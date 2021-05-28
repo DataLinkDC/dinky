@@ -22,181 +22,22 @@ export default [
     component: './Welcome',
   },
   {
-    path: '/dbase',
-    name: 'dbase',
-    access: 'canAdmin',
-    routes: [
-      {
-        path: '/dbase/user-center',
-        name: 'user-center',
-        icon: 'user',
-        routes: [
-          {
-            path: '/dbase/user-center/user',
-            name: 'user',
-            icon: 'user',
-            component: './Dbase/User',
-          },
-          {
-            path: '/dbase/user-center/role',
-            name: 'role',
-            icon: 'smile',
-            component: './Common/Build',
-          },
-          {
-            path: '/dbase/user-center/menu',
-            name: 'menu',
-            icon: 'smile',
-            component: './Common/Build',
-          },
-          {
-            path: '/dbase/user-center/client',
-            name: 'client',
-            icon: 'smile',
-            component: './Common/Build',
-          },
-          {
-            path: '/dbase/user-center/token',
-            name: 'token',
-            icon: 'smile',
-            component: './Common/Build',
-          },
-        ],
-      },
-      {
-        path: '/dbase/springcloud',
-        name: 'springcloud',
-        icon: 'cloud',
-        routes: [
-          {
-            path: '/dbase/springcloud/nacos',
-            name: 'nacos',
-            component: './Common/Build',
-          },
-        ],
-      },
-      {
-        path: '/dbase/database',
-        name: 'database',
-        icon: 'database',
-        routes: [
-          {
-            path: '/dbase/database/manager',
-            name: 'manager',
-            component: './Common/Build',
-          },
-        ],
-      },
-      {
-        path: '/dbase/moitor',
-        name: 'moitor',
-        icon: 'desktop',
-        routes: [
-          {
-            path: '/dbase/moitor/log',
-            name: 'log',
-            component: './Common/Build',
-          },
-        ],
-      },
-      {
-        path: '/dbase/cluster',
-        name: 'cluster',
-        icon: 'cluster',
-        routes: [
-          {
-            path: '/dbase/cluster/node',
-            name: 'node',
-            component: './Common/Build',
-          },
-        ],
-      },
-      {
-        path: '/dbase/schedule',
-        name: 'schedule',
-        icon: 'fieldTime',
-        routes: [
-          {
-            path: '/dbase/schedule/job',
-            name: 'job',
-            component: './Common/Build',
-          },
-        ],
-      },
-    ],
+    path: '/studio',
+    name: 'studio',
+    icon: 'consoleSql',
+    component: './Studio',
   },
   {
-    path: '/dbus',
-    name: 'dbus',
-    component: './Common/Build',
+    path: '/task',
+    name: 'task',
+    icon: 'partition',
+    component: './Task',
   },
   {
-    path: '/dlink',
-    name: 'dlink',
-    access: 'canAdmin',
-    routes: [
-      {
-        path: '/dlink/flink',
-        name: 'flink',
-        icon: 'crown',
-        routes: [
-          {
-            path: '/dlink/flink/studio',
-            name: 'studio',
-            component: './Dlink/Studio',
-          },
-        ],
-      },
-      {
-        path: '/dlink/task',
-        name: 'task',
-        icon: 'crown',
-        routes: [
-          {
-            path: '/dlink/task/list',
-            name: 'list',
-            component: './Dlink/Task',
-          },
-          {
-            path: '/dlink/task/create',
-            name: 'create',
-            component: './Common/Build',
-          },
-          {
-            path: '/dlink/task/flinksql',
-            name: 'flinksql',
-            component: './Dlink/FlinkSql',
-          },
-        ],
-      },
-      {
-        path: '/dlink/warehouse',
-        name: 'warehouse',
-        icon: 'deploymentUnit',
-        routes: [
-          {
-            path: '/dlink/warehouse/metadata',
-            name: 'metadata',
-            component: './Common/Build',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    path: '/dsink',
-    name: 'dsink',
-    component: './Common/Build',
-  },
-  {
-    path: '/dview',
-    name: 'dview',
-    component: './Common/Build',
-  },
-  {
-    path: '/dai',
-    name: 'dai',
-    component: './Common/Build',
+    path: '/cluster',
+    name: 'cluster',
+    icon: 'cluster',
+    component: './Cluster',
   },
   {
     path: '/dev',
@@ -279,7 +120,7 @@ export default [
             name: 'advanced-form',
             icon: 'smile',
             path: '/demo/form/formadvancedform',
-            component: './FormAdvancedForm',
+            component: './Demo/FormAdvancedForm',
           },
           {
             name: '分步表单',

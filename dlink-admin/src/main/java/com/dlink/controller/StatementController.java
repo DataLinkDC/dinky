@@ -26,7 +26,7 @@ import java.util.List;
  **/
 @Slf4j
 @RestController
-@RequestMapping("/statement")
+@RequestMapping("/api/statement")
 public class StatementController {
     @Autowired
     private StatementService statementService;

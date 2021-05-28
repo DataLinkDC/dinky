@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mysql://10.1.51.25:3306/dlink?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-    username: dfly
-    password: Dareway@2020
+    url: jdbc:mysql://127.0.0.1:3306/dlink?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: dlink
+    password: dlink
     driver-class-name: com.mysql.cj.jdbc.Driver
   application:
     name: dlink
@@ -24,10 +24,7 @@ mybatis-plus:
 
 ##### Flink 集群配置
 dlink:
-  flink:
-    host: 10.1.51.24,10.1.51.25,10.1.51.26
-    port: 8081
 ##### 登录用户配置
   login:
     username: admin
-    password: dlink
+    password: admin

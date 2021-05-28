@@ -8,27 +8,9 @@ import Footer from '@/components/Footer';
 import type { ResponseError } from 'umi-request';
 import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
 import { BookOutlined, LinkOutlined } from '@ant-design/icons';
-import {RequestOptionsInit} from "umi-request";
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
-
-const authHeaderInterceptor = (url: string, options: RequestOptionsInit) => {
-  if(url === '/api-uaa/oauth/token'){
-    const authorization = Buffer.from('webApp:webApp').toString('base64');
-    const authHeader = { Authorization: `Basic ${authorization}` };
-    return {
-      url: `${url}`,
-      options: {...options, interceptors: true, headers: authHeader},
-    };
-  }else {
-    const authHeader = {Authorization: `Bearer ${localStorage.getItem('token')}`};
-    return {
-      url: `${url}`,
-      options: {...options, interceptors: true, headers: authHeader},
-    };
-  }
-};
 
 /** 获取用户信息比较慢的时候会展示一个 loading */
 export const initialStateConfig = {
@@ -47,9 +29,9 @@ export async function getInitialState(): Promise<{
     try {
       const result = await queryCurrentUser();
       const currentUser:API.CurrentUser = {
-        name: result.datas.nickname,
-        avatar: result.datas.avatar,
-        userid: result.datas.id,
+        name: '超级管理员',
+        avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
+        userid: '1',
         email: 'antdesign@alipay.com',
         signature: '海纳百川，有容乃大',
         title: '交互专家啊',
@@ -168,8 +150,7 @@ export const request: RequestConfig = {
     throw error;
   }
   },
-  // 新增自动添加AccessToken的请求前拦截器
-  requestInterceptors: [authHeaderInterceptor],
+
 };
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
