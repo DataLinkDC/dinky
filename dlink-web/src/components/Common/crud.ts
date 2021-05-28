@@ -39,6 +39,15 @@ export async function postDataArray(url:string,params: number[]) {
   });
 }
 
+export async function postAll(url:string,params?: any) {
+  return request(url, {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
+
 export const handleAddOrUpdate = async (url:string,fields: any) => {
   const tipsTitle = fields.id ? "修改" : "添加";
   const hide = message.loading(`正在${tipsTitle}`);
@@ -90,3 +99,16 @@ export const updateEnabled = (url:string,selectedRows: [], enabled: boolean) => 
   })
 };
 
+export const handleOption = async (url:string,title:string,param:any) => {
+  const hide = message.loading('正在'+title);
+  try {
+    const {msg} = await postAll(url,param);
+    hide();
+    message.success(msg);
+    return true;
+  } catch (error) {
+    hide();
+    message.error(title+'失败，请重试');
+    return false;
+  }
+};

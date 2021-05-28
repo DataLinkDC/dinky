@@ -25,7 +25,7 @@ import java.util.List;
  **/
 @Slf4j
 @RestController
-@RequestMapping("/catalogue")
+@RequestMapping("/api/catalogue")
 public class CatalogueController {
     @Autowired
     private CatalogueService catalogueService;

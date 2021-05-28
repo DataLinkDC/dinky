@@ -1,13 +1,16 @@
-export type TaskTableListItem = {
+export type ClusterTableListItem = {
             id: number,
             name: string,
             alias: string,
             type: string,
+            checkPoint: number,
+            savePointPath: string,
+            parallelism: number,
+            fragment: boolean,
+            clusterId: number,
             note: string,
             enabled: boolean,
-            createUser: number,
             createTime: Date,
-            updateUser: number,
             updateTime: Date,
 };
 

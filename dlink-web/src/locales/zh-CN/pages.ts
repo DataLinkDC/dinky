@@ -1,5 +1,5 @@
 export default {
-  'pages.layouts.userLayout.title': 'DataLink 是一款开源的创新型数据中台解决方案',
+  'pages.layouts.userLayout.title': 'Dlink 是一款开源的 Apache Flink 开发运维平台',
   'pages.login.accountLogin.tab': '账户密码登录',
   'pages.login.accountLogin.errorMessage': '错误的用户名和密码（admin/ant.design)',
   'pages.login.failure': '登录失败，请重试！',

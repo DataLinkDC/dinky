@@ -8,12 +8,7 @@ import com.dlink.service.ClusterService;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +21,7 @@ import java.util.List;
  **/
 @Slf4j
 @RestController
-@RequestMapping("/cluster")
+@RequestMapping("/api/cluster")
 public class ClusterController {
     @Autowired
     private ClusterService clusterService;
@@ -36,6 +31,7 @@ public class ClusterController {
      */
     @PutMapping
     public Result saveOrUpdate(@RequestBody Cluster cluster) throws Exception {
+        checkHealth(cluster);
         if(clusterService.saveOrUpdate(cluster)){
             return Result.succeed("新增成功");
         }else {
@@ -92,16 +88,20 @@ public class ClusterController {
         List<Cluster> clusters = clusterService.listEnabledAll();
         for (int i = 0; i < clusters.size(); i++) {
             Cluster cluster = clusters.get(i);
-            String jobManagerHost = clusterService.checkHeartBeat(cluster.getHosts(), cluster.getJobManagerHost());
-            if(jobManagerHost==null){
-                cluster.setJobManagerHost("");
-                cluster.setStatus(0);
-            }else{
-                cluster.setJobManagerHost(jobManagerHost);
-                cluster.setStatus(1);
-            }
+            checkHealth(cluster);
             clusterService.updateById(cluster);
         }
         return Result.succeed("状态刷新完成");
+    }
+
+    private void checkHealth(Cluster cluster){
+        String jobManagerHost = clusterService.checkHeartBeat(cluster.getHosts(), cluster.getJobManagerHost());
+        if(jobManagerHost==null){
+            cluster.setJobManagerHost("");
+            cluster.setStatus(0);
+        }else{
+            cluster.setJobManagerHost(jobManagerHost);
+            cluster.setStatus(1);
+        }
     }
 }
