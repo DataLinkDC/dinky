@@ -28,3 +28,6 @@ target/*
 */target/*
 */*/target/*
 dlink-web/node_modules/*
+datalink-web/node_modules/*
+dlink-web/dist/*
+datalink-web/dist/*
