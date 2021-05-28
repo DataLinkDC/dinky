@@ -8,22 +8,32 @@ package com.dlink.executor;
  **/
 public class ExecutorSetting {
     private String type = Executor.LOCAL;
-    private Long checkpoint;
+    private Integer checkpoint;
+    private Integer parallelism;
     private boolean useSqlFragment = true;
+    private String savePointPath;
 
     public ExecutorSetting(String type) {
         this.type = type;
     }
 
-    public ExecutorSetting(String type, Long checkpoint) {
+    public ExecutorSetting(String type, Integer checkpoint) {
         this.type = type;
         this.checkpoint = checkpoint;
     }
 
-    public ExecutorSetting(String type, Long checkpoint, boolean useSqlFragment) {
+    public ExecutorSetting(String type, Integer checkpoint, boolean useSqlFragment) {
         this.type = type;
         this.checkpoint = checkpoint;
         this.useSqlFragment = useSqlFragment;
+    }
+
+    public ExecutorSetting(String type, Integer checkpoint, Integer parallelism, boolean useSqlFragment, String savePointPath) {
+        this.type = type;
+        this.checkpoint = checkpoint;
+        this.parallelism = parallelism;
+        this.useSqlFragment = useSqlFragment;
+        this.savePointPath = savePointPath;
     }
 
     public String getType() {
@@ -34,11 +44,11 @@ public class ExecutorSetting {
         this.type = type;
     }
 
-    public Long getCheckpoint() {
+    public Integer getCheckpoint() {
         return checkpoint;
     }
 
-    public void setCheckpoint(Long checkpoint) {
+    public void setCheckpoint(Integer checkpoint) {
         this.checkpoint = checkpoint;
     }
 
@@ -48,5 +58,21 @@ public class ExecutorSetting {
 
     public void setUseSqlFragment(boolean useSqlFragment) {
         this.useSqlFragment = useSqlFragment;
+    }
+
+    public Integer getParallelism() {
+        return parallelism;
+    }
+
+    public void setParallelism(Integer parallelism) {
+        this.parallelism = parallelism;
+    }
+
+    public String getSavePointPath() {
+        return savePointPath;
+    }
+
+    public void setSavePointPath(String savePointPath) {
+        this.savePointPath = savePointPath;
     }
 }

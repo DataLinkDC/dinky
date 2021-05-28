@@ -13,6 +13,7 @@ import org.apache.flink.api.common.JobID;
 import org.apache.flink.table.api.TableResult;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,19 @@ public class JobManager {
     private Integer port;
     private String sessionId;
     private Integer maxRowNum = 100;
+
+    public JobManager(String host) {
+        if(host!=null) {
+            String[] strs = host.split(":");
+            if(strs.length>=2) {
+                this.flinkHost = strs[0];
+                this.port = Integer.parseInt(strs[1]);
+            }else{
+                this.flinkHost = strs[0];
+                this.port = 8081;
+            }
+        }
+    }
 
     public JobManager(String flinkHost, Integer port) {
         this.flinkHost = flinkHost;
@@ -82,6 +96,14 @@ public class JobManager {
             return runResult;
         }
         return runResult;
+    }
+
+    public SubmitResult submit(String statement, ExecutorSetting executerSetting) {
+        if(statement==null||"".equals(statement)){
+            return SubmitResult.error("FlinkSql语句不存在");
+        }
+        String [] statements = statement.split(FlinkSQLConstant.SEPARATOR);
+        return submit(Arrays.asList(statements),executerSetting);
     }
 
     public SubmitResult submit(List<String> sqlList, ExecutorSetting executerSetting) {

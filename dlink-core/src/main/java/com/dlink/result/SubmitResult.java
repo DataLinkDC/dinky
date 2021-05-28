@@ -23,6 +23,15 @@ public class SubmitResult {
     public SubmitResult() {
     }
 
+    public static SubmitResult error(String error){
+        return new SubmitResult(false, error);
+    }
+
+    public SubmitResult(boolean success, String error) {
+        this.success = success;
+        this.error = error;
+    }
+
     public SubmitResult(String sessionId, List<String> statements, String flinkHost) {
         this.sessionId = sessionId;
         this.statements = statements;

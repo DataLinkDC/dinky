@@ -1,5 +1,6 @@
 package com.dlink.common.result;
 
+import com.dlink.model.CodeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

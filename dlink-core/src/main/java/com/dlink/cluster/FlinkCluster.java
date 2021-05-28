@@ -26,31 +26,64 @@ public class FlinkCluster {
         FlinkCluster.flinkJobMangerHost = flinkJobMangerHost;
     }
 
-    public static String getFlinkJobManagerIP(String flinkServers) {
-        String res = "";
-        String flinkAddress = "";
+    public static String getFlinkJobManagerIP(String hosts) {
         try {
-            flinkAddress = getFlinkJobMangerHost();
-            res = HttpUtil.get(NetConstant.HTTP + flinkAddress + NetConstant.COLON + NetConstant.PORT +  NetConstant.SLASH + FlinkHistoryConstant.JOBS, NetConstant.SERVER_TIME_OUT_ACTIVE);
+            String res = HttpUtil.get(NetConstant.HTTP + getFlinkJobMangerHost() +  NetConstant.SLASH + FlinkHistoryConstant.JOBS, NetConstant.SERVER_TIME_OUT_ACTIVE);
             if (!res.isEmpty()) {
-                return flinkAddress;
+                return getFlinkJobMangerHost();
             }
         } catch (Exception e) {
         }
-        String[] servers = flinkServers.split(",");
+        String[] servers = hosts.split(",");
         for (String server : servers) {
             try {
-                String url = NetConstant.HTTP + server + NetConstant.COLON + NetConstant.PORT +  NetConstant.SLASH + FlinkHistoryConstant.JOBS;
-                res = HttpUtil.get(url, NetConstant.SERVER_TIME_OUT_ACTIVE);
+                String url = NetConstant.HTTP + server +  NetConstant.SLASH + FlinkHistoryConstant.JOBS;
+                String res = HttpUtil.get(url, NetConstant.SERVER_TIME_OUT_ACTIVE);
                 if (!res.isEmpty()) {
-                    if(server.equalsIgnoreCase(flinkAddress)){
-                        setFlinkJobMangerHost(server);
-                    }
+                    setFlinkJobMangerHost(server);
                     return server;
                 }
             } catch (Exception e) {
             }
         }
         return "";
+    }
+
+    public static String getFlinkJobManagerHost(String hosts) {
+        String[] servers = hosts.split(",");
+        for (String server : servers) {
+            try {
+                String res = HttpUtil.get(NetConstant.HTTP + server +  NetConstant.SLASH + FlinkHistoryConstant.JOBS, NetConstant.SERVER_TIME_OUT_ACTIVE);
+                if (!res.isEmpty()) {
+                    setFlinkJobMangerHost(server);
+                    return server;
+                }
+            } catch (Exception e) {
+            }
+        }
+        return "";
+    }
+
+    public static String testFlinkJobManagerIP(String hosts,String host) {
+        try {
+            String res = HttpUtil.get(NetConstant.HTTP + host +  NetConstant.SLASH + FlinkHistoryConstant.JOBS, NetConstant.SERVER_TIME_OUT_ACTIVE);
+            if (!res.isEmpty()) {
+                return host;
+            }
+        } catch (Exception e) {
+        }
+        String[] servers = hosts.split(",");
+        for (String server : servers) {
+            try {
+                String url = NetConstant.HTTP + server +  NetConstant.SLASH + FlinkHistoryConstant.JOBS;
+                String res = HttpUtil.get(url, NetConstant.SERVER_TIME_OUT_ACTIVE);
+                if (!res.isEmpty()) {
+                    setFlinkJobMangerHost(server);
+                    return server;
+                }
+            } catch (Exception e) {
+            }
+        }
+        return null;
     }
 }

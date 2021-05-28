@@ -47,4 +47,8 @@ public interface FlinkSQLConstant {
      * 删除表语句的头部 DROP TABLE IF EXISTS
      */
     String DROP_TABLE_HEAD = " DROP TABLE IF EXISTS ";
+    /**
+     * 分隔符
+     */
+    String SEPARATOR = ";";
 }
