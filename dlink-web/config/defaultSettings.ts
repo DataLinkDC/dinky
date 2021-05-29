@@ -20,7 +20,7 @@ const Settings: LayoutSettings & {
     locale: true
   },
   headerHeight: 48,
-  //splitMenus: true
+  splitMenus: true
 };
 
 export default Settings;

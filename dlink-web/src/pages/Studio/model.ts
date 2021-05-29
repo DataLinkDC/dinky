@@ -43,9 +43,7 @@ const Model: ModelType = {
     saveSql(state, { payload }) {
       return {
         ...state,
-        sql: {
-          ...payload,
-        },
+        sql: payload,
       };
     },
   },

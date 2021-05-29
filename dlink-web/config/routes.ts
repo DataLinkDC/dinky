@@ -28,6 +28,12 @@ export default [
     component: './Studio',
   },
   {
+    path: '/flinksqlstudio',
+    name: 'flinsqlstudio',
+    icon: 'consoleSql',
+    component: './FlinkSqlStudio',
+  },
+  {
     path: '/task',
     name: 'task',
     icon: 'partition',
