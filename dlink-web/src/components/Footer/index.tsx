@@ -6,7 +6,7 @@ export default () => {
   const intl = useIntl();
   const defaultMessage = intl.formatMessage({
     id: 'app.copyright.produced',
-    defaultMessage: 'DataLink 数据中台 开源',
+    defaultMessage: 'Dlink',
   });
 
   return (
@@ -14,15 +14,15 @@ export default () => {
       copyright={`2021 ${defaultMessage}`}
       links={[
         {
-          key: 'DataLink',
-          title: 'DataLink',
+          key: 'Dlink',
+          title: 'Dlink',
           href: '',
           blankTarget: true,
         },
         {
           key: 'github',
           title: <GithubOutlined />,
-          href: 'https://github.com/aiwenmo/DataLink',
+          href: 'https://github.com/aiwenmo/Dlink',
           blankTarget: true,
         },
       ]}
