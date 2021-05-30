@@ -6,6 +6,8 @@ import com.dlink.model.Catalogue;
 import com.dlink.service.CatalogueService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * CatalogueServiceImpl
  *
@@ -14,4 +16,8 @@ import org.springframework.stereotype.Service;
  **/
 @Service
 public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Catalogue> implements CatalogueService {
+    @Override
+    public List<Catalogue> getAllData() {
+        return this.list();
+    }
 }

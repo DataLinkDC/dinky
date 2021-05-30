@@ -28,6 +28,12 @@ export default [
     component: './Studio',
   },
   {
+    path: '/flinksqlstudio',
+    name: 'flinsqlstudio',
+    icon: 'consoleSql',
+    component: './FlinkSqlStudio',
+  },
+  {
     path: '/task',
     name: 'task',
     icon: 'partition',
@@ -42,6 +48,7 @@ export default [
   {
     path: '/dev',
     name: 'dev',
+    icon: 'crown',
     routes: [
       {
         path: '/dev/flink',
@@ -90,6 +97,7 @@ export default [
   {
     path: '/demo',
     name: 'demo',
+    icon: 'crown',
     //access: 'canAdmin',
     routes: [
       {

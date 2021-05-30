@@ -2,7 +2,6 @@ import { PageContainer } from '@ant-design/pro-layout';
 import React, { useState, useEffect } from 'react';
 import { Spin } from 'antd';
 import styles from './index.less';
-import FlinkSqlEditor from '@/components/FlinkSqlEditor';
 import * as monaco from 'monaco-editor';
 import Card from 'antd/es/card';
 import DropdownSubMenu from './DropdownSubMenu';

@@ -92,17 +92,6 @@
         <discardingThreshold>0</discardingThreshold>
         <appender-ref ref="FileAppender"/>
     </appender>
-    <appender name="audit_log_async" class="ch.qos.logback.classic.AsyncAppender">
-        <discardingThreshold>0</discardingThreshold>
-        <appender-ref ref="audit_log"/>
-    </appender>
-    <logger name="com.datalink.log.monitor" level="debug" addtivity="false">
-        <appender-ref ref="point_log_async" />
-    </logger>
-    <logger name="com.datalink.log.service.impl.LoggerAuditServiceImpl" level="debug" addtivity="false">
-        <appender-ref ref="audit_log_async" />
-    </logger>
-
     <root level="INFO">
         <appender-ref ref="StdoutAppender"/>
         <appender-ref ref="file_async"/>

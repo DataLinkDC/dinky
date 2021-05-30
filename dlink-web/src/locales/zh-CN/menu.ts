@@ -52,6 +52,7 @@ export default {
   'menu.demo': 'Demo 开发模板',
   'menu.cluster': '集群中心',
   'menu.studio': 'FlinkSql IDE',
+  'menu.flinsqlstudio': 'FlinkSql Studio',
   'menu.task': '作业中心',
   'menu.dai': 'Dai 人工智能',
   'menu.dev': 'Dev 开发者工具',

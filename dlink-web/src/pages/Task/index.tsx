@@ -15,7 +15,7 @@ import Dropdown from "antd/es/dropdown/dropdown";
 import Menu from "antd/es/menu";
 import {handleAddOrUpdate, handleRemove, handleSubmit, queryData, updateEnabled} from "@/components/Common/crud";
 
-const url = '/api-dlink/task';
+const url = '/api/task';
 
 const TaskTableList: React.FC<{}> = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
@@ -113,6 +113,54 @@ const TaskTableList: React.FC<{}> = () => {
       hideInTable: false,
     },
     {
+      title: 'CheckPoint',
+      sorter: true,
+      dataIndex: 'checkPoint',
+      hideInForm: false,
+      hideInSearch: true,
+      hideInTable: true,
+    },
+    {
+      title: 'SavePointPath',
+      sorter: true,
+      dataIndex: 'savePointPath',
+      hideInForm: false,
+      hideInSearch: true,
+      hideInTable: true,
+    },
+    {
+      title: 'Parallelism',
+      sorter: true,
+      dataIndex: 'parallelism',
+      hideInForm: false,
+      hideInSearch: true,
+      hideInTable: true,
+    },
+    {
+      title: 'Fragment',
+      sorter: true,
+      dataIndex: 'fragment',
+      hideInForm: false,
+      hideInSearch: true,
+      hideInTable: true,
+    },
+    {
+      title: '集群ID',
+      sorter: true,
+      dataIndex: 'clusterId',
+      hideInForm: false,
+      hideInSearch: true,
+      hideInTable: true,
+    },
+    {
+      title: '集群',
+      sorter: true,
+      dataIndex: 'clusterName',
+      hideInForm: true,
+      hideInSearch: true,
+      hideInTable: true,
+    },
+    {
       title: '注释',
       sorter: true,
       valueType: 'textarea',
@@ -144,23 +192,6 @@ const TaskTableList: React.FC<{}> = () => {
       },
     },
     {
-      title: '创建人ID',
-      sorter: true,
-      dataIndex: 'createUser',
-      hideInForm: true,
-      hideInSearch: true,
-      hideInTable: true,
-      hideInDescriptions:true,
-    },
-    {
-      title: '创建人',
-      sorter: true,
-      dataIndex: 'createNickName',
-      hideInForm: true,
-      hideInSearch: true,
-      hideInTable: true,
-    },
-    {
       title: '创建时间',
       dataIndex: 'createTime',
       sorter: true,
@@ -177,23 +208,6 @@ const TaskTableList: React.FC<{}> = () => {
         }
         return defaultRender(item);
       },
-    },
-    {
-      title: '更新人ID',
-      sorter: true,
-      dataIndex: 'updateUser',
-      hideInForm: true,
-      hideInSearch: true,
-      hideInTable: true,
-      hideInDescriptions:true,
-    },
-    {
-      title: '更新人',
-      sorter: true,
-      dataIndex: 'updateNickName',
-      hideInForm: true,
-      hideInSearch: true,
-      hideInTable: false,
     },
     {
       title: '最近更新时间',
