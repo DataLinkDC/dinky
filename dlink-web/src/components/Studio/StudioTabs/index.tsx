@@ -1,6 +1,8 @@
 import { Tabs } from 'antd';
 import React from 'react';
 import StudioEdit from "../StudioEdit";
+import {connect} from "umi";
+import {StateType} from "@/pages/FlinkSqlStudio/model";
 
 const { TabPane } = Tabs;
 
@@ -96,4 +98,8 @@ class EditorTabs extends React.Component {
   }
 }
 
-export default EditorTabs;
+export default connect(({ Studio }: { Studio: StateType }) => ({
+  current: Studio.current,
+  catalogue: Studio.catalogue,
+  sql: Studio.sql,
+}))(EditorTabs);

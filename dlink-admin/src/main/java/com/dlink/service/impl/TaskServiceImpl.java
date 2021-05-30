@@ -1,5 +1,6 @@
 package com.dlink.service.impl;
 
+import com.dlink.assertion.Assert;
 import com.dlink.cluster.FlinkCluster;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.exception.BusException;
@@ -34,21 +35,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public SubmitResult submitByTaskId(Integer id) {
         Task task = this.getById(id);
-        if (task == null) {
-            throw new BusException("作业不存在");
-        }
+        Assert.check(task);
         Cluster cluster = clusterService.getById(task.getClusterId());
-        if (cluster == null) {
-            throw new BusException("Flink集群不存在");
-        }
+        Assert.check(cluster);
         Statement statement = statementService.getById(id);
-        if (statement == null) {
-            throw new BusException("FlinkSql语句不存在");
-        }
+        Assert.check(statement);
         String host = FlinkCluster.testFlinkJobManagerIP(cluster.getHosts(), cluster.getJobManagerHost());
-        if (host == null || "".equals(host)) {
-            throw new BusException("集群地址暂不可用");
-        }
+        Assert.checkHost(host);
         JobManager jobManager = new JobManager(host);
         return jobManager.submit(statement.getStatement(), task.getRemoteExecutorSetting());
     }

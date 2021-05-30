@@ -56,14 +56,14 @@ public class JobManager {
         this.port = port;
     }
 
-    public RunResult execute(String statement) {
+    public RunResult execute(String statement,ExecutorSetting executorSetting) {
         RunResult runResult = new RunResult(sessionId, statement, flinkHost);
         Executor executor = null;
         ExecutorEntity executorEntity = SessionPool.get(sessionId);
         if (executorEntity != null) {
             executor = executorEntity.getExecutor();
         } else {
-            executor = Executor.build(new EnvironmentSetting(flinkHost, FlinkConstant.PORT), new ExecutorSetting(Executor.REMOTE));
+            executor = Executor.build(new EnvironmentSetting(flinkHost, FlinkConstant.PORT), executorSetting);
             SessionPool.push(new ExecutorEntity(sessionId, executor));
         }
         String[] Statements = statement.split(";");

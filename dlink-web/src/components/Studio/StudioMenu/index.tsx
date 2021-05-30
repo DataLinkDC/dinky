@@ -6,7 +6,7 @@ import Space from "antd/es/space";
 import Divider from "antd/es/divider";
 import Button from "antd/es/button/button";
 import Breadcrumb from "antd/es/breadcrumb/Breadcrumb";
-import {StateType} from "@/pages/Studio/model";
+import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
 
 const { SubMenu } = Menu;

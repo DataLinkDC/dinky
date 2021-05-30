@@ -6,7 +6,7 @@ import StudioMenu from "./StudioMenu";
 import {Row,Col,Card} from "antd";
 import StudioTree from "./StudioTree";
 import StudioTabs from "./StudioTabs";
-import {StateType} from "@/pages/Studio/model";
+import {StateType} from "@/pages/FlinkSqlStudio/model";
 
 type StudioProps = {
   sql: StateType['sql'];
@@ -56,6 +56,8 @@ const Studio: React.FC<StudioProps> = ({ sql }) => {
 // export default connect(mapStateToProps)(Studio);
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
+  current: Studio.current,
+  catalogue: Studio.catalogue,
   sql: Studio.sql,
 }))(Studio);
 

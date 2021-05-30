@@ -82,4 +82,13 @@ public class CatalogueController {
         catalogue = catalogueService.getById(catalogue.getId());
         return Result.succeed(catalogue,"获取成功");
     }
+
+    /**
+     * 获取所有目录
+     */
+    @PostMapping("/getCatalogueTreeData")
+    public Result getCatalogueTreeData() throws Exception {
+        List<Catalogue> catalogues = catalogueService.getAllData();
+        return Result.succeed(catalogues,"获取成功");
+    }
 }

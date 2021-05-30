@@ -5,8 +5,8 @@ import MonacoEditor from "react-monaco-editor";
 import {BaseDataSourceField, BaseDataSourceHeader, CompletionItem} from "./data";
 import Completion from "./completion";
 
-import {executeSql} from "./service";
-import {StateType} from "@/pages/Studio/model";
+import {executeSql} from "@/pages/FlinkSqlStudio/service";
+import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
 
 let provider = {
@@ -29,8 +29,8 @@ const FlinkSqlEditor = (props:any) => {
         selectOnLineNumbers: true,
         renderSideBySide: false,
       },
-    // sql=props.data.sql,
-    sql,
+    sql=props.catalogue.sql,
+    // sql,
     dispatch,
     } = props
   ;
@@ -166,5 +166,7 @@ return (
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
+  current: Studio.current,
+  catalogue: Studio.catalogue,
   sql: Studio.sql,
 }))(FlinkSqlEditor);

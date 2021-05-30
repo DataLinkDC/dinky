@@ -1,8 +1,16 @@
 import {Effect, Reducer} from "umi";
-import {fakeSubmitForm} from "@/pages/Demo/FormStepForm/service";
+import {executeSql} from "./service";
+
+export type CatalogueType = {
+  id?: number;
+  taskId?: number;
+  sql?: string;
+  clusterId?: number;
+}
 
 export type StateType = {
-  current?: string;
+  current?: number;
+  catalogue: CatalogueType[];
   sql?: string;
 };
 
@@ -18,16 +26,20 @@ export type ModelType = {
 };
 
 
+
 const Model: ModelType = {
   namespace: 'Studio',
   state: {
-    current: 'info',
+    current: 0,
+    catalogue: [{
+      sql: '',
+    }],
     sql: '',
   },
 
   effects: {
     *executeSql({ payload }, { call, put }) {
-      yield call(fakeSubmitForm, payload);
+      yield call(executeSql, payload);
       yield put({
         type: 'saveStepFormData',
         payload,
@@ -41,9 +53,15 @@ const Model: ModelType = {
 
   reducers: {
     saveSql(state, { payload }) {
+      const catalogues = state.catalogue;
+      for(let i=0;i<catalogues.length;i++){
+        if(catalogues[i].id==payload.id){
+          catalogues[i].sql=payload.sql;
+        }
+      }
       return {
         ...state,
-        sql: payload,
+        catalogue:catalogues,
       };
     },
   },
