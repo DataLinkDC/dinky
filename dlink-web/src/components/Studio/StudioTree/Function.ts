@@ -9,6 +9,7 @@ export type DataType = {
 };
 export interface TreeDataNode extends DataNode {
   name:String;
+  id:number;
   parentId:number;
   isDir:boolean;
 }
@@ -23,8 +24,9 @@ export function convertToTreeData(data:TreeDataNode[], pid:number) {
       if (temp.length > 0) {
         obj.children = temp
       }
-      obj.isLeaf = obj.isDir;
+      obj.isLeaf = !obj.isDir;
       obj.title = obj.name;
+      obj.key = obj.id;
       result.push(obj)
     }
   }
