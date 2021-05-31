@@ -1,4 +1,3 @@
-import React from "react";
 import styles from "./index.less";
 import {Menu, Dropdown, Typography, Row, Col} from "antd";
 import {PauseCircleTwoTone, CopyTwoTone, DeleteTwoTone,PlayCircleTwoTone,DiffTwoTone,
@@ -9,6 +8,7 @@ import Button from "antd/es/button/button";
 import Breadcrumb from "antd/es/breadcrumb/Breadcrumb";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
+import {useEffect, useState} from "react";
 
 const {SubMenu} = Menu;
 //<Button shape="circle" icon={<CaretRightOutlined />} />
@@ -30,8 +30,9 @@ const menu = (
 
 const StudioMenu = (props: any) => {
 
-  const {sql} = props;
-  console.log(props);
+  const {sql,currentPath} = props;
+  const [pathItem, setPathItem] = useState<[]>();
+
   const executeSql = () => {
     console.log('获取' + sql);
   };
@@ -41,6 +42,25 @@ const StudioMenu = (props: any) => {
       <Menu.Item onClick={executeSql}>执行</Menu.Item>
     </Menu>
   );
+
+  /*const getPath = ()=>{
+    let itemList = [];
+    for(let item of currentPath){
+      itemList.push(<Breadcrumb.Item>{item}</Breadcrumb.Item>)
+    }
+    setPathItem(itemList);
+  };
+
+  useEffect(() => {
+    getPath();
+  }, []);*/
+  const getPathItem = (paths)=>{
+    let itemList = [];
+    for(let item of paths){
+      itemList.push(<Breadcrumb.Item>{item}</Breadcrumb.Item>)
+    }
+    return itemList;
+  };
 
   return (
     <Row className={styles.container}>
@@ -77,9 +97,7 @@ const StudioMenu = (props: any) => {
             <Breadcrumb className={styles["dw-path"]}>
               <EnvironmentOutlined />
               <Divider type="vertical" />
-              <Breadcrumb.Item>数据仓库</Breadcrumb.Item>
-              <Breadcrumb.Item>维度</Breadcrumb.Item>
-              <Breadcrumb.Item>用户信息</Breadcrumb.Item>
+              {getPathItem(currentPath)}
             </Breadcrumb>
           </Col>
           <Col span={8} offset={8}>
@@ -137,4 +155,5 @@ const StudioMenu = (props: any) => {
 
 export default connect(({Studio}: { Studio: StateType }) => ({
   sql: Studio.sql,
+  currentPath: Studio.currentPath,
 }))(StudioMenu);

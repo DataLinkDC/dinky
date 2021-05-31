@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {connect} from "umi";
-import {StateType} from "@/pages/Demo/FormStepForm/model";
 import  {DownOutlined, FrownFilled, FrownOutlined, MehOutlined, SmileOutlined} from "@ant-design/icons";
 import {Tree, Input, Menu, Empty,Button} from 'antd';
 import {getCatalogueTreeData} from "@/pages/FlinkSqlStudio/service";
 import {convertToTreeData, DataType, TreeDataNode} from "@/components/Studio/StudioTree/Function";
 import style from "./index.less";
+import {StateType} from "@/pages/FlinkSqlStudio/model";
 
 const { DirectoryTree } = Tree;
 
@@ -40,6 +40,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
   const [treeData, setTreeData] = useState<TreeDataNode[]>();
   const [dataList, setDataList] = useState<[]>();
   const [rightClickNodeTreeItem,setRightClickNodeTreeItem] = useState<RightClickMenu>();
+  const {currentPath,dispatch} = props;
 
   const getTreeData = async () => {
     const result = await getCatalogueTreeData();
@@ -93,6 +94,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     const empty = (<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} ><Button type="primary">创建目录</Button></Empty>);
     return (treeData&&treeData.length==0)?empty:'';
   };
+
   const onRightClick = (e:any) => {
     setRightClickNodeTreeItem({
       pageX: e.event.pageX,
@@ -102,7 +104,12 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     });
   };
 
-  const onSelect = () => {
+  const onSelect = (selectedKeys:[], e:any) => {
+    console.log(e.node.path);
+    dispatch({
+      type: "Studio/saveCurrentPath",
+      payload: e.node.path,
+    });
     setRightClickNodeTreeItem(null);
   };
 
@@ -123,4 +130,6 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
 };
 
 
-export default connect(({studio}: { studio: StateType }) => ({}))(StudioTree);
+export default connect(({Studio}: { Studio: StateType }) => ({
+  currentPath:Studio.currentPath
+}))(StudioTree);
