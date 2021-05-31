@@ -21,12 +21,12 @@ export default [
     icon: 'home',
     component: './Welcome',
   },
-  {
+  /*{
     path: '/studio',
     name: 'studio',
     icon: 'consoleSql',
     component: './Studio',
-  },
+  },*/
   {
     path: '/flinksqlstudio',
     name: 'flinsqlstudio',

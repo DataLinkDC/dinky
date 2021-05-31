@@ -7,7 +7,7 @@ import {StateType} from "@/pages/FlinkSqlStudio/model";
 const { TabPane } = Tabs;
 
 const initialPanes = [
-  { title: '未命名', key: '0' ,value:'select * from ',closable: false,},
+  { title: '草稿', key: '0' ,value:'select * from ',closable: false,},
 ];
 
 class EditorTabs extends React.Component {
