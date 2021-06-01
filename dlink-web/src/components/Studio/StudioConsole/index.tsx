@@ -70,7 +70,7 @@ const StudioConsole = (props:any) => {
           文档
         </span>
         }
-        key="4"
+        key="5"
       >
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       </TabPane>

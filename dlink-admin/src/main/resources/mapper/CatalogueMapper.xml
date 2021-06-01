@@ -9,7 +9,7 @@
         <result column="task_id" property="taskId" />
         <result column="type" property="type" />
         <result column="parent_id" property="parentId" />
-        <result column="is_dir" property="isDir" />
+        <result column="is_leaf" property="isLeaf" />
         <result column="enabled" property="enabled" />
         <result column="create_time" property="createTime" />
         <result column="update_time" property="updateTime" />
@@ -17,7 +17,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, task_id, type,parent_id,is_dir, enabled, create_time, update_time
+        id, name, task_id, type,parent_id,is_leaf, enabled, create_time, update_time
     </sql>
 
 

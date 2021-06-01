@@ -24,5 +24,5 @@ public class Catalogue extends SuperEntity {
 
     private Integer parentId;
 
-    private Boolean isDir;
+    private Boolean isLeaf;
 }

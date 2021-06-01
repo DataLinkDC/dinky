@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {connect} from "umi";
 import  {DownOutlined, FrownFilled, FrownOutlined, MehOutlined, SmileOutlined} from "@ant-design/icons";
 import {Tree, Input, Menu, Empty,Button} from 'antd';
@@ -6,6 +6,9 @@ import {getCatalogueTreeData} from "@/pages/FlinkSqlStudio/service";
 import {convertToTreeData, DataType, TreeDataNode} from "@/components/Studio/StudioTree/Function";
 import style from "./index.less";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
+import {handleAddOrUpdate} from "@/components/Common/crud";
+import UpdateCatalogueForm from './components/UpdateCatalogueForm';
+import {ActionType} from "@ant-design/pro-table";
 
 const { DirectoryTree } = Tree;
 
@@ -41,6 +44,10 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
   const [dataList, setDataList] = useState<[]>();
   const [rightClickNodeTreeItem,setRightClickNodeTreeItem] = useState<RightClickMenu>();
   const {currentPath,dispatch} = props;
+  const [updateCatalogueModalVisible, handleUpdateCatalogueModalVisible] = useState<boolean>(false);
+  const [isCreateCatalogue, setIsCreateCatalogue] = useState<boolean>(true);
+  const [catalogueFormValues, setCatalogueFormValues] = useState({});
+  const actionRef = useRef<ActionType>();
 
   const getTreeData = async () => {
     const result = await getCatalogueTreeData();
@@ -91,7 +98,14 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
   };
 
   const getEmpty = () =>{
-    const empty = (<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} ><Button type="primary">创建目录</Button></Empty>);
+    const empty = (<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} ><Button type="primary" onClick={() => {
+      handleUpdateCatalogueModalVisible(true);
+      setIsCreateCatalogue(true);
+      setCatalogueFormValues({
+        isLeaf:false,
+        parentId:0,
+      });
+    }}>创建目录</Button></Empty>);
     return (treeData&&treeData.length==0)?empty:'';
   };
 
@@ -125,6 +139,25 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
         />
       {getNodeTreeRightClickMenu()}
       {getEmpty()}
+      {updateCatalogueModalVisible? (
+        <UpdateCatalogueForm
+          onSubmit={async (value) => {
+            const success = await handleAddOrUpdate('api/catalogue',value);
+            if (success) {
+              handleUpdateCatalogueModalVisible(false);
+              setCatalogueFormValues({});
+              getTreeData()
+            }
+          }}
+          onCancel={() => {
+            handleUpdateCatalogueModalVisible(false);
+            setCatalogueFormValues({});
+          }}
+          updateModalVisible={updateCatalogueModalVisible}
+          values={catalogueFormValues}
+          isCreate={isCreateCatalogue}
+        />
+      ) : null}
     </div>
   );
 };

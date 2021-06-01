@@ -3,7 +3,6 @@ import {DataNode} from "antd/lib/tree";
 export type DataType = {
   id:number;
   parentId:number;
-  isDir:boolean;
   isLeaf:boolean;
   children:DataType[];
 };
@@ -11,7 +10,6 @@ export interface TreeDataNode extends DataNode {
   name:string;
   id:number;
   parentId:number;
-  isDir:boolean;
   path:string[];
 }
 
@@ -22,7 +20,6 @@ export function convertToTreeData(data:TreeDataNode[], pid:number,path?:string[]
   for (let i = 0; i < data.length; i++) {
     if (data[i].parentId === pid) {
       let obj = data[i];
-      obj.isLeaf = !obj.isDir;
       obj.title = obj.name;
       obj.key = obj.id;
       obj.path = path.slice();
