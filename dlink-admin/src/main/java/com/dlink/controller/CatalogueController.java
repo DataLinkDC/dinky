@@ -2,6 +2,7 @@ package com.dlink.controller;
 
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
+import com.dlink.dto.CatalogueTaskDTO;
 import com.dlink.model.Catalogue;
 import com.dlink.service.CatalogueService;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -36,9 +37,9 @@ public class CatalogueController {
     @PutMapping
     public Result saveOrUpdate(@RequestBody Catalogue catalogue) throws Exception {
         if(catalogueService.saveOrUpdate(catalogue)){
-            return Result.succeed("新增成功");
+            return Result.succeed("创建成功");
         }else {
-            return Result.failed("新增失败");
+            return Result.failed("创建失败");
         }
     }
 
@@ -60,7 +61,7 @@ public class CatalogueController {
             List<Integer> error = new ArrayList<>();
             for (final JsonNode item : para){
                 Integer id = item.asInt();
-                if(!catalogueService.removeById(id)){
+                if(!catalogueService.removeCatalogueAndTaskById(id)){
                     error.add(id);
                 }
             }
@@ -90,5 +91,29 @@ public class CatalogueController {
     public Result getCatalogueTreeData() throws Exception {
         List<Catalogue> catalogues = catalogueService.getAllData();
         return Result.succeed(catalogues,"获取成功");
+    }
+
+    /**
+     * 创建节点和作业
+     */
+    @PutMapping("/createTask")
+    public Result createTask(@RequestBody CatalogueTaskDTO catalogueTaskDTO) throws Exception {
+        if(catalogueService.createCatalogueAndTask(catalogueTaskDTO)){
+            return Result.succeed("创建成功");
+        }else {
+            return Result.failed("创建失败");
+        }
+    }
+
+    /**
+     * 创建节点和作业
+     */
+    @PutMapping("/toRename")
+    public Result toRename(@RequestBody Catalogue catalogue) throws Exception {
+        if(catalogueService.toRename(catalogue)){
+            return Result.succeed("重命名成功");
+        }else {
+            return Result.failed("重命名失败");
+        }
     }
 }

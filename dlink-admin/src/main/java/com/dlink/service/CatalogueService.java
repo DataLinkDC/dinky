@@ -1,6 +1,7 @@
 package com.dlink.service;
 
 import com.dlink.db.service.ISuperService;
+import com.dlink.dto.CatalogueTaskDTO;
 import com.dlink.model.Catalogue;
 
 import java.util.List;
@@ -14,4 +15,10 @@ import java.util.List;
 public interface CatalogueService extends ISuperService<Catalogue> {
 
     List<Catalogue> getAllData();
+
+    boolean createCatalogueAndTask(CatalogueTaskDTO catalogueTaskDTO);
+
+    boolean toRename(Catalogue catalogue);
+
+    boolean removeCatalogueAndTaskById(Integer id);
 }

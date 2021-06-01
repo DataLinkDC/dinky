@@ -1,10 +1,16 @@
 package com.dlink.service.impl;
 
+import com.dlink.assertion.Assert;
 import com.dlink.db.service.impl.SuperServiceImpl;
+import com.dlink.dto.CatalogueTaskDTO;
 import com.dlink.mapper.CatalogueMapper;
 import com.dlink.model.Catalogue;
+import com.dlink.model.Task;
 import com.dlink.service.CatalogueService;
+import com.dlink.service.TaskService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,8 +22,57 @@ import java.util.List;
  **/
 @Service
 public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Catalogue> implements CatalogueService {
+
+    @Autowired
+    private TaskService taskService;
+
     @Override
     public List<Catalogue> getAllData() {
         return this.list();
+    }
+
+    @Transactional(rollbackFor=Exception.class)
+    @Override
+    public boolean createCatalogueAndTask(CatalogueTaskDTO catalogueTaskDTO) {
+        Task task = new Task();
+        task.setName(catalogueTaskDTO.getName());
+        task.setAlias(catalogueTaskDTO.getAlias());
+        taskService.save(task);
+        Catalogue catalogue = new Catalogue();
+        catalogue.setName(catalogueTaskDTO.getAlias());
+        catalogue.setIsLeaf(true);
+        catalogue.setTaskId(task.getId());
+        catalogue.setParentId(catalogueTaskDTO.getParentId());
+        return this.save(catalogue);
+    }
+
+    @Transactional(rollbackFor=Exception.class)
+    @Override
+    public boolean toRename(Catalogue catalogue) {
+        Catalogue oldCatalogue = this.getById(catalogue.getId());
+        if(oldCatalogue==null){
+            return false;
+        }else{
+            Task task = new Task();
+            task.setId(oldCatalogue.getTaskId());
+            task.setAlias(oldCatalogue.getName());
+            taskService.updateById(task);
+            this.updateById(catalogue);
+            return true;
+        }
+    }
+
+    @Override
+    public boolean removeCatalogueAndTaskById(Integer id) {
+        Catalogue catalogue = this.getById(id);
+        if(catalogue==null){
+            return false;
+        }else{
+            if(catalogue.getTaskId()!=null) {
+                taskService.removeById(catalogue.getTaskId());
+            }
+            this.removeById(id);
+            return true;
+        }
     }
 }

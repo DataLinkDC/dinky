@@ -8,12 +8,7 @@ import com.dlink.service.TaskService;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,9 +99,9 @@ public class TaskController {
     /**
      * 获取指定ID的信息
      */
-    @PostMapping("/getOneById")
-    public Result getOneById(@RequestBody Task task) throws Exception {
-        task = taskService.getById(task.getId());
+    @GetMapping
+    public Result getOneById(@RequestParam Integer id) {
+        Task task = taskService.getTaskInfoById(id);
         return Result.succeed(task,"获取成功");
     }
 }

@@ -1,14 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import { Form, Button, Input, Modal,Select } from 'antd';
 
-import type { TableListItem } from '../data.d';
 import Switch from "antd/es/switch";
 import TextArea from "antd/es/input/TextArea";
+import {ClusterTableListItem} from "@/pages/Cluster/data";
+
 export type UpdateFormProps = {
-    onCancel: (flag?: boolean, formVals?: Partial<TableListItem>) => void;
-    onSubmit: (values: Partial<TableListItem>) => void;
+    onCancel: (flag?: boolean, formVals?: Partial<ClusterTableListItem>) => void;
+    onSubmit: (values: Partial<ClusterTableListItem>) => void;
     updateModalVisible: boolean;
-    values: Partial<TableListItem>;
+    values: Partial<ClusterTableListItem>;
 };
 const FormItem = Form.Item;
 
@@ -18,7 +19,7 @@ const formLayout = {
 };
 
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
-    const [formVals, setFormVals] = useState<Partial<TableListItem>>({
+    const [formVals, setFormVals] = useState<Partial<ClusterTableListItem>>({
         id: props.values.id,
         name: props.values.name,
         alias: props.values.alias,

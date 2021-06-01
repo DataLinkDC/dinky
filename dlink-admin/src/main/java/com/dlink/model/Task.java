@@ -1,5 +1,6 @@
 package com.dlink.model;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.dlink.db.model.SuperEntity;
 import com.dlink.executor.Executor;
@@ -36,6 +37,9 @@ public class Task extends SuperEntity{
 
     private String note;
 
+    @TableField(exist = false)
+    private String statement;
+
     public ExecutorSetting getLocalExecutorSetting(){
         return new ExecutorSetting(Executor.LOCAL,checkPoint,parallelism,fragment,savePointPath);
     }
@@ -43,4 +47,6 @@ public class Task extends SuperEntity{
     public ExecutorSetting getRemoteExecutorSetting(){
         return new ExecutorSetting(Executor.REMOTE,checkPoint,parallelism,fragment,savePointPath);
     }
+
+
 }

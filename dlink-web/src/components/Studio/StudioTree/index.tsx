@@ -1,11 +1,15 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {connect} from "umi";
-import {StateType} from "@/pages/Demo/FormStepForm/model";
 import  {DownOutlined, FrownFilled, FrownOutlined, MehOutlined, SmileOutlined} from "@ant-design/icons";
-import {Tree, Input, Menu} from 'antd';
+import {Tree, Input, Menu, Empty, Button, message, Modal} from 'antd';
 import {getCatalogueTreeData} from "@/pages/FlinkSqlStudio/service";
 import {convertToTreeData, DataType, TreeDataNode} from "@/components/Studio/StudioTree/Function";
 import style from "./index.less";
+import {StateType} from "@/pages/FlinkSqlStudio/model";
+import {getInfoById, handleAddOrUpdate, handleInfo, handleRemove} from "@/components/Common/crud";
+import UpdateCatalogueForm from './components/UpdateCatalogueForm';
+import {ActionType} from "@ant-design/pro-table";
+import UpdateTaskForm from "@/components/Studio/StudioTree/components/UpdateTaskForm";
 
 const { DirectoryTree } = Tree;
 
@@ -40,34 +44,13 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
   const [treeData, setTreeData] = useState<TreeDataNode[]>();
   const [dataList, setDataList] = useState<[]>();
   const [rightClickNodeTreeItem,setRightClickNodeTreeItem] = useState<RightClickMenu>();
-  // const [searchValue,setSearchValue] = useState<string>();
-  // const [expandedKeys,setExpandedKeys] = useState<any>();
-  // const [autoExpandParent,setAutoExpandParent] = useState<boolean>(true);
-
-  /*const loop = data =>
-    data.map(item => {
-      const index = item.title.indexOf(searchValue);
-      const beforeStr = item.title.substr(0, index);
-      const afterStr = item.title.substr(index + searchValue.length);
-      const title =
-        index > -1 ? (
-          <span>
-              {beforeStr}
-            <span className="site-tree-search-value">{searchValue}</span>
-            {afterStr}
-            </span>
-        ) : (
-          <span>{item.title}</span>
-        );
-      if (item.children) {
-        return { title, key: item.key, children: loop(item.children) };
-      }
-
-      return {
-        title,
-        key: item.key,
-      };
-    });*/
+  const {currentPath,dispatch,tabs} = props;
+  const [updateCatalogueModalVisible, handleUpdateCatalogueModalVisible] = useState<boolean>(false);
+  const [updateTaskModalVisible, handleUpdateTaskModalVisible] = useState<boolean>(false);
+  const [isCreate, setIsCreate] = useState<boolean>(true);
+  const [catalogueFormValues, setCatalogueFormValues] = useState({});
+  const [taskFormValues, setTaskFormValues] = useState({});
+  const [rightClickNode, setRightClickNode] = useState<TreeDataNode>();
 
   const getTreeData = async () => {
     const result = await getCatalogueTreeData();
@@ -76,7 +59,6 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     for(let i=0;i<list.length;i++){
       list[i].title=list[i].name;
       list[i].key=list[i].id;
-      list[i].isLeaf=!list[i].isDir;
     }
     setDataList(list);
     data = convertToTreeData(data, 0);
@@ -87,29 +69,106 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     getTreeData();
   }, []);
 
-  /*const onExpand = () => {
-    setExpandedKeys(expandedKeys);
-    console.log(autoExpandParent);
-    setAutoExpandParent(!autoExpandParent);
-  };*/
-
   const onChange = (e:any) => {
-    /*const { value } = e.target;
-    const expandedKeys = dataList
-      .map(item => {
-        if (item.title.indexOf(value) > -1) {
-          return getParentKey(item.key, treeData);
-        }
-        return null;
-      })
-      .filter((item, i, self) => item && self.indexOf(item) === i);
-    setSearchValue(value);
-    setExpandedKeys(expandedKeys);
-    setAutoExpandParent(true);*/
+
   };
 
-  const handleMenuClick=()=>{
+  const handleMenuClick=(key:string)=>{
     setRightClickNodeTreeItem(null);
+    if(key=='Open'){
+      toOpen(rightClickNode);
+    }else if(key=='CreateCatalogue'){
+      createCatalogue(rightClickNode);
+    }else if(key=='CreateTask'){
+      createTask(rightClickNode);
+    }else if(key=='Rename'){
+      toRename(rightClickNode);
+    }else if(key=='Delete'){
+      toDelete(rightClickNode);
+    }
+  };
+
+  const toOpen=(node:TreeDataNode)=>{
+    if(node.isLeaf&&node.taskId) {
+      for(let item of tabs.panes){
+        if(item.key==node.taskId){
+          tabs.activeKey = node.taskId;
+          dispatch({
+            type: "Studio/changeActiveKey",
+            payload: tabs.activeKey,
+          });
+          return;
+        }
+      }
+      const result = getInfoById('api/task',node.taskId);
+      result.then(result=>{
+        let newTabs = tabs;
+        let newPane = {
+          title: node.name,
+          key: node.taskId,
+          value:(result.datas.statement?result.datas.statement:''),
+          closable: true,
+          task:result.datas
+        };
+        newTabs.activeKey = node.taskId;
+        newTabs.panes.push(newPane);
+        dispatch({
+          type: "Studio/saveTabs",
+          payload: newTabs,
+        });
+      })
+    }
+  };
+
+  const createCatalogue=(node:TreeDataNode)=>{
+    if(!node.isLeaf) {
+      handleUpdateCatalogueModalVisible(true);
+      setIsCreate(true);
+      setCatalogueFormValues({
+        isLeaf: false,
+        parentId: node.id,
+      });
+      getTreeData();
+    }else{
+      message.error('只能在目录上创建目录');
+    }
+  };
+
+  const toRename=(node:TreeDataNode)=>{
+    handleUpdateCatalogueModalVisible(true);
+    setIsCreate(false);
+    setCatalogueFormValues({
+      id: node.id,
+      name: node.name,
+    });
+    getTreeData();
+  };
+
+  const createTask=(node:TreeDataNode)=>{
+    if(!node.isLeaf) {
+      handleUpdateTaskModalVisible(true);
+      setIsCreate(true);
+      setTaskFormValues({
+        parentId: node.id,
+      });
+      getTreeData();
+    }else{
+      message.error('只能在目录上创建作业');
+    }
+  };
+
+  const toDelete= (node:TreeDataNode)=>{
+    let label = (node.taskId==null)?'目录':'作业';
+    Modal.confirm({
+      title: `删除${label}`,
+      content: `确定删除该${label}吗？`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk:async () => {
+        await handleRemove('api/catalogue',[node]);
+        getTreeData();
+      }
+    });
   };
 
   const getNodeTreeRightClickMenu = () => {
@@ -121,20 +180,34 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     };
     const menu = (
       <Menu
-        onClick={handleMenuClick}
+        onClick={({key}) => handleMenuClick(key)}
         style={tmpStyle}
         className={style.right_click_menu}
       >
-        <Menu.Item key='1'>{'创建目录'}</Menu.Item>
-        <Menu.Item key='2'>{'创建作业'}</Menu.Item>
-        <Menu.Item key='4'>{'修改'}</Menu.Item>
-        <Menu.Item key='3'>{'删除'}</Menu.Item>
+        <Menu.Item key='Open'>{'打开'}</Menu.Item>
+        <Menu.Item key='CreateCatalogue'>{'创建目录'}</Menu.Item>
+        <Menu.Item key='CreateTask'>{'创建作业'}</Menu.Item>
+        <Menu.Item key='Rename'>{'重命名'}</Menu.Item>
+        <Menu.Item key='Delete'>{'删除'}</Menu.Item>
       </Menu>
     );
     return (rightClickNodeTreeItem == null) ? '' : menu;
   };
 
+  const getEmpty = () =>{
+    const empty = (<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} ><Button type="primary" onClick={() => {
+      handleUpdateCatalogueModalVisible(true);
+      setIsCreate(true);
+      setCatalogueFormValues({
+        isLeaf:false,
+        parentId:0,
+      });
+    }}>创建目录</Button></Empty>);
+    return (treeData&&treeData.length==0)?empty:'';
+  };
+
   const onRightClick = (e:any) => {
+    setRightClickNode(e.node);
     setRightClickNodeTreeItem({
       pageX: e.event.pageX,
       pageY: e.event.pageY,
@@ -143,31 +216,71 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     });
   };
 
-  const onSelect = (e:any) => {
+  const onSelect = (selectedKeys:[], e:any) => {
+    dispatch({
+      type: "Studio/saveCurrentPath",
+      payload: e.node.path,
+    });
     setRightClickNodeTreeItem(null);
-    // setAutoExpandParent(!autoExpandParent);
   };
 
   return (
     <div className={style.tree_div}>
       <Search style={{marginBottom: 8}} placeholder="Search" onChange={onChange}/>
         <DirectoryTree
-          /*onExpand={onExpand}
-          expandedKeys={expandedKeys}
-          autoExpandParent={autoExpandParent}*/
-          // showIcon
-          // showLine
           multiple
           onRightClick={onRightClick}
           onSelect={onSelect}
-          // defaultExpandAll
           switcherIcon={<DownOutlined/>}
           treeData={treeData}
         />
       {getNodeTreeRightClickMenu()}
+      {getEmpty()}
+      {updateCatalogueModalVisible? (
+        <UpdateCatalogueForm
+          onSubmit={async (value) => {
+            const success = await handleAddOrUpdate(
+              isCreate?'api/catalogue':'api/catalogue/toRename',value);
+            if (success) {
+              handleUpdateCatalogueModalVisible(false);
+              setCatalogueFormValues({});
+              getTreeData()
+            }
+          }}
+          onCancel={() => {
+            handleUpdateCatalogueModalVisible(false);
+            setCatalogueFormValues({});
+          }}
+          updateModalVisible={updateCatalogueModalVisible}
+          values={catalogueFormValues}
+          isCreate={isCreate}
+        />
+      ) : null}
+      {updateTaskModalVisible? (
+        <UpdateTaskForm
+          onSubmit={async (value) => {
+            const success = await handleAddOrUpdate('api/catalogue/createTask',value);
+            if (success) {
+              handleUpdateTaskModalVisible(false);
+              setTaskFormValues({});
+              getTreeData()
+            }
+          }}
+          onCancel={() => {
+            handleUpdateTaskModalVisible(false);
+            setTaskFormValues({});
+          }}
+          updateModalVisible={updateTaskModalVisible}
+          values={taskFormValues}
+          isCreate={isCreate}
+        />
+      ) : null}
     </div>
   );
 };
 
 
-export default connect(({studio}: { studio: StateType }) => ({}))(StudioTree);
+export default connect(({Studio}: { Studio: StateType }) => ({
+  currentPath:Studio.currentPath,
+  tabs: Studio.tabs,
+}))(StudioTree);

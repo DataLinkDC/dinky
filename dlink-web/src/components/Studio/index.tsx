@@ -1,17 +1,23 @@
 import React, {useEffect, useState} from "react";
 import {connect} from "umi";
-import PageContainer from "@ant-design/pro-layout/es/components/PageContainer";
 import styles from './index.less';
+import {BarsOutlined,SettingOutlined} from "@ant-design/icons";
+
 import StudioMenu from "./StudioMenu";
-import {Row,Col,Card} from "antd";
+import {Row, Col, Card, Empty, Tabs} from "antd";
 import StudioTree from "./StudioTree";
 import StudioTabs from "./StudioTabs";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
+import StudioConsole from "./StudioConsole";
+import StudioSetting from "./StudioSetting";
+import StudioEdit from "./StudioEdit";
+
+const {TabPane} = Tabs;
 
 type StudioProps = {
   sql: StateType['sql'];
 };
-const Studio: React.FC<StudioProps> = ({ sql }) => {
+const Studio: React.FC<StudioProps> = ({sql}) => {
 
   const [console, setConsole] = useState<boolean>(false);
   const [sqls, setSqls] = useState<String>();
@@ -21,23 +27,32 @@ const Studio: React.FC<StudioProps> = ({ sql }) => {
   }, [sql]);
 
   return (
-
-    <PageContainer
-      title={false}
-      content={<StudioMenu />}
-      className={styles.main}
-    >
-      <Card bordered={false} className={styles.card}>
+    <div>
+      <StudioMenu/>
+      <Card bordered={false} className={styles.card} size="small">
         <Row>
           <Col span={4}>
-            <StudioTree />
+            <Tabs defaultActiveKey="1" size="small">
+              <TabPane tab={<span><BarsOutlined/>目录</span>} key="1" >
+                <StudioTree/>
+              </TabPane>
+            </Tabs>
           </Col>
-          <Col span={20}>
-            <StudioTabs />
+          <Col span={16}>
+            <StudioTabs/>
+            <StudioEdit/>
+            <StudioConsole/>
+          </Col>
+          <Col span={4}>
+            <Tabs defaultActiveKey="1" size="small">
+              <TabPane tab={<span><SettingOutlined />配置</span>} key="1" >
+                <StudioSetting />
+              </TabPane>
+            </Tabs>
           </Col>
         </Row>
       </Card>
-    </PageContainer>
+    </div>
   )
 };
 
@@ -55,10 +70,12 @@ const Studio: React.FC<StudioProps> = ({ sql }) => {
 
 // export default connect(mapStateToProps)(Studio);
 
-export default connect(({ Studio }: { Studio: StateType }) => ({
+export default connect(({Studio}: { Studio: StateType }) => ({
   current: Studio.current,
   catalogue: Studio.catalogue,
   sql: Studio.sql,
+  cluster: Studio.cluster,
+  tabs: Studio.tabs,
 }))(Studio);
 
 // export default Studio;

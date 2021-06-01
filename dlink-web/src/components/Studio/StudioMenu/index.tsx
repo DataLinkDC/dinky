@@ -1,15 +1,16 @@
-import React from "react";
 import styles from "./index.less";
-import { Menu, Dropdown, Typography, Row, Col } from "antd";
-import {CaretRightOutlined, DownOutlined, PlayCircleOutlined } from "@ant-design/icons";
+import {Menu, Dropdown, Typography, Row, Col} from "antd";
+import {PauseCircleTwoTone, CopyTwoTone, DeleteTwoTone,PlayCircleTwoTone,DiffTwoTone,
+  FileAddTwoTone,FolderOpenTwoTone,SafetyCertificateTwoTone,SaveTwoTone,FlagTwoTone,EnvironmentOutlined} from "@ant-design/icons";
 import Space from "antd/es/space";
 import Divider from "antd/es/divider";
 import Button from "antd/es/button/button";
 import Breadcrumb from "antd/es/breadcrumb/Breadcrumb";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
+import {useEffect, useState} from "react";
 
-const { SubMenu } = Menu;
+const {SubMenu} = Menu;
 //<Button shape="circle" icon={<CaretRightOutlined />} />
 const menu = (
   <Menu>
@@ -27,13 +28,13 @@ const menu = (
 );
 
 
+const StudioMenu = (props: any) => {
 
-const StudioMenu = (props:any) => {
+  const {catalogue,currentPath} = props;
+  const [pathItem, setPathItem] = useState<[]>();
 
-  const {sql} = props;
-  console.log(props);
-  const executeSql = () =>{
-    console.log('获取'+sql);
+  const executeSql = () => {
+    console.log('获取' + catalogue.sql);
   };
 
   const runMenu = (
@@ -41,6 +42,25 @@ const StudioMenu = (props:any) => {
       <Menu.Item onClick={executeSql}>执行</Menu.Item>
     </Menu>
   );
+
+  /*const getPath = ()=>{
+    let itemList = [];
+    for(let item of currentPath){
+      itemList.push(<Breadcrumb.Item>{item}</Breadcrumb.Item>)
+    }
+    setPathItem(itemList);
+  };
+
+  useEffect(() => {
+    getPath();
+  }, []);*/
+  const getPathItem = (paths)=>{
+    let itemList = [];
+    for(let item of paths){
+      itemList.push(<Breadcrumb.Item>{item}</Breadcrumb.Item>)
+    }
+    return itemList;
+  };
 
   return (
     <Row className={styles.container}>
@@ -72,16 +92,68 @@ const StudioMenu = (props:any) => {
       </Col>
       <Divider className={styles["ant-divider-horizontal-0"]}/>
       <Col span={24}>
-        <Breadcrumb className={styles["dw-path"]}>
-          <Breadcrumb.Item>数据仓库</Breadcrumb.Item>
-          <Breadcrumb.Item>维度</Breadcrumb.Item>
-          <Breadcrumb.Item>用户信息</Breadcrumb.Item>
-        </Breadcrumb>
+        <Row>
+          <Col span={8}>
+            <Breadcrumb className={styles["dw-path"]}>
+              <EnvironmentOutlined />
+              <Divider type="vertical" />
+              {getPathItem(currentPath)}
+            </Breadcrumb>
+          </Col>
+          <Col span={8} offset={8}>
+            <Button
+              type="text"
+              icon={<FileAddTwoTone />}
+            />
+            <Button
+              type="text"
+              icon={<FolderOpenTwoTone />}
+            />
+            <Button
+              type="text"
+              icon={<SaveTwoTone />}
+            />
+            <Divider type="vertical" />
+            <Button
+              type="text"
+              icon={<SafetyCertificateTwoTone />}
+            />
+            <Button
+              type="text"
+              icon={<FlagTwoTone />}
+            />
+            <Button
+              type="text"
+              icon={<PlayCircleTwoTone />}
+              //loading={loadings[2]}
+              //onClick={() => this.enterLoading(2)}
+            />
+            <Button
+              type="text"
+              icon={<PauseCircleTwoTone />}
+            />
+            <Divider type="vertical" />
+            <Button
+              type="text"
+              icon={<DiffTwoTone />}
+            />
+            <Button
+              type="text"
+              icon={<CopyTwoTone />}
+            />
+            <Button
+              type="text"
+              icon={<DeleteTwoTone />}
+            />
+
+          </Col>
+        </Row>
       </Col>
     </Row>
   );
 };
 
-export default connect(({ Studio }: { Studio: StateType }) => ({
-  sql: Studio.sql,
+export default connect(({Studio}: { Studio: StateType }) => ({
+  catalogue: Studio.catalogue,
+  currentPath: Studio.currentPath,
 }))(StudioMenu);
