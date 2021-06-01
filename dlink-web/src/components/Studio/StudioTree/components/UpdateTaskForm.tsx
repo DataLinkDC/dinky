@@ -1,15 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import {Form, Button, Input, Modal} from 'antd';
 
-import type {CatalogueTableListItem} from '../data.d';
+import type {TaskTableListItem} from '../data.d';
 
 export type UpdateFormProps = {
-  onCancel: (flag?: boolean, formVals?: Partial<CatalogueTableListItem>) => void;
-  onSubmit: (values: Partial<CatalogueTableListItem>) => void;
+  onCancel: (flag?: boolean, formVals?: Partial<TaskTableListItem>) => void;
+  onSubmit: (values: Partial<TaskTableListItem>) => void;
   updateModalVisible: boolean;
   isCreate: boolean;
-  values: Partial<CatalogueTableListItem>;
+  values: Partial<TaskTableListItem>;
 };
+
 const FormItem = Form.Item;
 
 const formLayout = {
@@ -17,11 +18,11 @@ const formLayout = {
   wrapperCol: {span: 13},
 };
 
-const UpdateCatalogueForm: React.FC<UpdateFormProps> = (props) => {
-  const [formVals, setFormVals] = useState<Partial<CatalogueTableListItem>>({
+const UpdateTaskForm: React.FC<UpdateFormProps> = (props) => {
+  const [formVals, setFormVals] = useState<Partial<TaskTableListItem>>({
     id: props.values.id,
     name: props.values.name,
-    isLeaf: props.values.isLeaf,
+    alias: props.values.alias,
     parentId: props.values.parentId,
   });
 
@@ -47,7 +48,13 @@ const UpdateCatalogueForm: React.FC<UpdateFormProps> = (props) => {
         <FormItem
           name="name"
           label="名称"
-          rules={[{required: true, message: '请输入名称！'}]}>
+          rules={[{required: true, message: '请输入唯一名称！'}]}>
+          <Input placeholder="请输入"/>
+        </FormItem>
+        <FormItem
+          name="alias"
+          label="别名"
+          rules={[{required: true, message: '请输入别名！'}]}>
           <Input placeholder="请输入"/>
         </FormItem>
       </>
@@ -70,7 +77,7 @@ const UpdateCatalogueForm: React.FC<UpdateFormProps> = (props) => {
       width={640}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title={isCreate ? '创建新目录' : ('重命名目录-' + formVals.name)}
+      title={isCreate ? '创建新作业' : ('重命名作业-' + formVals.name)}
       visible={updateModalVisible}
       footer={renderFooter()}
       onCancel={() => handleUpdateModalVisible()}
@@ -81,7 +88,7 @@ const UpdateCatalogueForm: React.FC<UpdateFormProps> = (props) => {
         initialValues={{
           id: formVals.id,
           name: formVals.name,
-          isLeaf: formVals.isLeaf,
+          alias: formVals.alias,
           parentId: formVals.parentId,
         }}
       >
@@ -91,4 +98,4 @@ const UpdateCatalogueForm: React.FC<UpdateFormProps> = (props) => {
   );
 };
 
-export default UpdateCatalogueForm;
+export default UpdateTaskForm;

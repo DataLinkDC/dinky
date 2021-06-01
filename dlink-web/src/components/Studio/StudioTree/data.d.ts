@@ -4,3 +4,10 @@ export type CatalogueTableListItem = {
   isLeaf: string,
   parentId: number,
 };
+
+export type TaskTableListItem = {
+  id: number,
+  name: string,
+  alias: string,
+  parentId: number,
+};

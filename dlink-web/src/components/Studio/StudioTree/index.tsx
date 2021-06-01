@@ -1,14 +1,15 @@
 import React, {useEffect, useRef, useState} from "react";
 import {connect} from "umi";
 import  {DownOutlined, FrownFilled, FrownOutlined, MehOutlined, SmileOutlined} from "@ant-design/icons";
-import {Tree, Input, Menu, Empty,Button} from 'antd';
+import {Tree, Input, Menu, Empty, Button, message, Modal} from 'antd';
 import {getCatalogueTreeData} from "@/pages/FlinkSqlStudio/service";
 import {convertToTreeData, DataType, TreeDataNode} from "@/components/Studio/StudioTree/Function";
 import style from "./index.less";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
-import {handleAddOrUpdate} from "@/components/Common/crud";
+import {handleAddOrUpdate, handleRemove} from "@/components/Common/crud";
 import UpdateCatalogueForm from './components/UpdateCatalogueForm';
 import {ActionType} from "@ant-design/pro-table";
+import UpdateTaskForm from "@/components/Studio/StudioTree/components/UpdateTaskForm";
 
 const { DirectoryTree } = Tree;
 
@@ -45,9 +46,11 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
   const [rightClickNodeTreeItem,setRightClickNodeTreeItem] = useState<RightClickMenu>();
   const {currentPath,dispatch} = props;
   const [updateCatalogueModalVisible, handleUpdateCatalogueModalVisible] = useState<boolean>(false);
-  const [isCreateCatalogue, setIsCreateCatalogue] = useState<boolean>(true);
+  const [updateTaskModalVisible, handleUpdateTaskModalVisible] = useState<boolean>(false);
+  const [isCreate, setIsCreate] = useState<boolean>(true);
   const [catalogueFormValues, setCatalogueFormValues] = useState({});
-  const actionRef = useRef<ActionType>();
+  const [taskFormValues, setTaskFormValues] = useState({});
+  const [rightClickNode, setRightClickNode] = useState<TreeDataNode>();
 
   const getTreeData = async () => {
     const result = await getCatalogueTreeData();
@@ -56,7 +59,6 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     for(let i=0;i<list.length;i++){
       list[i].title=list[i].name;
       list[i].key=list[i].id;
-      list[i].isLeaf=!list[i].isDir;
     }
     setDataList(list);
     data = convertToTreeData(data, 0);
@@ -71,8 +73,69 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
 
   };
 
-  const handleMenuClick=()=>{
+  const handleMenuClick=(key:string)=>{
     setRightClickNodeTreeItem(null);
+    if(key=='CreateCatalogue'){
+      createCatalogue(rightClickNode);
+    }else if(key=='CreateTask'){
+      createTask(rightClickNode);
+    }else if(key=='Rename'){
+      toRename(rightClickNode);
+    }else if(key=='Delete'){
+      toDelete(rightClickNode);
+    }
+  };
+
+  const createCatalogue=(node:TreeDataNode)=>{
+    if(!node.isLeaf) {
+      handleUpdateCatalogueModalVisible(true);
+      setIsCreate(true);
+      setCatalogueFormValues({
+        isLeaf: false,
+        parentId: node.id,
+      });
+      getTreeData();
+    }else{
+      message.error('只能在目录上创建目录');
+    }
+  };
+
+  const toRename=(node:TreeDataNode)=>{
+    handleUpdateCatalogueModalVisible(true);
+    setIsCreate(false);
+    setCatalogueFormValues({
+      id: node.id,
+      name: node.name,
+    });
+    getTreeData();
+  };
+
+  const createTask=(node:TreeDataNode)=>{
+    if(!node.isLeaf) {
+      handleUpdateTaskModalVisible(true);
+      setIsCreate(true);
+      setTaskFormValues({
+        parentId: node.id,
+      });
+      getTreeData();
+    }else{
+      message.error('只能在目录上创建作业');
+    }
+  };
+
+  const toDelete= (node:TreeDataNode)=>{
+    let label = (node.taskId==null)?'目录':'作业';
+    Modal.confirm({
+      title: `删除${label}`,
+      content: `确定删除该${label}吗？`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk:async () => {
+        await handleRemove('api/catalogue',[node]);
+        getTreeData();
+      }
+    });
+
   };
 
   const getNodeTreeRightClickMenu = () => {
@@ -84,14 +147,14 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     };
     const menu = (
       <Menu
-        onClick={handleMenuClick}
+        onClick={({key}) => handleMenuClick(key)}
         style={tmpStyle}
         className={style.right_click_menu}
       >
-        <Menu.Item key='1'>{'创建目录'}</Menu.Item>
-        <Menu.Item key='2'>{'创建作业'}</Menu.Item>
-        <Menu.Item key='4'>{'修改'}</Menu.Item>
-        <Menu.Item key='3'>{'删除'}</Menu.Item>
+        <Menu.Item key='CreateCatalogue'>{'创建目录'}</Menu.Item>
+        <Menu.Item key='CreateTask'>{'创建作业'}</Menu.Item>
+        <Menu.Item key='Rename'>{'重命名'}</Menu.Item>
+        <Menu.Item key='Delete'>{'删除'}</Menu.Item>
       </Menu>
     );
     return (rightClickNodeTreeItem == null) ? '' : menu;
@@ -100,7 +163,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
   const getEmpty = () =>{
     const empty = (<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} ><Button type="primary" onClick={() => {
       handleUpdateCatalogueModalVisible(true);
-      setIsCreateCatalogue(true);
+      setIsCreate(true);
       setCatalogueFormValues({
         isLeaf:false,
         parentId:0,
@@ -110,6 +173,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
   };
 
   const onRightClick = (e:any) => {
+    setRightClickNode(e.node);
     setRightClickNodeTreeItem({
       pageX: e.event.pageX,
       pageY: e.event.pageY,
@@ -142,7 +206,8 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       {updateCatalogueModalVisible? (
         <UpdateCatalogueForm
           onSubmit={async (value) => {
-            const success = await handleAddOrUpdate('api/catalogue',value);
+            const success = await handleAddOrUpdate(
+              isCreate?'api/catalogue':'api/catalogue/toRename',value);
             if (success) {
               handleUpdateCatalogueModalVisible(false);
               setCatalogueFormValues({});
@@ -155,7 +220,26 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
           }}
           updateModalVisible={updateCatalogueModalVisible}
           values={catalogueFormValues}
-          isCreate={isCreateCatalogue}
+          isCreate={isCreate}
+        />
+      ) : null}
+      {updateTaskModalVisible? (
+        <UpdateTaskForm
+          onSubmit={async (value) => {
+            const success = await handleAddOrUpdate('api/catalogue/createTask',value);
+            if (success) {
+              handleUpdateTaskModalVisible(false);
+              setTaskFormValues({});
+              getTreeData()
+            }
+          }}
+          onCancel={() => {
+            handleUpdateTaskModalVisible(false);
+            setTaskFormValues({});
+          }}
+          updateModalVisible={updateTaskModalVisible}
+          values={taskFormValues}
+          isCreate={isCreate}
         />
       ) : null}
     </div>

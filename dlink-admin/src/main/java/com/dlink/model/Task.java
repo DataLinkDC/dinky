@@ -43,4 +43,6 @@ public class Task extends SuperEntity{
     public ExecutorSetting getRemoteExecutorSetting(){
         return new ExecutorSetting(Executor.REMOTE,checkPoint,parallelism,fragment,savePointPath);
     }
+
+
 }
