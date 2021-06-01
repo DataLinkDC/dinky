@@ -48,6 +48,15 @@ export async function postAll(url:string,params?: any) {
   });
 }
 
+export async function getInfoById(url:string,id:number) {
+  return request(url, {
+    method: 'GET',
+    params: {
+      id:id,
+    },
+  });
+}
+
 export const handleAddOrUpdate = async (url:string,fields: any) => {
   const tipsTitle = fields.id ? "修改" : "添加";
   const hide = message.loading(`正在${tipsTitle}`);
@@ -109,6 +118,16 @@ export const handleOption = async (url:string,title:string,param:any) => {
   } catch (error) {
     hide();
     message.error(title+'失败，请重试');
+    return false;
+  }
+};
+
+export const handleInfo = async (url:string,id:number) => {
+  try {
+    const {datas} = await getInfoById(url,id);
+    return datas;
+  } catch (error) {
+    message.error('获取失败，请重试');
     return false;
   }
 };

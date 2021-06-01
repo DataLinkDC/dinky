@@ -6,7 +6,7 @@ import {getCatalogueTreeData} from "@/pages/FlinkSqlStudio/service";
 import {convertToTreeData, DataType, TreeDataNode} from "@/components/Studio/StudioTree/Function";
 import style from "./index.less";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
-import {handleAddOrUpdate, handleRemove} from "@/components/Common/crud";
+import {getInfoById, handleAddOrUpdate, handleInfo, handleRemove} from "@/components/Common/crud";
 import UpdateCatalogueForm from './components/UpdateCatalogueForm';
 import {ActionType} from "@ant-design/pro-table";
 import UpdateTaskForm from "@/components/Studio/StudioTree/components/UpdateTaskForm";
@@ -44,7 +44,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
   const [treeData, setTreeData] = useState<TreeDataNode[]>();
   const [dataList, setDataList] = useState<[]>();
   const [rightClickNodeTreeItem,setRightClickNodeTreeItem] = useState<RightClickMenu>();
-  const {currentPath,dispatch} = props;
+  const {currentPath,dispatch,tabs} = props;
   const [updateCatalogueModalVisible, handleUpdateCatalogueModalVisible] = useState<boolean>(false);
   const [updateTaskModalVisible, handleUpdateTaskModalVisible] = useState<boolean>(false);
   const [isCreate, setIsCreate] = useState<boolean>(true);
@@ -75,7 +75,9 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
 
   const handleMenuClick=(key:string)=>{
     setRightClickNodeTreeItem(null);
-    if(key=='CreateCatalogue'){
+    if(key=='Open'){
+      toOpen(rightClickNode);
+    }else if(key=='CreateCatalogue'){
       createCatalogue(rightClickNode);
     }else if(key=='CreateTask'){
       createTask(rightClickNode);
@@ -83,6 +85,38 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       toRename(rightClickNode);
     }else if(key=='Delete'){
       toDelete(rightClickNode);
+    }
+  };
+
+  const toOpen=(node:TreeDataNode)=>{
+    if(node.isLeaf&&node.taskId) {
+      for(let item of tabs.panes){
+        if(item.key==node.taskId){
+          tabs.activeKey = node.taskId;
+          dispatch({
+            type: "Studio/changeActiveKey",
+            payload: tabs.activeKey,
+          });
+          return;
+        }
+      }
+      const result = getInfoById('api/task',node.taskId);
+      result.then(result=>{
+        let newTabs = tabs;
+        let newPane = {
+          title: node.name,
+          key: node.taskId,
+          value:(result.datas.statement?result.datas.statement:''),
+          closable: true,
+          task:result.datas
+        };
+        newTabs.activeKey = node.taskId;
+        newTabs.panes.push(newPane);
+        dispatch({
+          type: "Studio/saveTabs",
+          payload: newTabs,
+        });
+      })
     }
   };
 
@@ -135,7 +169,6 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
         getTreeData();
       }
     });
-
   };
 
   const getNodeTreeRightClickMenu = () => {
@@ -151,6 +184,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
         style={tmpStyle}
         className={style.right_click_menu}
       >
+        <Menu.Item key='Open'>{'打开'}</Menu.Item>
         <Menu.Item key='CreateCatalogue'>{'创建目录'}</Menu.Item>
         <Menu.Item key='CreateTask'>{'创建作业'}</Menu.Item>
         <Menu.Item key='Rename'>{'重命名'}</Menu.Item>
@@ -183,7 +217,6 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
   };
 
   const onSelect = (selectedKeys:[], e:any) => {
-    console.log(e.node.path);
     dispatch({
       type: "Studio/saveCurrentPath",
       payload: e.node.path,
@@ -248,5 +281,6 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
 
 
 export default connect(({Studio}: { Studio: StateType }) => ({
-  currentPath:Studio.currentPath
+  currentPath:Studio.currentPath,
+  tabs: Studio.tabs,
 }))(StudioTree);

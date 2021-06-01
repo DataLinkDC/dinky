@@ -1,5 +1,6 @@
 package com.dlink.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.assertion.Assert;
 import com.dlink.cluster.FlinkCluster;
 import com.dlink.db.service.impl.SuperServiceImpl;
@@ -44,6 +45,18 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Assert.checkHost(host);
         JobManager jobManager = new JobManager(host);
         return jobManager.submit(statement.getStatement(), task.getRemoteExecutorSetting());
+    }
+
+    @Override
+    public Task getTaskInfoById(Integer id) {
+        Task task = this.getById(id);
+        if(task!=null){
+            Statement statement = statementService.getById(id);
+            if(statement!=null){
+                task.setStatement(statement.getStatement());
+            }
+        }
+        return task;
     }
 
 }

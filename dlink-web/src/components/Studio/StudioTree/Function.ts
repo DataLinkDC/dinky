@@ -9,6 +9,7 @@ export type DataType = {
 export interface TreeDataNode extends DataNode {
   name:string;
   id:number;
+  taskId:number;
   parentId:number;
   path:string[];
 }

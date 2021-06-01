@@ -10,6 +10,7 @@ import StudioTabs from "./StudioTabs";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import StudioConsole from "./StudioConsole";
 import StudioSetting from "./StudioSetting";
+import StudioEdit from "./StudioEdit";
 
 const {TabPane} = Tabs;
 
@@ -26,7 +27,6 @@ const Studio: React.FC<StudioProps> = ({sql}) => {
   }, [sql]);
 
   return (
-
     <div>
       <StudioMenu/>
       <Card bordered={false} className={styles.card} size="small">
@@ -40,6 +40,7 @@ const Studio: React.FC<StudioProps> = ({sql}) => {
           </Col>
           <Col span={16}>
             <StudioTabs/>
+            <StudioEdit/>
             <StudioConsole/>
           </Col>
           <Col span={4}>
@@ -74,6 +75,7 @@ export default connect(({Studio}: { Studio: StateType }) => ({
   catalogue: Studio.catalogue,
   sql: Studio.sql,
   cluster: Studio.cluster,
+  tabs: Studio.tabs,
 }))(Studio);
 
 // export default Studio;

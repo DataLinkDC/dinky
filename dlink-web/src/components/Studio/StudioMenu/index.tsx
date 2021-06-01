@@ -30,11 +30,11 @@ const menu = (
 
 const StudioMenu = (props: any) => {
 
-  const {sql,currentPath} = props;
+  const {catalogue,currentPath} = props;
   const [pathItem, setPathItem] = useState<[]>();
 
   const executeSql = () => {
-    console.log('获取' + sql);
+    console.log('获取' + catalogue.sql);
   };
 
   const runMenu = (
@@ -154,6 +154,6 @@ const StudioMenu = (props: any) => {
 };
 
 export default connect(({Studio}: { Studio: StateType }) => ({
-  sql: Studio.sql,
+  catalogue: Studio.catalogue,
   currentPath: Studio.currentPath,
 }))(StudioMenu);

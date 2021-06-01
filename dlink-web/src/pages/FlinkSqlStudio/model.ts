@@ -1,7 +1,7 @@
 import {Effect, Reducer} from "umi";
 import {executeSql} from "./service";
 import {message} from "antd";
-import {queryData, removeData} from "@/components/Common/crud";
+import {getInfoById, handleInfo, queryData, removeData} from "@/components/Common/crud";
 
 export type CatalogueType = {
   id?: number;
@@ -24,12 +24,45 @@ export type ClusterType = {
   updateTime: Date,
 }
 
+export type TaskType = {
+  id: number,
+  catalogueId: number,
+  name: string,
+  alias: string,
+  type: string,
+  checkPoint: number,
+  savePointPath: string,
+  parallelism: number,
+  fragment: boolean,
+  clusterId: number,
+  clusterName: string,
+  note: string,
+  enabled: boolean,
+  createTime: Date,
+  updateTime: Date,
+  statement: string,
+};
+
+export type TabsItemType = {
+  title: string;
+  key: number ,
+  value:string;
+  closable: boolean;
+  task?:TaskType;
+}
+
+export type TabsType = {
+  activeKey: number;
+  panes?: TabsItemType[];
+}
+
 export type StateType = {
   current?: number;
   cluster?:ClusterType[];
   catalogue: CatalogueType[];
   sql?: string;
   currentPath?: string[];
+  tabs:TabsType;
 };
 
 export type ModelType = {
@@ -64,6 +97,15 @@ const Model: ModelType = {
     }],
     sql: '',
     currentPath: [],
+    tabs:{
+      activeKey: 0,
+      panes: [{
+        title: '草稿',
+        key: 0 ,
+        value:'',
+        closable: false,
+      }],
+    }
   },
 
   effects: {
@@ -90,13 +132,33 @@ const Model: ModelType = {
       }
       return {
         ...state,
-        catalogue:catalogues,
+        catalogue:{
+          ...catalogues
+        },
       };
     },
     saveCurrentPath(state, { payload }) {
       return {
         ...state,
         currentPath:payload,
+      };
+    },
+    saveTabs(state, { payload }) {
+      return {
+        ...state,
+        tabs:{
+          ...payload
+        },
+      };
+    },
+    changeActiveKey(state, { payload }) {
+      let tabs = state.tabs;
+      tabs.activeKey = payload;
+      return {
+        ...state,
+        tabs:{
+          ...tabs,
+        },
       };
     },
   },
