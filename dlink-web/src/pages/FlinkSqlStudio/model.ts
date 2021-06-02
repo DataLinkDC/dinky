@@ -18,22 +18,23 @@ export type ClusterType = {
 }
 
 export type TaskType = {
-  id: number,
-  catalogueId: number,
-  name: string,
-  alias: string,
-  type: string,
-  checkPoint: number,
-  savePointPath: string,
-  parallelism: number,
-  fragment: boolean,
-  clusterId: number,
-  clusterName: string,
-  note: string,
-  enabled: boolean,
-  createTime: Date,
-  updateTime: Date,
-  statement: string,
+  id?: number,
+  catalogueId?: number,
+  name?: string,
+  alias?: string,
+  type?: string,
+  checkPoint?: number,
+  savePointPath?: string,
+  parallelism?: number,
+  fragment?: boolean,
+  clusterId?: any,
+  clusterName?: string,
+  note?: string,
+  enabled?: boolean,
+  createTime?: Date,
+  updateTime?: Date,
+  statement?: string,
+  session:string;
 };
 
 export type TabsItemType = {
@@ -55,6 +56,7 @@ export type StateType = {
   sql?: string;
   currentPath?: string[];
   tabs:TabsType;
+  session:string[];
 };
 
 export type ModelType = {
@@ -69,18 +71,14 @@ export type ModelType = {
     saveTabs: Reducer<StateType>;
     changeActiveKey: Reducer<StateType>;
     saveTaskData: Reducer<StateType>;
+    saveSession: Reducer<StateType>;
   };
 };
 
 const getClusters = async () => {
   try {
-    const msg = await postAll('api/cluster/listEnabledAll');
-    let data:any= [];
-    msg.then(value=>{
-      data = value.datas;
-    });
-    console.log(data);
-    return data;
+    const {datas} = await postAll('api/cluster/listEnabledAll');
+    return datas;
   } catch (error) {
     console.error('获取Flink集群失败');
     return [];
@@ -97,6 +95,14 @@ const Model: ModelType = {
       key: 0 ,
       value:'',
       closable: false,
+      task:{
+        checkPoint: 0,
+        savePointPath: '',
+        parallelism: 1,
+        fragment: true,
+        clusterId: '0',
+        session:'admin',
+      },
     },
     sql: '',
     currentPath: [],
@@ -107,8 +113,17 @@ const Model: ModelType = {
         key: 0 ,
         value:'',
         closable: false,
+        task:{
+          checkPoint: 0,
+          savePointPath: '',
+          parallelism: 1,
+          fragment: true,
+          clusterId: '0',
+          session:'admin',
+        },
       }],
     },
+    session:['admin'],
   },
 
   effects: {
@@ -149,19 +164,19 @@ const Model: ModelType = {
       };
     },
     saveTabs(state, { payload }) {
-      /*let newCurrent = state.current;
-      for(let i=0;i<payload.tabs.panes.length;i++){
-        if(payload.tabs.panes[i].key==payload.tabs.activeKey){
-          newCurrent=payload.tabs.panes[i];
+      let newCurrent = state.current;
+      for(let i=0;i<payload.panes.length;i++){
+        if(payload.panes[i].key==payload.activeKey){
+          newCurrent=payload.panes[i];
         }
-      }*/
+      }
       return {
         ...state,
         current:{
-          ...payload.current,
+          ...newCurrent,
         },
         tabs:{
-          ...payload.tabs,
+          ...payload,
         },
       };
     },
@@ -188,9 +203,7 @@ const Model: ModelType = {
       let newTabs = state.tabs;
       for(let i=0;i<newTabs.panes.length;i++){
         if(newTabs.panes[i].key==newTabs.activeKey){
-          newTabs.panes[i]={
-            ...payload
-          };
+          newTabs.panes[i].task=payload;
         }
       }
       return {
@@ -198,6 +211,20 @@ const Model: ModelType = {
         tabs:{
           ...newTabs,
         },
+      };
+    },
+    saveSession(state, { payload }) {
+      let newSession = state.session;
+      for(let i=0;i<newSession.length;i++){
+        if(newSession[i].key==payload){
+          return {};
+        }
+      }
+      newSession.push(payload);
+      console.log(newSession);
+      return {
+        ...state,
+        session:newSession,
       };
     },
   },

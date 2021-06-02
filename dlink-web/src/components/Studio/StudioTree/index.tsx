@@ -113,10 +113,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
         newTabs.panes.push(newPane);
         dispatch&&dispatch({
           type: "Studio/saveTabs",
-          payload: {
-            current:newPane,
-            tabs:newTabs,
-          },
+          payload: newTabs,
         });
       })
     }

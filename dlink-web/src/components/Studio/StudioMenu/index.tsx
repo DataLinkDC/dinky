@@ -40,7 +40,6 @@ const StudioMenu = (props: any) => {
 
   const saveSqlAndSettingToTask = async() => {
     const fieldsValue = await form.validateFields();
-    console.log(fieldsValue);
     if(current.task){
       let task = {
         id:current.key,
@@ -57,7 +56,6 @@ const StudioMenu = (props: any) => {
     }else{
 
     }
-    console.log('获取' + current.value);
   };
 
   const runMenu = (

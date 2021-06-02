@@ -1,4 +1,4 @@
-import { Tabs } from 'antd';
+import {message, Tabs } from 'antd';
 import React, {useState} from 'react';
 import StudioEdit from "../StudioEdit";
 import {connect} from "umi";
@@ -13,8 +13,6 @@ const EditorTabs = (props: any) => {
   const [panes, setPanes] = useState<any>(tabs.panes);
 
   const onChange = (activeKey: any) => {
-    //setActiveKey(activeKey);
-    console.log(activeKey);
     dispatch({
       type: "Studio/changeActiveKey",
       payload: activeKey,
@@ -22,8 +20,6 @@ const EditorTabs = (props: any) => {
   };
 
   const onEdit = (targetKey: any, action: any) => {
-    console.log(targetKey)
-    console.log(action);
     if(action=='add'){
       add();
     }else if(action=='remove'){
@@ -31,22 +27,14 @@ const EditorTabs = (props: any) => {
     }
   };
 
-  const updateValue = (targetKey: any, val: string)=>{
-    panes.forEach((pane, i) => {
-      if (pane.key === targetKey) {
-        //pane.value = val;
-        return;
-      }
-    });
-  };
-
   const add = () => {
-    let index = newTabIndex + 1;
+    message.warn('敬请期待');
+    /*let index = newTabIndex + 1;
     const newPanes = [...panes];
     newPanes.push({ title: `未命名${index}`,value:'', key: -index });
     setPanes(newPanes);
     setActiveKey(-index);
-    setNewTabIndex(index);
+    setNewTabIndex(index);*/
   };
 
   const remove = (targetKey:any) => {
