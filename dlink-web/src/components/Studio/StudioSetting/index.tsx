@@ -9,8 +9,7 @@ const { Option } = Select;
 
 const StudioSetting = (props: any) => {
 
-  const [form] = Form.useForm();
-  const {cluster} = props;
+  const {cluster,current,form,dispatch} = props;
   const [clusterOption, setClusterOption] = useState<[]>();
 
 
@@ -37,9 +36,9 @@ const StudioSetting = (props: any) => {
       form={form}
       layout="vertical"
       className={styles.form_setting}
-      initialValues={{}}
+      initialValues={current.task}
     >
-      <Form.Item label="Flink集群" tooltip="选择Flink集群进行远程提交任务"
+      <Form.Item label="Flink集群" tooltip="选择Flink集群进行远程提交任务" name="clusterId"
       className={styles.form_item}>
         <Select
           //mode="multiple"
@@ -55,18 +54,18 @@ const StudioSetting = (props: any) => {
           {clusterOption}
         </Select>
       </Form.Item>
-      <Form.Item label="CheckPoint" tooltip="设置Flink任务的检查点步长，0 代表不启用"
+      <Form.Item label="CheckPoint" tooltip="设置Flink任务的检查点步长，0 代表不启用" name="checkPoint"
       className={styles.form_item}>
         <InputNumber min={0} max={999999} defaultValue={0}/>
       </Form.Item>
       <Form.Item
-        label="Parallelism" className={styles.form_item}
+        label="Parallelism" className={styles.form_item} name="parallelism"
         tooltip="设置Flink任务的并行度，最小为 1"
       >
         <InputNumber min={1} max={9999} defaultValue={1}/>
       </Form.Item>
       <Form.Item
-        label="Fragment" className={styles.form_item}
+        label="Fragment" className={styles.form_item} name="fragment"
         tooltip={{ title: '【增强特性】 开启FlinkSql片段机制，使用“:=”进行定义（以“;”结束），“${}”进行调用', icon: <InfoCircleOutlined /> }}
       >
         <Switch checkedChildren="启用" unCheckedChildren="禁用"
@@ -74,7 +73,7 @@ const StudioSetting = (props: any) => {
         />
       </Form.Item>
       <Form.Item
-        label="SavePointPath" className={styles.form_item}
+        label="SavePointPath" className={styles.form_item} name="savePointPath"
         tooltip='从SavePointPath恢复Flink任务'
       >
         <Input placeholder="hdfs://..." />
@@ -85,5 +84,5 @@ const StudioSetting = (props: any) => {
 
 export default connect(({Studio}: { Studio: StateType }) => ({
   cluster: Studio.cluster,
-  sql: Studio.sql,
+  current: Studio.current,
 }))(StudioSetting);

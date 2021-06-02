@@ -50,13 +50,36 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public Task getTaskInfoById(Integer id) {
         Task task = this.getById(id);
-        if(task!=null){
+        if (task != null) {
             Statement statement = statementService.getById(id);
-            if(statement!=null){
+            if (statement != null) {
                 task.setStatement(statement.getStatement());
             }
         }
         return task;
+    }
+
+    @Override
+    public boolean saveOrUpdateTask(Task task) {
+        if (task.getId() != null) {
+            this.updateById(task);
+            if (task.getStatement() != null) {
+                Statement statement = new Statement();
+                statement.setId(task.getId());
+                statement.setStatement(task.getStatement());
+                statementService.updateById(statement);
+            }
+        } else {
+            this.save(task);
+            Statement statement = new Statement();
+            statement.setId(task.getId());
+            if (task.getStatement() == null) {
+                task.setStatement("");
+            }
+            statement.setStatement(task.getStatement());
+            statementService.insert(statement);
+        }
+        return true;
     }
 
 }

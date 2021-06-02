@@ -29,7 +29,8 @@ const FlinkSqlEditor = (props:any) => {
         selectOnLineNumbers: true,
         renderSideBySide: false,
       },
-    sql=props.catalogue.sql,
+    sql=props.current.value,
+    current=props.current,
     // sql,
     dispatch,
     } = props
@@ -41,7 +42,7 @@ const FlinkSqlEditor = (props:any) => {
 
   const monacoInstance: any = useRef();
 
-  const code: any = useRef(sql ? sql : '');
+  const code: any = useRef(current.sql ? current.sql : '');
   // const code: any = useRef(value ? value.formulaContent : '');
 
   const cache: any = useRef(code.current);
@@ -59,10 +60,6 @@ const FlinkSqlEditor = (props:any) => {
     handleSetEditorVal,
     getEditorData: () => cache.current,
   }));
-
-  const submit = async () => {
-    await executeSql({statement:cache.current});
-  };
 
   const handleSetEditorVal = (value: string): void => {
     if (!value) return;
@@ -155,7 +152,7 @@ return (
       width={width}
       height={height}
       language={language}
-      //value={cache.current}
+      value={current.value}
       options={options}
       onChange={onChangeHandle}
       theme="vs-dark"
@@ -167,6 +164,6 @@ return (
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
   current: Studio.current,
-  catalogue: Studio.catalogue,
   sql: Studio.sql,
+  tabs: Studio.tabs,
 }))(FlinkSqlEditor);

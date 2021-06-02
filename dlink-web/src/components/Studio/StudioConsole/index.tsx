@@ -1,5 +1,5 @@
 import { Tabs,Empty } from "antd";
-import {CodeOutlined, TableOutlined,RadarChartOutlined,CalendarOutlined,FileSearchOutlined} from "@ant-design/icons";
+import {CodeOutlined, TableOutlined,RadarChartOutlined,CalendarOutlined,FileSearchOutlined,DesktopOutlined} from "@ant-design/icons";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
 import styles from "./index.less";
@@ -55,11 +55,22 @@ const StudioConsole = (props:any) => {
       <TabPane
         tab={
           <span>
+          <DesktopOutlined />
+          进程
+        </span>
+        }
+        key="4"
+      >
+        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+      </TabPane>
+      <TabPane
+        tab={
+          <span>
           <CalendarOutlined />
           历史
         </span>
         }
-        key="4"
+        key="5"
       >
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       </TabPane>
@@ -70,7 +81,7 @@ const StudioConsole = (props:any) => {
           文档
         </span>
         }
-        key="5"
+        key="6"
       >
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       </TabPane>

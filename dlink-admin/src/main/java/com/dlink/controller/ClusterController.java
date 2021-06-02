@@ -81,6 +81,15 @@ public class ClusterController {
     }
 
     /**
+     * 获取指定ID的信息
+     */
+    @PostMapping("/listEnabledAll")
+    public Result listEnabledAll() throws Exception {
+        List<Cluster >clusters = clusterService.listEnabledAll();
+        return Result.succeed(clusters,"获取成功");
+    }
+
+    /**
      * 全部心跳监测
      */
     @PostMapping("/heartbeats")

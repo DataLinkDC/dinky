@@ -1,5 +1,5 @@
 import styles from "./index.less";
-import {Menu, Dropdown, Typography, Row, Col} from "antd";
+import {Menu, Dropdown, Tooltip, Row, Col,Popconfirm,Badge} from "antd";
 import {PauseCircleTwoTone, CopyTwoTone, DeleteTwoTone,PlayCircleTwoTone,DiffTwoTone,
   FileAddTwoTone,FolderOpenTwoTone,SafetyCertificateTwoTone,SaveTwoTone,FlagTwoTone,EnvironmentOutlined} from "@ant-design/icons";
 import Space from "antd/es/space";
@@ -9,6 +9,7 @@ import Breadcrumb from "antd/es/breadcrumb/Breadcrumb";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
 import {useEffect, useState} from "react";
+import {handleAddOrUpdate} from "@/components/Common/crud";
 
 const {SubMenu} = Menu;
 //<Button shape="circle" icon={<CaretRightOutlined />} />
@@ -30,11 +31,33 @@ const menu = (
 
 const StudioMenu = (props: any) => {
 
-  const {catalogue,currentPath} = props;
+  const {tabs,current,currentPath,form,dispatch} = props;
   const [pathItem, setPathItem] = useState<[]>();
 
   const executeSql = () => {
-    console.log('获取' + catalogue.sql);
+    console.log('获取' + current.value);
+  };
+
+  const saveSqlAndSettingToTask = async() => {
+    const fieldsValue = await form.validateFields();
+    console.log(fieldsValue);
+    if(current.task){
+      let task = {
+        id:current.key,
+        statement:current.value,
+        ...fieldsValue
+      };
+      dispatch&&dispatch({
+        type: "Studio/saveTask",
+        payload: task,
+      });
+      /*const success = handleAddOrUpdate('api/task',task);
+      console.log(success);
+      console.log(tabs);*/
+    }else{
+
+    }
+    console.log('获取' + current.value);
   };
 
   const runMenu = (
@@ -43,17 +66,6 @@ const StudioMenu = (props: any) => {
     </Menu>
   );
 
-  /*const getPath = ()=>{
-    let itemList = [];
-    for(let item of currentPath){
-      itemList.push(<Breadcrumb.Item>{item}</Breadcrumb.Item>)
-    }
-    setPathItem(itemList);
-  };
-
-  useEffect(() => {
-    getPath();
-  }, []);*/
   const getPathItem = (paths)=>{
     let itemList = [];
     for(let item of paths){
@@ -109,10 +121,13 @@ const StudioMenu = (props: any) => {
               type="text"
               icon={<FolderOpenTwoTone />}
             />
+            <Tooltip title="保存当前的 FlinkSql">
             <Button
               type="text"
               icon={<SaveTwoTone />}
+              onClick={saveSqlAndSettingToTask}
             />
+            </Tooltip>
             <Divider type="vertical" />
             <Button
               type="text"
@@ -122,16 +137,30 @@ const StudioMenu = (props: any) => {
               type="text"
               icon={<FlagTwoTone />}
             />
+            <Tooltip title="执行当前的 FlinkSql">
             <Button
               type="text"
               icon={<PlayCircleTwoTone />}
               //loading={loadings[2]}
-              //onClick={() => this.enterLoading(2)}
+              onClick={executeSql}
             />
+            </Tooltip>
+            <Popconfirm
+              title="您确定要停止所有的 FlinkSql 任务吗？"
+             // onConfirm={confirm}
+              //onCancel={cancel}
+              okText="停止"
+              cancelText="取消"
+            >
+              <Tooltip title="停止所有的 FlinkSql 任务">
+                <Badge size="small" count={1} offset={[-5, 5]}>
             <Button
               type="text"
               icon={<PauseCircleTwoTone />}
             />
+                </Badge>
+              </Tooltip>
+            </Popconfirm>
             <Divider type="vertical" />
             <Button
               type="text"
@@ -145,7 +174,6 @@ const StudioMenu = (props: any) => {
               type="text"
               icon={<DeleteTwoTone />}
             />
-
           </Col>
         </Row>
       </Col>
@@ -154,6 +182,7 @@ const StudioMenu = (props: any) => {
 };
 
 export default connect(({Studio}: { Studio: StateType }) => ({
-  catalogue: Studio.catalogue,
+  current: Studio.current,
   currentPath: Studio.currentPath,
+  tabs: Studio.tabs,
 }))(StudioMenu);

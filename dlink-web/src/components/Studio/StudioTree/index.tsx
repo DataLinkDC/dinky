@@ -92,10 +92,9 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     if(node.isLeaf&&node.taskId) {
       for(let item of tabs.panes){
         if(item.key==node.taskId){
-          tabs.activeKey = node.taskId;
-          dispatch({
+          dispatch&&dispatch({
             type: "Studio/changeActiveKey",
-            payload: tabs.activeKey,
+            payload: node.taskId,
           });
           return;
         }
@@ -112,9 +111,12 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
         };
         newTabs.activeKey = node.taskId;
         newTabs.panes.push(newPane);
-        dispatch({
+        dispatch&&dispatch({
           type: "Studio/saveTabs",
-          payload: newTabs,
+          payload: {
+            current:newPane,
+            tabs:newTabs,
+          },
         });
       })
     }
@@ -175,20 +177,33 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     const {pageX, pageY} = {...rightClickNodeTreeItem};
     const tmpStyle = {
       position: 'absolute',
-      left: `${pageX - 50}px`,
-      top: `${pageY - 202}px`
+      // left: `${pageX - 50}px`,
+      // top: `${pageY - 202}px`,
+      left: `${pageX - 30}px`,
+      top: `${pageY - 152}px`,
     };
+    let menuItems;
+    if(rightClickNode&&rightClickNode.isLeaf){
+      menuItems=(<>
+        <Menu.Item key='Open'>{'打开'}</Menu.Item>
+        <Menu.Item key='Rename'>{'重命名'}</Menu.Item>
+        <Menu.Item key='Delete'>{'删除'}</Menu.Item>
+      </>)
+    }else{
+      menuItems=(<>
+        <Menu.Item key='CreateCatalogue'>{'创建目录'}</Menu.Item>
+        <Menu.Item key='CreateTask'>{'创建作业'}</Menu.Item>
+        <Menu.Item key='Rename'>{'重命名'}</Menu.Item>
+        <Menu.Item key='Delete'>{'删除'}</Menu.Item>
+      </>)
+    }
     const menu = (
       <Menu
         onClick={({key}) => handleMenuClick(key)}
         style={tmpStyle}
         className={style.right_click_menu}
       >
-        <Menu.Item key='Open'>{'打开'}</Menu.Item>
-        <Menu.Item key='CreateCatalogue'>{'创建目录'}</Menu.Item>
-        <Menu.Item key='CreateTask'>{'创建作业'}</Menu.Item>
-        <Menu.Item key='Rename'>{'重命名'}</Menu.Item>
-        <Menu.Item key='Delete'>{'删除'}</Menu.Item>
+        {menuItems}
       </Menu>
     );
     return (rightClickNodeTreeItem == null) ? '' : menu;

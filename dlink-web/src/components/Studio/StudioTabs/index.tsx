@@ -6,10 +6,6 @@ import {StateType} from "@/pages/FlinkSqlStudio/model";
 
 const { TabPane } = Tabs;
 
-const initialPanes = [
-  { title: '草稿', key: '0' ,value:'select * from ',closable: false,},
-];
-
 const EditorTabs = (props: any) => {
   const {tabs,dispatch} = props;
   const [newTabIndex, setNewTabIndex] = useState<number>(0);
@@ -18,6 +14,7 @@ const EditorTabs = (props: any) => {
 
   const onChange = (activeKey: any) => {
     //setActiveKey(activeKey);
+    console.log(activeKey);
     dispatch({
       type: "Studio/changeActiveKey",
       payload: activeKey,
@@ -98,7 +95,6 @@ const EditorTabs = (props: any) => {
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
   current: Studio.current,
-  catalogue: Studio.catalogue,
   sql: Studio.sql,
   tabs: Studio.tabs,
 }))(EditorTabs);

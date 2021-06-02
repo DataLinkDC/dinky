@@ -4,7 +4,7 @@ import styles from './index.less';
 import {BarsOutlined,SettingOutlined} from "@ant-design/icons";
 
 import StudioMenu from "./StudioMenu";
-import {Row, Col, Card, Empty, Tabs} from "antd";
+import {Row, Col, Card, Empty, Tabs, Form} from "antd";
 import StudioTree from "./StudioTree";
 import StudioTabs from "./StudioTabs";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
@@ -21,6 +21,7 @@ const Studio: React.FC<StudioProps> = ({sql}) => {
 
   const [console, setConsole] = useState<boolean>(false);
   const [sqls, setSqls] = useState<String>();
+  const [form] = Form.useForm();
 
   useEffect(() => {
     setSqls(sql);
@@ -28,7 +29,7 @@ const Studio: React.FC<StudioProps> = ({sql}) => {
 
   return (
     <div>
-      <StudioMenu/>
+      <StudioMenu form={form}/>
       <Card bordered={false} className={styles.card} size="small">
         <Row>
           <Col span={4}>
@@ -46,7 +47,7 @@ const Studio: React.FC<StudioProps> = ({sql}) => {
           <Col span={4}>
             <Tabs defaultActiveKey="1" size="small">
               <TabPane tab={<span><SettingOutlined />配置</span>} key="1" >
-                <StudioSetting />
+                <StudioSetting form={form} />
               </TabPane>
             </Tabs>
           </Col>

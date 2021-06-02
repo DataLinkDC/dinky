@@ -1,8 +1,10 @@
 package com.dlink.mapper;
 
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.dlink.db.mapper.SuperMapper;
 import com.dlink.model.Statement;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * StatementMapper
@@ -12,4 +14,7 @@ import org.apache.ibatis.annotations.Mapper;
  **/
 @Mapper
 public interface StatementMapper extends SuperMapper<Statement> {
+
+    int insert(Statement statement);
+
 }
