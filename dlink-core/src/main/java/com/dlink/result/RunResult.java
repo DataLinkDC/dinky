@@ -1,6 +1,8 @@
 package com.dlink.result;
 
-import java.time.LocalDate;
+import com.dlink.executor.ExecutorSetting;
+
+import java.time.LocalDateTime;
 
 /**
  * RunResult
@@ -12,20 +14,32 @@ public class RunResult {
     private String sessionId;
     private String statement;
     private String flinkHost;
+    private Integer flinkPort;
     private boolean success;
     private long time;
-    private LocalDate finishDate;
+    private LocalDateTime finishDate;
     private String msg;
     private String error;
     private IResult result;
+    private ExecutorSetting setting;
 
     public RunResult() {
     }
 
-    public RunResult(String sessionId, String statement, String flinkHost) {
+    public RunResult(String sessionId, String statement, String flinkHost, Integer flinkPort,ExecutorSetting setting) {
         this.sessionId = sessionId;
         this.statement = statement;
         this.flinkHost = flinkHost;
+        this.flinkPort = flinkPort;
+        this.setting = setting;
+    }
+
+    public ExecutorSetting getSetting() {
+        return setting;
+    }
+
+    public void setSetting(ExecutorSetting setting) {
+        this.setting = setting;
     }
 
     public String getSessionId() {
@@ -84,11 +98,11 @@ public class RunResult {
         this.time = time;
     }
 
-    public LocalDate getFinishDate() {
+    public LocalDateTime getFinishDate() {
         return finishDate;
     }
 
-    public void setFinishDate(LocalDate finishDate) {
+    public void setFinishDate(LocalDateTime finishDate) {
         this.finishDate = finishDate;
     }
 
@@ -98,5 +112,13 @@ public class RunResult {
 
     public void setMsg(String msg) {
         this.msg = msg;
+    }
+
+    public Integer getFlinkPort() {
+        return flinkPort;
+    }
+
+    public void setFlinkPort(Integer flinkPort) {
+        this.flinkPort = flinkPort;
     }
 }

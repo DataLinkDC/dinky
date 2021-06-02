@@ -107,7 +107,10 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
           key: node.taskId,
           value:(result.datas.statement?result.datas.statement:''),
           closable: true,
-          task:result.datas
+          task:result.datas,
+          console:{
+            result:[],
+          }
         };
         newTabs.activeKey = node.taskId;
         newTabs.panes.push(newPane);

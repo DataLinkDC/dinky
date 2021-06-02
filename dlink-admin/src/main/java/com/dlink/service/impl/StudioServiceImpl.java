@@ -31,7 +31,9 @@ public class StudioServiceImpl implements StudioService {
         Assert.check(cluster);
         String host = FlinkCluster.testFlinkJobManagerIP(cluster.getHosts(), cluster.getJobManagerHost());
         Assert.checkHost(host);
-        JobManager jobManager = new JobManager(host);
-        return jobManager.execute(studioExecuteDTO.getStatement(), new ExecutorSetting(Executor.REMOTE));
+        JobManager jobManager = new JobManager(host,studioExecuteDTO.getSession(),studioExecuteDTO.getMaxRowNum());
+        return jobManager.execute(studioExecuteDTO.getStatement(), new ExecutorSetting(
+                Executor.REMOTE,studioExecuteDTO.getCheckPoint(),studioExecuteDTO.getParallelism(),
+                studioExecuteDTO.isFragment(),studioExecuteDTO.getSavePointPath()));
     }
 }

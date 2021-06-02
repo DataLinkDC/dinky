@@ -9,7 +9,7 @@ import Breadcrumb from "antd/es/breadcrumb/Breadcrumb";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
 import {useEffect, useState} from "react";
-import {handleAddOrUpdate} from "@/components/Common/crud";
+import {handleAddOrUpdate, postAll} from "@/components/Common/crud";
 
 const {SubMenu} = Menu;
 //<Button shape="circle" icon={<CaretRightOutlined />} />
@@ -35,7 +35,44 @@ const StudioMenu = (props: any) => {
   const [pathItem, setPathItem] = useState<[]>();
 
   const executeSql = () => {
-    console.log('获取' + current.value);
+    let param ={
+      session:current.task.session,
+      statement:current.value,
+      clusterId:current.task.clusterId,
+      checkPoint:current.task.checkPoint,
+      parallelism:current.task.parallelism,
+      maxRowNum:current.task.maxRowNum,
+      fragment:current.task.fragemnt,
+      savePointPath:current.task.savePointPath,
+    };
+    const key = current.key;
+    const result = postAll('api/studio/executeSql',param);
+    result.then(res=>{
+      let newTabs = tabs;
+      for(let i=0;i<newTabs.panes.length;i++){
+        if(newTabs.panes[i].key==key){
+          let newResult = newTabs.panes[i].console.result;
+          newResult.unshift(res.datas);
+          newTabs.panes[i].console={
+            result:newResult,
+          };
+          break;
+        }
+      }
+      console.log(newTabs);
+      dispatch&&dispatch({
+        type: "Studio/saveTabs",
+        payload: newTabs,
+      });
+    })
+  };
+
+  const buildMsg=(res)=>{
+    const result = res.datas;
+    let msg=`[${result.sessionId}:${result.flinkHost}:${result.flinkPort}] ${result.finishDate} ${result.success?'Success':'Error'} 
+    [${result.time}ms] ${result.msg?result.msg:''} ${result.error?result.error:''} \r\n
+    Statement: ${result.statement}`;
+    return msg;
   };
 
   const saveSqlAndSettingToTask = async() => {

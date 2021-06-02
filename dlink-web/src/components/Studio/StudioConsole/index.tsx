@@ -4,19 +4,14 @@ import {CodeOutlined, TableOutlined,RadarChartOutlined,CalendarOutlined,FileSear
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
 import styles from "./index.less";
+import StudioMsg from "./StudioMsg";
+import StudioTable from "./StudioTable";
 
 const { TabPane } = Tabs;
 
 
 
 const StudioConsole = (props:any) => {
-
-  const {sql} = props;
-
-  const executeSql = () =>{
-    console.log('获取'+sql);
-  };
-
 
   return (
     <Tabs defaultActiveKey="1" size="small">
@@ -29,7 +24,7 @@ const StudioConsole = (props:any) => {
         }
         key="1"
       >
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+        <StudioMsg />
       </TabPane>
       <TabPane
         tab={
@@ -40,7 +35,7 @@ const StudioConsole = (props:any) => {
         }
         key="2"
       >
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+        <StudioTable />
       </TabPane>
       <TabPane
         tab={

@@ -1,6 +1,6 @@
 package com.dlink.result;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * InsertResult
@@ -13,9 +13,9 @@ public class InsertResult implements IResult {
     private String jobID;
     private boolean success;
     private long time;
-    private LocalDate finishDate;
+    private LocalDateTime finishDate;
 
-    public InsertResult(String statement, String jobID, boolean success, long time, LocalDate finishDate) {
+    public InsertResult(String statement, String jobID, boolean success, long time, LocalDateTime finishDate) {
         this.statement = statement;
         this.jobID = jobID;
         this.success = success;
@@ -55,11 +55,11 @@ public class InsertResult implements IResult {
         this.time = time;
     }
 
-    public LocalDate getFinishDate() {
+    public LocalDateTime getFinishDate() {
         return finishDate;
     }
 
-    public void setFinishDate(LocalDate finishDate) {
+    public void setFinishDate(LocalDateTime finishDate) {
         this.finishDate = finishDate;
     }
 }

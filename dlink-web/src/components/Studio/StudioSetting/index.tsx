@@ -83,6 +83,8 @@ const StudioSetting = (props: any) => {
       </Form.Item>
         </Col>
       </Row>
+      <Row>
+        <Col span={12}>
       <Form.Item
         label="Fragment" className={styles.form_item} name="fragment"
         tooltip={{ title: '【增强特性】 开启FlinkSql片段机制，使用“:=”进行定义（以“;”结束），“${}”进行调用', icon: <InfoCircleOutlined /> }}
@@ -91,6 +93,16 @@ const StudioSetting = (props: any) => {
                // defaultChecked={formVals.enabled}
         />
       </Form.Item>
+        </Col>
+          <Col span={12}>
+      <Form.Item
+        label="MaxRowNum" className={styles.form_item} name="maxRowNum"
+        tooltip='预览数据的最大行数'
+      >
+        <InputNumber min={1} max={9999} defaultValue={100} />
+      </Form.Item>
+        </Col>
+      </Row>
       <Form.Item
         label="SavePointPath" className={styles.form_item} name="savePointPath"
         tooltip='从SavePointPath恢复Flink任务'

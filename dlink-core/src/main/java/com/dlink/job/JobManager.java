@@ -12,7 +12,7 @@ import com.dlink.trans.Operations;
 import org.apache.flink.api.common.JobID;
 import org.apache.flink.table.api.TableResult;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +44,21 @@ public class JobManager {
         }
     }
 
+    public JobManager(String host,String sessionId, Integer maxRowNum) {
+        if(host!=null) {
+            String[] strs = host.split(":");
+            if(strs.length>=2) {
+                this.flinkHost = strs[0];
+                this.port = Integer.parseInt(strs[1]);
+            }else{
+                this.flinkHost = strs[0];
+                this.port = 8081;
+            }
+        }
+        this.sessionId = sessionId;
+        this.maxRowNum = maxRowNum;
+    }
+
     public JobManager(String flinkHost, Integer port) {
         this.flinkHost = flinkHost;
         this.port = port;
@@ -57,7 +72,7 @@ public class JobManager {
     }
 
     public RunResult execute(String statement,ExecutorSetting executorSetting) {
-        RunResult runResult = new RunResult(sessionId, statement, flinkHost);
+        RunResult runResult = new RunResult(sessionId, statement, flinkHost,port,executorSetting);
         Executor executor = null;
         ExecutorEntity executorEntity = SessionPool.get(sessionId);
         if (executorEntity != null) {
@@ -83,7 +98,8 @@ public class JobManager {
                 IResult result = ResultBuilder.build(operationType, maxRowNum, "", false).getResult(tableResult);
                 runResult.setResult(result);
                 runResult.setTime(timeElapsed);
-                runResult.setFinishDate(LocalDate.now());
+                runResult.setFinishDate(LocalDateTime.now());
+                runResult.setSuccess(true);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -92,7 +108,9 @@ public class JobManager {
             for (StackTraceElement s : trace) {
                 resMsg.append(" </br> " + s + "  ");
             }
-            runResult.setError(LocalDate.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage() + "</br> >>>堆栈信息<<<" + resMsg.toString());
+            runResult.setFinishDate(LocalDateTime.now());
+            runResult.setSuccess(false);
+            runResult.setError(LocalDateTime.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage() + "</br> >>>堆栈信息<<<" + resMsg.toString());
             return runResult;
         }
         return runResult;
@@ -125,8 +143,8 @@ public class JobManager {
                         JobID jobID = tableResult.getJobClient().get().getJobID();
                         result.setSuccess(true);
                         result.setTime(timeElapsed);
-                        result.setFinishDate(LocalDate.now());
-                        InsertResult insertResult = new InsertResult(sqlText,(jobID == null ? "" : jobID.toHexString()),true,timeElapsed,LocalDate.now());
+                        result.setFinishDate(LocalDateTime.now());
+                        InsertResult insertResult = new InsertResult(sqlText,(jobID == null ? "" : jobID.toHexString()),true,timeElapsed,LocalDateTime.now());
                         result.setResult(insertResult);
                     } else {
                         executor.executeSql(sqlText);
@@ -134,7 +152,7 @@ public class JobManager {
                 }
             } else {
                 result.setSuccess(false);
-                result.setMsg(LocalDate.now().toString()+":执行sql语句为空。");
+                result.setMsg(LocalDateTime.now().toString()+":执行sql语句为空。");
                 return result;
             }
         } catch (Exception e) {
@@ -144,12 +162,12 @@ public class JobManager {
             for (StackTraceElement s : trace) {
                 resMsg.append(" </br> " + s + "  ");
             }
-            result.setError(LocalDate.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage() + "</br> >>>堆栈信息<<<" + resMsg.toString());
+            result.setError(LocalDateTime.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage() + "</br> >>>堆栈信息<<<" + resMsg.toString());
             return result;
 
         }
         result.setSuccess(true);
-        result.setMsg(LocalDate.now().toString() + ":任务提交成功！");
+        result.setMsg(LocalDateTime.now().toString() + ":任务提交成功！");
         return result;
     }
 }

@@ -35,7 +35,12 @@ export type TaskType = {
   updateTime?: Date,
   statement?: string,
   session:string;
+  maxRowNum:number;
 };
+
+export type ConsoleType = {
+  result: [];
+}
 
 export type TabsItemType = {
   title: string;
@@ -43,6 +48,7 @@ export type TabsItemType = {
   value:string;
   closable: boolean;
   task?:TaskType;
+  console:ConsoleType;
 }
 
 export type TabsType = {
@@ -101,8 +107,12 @@ const Model: ModelType = {
         parallelism: 1,
         fragment: true,
         clusterId: '0',
+        maxRowNum: 100,
         session:'admin',
       },
+      console:{
+        result:[],
+      }
     },
     sql: '',
     currentPath: [],
@@ -120,7 +130,11 @@ const Model: ModelType = {
           fragment: true,
           clusterId: '0',
           session:'admin',
+          maxRowNum: 100,
         },
+        console:{
+          result:[],
+        }
       }],
     },
     session:['admin'],
@@ -170,6 +184,7 @@ const Model: ModelType = {
           newCurrent=payload.panes[i];
         }
       }
+      console.log(newCurrent);
       return {
         ...state,
         current:{
