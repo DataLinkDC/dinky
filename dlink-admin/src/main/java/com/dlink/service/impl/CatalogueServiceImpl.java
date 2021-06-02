@@ -7,6 +7,7 @@ import com.dlink.mapper.CatalogueMapper;
 import com.dlink.model.Catalogue;
 import com.dlink.model.Task;
 import com.dlink.service.CatalogueService;
+import com.dlink.service.StatementService;
 import com.dlink.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,8 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
 
     @Autowired
     private TaskService taskService;
+    @Autowired
+    private StatementService statementService;
 
     @Override
     public List<Catalogue> getAllData() {
@@ -37,7 +40,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         Task task = new Task();
         task.setName(catalogueTaskDTO.getName());
         task.setAlias(catalogueTaskDTO.getAlias());
-        taskService.save(task);
+        taskService.saveOrUpdateTask(task);
         Catalogue catalogue = new Catalogue();
         catalogue.setName(catalogueTaskDTO.getAlias());
         catalogue.setIsLeaf(true);
@@ -70,6 +73,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         }else{
             if(catalogue.getTaskId()!=null) {
                 taskService.removeById(catalogue.getTaskId());
+                statementService.removeById(catalogue.getTaskId());
             }
             this.removeById(id);
             return true;

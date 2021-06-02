@@ -67,7 +67,7 @@ export const handleAddOrUpdate = async (url:string,fields: any) => {
     return true;
   } catch (error) {
     hide();
-    message.error(error);
+    message.error('出错啦');
     return false;
   }
 };

@@ -12,6 +12,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class StudioExecuteDTO {
+    private String session;
     private String statement;
-    private Integer clusterId;
+    private Integer clusterId=0;
+    private Integer checkPoint=0;
+    private Integer parallelism=1;
+    private Integer maxRowNum=100;
+    private boolean fragment=false;
+    private String savePointPath;
 }

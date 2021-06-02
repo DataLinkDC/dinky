@@ -1,6 +1,6 @@
 package com.dlink.result;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -15,7 +15,7 @@ public class SubmitResult {
     private String flinkHost;
     private boolean success;
     private long time;
-    private LocalDate finishDate;
+    private LocalDateTime finishDate;
     private String msg;
     private String error;
     private IResult result;
@@ -78,11 +78,11 @@ public class SubmitResult {
         this.time = time;
     }
 
-    public LocalDate getFinishDate() {
+    public LocalDateTime getFinishDate() {
         return finishDate;
     }
 
-    public void setFinishDate(LocalDate finishDate) {
+    public void setFinishDate(LocalDateTime finishDate) {
         this.finishDate = finishDate;
     }
 

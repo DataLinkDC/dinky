@@ -31,10 +31,10 @@ public class TaskController {
      */
     @PutMapping
     public Result saveOrUpdate(@RequestBody Task task) throws Exception {
-        if(taskService.saveOrUpdate(task)){
-            return Result.succeed("新增成功");
+        if(taskService.saveOrUpdateTask(task)){
+            return Result.succeed("操作成功");
         }else {
-            return Result.failed("新增失败");
+            return Result.failed("操作失败");
         }
     }
 

@@ -14,4 +14,12 @@ import org.springframework.stereotype.Service;
  **/
 @Service
 public class StatementServiceImpl extends SuperServiceImpl<StatementMapper, Statement> implements StatementService {
+    @Override
+    public boolean insert(Statement statement) {
+        if(baseMapper.insert(statement)>0){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }

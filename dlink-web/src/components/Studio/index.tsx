@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {connect} from "umi";
 import styles from './index.less';
-import {BarsOutlined,SettingOutlined} from "@ant-design/icons";
+import {BarsOutlined,SettingOutlined,AuditOutlined,ScheduleOutlined,AppstoreOutlined,ApiOutlined,DashboardOutlined,
+  FireOutlined} from "@ant-design/icons";
 
 import StudioMenu from "./StudioMenu";
-import {Row, Col, Card, Empty, Tabs} from "antd";
+import {Row, Col, Card, Empty, Tabs, Form} from "antd";
 import StudioTree from "./StudioTree";
 import StudioTabs from "./StudioTabs";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
@@ -21,6 +22,7 @@ const Studio: React.FC<StudioProps> = ({sql}) => {
 
   const [console, setConsole] = useState<boolean>(false);
   const [sqls, setSqls] = useState<String>();
+  const [form] = Form.useForm();
 
   useEffect(() => {
     setSqls(sql);
@@ -28,13 +30,16 @@ const Studio: React.FC<StudioProps> = ({sql}) => {
 
   return (
     <div>
-      <StudioMenu/>
+      <StudioMenu form={form}/>
       <Card bordered={false} className={styles.card} size="small">
         <Row>
           <Col span={4}>
             <Tabs defaultActiveKey="1" size="small">
               <TabPane tab={<span><BarsOutlined/>目录</span>} key="1" >
                 <StudioTree/>
+              </TabPane>
+              <TabPane tab={<span><AppstoreOutlined />元数据</span>} key="2" >
+                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
               </TabPane>
             </Tabs>
           </Col>
@@ -46,7 +51,24 @@ const Studio: React.FC<StudioProps> = ({sql}) => {
           <Col span={4}>
             <Tabs defaultActiveKey="1" size="small">
               <TabPane tab={<span><SettingOutlined />配置</span>} key="1" >
-                <StudioSetting />
+                <StudioSetting form={form} />
+              </TabPane>
+              <TabPane tab={<span><ScheduleOutlined />详情</span>} key="2" >
+                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+              </TabPane>
+              <TabPane tab={<span><AuditOutlined />审计</span>} key="3" >
+                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+              </TabPane>
+            </Tabs>
+            <Tabs defaultActiveKey="1" size="small">
+              <TabPane tab={<span>&nbsp;<ApiOutlined />连接器</span>} key="1" >
+                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+              </TabPane>
+              <TabPane tab={<span>&nbsp;<DashboardOutlined />总览</span>} key="2" >
+                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+              </TabPane>
+              <TabPane tab={<span>&nbsp;<FireOutlined />任务</span>} key="3" >
+                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
               </TabPane>
             </Tabs>
           </Col>

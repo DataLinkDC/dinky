@@ -11,6 +11,7 @@ import java.util.Set;
  * @since 2021/5/25 16:01
  **/
 public class SelectResult implements IResult{
+
     private List<Map<String,Object>> rowData;
     private Integer total;
     private Integer currentCount;
@@ -20,6 +21,38 @@ public class SelectResult implements IResult{
         this.rowData = rowData;
         this.total = total;
         this.currentCount = currentCount;
+        this.columns = columns;
+    }
+
+    public List<Map<String, Object>> getRowData() {
+        return rowData;
+    }
+
+    public void setRowData(List<Map<String, Object>> rowData) {
+        this.rowData = rowData;
+    }
+
+    public Integer getTotal() {
+        return total;
+    }
+
+    public void setTotal(Integer total) {
+        this.total = total;
+    }
+
+    public Integer getCurrentCount() {
+        return currentCount;
+    }
+
+    public void setCurrentCount(Integer currentCount) {
+        this.currentCount = currentCount;
+    }
+
+    public Set<String> getColumns() {
+        return columns;
+    }
+
+    public void setColumns(Set<String> columns) {
         this.columns = columns;
     }
 }
