@@ -90,7 +90,7 @@ export default (): React.ReactNode => {
               </li>
             </ul>
           </Paragraph></>} reverse={true}>
-          <Timeline.Item><Text code>0.1.0</Text> <Text type="secondary">2021-06-04</Text>
+          <Timeline.Item><Text code>0.1.0</Text> <Text type="secondary">2021-06-06</Text>
             <p> </p>
             <Paragraph>
               <ul>

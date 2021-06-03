@@ -113,7 +113,8 @@ const StudioConnector = (props:any) => {
           let newTableData = tableData;
           for (let i=0; i<newTableData.length; i++) {
             if (newTableData[i].tablename == item.tablename) {
-              newTableData.splice(i, 1);
+              // newTableData.splice(i, 1);
+              delete newTableData[i];
               setTableData(newTableData);
               break;
             }

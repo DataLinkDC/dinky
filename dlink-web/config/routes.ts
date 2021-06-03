@@ -21,15 +21,9 @@ export default [
     icon: 'home',
     component: './Welcome',
   },
-  /*{
-    path: '/studio',
-    name: 'studio',
-    icon: 'consoleSql',
-    component: './Studio',
-  },*/
   {
     path: '/flinksqlstudio',
-    name: 'flinsqlstudio',
+    name: 'flinksqlstudio',
     icon: 'consoleSql',
     component: './FlinkSqlStudio',
   },
@@ -44,6 +38,12 @@ export default [
     name: 'cluster',
     icon: 'cluster',
     component: './Cluster',
+  },
+  {
+    path: '/document',
+    name: 'document',
+    icon: 'cluster',
+    component: './Document',
   },
   /*{
     path: '/dev',
