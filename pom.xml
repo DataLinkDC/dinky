@@ -7,7 +7,7 @@
     <groupId>com.dlink</groupId>
     <artifactId>dlink</artifactId>
     <packaging>pom</packaging>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1.0</version>
     <modules>
         <module>dlink-core</module>
         <module>dlink-admin</module>
@@ -29,6 +29,7 @@
         <mysql-connector-java.version>8.0.22</mysql-connector-java.version>
         <banner.version>1.0.2</banner.version>
         <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
+        <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -121,4 +122,20 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot-dependencies.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>versions-maven-plugin</artifactId>
+                    <version>${versions-maven-plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 </project>

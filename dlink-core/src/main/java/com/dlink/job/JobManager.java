@@ -104,11 +104,9 @@ public class JobManager {
                 runResult.setTime(timeElapsed);
                 runResult.setFinishDate(LocalDateTime.now());
                 if(tableResult.getJobClient().isPresent()) {
-                    runResult.setJobId(tableResult.getJobClient().get().getJobID().toString());
-                    runResult.setSuccess(tableResult.getJobClient().get().getJobStatus().isDone());
-                }else{
-                    runResult.setSuccess(true);
+                    runResult.setJobId(tableResult.getJobClient().get().getJobID().toHexString());
                 }
+                runResult.setSuccess(true);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -144,7 +142,6 @@ public class JobManager {
                     currentIndex++;
                     String operationType = Operations.getOperationType(sqlText);
                     if (operationType.equalsIgnoreCase(FlinkSQLConstant.INSERT)) {
-
                         long start = System.currentTimeMillis();
                         TableResult tableResult = executor.executeSql(sqlText);
                         long finish = System.currentTimeMillis();
@@ -169,9 +166,10 @@ public class JobManager {
             StackTraceElement[] trace = e.getStackTrace();
             StringBuilder resMsg = new StringBuilder();
             for (StackTraceElement s : trace) {
-                resMsg.append(" </br> " + s + "  ");
+                resMsg.append(" \n " + s + "  ");
             }
-            result.setError(LocalDateTime.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage() + "</br> >>>堆栈信息<<<" + resMsg.toString());
+            result.setSuccess(false);
+            result.setError(LocalDateTime.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage() + "\n >>>堆栈信息<<<" + resMsg.toString());
             return result;
 
         }
