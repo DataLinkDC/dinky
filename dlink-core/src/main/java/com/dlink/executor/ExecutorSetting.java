@@ -7,10 +7,10 @@ package com.dlink.executor;
  * @since 2021/5/25 13:43
  **/
 public class ExecutorSetting {
-    private String type = Executor.LOCAL;
+    private String type;
     private Integer checkpoint;
     private Integer parallelism;
-    private boolean useSqlFragment = true;
+    private boolean useSqlFragment;
     private String savePointPath;
 
     public ExecutorSetting(String type) {

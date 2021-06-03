@@ -24,6 +24,8 @@ export default {
   'pages.login.registerAccount': '注册账户',
   'pages.welcome.Community': '官方社区',
   'pages.welcome.upgrade': '更新日志',
+  'pages.welcome.QQ': 'QQ官方社区群',
+  'pages.welcome.QQcode': '543709668',
   'pages.welcome.link': '欢迎加入',
   'pages.welcome.star': '欢迎 Star ',
   'pages.welcome.advancedLayout': 'Github',
