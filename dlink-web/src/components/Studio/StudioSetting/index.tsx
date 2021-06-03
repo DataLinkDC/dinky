@@ -15,7 +15,7 @@ const StudioSetting = (props: any) => {
 
 
   const getCluster = ()=>{
-    cluster.then(value=>{
+    cluster&&cluster.then(value=>{
       let itemList = [];
       for(let item of value){
         let tag =(<><Tag color={item.enabled?"processing":"error"}>{item.type}</Tag>{item.alias}</>);
@@ -134,6 +134,7 @@ const StudioSetting = (props: any) => {
         className={styles.form_item}>
         <Select
           placeholder="选择会话"
+          defaultValue='admin'
           dropdownRender={menu => (
             <div>
               {menu}

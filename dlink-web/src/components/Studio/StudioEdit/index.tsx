@@ -29,10 +29,9 @@ const FlinkSqlEditor = (props:any) => {
         selectOnLineNumbers: true,
         renderSideBySide: false,
       },
-    sql=props.current.value,
     current=props.current,
-    // sql,
     dispatch,
+    monaco,
     } = props
   ;
 
@@ -48,6 +47,7 @@ const FlinkSqlEditor = (props:any) => {
   const cache: any = useRef(code.current);
 
   const [refresh, setRefresh] = React.useState<boolean>(false);
+  const [selectValue, setSelectValue] = React.useState<string>("");
 
   useEffect(
     () => () => {
@@ -113,7 +113,6 @@ const FlinkSqlEditor = (props:any) => {
       }
     });
     code.current = newSecondRightFields; // 数组长度永远为1
-
     // 提示项设值
     provider = monaco.languages.registerCompletionItemProvider('sql', {
       provideCompletionItems() {
@@ -149,6 +148,7 @@ const FlinkSqlEditor = (props:any) => {
 return (
   <React.Fragment>
     <MonacoEditor
+      ref={monaco}
       width={width}
       height={height}
       language={language}
@@ -158,6 +158,7 @@ return (
       theme="vs-dark"
       editorDidMount={editorDidMountHandle}
     />
+    {selectValue}
   </React.Fragment>
 );
 };
@@ -166,4 +167,5 @@ export default connect(({ Studio }: { Studio: StateType }) => ({
   current: Studio.current,
   sql: Studio.sql,
   tabs: Studio.tabs,
+  monaco: Studio.monaco,
 }))(FlinkSqlEditor);

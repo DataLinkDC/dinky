@@ -10,6 +10,15 @@ export async function executeSql(params: StudioParam) {
   });
 }
 
+export async function executeDDL(params: StudioParam) {
+  return request<API.Result>('/api/studio/executeDDL', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
+
 export async function getCatalogueTreeData(params?: StudioParam) {
   return request<API.Result>('/api/catalogue/getCatalogueTreeData', {
     method: 'POST',

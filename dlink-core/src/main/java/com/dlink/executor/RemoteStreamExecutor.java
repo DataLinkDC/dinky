@@ -30,6 +30,12 @@ public class RemoteStreamExecutor extends Executor {
         this.executorSetting = executorSetting;
         synchronized (RemoteStreamExecutor.class){
             this.environment = StreamExecutionEnvironment.createRemoteEnvironment(environmentSetting.getHost(), environmentSetting.getPort());
+            if(executorSetting.getCheckpoint()!=null&&executorSetting.getCheckpoint()>0){
+                environment.enableCheckpointing(executorSetting.getCheckpoint());
+            }
+            if(executorSetting.getParallelism()!=null&&executorSetting.getParallelism()>0){
+                environment.setParallelism(executorSetting.getParallelism());
+            }
             if(stEnvironment == null){
                 stEnvironment = CustomTableEnvironmentImpl.create(environment);
             }

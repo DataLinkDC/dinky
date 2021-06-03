@@ -1,5 +1,6 @@
 package com.dlink.service;
 
+import com.dlink.dto.StudioDDLDTO;
 import com.dlink.dto.StudioExecuteDTO;
 import com.dlink.result.RunResult;
 
@@ -11,4 +12,6 @@ import com.dlink.result.RunResult;
  */
 public interface StudioService {
     RunResult executeSql(StudioExecuteDTO studioExecuteDTO);
+
+    RunResult executeDDL(StudioDDLDTO studioDDLDTO);
 }

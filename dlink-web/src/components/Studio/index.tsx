@@ -12,6 +12,7 @@ import {StateType} from "@/pages/FlinkSqlStudio/model";
 import StudioConsole from "./StudioConsole";
 import StudioSetting from "./StudioSetting";
 import StudioEdit from "./StudioEdit";
+import StudioConnector from "./StudioConnector";
 
 const {TabPane} = Tabs;
 
@@ -62,7 +63,7 @@ const Studio: React.FC<StudioProps> = ({sql}) => {
             </Tabs>
             <Tabs defaultActiveKey="1" size="small">
               <TabPane tab={<span>&nbsp;<ApiOutlined />连接器</span>} key="1" >
-                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                <StudioConnector />
               </TabPane>
               <TabPane tab={<span>&nbsp;<DashboardOutlined />总览</span>} key="2" >
                 <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />

@@ -78,7 +78,11 @@ public class JobManager {
         if (executorEntity != null) {
             executor = executorEntity.getExecutor();
         } else {
-            executor = Executor.build(new EnvironmentSetting(flinkHost, FlinkConstant.PORT), executorSetting);
+            if(executorSetting.isRemote()) {
+                executor = Executor.build(new EnvironmentSetting(flinkHost, FlinkConstant.PORT), executorSetting);
+            }else{
+                executor = Executor.build(null, executorSetting);
+            }
             SessionPool.push(new ExecutorEntity(sessionId, executor));
         }
         String[] Statements = statement.split(";");
@@ -99,18 +103,23 @@ public class JobManager {
                 runResult.setResult(result);
                 runResult.setTime(timeElapsed);
                 runResult.setFinishDate(LocalDateTime.now());
-                runResult.setSuccess(true);
+                if(tableResult.getJobClient().isPresent()) {
+                    runResult.setJobId(tableResult.getJobClient().get().getJobID().toString());
+                    runResult.setSuccess(tableResult.getJobClient().get().getJobStatus().isDone());
+                }else{
+                    runResult.setSuccess(true);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
             StackTraceElement[] trace = e.getStackTrace();
             StringBuffer resMsg = new StringBuffer("");
             for (StackTraceElement s : trace) {
-                resMsg.append(" </br> " + s + "  ");
+                resMsg.append(" \n " + s + "  ");
             }
             runResult.setFinishDate(LocalDateTime.now());
             runResult.setSuccess(false);
-            runResult.setError(LocalDateTime.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage() + "</br> >>>堆栈信息<<<" + resMsg.toString());
+            runResult.setError(LocalDateTime.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage() + " \n >>>堆栈信息<<<" + resMsg.toString());
             return runResult;
         }
         return runResult;

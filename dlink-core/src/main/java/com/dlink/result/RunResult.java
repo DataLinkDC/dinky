@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
  **/
 public class RunResult {
     private String sessionId;
+    private String jobId;
     private String statement;
     private String flinkHost;
     private Integer flinkPort;
@@ -32,6 +33,14 @@ public class RunResult {
         this.flinkHost = flinkHost;
         this.flinkPort = flinkPort;
         this.setting = setting;
+    }
+
+    public String getJobId() {
+        return jobId;
+    }
+
+    public void setJobId(String jobId) {
+        this.jobId = jobId;
     }
 
     public ExecutorSetting getSetting() {
