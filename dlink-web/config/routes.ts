@@ -45,7 +45,7 @@ export default [
     icon: 'cluster',
     component: './Cluster',
   },
-  {
+  /*{
     path: '/dev',
     name: 'dev',
     icon: 'crown',
@@ -78,7 +78,7 @@ export default [
         ],
       },
     ],
-  },
+  },*/
   /*{
   path: '/admin',
   name: 'admin',
@@ -94,7 +94,7 @@ export default [
     },
    ],
 },*/
-  {
+  /*{
     path: '/demo',
     name: 'demo',
     icon: 'crown',
@@ -139,7 +139,7 @@ export default [
         ],
       },
     ],
-  },
+  },*/
   {
     path: '/',
     redirect: '/welcome',

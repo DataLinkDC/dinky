@@ -36,6 +36,10 @@ public class ExecutorSetting {
         this.savePointPath = savePointPath;
     }
 
+    public boolean isRemote(){
+        return type.equals(Executor.REMOTE);
+    }
+
     public String getType() {
         return type;
     }

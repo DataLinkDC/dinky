@@ -2,6 +2,7 @@ package com.dlink.service.impl;
 
 import com.dlink.assertion.Assert;
 import com.dlink.cluster.FlinkCluster;
+import com.dlink.dto.StudioDDLDTO;
 import com.dlink.dto.StudioExecuteDTO;
 import com.dlink.executor.Executor;
 import com.dlink.executor.ExecutorSetting;
@@ -27,13 +28,38 @@ public class StudioServiceImpl implements StudioService {
 
     @Override
     public RunResult executeSql(StudioExecuteDTO studioExecuteDTO) {
+        studioExecuteDTO.setSession(studioExecuteDTO.getClusterId()+"_"+studioExecuteDTO.getSession());
+        String ExecuteType = Executor.REMOTE;
+        String host =null;
         Cluster cluster = clusterService.getById(studioExecuteDTO.getClusterId());
-        Assert.check(cluster);
-        String host = FlinkCluster.testFlinkJobManagerIP(cluster.getHosts(), cluster.getJobManagerHost());
-        Assert.checkHost(host);
+        if(studioExecuteDTO.getClusterId()==0&&cluster==null){
+            ExecuteType = Executor.LOCAL;
+        }else {
+            Assert.check(cluster);
+            host = FlinkCluster.testFlinkJobManagerIP(cluster.getHosts(), cluster.getJobManagerHost());
+            Assert.checkHost(host);
+        }
         JobManager jobManager = new JobManager(host,studioExecuteDTO.getSession(),studioExecuteDTO.getMaxRowNum());
         return jobManager.execute(studioExecuteDTO.getStatement(), new ExecutorSetting(
-                Executor.REMOTE,studioExecuteDTO.getCheckPoint(),studioExecuteDTO.getParallelism(),
+                ExecuteType,studioExecuteDTO.getCheckPoint(),studioExecuteDTO.getParallelism(),
                 studioExecuteDTO.isFragment(),studioExecuteDTO.getSavePointPath()));
+    }
+
+    @Override
+    public RunResult executeDDL(StudioDDLDTO studioDDLDTO) {
+        studioDDLDTO.setSession(studioDDLDTO.getClusterId()+"_"+studioDDLDTO.getSession());
+        String ExecuteType = Executor.REMOTE;
+        String host =null;
+        Cluster cluster = clusterService.getById(studioDDLDTO.getClusterId());
+        if(studioDDLDTO.getClusterId()==0&&cluster==null){
+            ExecuteType = Executor.LOCAL;
+        }else {
+            Assert.check(cluster);
+            host = FlinkCluster.testFlinkJobManagerIP(cluster.getHosts(), cluster.getJobManagerHost());
+            Assert.checkHost(host);
+        }
+        JobManager jobManager = new JobManager(host,studioDDLDTO.getSession(),1000);
+        return jobManager.execute(studioDDLDTO.getStatement(), new ExecutorSetting(
+                ExecuteType));
     }
 }

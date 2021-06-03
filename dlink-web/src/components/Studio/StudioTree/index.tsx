@@ -107,7 +107,11 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
           key: node.taskId,
           value:(result.datas.statement?result.datas.statement:''),
           closable: true,
-          task:result.datas,
+          task:{
+            session:'admin',
+            maxRowNum: 100,
+            ...result.datas
+          },
           console:{
             result:[],
           }

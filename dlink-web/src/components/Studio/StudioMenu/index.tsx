@@ -1,43 +1,37 @@
 import styles from "./index.less";
-import {Menu, Dropdown, Tooltip, Row, Col,Popconfirm,Badge} from "antd";
+import {Menu, Dropdown, Tooltip, Row, Col,Popconfirm,notification} from "antd";
 import {PauseCircleTwoTone, CopyTwoTone, DeleteTwoTone,PlayCircleTwoTone,DiffTwoTone,
-  FileAddTwoTone,FolderOpenTwoTone,SafetyCertificateTwoTone,SaveTwoTone,FlagTwoTone,EnvironmentOutlined} from "@ant-design/icons";
+  FileAddTwoTone,FolderOpenTwoTone,SafetyCertificateTwoTone,SaveTwoTone,FlagTwoTone,
+  EnvironmentOutlined,SmileOutlined} from "@ant-design/icons";
 import Space from "antd/es/space";
 import Divider from "antd/es/divider";
 import Button from "antd/es/button/button";
 import Breadcrumb from "antd/es/breadcrumb/Breadcrumb";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
-import {useEffect, useState} from "react";
-import {handleAddOrUpdate, postAll} from "@/components/Common/crud";
+import { postAll} from "@/components/Common/crud";
+import {executeSql} from "@/pages/FlinkSqlStudio/service";
 
-const {SubMenu} = Menu;
-//<Button shape="circle" icon={<CaretRightOutlined />} />
 const menu = (
   <Menu>
-    <Menu.Item>1st menu item</Menu.Item>
-    <Menu.Item>2nd menu item</Menu.Item>
-    <SubMenu title="sub menu">
-      <Menu.Item>3rd menu item</Menu.Item>
-      <Menu.Item>4th menu item</Menu.Item>
-    </SubMenu>
-    <SubMenu title="disabled sub menu" disabled>
-      <Menu.Item>5d menu item</Menu.Item>
-      <Menu.Item>6th menu item</Menu.Item>
-    </SubMenu>
+    <Menu.Item>敬请期待</Menu.Item>
   </Menu>
 );
 
 
 const StudioMenu = (props: any) => {
 
-  const {tabs,current,currentPath,form,dispatch} = props;
-  const [pathItem, setPathItem] = useState<[]>();
+  const {tabs,current,currentPath,form,dispatch,monaco} = props;
 
-  const executeSql = () => {
+  const execute = () => {
+    let selection = monaco.current.editor.getSelection();
+    let selectsql = monaco.current.editor.getModel().getValueInRange(selection);
+    if(selectsql==null||selectsql==''){
+      selectsql=current.value;
+    }
     let param ={
       session:current.task.session,
-      statement:current.value,
+      statement:selectsql,
       clusterId:current.task.clusterId,
       checkPoint:current.task.checkPoint,
       parallelism:current.task.parallelism,
@@ -46,8 +40,17 @@ const StudioMenu = (props: any) => {
       savePointPath:current.task.savePointPath,
     };
     const key = current.key;
-    const result = postAll('api/studio/executeSql',param);
+    const taskKey = (Math.random()*1000)+'';
+    notification.success({
+      message: `${param.clusterId+"_"+param.session} 新任务正在执行`,
+      description: param.statement,
+      duration:null,
+      key:taskKey,
+      icon: <SmileOutlined style={{ color: '#108ee9' }} />,
+    });
+    const result = executeSql(param);
     result.then(res=>{
+      notification.close(taskKey);
       let newTabs = tabs;
       for(let i=0;i<newTabs.panes.length;i++){
         if(newTabs.panes[i].key==key){
@@ -59,20 +62,11 @@ const StudioMenu = (props: any) => {
           break;
         }
       }
-      console.log(newTabs);
       dispatch&&dispatch({
         type: "Studio/saveTabs",
         payload: newTabs,
       });
     })
-  };
-
-  const buildMsg=(res)=>{
-    const result = res.datas;
-    let msg=`[${result.sessionId}:${result.flinkHost}:${result.flinkPort}] ${result.finishDate} ${result.success?'Success':'Error'} 
-    [${result.time}ms] ${result.msg?result.msg:''} ${result.error?result.error:''} \r\n
-    Statement: ${result.statement}`;
-    return msg;
   };
 
   const saveSqlAndSettingToTask = async() => {
@@ -97,7 +91,7 @@ const StudioMenu = (props: any) => {
 
   const runMenu = (
     <Menu>
-      <Menu.Item onClick={executeSql}>执行</Menu.Item>
+      <Menu.Item onClick={execute}>执行</Menu.Item>
     </Menu>
   );
 
@@ -177,7 +171,7 @@ const StudioMenu = (props: any) => {
               type="text"
               icon={<PlayCircleTwoTone />}
               //loading={loadings[2]}
-              onClick={executeSql}
+              onClick={execute}
             />
             </Tooltip>
             <Popconfirm
@@ -188,12 +182,12 @@ const StudioMenu = (props: any) => {
               cancelText="取消"
             >
               <Tooltip title="停止所有的 FlinkSql 任务">
-                <Badge size="small" count={1} offset={[-5, 5]}>
+                {/*<Badge size="small" count={1} offset={[-5, 5]}>*/}
             <Button
               type="text"
               icon={<PauseCircleTwoTone />}
             />
-                </Badge>
+                {/*</Badge>*/}
               </Tooltip>
             </Popconfirm>
             <Divider type="vertical" />
@@ -220,4 +214,5 @@ export default connect(({Studio}: { Studio: StateType }) => ({
   current: Studio.current,
   currentPath: Studio.currentPath,
   tabs: Studio.tabs,
+  monaco: Studio.monaco,
 }))(StudioMenu);

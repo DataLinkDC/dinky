@@ -31,4 +31,11 @@ export type CompletionItem ={
 }
  export type StudioParam = {
    statement:string,
+   checkPoint?: number,
+   savePointPath?: string,
+   parallelism?: number,
+   fragment?: boolean,
+   clusterId: number,
+   session:string,
+   maxRowNum?: number,
  }

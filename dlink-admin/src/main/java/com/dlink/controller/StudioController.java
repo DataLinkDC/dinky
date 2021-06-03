@@ -1,6 +1,7 @@
 package com.dlink.controller;
 
 import com.dlink.common.result.Result;
+import com.dlink.dto.StudioDDLDTO;
 import com.dlink.dto.StudioExecuteDTO;
 import com.dlink.model.Task;
 import com.dlink.result.RunResult;
@@ -32,6 +33,15 @@ public class StudioController {
     @PostMapping("/executeSql")
     public Result executeSql(@RequestBody StudioExecuteDTO studioExecuteDTO) throws Exception {
         RunResult runResult = studioService.executeSql(studioExecuteDTO);
+        return Result.succeed(runResult,"执行成功");
+    }
+
+    /**
+     * 进行DDL操作
+     */
+    @PostMapping("/executeDDL")
+    public Result executeDDL(@RequestBody StudioDDLDTO studioDDLDTO) throws Exception {
+        RunResult runResult = studioService.executeDDL(studioDDLDTO);
         return Result.succeed(runResult,"执行成功");
     }
 }

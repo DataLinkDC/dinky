@@ -6,6 +6,8 @@ import {connect} from "umi";
 import styles from "./index.less";
 import StudioMsg from "./StudioMsg";
 import StudioTable from "./StudioTable";
+import StudioHistory from "./StudioHistory";
+import StudioDocument from "./StudioDocument";
 
 const { TabPane } = Tabs;
 
@@ -68,7 +70,7 @@ const StudioConsole = (props:any) => {
         }
         key="5"
       >
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+        <StudioHistory />
       </TabPane>
       <TabPane
         tab={
@@ -79,7 +81,7 @@ const StudioConsole = (props:any) => {
         }
         key="6"
       >
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+        <StudioDocument />
       </TabPane>
       <TabPane
         tab={

@@ -60,6 +60,7 @@ export type StateType = {
   cluster?:ClusterType[];
   current: TabsItemType;
   sql?: string;
+  monaco?: any;
   currentPath?: string[];
   tabs:TabsType;
   session:string[];
@@ -74,6 +75,7 @@ export type ModelType = {
   reducers: {
     saveSql: Reducer<StateType>;
     saveCurrentPath: Reducer<StateType>;
+    saveMonaco: Reducer<StateType>;
     saveTabs: Reducer<StateType>;
     changeActiveKey: Reducer<StateType>;
     saveTaskData: Reducer<StateType>;
@@ -115,6 +117,7 @@ const Model: ModelType = {
       }
     },
     sql: '',
+    monaco: {},
     currentPath: [],
     tabs:{
       activeKey: 0,
@@ -175,6 +178,14 @@ const Model: ModelType = {
       return {
         ...state,
         currentPath:payload,
+      };
+    },
+    saveMonaco(state, { payload }) {
+      return {
+        ...state,
+        monaco:{
+          ...payload
+        },
       };
     },
     saveTabs(state, { payload }) {

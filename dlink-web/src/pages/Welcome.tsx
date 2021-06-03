@@ -1,9 +1,9 @@
 import React from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Card, Alert, Typography } from 'antd';
+import { Card, Alert, Typography,Timeline } from 'antd';
 import { useIntl, FormattedMessage } from 'umi';
 import styles from './Welcome.less';
-
+const { Text, Link,Paragraph } = Typography;
 const CodePreview: React.FC = ({ children }) => (
   <pre className={styles.pre}>
     <code>
@@ -31,32 +31,49 @@ export default (): React.ReactNode => {
           }}
         />
         <Typography.Text strong>
-          <FormattedMessage id="pages.welcome.advancedComponent" defaultMessage="高级表格" />{' '}
-          <a
-            href="https://procomponents.ant.design/components/table"
-            rel="noopener noreferrer"
-            target="__blank"
-          >
-            <FormattedMessage id="pages.welcome.link" defaultMessage="欢迎使用" />
-          </a>
+          <FormattedMessage id="pages.welcome.Community" defaultMessage="官方社区" />{' '}
+          <FormattedMessage id="pages.welcome.link" defaultMessage="欢迎加入" />
         </Typography.Text>
-        <CodePreview>yarn add @ant-design/pro-table</CodePreview>
+        <CodePreview>微信公众号：Datalink数据中台</CodePreview>
         <Typography.Text
           strong
           style={{
             marginBottom: 12,
           }}
         >
-          <FormattedMessage id="pages.welcome.advancedLayout" defaultMessage="高级布局" />{' '}
+          <FormattedMessage id="pages.welcome.advancedLayout" defaultMessage="Github" />{' '}
           <a
-            href="https://procomponents.ant.design/components/layout"
+            href="https://github.com/aiwenmo/dlink"
             rel="noopener noreferrer"
             target="__blank"
           >
-            <FormattedMessage id="pages.welcome.link" defaultMessage="欢迎使用" />
+            <FormattedMessage id="pages.welcome.star" defaultMessage="欢迎 Star " />
           </a>
         </Typography.Text>
-        <CodePreview>yarn add @ant-design/pro-layout</CodePreview>
+        <Paragraph>
+        <Typography.Text strong>
+          <FormattedMessage id="pages.welcome.upgrade" defaultMessage="更新日志" />
+        </Typography.Text>
+        </Paragraph>
+        <p> </p>
+        <Timeline pending="Recording..." reverse={true}>
+          <Timeline.Item><Text code>0.1.0</Text> <Text type="secondary">2015-09-01</Text>
+            <p> </p>
+            <Paragraph>
+              <ul>
+                <li>
+                  <Link href="">FlinkSql Studio</Link>
+                </li>
+                <li>
+                  <Link href="">Flink 集群</Link>
+                </li>
+                <li>
+                  <Link href="">Flink 任务</Link>
+                </li>
+              </ul>
+            </Paragraph>
+          </Timeline.Item>
+        </Timeline>
       </Card>
     </PageContainer>
   );
