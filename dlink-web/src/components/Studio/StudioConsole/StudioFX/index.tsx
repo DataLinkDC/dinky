@@ -1,7 +1,5 @@
-import {DownOutlined, HeartOutlined, PlusOutlined, UserOutlined} from '@ant-design/icons';
-import {Button, message, Input, Drawer, Modal} from 'antd';
+import { Input, Drawer, Modal} from 'antd';
 import React, {useState, useRef} from 'react';
-import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
 import type {ProColumns, ActionType} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
@@ -9,12 +7,10 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import type {DocumentTableListItem} from '@/pages/Document/data.d';
 
 import { queryData,} from "@/components/Common/crud";
-import {connect} from "umi";
-import {StateType} from "@/pages/FlinkSqlStudio/model";
 
 const url = '/api/document';
 
-const StudioDocument = () => {
+const StudioFX = () => {
   const actionRef = useRef<ActionType>();
   const [row, setRow] = useState<DocumentTableListItem>();
   const columns: ProColumns<DocumentTableListItem>[] = [
@@ -186,7 +182,7 @@ const StudioDocument = () => {
       dataIndex: 'likeNum',
       hideInForm: true,
       hideInSearch: true,
-      hideInTable: false,
+      hideInTable: true,
     },
     {
       title: '是否启用',
@@ -253,7 +249,7 @@ const StudioDocument = () => {
   return (
     <>
       <ProTable<DocumentTableListItem>
-        headerTitle="文档管理"
+        headerTitle="文档浏览"
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -287,6 +283,4 @@ const StudioDocument = () => {
     </>);
 };
 
-export default connect(({ Studio }: { Studio: StateType }) => ({
-  current: Studio.current,
-}))(StudioDocument);
+export default StudioFX;

@@ -38,6 +38,10 @@ public class StudioServiceImpl implements StudioService {
             Assert.check(cluster);
             host = FlinkCluster.testFlinkJobManagerIP(cluster.getHosts(), cluster.getJobManagerHost());
             Assert.checkHost(host);
+            if(!host.equals(cluster.getJobManagerHost())){
+                cluster.setJobManagerHost(host);
+                clusterService.updateById(cluster);
+            }
         }
         JobManager jobManager = new JobManager(host,studioExecuteDTO.getSession(),studioExecuteDTO.getMaxRowNum());
         return jobManager.execute(studioExecuteDTO.getStatement(), new ExecutorSetting(
@@ -57,6 +61,10 @@ public class StudioServiceImpl implements StudioService {
             Assert.check(cluster);
             host = FlinkCluster.testFlinkJobManagerIP(cluster.getHosts(), cluster.getJobManagerHost());
             Assert.checkHost(host);
+            if(!host.equals(cluster.getJobManagerHost())){
+                cluster.setJobManagerHost(host);
+                clusterService.updateById(cluster);
+            }
         }
         JobManager jobManager = new JobManager(host,studioDDLDTO.getSession(),1000);
         return jobManager.execute(studioDDLDTO.getStatement(), new ExecutorSetting(

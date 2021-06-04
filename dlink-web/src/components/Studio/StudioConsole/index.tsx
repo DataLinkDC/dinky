@@ -7,7 +7,7 @@ import styles from "./index.less";
 import StudioMsg from "./StudioMsg";
 import StudioTable from "./StudioTable";
 import StudioHistory from "./StudioHistory";
-import StudioDocument from "./StudioDocument";
+import StudioFX from "./StudioFX";
 
 const { TabPane } = Tabs;
 
@@ -81,7 +81,7 @@ const StudioConsole = (props:any) => {
         }
         key="6"
       >
-        <StudioDocument />
+        <StudioFX />
       </TabPane>
       <TabPane
         tab={

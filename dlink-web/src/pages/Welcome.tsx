@@ -86,7 +86,7 @@ export default (): React.ReactNode => {
                 <Link href="">FlinkSql Studio 自动完成函数</Link>
               </li>
               <li>
-                <Link href="">细节优化</Link>
+                <Link href="">用户与授权</Link>
               </li>
             </ul>
           </Paragraph></>} reverse={true}>

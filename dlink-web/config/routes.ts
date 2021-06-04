@@ -27,12 +27,12 @@ export default [
     icon: 'consoleSql',
     component: './FlinkSqlStudio',
   },
-  {
+  /*{
     path: '/task',
     name: 'task',
     icon: 'partition',
     component: './Task',
-  },
+  },*/
   {
     path: '/cluster',
     name: 'cluster',
@@ -42,7 +42,7 @@ export default [
   {
     path: '/document',
     name: 'document',
-    icon: 'cluster',
+    icon: 'container',
     component: './Document',
   },
   /*{

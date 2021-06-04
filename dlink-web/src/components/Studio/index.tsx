@@ -5,7 +5,7 @@ import {BarsOutlined,SettingOutlined,AuditOutlined,ScheduleOutlined,AppstoreOutl
   FireOutlined} from "@ant-design/icons";
 
 import StudioMenu from "./StudioMenu";
-import {Row, Col, Card, Empty, Tabs, Form} from "antd";
+import {Row, Col, Card, Empty, Tabs, Form,BackTop} from "antd";
 import StudioTree from "./StudioTree";
 import StudioTabs from "./StudioTabs";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
@@ -75,6 +75,7 @@ const Studio: React.FC<StudioProps> = ({sql}) => {
           </Col>
         </Row>
       </Card>
+      <BackTop />
     </div>
   )
 };

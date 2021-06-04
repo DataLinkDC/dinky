@@ -113,9 +113,10 @@ const StudioConnector = (props:any) => {
           let newTableData = tableData;
           for (let i=0; i<newTableData.length; i++) {
             if (newTableData[i].tablename == item.tablename) {
-              // newTableData.splice(i, 1);
-              delete newTableData[i];
-              setTableData(newTableData);
+              newTableData.splice(i, 1);
+              // delete newTableData[i];
+              // setTableData(newTableData);
+              getTables();
               break;
             }
           }
@@ -190,7 +191,7 @@ const StudioConnector = (props:any) => {
       >
         获取Connectors
       </Button>
-      {tableData.length>0?(<Table dataSource={tableData} columns={getColumns()} />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
+      {tableData&&tableData.length>0?(<Table dataSource={tableData} columns={getColumns()} />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
     </>
   );
 };
