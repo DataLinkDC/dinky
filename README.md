@@ -2,7 +2,7 @@
 
 ## 简介
 
-Dlink 为 Apache Flink 而生。它是一个 FlinkSQL Studio，可以在线开发、预览、调试 FlinkSql，支持 Flink 官方所有语法及其增强语法，并且可以远程提交 Sql 作业到集群，无打包过程。
+Dlink 为 Apache Flink 而生。它是一个 FlinkSQL Studio，可以在线开发、预览、调试 FlinkSQL，支持 Flink 官方所有语法及其增强语法，并且可以远程提交 Sql 作业到集群，无打包过程。
 
 需要注意的是，Dlink 它更专注于 FlinkSQL 的应用，而不是 DataStream。在开发过程中您不会看到任何一句 java、scala 或者 python。所以，它的目标是基于 FlinkSQL 来实现批流一体的实时计算平台。
 
@@ -179,7 +179,7 @@ maven clean install -Dmaven.test.skip=true
 4. Fragment开启后，可以这样写，为了您方便：
 
 ```sql
-sf:select * from;tb:student;
+sf:=select * from;tb:=student;
 ${sf} ${tb}
 ##效果等同于
 select * from student
