@@ -2,7 +2,7 @@
 # 定义变量
 # 要运行的jar包路径，加不加引号都行。 注意：等号两边 不能 有空格，否则会提示command找不到
 JAR_NAME="./dlink-admin.jar"
-LIB_PATH="./lib"
+SETTING="-Djava.ext.dirs=./lib"
  
 # 如果输入格式不对，给出提示！
 tips() {
@@ -19,7 +19,7 @@ start() {
 	pid=`ps -ef | grep $JAR_NAME | grep -v grep | awk '{print $2}'`
         # -z 表示如果$pid为空时执行
 	if [ -z $pid ]; then
-        nohup java -Djava.ext.dirs=$LIB_PATH -Doracle.jdbc.thinLogonCapability=o3 -jar -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M $JAR_NAME > /dev/null 2>&1 &
+        nohup java $SETTING -jar -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M $JAR_NAME > /dev/null 2>&1 &
         pid=`ps -ef | grep $JAR_NAME | grep -v grep | awk '{print $2}'`
 		echo ""
         echo "Service ${JAR_NAME} is starting！pid=${pid}"

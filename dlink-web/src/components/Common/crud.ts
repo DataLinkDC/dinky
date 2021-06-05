@@ -12,7 +12,7 @@ export async function queryData(url:string,params?: TableListParams) {
   });
 }
 
-export async function removeData(url:string,params: number[]) {
+export async function removeData(url:string,params: any[]) {
   return request(url, {
     method: 'DELETE',
     data: {
@@ -87,7 +87,7 @@ export const handleRemove = async (url:string,selectedRows: []) => {
   }
 };
 
-export const handleSubmit = async (url:string,title:string,selectedRows: []) => {
+export const handleSubmit = async (url:string,title:string,selectedRows: any[]) => {
   const hide = message.loading('正在'+title);
   if (!selectedRows) return true;
   try {

@@ -14,4 +14,6 @@ public interface StudioService {
     RunResult executeSql(StudioExecuteDTO studioExecuteDTO);
 
     RunResult executeDDL(StudioDDLDTO studioDDLDTO);
+
+    boolean clearSession(String session);
 }

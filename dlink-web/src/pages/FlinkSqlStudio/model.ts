@@ -195,7 +195,6 @@ const Model: ModelType = {
           newCurrent=payload.panes[i];
         }
       }
-      console.log(newCurrent);
       return {
         ...state,
         current:{
@@ -247,7 +246,6 @@ const Model: ModelType = {
         }
       }
       newSession.push(payload);
-      console.log(newSession);
       return {
         ...state,
         session:newSession,

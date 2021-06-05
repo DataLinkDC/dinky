@@ -3,9 +3,10 @@ import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
 import {useState} from "react";
 // import Highlighter from 'react-highlight-words';
-import { SearchOutlined,DownOutlined,TableOutlined } from '@ant-design/icons';
+import { SearchOutlined,DownOutlined,DeleteOutlined } from '@ant-design/icons';
 import React from "react";
 import {executeDDL} from "@/pages/FlinkSqlStudio/service";
+import {handleRemove} from "@/components/Common/crud";
 
 
 const StudioConnector = (props:any) => {
@@ -113,9 +114,10 @@ const StudioConnector = (props:any) => {
           let newTableData = tableData;
           for (let i=0; i<newTableData.length; i++) {
             if (newTableData[i].tablename == item.tablename) {
-              // newTableData.splice(i, 1);
-              delete newTableData[i];
-              setTableData(newTableData);
+              newTableData.splice(i, 1);
+              // delete newTableData[i];
+              // setTableData(newTableData);
+              getTables();
               break;
             }
           }
@@ -146,6 +148,22 @@ const StudioConnector = (props:any) => {
       }
       let newLoadings = [...loadings];
       newLoadings[0] = false;
+      setLoadings(newLoadings);
+    });
+  };
+
+  const clearSession = () => {
+    let newLoadings = [...loadings];
+    newLoadings[2] = true;
+    setLoadings(newLoadings);
+    let session = {
+      id:current.task.clusterId+'_'+current.task.session,
+    };
+    const res = handleRemove('/api/studio/clearSession',[session]);
+    res.then((result)=>{
+      getTables();
+      let newLoadings = [...loadings];
+      newLoadings[2] = false;
       setLoadings(newLoadings);
     });
   };
@@ -182,15 +200,21 @@ const StudioConnector = (props:any) => {
 
   return (
     <>
+      <Space>
       <Button
-        type="primary"
-        icon={<TableOutlined />}
-        loading={loadings[0]}
-        onClick={() => getTables()}
-      >
-        获取Connectors
-      </Button>
-      {tableData.length>0?(<Table dataSource={tableData} columns={getColumns()} />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
+      type="primary"
+      icon={<SearchOutlined />}
+      loading={loadings[0]}
+      onClick={() => getTables()}
+    />
+      <Button
+        danger
+        icon={<DeleteOutlined />}
+        loading={loadings[2]}
+        onClick={() => clearSession()}
+      />
+      </Space>
+      {tableData&&tableData.length>0?(<Table dataSource={tableData} columns={getColumns()} />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
     </>
   );
 };

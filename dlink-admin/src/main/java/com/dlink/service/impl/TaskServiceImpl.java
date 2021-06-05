@@ -43,6 +43,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Assert.check(statement);
         String host = FlinkCluster.testFlinkJobManagerIP(cluster.getHosts(), cluster.getJobManagerHost());
         Assert.checkHost(host);
+        if(!host.equals(cluster.getJobManagerHost())){
+            cluster.setJobManagerHost(host);
+            clusterService.updateById(cluster);
+        }
         JobManager jobManager = new JobManager(host);
         return jobManager.submit(statement.getStatement(), task.getRemoteExecutorSetting());
     }

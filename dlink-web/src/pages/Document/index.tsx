@@ -46,11 +46,6 @@ const DocumentTableList: React.FC<{}> = () => {
     }
   };
 
-  const checkHeartBeats = async ()=>{
-    await handleOption(url+'/heartbeats','心跳检测',null);
-    actionRef.current?.reloadAndRest?.();
-  };
-
   const MoreBtn: React.FC<{
     item: DocumentTableListItem;
   }> = ({item}) => (
@@ -219,21 +214,21 @@ const DocumentTableList: React.FC<{}> = () => {
       dataIndex: 'description',
       valueType: 'textarea',
       hideInForm: false,
-      hideInSearch: true,
+      hideInSearch: false,
       hideInTable: true,
     },
     {
       title: '版本',
       sorter: true,
       dataIndex: 'version',
-      hideInForm: true,
+      hideInForm: false,
       hideInSearch: true,
       hideInTable: true,
     },
     {
       title: '是否启用',
       dataIndex: 'enabled',
-      hideInForm: true,
+      hideInForm: false,
       hideInSearch: true,
       hideInTable: false,
       filters: [
@@ -317,9 +312,6 @@ const DocumentTableList: React.FC<{}> = () => {
         toolBarRender={() => [
         <Button type="primary" onClick={() => handleModalVisible(true)}>
           <PlusOutlined/> 新建
-        </Button>,
-        <Button type="primary" onClick={() => checkHeartBeats()}>
-          <HeartOutlined /> 心跳
         </Button>,
       ]}
         request={(params, sorter, filter) => queryData(url,{...params, sorter, filter})}
