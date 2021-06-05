@@ -68,10 +68,13 @@ export default (): React.ReactNode => {
           <Paragraph>
             <ul>
               <li>
-                <Link href="">FlinkSql Studio 会话管理</Link>
+                <Link href="">FlinkSql Studio 进程监控</Link>
               </li>
               <li>
-                <Link href="">FlinkSql Studio 进程监控</Link>
+                <Link href="">FlinkSql Studio 集群总览</Link>
+              </li>
+              <li>
+                <Link href="">FlinkSql Studio 集群任务</Link>
               </li>
               <li>
                 <Link href="">FlinkSql Studio 任务详情</Link>

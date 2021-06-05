@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    url: jdbc:mysql://192.168.24.1:3306/dlink?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: dlink
+    password: dlink
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  application:
+    name: dlink
+
+server:
+  port: 8888
+
+mybatis-plus:
+  mapper-locations: classpath:/mapper/*Mapper.xml
+  #实体扫描，多个package用逗号或者分号分隔
+  typeAliasesPackage: com.dlink.model
+  global-config:
+    db-config:
+      id-type: auto
+  configuration:
+  ##### mybatis-plus打印完整sql(只适用于开发环境)
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+
+
+dlink:
+##### 登录用户配置
+  login:
+    username: admin
+    password: admin

@@ -3,9 +3,10 @@ import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
 import {useState} from "react";
 // import Highlighter from 'react-highlight-words';
-import { SearchOutlined,DownOutlined,TableOutlined } from '@ant-design/icons';
+import { SearchOutlined,DownOutlined,DeleteOutlined } from '@ant-design/icons';
 import React from "react";
 import {executeDDL} from "@/pages/FlinkSqlStudio/service";
+import {handleRemove} from "@/components/Common/crud";
 
 
 const StudioConnector = (props:any) => {
@@ -151,6 +152,22 @@ const StudioConnector = (props:any) => {
     });
   };
 
+  const clearSession = () => {
+    let newLoadings = [...loadings];
+    newLoadings[2] = true;
+    setLoadings(newLoadings);
+    let session = {
+      id:current.task.clusterId+'_'+current.task.session,
+    };
+    const res = handleRemove('/api/studio/clearSession',[session]);
+    res.then((result)=>{
+      getTables();
+      let newLoadings = [...loadings];
+      newLoadings[2] = false;
+      setLoadings(newLoadings);
+    });
+  };
+
   const getColumns=()=>{
     let columns:any=[{
       title: "表名",
@@ -183,14 +200,20 @@ const StudioConnector = (props:any) => {
 
   return (
     <>
+      <Space>
       <Button
-        type="primary"
-        icon={<TableOutlined />}
-        loading={loadings[0]}
-        onClick={() => getTables()}
-      >
-        获取Connectors
-      </Button>
+      type="primary"
+      icon={<SearchOutlined />}
+      loading={loadings[0]}
+      onClick={() => getTables()}
+    />
+      <Button
+        danger
+        icon={<DeleteOutlined />}
+        loading={loadings[2]}
+        onClick={() => clearSession()}
+      />
+      </Space>
       {tableData&&tableData.length>0?(<Table dataSource={tableData} columns={getColumns()} />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
     </>
   );

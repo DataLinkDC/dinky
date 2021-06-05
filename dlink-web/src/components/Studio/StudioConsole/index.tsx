@@ -1,6 +1,6 @@
 import { Tabs,Empty } from "antd";
 import {CodeOutlined, TableOutlined,RadarChartOutlined,CalendarOutlined,FileSearchOutlined,DesktopOutlined
-  ,FunctionOutlined} from "@ant-design/icons";
+  ,FunctionOutlined,ApartmentOutlined} from "@ant-design/icons";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
 import styles from "./index.less";
@@ -16,7 +16,7 @@ const { TabPane } = Tabs;
 const StudioConsole = (props:any) => {
 
   return (
-    <Tabs defaultActiveKey="1" size="small">
+    <Tabs defaultActiveKey="StudioMsg" size="small">
       <TabPane
         tab={
           <span>
@@ -24,7 +24,7 @@ const StudioConsole = (props:any) => {
           信息
         </span>
         }
-        key="1"
+        key="StudioMsg"
       >
         <StudioMsg />
       </TabPane>
@@ -35,7 +35,7 @@ const StudioConsole = (props:any) => {
           结果
         </span>
         }
-        key="2"
+        key="StudioTable"
       >
         <StudioTable />
       </TabPane>
@@ -46,7 +46,18 @@ const StudioConsole = (props:any) => {
           指标
         </span>
         }
-        key="3"
+        key="StudioMetrics"
+      >
+        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+      </TabPane>
+      <TabPane
+        tab={
+          <span>
+          <ApartmentOutlined />
+          血缘
+        </span>
+        }
+        key="StudioConsanguinity"
       >
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       </TabPane>
@@ -57,7 +68,7 @@ const StudioConsole = (props:any) => {
           进程
         </span>
         }
-        key="4"
+        key="StudioProcess"
       >
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       </TabPane>
@@ -68,7 +79,7 @@ const StudioConsole = (props:any) => {
           历史
         </span>
         }
-        key="5"
+        key="StudioHistory"
       >
         <StudioHistory />
       </TabPane>
@@ -79,7 +90,7 @@ const StudioConsole = (props:any) => {
           函数
         </span>
         }
-        key="6"
+        key="StudioFX"
       >
         <StudioFX />
       </TabPane>
@@ -90,7 +101,7 @@ const StudioConsole = (props:any) => {
           文档
         </span>
         }
-        key="7"
+        key="StudioDocument"
       >
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       </TabPane>

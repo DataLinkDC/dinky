@@ -15,19 +15,10 @@ const StudioFX = () => {
   const [row, setRow] = useState<DocumentTableListItem>();
   const columns: ProColumns<DocumentTableListItem>[] = [
     {
-      title: '名称',
+      title: '函数',
       dataIndex: 'name',
-      tip: '名称是唯一的',
       sorter: true,
       width:'400px',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '名称为必填项',
-          },
-        ],
-      },
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
@@ -176,7 +167,8 @@ const StudioFX = () => {
       hideInForm: true,
       hideInSearch: true,
       hideInTable: true,
-    },{
+    },
+    {
       title: '赞',
       sorter: true,
       dataIndex: 'likeNum',
@@ -249,7 +241,7 @@ const StudioFX = () => {
   return (
     <>
       <ProTable<DocumentTableListItem>
-        headerTitle="文档浏览"
+        headerTitle="FlinkSql 函数浏览"
         actionRef={actionRef}
         rowKey="id"
         search={{

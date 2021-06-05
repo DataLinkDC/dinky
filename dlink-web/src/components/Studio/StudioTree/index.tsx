@@ -6,7 +6,7 @@ import {getCatalogueTreeData} from "@/pages/FlinkSqlStudio/service";
 import {convertToTreeData, DataType, TreeDataNode} from "@/components/Studio/StudioTree/Function";
 import style from "./index.less";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
-import {getInfoById, handleAddOrUpdate, handleInfo, handleRemove} from "@/components/Common/crud";
+import {getInfoById, handleAddOrUpdate, handleInfo, handleRemove, handleSubmit} from "@/components/Common/crud";
 import UpdateCatalogueForm from './components/UpdateCatalogueForm';
 import {ActionType} from "@ant-design/pro-table";
 import UpdateTaskForm from "@/components/Studio/StudioTree/components/UpdateTaskForm";
@@ -77,6 +77,8 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     setRightClickNodeTreeItem(null);
     if(key=='Open'){
       toOpen(rightClickNode);
+    }else if(key=='Submit'){
+      toSubmit(rightClickNode);
     }else if(key=='CreateCatalogue'){
       createCatalogue(rightClickNode);
     }else if(key=='CreateTask'){
@@ -99,7 +101,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
           return;
         }
       }
-      const result = getInfoById('api/task',node.taskId);
+      const result = getInfoById('/api/task',node.taskId);
       result.then(result=>{
         let newTabs = tabs;
         let newPane = {
@@ -140,6 +142,21 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     }
   };
 
+  const toSubmit=(node:TreeDataNode)=>{
+    Modal.confirm({
+      title: '提交作业',
+      content: '确定提交该作业到其配置的集群吗？',
+      okText: '确认',
+      cancelText: '取消',
+      onOk:async () => {
+        let task = {
+          id:node.taskId,
+        };
+        handleSubmit('/api/task/submit','作业',[task]);
+      }
+    });
+  };
+
   const toRename=(node:TreeDataNode)=>{
     handleUpdateCatalogueModalVisible(true);
     setIsCreate(false);
@@ -171,7 +188,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       okText: '确认',
       cancelText: '取消',
       onOk:async () => {
-        await handleRemove('api/catalogue',[node]);
+        await handleRemove('/api/catalogue',[node]);
         getTreeData();
       }
     });
@@ -190,8 +207,15 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     if(rightClickNode&&rightClickNode.isLeaf){
       menuItems=(<>
         <Menu.Item key='Open'>{'打开'}</Menu.Item>
+        <Menu.Item key='Submit'>{'异步提交'}</Menu.Item>
         <Menu.Item key='Rename'>{'重命名'}</Menu.Item>
         <Menu.Item key='Delete'>{'删除'}</Menu.Item>
+      </>)
+    }else if(rightClickNode&&rightClickNode.children&&rightClickNode.children.length>0){
+      menuItems=(<>
+        <Menu.Item key='CreateCatalogue'>{'创建目录'}</Menu.Item>
+        <Menu.Item key='CreateTask'>{'创建作业'}</Menu.Item>
+        <Menu.Item key='Rename'>{'重命名'}</Menu.Item>
       </>)
     }else{
       menuItems=(<>
@@ -259,7 +283,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
         <UpdateCatalogueForm
           onSubmit={async (value) => {
             const success = await handleAddOrUpdate(
-              isCreate?'api/catalogue':'api/catalogue/toRename',value);
+              isCreate?'/api/catalogue':'/api/catalogue/toRename',value);
             if (success) {
               handleUpdateCatalogueModalVisible(false);
               setCatalogueFormValues({});
@@ -278,7 +302,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       {updateTaskModalVisible? (
         <UpdateTaskForm
           onSubmit={async (value) => {
-            const success = await handleAddOrUpdate('api/catalogue/createTask',value);
+            const success = await handleAddOrUpdate('/api/catalogue/createTask',value);
             if (success) {
               handleUpdateTaskModalVisible(false);
               setTaskFormValues({});

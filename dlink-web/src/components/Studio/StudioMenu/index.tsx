@@ -1,15 +1,15 @@
 import styles from "./index.less";
-import {Menu, Dropdown, Tooltip, Row, Col,Popconfirm,notification} from "antd";
+import {Menu, Dropdown, Tooltip, Row, Col, Popconfirm, notification, Modal} from "antd";
 import {PauseCircleTwoTone, CopyTwoTone, DeleteTwoTone,PlayCircleTwoTone,DiffTwoTone,
   FileAddTwoTone,FolderOpenTwoTone,SafetyCertificateTwoTone,SaveTwoTone,FlagTwoTone,
-  EnvironmentOutlined,SmileOutlined} from "@ant-design/icons";
+  EnvironmentOutlined,SmileOutlined,RocketTwoTone} from "@ant-design/icons";
 import Space from "antd/es/space";
 import Divider from "antd/es/divider";
 import Button from "antd/es/button/button";
 import Breadcrumb from "antd/es/breadcrumb/Breadcrumb";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
-import { postAll} from "@/components/Common/crud";
+import {handleSubmit, postAll} from "@/components/Common/crud";
 import {executeSql} from "@/pages/FlinkSqlStudio/service";
 
 const menu = (
@@ -69,6 +69,21 @@ const StudioMenu = (props: any) => {
     })
   };
 
+  const submit=()=>{
+    Modal.confirm({
+      title: '异步提交作业',
+      content: '确定异步提交该作业到其配置的集群吗？',
+      okText: '确认',
+      cancelText: '取消',
+      onOk:async () => {
+        let task = {
+          id:current.task.id,
+        };
+        handleSubmit('/api/task/submit','作业',[task]);
+      }
+    });
+  };
+
   const saveSqlAndSettingToTask = async() => {
     const fieldsValue = await form.validateFields();
     if(current.task){
@@ -81,9 +96,6 @@ const StudioMenu = (props: any) => {
         type: "Studio/saveTask",
         payload: task,
       });
-      /*const success = handleAddOrUpdate('api/task',task);
-      console.log(success);
-      console.log(tabs);*/
     }else{
 
     }
@@ -91,7 +103,8 @@ const StudioMenu = (props: any) => {
 
   const runMenu = (
     <Menu>
-      <Menu.Item onClick={execute}>执行</Menu.Item>
+      <Menu.Item onClick={execute}>同步执行</Menu.Item>
+      <Menu.Item onClick={submit}>异步提交</Menu.Item>
     </Menu>
   );
 
@@ -172,6 +185,13 @@ const StudioMenu = (props: any) => {
               icon={<PlayCircleTwoTone />}
               //loading={loadings[2]}
               onClick={execute}
+            />
+            </Tooltip>
+            <Tooltip title="提交当前的作业到集群">
+            <Button
+              type="text"
+              icon={<RocketTwoTone />}
+              onClick={submit}
             />
             </Tooltip>
             <Popconfirm
