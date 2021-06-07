@@ -1,5 +1,5 @@
 import styles from "./index.less";
-import {Menu, Dropdown, Tooltip, Row, Col, Popconfirm, notification, Modal} from "antd";
+import {Menu, Dropdown, Tooltip, Row, Col, Popconfirm, notification, Modal,message} from "antd";
 import {PauseCircleTwoTone, CopyTwoTone, DeleteTwoTone,PlayCircleTwoTone,DiffTwoTone,
   FileAddTwoTone,FolderOpenTwoTone,SafetyCertificateTwoTone,SaveTwoTone,FlagTwoTone,
   EnvironmentOutlined,SmileOutlined,RocketTwoTone} from "@ant-design/icons";
@@ -70,16 +70,20 @@ const StudioMenu = (props: any) => {
   };
 
   const submit=()=>{
+    if(!current.task.id){
+      message.error(`草稿【${current.title}】无法被提交，请创建或选择有效作业进行提交`);
+      return false;
+    }
     Modal.confirm({
       title: '异步提交作业',
-      content: '确定异步提交该作业到其配置的集群吗？',
+      content: `确定异步提交作业【${current.task.alias}】到其配置的集群吗？`,
       okText: '确认',
       cancelText: '取消',
       onOk:async () => {
         let task = {
           id:current.task.id,
         };
-        handleSubmit('/api/task/submit','作业',[task]);
+        handleSubmit('/api/task/submit','异步提交作业',[task]);
       }
     });
   };
