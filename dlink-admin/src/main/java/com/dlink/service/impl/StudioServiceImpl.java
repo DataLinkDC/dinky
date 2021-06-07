@@ -4,6 +4,7 @@ import com.dlink.assertion.Assert;
 import com.dlink.cluster.FlinkCluster;
 import com.dlink.dto.StudioDDLDTO;
 import com.dlink.dto.StudioExecuteDTO;
+import com.dlink.exception.BusException;
 import com.dlink.executor.Executor;
 import com.dlink.executor.ExecutorSetting;
 import com.dlink.job.JobManager;
@@ -35,6 +36,8 @@ public class StudioServiceImpl implements StudioService {
         Cluster cluster = clusterService.getById(studioExecuteDTO.getClusterId());
         if(studioExecuteDTO.getClusterId()==0&&cluster==null){
             ExecuteType = Executor.LOCAL;
+        }else if(cluster==null){
+            throw new BusException("未获取到集群信息");
         }else {
             Assert.check(cluster);
             host = FlinkCluster.testFlinkJobManagerIP(cluster.getHosts(), cluster.getJobManagerHost());

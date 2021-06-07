@@ -1,5 +1,5 @@
 import styles from "./index.less";
-import {Menu, Dropdown, Tooltip, Row, Col, Popconfirm, notification, Modal} from "antd";
+import {Menu, Dropdown, Tooltip, Row, Col, Popconfirm, notification, Modal,message} from "antd";
 import {PauseCircleTwoTone, CopyTwoTone, DeleteTwoTone,PlayCircleTwoTone,DiffTwoTone,
   FileAddTwoTone,FolderOpenTwoTone,SafetyCertificateTwoTone,SaveTwoTone,FlagTwoTone,
   EnvironmentOutlined,SmileOutlined,RocketTwoTone} from "@ant-design/icons";
@@ -70,16 +70,20 @@ const StudioMenu = (props: any) => {
   };
 
   const submit=()=>{
+    if(!current.task.id){
+      message.error(`草稿【${current.title}】无法被提交，请创建或选择有效作业进行提交`);
+      return false;
+    }
     Modal.confirm({
       title: '异步提交作业',
-      content: '确定异步提交该作业到其配置的集群吗？',
+      content: `确定异步提交作业【${current.task.alias}】到其配置的集群吗？`,
       okText: '确认',
       cancelText: '取消',
       onOk:async () => {
         let task = {
           id:current.task.id,
         };
-        handleSubmit('/api/task/submit','作业',[task]);
+        handleSubmit('/api/task/submit','异步提交作业',[task]);
       }
     });
   };
@@ -157,11 +161,11 @@ const StudioMenu = (props: any) => {
           <Col span={8} offset={8}>
             <Button
               type="text"
-              icon={<FileAddTwoTone />}
+              icon={<FileAddTwoTone twoToneColor="#ddd" />}
             />
             <Button
               type="text"
-              icon={<FolderOpenTwoTone />}
+              icon={<FolderOpenTwoTone twoToneColor="#ddd" />}
             />
             <Tooltip title="保存当前的 FlinkSql">
             <Button
@@ -173,11 +177,11 @@ const StudioMenu = (props: any) => {
             <Divider type="vertical" />
             <Button
               type="text"
-              icon={<SafetyCertificateTwoTone />}
+              icon={<SafetyCertificateTwoTone twoToneColor="#ddd" />}
             />
             <Button
               type="text"
-              icon={<FlagTwoTone />}
+              icon={<FlagTwoTone twoToneColor="#ddd" />}
             />
             <Tooltip title="执行当前的 FlinkSql">
             <Button
@@ -201,11 +205,11 @@ const StudioMenu = (props: any) => {
               okText="停止"
               cancelText="取消"
             >
-              <Tooltip title="停止所有的 FlinkSql 任务">
+              <Tooltip title="停止所有的 FlinkSql 任务，暂不可用">
                 {/*<Badge size="small" count={1} offset={[-5, 5]}>*/}
             <Button
               type="text"
-              icon={<PauseCircleTwoTone />}
+              icon={<PauseCircleTwoTone twoToneColor="#ddd" />}
             />
                 {/*</Badge>*/}
               </Tooltip>
@@ -213,15 +217,15 @@ const StudioMenu = (props: any) => {
             <Divider type="vertical" />
             <Button
               type="text"
-              icon={<DiffTwoTone />}
+              icon={<DiffTwoTone twoToneColor="#ddd" />}
             />
             <Button
               type="text"
-              icon={<CopyTwoTone />}
+              icon={<CopyTwoTone twoToneColor="#ddd" />}
             />
             <Button
               type="text"
-              icon={<DeleteTwoTone />}
+              icon={<DeleteTwoTone twoToneColor="#ddd" />}
             />
           </Col>
         </Row>

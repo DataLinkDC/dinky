@@ -19,7 +19,7 @@ import java.util.concurrent.*;
 /**
  * 定制TableResultImpl
  * @author  wenmo
- * @since  2021/5/25
+ * @since  2021/6/7 22:06
  **/
 @Internal
 class CustomTableResultImpl implements TableResult {
