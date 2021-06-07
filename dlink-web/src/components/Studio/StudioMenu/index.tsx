@@ -157,11 +157,11 @@ const StudioMenu = (props: any) => {
           <Col span={8} offset={8}>
             <Button
               type="text"
-              icon={<FileAddTwoTone />}
+              icon={<FileAddTwoTone twoToneColor="#ddd" />}
             />
             <Button
               type="text"
-              icon={<FolderOpenTwoTone />}
+              icon={<FolderOpenTwoTone twoToneColor="#ddd" />}
             />
             <Tooltip title="保存当前的 FlinkSql">
             <Button
@@ -173,11 +173,11 @@ const StudioMenu = (props: any) => {
             <Divider type="vertical" />
             <Button
               type="text"
-              icon={<SafetyCertificateTwoTone />}
+              icon={<SafetyCertificateTwoTone twoToneColor="#ddd" />}
             />
             <Button
               type="text"
-              icon={<FlagTwoTone />}
+              icon={<FlagTwoTone twoToneColor="#ddd" />}
             />
             <Tooltip title="执行当前的 FlinkSql">
             <Button
@@ -201,11 +201,11 @@ const StudioMenu = (props: any) => {
               okText="停止"
               cancelText="取消"
             >
-              <Tooltip title="停止所有的 FlinkSql 任务">
+              <Tooltip title="停止所有的 FlinkSql 任务，暂不可用">
                 {/*<Badge size="small" count={1} offset={[-5, 5]}>*/}
             <Button
               type="text"
-              icon={<PauseCircleTwoTone />}
+              icon={<PauseCircleTwoTone twoToneColor="#ddd" />}
             />
                 {/*</Badge>*/}
               </Tooltip>
@@ -213,15 +213,15 @@ const StudioMenu = (props: any) => {
             <Divider type="vertical" />
             <Button
               type="text"
-              icon={<DiffTwoTone />}
+              icon={<DiffTwoTone twoToneColor="#ddd" />}
             />
             <Button
               type="text"
-              icon={<CopyTwoTone />}
+              icon={<CopyTwoTone twoToneColor="#ddd" />}
             />
             <Button
               type="text"
-              icon={<DeleteTwoTone />}
+              icon={<DeleteTwoTone twoToneColor="#ddd" />}
             />
           </Col>
         </Row>

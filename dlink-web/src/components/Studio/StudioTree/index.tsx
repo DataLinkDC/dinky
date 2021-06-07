@@ -265,6 +265,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       payload: e.node.path,
     });
     setRightClickNodeTreeItem(null);
+    toOpen(e.node);
   };
 
   return (

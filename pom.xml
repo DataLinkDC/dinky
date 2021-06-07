@@ -11,7 +11,8 @@
     <modules>
         <module>dlink-core</module>
         <module>dlink-admin</module>
-        <module>dlink-connector</module>
+        <module>dlink-connectors</module>
+        <module>dlink-client</module>
     </modules>
 
     <properties>
@@ -123,7 +124,12 @@
             </dependency>
             <dependency>
                 <groupId>com.dlink</groupId>
-                <artifactId>dlink-connector</artifactId>
+                <artifactId>dlink-client-1.12</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-connector-jdbc</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

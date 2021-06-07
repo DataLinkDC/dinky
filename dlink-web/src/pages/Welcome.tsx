@@ -112,6 +112,28 @@ export default (): React.ReactNode => {
               </ul>
             </Paragraph>
           </Timeline.Item>
+          <Timeline.Item><Text code>0.1.1</Text> <Text type="secondary">2021-06-08</Text>
+            <p> </p>
+            <Paragraph>
+              <ul>
+                <li>
+                  <Link href="">FlinkSql Studio 代码底层架构优化</Link>
+                </li>
+                <li>
+                  <Link href="">支持以 SPI 的方式扩展任意 Connector，同 Flink 官网</Link>
+                </li>
+                <li>
+                  <Link href="">提供了 dlink-connector-jdbc，额外支持 Oracle 和 ClickHouse 读写，该扩展包可直接上传 Flink 集群的 lib 进行远程使用，无需重新编译</Link>
+                </li>
+                <li>
+                  <Link href="">提供了 dlink-client-1.12，支持 Flink 1.12.0+ 多集群的远程使用与本地隔离使用，1.10、1.11 和 1.13 集群可能存在问题</Link>
+                </li>
+                <li>
+                  <Link href="">对 Studio 界面进行了一定的提示优化</Link>
+                </li>
+              </ul>
+            </Paragraph>
+          </Timeline.Item>
         </Timeline>
       </Card>
     </PageContainer>

@@ -110,8 +110,8 @@ public class JobManager {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            StackTraceElement[] trace = e.getCause().getStackTrace();
-            /*StringBuffer resMsg = new StringBuffer("");
+            /*StackTraceElement[] trace = e.getStackTrace();
+            StringBuffer resMsg = new StringBuffer("");
             for (StackTraceElement s : trace) {
                 resMsg.append(" \n " + s + "  ");
             }*/
@@ -165,8 +165,8 @@ public class JobManager {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            StackTraceElement[] trace = e.getStackTrace();
-            /*StringBuilder resMsg = new StringBuilder();
+            /*StackTraceElement[] trace = e.getStackTrace();
+            StringBuilder resMsg = new StringBuilder();
             for (StackTraceElement s : trace) {
                 resMsg.append(" \n " + s + "  ");
             }*/

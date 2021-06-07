@@ -74,10 +74,6 @@
             <groupId>com.dlink</groupId>
             <artifactId>dlink-core</artifactId>
         </dependency>
-        <!--<dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-connector</artifactId>
-        </dependency>-->
     </dependencies>
     <build>
         <plugins>
