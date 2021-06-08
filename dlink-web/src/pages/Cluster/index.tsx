@@ -137,7 +137,7 @@ const ClusterTableList: React.FC<{}> = () => {
       hideInTable: true,
     },
     {
-      title: 'TMHost',
+      title: 'JMHost',
       sorter: true,
       dataIndex: 'jobManagerHost',
       hideInForm: true,
