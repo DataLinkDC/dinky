@@ -260,12 +260,14 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
   };
 
   const onSelect = (selectedKeys:[], e:any) => {
-    dispatch({
-      type: "Studio/saveCurrentPath",
-      payload: e.node.path,
-    });
+    if(e.node.isLeaf) {
+      dispatch({
+        type: "Studio/saveCurrentPath",
+        payload: e.node.path,
+      });
+      toOpen(e.node);
+    }
     setRightClickNodeTreeItem(null);
-    toOpen(e.node);
   };
 
   return (

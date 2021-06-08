@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class RunResult {
     private String sessionId;
     private String jobId;
+    private String jobName;
     private String statement;
     private String flinkHost;
     private Integer flinkPort;
@@ -27,12 +28,21 @@ public class RunResult {
     public RunResult() {
     }
 
-    public RunResult(String sessionId, String statement, String flinkHost, Integer flinkPort,ExecutorSetting setting) {
+    public RunResult(String sessionId, String statement, String flinkHost, Integer flinkPort,ExecutorSetting setting,String jobName) {
         this.sessionId = sessionId;
         this.statement = statement;
         this.flinkHost = flinkHost;
         this.flinkPort = flinkPort;
         this.setting = setting;
+        this.jobName = jobName;
+    }
+
+    public String getJobName() {
+        return jobName;
+    }
+
+    public void setJobName(String jobName) {
+        this.jobName = jobName;
     }
 
     public String getJobId() {

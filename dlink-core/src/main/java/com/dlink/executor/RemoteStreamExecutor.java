@@ -39,6 +39,9 @@ public class RemoteStreamExecutor extends Executor {
             if(stEnvironment == null){
                 stEnvironment = CustomTableEnvironmentImpl.create(environment);
             }
+            if(executorSetting.getJobName()!=null&&!"".equals(executorSetting.getJobName())){
+                stEnvironment.getConfig().getConfiguration().setString("pipeline.name", executorSetting.getJobName());
+            }
             if(executorSetting.isUseSqlFragment()){
                 stEnvironment.useSqlFragment();
             }else{

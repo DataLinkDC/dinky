@@ -19,7 +19,7 @@ start() {
 	pid=`ps -ef | grep $JAR_NAME | grep -v grep | awk '{print $2}'`
         # -z 表示如果$pid为空时执行
 	if [ -z $pid ]; then
-        nohup java $SETTING -jar -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M $JAR_NAME > /dev/null 2>&1 &
+        nohup java $SETTING -jar -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M $JAR_NAME > dlink.log 2>&1 &
         pid=`ps -ef | grep $JAR_NAME | grep -v grep | awk '{print $2}'`
 		echo ""
         echo "Service ${JAR_NAME} is starting！pid=${pid}"

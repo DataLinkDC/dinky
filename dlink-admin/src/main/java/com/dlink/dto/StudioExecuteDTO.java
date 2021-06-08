@@ -20,4 +20,5 @@ public class StudioExecuteDTO {
     private Integer maxRowNum=100;
     private boolean fragment=false;
     private String savePointPath;
+    private String jobName;
 }

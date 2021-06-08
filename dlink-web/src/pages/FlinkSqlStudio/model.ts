@@ -111,6 +111,7 @@ const Model: ModelType = {
         clusterId: '0',
         maxRowNum: 100,
         session:'admin',
+        alias:'草稿',
       },
       console:{
         result:[],
@@ -134,6 +135,7 @@ const Model: ModelType = {
           clusterId: '0',
           session:'admin',
           maxRowNum: 100,
+          alias:'草稿',
         },
         console:{
           result:[],

@@ -41,11 +41,11 @@ public class Task extends SuperEntity{
     private String statement;
 
     public ExecutorSetting getLocalExecutorSetting(){
-        return new ExecutorSetting(Executor.LOCAL,checkPoint,parallelism,fragment,savePointPath);
+        return new ExecutorSetting(Executor.LOCAL,checkPoint,parallelism,fragment,savePointPath,alias);
     }
 
     public ExecutorSetting getRemoteExecutorSetting(){
-        return new ExecutorSetting(Executor.REMOTE,checkPoint,parallelism,fragment,savePointPath);
+        return new ExecutorSetting(Executor.REMOTE,checkPoint,parallelism,fragment,savePointPath,alias);
     }
 
 
