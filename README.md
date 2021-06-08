@@ -154,15 +154,10 @@ npm run build
 
 前端打包后的 dlink-web/dist 目录下的内容放到  dlink-admin 的 static 下或者使用 Nginx 代理。
 
-#### 后台编译
+#### 后台编译打包
 
-打包所有模块
 ```shell
 maven clean install -Dmaven.test.skip=true
-```
-打包Client模块，dlink-client目录下
-```shell
-maven assembly:assembly
 ```
 
 #### 扩展Connector
@@ -261,7 +256,7 @@ QQ社区群：**543709668**，申请备注 “ Dlink ”，不写不批哦
 
 > 首页
 
-![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTo5cwuZy7GSLibw5J7Lx6cicxiaq9zE4rRqczh3Xjt7YLZohOmTqbDytj1K8qmrjmjcRuyRzdWD9opeA/0?wx_fmt=png)
+![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTq1s1uxJic1HAhphuR655hQ6eLXSIVvU55qYtZKB3WgMCNaX75jwnKSEet2IEIfyWRX9032ib9vqjibA/0?wx_fmt=png)
 
 > Studio 执行信息
 

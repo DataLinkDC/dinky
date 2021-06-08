@@ -38,6 +38,7 @@ const StudioMenu = (props: any) => {
       maxRowNum:current.task.maxRowNum,
       fragment:current.task.fragemnt,
       savePointPath:current.task.savePointPath,
+      jobName:current.task.alias,
     };
     const key = current.key;
     const taskKey = (Math.random()*1000)+'';
@@ -69,7 +70,7 @@ const StudioMenu = (props: any) => {
     })
   };
 
-  const submit=()=>{
+  const submit= () =>{
     if(!current.task.id){
       message.error(`草稿【${current.title}】无法被提交，请创建或选择有效作业进行提交`);
       return false;
