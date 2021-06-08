@@ -20,7 +20,7 @@ export default (): React.ReactNode => {
         <Alert
           message={intl.formatMessage({
             id: 'pages.welcome.alertMessage',
-            defaultMessage: '更快更强的重型组件，已经发布。',
+            defaultMessage: '实时计算平台 Dlink & Apache Flink 即将发布，目前为体验版，版本号为 0.2.0。',
           })}
           type="success"
           showIcon
@@ -62,7 +62,7 @@ export default (): React.ReactNode => {
         </Typography.Text>
         </Paragraph>
         <p> </p>
-        <Timeline pending={<><Text code>0.2.0</Text>
+        <Timeline pending={<><Text code>0.3.0</Text>
           <Text type="secondary">敬请期待</Text>
           <p> </p>
           <Paragraph>
@@ -112,12 +112,12 @@ export default (): React.ReactNode => {
               </ul>
             </Paragraph>
           </Timeline.Item>
-          <Timeline.Item><Text code>0.1.1</Text> <Text type="secondary">2021-06-08</Text>
+          <Timeline.Item><Text code>0.2.0</Text> <Text type="secondary">2021-06-08</Text>
             <p> </p>
             <Paragraph>
               <ul>
                 <li>
-                  <Link href="">FlinkSql Studio 代码底层架构优化</Link>
+                  <Link href="">FlinkSql Studio 代码底层架构进行大优化</Link>
                 </li>
                 <li>
                   <Link href="">支持以 SPI 的方式扩展任意 Connector，同 Flink 官网</Link>
@@ -127,6 +127,15 @@ export default (): React.ReactNode => {
                 </li>
                 <li>
                   <Link href="">提供了 dlink-client-1.12，支持 Flink 1.12.0+ 多集群的远程使用与本地隔离使用，1.10、1.11 和 1.13 集群可能存在问题</Link>
+                </li>
+                <li>
+                  <Link href="">优化了 FlinkSQL 执行与提交到远程集群的任务名，默认为作业的中文别名</Link>
+                </li>
+                <li>
+                  <Link href="">优化了目录的操作，点击节点即可打开作业，无须右键打开</Link>
+                </li>
+                <li>
+                  <Link href="">优化了执行结果信息，添加了任务名的展示</Link>
                 </li>
                 <li>
                   <Link href="">对 Studio 界面进行了一定的提示优化</Link>

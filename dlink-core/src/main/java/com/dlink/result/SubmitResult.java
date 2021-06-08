@@ -13,6 +13,8 @@ public class SubmitResult {
     private String sessionId;
     private List<String> statements;
     private String flinkHost;
+    private String jobId;
+    private String jobName;
     private boolean success;
     private long time;
     private LocalDateTime finishDate;
@@ -32,10 +34,11 @@ public class SubmitResult {
         this.error = error;
     }
 
-    public SubmitResult(String sessionId, List<String> statements, String flinkHost) {
+    public SubmitResult(String sessionId, List<String> statements, String flinkHost,String jobName) {
         this.sessionId = sessionId;
         this.statements = statements;
         this.flinkHost = flinkHost;
+        this.jobName = jobName;
     }
 
     public String getSessionId() {
@@ -108,5 +111,21 @@ public class SubmitResult {
 
     public void setResult(IResult result) {
         this.result = result;
+    }
+
+    public String getJobId() {
+        return jobId;
+    }
+
+    public void setJobId(String jobId) {
+        this.jobId = jobId;
+    }
+
+    public String getJobName() {
+        return jobName;
+    }
+
+    public void setJobName(String jobName) {
+        this.jobName = jobName;
     }
 }

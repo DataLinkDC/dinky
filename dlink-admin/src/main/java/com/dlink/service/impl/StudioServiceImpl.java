@@ -50,7 +50,7 @@ public class StudioServiceImpl implements StudioService {
         JobManager jobManager = new JobManager(host,studioExecuteDTO.getSession(),studioExecuteDTO.getMaxRowNum());
         return jobManager.execute(studioExecuteDTO.getStatement(), new ExecutorSetting(
                 ExecuteType,studioExecuteDTO.getCheckPoint(),studioExecuteDTO.getParallelism(),
-                studioExecuteDTO.isFragment(),studioExecuteDTO.getSavePointPath()));
+                studioExecuteDTO.isFragment(),studioExecuteDTO.getSavePointPath(),studioExecuteDTO.getJobName()));
     }
 
     @Override

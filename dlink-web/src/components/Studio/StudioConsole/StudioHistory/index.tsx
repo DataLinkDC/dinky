@@ -19,6 +19,7 @@ const StudioHistory = (props:any) => {
             {!item.success ? <><Badge status="error"/><Text type="danger">Error</Text></> :
               <><Badge status="success"/><Text type="success">Success</Text></>}
             <Divider type="vertical" />
+            {item.jobName&&<Text code>{item.jobName}</Text>}
             {item.jobId&&<Text code>{item.jobId}</Text>}
             <Text keyboard>{item.time}ms</Text></blockquote>
           {item.statement && (<pre style={{height:'40px'}}>{item.statement}</pre>)}

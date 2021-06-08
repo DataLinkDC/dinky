@@ -93,7 +93,7 @@ DataLink 开源项目及社区正在建设，希望本项目可以帮助你更�
 
 ### 最新版本
 
-dlink-0.1.0
+dlink-0.2.0
 
 ### 从安装包开始
 
@@ -108,10 +108,10 @@ lib/ -- 外部依赖及Connector
 |- flink-json-1.12.4.jar
 |- mysql-connector-java-8.0.21.jar
 |- ojdbc6-11.2.0.3.jar
-|- slf4j-api-1.7.30.jar -- 必需
-sql/ --Mysql初始化脚本
-|- auto.sh --启动停止脚本
-|- dlink-admin.jar --程序包
+sql/ 
+|- dlink.sql --Mysql初始化脚本
+auto.sh --启动停止脚本
+dlink-admin.jar --程序包
 ```
 
 解压后结构如上所示，修改配置文件内容。
@@ -140,6 +140,9 @@ dlink -- 父项目
 | |-dlink-connector-jdbc -- Jdbc 扩展
 |-dlink-core -- 执行中心
 |-dlink-doc -- 文档
+| |-bin -- 启动脚本
+| |-config -- 配置文件
+| |-sql -- sql脚本
 |-dlink-web -- React 前端
 ```
 
@@ -153,8 +156,13 @@ npm run build
 
 #### 后台编译
 
+打包所有模块
 ```shell
 maven clean install -Dmaven.test.skip=true
+```
+打包Client模块，dlink-client目录下
+```shell
+maven assembly:assembly
 ```
 
 #### 扩展Connector

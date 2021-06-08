@@ -31,6 +31,9 @@ public class JobManager {
     private String sessionId;
     private Integer maxRowNum = 100;
 
+    public JobManager() {
+    }
+
     public JobManager(String host) {
         if(host!=null) {
             String[] strs = host.split(":");
@@ -72,7 +75,7 @@ public class JobManager {
     }
 
     public RunResult execute(String statement,ExecutorSetting executorSetting) {
-        RunResult runResult = new RunResult(sessionId, statement, flinkHost,port,executorSetting);
+        RunResult runResult = new RunResult(sessionId, statement, flinkHost,port,executorSetting,executorSetting.getJobName());
         Executor executor = null;
         ExecutorEntity executorEntity = SessionPool.get(sessionId);
         if (executorEntity != null) {
@@ -125,21 +128,24 @@ public class JobManager {
         return runResult;
     }
 
-    public SubmitResult submit(String statement, ExecutorSetting executerSetting) {
+    public SubmitResult submit(String statement, ExecutorSetting executorSetting) {
         if(statement==null||"".equals(statement)){
             return SubmitResult.error("FlinkSql语句不存在");
         }
         String [] statements = statement.split(FlinkSQLConstant.SEPARATOR);
-        return submit(Arrays.asList(statements),executerSetting);
+        return submit(Arrays.asList(statements),executorSetting);
     }
 
-    public SubmitResult submit(List<String> sqlList, ExecutorSetting executerSetting) {
-        SubmitResult result = new SubmitResult(sessionId,sqlList,flinkHost);
-        Map<String, String> map = new HashMap<>();
+    public SubmitResult submit(List<String> sqlList, ExecutorSetting executorSetting) {
+        SubmitResult result = new SubmitResult(sessionId,sqlList,flinkHost,executorSetting.getJobName());
         int currentIndex = 0;
         try {
             if (sqlList != null && sqlList.size() > 0) {
-                Executor executor = Executor.build(new EnvironmentSetting(flinkHost, port), executerSetting);
+                EnvironmentSetting environmentSetting = null;
+                if(executorSetting.isRemote()) {
+                    environmentSetting = new EnvironmentSetting(flinkHost, port);
+                }
+                Executor executor = Executor.build(environmentSetting, executorSetting);
                 for (String sqlText : sqlList) {
                     currentIndex++;
                     String operationType = Operations.getOperationType(sqlText);
@@ -154,6 +160,7 @@ public class JobManager {
                         result.setFinishDate(LocalDateTime.now());
                         InsertResult insertResult = new InsertResult(sqlText,(jobID == null ? "" : jobID.toHexString()),true,timeElapsed,LocalDateTime.now());
                         result.setResult(insertResult);
+                        result.setJobId((jobID == null ? "" : jobID.toHexString()));
                     } else {
                         executor.executeSql(sqlText);
                     }
@@ -173,7 +180,7 @@ public class JobManager {
             result.setSuccess(false);
 //            result.setError(LocalDateTime.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage());
 //            result.setError(LocalDateTime.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage() + "\n >>>堆栈信息<<<" + resMsg.toString());
-            result.setError(LocalDateTime.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage() + "\n >>>异常原因<<< \n" + e.getCause().toString());
+            result.setError(LocalDateTime.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage() + "\n >>>异常原因<<< \n" + e.toString());
             return result;
 
         }

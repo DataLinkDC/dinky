@@ -33,6 +33,9 @@ public class LocalStreamExecutor extends Executor {
             environment.setParallelism(executorSetting.getParallelism());
         }
         stEnvironment = CustomTableEnvironmentImpl.create(environment);
+        if(executorSetting.getJobName()!=null&&!"".equals(executorSetting.getJobName())){
+            stEnvironment.getConfig().getConfiguration().setString("pipeline.name", executorSetting.getJobName());
+        }
         if(executorSetting.isUseSqlFragment()){
             stEnvironment.useSqlFragment();
         }else{

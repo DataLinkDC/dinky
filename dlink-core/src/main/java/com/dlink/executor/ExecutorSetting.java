@@ -12,6 +12,7 @@ public class ExecutorSetting {
     private Integer parallelism;
     private boolean useSqlFragment;
     private String savePointPath;
+    private String jobName;
 
     public ExecutorSetting(String type) {
         this.type = type;
@@ -26,6 +27,15 @@ public class ExecutorSetting {
         this.type = type;
         this.checkpoint = checkpoint;
         this.useSqlFragment = useSqlFragment;
+    }
+
+    public ExecutorSetting(String type, Integer checkpoint, Integer parallelism, boolean useSqlFragment, String savePointPath,String jobName) {
+        this.type = type;
+        this.checkpoint = checkpoint;
+        this.parallelism = parallelism;
+        this.useSqlFragment = useSqlFragment;
+        this.savePointPath = savePointPath;
+        this.jobName = jobName;
     }
 
     public ExecutorSetting(String type, Integer checkpoint, Integer parallelism, boolean useSqlFragment, String savePointPath) {
@@ -78,5 +88,13 @@ public class ExecutorSetting {
 
     public void setSavePointPath(String savePointPath) {
         this.savePointPath = savePointPath;
+    }
+
+    public String getJobName() {
+        return jobName;
+    }
+
+    public void setJobName(String jobName) {
+        this.jobName = jobName;
     }
 }
