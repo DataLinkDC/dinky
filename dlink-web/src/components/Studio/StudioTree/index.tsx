@@ -15,7 +15,12 @@ const { DirectoryTree } = Tree;
 
 const {Search} = Input;
 
-type StudioTreeProps = {};
+type StudioTreeProps = {
+  rightClickMenu:StateType['rightClickMenu'];
+  dispatch:any;
+  tabs:StateType['tabs'];
+  current:StateType['current'];
+};
 
 type RightClickMenu = {
   pageX: number,
@@ -44,7 +49,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
   const [treeData, setTreeData] = useState<TreeDataNode[]>();
   const [dataList, setDataList] = useState<[]>();
   const [rightClickNodeTreeItem,setRightClickNodeTreeItem] = useState<RightClickMenu>();
-  const {currentPath,dispatch,tabs} = props;
+  const {rightClickMenu,dispatch,tabs} = props;
   const [updateCatalogueModalVisible, handleUpdateCatalogueModalVisible] = useState<boolean>(false);
   const [updateTaskModalVisible, handleUpdateTaskModalVisible] = useState<boolean>(false);
   const [isCreate, setIsCreate] = useState<boolean>(true);
@@ -74,7 +79,6 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
   };
 
   const handleMenuClick=(key:string)=>{
-    setRightClickNodeTreeItem(null);
     if(key=='Open'){
       toOpen(rightClickNode);
     }else if(key=='Submit'){
@@ -109,6 +113,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
           key: node.taskId,
           value:(result.datas.statement?result.datas.statement:''),
           closable: true,
+          path: node.path,
           task:{
             session:'admin',
             maxRowNum: 100,
@@ -200,8 +205,8 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       position: 'absolute',
       // left: `${pageX - 50}px`,
       // top: `${pageY - 202}px`,
-      left: `${pageX - 30}px`,
-      top: `${pageY - 152}px`,
+      left: `${pageX - 25}px`,
+      top: `${pageY - 140}px`,
     };
     let menuItems;
     if(rightClickNode&&rightClickNode.isLeaf){
@@ -216,6 +221,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
         <Menu.Item key='CreateCatalogue'>{'创建目录'}</Menu.Item>
         <Menu.Item key='CreateTask'>{'创建作业'}</Menu.Item>
         <Menu.Item key='Rename'>{'重命名'}</Menu.Item>
+        <Menu.Item disabled>{'删除'}</Menu.Item>
       </>)
     }else{
       menuItems=(<>
@@ -234,7 +240,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
         {menuItems}
       </Menu>
     );
-    return (rightClickNodeTreeItem == null) ? '' : menu;
+    return rightClickMenu? menu: '';
   };
 
   const getEmpty = () =>{
@@ -257,6 +263,10 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       id: e.node.id,
       categoryName: e.node.name
     });
+    dispatch&&dispatch({
+      type: "Studio/showRightClickMenu",
+      payload: true,
+    });
   };
 
   const onSelect = (selectedKeys:[], e:any) => {
@@ -267,7 +277,6 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       });
       toOpen(e.node);
     }
-    setRightClickNodeTreeItem(null);
   };
 
   return (
@@ -329,4 +338,5 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
 export default connect(({Studio}: { Studio: StateType }) => ({
   currentPath:Studio.currentPath,
   tabs: Studio.tabs,
+  rightClickMenu: Studio.rightClickMenu,
 }))(StudioTree);

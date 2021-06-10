@@ -16,3 +16,41 @@
 .card{
   background-color: #ffffff;
 }
+
+:global {
+
+  /* --- card 内偏移样式 --- start */
+  #studio_card > .ant-card-body {
+    padding: 0px;
+  }
+  /* --- card 内偏移样式 --- start */
+
+
+}
+
+/* --- tabs 垂直样式 --- start */
+.vertical-tabs{
+  :global {
+    .ant-tabs-left>.ant-tabs-nav, .ant-tabs-right>.ant-tabs-nav, .ant-tabs-left>div>.ant-tabs-nav, .ant-tabs-right>div>.ant-tabs-nav {
+      min-width: 20px;
+    }
+
+    .ant-tabs-left>.ant-tabs-nav .ant-tabs-tab, .ant-tabs-right>.ant-tabs-nav .ant-tabs-tab, .ant-tabs-left>div>.ant-tabs-nav .ant-tabs-tab, .ant-tabs-right>div>.ant-tabs-nav .ant-tabs-tab {
+      padding: 5px 5px;
+    }
+
+    .ant-tabs-tab-btn {
+      writing-mode: vertical-lr;
+    }
+
+    .ant-tabs-tab .anticon {
+      margin-right: 0;
+    }
+
+    .anticon {
+      vertical-align: 0;
+    }
+  }
+}
+/* --- tabs 垂直样式 --- end */
+

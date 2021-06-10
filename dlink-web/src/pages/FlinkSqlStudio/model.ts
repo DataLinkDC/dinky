@@ -47,6 +47,7 @@ export type TabsItemType = {
   key: number ,
   value:string;
   closable: boolean;
+  path: string[];
   task?:TaskType;
   console:ConsoleType;
 }
@@ -56,6 +57,12 @@ export type TabsType = {
   panes?: TabsItemType[];
 }
 
+export type RightClickMenu = {
+  pageX: number,
+  pageY: number,
+  id: number,
+  name: string
+};
 export type StateType = {
   cluster?:ClusterType[];
   current: TabsItemType;
@@ -64,6 +71,7 @@ export type StateType = {
   currentPath?: string[];
   tabs:TabsType;
   session:string[];
+  rightClickMenu?:boolean;
 };
 
 export type ModelType = {
@@ -80,6 +88,7 @@ export type ModelType = {
     changeActiveKey: Reducer<StateType>;
     saveTaskData: Reducer<StateType>;
     saveSession: Reducer<StateType>;
+    showRightClickMenu: Reducer<StateType>;
   };
 };
 
@@ -103,6 +112,7 @@ const Model: ModelType = {
       key: 0 ,
       value:'',
       closable: false,
+      path: ['草稿'],
       task:{
         checkPoint: 0,
         savePointPath: '',
@@ -127,6 +137,7 @@ const Model: ModelType = {
         key: 0 ,
         value:'',
         closable: false,
+        path: ['草稿'],
         task:{
           checkPoint: 0,
           savePointPath: '',
@@ -143,6 +154,7 @@ const Model: ModelType = {
       }],
     },
     session:['admin'],
+    rightClickMenu:false
   },
 
   effects: {
@@ -224,6 +236,7 @@ const Model: ModelType = {
         tabs:{
           ...tabs,
         },
+        currentPath:newCurrent.path,
       };
     },
     saveTaskData(state, { payload }) {
@@ -251,6 +264,12 @@ const Model: ModelType = {
       return {
         ...state,
         session:newSession,
+      };
+    },
+    showRightClickMenu(state, { payload }) {
+      return {
+        ...state,
+        rightClickMenu:payload,
       };
     },
   },

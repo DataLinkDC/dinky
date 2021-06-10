@@ -16,7 +16,7 @@ const { TabPane } = Tabs;
 const StudioConsole = (props:any) => {
 
   return (
-    <Tabs defaultActiveKey="StudioMsg" size="small">
+    <Tabs defaultActiveKey="StudioMsg" size="small"  tabPosition="bottom" style={{ border: "1px solid #f0f0f0"}}>
       <TabPane
         tab={
           <span>

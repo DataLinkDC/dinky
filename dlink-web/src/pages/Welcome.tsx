@@ -143,6 +143,25 @@ export default (): React.ReactNode => {
               </ul>
             </Paragraph>
           </Timeline.Item>
+          <Timeline.Item><Text code>0.2.1</Text> <Text type="secondary">2021-06-11</Text>
+            <p> </p>
+            <Paragraph>
+              <ul>
+                <li>
+                  <Link href="">FlinkSql Studio 页面仿IDE设计改进</Link>
+                </li>
+                <li>
+                  <Link href="">解决了目录树右键菜单的不能任意点关闭问题</Link>
+                </li>
+                <li>
+                  <Link href="">解决了选项卡关闭不能正确刷新编辑器的问题</Link>
+                </li>
+                <li>
+                  <Link href="">解决了当前位置不根据选项卡刷新的问题</Link>
+                </li>
+              </ul>
+            </Paragraph>
+          </Timeline.Item>
         </Timeline>
       </Card>
     </PageContainer>
