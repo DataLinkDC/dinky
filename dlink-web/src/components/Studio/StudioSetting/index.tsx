@@ -1,7 +1,7 @@
 import {connect} from "umi";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
-import {Form, InputNumber,Input,Switch,Select,Tag,Row,Col,Divider} from "antd";
-import {InfoCircleOutlined,PlusOutlined} from "@ant-design/icons";
+import {Form, InputNumber,Input,Switch,Select,Tag,Row,Col,Divider,Tooltip,Button} from "antd";
+import {InfoCircleOutlined,PlusOutlined,MinusSquareOutlined} from "@ant-design/icons";
 import styles from "./index.less";
 import {useEffect, useState} from "react";
 
@@ -60,6 +60,19 @@ const StudioSetting = (props: any) => {
   };
   const localOption = (<><Tag color="default">Local</Tag>本地环境</>);
   return (
+    <>
+      <Row>
+        <Col span={24}>
+          <div style={{float: "right"}}>
+            <Tooltip title="最小化">
+              <Button
+                type="text"
+                icon={<MinusSquareOutlined />}
+              />
+            </Tooltip>
+          </div>
+        </Col>
+      </Row>
     <Form
       form={form}
       layout="vertical"
@@ -163,6 +176,7 @@ const StudioSetting = (props: any) => {
         </Col>
       </Row>
     </Form>
+      </>
   );
 };
 

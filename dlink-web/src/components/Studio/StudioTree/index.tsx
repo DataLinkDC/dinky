@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from "react";
 import {connect} from "umi";
-import  {DownOutlined, FrownFilled, FrownOutlined, MehOutlined, SmileOutlined} from "@ant-design/icons";
-import {Tree, Input, Menu, Empty, Button, message, Modal} from 'antd';
+import  {DownOutlined, SwitcherOutlined, FrownOutlined, MehOutlined, SmileOutlined,FolderAddOutlined} from "@ant-design/icons";
+import {Tree, Input, Menu, Empty, Button, message, Modal,Tooltip,Row,Col} from 'antd';
 import {getCatalogueTreeData} from "@/pages/FlinkSqlStudio/service";
 import {convertToTreeData, DataType, TreeDataNode} from "@/components/Studio/StudioTree/Function";
 import style from "./index.less";
@@ -48,6 +48,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
 
   const [treeData, setTreeData] = useState<TreeDataNode[]>();
   const [dataList, setDataList] = useState<[]>();
+  const [expandedKeys, setExpandedKeys] = useState<[]>();
   const [rightClickNodeTreeItem,setRightClickNodeTreeItem] = useState<RightClickMenu>();
   const {rightClickMenu,dispatch,tabs} = props;
   const [updateCatalogueModalVisible, handleUpdateCatalogueModalVisible] = useState<boolean>(false);
@@ -85,6 +86,8 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       toSubmit(rightClickNode);
     }else if(key=='CreateCatalogue'){
       createCatalogue(rightClickNode);
+    }else if(key=='CreateRootCatalogue'){
+      createRootCatalogue(rightClickNode);
     }else if(key=='CreateTask'){
       createTask(rightClickNode);
     }else if(key=='Rename'){
@@ -145,6 +148,16 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     }else{
       message.error('只能在目录上创建目录');
     }
+  };
+
+  const createRootCatalogue=()=>{
+    handleUpdateCatalogueModalVisible(true);
+    setIsCreate(true);
+    setCatalogueFormValues({
+      isLeaf: false,
+      parentId: 0,
+    });
+    getTreeData();
   };
 
   const toSubmit=(node:TreeDataNode)=>{
@@ -219,6 +232,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     }else if(rightClickNode&&rightClickNode.children&&rightClickNode.children.length>0){
       menuItems=(<>
         <Menu.Item key='CreateCatalogue'>{'创建目录'}</Menu.Item>
+        <Menu.Item key='CreateRootCatalogue'>{'创建根目录'}</Menu.Item>
         <Menu.Item key='CreateTask'>{'创建作业'}</Menu.Item>
         <Menu.Item key='Rename'>{'重命名'}</Menu.Item>
         <Menu.Item disabled>{'删除'}</Menu.Item>
@@ -279,15 +293,45 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     }
   };
 
+  const offExpandAll = ()=>{
+    setExpandedKeys([]);
+  };
+
+  const onExpand=(expandedKeys:[])=>{
+    setExpandedKeys(expandedKeys);
+  };
+
   return (
-    <div className={style.tree_div}>
-      <Search style={{marginBottom: 8}} placeholder="Search" onChange={onChange}/>
+    <div className={style.tree_div} >
+      <Row>
+        <Col span={24}>
+      <div style={{float: "right"}}>
+        <Tooltip title="创建根目录">
+          <Button
+          type="text"
+          icon={<FolderAddOutlined />}
+          onClick={createRootCatalogue}
+          />
+        </Tooltip>
+        <Tooltip title="折叠目录">
+          <Button
+          type="text"
+          icon={<SwitcherOutlined />}
+          onClick={offExpandAll}
+          />
+        </Tooltip>
+      </div>
+        </Col>
+      </Row>
+      {/*<Search style={{marginBottom: 8}} placeholder="Search" onChange={onChange}/>*/}
         <DirectoryTree
           multiple
           onRightClick={onRightClick}
           onSelect={onSelect}
           switcherIcon={<DownOutlined/>}
           treeData={treeData}
+          onExpand ={onExpand }
+          expandedKeys={expandedKeys}
         />
       {getNodeTreeRightClickMenu()}
       {getEmpty()}

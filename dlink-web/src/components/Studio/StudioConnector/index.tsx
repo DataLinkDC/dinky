@@ -1,4 +1,4 @@
-import {message, Input, Button, Space, Table,  Dropdown, Menu, Empty,Divider} from "antd";
+import {message, Input, Button, Space, Table,  Dropdown, Menu, Empty,Divider,Tooltip} from "antd";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
 import {useState} from "react";
@@ -200,21 +200,23 @@ const StudioConnector = (props:any) => {
 
   return (
     <>
-      <Space>
-      <Button
-      type="primary"
-      icon={<SearchOutlined />}
-      loading={loadings[0]}
-      onClick={() => getTables()}
-    />
-      <Button
-        danger
-        icon={<DeleteOutlined />}
-        loading={loadings[2]}
-        onClick={() => clearSession()}
-      />
-      </Space>
-      {tableData&&tableData.length>0?(<Table dataSource={tableData} columns={getColumns()} />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
+      <div style={{float: "right"}}>
+        <Tooltip title="刷新连接器">
+          <Button
+            type="text"
+            icon={<SearchOutlined />}
+            onClick={getTables}
+          />
+        </Tooltip>
+        <Tooltip title="清空连接器">
+          <Button
+            type="text"
+            icon={<DeleteOutlined />}
+            onClick={clearSession}
+          />
+        </Tooltip>
+      </div>
+      {tableData&&tableData.length>0?(<Table dataSource={tableData} columns={getColumns()} size="small" />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
     </>
   );
 };
