@@ -66,7 +66,7 @@ const Studio: React.FC<StudioProps> = (props) => {
               <TabPane tab={<span><FireOutlined /> 任务</span>} key="FlinkTask" >
                 <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
               </TabPane>
-              <TabPane tab={<span><FunctionOutlined /> 函数</span>} key="FlinkTask" >
+              <TabPane tab={<span><FunctionOutlined /> 函数</span>} key="Function" >
                 <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
               </TabPane>
             </Tabs>

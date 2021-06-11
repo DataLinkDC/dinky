@@ -21,7 +21,7 @@ interface IRightContent {
 
 const FlinkSqlEditor = (props:any) => {
   const {
-      height = '300px',
+      height = '100%',
       width = '100%',
       language = 'sql',
       onChange=(val: string, event: { changes: { text: any }[] })=>{},

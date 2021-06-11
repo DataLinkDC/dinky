@@ -2,15 +2,16 @@ import styles from "./index.less";
 import {Menu, Dropdown, Tooltip, Row, Col, Popconfirm, notification, Modal,message} from "antd";
 import {PauseCircleTwoTone, CopyTwoTone, DeleteTwoTone,PlayCircleTwoTone,DiffTwoTone,
   FileAddTwoTone,FolderOpenTwoTone,SafetyCertificateTwoTone,SaveTwoTone,FlagTwoTone,
-  EnvironmentOutlined,SmileOutlined,RocketTwoTone} from "@ant-design/icons";
+  EnvironmentOutlined,SmileOutlined,RocketTwoTone,QuestionCircleTwoTone} from "@ant-design/icons";
 import Space from "antd/es/space";
 import Divider from "antd/es/divider";
 import Button from "antd/es/button/button";
 import Breadcrumb from "antd/es/breadcrumb/Breadcrumb";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
-import {handleSubmit, postAll} from "@/components/Common/crud";
+import {handleSubmit, postDataArray} from "@/components/Common/crud";
 import {executeSql} from "@/pages/FlinkSqlStudio/service";
+import StudioHelp from "../StudioHelp";
 
 const menu = (
   <Menu>
@@ -52,6 +53,11 @@ const StudioMenu = (props: any) => {
     const result = executeSql(param);
     result.then(res=>{
       notification.close(taskKey);
+      if(res.datas.success){
+        message.success('执行成功');
+      }else{
+        message.success('执行失败');
+      }
       let newTabs = tabs;
       for(let i=0;i<newTabs.panes.length;i++){
         if(newTabs.panes[i].key==key){
@@ -75,16 +81,31 @@ const StudioMenu = (props: any) => {
       message.error(`草稿【${current.title}】无法被提交，请创建或选择有效作业进行提交`);
       return false;
     }
+    const taskKey = (Math.random()*1000)+'';
+
     Modal.confirm({
       title: '异步提交作业',
-      content: `确定异步提交作业【${current.task.alias}】到其配置的集群吗？`,
+      content: `确定异步提交作业【${current.task.alias}】到其配置的集群吗？请确认您的作业是否已经被保存！`,
       okText: '确认',
       cancelText: '取消',
       onOk:async () => {
         let task = {
           id:current.task.id,
         };
-        handleSubmit('/api/task/submit','异步提交作业',[task]);
+        notification.success({
+          message: `任务【${current.task.alias} 】正在异步提交`,
+          description: current.task.statement,
+          duration:null,
+          key:taskKey,
+          icon: <SmileOutlined style={{ color: '#108ee9' }} />,
+        });
+        const res = await postDataArray('/api/task/submit',[task.id]);
+          notification.close(taskKey);
+          if(res.datas[0].success){
+            message.success('异步提交成功');
+          }else{
+            message.success('异步提交失败');
+          }
       }
     });
   };
@@ -121,6 +142,16 @@ const StudioMenu = (props: any) => {
     return itemList;
   };
 
+  const showHelp=()=>{
+    Modal.info({
+      title: '使用帮助',
+      width:1000,
+      content: (
+        <StudioHelp />
+      ),
+      onOk() {},
+    });
+  };
   return (
     <Row className={styles.container}>
       <Col span={24}>
@@ -168,7 +199,7 @@ const StudioMenu = (props: any) => {
               type="text"
               icon={<FolderOpenTwoTone twoToneColor="#ddd" />}
             />
-            <Tooltip title="保存当前的 FlinkSql">
+            <Tooltip title="保存当前的 FlinkSql 及配置">
             <Button
               type="text"
               icon={<SaveTwoTone />}
@@ -228,6 +259,13 @@ const StudioMenu = (props: any) => {
               type="text"
               icon={<DeleteTwoTone twoToneColor="#ddd" />}
             />
+            <Tooltip title="查看使用帮助">
+              <Button
+                type="text"
+                icon={<QuestionCircleTwoTone />}
+                onClick={showHelp}
+              />
+            </Tooltip>
           </Col>
         </Row>
       </Col>

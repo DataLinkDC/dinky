@@ -20,7 +20,7 @@ export default (): React.ReactNode => {
         <Alert
           message={intl.formatMessage({
             id: 'pages.welcome.alertMessage',
-            defaultMessage: '实时计算平台 Dlink & Apache Flink 即将发布，目前为体验版，版本号为 0.2.0。',
+            defaultMessage: '实时计算平台 Dlink & Apache Flink 即将发布，目前为体验版，版本号为 0.2.1。',
           })}
           type="success"
           showIcon
@@ -148,7 +148,7 @@ export default (): React.ReactNode => {
             <Paragraph>
               <ul>
                 <li>
-                  <Link href="">FlinkSql Studio 页面仿IDE设计改进</Link>
+                  <Link href="">FlinkSql Studio 页面仿IDE紧凑型设计改进</Link>
                 </li>
                 <li>
                   <Link href="">解决了目录树右键菜单的不能任意点关闭问题</Link>
@@ -158,6 +158,21 @@ export default (): React.ReactNode => {
                 </li>
                 <li>
                   <Link href="">解决了当前位置不根据选项卡刷新的问题</Link>
+                </li>
+                <li>
+                  <Link href="">增加了目录树非空文件夹的灰色删除按钮</Link>
+                </li>
+                <li>
+                  <Link href="">增加了目录树创建根目录按钮以及折叠按钮</Link>
+                </li>
+                <li>
+                  <Link href="">优化了连接器刷新与清空按钮</Link>
+                </li>
+                <li>
+                  <Link href="">优化了作业异步提交的提示</Link>
+                </li>
+                <li>
+                  <Link href="">增加了简易的使用帮助</Link>
                 </li>
               </ul>
             </Paragraph>

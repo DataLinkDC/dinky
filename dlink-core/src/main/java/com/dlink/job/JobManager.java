@@ -113,16 +113,16 @@ public class JobManager {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            /*StackTraceElement[] trace = e.getStackTrace();
+            StackTraceElement[] trace = e.getStackTrace();
             StringBuffer resMsg = new StringBuffer("");
             for (StackTraceElement s : trace) {
                 resMsg.append(" \n " + s + "  ");
-            }*/
+            }
             runResult.setFinishDate(LocalDateTime.now());
             runResult.setSuccess(false);
 //            runResult.setError(LocalDateTime.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage());
-//            runResult.setError(LocalDateTime.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage() + " \n >>>堆栈信息<<<" + resMsg.toString());
-            runResult.setError(LocalDateTime.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage() + "\n >>>异常原因<<< \n" + e.getCause().toString());
+            runResult.setError(LocalDateTime.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage() + " \n >>>堆栈信息<<<" + resMsg.toString());
+//            runResult.setError(LocalDateTime.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage() + "\n >>>异常原因<<< \n" + e.getCause().toString());
             return runResult;
         }
         return runResult;
@@ -172,15 +172,15 @@ public class JobManager {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            /*StackTraceElement[] trace = e.getStackTrace();
+            StackTraceElement[] trace = e.getStackTrace();
             StringBuilder resMsg = new StringBuilder();
             for (StackTraceElement s : trace) {
                 resMsg.append(" \n " + s + "  ");
-            }*/
+            }
             result.setSuccess(false);
 //            result.setError(LocalDateTime.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage());
-//            result.setError(LocalDateTime.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage() + "\n >>>堆栈信息<<<" + resMsg.toString());
-            result.setError(LocalDateTime.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage() + "\n >>>异常原因<<< \n" + e.toString());
+            result.setError(LocalDateTime.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage() + "\n >>>堆栈信息<<<" + resMsg.toString());
+//            result.setError(LocalDateTime.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage() + "\n >>>异常原因<<< \n" + e.toString());
             return result;
 
         }
