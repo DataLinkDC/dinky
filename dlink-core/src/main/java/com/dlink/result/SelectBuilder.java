@@ -38,10 +38,11 @@ public class SelectBuilder extends AbstractBuilder implements ResultBuilder {
                 return new String[x$0];
             });
         }
-        long numRows;
+        long numRows = 0L;
         List<Map<String,Object>> rows = new ArrayList<>();
         Iterator<Row> it = tableResult.collect();
-        for (numRows = 0L; it.hasNext() ; ++numRows) {
+        while(it.hasNext()){
+//        for (numRows = 0L; it.hasNext() ; ++numRows) {
             if (numRows < maxRowNum) {
                 String[] cols = rowToString((Row) it.next());
                 Map<String,Object> row = new HashMap<>();
@@ -56,8 +57,10 @@ public class SelectBuilder extends AbstractBuilder implements ResultBuilder {
                 }
                 rows.add(row);
             }else {
-                it.next();
+                break;
+//                it.next();
             }
+            numRows++;
             totalCount++;
         }
         return new SelectResult(rows,totalCount,rows.size(),column);

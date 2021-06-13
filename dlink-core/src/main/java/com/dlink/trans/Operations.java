@@ -9,12 +9,7 @@ import com.dlink.constant.FlinkSQLConstant;
  * @since 2021/5/25 15:50
  **/
 public class Operations {
-    /**
-     * 获取操作类型
-     *
-     * @param sql
-     * @return
-     */
+
     public static String getOperationType(String sql) {
         String sqlTrim = sql.replaceAll("[\\s\\t\\n\\r]", "").toUpperCase();
         if (sqlTrim.startsWith(FlinkSQLConstant.CREATE)) {
