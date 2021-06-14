@@ -14,7 +14,7 @@ import java.util.Map;
  * @author wenmo
  * @since 2021/5/25 15:50
  **/
-public  class RowsToMap extends TableAggregateFunction<String, Map> {
+public class RowsToMap extends TableAggregateFunction<String, Map> {
     @Override
     public Map createAccumulator() {
         return new HashMap();
@@ -46,6 +46,5 @@ public  class RowsToMap extends TableAggregateFunction<String, Map> {
 
     public void emitValue(Map acc, Collector<String> out) {
         out.collect(acc.toString());
-
     }
 }

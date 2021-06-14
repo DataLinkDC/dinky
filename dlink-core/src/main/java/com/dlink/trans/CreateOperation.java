@@ -1,5 +1,7 @@
 package com.dlink.trans;
 
+import com.dlink.executor.custom.CustomTableEnvironmentImpl;
+
 /**
  * TODO
  *
@@ -8,5 +10,5 @@ package com.dlink.trans;
  */
 public interface CreateOperation extends Operation{
 
-    void create();
+    //void create(CustomTableEnvironmentImpl stEnvironment);
 }

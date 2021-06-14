@@ -31,12 +31,17 @@
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-client-1.12</artifactId>
-            <!--<scope>provided</scope>-->
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-connector-jdbc</artifactId>
-            <!--<scope>provided</scope>-->
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-function</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

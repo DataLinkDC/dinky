@@ -13,6 +13,7 @@
         <module>dlink-admin</module>
         <module>dlink-connectors</module>
         <module>dlink-client</module>
+        <module>dlink-function</module>
     </modules>
 
     <properties>
@@ -130,6 +131,11 @@
             <dependency>
                 <groupId>com.dlink</groupId>
                 <artifactId>dlink-connector-jdbc</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-function</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

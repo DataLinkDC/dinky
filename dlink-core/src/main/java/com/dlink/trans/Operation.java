@@ -1,5 +1,7 @@
 package com.dlink.trans;
 
+import com.dlink.executor.custom.CustomTableEnvironmentImpl;
+
 /**
  * Operation
  *
@@ -10,7 +12,9 @@ public interface Operation {
 
     String getHandle();
 
-    boolean canHandle(String key);
+    Operation create(String statement);
 
-    void build();
+    void build(CustomTableEnvironmentImpl stEnvironment);
+
+    boolean noExecute();
 }
