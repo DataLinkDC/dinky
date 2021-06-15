@@ -99,11 +99,10 @@ const StudioSetting = (props: any) => {
       <Row>
         <Col span={12}>
       <Form.Item
-        label="Fragment" className={styles.form_item} name="fragment"
+        label="Fragment" className={styles.form_item} name="fragment" valuePropName="checked"
         tooltip={{ title: '【增强特性】 开启FlinkSql片段机制，使用“:=”进行定义（以“;”结束），“${}”进行调用', icon: <InfoCircleOutlined /> }}
       >
         <Switch checkedChildren="启用" unCheckedChildren="禁用"
-               // defaultChecked={formVals.enabled}
         />
       </Form.Item>
         </Col>

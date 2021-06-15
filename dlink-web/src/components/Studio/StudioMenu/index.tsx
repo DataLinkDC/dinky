@@ -37,7 +37,7 @@ const StudioMenu = (props: any) => {
       checkPoint:current.task.checkPoint,
       parallelism:current.task.parallelism,
       maxRowNum:current.task.maxRowNum,
-      fragment:current.task.fragemnt,
+      fragment:current.task.fragment,
       savePointPath:current.task.savePointPath,
       jobName:current.task.alias,
     };
