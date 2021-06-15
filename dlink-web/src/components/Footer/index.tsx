@@ -22,7 +22,7 @@ export default () => {
         {
           key: 'github',
           title: <GithubOutlined />,
-          href: 'https://github.com/aiwenmo/Dlink',
+          href: 'https://github.com/DataLinkDC/dlink',
           blankTarget: true,
         },
       ]}

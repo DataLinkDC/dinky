@@ -20,17 +20,17 @@ DataLink 开源项目及社区正在建设，希望本项目可以帮助你更�
 
 |     域     |         概要          |   进展   |
 | :--------: | :-------------------: | :------: |
-|   Studio   |   FlinkSQL 作业管理   |  已完成  |
-|            |    FlinkSQL 编辑器    |  已完成  |
-|            |       运行信息        |  已完成  |
-|            |       查询结果        |  已完成  |
-|            |       历史记录        |  已完成  |
-|            |       函数浏览        |  已完成  |
-|            |       执行配置        |  已完成  |
-|            |    会话创建与共享     |  已完成  |
-|            |      连接器管理       |  已完成  |
-|            |       同步执行        |  已完成  |
-|            |       异步提交        |  已完成  |
+|   Studio   |   FlinkSQL 作业管理   |  0.1.0   |
+|            |    FlinkSQL 编辑器    |  0.1.0   |
+|            |       运行信息        |  0.1.0   |
+|            |       查询结果        |  0.1.0   |
+|            |       历史记录        |  0.1.0   |
+|            |       函数浏览        |  0.1.0   |
+|            |       执行配置        |  0.1.0   |
+|            |    会话创建与共享     |  0.1.0   |
+|            |      连接器管理       |  0.1.0   |
+|            |       同步执行        |  0.1.0   |
+|            |       异步提交        |  0.1.0   |
 |            |     函数自动补全      | 敬请期待 |
 |            |       任务详情        | 敬请期待 |
 |            |       任务审计        | 敬请期待 |
@@ -49,20 +49,20 @@ DataLink 开源项目及社区正在建设，希望本项目可以帮助你更�
 |            |       更改对比        | 敬请期待 |
 |            |   Create Table 生成   | 敬请期待 |
 |            |      Insert 生成      | 敬请期待 |
-|            |     AGGTABLE 语法     | 敬请期待 |
+|            |     AGGTABLE 语法     |  0.2.2   |
 |            |       SQL 翻译        | 敬请期待 |
 |            |   智能 Select 模式    | 敬请期待 |
 |            |    自动补全元数据     | 敬请期待 |
 |            |  任务反压和倾斜提示   | 敬请期待 |
 |            |    流任务数据预览     | 敬请期待 |
 |            |          ...          | 欢迎提议 |
-|  集群中心  |    集群注册与管理     |  已完成  |
-|            |       心跳检测        |  已完成  |
+|  集群中心  |    集群注册与管理     |  0.1.0   |
+|            |       心跳检测        |  0.1.0   |
 |            |    修改与删除审计     | 敬请期待 |
 |            |       集群信息        | 敬请期待 |
 |            |     历史任务检索      | 敬请期待 |
 |            |      启动与停止       | 敬请期待 |
-|  文档中心  | FlinkSQL 函数文档管理 |  已完成  |
+|  文档中心  | FlinkSQL 函数文档管理 |  0.1.0   |
 |            |   FlinkSQL 示例文档   | 敬请期待 |
 |            |   FlinkSQL 调优文档   | 敬请期待 |
 |  用户中心  |       用户管理        | 敬请期待 |
@@ -93,7 +93,7 @@ DataLink 开源项目及社区正在建设，希望本项目可以帮助你更�
 
 ### 最新版本
 
-dlink-0.2.0
+dlink-0.2.2-rc1
 
 ### 从安装包开始
 
@@ -103,11 +103,11 @@ config/ -- 配置文件
 lib/ -- 外部依赖及Connector
 |- dlink-client-1.12.jar -- 必需
 |- dlink-connector-jdbc.jar
+|- dlink-function-0.2.2.jar
 |- flink-connector-jdbc_2.11-1.12.4.jar
 |- flink-csv-1.12.4.jar
 |- flink-json-1.12.4.jar
 |- mysql-connector-java-8.0.21.jar
-|- ojdbc6-11.2.0.3.jar
 sql/ 
 |- dlink.sql --Mysql初始化脚本
 auto.sh --启动停止脚本
@@ -141,8 +141,11 @@ dlink -- 父项目
 |-dlink-core -- 执行中心
 |-dlink-doc -- 文档
 | |-bin -- 启动脚本
+| |-bug -- bug 反馈
 | |-config -- 配置文件
+| |-doc -- 使用文档
 | |-sql -- sql脚本
+|-dlink-function -- 函数中心
 |-dlink-web -- React 前端
 ```
 
@@ -160,9 +163,9 @@ npm run build
 maven clean install -Dmaven.test.skip=true
 ```
 
-#### 扩展Connector
+#### 扩展Connector及UDF
 
-将 Flink 集群上已扩展好的 Connector 直接放入 Dlink 的 lib 下，然后重启即可。
+将 Flink 集群上已扩展好的 Connector和UDF 直接放入 Dlink 的 lib 下，然后重启即可。
 定制 Connector 过程同 Flink 官方一样。
 
 #### 扩展其他版本的Flink
@@ -170,10 +173,6 @@ maven clean install -Dmaven.test.skip=true
 Flink 的版本取决于 lib 下的 dlink-client-1.12.jar。
 当前版本默认为 Flink 1.12.4 API。
 向其他版本的集群提交任务可能存在问题，未来将实现 1.13、1.11、1.10.
-
-#### 源码质量一般问题
-
-利用一个周写的项目所有代码，而且React从零边学边写，还请海涵~（> ^ <）~后续版本将优化代码逻辑。
 
 ## 使用手册
 
@@ -205,20 +204,20 @@ ${sf} ${tb}
 select * from student
 ```
 
-5. MaxRowNum 为预览的最大集合长度，默认100，最大9999，当前版本防止您作死。
-6. SavePointPath 当前版本暂不可用。
+5. MaxRowNum 为预览的最大集合长度，默认100，最大9999。
+6. SavePointPath 当前版本属于非Jar提交，暂不可用。
 7. Flink集群与共享会话构成了唯一的 Catalogue ,即您可以通过自定义一个会话 key，然后将当前会话 key 告诉您的战友，那他可以用该 key 访问您在集群上的 Catalogue信息与缓存。当然会话数量有限制，最大256*0.75，未来版本会开放设置。
 8. 连接器为 Catalogue 里的表信息，清除会销毁当前会话。
 9. Local 模式请使用少量测试数据，真实数据请使用远程集群。
 10. 执行 SQL 时，如果您选中了部分SQL，则会执行选中的内容，否则执行全部内容。
 11. 小火箭的提交功能是异步提交当前任务保存的FlinkSQL及配置到集群。无法提交草稿。
-12. 执行信息或者历史中那个很长很长的就是集群上的 JobId。
+12. 执行信息或者历史中那个很长很长的就是集群上的 JobId，只有同步执行才会记录执行信息和历史。
 13. 草稿是无法被异步远程提交的，只能同步执行。
 14. 灰色按钮代表近期将实现。
 
 #### 使用技巧
 
-（=。=）~ 敬请期待。
+1.[Flink AggTable 在 Dlink 的实践](https://github.com/DataLinkDC/dlink/dlink-doc/doc/FlinkAggTable在Dlink的实践.md)
 
 #### 常见问题及解决
 
@@ -256,15 +255,15 @@ QQ社区群：**543709668**，申请备注 “ Dlink ”，不写不批哦
 
 > 首页
 
-![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTq1s1uxJic1HAhphuR655hQ6eLXSIVvU55qYtZKB3WgMCNaX75jwnKSEet2IEIfyWRX9032ib9vqjibA/0?wx_fmt=png)
+![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTrkkX1Jsib7GxQY7tpiciaNdkGIAFicLZ3bwSawOianJQnNWuKAvZJ3Bb00DiaBxtxvnXgToGibPAwMFhs6A/0?wx_fmt=png)
 
 > Studio 执行信息
 
-![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTo5cwuZy7GSLibw5J7Lx6cicxbb59bxUA0XKUQbQoCS2drUO5uCQk8JYJrBexL4fFwk5wltMweLiczibg/0?wx_fmt=png)
+![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTrkkX1Jsib7GxQY7tpiciaNdkGApFiacyxkKERLE9FhsteTeTovcjTQHiaPKcxY6YqSukkVYZWVFGxPJibQ/0?wx_fmt=png)
 
 > Studio 数据预览
 
-![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTo5cwuZy7GSLibw5J7Lx6cicxk5PnuQl5j81VOQWCcDquOaje1uR3wKvKPp3HPm1A8iaibpzCnmSJM2OQ/0?wx_fmt=png)
+![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTrkkX1Jsib7GxQY7tpiciaNdkG5mNQFZp4YIuwIrh6cJteFIwsbomibSk32hWbFqlt887F9lee9NYT8fQ/0?wx_fmt=png)
 
 > Studio 异常反馈
 

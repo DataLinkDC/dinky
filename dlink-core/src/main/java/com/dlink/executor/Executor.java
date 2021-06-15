@@ -21,6 +21,12 @@ public abstract class Executor {
     public static final String LOCAL = "LOCAL";
     public static final String REMOTE = "REMOTE";
 
+    protected StreamExecutionEnvironment environment;
+    protected CustomTableEnvironmentImpl stEnvironment;
+    protected EnvironmentSetting environmentSetting;
+    protected ExecutorSetting executorSetting;
+
+
     public static Executor build(){
         return new LocalStreamExecutor(new ExecutorSetting(LOCAL));
     }
@@ -35,29 +41,55 @@ public abstract class Executor {
         }
     }
 
-    public abstract StreamExecutionEnvironment getEnvironment();
+    public StreamExecutionEnvironment getEnvironment(){
+        return environment;
+    }
 
-    public abstract CustomTableEnvironmentImpl getCustomTableEnvironmentImpl();
+    public CustomTableEnvironmentImpl getCustomTableEnvironmentImpl(){
+        return stEnvironment;
+    }
 
-    public abstract ExecutorSetting getExecutorSetting();
+    public ExecutorSetting getExecutorSetting(){
+        return executorSetting;
+    }
 
-    public abstract EnvironmentSetting getEnvironmentSetting();
+    public EnvironmentSetting getEnvironmentSetting(){
+        return environmentSetting;
+    }
 
-    public abstract JobExecutionResult execute(String statement) throws Exception;
+    public JobExecutionResult execute(String statement) throws Exception{
+        return stEnvironment.execute(statement);
+    }
 
-    public abstract TableResult executeSql(String statement);
+    public TableResult executeSql(String statement){
+        return stEnvironment.executeSql(statement);
+    }
 
-    public abstract Table sqlQuery(String statement);
+    public Table sqlQuery(String statement){
+        return stEnvironment.sqlQuery(statement);
+    }
 
-    public abstract String explainSql(String statement, ExplainDetail... extraDetails);
+    public String explainSql(String statement, ExplainDetail... extraDetails){
+        return stEnvironment.explainSql(statement,extraDetails);
+    }
 
-    public abstract SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails);
+    public SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails){
+        return stEnvironment.explainSqlRecord(statement,extraDetails);
+    }
 
-    public abstract String getStreamGraphString(String statement);
+    public String getStreamGraphString(String statement){
+        return stEnvironment.getStreamGraphString(statement);
+    }
 
-    public abstract ObjectNode getStreamGraph(String statement);
+    public ObjectNode getStreamGraph(String statement){
+        return stEnvironment.getStreamGraph(statement);
+    }
 
-    public abstract void registerFunction(String name, ScalarFunction function);
+    public void registerFunction(String name, ScalarFunction function){
+        stEnvironment.registerFunction(name,function);
+    }
 
-    public abstract void createTemporarySystemFunction(String name, Class<? extends UserDefinedFunction> var2);
+    public void createTemporarySystemFunction(String name, Class<? extends UserDefinedFunction> var2){
+        stEnvironment.createTemporarySystemFunction(name,var2);
+    }
 }

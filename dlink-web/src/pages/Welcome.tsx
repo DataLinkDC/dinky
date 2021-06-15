@@ -20,7 +20,7 @@ export default (): React.ReactNode => {
         <Alert
           message={intl.formatMessage({
             id: 'pages.welcome.alertMessage',
-            defaultMessage: '实时计算平台 Dlink & Apache Flink 即将发布，目前为体验版，版本号为 0.2.1。',
+            defaultMessage: '实时计算平台 Dlink & Apache Flink 即将发布，目前为体验版，版本号为 0.2.2-rc1。',
           })}
           type="success"
           showIcon
@@ -49,7 +49,7 @@ export default (): React.ReactNode => {
         >
           <FormattedMessage id="pages.welcome.advancedLayout" defaultMessage="Github" />{' '}
           <a
-            href="https://github.com/aiwenmo/dlink"
+            href="https://github.com/DataLinkDC/dlink"
             rel="noopener noreferrer"
             target="__blank"
           >
@@ -173,6 +173,22 @@ export default (): React.ReactNode => {
                 </li>
                 <li>
                   <Link href="">增加了简易的使用帮助</Link>
+                </li>
+              </ul>
+            </Paragraph>
+          </Timeline.Item>
+          <Timeline.Item><Text code>0.2.2-rc1</Text> <Text type="secondary">2021-06-15</Text>
+            <p> </p>
+            <Paragraph>
+              <ul>
+                <li>
+                  <Link href="">AGGTABLE 语法实现</Link>
+                </li>
+                <li>
+                  <Link href="">增加了 dlink-function 模块用来管理 UDF 等，其可直接上传至集群lib</Link>
+                </li>
+                <li>
+                  <Link href="">解决了表单无法正确提交 Fragment 的问题</Link>
                 </li>
               </ul>
             </Paragraph>
