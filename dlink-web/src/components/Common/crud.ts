@@ -72,11 +72,40 @@ export const handleAddOrUpdate = async (url:string,fields: any) => {
   }
 };
 
+export const handleAddOrUpdateWithResult = async (url:string,fields: any) => {
+  const tipsTitle = fields.id ? "修改" : "添加";
+  const hide = message.loading(`正在${tipsTitle}`);
+  try {
+    const {msg,datas} = await addOrUpdateData(url,{...fields});
+    hide();
+    message.success(msg);
+    return datas;
+  } catch (error) {
+    hide();
+    message.error('出错啦');
+    return null;
+  }
+};
+
 export const handleRemove = async (url:string,selectedRows: []) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
     const {msg} = await removeData(url,selectedRows.map((row) => row.id));
+    hide();
+    message.success(msg);
+    return true;
+  } catch (error) {
+    hide();
+    message.error('删除失败，请重试');
+    return false;
+  }
+};
+
+export const handleRemoveById = async (url:string,id: number) => {
+  const hide = message.loading('正在删除');
+  try {
+    const {msg} = await removeData(url,[id]);
     hide();
     message.success(msg);
     return true;

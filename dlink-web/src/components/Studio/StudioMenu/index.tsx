@@ -25,8 +25,8 @@ const StudioMenu = (props: any) => {
   const {tabs,current,currentPath,form,dispatch,monaco} = props;
 
   const execute = () => {
-    let selection = monaco.current.editor.getSelection();
-    let selectsql = monaco.current.editor.getModel().getValueInRange(selection);
+    let selection = current.monaco.current.editor.getSelection();
+    let selectsql = current.monaco.current.editor.getModel().getValueInRange(selection);
     if(selectsql==null||selectsql==''){
       selectsql=current.value;
     }
@@ -277,5 +277,5 @@ export default connect(({Studio}: { Studio: StateType }) => ({
   current: Studio.current,
   currentPath: Studio.currentPath,
   tabs: Studio.tabs,
-  monaco: Studio.monaco,
+  // monaco: Studio.monaco,
 }))(StudioMenu);

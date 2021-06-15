@@ -14,6 +14,7 @@ let provider = {
 };
 
 interface IRightContent {
+  key: string;
   value: any;
   handleCheck: () => Promise<boolean>;
   secondRightData: (BaseDataSourceField|BaseDataSourceHeader)[];
@@ -29,19 +30,30 @@ const FlinkSqlEditor = (props:any) => {
         selectOnLineNumbers: true,
         renderSideBySide: false,
       },
-    current=props.current,
+    // current,
+    tabs,
+    // current=props.current,
     dispatch,
-    monaco,
     } = props
   ;
 
-  const { value, handleCheck, secondRightData = [] }: IRightContent = props;
+  const { tabsKey, value, handleCheck, secondRightData = [] }: IRightContent = props;
 
   const editorInstance:any = useRef<any>();
 
   const monacoInstance: any = useRef();
 
-  const code: any = useRef(current.sql ? current.sql : '');
+  const getTabIndex = ():number=>{
+    for(let i=0;i<tabs.panes.length;i++){
+      if(tabs.panes[i].key==tabsKey){
+        return i;
+      }
+    }
+    return 0;
+  };
+  const tabIndex = getTabIndex();
+  const code: any = useRef(tabs.panes[tabIndex].value ? tabs.panes[tabIndex].value : '');
+  // const code: any = useRef(current.sql ? current.sql : '');
   // const code: any = useRef(value ? value.formulaContent : '');
 
   const cache: any = useRef(code.current);
@@ -148,11 +160,11 @@ const FlinkSqlEditor = (props:any) => {
 return (
   <React.Fragment>
     <MonacoEditor
-      ref={monaco}
+      ref={tabs.panes[tabIndex].monaco}
       width={width}
       height={height}
       language={language}
-      value={current.value}
+      value={tabs.panes[tabIndex].value}
       options={options}
       onChange={onChangeHandle}
       theme="vs-dark"

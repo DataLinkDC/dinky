@@ -3,6 +3,7 @@ import React, {useState} from 'react';
 import {connect} from "umi";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import styles from './index.less';
+import StudioEdit from '../StudioEdit';
 
 const { TabPane } = Tabs;
 
@@ -70,6 +71,7 @@ const EditorTabs = (props: any) => {
       >
         {tabs.panes.map(pane => (
           <TabPane tab={pane.title} key={pane.key} closable={pane.closable}>
+            <StudioEdit tabsKey={pane.key} height='400px'/>
           </TabPane>
         ))}
       </Tabs>

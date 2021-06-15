@@ -80,6 +80,15 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 statementService.updateById(statement);
             }
         } else {
+            if(task.getCheckPoint()==null){
+                task.setCheckPoint(0);
+            }
+            if(task.getParallelism()==null){
+                task.setParallelism(1);
+            }
+            if(task.getClusterId()==null){
+                task.setClusterId(0);
+            }
             this.save(task);
             Statement statement = new Statement();
             statement.setId(task.getId());
