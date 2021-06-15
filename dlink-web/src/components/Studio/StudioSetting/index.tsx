@@ -58,7 +58,6 @@ const StudioSetting = (props: any) => {
       payload: newTabs,
     });
   };
-  const localOption = (<><Tag color="default">Local</Tag>本地环境</>);
   return (
     <>
       <Row>
@@ -126,13 +125,12 @@ const StudioSetting = (props: any) => {
       <Form.Item label="Flink集群" tooltip="选择Flink集群进行远程提交任务" name="clusterId"
                  className={styles.form_item}>
         <Select
-          //mode="multiple"
           style={{ width: '100%' }}
           placeholder="选择Flink集群"
-          defaultValue={['0']}
+          defaultValue={0}
           optionLabelProp="label"
         >
-          <Option value="0" label={localOption}>
+          <Option value={0} label={(<><Tag color="default">Local</Tag>本地环境</>)}>
             <Tag color="default">Local</Tag>
             本地环境
           </Option>

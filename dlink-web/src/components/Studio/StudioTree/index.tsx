@@ -3,10 +3,13 @@ import {connect} from "umi";
 import  {DownOutlined, SwitcherOutlined, FrownOutlined, MehOutlined, SmileOutlined,FolderAddOutlined} from "@ant-design/icons";
 import {Tree, Input, Menu, Empty, Button, message, Modal,Tooltip,Row,Col} from 'antd';
 import {getCatalogueTreeData} from "@/pages/FlinkSqlStudio/service";
-import {convertToTreeData, DataType, TreeDataNode} from "@/components/Studio/StudioTree/Function";
+import {convertToTreeData, DataType, getTreeNodeByKey, TreeDataNode} from "@/components/Studio/StudioTree/Function";
 import style from "./index.less";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
-import {getInfoById, handleAddOrUpdate, handleInfo, handleRemove, handleSubmit} from "@/components/Common/crud";
+import {
+  getInfoById, handleAddOrUpdate, handleAddOrUpdateWithResult, handleInfo, handleRemove, handleRemoveById,
+  handleSubmit
+} from "@/components/Common/crud";
 import UpdateCatalogueForm from './components/UpdateCatalogueForm';
 import {ActionType} from "@ant-design/pro-table";
 import UpdateTaskForm from "@/components/Studio/StudioTree/components/UpdateTaskForm";
@@ -69,6 +72,21 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     setDataList(list);
     data = convertToTreeData(data, 0);
     setTreeData(data);
+  };
+
+  const openByKey = async (key)=>{
+    const result = await getCatalogueTreeData();
+    let data = result.datas;
+    let list = data;
+    for(let i=0;i<list.length;i++){
+      list[i].title=list[i].name;
+      list[i].key=list[i].id;
+    }
+    setDataList(list);
+    data = convertToTreeData(data, 0);
+    setTreeData(data);
+    let node = getTreeNodeByKey(data,key);
+    onSelect([],{node:node});
   };
 
   useEffect(() => {
@@ -192,7 +210,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       setTaskFormValues({
         parentId: node.id,
       });
-      getTreeData();
+      //getTreeData();
     }else{
       message.error('只能在目录上创建作业');
     }
@@ -206,7 +224,13 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       okText: '确认',
       cancelText: '取消',
       onOk:async () => {
-        await handleRemove('/api/catalogue',[node]);
+        await handleRemoveById('/api/catalogue',node.id);
+        if(node.taskId) {
+          dispatch({
+            type: "Studio/deleteTabByKey",
+            payload: node.taskId,
+          });
+        }
         getTreeData();
       }
     });
@@ -358,11 +382,14 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       {updateTaskModalVisible? (
         <UpdateTaskForm
           onSubmit={async (value) => {
-            const success = await handleAddOrUpdate('/api/catalogue/createTask',value);
-            if (success) {
+            const datas = await handleAddOrUpdateWithResult('/api/catalogue/createTask',value);
+            if (datas) {
               handleUpdateTaskModalVisible(false);
               setTaskFormValues({});
-              getTreeData()
+              openByKey(datas.id);
+              // getTreeData();
+              // console.log(datas);
+              // onSelect([],openByKey(datas.id));
             }
           }}
           onCancel={() => {

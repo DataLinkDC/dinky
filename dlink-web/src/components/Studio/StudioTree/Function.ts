@@ -34,3 +34,18 @@ export function convertToTreeData(data:TreeDataNode[], pid:number,path?:string[]
   }
   return result
 }
+
+export function getTreeNodeByKey(node:any[], key:number) {
+  for(let i=0;i<node.length;i++) {
+    if (node[i].key == key) {
+      return node[i];
+    } else if (node[i].children) {
+      let result = getTreeNodeByKey(node[i].children, key);
+      if(result){
+        return result;
+      }
+    }else{
+      return null;
+    }
+  }
+}

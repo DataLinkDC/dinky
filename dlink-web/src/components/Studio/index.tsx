@@ -73,7 +73,7 @@ const Studio: React.FC<StudioProps> = (props) => {
           </Col>
           <Col span={16}>
             <StudioTabs/>
-            <StudioEdit/>
+            {/*<StudioEdit/>*/}
           </Col>
           <Col span={4} className={styles["vertical-tabs"]}>
             <Tabs defaultActiveKey="1" size="small" tabPosition="right"  style={{ height: "100%",border: "1px solid #f0f0f0"}}>

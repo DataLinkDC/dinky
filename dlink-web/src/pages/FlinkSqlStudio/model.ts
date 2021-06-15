@@ -1,6 +1,9 @@
 import {Effect, Reducer} from "umi";
 import {executeSql} from "./service";
-import {addOrUpdateData, handleAddOrUpdate, postAll, queryData} from "@/components/Common/crud";
+import {
+  addOrUpdateData, handleAddOrUpdate, handleRemove, handleRemoveById, postAll,
+  queryData
+} from "@/components/Common/crud";
 import {Form} from "antd";
 
 export type ClusterType = {
@@ -50,6 +53,7 @@ export type TabsItemType = {
   path: string[];
   task?:TaskType;
   console:ConsoleType;
+  monaco?: any;
 }
 
 export type TabsType = {
@@ -118,14 +122,15 @@ const Model: ModelType = {
         savePointPath: '',
         parallelism: 1,
         fragment: true,
-        clusterId: '0',
+        clusterId: 0,
         maxRowNum: 100,
         session:'admin',
         alias:'草稿',
       },
       console:{
         result:[],
-      }
+      },
+      monaco: {},
     },
     sql: '',
     monaco: {},
@@ -150,7 +155,8 @@ const Model: ModelType = {
         },
         console:{
           result:[],
-        }
+        },
+        monaco: {},
       }],
     },
     session:['admin'],
@@ -216,6 +222,28 @@ const Model: ModelType = {
         },
         tabs:{
           ...payload,
+        },
+      };
+    },
+    deleteTabByKey(state, { payload }) {
+      let newTabs = state.tabs;
+      for(let i=0;i<newTabs.panes.length;i++){
+        if(newTabs.panes[i].key==payload){
+          newTabs.panes.splice(i, 1);
+          break;
+        }
+      }
+      let newCurrent = newTabs.panes[newTabs.panes.length-1];
+      if(newTabs.activeKey==payload) {
+        newTabs.activeKey = newCurrent.key;
+      }
+      return {
+        ...state,
+        current:{
+          ...newCurrent,
+        },
+        tabs:{
+          ...newTabs,
         },
       };
     },

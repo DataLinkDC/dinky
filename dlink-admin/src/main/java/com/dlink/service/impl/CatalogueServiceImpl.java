@@ -36,7 +36,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
 
     @Transactional(rollbackFor=Exception.class)
     @Override
-    public boolean createCatalogueAndTask(CatalogueTaskDTO catalogueTaskDTO) {
+    public Catalogue createCatalogueAndTask(CatalogueTaskDTO catalogueTaskDTO) {
         Task task = new Task();
         task.setName(catalogueTaskDTO.getName());
         task.setAlias(catalogueTaskDTO.getAlias());
@@ -46,7 +46,8 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         catalogue.setIsLeaf(true);
         catalogue.setTaskId(task.getId());
         catalogue.setParentId(catalogueTaskDTO.getParentId());
-        return this.save(catalogue);
+        this.save(catalogue);
+        return catalogue;
     }
 
     @Transactional(rollbackFor=Exception.class)

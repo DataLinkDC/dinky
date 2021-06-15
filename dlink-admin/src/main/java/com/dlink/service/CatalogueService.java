@@ -16,7 +16,7 @@ public interface CatalogueService extends ISuperService<Catalogue> {
 
     List<Catalogue> getAllData();
 
-    boolean createCatalogueAndTask(CatalogueTaskDTO catalogueTaskDTO);
+    Catalogue createCatalogueAndTask(CatalogueTaskDTO catalogueTaskDTO);
 
     boolean toRename(Catalogue catalogue);
 

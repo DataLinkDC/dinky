@@ -98,8 +98,9 @@ public class CatalogueController {
      */
     @PutMapping("/createTask")
     public Result createTask(@RequestBody CatalogueTaskDTO catalogueTaskDTO) throws Exception {
-        if(catalogueService.createCatalogueAndTask(catalogueTaskDTO)){
-            return Result.succeed("创建成功");
+        Catalogue catalogue = catalogueService.createCatalogueAndTask(catalogueTaskDTO);
+        if(catalogue.getId()!=null){
+            return Result.succeed(catalogue,"创建成功");
         }else {
             return Result.failed("创建失败");
         }
