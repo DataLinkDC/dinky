@@ -22,7 +22,7 @@ const menu = (
 
 const StudioMenu = (props: any) => {
 
-  const {tabs,current,currentPath,form,dispatch,monaco} = props;
+  const {tabs,current,currentPath,form,dispatch} = props;
 
   const execute = () => {
     let selection = current.monaco.current.editor.getSelection();

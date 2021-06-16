@@ -11,6 +11,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>dlink-client-1.12</module>
+        <module>dlink-client-1.13</module>
     </modules>
     <artifactId>dlink-client</artifactId>
 </project>

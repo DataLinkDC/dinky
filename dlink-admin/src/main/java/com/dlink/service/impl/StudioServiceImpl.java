@@ -47,10 +47,18 @@ public class StudioServiceImpl implements StudioService {
                 clusterService.updateById(cluster);
             }
         }
-        JobManager jobManager = new JobManager(host,studioExecuteDTO.getSession(),studioExecuteDTO.getMaxRowNum());
-        return jobManager.execute(studioExecuteDTO.getStatement(), new ExecutorSetting(
-                ExecuteType,studioExecuteDTO.getCheckPoint(),studioExecuteDTO.getParallelism(),
-                studioExecuteDTO.isFragment(),studioExecuteDTO.getSavePointPath(),studioExecuteDTO.getJobName()));
+        JobManager jobManager = new JobManager(
+                host,
+                studioExecuteDTO.getSession(),
+                studioExecuteDTO.getMaxRowNum(),
+                new ExecutorSetting(
+                        ExecuteType,
+                        studioExecuteDTO.getCheckPoint(),
+                        studioExecuteDTO.getParallelism(),
+                        studioExecuteDTO.isFragment(),
+                        studioExecuteDTO.getSavePointPath(),
+                        studioExecuteDTO.getJobName()));
+        return jobManager.execute(studioExecuteDTO.getStatement());
     }
 
     @Override
@@ -70,10 +78,13 @@ public class StudioServiceImpl implements StudioService {
                 clusterService.updateById(cluster);
             }
         }
-        JobManager jobManager = new JobManager(host,studioDDLDTO.getSession(),1000);
-        return jobManager.execute(studioDDLDTO.getStatement(), new ExecutorSetting(
-                ExecuteType));
-    }
+        JobManager jobManager = new JobManager(
+                host,
+                studioDDLDTO.getSession(),
+                1000,
+                new ExecutorSetting(ExecuteType));
+        return jobManager.execute(studioDDLDTO.getStatement());
+}
 
     @Override
     public boolean clearSession(String session) {

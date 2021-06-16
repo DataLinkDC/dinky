@@ -205,6 +205,15 @@ export default (): React.ReactNode => {
                 <li>
                   <Link href="">增加了新增作业自动定位及打开选项卡的功能</Link>
                 </li>
+                <li>
+                  <Link href="">增加了在不选择会话值时自动禁用会话的功能</Link>
+                </li>
+                <li>
+                  <Link href="">解决了在修改配置后异步提交任务会将作业识别为草稿的问题</Link>
+                </li>
+                <li>
+                  <Link href="">扩展了 Flink Client 1.13</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>
