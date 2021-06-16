@@ -136,13 +136,14 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
           closable: true,
           path: node.path,
           task:{
-            session:'admin',
+            session:'',
             maxRowNum: 100,
             ...result.datas
           },
           console:{
             result:[],
-          }
+          },
+          monaco: {},
         };
         newTabs.activeKey = node.taskId;
         newTabs.panes.push(newPane);

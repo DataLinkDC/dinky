@@ -93,7 +93,7 @@ DataLink 开源项目及社区正在建设，希望本项目可以帮助你更�
 
 ### 最新版本
 
-dlink-0.2.2-rc1
+dlink-0.2.2
 
 ### 从安装包开始
 
@@ -217,7 +217,7 @@ select * from student
 
 #### 使用技巧
 
-1.[Flink AggTable 在 Dlink 的实践](https://github.com/DataLinkDC/dlink/dlink-doc/doc/FlinkAggTable在Dlink的实践.md)
+1.[Flink AggTable 在 Dlink 的实践](https://github.com/DataLinkDC/dlink/blob/main/dlink-doc/doc/FlinkAggTable%E5%9C%A8Dlink%E7%9A%84%E5%BA%94%E7%94%A8.md)
 
 #### 常见问题及解决
 

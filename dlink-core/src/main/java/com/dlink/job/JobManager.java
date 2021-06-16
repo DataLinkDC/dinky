@@ -32,11 +32,16 @@ public class JobManager {
     private Integer port;
     private String sessionId;
     private Integer maxRowNum = 100;
+    private ExecutorSetting executorSetting;
 
     public JobManager() {
     }
 
-    public JobManager(String host) {
+    public JobManager(ExecutorSetting executorSetting) {
+        this.executorSetting=executorSetting;
+    }
+
+    public JobManager(String host,ExecutorSetting executorSetting) {
         if (host != null) {
             String[] strs = host.split(":");
             if (strs.length >= 2) {
@@ -46,10 +51,11 @@ public class JobManager {
                 this.flinkHost = strs[0];
                 this.port = 8081;
             }
+            this.executorSetting=executorSetting;
         }
     }
 
-    public JobManager(String host, String sessionId, Integer maxRowNum) {
+    public JobManager(String host, String sessionId, Integer maxRowNum,ExecutorSetting executorSetting) {
         if (host != null) {
             String[] strs = host.split(":");
             if (strs.length >= 2) {
@@ -57,11 +63,12 @@ public class JobManager {
                 this.port = Integer.parseInt(strs[1]);
             } else {
                 this.flinkHost = strs[0];
-                this.port = 8081;
+                this.port = FlinkConstant.PORT;
             }
         }
         this.sessionId = sessionId;
         this.maxRowNum = maxRowNum;
+        this.executorSetting=executorSetting;
     }
 
     public JobManager(String flinkHost, Integer port) {
@@ -76,23 +83,45 @@ public class JobManager {
         this.port = port;
     }
 
-    public RunResult execute(String statement, ExecutorSetting executorSetting) {
-        RunResult runResult = new RunResult(sessionId, statement, flinkHost, port, executorSetting, executorSetting.getJobName());
-        Executor executor = null;
-        ExecutorEntity executorEntity = SessionPool.get(sessionId);
-        if (executorEntity != null) {
-            executor = executorEntity.getExecutor();
-        } else {
-            if (executorSetting.isRemote()) {
-                executor = Executor.build(new EnvironmentSetting(flinkHost, FlinkConstant.PORT), executorSetting);
-            } else {
-                executor = Executor.build(null, executorSetting);
+    private boolean checkSession(){
+        if(sessionId!=null&&!"".equals(sessionId)){
+            String[] strs = sessionId.split("_");
+            if(strs.length>1&&!"".equals(strs[1])){
+                return true;
             }
-            SessionPool.push(new ExecutorEntity(sessionId, executor));
         }
+        return false;
+    }
+
+    private Executor createExecutor(){
+        if (executorSetting.isRemote()) {
+            return Executor.build(new EnvironmentSetting(flinkHost, port), executorSetting);
+        } else {
+            return Executor.build(null, executorSetting);
+        }
+    }
+
+    private Executor createExecutorWithSession(){
+        Executor executor;
+        if(checkSession()){
+            ExecutorEntity executorEntity = SessionPool.get(sessionId);
+            if (executorEntity != null) {
+                executor = executorEntity.getExecutor();
+            } else {
+                executor = createExecutor();
+                SessionPool.push(new ExecutorEntity(sessionId, executor));
+            }
+        }else {
+            executor = createExecutor();
+        }
+        return executor;
+    }
+
+    public RunResult execute(String statement) {
+        RunResult runResult = new RunResult(sessionId, statement, flinkHost, port, executorSetting, executorSetting.getJobName());
+        Executor executor = createExecutorWithSession();
         String[] Statements = statement.split(";");
         int currentIndex = 0;
-        //当前只支持对 show select的操作的结果的数据查询  后期需要可添加
         try {
             for (String item : Statements) {
                 currentIndex++;
@@ -133,24 +162,20 @@ public class JobManager {
         return runResult;
     }
 
-    public SubmitResult submit(String statement, ExecutorSetting executorSetting) {
+    public SubmitResult submit(String statement) {
         if (statement == null || "".equals(statement)) {
             return SubmitResult.error("FlinkSql语句不存在");
         }
         String[] statements = statement.split(FlinkSQLConstant.SEPARATOR);
-        return submit(Arrays.asList(statements), executorSetting);
+        return submit(Arrays.asList(statements));
     }
 
-    public SubmitResult submit(List<String> sqlList, ExecutorSetting executorSetting) {
+    public SubmitResult submit(List<String> sqlList) {
         SubmitResult result = new SubmitResult(sessionId, sqlList, flinkHost, executorSetting.getJobName());
         int currentIndex = 0;
         try {
             if (sqlList != null && sqlList.size() > 0) {
-                EnvironmentSetting environmentSetting = null;
-                if (executorSetting.isRemote()) {
-                    environmentSetting = new EnvironmentSetting(flinkHost, port);
-                }
-                Executor executor = Executor.build(environmentSetting, executorSetting);
+                Executor executor = createExecutor();
                 for (String sqlText : sqlList) {
                     currentIndex++;
                     String operationType = Operations.getOperationType(sqlText);

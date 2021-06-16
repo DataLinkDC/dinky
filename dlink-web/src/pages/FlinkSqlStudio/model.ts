@@ -124,7 +124,7 @@ const Model: ModelType = {
         fragment: true,
         clusterId: 0,
         maxRowNum: 100,
-        session:'admin',
+        session:'',
         alias:'草稿',
       },
       console:{
@@ -149,7 +149,7 @@ const Model: ModelType = {
           parallelism: 1,
           fragment: true,
           clusterId: '0',
-          session:'admin',
+          session:'',
           maxRowNum: 100,
           alias:'草稿',
         },
@@ -159,7 +159,7 @@ const Model: ModelType = {
         monaco: {},
       }],
     },
-    session:['admin'],
+    session:[],
     rightClickMenu:false
   },
 

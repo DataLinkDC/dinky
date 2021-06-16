@@ -47,12 +47,13 @@ const StudioSetting = (props: any) => {
     let newTabs = tabs;
     for(let i=0;i<newTabs.panes.length;i++){
       if(newTabs.panes[i].key==newTabs.activeKey){
-        newTabs.panes[i].task={
-          ...all
-        };
+        for(let key in change){
+          newTabs.panes[i].task[key]=change[key];
+        }
         break;
       }
     }
+
     dispatch&&dispatch({
       type: "Studio/saveTabs",
       payload: newTabs,
@@ -144,7 +145,8 @@ const StudioSetting = (props: any) => {
         className={styles.form_item}>
         <Select
           placeholder="选择会话"
-          defaultValue='admin'
+          // defaultValue='admin'
+          allowClear
           dropdownRender={menu => (
             <div>
               {menu}

@@ -20,7 +20,8 @@ public class JobManagerTest {
 
     @Test
     public void submitJobTest2(){
-        JobManager jobManager = new JobManager("192.168.123.157",8081,"test2",100);
+        ExecutorSetting setting = new ExecutorSetting(Executor.REMOTE);
+        JobManager jobManager = new JobManager("192.168.123.157:8081","test2",100, setting);
         String sql1 ="CREATE TABLE student (\n" +
                 "  sid INT,\n" +
                 "  name STRING,\n" +
@@ -48,14 +49,15 @@ public class JobManagerTest {
         sqls.add(sql1);
         sqls.add(sql2);
         sqls.add(sql3);
-        ExecutorSetting setting = new ExecutorSetting(Executor.REMOTE);
-        SubmitResult result = jobManager.submit(sqls, setting);
+        SubmitResult result = jobManager.submit(sqls);
         System.out.println(result.isSuccess());
     }
 
     @Test
     public void executeJobTest(){
-        JobManager jobManager = new JobManager("192.168.123.157",8081,"test2",100);
+        ExecutorSetting setting = new ExecutorSetting(Executor.REMOTE,0,1,false,null);
+
+        JobManager jobManager = new JobManager("192.168.123.157:8081","test2",100, setting);
         String sql1 ="CREATE TABLE student (\n" +
                 "  sid INT,\n" +
                 "  name STRING,\n" +
@@ -84,8 +86,7 @@ public class JobManagerTest {
         sqls.add(sql2);
         sqls.add(sql3);
         String sql = sql1+sql2+sql3;
-        ExecutorSetting setting = new ExecutorSetting(Executor.REMOTE,0,1,false,null);
-        RunResult result = jobManager.execute(sql, setting);
+        RunResult result = jobManager.execute(sql);
         System.out.println(result.isSuccess());
     }
 }
