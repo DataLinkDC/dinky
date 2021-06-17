@@ -223,6 +223,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>解决了首页更新日志点击会打开新连接的问题</Link>
                 </li>
+                <li>
+                  <Link>解决了首次加载草稿无法执行 Sql 的问题</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

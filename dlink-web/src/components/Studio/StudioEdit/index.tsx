@@ -52,6 +52,7 @@ const FlinkSqlEditor = (props:any) => {
     return 0;
   };
   const tabIndex = getTabIndex();
+
   const code: any = useRef(tabs.panes[tabIndex].value ? tabs.panes[tabIndex].value : '');
   // const code: any = useRef(current.sql ? current.sql : '');
   // const code: any = useRef(value ? value.formulaContent : '');

@@ -148,7 +148,7 @@ const Model: ModelType = {
           savePointPath: '',
           parallelism: 1,
           fragment: true,
-          clusterId: '0',
+          clusterId: 0,
           session:'',
           maxRowNum: 100,
           alias:'草稿',

@@ -25,8 +25,11 @@ const StudioMenu = (props: any) => {
   const {tabs,current,currentPath,form,dispatch} = props;
 
   const execute = () => {
-    let selection = current.monaco.current.editor.getSelection();
-    let selectsql = current.monaco.current.editor.getModel().getValueInRange(selection);
+    let selectsql =null;
+    if(current.monaco.current) {
+      let selection = current.monaco.current.editor.getSelection();
+      selectsql = current.monaco.current.editor.getModel().getValueInRange(selection);
+    }
     if(selectsql==null||selectsql==''){
       selectsql=current.value;
     }
