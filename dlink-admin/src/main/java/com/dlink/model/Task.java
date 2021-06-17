@@ -40,6 +40,9 @@ public class Task extends SuperEntity{
     @TableField(exist = false)
     private String statement;
 
+    @TableField(exist = false)
+    private String clusterName;
+
     public ExecutorSetting getLocalExecutorSetting(){
         return new ExecutorSetting(Executor.LOCAL,checkPoint,parallelism,fragment,savePointPath,alias);
     }

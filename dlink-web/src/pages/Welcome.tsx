@@ -229,6 +229,28 @@ export default (): React.ReactNode => {
               </ul>
             </Paragraph>
           </Timeline.Item>
+          <Timeline.Item><Text code>0.2.3</Text> <Text type="secondary">2021-06-17</Text>
+            <p> </p>
+            <Paragraph>
+              <ul>
+                <li>
+                  <Link>优化了任务配置集群下拉框的展示</Link>
+                </li>
+                <li>
+                  <Link>解决了新增会话后输入框的值仍保留的问题</Link>
+                </li>
+                <li>
+                  <Link>修改了历史下拉框语句为全部展示</Link>
+                </li>
+                <li>
+                  <Link>增加了作业同步执行时的任务名配置</Link>
+                </li>
+                <li>
+                  <Link>增加了连接器当前的集群与会话显示</Link>
+                </li>
+              </ul>
+            </Paragraph>
+          </Timeline.Item>
         </Timeline>
       </Card>
     </PageContainer>

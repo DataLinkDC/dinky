@@ -115,7 +115,7 @@ const StudioTable = (props:any) => {
               {item.jobName&&<Text code>{item.jobName}</Text>}
               {item.jobId&&<Text code>{item.jobId}</Text>}
               <Text keyboard>{item.time}ms</Text>
-               {item.statement.substring(0,20)+"..."}</>);
+               {item.statement}</>);
             return (<Option value={index} label={tag}>
               {tag}
             </Option>)

@@ -39,6 +39,7 @@ export type TaskType = {
   statement?: string,
   session:string;
   maxRowNum:number;
+  jobName:string;
 };
 
 export type ConsoleType = {
@@ -118,11 +119,13 @@ const Model: ModelType = {
       closable: false,
       path: ['草稿'],
       task:{
+        jobName:'草稿',
         checkPoint: 0,
         savePointPath: '',
         parallelism: 1,
         fragment: true,
         clusterId: 0,
+        clusterName:"本地环境",
         maxRowNum: 100,
         session:'',
         alias:'草稿',
@@ -144,11 +147,13 @@ const Model: ModelType = {
         closable: false,
         path: ['草稿'],
         task:{
+          jobName:'草稿',
           checkPoint: 0,
           savePointPath: '',
           parallelism: 1,
           fragment: true,
           clusterId: 0,
+          clusterName:"本地环境",
           session:'',
           maxRowNum: 100,
           alias:'草稿',

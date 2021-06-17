@@ -1,9 +1,10 @@
-import {message, Input, Button, Space, Table,  Dropdown, Menu, Empty,Divider,Tooltip} from "antd";
+import {message, Input, Button, Space, Table,  Dropdown, Menu, Empty,Divider,
+  Tooltip,Breadcrumb} from "antd";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
 import {useState} from "react";
-// import Highlighter from 'react-highlight-words';
-import { SearchOutlined,DownOutlined,DeleteOutlined } from '@ant-design/icons';
+import styles from "./index.less";
+import { SearchOutlined,DownOutlined,DeleteOutlined,CommentOutlined } from '@ant-design/icons';
 import React from "react";
 import {executeDDL} from "@/pages/FlinkSqlStudio/service";
 import {handleRemove} from "@/components/Common/crud";
@@ -16,6 +17,8 @@ const StudioConnector = (props:any) => {
   const [loadings,setLoadings] = useState<boolean[]>([]);
   const [searchText,setSearchText] = useState<string>('');
   const [searchedColumn,setSearchedColumn] = useState<string>('');
+  const [clusterName,setClusterName] = useState<string>('');
+  const [session,setSession] = useState<string>('');
 
   const getColumnSearchProps = (dIndex) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
@@ -141,6 +144,8 @@ const StudioConnector = (props:any) => {
       session:current.task.session,
     });
     res.then((result)=>{
+      setClusterName(current.task.clusterName);
+      setSession(current.task.session);
       if(result.datas.result.rowData.length>0){
         setTableData(result.datas.result.rowData);
       }else {
@@ -216,8 +221,14 @@ const StudioConnector = (props:any) => {
           />
         </Tooltip>
       </div>
+      <Breadcrumb className={styles["session-path"]}>
+        <CommentOutlined />
+        <Divider type="vertical" />
+        <Breadcrumb.Item>{clusterName}</Breadcrumb.Item>
+        <Breadcrumb.Item>{session}</Breadcrumb.Item>
+      </Breadcrumb>
       {tableData&&tableData.length>0?(<Table dataSource={tableData} columns={getColumns()} size="small" />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
-    </>
+      </>
   );
 };
 

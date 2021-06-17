@@ -80,6 +80,12 @@ const StudioSetting = (props: any) => {
       //initialValues={current.task}
       onValuesChange={onValuesChange}
     >
+      <Form.Item
+        label="jobName" className={styles.form_item} name="jobName"
+        tooltip='设置任务名称，默认为作业名'
+      >
+        <Input placeholder="hdfs://..." />
+      </Form.Item>
       <Row>
         <Col span={12}>
       <Form.Item label="CheckPoint" tooltip="设置Flink任务的检查点步长，0 代表不启用" name="checkPoint"
@@ -122,7 +128,7 @@ const StudioSetting = (props: any) => {
         <Input placeholder="hdfs://..." />
       </Form.Item>
       <Row>
-        <Col span={11}>
+        <Col span={24}>
       <Form.Item label="Flink集群" tooltip="选择Flink集群进行远程提交任务" name="clusterId"
                  className={styles.form_item}>
         <Select
@@ -139,9 +145,11 @@ const StudioSetting = (props: any) => {
         </Select>
       </Form.Item>
         </Col>
-          <Col span={11} offset={1}>
+      </Row>
+      <Row>
+        <Col span={24}>
       <Form.Item
-        label="共享会话" tooltip="选择会话进行 Flink Catalog 的共享" name="session"
+        label="共享会话" tooltip="选择会话进行 Flink Catalog 的共享，当未选择时默认禁用该功能" name="session"
         className={styles.form_item}>
         <Select
           placeholder="选择会话"
@@ -152,7 +160,7 @@ const StudioSetting = (props: any) => {
               {menu}
               <Divider style={{ margin: '4px 0' }} />
               <div style={{ display: 'flex', flexWrap: 'nowrap', padding: 8 }}>
-                <Input style={{ flex: 'auto' }}
+                <Input style={{ flex: 'auto' }} value={newSesstion}
                   onChange={(e)=>{
                     setNewSesstion(e.target.value);
                   }}

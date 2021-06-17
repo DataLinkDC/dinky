@@ -9,7 +9,7 @@ import Button from "antd/es/button/button";
 import Breadcrumb from "antd/es/breadcrumb/Breadcrumb";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
-import {handleSubmit, postDataArray} from "@/components/Common/crud";
+import { postDataArray} from "@/components/Common/crud";
 import {executeSql} from "@/pages/FlinkSqlStudio/service";
 import StudioHelp from "../StudioHelp";
 
@@ -42,7 +42,7 @@ const StudioMenu = (props: any) => {
       maxRowNum:current.task.maxRowNum,
       fragment:current.task.fragment,
       savePointPath:current.task.savePointPath,
-      jobName:current.task.alias,
+      jobName:current.task.jobName,
     };
     const key = current.key;
     const taskKey = (Math.random()*1000)+'';
