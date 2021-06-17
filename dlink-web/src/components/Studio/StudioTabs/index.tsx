@@ -68,10 +68,11 @@ const EditorTabs = (props: any) => {
         activeKey={tabs.activeKey+''}
         onEdit={onEdit}
         className={styles["edit-tabs"]}
+        style={{height:"100%"}}
       >
         {tabs.panes.map(pane => (
           <TabPane tab={pane.title} key={pane.key} closable={pane.closable}>
-            <StudioEdit tabsKey={pane.key} height='400px'/>
+            <StudioEdit tabsKey={pane.key} height='100%'/>
           </TabPane>
         ))}
       </Tabs>

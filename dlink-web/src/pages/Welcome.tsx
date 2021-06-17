@@ -68,28 +68,28 @@ export default (): React.ReactNode => {
           <Paragraph>
             <ul>
               <li>
-                <Link href="">FlinkSql Studio 进程监控</Link>
+                <Link>FlinkSql Studio 进程监控</Link>
               </li>
               <li>
-                <Link href="">FlinkSql Studio 集群总览</Link>
+                <Link>FlinkSql Studio 集群总览</Link>
               </li>
               <li>
-                <Link href="">FlinkSql Studio 集群任务</Link>
+                <Link>FlinkSql Studio 集群任务</Link>
               </li>
               <li>
-                <Link href="">FlinkSql Studio 任务详情</Link>
+                <Link>FlinkSql Studio 任务详情</Link>
               </li>
               <li>
-                <Link href="">FlinkSql Studio 连接器详情</Link>
+                <Link>FlinkSql Studio 连接器详情</Link>
               </li>
               <li>
-                <Link href="">FlinkSql Studio 指标展示</Link>
+                <Link>FlinkSql Studio 指标展示</Link>
               </li>
               <li>
-                <Link href="">FlinkSql Studio 自动完成函数</Link>
+                <Link>FlinkSql Studio 自动完成函数</Link>
               </li>
               <li>
-                <Link href="">用户与授权</Link>
+                <Link>用户与授权</Link>
               </li>
             </ul>
           </Paragraph></>} reverse={true}>
@@ -98,16 +98,16 @@ export default (): React.ReactNode => {
             <Paragraph>
               <ul>
                 <li>
-                  <Link href="">FlinkSql Studio 基本功能</Link>
+                  <Link>FlinkSql Studio 基本功能</Link>
                 </li>
                 <li>
-                  <Link href="">Flink 集群管理</Link>
+                  <Link>Flink 集群管理</Link>
                 </li>
                 <li>
-                  <Link href="">FlinkSql 任务管理</Link>
+                  <Link>FlinkSql 任务管理</Link>
                 </li>
                 <li>
-                  <Link href="">FlinkSql 文档管理</Link>
+                  <Link>FlinkSql 文档管理</Link>
                 </li>
               </ul>
             </Paragraph>
@@ -117,28 +117,28 @@ export default (): React.ReactNode => {
             <Paragraph>
               <ul>
                 <li>
-                  <Link href="">FlinkSql Studio 代码底层架构进行大优化</Link>
+                  <Link>FlinkSql Studio 代码底层架构进行大优化</Link>
                 </li>
                 <li>
-                  <Link href="">支持以 SPI 的方式扩展任意 Connector，同 Flink 官网</Link>
+                  <Link>支持以 SPI 的方式扩展任意 Connector，同 Flink 官网</Link>
                 </li>
                 <li>
-                  <Link href="">提供了 dlink-connector-jdbc，额外支持 Oracle 和 ClickHouse 读写，该扩展包可直接上传 Flink 集群的 lib 进行远程使用，无需重新编译</Link>
+                  <Link>提供了 dlink-connector-jdbc，额外支持 Oracle 和 ClickHouse 读写，该扩展包可直接上传 Flink 集群的 lib 进行远程使用，无需重新编译</Link>
                 </li>
                 <li>
-                  <Link href="">提供了 dlink-client-1.12，支持 Flink 1.12.0+ 多集群的远程使用与本地隔离使用，1.10、1.11 和 1.13 集群可能存在问题</Link>
+                  <Link>提供了 dlink-client-1.12，支持 Flink 1.12.0+ 多集群的远程使用与本地隔离使用，1.10、1.11 和 1.13 集群可能存在问题</Link>
                 </li>
                 <li>
-                  <Link href="">优化了 FlinkSQL 执行与提交到远程集群的任务名，默认为作业的中文别名</Link>
+                  <Link>优化了 FlinkSQL 执行与提交到远程集群的任务名，默认为作业的中文别名</Link>
                 </li>
                 <li>
-                  <Link href="">优化了目录的操作，点击节点即可打开作业，无须右键打开</Link>
+                  <Link>优化了目录的操作，点击节点即可打开作业，无须右键打开</Link>
                 </li>
                 <li>
-                  <Link href="">优化了执行结果信息，添加了任务名的展示</Link>
+                  <Link>优化了执行结果信息，添加了任务名的展示</Link>
                 </li>
                 <li>
-                  <Link href="">对 Studio 界面进行了一定的提示优化</Link>
+                  <Link>对 Studio 界面进行了一定的提示优化</Link>
                 </li>
               </ul>
             </Paragraph>
@@ -148,71 +148,80 @@ export default (): React.ReactNode => {
             <Paragraph>
               <ul>
                 <li>
-                  <Link href="">FlinkSql Studio 页面仿IDE紧凑型设计改进</Link>
+                  <Link>FlinkSql Studio 页面仿IDE紧凑型设计改进</Link>
                 </li>
                 <li>
-                  <Link href="">解决了目录树右键菜单的不能任意点关闭问题</Link>
+                  <Link>解决了目录树右键菜单的不能任意点关闭问题</Link>
                 </li>
                 <li>
-                  <Link href="">解决了选项卡关闭不能正确刷新编辑器的问题</Link>
+                  <Link>解决了选项卡关闭不能正确刷新编辑器的问题</Link>
                 </li>
                 <li>
-                  <Link href="">解决了当前位置不根据选项卡刷新的问题</Link>
+                  <Link>解决了当前位置不根据选项卡刷新的问题</Link>
                 </li>
                 <li>
-                  <Link href="">增加了目录树非空文件夹的灰色删除按钮</Link>
+                  <Link>增加了目录树非空文件夹的灰色删除按钮</Link>
                 </li>
                 <li>
-                  <Link href="">增加了目录树创建根目录按钮以及折叠按钮</Link>
+                  <Link>增加了目录树创建根目录按钮以及折叠按钮</Link>
                 </li>
                 <li>
-                  <Link href="">优化了连接器刷新与清空按钮</Link>
+                  <Link>优化了连接器刷新与清空按钮</Link>
                 </li>
                 <li>
-                  <Link href="">优化了作业异步提交的提示</Link>
+                  <Link>优化了作业异步提交的提示</Link>
                 </li>
                 <li>
-                  <Link href="">增加了简易的使用帮助</Link>
+                  <Link>增加了简易的使用帮助</Link>
                 </li>
               </ul>
             </Paragraph>
           </Timeline.Item>
-          <Timeline.Item><Text code>0.2.2</Text> <Text type="secondary">2021-06-15</Text>
+          <Timeline.Item><Text code>0.2.2</Text> <Text type="secondary">2021-06-17</Text>
             <p> </p>
             <Paragraph>
               <ul>
                 <li>
-                  <Link href="">AGGTABLE 语法实现</Link>
+                  <Link>AGGTABLE 语法实现</Link>
                 </li>
                 <li>
-                  <Link href="">增加了 dlink-function 模块用来管理 UDF 等，其可直接上传至集群lib</Link>
+                  <Link>增加了 dlink-function 模块用来管理 UDF 等，其可直接上传至集群lib</Link>
                 </li>
                 <li>
-                  <Link href="">解决了表单无法正确提交 Fragment 的问题</Link>
+                  <Link>解决了表单无法正确提交 Fragment 的问题</Link>
                 </li>
                 <li>
-                  <Link href="">开启Hash路由解决了历史路由集成Springboot的问题</Link>
+                  <Link>开启Hash路由解决了历史路由集成Springboot的问题</Link>
                 </li>
                 <li>
-                  <Link href="">解决了 FlinkSQL 编辑器的 CTRL+C 撤销乱窜问题</Link>
+                  <Link>解决了 FlinkSQL 编辑器的 CTRL+C 撤销乱窜问题</Link>
                 </li>
                 <li>
-                  <Link href="">解决了右键删除目录树的作业时对应选项卡不关闭的问题</Link>
+                  <Link>解决了右键删除目录树的作业时对应选项卡不关闭的问题</Link>
                 </li>
                 <li>
-                  <Link href="">解决了新增作业其配置无法正常初始化的问题</Link>
+                  <Link>解决了新增作业其配置无法正常初始化的问题</Link>
                 </li>
                 <li>
-                  <Link href="">增加了新增作业自动定位及打开选项卡的功能</Link>
+                  <Link>解决了新增作业集群下拉框值为0的问题</Link>
                 </li>
                 <li>
-                  <Link href="">增加了在不选择会话值时自动禁用会话的功能</Link>
+                  <Link>增加了新增作业自动定位及打开选项卡的功能</Link>
                 </li>
                 <li>
-                  <Link href="">解决了在修改配置后异步提交任务会将作业识别为草稿的问题</Link>
+                  <Link>增加了在不选择会话值时自动禁用会话的功能</Link>
                 </li>
                 <li>
-                  <Link href="">扩展了 Flink Client 1.13</Link>
+                  <Link>解决了在修改配置后异步提交任务会将作业识别为草稿的问题</Link>
+                </li>
+                <li>
+                  <Link>扩展了 Flink Client 1.13</Link>
+                </li>
+                <li>
+                  <Link>解决了编辑器初始化高度5px的问题</Link>
+                </li>
+                <li>
+                  <Link>解决了首页更新日志点击会打开新连接的问题</Link>
                 </li>
               </ul>
             </Paragraph>

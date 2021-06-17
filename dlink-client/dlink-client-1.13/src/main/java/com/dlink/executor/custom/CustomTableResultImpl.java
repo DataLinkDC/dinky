@@ -5,6 +5,7 @@ import org.apache.flink.core.execution.JobClient;
 import org.apache.flink.table.api.*;
 import org.apache.flink.table.catalog.Column;
 import org.apache.flink.table.catalog.ResolvedSchema;
+import org.apache.flink.table.types.DataType;
 import org.apache.flink.table.utils.PrintUtils;
 import org.apache.flink.types.Row;
 import org.apache.flink.util.CloseableIterator;
@@ -44,12 +45,13 @@ public class CustomTableResultImpl implements TableResult {
     public static TableResult buildTableResult(List<TableSchemaField> fields,List<Row> rows){
         Builder builder = builder().resultKind(ResultKind.SUCCESS);
         if(fields.size()>0) {
-            //ResolvedSchema tableSchemaBuild = ResolvedSchema.of();
-            /*List<Column> columns = new ArrayList<>();
+            List<String> columnNames = new ArrayList<>();
+            List<DataType> columnTypes = new ArrayList<>();
             for (int i = 0; i < fields.size(); i++) {
-                columns.add(new TableColumn.PhysicalColumn(fields.get(i).getName(),fields.get(i).getType()));
+                columnNames.add(fields.get(i).getName());
+                columnTypes.add(fields.get(i).getType());
             }
-            builder.schema(tableSchemaBuild.build()).data(rows);*/
+            builder.schema(ResolvedSchema.physical(columnNames,columnTypes)).data(rows);
         }
         return builder.build();
     }
