@@ -103,7 +103,7 @@ config/ -- 配置文件
 lib/ -- 外部依赖及Connector
 |- dlink-client-1.12.jar -- 必需
 |- dlink-connector-jdbc.jar
-|- dlink-function-0.2.2.jar
+|- dlink-function-0.2.3.jar
 |- flink-connector-jdbc_2.11-1.12.4.jar
 |- flink-csv-1.12.4.jar
 |- flink-json-1.12.4.jar
@@ -136,6 +136,7 @@ dlink -- 父项目
 |-dlink-admin -- 管理中心
 |-dlink-client -- Client 中心
 | |-dlink-client-1.12 -- Client-1.12 实现
+| |-dlink-client-1.13 -- Client-1.13 实现
 |-dlink-connectors -- Connectors 中心
 | |-dlink-connector-jdbc -- Jdbc 扩展
 |-dlink-core -- 执行中心
@@ -165,7 +166,7 @@ maven clean install -Dmaven.test.skip=true
 
 #### 扩展Connector及UDF
 
-将 Flink 集群上已扩展好的 Connector和UDF 直接放入 Dlink 的 lib 下，然后重启即可。
+将 Flink 集群上已扩展好的 Connector 和 UDF 直接放入 Dlink 的 lib 下，然后重启即可。
 定制 Connector 过程同 Flink 官方一样。
 
 #### 扩展其他版本的Flink
@@ -195,7 +196,7 @@ Flink 的版本取决于 lib 下的 dlink-client-1.12.jar。
 1. 在左侧目录区域创建文件夹或任务。
 2. 在中间编辑区编写 FlinkSQL 。
 3. 在右侧配置执行参数。
-4. Fragment开启后，可以这样写，为了您方便：
+4. Fragment 开启后，可以使用增强的 sql 片段语法：
 
 ```sql
 sf:=select * from;tb:=student;
@@ -203,18 +204,26 @@ ${sf} ${tb}
 ##效果等同于
 select * from student
 ```
+5. 内置 sql 增强语法-表值聚合：
 
-5. MaxRowNum 为预览的最大集合长度，默认100，最大9999。
-6. SavePointPath 当前版本属于非Jar提交，暂不可用。
-7. Flink集群与共享会话构成了唯一的 Catalogue ,即您可以通过自定义一个会话 key，然后将当前会话 key 告诉您的战友，那他可以用该 key 访问您在集群上的 Catalogue信息与缓存。当然会话数量有限制，最大256*0.75，未来版本会开放设置。
-8. 连接器为 Catalogue 里的表信息，清除会销毁当前会话。
-9. Local 模式请使用少量测试数据，真实数据请使用远程集群。
-10. 执行 SQL 时，如果您选中了部分SQL，则会执行选中的内容，否则执行全部内容。
-11. 小火箭的提交功能是异步提交当前任务保存的FlinkSQL及配置到集群。无法提交草稿。
-12. 执行信息或者历史中那个很长很长的就是集群上的 JobId，只有同步执行才会记录执行信息和历史。
-13. 草稿是无法被异步远程提交的，只能同步执行。
-14. 灰色按钮代表近期将实现。
-
+```sql
+CREATE AGGTABLE aggdemo AS
+SELECT myField,value,rank
+FROM MyTable
+GROUP BY myField
+AGG BY TOP2(value) as (value,rank);
+```
+6. MaxRowNum 为同步执行时预览查询结果的最大集合长度，默认 100，最大 9999。
+7. SavePointPath 当前版本属于非 Jar 提交，暂不可用。
+8. Flink 集群与共享会话构成了唯一的 Catalogue ,即您可以通过自定义一个会话 key，然后将当前会话 key 告诉您的战友，那他可以用该 key 访问您在集群上的 Catalogue信息与缓存。当然会话数量有限制，最大256*0.75，未来版本会开放设置。当不选择会话值时，默认为临时会话。
+9. 连接器为 Catalogue 里的表信息，清空按钮会销毁当前会话。
+10. Local 模式请使用少量测试数据，真实数据请使用远程集群。
+11. 执行 SQL 时，如果您选中了部分 SQL，则会执行选中的内容，否则执行全部内容。
+12. 小火箭的提交功能是异步提交当前任务保存的 FlinkSQL 及配置到集群。无法提交草稿。
+13. 执行信息或者历史中那个很长很长的就是集群上的 JobId，只有同步执行才会记录执行信息和历史。
+14. 草稿是无法被异步远程提交的，只能同步执行。
+15. 灰色按钮代表近期将实现。
+16. 同步执行时可以自由指定任务名，异步提交默认为作业名。
 #### 使用技巧
 
 1.[Flink AggTable 在 Dlink 的实践](https://github.com/DataLinkDC/dlink/blob/main/dlink-doc/doc/FlinkAggTable%E5%9C%A8Dlink%E7%9A%84%E5%BA%94%E7%94%A8.md)
