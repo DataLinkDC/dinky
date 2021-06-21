@@ -6,6 +6,8 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   application:
     name: dlink
+  flyway:
+    enabled: true
 
 server:
   port: 8888
