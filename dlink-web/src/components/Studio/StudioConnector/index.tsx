@@ -1,21 +1,25 @@
-import {message, Input, Button, Space, Table,  Dropdown, Menu, Empty,Divider,Tooltip} from "antd";
+import {message, Input, Button, Space, Table,  Dropdown, Menu, Empty,Divider,
+  Tooltip,Breadcrumb} from "antd";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
 import {useState} from "react";
-// import Highlighter from 'react-highlight-words';
-import { SearchOutlined,DownOutlined,DeleteOutlined } from '@ant-design/icons';
+import styles from "./index.less";
+import { SearchOutlined,DownOutlined,DeleteOutlined,CommentOutlined } from '@ant-design/icons';
 import React from "react";
 import {executeDDL} from "@/pages/FlinkSqlStudio/service";
 import {handleRemove} from "@/components/Common/crud";
+import {showTables} from "@/components/Studio/StudioEvent/DDL";
 
 
 const StudioConnector = (props:any) => {
 
-  const {current} = props;
+  const {current,dispatch,currentSessionCluster} = props;
   const [tableData,setTableData] = useState<[]>([]);
   const [loadings,setLoadings] = useState<boolean[]>([]);
   const [searchText,setSearchText] = useState<string>('');
   const [searchedColumn,setSearchedColumn] = useState<string>('');
+  const [clusterName,setClusterName] = useState<string>('');
+  const [session,setSession] = useState<string>('');
 
   const getColumnSearchProps = (dIndex) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
@@ -132,24 +136,7 @@ const StudioConnector = (props:any) => {
   };
 
   const getTables = () => {
-    let newLoadings = [...loadings];
-    newLoadings[0] = true;
-    setLoadings(newLoadings);
-    const res = executeDDL({
-      statement:"show tables",
-      clusterId: current.task.clusterId,
-      session:current.task.session,
-    });
-    res.then((result)=>{
-      if(result.datas.result.rowData.length>0){
-        setTableData(result.datas.result.rowData);
-      }else {
-        setTableData([]);
-      }
-      let newLoadings = [...loadings];
-      newLoadings[0] = false;
-      setLoadings(newLoadings);
-    });
+    showTables(current.task.clusterId,current.task.clusterName,current.task.session,dispatch);
   };
 
   const clearSession = () => {
@@ -216,11 +203,18 @@ const StudioConnector = (props:any) => {
           />
         </Tooltip>
       </div>
-      {tableData&&tableData.length>0?(<Table dataSource={tableData} columns={getColumns()} size="small" />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
-    </>
+      <Breadcrumb className={styles["session-path"]}>
+        <CommentOutlined />
+        <Divider type="vertical" />
+        <Breadcrumb.Item>{currentSessionCluster.clusterName}</Breadcrumb.Item>
+        <Breadcrumb.Item>{currentSessionCluster.session}</Breadcrumb.Item>
+      </Breadcrumb>
+      {currentSessionCluster.connectors&&currentSessionCluster.connectors.length>0?(<Table dataSource={currentSessionCluster.connectors} columns={getColumns()} size="small" />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
+      </>
   );
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
   current: Studio.current,
+  currentSessionCluster: Studio.currentSessionCluster,
 }))(StudioConnector);

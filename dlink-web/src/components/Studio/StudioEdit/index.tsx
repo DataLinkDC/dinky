@@ -4,8 +4,8 @@ import * as _monaco from "monaco-editor";
 import MonacoEditor from "react-monaco-editor";
 import {BaseDataSourceField, BaseDataSourceHeader, CompletionItem} from "./data";
 import Completion from "./completion";
+import styles from './index.less';
 
-import {executeSql} from "@/pages/FlinkSqlStudio/service";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
 
@@ -52,6 +52,7 @@ const FlinkSqlEditor = (props:any) => {
     return 0;
   };
   const tabIndex = getTabIndex();
+
   const code: any = useRef(tabs.panes[tabIndex].value ? tabs.panes[tabIndex].value : '');
   // const code: any = useRef(current.sql ? current.sql : '');
   // const code: any = useRef(value ? value.formulaContent : '');

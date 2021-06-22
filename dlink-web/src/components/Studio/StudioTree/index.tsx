@@ -138,6 +138,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
           task:{
             session:'',
             maxRowNum: 100,
+            jobName:node.name,
             ...result.datas
           },
           console:{
