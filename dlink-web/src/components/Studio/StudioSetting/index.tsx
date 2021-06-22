@@ -4,6 +4,7 @@ import {Form, InputNumber,Input,Switch,Select,Tag,Row,Col,Divider,Tooltip,Button
 import {InfoCircleOutlined,PlusOutlined,MinusSquareOutlined} from "@ant-design/icons";
 import styles from "./index.less";
 import {useEffect, useState} from "react";
+import {showTables} from "@/components/Studio/StudioEvent/DDL";
 
 const { Option } = Select;
 
@@ -58,6 +59,10 @@ const StudioSetting = (props: any) => {
       type: "Studio/saveTabs",
       payload: newTabs,
     });
+  };
+
+  const onChangeClusterSession = ()=>{
+    showTables(current.task.clusterId,current.task.clusterName,current.task.session,dispatch);
   };
   return (
     <>
@@ -136,6 +141,7 @@ const StudioSetting = (props: any) => {
           placeholder="选择Flink集群"
           defaultValue={0}
           optionLabelProp="label"
+          onChange={onChangeClusterSession}
         >
           <Option value={0} label={(<><Tag color="default">Local</Tag>本地环境</>)}>
             <Tag color="default">Local</Tag>
@@ -155,6 +161,7 @@ const StudioSetting = (props: any) => {
           placeholder="选择会话"
           // defaultValue='admin'
           allowClear
+          onChange={onChangeClusterSession}
           dropdownRender={menu => (
             <div>
               {menu}

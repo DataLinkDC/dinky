@@ -8,11 +8,12 @@ import { SearchOutlined,DownOutlined,DeleteOutlined,CommentOutlined } from '@ant
 import React from "react";
 import {executeDDL} from "@/pages/FlinkSqlStudio/service";
 import {handleRemove} from "@/components/Common/crud";
+import {showTables} from "@/components/Studio/StudioEvent/DDL";
 
 
 const StudioConnector = (props:any) => {
 
-  const {current} = props;
+  const {current,dispatch,currentSessionCluster} = props;
   const [tableData,setTableData] = useState<[]>([]);
   const [loadings,setLoadings] = useState<boolean[]>([]);
   const [searchText,setSearchText] = useState<string>('');
@@ -135,26 +136,7 @@ const StudioConnector = (props:any) => {
   };
 
   const getTables = () => {
-    let newLoadings = [...loadings];
-    newLoadings[0] = true;
-    setLoadings(newLoadings);
-    const res = executeDDL({
-      statement:"show tables",
-      clusterId: current.task.clusterId,
-      session:current.task.session,
-    });
-    res.then((result)=>{
-      setClusterName(current.task.clusterName);
-      setSession(current.task.session);
-      if(result.datas.result.rowData.length>0){
-        setTableData(result.datas.result.rowData);
-      }else {
-        setTableData([]);
-      }
-      let newLoadings = [...loadings];
-      newLoadings[0] = false;
-      setLoadings(newLoadings);
-    });
+    showTables(current.task.clusterId,current.task.clusterName,current.task.session,dispatch);
   };
 
   const clearSession = () => {
@@ -224,14 +206,15 @@ const StudioConnector = (props:any) => {
       <Breadcrumb className={styles["session-path"]}>
         <CommentOutlined />
         <Divider type="vertical" />
-        <Breadcrumb.Item>{clusterName}</Breadcrumb.Item>
-        <Breadcrumb.Item>{session}</Breadcrumb.Item>
+        <Breadcrumb.Item>{currentSessionCluster.clusterName}</Breadcrumb.Item>
+        <Breadcrumb.Item>{currentSessionCluster.session}</Breadcrumb.Item>
       </Breadcrumb>
-      {tableData&&tableData.length>0?(<Table dataSource={tableData} columns={getColumns()} size="small" />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
+      {currentSessionCluster.connectors&&currentSessionCluster.connectors.length>0?(<Table dataSource={currentSessionCluster.connectors} columns={getColumns()} size="small" />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
       </>
   );
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
   current: Studio.current,
+  currentSessionCluster: Studio.currentSessionCluster,
 }))(StudioConnector);

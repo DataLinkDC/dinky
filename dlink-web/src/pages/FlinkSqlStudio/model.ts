@@ -5,6 +5,7 @@ import {
   queryData
 } from "@/components/Common/crud";
 import {Form} from "antd";
+import {executeDDL} from "@/pages/FlinkSqlStudio/service";
 
 export type ClusterType = {
   id: number,
@@ -37,9 +38,9 @@ export type TaskType = {
   createTime?: Date,
   updateTime?: Date,
   statement?: string,
-  session:string;
-  maxRowNum:number;
-  jobName:string;
+  session: string;
+  maxRowNum: number;
+  jobName: string;
 };
 
 export type ConsoleType = {
@@ -48,12 +49,12 @@ export type ConsoleType = {
 
 export type TabsItemType = {
   title: string;
-  key: number ,
-  value:string;
+  key: number,
+  value: string;
   closable: boolean;
   path: string[];
-  task?:TaskType;
-  console:ConsoleType;
+  task?: TaskType;
+  console: ConsoleType;
   monaco?: any;
 }
 
@@ -68,15 +69,26 @@ export type RightClickMenu = {
   id: number,
   name: string
 };
+
+export type ConnectorType = {
+  tablename: string;
+}
+export type SessionClusterType = {
+  session: string;
+  clusterId: number;
+  clusterName: string;
+  connectors: ConnectorType[];
+}
 export type StateType = {
-  cluster?:ClusterType[];
+  cluster?: ClusterType[];
+  currentSessionCluster: SessionClusterType[];
   current: TabsItemType;
   sql?: string;
   monaco?: any;
   currentPath?: string[];
-  tabs:TabsType;
-  session:string[];
-  rightClickMenu?:boolean;
+  tabs: TabsType;
+  session: string[];
+  rightClickMenu?: boolean;
 };
 
 export type ModelType = {
@@ -94,6 +106,7 @@ export type ModelType = {
     saveTaskData: Reducer<StateType>;
     saveSession: Reducer<StateType>;
     showRightClickMenu: Reducer<StateType>;
+    refreshCurrentSessionCluster: Reducer<StateType>;
   };
 };
 
@@ -111,66 +124,72 @@ const getClusters = async () => {
 const Model: ModelType = {
   namespace: 'Studio',
   state: {
-    cluster:getClusters(),
+    cluster: getClusters(),
+    currentSessionCluster: {
+      session: '',
+      clusterId: 0,
+      clusterName: '本地环境',
+      connectors: [],
+    },
     current: {
       title: '草稿',
-      key: 0 ,
-      value:'',
+      key: 0,
+      value: '',
       closable: false,
       path: ['草稿'],
-      task:{
-        jobName:'草稿',
+      task: {
+        jobName: '草稿',
         checkPoint: 0,
         savePointPath: '',
         parallelism: 1,
         fragment: true,
         clusterId: 0,
-        clusterName:"本地环境",
+        clusterName: "本地环境",
         maxRowNum: 100,
-        session:'',
-        alias:'草稿',
+        session: '',
+        alias: '草稿',
       },
-      console:{
-        result:[],
+      console: {
+        result: [],
       },
       monaco: {},
     },
     sql: '',
     monaco: {},
     currentPath: [],
-    tabs:{
+    tabs: {
       activeKey: 0,
       panes: [{
         title: '草稿',
-        key: 0 ,
-        value:'',
+        key: 0,
+        value: '',
         closable: false,
         path: ['草稿'],
-        task:{
-          jobName:'草稿',
+        task: {
+          jobName: '草稿',
           checkPoint: 0,
           savePointPath: '',
           parallelism: 1,
           fragment: true,
           clusterId: 0,
-          clusterName:"本地环境",
-          session:'',
+          clusterName: "本地环境",
+          session: '',
           maxRowNum: 100,
-          alias:'草稿',
+          alias: '草稿',
         },
-        console:{
-          result:[],
+        console: {
+          result: [],
         },
         monaco: {},
       }],
     },
-    session:[],
-    rightClickMenu:false
+    session: [],
+    rightClickMenu: false
   },
 
   effects: {
-    *saveTask({ payload }, { call, put }) {
-      yield call(handleAddOrUpdate,'api/task', payload);
+    * saveTask({payload}, {call, put}) {
+      yield call(handleAddOrUpdate, 'api/task', payload);
       yield put({
         type: 'saveTaskData',
         payload,
@@ -179,130 +198,138 @@ const Model: ModelType = {
   },
 
   reducers: {
-    saveSql(state, { payload }) {
+    saveSql(state, {payload}) {
       const tabs = state.tabs;
       let newCurrent = state.current;
-      newCurrent.value=payload;
-      for(let i=0;i<tabs.panes.length;i++){
-        if(tabs.panes[i].key==tabs.activeKey){
-          tabs.panes[i].value=payload;
-          tabs.panes[i].task&&(tabs.panes[i].task.statement=payload);
+      newCurrent.value = payload;
+      for (let i = 0; i < tabs.panes.length; i++) {
+        if (tabs.panes[i].key == tabs.activeKey) {
+          tabs.panes[i].value = payload;
+          tabs.panes[i].task && (tabs.panes[i].task.statement = payload);
         }
       }
       return {
         ...state,
-        current:{
+        current: {
           ...newCurrent
         },
-        tabs:{
+        tabs: {
           ...tabs
         },
       };
     },
-    saveCurrentPath(state, { payload }) {
+    saveCurrentPath(state, {payload}) {
       return {
         ...state,
-        currentPath:payload,
+        currentPath: payload,
       };
     },
-    saveMonaco(state, { payload }) {
+    saveMonaco(state, {payload}) {
       return {
         ...state,
-        monaco:{
+        monaco: {
           ...payload
         },
       };
     },
-    saveTabs(state, { payload }) {
+    saveTabs(state, {payload}) {
       let newCurrent = state.current;
-      for(let i=0;i<payload.panes.length;i++){
-        if(payload.panes[i].key==payload.activeKey){
-          newCurrent=payload.panes[i];
+      for (let i = 0; i < payload.panes.length; i++) {
+        if (payload.panes[i].key == payload.activeKey) {
+          newCurrent = payload.panes[i];
         }
       }
       return {
         ...state,
-        current:{
+        current: {
           ...newCurrent,
         },
-        tabs:{
+        tabs: {
           ...payload,
         },
       };
     },
-    deleteTabByKey(state, { payload }) {
+    deleteTabByKey(state, {payload}) {
       let newTabs = state.tabs;
-      for(let i=0;i<newTabs.panes.length;i++){
-        if(newTabs.panes[i].key==payload){
+      for (let i = 0; i < newTabs.panes.length; i++) {
+        if (newTabs.panes[i].key == payload) {
           newTabs.panes.splice(i, 1);
           break;
         }
       }
-      let newCurrent = newTabs.panes[newTabs.panes.length-1];
-      if(newTabs.activeKey==payload) {
+      let newCurrent = newTabs.panes[newTabs.panes.length - 1];
+      if (newTabs.activeKey == payload) {
         newTabs.activeKey = newCurrent.key;
       }
       return {
         ...state,
-        current:{
+        current: {
           ...newCurrent,
         },
-        tabs:{
+        tabs: {
           ...newTabs,
         },
       };
     },
-    changeActiveKey(state, { payload }) {
+    changeActiveKey(state, {payload}) {
       let tabs = state.tabs;
       tabs.activeKey = payload;
       let newCurrent = state.current;
-      for(let i=0;i<tabs.panes.length;i++){
-        if(tabs.panes[i].key==tabs.activeKey){
-          newCurrent=tabs.panes[i];
+      for (let i = 0; i < tabs.panes.length; i++) {
+        if (tabs.panes[i].key == tabs.activeKey) {
+          newCurrent = tabs.panes[i];
         }
       }
       return {
         ...state,
-        current:{
+        current: {
           ...newCurrent,
         },
-        tabs:{
+        tabs: {
           ...tabs,
         },
-        currentPath:newCurrent.path,
+        currentPath: newCurrent.path,
       };
     },
-    saveTaskData(state, { payload }) {
+    saveTaskData(state, {payload}) {
       let newTabs = state.tabs;
-      for(let i=0;i<newTabs.panes.length;i++){
-        if(newTabs.panes[i].key==newTabs.activeKey){
-          newTabs.panes[i].task=payload;
+      for (let i = 0; i < newTabs.panes.length; i++) {
+        if (newTabs.panes[i].key == newTabs.activeKey) {
+          newTabs.panes[i].task = payload;
         }
       }
       return {
         ...state,
-        tabs:{
+        tabs: {
           ...newTabs,
         },
       };
     },
-    saveSession(state, { payload }) {
+    saveSession(state, {payload}) {
       let newSession = state.session;
-      for(let i=0;i<newSession.length;i++){
-        if(newSession[i].key==payload){
+      for (let i = 0; i < newSession.length; i++) {
+        if (newSession[i].key == payload) {
           return {};
         }
       }
       newSession.push(payload);
       return {
         ...state,
-        session:newSession,
+        session: newSession,
       };
     },
-    showRightClickMenu(state, { payload }) {
+    showRightClickMenu(state, {payload}) {
       return {
         ...state,
-        rightClickMenu:payload,
+        rightClickMenu: payload,
+      };
+    },
+    refreshCurrentSessionCluster(state, {payload}) {
+      return {
+        ...state,
+        currentSessionCluster: {
+          ...payload
+        },
       };
     },
   },

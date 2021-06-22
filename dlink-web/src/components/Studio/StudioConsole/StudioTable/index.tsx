@@ -1,4 +1,4 @@
-import {Typography, Input, Button, Space, Table, Select, Tag, Form, Empty} from "antd";
+import {Typography, Input, Button, Space, Table, Select, Tag, Form, Empty,Tooltip} from "antd";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
 import {useState} from "react";
@@ -110,12 +110,12 @@ const StudioTable = (props:any) => {
       >
         {current.console.result.map((item,index)=> {
           if(item.success) {
-            let tag = (<><Tag color="processing">{item.finishDate}</Tag>
+            let tag = (<> <Tooltip placement="topLeft" title={item.statement}><Tag color="processing">{item.finishDate}</Tag>
               <Text underline>[{item.sessionId}:{item.flinkHost}:{item.flinkPort}]</Text>
               {item.jobName&&<Text code>{item.jobName}</Text>}
               {item.jobId&&<Text code>{item.jobId}</Text>}
               <Text keyboard>{item.time}ms</Text>
-               {item.statement}</>);
+              {item.statement}</Tooltip></>);
             return (<Option value={index} label={tag}>
               {tag}
             </Option>)

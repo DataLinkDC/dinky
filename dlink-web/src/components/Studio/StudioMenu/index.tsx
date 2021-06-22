@@ -12,6 +12,7 @@ import {connect} from "umi";
 import { postDataArray} from "@/components/Common/crud";
 import {executeSql} from "@/pages/FlinkSqlStudio/service";
 import StudioHelp from "../StudioHelp";
+import {showTables} from "@/components/Studio/StudioEvent/DDL";
 
 const menu = (
   <Menu>
@@ -76,16 +77,16 @@ const StudioMenu = (props: any) => {
         type: "Studio/saveTabs",
         payload: newTabs,
       });
+      showTables(current.task.clusterId,current.task.clusterName,current.task.session,dispatch);
     })
   };
 
   const submit= () =>{
     if(!current.task.id){
       message.error(`草稿【${current.title}】无法被提交，请创建或选择有效作业进行提交`);
-      return false;
+      return;
     }
     const taskKey = (Math.random()*1000)+'';
-
     Modal.confirm({
       title: '异步提交作业',
       content: `确定异步提交作业【${current.task.alias}】到其配置的集群吗？请确认您的作业是否已经被保存！`,
@@ -117,7 +118,7 @@ const StudioMenu = (props: any) => {
     const fieldsValue = await form.validateFields();
     if(current.task){
       let task = {
-        id:current.key,
+        ...current.task,
         statement:current.value,
         ...fieldsValue
       };

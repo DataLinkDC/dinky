@@ -229,7 +229,7 @@ export default (): React.ReactNode => {
               </ul>
             </Paragraph>
           </Timeline.Item>
-          <Timeline.Item><Text code>0.2.3</Text> <Text type="secondary">2021-06-17</Text>
+          <Timeline.Item><Text code>0.2.3</Text> <Text type="secondary">2021-06-21</Text>
             <p> </p>
             <Paragraph>
               <ul>
@@ -247,6 +247,15 @@ export default (): React.ReactNode => {
                 </li>
                 <li>
                   <Link>增加了连接器当前的集群与会话显示</Link>
+                </li>
+                <li>
+                  <Link>增加了选择集群或会话以及同步执行时的连接器自动刷新</Link>
+                </li>
+                <li>
+                  <Link>解决了在修改作业配置后异步提交作业名未定义的问题</Link>
+                </li>
+                <li>
+                  <Link>增加了历史记录下拉列表鼠标悬浮显示全部SQL的功能</Link>
                 </li>
               </ul>
             </Paragraph>
