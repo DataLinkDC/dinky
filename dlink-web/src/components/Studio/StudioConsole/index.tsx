@@ -8,6 +8,7 @@ import StudioMsg from "./StudioMsg";
 import StudioTable from "./StudioTable";
 import StudioHistory from "./StudioHistory";
 import StudioFX from "./StudioFX";
+import StudioCA from "./StudioCA";
 
 const { TabPane } = Tabs;
 
@@ -59,7 +60,7 @@ const StudioConsole = (props:any) => {
         }
         key="StudioConsanguinity"
       >
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+        <StudioCA />
       </TabPane>
       <TabPane
         tab={

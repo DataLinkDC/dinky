@@ -1,6 +1,7 @@
 package com.dlink.controller;
 
 import com.dlink.common.result.Result;
+import com.dlink.dto.StudioCADTO;
 import com.dlink.dto.StudioDDLDTO;
 import com.dlink.dto.StudioExecuteDTO;
 import com.dlink.model.Task;
@@ -44,6 +45,17 @@ public class StudioController {
     public Result executeDDL(@RequestBody StudioDDLDTO studioDDLDTO)  {
         RunResult runResult = studioService.executeDDL(studioDDLDTO);
         return Result.succeed(runResult,"执行成功");
+    }
+
+    /**
+     * 获取单表的血缘分析
+     */
+    @PostMapping("/getCAByStatement")
+    public Result getCAByStatement(@RequestBody StudioCADTO studioCADTO)  {
+        switch (studioCADTO.getType()){
+            case 1:return Result.succeed(studioService.getOneTableColumnCAByStatement(studioCADTO.getStatement()),"执行成功");
+            default:return Result.failed("敬请期待");
+        }
     }
 
     /**

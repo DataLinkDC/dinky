@@ -7,6 +7,8 @@ import com.dlink.dto.StudioExecuteDTO;
 import com.dlink.exception.BusException;
 import com.dlink.executor.Executor;
 import com.dlink.executor.ExecutorSetting;
+import com.dlink.explainer.ca.CABuilder;
+import com.dlink.explainer.ca.TableCANode;
 import com.dlink.job.JobManager;
 import com.dlink.model.Cluster;
 import com.dlink.result.RunResult;
@@ -15,6 +17,8 @@ import com.dlink.service.StudioService;
 import com.dlink.session.SessionPool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * StudioServiceImpl
@@ -93,5 +97,15 @@ public class StudioServiceImpl implements StudioService {
         }else{
             return false;
         }
+    }
+
+    @Override
+    public List<TableCANode> getOneTableCAByStatement(String statement) {
+        return CABuilder.getOneTableCAByStatement(statement);
+    }
+
+    @Override
+    public List<TableCANode> getOneTableColumnCAByStatement(String statement) {
+        return CABuilder.getOneTableColumnCAByStatement(statement);
     }
 }

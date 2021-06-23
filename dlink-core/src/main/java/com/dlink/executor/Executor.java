@@ -8,6 +8,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.ExplainDetail;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableResult;
+import org.apache.flink.table.catalog.CatalogManager;
 import org.apache.flink.table.functions.ScalarFunction;
 import org.apache.flink.table.functions.UserDefinedFunction;
 
@@ -28,7 +29,7 @@ public abstract class Executor {
 
 
     public static Executor build(){
-        return new LocalStreamExecutor(new ExecutorSetting(LOCAL));
+        return new LocalStreamExecutor(new ExecutorSetting(LOCAL,true));
     }
 
     public static Executor build(EnvironmentSetting environmentSetting,ExecutorSetting executorSetting){
@@ -91,5 +92,9 @@ public abstract class Executor {
 
     public void createTemporarySystemFunction(String name, Class<? extends UserDefinedFunction> var2){
         stEnvironment.createTemporarySystemFunction(name,var2);
+    }
+
+    public CatalogManager getCatalogManager(){
+        return stEnvironment.getCatalogManager();
     }
 }

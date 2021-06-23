@@ -3,6 +3,9 @@ package com.dlink.executor.custom;
 import com.dlink.result.SqlExplainResult;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.dag.Transformation;
+import org.apache.flink.calcite.shaded.com.fasterxml.jackson.core.JsonProcessingException;
+import org.apache.flink.calcite.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.JsonNode;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.graph.JSONGenerator;
@@ -199,13 +202,14 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
             } else if (operation instanceof QueryOperation) {
                 record.setType("Query DML");
             } else {
-                operationlist.remove(i);
+                record.setExplain(operation.asSummaryString());
+                record.setExplainTrue(true);
                 record.setType("DDL");
+                operationlist.remove(i);
                 i=i-1;
             }
         }
         if(operationlist.size()==0){
-            //record.setExplain("DDL语句不进行解释。");
             return record;
         }
         record.setExplain(planner.explain(operationlist, extraDetails));

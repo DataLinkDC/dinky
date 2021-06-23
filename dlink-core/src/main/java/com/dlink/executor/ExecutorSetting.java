@@ -18,6 +18,11 @@ public class ExecutorSetting {
         this.type = type;
     }
 
+    public ExecutorSetting(String type, boolean useSqlFragment) {
+        this.type = type;
+        this.useSqlFragment = useSqlFragment;
+    }
+
     public ExecutorSetting(String type, Integer checkpoint) {
         this.type = type;
         this.checkpoint = checkpoint;

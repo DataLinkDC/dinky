@@ -2,7 +2,10 @@ package com.dlink.service;
 
 import com.dlink.dto.StudioDDLDTO;
 import com.dlink.dto.StudioExecuteDTO;
+import com.dlink.explainer.ca.TableCANode;
 import com.dlink.result.RunResult;
+
+import java.util.List;
 
 /**
  * StudioService
@@ -16,4 +19,8 @@ public interface StudioService {
     RunResult executeDDL(StudioDDLDTO studioDDLDTO);
 
     boolean clearSession(String session);
+
+    List<TableCANode> getOneTableCAByStatement(String statement);
+
+    List<TableCANode> getOneTableColumnCAByStatement(String statement);
 }

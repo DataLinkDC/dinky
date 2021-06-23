@@ -260,6 +260,16 @@ export default (): React.ReactNode => {
               </ul>
             </Paragraph>
           </Timeline.Item>
+          <Timeline.Item><Text code>0.3.0</Text> <Text type="secondary">2021-07-??</Text>
+            <p> </p>
+            <Paragraph>
+              <ul>
+                <li>
+                  <Link>实现了单任务的表级血缘分析</Link>
+                </li>
+              </ul>
+            </Paragraph>
+          </Timeline.Item>
         </Timeline>
       </Card>
     </PageContainer>
