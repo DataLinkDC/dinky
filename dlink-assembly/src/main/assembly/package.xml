@@ -1,0 +1,41 @@
+<assembly
+        xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
+    <id>bin-${package.version}</id>
+    <formats>
+        <format>dir</format>
+        <format>tar.gz</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <baseDirectory>dlink</baseDirectory>
+    <fileSets>
+
+        <!--        打包dlink主要代码-->
+        <fileSet>
+            <directory>../dlink-admin/target/dlink-service/</directory>
+            <includes>
+                <include>**/*.*</include>
+            </includes>
+            <outputDirectory>dlink</outputDirectory>
+        </fileSet>
+
+        <!--        打包dlink-client Jar包-->
+        <fileSet>
+            <directory>../dlink-client/dlink-client-1.12/target/</directory>
+            <includes>
+                <include>*.jar</include>
+            </includes>
+            <outputDirectory>dlink/lib/</outputDirectory>
+        </fileSet>
+
+        <!--        打包dlink-connectors Jar包-->
+        <fileSet>
+            <directory>../dlink-connectors/dlink-connectors-jdbc/target/</directory>
+            <includes>
+                <include>*.jar</include>
+            </includes>
+            <outputDirectory>dlink/lib/</outputDirectory>
+        </fileSet>
+    </fileSets>
+</assembly>

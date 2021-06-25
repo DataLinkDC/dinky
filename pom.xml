@@ -14,6 +14,7 @@
         <module>dlink-connectors</module>
         <module>dlink-client</module>
         <module>dlink-function</module>
+        <module>dlink-assembly</module>
     </modules>
 
     <properties>
@@ -34,6 +35,8 @@
         <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
         <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
         <flyway.version>6.4.4</flyway.version>
+        <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
+        <maven-assembly-plugin.version>3.2.0</maven-assembly-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -151,14 +154,14 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-maven-plugin</artifactId>
-                    <version>${spring-boot-dependencies.version}</version>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${maven-jar-plugin.version}</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>versions-maven-plugin</artifactId>
-                    <version>${versions-maven-plugin.version}</version>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>${maven-assembly-plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
