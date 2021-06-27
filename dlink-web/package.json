@@ -46,7 +46,7 @@
     "not ie <= 10"
   ],
   "dependencies": {
-    "@ant-design/charts": "^1.1.17",
+    "@ant-design/charts": "^1.1.18",
     "@ant-design/icons": "^4.5.0",
     "@ant-design/pro-descriptions": "^1.6.8",
     "@ant-design/pro-form": "^1.18.3",
@@ -67,7 +67,6 @@
     "nzh": "^1.0.3",
     "omit.js": "^2.0.2",
     "react": "^17.0.0",
-    "react-custom-scrollbars": "^4.2.1",
     "react-dev-inspector": "^1.1.1",
     "react-dom": "^17.0.0",
     "react-helmet-async": "^1.0.4",

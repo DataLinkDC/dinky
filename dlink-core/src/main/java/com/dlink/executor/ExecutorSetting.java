@@ -1,12 +1,18 @@
 package com.dlink.executor;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * ExecutorSetting
  *
  * @author wenmo
  * @since 2021/5/25 13:43
  **/
+@Setter
+@Getter
 public class ExecutorSetting {
+    private String host;
     private String type;
     private Integer checkpoint;
     private Integer parallelism;
@@ -51,55 +57,17 @@ public class ExecutorSetting {
         this.savePointPath = savePointPath;
     }
 
+    public ExecutorSetting(String host, String type, Integer checkpoint, Integer parallelism, boolean useSqlFragment, String savePointPath, String jobName) {
+        this.host = host;
+        this.type = type;
+        this.checkpoint = checkpoint;
+        this.parallelism = parallelism;
+        this.useSqlFragment = useSqlFragment;
+        this.savePointPath = savePointPath;
+        this.jobName = jobName;
+    }
+
     public boolean isRemote(){
         return type.equals(Executor.REMOTE);
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public Integer getCheckpoint() {
-        return checkpoint;
-    }
-
-    public void setCheckpoint(Integer checkpoint) {
-        this.checkpoint = checkpoint;
-    }
-
-    public boolean isUseSqlFragment() {
-        return useSqlFragment;
-    }
-
-    public void setUseSqlFragment(boolean useSqlFragment) {
-        this.useSqlFragment = useSqlFragment;
-    }
-
-    public Integer getParallelism() {
-        return parallelism;
-    }
-
-    public void setParallelism(Integer parallelism) {
-        this.parallelism = parallelism;
-    }
-
-    public String getSavePointPath() {
-        return savePointPath;
-    }
-
-    public void setSavePointPath(String savePointPath) {
-        this.savePointPath = savePointPath;
-    }
-
-    public String getJobName() {
-        return jobName;
-    }
-
-    public void setJobName(String jobName) {
-        this.jobName = jobName;
     }
 }

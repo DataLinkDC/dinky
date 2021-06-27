@@ -2,6 +2,7 @@ package com.dlink.job;
 
 import com.dlink.constant.FlinkConstant;
 import com.dlink.constant.FlinkSQLConstant;
+import com.dlink.constant.NetConstant;
 import com.dlink.executor.EnvironmentSetting;
 import com.dlink.executor.Executor;
 import com.dlink.executor.ExecutorSetting;
@@ -13,12 +14,10 @@ import com.dlink.session.SessionPool;
 import com.dlink.trans.Operations;
 import org.apache.flink.api.common.JobID;
 import org.apache.flink.table.api.TableResult;
+import org.junit.Assert;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * JobManager
@@ -26,38 +25,42 @@ import java.util.Map;
  * @author wenmo
  * @since 2021/5/25 15:27
  **/
-public class JobManager {
+public class JobManager extends RunTime {
 
+    private JobHandler handler = JobHandler.build();
     private String flinkHost;
+    private String jobManagerHost;
+    private Integer jobManagerPort;
     private Integer port;
+    private boolean isRemote;
+    private boolean isSession;
     private String sessionId;
     private Integer maxRowNum = 100;
     private ExecutorSetting executorSetting;
+    private JobConfig config;
+    private Executor executor;
 
     public JobManager() {
     }
 
-    public JobManager(ExecutorSetting executorSetting) {
-        this.executorSetting=executorSetting;
-    }
-
-    public JobManager(String host,ExecutorSetting executorSetting) {
+    public JobManager(String host, ExecutorSetting executorSetting) {
         if (host != null) {
-            String[] strs = host.split(":");
+            String[] strs = host.split(NetConstant.COLON);
             if (strs.length >= 2) {
                 this.flinkHost = strs[0];
                 this.port = Integer.parseInt(strs[1]);
             } else {
                 this.flinkHost = strs[0];
-                this.port = 8081;
+                this.port = FlinkConstant.PORT;
             }
-            this.executorSetting=executorSetting;
+            this.executorSetting = executorSetting;
+            this.executor = createExecutor();
         }
     }
 
-    public JobManager(String host, String sessionId, Integer maxRowNum,ExecutorSetting executorSetting) {
+    public JobManager(String host, String sessionId, Integer maxRowNum, ExecutorSetting executorSetting) {
         if (host != null) {
-            String[] strs = host.split(":");
+            String[] strs = host.split(NetConstant.COLON);
             if (strs.length >= 2) {
                 this.flinkHost = strs[0];
                 this.port = Integer.parseInt(strs[1]);
@@ -68,53 +71,101 @@ public class JobManager {
         }
         this.sessionId = sessionId;
         this.maxRowNum = maxRowNum;
-        this.executorSetting=executorSetting;
+        this.executorSetting = executorSetting;
+        this.executor = createExecutorWithSession();
     }
 
-    public JobManager(String flinkHost, Integer port) {
-        this.flinkHost = flinkHost;
-        this.port = port;
+    public JobManager(JobConfig config) {
+        this.config = config;
     }
 
-    public JobManager(String flinkHost, Integer port, String sessionId, Integer maxRowNum) {
-        this.flinkHost = flinkHost;
-        this.sessionId = sessionId;
-        this.maxRowNum = maxRowNum;
-        this.port = port;
+    public static JobManager build() {
+        return new JobManager();
     }
 
-    private boolean checkSession(){
-        if(sessionId!=null&&!"".equals(sessionId)){
-            String[] strs = sessionId.split("_");
-            if(strs.length>1&&!"".equals(strs[1])){
-                return true;
+    public static JobManager build(JobConfig config) {
+        return new JobManager(config);
+    }
+
+    private Executor createExecutor() {
+        if (!isSession) {
+            if (isRemote) {
+                executor = Executor.build(new EnvironmentSetting(jobManagerHost, jobManagerPort), config.getExecutorSetting());
+                return executor;
+            } else {
+                executor = Executor.build(null, executorSetting);
+                return executor;
+            }
+        } else {
+            createExecutorWithSession();
+            return executor;
+        }
+    }
+
+    private boolean checkSession() {
+        if (config != null) {
+            String session = config.getSession();
+            if (session != null && !"".equals(session)) {
+                String[] keys = session.split("_");
+                if (keys.length > 1 && !"".equals(keys[1])) {
+                    isSession = true;
+                    return true;
+                }
             }
         }
+        isSession = false;
         return false;
     }
 
-    private Executor createExecutor(){
-        if (executorSetting.isRemote()) {
-            return Executor.build(new EnvironmentSetting(flinkHost, port), executorSetting);
+    private Executor createExecutorWithSession() {
+        ExecutorEntity executorEntity = SessionPool.get(config.getSession());
+        if (executorEntity != null) {
+            executor = executorEntity.getExecutor();
         } else {
-            return Executor.build(null, executorSetting);
-        }
-    }
-
-    private Executor createExecutorWithSession(){
-        Executor executor;
-        if(checkSession()){
-            ExecutorEntity executorEntity = SessionPool.get(sessionId);
-            if (executorEntity != null) {
-                executor = executorEntity.getExecutor();
-            } else {
-                executor = createExecutor();
-                SessionPool.push(new ExecutorEntity(sessionId, executor));
-            }
-        }else {
-            executor = createExecutor();
+            createExecutor();
+            SessionPool.push(new ExecutorEntity(sessionId, executor));
         }
         return executor;
+    }
+
+    @Override
+    public void init() {
+        String host = config.getHost();
+        if (host != null && !("").equals(host)) {
+            String[] strs = host.split(NetConstant.COLON);
+            if (strs.length >= 2) {
+                jobManagerHost = strs[0];
+                jobManagerPort = Integer.parseInt(strs[1]);
+            } else {
+                jobManagerHost = strs[0];
+                jobManagerPort = FlinkConstant.PORT;
+            }
+            isRemote = true;
+        } else {
+            isRemote = false;
+        }
+        checkSession();
+        createExecutor();
+    }
+
+    @Override
+    public boolean ready() {
+        return false;
+    }
+
+    @Override
+    public boolean success() {
+        return false;
+    }
+
+    @Override
+    public boolean error() {
+        return false;
+    }
+
+    @Override
+    public void close() {
+
     }
 
     public RunResult execute(String statement) {
@@ -222,5 +273,47 @@ public class JobManager {
         result.setSuccess(true);
         result.setMsg(LocalDateTime.now().toString() + ":任务提交成功！");
         return result;
+    }
+
+    public void executeSql(String statement) {
+        RunResult runResult = new RunResult(sessionId, statement, flinkHost, port, executorSetting, executorSetting.getJobName());
+        String[] Statements = statement.split(";");
+        int currentIndex = 0;
+        try {
+            for (String item : Statements) {
+                if (item.trim().isEmpty()) {
+                    continue;
+                }
+                currentIndex++;
+                String operationType = Operations.getOperationType(item);
+                long start = System.currentTimeMillis();
+                CustomTableEnvironmentImpl stEnvironment = executor.getCustomTableEnvironmentImpl();
+                if (!FlinkInterceptor.build(stEnvironment, item)) {
+                    TableResult tableResult = executor.executeSql(item);
+                    if (tableResult.getJobClient().isPresent()) {
+                        runResult.setJobId(tableResult.getJobClient().get().getJobID().toHexString());
+                    }
+                    IResult result = ResultBuilder.build(operationType, maxRowNum, "", false).getResult(tableResult);
+                    runResult.setResult(result);
+                }
+                long finish = System.currentTimeMillis();
+                long timeElapsed = finish - start;
+                runResult.setTime(timeElapsed);
+                runResult.setFinishDate(LocalDateTime.now());
+                runResult.setSuccess(true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            StackTraceElement[] trace = e.getStackTrace();
+            StringBuffer resMsg = new StringBuffer("");
+            for (StackTraceElement s : trace) {
+                resMsg.append(" \n " + s + "  ");
+            }
+            runResult.setFinishDate(LocalDateTime.now());
+            runResult.setSuccess(false);
+//            runResult.setError(LocalDateTime.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage());
+            runResult.setError(LocalDateTime.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage() + " \n >>>堆栈信息<<<" + resMsg.toString());
+//            runResult.setError(LocalDateTime.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage() + "\n >>>异常原因<<< \n" + e.getCause().toString());
+        }
     }
 }
