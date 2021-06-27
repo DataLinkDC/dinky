@@ -28,7 +28,7 @@
         <fileSet>
             <directory>target/</directory>
             <includes>
-                <include>dlink-admin-${project.version}.jar</include>
+                <include>*.jar</include>
             </includes>
             <outputDirectory>.</outputDirectory>
         </fileSet>
