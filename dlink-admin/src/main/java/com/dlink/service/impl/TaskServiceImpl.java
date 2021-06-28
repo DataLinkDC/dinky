@@ -50,7 +50,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             JobManager jobManager = new JobManager(host,task.getRemoteExecutorSetting());
             return jobManager.submit(statement.getStatement());
         }else if(task.getClusterId()==0){
-            JobManager jobManager = new JobManager(task.getLocalExecutorSetting());
+            JobManager jobManager = new JobManager();
             return jobManager.submit(statement.getStatement());
         }else{
             throw new BusException("该任务的集群不存在");

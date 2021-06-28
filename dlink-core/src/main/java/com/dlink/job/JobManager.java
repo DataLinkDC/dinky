@@ -80,11 +80,15 @@ public class JobManager extends RunTime {
     }
 
     public static JobManager build() {
-        return new JobManager();
+        JobManager manager = new JobManager();
+        manager.init();
+        return manager;
     }
 
     public static JobManager build(JobConfig config) {
-        return new JobManager(config);
+        JobManager manager = new JobManager(config);
+        manager.init();
+        return manager;
     }
 
     private Executor createExecutor() {
@@ -277,6 +281,7 @@ public class JobManager extends RunTime {
 
     public void executeSql(String statement) {
         RunResult runResult = new RunResult(sessionId, statement, flinkHost, port, executorSetting, executorSetting.getJobName());
+        Job job = new Job();
         String[] Statements = statement.split(";");
         int currentIndex = 0;
         try {

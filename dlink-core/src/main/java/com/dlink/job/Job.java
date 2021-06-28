@@ -16,21 +16,31 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class Job {
-    private Integer id;
-    private Integer clusterId;
-    private String session;
-    private String jobId;
-    private String jobName;
+    private JobConfig jobConfig;
     private String jobManagerAddress;
-    private Integer status;
+    private boolean isRemote;
+    private boolean isSession;
+    private JobStatus status;
     private String statement;
-    private Integer type;
+    private JobType type;
     private String error;
     private String result;
-    private ExecutorSetting config;
+    private ExecutorSetting executorSetting;
     private LocalDate startTime;
     private LocalDate endTime;
     private String msg;
-    private Integer taskId;
     private Executor executor;
+
+    enum JobType{
+        EXECUTE,
+        SUBMIT
+    }
+
+    enum JobStatus{
+        INITIALIZE,
+        RUNNING,
+        SUCCESS,
+        FAILED,
+        CANCEL
+    }
 }
