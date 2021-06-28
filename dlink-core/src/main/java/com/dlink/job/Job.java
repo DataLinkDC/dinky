@@ -43,4 +43,17 @@ public class Job {
         FAILED,
         CANCEL
     }
+
+    public Job(JobConfig jobConfig, String jobManagerAddress, boolean isRemote, boolean isSession, JobStatus status, String statement, JobType type, ExecutorSetting executorSetting, LocalDate startTime, Executor executor) {
+        this.jobConfig = jobConfig;
+        this.jobManagerAddress = jobManagerAddress;
+        this.isRemote = isRemote;
+        this.isSession = isSession;
+        this.status = status;
+        this.statement = statement;
+        this.type = type;
+        this.executorSetting = executorSetting;
+        this.startTime = startTime;
+        this.executor = executor;
+    }
 }

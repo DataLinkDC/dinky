@@ -16,6 +16,7 @@ import org.apache.flink.api.common.JobID;
 import org.apache.flink.table.api.TableResult;
 import org.junit.Assert;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -133,7 +134,7 @@ public class JobManager extends RunTime {
     }
 
     @Override
-    public void init() {
+    public boolean init() {
         String host = config.getHost();
         if (host != null && !("").equals(host)) {
             String[] strs = host.split(NetConstant.COLON);
@@ -150,11 +151,12 @@ public class JobManager extends RunTime {
         }
         checkSession();
         createExecutor();
+        return false;
     }
 
     @Override
     public boolean ready() {
-        return false;
+        return handler.init();
     }
 
     @Override
@@ -168,8 +170,8 @@ public class JobManager extends RunTime {
     }
 
     @Override
-    public void close() {
-
+    public boolean close() {
+        return false;
     }
 
     public RunResult execute(String statement) {
@@ -281,7 +283,10 @@ public class JobManager extends RunTime {
 
     public void executeSql(String statement) {
         RunResult runResult = new RunResult(sessionId, statement, flinkHost, port, executorSetting, executorSetting.getJobName());
-        Job job = new Job();
+        Job job = new Job(config,jobManagerHost+NetConstant.COLON+jobManagerPort,isRemote, isSession,
+                Job.JobStatus.INITIALIZE,statement,Job.JobType.EXECUTE,executorSetting, LocalDate.now(),executor);
+        JobContextHolder.setJob(job);
+        ready();
         String[] Statements = statement.split(";");
         int currentIndex = 0;
         try {

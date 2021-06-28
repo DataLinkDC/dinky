@@ -10,14 +10,14 @@ import java.util.ServiceLoader;
  * @author wenmo
  * @since 2021/6/26 23:22
  */
-public interface JobHandler {
-    void init();
-    void start();
-    void running();
-    void success();
-    void failed();
-    void callback();
-    void close();
+public interface JobHandler  {
+    boolean init();
+    boolean ready();
+    boolean running();
+    boolean success();
+    boolean failed();
+    boolean callback();
+    boolean close();
     static JobHandler build(){
         ServiceLoader<JobHandler> jobHandlers = ServiceLoader.load(JobHandler.class);
         for(JobHandler jobHandler : jobHandlers){

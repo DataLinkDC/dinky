@@ -8,7 +8,7 @@ package com.dlink.job;
  */
 public abstract class RunTime {
 
-    abstract void init();
+    abstract boolean init();
 
     abstract boolean ready();
 
@@ -16,5 +16,5 @@ public abstract class RunTime {
 
     abstract boolean error();
 
-    abstract void close();
+    abstract boolean close();
 }

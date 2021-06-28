@@ -17,6 +17,7 @@ public class JobConfig {
     private String session;
     private String type;
     private Integer taskId;
+    private Integer clusterId;
     private Integer checkpoint;
     private Integer parallelism;
     private boolean useSqlFragment;
