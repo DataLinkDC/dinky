@@ -14,7 +14,7 @@ public abstract class RunTime {
 
     abstract boolean success();
 
-    abstract boolean error();
+    abstract boolean failed();
 
     abstract boolean close();
 }

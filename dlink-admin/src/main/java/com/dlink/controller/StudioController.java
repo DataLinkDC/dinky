@@ -34,7 +34,8 @@ public class StudioController {
      */
     @PostMapping("/executeSql")
     public Result executeSql(@RequestBody StudioExecuteDTO studioExecuteDTO)  {
-        RunResult runResult = studioService.executeSql(studioExecuteDTO);
+//        RunResult runResult = studioService.executeSql(studioExecuteDTO);
+        Integer runResult = studioService.executeSqlTest(studioExecuteDTO);
         return Result.succeed(runResult,"执行成功");
     }
 

@@ -12,13 +12,11 @@
         <result column="job_manager_address" property="jobManagerAddress"/>
         <result column="status" property="status"/>
         <result column="statement" property="statement"/>
-        <result column="type" property="type"/>
         <result column="error" property="error"/>
         <result column="result" property="result"/>
         <result column="config" property="config"/>
         <result column="start_time" property="startTime"/>
         <result column="end_time" property="endTime"/>
-        <result column="msg" property="msg"/>
         <result column="task_id" property="taskId"/>
     </resultMap>
 
@@ -26,8 +24,7 @@
     <sql id="Base_Column_List">
         id,cluster_id,session,jod_id,job_name,
         job_manager_address,status,statement,type, error,
-        result,result,config,start_time,end_time,
-        msg,task_id
+        result,config,start_time,end_time,task_id
     </sql>
 
 

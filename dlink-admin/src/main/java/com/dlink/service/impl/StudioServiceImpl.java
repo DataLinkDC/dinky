@@ -5,10 +5,12 @@ import com.dlink.cluster.FlinkCluster;
 import com.dlink.dto.StudioDDLDTO;
 import com.dlink.dto.StudioExecuteDTO;
 import com.dlink.exception.BusException;
+import com.dlink.exception.JobException;
 import com.dlink.executor.Executor;
 import com.dlink.executor.ExecutorSetting;
 import com.dlink.explainer.ca.CABuilder;
 import com.dlink.explainer.ca.TableCANode;
+import com.dlink.job.JobConfig;
 import com.dlink.job.JobManager;
 import com.dlink.model.Cluster;
 import com.dlink.result.RunResult;
@@ -63,6 +65,27 @@ public class StudioServiceImpl implements StudioService {
                         studioExecuteDTO.getSavePointPath(),
                         studioExecuteDTO.getJobName()));
         return jobManager.execute(studioExecuteDTO.getStatement());
+    }
+
+    @Override
+    public Integer executeSqlTest(StudioExecuteDTO studioExecuteDTO) {
+        studioExecuteDTO.setSession(studioExecuteDTO.getClusterId()+"_"+studioExecuteDTO.getSession());
+        JobConfig config = studioExecuteDTO.getJobConfig();
+        Cluster cluster = clusterService.getById(studioExecuteDTO.getClusterId());
+        if(cluster==null){
+            throw new JobException("未获取到集群信息");
+        }else {
+            Assert.check(cluster);
+            String host = FlinkCluster.testFlinkJobManagerIP(cluster.getHosts(), cluster.getJobManagerHost());
+            Assert.checkHost(host);
+            if(!host.equals(cluster.getJobManagerHost())){
+                cluster.setJobManagerHost(host);
+                clusterService.updateById(cluster);
+            }
+            config.setHost(host);
+        }
+        JobManager jobManager = JobManager.build(config);
+        return jobManager.executeSql(studioExecuteDTO.getStatement());
     }
 
     @Override

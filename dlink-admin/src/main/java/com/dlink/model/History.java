@@ -1,5 +1,6 @@
 package com.dlink.model;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,13 +29,13 @@ public class History implements Serializable {
     private String jobManagerAddress;
     private Integer status;
     private String statement;
-    private Integer type;
     private String error;
     private String result;
     private String config;
     private LocalDate startTime;
     private LocalDate endTime;
-    private String msg;
     private Integer taskId;
+
+    @TableField(exist = false)
     private String statusText;
 }

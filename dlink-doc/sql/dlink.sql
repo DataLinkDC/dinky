@@ -302,4 +302,29 @@ INSERT INTO `dlink_flink_document` VALUES (209, 'function', '内置函数', '聚
 INSERT INTO `dlink_flink_document` VALUES (210, 'function', '内置函数', '列函数', 'withColumns(…)', '选择的列', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO `dlink_flink_document` VALUES (211, 'function', '内置函数', '列函数', 'withoutColumns(…)', '不选择的列', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO `dlink_flink_document` VALUES (262, 'function', 'UDF', '表值聚合函数', 'TO_MAP(string1,object2[, string3])', '将非规则一维表转化为规则二维表，string1是key。string2是value。string3为非必填项，表示key的值域（维度），用英文逗号分割。', '1.12', 8, 1, '2021-05-20 19:59:22', '2021-05-20 20:00:54');
+
+-- ----------------------------
+-- Table structure for dlink_history
+-- ----------------------------
+DROP TABLE IF EXISTS `dlink_history`;
+CREATE TABLE `dlink_history`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `cluster_id` int(11) NOT NULL DEFAULT 0 COMMENT '集群ID',
+  `session` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '会话',
+  `job_id` varchar(50) NULL DEFAULT NULL COMMENT 'JobID',
+  `job_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '作业名',
+  `job_manager_address` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'JM地址',
+  `status` int(1) NOT NULL DEFAULT 0 COMMENT '状态',
+  `statement` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '语句集',
+  `error` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '异常信息',
+  `result` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '结果集',
+  `config` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '配置',
+  `start_time` datetime(0) NULL DEFAULT NULL COMMENT '开始时间',
+  `end_time` datetime(0) NULL DEFAULT NULL COMMENT '结束时间',
+  `task_id` int(11) NULL DEFAULT NULL COMMENT '作业ID',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `task_index`(`task_id`) USING BTREE,
+  INDEX `cluster_index`(`cluster_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '执行历史' ROW_FORMAT = Dynamic;
+
 SET FOREIGN_KEY_CHECKS = 1;

@@ -58,8 +58,8 @@ public abstract class Executor {
         return environmentSetting;
     }
 
-    public JobExecutionResult execute(String statement) throws Exception{
-        return stEnvironment.execute(statement);
+    public JobExecutionResult execute(String jobName) throws Exception{
+        return stEnvironment.execute(jobName);
     }
 
     public TableResult executeSql(String statement){
