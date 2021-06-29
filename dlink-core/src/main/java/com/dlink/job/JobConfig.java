@@ -17,7 +17,7 @@ public class JobConfig {
 
     private boolean isResult;
     private boolean isSession;
-    private String session;
+    private String sessionKey;
     private boolean isRemote;
     private Integer clusterId;
     private String host;
@@ -29,12 +29,12 @@ public class JobConfig {
     private Integer parallelism;
     private String savePointPath;
 
-    public JobConfig(boolean isResult, boolean isSession, String session, boolean isRemote, Integer clusterId,
+    public JobConfig(boolean isResult, boolean isSession, String sessionKey, boolean isRemote, Integer clusterId,
                      Integer taskId, String jobName, boolean useSqlFragment, Integer maxRowNum, Integer checkpoint,
                      Integer parallelism, String savePointPath) {
         this.isResult = isResult;
         this.isSession = isSession;
-        this.session = session;
+        this.sessionKey = sessionKey;
         this.isRemote = isRemote;
         this.clusterId = clusterId;
         this.taskId = taskId;
@@ -44,6 +44,14 @@ public class JobConfig {
         this.checkpoint = checkpoint;
         this.parallelism = parallelism;
         this.savePointPath = savePointPath;
+    }
+
+    public JobConfig(boolean isResult, boolean isSession, String sessionKey, boolean isRemote, Integer clusterId) {
+        this.isResult = isResult;
+        this.isSession = isSession;
+        this.sessionKey = sessionKey;
+        this.isRemote = isRemote;
+        this.clusterId = clusterId;
     }
 
     public ExecutorSetting getExecutorSetting(){

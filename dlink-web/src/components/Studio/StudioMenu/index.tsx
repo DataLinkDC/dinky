@@ -44,6 +44,9 @@ const StudioMenu = (props: any) => {
       fragment:current.task.fragment,
       savePointPath:current.task.savePointPath,
       jobName:current.task.jobName,
+      isResult:current.task.isResult,
+      isSession:current.task.isSession,
+      remote:current.task.isRemote,
     };
     const key = current.key;
     const taskKey = (Math.random()*1000)+'';
@@ -77,7 +80,7 @@ const StudioMenu = (props: any) => {
         type: "Studio/saveTabs",
         payload: newTabs,
       });
-      showTables(current.task.clusterId,current.task.clusterName,current.task.session,dispatch);
+      showTables(current.task,dispatch);
     })
   };
 

@@ -95,7 +95,7 @@ public class JobManager extends RunTime {
             executor = Executor.build(new EnvironmentSetting(jobManagerHost, jobManagerPort), config.getExecutorSetting());
             return executor;
         } else {
-            executor = Executor.build(null, executorSetting);
+            executor = Executor.build(null, config.getExecutorSetting());
             return executor;
         }
     }
@@ -117,12 +117,12 @@ public class JobManager extends RunTime {
 
     private Executor createExecutorWithSession() {
         if(config.isSession()) {
-            ExecutorEntity executorEntity = SessionPool.get(config.getSession());
+            ExecutorEntity executorEntity = SessionPool.get(config.getSessionKey());
             if (executorEntity != null) {
                 executor = executorEntity.getExecutor();
             } else {
                 createExecutor();
-                SessionPool.push(new ExecutorEntity(config.getSession(), executor));
+                SessionPool.push(new ExecutorEntity(config.getSessionKey(), executor));
             }
         }else {
             createExecutor();
@@ -239,7 +239,7 @@ public class JobManager extends RunTime {
                             JobID jobID = tableResult.getJobClient().get().getJobID();
                             long finish = System.currentTimeMillis();
                             long timeElapsed = finish - start;
-                            InsertResult insertResult = new InsertResult(sqlText, (jobID == null ? "" : jobID.toHexString()), true, timeElapsed, LocalDateTime.now());
+                            InsertResult insertResult = new InsertResult((jobID == null ? "" : jobID.toHexString()), true);
                             result.setResult(insertResult);
                             result.setJobId((jobID == null ? "" : jobID.toHexString()));
                             result.setTime(timeElapsed);
@@ -276,7 +276,7 @@ public class JobManager extends RunTime {
         return result;
     }
 
-    public Integer executeSql(String statement) {
+    public JobResult executeSql(String statement) {
         Job job = new Job(config,jobManagerHost+NetConstant.COLON+jobManagerPort,
                 Job.JobStatus.INITIALIZE,statement,executorSetting, LocalDate.now(),executor);
         JobContextHolder.setJob(job);
@@ -323,6 +323,29 @@ public class JobManager extends RunTime {
             close();
         }
         close();
-        return job.getId();
+        return job.getJobResult();
+    }
+
+    public IResult executeDDL(String statement) {
+        String[] statements = statement.split(";");
+        try {
+            for (String item : statements) {
+                if (item.trim().isEmpty()) {
+                    continue;
+                }
+                String operationType = Operations.getOperationType(item);
+                if(FlinkSQLConstant.INSERT.equals(operationType)||FlinkSQLConstant.SELECT.equals(operationType)){
+                    continue;
+                }
+                LocalDateTime startTime = LocalDateTime.now();
+                TableResult tableResult = executor.executeSql(item);
+                IResult result = ResultBuilder.build(operationType, maxRowNum, "", false).getResult(tableResult);
+                result.setStartTime(startTime);
+                return result;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ErrorResult();
     }
 }

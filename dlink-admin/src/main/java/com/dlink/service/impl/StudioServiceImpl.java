@@ -12,7 +12,9 @@ import com.dlink.explainer.ca.CABuilder;
 import com.dlink.explainer.ca.TableCANode;
 import com.dlink.job.JobConfig;
 import com.dlink.job.JobManager;
+import com.dlink.job.JobResult;
 import com.dlink.model.Cluster;
+import com.dlink.result.IResult;
 import com.dlink.result.RunResult;
 import com.dlink.service.ClusterService;
 import com.dlink.service.StudioService;
@@ -34,7 +36,7 @@ public class StudioServiceImpl implements StudioService {
     @Autowired
     private ClusterService clusterService;
 
-    @Override
+    /*@Override
     public RunResult executeSql(StudioExecuteDTO studioExecuteDTO) {
         studioExecuteDTO.setSession(studioExecuteDTO.getClusterId()+"_"+studioExecuteDTO.getSession());
         String ExecuteType = Executor.REMOTE;
@@ -65,53 +67,31 @@ public class StudioServiceImpl implements StudioService {
                         studioExecuteDTO.getSavePointPath(),
                         studioExecuteDTO.getJobName()));
         return jobManager.execute(studioExecuteDTO.getStatement());
-    }
+    }*/
 
     @Override
-    public Integer executeSqlTest(StudioExecuteDTO studioExecuteDTO) {
-        studioExecuteDTO.setSession(studioExecuteDTO.getClusterId()+"_"+studioExecuteDTO.getSession());
+    public JobResult executeSql(StudioExecuteDTO studioExecuteDTO) {
         JobConfig config = studioExecuteDTO.getJobConfig();
-        Cluster cluster = clusterService.getById(studioExecuteDTO.getClusterId());
-        if(cluster==null){
-            throw new JobException("未获取到集群信息");
-        }else {
-            Assert.check(cluster);
-            String host = FlinkCluster.testFlinkJobManagerIP(cluster.getHosts(), cluster.getJobManagerHost());
-            Assert.checkHost(host);
-            if(!host.equals(cluster.getJobManagerHost())){
-                cluster.setJobManagerHost(host);
-                clusterService.updateById(cluster);
-            }
-            config.setHost(host);
+        if(config.isRemote()) {
+            config.setHost(clusterService.getJobManagerAddress(
+                    clusterService.getById(studioExecuteDTO.getClusterId())
+            ));
         }
         JobManager jobManager = JobManager.build(config);
         return jobManager.executeSql(studioExecuteDTO.getStatement());
     }
 
     @Override
-    public RunResult executeDDL(StudioDDLDTO studioDDLDTO) {
-        studioDDLDTO.setSession(studioDDLDTO.getClusterId()+"_"+studioDDLDTO.getSession());
-        String ExecuteType = Executor.REMOTE;
-        String host =null;
-        Cluster cluster = clusterService.getById(studioDDLDTO.getClusterId());
-        if(studioDDLDTO.getClusterId()==0&&cluster==null){
-            ExecuteType = Executor.LOCAL;
-        }else {
-            Assert.check(cluster);
-            host = FlinkCluster.testFlinkJobManagerIP(cluster.getHosts(), cluster.getJobManagerHost());
-            Assert.checkHost(host);
-            if(!host.equals(cluster.getJobManagerHost())){
-                cluster.setJobManagerHost(host);
-                clusterService.updateById(cluster);
-            }
+    public IResult executeDDL(StudioDDLDTO studioDDLDTO) {
+        JobConfig config = studioDDLDTO.getJobConfig();
+        if(config.isRemote()) {
+            config.setHost(clusterService.getJobManagerAddress(
+                    clusterService.getById(studioDDLDTO.getClusterId())
+            ));
         }
-        JobManager jobManager = new JobManager(
-                host,
-                studioDDLDTO.getSession(),
-                1000,
-                new ExecutorSetting(ExecuteType));
-        return jobManager.execute(studioDDLDTO.getStatement());
-}
+        JobManager jobManager = JobManager.build(config);
+        return jobManager.executeDDL(studioDDLDTO.getStatement());
+    }
 
     @Override
     public boolean clearSession(String session) {

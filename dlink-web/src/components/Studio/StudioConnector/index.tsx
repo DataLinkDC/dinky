@@ -136,7 +136,7 @@ const StudioConnector = (props:any) => {
   };
 
   const getTables = () => {
-    showTables(current.task.clusterId,current.task.clusterName,current.task.session,dispatch);
+    showTables(current.task,dispatch);
   };
 
   const clearSession = () => {

@@ -4,7 +4,9 @@ import com.dlink.common.result.Result;
 import com.dlink.dto.StudioCADTO;
 import com.dlink.dto.StudioDDLDTO;
 import com.dlink.dto.StudioExecuteDTO;
+import com.dlink.job.JobResult;
 import com.dlink.model.Task;
+import com.dlink.result.IResult;
 import com.dlink.result.RunResult;
 import com.dlink.service.StudioService;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -34,9 +36,8 @@ public class StudioController {
      */
     @PostMapping("/executeSql")
     public Result executeSql(@RequestBody StudioExecuteDTO studioExecuteDTO)  {
-//        RunResult runResult = studioService.executeSql(studioExecuteDTO);
-        Integer runResult = studioService.executeSqlTest(studioExecuteDTO);
-        return Result.succeed(runResult,"执行成功");
+        JobResult jobResult = studioService.executeSql(studioExecuteDTO);
+        return Result.succeed(jobResult,"执行成功");
     }
 
     /**
@@ -44,8 +45,8 @@ public class StudioController {
      */
     @PostMapping("/executeDDL")
     public Result executeDDL(@RequestBody StudioDDLDTO studioDDLDTO)  {
-        RunResult runResult = studioService.executeDDL(studioDDLDTO);
-        return Result.succeed(runResult,"执行成功");
+        IResult result = studioService.executeDDL(studioDDLDTO);
+        return Result.succeed(result,"执行成功");
     }
 
     /**

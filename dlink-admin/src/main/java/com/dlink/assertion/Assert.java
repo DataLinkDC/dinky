@@ -13,25 +13,25 @@ import com.dlink.model.Task;
  */
 public interface Assert {
 
-    static void check(Cluster cluster){
-        if(cluster.getId()==null){
-            throw new BusException("Flink集群不存在");
+    static void check(Cluster cluster) {
+        if (cluster.getId() == null) {
+            throw new BusException("Flink 集群【" + cluster.getId() + "】不存在");
         }
     }
 
-    static void check(Task task){
+    static void check(Task task) {
         if (task == null) {
             throw new BusException("作业不存在");
         }
     }
 
-    static void check(Statement statement){
+    static void check(Statement statement) {
         if (statement == null) {
             throw new BusException("FlinkSql语句不存在");
         }
     }
 
-    static void checkHost(String host){
+    static void checkHost(String host) {
         if (host == null || "".equals(host)) {
             throw new BusException("集群地址暂不可用");
         }

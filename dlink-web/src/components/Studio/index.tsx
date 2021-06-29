@@ -14,6 +14,7 @@ import StudioConsole from "./StudioConsole";
 import StudioSetting from "./StudioSetting";
 import StudioEdit from "./StudioEdit";
 import StudioConnector from "./StudioConnector";
+import StudioConfig from "./StudioConfig";
 
 const {TabPane} = Tabs;
 
@@ -77,13 +78,16 @@ const Studio: React.FC<StudioProps> = (props) => {
           </Col>
           <Col span={4} className={styles["vertical-tabs"]}>
             <Tabs defaultActiveKey="1" size="small" tabPosition="right"  style={{ height: "100%",border: "1px solid #f0f0f0"}}>
-              <TabPane tab={<span><SettingOutlined /> 配置</span>} key="1" >
+              <TabPane tab={<span><SettingOutlined /> 作业配置</span>} key="StudioSetting" >
                 <StudioSetting form={form} />
               </TabPane>
-              <TabPane tab={<span><ScheduleOutlined /> 详情</span>} key="2" >
+              <TabPane tab={<span><ScheduleOutlined /> 执行配置</span>} key="StudioConfig" >
+                <StudioConfig form={form}/>
+              </TabPane>
+              <TabPane tab={<span><ScheduleOutlined /> 详情</span>} key="3" >
                 <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
               </TabPane>
-              <TabPane tab={<span><AuditOutlined /> 审计</span>} key="3" >
+              <TabPane tab={<span><AuditOutlined /> 审计</span>} key="4" >
                 <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
               </TabPane>
             </Tabs>

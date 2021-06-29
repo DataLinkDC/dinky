@@ -28,7 +28,7 @@ public class Job2MysqlHandler implements JobHandler {
         history.setClusterId(job.getJobConfig().getClusterId());
         history.setJobManagerAddress(job.getJobManagerAddress());
         history.setJobName(job.getJobConfig().getJobName());
-        history.setSession(job.getJobConfig().getSession());
+        history.setSession(job.getJobConfig().getSessionKey());
         history.setStatus(job.getStatus().ordinal());
         history.setStartTime(job.getStartTime());
         history.setTaskId(job.getJobConfig().getTaskId());

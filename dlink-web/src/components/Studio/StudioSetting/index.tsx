@@ -10,9 +10,8 @@ const { Option } = Select;
 
 const StudioSetting = (props: any) => {
 
-  const {cluster,current,form,dispatch,tabs,session} = props;
+  const {cluster,current,form,dispatch,tabs} = props;
   const [clusterOption, setClusterOption] = useState<[]>();
-  const [newSesstion, setNewSesstion] = useState<string>('');
 
 
   const getCluster = ()=>{
@@ -34,16 +33,6 @@ const StudioSetting = (props: any) => {
     getCluster();
   }, []);
 
-  const addSession = ()=>{
-    if(newSesstion!='') {
-      dispatch && dispatch({
-        type: "Studio/saveSession",
-        payload: newSesstion,
-      });
-      setNewSesstion('');
-    }
-  };
-
   const onValuesChange = (change:any,all:any)=>{
     let newTabs = tabs;
     for(let i=0;i<newTabs.panes.length;i++){
@@ -62,7 +51,7 @@ const StudioSetting = (props: any) => {
   };
 
   const onChangeClusterSession = ()=>{
-    showTables(current.task.clusterId,current.task.clusterName,current.task.session,dispatch);
+    showTables(current.task,dispatch);
   };
   return (
     <>
@@ -82,15 +71,8 @@ const StudioSetting = (props: any) => {
       form={form}
       layout="vertical"
       className={styles.form_setting}
-      //initialValues={current.task}
       onValuesChange={onValuesChange}
     >
-      <Form.Item
-        label="jobName" className={styles.form_item} name="jobName"
-        tooltip='设置任务名称，默认为作业名'
-      >
-        <Input placeholder="hdfs://..." />
-      </Form.Item>
       <Row>
         <Col span={12}>
       <Form.Item label="CheckPoint" tooltip="设置Flink任务的检查点步长，0 代表不启用" name="checkPoint"
@@ -117,14 +99,6 @@ const StudioSetting = (props: any) => {
         />
       </Form.Item>
         </Col>
-          <Col span={12}>
-      <Form.Item
-        label="MaxRowNum" className={styles.form_item} name="maxRowNum"
-        tooltip='预览数据的最大行数'
-      >
-        <InputNumber min={1} max={9999} defaultValue={100} />
-      </Form.Item>
-        </Col>
       </Row>
       <Form.Item
         label="SavePointPath" className={styles.form_item} name="savePointPath"
@@ -148,43 +122,6 @@ const StudioSetting = (props: any) => {
             本地环境
           </Option>
           {clusterOption}
-        </Select>
-      </Form.Item>
-        </Col>
-      </Row>
-      <Row>
-        <Col span={24}>
-      <Form.Item
-        label="共享会话" tooltip="选择会话进行 Flink Catalog 的共享，当未选择时默认禁用该功能" name="session"
-        className={styles.form_item}>
-        <Select
-          placeholder="选择会话"
-          // defaultValue='admin'
-          allowClear
-          onChange={onChangeClusterSession}
-          dropdownRender={menu => (
-            <div>
-              {menu}
-              <Divider style={{ margin: '4px 0' }} />
-              <div style={{ display: 'flex', flexWrap: 'nowrap', padding: 8 }}>
-                <Input style={{ flex: 'auto' }} value={newSesstion}
-                  onChange={(e)=>{
-                    setNewSesstion(e.target.value);
-                  }}
-                />
-                <a
-                  style={{ flex: 'none', padding: '8px', display: 'block', cursor: 'pointer' }}
-                  onClick={addSession}
-                >
-                  <PlusOutlined />
-                </a>
-              </div>
-            </div>
-          )}
-        >
-          {session.map(item => (
-            <Option key={item}>{item}</Option>
-          ))}
         </Select>
       </Form.Item>
         </Col>

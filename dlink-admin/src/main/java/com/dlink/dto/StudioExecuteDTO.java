@@ -13,21 +13,29 @@ import lombok.Setter;
 @Getter
 @Setter
 public class StudioExecuteDTO {
-    private boolean isResult=true;
-    private boolean isSession=false;
+    private boolean isResult;
+    private boolean isSession;
     private String session;
-    private boolean isRemote=false;
+    private boolean isRemote;
     private Integer clusterId;
-    private boolean fragment=false;
+    private boolean fragment;
     private String statement;
     private String jobName;
     private Integer taskId;
-    private Integer maxRowNum=100;
-    private Integer checkPoint=0;
-    private Integer parallelism=1;
+    private Integer maxRowNum;
+    private Integer checkPoint;
+    private Integer parallelism;
     private String savePointPath;
 
-    public JobConfig getJobConfig(){
-        return new JobConfig(isResult,isSession,session,isRemote,clusterId,taskId,jobName,fragment,maxRowNum,checkPoint,parallelism,savePointPath);
+    public JobConfig getJobConfig() {
+        return new JobConfig(isResult, isSession, getSession(), isRemote, clusterId, taskId, jobName, fragment, maxRowNum, checkPoint, parallelism, savePointPath);
+    }
+
+    public String getSession() {
+        if(isRemote) {
+            return clusterId + "_" + session;
+        }else{
+            return "0_" + session;
+        }
     }
 }

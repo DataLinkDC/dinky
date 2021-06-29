@@ -1,23 +1,27 @@
 import {executeDDL} from "@/pages/FlinkSqlStudio/service";
 import FlinkSQL from "./FlinkSQL";
+import {TaskType} from "@/pages/FlinkSqlStudio/model";
 
-export function showTables(clusterId:number,clusterName:string,session:string,dispatch:any) {
+export function showTables(task:TaskType,dispatch:any) {
   const res = executeDDL({
     statement:FlinkSQL.SHOW_TABLES,
-    clusterId: clusterId,
-    session:session,
+    clusterId: task.clusterId,
+    session:task.session,
+    isRemote:task.isRemote,
+    isSession:task.isSession,
+    isResult:true,
   });
   res.then((result)=>{
     let tableData = [];
-    if(result.datas.result.rowData.length>0){
-      tableData = result.datas.result.rowData;
+    if(result.datas.rowData.length>0){
+      tableData = result.datas.rowData;
     }
     dispatch&&dispatch({
       type: "Studio/refreshCurrentSessionCluster",
       payload: {
-        session: session,
-        clusterId: clusterId,
-        clusterName: clusterName,
+        session: task.session,
+        clusterId: task.clusterId,
+        clusterName: task.clusterName,
         connectors: tableData,
       },
     });

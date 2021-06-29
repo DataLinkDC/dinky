@@ -1,5 +1,8 @@
 package com.dlink.result;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 
 /**
@@ -8,58 +11,15 @@ import java.time.LocalDateTime;
  * @author wenmo
  * @since 2021/5/25 19:08
  **/
-public class InsertResult implements IResult {
-    private String statement;
+@Getter
+@Setter
+public class InsertResult extends AbstractResult implements IResult {
+
     private String jobID;
-    private boolean success;
-    private long time;
-    private LocalDateTime finishDate;
 
-    public InsertResult(String statement, String jobID, boolean success, long time, LocalDateTime finishDate) {
-        this.statement = statement;
+    public InsertResult(String jobID, boolean success) {
         this.jobID = jobID;
         this.success = success;
-        this.time = time;
-        this.finishDate = finishDate;
-    }
-
-    public String getStatement() {
-        return statement;
-    }
-
-    public void setStatement(String statement) {
-        this.statement = statement;
-    }
-
-    public String getJobID() {
-        return jobID;
-    }
-
-    public void setJobID(String jobID) {
-        this.jobID = jobID;
-    }
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
-
-    public long getTime() {
-        return time;
-    }
-
-    public void setTime(long time) {
-        this.time = time;
-    }
-
-    public LocalDateTime getFinishDate() {
-        return finishDate;
-    }
-
-    public void setFinishDate(LocalDateTime finishDate) {
-        this.finishDate = finishDate;
+        this.endTime = LocalDateTime.now();
     }
 }

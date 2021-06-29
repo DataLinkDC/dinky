@@ -32,6 +32,10 @@ public interface FlinkSQLConstant {
      */
     String SHOW = "SHOW";
     /**
+     * DESCRIBE
+     */
+    String DESCRIBE = "DESCRIBE";
+    /**
      * 未知操作类型
      */
     String UNKNOWN_TYPE = "UNKNOWN TYPE";

@@ -15,5 +15,7 @@ public interface ClusterService extends ISuperService<Cluster> {
 
     String checkHeartBeat(String hosts,String host);
 
+    String getJobManagerAddress(Cluster cluster);
+
     List<Cluster> listEnabledAll();
 }

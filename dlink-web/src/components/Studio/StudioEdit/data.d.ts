@@ -38,6 +38,9 @@ export type StudioParam = {
   clusterId: number,
   session: string,
   maxRowNum?: number,
+  isResult:boolean;
+  isSession:boolean;
+  isRemote:boolean;
 }
 export type CAParam = {
   statement: string,

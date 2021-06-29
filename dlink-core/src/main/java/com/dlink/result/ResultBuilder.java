@@ -1,5 +1,6 @@
 package com.dlink.result;
 
+import com.dlink.constant.FlinkSQLConstant;
 import org.apache.flink.table.api.TableResult;
 
 /**
@@ -12,10 +13,14 @@ public interface ResultBuilder {
 
     static ResultBuilder build(String operationType, Integer maxRowNum, String nullColumn, boolean printRowKind){
         switch (operationType.toUpperCase()){
-            case SelectBuilder.OPERATION_TYPE:
-                return new SelectBuilder(operationType,maxRowNum,nullColumn,printRowKind);
+            case SelectResultBuilder.OPERATION_TYPE:
+            case FlinkSQLConstant.SHOW:
+            case FlinkSQLConstant.DESCRIBE:
+                return new SelectResultBuilder(maxRowNum,nullColumn,printRowKind);
+            case InsertResultBuilder.OPERATION_TYPE:
+                return new InsertResultBuilder();
             default:
-                return new SelectBuilder(operationType,maxRowNum,nullColumn,printRowKind);
+                return new DDLResultBuilder();
         }
     }
 

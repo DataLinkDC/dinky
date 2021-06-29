@@ -139,6 +139,9 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
             session:'',
             maxRowNum: 100,
             jobName:node.name,
+            isResult:false,
+            isSession:false,
+            isRemote:true,
             ...result.datas
           },
           console:{

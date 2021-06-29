@@ -41,6 +41,9 @@ export type TaskType = {
   session: string;
   maxRowNum: number;
   jobName: string;
+  isResult:boolean;
+  isSession:boolean;
+  isRemote:boolean;
 };
 
 export type ConsoleType = {
@@ -148,6 +151,9 @@ const Model: ModelType = {
         maxRowNum: 100,
         session: '',
         alias: '草稿',
+        isResult:true,
+        isSession:false,
+        isRemote:false,
       },
       console: {
         result: [],
@@ -176,6 +182,9 @@ const Model: ModelType = {
           session: '',
           maxRowNum: 100,
           alias: '草稿',
+          isResult:true,
+          isSession:false,
+          isRemote:false,
         },
         console: {
           result: [],
