@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * JobResult
@@ -25,10 +26,10 @@ public class JobResult {
     private String jobId;
     private String error;
     private IResult result;
-    private LocalDate startTime;
-    private LocalDate endTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
 
-    public JobResult(Integer id, JobConfig jobConfig, String jobManagerAddress, Job.JobStatus status, String statement, String jobId, String error, IResult result,  LocalDate startTime, LocalDate endTime) {
+    public JobResult(Integer id, JobConfig jobConfig, String jobManagerAddress, Job.JobStatus status, String statement, String jobId, String error, IResult result,  LocalDateTime startTime, LocalDateTime endTime) {
         this.id = id;
         this.jobConfig = jobConfig;
         this.jobManagerAddress = jobManagerAddress;

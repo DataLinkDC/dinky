@@ -278,7 +278,7 @@ public class JobManager extends RunTime {
 
     public JobResult executeSql(String statement) {
         Job job = new Job(config,jobManagerHost+NetConstant.COLON+jobManagerPort,
-                Job.JobStatus.INITIALIZE,statement,executorSetting, LocalDate.now(),executor);
+                Job.JobStatus.INITIALIZE,statement,executorSetting, LocalDateTime.now(),executor);
         JobContextHolder.setJob(job);
         ready();
         String[] statements = statement.split(";");
@@ -304,7 +304,7 @@ public class JobManager extends RunTime {
                     break;
                 }
             }
-            job.setEndTime(LocalDate.now());
+            job.setEndTime(LocalDateTime.now());
             job.setStatus(Job.JobStatus.SUCCESS);
             success();
         } catch (Exception e) {
@@ -314,7 +314,7 @@ public class JobManager extends RunTime {
             for (StackTraceElement s : trace) {
                 resMsg.append(" \n " + s + "  ");
             }
-            LocalDate now = LocalDate.now();
+            LocalDateTime now = LocalDateTime.now();
             job.setEndTime(now);
             job.setStatus(Job.JobStatus.FAILED);
             String error = now.toString() + ":" + "运行第" + currentIndex + "个sql时出现异常:" + e.getMessage() + " \n >>>堆栈信息<<<" + resMsg.toString();

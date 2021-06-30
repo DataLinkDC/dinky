@@ -11,7 +11,7 @@ import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
 import { postDataArray} from "@/components/Common/crud";
 import {executeSql} from "@/pages/FlinkSqlStudio/service";
-import StudioHelp from "../StudioHelp";
+import StudioHelp from "./StudioHelp";
 import {showTables} from "@/components/Studio/StudioEvent/DDL";
 
 const menu = (

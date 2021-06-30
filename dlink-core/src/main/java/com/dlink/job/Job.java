@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * Job
@@ -26,8 +27,8 @@ public class Job {
     private String error;
     private IResult result;
     private ExecutorSetting executorSetting;
-    private LocalDate startTime;
-    private LocalDate endTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
     private Executor executor;
 
     enum JobStatus{
@@ -38,7 +39,7 @@ public class Job {
         CANCEL
     }
 
-    public Job(JobConfig jobConfig, String jobManagerAddress, JobStatus status, String statement,ExecutorSetting executorSetting, LocalDate startTime, Executor executor) {
+    public Job(JobConfig jobConfig, String jobManagerAddress, JobStatus status, String statement,ExecutorSetting executorSetting, LocalDateTime startTime, Executor executor) {
         this.jobConfig = jobConfig;
         this.jobManagerAddress = jobManagerAddress;
         this.status = status;

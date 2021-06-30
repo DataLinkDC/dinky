@@ -51,6 +51,7 @@
     "@ant-design/pro-descriptions": "^1.6.8",
     "@ant-design/pro-form": "^1.18.3",
     "@ant-design/pro-layout": "^6.18.0",
+    "@ant-design/pro-list": "^1.10.3",
     "@ant-design/pro-table": "^2.36.0",
     "@types/lodash.isequal": "^4.5.5",
     "@umijs/openapi": "^1.1.14",
