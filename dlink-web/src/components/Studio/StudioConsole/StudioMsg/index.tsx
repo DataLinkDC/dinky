@@ -13,18 +13,18 @@ const StudioMsg = (props:any) => {
       {current.console.result.map((item,index)=> {
         if(index==0) {
           return (<Paragraph>
-            <blockquote><Link href={`http://${item.flinkHost}:${item.flinkPort}`} target="_blank">
-              [{item.sessionId}:{item.flinkHost}:{item.flinkPort}]
-            </Link> <Divider type="vertical"/>{item.finishDate}
+            <blockquote><Link href={`http://${item.jobConfig.host}`} target="_blank">
+              [{item.jobConfig.sessionKey}:{item.jobConfig.host}]
+            </Link> <Divider type="vertical"/>{item.startTime}
+             <Divider type="vertical"/>{item.endTime}
               <Divider type="vertical"/>
-              {!item.success ? <><Badge status="error"/><Text type="danger">Error</Text></> :
+              {!(item.status=='SUCCESS') ? <><Badge status="error"/><Text type="danger">Error</Text></> :
                 <><Badge status="success"/><Text type="success">Success</Text></>}
               <Divider type="vertical"/>
-              {item.jobName&&<Text code>{item.jobName}</Text>}
+              {item.jobConfig.jobName&&<Text code>{item.jobConfig.jobName}</Text>}
               {item.jobId&&<Text code>{item.jobId}</Text>}
-              <Text keyboard>{item.time}ms</Text></blockquote>
+              </blockquote>
             {item.statement && (<pre style={{height: '100px'}}>{item.statement}</pre>)}
-            {item.msg ? item.msg : ''}
             {item.error && (<pre style={{height: '100px'}}>{item.error}</pre>)}
           </Paragraph>)
         }else{

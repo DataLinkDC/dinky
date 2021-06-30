@@ -109,7 +109,7 @@ const StudioTable = (props:any) => {
         onChange={onChange}
       >
         {current.console.result.map((item,index)=> {
-          if(item.success) {
+          if(item.status=='SUCCESS') {
             let tag = (<> <Tooltip placement="topLeft" title={item.statement}><Tag color="processing">{item.finishDate}</Tag>
               <Text underline>[{item.sessionId}:{item.flinkHost}:{item.flinkPort}]</Text>
               {item.jobName&&<Text code>{item.jobName}</Text>}

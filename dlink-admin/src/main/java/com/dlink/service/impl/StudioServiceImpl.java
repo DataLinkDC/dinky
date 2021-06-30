@@ -72,7 +72,7 @@ public class StudioServiceImpl implements StudioService {
     @Override
     public JobResult executeSql(StudioExecuteDTO studioExecuteDTO) {
         JobConfig config = studioExecuteDTO.getJobConfig();
-        if(config.isRemote()) {
+        if(config.isUseRemote()) {
             config.setHost(clusterService.getJobManagerAddress(
                     clusterService.getById(studioExecuteDTO.getClusterId())
             ));
@@ -84,7 +84,7 @@ public class StudioServiceImpl implements StudioService {
     @Override
     public IResult executeDDL(StudioDDLDTO studioDDLDTO) {
         JobConfig config = studioDDLDTO.getJobConfig();
-        if(config.isRemote()) {
+        if(config.isUseRemote()) {
             config.setHost(clusterService.getJobManagerAddress(
                     clusterService.getById(studioDDLDTO.getClusterId())
             ));

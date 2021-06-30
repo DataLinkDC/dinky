@@ -15,10 +15,10 @@ import lombok.Setter;
 @Setter
 public class JobConfig {
 
-    private boolean isResult;
-    private boolean isSession;
+    private boolean useResult;
+    private boolean useSession;
     private String sessionKey;
-    private boolean isRemote;
+    private boolean useRemote;
     private Integer clusterId;
     private String host;
     private Integer taskId;
@@ -29,13 +29,13 @@ public class JobConfig {
     private Integer parallelism;
     private String savePointPath;
 
-    public JobConfig(boolean isResult, boolean isSession, String sessionKey, boolean isRemote, Integer clusterId,
+    public JobConfig(boolean useResult, boolean useSession, String sessionKey, boolean useRemote, Integer clusterId,
                      Integer taskId, String jobName, boolean useSqlFragment, Integer maxRowNum, Integer checkpoint,
                      Integer parallelism, String savePointPath) {
-        this.isResult = isResult;
-        this.isSession = isSession;
+        this.useResult = useResult;
+        this.useSession = useSession;
         this.sessionKey = sessionKey;
-        this.isRemote = isRemote;
+        this.useRemote = useRemote;
         this.clusterId = clusterId;
         this.taskId = taskId;
         this.jobName = jobName;
@@ -46,17 +46,17 @@ public class JobConfig {
         this.savePointPath = savePointPath;
     }
 
-    public JobConfig(boolean isResult, boolean isSession, String sessionKey, boolean isRemote, Integer clusterId) {
-        this.isResult = isResult;
-        this.isSession = isSession;
+    public JobConfig(boolean useResult, boolean useSession, String sessionKey, boolean useRemote, Integer clusterId) {
+        this.useResult = useResult;
+        this.useSession = useSession;
         this.sessionKey = sessionKey;
-        this.isRemote = isRemote;
+        this.useRemote = useRemote;
         this.clusterId = clusterId;
     }
 
     public ExecutorSetting getExecutorSetting(){
         String type = Executor.LOCAL;
-        if(isRemote){
+        if(useRemote){
             type = Executor.REMOTE;
         }
         return new ExecutorSetting(host,type,checkpoint,parallelism,useSqlFragment,savePointPath,jobName);

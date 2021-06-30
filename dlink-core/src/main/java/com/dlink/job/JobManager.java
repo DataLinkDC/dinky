@@ -91,7 +91,7 @@ public class JobManager extends RunTime {
     }
 
     private Executor createExecutor() {
-        if (config.isRemote()) {
+        if (config.isUseRemote()) {
             executor = Executor.build(new EnvironmentSetting(jobManagerHost, jobManagerPort), config.getExecutorSetting());
             return executor;
         } else {
@@ -116,7 +116,7 @@ public class JobManager extends RunTime {
     }*/
 
     private Executor createExecutorWithSession() {
-        if(config.isSession()) {
+        if(config.isUseSession()) {
             ExecutorEntity executorEntity = SessionPool.get(config.getSessionKey());
             if (executorEntity != null) {
                 executor = executorEntity.getExecutor();
@@ -134,7 +134,7 @@ public class JobManager extends RunTime {
     public boolean init() {
         handler = JobHandler.build();
         String host = config.getHost();
-        if (config.isRemote() && host != null && !("").equals(host)) {
+        if (config.isUseRemote() && host != null && !("").equals(host)) {
             String[] strs = host.split(NetConstant.COLON);
             if (strs.length >= 2) {
                 jobManagerHost = strs[0];
@@ -295,7 +295,7 @@ public class JobManager extends RunTime {
                     if (tableResult.getJobClient().isPresent()) {
                         job.setJobId(tableResult.getJobClient().get().getJobID().toHexString());
                     }
-                    if(config.isResult()) {
+                    if(config.isUseResult()) {
                         IResult result = ResultBuilder.build(operationType, maxRowNum, "", false).getResult(tableResult);
                         job.setResult(result);
                     }

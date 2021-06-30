@@ -74,7 +74,7 @@ const StudioConfig = (props: any) => {
       <Row>
         <Col span={12}>
           <Form.Item
-            label="预览结果" className={styles.form_item} name="isResult" valuePropName="checked"
+            label="预览结果" className={styles.form_item} name="useResult" valuePropName="checked"
             tooltip={{ title: '开启预览结果，将同步运行并返回数据结果', icon: <InfoCircleOutlined /> }}
           >
             <Switch checkedChildren="启用" unCheckedChildren="禁用"
@@ -91,7 +91,7 @@ const StudioConfig = (props: any) => {
         </Col>
       </Row>
       <Form.Item
-        label="远程执行" className={styles.form_item} name="isRemote" valuePropName="checked"
+        label="远程执行" className={styles.form_item} name="useRemote" valuePropName="checked"
         tooltip={{ title: '开启远程执行，将在远程集群进行任务执行', icon: <InfoCircleOutlined /> }}
       >
         <Switch checkedChildren="启用" unCheckedChildren="禁用"
@@ -100,7 +100,7 @@ const StudioConfig = (props: any) => {
       <Row>
         <Col span={10}>
           <Form.Item
-            label="共享会话" className={styles.form_item} name="isSession" valuePropName="checked"
+            label="共享会话" className={styles.form_item} name="useSession" valuePropName="checked"
             tooltip={{ title: '开启共享会话，将进行 Flink Catalog 的共享', icon: <InfoCircleOutlined /> }}
           >
             <Switch checkedChildren="启用" unCheckedChildren="禁用"

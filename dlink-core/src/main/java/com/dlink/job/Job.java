@@ -49,6 +49,6 @@ public class Job {
     }
 
     public JobResult getJobResult(){
-        return new JobResult(id,jobConfig,jobManagerAddress,status,statement,jobId,error,result,executorSetting,startTime,endTime);
+        return new JobResult(id,jobConfig,jobManagerAddress,status,statement,jobId,error,result,startTime,endTime);
     }
 }

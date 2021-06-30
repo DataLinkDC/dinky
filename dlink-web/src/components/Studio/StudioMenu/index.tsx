@@ -44,9 +44,9 @@ const StudioMenu = (props: any) => {
       fragment:current.task.fragment,
       savePointPath:current.task.savePointPath,
       jobName:current.task.jobName,
-      isResult:current.task.isResult,
-      isSession:current.task.isSession,
-      remote:current.task.isRemote,
+      useResult:current.task.useResult,
+      useSession:current.task.useSession,
+      useRemote:current.task.useRemote,
     };
     const key = current.key;
     const taskKey = (Math.random()*1000)+'';
