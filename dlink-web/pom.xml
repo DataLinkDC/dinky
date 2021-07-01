@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>dlink</artifactId>
+    <groupId>com.dlink</groupId>
+    <version>0.3.0-SANPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <packaging>pom</packaging>
+
+  <artifactId>dlink-web</artifactId>
+
+  <build>
+    <plugins>
+      <!-- 调用npm命令插件 -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.6.0</version>
+        <executions>
+          <!-- 先执行前端依赖下载 -->
+          <execution>
+            <id>exec-npm-install</id>
+            <phase>package</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>npm</executable>
+              <arguments>
+                <argumnet>install</argumnet>
+              </arguments>
+              <workingDirectory>${basedir}</workingDirectory>
+            </configuration>
+          </execution>
+          <!-- npm打包 -->
+          <execution>
+            <id>exec-npm-run-build</id>
+            <phase>package</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>npm</executable>
+              <arguments>
+                <argumnet>run</argumnet>
+                <argumnet>build</argumnet>
+              </arguments>
+              <workingDirectory>${basedir}</workingDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+    <finalName>${project.artifactId}-${project.version}</finalName>
+  </build>
+</project>

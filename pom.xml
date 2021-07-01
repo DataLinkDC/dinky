@@ -8,12 +8,14 @@
     <artifactId>dlink</artifactId>
     <packaging>pom</packaging>
     <version>0.3.0-SANPSHOT</version>
+
     <modules>
         <module>dlink-core</module>
-        <module>dlink-admin</module>
         <module>dlink-connectors</module>
         <module>dlink-client</module>
         <module>dlink-function</module>
+        <module>dlink-web</module>
+        <module>dlink-admin</module>
         <module>dlink-assembly</module>
     </modules>
 
@@ -37,6 +39,7 @@
         <flyway.version>6.4.4</flyway.version>
         <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
         <maven-assembly-plugin.version>3.2.0</maven-assembly-plugin.version>
+        <maven.resource.version>3.2.0</maven.resource.version>
     </properties>
 
     <dependencyManagement>
@@ -151,19 +154,31 @@
         </dependencies>
     </dependencyManagement>
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <version>${maven-jar-plugin.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-assembly-plugin</artifactId>
-                    <version>${maven-assembly-plugin.version}</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+            </plugin>
+
+            <!-- 将依赖的jar包拷贝到target目录下 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target</outputDirectory>
+                            <excludeTransitive>false</excludeTransitive>
+                            <stripVersion>false</stripVersion>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 </project>

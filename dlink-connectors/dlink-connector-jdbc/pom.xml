@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>dlink-connector-jdbc</artifactId>
+
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -21,12 +22,14 @@
         <postgres.version>42.2.10</postgres.version>
         <otj-pg-embedded.version>0.13.3</otj-pg-embedded.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-connector-jdbc_${scala.binary.version}</artifactId>
             <version>${flink.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-table-api-java-bridge_${scala.binary.version}</artifactId>
@@ -43,7 +46,6 @@
         </dependency>
 
         <!-- Postgres dependencies -->
-
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
@@ -52,7 +54,6 @@
         </dependency>
 
         <!-- test dependencies -->
-
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-test-utils_${scala.binary.version}</artifactId>
@@ -141,7 +142,7 @@
 			<scope>test</scope>
 		</dependency>
     </dependencies>
-    <build>
+    <!--<build>
         <plugins>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -153,5 +154,5 @@
             </plugin>
         </plugins>
         <finalName>${project.artifactId}</finalName>
-    </build>
+    </build>-->
 </project>
