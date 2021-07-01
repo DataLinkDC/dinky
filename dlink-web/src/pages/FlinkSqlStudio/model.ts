@@ -91,6 +91,7 @@ export type StateType = {
   currentPath?: string[];
   tabs: TabsType;
   session: string[];
+  result:{};
   rightClickMenu?: boolean;
 };
 
@@ -110,6 +111,7 @@ export type ModelType = {
     saveSession: Reducer<StateType>;
     showRightClickMenu: Reducer<StateType>;
     refreshCurrentSessionCluster: Reducer<StateType>;
+    saveResult: Reducer<StateType>;
   };
 };
 
@@ -193,6 +195,7 @@ const Model: ModelType = {
       }],
     },
     session: [],
+    result:{},
     rightClickMenu: false
   },
 
@@ -337,6 +340,14 @@ const Model: ModelType = {
       return {
         ...state,
         currentSessionCluster: {
+          ...payload
+        },
+      };
+    },
+    saveResult(state, {payload}) {
+      return {
+        ...state,
+        result: {
           ...payload
         },
       };

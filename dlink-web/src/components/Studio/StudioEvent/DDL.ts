@@ -7,9 +7,9 @@ export function showTables(task:TaskType,dispatch:any) {
     statement:FlinkSQL.SHOW_TABLES,
     clusterId: task.clusterId,
     session:task.session,
-    isRemote:task.isRemote,
-    isSession:task.isSession,
-    isResult:true,
+    useRemote:task.useRemote,
+    useSession:task.useSession,
+    useResult:true,
   });
   res.then((result)=>{
     let tableData = [];

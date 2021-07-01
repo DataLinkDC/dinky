@@ -5,9 +5,7 @@ import com.dlink.dto.StudioCADTO;
 import com.dlink.dto.StudioDDLDTO;
 import com.dlink.dto.StudioExecuteDTO;
 import com.dlink.job.JobResult;
-import com.dlink.model.Task;
 import com.dlink.result.IResult;
-import com.dlink.result.RunResult;
 import com.dlink.service.StudioService;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +45,14 @@ public class StudioController {
     public Result executeDDL(@RequestBody StudioDDLDTO studioDDLDTO)  {
         IResult result = studioService.executeDDL(studioDDLDTO);
         return Result.succeed(result,"执行成功");
+    }
+
+    /**
+     * 根据jobId获取数据
+     */
+    @GetMapping("/getJobData")
+    public Result getJobData(@RequestParam String jobId)  {
+        return Result.succeed(studioService.getJobData(jobId),"获取成功");
     }
 
     /**

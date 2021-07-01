@@ -14,9 +14,10 @@ public interface ResultBuilder {
     static ResultBuilder build(String operationType, Integer maxRowNum, String nullColumn, boolean printRowKind){
         switch (operationType.toUpperCase()){
             case SelectResultBuilder.OPERATION_TYPE:
+                return new SelectResultBuilder(maxRowNum,nullColumn,printRowKind);
             case FlinkSQLConstant.SHOW:
             case FlinkSQLConstant.DESCRIBE:
-                return new SelectResultBuilder(maxRowNum,nullColumn,printRowKind);
+                return new ShowResultBuilder(nullColumn,printRowKind);
             case InsertResultBuilder.OPERATION_TYPE:
                 return new InsertResultBuilder();
             default:

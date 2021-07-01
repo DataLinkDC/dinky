@@ -19,6 +19,15 @@ export async function executeDDL(params: StudioParam) {
   });
 }
 
+export async function getJobData(jobId:string) {
+  return request<API.Result>('/api/studio/getJobData', {
+    method: 'GET',
+    params: {
+      jobId,
+    },
+  });
+}
+
 export async function getCatalogueTreeData(params?: StudioParam) {
   return request<API.Result>('/api/catalogue/getCatalogueTreeData', {
     method: 'POST',

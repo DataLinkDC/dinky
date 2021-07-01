@@ -5,8 +5,7 @@ import com.dlink.dto.StudioExecuteDTO;
 import com.dlink.explainer.ca.TableCANode;
 import com.dlink.job.JobResult;
 import com.dlink.result.IResult;
-import com.dlink.result.RunResult;
-import org.apache.flink.table.planner.expressions.In;
+import com.dlink.result.SelectResult;
 
 import java.util.List;
 
@@ -21,6 +20,8 @@ public interface StudioService {
     JobResult executeSql(StudioExecuteDTO studioExecuteDTO);
 
     IResult executeDDL(StudioDDLDTO studioDDLDTO);
+
+    SelectResult getJobData(String jobId);
 
     boolean clearSession(String session);
 

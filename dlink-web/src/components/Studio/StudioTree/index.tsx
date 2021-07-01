@@ -313,7 +313,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
   };
 
   const onSelect = (selectedKeys:[], e:any) => {
-    if(e.node.isLeaf) {
+    if(e.node&&e.node.isLeaf) {
       dispatch({
         type: "Studio/saveCurrentPath",
         payload: e.node.path,

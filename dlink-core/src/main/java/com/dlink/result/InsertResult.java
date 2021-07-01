@@ -22,4 +22,9 @@ public class InsertResult extends AbstractResult implements IResult {
         this.success = success;
         this.endTime = LocalDateTime.now();
     }
+
+    @Override
+    public String getJobId() {
+        return jobID;
+    }
 }

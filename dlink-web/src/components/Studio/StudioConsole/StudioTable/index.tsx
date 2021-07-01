@@ -4,6 +4,7 @@ import {connect} from "umi";
 import {useState} from "react";
 // import Highlighter from 'react-highlight-words';
 import { SearchOutlined } from '@ant-design/icons';
+import {showJobData} from "@/components/Studio/StudioEvent/DQL";
 
 const { Option } = Select;
 const { Title, Paragraph, Text, Link } = Typography;
@@ -11,7 +12,7 @@ const { Title, Paragraph, Text, Link } = Typography;
 
 const StudioTable = (props:any) => {
 
-  const {current} = props;
+  const {current,result,dispatch} = props;
   const [dataIndex,setDataIndex] = useState<number>(0);
   const [searchText,setSearchText] = useState<string>('');
   const [searchedColumn,setSearchedColumn] = useState<string>('');
@@ -95,8 +96,8 @@ const StudioTable = (props:any) => {
     return datas;
   };
 
-  const onChange=(val:number)=>{
-    setDataIndex(val);
+  const onChange=(val:string)=>{
+    showJobData(val,dispatch);
   };
 
   return (
@@ -109,25 +110,27 @@ const StudioTable = (props:any) => {
         onChange={onChange}
       >
         {current.console.result.map((item,index)=> {
-          if(item.status=='SUCCESS') {
-            let tag = (<> <Tooltip placement="topLeft" title={item.statement}><Tag color="processing">{item.finishDate}</Tag>
-              <Text underline>[{item.sessionId}:{item.flinkHost}:{item.flinkPort}]</Text>
-              {item.jobName&&<Text code>{item.jobName}</Text>}
+          if(item.status=='SUCCESS'&&item.jobId) {
+            let tag = (<> <Tooltip placement="topLeft" title={item.statement}>
+              <Tag color="processing">{item.startTime}</Tag>
+              <Tag color="processing">{item.endTime}</Tag>
+              <Text underline>[{item.jobConfig.sessionKey}:{item.jobConfig.host}]</Text>
+              {item.jobConfig.jobName&&<Text code>{item.jobConfig.jobName}</Text>}
               {item.jobId&&<Text code>{item.jobId}</Text>}
-              <Text keyboard>{item.time}ms</Text>
               {item.statement}</Tooltip></>);
-            return (<Option value={index} label={tag}>
+            return (<Option value={item.jobId} label={tag}>
               {tag}
             </Option>)
           }
         })}
         </Select>
       </Form.Item>
-      {current.console.result[dataIndex]&&current.console.result[dataIndex].result?(<Table dataSource={current.console.result[dataIndex].result.rowData} columns={getColumns(current.console.result[dataIndex].result.columns)} />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
+      {result&&result.jobId&&!result.isDestroyed?(<Table dataSource={result.rowData} columns={getColumns(result.columns)} />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
     </Typography>
   );
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
   current: Studio.current,
+  result: Studio.result,
 }))(StudioTable);

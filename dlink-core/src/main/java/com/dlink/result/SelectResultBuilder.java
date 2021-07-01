@@ -31,8 +31,17 @@ public class SelectResultBuilder implements ResultBuilder {
 
     @Override
     public IResult getResult(TableResult tableResult) {
-        String jobId = null;
-        if(tableResult.getJobClient().isPresent()) {
+        if (tableResult.getJobClient().isPresent()) {
+            String jobId = tableResult.getJobClient().get().getJobID().toHexString();
+            ResultRunnable runnable = new ResultRunnable(tableResult, maxRowNum, printRowKind, nullColumn);
+            Thread thread = new Thread(runnable, jobId);
+            thread.start();
+            return SelectResult.buildSuccess(jobId);
+        }else{
+            return SelectResult.buildFailed();
+        }
+        /*String jobId = null;
+        if (tableResult.getJobClient().isPresent()) {
             jobId = tableResult.getJobClient().get().getJobID().toHexString();
         }
         List<TableColumn> columns = tableResult.getTableSchema().getTableColumns();
@@ -69,24 +78,7 @@ public class SelectResultBuilder implements ResultBuilder {
             numRows++;
             totalCount++;
         }
-        return new SelectResult(rows, totalCount, rows.size(), column, jobId, true);
-    }
-
-    public String[] rowToString(Row row) {
-        int len = printRowKind ? row.getArity() + 1 : row.getArity();
-        List<String> fields = new ArrayList(len);
-        if (printRowKind) {
-            fields.add(row.getKind().shortString());
-        }
-        for (int i = 0; i < row.getArity(); ++i) {
-            Object field = row.getField(i);
-            if (field == null) {
-                fields.add(nullColumn);
-            } else {
-                fields.add(StringUtils.arrayAwareToString(field));
-            }
-        }
-        return (String[]) fields.toArray(new String[0]);
+        return new SelectResult(rows, totalCount, rows.size(), column, jobId, true);*/
     }
 
 }

@@ -16,6 +16,7 @@ import com.dlink.job.JobResult;
 import com.dlink.model.Cluster;
 import com.dlink.result.IResult;
 import com.dlink.result.RunResult;
+import com.dlink.result.SelectResult;
 import com.dlink.service.ClusterService;
 import com.dlink.service.StudioService;
 import com.dlink.session.SessionPool;
@@ -91,6 +92,11 @@ public class StudioServiceImpl implements StudioService {
         }
         JobManager jobManager = JobManager.build(config);
         return jobManager.executeDDL(studioDDLDTO.getStatement());
+    }
+
+    @Override
+    public SelectResult getJobData(String jobId) {
+        return JobManager.getJobData(jobId);
     }
 
     @Override

@@ -11,4 +11,6 @@ import java.time.LocalDateTime;
 public interface IResult {
 
     void setStartTime(LocalDateTime startTime);
+
+    String getJobId();
 }

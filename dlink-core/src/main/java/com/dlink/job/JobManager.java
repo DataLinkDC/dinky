@@ -348,4 +348,8 @@ public class JobManager extends RunTime {
         }
         return new ErrorResult();
     }
+
+    public static SelectResult getJobData(String jobId){
+        return ResultPool.get(jobId);
+    }
 }

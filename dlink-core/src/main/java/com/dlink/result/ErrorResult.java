@@ -14,4 +14,9 @@ public class ErrorResult extends AbstractResult implements IResult {
         this.success = false;
         this.endTime = LocalDateTime.now();
     }
+
+    @Override
+    public String getJobId() {
+        return null;
+    }
 }
