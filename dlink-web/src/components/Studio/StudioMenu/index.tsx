@@ -13,6 +13,7 @@ import { postDataArray} from "@/components/Common/crud";
 import {executeSql} from "@/pages/FlinkSqlStudio/service";
 import StudioHelp from "./StudioHelp";
 import {showTables} from "@/components/Studio/StudioEvent/DDL";
+import {timeout} from "d3-timer";
 
 const menu = (
   <Menu>
@@ -23,7 +24,7 @@ const menu = (
 
 const StudioMenu = (props: any) => {
 
-  const {tabs,current,currentPath,form,dispatch} = props;
+  const {tabs,current,currentPath,form,refs,dispatch} = props;
 
   const execute = () => {
     let selectsql =null;
@@ -57,6 +58,9 @@ const StudioMenu = (props: any) => {
       key:taskKey,
       icon: <SmileOutlined style={{ color: '#108ee9' }} />,
     });
+    setTimeout(()=>{
+      refs?.history?.current?.reload();
+    },2000);
     const result = executeSql(param);
     result.then(res=>{
       notification.close(taskKey);
@@ -284,5 +288,6 @@ export default connect(({Studio}: { Studio: StateType }) => ({
   current: Studio.current,
   currentPath: Studio.currentPath,
   tabs: Studio.tabs,
+  refs: Studio.refs,
   // monaco: Studio.monaco,
 }))(StudioMenu);

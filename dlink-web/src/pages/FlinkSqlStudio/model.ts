@@ -93,6 +93,9 @@ export type StateType = {
   session: string[];
   result:{};
   rightClickMenu?: boolean;
+  refs:{
+    history:any;
+  };
 };
 
 export type ModelType = {
@@ -196,7 +199,10 @@ const Model: ModelType = {
     },
     session: [],
     result:{},
-    rightClickMenu: false
+    rightClickMenu: false,
+    refs:{
+      history:{},
+    }
   },
 
   effects: {

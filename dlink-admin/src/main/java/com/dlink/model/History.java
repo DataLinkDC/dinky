@@ -38,4 +38,8 @@ public class History implements Serializable {
 
     @TableField(exist = false)
     private String statusText;
+    @TableField(exist = false)
+    private String clusterAlias;
+    @TableField(exist = false)
+    private String taskAlias;
 }

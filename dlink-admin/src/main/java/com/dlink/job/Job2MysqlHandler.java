@@ -28,7 +28,7 @@ public class Job2MysqlHandler implements JobHandler {
         history.setClusterId(job.getJobConfig().getClusterId());
         history.setJobManagerAddress(job.getJobManagerAddress());
         history.setJobName(job.getJobConfig().getJobName());
-        history.setSession(job.getJobConfig().getSessionKey());
+        history.setSession(job.getJobConfig().getSession());
         history.setStatus(job.getStatus().ordinal());
         history.setStartTime(job.getStartTime());
         history.setTaskId(job.getJobConfig().getTaskId());
@@ -54,9 +54,10 @@ public class Job2MysqlHandler implements JobHandler {
         History history = new History();
         history.setId(job.getId());
         history.setJobId(job.getJobId());
+        history.setStatement(job.getStatement());
         history.setStatus(job.getStatus().ordinal());
         history.setEndTime(job.getEndTime());
-        history.setResult(JSONUtil.toJsonStr(job.getResult()));
+//        history.setResult(JSONUtil.toJsonStr(job.getResult()));
         historyService.updateById(history);
         return true;
     }

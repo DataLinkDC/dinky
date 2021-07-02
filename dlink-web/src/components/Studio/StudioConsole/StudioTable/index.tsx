@@ -5,6 +5,7 @@ import {useState} from "react";
 // import Highlighter from 'react-highlight-words';
 import { SearchOutlined } from '@ant-design/icons';
 import {showJobData} from "@/components/Studio/StudioEvent/DQL";
+import ProTable from '@ant-design/pro-table';
 
 const { Option } = Select;
 const { Title, Paragraph, Text, Link } = Typography;
@@ -96,36 +97,11 @@ const StudioTable = (props:any) => {
     return datas;
   };
 
-  const onChange=(val:string)=>{
-    showJobData(val,dispatch);
-  };
-
   return (
     <Typography>
-      <Form.Item label="当前执行记录" tooltip="选择最近的执行记录，仅包含成功的记录">
-      <Select
-        style={{ width: '100%' }}
-        placeholder="选择最近的执行记录"
-        optionLabelProp="label"
-        onChange={onChange}
-      >
-        {current.console.result.map((item,index)=> {
-          if(item.status=='SUCCESS'&&item.jobId) {
-            let tag = (<> <Tooltip placement="topLeft" title={item.statement}>
-              <Tag color="processing">{item.startTime}</Tag>
-              <Tag color="processing">{item.endTime}</Tag>
-              <Text underline>[{item.jobConfig.sessionKey}:{item.jobConfig.host}]</Text>
-              {item.jobConfig.jobName&&<Text code>{item.jobConfig.jobName}</Text>}
-              {item.jobId&&<Text code>{item.jobId}</Text>}
-              {item.statement}</Tooltip></>);
-            return (<Option value={item.jobId} label={tag}>
-              {tag}
-            </Option>)
-          }
-        })}
-        </Select>
-      </Form.Item>
-      {result&&result.jobId&&!result.isDestroyed?(<Table dataSource={result.rowData} columns={getColumns(result.columns)} />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
+      {result&&result.jobId&&!result.isDestroyed?
+        (<ProTable dataSource={result.rowData} columns={getColumns(result.columns)} search={false}
+      />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
     </Typography>
   );
 };

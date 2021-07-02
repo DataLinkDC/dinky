@@ -28,14 +28,14 @@ public class StudioExecuteDTO {
     private String savePointPath;
 
     public JobConfig getJobConfig() {
-        return new JobConfig(useResult, useSession, getSession(), useRemote, clusterId, taskId, jobName, fragment, maxRowNum, checkPoint, parallelism, savePointPath);
+        return new JobConfig(useResult, useSession, session, useRemote, clusterId, taskId, jobName, fragment, maxRowNum, checkPoint, parallelism, savePointPath);
     }
 
-    public String getSession() {
+    /*public String getSession() {
         if(useRemote) {
             return clusterId + "_" + session;
         }else{
             return "0_" + session;
         }
-    }
+    }*/
 }

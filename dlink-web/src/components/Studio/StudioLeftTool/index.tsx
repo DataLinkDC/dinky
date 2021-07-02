@@ -1,5 +1,5 @@
 import {Tabs, Empty} from "antd";
-import {BarsOutlined,DatabaseOutlined,AppstoreOutlined,ClusterOutlined,ApiOutlined,FireOutlined,FunctionOutlined} from "@ant-design/icons";
+import {BarsOutlined,DatabaseOutlined,AppstoreOutlined,ClusterOutlined,MessageOutlined,FireOutlined,FunctionOutlined} from "@ant-design/icons";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
 import styles from "./index.less";
@@ -27,7 +27,7 @@ const StudioLeftTool = (props:any) => {
       <TabPane tab={<span><ClusterOutlined /> 集群</span>} key="Cluster" >
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       </TabPane>
-      <TabPane tab={<span><ApiOutlined /> 连接器</span>} key="Connectors" >
+      <TabPane tab={<span><MessageOutlined /> 会话</span>} key="Connectors" >
         <StudioConnector />
       </TabPane>
       <TabPane tab={<span><FireOutlined /> 任务</span>} key="FlinkTask" >

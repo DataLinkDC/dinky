@@ -117,12 +117,12 @@ public class JobManager extends RunTime {
 
     private Executor createExecutorWithSession() {
         if(config.isUseSession()) {
-            ExecutorEntity executorEntity = SessionPool.get(config.getSessionKey());
+            ExecutorEntity executorEntity = SessionPool.get(config.getSession());
             if (executorEntity != null) {
                 executor = executorEntity.getExecutor();
             } else {
                 createExecutor();
-                SessionPool.push(new ExecutorEntity(config.getSessionKey(), executor));
+                SessionPool.push(new ExecutorEntity(config.getSession(), executor));
             }
         }else {
             createExecutor();
@@ -134,7 +134,7 @@ public class JobManager extends RunTime {
     public boolean init() {
         handler = JobHandler.build();
         String host = config.getHost();
-        if (config.isUseRemote() && host != null && !("").equals(host)) {
+        if (host != null && !("").equals(host)) {
             String[] strs = host.split(NetConstant.COLON);
             if (strs.length >= 2) {
                 jobManagerHost = strs[0];

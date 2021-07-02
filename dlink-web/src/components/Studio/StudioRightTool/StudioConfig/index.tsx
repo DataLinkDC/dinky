@@ -72,6 +72,51 @@ const StudioConfig = (props: any) => {
         <Input placeholder="自定义作业名" />
       </Form.Item>
       <Row>
+        <Col span={10}>
+          <Form.Item
+            label="共享会话" className={styles.form_item} name="useSession" valuePropName="checked"
+            tooltip={{ title: '开启共享会话，将进行 Flink Catalog 的共享', icon: <InfoCircleOutlined /> }}
+          >
+            <Switch checkedChildren="启用" unCheckedChildren="禁用"
+            />
+          </Form.Item>
+        </Col>
+        <Col span={14}>
+          <Form.Item
+            label="会话 Key" tooltip="设置共享会话的 Key" name="session"
+            className={styles.form_item}>
+            <Select
+              placeholder="选择会话"
+              allowClear
+              onChange={onChangeClusterSession}
+              dropdownRender={menu => (
+                <div>
+                  {menu}
+                  <Divider style={{ margin: '4px 0' }} />
+                  <div style={{ display: 'flex', flexWrap: 'nowrap', padding: 8 }}>
+                    <Input style={{ flex: 'auto' }} value={newSesstion}
+                           onChange={(e)=>{
+                             setNewSesstion(e.target.value);
+                           }}
+                    />
+                    <a
+                      style={{ flex: 'none', padding: '8px', display: 'block', cursor: 'pointer' }}
+                      onClick={addSession}
+                    >
+                      <PlusOutlined />
+                    </a>
+                  </div>
+                </div>
+              )}
+            >
+              {session.map(item => (
+                <Option key={item}>{item}</Option>
+              ))}
+            </Select>
+          </Form.Item>
+        </Col>
+      </Row>
+      <Row>
         <Col span={12}>
           <Form.Item
             label="预览结果" className={styles.form_item} name="useResult" valuePropName="checked"
@@ -97,51 +142,6 @@ const StudioConfig = (props: any) => {
         <Switch checkedChildren="启用" unCheckedChildren="禁用"
         />
       </Form.Item>
-      <Row>
-        <Col span={10}>
-          <Form.Item
-            label="共享会话" className={styles.form_item} name="useSession" valuePropName="checked"
-            tooltip={{ title: '开启共享会话，将进行 Flink Catalog 的共享', icon: <InfoCircleOutlined /> }}
-          >
-            <Switch checkedChildren="启用" unCheckedChildren="禁用"
-            />
-          </Form.Item>
-        </Col>
-        <Col span={14}>
-      <Form.Item
-        label="会话 Key" tooltip="设置共享会话的 Key" name="session"
-        className={styles.form_item}>
-        <Select
-          placeholder="选择会话"
-          allowClear
-          onChange={onChangeClusterSession}
-          dropdownRender={menu => (
-            <div>
-              {menu}
-              <Divider style={{ margin: '4px 0' }} />
-              <div style={{ display: 'flex', flexWrap: 'nowrap', padding: 8 }}>
-                <Input style={{ flex: 'auto' }} value={newSesstion}
-                  onChange={(e)=>{
-                    setNewSesstion(e.target.value);
-                  }}
-                />
-                <a
-                  style={{ flex: 'none', padding: '8px', display: 'block', cursor: 'pointer' }}
-                  onClick={addSession}
-                >
-                  <PlusOutlined />
-                </a>
-              </div>
-            </div>
-          )}
-        >
-          {session.map(item => (
-            <Option key={item}>{item}</Option>
-          ))}
-        </Select>
-      </Form.Item>
-        </Col>
-      </Row>
     </Form>
       </>
   );

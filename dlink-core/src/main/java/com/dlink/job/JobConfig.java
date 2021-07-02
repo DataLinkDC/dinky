@@ -17,7 +17,7 @@ public class JobConfig {
 
     private boolean useResult;
     private boolean useSession;
-    private String sessionKey;
+    private String session;
     private boolean useRemote;
     private Integer clusterId;
     private String host;
@@ -29,12 +29,12 @@ public class JobConfig {
     private Integer parallelism;
     private String savePointPath;
 
-    public JobConfig(boolean useResult, boolean useSession, String sessionKey, boolean useRemote, Integer clusterId,
+    public JobConfig(boolean useResult, boolean useSession, String session, boolean useRemote, Integer clusterId,
                      Integer taskId, String jobName, boolean useSqlFragment, Integer maxRowNum, Integer checkpoint,
                      Integer parallelism, String savePointPath) {
         this.useResult = useResult;
         this.useSession = useSession;
-        this.sessionKey = sessionKey;
+        this.session = session;
         this.useRemote = useRemote;
         this.clusterId = clusterId;
         this.taskId = taskId;
@@ -46,10 +46,10 @@ public class JobConfig {
         this.savePointPath = savePointPath;
     }
 
-    public JobConfig(boolean useResult, boolean useSession, String sessionKey, boolean useRemote, Integer clusterId) {
+    public JobConfig(boolean useResult, boolean useSession, String session, boolean useRemote, Integer clusterId) {
         this.useResult = useResult;
         this.useSession = useSession;
-        this.sessionKey = sessionKey;
+        this.session = session;
         this.useRemote = useRemote;
         this.clusterId = clusterId;
     }
