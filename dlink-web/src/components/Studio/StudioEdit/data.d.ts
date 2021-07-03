@@ -30,17 +30,18 @@ export type CompletionItem = {
   detail?: string,
 }
 export type StudioParam = {
+  useSession:boolean;
+  session: string,
+  useRemote?:boolean;
+  clusterId?: number,
+  useResult:boolean;
+  maxRowNum?: number,
   statement: string,
+  fragment?: boolean,
+  jobName?:string,
+  parallelism?: number,
   checkPoint?: number,
   savePointPath?: string,
-  parallelism?: number,
-  fragment?: boolean,
-  clusterId: number,
-  session: string,
-  maxRowNum?: number,
-  isResult:boolean;
-  isSession:boolean;
-  isRemote:boolean;
 }
 export type CAParam = {
   statement: string,

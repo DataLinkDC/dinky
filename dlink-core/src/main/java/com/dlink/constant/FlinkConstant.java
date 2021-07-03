@@ -24,4 +24,8 @@ public interface FlinkConstant {
      * flink运行节点
      */
     String FLINK_JOB_MANAGER_HOST = "flinkJobManagerHOST";
+    /**
+     * 本地模式host
+     */
+    String LOCAL_HOST = "localhost:8081";
 }

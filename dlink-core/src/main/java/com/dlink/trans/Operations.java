@@ -1,6 +1,7 @@
 package com.dlink.trans;
 
 import com.dlink.constant.FlinkSQLConstant;
+import com.dlink.parser.SqlType;
 import com.dlink.trans.ddl.CreateAggTableOperation;
 
 /**
@@ -15,9 +16,32 @@ public class Operations {
       new CreateAggTableOperation()
     };
 
-    public static String getOperationType(String sql) {
+    public static SqlType getSqlTypeFromStatements(String statement){
+        String[] statements = statement.split(";");
+        SqlType sqlType = SqlType.UNKNOWN;
+        for (String item : statements) {
+            if (item.trim().isEmpty()) {
+                continue;
+            }
+            sqlType = Operations.getOperationType(item);
+            if(FlinkSQLConstant.INSERT.equals(sqlType)||FlinkSQLConstant.SELECT.equals(sqlType)){
+                return sqlType;
+            }
+        }
+        return sqlType;
+    }
+
+    public static SqlType getOperationType(String sql) {
         String sqlTrim = sql.replaceAll("[\\s\\t\\n\\r]", "").toUpperCase();
-        if (sqlTrim.startsWith(FlinkSQLConstant.CREATE)) {
+        SqlType type = SqlType.UNKNOWN;
+        for (SqlType sqlType : SqlType.values()) {
+            if (sqlTrim.startsWith(sqlType.getType())) {
+                type = sqlType;
+                break;
+            }
+        }
+        return type;
+        /*if (sqlTrim.startsWith(FlinkSQLConstant.CREATE)) {
             return FlinkSQLConstant.CREATE;
         }
         if (sqlTrim.startsWith(FlinkSQLConstant.ALTER)) {
@@ -27,7 +51,7 @@ public class Operations {
             return FlinkSQLConstant.INSERT;
         }
         if (sqlTrim.startsWith(FlinkSQLConstant.DROP)) {
-            return FlinkSQLConstant.INSERT;
+            return FlinkSQLConstant.DROP;
         }
         if (sqlTrim.startsWith(FlinkSQLConstant.SELECT)) {
             return FlinkSQLConstant.SELECT;
@@ -35,7 +59,7 @@ public class Operations {
         if (sqlTrim.startsWith(FlinkSQLConstant.SHOW)) {
             return FlinkSQLConstant.SHOW;
         }
-        return FlinkSQLConstant.UNKNOWN_TYPE;
+        return FlinkSQLConstant.UNKNOWN;*/
     }
 
     public static Operation buildOperation(String statement){

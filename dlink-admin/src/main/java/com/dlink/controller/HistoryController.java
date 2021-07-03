@@ -42,7 +42,7 @@ public class HistoryController {
             List<Integer> error = new ArrayList<>();
             for (final JsonNode item : para){
                 Integer id = item.asInt();
-                if(!historyService.removeById(id)){
+                if(!historyService.removeHistoryById(id)){
                     error.add(id);
                 }
             }

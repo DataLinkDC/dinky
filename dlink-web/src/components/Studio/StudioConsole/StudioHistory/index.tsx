@@ -1,23 +1,18 @@
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
-import {Button, Tag, Space,Typography, Divider, Badge,Drawer,} from 'antd';
+import {Button, Tag, Space, Typography, Divider, Badge, Drawer, Modal,} from 'antd';
 import {MessageOutlined,ClusterOutlined,FireOutlined,ReloadOutlined} from "@ant-design/icons";
-import { LightFilter, ProFormDatePicker } from '@ant-design/pro-form';
 import ProList from '@ant-design/pro-list';
-import request from 'umi-request';
 import {handleRemove, queryData} from "@/components/Common/crud";
 import ProDescriptions from '@ant-design/pro-descriptions';
-import {useRef, useState} from "react";
-import {DocumentTableListItem} from "@/pages/Document/data";
-import ProForm, {
+import React, {useRef, useState} from "react";
+import {
   ModalForm,
-  ProFormText,
-  ProFormDateRangePicker,
-  ProFormSelect,
 } from '@ant-design/pro-form';
 import styles from "./index.less";
 import {ActionType} from "@ant-design/pro-table";
 import {showJobData} from "@/components/Studio/StudioEvent/DQL";
+import StudioPreview from "../StudioPreview";
 
 
 const { Title, Paragraph, Text, Link } = Typography;
@@ -71,12 +66,23 @@ const StudioHistory = (props: any) => {
     setModalVisit(true);
     setType(type);
     setConfig(JSON.parse(row.config));
+    if(type==3){
+      showJobData(row.jobId,dispatch)
+    }
   };
 
-  const removeHistory=async (row:HistoryItem)=>{
-    await handleRemove(url,[row]);
-    // refs.current?.reloadAndRest?.();
-    refs.history?.current?.reload();
+  const removeHistory=(row:HistoryItem)=>{
+    Modal.confirm({
+      title: '删除执行记录',
+      content: '确定删除该执行记录吗？',
+      okText: '确认',
+      cancelText: '取消',
+      onOk:async () => {
+        await handleRemove(url,[row]);
+        // refs.current?.reloadAndRest?.();
+        refs.history?.current?.reload();
+      }
+    });
   };
 
   return (
@@ -172,7 +178,7 @@ const StudioHistory = (props: any) => {
           <a key="statement" onClick={()=>{showDetail(row,2)}}>
             FlinkSql语句
           </a>,
-          <a key="result" onClick={()=>{showJobData(row.jobId,dispatch)}}>
+          <a key="result" onClick={()=>{showDetail(row,3)}}>
             预览数据
           </a>,
           <a key="error" onClick={()=>{showDetail(row,4)}}>
@@ -190,7 +196,7 @@ const StudioHistory = (props: any) => {
       },
       clusterId: {
         dataIndex: 'clusterId',
-        title: '执行方式',
+        title: '运行集群',
       },
       session: {
         dataIndex: 'session',
@@ -201,24 +207,24 @@ const StudioHistory = (props: any) => {
         title: '状态',
         valueType: 'select',
         valueEnum: {
-          ALL: {text: '全部', status: 'ALL'},
-          INITIALIZE: {
+          '': {text: '全部', status: 'ALL'},
+          0: {
             text: '初始化',
             status: 'INITIALIZE',
           },
-          RUNNING: {
+          1: {
             text: '运行中',
             status: 'RUNNING',
           },
-          SUCCESS: {
+          2: {
             text: '成功',
             status: 'SUCCESS',
           },
-          FAILED: {
+          3: {
             text: '失败',
             status: 'FAILED',
           },
-          CANCEL: {
+          4: {
             text: '停止',
             status: 'CANCEL',
           },
@@ -263,7 +269,9 @@ const StudioHistory = (props: any) => {
               title='执行配置'
             >
               <ProDescriptions.Item span={2} label="JobId" >
-                {row.jobId}
+                <Tag color="blue" key={row.jobId}>
+                  <FireOutlined /> {row.jobId}
+                </Tag>
               </ProDescriptions.Item>
               <ProDescriptions.Item label="共享会话" >
                 {config.useSession?'启用':'禁用'}
@@ -312,10 +320,27 @@ const StudioHistory = (props: any) => {
               title='FlinkSql 语句'
             >
               <ProDescriptions.Item label="JobId" >
-                {row.jobId}
+                <Tag color="blue" key={row.jobId}>
+                  <FireOutlined /> {row.jobId}
+                </Tag>
               </ProDescriptions.Item>
               <ProDescriptions.Item>
                 <pre className={styles.code}>{row.statement}</pre>
+              </ProDescriptions.Item>
+            </ProDescriptions>
+          )}
+          {type==3 && (
+            <ProDescriptions
+              column={2}
+              title='数据预览'
+            >
+              <ProDescriptions.Item span={2} label="JobId" >
+                <Tag color="blue" key={row.jobId}>
+                  <FireOutlined /> {row.jobId}
+                </Tag>
+              </ProDescriptions.Item>
+              <ProDescriptions.Item  span={2} >
+                <StudioPreview style={{width: '100%'}}/>
               </ProDescriptions.Item>
             </ProDescriptions>
           )}
@@ -325,7 +350,9 @@ const StudioHistory = (props: any) => {
               title='异常信息'
             >
               <ProDescriptions.Item label="JobId" >
-                {row.jobId}
+                <Tag color="blue" key={row.jobId}>
+                  <FireOutlined /> {row.jobId}
+                </Tag>
               </ProDescriptions.Item>
               <ProDescriptions.Item >
                 <pre className={styles.code}>{row.error}</pre>

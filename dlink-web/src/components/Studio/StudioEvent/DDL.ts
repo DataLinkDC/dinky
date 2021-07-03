@@ -1,13 +1,14 @@
 import {executeDDL} from "@/pages/FlinkSqlStudio/service";
 import FlinkSQL from "./FlinkSQL";
 import {TaskType} from "@/pages/FlinkSqlStudio/model";
+import {Modal} from "antd";
+import {handleRemove} from "@/components/Common/crud";
 
 export function showTables(task:TaskType,dispatch:any) {
   const res = executeDDL({
     statement:FlinkSQL.SHOW_TABLES,
     clusterId: task.clusterId,
     session:task.session,
-    useRemote:task.useRemote,
     useSession:task.useSession,
     useResult:true,
   });
@@ -25,5 +26,42 @@ export function showTables(task:TaskType,dispatch:any) {
         connectors: tableData,
       },
     });
+  });
+}
+
+export function removeTable(tablename:string,task:TaskType,dispatch:any) {
+  Modal.confirm({
+    title: '确定删除表【'+tablename+'】吗？',
+    okText: '确认',
+    cancelText: '取消',
+    onOk:async () => {
+      const res = executeDDL({
+        statement:"drop table "+tablename,
+        clusterId: task.clusterId,
+        session:task.session,
+        useSession:task.useSession,
+        useResult:true,
+      });
+      res.then((result)=>{
+        showTables(task,dispatch);
+      });
+    }
+  });
+}
+
+export function clearSession(task:TaskType,dispatch:any) {
+  Modal.confirm({
+    title: '确认清空会话【'+task.session+'】？',
+    okText: '确认',
+    cancelText: '取消',
+    onOk:async () => {
+      let session = {
+        id:task.session,
+      };
+      const res = handleRemove('/api/studio/clearSession',[session]);
+      res.then((result)=>{
+        showTables(task,dispatch);
+      });
+    }
   });
 }

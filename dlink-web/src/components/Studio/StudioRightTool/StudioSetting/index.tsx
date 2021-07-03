@@ -73,6 +73,12 @@ const StudioSetting = (props: any) => {
       className={styles.form_setting}
       onValuesChange={onValuesChange}
     >
+      <Form.Item
+        label="作业名" className={styles.form_item} name="jobName"
+        tooltip='设置任务名称，默认为作业名'
+      >
+        <Input placeholder="自定义作业名" />
+      </Form.Item>
       <Row>
         <Col span={12}>
       <Form.Item label="CheckPoint" tooltip="设置Flink任务的检查点步长，0 代表不启用" name="checkPoint"

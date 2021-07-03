@@ -16,7 +16,6 @@ import java.util.stream.Stream;
  * @since 2021/7/1 23:57
  */
 public class ShowResultBuilder implements ResultBuilder {
-    public static final String OPERATION_TYPE = FlinkSQLConstant.SHOW;
 
     private boolean printRowKind;
     private String nullColumn;

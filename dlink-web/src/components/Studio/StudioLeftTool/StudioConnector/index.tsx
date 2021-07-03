@@ -8,7 +8,7 @@ import { SearchOutlined,DownOutlined,DeleteOutlined,CommentOutlined } from '@ant
 import React from "react";
 import {executeDDL} from "@/pages/FlinkSqlStudio/service";
 import {handleRemove} from "@/components/Common/crud";
-import {showTables} from "@/components/Studio/StudioEvent/DDL";
+import {removeTable, showTables,clearSession} from "@/components/Studio/StudioEvent/DDL";
 
 
 const StudioConnector = (props:any) => {
@@ -18,8 +18,8 @@ const StudioConnector = (props:any) => {
   const [loadings,setLoadings] = useState<boolean[]>([]);
   const [searchText,setSearchText] = useState<string>('');
   const [searchedColumn,setSearchedColumn] = useState<string>('');
-  const [clusterName,setClusterName] = useState<string>('');
-  const [session,setSession] = useState<string>('');
+  const [modalVisit, setModalVisit] = useState(false);
+  const [row, setRow] = useState<{}>();
 
   const getColumnSearchProps = (dIndex) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
@@ -105,31 +105,7 @@ const StudioConnector = (props:any) => {
 
   const keyEvent=(key, item)=>{
     if(key=='delete'){
-      let newLoadings = [...loadings];
-      newLoadings[1] = true;
-      setLoadings(newLoadings);
-      const res = executeDDL({
-        statement:"drop table "+item.tablename,
-        clusterId: current.task.clusterId,
-        session:current.task.session,
-      });
-      res.then((result)=>{
-        if(result.datas.success){
-          let newTableData = tableData;
-          for (let i=0; i<newTableData.length; i++) {
-            if (newTableData[i].tablename == item.tablename) {
-              newTableData.splice(i, 1);
-              // delete newTableData[i];
-              // setTableData(newTableData);
-              getTables();
-              break;
-            }
-          }
-        }
-        let newLoadings = [...loadings];
-        newLoadings[1] = false;
-        setLoadings(newLoadings);
-      });
+      removeTable(item.tablename,current.task,dispatch);
     }else{
       message.warn("敬请期待");
     }
@@ -139,8 +115,8 @@ const StudioConnector = (props:any) => {
     showTables(current.task,dispatch);
   };
 
-  const clearSession = () => {
-    let newLoadings = [...loadings];
+  const onClearSession = () => {
+    /*let newLoadings = [...loadings];
     newLoadings[2] = true;
     setLoadings(newLoadings);
     let session = {
@@ -152,7 +128,8 @@ const StudioConnector = (props:any) => {
       let newLoadings = [...loadings];
       newLoadings[2] = false;
       setLoadings(newLoadings);
-    });
+    });*/
+    clearSession(current.task,dispatch);
   };
 
   const getColumns=()=>{
@@ -199,14 +176,13 @@ const StudioConnector = (props:any) => {
           <Button
             type="text"
             icon={<DeleteOutlined />}
-            onClick={clearSession}
+            onClick={onClearSession}
           />
         </Tooltip>
       </div>
       <Breadcrumb className={styles["session-path"]}>
         <CommentOutlined />
         <Divider type="vertical" />
-        <Breadcrumb.Item>{currentSessionCluster.clusterName}</Breadcrumb.Item>
         <Breadcrumb.Item>{currentSessionCluster.session}</Breadcrumb.Item>
       </Breadcrumb>
       {currentSessionCluster.connectors&&currentSessionCluster.connectors.length>0?(<Table dataSource={currentSessionCluster.connectors} columns={getColumns()} size="small" />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}

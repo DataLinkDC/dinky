@@ -10,4 +10,5 @@ import com.dlink.model.History;
  * @since 2021/6/26 23:07
  */
 public interface HistoryService extends ISuperService<History> {
+    public boolean removeHistoryById(Integer id);
 }

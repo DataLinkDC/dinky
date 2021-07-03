@@ -2,6 +2,7 @@ package com.dlink.job;
 
 import com.dlink.executor.Executor;
 import com.dlink.executor.ExecutorSetting;
+import com.dlink.parser.SqlType;
 import com.dlink.result.IResult;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +23,7 @@ public class Job {
     private JobConfig jobConfig;
     private String jobManagerAddress;
     private JobStatus status;
+    private SqlType type;
     private String statement;
     private String jobId;
     private String error;

@@ -3,6 +3,7 @@ package com.dlink.job;
 import cn.hutool.json.JSONUtil;
 import com.dlink.context.SpringContextUtils;
 import com.dlink.model.History;
+import com.dlink.parser.SqlType;
 import com.dlink.service.HistoryService;
 import org.springframework.context.annotation.DependsOn;
 
@@ -24,12 +25,16 @@ public class Job2MysqlHandler implements JobHandler {
     @Override
     public boolean init() {
         Job job = JobContextHolder.getJob();
+        if(job.getType()!= SqlType.SELECT&&job.getType()!=SqlType.INSERT){
+            return false;
+        }
         History history = new History();
         history.setClusterId(job.getJobConfig().getClusterId());
         history.setJobManagerAddress(job.getJobManagerAddress());
         history.setJobName(job.getJobConfig().getJobName());
         history.setSession(job.getJobConfig().getSession());
         history.setStatus(job.getStatus().ordinal());
+        history.setStatement(job.getStatement());
         history.setStartTime(job.getStartTime());
         history.setTaskId(job.getJobConfig().getTaskId());
         history.setConfig(JSONUtil.toJsonStr(job.getJobConfig()));
@@ -51,10 +56,13 @@ public class Job2MysqlHandler implements JobHandler {
     @Override
     public boolean success() {
         Job job = JobContextHolder.getJob();
+        if(job.getType()!= SqlType.SELECT&&job.getType()!=SqlType.INSERT){
+            return false;
+        }
         History history = new History();
         history.setId(job.getId());
         history.setJobId(job.getJobId());
-        history.setStatement(job.getStatement());
+        history.setType(job.getType().getType());
         history.setStatus(job.getStatus().ordinal());
         history.setEndTime(job.getEndTime());
 //        history.setResult(JSONUtil.toJsonStr(job.getResult()));
@@ -65,10 +73,14 @@ public class Job2MysqlHandler implements JobHandler {
     @Override
     public boolean failed() {
         Job job = JobContextHolder.getJob();
+        if(job.getType()!= SqlType.SELECT&&job.getType()!=SqlType.INSERT){
+            return false;
+        }
         History history = new History();
         history.setId(job.getId());
         history.setJobId(job.getJobId());
         history.setStatus(job.getStatus().ordinal());
+        history.setType(job.getType().getType());
         history.setEndTime(job.getEndTime());
         history.setError(job.getError());
         historyService.updateById(history);

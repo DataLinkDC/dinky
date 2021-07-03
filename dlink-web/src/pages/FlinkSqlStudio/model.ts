@@ -47,7 +47,7 @@ export type TaskType = {
 };
 
 export type ConsoleType = {
-  result: [];
+  result: {};
 }
 
 export type TabsItemType = {
@@ -161,7 +161,7 @@ const Model: ModelType = {
         useRemote:false,
       },
       console: {
-        result: [],
+        result: {},
       },
       monaco: {},
     },
@@ -192,7 +192,7 @@ const Model: ModelType = {
           useRemote:false,
         },
         console: {
-          result: [],
+          result: {},
         },
         monaco: {},
       }],

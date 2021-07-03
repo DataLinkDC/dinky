@@ -1,6 +1,7 @@
-import {Typography, Divider, Badge, Empty} from "antd";
+import {Typography, Divider, Badge, Empty,Tag} from "antd";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
+import { FireOutlined } from '@ant-design/icons';
 
 const { Title, Paragraph, Text, Link } = Typography;
 
@@ -10,28 +11,28 @@ const StudioMsg = (props:any) => {
 
   return (
     <Typography>
-      {current.console.result.map((item,index)=> {
-        if(index==0) {
-          return (<Paragraph>
-            <blockquote><Link href={`http://${item.jobConfig.host}`} target="_blank">
-              [{item.jobConfig.sessionKey}:{item.jobConfig.host}]
-            </Link> <Divider type="vertical"/>{item.startTime}
-             <Divider type="vertical"/>{item.endTime}
-              <Divider type="vertical"/>
-              {!(item.status=='SUCCESS') ? <><Badge status="error"/><Text type="danger">Error</Text></> :
-                <><Badge status="success"/><Text type="success">Success</Text></>}
-              <Divider type="vertical"/>
-              {item.jobConfig.jobName&&<Text code>{item.jobConfig.jobName}</Text>}
-              {item.jobId&&<Text code>{item.jobId}</Text>}
-              </blockquote>
-            {item.statement && (<pre style={{height: '100px'}}>{item.statement}</pre>)}
-            {item.error && (<pre style={{height: '100px'}}>{item.error}</pre>)}
-          </Paragraph>)
-        }else{
-          return '';
-        }
-      })}
-      {current.console.result.length==0?<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />:''}
+      {current.console.result.jobConfig?(<Paragraph>
+        <blockquote><Link href={`http://${current.console.result.jobConfig.host}`} target="_blank">
+          [{current.console.result.jobConfig.session}:{current.console.result.jobConfig.host}]
+        </Link> <Divider type="vertical"/>{current.console.result.startTime}
+          <Divider type="vertical"/>{current.console.result.endTime}
+          <Divider type="vertical"/>
+          {!(current.console.result.status=='SUCCESS') ? <><Badge status="error"/><Text type="danger">Error</Text></> :
+            <><Badge status="success"/><Text type="success">Success</Text></>}
+          <Divider type="vertical"/>
+          {current.console.result.jobConfig.jobName&&<Text code>{current.console.result.jobConfig.jobName}</Text>}
+          {current.console.result.jobId&&
+          (<>
+            <Divider type="vertical"/>
+            <Tag color="blue" key={current.console.result.jobId}>
+            <FireOutlined /> {current.console.result.jobId}
+          </Tag>
+            </>)}
+        </blockquote>
+        {current.console.result.statement && (<pre style={{height: '100px'}}>{current.console.result.statement}</pre>)}
+        {current.console.result.error && (<pre style={{height: '100px'}}>{current.console.result.error}</pre>)}
+      </Paragraph>):<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+      }
     </Typography>
   );
 };

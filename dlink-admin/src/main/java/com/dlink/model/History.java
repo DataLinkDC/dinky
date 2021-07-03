@@ -29,6 +29,7 @@ public class History implements Serializable {
     private String jobManagerAddress;
     private Integer status;
     private String statement;
+    private String type;
     private String error;
     private String result;
     private String config;

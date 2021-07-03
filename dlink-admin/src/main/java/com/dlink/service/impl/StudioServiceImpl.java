@@ -2,6 +2,7 @@ package com.dlink.service.impl;
 
 import com.dlink.assertion.Assert;
 import com.dlink.cluster.FlinkCluster;
+import com.dlink.constant.FlinkConstant;
 import com.dlink.dto.StudioDDLDTO;
 import com.dlink.dto.StudioExecuteDTO;
 import com.dlink.exception.BusException;
@@ -77,6 +78,8 @@ public class StudioServiceImpl implements StudioService {
             config.setHost(clusterService.getJobManagerAddress(
                     clusterService.getById(studioExecuteDTO.getClusterId())
             ));
+        }else{
+            config.setHost(FlinkConstant.LOCAL_HOST);
         }
         JobManager jobManager = JobManager.build(config);
         return jobManager.executeSql(studioExecuteDTO.getStatement());

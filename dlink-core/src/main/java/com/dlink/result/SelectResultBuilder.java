@@ -17,8 +17,6 @@ import java.util.stream.Stream;
  **/
 public class SelectResultBuilder implements ResultBuilder {
 
-    public static final String OPERATION_TYPE = FlinkSQLConstant.SELECT;
-
     private Integer maxRowNum;
     private boolean printRowKind;
     private String nullColumn;

@@ -8,6 +8,7 @@ import com.dlink.executor.Executor;
 import com.dlink.executor.ExecutorSetting;
 import com.dlink.executor.custom.CustomTableEnvironmentImpl;
 import com.dlink.interceptor.FlinkInterceptor;
+import com.dlink.parser.SqlType;
 import com.dlink.result.*;
 import com.dlink.session.ExecutorEntity;
 import com.dlink.session.SessionPool;
@@ -180,7 +181,7 @@ public class JobManager extends RunTime {
                 if (item.trim().isEmpty()) {
                     continue;
                 }
-                String operationType = Operations.getOperationType(item);
+                SqlType operationType = Operations.getOperationType(item);
                 long start = System.currentTimeMillis();
                 CustomTableEnvironmentImpl stEnvironment = executor.getCustomTableEnvironmentImpl();
                 if (!FlinkInterceptor.build(stEnvironment, item)) {
@@ -230,9 +231,9 @@ public class JobManager extends RunTime {
                 Executor executor = createExecutor();
                 for (String sqlText : sqlList) {
                     currentIndex++;
-                    String operationType = Operations.getOperationType(sqlText);
+                    SqlType operationType = Operations.getOperationType(sqlText);
                     CustomTableEnvironmentImpl stEnvironment = executor.getCustomTableEnvironmentImpl();
-                    if (operationType.equalsIgnoreCase(FlinkSQLConstant.INSERT)) {
+                    if (operationType==SqlType.INSERT) {
                         long start = System.currentTimeMillis();
                         if (!FlinkInterceptor.build(stEnvironment, sqlText)) {
                             TableResult tableResult = executor.executeSql(sqlText);
@@ -280,6 +281,7 @@ public class JobManager extends RunTime {
         Job job = new Job(config,jobManagerHost+NetConstant.COLON+jobManagerPort,
                 Job.JobStatus.INITIALIZE,statement,executorSetting, LocalDateTime.now(),executor);
         JobContextHolder.setJob(job);
+        job.setType(Operations.getSqlTypeFromStatements(statement));
         ready();
         String[] statements = statement.split(";");
         int currentIndex = 0;
@@ -289,14 +291,14 @@ public class JobManager extends RunTime {
                     continue;
                 }
                 currentIndex++;
-                String operationType = Operations.getOperationType(item);
+                SqlType operationType = Operations.getOperationType(item);
                 if (!FlinkInterceptor.build(executor.getCustomTableEnvironmentImpl(), item)) {
                     TableResult tableResult = executor.executeSql(item);
                     if (tableResult.getJobClient().isPresent()) {
                         job.setJobId(tableResult.getJobClient().get().getJobID().toHexString());
                     }
                     if(config.isUseResult()) {
-                        IResult result = ResultBuilder.build(operationType, maxRowNum, "", false).getResult(tableResult);
+                        IResult result = ResultBuilder.build(operationType, maxRowNum, "", true).getResult(tableResult);
                         job.setResult(result);
                     }
                 }
@@ -333,8 +335,8 @@ public class JobManager extends RunTime {
                 if (item.trim().isEmpty()) {
                     continue;
                 }
-                String operationType = Operations.getOperationType(item);
-                if(FlinkSQLConstant.INSERT.equals(operationType)||FlinkSQLConstant.SELECT.equals(operationType)){
+                SqlType operationType = Operations.getOperationType(item);
+                if(SqlType.INSERT==operationType||SqlType.SELECT==operationType){
                     continue;
                 }
                 LocalDateTime startTime = LocalDateTime.now();
@@ -352,4 +354,8 @@ public class JobManager extends RunTime {
     public static SelectResult getJobData(String jobId){
         return ResultPool.get(jobId);
     }
+
+    /*public static void cancel(String jobId){
+        SelectResult selectResult = ResultPool.get(jobId);
+    }*/
 }

@@ -1,19 +1,13 @@
-import {Typography, Input, Button, Space, Table, Select, Tag, Form, Empty,Tooltip} from "antd";
+import {Input, Button, Space, Empty} from "antd";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
 import {useState} from "react";
-// import Highlighter from 'react-highlight-words';
 import { SearchOutlined } from '@ant-design/icons';
-import {showJobData} from "@/components/Studio/StudioEvent/DQL";
 import ProTable from '@ant-design/pro-table';
 
-const { Option } = Select;
-const { Title, Paragraph, Text, Link } = Typography;
+const StudioPreview = (props:any) => {
 
-
-const StudioTable = (props:any) => {
-
-  const {current,result,dispatch} = props;
+  const {result} = props;
   const [searchText,setSearchText] = useState<string>('');
   const [searchedColumn,setSearchedColumn] = useState<string>('');
 
@@ -58,17 +52,6 @@ const StudioTable = (props:any) => {
       record[dIndex]
         ? record[dIndex].toString().toLowerCase().includes(value.toLowerCase())
         : '',
-    /*render: text =>
-      searchedColumn === dIndex ? (
-        <Highlighter
-          highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
-          searchWords={[searchText]}
-          autoEscape
-          textToHighlight={text ? text.toString() : ''}
-        />
-      ) : (
-        text
-      ),*/
   });
 
   const handleSearch = (selectedKeys, confirm, dIndex) => {
@@ -96,26 +79,10 @@ const StudioTable = (props:any) => {
     return datas;
   };
 
-  const showDetail=()=>{
-    showJobData(current.console.result.jobId,dispatch)
-  };
   return (
     <div style={{width: '100%'}}>
-      {current.console&&current.console.result.jobId?
-        (<>
-          <Button type="primary" onClick={showDetail} icon={<SearchOutlined />}>
-            获取最新数据
-          </Button>
-          {result.rowData&&result.columns?
-            <ProTable dataSource={result.rowData} columns={getColumns(result.columns)} search={false}
-                      options={{
-                        search: false,
-                      }}/>
-            :(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)
-          }
-          </>):
-        current.console&&current.console.result&&current.console.result.result&&current.console.result.result.rowData&&current.console.result.result.columns?
-        (<ProTable dataSource={current.console.result.result.rowData} columns={getColumns(current.console.result.result.columns)} search={false}
+      {result&&result.jobId&&!result.isDestroyed&&result.rowData&&result.columns?
+        (<ProTable dataSource={result.rowData} columns={getColumns(result.columns)} search={false}
       />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
     </div>
   );
@@ -124,4 +91,4 @@ const StudioTable = (props:any) => {
 export default connect(({ Studio }: { Studio: StateType }) => ({
   current: Studio.current,
   result: Studio.result,
-}))(StudioTable);
+}))(StudioPreview);

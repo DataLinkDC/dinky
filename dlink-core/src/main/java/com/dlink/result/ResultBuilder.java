@@ -1,6 +1,6 @@
 package com.dlink.result;
 
-import com.dlink.constant.FlinkSQLConstant;
+import com.dlink.parser.SqlType;
 import org.apache.flink.table.api.TableResult;
 
 /**
@@ -11,14 +11,14 @@ import org.apache.flink.table.api.TableResult;
  **/
 public interface ResultBuilder {
 
-    static ResultBuilder build(String operationType, Integer maxRowNum, String nullColumn, boolean printRowKind){
-        switch (operationType.toUpperCase()){
-            case SelectResultBuilder.OPERATION_TYPE:
+    static ResultBuilder build(SqlType operationType, Integer maxRowNum, String nullColumn, boolean printRowKind){
+        switch (operationType){
+            case SELECT:
                 return new SelectResultBuilder(maxRowNum,nullColumn,printRowKind);
-            case FlinkSQLConstant.SHOW:
-            case FlinkSQLConstant.DESCRIBE:
-                return new ShowResultBuilder(nullColumn,printRowKind);
-            case InsertResultBuilder.OPERATION_TYPE:
+            case SHOW:
+            case DESCRIBE:
+                return new ShowResultBuilder(nullColumn,false);
+            case INSERT:
                 return new InsertResultBuilder();
             default:
                 return new DDLResultBuilder();

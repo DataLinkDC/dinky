@@ -21,14 +21,7 @@ public class StudioDDLDTO {
     private String statement;
 
     public JobConfig getJobConfig() {
-        return new JobConfig(useResult, useSession, getSession(), useRemote, clusterId);
+        return new JobConfig(useResult, useSession, session, useRemote, clusterId);
     }
 
-    public String getSession() {
-        if(useRemote) {
-            return clusterId + "_" + session;
-        }else{
-            return "0_" + session;
-        }
-    }
 }

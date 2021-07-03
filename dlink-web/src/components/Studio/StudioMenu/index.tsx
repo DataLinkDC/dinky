@@ -13,7 +13,6 @@ import { postDataArray} from "@/components/Common/crud";
 import {executeSql} from "@/pages/FlinkSqlStudio/service";
 import StudioHelp from "./StudioHelp";
 import {showTables} from "@/components/Studio/StudioEvent/DDL";
-import {timeout} from "d3-timer";
 
 const menu = (
   <Menu>
@@ -36,24 +35,24 @@ const StudioMenu = (props: any) => {
       selectsql=current.value;
     }
     let param ={
-      session:current.task.session,
-      statement:selectsql,
-      clusterId:current.task.clusterId,
-      checkPoint:current.task.checkPoint,
-      parallelism:current.task.parallelism,
-      maxRowNum:current.task.maxRowNum,
-      fragment:current.task.fragment,
-      savePointPath:current.task.savePointPath,
-      jobName:current.task.jobName,
-      useResult:current.task.useResult,
       useSession:current.task.useSession,
+      session:current.task.session,
       useRemote:current.task.useRemote,
+      clusterId:current.task.clusterId,
+      useResult:current.task.useResult,
+      maxRowNum:current.task.maxRowNum,
+      statement:selectsql,
+      fragment:current.task.fragment,
+      jobName:current.task.jobName,
+      parallelism:current.task.parallelism,
+      checkPoint:current.task.checkPoint,
+      savePointPath:current.task.savePointPath,
     };
     const key = current.key;
     const taskKey = (Math.random()*1000)+'';
     notification.success({
-      message: `${param.clusterId+"_"+param.session} 新任务正在执行`,
-      description: param.statement,
+      message: `新任务【${param.jobName}】正在执行`,
+      description: param.statement.substring(0,40)+'...',
       duration:null,
       key:taskKey,
       icon: <SmileOutlined style={{ color: '#108ee9' }} />,
@@ -72,11 +71,12 @@ const StudioMenu = (props: any) => {
       let newTabs = tabs;
       for(let i=0;i<newTabs.panes.length;i++){
         if(newTabs.panes[i].key==key){
-          let newResult = newTabs.panes[i].console.result;
+          /*let newResult = newTabs.panes[i].console.result;
           newResult.unshift(res.datas);
           newTabs.panes[i].console={
             result:newResult,
-          };
+          };*/
+          newTabs.panes[i].console.result=res.datas;
           break;
         }
       }

@@ -11,8 +11,6 @@ import org.apache.flink.table.api.TableResult;
  */
 public class InsertResultBuilder implements ResultBuilder {
 
-    public static final String OPERATION_TYPE = FlinkSQLConstant.INSERT;
-
     @Override
     public IResult getResult(TableResult tableResult) {
         if(tableResult.getJobClient().isPresent()){
