@@ -4,12 +4,14 @@ import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
 import {useState} from "react";
 import styles from "./index.less";
-import { SearchOutlined,DownOutlined,DeleteOutlined,CommentOutlined } from '@ant-design/icons';
+import { SearchOutlined,DownOutlined,DeleteOutlined,CommentOutlined ,MessageOutlined} from '@ant-design/icons';
 import React from "react";
-import {executeDDL} from "@/pages/FlinkSqlStudio/service";
-import {handleRemove} from "@/components/Common/crud";
 import {removeTable, showTables,clearSession} from "@/components/Studio/StudioEvent/DDL";
-
+import {
+  ModalForm,
+} from '@ant-design/pro-form';
+import ProDescriptions from '@ant-design/pro-descriptions';
+import ProTable from '@ant-design/pro-table';
 
 const StudioConnector = (props:any) => {
 
@@ -19,7 +21,8 @@ const StudioConnector = (props:any) => {
   const [searchText,setSearchText] = useState<string>('');
   const [searchedColumn,setSearchedColumn] = useState<string>('');
   const [modalVisit, setModalVisit] = useState(false);
-  const [row, setRow] = useState<{}>();
+  const [type, setType] = useState<number>();
+  const [sessionData, setSessionData] = useState<{}>();
 
   const getColumnSearchProps = (dIndex) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
@@ -111,25 +114,20 @@ const StudioConnector = (props:any) => {
     }
   };
 
+  const keySessionsEvent=(key, item)=>{
+    if(key=='delete'){
+      clearSession(item.session,current.task,dispatch);
+    }else{
+      message.warn("敬请期待");
+    }
+  };
+
   const getTables = () => {
     showTables(current.task,dispatch);
   };
 
   const onClearSession = () => {
-    /*let newLoadings = [...loadings];
-    newLoadings[2] = true;
-    setLoadings(newLoadings);
-    let session = {
-      id:current.task.clusterId+'_'+current.task.session,
-    };
-    const res = handleRemove('/api/studio/clearSession',[session]);
-    res.then((result)=>{
-      getTables();
-      let newLoadings = [...loadings];
-      newLoadings[2] = false;
-      setLoadings(newLoadings);
-    });*/
-    clearSession(current.task,dispatch);
+    clearSession(current.task.session,current.task,dispatch);
   };
 
   const getColumns=()=>{
@@ -162,9 +160,49 @@ const StudioConnector = (props:any) => {
     return columns;
   };
 
+  const getSessionsColumns=()=>{
+    let columns:any=[{
+      title: "会话 Key",
+      dataIndex: "session",
+      key: "session",
+      sorter: true,
+      ...getColumnSearchProps("session"),
+    },{
+      title: '操作',
+      dataIndex: 'option',
+      valueType: 'option',
+      render: (_, record) => [
+        <a
+          onClick={() => {
+            message.warn('敬请期待');
+          }}
+        >
+          描述
+        </a>,<Divider type="vertical" />,<a
+          onClick={() => {
+            keySessionsEvent('delete',record);
+          }}
+        >
+          删除
+        </a>
+      ],
+    },];
+    return columns;
+  };
+  const showSessions=()=>{
+
+  };
+
   return (
     <>
       <div style={{float: "right"}}>
+        <Tooltip title="切换会话">
+          <Button
+            type="text"
+            icon={<CommentOutlined />}
+            onClick={showSessions}
+          />
+        </Tooltip>
         <Tooltip title="刷新连接器">
           <Button
             type="text"
@@ -181,11 +219,40 @@ const StudioConnector = (props:any) => {
         </Tooltip>
       </div>
       <Breadcrumb className={styles["session-path"]}>
-        <CommentOutlined />
+        <MessageOutlined />
         <Divider type="vertical" />
         <Breadcrumb.Item>{currentSessionCluster.session}</Breadcrumb.Item>
       </Breadcrumb>
       {currentSessionCluster.connectors&&currentSessionCluster.connectors.length>0?(<Table dataSource={currentSessionCluster.connectors} columns={getColumns()} size="small" />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
+      <ModalForm
+        // title="新建表单"
+        visible={modalVisit}
+        onFinish={async () => {
+          setSessionData(undefined);
+        }}
+        onVisibleChange={setModalVisit}
+        submitter={{
+          submitButtonProps: {
+            style: {
+              display: 'none',
+            },
+          },
+        }}
+      >
+        {type==1&&
+        (<ProDescriptions
+            column={2}
+            title='全部共享会话'
+          >
+            <ProDescriptions.Item  span={2} >
+              {sessionData?
+                (<Table dataSource={sessionData} columns={getSessionsColumns} size="small"
+                />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
+            </ProDescriptions.Item>
+          </ProDescriptions>
+        )
+        }
+      </ModalForm>
       </>
   );
 };

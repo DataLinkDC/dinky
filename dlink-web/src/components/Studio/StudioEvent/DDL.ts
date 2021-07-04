@@ -49,16 +49,16 @@ export function removeTable(tablename:string,task:TaskType,dispatch:any) {
   });
 }
 
-export function clearSession(task:TaskType,dispatch:any) {
+export function clearSession(session:string,task:TaskType,dispatch:any) {
   Modal.confirm({
-    title: '确认清空会话【'+task.session+'】？',
+    title: '确认清空会话【'+session+'】？',
     okText: '确认',
     cancelText: '取消',
     onOk:async () => {
-      let session = {
-        id:task.session,
+      let para = {
+        id:session,
       };
-      const res = handleRemove('/api/studio/clearSession',[session]);
+      const res = handleRemove('/api/studio/clearSession',[para]);
       res.then((result)=>{
         showTables(task,dispatch);
       });

@@ -44,4 +44,8 @@ public class SessionPool {
         }
         return null;
     }
+
+    public static List<ExecutorEntity> list(){
+        return executorList;
+    }
 }

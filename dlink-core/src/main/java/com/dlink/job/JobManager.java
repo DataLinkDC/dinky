@@ -101,21 +101,6 @@ public class JobManager extends RunTime {
         }
     }
 
-    /*private boolean checkSession() {
-        if (config != null) {
-            String session = config.getSession();
-            if (session != null && !"".equals(session)) {
-                String[] keys = session.split("_");
-                if (keys.length > 1 && !"".equals(keys[1])) {
-                    isSession = true;
-                    return true;
-                }
-            }
-        }
-        isSession = false;
-        return false;
-    }*/
-
     private Executor createExecutorWithSession() {
         if(config.isUseSession()) {
             ExecutorEntity executorEntity = SessionPool.get(config.getSession());
@@ -355,7 +340,7 @@ public class JobManager extends RunTime {
         return ResultPool.get(jobId);
     }
 
-    /*public static void cancel(String jobId){
-        SelectResult selectResult = ResultPool.get(jobId);
-    }*/
+    public static void createSession(String session){
+
+    }
 }
