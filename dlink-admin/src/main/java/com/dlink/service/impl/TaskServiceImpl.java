@@ -3,11 +3,14 @@ package com.dlink.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.assertion.Assert;
 import com.dlink.cluster.FlinkCluster;
+import com.dlink.constant.FlinkConstant;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.exception.BusException;
 import com.dlink.executor.Executor;
 import com.dlink.executor.ExecutorSetting;
+import com.dlink.job.JobConfig;
 import com.dlink.job.JobManager;
+import com.dlink.job.JobResult;
 import com.dlink.mapper.TaskMapper;
 import com.dlink.model.Cluster;
 import com.dlink.model.Statement;
@@ -18,6 +21,9 @@ import com.dlink.service.StatementService;
 import com.dlink.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * 任务 服务实现类
@@ -34,8 +40,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private ClusterService clusterService;
 
     @Override
-    public SubmitResult submitByTaskId(Integer id) {
-        Task task = this.getById(id);
+    public JobResult submitByTaskId(Integer id) {
+        /*Task task = this.getById(id);
         Assert.check(task);
         Cluster cluster = clusterService.getById(task.getClusterId());
         Statement statement = statementService.getById(id);
@@ -54,7 +60,15 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             return jobManager.submit(statement.getStatement());
         }else{
             throw new BusException("该任务的集群不存在");
-        }
+        }*/
+        Task task = this.getById(id);
+        Assert.check(task);
+        Statement statement = statementService.getById(id);
+        Assert.check(statement);
+        JobConfig config = task.getSubmitConfig();
+        config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(),task.getClusterId()));
+        JobManager jobManager = JobManager.build(config);
+        return jobManager.executeSql(statement.getStatement());
     }
 
     @Override

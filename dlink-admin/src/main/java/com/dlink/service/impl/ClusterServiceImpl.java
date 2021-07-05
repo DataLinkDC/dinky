@@ -3,12 +3,16 @@ package com.dlink.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.assertion.Assert;
 import com.dlink.cluster.FlinkCluster;
+import com.dlink.constant.FlinkConstant;
+import com.dlink.constant.NetConstant;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.ClusterMapper;
 import com.dlink.model.Cluster;
 import com.dlink.service.ClusterService;
 import org.springframework.stereotype.Service;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.List;
 
 /**
@@ -35,6 +39,24 @@ public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
             updateById(cluster);
         }
         return host;
+    }
+
+    @Override
+    public String buildEnvironmentAddress(boolean useRemote, Integer id) {
+        String address = FlinkConstant.LOCAL_HOST;
+        if(useRemote) {
+            return getJobManagerAddress(getById(id));
+        }else{
+            try {
+                InetAddress inetAddress = InetAddress.getLocalHost();
+                if(inetAddress!=null) {
+                    return inetAddress.getHostAddress()+ NetConstant.COLON+FlinkConstant.PORT;
+                }
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
+        }
+        return address;
     }
 
     @Override

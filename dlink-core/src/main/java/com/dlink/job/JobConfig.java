@@ -54,7 +54,27 @@ public class JobConfig {
         this.clusterId = clusterId;
     }
 
+    public JobConfig(boolean useResult, boolean useSession, boolean useRemote, Integer clusterId,
+                     Integer taskId, String jobName, boolean useSqlFragment, Integer checkpoint,
+                     Integer parallelism, String savePointPath) {
+        this.useResult = useResult;
+        this.useSession = useSession;
+        this.useRemote = useRemote;
+        this.clusterId = clusterId;
+        this.taskId = taskId;
+        this.jobName = jobName;
+        this.useSqlFragment = useSqlFragment;
+        this.checkpoint = checkpoint;
+        this.parallelism = parallelism;
+        this.savePointPath = savePointPath;
+    }
+
     public ExecutorSetting getExecutorSetting(){
         return new ExecutorSetting(checkpoint,parallelism,useSqlFragment,savePointPath,jobName);
+    }
+
+    public JobConfig buildSubmitConfig(Integer clusterId, Integer taskId, String jobName,boolean useSqlFragment, Integer checkpoint,
+                                       Integer parallelism, String savePointPath){
+        return new JobConfig(false,false,false,clusterId,taskId,jobName,useSqlFragment,checkpoint,parallelism,savePointPath);
     }
 }

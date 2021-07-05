@@ -43,34 +43,15 @@ public class StudioServiceImpl implements StudioService {
     @Override
     public JobResult executeSql(StudioExecuteDTO studioExecuteDTO) {
         JobConfig config = studioExecuteDTO.getJobConfig();
-        buildEnvironmentAddress(config,studioExecuteDTO.getClusterId());
+        config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(),studioExecuteDTO.getClusterId()));
         JobManager jobManager = JobManager.build(config);
         return jobManager.executeSql(studioExecuteDTO.getStatement());
-    }
-
-    private void buildEnvironmentAddress(JobConfig config,Integer clusterId){
-        if(config.isUseRemote()) {
-            config.setAddress(clusterService.getJobManagerAddress(
-                    clusterService.getById(clusterId)
-            ));
-        }else{
-            try {
-                InetAddress address = InetAddress.getLocalHost();
-                if(address!=null) {
-                    config.setAddress(address.getHostAddress());
-                }else{
-                    config.setAddress(FlinkConstant.LOCAL_HOST);
-                }
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     @Override
     public IResult executeDDL(StudioDDLDTO studioDDLDTO) {
         JobConfig config = studioDDLDTO.getJobConfig();
-        buildEnvironmentAddress(config,studioDDLDTO.getClusterId());
+        config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(),studioDDLDTO.getClusterId()));
         JobManager jobManager = JobManager.build(config);
         return jobManager.executeDDL(studioDDLDTO.getStatement());
     }

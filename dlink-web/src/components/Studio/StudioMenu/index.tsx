@@ -34,8 +34,9 @@ const StudioMenu = (props: any) => {
     if(selectsql==null||selectsql==''){
       selectsql=current.value;
     }
+    let useSession = current.task.useSession;
     let param ={
-      useSession:current.task.useSession,
+      useSession:useSession,
       session:current.task.session,
       useRemote:current.task.useRemote,
       clusterId:current.task.clusterId,
@@ -84,7 +85,7 @@ const StudioMenu = (props: any) => {
         type: "Studio/saveTabs",
         payload: newTabs,
       });
-      showTables(current.task,dispatch);
+      useSession&&showTables(current.task,dispatch);
     })
   };
 
@@ -110,6 +111,9 @@ const StudioMenu = (props: any) => {
           key:taskKey,
           icon: <SmileOutlined style={{ color: '#108ee9' }} />,
         });
+        setTimeout(()=>{
+          refs?.history?.current?.reload();
+        },2000);
         const res = await postDataArray('/api/task/submit',[task.id]);
           notification.close(taskKey);
           if(res.datas[0].success){

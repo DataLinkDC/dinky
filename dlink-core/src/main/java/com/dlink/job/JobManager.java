@@ -124,51 +124,6 @@ public class JobManager extends RunTime {
         return false;
     }
 
-    public RunResult execute(String statement) {
-        RunResult runResult = new RunResult(sessionId, statement, environmentSetting.getHost(), environmentSetting.getPort(), executorSetting, executorSetting.getJobName());
-        Executor executor = createExecutorWithSession();
-        String[] Statements = statement.split(";");
-        int currentIndex = 0;
-        try {
-            for (String item : Statements) {
-                currentIndex++;
-                if (item.trim().isEmpty()) {
-                    continue;
-                }
-                SqlType operationType = Operations.getOperationType(item);
-                long start = System.currentTimeMillis();
-                CustomTableEnvironmentImpl stEnvironment = executor.getCustomTableEnvironmentImpl();
-                if (!FlinkInterceptor.build(stEnvironment, item)) {
-                    TableResult tableResult = executor.executeSql(item);
-                    if (tableResult.getJobClient().isPresent()) {
-                        runResult.setJobId(tableResult.getJobClient().get().getJobID().toHexString());
-                    }
-                    IResult result = ResultBuilder.build(operationType, maxRowNum, "", false).getResult(tableResult);
-                    runResult.setResult(result);
-                }
-                long finish = System.currentTimeMillis();
-                long timeElapsed = finish - start;
-                runResult.setTime(timeElapsed);
-                runResult.setFinishDate(LocalDateTime.now());
-                runResult.setSuccess(true);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            StackTraceElement[] trace = e.getStackTrace();
-            StringBuffer resMsg = new StringBuffer("");
-            for (StackTraceElement s : trace) {
-                resMsg.append(" \n " + s + "  ");
-            }
-            runResult.setFinishDate(LocalDateTime.now());
-            runResult.setSuccess(false);
-//            runResult.setError(LocalDateTime.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage());
-            runResult.setError(LocalDateTime.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage() + " \n >>>堆栈信息<<<" + resMsg.toString());
-//            runResult.setError(LocalDateTime.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage() + "\n >>>异常原因<<< \n" + e.getCause().toString());
-            return runResult;
-        }
-        return runResult;
-    }
-
     public SubmitResult submit(String statement) {
         if (statement == null || "".equals(statement)) {
             return SubmitResult.error("FlinkSql语句不存在");

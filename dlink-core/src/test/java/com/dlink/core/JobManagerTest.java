@@ -90,8 +90,8 @@ public class JobManagerTest {
         sqls.add(sql2);
         sqls.add(sql3);
         String sql = sql1+sql2+sql3;
-        RunResult result = jobManager.execute(sql);
-        System.out.println(result.isSuccess());
+        JobResult jobResult = jobManager.executeSql(sql);
+        System.out.println(jobResult.isSuccess());
     }
 
     @Test

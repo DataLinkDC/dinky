@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.dlink.db.model.SuperEntity;
 import com.dlink.executor.Executor;
 import com.dlink.executor.ExecutorSetting;
+import com.dlink.job.JobConfig;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -56,5 +57,12 @@ public class Task extends SuperEntity{
         return new ExecutorSetting(checkPoint,parallelism,fragment,savePointPath,alias,configMap);
     }
 
+    public JobConfig getSubmitConfig(){
+        boolean useRemote = true;
+        if(clusterId==null||clusterId==0){
+            useRemote = false;
+        }
+        return new JobConfig(false,false,useRemote,clusterId,getId(),alias,fragment,checkPoint,parallelism,savePointPath);
+    }
 
 }

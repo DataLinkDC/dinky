@@ -48,12 +48,12 @@ const getParentKey = (key, tree) => {
 };
 
 const StudioTree: React.FC<StudioTreeProps> = (props) => {
+  const {rightClickMenu,dispatch,tabs,refs} = props;
 
   const [treeData, setTreeData] = useState<TreeDataNode[]>();
   const [dataList, setDataList] = useState<[]>();
   const [expandedKeys, setExpandedKeys] = useState<[]>();
   const [rightClickNodeTreeItem,setRightClickNodeTreeItem] = useState<RightClickMenu>();
-  const {rightClickMenu,dispatch,tabs} = props;
   const [updateCatalogueModalVisible, handleUpdateCatalogueModalVisible] = useState<boolean>(false);
   const [updateTaskModalVisible, handleUpdateTaskModalVisible] = useState<boolean>(false);
   const [isCreate, setIsCreate] = useState<boolean>(true);
@@ -193,6 +193,9 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
         let task = {
           id:node.taskId,
         };
+        setTimeout(()=>{
+          refs?.history?.current?.reload();
+        },2000);
         handleSubmit('/api/task/submit','作业',[task]);
       }
     });
@@ -415,4 +418,5 @@ export default connect(({Studio}: { Studio: StateType }) => ({
   currentPath:Studio.currentPath,
   tabs: Studio.tabs,
   rightClickMenu: Studio.rightClickMenu,
+  refs: Studio.refs,
 }))(StudioTree);
