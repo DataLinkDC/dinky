@@ -14,8 +14,9 @@ public class RemoteStreamExecutor extends Executor {
     public RemoteStreamExecutor(EnvironmentSetting environmentSetting,ExecutorSetting executorSetting) {
         this.environmentSetting = environmentSetting;
         this.executorSetting = executorSetting;
-        synchronized (RemoteStreamExecutor.class){
-            this.environment = StreamExecutionEnvironment.createRemoteEnvironment(environmentSetting.getHost(), environmentSetting.getPort());
+        this.environment = StreamExecutionEnvironment.createRemoteEnvironment(environmentSetting.getHost(), environmentSetting.getPort());
+        init();
+        /*synchronized (RemoteStreamExecutor.class){
             if(executorSetting.getCheckpoint()!=null&&executorSetting.getCheckpoint()>0){
                 environment.enableCheckpointing(executorSetting.getCheckpoint());
             }
@@ -33,7 +34,7 @@ public class RemoteStreamExecutor extends Executor {
             }else{
                 stEnvironment.unUseSqlFragment();
             }
-        }
+        }*/
     }
 
 }

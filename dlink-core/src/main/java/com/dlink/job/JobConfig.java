@@ -20,7 +20,7 @@ public class JobConfig {
     private String session;
     private boolean useRemote;
     private Integer clusterId;
-    private String host;
+    private String address;
     private Integer taskId;
     private String jobName;
     private boolean useSqlFragment;
@@ -55,10 +55,6 @@ public class JobConfig {
     }
 
     public ExecutorSetting getExecutorSetting(){
-        String type = Executor.LOCAL;
-        if(useRemote){
-            type = Executor.REMOTE;
-        }
-        return new ExecutorSetting(host,type,checkpoint,parallelism,useSqlFragment,savePointPath,jobName);
+        return new ExecutorSetting(checkpoint,parallelism,useSqlFragment,savePointPath,jobName);
     }
 }

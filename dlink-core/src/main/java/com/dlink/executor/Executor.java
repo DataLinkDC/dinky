@@ -12,15 +12,14 @@ import org.apache.flink.table.catalog.CatalogManager;
 import org.apache.flink.table.functions.ScalarFunction;
 import org.apache.flink.table.functions.UserDefinedFunction;
 
+import java.util.Map;
+
 /**
  * Executor
  * @author  wenmo
  * @since  2021/5/25 13:39
  **/
 public abstract class Executor {
-
-    public static final String LOCAL = "LOCAL";
-    public static final String REMOTE = "REMOTE";
 
     protected StreamExecutionEnvironment environment;
     protected CustomTableEnvironmentImpl stEnvironment;
@@ -29,17 +28,24 @@ public abstract class Executor {
 
 
     public static Executor build(){
-        return new LocalStreamExecutor(new ExecutorSetting(LOCAL,true));
+        return new LocalStreamExecutor(ExecutorSetting.DEFAULT);
     }
 
     public static Executor build(EnvironmentSetting environmentSetting,ExecutorSetting executorSetting){
-        if(LOCAL.equals(executorSetting.getType())){
-            return new LocalStreamExecutor(executorSetting);
-        }else if(REMOTE.equals(executorSetting.getType())){
-            return new RemoteStreamExecutor(environmentSetting,executorSetting);
+        if(environmentSetting.isUseRemote()){
+            return buildRemoteExecutor(environmentSetting,executorSetting);
         }else{
-            return new LocalStreamExecutor(executorSetting);
+            return buildLocalExecutor(executorSetting);
         }
+    }
+
+    public static Executor buildLocalExecutor(ExecutorSetting executorSetting){
+        return new LocalStreamExecutor(executorSetting);
+    }
+
+    public static Executor buildRemoteExecutor(EnvironmentSetting environmentSetting,ExecutorSetting executorSetting){
+        environmentSetting.setUseRemote(true);
+        return new RemoteStreamExecutor(environmentSetting,executorSetting);
     }
 
     public StreamExecutionEnvironment getEnvironment(){
@@ -56,6 +62,37 @@ public abstract class Executor {
 
     public EnvironmentSetting getEnvironmentSetting(){
         return environmentSetting;
+    }
+
+    protected void init(){
+        initEnvironment();
+        initStreamExecutionEnvironment();
+    }
+
+    private void initEnvironment(){
+        if(executorSetting.getCheckpoint()!=null&&executorSetting.getCheckpoint()>0){
+            environment.enableCheckpointing(executorSetting.getCheckpoint());
+        }
+        if(executorSetting.getParallelism()!=null&&executorSetting.getParallelism()>0){
+            environment.setParallelism(executorSetting.getParallelism());
+        }
+    }
+
+    private void initStreamExecutionEnvironment(){
+        stEnvironment = CustomTableEnvironmentImpl.create(environment);
+        if(executorSetting.isUseSqlFragment()){
+            stEnvironment.useSqlFragment();
+        }else{
+            stEnvironment.unUseSqlFragment();
+        }
+        if(executorSetting.getJobName()!=null&&!"".equals(executorSetting.getJobName())){
+            stEnvironment.getConfig().getConfiguration().setString("pipeline.name", executorSetting.getJobName());
+        }
+        if(executorSetting.getConfig()!=null){
+            for (Map.Entry<String, String> entry : executorSetting.getConfig().entrySet()) {
+                stEnvironment.getConfig().getConfiguration().setString(entry.getKey(), entry.getValue());
+            }
+        }
     }
 
     public JobExecutionResult execute(String jobName) throws Exception{

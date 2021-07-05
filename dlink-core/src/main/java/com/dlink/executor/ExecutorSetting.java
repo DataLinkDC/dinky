@@ -3,6 +3,8 @@ package com.dlink.executor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Map;
+
 /**
  * ExecutorSetting
  *
@@ -12,36 +14,28 @@ import lombok.Setter;
 @Setter
 @Getter
 public class ExecutorSetting {
-    private String host;
-    private String type;
     private Integer checkpoint;
     private Integer parallelism;
     private boolean useSqlFragment;
     private String savePointPath;
     private String jobName;
+    private Map<String,String> config;
+    public static final ExecutorSetting DEFAULT = new ExecutorSetting(false);
 
-    public ExecutorSetting(String type) {
-        this.type = type;
-    }
-
-    public ExecutorSetting(String type, boolean useSqlFragment) {
-        this.type = type;
+    public ExecutorSetting(boolean useSqlFragment) {
         this.useSqlFragment = useSqlFragment;
     }
 
-    public ExecutorSetting(String type, Integer checkpoint) {
-        this.type = type;
+    public ExecutorSetting(Integer checkpoint) {
         this.checkpoint = checkpoint;
     }
 
-    public ExecutorSetting(String type, Integer checkpoint, boolean useSqlFragment) {
-        this.type = type;
+    public ExecutorSetting(Integer checkpoint, boolean useSqlFragment) {
         this.checkpoint = checkpoint;
         this.useSqlFragment = useSqlFragment;
     }
 
-    public ExecutorSetting(String type, Integer checkpoint, Integer parallelism, boolean useSqlFragment, String savePointPath,String jobName) {
-        this.type = type;
+    public ExecutorSetting(Integer checkpoint, Integer parallelism, boolean useSqlFragment, String savePointPath,String jobName) {
         this.checkpoint = checkpoint;
         this.parallelism = parallelism;
         this.useSqlFragment = useSqlFragment;
@@ -49,25 +43,19 @@ public class ExecutorSetting {
         this.jobName = jobName;
     }
 
-    public ExecutorSetting(String type, Integer checkpoint, Integer parallelism, boolean useSqlFragment, String savePointPath) {
-        this.type = type;
+    public ExecutorSetting(Integer checkpoint, Integer parallelism, boolean useSqlFragment, String savePointPath) {
         this.checkpoint = checkpoint;
         this.parallelism = parallelism;
         this.useSqlFragment = useSqlFragment;
         this.savePointPath = savePointPath;
     }
 
-    public ExecutorSetting(String host, String type, Integer checkpoint, Integer parallelism, boolean useSqlFragment, String savePointPath, String jobName) {
-        this.host = host;
-        this.type = type;
+    public ExecutorSetting(Integer checkpoint, Integer parallelism, boolean useSqlFragment, String savePointPath, String jobName, Map<String, String> config) {
         this.checkpoint = checkpoint;
         this.parallelism = parallelism;
         this.useSqlFragment = useSqlFragment;
         this.savePointPath = savePointPath;
         this.jobName = jobName;
-    }
-
-    public boolean isRemote(){
-        return type.equals(Executor.REMOTE);
+        this.config = config;
     }
 }

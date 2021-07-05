@@ -24,7 +24,7 @@ public class JobManagerTest {
 
     @Test
     public void submitJobTest2(){
-        ExecutorSetting setting = new ExecutorSetting(Executor.REMOTE);
+        ExecutorSetting setting = new ExecutorSetting(true);
         JobManager jobManager = new JobManager("192.168.123.157:8081","test2",100, setting);
         String sql1 ="CREATE TABLE student (\n" +
                 "  sid INT,\n" +
@@ -59,7 +59,7 @@ public class JobManagerTest {
 
     @Test
     public void executeJobTest(){
-        ExecutorSetting setting = new ExecutorSetting(Executor.REMOTE,0,1,false,null);
+        ExecutorSetting setting = new ExecutorSetting(0,1,false,null);
 
         JobManager jobManager = new JobManager("192.168.123.157:8081","test2",100, setting);
         String sql1 ="CREATE TABLE student (\n" +
@@ -101,7 +101,7 @@ public class JobManagerTest {
                 null, "测试", false, 100, 0,
                 1, null);
         if(config.isUseRemote()) {
-            config.setHost("192.168.123.157:8081");
+            config.setAddress("192.168.123.157:8081");
         }
         JobManager jobManager = JobManager.build(config);
         String sql1 ="CREATE TABLE Orders (\n" +

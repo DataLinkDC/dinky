@@ -24,6 +24,8 @@ import com.dlink.session.SessionPool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.List;
 
 /**
@@ -38,61 +40,37 @@ public class StudioServiceImpl implements StudioService {
     @Autowired
     private ClusterService clusterService;
 
-    /*@Override
-    public RunResult executeSql(StudioExecuteDTO studioExecuteDTO) {
-        studioExecuteDTO.setSession(studioExecuteDTO.getClusterId()+"_"+studioExecuteDTO.getSession());
-        String ExecuteType = Executor.REMOTE;
-        String host =null;
-        Cluster cluster = clusterService.getById(studioExecuteDTO.getClusterId());
-        if(studioExecuteDTO.getClusterId()==0&&cluster==null){
-            ExecuteType = Executor.LOCAL;
-        }else if(cluster==null){
-            throw new BusException("未获取到集群信息");
-        }else {
-            Assert.check(cluster);
-            host = FlinkCluster.testFlinkJobManagerIP(cluster.getHosts(), cluster.getJobManagerHost());
-            Assert.checkHost(host);
-            if(!host.equals(cluster.getJobManagerHost())){
-                cluster.setJobManagerHost(host);
-                clusterService.updateById(cluster);
-            }
-        }
-        JobManager jobManager = new JobManager(
-                host,
-                studioExecuteDTO.getSession(),
-                studioExecuteDTO.getMaxRowNum(),
-                new ExecutorSetting(
-                        ExecuteType,
-                        studioExecuteDTO.getCheckPoint(),
-                        studioExecuteDTO.getParallelism(),
-                        studioExecuteDTO.isFragment(),
-                        studioExecuteDTO.getSavePointPath(),
-                        studioExecuteDTO.getJobName()));
-        return jobManager.execute(studioExecuteDTO.getStatement());
-    }*/
-
     @Override
     public JobResult executeSql(StudioExecuteDTO studioExecuteDTO) {
         JobConfig config = studioExecuteDTO.getJobConfig();
-        if(config.isUseRemote()) {
-            config.setHost(clusterService.getJobManagerAddress(
-                    clusterService.getById(studioExecuteDTO.getClusterId())
-            ));
-        }else{
-            config.setHost(FlinkConstant.LOCAL_HOST);
-        }
+        buildEnvironmentAddress(config,studioExecuteDTO.getClusterId());
         JobManager jobManager = JobManager.build(config);
         return jobManager.executeSql(studioExecuteDTO.getStatement());
+    }
+
+    private void buildEnvironmentAddress(JobConfig config,Integer clusterId){
+        if(config.isUseRemote()) {
+            config.setAddress(clusterService.getJobManagerAddress(
+                    clusterService.getById(clusterId)
+            ));
+        }else{
+            try {
+                InetAddress address = InetAddress.getLocalHost();
+                if(address!=null) {
+                    config.setAddress(address.getHostAddress());
+                }else{
+                    config.setAddress(FlinkConstant.LOCAL_HOST);
+                }
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
     public IResult executeDDL(StudioDDLDTO studioDDLDTO) {
         JobConfig config = studioDDLDTO.getJobConfig();
-        if(config.isUseRemote()) {
-            config.setHost(clusterService.getJobManagerAddress(
-                    clusterService.getById(studioDDLDTO.getClusterId())
-            ));
-        }
+        buildEnvironmentAddress(config,studioDDLDTO.getClusterId());
         JobManager jobManager = JobManager.build(config);
         return jobManager.executeDDL(studioDDLDTO.getStatement());
     }

@@ -47,7 +47,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 cluster.setJobManagerHost(host);
                 clusterService.updateById(cluster);
             }
-            JobManager jobManager = new JobManager(host,task.getRemoteExecutorSetting());
+            JobManager jobManager = new JobManager(host,task.getExecutorSetting());
             return jobManager.submit(statement.getStatement());
         }else if(task.getClusterId()==0){
             JobManager jobManager = new JobManager();

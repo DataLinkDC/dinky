@@ -327,4 +327,7 @@ CREATE TABLE `dlink_history`  (
   INDEX `cluster_index`(`cluster_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '执行历史' ROW_FORMAT = Dynamic;
 
+ALTER TABLE `dlink`.`dlink_task`
+ADD COLUMN `config` text NULL COMMENT '配置' AFTER `cluster_id`;
+
 SET FOREIGN_KEY_CHECKS = 1;
