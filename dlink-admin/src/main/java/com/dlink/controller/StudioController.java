@@ -1,6 +1,7 @@
 package com.dlink.controller;
 
 import com.dlink.common.result.Result;
+import com.dlink.dto.SessionDTO;
 import com.dlink.dto.StudioCADTO;
 import com.dlink.dto.StudioDDLDTO;
 import com.dlink.dto.StudioExecuteDTO;
@@ -67,6 +68,14 @@ public class StudioController {
     }
 
     /**
+     * 创建session
+     */
+    @PostMapping("/createSession")
+    public Result createSession(@RequestBody SessionDTO sessionDTO)  {
+        return Result.succeed(studioService.createSession(sessionDTO,"admin"),"创建成功");
+    }
+
+    /**
      * 清除指定session
      */
     @DeleteMapping("/clearSession")
@@ -87,5 +96,13 @@ public class StudioController {
         }else{
             return Result.failed("请选择要清除的记录");
         }
+    }
+
+    /**
+     * 获取session列表
+     */
+    @GetMapping("/listSession")
+    public Result listSession()  {
+        return Result.succeed(studioService.listSession("admin"),"获取成功");
     }
 }

@@ -1,11 +1,13 @@
 package com.dlink.service;
 
+import com.dlink.dto.SessionDTO;
 import com.dlink.dto.StudioDDLDTO;
 import com.dlink.dto.StudioExecuteDTO;
 import com.dlink.explainer.ca.TableCANode;
 import com.dlink.job.JobResult;
 import com.dlink.result.IResult;
 import com.dlink.result.SelectResult;
+import com.dlink.session.SessionInfo;
 
 import java.util.List;
 
@@ -23,7 +25,11 @@ public interface StudioService {
 
     SelectResult getJobData(String jobId);
 
+    boolean createSession(SessionDTO sessionDTO,String createUser);
+
     boolean clearSession(String session);
+
+    List<SessionInfo> listSession(String createUser);
 
     List<TableCANode> getOneTableCAByStatement(String statement);
 

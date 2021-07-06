@@ -16,31 +16,21 @@ import java.time.LocalDateTime;
 @Getter
 public class ExecutorEntity {
     private String sessionId;
-    private SessionType type;
-    private boolean useRemote;
-    private String address;
+    private SessionConfig sessionConfig;
     private String createUser;
     private LocalDateTime createTime;
     private Executor executor;
-
-    public enum SessionType{
-        PUBLIC,
-        PRIVATE
-    }
 
     public ExecutorEntity(String sessionId, Executor executor) {
         this.sessionId = sessionId;
         this.executor = executor;
     }
 
-    public ExecutorEntity(String sessionId, SessionType type, boolean useRemote, String address, String createUser, LocalDateTime createTime, Executor executor) {
+    public ExecutorEntity(String sessionId, SessionConfig sessionConfig, String createUser, LocalDateTime createTime, Executor executor) {
         this.sessionId = sessionId;
-        this.type = type;
-        this.useRemote = useRemote;
-        this.address = address;
+        this.sessionConfig = sessionConfig;
         this.createUser = createUser;
         this.createTime = createTime;
         this.executor = executor;
     }
-
 }

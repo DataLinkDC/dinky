@@ -3,6 +3,7 @@ package com.dlink.service.impl;
 import com.dlink.assertion.Assert;
 import com.dlink.cluster.FlinkCluster;
 import com.dlink.constant.FlinkConstant;
+import com.dlink.dto.SessionDTO;
 import com.dlink.dto.StudioDDLDTO;
 import com.dlink.dto.StudioExecuteDTO;
 import com.dlink.exception.BusException;
@@ -20,6 +21,8 @@ import com.dlink.result.RunResult;
 import com.dlink.result.SelectResult;
 import com.dlink.service.ClusterService;
 import com.dlink.service.StudioService;
+import com.dlink.session.SessionConfig;
+import com.dlink.session.SessionInfo;
 import com.dlink.session.SessionPool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,12 +65,27 @@ public class StudioServiceImpl implements StudioService {
     }
 
     @Override
+    public boolean createSession(SessionDTO sessionDTO,String createUser) {
+        Cluster cluster = clusterService.getById(sessionDTO.getClusterId());
+        SessionConfig sessionConfig = SessionConfig.build(
+                sessionDTO.getType(), sessionDTO.isUseRemote(),
+                cluster.getId(),cluster.getAlias(),
+                clusterService.buildEnvironmentAddress(sessionDTO.isUseRemote(),sessionDTO.getClusterId()));
+        return JobManager.createSession(sessionDTO.getSession(),sessionConfig,createUser);
+    }
+
+    @Override
     public boolean clearSession(String session) {
         if(SessionPool.remove(session)>0){
             return true;
         }else{
             return false;
         }
+    }
+
+    @Override
+    public List<SessionInfo> listSession(String createUser) {
+        return JobManager.listSession(createUser);
     }
 
     @Override

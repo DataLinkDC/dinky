@@ -9,6 +9,8 @@ import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.parser.SqlType;
 import com.dlink.result.*;
 import com.dlink.session.ExecutorEntity;
+import com.dlink.session.SessionConfig;
+import com.dlink.session.SessionInfo;
 import com.dlink.session.SessionPool;
 import com.dlink.trans.Operations;
 import org.apache.flink.api.common.JobID;
@@ -264,7 +266,21 @@ public class JobManager extends RunTime {
         return ResultPool.get(jobId);
     }
 
-    public static void createSession(String session){
+    public static boolean createSession(String session, SessionConfig sessionConfig,String createUser){
+        if(SessionPool.exist(session)){
+            return false;
+        }
+        Executor sessionExecutor = null;
+        if (sessionConfig.isUseRemote()) {
+            sessionExecutor = Executor.buildRemoteExecutor(EnvironmentSetting.build(sessionConfig.getAddress()), ExecutorSetting.DEFAULT);
+        } else {
+            sessionExecutor = Executor.buildLocalExecutor(sessionConfig.getExecutorSetting());
+        }
+        SessionPool.push(new ExecutorEntity(session,sessionConfig,createUser,LocalDateTime.now(), sessionExecutor));
+        return true;
+    }
 
+    public static List<SessionInfo> listSession(String createUser){
+        return SessionPool.filter(createUser);
     }
 }

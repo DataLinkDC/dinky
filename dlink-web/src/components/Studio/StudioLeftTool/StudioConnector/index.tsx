@@ -4,7 +4,7 @@ import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
 import {useState} from "react";
 import styles from "./index.less";
-import { SearchOutlined,DownOutlined,DeleteOutlined,CommentOutlined ,MessageOutlined} from '@ant-design/icons';
+import { SearchOutlined,DownOutlined,DeleteOutlined,CommentOutlined ,MessageOutlined,PlusOutlined} from '@ant-design/icons';
 import React from "react";
 import {removeTable, showTables,clearSession} from "@/components/Studio/StudioEvent/DDL";
 import {
@@ -200,6 +200,13 @@ const StudioConnector = (props:any) => {
           <Button
             type="text"
             icon={<CommentOutlined />}
+            onClick={showSessions}
+          />
+        </Tooltip>
+        <Tooltip title="新建会话">
+          <Button
+            type="text"
+            icon={<PlusOutlined />}
             onClick={showSessions}
           />
         </Tooltip>

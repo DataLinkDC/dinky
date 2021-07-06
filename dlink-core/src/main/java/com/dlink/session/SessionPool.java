@@ -2,6 +2,7 @@ package com.dlink.session;
 
 import com.dlink.constant.FlinkConstant;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -14,7 +15,16 @@ import java.util.Vector;
 public class SessionPool {
 
     private static volatile List<ExecutorEntity> executorList = new Vector<>(FlinkConstant.DEFAULT_SESSION_COUNT);
-    
+
+    public static boolean exist(String sessionId) {
+        for (ExecutorEntity executorEntity : executorList) {
+            if (executorEntity.getSessionId().equals(sessionId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static Integer push(ExecutorEntity executorEntity){
         if (executorList.size() >= FlinkConstant.DEFAULT_SESSION_COUNT * FlinkConstant.DEFAULT_FACTOR) {
             executorList.remove(0);
@@ -47,5 +57,19 @@ public class SessionPool {
 
     public static List<ExecutorEntity> list(){
         return executorList;
+    }
+
+    public static List<SessionInfo> filter(String createUser){
+        List<SessionInfo> sessionInfos = new ArrayList<>();
+        for (ExecutorEntity item : executorList) {
+            if(item.getSessionConfig().getType()== SessionConfig.SessionType.PUBLIC){
+                sessionInfos.add(SessionInfo.build(item));
+            }else{
+                if(createUser!=null&&createUser.equals(item.getCreateUser())){
+                    sessionInfos.add(SessionInfo.build(item));
+                }
+            }
+        }
+        return sessionInfos;
     }
 }

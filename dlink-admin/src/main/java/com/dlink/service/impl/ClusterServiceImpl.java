@@ -43,7 +43,6 @@ public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
 
     @Override
     public String buildEnvironmentAddress(boolean useRemote, Integer id) {
-        String address = FlinkConstant.LOCAL_HOST;
         if(useRemote) {
             return getJobManagerAddress(getById(id));
         }else{
@@ -56,7 +55,7 @@ public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
                 e.printStackTrace();
             }
         }
-        return address;
+        return FlinkConstant.LOCAL_HOST;
     }
 
     @Override

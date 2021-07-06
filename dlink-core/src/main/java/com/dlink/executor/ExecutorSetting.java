@@ -20,7 +20,7 @@ public class ExecutorSetting {
     private String savePointPath;
     private String jobName;
     private Map<String,String> config;
-    public static final ExecutorSetting DEFAULT = new ExecutorSetting(false);
+    public static final ExecutorSetting DEFAULT = new ExecutorSetting(true);
 
     public ExecutorSetting(boolean useSqlFragment) {
         this.useSqlFragment = useSqlFragment;
