@@ -1,17 +1,19 @@
-import React, {useEffect, useState} from 'react';
-import {Form, Button, Input, Modal} from 'antd';
+import React, {useState} from 'react';
+import {Form, Button, Input, Modal,Select,Switch} from 'antd';
 
-import type {SessionItem} from '../data.d';
+import {SessionItem} from '../data.d';
+import {connect} from "umi";
+import {StateType} from "@/pages/FlinkSqlStudio/model";
 
 export type UpdateFormProps = {
   onCancel: (flag?: boolean, formVals?: Partial<SessionItem>) => void;
   onSubmit: (values: Partial<SessionItem>) => void;
   updateModalVisible: boolean;
-  isCreate: boolean;
   values: Partial<SessionItem>;
 };
 
-const FormItem = Form.Item;
+const {Item} = Form;
+const {Option} = Select;
 
 const formLayout = {
   labelCol: {span: 7},
@@ -21,9 +23,11 @@ const formLayout = {
 const SessionForm: React.FC<UpdateFormProps> = (props) => {
   const [formVals, setFormVals] = useState<Partial<SessionItem>>({
     session: props.values.session,
-    type: props.values.sessionConfig?.type,
-    useRemote: props.values.sessionConfig?.useRemote,
-    address: props.values.sessionConfig?.address,
+    type: props.values.type,
+    useRemote: props.values.useRemote,
+    clusterId: props.values.clusterId,
+    clusterName: props.values.clusterName,
+    address: props.values.address,
     createUser: props.values.createUser,
     createTime: props.values.createTime,
   });
@@ -35,7 +39,6 @@ const SessionForm: React.FC<UpdateFormProps> = (props) => {
     onCancel: handleUpdateModalVisible,
     updateModalVisible,
     values,
-    isCreate,
   } = props;
 
   const submitForm = async () => {
@@ -47,18 +50,41 @@ const SessionForm: React.FC<UpdateFormProps> = (props) => {
   const renderContent = () => {
     return (
       <>
-        <FormItem
+        <Item
           name="session"
           label="名称"
           rules={[{required: true, message: '请输入唯一名称！'}]}>
           <Input placeholder="请输入"/>
-        </FormItem>
-        <FormItem
-          name="alias"
-          label="别名"
+        </Item>
+        <Item
+          name="type"
+          label="访问权限"
           rules={[{required: true, message: '请输入别名！'}]}>
-          <Input placeholder="请输入"/>
-        </FormItem>
+          <Select defaultValue="PUBLIC">
+            <Option value="PUBLIC">共享</Option>
+            <Option value="PRIVATE">私密</Option>
+          </Select>
+        </Item>
+        <Item
+          name="useRemote"
+          label="是否远程"
+          rules={[{required: true, message: '禁用则为本地模式'}]}>
+          <Switch checkedChildren="启用" unCheckedChildren="禁用"
+                  defaultChecked={formVals.useRemote}/>
+        </Item>
+        <Item
+          name="clusterId"
+          label="集群"
+          rules={[{required: true, message: '请输入别名！'}]}>
+          <Select
+            style={{ width: '100%' }}
+            placeholder="选择Flink集群"
+            defaultValue={0}
+            optionLabelProp="label"
+          >
+
+          </Select>
+        </Item>
       </>
     );
   };
@@ -79,7 +105,7 @@ const SessionForm: React.FC<UpdateFormProps> = (props) => {
       width={640}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title={isCreate ? '创建新作业' : ('重命名作业-' + formVals.name)}
+      title={'创建新会话'}
       visible={updateModalVisible}
       footer={renderFooter()}
       onCancel={() => handleUpdateModalVisible()}
@@ -88,10 +114,10 @@ const SessionForm: React.FC<UpdateFormProps> = (props) => {
         {...formLayout}
         form={form}
         initialValues={{
-          id: formVals.id,
-          name: formVals.name,
-          alias: formVals.alias,
-          parentId: formVals.parentId,
+          session: formVals.session,
+          type: formVals.type,
+          useRemote: formVals.useRemote,
+          clusterId: formVals.clusterId,
         }}
       >
         {renderContent()}
@@ -100,4 +126,6 @@ const SessionForm: React.FC<UpdateFormProps> = (props) => {
   );
 };
 
-export default SessionForm;
+export default connect(({Studio}: { Studio: StateType }) => ({
+  cluster: Studio.cluster,
+}))(SessionForm);

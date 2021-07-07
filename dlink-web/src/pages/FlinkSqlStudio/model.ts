@@ -1,11 +1,7 @@
 import {Effect, Reducer} from "umi";
-import {executeSql} from "./service";
 import {
-  addOrUpdateData, handleAddOrUpdate, handleRemove, handleRemoveById, postAll,
-  queryData
+  getData, handleAddOrUpdate
 } from "@/components/Common/crud";
-import {Form} from "antd";
-import {executeDDL} from "@/pages/FlinkSqlStudio/service";
 
 export type ClusterType = {
   id: number,
@@ -76,21 +72,26 @@ export type RightClickMenu = {
 export type ConnectorType = {
   tablename: string;
 }
-export type SessionClusterType = {
-  session: string;
-  clusterId: number;
-  clusterName: string;
+export type SessionType = {
+  session?: string;
+  type?: string;
+  useRemote?: string;
+  clusterId?: number;
+  clusterName?: string;
+  address?: string;
+  createUser?: string;
+  createTime?: string;
   connectors: ConnectorType[];
 }
 export type StateType = {
   cluster?: ClusterType[];
-  currentSessionCluster: SessionClusterType[];
+  currentSessionCluster: SessionType;
   current: TabsItemType;
   sql?: string;
   monaco?: any;
   currentPath?: string[];
   tabs: TabsType;
-  session: string[];
+  session: SessionType[];
   result:{};
   rightClickMenu?: boolean;
   refs:{
@@ -120,7 +121,7 @@ export type ModelType = {
 
 const getClusters = async () => {
   try {
-    const {datas} = await postAll('api/cluster/listEnabledAll');
+    const {datas} = await getData('api/cluster/listEnabledAll');
     return datas;
   } catch (error) {
     console.error('获取Flink集群失败');
@@ -134,9 +135,6 @@ const Model: ModelType = {
   state: {
     cluster: getClusters(),
     currentSessionCluster: {
-      session: '',
-      clusterId: 0,
-      clusterName: '本地环境',
       connectors: [],
     },
     current: {

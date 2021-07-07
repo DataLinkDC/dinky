@@ -80,10 +80,10 @@ public class ClusterController {
     }
 
     /**
-     * 获取指定ID的信息
+     * 获取可用的集群列表
      */
-    @PostMapping("/listEnabledAll")
-    public Result listEnabledAll() throws Exception {
+    @GetMapping("/listEnabledAll")
+    public Result listEnabledAll() {
         List<Cluster >clusters = clusterService.listEnabledAll();
         return Result.succeed(clusters,"获取成功");
     }

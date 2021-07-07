@@ -12,6 +12,8 @@ import {
 } from '@ant-design/pro-form';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import ProTable from '@ant-design/pro-table';
+import {getData, handleAddOrUpdate} from "@/components/Common/crud";
+import SessionForm from "@/components/Studio/StudioLeftTool/StudioConnector/components/SessionForm";
 
 const StudioConnector = (props:any) => {
 
@@ -23,6 +25,8 @@ const StudioConnector = (props:any) => {
   const [modalVisit, setModalVisit] = useState(false);
   const [type, setType] = useState<number>();
   const [sessionData, setSessionData] = useState<{}>();
+  const [createSessionModalVisible, handleCreateSessionModalVisible] = useState<boolean>(false);
+
 
   const getColumnSearchProps = (dIndex) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
@@ -189,8 +193,18 @@ const StudioConnector = (props:any) => {
     },];
     return columns;
   };
-  const showSessions=()=>{
 
+  const createSessions=()=>{
+    handleCreateSessionModalVisible(true);
+  };
+
+  const showSessions=()=>{
+    setModalVisit(true);
+    setType(1);
+    const res = getData("api/studio/listSession");
+    res.then((result)=>{
+      setSessionData(result.datas);
+    });
   };
 
   return (
@@ -207,7 +221,7 @@ const StudioConnector = (props:any) => {
           <Button
             type="text"
             icon={<PlusOutlined />}
-            onClick={showSessions}
+            onClick={createSessions}
           />
         </Tooltip>
         <Tooltip title="刷新连接器">
@@ -253,13 +267,30 @@ const StudioConnector = (props:any) => {
           >
             <ProDescriptions.Item  span={2} >
               {sessionData?
-                (<Table dataSource={sessionData} columns={getSessionsColumns} size="small"
+                (<Table dataSource={sessionData} columns={getSessionsColumns()} size="small"
                 />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
             </ProDescriptions.Item>
           </ProDescriptions>
         )
         }
       </ModalForm>
+      <SessionForm
+        onSubmit={async (value) => {
+          const success = await handleAddOrUpdate("api/studio/createSession",value);
+          if (success) {
+            handleCreateSessionModalVisible(false);
+            /*if (actionRef.current) {
+              actionRef.current.reload();
+            }*/
+          }
+        }}
+        onCancel={() => {
+          handleCreateSessionModalVisible(false);
+          // setFormValues({});
+        }}
+        updateModalVisible={createSessionModalVisible}
+        values={{}}
+      />
       </>
   );
 };

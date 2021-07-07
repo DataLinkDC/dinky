@@ -19,5 +19,9 @@ public interface ClusterService extends ISuperService<Cluster> {
 
     String buildEnvironmentAddress(boolean useRemote,Integer id);
 
+    String buildRemoteEnvironmentAddress(Integer id);
+
+    String buildLocalEnvironmentAddress();
+
     List<Cluster> listEnabledAll();
 }

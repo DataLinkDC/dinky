@@ -44,16 +44,26 @@ public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
     @Override
     public String buildEnvironmentAddress(boolean useRemote, Integer id) {
         if(useRemote) {
-            return getJobManagerAddress(getById(id));
+            return buildRemoteEnvironmentAddress(id);
         }else{
-            try {
-                InetAddress inetAddress = InetAddress.getLocalHost();
-                if(inetAddress!=null) {
-                    return inetAddress.getHostAddress()+ NetConstant.COLON+FlinkConstant.PORT;
-                }
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
+            return buildLocalEnvironmentAddress();
+        }
+    }
+
+    @Override
+    public String buildRemoteEnvironmentAddress(Integer id) {
+        return getJobManagerAddress(getById(id));
+    }
+
+    @Override
+    public String buildLocalEnvironmentAddress() {
+        try {
+            InetAddress inetAddress = InetAddress.getLocalHost();
+            if(inetAddress!=null) {
+                return inetAddress.getHostAddress()+ NetConstant.COLON+FlinkConstant.PORT;
             }
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
         }
         return FlinkConstant.LOCAL_HOST;
     }

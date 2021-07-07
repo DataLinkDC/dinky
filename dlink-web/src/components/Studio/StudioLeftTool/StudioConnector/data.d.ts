@@ -1,11 +1,11 @@
 
 export type SessionItem = {
   session: string,
-  sessionConfig: {
-    type:string,
-    useRemote:boolean,
-    clusterId:number,
-  },
+  type:string,
+  useRemote:boolean,
+  clusterId:number,
+  clusterName:string,
+  address:string,
   createUser: string,
   createTime: string,
 };

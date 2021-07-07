@@ -1,15 +1,8 @@
 package com.dlink.service.impl;
 
-import com.dlink.assertion.Assert;
-import com.dlink.cluster.FlinkCluster;
-import com.dlink.constant.FlinkConstant;
 import com.dlink.dto.SessionDTO;
 import com.dlink.dto.StudioDDLDTO;
 import com.dlink.dto.StudioExecuteDTO;
-import com.dlink.exception.BusException;
-import com.dlink.exception.JobException;
-import com.dlink.executor.Executor;
-import com.dlink.executor.ExecutorSetting;
 import com.dlink.explainer.ca.CABuilder;
 import com.dlink.explainer.ca.TableCANode;
 import com.dlink.job.JobConfig;
@@ -17,7 +10,6 @@ import com.dlink.job.JobManager;
 import com.dlink.job.JobResult;
 import com.dlink.model.Cluster;
 import com.dlink.result.IResult;
-import com.dlink.result.RunResult;
 import com.dlink.result.SelectResult;
 import com.dlink.service.ClusterService;
 import com.dlink.service.StudioService;
@@ -27,8 +19,6 @@ import com.dlink.session.SessionPool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.List;
 
 /**
@@ -66,12 +56,20 @@ public class StudioServiceImpl implements StudioService {
 
     @Override
     public boolean createSession(SessionDTO sessionDTO,String createUser) {
-        Cluster cluster = clusterService.getById(sessionDTO.getClusterId());
-        SessionConfig sessionConfig = SessionConfig.build(
-                sessionDTO.getType(), sessionDTO.isUseRemote(),
-                cluster.getId(),cluster.getAlias(),
-                clusterService.buildEnvironmentAddress(sessionDTO.isUseRemote(),sessionDTO.getClusterId()));
-        return JobManager.createSession(sessionDTO.getSession(),sessionConfig,createUser);
+        if(sessionDTO.isUseRemote()) {
+            Cluster cluster = clusterService.getById(sessionDTO.getClusterId());
+            SessionConfig sessionConfig = SessionConfig.build(
+                    sessionDTO.getType(), true,
+                    cluster.getId(), cluster.getAlias(),
+                    clusterService.buildEnvironmentAddress(true, sessionDTO.getClusterId()));
+            return JobManager.createSession(sessionDTO.getSession(), sessionConfig, createUser);
+        }else{
+            SessionConfig sessionConfig = SessionConfig.build(
+                    sessionDTO.getType(), false,
+                    null, null,
+                    clusterService.buildEnvironmentAddress(false, null));
+            return JobManager.createSession(sessionDTO.getSession(), sessionConfig, createUser);
+        }
     }
 
     @Override
