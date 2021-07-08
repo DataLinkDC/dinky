@@ -11,6 +11,7 @@ import {StateType} from "@/pages/FlinkSqlStudio/model";
 import StudioConsole from "./StudioConsole";
 import StudioLeftTool from "./StudioLeftTool";
 import StudioRightTool from "./StudioRightTool";
+import {showCluster} from "@/components/Studio/StudioEvent/DDL";
 
 type StudioProps = {
   rightClickMenu:StateType['rightClickMenu'];
@@ -21,6 +22,8 @@ const Studio: React.FC<StudioProps> = (props) => {
 
   const {rightClickMenu,dispatch} = props;
   const [form] = Form.useForm();
+
+  showCluster(dispatch);
 
   const onClick=()=>{
     if(rightClickMenu){

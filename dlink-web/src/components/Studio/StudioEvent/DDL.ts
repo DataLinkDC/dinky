@@ -2,22 +2,22 @@ import {executeDDL} from "@/pages/FlinkSqlStudio/service";
 import FlinkSQL from "./FlinkSQL";
 import {TaskType} from "@/pages/FlinkSqlStudio/model";
 import {Modal} from "antd";
-import {handleRemove} from "@/components/Common/crud";
+import {getData, handleRemove} from "@/components/Common/crud";
 
-export function showTables(task:TaskType,dispatch:any) {
+export function showTables(task: TaskType, dispatch: any) {
   const res = executeDDL({
-    statement:FlinkSQL.SHOW_TABLES,
+    statement: FlinkSQL.SHOW_TABLES,
     clusterId: task.clusterId,
-    session:task.session,
-    useSession:task.useSession,
-    useResult:true,
+    session: task.session,
+    useSession: task.useSession,
+    useResult: true,
   });
-  res.then((result)=>{
+  res.then((result) => {
     let tableData = [];
-    if(result.datas.rowData.length>0){
+    if (result.datas.rowData.length > 0) {
       tableData = result.datas.rowData;
     }
-    dispatch&&dispatch({
+    dispatch && dispatch({
       type: "Studio/refreshCurrentSessionCluster",
       payload: {
         session: task.session,
@@ -29,39 +29,49 @@ export function showTables(task:TaskType,dispatch:any) {
   });
 }
 
-export function removeTable(tablename:string,task:TaskType,dispatch:any) {
+export function removeTable(tablename: string, task: TaskType, dispatch: any) {
   Modal.confirm({
-    title: '确定删除表【'+tablename+'】吗？',
+    title: '确定删除表【' + tablename + '】吗？',
     okText: '确认',
     cancelText: '取消',
-    onOk:async () => {
+    onOk: async () => {
       const res = executeDDL({
-        statement:"drop table "+tablename,
+        statement: "drop table " + tablename,
         clusterId: task.clusterId,
-        session:task.session,
-        useSession:task.useSession,
-        useResult:true,
+        session: task.session,
+        useSession: task.useSession,
+        useResult: true,
       });
-      res.then((result)=>{
-        showTables(task,dispatch);
+      res.then((result) => {
+        showTables(task, dispatch);
       });
     }
   });
 }
 
-export function clearSession(session:string,task:TaskType,dispatch:any) {
+export function clearSession(session: string, task: TaskType, dispatch: any) {
   Modal.confirm({
-    title: '确认清空会话【'+session+'】？',
+    title: '确认清空会话【' + session + '】？',
     okText: '确认',
     cancelText: '取消',
-    onOk:async () => {
+    onOk: async () => {
       let para = {
-        id:session,
+        id: session,
       };
-      const res = handleRemove('/api/studio/clearSession',[para]);
-      res.then((result)=>{
-        showTables(task,dispatch);
+      const res = handleRemove('/api/studio/clearSession', [para]);
+      res.then((result) => {
+        showTables(task, dispatch);
       });
     }
+  });
+}
+
+export function showCluster(dispatch: any) {
+  const res = getData('api/cluster/listEnabledAll');
+  res.then((result) => {
+    result.datas && dispatch && dispatch({
+      type: "Studio/saveCluster",
+      payload: result.datas,
+    });
   });
 }

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Form, Button, Input, Modal,Select,Switch} from 'antd';
+import {Form, Button, Input, Modal,Select,Tag,Switch} from 'antd';
 
 import {SessionItem} from '../data.d';
 import {connect} from "umi";
@@ -32,6 +32,8 @@ const SessionForm: React.FC<UpdateFormProps> = (props) => {
     createTime: props.values.createTime,
   });
 
+  const {cluster} = props;
+
   const [form] = Form.useForm();
 
   const {
@@ -45,6 +47,20 @@ const SessionForm: React.FC<UpdateFormProps> = (props) => {
     const fieldsValue = await form.validateFields();
     setFormVals({...formVals, ...fieldsValue});
     handleUpdate({...formVals, ...fieldsValue});
+  };
+
+  const getClusterOptions = ()=>{
+    let itemList = [(<Option value={0} label={(<><Tag color="default">Local</Tag>本地环境</>)}>
+      <Tag color="default">Local</Tag>
+      本地环境
+    </Option>)];
+    for(let item of cluster){
+      let tag =(<><Tag color={item.enabled?"processing":"error"}>{item.type}</Tag>{item.alias}</>);
+      itemList.push(<Option value={item.id} label={tag}>
+        {tag}
+      </Option>)
+    }
+    return itemList;
   };
 
   const renderContent = () => {
@@ -82,7 +98,7 @@ const SessionForm: React.FC<UpdateFormProps> = (props) => {
             defaultValue={0}
             optionLabelProp="label"
           >
-
+            {getClusterOptions()}
           </Select>
         </Item>
       </>

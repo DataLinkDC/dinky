@@ -4,34 +4,29 @@ import {Form, InputNumber,Input,Switch,Select,Tag,Row,Col,Divider,Tooltip,Button
 import {InfoCircleOutlined,PlusOutlined,MinusSquareOutlined} from "@ant-design/icons";
 import styles from "./index.less";
 import {useEffect, useState} from "react";
-import {showTables} from "@/components/Studio/StudioEvent/DDL";
+import {showCluster, showTables} from "@/components/Studio/StudioEvent/DDL";
 
 const { Option } = Select;
 
 const StudioSetting = (props: any) => {
 
   const {cluster,current,form,dispatch,tabs} = props;
-  const [clusterOption, setClusterOption] = useState<[]>();
 
-
-  const getCluster = ()=>{
-    cluster&&cluster.then(value=>{
-      let itemList = [];
-      for(let item of value){
-        let tag =(<><Tag color={item.enabled?"processing":"error"}>{item.type}</Tag>{item.alias}</>);
-        itemList.push(<Option value={item.id} label={tag}>
-          {tag}
-        </Option>)
-      }
-      setClusterOption(itemList);
-    });
+  const getClusterOptions = ()=>{
+    let itemList = [(<Option value={0} label={(<><Tag color="default">Local</Tag>本地环境</>)}>
+      <Tag color="default">Local</Tag>
+      本地环境
+    </Option>)];
+    for(let item of cluster){
+      let tag =(<><Tag color={item.enabled?"processing":"error"}>{item.type}</Tag>{item.alias}</>);
+      itemList.push(<Option value={item.id} label={tag}>
+        {tag}
+      </Option>)
+    }
+    return itemList;
   };
 
   form.setFieldsValue(current.task);
-
-  useEffect(() => {
-    getCluster();
-  }, []);
 
   const onValuesChange = (change:any,all:any)=>{
     let newTabs = tabs;
@@ -123,11 +118,7 @@ const StudioSetting = (props: any) => {
           optionLabelProp="label"
           onChange={onChangeClusterSession}
         >
-          <Option value={0} label={(<><Tag color="default">Local</Tag>本地环境</>)}>
-            <Tag color="default">Local</Tag>
-            本地环境
-          </Option>
-          {clusterOption}
+          {getClusterOptions()}
         </Select>
       </Form.Item>
         </Col>

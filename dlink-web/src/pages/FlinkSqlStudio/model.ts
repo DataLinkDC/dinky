@@ -85,16 +85,16 @@ export type SessionType = {
 }
 export type StateType = {
   cluster?: ClusterType[];
-  currentSessionCluster: SessionType;
-  current: TabsItemType;
+  currentSessionCluster?: SessionType;
+  current?: TabsItemType;
   sql?: string;
   monaco?: any;
   currentPath?: string[];
-  tabs: TabsType;
-  session: SessionType[];
-  result:{};
+  tabs?: TabsType;
+  session?: SessionType[];
+  result?:{};
   rightClickMenu?: boolean;
-  refs:{
+  refs?:{
     history:any;
   };
 };
@@ -116,24 +116,14 @@ export type ModelType = {
     showRightClickMenu: Reducer<StateType>;
     refreshCurrentSessionCluster: Reducer<StateType>;
     saveResult: Reducer<StateType>;
+    saveCluster: Reducer<StateType>;
   };
 };
-
-const getClusters = async () => {
-  try {
-    const {datas} = await getData('api/cluster/listEnabledAll');
-    return datas;
-  } catch (error) {
-    console.error('获取Flink集群失败');
-    return [];
-  }
-};
-
 
 const Model: ModelType = {
   namespace: 'Studio',
   state: {
-    cluster: getClusters(),
+    cluster: [],
     currentSessionCluster: {
       connectors: [],
     },
@@ -322,17 +312,23 @@ const Model: ModelType = {
       };
     },
     saveSession(state, {payload}) {
-      let newSession = state.session;
-      for (let i = 0; i < newSession.length; i++) {
-        if (newSession[i].key == payload) {
-          return {};
+      let newSession = state?.session;
+      if(newSession) {
+        for (let i = 0; i < newSession.length; i++) {
+          if (newSession[i].key == payload) {
+            return {};
+          }
         }
+        newSession.push(payload);
+        return {
+          ...state,
+          session: newSession,
+        };
+      }else {
+        return {
+          ...state
+        };
       }
-      newSession.push(payload);
-      return {
-        ...state,
-        session: newSession,
-      };
     },
     showRightClickMenu(state, {payload}) {
       return {
@@ -354,6 +350,12 @@ const Model: ModelType = {
         result: {
           ...payload
         },
+      };
+    },
+    saveCluster(state, {payload}) {
+      return {
+        ...state,
+        cluster: payload,
       };
     },
   },
