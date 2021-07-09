@@ -1,6 +1,6 @@
 import {Effect, Reducer} from "umi";
 import {
-  getData, handleAddOrUpdate
+   handleAddOrUpdate
 } from "@/components/Common/crud";
 
 export type ClusterType = {

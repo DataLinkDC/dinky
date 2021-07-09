@@ -70,7 +70,7 @@ public class StudioController {
     /**
      * 创建session
      */
-    @PostMapping("/createSession")
+    @PutMapping("/createSession")
     public Result createSession(@RequestBody SessionDTO sessionDTO)  {
         return Result.succeed(studioService.createSession(sessionDTO,"admin"),"创建成功");
     }

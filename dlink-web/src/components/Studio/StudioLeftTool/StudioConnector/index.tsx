@@ -121,6 +121,8 @@ const StudioConnector = (props:any) => {
   const keySessionsEvent=(key, item)=>{
     if(key=='delete'){
       clearSession(item.session,current.task,dispatch);
+    }else if(key=='connect'){
+
     }else{
       message.warn("敬请期待");
     }
@@ -172,6 +174,41 @@ const StudioConnector = (props:any) => {
       sorter: true,
       ...getColumnSearchProps("session"),
     },{
+      title: "执行模式",
+      key: "useRemote",
+      sorter: true,
+      ...getColumnSearchProps("useRemote"),
+      render:function(text, record, index) {
+        return record.sessionConfig.useRemote?'远程':'本地';
+      }
+    },{
+      title: "集群名",
+      key: "clusterName",
+      sorter: true,
+      ...getColumnSearchProps("clusterName"),
+      render:function(text, record, index) {
+        return record.sessionConfig.clusterName;
+      }
+    },{
+      title: "JobManager地址",
+      key: "address",
+      sorter: true,
+      ...getColumnSearchProps("address"),
+      render:function(text, record, index) {
+        return record.sessionConfig.address;
+      }
+    },{
+      title: "创建人",
+      dataIndex: "createUser",
+      key: "createUser",
+      sorter: true,
+      ...getColumnSearchProps("createUser"),
+    },{
+      title: "创建时间",
+      dataIndex: "createTime",
+      key: "createTime",
+      sorter: true,
+    },{
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
@@ -181,7 +218,7 @@ const StudioConnector = (props:any) => {
             message.warn('敬请期待');
           }}
         >
-          描述
+          连接
         </a>,<Divider type="vertical" />,<a
           onClick={() => {
             keySessionsEvent('delete',record);
@@ -276,17 +313,14 @@ const StudioConnector = (props:any) => {
       </ModalForm>
       <SessionForm
         onSubmit={async (value) => {
+          console.log(value);
           const success = await handleAddOrUpdate("api/studio/createSession",value);
           if (success) {
             handleCreateSessionModalVisible(false);
-            /*if (actionRef.current) {
-              actionRef.current.reload();
-            }*/
           }
         }}
         onCancel={() => {
           handleCreateSessionModalVisible(false);
-          // setFormValues({});
         }}
         updateModalVisible={createSessionModalVisible}
         values={{}}

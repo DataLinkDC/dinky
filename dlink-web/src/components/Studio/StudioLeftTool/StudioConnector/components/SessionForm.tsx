@@ -75,7 +75,7 @@ const SessionForm: React.FC<UpdateFormProps> = (props) => {
         <Item
           name="type"
           label="访问权限"
-          rules={[{required: true, message: '请输入别名！'}]}>
+          >
           <Select defaultValue="PUBLIC">
             <Option value="PUBLIC">共享</Option>
             <Option value="PRIVATE">私密</Option>
@@ -84,7 +84,7 @@ const SessionForm: React.FC<UpdateFormProps> = (props) => {
         <Item
           name="useRemote"
           label="是否远程"
-          rules={[{required: true, message: '禁用则为本地模式'}]}>
+          >
           <Switch checkedChildren="启用" unCheckedChildren="禁用"
                   defaultChecked={formVals.useRemote}/>
         </Item>
