@@ -74,7 +74,7 @@ export function clearSession(session: string, dispatch: any) {
       };
       const res = handleRemove('/api/studio/clearSession', [para]);
       res.then((result) => {
-        showTables(session, dispatch);
+        quitSession(dispatch);
       });
     }
   });

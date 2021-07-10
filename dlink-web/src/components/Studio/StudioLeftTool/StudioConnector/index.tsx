@@ -134,7 +134,7 @@ const StudioConnector = (props:any) => {
   };
 
   const onClearSession = () => {
-    clearSession(current.task.session,current.task,dispatch);
+    clearSession(currentSession.session,dispatch);
   };
 
   const getColumns=()=>{
