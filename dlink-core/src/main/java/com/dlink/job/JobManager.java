@@ -72,6 +72,7 @@ public class JobManager extends RunTime {
     }
 
     private Executor createExecutor() {
+        initEnvironmentSetting();
         if (config.isUseRemote()) {
             executor = Executor.buildRemoteExecutor(environmentSetting, config.getExecutorSetting());
             return executor;
@@ -86,6 +87,8 @@ public class JobManager extends RunTime {
             ExecutorEntity executorEntity = SessionPool.get(config.getSession());
             if (executorEntity != null) {
                 executor = executorEntity.getExecutor();
+                config.setSessionConfig(executorEntity.getSessionConfig());
+                initEnvironmentSetting();
             } else {
                 createExecutor();
                 SessionPool.push(new ExecutorEntity(config.getSession(), executor));
@@ -96,11 +99,13 @@ public class JobManager extends RunTime {
         return executor;
     }
 
+    private void initEnvironmentSetting(){
+        environmentSetting = EnvironmentSetting.build(config.getAddress());
+    }
+
     @Override
     public boolean init() {
         handler = JobHandler.build();
-        String address = config.getAddress();
-        environmentSetting = EnvironmentSetting.build(address);
         createExecutorWithSession();
         return false;
     }

@@ -91,11 +91,10 @@ const SessionForm: React.FC<UpdateFormProps> = (props) => {
         <Item
           name="clusterId"
           label="集群"
-          rules={[{required: true, message: '请输入别名！'}]}>
+          >
           <Select
             style={{ width: '100%' }}
             placeholder="选择Flink集群"
-            defaultValue={0}
             optionLabelProp="label"
           >
             {getClusterOptions()}

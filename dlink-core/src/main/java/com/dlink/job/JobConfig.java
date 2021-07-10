@@ -2,6 +2,7 @@ package com.dlink.job;
 
 import com.dlink.executor.Executor;
 import com.dlink.executor.ExecutorSetting;
+import com.dlink.session.SessionConfig;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -76,5 +77,13 @@ public class JobConfig {
     public JobConfig buildSubmitConfig(Integer clusterId, Integer taskId, String jobName,boolean useSqlFragment, Integer checkpoint,
                                        Integer parallelism, String savePointPath){
         return new JobConfig(false,false,false,clusterId,taskId,jobName,useSqlFragment,checkpoint,parallelism,savePointPath);
+    }
+
+    public void setSessionConfig(SessionConfig sessionConfig){
+        if(sessionConfig!=null) {
+            address = sessionConfig.getAddress();
+            clusterId = sessionConfig.getClusterId();
+            useRemote = sessionConfig.isUseRemote();
+        }
     }
 }

@@ -1,23 +1,22 @@
 import {message, Input, Button, Space, Table,  Dropdown, Menu, Empty,Divider,
-  Tooltip,Breadcrumb} from "antd";
+  Tooltip} from "antd";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
 import {useState} from "react";
 import styles from "./index.less";
-import { SearchOutlined,DownOutlined,DeleteOutlined,CommentOutlined ,MessageOutlined,PlusOutlined} from '@ant-design/icons';
+import { SearchOutlined,DownOutlined,DeleteOutlined,CommentOutlined ,PoweroffOutlined,PlusOutlined} from '@ant-design/icons';
 import React from "react";
-import {removeTable, showTables,clearSession} from "@/components/Studio/StudioEvent/DDL";
+import {removeTable, showTables, clearSession, changeSession, quitSession} from "@/components/Studio/StudioEvent/DDL";
 import {
   ModalForm,
 } from '@ant-design/pro-form';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import ProTable from '@ant-design/pro-table';
 import {getData, handleAddOrUpdate} from "@/components/Common/crud";
 import SessionForm from "@/components/Studio/StudioLeftTool/StudioConnector/components/SessionForm";
 
 const StudioConnector = (props:any) => {
 
-  const {current,dispatch,currentSessionCluster} = props;
+  const {current,dispatch,currentSession} = props;
   const [tableData,setTableData] = useState<[]>([]);
   const [loadings,setLoadings] = useState<boolean[]>([]);
   const [searchText,setSearchText] = useState<string>('');
@@ -112,7 +111,7 @@ const StudioConnector = (props:any) => {
 
   const keyEvent=(key, item)=>{
     if(key=='delete'){
-      removeTable(item.tablename,current.task,dispatch);
+      removeTable(item.tablename,currentSession.session,dispatch);
     }else{
       message.warn("敬请期待");
     }
@@ -122,14 +121,16 @@ const StudioConnector = (props:any) => {
     if(key=='delete'){
       clearSession(item.session,current.task,dispatch);
     }else if(key=='connect'){
-
+      changeSession(item,dispatch);
+      message.success('连接共享会话【'+item.session+'】成功！');
+      setModalVisit(false);
     }else{
       message.warn("敬请期待");
     }
   };
 
   const getTables = () => {
-    showTables(current.task,dispatch);
+    showTables(currentSession.session,dispatch);
   };
 
   const onClearSession = () => {
@@ -190,14 +191,6 @@ const StudioConnector = (props:any) => {
         return record.sessionConfig.clusterName;
       }
     },{
-      title: "JobManager地址",
-      key: "address",
-      sorter: true,
-      ...getColumnSearchProps("address"),
-      render:function(text, record, index) {
-        return record.sessionConfig.address;
-      }
-    },{
       title: "创建人",
       dataIndex: "createUser",
       key: "createUser",
@@ -215,7 +208,7 @@ const StudioConnector = (props:any) => {
       render: (_, record) => [
         <a
           onClick={() => {
-            message.warn('敬请期待');
+            keySessionsEvent('connect',record);
           }}
         >
           连接
@@ -244,6 +237,11 @@ const StudioConnector = (props:any) => {
     });
   };
 
+  const quitSessions=()=>{
+    quitSession(dispatch);
+    message.success('退出共享会话成功！');
+  };
+
   return (
     <>
       <div style={{float: "right"}}>
@@ -252,6 +250,13 @@ const StudioConnector = (props:any) => {
             type="text"
             icon={<CommentOutlined />}
             onClick={showSessions}
+          />
+        </Tooltip>
+        <Tooltip title="退出会话">
+          <Button
+            type="text"
+            icon={<PoweroffOutlined />}
+            onClick={quitSessions}
           />
         </Tooltip>
         <Tooltip title="新建会话">
@@ -268,7 +273,7 @@ const StudioConnector = (props:any) => {
             onClick={getTables}
           />
         </Tooltip>
-        <Tooltip title="清空连接器">
+        <Tooltip title="注销会话">
           <Button
             type="text"
             icon={<DeleteOutlined />}
@@ -276,12 +281,7 @@ const StudioConnector = (props:any) => {
           />
         </Tooltip>
       </div>
-      <Breadcrumb className={styles["session-path"]}>
-        <MessageOutlined />
-        <Divider type="vertical" />
-        <Breadcrumb.Item>{currentSessionCluster.session}</Breadcrumb.Item>
-      </Breadcrumb>
-      {currentSessionCluster.connectors&&currentSessionCluster.connectors.length>0?(<Table dataSource={currentSessionCluster.connectors} columns={getColumns()} size="small" />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
+      {currentSession.connectors&&currentSession.connectors.length>0?(<Table dataSource={currentSession.connectors} columns={getColumns()} size="small" />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
       <ModalForm
         // title="新建表单"
         visible={modalVisit}
@@ -323,7 +323,11 @@ const StudioConnector = (props:any) => {
           handleCreateSessionModalVisible(false);
         }}
         updateModalVisible={createSessionModalVisible}
-        values={{}}
+        values={{
+          session:'',
+          type:'PUBLIC',
+          useRemote:false,
+        }}
       />
       </>
   );
@@ -331,5 +335,5 @@ const StudioConnector = (props:any) => {
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
   current: Studio.current,
-  currentSessionCluster: Studio.currentSessionCluster,
+  currentSession: Studio.currentSession,
 }))(StudioConnector);

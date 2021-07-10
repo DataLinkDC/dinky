@@ -36,7 +36,9 @@ public class StudioServiceImpl implements StudioService {
     @Override
     public JobResult executeSql(StudioExecuteDTO studioExecuteDTO) {
         JobConfig config = studioExecuteDTO.getJobConfig();
-        config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(),studioExecuteDTO.getClusterId()));
+        if(!config.isUseSession()) {
+            config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
+        }
         JobManager jobManager = JobManager.build(config);
         return jobManager.executeSql(studioExecuteDTO.getStatement());
     }
@@ -44,7 +46,9 @@ public class StudioServiceImpl implements StudioService {
     @Override
     public IResult executeDDL(StudioDDLDTO studioDDLDTO) {
         JobConfig config = studioDDLDTO.getJobConfig();
-        config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(),studioDDLDTO.getClusterId()));
+        if(!config.isUseSession()) {
+            config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioDDLDTO.getClusterId()));
+        }
         JobManager jobManager = JobManager.build(config);
         return jobManager.executeDDL(studioDDLDTO.getStatement());
     }

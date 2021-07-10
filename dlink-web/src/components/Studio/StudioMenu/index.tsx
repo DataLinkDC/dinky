@@ -2,7 +2,7 @@ import styles from "./index.less";
 import {Menu, Dropdown, Tooltip, Row, Col, Popconfirm, notification, Modal,message} from "antd";
 import {PauseCircleTwoTone, CopyTwoTone, DeleteTwoTone,PlayCircleTwoTone,DiffTwoTone,
   FileAddTwoTone,FolderOpenTwoTone,SafetyCertificateTwoTone,SaveTwoTone,FlagTwoTone,
-  EnvironmentOutlined,SmileOutlined,RocketTwoTone,QuestionCircleTwoTone} from "@ant-design/icons";
+  EnvironmentOutlined,SmileOutlined,RocketTwoTone,QuestionCircleTwoTone,MessageOutlined} from "@ant-design/icons";
 import Space from "antd/es/space";
 import Divider from "antd/es/divider";
 import Button from "antd/es/button/button";
@@ -23,7 +23,7 @@ const menu = (
 
 const StudioMenu = (props: any) => {
 
-  const {tabs,current,currentPath,form,refs,dispatch} = props;
+  const {tabs,current,currentPath,form,refs,dispatch,currentSession} = props;
 
   const execute = () => {
     let selectsql =null;
@@ -34,10 +34,10 @@ const StudioMenu = (props: any) => {
     if(selectsql==null||selectsql==''){
       selectsql=current.value;
     }
-    let useSession = current.task.useSession;
+    let useSession = !!currentSession.session;
     let param ={
       useSession:useSession,
-      session:current.task.session,
+      session:currentSession.session,
       useRemote:current.task.useRemote,
       clusterId:current.task.clusterId,
       useResult:current.task.useResult,
@@ -85,7 +85,7 @@ const StudioMenu = (props: any) => {
         type: "Studio/saveTabs",
         payload: newTabs,
       });
-      useSession&&showTables(current.task,dispatch);
+      useSession&&showTables(currentSession.session,dispatch);
     })
   };
 
@@ -203,6 +203,14 @@ const StudioMenu = (props: any) => {
               <EnvironmentOutlined />
               <Divider type="vertical" />
               {getPathItem(currentPath)}
+              {currentSession.session&&
+              (<>
+                <Divider type="vertical" />
+                <MessageOutlined />
+                <Divider type="vertical" />
+                <Breadcrumb.Item>{currentSession.session}</Breadcrumb.Item>
+              </>)
+                }
             </Breadcrumb>
           </Col>
           <Col span={8} offset={8}>
@@ -293,5 +301,5 @@ export default connect(({Studio}: { Studio: StateType }) => ({
   currentPath: Studio.currentPath,
   tabs: Studio.tabs,
   refs: Studio.refs,
-  // monaco: Studio.monaco,
+  currentSession: Studio.currentSession,
 }))(StudioMenu);

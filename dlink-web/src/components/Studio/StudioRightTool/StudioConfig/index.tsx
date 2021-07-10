@@ -10,20 +10,10 @@ const { Option } = Select;
 
 const StudioConfig = (props: any) => {
 
-  const {current,form,dispatch,tabs,session} = props;
-  const [newSesstion, setNewSesstion] = useState<string>('');
+  const {current,form,dispatch,tabs,currentSession} = props;
 
   form.setFieldsValue(current.task);
 
-  const addSession = ()=>{
-    if(newSesstion!='') {
-      dispatch && dispatch({
-        type: "Studio/saveSession",
-        payload: newSesstion,
-      });
-      setNewSesstion('');
-    }
-  };
 
   const onValuesChange = (change:any,all:any)=>{
     let newTabs = tabs;
@@ -42,9 +32,6 @@ const StudioConfig = (props: any) => {
     });
   };
 
-  const onChangeClusterSession = ()=>{
-    showTables(current.task,dispatch);
-  };
   return (
     <>
       <Row>
@@ -65,51 +52,6 @@ const StudioConfig = (props: any) => {
       className={styles.form_setting}
       onValuesChange={onValuesChange}
     >
-      <Row>
-        <Col span={10}>
-          <Form.Item
-            label="共享会话" className={styles.form_item} name="useSession" valuePropName="checked"
-            tooltip={{ title: '开启共享会话，将进行 Flink Catalog 的共享', icon: <InfoCircleOutlined /> }}
-          >
-            <Switch checkedChildren="启用" unCheckedChildren="禁用"
-            />
-          </Form.Item>
-        </Col>
-        <Col span={14}>
-          <Form.Item
-            label="会话 Key" tooltip="设置共享会话的 Key" name="session"
-            className={styles.form_item}>
-            <Select
-              placeholder="选择会话"
-              allowClear
-              onChange={onChangeClusterSession}
-              dropdownRender={menu => (
-                <div>
-                  {menu}
-                  <Divider style={{ margin: '4px 0' }} />
-                  <div style={{ display: 'flex', flexWrap: 'nowrap', padding: 8 }}>
-                    <Input style={{ flex: 'auto' }} value={newSesstion}
-                           onChange={(e)=>{
-                             setNewSesstion(e.target.value);
-                           }}
-                    />
-                    <a
-                      style={{ flex: 'none', padding: '8px', display: 'block', cursor: 'pointer' }}
-                      onClick={addSession}
-                    >
-                      <PlusOutlined />
-                    </a>
-                  </div>
-                </div>
-              )}
-            >
-              {session.map(item => (
-                <Option key={item}>{item}</Option>
-              ))}
-            </Select>
-          </Form.Item>
-        </Col>
-      </Row>
       <Row>
         <Col span={12}>
           <Form.Item
@@ -144,6 +86,6 @@ const StudioConfig = (props: any) => {
 export default connect(({Studio}: { Studio: StateType }) => ({
   cluster: Studio.cluster,
   current: Studio.current,
+  currentSession: Studio.currentSession,
   tabs: Studio.tabs,
-  session: Studio.session,
 }))(StudioConfig);

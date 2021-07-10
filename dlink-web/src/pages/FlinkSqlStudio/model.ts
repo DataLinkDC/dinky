@@ -72,6 +72,7 @@ export type RightClickMenu = {
 export type ConnectorType = {
   tablename: string;
 }
+
 export type SessionType = {
   session?: string;
   type?: string;
@@ -85,7 +86,7 @@ export type SessionType = {
 }
 export type StateType = {
   cluster?: ClusterType[];
-  currentSessionCluster?: SessionType;
+  currentSession?: SessionType;
   current?: TabsItemType;
   sql?: string;
   monaco?: any;
@@ -114,7 +115,8 @@ export type ModelType = {
     saveTaskData: Reducer<StateType>;
     saveSession: Reducer<StateType>;
     showRightClickMenu: Reducer<StateType>;
-    refreshCurrentSessionCluster: Reducer<StateType>;
+    refreshCurrentSession: Reducer<StateType>;
+    quitCurrentSession: Reducer<StateType>;
     saveResult: Reducer<StateType>;
     saveCluster: Reducer<StateType>;
   };
@@ -124,7 +126,7 @@ const Model: ModelType = {
   namespace: 'Studio',
   state: {
     cluster: [],
-    currentSessionCluster: {
+    currentSession: {
       connectors: [],
     },
     current: {
@@ -336,12 +338,21 @@ const Model: ModelType = {
         rightClickMenu: payload,
       };
     },
-    refreshCurrentSessionCluster(state, {payload}) {
+    refreshCurrentSession(state, {payload}) {
       return {
         ...state,
-        currentSessionCluster: {
+        currentSession: {
+          ...state?.currentSession,
           ...payload
-        },
+        }
+      };
+    },
+    quitCurrentSession(state) {
+      return {
+        ...state,
+        currentSession: {
+          connectors: [],
+        }
       };
     },
     saveResult(state, {payload}) {

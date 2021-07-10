@@ -10,7 +10,7 @@ const { Option } = Select;
 
 const StudioSetting = (props: any) => {
 
-  const {cluster,current,form,dispatch,tabs} = props;
+  const {cluster,current,form,dispatch,tabs,currentSession} = props;
 
   const getClusterOptions = ()=>{
     let itemList = [(<Option value={0} label={(<><Tag color="default">Local</Tag>本地环境</>)}>
@@ -46,7 +46,7 @@ const StudioSetting = (props: any) => {
   };
 
   const onChangeClusterSession = ()=>{
-    showTables(current.task,dispatch);
+    showTables(currentSession.session,dispatch);
   };
   return (
     <>
@@ -133,4 +133,5 @@ export default connect(({Studio}: { Studio: StateType }) => ({
   current: Studio.current,
   tabs: Studio.tabs,
   session: Studio.session,
+  currentSession: Studio.currentSession,
 }))(StudioSetting);
