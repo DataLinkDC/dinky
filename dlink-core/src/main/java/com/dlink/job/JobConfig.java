@@ -1,10 +1,13 @@
 package com.dlink.job;
 
+import com.dlink.executor.EnvironmentSetting;
 import com.dlink.executor.Executor;
 import com.dlink.executor.ExecutorSetting;
 import com.dlink.session.SessionConfig;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Map;
 
 /**
  * JobConfig
@@ -29,6 +32,7 @@ public class JobConfig {
     private Integer checkpoint;
     private Integer parallelism;
     private String savePointPath;
+    //private Map<String,String> config;
 
     public JobConfig(boolean useResult, boolean useSession, String session, boolean useRemote, Integer clusterId,
                      Integer taskId, String jobName, boolean useSqlFragment, Integer maxRowNum, Integer checkpoint,
@@ -45,6 +49,7 @@ public class JobConfig {
         this.checkpoint = checkpoint;
         this.parallelism = parallelism;
         this.savePointPath = savePointPath;
+//        this.config = config;
     }
 
     public JobConfig(boolean useResult, boolean useSession, String session, boolean useRemote, Integer clusterId) {
@@ -72,6 +77,10 @@ public class JobConfig {
 
     public ExecutorSetting getExecutorSetting(){
         return new ExecutorSetting(checkpoint,parallelism,useSqlFragment,savePointPath,jobName);
+    }
+
+    public EnvironmentSetting getEnvironmentSetting(){
+        return EnvironmentSetting.build(address);
     }
 
     public JobConfig buildSubmitConfig(Integer clusterId, Integer taskId, String jobName,boolean useSqlFragment, Integer checkpoint,

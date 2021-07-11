@@ -13,6 +13,10 @@ import com.dlink.model.Task;
  */
 public interface Assert {
 
+    static boolean checkNotNull(Object object){
+        return object!=null;
+    }
+
     static void check(Cluster cluster) {
         if (cluster.getId() == null) {
             throw new BusException("Flink 集群【" + cluster.getId() + "】不存在");

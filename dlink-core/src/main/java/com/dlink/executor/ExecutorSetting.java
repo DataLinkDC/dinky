@@ -1,5 +1,6 @@
 package com.dlink.executor;
 
+import com.dlink.job.JobConfig;
 import lombok.Getter;
 import lombok.Setter;
 

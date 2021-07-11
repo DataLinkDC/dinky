@@ -10,6 +10,10 @@ import com.dlink.exception.JobException;
  */
 public class Asserts {
 
+    public static boolean checkNotNull(Object object){
+        return object!=null;
+    }
+
     public static void checkNull(String key,String msg) {
         if (key == null||"".equals(key)) {
             throw new JobException(msg);

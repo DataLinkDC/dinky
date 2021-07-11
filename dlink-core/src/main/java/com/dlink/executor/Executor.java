@@ -26,7 +26,6 @@ public abstract class Executor {
     protected EnvironmentSetting environmentSetting;
     protected ExecutorSetting executorSetting;
 
-
     public static Executor build(){
         return new LocalStreamExecutor(ExecutorSetting.DEFAULT);
     }
@@ -69,7 +68,21 @@ public abstract class Executor {
         initStreamExecutionEnvironment();
     }
 
+    public void update(ExecutorSetting executorSetting){
+        updateEnvironment(executorSetting);
+        updateStreamExecutionEnvironment(executorSetting);
+    }
+
     private void initEnvironment(){
+        if(executorSetting.getCheckpoint()!=null&&executorSetting.getCheckpoint()>0){
+            environment.enableCheckpointing(executorSetting.getCheckpoint());
+        }
+        if(executorSetting.getParallelism()!=null&&executorSetting.getParallelism()>0){
+            environment.setParallelism(executorSetting.getParallelism());
+        }
+    }
+
+    private void updateEnvironment(ExecutorSetting executorSetting){
         if(executorSetting.getCheckpoint()!=null&&executorSetting.getCheckpoint()>0){
             environment.enableCheckpointing(executorSetting.getCheckpoint());
         }
@@ -80,6 +93,22 @@ public abstract class Executor {
 
     private void initStreamExecutionEnvironment(){
         stEnvironment = CustomTableEnvironmentImpl.create(environment);
+        if(executorSetting.isUseSqlFragment()){
+            stEnvironment.useSqlFragment();
+        }else{
+            stEnvironment.unUseSqlFragment();
+        }
+        if(executorSetting.getJobName()!=null&&!"".equals(executorSetting.getJobName())){
+            stEnvironment.getConfig().getConfiguration().setString("pipeline.name", executorSetting.getJobName());
+        }
+        if(executorSetting.getConfig()!=null){
+            for (Map.Entry<String, String> entry : executorSetting.getConfig().entrySet()) {
+                stEnvironment.getConfig().getConfiguration().setString(entry.getKey(), entry.getValue());
+            }
+        }
+    }
+
+    private void updateStreamExecutionEnvironment(ExecutorSetting executorSetting){
         if(executorSetting.isUseSqlFragment()){
             stEnvironment.useSqlFragment();
         }else{

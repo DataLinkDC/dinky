@@ -4,6 +4,8 @@ import com.dlink.job.JobConfig;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Map;
+
 /**
  * StudioExecuteDTO
  *
@@ -26,6 +28,7 @@ public class StudioExecuteDTO {
     private Integer checkPoint;
     private Integer parallelism;
     private String savePointPath;
+//    private Map<String,String> config;
 
     public JobConfig getJobConfig() {
         return new JobConfig(useResult, useSession, session, useRemote, clusterId, taskId, jobName, fragment, maxRowNum, checkPoint, parallelism, savePointPath);

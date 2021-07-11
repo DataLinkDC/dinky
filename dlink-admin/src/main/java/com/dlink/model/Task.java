@@ -49,7 +49,7 @@ public class Task extends SuperEntity{
     @TableField(exist = false)
     private String clusterName;
 
-    public ExecutorSetting getExecutorSetting(){
+    public ExecutorSetting buildExecutorSetting(){
         HashMap configMap = new HashMap();
         if(config!=null&&!"".equals(clusterName)) {
             configMap = JSONUtil.toBean(config, HashMap.class);
@@ -57,7 +57,7 @@ public class Task extends SuperEntity{
         return new ExecutorSetting(checkPoint,parallelism,fragment,savePointPath,alias,configMap);
     }
 
-    public JobConfig getSubmitConfig(){
+    public JobConfig buildSubmitConfig(){
         boolean useRemote = true;
         if(clusterId==null||clusterId==0){
             useRemote = false;

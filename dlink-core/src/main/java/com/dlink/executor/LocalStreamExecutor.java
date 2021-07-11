@@ -16,4 +16,5 @@ public class LocalStreamExecutor extends Executor {
         this.environment = StreamExecutionEnvironment.createLocalEnvironment();
         init();
     }
+
 }

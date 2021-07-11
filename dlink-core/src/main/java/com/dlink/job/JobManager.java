@@ -1,5 +1,6 @@
 package com.dlink.job;
 
+import com.dlink.assertion.Asserts;
 import com.dlink.constant.FlinkSQLConstant;
 import com.dlink.executor.EnvironmentSetting;
 import com.dlink.executor.Executor;
@@ -85,10 +86,11 @@ public class JobManager extends RunTime {
     private Executor createExecutorWithSession() {
         if(config.isUseSession()) {
             ExecutorEntity executorEntity = SessionPool.get(config.getSession());
-            if (executorEntity != null) {
+            if (Asserts.checkNotNull(executorEntity)) {
                 executor = executorEntity.getExecutor();
                 config.setSessionConfig(executorEntity.getSessionConfig());
                 initEnvironmentSetting();
+                executor.update(executorSetting);
             } else {
                 createExecutor();
                 SessionPool.push(new ExecutorEntity(config.getSession(), executor));
@@ -103,9 +105,14 @@ public class JobManager extends RunTime {
         environmentSetting = EnvironmentSetting.build(config.getAddress());
     }
 
+    private void initExecutorSetting(){
+        executorSetting = config.getExecutorSetting();
+    }
+
     @Override
     public boolean init() {
         handler = JobHandler.build();
+        initExecutorSetting();
         createExecutorWithSession();
         return false;
     }

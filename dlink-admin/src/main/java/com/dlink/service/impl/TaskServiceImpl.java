@@ -41,31 +41,11 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public JobResult submitByTaskId(Integer id) {
-        /*Task task = this.getById(id);
-        Assert.check(task);
-        Cluster cluster = clusterService.getById(task.getClusterId());
-        Statement statement = statementService.getById(id);
-        Assert.check(statement);
-        if(cluster!=null) {
-            String host = FlinkCluster.testFlinkJobManagerIP(cluster.getHosts(), cluster.getJobManagerHost());
-            Assert.checkHost(host);
-            if (!host.equals(cluster.getJobManagerHost())) {
-                cluster.setJobManagerHost(host);
-                clusterService.updateById(cluster);
-            }
-            JobManager jobManager = new JobManager(host,task.getExecutorSetting());
-            return jobManager.submit(statement.getStatement());
-        }else if(task.getClusterId()==0){
-            JobManager jobManager = new JobManager();
-            return jobManager.submit(statement.getStatement());
-        }else{
-            throw new BusException("该任务的集群不存在");
-        }*/
         Task task = this.getById(id);
         Assert.check(task);
         Statement statement = statementService.getById(id);
         Assert.check(statement);
-        JobConfig config = task.getSubmitConfig();
+        JobConfig config = task.buildSubmitConfig();
         config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(),task.getClusterId()));
         JobManager jobManager = JobManager.build(config);
         return jobManager.executeSql(statement.getStatement());
