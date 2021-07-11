@@ -1,15 +1,17 @@
 import styles from "./index.less";
-import {Menu, Dropdown, Tooltip, Row, Col, Popconfirm, notification, Modal,message} from "antd";
-import {PauseCircleTwoTone, CopyTwoTone, DeleteTwoTone,PlayCircleTwoTone,DiffTwoTone,
-  FileAddTwoTone,FolderOpenTwoTone,SafetyCertificateTwoTone,SaveTwoTone,FlagTwoTone,
-  EnvironmentOutlined,SmileOutlined,RocketTwoTone,QuestionCircleTwoTone,MessageOutlined} from "@ant-design/icons";
+import {Menu, Dropdown, Tooltip, Row, Col, Popconfirm, notification, Modal, message} from "antd";
+import {
+  PauseCircleTwoTone, CopyTwoTone, DeleteTwoTone, PlayCircleTwoTone, DiffTwoTone,
+  FileAddTwoTone, FolderOpenTwoTone, SafetyCertificateTwoTone, SaveTwoTone, FlagTwoTone,
+  EnvironmentOutlined, SmileOutlined, RocketTwoTone, QuestionCircleTwoTone, MessageOutlined, ClusterOutlined
+} from "@ant-design/icons";
 import Space from "antd/es/space";
 import Divider from "antd/es/divider";
 import Button from "antd/es/button/button";
 import Breadcrumb from "antd/es/breadcrumb/Breadcrumb";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
-import { postDataArray} from "@/components/Common/crud";
+import {postDataArray} from "@/components/Common/crud";
 import {executeSql} from "@/pages/FlinkSqlStudio/service";
 import StudioHelp from "./StudioHelp";
 import {showTables} from "@/components/Studio/StudioEvent/DDL";
@@ -23,121 +25,121 @@ const menu = (
 
 const StudioMenu = (props: any) => {
 
-  const {tabs,current,currentPath,form,refs,dispatch,currentSession} = props;
+  const {tabs, current, currentPath, form, refs, dispatch, currentSession} = props;
 
   const execute = () => {
-    let selectsql =null;
-    if(current.monaco.current) {
+    let selectsql = null;
+    if (current.monaco.current) {
       let selection = current.monaco.current.editor.getSelection();
       selectsql = current.monaco.current.editor.getModel().getValueInRange(selection);
     }
-    if(selectsql==null||selectsql==''){
-      selectsql=current.value;
+    if (selectsql == null || selectsql == '') {
+      selectsql = current.value;
     }
     let useSession = !!currentSession.session;
-    let param ={
-      useSession:useSession,
-      session:currentSession.session,
-      useRemote:current.task.useRemote,
-      clusterId:current.task.clusterId,
-      useResult:current.task.useResult,
-      maxRowNum:current.task.maxRowNum,
-      statement:selectsql,
-      fragment:current.task.fragment,
-      jobName:current.task.jobName,
-      parallelism:current.task.parallelism,
-      checkPoint:current.task.checkPoint,
-      savePointPath:current.task.savePointPath,
+    let param = {
+      useSession: useSession,
+      session: currentSession.session,
+      useRemote: current.task.useRemote,
+      clusterId: current.task.clusterId,
+      useResult: current.task.useResult,
+      maxRowNum: current.task.maxRowNum,
+      statement: selectsql,
+      fragment: current.task.fragment,
+      jobName: current.task.jobName,
+      parallelism: current.task.parallelism,
+      checkPoint: current.task.checkPoint,
+      savePointPath: current.task.savePointPath,
     };
     const key = current.key;
-    const taskKey = (Math.random()*1000)+'';
+    const taskKey = (Math.random() * 1000) + '';
     notification.success({
       message: `新任务【${param.jobName}】正在执行`,
-      description: param.statement.substring(0,40)+'...',
-      duration:null,
-      key:taskKey,
-      icon: <SmileOutlined style={{ color: '#108ee9' }} />,
+      description: param.statement.substring(0, 40) + '...',
+      duration: null,
+      key: taskKey,
+      icon: <SmileOutlined style={{color: '#108ee9'}}/>,
     });
-    setTimeout(()=>{
+    setTimeout(() => {
       refs?.history?.current?.reload();
-    },2000);
+    }, 2000);
     const result = executeSql(param);
-    result.then(res=>{
+    result.then(res => {
       notification.close(taskKey);
-      if(res.datas.success){
+      if (res.datas.success) {
         message.success('执行成功');
-      }else{
+      } else {
         message.success('执行失败');
       }
       let newTabs = tabs;
-      for(let i=0;i<newTabs.panes.length;i++){
-        if(newTabs.panes[i].key==key){
+      for (let i = 0; i < newTabs.panes.length; i++) {
+        if (newTabs.panes[i].key == key) {
           /*let newResult = newTabs.panes[i].console.result;
           newResult.unshift(res.datas);
           newTabs.panes[i].console={
             result:newResult,
           };*/
-          newTabs.panes[i].console.result=res.datas;
+          newTabs.panes[i].console.result = res.datas;
           break;
         }
       }
-      dispatch&&dispatch({
+      dispatch && dispatch({
         type: "Studio/saveTabs",
         payload: newTabs,
       });
-      useSession&&showTables(currentSession.session,dispatch);
+      useSession && showTables(currentSession.session, dispatch);
     })
   };
 
-  const submit= () =>{
-    if(!current.task.id){
+  const submit = () => {
+    if (!current.task.id) {
       message.error(`草稿【${current.title}】无法被提交，请创建或选择有效作业进行提交`);
       return;
     }
-    const taskKey = (Math.random()*1000)+'';
+    const taskKey = (Math.random() * 1000) + '';
     Modal.confirm({
       title: '异步提交作业',
       content: `确定异步提交作业【${current.task.alias}】到其配置的集群吗？请确认您的作业是否已经被保存！`,
       okText: '确认',
       cancelText: '取消',
-      onOk:async () => {
+      onOk: async () => {
         let task = {
-          id:current.task.id,
+          id: current.task.id,
         };
         notification.success({
           message: `任务【${current.task.alias} 】正在异步提交`,
           description: current.task.statement,
-          duration:null,
-          key:taskKey,
-          icon: <SmileOutlined style={{ color: '#108ee9' }} />,
+          duration: null,
+          key: taskKey,
+          icon: <SmileOutlined style={{color: '#108ee9'}}/>,
         });
-        setTimeout(()=>{
+        setTimeout(() => {
           refs?.history?.current?.reload();
-        },2000);
-        const res = await postDataArray('/api/task/submit',[task.id]);
-          notification.close(taskKey);
-          if(res.datas[0].success){
-            message.success('异步提交成功');
-          }else{
-            message.success('异步提交失败');
-          }
+        }, 2000);
+        const res = await postDataArray('/api/task/submit', [task.id]);
+        notification.close(taskKey);
+        if (res.datas[0].success) {
+          message.success('异步提交成功');
+        } else {
+          message.success('异步提交失败');
+        }
       }
     });
   };
 
-  const saveSqlAndSettingToTask = async() => {
+  const saveSqlAndSettingToTask = async () => {
     const fieldsValue = await form.validateFields();
-    if(current.task){
+    if (current.task) {
       let task = {
         ...current.task,
-        statement:current.value,
+        statement: current.value,
         ...fieldsValue
       };
-      dispatch&&dispatch({
+      dispatch && dispatch({
         type: "Studio/saveTask",
         payload: task,
       });
-    }else{
+    } else {
 
     }
   };
@@ -149,22 +151,23 @@ const StudioMenu = (props: any) => {
     </Menu>
   );
 
-  const getPathItem = (paths)=>{
+  const getPathItem = (paths) => {
     let itemList = [];
-    for(let item of paths){
+    for (let item of paths) {
       itemList.push(<Breadcrumb.Item>{item}</Breadcrumb.Item>)
     }
     return itemList;
   };
 
-  const showHelp=()=>{
+  const showHelp = () => {
     Modal.info({
       title: '使用帮助',
-      width:1000,
+      width: 1000,
       content: (
-        <StudioHelp />
+        <StudioHelp/>
       ),
-      onOk() {},
+      onOk() {
+      },
     });
   };
   return (
@@ -198,94 +201,102 @@ const StudioMenu = (props: any) => {
       <Divider className={styles["ant-divider-horizontal-0"]}/>
       <Col span={24}>
         <Row>
-          <Col span={8}>
+          <Col span={4}>
             <Breadcrumb className={styles["dw-path"]}>
-              <EnvironmentOutlined />
-              <Divider type="vertical" />
+              <EnvironmentOutlined/>
+              <Divider type="vertical"/>
               {getPathItem(currentPath)}
-              {currentSession.session&&
-              (<>
-                <Divider type="vertical" />
-                <MessageOutlined />
-                <Divider type="vertical" />
-                <Breadcrumb.Item>{currentSession.session}</Breadcrumb.Item>
-              </>)
-                }
             </Breadcrumb>
           </Col>
-          <Col span={8} offset={8}>
+          <Col span={12}>
+            {currentSession.session &&
+            (
+              <Breadcrumb className={styles["dw-path"]}>
+                <Divider type="vertical"/>
+                <MessageOutlined/>
+                <Divider type="vertical"/>
+                {currentSession.session}
+                <Divider type="vertical"/>
+                <ClusterOutlined/>
+                <Divider type="vertical"/>
+                {currentSession.sessionConfig.useRemote ?
+                  currentSession.sessionConfig.clusterName : '本地模式'}
+              </Breadcrumb>
+            )}
+          </Col>
+          <Col span={8}>
             <Button
               type="text"
-              icon={<FileAddTwoTone twoToneColor="#ddd" />}
+              icon={<FileAddTwoTone twoToneColor="#ddd"/>}
             />
             <Button
               type="text"
-              icon={<FolderOpenTwoTone twoToneColor="#ddd" />}
+              icon={<FolderOpenTwoTone twoToneColor="#ddd"/>}
             />
             <Tooltip title="保存当前的 FlinkSql 及配置">
-            <Button
-              type="text"
-              icon={<SaveTwoTone />}
-              onClick={saveSqlAndSettingToTask}
-            />
+              <Button
+                type="text"
+                icon={<SaveTwoTone/>}
+                onClick={saveSqlAndSettingToTask}
+              />
             </Tooltip>
-            <Divider type="vertical" />
+            <Divider type="vertical"/>
             <Button
               type="text"
-              icon={<SafetyCertificateTwoTone twoToneColor="#ddd" />}
+              icon={<SafetyCertificateTwoTone twoToneColor="#ddd"/>}
             />
             <Button
               type="text"
-              icon={<FlagTwoTone twoToneColor="#ddd" />}
+              icon={<FlagTwoTone twoToneColor="#ddd"/>}
             />
             <Tooltip title="执行当前的 FlinkSql">
-            <Button
-              type="text"
-              icon={<PlayCircleTwoTone />}
-              //loading={loadings[2]}
-              onClick={execute}
-            />
+              <Button
+                type="text"
+                icon={<PlayCircleTwoTone/>}
+                //loading={loadings[2]}
+                onClick={execute}
+              />
             </Tooltip>
             <Tooltip title="提交当前的作业到集群">
-            <Button
-              type="text"
-              icon={<RocketTwoTone />}
-              onClick={submit}
-            />
+              <Button
+                type="text"
+                icon={<RocketTwoTone/>}
+                onClick={submit}
+              />
             </Tooltip>
             <Popconfirm
               title="您确定要停止所有的 FlinkSql 任务吗？"
-             // onConfirm={confirm}
+              // onConfirm={confirm}
               //onCancel={cancel}
               okText="停止"
               cancelText="取消"
             >
               <Tooltip title="停止所有的 FlinkSql 任务，暂不可用">
                 {/*<Badge size="small" count={1} offset={[-5, 5]}>*/}
-            <Button
-              type="text"
-              icon={<PauseCircleTwoTone twoToneColor="#ddd" />}
-            />
+                <Button
+                  type="text"
+                  icon={<PauseCircleTwoTone twoToneColor="#ddd"/>}
+                />
                 {/*</Badge>*/}
               </Tooltip>
             </Popconfirm>
-            <Divider type="vertical" />
+            <Divider type="vertical"/>
             <Button
               type="text"
-              icon={<DiffTwoTone twoToneColor="#ddd" />}
+              icon={<DiffTwoTone twoToneColor="#ddd"/>}
             />
             <Button
               type="text"
-              icon={<CopyTwoTone twoToneColor="#ddd" />}
+              icon={<CopyTwoTone twoToneColor="#ddd"/>}
             />
             <Button
               type="text"
-              icon={<DeleteTwoTone twoToneColor="#ddd" />}
+              icon={<DeleteTwoTone twoToneColor="#ddd"/>}
             />
             <Tooltip title="查看使用帮助">
               <Button
                 type="text"
-                icon={<QuestionCircleTwoTone />}
+                icon={<QuestionCircleTwoTone/>}
                 onClick={showHelp}
               />
             </Tooltip>

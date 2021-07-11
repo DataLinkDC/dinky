@@ -17,10 +17,12 @@ import {
   handleAddOrUpdate, handleOption, handleRemove, queryData,
   updateEnabled
 } from "@/components/Common/crud";
+import {showCluster} from "@/components/Studio/StudioEvent/DDL";
 
 const url = '/api/cluster';
 
-const ClusterTableList: React.FC<{}> = () => {
+const ClusterTableList: React.FC<{}> = (props: any) => {
+  const {dispatch} = props;
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [formValues, setFormValues] = useState({});
@@ -38,16 +40,16 @@ const ClusterTableList: React.FC<{}> = () => {
         content: '确定删除该集群吗？',
         okText: '确认',
         cancelText: '取消',
-        onOk:async () => {
-          await handleRemove(url,[currentItem]);
+        onOk: async () => {
+          await handleRemove(url, [currentItem]);
           actionRef.current?.reloadAndRest?.();
         }
       });
     }
   };
 
-  const checkHeartBeats = async ()=>{
-    await handleOption(url+'/heartbeats','心跳检测',null);
+  const checkHeartBeats = async () => {
+    await handleOption(url + '/heartbeats', '心跳检测', null);
     actionRef.current?.reloadAndRest?.();
   };
 
@@ -122,9 +124,9 @@ const ClusterTableList: React.FC<{}> = () => {
       ],
       filterMultiple: false,
       valueEnum: {
-        'Yarn': { text: 'Yarn'},
-        'Standalone': { text: 'Standalone'},
-        'Others': { text: 'Others' },
+        'Yarn': {text: 'Yarn'},
+        'Standalone': {text: 'Standalone'},
+        'Others': {text: 'Others'},
       },
     },
     {
@@ -162,8 +164,8 @@ const ClusterTableList: React.FC<{}> = () => {
       ],
       filterMultiple: false,
       valueEnum: {
-        1: { text: '正常', status: 'Success' },
-        0: { text: '异常', status: 'Error' },
+        1: {text: '正常', status: 'Success'},
+        0: {text: '异常', status: 'Error'},
       },
     },
     {
@@ -193,8 +195,8 @@ const ClusterTableList: React.FC<{}> = () => {
       ],
       filterMultiple: false,
       valueEnum: {
-        true: { text: '已启用', status: 'Success' },
-        false: { text: '已禁用', status: 'Error' },
+        true: {text: '已启用', status: 'Success'},
+        false: {text: '已禁用', status: 'Error'},
       },
     },
     {
@@ -203,14 +205,14 @@ const ClusterTableList: React.FC<{}> = () => {
       sorter: true,
       valueType: 'dateTime',
       hideInForm: true,
-      hideInTable:true,
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
+      hideInTable: true,
+      renderFormItem: (item, {defaultRender, ...rest}, form) => {
         const status = form.getFieldValue('status');
         if (`${status}` === '0') {
           return false;
         }
         if (`${status}` === '3') {
-          return <Input {...rest} placeholder="请输入异常原因！" />;
+          return <Input {...rest} placeholder="请输入异常原因！"/>;
         }
         return defaultRender(item);
       },
@@ -221,13 +223,13 @@ const ClusterTableList: React.FC<{}> = () => {
       sorter: true,
       valueType: 'dateTime',
       hideInForm: true,
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
+      renderFormItem: (item, {defaultRender, ...rest}, form) => {
         const status = form.getFieldValue('status');
         if (`${status}` === '0') {
           return false;
         }
         if (`${status}` === '3') {
-          return <Input {...rest} placeholder="请输入异常原因！" />;
+          return <Input {...rest} placeholder="请输入异常原因！"/>;
         }
         return defaultRender(item);
       },
@@ -264,10 +266,10 @@ const ClusterTableList: React.FC<{}> = () => {
           <PlusOutlined/> 新建
         </Button>,
         <Button type="primary" onClick={() => checkHeartBeats()}>
-          <HeartOutlined /> 心跳
+          <HeartOutlined/> 心跳
         </Button>,
       ]}
-        request={(params, sorter, filter) => queryData(url,{...params, sorter, filter})}
+        request={(params, sorter, filter) => queryData(url, {...params, sorter, filter})}
         columns={columns}
         rowSelection={{
         onChange: (_, selectedRows) => setSelectedRows(selectedRows),
@@ -285,14 +287,14 @@ const ClusterTableList: React.FC<{}> = () => {
             }
           >
             <Button type="primary" danger
-                    onClick ={()=>{
+                    onClick={() => {
                       Modal.confirm({
                         title: '删除集群',
                         content: '确定删除选中的集群吗？',
                         okText: '确认',
                         cancelText: '取消',
-                        onOk:async () => {
-                          await handleRemove(url,selectedRowsState);
+                        onOk: async () => {
+                          await handleRemove(url, selectedRowsState);
                           setSelectedRows([]);
                           actionRef.current?.reloadAndRest?.();
                         }
@@ -302,14 +304,14 @@ const ClusterTableList: React.FC<{}> = () => {
               批量删除
             </Button>
             <Button type="primary"
-                    onClick ={()=>{
+                    onClick={() => {
                       Modal.confirm({
                         title: '启用集群',
                         content: '确定启用选中的集群吗？',
                         okText: '确认',
                         cancelText: '取消',
-                        onOk:async () => {
-                          await updateEnabled(url,selectedRowsState, true);
+                        onOk: async () => {
+                          await updateEnabled(url, selectedRowsState, true);
                           setSelectedRows([]);
                           actionRef.current?.reloadAndRest?.();
                         }
@@ -317,14 +319,14 @@ const ClusterTableList: React.FC<{}> = () => {
                     }}
             >批量启用</Button>
             <Button danger
-                    onClick ={()=>{
+                    onClick={() => {
                       Modal.confirm({
                         title: '禁用集群',
                         content: '确定禁用选中的集群吗？',
                         okText: '确认',
                         cancelText: '取消',
-                        onOk:async () => {
-                          await updateEnabled(url,selectedRowsState, false);
+                        onOk: async () => {
+                          await updateEnabled(url, selectedRowsState, false);
                           setSelectedRows([]);
                           actionRef.current?.reloadAndRest?.();
                         }
@@ -336,12 +338,13 @@ const ClusterTableList: React.FC<{}> = () => {
         <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>
           <ProTable<ClusterTableListItem, ClusterTableListItem>
           onSubmit={async (value) => {
-          const success = await handleAddOrUpdate(url,value);
+          const success = await handleAddOrUpdate(url, value);
           if (success) {
             handleModalVisible(false);
             if (actionRef.current) {
               actionRef.current.reload();
             }
+            showCluster(dispatch);
           }
         }}
           rowKey="id"
@@ -352,13 +355,14 @@ const ClusterTableList: React.FC<{}> = () => {
         {formValues && Object.keys(formValues).length ? (
           <UpdateForm
             onSubmit={async (value) => {
-              const success = await handleAddOrUpdate(url,value);
+              const success = await handleAddOrUpdate(url, value);
               if (success) {
                 handleUpdateModalVisible(false);
                 setFormValues({});
                 if (actionRef.current) {
                   actionRef.current.reload();
                 }
+                showCluster(dispatch);
               }
             }}
             onCancel={() => {

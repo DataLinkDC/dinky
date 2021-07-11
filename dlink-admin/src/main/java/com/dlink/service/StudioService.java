@@ -7,6 +7,7 @@ import com.dlink.explainer.ca.TableCANode;
 import com.dlink.job.JobResult;
 import com.dlink.result.IResult;
 import com.dlink.result.SelectResult;
+import com.dlink.session.ExecutorEntity;
 import com.dlink.session.SessionInfo;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public interface StudioService {
 
     SelectResult getJobData(String jobId);
 
-    boolean createSession(SessionDTO sessionDTO,String createUser);
+    SessionInfo createSession(SessionDTO sessionDTO, String createUser);
 
     boolean clearSession(String session);
 

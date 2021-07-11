@@ -271,9 +271,9 @@ public class JobManager extends RunTime {
         return ResultPool.get(jobId);
     }
 
-    public static boolean createSession(String session, SessionConfig sessionConfig,String createUser){
+    public static SessionInfo createSession(String session, SessionConfig sessionConfig,String createUser){
         if(SessionPool.exist(session)){
-            return false;
+            return SessionPool.getInfo(session);
         }
         Executor sessionExecutor = null;
         if (sessionConfig.isUseRemote()) {
@@ -281,8 +281,9 @@ public class JobManager extends RunTime {
         } else {
             sessionExecutor = Executor.buildLocalExecutor(sessionConfig.getExecutorSetting());
         }
-        SessionPool.push(new ExecutorEntity(session,sessionConfig,createUser,LocalDateTime.now(), sessionExecutor));
-        return true;
+        ExecutorEntity executorEntity = new ExecutorEntity(session, sessionConfig, createUser, LocalDateTime.now(), sessionExecutor);
+        SessionPool.push(executorEntity);
+        return SessionInfo.build(executorEntity);
     }
 
     public static List<SessionInfo> listSession(String createUser){

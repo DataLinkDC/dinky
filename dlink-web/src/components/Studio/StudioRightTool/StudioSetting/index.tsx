@@ -1,12 +1,13 @@
 import {connect} from "umi";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
-import {Form, InputNumber,Input,Switch,Select,Tag,Row,Col,Divider,Tooltip,Button} from "antd";
+import {Form, InputNumber, Input, Switch, Select, Tag, Row, Col, Badge, Tooltip, Button, Typography} from "antd";
 import {InfoCircleOutlined,PlusOutlined,MinusSquareOutlined} from "@ant-design/icons";
 import styles from "./index.less";
 import {useEffect, useState} from "react";
 import {showCluster, showTables} from "@/components/Studio/StudioEvent/DDL";
 
 const { Option } = Select;
+const { Text } = Typography;
 
 const StudioSetting = (props: any) => {
 
@@ -111,15 +112,22 @@ const StudioSetting = (props: any) => {
         <Col span={24}>
       <Form.Item label="Flink集群" tooltip="选择Flink集群进行远程提交任务" name="clusterId"
                  className={styles.form_item}>
-        <Select
-          style={{ width: '100%' }}
-          placeholder="选择Flink集群"
-          defaultValue={0}
-          optionLabelProp="label"
-          onChange={onChangeClusterSession}
-        >
-          {getClusterOptions()}
-        </Select>
+        {
+          currentSession.session?
+            (currentSession.sessionConfig&&currentSession.sessionConfig.clusterId?
+                (<><Badge status="success"/><Text type="success">{currentSession.sessionConfig.clusterName}</Text></>)
+                :(<><Badge status="error"/><Text type="danger">本地模式</Text></>)
+          ):(<Select
+              style={{ width: '100%' }}
+              placeholder="选择Flink集群"
+              defaultValue={0}
+              optionLabelProp="label"
+              onChange={onChangeClusterSession}
+            >
+              {getClusterOptions()}
+            </Select>)
+        }
+
       </Form.Item>
         </Col>
       </Row>

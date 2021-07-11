@@ -13,6 +13,7 @@ import com.dlink.result.IResult;
 import com.dlink.result.SelectResult;
 import com.dlink.service.ClusterService;
 import com.dlink.service.StudioService;
+import com.dlink.session.ExecutorEntity;
 import com.dlink.session.SessionConfig;
 import com.dlink.session.SessionInfo;
 import com.dlink.session.SessionPool;
@@ -59,7 +60,7 @@ public class StudioServiceImpl implements StudioService {
     }
 
     @Override
-    public boolean createSession(SessionDTO sessionDTO,String createUser) {
+    public SessionInfo createSession(SessionDTO sessionDTO, String createUser) {
         if(sessionDTO.isUseRemote()) {
             Cluster cluster = clusterService.getById(sessionDTO.getClusterId());
             SessionConfig sessionConfig = SessionConfig.build(

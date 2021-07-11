@@ -72,4 +72,13 @@ public class SessionPool {
         }
         return sessionInfos;
     }
+
+    public static SessionInfo getInfo(String sessionId){
+        ExecutorEntity executorEntity = get(sessionId);
+        if(executorEntity!=null){
+            return SessionInfo.build(executorEntity);
+        }else {
+            return null;
+        }
+    }
 }

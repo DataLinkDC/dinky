@@ -75,11 +75,13 @@ export type ConnectorType = {
 
 export type SessionType = {
   session?: string;
-  type?: string;
-  useRemote?: string;
-  clusterId?: number;
-  clusterName?: string;
-  address?: string;
+  sessionConfig?:{
+    type?: string;
+    useRemote?: boolean;
+    clusterId?: number;
+    clusterName?: string;
+    address?: string;
+  }
   createUser?: string;
   createTime?: string;
   connectors: ConnectorType[];
@@ -157,7 +159,7 @@ const Model: ModelType = {
     },
     sql: '',
     monaco: {},
-    currentPath: [],
+    currentPath: ['草稿'],
     tabs: {
       activeKey: 0,
       panes: [{
@@ -314,23 +316,11 @@ const Model: ModelType = {
       };
     },
     saveSession(state, {payload}) {
-      let newSession = state?.session;
-      if(newSession) {
-        for (let i = 0; i < newSession.length; i++) {
-          if (newSession[i].key == payload) {
-            return {};
-          }
-        }
-        newSession.push(payload);
-        return {
-          ...state,
-          session: newSession,
-        };
-      }else {
-        return {
-          ...state
-        };
-      }
+      console.log(payload);
+      return {
+        ...state,
+        session: [...payload],
+      };
     },
     showRightClickMenu(state, {payload}) {
       return {

@@ -18,17 +18,17 @@ const StudioLeftTool = (props:any) => {
       <TabPane tab={<span><BarsOutlined/> 目录</span>} key="StudioTree" >
         <StudioTree/>
       </TabPane>
+      <TabPane tab={<span><MessageOutlined /> 会话</span>} key="Connectors" >
+        <StudioConnector />
+      </TabPane>
+      <TabPane tab={<span><ClusterOutlined /> 集群</span>} key="Cluster" >
+        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+      </TabPane>
       <TabPane tab={<span><DatabaseOutlined /> 数据源</span>} key="DataSource" >
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       </TabPane>
       <TabPane tab={<span><AppstoreOutlined /> 元数据</span>} key="MetaData" >
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-      </TabPane>
-      <TabPane tab={<span><ClusterOutlined /> 集群</span>} key="Cluster" >
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-      </TabPane>
-      <TabPane tab={<span><MessageOutlined /> 会话</span>} key="Connectors" >
-        <StudioConnector />
       </TabPane>
       <TabPane tab={<span><FireOutlined /> 任务</span>} key="FlinkTask" >
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />

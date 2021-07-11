@@ -1,12 +1,16 @@
 import {connect} from "umi";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
-import {Form, InputNumber,Input,Switch,Select,Tag,Row,Col,Divider,Tooltip,Button} from "antd";
+import {
+  Form, InputNumber, Input, Switch, Select, Tag, Row, Col, Divider, Tooltip, Button, Badge,
+  Typography
+} from "antd";
 import {InfoCircleOutlined,PlusOutlined,MinusSquareOutlined} from "@ant-design/icons";
 import styles from "./index.less";
 import {useEffect, useState} from "react";
 import {showTables} from "@/components/Studio/StudioEvent/DDL";
 
 const { Option } = Select;
+const { Text } = Typography;
 
 const StudioConfig = (props: any) => {
 
@@ -75,8 +79,11 @@ const StudioConfig = (props: any) => {
         label="远程执行" className={styles.form_item} name="useRemote" valuePropName="checked"
         tooltip={{ title: '开启远程执行，将在远程集群进行任务执行', icon: <InfoCircleOutlined /> }}
       >
-        <Switch checkedChildren="启用" unCheckedChildren="禁用"
-        />
+        {
+          currentSession.session?
+            (currentSession.sessionConfig&&currentSession.sessionConfig.useRemote?(<><Badge status="success"/><Text type="success">已启用</Text></>):(<><Badge status="error"/><Text type="danger">已禁用</Text></>)
+            ):(<Switch checkedChildren="启用" unCheckedChildren="禁用"/>)
+        }
       </Form.Item>
     </Form>
       </>

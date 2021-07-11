@@ -1,12 +1,24 @@
-import {message, Input, Button, Space, Table,  Dropdown, Menu, Empty,Divider,
-  Tooltip} from "antd";
+import {
+  message, Input, Button, Space, Table, Dropdown, Menu, Empty, Divider,
+  Tooltip
+} from "antd";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
 import {useState} from "react";
 import styles from "./index.less";
-import { SearchOutlined,DownOutlined,DeleteOutlined,CommentOutlined ,PoweroffOutlined,PlusOutlined} from '@ant-design/icons';
+import {
+  SearchOutlined,
+  DownOutlined,
+  DeleteOutlined,
+  CommentOutlined,
+  PoweroffOutlined,
+  PlusOutlined
+} from '@ant-design/icons';
 import React from "react";
-import {removeTable, showTables, clearSession, changeSession, quitSession} from "@/components/Studio/StudioEvent/DDL";
+import {
+  removeTable, showTables, clearSession, changeSession, quitSession,
+  createSession, listSession
+} from "@/components/Studio/StudioEvent/DDL";
 import {
   ModalForm,
 } from '@ant-design/pro-form';
@@ -14,13 +26,13 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import {getData, handleAddOrUpdate} from "@/components/Common/crud";
 import SessionForm from "@/components/Studio/StudioLeftTool/StudioConnector/components/SessionForm";
 
-const StudioConnector = (props:any) => {
+const StudioConnector = (props: any) => {
 
-  const {current,dispatch,currentSession} = props;
-  const [tableData,setTableData] = useState<[]>([]);
-  const [loadings,setLoadings] = useState<boolean[]>([]);
-  const [searchText,setSearchText] = useState<string>('');
-  const [searchedColumn,setSearchedColumn] = useState<string>('');
+  const {current, dispatch, currentSession, session} = props;
+  const [tableData, setTableData] = useState<[]>([]);
+  const [loadings, setLoadings] = useState<boolean[]>([]);
+  const [searchText, setSearchText] = useState<string>('');
+  const [searchedColumn, setSearchedColumn] = useState<string>('');
   const [modalVisit, setModalVisit] = useState(false);
   const [type, setType] = useState<number>();
   const [sessionData, setSessionData] = useState<{}>();
@@ -28,26 +40,26 @@ const StudioConnector = (props:any) => {
 
 
   const getColumnSearchProps = (dIndex) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-      <div style={{ padding: 8 }}>
+    filterDropdown: ({setSelectedKeys, selectedKeys, confirm, clearFilters}) => (
+      <div style={{padding: 8}}>
         <Input
           placeholder={`Search ${dIndex}`}
           value={selectedKeys[0]}
           onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
           onPressEnter={() => handleSearch(selectedKeys, confirm, dIndex)}
-          style={{ marginBottom: 8, display: 'block' }}
+          style={{marginBottom: 8, display: 'block'}}
         />
         <Space>
           <Button
             type="primary"
             onClick={() => handleSearch(selectedKeys, confirm, dIndex)}
-            icon={<SearchOutlined />}
+            icon={<SearchOutlined/>}
             size="small"
-            style={{ width: 90 }}
+            style={{width: 90}}
           >
             搜索
           </Button>
-          <Button onClick={() => handleReset(clearFilters)} size="small" style={{ width: 90 }}>
+          <Button onClick={() => handleReset(clearFilters)} size="small" style={{width: 90}}>
             重置
           </Button>
           <Button
@@ -63,7 +75,7 @@ const StudioConnector = (props:any) => {
         </Space>
       </div>
     ),
-    filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+    filterIcon: filtered => <SearchOutlined style={{color: filtered ? '#1890ff' : undefined}}/>,
     onFilter: (value, record) =>
       record[dIndex]
         ? record[dIndex].toString().toLowerCase().includes(value.toLowerCase())
@@ -93,7 +105,7 @@ const StudioConnector = (props:any) => {
   };
 
   const MoreBtn: React.FC<{
-    item:any
+    item: any
   }> = ({item}) => (
     <Dropdown
       overlay={
@@ -109,42 +121,42 @@ const StudioConnector = (props:any) => {
     </Dropdown>
   );
 
-  const keyEvent=(key, item)=>{
-    if(key=='delete'){
-      removeTable(item.tablename,currentSession.session,dispatch);
-    }else{
+  const keyEvent = (key, item) => {
+    if (key == 'delete') {
+      removeTable(item.tablename, currentSession.session, dispatch);
+    } else {
       message.warn("敬请期待");
     }
   };
 
-  const keySessionsEvent=(key, item)=>{
-    if(key=='delete'){
-      clearSession(item.session,current.task,dispatch);
-    }else if(key=='connect'){
-      changeSession(item,dispatch);
-      message.success('连接共享会话【'+item.session+'】成功！');
+  const keySessionsEvent = (key, item) => {
+    if (key == 'delete') {
+      clearSession(item.session, dispatch);
+    } else if (key == 'connect') {
+      changeSession(item, dispatch);
+      message.success('连接共享会话【' + item.session + '】成功！');
       setModalVisit(false);
-    }else{
+    } else {
       message.warn("敬请期待");
     }
   };
 
   const getTables = () => {
-    showTables(currentSession.session,dispatch);
+    showTables(currentSession.session, dispatch);
   };
 
   const onClearSession = () => {
-    clearSession(currentSession.session,dispatch);
+    clearSession(currentSession.session, dispatch);
   };
 
-  const getColumns=()=>{
-    let columns:any=[{
+  const getColumns = () => {
+    let columns: any = [{
       title: "表名",
       dataIndex: "tablename",
       key: "tablename",
       sorter: true,
       ...getColumnSearchProps("tablename"),
-    },{
+    }, {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
@@ -155,9 +167,9 @@ const StudioConnector = (props:any) => {
           }}
         >
           描述
-        </a>,<Divider type="vertical" />,<a
+        </a>, <Divider type="vertical"/>, <a
           onClick={() => {
-            keyEvent('delete',record);
+            keyEvent('delete', record);
           }}
         >
           删除
@@ -167,54 +179,54 @@ const StudioConnector = (props:any) => {
     return columns;
   };
 
-  const getSessionsColumns=()=>{
-    let columns:any=[{
+  const getSessionsColumns = () => {
+    let columns: any = [{
       title: "会话 Key",
       dataIndex: "session",
       key: "session",
       sorter: true,
       ...getColumnSearchProps("session"),
-    },{
+    }, {
       title: "执行模式",
       key: "useRemote",
       sorter: true,
       ...getColumnSearchProps("useRemote"),
-      render:function(text, record, index) {
-        return record.sessionConfig.useRemote?'远程':'本地';
+      render: function (text, record, index) {
+        return record.sessionConfig.useRemote ? '远程' : '本地';
       }
-    },{
+    }, {
       title: "集群名",
       key: "clusterName",
       sorter: true,
       ...getColumnSearchProps("clusterName"),
-      render:function(text, record, index) {
+      render: function (text, record, index) {
         return record.sessionConfig.clusterName;
       }
-    },{
+    }, {
       title: "创建人",
       dataIndex: "createUser",
       key: "createUser",
       sorter: true,
       ...getColumnSearchProps("createUser"),
-    },{
+    }, {
       title: "创建时间",
       dataIndex: "createTime",
       key: "createTime",
       sorter: true,
-    },{
+    }, {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
         <a
           onClick={() => {
-            keySessionsEvent('connect',record);
+            keySessionsEvent('connect', record);
           }}
         >
           连接
-        </a>,<Divider type="vertical" />,<a
+        </a>, <Divider type="vertical"/>, <a
           onClick={() => {
-            keySessionsEvent('delete',record);
+            keySessionsEvent('delete', record);
           }}
         >
           删除
@@ -224,66 +236,69 @@ const StudioConnector = (props:any) => {
     return columns;
   };
 
-  const createSessions=()=>{
+  const createSessions = () => {
     handleCreateSessionModalVisible(true);
   };
 
-  const showSessions=()=>{
+  const showSessions = () => {
     setModalVisit(true);
     setType(1);
-    const res = getData("api/studio/listSession");
-    res.then((result)=>{
-      setSessionData(result.datas);
-    });
+    listSession(dispatch);
   };
 
-  const quitSessions=()=>{
+  const quitSessions = () => {
     quitSession(dispatch);
     message.success('退出共享会话成功！');
   };
 
   return (
     <>
+      <Tooltip title="新建会话">
+        <Button
+          type="text"
+          icon={<PlusOutlined/>}
+          onClick={createSessions}
+        />
+      </Tooltip>
       <div style={{float: "right"}}>
-        <Tooltip title="切换会话">
-          <Button
-            type="text"
-            icon={<CommentOutlined />}
-            onClick={showSessions}
-          />
-        </Tooltip>
-        <Tooltip title="退出会话">
-          <Button
-            type="text"
-            icon={<PoweroffOutlined />}
-            onClick={quitSessions}
-          />
-        </Tooltip>
-        <Tooltip title="新建会话">
-          <Button
-            type="text"
-            icon={<PlusOutlined />}
-            onClick={createSessions}
-          />
-        </Tooltip>
-        <Tooltip title="刷新连接器">
-          <Button
-            type="text"
-            icon={<SearchOutlined />}
-            onClick={getTables}
-          />
-        </Tooltip>
-        <Tooltip title="注销会话">
-          <Button
-            type="text"
-            icon={<DeleteOutlined />}
-            onClick={onClearSession}
-          />
-        </Tooltip>
+        {session.length > 0 ? (
+          <Tooltip title="切换会话">
+            <Button
+              type="text"
+              icon={<CommentOutlined/>}
+              onClick={showSessions}
+            />
+          </Tooltip>
+        ) : ''}
+        {currentSession.session && (
+          <>
+            <Tooltip title="退出会话">
+              <Button
+                type="text"
+                icon={<PoweroffOutlined/>}
+                onClick={quitSessions}
+              />
+            </Tooltip>
+            <Tooltip title="刷新连接器">
+              <Button
+                type="text"
+                icon={<SearchOutlined/>}
+                onClick={getTables}
+              />
+            </Tooltip>
+            <Tooltip title="注销会话">
+              <Button
+                type="text"
+                icon={<DeleteOutlined/>}
+                onClick={onClearSession}
+              />
+            </Tooltip>
+          </>)}
       </div>
-      {currentSession.connectors&&currentSession.connectors.length>0?(<Table dataSource={currentSession.connectors} columns={getColumns()} size="small" />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
+      {currentSession.connectors && currentSession.connectors.length > 0 ? (
+        <Table dataSource={currentSession.connectors} columns={getColumns()} size="small"/>) : (
+        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>)}
       <ModalForm
-        // title="新建表单"
         visible={modalVisit}
         onFinish={async () => {
           setSessionData(undefined);
@@ -297,15 +312,15 @@ const StudioConnector = (props:any) => {
           },
         }}
       >
-        {type==1&&
+        {type == 1 &&
         (<ProDescriptions
             column={2}
             title='全部共享会话'
           >
-            <ProDescriptions.Item  span={2} >
-              {sessionData?
-                (<Table dataSource={sessionData} columns={getSessionsColumns()} size="small"
-                />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
+            <ProDescriptions.Item span={2}>
+              {session.length > 0 ?
+                (<Table dataSource={session} columns={getSessionsColumns()} size="small"
+                />) : (<Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>)}
             </ProDescriptions.Item>
           </ProDescriptions>
         )
@@ -313,27 +328,25 @@ const StudioConnector = (props:any) => {
       </ModalForm>
       <SessionForm
         onSubmit={async (value) => {
-          console.log(value);
-          const success = await handleAddOrUpdate("api/studio/createSession",value);
-          if (success) {
-            handleCreateSessionModalVisible(false);
-          }
+          createSession(value, dispatch);
+          handleCreateSessionModalVisible(false);
         }}
         onCancel={() => {
           handleCreateSessionModalVisible(false);
         }}
         updateModalVisible={createSessionModalVisible}
         values={{
-          session:'',
-          type:'PUBLIC',
-          useRemote:false,
+          session: '',
+          type: 'PUBLIC',
+          useRemote: true,
         }}
       />
-      </>
+    </>
   );
 };
 
-export default connect(({ Studio }: { Studio: StateType }) => ({
+export default connect(({Studio}: { Studio: StateType }) => ({
   current: Studio.current,
   currentSession: Studio.currentSession,
+  session: Studio.session,
 }))(StudioConnector);

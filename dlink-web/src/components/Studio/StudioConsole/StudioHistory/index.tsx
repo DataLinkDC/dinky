@@ -157,7 +157,7 @@ const StudioHistory = (props: any) => {
               {(row.status==2) ?
                 (<><Badge status="success"/><Text type="success">SUCCESS</Text></>):
                 (row.status==1) ?
-                  <><Badge status="error"/><Text type="secondary">RUNNING</Text></> :
+                  <><Badge status="success"/><Text type="secondary">RUNNING</Text></> :
                   (row.status==3) ?
                     <><Badge status="error"/><Text type="danger">FAILED</Text></> :
                     (row.status==4) ?
