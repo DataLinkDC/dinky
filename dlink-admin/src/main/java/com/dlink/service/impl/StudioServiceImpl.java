@@ -4,11 +4,13 @@ import com.dlink.dto.SessionDTO;
 import com.dlink.dto.StudioDDLDTO;
 import com.dlink.dto.StudioExecuteDTO;
 import com.dlink.explainer.ca.CABuilder;
+import com.dlink.explainer.ca.ColumnCANode;
 import com.dlink.explainer.ca.TableCANode;
 import com.dlink.job.JobConfig;
 import com.dlink.job.JobManager;
 import com.dlink.job.JobResult;
 import com.dlink.model.Cluster;
+import com.dlink.parser.SqlType;
 import com.dlink.result.IResult;
 import com.dlink.result.SelectResult;
 import com.dlink.service.ClusterService;
@@ -17,9 +19,11 @@ import com.dlink.session.ExecutorEntity;
 import com.dlink.session.SessionConfig;
 import com.dlink.session.SessionInfo;
 import com.dlink.session.SessionPool;
+import com.dlink.trans.Operations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -93,11 +97,28 @@ public class StudioServiceImpl implements StudioService {
 
     @Override
     public List<TableCANode> getOneTableCAByStatement(String statement) {
-        return CABuilder.getOneTableCAByStatement(statement);
+        if(Operations.getSqlTypeFromStatements(statement)== SqlType.INSERT) {
+            return CABuilder.getOneTableCAByStatement(statement);
+        }else{
+            return new ArrayList<>();
+        }
     }
 
     @Override
     public List<TableCANode> getOneTableColumnCAByStatement(String statement) {
-        return CABuilder.getOneTableColumnCAByStatement(statement);
+        if(Operations.getSqlTypeFromStatements(statement)== SqlType.INSERT) {
+            return CABuilder.getOneTableColumnCAByStatement(statement);
+        }else{
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public List<ColumnCANode> getColumnCAByStatement(String statement) {
+        if(Operations.getSqlTypeFromStatements(statement)== SqlType.INSERT) {
+            return CABuilder.getColumnCAByStatement(statement);
+        }else{
+            return new ArrayList<>();
+        }
     }
 }

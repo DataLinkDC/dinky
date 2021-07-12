@@ -3,6 +3,7 @@ package com.dlink.service;
 import com.dlink.dto.SessionDTO;
 import com.dlink.dto.StudioDDLDTO;
 import com.dlink.dto.StudioExecuteDTO;
+import com.dlink.explainer.ca.ColumnCANode;
 import com.dlink.explainer.ca.TableCANode;
 import com.dlink.job.JobResult;
 import com.dlink.result.IResult;
@@ -35,4 +36,6 @@ public interface StudioService {
     List<TableCANode> getOneTableCAByStatement(String statement);
 
     List<TableCANode> getOneTableColumnCAByStatement(String statement);
+
+    List<ColumnCANode> getColumnCAByStatement(String statement);
 }
