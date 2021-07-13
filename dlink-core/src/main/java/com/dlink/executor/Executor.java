@@ -8,10 +8,12 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.ExplainDetail;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableResult;
+import org.apache.flink.table.catalog.Catalog;
 import org.apache.flink.table.catalog.CatalogManager;
 import org.apache.flink.table.functions.ScalarFunction;
 import org.apache.flink.table.functions.UserDefinedFunction;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -109,6 +111,7 @@ public abstract class Executor {
     }
 
     private void updateStreamExecutionEnvironment(ExecutorSetting executorSetting){
+        copyCatalog();
         if(executorSetting.isUseSqlFragment()){
             stEnvironment.useSqlFragment();
         }else{
@@ -124,6 +127,17 @@ public abstract class Executor {
         }
     }
 
+    private void copyCatalog(){
+        String[] catalogs = stEnvironment.listCatalogs();
+        CustomTableEnvironmentImpl newstEnvironment = CustomTableEnvironmentImpl.create(environment);
+        for (int i = 0; i < catalogs.length; i++) {
+            if(stEnvironment.getCatalog(catalogs[i]).isPresent()) {
+                newstEnvironment.getCatalogManager().unregisterCatalog(catalogs[i],true);
+                newstEnvironment.registerCatalog(catalogs[i], stEnvironment.getCatalog(catalogs[i]).get());
+            }
+        }
+        stEnvironment = newstEnvironment;
+    }
     public JobExecutionResult execute(String jobName) throws Exception{
         return stEnvironment.execute(jobName);
     }

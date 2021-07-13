@@ -21,7 +21,7 @@ public class ExecutorSetting {
     private String savePointPath;
     private String jobName;
     private Map<String,String> config;
-    public static final ExecutorSetting DEFAULT = new ExecutorSetting(true);
+    public static final ExecutorSetting DEFAULT = new ExecutorSetting(0,1,true);
 
     public ExecutorSetting(boolean useSqlFragment) {
         this.useSqlFragment = useSqlFragment;
@@ -36,7 +36,13 @@ public class ExecutorSetting {
         this.useSqlFragment = useSqlFragment;
     }
 
-    public ExecutorSetting(Integer checkpoint, Integer parallelism, boolean useSqlFragment, String savePointPath,String jobName) {
+    public ExecutorSetting(Integer checkpoint, Integer parallelism, boolean useSqlFragment) {
+        this.checkpoint = checkpoint;
+        this.parallelism = parallelism;
+        this.useSqlFragment = useSqlFragment;
+    }
+
+    public ExecutorSetting(Integer checkpoint, Integer parallelism, boolean useSqlFragment, String savePointPath, String jobName) {
         this.checkpoint = checkpoint;
         this.parallelism = parallelism;
         this.useSqlFragment = useSqlFragment;
