@@ -1,5 +1,6 @@
 package com.dlink.interceptor;
 
+import com.dlink.assertion.Asserts;
 import com.dlink.catalog.function.FunctionManager;
 import com.dlink.catalog.function.UDFunction;
 import com.dlink.constant.FlinkFunctionConstant;
@@ -25,7 +26,7 @@ public class FlinkInterceptor {
     public static boolean build( CustomTableEnvironmentImpl stEnvironment,String statemnet){
         initFunctions(stEnvironment,statemnet);
         Operation operation = Operations.buildOperation(statemnet);
-        if(operation!=null) {
+        if(Asserts.isNotNull(operation)) {
             operation.build(stEnvironment);
             return operation.noExecute();
         }

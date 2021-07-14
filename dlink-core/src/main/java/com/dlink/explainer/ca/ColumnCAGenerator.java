@@ -72,7 +72,10 @@ public class ColumnCAGenerator implements CAGenerator {
                         buildColumnCAFields(tableCA, tableCA.getParentId(), columnCA);
                     }
                 }
-            } else if (transList.get(i) instanceof SinkTrans) {
+            }
+        }
+        for (int i = 0; i < transList.size(); i++) {
+            if (transList.get(i) instanceof SinkTrans) {
                 TableCA tableCA = new TableCA((SinkTrans) transList.get(i));
                 searchColumnCAId(tableCA);
                 this.sinkTableCA = tableCA;

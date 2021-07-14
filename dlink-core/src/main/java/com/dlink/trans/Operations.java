@@ -1,5 +1,6 @@
 package com.dlink.trans;
 
+import com.dlink.assertion.Asserts;
 import com.dlink.constant.FlinkSQLConstant;
 import com.dlink.parser.SqlType;
 import com.dlink.trans.ddl.CreateAggTableOperation;
@@ -24,7 +25,7 @@ public class Operations {
                 continue;
             }
             sqlType = Operations.getOperationType(item);
-            if(FlinkSQLConstant.INSERT.equals(sqlType)||FlinkSQLConstant.SELECT.equals(sqlType)){
+            if(sqlType == SqlType.INSERT ||sqlType == SqlType.SELECT){
                 return sqlType;
             }
         }
@@ -41,30 +42,10 @@ public class Operations {
             }
         }
         return type;
-        /*if (sqlTrim.startsWith(FlinkSQLConstant.CREATE)) {
-            return FlinkSQLConstant.CREATE;
-        }
-        if (sqlTrim.startsWith(FlinkSQLConstant.ALTER)) {
-            return FlinkSQLConstant.ALTER;
-        }
-        if (sqlTrim.startsWith(FlinkSQLConstant.INSERT)) {
-            return FlinkSQLConstant.INSERT;
-        }
-        if (sqlTrim.startsWith(FlinkSQLConstant.DROP)) {
-            return FlinkSQLConstant.DROP;
-        }
-        if (sqlTrim.startsWith(FlinkSQLConstant.SELECT)) {
-            return FlinkSQLConstant.SELECT;
-        }
-        if (sqlTrim.startsWith(FlinkSQLConstant.SHOW)) {
-            return FlinkSQLConstant.SHOW;
-        }
-        return FlinkSQLConstant.UNKNOWN;*/
     }
 
     public static Operation buildOperation(String statement){
-        statement = statement.replace("\n"," ").replaceAll("\\s{1,}", " ").trim();
-        String sql = statement.toUpperCase();
+        String sql = statement.replace("\n"," ").replaceAll("\\s{1,}", " ").trim().toUpperCase();
         for (int i = 0; i < operations.length; i++) {
             if(sql.startsWith(operations[i].getHandle())){
                 return operations[i].create(statement);

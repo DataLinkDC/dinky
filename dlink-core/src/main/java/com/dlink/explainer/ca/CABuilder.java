@@ -17,7 +17,7 @@ public class CABuilder {
     public static List<TableCANode> getOneTableCAByStatement(String statement){
         List<TableCANode> tableCANodes = new ArrayList<>();
         FlinkSqlPlus plus = FlinkSqlPlus.build();
-        List<TableCAResult> results = plus.explainSqlTableCA(statement);
+        List<TableCAResult> results = plus.generateTableCA(statement);
         for (int j = 0; j < results.size(); j++) {
             TableCAResult result = results.get(j);
             TableCANode node = new TableCANode();
@@ -59,10 +59,10 @@ public class CABuilder {
         List<ColumnCAResult> columnCAResults = plus.explainSqlColumnCA(statement);
         for (int j = 0; j < columnCAResults.size(); j++) {
             ColumnCAResult result = columnCAResults.get(j);
-            ColumnCANode node = new ColumnCANode();
             List<Integer> sinkColumns = result.getSinkColumns();
             for (int k = 0; k < sinkColumns.size(); k++) {
                 ColumnCA columnCA = (ColumnCA)result.getColumnCASMaps().get(sinkColumns.get(k));
+                ColumnCANode node = new ColumnCANode();
                 node.setName(columnCA.getAlias());
                 node.setType(columnCA.getType());
                 node.setTitle(columnCA.getAlias());
@@ -70,8 +70,8 @@ public class CABuilder {
                 List<ColumnCANode> children = new ArrayList<>();
                 buildColumnCANodeChildren(children,result,sinkColumns.get(k),columnCA.getOperation());
                 node.setChildren(children);
+                columnCANodes.add(node);
             }
-            columnCANodes.add(node);
         }
         return columnCANodes;
     }

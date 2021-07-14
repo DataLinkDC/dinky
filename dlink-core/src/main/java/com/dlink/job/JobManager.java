@@ -86,7 +86,7 @@ public class JobManager extends RunTime {
     private Executor createExecutorWithSession() {
         if(config.isUseSession()) {
             ExecutorEntity executorEntity = SessionPool.get(config.getSession());
-            if (Asserts.checkNotNull(executorEntity)) {
+            if (Asserts.isNotNull(executorEntity)) {
                 executor = executorEntity.getExecutor();
                 config.setSessionConfig(executorEntity.getSessionConfig());
                 initEnvironmentSetting();
@@ -225,7 +225,7 @@ public class JobManager extends RunTime {
                         job.setResult(result);
                     }
                 }
-                if(FlinkSQLConstant.INSERT.equals(operationType)||FlinkSQLConstant.SELECT.equals(operationType)){
+                if(operationType==SqlType.INSERT||operationType==SqlType.SELECT){
                     break;
                 }
             }

@@ -68,8 +68,8 @@ public class FlinkSqlPlus {
         return explainer.explainSqlTableColumnCA(statement);
     }
 
-    public List<TableCAResult> explainSqlTableCA(String statement) {
-        return explainer.explainSqlTableCA(statement);
+    public List<TableCAResult> generateTableCA(String statement) {
+        return explainer.generateTableCA(statement);
     }
 
     public List<ColumnCAResult> explainSqlColumnCA(String statement) {

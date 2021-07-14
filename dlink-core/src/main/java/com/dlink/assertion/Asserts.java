@@ -10,8 +10,26 @@ import com.dlink.exception.JobException;
  */
 public class Asserts {
 
-    public static boolean checkNotNull(Object object){
+    public static boolean isNotNull(Object object){
         return object!=null;
+    }
+
+    public static boolean isNull(Object object){
+        return object==null;
+    }
+
+    public static boolean isNullString(String str){
+        return str==null||"".equals(str);
+    }
+
+    public static boolean isEquals(String str1,String str2){
+        if(isNull(str1)&&isNull(str2)){
+            return true;
+        }else if(isNull(str1)||isNull(str2)){
+            return false;
+        }else{
+            return str1.equals(str2);
+        }
     }
 
     public static void checkNull(String key,String msg) {

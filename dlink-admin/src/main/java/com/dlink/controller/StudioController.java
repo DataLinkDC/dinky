@@ -63,7 +63,7 @@ public class StudioController {
     public Result getCAByStatement(@RequestBody StudioCADTO studioCADTO)  {
         switch (studioCADTO.getType()){
             case 1:return Result.succeed(studioService.getOneTableColumnCAByStatement(studioCADTO.getStatement()),"执行成功");
-//            case 2:return Result.succeed(studioService.getColumnCAByStatement(studioCADTO.getStatement()),"执行成功");
+            case 2:return Result.succeed(studioService.getColumnCAByStatement(studioCADTO.getStatement()),"执行成功");
             default:return Result.failed("敬请期待");
         }
     }

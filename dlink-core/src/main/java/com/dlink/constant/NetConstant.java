@@ -14,10 +14,6 @@ public interface NetConstant {
      */
     String SLASH = "/";
     /**
-     * Flink默认端口
-     */
-    String PORT = "8081";
-    /**
      * 连接运行服务器超时时间  1000
      */
     Integer SERVER_TIME_OUT_ACTIVE = 1000;
