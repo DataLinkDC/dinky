@@ -38,4 +38,10 @@ public class Asserts {
         }
     }
 
+    public static void checkNotNull(Object object,String msg) {
+        if (isNull(object)) {
+            throw new JobException(msg);
+        }
+    }
+
 }

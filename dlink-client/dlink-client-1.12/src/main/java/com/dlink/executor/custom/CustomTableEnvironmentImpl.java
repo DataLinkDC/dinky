@@ -168,7 +168,7 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
                 ObjectNode jsonNode = jsonGenerator.getJSONNode();
                 return jsonNode;
             }else{
-                throw new TableException("Unsupported SQL query! explainSql() need a single SQL to query.");
+                throw new TableException("Unsupported SQL query! ExecEnv need a ExecutorBase.");
             }
         }
     }

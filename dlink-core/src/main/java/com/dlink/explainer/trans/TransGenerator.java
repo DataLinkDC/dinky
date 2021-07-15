@@ -1,5 +1,6 @@
 package com.dlink.explainer.trans;
 
+import com.dlink.assertion.Asserts;
 import com.dlink.exception.SqlException;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.JsonNode;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.node.ObjectNode;
@@ -23,7 +24,7 @@ public class TransGenerator {
         this.plan = plan;
     }
 
-    public static Trans get(String pact) {
+    public static Trans getTrans(String pact) {
         switch (pact) {
             case OperatorTrans.TRANS_TYPE:
                 return new OperatorTrans();
@@ -42,10 +43,8 @@ public class TransGenerator {
         Map<Integer, Trans> nodemap = new HashMap<>();
         for (JsonNode node : nodes) {
             String pact = node.get("pact").asText();
-            Trans trans = get(pact);
-            if (trans==null) {
-                throw new SqlException("该转换无法被解析，原文如下：" + pact);
-            }
+            Trans trans = getTrans(pact);
+            Asserts.checkNotNull(trans,"该转换无法被解析，原文如下：" + pact);
             trans.build(node);
             nodemap.put(trans.getId(), trans);
         }
