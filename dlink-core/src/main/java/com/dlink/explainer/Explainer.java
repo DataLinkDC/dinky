@@ -75,21 +75,22 @@ public class Explainer {
         List<TableCAResult> results = new ArrayList<>();
         for (int i = 0; i < strPlans.size(); i++) {
             List<Trans> trans = translateTrans(translateObjectNode(strPlans.get(i)));
-            TableCAGenerator generator = new TableCAGenerator(trans);
+            TableCAGenerator generator = TableCAGenerator.build(trans);
             if (onlyTable) {
                 generator.translateOnlyTable();
             } else {
                 generator.translate();
             }
-            results.add(new TableCAResult(generator));
+            results.add(generator.getResult());
         }
         if (results.size() > 0) {
             CatalogManager catalogManager = executor.getCatalogManager();
             for (int i = 0; i < results.size(); i++) {
                 TableCA sinkTableCA = (TableCA) results.get(i).getSinkTableCA();
-                if (sinkTableCA != null) {
-                    ObjectIdentifier objectIdentifier = ObjectIdentifier.of(sinkTableCA.getCatalog(), sinkTableCA.getDatabase(), sinkTableCA.getTable());
-                    Optional<CatalogManager.TableLookupResult> tableOpt = catalogManager.getTable(objectIdentifier);
+                if (Asserts.isNotNull(sinkTableCA)) {
+                    Optional<CatalogManager.TableLookupResult> tableOpt = catalogManager.getTable(
+                            ObjectIdentifier.of(sinkTableCA.getCatalog(), sinkTableCA.getDatabase(), sinkTableCA.getTable())
+                    );
                     if (tableOpt.isPresent()) {
                         String[] fieldNames = tableOpt.get().getResolvedSchema().getFieldNames();
                         sinkTableCA.setFields(Arrays.asList(fieldNames));

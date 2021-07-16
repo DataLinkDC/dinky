@@ -2,6 +2,7 @@ package com.dlink.explainer.ca;
 
 import com.dlink.explainer.trans.SinkTrans;
 import com.dlink.explainer.trans.SourceTrans;
+import com.dlink.explainer.trans.Trans;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,6 +32,11 @@ public class TableCA implements ICA{
     private Set<Integer> columnCAIds = new HashSet<>();
     private Integer parallelism;
 
+    private static final TableCA EMPTY = new TableCA();
+
+    public TableCA() {
+    }
+
     public TableCA(SourceTrans trans) {
         this.id = trans.getId();
         this.parentId = trans.getParentId();
@@ -55,6 +61,16 @@ public class TableCA implements ICA{
         this.useFields = trans.getFields();
         this.parallelism = trans.getParallelism();
         this.type = trans.getPact();
+    }
+
+    public static TableCA build(Trans trans){
+        if(trans instanceof SourceTrans){
+            return new TableCA((SourceTrans)trans);
+        }else if(trans instanceof SinkTrans){
+            return new TableCA((SinkTrans)trans);
+        }else{
+            return TableCA.EMPTY;
+        }
     }
 
     @Override

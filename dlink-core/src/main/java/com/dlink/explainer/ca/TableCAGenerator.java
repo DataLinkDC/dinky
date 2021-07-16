@@ -44,11 +44,19 @@ public class TableCAGenerator implements CAGenerator {
         }
     }
 
+    public static TableCAGenerator build(List<Trans> transList) {
+        return new TableCAGenerator(transList);
+    }
+
+    public TableCAResult getResult(){
+        return new TableCAResult(this);
+    }
+
     @Override
     public void translate() {
-        for (int i = 0; i < transList.size(); i++) {
-            if(transList.get(i) instanceof SourceTrans) {
-                TableCA tableCA = new TableCA((SourceTrans) transList.get(i));
+        for(Trans trans : transList){
+            if(trans instanceof SourceTrans) {
+                TableCA tableCA = TableCA.build(trans);
                 List<String> sourceFields = new ArrayList<>();
                 CollectionUtils.addAll(sourceFields, new Object[tableCA.getFields().size()]);
                 Collections.copy(sourceFields, tableCA.getFields());
@@ -56,8 +64,8 @@ public class TableCAGenerator implements CAGenerator {
                     buildTableCAFields(tableCA,tableCA.getParentId(),sourceFields.get(j));
                 }
                 this.sourceTableCAS.add(tableCA);
-            }else if(transList.get(i) instanceof SinkTrans) {
-                TableCA tableCA = new TableCA((SinkTrans) transList.get(i));
+            }else if(trans instanceof SinkTrans) {
+                TableCA tableCA = TableCA.build(trans);
                 this.sinkTableCA = tableCA;
                 this.sinkTableName = tableCA.getName();
             }
@@ -65,11 +73,11 @@ public class TableCAGenerator implements CAGenerator {
     }
 
     public void translateOnlyTable() {
-        for (int i = 0; i < transList.size(); i++) {
-            if(transList.get(i) instanceof SourceTrans) {
-                this.sourceTableCAS.add(new TableCA((SourceTrans) transList.get(i)));
-            }else if(transList.get(i) instanceof SinkTrans) {
-                TableCA tableCA = new TableCA((SinkTrans) transList.get(i));
+        for(Trans trans : transList){
+            if(trans instanceof SourceTrans) {
+                this.sourceTableCAS.add(new TableCA((SourceTrans) trans));
+            }else if(trans instanceof SinkTrans) {
+                TableCA tableCA = new TableCA((SinkTrans) trans);
                 this.sinkTableCA = tableCA;
                 this.sinkTableName = tableCA.getName();
             }
