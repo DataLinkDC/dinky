@@ -1,5 +1,6 @@
 package com.dlink.explainer.ca;
 
+import com.dlink.assertion.Asserts;
 import com.dlink.explainer.trans.Field;
 import com.dlink.explainer.trans.OperatorTrans;
 import com.dlink.explainer.trans.SinkTrans;
@@ -89,14 +90,14 @@ public class TableCAGenerator implements CAGenerator {
             OperatorTrans trans = (OperatorTrans) transMaps.get(id);
             searchSelectFields(tableCA, trans.getSelect(),field);
             searchWhereFields(tableCA, trans.getWhere(),field);
-            if(trans.getParentId()!=null){
+            if(Asserts.isNotNull(trans.getParentId())){
                 buildTableCAFields(tableCA,trans.getParentId(),field);
             }
         }
     }
 
     private void searchSelectFields(TableCA tableCA, List<Field> selects, String field){
-        if(selects!=null&&selects.size()>0){
+        if(Asserts.isNotNull(selects)){
             for (int i = 0; i < selects.size(); i++){
                 List<String> fields = matchFields( selects.get(i).getFragment(),field);
                 /*if(tableCA.getFields().contains(field)){
@@ -112,7 +113,7 @@ public class TableCAGenerator implements CAGenerator {
     }
 
     private void searchWhereFields(TableCA tableCA,String wheres,String field){
-        if(wheres!=null&&!"[]".equals(wheres)){
+        if(Asserts.isNotNull(wheres)&&!"[]".equals(wheres)){
             List<String> fields = matchFields( wheres,field);
             /*if(tableCA.getFields().contains(field)){
                 tableCA.getFields().remove(field);

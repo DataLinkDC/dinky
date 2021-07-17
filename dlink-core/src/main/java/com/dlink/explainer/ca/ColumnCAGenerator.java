@@ -1,6 +1,7 @@
 package com.dlink.explainer.ca;
 
 
+import com.dlink.assertion.Asserts;
 import com.dlink.explainer.trans.Field;
 import com.dlink.explainer.trans.OperatorTrans;
 import com.dlink.explainer.trans.SinkTrans;
@@ -91,22 +92,22 @@ public class ColumnCAGenerator implements CAGenerator {
                 sufOnly.add(nodeRel.getSufId());
             }
         }
-        /*for (NodeRel nodeRel : this.columnCASRel) {
+        for (NodeRel nodeRel : this.columnCASRel) {
             if(sufOnly.contains(nodeRel.getPreId())) {
                 sufOnly.remove(nodeRel.getPreId());
             }
-        }*/
+        }
         List<Integer> preOnly = new ArrayList<>();
         for (NodeRel nodeRel : this.columnCASRel) {
             if(!preOnly.contains(nodeRel.getPreId())) {
                 preOnly.add(nodeRel.getPreId());
             }
         }
-        /*for (NodeRel nodeRel : this.columnCASRel) {
+        for (NodeRel nodeRel : this.columnCASRel) {
             if(preOnly.contains(nodeRel.getSufId())) {
                 preOnly.remove(nodeRel.getSufId());
             }
-        }*/
+        }
         for (int i = 0; i < sufOnly.size(); i++) {
             ColumnCA columnCA = (ColumnCA)this.columnCASMaps.get(sufOnly.get(i));
             List<String> fields = tableCA.getFields();
@@ -136,7 +137,7 @@ public class ColumnCAGenerator implements CAGenerator {
         if (transMaps.get(id) instanceof OperatorTrans) {
             OperatorTrans trans = (OperatorTrans) transMaps.get(id);
             List<Field> selects = trans.getSelect();
-            if (selects != null && selects.size() > 0) {
+            if (Asserts.isNotNull(selects)) {
                 for (int i = 0; i < selects.size(); i++) {
                     String operation = selects.get(i).getFragment();
                     String alias = selects.get(i).getAlias();
@@ -150,7 +151,7 @@ public class ColumnCAGenerator implements CAGenerator {
     }
 
     private void searchSelect(TableCA tableCA, ColumnCA columnCA, OperatorTrans trans, String operation, String alias) {
-        if (operation.contains(" " + columnCA.getAlias() + " ") ||
+        if(Asserts.isEquals(operation,columnCA.getAlias())||operation.contains(" " + columnCA.getAlias() + " ") ||
                 operation.contains("(" + columnCA.getAlias() + " ") ||
                 operation.contains(" " + columnCA.getAlias() + ")")) {
             boolean isHad = false;
