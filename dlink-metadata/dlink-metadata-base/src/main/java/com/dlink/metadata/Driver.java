@@ -1,0 +1,84 @@
+package com.dlink.metadata;
+
+import com.dlink.assertion.Asserts;
+import com.dlink.exception.MetaDataException;
+import com.dlink.metadata.result.SelectResult;
+import com.dlink.model.Column;
+import com.dlink.model.Schema;
+import com.dlink.model.Table;
+import com.fasterxml.jackson.databind.JsonNode;
+import sun.misc.Service;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * Driver
+ *
+ * @author wenmo
+ * @since 2021/7/19 23:15
+ */
+public interface Driver {
+
+    static Optional<Driver> get(DriverConfig config) {
+        Asserts.checkNotNull(config, "配置不能为空");
+        Iterator<Driver> providers = Service.providers(Driver.class);
+        while (providers.hasNext()) {
+            Driver gainer = providers.next();
+            if (gainer.canHandle(config.getType())) {
+                return Optional.of(gainer.setDriverConfig(config));
+            }
+        }
+        return Optional.empty();
+    }
+
+    static Driver build(DriverConfig config) {
+        Optional<Driver> optionalDriver = Driver.get(config);
+        if (!optionalDriver.isPresent()) {
+            throw new MetaDataException("不支持数据源类型【" + config.getType() + "】");
+        }
+        return optionalDriver.get();
+    }
+
+    Driver setDriverConfig(DriverConfig config);
+
+    boolean canHandle(String type);
+
+    String getType();
+
+    boolean test();
+
+    Driver connect();
+
+    void close();
+
+    List<Schema> listSchemas();
+
+    List<Table> listTables(String schema);
+
+    List<Column> listColumns(String schema, String table);
+
+    List<Schema> getSchemasAndTables();
+
+    List<Table> getTablesAndColumns(String schema);
+
+    boolean existTable(Table table);
+
+    boolean createTable(Table table);
+
+    boolean deleteTable(Table table);
+
+    boolean truncateTable(Table table);
+
+    String getCreateTableSql(Table table);
+
+    boolean insert(Table table, JsonNode data);
+
+    boolean update(Table table, JsonNode data);
+
+    boolean delete(Table table, JsonNode data);
+
+    SelectResult select(String sql);
+
+}

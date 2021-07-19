@@ -17,6 +17,8 @@
         <module>dlink-web</module>
         <module>dlink-admin</module>
         <module>dlink-assembly</module>
+        <module>dlink-common</module>
+        <module>dlink-metadata</module>
     </modules>
 
     <properties>
@@ -149,6 +151,11 @@
             <dependency>
                 <groupId>com.dlink</groupId>
                 <artifactId>dlink-function</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>
