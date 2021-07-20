@@ -1,5 +1,7 @@
 package com.dlink.assertion;
 
+import com.dlink.exception.RunTimeException;
+
 /**
  * Asserts
  *
@@ -18,6 +20,10 @@ public class Asserts {
 
     public static boolean isNullString(String str){
         return isNull(str)||"".equals(str);
+    }
+
+    public static boolean isNotNullString(String str){
+        return !isNullString(str);
     }
 
     public static boolean isEquals(String str1,String str2){
@@ -42,13 +48,19 @@ public class Asserts {
 
     public static void checkNull(String key,String msg) {
         if (key == null||"".equals(key)) {
-            throw new NullPointerException(msg);
+            throw new RunTimeException(msg);
         }
     }
 
     public static void checkNotNull(Object object,String msg) {
         if (isNull(object)) {
-            throw new NullPointerException(msg);
+            throw new RunTimeException(msg);
+        }
+    }
+
+    public static void checkNullString(String key,String msg) {
+        if (isNull(key)||isEquals("",key)) {
+            throw new RunTimeException(msg);
         }
     }
 

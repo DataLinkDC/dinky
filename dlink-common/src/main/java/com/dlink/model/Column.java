@@ -17,21 +17,17 @@ public class Column implements Serializable {
 
     private static final long serialVersionUID = 6438514547501611599L;
 
-    private boolean convert;
+    private String name;
+    private String type;
+    private String comment;
     private boolean keyFlag;
     /**
      * 主键是否为自增类型
      */
     private boolean keyIdentityFlag;
-    private String name;
-    private String type;
-    private String propertyName;
-    private String columnType;
-    private String comment;
     private String fill;
     private String isNotNull;
-    private boolean keyWords;
-    private String columnName;
+    private String javaType;
     private String columnFamily;
 
 }

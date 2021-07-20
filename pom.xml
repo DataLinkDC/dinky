@@ -42,6 +42,7 @@
         <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
         <maven-assembly-plugin.version>3.2.0</maven-assembly-plugin.version>
         <maven.resource.version>3.2.0</maven.resource.version>
+        <junit.version>4.12</junit.version>
     </properties>
 
     <dependencyManagement>
@@ -127,6 +128,12 @@
                 <artifactId>hibernate-validator</artifactId>
                 <version>${hibernate-validator.version}</version>
             </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <scope>provided</scope>
+            </dependency>
             <!-- flyway -->
             <dependency>
                 <groupId>org.flywaydb</groupId>
@@ -156,6 +163,11 @@
             <dependency>
                 <groupId>com.dlink</groupId>
                 <artifactId>dlink-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-metadata-base</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

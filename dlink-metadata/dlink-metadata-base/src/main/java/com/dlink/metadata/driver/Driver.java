@@ -1,4 +1,4 @@
-package com.dlink.metadata;
+package com.dlink.metadata.driver;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.exception.MetaDataException;
@@ -22,7 +22,7 @@ import java.util.Optional;
 public interface Driver {
 
     static Optional<Driver> get(DriverConfig config) {
-        Asserts.checkNotNull(config, "配置不能为空");
+        Asserts.checkNotNull(config, "数据源配置不能为空");
         Iterator<Driver> providers = Service.providers(Driver.class);
         while (providers.hasNext()) {
             Driver gainer = providers.next();
@@ -47,6 +47,8 @@ public interface Driver {
 
     String getType();
 
+    String getName();
+
     boolean test();
 
     Driver connect();
@@ -55,13 +57,13 @@ public interface Driver {
 
     List<Schema> listSchemas();
 
-    List<Table> listTables(String schema);
+    List<Table> listTables(String schemaName);
 
-    List<Column> listColumns(String schema, String table);
+    List<Column> listColumns(String schemaName, String tableName);
 
     List<Schema> getSchemasAndTables();
 
-    List<Table> getTablesAndColumns(String schema);
+    List<Table> getTablesAndColumns(String schemaName);
 
     boolean existTable(Table table);
 
@@ -80,5 +82,9 @@ public interface Driver {
     boolean delete(Table table, JsonNode data);
 
     SelectResult select(String sql);
+
+    boolean execute(String sql);
+
+    List query(String sql);
 
 }

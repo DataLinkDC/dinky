@@ -1,4 +1,4 @@
-package com.dlink.metadata;
+package com.dlink.metadata.driver;
 
 
 import lombok.Getter;
@@ -21,5 +21,6 @@ public class DriverConfig {
     private String url;
     private String username;
     private String password;
+
 
 }

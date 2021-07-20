@@ -139,6 +139,7 @@ dlink -- 父项目
 |-dlink-client -- Client 中心
 | |-dlink-client-1.12 -- Client-1.12 实现
 | |-dlink-client-1.13 -- Client-1.13 实现
+|-dlink-common -- 通用中心
 |-dlink-connectors -- Connectors 中心
 | |-dlink-connector-jdbc -- Jdbc 扩展
 |-dlink-core -- 执行中心
@@ -149,6 +150,9 @@ dlink -- 父项目
 | |-doc -- 使用文档
 | |-sql -- sql脚本
 |-dlink-function -- 函数中心
+|-dlink-metadata -- 元数据中心
+| |-dlink-metadata-base -- 元数据基础组件
+| |-dlink-metadata-mysql -- 元数据- mysql 实现
 |-dlink-web -- React 前端
 ```
 
@@ -163,7 +167,7 @@ npm run build
 #### 后台编译打包
 
 ```shell
-maven clean install -Dmaven.test.skip=true
+mvn clean install -Dmaven.test.skip=true
 ```
 
 #### 扩展Connector及UDF

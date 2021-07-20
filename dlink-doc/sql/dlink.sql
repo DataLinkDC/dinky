@@ -67,7 +67,7 @@ CREATE TABLE `dlink_task`  (
   `check_point` int(11) NULL DEFAULT NULL COMMENT 'CheckPoint ',
   `save_point_path` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'SavePointPath',
   `parallelism` int(4) NULL DEFAULT NULL COMMENT 'parallelism',
-  `fragment` tinyint(255) NULL DEFAULT NULL COMMENT 'fragment',
+  `fragment` tinyint(1) NULL DEFAULT NULL COMMENT 'fragment',
   `cluster_id` int(11) NULL DEFAULT NULL COMMENT 'Flink集群ID',
   `note` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '注释',
   `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT '是否启用',
@@ -330,5 +330,30 @@ CREATE TABLE `dlink_history`  (
 
 ALTER TABLE `dlink`.`dlink_task`
 ADD COLUMN `config` text NULL COMMENT '配置' AFTER `cluster_id`;
+
+-- ----------------------------
+-- Table structure for dlink_database
+-- ----------------------------
+DROP TABLE IF EXISTS `dlink_database`;
+CREATE TABLE `dlink_database`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `name` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '数据源名',
+  `alias` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '数据源标题',
+  `group_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'Default' COMMENT '数据源分组',
+  `type` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '类型',
+  `driver_class_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'Driver',
+  `ip` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'IP',
+  `port` int(11) NULL DEFAULT NULL COMMENT '端口号',
+  `url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'url',
+  `username` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '用户名',
+  `password` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '密码',
+  `note` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '注释',
+  `db_version` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '版本，如oracle的11g，hbase的2.2.3',
+  `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT '启用',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '最近修改时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `db_index`(`name`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
