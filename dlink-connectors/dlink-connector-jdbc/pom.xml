@@ -121,7 +121,6 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.20</version>
             <scope>test</scope>
         </dependency>
 
@@ -138,7 +137,6 @@
         <dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>ojdbc6</artifactId>
-			<version>11.2.0.3</version>
 			<scope>test</scope>
 		</dependency>
     </dependencies>

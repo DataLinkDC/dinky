@@ -33,37 +33,17 @@ public class MySqlDriver extends AbstractJdbcDriver {
 
     @Override
     public String getType() {
-        return "Mysql";
+        return "MySql";
     }
 
     @Override
     public String getName() {
-        return "Mysql";
+        return "MySql数据库";
     }
 
     @Override
     public String getDriverClass() {
         return "com.mysql.cj.jdbc.Driver";
-    }
-
-    @Override
-    public boolean createTable(Table table) {
-        String sql = getCreateTableSql(table);
-        if(Asserts.isNotNull(sql)) {
-            return execute(sql.replaceAll("\r\n"," "));
-        }else{
-            return false;
-        }
-    }
-
-    @Override
-    public boolean deleteTable(Table table) {
-        return false;
-    }
-
-    @Override
-    public boolean truncateTable(Table table) {
-        return false;
     }
 
     @Override
@@ -105,23 +85,4 @@ public class MySqlDriver extends AbstractJdbcDriver {
         return sb.toString();
     }
 
-    @Override
-    public boolean insert(Table table, JsonNode data) {
-        return false;
-    }
-
-    @Override
-    public boolean update(Table table, JsonNode data) {
-        return false;
-    }
-
-    @Override
-    public boolean delete(Table table, JsonNode data) {
-        return false;
-    }
-
-    @Override
-    public SelectResult select(String sql) {
-        return null;
-    }
 }

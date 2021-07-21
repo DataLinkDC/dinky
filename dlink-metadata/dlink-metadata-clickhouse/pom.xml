@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>dlink-metadata-mysql</artifactId>
+    <artifactId>dlink-metadata-clickhouse</artifactId>
 
     <dependencies>
         <dependency>
@@ -22,8 +22,8 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
+            <groupId>ru.yandex.clickhouse</groupId>
+            <artifactId>clickhouse-jdbc</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

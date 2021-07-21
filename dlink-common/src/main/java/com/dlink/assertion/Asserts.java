@@ -2,6 +2,8 @@ package com.dlink.assertion;
 
 import com.dlink.exception.RunTimeException;
 
+import java.util.Collection;
+
 /**
  * Asserts
  *
@@ -46,6 +48,18 @@ public class Asserts {
         }
     }
 
+    public static boolean isNullCollection(Collection collection) {
+        if (isNull(collection)||collection.size()==0) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isNotNullCollection(Collection collection) {
+        return !isNullCollection(collection);
+    }
+
+
     public static void checkNull(String key,String msg) {
         if (key == null||"".equals(key)) {
             throw new RunTimeException(msg);
@@ -64,4 +78,9 @@ public class Asserts {
         }
     }
 
+    public static void checkNullCollection(Collection collection,String msg) {
+        if(isNullCollection(collection)){
+            throw new RunTimeException(msg);
+        }
+    }
 }

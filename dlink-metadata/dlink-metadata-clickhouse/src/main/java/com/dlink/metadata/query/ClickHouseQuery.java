@@ -1,18 +1,15 @@
 package com.dlink.metadata.query;
 
-import com.dlink.assertion.Asserts;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * MySqlQuery
+ * ClickHouseQuery
  *
  * @author wenmo
- * @since 2021/7/20 14:01
+ * @since 2021/7/21 17:15
  **/
-public class MySqlQuery extends AbstractDBQuery {
-
+public class ClickHouseQuery extends AbstractDBQuery {
     @Override
     public String schemaAllSql() {
         return "show databases";
@@ -20,48 +17,48 @@ public class MySqlQuery extends AbstractDBQuery {
 
     @Override
     public String tablesSql(String schemaName) {
-        return "select TABLE_NAME AS `NAME`,TABLE_SCHEMA AS `Database`,TABLE_COMMENT AS COMMENT from information_schema.tables" +
-                " where TABLE_SCHEMA = '"+schemaName+"'";
+        return "show table status WHERE 1=1 ";
     }
+
 
     @Override
     public String columnsSql(String schemaName,String tableName) {
-        return "show full columns from `"+tableName+"`";
+        return "desc `"+tableName+"`";
     }
 
     @Override
     public String schemaName() {
-        return "Database";
+        return "db";
     }
 
 
     @Override
     public String tableName() {
-        return "NAME";
+        return "name";
     }
 
 
     @Override
     public String tableComment() {
-        return "COMMENT";
+        return "comment";
     }
 
 
     @Override
     public String columnName() {
-        return "FIELD";
+        return "name";
     }
 
 
     @Override
     public String columnType() {
-        return "TYPE";
+        return "type";
     }
 
 
     @Override
     public String columnComment() {
-        return "COMMENT";
+        return "comment";
     }
 
 

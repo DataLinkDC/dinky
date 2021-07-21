@@ -35,6 +35,8 @@
         <guava.version>21.0</guava.version>
         <slf4j.version>1.7.30</slf4j.version>
         <mysql-connector-java.version>8.0.22</mysql-connector-java.version>
+        <ojdbc6.version>11.2.0.3</ojdbc6.version>
+        <clickhouse.version>0.2.6</clickhouse.version>
         <banner.version>1.0.2</banner.version>
         <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
         <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
@@ -117,6 +119,16 @@
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
                 <version>${mysql-connector-java.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.oracle</groupId>
+                <artifactId>ojdbc6</artifactId>
+                <version>${ojdbc6.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.yandex.clickhouse</groupId>
+                <artifactId>clickhouse-jdbc</artifactId>
+                <version>${clickhouse.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.nepxion</groupId>

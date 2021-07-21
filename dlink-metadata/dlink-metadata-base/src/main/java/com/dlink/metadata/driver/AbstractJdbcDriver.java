@@ -30,7 +30,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
 
     @Override
     public boolean test() {
-        Asserts.checkNotNull(config,"无效的数据源配置");
+        Asserts.checkNotNull(config, "无效的数据源配置");
         try {
             Class.forName(getDriverClass());
             DriverManager.getConnection(config.getUrl(), config.getUsername(), config.getPassword()).close();
@@ -57,7 +57,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     @Override
     public void close() {
         try {
-            if(Asserts.isNotNull(conn)) {
+            if (Asserts.isNotNull(conn)) {
                 conn.close();
             }
         } catch (SQLException e) {
@@ -65,23 +65,39 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         }
     }
 
+    public void close(PreparedStatement preparedStatement,ResultSet results){
+        try {
+            if (Asserts.isNotNull(results)) {
+                results.close();
+            }
+            if (Asserts.isNotNull(preparedStatement)) {
+                preparedStatement.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
-    public List<Schema> listSchemas(){
+    public List<Schema> listSchemas() {
         List<Schema> schemas = new ArrayList<>();
+        PreparedStatement preparedStatement = null;
+        ResultSet results = null;
         String schemasSql = getDBQuery().schemaAllSql();
         try {
-            try (PreparedStatement preparedStatement = conn.prepareStatement(schemasSql);
-                 ResultSet results = preparedStatement.executeQuery()) {
-                while (results.next()) {
-                    String schemaName = results.getString(getDBQuery().schemaName());
-                    if (Asserts.isNotNullString(schemaName)) {
-                        Schema schema = new Schema(schemaName);
-                        schemas.add(schema);
-                    }
+            preparedStatement = conn.prepareStatement(schemasSql);
+            results = preparedStatement.executeQuery();
+            while (results.next()) {
+                String schemaName = results.getString(getDBQuery().schemaName());
+                if (Asserts.isNotNullString(schemaName)) {
+                    Schema schema = new Schema(schemaName);
+                    schemas.add(schema);
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            close(preparedStatement,results);
         }
         return schemas;
     }
@@ -89,80 +105,126 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     @Override
     public List<Table> listTables(String schemaName) {
         List<Table> tableList = new ArrayList<>();
+        PreparedStatement preparedStatement = null;
         ResultSet results = null;
+        String sql = getDBQuery().tablesSql(schemaName);
         try {
-            String tablesSql = getDBQuery().tablesSql();
-            StringBuilder sql = new StringBuilder(tablesSql);
-            try (PreparedStatement preparedStatement = conn.prepareStatement(sql.toString())) {
-                preparedStatement.setString(1,schemaName);
-                results = preparedStatement.executeQuery();
-                while (results.next()) {
-                    String tableName = results.getString(getDBQuery().tableName());
-                    if (Asserts.isNotNullString(tableName)) {
-                        Table tableInfo = new Table();
-                        tableInfo.setName(tableName);
-                        String tableComment = results.getString(getDBQuery().tableComment());
-                        tableInfo.setComment(tableComment);
-                        tableInfo.setSchema(schemaName);
-                        tableList.add(tableInfo);
-                    }
+            preparedStatement = conn.prepareStatement(sql);
+            results = preparedStatement.executeQuery();
+            while (results.next()) {
+                String tableName = results.getString(getDBQuery().tableName());
+                if (Asserts.isNotNullString(tableName)) {
+                    Table tableInfo = new Table();
+                    tableInfo.setName(tableName);
+                    String tableComment = results.getString(getDBQuery().tableComment());
+                    tableInfo.setComment(tableComment);
+                    tableInfo.setSchema(schemaName);
+                    tableList.add(tableInfo);
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            if(Asserts.isNotNull(results)){
-                try {
-                    results.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+            close(preparedStatement,results);
         }
         return tableList;
     }
 
     @Override
-    public List<Column> listColumns(String schema, String tableName) {
+    public List<Column> listColumns(String schemaName, String tableName) {
         List<Column> columns = new ArrayList<>();
+        PreparedStatement preparedStatement = null;
+        ResultSet results = null;
+        String tableFieldsSql = getDBQuery().columnsSql(schemaName,tableName);
+        tableFieldsSql = String.format(tableFieldsSql, tableName);
         try {
-            String tableFieldsSql = getDBQuery().columnsSql();
-            tableFieldsSql = String.format(tableFieldsSql, tableName);
-            try (
-                    PreparedStatement preparedStatement = conn.prepareStatement(tableFieldsSql);
-                    ResultSet results = preparedStatement.executeQuery()) {
-                while (results.next()) {
-                    Column field = new Column();
-                    String columnName = results.getString(getDBQuery().columnName());
-                    boolean isId;
-                    String key = results.getString(getDBQuery().columnKey());
-                    isId = Asserts.isNotNullString(key) && "PRI".equals(key.toUpperCase());
-                    if (isId) {
-                        field.setKeyFlag(true);
-                    } else {
-                        field.setKeyFlag(false);
-                    }
-                    field.setName(columnName);
-                    field.setType(results.getString(getDBQuery().columnType()));
-                    field.setJavaType(getTypeConvert().convert(field.getType()).getType());
-                    field.setComment(results.getString(getDBQuery().columnComment()));
-                    field.setIsNotNull(results.getString(getDBQuery().isNotNull()));
-                    columns.add(field);
+            preparedStatement = conn.prepareStatement(tableFieldsSql);
+            results = preparedStatement.executeQuery();
+            while (results.next()) {
+                Column field = new Column();
+                String columnName = results.getString(getDBQuery().columnName());
+                boolean isId;
+                String key = results.getString(getDBQuery().columnKey());
+                isId = Asserts.isNotNullString(key) && "PRI".equals(key.toUpperCase());
+                if (isId) {
+                    field.setKeyFlag(true);
+                } else {
+                    field.setKeyFlag(false);
                 }
+                field.setName(columnName);
+                field.setType(results.getString(getDBQuery().columnType()));
+                field.setJavaType(getTypeConvert().convert(field.getType()).getType());
+                field.setComment(results.getString(getDBQuery().columnComment()));
+                field.setIsNotNull(results.getString(getDBQuery().isNotNull()));
+                columns.add(field);
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            close(preparedStatement,results);
         }
         return columns;
     }
 
     @Override
-    public boolean execute(String sql){
-        Asserts.checkNullString(sql,"Sql 语句为空");
+    public boolean createTable(Table table) {
+        String sql = getCreateTableSql(table).replaceAll("\r\n", " ");
+        if (Asserts.isNotNull(sql)) {
+            return execute(sql);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean dropTable(Table table) {
+        String sql = getDropTableSql(table).replaceAll("\r\n", " ");
+        if (Asserts.isNotNull(sql)) {
+            return execute(sql);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean truncateTable(Table table) {
+        String sql = getTruncateTableSql(table).replaceAll("\r\n", " ");
+        if (Asserts.isNotNull(sql)) {
+            return execute(sql);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public String getDropTableSql(Table table) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("DROP TABLE ");
+        if (Asserts.isNotNullString(table.getSchema())) {
+            sb.append(table.getSchema() + ".");
+        }
+        sb.append(table.getName());
+        return sb.toString();
+    }
+
+    @Override
+    public String getTruncateTableSql(Table table) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("TRUNCATE TABLE ");
+        if (Asserts.isNotNullString(table.getSchema())) {
+            sb.append(table.getSchema() + ".");
+        }
+        sb.append(table.getName());
+        return sb.toString();
+    }
+
+    @Override
+    public boolean execute(String sql) {
+        Asserts.checkNullString(sql, "Sql 语句为空");
         String[] sqls = sql.split(";");
-        try(Statement statement = conn.createStatement()){
+        try (Statement statement = conn.createStatement()) {
             for (int i = 0; i < sqls.length; i++) {
-                if(Asserts.isNullString(sqls[i])){
+                if (Asserts.isNullString(sqls[i])) {
                     continue;
                 }
                 statement.execute(sqls[i]);
@@ -178,8 +240,11 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     public List<HashMap<String, Object>> query(String sql) {
         List<HashMap<String, Object>> datas = new ArrayList<>();
         List<Column> columns = new ArrayList<>();
-        try (PreparedStatement preparedStatement = conn.prepareStatement(sql);
-             ResultSet results = preparedStatement.executeQuery()) {
+        PreparedStatement preparedStatement = null;
+        ResultSet results = null;
+        try {
+            preparedStatement = conn.prepareStatement(sql);
+            results = preparedStatement.executeQuery();
             ResultSetMetaData metaData = results.getMetaData();
             for (int i = 1; i <= metaData.getColumnCount(); i++) {
                 Column column = new Column();
@@ -191,13 +256,14 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
             while (results.next()) {
                 HashMap<String, Object> data = new HashMap<>();
                 for (int i = 0; i < columns.size(); i++) {
-                    data.put(columns.get(i).getName(), getTypeConvert().convertValue(results,columns.get(i).getName(),columns.get(i).getType()));
+                    data.put(columns.get(i).getName(), getTypeConvert().convertValue(results, columns.get(i).getName(), columns.get(i).getType()));
                 }
                 datas.add(data);
             }
-            results.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close(preparedStatement,results);
         }
         return datas;
     }

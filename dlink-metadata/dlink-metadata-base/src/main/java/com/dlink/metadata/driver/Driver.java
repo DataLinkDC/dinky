@@ -69,19 +69,23 @@ public interface Driver {
 
     boolean createTable(Table table);
 
-    boolean deleteTable(Table table);
+    boolean dropTable(Table table);
 
     boolean truncateTable(Table table);
 
     String getCreateTableSql(Table table);
 
-    boolean insert(Table table, JsonNode data);
+    String getDropTableSql(Table table);
+
+    String getTruncateTableSql(Table table);
+
+   /* boolean insert(Table table, JsonNode data);
 
     boolean update(Table table, JsonNode data);
 
     boolean delete(Table table, JsonNode data);
 
-    SelectResult select(String sql);
+    SelectResult select(String sql);*/
 
     boolean execute(String sql);
 

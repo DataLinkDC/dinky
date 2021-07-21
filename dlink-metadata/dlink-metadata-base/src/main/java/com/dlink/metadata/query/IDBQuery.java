@@ -15,17 +15,13 @@ public interface IDBQuery {
      */
     String schemaAllSql();
     /**
-     * 所有表信息查询 SQL
-     */
-    String tableAllSql();
-    /**
      * 表信息查询 SQL
      */
-    String tablesSql();
+    String tablesSql(String schemaName);
     /**
      * 表字段信息查询 SQL
      */
-    String columnsSql();
+    String columnsSql(String schemaName,String tableName);
     /**
      * 数据库、模式、组织名称
      */
