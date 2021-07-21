@@ -16,6 +16,7 @@
         <result column="password" property="password" />
         <result column="db_version" property="dbVersion" />
         <result column="note" property="note" />
+        <result column="status" property="status" />
         <result column="enabled" property="enabled" />
         <result column="create_time" property="createTime" />
         <result column="update_time" property="updateTime" />
@@ -23,7 +24,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, alias,group_name, type,ip,port, url,username,password,db_version,note, enabled, create_time, update_time
+        id, name, alias,group_name, type,ip,port, url,username,password,db_version,note,status, enabled, create_time, update_time
     </sql>
 
 

@@ -40,6 +40,12 @@ export default [
     component: './Cluster',
   },
   {
+    path: '/database',
+    name: 'database',
+    icon: 'database',
+    component: './DataBase',
+  },
+  {
     path: '/document',
     name: 'document',
     icon: 'container',
