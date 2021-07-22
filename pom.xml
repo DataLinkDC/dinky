@@ -37,6 +37,7 @@
         <mysql-connector-java.version>8.0.22</mysql-connector-java.version>
         <ojdbc6.version>11.2.0.3</ojdbc6.version>
         <clickhouse.version>0.2.6</clickhouse.version>
+        <postgresql.version>42.2.14</postgresql.version>
         <banner.version>1.0.2</banner.version>
         <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
         <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
@@ -129,6 +130,11 @@
                 <groupId>ru.yandex.clickhouse</groupId>
                 <artifactId>clickhouse-jdbc</artifactId>
                 <version>${clickhouse.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${postgresql.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.nepxion</groupId>

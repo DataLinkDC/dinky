@@ -152,7 +152,10 @@ dlink -- 父项目
 |-dlink-function -- 函数中心
 |-dlink-metadata -- 元数据中心
 | |-dlink-metadata-base -- 元数据基础组件
+| |-dlink-metadata-clickhouse -- 元数据- clickhouse 实现
 | |-dlink-metadata-mysql -- 元数据- mysql 实现
+| |-dlink-metadata-oracle -- 元数据- oracle 实现
+| |-dlink-metadata-postgresql -- 元数据- postgresql 实现
 |-dlink-web -- React 前端
 ```
 

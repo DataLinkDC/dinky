@@ -16,6 +16,7 @@
         <module>dlink-metadata-mysql</module>
         <module>dlink-metadata-oracle</module>
         <module>dlink-metadata-clickhouse</module>
+        <module>dlink-metadata-postgresql</module>
     </modules>
 
 
