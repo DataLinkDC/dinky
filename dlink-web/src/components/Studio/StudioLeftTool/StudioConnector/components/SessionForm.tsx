@@ -26,10 +26,6 @@ const SessionForm: React.FC<UpdateFormProps> = (props) => {
     type: props.values.type,
     useRemote: props.values.useRemote,
     clusterId: props.values.clusterId,
-    clusterName: props.values.clusterName,
-    address: props.values.address,
-    createUser: props.values.createUser,
-    createTime: props.values.createTime,
   });
 
   const {cluster} = props;

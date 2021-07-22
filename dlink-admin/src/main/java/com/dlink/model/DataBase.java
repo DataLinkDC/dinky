@@ -5,6 +5,8 @@ import com.dlink.db.model.SuperEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.time.LocalDateTime;
+
 /**
  * DataBase
  *
@@ -39,4 +41,8 @@ public class DataBase extends SuperEntity {
     private String dbVersion;
 
     private boolean status;
+
+    private LocalDateTime healthTime;
+
+    private LocalDateTime heartbeatTime;
 }

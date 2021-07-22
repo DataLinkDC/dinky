@@ -349,6 +349,8 @@ CREATE TABLE `dlink_database`  (
   `note` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '注释',
   `db_version` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '版本，如oracle的11g，hbase的2.2.3',
   `status` tinyint(1) NULL COMMENT '状态',
+  `health_time` datetime(0) NULL DEFAULT NULL COMMENT '最近健康时间',
+  `heartbeat_time` datetime(0) NULL DEFAULT NULL COMMENT '最近心跳检测时间',
   `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT '启用',
   `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '最近修改时间',
