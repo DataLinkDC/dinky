@@ -30,10 +30,10 @@ public class DataBaseController {
      */
     @PutMapping
     public Result saveOrUpdate(@RequestBody DataBase database) {
-        if(databaseService.saveOrUpdate(database)){
-            return Result.succeed("新增成功");
+        if(databaseService.saveOrUpdateDataBase(database)){
+            return Result.succeed("更新成功");
         }else {
-            return Result.failed("新增失败");
+            return Result.failed("更新失败");
         }
     }
 

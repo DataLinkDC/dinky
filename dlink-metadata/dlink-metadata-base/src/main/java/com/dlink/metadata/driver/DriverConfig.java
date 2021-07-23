@@ -22,5 +22,13 @@ public class DriverConfig {
     private String username;
     private String password;
 
+    public DriverConfig() {
+    }
 
+    public DriverConfig(String type, String url, String username, String password) {
+        this.type = type;
+        this.url = url;
+        this.username = username;
+        this.password = password;
+    }
 }

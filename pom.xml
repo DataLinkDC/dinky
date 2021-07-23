@@ -188,6 +188,11 @@
                 <artifactId>dlink-metadata-base</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-metadata-mysql</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <build>

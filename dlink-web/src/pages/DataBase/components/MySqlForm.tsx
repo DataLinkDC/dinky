@@ -24,7 +24,7 @@ const MysqlForm: React.FC<MysqlFormProps> = (props) => {
     id: props.values.id,
     name: props.values.name,
     alias: props.values.alias,
-    type: "Mysql",
+    type: "MySql",
     groupName: props.values.groupName,
     url: props.values.url,
     username: props.values.username,
@@ -71,7 +71,7 @@ const MysqlForm: React.FC<MysqlFormProps> = (props) => {
           name="groupName"
           label="分组类型"
         >
-          <Select defaultValue="其他">
+          <Select >
             <Option value="来源">来源</Option>
             <Option value="数仓">数仓</Option>
             <Option value="应用">应用</Option>

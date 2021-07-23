@@ -1,10 +1,15 @@
 package com.dlink.service.impl;
 
+import com.dlink.assertion.Asserts;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.DataBaseMapper;
+import com.dlink.metadata.driver.Driver;
 import com.dlink.model.DataBase;
 import com.dlink.service.DataBaseService;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+
 
 /**
  * DataBaseServiceImpl
@@ -14,4 +19,38 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBase> implements DataBaseService {
+    @Override
+    public boolean checkHeartBeat(DataBase dataBase) {
+        boolean isHealthy =  Driver.build(dataBase.getDriverConfig()).test();
+        dataBase.setStatus(isHealthy);
+        dataBase.setHeartbeatTime(LocalDateTime.now());
+        if(isHealthy){
+            dataBase.setHealthTime(LocalDateTime.now());
+        }
+        return isHealthy;
+    }
+
+    @Override
+    public boolean saveOrUpdateDataBase(DataBase dataBase) {
+        if(Asserts.isNull(dataBase)){
+            return false;
+        }
+        if(Asserts.isNull(dataBase.getId())){
+            checkHeartBeat(dataBase);
+            return save(dataBase);
+        }else{
+            DataBase dataBaseInfo = getById(dataBase.getId());
+            if(Asserts.isNull(dataBase.getUrl())){
+                dataBase.setUrl(dataBaseInfo.getUrl());
+            }
+            if(Asserts.isNull(dataBase.getUsername())){
+                dataBase.setUsername(dataBaseInfo.getUsername());
+            }
+            if(Asserts.isNull(dataBase.getPassword())){
+                dataBase.setPassword(dataBaseInfo.getPassword());
+            }
+            checkHeartBeat(dataBase);
+            return updateById(dataBase);
+        }
+    }
 }

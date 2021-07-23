@@ -9,8 +9,6 @@
         <result column="alias" property="alias" />
         <result column="group_name" property="groupName" />
         <result column="type" property="type" />
-        <result column="ip" property="ip" />
-        <result column="port" property="port" />
         <result column="url" property="url" />
         <result column="username" property="username" />
         <result column="password" property="password" />
@@ -26,7 +24,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, alias,group_name, type,ip,port, url,username,password,db_version,note,status,health_time,heartbeat_time, enabled, create_time, update_time
+        id, name, alias,group_name, type,url,username,password,db_version,note,status,health_time,heartbeat_time, enabled, create_time, update_time
     </sql>
 
 

@@ -10,4 +10,8 @@ import com.dlink.model.DataBase;
  * @since 2021/7/20 23:47
  */
 public interface DataBaseService extends ISuperService<DataBase> {
+
+    boolean checkHeartBeat(DataBase dataBase);
+
+    boolean saveOrUpdateDataBase(DataBase dataBase);
 }

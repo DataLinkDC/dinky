@@ -2,6 +2,7 @@ package com.dlink.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.dlink.db.model.SuperEntity;
+import com.dlink.metadata.driver.DriverConfig;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -26,10 +27,6 @@ public class DataBase extends SuperEntity {
 
     private String type;
 
-    private String ip;
-
-    private Integer port;
-
     private String url;
 
     private String username;
@@ -45,4 +42,8 @@ public class DataBase extends SuperEntity {
     private LocalDateTime healthTime;
 
     private LocalDateTime heartbeatTime;
+
+    public DriverConfig getDriverConfig(){
+        return new DriverConfig(type,url,username,password);
+    }
 }
