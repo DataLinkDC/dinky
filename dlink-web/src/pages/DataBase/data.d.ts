@@ -4,8 +4,6 @@ export type DataBaseItem = {
   alias: string,
   groupName: string,
   type: string,
-  ip: string,
-  port: number,
   url: string,
   username: string,
   password: string,

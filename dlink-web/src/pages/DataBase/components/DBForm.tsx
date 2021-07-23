@@ -6,6 +6,7 @@ import {connect} from "umi";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {getDBImage} from "@/pages/DataBase/DB";
 import MysqlForm from "@/pages/DataBase/components/MySqlForm";
+import {handleAddOrUpdate} from "@/components/Common/crud";
 
 export type UpdateFormProps = {
   onCancel: (flag?: boolean, formVals?: Partial<DataBaseItem>) => void;
@@ -29,12 +30,13 @@ const data = [
   },
 ];
 
-const ChooseDB: React.FC<UpdateFormProps> = (props) => {
+const DBForm: React.FC<UpdateFormProps> = (props) => {
 
   const {
-    // onSubmit: handleUpdate,
+    onSubmit: handleUpdate,
     onCancel: handleChooseDBModalVisible,
     modalVisible,
+    values
   } = props;
 
   const [dbType, setDbType] = useState<string>();
@@ -51,12 +53,13 @@ const ChooseDB: React.FC<UpdateFormProps> = (props) => {
     <Modal
       width={800}
       bodyStyle={{padding: '32px 40px 48px'}}
-      title={'选择数据源类型'}
+      title={'创建数据源'}
       visible={modalVisible}
       onCancel={() => handleChooseDBModalVisible()}
+      maskClosable = {false}
       footer={null}
-    >
-      <List
+    >{
+      !dbType&&(<List
         grid={{
           gutter: 16,
           xs: 1,
@@ -79,13 +82,20 @@ const ChooseDB: React.FC<UpdateFormProps> = (props) => {
             </Card>
           </List.Item>
         )}
-      />
+      />)
+    }
       <MysqlForm
         onCancel={() => setDbType(undefined)}
         modalVisible={dbType=='MySql'}
         values={{}}
-        onSubmit={()=>{
-          setDbType(undefined)
+        onSubmit={async (value) => {
+          console.log(value);
+          const success = await handleAddOrUpdate('/api/database', value);
+          if (success) {
+            handleChooseDBModalVisible();
+            setDbType(undefined);
+            handleUpdate(value);
+          }
         }}
       />
     </Modal>
@@ -94,4 +104,4 @@ const ChooseDB: React.FC<UpdateFormProps> = (props) => {
 
 export default connect(({Studio}: { Studio: StateType }) => ({
   cluster: Studio.cluster,
-}))(ChooseDB);
+}))(DBForm);

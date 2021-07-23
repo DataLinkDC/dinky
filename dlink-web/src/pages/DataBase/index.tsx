@@ -1,11 +1,12 @@
-import React, {useState} from "react";
+import React, {useRef, useState} from "react";
 import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
 import {DownOutlined, HeartOutlined, PlusOutlined, UserOutlined} from '@ant-design/icons';
 import {Progress, Tag, Button, Space, Badge, Typography, Image, Row, Col} from 'antd';
 import ProList from '@ant-design/pro-list';
 import {queryData} from "@/components/Common/crud";
 import {getDBImage} from "@/pages/DataBase/DB";
-import ChooseDB from "./components/ChooseDB";
+import DBForm from "./components/DBForm";
+import {ActionType} from "@ant-design/pro-table";
 
 const {Text} = Typography;
 
@@ -13,18 +14,15 @@ const url = '/api/database';
 
 const DataBaseTableList: React.FC<{}> = (props: any) => {
 
-  const [chooseDBModalVisible, handleChooseDBModalVisible] = useState<boolean>(false);
-
-  const chooseDB = () =>{
-
-  };
-
+  const [chooseDBModalVisible, handleDBFormModalVisible] = useState<boolean>(false);
+  const actionRef = useRef<ActionType>();
   return (
     <PageContainer>
       <ProList
+        actionRef={actionRef}
         toolBarRender={() => {
           return [
-            <Button type="primary" onClick={() => handleChooseDBModalVisible(true)}>
+            <Button type="primary" onClick={() => handleDBFormModalVisible(true)}>
               <PlusOutlined/> 新建
             </Button>,
           ];
@@ -79,7 +77,9 @@ const DataBaseTableList: React.FC<{}> = (props: any) => {
         }}
         headerTitle="数据源"
       />
-      <ChooseDB onCancel={() => handleChooseDBModalVisible(false)} modalVisible={chooseDBModalVisible}/>
+      <DBForm onCancel={() => handleDBFormModalVisible(false)} modalVisible={chooseDBModalVisible}
+      onSubmit={()=>{actionRef.current?.reloadAndRest?.();}}
+      />
     </PageContainer>
   );
 };
