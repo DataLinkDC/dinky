@@ -1,5 +1,7 @@
 package com.dlink.service.impl;
 
+import com.dlink.api.FlinkAPI;
+import com.dlink.assertion.Asserts;
 import com.dlink.dto.SessionDTO;
 import com.dlink.dto.StudioDDLDTO;
 import com.dlink.dto.StudioExecuteDTO;
@@ -15,11 +17,11 @@ import com.dlink.result.IResult;
 import com.dlink.result.SelectResult;
 import com.dlink.service.ClusterService;
 import com.dlink.service.StudioService;
-import com.dlink.session.ExecutorEntity;
 import com.dlink.session.SessionConfig;
 import com.dlink.session.SessionInfo;
 import com.dlink.session.SessionPool;
 import com.dlink.trans.Operations;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -120,5 +122,12 @@ public class StudioServiceImpl implements StudioService {
         }else{
             return new ArrayList<>();
         }
+    }
+
+    @Override
+    public List<JsonNode> listJobs(Integer clusterId) {
+        Cluster cluster = clusterService.getById(clusterId);
+        Asserts.checkNotNull(cluster,"该集群不存在");
+        return FlinkAPI.build(cluster.getJobManagerHost()).listJobs();
     }
 }

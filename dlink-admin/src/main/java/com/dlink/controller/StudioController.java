@@ -106,4 +106,13 @@ public class StudioController {
     public Result listSession()  {
         return Result.succeed(studioService.listSession("admin"),"获取成功");
     }
+
+    /**
+     * 获取session列表
+     */
+    @GetMapping("/listJobs")
+    public Result listJobs(@RequestParam Integer clusterId)  {
+        List<JsonNode> jobs = studioService.listJobs(clusterId);
+        return Result.succeed(jobs.toArray(),"获取成功");
+    }
 }

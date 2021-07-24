@@ -9,6 +9,7 @@ import StudioTable from "./StudioTable";
 import StudioHistory from "./StudioHistory";
 import StudioFX from "./StudioFX";
 import StudioCA from "./StudioCA";
+import StudioProcess from "./StudioProcess";
 
 const { TabPane } = Tabs;
 
@@ -71,7 +72,7 @@ const StudioConsole = (props:any) => {
         }
         key="StudioProcess"
       >
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+        <StudioProcess />
       </TabPane>
       <TabPane
         tab={

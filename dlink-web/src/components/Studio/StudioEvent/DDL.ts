@@ -120,3 +120,7 @@ export function showDataBase(dispatch: any) {
     });
   });
 }
+/*--- 刷新 Flink Jobs ---*/
+export function showFlinkJobs(clusterId:number) {
+  return getData('api/studio/listJobs',{clusterId:clusterId});
+}

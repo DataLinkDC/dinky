@@ -1,5 +1,5 @@
 import {
-  message, Button,Table, Empty, Divider,
+  message, Button, Table, Empty, Divider,
   Tooltip
 } from "antd";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
@@ -11,18 +11,15 @@ import {
   PlusOutlined
 } from '@ant-design/icons';
 import React from "react";
-import {showDataBase} from "../../StudioEvent/DDL";
-import DBForm from "@/pages/DataBase/components/DBForm";
+import {showCluster} from "../../StudioEvent/DDL";
 
-const StudioDataBase = (props: any) => {
+const StudioCluster = (props: any) => {
 
-  const {database, dispatch} = props;
-  const [chooseDBModalVisible, handleDBFormModalVisible] = useState<boolean>(false);
-  const [values, setValues] = useState<any>({});
+  const {cluster, dispatch} = props;
 
   const getColumns = () => {
     let columns: any = [{
-      title: "数据源名",
+      title: "集群名",
       dataIndex: "alias",
       key: "alias",
       sorter: true,
@@ -49,51 +46,39 @@ const StudioDataBase = (props: any) => {
     return columns;
   };
 
-  const onRefreshDataBase = () => {
-    showDataBase(dispatch);
+  const onRefreshCluster = () => {
+    showCluster(dispatch);
   };
 
-  const onCreateDataBase = () => {
-    setValues({});
-    handleDBFormModalVisible(true);
+  const onCreateCluster = () => {
+
   };
 
   return (
     <>
-      <Tooltip title="新建数据源">
+      <Tooltip title="新建 Flink 集群">
         <Button
           type="text"
           icon={<PlusOutlined/>}
-          onClick={onCreateDataBase}
+          onClick={onCreateCluster}
         />
       </Tooltip>
       <div style={{float: "right"}}>
-        <Tooltip title="刷新数据源">
+        <Tooltip title="刷新 Flink 集群">
           <Button
             type="text"
-            icon={<ReloadOutlined/>}
-            onClick={onRefreshDataBase}
+            icon={<ReloadOutlined />}
+            onClick={onRefreshCluster}
           />
         </Tooltip>
       </div>
-      {database.length > 0 ? (
-        <Table dataSource={database} columns={getColumns()} size="small"/>) : (
+      {cluster.length > 0 ? (
+        <Table dataSource={cluster} columns={getColumns()} size="small"/>) : (
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>)}
-      <DBForm
-        onCancel={() => {
-          handleDBFormModalVisible(false);
-          setValues({});
-        }}
-        modalVisible={chooseDBModalVisible}
-        onSubmit={() => {
-          showDataBase(dispatch);
-        }}
-        values={values}
-      />
     </>
   );
 };
 
 export default connect(({Studio}: { Studio: StateType }) => ({
-  database: Studio.database,
-}))(StudioDataBase);
+  cluster: Studio.cluster,
+}))(StudioCluster);

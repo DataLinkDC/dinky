@@ -7,6 +7,8 @@ import StudioTree from "../StudioTree";
 import StudioConnector from "./StudioConnector";
 import React from "react";
 import StudioDataBase from "./StudioDataBase";
+import StudioCluster from "./StudioCluster";
+import StudioJobs from "./StudioJobs";
 
 
 const { TabPane } = Tabs;
@@ -24,7 +26,7 @@ const StudioLeftTool = (props:any) => {
         <StudioConnector />
       </TabPane>
       <TabPane tab={<span><ClusterOutlined /> 集群</span>} key="Cluster" >
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+        <StudioCluster />
       </TabPane>
       <TabPane tab={<span><DatabaseOutlined /> 数据源</span>} key="DataSource" >
         <StudioDataBase />
@@ -33,7 +35,7 @@ const StudioLeftTool = (props:any) => {
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       </TabPane>
       <TabPane tab={<span><FireOutlined /> 任务</span>} key="FlinkTask" >
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+        <StudioJobs />
       </TabPane>
       <TabPane tab={<span><FunctionOutlined /> 函数</span>} key="Function" >
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />

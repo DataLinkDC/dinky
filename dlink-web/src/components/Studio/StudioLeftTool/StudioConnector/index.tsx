@@ -7,7 +7,7 @@ import {connect} from "umi";
 import {useState} from "react";
 import styles from "./index.less";
 import {
-  SearchOutlined,
+  ReloadOutlined,
   DownOutlined,
   DeleteOutlined,
   CommentOutlined,
@@ -282,7 +282,7 @@ const StudioConnector = (props: any) => {
             <Tooltip title="刷新连接器">
               <Button
                 type="text"
-                icon={<SearchOutlined/>}
+                icon={<ReloadOutlined/>}
                 onClick={getTables}
               />
             </Tooltip>

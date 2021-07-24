@@ -8,8 +8,8 @@ import com.dlink.explainer.ca.TableCANode;
 import com.dlink.job.JobResult;
 import com.dlink.result.IResult;
 import com.dlink.result.SelectResult;
-import com.dlink.session.ExecutorEntity;
 import com.dlink.session.SessionInfo;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.List;
 
@@ -38,4 +38,6 @@ public interface StudioService {
     List<TableCANode> getOneTableColumnCAByStatement(String statement);
 
     List<ColumnCANode> getColumnCAByStatement(String statement);
+
+    List<JsonNode> listJobs(Integer clusterId);
 }
