@@ -3,6 +3,8 @@ package com.dlink.service;
 import com.dlink.db.service.ISuperService;
 import com.dlink.model.DataBase;
 
+import java.util.List;
+
 /**
  * DataBaseService
  *
@@ -14,4 +16,6 @@ public interface DataBaseService extends ISuperService<DataBase> {
     boolean checkHeartBeat(DataBase dataBase);
 
     boolean saveOrUpdateDataBase(DataBase dataBase);
+
+    List<DataBase> listEnabledAll();
 }

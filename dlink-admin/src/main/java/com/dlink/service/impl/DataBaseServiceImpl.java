@@ -1,5 +1,6 @@
 package com.dlink.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.assertion.Asserts;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.DataBaseMapper;
@@ -9,6 +10,7 @@ import com.dlink.service.DataBaseService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 /**
@@ -52,5 +54,10 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
             checkHeartBeat(dataBase);
             return updateById(dataBase);
         }
+    }
+
+    @Override
+    public List<DataBase> listEnabledAll() {
+        return this.list(new QueryWrapper<DataBase>().eq("enabled",1));
     }
 }

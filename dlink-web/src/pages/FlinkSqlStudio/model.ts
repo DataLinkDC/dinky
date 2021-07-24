@@ -17,6 +17,25 @@ export type ClusterType = {
   updateTime: Date,
 }
 
+export type DataBaseType = {
+  id: number,
+  name: string,
+  alias: string,
+  groupName: string,
+  type: string,
+  url: string,
+  username: string,
+  password: string,
+  note: string,
+  dbVersion: string,
+  status: boolean,
+  healthTime: Date,
+  heartbeatTime: Date,
+  enabled: boolean,
+  createTime: Date,
+  updateTime: Date,
+};
+
 export type TaskType = {
   id?: number,
   catalogueId?: number,
@@ -62,13 +81,6 @@ export type TabsType = {
   panes?: TabsItemType[];
 }
 
-export type RightClickMenu = {
-  pageX: number,
-  pageY: number,
-  id: number,
-  name: string
-};
-
 export type ConnectorType = {
   tablename: string;
 }
@@ -86,8 +98,10 @@ export type SessionType = {
   createTime?: string;
   connectors: ConnectorType[];
 }
+
 export type StateType = {
   cluster?: ClusterType[];
+  database?: DataBaseType[];
   currentSession?: SessionType;
   current?: TabsItemType;
   sql?: string;
@@ -121,6 +135,7 @@ export type ModelType = {
     quitCurrentSession: Reducer<StateType>;
     saveResult: Reducer<StateType>;
     saveCluster: Reducer<StateType>;
+    saveDataBase: Reducer<StateType>;
   };
 };
 
@@ -128,6 +143,7 @@ const Model: ModelType = {
   namespace: 'Studio',
   state: {
     cluster: [],
+    database: [],
     currentSession: {
       connectors: [],
     },
@@ -316,7 +332,6 @@ const Model: ModelType = {
       };
     },
     saveSession(state, {payload}) {
-      console.log(payload);
       return {
         ...state,
         session: [...payload],
@@ -357,6 +372,11 @@ const Model: ModelType = {
       return {
         ...state,
         cluster: payload,
+      };
+    },saveDataBase(state, {payload}) {
+      return {
+        ...state,
+        database: payload,
       };
     },
   },

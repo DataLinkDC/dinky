@@ -110,3 +110,13 @@ export function showCluster(dispatch: any) {
     });
   });
 }
+/*--- 刷新 数据源 ---*/
+export function showDataBase(dispatch: any) {
+  const res = getData('api/database/listEnabledAll');
+  res.then((result) => {
+    result.datas && dispatch && dispatch({
+      type: "Studio/saveDataBase",
+      payload: result.datas,
+    });
+  });
+}

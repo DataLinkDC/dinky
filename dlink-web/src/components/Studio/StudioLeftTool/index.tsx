@@ -5,6 +5,8 @@ import {connect} from "umi";
 import styles from "./index.less";
 import StudioTree from "../StudioTree";
 import StudioConnector from "./StudioConnector";
+import React from "react";
+import StudioDataBase from "./StudioDataBase";
 
 
 const { TabPane } = Tabs;
@@ -25,7 +27,7 @@ const StudioLeftTool = (props:any) => {
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       </TabPane>
       <TabPane tab={<span><DatabaseOutlined /> 数据源</span>} key="DataSource" >
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+        <StudioDataBase />
       </TabPane>
       <TabPane tab={<span><AppstoreOutlined /> 元数据</span>} key="MetaData" >
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />

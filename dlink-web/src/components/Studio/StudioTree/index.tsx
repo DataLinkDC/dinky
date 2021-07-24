@@ -250,8 +250,8 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       position: 'absolute',
       // left: `${pageX - 50}px`,
       // top: `${pageY - 202}px`,
-      left: `${pageX - 25}px`,
-      top: `${pageY - 140}px`,
+      left: `${pageX}px`,
+      top: `${pageY - 120}px`,
     };
     let menuItems;
     if(rightClickNode&&rightClickNode.isLeaf){

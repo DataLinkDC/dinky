@@ -43,6 +43,10 @@ const DBForm: React.FC<UpdateFormProps> = (props) => {
   const [dbType, setDbType] = useState<string>();
 
   const chooseOne = (item:DataBaseItem)=>{
+    if(item.type!='MySql'){
+      message.success('敬请期待');
+      return;
+    }
     setDbType(item.type);
   };
 

@@ -1,5 +1,6 @@
 package com.dlink.controller;
 
+import com.dlink.assertion.Asserts;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
 import com.dlink.model.DataBase;
@@ -78,10 +79,44 @@ public class DataBaseController {
     }
 
     /**
-     * 全部心跳监测
+     * 获取可用的集群列表
+     */
+    @GetMapping("/listEnabledAll")
+    public Result listEnabledAll() {
+        List<DataBase> dataBases = databaseService.listEnabledAll();
+        return Result.succeed(dataBases,"获取成功");
+    }
+    /**
+     * 连接测试
      */
     @PostMapping("/testConnect")
     public Result testConnect(@RequestBody DataBase database) {
         return Result.succeed(databaseService.checkHeartBeat(database),"获取成功");
+    }
+
+    /**
+     * 全部心跳监测
+     */
+    @PostMapping("/checkHeartBeats")
+    public Result checkHeartBeats() {
+        List<DataBase> dataBases = databaseService.listEnabledAll();
+        for (int i = 0; i < dataBases.size(); i++) {
+            DataBase dataBase = dataBases.get(i);
+            databaseService.checkHeartBeat(dataBase);
+            databaseService.updateById(dataBase);
+        }
+        return Result.succeed("状态刷新完成");
+    }
+
+    /**
+     * 心跳检测指定ID
+     */
+    @GetMapping("/checkHeartBeatById")
+    public Result checkHeartBeatById(@RequestParam Integer id) {
+        DataBase dataBase = databaseService.getById(id);
+        Asserts.checkNotNull(dataBase,"该数据源不存在！");
+        databaseService.checkHeartBeat(dataBase);
+        databaseService.updateById(dataBase);
+        return Result.succeed(dataBase,"状态刷新完成");
     }
 }

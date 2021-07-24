@@ -20,6 +20,7 @@ import {ActionType} from "@ant-design/pro-table";
 
 import styles from './index.less';
 import {DataBaseItem} from "@/pages/DataBase/data";
+import {checkHeartBeat} from "@/pages/DataBase/service";
 
 const {Text} = Typography;
 
@@ -41,6 +42,10 @@ const DataBaseTableList: React.FC<{}> = (props: any) => {
     handleDBFormModalVisible(true);
   };
 
+  const onCheckHeartBeat = (row: DataBaseItem) => {
+    checkHeartBeat(row.id);
+    actionRef.current?.reloadAndRest?.();
+  };
 
   return (
     <PageContainer>
@@ -78,9 +83,11 @@ const DataBaseTableList: React.FC<{}> = (props: any) => {
                 </div>
               }
               actions={[
-                <SettingOutlined key="setting"/>,
+                <HeartOutlined key="setting" onClick={()=>{
+                  onCheckHeartBeat(row);
+                }}/>,
                 <EditOutlined key="edit" onClick={() => {
-                  onEdit(row)
+                  onEdit(row);
                 }}/>,
                 <EllipsisOutlined key="ellipsis"/>,
               ]}

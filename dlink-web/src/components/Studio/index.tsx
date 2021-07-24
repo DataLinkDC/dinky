@@ -11,7 +11,7 @@ import {StateType} from "@/pages/FlinkSqlStudio/model";
 import StudioConsole from "./StudioConsole";
 import StudioLeftTool from "./StudioLeftTool";
 import StudioRightTool from "./StudioRightTool";
-import {listSession, showCluster} from "@/components/Studio/StudioEvent/DDL";
+import {listSession, showCluster, showDataBase} from "@/components/Studio/StudioEvent/DDL";
 
 type StudioProps = {
   rightClickMenu:StateType['rightClickMenu'];
@@ -24,6 +24,7 @@ const Studio: React.FC<StudioProps> = (props) => {
   const [form] = Form.useForm();
 
   showCluster(dispatch);
+  showDataBase(dispatch);
   listSession(dispatch);
 
   const onClick=()=>{
@@ -36,7 +37,7 @@ const Studio: React.FC<StudioProps> = (props) => {
   };
 
   return (
-    <div onClick={onClick}>
+    <div onClick={onClick} style={{'margin':'-24px'}}>
       <StudioMenu form={form}/>
       <Card bordered={false} className={styles.card} size="small" id="studio_card">
         <Row>
