@@ -9,6 +9,7 @@ import {DataBaseItem} from "@/pages/DataBase/data";
 export type MysqlFormProps = {
   onCancel: (flag?: boolean, formVals?: Partial<DataBaseItem>) => void;
   onSubmit: (values: Partial<DataBaseItem>) => void;
+  onTest: (values: Partial<DataBaseItem>) => void;
   modalVisible: boolean;
   values: Partial<DataBaseItem>;
 };
@@ -37,6 +38,7 @@ const MysqlForm: React.FC<MysqlFormProps> = (props) => {
   const [form] = Form.useForm();
   const {
     onSubmit: handleUpdate,
+    onTest: handleTest,
     onCancel: handleModalVisible,
     modalVisible,
     values,
@@ -46,6 +48,12 @@ const MysqlForm: React.FC<MysqlFormProps> = (props) => {
     const fieldsValue = await form.validateFields();
     setFormVals({...formVals, ...fieldsValue});
     handleUpdate({...formVals, ...fieldsValue});
+  };
+
+  const testForm = async () => {
+    const fieldsValue = await form.validateFields();
+    setFormVals({...formVals, ...fieldsValue});
+    handleTest({...formVals, ...fieldsValue});
   };
 
   const onReset = () => {
@@ -146,10 +154,10 @@ const MysqlForm: React.FC<MysqlFormProps> = (props) => {
                   <Button htmlType="button" onClick={onReset}>
                     重置
                   </Button>
-                  <Button htmlType="button">
+                  <Button type="primary" htmlType="button" onClick={testForm}>
                     测试
                   </Button>
-                  <Button type="primary" htmlType="button" onClick={() => submitForm()}>
+                  <Button type="primary" htmlType="button" onClick={submitForm}>
                     保存
                   </Button>
                 </Space>

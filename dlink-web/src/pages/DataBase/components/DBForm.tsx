@@ -6,7 +6,8 @@ import {connect} from "umi";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {getDBImage} from "@/pages/DataBase/DB";
 import MysqlForm from "@/pages/DataBase/components/MySqlForm";
-import {handleAddOrUpdate} from "@/components/Common/crud";
+import {handleAddOrUpdate, handleOption, postAll} from "@/components/Common/crud";
+import {createOrModifyDatabase, testDatabaseConnect} from "@/pages/DataBase/service";
 
 export type UpdateFormProps = {
   onCancel: (flag?: boolean, formVals?: Partial<DataBaseItem>) => void;
@@ -40,18 +41,13 @@ const DBForm: React.FC<UpdateFormProps> = (props) => {
   } = props;
 
   const [dbType, setDbType] = useState<string>();
-  const [createModalVisible, handleModalVisible] = useState<boolean>(false);
 
   const chooseOne = (item:DataBaseItem)=>{
     setDbType(item.type);
-    handleModalVisible(true);
-    // handleChooseDBModalVisible();
-
   };
 
   const onSubmit = async (value:any)=>{
-    console.log(value);
-    const success = await handleAddOrUpdate('/api/database', value);
+    const success = await createOrModifyDatabase(value);
     if (success) {
       handleChooseDBModalVisible();
       setDbType(undefined);
@@ -59,17 +55,25 @@ const DBForm: React.FC<UpdateFormProps> = (props) => {
     }
   };
 
+  const onTest = async (value:any)=>{
+    await testDatabaseConnect(value);
+  };
+
   return (
     <Modal
       width={800}
       bodyStyle={{padding: '32px 40px 48px'}}
-      title={'创建数据源'}
+      title={values.id?'编辑数据源':'创建数据源'}
       visible={modalVisible}
-      onCancel={() => handleChooseDBModalVisible()}
+      onCancel={() => {
+        setDbType(undefined);
+        handleChooseDBModalVisible();
+      }}
       maskClosable = {false}
+      destroyOnClose = {true}
       footer={null}
     >{
-      !dbType&&(<List
+      (!dbType&&!values.id)&&(<List
         grid={{
           gutter: 16,
           xs: 1,
@@ -96,10 +100,13 @@ const DBForm: React.FC<UpdateFormProps> = (props) => {
     }
       <MysqlForm
         onCancel={() => setDbType(undefined)}
-        modalVisible={dbType=='MySql'}
-        values={{}}
+        modalVisible={dbType=='MySql'||values.type=='MySql'}
+        values={values}
         onSubmit={(value) => {
           onSubmit(value);
+        }}
+        onTest={(value) => {
+          onTest(value);
         }}
       />
     </Modal>

@@ -77,4 +77,11 @@ public class DataBaseController {
         return Result.succeed(database,"获取成功");
     }
 
+    /**
+     * 全部心跳监测
+     */
+    @PostMapping("/testConnect")
+    public Result testConnect(@RequestBody DataBase database) {
+        return Result.succeed(databaseService.checkHeartBeat(database),"获取成功");
+    }
 }
