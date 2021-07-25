@@ -120,6 +120,10 @@ export function showDataBase(dispatch: any) {
     });
   });
 }
+/*--- 刷新 元数据表 ---*/
+export function showMetaDataTable(id:number) {
+  return getData('api/database/getSchemasAndTables',{id:id});
+}
 /*--- 刷新 Flink Jobs ---*/
 export function showFlinkJobs(clusterId:number) {
   return getData('api/studio/listJobs',{clusterId:clusterId});

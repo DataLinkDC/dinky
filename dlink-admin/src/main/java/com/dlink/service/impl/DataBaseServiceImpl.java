@@ -5,7 +5,9 @@ import com.dlink.assertion.Asserts;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.DataBaseMapper;
 import com.dlink.metadata.driver.Driver;
+import com.dlink.metadata.driver.DriverConfig;
 import com.dlink.model.DataBase;
+import com.dlink.model.Schema;
 import com.dlink.service.DataBaseService;
 import org.springframework.stereotype.Service;
 
@@ -59,5 +61,13 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     @Override
     public List<DataBase> listEnabledAll() {
         return this.list(new QueryWrapper<DataBase>().eq("enabled",1));
+    }
+
+    @Override
+    public List<Schema> getSchemasAndTables(Integer id) {
+        DataBase dataBase = getById(id);
+        Asserts.checkNotNull(dataBase,"该数据源不存在！");
+        Driver driver = Driver.build(dataBase.getDriverConfig()).connect();
+        return driver.getSchemasAndTables();
     }
 }

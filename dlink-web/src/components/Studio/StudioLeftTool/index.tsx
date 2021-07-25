@@ -8,6 +8,7 @@ import StudioConnector from "./StudioConnector";
 import React from "react";
 import StudioDataBase from "./StudioDataBase";
 import StudioCluster from "./StudioCluster";
+import StudioMetaData from "./StudioMetaData";
 
 const { TabPane } = Tabs;
 
@@ -28,7 +29,7 @@ const StudioLeftTool = (props:any) => {
         <StudioDataBase />
       </TabPane>
       <TabPane tab={<span><AppstoreOutlined /> 元数据</span>} key="MetaData" >
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+        <StudioMetaData />
       </TabPane>
       <TabPane tab={<span><FunctionOutlined /> 函数</span>} key="Function" >
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />

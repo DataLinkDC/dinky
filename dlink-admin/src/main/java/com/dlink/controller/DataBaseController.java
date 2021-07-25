@@ -119,4 +119,12 @@ public class DataBaseController {
         databaseService.updateById(dataBase);
         return Result.succeed(dataBase,"状态刷新完成");
     }
+
+    /**
+     * 获取元数据的表
+     */
+    @GetMapping("/getSchemasAndTables")
+    public Result getSchemasAndTables(@RequestParam Integer id) {
+        return Result.succeed(databaseService.getSchemasAndTables(id),"获取成功");
+    }
 }

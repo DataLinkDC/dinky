@@ -2,6 +2,7 @@ package com.dlink.service;
 
 import com.dlink.db.service.ISuperService;
 import com.dlink.model.DataBase;
+import com.dlink.model.Schema;
 
 import java.util.List;
 
@@ -18,4 +19,6 @@ public interface DataBaseService extends ISuperService<DataBase> {
     boolean saveOrUpdateDataBase(DataBase dataBase);
 
     List<DataBase> listEnabledAll();
+
+    List<Schema> getSchemasAndTables(Integer id);
 }
