@@ -1,6 +1,7 @@
 package com.dlink.api;
 
 import cn.hutool.http.HttpUtil;
+import cn.hutool.http.Method;
 import com.dlink.constant.FlinkRestAPIConstant;
 import com.dlink.constant.NetConstant;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -51,8 +52,14 @@ public class FlinkAPI {
         return parse(res);
     }
 
+    private JsonNode patch(String route, String body) {
+
+        String res = HttpUtil.createRequest(Method.PATCH,NetConstant.HTTP + address + NetConstant.SLASH + route).timeout(NetConstant.SERVER_TIME_OUT_ACTIVE).body(body).execute().body();
+        return parse(res);
+    }
+
     public List<JsonNode> listJobs() {
-        JsonNode result = get(FlinkRestAPIConstant.JOBS);
+        JsonNode result = get(FlinkRestAPIConstant.JOBSLIST);
         JsonNode jobs = result.get("jobs");
         List<JsonNode> joblist = new ArrayList<>();
         if (jobs.isArray()) {
@@ -61,5 +68,10 @@ public class FlinkAPI {
             }
         }
         return joblist;
+    }
+
+    public boolean stop(String jobId){
+        get(FlinkRestAPIConstant.JOBS+jobId+FlinkRestAPIConstant.CANCEL);
+        return true;
     }
 }

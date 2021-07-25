@@ -130,4 +130,11 @@ public class StudioServiceImpl implements StudioService {
         Asserts.checkNotNull(cluster,"该集群不存在");
         return FlinkAPI.build(cluster.getJobManagerHost()).listJobs();
     }
+
+    @Override
+    public boolean cancel(Integer clusterId,String jobId) {
+        Cluster cluster = clusterService.getById(clusterId);
+        Asserts.checkNotNull(cluster,"该集群不存在");
+        return FlinkAPI.build(cluster.getJobManagerHost()).stop(jobId);
+    }
 }

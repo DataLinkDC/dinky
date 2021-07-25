@@ -40,4 +40,6 @@ public interface StudioService {
     List<ColumnCANode> getColumnCAByStatement(String statement);
 
     List<JsonNode> listJobs(Integer clusterId);
+
+    boolean cancel(Integer clusterId,String jobId);
 }

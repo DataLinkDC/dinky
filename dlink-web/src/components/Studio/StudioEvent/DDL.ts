@@ -124,3 +124,7 @@ export function showDataBase(dispatch: any) {
 export function showFlinkJobs(clusterId:number) {
   return getData('api/studio/listJobs',{clusterId:clusterId});
 }
+/*--- 停止 Flink Jobs ---*/
+export function cancelJob(clusterId:number,jobId:string) {
+  return getData('api/studio/cancel',{clusterId:clusterId,jobId:jobId});
+}

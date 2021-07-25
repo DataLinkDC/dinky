@@ -10,5 +10,13 @@ public interface FlinkRestAPIConstant {
     /**
      * jobs
      */
-    String JOBS = "jobs";
+    String JOBS = "jobs/";
+    /**
+     * JOBSLIST
+     */
+    String JOBSLIST = "jobs/overview";
+    /**
+     * cancel
+     */
+    String CANCEL = "/yarn-cancel";
 }

@@ -20,4 +20,9 @@ public class FlinkRestAPITest {
         List<JsonNode> jobs = FlinkAPI.build(address).listJobs();
         System.out.println(jobs.toString());
     }
+
+    @Test
+    public void stopTest(){
+        FlinkAPI.build(address).stop("0727f796fcf9e07d89e724f7e15598cf");
+    }
 }

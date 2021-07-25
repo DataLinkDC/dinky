@@ -108,11 +108,19 @@ public class StudioController {
     }
 
     /**
-     * 获取session列表
+     * 获取flinkjobs列表
      */
     @GetMapping("/listJobs")
     public Result listJobs(@RequestParam Integer clusterId)  {
         List<JsonNode> jobs = studioService.listJobs(clusterId);
         return Result.succeed(jobs.toArray(),"获取成功");
+    }
+
+    /**
+     * 获取session列表
+     */
+    @GetMapping("/cancel")
+    public Result cancel(@RequestParam Integer clusterId,@RequestParam String jobId)  {
+        return Result.succeed(studioService.cancel(clusterId,jobId),"停止成功");
     }
 }
