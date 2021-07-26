@@ -12,10 +12,13 @@ import {
 } from '@ant-design/icons';
 import React from "react";
 import {showCluster} from "../../StudioEvent/DDL";
+import {handleAddOrUpdate} from "@/components/Common/crud";
+import ClusterForm from "@/pages/Cluster/components/ClusterForm";
 
 const StudioCluster = (props: any) => {
 
   const {cluster, dispatch} = props;
+  const [createModalVisible, handleCreateModalVisible] = useState<boolean>(false);
 
   const getColumns = () => {
     let columns: any = [{
@@ -51,7 +54,7 @@ const StudioCluster = (props: any) => {
   };
 
   const onCreateCluster = () => {
-
+    handleCreateModalVisible(true);
   };
 
   return (
@@ -75,6 +78,19 @@ const StudioCluster = (props: any) => {
       {cluster.length > 0 ? (
         <Table dataSource={cluster} columns={getColumns()} size="small"/>) : (
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>)}
+      <ClusterForm
+        onSubmit={async (value) => {
+          const success = await handleAddOrUpdate("api/cluster", value);
+          if (success) {
+            handleCreateModalVisible(false);
+            showCluster(dispatch);
+          }
+        }}
+        onCancel={() => {
+          handleCreateModalVisible(false);
+        }}
+        modalVisible={createModalVisible}
+      />
     </>
   );
 };

@@ -19,6 +19,7 @@ import {
 } from "@/components/Common/crud";
 import {showCluster} from "@/components/Studio/StudioEvent/DDL";
 
+const TextArea = Input.TextArea;
 const url = '/api/cluster';
 
 const ClusterTableList: React.FC<{}> = (props: any) => {
@@ -137,6 +138,9 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       hideInForm: false,
       hideInSearch: true,
       hideInTable: true,
+      renderFormItem: (item, {defaultRender, ...rest}, form) => {
+        return <TextArea placeholder="添加 Flink Hosts...例如：127.0.0.1:8081,127.0.0.1:8091" allowClear autoSize={{ minRows: 3, maxRows: 10 }}/>;
+      },
     },
     {
       title: 'JMHost',
