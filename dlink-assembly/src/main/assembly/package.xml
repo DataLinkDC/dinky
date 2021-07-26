@@ -71,5 +71,45 @@
                 <include>dlink-function-${project.version}.jar</include>
             </includes>
         </fileSet>
+
+        <!-- 将模块dlink-metadata的jar文件放到打包目录/lib下 -->
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-metadata/dlink-metadata-clickhouse/target
+            </directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>dlink-metadata-clickhouse-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+
+        <!-- 将模块dlink-metadata的jar文件放到打包目录/lib下 -->
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-metadata/dlink-metadata-mysql/target
+            </directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>dlink-metadata-mysql-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+
+        <!-- 将模块dlink-metadata的jar文件放到打包目录/lib下 -->
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-metadata/dlink-metadata-oracle/target
+            </directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>dlink-metadata-oracle-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+
+        <!-- 将模块dlink-metadata的jar文件放到打包目录/lib下 -->
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-metadata/dlink-metadata-postgresql/target
+            </directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>dlink-metadata-postgresql-${project.version}.jar</include>
+            </includes>
+        </fileSet>
     </fileSets>
 </assembly>
