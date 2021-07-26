@@ -49,7 +49,7 @@ const Studio: React.FC<StudioProps> = (props) => {
             {/*<StudioConsole/>*/}
           </Col>
           <Col span={4} className={styles["vertical-tabs"]}>
-            <StudioRightTool/>
+            <StudioRightTool form={form}/>
           </Col>
         </Row>
         <Row>

@@ -1,10 +1,10 @@
 import {connect} from "umi";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
-import {Form, InputNumber, Input, Switch, Select, Tag, Row, Col, Badge, Tooltip, Button, Typography} from "antd";
-import {InfoCircleOutlined,PlusOutlined,MinusSquareOutlined} from "@ant-design/icons";
+import {Form, InputNumber, Input, Switch, Select, Tag, Row, Col, Badge, Tooltip, Button, Typography,Space} from "antd";
+import {InfoCircleOutlined,PlusOutlined,MinusSquareOutlined,MinusCircleOutlined} from "@ant-design/icons";
 import styles from "./index.less";
 import {useEffect, useState} from "react";
-import {showCluster, showTables} from "@/components/Studio/StudioEvent/DDL";
+import { showTables} from "@/components/Studio/StudioEvent/DDL";
 
 const { Option } = Select;
 const { Text } = Typography;
@@ -39,7 +39,7 @@ const StudioSetting = (props: any) => {
         break;
       }
     }
-
+    // console.log(change);
     dispatch&&dispatch({
       type: "Studio/saveTabs",
       payload: newTabs,
@@ -131,6 +131,45 @@ const StudioSetting = (props: any) => {
       </Form.Item>
         </Col>
       </Row>
+      <Form.Item
+        label="其他配置" className={styles.form_item}
+        tooltip={{ title: '其他配置项，将被应用于执行环境，如 pipeline.name', icon: <InfoCircleOutlined /> }}
+      >
+
+      <Form.List name="config"
+      >
+        {(fields, { add, remove }) => (
+          <>
+            {fields.map(({ key, name, fieldKey, ...restField }) => (
+              <Space key={key} style={{ display: 'flex' }} align="baseline">
+                <Form.Item
+                  {...restField}
+                  name={[name, 'key']}
+                  // fieldKey={[fieldKey, 'key']}
+                  style={{ marginBottom: '5px' }}
+                >
+                  <Input placeholder="参数" />
+                </Form.Item>
+                <Form.Item
+                  {...restField}
+                  name={[name, 'value']}
+                  // fieldKey={[fieldKey, 'value']}
+                  style={{ marginBottom: '5px' }}
+                >
+                  <Input placeholder="值" />
+                </Form.Item>
+                <MinusCircleOutlined onClick={() => remove(name)} />
+              </Space>
+            ))}
+            <Form.Item>
+              <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                添加配置项
+              </Button>
+            </Form.Item>
+          </>
+        )}
+      </Form.List>
+      </Form.Item>
     </Form>
       </>
   );

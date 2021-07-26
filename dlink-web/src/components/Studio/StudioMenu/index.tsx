@@ -129,6 +129,8 @@ const StudioMenu = (props: any) => {
 
   const saveSqlAndSettingToTask = async () => {
     const fieldsValue = await form.validateFields();
+    // console.log(fieldsValue);
+    // return;
     if (current.task) {
       let task = {
         ...current.task,
