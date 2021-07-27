@@ -6,6 +6,7 @@ import com.dlink.executor.EnvironmentSetting;
 import com.dlink.executor.Executor;
 import com.dlink.executor.ExecutorSetting;
 import com.dlink.executor.custom.CustomTableEnvironmentImpl;
+import com.dlink.explainer.Explainer;
 import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.parser.SqlType;
 import com.dlink.result.*;
@@ -295,5 +296,10 @@ public class JobManager extends RunTime {
 
     public static List<SessionInfo> listSession(String createUser){
         return SessionPool.filter(createUser);
+    }
+
+    public List<SqlExplainResult> explainSql(String statement){
+        Explainer explainer = Explainer.build(executor);
+        return explainer.explainSqlResult(statement);
     }
 }

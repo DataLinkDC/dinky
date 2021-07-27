@@ -19,6 +19,15 @@ export async function executeDDL(params: StudioParam) {
   });
 }
 
+export async function explainSql(params: StudioParam) {
+  return request<API.Result>('/api/studio/explainSql', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
+
 export async function getJobData(jobId:string) {
   return request<API.Result>('/api/studio/getJobData', {
     method: 'GET',

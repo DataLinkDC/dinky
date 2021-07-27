@@ -8,6 +8,7 @@ import com.dlink.explainer.ca.TableCANode;
 import com.dlink.job.JobResult;
 import com.dlink.result.IResult;
 import com.dlink.result.SelectResult;
+import com.dlink.result.SqlExplainResult;
 import com.dlink.session.SessionInfo;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -24,6 +25,8 @@ public interface StudioService {
     JobResult executeSql(StudioExecuteDTO studioExecuteDTO);
 
     IResult executeDDL(StudioDDLDTO studioDDLDTO);
+
+    List<SqlExplainResult> explainSql(StudioExecuteDTO studioExecuteDTO);
 
     SelectResult getJobData(String jobId);
 

@@ -11,10 +11,12 @@ import Button from "antd/es/button/button";
 import Breadcrumb from "antd/es/breadcrumb/Breadcrumb";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
-import {postDataArray} from "@/components/Common/crud";
-import {executeSql} from "@/pages/FlinkSqlStudio/service";
+import {handleAddOrUpdate, postDataArray} from "@/components/Common/crud";
+import {executeSql, explainSql} from "@/pages/FlinkSqlStudio/service";
 import StudioHelp from "./StudioHelp";
-import {showTables} from "@/components/Studio/StudioEvent/DDL";
+import {showCluster, showTables} from "@/components/Studio/StudioEvent/DDL";
+import {useState} from "react";
+import StudioExplain from "../StudioConsole/StudioExplain";
 
 const menu = (
   <Menu>
@@ -26,6 +28,8 @@ const menu = (
 const StudioMenu = (props: any) => {
 
   const {tabs, current, currentPath, form, refs, dispatch, currentSession} = props;
+  const [modalVisible, handleModalVisible] = useState<boolean>(false);
+  const [explainData, setExplainData] = useState([]);
 
   const execute = () => {
     let selectsql = null;
@@ -127,10 +131,48 @@ const StudioMenu = (props: any) => {
     });
   };
 
+  const onCheckSql = ()=>{
+    let selectsql = null;
+    if (current.monaco.current) {
+      let selection = current.monaco.current.editor.getSelection();
+      selectsql = current.monaco.current.editor.getModel().getValueInRange(selection);
+    }
+    if (selectsql == null || selectsql == '') {
+      selectsql = current.value;
+    }
+    let useSession = !!currentSession.session;
+    let param = {
+      useSession: useSession,
+      session: currentSession.session,
+      useRemote: current.task.useRemote,
+      clusterId: current.task.clusterId,
+      useResult: current.task.useResult,
+      maxRowNum: current.task.maxRowNum,
+      statement: selectsql,
+      fragment: current.task.fragment,
+      jobName: current.task.jobName,
+      parallelism: current.task.parallelism,
+      checkPoint: current.task.checkPoint,
+      savePointPath: current.task.savePointPath,
+    };
+    const taskKey = (Math.random() * 1000) + '';
+    notification.success({
+      message: `新任务【${param.jobName}】正在检查`,
+      description: param.statement.substring(0, 40) + '...',
+      duration: null,
+      key: taskKey,
+      icon: <SmileOutlined style={{color: '#108ee9'}}/>,
+    });
+    const result = explainSql(param);
+    handleModalVisible(true);
+    result.then(res => {
+      notification.close(taskKey);
+      setExplainData(res.datas);
+    })
+  };
+
   const saveSqlAndSettingToTask = async () => {
     const fieldsValue = await form.validateFields();
-    // console.log(fieldsValue);
-    // return;
     if (current.task) {
       let task = {
         ...current.task,
@@ -243,10 +285,13 @@ const StudioMenu = (props: any) => {
               />
             </Tooltip>
             <Divider type="vertical"/>
-            <Button
-              type="text"
-              icon={<SafetyCertificateTwoTone twoToneColor="#ddd"/>}
-            />
+            <Tooltip title="检查当前的 FlinkSql">
+              <Button
+                type="text"
+                icon={<SafetyCertificateTwoTone />}
+                onClick={onCheckSql}
+              />
+            </Tooltip>
             <Button
               type="text"
               icon={<FlagTwoTone twoToneColor="#ddd"/>}
@@ -305,6 +350,14 @@ const StudioMenu = (props: any) => {
           </Col>
         </Row>
       </Col>
+      <StudioExplain
+        onCancel={() => {
+          handleModalVisible(false);
+          setExplainData([]);
+        }}
+        modalVisible={modalVisible}
+        data={explainData}
+      />
     </Row>
   );
 };

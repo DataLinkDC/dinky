@@ -35,7 +35,7 @@
         <guava.version>21.0</guava.version>
         <slf4j.version>1.7.30</slf4j.version>
         <mysql-connector-java.version>8.0.22</mysql-connector-java.version>
-        <ojdbc6.version>11.2.0.3</ojdbc6.version>
+        <ojdbc8.version>12.2.0.1</ojdbc8.version>
         <clickhouse.version>0.2.6</clickhouse.version>
         <postgresql.version>42.2.14</postgresql.version>
         <banner.version>1.0.2</banner.version>
@@ -122,9 +122,9 @@
                 <version>${mysql-connector-java.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.oracle</groupId>
-                <artifactId>ojdbc6</artifactId>
-                <version>${ojdbc6.version}</version>
+                <groupId>com.oracle.database.jdbc</groupId>
+                <artifactId>ojdbc8</artifactId>
+                <version>${ojdbc8.version}</version>
             </dependency>
             <dependency>
                 <groupId>ru.yandex.clickhouse</groupId>

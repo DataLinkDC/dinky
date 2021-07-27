@@ -38,6 +38,10 @@ public class Explainer {
         this.executor = executor;
     }
 
+    public static Explainer build(Executor executor){
+        return new Explainer(executor);
+    }
+
     public List<SqlExplainResult> explainSqlResult(String statement, ExplainDetail... extraDetails) {
         String[] sqls = SqlUtil.getStatements(statement);
         List<SqlExplainResult> sqlExplainRecords = new ArrayList<>();

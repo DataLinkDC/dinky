@@ -82,7 +82,10 @@ const StudioPreview = (props:any) => {
   return (
     <div style={{width: '100%'}}>
       {result&&result.jobId&&!result.isDestroyed&&result.rowData&&result.columns?
-        (<ProTable dataSource={result.rowData} columns={getColumns(result.columns)} search={false}
+        (<ProTable dataSource={result.rowData} columns={getColumns(result.columns)} search={false} toolBarRender={false}
+                   pagination={{
+                     pageSize: 5,
+                   }}
       />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
     </div>
   );

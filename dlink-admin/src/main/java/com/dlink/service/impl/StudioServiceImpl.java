@@ -15,6 +15,7 @@ import com.dlink.model.Cluster;
 import com.dlink.parser.SqlType;
 import com.dlink.result.IResult;
 import com.dlink.result.SelectResult;
+import com.dlink.result.SqlExplainResult;
 import com.dlink.service.ClusterService;
 import com.dlink.service.StudioService;
 import com.dlink.session.SessionConfig;
@@ -58,6 +59,16 @@ public class StudioServiceImpl implements StudioService {
         }
         JobManager jobManager = JobManager.build(config);
         return jobManager.executeDDL(studioDDLDTO.getStatement());
+    }
+
+    @Override
+    public List<SqlExplainResult> explainSql(StudioExecuteDTO studioExecuteDTO) {
+        JobConfig config = studioExecuteDTO.getJobConfig();
+        if(!config.isUseSession()) {
+            config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
+        }
+        JobManager jobManager = JobManager.build(config);
+        return jobManager.explainSql(studioExecuteDTO.getStatement());
     }
 
     @Override

@@ -40,6 +40,14 @@ public class StudioController {
     }
 
     /**
+     * 解释Sql
+     */
+    @PostMapping("/explainSql")
+    public Result explainSql(@RequestBody StudioExecuteDTO studioExecuteDTO)  {
+        return Result.succeed(studioService.explainSql(studioExecuteDTO),"解释成功");
+    }
+
+    /**
      * 进行DDL操作
      */
     @PostMapping("/executeDDL")

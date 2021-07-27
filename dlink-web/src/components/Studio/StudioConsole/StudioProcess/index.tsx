@@ -87,8 +87,8 @@ const StudioProcess = (props: any) => {
             {row.tasks.created>0?(<Tooltip title="CREATED"><Tag color="#666">{row.tasks.created}</Tag></Tooltip>):''}
             {row.tasks.deploying>0?(<Tooltip title="DEPLOYING"><Tag color="#666">{row.tasks.deploying}</Tag></Tooltip>):''}
             {row.tasks.running>0?(<Tooltip title="RUNNING"><Tag color="#44b549">{row.tasks.running}</Tag></Tooltip>):''}
-            {row.tasks.failed>0?(<Tooltip title="FAILED"><Tag color="#666">{row.tasks.failed}</Tag></Tooltip>):''}
-            {row.tasks.finished>0?(<Tooltip title="CREATED"><Tag color="#108ee9">{row.tasks.finished}</Tag></Tooltip>):''}
+            {row.tasks.failed>0?(<Tooltip title="FAILED"><Tag color="#ff4d4f">{row.tasks.failed}</Tag></Tooltip>):''}
+            {row.tasks.finished>0?(<Tooltip title="FINISHED"><Tag color="#108ee9">{row.tasks.finished}</Tag></Tooltip>):''}
             {row.tasks.reconciling>0?(<Tooltip title="RECONCILING"><Tag color="#666">{row.tasks.reconciling}</Tag></Tooltip>):''}
             {row.tasks.scheduled>0?(<Tooltip title="SCHEDULED"><Tag color="#666">{row.tasks.scheduled}</Tag></Tooltip>):''}
             {row.tasks.canceling>0?(<Tooltip title="CANCELING"><Tag color="#feb72b">{row.tasks.canceling}</Tag></Tooltip>):''}
@@ -189,6 +189,9 @@ const StudioProcess = (props: any) => {
       </Space>
       {jobsData.length > 0 ?
         (<ProTable dataSource={jobsData} columns={getColumns()} size="small" search={false} toolBarRender={false}
+                   pagination={{
+                     pageSize: 5,
+                   }}
         />) : (<Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>)}
     </div>
   );
