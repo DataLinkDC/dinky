@@ -20,7 +20,7 @@ export default (): React.ReactNode => {
         <Alert
           message={intl.formatMessage({
             id: 'pages.welcome.alertMessage',
-            defaultMessage: '实时计算平台 Dlink & Apache Flink 即将发布，目前为体验版，版本号为 0.2.2。',
+            defaultMessage: '实时计算平台 Dlink & Apache Flink 即将发布，目前为体验版，版本号为 0.3.0。',
           })}
           type="success"
           showIcon
@@ -62,34 +62,16 @@ export default (): React.ReactNode => {
         </Typography.Text>
         </Paragraph>
         <p> </p>
-        <Timeline pending={<><Text code>0.3.0</Text>
+        <Timeline pending={<><Text code>0.4.0</Text>
           <Text type="secondary">敬请期待</Text>
           <p> </p>
           <Paragraph>
             <ul>
               <li>
-                <Link>FlinkSql Studio 进程监控</Link>
+                <Link>FlinkSql Studio 时间调度</Link>
               </li>
               <li>
-                <Link>FlinkSql Studio 集群总览</Link>
-              </li>
-              <li>
-                <Link>FlinkSql Studio 集群任务</Link>
-              </li>
-              <li>
-                <Link>FlinkSql Studio 任务详情</Link>
-              </li>
-              <li>
-                <Link>FlinkSql Studio 连接器详情</Link>
-              </li>
-              <li>
-                <Link>FlinkSql Studio 指标展示</Link>
-              </li>
-              <li>
-                <Link>FlinkSql Studio 自动完成函数</Link>
-              </li>
-              <li>
-                <Link>用户与授权</Link>
+                <Link>FlinkSql Studio 依赖调度</Link>
               </li>
             </ul>
           </Paragraph></>} reverse={true}>
@@ -260,12 +242,36 @@ export default (): React.ReactNode => {
               </ul>
             </Paragraph>
           </Timeline.Item>
-          <Timeline.Item><Text code>0.3.0</Text> <Text type="secondary">2021-07-??</Text>
+          <Timeline.Item><Text code>0.3.0</Text> <Text type="secondary">2021-07-27</Text>
             <p> </p>
             <Paragraph>
               <ul>
                 <li>
-                  <Link>实现了单任务的表级血缘分析</Link>
+                  <Link>批流任务实时查看 SELECT 数据</Link>
+                </li>
+                <li>
+                  <Link>共享会话持久管理</Link>
+                </li>
+                <li>
+                  <Link>数据源注册与连接</Link>
+                </li>
+                <li>
+                  <Link>元数据查询</Link>
+                </li>
+                <li>
+                  <Link>历史任务监控与管理</Link>
+                </li>
+                <li>
+                  <Link>集群作业监控与管理</Link>
+                </li>
+                <li>
+                  <Link>单任务血缘分析</Link>
+                </li>
+                <li>
+                  <Link>语句语法与逻辑检查</Link>
+                </li>
+                <li>
+                  <Link>界面交互升级</Link>
                 </li>
               </ul>
             </Paragraph>
