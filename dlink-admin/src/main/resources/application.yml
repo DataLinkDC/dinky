@@ -6,11 +6,11 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   application:
     name: dlink
-  flyway:
-    enabled: true
-    clean-disabled: true
-#    baseline-on-migrate: true
-    table: dlink_schema_history
+#  flyway:
+#    enabled: false
+#    clean-disabled: true
+##    baseline-on-migrate: true
+#    table: dlink_schema_history
 
 server:
   port: 8888
@@ -24,8 +24,8 @@ mybatis-plus:
       id-type: auto
   configuration:
   ##### mybatis-plus打印完整sql(只适用于开发环境)
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-#    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
 
 
 ##### Flink 集群配置

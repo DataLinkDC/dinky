@@ -5,11 +5,12 @@
     <parent>
         <artifactId>dlink-connectors</artifactId>
         <groupId>com.dlink</groupId>
-        <version>0.2.3</version>
+        <version>0.3.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>dlink-connector-jdbc</artifactId>
+
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -21,12 +22,14 @@
         <postgres.version>42.2.10</postgres.version>
         <otj-pg-embedded.version>0.13.3</otj-pg-embedded.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-connector-jdbc_${scala.binary.version}</artifactId>
             <version>${flink.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-table-api-java-bridge_${scala.binary.version}</artifactId>
@@ -43,7 +46,6 @@
         </dependency>
 
         <!-- Postgres dependencies -->
-
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
@@ -52,7 +54,6 @@
         </dependency>
 
         <!-- test dependencies -->
-
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-test-utils_${scala.binary.version}</artifactId>
@@ -120,7 +121,6 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.20</version>
             <scope>test</scope>
         </dependency>
 
@@ -135,13 +135,13 @@
 
         <!-- Oracle test dependencies -->
         <dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc6</artifactId>
-			<version>11.2.0.3</version>
-			<scope>test</scope>
-		</dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc8</artifactId>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
-    <build>
+    <!--<build>
         <plugins>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -153,5 +153,5 @@
             </plugin>
         </plugins>
         <finalName>${project.artifactId}</finalName>
-    </build>
+    </build>-->
 </project>

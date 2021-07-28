@@ -1,9 +1,10 @@
 #!/bin/bash
 # 定义变量
 # 要运行的jar包路径，加不加引号都行。 注意：等号两边 不能 有空格，否则会提示command找不到
-JAR_NAME="./dlink-admin.jar"
-SETTING="-Djava.ext.dirs=./lib"
- 
+JAR_NAME="./dlink-admin-*.jar"
+#java -Djava.ext.dirs=$JAVA_HOME/jre/lib/ext:$JAVA_HOME/jre/lib:./lib -classpath ."/lib/*.jar" -jar dlink-admin-*.jar
+SETTING="-Djava.ext.dirs=$JAVA_HOME/jre/lib/ext:$JAVA_HOME/jre/lib:./lib"
+
 # 如果输入格式不对，给出提示！
 tips() {
 	echo ""

@@ -8,6 +8,8 @@ import StudioMsg from "./StudioMsg";
 import StudioTable from "./StudioTable";
 import StudioHistory from "./StudioHistory";
 import StudioFX from "./StudioFX";
+import StudioCA from "./StudioCA";
+import StudioProcess from "./StudioProcess";
 
 const { TabPane } = Tabs;
 
@@ -59,7 +61,7 @@ const StudioConsole = (props:any) => {
         }
         key="StudioConsanguinity"
       >
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+        <StudioCA />
       </TabPane>
       <TabPane
         tab={
@@ -70,7 +72,7 @@ const StudioConsole = (props:any) => {
         }
         key="StudioProcess"
       >
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+        <StudioProcess />
       </TabPane>
       <TabPane
         tab={

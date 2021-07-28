@@ -1,7 +1,6 @@
 package com.dlink.trans.ddl;
 
 import com.dlink.parser.SingleSqlParserFactory;
-import com.dlink.utils.SqlExtractUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;

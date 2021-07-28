@@ -30,8 +30,14 @@ public class SqlParserTest {
                 "WHERE cls = 1\n" +
                 "GROUP BY sid\n" +
                 "AGG BY toMap(cls,score) as (data)";
+        String sql2 = "\r\n" +
+                "CREATE AGGTABLE aggscore AS \r\n" +
+                "SELECT cls,score,rank\r\n" +
+                "FROM score\r\n" +
+                "GROUP BY cls\r\n" +
+                "AGG BY TOP2(score) as (score,rank)";
         //sql=sql.replace("\n"," ");
-        Map<String,List<String>> lists = SingleSqlParserFactory.generateParser(sql);
+        Map<String,List<String>> lists = SingleSqlParserFactory.generateParser(sql2);
         System.out.println(lists.toString());
         System.out.println(StringUtils.join(lists.get("SELECT"),","));
     }

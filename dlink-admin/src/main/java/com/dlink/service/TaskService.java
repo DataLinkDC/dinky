@@ -2,6 +2,7 @@ package com.dlink.service;
 
 
 import com.dlink.db.service.ISuperService;
+import com.dlink.job.JobResult;
 import com.dlink.model.Task;
 import com.dlink.result.SubmitResult;
 
@@ -13,7 +14,7 @@ import com.dlink.result.SubmitResult;
  */
 public interface TaskService extends ISuperService<Task> {
 
-    SubmitResult submitByTaskId(Integer id);
+    JobResult submitByTaskId(Integer id);
 
     Task getTaskInfoById(Integer id);
 

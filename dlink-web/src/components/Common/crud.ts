@@ -1,12 +1,20 @@
 import request from "umi-request";
 import {TableListParams} from "@/components/Common/data";
 import {message, Modal} from "antd";
-import {submitTask} from "@/pages/Dlink/Task/service";
 
 export async function queryData(url:string,params?: TableListParams) {
   return request(url, {
     method: 'POST',
     data: {
+      ...params,
+    },
+  });
+}
+
+export async function getData(url:string,params?: any) {
+  return request(url, {
+    method: 'GET',
+    params: {
       ...params,
     },
   });

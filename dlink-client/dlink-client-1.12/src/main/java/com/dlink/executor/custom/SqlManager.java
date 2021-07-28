@@ -55,10 +55,10 @@ public final class SqlManager {
                 "sql fragment name cannot be null or empty.");
         checkNotNull(sqlFragment, "sql fragment cannot be null");
 
-        if (sqlFragments.containsKey(sqlFragmentName)) {
+        /*if (sqlFragments.containsKey(sqlFragmentName)) {
             throw new CatalogException(
                     format("The fragment of sql %s already exists.", sqlFragmentName));
-        }
+        }*/
 
         sqlFragments.put(sqlFragmentName, sqlFragment);
     }

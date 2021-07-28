@@ -1,12 +1,16 @@
 package com.dlink.model;
 
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.dlink.db.model.SuperEntity;
 import com.dlink.executor.Executor;
 import com.dlink.executor.ExecutorSetting;
+import com.dlink.job.JobConfig;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.util.HashMap;
 
 /**
  * 任务
@@ -35,6 +39,8 @@ public class Task extends SuperEntity{
 
     private Integer clusterId;
 
+    private String config;
+
     private String note;
 
     @TableField(exist = false)
@@ -43,13 +49,20 @@ public class Task extends SuperEntity{
     @TableField(exist = false)
     private String clusterName;
 
-    public ExecutorSetting getLocalExecutorSetting(){
-        return new ExecutorSetting(Executor.LOCAL,checkPoint,parallelism,fragment,savePointPath,alias);
+    public ExecutorSetting buildExecutorSetting(){
+        HashMap configMap = new HashMap();
+        if(config!=null&&!"".equals(clusterName)) {
+            configMap = JSONUtil.toBean(config, HashMap.class);
+        }
+        return new ExecutorSetting(checkPoint,parallelism,fragment,savePointPath,alias,configMap);
     }
 
-    public ExecutorSetting getRemoteExecutorSetting(){
-        return new ExecutorSetting(Executor.REMOTE,checkPoint,parallelism,fragment,savePointPath,alias);
+    public JobConfig buildSubmitConfig(){
+        boolean useRemote = true;
+        if(clusterId==null||clusterId==0){
+            useRemote = false;
+        }
+        return new JobConfig(false,false,useRemote,clusterId,getId(),alias,fragment,checkPoint,parallelism,savePointPath);
     }
-
 
 }

@@ -51,6 +51,7 @@ export default {
   'menu.editor.koni': '拓扑编辑器',
   'menu.demo': 'Demo 开发模板',
   'menu.cluster': '集群中心',
+  'menu.database': '数据源中心',
   'menu.studio': 'FlinkSql IDE',
   'menu.flinksqlstudio': 'FlinkSql Studio',
   'menu.task': '作业中心',

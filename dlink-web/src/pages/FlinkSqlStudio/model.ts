@@ -1,11 +1,7 @@
 import {Effect, Reducer} from "umi";
-import {executeSql} from "./service";
 import {
-  addOrUpdateData, handleAddOrUpdate, handleRemove, handleRemoveById, postAll,
-  queryData
+   handleAddOrUpdate
 } from "@/components/Common/crud";
-import {Form} from "antd";
-import {executeDDL} from "@/pages/FlinkSqlStudio/service";
 
 export type ClusterType = {
   id: number,
@@ -21,6 +17,25 @@ export type ClusterType = {
   updateTime: Date,
 }
 
+export type DataBaseType = {
+  id: number,
+  name: string,
+  alias: string,
+  groupName: string,
+  type: string,
+  url: string,
+  username: string,
+  password: string,
+  note: string,
+  dbVersion: string,
+  status: boolean,
+  healthTime: Date,
+  heartbeatTime: Date,
+  enabled: boolean,
+  createTime: Date,
+  updateTime: Date,
+};
+
 export type TaskType = {
   id?: number,
   catalogueId?: number,
@@ -31,6 +46,7 @@ export type TaskType = {
   savePointPath?: string,
   parallelism?: number,
   fragment?: boolean,
+  config?: [],
   clusterId?: any,
   clusterName?: string,
   note?: string,
@@ -41,10 +57,13 @@ export type TaskType = {
   session: string;
   maxRowNum: number;
   jobName: string;
+  useResult:boolean;
+  useSession:boolean;
+  useRemote:boolean;
 };
 
 export type ConsoleType = {
-  result: [];
+  result: {};
 }
 
 export type TabsItemType = {
@@ -63,32 +82,39 @@ export type TabsType = {
   panes?: TabsItemType[];
 }
 
-export type RightClickMenu = {
-  pageX: number,
-  pageY: number,
-  id: number,
-  name: string
-};
-
 export type ConnectorType = {
   tablename: string;
 }
-export type SessionClusterType = {
-  session: string;
-  clusterId: number;
-  clusterName: string;
+
+export type SessionType = {
+  session?: string;
+  sessionConfig?:{
+    type?: string;
+    useRemote?: boolean;
+    clusterId?: number;
+    clusterName?: string;
+    address?: string;
+  }
+  createUser?: string;
+  createTime?: string;
   connectors: ConnectorType[];
 }
+
 export type StateType = {
   cluster?: ClusterType[];
-  currentSessionCluster: SessionClusterType[];
-  current: TabsItemType;
+  database?: DataBaseType[];
+  currentSession?: SessionType;
+  current?: TabsItemType;
   sql?: string;
   monaco?: any;
   currentPath?: string[];
-  tabs: TabsType;
-  session: string[];
+  tabs?: TabsType;
+  session?: SessionType[];
+  result?:{};
   rightClickMenu?: boolean;
+  refs?:{
+    history:any;
+  };
 };
 
 export type ModelType = {
@@ -106,29 +132,20 @@ export type ModelType = {
     saveTaskData: Reducer<StateType>;
     saveSession: Reducer<StateType>;
     showRightClickMenu: Reducer<StateType>;
-    refreshCurrentSessionCluster: Reducer<StateType>;
+    refreshCurrentSession: Reducer<StateType>;
+    quitCurrentSession: Reducer<StateType>;
+    saveResult: Reducer<StateType>;
+    saveCluster: Reducer<StateType>;
+    saveDataBase: Reducer<StateType>;
   };
 };
-
-const getClusters = async () => {
-  try {
-    const {datas} = await postAll('api/cluster/listEnabledAll');
-    return datas;
-  } catch (error) {
-    console.error('获取Flink集群失败');
-    return [];
-  }
-};
-
 
 const Model: ModelType = {
   namespace: 'Studio',
   state: {
-    cluster: getClusters(),
-    currentSessionCluster: {
-      session: '',
-      clusterId: 0,
-      clusterName: '本地环境',
+    cluster: [],
+    database: [],
+    currentSession: {
       connectors: [],
     },
     current: {
@@ -146,17 +163,21 @@ const Model: ModelType = {
         clusterId: 0,
         clusterName: "本地环境",
         maxRowNum: 100,
+        config: [],
         session: '',
         alias: '草稿',
+        useResult:true,
+        useSession:false,
+        useRemote:false,
       },
       console: {
-        result: [],
+        result: {},
       },
       monaco: {},
     },
     sql: '',
     monaco: {},
-    currentPath: [],
+    currentPath: ['草稿'],
     tabs: {
       activeKey: 0,
       panes: [{
@@ -174,17 +195,25 @@ const Model: ModelType = {
           clusterId: 0,
           clusterName: "本地环境",
           session: '',
+          config: [],
           maxRowNum: 100,
           alias: '草稿',
+          useResult:true,
+          useSession:false,
+          useRemote:false,
         },
         console: {
-          result: [],
+          result: {},
         },
         monaco: {},
       }],
     },
     session: [],
-    rightClickMenu: false
+    result:{},
+    rightClickMenu: false,
+    refs:{
+      history:{},
+    }
   },
 
   effects: {
@@ -306,16 +335,9 @@ const Model: ModelType = {
       };
     },
     saveSession(state, {payload}) {
-      let newSession = state.session;
-      for (let i = 0; i < newSession.length; i++) {
-        if (newSession[i].key == payload) {
-          return {};
-        }
-      }
-      newSession.push(payload);
       return {
         ...state,
-        session: newSession,
+        session: [...payload],
       };
     },
     showRightClickMenu(state, {payload}) {
@@ -324,12 +346,40 @@ const Model: ModelType = {
         rightClickMenu: payload,
       };
     },
-    refreshCurrentSessionCluster(state, {payload}) {
+    refreshCurrentSession(state, {payload}) {
       return {
         ...state,
-        currentSessionCluster: {
+        currentSession: {
+          ...state?.currentSession,
+          ...payload
+        }
+      };
+    },
+    quitCurrentSession(state) {
+      return {
+        ...state,
+        currentSession: {
+          connectors: [],
+        }
+      };
+    },
+    saveResult(state, {payload}) {
+      return {
+        ...state,
+        result: {
           ...payload
         },
+      };
+    },
+    saveCluster(state, {payload}) {
+      return {
+        ...state,
+        cluster: payload,
+      };
+    },saveDataBase(state, {payload}) {
+      return {
+        ...state,
+        database: payload,
       };
     },
   },

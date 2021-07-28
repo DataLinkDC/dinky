@@ -14,26 +14,8 @@ public class RemoteStreamExecutor extends Executor {
     public RemoteStreamExecutor(EnvironmentSetting environmentSetting,ExecutorSetting executorSetting) {
         this.environmentSetting = environmentSetting;
         this.executorSetting = executorSetting;
-        synchronized (RemoteStreamExecutor.class){
-            this.environment = StreamExecutionEnvironment.createRemoteEnvironment(environmentSetting.getHost(), environmentSetting.getPort());
-            if(executorSetting.getCheckpoint()!=null&&executorSetting.getCheckpoint()>0){
-                environment.enableCheckpointing(executorSetting.getCheckpoint());
-            }
-            if(executorSetting.getParallelism()!=null&&executorSetting.getParallelism()>0){
-                environment.setParallelism(executorSetting.getParallelism());
-            }
-            if(stEnvironment == null){
-                stEnvironment = CustomTableEnvironmentImpl.create(environment);
-            }
-            if(executorSetting.getJobName()!=null&&!"".equals(executorSetting.getJobName())){
-                stEnvironment.getConfig().getConfiguration().setString("pipeline.name", executorSetting.getJobName());
-            }
-            if(executorSetting.isUseSqlFragment()){
-                stEnvironment.useSqlFragment();
-            }else{
-                stEnvironment.unUseSqlFragment();
-            }
-        }
+        this.environment = StreamExecutionEnvironment.createRemoteEnvironment(environmentSetting.getHost(), environmentSetting.getPort());
+        init();
     }
 
 }

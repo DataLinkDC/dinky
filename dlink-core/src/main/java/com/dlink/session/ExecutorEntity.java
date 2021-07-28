@@ -1,6 +1,10 @@
 package com.dlink.session;
 
 import com.dlink.executor.Executor;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 /**
  * FlinkEntity
@@ -8,8 +12,13 @@ import com.dlink.executor.Executor;
  * @author wenmo
  * @since 2021/5/25 14:45
  **/
+@Setter
+@Getter
 public class ExecutorEntity {
     private String sessionId;
+    private SessionConfig sessionConfig;
+    private String createUser;
+    private LocalDateTime createTime;
     private Executor executor;
 
     public ExecutorEntity(String sessionId, Executor executor) {
@@ -17,19 +26,11 @@ public class ExecutorEntity {
         this.executor = executor;
     }
 
-    public String getSessionId() {
-        return sessionId;
-    }
-
-    public void setSessionId(String sessionId) {
+    public ExecutorEntity(String sessionId, SessionConfig sessionConfig, String createUser, LocalDateTime createTime, Executor executor) {
         this.sessionId = sessionId;
-    }
-
-    public Executor getExecutor() {
-        return executor;
-    }
-
-    public void setExecutor(Executor executor) {
+        this.sessionConfig = sessionConfig;
+        this.createUser = createUser;
+        this.createTime = createTime;
         this.executor = executor;
     }
 }

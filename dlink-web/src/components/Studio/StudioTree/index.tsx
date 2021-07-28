@@ -48,12 +48,12 @@ const getParentKey = (key, tree) => {
 };
 
 const StudioTree: React.FC<StudioTreeProps> = (props) => {
+  const {rightClickMenu,dispatch,tabs,refs} = props;
 
   const [treeData, setTreeData] = useState<TreeDataNode[]>();
   const [dataList, setDataList] = useState<[]>();
   const [expandedKeys, setExpandedKeys] = useState<[]>();
   const [rightClickNodeTreeItem,setRightClickNodeTreeItem] = useState<RightClickMenu>();
-  const {rightClickMenu,dispatch,tabs} = props;
   const [updateCatalogueModalVisible, handleUpdateCatalogueModalVisible] = useState<boolean>(false);
   const [updateTaskModalVisible, handleUpdateTaskModalVisible] = useState<boolean>(false);
   const [isCreate, setIsCreate] = useState<boolean>(true);
@@ -139,6 +139,10 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
             session:'',
             maxRowNum: 100,
             jobName:node.name,
+            config: [],
+            useResult:false,
+            useSession:false,
+            useRemote:true,
             ...result.datas
           },
           console:{
@@ -190,6 +194,9 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
         let task = {
           id:node.taskId,
         };
+        setTimeout(()=>{
+          refs?.history?.current?.reload();
+        },2000);
         handleSubmit('/api/task/submit','作业',[task]);
       }
     });
@@ -244,8 +251,8 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       position: 'absolute',
       // left: `${pageX - 50}px`,
       // top: `${pageY - 202}px`,
-      left: `${pageX - 25}px`,
-      top: `${pageY - 140}px`,
+      left: `${pageX}px`,
+      top: `${pageY - 120}px`,
     };
     let menuItems;
     if(rightClickNode&&rightClickNode.isLeaf){
@@ -310,7 +317,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
   };
 
   const onSelect = (selectedKeys:[], e:any) => {
-    if(e.node.isLeaf) {
+    if(e.node&&e.node.isLeaf) {
       dispatch({
         type: "Studio/saveCurrentPath",
         payload: e.node.path,
@@ -412,4 +419,5 @@ export default connect(({Studio}: { Studio: StateType }) => ({
   currentPath:Studio.currentPath,
   tabs: Studio.tabs,
   rightClickMenu: Studio.rightClickMenu,
+  refs: Studio.refs,
 }))(StudioTree);

@@ -2,6 +2,7 @@ package com.dlink.controller;
 
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
+import com.dlink.job.JobResult;
 import com.dlink.model.Task;
 import com.dlink.result.SubmitResult;
 import com.dlink.service.TaskService;
@@ -76,11 +77,11 @@ public class TaskController {
     @PostMapping(value = "/submit")
     public Result submit(@RequestBody JsonNode para) throws Exception {
         if (para.size()>0){
-            List<SubmitResult> results = new ArrayList<>();
+            List<JobResult> results = new ArrayList<>();
             List<Integer> error = new ArrayList<>();
             for (final JsonNode item : para){
                 Integer id = item.asInt();
-                SubmitResult result = taskService.submitByTaskId(id);
+                JobResult result = taskService.submitByTaskId(id);
                 if(!result.isSuccess()){
                     error.add(id);
                 }

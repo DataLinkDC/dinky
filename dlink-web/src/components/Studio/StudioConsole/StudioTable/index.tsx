@@ -4,6 +4,8 @@ import {connect} from "umi";
 import {useState} from "react";
 // import Highlighter from 'react-highlight-words';
 import { SearchOutlined } from '@ant-design/icons';
+import {showJobData} from "@/components/Studio/StudioEvent/DQL";
+import ProTable from '@ant-design/pro-table';
 
 const { Option } = Select;
 const { Title, Paragraph, Text, Link } = Typography;
@@ -11,8 +13,7 @@ const { Title, Paragraph, Text, Link } = Typography;
 
 const StudioTable = (props:any) => {
 
-  const {current} = props;
-  const [dataIndex,setDataIndex] = useState<number>(0);
+  const {current,result,dispatch} = props;
   const [searchText,setSearchText] = useState<string>('');
   const [searchedColumn,setSearchedColumn] = useState<string>('');
 
@@ -95,39 +96,32 @@ const StudioTable = (props:any) => {
     return datas;
   };
 
-  const onChange=(val:number)=>{
-    setDataIndex(val);
+  const showDetail=()=>{
+    showJobData(current.console.result.jobId,dispatch)
   };
-
   return (
-    <Typography>
-      <Form.Item label="当前执行记录" tooltip="选择最近的执行记录，仅包含成功的记录">
-      <Select
-        style={{ width: '100%' }}
-        placeholder="选择最近的执行记录"
-        optionLabelProp="label"
-        onChange={onChange}
-      >
-        {current.console.result.map((item,index)=> {
-          if(item.success) {
-            let tag = (<> <Tooltip placement="topLeft" title={item.statement}><Tag color="processing">{item.finishDate}</Tag>
-              <Text underline>[{item.sessionId}:{item.flinkHost}:{item.flinkPort}]</Text>
-              {item.jobName&&<Text code>{item.jobName}</Text>}
-              {item.jobId&&<Text code>{item.jobId}</Text>}
-              <Text keyboard>{item.time}ms</Text>
-              {item.statement}</Tooltip></>);
-            return (<Option value={index} label={tag}>
-              {tag}
-            </Option>)
+    <div style={{width: '100%'}}>
+      {current.console&&current.console.result.jobId?
+        (<>
+          <Button type="primary" onClick={showDetail} icon={<SearchOutlined />}>
+            获取最新数据
+          </Button>
+          {result.rowData&&result.columns?
+            <ProTable dataSource={result.rowData} columns={getColumns(result.columns)} search={false}
+                      options={{
+                        search: false,
+                      }}/>
+            :(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)
           }
-        })}
-        </Select>
-      </Form.Item>
-      {current.console.result[dataIndex]&&current.console.result[dataIndex].result?(<Table dataSource={current.console.result[dataIndex].result.rowData} columns={getColumns(current.console.result[dataIndex].result.columns)} />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
-    </Typography>
+          </>):
+        current.console&&current.console.result&&current.console.result.result&&current.console.result.result.rowData&&current.console.result.result.columns?
+        (<ProTable dataSource={current.console.result.result.rowData} columns={getColumns(current.console.result.result.columns)} search={false}
+      />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
+    </div>
   );
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
   current: Studio.current,
+  result: Studio.result,
 }))(StudioTable);

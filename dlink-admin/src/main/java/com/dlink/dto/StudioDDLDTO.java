@@ -1,5 +1,6 @@
 package com.dlink.dto;
 
+import com.dlink.job.JobConfig;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +13,15 @@ import lombok.Setter;
 @Getter
 @Setter
 public class StudioDDLDTO {
+    private boolean useResult;
+    private boolean useSession;
     private String session;
+    private boolean useRemote;
+    private Integer clusterId;
     private String statement;
-    private Integer clusterId=0;
+
+    public JobConfig getJobConfig() {
+        return new JobConfig(useResult, useSession, session, useRemote, clusterId);
+    }
+
 }

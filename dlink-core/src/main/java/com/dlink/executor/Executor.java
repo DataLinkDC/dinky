@@ -8,8 +8,13 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.ExplainDetail;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableResult;
+import org.apache.flink.table.catalog.Catalog;
+import org.apache.flink.table.catalog.CatalogManager;
 import org.apache.flink.table.functions.ScalarFunction;
 import org.apache.flink.table.functions.UserDefinedFunction;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Executor
@@ -18,27 +23,30 @@ import org.apache.flink.table.functions.UserDefinedFunction;
  **/
 public abstract class Executor {
 
-    public static final String LOCAL = "LOCAL";
-    public static final String REMOTE = "REMOTE";
-
     protected StreamExecutionEnvironment environment;
     protected CustomTableEnvironmentImpl stEnvironment;
     protected EnvironmentSetting environmentSetting;
     protected ExecutorSetting executorSetting;
 
-
     public static Executor build(){
-        return new LocalStreamExecutor(new ExecutorSetting(LOCAL));
+        return new LocalStreamExecutor(ExecutorSetting.DEFAULT);
     }
 
     public static Executor build(EnvironmentSetting environmentSetting,ExecutorSetting executorSetting){
-        if(LOCAL.equals(executorSetting.getType())){
-            return new LocalStreamExecutor(executorSetting);
-        }else if(REMOTE.equals(executorSetting.getType())){
-            return new RemoteStreamExecutor(environmentSetting,executorSetting);
+        if(environmentSetting.isUseRemote()){
+            return buildRemoteExecutor(environmentSetting,executorSetting);
         }else{
-            return new LocalStreamExecutor(executorSetting);
+            return buildLocalExecutor(executorSetting);
         }
+    }
+
+    public static Executor buildLocalExecutor(ExecutorSetting executorSetting){
+        return new LocalStreamExecutor(executorSetting);
+    }
+
+    public static Executor buildRemoteExecutor(EnvironmentSetting environmentSetting,ExecutorSetting executorSetting){
+        environmentSetting.setUseRemote(true);
+        return new RemoteStreamExecutor(environmentSetting,executorSetting);
     }
 
     public StreamExecutionEnvironment getEnvironment(){
@@ -57,8 +65,82 @@ public abstract class Executor {
         return environmentSetting;
     }
 
-    public JobExecutionResult execute(String statement) throws Exception{
-        return stEnvironment.execute(statement);
+    protected void init(){
+        initEnvironment();
+        initStreamExecutionEnvironment();
+    }
+
+    public void update(ExecutorSetting executorSetting){
+        updateEnvironment(executorSetting);
+        updateStreamExecutionEnvironment(executorSetting);
+    }
+
+    private void initEnvironment(){
+        if(executorSetting.getCheckpoint()!=null&&executorSetting.getCheckpoint()>0){
+            environment.enableCheckpointing(executorSetting.getCheckpoint());
+        }
+        if(executorSetting.getParallelism()!=null&&executorSetting.getParallelism()>0){
+            environment.setParallelism(executorSetting.getParallelism());
+        }
+    }
+
+    private void updateEnvironment(ExecutorSetting executorSetting){
+        if(executorSetting.getCheckpoint()!=null&&executorSetting.getCheckpoint()>0){
+            environment.enableCheckpointing(executorSetting.getCheckpoint());
+        }
+        if(executorSetting.getParallelism()!=null&&executorSetting.getParallelism()>0){
+            environment.setParallelism(executorSetting.getParallelism());
+        }
+    }
+
+    private void initStreamExecutionEnvironment(){
+        stEnvironment = CustomTableEnvironmentImpl.create(environment);
+        if(executorSetting.isUseSqlFragment()){
+            stEnvironment.useSqlFragment();
+        }else{
+            stEnvironment.unUseSqlFragment();
+        }
+        if(executorSetting.getJobName()!=null&&!"".equals(executorSetting.getJobName())){
+            stEnvironment.getConfig().getConfiguration().setString("pipeline.name", executorSetting.getJobName());
+        }
+        if(executorSetting.getConfig()!=null){
+            for (Map.Entry<String, String> entry : executorSetting.getConfig().entrySet()) {
+                stEnvironment.getConfig().getConfiguration().setString(entry.getKey(), entry.getValue());
+            }
+        }
+    }
+
+    private void updateStreamExecutionEnvironment(ExecutorSetting executorSetting){
+        copyCatalog();
+        if(executorSetting.isUseSqlFragment()){
+            stEnvironment.useSqlFragment();
+        }else{
+            stEnvironment.unUseSqlFragment();
+        }
+        if(executorSetting.getJobName()!=null&&!"".equals(executorSetting.getJobName())){
+            stEnvironment.getConfig().getConfiguration().setString("pipeline.name", executorSetting.getJobName());
+        }
+        if(executorSetting.getConfig()!=null){
+            for (Map.Entry<String, String> entry : executorSetting.getConfig().entrySet()) {
+                stEnvironment.getConfig().getConfiguration().setString(entry.getKey(), entry.getValue());
+            }
+        }
+    }
+
+    private void copyCatalog(){
+        String[] catalogs = stEnvironment.listCatalogs();
+        CustomTableEnvironmentImpl newstEnvironment = CustomTableEnvironmentImpl.create(environment);
+        for (int i = 0; i < catalogs.length; i++) {
+            if(stEnvironment.getCatalog(catalogs[i]).isPresent()) {
+                newstEnvironment.getCatalogManager().unregisterCatalog(catalogs[i],true);
+                newstEnvironment.registerCatalog(catalogs[i], stEnvironment.getCatalog(catalogs[i]).get());
+            }
+        }
+        stEnvironment = newstEnvironment;
+    }
+
+    public JobExecutionResult execute(String jobName) throws Exception{
+        return stEnvironment.execute(jobName);
     }
 
     public TableResult executeSql(String statement){
@@ -91,5 +173,9 @@ public abstract class Executor {
 
     public void createTemporarySystemFunction(String name, Class<? extends UserDefinedFunction> var2){
         stEnvironment.createTemporarySystemFunction(name,var2);
+    }
+
+    public CatalogManager getCatalogManager(){
+        return stEnvironment.getCatalogManager();
     }
 }

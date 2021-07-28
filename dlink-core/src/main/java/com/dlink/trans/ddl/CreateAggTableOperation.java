@@ -52,9 +52,4 @@ public class CreateAggTableOperation extends AbstractOperation implements Operat
                 .select(aggTable.getColumns());
         stEnvironment.registerTable(aggTable.getName(), sink);
     }
-
-    /*@Override
-    public boolean noExecute(){
-        return true;
-    }*/
 }

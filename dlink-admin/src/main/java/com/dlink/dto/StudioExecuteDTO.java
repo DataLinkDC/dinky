@@ -1,7 +1,10 @@
 package com.dlink.dto;
 
+import com.dlink.job.JobConfig;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Map;
 
 /**
  * StudioExecuteDTO
@@ -12,13 +15,30 @@ import lombok.Setter;
 @Getter
 @Setter
 public class StudioExecuteDTO {
+    private boolean useResult;
+    private boolean useSession;
     private String session;
+    private boolean useRemote;
+    private Integer clusterId;
+    private boolean fragment;
     private String statement;
-    private Integer clusterId=0;
-    private Integer checkPoint=0;
-    private Integer parallelism=1;
-    private Integer maxRowNum=100;
-    private boolean fragment=false;
-    private String savePointPath;
     private String jobName;
+    private Integer taskId;
+    private Integer maxRowNum;
+    private Integer checkPoint;
+    private Integer parallelism;
+    private String savePointPath;
+//    private Map<String,String> config;
+
+    public JobConfig getJobConfig() {
+        return new JobConfig(useResult, useSession, session, useRemote, clusterId, taskId, jobName, fragment, maxRowNum, checkPoint, parallelism, savePointPath);
+    }
+
+    /*public String getSession() {
+        if(useRemote) {
+            return clusterId + "_" + session;
+        }else{
+            return "0_" + session;
+        }
+    }*/
 }

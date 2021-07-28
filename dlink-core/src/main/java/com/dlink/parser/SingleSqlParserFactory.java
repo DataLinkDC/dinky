@@ -16,7 +16,7 @@ public class SingleSqlParserFactory {
     public static Map<String,List<String>> generateParser(String sql) {
         BaseSingleSqlParser tmp = null;
 //        sql = sql.replace("\n"," ").replaceAll("\\s{1,}", " ") +" ENDOFSQL";
-        sql = sql.replace("\n"," ") +" ENDOFSQL";
+        sql = sql.replace("\r\n"," ").replace("\n"," ") +" ENDOFSQL";
         if (contains(sql, "(insert\\s+into)(.+)(select)(.+)(from)(.+)")) {
             tmp = new InsertSelectSqlParser(sql);
         } else if (contains(sql, "(create\\s+aggtable)(.+)(as\\s+select)(.+)")) {
