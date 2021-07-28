@@ -172,7 +172,7 @@ npm run build
 ```shell
 mvn clean install -Dmaven.test.skip=true
 ```
-
+前端编译报错时：npm install -g umi
 #### 扩展Connector及UDF
 
 将 Flink 集群上已扩展好的 Connector 和 UDF 直接放入 Dlink 的 lib 下，然后重启即可。
