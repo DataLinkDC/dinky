@@ -321,7 +321,7 @@ QQ社区群：**543709668**，申请备注 “ Dlink ”，不写不批哦
 
 > 数据源注册
 
-![](https://mp.weixin.qq.com/cgi-bin/filepage?type=2&begin=0&count=12&token=2057025352&lang=zh_CN)
+![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTrh5UYychtscpfXuuKt16CvsFzqzCuMlFDrKYyBcuUQbEeicfJfHiaJk1e9Znfv2WvcAduSUsW02nsQ/0?wx_fmt=png)
 
 > 元数据查询
 
