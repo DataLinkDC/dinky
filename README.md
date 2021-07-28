@@ -14,6 +14,8 @@ DataLink 开源项目及社区正在建设，希望本项目可以帮助你更�
 
 ![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTo5cwuZy7GSLibw5J7Lx6cicx0vXaDHqn5VrrDJ9d3hcEicbEVO77NcP6bOylC9bOpuibM08JJ8bh8XQQ/0?wx_fmt=png)
 
+![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTqVImq5JvQzZ7oMqpnQ2NVHdmM6Pfib63atzoWNIqK7Ue6p9KfdibV889sOcZJ1Olw3kLHLmHZiab3Tg/0?wx_fmt=png)
+
 ## 功能
 
 注意：已完成只表明核心功能完成，不包括细节优化。
@@ -315,13 +317,17 @@ QQ社区群：**543709668**，申请备注 “ Dlink ”，不写不批哦
 
 ![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTrh5UYychtscpfXuuKt16Cvo3bmeQGbM3qMibOkbNGl6Uj8OibyR5CkOWp86YYlD6LDhZCX3VZLz9cA/0?wx_fmt=png)
 
+> Studio 共享会话
+
+![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTrh5UYychtscpfXuuKt16Cvp0AcrZPNAuoe9yeHJLl1ztj7NUoMJx0I4GQwTYaQYI8Ldp6PWzhShQ/0?wx_fmt=png)
+
 > 集群注册
 
 ![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTrh5UYychtscpfXuuKt16Cv2010EVibf5rvht2nQVu7dAIoUMGgwh7PUWk9HWUjgyy2emSLGCqkdeQ/0?wx_fmt=png)
 
 > 数据源注册
 
-![](https://mp.weixin.qq.com/cgi-bin/filepage?type=2&begin=0&count=12&token=2057025352&lang=zh_CN)
+![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTrh5UYychtscpfXuuKt16CvsFzqzCuMlFDrKYyBcuUQbEeicfJfHiaJk1e9Znfv2WvcAduSUsW02nsQ/0?wx_fmt=png)
 
 > 元数据查询
 
