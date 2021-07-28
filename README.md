@@ -2,7 +2,7 @@
 
 ## 简介
 
-Dlink 为 Apache Flink 而生。它是一个 FlinkSQL Studio，可以在线开发、预览、调试 FlinkSQL，支持 Flink 官方所有语法及其增强语法，并且可以远程提交 Sql 作业到集群，无打包过程。
+Dlink 为 Apache Flink 而生，让 Flink SQL 更加丝滑。它是一个 FlinkSQL Studio，可以在线开发、预览、调试 FlinkSQL，支持 Flink 官方所有语法及其增强语法，并且可以远程提交 Sql 作业到集群，无打包过程。
 
 需要注意的是，Dlink 它更专注于 FlinkSQL 的应用，而不是 DataStream。在开发过程中您不会看到任何一句 java、scala 或者 python。所以，它的目标是基于 FlinkSQL 来实现批流一体的实时计算平台。
 
@@ -31,30 +31,30 @@ DataLink 开源项目及社区正在建设，希望本项目可以帮助你更�
 |            |      连接器管理       |  0.1.0   |
 |            |       同步执行        |  0.1.0   |
 |            |       异步提交        |  0.1.0   |
-|            |     函数自动补全      | 敬请期待 |
+|            |     AGGTABLE 语法     |  0.2.2   |
+|            |    流任务数据预览     | 0.3.0 |
 |            |       任务详情        | 0.3.0 |
-|            |       任务审计        | 敬请期待 |
 |            |       集群总览        | 0.3.0 |
 |            |       集群任务        | 0.3.0 |
 |            |      元数据查询       | 0.3.0 |
-|            |   FlinkSQL 运行指标   | 敬请期待 |
 |            |     表级血缘分析      | 0.3.0 |
-|            |    字段级血缘分析     | 敬请期待 |
 |            |       任务进程        | 0.3.0 |
+|            |     远程任务停止      | 0.3.0 |
+|            |     函数自动补全      | 敬请期待 |
+|            |       任务审计        | 敬请期待 |
+|            |   FlinkSQL 运行指标   | 敬请期待 |
+|            |    字段级血缘分析     | 敬请期待 |
 |            |    示例与技巧文档     | 敬请期待 |
 |            |    FlinkSQL 执行图    | 敬请期待 |
-|            |     远程任务停止      | 0.3.0 |
 |            |       任务恢复        | 敬请期待 |
 |            |        UDF注册        | 敬请期待 |
 |            |       更改对比        | 敬请期待 |
-|            |   Create Table 生成   | 0.3.0 |
+|            |   Create Table 生成   | 敬请期待 |
 |            |      Insert 生成      | 敬请期待 |
-|            |     AGGTABLE 语法     |  0.2.2   |
 |            |       SQL 翻译        | 敬请期待 |
 |            |   智能 Select 模式    | 敬请期待 |
 |            |    自动补全元数据     | 敬请期待 |
 |            |  任务反压和倾斜提示   | 敬请期待 |
-|            |    流任务数据预览     | 0.3.0 |
 |            |          ...          | 欢迎提议 |
 |  集群中心  |    集群注册与管理     |  0.1.0   |
 |            |       心跳检测        |  0.1.0   |
@@ -65,13 +65,13 @@ DataLink 开源项目及社区正在建设，希望本项目可以帮助你更�
 |  文档中心  | FlinkSQL 函数文档管理 |  0.1.0   |
 |            |   FlinkSQL 示例文档   | 敬请期待 |
 |            |   FlinkSQL 调优文档   | 敬请期待 |
-|  用户中心  |       用户管理        | 0.3.0 |
-|            |       角色管理        | 0.3.0 |
-|            |       登录授权        | 0.3.0 |
+|  用户中心  |       用户管理        | 敬请期待 |
+|            |       角色管理        | 敬请期待 |
+|            |       登录授权        | 敬请期待 |
 | 数据源中心 |   数据源注册与管理    | 0.3.0 |
 |            |       心跳检测        | 0.3.0 |
 |            |      元数据查询       | 0.3.0 |
-|            |       数据查询        | 0.3.0 |
+|            |       数据查询        | 敬请期待 |
 |            |       质量分析        | 敬请期待 |
 |  调度中心  |   定时调度任务管理    | 敬请期待 |
 |            | 依赖血缘调度任务管理  | 敬请期待 |
@@ -95,7 +95,7 @@ DataLink 开源项目及社区正在建设，希望本项目可以帮助你更�
 
 抢先体验( main 主支)：dlink-0.3.0-SANPSHOT
 
-稳定版本( 0.2.3 分支)：dlink-0.2.3
+稳定版本( 0.3.0 分支)：dlink-0.3.0
 
 ### 从安装包开始
 
@@ -159,24 +159,22 @@ dlink -- 父项目
 |-dlink-web -- React 前端
 ```
 
-#### 前端打包
-
-```shell
-npm run build
-```
-
-前端打包后的 dlink-web/dist 目录下的内容放到  dlink-admin 的 static 下或者使用 Nginx 代理。
-
-#### 后台编译打包
+#### 编译打包
 
 ```shell
 mvn clean install -Dmaven.test.skip=true
 ```
-前端编译报错时：npm install -g umi
+
+前端编译umi报错时：npm install -g umi
+
 #### 扩展Connector及UDF
 
 将 Flink 集群上已扩展好的 Connector 和 UDF 直接放入 Dlink 的 lib 下，然后重启即可。
 定制 Connector 过程同 Flink 官方一样。
+
+#### 扩展Metadata
+
+遵循SPI。
 
 #### 扩展其他版本的Flink
 
@@ -222,14 +220,14 @@ FROM MyTable
 GROUP BY myField
 AGG BY TOP2(value) as (value,rank);
 ```
-6. MaxRowNum 为同步执行时预览查询结果的最大集合长度，默认 100，最大 9999。
+6. MaxRowNum 为批流执行Select时预览查询结果的最大集合长度，默认 100，最大 9999。
 7. SavePointPath 当前版本属于非 Jar 提交，暂不可用。
-8. Flink 集群与共享会话构成了唯一的 Catalogue ,即您可以通过自定义一个会话 key，然后将当前会话 key 告诉您的战友，那他可以用该 key 访问您在集群上的 Catalogue信息与缓存。当然会话数量有限制，最大256*0.75，未来版本会开放设置。当不选择会话值时，默认为临时会话。
+8. Flink 共享会话共享 Catalogue 。
 9. 连接器为 Catalogue 里的表信息，清空按钮会销毁当前会话。
 10. Local 模式请使用少量测试数据，真实数据请使用远程集群。
 11. 执行 SQL 时，如果您选中了部分 SQL，则会执行选中的内容，否则执行全部内容。
 12. 小火箭的提交功能是异步提交当前任务保存的 FlinkSQL 及配置到集群。无法提交草稿。
-13. 执行信息或者历史中那个很长很长的就是集群上的 JobId，只有同步执行才会记录执行信息和历史。
+13. 执行信息或者历史中那个很长很长的就是集群上的 JobId。
 14. 草稿是无法被异步远程提交的，只能同步执行。
 15. 灰色按钮代表近期将实现。
 16. 同步执行时可以自由指定任务名，异步提交默认为作业名。
@@ -279,37 +277,53 @@ QQ社区群：**543709668**，申请备注 “ Dlink ”，不写不批哦
 
 > 首页
 
-![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTrkkX1Jsib7GxQY7tpiciaNdkGIAFicLZ3bwSawOianJQnNWuKAvZJ3Bb00DiaBxtxvnXgToGibPAwMFhs6A/0?wx_fmt=png)
+![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTrh5UYychtscpfXuuKt16CvTKz0dcibiavX4ZHA1wSHUvXLlsRvcghHKOhLmIMicJWlnp61L2gxyJEwg/0?wx_fmt=png)
 
-> Studio 执行信息
+> Studio 任务提交
 
-![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTrkkX1Jsib7GxQY7tpiciaNdkGApFiacyxkKERLE9FhsteTeTovcjTQHiaPKcxY6YqSukkVYZWVFGxPJibQ/0?wx_fmt=png)
+![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTrh5UYychtscpfXuuKt16Cv1oWyfwgHbcYQGEyS0xg8SVVArEmPXVWVSQk2AGWO0cnh9C3ZtyXeJg/0?wx_fmt=png)
 
-> Studio 数据预览
+> Studio 语法逻辑检查
 
-![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTrkkX1Jsib7GxQY7tpiciaNdkG5mNQFZp4YIuwIrh6cJteFIwsbomibSk32hWbFqlt887F9lee9NYT8fQ/0?wx_fmt=png)
+![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTrh5UYychtscpfXuuKt16Cvhpib8mBVribEEEUacvddKxL28xwjWicwIoJ78YTGLgtqZ2dKWfAFOckTw/0?wx_fmt=png)
+
+> Studio 批流预览
+
+![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTrh5UYychtscpfXuuKt16CvJ1roopzpX0zSyC2gP1p3a7fZykXqn90k38wOjARrR9DHiajbQAldEQA/0?wx_fmt=png)
 
 > Studio 异常反馈
 
-![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTo5cwuZy7GSLibw5J7Lx6cicxTGIh7fibBgd45wqjSY3WOK1xqA4dE6XfaOjCeUmib9y4sKqYI0rylrsg/0?wx_fmt=png)
+![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTrh5UYychtscpfXuuKt16Cv7Ut058hld87PWgamiayRMz0X4eF8SkROnXGquVq5wc3OzkPf8tlWmGw/0?wx_fmt=png)
 
-> Studio 执行提示
+> Studio 进程监控
 
-![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTo5cwuZy7GSLibw5J7Lx6cicx9vFRcB0JaETyjXqdgeMRGB0ycWV0wYo9tsNlMicv4ww48zAHxUy4d2A/0?wx_fmt=png)
+![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTrh5UYychtscpfXuuKt16CvQKRDlwya3rEaJzzhVohZRTponJXnf4iaZ85Q8Vic8iaLLvcTIQJrJOZOQ/0?wx_fmt=png)
 
 > Studio 执行历史
 
-![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTo5cwuZy7GSLibw5J7Lx6cicxoxk9PcDibbr8vxyvU4Mvib6259bwkPUAVWO7j1HzNPxBE5lPlnpWMDIw/0?wx_fmt=png)
+![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTrh5UYychtscpfXuuKt16CvDuLY9K4xalvoytxAlNjoR6Upf1v167rGicaPaAfIhibCGcEhOvzI7V1A/0?wx_fmt=png)
+
+> Studio 数据回放
+
+![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTrh5UYychtscpfXuuKt16CvLlyAyRYXPPkDrSYuKN6DB13wcHbLZ2qibbewQgXibeaWH8zOLq0lQyAQ/0?wx_fmt=png)
+
+> Studio 血缘分析
+
+![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTrh5UYychtscpfXuuKt16CvmrA22mmuFJ6QzAG5fEAMSbmMHXFsODzzrzOrFz3eGd7pEicN6fQupwg/0?wx_fmt=png)
 
 > Studio 函数浏览
 
-![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTo5cwuZy7GSLibw5J7Lx6cicxU4Enla8scGnuNb8gVEic9c0mJLPxSDEt7U6I5P4xB73bLMt5iaqfKrVA/0?wx_fmt=png)
+![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTrh5UYychtscpfXuuKt16Cvo3bmeQGbM3qMibOkbNGl6Uj8OibyR5CkOWp86YYlD6LDhZCX3VZLz9cA/0?wx_fmt=png)
 
-> 集群中心
+> 集群注册
 
-![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTo5cwuZy7GSLibw5J7Lx6cicxep8XicicrZPQcY1q8ehTIH2eTibH0KR0vpF0srhkFMBTcxgmJTzp8tia8Q/0?wx_fmt=png)
+![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTrh5UYychtscpfXuuKt16Cv2010EVibf5rvht2nQVu7dAIoUMGgwh7PUWk9HWUjgyy2emSLGCqkdeQ/0?wx_fmt=png)
 
-> 文档中心
+> 数据源注册
 
-![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTo5cwuZy7GSLibw5J7Lx6cicxh70BibdyHicHopaBsWlp0g3WLHpEKPAl0obonjxhKHtdlWjRslVekbIg/0?wx_fmt=png)
+![](https://mp.weixin.qq.com/cgi-bin/filepage?type=2&begin=0&count=12&token=2057025352&lang=zh_CN)
+
+> 元数据查询
+
+![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTrh5UYychtscpfXuuKt16Cvwh7ES41AWxmujZtg0icuvzZc2WGRROgLv77devjaJ4p18X2Yv1ibklTA/0?wx_fmt=png)
 
