@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Form, Button, Input, Modal, Select,Switch} from 'antd';
+import {Form, Button, Input, Modal, Select} from 'antd';
 
 import {ClusterTableListItem} from "@/pages/Cluster/data";
 
@@ -39,6 +39,7 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
           rules={[{required: true, message: '请输入名称！'}]}>
           <Input placeholder="请输入唯一英文标识"/>
         </Form.Item>
+
         <Form.Item
           name="alias"
           label="名称"
@@ -57,10 +58,12 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
         </Form.Item>
         <Form.Item
           name="hosts"
-          label="Hosts"
+          label="JobManager HA 地址"
         >
-          <Input.TextArea placeholder="添加 Flink Hosts...例如：127.0.0.1:8081,127.0.0.1:8091" allowClear
-                    autoSize={{minRows: 3, maxRows: 10}}/>
+          <Input.TextArea
+            placeholder="添加 Flink 集群的 JobManager 的 RestApi 地址。当 HA 模式时，地址间用英文逗号分隔，例如：192.168.123.101:8081,192.168.123.102:8081,192.168.123.103:8081"
+            allowClear
+            autoSize={{minRows: 3, maxRows: 10}}/>
         </Form.Item>
         <Form.Item
           name="note"

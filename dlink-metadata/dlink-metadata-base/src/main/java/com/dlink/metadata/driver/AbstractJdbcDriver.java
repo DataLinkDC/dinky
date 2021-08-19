@@ -1,9 +1,12 @@
 package com.dlink.metadata.driver;
 
 import com.dlink.assertion.Asserts;
+import com.dlink.constant.CommonConstant;
 import com.dlink.model.Column;
 import com.dlink.model.Schema;
 import com.dlink.model.Table;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -24,23 +27,23 @@ import java.util.List;
  **/
 public abstract class AbstractJdbcDriver extends AbstractDriver {
 
+    private static Logger logger = LoggerFactory.getLogger(AbstractJdbcDriver.class);
+
     protected Connection conn;
 
     abstract String getDriverClass();
 
     @Override
-    public boolean test() {
+    public String test() {
         Asserts.checkNotNull(config, "无效的数据源配置");
         try {
             Class.forName(getDriverClass());
             DriverManager.getConnection(config.getUrl(), config.getUsername(), config.getPassword()).close();
-        } catch (SQLException e) {
-//            logger.error("Jdbc链接测试失败！错误信息为：" + e.getMessage(), e);
-            return false;
         } catch (Exception e) {
-            return false;
+            logger.error("Jdbc链接测试失败！错误信息为：" + e.getMessage(), e);
+            return e.getMessage();
         }
-        return true;
+        return CommonConstant.HEALTHY;
     }
 
     @Override
@@ -65,7 +68,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         }
     }
 
-    public void close(PreparedStatement preparedStatement,ResultSet results){
+    public void close(PreparedStatement preparedStatement, ResultSet results) {
         try {
             if (Asserts.isNotNull(results)) {
                 results.close();
@@ -97,7 +100,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            close(preparedStatement,results);
+            close(preparedStatement, results);
         }
         return schemas;
     }
@@ -125,7 +128,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            close(preparedStatement,results);
+            close(preparedStatement, results);
         }
         return tableList;
     }
@@ -135,7 +138,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         List<Column> columns = new ArrayList<>();
         PreparedStatement preparedStatement = null;
         ResultSet results = null;
-        String tableFieldsSql = getDBQuery().columnsSql(schemaName,tableName);
+        String tableFieldsSql = getDBQuery().columnsSql(schemaName, tableName);
         tableFieldsSql = String.format(tableFieldsSql, tableName);
         try {
             preparedStatement = conn.prepareStatement(tableFieldsSql);
@@ -160,8 +163,8 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            close(preparedStatement,results);
+        } finally {
+            close(preparedStatement, results);
         }
         return columns;
     }
@@ -263,7 +266,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            close(preparedStatement,results);
+            close(preparedStatement, results);
         }
         return datas;
     }

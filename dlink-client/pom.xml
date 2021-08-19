@@ -15,5 +15,6 @@
     <modules>
         <module>dlink-client-1.12</module>
         <module>dlink-client-1.13</module>
+        <module>dlink-client-1.11</module>
     </modules>
 </project>

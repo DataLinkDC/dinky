@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <settings>
+        <!--logImpl指定MyBatis所用的日志工具，未指定时将自动查找，查找顺序是SLF4J、Apache Commons Logging、Log4j2、Log4j、JDK logging，如果一个都未找到，日志功能就会被禁用，我们可以设置mybatis使用的日志工具，value可选的值有：SLF4J、LOG4J、LOG4J2、JDK_LOGGING、COMMONS_LOGGING、STDOUT_LOGGING、NO_LOGGING-->
+        <!--如果是springboot+log4j2，那就是下面的-->
+        <!--<setting name="logImpl" value="LOG4J2" />-->
+        <!--如果加上了slf4j，那就需要改成SLF4J-->
+        <setting name="logImpl" value="SLF4J" />
+    </settings>
+</configuration>

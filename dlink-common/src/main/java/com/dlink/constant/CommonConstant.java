@@ -10,5 +10,9 @@ public interface CommonConstant {
     /**
      * 项目版本号(banner使用)
      */
-    String PROJECT_VERSION = "0.1.0";
+    String PROJECT_VERSION = "0.3.0";
+    /**
+     * 实例健康
+     */
+    String HEALTHY = "1";
 }

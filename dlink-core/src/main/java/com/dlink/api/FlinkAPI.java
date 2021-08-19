@@ -74,4 +74,9 @@ public class FlinkAPI {
         get(FlinkRestAPIConstant.JOBS+jobId+FlinkRestAPIConstant.CANCEL);
         return true;
     }
+
+    public String getVersion(){
+        JsonNode result = get(FlinkRestAPIConstant.CONFIG);
+        return result.get("flink-version").asText();
+    }
 }

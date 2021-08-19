@@ -20,7 +20,7 @@ export default (): React.ReactNode => {
         <Alert
           message={intl.formatMessage({
             id: 'pages.welcome.alertMessage',
-            defaultMessage: '实时计算平台 Dlink & Apache Flink 即将发布，目前为体验版，版本号为 0.3.0。',
+            defaultMessage: '实时计算平台 Dlink & Apache Flink 即将发布，目前为体验版，版本号为 0.3.1。',
           })}
           type="success"
           showIcon
@@ -272,6 +272,28 @@ export default (): React.ReactNode => {
                 </li>
                 <li>
                   <Link>界面交互升级</Link>
+                </li>
+              </ul>
+            </Paragraph>
+          </Timeline.Item>
+          <Timeline.Item><Text code>0.3.1</Text> <Text type="secondary">2021-08-2?</Text>
+            <p> </p>
+            <Paragraph>
+              <ul>
+                <li>
+                  <Link>解决日志无法正确输出的bug</Link>
+                </li>
+                <li>
+                  <Link>解决数据源注册可能失败的bug</Link>
+                </li>
+                <li>
+                  <Link>扩展了对Flink 1.11的支持，并更新了其他的最新版本</Link>
+                </li>
+                <li>
+                  <Link>Flink集群添加了版本号的自动获取及展示</Link>
+                </li>
+                <li>
+                  <Link>修复了本地环境+远程执行导致集群查询未果的bug</Link>
                 </li>
               </ul>
             </Paragraph>

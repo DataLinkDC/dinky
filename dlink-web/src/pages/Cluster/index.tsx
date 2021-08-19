@@ -131,7 +131,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: 'Hosts',
+      title: 'JobManager HA 地址',
       sorter: true,
       dataIndex: 'hosts',
       valueType: 'textarea',
@@ -139,16 +139,23 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       hideInSearch: true,
       hideInTable: true,
       renderFormItem: (item, {defaultRender, ...rest}, form) => {
-        return <TextArea placeholder="添加 Flink Hosts...例如：127.0.0.1:8081,127.0.0.1:8091" allowClear autoSize={{ minRows: 3, maxRows: 10 }}/>;
+        return <TextArea placeholder="添加 Flink 集群的 JobManager 的 RestApi 地址。当 HA 模式时，地址间用英文逗号分隔，例如：192.168.123.101:8081,192.168.123.102:8081,192.168.123.103:8081" allowClear autoSize={{ minRows: 3, maxRows: 10 }}/>;
       },
     },
     {
-      title: 'JMHost',
+      title: '当前 JobManager 地址',
       sorter: true,
       dataIndex: 'jobManagerHost',
       hideInForm: true,
       hideInSearch: true,
-      hideInTable: true,
+      hideInTable: false,
+    },{
+      title: '版本',
+      sorter: true,
+      dataIndex: 'version',
+      hideInForm: true,
+      hideInSearch: true,
+      hideInTable: false,
     },
     {
       title: '状态',

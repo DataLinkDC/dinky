@@ -36,7 +36,7 @@ public class OracleTest {
         config.setUsername("cdr");
         config.setPassword("cdr");
         config.setUrl("jdbc:oracle:thin:@10.1.51.25:1521:orcl");
-        boolean test = Driver.build(config).test();
+        String test = Driver.build(config).test();
         System.out.println(test);
         System.out.println("end...");
     }

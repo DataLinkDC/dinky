@@ -5,6 +5,7 @@ export type ClusterTableListItem = {
   type: string,
   hosts: string,
   jobManagerHost: string,
+  version: string,
   status: number,
   note: string,
   enabled: boolean,

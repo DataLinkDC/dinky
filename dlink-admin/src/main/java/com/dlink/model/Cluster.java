@@ -26,6 +26,8 @@ public class Cluster extends SuperEntity {
 
     private String jobManagerHost;
 
+    private String version;
+
     private Integer status;
 
     private String note;

@@ -143,7 +143,7 @@ const StudioCA = (props:any) => {
       <TabPane
         tab={
           <span>
-          单表表级血缘
+          单任务表级血缘
         </span>
         }
         key="OneTableCA"
@@ -164,7 +164,7 @@ const StudioCA = (props:any) => {
       <TabPane
         tab={
           <span>
-          单表字段级血缘
+          单任务字段级血缘
         </span>
         }
         key="OneColumnCA"

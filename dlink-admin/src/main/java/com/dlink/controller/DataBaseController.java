@@ -3,10 +3,13 @@ package com.dlink.controller;
 import com.dlink.assertion.Asserts;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
+import com.dlink.constant.CommonConstant;
 import com.dlink.model.DataBase;
 import com.dlink.service.DataBaseService;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +28,7 @@ import java.util.List;
 public class DataBaseController {
     @Autowired
     private DataBaseService databaseService;
+    private static Logger logger = LoggerFactory.getLogger(DataBaseController.class);
 
     /**
      * 新增或者更新
@@ -91,7 +95,13 @@ public class DataBaseController {
      */
     @PostMapping("/testConnect")
     public Result testConnect(@RequestBody DataBase database) {
-        return Result.succeed(databaseService.checkHeartBeat(database),"获取成功");
+        String msg = databaseService.testConnect(database);
+        boolean isHealthy =  Asserts.isEquals(CommonConstant.HEALTHY,msg);
+        if(isHealthy){
+            return Result.succeed("数据源连接测试成功!");
+        }else{
+            return Result.failed(msg);
+        }
     }
 
     /**
@@ -117,6 +127,7 @@ public class DataBaseController {
         Asserts.checkNotNull(dataBase,"该数据源不存在！");
         databaseService.checkHeartBeat(dataBase);
         databaseService.updateById(dataBase);
+        logger.warn("埋点日志");
         return Result.succeed(dataBase,"状态刷新完成");
     }
 

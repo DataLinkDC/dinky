@@ -49,7 +49,7 @@ public interface Driver {
 
     String getName();
 
-    boolean test();
+    String test();
 
     Driver connect();
 
