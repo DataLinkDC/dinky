@@ -36,7 +36,7 @@ public class MysqlTest {
         config.setUsername("dca");
         config.setPassword("dca");
         config.setUrl("jdbc:mysql://10.1.51.25:3306/dca?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&autoReconnect=true");
-        boolean test = Driver.build(config).test();
+        String test = Driver.build(config).test();
         System.out.println(test);
         System.out.println("end...");
     }

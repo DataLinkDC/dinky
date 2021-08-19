@@ -2,6 +2,7 @@ package com.dlink.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.assertion.Asserts;
+import com.dlink.constant.CommonConstant;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.DataBaseMapper;
 import com.dlink.metadata.driver.Driver;
@@ -24,8 +25,13 @@ import java.util.List;
 @Service
 public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBase> implements DataBaseService {
     @Override
+    public String testConnect(DataBase dataBase) {
+        return Driver.build(dataBase.getDriverConfig()).test();
+    }
+
+    @Override
     public boolean checkHeartBeat(DataBase dataBase) {
-        boolean isHealthy =  Driver.build(dataBase.getDriverConfig()).test();
+        boolean isHealthy =  Asserts.isEquals(CommonConstant.HEALTHY,Driver.build(dataBase.getDriverConfig()).test());
         dataBase.setStatus(isHealthy);
         dataBase.setHeartbeatTime(LocalDateTime.now());
         if(isHealthy){

@@ -14,6 +14,8 @@ import java.util.List;
  */
 public interface DataBaseService extends ISuperService<DataBase> {
 
+    String testConnect(DataBase dataBase);
+
     boolean checkHeartBeat(DataBase dataBase);
 
     boolean saveOrUpdateDataBase(DataBase dataBase);
