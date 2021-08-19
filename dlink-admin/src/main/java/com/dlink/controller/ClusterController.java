@@ -1,5 +1,6 @@
 package com.dlink.controller;
 
+import com.dlink.api.FlinkAPI;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
 import com.dlink.model.Cluster;
@@ -32,6 +33,7 @@ public class ClusterController {
     @PutMapping
     public Result saveOrUpdate(@RequestBody Cluster cluster) throws Exception {
         checkHealth(cluster);
+
         if(clusterService.saveOrUpdate(cluster)){
             return Result.succeed("新增成功");
         }else {
@@ -110,6 +112,7 @@ public class ClusterController {
         }else{
             cluster.setJobManagerHost(jobManagerHost);
             cluster.setStatus(1);
+            cluster.setVersion(FlinkAPI.build(jobManagerHost).getVersion());
         }
     }
 }

@@ -163,11 +163,20 @@ dlink -- 父项目
 
 #### 编译打包
 
+以下环境版本实测编译成功：
+
+|         环境          |   版本   |
+| :-------------------: | :------: |
+|         npm          |  7.19.0  |
+|       node.js        |  14.17.0 |
+|         jdk          | 1.8.0_201|
+|         maven        |  3.6.0   |
+
 ```shell
 mvn clean install -Dmaven.test.skip=true
 ```
 
-前端编译umi报错时：npm install -g umi
+如果前端编译 umi 报错时：npm install -g umi
 
 #### 扩展Connector及UDF
 

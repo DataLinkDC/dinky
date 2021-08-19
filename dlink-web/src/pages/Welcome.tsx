@@ -286,6 +286,15 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>解决数据源注册可能失败的bug</Link>
                 </li>
+                <li>
+                  <Link>扩展了对Flink 1.11的支持，并更新了其他的最新版本</Link>
+                </li>
+                <li>
+                  <Link>Flink集群添加了版本号的自动获取及展示</Link>
+                </li>
+                <li>
+                  <Link>修复了本地环境+远程执行导致集群查询未果的bug</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

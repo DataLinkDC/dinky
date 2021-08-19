@@ -10,6 +10,7 @@
         <result column="type" property="type" />
         <result column="hosts" property="hosts" />
         <result column="job_manager_host" property="jobManagerHost" />
+        <result column="version" property="version" />
         <result column="status" property="status" />
         <result column="note" property="note" />
         <result column="enabled" property="enabled" />
@@ -19,7 +20,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, alias, type,hosts,job_manager_host, status,note, enabled, create_time, update_time
+        id, name, alias, type,hosts,job_manager_host,version, status,note, enabled, create_time, update_time
     </sql>
 
 

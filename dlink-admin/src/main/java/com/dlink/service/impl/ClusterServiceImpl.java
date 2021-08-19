@@ -43,7 +43,7 @@ public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
 
     @Override
     public String buildEnvironmentAddress(boolean useRemote, Integer id) {
-        if(useRemote) {
+        if(useRemote&&id!=0) {
             return buildRemoteEnvironmentAddress(id);
         }else{
             return buildLocalEnvironmentAddress();
