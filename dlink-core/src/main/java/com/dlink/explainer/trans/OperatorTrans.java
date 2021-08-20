@@ -58,7 +58,7 @@ public class OperatorTrans extends AbstractTrans implements Trans {
     @Override
     public void translate() {
         name = pact;
-        Map map = MapParseUtils.parse(contents,"where");
+        Map map = MapParseUtils.parseForSelect(contents);
         translateSelect((ArrayList<String>) map.get("select"));
         joinType = (ArrayList<String>) map.get("joinType");
         where = map.containsKey("where")?map.get("where").toString():null;

@@ -3,6 +3,8 @@ package com.dlink.executor.custom;
 import com.dlink.result.SqlExplainResult;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.dag.Transformation;
+import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.core.JsonProcessingException;
+import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.graph.JSONGenerator;
@@ -162,8 +164,16 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
             if(execEnv instanceof ExecutorBase){
                 StreamGraph streamGraph = ExecutorUtils.generateStreamGraph(((ExecutorBase) execEnv).getExecutionEnvironment(), trans);
                 JSONGenerator jsonGenerator = new JSONGenerator(streamGraph);
-                ObjectNode jsonNode = jsonGenerator.getJSONNode();
-                return jsonNode;
+                String json = jsonGenerator.getJSON();
+                ObjectMapper mapper = new ObjectMapper();
+                ObjectNode objectNode =mapper.createObjectNode();
+                try {
+                    objectNode = (ObjectNode) mapper.readTree(json);
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }finally {
+                    return objectNode;
+                }
             }else{
                 throw new TableException("Unsupported SQL query! explainSql() need a single SQL to query.");
             }

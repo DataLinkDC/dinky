@@ -358,4 +358,7 @@ CREATE TABLE `dlink_database`  (
   UNIQUE INDEX `db_index`(`name`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
+ALTER TABLE `dlink`.`dlink_cluster`
+ADD COLUMN `version` varchar(20) NULL COMMENT '版本' AFTER `job_manager_host`;
+
 SET FOREIGN_KEY_CHECKS = 1;
