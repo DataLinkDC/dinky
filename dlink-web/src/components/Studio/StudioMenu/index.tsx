@@ -12,8 +12,9 @@ import Breadcrumb from "antd/es/breadcrumb/Breadcrumb";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
 import {handleAddOrUpdate, postDataArray} from "@/components/Common/crud";
-import {executeSql, explainSql} from "@/pages/FlinkSqlStudio/service";
+import {executeSql, explainSql, getStreamGraph} from "@/pages/FlinkSqlStudio/service";
 import StudioHelp from "./StudioHelp";
+import StudioGraph from "./StudioGraph";
 import {showCluster, showTables} from "@/components/Studio/StudioEvent/DDL";
 import {useState} from "react";
 import StudioExplain from "../StudioConsole/StudioExplain";
@@ -29,7 +30,9 @@ const StudioMenu = (props: any) => {
 
   const {tabs, current, currentPath, form, refs, dispatch, currentSession} = props;
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
+  const [graphModalVisible, handleGraphModalVisible] = useState<boolean>(false);
   const [explainData, setExplainData] = useState([]);
+  const [graphData, setGraphData] = useState();
 
   const execute = () => {
     let selectsql = null;
@@ -131,7 +134,7 @@ const StudioMenu = (props: any) => {
     });
   };
 
-  const onCheckSql = ()=>{
+  const onCheckSql = () => {
     let selectsql = null;
     if (current.monaco.current) {
       let selection = current.monaco.current.editor.getSelection();
@@ -169,6 +172,65 @@ const StudioMenu = (props: any) => {
       notification.close(taskKey);
       setExplainData(res.datas);
     })
+  };
+
+  const onGetStreamGraph=()=>{
+    let selectsql = null;
+    if (current.monaco.current) {
+      let selection = current.monaco.current.editor.getSelection();
+      selectsql = current.monaco.current.editor.getModel().getValueInRange(selection);
+    }
+    if (selectsql == null || selectsql == '') {
+      selectsql = current.value;
+    }
+    let useSession = !!currentSession.session;
+    let param = {
+      useSession: useSession,
+      session: currentSession.session,
+      useRemote: current.task.useRemote,
+      clusterId: current.task.clusterId,
+      useResult: current.task.useResult,
+      maxRowNum: current.task.maxRowNum,
+      statement: selectsql,
+      fragment: current.task.fragment,
+      jobName: current.task.jobName,
+      parallelism: current.task.parallelism,
+      checkPoint: current.task.checkPoint,
+      savePointPath: current.task.savePointPath,
+    };
+    const res = getStreamGraph(param);
+    handleGraphModalVisible(true);
+    res.then((result)=>{
+      if(result.code==0){
+        setGraphData(buildGraphData(result.datas));
+      }else{
+        setGraphData(undefined);
+      }
+    })
+  };
+
+  const buildGraphData=(data)=>{
+    let edges = [];
+    for(let i in data.nodes){
+      data.nodes[i].id=data.nodes[i].id.toString();
+      data.nodes[i].value={
+        title:data.nodes[i].pact,
+        items: [
+          {
+            text: data.nodes[i].contents,
+          },
+        ],
+      };
+      if(data.nodes[i].predecessors){
+        for(let j in data.nodes[i].predecessors){
+          edges.push({source: data.nodes[i].predecessors[j].id.toString(),
+            target: data.nodes[i].id.toString(),
+            value: data.nodes[i].predecessors[j].ship_strategy})
+        }
+      }
+    }
+    data.edges = edges;
+    return data;
   };
 
   const saveSqlAndSettingToTask = async () => {
@@ -288,14 +350,17 @@ const StudioMenu = (props: any) => {
             <Tooltip title="检查当前的 FlinkSql">
               <Button
                 type="text"
-                icon={<SafetyCertificateTwoTone />}
+                icon={<SafetyCertificateTwoTone/>}
                 onClick={onCheckSql}
               />
             </Tooltip>
-            <Button
-              type="text"
-              icon={<FlagTwoTone twoToneColor="#ddd"/>}
-            />
+            <Tooltip title="获取当前的 FlinkSql 的执行图">
+              <Button
+                type="text"
+                icon={<FlagTwoTone/>}
+                onClick={onGetStreamGraph}
+              />
+            </Tooltip>
             <Tooltip title="执行当前的 FlinkSql">
               <Button
                 type="text"
@@ -358,6 +423,16 @@ const StudioMenu = (props: any) => {
         modalVisible={modalVisible}
         data={explainData}
       />
+      <Modal
+        width={1200}
+        bodyStyle={{padding: '32px 40px 48px'}}
+        destroyOnClose
+        title="FlinkSQL 的 StreamGraph"
+        visible={graphModalVisible}
+        onCancel={() => handleGraphModalVisible(false)}
+      >
+        <StudioGraph graphData={graphData} />
+      </Modal>
     </Row>
   );
 };

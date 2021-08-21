@@ -15,6 +15,7 @@ import com.dlink.session.SessionConfig;
 import com.dlink.session.SessionInfo;
 import com.dlink.session.SessionPool;
 import com.dlink.trans.Operations;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.flink.api.common.JobID;
 import org.apache.flink.table.api.TableResult;
 
@@ -301,5 +302,10 @@ public class JobManager extends RunTime {
     public List<SqlExplainResult> explainSql(String statement){
         Explainer explainer = Explainer.build(executor);
         return explainer.explainSqlResult(statement);
+    }
+
+    public ObjectNode getStreamGraph(String statement){
+        Explainer explainer = Explainer.build(executor);
+        return explainer.getStreamGraph(statement);
     }
 }

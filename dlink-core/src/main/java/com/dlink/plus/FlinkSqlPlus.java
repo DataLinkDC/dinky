@@ -5,7 +5,7 @@ import com.dlink.explainer.Explainer;
 import com.dlink.explainer.ca.ColumnCAResult;
 import com.dlink.explainer.ca.TableCAResult;
 import com.dlink.result.SqlExplainResult;
-import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.flink.table.api.ExplainDetail;
 
 import java.util.ArrayList;

@@ -11,6 +11,7 @@ import com.dlink.result.SelectResult;
 import com.dlink.result.SqlExplainResult;
 import com.dlink.session.SessionInfo;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.util.List;
 
@@ -27,6 +28,8 @@ public interface StudioService {
     IResult executeDDL(StudioDDLDTO studioDDLDTO);
 
     List<SqlExplainResult> explainSql(StudioExecuteDTO studioExecuteDTO);
+
+    ObjectNode getStreamGraph(StudioExecuteDTO studioExecuteDTO);
 
     SelectResult getJobData(String jobId);
 

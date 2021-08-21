@@ -106,7 +106,7 @@ const StudioCA = (props:any) => {
     });
     res.then((result)=>{
       if(result.code==0){
-        setOneTableCAData(convertTreeData(result.datas[0]));
+        setOneTableCAData(fullTreeData(result.datas[0]));
       }else{
         setOneTableCAData(null);
       }
@@ -120,18 +120,18 @@ const StudioCA = (props:any) => {
     });
     res.then((result)=>{
       if(result.code==0){
-        setOneColumnCAData(convertTreeData(result.datas[0]));
+        setOneColumnCAData(fullTreeData(result.datas[0]));
       }else{
         setOneColumnCAData(null);
       }
     })
   };
 
-  const convertTreeData=(node)=>{
+  const fullTreeData=(node)=>{
     if(node){
       node.body=node.columns.toString();
       for(let i in node.children){
-        node.children[i] = convertTreeData(node.children[i])
+        node.children[i] = fullTreeData(node.children[i])
       }
       return node;
     }

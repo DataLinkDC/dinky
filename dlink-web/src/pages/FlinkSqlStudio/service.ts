@@ -28,6 +28,15 @@ export async function explainSql(params: StudioParam) {
   });
 }
 
+export async function getStreamGraph(params: StudioParam) {
+  return request<API.Result>('/api/studio/getStreamGraph', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
+
 export async function getJobData(jobId:string) {
   return request<API.Result>('/api/studio/getJobData', {
     method: 'GET',

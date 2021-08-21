@@ -13,7 +13,8 @@ import com.dlink.explainer.trans.TransGenerator;
 import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.result.SqlExplainResult;
 import com.dlink.utils.SqlUtil;
-import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.flink.table.api.ExplainDetail;
 import org.apache.flink.table.catalog.CatalogManager;
 import org.apache.flink.table.catalog.ObjectIdentifier;
@@ -33,6 +34,7 @@ import java.util.Optional;
 public class Explainer {
 
     private Executor executor;
+    private ObjectMapper mapper = new ObjectMapper();
 
     public Explainer(Executor executor) {
         this.executor = executor;
@@ -65,6 +67,22 @@ public class Explainer {
             }
         }
         return sqlExplainRecords;
+    }
+
+    public ObjectNode getStreamGraph(String statement){
+        List<SqlExplainResult> sqlExplainRecords = explainSqlResult(statement);
+        List<String> strPlans = new ArrayList<>();
+        for (int i = 0; i < sqlExplainRecords.size(); i++) {
+            if (Asserts.isNotNull(sqlExplainRecords.get(i).getType())
+                    && sqlExplainRecords.get(i).getType().contains(FlinkSQLConstant.DML)) {
+                strPlans.add(sqlExplainRecords.get(i).getSql());
+            }
+        }
+        if(strPlans.size()>0){
+            return translateObjectNode(strPlans.get(0));
+        }else{
+            return mapper.createObjectNode();
+        }
     }
 
     private List<TableCAResult> generateTableCA(String statement, boolean onlyTable) {
@@ -134,8 +152,8 @@ public class Explainer {
         return results;
     }
 
-    private ObjectNode translateObjectNode(String strPlans) {
-        return executor.getStreamGraph(strPlans);
+    private ObjectNode translateObjectNode(String statement) {
+        return executor.getStreamGraph(statement);
     }
 
     private List<Trans> translateTrans(ObjectNode plan) {
