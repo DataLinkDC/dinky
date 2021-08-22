@@ -6,16 +6,25 @@ import styles from "./index.less";
 import React, {useState} from "react";
 
 const StudioGraph = (props:any) => {
-  const {graphData,current,currentSession} = props;
+  const {data,current,currentSession} = props;
 
   const config = {
-    data:graphData,
+    data,
     nodeCfg: {
-      size: [140, 25],
+      size: [140, 65],
+      /*anchorPoints: [
+        [0.5, 1],
+        [0.5, 0],
+      ],*/
       items: {
-        padding: 6,
+        padding: [6, 0, 0],
         containerStyle: {
           fill: '#fff',
+          width:'100px',
+          display: 'inline-block',
+          overflow:'hidden',
+          textOverflow:'ellipsis',
+          whiteSpace:'nowrap',
         },
         style: (cfg, group, type) => {
           const styles = {
@@ -28,33 +37,29 @@ const StudioGraph = (props:any) => {
             },
             text: {
               fill: '#aaa',
+              width:'100px',
+              display: 'inline-block',
+              overflow:'hidden',
+          textOverflow:'ellipsis',
+          whiteSpace:'nowrap',
             },
           };
           return styles[type];
         },
       },
+
       nodeStateStyles: {
         hover: {
           stroke: '#1890ff',
           lineWidth: 2,
         },
       },
-      title: {
-        containerStyle: {
-          fill: 'transparent',
-        },
-        style: {
-          fill: '#000',
-          fontSize: 12,
-        },
-      },
       style: {
-        fill: '#E6EAF1',
-        stroke: '#B2BED5',
         radius: [2, 2, 2, 2],
       },
     },
     edgeCfg: {
+      type: 'polyline',
       label: {
         style: {
           fill: '#aaa',
@@ -62,51 +67,33 @@ const StudioGraph = (props:any) => {
           fillOpacity: 1,
         },
       },
-      style: (edge) => {
-        const stroke = edge.target === '0' ? '#c86bdd' : '#5ae859';
-        return {
-          stroke,
-          lineWidth: 1,
-          strokeOpacity: 0.5,
-        };
+      endArrow: {
+        fill: '#ddd',
       },
       edgeStateStyles: {
         hover: {
+          stroke: '#1890ff',
           lineWidth: 2,
-          strokeOpacity: 1,
         },
       },
     },
     markerCfg: (cfg) => {
-      const {edges} = graphData;
+      const { edges } = data;
       return {
         position: 'right',
-        show: edges.find((item) => item.source == cfg.id),
-        collapsed: !edges.find((item) => item.source == cfg.id),
+        show: edges.find((item) => item.source === cfg.id),
+        collapsed: !edges.find((item) => item.source === cfg.id),
       };
     },
     behaviors: ['drag-canvas', 'zoom-canvas', 'drag-node'],
+    /*layout: {
+      rankdir: 'TB',
+      ranksepFunc: () => 20,
+    },*/
   };
 
-
-
-
-  /*const buildGraphEdges=(nodes)=>{
-    let edges = [];
-    for(let i in nodes){
-      if(nodes[i].predecessors){
-        for(let j in nodes[i].predecessors){
-          edges.push({source: nodes[i].predecessors[j].id.toString(),
-            target: nodes[i].id.toString(),
-            value: nodes[i].predecessors[j].ship_strategy})
-        }
-      }
-    }
-    return edges;
-  };*/
-
   return (
-    <>{graphData? <FlowAnalysisGraph {...config} /> :<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+    <>{data? <FlowAnalysisGraph {...config} /> :<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
     </>
   );
 };

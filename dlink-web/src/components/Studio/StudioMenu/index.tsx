@@ -218,6 +218,7 @@ const StudioMenu = (props: any) => {
         items: [
           {
             text: data.nodes[i].contents,
+            value: data.nodes[i].parallelism,
           },
         ],
       };
@@ -384,12 +385,10 @@ const StudioMenu = (props: any) => {
               cancelText="取消"
             >
               <Tooltip title="停止所有的 FlinkSql 任务，暂不可用">
-                {/*<Badge size="small" count={1} offset={[-5, 5]}>*/}
                 <Button
                   type="text"
                   icon={<PauseCircleTwoTone twoToneColor="#ddd"/>}
                 />
-                {/*</Badge>*/}
               </Tooltip>
             </Popconfirm>
             <Divider type="vertical"/>
@@ -431,7 +430,7 @@ const StudioMenu = (props: any) => {
         visible={graphModalVisible}
         onCancel={() => handleGraphModalVisible(false)}
       >
-        <StudioGraph graphData={graphData} />
+        <StudioGraph data={graphData} />
       </Modal>
     </Row>
   );
