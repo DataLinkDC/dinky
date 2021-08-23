@@ -45,7 +45,7 @@ public class MapParseUtils {
 
     /**
      * 获取嵌套最外层的下标对  table=[[default_catalog, default_database, score, project=[sid, cls, score]]], fields=[sid, cls, score]
-     *                           ^(下标x)                                                              ^(下标y)   ^(下标z)         ^(下标n)
+     * ^(下标x)                                                              ^(下标y)   ^(下标z)         ^(下标n)
      * List<Integer>   [x, y, z, n]
      *
      * @param inStr
@@ -74,6 +74,37 @@ public class MapParseUtils {
         return nestIndexList;
     }
 
+    /**
+     * 获取最外层括号下标     table=[((f.SERIAL_NO || f.PRESC_NO) || f.ITEM_NO) AS EXPR$0, ((f.DATE || f.TIME) || f.ITEM_NO) AS EXPR$2]
+     * ^(下标x)                                 ^(下标y)      ^(下标z)                         ^(下标n)
+     * List<Integer>   [x, y, z, n]
+     *
+     * @param inStr
+     * @return
+     */
+    public static List<Integer> getBracketsList(String inStr) {
+        Stack nestIndexList = new Stack();
+        if (inStr == null || inStr.isEmpty()) {
+            return nestIndexList;
+        }
+        Deque<Integer> stack = new LinkedList<>();
+        for (int i = 0; i < inStr.length(); i++) {
+            if (inStr.charAt(i) == '(') {
+                if (stack.isEmpty()) {
+                    nestIndexList.add(i);
+                }
+                stack.push(i);
+            }
+            if (inStr.charAt(i) == ')') {
+                stack.pop();
+                if (stack.size() == 0) {
+                    nestIndexList.add(i);
+                }
+            }
+        }
+        return nestIndexList;
+    }
+
 
     /**
      * 转换map
@@ -81,9 +112,9 @@ public class MapParseUtils {
      * @param inStr
      * @return
      */
-    public static Map parse(String inStr,String... blackKeys) {
+    public static Map parse(String inStr, String... blackKeys) {
         if (getStrIsNest(inStr)) {
-            return parseForNest(inStr,blackKeys);
+            return parseForNest(inStr, blackKeys);
         } else {
             return parseForNotNest(inStr);
         }
@@ -95,7 +126,7 @@ public class MapParseUtils {
      * @param inStr
      * @return
      */
-    public static Map parseForNest(String inStr,String... blackKeys) {
+    public static Map parseForNest(String inStr, String... blackKeys) {
         Map map = new HashMap();
         List<Integer> nestList = getNestList(inStr);
         int num = nestList.size() / 2;
@@ -105,39 +136,71 @@ public class MapParseUtils {
                 String key = getMapKey(substring);
                 boolean isNext = true;
                 for (int j = 0; j < blackKeys.length; j++) {
-                    if(key.equals(blackKeys[j])){
+                    if (key.equals(blackKeys[j])) {
                         isNext = false;
                     }
                 }
-                if(isNext) {
+                if (isNext) {
                     if (getStrIsNest(substring)) {
                         map.put(key, getMapListNest(substring));
                     } else {
                         map.put(key, getMapList(substring));
                     }
-                }else{
-                    map.put(key,  getTextValue(substring));
+                } else {
+                    map.put(key, getTextValue(substring));
                 }
             } else {
                 String substring = inStr.substring(nestList.get(2 * i - 1) + 2, nestList.get(2 * i + 1) + 1);
                 String key = getMapKey(substring);
                 boolean isNext = true;
                 for (int j = 0; j < blackKeys.length; j++) {
-                    if(key.equals(blackKeys[j])){
+                    if (key.equals(blackKeys[j])) {
                         isNext = false;
                     }
                 }
-                if(isNext) {
+                if (isNext) {
                     if (getStrIsNest(substring)) {
                         map.put(key, getMapListNest(substring));
                     } else {
                         map.put(key, getMapList(substring));
                     }
-                }else{
-                    map.put(key,  getTextValue(substring));
+                } else {
+                    map.put(key, getTextValue(substring));
                 }
             }
         }
+        return map;
+    }
+
+    /**
+     * @return java.util.Map
+     * @author lewnn
+     * @operate
+     * @date 2021/8/20 15:03
+     */
+    public static Map parseForSelect(String inStr) {
+        Map map = new HashMap();
+        List<Integer> bracketsList = getBracketsList(inStr);
+        String mapKey = getMapKey(inStr);
+        List<String> list = new ArrayList<>();
+        int size = bracketsList.size();
+        if (size % 2 != 0) {
+            // 此处若size部位偶数 则返回空   可能会存在问题
+            return map;
+        } else {
+            int numSize = size / 2;//括号对数
+            for (int i = 0; i < numSize; i++) {
+                String msgStr = "";
+                if (2 * i + 2 >= size) {
+                    msgStr = inStr.substring(bracketsList.get(2 * i), inStr.lastIndexOf("]"));
+                } else {
+                    msgStr = inStr.substring(bracketsList.get(2 * i), bracketsList.get(2 * i + 2));
+                    msgStr = msgStr.substring(0, msgStr.lastIndexOf(",") > 0 ? msgStr.lastIndexOf(",") : msgStr.length());
+                }
+                list.add(msgStr);
+            }
+        }
+        map.put(mapKey, list);
         return map;
     }
 
@@ -151,10 +214,10 @@ public class MapParseUtils {
         String[] split = inStr.split("], ");
         Map map = new HashMap();
         for (int i = 0; i < split.length; i++) {
-            if(i == split.length -1){
-                map.put(getMapKey( split[i]), getMapList(split[i]));
-            }else {
-                map.put(getMapKey( split[i]+ "]"), getMapList(split[i] + "]"));
+            if (i == split.length - 1) {
+                map.put(getMapKey(split[i]), getMapList(split[i]));
+            } else {
+                map.put(getMapKey(split[i] + "]"), getMapList(split[i] + "]"));
             }
         }
         return map;
@@ -235,7 +298,7 @@ public class MapParseUtils {
         return list;
     }
 
-    private static String getTextValue(String splitStr){
+    private static String getTextValue(String splitStr) {
         return splitStr.substring(splitStr.indexOf("[") + 1, splitStr.lastIndexOf("]"));
     }
 }

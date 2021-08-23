@@ -48,6 +48,14 @@ public class StudioController {
     }
 
     /**
+     * 解释Sql
+     */
+    @PostMapping("/getStreamGraph")
+    public Result getStreamGraph(@RequestBody StudioExecuteDTO studioExecuteDTO)  {
+        return Result.succeed(studioService.getStreamGraph(studioExecuteDTO),"获取执行图成功");
+    }
+
+    /**
      * 进行DDL操作
      */
     @PostMapping("/executeDDL")

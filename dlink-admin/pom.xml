@@ -161,6 +161,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot-dependencies.version}</version>
                 <configuration>
                     <layout>ZIP</layout>
                     <mainClass>com.dlink.Dlink</mainClass>

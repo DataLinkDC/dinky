@@ -23,6 +23,7 @@ import com.dlink.session.SessionInfo;
 import com.dlink.session.SessionPool;
 import com.dlink.trans.Operations;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -69,6 +70,16 @@ public class StudioServiceImpl implements StudioService {
         }
         JobManager jobManager = JobManager.build(config);
         return jobManager.explainSql(studioExecuteDTO.getStatement());
+    }
+
+    @Override
+    public ObjectNode getStreamGraph(StudioExecuteDTO studioExecuteDTO) {
+        JobConfig config = studioExecuteDTO.getJobConfig();
+        if(!config.isUseSession()) {
+            config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
+        }
+        JobManager jobManager = JobManager.build(config);
+        return jobManager.getStreamGraph(studioExecuteDTO.getStatement());
     }
 
     @Override

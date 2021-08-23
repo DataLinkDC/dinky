@@ -295,6 +295,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>修复了本地环境+远程执行导致集群查询未果的bug</Link>
                 </li>
+                <li>
+                  <Link>增加了 Flink StreamGraph 预览功能</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

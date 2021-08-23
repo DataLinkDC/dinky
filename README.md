@@ -170,7 +170,9 @@ dlink -- 父项目
 |         npm          |  7.19.0  |
 |       node.js        |  14.17.0 |
 |         jdk          | 1.8.0_201|
-|         maven        |  3.6.0   |
+|        maven         |  3.6.0   |
+|       lombok         |  1.18.16 |
+|        mysql         |   5.7+   |
 
 ```shell
 mvn clean install -Dmaven.test.skip=true
@@ -191,7 +193,7 @@ mvn clean install -Dmaven.test.skip=true
 
 Flink 的版本取决于 lib 下的 dlink-client-1.12.jar。
 当前版本默认为 Flink 1.12.4 API。
-向其他版本的集群提交任务可能存在问题，未来将实现 1.13、1.11、1.10.
+向其他版本的集群提交任务可能存在问题，已实现 1.11、1.12、1.13，切换版本时只需要将对应依赖在lib下进行替换，然后重启即可。
 
 ## 使用手册
 
@@ -203,11 +205,9 @@ Flink 的版本取决于 lib 下的 dlink-client-1.12.jar。
 
 #### 集群中心
 
-注册Flink集群地址，格式为 host:port ，用英文逗号分隔。
-
-新增和修改的等待时间较长，是因为需要重新计算最新的 JM 地址。
-
-心跳检测为手动触发，会更新集群状态与 JM 地址。
+注册 Flink 集群地址时，格式为 host:port ，用英文逗号分隔。即添加 Flink 集群的 JobManager 的 RestApi 地址。当 HA 模式时，地址间用英文逗号分隔，例如：192.168.123.101:8081,192.168.123.102:8081,192.168.123.103:8081。
+新增和修改的等待时间较长，是因为需要检测最新的 JobManager 地址。
+心跳检测为手动触发，会更新集群状态与 JobManager 地址。
 
 #### Studio
 
@@ -215,7 +215,6 @@ Flink 的版本取决于 lib 下的 dlink-client-1.12.jar。
 2. 在中间编辑区编写 FlinkSQL 。
 3. 在右侧配置执行参数。
 4. Fragment 开启后，可以使用增强的 sql 片段语法：
-
 ```sql
 sf:=select * from;tb:=student;
 ${sf} ${tb}
@@ -223,7 +222,6 @@ ${sf} ${tb}
 select * from student
 ```
 5. 内置 sql 增强语法-表值聚合：
-
 ```sql
 CREATE AGGTABLE aggdemo AS
 SELECT myField,value,rank
@@ -233,11 +231,11 @@ AGG BY TOP2(value) as (value,rank);
 ```
 6. MaxRowNum 为批流执行Select时预览查询结果的最大集合长度，默认 100，最大 9999。
 7. SavePointPath 当前版本属于非 Jar 提交，暂不可用。
-8. Flink 共享会话共享 Catalogue 。
-9. 连接器为 Catalogue 里的表信息，清空按钮会销毁当前会话。
+8. Flink 共享会话共享 Catalog 。
+9. 连接器为 Catalog 里的表信息，清空按钮会销毁当前会话。
 10. Local 模式请使用少量测试数据，真实数据请使用远程集群。
 11. 执行 SQL 时，如果您选中了部分 SQL，则会执行选中的内容，否则执行全部内容。
-12. 小火箭的提交功能是异步提交当前任务保存的 FlinkSQL 及配置到集群。无法提交草稿。
+12. 小火箭的提交功能是异步提交当前任务已保存的 FlinkSQL 及配置到集群。无法提交草稿。
 13. 执行信息或者历史中那个很长很长的就是集群上的 JobId。
 14. 草稿是无法被异步远程提交的，只能同步执行。
 15. 灰色按钮代表近期将实现。
@@ -256,7 +254,7 @@ AGG BY TOP2(value) as (value,rank);
 
 [Mybatis Plus](https://github.com/baomidou/mybatis-plus)
 
-[ant-design-pro](https://github.com/aiwenmo/ant-design-pro)
+[ant-design-pro](https://github.com/ant-design/ant-design-pro)
 
 [Monaco Editor](https://github.com/Microsoft/monaco-editor)
 
