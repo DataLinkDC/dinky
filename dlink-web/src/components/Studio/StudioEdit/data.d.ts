@@ -23,9 +23,9 @@ export type BaseDataSourceHeader = {
 }
 
 export type CompletionItem = {
-  label?: string,
+  label: string,
   kind?: any,
-  insertText?: string,
+  insertText: string,
   insertTextRules?: any,
   detail?: string,
 }

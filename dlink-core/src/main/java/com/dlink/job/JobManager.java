@@ -76,7 +76,7 @@ public class JobManager extends RunTime {
 
     private Executor createExecutor() {
         initEnvironmentSetting();
-        if (config.isUseRemote()) {
+        if (config.isUseRemote()&&config.getClusterId()!=0) {
             executor = Executor.buildRemoteExecutor(environmentSetting, config.getExecutorSetting());
             return executor;
         } else {

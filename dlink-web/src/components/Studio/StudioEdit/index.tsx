@@ -1,6 +1,5 @@
 import React, {useEffect, useImperativeHandle, useRef} from 'react';
 import * as _monaco from "monaco-editor";
-// import MonacoEditor from "react-monaco-editor/lib/editor";
 import MonacoEditor from "react-monaco-editor";
 import {BaseDataSourceField, BaseDataSourceHeader, CompletionItem} from "./data";
 import Completion from "./completion";
@@ -20,6 +19,13 @@ interface IRightContent {
   secondRightData: (BaseDataSourceField|BaseDataSourceHeader)[];
 }
 
+interface ISuggestions {
+  label: string;
+  kind: string;
+  insertText: string;
+  detail?: string;
+}
+
 const FlinkSqlEditor = (props:any) => {
   const {
       height = '100%',
@@ -30,9 +36,7 @@ const FlinkSqlEditor = (props:any) => {
         selectOnLineNumbers: true,
         renderSideBySide: false,
       },
-    // current,
     tabs,
-    // current=props.current,
     dispatch,
     } = props
   ;
@@ -52,15 +56,8 @@ const FlinkSqlEditor = (props:any) => {
     return 0;
   };
   const tabIndex = getTabIndex();
-
   const code: any = useRef(tabs.panes[tabIndex].value ? tabs.panes[tabIndex].value : '');
-  // const code: any = useRef(current.sql ? current.sql : '');
-  // const code: any = useRef(value ? value.formulaContent : '');
-
   const cache: any = useRef(code.current);
-
-  const [refresh, setRefresh] = React.useState<boolean>(false);
-  const [selectValue, setSelectValue] = React.useState<string>("");
 
   useEffect(
     () => () => {
@@ -107,13 +104,6 @@ const FlinkSqlEditor = (props:any) => {
     });
   };
 
-  interface ISuggestions {
-    label: string;
-    kind: string;
-    insertText: string;
-    detail?: string;
-  }
-
   const editorDidMountHandle = (editor: any, monaco: any) => {
     monacoInstance.current = monaco;
     editorInstance.current = editor;
@@ -129,7 +119,7 @@ const FlinkSqlEditor = (props:any) => {
     // 提示项设值
     provider = monaco.languages.registerCompletionItemProvider('sql', {
       provideCompletionItems() {
-        const suggestions: ISuggestions[] = [];
+        let suggestions: ISuggestions[] = [];
         if (code && code.current) {
           code.current.forEach((record:any) => {
             suggestions.push({
@@ -146,14 +136,20 @@ const FlinkSqlEditor = (props:any) => {
           });
         }
         Completion.forEach((item:CompletionItem) => {
-          suggestions.push(item);
+          suggestions.push( {
+            label: item.label,
+            kind: item.kind,
+            insertText: item.insertText,
+            insertTextRules: item.insertTextRules,
+            detail: item.detail
+          });
         });
         return {
           suggestions,
         };
       },
-      quickSuggestions: true,
-      triggerCharacters: ['$', '.', '='],
+      quickSuggestions: false,
+      // triggerCharacters: ['$', '.', '='],
     });
     editor.focus();
   };
@@ -171,7 +167,6 @@ return (
       theme="vs-dark"
       editorDidMount={editorDidMountHandle}
     />
-    {selectValue}
   </React.Fragment>
 );
 };
