@@ -9,9 +9,6 @@ const { TabPane } = Tabs;
 
 const EditorTabs = (props: any) => {
   const {tabs,dispatch,current} = props;
-  const [newTabIndex, setNewTabIndex] = useState<number>(0);
-  const [activeKey, setActiveKey] = useState<number>(tabs.activeKey);
-  const [panes, setPanes] = useState<any>(tabs.panes);
 
   const onChange = (activeKey: any) => {
     dispatch({

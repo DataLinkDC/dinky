@@ -298,6 +298,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>增加了 Flink StreamGraph 预览功能</Link>
                 </li>
+                <li>
+                  <Link>修复了 Studio 编辑器的自动补全无法正常提示的bug</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

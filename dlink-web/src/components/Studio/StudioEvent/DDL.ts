@@ -16,7 +16,6 @@ export function createSession(session: SessionType,dispatch: any) {
 export function listSession(dispatch: any) {
   const res = getData("api/studio/listSession");
   res.then((result)=>{
-    console.log(result.datas);
     dispatch && dispatch({
       type: "Studio/saveSession",
       payload: result.datas,
