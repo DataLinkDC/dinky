@@ -95,9 +95,9 @@ DataLink 开源项目及社区正在建设，希望本项目可以帮助你更�
 
 ### 版本
 
-抢先体验( main 主支)：dlink-0.3.0-SANPSHOT
+抢先体验( main 主支)：dlink-0.3.2
 
-稳定版本( 0.3.0 分支)：dlink-0.3.0
+稳定版本( 0.3.1 分支)：dlink-0.3.1
 
 ### 从安装包开始
 
@@ -107,10 +107,10 @@ config/ -- 配置文件
 lib/ -- 外部依赖及Connector
 |- dlink-client-1.12.jar -- 必需
 |- dlink-connector-jdbc.jar
-|- dlink-function-0.2.3.jar
-|- flink-connector-jdbc_2.11-1.12.4.jar
-|- flink-csv-1.12.4.jar
-|- flink-json-1.12.4.jar
+|- dlink-function.jar
+|- flink-connector-jdbc_2.11-1.12.5.jar
+|- flink-csv-1.12.5.jar
+|- flink-json-1.12.5.jar
 |- mysql-connector-java-8.0.21.jar
 sql/ 
 |- dlink.sql --Mysql初始化脚本

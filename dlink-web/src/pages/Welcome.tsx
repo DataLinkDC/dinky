@@ -276,7 +276,7 @@ export default (): React.ReactNode => {
               </ul>
             </Paragraph>
           </Timeline.Item>
-          <Timeline.Item><Text code>0.3.1</Text> <Text type="secondary">2021-08-2?</Text>
+          <Timeline.Item><Text code>0.3.1</Text> <Text type="secondary">2021-08-25</Text>
             <p> </p>
             <Paragraph>
               <ul>
