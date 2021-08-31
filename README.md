@@ -95,9 +95,9 @@ DataLink 开源项目及社区正在建设，希望本项目可以帮助你更�
 
 ### 版本
 
-抢先体验( main 主支)：dlink-0.3.0-SANPSHOT
+抢先体验( main 主支)：dlink-0.3.2
 
-稳定版本( 0.3.0 分支)：dlink-0.3.0
+稳定版本( 0.3.1 分支)：dlink-0.3.1
 
 ### 从安装包开始
 
@@ -107,10 +107,10 @@ config/ -- 配置文件
 lib/ -- 外部依赖及Connector
 |- dlink-client-1.12.jar -- 必需
 |- dlink-connector-jdbc.jar
-|- dlink-function-0.2.3.jar
-|- flink-connector-jdbc_2.11-1.12.4.jar
-|- flink-csv-1.12.4.jar
-|- flink-json-1.12.4.jar
+|- dlink-function.jar
+|- flink-connector-jdbc_2.11-1.12.5.jar
+|- flink-csv-1.12.5.jar
+|- flink-json-1.12.5.jar
 |- mysql-connector-java-8.0.21.jar
 sql/ 
 |- dlink.sql --Mysql初始化脚本
@@ -244,6 +244,8 @@ AGG BY TOP2(value) as (value,rank);
 
 1.[Flink AggTable 在 Dlink 的实践](https://github.com/DataLinkDC/dlink/blob/main/dlink-doc/doc/FlinkAggTable%E5%9C%A8Dlink%E7%9A%84%E5%BA%94%E7%94%A8.md)
 2.[Dlink 概念原理与源码扩展介绍](https://github.com/DataLinkDC/dlink/blob/main/dlink-doc/doc/Dlink%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E4%B8%8E%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E8%AF%A6%E8%A7%A3.md)
+3.[Dlink 实时计算平台——部署篇](https://github.com/DataLinkDC/dlink/blob/dev/dlink-doc/doc/Dlink%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97%E5%B9%B3%E5%8F%B0%E2%80%94%E2%80%94%E9%83%A8%E7%BD%B2%E7%AF%87.md)
+
 #### 常见问题及解决
 
 （=。=）~ 敬请期待。
