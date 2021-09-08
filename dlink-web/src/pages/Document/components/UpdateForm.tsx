@@ -27,6 +27,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         type: props.values.type,
         subtype: props.values.subtype,
         description: props.values.description,
+      fillValue: props.values.fillValue,
         version: props.values.version,
         likeNum: props.values.likeNum,
         enabled: props.values.enabled,
@@ -102,6 +103,12 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
               >
                 <TextArea placeholder="" allowClear autoSize={{ minRows: 3, maxRows: 10 }}/>
               </FormItem>
+              <FormItem
+                name="fillValue"
+                label="填充值"
+              >
+                <TextArea placeholder="" allowClear autoSize={{ minRows: 3, maxRows: 10 }}/>
+              </FormItem>
                     <FormItem
                         name="version"
                         label="版本"
@@ -150,6 +157,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         type: formVals.type,
         subtype: formVals.subtype,
         description: formVals.description,
+                  fillValue: formVals.fillValue,
         version: formVals.version,
         likeNum: formVals.likeNum,
         enabled: formVals.enabled,

@@ -5,6 +5,7 @@ export type DocumentTableListItem = {
   type: string,
   subtype: string,
   description: string,
+  fillValue: string,
   version: string,
   likeNum: number,
   enabled: boolean,

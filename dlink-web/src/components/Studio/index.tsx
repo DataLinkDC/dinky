@@ -11,7 +11,7 @@ import {StateType} from "@/pages/FlinkSqlStudio/model";
 import StudioConsole from "./StudioConsole";
 import StudioLeftTool from "./StudioLeftTool";
 import StudioRightTool from "./StudioRightTool";
-import {listSession, showCluster, showDataBase} from "@/components/Studio/StudioEvent/DDL";
+import {listSession, showCluster, showDataBase,getFillAllByVersion} from "@/components/Studio/StudioEvent/DDL";
 
 type StudioProps = {
   rightClickMenu:StateType['rightClickMenu'];
@@ -22,7 +22,7 @@ const Studio: React.FC<StudioProps> = (props) => {
 
   const {rightClickMenu,dispatch} = props;
   const [form] = Form.useForm();
-
+  getFillAllByVersion('1.12',dispatch);
   showCluster(dispatch);
   showDataBase(dispatch);
   listSession(dispatch);

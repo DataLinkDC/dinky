@@ -131,3 +131,13 @@ export function showFlinkJobs(clusterId:number) {
 export function cancelJob(clusterId:number,jobId:string) {
   return getData('api/studio/cancel',{clusterId:clusterId,jobId:jobId});
 }
+/*--- 根据版本号获取所有自动补全的文档 ---*/
+export function getFillAllByVersion(version:string,dispatch: any) {
+  const res = getData('api/document/getFillAllByVersion',{version:version});
+  res.then((result) => {
+    result.datas && dispatch && dispatch({
+      type: "Document/saveAllFillDocuments",
+      payload: result.datas,
+    });
+  });
+}

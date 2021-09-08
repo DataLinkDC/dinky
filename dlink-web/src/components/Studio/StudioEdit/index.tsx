@@ -7,6 +7,8 @@ import styles from './index.less';
 
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
+import {DocumentStateType} from "@/pages/Document/model";
+import {DocumentTableListItem} from "@/pages/Document/data";
 
 let provider = {
   dispose: () => {},
@@ -37,6 +39,7 @@ const FlinkSqlEditor = (props:any) => {
         renderSideBySide: false,
       },
     tabs,
+    fillDocuments,
     dispatch,
     } = props
   ;
@@ -135,14 +138,24 @@ const FlinkSqlEditor = (props:any) => {
             });
           });
         }
-        Completion.forEach((item:CompletionItem) => {
-          suggestions.push( {
-            label: item.label,
-            kind: item.kind,
-            insertText: item.insertText,
-            insertTextRules: item.insertTextRules,
-            detail: item.detail
-          });
+        fillDocuments.forEach((item:DocumentTableListItem) => {
+          if(monaco.languages.CompletionItemKind[item.category]) {
+            suggestions.push({
+              label: item.name,
+              kind: monaco.languages.CompletionItemKind[item.category],
+              insertText: item.fillValue,
+              insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+              detail: item.description
+            });
+          }else {
+            suggestions.push({
+              label: item.name,
+              kind: monaco.languages.CompletionItemKind.Text,
+              insertText: item.fillValue,
+              insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+              detail: item.description
+            });
+          }
         });
         return {
           suggestions,
@@ -171,9 +184,10 @@ return (
 );
 };
 
-export default connect(({ Studio }: { Studio: StateType }) => ({
+export default connect(({ Studio,Document }: { Studio: StateType,Document: DocumentStateType }) => ({
   current: Studio.current,
   sql: Studio.sql,
   tabs: Studio.tabs,
   monaco: Studio.monaco,
+  fillDocuments: Document.fillDocuments,
 }))(FlinkSqlEditor);
