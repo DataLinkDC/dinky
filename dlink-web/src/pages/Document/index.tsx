@@ -17,10 +17,13 @@ import {
   handleAddOrUpdate, handleOption, handleRemove, queryData,
   updateEnabled
 } from "@/components/Common/crud";
+import {getFillAllByVersion} from "@/components/Studio/StudioEvent/DDL";
 
 const url = '/api/document';
 
-const DocumentTableList: React.FC<{}> = () => {
+const DocumentTableList: React.FC<{}> = (props: any) => {
+
+  const {dispatch} = props;
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [formValues, setFormValues] = useState({});
@@ -424,6 +427,7 @@ const DocumentTableList: React.FC<{}> = () => {
             if (actionRef.current) {
               actionRef.current.reload();
             }
+            getFillAllByVersion('',dispatch);
           }
         }}
           rowKey="id"
@@ -441,6 +445,7 @@ const DocumentTableList: React.FC<{}> = () => {
                 if (actionRef.current) {
                   actionRef.current.reload();
                 }
+                getFillAllByVersion('',dispatch);
               }
             }}
             onCancel={() => {

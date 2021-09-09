@@ -1,6 +1,7 @@
 package com.dlink.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.dlink.assertion.Asserts;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.DocumentMapper;
 import com.dlink.model.Document;
@@ -20,6 +21,10 @@ public class DocumentServiceImpl extends SuperServiceImpl<DocumentMapper, Docume
 
     @Override
     public List<Document> getFillAllByVersion(String version) {
-        return baseMapper.selectList(new QueryWrapper<Document>().eq("version",version).eq("enabled",1));
+        if(Asserts.isNotNullString(version)) {
+            return baseMapper.selectList(new QueryWrapper<Document>().eq("version", version).eq("enabled", 1));
+        }else{
+            return baseMapper.selectList(new QueryWrapper<Document>().eq("enabled", 1));
+        }
     }
 }

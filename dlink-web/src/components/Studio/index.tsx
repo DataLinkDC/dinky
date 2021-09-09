@@ -22,7 +22,7 @@ const Studio: React.FC<StudioProps> = (props) => {
 
   const {rightClickMenu,dispatch} = props;
   const [form] = Form.useForm();
-  getFillAllByVersion('1.12',dispatch);
+  getFillAllByVersion('',dispatch);
   showCluster(dispatch);
   showDataBase(dispatch);
   listSession(dispatch);
@@ -46,7 +46,6 @@ const Studio: React.FC<StudioProps> = (props) => {
           </Col>
           <Col span={16}>
             <StudioTabs/>
-            {/*<StudioConsole/>*/}
           </Col>
           <Col span={4} className={styles["vertical-tabs"]}>
             <StudioRightTool form={form}/>
