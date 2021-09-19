@@ -159,7 +159,22 @@
             </dependency>
             <dependency>
                 <groupId>com.dlink</groupId>
-                <artifactId>dlink-connector-jdbc</artifactId>
+                <artifactId>dlink-client-1.13</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-client-1.11</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-connector-jdbc-1.12</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-connector-jdbc-1.13</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

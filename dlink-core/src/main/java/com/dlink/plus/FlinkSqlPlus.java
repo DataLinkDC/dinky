@@ -60,8 +60,8 @@ public class FlinkSqlPlus {
         }
     }
 
-    public List<SqlExplainResult> explainSqlRecord(String statement, ExplainDetail... extraDetails) {
-        return explainer.explainSqlResult(statement,extraDetails);
+    public List<SqlExplainResult> explainSqlRecord(String statement) {
+        return explainer.explainSqlResult(statement);
     }
 
     public List<TableCAResult> explainSqlTableColumnCA(String statement) {

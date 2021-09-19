@@ -311,6 +311,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增了SQL编辑器自动补全文档的功能</Link>
                 </li>
+                <li>
+                  <Link>优化了 Flink 多版本间的切换，下沉 Flink 获取表字段的逻辑</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>
