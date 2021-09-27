@@ -13,11 +13,11 @@ import java.util.List;
  **/
 public interface ClusterService extends ISuperService<Cluster> {
 
-    String checkHeartBeat(String hosts,String host);
+    String checkHeartBeat(String hosts, String host);
 
     String getJobManagerAddress(Cluster cluster);
 
-    String buildEnvironmentAddress(boolean useRemote,Integer id);
+    String buildEnvironmentAddress(boolean useRemote, Integer id);
 
     String buildRemoteEnvironmentAddress(Integer id);
 

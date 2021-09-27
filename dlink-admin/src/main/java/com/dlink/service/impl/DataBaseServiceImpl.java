@@ -6,11 +6,11 @@ import com.dlink.constant.CommonConstant;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.DataBaseMapper;
 import com.dlink.metadata.driver.Driver;
-import com.dlink.metadata.driver.DriverConfig;
 import com.dlink.model.DataBase;
 import com.dlink.model.Schema;
 import com.dlink.service.DataBaseService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -45,18 +45,26 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
         if(Asserts.isNull(dataBase)){
             return false;
         }
-        if(Asserts.isNull(dataBase.getId())){
+        if(Asserts.isNull(dataBase.getId())) {
             checkHeartBeat(dataBase);
+            if (StringUtils.isEmpty(dataBase.getAlias())) {
+                dataBase.setAlias(dataBase.getName());
+            }
             return save(dataBase);
-        }else{
+        }else {
             DataBase dataBaseInfo = getById(dataBase.getId());
-            if(Asserts.isNull(dataBase.getUrl())){
+
+            if (StringUtils.isEmpty(dataBase.getAlias())) {
+                dataBase.setAlias(dataBase.getName());
+            }
+
+            if (Asserts.isNull(dataBase.getUrl())) {
                 dataBase.setUrl(dataBaseInfo.getUrl());
             }
-            if(Asserts.isNull(dataBase.getUsername())){
+            if (Asserts.isNull(dataBase.getUsername())) {
                 dataBase.setUsername(dataBaseInfo.getUsername());
             }
-            if(Asserts.isNull(dataBase.getPassword())){
+            if (Asserts.isNull(dataBase.getPassword())) {
                 dataBase.setPassword(dataBaseInfo.getPassword());
             }
             checkHeartBeat(dataBase);

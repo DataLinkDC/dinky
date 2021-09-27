@@ -10,6 +10,7 @@ import com.dlink.mapper.ClusterMapper;
 import com.dlink.model.Cluster;
 import com.dlink.service.ClusterService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -70,6 +71,14 @@ public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
 
     @Override
     public List<Cluster> listEnabledAll() {
-        return this.list(new QueryWrapper<Cluster>().eq("enabled",1));
+        return this.list(new QueryWrapper<Cluster>().eq("enabled", 1));
+    }
+
+    @Override
+    public boolean saveOrUpdate(Cluster cluster) {
+        if (StringUtils.isEmpty(cluster.getAlias())) {
+            cluster.setAlias(cluster.getName());
+        }
+        return saveOrUpdate(cluster);
     }
 }
