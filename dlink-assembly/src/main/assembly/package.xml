@@ -52,13 +52,34 @@
                 <include>dlink-client-1.12-${project.version}.jar</include>
             </includes>
         </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-client/dlink-client-1.11/target</directory>
+            <outputDirectory>plugins</outputDirectory>
+            <includes>
+                <include>dlink-client-1.11-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-client/dlink-client-1.13/target</directory>
+            <outputDirectory>plugins</outputDirectory>
+            <includes>
+                <include>dlink-client-1.13-${project.version}.jar</include>
+            </includes>
+        </fileSet>
 
         <!-- 将模块dlink-connectors的jar文件放到打包目录/lib下 -->
         <fileSet>
-            <directory>${project.parent.basedir}/dlink-connectors/dlink-connector-jdbc/target</directory>
+            <directory>${project.parent.basedir}/dlink-connectors/dlink-connector-jdbc-1.12/target</directory>
             <outputDirectory>lib</outputDirectory>
             <includes>
-                <include>dlink-connector-jdbc-${project.version}.jar</include>
+                <include>dlink-connector-jdbc-1.12-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-connectors/dlink-connector-jdbc-1.13/target</directory>
+            <outputDirectory>plugins</outputDirectory>
+            <includes>
+                <include>dlink-connector-jdbc-1.13-${project.version}.jar</include>
             </includes>
         </fileSet>
 

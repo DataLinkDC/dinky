@@ -215,17 +215,16 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
                 record.setType("Query DML");
             } else {
                 record.setExplain(operation.asSummaryString());
-                record.setExplainTrue(true);
-                record.setType("DDL");
                 operationlist.remove(i);
+                record.setType("DDL");
                 i=i-1;
             }
         }
+        record.setExplainTrue(true);
         if(operationlist.size()==0){
             return record;
         }
         record.setExplain(planner.explain(operationlist, extraDetails));
-        record.setExplainTrue(true);
         return record;
     }
 

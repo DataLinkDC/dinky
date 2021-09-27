@@ -209,17 +209,18 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
             } else if (operation instanceof QueryOperation) {
                 record.setType("Query DML");
             } else {
+                record.setExplain(operation.asSummaryString());
                 operationlist.remove(i);
                 record.setType("DDL");
                 i=i-1;
             }
         }
+        record.setExplainTrue(true);
         if(operationlist.size()==0){
             //record.setExplain("DDL语句不进行解释。");
             return record;
         }
         record.setExplain(planner.explain(operationlist, extraDetails));
-        record.setExplainTrue(true);
         return record;
     }
 

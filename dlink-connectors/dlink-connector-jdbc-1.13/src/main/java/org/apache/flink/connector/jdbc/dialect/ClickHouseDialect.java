@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  * JDBC dialect for ClickHouse.
  *
  * @author wenmo
- * @since 2021/6/7 21:48
+ * @since 2021/9/19 20:32
  */
 public class ClickHouseDialect extends AbstractDialect {
 
@@ -55,6 +55,11 @@ public class ClickHouseDialect extends AbstractDialect {
     }
 
     @Override
+    public String getLimitClause(long limit) {
+        return "LIMIT " + limit;
+    }
+
+    @Override
     public Optional<String> defaultDriverName() {
         return Optional.of("ru.yandex.clickhouse.ClickHouseDriver");
     }
@@ -67,11 +72,6 @@ public class ClickHouseDialect extends AbstractDialect {
     @Override
     public Optional<String> getUpsertStatement(
             String tableName, String[] fieldNames, String[] uniqueKeyFields) {
-        String columns = Arrays.stream(fieldNames).collect(Collectors.joining(", "));
-        String placeholders =
-                Arrays.stream(fieldNames)
-                        .map(f -> quoteIdentifier(f))
-                        .collect(Collectors.joining(", "));
         return Optional.of(getInsertIntoStatement(tableName, fieldNames));
     }
 

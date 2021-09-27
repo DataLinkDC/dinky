@@ -3,27 +3,20 @@ package com.dlink.explainer;
 import com.dlink.assertion.Asserts;
 import com.dlink.constant.FlinkSQLConstant;
 import com.dlink.executor.Executor;
-import com.dlink.explainer.ca.ColumnCAGenerator;
-import com.dlink.explainer.ca.ColumnCAResult;
-import com.dlink.explainer.ca.TableCA;
-import com.dlink.explainer.ca.TableCAGenerator;
-import com.dlink.explainer.ca.TableCAResult;
+import com.dlink.explainer.ca.*;
 import com.dlink.explainer.trans.Trans;
 import com.dlink.explainer.trans.TransGenerator;
 import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.result.SqlExplainResult;
+import com.dlink.utils.FlinkUtil;
 import com.dlink.utils.SqlUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.apache.flink.table.api.ExplainDetail;
 import org.apache.flink.table.catalog.CatalogManager;
-import org.apache.flink.table.catalog.ObjectIdentifier;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Explainer
@@ -44,14 +37,14 @@ public class Explainer {
         return new Explainer(executor);
     }
 
-    public List<SqlExplainResult> explainSqlResult(String statement, ExplainDetail... extraDetails) {
+    public List<SqlExplainResult> explainSqlResult(String statement) {
         String[] sqls = SqlUtil.getStatements(statement);
         List<SqlExplainResult> sqlExplainRecords = new ArrayList<>();
         for (int i = 0; i < sqls.length; i++) {
             SqlExplainResult record = new SqlExplainResult();
             try {
                 if (!FlinkInterceptor.build(executor.getCustomTableEnvironmentImpl(), sqls[i])) {
-                    record = executor.explainSqlRecord(sqls[i], extraDetails);
+                    record = executor.explainSqlRecord(sqls[i]);
                     if (Asserts.isEquals(FlinkSQLConstant.DDL,record.getType())) {
                         executor.executeSql(sqls[i]);
                     }
@@ -110,13 +103,7 @@ public class Explainer {
             for (int i = 0; i < results.size(); i++) {
                 TableCA sinkTableCA = (TableCA) results.get(i).getSinkTableCA();
                 if (Asserts.isNotNull(sinkTableCA)) {
-                    Optional<CatalogManager.TableLookupResult> tableOpt = catalogManager.getTable(
-                            ObjectIdentifier.of(sinkTableCA.getCatalog(), sinkTableCA.getDatabase(), sinkTableCA.getTable())
-                    );
-                    if (tableOpt.isPresent()) {
-                        String[] fieldNames = tableOpt.get().getResolvedSchema().getFieldNames();
-                        sinkTableCA.setFields(Arrays.asList(fieldNames));
-                    }
+                    sinkTableCA.setFields(FlinkUtil.getFieldNamesFromCatalogManager(catalogManager,sinkTableCA.getCatalog(), sinkTableCA.getDatabase(), sinkTableCA.getTable()));
                 }
             }
         }

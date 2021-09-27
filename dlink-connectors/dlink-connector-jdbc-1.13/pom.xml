@@ -9,12 +9,12 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>dlink-connector-jdbc</artifactId>
+    <artifactId>dlink-connector-jdbc-1.13</artifactId>
 
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <flink.version>1.12.4</flink.version>
+        <flink.version>1.13.2</flink.version>
         <scala.binary.version>2.11</scala.binary.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -154,4 +154,5 @@
         </plugins>
         <finalName>${project.artifactId}</finalName>
     </build>-->
+
 </project>
