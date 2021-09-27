@@ -23,8 +23,8 @@ const StudioDataBase = (props: any) => {
   const getColumns = () => {
     let columns: any = [{
       title: "数据源名",
-      dataIndex: "alias",
-      key: "alias",
+      dataIndex: "name",
+      key: "name",
       sorter: true,
     }, {
       title: '操作',

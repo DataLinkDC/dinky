@@ -23,8 +23,8 @@ const StudioCluster = (props: any) => {
   const getColumns = () => {
     let columns: any = [{
       title: "集群名",
-      dataIndex: "alias",
-      key: "alias",
+      dataIndex: "name",
+      key: "name",
       sorter: true,
     }, {
       title: '操作',
