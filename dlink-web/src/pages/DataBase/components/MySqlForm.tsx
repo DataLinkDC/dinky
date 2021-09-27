@@ -73,7 +73,7 @@ const MysqlForm: React.FC<MysqlFormProps> = (props) => {
           name="alias"
           label="别名"
         >
-          <Input placeholder="请输入别名"/>
+          <Input placeholder="请输入别名 如果不填默认使用[名称]"/>
         </Form.Item>
         <Form.Item
           name="groupName"

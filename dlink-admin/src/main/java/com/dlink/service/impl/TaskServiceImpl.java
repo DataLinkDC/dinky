@@ -1,13 +1,7 @@
 package com.dlink.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.assertion.Assert;
-import com.dlink.cluster.FlinkCluster;
-import com.dlink.constant.FlinkConstant;
 import com.dlink.db.service.impl.SuperServiceImpl;
-import com.dlink.exception.BusException;
-import com.dlink.executor.Executor;
-import com.dlink.executor.ExecutorSetting;
 import com.dlink.job.JobConfig;
 import com.dlink.job.JobManager;
 import com.dlink.job.JobResult;
@@ -15,15 +9,12 @@ import com.dlink.mapper.TaskMapper;
 import com.dlink.model.Cluster;
 import com.dlink.model.Statement;
 import com.dlink.model.Task;
-import com.dlink.result.SubmitResult;
 import com.dlink.service.ClusterService;
 import com.dlink.service.StatementService;
 import com.dlink.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import org.springframework.util.StringUtils;
 
 /**
  * 任务 服务实现类
@@ -72,6 +63,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public boolean saveOrUpdateTask(Task task) {
         if (task.getId() != null) {
+            if (StringUtils.isEmpty(task.getAlias())) {
+                task.setAlias(task.getName());
+            }
             this.updateById(task);
             if (task.getStatement() != null) {
                 Statement statement = new Statement();
@@ -80,16 +74,20 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 statementService.updateById(statement);
             }
         } else {
-            if(task.getCheckPoint()==null){
+            if (task.getCheckPoint() == null) {
                 task.setCheckPoint(0);
             }
-            if(task.getParallelism()==null){
+            if (task.getParallelism() == null) {
                 task.setParallelism(1);
             }
-            if(task.getClusterId()==null){
+            if (task.getClusterId() == null) {
                 task.setClusterId(0);
             }
+            if (StringUtils.isEmpty(task.getAlias())) {
+                task.setAlias(task.getName());
+            }
             this.save(task);
+
             Statement statement = new Statement();
             statement.setId(task.getId());
             if (task.getStatement() == null) {

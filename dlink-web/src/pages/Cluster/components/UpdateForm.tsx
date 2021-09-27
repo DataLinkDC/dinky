@@ -58,7 +58,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           name="alias"
           label="别名"
         >
-          <Input placeholder="请输入"/>
+          <Input placeholder="请输入 如果不填默认使用[名称]"/>
         </FormItem>
         <FormItem
           name="type"
