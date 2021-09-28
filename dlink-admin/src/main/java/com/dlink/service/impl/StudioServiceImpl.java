@@ -45,41 +45,51 @@ public class StudioServiceImpl implements StudioService {
     @Override
     public JobResult executeSql(StudioExecuteDTO studioExecuteDTO) {
         JobConfig config = studioExecuteDTO.getJobConfig();
-        if(!config.isUseSession()) {
+        if (!config.isUseSession()) {
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
         }
         JobManager jobManager = JobManager.build(config);
-        return jobManager.executeSql(studioExecuteDTO.getStatement());
+
+        String executeSql = studioExecuteDTO.getStatement().replaceAll("\\n||\\r||\\t", "").trim();
+
+        return jobManager.executeSql(executeSql);
     }
 
     @Override
     public IResult executeDDL(StudioDDLDTO studioDDLDTO) {
         JobConfig config = studioDDLDTO.getJobConfig();
-        if(!config.isUseSession()) {
+        if (!config.isUseSession()) {
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioDDLDTO.getClusterId()));
         }
         JobManager jobManager = JobManager.build(config);
-        return jobManager.executeDDL(studioDDLDTO.getStatement());
+        return jobManager.executeDDL(studioDDLDTO.getStatement().trim());
     }
 
     @Override
     public List<SqlExplainResult> explainSql(StudioExecuteDTO studioExecuteDTO) {
         JobConfig config = studioExecuteDTO.getJobConfig();
-        if(!config.isUseSession()) {
+        if (!config.isUseSession()) {
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
         }
         JobManager jobManager = JobManager.build(config);
-        return jobManager.explainSql(studioExecuteDTO.getStatement());
+
+        String sqlStatement = studioExecuteDTO.getStatement().replaceAll("\\n||\\r||\\t", "").trim();
+
+        return jobManager.explainSql(sqlStatement);
     }
 
     @Override
     public ObjectNode getStreamGraph(StudioExecuteDTO studioExecuteDTO) {
         JobConfig config = studioExecuteDTO.getJobConfig();
-        if(!config.isUseSession()) {
+        if (!config.isUseSession()) {
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
         }
         JobManager jobManager = JobManager.build(config);
-        return jobManager.getStreamGraph(studioExecuteDTO.getStatement());
+
+
+        String streamGraph = studioExecuteDTO.getStatement().replaceAll("\\n||\\r||\\t", "").trim();
+
+        return jobManager.getStreamGraph(streamGraph);
     }
 
     @Override
@@ -89,14 +99,14 @@ public class StudioServiceImpl implements StudioService {
 
     @Override
     public SessionInfo createSession(SessionDTO sessionDTO, String createUser) {
-        if(sessionDTO.isUseRemote()) {
+        if (sessionDTO.isUseRemote()) {
             Cluster cluster = clusterService.getById(sessionDTO.getClusterId());
             SessionConfig sessionConfig = SessionConfig.build(
                     sessionDTO.getType(), true,
                     cluster.getId(), cluster.getAlias(),
                     clusterService.buildEnvironmentAddress(true, sessionDTO.getClusterId()));
             return JobManager.createSession(sessionDTO.getSession(), sessionConfig, createUser);
-        }else{
+        } else {
             SessionConfig sessionConfig = SessionConfig.build(
                     sessionDTO.getType(), false,
                     null, null,
@@ -107,9 +117,9 @@ public class StudioServiceImpl implements StudioService {
 
     @Override
     public boolean clearSession(String session) {
-        if(SessionPool.remove(session)>0){
+        if (SessionPool.remove(session) > 0) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
@@ -121,27 +131,27 @@ public class StudioServiceImpl implements StudioService {
 
     @Override
     public List<TableCANode> getOneTableCAByStatement(String statement) {
-        if(Operations.getSqlTypeFromStatements(statement)== SqlType.INSERT) {
+        if (Operations.getSqlTypeFromStatements(statement) == SqlType.INSERT) {
             return CABuilder.getOneTableCAByStatement(statement);
-        }else{
+        } else {
             return new ArrayList<>();
         }
     }
 
     @Override
     public List<TableCANode> getOneTableColumnCAByStatement(String statement) {
-        if(Operations.getSqlTypeFromStatements(statement)== SqlType.INSERT) {
+        if (Operations.getSqlTypeFromStatements(statement) == SqlType.INSERT) {
             return CABuilder.getOneTableColumnCAByStatement(statement);
-        }else{
+        } else {
             return new ArrayList<>();
         }
     }
 
     @Override
     public List<ColumnCANode> getColumnCAByStatement(String statement) {
-        if(Operations.getSqlTypeFromStatements(statement)== SqlType.INSERT) {
+        if (Operations.getSqlTypeFromStatements(statement) == SqlType.INSERT) {
             return CABuilder.getColumnCAByStatement(statement);
-        }else{
+        } else {
             return new ArrayList<>();
         }
     }
@@ -149,14 +159,14 @@ public class StudioServiceImpl implements StudioService {
     @Override
     public List<JsonNode> listJobs(Integer clusterId) {
         Cluster cluster = clusterService.getById(clusterId);
-        Asserts.checkNotNull(cluster,"该集群不存在");
+        Asserts.checkNotNull(cluster, "该集群不存在");
         return FlinkAPI.build(cluster.getJobManagerHost()).listJobs();
     }
 
     @Override
-    public boolean cancel(Integer clusterId,String jobId) {
+    public boolean cancel(Integer clusterId, String jobId) {
         Cluster cluster = clusterService.getById(clusterId);
-        Asserts.checkNotNull(cluster,"该集群不存在");
+        Asserts.checkNotNull(cluster, "该集群不存在");
         return FlinkAPI.build(cluster.getJobManagerHost()).stop(jobId);
     }
 }
