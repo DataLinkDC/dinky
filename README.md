@@ -104,10 +104,26 @@ DataLink 开源项目及社区正在建设，希望本项目可以帮助你更�
 ```
 config/ -- 配置文件
 |- application.yml
+extends/ -- 扩展
+|- clickhouse-jdbc-0.2.6.jar
+|- dlink-client-1.11.jar
+|- dlink-client-1.13.jar
+|- dlink-flink-shaded-hadoop-3-uber.jar
+|- flink-sql-connector-hbase-1.4_2.11-1.12.5.jar
+|- flink-sql-connector-hbase-2.2_2.11-1.12.5.jar
+|- flink-sql-connector-kafka_2.11-1.12.5.jar
+|- ojdbc8-12.2.0.1.jar
+|- otj-pg-embedded-0.13.3.jar
+|- postgresql-42.2.10.jar
 lib/ -- 外部依赖及Connector
 |- dlink-client-1.12.jar -- 必需
 |- dlink-connector-jdbc.jar
 |- dlink-function.jar
+|- dlink-metadata-clickhouse.jar
+|- dlink-metadata-mysql.jar
+|- dlink-metadata-oracle.jar
+|- dlink-metadata-postgresql.jar
+plugins/
 |- flink-connector-jdbc_2.11-1.12.5.jar
 |- flink-csv-1.12.5.jar
 |- flink-json-1.12.5.jar

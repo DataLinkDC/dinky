@@ -54,14 +54,14 @@
         </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}/dlink-client/dlink-client-1.11/target</directory>
-            <outputDirectory>plugins</outputDirectory>
+            <outputDirectory>extends</outputDirectory>
             <includes>
                 <include>dlink-client-1.11-${project.version}.jar</include>
             </includes>
         </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}/dlink-client/dlink-client-1.13/target</directory>
-            <outputDirectory>plugins</outputDirectory>
+            <outputDirectory>extends</outputDirectory>
             <includes>
                 <include>dlink-client-1.13-${project.version}.jar</include>
             </includes>
@@ -75,11 +75,12 @@
                 <include>dlink-connector-jdbc-1.12-${project.version}.jar</include>
             </includes>
         </fileSet>
+        <!-- 将模块dlink-connectors的flink-shaded-hadoop-3-uber文件放到打包目录extends下 -->
         <fileSet>
-            <directory>${project.parent.basedir}/dlink-connectors/dlink-connector-jdbc-1.13/target</directory>
-            <outputDirectory>plugins</outputDirectory>
+            <directory>${project.parent.basedir}/dlink-connectors/dlink-flink-shaded-hadoop-3-uber/target</directory>
+            <outputDirectory>extends</outputDirectory>
             <includes>
-                <include>dlink-connector-jdbc-1.13-${project.version}.jar</include>
+                <include>dlink-flink-shaded-hadoop-3-uber.jar</include>
             </includes>
         </fileSet>
 
@@ -130,6 +131,35 @@
             <outputDirectory>lib</outputDirectory>
             <includes>
                 <include>dlink-metadata-postgresql-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+
+        <!-- 将模块dlink-extends的常用jar文件放到打包目录/plugins下 -->
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-extends/target
+            </directory>
+            <outputDirectory>plugins</outputDirectory>
+            <includes>
+                <include>flink-csv-*.jar</include>
+                <include>flink-json-*.jar</include>
+                <include>flink-connector-jdbc_2.11-*.jar</include>
+                <include>mysql-connector-java-*.jar</include>
+            </includes>
+        </fileSet>
+
+        <!-- 将模块dlink-extends的jar文件放到打包目录/extends下 -->
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-extends/target
+            </directory>
+            <outputDirectory>extends</outputDirectory>
+            <includes>
+                <include>flink-sql-connector-hbase-1.4_2.11-*.jar</include>
+                <include>flink-sql-connector-hbase-2.2_2.11-*.jar</include>
+                <include>flink-sql-connector-kafka_2.11-*.jar</include>
+                <include>postgresql-*.jar</include>
+                <include>otj-pg-embedded-*.jar</include>
+                <include>ojdbc8-*.jar</include>
+                <include>clickhouse-jdbc-*.jar</include>
             </includes>
         </fileSet>
     </fileSets>

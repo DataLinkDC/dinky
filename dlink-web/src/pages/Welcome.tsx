@@ -304,7 +304,7 @@ export default (): React.ReactNode => {
               </ul>
             </Paragraph>
           </Timeline.Item>
-          <Timeline.Item><Text code>0.3.2</Text> <Text type="secondary">2021-09-?</Text>
+          <Timeline.Item><Text code>0.3.2</Text> <Text type="secondary">2021-10-?</Text>
             <p> </p>
             <Paragraph>
               <ul>
@@ -313,6 +313,15 @@ export default (): React.ReactNode => {
                 </li>
                 <li>
                   <Link>优化了 Flink 多版本间的切换，下沉 Flink 获取表字段的逻辑</Link>
+                </li>
+                <li>
+                  <Link>增加了适用于 Dlink 的 flink-shaded-hadoop-3-uber</Link>
+                </li>
+                <li>
+                  <Link>增加了 plugins 类加载路径用于加载 Flink 的有关依赖</Link>
+                </li>
+                <li>
+                  <Link>增加了 dlink-extends 模块用于扩展依赖打包</Link>
                 </li>
               </ul>
             </Paragraph>

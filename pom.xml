@@ -7,7 +7,7 @@
     <groupId>com.dlink</groupId>
     <artifactId>dlink</artifactId>
     <packaging>pom</packaging>
-    <version>0.3.1</version>
+    <version>0.3.2-SANPSHOT</version>
 
     <modules>
         <module>dlink-core</module>
@@ -16,6 +16,7 @@
         <module>dlink-function</module>
         <module>dlink-common</module>
         <module>dlink-metadata</module>
+        <module>dlink-extends</module>
         <module>dlink-web</module>
         <module>dlink-admin</module>
         <module>dlink-assembly</module>
@@ -175,6 +176,16 @@
             <dependency>
                 <groupId>com.dlink</groupId>
                 <artifactId>dlink-connector-jdbc-1.13</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-connector-hbase-1.4.3-1.12</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-flink-shaded-hadoop-3-uber</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

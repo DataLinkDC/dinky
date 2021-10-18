@@ -5,13 +5,14 @@
     <parent>
         <artifactId>dlink</artifactId>
         <groupId>com.dlink</groupId>
-        <version>0.3.1</version>
+        <version>0.3.2-SANPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <modules>
         <module>dlink-connector-jdbc-1.12</module>
         <module>dlink-connector-jdbc-1.13</module>
+        <module>dlink-flink-shaded-hadoop-3-uber</module>
     </modules>
     <artifactId>dlink-connectors</artifactId>
 </project>
