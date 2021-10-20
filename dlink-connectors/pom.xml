@@ -12,7 +12,6 @@
     <modules>
         <module>dlink-connector-jdbc-1.12</module>
         <module>dlink-connector-jdbc-1.13</module>
-        <module>dlink-flink-shaded-hadoop-3-uber</module>
     </modules>
     <artifactId>dlink-connectors</artifactId>
 </project>

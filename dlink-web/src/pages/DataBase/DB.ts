@@ -1,6 +1,6 @@
 
 export function getDBImage(type:string) {
-  let imageUrl = '/database/';
+  let imageUrl = 'database/';
   switch (type.toLowerCase()){
     case 'mysql':
       imageUrl += 'mysql.jpg';
@@ -15,7 +15,7 @@ export function getDBImage(type:string) {
       imageUrl += 'clickhouse.png';
       break;
     default:
-      imageUrl += 'db.png';
+      imageUrl += 'db.jpg';
   }
   return imageUrl;
 }

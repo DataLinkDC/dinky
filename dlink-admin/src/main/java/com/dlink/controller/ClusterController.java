@@ -1,6 +1,7 @@
 package com.dlink.controller;
 
 import com.dlink.api.FlinkAPI;
+import com.dlink.cluster.FlinkClusterInfo;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
 import com.dlink.model.Cluster;
@@ -105,14 +106,14 @@ public class ClusterController {
     }
 
     private void checkHealth(Cluster cluster){
-        String jobManagerHost = clusterService.checkHeartBeat(cluster.getHosts(), cluster.getJobManagerHost());
-        if(jobManagerHost==null){
+        FlinkClusterInfo info = clusterService.checkHeartBeat(cluster.getHosts(), cluster.getJobManagerHost());
+        if(!info.isEffective()){
             cluster.setJobManagerHost("");
             cluster.setStatus(0);
         }else{
-            cluster.setJobManagerHost(jobManagerHost);
+            cluster.setJobManagerHost(info.getJobManagerAddress());
             cluster.setStatus(1);
-            cluster.setVersion(FlinkAPI.build(jobManagerHost).getVersion());
+            cluster.setVersion(info.getVersion());
         }
     }
 }

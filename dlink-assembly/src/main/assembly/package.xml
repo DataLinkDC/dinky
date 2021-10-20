@@ -75,14 +75,6 @@
                 <include>dlink-connector-jdbc-1.12-${project.version}.jar</include>
             </includes>
         </fileSet>
-        <!-- 将模块dlink-connectors的flink-shaded-hadoop-3-uber文件放到打包目录extends下 -->
-        <fileSet>
-            <directory>${project.parent.basedir}/dlink-connectors/dlink-flink-shaded-hadoop-3-uber/target</directory>
-            <outputDirectory>extends</outputDirectory>
-            <includes>
-                <include>dlink-flink-shaded-hadoop-3-uber.jar</include>
-            </includes>
-        </fileSet>
 
         <!-- 将模块dlink-function的jar文件放到打包目录/lib下 -->
         <fileSet>
@@ -153,11 +145,7 @@
             </directory>
             <outputDirectory>extends</outputDirectory>
             <includes>
-                <include>flink-sql-connector-hbase-1.4_2.11-*.jar</include>
-                <include>flink-sql-connector-hbase-2.2_2.11-*.jar</include>
-                <include>flink-sql-connector-kafka_2.11-*.jar</include>
-                <include>postgresql-*.jar</include>
-                <include>otj-pg-embedded-*.jar</include>
+                <include>flink-sql-connector-*.jar</include>
                 <include>ojdbc8-*.jar</include>
                 <include>clickhouse-jdbc-*.jar</include>
             </includes>

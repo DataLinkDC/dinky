@@ -3,7 +3,7 @@
   <parent>
     <artifactId>dlink</artifactId>
     <groupId>com.dlink</groupId>
-    <version>0.3.1</version>
+    <version>0.3.2-SANPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>dlink-extends</artifactId>
@@ -64,13 +64,11 @@
     <java.version>1.8</java.version>
     <clickhouse-jdbc.version>0.2.6</clickhouse-jdbc.version>
     <mariadb-java-client.version>2.5.4</mariadb-java-client.version>
-    <postgres.version>42.2.10</postgres.version>
-    <otj-pg-embedded.version>0.13.3</otj-pg-embedded.version>
     <maven.compiler.target>1.8</maven.compiler.target>
     <scala.binary.version>2.11</scala.binary.version>
     <derby.version>10.14.2.0</derby.version>
-    <mariaDB4j.version>2.4.0</mariaDB4j.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <mariaDB4j.version>2.4.0</mariaDB4j.version>
     <mysql-connector-java.version>8.0.22</mysql-connector-java.version>
     <maven.compiler.source>1.8</maven.compiler.source>
     <ojdbc8.version>12.2.0.1</ojdbc8.version>

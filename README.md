@@ -42,7 +42,7 @@ DataLink 开源项目及社区正在建设，希望本项目可以帮助你更�
 |            |     表级血缘分析      | 0.3.0 |
 |            |       任务进程        | 0.3.0 |
 |            |     远程任务停止      | 0.3.0 |
-|            |     函数自动补全      | 敬请期待 |
+|            |     函数自动补全      | 0.3.1 |
 |            |       任务审计        | 敬请期待 |
 |            |   FlinkSQL 运行指标   | 敬请期待 |
 |            |    字段级血缘分析     | 敬请期待 |
@@ -113,8 +113,6 @@ extends/ -- 扩展
 |- flink-sql-connector-hbase-2.2_2.11-1.12.5.jar
 |- flink-sql-connector-kafka_2.11-1.12.5.jar
 |- ojdbc8-12.2.0.1.jar
-|- otj-pg-embedded-0.13.3.jar
-|- postgresql-42.2.10.jar
 lib/ -- 外部依赖及Connector
 |- dlink-client-1.12.jar -- 必需
 |- dlink-connector-jdbc.jar
@@ -135,6 +133,8 @@ dlink-admin.jar --程序包
 ```
 
 解压后结构如上所示，修改配置文件内容。
+lib 文件夹下存放 dlink 自身的扩展文件，plugins 文件夹下存放 flink 及 hadoop 的官方扩展文件。
+extends 文件夹只作为扩展插件的备份管理，不会被 dlink 加载。
 
 在Mysql数据库中创建数据库并执行初始化脚本。
 
@@ -146,6 +146,51 @@ sh auto.sh stop
 sh auto.sh restart
 sh auto.sh status
 ```
+此时通过 8888 端口号可以正常访问 Dlink 的前端页面，但是如果在 plugins 中引入 Hadoop 依赖后，网页将无法正常访问，所以建议使用 nginx 的方式部署。
+
+前端 Nginx 部署：
+```shell
+    server {
+        listen       9999;
+        server_name  localhost;
+
+		# gzip config
+		gzip on;
+		gzip_min_length 1k;
+		gzip_comp_level 9;
+		gzip_types text/plain application/javascript application/x-javascript text/css application/xml text/javascript application/x-httpd-php image/jpeg image/gif image/png;
+		gzip_vary on;
+		gzip_disable "MSIE [1-6]\.";
+
+        #charset koi8-r;
+
+        #access_log  logs/host.access.log  main;
+
+        location / {
+            root   html;
+            index  index.html index.htm;
+			try_files $uri $uri/ /index.html;
+        }
+
+        #error_page  404              /404.html;
+
+        # redirect server error pages to the static page /50x.html
+        #
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   html;
+        }
+
+        location ^~ /api {
+            proxy_pass http://127.0.0.1:8888;
+            proxy_set_header   X-Forwarded-Proto $scheme;
+            proxy_set_header   X-Real-IP         $remote_addr;
+        }
+    }
+```
+1.  server.listen 填写前端访问端口
+2.  proxy_pass 填写后端地址如 http://127.0.0.1:8888
+3.  将 dist 文件夹下打包好的资源上传到 nginx 的 html 文件夹中，重启 nginx，访问即可。
 
 ### 从源码编译
 

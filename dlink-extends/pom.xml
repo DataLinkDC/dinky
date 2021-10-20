@@ -15,10 +15,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <flink.version>1.12.5</flink.version>
         <scala.binary.version>2.11</scala.binary.version>
-        <postgres.version>42.2.10</postgres.version>
         <mysql-connector-java.version>8.0.22</mysql-connector-java.version>
         <ojdbc8.version>12.2.0.1</ojdbc8.version>
-        <otj-pg-embedded.version>0.13.3</otj-pg-embedded.version>
         <mariaDB4j.version>2.4.0</mariaDB4j.version>
         <mariadb-java-client.version>2.5.4</mariadb-java-client.version>
         <derby.version>10.14.2.0</derby.version>
@@ -57,16 +55,6 @@
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-sql-connector-kafka_${scala.binary.version}</artifactId>
             <version>${flink.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>${postgres.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.opentable.components</groupId>
-            <artifactId>otj-pg-embedded</artifactId>
-            <version>${otj-pg-embedded.version}</version>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>

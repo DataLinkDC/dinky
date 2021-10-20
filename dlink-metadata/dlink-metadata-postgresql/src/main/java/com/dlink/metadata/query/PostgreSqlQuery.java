@@ -3,7 +3,7 @@ package com.dlink.metadata.query;
 /**
  * PostgreSqlQuery
  *
- * @author qiwenkai
+ * @author wenmo
  * @since 2021/7/22 9:29
  **/
 public class PostgreSqlQuery extends AbstractDBQuery {
