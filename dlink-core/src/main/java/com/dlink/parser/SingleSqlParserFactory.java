@@ -33,6 +33,8 @@ public class SingleSqlParserFactory {
         } else if (contains(sql, "(create\\s+database)(.+)")) {
         } else if (contains(sql, "(show\\s+databases)")) {
         } else if (contains(sql, "(use)(.+)")) {
+        } else if (contains(sql, "(set)(.+)")) {
+            tmp = new SetSqlParser(sql);
         } else {
         }
         return tmp.splitSql2Segment();

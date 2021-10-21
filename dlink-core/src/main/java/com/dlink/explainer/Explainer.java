@@ -41,6 +41,10 @@ public class Explainer {
         String[] sqls = SqlUtil.getStatements(statement);
         List<SqlExplainResult> sqlExplainRecords = new ArrayList<>();
         for (int i = 0; i < sqls.length; i++) {
+            String sql = sqls[i].trim();
+            if(Asserts.isNullString(sql)){
+                continue;
+            }
             SqlExplainResult record = new SqlExplainResult();
             try {
                 if (!FlinkInterceptor.build(executor.getCustomTableEnvironmentImpl(), sqls[i])) {
@@ -48,6 +52,9 @@ public class Explainer {
                     if (Asserts.isEquals(FlinkSQLConstant.DDL,record.getType())) {
                         executor.executeSql(sqls[i]);
                     }
+                }else{
+                    record.setParseTrue(true);
+                    record.setExplainTrue(true);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

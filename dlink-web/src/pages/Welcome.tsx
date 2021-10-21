@@ -329,6 +329,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>优化在注册 Flink 集群时的链接检测与异常输出</Link>
                 </li>
+                <li>
+                  <Link>支持set语法来设置执行环境参数</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

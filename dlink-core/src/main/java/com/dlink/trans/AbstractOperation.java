@@ -15,6 +15,13 @@ public class AbstractOperation {
 
     protected String statement;
 
+    public AbstractOperation() {
+    }
+
+    public AbstractOperation(String statement) {
+        this.statement = statement;
+    }
+
     public String getStatement() {
         return statement;
     }

@@ -3,15 +3,19 @@ package com.dlink.interceptor;
 import com.dlink.assertion.Asserts;
 import com.dlink.catalog.function.FunctionManager;
 import com.dlink.catalog.function.UDFunction;
-import com.dlink.constant.FlinkFunctionConstant;
 import com.dlink.executor.custom.CustomTableEnvironmentImpl;
+import com.dlink.parser.SingleSqlParserFactory;
 import com.dlink.trans.Operation;
 import com.dlink.trans.Operations;
-import com.dlink.ud.udtaf.RowsToMap;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.table.functions.*;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.flink.configuration.Configuration;
+import org.apache.flink.table.functions.AggregateFunction;
+import org.apache.flink.table.functions.ScalarFunction;
+import org.apache.flink.table.functions.TableAggregateFunction;
+import org.apache.flink.table.functions.TableFunction;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +29,9 @@ public class FlinkInterceptor {
 
     public static boolean build( CustomTableEnvironmentImpl stEnvironment,String statemnet){
         initFunctions(stEnvironment,statemnet);
+        /*if(initConfiguration(stEnvironment,statemnet)){
+            return true;
+        }*/
         Operation operation = Operations.buildOperation(statemnet);
         if(Asserts.isNotNull(operation)) {
             operation.build(stEnvironment);
@@ -55,4 +62,5 @@ public class FlinkInterceptor {
             }
         }
     }
+
 }
