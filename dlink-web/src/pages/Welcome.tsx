@@ -332,6 +332,12 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>支持set语法来设置执行环境参数</Link>
                 </li>
+                <li>
+                  <Link>升级了 Flink 1.13 的版本支持为 1.13.3</Link>
+                </li>
+                <li>
+                  <Link>扩展了 Flink 1.14 的支持</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

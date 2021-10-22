@@ -76,10 +76,6 @@ public class FlinkSqlPlus {
         return explainer.explainSqlColumnCA(statement);
     }
 
-    public String getStreamGraphString(String statement) {
-        return executor.getStreamGraphString(statement);
-    }
-
     public ObjectNode getStreamGraph(String statement) {
         return executor.getStreamGraph(statement);
     }

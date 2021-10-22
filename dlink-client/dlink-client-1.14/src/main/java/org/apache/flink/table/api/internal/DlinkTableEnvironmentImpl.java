@@ -1,13 +1,14 @@
-package com.dlink.executor.custom;
+package org.apache.flink.table.api.internal;
 
+import com.dlink.executor.custom.CustomTableResultImpl;
+import com.dlink.executor.custom.SqlManager;
 import com.dlink.result.SqlExplainResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.dag.Transformation;
-
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.graph.JSONGenerator;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.EnvironmentSettings;
@@ -16,15 +17,14 @@ import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableException;
 import org.apache.flink.table.api.TableResult;
-import org.apache.flink.table.api.internal.TableEnvironmentImpl;
 import org.apache.flink.table.catalog.CatalogManager;
 import org.apache.flink.table.catalog.FunctionCatalog;
 import org.apache.flink.table.catalog.GenericInMemoryCatalog;
 import org.apache.flink.table.delegation.Executor;
 import org.apache.flink.table.delegation.ExecutorFactory;
 import org.apache.flink.table.delegation.Planner;
-import org.apache.flink.table.delegation.PlannerFactory;
-import org.apache.flink.table.factories.ComponentFactoryService;
+import org.apache.flink.table.factories.FactoryUtil;
+import org.apache.flink.table.factories.PlannerFactoryUtil;
 import org.apache.flink.table.functions.AggregateFunction;
 import org.apache.flink.table.functions.TableAggregateFunction;
 import org.apache.flink.table.functions.TableFunction;
@@ -34,64 +34,83 @@ import org.apache.flink.table.operations.ExplainOperation;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.operations.QueryOperation;
-import org.apache.flink.table.planner.delegation.ExecutorBase;
-import org.apache.flink.table.planner.utils.ExecutorUtils;
+import org.apache.flink.table.planner.delegation.DefaultExecutor;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 定制TableEnvironmentImpl
  *
  * @author wenmo
- * @since 2021/6/7 22:06
+ * @since 2021/10/22 10:02
  **/
-public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
+public class DlinkTableEnvironmentImpl extends TableEnvironmentImpl {
 
     private SqlManager sqlManager;
 
     private boolean useSqlFragment = true;
 
-    protected CustomTableEnvironmentImpl(CatalogManager catalogManager, SqlManager sqlManager, ModuleManager moduleManager, TableConfig tableConfig, Executor executor, FunctionCatalog functionCatalog, Planner planner, boolean isStreamingMode, ClassLoader userClassLoader) {
+    protected DlinkTableEnvironmentImpl(CatalogManager catalogManager, SqlManager sqlManager, ModuleManager moduleManager, TableConfig tableConfig, Executor executor, FunctionCatalog functionCatalog, Planner planner, boolean isStreamingMode, ClassLoader userClassLoader) {
         super(catalogManager, moduleManager, tableConfig, executor, functionCatalog, planner, isStreamingMode, userClassLoader);
         this.sqlManager = sqlManager;
     }
 
-    public static CustomTableEnvironmentImpl create(StreamExecutionEnvironment executionEnvironment) {
-        return create(executionEnvironment, EnvironmentSettings.newInstance().build());
+    public static TableEnvironmentImpl create(Configuration configuration) {
+        return create(EnvironmentSettings.fromConfiguration(configuration), configuration);
     }
 
-    static CustomTableEnvironmentImpl create(StreamExecutionEnvironment executionEnvironment, EnvironmentSettings settings) {
-        return create(executionEnvironment, settings, new TableConfig());
+    public static TableEnvironmentImpl create(EnvironmentSettings settings) {
+        return create(settings, settings.toConfiguration());
     }
 
-    public static CustomTableEnvironmentImpl create(StreamExecutionEnvironment executionEnvironment, EnvironmentSettings settings, TableConfig tableConfig) {
-        if (!settings.isStreamingMode()) {
-            throw new TableException("StreamTableEnvironment can not run in batch mode for now, please use TableEnvironment.");
-        } else {
-            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            ModuleManager moduleManager = new ModuleManager();
-            SqlManager sqlManager = new SqlManager();
-            CatalogManager catalogManager = CatalogManager.newBuilder().classLoader(classLoader).config(tableConfig.getConfiguration()).defaultCatalog(settings.getBuiltInCatalogName(), new GenericInMemoryCatalog(settings.getBuiltInCatalogName(), settings.getBuiltInDatabaseName())).executionConfig(executionEnvironment.getConfig()).build();
-            FunctionCatalog functionCatalog = new FunctionCatalog(tableConfig, catalogManager, moduleManager);
-            Map<String, String> executorProperties = settings.toExecutorProperties();
-            Executor executor = lookupExecutor(executorProperties, executionEnvironment);
-            Map<String, String> plannerProperties = settings.toPlannerProperties();
-            Planner planner = ((PlannerFactory) ComponentFactoryService.find(PlannerFactory.class, plannerProperties)).create(plannerProperties, executor, tableConfig, functionCatalog, catalogManager);
-            return new CustomTableEnvironmentImpl(catalogManager, sqlManager, moduleManager, tableConfig, executor, functionCatalog, planner, settings.isStreamingMode(), classLoader);
-        }
-    }
+    private static TableEnvironmentImpl create(
+            EnvironmentSettings settings, Configuration configuration) {
+        // temporary solution until FLINK-15635 is fixed
+        final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
-    private static Executor lookupExecutor(Map<String, String> executorProperties, StreamExecutionEnvironment executionEnvironment) {
-        try {
-            ExecutorFactory executorFactory = (ExecutorFactory) ComponentFactoryService.find(ExecutorFactory.class, executorProperties);
-            Method createMethod = executorFactory.getClass().getMethod("create", Map.class, StreamExecutionEnvironment.class);
-            return (Executor) createMethod.invoke(executorFactory, executorProperties, executionEnvironment);
-        } catch (Exception var4) {
-            throw new TableException("Could not instantiate the executor. Make sure a planner module is on the classpath", var4);
-        }
+        // use configuration to init table config
+        final TableConfig tableConfig = new TableConfig();
+        tableConfig.addConfiguration(configuration);
+
+        final ModuleManager moduleManager = new ModuleManager();
+
+        final CatalogManager catalogManager =
+                CatalogManager.newBuilder()
+                        .classLoader(classLoader)
+                        .config(tableConfig.getConfiguration())
+                        .defaultCatalog(
+                                settings.getBuiltInCatalogName(),
+                                new GenericInMemoryCatalog(
+                                        settings.getBuiltInCatalogName(),
+                                        settings.getBuiltInDatabaseName()))
+                        .build();
+
+        final FunctionCatalog functionCatalog =
+                new FunctionCatalog(tableConfig, catalogManager, moduleManager);
+
+        final ExecutorFactory executorFactory =
+                FactoryUtil.discoverFactory(
+                        classLoader, ExecutorFactory.class, settings.getExecutor());
+        final Executor executor = executorFactory.create(configuration);
+
+        final Planner planner =
+                PlannerFactoryUtil.createPlanner(
+                        settings.getPlanner(),
+                        executor,
+                        tableConfig,
+                        catalogManager,
+                        functionCatalog);
+
+        return new TableEnvironmentImpl(
+                catalogManager,
+                moduleManager,
+                tableConfig,
+                executor,
+                functionCatalog,
+                planner,
+                settings.isStreamingMode(),
+                classLoader);
     }
 
     public void useSqlFragment() {
@@ -127,7 +146,7 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
         if (checkShowFragments(statement)) {
             throw new TableException("'SHOW FRAGMENTS' can't be explained.");
         }
-        List<Operation> operations = super.parser.parse(statement);
+        List<Operation> operations = super.getParser().parse(statement);
         if (operations.size() != 1) {
             throw new TableException("Unsupported SQL query! explainSql() only accepts a single SQL query.");
         } else {
@@ -138,8 +157,8 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
                 }
             }
             List<Transformation<?>> trans = super.planner.translate(modifyOperations);
-            if(execEnv instanceof ExecutorBase){
-                StreamGraph streamGraph = ExecutorUtils.generateStreamGraph(((ExecutorBase) execEnv).getExecutionEnvironment(), trans);
+            if(execEnv instanceof DefaultExecutor){
+                StreamGraph streamGraph = ((DefaultExecutor) execEnv).getExecutionEnvironment().generateStreamGraph(trans);
                 JSONGenerator jsonGenerator = new JSONGenerator(streamGraph);
                 String json = jsonGenerator.getJSON();
                 ObjectMapper mapper = new ObjectMapper();
@@ -152,7 +171,7 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
                     return objectNode;
                 }
             }else{
-                throw new TableException("Unsupported SQL query! ExecEnv need a ExecutorBase.");
+                throw new TableException("Unsupported SQL query! explainSql() need a single SQL to query.");
             }
         }
     }
@@ -170,7 +189,7 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
                 return record;
             }
         }
-        List<Operation> operations = parser.parse(statement);
+        List<Operation> operations = getParser().parse(statement);
         record.setParseTrue(true);
         if (operations.size() != 1) {
             throw new TableException(
@@ -194,6 +213,7 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
         }
         record.setExplainTrue(true);
         if(operationlist.size()==0){
+            //record.setExplain("DDL语句不进行解释。");
             return record;
         }
         record.setExplain(planner.explain(operationlist, extraDetails));

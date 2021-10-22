@@ -158,10 +158,6 @@ public abstract class Executor {
         return stEnvironment.explainSqlRecord(statement,extraDetails);
     }
 
-    public String getStreamGraphString(String statement){
-        return stEnvironment.getStreamGraphString(statement);
-    }
-
     public ObjectNode getStreamGraph(String statement){
         return stEnvironment.getStreamGraph(statement);
     }

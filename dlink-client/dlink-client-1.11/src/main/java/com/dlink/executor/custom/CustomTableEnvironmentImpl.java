@@ -116,35 +116,6 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
         }
     }
 
-    public String getStreamGraphString(String statement) {
-        if(useSqlFragment) {
-            statement = sqlManager.parseVariable(statement);
-            if (statement.length() == 0) {
-                return "This is a sql fragment.";
-            }
-        }
-        if (checkShowFragments(statement)) {
-            return "'SHOW FRAGMENTS' can't be explained.";
-        }
-        List<Operation> operations = super.parser.parse(statement);
-        if (operations.size() != 1) {
-            throw new TableException("Unsupported SQL query! explainSql() only accepts a single SQL query.");
-        } else {
-            List<ModifyOperation> modifyOperations = new ArrayList<>();
-            for (int i = 0; i < operations.size(); i++) {
-                if(operations.get(i) instanceof ModifyOperation){
-                    modifyOperations.add((ModifyOperation)operations.get(i));
-                }
-            }
-            List<Transformation<?>> trans = super.planner.translate(modifyOperations);
-            if(execEnv instanceof ExecutorBase){
-                return ExecutorUtils.generateStreamGraph(((ExecutorBase) execEnv).getExecutionEnvironment(), trans).getStreamingPlanAsJSON();
-            }else{
-                return "Unsupported SQL query! explainSql() need a single SQL to query.";
-            }
-        }
-    }
-
     public ObjectNode getStreamGraph(String statement) {
         if(useSqlFragment) {
             statement = sqlManager.parseVariable(statement);
