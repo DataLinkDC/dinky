@@ -95,9 +95,9 @@ DataLink 开源项目及社区正在建设，希望本项目可以帮助你更�
 
 ### 版本
 
-抢先体验( main 主支)：dlink-0.3.2
+抢先体验( main 主支)：dlink-0.3.3
 
-稳定版本( 0.3.1 分支)：dlink-0.3.1
+稳定版本( 0.3.2 分支)：dlink-0.3.2
 
 ### 从安装包开始
 
@@ -149,6 +149,7 @@ sh auto.sh status
 此时通过 8888 端口号可以正常访问 Dlink 的前端页面，但是如果在 plugins 中引入 Hadoop 依赖后，网页将无法正常访问，所以建议使用 nginx 的方式部署。
 
 前端 Nginx 部署：
+    将 dist.rar 解压并上传至 nginx 的 html 文件夹下，修改 nginx 配置文件并重启。
 ```shell
     server {
         listen       9999;
@@ -212,6 +213,7 @@ dlink -- 父项目
 | |-config -- 配置文件
 | |-doc -- 使用文档
 | |-sql -- sql脚本
+|-dlink-extends -- 扩展中心
 |-dlink-function -- 函数中心
 |-dlink-metadata -- 元数据中心
 | |-dlink-metadata-base -- 元数据基础组件
@@ -254,7 +256,7 @@ mvn clean install -Dmaven.test.skip=true
 
 Flink 的版本取决于 lib 下的 dlink-client-1.12.jar。
 当前版本默认为 Flink 1.12.4 API。
-向其他版本的集群提交任务可能存在问题，已实现 1.11、1.12、1.13，切换版本时只需要将对应依赖在lib下进行替换，然后重启即可。
+向其他版本的集群提交任务可能存在问题，已实现 1.11、1.12、1.13, 1.14，切换版本时只需要将对应依赖在lib下进行替换，然后重启即可。
 
 ## 使用手册
 
@@ -274,7 +276,7 @@ Flink 的版本取决于 lib 下的 dlink-client-1.12.jar。
 
 1. 在左侧目录区域创建文件夹或任务。
 2. 在中间编辑区编写 FlinkSQL 。
-3. 在右侧配置执行参数。
+3. 在右侧配置作业配置和执行参数。
 4. Fragment 开启后，可以使用增强的 sql 片段语法：
 ```sql
 sf:=select * from;tb:=student;
@@ -292,15 +294,23 @@ AGG BY TOP2(value) as (value,rank);
 ```
 6. MaxRowNum 为批流执行Select时预览查询结果的最大集合长度，默认 100，最大 9999。
 7. SavePointPath 当前版本属于非 Jar 提交，暂不可用。
-8. Flink 共享会话共享 Catalog 。
+8. Flink 共享会话共享 Catalog ，会话的使用需要在左侧会话选项卡手动创建并维护。
 9. 连接器为 Catalog 里的表信息，清空按钮会销毁当前会话。
 10. Local 模式请使用少量测试数据，真实数据请使用远程集群。
 11. 执行 SQL 时，如果您选中了部分 SQL，则会执行选中的内容，否则执行全部内容。
-12. 小火箭的提交功能是异步提交当前任务已保存的 FlinkSQL 及配置到集群。无法提交草稿。
-13. 执行信息或者历史中那个很长很长的就是集群上的 JobId。
+12. 小火箭的提交功能是异步提交当前任务已保存的 FlinkSQL 及配置到集群。由于适用于快速提交稳定的任务，所以无法提交草稿，且无法预览数据。
+13. 执行信息或者历史中那个很长很长的就是集群上的 JobId，任务历史可以查看执行过的任务的数据回放。
 14. 草稿是无法被异步远程提交的，只能同步执行。
 15. 灰色按钮代表近期将实现。
 16. 同步执行时可以自由指定任务名，异步提交默认为作业名。
+17. 支持 set 语法设置 Flink 的执行配置，其优先级大于右侧的配置。
+18. 支持远程集群查看及停止任务。
+19. 支持自定义的 sql 函数或片段的自动补全，通过函数文档维护。
+20. 支持 Flink 所有官方的连接器及插件的扩展，但需注意版本号适配。
+21. 使用 IDEA 进行源码调试时，需要在 admin 及 core 下修改相应 pom 依赖的引入来完成功能的加载。
+22. 支持可执行 FlinkSql （Insert into）的血缘分析，无论你的 sql 有多复杂或者多 view。
+23. Dlink 目前提交方式支持 Standalone 及 Yarn Session，近期将开源 Yarn Application 的提交方式。
+24. Dlink 目前对于 Flink 多版本的支持只能一个 Dlink 实例支持一个 Flink 版本，未来将开源同时支持多版本的能力。
 #### 使用技巧
 
 1.[Flink AggTable 在 Dlink 的实践](https://github.com/DataLinkDC/dlink/blob/main/dlink-doc/doc/FlinkAggTable%E5%9C%A8Dlink%E7%9A%84%E5%BA%94%E7%94%A8.md)

@@ -7,11 +7,12 @@
     <groupId>com.dlink</groupId>
     <artifactId>dlink</artifactId>
     <packaging>pom</packaging>
-    <version>0.3.2-SANPSHOT</version>
+    <version>0.3.2</version>
 
     <modules>
         <module>dlink-core</module>
         <module>dlink-connectors</module>
+        <module>dlink-executor</module>
         <module>dlink-client</module>
         <module>dlink-function</module>
         <module>dlink-common</module>
