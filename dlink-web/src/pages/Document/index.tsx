@@ -17,10 +17,13 @@ import {
   handleAddOrUpdate, handleOption, handleRemove, queryData,
   updateEnabled
 } from "@/components/Common/crud";
+import {getFillAllByVersion} from "@/components/Studio/StudioEvent/DDL";
 
 const url = '/api/document';
 
-const DocumentTableList: React.FC<{}> = () => {
+const DocumentTableList: React.FC<{}> = (props: any) => {
+
+  const {dispatch} = props;
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [formValues, setFormValues] = useState({});
@@ -103,7 +106,34 @@ const DocumentTableList: React.FC<{}> = () => {
       ],
       filterMultiple: false,
       valueEnum: {
-        'function': { text: '函数'},
+        'Method': { text: 'Method'},
+        'Function': { text: 'Function'},
+        'Constructor': { text: 'Constructor'},
+        'Field': { text: 'Field'},
+        'Variable': { text: 'Variable'},
+        'Class': { text: 'Class'},
+        'Struct': { text: 'Struct'},
+        'Interface': { text: 'Interface'},
+        'Module': { text: 'Module'},
+        'Property': { text: 'Property'},
+        'Event': { text: 'Event'},
+        'Operator': { text: 'Operator'},
+        'Unit': { text: 'Unit'},
+        'Value': { text: 'Value'},
+        'Constant': { text: 'Constant'},
+        'Enum': { text: 'Enum'},
+        'EnumMember': { text: 'EnumMember'},
+        'Keyword': { text: 'Keyword'},
+        'Text': { text: 'Text'},
+        'Color': { text: 'Color'},
+        'File': { text: 'File'},
+        'Reference': { text: 'Reference'},
+        'Customcolor': { text: 'Customcolor'},
+        'Folder': { text: 'Folder'},
+        'TypeParameter': { text: 'TypeParameter'},
+        'User': { text: 'User'},
+        'Issue': { text: 'Issue'},
+        'Snippet': { text: 'Snippet'},
       },
     },
     {
@@ -113,7 +143,7 @@ const DocumentTableList: React.FC<{}> = () => {
       hideInForm: false,
       hideInSearch: true,
       hideInTable: false,
-      filters: [
+      /*filters: [
         {
           text: '内置函数',
           value: '内置函数',
@@ -127,7 +157,7 @@ const DocumentTableList: React.FC<{}> = () => {
       valueEnum: {
         '内置函数': { text: '内置函数'},
         'UDF': { text: 'UDF'},
-      },
+      },*/
     },
     {
       title: '子类型',
@@ -136,7 +166,7 @@ const DocumentTableList: React.FC<{}> = () => {
       hideInForm: false,
       hideInSearch: true,
       hideInTable: false,
-      filters: [
+      /*filters: [
         {
           text: '比较函数',
           value: '比较函数',
@@ -206,7 +236,7 @@ const DocumentTableList: React.FC<{}> = () => {
         '列函数': { text: '列函数'},
         '表值聚合函数': { text: '表值聚合函数'},
         '其他函数': { text: '其他函数'},
-      },
+      },*/
     },
     {
       title: '描述',
@@ -215,6 +245,14 @@ const DocumentTableList: React.FC<{}> = () => {
       valueType: 'textarea',
       hideInForm: false,
       hideInSearch: false,
+      hideInTable: true,
+    },{
+      title: '填充值',
+      sorter: true,
+      dataIndex: 'fillValue',
+      valueType: 'textarea',
+      hideInForm: false,
+      hideInSearch: true,
       hideInTable: true,
     },
     {
@@ -389,6 +427,7 @@ const DocumentTableList: React.FC<{}> = () => {
             if (actionRef.current) {
               actionRef.current.reload();
             }
+            getFillAllByVersion('',dispatch);
           }
         }}
           rowKey="id"
@@ -406,6 +445,7 @@ const DocumentTableList: React.FC<{}> = () => {
                 if (actionRef.current) {
                   actionRef.current.reload();
                 }
+                getFillAllByVersion('',dispatch);
               }
             }}
             onCancel={() => {

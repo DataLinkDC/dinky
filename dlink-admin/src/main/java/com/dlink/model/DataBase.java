@@ -1,5 +1,7 @@
 package com.dlink.model;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.dlink.db.model.SuperEntity;
 import com.dlink.metadata.driver.DriverConfig;
@@ -21,6 +23,7 @@ public class DataBase extends SuperEntity {
 
     private static final long serialVersionUID = -5002272138861566408L;
 
+    @TableField(fill = FieldFill.INSERT)
     private String alias;
 
     private String groupName;

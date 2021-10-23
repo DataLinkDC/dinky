@@ -152,36 +152,37 @@ public class JobManager extends RunTime {
         SubmitResult result = new SubmitResult(sessionId, sqlList, environmentSetting.getHost(), executorSetting.getJobName());
         int currentIndex = 0;
         try {
-            if (sqlList != null && sqlList.size() > 0) {
-                Executor executor = createExecutor();
-                for (String sqlText : sqlList) {
-                    currentIndex++;
-                    SqlType operationType = Operations.getOperationType(sqlText);
-                    CustomTableEnvironmentImpl stEnvironment = executor.getCustomTableEnvironmentImpl();
-                    if (operationType==SqlType.INSERT) {
-                        long start = System.currentTimeMillis();
-                        if (!FlinkInterceptor.build(stEnvironment, sqlText)) {
-                            TableResult tableResult = executor.executeSql(sqlText);
-                            JobID jobID = tableResult.getJobClient().get().getJobID();
-                            long finish = System.currentTimeMillis();
-                            long timeElapsed = finish - start;
-                            InsertResult insertResult = new InsertResult((jobID == null ? "" : jobID.toHexString()), true);
-                            result.setResult(insertResult);
-                            result.setJobId((jobID == null ? "" : jobID.toHexString()));
-                            result.setTime(timeElapsed);
-                        }
-                        result.setSuccess(true);
-                        result.setFinishDate(LocalDateTime.now());
-                    } else {
-                        if (!FlinkInterceptor.build(stEnvironment, sqlText)) {
-                            executor.executeSql(sqlText);
-                        }
-                    }
-                }
-            } else {
+            if (Asserts.isNullCollection(sqlList)) {
                 result.setSuccess(false);
                 result.setMsg(LocalDateTime.now().toString() + ":执行sql语句为空。");
                 return result;
+            }
+            Executor executor = createExecutor();
+            for (String sqlText : sqlList) {
+                currentIndex++;
+                SqlType operationType = Operations.getOperationType(sqlText);
+                CustomTableEnvironmentImpl stEnvironment = executor.getCustomTableEnvironmentImpl();
+                if (operationType.equals(SqlType.INSERT)) {
+                    long start = System.currentTimeMillis();
+                    if (!FlinkInterceptor.build(stEnvironment, sqlText)) {
+                        TableResult tableResult = executor.executeSql(sqlText);
+                        JobID jobID = tableResult.getJobClient().get().getJobID();
+                        long finish = System.currentTimeMillis();
+                        long timeElapsed = finish - start;
+                        InsertResult insertResult = new InsertResult((jobID == null ? "" : jobID.toHexString()), true);
+                        result.setResult(insertResult);
+                        result.setJobId((jobID == null ? "" : jobID.toHexString()));
+                        result.setTime(timeElapsed);
+                    }
+                    result.setSuccess(true);
+                    result.setFinishDate(LocalDateTime.now());
+                } else if(operationType.equals(SqlType.SET)){
+
+                } else {
+                    if (!FlinkInterceptor.build(stEnvironment, sqlText)) {
+                        executor.executeSql(sqlText);
+                    }
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

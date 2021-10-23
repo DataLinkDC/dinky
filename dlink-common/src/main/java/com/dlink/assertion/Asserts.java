@@ -3,6 +3,7 @@ package com.dlink.assertion;
 import com.dlink.exception.RunTimeException;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * Asserts
@@ -59,6 +60,16 @@ public class Asserts {
         return !isNullCollection(collection);
     }
 
+    public static boolean isNullMap(Map map) {
+        if (isNull(map)||map.size()==0) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isNotNullMap(Map map) {
+        return !isNullMap(map);
+    }
 
     public static void checkNull(String key,String msg) {
         if (key == null||"".equals(key)) {
@@ -80,6 +91,12 @@ public class Asserts {
 
     public static void checkNullCollection(Collection collection,String msg) {
         if(isNullCollection(collection)){
+            throw new RunTimeException(msg);
+        }
+    }
+
+    public static void checkNullMap(Map map,String msg) {
+        if(isNullMap(map)){
             throw new RunTimeException(msg);
         }
     }

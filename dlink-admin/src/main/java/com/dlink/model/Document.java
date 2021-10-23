@@ -22,5 +22,6 @@ public class Document extends SuperEntity {
     private String subtype;
     private String description;
     private String version;
+    private String fillValue;
     private String likeNum;
 }

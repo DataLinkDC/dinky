@@ -1,16 +1,12 @@
 package com.dlink.cluster;
 
-import cn.hutool.http.HttpUtil;
+import cn.hutool.core.io.IORuntimeException;
 import com.dlink.api.FlinkAPI;
 import com.dlink.assertion.Asserts;
-import com.dlink.constant.FlinkConstant;
-import com.dlink.constant.FlinkHistoryConstant;
-import com.dlink.constant.NetConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.net.SocketTimeoutException;
 
 /**
  * FlinkCluster
@@ -22,27 +18,35 @@ public class FlinkCluster {
 
     private static Logger logger = LoggerFactory.getLogger(FlinkCluster.class);
 
-    public static String testFlinkJobManagerIP(String hosts,String host) {
-        try {
-            String res = FlinkAPI.build(host).getVersion();
-            if (Asserts.isNotNullString(res)) {
-                return host;
+    public static FlinkClusterInfo testFlinkJobManagerIP(String hosts,String host) {
+        if(Asserts.isNotNullString(host)) {
+            FlinkClusterInfo info = executeSocketTest(host);
+            if(info.isEffective()){
+                return info;
             }
-        } catch (Exception e) {
-            logger.error(e.getMessage(),e);
         }
         String[] servers = hosts.split(",");
         for (String server : servers) {
-            try {
-                String res = FlinkAPI.build(server).getVersion();
-                if (Asserts.isNotNullString(res)) {
-                    return server;
-                }
-            } catch (Exception e) {
-                logger.error(e.getMessage(),e);
+            FlinkClusterInfo info = executeSocketTest(server);
+            if(info.isEffective()){
+                return info;
             }
         }
-        return null;
+        return FlinkClusterInfo.INEFFECTIVE;
+    }
+    
+    private static FlinkClusterInfo executeSocketTest(String host){
+        try {
+            String res = FlinkAPI.build(host).getVersion();
+            if (Asserts.isNotNullString(res)) {
+                return FlinkClusterInfo.build(host,res);
+            }
+        } catch (IORuntimeException e) {
+            logger.info("Flink jobManager 地址排除 -- "+ host);
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+        }
+        return FlinkClusterInfo.INEFFECTIVE;
     }
 
 }

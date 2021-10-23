@@ -6,7 +6,7 @@ import com.dlink.metadata.rules.IColumnType;
 /**
  * PostgreSqlTypeConvert
  *
- * @author qiwenkai
+ * @author wenmo
  * @since 2021/7/22 9:33
  **/
 public class PostgreSqlTypeConvert implements ITypeConvert {

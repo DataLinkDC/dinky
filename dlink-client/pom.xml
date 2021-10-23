@@ -5,7 +5,7 @@
     <parent>
         <artifactId>dlink</artifactId>
         <groupId>com.dlink</groupId>
-        <version>0.3.1</version>
+        <version>0.3.2</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -16,5 +16,6 @@
         <module>dlink-client-1.12</module>
         <module>dlink-client-1.13</module>
         <module>dlink-client-1.11</module>
+        <module>dlink-client-1.14</module>
     </modules>
 </project>

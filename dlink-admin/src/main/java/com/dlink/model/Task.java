@@ -1,6 +1,7 @@
 package com.dlink.model;
 
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.dlink.db.model.SuperEntity;
@@ -25,6 +26,7 @@ public class Task extends SuperEntity{
 
     private static final long serialVersionUID = 5988972129893667154L;
 
+    @TableField(fill = FieldFill.INSERT)
     private String alias;
 
     private String type;

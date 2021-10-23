@@ -1,5 +1,7 @@
 package com.dlink.parser;
 
+import com.dlink.assertion.Asserts;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,8 +43,8 @@ public abstract class BaseSingleSqlParser {
         Map<String,List<String>> map = new HashMap<>();
         for (SqlSegment sqlSegment : segments) {
             sqlSegment.parse(originalSql);
-            if(sqlSegment.getStart()!=null&&!"".equals(sqlSegment.getStart())) {
-                map.put(sqlSegment.getStart(), sqlSegment.getBodyPieces());
+            if(Asserts.isNotNullString(sqlSegment.getStart())) {
+                map.put(sqlSegment.getStart().toUpperCase(), sqlSegment.getBodyPieces());
             }
         }
         return map;
@@ -54,9 +56,9 @@ public abstract class BaseSingleSqlParser {
     public String getParsedSql() {
         StringBuffer sb = new StringBuffer();
         for (SqlSegment sqlSegment : segments) {
-            sb.append(sqlSegment.getParsedSqlSegment() + "n");
+            sb.append(sqlSegment.getParsedSqlSegment() + "\n");
         }
-        String retval = sb.toString().replaceAll("n+", "n");
+        String retval = sb.toString().replaceAll("\n+", "\n");
         return retval;
     }
 

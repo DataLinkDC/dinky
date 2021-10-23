@@ -1,5 +1,6 @@
 package com.dlink.service;
 
+import com.dlink.cluster.FlinkClusterInfo;
 import com.dlink.db.service.ISuperService;
 import com.dlink.model.Cluster;
 
@@ -13,7 +14,7 @@ import java.util.List;
  **/
 public interface ClusterService extends ISuperService<Cluster> {
 
-    String checkHeartBeat(String hosts,String host);
+    FlinkClusterInfo checkHeartBeat(String hosts, String host);
 
     String getJobManagerAddress(Cluster cluster);
 

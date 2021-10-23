@@ -1,5 +1,5 @@
 import { Tabs,Empty,Tooltip,Button } from "antd";
-import { IndentedTreeGraph } from '@ant-design/charts';
+import { IndentedTreeGraph,DecompositionTreeGraph } from '@ant-design/charts';
 import {SearchOutlined} from "@ant-design/icons";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
@@ -48,10 +48,13 @@ const StudioCA = (props:any) => {
        * item.source: 获取 source 数据
        * item.target: 获取 target 数据
        */
-      // console.log(graph.findById(item.target).getModel());
+      /*console.log(item);
+      console.log(graph);
+      console.log(graph.findById(item.target.id).getModel());*/
       return {
         stroke: '#40a9ff',
-        lineWidth: graph.findById(item.target).getModel().columnSize,
+        // lineWidth: graph.findById(item.target).getModel().columnSize,
+        lineWidth: 1,
         strokeOpacity: 0.5,
       };
     },
@@ -88,7 +91,8 @@ const StudioCA = (props:any) => {
       // console.log(graph.findById(item.target).getModel());
       return {
         stroke: '#40a9ff',
-        lineWidth: graph.findById(item.target).getModel().columnSize,
+        // lineWidth: graph.findById(item.target).getModel().columnSize,
+        lineWidth: 1,
         strokeOpacity: 0.5,
       };
     },

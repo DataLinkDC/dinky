@@ -18,6 +18,10 @@ public interface NetConstant {
      */
     Integer SERVER_TIME_OUT_ACTIVE = 1000;
     /**
+     * 读取服务器超时时间  3000
+     */
+    Integer READ_TIME_OUT = 3000;
+    /**
      * 连接FLINK历史服务器超时时间  2000
      */
     Integer SERVER_TIME_OUT_HISTORY = 3000;

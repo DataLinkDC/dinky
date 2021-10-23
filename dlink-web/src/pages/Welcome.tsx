@@ -20,7 +20,7 @@ export default (): React.ReactNode => {
         <Alert
           message={intl.formatMessage({
             id: 'pages.welcome.alertMessage',
-            defaultMessage: '实时计算平台 Dlink & Apache Flink 即将发布，目前为体验版，版本号为 0.3.1。',
+            defaultMessage: '实时计算平台 Dlink & Apache Flink 即将发布，目前为体验版，版本号为 0.3.2。',
           })}
           type="success"
           showIcon
@@ -300,6 +300,46 @@ export default (): React.ReactNode => {
                 </li>
                 <li>
                   <Link>修复了 Studio 编辑器的自动补全无法正常提示的bug</Link>
+                </li>
+              </ul>
+            </Paragraph>
+          </Timeline.Item>
+          <Timeline.Item><Text code>0.3.2</Text> <Text type="secondary">2021-10-22</Text>
+            <p> </p>
+            <Paragraph>
+              <ul>
+                <li>
+                  <Link>新增了SQL编辑器自动补全文档的功能</Link>
+                </li>
+                <li>
+                  <Link>优化了 Flink 多版本间的切换，下沉 Flink 获取表字段的逻辑</Link>
+                </li>
+                <li>
+                  <Link>增加了 plugins 类加载路径用于加载 Flink 的有关依赖</Link>
+                </li>
+                <li>
+                  <Link>增加了 dlink-extends 模块用于扩展依赖打包</Link>
+                </li>
+                <li>
+                  <Link>增加了更加稳定 Nginx 前后端分离部署方式</Link>
+                </li>
+                <li>
+                  <Link>优化所有的新增功能别名未填则默认为名称</Link>
+                </li>
+                <li>
+                  <Link>优化在注册 Flink 集群时的链接检测与异常输出</Link>
+                </li>
+                <li>
+                  <Link>支持set语法来设置执行环境参数</Link>
+                </li>
+                <li>
+                  <Link>升级了 Flink 1.13 的版本支持为 1.13.3</Link>
+                </li>
+                <li>
+                  <Link>扩展了 Flink 1.14 的支持</Link>
+                </li>
+                <li>
+                  <Link>修复血缘分析缩进树图渲染bug</Link>
                 </li>
               </ul>
             </Paragraph>

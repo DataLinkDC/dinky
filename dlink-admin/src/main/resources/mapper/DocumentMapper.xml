@@ -10,6 +10,7 @@
         <result column="type" property="type" />
         <result column="subtype" property="subtype" />
         <result column="description" property="description" />
+        <result column="fill_value" property="fillValue" />
         <result column="version" property="version" />
         <result column="like_num" property="likeNum" />
         <result column="enabled" property="enabled" />
@@ -19,7 +20,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, category, type,subtype,description, version,like_num, enabled, create_time, update_time
+        id, name, category, type,subtype,description, version,fill_value,like_num, enabled, create_time, update_time
     </sql>
 
 

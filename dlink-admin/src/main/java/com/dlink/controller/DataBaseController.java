@@ -127,7 +127,6 @@ public class DataBaseController {
         Asserts.checkNotNull(dataBase,"该数据源不存在！");
         databaseService.checkHeartBeat(dataBase);
         databaseService.updateById(dataBase);
-        logger.warn("埋点日志");
         return Result.succeed(dataBase,"状态刷新完成");
     }
 

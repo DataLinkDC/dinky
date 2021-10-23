@@ -41,4 +41,11 @@ public class SqlParserTest {
         System.out.println(lists.toString());
         System.out.println(StringUtils.join(lists.get("SELECT"),","));
     }
+
+    @Test
+    public void setTest(){
+        String sql = "set table.exec.resource.default-parallelism = 2";
+        Map<String,List<String>> lists = SingleSqlParserFactory.generateParser(sql);
+        System.out.println(lists.toString());
+    }
 }

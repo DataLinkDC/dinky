@@ -361,4 +361,11 @@ CREATE TABLE `dlink_database`  (
 ALTER TABLE `dlink`.`dlink_cluster`
 ADD COLUMN `version` varchar(20) NULL COMMENT '版本' AFTER `job_manager_host`;
 
+ALTER TABLE `dlink`.`dlink_flink_document`
+ADD COLUMN `fill_value` varchar(255) NULL COMMENT '填充值' AFTER `description`;
+
+update dlink_flink_document set fill_value=name;
+
+update dlink_flink_document set category='Function' where category='function' ;
+
 SET FOREIGN_KEY_CHECKS = 1;

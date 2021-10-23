@@ -1,9 +1,8 @@
 package com.dlink.trans;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.constant.FlinkSQLConstant;
 import com.dlink.parser.SqlType;
 import com.dlink.trans.ddl.CreateAggTableOperation;
+import com.dlink.trans.ddl.SetOperation;
 
 /**
  * Operations
@@ -14,7 +13,8 @@ import com.dlink.trans.ddl.CreateAggTableOperation;
 public class Operations {
 
     private static Operation[] operations = {
-      new CreateAggTableOperation()
+      new CreateAggTableOperation(),
+            new SetOperation()
     };
 
     public static SqlType getSqlTypeFromStatements(String statement){
@@ -33,7 +33,7 @@ public class Operations {
     }
 
     public static SqlType getOperationType(String sql) {
-        String sqlTrim = sql.replaceAll("[\\s\\t\\n\\r]", "").toUpperCase();
+        String sqlTrim = sql.replaceAll("[\\s\\t\\n\\r]", "").trim().toUpperCase();
         SqlType type = SqlType.UNKNOWN;
         for (SqlType sqlType : SqlType.values()) {
             if (sqlTrim.startsWith(sqlType.getType())) {

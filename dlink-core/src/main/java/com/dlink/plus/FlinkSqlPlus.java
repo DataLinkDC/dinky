@@ -60,8 +60,8 @@ public class FlinkSqlPlus {
         }
     }
 
-    public List<SqlExplainResult> explainSqlRecord(String statement, ExplainDetail... extraDetails) {
-        return explainer.explainSqlResult(statement,extraDetails);
+    public List<SqlExplainResult> explainSqlRecord(String statement) {
+        return explainer.explainSqlResult(statement);
     }
 
     public List<TableCAResult> explainSqlTableColumnCA(String statement) {
@@ -74,10 +74,6 @@ public class FlinkSqlPlus {
 
     public List<ColumnCAResult> explainSqlColumnCA(String statement) {
         return explainer.explainSqlColumnCA(statement);
-    }
-
-    public String getStreamGraphString(String statement) {
-        return executor.getStreamGraphString(statement);
     }
 
     public ObjectNode getStreamGraph(String statement) {

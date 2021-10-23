@@ -7,12 +7,7 @@ import com.dlink.service.DocumentService;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,5 +75,13 @@ public class DocumentController {
     public Result getOneById(@RequestBody Document document) throws Exception {
         document = documentService.getById(document.getId());
         return Result.succeed(document,"获取成功");
+    }
+
+    /**
+     * 根据版本号获取自动补全内容
+     */
+    @GetMapping("/getFillAllByVersion")
+    public Result getFillAllByVersion(@RequestParam String version) {
+        return Result.succeed(documentService.getFillAllByVersion(version),"获取成功");
     }
 }

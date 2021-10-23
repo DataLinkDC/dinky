@@ -7,15 +7,17 @@
     <groupId>com.dlink</groupId>
     <artifactId>dlink</artifactId>
     <packaging>pom</packaging>
-    <version>0.3.1</version>
+    <version>0.3.2</version>
 
     <modules>
         <module>dlink-core</module>
         <module>dlink-connectors</module>
+        <module>dlink-executor</module>
         <module>dlink-client</module>
         <module>dlink-function</module>
         <module>dlink-common</module>
         <module>dlink-metadata</module>
+        <module>dlink-extends</module>
         <module>dlink-web</module>
         <module>dlink-admin</module>
         <module>dlink-assembly</module>
@@ -95,7 +97,7 @@
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
             </dependency>
-            <dependency>
+            <!--<dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.version}</version>
@@ -104,7 +106,7 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-simple</artifactId>
                 <version>${slf4j.version}</version>
-            </dependency>
+            </dependency>-->
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
@@ -159,7 +161,27 @@
             </dependency>
             <dependency>
                 <groupId>com.dlink</groupId>
-                <artifactId>dlink-connector-jdbc</artifactId>
+                <artifactId>dlink-client-1.13</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-client-1.14</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-client-1.11</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-connector-jdbc-1.12</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-connector-jdbc-1.13</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

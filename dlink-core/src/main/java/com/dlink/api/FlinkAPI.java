@@ -41,8 +41,7 @@ public class FlinkAPI {
         return result;
     }
 
-
-    private JsonNode get(String route) {
+    private JsonNode get(String route){
         String res = HttpUtil.get(NetConstant.HTTP + address + NetConstant.SLASH + route, NetConstant.SERVER_TIME_OUT_ACTIVE);
         return parse(res);
     }
@@ -75,7 +74,7 @@ public class FlinkAPI {
         return true;
     }
 
-    public String getVersion(){
+    public String getVersion() {
         JsonNode result = get(FlinkRestAPIConstant.CONFIG);
         return result.get("flink-version").asText();
     }

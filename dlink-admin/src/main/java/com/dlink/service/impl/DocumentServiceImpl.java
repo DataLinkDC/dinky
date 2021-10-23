@@ -1,10 +1,14 @@
 package com.dlink.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.dlink.assertion.Asserts;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.DocumentMapper;
 import com.dlink.model.Document;
 import com.dlink.service.DocumentService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * DocumentServiceImpl
@@ -15,4 +19,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class DocumentServiceImpl extends SuperServiceImpl<DocumentMapper, Document> implements DocumentService {
 
+    @Override
+    public List<Document> getFillAllByVersion(String version) {
+        if(Asserts.isNotNullString(version)) {
+            return baseMapper.selectList(new QueryWrapper<Document>().eq("version", version).eq("enabled", 1));
+        }else{
+            return baseMapper.selectList(new QueryWrapper<Document>().eq("enabled", 1));
+        }
+    }
 }

@@ -1,11 +1,8 @@
 package com.dlink.trans.ddl;
 
-import com.dlink.constant.FlinkFunctionConstant;
 import com.dlink.executor.custom.CustomTableEnvironmentImpl;
 import com.dlink.trans.AbstractOperation;
 import com.dlink.trans.Operation;
-import com.dlink.ud.udf.GetKey;
-import com.dlink.ud.udtaf.RowsToMap;
 import org.apache.flink.table.api.Table;
 
 import java.util.List;
@@ -24,7 +21,7 @@ public class CreateAggTableOperation extends AbstractOperation implements Operat
     }
 
     public CreateAggTableOperation(String statement) {
-        this.statement = statement;
+        super(statement);
     }
 
     @Override
