@@ -344,6 +344,19 @@ export default (): React.ReactNode => {
               </ul>
             </Paragraph>
           </Timeline.Item>
+          <Timeline.Item><Text code>0.3.3</Text> <Text type="secondary">2021-11-?</Text>
+            <p> </p>
+            <Paragraph>
+              <ul>
+                <li>
+                  <Link>修复 FlinkSQL 代码提示会因为打开多个选项卡而重复的问题</Link>
+                </li>
+                <li>
+                  <Link>新增 FlinkSQL 自动补全可以根据 sql 上下文来提示已注册的元数据的功能</Link>
+                </li>
+              </ul>
+            </Paragraph>
+          </Timeline.Item>
         </Timeline>
       </Card>
     </PageContainer>

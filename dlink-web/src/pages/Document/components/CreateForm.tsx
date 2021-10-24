@@ -12,7 +12,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
   return (
     <Modal
       destroyOnClose
-      title="添加 Flink 集群"
+      title="添加文档内容"
       visible={modalVisible}
       onCancel={() => onCancel()}
       footer={null}

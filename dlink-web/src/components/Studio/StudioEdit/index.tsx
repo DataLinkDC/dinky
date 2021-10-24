@@ -2,13 +2,14 @@ import React, {useEffect, useImperativeHandle, useRef} from 'react';
 import * as _monaco from "monaco-editor";
 import MonacoEditor from "react-monaco-editor";
 import {BaseDataSourceField, BaseDataSourceHeader, CompletionItem} from "./data";
-import Completion from "./completion";
 import styles from './index.less';
 
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
 import {DocumentStateType} from "@/pages/Document/model";
 import {DocumentTableListItem} from "@/pages/Document/data";
+import {parseSqlMetaData} from "@/components/Studio/StudioEvent/Utils";
+import {Column, MetaData} from "@/components/Studio/StudioEvent/data";
 
 let provider = {
   dispose: () => {},
@@ -93,6 +94,14 @@ const FlinkSqlEditor = (props:any) => {
   };
 
   const onChangeHandle = (val: string, event: { changes: { text: any }[] }) => {
+    let sqlMetaData = parseSqlMetaData(val);
+    dispatch({
+      type: "Studio/saveSqlMetaData",
+      payload: {
+        activeKey:tabs.panes[tabIndex].key,
+        sqlMetaData
+      },
+    });
     onChange(val,event);
     /*const curWord = event.changes[0].text;
     if (curWord === ';') {
@@ -105,63 +114,63 @@ const FlinkSqlEditor = (props:any) => {
       type: "Studio/saveSql",
       payload: val,
     });
+
+  };
+
+  const buildSuggestions = () => {
+    let suggestions: ISuggestions[] = [];
+    tabs.panes[tabIndex].sqlMetaData?.metaData?.forEach((item:MetaData) => {
+      suggestions.push({
+        label: item.table,
+        kind: _monaco.languages.CompletionItemKind.Constant,
+        insertText: item.table,
+        insertTextRules: _monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+        detail: 'FlinkSQL Connector => '+item.connector
+      });
+      item.columns.forEach((column:Column) => {
+        suggestions.push({
+          label: column.name,
+          kind: _monaco.languages.CompletionItemKind.Field,
+          insertText: column.name,
+          insertTextRules: _monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+          detail: 'Column => '+column.type +' from '+item.table
+        });
+      })
+    });
+    fillDocuments.forEach((item:DocumentTableListItem) => {
+      if(_monaco.languages.CompletionItemKind[item.category]) {
+        suggestions.push({
+          label: item.name,
+          kind: _monaco.languages.CompletionItemKind[item.category],
+          insertText: item.fillValue,
+          insertTextRules: _monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+          detail: item.description
+        });
+      }else {
+        suggestions.push({
+          label: item.name,
+          kind: _monaco.languages.CompletionItemKind.Text,
+          insertText: item.fillValue,
+          insertTextRules: _monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+          detail: item.description
+        });
+      }
+    });
+    return suggestions;
   };
 
   const editorDidMountHandle = (editor: any, monaco: any) => {
     monacoInstance.current = monaco;
     editorInstance.current = editor;
-    const newSecondRightFields: BaseDataSourceHeader[] = [];
-    (secondRightData as BaseDataSourceHeader[]).forEach((record) => {
-      if (record.fields && Array.isArray(record.fields)) {
-        record.fields.forEach((item: any) => {
-          newSecondRightFields.push(item);
-        });
-      }
-    });
-    code.current = newSecondRightFields; // 数组长度永远为1
+    provider.dispose();// 清空提示项
     // 提示项设值
     provider = monaco.languages.registerCompletionItemProvider('sql', {
       provideCompletionItems() {
-        let suggestions: ISuggestions[] = [];
-        if (code && code.current) {
-          code.current.forEach((record:any) => {
-            suggestions.push({
-              // label未写错 中间加空格为了隐藏大写字段名称 大写字段名称用于规避自定义提示不匹配小写的bug
-              label:
-              record.label ||
-              `${record.displayName} (${
-                record.aliasName
-                })                        ${''}(${record.aliasName.toUpperCase()})`, // 显示名称
-              kind: record.kind || monaco.languages.CompletionItemKind.Field, // 这里Function也可以是别的值，主要用来显示不同的图标
-              insertText: record.insertText || record.aliasName, // 实际粘贴上的值
-              detail: record.detail || `(property) ${record.aliasName}: String`,
-            });
-          });
-        }
-        fillDocuments.forEach((item:DocumentTableListItem) => {
-          if(monaco.languages.CompletionItemKind[item.category]) {
-            suggestions.push({
-              label: item.name,
-              kind: monaco.languages.CompletionItemKind[item.category],
-              insertText: item.fillValue,
-              insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-              detail: item.description
-            });
-          }else {
-            suggestions.push({
-              label: item.name,
-              kind: monaco.languages.CompletionItemKind.Text,
-              insertText: item.fillValue,
-              insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-              detail: item.description
-            });
-          }
-        });
         return {
-          suggestions,
+          suggestions:buildSuggestions(),
         };
       },
-      quickSuggestions: false,
+      // quickSuggestions: false,
       // triggerCharacters: ['$', '.', '='],
     });
     editor.focus();
