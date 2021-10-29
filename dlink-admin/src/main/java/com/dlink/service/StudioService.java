@@ -5,6 +5,8 @@ import com.dlink.dto.StudioDDLDTO;
 import com.dlink.dto.StudioExecuteDTO;
 import com.dlink.explainer.ca.ColumnCANode;
 import com.dlink.explainer.ca.TableCANode;
+import com.dlink.gateway.GatewayConfig;
+import com.dlink.gateway.result.GatewayResult;
 import com.dlink.job.JobResult;
 import com.dlink.result.IResult;
 import com.dlink.result.SelectResult;
@@ -48,4 +50,6 @@ public interface StudioService {
     List<JsonNode> listJobs(Integer clusterId);
 
     boolean cancel(Integer clusterId,String jobId);
+
+    GatewayResult submitJar(GatewayConfig config);
 }

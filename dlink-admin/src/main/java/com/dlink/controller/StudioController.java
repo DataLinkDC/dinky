@@ -5,6 +5,7 @@ import com.dlink.dto.SessionDTO;
 import com.dlink.dto.StudioCADTO;
 import com.dlink.dto.StudioDDLDTO;
 import com.dlink.dto.StudioExecuteDTO;
+import com.dlink.gateway.GatewayConfig;
 import com.dlink.job.JobResult;
 import com.dlink.result.IResult;
 import com.dlink.service.StudioService;
@@ -138,5 +139,12 @@ public class StudioController {
     @GetMapping("/cancel")
     public Result cancel(@RequestParam Integer clusterId,@RequestParam String jobId)  {
         return Result.succeed(studioService.cancel(clusterId,jobId),"停止成功");
+    }
+    /**
+     * 提交jar
+     */
+    @PostMapping("/submitJar")
+    public Result submitJar(@RequestBody JsonNode para)  {
+        return Result.succeed(studioService.submitJar(GatewayConfig.build(para)),"执行成功");
     }
 }

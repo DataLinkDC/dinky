@@ -10,17 +10,20 @@
     <version>0.3.2</version>
 
     <modules>
-        <module>dlink-core</module>
-        <module>dlink-connectors</module>
-        <module>dlink-executor</module>
+        <module>dlink-common</module>
         <module>dlink-client</module>
         <module>dlink-function</module>
-        <module>dlink-common</module>
         <module>dlink-metadata</module>
+        <module>dlink-gateway</module>
+        <module>dlink-connectors</module>
+        <module>dlink-executor</module>
         <module>dlink-extends</module>
+        <module>dlink-core</module>
+        <module>dlink-app</module>
         <module>dlink-web</module>
         <module>dlink-admin</module>
         <module>dlink-assembly</module>
+
     </modules>
 
     <properties>
@@ -202,6 +205,11 @@
             <dependency>
                 <groupId>com.dlink</groupId>
                 <artifactId>dlink-metadata-mysql</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-gateway</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

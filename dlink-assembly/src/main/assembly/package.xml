@@ -150,5 +150,13 @@
                 <include>clickhouse-jdbc-*.jar</include>
             </includes>
         </fileSet>
+
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-gateway/target</directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>dlink-gateway-${project.version}.jar</include>
+            </includes>
+        </fileSet>
     </fileSets>
 </assembly>

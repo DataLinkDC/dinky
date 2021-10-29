@@ -50,10 +50,13 @@ const StudioProcess = (props: any) => {
                     (row.state == 'INITIALIZE') ?
                       (<Tag icon={<ClockCircleOutlined />} color="default">
                         INITIALIZE
-                        </Tag>) :
-                      (<Tag color="default">
-                        UNKNOWEN
-                      </Tag>)
+                        </Tag>) :(row.state == 'RESTARTING') ?
+                        (<Tag icon={<ClockCircleOutlined />} color="default">
+                          RESTARTING
+                          </Tag>) :
+                        (<Tag color="default">
+                          UNKNOWEN
+                        </Tag>)
             }</>)
           ;
       }
