@@ -2,6 +2,7 @@ import {Effect, Reducer} from "umi";
 import {
    handleAddOrUpdate
 } from "@/components/Common/crud";
+import {SqlMetaData} from "@/components/Studio/StudioEvent/data";
 
 export type ClusterType = {
   id: number,
@@ -75,6 +76,7 @@ export type TabsItemType = {
   task?: TaskType;
   console: ConsoleType;
   monaco?: any;
+  sqlMetaData?:SqlMetaData;
 }
 
 export type TabsType = {
@@ -127,6 +129,7 @@ export type ModelType = {
     saveSql: Reducer<StateType>;
     saveCurrentPath: Reducer<StateType>;
     saveMonaco: Reducer<StateType>;
+    saveSqlMetaData: Reducer<StateType>;
     saveTabs: Reducer<StateType>;
     changeActiveKey: Reducer<StateType>;
     saveTaskData: Reducer<StateType>;
@@ -174,6 +177,7 @@ const Model: ModelType = {
         result: {},
       },
       monaco: {},
+      sqlMetaData: undefined,
     },
     sql: '',
     monaco: {},
@@ -206,6 +210,7 @@ const Model: ModelType = {
           result: {},
         },
         monaco: {},
+        sqlMetaData: undefined,
       }],
     },
     session: [],
@@ -259,6 +264,24 @@ const Model: ModelType = {
         monaco: {
           ...payload
         },
+      };
+    },
+    saveSqlMetaData(state, {payload}) {
+      let newCurrent = state.current;
+      let newTabs = state.tabs;
+      if(newCurrent.key == payload.activeKey){
+        newCurrent.sqlMetaData = payload.sqlMetaData;
+      }
+      for (let i = 0; i < newTabs.panes.length; i++) {
+        if (newTabs.panes[i].key == payload.activeKey) {
+          newTabs.panes[i].sqlMetaData = payload.sqlMetaData;
+          break;
+        }
+      }
+      return {
+        ...state,
+        current: newCurrent,
+        tabs: newTabs,
       };
     },
     saveTabs(state, {payload}) {
