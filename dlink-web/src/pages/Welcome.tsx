@@ -354,6 +354,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增 FlinkSQL 自动补全可以根据 sql 上下文来提示已注册的元数据的功能</Link>
                 </li>
+                <li>
+                  <Link>修复 Flink 1.14.0 远程提交无法正确提交任务至集群的问题</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

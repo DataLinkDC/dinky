@@ -5,7 +5,6 @@ import org.apache.flink.table.api.DataTypes;
 import org.apache.flink.table.api.ExpressionParserException;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableResult;
-import org.apache.flink.table.api.internal.DlinkTableEnvironmentImpl;
 import org.apache.flink.table.catalog.exceptions.CatalogException;
 import org.apache.flink.types.Row;
 import org.apache.flink.util.StringUtils;
@@ -133,7 +132,7 @@ public final class SqlManager {
         return sqlFragments.entrySet().iterator();
     }
 
-    public Table getSqlFragmentsTable(DlinkTableEnvironmentImpl environment) {
+    public Table getSqlFragmentsTable(CustomTableEnvironmentImpl environment) {
         List<String> keys = new ArrayList<>();
         for (String key : sqlFragments.keySet()) {
             keys.add(key);

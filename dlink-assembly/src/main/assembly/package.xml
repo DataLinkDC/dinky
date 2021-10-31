@@ -66,6 +66,13 @@
                 <include>dlink-client-1.13-${project.version}.jar</include>
             </includes>
         </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-client/dlink-client-1.14/target</directory>
+            <outputDirectory>extends</outputDirectory>
+            <includes>
+                <include>dlink-client-1.14-${project.version}.jar</include>
+            </includes>
+        </fileSet>
 
         <!-- 将模块dlink-connectors的jar文件放到打包目录/lib下 -->
         <fileSet>
