@@ -9,7 +9,7 @@ import com.dlink.explainer.ca.CABuilder;
 import com.dlink.explainer.ca.ColumnCANode;
 import com.dlink.explainer.ca.TableCANode;
 import com.dlink.gateway.Gateway;
-import com.dlink.gateway.GatewayConfig;
+import com.dlink.gateway.config.GatewayConfig;
 import com.dlink.gateway.result.GatewayResult;
 import com.dlink.job.JobConfig;
 import com.dlink.job.JobManager;

@@ -1,5 +1,6 @@
 package com.dlink.gateway;
 
+import com.dlink.gateway.config.GatewayConfig;
 import org.apache.flink.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

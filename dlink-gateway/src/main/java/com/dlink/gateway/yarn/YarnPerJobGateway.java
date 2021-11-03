@@ -1,7 +1,7 @@
 package com.dlink.gateway.yarn;
 
 import com.dlink.assertion.Asserts;
-import com.dlink.gateway.GatewayConfig;
+import com.dlink.gateway.config.GatewayConfig;
 import com.dlink.gateway.GatewayType;
 import com.dlink.gateway.exception.GatewayException;
 import com.dlink.gateway.result.GatewayResult;

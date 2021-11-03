@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 /**
  * YarnResult
  *
- * @author qiwenkai
- * @since 2021/10/29 15:49
+ * @author wenmo
+ * @since 2021/10/29
  **/
 @Getter
 @Setter
@@ -23,8 +23,8 @@ public class YarnResult extends AbstractGatewayResult {
         super(type, startTime);
     }
 
-    public YarnResult(String appId, String jobId, String savePointPath, LocalDateTime startTime, LocalDateTime endTime, boolean isSuccess, String exceptionMsg) {
-        super(jobId, savePointPath, startTime, endTime, isSuccess, exceptionMsg);
+    public YarnResult(String appId, LocalDateTime startTime, LocalDateTime endTime, boolean isSuccess, String exceptionMsg) {
+        super(startTime, endTime, isSuccess, exceptionMsg);
         this.appId = appId;
     }
 

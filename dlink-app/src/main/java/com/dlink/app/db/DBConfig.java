@@ -5,8 +5,8 @@ import org.apache.flink.api.java.utils.ParameterTool;
 /**
  * DBConfig
  *
- * @author qiwenkai
- * @since 2021/10/27 14:46
+ * @author wenmo
+ * @since 2021/10/27
  **/
 public class DBConfig {
 

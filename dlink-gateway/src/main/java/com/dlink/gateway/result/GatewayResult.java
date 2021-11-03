@@ -3,7 +3,7 @@ package com.dlink.gateway.result;
 /**
  * GatewayResult
  *
- * @author qiwenkai
+ * @author wenmo
  * @since 2021/10/29 15:39
  **/
 public interface GatewayResult {

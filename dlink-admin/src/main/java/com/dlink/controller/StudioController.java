@@ -5,7 +5,7 @@ import com.dlink.dto.SessionDTO;
 import com.dlink.dto.StudioCADTO;
 import com.dlink.dto.StudioDDLDTO;
 import com.dlink.dto.StudioExecuteDTO;
-import com.dlink.gateway.GatewayConfig;
+import com.dlink.gateway.config.GatewayConfig;
 import com.dlink.job.JobResult;
 import com.dlink.result.IResult;
 import com.dlink.service.StudioService;

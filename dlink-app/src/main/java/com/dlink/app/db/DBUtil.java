@@ -14,8 +14,8 @@ import java.util.Map;
 /**
  * DBUtil
  *
- * @author qiwenkai
- * @since 2021/10/27 11:25
+ * @author wenmo
+ * @since 2021/10/27
  **/
 public class DBUtil {
 

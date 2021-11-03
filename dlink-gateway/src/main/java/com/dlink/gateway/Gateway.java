@@ -1,10 +1,10 @@
 package com.dlink.gateway;
 
 import com.dlink.assertion.Asserts;
+import com.dlink.gateway.config.GatewayConfig;
 import com.dlink.gateway.exception.GatewayException;
 import com.dlink.gateway.result.GatewayResult;
 import org.apache.flink.runtime.jobgraph.JobGraph;
-import sun.misc.Service;
 
 import java.util.Iterator;
 import java.util.Optional;
@@ -50,6 +50,8 @@ public interface Gateway {
 
     GatewayResult submitJar();
 
-    GatewayResult savepoint();
+    GatewayResult savepointCluster();
+
+    GatewayResult savepointJob();
 
 }

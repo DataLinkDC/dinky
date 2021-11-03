@@ -1,8 +1,9 @@
 package com.dlink.gateway.yarn;
 
 import com.dlink.assertion.Asserts;
-import com.dlink.gateway.GatewayConfig;
+import com.dlink.gateway.config.GatewayConfig;
 import com.dlink.gateway.GatewayType;
+import com.dlink.gateway.config.AppConfig;
 import com.dlink.gateway.exception.GatewayException;
 import com.dlink.gateway.result.GatewayResult;
 import com.dlink.gateway.result.YarnResult;
@@ -49,15 +50,16 @@ public class YarnApplicationGateway extends YarnGateway {
             init();
         }
         YarnResult result = YarnResult.build(getType());
-        configuration.set(PipelineOptions.JARS, Collections.singletonList(config.getUserJarPath()));
+        AppConfig appConfig = config.getAppConfig();
+        configuration.set(PipelineOptions.JARS, Collections.singletonList(appConfig.getUserJarPath()));
         ClusterSpecification clusterSpecification = new ClusterSpecification.ClusterSpecificationBuilder().createClusterSpecification();
-        ApplicationConfiguration appConfig = new ApplicationConfiguration(config.getUserJarParas(), config.getUserJarMainAppClass());
+        ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration(appConfig.getUserJarParas(), appConfig.getUserJarMainAppClass());
         YarnClusterDescriptor yarnClusterDescriptor = new YarnClusterDescriptor(
                 configuration, yarnConfiguration, yarnClient, YarnClientYarnClusterInformationRetriever.create(yarnClient), true);
         try {
             ClusterClientProvider<ApplicationId> clusterClientProvider = yarnClusterDescriptor.deployApplicationCluster(
                     clusterSpecification,
-                    appConfig);
+                    applicationConfiguration);
             ClusterClient<ApplicationId> clusterClient = clusterClientProvider.getClusterClient();
             ApplicationId applicationId = clusterClient.getClusterId();
             result.setAppId(applicationId.toString());

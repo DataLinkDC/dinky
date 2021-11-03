@@ -1,15 +1,10 @@
 package com.dlink.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.assertion.Assert;
-import com.dlink.cluster.FlinkCluster;
 import com.dlink.common.result.Result;
-import com.dlink.constant.FlinkConstant;
 import com.dlink.db.service.impl.SuperServiceImpl;
-import com.dlink.exception.BusException;
-import com.dlink.executor.Executor;
-import com.dlink.executor.ExecutorSetting;
-import com.dlink.gateway.GatewayConfig;
+import com.dlink.gateway.config.ClusterConfig;
+import com.dlink.gateway.config.GatewayConfig;
 import com.dlink.gateway.GatewayType;
 import com.dlink.job.JobConfig;
 import com.dlink.job.JobManager;
@@ -24,9 +19,6 @@ import com.dlink.service.StatementService;
 import com.dlink.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 /**
  * 任务 服务实现类
@@ -62,11 +54,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Assert.check(statement);
         JobConfig config = task.buildSubmitConfig();
         GatewayConfig gatewayConfig = new GatewayConfig();
-        gatewayConfig.setJobName(config.getJobName());
+        gatewayConfig.getFlinkConfig().setJobName(config.getJobName());
         gatewayConfig.setType(GatewayType.YARN_PER_JOB);
-        gatewayConfig.setFlinkConfigPath("/opt/src/flink-1.12.2_pj/conf");
-        gatewayConfig.setFlinkLibs("hdfs:///flink12/lib/flinklib");
-        gatewayConfig.setYarnConfigPath("/usr/local/hadoop/hadoop-2.7.7/etc/hadoop/yarn-site.xml");
+        ClusterConfig clusterConfig = ClusterConfig.build(
+                "/opt/src/flink-1.12.2_pj/conf",
+                "/opt/src/flink-1.12.2_pj/conf",
+                "/usr/local/hadoop/hadoop-2.7.7/etc/hadoop/yarn-site.xml");
+        gatewayConfig.setClusterConfig(clusterConfig);
         JobManager jobManager = JobManager.build(config);
         SubmitResult result = jobManager.submitGraph(statement.getStatement(), gatewayConfig);
         return Result.succeed(result,"提交成功");

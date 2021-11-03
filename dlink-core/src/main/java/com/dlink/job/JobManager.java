@@ -8,7 +8,7 @@ import com.dlink.executor.ExecutorSetting;
 import com.dlink.executor.custom.CustomTableEnvironmentImpl;
 import com.dlink.explainer.Explainer;
 import com.dlink.gateway.Gateway;
-import com.dlink.gateway.GatewayConfig;
+import com.dlink.gateway.config.GatewayConfig;
 import com.dlink.gateway.result.GatewayResult;
 import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.parser.SqlType;
@@ -21,7 +21,6 @@ import com.dlink.trans.Operations;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.flink.api.common.JobID;
 import org.apache.flink.runtime.jobgraph.JobGraph;
-import org.apache.flink.table.api.StatementSet;
 import org.apache.flink.table.api.TableResult;
 
 import java.time.LocalDateTime;
