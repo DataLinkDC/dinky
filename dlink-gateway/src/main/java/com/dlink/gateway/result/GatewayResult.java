@@ -8,5 +8,5 @@ package com.dlink.gateway.result;
  **/
 public interface GatewayResult {
 
-
+    String getAppId();
 }

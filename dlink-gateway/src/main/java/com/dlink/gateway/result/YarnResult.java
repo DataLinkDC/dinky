@@ -28,6 +28,13 @@ public class YarnResult extends AbstractGatewayResult {
         this.appId = appId;
     }
 
+    public String getAppId() {
+        return appId;
+    }
+
+    public String getWebURL() {
+        return webURL;
+    }
 
     public static YarnResult build(GatewayType type){
         return new YarnResult(type,LocalDateTime.now());

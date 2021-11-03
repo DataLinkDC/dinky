@@ -7,16 +7,12 @@ import com.dlink.gateway.exception.GatewayException;
 import com.dlink.gateway.result.GatewayResult;
 import com.dlink.gateway.result.YarnResult;
 import org.apache.flink.client.deployment.ClusterSpecification;
-import org.apache.flink.client.deployment.application.ApplicationConfiguration;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.client.program.ClusterClientProvider;
-import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.yarn.YarnClientYarnClusterInformationRetriever;
 import org.apache.flink.yarn.YarnClusterDescriptor;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
-
-import java.util.Collections;
 
 /**
  * YarnApplicationGateway
@@ -24,40 +20,31 @@ import java.util.Collections;
  * @author wenmo
  * @since 2021/10/29
  **/
-public class YarnApplicationGateway extends YarnGateway {
+public class YarnPerJobGateway extends YarnGateway {
 
-    public YarnApplicationGateway(GatewayConfig config) {
+    public YarnPerJobGateway(GatewayConfig config) {
         super(config);
     }
 
-    public YarnApplicationGateway() {
+    public YarnPerJobGateway() {
     }
 
     @Override
     public GatewayType getType() {
-        return GatewayType.YARN_APPLICATION;
+        return GatewayType.YARN_PER_JOB;
     }
 
     @Override
     public GatewayResult submitJobGraph(JobGraph jobGraph) {
-        throw new GatewayException("Couldn't deploy Yarn Application Cluster with job graph.");
-    }
-
-    @Override
-    public GatewayResult submitJar() {
         if(Asserts.isNull(yarnClient)){
             init();
         }
         YarnResult result = YarnResult.build(getType());
-        configuration.set(PipelineOptions.JARS, Collections.singletonList(config.getUserJarPath()));
         ClusterSpecification clusterSpecification = new ClusterSpecification.ClusterSpecificationBuilder().createClusterSpecification();
-        ApplicationConfiguration appConfig = new ApplicationConfiguration(config.getUserJarParas(), config.getUserJarMainAppClass());
         YarnClusterDescriptor yarnClusterDescriptor = new YarnClusterDescriptor(
                 configuration, yarnConfiguration, yarnClient, YarnClientYarnClusterInformationRetriever.create(yarnClient), true);
         try {
-            ClusterClientProvider<ApplicationId> clusterClientProvider = yarnClusterDescriptor.deployApplicationCluster(
-                    clusterSpecification,
-                    appConfig);
+            ClusterClientProvider<ApplicationId> clusterClientProvider = yarnClusterDescriptor.deployJobCluster(clusterSpecification,jobGraph,false);
             ClusterClient<ApplicationId> clusterClient = clusterClientProvider.getClusterClient();
             ApplicationId applicationId = clusterClient.getClusterId();
             result.setAppId(applicationId.toString());
@@ -69,5 +56,10 @@ public class YarnApplicationGateway extends YarnGateway {
             result.fail(e.getMessage());
         }
         return result;
+    }
+
+    @Override
+    public GatewayResult submitJar() {
+        throw new GatewayException("Couldn't deploy Yarn Per-Job Cluster with User Application Jar.");
     }
 }

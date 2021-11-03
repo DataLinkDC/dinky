@@ -15,7 +15,7 @@ public class GatewayTest {
         GatewayConfig config = new GatewayConfig();
         config.setJobName("apptest");
         config.setType(GatewayType.get("yarn-application"));
-        config.setConfigDir("/opt/src/flink-1.12.2_pj/conf");
+        config.setFlinkConfigPath("/opt/src/flink-1.12.2_pj/conf");
         config.setUserJarPath("hdfs:///flink12/jar/currencyAppJar.jar");
         config.setUserJarParas("--id 2410,2412,2411".split("\\s+"));
         config.setUserJarMainAppClass("com.app.MainApp");

@@ -3,9 +3,13 @@ package com.dlink.executor.custom;
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.table.api.DataTypes;
 import org.apache.flink.table.api.ExpressionParserException;
+import org.apache.flink.table.api.StatementSet;
 import org.apache.flink.table.api.Table;
+import org.apache.flink.table.api.TableException;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.catalog.exceptions.CatalogException;
+import org.apache.flink.table.operations.ModifyOperation;
+import org.apache.flink.table.operations.Operation;
 import org.apache.flink.types.Row;
 import org.apache.flink.util.StringUtils;
 
@@ -26,6 +30,8 @@ import static org.apache.flink.util.Preconditions.checkNotNull;
 public final class SqlManager {
 
     private Map<String, String> sqlFragments;
+    private List<ModifyOperation> operations = new ArrayList();
+
     static final String SHOW_FRAGMENTS = "SHOW FRAGMENTS";
 
     public SqlManager() {
@@ -190,5 +196,19 @@ public final class SqlManager {
         }
         m.appendTail(sb);
         return sb.toString();
+    }
+
+    public void addInsertSql(String statement,CustomTableEnvironmentImpl tableEnvironment) {
+        List<Operation> operations = tableEnvironment.getParser().parse(statement);
+        if (operations.size() != 1) {
+            throw new TableException("Only single statement is supported.");
+        } else {
+            Operation operation = (Operation)operations.get(0);
+            if (operation instanceof ModifyOperation) {
+                this.operations.add((ModifyOperation)operation);
+            } else {
+                throw new TableException("Only insert statement is supported now.");
+            }
+        }
     }
 }

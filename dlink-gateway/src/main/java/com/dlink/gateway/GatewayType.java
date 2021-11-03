@@ -10,7 +10,7 @@ import com.dlink.assertion.Asserts;
  **/
 public enum GatewayType {
 
-    YARN_APPLICATION("ya","yarn-application");
+    YARN_APPLICATION("ya","yarn-application"),YARN_PER_JOB("ypj","yarn-per-job");
 
     private String value;
     private String longValue;

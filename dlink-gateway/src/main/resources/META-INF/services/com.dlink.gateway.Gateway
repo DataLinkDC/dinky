@@ -1,1 +1,2 @@
 com.dlink.gateway.yarn.YarnApplicationGateway
+com.dlink.gateway.yarn.YarnPerJobGateway

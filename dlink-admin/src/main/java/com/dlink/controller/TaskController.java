@@ -105,5 +105,13 @@ public class TaskController {
         Task task = taskService.getTaskInfoById(id);
         return Result.succeed(task,"获取成功");
     }
+
+    /**
+     * 提交作业
+     */
+    @GetMapping(value = "/submitApplication")
+    public Result submitApplicationByTaskId(@RequestParam Integer id) {
+        return taskService.submitApplicationByTaskId(id);
+    }
 }
 

@@ -4,8 +4,10 @@ import com.dlink.executor.custom.CustomTableEnvironmentImpl;
 import com.dlink.result.SqlExplainResult;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.flink.api.common.JobExecutionResult;
+import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.ExplainDetail;
+import org.apache.flink.table.api.StatementSet;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.catalog.CatalogManager;
@@ -13,6 +15,7 @@ import org.apache.flink.table.functions.ScalarFunction;
 import org.apache.flink.table.functions.UserDefinedFunction;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -172,5 +175,9 @@ public abstract class Executor {
 
     public CatalogManager getCatalogManager(){
         return stEnvironment.getCatalogManager();
+    }
+
+    public JobGraph getJobGraphFromInserts(List<String> statements){
+        return stEnvironment.getJobGraphFromInserts(statements);
     }
 }

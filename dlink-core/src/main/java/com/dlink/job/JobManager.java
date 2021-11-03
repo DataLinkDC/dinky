@@ -7,6 +7,9 @@ import com.dlink.executor.Executor;
 import com.dlink.executor.ExecutorSetting;
 import com.dlink.executor.custom.CustomTableEnvironmentImpl;
 import com.dlink.explainer.Explainer;
+import com.dlink.gateway.Gateway;
+import com.dlink.gateway.GatewayConfig;
+import com.dlink.gateway.result.GatewayResult;
 import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.parser.SqlType;
 import com.dlink.result.*;
@@ -17,9 +20,12 @@ import com.dlink.session.SessionPool;
 import com.dlink.trans.Operations;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.flink.api.common.JobID;
+import org.apache.flink.runtime.jobgraph.JobGraph;
+import org.apache.flink.table.api.StatementSet;
 import org.apache.flink.table.api.TableResult;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -104,7 +110,9 @@ public class JobManager extends RunTime {
     }
 
     private void initEnvironmentSetting(){
-        environmentSetting = EnvironmentSetting.build(config.getAddress());
+        if(Asserts.isNotNullString(config.getAddress())) {
+            environmentSetting = EnvironmentSetting.build(config.getAddress());
+        }
     }
 
     private void initExecutorSetting(){
@@ -184,6 +192,68 @@ public class JobManager extends RunTime {
                     }
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            StackTraceElement[] trace = e.getStackTrace();
+            StringBuilder resMsg = new StringBuilder();
+            for (StackTraceElement s : trace) {
+                resMsg.append(" \n " + s + "  ");
+            }
+            result.setSuccess(false);
+//            result.setError(LocalDateTime.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage());
+            result.setError(LocalDateTime.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage() + "\n >>>堆栈信息<<<" + resMsg.toString());
+//            result.setError(LocalDateTime.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage() + "\n >>>异常原因<<< \n" + e.toString());
+            return result;
+
+        }
+        result.setSuccess(true);
+        result.setMsg(LocalDateTime.now().toString() + ":任务提交成功！");
+        return result;
+    }
+
+    public SubmitResult submitGraph(String statement, GatewayConfig gatewayConfig) {
+        if (statement == null || "".equals(statement)) {
+            return SubmitResult.error("FlinkSql语句不存在");
+        }
+        String[] statements = statement.split(FlinkSQLConstant.SEPARATOR);
+        List<String> sqlList = Arrays.asList(statements);
+        SubmitResult result = new SubmitResult(null, sqlList, null, executorSetting.getJobName());
+        int currentIndex = 0;
+        try {
+            if (Asserts.isNullCollection(sqlList)) {
+                result.setSuccess(false);
+                result.setMsg(LocalDateTime.now().toString() + ":执行sql语句为空。");
+                return result;
+            }
+            Executor executor = createExecutor();
+            List<String> inserts = new ArrayList<>();
+            long start = System.currentTimeMillis();
+            for (String sqlText : sqlList) {
+                currentIndex++;
+                SqlType operationType = Operations.getOperationType(sqlText);
+                CustomTableEnvironmentImpl stEnvironment = executor.getCustomTableEnvironmentImpl();
+                if (operationType.equals(SqlType.INSERT)) {
+                    if (!FlinkInterceptor.build(stEnvironment, sqlText)) {
+                        inserts.add(sqlText);
+                    }
+                } else if(operationType.equals(SqlType.SET)){
+
+                } else {
+                    if (!FlinkInterceptor.build(stEnvironment, sqlText)) {
+                        executor.executeSql(sqlText);
+                    }
+                }
+            }
+            JobGraph jobGraph = executor.getJobGraphFromInserts(inserts);
+            GatewayResult gatewayResult = Gateway.build(gatewayConfig).submitJobGraph(jobGraph);
+            long finish = System.currentTimeMillis();
+            long timeElapsed = finish - start;
+            InsertResult insertResult = new InsertResult(gatewayResult.getAppId(), true);
+            result.setResult(insertResult);
+            result.setJobId(gatewayResult.getAppId());
+            result.setTime(timeElapsed);
+            result.setSuccess(true);
+            result.setFinishDate(LocalDateTime.now());
         } catch (Exception e) {
             e.printStackTrace();
             StackTraceElement[] trace = e.getStackTrace();

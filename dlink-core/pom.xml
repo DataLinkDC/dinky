@@ -55,5 +55,10 @@
             <artifactId>dlink-function</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-gateway</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

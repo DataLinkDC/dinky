@@ -3,11 +3,14 @@ package com.dlink.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.assertion.Assert;
 import com.dlink.cluster.FlinkCluster;
+import com.dlink.common.result.Result;
 import com.dlink.constant.FlinkConstant;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.exception.BusException;
 import com.dlink.executor.Executor;
 import com.dlink.executor.ExecutorSetting;
+import com.dlink.gateway.GatewayConfig;
+import com.dlink.gateway.GatewayType;
 import com.dlink.job.JobConfig;
 import com.dlink.job.JobManager;
 import com.dlink.job.JobResult;
@@ -49,6 +52,24 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(),task.getClusterId()));
         JobManager jobManager = JobManager.build(config);
         return jobManager.executeSql(statement.getStatement());
+    }
+
+    @Override
+    public Result submitApplicationByTaskId(Integer id) {
+        Task task = this.getById(id);
+        Assert.check(task);
+        Statement statement = statementService.getById(id);
+        Assert.check(statement);
+        JobConfig config = task.buildSubmitConfig();
+        GatewayConfig gatewayConfig = new GatewayConfig();
+        gatewayConfig.setJobName(config.getJobName());
+        gatewayConfig.setType(GatewayType.YARN_PER_JOB);
+        gatewayConfig.setFlinkConfigPath("/opt/src/flink-1.12.2_pj/conf");
+        gatewayConfig.setFlinkLibs("hdfs:///flink12/lib/flinklib");
+        gatewayConfig.setYarnConfigPath("/usr/local/hadoop/hadoop-2.7.7/etc/hadoop/yarn-site.xml");
+        JobManager jobManager = JobManager.build(config);
+        SubmitResult result = jobManager.submitGraph(statement.getStatement(), gatewayConfig);
+        return Result.succeed(result,"提交成功");
     }
 
     @Override

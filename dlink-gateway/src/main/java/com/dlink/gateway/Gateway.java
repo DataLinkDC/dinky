@@ -8,6 +8,7 @@ import sun.misc.Service;
 
 import java.util.Iterator;
 import java.util.Optional;
+import java.util.ServiceLoader;
 
 /**
  * Submiter
@@ -19,9 +20,10 @@ public interface Gateway {
 
     static Optional<Gateway> get(GatewayConfig config){
         Asserts.checkNotNull(config,"配置不能为空");
-        Iterator<Gateway> providers = Service.providers(Gateway.class);
-        while(providers.hasNext()) {
-            Gateway gateway = providers.next();
+        ServiceLoader<Gateway> loader = ServiceLoader.load(Gateway.class);
+        Iterator<Gateway> iterator = loader.iterator();
+        while(iterator.hasNext()) {
+            Gateway gateway = iterator.next();
             if(gateway.canHandle(config.getType())){
                 gateway.setGatewayConfig(config);
                 return Optional.of(gateway);
@@ -47,5 +49,7 @@ public interface Gateway {
     GatewayResult submitJobGraph(JobGraph jobGraph);
 
     GatewayResult submitJar();
+
+    GatewayResult savepoint();
 
 }
