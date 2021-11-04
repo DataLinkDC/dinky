@@ -344,7 +344,7 @@ export default (): React.ReactNode => {
               </ul>
             </Paragraph>
           </Timeline.Item>
-          <Timeline.Item><Text code>0.3.3</Text> <Text type="secondary">2021-11-?</Text>
+          <Timeline.Item><Text code>0.4.0</Text> <Text type="secondary">2021-11-?</Text>
             <p> </p>
             <Paragraph>
               <ul>
@@ -356,6 +356,12 @@ export default (): React.ReactNode => {
                 </li>
                 <li>
                   <Link>修复 Flink 1.14.0 远程提交无法正确提交任务至集群的问题</Link>
+                </li>
+                <li>
+                  <Link>新增 yarn-perjob 与 yarn-application 的任务提交方式</Link>
+                </li>
+                <li>
+                  <Link>更新 dlink 的 flink 主版本号为 1.13.3</Link>
                 </li>
               </ul>
             </Paragraph>

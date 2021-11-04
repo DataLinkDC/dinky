@@ -6,6 +6,7 @@ import org.apache.flink.api.dag.Transformation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.graph.JSONGenerator;
 import org.apache.flink.streaming.api.graph.StreamGraph;
@@ -153,6 +154,39 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
             }else{
                 throw new TableException("Unsupported SQL query! ExecEnv need a ExecutorBase.");
             }
+        }
+    }
+
+    public JobGraph getJobGraphFromInserts(List<String> statements) {
+        List<ModifyOperation> modifyOperations = new ArrayList();
+        for(String statement : statements){
+            if(useSqlFragment) {
+                statement = sqlManager.parseVariable(statement);
+                if (statement.length() == 0) {
+                    throw new TableException("This is a sql fragment.");
+                }
+            }
+            if (checkShowFragments(statement)) {
+                throw new TableException("'SHOW FRAGMENTS' can't be add inserts.");
+            }
+            List<Operation> operations = getParser().parse(statement);
+            if (operations.size() != 1) {
+                throw new TableException("Only single statement is supported.");
+            } else {
+                Operation operation = operations.get(0);
+                if (operation instanceof ModifyOperation) {
+                    modifyOperations.add((ModifyOperation)operation);
+                } else {
+                    throw new TableException("Only insert statement is supported now.");
+                }
+            }
+        }
+        List<Transformation<?>> trans = getPlanner().translate(modifyOperations);
+        if(execEnv instanceof ExecutorBase){
+            StreamGraph streamGraph = ExecutorUtils.generateStreamGraph(((ExecutorBase) execEnv).getExecutionEnvironment(), trans);
+            return streamGraph.getJobGraph();
+        }else{
+            throw new TableException("Unsupported SQL query! ExecEnv need a ExecutorBase.");
         }
     }
 

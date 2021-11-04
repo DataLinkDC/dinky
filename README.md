@@ -323,6 +323,8 @@ AGG BY TOP2(value) as (value,rank);
 
 5.[Dlink-0.3.2更新说明](https://github.com/DataLinkDC/dlink/blob/main/dlink-doc/doc/Dlink-0.3.2%E6%9B%B4%E6%96%B0%E8%AF%B4%E6%98%8E.md)
 
+6.[Dlink 读写 Hive 的实践](https://github.com/DataLinkDC/dlink/blob/dev/dlink-doc/doc/Dlink%E8%AF%BB%E5%86%99Hive%E7%9A%84%E5%AE%9E%E8%B7%B5.md)
+
 #### 常见问题及解决
 
 （=。=）~ 敬请期待。

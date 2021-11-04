@@ -114,35 +114,11 @@
             <groupId>com.dlink</groupId>
             <artifactId>dlink-metadata-base</artifactId>
         </dependency>
-
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-gateway</artifactId>
             <scope>provided</scope>
         </dependency>
-        <!--<dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-yarn_2.11</artifactId>
-            <version>1.12.5</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.hadoop</groupId>
-                    <artifactId>hadoop-yarn-common</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>-->
-        <!--<dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-metadata-mysql</artifactId>
-            <scope>provided</scope>
-        </dependency>-->
-        <!--<dependency>
-            <groupId>com.alibaba.ververica</groupId>
-            &lt;!&ndash; add the dependency matching your database &ndash;&gt;
-            <artifactId>flink-connector-mysql-cdc</artifactId>
-            <version>1.3.0</version>
-        </dependency>-->
-
     </dependencies>
     <build>
         <plugins>

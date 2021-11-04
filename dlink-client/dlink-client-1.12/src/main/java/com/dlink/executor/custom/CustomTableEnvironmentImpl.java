@@ -176,7 +176,7 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
             if (operations.size() != 1) {
                 throw new TableException("Only single statement is supported.");
             } else {
-                Operation operation = (Operation)operations.get(0);
+                Operation operation = operations.get(0);
                 if (operation instanceof ModifyOperation) {
                     modifyOperations.add((ModifyOperation)operation);
                 } else {
@@ -311,9 +311,5 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
         TypeInformation<T> typeInfo = UserDefinedFunctionHelper.getReturnTypeOfAggregateFunction(tableAggregateFunction);
         TypeInformation<ACC> accTypeInfo = UserDefinedFunctionHelper.getAccumulatorTypeOfAggregateFunction(tableAggregateFunction);
         this.functionCatalog.registerTempSystemAggregateFunction(name, tableAggregateFunction, typeInfo, accTypeInfo);
-    }
-
-    public Parser getParser(){
-        return super.parser;
     }
 }

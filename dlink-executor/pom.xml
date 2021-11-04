@@ -41,12 +41,12 @@
         </dependency>
         <dependency>
             <groupId>com.dlink</groupId>
-            <artifactId>dlink-client-1.12</artifactId>
+            <artifactId>dlink-client-1.13</artifactId>
             <!--<scope>provided</scope>-->
         </dependency>
         <dependency>
             <groupId>com.dlink</groupId>
-            <artifactId>dlink-connector-jdbc-1.12</artifactId>
+            <artifactId>dlink-connector-jdbc-1.13</artifactId>
             <!--<scope>provided</scope>-->
         </dependency>
         <dependency>
