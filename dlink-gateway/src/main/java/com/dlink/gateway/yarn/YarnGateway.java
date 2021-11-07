@@ -26,6 +26,7 @@ import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.client.api.YarnClient;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -69,7 +70,9 @@ public abstract class YarnGateway extends AbstractGateway {
 
     private void initYarnClient(){
         yarnConfiguration = new YarnConfiguration();
-        yarnConfiguration.addResource( new Path( config.getClusterConfig().getYarnConfigPath() ) );
+        yarnConfiguration.addResource( new Path( URI.create(config.getClusterConfig().getYarnConfigPath()+"/yarn-site.xml") ) );
+        yarnConfiguration.addResource( new Path( URI.create(config.getClusterConfig().getYarnConfigPath()+"/core-site.xml") ) );
+        yarnConfiguration.addResource( new Path( URI.create(config.getClusterConfig().getYarnConfigPath()+"/hdfs-site.xml") ) );
         yarnClient = YarnClient.createYarnClient();
         yarnClient.init(yarnConfiguration);
         yarnClient.start();

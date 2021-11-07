@@ -60,7 +60,7 @@
     </plugins>
   </build>
   <properties>
-    <flink.version>1.12.5</flink.version>
+    <flink.version>1.13.3</flink.version>
     <java.version>1.8</java.version>
     <clickhouse-jdbc.version>0.2.6</clickhouse-jdbc.version>
     <mariadb-java-client.version>2.5.4</mariadb-java-client.version>
