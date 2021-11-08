@@ -1,27 +1,26 @@
 import React, {useRef, useState} from "react";
 import {DownOutlined, HeartOutlined, PlusOutlined, UserOutlined} from '@ant-design/icons';
-import {ClusterConfigerationTableListItem} from "@/pages/Cluster/data";
 import {ActionType, ProColumns} from "@ant-design/pro-table";
 import {Button, message, Input, Drawer, Modal, Dropdown, Menu} from 'antd';
 import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
-import type {ProColumns, ActionType} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import {ClusterConfigerationTableListItem} from "@/pages/ClusterConfiguration/data";
+import {ClusterConfigurationTableListItem} from "@/pages/ClusterConfiguration/data";
 import {handleAddOrUpdate, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
-import {showCluster} from "@/components/Studio/StudioEvent/DDL";
+import {showClusterConfiguration} from "@/components/Studio/StudioEvent/DDL";
+import ClusterConfigurationForm from "@/pages/ClusterConfiguration/components/ClusterConfigurationForm";
 
-const url = '/api/clusterConfigeration';
+const url = '/api/clusterConfiguration';
 const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
   const {dispatch} = props;
-  const [row, setRow] = useState<ClusterConfigerationTableListItem>();
-  const [createModalVisible, handleModalVisible] = useState<boolean>(false);
+  const [row, setRow] = useState<ClusterConfigurationTableListItem>();
+  const [modalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [formValues, setFormValues] = useState({});
   const actionRef = useRef<ActionType>();
-  const [selectedRowsState, setSelectedRows] = useState<ClusterConfigerationTableListItem[]>([]);
+  const [selectedRowsState, setSelectedRows] = useState<ClusterConfigurationTableListItem[]>([]);
 
-  const editAndDelete = (key: string | number, currentItem: ClusterConfigerationTableListItem) => {
+  const editAndDelete = (key: string | number, currentItem: ClusterConfigurationTableListItem) => {
     if (key === 'edit') {
       handleUpdateModalVisible(true);
       setFormValues(currentItem);
@@ -40,7 +39,7 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
   };
 
   const MoreBtn: React.FC<{
-    item: ClusterConfigerationTableListItem;
+    item: ClusterConfigurationTableListItem;
   }> = ({item}) => (
     <Dropdown
       overlay={
@@ -56,7 +55,7 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
     </Dropdown>
   );
 
-  const columns: ProColumns<ClusterConfigerationTableListItem>[] = [
+  const columns: ProColumns<ClusterConfigurationTableListItem>[] = [
     {
       title: '名称',
       dataIndex: 'name',
@@ -117,7 +116,7 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
     },
     {
       title: '是否可用',
-      dataIndex: 'enabled',
+      dataIndex: 'available',
       hideInForm: true,
       hideInSearch: true,
       hideInTable: false,
@@ -223,7 +222,7 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
 
   return (
     <PageContainer>
-      <ProTable<ClusterConfigerationTableListItem>
+      <ProTable<ClusterConfigurationTableListItem>
         headerTitle="集群配置管理"
         actionRef={actionRef}
         rowKey="id"
@@ -301,7 +300,19 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
             >批量禁用</Button>
           </FooterToolbar>
         )}
-
+        <ClusterConfigurationForm
+          onSubmit={async (value) => {
+            const success = await handleAddOrUpdate("api/clusterConfiguration", value);
+            if (success) {
+              handleModalVisible(false);
+              showClusterConfiguration(dispatch);
+            }
+          }}
+          onCancel={() => {
+            handleModalVisible(false);
+          }}
+          modalVisible={modalVisible}
+        />
         <Drawer
           width={600}
           visible={!!row}
@@ -311,7 +322,7 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
           closable={false}
         >
           {row?.name && (
-            <ProDescriptions<ClusterConfigerationTableListItem>
+            <ProDescriptions<ClusterConfigurationTableListItem>
               column={2}
               title={row?.name}
               request={async () => ({
@@ -328,4 +339,4 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
 );
 };
 
-export default ClusterConfigerationTableList;
+export default ClusterConfigurationTableList;

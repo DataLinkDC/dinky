@@ -21,7 +21,7 @@ import java.util.Map;
  **/
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("dlink_cluster_config")
+@TableName("dlink_cluster_configuration")
 public class ClusterConfiguration extends SuperEntity {
 
     private static final long serialVersionUID = 5830130188542066241L;

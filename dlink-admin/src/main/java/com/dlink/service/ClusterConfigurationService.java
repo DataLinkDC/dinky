@@ -3,6 +3,8 @@ package com.dlink.service;
 import com.dlink.db.service.ISuperService;
 import com.dlink.model.ClusterConfiguration;
 
+import java.util.List;
+
 /**
  * ClusterConfigService
  *
@@ -12,4 +14,7 @@ import com.dlink.model.ClusterConfiguration;
 public interface ClusterConfigurationService extends ISuperService<ClusterConfiguration> {
 
     ClusterConfiguration getClusterConfigById(Integer id);
+
+    List<ClusterConfiguration> listEnabledAll();
+
 }

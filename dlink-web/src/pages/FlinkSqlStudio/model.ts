@@ -18,6 +18,19 @@ export type ClusterType = {
   updateTime: Date,
 }
 
+export type ClusterConfigurationType = {
+  id: number,
+  name: string,
+  alias: string,
+  type: string,
+  config: any,
+  available: boolean,
+  note: string,
+  enabled: boolean,
+  createTime: Date,
+  updateTime: Date,
+}
+
 export type DataBaseType = {
   id: number,
   name: string,
@@ -104,6 +117,7 @@ export type SessionType = {
 
 export type StateType = {
   cluster?: ClusterType[];
+  clusterConfiguration?: ClusterConfigurationType[];
   database?: DataBaseType[];
   currentSession?: SessionType;
   current?: TabsItemType;
@@ -139,6 +153,7 @@ export type ModelType = {
     quitCurrentSession: Reducer<StateType>;
     saveResult: Reducer<StateType>;
     saveCluster: Reducer<StateType>;
+    saveClusterConfiguration: Reducer<StateType>;
     saveDataBase: Reducer<StateType>;
   };
 };
@@ -147,6 +162,7 @@ const Model: ModelType = {
   namespace: 'Studio',
   state: {
     cluster: [],
+    clusterConfiguration: [],
     database: [],
     currentSession: {
       connectors: [],
@@ -398,6 +414,11 @@ const Model: ModelType = {
       return {
         ...state,
         cluster: payload,
+      };
+    },saveClusterConfiguration(state, {payload}) {
+      return {
+        ...state,
+        clusterConfiguration: payload,
       };
     },saveDataBase(state, {payload}) {
       return {

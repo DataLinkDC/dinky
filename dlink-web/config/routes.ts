@@ -34,10 +34,22 @@ export default [
     component: './Task',
   },*/
   {
-    path: '/cluster',
-    name: 'cluster',
+    path: '/clusters',
+    name: 'clusters',
     icon: 'cluster',
-    component: './Cluster',
+    routes:[
+      {
+        path: '/clusters/cluster',
+        name: 'cluster',
+        icon: 'cluster',
+        component: './Cluster',
+      },{
+        path: '/clusters/clusterConfiguration',
+        name: 'clusterConfiguration',
+        icon: 'setting',
+        component: './ClusterConfiguration',
+      }
+    ]
   },
   {
     path: '/database',

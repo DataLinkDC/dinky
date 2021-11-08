@@ -76,4 +76,13 @@ public class ClusterConfigurationController {
         clusterConfiguration = clusterConfigurationService.getById(clusterConfiguration.getId());
         return Result.succeed(clusterConfiguration,"获取成功");
     }
+
+    /**
+     * 获取可用的集群列表
+     */
+    @GetMapping("/listEnabledAll")
+    public Result listEnabledAll() {
+        List<ClusterConfiguration >clusters = clusterConfigurationService.listEnabledAll();
+        return Result.succeed(clusters,"获取成功");
+    }
 }

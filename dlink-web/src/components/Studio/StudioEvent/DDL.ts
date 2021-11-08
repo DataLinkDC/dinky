@@ -141,3 +141,13 @@ export function getFillAllByVersion(version:string,dispatch: any) {
     });
   });
 }
+/*--- 刷新 集群 ---*/
+export function showClusterConfiguration(dispatch: any) {
+  const res = getData('api/clusterConfiguration/listEnabledAll');
+  res.then((result) => {
+    result.datas && dispatch && dispatch({
+      type: "Studio/saveClusterConfiguration",
+      payload: result.datas,
+    });
+  });
+}

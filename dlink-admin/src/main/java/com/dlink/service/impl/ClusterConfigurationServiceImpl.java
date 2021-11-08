@@ -1,10 +1,13 @@
 package com.dlink.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.ClusterConfigurationMapper;
 import com.dlink.model.ClusterConfiguration;
 import com.dlink.service.ClusterConfigurationService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * ClusterConfigServiceImpl
@@ -19,5 +22,10 @@ public class ClusterConfigurationServiceImpl extends SuperServiceImpl<ClusterCon
         ClusterConfiguration clusterConfiguration = baseMapper.selectById(id);
         clusterConfiguration.parseConfig();
         return clusterConfiguration;
+    }
+
+    @Override
+    public List<ClusterConfiguration> listEnabledAll() {
+        return this.list(new QueryWrapper<ClusterConfiguration>().eq("enabled",1));
     }
 }

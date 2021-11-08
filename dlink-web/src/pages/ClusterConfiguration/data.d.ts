@@ -1,10 +1,10 @@
-export type ClusterConfigerationTableListItem = {
+export type ClusterConfigurationTableListItem = {
   id: number,
   name: string,
   alias: string,
   type: string,
   config: any,
-  isAvailable: boolean,
+  available: boolean,
   note: string,
   enabled: boolean,
   createTime: Date,
