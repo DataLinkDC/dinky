@@ -60,6 +60,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
   const [catalogueFormValues, setCatalogueFormValues] = useState({});
   const [taskFormValues, setTaskFormValues] = useState({});
   const [rightClickNode, setRightClickNode] = useState<TreeDataNode>();
+  const [available, setAvailable] = useState<boolean>(true);
 
   const getTreeData = async () => {
     const result = await getCatalogueTreeData();
@@ -116,6 +117,11 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
   };
 
   const toOpen=(node:TreeDataNode)=>{
+    if(!available){return}
+    setAvailable(false);
+    setTimeout(()=>{
+      setAvailable(true);
+    },200);
     if(node.isLeaf&&node.taskId) {
       for(let item of tabs.panes){
         if(item.key==node.taskId){
