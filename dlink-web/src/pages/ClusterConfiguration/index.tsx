@@ -22,8 +22,8 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
 
   const editAndDelete = (key: string | number, currentItem: ClusterConfigurationTableListItem) => {
     if (key === 'edit') {
-      handleUpdateModalVisible(true);
       setFormValues(currentItem);
+      handleUpdateModalVisible(true);
     } else if (key === 'delete') {
       Modal.confirm({
         title: '删除集群配置',
@@ -305,6 +305,10 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
             const success = await handleAddOrUpdate("api/clusterConfiguration", value);
             if (success) {
               handleModalVisible(false);
+              setFormValues({});
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
               showClusterConfiguration(dispatch);
             }
           }}
@@ -312,7 +316,29 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
             handleModalVisible(false);
           }}
           modalVisible={modalVisible}
+          values={{}}
         />
+        {formValues && Object.keys(formValues).length ? (
+        <ClusterConfigurationForm
+          onSubmit={async (value) => {
+            const success = await handleAddOrUpdate("api/clusterConfiguration", value);
+            if (success) {
+              handleUpdateModalVisible(false);
+              setFormValues({});
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+              showClusterConfiguration(dispatch);
+            }
+          }}
+          onCancel={() => {
+            handleUpdateModalVisible(false);
+            setFormValues({});
+          }}
+          modalVisible={updateModalVisible}
+          values={formValues}
+        />
+          ): null}
         <Drawer
           width={600}
           visible={!!row}

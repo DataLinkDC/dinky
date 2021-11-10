@@ -1,12 +1,16 @@
 import React, {useEffect, useState} from 'react';
-import {Form, Button, Input, Modal, Select,Divider,Space} from 'antd';
+import {Form, Button, Input, Modal, Select,Divider,Space,Switch} from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import {ClusterConfigurationTableListItem} from "@/pages/ClusterConfiguration/data";
+import {getConfig, getConfigFormValues} from "@/pages/ClusterConfiguration/function";
+import {FLINK_CONFIG_LIST, HADOOP_CONFIG_LIST} from "@/pages/ClusterConfiguration/conf";
+import type {Config} from "@/pages/ClusterConfiguration/conf";
 
 export type ClusterConfigurationFormProps = {
   onCancel: (flag?: boolean) => void;
   onSubmit: (values: Partial<ClusterConfigurationTableListItem>) => void;
   modalVisible: boolean;
+  values: Partial<ClusterConfigurationTableListItem>;
 };
 const Option = Select.Option;
 
@@ -18,25 +22,58 @@ const formLayout = {
 const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props) => {
 
   const [form] = Form.useForm();
+  const [formVals, setFormVals] = useState<Partial<ClusterConfigurationTableListItem>>({
+    id: props.values.id,
+    name: props.values.name,
+    alias: props.values.alias,
+    type: props.values.type?props.values.type:"Yarn",
+    configJson: props.values.configJson,
+    note: props.values.note,
+    enabled: props.values.enabled,
+  });
+
   const {
     onSubmit: handleSubmit,
     onCancel: handleModalVisible,
     modalVisible,
   } = props;
 
-  const submitForm = async () => {
-    const fieldsValue = await form.validateFields();
-    handleSubmit(fieldsValue);
+  const buildConfig = (config:Config[]) =>{
+    let itemList = [];
+    for(let i in config){
+      itemList.push(<Form.Item
+        name={config[i].name}
+        label={config[i].lable}
+      >
+        <Input placeholder={config[i].placeholder}/>
+      </Form.Item>)
+    }
+    return itemList;
   };
 
-  const renderContent = () => {
+  const submitForm = async () => {
+    const fieldsValue = await form.validateFields();
+    let formValues = {
+      id:formVals.id,
+      name:fieldsValue.name,
+      alias:fieldsValue.alias,
+      type:fieldsValue.type,
+      note:fieldsValue.note,
+      enabled:fieldsValue.enabled,
+      configJson:JSON.stringify(getConfig(fieldsValue)),
+    };
+    setFormVals({...formVals, ...formValues});
+    handleSubmit({...formVals, ...formValues});
+  };
+
+  const renderContent = (formVals) => {
     return (
       <>
         <Form.Item
           name="type"
           label="类型"
         >
-          <Select defaultValue="Yarn" allowClear>
+          <Select defaultValue="Yarn" value="Yarn">
             <Option value="Yarn">Flink On Yarn</Option>
           </Select>
         </Form.Item>
@@ -49,16 +86,11 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
           <Input placeholder="值如 /usr/local/dlink/conf"/>
         </Form.Item>
         <Divider orientation="left" plain>自定义配置（高优先级）</Divider>
-        <Form.Item
-          name="ha.zookeeper.quorum"
-          label="ha.zookeeper.quorum"
-        >
-          <Input placeholder="值如 192.168.123.1:2181,192.168.123.2:2181,192.168.123.3:2181"/>
-        </Form.Item>
+        {buildConfig(HADOOP_CONFIG_LIST)}
         <Form.Item
           label="其他配置"
         >
-        <Form.List name="hadoopConfig">
+        <Form.List name="hadoopConfigList">
           {(fields, { add, remove }) => (
             <>
               {fields.map(({ key, name, fieldKey, ...restField }) => (
@@ -106,40 +138,11 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
           <Input placeholder="值如 /usr/local/dlink/conf/flink-conf.yaml"/>
         </Form.Item>
         <Divider orientation="left" plain>自定义配置（高优先级）</Divider>
-        <Form.Item
-          name="jobmanager.memory.process.size"
-          label="jobmanager.memory.process.size"
-        >
-          <Input placeholder="值如 1024m"/>
-        </Form.Item>
-        <Form.Item
-          name="taskmanager.memory.flink.size"
-          label="taskmanager.memory.flink.size"
-        >
-          <Input placeholder="值如 1024m"/>
-        </Form.Item>
-        <Form.Item
-          name="taskmanager.memory.framework.heap.size"
-          label="taskmanager.memory.framework.heap.size"
-        >
-          <Input placeholder="值如 1024m"/>
-        </Form.Item>
-        <Form.Item
-          name="taskmanager.numberOfTaskSlots"
-          label="taskmanager.numberOfTaskSlots"
-        >
-          <Input placeholder="值如 4"/>
-        </Form.Item>
-        <Form.Item
-          name="parallelism.default"
-          label="parallelism.default"
-        >
-          <Input placeholder="值如 4"/>
-        </Form.Item>
+        {buildConfig(FLINK_CONFIG_LIST)}
         <Form.Item
           label="其他配置"
         >
-        <Form.List name="flinkConfig">
+        <Form.List name="flinkConfigList">
           {(fields, { add, remove }) => (
             <>
               {fields.map(({ key, name, fieldKey, ...restField }) => (
@@ -190,6 +193,12 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
           <Input.TextArea placeholder="请输入文本注释" allowClear
                           autoSize={{minRows: 3, maxRows: 10}}/>
         </Form.Item>
+        <Form.Item
+          name="enabled"
+          label="是否启用">
+          <Switch checkedChildren="启用" unCheckedChildren="禁用"
+                  defaultChecked={formVals.enabled}/>
+        </Form.Item>
       </>
     );
   };
@@ -210,7 +219,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
       width={1200}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title="创建集群配置"
+      title={formVals.id?"维护集群配置":"创建集群配置"}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}
@@ -218,8 +227,9 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
       <Form
         {...formLayout}
         form={form}
+        initialValues={getConfigFormValues(formVals)}
       >
-        {renderContent()}
+        {renderContent(formVals)}
       </Form>
     </Modal>
   );
