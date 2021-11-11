@@ -44,8 +44,8 @@ public class GatewayConfig {
         if(para.has("flinkConfigPath")) {
             config.getClusterConfig().setFlinkConfigPath(para.get("flinkConfigPath").asText());
         }
-        if(para.has("flinkLibs")) {
-            config.getClusterConfig().setFlinkLibs(para.get("flinkLibs").asText());
+        if(para.has("flinkLibPath")) {
+            config.getClusterConfig().setFlinkLibPath(para.get("flinkLibPath").asText());
         }
         if(para.has("yarnConfigPath")) {
             config.getClusterConfig().setYarnConfigPath(para.get("yarnConfigPath").asText());

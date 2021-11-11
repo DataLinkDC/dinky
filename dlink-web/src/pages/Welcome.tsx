@@ -363,6 +363,15 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>更新 dlink 的 flink 主版本号为 1.13.3</Link>
                 </li>
+                <li>
+                  <Link>新增 yarn-application 的作业提交方式</Link>
+                </li>
+                <li>
+                  <Link>新增 yarn-perjob 的作业提交方式</Link>
+                </li>
+                <li>
+                  <Link>新增集群配置管理及维护页面</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

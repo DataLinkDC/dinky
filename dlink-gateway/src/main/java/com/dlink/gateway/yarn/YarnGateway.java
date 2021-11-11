@@ -63,7 +63,7 @@ public abstract class YarnGateway extends AbstractGateway {
         if(Asserts.isNotNullString(config.getFlinkConfig().getSavePoint())) {
             configuration.setString(SavepointConfigOptions.SAVEPOINT_PATH, config.getFlinkConfig().getSavePoint());
         }
-        configuration.set(YarnConfigOptions.PROVIDED_LIB_DIRS, Collections.singletonList(config.getClusterConfig().getFlinkLibs()));
+        configuration.set(YarnConfigOptions.PROVIDED_LIB_DIRS, Collections.singletonList(config.getClusterConfig().getFlinkLibPath()));
         configuration.set(YarnConfigOptions.APPLICATION_NAME, config.getFlinkConfig().getJobName());
         YarnLogConfigUtil.setLogConfigFileInConfig(configuration, config.getClusterConfig().getFlinkConfigPath());
     }

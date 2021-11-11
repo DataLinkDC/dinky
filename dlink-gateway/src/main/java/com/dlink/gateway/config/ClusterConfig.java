@@ -13,19 +13,19 @@ import lombok.Setter;
 @Setter
 public class ClusterConfig {
     private String flinkConfigPath;
-    private String flinkLibs;
+    private String flinkLibPath;
     private String yarnConfigPath;
 
     public ClusterConfig() {
     }
 
-    public ClusterConfig(String flinkConfigPath, String flinkLibs, String yarnConfigPath) {
+    public ClusterConfig(String flinkConfigPath, String flinkLibPath, String yarnConfigPath) {
         this.flinkConfigPath = flinkConfigPath;
-        this.flinkLibs = flinkLibs;
+        this.flinkLibPath = flinkLibPath;
         this.yarnConfigPath = yarnConfigPath;
     }
 
-    public static ClusterConfig build(String flinkConfigPath, String flinkLibs, String yarnConfigPath){
-        return new ClusterConfig(flinkConfigPath,flinkLibs,yarnConfigPath);
+    public static ClusterConfig build(String flinkConfigPath, String flinkLibPath, String yarnConfigPath){
+        return new ClusterConfig(flinkConfigPath,flinkLibPath,yarnConfigPath);
     }
 }
