@@ -27,12 +27,25 @@ export default [
     icon: 'consoleSql',
     component: './FlinkSqlStudio',
   },
-  /*{
-    path: '/task',
-    name: 'task',
+  {
+    path: '/taskcenter',
+    name: 'taskcenter',
     icon: 'partition',
-    component: './Task',
-  },*/
+    routes:[
+      /*{
+        path: '/taskcenter/task',
+        name: 'task',
+        icon: 'task',
+        component: './Task',
+      },*/
+      {
+        path: '/taskcenter/jar',
+        name: 'jar',
+        icon: 'code-sandbox',
+        component: './Jar',
+      }
+    ]
+  },
   {
     path: '/clusters',
     name: 'clusters',

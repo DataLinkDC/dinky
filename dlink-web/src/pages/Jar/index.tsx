@@ -5,29 +5,28 @@ import {Button, message, Input, Drawer, Modal, Dropdown, Menu} from 'antd';
 import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import {ClusterConfigurationTableListItem} from "@/pages/ClusterConfiguration/data";
+import {JarTableListItem} from "@/pages/Jar/data";
 import {handleAddOrUpdate, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
-import {showClusterConfiguration} from "@/components/Studio/StudioEvent/DDL";
-import ClusterConfigurationForm from "@/pages/ClusterConfiguration/components/ClusterConfigurationForm";
+import JarForm from "@/pages/Jar/components/JarForm";
 
-const url = '/api/clusterConfiguration';
-const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
+const url = '/api/jar';
+const JarTableList: React.FC<{}> = (props: any) => {
   const {dispatch} = props;
-  const [row, setRow] = useState<ClusterConfigurationTableListItem>();
+  const [row, setRow] = useState<JarTableListItem>();
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [formValues, setFormValues] = useState({});
   const actionRef = useRef<ActionType>();
-  const [selectedRowsState, setSelectedRows] = useState<ClusterConfigurationTableListItem[]>([]);
+  const [selectedRowsState, setSelectedRows] = useState<JarTableListItem[]>([]);
 
-  const editAndDelete = (key: string | number, currentItem: ClusterConfigurationTableListItem) => {
+  const editAndDelete = (key: string | number, currentItem: JarTableListItem) => {
     if (key === 'edit') {
       setFormValues(currentItem);
       handleUpdateModalVisible(true);
     } else if (key === 'delete') {
       Modal.confirm({
-        title: '删除集群配置',
-        content: '确定删除该集群配置吗？',
+        title: '删除Jar配置',
+        content: '确定删除该Jar配置吗？',
         okText: '确认',
         cancelText: '取消',
         onOk: async () => {
@@ -39,7 +38,7 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
   };
 
   const MoreBtn: React.FC<{
-    item: ClusterConfigurationTableListItem;
+    item: JarTableListItem;
   }> = ({item}) => (
     <Dropdown
       overlay={
@@ -55,7 +54,7 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
     </Dropdown>
   );
 
-  const columns: ProColumns<ClusterConfigurationTableListItem>[] = [
+  const columns: ProColumns<JarTableListItem>[] = [
     {
       title: '名称',
       dataIndex: 'name',
@@ -95,46 +94,26 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
       hideInTable: false,
       filters: [
         {
-          text: 'Yarn',
-          value: 'Yarn',
-        },
-        {
-          text: 'Standalone',
-          value: 'Standalone',
-        },
-        {
-          text: 'Others',
-          value: 'Others',
-        },
+          text: 'UserApp',
+          value: 'UserApp',
+        }
       ],
       filterMultiple: false,
       valueEnum: {
-        'Yarn': {text: 'Yarn'},
-        'Standalone': {text: 'Standalone'},
-        'Others': {text: 'Others'},
+        'UserApp': {text: 'UserApp'},
       },
     },
     {
-      title: '是否可用',
-      dataIndex: 'available',
-      hideInForm: true,
-      hideInSearch: true,
+      title: '文件路径',
+      sorter: true,
+      dataIndex: 'path',
       hideInTable: false,
-      filters: [
-        {
-          text: '可用',
-          value: 1,
-        },
-        {
-          text: '不可用',
-          value: 0,
-        },
-      ],
-      filterMultiple: false,
-      valueEnum: {
-        true: {text: '可用', status: 'Success'},
-        false: {text: '不可用', status: 'Error'},
-      },
+    },
+    {
+      title: '启动类',
+      sorter: true,
+      dataIndex: 'mainClass',
+      hideInTable: false,
     },
     {
       title: '注释',
@@ -172,7 +151,7 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
       dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',
-      hideInTable: true,
+      hideInTable: true
     },
     {
       title: '最近更新时间',
@@ -200,8 +179,8 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
 
   return (
     <PageContainer>
-      <ProTable<ClusterConfigurationTableListItem>
-        headerTitle="集群配置管理"
+      <ProTable<JarTableListItem>
+        headerTitle="Jar 配置管理"
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -232,8 +211,8 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
             <Button type="primary" danger
                     onClick={() => {
                       Modal.confirm({
-                        title: '删除集群配置',
-                        content: '确定删除选中的集群配置吗？',
+                        title: '删除Jar配置',
+                        content: '确定删除选中的Jar配置吗？',
                         okText: '确认',
                         cancelText: '取消',
                         onOk: async () => {
@@ -249,8 +228,8 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
             <Button type="primary"
                     onClick={() => {
                       Modal.confirm({
-                        title: '启用集群配置',
-                        content: '确定启用选中的集群配置吗？',
+                        title: '启用Jar配置',
+                        content: '确定启用选中的Jar配置吗？',
                         okText: '确认',
                         cancelText: '取消',
                         onOk: async () => {
@@ -264,8 +243,8 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
             <Button danger
                     onClick={() => {
                       Modal.confirm({
-                        title: '禁用集群配置',
-                        content: '确定禁用选中的集群配置吗？',
+                        title: '禁用Jar配置',
+                        content: '确定禁用选中的Jar配置吗？',
                         okText: '确认',
                         cancelText: '取消',
                         onOk: async () => {
@@ -278,16 +257,15 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
             >批量禁用</Button>
           </FooterToolbar>
         )}
-        <ClusterConfigurationForm
+        <JarForm
           onSubmit={async (value) => {
-            const success = await handleAddOrUpdate("api/clusterConfiguration", value);
+            const success = await handleAddOrUpdate(url, value);
             if (success) {
               handleModalVisible(false);
               setFormValues({});
               if (actionRef.current) {
                 actionRef.current.reload();
               }
-              showClusterConfiguration(dispatch);
             }
           }}
           onCancel={() => {
@@ -297,26 +275,25 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
           values={{}}
         />
         {formValues && Object.keys(formValues).length ? (
-        <ClusterConfigurationForm
-          onSubmit={async (value) => {
-            const success = await handleAddOrUpdate("api/clusterConfiguration", value);
-            if (success) {
+          <JarForm
+            onSubmit={async (value) => {
+              const success = await handleAddOrUpdate(url, value);
+              if (success) {
+                handleUpdateModalVisible(false);
+                setFormValues({});
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
+              }
+            }}
+            onCancel={() => {
               handleUpdateModalVisible(false);
               setFormValues({});
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-              showClusterConfiguration(dispatch);
-            }
-          }}
-          onCancel={() => {
-            handleUpdateModalVisible(false);
-            setFormValues({});
-          }}
-          modalVisible={updateModalVisible}
-          values={formValues}
-        />
-          ): null}
+            }}
+            modalVisible={updateModalVisible}
+            values={formValues}
+          />
+        ): null}
         <Drawer
           width={600}
           visible={!!row}
@@ -326,7 +303,7 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
           closable={false}
         >
           {row?.name && (
-            <ProDescriptions<ClusterConfigurationTableListItem>
+            <ProDescriptions<JarTableListItem>
               column={2}
               title={row?.name}
               request={async () => ({
@@ -343,4 +320,4 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
 );
 };
 
-export default ClusterConfigurationTableList;
+export default JarTableList;
