@@ -29,5 +29,7 @@ public class Jar extends SuperEntity {
 
     private String mainClass;
 
+    private String paras;
+
     private String note;
 }

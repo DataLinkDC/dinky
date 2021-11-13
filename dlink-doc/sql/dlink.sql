@@ -389,6 +389,7 @@ CREATE TABLE `dlink_job` (
   `type` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '类型',
   `path` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '文件路径',
   `main_class` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '启动类',
+  `paras` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '启动类入参',
   `note` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '注释',
   `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否启用',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
@@ -396,4 +397,6 @@ CREATE TABLE `dlink_job` (
   PRIMARY KEY (`id`)
 )  ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
+ALTER TABLE `dlink`.`dlink_task`
+  ADD COLUMN `cluster_configuration_id` int(11) NULL COMMENT '集群配置ID' AFTER `cluster_id`;
 SET FOREIGN_KEY_CHECKS = 1;

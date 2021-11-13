@@ -25,6 +25,7 @@ const JarForm: React.FC<JarFormProps> = (props) => {
     type: props.values.type?props.values.type:'UserApp',
     path: props.values.path,
     mainClass: props.values.mainClass,
+    paras: props.values.paras,
     note: props.values.note,
     enabled: props.values.enabled?props.values.enabled:true,
   });
@@ -68,7 +69,13 @@ const JarForm: React.FC<JarFormProps> = (props) => {
         >
           <Input placeholder="com.dlink.app.MainApp"/>
         </Form.Item>
-        <Divider orientation="left" plain>自定义配置（高优先级）</Divider>
+        <Form.Item
+          name="paras"
+          label="执行参数"
+          help="指定可执行 Jar 的启动类入参，（可选）"
+        >
+          <Input placeholder="--id 1,2"/>
+        </Form.Item>
         <Divider>基本配置</Divider>
         <Form.Item
           name="name"

@@ -107,13 +107,15 @@ const JarTableList: React.FC<{}> = (props: any) => {
       title: '文件路径',
       sorter: true,
       dataIndex: 'path',
-      hideInTable: false,
     },
     {
       title: '启动类',
       sorter: true,
       dataIndex: 'mainClass',
-      hideInTable: false,
+    },{
+      title: '执行参数',
+      sorter: true,
+      dataIndex: 'paras',
     },
     {
       title: '注释',

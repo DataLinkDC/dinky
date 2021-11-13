@@ -41,6 +41,8 @@ public class Task extends SuperEntity{
 
     private Integer clusterId;
 
+    private Integer clusterConfigurationId;
+
     private String config;
 
     private String note;

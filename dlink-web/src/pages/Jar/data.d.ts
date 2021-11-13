@@ -5,6 +5,7 @@ export type JarTableListItem = {
   type: string,
   path: string,
   mainClass: string,
+  paras: string,
   note: string,
   enabled: boolean,
   createTime: Date,
