@@ -399,4 +399,8 @@ CREATE TABLE `dlink_job` (
 
 ALTER TABLE `dlink`.`dlink_task`
   ADD COLUMN `cluster_configuration_id` int(11) NULL COMMENT '集群配置ID' AFTER `cluster_id`;
+
+ALTER TABLE `dlink`.`dlink_task`
+ADD COLUMN `statement_set` tinyint(1) NULL COMMENT '启用语句集' AFTER `fragment`;
+
 SET FOREIGN_KEY_CHECKS = 1;

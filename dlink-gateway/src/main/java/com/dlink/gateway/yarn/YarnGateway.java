@@ -2,7 +2,7 @@ package com.dlink.gateway.yarn;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.gateway.AbstractGateway;
-import com.dlink.gateway.ConfigPara;
+import com.dlink.gateway.config.ConfigPara;
 import com.dlink.gateway.config.FlinkConfig;
 import com.dlink.gateway.config.GatewayConfig;
 import com.dlink.gateway.config.ActionType;
@@ -10,7 +10,6 @@ import com.dlink.gateway.exception.GatewayException;
 import com.dlink.gateway.model.JobInfo;
 import com.dlink.gateway.result.GatewayResult;
 import com.dlink.gateway.result.SavePointResult;
-import com.dlink.gateway.result.YarnResult;
 import org.apache.flink.api.common.JobID;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.configuration.DeploymentOptions;

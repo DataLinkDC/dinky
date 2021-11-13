@@ -8,6 +8,8 @@ import com.dlink.executor.ExecutorSetting;
 import com.dlink.executor.custom.CustomTableEnvironmentImpl;
 import com.dlink.explainer.Explainer;
 import com.dlink.gateway.Gateway;
+import com.dlink.gateway.GatewayType;
+import com.dlink.gateway.config.FlinkConfig;
 import com.dlink.gateway.config.GatewayConfig;
 import com.dlink.gateway.result.GatewayResult;
 import com.dlink.interceptor.FlinkInterceptor;
@@ -43,6 +45,7 @@ public class JobManager extends RunTime {
     private ExecutorSetting executorSetting;
     private JobConfig config;
     private Executor executor;
+    private boolean useGateway = false;
 
     public JobManager() {
     }
@@ -74,14 +77,30 @@ public class JobManager extends RunTime {
     }
 
     public static JobManager build(JobConfig config) {
+        initGatewayConfig(config);
         JobManager manager = new JobManager(config);
         manager.init();
         return manager;
     }
 
+    private static void initGatewayConfig(JobConfig config){
+        if(useGateway(config.getType())){
+            Asserts.checkNull(config.getGatewayConfig(),"GatewayConfig 不能为空");
+            config.getGatewayConfig().setType(GatewayType.get(config.getType()));
+            config.getGatewayConfig().setTaskId(config.getTaskId());
+            config.getGatewayConfig().setFlinkConfig(FlinkConfig.build(config.getJobName(),
+                    null,null,null,config.getSavePointPath(),null));
+        }
+    }
+
+    public static boolean useGateway(String type){
+        return !(GatewayType.STANDALONE.equalsValue(type)||
+                GatewayType.YARN_SESSION.equalsValue(type));
+    }
+
     private Executor createExecutor() {
         initEnvironmentSetting();
-        if (config.isUseRemote()&&config.getClusterId()!=0) {
+        if (!useGateway&& config.isUseRemote()&&config.getClusterId()!=0) {
             executor = Executor.buildRemoteExecutor(environmentSetting, config.getExecutorSetting());
             return executor;
         } else {
@@ -120,6 +139,7 @@ public class JobManager extends RunTime {
 
     @Override
     public boolean init() {
+        useGateway = useGateway(config.getType());
         handler = JobHandler.build();
         initExecutorSetting();
         createExecutorWithSession();
@@ -261,9 +281,7 @@ public class JobManager extends RunTime {
                 resMsg.append(" \n " + s + "  ");
             }
             result.setSuccess(false);
-//            result.setError(LocalDateTime.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage());
             result.setError(LocalDateTime.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage() + "\n >>>堆栈信息<<<" + resMsg.toString());
-//            result.setError(LocalDateTime.now().toString() + ":" + "运行第" + currentIndex + "行sql时出现异常:" + e.getMessage() + "\n >>>异常原因<<< \n" + e.toString());
             return result;
 
         }
@@ -273,33 +291,58 @@ public class JobManager extends RunTime {
     }
 
     public JobResult executeSql(String statement) {
-        Job job = new Job(config,environmentSetting.getAddress(),
+        String address = null;
+        if(!useGateway){
+            address = environmentSetting.getAddress();
+        }
+        Job job = new Job(config,address,
                 Job.JobStatus.INITIALIZE,statement,executorSetting, LocalDateTime.now(),executor);
         JobContextHolder.setJob(job);
         job.setType(Operations.getSqlTypeFromStatements(statement));
         ready();
         String[] statements = statement.split(";");
-        int currentIndex = 0;
+        String currentSql = "";
+        CustomTableEnvironmentImpl stEnvironment = executor.getCustomTableEnvironmentImpl();
+        List<String> inserts = new ArrayList<>();
         try {
             for (String item : statements) {
                 if (item.trim().isEmpty()) {
                     continue;
                 }
-                currentIndex++;
+                currentSql = item;
                 SqlType operationType = Operations.getOperationType(item);
-                if (!FlinkInterceptor.build(executor.getCustomTableEnvironmentImpl(), item)) {
-                    TableResult tableResult = executor.executeSql(item);
-                    if (tableResult.getJobClient().isPresent()) {
-                        job.setJobId(tableResult.getJobClient().get().getJobID().toHexString());
+                if(config.isUseStatementSet()){
+                    if (!FlinkInterceptor.build(stEnvironment, item)) {
+                        if (operationType.equals(SqlType.INSERT)) {
+                            inserts.add(item);
+                        }else if (operationType.equals(SqlType.SELECT)) {
+
+                        }else{
+                            executor.executeSql(item);
+                        }
                     }
-                    if(config.isUseResult()) {
-                        IResult result = ResultBuilder.build(operationType, maxRowNum, "", true).getResult(tableResult);
-                        job.setResult(result);
+                }else {
+                    if (!FlinkInterceptor.build(stEnvironment, item)) {
+                        TableResult tableResult = executor.executeSql(item);
+                        if (tableResult.getJobClient().isPresent()) {
+                            job.setJobId(tableResult.getJobClient().get().getJobID().toHexString());
+                        }
+                        if (config.isUseResult()) {
+                            IResult result = ResultBuilder.build(operationType, maxRowNum, "", true).getResult(tableResult);
+                            job.setResult(result);
+                        }
+                    }
+                    if (operationType == SqlType.INSERT || operationType == SqlType.SELECT) {
+                        break;
                     }
                 }
-                if(operationType==SqlType.INSERT||operationType==SqlType.SELECT){
-                    break;
-                }
+            }
+            if(config.isUseStatementSet()){
+                JobGraph jobGraph = executor.getJobGraphFromInserts(inserts);
+                GatewayResult gatewayResult = Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);
+                InsertResult insertResult = new InsertResult(gatewayResult.getAppId(), true);
+                job.setResult(insertResult);
+                job.setJobId(gatewayResult.getAppId());
             }
             job.setEndTime(LocalDateTime.now());
             job.setStatus(Job.JobStatus.SUCCESS);
@@ -314,7 +357,7 @@ public class JobManager extends RunTime {
             LocalDateTime now = LocalDateTime.now();
             job.setEndTime(now);
             job.setStatus(Job.JobStatus.FAILED);
-            String error = now.toString() + ":" + "运行第" + currentIndex + "个sql时出现异常:" + e.getMessage() + " \n >>>堆栈信息<<<" + resMsg.toString();
+            String error = now.toString() + ":" + "运行语句：\n" + currentSql + " \n时出现异常:" + e.getMessage() + " \n >>>堆栈信息<<<" + resMsg.toString();
             job.setError(error);
             failed();
             close();

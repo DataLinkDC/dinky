@@ -161,6 +161,15 @@ const StudioSetting = (props: any) => {
         />
       </Form.Item>
         </Col>
+        <Col span={12}>
+      <Form.Item
+        label="启用语句集" className={styles.form_item} name="statementSet" valuePropName="checked"
+        tooltip={{ title: '【增强特性】 开启语句集机制，将把多个 Insert 语句合成一个 JobGraph 再进行提交，Select 语句无效', icon: <InfoCircleOutlined /> }}
+      >
+        <Switch checkedChildren="启用" unCheckedChildren="禁用"
+        />
+      </Form.Item>
+        </Col>
       </Row>
       <Form.Item
         label="SavePointPath" className={styles.form_item} name="savePointPath"

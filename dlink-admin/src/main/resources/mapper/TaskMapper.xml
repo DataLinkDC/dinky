@@ -12,6 +12,7 @@
         <result column="save_point_path" property="savePointPath" />
         <result column="parallelism" property="parallelism" />
         <result column="fragment" property="fragment" />
+        <result column="statement_set" property="statementSet" />
         <result column="cluster_id" property="clusterId" />
         <result column="cluster_configuration_id" property="clusterConfigurationId" />
         <result column="config" property="config" />
@@ -23,7 +24,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, alias, type,check_point,save_point_path, parallelism,fragment,cluster_id,cluster_configuration_id,config,note, enabled, create_time, update_time
+        id, name, alias, type,check_point,save_point_path, parallelism,fragment,statement_set,cluster_id,cluster_configuration_id,config,note, enabled, create_time, update_time
     </sql>
 
 

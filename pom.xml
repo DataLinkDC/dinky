@@ -12,9 +12,9 @@
     <modules>
         <module>dlink-common</module>
         <module>dlink-client</module>
+        <module>dlink-gateway</module>
         <module>dlink-function</module>
         <module>dlink-metadata</module>
-        <module>dlink-gateway</module>
         <module>dlink-connectors</module>
         <module>dlink-executor</module>
         <module>dlink-extends</module>

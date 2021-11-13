@@ -14,6 +14,7 @@ import com.dlink.model.Cluster;
 import com.dlink.model.Statement;
 import com.dlink.model.Task;
 import com.dlink.result.SubmitResult;
+import com.dlink.service.ClusterConfigurationService;
 import com.dlink.service.ClusterService;
 import com.dlink.service.StatementService;
 import com.dlink.service.TaskService;
@@ -33,6 +34,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private StatementService statementService;
     @Autowired
     private ClusterService clusterService;
+    @Autowired
+    private ClusterConfigurationService clusterConfigurationService;
 
     @Override
     public JobResult submitByTaskId(Integer id) {
@@ -41,7 +44,11 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Statement statement = statementService.getById(id);
         Assert.check(statement);
         JobConfig config = task.buildSubmitConfig();
-        config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(),task.getClusterId()));
+        if(!JobManager.useGateway(config.getType())) {
+            config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), task.getClusterId()));
+        }else{
+            config.setGatewayConfig(clusterConfigurationService.buildGatewayConfig(task.getClusterConfigurationId()));
+        }
         JobManager jobManager = JobManager.build(config);
         return jobManager.executeSql(statement.getStatement());
     }

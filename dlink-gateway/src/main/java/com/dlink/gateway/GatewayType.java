@@ -10,7 +10,7 @@ import com.dlink.assertion.Asserts;
  **/
 public enum GatewayType {
 
-    YARN_APPLICATION("ya","yarn-application"),YARN_PER_JOB("ypj","yarn-per-job");
+    STANDALONE("s","standalone"),YARN_SESSION("ys","yarn-session"),YARN_APPLICATION("ya","yarn-application"),YARN_PER_JOB("ypj","yarn-per-job");
 
     private String value;
     private String longValue;
@@ -35,5 +35,12 @@ public enum GatewayType {
             }
         }
         return GatewayType.YARN_APPLICATION;
+    }
+
+    public boolean equalsValue(String type){
+        if(Asserts.isEquals(value,type)||Asserts.isEquals(longValue,type)){
+            return true;
+        }
+        return false;
     }
 }

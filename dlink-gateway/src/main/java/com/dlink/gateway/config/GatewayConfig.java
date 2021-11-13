@@ -1,6 +1,5 @@
 package com.dlink.gateway.config;
 
-import com.dlink.gateway.ConfigPara;
 import com.dlink.gateway.GatewayType;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;

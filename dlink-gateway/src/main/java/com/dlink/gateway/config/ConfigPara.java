@@ -1,4 +1,4 @@
-package com.dlink.gateway;
+package com.dlink.gateway.config;
 
 /**
  * ConfigPara
