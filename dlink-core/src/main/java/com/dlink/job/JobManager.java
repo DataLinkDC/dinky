@@ -90,6 +90,7 @@ public class JobManager extends RunTime {
             config.getGatewayConfig().setTaskId(config.getTaskId());
             config.getGatewayConfig().setFlinkConfig(FlinkConfig.build(config.getJobName(),
                     null,null,null,config.getSavePointPath(),null));
+            config.setUseRemote(false);
         }
     }
 
@@ -343,6 +344,7 @@ public class JobManager extends RunTime {
                 InsertResult insertResult = new InsertResult(gatewayResult.getAppId(), true);
                 job.setResult(insertResult);
                 job.setJobId(gatewayResult.getAppId());
+                job.setJobManagerAddress(gatewayResult.getWebURL());
             }
             job.setEndTime(LocalDateTime.now());
             job.setStatus(Job.JobStatus.SUCCESS);

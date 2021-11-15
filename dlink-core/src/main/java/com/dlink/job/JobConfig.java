@@ -1,14 +1,10 @@
 package com.dlink.job;
 
-import com.dlink.executor.EnvironmentSetting;
-import com.dlink.executor.Executor;
 import com.dlink.executor.ExecutorSetting;
 import com.dlink.gateway.config.GatewayConfig;
 import com.dlink.session.SessionConfig;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Map;
 
 /**
  * JobConfig
@@ -86,10 +82,6 @@ public class JobConfig {
 
     public ExecutorSetting getExecutorSetting(){
         return new ExecutorSetting(checkpoint,parallelism,useSqlFragment,savePointPath,jobName);
-    }
-
-    public EnvironmentSetting getEnvironmentSetting(){
-        return EnvironmentSetting.build(address);
     }
 
     public void setSessionConfig(SessionConfig sessionConfig){

@@ -372,6 +372,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增集群配置管理及维护页面</Link>
                 </li>
+                <li>
+                  <Link>新增 Jar 管理及维护页面</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

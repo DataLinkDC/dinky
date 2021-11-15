@@ -33,6 +33,11 @@ public class SavePointResult extends AbstractGatewayResult {
         return appId;
     }
 
+    @Override
+    public String getWebURL() {
+        return null;
+    }
+
     public static SavePointResult build(GatewayType type){
         return new SavePointResult(type,LocalDateTime.now());
     }
