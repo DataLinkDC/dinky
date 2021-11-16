@@ -95,8 +95,8 @@ public class JobManager extends RunTime {
     }
 
     public static boolean useGateway(String type){
-        return !(GatewayType.STANDALONE.equalsValue(type)||
-                GatewayType.YARN_SESSION.equalsValue(type));
+        return (GatewayType.YARN_PER_JOB.equalsValue(type)||
+                GatewayType.YARN_APPLICATION.equalsValue(type));
     }
 
     private Executor createExecutor() {
