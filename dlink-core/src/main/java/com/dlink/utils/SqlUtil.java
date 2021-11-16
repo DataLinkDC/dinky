@@ -17,4 +17,11 @@ public class SqlUtil {
         }
         return sql.split(FlinkSQLConstant.SEPARATOR);
     }
+
+    public static String removeNote(String sql){
+        if(Asserts.isNotNullString(sql)) {
+            sql = sql.replaceAll("--([^'\\r\\n]{0,}('[^'\\r\\n]{0,}'){0,1}[^'\\r\\n]{0,}){0,}$", "").trim();
+        }
+        return sql;
+    }
 }

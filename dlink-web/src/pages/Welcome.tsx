@@ -375,6 +375,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增 Jar 管理及维护页面</Link>
                 </li>
+                <li>
+                  <Link>新增 FlinkSQL 语句集提交</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

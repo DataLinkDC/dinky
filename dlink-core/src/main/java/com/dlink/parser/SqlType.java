@@ -36,4 +36,8 @@ public enum  SqlType {
     public String getType() {
         return type;
     }
+
+    public boolean equalsValue(String value){
+        return type.equalsIgnoreCase(value);
+    }
 }
