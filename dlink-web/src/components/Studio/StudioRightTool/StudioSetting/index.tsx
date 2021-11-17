@@ -38,7 +38,9 @@ const StudioSetting = (props: any) => {
     return itemList;
   };
 
-  form.setFieldsValue(current.task);
+  useEffect(()=>{
+    form.setFieldsValue(current.task);
+  },[])
 
   const onValuesChange = (change:any,all:any)=>{
     let newTabs = tabs;
