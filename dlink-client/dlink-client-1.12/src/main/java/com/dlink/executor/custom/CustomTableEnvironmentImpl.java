@@ -6,25 +6,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.dag.Transformation;
-
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.graph.JSONGenerator;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.ExplainDetail;
-import org.apache.flink.table.api.StatementSet;
-import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableException;
-import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.api.internal.TableEnvironmentImpl;
 import org.apache.flink.table.catalog.CatalogManager;
 import org.apache.flink.table.catalog.FunctionCatalog;
 import org.apache.flink.table.catalog.GenericInMemoryCatalog;
 import org.apache.flink.table.delegation.Executor;
 import org.apache.flink.table.delegation.ExecutorFactory;
-import org.apache.flink.table.delegation.Parser;
 import org.apache.flink.table.delegation.Planner;
 import org.apache.flink.table.delegation.PlannerFactory;
 import org.apache.flink.table.factories.ComponentFactoryService;
@@ -53,13 +48,8 @@ import java.util.Map;
  **/
 public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
 
-    private SqlManager sqlManager;
-
-    private boolean useSqlFragment = true;
-
-    protected CustomTableEnvironmentImpl(CatalogManager catalogManager, SqlManager sqlManager, ModuleManager moduleManager, TableConfig tableConfig, Executor executor, FunctionCatalog functionCatalog, Planner planner, boolean isStreamingMode, ClassLoader userClassLoader) {
+    protected CustomTableEnvironmentImpl(CatalogManager catalogManager, ModuleManager moduleManager, TableConfig tableConfig, Executor executor, FunctionCatalog functionCatalog, Planner planner, boolean isStreamingMode, ClassLoader userClassLoader) {
         super(catalogManager, moduleManager, tableConfig, executor, functionCatalog, planner, isStreamingMode, userClassLoader);
-        this.sqlManager = sqlManager;
     }
 
     public static CustomTableEnvironmentImpl create(StreamExecutionEnvironment executionEnvironment) {
@@ -76,20 +66,19 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
         } else {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             ModuleManager moduleManager = new ModuleManager();
-            SqlManager sqlManager = new SqlManager();
             CatalogManager catalogManager = CatalogManager.newBuilder().classLoader(classLoader).config(tableConfig.getConfiguration()).defaultCatalog(settings.getBuiltInCatalogName(), new GenericInMemoryCatalog(settings.getBuiltInCatalogName(), settings.getBuiltInDatabaseName())).executionConfig(executionEnvironment.getConfig()).build();
             FunctionCatalog functionCatalog = new FunctionCatalog(tableConfig, catalogManager, moduleManager);
             Map<String, String> executorProperties = settings.toExecutorProperties();
             Executor executor = lookupExecutor(executorProperties, executionEnvironment);
             Map<String, String> plannerProperties = settings.toPlannerProperties();
-            Planner planner = ((PlannerFactory) ComponentFactoryService.find(PlannerFactory.class, plannerProperties)).create(plannerProperties, executor, tableConfig, functionCatalog, catalogManager);
-            return new CustomTableEnvironmentImpl(catalogManager, sqlManager, moduleManager, tableConfig, executor, functionCatalog, planner, settings.isStreamingMode(), classLoader);
+            Planner planner = (ComponentFactoryService.find(PlannerFactory.class, plannerProperties)).create(plannerProperties, executor, tableConfig, functionCatalog, catalogManager);
+            return new CustomTableEnvironmentImpl(catalogManager, moduleManager, tableConfig, executor, functionCatalog, planner, settings.isStreamingMode(), classLoader);
         }
     }
 
     private static Executor lookupExecutor(Map<String, String> executorProperties, StreamExecutionEnvironment executionEnvironment) {
         try {
-            ExecutorFactory executorFactory = (ExecutorFactory) ComponentFactoryService.find(ExecutorFactory.class, executorProperties);
+            ExecutorFactory executorFactory = ComponentFactoryService.find(ExecutorFactory.class, executorProperties);
             Method createMethod = executorFactory.getClass().getMethod("create", Map.class, StreamExecutionEnvironment.class);
             return (Executor) createMethod.invoke(executorFactory, executorProperties, executionEnvironment);
         } catch (Exception var4) {
@@ -97,39 +86,7 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
         }
     }
 
-    public void useSqlFragment() {
-        this.useSqlFragment = true;
-    }
-
-    public void unUseSqlFragment() {
-        this.useSqlFragment = false;
-    }
-
-    @Override
-    public String explainSql(String statement, ExplainDetail... extraDetails) {
-        if(useSqlFragment) {
-            statement = sqlManager.parseVariable(statement);
-            if (statement.length() == 0) {
-                return "This is a sql fragment.";
-            }
-        }
-        if (checkShowFragments(statement)) {
-            return "'SHOW FRAGMENTS' can't be explained.";
-        } else {
-            return super.explainSql(statement, extraDetails);
-        }
-    }
-
     public ObjectNode getStreamGraph(String statement) {
-        if(useSqlFragment) {
-            statement = sqlManager.parseVariable(statement);
-            if (statement.length() == 0) {
-                throw new TableException("This is a sql fragment.");
-            }
-        }
-        if (checkShowFragments(statement)) {
-            throw new TableException("'SHOW FRAGMENTS' can't be explained.");
-        }
         List<Operation> operations = super.parser.parse(statement);
         if (operations.size() != 1) {
             throw new TableException("Unsupported SQL query! explainSql() only accepts a single SQL query.");
@@ -163,15 +120,6 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
     public JobGraph getJobGraphFromInserts(List<String> statements) {
         List<ModifyOperation> modifyOperations = new ArrayList();
         for(String statement : statements){
-            if(useSqlFragment) {
-                statement = sqlManager.parseVariable(statement);
-                if (statement.length() == 0) {
-                    throw new TableException("This is a sql fragment.");
-                }
-            }
-            if (checkShowFragments(statement)) {
-                throw new TableException("'SHOW FRAGMENTS' can't be add inserts.");
-            }
             List<Operation> operations = getParser().parse(statement);
             if (operations.size() != 1) {
                 throw new TableException("Only single statement is supported.");
@@ -195,17 +143,6 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
 
     public SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails) {
         SqlExplainResult record = new SqlExplainResult();
-        if(useSqlFragment) {
-            String orignSql = statement;
-            statement = sqlManager.parseVariable(statement);
-            if (statement.length() == 0) {
-                record.setParseTrue(true);
-                record.setType("Sql Fragment");
-                record.setExplain(orignSql);
-                record.setExplainTrue(true);
-                return record;
-            }
-        }
         List<Operation> operations = parser.parse(statement);
         record.setParseTrue(true);
         if (operations.size() != 1) {
@@ -234,66 +171,6 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
         }
         record.setExplain(planner.explain(operationlist, extraDetails));
         return record;
-    }
-
-    @Override
-    public String[] getCompletionHints(String statement, int position) {
-        if(useSqlFragment) {
-            statement = sqlManager.parseVariable(statement);
-            if (statement.length() == 0) {
-                return new String[0];
-            }
-        }
-        return super.getCompletionHints(statement, position);
-    }
-
-    @Override
-    public Table sqlQuery(String query) {
-        if(useSqlFragment) {
-            query = sqlManager.parseVariable(query);
-            if (query.length() == 0) {
-                throw new TableException("Unsupported SQL query! The SQL query parsed is null.If it's a sql fragment, and please use executeSql().");
-            }
-            if (checkShowFragments(query)) {
-                return sqlManager.getSqlFragmentsTable(this);
-            } else {
-                return super.sqlQuery(query);
-            }
-        }else {
-            return super.sqlQuery(query);
-        }
-    }
-
-    @Override
-    public TableResult executeSql(String statement) {
-        if(useSqlFragment) {
-            statement = sqlManager.parseVariable(statement);
-            if (statement.length() == 0) {
-                return CustomTableResultImpl.TABLE_RESULT_OK;
-            }
-            if (checkShowFragments(statement)) {
-                return sqlManager.getSqlFragments();
-            } else {
-                return super.executeSql(statement);
-            }
-        }else{
-            return super.executeSql(statement);
-        }
-    }
-
-    @Override
-    public void sqlUpdate(String stmt) {
-        if(useSqlFragment) {
-            stmt = sqlManager.parseVariable(stmt);
-            if (stmt.length() == 0) {
-                throw new TableException("Unsupported SQL update! The SQL update parsed is null.If it's a sql fragment, and please use executeSql().");
-            }
-        }
-        super.sqlUpdate(stmt);
-    }
-
-    public boolean checkShowFragments(String sql){
-        return sqlManager.checkShowFragments(sql);
     }
 
     public <T> void registerFunction(String name, TableFunction<T> tableFunction) {

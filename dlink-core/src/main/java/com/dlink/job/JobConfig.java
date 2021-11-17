@@ -1,10 +1,13 @@
 package com.dlink.job;
 
 import com.dlink.executor.ExecutorSetting;
+import com.dlink.gateway.config.ClusterConfig;
 import com.dlink.gateway.config.GatewayConfig;
 import com.dlink.session.SessionConfig;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Map;
 
 /**
  * JobConfig
@@ -90,5 +93,12 @@ public class JobConfig {
             clusterId = sessionConfig.getClusterId();
             useRemote = sessionConfig.isUseRemote();
         }
+    }
+
+    public void buildGatewayConfig(Map<String,String> config){
+        gatewayConfig = new GatewayConfig();
+        gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath"),
+                config.get("flinkLibPath"),
+                config.get("hadoopConfigPath")));
     }
 }

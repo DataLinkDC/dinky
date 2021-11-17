@@ -31,7 +31,7 @@ public class FlinkInterceptor {
             statement = executor.getSqlManager().parseVariable(statement);
         }
         initFunctions(executor.getCustomTableEnvironmentImpl(), statement);
-        return statement;
+        return statement.trim();
     }
 
     public static boolean build(Executor executor, String statement) {

@@ -378,6 +378,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增 FlinkSQL 语句集提交</Link>
                 </li>
+                <li>
+                  <Link>executor 模块独立并优化增强逻辑</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

@@ -7,7 +7,9 @@ import com.dlink.explainer.ca.*;
 import com.dlink.explainer.trans.Trans;
 import com.dlink.explainer.trans.TransGenerator;
 import com.dlink.interceptor.FlinkInterceptor;
+import com.dlink.parser.SqlType;
 import com.dlink.result.SqlExplainResult;
+import com.dlink.trans.Operations;
 import com.dlink.utils.FlinkUtil;
 import com.dlink.utils.SqlUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -40,31 +42,43 @@ public class Explainer {
     public List<SqlExplainResult> explainSqlResult(String statement) {
         String[] sqls = SqlUtil.getStatements(statement);
         List<SqlExplainResult> sqlExplainRecords = new ArrayList<>();
-        for (int i = 0; i < sqls.length; i++) {
-            String sql = sqls[i].trim();
-            if(Asserts.isNullString(sql)){
-                continue;
-            }
+        int index = 1;
+        for (String item : sqls) {
             SqlExplainResult record = new SqlExplainResult();
+            String sql = "";
             try {
-                if (!FlinkInterceptor.build(executor.getCustomTableEnvironmentImpl(), sqls[i])) {
-                    record = executor.explainSqlRecord(sqls[i]);
-                    if (Asserts.isEquals(FlinkSQLConstant.DDL,record.getType())) {
-                        executor.executeSql(sqls[i]);
+                sql = FlinkInterceptor.pretreatStatement(executor,item);
+                if(Asserts.isNullString(sql)){
+                    continue;
+                }
+                SqlType operationType = Operations.getOperationType(statement);
+                if (operationType.equals(SqlType.INSERT)||operationType.equals(SqlType.SELECT)) {
+                    record = executor.explainSqlRecord(sql);
+                    if(Asserts.isNull(record)){
+                        continue;
                     }
                 }else{
-                    record.setParseTrue(true);
-                    record.setExplainTrue(true);
+                    record = executor.explainSqlRecord(sql);
+                    if(Asserts.isNull(record)){
+                        continue;
+                    }
+                    executor.executeSql(sql);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 record.setError(e.getMessage());
-            } finally {
+                record.setExplainTrue(false);
                 record.setExplainTime(new Date());
-                record.setIndex(i + 1);
-                record.setSql(sqls[i]);
+                record.setSql(sql);
+                record.setIndex(index);
                 sqlExplainRecords.add(record);
+                break;
             }
+            record.setExplainTrue(true);
+            record.setExplainTime(new Date());
+            record.setSql(sql);
+            record.setIndex(index++);
+            sqlExplainRecords.add(record);
         }
         return sqlExplainRecords;
     }
@@ -72,10 +86,10 @@ public class Explainer {
     public ObjectNode getStreamGraph(String statement){
         List<SqlExplainResult> sqlExplainRecords = explainSqlResult(statement);
         List<String> strPlans = new ArrayList<>();
-        for (int i = 0; i < sqlExplainRecords.size(); i++) {
-            if (Asserts.isNotNull(sqlExplainRecords.get(i).getType())
-                    && sqlExplainRecords.get(i).getType().contains(FlinkSQLConstant.DML)) {
-                strPlans.add(sqlExplainRecords.get(i).getSql());
+        for (SqlExplainResult item : sqlExplainRecords) {
+            if (Asserts.isNotNull(item.getType())
+                    && item.getType().contains(FlinkSQLConstant.DML)) {
+                strPlans.add(item.getSql());
             }
         }
         if(strPlans.size()>0){

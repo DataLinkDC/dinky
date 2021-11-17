@@ -109,9 +109,9 @@ public class TaskController {
     /**
      * 提交作业
      */
-    @GetMapping(value = "/submitApplication")
+    /*@GetMapping(value = "/submitApplication")
     public Result submitApplicationByTaskId(@RequestParam Integer id) {
         return taskService.submitApplicationByTaskId(id);
-    }
+    }*/
 }
 

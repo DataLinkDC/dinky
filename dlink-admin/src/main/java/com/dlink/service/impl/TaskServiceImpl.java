@@ -1,11 +1,7 @@
 package com.dlink.service.impl;
 
 import com.dlink.assertion.Assert;
-import com.dlink.common.result.Result;
 import com.dlink.db.service.impl.SuperServiceImpl;
-import com.dlink.gateway.config.ClusterConfig;
-import com.dlink.gateway.config.GatewayConfig;
-import com.dlink.gateway.GatewayType;
 import com.dlink.job.JobConfig;
 import com.dlink.job.JobManager;
 import com.dlink.job.JobResult;
@@ -13,7 +9,6 @@ import com.dlink.mapper.TaskMapper;
 import com.dlink.model.Cluster;
 import com.dlink.model.Statement;
 import com.dlink.model.Task;
-import com.dlink.result.SubmitResult;
 import com.dlink.service.ClusterConfigurationService;
 import com.dlink.service.ClusterService;
 import com.dlink.service.StatementService;
@@ -47,13 +42,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if(!JobManager.useGateway(config.getType())) {
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), task.getClusterId()));
         }else{
-            config.setGatewayConfig(clusterConfigurationService.buildGatewayConfig(task.getClusterConfigurationId()));
+            config.buildGatewayConfig(clusterConfigurationService.getGatewayConfig(task.getClusterConfigurationId()));
         }
         JobManager jobManager = JobManager.build(config);
         return jobManager.executeSql(statement.getStatement());
     }
 
-    @Override
+    /*@Override
     public Result submitApplicationByTaskId(Integer id) {
         Task task = this.getById(id);
         Assert.check(task);
@@ -71,7 +66,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         JobManager jobManager = JobManager.build(config);
         SubmitResult result = jobManager.submitGraph(statement.getStatement(), gatewayConfig);
         return Result.succeed(result,"提交成功");
-    }
+    }*/
 
     @Override
     public Task getTaskInfoById(Integer id) {

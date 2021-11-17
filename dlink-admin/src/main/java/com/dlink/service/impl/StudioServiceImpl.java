@@ -8,14 +8,10 @@ import com.dlink.dto.StudioExecuteDTO;
 import com.dlink.explainer.ca.CABuilder;
 import com.dlink.explainer.ca.ColumnCANode;
 import com.dlink.explainer.ca.TableCANode;
-import com.dlink.gateway.Gateway;
-import com.dlink.gateway.config.GatewayConfig;
-import com.dlink.gateway.result.GatewayResult;
 import com.dlink.job.JobConfig;
 import com.dlink.job.JobManager;
 import com.dlink.job.JobResult;
 import com.dlink.model.Cluster;
-import com.dlink.parser.SqlType;
 import com.dlink.result.IResult;
 import com.dlink.result.SelectResult;
 import com.dlink.result.SqlExplainResult;
@@ -24,13 +20,11 @@ import com.dlink.service.StudioService;
 import com.dlink.session.SessionConfig;
 import com.dlink.session.SessionInfo;
 import com.dlink.session.SessionPool;
-import com.dlink.trans.Operations;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -124,29 +118,17 @@ public class StudioServiceImpl implements StudioService {
 
     @Override
     public List<TableCANode> getOneTableCAByStatement(String statement) {
-        if(Operations.getSqlTypeFromStatements(statement)== SqlType.INSERT) {
-            return CABuilder.getOneTableCAByStatement(statement);
-        }else{
-            return new ArrayList<>();
-        }
+        return CABuilder.getOneTableCAByStatement(statement);
     }
 
     @Override
     public List<TableCANode> getOneTableColumnCAByStatement(String statement) {
-        if(Operations.getSqlTypeFromStatements(statement)== SqlType.INSERT) {
-            return CABuilder.getOneTableColumnCAByStatement(statement);
-        }else{
-            return new ArrayList<>();
-        }
+        return CABuilder.getOneTableColumnCAByStatement(statement);
     }
 
     @Override
     public List<ColumnCANode> getColumnCAByStatement(String statement) {
-        if(Operations.getSqlTypeFromStatements(statement)== SqlType.INSERT) {
-            return CABuilder.getColumnCAByStatement(statement);
-        }else{
-            return new ArrayList<>();
-        }
+        return CABuilder.getColumnCAByStatement(statement);
     }
 
     @Override
@@ -161,10 +143,5 @@ public class StudioServiceImpl implements StudioService {
         Cluster cluster = clusterService.getById(clusterId);
         Asserts.checkNotNull(cluster,"该集群不存在");
         return FlinkAPI.build(cluster.getJobManagerHost()).stop(jobId);
-    }
-
-    @Override
-    public GatewayResult submitJar(GatewayConfig config) {
-        return Gateway.build(config).submitJar();
     }
 }

@@ -114,11 +114,6 @@
             <groupId>com.dlink</groupId>
             <artifactId>dlink-metadata-base</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-gateway</artifactId>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
     <build>
         <plugins>

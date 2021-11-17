@@ -17,7 +17,7 @@ public interface TaskService extends ISuperService<Task> {
 
     JobResult submitByTaskId(Integer id);
 
-    Result submitApplicationByTaskId(Integer id);
+//    Result submitApplicationByTaskId(Integer id);
 
     Task getTaskInfoById(Integer id);
 

@@ -47,6 +47,11 @@
         </dependency>
         <dependency>
             <groupId>com.dlink</groupId>
+            <artifactId>dlink-executor</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dlink</groupId>
             <artifactId>dlink-connector-jdbc-1.13</artifactId>
             <scope>provided</scope>
         </dependency>

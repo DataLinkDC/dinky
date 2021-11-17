@@ -1,18 +1,20 @@
 package com.dlink.executor;
 
+import com.dlink.assertion.Asserts;
 import com.dlink.executor.custom.CustomTableEnvironmentImpl;
-import com.dlink.executor.custom.SqlManager;
+import com.dlink.executor.custom.CustomTableResultImpl;
+import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.result.SqlExplainResult;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.apache.flink.api.common.JobExecutionResult;
+import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.ExplainDetail;
-import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.catalog.CatalogManager;
 import org.apache.flink.table.functions.ScalarFunction;
 import org.apache.flink.table.functions.UserDefinedFunction;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -104,12 +106,8 @@ public abstract class Executor {
     }
 
     private void initStreamExecutionEnvironment(){
+        useSqlFragment = executorSetting.isUseSqlFragment();
         stEnvironment = CustomTableEnvironmentImpl.create(environment);
-        if(executorSetting.isUseSqlFragment()){
-            stEnvironment.useSqlFragment();
-        }else{
-            stEnvironment.unUseSqlFragment();
-        }
         if(executorSetting.getJobName()!=null&&!"".equals(executorSetting.getJobName())){
             stEnvironment.getConfig().getConfiguration().setString("pipeline.name", executorSetting.getJobName());
         }
@@ -121,12 +119,8 @@ public abstract class Executor {
     }
 
     private void updateStreamExecutionEnvironment(ExecutorSetting executorSetting){
+        useSqlFragment = executorSetting.isUseSqlFragment();
         copyCatalog();
-        if(executorSetting.isUseSqlFragment()){
-            stEnvironment.useSqlFragment();
-        }else{
-            stEnvironment.unUseSqlFragment();
-        }
         if(executorSetting.getJobName()!=null&&!"".equals(executorSetting.getJobName())){
             stEnvironment.getConfig().getConfiguration().setString("pipeline.name", executorSetting.getJobName());
         }
@@ -149,28 +143,48 @@ public abstract class Executor {
         stEnvironment = newstEnvironment;
     }
 
-    public JobExecutionResult execute(String jobName) throws Exception{
-        return stEnvironment.execute(jobName);
+    private String pretreatStatement(String statement){
+        return FlinkInterceptor.pretreatStatement(this,statement);
+    }
+
+    private boolean pretreatExecute(String statement){
+        return !FlinkInterceptor.build(this,statement);
     }
 
     public TableResult executeSql(String statement){
-        return stEnvironment.executeSql(statement);
-    }
-
-    public Table sqlQuery(String statement){
-        return stEnvironment.sqlQuery(statement);
+        statement = pretreatStatement(statement);
+        if(pretreatExecute(statement)) {
+            return stEnvironment.executeSql(statement);
+        }else{
+            return CustomTableResultImpl.TABLE_RESULT_OK;
+        }
     }
 
     public String explainSql(String statement, ExplainDetail... extraDetails){
-        return stEnvironment.explainSql(statement,extraDetails);
+        statement = pretreatStatement(statement);
+        if(pretreatExecute(statement)) {
+            return stEnvironment.explainSql(statement,extraDetails);
+        }else{
+            return "";
+        }
     }
 
     public SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails){
-        return stEnvironment.explainSqlRecord(statement,extraDetails);
+        statement = pretreatStatement(statement);
+        if(Asserts.isNotNullString(statement)&&pretreatExecute(statement)) {
+            return stEnvironment.explainSqlRecord(statement,extraDetails);
+        }else{
+            return null;
+        }
     }
 
     public ObjectNode getStreamGraph(String statement){
-        return stEnvironment.getStreamGraph(statement);
+        statement = pretreatStatement(statement);
+        if(pretreatExecute(statement)) {
+            return stEnvironment.getStreamGraph(statement);
+        }else{
+            return null;
+        }
     }
 
     public void registerFunction(String name, ScalarFunction function){
@@ -183,5 +197,9 @@ public abstract class Executor {
 
     public CatalogManager getCatalogManager(){
         return stEnvironment.getCatalogManager();
+    }
+
+    public JobGraph getJobGraphFromInserts(List<String> statements){
+        return stEnvironment.getJobGraphFromInserts(statements);
     }
 }

@@ -165,5 +165,12 @@
                 <include>dlink-gateway-${project.version}.jar</include>
             </includes>
         </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-executor/target</directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>dlink-executor-${project.version}.jar</include>
+            </includes>
+        </fileSet>
     </fileSets>
 </assembly>

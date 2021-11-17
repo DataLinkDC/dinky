@@ -1,17 +1,12 @@
 package com.dlink.model;
 
-import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.dlink.db.model.SuperEntity;
-import com.dlink.executor.Executor;
-import com.dlink.executor.ExecutorSetting;
 import com.dlink.job.JobConfig;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.util.HashMap;
 
 /**
  * 任务
@@ -55,13 +50,13 @@ public class Task extends SuperEntity{
     @TableField(exist = false)
     private String clusterName;
 
-    public ExecutorSetting buildExecutorSetting(){
+    /*public ExecutorSetting buildExecutorSetting(){
         HashMap configMap = new HashMap();
         if(config!=null&&!"".equals(clusterName)) {
             configMap = JSONUtil.toBean(config, HashMap.class);
         }
         return new ExecutorSetting(checkPoint,parallelism,fragment,savePointPath,alias,configMap);
-    }
+    }*/
 
     public JobConfig buildSubmitConfig(){
         boolean useRemote = true;

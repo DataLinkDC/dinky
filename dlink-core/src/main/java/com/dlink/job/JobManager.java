@@ -10,7 +10,6 @@ import com.dlink.explainer.Explainer;
 import com.dlink.gateway.Gateway;
 import com.dlink.gateway.GatewayType;
 import com.dlink.gateway.config.FlinkConfig;
-import com.dlink.gateway.config.GatewayConfig;
 import com.dlink.gateway.result.GatewayResult;
 import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.parser.SqlType;
@@ -22,14 +21,12 @@ import com.dlink.session.SessionPool;
 import com.dlink.trans.Operations;
 import com.dlink.utils.SqlUtil;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.apache.flink.api.common.JobID;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.table.api.StatementSet;
 import org.apache.flink.table.api.TableResult;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -170,7 +167,7 @@ public class JobManager extends RunTime {
         return false;
     }
 
-    @Deprecated
+    /*@Deprecated
     public SubmitResult submit(String statement) {
         if (statement == null || "".equals(statement)) {
             return SubmitResult.error("FlinkSql语句不存在");
@@ -234,8 +231,8 @@ public class JobManager extends RunTime {
         result.setMsg(LocalDateTime.now().toString() + ":任务提交成功！");
         return result;
     }
-
-    @Deprecated
+*/
+    /*@Deprecated
     public SubmitResult submitGraph(String statement, GatewayConfig gatewayConfig) {
         if (statement == null || "".equals(statement)) {
             return SubmitResult.error("FlinkSql语句不存在");
@@ -372,7 +369,7 @@ public class JobManager extends RunTime {
         }
         close();
         return job.getJobResult();
-    }
+    }*/
 
     public JobResult executeSql(String statement) {
         String address = null;
@@ -391,16 +388,18 @@ public class JobManager extends RunTime {
         try {
             for (StatementParam item : jobParam.getDdl()) {
                 currentSql = item.getValue();
-                if (!FlinkInterceptor.build(stEnvironment, item.getValue())) {
+                /*if (!FlinkInterceptor.build(executor, item.getValue())) {
                     executor.executeSql(item.getValue());
-                }
+                }*/
+                executor.executeSql(item.getValue());
             }
             if(config.isUseStatementSet()&&useGateway) {
                 List<String> inserts = new ArrayList<>();
                 for (StatementParam item : jobParam.getTrans()) {
-                    if (!FlinkInterceptor.build(stEnvironment, item.getValue())) {
+                    /*if (!FlinkInterceptor.build(executor, item.getValue())) {
                         inserts.add(item.getValue());
-                    }
+                    }*/
+                    inserts.add(item.getValue());
                 }
                 currentSql = String.join(FlinkSQLConstant.SEPARATOR,inserts);
                 JobGraph jobGraph = executor.getJobGraphFromInserts(inserts);
@@ -414,10 +413,12 @@ public class JobManager extends RunTime {
                 StatementSet statementSet = stEnvironment.createStatementSet();
                 for (StatementParam item : jobParam.getTrans()) {
                     if(item.getType().equals(SqlType.INSERT)) {
-                        if (!FlinkInterceptor.build(stEnvironment, item.getValue())) {
+                        /*if (!FlinkInterceptor.build(executor, item.getValue())) {
                             statementSet.addInsertSql(item.getValue());
                             inserts.add(item.getValue());
-                        }
+                        }*/
+                        statementSet.addInsertSql(item.getValue());
+                        inserts.add(item.getValue());
                     }
                 }
                 if(inserts.size()>0) {
@@ -434,10 +435,12 @@ public class JobManager extends RunTime {
             }else if(!config.isUseStatementSet()&&useGateway) {
                 List<String> inserts = new ArrayList<>();
                 for (StatementParam item : jobParam.getTrans()) {
-                    if (!FlinkInterceptor.build(stEnvironment, item.getValue())) {
+                    /*if (!FlinkInterceptor.build(executor, item.getValue())) {
                         inserts.add(item.getValue());
                         break;
-                    }
+                    }*/
+                    inserts.add(item.getValue());
+                    break;
                 }
                 currentSql = String.join(FlinkSQLConstant.SEPARATOR,inserts);
                 JobGraph jobGraph = executor.getJobGraphFromInserts(inserts);
@@ -449,7 +452,7 @@ public class JobManager extends RunTime {
             }else{
                 for (StatementParam item : jobParam.getTrans()) {
                     currentSql = item.getValue();
-                    if (!FlinkInterceptor.build(stEnvironment, item.getValue())) {
+                    if (!FlinkInterceptor.build(executor, item.getValue())) {
                         TableResult tableResult = executor.executeSql(item.getValue());
                         if (tableResult.getJobClient().isPresent()) {
                             job.setJobId(tableResult.getJobClient().get().getJobID().toHexString());
@@ -487,7 +490,8 @@ public class JobManager extends RunTime {
         List<StatementParam> ddl = new ArrayList<>();
         List<StatementParam> trans = new ArrayList<>();
         for (String item : statements) {
-            String statement = SqlUtil.removeNote(item);
+            String statement = FlinkInterceptor.pretreatStatement(executor,item);
+//            String statement = SqlUtil.removeNote(item);
             if (statement.isEmpty()) {
                 continue;
             }

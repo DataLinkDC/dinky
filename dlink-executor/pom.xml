@@ -42,17 +42,12 @@
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-client-1.13</artifactId>
-            <!--<scope>provided</scope>-->
-        </dependency>
-        <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-connector-jdbc-1.13</artifactId>
-            <!--<scope>provided</scope>-->
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-function</artifactId>
-            <!--<scope>provided</scope>-->
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

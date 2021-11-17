@@ -1,10 +1,10 @@
 package com.dlink.service;
 
 import com.dlink.db.service.ISuperService;
-import com.dlink.gateway.config.GatewayConfig;
 import com.dlink.model.ClusterConfiguration;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * ClusterConfigService
@@ -18,6 +18,6 @@ public interface ClusterConfigurationService extends ISuperService<ClusterConfig
 
     List<ClusterConfiguration> listEnabledAll();
 
-    GatewayConfig buildGatewayConfig(Integer id);
+    Map<String,String> getGatewayConfig(Integer id);
 
 }
