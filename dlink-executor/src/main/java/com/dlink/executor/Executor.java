@@ -1,6 +1,7 @@
 package com.dlink.executor;
 
 import com.dlink.executor.custom.CustomTableEnvironmentImpl;
+import com.dlink.executor.custom.SqlManager;
 import com.dlink.result.SqlExplainResult;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.flink.api.common.JobExecutionResult;
@@ -17,7 +18,7 @@ import java.util.Map;
 /**
  * Executor
  * @author  wenmo
- * @since  2021/5/25 13:39
+ * @since  2021/11/17
  **/
 public abstract class Executor {
 
@@ -25,6 +26,17 @@ public abstract class Executor {
     protected CustomTableEnvironmentImpl stEnvironment;
     protected EnvironmentSetting environmentSetting;
     protected ExecutorSetting executorSetting;
+
+    protected SqlManager sqlManager = new SqlManager();
+    protected boolean useSqlFragment = true;
+
+    public SqlManager getSqlManager() {
+        return sqlManager;
+    }
+
+    public boolean isUseSqlFragment() {
+        return useSqlFragment;
+    }
 
     public static Executor build(){
         return new LocalStreamExecutor(ExecutorSetting.DEFAULT);

@@ -24,6 +24,7 @@ import com.dlink.utils.SqlUtil;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.flink.api.common.JobID;
 import org.apache.flink.runtime.jobgraph.JobGraph;
+import org.apache.flink.table.api.StatementSet;
 import org.apache.flink.table.api.TableResult;
 
 import java.time.LocalDateTime;
@@ -394,14 +395,51 @@ public class JobManager extends RunTime {
                     executor.executeSql(item.getValue());
                 }
             }
-            if(config.isUseStatementSet()) {
+            if(config.isUseStatementSet()&&useGateway) {
                 List<String> inserts = new ArrayList<>();
                 for (StatementParam item : jobParam.getTrans()) {
                     if (!FlinkInterceptor.build(stEnvironment, item.getValue())) {
                         inserts.add(item.getValue());
                     }
                 }
-                currentSql = inserts.toString();
+                currentSql = String.join(FlinkSQLConstant.SEPARATOR,inserts);
+                JobGraph jobGraph = executor.getJobGraphFromInserts(inserts);
+                GatewayResult gatewayResult = Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);
+                InsertResult insertResult = new InsertResult(gatewayResult.getAppId(), true);
+                job.setResult(insertResult);
+                job.setJobId(gatewayResult.getAppId());
+                job.setJobManagerAddress(gatewayResult.getWebURL());
+            }else if(config.isUseStatementSet()&&!useGateway) {
+                List<String> inserts = new ArrayList<>();
+                StatementSet statementSet = stEnvironment.createStatementSet();
+                for (StatementParam item : jobParam.getTrans()) {
+                    if(item.getType().equals(SqlType.INSERT)) {
+                        if (!FlinkInterceptor.build(stEnvironment, item.getValue())) {
+                            statementSet.addInsertSql(item.getValue());
+                            inserts.add(item.getValue());
+                        }
+                    }
+                }
+                if(inserts.size()>0) {
+                    currentSql = String.join(FlinkSQLConstant.SEPARATOR, inserts);
+                    TableResult tableResult = statementSet.execute();
+                    if (tableResult.getJobClient().isPresent()) {
+                        job.setJobId(tableResult.getJobClient().get().getJobID().toHexString());
+                    }
+                    if (config.isUseResult()) {
+                        IResult result = ResultBuilder.build(SqlType.INSERT, maxRowNum, "", true).getResult(tableResult);
+                        job.setResult(result);
+                    }
+                }
+            }else if(!config.isUseStatementSet()&&useGateway) {
+                List<String> inserts = new ArrayList<>();
+                for (StatementParam item : jobParam.getTrans()) {
+                    if (!FlinkInterceptor.build(stEnvironment, item.getValue())) {
+                        inserts.add(item.getValue());
+                        break;
+                    }
+                }
+                currentSql = String.join(FlinkSQLConstant.SEPARATOR,inserts);
                 JobGraph jobGraph = executor.getJobGraphFromInserts(inserts);
                 GatewayResult gatewayResult = Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);
                 InsertResult insertResult = new InsertResult(gatewayResult.getAppId(), true);
