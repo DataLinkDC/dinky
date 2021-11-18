@@ -172,5 +172,12 @@
                 <include>dlink-executor-${project.version}.jar</include>
             </includes>
         </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-app/target</directory>
+            <outputDirectory>jar</outputDirectory>
+            <includes>
+                <include>dlink-app-${project.version}.jar</include>
+            </includes>
+        </fileSet>
     </fileSets>
 </assembly>

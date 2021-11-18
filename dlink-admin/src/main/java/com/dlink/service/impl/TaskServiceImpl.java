@@ -8,13 +8,17 @@ import com.dlink.job.JobResult;
 import com.dlink.mapper.TaskMapper;
 import com.dlink.model.Cluster;
 import com.dlink.model.Statement;
+import com.dlink.model.SystemConfiguration;
 import com.dlink.model.Task;
 import com.dlink.service.ClusterConfigurationService;
 import com.dlink.service.ClusterService;
 import com.dlink.service.StatementService;
 import com.dlink.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 /**
  * 任务 服务实现类
@@ -42,7 +46,14 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if(!JobManager.useGateway(config.getType())) {
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), task.getClusterId()));
         }else{
-            config.buildGatewayConfig(clusterConfigurationService.getGatewayConfig(task.getClusterConfigurationId()));
+            Map<String, String> gatewayConfig = clusterConfigurationService.getGatewayConfig(task.getClusterConfigurationId());
+            if("yarn-application".equals(config.getType())||"ya".equals(config.getType())){
+                SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
+                gatewayConfig.put("userJarPath",systemConfiguration.getSqlSubmitJarPath());
+                gatewayConfig.put("userJarParas",systemConfiguration.getSqlSubmitJarParas() + config.getTaskId());
+                gatewayConfig.put("userJarMainAppClass",systemConfiguration.getSqlSubmitJarMainAppClass());
+            }
+            config.buildGatewayConfig(gatewayConfig);
         }
         JobManager jobManager = JobManager.build(config);
         return jobManager.executeSql(statement.getStatement());

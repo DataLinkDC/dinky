@@ -9,6 +9,7 @@ import com.dlink.executor.custom.CustomTableEnvironmentImpl;
 import com.dlink.explainer.Explainer;
 import com.dlink.gateway.Gateway;
 import com.dlink.gateway.GatewayType;
+import com.dlink.gateway.config.AppConfig;
 import com.dlink.gateway.config.FlinkConfig;
 import com.dlink.gateway.result.GatewayResult;
 import com.dlink.interceptor.FlinkInterceptor;
@@ -388,22 +389,21 @@ public class JobManager extends RunTime {
         try {
             for (StatementParam item : jobParam.getDdl()) {
                 currentSql = item.getValue();
-                /*if (!FlinkInterceptor.build(executor, item.getValue())) {
-                    executor.executeSql(item.getValue());
-                }*/
                 executor.executeSql(item.getValue());
             }
             if(config.isUseStatementSet()&&useGateway) {
                 List<String> inserts = new ArrayList<>();
                 for (StatementParam item : jobParam.getTrans()) {
-                    /*if (!FlinkInterceptor.build(executor, item.getValue())) {
-                        inserts.add(item.getValue());
-                    }*/
                     inserts.add(item.getValue());
                 }
                 currentSql = String.join(FlinkSQLConstant.SEPARATOR,inserts);
                 JobGraph jobGraph = executor.getJobGraphFromInserts(inserts);
-                GatewayResult gatewayResult = Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);
+                GatewayResult gatewayResult = null;
+                if(GatewayType.YARN_APPLICATION.equalsValue(config.getType())){
+                    gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
+                }else{
+                    gatewayResult = Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);
+                }
                 InsertResult insertResult = new InsertResult(gatewayResult.getAppId(), true);
                 job.setResult(insertResult);
                 job.setJobId(gatewayResult.getAppId());
@@ -413,10 +413,6 @@ public class JobManager extends RunTime {
                 StatementSet statementSet = stEnvironment.createStatementSet();
                 for (StatementParam item : jobParam.getTrans()) {
                     if(item.getType().equals(SqlType.INSERT)) {
-                        /*if (!FlinkInterceptor.build(executor, item.getValue())) {
-                            statementSet.addInsertSql(item.getValue());
-                            inserts.add(item.getValue());
-                        }*/
                         statementSet.addInsertSql(item.getValue());
                         inserts.add(item.getValue());
                     }
@@ -435,16 +431,17 @@ public class JobManager extends RunTime {
             }else if(!config.isUseStatementSet()&&useGateway) {
                 List<String> inserts = new ArrayList<>();
                 for (StatementParam item : jobParam.getTrans()) {
-                    /*if (!FlinkInterceptor.build(executor, item.getValue())) {
-                        inserts.add(item.getValue());
-                        break;
-                    }*/
                     inserts.add(item.getValue());
                     break;
                 }
                 currentSql = String.join(FlinkSQLConstant.SEPARATOR,inserts);
                 JobGraph jobGraph = executor.getJobGraphFromInserts(inserts);
-                GatewayResult gatewayResult = Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);
+                GatewayResult gatewayResult = null;
+                if(GatewayType.YARN_APPLICATION.equalsValue(config.getType())){
+                    gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
+                }else{
+                    gatewayResult = Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);
+                }
                 InsertResult insertResult = new InsertResult(gatewayResult.getAppId(), true);
                 job.setResult(insertResult);
                 job.setJobId(gatewayResult.getAppId());
@@ -491,7 +488,6 @@ public class JobManager extends RunTime {
         List<StatementParam> trans = new ArrayList<>();
         for (String item : statements) {
             String statement = FlinkInterceptor.pretreatStatement(executor,item);
-//            String statement = SqlUtil.removeNote(item);
             if (statement.isEmpty()) {
                 continue;
             }

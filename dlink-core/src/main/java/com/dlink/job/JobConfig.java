@@ -1,6 +1,7 @@
 package com.dlink.job;
 
 import com.dlink.executor.ExecutorSetting;
+import com.dlink.gateway.config.AppConfig;
 import com.dlink.gateway.config.ClusterConfig;
 import com.dlink.gateway.config.GatewayConfig;
 import com.dlink.session.SessionConfig;
@@ -100,5 +101,12 @@ public class JobConfig {
         gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath"),
                 config.get("flinkLibPath"),
                 config.get("hadoopConfigPath")));
+        if(config.containsKey("userJarPath")){
+            gatewayConfig.setAppConfig(AppConfig.build(
+                    config.get("userJarPath"),
+                    config.get("userJarParas"),
+                    config.get("userJarMainAppClass")
+            ));
+        }
     }
 }
