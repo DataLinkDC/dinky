@@ -2,8 +2,6 @@ package com.dlink.model;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import java.util.Map;
-
 /**
  * SystemConfiguration
  *
@@ -28,7 +26,7 @@ public class SystemConfiguration {
             "sqlSubmitJarParas",
             "FlinkSQL提交Jar参数",
             ValueType.STRING,
-            "--id ",
+            "",
             "用于指定Applcation模式提交FlinkSQL的Jar的参数"
     );
     private Configuration sqlSubmitJarMainAppClass = new Configuration(

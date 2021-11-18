@@ -57,6 +57,10 @@ public abstract class Executor {
         return new LocalStreamExecutor(executorSetting);
     }
 
+    public static Executor buildAppStreamExecutor(ExecutorSetting executorSetting){
+        return new AppStreamExecutor(executorSetting);
+    }
+
     public static Executor buildRemoteExecutor(EnvironmentSetting environmentSetting,ExecutorSetting executorSetting){
         environmentSetting.setUseRemote(true);
         return new RemoteStreamExecutor(environmentSetting,executorSetting);
@@ -206,5 +210,21 @@ public abstract class Executor {
 
     public StatementSet createStatementSet(){
         return stEnvironment.createStatementSet();
+    }
+
+    public TableResult executeStatementSet(List<String> statements){
+        StatementSet statementSet = stEnvironment.createStatementSet();
+        for (String item : statements) {
+            statementSet.addInsertSql(item);
+        }
+        return statementSet.execute();
+    }
+
+    public void submitSql(String statements){
+        executeSql(statements);
+    }
+
+    public void submitStatementSet(List<String> statements){
+        executeStatementSet(statements);
     }
 }

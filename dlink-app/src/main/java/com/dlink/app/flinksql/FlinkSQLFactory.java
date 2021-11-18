@@ -8,16 +8,11 @@ import com.dlink.executor.ExecutorSetting;
 import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.parser.SqlType;
 import com.dlink.trans.Operations;
-import org.apache.flink.table.api.StatementSet;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * FlinkSQLFactory
@@ -76,7 +71,7 @@ public class FlinkSQLFactory {
     public static void submit(Integer id,DBConfig dbConfig){
         List<String> statements = FlinkSQLFactory.getStatements(Integer.valueOf(id), dbConfig);
         ExecutorSetting executorSetting = ExecutorSetting.build(FlinkSQLFactory.getTaskConfig(Integer.valueOf(id),dbConfig));
-        Executor executor = Executor.buildLocalExecutor(executorSetting);
+        Executor executor = Executor.buildAppStreamExecutor(executorSetting);
         List<StatementParam> ddl = new ArrayList<>();
         List<StatementParam> trans = new ArrayList<>();
         for (String item : statements) {
@@ -96,19 +91,15 @@ public class FlinkSQLFactory {
         }
         if(executorSetting.isUseStatementSet()) {
             List<String> inserts = new ArrayList<>();
-            StatementSet statementSet = executor.createStatementSet();
             for (StatementParam item : trans) {
                 if(item.getType().equals(SqlType.INSERT)) {
-                    statementSet.addInsertSql(item.getValue());
                     inserts.add(item.getValue());
                 }
             }
-            if(inserts.size()>0) {
-                statementSet.execute();
-            }
+            executor.submitStatementSet(inserts);
         }else{
             for (StatementParam item : trans) {
-                executor.executeSql(item.getValue());
+                executor.submitSql(item.getValue());
                 break;
             }
         }

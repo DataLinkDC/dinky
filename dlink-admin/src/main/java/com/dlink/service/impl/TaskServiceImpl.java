@@ -36,6 +36,19 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Autowired
     private ClusterConfigurationService clusterConfigurationService;
 
+    @Value("${spring.datasource.driver-class-name}")
+    private String driver;
+    @Value("${spring.datasource.url}")
+    private String url;
+    @Value("${spring.datasource.username}")
+    private String username;
+    @Value("${spring.datasource.password}")
+    private String password;
+
+    private String buildParas(Integer id) {
+        return "--id " + id + " --driver " + driver + " --url " + url + " --username " + username + " --password " + password;
+    }
+
     @Override
     public JobResult submitByTaskId(Integer id) {
         Task task = this.getById(id);
@@ -43,15 +56,15 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Statement statement = statementService.getById(id);
         Assert.check(statement);
         JobConfig config = task.buildSubmitConfig();
-        if(!JobManager.useGateway(config.getType())) {
+        if (!JobManager.useGateway(config.getType())) {
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), task.getClusterId()));
-        }else{
+        } else {
             Map<String, String> gatewayConfig = clusterConfigurationService.getGatewayConfig(task.getClusterConfigurationId());
-            if("yarn-application".equals(config.getType())||"ya".equals(config.getType())){
+            if ("yarn-application".equals(config.getType()) || "ya".equals(config.getType())) {
                 SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
-                gatewayConfig.put("userJarPath",systemConfiguration.getSqlSubmitJarPath());
-                gatewayConfig.put("userJarParas",systemConfiguration.getSqlSubmitJarParas() + config.getTaskId());
-                gatewayConfig.put("userJarMainAppClass",systemConfiguration.getSqlSubmitJarMainAppClass());
+                gatewayConfig.put("userJarPath", systemConfiguration.getSqlSubmitJarPath());
+                gatewayConfig.put("userJarParas", systemConfiguration.getSqlSubmitJarParas() + buildParas(config.getTaskId()));
+                gatewayConfig.put("userJarMainAppClass", systemConfiguration.getSqlSubmitJarMainAppClass());
             }
             config.buildGatewayConfig(gatewayConfig);
         }
@@ -59,34 +72,14 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         return jobManager.executeSql(statement.getStatement());
     }
 
-    /*@Override
-    public Result submitApplicationByTaskId(Integer id) {
-        Task task = this.getById(id);
-        Assert.check(task);
-        Statement statement = statementService.getById(id);
-        Assert.check(statement);
-        JobConfig config = task.buildSubmitConfig();
-        GatewayConfig gatewayConfig = new GatewayConfig();
-        gatewayConfig.getFlinkConfig().setJobName(config.getJobName());
-        gatewayConfig.setType(GatewayType.YARN_PER_JOB);
-        ClusterConfig clusterConfig = ClusterConfig.build(
-                "/opt/src/flink-1.12.2_pj/conf",
-                "/opt/src/flink-1.12.2_pj/conf",
-                "/usr/local/hadoop/hadoop-2.7.7/etc/hadoop/yarn-site.xml");
-        gatewayConfig.setClusterConfig(clusterConfig);
-        JobManager jobManager = JobManager.build(config);
-        SubmitResult result = jobManager.submitGraph(statement.getStatement(), gatewayConfig);
-        return Result.succeed(result,"提交成功");
-    }*/
-
     @Override
     public Task getTaskInfoById(Integer id) {
         Task task = this.getById(id);
         if (task != null) {
             Statement statement = statementService.getById(id);
-            if(task.getClusterId()!=null) {
+            if (task.getClusterId() != null) {
                 Cluster cluster = clusterService.getById(task.getClusterId());
-                if(cluster!=null){
+                if (cluster != null) {
                     task.setClusterName(cluster.getAlias());
                 }
             }
@@ -108,13 +101,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 statementService.updateById(statement);
             }
         } else {
-            if(task.getCheckPoint()==null){
+            if (task.getCheckPoint() == null) {
                 task.setCheckPoint(0);
             }
-            if(task.getParallelism()==null){
+            if (task.getParallelism() == null) {
                 task.setParallelism(1);
             }
-            if(task.getClusterId()==null){
+            if (task.getClusterId() == null) {
                 task.setClusterId(0);
             }
             this.save(task);
