@@ -176,7 +176,7 @@
             <directory>${project.parent.basedir}/dlink-app/target</directory>
             <outputDirectory>jar</outputDirectory>
             <includes>
-                <include>dlink-app-${project.version}.jar</include>
+                <include>dlink-app-${project.version}-jar-with-dependencies.jar</include>
             </includes>
         </fileSet>
     </fileSets>

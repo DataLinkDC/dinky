@@ -8,6 +8,8 @@ import com.dlink.executor.ExecutorSetting;
 import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.parser.SqlType;
 import com.dlink.trans.Operations;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -20,7 +22,9 @@ import java.util.*;
  * @author wenmo
  * @since 2021/10/27
  **/
-public class FlinkSQLFactory {
+public class Submiter {
+
+    private static final Logger logger = LoggerFactory.getLogger(Submiter.class);
 
     private static String getQuerySQL(Integer id) throws SQLException {
         if (id == null) {
@@ -44,9 +48,9 @@ public class FlinkSQLFactory {
             statement = DBUtil.getOneByID(getQuerySQL(id),config);
         } catch (IOException | SQLException e) {
             e.printStackTrace();
-            System.err.println(LocalDateTime.now().toString() + " --> 获取 FlinkSQL 异常，ID 为"+ id );
-            System.err.println(LocalDateTime.now().toString() + "连接信息为："+ config.toString() );
-            System.err.println(LocalDateTime.now().toString() + "异常信息为："+ e.getMessage() );
+            logger.error(LocalDateTime.now().toString() + " --> 获取 FlinkSQL 异常，ID 为"+ id );
+            logger.error(LocalDateTime.now().toString() + "连接信息为："+ config.toString() );
+            logger.error(LocalDateTime.now().toString() + "异常信息为："+ e.getMessage() );
         }
         return statement;
     }
@@ -54,12 +58,12 @@ public class FlinkSQLFactory {
     public static Map<String,String> getTaskConfig(Integer id, DBConfig config) {
         Map<String,String> task = new HashMap<>();
         try {
-            task = DBUtil.getMapByID(getQuerySQL(id),config);
+            task = DBUtil.getMapByID(getTaskInfo(id),config);
         } catch (IOException | SQLException e) {
             e.printStackTrace();
-            System.err.println(LocalDateTime.now().toString() + " --> 获取 FlinkSQL 配置异常，ID 为"+ id );
-            System.err.println(LocalDateTime.now().toString() + "连接信息为："+ config.toString() );
-            System.err.println(LocalDateTime.now().toString() + "异常信息为："+ e.getMessage() );
+            logger.error(LocalDateTime.now().toString() + " --> 获取 FlinkSQL 配置异常，ID 为"+ id );
+            logger.error(LocalDateTime.now().toString() + "连接信息为："+ config.toString() );
+            logger.error(LocalDateTime.now().toString() + "异常信息为："+ e.getMessage() );
         }
         return task;
     }
@@ -69,8 +73,10 @@ public class FlinkSQLFactory {
     }
 
     public static void submit(Integer id,DBConfig dbConfig){
-        List<String> statements = FlinkSQLFactory.getStatements(Integer.valueOf(id), dbConfig);
-        ExecutorSetting executorSetting = ExecutorSetting.build(FlinkSQLFactory.getTaskConfig(Integer.valueOf(id),dbConfig));
+        logger.info(LocalDateTime.now() + "开始提交作业 -- "+id);
+        List<String> statements = Submiter.getStatements(id, dbConfig);
+        ExecutorSetting executorSetting = ExecutorSetting.build(Submiter.getTaskConfig(id,dbConfig));
+        logger.info("作业配置如下： "+executorSetting.toString());
         Executor executor = Executor.buildAppStreamExecutor(executorSetting);
         List<StatementParam> ddl = new ArrayList<>();
         List<StatementParam> trans = new ArrayList<>();
@@ -89,6 +95,11 @@ public class FlinkSQLFactory {
                 ddl.add(new StatementParam(statement, operationType));
             }
         }
+        for (StatementParam item : ddl) {
+            logger.info("正在执行 FlinkSQL： "+item.getValue());
+            executor.submitSql(item.getValue());
+            logger.info("执行成功");
+        }
         if(executorSetting.isUseStatementSet()) {
             List<String> inserts = new ArrayList<>();
             for (StatementParam item : trans) {
@@ -96,13 +107,18 @@ public class FlinkSQLFactory {
                     inserts.add(item.getValue());
                 }
             }
+            logger.info("正在执行 FlinkSQL 语句集： "+String.join(FlinkSQLConstant.SEPARATOR,inserts));
             executor.submitStatementSet(inserts);
+            logger.info("执行成功");
         }else{
             for (StatementParam item : trans) {
+                logger.info("正在执行 FlinkSQL： "+item.getValue());
                 executor.submitSql(item.getValue());
+                logger.info("执行成功");
                 break;
             }
         }
+        logger.info(LocalDateTime.now() + "任务提交成功");
         System.out.println(LocalDateTime.now() + "任务提交成功");
     }
 }

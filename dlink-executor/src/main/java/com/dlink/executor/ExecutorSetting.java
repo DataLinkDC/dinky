@@ -116,4 +116,17 @@ public class ExecutorSetting {
                 settingMap.get("jobName"),
                 settingMap.get("config"));
     }
+
+    @Override
+    public String toString() {
+        return "ExecutorSetting{" +
+                "checkpoint=" + checkpoint +
+                ", parallelism=" + parallelism +
+                ", useSqlFragment=" + useSqlFragment +
+                ", useStatementSet=" + useStatementSet +
+                ", savePointPath='" + savePointPath + '\'' +
+                ", jobName='" + jobName + '\'' +
+                ", config=" + config +
+                '}';
+    }
 }
