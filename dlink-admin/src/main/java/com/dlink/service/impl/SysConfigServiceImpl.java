@@ -29,16 +29,19 @@ public class SysConfigServiceImpl extends SuperServiceImpl<SysConfigMapper, SysC
     private static final ObjectMapper mapper = new ObjectMapper();
 
     @Override
-    public void initSysConfig() {
-        List<SysConfig> sysConfigs = list();
-        if(sysConfigs.size()==0){
-            return;
-        }
+    public Map<String, String> getAll() {
         Map<String,String> map = new HashMap<>();
+        List<SysConfig> sysConfigs = list();
         for(SysConfig item : sysConfigs){
             map.put(item.getName(),item.getValue());
         }
-        SystemConfiguration.getInstances().setConfiguration(mapper.valueToTree(map));
+        SystemConfiguration.getInstances().addConfiguration(map);
+        return map;
+    }
+
+    @Override
+    public void initSysConfig() {
+        SystemConfiguration.getInstances().setConfiguration(mapper.valueToTree(getAll()));
     }
 
     @Override

@@ -7,12 +7,7 @@ import com.dlink.service.SysConfigService;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +75,14 @@ public class SysConfigController {
     public Result getOneById(@RequestBody SysConfig sysConfig) throws Exception {
         sysConfig = sysConfigService.getById(sysConfig.getId());
         return Result.succeed(sysConfig,"获取成功");
+    }
+
+    /**
+     * 获取所有配置
+     */
+    @GetMapping("/getAll")
+    public Result getAll() {
+        return Result.succeed(sysConfigService.getAll(),"获取成功");
     }
 
     /**

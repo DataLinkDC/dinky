@@ -2,6 +2,8 @@ package com.dlink.model;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import java.util.Map;
+
 /**
  * SystemConfiguration
  *
@@ -46,6 +48,18 @@ public class SystemConfiguration {
         }
         if(jsonNode.has("sqlSubmitJarMainAppClass")){
             setSqlSubmitJarMainAppClass(jsonNode.get("sqlSubmitJarMainAppClass").asText());
+        }
+    }
+
+    public void addConfiguration(Map<String,String> map){
+        if(!map.containsKey("sqlSubmitJarPath")){
+            map.put("sqlSubmitJarPath",sqlSubmitJarPath.getValue().toString());
+        }
+        if(!map.containsKey("sqlSubmitJarParas")){
+            map.put("sqlSubmitJarParas",sqlSubmitJarParas.getValue().toString());
+        }
+        if(!map.containsKey("sqlSubmitJarMainAppClass")){
+            map.put("sqlSubmitJarMainAppClass",sqlSubmitJarMainAppClass.getValue().toString());
         }
     }
 

@@ -60,7 +60,7 @@ export default {
   'menu.taskcenter.task': '作业管理',
   'menu.taskcenter.jar': 'Jar 管理',
   'menu.document': '文档中心',
-  'menu.dev': 'Dev 开发者工具',
+  'menu.settings': '系统设置',
   'menu.dev.flink': 'Flink 计算框架',
   'menu.dev.flink.docs': '官方文档',
   'menu.dev.ant-design': 'Ant Design UI框架',
