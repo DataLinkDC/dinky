@@ -12,6 +12,7 @@ import com.dlink.result.SubmitResult;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -62,9 +63,9 @@ public class JobManagerTest {
     @Test
     public void cancelJobSelect(){
 
-        JobConfig config = new JobConfig(true, true, "s1", true, 2,
-                null, "测试", false, 100, 0,
-                1, null);
+        JobConfig config = new JobConfig("session-yarn",true, true, "s1", true, 2,
+                null, null, "测试", false,false, 100, 0,
+                1, null,new HashMap<>());
         if(config.isUseRemote()) {
             config.setAddress("192.168.123.157:8081");
         }

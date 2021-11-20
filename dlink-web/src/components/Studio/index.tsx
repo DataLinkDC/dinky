@@ -13,7 +13,7 @@ import StudioLeftTool from "./StudioLeftTool";
 import StudioRightTool from "./StudioRightTool";
 import {
   listSession, showCluster, showDataBase, getFillAllByVersion,
-  showClusterConfiguration
+  showClusterConfiguration,showSessionCluster
 } from "@/components/Studio/StudioEvent/DDL";
 import {loadSettings} from "@/pages/Settings/function";
 
@@ -29,6 +29,7 @@ const Studio: React.FC<StudioProps> = (props) => {
   loadSettings(dispatch);
   getFillAllByVersion('',dispatch);
   showCluster(dispatch);
+  showSessionCluster(dispatch);
   showClusterConfiguration(dispatch);
   showDataBase(dispatch);
   listSession(dispatch);

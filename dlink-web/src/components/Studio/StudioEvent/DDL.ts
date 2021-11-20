@@ -109,6 +109,16 @@ export function showCluster(dispatch: any) {
     });
   });
 }
+/*--- 刷新 Session集群 ---*/
+export function showSessionCluster(dispatch: any) {
+  const res = getData('api/cluster/listSessionEnable');
+  res.then((result) => {
+    result.datas && dispatch && dispatch({
+      type: "Studio/saveSessionCluster",
+      payload: result.datas,
+    });
+  });
+}
 /*--- 刷新 数据源 ---*/
 export function showDataBase(dispatch: any) {
   const res = getData('api/database/listEnabledAll');

@@ -11,16 +11,16 @@ const { Text } = Typography;
 
 const StudioSetting = (props: any) => {
 
-  const {cluster,clusterConfiguration,current,form,dispatch,tabs,currentSession} = props;
+  const {sessionCluster,clusterConfiguration,current,form,dispatch,tabs,currentSession} = props;
 
   const getClusterOptions = ()=>{
-    let itemList = [(<Option value={0} label={(<><Tag color="default">Local</Tag>本地环境</>)}>
+    let itemList = [(<Option key={0} value={0} label={(<><Tag color="default">Local</Tag>本地环境</>)}>
       <Tag color="default">Local</Tag>
       本地环境
     </Option>)];
-    for(let item of cluster){
+    for(let item of sessionCluster){
       let tag =(<><Tag color={item.enabled?"processing":"error"}>{item.type}</Tag>{item.alias}</>);
-      itemList.push(<Option value={item.id} label={tag}>
+      itemList.push(<Option key={item.id} value={item.id} label={tag}>
         {tag}
       </Option>)
     }
@@ -31,23 +31,21 @@ const StudioSetting = (props: any) => {
     let itemList = [];
     for(let item of clusterConfiguration){
       let tag =(<><Tag color={item.enabled?"processing":"error"}>{item.type}</Tag>{item.alias}</>);
-      itemList.push(<Option value={item.id} label={tag}>
+      itemList.push(<Option key={item.id} value={item.id} label={tag}>
         {tag}
       </Option>)
     }
     return itemList;
   };
 
-  useEffect(()=>{
-    form.setFieldsValue(current.task);
-  },[])
+  form.setFieldsValue(current.task);
 
   const onValuesChange = (change:any,all:any)=>{
     let newTabs = tabs;
     for(let i=0;i<newTabs.panes.length;i++){
       if(newTabs.panes[i].key==newTabs.activeKey){
         for(let key in change){
-          newTabs.panes[i].task[key]=change[key];
+          newTabs.panes[i].task[key]=all[key];
         }
         break;
       }
@@ -224,7 +222,7 @@ const StudioSetting = (props: any) => {
 };
 
 export default connect(({Studio}: { Studio: StateType }) => ({
-  cluster: Studio.cluster,
+  sessionCluster: Studio.sessionCluster,
   clusterConfiguration: Studio.clusterConfiguration,
   current: Studio.current,
   tabs: Studio.tabs,

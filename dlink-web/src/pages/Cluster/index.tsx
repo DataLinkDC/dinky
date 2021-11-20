@@ -17,7 +17,7 @@ import {
   handleAddOrUpdate, handleOption, handleRemove, queryData,
   updateEnabled
 } from "@/components/Common/crud";
-import {showCluster} from "@/components/Studio/StudioEvent/DDL";
+import {showCluster,showSessionCluster} from "@/components/Studio/StudioEvent/DDL";
 
 const TextArea = Input.TextArea;
 const url = '/api/cluster';
@@ -111,23 +111,28 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       hideInTable: false,
       filters: [
         {
-          text: 'Yarn',
-          value: 'Yarn',
+          text: 'Yarn Session',
+          value: 'yarn-session',
         },
         {
           text: 'Standalone',
-          value: 'Standalone',
+          value: 'standalone',
         },
         {
-          text: 'Others',
-          value: 'Others',
+          text: 'Yarn Per-Job',
+          value: 'yarn-per-job',
+        },
+        {
+          text: 'Yarn Application',
+          value: 'yarn-application',
         },
       ],
       filterMultiple: false,
       valueEnum: {
-        'Yarn': {text: 'Yarn'},
-        'Standalone': {text: 'Standalone'},
-        'Others': {text: 'Others'},
+        'yarn-session': {text: 'Yarn Session'},
+        'standalone': {text: 'Standalone'},
+        'yarn-per-job': {text: 'Yarn Per-Job'},
+        'yarn-application': {text: 'Yarn Application'},
       },
     },
     {
@@ -208,6 +213,28 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       valueEnum: {
         true: {text: '已启用', status: 'Success'},
         false: {text: '已禁用', status: 'Error'},
+      },
+    },
+    {
+      title: '注册方式',
+      dataIndex: 'autoRegisters',
+      hideInForm: true,
+      hideInSearch: true,
+      hideInTable: false,
+      filters: [
+        {
+          text: '自动',
+          value: 1,
+        },
+        {
+          text: '手动',
+          value: 0,
+        },
+      ],
+      filterMultiple: false,
+      valueEnum: {
+        true: {text: '自动', status: 'Success'},
+        false: {text: '手动', status: 'Error'},
       },
     },
     {
@@ -356,6 +383,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
               actionRef.current.reload();
             }
             showCluster(dispatch);
+            showSessionCluster(dispatch);
           }
         }}
           rowKey="id"
@@ -374,6 +402,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
                   actionRef.current.reload();
                 }
                 showCluster(dispatch);
+                showSessionCluster(dispatch);
               }
             }}
             onCancel={() => {

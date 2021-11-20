@@ -23,6 +23,7 @@ public class History implements Serializable {
 
     private Integer id;
     private Integer clusterId;
+    private Integer clusterConfigurationId;
     private String session;
     private String jobId;
     private String jobName;

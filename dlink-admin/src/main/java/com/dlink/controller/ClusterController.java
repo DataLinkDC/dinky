@@ -33,13 +33,9 @@ public class ClusterController {
      */
     @PutMapping
     public Result saveOrUpdate(@RequestBody Cluster cluster) throws Exception {
-        checkHealth(cluster);
-
-        if(clusterService.saveOrUpdate(cluster)){
-            return Result.succeed("新增成功");
-        }else {
-            return Result.failed("新增失败");
-        }
+        cluster.setAutoRegisters(false);
+        clusterService.registersCluster(cluster);
+        return Result.succeed("新增成功");
     }
 
     /**
@@ -92,6 +88,15 @@ public class ClusterController {
     }
 
     /**
+     * 获取可用的集群列表
+     */
+    @GetMapping("/listSessionEnable")
+    public Result listSessionEnable() {
+        List<Cluster >clusters = clusterService.listSessionEnable();
+        return Result.succeed(clusters,"获取成功");
+    }
+
+    /**
      * 全部心跳监测
      */
     @PostMapping("/heartbeats")
@@ -99,21 +104,9 @@ public class ClusterController {
         List<Cluster> clusters = clusterService.listEnabledAll();
         for (int i = 0; i < clusters.size(); i++) {
             Cluster cluster = clusters.get(i);
-            checkHealth(cluster);
-            clusterService.updateById(cluster);
+            clusterService.registersCluster(cluster);
         }
         return Result.succeed("状态刷新完成");
     }
 
-    private void checkHealth(Cluster cluster){
-        FlinkClusterInfo info = clusterService.checkHeartBeat(cluster.getHosts(), cluster.getJobManagerHost());
-        if(!info.isEffective()){
-            cluster.setJobManagerHost("");
-            cluster.setStatus(0);
-        }else{
-            cluster.setJobManagerHost(info.getJobManagerAddress());
-            cluster.setStatus(1);
-            cluster.setVersion(info.getVersion());
-        }
-    }
 }

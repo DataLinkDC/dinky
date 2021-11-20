@@ -328,7 +328,7 @@ CREATE TABLE `dlink_history`  (
   INDEX `cluster_index`(`cluster_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '执行历史' ROW_FORMAT = Dynamic;
 
-ALTER TABLE `dlink`.`dlink_task`
+ALTER TABLE `dlink_task`
 ADD COLUMN `config` text NULL COMMENT '配置' AFTER `cluster_id`;
 
 -- ----------------------------
@@ -358,10 +358,10 @@ CREATE TABLE `dlink_database`  (
   UNIQUE INDEX `db_index`(`name`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
-ALTER TABLE `dlink`.`dlink_cluster`
+ALTER TABLE `dlink_cluster`
 ADD COLUMN `version` varchar(20) NULL COMMENT '版本' AFTER `job_manager_host`;
 
-ALTER TABLE `dlink`.`dlink_flink_document`
+ALTER TABLE `dlink_flink_document`
 ADD COLUMN `fill_value` varchar(255) NULL COMMENT '填充值' AFTER `description`;
 
 update dlink_flink_document set fill_value=name;
@@ -397,10 +397,34 @@ CREATE TABLE `dlink_jar` (
   PRIMARY KEY (`id`)
 )  ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
-ALTER TABLE `dlink`.`dlink_task`
+ALTER TABLE `dlink_task`
   ADD COLUMN `cluster_configuration_id` int(11) NULL COMMENT '集群配置ID' AFTER `cluster_id`;
 
-ALTER TABLE `dlink`.`dlink_task`
+ALTER TABLE `dlink_task`
 ADD COLUMN `statement_set` tinyint(1) NULL COMMENT '启用语句集' AFTER `fragment`;
+
+alter table dlink_history
+	add cluster_configuration_id int(11) null COMMENT '集群配置ID' after cluster_id;
+
+CREATE TABLE `dlink_sys_config` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '配置名',
+  `value` text CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '值',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+)  ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+alter table dlink_cluster
+  add auto_registers tinyint(1) default 0 null comment '是否自动注册' after note;
+
+update dlink_cluster set type ='yarn-session' where type ='Yarn';
+update dlink_cluster set type ='standalone' where type ='Standalone';
+
+ALTER TABLE `dlink_cluster`
+  ADD COLUMN `cluster_configuration_id` int(11) NULL COMMENT '集群配置ID' AFTER `auto_registers`;
+
+ALTER TABLE `dlink_cluster`
+  ADD COLUMN `task_id` int(11) NULL COMMENT '任务ID' AFTER `cluster_configuration_id`;
 
 SET FOREIGN_KEY_CHECKS = 1;

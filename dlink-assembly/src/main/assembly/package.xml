@@ -179,5 +179,13 @@
                 <include>dlink-app-${project.version}-jar-with-dependencies.jar</include>
             </includes>
         </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-web/dist</directory>
+            <outputDirectory>html</outputDirectory>
+            <includes>
+                <include>*</include>
+                <include>*/*</include>
+            </includes>
+        </fileSet>
     </fileSets>
 </assembly>

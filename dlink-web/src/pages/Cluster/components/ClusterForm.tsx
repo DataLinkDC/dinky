@@ -50,10 +50,11 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
           name="type"
           label="类型"
         >
-          <Select defaultValue="Yarn" allowClear>
-            <Option value="Standalone">Standalone</Option>
-            <Option value="Yarn">Yarn</Option>
-            <Option value="Others">Others</Option>
+          <Select defaultValue="yarn-session" allowClear>
+            <Option value="standalone">Standalone</Option>
+            <Option value="yarn-session">Yarn Session</Option>
+            <Option value="yarn-per-job">Yarn Per-Job</Option>
+            <Option value="yarn-application">Yarn Application</Option>
           </Select>
         </Form.Item>
         <Form.Item

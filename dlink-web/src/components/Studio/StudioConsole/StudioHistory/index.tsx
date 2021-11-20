@@ -1,7 +1,7 @@
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
 import {Button, Tag, Space, Typography, Divider, Badge, Drawer, Modal,} from 'antd';
-import {MessageOutlined,ClusterOutlined,FireOutlined,ReloadOutlined} from "@ant-design/icons";
+import {MessageOutlined,ClusterOutlined,FireOutlined,ReloadOutlined,RocketOutlined} from "@ant-design/icons";
 import ProList from '@ant-design/pro-list';
 import {handleRemove, queryData} from "@/components/Common/crud";
 import ProDescriptions from '@ant-design/pro-descriptions';
@@ -31,6 +31,7 @@ type HistoryItem = {
   error: string;
   result: string;
   config: string;
+  type: string;
   startTime: string;
   endTime: string;
   taskId: number;
@@ -121,11 +122,10 @@ const StudioHistory = (props: any) => {
       description: {
         search: false,
         render:(_, row)=>{
-          let jobConfig =  JSON.parse(row.config);
           return (<Paragraph>
             <blockquote>
-              <Link href={`http://${jobConfig.host}`} target="_blank">
-              [{jobConfig.session}:{row.jobManagerAddress}]
+              <Link href={`http://${row.jobManagerAddress}`} target="_blank">
+              [{row.jobManagerAddress}]
               </Link>
               <Divider type="vertical"/>开始于：{row.startTime}
               <Divider type="vertical"/>完成于：{row.endTime}
@@ -151,9 +151,14 @@ const StudioHistory = (props: any) => {
                 <Tag color="green" key={row.clusterAlias}>
                   <ClusterOutlined /> {row.clusterAlias}
                 </Tag>
-              ):(<Tag color="blue" key={row.clusterAlias}>
+              ):(<Tag color="green" key={row.clusterAlias}>
                 <ClusterOutlined /> 本地环境
               </Tag>)}
+              {row.type?(
+                <Tag color="blue" key={row.type}>
+                  <RocketOutlined /> {row.type}
+                </Tag>
+              ):''}
               {(row.status==2) ?
                 (<><Badge status="success"/><Text type="success">SUCCESS</Text></>):
                 (row.status==1) ?

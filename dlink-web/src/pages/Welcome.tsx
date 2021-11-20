@@ -387,6 +387,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增 yarn-application 的sql作业提交方式</Link>
                 </li>
+                <li>
+                  <Link>新增 yarn-application 和 yarn-application 集群的自动注册</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

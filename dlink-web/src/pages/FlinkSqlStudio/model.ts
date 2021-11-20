@@ -120,6 +120,7 @@ export type SessionType = {
 
 export type StateType = {
   cluster?: ClusterType[];
+  sessionCluster?: ClusterType[];
   clusterConfiguration?: ClusterConfigurationType[];
   database?: DataBaseType[];
   currentSession?: SessionType;
@@ -156,6 +157,7 @@ export type ModelType = {
     quitCurrentSession: Reducer<StateType>;
     saveResult: Reducer<StateType>;
     saveCluster: Reducer<StateType>;
+    saveSessionCluster: Reducer<StateType>;
     saveClusterConfiguration: Reducer<StateType>;
     saveDataBase: Reducer<StateType>;
   };
@@ -165,6 +167,7 @@ const Model: ModelType = {
   namespace: 'Studio',
   state: {
     cluster: [],
+    sessionCluster: [],
     clusterConfiguration: [],
     database: [],
     currentSession: {
@@ -178,6 +181,7 @@ const Model: ModelType = {
       path: ['草稿'],
       task: {
         jobName: '草稿',
+        // type: 'standalone',
         checkPoint: 0,
         savePointPath: '',
         parallelism: 1,
@@ -214,6 +218,7 @@ const Model: ModelType = {
         path: ['草稿'],
         task: {
           jobName: '草稿',
+          // type: 'standalone',
           checkPoint: 0,
           savePointPath: '',
           parallelism: 1,
@@ -423,6 +428,11 @@ const Model: ModelType = {
       return {
         ...state,
         cluster: payload,
+      };
+    },saveSessionCluster(state, {payload}) {
+      return {
+        ...state,
+        sessionCluster: payload,
       };
     },saveClusterConfiguration(state, {payload}) {
       return {
