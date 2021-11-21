@@ -10,10 +10,7 @@ import com.dlink.model.Cluster;
 import com.dlink.model.Statement;
 import com.dlink.model.SystemConfiguration;
 import com.dlink.model.Task;
-import com.dlink.service.ClusterConfigurationService;
-import com.dlink.service.ClusterService;
-import com.dlink.service.StatementService;
-import com.dlink.service.TaskService;
+import com.dlink.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -35,6 +32,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private ClusterService clusterService;
     @Autowired
     private ClusterConfigurationService clusterConfigurationService;
+    @Autowired
+    private SavepointsService savepointsService;
 
     @Value("${spring.datasource.driver-class-name}")
     private String driver;
@@ -87,6 +86,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 task.setStatement(statement.getStatement());
             }
         }
+
         return task;
     }
 

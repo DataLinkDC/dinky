@@ -37,13 +37,17 @@ public class JobConfig {
     private Integer parallelism;
     private String savePointPath;
     private GatewayConfig gatewayConfig;
+    private boolean useRestAPI;
 
     private Map<String,String> config;
 
-    public JobConfig(String type,boolean useResult, boolean useSession, String session, boolean useRemote, Integer clusterId,
-                     Integer clusterConfigurationId,Integer taskId, String jobName, boolean useSqlFragment,
-                     boolean useStatementSet,Integer maxRowNum, Integer checkpoint,
-                     Integer parallelism, String savePointPath,Map<String,String> config) {
+    public JobConfig() {
+    }
+
+    public JobConfig(String type, boolean useResult, boolean useSession, String session, boolean useRemote, Integer clusterId,
+                     Integer clusterConfigurationId, Integer taskId, String jobName, boolean useSqlFragment,
+                     boolean useStatementSet, Integer maxRowNum, Integer checkpoint,
+                     Integer parallelism, String savePointPath, Map<String,String> config) {
         this.type = type;
         this.useResult = useResult;
         this.useSession = useSession;

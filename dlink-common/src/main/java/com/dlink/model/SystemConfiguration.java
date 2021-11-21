@@ -1,7 +1,10 @@
 package com.dlink.model;
 
+import com.dlink.assertion.Asserts;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,6 +19,12 @@ public class SystemConfiguration {
     public static SystemConfiguration getInstances() {
         return systemConfiguration;
     }
+    private static final List<Configuration> CONFIGURATION_LIST = new ArrayList<Configuration>(){{
+        add(systemConfiguration.sqlSubmitJarPath);
+        add(systemConfiguration.sqlSubmitJarParas);
+        add(systemConfiguration.sqlSubmitJarMainAppClass);
+        add(systemConfiguration.useRestAPI);
+    }};
 
     private Configuration sqlSubmitJarPath = new Configuration(
             "sqlSubmitJarPath",
@@ -38,28 +47,40 @@ public class SystemConfiguration {
             "com.dlink.app.MainApp",
             "用于指定Applcation模式提交FlinkSQL的Jar的主类"
     );
+    private Configuration useRestAPI = new Configuration(
+            "useRestAPI",
+            "使用 RestAPI",
+            ValueType.BOOLEAN,
+            true,
+            "在运维 Flink 任务时是否使用 RestAPI"
+    );
 
     public void setConfiguration(JsonNode jsonNode){
-        if(jsonNode.has("sqlSubmitJarPath")){
-            setSqlSubmitJarPath(jsonNode.get("sqlSubmitJarPath").asText());
-        }
-        if(jsonNode.has("sqlSubmitJarParas")){
-            setSqlSubmitJarParas(jsonNode.get("sqlSubmitJarParas").asText());
-        }
-        if(jsonNode.has("sqlSubmitJarMainAppClass")){
-            setSqlSubmitJarMainAppClass(jsonNode.get("sqlSubmitJarMainAppClass").asText());
+        for(Configuration item : CONFIGURATION_LIST){
+            if(!jsonNode.has(item.getName())){
+                continue;
+            }
+            switch (item.getType()){
+                case BOOLEAN:
+                    item.setValue(jsonNode.get(item.getName()).asBoolean());
+                    break;
+                case INT:
+                    item.setValue(jsonNode.get(item.getName()).asInt());
+                    break;
+                default:
+                    item.setValue(jsonNode.get(item.getName()).asText());
+            }
         }
     }
 
-    public void addConfiguration(Map<String,String> map){
-        if(!map.containsKey("sqlSubmitJarPath")){
-            map.put("sqlSubmitJarPath",sqlSubmitJarPath.getValue().toString());
-        }
-        if(!map.containsKey("sqlSubmitJarParas")){
-            map.put("sqlSubmitJarParas",sqlSubmitJarParas.getValue().toString());
-        }
-        if(!map.containsKey("sqlSubmitJarMainAppClass")){
-            map.put("sqlSubmitJarMainAppClass",sqlSubmitJarMainAppClass.getValue().toString());
+    public void addConfiguration(Map<String,Object> map){
+        for(Configuration item : CONFIGURATION_LIST){
+            if(map.containsKey(item.getName())&&item.getType().equals(ValueType.BOOLEAN)){
+                map.put(item.getName(), Asserts.isEqualsIgnoreCase("true",map.get(item.getName()).toString()));
+            }
+            if(!map.containsKey(item.getName())) {
+                map.put(item.getName(), item.getValue());
+            }
         }
     }
 
@@ -85,6 +106,14 @@ public class SystemConfiguration {
 
     public void setSqlSubmitJarMainAppClass(String sqlSubmitJarMainAppClass) {
         this.sqlSubmitJarMainAppClass.setValue(sqlSubmitJarMainAppClass);
+    }
+
+    public boolean isUseRestAPI() {
+        return (boolean) useRestAPI.getValue();
+    }
+
+    public void setUseRestAPI(boolean useRestAPI) {
+        this.useRestAPI.setValue(useRestAPI);
     }
 
     enum ValueType{
@@ -114,6 +143,14 @@ public class SystemConfiguration {
 
         public Object getValue() {
             return value;
+        }
+
+        public ValueType getType() {
+            return type;
+        }
+
+        public String getName() {
+            return name;
         }
     }
 }

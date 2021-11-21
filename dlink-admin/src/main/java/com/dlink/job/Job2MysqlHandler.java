@@ -9,6 +9,8 @@ import com.dlink.service.ClusterService;
 import com.dlink.service.HistoryService;
 import org.springframework.context.annotation.DependsOn;
 
+import java.time.LocalDateTime;
+
 /**
  * Job2MysqlHandler
  *
@@ -73,7 +75,7 @@ public class Job2MysqlHandler implements JobHandler {
 //        history.setResult(JSONUtil.toJsonStr(job.getResult()));
         if(job.isUseGateway()){
             Cluster cluster = clusterService.registersCluster(Cluster.autoRegistersCluster(job.getJobManagerAddress(),
-                    job.getJobConfig().getJobName(), job.getType().getLongValue(),
+                    job.getJobConfig().getJobName()+ LocalDateTime.now(), job.getType().getLongValue(),
                     job.getJobConfig().getClusterConfigurationId(),job.getJobConfig().getClusterConfigurationId()));
             if(Asserts.isNotNull(cluster)){
                 history.setClusterId(cluster.getId());

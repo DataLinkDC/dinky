@@ -4,6 +4,7 @@ export type SettingsStateType = {
   sqlSubmitJarPath:string,
   sqlSubmitJarParas:string,
   sqlSubmitJarMainAppClass:string,
+  useRestAPI:boolean,
 };
 
 export type ModelType = {
@@ -22,6 +23,7 @@ const SettingsModel: ModelType = {
     sqlSubmitJarPath:'',
     sqlSubmitJarParas:'',
     sqlSubmitJarMainAppClass:'',
+    useRestAPI:true,
   },
 
   effects: {

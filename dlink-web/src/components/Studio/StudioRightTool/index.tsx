@@ -5,6 +5,7 @@ import {connect} from "umi";
 import styles from "./index.less";
 import StudioConfig from "./StudioConfig";
 import StudioSetting from "./StudioSetting";
+import StudioSavePoint from "./StudioSavePoint";
 
 
 const { TabPane } = Tabs;
@@ -22,8 +23,8 @@ const StudioRightTool = (props:any) => {
       <TabPane tab={<span><ScheduleOutlined /> 执行配置</span>} key="StudioConfig" >
         <StudioConfig form={form}/>
       </TabPane>
-      <TabPane tab={<span><ScheduleOutlined /> 详情</span>} key="3" >
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+      <TabPane tab={<span><ScheduleOutlined /> 保存点</span>} key="3" >
+        <StudioSavePoint />
       </TabPane>
       <TabPane tab={<span><AuditOutlined /> 审计</span>} key="4" >
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />

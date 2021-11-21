@@ -85,7 +85,7 @@ public abstract class YarnGateway extends AbstractGateway {
         }
     }
 
-    public GatewayResult savepointCluster(){
+    public SavePointResult savepointCluster(){
         if(Asserts.isNull(yarnClient)){
             init();
         }
@@ -119,7 +119,7 @@ public abstract class YarnGateway extends AbstractGateway {
         return result;
     }
 
-    public GatewayResult savepointJob(){
+    public SavePointResult savepointJob(){
         if(Asserts.isNull(yarnClient)){
             init();
         }

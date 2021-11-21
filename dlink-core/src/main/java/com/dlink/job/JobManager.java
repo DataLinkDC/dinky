@@ -1,5 +1,6 @@
 package com.dlink.job;
 
+import com.dlink.api.FlinkAPI;
 import com.dlink.assertion.Asserts;
 import com.dlink.constant.FlinkSQLConstant;
 import com.dlink.executor.EnvironmentSetting;
@@ -9,9 +10,12 @@ import com.dlink.executor.custom.CustomTableEnvironmentImpl;
 import com.dlink.explainer.Explainer;
 import com.dlink.gateway.Gateway;
 import com.dlink.gateway.GatewayType;
+import com.dlink.gateway.config.ActionType;
 import com.dlink.gateway.config.AppConfig;
 import com.dlink.gateway.config.FlinkConfig;
+import com.dlink.gateway.config.SavePointType;
 import com.dlink.gateway.result.GatewayResult;
+import com.dlink.gateway.result.SavePointResult;
 import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.parser.SqlType;
 import com.dlink.result.*;
@@ -48,6 +52,10 @@ public class JobManager extends RunTime {
     private boolean useGateway = false;
 
     public JobManager() {
+    }
+
+    public void setUseGateway(boolean useGateway) {
+        this.useGateway = useGateway;
     }
 
     public JobManager(String address, ExecutorSetting executorSetting) {
@@ -169,7 +177,7 @@ public class JobManager extends RunTime {
     }
 
     public JobResult executeSql(String statement) {
-        Job job = Job.init(GatewayType.get(config.getType()), config, executorSetting, executor, statement,useGateway);
+        Job job = Job.init(GatewayType.get(config.getType()), config, executorSetting, executor, statement, useGateway);
         JobContextHolder.setJob(job);
         if (!useGateway) {
             job.setJobManagerAddress(environmentSetting.getAddress());
@@ -183,7 +191,7 @@ public class JobManager extends RunTime {
                 currentSql = item.getValue();
                 executor.executeSql(item.getValue());
             }
-            if(jobParam.getTrans().size()>0) {
+            if (jobParam.getTrans().size() > 0) {
                 if (config.isUseStatementSet() && useGateway) {
                     List<String> inserts = new ArrayList<>();
                     for (StatementParam item : jobParam.getTrans()) {
@@ -275,13 +283,14 @@ public class JobManager extends RunTime {
         return job.getJobResult();
     }
 
-    private String formatAddress(String webURL){
-        if(Asserts.isNotNullString(webURL)) {
-            return webURL.replaceAll("http://","");
-        }else {
+    private String formatAddress(String webURL) {
+        if (Asserts.isNotNullString(webURL)) {
+            return webURL.replaceAll("http://", "");
+        } else {
             return "";
         }
     }
+
     private JobParam pretreatStatements(String[] statements) {
         List<StatementParam> ddl = new ArrayList<>();
         List<StatementParam> trans = new ArrayList<>();
@@ -358,4 +367,26 @@ public class JobManager extends RunTime {
         Explainer explainer = Explainer.build(executor);
         return explainer.getStreamGraph(statement);
     }
+
+    public boolean cancel(String jobId) {
+        if (useGateway && !config.isUseRestAPI()) {
+            config.getGatewayConfig().setFlinkConfig(FlinkConfig.build(jobId, ActionType.CANCEL.getValue(),
+                    null, config.getSavePointPath()));
+            Gateway.build(config.getGatewayConfig()).savepointJob();
+            return true;
+        } else {
+            return FlinkAPI.build(config.getAddress()).stop(jobId);
+        }
+    }
+
+    public SavePointResult savepoint(String jobId,String savePointType) {
+        if (useGateway && !config.isUseRestAPI()) {
+            config.getGatewayConfig().setFlinkConfig(FlinkConfig.build(jobId, ActionType.SAVEPOINT.getValue(),
+                    savePointType, config.getSavePointPath()));
+            return Gateway.build(config.getGatewayConfig()).savepointJob();
+        } else {
+            return null;
+        }
+    }
+
 }
