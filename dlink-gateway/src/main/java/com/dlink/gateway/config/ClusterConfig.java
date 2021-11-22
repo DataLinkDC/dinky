@@ -15,6 +15,7 @@ public class ClusterConfig {
     private String flinkConfigPath;
     private String flinkLibPath;
     private String yarnConfigPath;
+    private String appId;
 
     public ClusterConfig() {
     }
@@ -27,5 +28,15 @@ public class ClusterConfig {
 
     public static ClusterConfig build(String flinkConfigPath, String flinkLibPath, String yarnConfigPath){
         return new ClusterConfig(flinkConfigPath,flinkLibPath,yarnConfigPath);
+    }
+
+    @Override
+    public String toString() {
+        return "ClusterConfig{" +
+                "flinkConfigPath='" + flinkConfigPath + '\'' +
+                ", flinkLibPath='" + flinkLibPath + '\'' +
+                ", yarnConfigPath='" + yarnConfigPath + '\'' +
+                ", appId='" + appId + '\'' +
+                '}';
     }
 }

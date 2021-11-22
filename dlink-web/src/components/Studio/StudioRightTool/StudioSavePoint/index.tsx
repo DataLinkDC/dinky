@@ -21,9 +21,10 @@ const StudioSavePoint: React.FC<{}> = (props: any) => {
       title: '名称',
       dataIndex: 'name',
       sorter: true,
-      render: (dom, entity) => {
+      hideInTable: true,
+      /*render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
-      },
+      },*/
     },
     {
       title: 'id',
@@ -58,7 +59,9 @@ const StudioSavePoint: React.FC<{}> = (props: any) => {
       dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',
-      hideInTable: true,
+      render: (dom, entity) => {
+        return <a onClick={() => setRow(entity)}>{dom}</a>;
+      },
     },
   ];
 

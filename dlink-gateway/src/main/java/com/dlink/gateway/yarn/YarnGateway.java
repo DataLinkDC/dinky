@@ -57,13 +57,17 @@ public abstract class YarnGateway extends AbstractGateway {
 
     private void initConfig(){
         configuration = GlobalConfiguration.loadConfiguration(config.getClusterConfig().getFlinkConfigPath());
-        addConfigParas(config.getFlinkConfig().getConfigParas());
+        if(Asserts.isNotNull(config.getFlinkConfig().getConfigParas())) {
+            addConfigParas(config.getFlinkConfig().getConfigParas());
+        }
         configuration.set(DeploymentOptions.TARGET, getType().getLongValue());
         if(Asserts.isNotNullString(config.getFlinkConfig().getSavePoint())) {
             configuration.setString(SavepointConfigOptions.SAVEPOINT_PATH, config.getFlinkConfig().getSavePoint());
         }
         configuration.set(YarnConfigOptions.PROVIDED_LIB_DIRS, Collections.singletonList(config.getClusterConfig().getFlinkLibPath()));
-        configuration.set(YarnConfigOptions.APPLICATION_NAME, config.getFlinkConfig().getJobName());
+        if(Asserts.isNotNullString(config.getFlinkConfig().getJobName())) {
+            configuration.set(YarnConfigOptions.APPLICATION_NAME, config.getFlinkConfig().getJobName());
+        }
         YarnLogConfigUtil.setLogConfigFileInConfig(configuration, config.getClusterConfig().getFlinkConfigPath());
     }
 
@@ -91,6 +95,7 @@ public abstract class YarnGateway extends AbstractGateway {
         }
         SavePointResult result = SavePointResult.build(getType());
         YarnClusterClientFactory clusterClientFactory = new YarnClusterClientFactory();
+        configuration.set(YarnConfigOptions.APPLICATION_ID, config.getClusterConfig().getAppId());
         ApplicationId applicationId = clusterClientFactory.getClusterId(configuration);
         if (applicationId == null){
             throw new GatewayException(
@@ -123,12 +128,15 @@ public abstract class YarnGateway extends AbstractGateway {
         if(Asserts.isNull(yarnClient)){
             init();
         }
+        System.out.println(config.getClusterConfig().toString());
+        logger.warn(config.getClusterConfig().toString());
         if(Asserts.isNull(config.getFlinkConfig().getJobId())){
             throw new GatewayException(
                     "No job id was specified. Please specify a job to which you would like to savepont.");
         }
         SavePointResult result = SavePointResult.build(getType());
         YarnClusterClientFactory clusterClientFactory = new YarnClusterClientFactory();
+        configuration.set(YarnConfigOptions.APPLICATION_ID, config.getClusterConfig().getAppId());
         ApplicationId applicationId = clusterClientFactory.getClusterId(configuration);
         if (Asserts.isNull(applicationId)){
             throw new GatewayException(
