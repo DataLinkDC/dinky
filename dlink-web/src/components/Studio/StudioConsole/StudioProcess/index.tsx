@@ -1,10 +1,12 @@
-import {Empty, Tag, Divider, Tooltip, message, Select, Button, Space, Modal} from "antd";
+import {Empty, Tag, Divider, Tooltip, message, Select, Button, Space, Modal,Dropdown,Menu} from "antd";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
 import {useState} from "react";
-import {SearchOutlined,CheckCircleOutlined,SyncOutlined,CloseCircleOutlined,ClockCircleOutlined,MinusCircleOutlined} from '@ant-design/icons';
+import {SearchOutlined,CheckCircleOutlined,SyncOutlined,CloseCircleOutlined,ClockCircleOutlined,MinusCircleOutlined,DownOutlined} from '@ant-design/icons';
 import ProTable from '@ant-design/pro-table';
-import {cancelJob, showFlinkJobs} from "../../StudioEvent/DDL";
+import {cancelJob, savepointJob, showFlinkJobs} from "../../StudioEvent/DDL";
+import {ClusterTableListItem} from "@/pages/Cluster/data";
+import React from "react";
 
 const {Option} = Select;
 
@@ -13,6 +15,46 @@ const StudioProcess = (props: any) => {
   const {cluster} = props;
   const [jobsData, setJobsData] = useState<any>({});
   const [clusterId, setClusterId] = useState<number>();
+
+  const savepoint = (key: string | number, currentItem: {}) => {
+    Modal.confirm({
+      title: key+'任务',
+      content: `确定${key}该作业吗？`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk: async () => {
+        if (!clusterId) return;
+        let res = savepointJob(clusterId, currentItem.jid,key,key);
+        res.then((result) => {
+          if (result.datas == true) {
+            message.success(key+"成功");
+            onRefreshJobs();
+          } else {
+            message.error(key+"失败");
+          }
+        });
+      }
+    });
+  };
+
+  const SavePointBtn: React.FC<{
+    item: {};
+  }> = ({item}) => (
+    <Dropdown
+      overlay={
+        <Menu onClick={({key}) => savepoint(key, item)}>
+          <Menu.Item key="trigger">Trigger</Menu.Item>
+          <Menu.Item key="dispose">Dispose</Menu.Item>
+          <Menu.Item key="stop">Stop</Menu.Item>
+          <Menu.Item key="cancel">Cancel</Menu.Item>
+        </Menu>
+      }
+    >
+      <a>
+        SavePoint <DownOutlined/>
+      </a>
+    </Dropdown>
+  );
 
   const getColumns = () => {
     let columns: any = [{
@@ -121,6 +163,7 @@ const StudioProcess = (props: any) => {
             停止
           </a>);
         }
+        option.push(<SavePointBtn key="savepoint" item={record}/>,)
         return option;
       },
     },];

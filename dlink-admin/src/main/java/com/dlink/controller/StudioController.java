@@ -133,10 +133,19 @@ public class StudioController {
     }
 
     /**
-     * 获取session列表
+     * 停止任务
      */
     @GetMapping("/cancel")
     public Result cancel(@RequestParam Integer clusterId,@RequestParam String jobId)  {
         return Result.succeed(studioService.cancel(clusterId,jobId),"停止成功");
+    }
+
+    /**
+     * savepoint
+     */
+    @GetMapping("/savepoint")
+    public Result savepoint(@RequestParam Integer clusterId,@RequestParam String jobId,
+                            @RequestParam String savePointType,@RequestParam String name)  {
+        return Result.succeed(studioService.savepoint(clusterId,jobId,savePointType,name),"savepoint 成功");
     }
 }

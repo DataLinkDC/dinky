@@ -8,6 +8,8 @@ import com.dlink.job.JobConfig;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 /**
  * 任务
  *
@@ -49,6 +51,9 @@ public class Task extends SuperEntity{
 
     @TableField(exist = false)
     private String clusterName;
+
+    @TableField(exist = false)
+    private List<Savepoints> savepoints;
 
     /*public ExecutorSetting buildExecutorSetting(){
         HashMap configMap = new HashMap();

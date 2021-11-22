@@ -6,8 +6,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -58,5 +58,45 @@ public class DBUtil {
             System.err.println(LocalDateTime.now().toString() + " --> 获取 FlinkSQL 异常，ID 为");
         }*/
         return result;
+    }
+
+    public static Map<String,String> getMapByID(String sql,DBConfig config) throws SQLException, IOException {
+        Connection conn = getConnection(config);
+        HashMap<String,String> map = new HashMap();
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            List<String> columnList = new ArrayList<>();
+            for(int i =0;i<rs.getMetaData().getColumnCount();i++){
+                columnList.add(rs.getMetaData().getColumnName(i));
+            }
+            if (rs.next()) {
+                for(int i =0;i<columnList.size();i++){
+                    map.put(columnList.get(i),rs.getString(i));
+                }
+            }
+        }
+        close(conn);
+        return map;
+    }
+
+    public static List<Map<String,String>> getListByID(String sql,DBConfig config) throws SQLException, IOException {
+        Connection conn = getConnection(config);
+        List<Map<String,String>> list = new ArrayList<>();
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            List<String> columnList = new ArrayList<>();
+            for(int i =0;i<rs.getMetaData().getColumnCount();i++){
+                columnList.add(rs.getMetaData().getColumnName(i));
+            }
+            while (rs.next()) {
+                HashMap<String,String> map = new HashMap();
+                for(int i =0;i<columnList.size();i++){
+                    map.put(columnList.get(i),rs.getString(i));
+                }
+                list.add(map);
+            }
+        }
+        close(conn);
+        return list;
     }
 }

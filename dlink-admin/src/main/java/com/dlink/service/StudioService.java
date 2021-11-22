@@ -48,4 +48,6 @@ public interface StudioService {
     List<JsonNode> listJobs(Integer clusterId);
 
     boolean cancel(Integer clusterId,String jobId);
+
+    boolean savepoint(Integer clusterId,String jobId,String savePointType,String name);
 }

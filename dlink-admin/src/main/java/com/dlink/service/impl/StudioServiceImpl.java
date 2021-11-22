@@ -8,14 +8,20 @@ import com.dlink.dto.StudioExecuteDTO;
 import com.dlink.explainer.ca.CABuilder;
 import com.dlink.explainer.ca.ColumnCANode;
 import com.dlink.explainer.ca.TableCANode;
+import com.dlink.gateway.model.JobInfo;
+import com.dlink.gateway.result.SavePointResult;
 import com.dlink.job.JobConfig;
 import com.dlink.job.JobManager;
 import com.dlink.job.JobResult;
 import com.dlink.model.Cluster;
+import com.dlink.model.Savepoints;
+import com.dlink.model.SystemConfiguration;
 import com.dlink.result.IResult;
 import com.dlink.result.SelectResult;
 import com.dlink.result.SqlExplainResult;
+import com.dlink.service.ClusterConfigurationService;
 import com.dlink.service.ClusterService;
+import com.dlink.service.SavepointsService;
 import com.dlink.service.StudioService;
 import com.dlink.session.SessionConfig;
 import com.dlink.session.SessionInfo;
@@ -25,7 +31,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 /**
  * StudioServiceImpl
@@ -38,6 +46,10 @@ public class StudioServiceImpl implements StudioService {
 
     @Autowired
     private ClusterService clusterService;
+    @Autowired
+    private ClusterConfigurationService clusterConfigurationService;
+    @Autowired
+    private SavepointsService savepointsService;
 
     @Override
     public JobResult executeSql(StudioExecuteDTO studioExecuteDTO) {
@@ -142,6 +154,45 @@ public class StudioServiceImpl implements StudioService {
     public boolean cancel(Integer clusterId,String jobId) {
         Cluster cluster = clusterService.getById(clusterId);
         Asserts.checkNotNull(cluster,"该集群不存在");
-        return FlinkAPI.build(cluster.getJobManagerHost()).stop(jobId);
+        JobConfig jobConfig = new JobConfig();
+        jobConfig.setAddress(cluster.getJobManagerHost());
+        if(Asserts.isNotNull(cluster.getClusterConfigurationId())){
+            Map<String, String> gatewayConfig = clusterConfigurationService.getGatewayConfig(cluster.getClusterConfigurationId());
+            jobConfig.buildGatewayConfig(gatewayConfig);
+        }
+        jobConfig.setUseRestAPI(SystemConfiguration.getInstances().isUseRestAPI());
+        JobManager jobManager = JobManager.build(jobConfig);
+        return jobManager.cancel(jobId);
+    }
+
+    @Override
+    public boolean savepoint(Integer clusterId, String jobId, String savePointType,String name) {
+        Cluster cluster = clusterService.getById(clusterId);
+        Asserts.checkNotNull(cluster,"该集群不存在");
+        JobConfig jobConfig = new JobConfig();
+        jobConfig.setAddress(cluster.getJobManagerHost());
+        jobConfig.setType(cluster.getType());
+        if(Asserts.isNotNull(cluster.getClusterConfigurationId())){
+            Map<String, String> gatewayConfig = clusterConfigurationService.getGatewayConfig(cluster.getClusterConfigurationId());
+            jobConfig.buildGatewayConfig(gatewayConfig);
+        }
+        jobConfig.setUseRestAPI(SystemConfiguration.getInstances().isUseRestAPI());
+        JobManager jobManager = JobManager.build(jobConfig);
+        jobManager.setUseGateway(true);
+        SavePointResult savePointResult = jobManager.savepoint(jobId, savePointType);
+        if(Asserts.isNotNull(savePointResult)){
+            for(JobInfo item : savePointResult.getJobInfos()){
+                if(Asserts.isEqualsIgnoreCase(jobId,item.getJobId())){
+                    Savepoints savepoints = new Savepoints();
+                    savepoints.setName(name);
+                    savepoints.setType(savePointType);
+                    savepoints.setPath(item.getSavePoint());
+                    savepoints.setTaskId(cluster.getTaskId());
+                    savepointsService.save(savepoints);
+                }
+            }
+            return true;
+        }
+        return false;
     }
 }

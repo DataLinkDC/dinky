@@ -109,6 +109,16 @@ export function showCluster(dispatch: any) {
     });
   });
 }
+/*--- 刷新 Session集群 ---*/
+export function showSessionCluster(dispatch: any) {
+  const res = getData('api/cluster/listSessionEnable');
+  res.then((result) => {
+    result.datas && dispatch && dispatch({
+      type: "Studio/saveSessionCluster",
+      payload: result.datas,
+    });
+  });
+}
 /*--- 刷新 数据源 ---*/
 export function showDataBase(dispatch: any) {
   const res = getData('api/database/listEnabledAll');
@@ -130,6 +140,10 @@ export function showFlinkJobs(clusterId:number) {
 /*--- 停止 Flink Jobs ---*/
 export function cancelJob(clusterId:number,jobId:string) {
   return getData('api/studio/cancel',{clusterId:clusterId,jobId:jobId});
+}
+/*--- 停止 SavePoint Jobs ---*/
+export function savepointJob(clusterId:number,jobId:string,savePointType:string,name:string) {
+  return getData('api/studio/savepoint',{clusterId,jobId,savePointType,name});
 }
 /*--- 根据版本号获取所有自动补全的文档 ---*/
 export function getFillAllByVersion(version:string,dispatch: any) {

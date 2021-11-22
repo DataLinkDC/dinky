@@ -154,7 +154,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
           console:{
             result:[],
           },
-          monaco: {},
+          monaco: React.createRef(),
         };
         newTabs.activeKey = node.taskId;
         newTabs.panes.push(newPane);
@@ -403,7 +403,6 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
               setTaskFormValues({});
               openByKey(datas.id);
               // getTreeData();
-              // console.log(datas);
               // onSelect([],openByKey(datas.id));
             }
           }}

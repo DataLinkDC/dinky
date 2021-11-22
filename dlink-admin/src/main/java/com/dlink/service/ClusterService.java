@@ -25,4 +25,8 @@ public interface ClusterService extends ISuperService<Cluster> {
     String buildLocalEnvironmentAddress();
 
     List<Cluster> listEnabledAll();
+
+    List<Cluster> listSessionEnable();
+
+    Cluster registersCluster(Cluster cluster);
 }

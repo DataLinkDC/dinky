@@ -57,4 +57,9 @@ public class FlinkConfig {
         }
         return new FlinkConfig(jobName,jobId,ActionType.get(actionStr),SavePointType.get(savePointTypeStr),savePoint,configParasList);
     }
+
+    public static FlinkConfig build(String jobId, String actionStr, String savePointTypeStr, String savePoint){
+        return new FlinkConfig(null,jobId,ActionType.get(actionStr),SavePointType.get(savePointTypeStr),savePoint,null);
+    }
 }
+

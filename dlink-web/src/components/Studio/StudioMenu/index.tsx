@@ -130,6 +130,7 @@ const StudioMenu = (props: any) => {
         } else {
           message.success('异步提交失败');
         }
+        showCluster(dispatch);
       }
     });
   };

@@ -12,8 +12,8 @@ const StudioMsg = (props:any) => {
   return (
     <Typography>
       {current.console.result.jobConfig?(<Paragraph>
-        <blockquote><Link href={`http://${current.console.result.jobConfig.host}`} target="_blank">
-          [{current.console.result.jobConfig.session}:{current.console.result.jobConfig.host}]
+        <blockquote><Link href={`http://${current.console.result.jobConfig.address}`} target="_blank">
+          [{current.console.result.jobConfig.session}:{current.console.result.jobConfig.address}]
         </Link> <Divider type="vertical"/>{current.console.result.startTime}
           <Divider type="vertical"/>{current.console.result.endTime}
           <Divider type="vertical"/>

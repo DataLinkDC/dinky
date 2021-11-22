@@ -1,6 +1,7 @@
 package com.dlink.job;
 
 import com.dlink.executor.ExecutorSetting;
+import com.dlink.gateway.config.AppConfig;
 import com.dlink.gateway.config.ClusterConfig;
 import com.dlink.gateway.config.GatewayConfig;
 import com.dlink.session.SessionConfig;
@@ -36,28 +37,37 @@ public class JobConfig {
     private Integer parallelism;
     private String savePointPath;
     private GatewayConfig gatewayConfig;
+    private boolean useRestAPI;
 
-    //private Map<String,String> config;
+    private Map<String,String> config;
 
-    public JobConfig(boolean useResult, boolean useSession, String session, boolean useRemote, Integer clusterId,
-                     Integer taskId, String jobName, boolean useSqlFragment, Integer maxRowNum, Integer checkpoint,
-                     Integer parallelism, String savePointPath) {
+    public JobConfig() {
+    }
+
+    public JobConfig(String type, boolean useResult, boolean useSession, String session, boolean useRemote, Integer clusterId,
+                     Integer clusterConfigurationId, Integer taskId, String jobName, boolean useSqlFragment,
+                     boolean useStatementSet, Integer maxRowNum, Integer checkpoint,
+                     Integer parallelism, String savePointPath, Map<String,String> config) {
+        this.type = type;
         this.useResult = useResult;
         this.useSession = useSession;
         this.session = session;
         this.useRemote = useRemote;
         this.clusterId = clusterId;
+        this.clusterConfigurationId = clusterConfigurationId;
         this.taskId = taskId;
         this.jobName = jobName;
         this.useSqlFragment = useSqlFragment;
+        this.useStatementSet = useStatementSet;
         this.maxRowNum = maxRowNum;
         this.checkpoint = checkpoint;
         this.parallelism = parallelism;
         this.savePointPath = savePointPath;
-//        this.config = config;
+        this.config = config;
     }
 
-    public JobConfig(boolean useResult, boolean useSession, String session, boolean useRemote, Integer clusterId) {
+    public JobConfig(String type,boolean useResult, boolean useSession, String session, boolean useRemote, Integer clusterId) {
+        this.type = type;
         this.useResult = useResult;
         this.useSession = useSession;
         this.session = session;
@@ -100,5 +110,12 @@ public class JobConfig {
         gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath"),
                 config.get("flinkLibPath"),
                 config.get("hadoopConfigPath")));
+        if(config.containsKey("userJarPath")){
+            gatewayConfig.setAppConfig(AppConfig.build(
+                    config.get("userJarPath"),
+                    config.get("userJarParas"),
+                    config.get("userJarMainAppClass")
+            ));
+        }
     }
 }

@@ -7,6 +7,8 @@ import com.dlink.db.model.SuperEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serializable;
+
 /**
  * Jar
  *

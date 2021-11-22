@@ -114,6 +114,14 @@
             <groupId>com.dlink</groupId>
             <artifactId>dlink-metadata-base</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-executor</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-gateway</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -124,6 +132,16 @@
                 <configuration>
                     <layout>ZIP</layout>
                     <mainClass>com.dlink.Dlink</mainClass>
+                    <excludes>
+                        <exclude>
+                            <groupId>com.dlink</groupId>
+                            <artifactId>dlink-executor</artifactId>
+                        </exclude>
+                        <exclude>
+                            <groupId>com.dlink</groupId>
+                            <artifactId>dlink-gateway</artifactId>
+                        </exclude>
+                    </excludes>
                 </configuration>
                 <executions>
                     <execution>

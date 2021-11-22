@@ -4,6 +4,8 @@ import com.dlink.db.mapper.SuperMapper;
 import com.dlink.model.Cluster;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * ClusterMapper
  *
@@ -12,4 +14,6 @@ import org.apache.ibatis.annotations.Mapper;
  **/
 @Mapper
 public interface ClusterMapper extends SuperMapper<Cluster> {
+
+    List<Cluster> listSessionEnable();
 }
