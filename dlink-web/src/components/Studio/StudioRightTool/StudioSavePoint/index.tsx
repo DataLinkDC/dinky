@@ -10,7 +10,7 @@ import {SavePointTableListItem} from "@/components/Studio/StudioRightTool/Studio
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
 
-const url = '/api/clusterConfiguration';
+const url = '/api/savepoints';
 const StudioSavePoint: React.FC<{}> = (props: any) => {
   const {current,dispatch} = props;
   const [row, setRow] = useState<SavePointTableListItem>();
@@ -22,6 +22,8 @@ const StudioSavePoint: React.FC<{}> = (props: any) => {
       dataIndex: 'name',
       sorter: true,
       hideInTable: true,
+      hideInForm: true,
+      hideInSearch: true,
       /*render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },*/
@@ -68,12 +70,8 @@ const StudioSavePoint: React.FC<{}> = (props: any) => {
   return (
     <PageContainer>
       <ProTable<SavePointTableListItem>
-        headerTitle="savepoints"
         actionRef={actionRef}
         rowKey="id"
-        search={{
-        labelWidth: 120,
-      }}
         request={(params, sorter, filter) => queryData(url, {taskId:current.taskId,...params, sorter, filter})}
         columns={columns}
         />
