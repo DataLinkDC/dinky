@@ -93,6 +93,7 @@ export type TabsItemType = {
   task?: TaskType;
   console: ConsoleType;
   monaco?: any;
+  isModified:boolean;
   sqlMetaData?:SqlMetaData;
 }
 
@@ -180,6 +181,7 @@ const Model: ModelType = {
       value: '',
       closable: false,
       path: ['草稿'],
+      isModified: false,
       task: {
         jobName: '草稿',
         // type: 'standalone',
@@ -217,6 +219,7 @@ const Model: ModelType = {
         key: 0,
         value: '',
         closable: false,
+        isModified: false,
         path: ['草稿'],
         task: {
           jobName: '草稿',
@@ -304,10 +307,12 @@ const Model: ModelType = {
       let newTabs = state.tabs;
       if(newCurrent.key == payload.activeKey){
         newCurrent.sqlMetaData = payload.sqlMetaData;
+        newCurrent.isModified = payload.isModified;
       }
       for (let i = 0; i < newTabs.panes.length; i++) {
         if (newTabs.panes[i].key == payload.activeKey) {
           newTabs.panes[i].sqlMetaData = payload.sqlMetaData;
+          newTabs.panes[i].isModified = payload.isModified;
           break;
         }
       }
@@ -328,6 +333,7 @@ const Model: ModelType = {
         ...state,
         current: {
           ...newCurrent,
+          isModified:false,
         },
         tabs: {
           ...payload,

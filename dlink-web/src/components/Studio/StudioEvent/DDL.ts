@@ -3,6 +3,21 @@ import FlinkSQL from "./FlinkSQL";
 import {SessionType} from "@/pages/FlinkSqlStudio/model";
 import {Modal,message} from "antd";
 import {addOrUpdateData, getData, handleRemove} from "@/components/Common/crud";
+
+/*--- 保存sql ---*/
+export function saveTask(current:any,dispatch: any){
+  if (current.task) {
+    let task = {
+      ...current.task,
+      statement: current.value,
+    };
+    dispatch && dispatch({
+      type: "Studio/saveTask",
+      payload: task,
+    });
+  }
+}
+
 /*--- 创建会话 ---*/
 export function createSession(session: SessionType,dispatch: any) {
   const res = addOrUpdateData("api/studio/createSession",session)

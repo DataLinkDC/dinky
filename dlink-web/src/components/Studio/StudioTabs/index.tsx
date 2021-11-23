@@ -4,7 +4,7 @@ import {connect} from "umi";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import styles from './index.less';
 import StudioEdit from '../StudioEdit';
-
+import {saveTask} from "@/components/Studio/StudioEvent/DDL";
 const { TabPane } = Tabs;
 
 const EditorTabs = (props: any) => {
@@ -21,6 +21,9 @@ const EditorTabs = (props: any) => {
     if(action=='add'){
       add();
     }else if(action=='remove'){
+      if(current.isModified){
+        saveTask(current,dispatch);
+      }
       remove(targetKey);
     }
   };
