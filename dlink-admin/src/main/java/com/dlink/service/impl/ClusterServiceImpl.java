@@ -65,7 +65,7 @@ public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
         try {
             InetAddress inetAddress = InetAddress.getLocalHost();
             if(inetAddress!=null) {
-                return inetAddress.getHostAddress()+ NetConstant.COLON+FlinkConstant.PORT;
+                return inetAddress.getHostAddress()+ NetConstant.COLON+FlinkConstant.FLINK_REST_DEFAULT_PORT;
             }
         } catch (UnknownHostException e) {
             e.printStackTrace();
@@ -76,5 +76,29 @@ public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
     @Override
     public List<Cluster> listEnabledAll() {
         return this.list(new QueryWrapper<Cluster>().eq("enabled",1));
+    }
+
+    @Override
+    public List<Cluster> listSessionEnable() {
+        return baseMapper.listSessionEnable();
+    }
+
+    @Override
+    public Cluster registersCluster(Cluster cluster) {
+        checkHealth(cluster);
+        saveOrUpdate(cluster);
+        return cluster;
+    }
+
+    private void checkHealth(Cluster cluster){
+        FlinkClusterInfo info = checkHeartBeat(cluster.getHosts(), cluster.getJobManagerHost());
+        if(!info.isEffective()){
+            cluster.setJobManagerHost("");
+            cluster.setStatus(0);
+        }else{
+            cluster.setJobManagerHost(info.getJobManagerAddress());
+            cluster.setStatus(1);
+            cluster.setVersion(info.getVersion());
+        }
     }
 }

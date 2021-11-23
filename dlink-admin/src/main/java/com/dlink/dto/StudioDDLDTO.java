@@ -13,6 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class StudioDDLDTO {
+    private String type;
     private boolean useResult;
     private boolean useSession;
     private String session;
@@ -21,7 +22,7 @@ public class StudioDDLDTO {
     private String statement;
 
     public JobConfig getJobConfig() {
-        return new JobConfig(useResult, useSession, session, useRemote, clusterId);
+        return new JobConfig(type,useResult, useSession, session, useRemote, clusterId);
     }
 
 }

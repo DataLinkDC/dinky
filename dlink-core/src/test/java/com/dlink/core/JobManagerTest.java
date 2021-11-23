@@ -12,6 +12,7 @@ import com.dlink.result.SubmitResult;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -21,41 +22,6 @@ import java.util.List;
  * @since 2021/6/3
  **/
 public class JobManagerTest {
-
-    @Test
-    public void submitJobTest2(){
-        ExecutorSetting setting = new ExecutorSetting(true);
-        JobManager jobManager = new JobManager("192.168.123.157:8081","test2",100, setting);
-        String sql1 ="CREATE TABLE student (\n" +
-                "  sid INT,\n" +
-                "  name STRING,\n" +
-                "  PRIMARY KEY (sid) NOT ENFORCED\n" +
-                ") WITH (\n" +
-                "   'connector' = 'jdbc',\n" +
-                "   'url' = 'jdbc:mysql://192.168.24.1:3306/data?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true',\n" +
-                "   'username'='datalink',\n" +
-                "   'password'='datalink',\n" +
-                "   'table-name' = 'student'\n" +
-                ")";
-        String sql2 ="CREATE TABLE man (\n" +
-                "  pid INT,\n" +
-                "  name STRING,\n" +
-                "  PRIMARY KEY (pid) NOT ENFORCED\n" +
-                ") WITH (\n" +
-                "   'connector' = 'jdbc',\n" +
-                "   'url' = 'jdbc:mysql://192.168.24.1:3306/data?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true',\n" +
-                "   'username'='datalink',\n" +
-                "   'password'='datalink',\n" +
-                "   'table-name' = 'man'\n" +
-                ")";
-        String sql3 = "INSERT INTO man SELECT sid as pid,name from student";
-        List<String> sqls = new ArrayList<>();
-        sqls.add(sql1);
-        sqls.add(sql2);
-        sqls.add(sql3);
-        SubmitResult result = jobManager.submit(sqls);
-        System.out.println(result.isSuccess());
-    }
 
     @Test
     public void executeJobTest(){
@@ -97,9 +63,9 @@ public class JobManagerTest {
     @Test
     public void cancelJobSelect(){
 
-        JobConfig config = new JobConfig(true, true, "s1", true, 2,
-                null, "测试", false, 100, 0,
-                1, null);
+        JobConfig config = new JobConfig("session-yarn",true, true, "s1", true, 2,
+                null, null, "测试", false,false, 100, 0,
+                1, 0,null,new HashMap<>());
         if(config.isUseRemote()) {
             config.setAddress("192.168.123.157:8081");
         }

@@ -20,7 +20,7 @@ export default (): React.ReactNode => {
         <Alert
           message={intl.formatMessage({
             id: 'pages.welcome.alertMessage',
-            defaultMessage: '实时计算平台 Dlink & Apache Flink 即将发布，目前为体验版，版本号为 0.3.2。',
+            defaultMessage: '实时计算平台 Dlink & Apache Flink 即将发布，目前为体验版，版本号为 0.4.0。',
           })}
           type="success"
           showIcon
@@ -344,7 +344,7 @@ export default (): React.ReactNode => {
               </ul>
             </Paragraph>
           </Timeline.Item>
-          <Timeline.Item><Text code>0.3.3</Text> <Text type="secondary">2021-11-?</Text>
+          <Timeline.Item><Text code>0.4.0</Text> <Text type="secondary">2021-11-?</Text>
             <p> </p>
             <Paragraph>
               <ul>
@@ -353,6 +353,63 @@ export default (): React.ReactNode => {
                 </li>
                 <li>
                   <Link>新增 FlinkSQL 自动补全可以根据 sql 上下文来提示已注册的元数据的功能</Link>
+                </li>
+                <li>
+                  <Link>修复 Flink 1.14.0 远程提交无法正确提交任务至集群的问题</Link>
+                </li>
+                <li>
+                  <Link>新增 yarn-perjob 与 yarn-application 的任务提交方式</Link>
+                </li>
+                <li>
+                  <Link>更新 dlink 的 flink 主版本号为 1.13.3</Link>
+                </li>
+                <li>
+                  <Link>新增 yarn-application 的sql作业提交方式</Link>
+                </li>
+                <li>
+                  <Link>新增 yarn-perjob 的作业提交方式</Link>
+                </li>
+                <li>
+                  <Link>新增集群配置管理及维护页面</Link>
+                </li>
+                <li>
+                  <Link>新增 Jar 管理及维护页面</Link>
+                </li>
+                <li>
+                  <Link>新增 FlinkSQL 语句集提交</Link>
+                </li>
+                <li>
+                  <Link>executor 模块独立并优化增强逻辑</Link>
+                </li>
+                <li>
+                  <Link>新增系统配置管理</Link>
+                </li>
+                <li>
+                  <Link>新增 yarn-application 的sql作业提交方式</Link>
+                </li>
+                <li>
+                  <Link>新增 yarn-perjob 和 yarn-application 集群的作业停止</Link>
+                </li>
+                <li>
+                  <Link>新增 yarn-perjob 和 yarn-application 集群的自动注册</Link>
+                </li>
+                <li>
+                  <Link>新增 savepoint 各种机制触发</Link>
+                </li>
+                <li>
+                  <Link>新增 savepoint 的归档管理</Link>
+                </li>
+                <li>
+                  <Link>新增任务启动 savepoint 多种启动策略</Link>
+                </li>
+                <li>
+                  <Link>新增 yarn-perjob 和 yarn-application 的从 savepoint 启动</Link>
+                </li>
+                <li>
+                  <Link>新增 yarn-perjob 和 yarn-application 的启动时多样化集群配置生效</Link>
+                </li>
+                <li>
+                  <Link>优化项目结构与打包结构</Link>
                 </li>
               </ul>
             </Paragraph>

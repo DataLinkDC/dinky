@@ -18,6 +18,19 @@ export type ClusterType = {
   updateTime: Date,
 }
 
+export type ClusterConfigurationType = {
+  id: number,
+  name: string,
+  alias: string,
+  type: string,
+  config: any,
+  available: boolean,
+  note: string,
+  enabled: boolean,
+  createTime: Date,
+  updateTime: Date,
+}
+
 export type DataBaseType = {
   id: number,
   name: string,
@@ -44,12 +57,16 @@ export type TaskType = {
   alias?: string,
   type?: string,
   checkPoint?: number,
+  savePointStrategy?: number,
   savePointPath?: string,
   parallelism?: number,
   fragment?: boolean,
+  statementSet?: boolean,
   config?: [],
   clusterId?: any,
   clusterName?: string,
+  clusterConfigurationId?: string,
+  clusterConfigurationName?: string,
   note?: string,
   enabled?: boolean,
   createTime?: Date,
@@ -76,6 +93,7 @@ export type TabsItemType = {
   task?: TaskType;
   console: ConsoleType;
   monaco?: any;
+  isModified:boolean;
   sqlMetaData?:SqlMetaData;
 }
 
@@ -104,6 +122,8 @@ export type SessionType = {
 
 export type StateType = {
   cluster?: ClusterType[];
+  sessionCluster?: ClusterType[];
+  clusterConfiguration?: ClusterConfigurationType[];
   database?: DataBaseType[];
   currentSession?: SessionType;
   current?: TabsItemType;
@@ -139,6 +159,8 @@ export type ModelType = {
     quitCurrentSession: Reducer<StateType>;
     saveResult: Reducer<StateType>;
     saveCluster: Reducer<StateType>;
+    saveSessionCluster: Reducer<StateType>;
+    saveClusterConfiguration: Reducer<StateType>;
     saveDataBase: Reducer<StateType>;
   };
 };
@@ -147,6 +169,8 @@ const Model: ModelType = {
   namespace: 'Studio',
   state: {
     cluster: [],
+    sessionCluster: [],
+    clusterConfiguration: [],
     database: [],
     currentSession: {
       connectors: [],
@@ -157,14 +181,20 @@ const Model: ModelType = {
       value: '',
       closable: false,
       path: ['草稿'],
+      isModified: false,
       task: {
         jobName: '草稿',
+        // type: 'standalone',
         checkPoint: 0,
+        savePointStrategy: 0,
         savePointPath: '',
         parallelism: 1,
         fragment: true,
+        statementSet: false,
         clusterId: 0,
         clusterName: "本地环境",
+        clusterConfigurationId:undefined,
+        clusterConfigurationName:undefined,
         maxRowNum: 100,
         config: [],
         session: '',
@@ -189,15 +219,21 @@ const Model: ModelType = {
         key: 0,
         value: '',
         closable: false,
+        isModified: false,
         path: ['草稿'],
         task: {
           jobName: '草稿',
+          // type: 'standalone',
           checkPoint: 0,
+          savePointStrategy: 0,
           savePointPath: '',
           parallelism: 1,
           fragment: true,
+          statementSet: false,
           clusterId: 0,
           clusterName: "本地环境",
+          clusterConfigurationId:undefined,
+          clusterConfigurationName:undefined,
           session: '',
           config: [],
           maxRowNum: 100,
@@ -271,10 +307,12 @@ const Model: ModelType = {
       let newTabs = state.tabs;
       if(newCurrent.key == payload.activeKey){
         newCurrent.sqlMetaData = payload.sqlMetaData;
+        newCurrent.isModified = payload.isModified;
       }
       for (let i = 0; i < newTabs.panes.length; i++) {
         if (newTabs.panes[i].key == payload.activeKey) {
           newTabs.panes[i].sqlMetaData = payload.sqlMetaData;
+          newTabs.panes[i].isModified = payload.isModified;
           break;
         }
       }
@@ -295,6 +333,7 @@ const Model: ModelType = {
         ...state,
         current: {
           ...newCurrent,
+          isModified:false,
         },
         tabs: {
           ...payload,
@@ -398,6 +437,16 @@ const Model: ModelType = {
       return {
         ...state,
         cluster: payload,
+      };
+    },saveSessionCluster(state, {payload}) {
+      return {
+        ...state,
+        sessionCluster: payload,
+      };
+    },saveClusterConfiguration(state, {payload}) {
+      return {
+        ...state,
+        clusterConfiguration: payload,
       };
     },saveDataBase(state, {payload}) {
       return {

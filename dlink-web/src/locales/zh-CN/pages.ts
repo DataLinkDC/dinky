@@ -29,7 +29,7 @@ export default {
   'pages.welcome.link': '欢迎加入',
   'pages.welcome.star': '欢迎 Star ',
   'pages.welcome.advancedLayout': 'Github',
-  'pages.welcome.alertMessage': '实时计算平台 Dlink & Apache Flink 即将发布，目前为体验版，版本号为 0.3.2。',
+  'pages.welcome.alertMessage': '实时计算平台 Dlink & Apache Flink 即将发布，目前为体验版，版本号为 0.4.0。',
   'pages.admin.subPage.title': ' 这个页面只有 admin 权限才能查看',
   'pages.admin.subPage.alertMessage': 'umi ui 现已发布，欢迎使用 npm run ui 启动体验。',
   'pages.searchTable.createForm.newRule': '新建规则',

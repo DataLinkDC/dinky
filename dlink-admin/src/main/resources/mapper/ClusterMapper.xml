@@ -13,6 +13,9 @@
         <result column="version" property="version" />
         <result column="status" property="status" />
         <result column="note" property="note" />
+        <result column="auto_registers" property="autoRegisters" />
+        <result column="cluster_configuration_id" property="clusterConfigurationId" />
+        <result column="task_id" property="taskId" />
         <result column="enabled" property="enabled" />
         <result column="create_time" property="createTime" />
         <result column="update_time" property="updateTime" />
@@ -20,7 +23,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, alias, type,hosts,job_manager_host,version, status,note, enabled, create_time, update_time
+        id, name, alias, type,hosts,job_manager_host,version, status,note,auto_registers,cluster_configuration_id,task_id, enabled, create_time, update_time
     </sql>
 
 
@@ -50,5 +53,14 @@
                 ${ew.sqlSegment}
             </if>
         </where>
+    </select>
+
+    <select id="listSessionEnable" resultType="com.dlink.model.Cluster">
+        select
+        a.*
+        from
+        dlink_cluster a
+        where enabled = 1
+        and (type = 'standalone' or type = 'yarn-session')
     </select>
 </mapper>

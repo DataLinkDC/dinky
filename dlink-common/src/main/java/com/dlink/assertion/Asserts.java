@@ -71,8 +71,8 @@ public class Asserts {
         return !isNullMap(map);
     }
 
-    public static void checkNull(String key,String msg) {
-        if (key == null||"".equals(key)) {
+    public static void checkNull(Object key,String msg) {
+        if (key == null) {
             throw new RunTimeException(msg);
         }
     }

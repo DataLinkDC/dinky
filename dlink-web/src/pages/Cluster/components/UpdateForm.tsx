@@ -11,7 +11,6 @@ export type UpdateFormProps = {
   updateModalVisible: boolean;
   values: Partial<ClusterTableListItem>;
 };
-const FormItem = Form.Item;
 const Option = Select.Option;
 
 const formLayout = {
@@ -48,29 +47,30 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   const renderContent = (formVals) => {
     return (
       <>
-        <FormItem
+        <Form.Item
           name="name"
           label="名称"
           rules={[{required: true, message: '请输入名称！'}]}>
           <Input placeholder="请输入"/>
-        </FormItem>
-        <FormItem
+        </Form.Item>
+        <Form.Item
           name="alias"
           label="别名"
         >
           <Input placeholder="请输入"/>
-        </FormItem>
-        <FormItem
+        </Form.Item>
+        <Form.Item
           name="type"
           label="类型"
         >
-          <Select defaultValue="Yarn" allowClear>
-            <Option value="Standalone">Standalone</Option>
-            <Option value="Yarn">Yarn</Option>
-            <Option value="Others">Others</Option>
+          <Select defaultValue="yarn-session" allowClear>
+            <Option value="standalone">Standalone</Option>
+            <Option value="yarn-session">Yarn Session</Option>
+            <Option value="yarn-per-job">Yarn Per-Job</Option>
+            <Option value="yarn-application">Yarn Application</Option>
           </Select>
-        </FormItem>
-        <FormItem
+        </Form.Item>
+        <Form.Item
           name="hosts"
           label="JobManager HA 地址"
         >
@@ -78,8 +78,8 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
             placeholder="添加 Flink 集群的 JobManager 的 RestApi 地址。当 HA 模式时，地址间用英文逗号分隔，例如：192.168.123.101:8081,192.168.123.102:8081,192.168.123.103:8081"
             allowClear
             autoSize={{minRows: 3, maxRows: 10}}/>
-        </FormItem>
-        <FormItem
+        </Form.Item>
+        <Form.Item
           name="note"
           label="注释"
         >
@@ -87,14 +87,14 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
             placeholder="请输入"
             allowClear
             autoSize={{minRows: 3, maxRows: 10}}/>
-        </FormItem>
-        <FormItem
+        </Form.Item>
+        <Form.Item
           name="enabled"
           label="是否启用"
           rules={[{required: true, message: '请输入是否启用！'}]}>
           <Switch checkedChildren="启用" unCheckedChildren="禁用"
                   defaultChecked={formVals.enabled}/>
-        </FormItem>
+        </Form.Item>
       </>
     );
   };

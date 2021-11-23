@@ -44,6 +44,7 @@ const Login: React.FC = () => {
   const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
   const [type, setType] = useState<string>('password');
   const { initialState, setInitialState } = useModel('@@initialState');
+  const [isLogin, setIsLogin] = useState<boolean>(true);
 
   const intl = useIntl();
 
@@ -58,6 +59,9 @@ const Login: React.FC = () => {
   };
 
   const handleSubmit = async (values: API.LoginParams) => {
+    if(!isLogin) {return;}
+    setIsLogin(false);
+    setTimeout(()=>{setIsLogin(true)},200);
     setSubmitting(true);
     try {
       // 登录
@@ -121,6 +125,7 @@ const Login: React.FC = () => {
                 style: {
                   width: '100%',
                 },
+                htmlType:'submit',
               },
             }}
             onFinish={async (values) => {

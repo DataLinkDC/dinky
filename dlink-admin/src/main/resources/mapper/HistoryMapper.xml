@@ -6,6 +6,7 @@
     <resultMap id="BaseResultMap" type="com.dlink.model.History">
         <id column="id" property="id"/>
         <result column="cluster_id" property="clusterId"/>
+        <result column="cluster_configuration_id" property="clusterConfigurationId"/>
         <result column="session" property="session"/>
         <result column="jod_id" property="jobId"/>
         <result column="job_name" property="jobName"/>
@@ -23,7 +24,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id,cluster_id,session,jod_id,job_name,
+        id,cluster_id,cluster_configuration_id,session,jod_id,job_name,
         job_manager_address,status,statement,type, error,
         result,config,start_time,end_time,task_id
     </sql>

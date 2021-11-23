@@ -48,4 +48,16 @@ public class SqlParserTest {
         Map<String,List<String>> lists = SingleSqlParserFactory.generateParser(sql);
         System.out.println(lists.toString());
     }
+
+    @Test
+    public void regTest(){
+        String sql = "--并行度\n" +
+                "CREATE TABLE student (\n" +
+                "    sid INT,\n" +
+                "    name STRING,\n" +
+                "    PRIMARY KEY (sid) NOT ENFORCED\n" +
+                ") WITH ${tb}";
+        sql=sql.replaceAll("--([^'\r\n]{0,}('[^'\r\n]{0,}'){0,1}[^'\r\n]{0,}){0,}","").trim();
+        System.out.println(sql);
+    }
 }

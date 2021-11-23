@@ -15,8 +15,8 @@ import {handleAddOrUpdate, postDataArray} from "@/components/Common/crud";
 import {executeSql, explainSql, getStreamGraph} from "@/pages/FlinkSqlStudio/service";
 import StudioHelp from "./StudioHelp";
 import StudioGraph from "./StudioGraph";
-import {showCluster, showTables} from "@/components/Studio/StudioEvent/DDL";
-import {useState} from "react";
+import {showCluster, showTables, saveTask} from "@/components/Studio/StudioEvent/DDL";
+import {useEffect, useState} from "react";
 import StudioExplain from "../StudioConsole/StudioExplain";
 
 const menu = (
@@ -56,6 +56,7 @@ const StudioMenu = (props: any) => {
       jobName: current.task.jobName,
       parallelism: current.task.parallelism,
       checkPoint: current.task.checkPoint,
+      savePointStrategy: current.task.savePointStrategy,
       savePointPath: current.task.savePointPath,
     };
     const key = current.key;
@@ -130,6 +131,7 @@ const StudioMenu = (props: any) => {
         } else {
           message.success('异步提交失败');
         }
+        showCluster(dispatch);
       }
     });
   };
@@ -234,21 +236,8 @@ const StudioMenu = (props: any) => {
     return data;
   };
 
-  const saveSqlAndSettingToTask = async () => {
-    const fieldsValue = await form.validateFields();
-    if (current.task) {
-      let task = {
-        ...current.task,
-        statement: current.value,
-        ...fieldsValue
-      };
-      dispatch && dispatch({
-        type: "Studio/saveTask",
-        payload: task,
-      });
-    } else {
-
-    }
+  const saveSqlAndSettingToTask = () => {
+    saveTask(current,dispatch);
   };
 
   const runMenu = (

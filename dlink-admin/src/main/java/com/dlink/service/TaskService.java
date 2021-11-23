@@ -4,7 +4,6 @@ package com.dlink.service;
 import com.dlink.db.service.ISuperService;
 import com.dlink.job.JobResult;
 import com.dlink.model.Task;
-import com.dlink.result.SubmitResult;
 
 /**
  * 作业 服务类

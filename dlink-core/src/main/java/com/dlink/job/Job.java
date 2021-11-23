@@ -2,6 +2,7 @@ package com.dlink.job;
 
 import com.dlink.executor.Executor;
 import com.dlink.executor.ExecutorSetting;
+import com.dlink.gateway.GatewayType;
 import com.dlink.parser.SqlType;
 import com.dlink.result.IResult;
 import lombok.Getter;
@@ -23,7 +24,7 @@ public class Job {
     private JobConfig jobConfig;
     private String jobManagerAddress;
     private JobStatus status;
-    private SqlType type;
+    private GatewayType type;
     private String statement;
     private String jobId;
     private String error;
@@ -32,8 +33,9 @@ public class Job {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private Executor executor;
+    private boolean useGateway;
 
-    enum JobStatus{
+    enum JobStatus {
         INITIALIZE,
         RUNNING,
         SUCCESS,
@@ -41,17 +43,22 @@ public class Job {
         CANCEL
     }
 
-    public Job(JobConfig jobConfig, String jobManagerAddress, JobStatus status, String statement,ExecutorSetting executorSetting, LocalDateTime startTime, Executor executor) {
+    public Job(JobConfig jobConfig, GatewayType type, JobStatus status, String statement, ExecutorSetting executorSetting, Executor executor, boolean useGateway) {
         this.jobConfig = jobConfig;
-        this.jobManagerAddress = jobManagerAddress;
+        this.type = type;
         this.status = status;
         this.statement = statement;
         this.executorSetting = executorSetting;
-        this.startTime = startTime;
+        this.startTime = LocalDateTime.now();
         this.executor = executor;
+        this.useGateway = useGateway;
     }
 
-    public JobResult getJobResult(){
-        return new JobResult(id,jobConfig,jobManagerAddress,status,statement,jobId,error,result,startTime,endTime);
+    public static Job init(GatewayType type, JobConfig jobConfig, ExecutorSetting executorSetting, Executor executor, String statement, boolean useGateway) {
+        return new Job(jobConfig, type, JobStatus.INITIALIZE, statement, executorSetting, executor, useGateway);
+    }
+
+    public JobResult getJobResult() {
+        return new JobResult(id, jobConfig, jobManagerAddress, status, statement, jobId, error, result, startTime, endTime);
     }
 }

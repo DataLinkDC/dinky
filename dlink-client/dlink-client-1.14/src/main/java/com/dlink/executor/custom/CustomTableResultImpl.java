@@ -36,7 +36,13 @@ import java.util.concurrent.TimeoutException;
  **/
 @Internal
 public class CustomTableResultImpl implements TableResult {
-    public static final TableResult TABLE_RESULT_OK;
+    public static final TableResult TABLE_RESULT_OK =
+            CustomTableResultImpl.builder()
+                    .resultKind(ResultKind.SUCCESS)
+                    .schema(ResolvedSchema.of(Column.physical("result", DataTypes.STRING())))
+                    .data(Collections.singletonList(Row.of("OK")))
+                    .build();
+
     private final JobClient jobClient;
     private final ResolvedSchema resolvedSchema;
     private final ResultKind resultKind;
@@ -44,14 +50,22 @@ public class CustomTableResultImpl implements TableResult {
     private final PrintStyle printStyle;
     private final ZoneId sessionTimeZone;
 
-    private CustomTableResultImpl(@Nullable JobClient jobClient, ResolvedSchema resolvedSchema, ResultKind resultKind, CloseableIterator<Row> data, PrintStyle printStyle, ZoneId sessionTimeZone) {
+    private CustomTableResultImpl(
+            @Nullable JobClient jobClient,
+            ResolvedSchema resolvedSchema,
+            ResultKind resultKind,
+            CloseableIterator<Row> data,
+            PrintStyle printStyle,
+            ZoneId sessionTimeZone) {
         this.jobClient = jobClient;
-        this.resolvedSchema = (ResolvedSchema)Preconditions.checkNotNull(resolvedSchema, "resolvedSchema should not be null");
-        this.resultKind = (ResultKind)Preconditions.checkNotNull(resultKind, "resultKind should not be null");
+        this.resolvedSchema =
+                Preconditions.checkNotNull(resolvedSchema, "resolvedSchema should not be null");
+        this.resultKind = Preconditions.checkNotNull(resultKind, "resultKind should not be null");
         Preconditions.checkNotNull(data, "data should not be null");
         this.data = new CloseableRowIteratorWrapper(data);
-        this.printStyle = (PrintStyle)Preconditions.checkNotNull(printStyle, "printStyle should not be null");
-        this.sessionTimeZone = (ZoneId)Preconditions.checkNotNull(sessionTimeZone, "sessionTimeZone should not be null");
+        this.printStyle = Preconditions.checkNotNull(printStyle, "printStyle should not be null");
+        this.sessionTimeZone =
+                Preconditions.checkNotNull(sessionTimeZone, "sessionTimeZone should not be null");
     }
 
     public static TableResult buildTableResult(List<TableSchemaField> fields,List<Row> rows){
@@ -68,134 +82,241 @@ public class CustomTableResultImpl implements TableResult {
         return builder.build();
     }
 
+    @Override
     public Optional<JobClient> getJobClient() {
-        return Optional.ofNullable(this.jobClient);
+        return Optional.ofNullable(jobClient);
     }
 
+    @Override
     public void await() throws InterruptedException, ExecutionException {
         try {
-            this.awaitInternal(-1L, TimeUnit.MILLISECONDS);
-        } catch (TimeoutException var2) {
-            ;
+            awaitInternal(-1, TimeUnit.MILLISECONDS);
+        } catch (TimeoutException e) {
+            // do nothing
+        }
+    }
+
+    @Override
+    public void await(long timeout, TimeUnit unit)
+            throws InterruptedException, ExecutionException, TimeoutException {
+        awaitInternal(timeout, unit);
+    }
+
+    private void awaitInternal(long timeout, TimeUnit unit)
+            throws InterruptedException, ExecutionException, TimeoutException {
+        if (jobClient == null) {
+            return;
         }
 
-    }
+        ExecutorService executor =
+                Executors.newFixedThreadPool(1, r -> new Thread(r, "TableResult-await-thread"));
+        try {
+            CompletableFuture<Void> future =
+                    CompletableFuture.runAsync(
+                            () -> {
+                                while (!data.isFirstRowReady()) {
+                                    try {
+                                        Thread.sleep(100);
+                                    } catch (InterruptedException e) {
+                                        throw new TableException("Thread is interrupted");
+                                    }
+                                }
+                            },
+                            executor);
 
-    public void await(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-        this.awaitInternal(timeout, unit);
-    }
-
-    private void awaitInternal(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-        if (this.jobClient != null) {
-            ExecutorService executor = Executors.newFixedThreadPool(1, (r) -> {
-                return new Thread(r, "TableResult-await-thread");
-            });
-
-            try {
-                CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-                    while(!this.data.isFirstRowReady()) {
-                        try {
-                            Thread.sleep(100L);
-                        } catch (InterruptedException var2) {
-                            throw new TableException("Thread is interrupted");
-                        }
-                    }
-
-                }, executor);
-                if (timeout >= 0L) {
-                    future.get(timeout, unit);
-                } else {
-                    future.get();
-                }
-            } finally {
-                executor.shutdown();
+            if (timeout >= 0) {
+                future.get(timeout, unit);
+            } else {
+                future.get();
             }
-
+        } finally {
+            executor.shutdown();
         }
     }
 
+    @Override
     public ResolvedSchema getResolvedSchema() {
-        return this.resolvedSchema;
+        return resolvedSchema;
     }
 
+    @Override
     public ResultKind getResultKind() {
-        return this.resultKind;
+        return resultKind;
     }
 
+    @Override
     public CloseableIterator<Row> collect() {
-        return this.data;
+        return data;
     }
 
+    @Override
     public void print() {
-        Iterator<Row> it = this.collect();
-        if (this.printStyle instanceof TableauStyle) {
-            int maxColumnWidth = ((TableauStyle)this.printStyle).getMaxColumnWidth();
-            String nullColumn = ((TableauStyle)this.printStyle).getNullColumn();
-            boolean deriveColumnWidthByType = ((TableauStyle)this.printStyle).isDeriveColumnWidthByType();
-            boolean printRowKind = ((TableauStyle)this.printStyle).isPrintRowKind();
-            PrintUtils.printAsTableauForm(this.getResolvedSchema(), it, new PrintWriter(System.out), maxColumnWidth, nullColumn, deriveColumnWidthByType, printRowKind, this.sessionTimeZone);
+        Iterator<Row> it = collect();
+        if (printStyle instanceof TableauStyle) {
+            int maxColumnWidth = ((TableauStyle) printStyle).getMaxColumnWidth();
+            String nullColumn = ((TableauStyle) printStyle).getNullColumn();
+            boolean deriveColumnWidthByType =
+                    ((TableauStyle) printStyle).isDeriveColumnWidthByType();
+            boolean printRowKind = ((TableauStyle) printStyle).isPrintRowKind();
+            PrintUtils.printAsTableauForm(
+                    getResolvedSchema(),
+                    it,
+                    new PrintWriter(System.out),
+                    maxColumnWidth,
+                    nullColumn,
+                    deriveColumnWidthByType,
+                    printRowKind,
+                    sessionTimeZone);
+        } else if (printStyle instanceof RawContentStyle) {
+            while (it.hasNext()) {
+                System.out.println(
+                        String.join(
+                                ",",
+                                PrintUtils.rowToString(
+                                        it.next(), getResolvedSchema(), sessionTimeZone)));
+            }
         } else {
-            if (!(this.printStyle instanceof RawContentStyle)) {
-                throw new TableException("Unsupported print style: " + this.printStyle);
-            }
-
-            while(it.hasNext()) {
-                System.out.println(String.join(",", PrintUtils.rowToString((Row)it.next(), this.getResolvedSchema(), this.sessionTimeZone)));
-            }
+            throw new TableException("Unsupported print style: " + printStyle);
         }
-
     }
 
     public static Builder builder() {
         return new Builder();
     }
 
-    static {
-        TABLE_RESULT_OK = builder().resultKind(ResultKind.SUCCESS).schema(ResolvedSchema.of(new Column[]{Column.physical("result", DataTypes.STRING())})).data(Collections.singletonList(Row.of(new Object[]{"OK"}))).build();
+    /** Builder for creating a {@link CustomTableResultImpl}. */
+    public static class Builder {
+        private JobClient jobClient = null;
+        private ResolvedSchema resolvedSchema = null;
+        private ResultKind resultKind = null;
+        private CloseableIterator<Row> data = null;
+        private PrintStyle printStyle =
+                PrintStyle.tableau(Integer.MAX_VALUE, PrintUtils.NULL_COLUMN, false, false);
+        private ZoneId sessionTimeZone = ZoneId.of("UTC");
+
+        private Builder() {}
+
+        /**
+         * Specifies job client which associates the submitted Flink job.
+         *
+         * @param jobClient a {@link JobClient} for the submitted Flink job.
+         */
+        public Builder jobClient(JobClient jobClient) {
+            this.jobClient = jobClient;
+            return this;
+        }
+
+        /**
+         * Specifies schema of the execution result.
+         *
+         * @param resolvedSchema a {@link ResolvedSchema} for the execution result.
+         */
+        public Builder schema(ResolvedSchema resolvedSchema) {
+            Preconditions.checkNotNull(resolvedSchema, "resolvedSchema should not be null");
+            this.resolvedSchema = resolvedSchema;
+            return this;
+        }
+
+        /**
+         * Specifies result kind of the execution result.
+         *
+         * @param resultKind a {@link ResultKind} for the execution result.
+         */
+        public Builder resultKind(ResultKind resultKind) {
+            Preconditions.checkNotNull(resultKind, "resultKind should not be null");
+            this.resultKind = resultKind;
+            return this;
+        }
+
+        /**
+         * Specifies an row iterator as the execution result.
+         *
+         * @param rowIterator a row iterator as the execution result.
+         */
+        public Builder data(CloseableIterator<Row> rowIterator) {
+            Preconditions.checkNotNull(rowIterator, "rowIterator should not be null");
+            this.data = rowIterator;
+            return this;
+        }
+
+        /**
+         * Specifies an row list as the execution result.
+         *
+         * @param rowList a row list as the execution result.
+         */
+        public Builder data(List<Row> rowList) {
+            Preconditions.checkNotNull(rowList, "listRows should not be null");
+            this.data = CloseableIterator.adapterForIterator(rowList.iterator());
+            return this;
+        }
+
+        /** Specifies print style. Default is {@link TableauStyle} with max integer column width. */
+        public Builder setPrintStyle(PrintStyle printStyle) {
+            Preconditions.checkNotNull(printStyle, "printStyle should not be null");
+            this.printStyle = printStyle;
+            return this;
+        }
+
+        /** Specifies session time zone. */
+        public Builder setSessionTimeZone(ZoneId sessionTimeZone) {
+            Preconditions.checkNotNull(sessionTimeZone, "sessionTimeZone should not be null");
+            this.sessionTimeZone = sessionTimeZone;
+            return this;
+        }
+
+        /** Returns a {@link TableResult} instance. */
+        public TableResult build() {
+            return new CustomTableResultImpl(
+                    jobClient, resolvedSchema, resultKind, data, printStyle, sessionTimeZone);
+        }
     }
 
-    private static final class CloseableRowIteratorWrapper implements CloseableIterator<Row> {
-        private final CloseableIterator<Row> iterator;
-        private boolean isFirstRowReady;
-
-        private CloseableRowIteratorWrapper(CloseableIterator<Row> iterator) {
-            this.isFirstRowReady = false;
-            this.iterator = iterator;
+    /** Root interface for all print styles. */
+    public interface PrintStyle {
+        /**
+         * Create a tableau print style with given max column width, null column, change mode
+         * indicator and a flag to indicate whether the column width is derived from type (true) or
+         * content (false), which prints the result schema and content as tableau form.
+         */
+        static PrintStyle tableau(
+                int maxColumnWidth,
+                String nullColumn,
+                boolean deriveColumnWidthByType,
+                boolean printRowKind) {
+            Preconditions.checkArgument(
+                    maxColumnWidth > 0, "maxColumnWidth should be greater than 0");
+            Preconditions.checkNotNull(nullColumn, "nullColumn should not be null");
+            return new TableauStyle(
+                    maxColumnWidth, nullColumn, deriveColumnWidthByType, printRowKind);
         }
 
-        public void close() throws Exception {
-            this.iterator.close();
-        }
-
-        public boolean hasNext() {
-            boolean hasNext = this.iterator.hasNext();
-            this.isFirstRowReady = this.isFirstRowReady || hasNext;
-            return hasNext;
-        }
-
-        public Row next() {
-            Row next = (Row)this.iterator.next();
-            this.isFirstRowReady = true;
-            return next;
-        }
-
-        public boolean isFirstRowReady() {
-            return this.isFirstRowReady || this.hasNext();
+        /**
+         * Create a raw content print style, which only print the result content as raw form. column
+         * delimiter is ",", row delimiter is "\n".
+         */
+        static PrintStyle rawContent() {
+            return new RawContentStyle();
         }
     }
 
-    private static final class RawContentStyle implements PrintStyle {
-        private RawContentStyle() {
-        }
-    }
-
+    /** print the result schema and content as tableau form. */
     private static final class TableauStyle implements PrintStyle {
+        /**
+         * A flag to indicate whether the column width is derived from type (true) or content
+         * (false).
+         */
         private final boolean deriveColumnWidthByType;
+
         private final int maxColumnWidth;
         private final String nullColumn;
+        /** A flag to indicate whether print row kind info. */
         private final boolean printRowKind;
 
-        private TableauStyle(int maxColumnWidth, String nullColumn, boolean deriveColumnWidthByType, boolean printRowKind) {
+        private TableauStyle(
+                int maxColumnWidth,
+                String nullColumn,
+                boolean deriveColumnWidthByType,
+                boolean printRowKind) {
             this.deriveColumnWidthByType = deriveColumnWidthByType;
             this.maxColumnWidth = maxColumnWidth;
             this.nullColumn = nullColumn;
@@ -203,94 +324,64 @@ public class CustomTableResultImpl implements TableResult {
         }
 
         public boolean isDeriveColumnWidthByType() {
-            return this.deriveColumnWidthByType;
+            return deriveColumnWidthByType;
         }
 
         int getMaxColumnWidth() {
-            return this.maxColumnWidth;
+            return maxColumnWidth;
         }
 
         String getNullColumn() {
-            return this.nullColumn;
+            return nullColumn;
         }
 
         public boolean isPrintRowKind() {
-            return this.printRowKind;
+            return printRowKind;
         }
     }
 
-    public interface PrintStyle {
-        static PrintStyle tableau(int maxColumnWidth, String nullColumn, boolean deriveColumnWidthByType, boolean printRowKind) {
-            Preconditions.checkArgument(maxColumnWidth > 0, "maxColumnWidth should be greater than 0");
-            Preconditions.checkNotNull(nullColumn, "nullColumn should not be null");
-            return new TableauStyle(maxColumnWidth, nullColumn, deriveColumnWidthByType, printRowKind);
+    /**
+     * only print the result content as raw form. column delimiter is ",", row delimiter is "\n".
+     */
+    private static final class RawContentStyle implements PrintStyle {}
+
+    /**
+     * A {@link CloseableIterator} wrapper class that can return whether the first row is ready.
+     *
+     * <p>The first row is ready when {@link #hasNext} method returns true or {@link #next()} method
+     * returns a row. The execution order of {@link TableResult#collect} method and {@link
+     * TableResult#await()} may be arbitrary, this class will record whether the first row is ready
+     * (or accessed).
+     */
+    private static final class CloseableRowIteratorWrapper implements CloseableIterator<Row> {
+        private final CloseableIterator<Row> iterator;
+        private boolean isFirstRowReady = false;
+
+        private CloseableRowIteratorWrapper(CloseableIterator<Row> iterator) {
+            this.iterator = iterator;
         }
 
-        static PrintStyle rawContent() {
-            return new RawContentStyle();
-        }
-    }
-
-    public static class Builder {
-        private JobClient jobClient;
-        private ResolvedSchema resolvedSchema;
-        private ResultKind resultKind;
-        private CloseableIterator<Row> data;
-        private PrintStyle printStyle;
-        private ZoneId sessionTimeZone;
-
-        private Builder() {
-            this.jobClient = null;
-            this.resolvedSchema = null;
-            this.resultKind = null;
-            this.data = null;
-            this.printStyle = PrintStyle.tableau(2147483647, "(NULL)", false, false);
-            this.sessionTimeZone = ZoneId.of("UTC");
+        @Override
+        public void close() throws Exception {
+            iterator.close();
         }
 
-        public Builder jobClient(JobClient jobClient) {
-            this.jobClient = jobClient;
-            return this;
+        @Override
+        public boolean hasNext() {
+            boolean hasNext = iterator.hasNext();
+            isFirstRowReady = isFirstRowReady || hasNext;
+            return hasNext;
         }
 
-        public Builder schema(ResolvedSchema resolvedSchema) {
-            Preconditions.checkNotNull(resolvedSchema, "resolvedSchema should not be null");
-            this.resolvedSchema = resolvedSchema;
-            return this;
+        @Override
+        public Row next() {
+            Row next = iterator.next();
+            isFirstRowReady = true;
+            return next;
         }
 
-        public Builder resultKind(ResultKind resultKind) {
-            Preconditions.checkNotNull(resultKind, "resultKind should not be null");
-            this.resultKind = resultKind;
-            return this;
-        }
-
-        public Builder data(CloseableIterator<Row> rowIterator) {
-            Preconditions.checkNotNull(rowIterator, "rowIterator should not be null");
-            this.data = rowIterator;
-            return this;
-        }
-
-        public Builder data(List<Row> rowList) {
-            Preconditions.checkNotNull(rowList, "listRows should not be null");
-            this.data = CloseableIterator.adapterForIterator(rowList.iterator());
-            return this;
-        }
-
-        public Builder setPrintStyle(PrintStyle printStyle) {
-            Preconditions.checkNotNull(printStyle, "printStyle should not be null");
-            this.printStyle = printStyle;
-            return this;
-        }
-
-        public Builder setSessionTimeZone(ZoneId sessionTimeZone) {
-            Preconditions.checkNotNull(sessionTimeZone, "sessionTimeZone should not be null");
-            this.sessionTimeZone = sessionTimeZone;
-            return this;
-        }
-
-        public TableResult build() {
-            return new CustomTableResultImpl(this.jobClient, this.resolvedSchema, this.resultKind, this.data, this.printStyle, this.sessionTimeZone);
+        public boolean isFirstRowReady() {
+            return isFirstRowReady || hasNext();
         }
     }
 }

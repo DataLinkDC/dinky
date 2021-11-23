@@ -3,6 +3,21 @@ import FlinkSQL from "./FlinkSQL";
 import {SessionType} from "@/pages/FlinkSqlStudio/model";
 import {Modal,message} from "antd";
 import {addOrUpdateData, getData, handleRemove} from "@/components/Common/crud";
+
+/*--- 保存sql ---*/
+export function saveTask(current:any,dispatch: any){
+  if (current.task) {
+    let task = {
+      ...current.task,
+      statement: current.value,
+    };
+    dispatch && dispatch({
+      type: "Studio/saveTask",
+      payload: task,
+    });
+  }
+}
+
 /*--- 创建会话 ---*/
 export function createSession(session: SessionType,dispatch: any) {
   const res = addOrUpdateData("api/studio/createSession",session)
@@ -109,6 +124,16 @@ export function showCluster(dispatch: any) {
     });
   });
 }
+/*--- 刷新 Session集群 ---*/
+export function showSessionCluster(dispatch: any) {
+  const res = getData('api/cluster/listSessionEnable');
+  res.then((result) => {
+    result.datas && dispatch && dispatch({
+      type: "Studio/saveSessionCluster",
+      payload: result.datas,
+    });
+  });
+}
 /*--- 刷新 数据源 ---*/
 export function showDataBase(dispatch: any) {
   const res = getData('api/database/listEnabledAll');
@@ -131,12 +156,26 @@ export function showFlinkJobs(clusterId:number) {
 export function cancelJob(clusterId:number,jobId:string) {
   return getData('api/studio/cancel',{clusterId:clusterId,jobId:jobId});
 }
+/*--- 停止 SavePoint Jobs ---*/
+export function savepointJob(clusterId:number,jobId:string,savePointType:string,name:string) {
+  return getData('api/studio/savepoint',{clusterId,jobId,savePointType,name});
+}
 /*--- 根据版本号获取所有自动补全的文档 ---*/
 export function getFillAllByVersion(version:string,dispatch: any) {
   const res = getData('api/document/getFillAllByVersion',{version:version});
   res.then((result) => {
     result.datas && dispatch && dispatch({
       type: "Document/saveAllFillDocuments",
+      payload: result.datas,
+    });
+  });
+}
+/*--- 刷新 集群 ---*/
+export function showClusterConfiguration(dispatch: any) {
+  const res = getData('api/clusterConfiguration/listEnabledAll');
+  res.then((result) => {
+    result.datas && dispatch && dispatch({
+      type: "Studio/saveClusterConfiguration",
       payload: result.datas,
     });
   });

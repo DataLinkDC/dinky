@@ -8,27 +8,35 @@ import com.dlink.dto.StudioExecuteDTO;
 import com.dlink.explainer.ca.CABuilder;
 import com.dlink.explainer.ca.ColumnCANode;
 import com.dlink.explainer.ca.TableCANode;
+import com.dlink.gateway.model.JobInfo;
+import com.dlink.gateway.result.SavePointResult;
 import com.dlink.job.JobConfig;
 import com.dlink.job.JobManager;
 import com.dlink.job.JobResult;
 import com.dlink.model.Cluster;
-import com.dlink.parser.SqlType;
+import com.dlink.model.Savepoints;
+import com.dlink.model.SystemConfiguration;
 import com.dlink.result.IResult;
 import com.dlink.result.SelectResult;
 import com.dlink.result.SqlExplainResult;
+import com.dlink.service.ClusterConfigurationService;
 import com.dlink.service.ClusterService;
+import com.dlink.service.SavepointsService;
 import com.dlink.service.StudioService;
 import com.dlink.session.SessionConfig;
 import com.dlink.session.SessionInfo;
 import com.dlink.session.SessionPool;
-import com.dlink.trans.Operations;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * StudioServiceImpl
@@ -39,8 +47,14 @@ import java.util.List;
 @Service
 public class StudioServiceImpl implements StudioService {
 
+    private static final Logger logger = LoggerFactory.getLogger(StudioServiceImpl.class);
+
     @Autowired
     private ClusterService clusterService;
+    @Autowired
+    private ClusterConfigurationService clusterConfigurationService;
+    @Autowired
+    private SavepointsService savepointsService;
 
     @Override
     public JobResult executeSql(StudioExecuteDTO studioExecuteDTO) {
@@ -121,42 +135,76 @@ public class StudioServiceImpl implements StudioService {
 
     @Override
     public List<TableCANode> getOneTableCAByStatement(String statement) {
-        if(Operations.getSqlTypeFromStatements(statement)== SqlType.INSERT) {
-            return CABuilder.getOneTableCAByStatement(statement);
-        }else{
-            return new ArrayList<>();
-        }
+        return CABuilder.getOneTableCAByStatement(statement);
     }
 
     @Override
     public List<TableCANode> getOneTableColumnCAByStatement(String statement) {
-        if(Operations.getSqlTypeFromStatements(statement)== SqlType.INSERT) {
-            return CABuilder.getOneTableColumnCAByStatement(statement);
-        }else{
-            return new ArrayList<>();
-        }
+        return CABuilder.getOneTableColumnCAByStatement(statement);
     }
 
     @Override
     public List<ColumnCANode> getColumnCAByStatement(String statement) {
-        if(Operations.getSqlTypeFromStatements(statement)== SqlType.INSERT) {
-            return CABuilder.getColumnCAByStatement(statement);
-        }else{
-            return new ArrayList<>();
-        }
+        return CABuilder.getColumnCAByStatement(statement);
     }
 
     @Override
     public List<JsonNode> listJobs(Integer clusterId) {
         Cluster cluster = clusterService.getById(clusterId);
         Asserts.checkNotNull(cluster,"该集群不存在");
-        return FlinkAPI.build(cluster.getJobManagerHost()).listJobs();
+        try{
+            return FlinkAPI.build(cluster.getJobManagerHost()).listJobs();
+        } catch (Exception e) {
+            logger.info("查询作业时集群不存在");
+        }
+        return new ArrayList<>();
     }
 
     @Override
     public boolean cancel(Integer clusterId,String jobId) {
         Cluster cluster = clusterService.getById(clusterId);
         Asserts.checkNotNull(cluster,"该集群不存在");
-        return FlinkAPI.build(cluster.getJobManagerHost()).stop(jobId);
+        JobConfig jobConfig = new JobConfig();
+        jobConfig.setAddress(cluster.getJobManagerHost());
+        if(Asserts.isNotNull(cluster.getClusterConfigurationId())){
+            Map<String, Object> gatewayConfig = clusterConfigurationService.getGatewayConfig(cluster.getClusterConfigurationId());
+            jobConfig.buildGatewayConfig(gatewayConfig);
+        }
+        jobConfig.setUseRestAPI(SystemConfiguration.getInstances().isUseRestAPI());
+        JobManager jobManager = JobManager.build(jobConfig);
+        return jobManager.cancel(jobId);
+    }
+
+    @Override
+    public boolean savepoint(Integer clusterId, String jobId, String savePointType,String name) {
+        Cluster cluster = clusterService.getById(clusterId);
+        Asserts.checkNotNull(cluster,"该集群不存在");
+        JobConfig jobConfig = new JobConfig();
+        jobConfig.setAddress(cluster.getJobManagerHost());
+        jobConfig.setType(cluster.getType());
+        if(Asserts.isNotNull(cluster.getClusterConfigurationId())){
+            Map<String, Object> gatewayConfig = clusterConfigurationService.getGatewayConfig(cluster.getClusterConfigurationId());
+            jobConfig.buildGatewayConfig(gatewayConfig);
+            jobConfig.getGatewayConfig().getClusterConfig().setAppId(cluster.getName());
+            jobConfig.setTaskId(cluster.getTaskId());
+        }
+        jobConfig.setUseRestAPI(SystemConfiguration.getInstances().isUseRestAPI());
+        JobManager jobManager = JobManager.build(jobConfig);
+        jobManager.setUseGateway(true);
+        SavePointResult savePointResult = jobManager.savepoint(jobId, savePointType);
+        if(Asserts.isNotNull(savePointResult)){
+            for(JobInfo item : savePointResult.getJobInfos()){
+                if(Asserts.isEqualsIgnoreCase(jobId,item.getJobId())){
+                    Savepoints savepoints = new Savepoints();
+                    savepoints.setName(name);
+                    savepoints.setType(savePointType);
+                    savepoints.setPath(item.getSavePoint());
+                    savepoints.setTaskId(cluster.getTaskId());
+                    savepointsService.save(savepoints);
+                }
+            }
+            return true;
+        }
+        return false;
     }
 }

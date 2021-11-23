@@ -1,29 +1,23 @@
 package com.dlink.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.assertion.Assert;
-import com.dlink.cluster.FlinkCluster;
-import com.dlink.constant.FlinkConstant;
+import com.dlink.assertion.Asserts;
 import com.dlink.db.service.impl.SuperServiceImpl;
-import com.dlink.exception.BusException;
-import com.dlink.executor.Executor;
-import com.dlink.executor.ExecutorSetting;
 import com.dlink.job.JobConfig;
 import com.dlink.job.JobManager;
 import com.dlink.job.JobResult;
 import com.dlink.mapper.TaskMapper;
 import com.dlink.model.Cluster;
+import com.dlink.model.Savepoints;
 import com.dlink.model.Statement;
+import com.dlink.model.SystemConfiguration;
 import com.dlink.model.Task;
-import com.dlink.result.SubmitResult;
-import com.dlink.service.ClusterService;
-import com.dlink.service.StatementService;
-import com.dlink.service.TaskService;
+import com.dlink.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.util.Map;
 
 /**
  * 任务 服务实现类
@@ -38,6 +32,23 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private StatementService statementService;
     @Autowired
     private ClusterService clusterService;
+    @Autowired
+    private ClusterConfigurationService clusterConfigurationService;
+    @Autowired
+    private SavepointsService savepointsService;
+
+    @Value("${spring.datasource.driver-class-name}")
+    private String driver;
+    @Value("${spring.datasource.url}")
+    private String url;
+    @Value("${spring.datasource.username}")
+    private String username;
+    @Value("${spring.datasource.password}")
+    private String password;
+
+    private String buildParas(Integer id) {
+        return "--id " + id + " --driver " + driver + " --url " + url + " --username " + username + " --password " + password;
+    }
 
     @Override
     public JobResult submitByTaskId(Integer id) {
@@ -46,7 +57,36 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Statement statement = statementService.getById(id);
         Assert.check(statement);
         JobConfig config = task.buildSubmitConfig();
-        config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(),task.getClusterId()));
+        if (!JobManager.useGateway(config.getType())) {
+            config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), task.getClusterId()));
+        } else {
+            Map<String, Object> gatewayConfig = clusterConfigurationService.getGatewayConfig(task.getClusterConfigurationId());
+            if ("yarn-application".equals(config.getType()) || "ya".equals(config.getType())) {
+                SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
+                gatewayConfig.put("userJarPath", systemConfiguration.getSqlSubmitJarPath());
+                gatewayConfig.put("userJarParas", systemConfiguration.getSqlSubmitJarParas() + buildParas(config.getTaskId()));
+                gatewayConfig.put("userJarMainAppClass", systemConfiguration.getSqlSubmitJarMainAppClass());
+            }
+            config.buildGatewayConfig(gatewayConfig);
+        }
+        switch (config.getSavePointStrategy()) {
+            case LATEST:
+                Savepoints latestSavepoints = savepointsService.getLatestSavepointByTaskId(id);
+                if (Asserts.isNotNull(latestSavepoints)) {
+                    config.setSavePointPath(latestSavepoints.getPath());
+                }
+                break;
+            case EARLIEST:
+                Savepoints earliestSavepoints = savepointsService.getEarliestSavepointByTaskId(id);
+                if (Asserts.isNotNull(earliestSavepoints)) {
+                    config.setSavePointPath(earliestSavepoints.getPath());
+                }
+                break;
+            case CUSTOM:
+                break;
+            default:
+                config.setSavePointPath(null);
+        }
         JobManager jobManager = JobManager.build(config);
         return jobManager.executeSql(statement.getStatement());
     }
@@ -56,9 +96,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Task task = this.getById(id);
         if (task != null) {
             Statement statement = statementService.getById(id);
-            if(task.getClusterId()!=null) {
+            if (task.getClusterId() != null) {
                 Cluster cluster = clusterService.getById(task.getClusterId());
-                if(cluster!=null){
+                if (cluster != null) {
                     task.setClusterName(cluster.getAlias());
                 }
             }
@@ -66,6 +106,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 task.setStatement(statement.getStatement());
             }
         }
+
         return task;
     }
 
@@ -80,13 +121,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 statementService.updateById(statement);
             }
         } else {
-            if(task.getCheckPoint()==null){
+            if (task.getCheckPoint() == null) {
                 task.setCheckPoint(0);
             }
-            if(task.getParallelism()==null){
+            if (task.getParallelism() == null) {
                 task.setParallelism(1);
             }
-            if(task.getClusterId()==null){
+            if (task.getClusterId() == null) {
                 task.setClusterId(0);
             }
             this.save(task);
