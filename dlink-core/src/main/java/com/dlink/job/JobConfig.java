@@ -3,7 +3,9 @@ package com.dlink.job;
 import com.dlink.executor.ExecutorSetting;
 import com.dlink.gateway.config.AppConfig;
 import com.dlink.gateway.config.ClusterConfig;
+import com.dlink.gateway.config.FlinkConfig;
 import com.dlink.gateway.config.GatewayConfig;
+import com.dlink.gateway.config.SavePointStrategy;
 import com.dlink.session.SessionConfig;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,6 +37,7 @@ public class JobConfig {
     private Integer maxRowNum;
     private Integer checkpoint;
     private Integer parallelism;
+    private SavePointStrategy savePointStrategy;
     private String savePointPath;
     private GatewayConfig gatewayConfig;
     private boolean useRestAPI;
@@ -47,7 +50,7 @@ public class JobConfig {
     public JobConfig(String type, boolean useResult, boolean useSession, String session, boolean useRemote, Integer clusterId,
                      Integer clusterConfigurationId, Integer taskId, String jobName, boolean useSqlFragment,
                      boolean useStatementSet, Integer maxRowNum, Integer checkpoint,
-                     Integer parallelism, String savePointPath, Map<String,String> config) {
+                     Integer parallelism, Integer savePointStrategyValue, String savePointPath, Map<String,String> config) {
         this.type = type;
         this.useResult = useResult;
         this.useSession = useSession;
@@ -62,6 +65,7 @@ public class JobConfig {
         this.maxRowNum = maxRowNum;
         this.checkpoint = checkpoint;
         this.parallelism = parallelism;
+        this.savePointStrategy = SavePointStrategy.get(savePointStrategyValue);
         this.savePointPath = savePointPath;
         this.config = config;
     }
@@ -77,7 +81,7 @@ public class JobConfig {
 
     public JobConfig(String type,boolean useResult, boolean useSession, boolean useRemote, Integer clusterId,
                      Integer clusterConfigurationId, Integer taskId, String jobName, boolean useSqlFragment,
-                     boolean useStatementSet,Integer checkpoint, Integer parallelism, String savePointPath) {
+                     boolean useStatementSet,Integer checkpoint, Integer parallelism, Integer savePointStrategyValue, String savePointPath) {
         this.type = type;
         this.useResult = useResult;
         this.useSession = useSession;
@@ -90,6 +94,7 @@ public class JobConfig {
         this.useStatementSet = useStatementSet;
         this.checkpoint = checkpoint;
         this.parallelism = parallelism;
+        this.savePointStrategy = SavePointStrategy.get(savePointStrategyValue);
         this.savePointPath = savePointPath;
     }
 
@@ -105,17 +110,20 @@ public class JobConfig {
         }
     }
 
-    public void buildGatewayConfig(Map<String,String> config){
+    public void buildGatewayConfig(Map<String,Object> config){
         gatewayConfig = new GatewayConfig();
-        gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath"),
-                config.get("flinkLibPath"),
-                config.get("hadoopConfigPath")));
+        gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath").toString(),
+                config.get("flinkLibPath").toString(),
+                config.get("hadoopConfigPath").toString()));
         if(config.containsKey("userJarPath")){
             gatewayConfig.setAppConfig(AppConfig.build(
-                    config.get("userJarPath"),
-                    config.get("userJarParas"),
-                    config.get("userJarMainAppClass")
+                    config.get("userJarPath").toString(),
+                    config.get("userJarParas").toString(),
+                    config.get("userJarMainAppClass").toString()
             ));
+        }
+        if(config.containsKey("flinkConfig")){
+            gatewayConfig.setFlinkConfig(FlinkConfig.build((Map<String, String>)config.get("flinkConfig")));
         }
     }
 }

@@ -96,8 +96,8 @@ public class JobManager extends RunTime {
             Asserts.checkNull(config.getGatewayConfig(), "GatewayConfig 不能为空");
             config.getGatewayConfig().setType(GatewayType.get(config.getType()));
             config.getGatewayConfig().setTaskId(config.getTaskId());
-            config.getGatewayConfig().setFlinkConfig(FlinkConfig.build(config.getJobName(),
-                    null, null, null, config.getSavePointPath(), null));
+            config.getGatewayConfig().getFlinkConfig().setJobName(config.getJobName());
+            config.getGatewayConfig().getFlinkConfig().setSavePoint(config.getSavePointPath());
             config.setUseRemote(false);
         }
     }
@@ -371,7 +371,7 @@ public class JobManager extends RunTime {
     public boolean cancel(String jobId) {
         if (useGateway && !config.isUseRestAPI()) {
             config.getGatewayConfig().setFlinkConfig(FlinkConfig.build(jobId, ActionType.CANCEL.getValue(),
-                    null, config.getSavePointPath()));
+                    null, null));
             Gateway.build(config.getGatewayConfig()).savepointJob();
             return true;
         } else {
@@ -382,7 +382,7 @@ public class JobManager extends RunTime {
     public SavePointResult savepoint(String jobId,String savePointType) {
         if (useGateway && !config.isUseRestAPI()) {
             config.getGatewayConfig().setFlinkConfig(FlinkConfig.build(jobId, ActionType.SAVEPOINT.getValue(),
-                    savePointType, config.getSavePointPath()));
+                    savePointType, null));
             return Gateway.build(config.getGatewayConfig()).savepointJob();
         } else {
             return null;

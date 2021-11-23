@@ -22,4 +22,14 @@ public class SavepointsServiceImpl extends SuperServiceImpl<SavepointsMapper, Sa
     public List<Savepoints> listSavepointsByTaskId(Integer taskId) {
         return list(new QueryWrapper<Savepoints>().eq("task_id",taskId));
     }
+
+    @Override
+    public Savepoints getLatestSavepointByTaskId(Integer taskId) {
+        return baseMapper.getLatestSavepointByTaskId(taskId);
+    }
+
+    @Override
+    public Savepoints getEarliestSavepointByTaskId(Integer taskId) {
+        return baseMapper.getEarliestSavepointByTaskId(taskId);
+    }
 }

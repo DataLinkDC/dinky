@@ -437,4 +437,7 @@ CREATE TABLE `dlink_savepoints` (
   PRIMARY KEY (`id`)
 )  ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
+ALTER TABLE `dlink_task`
+  ADD COLUMN `save_point_strategy` int(1) NULL COMMENT 'SavePoint策略' AFTER `check_point`;
+
 SET FOREIGN_KEY_CHECKS = 1;

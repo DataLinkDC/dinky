@@ -388,7 +388,25 @@ export default (): React.ReactNode => {
                   <Link>新增 yarn-application 的sql作业提交方式</Link>
                 </li>
                 <li>
-                  <Link>新增 yarn-application 和 yarn-application 集群的自动注册</Link>
+                  <Link>新增 yarn-perjob 和 yarn-application 集群的作业停止</Link>
+                </li>
+                <li>
+                  <Link>新增 yarn-perjob 和 yarn-application 集群的自动注册</Link>
+                </li>
+                <li>
+                  <Link>新增 savepoint 各种机制触发</Link>
+                </li>
+                <li>
+                  <Link>新增 savepoint 的归档管理</Link>
+                </li>
+                <li>
+                  <Link>新增任务启动 savepoint 多种启动策略</Link>
+                </li>
+                <li>
+                  <Link>新增 yarn-perjob 和 yarn-application 的从 savepoint 启动</Link>
+                </li>
+                <li>
+                  <Link>新增 yarn-perjob 和 yarn-application 的启动时多样化集群配置生效</Link>
                 </li>
               </ul>
             </Paragraph>

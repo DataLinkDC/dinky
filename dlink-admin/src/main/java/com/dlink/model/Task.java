@@ -30,6 +30,8 @@ public class Task extends SuperEntity{
 
     private Integer checkPoint;
 
+    private Integer savePointStrategy;
+
     private String savePointPath;
 
     private Integer parallelism;
@@ -68,7 +70,7 @@ public class Task extends SuperEntity{
         if(clusterId==null||clusterId==0){
             useRemote = false;
         }
-        return new JobConfig(type,false,false,useRemote,clusterId,clusterConfigurationId,getId(),alias,fragment,statementSet,checkPoint,parallelism,savePointPath);
+        return new JobConfig(type,false,false,useRemote,clusterId,clusterConfigurationId,getId(),alias,fragment,statementSet,checkPoint,parallelism,savePointStrategy,savePointPath);
     }
 
 }

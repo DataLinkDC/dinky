@@ -35,6 +35,7 @@ public class StudioExecuteDTO {
     private Integer maxRowNum;
     private Integer checkPoint;
     private Integer parallelism;
+    private Integer savePointStrategy;
     private String savePointPath;
     private String configJson;
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -56,6 +57,6 @@ public class StudioExecuteDTO {
         return new JobConfig(
                 type,useResult, useSession, session, useRemote, clusterId,
                 clusterConfigurationId, taskId, jobName, fragment,useStatementSet,
-                maxRowNum, checkPoint, parallelism, savePointPath,config);
+                maxRowNum, checkPoint, parallelism,savePointStrategy, savePointPath,config);
     }
 }

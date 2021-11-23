@@ -175,13 +175,17 @@ public abstract class YarnGateway extends AbstractGateway {
     }
 
     private void runSavePointJob(List<JobInfo> jobInfos,ClusterClient<ApplicationId> clusterClient) throws Exception{
-        String savePoint = FlinkConfig.DEFAULT_SAVEPOINT_PREFIX;
-        if(Asserts.isNotNull(config.getTaskId())){
-            savePoint = savePoint + config.getTaskId();
-        }
+        String savePoint = null;
+        /*String savePoint = FlinkConfig.DEFAULT_SAVEPOINT_PREFIX;
         if(Asserts.isNotNullString(config.getFlinkConfig().getSavePoint())){
             savePoint = config.getFlinkConfig().getSavePoint();
         }
+        if(Asserts.isNotNull(config.getTaskId())){
+            if(savePoint.lastIndexOf("/")!=savePoint.length()){
+                savePoint = savePoint + "/";
+            }
+            savePoint = savePoint + config.getTaskId();
+        }*/
         for( JobInfo jobInfo: jobInfos){
             if(ActionType.CANCEL== config.getFlinkConfig().getAction()){
                 clusterClient.cancel(JobID.fromHexString(jobInfo.getJobId()));
@@ -192,9 +196,6 @@ public abstract class YarnGateway extends AbstractGateway {
                 case TRIGGER:
                     CompletableFuture<String> triggerFuture = clusterClient.triggerSavepoint(JobID.fromHexString(jobInfo.getJobId()), savePoint);
                     jobInfo.setSavePoint(triggerFuture.get());
-                    break;
-                case DISPOSE:
-                    clusterClient.disposeSavepoint(savePoint);
                     break;
                 case STOP:
                     CompletableFuture<String> stopFuture = clusterClient.stopWithSavepoint(JobID.fromHexString(jobInfo.getJobId()), true, savePoint);

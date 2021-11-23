@@ -12,4 +12,8 @@ import org.apache.ibatis.annotations.Mapper;
  **/
 @Mapper
 public interface SavepointsMapper extends SuperMapper<Savepoints> {
+
+    Savepoints getLatestSavepointByTaskId(Integer id);
+
+    Savepoints getEarliestSavepointByTaskId(Integer id);
 }

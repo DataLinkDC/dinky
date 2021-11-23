@@ -1,12 +1,14 @@
 package com.dlink.service.impl;
 
 import com.dlink.assertion.Assert;
+import com.dlink.assertion.Asserts;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.job.JobConfig;
 import com.dlink.job.JobManager;
 import com.dlink.job.JobResult;
 import com.dlink.mapper.TaskMapper;
 import com.dlink.model.Cluster;
+import com.dlink.model.Savepoints;
 import com.dlink.model.Statement;
 import com.dlink.model.SystemConfiguration;
 import com.dlink.model.Task;
@@ -58,7 +60,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if (!JobManager.useGateway(config.getType())) {
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), task.getClusterId()));
         } else {
-            Map<String, String> gatewayConfig = clusterConfigurationService.getGatewayConfig(task.getClusterConfigurationId());
+            Map<String, Object> gatewayConfig = clusterConfigurationService.getGatewayConfig(task.getClusterConfigurationId());
             if ("yarn-application".equals(config.getType()) || "ya".equals(config.getType())) {
                 SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
                 gatewayConfig.put("userJarPath", systemConfiguration.getSqlSubmitJarPath());
@@ -66,6 +68,24 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 gatewayConfig.put("userJarMainAppClass", systemConfiguration.getSqlSubmitJarMainAppClass());
             }
             config.buildGatewayConfig(gatewayConfig);
+        }
+        switch (config.getSavePointStrategy()) {
+            case LATEST:
+                Savepoints latestSavepoints = savepointsService.getLatestSavepointByTaskId(id);
+                if (Asserts.isNotNull(latestSavepoints)) {
+                    config.setSavePointPath(latestSavepoints.getPath());
+                }
+                break;
+            case EARLIEST:
+                Savepoints earliestSavepoints = savepointsService.getEarliestSavepointByTaskId(id);
+                if (Asserts.isNotNull(earliestSavepoints)) {
+                    config.setSavePointPath(earliestSavepoints.getPath());
+                }
+                break;
+            case CUSTOM:
+                break;
+            default:
+                config.setSavePointPath(null);
         }
         JobManager jobManager = JobManager.build(config);
         return jobManager.executeSql(statement.getStatement());

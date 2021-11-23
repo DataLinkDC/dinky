@@ -61,6 +61,8 @@ const StudioSavePoint: React.FC<{}> = (props: any) => {
       dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',
+      hideInForm: true,
+      hideInSearch: true,
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
@@ -68,12 +70,13 @@ const StudioSavePoint: React.FC<{}> = (props: any) => {
   ];
 
   return (
-    <PageContainer>
+    <>
       <ProTable<SavePointTableListItem>
         actionRef={actionRef}
         rowKey="id"
         request={(params, sorter, filter) => queryData(url, {taskId:current.taskId,...params, sorter, filter})}
         columns={columns}
+        search={false}
         />
         <Drawer
           width={600}
@@ -97,7 +100,7 @@ const StudioSavePoint: React.FC<{}> = (props: any) => {
               />
               )}
         </Drawer>
-    </PageContainer>
+    </>
 );
 };
 

@@ -157,7 +157,7 @@ public class StudioServiceImpl implements StudioService {
         JobConfig jobConfig = new JobConfig();
         jobConfig.setAddress(cluster.getJobManagerHost());
         if(Asserts.isNotNull(cluster.getClusterConfigurationId())){
-            Map<String, String> gatewayConfig = clusterConfigurationService.getGatewayConfig(cluster.getClusterConfigurationId());
+            Map<String, Object> gatewayConfig = clusterConfigurationService.getGatewayConfig(cluster.getClusterConfigurationId());
             jobConfig.buildGatewayConfig(gatewayConfig);
         }
         jobConfig.setUseRestAPI(SystemConfiguration.getInstances().isUseRestAPI());
@@ -173,9 +173,10 @@ public class StudioServiceImpl implements StudioService {
         jobConfig.setAddress(cluster.getJobManagerHost());
         jobConfig.setType(cluster.getType());
         if(Asserts.isNotNull(cluster.getClusterConfigurationId())){
-            Map<String, String> gatewayConfig = clusterConfigurationService.getGatewayConfig(cluster.getClusterConfigurationId());
+            Map<String, Object> gatewayConfig = clusterConfigurationService.getGatewayConfig(cluster.getClusterConfigurationId());
             jobConfig.buildGatewayConfig(gatewayConfig);
             jobConfig.getGatewayConfig().getClusterConfig().setAppId(cluster.getName());
+            jobConfig.setTaskId(cluster.getTaskId());
         }
         jobConfig.setUseRestAPI(SystemConfiguration.getInstances().isUseRestAPI());
         JobManager jobManager = JobManager.build(jobConfig);

@@ -175,11 +175,24 @@ const StudioSetting = (props: any) => {
         </Col>
       </Row>
       <Form.Item
-        label="SavePointPath" className={styles.form_item} name="savePointPath"
-        tooltip='从SavePointPath恢复Flink任务'
+        label="SavePoint策略" className={styles.form_item} name="savePointStrategy"
+        tooltip='指定 SavePoint策略，默认为禁用'
       >
-        <Input placeholder="hdfs://..." />
+        <Select defaultValue="0">
+          <Option value="0">禁用</Option>
+          <Option value="1">最近一次</Option>
+          <Option value="2">最早一次</Option>
+          <Option value="3">自定义</Option>
+        </Select>
       </Form.Item>
+      {current.task.savePointStrategy == 3 ?
+        (<Form.Item
+          label="SavePointPath" className={styles.form_item} name="savePointPath"
+          tooltip='从SavePointPath恢复Flink任务'
+        >
+          <Input placeholder="hdfs://..."/>
+        </Form.Item>):''
+      }
       <Form.Item
         label="其他配置" className={styles.form_item}
         tooltip={{ title: '其他配置项，将被应用于执行环境，如 pipeline.name', icon: <InfoCircleOutlined /> }}

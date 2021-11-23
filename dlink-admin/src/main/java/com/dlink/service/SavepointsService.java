@@ -15,4 +15,9 @@ import java.util.Map;
  **/
 public interface SavepointsService extends ISuperService<Savepoints> {
     List<Savepoints> listSavepointsByTaskId(Integer taskId);
+
+    Savepoints getLatestSavepointByTaskId(Integer taskId);
+
+    Savepoints getEarliestSavepointByTaskId(Integer taskId);
+
 }

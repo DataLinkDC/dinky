@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * FlinkConfig
@@ -32,6 +33,10 @@ public class FlinkConfig {
     public FlinkConfig() {
     }
 
+    public FlinkConfig(List<ConfigPara> configParas) {
+        this.configParas = configParas;
+    }
+
     public FlinkConfig(String jobName, String jobId, ActionType action, SavePointType savePointType, String savePoint, List<ConfigPara> configParas) {
         this.jobName = jobName;
         this.jobId = jobId;
@@ -39,6 +44,14 @@ public class FlinkConfig {
         this.savePointType = savePointType;
         this.savePoint = savePoint;
         this.configParas = configParas;
+    }
+
+    public static FlinkConfig build(Map<String, String> paras){
+        List<ConfigPara> configParasList = new ArrayList<>();
+        for (Map.Entry<String, String> entry : paras.entrySet()) {
+            configParasList.add(new ConfigPara(entry.getKey(),entry.getValue()));
+        }
+        return new FlinkConfig(configParasList);
     }
 
     public static FlinkConfig build(String jobName, String jobId, String actionStr, String savePointTypeStr, String savePoint, String configParasStr){

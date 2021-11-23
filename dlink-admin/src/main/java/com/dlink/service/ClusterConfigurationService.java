@@ -18,6 +18,6 @@ public interface ClusterConfigurationService extends ISuperService<ClusterConfig
 
     List<ClusterConfiguration> listEnabledAll();
 
-    Map<String,String> getGatewayConfig(Integer id);
+    Map<String,Object> getGatewayConfig(Integer id);
 
 }

@@ -23,4 +23,18 @@
             </if>
         </where>
     </select>
+
+    <select id="getLatestSavepointByTaskId" resultType="com.dlink.model.Savepoints">
+        SELECT * FROM dlink_savepoints
+        WHERE task_id = #{id}
+        ORDER BY create_time DESC
+        LIMIT 1
+    </select>
+
+    <select id="getEarliestSavepointByTaskId" resultType="com.dlink.model.Savepoints">
+        SELECT * FROM dlink_savepoints
+        WHERE task_id = #{id}
+        ORDER BY create_time ASC
+        LIMIT 1
+    </select>
 </mapper>

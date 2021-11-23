@@ -38,10 +38,10 @@ public class ClusterConfiguration extends SuperEntity {
     private String note;
 
     @TableField(exist = false)
-    private Map<String,String> config = new HashMap<>();
+    private Map<String,Object> config = new HashMap<>();
 
 
-    public Map<String,String> parseConfig(){
+    public Map<String,Object> parseConfig(){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             if(Asserts.isNotNullString(configJson)) {

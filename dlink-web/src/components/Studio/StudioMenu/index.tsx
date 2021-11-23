@@ -56,6 +56,7 @@ const StudioMenu = (props: any) => {
       jobName: current.task.jobName,
       parallelism: current.task.parallelism,
       checkPoint: current.task.checkPoint,
+      savePointStrategy: current.task.savePointStrategy,
       savePointPath: current.task.savePointPath,
     };
     const key = current.key;
