@@ -75,7 +75,7 @@ public class Job2MysqlHandler implements JobHandler {
 //        history.setResult(JSONUtil.toJsonStr(job.getResult()));
         if(job.isUseGateway()){
             Cluster cluster = clusterService.registersCluster(Cluster.autoRegistersCluster(job.getJobManagerAddress(),
-                    job.getJobConfig().getJobName()+ LocalDateTime.now(), job.getType().getLongValue(),
+                    job.getJobId(),job.getJobConfig().getJobName()+ LocalDateTime.now(), job.getType().getLongValue(),
                     job.getJobConfig().getClusterConfigurationId(),job.getJobConfig().getClusterConfigurationId()));
             if(Asserts.isNotNull(cluster)){
                 history.setClusterId(cluster.getId());

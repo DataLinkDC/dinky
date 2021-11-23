@@ -175,6 +175,7 @@ public class StudioServiceImpl implements StudioService {
         if(Asserts.isNotNull(cluster.getClusterConfigurationId())){
             Map<String, String> gatewayConfig = clusterConfigurationService.getGatewayConfig(cluster.getClusterConfigurationId());
             jobConfig.buildGatewayConfig(gatewayConfig);
+            jobConfig.getGatewayConfig().getClusterConfig().setAppId(cluster.getName());
         }
         jobConfig.setUseRestAPI(SystemConfiguration.getInstances().isUseRestAPI());
         JobManager jobManager = JobManager.build(jobConfig);

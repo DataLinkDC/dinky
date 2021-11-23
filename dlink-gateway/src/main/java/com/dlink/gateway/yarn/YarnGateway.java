@@ -12,10 +12,12 @@ import com.dlink.gateway.result.GatewayResult;
 import com.dlink.gateway.result.SavePointResult;
 import org.apache.flink.api.common.JobID;
 import org.apache.flink.client.program.ClusterClient;
+import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.DeploymentOptions;
 import org.apache.flink.configuration.GlobalConfiguration;
 import org.apache.flink.runtime.client.JobStatusMessage;
 import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
+import org.apache.flink.yarn.YarnClientYarnClusterInformationRetriever;
 import org.apache.flink.yarn.YarnClusterClientFactory;
 import org.apache.flink.yarn.YarnClusterDescriptor;
 import org.apache.flink.yarn.configuration.YarnConfigOptions;
@@ -24,7 +26,9 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.client.api.YarnClient;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
+import org.apache.hadoop.yarn.exceptions.YarnException;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,13 +61,17 @@ public abstract class YarnGateway extends AbstractGateway {
 
     private void initConfig(){
         configuration = GlobalConfiguration.loadConfiguration(config.getClusterConfig().getFlinkConfigPath());
-        addConfigParas(config.getFlinkConfig().getConfigParas());
+        if(Asserts.isNotNull(config.getFlinkConfig().getConfigParas())) {
+            addConfigParas(config.getFlinkConfig().getConfigParas());
+        }
         configuration.set(DeploymentOptions.TARGET, getType().getLongValue());
         if(Asserts.isNotNullString(config.getFlinkConfig().getSavePoint())) {
             configuration.setString(SavepointConfigOptions.SAVEPOINT_PATH, config.getFlinkConfig().getSavePoint());
         }
         configuration.set(YarnConfigOptions.PROVIDED_LIB_DIRS, Collections.singletonList(config.getClusterConfig().getFlinkLibPath()));
-        configuration.set(YarnConfigOptions.APPLICATION_NAME, config.getFlinkConfig().getJobName());
+        if(Asserts.isNotNullString(config.getFlinkConfig().getJobName())) {
+            configuration.set(YarnConfigOptions.APPLICATION_NAME, config.getFlinkConfig().getJobName());
+        }
         YarnLogConfigUtil.setLogConfigFileInConfig(configuration, config.getClusterConfig().getFlinkConfigPath());
     }
 
@@ -89,17 +97,24 @@ public abstract class YarnGateway extends AbstractGateway {
         if(Asserts.isNull(yarnClient)){
             init();
         }
+        /*if(Asserts.isNotNullString(config.getClusterConfig().getYarnConfigPath())) {
+            configuration = GlobalConfiguration.loadConfiguration(config.getClusterConfig().getYarnConfigPath());
+        }else {
+            configuration = new Configuration();
+        }*/
         SavePointResult result = SavePointResult.build(getType());
         YarnClusterClientFactory clusterClientFactory = new YarnClusterClientFactory();
+        configuration.set(YarnConfigOptions.APPLICATION_ID, config.getClusterConfig().getAppId());
         ApplicationId applicationId = clusterClientFactory.getClusterId(configuration);
         if (applicationId == null){
             throw new GatewayException(
                     "No cluster id was specified. Please specify a cluster to which you would like to connect.");
         }
-        YarnClusterDescriptor clusterDescriptor = clusterClientFactory
+        /*YarnClusterDescriptor clusterDescriptor = clusterClientFactory
                 .createClusterDescriptor(
-                        configuration);
-
+                        configuration);*/
+        YarnClusterDescriptor clusterDescriptor = new YarnClusterDescriptor(
+                configuration, yarnConfiguration, yarnClient, YarnClientYarnClusterInformationRetriever.create(yarnClient), true);
         try(ClusterClient<ApplicationId> clusterClient = clusterDescriptor.retrieve(
                 applicationId).getClusterClient()){
             List<JobInfo> jobInfos = new ArrayList<>();
@@ -127,16 +142,24 @@ public abstract class YarnGateway extends AbstractGateway {
             throw new GatewayException(
                     "No job id was specified. Please specify a job to which you would like to savepont.");
         }
+        /*if(Asserts.isNotNullString(config.getClusterConfig().getYarnConfigPath())) {
+            configuration = GlobalConfiguration.loadConfiguration(config.getClusterConfig().getYarnConfigPath());
+        }else {
+            configuration = new Configuration();
+        }*/
         SavePointResult result = SavePointResult.build(getType());
         YarnClusterClientFactory clusterClientFactory = new YarnClusterClientFactory();
+        configuration.set(YarnConfigOptions.APPLICATION_ID, config.getClusterConfig().getAppId());
         ApplicationId applicationId = clusterClientFactory.getClusterId(configuration);
         if (Asserts.isNull(applicationId)){
             throw new GatewayException(
                     "No cluster id was specified. Please specify a cluster to which you would like to connect.");
         }
-        YarnClusterDescriptor clusterDescriptor = clusterClientFactory
+        /*YarnClusterDescriptor clusterDescriptor = clusterClientFactory
                 .createClusterDescriptor(
-                        configuration);
+                        configuration);*/
+        YarnClusterDescriptor clusterDescriptor = new YarnClusterDescriptor(
+                configuration, yarnConfiguration, yarnClient, YarnClientYarnClusterInformationRetriever.create(yarnClient), true);
         try(ClusterClient<ApplicationId> clusterClient = clusterDescriptor.retrieve(
                 applicationId).getClusterClient()){
             List<JobInfo> jobInfos = new ArrayList<>();
