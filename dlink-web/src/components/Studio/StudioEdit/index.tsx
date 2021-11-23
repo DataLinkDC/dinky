@@ -99,7 +99,8 @@ const FlinkSqlEditor = (props:any) => {
       type: "Studio/saveSqlMetaData",
       payload: {
         activeKey:tabs.panes[tabIndex].key,
-        sqlMetaData
+        sqlMetaData,
+        isModified: true,
       },
     });
     onChange(val,event);
@@ -114,7 +115,6 @@ const FlinkSqlEditor = (props:any) => {
       type: "Studio/saveSql",
       payload: val,
     });
-
   };
 
   const buildSuggestions = () => {
