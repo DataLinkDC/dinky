@@ -1,8 +1,7 @@
 import React, {useRef, useState} from "react";
 import {DownOutlined, HeartOutlined, PlusOutlined, UserOutlined} from '@ant-design/icons';
 import {ActionType, ProColumns} from "@ant-design/pro-table";
-import {Drawer} from 'antd';
-import {PageContainer} from '@ant-design/pro-layout';
+import {Drawer,Table} from 'antd';
 import ProTable from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import {queryData} from "@/components/Common/crud";
@@ -74,7 +73,7 @@ const StudioSavePoint: React.FC<{}> = (props: any) => {
       <ProTable<SavePointTableListItem>
         actionRef={actionRef}
         rowKey="id"
-        request={(params, sorter, filter) => queryData(url, {taskId:current.taskId,...params, sorter, filter})}
+        request={(params, sorter, filter) => queryData(url, {taskId:current.key,...params, sorter, filter})}
         columns={columns}
         search={false}
         />

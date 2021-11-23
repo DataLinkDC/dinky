@@ -20,7 +20,7 @@ export default (): React.ReactNode => {
         <Alert
           message={intl.formatMessage({
             id: 'pages.welcome.alertMessage',
-            defaultMessage: '实时计算平台 Dlink & Apache Flink 即将发布，目前为体验版，版本号为 0.3.2。',
+            defaultMessage: '实时计算平台 Dlink & Apache Flink 即将发布，目前为体验版，版本号为 0.4.0。',
           })}
           type="success"
           showIcon
@@ -407,6 +407,9 @@ export default (): React.ReactNode => {
                 </li>
                 <li>
                   <Link>新增 yarn-perjob 和 yarn-application 的启动时多样化集群配置生效</Link>
+                </li>
+                <li>
+                  <Link>优化项目结构与打包结构</Link>
                 </li>
               </ul>
             </Paragraph>

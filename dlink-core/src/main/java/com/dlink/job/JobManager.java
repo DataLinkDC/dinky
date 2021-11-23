@@ -29,6 +29,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.table.api.StatementSet;
 import org.apache.flink.table.api.TableResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -41,6 +43,8 @@ import java.util.List;
  * @since 2021/5/25 15:27
  **/
 public class JobManager extends RunTime {
+
+    private static final Logger logger = LoggerFactory.getLogger(JobManager.class);
 
     private JobHandler handler;
     private String sessionId;
@@ -375,7 +379,12 @@ public class JobManager extends RunTime {
             Gateway.build(config.getGatewayConfig()).savepointJob();
             return true;
         } else {
-            return FlinkAPI.build(config.getAddress()).stop(jobId);
+            try{
+                return FlinkAPI.build(config.getAddress()).stop(jobId);
+            }catch (Exception e){
+                logger.info("停止作业时集群不存在");
+            }
+            return false;
         }
     }
 

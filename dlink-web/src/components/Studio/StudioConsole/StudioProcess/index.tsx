@@ -44,7 +44,6 @@ const StudioProcess = (props: any) => {
       overlay={
         <Menu onClick={({key}) => savepoint(key, item)}>
           <Menu.Item key="trigger">Trigger</Menu.Item>
-          <Menu.Item key="dispose">Dispose</Menu.Item>
           <Menu.Item key="stop">Stop</Menu.Item>
           <Menu.Item key="cancel">Cancel</Menu.Item>
         </Menu>

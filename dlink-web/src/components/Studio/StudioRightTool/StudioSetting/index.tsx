@@ -178,11 +178,11 @@ const StudioSetting = (props: any) => {
         label="SavePoint策略" className={styles.form_item} name="savePointStrategy"
         tooltip='指定 SavePoint策略，默认为禁用'
       >
-        <Select defaultValue="0">
-          <Option value="0">禁用</Option>
-          <Option value="1">最近一次</Option>
-          <Option value="2">最早一次</Option>
-          <Option value="3">自定义</Option>
+        <Select defaultValue={0}>
+          <Option value={0}>禁用</Option>
+          <Option value={1}>最近一次</Option>
+          <Option value={2}>最早一次</Option>
+          <Option value={3}>自定义</Option>
         </Select>
       </Form.Item>
       {current.task.savePointStrategy == 3 ?

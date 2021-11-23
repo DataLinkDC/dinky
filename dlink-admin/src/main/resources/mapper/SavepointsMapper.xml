@@ -9,6 +9,9 @@
         dlink_savepoints a
         <where>
             1=1
+            <if test='param.taskId!=null'>
+                and a.task_id = #{param.taskId}
+            </if>
             <if test='param.name!=null and param.name!=""'>
                 and a.name like "%${param.name}%"
             </if>

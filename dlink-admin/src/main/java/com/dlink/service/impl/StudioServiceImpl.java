@@ -28,10 +28,13 @@ import com.dlink.session.SessionInfo;
 import com.dlink.session.SessionPool;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -43,6 +46,8 @@ import java.util.Map;
  */
 @Service
 public class StudioServiceImpl implements StudioService {
+
+    private static final Logger logger = LoggerFactory.getLogger(StudioServiceImpl.class);
 
     @Autowired
     private ClusterService clusterService;
@@ -147,7 +152,12 @@ public class StudioServiceImpl implements StudioService {
     public List<JsonNode> listJobs(Integer clusterId) {
         Cluster cluster = clusterService.getById(clusterId);
         Asserts.checkNotNull(cluster,"该集群不存在");
-        return FlinkAPI.build(cluster.getJobManagerHost()).listJobs();
+        try{
+            return FlinkAPI.build(cluster.getJobManagerHost()).listJobs();
+        } catch (Exception e) {
+            logger.info("查询作业时集群不存在");
+        }
+        return new ArrayList<>();
     }
 
     @Override
