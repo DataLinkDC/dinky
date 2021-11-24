@@ -44,6 +44,8 @@ public class Task extends SuperEntity{
 
     private Integer clusterConfigurationId;
 
+    private Integer jarId;
+
     private String config;
 
     private String note;
@@ -70,7 +72,7 @@ public class Task extends SuperEntity{
         if(clusterId==null||clusterId==0){
             useRemote = false;
         }
-        return new JobConfig(type,false,false,useRemote,clusterId,clusterConfigurationId,getId(),alias,fragment,statementSet,checkPoint,parallelism,savePointStrategy,savePointPath);
+        return new JobConfig(type,false,false,useRemote,clusterId,clusterConfigurationId,jarId,getId(),alias,fragment,statementSet,checkPoint,parallelism,savePointStrategy,savePointPath);
     }
 
 }

@@ -2,6 +2,7 @@ package com.dlink.assertion;
 
 import com.dlink.exception.BusException;
 import com.dlink.model.Cluster;
+import com.dlink.model.Jar;
 import com.dlink.model.Statement;
 import com.dlink.model.Task;
 
@@ -38,6 +39,12 @@ public interface Assert {
     static void checkHost(String host) {
         if (host == null || "".equals(host)) {
             throw new BusException("集群地址暂不可用");
+        }
+    }
+
+    static void check(Jar jar) {
+        if (jar == null) {
+            throw new BusException("自定义Jar不存在");
         }
     }
 }

@@ -3,15 +3,12 @@ package com.dlink.service.impl;
 import com.dlink.assertion.Assert;
 import com.dlink.assertion.Asserts;
 import com.dlink.db.service.impl.SuperServiceImpl;
+import com.dlink.gateway.GatewayType;
 import com.dlink.job.JobConfig;
 import com.dlink.job.JobManager;
 import com.dlink.job.JobResult;
 import com.dlink.mapper.TaskMapper;
-import com.dlink.model.Cluster;
-import com.dlink.model.Savepoints;
-import com.dlink.model.Statement;
-import com.dlink.model.SystemConfiguration;
-import com.dlink.model.Task;
+import com.dlink.model.*;
 import com.dlink.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,6 +33,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private ClusterConfigurationService clusterConfigurationService;
     @Autowired
     private SavepointsService savepointsService;
+    @Autowired
+    private JarService jarService;
 
     @Value("${spring.datasource.driver-class-name}")
     private String driver;
@@ -54,18 +53,30 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     public JobResult submitByTaskId(Integer id) {
         Task task = this.getById(id);
         Assert.check(task);
-        Statement statement = statementService.getById(id);
-        Assert.check(statement);
+        boolean isJarTask = isJarTask(task);
+        Statement statement = null;
+        if(!isJarTask){
+            statement = statementService.getById(id);
+            Assert.check(statement);
+        }
         JobConfig config = task.buildSubmitConfig();
         if (!JobManager.useGateway(config.getType())) {
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), task.getClusterId()));
         } else {
             Map<String, Object> gatewayConfig = clusterConfigurationService.getGatewayConfig(task.getClusterConfigurationId());
-            if ("yarn-application".equals(config.getType()) || "ya".equals(config.getType())) {
-                SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
-                gatewayConfig.put("userJarPath", systemConfiguration.getSqlSubmitJarPath());
-                gatewayConfig.put("userJarParas", systemConfiguration.getSqlSubmitJarParas() + buildParas(config.getTaskId()));
-                gatewayConfig.put("userJarMainAppClass", systemConfiguration.getSqlSubmitJarMainAppClass());
+            if (GatewayType.YARN_APPLICATION.equals(config.getType())) {
+                if(!isJarTask) {
+                    SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
+                    gatewayConfig.put("userJarPath", systemConfiguration.getSqlSubmitJarPath());
+                    gatewayConfig.put("userJarParas", systemConfiguration.getSqlSubmitJarParas() + buildParas(config.getTaskId()));
+                    gatewayConfig.put("userJarMainAppClass", systemConfiguration.getSqlSubmitJarMainAppClass());
+                }else{
+                    Jar jar = jarService.getById(task.getJarId());
+                    Assert.check(jar);
+                    gatewayConfig.put("userJarPath", jar.getPath());
+                    gatewayConfig.put("userJarParas", jar.getParas());
+                    gatewayConfig.put("userJarMainAppClass", jar.getMainClass());
+                }
             }
             config.buildGatewayConfig(gatewayConfig);
         }
@@ -88,7 +99,15 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 config.setSavePointPath(null);
         }
         JobManager jobManager = JobManager.build(config);
-        return jobManager.executeSql(statement.getStatement());
+        if(!isJarTask) {
+            return jobManager.executeSql(statement.getStatement());
+        }else{
+            return jobManager.executeJar();
+        }
+    }
+
+    private boolean isJarTask(Task task){
+        return GatewayType.YARN_APPLICATION.equalsValue(task.getType())&&Asserts.isNotNull(task.getJarId());
     }
 
     @Override

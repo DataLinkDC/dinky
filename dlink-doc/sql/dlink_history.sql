@@ -440,4 +440,10 @@ CREATE TABLE `dlink_savepoints` (
 ALTER TABLE `dlink_task`
   ADD COLUMN `save_point_strategy` int(1) NULL COMMENT 'SavePoint策略' AFTER `check_point`;
 
+-- ----------------------------
+-- 0.4.0-SNAPSHOT 2021-11-24
+-- ----------------------------
+ALTER TABLE `dlink_task`
+  ADD COLUMN `jar_id` int(11) NULL COMMENT 'JarID' AFTER `cluster_configuration_id`;
+
 SET FOREIGN_KEY_CHECKS = 1;

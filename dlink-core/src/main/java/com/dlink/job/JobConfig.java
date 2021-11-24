@@ -29,6 +29,7 @@ public class JobConfig {
     private boolean useRemote;
     private Integer clusterId;
     private Integer clusterConfigurationId;
+    private Integer jarId;
     private String address;
     private Integer taskId;
     private String jobName;
@@ -48,7 +49,7 @@ public class JobConfig {
     }
 
     public JobConfig(String type, boolean useResult, boolean useSession, String session, boolean useRemote, Integer clusterId,
-                     Integer clusterConfigurationId, Integer taskId, String jobName, boolean useSqlFragment,
+                     Integer clusterConfigurationId,Integer jarId, Integer taskId, String jobName, boolean useSqlFragment,
                      boolean useStatementSet, Integer maxRowNum, Integer checkpoint,
                      Integer parallelism, Integer savePointStrategyValue, String savePointPath, Map<String,String> config) {
         this.type = type;
@@ -58,6 +59,7 @@ public class JobConfig {
         this.useRemote = useRemote;
         this.clusterId = clusterId;
         this.clusterConfigurationId = clusterConfigurationId;
+        this.jarId = jarId;
         this.taskId = taskId;
         this.jobName = jobName;
         this.useSqlFragment = useSqlFragment;
@@ -80,7 +82,7 @@ public class JobConfig {
     }
 
     public JobConfig(String type,boolean useResult, boolean useSession, boolean useRemote, Integer clusterId,
-                     Integer clusterConfigurationId, Integer taskId, String jobName, boolean useSqlFragment,
+                     Integer clusterConfigurationId, Integer jarId, Integer taskId, String jobName, boolean useSqlFragment,
                      boolean useStatementSet,Integer checkpoint, Integer parallelism, Integer savePointStrategyValue, String savePointPath) {
         this.type = type;
         this.useResult = useResult;
@@ -88,6 +90,7 @@ public class JobConfig {
         this.useRemote = useRemote;
         this.clusterId = clusterId;
         this.clusterConfigurationId = clusterConfigurationId;
+        this.jarId = jarId;
         this.taskId = taskId;
         this.jobName = jobName;
         this.useSqlFragment = useSqlFragment;

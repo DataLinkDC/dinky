@@ -398,4 +398,34 @@ public class JobManager extends RunTime {
         }
     }
 
+    public JobResult executeJar() {
+        Job job = Job.init(GatewayType.get(config.getType()), config, executorSetting, executor, null, useGateway);
+        JobContextHolder.setJob(job);
+        ready();
+        try {
+            GatewayResult gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
+            job.setResult(InsertResult.success(gatewayResult.getAppId()));
+            job.setJobId(gatewayResult.getAppId());
+            job.setJobManagerAddress(formatAddress(gatewayResult.getWebURL()));
+            job.setEndTime(LocalDateTime.now());
+            job.setStatus(Job.JobStatus.SUCCESS);
+            success();
+        } catch (Exception e) {
+            e.printStackTrace();
+            StackTraceElement[] trace = e.getStackTrace();
+            StringBuffer resMsg = new StringBuffer("");
+            for (StackTraceElement s : trace) {
+                resMsg.append(" \n " + s + "  ");
+            }
+            LocalDateTime now = LocalDateTime.now();
+            job.setEndTime(now);
+            job.setStatus(Job.JobStatus.FAILED);
+            String error = now.toString() + ":" + "运行Jar：\n" + config.getGatewayConfig().getAppConfig().getUserJarPath() + " \n时出现异常:" + e.getMessage() + " \n >>>堆栈信息<<<" + resMsg.toString();
+            job.setError(error);
+            failed();
+            close();
+        }
+        close();
+        return job.getJobResult();
+    }
 }

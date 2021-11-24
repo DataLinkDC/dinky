@@ -230,6 +230,7 @@ CREATE TABLE `dlink_task`  (
 	`statement_set` tinyint(1) NULL DEFAULT NULL COMMENT '启用语句集',
 	`cluster_id` int(11) NULL DEFAULT NULL COMMENT 'Flink集群ID',
 	`cluster_configuration_id` int(11) NULL DEFAULT NULL COMMENT '集群配置ID',
+	`jar_id` int(11) NULL DEFAULT NULL COMMENT 'jarID',
 	`config` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '配置',
 	`note` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '注释',
 	`enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT '是否启用',

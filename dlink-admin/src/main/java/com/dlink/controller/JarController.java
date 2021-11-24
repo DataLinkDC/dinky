@@ -82,4 +82,13 @@ public class JarController {
         jar = jarService.getById(jar.getId());
         return Result.succeed(jar,"获取成功");
     }
+
+    /**
+     * 获取可用的jar列表
+     */
+    @GetMapping("/listEnabledAll")
+    public Result listEnabledAll() {
+        List<Jar >jars = jarService.listEnabledAll();
+        return Result.succeed(jars,"获取成功");
+    }
 }

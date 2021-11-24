@@ -5,13 +5,14 @@ import {InfoCircleOutlined,PlusOutlined,MinusSquareOutlined,MinusCircleOutlined}
 import styles from "./index.less";
 import {useEffect, useState} from "react";
 import { showTables} from "@/components/Studio/StudioEvent/DDL";
+import {JarStateType} from "@/pages/Jar/model";
 
 const { Option } = Select;
 const { Text } = Typography;
 
 const StudioSetting = (props: any) => {
 
-  const {sessionCluster,clusterConfiguration,current,form,dispatch,tabs,currentSession} = props;
+  const {sessionCluster,clusterConfiguration,current,form,dispatch,tabs,currentSession,jars} = props;
 
   const getClusterOptions = ()=>{
     let itemList = [(<Option key={0} value={0} label={(<><Tag color="default">Local</Tag>本地环境</>)}>
@@ -30,6 +31,17 @@ const StudioSetting = (props: any) => {
   const getClusterConfigurationOptions = ()=>{
     let itemList = [];
     for(let item of clusterConfiguration){
+      let tag =(<><Tag color={item.enabled?"processing":"error"}>{item.type}</Tag>{item.alias}</>);
+      itemList.push(<Option key={item.id} value={item.id} label={tag}>
+        {tag}
+      </Option>)
+    }
+    return itemList;
+  };
+
+  const getJarOptions = ()=>{
+    let itemList = [];
+    for(let item of jars){
       let tag =(<><Tag color={item.enabled?"processing":"error"}>{item.type}</Tag>{item.alias}</>);
       itemList.push(<Option key={item.id} value={item.id} label={tag}>
         {tag}
@@ -128,6 +140,22 @@ const StudioSetting = (props: any) => {
                 optionLabelProp="label"
               >
                 {getClusterConfigurationOptions()}
+              </Select>
+            </Form.Item>
+          </Col>
+        </Row>):''}
+      {(current.task.type=='yarn-application')?(
+        <Row>
+          <Col span={24}>
+            <Form.Item label="可执行 Jar" tooltip={`选择可执行 Jar 进行 ${current.task.type} 模式的远程提交 Jar 任务。当该参数项存在值时，将只提交可执行 Jar.`} name="jarId"
+                       className={styles.form_item}>
+              <Select
+                style={{ width: '100%' }}
+                placeholder="选择可执行Jar，非必填"
+                allowClear
+                optionLabelProp="label"
+              >
+                {getJarOptions()}
               </Select>
             </Form.Item>
           </Col>
@@ -237,11 +265,12 @@ const StudioSetting = (props: any) => {
   );
 };
 
-export default connect(({Studio}: { Studio: StateType }) => ({
+export default connect(({Studio,Jar}: { Studio: StateType,Jar: JarStateType }) => ({
   sessionCluster: Studio.sessionCluster,
   clusterConfiguration: Studio.clusterConfiguration,
   current: Studio.current,
   tabs: Studio.tabs,
   session: Studio.session,
   currentSession: Studio.currentSession,
+  jars: Jar.jars,
 }))(StudioSetting);
