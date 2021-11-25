@@ -64,7 +64,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), task.getClusterId()));
         } else {
             Map<String, Object> gatewayConfig = clusterConfigurationService.getGatewayConfig(task.getClusterConfigurationId());
-            if (GatewayType.YARN_APPLICATION.equals(config.getType())) {
+            if (GatewayType.YARN_APPLICATION.equalsValue(config.getType())) {
                 if(!isJarTask) {
                     SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
                     gatewayConfig.put("userJarPath", systemConfiguration.getSqlSubmitJarPath());
