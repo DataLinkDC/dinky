@@ -15,20 +15,20 @@ const { TabPane } = Tabs;
 const StudioLeftTool = (props:any) => {
 
   return (
-    <Tabs defaultActiveKey="1" size="small" tabPosition="left" style={{ height: "100%",border: "1px solid #f0f0f0"}}>
-      <TabPane tab={<span><BarsOutlined/> 目录</span>} key="StudioTree" >
+    <Tabs defaultActiveKey="1" size="small" tabPosition="left" style={{ height: "100%"}}>
+      <TabPane tab={<span><BarsOutlined/> 目录</span>} key="StudioTree">
         <StudioTree/>
       </TabPane>
-      <TabPane tab={<span><MessageOutlined /> 会话</span>} key="Connectors" >
+      <TabPane tab={<span><MessageOutlined /> 会话</span>} key="Connectors">
         <StudioConnector />
       </TabPane>
-      <TabPane tab={<span><ClusterOutlined /> 集群</span>} key="Cluster" >
+      <TabPane tab={<span><ClusterOutlined /> 集群</span>} key="Cluster">
         <StudioCluster />
       </TabPane>
-      <TabPane tab={<span><DatabaseOutlined /> 数据源</span>} key="DataSource" >
+      <TabPane tab={<span><DatabaseOutlined /> 数据源</span>} key="DataSource">
         <StudioDataBase />
       </TabPane>
-      <TabPane tab={<span><AppstoreOutlined /> 元数据</span>} key="MetaData" >
+      <TabPane tab={<span><AppstoreOutlined /> 元数据</span>} key="MetaData">
         <StudioMetaData />
       </TabPane>
       <TabPane tab={<span><FunctionOutlined /> 函数</span>} key="Function" >

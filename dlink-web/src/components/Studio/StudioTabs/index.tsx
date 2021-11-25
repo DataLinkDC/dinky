@@ -59,7 +59,6 @@ const EditorTabs = (props: any) => {
   };
 
   return (
-    <>
       <Tabs
         hideAdd
         type="editable-card"
@@ -68,7 +67,7 @@ const EditorTabs = (props: any) => {
         activeKey={tabs.activeKey+''}
         onEdit={onEdit}
         className={styles["edit-tabs"]}
-        style={{height:"100%"}}
+        style={{height:"50%"}}
       >
         {tabs.panes.map(pane => (
           <TabPane tab={pane.title} key={pane.key} closable={pane.closable}>
@@ -76,7 +75,7 @@ const EditorTabs = (props: any) => {
           </TabPane>
         ))}
       </Tabs>
-      </>
+
     )
 };
 

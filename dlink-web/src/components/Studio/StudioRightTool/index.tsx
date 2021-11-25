@@ -16,7 +16,7 @@ const StudioRightTool = (props:any) => {
   // const [form] = Form.useForm();
   const {form} = props;
   return (
-    <Tabs defaultActiveKey="1" size="small" tabPosition="right"  style={{ height: "100%",border: "1px solid #f0f0f0"}}>
+    <Tabs defaultActiveKey="1" size="small" tabPosition="right"  style={{ height: "100%",overflow:"auto",border: "1px solid #f0f0f0"}}>
       <TabPane tab={<span><SettingOutlined /> 作业配置</span>} key="StudioSetting" >
         <StudioSetting form={form} />
       </TabPane>

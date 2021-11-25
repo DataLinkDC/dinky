@@ -1,6 +1,6 @@
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
-import {Button, Tag, Space, Typography, Divider, Badge, Drawer, Modal,} from 'antd';
+import {Button, Tag, Space, Typography, Divider, Badge, Drawer, Modal} from 'antd';
 import {MessageOutlined,ClusterOutlined,FireOutlined,ReloadOutlined,RocketOutlined} from "@ant-design/icons";
 import ProList from '@ant-design/pro-list';
 import {handleRemove, queryData} from "@/components/Common/crud";

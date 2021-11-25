@@ -10,7 +10,6 @@ import StudioHistory from "./StudioHistory";
 import StudioFX from "./StudioFX";
 import StudioCA from "./StudioCA";
 import StudioProcess from "./StudioProcess";
-
 const { TabPane } = Tabs;
 
 
@@ -18,7 +17,8 @@ const { TabPane } = Tabs;
 const StudioConsole = (props:any) => {
 
   return (
-    <Tabs defaultActiveKey="StudioMsg" size="small"  tabPosition="top" style={{ border: "1px solid #f0f0f0",margin: "0 32px"}}>
+    <Tabs defaultActiveKey="StudioMsg" size="small"  tabPosition="top" style={{
+      border: "1px solid #f0f0f0",height:"50%",overflow:"auto",width: "100%"}}>
       <TabPane
         tab={
           <span>

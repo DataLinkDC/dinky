@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useRef, useState,useCallback} from "react";
 import {connect} from "umi";
 import styles from './index.less';
 import {} from "@ant-design/icons";
@@ -25,6 +25,41 @@ const Studio: React.FC<StudioProps> = (props) => {
 
   const {rightClickMenu,dispatch} = props;
   const [form] = Form.useForm();
+  const VIEW = {
+    rightToolWidth:300,
+    leftToolWidth:300,
+    marginTop:114,
+  };
+  const [height, setHeight] = useState<number>();
+  const [size, setSize] = useState({
+    width: document.documentElement.clientWidth,
+    height: document.documentElement.clientHeight,
+  });
+  const onResize = useCallback(() => {
+    setSize({
+      width: document.documentElement.clientWidth,
+      height: document.documentElement.clientHeight,
+    })
+  }, []);
+  // const width = document.querySelector('body').offsetWidth;
+  // const height = document.querySelector('body').offsetHeight*(1/2);
+  /*const minWidth = document.querySelector('body').offsetWidth*(1/6);
+  const maxWidth = document.querySelector('body').offsetWidth*(1/2);*/
+ /* const resize=()=>{
+    debugger;
+    setWidth(document.querySelector('body').offsetWidth);
+    setHeight(document.querySelector('body').offsetHeight);
+    console.log(width);
+    console.log(height);
+  };*/
+  useEffect(() => {
+    window.addEventListener('resize', onResize);
+    onResize();
+    return () => {
+      window.removeEventListener('resize', onResize);
+    };
+  }, [onResize]);
+
   loadSettings(dispatch);
   getFillAllByVersion('',dispatch);
   showCluster(dispatch);
@@ -33,6 +68,8 @@ const Studio: React.FC<StudioProps> = (props) => {
   showDataBase(dispatch);
   listSession(dispatch);
   showJars(dispatch);
+
+
 
   const onClick=()=>{
     if(rightClickMenu){
@@ -44,76 +81,52 @@ const Studio: React.FC<StudioProps> = (props) => {
   };
 
   return (
-    // <div onClick={onClick} style={{'margin':'-24px'}}>
-    //   <StudioMenu form={form}/>
-    //   <Card bordered={false} className={styles.card} size="small" id="studio_card">
-    //     <Row>
-    //       <Col span={4} className={styles["vertical-tabs"]}>
-    //         <StudioLeftTool/>
-    //       </Col>
-    //       <Col span={16}>
-    //         <StudioTabs/>
-    //       </Col>
-    //       <Col span={4} className={styles["vertical-tabs"]}>
-    //         <StudioRightTool form={form}/>
-    //       </Col>
-    //     </Row>
-    //     <Row>
-    //       <Col span={24}>
-    //         <StudioConsole/>
-    //       </Col>
-    //     </Row>
-    //   </Card>
-    //   <BackTop />
-    // </div>
     <div onClick={onClick} style={{'margin':'-24px'}}>
       <StudioMenu form={form}/>
       <Card bordered={false} className={styles.card} size="small" id="studio_card">
         <Row>
-          <Col>
             <DraggleLayout
-              containerWidth={1100}
-              containerHeight={1220}
-              min={50}
-              max={600}
-              initLeftWidth={200}
+              containerWidth={size.width-VIEW.rightToolWidth}
+              containerHeight={(size.height-VIEW.marginTop)/2}
+              min={VIEW.leftToolWidth}
+              max={size.width*(1/2)}
+              initLeftWidth={VIEW.leftToolWidth}
               handler={
                 <div
                   style={{
                     width: 4,
                     height: '100%',
-                    background: 'rgb(77, 81, 100)',
+                    background: 'rgb(240, 240, 240)',
                   }}
                 />
               }
             >
-              <StudioLeftTool span={4} className={styles["vertical-tabs"]} style={{
-                backgroundColor: `rgb(36, 205, 208)`,
-                color: `#fff`,
-                height: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}/>
-              <StudioTabs
-                style={{
-                  backgroundColor: `rgb(116, 140, 253)`,
-                  color: `#fff`,
-                  height: '100%',
+              <Col className={styles["vertical-tabs"]}>
+                <StudioLeftTool className={styles["vertical-tabs"]} style={{
+                  height: (size.height-VIEW.marginTop),
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
+                }}/>
+              </Col>
+              <Col
+                style={{
+                  height: ((size.height-VIEW.marginTop)),
+                }}>
+              <StudioTabs
+                style={{
+                  height: ((size.height-VIEW.marginTop)/2),
                 }}
               />
+              <StudioConsole
+                style={{
+                  height: ((size.height-VIEW.marginTop)/2),
+                }}
+              />
+              </Col>
             </DraggleLayout>
-          </Col>
-          <Col span={4} className={styles["vertical-tabs"]}>
+          <Col id='StudioRightTool' style={{width:VIEW.rightToolWidth,height:(size.height-VIEW.marginTop)}} className={styles["vertical-tabs"]}>
             <StudioRightTool form={form}/>
-          </Col>
-        </Row>
-        <Row>
-          <Col span={24}>
-            <StudioConsole/>
           </Col>
         </Row>
       </Card>
