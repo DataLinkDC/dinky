@@ -30,28 +30,17 @@ const Studio: React.FC<StudioProps> = (props) => {
     leftToolWidth:300,
     marginTop:114,
   };
-  const [height, setHeight] = useState<number>();
   const [size, setSize] = useState({
-    width: document.documentElement.clientWidth,
+    width: document.documentElement.clientWidth-1,
     height: document.documentElement.clientHeight,
   });
   const onResize = useCallback(() => {
     setSize({
-      width: document.documentElement.clientWidth,
+      width: document.documentElement.clientWidth-1,
       height: document.documentElement.clientHeight,
     })
   }, []);
-  // const width = document.querySelector('body').offsetWidth;
-  // const height = document.querySelector('body').offsetHeight*(1/2);
-  /*const minWidth = document.querySelector('body').offsetWidth*(1/6);
-  const maxWidth = document.querySelector('body').offsetWidth*(1/2);*/
- /* const resize=()=>{
-    debugger;
-    setWidth(document.querySelector('body').offsetWidth);
-    setHeight(document.querySelector('body').offsetHeight);
-    console.log(width);
-    console.log(height);
-  };*/
+
   useEffect(() => {
     window.addEventListener('resize', onResize);
     onResize();
@@ -69,8 +58,6 @@ const Studio: React.FC<StudioProps> = (props) => {
   listSession(dispatch);
   showJars(dispatch);
 
-
-
   const onClick=()=>{
     if(rightClickMenu){
       dispatch&&dispatch({
@@ -83,7 +70,7 @@ const Studio: React.FC<StudioProps> = (props) => {
   return (
     <div onClick={onClick} style={{'margin':'-24px'}}>
       <StudioMenu form={form}/>
-      <Card bordered={false} className={styles.card} size="small" id="studio_card">
+      <Card bordered={false} className={styles.card} size="small" id="studio_card" style={{marginBottom:0}}>
         <Row>
             <DraggleLayout
               containerWidth={size.width-VIEW.rightToolWidth}

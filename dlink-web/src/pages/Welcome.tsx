@@ -414,6 +414,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增yarn-application 的自定义Jar提交</Link>
                 </li>
+                <li>
+                  <Link>优化 Studio 页面布局与拖动</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>
