@@ -28,7 +28,7 @@ const Studio: React.FC<StudioProps> = (props) => {
   const VIEW = {
     rightToolWidth:300,
     leftToolWidth:300,
-    marginTop:114,
+    marginTop:116,
   };
   const [size, setSize] = useState({
     width: document.documentElement.clientWidth-1,
