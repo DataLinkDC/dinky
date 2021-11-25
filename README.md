@@ -47,6 +47,7 @@ DataLink 开源项目及社区正在建设，希望本项目可以帮助你更�
 |                     |         yarn session SQL提交         |  已实现  |
 |                     |         yarn per-job SQL提交         |  已实现  |
 |                     |       yarn application SQL提交       |  已实现  |
+|                     |       yarn application Jar提交       |  已实现  |
 |                     |             作业 Cancel              |  已实现  |
 |                     |  作业 SavePoint Cancel,Stop,Trigger  |  已实现  |
 |                     |        作业从 SavePoint 恢复         |  已实现  |

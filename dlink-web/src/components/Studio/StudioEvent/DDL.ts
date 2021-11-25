@@ -144,6 +144,16 @@ export function showDataBase(dispatch: any) {
     });
   });
 }
+/*--- 刷新 自定义Jar ---*/
+export function showJars(dispatch: any) {
+  const res = getData('api/jar/listEnabledAll');
+  res.then((result) => {
+    result.datas && dispatch && dispatch({
+      type: "Jar/saveJars",
+      payload: result.datas,
+    });
+  });
+}
 /*--- 刷新 元数据表 ---*/
 export function showMetaDataTable(id:number) {
   return getData('api/database/getSchemasAndTables',{id:id});

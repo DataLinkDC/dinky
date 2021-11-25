@@ -411,6 +411,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>优化项目结构与打包结构</Link>
                 </li>
+                <li>
+                  <Link>新增yarn-application 的自定义Jar提交</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

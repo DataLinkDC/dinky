@@ -13,7 +13,7 @@ import StudioLeftTool from "./StudioLeftTool";
 import StudioRightTool from "./StudioRightTool";
 import {
   listSession, showCluster, showDataBase, getFillAllByVersion,
-  showClusterConfiguration,showSessionCluster
+  showClusterConfiguration, showSessionCluster, showJars
 } from "@/components/Studio/StudioEvent/DDL";
 import {loadSettings} from "@/pages/Settings/function";
 
@@ -33,6 +33,7 @@ const Studio: React.FC<StudioProps> = (props) => {
   showClusterConfiguration(dispatch);
   showDataBase(dispatch);
   listSession(dispatch);
+  showJars(dispatch);
 
   const onClick=()=>{
     if(rightClickMenu){

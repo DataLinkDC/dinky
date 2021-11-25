@@ -3,6 +3,8 @@ package com.dlink.service;
 import com.dlink.db.service.ISuperService;
 import com.dlink.model.Jar;
 
+import java.util.List;
+
 /**
  * JarService
  *
@@ -11,4 +13,5 @@ import com.dlink.model.Jar;
  **/
 public interface JarService extends ISuperService<Jar> {
 
+    List<Jar> listEnabledAll();
 }
