@@ -69,6 +69,7 @@ const DataBaseTableList: React.FC<{}> = (props: any) => {
         renderItem={(row) => {
           return (
             <Card
+
               style={{width: 300}}
               hoverable={true}
               bodyStyle={cardBodyStyle}
