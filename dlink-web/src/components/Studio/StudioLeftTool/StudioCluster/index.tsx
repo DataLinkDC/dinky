@@ -205,15 +205,13 @@ const StudioCluster = (props: any) => {
           onClick={onCreateCluster}
         />
       </Tooltip>
-      <div style={{float: "right"}}>
-        <Tooltip title="刷新 Flink 集群">
-          <Button
-            type="text"
-            icon={<ReloadOutlined/>}
-            onClick={onRefreshCluster}
-          />
-        </Tooltip>
-      </div>
+      <Tooltip title="刷新 Flink 集群">
+        <Button
+          type="text"
+          icon={<ReloadOutlined/>}
+          onClick={onRefreshCluster}
+        />
+      </Tooltip>
       <Scrollbars style={{height: (toolHeight - 32)}}>
         {cluster.length > 0 ? (
           <Table dataSource={cluster} columns={getColumns()} size="small"/>) : (

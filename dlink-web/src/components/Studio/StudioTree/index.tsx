@@ -345,7 +345,6 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     <div className={style.tree_div} >
       <Row>
         <Col span={24}>
-      <div style={{float: "right"}}>
         <Tooltip title="创建根目录">
           <Button
           type="text"
@@ -360,7 +359,6 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
           onClick={offExpandAll}
           />
         </Tooltip>
-      </div>
         </Col>
       </Row>
       <Scrollbars  style={{height:(toolHeight-32)}}>

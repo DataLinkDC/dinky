@@ -68,15 +68,13 @@ const StudioDataBase = (props: any) => {
           onClick={onCreateDataBase}
         />
       </Tooltip>
-      <div style={{float: "right"}}>
-        <Tooltip title="刷新数据源">
-          <Button
-            type="text"
-            icon={<ReloadOutlined/>}
-            onClick={onRefreshDataBase}
-          />
-        </Tooltip>
-      </div>
+      <Tooltip title="刷新数据源">
+        <Button
+          type="text"
+          icon={<ReloadOutlined/>}
+          onClick={onRefreshDataBase}
+        />
+      </Tooltip>
       <Scrollbars style={{height: (toolHeight - 32)}}>
       {database.length > 0 ? (
         <Table dataSource={database} columns={getColumns()} size="small"/>) : (

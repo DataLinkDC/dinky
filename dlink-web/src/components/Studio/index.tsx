@@ -24,14 +24,16 @@ type StudioProps = {
 
 const Studio: React.FC<StudioProps> = (props) => {
 
-  const {rightClickMenu, toolHeight, toolWidth, dispatch} = props;
+  const {rightClickMenu, toolHeight, toolLeftWidth,toolRightWidth, dispatch} = props;
   const [form] = Form.useForm();
   const VIEW = {
-    rightToolWidth: 300,
     leftToolWidth: 300,
     marginTop: 116,
     topHeight: 35.6,
     bottomHeight: 153.6,
+    rightMargin: 32,
+    leftMargin: 36,
+    midMargin: 46,
   };
   const [size, setSize] = useState({
     width: document.documentElement.clientWidth - 1,
@@ -92,11 +94,12 @@ const Studio: React.FC<StudioProps> = (props) => {
         >
           <Row>
             <DraggleLayout
-              containerWidth={size.width - VIEW.rightToolWidth}
+              containerWidth={size.width}
               containerHeight={toolHeight}
-              min={VIEW.leftToolWidth}
-              max={size.width * (1 / 2)}
-              initLeftWidth={VIEW.leftToolWidth}
+              min={VIEW.leftMargin+VIEW.midMargin}
+              max={size.width - VIEW.rightMargin}
+              initLeftWidth={size.width - toolRightWidth}
+              isLeft={false}
               handler={
                 <div
                   style={{
@@ -107,20 +110,38 @@ const Studio: React.FC<StudioProps> = (props) => {
                 />
               }
             >
-              <Col className={styles["vertical-tabs"]}>
-                <StudioLeftTool style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}/>
-              </Col>
-              <Col>
-                <StudioTabs width={size.width - VIEW.rightToolWidth - toolWidth}/>
+              <DraggleLayout
+                containerWidth={size.width - toolRightWidth}
+                containerHeight={toolHeight}
+                min={VIEW.leftMargin}
+                max={size.width - VIEW.rightMargin - VIEW.midMargin}
+                initLeftWidth={toolLeftWidth}
+                isLeft={true}
+                handler={
+                  <div
+                    style={{
+                      width: 4,
+                      height: '100%',
+                      background: 'rgb(240, 240, 240)',
+                    }}
+                  />
+                }
+              >
+                <Col className={styles["vertical-tabs"]}>
+                  <StudioLeftTool style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}/>
+                </Col>
+                <Col>
+                  <StudioTabs width={size.width - toolRightWidth - toolLeftWidth}/>
+                </Col>
+              </DraggleLayout>
+              <Col id='StudioRightTool' className={styles["vertical-tabs"]}>
+                <StudioRightTool form={form}/>
               </Col>
             </DraggleLayout>
-            <Col id='StudioRightTool' style={{width: VIEW.rightToolWidth}} className={styles["vertical-tabs"]}>
-              <StudioRightTool form={form}/>
-            </Col>
           </Row>
           <Row>
             <Col span={24}>
@@ -137,5 +158,6 @@ const Studio: React.FC<StudioProps> = (props) => {
 export default connect(({Studio}: { Studio: StateType }) => ({
   rightClickMenu: Studio.rightClickMenu,
   toolHeight: Studio.toolHeight,
-  toolWidth: Studio.toolWidth,
+  toolLeftWidth: Studio.toolLeftWidth,
+  toolRightWidth: Studio.toolRightWidth,
 }))(Studio);

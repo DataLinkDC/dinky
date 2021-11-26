@@ -68,15 +68,13 @@ const StudioMetaData = (props: any) => {
       >
         {getDataBaseOptions()}
       </Select>
-      <div style={{float: "right"}}>
-        <Tooltip title="刷新元数据表">
-          <Button
-            type="text"
-            icon={<ReloadOutlined/>}
-            onClick={onRefreshTreeData}
-          />
-        </Tooltip>
-      </div>
+      <Tooltip title="刷新元数据表">
+        <Button
+          type="text"
+          icon={<ReloadOutlined/>}
+          onClick={onRefreshTreeData}
+        />
+      </Tooltip>
       <Scrollbars style={{height: (toolHeight - 32)}}>
       <DirectoryTree
         multiple

@@ -261,7 +261,6 @@ const StudioConnector = (props: any) => {
           onClick={createSessions}
         />
       </Tooltip>
-      <div style={{float: "right"}}>
         {session.length > 0 ? (
           <Tooltip title="切换会话">
             <Button
@@ -295,7 +294,6 @@ const StudioConnector = (props: any) => {
               />
             </Tooltip>
           </>)}
-      </div>
       <Scrollbars style={{height: (toolHeight - 32)}}>
       {currentSession.connectors && currentSession.connectors.length > 0 ? (
         <Table dataSource={currentSession.connectors} columns={getColumns()} size="small"/>) : (
