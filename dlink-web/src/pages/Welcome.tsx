@@ -417,6 +417,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>优化 Studio 页面布局与拖动</Link>
                 </li>
+                <li>
+                  <Link>新增全模块实时的布局拖动与滚动条联动</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>
