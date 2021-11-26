@@ -13,15 +13,14 @@ import {
 } from '@ant-design/icons';
 import React from "react";
 import {showMetaDataTable} from "@/components/Studio/StudioEvent/DDL";
-import {convertToTreeData} from "@/components/Studio/StudioTree/Function";
-import {getCatalogueTreeData} from "@/pages/FlinkSqlStudio/service";
+import { Scrollbars } from 'react-custom-scrollbars';
 
 const { DirectoryTree } = Tree;
 const {Option} = Select;
 
 const StudioMetaData = (props: any) => {
 
-  const {database, dispatch} = props;
+  const {database,toolHeight, dispatch} = props;
   const [databaseId, setDataBaseId] = useState<number>();
   const [treeData, setTreeData] = useState<[]>([]);
 
@@ -69,25 +68,26 @@ const StudioMetaData = (props: any) => {
       >
         {getDataBaseOptions()}
       </Select>
-      <div style={{float: "right"}}>
-        <Tooltip title="刷新元数据表">
-          <Button
-            type="text"
-            icon={<ReloadOutlined/>}
-            onClick={onRefreshTreeData}
-          />
-        </Tooltip>
-      </div>
+      <Tooltip title="刷新元数据表">
+        <Button
+          type="text"
+          icon={<ReloadOutlined/>}
+          onClick={onRefreshTreeData}
+        />
+      </Tooltip>
+      <Scrollbars style={{height: (toolHeight - 32)}}>
       <DirectoryTree
         multiple
         switcherIcon={<DownOutlined/>}
         treeData={treeData}
         height={400}
       />
+      </Scrollbars>
     </>
   );
 };
 
 export default connect(({Studio}: { Studio: StateType }) => ({
   database: Studio.database,
+  toolHeight: Studio.toolHeight,
 }))(StudioMetaData);

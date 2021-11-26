@@ -12,7 +12,7 @@ export default defineConfig({
     babelPlugins: [],
     babelOptions: {},
   },
-  webpack5: {
+  /*webpack5: {
     // lazyCompilation: {},
-  },
+  },*/
 });

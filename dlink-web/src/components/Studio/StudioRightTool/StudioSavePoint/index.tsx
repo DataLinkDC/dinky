@@ -1,17 +1,18 @@
 import React, {useRef, useState} from "react";
-import {DownOutlined, HeartOutlined, PlusOutlined, UserOutlined} from '@ant-design/icons';
+import {MinusSquareOutlined} from '@ant-design/icons';
 import {ActionType, ProColumns} from "@ant-design/pro-table";
-import {Drawer,Table} from 'antd';
+import {Drawer,Row,Col,Tooltip,Button} from 'antd';
 import ProTable from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import {queryData} from "@/components/Common/crud";
 import {SavePointTableListItem} from "@/components/Studio/StudioRightTool/StudioSavePoint/data";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
+import { Scrollbars } from 'react-custom-scrollbars';
 
 const url = '/api/savepoints';
 const StudioSavePoint: React.FC<{}> = (props: any) => {
-  const {current,dispatch} = props;
+  const {current,toolHeight,dispatch} = props;
   const [row, setRow] = useState<SavePointTableListItem>();
   const actionRef = useRef<ActionType>();
 
@@ -70,6 +71,19 @@ const StudioSavePoint: React.FC<{}> = (props: any) => {
 
   return (
     <>
+      <Row>
+        <Col span={24}>
+          <div style={{float: "right"}}>
+            <Tooltip title="最小化">
+              <Button
+                type="text"
+                icon={<MinusSquareOutlined />}
+              />
+            </Tooltip>
+          </div>
+        </Col>
+      </Row>
+      <Scrollbars  style={{height:(toolHeight-32)}}>
       <ProTable<SavePointTableListItem>
         actionRef={actionRef}
         rowKey="id"
@@ -99,10 +113,12 @@ const StudioSavePoint: React.FC<{}> = (props: any) => {
               />
               )}
         </Drawer>
+      </Scrollbars>
     </>
 );
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
   current: Studio.current,
+  toolHeight: Studio.toolHeight,
 }))(StudioSavePoint);

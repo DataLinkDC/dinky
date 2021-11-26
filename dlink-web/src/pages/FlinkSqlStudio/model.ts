@@ -122,6 +122,9 @@ export type SessionType = {
 }
 
 export type StateType = {
+  toolHeight?: number;
+  toolRightWidth?: number;
+  toolLeftWidth?: number;
   cluster?: ClusterType[];
   sessionCluster?: ClusterType[];
   clusterConfiguration?: ClusterConfigurationType[];
@@ -147,6 +150,9 @@ export type ModelType = {
     saveTask: Effect;
   };
   reducers: {
+    saveToolHeight: Reducer<StateType>;
+    saveToolRightWidth: Reducer<StateType>;
+    saveToolLeftWidth: Reducer<StateType>;
     saveSql: Reducer<StateType>;
     saveCurrentPath: Reducer<StateType>;
     saveMonaco: Reducer<StateType>;
@@ -169,6 +175,9 @@ export type ModelType = {
 const Model: ModelType = {
   namespace: 'Studio',
   state: {
+    toolHeight: 400,
+    toolRightWidth: 300,
+    toolLeftWidth: 300,
     cluster: [],
     sessionCluster: [],
     clusterConfiguration: [],
@@ -271,6 +280,22 @@ const Model: ModelType = {
   },
 
   reducers: {
+    saveToolHeight(state, {payload}) {
+      return {
+        ...state,
+        toolHeight: payload,
+      };
+    },saveToolRightWidth(state, {payload}) {
+      return {
+        ...state,
+        toolRightWidth: payload,
+      };
+    },saveToolLeftWidth(state, {payload}) {
+      return {
+        ...state,
+        toolLeftWidth: payload,
+      };
+    },
     saveSql(state, {payload}) {
       const tabs = state.tabs;
       let newCurrent = state.current;

@@ -109,14 +109,25 @@
             <groupId>com.dlink</groupId>
             <artifactId>dlink-common</artifactId>
         </dependency>
-
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-metadata-base</artifactId>
         </dependency>
         <dependency>
             <groupId>com.dlink</groupId>
+            <artifactId>dlink-client-1.13</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.dlink</groupId>
             <artifactId>dlink-executor</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-connector-jdbc-1.13</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-function</artifactId>
         </dependency>
         <dependency>
             <groupId>com.dlink</groupId>
@@ -135,7 +146,19 @@
                     <excludes>
                         <exclude>
                             <groupId>com.dlink</groupId>
+                            <artifactId>dlink-client-1.13</artifactId>
+                        </exclude>
+                        <exclude>
+                            <groupId>com.dlink</groupId>
+                            <artifactId>dlink-function</artifactId>
+                        </exclude>
+                        <exclude>
+                            <groupId>com.dlink</groupId>
                             <artifactId>dlink-executor</artifactId>
+                        </exclude>
+                        <exclude>
+                            <groupId>com.dlink</groupId>
+                            <artifactId>dlink-connector-jdbc-1.13</artifactId>
                         </exclude>
                         <exclude>
                             <groupId>com.dlink</groupId>

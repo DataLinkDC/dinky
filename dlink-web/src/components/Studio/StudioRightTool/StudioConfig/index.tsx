@@ -8,13 +8,14 @@ import {InfoCircleOutlined,PlusOutlined,MinusSquareOutlined} from "@ant-design/i
 import styles from "./index.less";
 import {useEffect, useState} from "react";
 import {showTables} from "@/components/Studio/StudioEvent/DDL";
+import { Scrollbars } from 'react-custom-scrollbars';
 
 const { Option } = Select;
 const { Text } = Typography;
 
 const StudioConfig = (props: any) => {
 
-  const {current,form,dispatch,tabs,currentSession} = props;
+  const {current,form,dispatch,tabs,currentSession,toolHeight} = props;
 
   form.setFieldsValue(current.task);
 
@@ -50,6 +51,7 @@ const StudioConfig = (props: any) => {
           </div>
         </Col>
       </Row>
+      <Scrollbars style={{height:(toolHeight-32)}}>
     <Form
       form={form}
       layout="vertical"
@@ -86,6 +88,7 @@ const StudioConfig = (props: any) => {
         }
       </Form.Item>
     </Form>
+      </Scrollbars>
       </>
   );
 };
@@ -95,4 +98,5 @@ export default connect(({Studio}: { Studio: StateType }) => ({
   current: Studio.current,
   currentSession: Studio.currentSession,
   tabs: Studio.tabs,
+  toolHeight: Studio.toolHeight,
 }))(StudioConfig);

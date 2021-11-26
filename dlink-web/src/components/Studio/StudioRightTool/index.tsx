@@ -7,16 +7,15 @@ import StudioConfig from "./StudioConfig";
 import StudioSetting from "./StudioSetting";
 import StudioSavePoint from "./StudioSavePoint";
 
-
 const { TabPane } = Tabs;
 
 
 
 const StudioRightTool = (props:any) => {
   // const [form] = Form.useForm();
-  const {form} = props;
+  const {form,toolHeight} = props;
   return (
-    <Tabs defaultActiveKey="1" size="small" tabPosition="right"  style={{ height: "100%",border: "1px solid #f0f0f0"}}>
+    <Tabs defaultActiveKey="1" size="small" tabPosition="right"  style={{ height: toolHeight}}>
       <TabPane tab={<span><SettingOutlined /> 作业配置</span>} key="StudioSetting" >
         <StudioSetting form={form} />
       </TabPane>
@@ -35,4 +34,5 @@ const StudioRightTool = (props:any) => {
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
   sql: Studio.sql,
+  toolHeight: Studio.toolHeight,
 }))(StudioRightTool);
