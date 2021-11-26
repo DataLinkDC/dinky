@@ -17,41 +17,53 @@
   background-color: #ffffff;
 }
 
+
+
 :global {
 
+  /* --- tool窗口 滚动条 --- start */
+  .scrollbars-tool{
+    height: calc((100vh - 116px)/2 - 32px)!important;
+  }
+  /* --- tool窗口 滚动条 --- end */
+  /* --- 水平 tabs --- start */
+  .ant-tabs-top > .ant-tabs-nav, .ant-tabs-bottom > .ant-tabs-nav, .ant-tabs-top > div > .ant-tabs-nav, .ant-tabs-bottom > div > .ant-tabs-nav {
+    margin: 0;
+  }
+  /* --- 水平 tabs --- end */
   /* --- card 内偏移样式 --- start */
   #studio_card > .ant-card-body {
     padding: 0px;
   }
-  /* --- card 内偏移样式 --- start */
+  /* --- card 内偏移样式 --- end */
   /* --- list toolbar隐藏滚动条 --- start */
   .ant-pro-table-list-toolbar {
     overflow-x: hidden;
     overflow-y: hidden;
     line-height: 1;
   }
-  /* --- list toolbar隐藏滚动条 --- start */
+  /* --- list toolbar隐藏滚动条 --- end */
   /* --- list toolbar修改内偏移 --- start */
   .ant-pro-table-list-toolbar-container {
     padding: 0;
   }
-  /* --- list toolbar修改内偏移 --- start */
+  /* --- list toolbar修改内偏移 --- end */
   /* --- prodescription item宽度 --- start */
   .ant-descriptions-item-content {
     width: 100%;
   }
-  /* --- prodescription item宽度 --- start */
+  /* --- prodescription item宽度 --- end */
   /* --- table 宽度 --- start */
   .ant-table-wrapper {
     width: 100%;
   }
-  /* --- table 宽度 --- start */
+  /* --- table 宽度 --- end */
   /* --- 右键菜单选项 高度 --- start */
   .ant-menu-vertical > .ant-menu-item, .ant-menu-vertical-left > .ant-menu-item, .ant-menu-vertical-right > .ant-menu-item, .ant-menu-inline > .ant-menu-item, .ant-menu-vertical > .ant-menu-submenu > .ant-menu-submenu-title, .ant-menu-vertical-left > .ant-menu-submenu > .ant-menu-submenu-title, .ant-menu-vertical-right > .ant-menu-submenu > .ant-menu-submenu-title, .ant-menu-inline > .ant-menu-submenu > .ant-menu-submenu-title {
     height: 30px;
     line-height: 30px;
   }
-  /* --- 右键菜单选项 高度 --- start */
+  /* --- 右键菜单选项 高度 --- end */
 }
 
 /* --- tabs 垂直样式 --- start */

@@ -13,6 +13,7 @@ import {
 import UpdateCatalogueForm from './components/UpdateCatalogueForm';
 import {ActionType} from "@ant-design/pro-table";
 import UpdateTaskForm from "@/components/Studio/StudioTree/components/UpdateTaskForm";
+import { Scrollbars } from 'react-custom-scrollbars';
 
 const { DirectoryTree } = Tree;
 
@@ -48,7 +49,7 @@ const getParentKey = (key, tree) => {
 };
 
 const StudioTree: React.FC<StudioTreeProps> = (props) => {
-  const {rightClickMenu,dispatch,tabs,refs} = props;
+  const {rightClickMenu,dispatch,tabs,refs,toolHeight} = props;
 
   const [treeData, setTreeData] = useState<TreeDataNode[]>();
   const [dataList, setDataList] = useState<[]>();
@@ -362,6 +363,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       </div>
         </Col>
       </Row>
+      <Scrollbars  style={{height:(toolHeight-32)}}>
       {/*<Search style={{marginBottom: 8}} placeholder="Search" onChange={onChange}/>*/}
         <DirectoryTree
           multiple
@@ -415,6 +417,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
           isCreate={isCreate}
         />
       ) : null}
+      </Scrollbars>
     </div>
   );
 };
@@ -425,4 +428,5 @@ export default connect(({Studio}: { Studio: StateType }) => ({
   tabs: Studio.tabs,
   rightClickMenu: Studio.rightClickMenu,
   refs: Studio.refs,
+  toolHeight: Studio.toolHeight,
 }))(StudioTree);

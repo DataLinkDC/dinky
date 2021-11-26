@@ -13,10 +13,11 @@ import {
 import React from "react";
 import {showDataBase} from "../../StudioEvent/DDL";
 import DBForm from "@/pages/DataBase/components/DBForm";
+import { Scrollbars } from 'react-custom-scrollbars';
 
 const StudioDataBase = (props: any) => {
 
-  const {database, dispatch} = props;
+  const {database,toolHeight, dispatch} = props;
   const [chooseDBModalVisible, handleDBFormModalVisible] = useState<boolean>(false);
   const [values, setValues] = useState<any>({});
 
@@ -76,6 +77,7 @@ const StudioDataBase = (props: any) => {
           />
         </Tooltip>
       </div>
+      <Scrollbars style={{height: (toolHeight - 32)}}>
       {database.length > 0 ? (
         <Table dataSource={database} columns={getColumns()} size="small"/>) : (
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>)}
@@ -90,10 +92,12 @@ const StudioDataBase = (props: any) => {
         }}
         values={values}
       />
+      </Scrollbars>
     </>
   );
 };
 
 export default connect(({Studio}: { Studio: StateType }) => ({
   database: Studio.database,
+  toolHeight: Studio.toolHeight,
 }))(StudioDataBase);

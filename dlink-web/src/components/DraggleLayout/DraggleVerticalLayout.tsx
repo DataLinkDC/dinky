@@ -1,37 +1,37 @@
 import React, { useRef, useState } from 'react';
 import useDraggable from '../../hooks/useDraggable';
-import styles from './DraggleLayout.less';
+import styles from './DraggleVerticalLayout.less';
 import {connect} from "umi";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 
-function DraggleLayout({
-   children, // 两列布局
-   min = 400, // 左侧最小宽度
-   max = Infinity, // 左侧最大宽度
+function DraggleVerticalLayout({
+   children, // 两行布局
+   min = 100, // 顶部最小高度
+   max = Infinity, // 底部最大高度
    containerWidth = 0, // 容器宽度
    containerHeight = 0, // 容器高度
-   initLeftWidth = 0, // 初始左侧容器宽度
+   initTopHeight = 0, // 初始顶部容器高度
    handler = null, // 拖拽器
-   onWidthChange = width => width, // 左侧容器高度变化
-   toolWidth,
-   dispatch
+   onHeightChange = height => height, // 左侧容器高度变化
+   toolHeight,
+   dispatch,
  }) {
   const ref = useRef(null);
 
-  const [position, setPosition] = useState({ x: initLeftWidth, y: 0 });
+  const [position, setPosition] = useState({ x: 0, y: toolHeight });
 
   const [props] = useDraggable(
     ref,
     {
       onMouseMove: ({ x, y }) => {
-        let _x = x;
-        if (_x < min) _x = min;
-        if (_x > max) _x = max;
-        if (onWidthChange) onWidthChange(_x);
-        setPosition({ x: _x, y });
+        let _y = y;
+        if (_y < min) _y = min;
+        if (_y > max) _y = max;
+        if (onHeightChange) onHeightChange(_y);
+        setPosition({ x, y:_y });
         dispatch&&dispatch({
-          type: "Studio/saveToolWidth",
-          payload: _x,
+          type: "Studio/saveToolHeight",
+          payload: _y,
         });
       },
     },
@@ -55,7 +55,7 @@ function DraggleLayout({
       className={styles.root}
       style={{ width: containerWidth, height: containerHeight }}
     >
-      <div className={styles.left} style={{ width: position.x }}>
+      <div className={styles.top} style={{ height: position.y }}>
         {children[0]}
 
         <div className={styles.handler} {...props}>
@@ -63,8 +63,8 @@ function DraggleLayout({
         </div>
       </div>
       <div
-        className={styles.right}
-        style={{ width: containerWidth - position.x }}
+        className={styles.bottom}
+        style={{ height: containerHeight - position.y }}
       >
         {children[1]}
       </div>
@@ -73,5 +73,5 @@ function DraggleLayout({
 }
 
 export default connect(({Studio}: { Studio: StateType }) => ({
-  toolWidth: Studio.toolWidth,
-}))(DraggleLayout);
+  toolHeight: Studio.toolHeight,
+}))(DraggleVerticalLayout);

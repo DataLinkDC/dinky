@@ -13,9 +13,10 @@ import StudioMetaData from "./StudioMetaData";
 const { TabPane } = Tabs;
 
 const StudioLeftTool = (props:any) => {
+  const {toolHeight} = props;
 
   return (
-    <Tabs defaultActiveKey="1" size="small" tabPosition="left" style={{ height: "100%"}}>
+    <Tabs defaultActiveKey="1" size="small" tabPosition="left" style={{ height: toolHeight}}>
       <TabPane tab={<span><BarsOutlined/> 目录</span>} key="StudioTree">
         <StudioTree/>
       </TabPane>
@@ -40,4 +41,5 @@ const StudioLeftTool = (props:any) => {
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
   sql: Studio.sql,
+  toolHeight: Studio.toolHeight,
 }))(StudioLeftTool);

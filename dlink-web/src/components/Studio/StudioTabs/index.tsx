@@ -1,14 +1,15 @@
-import {message, Tabs } from 'antd';
+import {message, Tabs} from 'antd';
 import React, {useState} from 'react';
 import {connect} from "umi";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import styles from './index.less';
 import StudioEdit from '../StudioEdit';
 import {saveTask} from "@/components/Studio/StudioEvent/DDL";
-const { TabPane } = Tabs;
+
+const {TabPane} = Tabs;
 
 const EditorTabs = (props: any) => {
-  const {tabs,dispatch,current} = props;
+  const {tabs, dispatch, current, toolHeight,width} = props;
 
   const onChange = (activeKey: any) => {
     dispatch({
@@ -18,11 +19,11 @@ const EditorTabs = (props: any) => {
   };
 
   const onEdit = (targetKey: any, action: any) => {
-    if(action=='add'){
+    if (action == 'add') {
       add();
-    }else if(action=='remove'){
-      if(current.isModified){
-        saveTask(current,dispatch);
+    } else if (action == 'remove') {
+      if (current.isModified) {
+        saveTask(current, dispatch);
       }
       remove(targetKey);
     }
@@ -32,7 +33,7 @@ const EditorTabs = (props: any) => {
     message.warn('敬请期待');
   };
 
-  const remove = (targetKey:any) => {
+  const remove = (targetKey: any) => {
     let newActiveKey = tabs.activeKey;
     let lastIndex = 0;
     tabs.panes.forEach((pane, i) => {
@@ -52,35 +53,35 @@ const EditorTabs = (props: any) => {
     dispatch({
       type: "Studio/saveTabs",
       payload: {
-        activeKey:newActiveKey,
-        panes:newPanes,
+        activeKey: newActiveKey,
+        panes: newPanes,
       },
     });
   };
-
   return (
-      <Tabs
-        hideAdd
-        type="editable-card"
-        size="small"
-        onChange={onChange}
-        activeKey={tabs.activeKey+''}
-        onEdit={onEdit}
-        className={styles["edit-tabs"]}
-        style={{height:"50%"}}
-      >
-        {tabs.panes.map(pane => (
-          <TabPane tab={pane.title} key={pane.key} closable={pane.closable}>
-            <StudioEdit tabsKey={pane.key} height='100%'/>
-          </TabPane>
-        ))}
-      </Tabs>
+    <Tabs
+      hideAdd
+      type="editable-card"
+      size="small"
+      onChange={onChange}
+      activeKey={tabs.activeKey + ''}
+      onEdit={onEdit}
+      className={styles["edit-tabs"]}
+      style={{height: toolHeight}}
+    >
+      {tabs.panes.map(pane => (
+        <TabPane tab={pane.title} key={pane.key} closable={pane.closable}>
+          <StudioEdit tabsKey={pane.key} height={(toolHeight - 32)} width={width}/>
+        </TabPane>
+      ))}
+    </Tabs>
 
-    )
+  )
 };
 
-export default connect(({ Studio }: { Studio: StateType }) => ({
+export default connect(({Studio}: { Studio: StateType }) => ({
   current: Studio.current,
   sql: Studio.sql,
   tabs: Studio.tabs,
+  toolHeight: Studio.toolHeight,
 }))(EditorTabs);

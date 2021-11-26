@@ -1,6 +1,6 @@
 import {
   message, Button, Table, Empty, Divider,
-  Tooltip,Drawer
+  Tooltip, Drawer
 } from "antd";
 import ProDescriptions from '@ant-design/pro-descriptions';
 import {StateType} from "@/pages/FlinkSqlStudio/model";
@@ -15,11 +15,11 @@ import React from "react";
 import {showCluster} from "../../StudioEvent/DDL";
 import {handleAddOrUpdate} from "@/components/Common/crud";
 import ClusterForm from "@/pages/Cluster/components/ClusterForm";
-import {SavePointTableListItem} from "@/components/Studio/StudioRightTool/StudioSavePoint/data";
+import {Scrollbars} from 'react-custom-scrollbars';
 
 const StudioCluster = (props: any) => {
 
-  const {cluster, dispatch} = props;
+  const {cluster, toolHeight, dispatch} = props;
   const [createModalVisible, handleCreateModalVisible] = useState<boolean>(false);
   const [row, setRow] = useState<{}>();
 
@@ -40,7 +40,7 @@ const StudioCluster = (props: any) => {
       title: "集群名",
       dataIndex: "alias",
       key: "alias",
-    },{
+    }, {
       title: '名称',
       dataIndex: 'name',
     },
@@ -88,7 +88,7 @@ const StudioCluster = (props: any) => {
         title: '当前 JobManager 地址',
         sorter: true,
         dataIndex: 'jobManagerHost',
-      },{
+      }, {
         title: '版本',
         sorter: true,
         dataIndex: 'version',
@@ -167,25 +167,25 @@ const StudioCluster = (props: any) => {
         valueType: 'dateTime',
       },
       {
-      title: '操作',
-      dataIndex: 'option',
-      valueType: 'option',
-      render: (_, record) => [
-        <a
-          onClick={() => {
-            message.success('敬请期待');
-          }}
-        >
-          详情
-        </a>, <Divider type="vertical"/>, <a
-          onClick={() => {
-            message.success('敬请期待');
-          }}
-        >
-          管理
-        </a>
-      ],
-    },];
+        title: '操作',
+        dataIndex: 'option',
+        valueType: 'option',
+        render: (_, record) => [
+          <a
+            onClick={() => {
+              message.success('敬请期待');
+            }}
+          >
+            详情
+          </a>, <Divider type="vertical"/>, <a
+            onClick={() => {
+              message.success('敬请期待');
+            }}
+          >
+            管理
+          </a>
+        ],
+      },];
   };
 
   const onRefreshCluster = () => {
@@ -209,53 +209,56 @@ const StudioCluster = (props: any) => {
         <Tooltip title="刷新 Flink 集群">
           <Button
             type="text"
-            icon={<ReloadOutlined />}
+            icon={<ReloadOutlined/>}
             onClick={onRefreshCluster}
           />
         </Tooltip>
       </div>
-      {cluster.length > 0 ? (
-        <Table dataSource={cluster} columns={getColumns()} size="small"/>) : (
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>)}
-      <ClusterForm
-        onSubmit={async (value) => {
-          const success = await handleAddOrUpdate("api/cluster", value);
-          if (success) {
-            handleCreateModalVisible(false);
-            showCluster(dispatch);
-          }
-        }}
-        onCancel={() => {
-          handleCreateModalVisible(false);
-        }}
-        modalVisible={createModalVisible}
-      />
-      <Drawer
-        width={600}
-        visible={!!row}
-        onClose={() => {
-          setRow(undefined);
-        }}
-        closable={false}
-      >
-        {row?.name && (
-          <ProDescriptions
-            column={2}
-            title={row?.name}
-            request={async () => ({
-            data: row || {},
-          })}
-            params={{
-            id: row?.name,
+      <Scrollbars style={{height: (toolHeight - 32)}}>
+        {cluster.length > 0 ? (
+          <Table dataSource={cluster} columns={getColumns()} size="small"/>) : (
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>)}
+        <ClusterForm
+          onSubmit={async (value) => {
+            const success = await handleAddOrUpdate("api/cluster", value);
+            if (success) {
+              handleCreateModalVisible(false);
+              showCluster(dispatch);
+            }
           }}
-            columns={getAllColumns()}
+          onCancel={() => {
+            handleCreateModalVisible(false);
+          }}
+          modalVisible={createModalVisible}
+        />
+        <Drawer
+          width={600}
+          visible={!!row}
+          onClose={() => {
+            setRow(undefined);
+          }}
+          closable={false}
+        >
+          {row?.name && (
+            <ProDescriptions
+              column={2}
+              title={row?.name}
+              request={async () => ({
+                data: row || {},
+              })}
+              params={{
+                id: row?.name,
+              }}
+              columns={getAllColumns()}
             />
-            )}
-      </Drawer>
+          )}
+        </Drawer>
+      </Scrollbars>
     </>
   );
 };
 
 export default connect(({Studio}: { Studio: StateType }) => ({
   cluster: Studio.cluster,
+  toolHeight: Studio.toolHeight,
 }))(StudioCluster);

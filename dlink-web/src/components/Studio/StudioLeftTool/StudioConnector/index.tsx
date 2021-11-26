@@ -25,10 +25,11 @@ import {
 } from '@ant-design/pro-form';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import SessionForm from "@/components/Studio/StudioLeftTool/StudioConnector/components/SessionForm";
+import { Scrollbars } from 'react-custom-scrollbars';
 
 const StudioConnector = (props: any) => {
 
-  const {current, dispatch, currentSession, session} = props;
+  const {current,toolHeight, dispatch, currentSession, session} = props;
   const [tableData, setTableData] = useState<[]>([]);
   const [loadings, setLoadings] = useState<boolean[]>([]);
   const [searchText, setSearchText] = useState<string>('');
@@ -295,6 +296,7 @@ const StudioConnector = (props: any) => {
             </Tooltip>
           </>)}
       </div>
+      <Scrollbars style={{height: (toolHeight - 32)}}>
       {currentSession.connectors && currentSession.connectors.length > 0 ? (
         <Table dataSource={currentSession.connectors} columns={getColumns()} size="small"/>) : (
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>)}
@@ -341,6 +343,7 @@ const StudioConnector = (props: any) => {
           useRemote: true,
         }}
       />
+      </Scrollbars>
     </>
   );
 };
@@ -349,4 +352,5 @@ export default connect(({Studio}: { Studio: StateType }) => ({
   current: Studio.current,
   currentSession: Studio.currentSession,
   session: Studio.session,
+  toolHeight: Studio.toolHeight,
 }))(StudioConnector);
