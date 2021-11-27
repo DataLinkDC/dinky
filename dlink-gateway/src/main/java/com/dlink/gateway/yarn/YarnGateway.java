@@ -218,16 +218,20 @@ public abstract class YarnGateway extends AbstractGateway {
         try {
             initConfig();
         }catch (Exception e){
+            logger.error("测试 Flink 配置失败："+e.getMessage());
             return TestResult.fail("测试 Flink 配置失败："+e.getMessage());
         }
         try {
             initYarnClient();
             if(yarnClient.isInState(Service.STATE.STARTED)){
+                logger.info("配置连接测试成功");
                 return TestResult.success();
             }else{
+                logger.error("该配置无对应 Yarn 集群存在");
                 return TestResult.fail("该配置无对应 Yarn 集群存在");
             }
         }catch (Exception e){
+            logger.error("测试 Yarn 配置失败："+e.getMessage());
             return TestResult.fail("测试 Yarn 配置失败："+e.getMessage());
         }
     }

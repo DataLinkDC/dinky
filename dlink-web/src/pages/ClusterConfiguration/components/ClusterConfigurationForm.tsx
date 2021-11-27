@@ -63,8 +63,8 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
       enabled:fieldsValue.enabled,
       configJson:JSON.stringify(getConfig(fieldsValue)),
     };
-    setFormVals({...formVals, ...formValues});
-    handleSubmit({...formVals, ...formValues});
+    setFormVals(formValues);
+    handleSubmit(formValues);
   };
 
   const renderContent = (formVals) => {
@@ -204,10 +204,18 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
     );
   };
 
-  const testForm = ()=>{
-    const fieldsValue = form.validateFields();
-    setFormVals({...formVals, ...fieldsValue});
-    testClusterConfigurationConnect(formVals);
+  const testForm = async ()=>{
+    const fieldsValue = await form.validateFields();
+    let formValues = {
+      name:fieldsValue.name,
+      alias:fieldsValue.alias,
+      type:fieldsValue.type,
+      note:fieldsValue.note,
+      enabled:fieldsValue.enabled,
+      configJson:JSON.stringify(getConfig(fieldsValue)),
+    };
+    setFormVals(formValues);
+    testClusterConfigurationConnect(formValues);
   };
 
   const renderFooter = () => {
