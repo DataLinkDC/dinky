@@ -10,6 +10,7 @@ import com.dlink.gateway.exception.GatewayException;
 import com.dlink.gateway.model.JobInfo;
 import com.dlink.gateway.result.GatewayResult;
 import com.dlink.gateway.result.SavePointResult;
+import com.dlink.gateway.result.TestResult;
 import org.apache.flink.api.common.JobID;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.configuration.Configuration;
@@ -23,6 +24,7 @@ import org.apache.flink.yarn.YarnClusterDescriptor;
 import org.apache.flink.yarn.configuration.YarnConfigOptions;
 import org.apache.flink.yarn.configuration.YarnLogConfigUtil;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.service.Service;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.client.api.YarnClient;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
@@ -209,6 +211,24 @@ public abstract class YarnGateway extends AbstractGateway {
                     break;
                 default:
             }
+        }
+    }
+
+    public TestResult test(){
+        try {
+            initConfig();
+        }catch (Exception e){
+            return TestResult.fail("测试 Flink 配置失败："+e.getMessage());
+        }
+        try {
+            initYarnClient();
+            if(yarnClient.isInState(Service.STATE.STARTED)){
+                return TestResult.success();
+            }else{
+                return TestResult.fail("该配置无对应 Yarn 集群存在");
+            }
+        }catch (Exception e){
+            return TestResult.fail("测试 Yarn 配置失败："+e.getMessage());
         }
     }
 }

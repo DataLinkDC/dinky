@@ -5,6 +5,7 @@ import com.dlink.gateway.config.GatewayConfig;
 import com.dlink.gateway.exception.GatewayException;
 import com.dlink.gateway.result.GatewayResult;
 import com.dlink.gateway.result.SavePointResult;
+import com.dlink.gateway.result.TestResult;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 
 import java.util.Iterator;
@@ -21,6 +22,7 @@ public interface Gateway {
 
     static Optional<Gateway> get(GatewayConfig config){
         Asserts.checkNotNull(config,"配置不能为空");
+        Asserts.checkNotNull(config.getType(),"配置类型不能为空");
         ServiceLoader<Gateway> loader = ServiceLoader.load(Gateway.class);
         Iterator<Gateway> iterator = loader.iterator();
         while(iterator.hasNext()) {
@@ -54,5 +56,7 @@ public interface Gateway {
     SavePointResult savepointCluster();
 
     SavePointResult savepointJob();
+
+    TestResult test();
 
 }

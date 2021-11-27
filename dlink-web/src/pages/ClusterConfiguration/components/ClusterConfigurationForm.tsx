@@ -5,6 +5,7 @@ import {ClusterConfigurationTableListItem} from "@/pages/ClusterConfiguration/da
 import {getConfig, getConfigFormValues} from "@/pages/ClusterConfiguration/function";
 import {FLINK_CONFIG_LIST, HADOOP_CONFIG_LIST} from "@/pages/ClusterConfiguration/conf";
 import type {Config} from "@/pages/ClusterConfiguration/conf";
+import {testClusterConfigurationConnect} from "@/pages/ClusterConfiguration/service";
 
 export type ClusterConfigurationFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -203,10 +204,19 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
     );
   };
 
+  const testForm = ()=>{
+    const fieldsValue = form.validateFields();
+    setFormVals({...formVals, ...fieldsValue});
+    testClusterConfigurationConnect(formVals);
+  };
+
   const renderFooter = () => {
     return (
       <>
         <Button onClick={() => handleModalVisible(false)}>取消</Button>
+        <Button type="primary" htmlType="button" onClick={testForm}>
+          测试
+        </Button>
         <Button type="primary" onClick={() => submitForm()}>
           完成
         </Button>
