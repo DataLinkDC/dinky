@@ -85,9 +85,7 @@ jar/ -- dlink application模式提交sql用到的jar
 lib/ -- 内部组件
 |- dlink-client-1.13.jar -- 必需
 |- dlink-connector-jdbc.jar
-|- dlink-executor.jar
 |- dlink-function.jar
-|- dlink-gateway.jar
 |- dlink-metadata-clickhouse.jar
 |- dlink-metadata-mysql.jar
 |- dlink-metadata-oracle.jar
