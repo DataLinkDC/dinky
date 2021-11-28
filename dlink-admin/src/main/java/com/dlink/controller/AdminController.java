@@ -1,9 +1,14 @@
 package com.dlink.controller;
 
+import cn.dev33.satoken.stp.StpUtil;
+import com.dlink.assertion.Asserts;
 import com.dlink.common.result.Result;
+import com.dlink.dto.LoginUTO;
 import com.dlink.model.Task;
 import com.dlink.model.User;
+import com.dlink.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,27 +23,26 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class AdminController {
 
-    @Value("${dlink.login.username}")
-    private String username;
-    @Value("${dlink.login.password}")
-    private String password;
+    @Autowired
+    private UserService userService;
+
     /**
      * 登录
      */
     @PostMapping("/login")
-    public Result login(@RequestBody User user) throws Exception {
-        if(username.equals(user.getUsername())&&password.equals(user.getPassword())) {
-            return Result.succeed(username, "登录成功");
-        }else{
-            return Result.failed("验证失败");
+    public Result login(@RequestBody LoginUTO loginUTO) {
+        if(Asserts.isNull(loginUTO.isAutoLogin())){
+            loginUTO.setAutoLogin(false);
         }
+        return userService.loginUser(loginUTO.getUsername(), loginUTO.getPassword(),loginUTO.isAutoLogin());
     }
 
     /**
      * 退出
      */
     @DeleteMapping("/outLogin")
-    public Result outLogin() throws Exception {
+    public Result outLogin() {
+        StpUtil.logout();
         return Result.succeed("退出成功");
     }
 
@@ -47,6 +51,10 @@ public class AdminController {
      */
     @GetMapping("/current")
     public Result current() throws Exception {
-        return Result.succeed(username, "获取成功");
+        try{
+            return Result.succeed(StpUtil.getSession().get("user"), "获取成功");
+        }catch (Exception e){
+            return Result.failed("获取失败");
+        }
     }
 }

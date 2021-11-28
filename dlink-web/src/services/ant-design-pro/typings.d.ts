@@ -27,6 +27,8 @@ declare namespace API {
     };
     address?: string;
     phone?: string;
+    isAdmin?:boolean;
+    worknum?:string;
   };
 
   /*type LoginResult = {

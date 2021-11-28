@@ -47,6 +47,7 @@
         <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
         <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
         <!--<flyway.version>6.4.4</flyway.version>-->
+        <sa-token.version>1.28.0</sa-token.version>
         <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
         <maven-assembly-plugin.version>3.2.0</maven-assembly-plugin.version>
         <maven.resource.version>3.2.0</maven.resource.version>
@@ -152,6 +153,11 @@
                 <artifactId>flyway-core</artifactId>
                 <version>${flyway.version}</version>
             </dependency>-->
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-spring-boot-starter</artifactId>
+                <version>${sa-token.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.dlink</groupId>
                 <artifactId>dlink-core</artifactId>

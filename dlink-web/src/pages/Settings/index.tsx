@@ -1,15 +1,16 @@
-import React, { useState, useRef, useLayoutEffect } from 'react';
+import React, { useState,useEffect, useRef, useLayoutEffect } from 'react';
 import { GridContent } from '@ant-design/pro-layout';
 import { Menu } from 'antd';
 import FlinkConfigView from './components/flinkConfig';
 import styles from './style.less';
 import {loadSettings} from "@/pages/Settings/function";
 import {SettingsStateType} from "@/pages/Settings/model";
-import {connect} from "umi";
+import {connect,useModel} from "umi";
+import UserTableList from '../user';
 
 const { Item } = Menu;
 
-type SettingsStateKeys = 'flinkConfig' | 'sysConfig';
+type SettingsStateKeys = 'userManager' |'flinkConfig' | 'sysConfig';
 type SettingsState = {
   mode: 'inline' | 'horizontal';
   selectKey: SettingsStateKeys;
@@ -21,9 +22,17 @@ type SettingsProps = {
 
 
 const Settings: React.FC<SettingsProps> = (props) => {
-  const menuMap: Record<string, React.ReactNode> = {
+  const { initialState, setInitialState } = useModel('@@initialState');
+  const menuMapAdmin: Record<string, React.ReactNode> = {
+    userManager: '用户管理',
     flinkConfig: 'Flink 设置',
   };
+  const menuMapUser: Record<string, React.ReactNode> = {
+    flinkConfig: 'Flink 设置',
+  };
+
+  const menuMap: Record<string, React.ReactNode> = (initialState?.currentUser?.isAdmin)?menuMapAdmin:menuMapUser;
+
   const {dispatch} = props;
   const [initConfig, setInitConfig] = useState<SettingsState>({
     mode: 'inline',
@@ -59,12 +68,15 @@ const Settings: React.FC<SettingsProps> = (props) => {
   }, [dom.current]);
 
   const getMenu = () => {
+    console.log(menuMap);
     return Object.keys(menuMap).map((item) => <Item key={item}>{menuMap[item]}</Item>);
   };
 
   const renderChildren = () => {
     const { selectKey } = initConfig;
     switch (selectKey) {
+      case 'userManager':
+        return <UserTableList />;
       case 'flinkConfig':
         return <FlinkConfigView />;
       default:

@@ -75,6 +75,12 @@ const Login: React.FC = () => {
         await fetchUserInfo();
         goto();
         return;
+      }else{
+        const defaultloginFailureMessage = intl.formatMessage({
+          id: msg.msg,
+          defaultMessage: msg.msg,
+        });
+        message.error(defaultloginFailureMessage);
       }
       // 如果失败去设置用户错误信息
       setUserLoginState(msg.datas);
