@@ -420,6 +420,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增全模块实时的布局拖动与滚动条联动</Link>
                 </li>
+                <li>
+                  <Link>新增用户管理模块</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

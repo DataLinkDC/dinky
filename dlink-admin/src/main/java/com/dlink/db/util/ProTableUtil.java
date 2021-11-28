@@ -44,9 +44,9 @@ public class ProTableUtil {
     private static void buildDelete( QueryWrapper<?> wrapper, boolean camelToUnderscore, boolean isDelete){
         if (isDelete) {
             if (camelToUnderscore) {
-                wrapper.eq(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, "isDelete"), 0);
+                wrapper.eq(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, "is_delete"), 0);
             } else {
-                wrapper.eq("isDelete", 0);
+                wrapper.eq("is_delete", 0);
             }
         }
     }
@@ -173,6 +173,10 @@ public class ProTableUtil {
      **/
     public static void autoQueryDefalut(JsonNode para, QueryWrapper<?> wrapper) {
         autoQuery(para, wrapper, true, false);
+    }
+
+    public static void autoQueryDefalut(JsonNode para, QueryWrapper<?> wrapper,boolean isDelete) {
+        autoQuery(para, wrapper, true, isDelete);
     }
 
     /**

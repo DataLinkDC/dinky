@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.dlink.common.result.ProTableResult;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 
 /**
  * ISuperService
@@ -14,5 +17,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 public interface ISuperService<T> extends IService<T> {
 
     ProTableResult<T> selectForProTable(JsonNode para);
+
+    ProTableResult<T> selectForProTable(JsonNode para, boolean isDelete);
+
+    ProTableResult<T> selectForProTable(JsonNode para,Map<String, Object> paraMap);
 
 }

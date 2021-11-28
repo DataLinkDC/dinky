@@ -1,6 +1,7 @@
 package com.dlink.service;
 
 import com.dlink.db.service.ISuperService;
+import com.dlink.gateway.result.TestResult;
 import com.dlink.model.ClusterConfiguration;
 
 import java.util.List;
@@ -20,4 +21,5 @@ public interface ClusterConfigurationService extends ISuperService<ClusterConfig
 
     Map<String,Object> getGatewayConfig(Integer id);
 
+    TestResult testGateway(ClusterConfiguration clusterConfiguration);
 }

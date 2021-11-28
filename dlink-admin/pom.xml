@@ -102,6 +102,15 @@
             <artifactId>flyway-core</artifactId>
         </dependency>-->
         <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-core</artifactId>
         </dependency>
@@ -115,24 +124,27 @@
         </dependency>
         <dependency>
             <groupId>com.dlink</groupId>
-            <artifactId>dlink-client-1.13</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.dlink</groupId>
             <artifactId>dlink-executor</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-connector-jdbc-1.13</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-function</artifactId>
         </dependency>
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-gateway</artifactId>
         </dependency>
+        <!--<dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-client-1.13</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-connector-jdbc-1.13</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-function</artifactId>
+            <scope>provided</scope>
+        </dependency>-->
     </dependencies>
     <build>
         <plugins>
@@ -145,24 +157,8 @@
                     <mainClass>com.dlink.Dlink</mainClass>
                     <excludes>
                         <exclude>
-                            <groupId>com.dlink</groupId>
-                            <artifactId>dlink-client-1.13</artifactId>
-                        </exclude>
-                        <exclude>
-                            <groupId>com.dlink</groupId>
-                            <artifactId>dlink-function</artifactId>
-                        </exclude>
-                        <exclude>
-                            <groupId>com.dlink</groupId>
-                            <artifactId>dlink-executor</artifactId>
-                        </exclude>
-                        <exclude>
-                            <groupId>com.dlink</groupId>
-                            <artifactId>dlink-connector-jdbc-1.13</artifactId>
-                        </exclude>
-                        <exclude>
-                            <groupId>com.dlink</groupId>
-                            <artifactId>dlink-gateway</artifactId>
+                            <groupId>org.apache.flink</groupId>
+                            <artifactId>flink-*</artifactId>
                         </exclude>
                     </excludes>
                 </configuration>

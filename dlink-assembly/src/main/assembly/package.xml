@@ -134,7 +134,7 @@
         </fileSet>
 
         <!-- 将模块dlink-extends的常用jar文件放到打包目录/plugins下 -->
-        <fileSet>
+        <!--<fileSet>
             <directory>${project.parent.basedir}/dlink-extends/target
             </directory>
             <outputDirectory>plugins</outputDirectory>
@@ -146,7 +146,7 @@
             </includes>
         </fileSet>
 
-        <!-- 将模块dlink-extends的jar文件放到打包目录/extends下 -->
+        &lt;!&ndash; 将模块dlink-extends的jar文件放到打包目录/extends下 &ndash;&gt;
         <fileSet>
             <directory>${project.parent.basedir}/dlink-extends/target
             </directory>
@@ -156,22 +156,7 @@
                 <include>ojdbc8-*.jar</include>
                 <include>clickhouse-jdbc-*.jar</include>
             </includes>
-        </fileSet>
-
-        <fileSet>
-            <directory>${project.parent.basedir}/dlink-gateway/target</directory>
-            <outputDirectory>lib</outputDirectory>
-            <includes>
-                <include>dlink-gateway-${project.version}.jar</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.parent.basedir}/dlink-executor/target</directory>
-            <outputDirectory>lib</outputDirectory>
-            <includes>
-                <include>dlink-executor-${project.version}.jar</include>
-            </includes>
-        </fileSet>
+        </fileSet>-->
         <fileSet>
             <directory>${project.parent.basedir}/dlink-app/target</directory>
             <outputDirectory>jar</outputDirectory>

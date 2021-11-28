@@ -13,9 +13,11 @@ import com.dlink.gateway.GatewayType;
 import com.dlink.gateway.config.ActionType;
 import com.dlink.gateway.config.AppConfig;
 import com.dlink.gateway.config.FlinkConfig;
+import com.dlink.gateway.config.GatewayConfig;
 import com.dlink.gateway.config.SavePointType;
 import com.dlink.gateway.result.GatewayResult;
 import com.dlink.gateway.result.SavePointResult;
+import com.dlink.gateway.result.TestResult;
 import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.parser.SqlType;
 import com.dlink.result.*;
@@ -427,5 +429,9 @@ public class JobManager extends RunTime {
         }
         close();
         return job.getJobResult();
+    }
+
+    public static TestResult testGateway(GatewayConfig gatewayConfig){
+        return Gateway.build(gatewayConfig).test();
     }
 }

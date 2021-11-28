@@ -2,12 +2,19 @@ package com.dlink.controller;
 
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
+import com.dlink.gateway.result.TestResult;
 import com.dlink.model.ClusterConfiguration;
 import com.dlink.service.ClusterConfigurationService;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +37,8 @@ public class ClusterConfigurationController {
      */
     @PutMapping
     public Result saveOrUpdate(@RequestBody ClusterConfiguration clusterConfiguration) {
+        TestResult testResult = clusterConfigurationService.testGateway(clusterConfiguration);
+        clusterConfiguration.setAvailable(testResult.isAvailable());
         if(clusterConfigurationService.saveOrUpdate(clusterConfiguration)){
             return Result.succeed("新增成功");
         }else {
@@ -84,5 +93,18 @@ public class ClusterConfigurationController {
     public Result listEnabledAll() {
         List<ClusterConfiguration >clusters = clusterConfigurationService.listEnabledAll();
         return Result.succeed(clusters,"获取成功");
+    }
+
+    /**
+     * 测试
+     */
+    @PostMapping("/testConnect")
+    public Result testConnect(@RequestBody ClusterConfiguration clusterConfiguration) {
+        TestResult testResult = clusterConfigurationService.testGateway(clusterConfiguration);
+        if(testResult.isAvailable()){
+            return Result.succeed("测试链接成功");
+        }else {
+            return Result.failed(testResult.getError());
+        }
     }
 }
