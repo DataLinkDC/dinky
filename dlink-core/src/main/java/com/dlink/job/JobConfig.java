@@ -118,12 +118,16 @@ public class JobConfig {
         gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath").toString(),
                 config.get("flinkLibPath").toString(),
                 config.get("hadoopConfigPath").toString()));
+        AppConfig appConfig = new AppConfig();
         if(config.containsKey("userJarPath")){
-            gatewayConfig.setAppConfig(AppConfig.build(
-                    config.get("userJarPath").toString(),
-                    config.get("userJarParas").toString(),
-                    config.get("userJarMainAppClass").toString()
-            ));
+            appConfig.setUserJarPath(config.get("userJarPath").toString());
+            if(config.containsKey("userJarMainAppClass")){
+                appConfig.setUserJarMainAppClass(config.get("userJarMainAppClass").toString());
+            }
+            if(config.containsKey("userJarParas")){
+                appConfig.setUserJarParas(config.get("userJarParas").toString().split(" "));
+            }
+            gatewayConfig.setAppConfig(appConfig);
         }
         if(config.containsKey("flinkConfig")){
             gatewayConfig.setFlinkConfig(FlinkConfig.build((Map<String, String>)config.get("flinkConfig")));

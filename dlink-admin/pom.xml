@@ -198,7 +198,7 @@
                 </configuration>
             </plugin>-->
 
-            <plugin>
+            <!--<plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>${maven.resource.version}</version>
@@ -214,14 +214,14 @@
                             <overwrite>true</overwrite>
                             <resources>
                                 <resource>
-                                    <!-- 因为dlink-web打包目录在项目跟目录，所以从这里复制 -->
+                                    &lt;!&ndash; 因为dlink-web打包目录在项目跟目录，所以从这里复制 &ndash;&gt;
                                     <directory>../dlink-web/dist</directory>
                                 </resource>
                             </resources>
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
