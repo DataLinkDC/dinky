@@ -47,17 +47,9 @@ const StudioMenu = (props: any) => {
     let param = {
       useSession: useSession,
       session: currentSession.session,
-      useRemote: current.task.useRemote,
-      clusterId: current.task.clusterId,
-      useResult: current.task.useResult,
-      maxRowNum: current.task.maxRowNum,
       statement: selectsql,
-      fragment: current.task.fragment,
-      jobName: current.task.jobName,
-      parallelism: current.task.parallelism,
-      checkPoint: current.task.checkPoint,
-      savePointStrategy: current.task.savePointStrategy,
-      savePointPath: current.task.savePointPath,
+      configJson: JSON.stringify(current.task.config),
+      ...current.task,
     };
     const key = current.key;
     const taskKey = (Math.random() * 1000) + '';
@@ -82,11 +74,6 @@ const StudioMenu = (props: any) => {
       let newTabs = tabs;
       for (let i = 0; i < newTabs.panes.length; i++) {
         if (newTabs.panes[i].key == key) {
-          /*let newResult = newTabs.panes[i].console.result;
-          newResult.unshift(res.datas);
-          newTabs.panes[i].console={
-            result:newResult,
-          };*/
           newTabs.panes[i].console.result = res.datas;
           break;
         }

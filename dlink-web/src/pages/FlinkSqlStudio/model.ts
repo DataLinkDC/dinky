@@ -271,7 +271,9 @@ const Model: ModelType = {
 
   effects: {
     * saveTask({payload}, {call, put}) {
-      yield call(handleAddOrUpdate, 'api/task', payload);
+      let para = payload;
+      para.configJson = JSON.stringify(payload.config);
+      yield call(handleAddOrUpdate, 'api/task', para);
       yield put({
         type: 'saveTaskData',
         payload,

@@ -83,7 +83,8 @@ public class JobConfig {
 
     public JobConfig(String type,boolean useResult, boolean useSession, boolean useRemote, Integer clusterId,
                      Integer clusterConfigurationId, Integer jarId, Integer taskId, String jobName, boolean useSqlFragment,
-                     boolean useStatementSet,Integer checkpoint, Integer parallelism, Integer savePointStrategyValue, String savePointPath) {
+                     boolean useStatementSet,Integer checkpoint, Integer parallelism, Integer savePointStrategyValue,
+                     String savePointPath,Map<String,String> config) {
         this.type = type;
         this.useResult = useResult;
         this.useSession = useSession;
@@ -99,10 +100,11 @@ public class JobConfig {
         this.parallelism = parallelism;
         this.savePointStrategy = SavePointStrategy.get(savePointStrategyValue);
         this.savePointPath = savePointPath;
+        this.config = config;
     }
 
     public ExecutorSetting getExecutorSetting(){
-        return new ExecutorSetting(checkpoint,parallelism,useSqlFragment,savePointPath,jobName);
+        return new ExecutorSetting(checkpoint,parallelism,useSqlFragment,savePointPath,jobName,config);
     }
 
     public void setSessionConfig(SessionConfig sessionConfig){

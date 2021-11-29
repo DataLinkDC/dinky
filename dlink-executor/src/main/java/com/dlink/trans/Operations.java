@@ -13,8 +13,8 @@ import com.dlink.trans.ddl.SetOperation;
 public class Operations {
 
     private static Operation[] operations = {
-      new CreateAggTableOperation(),
-            new SetOperation()
+      new CreateAggTableOperation()
+//            , new SetOperation()
     };
 
     public static SqlType getSqlTypeFromStatements(String statement){

@@ -423,6 +423,12 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增用户管理模块</Link>
                 </li>
+                <li>
+                  <Link>优化 SET 语法</Link>
+                </li>
+                <li>
+                  <Link>新增作业配置的其他配置低优先级加载实现</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

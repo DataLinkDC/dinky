@@ -51,14 +51,14 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public JobResult submitByTaskId(Integer id) {
-        Task task = this.getById(id);
+        Task task = this.getTaskInfoById(id);
         Assert.check(task);
         boolean isJarTask = isJarTask(task);
-        Statement statement = null;
+        /*Statement statement = null;
         if(!isJarTask){
             statement = statementService.getById(id);
             Assert.check(statement);
-        }
+        }*/
         JobConfig config = task.buildSubmitConfig();
         if (!JobManager.useGateway(config.getType())) {
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), task.getClusterId()));
@@ -100,7 +100,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         }
         JobManager jobManager = JobManager.build(config);
         if(!isJarTask) {
-            return jobManager.executeSql(statement.getStatement());
+            return jobManager.executeSql(task.getStatement());
         }else{
             return jobManager.executeJar();
         }
@@ -114,6 +114,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     public Task getTaskInfoById(Integer id) {
         Task task = this.getById(id);
         if (task != null) {
+            task.parseConfig();
             Statement statement = statementService.getById(id);
             if (task.getClusterId() != null) {
                 Cluster cluster = clusterService.getById(task.getClusterId());

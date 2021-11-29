@@ -146,11 +146,10 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
             session:'',
             maxRowNum: 100,
             jobName:node.name,
-            config: [],
             useResult:false,
             useSession:false,
             useRemote:true,
-            ...result.datas
+            ...result.datas,
           },
           console:{
             result:[],

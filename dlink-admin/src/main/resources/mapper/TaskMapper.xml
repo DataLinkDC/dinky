@@ -17,7 +17,7 @@
         <result column="cluster_id" property="clusterId" />
         <result column="cluster_configuration_id" property="clusterConfigurationId" />
         <result column="jar_id" property="jarId" />
-        <result column="config" property="config" />
+        <result column="config_json" property="configJson" />
         <result column="note" property="note" />
         <result column="enabled" property="enabled" />
         <result column="create_time" property="createTime" />
@@ -26,7 +26,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, alias, type,check_point,save_point_strategy,save_point_path, parallelism,fragment,statement_set,cluster_id,cluster_configuration_id,jar_id,config,note, enabled, create_time, update_time
+        id, name, alias, type,check_point,save_point_strategy,save_point_path, parallelism,fragment,statement_set,cluster_id,cluster_configuration_id,jar_id,config_json,note, enabled, create_time, update_time
     </sql>
 
 
