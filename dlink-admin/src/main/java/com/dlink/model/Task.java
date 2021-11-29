@@ -3,12 +3,18 @@ package com.dlink.model;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.dlink.assertion.Asserts;
 import com.dlink.db.model.SuperEntity;
 import com.dlink.job.JobConfig;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 任务
@@ -46,7 +52,7 @@ public class Task extends SuperEntity{
 
     private Integer jarId;
 
-    private String config;
+    private String configJson;
 
     private String note;
 
@@ -59,6 +65,21 @@ public class Task extends SuperEntity{
     @TableField(exist = false)
     private List<Savepoints> savepoints;
 
+    @TableField(exist = false)
+    private List<Map<String,String>> config = new ArrayList<>();
+
+
+    public List<Map<String,String>> parseConfig(){
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            if(Asserts.isNotNullString(configJson)) {
+                config = objectMapper.readValue(configJson, ArrayList.class);
+            }
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return config;
+    }
     /*public ExecutorSetting buildExecutorSetting(){
         HashMap configMap = new HashMap();
         if(config!=null&&!"".equals(clusterName)) {
@@ -72,7 +93,11 @@ public class Task extends SuperEntity{
         if(clusterId==null||clusterId==0){
             useRemote = false;
         }
-        return new JobConfig(type,false,false,useRemote,clusterId,clusterConfigurationId,jarId,getId(),alias,fragment,statementSet,checkPoint,parallelism,savePointStrategy,savePointPath);
+        Map<String,String> map = new HashMap<>();
+        for(Map<String,String> item : config){
+            map.put(item.get("key"),item.get("value"));
+        }
+        return new JobConfig(type,false,false,useRemote,clusterId,clusterConfigurationId,jarId,getId(),alias,fragment,statementSet,checkPoint,parallelism,savePointStrategy,savePointPath,map);
     }
 
 }

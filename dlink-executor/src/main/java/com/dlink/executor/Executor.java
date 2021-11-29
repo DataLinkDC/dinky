@@ -6,6 +6,7 @@ import com.dlink.executor.custom.CustomTableResultImpl;
 import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.result.SqlExplainResult;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.flink.configuration.Configuration;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.ExplainDetail;
@@ -14,7 +15,11 @@ import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.catalog.CatalogManager;
 import org.apache.flink.table.functions.ScalarFunction;
 import org.apache.flink.table.functions.UserDefinedFunction;
+import org.apache.flink.table.operations.Operation;
+import org.apache.flink.table.operations.command.ResetOperation;
+import org.apache.flink.table.operations.command.SetOperation;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -99,6 +104,10 @@ public abstract class Executor {
         if(executorSetting.getParallelism()!=null&&executorSetting.getParallelism()>0){
             environment.setParallelism(executorSetting.getParallelism());
         }
+        if(executorSetting.getConfig()!=null) {
+            Configuration configuration = Configuration.fromMap(executorSetting.getConfig());
+            environment.getConfig().configure(configuration, null);
+        }
     }
 
     private void updateEnvironment(ExecutorSetting executorSetting){
@@ -107,6 +116,10 @@ public abstract class Executor {
         }
         if(executorSetting.getParallelism()!=null&&executorSetting.getParallelism()>0){
             environment.setParallelism(executorSetting.getParallelism());
+        }
+        if(executorSetting.getConfig()!=null) {
+            Configuration configuration = Configuration.fromMap(executorSetting.getConfig());
+            environment.getConfig().configure(configuration, null);
         }
     }
 
@@ -226,5 +239,35 @@ public abstract class Executor {
 
     public void submitStatementSet(List<String> statements){
         executeStatementSet(statements);
+    }
+
+    public boolean parseAndLoadConfiguration(String statement){
+        List<Operation> operations = stEnvironment.getParser().parse(statement);
+        for(Operation operation : operations){
+            if(operation instanceof SetOperation){
+                callSet((SetOperation)operation);
+                return true;
+            } else if (operation instanceof ResetOperation){
+                callReset((ResetOperation)operation);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void callSet(SetOperation setOperation){
+        if (setOperation.getKey().isPresent() && setOperation.getValue().isPresent()) {
+            String key = setOperation.getKey().get().trim();
+            String value = setOperation.getValue().get().trim();
+            Map<String,String> confMap = new HashMap<>();
+            confMap.put(key,value);
+            Configuration configuration = Configuration.fromMap(confMap);
+            environment.getConfig().configure(configuration,null);
+            stEnvironment.getConfig().addConfiguration(configuration);
+        }
+    }
+
+    private void callReset(ResetOperation resetOperation) {
+        // to do nothing
     }
 }

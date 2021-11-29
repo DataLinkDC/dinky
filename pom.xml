@@ -7,7 +7,7 @@
     <groupId>com.dlink</groupId>
     <artifactId>dlink</artifactId>
     <packaging>pom</packaging>
-    <version>0.4.0-SNAPSHOT</version>
+    <version>0.4.0</version>
 
     <modules>
         <module>dlink-common</module>
@@ -45,7 +45,6 @@
         <postgresql.version>42.2.14</postgresql.version>
         <banner.version>1.0.2</banner.version>
         <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
-        <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
         <!--<flyway.version>6.4.4</flyway.version>-->
         <sa-token.version>1.28.0</sa-token.version>
         <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>

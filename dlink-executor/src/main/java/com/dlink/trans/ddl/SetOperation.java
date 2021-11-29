@@ -18,6 +18,7 @@ import java.util.Map;
  * @author wenmo
  * @since 2021/10/21 19:56
  **/
+@Deprecated
 public class SetOperation extends AbstractOperation implements Operation {
 
     private String KEY_WORD = "SET";

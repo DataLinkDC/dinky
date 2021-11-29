@@ -34,7 +34,11 @@ public class FlinkInterceptor {
         return statement.trim();
     }
 
+    // return false to continue with executeSql
     public static boolean build(Executor executor, String statement) {
+        if(executor.parseAndLoadConfiguration(statement)){
+            return true;
+        }
         Operation operation = Operations.buildOperation(statement);
         if (Asserts.isNotNull(operation)) {
             operation.build(executor.getCustomTableEnvironmentImpl());
