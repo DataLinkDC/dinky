@@ -14,16 +14,17 @@ import UpdateCatalogueForm from './components/UpdateCatalogueForm';
 import {ActionType} from "@ant-design/pro-table";
 import UpdateTaskForm from "@/components/Studio/StudioTree/components/UpdateTaskForm";
 import { Scrollbars } from 'react-custom-scrollbars';
-
 const { DirectoryTree } = Tree;
-
 const {Search} = Input;
+
 
 type StudioTreeProps = {
   rightClickMenu:StateType['rightClickMenu'];
   dispatch:any;
   tabs:StateType['tabs'];
   current:StateType['current'];
+  toolHeight:number;
+  refs:any;
 };
 
 type RightClickMenu = {
@@ -50,7 +51,6 @@ const getParentKey = (key, tree) => {
 
 const StudioTree: React.FC<StudioTreeProps> = (props) => {
   const {rightClickMenu,dispatch,tabs,refs,toolHeight} = props;
-
   const [treeData, setTreeData] = useState<TreeDataNode[]>();
   const [dataList, setDataList] = useState<[]>();
   const [expandedKeys, setExpandedKeys] = useState<[]>();
@@ -62,6 +62,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
   const [taskFormValues, setTaskFormValues] = useState({});
   const [rightClickNode, setRightClickNode] = useState<TreeDataNode>();
   const [available, setAvailable] = useState<boolean>(true);
+  let sref = React.createRef<Scrollbars>();
 
   const getTreeData = async () => {
     const result = await getCatalogueTreeData();
@@ -95,9 +96,6 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     getTreeData();
   }, []);
 
-  const onChange = (e:any) => {
-
-  };
 
   const handleMenuClick=(key:string)=>{
     if(key=='Open'){
@@ -308,13 +306,18 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     return (treeData&&treeData.length==0)?empty:'';
   };
 
-  const onRightClick = (e:any) => {
-    setRightClickNode(e.node);
+  const handleContextMenu = (e: React.MouseEvent, node: TreeDataNode) => {
+    console.log('top:',sref.current.getScrollTop());
+    console.log('node:',node);
+    console.log('e:',e.pageY);
+    let position = e.currentTarget.getBoundingClientRect();
+    console.log('p:',position);
+    setRightClickNode(node);
     setRightClickNodeTreeItem({
-      pageX: e.event.pageX,
-      pageY: e.event.pageY,
-      id: e.node.id,
-      categoryName: e.node.name
+      pageX: e.pageX,
+      pageY: position.top+sref.current.getScrollTop(),
+      id: node.id,
+      categoryName: node.name
     });
     dispatch&&dispatch({
       type: "Studio/showRightClickMenu",
@@ -360,11 +363,13 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
         </Tooltip>
         </Col>
       </Row>
-      <Scrollbars  style={{height:(toolHeight-32)}}>
+      <Scrollbars  style={{height:(toolHeight-32)}} ref={sref}>
       {/*<Search style={{marginBottom: 8}} placeholder="Search" onChange={onChange}/>*/}
         <DirectoryTree
           multiple
-          onRightClick={onRightClick}
+          onRightClick={({event, node}: any) => {
+            handleContextMenu(event, node)
+          }}
           onSelect={onSelect}
           switcherIcon={<DownOutlined/>}
           treeData={treeData}

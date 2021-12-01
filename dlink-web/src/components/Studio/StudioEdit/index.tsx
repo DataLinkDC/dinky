@@ -3,7 +3,6 @@ import * as _monaco from "monaco-editor";
 import MonacoEditor from "react-monaco-editor";
 import {BaseDataSourceField, BaseDataSourceHeader, CompletionItem} from "./data";
 import styles from './index.less';
-
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
 import {DocumentStateType} from "@/pages/Document/model";
@@ -15,13 +14,6 @@ let provider = {
   dispose: () => {},
 };
 
-interface IRightContent {
-  key: string;
-  value: any;
-  handleCheck: () => Promise<boolean>;
-  secondRightData: (BaseDataSourceField|BaseDataSourceHeader)[];
-}
-
 interface ISuggestions {
   label: string;
   kind: string;
@@ -31,6 +23,7 @@ interface ISuggestions {
 
 const FlinkSqlEditor = (props:any) => {
   const {
+      tabsKey,
       height = '100%',
       width = '100%',
       language = 'sql',
@@ -42,13 +35,9 @@ const FlinkSqlEditor = (props:any) => {
     tabs,
     fillDocuments,
     dispatch,
-    } = props
-  ;
-
-  const { tabsKey, value, handleCheck, secondRightData = [] }: IRightContent = props;
+    } = props;
 
   const editorInstance:any = useRef<any>();
-
   const monacoInstance: any = useRef();
 
   const getTabIndex = ():number=>{
