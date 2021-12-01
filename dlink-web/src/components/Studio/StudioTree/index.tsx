@@ -253,10 +253,8 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     const {pageX, pageY} = {...rightClickNodeTreeItem};
     const tmpStyle = {
       position: 'absolute',
-      // left: `${pageX - 50}px`,
-      // top: `${pageY - 202}px`,
-      left: `${pageX}px`,
-      top: `${pageY - 120}px`,
+      left: `${pageX - 40}px`,
+      top: `${pageY - 150}px`,
     };
     let menuItems;
     if(rightClickNode&&rightClickNode.isLeaf){
@@ -307,15 +305,10 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
   };
 
   const handleContextMenu = (e: React.MouseEvent, node: TreeDataNode) => {
-    console.log('top:',sref.current.getScrollTop());
-    console.log('node:',node);
-    console.log('e:',e.pageY);
-    let position = e.currentTarget.getBoundingClientRect();
-    console.log('p:',position);
     setRightClickNode(node);
     setRightClickNodeTreeItem({
       pageX: e.pageX,
-      pageY: position.top+sref.current.getScrollTop(),
+      pageY: e.pageY+sref.current.getScrollTop(),
       id: node.id,
       categoryName: node.name
     });

@@ -45,11 +45,11 @@ const StudioMenu = (props: any) => {
     }
     let useSession = !!currentSession.session;
     let param = {
+      ...current.task,
       useSession: useSession,
       session: currentSession.session,
-      statement: selectsql,
       configJson: JSON.stringify(current.task.config),
-      ...current.task,
+      statement: selectsql,
     };
     const key = current.key;
     const taskKey = (Math.random() * 1000) + '';
