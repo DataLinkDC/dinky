@@ -165,7 +165,7 @@ const StudioCA = (props:any) => {
           {oneTableCAData!=null?<IndentedTreeGraph {...config} />:<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
         </div>
       </TabPane>
-      <TabPane
+      {/*<TabPane
         tab={
           <span>
           单任务字段级血缘
@@ -185,7 +185,7 @@ const StudioCA = (props:any) => {
           </div>
           {oneColumnCAData!=null?<IndentedTreeGraph {...columnConfig} />:<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
         </div>
-      </TabPane>
+      </TabPane>*/}
       {/*<TabPane
         tab={
           <span>

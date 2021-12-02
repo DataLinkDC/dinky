@@ -441,6 +441,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>优化打包及扩展方式</Link>
                 </li>
+                <li>
+                  <Link>解决血缘分析与执行图分析异常</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>
