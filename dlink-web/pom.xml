@@ -16,42 +16,42 @@
     <plugins>
       <!-- 调用npm命令插件 -->
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.6.0</version>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <version>1.12.0</version>
         <executions>
-          <!-- 先执行前端依赖下载 -->
           <execution>
-            <id>exec-npm-install</id>
-            <phase>package</phase>
+            <id>install node and npm</id>
             <goals>
-              <goal>exec</goal>
+              <goal>install-node-and-npm</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>npm install</id>
+            <goals>
+              <goal>npm</goal>
             </goals>
             <configuration>
-              <executable>npm</executable>
-              <arguments>
-                <argumnet>install</argumnet>
-              </arguments>
-              <workingDirectory>${basedir}</workingDirectory>
+              <!-- 国内npm源加速可在后面加入(去掉空格) - -registry https://repo.huaweicloud.com/repository/npm/ -->
+              <arguments>install --force</arguments>
             </configuration>
           </execution>
-          <!-- npm打包 -->
           <execution>
-            <id>exec-npm-run-build</id>
-            <phase>package</phase>
+            <id>npm run build</id>
             <goals>
-              <goal>exec</goal>
+              <goal>npm</goal>
             </goals>
             <configuration>
-              <executable>npm</executable>
-              <arguments>
-                <argumnet>run</argumnet>
-                <argumnet>build</argumnet>
-              </arguments>
-              <workingDirectory>${basedir}</workingDirectory>
+              <arguments>run build</arguments>
             </configuration>
           </execution>
         </executions>
+        <configuration>
+          <nodeVersion>v14.17.0</nodeVersion>
+          <npmVersion>7.19.0</npmVersion>
+          <!-- 国内node下载加速 -->
+          <!--<nodeDownloadRoot>https://mirrors.huaweicloud.com/nodejs/</nodeDownloadRoot>-->
+        </configuration>
       </plugin>
     </plugins>
     <finalName>${project.artifactId}-${project.version}</finalName>
