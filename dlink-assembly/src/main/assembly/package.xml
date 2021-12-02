@@ -134,17 +134,13 @@
         </fileSet>
 
         <!-- 将模块dlink-extends的常用jar文件放到打包目录/plugins下 -->
-        <fileSet>
+        <!--<fileSet>
             <directory>${project.parent.basedir}/dlink-extends/target
             </directory>
             <outputDirectory>plugins</outputDirectory>
             <includes>
-                <include>flink-csv-*.jar</include>
-                <include>flink-json-*.jar</include>
-                <include>flink-connector-jdbc_2.11-*.jar</include>
-                <include>mysql-connector-java-*.jar</include>
             </includes>
-        </fileSet>
+        </fileSet>-->
 
         <!-- 将模块dlink-extends的jar文件放到打包目录/extends下 -->
         <!--<fileSet>

@@ -62,16 +62,22 @@ export default (): React.ReactNode => {
         </Typography.Text>
         </Paragraph>
         <p> </p>
-        <Timeline pending={<><Text code>0.4.0</Text>
+        <Timeline pending={<><Text code>0.5.0</Text>
           <Text type="secondary">敬请期待</Text>
           <p> </p>
           <Paragraph>
             <ul>
               <li>
-                <Link>FlinkSql Studio 时间调度</Link>
+                <Link>支持同时托管多版本的Flink实例</Link>
               </li>
               <li>
-                <Link>FlinkSql Studio 依赖调度</Link>
+                <Link>支持K8S多种运行模式</Link>
+              </li>
+              <li>
+                <Link>支持多种任务调度框架接口</Link>
+              </li>
+              <li>
+                <Link>支持UDF动态加载</Link>
               </li>
             </ul>
           </Paragraph></>} reverse={true}>
@@ -344,7 +350,7 @@ export default (): React.ReactNode => {
               </ul>
             </Paragraph>
           </Timeline.Item>
-          <Timeline.Item><Text code>0.4.0</Text> <Text type="secondary">2021-11-?</Text>
+          <Timeline.Item><Text code>0.4.0</Text> <Text type="secondary">2021-12-02</Text>
             <p> </p>
             <Paragraph>
               <ul>
@@ -431,6 +437,9 @@ export default (): React.ReactNode => {
                 </li>
                 <li>
                   <Link>新增一键回收过期集群</Link>
+                </li>
+                <li>
+                  <Link>优化打包及扩展方式</Link>
                 </li>
               </ul>
             </Paragraph>
