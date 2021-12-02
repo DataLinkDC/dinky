@@ -82,7 +82,8 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
         <Form.Item
           name="hadoopConfigPath"
           label="配置文件路径"
-          help="可指定配置文件路径（末尾无/），需要包含以下文件：core-site.xml,hdfs-site.xml,yarn-site.xml"
+          rules={[{required: true, message: '请输入 hadoop 配置文件路径！'}]}
+          help="指定配置文件路径（末尾无/），需要包含以下文件：core-site.xml,hdfs-site.xml,yarn-site.xml"
         >
           <Input placeholder="值如 /usr/local/dlink/conf"/>
         </Form.Item>
@@ -126,15 +127,16 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
         <Form.Item
           name="flinkLibPath"
           label="lib 路径"
-          rules={[{required: true, message: '请输入 lib 路径！'}]}
-          help="必须指定 lib 的 hdfs 路径（末尾无/），需要包含 Flink 运行时的依赖"
+          rules={[{required: true, message: '请输入 lib 的 hdfs 路径！'}]}
+          help="指定 lib 的 hdfs 路径（末尾无/），需要包含 Flink 运行时的依赖"
         >
           <Input placeholder="值如 hdfs:///flink/lib"/>
         </Form.Item>
         <Form.Item
           name="flinkConfigPath"
           label="配置文件路径"
-          help="可指定配置文件 flink-conf.yaml 的具体路径"
+          rules={[{required: true, message: '请输入 flink-conf.yaml 路径！'}]}
+          help="指定 flink-conf.yaml 的具体路径"
         >
           <Input placeholder="值如 /usr/local/dlink/conf/flink-conf.yaml"/>
         </Form.Item>

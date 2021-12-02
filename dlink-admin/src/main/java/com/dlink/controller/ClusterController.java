@@ -109,4 +109,12 @@ public class ClusterController {
         return Result.succeed("状态刷新完成");
     }
 
+    /**
+     * 回收过期集群
+     */
+    @GetMapping("/clear")
+    public Result clear() {
+        return Result.succeed(clusterService.clearCluster(),"回收完成");
+    }
+
 }

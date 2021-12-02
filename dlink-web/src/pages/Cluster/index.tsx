@@ -1,4 +1,4 @@
-import {DownOutlined, HeartOutlined, PlusOutlined, UserOutlined} from '@ant-design/icons';
+import {DownOutlined, HeartOutlined, PlusOutlined, UserOutlined,ClearOutlined} from '@ant-design/icons';
 import {Button, message, Input, Drawer, Modal} from 'antd';
 import React, {useState, useRef} from 'react';
 import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
@@ -15,7 +15,7 @@ import Dropdown from "antd/es/dropdown/dropdown";
 import Menu from "antd/es/menu";
 import {
   handleAddOrUpdate, handleOption, handleRemove, queryData,
-  updateEnabled
+  updateEnabled,getData
 } from "@/components/Common/crud";
 import {showCluster,showSessionCluster} from "@/components/Studio/StudioEvent/DDL";
 
@@ -52,6 +52,21 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
   const checkHeartBeats = async () => {
     await handleOption(url + '/heartbeats', '心跳检测', null);
     actionRef.current?.reloadAndRest?.();
+  };
+
+  const clearCluster = async () => {
+
+    Modal.confirm({
+      title: '回收集群',
+      content: '确定回收所有自动创建且过期的集群吗？',
+      okText: '确认',
+      cancelText: '取消',
+      onOk: async () => {
+        const {datas} = await getData(url + '/clear', '回收集群', null);
+        message.success(`成功回收${datas}个集群`);
+        actionRef.current?.reloadAndRest?.();
+      }
+    });
   };
 
   const MoreBtn: React.FC<{
@@ -305,6 +320,9 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
         </Button>,
         <Button type="primary" onClick={() => checkHeartBeats()}>
           <HeartOutlined/> 心跳
+        </Button>,
+        <Button type="primary" onClick={() => clearCluster()}>
+          <ClearOutlined /> 回收
         </Button>,
       ]}
         request={(params, sorter, filter) => queryData(url, {...params, sorter, filter})}

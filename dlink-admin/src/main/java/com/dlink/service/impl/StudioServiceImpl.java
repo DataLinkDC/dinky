@@ -8,6 +8,7 @@ import com.dlink.dto.StudioExecuteDTO;
 import com.dlink.explainer.ca.CABuilder;
 import com.dlink.explainer.ca.ColumnCANode;
 import com.dlink.explainer.ca.TableCANode;
+import com.dlink.gateway.GatewayType;
 import com.dlink.gateway.model.JobInfo;
 import com.dlink.gateway.result.SavePointResult;
 import com.dlink.job.JobConfig;
@@ -89,6 +90,7 @@ public class StudioServiceImpl implements StudioService {
     @Override
     public ObjectNode getStreamGraph(StudioExecuteDTO studioExecuteDTO) {
         JobConfig config = studioExecuteDTO.getJobConfig();
+        config.setType(GatewayType.LOCAL.getLongValue());
         if(!config.isUseSession()) {
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
         }
