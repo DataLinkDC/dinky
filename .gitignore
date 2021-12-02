@@ -29,7 +29,6 @@ target/*
 */target/*
 */*/target/*
 dlink-web/node_modules/*
-datalink-web/node_modules/*
+dlink-web/node/*
 dlink-web/dist/*
-datalink-web/dist/*
 dlink-admin/src/main/resources/static/*

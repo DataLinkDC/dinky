@@ -429,6 +429,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增作业配置的其他配置低优先级加载实现</Link>
                 </li>
+                <li>
+                  <Link>新增一键回收过期集群</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

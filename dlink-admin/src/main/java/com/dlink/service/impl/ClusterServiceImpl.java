@@ -84,21 +84,40 @@ public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
     }
 
     @Override
+    public List<Cluster> listAutoEnable() {
+        return list(new QueryWrapper<Cluster>().eq("enabled",1).eq("auto_registers",1));
+    }
+
+    @Override
     public Cluster registersCluster(Cluster cluster) {
         checkHealth(cluster);
         saveOrUpdate(cluster);
         return cluster;
     }
 
-    private void checkHealth(Cluster cluster){
+    @Override
+    public int clearCluster() {
+        List<Cluster> clusters = listAutoEnable();
+        int count = 0;
+        for(Cluster item : clusters){
+            if((!checkHealth(item))&&removeById(item)){
+                count ++;
+            }
+        }
+        return count;
+    }
+
+    private boolean checkHealth(Cluster cluster){
         FlinkClusterInfo info = checkHeartBeat(cluster.getHosts(), cluster.getJobManagerHost());
         if(!info.isEffective()){
             cluster.setJobManagerHost("");
             cluster.setStatus(0);
+            return false;
         }else{
             cluster.setJobManagerHost(info.getJobManagerAddress());
             cluster.setStatus(1);
             cluster.setVersion(info.getVersion());
+            return true;
         }
     }
 }
