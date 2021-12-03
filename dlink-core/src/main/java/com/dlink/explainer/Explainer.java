@@ -51,7 +51,7 @@ public class Explainer {
                 if(Asserts.isNullString(sql)){
                     continue;
                 }
-                SqlType operationType = Operations.getOperationType(statement);
+                SqlType operationType = Operations.getOperationType(item);
                 if (operationType.equals(SqlType.INSERT)||operationType.equals(SqlType.SELECT)) {
                     record = executor.explainSqlRecord(sql);
                     if(Asserts.isNull(record)){

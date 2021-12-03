@@ -28,5 +28,9 @@ public interface ClusterService extends ISuperService<Cluster> {
 
     List<Cluster> listSessionEnable();
 
+    List<Cluster> listAutoEnable();
+
     Cluster registersCluster(Cluster cluster);
+
+    int clearCluster();
 }

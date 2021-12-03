@@ -174,18 +174,11 @@ const StudioMenu = (props: any) => {
     }
     let useSession = !!currentSession.session;
     let param = {
+      ...current.task,
       useSession: useSession,
       session: currentSession.session,
-      useRemote: current.task.useRemote,
-      clusterId: current.task.clusterId,
-      useResult: current.task.useResult,
-      maxRowNum: current.task.maxRowNum,
+      configJson: JSON.stringify(current.task.config),
       statement: selectsql,
-      fragment: current.task.fragment,
-      jobName: current.task.jobName,
-      parallelism: current.task.parallelism,
-      checkPoint: current.task.checkPoint,
-      savePointPath: current.task.savePointPath,
     };
     const res = getStreamGraph(param);
     handleGraphModalVisible(true);
