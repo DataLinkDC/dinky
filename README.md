@@ -10,7 +10,7 @@ Dlink 为 Apache Flink 而生，让 Flink SQL 更加丝滑。它是一个 C/S �
 
 ## 原理
 
-![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTqSas1xKRbibnZdGY1iagC3X6SounxGVTGxQ3nrvZYyNJ0F0QwHAFdHzKzjxRZtvqSvjxPECuvduQUA/0?wx_fmt=png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/Dlink_principle.png)
 
 ## 功能
 
@@ -18,11 +18,10 @@ Dlink 为 Apache Flink 而生，让 Flink SQL 更加丝滑。它是一个 C/S �
 
 |         域          |                 概要                 |  进展  |
 | :-----------------: | :----------------------------------: | :----: |
-|      基本管理       |                 作业管理               | 已实现 |
+|      基本管理       |         作业及Savepoint管理          | 已实现 |
 |                     |             FlinkSQL管理             | 已实现 |
 |                     |            Flink 集群管理            | 已实现 |
 |                     |          Flink 集群配置管理          | 已实现 |
-|                     |              Jar 管理              | 已实现 |
 |                     |              数据源管理              | 已实现 |
 |                     |               文档管理               | 已实现 |
 |                     |               系统配置               | 已实现 |
@@ -42,7 +41,6 @@ Dlink 为 Apache Flink 而生，让 Flink SQL 更加丝滑。它是一个 C/S �
 |                     |               布局拖拽               | 已实现 |
 |                     |      SELECT、SHOW等语法数据预览      | 已实现 |
 |                     |           JobGraph 图预览            | 已实现 |
-|                     |               血缘分析               | 已实现 |
 |   Flink 任务运维    |          standalone SQL提交          | 已实现 |
 |                     |         yarn session SQL提交         | 已实现 |
 |                     |         yarn per-job SQL提交         | 已实现 |
@@ -51,14 +49,12 @@ Dlink 为 Apache Flink 而生，让 Flink SQL 更加丝滑。它是一个 C/S �
 |                     |             作业 Cancel              | 已实现 |
 |                     |  作业 SavePoint Cancel,Stop,Trigger  | 已实现 |
 |                     |        作业从 SavePoint 恢复         | 已实现 |
-|                     |            SavePoint 管理           | 已实现 |
 |     元数据功能      |    Flink Catelog 浏览（connector)    | 已实现 |
 |                     |         外部数据源元数据浏览         | 已实现 |
 |      共享会话       | 支持 Session 集群 Catelog 持久与浏览 | 已实现 |
 |                     |          支持共享与私有会话          | 已实现 |
 |   Flink 集群中心    |        手动注册 Session 集群         | 已实现 |
 |                     | 自动注册 per-job 和 application 集群 | 已实现 |
-|                     |            一键回收集群             | 已实现 |
 
 ## 部署
 
@@ -103,9 +99,7 @@ auto.sh --启动停止脚本
 dlink-admin.jar --程序包
 ```
 
-解压后结构如上所示，修改配置文件内容。
-lib 文件夹下存放 dlink 自身的扩展文件，plugins 文件夹下存放 flink 及 hadoop 的官方扩展文件。其中 plugins 中的所有 jar 需要根据版本号自行下载并添加，才能体验完整功能。
-extends 文件夹只作为扩展插件的备份管理，不会被 dlink 加载。
+解压后结构如上所示，修改配置文件内容。lib 文件夹下存放 dlink 自身的扩展文件，plugins 文件夹下存放 flink 及 hadoop 的官方扩展文件。其中 plugins 中的所有 jar 需要根据版本号自行下载并添加，才能体验完整功能，当然也可以放自己修改的 Flink 源码编译包。extends 文件夹只作为扩展插件的备份管理，不会被 dlink 加载。
 
 在Mysql数据库中创建数据库并执行初始化脚本。
 
@@ -119,7 +113,7 @@ sh auto.sh status
 ```
 
 前端 Nginx 部署：
-    将 html 文件夹上传至 nginx 的 html 文件夹下，修改 nginx 配置文件并重启。
+    	将 html 文件夹上传至 nginx 的 html 文件夹下，修改 nginx 配置文件并重启。
 
 ```shell
     server {
@@ -221,8 +215,7 @@ mvn clean install -Dmaven.test.skip=true
 
 #### 扩展Connector及UDF
 
-将 Flink 集群上已扩展好的 Connector 和 UDF 直接放入 Dlink 的 lib 下，然后重启即可。
-定制 Connector 过程同 Flink 官方一样。
+将 Flink 集群上已扩展好的 Connector 和 UDF 直接放入 Dlink 的 lib 或者 plugins 下，然后重启即可。定制 Connector 过程同 Flink 官方一样。
 
 #### 扩展Metadata
 
@@ -230,9 +223,7 @@ mvn clean install -Dmaven.test.skip=true
 
 #### 扩展其他版本的Flink
 
-Flink 的版本取决于 lib 下的 dlink-client-1.13.jar。
-当前版本默认为 Flink 1.13.3 API。
-向其他版本的集群提交任务可能存在问题，已实现 1.11、1.12、1.13, 1.14，切换版本时只需要将对应依赖在lib下进行替换，然后重启即可。
+Flink 的版本取决于 lib 下的 dlink-client-1.13.jar。当前版本默认为 Flink 1.13.3 API。向其他版本的集群提交任务可能存在问题，已实现 1.11、1.12、1.13, 1.14，切换版本时只需要将对应依赖在lib下进行替换，然后重启即可。
 
 切换版本时需要同时更新 plugins 下的 Flink 依赖。
 
@@ -248,9 +239,7 @@ Flink 的版本取决于 lib 下的 dlink-client-1.13.jar。
 
 #### 集群中心
 
-注册 Flink 集群地址时，格式为 host:port ，用英文逗号分隔。即添加 Flink 集群的 JobManager 的 RestApi 地址。当 HA 模式时，地址间用英文逗号分隔，例如：192.168.123.101:8081,192.168.123.102:8081,192.168.123.103:8081。
-新增和修改的等待时间较长，是因为需要检测最新的 JobManager 地址。
-心跳检测为手动触发，会更新集群状态与 JobManager 地址。
+注册 Flink 集群地址时，格式为 host:port ，用英文逗号分隔。即添加 Flink 集群的 JobManager 的 RestApi 地址。当 HA 模式时，地址间用英文逗号分隔，例如：192.168.123.101:8081,192.168.123.102:8081,192.168.123.103:8081。新增和修改的等待时间较长，是因为需要检测最新的 JobManager 地址。心跳检测为手动触发，会更新集群状态与 JobManager 地址。
 
 #### Studio
 
@@ -276,26 +265,26 @@ GROUP BY myField
 AGG BY TOP2(value) as (value,rank);
 ```
 
-6. MaxRowNum 为批流执行Select时预览查询结果的最大集合长度，默认 100，最大 9999。
-7. SavePoint策略目前不支持 session 模式。
+6. MaxRowNum 为批流（Session模式下）执行Select时预览查询结果的最大集合长度，默认 100，最大 9999。
+7. SavePoint策略支持最近一次、最早一次、指定一次三种策略。
 8. Flink 共享会话共享 Catalog ，会话的使用需要在左侧会话选项卡手动创建并维护。
 9. 连接器为 Catalog 里的表信息，清空按钮会销毁当前会话。
-10. Local 模式请使用少量测试数据，真实数据请使用远程集群。
+10. Local 模式主要用于语法校验、血缘分析、执行图预览等功能，当然也可执行任务，但目前版本建议请使用远程集群来执行任务。
 11. 执行 SQL 时，如果您选中了部分 SQL，则会执行选中的内容，否则执行全部内容。
 12. 小火箭的提交功能是异步提交当前任务已保存的 FlinkSQL 及配置到集群。由于适用于快速提交稳定的任务，所以无法提交草稿，且无法预览数据。
-13. 执行信息或者历史中那个很长很长的就是集群上的 JobId，任务历史可以查看执行过的任务的数据回放。
+13. 执行信息或者历史中那个很长很长的就是集群上的 JobId 或者 APPID，任务历史可以查看执行过的任务的数据回放。
 14. 草稿是无法被异步远程提交的，只能同步执行，且无法保存。
-15. 灰色按钮代表近期将实现。
+15. Studio 的布局可以随意拖动，但由于是实时计算，联动较多，请温柔些。
 16. 同步执行时可以自由指定任务名，异步提交默认为作业名。
 17. 支持 set 语法设置 Flink 的执行配置，其优先级大于右侧的配置。
-18. 支持远程集群查看及停止任务。
-19. 支持自定义的 sql 函数或片段的自动补全，通过函数文档维护。
+18. 支持远程集群查看、SavePoint 及停止任务。
+19. 支持自定义及上下文的 sql 函数或片段的自动补全，通过函数文档维护。
 20. 支持 Flink 所有官方的连接器及插件的扩展，但需注意版本号适配。
 21. 使用 IDEA 进行源码调试时，需要在 admin 及 core 下修改相应 pom 依赖的引入来完成功能的加载。
-22. 支持可执行 FlinkSql （Insert into）的血缘分析，无论你的 sql 有多复杂或者多 view。
+22. 支持基于 StreamGraph 的可执行 FlinkSql （Insert into）的血缘分析，无论你的 sql 有多复杂或者多 view。
 23. Dlink 目前提交方式支持 Standalone 、Yarn Session、Yarn PerJob、Yarn Application，K8S 后续支持。
 24. Dlink 目前对于 Flink 多版本的支持只能一个 Dlink 实例支持一个 Flink 版本，未来将开源同时支持多版本的能力。
-25. 使用 Yarn PerJob、Yarn Application 需要配置集群配置。
+25. 使用 Yarn PerJob、Yarn Application 需要配置集群配置，且其自动注册的集群实例需要手动点击回收。
 26. 其他内容后续更新。。。
 
 #### 使用技巧
@@ -316,7 +305,7 @@ AGG BY TOP2(value) as (value,rank);
 
 #### 常见问题及解决
 
-（=。=）~ 敬请期待。
+期待您提出问题。
 
 ## 技术栈
 
@@ -354,9 +343,9 @@ dlink将正式开始社区积极的发展阶段，社区的主旨是开放、交
 
 QQ社区群：**543709668**，申请备注 “ Dlink ”，不写不批
 
-微信社区群（推荐）：添加微信号 wenmo_ai 邀请进群，申请备注 “ Dlink ”，不写不批
+微信社区群（推荐，大佬云集）：添加微信号 wenmo_ai 邀请进群，申请备注 “ Dlink ”，不写不批
 
-公众号：[DataLink数据中台](https://mmbiz.qpic.cn/mmbiz_jpg/dyicwnSlTFTp6w4PuJruFaLV6uShCJDkzqwtnbQJrQ90yKDuuIC8tyMU5DK69XZibibx7EPPBRQ3ic81se5UQYs21g/0?wx_fmt=jpeg)
+公众号（最新消息获取建议关注）：[DataLink数据中台](https://mmbiz.qpic.cn/mmbiz_jpg/dyicwnSlTFTp6w4PuJruFaLV6uShCJDkzqwtnbQJrQ90yKDuuIC8tyMU5DK69XZibibx7EPPBRQ3ic81se5UQYs21g/0?wx_fmt=jpeg)
 
 邮箱：aiwenmo@163.com
 
@@ -364,70 +353,71 @@ QQ社区群：**543709668**，申请备注 “ Dlink ”，不写不批
 
 > 登录页
 
-![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTo5cwuZy7GSLibw5J7Lx6cicxd9xkibGuLQiahOhU9ncGTamPViaIeRNlmH5rMmDgDaaLkXl9ibjDjBECwA/0?wx_fmt=png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/login.png)
 
 > 首页
 
-![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTq9JpeRzrhOCuSppFl3Q1hPP6PKkaNKyicp5ROO69P6QBrciaM5QCOibjBvX7q3DyUicEGxvdWD5LicDWg/0?wx_fmt=png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/welcome.png)
 
 > Studio SQL 开发提示与补全
 
-![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTq9JpeRzrhOCuSppFl3Q1hPVpN0I0bD8xAbmd5KzxfeE2WhNHb1GLmmQdLWAg3EpNl39pia4guPYsw/0?wx_fmt=png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/sqldev.png)
 
 > Studio 语法和逻辑检查
 
-![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTq9JpeRzrhOCuSppFl3Q1hPx11xDLKow43Cqj7f1dJdxBgicxWHa9Q36icgrOiaOmtuKZeNsxY5SNFkA/0?wx_fmt=png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/sqlcheck.png)
 
 > Studio 批流SELECT预览
 
-![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTqSas1xKRbibnZdGY1iagC3X6leQx4mfqsdwVftlEUXSFWnEzOTJGrCGHUKo98SpIn11WkZquEwwjpg/0?wx_fmt=png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/selectpreview.png)
 
 > Studio 异常反馈
 
-![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTq9JpeRzrhOCuSppFl3Q1hPQOlYfBfy11hGibcHW4fVLXg4Vv9WJAv6Hf5ekEAd83pgia2FZcpTrHYg/0?wx_fmt=png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/sqlerror.png)
 
 > Studio 进程监控
 
-![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTqSas1xKRbibnZdGY1iagC3X6koYZDQqzsawPOCTP64ycdUZlib5oJA9vo9fpX43DNTmibY60ojZv44zQ/0?wx_fmt=png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/process.png)
 
 > Studio 执行历史
 
-![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTq9JpeRzrhOCuSppFl3Q1hPZGicHuConKc7pEph89wPQRheBAm0Iibaqlg361INWfM6su4jKfaiagMLA/0?wx_fmt=png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/history.png)
 
 > Studio 数据回放
 
-![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTq9JpeRzrhOCuSppFl3Q1hP7gcTmxjorJtA1uKcV9fQIb0YVfQ28vtJ33DdpTIZ14do5OADpZqlEw/0?wx_fmt=png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/datashow.png)
 
 > Studio SavePoint 管理
 
-![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTqSas1xKRbibnZdGY1iagC3X6TGv1Gun2rB35Upv8hnsoeHzeDdFT4Ryag8icHz7BrzhE4YELiaMk7KYw/0?wx_fmt=png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/savepoint.png)
 
 > Studio 血缘分析
 
-![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTq9JpeRzrhOCuSppFl3Q1hPKup29pD5xgiagibC31wyj3cNu4u5gD9pF9Fmy7ibP9ACO7sY00MSviaLiag/0?wx_fmt=png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/ca.png)
 
 > Studio 函数浏览
 
-![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTq9JpeRzrhOCuSppFl3Q1hPB3ToEoSepiahsojAE7viaGB3L9DNuRUz2MyyDpicWIytdfpmnwGicmlGLQ/0?wx_fmt=png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/function.png)
 
 > Studio 共享会话
 
-![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTq9JpeRzrhOCuSppFl3Q1hPOAgia24OptBWzp5N8t42ZhsQjfdmUP8YSeZzwfZbgzcRMgbVm450A1g/0?wx_fmt=png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/session.png)
 
 > 集群管理
 
-![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTq9JpeRzrhOCuSppFl3Q1hPDOfnh8M0VHB5lnjq4ibsIyh0ZX9shpCNP9z4yRic5Vsj5El9fiaeyVY4A/0?wx_fmt=png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/cluster.png)
 
 
 
 > 集群配置管理
 
-![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTq9JpeRzrhOCuSppFl3Q1hPLk5ibs9APhhe1mrKq9ciaT71d9qFnfDZRMKiaaU6WT0FXDdQdibS0E4rRg/0?wx_fmt=png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/clusterconfiguration.png)
 
 > 数据源管理
 
-![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTq9JpeRzrhOCuSppFl3Q1hPeibE4sA12gVxdq6WoribKabXZpJ10HIrSiar7icb4GHOWYpIvurH7KXicsg/0?wx_fmt=png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/db.png)
 
 > 元数据查询
 
-![](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTq9JpeRzrhOCuSppFl3Q1hPKNkDElVbtbiaUGrBBCCOTibhj6vlibvm4AC3LljG9oUttrkswARqX2AOg/0?wx_fmt=png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/metadata.png)
+
