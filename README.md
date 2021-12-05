@@ -6,6 +6,7 @@ Dlink 为 Apache Flink 而生，让 Flink SQL 更加丝滑。它是一个 C/S �
 
 需要注意的是，Dlink 它更专注于 FlinkSQL 的应用，而不是 DataStream。在开发过程中您不会看到任何一句 java、scala 或者 python。所以，它的目标是基于 100% FlinkSQL 来实现批流一体的实时计算平台。
 
+站在巨人肩膀上开发与创新，Dlink 在未来批流一体的发展趋势下潜力无限。
 
 
 ## 原理
@@ -408,7 +409,6 @@ QQ社区群：**543709668**，申请备注 “ Dlink ”，不写不批
 ![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/cluster.png)
 
 
-
 > 集群配置管理
 
 ![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/clusterconfiguration.png)
@@ -416,8 +416,3 @@ QQ社区群：**543709668**，申请备注 “ Dlink ”，不写不批
 > 数据源管理
 
 ![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/db.png)
-
-> 元数据查询
-
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/metadata.png)
-
