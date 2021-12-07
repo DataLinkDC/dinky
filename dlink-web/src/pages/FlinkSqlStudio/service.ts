@@ -37,6 +37,15 @@ export async function getStreamGraph(params: StudioParam) {
   });
 }
 
+export async function getJobPlan(params: StudioParam) {
+  return request<API.Result>('/api/studio/getJobPlan', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
+
 export async function getJobData(jobId:string) {
   return request<API.Result>('/api/studio/getJobData', {
     method: 'GET',

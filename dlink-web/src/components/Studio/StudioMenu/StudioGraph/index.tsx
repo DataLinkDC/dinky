@@ -10,44 +10,29 @@ const StudioGraph = (props:any) => {
 
   const config = {
     data,
+    height:350,
     nodeCfg: {
-      size: [140, 65],
-      /*anchorPoints: [
-        [0.5, 1],
-        [0.5, 0],
-      ],*/
+      size: [160, 65],
       items: {
-        padding: [6, 0, 0],
+        autoEllipsis: false,
+        padding: [10],
         containerStyle: {
           fill: '#fff',
           width:'100px',
-          display: 'inline-block',
-          overflow:'hidden',
-          textOverflow:'ellipsis',
-          whiteSpace:'nowrap',
         },
         style: (cfg, group, type) => {
           const styles = {
-            icon: {
-              width: 12,
-              height: 12,
-            },
             value: {
-              fill: '#f00',
+              fill: '#000',
             },
             text: {
-              fill: '#aaa',
+              fill: '#222',
               width:'100px',
-              display: 'inline-block',
-              overflow:'hidden',
-          textOverflow:'ellipsis',
-          whiteSpace:'nowrap',
             },
           };
           return styles[type];
         },
       },
-
       nodeStateStyles: {
         hover: {
           stroke: '#1890ff',
@@ -55,20 +40,21 @@ const StudioGraph = (props:any) => {
         },
       },
       style: {
-        radius: [2, 2, 2, 2],
+        fill: '#40a9ff',
+        stroke: '#1890ff',
       },
     },
     edgeCfg: {
       type: 'polyline',
       label: {
         style: {
-          fill: '#aaa',
+          fill: '#666',
           fontSize: 12,
           fillOpacity: 1,
         },
       },
       endArrow: {
-        fill: '#ddd',
+        fill: '#333',
       },
       edgeStateStyles: {
         hover: {

@@ -31,6 +31,8 @@ public interface StudioService {
 
     ObjectNode getStreamGraph(StudioExecuteDTO studioExecuteDTO);
 
+    ObjectNode getJobPlan(StudioExecuteDTO studioExecuteDTO);
+
     SelectResult getJobData(String jobId);
 
     SessionInfo createSession(SessionDTO sessionDTO, String createUser);

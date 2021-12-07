@@ -365,13 +365,15 @@ public class JobManager extends RunTime {
     }
 
     public List<SqlExplainResult> explainSql(String statement) {
-        Explainer explainer = Explainer.build(executor);
-        return explainer.explainSqlResult(statement);
+        return Explainer.build(executor).explainSqlResult(statement);
     }
 
     public ObjectNode getStreamGraph(String statement) {
-        Explainer explainer = Explainer.build(executor);
-        return explainer.getStreamGraph(statement);
+        return Explainer.build(executor).getStreamGraph(statement);
+    }
+
+    public String getJobPlanJson(String statement) {
+        return Explainer.build(executor).getJobPlanInfo(statement).getJsonPlan();
     }
 
     public boolean cancel(String jobId) {

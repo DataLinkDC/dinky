@@ -27,7 +27,9 @@ import com.dlink.service.StudioService;
 import com.dlink.session.SessionConfig;
 import com.dlink.session.SessionInfo;
 import com.dlink.session.SessionPool;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,6 +98,26 @@ public class StudioServiceImpl implements StudioService {
         }
         JobManager jobManager = JobManager.build(config);
         return jobManager.getStreamGraph(studioExecuteDTO.getStatement());
+    }
+
+    @Override
+    public ObjectNode getJobPlan(StudioExecuteDTO studioExecuteDTO) {
+        JobConfig config = studioExecuteDTO.getJobConfig();
+        config.setType(GatewayType.LOCAL.getLongValue());
+        if(!config.isUseSession()) {
+            config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
+        }
+        JobManager jobManager = JobManager.build(config);
+        String planJson = jobManager.getJobPlanJson(studioExecuteDTO.getStatement());
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode objectNode =mapper.createObjectNode();
+        try {
+            objectNode = (ObjectNode) mapper.readTree(planJson);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }finally {
+            return objectNode;
+        }
     }
 
     @Override

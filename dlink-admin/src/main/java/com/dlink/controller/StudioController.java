@@ -56,6 +56,14 @@ public class StudioController {
     }
 
     /**
+     * 获取sql的jobplan
+     */
+    @PostMapping("/getJobPlan")
+    public Result getJobPlan(@RequestBody StudioExecuteDTO studioExecuteDTO)  {
+        return Result.succeed(studioService.getJobPlan(studioExecuteDTO),"获取作业计划成功");
+    }
+
+    /**
      * 进行DDL操作
      */
     @PostMapping("/executeDDL")

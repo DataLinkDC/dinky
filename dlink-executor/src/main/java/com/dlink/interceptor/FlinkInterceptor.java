@@ -30,7 +30,7 @@ public class FlinkInterceptor {
         if(executor.isUseSqlFragment()) {
             statement = executor.getSqlManager().parseVariable(statement);
         }
-        initFunctions(executor.getCustomTableEnvironmentImpl(), statement);
+//        initFunctions(executor.getCustomTableEnvironmentImpl(), statement);
         return statement.trim();
     }
 
@@ -47,6 +47,7 @@ public class FlinkInterceptor {
         return false;
     }
 
+    @Deprecated
     private static void initFunctions(CustomTableEnvironmentImpl stEnvironment, String statement) {
         Map<String, UDFunction> usedFunctions = FunctionManager.getUsedFunctions(statement);
         String[] udfs = stEnvironment.listUserDefinedFunctions();
