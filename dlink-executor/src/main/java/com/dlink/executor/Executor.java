@@ -8,6 +8,7 @@ import com.dlink.result.SqlExplainResult;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.runtime.jobgraph.JobGraph;
+import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.ExplainDetail;
 import org.apache.flink.table.api.StatementSet;
@@ -203,6 +204,10 @@ public abstract class Executor {
         }else{
             return null;
         }
+    }
+
+    public JobPlanInfo getJobPlanInfo(List<String> statements){
+        return stEnvironment.getJobPlanInfo(statements);
     }
 
     public void registerFunction(String name, ScalarFunction function){

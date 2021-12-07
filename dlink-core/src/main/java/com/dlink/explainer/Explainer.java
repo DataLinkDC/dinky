@@ -14,6 +14,7 @@ import com.dlink.utils.FlinkUtil;
 import com.dlink.utils.SqlUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import org.apache.flink.table.catalog.CatalogManager;
 
 import java.util.ArrayList;
@@ -96,6 +97,22 @@ public class Explainer {
             return translateObjectNode(strPlans.get(0));
         }else{
             return mapper.createObjectNode();
+        }
+    }
+
+    public JobPlanInfo getJobPlanInfo(String statement){
+        List<SqlExplainResult> sqlExplainRecords = explainSqlResult(statement);
+        List<String> strPlans = new ArrayList<>();
+        for (SqlExplainResult item : sqlExplainRecords) {
+            if (Asserts.isNotNull(item.getType())
+                    && item.getType().contains(FlinkSQLConstant.DML)) {
+                strPlans.add(item.getSql());
+            }
+        }
+        if(strPlans.size()>0){
+            return executor.getJobPlanInfo(strPlans);
+        }else{
+            return new JobPlanInfo("");
         }
     }
 

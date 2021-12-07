@@ -7,6 +7,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.flink.runtime.jobgraph.JobGraph;
+import org.apache.flink.runtime.jobgraph.jsonplan.JsonPlanGenerator;
+import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.graph.JSONGenerator;
 import org.apache.flink.streaming.api.graph.StreamGraph;
@@ -112,6 +114,10 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
                 throw new TableException("Unsupported SQL query! explainSql() need a single SQL to query.");
             }
         }
+    }
+
+    public JobPlanInfo getJobPlanInfo(List<String> statements) {
+        return new JobPlanInfo(JsonPlanGenerator.generatePlan(getJobGraphFromInserts(statements)));
     }
 
     public JobGraph getJobGraphFromInserts(List<String> statements) {

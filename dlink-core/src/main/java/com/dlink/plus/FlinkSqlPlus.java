@@ -6,6 +6,7 @@ import com.dlink.explainer.ca.ColumnCAResult;
 import com.dlink.explainer.ca.TableCAResult;
 import com.dlink.result.SqlExplainResult;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import org.apache.flink.table.api.ExplainDetail;
 
 import java.util.ArrayList;
@@ -78,6 +79,10 @@ public class FlinkSqlPlus {
 
     public ObjectNode getStreamGraph(String statement) {
         return executor.getStreamGraph(statement);
+    }
+
+    public JobPlanInfo getJobPlanInfo(String statement) {
+        return explainer.getJobPlanInfo(statement);
     }
 
 }
