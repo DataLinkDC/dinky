@@ -348,7 +348,11 @@ QQ社区群：**543709668**，申请备注 “ Dlink ”，不写不批
 
 公众号（最新消息获取建议关注）：[DataLink数据中台](https://mmbiz.qpic.cn/mmbiz_jpg/dyicwnSlTFTp6w4PuJruFaLV6uShCJDkzqwtnbQJrQ90yKDuuIC8tyMU5DK69XZibibx7EPPBRQ3ic81se5UQYs21g/0?wx_fmt=jpeg)
 
-邮箱：aiwenmo@163.com
+163 邮箱：aiwenmo@163.com
+
+QQ 邮箱：809097465@qq.com
+
+Request ID=04122021/8392566
 
 ## 运行截图
 
