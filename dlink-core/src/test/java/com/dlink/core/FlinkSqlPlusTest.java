@@ -9,6 +9,7 @@ import com.dlink.job.JobManager;
 import com.dlink.parser.SingleSqlParserFactory;
 import com.dlink.plus.FlinkSqlPlus;
 import com.dlink.result.SubmitResult;
+import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -22,39 +23,54 @@ import java.util.Map;
  * @since 2021/6/23 10:37
  **/
 public class FlinkSqlPlusTest {
+
     @Test
-    public void tableCATest(){
-        String sql1 ="CREATE TABLE student (\n" +
-                "  sid INT,\n" +
-                "  name STRING,\n" +
-                "  PRIMARY KEY (sid) NOT ENFORCED\n" +
+    public void getJobPlanInfo(){
+        String sql = "jdbcconfig:='connector' = 'jdbc',\n" +
+                "    'url' = 'jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true',\n" +
+                "    'username'='dlink',\n" +
+                "    'password'='dlink',;\n" +
+                "create temporary function TOP2 as 'com.dlink.ud.udtaf.Top2';\n" +
+                "CREATE TABLE student (\n" +
+                "    sid INT,\n" +
+                "    name STRING,\n" +
+                "    PRIMARY KEY (sid) NOT ENFORCED\n" +
                 ") WITH (\n" +
-                "   'connector' = 'jdbc',\n" +
-                "   'url' = 'jdbc:mysql://10.1.51.25:3306/dataxweb?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true',\n" +
-                "   'username'='dfly',\n" +
-                "   'password'='Dareway',\n" +
-                "   'table-name' = 'student'\n" +
-                ")";
-        String sql2 ="CREATE TABLE man (\n" +
-                "  pid INT,\n" +
-                "  name STRING,\n" +
-                "  PRIMARY KEY (pid) NOT ENFORCED\n" +
+                "    ${jdbcconfig}\n" +
+                "    'table-name' = 'student'\n" +
+                ");\n" +
+                "CREATE TABLE score (\n" +
+                "    cid INT,\n" +
+                "    sid INT,\n" +
+                "    cls STRING,\n" +
+                "    score INT,\n" +
+                "    PRIMARY KEY (cid) NOT ENFORCED\n" +
                 ") WITH (\n" +
-                "   'connector' = 'jdbc',\n" +
-                "   'url' = 'jdbc:mysql://10.1.51.25:3306/dataxweb?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true',\n" +
-                "   'username'='dfly',\n" +
-                "   'password'='Dareway',\n" +
-                "   'table-name' = 'man'\n" +
-                ")";
-        String sql3 = "INSERT INTO man SELECT sid as pid,name from student";
-        List<String> sqls = new ArrayList<>();
-        sqls.add(sql1);
-        sqls.add(sql2);
-        sqls.add(sql3);
+                "    ${jdbcconfig}\n" +
+                "    'table-name' = 'score'\n" +
+                ");\n" +
+                "CREATE TABLE scoretop2 (\n" +
+                "    cls STRING,\n" +
+                "    score INT,\n" +
+                "    `rank` INT,\n" +
+                "    PRIMARY KEY (cls,`rank`) NOT ENFORCED\n" +
+                ") WITH (\n" +
+                "    ${jdbcconfig}\n" +
+                "    'table-name' = 'scoretop2'\n" +
+                ");\n" +
+                "CREATE AGGTABLE aggscore AS \n" +
+                "SELECT cls,score,rank\n" +
+                "FROM score\n" +
+                "GROUP BY cls\n" +
+                "AGG BY TOP2(score) as (score,rank);\n" +
+                "\n" +
+                "insert into scoretop2\n" +
+                "select \n" +
+                "b.cls,b.score,b.`rank`\n" +
+                "from aggscore b";
+
         FlinkSqlPlus plus = FlinkSqlPlus.build();
-//        List<TableCAResult> tableCAResults = plus.explainSqlTableColumnCA(String.join(";", sqls));
-//        List<TableCANode> tableCANodes = CABuilder.getOneTableCASByStatement(String.join(";", sqls));
-        List<TableCANode> tableCANodes = CABuilder.getOneTableColumnCAByStatement(String.join(";", sqls));
-        System.out.println(tableCANodes.toString());
+        JobPlanInfo jobPlanInfo = plus.getJobPlanInfo(sql);
+        System.out.println(jobPlanInfo.getJsonPlan());
     }
 }

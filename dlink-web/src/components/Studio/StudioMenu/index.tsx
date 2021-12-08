@@ -12,7 +12,7 @@ import Breadcrumb from "antd/es/breadcrumb/Breadcrumb";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
 import {handleAddOrUpdate, postDataArray} from "@/components/Common/crud";
-import {executeSql, explainSql, getStreamGraph} from "@/pages/FlinkSqlStudio/service";
+import {executeSql, explainSql, getJobPlan} from "@/pages/FlinkSqlStudio/service";
 import StudioHelp from "./StudioHelp";
 import StudioGraph from "./StudioGraph";
 import {showCluster, showTables, saveTask} from "@/components/Studio/StudioEvent/DDL";
@@ -134,18 +134,11 @@ const StudioMenu = (props: any) => {
     }
     let useSession = !!currentSession.session;
     let param = {
+      ...current.task,
       useSession: useSession,
       session: currentSession.session,
-      useRemote: current.task.useRemote,
-      clusterId: current.task.clusterId,
-      useResult: current.task.useResult,
-      maxRowNum: current.task.maxRowNum,
+      configJson: JSON.stringify(current.task.config),
       statement: selectsql,
-      fragment: current.task.fragment,
-      jobName: current.task.jobName,
-      parallelism: current.task.parallelism,
-      checkPoint: current.task.checkPoint,
-      savePointPath: current.task.savePointPath,
     };
     const taskKey = (Math.random() * 1000) + '';
     notification.success({
@@ -180,7 +173,7 @@ const StudioMenu = (props: any) => {
       configJson: JSON.stringify(current.task.config),
       statement: selectsql,
     };
-    const res = getStreamGraph(param);
+    const res = getJobPlan(param);
     handleGraphModalVisible(true);
     res.then((result)=>{
       if(result.code==0){
@@ -199,22 +192,56 @@ const StudioMenu = (props: any) => {
         title:data.nodes[i].pact,
         items: [
           {
-            text: data.nodes[i].contents,
-            value: data.nodes[i].parallelism,
+            text: getRangeText(data.nodes[i].description),
+          },
+          {
+            text: '\r\nParallelism: ',
+            value: '\r\n  '+data.nodes[i].parallelism,
           },
         ],
       };
-      if(data.nodes[i].predecessors){
-        for(let j in data.nodes[i].predecessors){
-          edges.push({source: data.nodes[i].predecessors[j].id.toString(),
+      if(data.nodes[i].inputs){
+        for(let j in data.nodes[i].inputs){
+          edges.push({source: data.nodes[i].inputs[j].id.toString(),
             target: data.nodes[i].id.toString(),
-            value: data.nodes[i].predecessors[j].ship_strategy})
+            value: data.nodes[i].inputs[j].ship_strategy})
         }
       }
     }
     data.edges = edges;
     return data;
   };
+
+  const getRangeText = (str:string) => {
+    str = escape2Html(str);
+    var canvas = getRangeText.canvas || (getRangeText.canvas = document.createElement("canvas"));
+    var context = canvas.getContext("2d");
+    context.font = "10px sans-serif";
+    let result = '';
+    let count = 1;
+    for(let i=0,len=str.length;i<len;i++){
+      result += str[i];
+      let width = context.measureText(result).width;
+      if(width >= 110*count) {
+        result += '\r\n';
+        count++;
+      }
+    }
+    return result;
+  }
+
+
+  const getTextWidth = (text:string, font:string) => {
+    var canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
+    var context = canvas.getContext("2d");
+    context.font = font;
+    var metrics = context.measureText(text);
+    return metrics.width;
+  }
+  const escape2Html = (str:string) => {
+    let arrEntities={'lt':'<','gt':'>','nbsp':' ','amp':'&','quot':'"'};
+    return str.replace(/&(lt|gt|nbsp|amp|quot);/ig,function(all,t){return arrEntities[t];});
+  }
 
   const saveSqlAndSettingToTask = () => {
     saveTask(current,dispatch);
@@ -392,10 +419,10 @@ const StudioMenu = (props: any) => {
         data={explainData}
       />
       <Modal
-        width={1200}
+        width={1000}
         bodyStyle={{padding: '32px 40px 48px'}}
         destroyOnClose
-        title="FlinkSQL 的 StreamGraph"
+        title="FlinkSQL 的 JobPlan"
         visible={graphModalVisible}
         onCancel={() => handleGraphModalVisible(false)}
       >

@@ -8,6 +8,7 @@ import org.apache.flink.table.functions.FunctionDefinition;
  * @author wenmo
  * @since 2021/6/14 22:14
  */
+@Deprecated
 public class UDFunction {
 
     public enum UDFunctionType {

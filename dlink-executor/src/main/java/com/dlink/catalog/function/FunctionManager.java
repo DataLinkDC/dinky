@@ -14,6 +14,7 @@ import java.util.Map;
  * @author wenmo
  * @since 2021/6/14 21:19
  */
+@Deprecated
 public class FunctionManager {
 
     private static Map<String,UDFunction> functions = new HashMap<String,UDFunction>(){
