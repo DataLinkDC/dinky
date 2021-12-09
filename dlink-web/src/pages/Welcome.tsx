@@ -457,6 +457,12 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增 SQLServer Jdbc Connector 的实现</Link>
                 </li>
+                <li>
+                  <Link>修复编辑集群配置测试后保存会新建的bug</Link>
+                </li>
+                <li>
+                  <Link>新增 Local 的运行模式选择并优化 JobManager</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

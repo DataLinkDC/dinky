@@ -20,6 +20,7 @@ import java.util.Map;
 @Getter
 @Setter
 public class StudioExecuteDTO {
+    // RUN_MODE
     private String type;
     private boolean useResult;
     private boolean useStatementSet;

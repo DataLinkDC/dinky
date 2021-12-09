@@ -2,6 +2,7 @@ package com.dlink.service.impl;
 
 import com.dlink.assertion.Assert;
 import com.dlink.assertion.Asserts;
+import com.dlink.assertion.Tips;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.gateway.GatewayType;
 import com.dlink.job.JobConfig;
@@ -52,13 +53,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public JobResult submitByTaskId(Integer id) {
         Task task = this.getTaskInfoById(id);
-        Assert.check(task);
+        Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
         boolean isJarTask = isJarTask(task);
-        /*Statement statement = null;
-        if(!isJarTask){
-            statement = statementService.getById(id);
-            Assert.check(statement);
-        }*/
         JobConfig config = task.buildSubmitConfig();
         if (!JobManager.useGateway(config.getType())) {
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), task.getClusterId()));

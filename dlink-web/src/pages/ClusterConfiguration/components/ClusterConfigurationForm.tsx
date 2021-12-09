@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Form, Button, Input, Modal, Select,Divider,Space,Switch} from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import {ClusterConfigurationTableListItem} from "@/pages/ClusterConfiguration/data";
+import type {ClusterConfigurationTableListItem} from "@/pages/ClusterConfiguration/data";
 import {getConfig, getConfigFormValues} from "@/pages/ClusterConfiguration/function";
 import {FLINK_CONFIG_LIST, HADOOP_CONFIG_LIST} from "@/pages/ClusterConfiguration/conf";
 import type {Config} from "@/pages/ClusterConfiguration/conf";
@@ -13,7 +13,7 @@ export type ClusterConfigurationFormProps = {
   modalVisible: boolean;
   values: Partial<ClusterConfigurationTableListItem>;
 };
-const Option = Select.Option;
+const {Option} = Select;
 
 const formLayout = {
   labelCol: {span: 7},
@@ -39,22 +39,22 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
     modalVisible,
   } = props;
 
-  const buildConfig = (config:Config[]) =>{
-    let itemList = [];
-    for(let i in config){
+  const buildConfig = (config: Config[]) =>{
+    const itemList: JSX.Element[] = [];
+    config.forEach(configItem => {
       itemList.push(<Form.Item
-        name={config[i].name}
-        label={config[i].lable}
+        name={configItem.name}
+        label={configItem.lable}
       >
-        <Input placeholder={config[i].placeholder}/>
+        <Input placeholder={configItem.placeholder}/>
       </Form.Item>)
-    }
+    });
     return itemList;
   };
 
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
-    let formValues = {
+    const formValues = {
       id:formVals.id,
       name:fieldsValue.name,
       alias:fieldsValue.alias,
@@ -67,7 +67,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
     handleSubmit(formValues);
   };
 
-  const renderContent = (formVals) => {
+  const renderContent = (formValsPara: Partial<ClusterConfigurationTableListItem>) => {
     return (
       <>
         <Form.Item
@@ -200,7 +200,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
           name="enabled"
           label="是否启用">
           <Switch checkedChildren="启用" unCheckedChildren="禁用"
-                  defaultChecked={formVals.enabled}/>
+                  defaultChecked={formValsPara.enabled}/>
         </Form.Item>
       </>
     );
@@ -208,14 +208,15 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
 
   const testForm = async ()=>{
     const fieldsValue = await form.validateFields();
-    let formValues = {
+    const formValues = {
+      id :formVals.id,
       name:fieldsValue.name,
       alias:fieldsValue.alias,
       type:fieldsValue.type,
       note:fieldsValue.note,
       enabled:fieldsValue.enabled,
       configJson:JSON.stringify(getConfig(fieldsValue)),
-    };
+    } as ClusterConfigurationTableListItem;
     setFormVals(formValues);
     testClusterConfigurationConnect(formValues);
   };

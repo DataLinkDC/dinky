@@ -3,10 +3,11 @@ import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {Form, InputNumber, Input, Switch, Select, Tag, Row, Col, Badge, Tooltip, Button, Typography, Space} from "antd";
 import {InfoCircleOutlined, PlusOutlined, MinusSquareOutlined, MinusCircleOutlined} from "@ant-design/icons";
 import styles from "./index.less";
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {showTables} from "@/components/Studio/StudioEvent/DDL";
 import {JarStateType} from "@/pages/Jar/model";
-import {Scrollbars} from 'react-custom-scrollbars';
+import {Scrollbars} from "react-custom-scrollbars";
+import {RUN_MODE} from "@/components/Studio/StudioRightTool/StudioSetting/conf";
 
 const {Option} = Select;
 const {Text} = Typography;
@@ -16,12 +17,13 @@ const StudioSetting = (props: any) => {
   const {sessionCluster, clusterConfiguration, current, form, dispatch, tabs, currentSession, jars, toolHeight} = props;
 
   const getClusterOptions = () => {
-    let itemList = [(<Option key={0} value={0} label={(<><Tag color="default">Local</Tag>本地环境</>)}>
+    /* const itemList = [(<Option key={0} value={0} label={(<><Tag color="default">Local</Tag>本地环境</>)}>
       <Tag color="default">Local</Tag>
       本地环境
-    </Option>)];
-    for (let item of sessionCluster) {
-      let tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias}</>);
+    </Option>)]; */
+    const itemList = [];
+    for (const item of sessionCluster) {
+      const tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias}</>);
       itemList.push(<Option key={item.id} value={item.id} label={tag}>
         {tag}
       </Option>)
@@ -30,9 +32,9 @@ const StudioSetting = (props: any) => {
   };
 
   const getClusterConfigurationOptions = () => {
-    let itemList = [];
-    for (let item of clusterConfiguration) {
-      let tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias}</>);
+    const itemList = [];
+    for (const item of clusterConfiguration) {
+      const tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias}</>);
       itemList.push(<Option key={item.id} value={item.id} label={tag}>
         {tag}
       </Option>)
@@ -41,9 +43,9 @@ const StudioSetting = (props: any) => {
   };
 
   const getJarOptions = () => {
-    let itemList = [];
-    for (let item of jars) {
-      let tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias}</>);
+    const itemList = [];
+    for (const item of jars) {
+      const tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias}</>);
       itemList.push(<Option key={item.id} value={item.id} label={tag}>
         {tag}
       </Option>)
@@ -57,16 +59,16 @@ const StudioSetting = (props: any) => {
 
 
   const onValuesChange = (change: any, all: any) => {
-    let newTabs = tabs;
+    const newTabs = tabs;
     for (let i = 0; i < newTabs.panes.length; i++) {
-      if (newTabs.panes[i].key == newTabs.activeKey) {
-        for (let key in change) {
+      if (newTabs.panes[i].key === newTabs.activeKey) {
+        for (const key in change) {
           newTabs.panes[i].task[key] = all[key];
         }
         break;
       }
     }
-    dispatch && dispatch({
+    dispatch({
       type: "Studio/saveTabs",
       payload: newTabs,
     });
@@ -98,16 +100,17 @@ const StudioSetting = (props: any) => {
         >
           <Form.Item
             label="执行模式" className={styles.form_item} name="type"
-            tooltip='指定 Flink 任务的执行模式，默认为 yarn-session'
+            tooltip='指定 Flink 任务的执行模式，默认为 Local'
           >
-            <Select defaultValue="yarn-session" value="yarn-session">
-              <Option value="standalone">standalone</Option>
-              <Option value="yarn-session">yarn-session</Option>
-              <Option value="yarn-per-job">yarn-per-job</Option>
-              <Option value="yarn-application">yarn-application</Option>
+            <Select defaultValue={RUN_MODE.LOCAL} value={RUN_MODE.LOCAL}>
+              <Option value={RUN_MODE.LOCAL}>Local</Option>
+              <Option value={RUN_MODE.STANDALONE}>Standalone</Option>
+              <Option value={RUN_MODE.YARN_SESSION}>Yarn Session</Option>
+              <Option value={RUN_MODE.YARN_PER_JOB}>Yarn Per-Job</Option>
+              <Option value={RUN_MODE.YARN_APPLICATION}>Yarn Application</Option>
             </Select>
           </Form.Item>
-          {(current.task.type == 'yarn-session' || current.task.type == 'standalone') ? (
+          {(current.task.type === RUN_MODE.YARN_SESSION || current.task.type === RUN_MODE.STANDALONE) ? (
             <Row>
               <Col span={24}>
                 <Form.Item label="Flink集群" tooltip={`选择Flink集群进行 ${current.task.type} 模式的远程提交任务`} name="clusterId"
@@ -130,8 +133,8 @@ const StudioSetting = (props: any) => {
                   }
                 </Form.Item>
               </Col>
-            </Row>) : ''}
-          {(current.task.type == 'yarn-per-job' || current.task.type == 'yarn-application') ? (
+            </Row>) : undefined}
+          {(current.task.type === RUN_MODE.YARN_PER_JOB || current.task.type === RUN_MODE.YARN_APPLICATION) ? (
             <Row>
               <Col span={24}>
                 <Form.Item label="Flink集群配置" tooltip={`选择Flink集群配置进行 ${current.task.type} 模式的远程提交任务`}
@@ -147,8 +150,8 @@ const StudioSetting = (props: any) => {
                   </Select>
                 </Form.Item>
               </Col>
-            </Row>) : ''}
-          {(current.task.type == 'yarn-application') ? (
+            </Row>) : undefined}
+          {(current.task.type === RUN_MODE.YARN_APPLICATION) ? (
             <Row>
               <Col span={24}>
                 <Form.Item label="可执行 Jar"
@@ -165,7 +168,7 @@ const StudioSetting = (props: any) => {
                   </Select>
                 </Form.Item>
               </Col>
-            </Row>) : ''}
+            </Row>) : undefined}
           <Form.Item
             label="作业名" className={styles.form_item} name="jobName"
             tooltip='设置任务名称，默认为作业名'
@@ -219,10 +222,10 @@ const StudioSetting = (props: any) => {
               <Option value={0}>禁用</Option>
               <Option value={1}>最近一次</Option>
               <Option value={2}>最早一次</Option>
-              <Option value={3}>自定义</Option>
+              <Option value={3}>指定一次</Option>
             </Select>
           </Form.Item>
-          {current.task.savePointStrategy == 3 ?
+          {current.task.savePointStrategy === 3 ?
             (<Form.Item
               label="SavePointPath" className={styles.form_item} name="savePointPath"
               tooltip='从SavePointPath恢复Flink任务'
@@ -244,7 +247,6 @@ const StudioSetting = (props: any) => {
                       <Form.Item
                         {...restField}
                         name={[name, 'key']}
-                        // fieldKey={[fieldKey, 'key']}
                         style={{marginBottom: '5px'}}
                       >
                         <Input placeholder="参数"/>
@@ -252,7 +254,6 @@ const StudioSetting = (props: any) => {
                       <Form.Item
                         {...restField}
                         name={[name, 'value']}
-                        // fieldKey={[fieldKey, 'value']}
                         style={{marginBottom: '5px'}}
                       >
                         <Input placeholder="值"/>

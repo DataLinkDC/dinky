@@ -11,10 +11,8 @@ import com.dlink.explainer.Explainer;
 import com.dlink.gateway.Gateway;
 import com.dlink.gateway.GatewayType;
 import com.dlink.gateway.config.ActionType;
-import com.dlink.gateway.config.AppConfig;
 import com.dlink.gateway.config.FlinkConfig;
 import com.dlink.gateway.config.GatewayConfig;
-import com.dlink.gateway.config.SavePointType;
 import com.dlink.gateway.result.GatewayResult;
 import com.dlink.gateway.result.SavePointResult;
 import com.dlink.gateway.result.TestResult;
@@ -49,13 +47,14 @@ public class JobManager extends RunTime {
     private static final Logger logger = LoggerFactory.getLogger(JobManager.class);
 
     private JobHandler handler;
-    private String sessionId;
     private Integer maxRowNum = 100;
     private EnvironmentSetting environmentSetting;
     private ExecutorSetting executorSetting;
     private JobConfig config;
     private Executor executor;
     private boolean useGateway = false;
+    private boolean isPlanMode = false;
+    private GatewayType runMode = GatewayType.LOCAL;
 
     public JobManager() {
     }
@@ -64,20 +63,8 @@ public class JobManager extends RunTime {
         this.useGateway = useGateway;
     }
 
-    public JobManager(String address, ExecutorSetting executorSetting) {
-        if (address != null) {
-            this.environmentSetting = EnvironmentSetting.build(address);
-            this.executorSetting = executorSetting;
-            this.executor = createExecutor();
-        }
-    }
-
-    public JobManager(String address, String sessionId, Integer maxRowNum, ExecutorSetting executorSetting) {
-        this.environmentSetting = EnvironmentSetting.build(address);
-        this.sessionId = sessionId;
-        this.maxRowNum = maxRowNum;
-        this.executorSetting = executorSetting;
-        this.executor = createExecutorWithSession();
+    public void setPlanMode(boolean planMode) {
+        isPlanMode = planMode;
     }
 
     public JobManager(JobConfig config) {
@@ -97,6 +84,13 @@ public class JobManager extends RunTime {
         return manager;
     }
 
+    public static JobManager buildPlanMode(JobConfig config) {
+        JobManager manager = new JobManager(config);
+        manager.setPlanMode(true);
+        manager.init();
+        return manager;
+    }
+
     private static void initGatewayConfig(JobConfig config) {
         if (useGateway(config.getType())) {
             Asserts.checkNull(config.getGatewayConfig(), "GatewayConfig 不能为空");
@@ -109,13 +103,12 @@ public class JobManager extends RunTime {
     }
 
     public static boolean useGateway(String type) {
-        return (GatewayType.YARN_PER_JOB.equalsValue(type) ||
-                GatewayType.YARN_APPLICATION.equalsValue(type));
+        return (GatewayType.YARN_PER_JOB.equalsValue(type) || GatewayType.YARN_APPLICATION.equalsValue(type));
     }
 
     private Executor createExecutor() {
         initEnvironmentSetting();
-        if (!useGateway && config.isUseRemote() && config.getClusterId() != 0) {
+        if (!runMode.equals(GatewayType.LOCAL)&& !useGateway && config.isUseRemote()) {
             executor = Executor.buildRemoteExecutor(environmentSetting, config.getExecutorSetting());
             return executor;
         } else {
@@ -154,8 +147,11 @@ public class JobManager extends RunTime {
 
     @Override
     public boolean init() {
-        useGateway = useGateway(config.getType());
-        handler = JobHandler.build();
+        if(!isPlanMode) {
+            runMode = GatewayType.get(config.getType());
+            useGateway = useGateway(config.getType());
+            handler = JobHandler.build();
+        }
         initExecutorSetting();
         createExecutorWithSession();
         return false;

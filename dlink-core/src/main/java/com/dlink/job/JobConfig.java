@@ -104,7 +104,7 @@ public class JobConfig {
     }
 
     public ExecutorSetting getExecutorSetting(){
-        return new ExecutorSetting(checkpoint,parallelism,useSqlFragment,savePointPath,jobName,config);
+        return new ExecutorSetting(checkpoint,parallelism,useSqlFragment,useStatementSet,savePointPath,jobName,config);
     }
 
     public void setSessionConfig(SessionConfig sessionConfig){
