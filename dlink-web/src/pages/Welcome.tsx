@@ -447,6 +447,19 @@ export default (): React.ReactNode => {
               </ul>
             </Paragraph>
           </Timeline.Item>
+          <Timeline.Item><Text code>0.5.0</Text> <Text type="secondary">2022-01-??</Text>
+            <p> </p>
+            <Paragraph>
+              <ul>
+                <li>
+                  <Link>新增 JobPlanGraph 来替代 StreamGraph </Link>
+                </li>
+                <li>
+                  <Link>新增 SQLServer Jdbc Connector 的实现</Link>
+                </li>
+              </ul>
+            </Paragraph>
+          </Timeline.Item>
         </Timeline>
       </Card>
     </PageContainer>

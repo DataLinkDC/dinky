@@ -6,8 +6,7 @@ Dlink 为 Apache Flink 而生，让 Flink SQL 更加丝滑。它是一个交互�
 
 需要注意的是，Dlink 它更专注于 FlinkSQL 的应用，而不是 DataStream。在开发过程中您不会看到任何一句 java、scala 或者 python。所以，它的目标是基于 100% FlinkSQL 来实现批流一体的实时计算平台。
 
-站在巨人肩膀上开发与创新，Dlink 在未来批流一体的发展趋势下潜力无限。
-
+值得惊喜的是，Dlink 的实现基于最新 Flink 源码二次开发，而交互更加贴近 Flink 的功能与体验，并且紧随官方社区发展。即站在巨人肩膀上开发与创新，Dlink 在未来批流一体的发展趋势下潜力无限。
 
 ## 原理
 
@@ -19,10 +18,9 @@ Dlink 为 Apache Flink 而生，让 Flink SQL 更加丝滑。它是一个交互�
 
 |         域          |                 概要                 |  进展  |
 | :-----------------: | :----------------------------------: | :----: |
-|      基本管理       |         作业及Savepoint管理          | 已实现 |
-|                     |             FlinkSQL管理             | 已实现 |
-|                     |            Flink 集群管理            | 已实现 |
-|                     |          Flink 集群配置管理          | 已实现 |
+|      基本管理       |        作业及 Savepoint 管理         | 已实现 |
+|                     |        FlinkSQL 及执行配置管理       | 已实现 |
+|                     |         Flink 集群及配置管理         | 已实现 |
 |                     |              数据源管理              | 已实现 |
 |                     |               文档管理               | 已实现 |
 |                     |               系统配置               | 已实现 |
@@ -31,6 +29,7 @@ Dlink 为 Apache Flink 而生，让 Flink SQL 更加丝滑。它是一个交互�
 |                     |            AGGTABLE 语法             | 已实现 |
 |                     |                语句集                | 已实现 |
 |                     |       支持 sql-client 所有语法       | 已实现 |
+|                     |     支持 Flink 所有 Configuration    | 已实现 |
 | FlinkSQL 交互式开发 |        会话的 connector 查询         | 已实现 |
 |                     |               语法检查               | 已实现 |
 |                     |              执行图校验              | 已实现 |
@@ -41,7 +40,7 @@ Dlink 为 Apache Flink 而生，让 Flink SQL 更加丝滑。它是一个交互�
 |                     |             支持选中提交             | 已实现 |
 |                     |               布局拖拽               | 已实现 |
 |                     |      SELECT、SHOW等语法数据预览      | 已实现 |
-|                     |           JobGraph 图预览            | 已实现 |
+|                     |           JobPlanGraph 预览            | 已实现 |
 |   Flink 任务运维    |          standalone SQL提交          | 已实现 |
 |                     |         yarn session SQL提交         | 已实现 |
 |                     |         yarn per-job SQL提交         | 已实现 |
