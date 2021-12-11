@@ -23,4 +23,12 @@ public interface FlinkRestAPIConstant {
      * cancel
      */
     String CANCEL = "/yarn-cancel";
+    /**
+     * savepoints
+     */
+    String SAVEPOINTS = "/savepoints";
+    /**
+     * stop
+     */
+    String STOP = "/stop";
 }

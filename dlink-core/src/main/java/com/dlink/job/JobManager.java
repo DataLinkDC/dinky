@@ -415,7 +415,7 @@ public class JobManager {
                     savePointType, null));
             return Gateway.build(config.getGatewayConfig()).savepointJob();
         } else {
-            return null;
+            return FlinkAPI.build(config.getAddress()).savepoints(jobId,savePointType);
         }
     }
 
