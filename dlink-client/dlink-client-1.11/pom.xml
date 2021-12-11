@@ -47,7 +47,6 @@
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-yarn_2.11</artifactId>
             <version>${flink.version}</version>
-            <!--<scope>provided</scope>-->
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.hadoop</groupId>
@@ -81,7 +80,7 @@
         </dependency>
     </dependencies>
 
-    <build>
+    <!--<build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -136,6 +135,6 @@
                 </executions>
             </plugin>
         </plugins>
-    </build>
+    </build>-->
 
 </project>

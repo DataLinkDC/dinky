@@ -42,7 +42,7 @@ import java.util.List;
  * @author wenmo
  * @since 2021/5/25 15:27
  **/
-public class JobManager extends RunTime {
+public class JobManager {
 
     private static final Logger logger = LoggerFactory.getLogger(JobManager.class);
 
@@ -54,6 +54,8 @@ public class JobManager extends RunTime {
     private Executor executor;
     private boolean useGateway = false;
     private boolean isPlanMode = false;
+    private boolean useStatementSet = false;
+    private boolean useRestAPI = false;
     private GatewayType runMode = GatewayType.LOCAL;
 
     public JobManager() {
@@ -63,8 +65,32 @@ public class JobManager extends RunTime {
         this.useGateway = useGateway;
     }
 
+    public boolean isUseGateway() {
+        return useGateway;
+    }
+
     public void setPlanMode(boolean planMode) {
         isPlanMode = planMode;
+    }
+
+    public boolean isPlanMode() {
+        return isPlanMode;
+    }
+
+    public boolean isUseStatementSet() {
+        return useStatementSet;
+    }
+
+    public void setUseStatementSet(boolean useStatementSet) {
+        this.useStatementSet = useStatementSet;
+    }
+
+    public boolean isUseRestAPI() {
+        return useRestAPI;
+    }
+
+    public void setUseRestAPI(boolean useRestAPI) {
+        this.useRestAPI = useRestAPI;
     }
 
     public JobManager(JobConfig config) {
@@ -145,56 +171,52 @@ public class JobManager extends RunTime {
         executorSetting = config.getExecutorSetting();
     }
 
-    @Override
     public boolean init() {
         if(!isPlanMode) {
             runMode = GatewayType.get(config.getType());
             useGateway = useGateway(config.getType());
             handler = JobHandler.build();
         }
+        useStatementSet = config.isUseStatementSet();
+        useRestAPI = config.isUseRestAPI();
         initExecutorSetting();
         createExecutorWithSession();
         return false;
     }
 
-    @Override
-    public boolean ready() {
+    private boolean ready() {
         return handler.init();
     }
 
-    @Override
-    public boolean success() {
+    private boolean success() {
         return handler.success();
     }
 
-    @Override
-    public boolean failed() {
+    private boolean failed() {
         return handler.failed();
     }
 
-    @Override
     public boolean close() {
         JobContextHolder.clear();
         return false;
     }
 
     public JobResult executeSql(String statement) {
-        Job job = Job.init(GatewayType.get(config.getType()), config, executorSetting, executor, statement, useGateway);
-        JobContextHolder.setJob(job);
+        Job job = Job.init(runMode, config, executorSetting, executor, statement, useGateway);
         if (!useGateway) {
             job.setJobManagerAddress(environmentSetting.getAddress());
         }
+        JobContextHolder.setJob(job);
         ready();
         String currentSql = "";
         JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement));
-        CustomTableEnvironmentImpl stEnvironment = executor.getCustomTableEnvironmentImpl();
         try {
             for (StatementParam item : jobParam.getDdl()) {
                 currentSql = item.getValue();
                 executor.executeSql(item.getValue());
             }
             if (jobParam.getTrans().size() > 0) {
-                if (config.isUseStatementSet() && useGateway) {
+                if (useStatementSet && useGateway) {
                     List<String> inserts = new ArrayList<>();
                     for (StatementParam item : jobParam.getTrans()) {
                         inserts.add(item.getValue());
@@ -202,7 +224,7 @@ public class JobManager extends RunTime {
                     currentSql = String.join(FlinkSQLConstant.SEPARATOR, inserts);
                     JobGraph jobGraph = executor.getJobGraphFromInserts(inserts);
                     GatewayResult gatewayResult = null;
-                    if (GatewayType.YARN_APPLICATION.equalsValue(config.getType())) {
+                    if (GatewayType.YARN_APPLICATION.equals(runMode)) {
                         gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
                     } else {
                         gatewayResult = Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);
@@ -210,18 +232,16 @@ public class JobManager extends RunTime {
                     job.setResult(InsertResult.success(gatewayResult.getAppId()));
                     job.setJobId(gatewayResult.getAppId());
                     job.setJobManagerAddress(formatAddress(gatewayResult.getWebURL()));
-                } else if (config.isUseStatementSet() && !useGateway) {
+                } else if (useStatementSet && !useGateway) {
                     List<String> inserts = new ArrayList<>();
-                    StatementSet statementSet = stEnvironment.createStatementSet();
                     for (StatementParam item : jobParam.getTrans()) {
                         if (item.getType().equals(SqlType.INSERT)) {
-                            statementSet.addInsertSql(item.getValue());
                             inserts.add(item.getValue());
                         }
                     }
                     if (inserts.size() > 0) {
                         currentSql = String.join(FlinkSQLConstant.SEPARATOR, inserts);
-                        TableResult tableResult = statementSet.execute();
+                        TableResult tableResult = executor.executeStatementSet(inserts);
                         if (tableResult.getJobClient().isPresent()) {
                             job.setJobId(tableResult.getJobClient().get().getJobID().toHexString());
                         }
@@ -230,7 +250,7 @@ public class JobManager extends RunTime {
                             job.setResult(result);
                         }
                     }
-                } else if (!config.isUseStatementSet() && useGateway) {
+                } else if (!useStatementSet && useGateway) {
                     List<String> inserts = new ArrayList<>();
                     for (StatementParam item : jobParam.getTrans()) {
                         inserts.add(item.getValue());
@@ -297,14 +317,14 @@ public class JobManager extends RunTime {
         List<StatementParam> ddl = new ArrayList<>();
         List<StatementParam> trans = new ArrayList<>();
         for (String item : statements) {
-            String statement = FlinkInterceptor.pretreatStatement(executor, item);
+            String statement = executor.pretreatStatement(item);
             if (statement.isEmpty()) {
                 continue;
             }
             SqlType operationType = Operations.getOperationType(statement);
             if (operationType.equals(SqlType.INSERT) || operationType.equals(SqlType.SELECT)) {
                 trans.add(new StatementParam(statement, operationType));
-                if (!config.isUseStatementSet()) {
+                if (!useStatementSet) {
                     break;
                 }
             } else {
@@ -315,18 +335,19 @@ public class JobManager extends RunTime {
     }
 
     public IResult executeDDL(String statement) {
-        String[] statements = statement.split(";");
+        String[] statements = SqlUtil.getStatements(statement);
         try {
             for (String item : statements) {
-                if (item.trim().isEmpty()) {
+                String newStatement = executor.pretreatStatement(item);
+                if (newStatement.trim().isEmpty()) {
                     continue;
                 }
-                SqlType operationType = Operations.getOperationType(item);
+                SqlType operationType = Operations.getOperationType(newStatement);
                 if (SqlType.INSERT == operationType || SqlType.SELECT == operationType) {
                     continue;
                 }
                 LocalDateTime startTime = LocalDateTime.now();
-                TableResult tableResult = executor.executeSql(item);
+                TableResult tableResult = executor.executeSql(newStatement);
                 IResult result = ResultBuilder.build(operationType, maxRowNum, "", false).getResult(tableResult);
                 result.setStartTime(startTime);
                 return result;
@@ -373,7 +394,7 @@ public class JobManager extends RunTime {
     }
 
     public boolean cancel(String jobId) {
-        if (useGateway && !config.isUseRestAPI()) {
+        if (useGateway && !useRestAPI) {
             config.getGatewayConfig().setFlinkConfig(FlinkConfig.build(jobId, ActionType.CANCEL.getValue(),
                     null, null));
             Gateway.build(config.getGatewayConfig()).savepointJob();
@@ -389,7 +410,7 @@ public class JobManager extends RunTime {
     }
 
     public SavePointResult savepoint(String jobId,String savePointType) {
-        if (useGateway && !config.isUseRestAPI()) {
+        if (useGateway && !useRestAPI) {
             config.getGatewayConfig().setFlinkConfig(FlinkConfig.build(jobId, ActionType.SAVEPOINT.getValue(),
                     savePointType, null));
             return Gateway.build(config.getGatewayConfig()).savepointJob();
@@ -399,7 +420,7 @@ public class JobManager extends RunTime {
     }
 
     public JobResult executeJar() {
-        Job job = Job.init(GatewayType.get(config.getType()), config, executorSetting, executor, null, useGateway);
+        Job job = Job.init(runMode, config, executorSetting, executor, null, useGateway);
         JobContextHolder.setJob(job);
         ready();
         try {

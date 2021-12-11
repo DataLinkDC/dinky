@@ -162,7 +162,7 @@ public abstract class Executor {
         stEnvironment = newstEnvironment;
     }
 
-    private String pretreatStatement(String statement){
+    public String pretreatStatement(String statement){
         return FlinkInterceptor.pretreatStatement(this,statement);
     }
 
