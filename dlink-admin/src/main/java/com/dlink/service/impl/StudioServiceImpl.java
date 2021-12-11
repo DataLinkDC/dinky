@@ -27,6 +27,7 @@ import com.dlink.service.StudioService;
 import com.dlink.session.SessionConfig;
 import com.dlink.session.SessionInfo;
 import com.dlink.session.SessionPool;
+import com.dlink.utils.RunTimeUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -67,7 +68,9 @@ public class StudioServiceImpl implements StudioService {
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
         }
         JobManager jobManager = JobManager.build(config);
-        return jobManager.executeSql(studioExecuteDTO.getStatement());
+        JobResult jobResult = jobManager.executeSql(studioExecuteDTO.getStatement());
+        RunTimeUtil.recovery(jobManager);
+        return jobResult;
     }
 
     @Override
@@ -86,7 +89,7 @@ public class StudioServiceImpl implements StudioService {
         if(!config.isUseSession()) {
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
         }
-        JobManager jobManager = JobManager.build(config);
+        JobManager jobManager = JobManager.buildPlanMode(config);
         return jobManager.explainSql(studioExecuteDTO.getStatement());
     }
 
@@ -97,7 +100,7 @@ public class StudioServiceImpl implements StudioService {
         if(!config.isUseSession()) {
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
         }
-        JobManager jobManager = JobManager.build(config);
+        JobManager jobManager = JobManager.buildPlanMode(config);
         return jobManager.getStreamGraph(studioExecuteDTO.getStatement());
     }
 
@@ -108,7 +111,7 @@ public class StudioServiceImpl implements StudioService {
         if(!config.isUseSession()) {
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
         }
-        JobManager jobManager = JobManager.build(config);
+        JobManager jobManager = JobManager.buildPlanMode(config);
         String planJson = jobManager.getJobPlanJson(studioExecuteDTO.getStatement());
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode objectNode =mapper.createObjectNode();

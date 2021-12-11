@@ -8,7 +8,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * SubmitConfig
@@ -66,13 +68,13 @@ public class GatewayConfig {
         }
         if(para.has("configParas")) {
             try {
-                List<ConfigPara> configParas = new ArrayList<>();
+                Map<String, String> configMap = new HashMap<>();
                 JsonNode paras = mapper.readTree(para.get("configParas").asText());
                 paras.forEach((JsonNode node)-> {
-                    configParas.add(new ConfigPara(node.get("key").asText(),node.get("value").asText()));
+                    configMap.put(node.get("key").asText(),node.get("value").asText());
                     }
                 );
-                config.getFlinkConfig().setConfigParas(configParas);
+                config.getFlinkConfig().setConfiguration(configMap);
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }

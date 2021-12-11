@@ -463,6 +463,18 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增 Local 的运行模式选择并优化 JobManager</Link>
                 </li>
+                <li>
+                  <Link>修复登录页报错弹框</Link>
+                </li>
+                <li>
+                  <Link>优化所有模式的所有功能的执行逻辑</Link>
+                </li>
+                <li>
+                  <Link>新增 trigger 的 restAPI 实现</Link>
+                </li>
+                <li>
+                  <Link>新增 OpenAPI 的执行 sql 接口</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

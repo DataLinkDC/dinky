@@ -35,7 +35,7 @@ public class Job {
     private Executor executor;
     private boolean useGateway;
 
-    enum JobStatus {
+    public enum JobStatus {
         INITIALIZE,
         RUNNING,
         SUCCESS,

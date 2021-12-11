@@ -28,7 +28,7 @@ export async function getInitialState(): Promise<{
   const fetchUserInfo = async () => {
     try {
       const result = await queryCurrentUser();
-      const currentUser:API.CurrentUser = {
+      const currentUser: API.CurrentUser = {
         name: result.datas.nickname,
         avatar: result.datas.avatar?result.datas.avatar:'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
         userid: result.datas.username,
@@ -86,7 +86,7 @@ export const request: RequestConfig = {
   errorHandler: (error: ResponseError) => {
     const { messages } = getIntl(getLocale());
     const { request,response } = error;
-    const writeUrl = ['/api-user/users/current','/api-uaa/oauth/token'];
+    const writeUrl = ['/api/current'];
   if(writeUrl.indexOf(request.originUrl)>-1){
     return;
   }else {

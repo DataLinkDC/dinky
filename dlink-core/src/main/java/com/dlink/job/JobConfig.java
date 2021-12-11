@@ -22,6 +22,7 @@ import java.util.Map;
 @Setter
 public class JobConfig {
 
+    // flink run mode
     private String type;
     private boolean useResult;
     private boolean useSession;
@@ -50,8 +51,8 @@ public class JobConfig {
 
     public JobConfig(String type, boolean useResult, boolean useSession, String session, boolean useRemote, Integer clusterId,
                      Integer clusterConfigurationId,Integer jarId, Integer taskId, String jobName, boolean useSqlFragment,
-                     boolean useStatementSet, Integer maxRowNum, Integer checkpoint,
-                     Integer parallelism, Integer savePointStrategyValue, String savePointPath, Map<String,String> config) {
+                     boolean useStatementSet, Integer maxRowNum, Integer checkpoint, Integer parallelism,
+                     Integer savePointStrategyValue, String savePointPath, Map<String,String> config) {
         this.type = type;
         this.useResult = useResult;
         this.useSession = useSession;
@@ -70,6 +71,28 @@ public class JobConfig {
         this.savePointStrategy = SavePointStrategy.get(savePointStrategyValue);
         this.savePointPath = savePointPath;
         this.config = config;
+    }
+
+    public JobConfig(String type, boolean useResult, boolean useSession, String session, boolean useRemote, String address,
+                     String jobName, boolean useSqlFragment,
+                     boolean useStatementSet, Integer maxRowNum, Integer checkpoint, Integer parallelism,
+                     Integer savePointStrategyValue, String savePointPath, Map<String,String> config, GatewayConfig gatewayConfig) {
+        this.type = type;
+        this.useResult = useResult;
+        this.useSession = useSession;
+        this.session = session;
+        this.useRemote = useRemote;
+        this.address = address;
+        this.jobName = jobName;
+        this.useSqlFragment = useSqlFragment;
+        this.useStatementSet = useStatementSet;
+        this.maxRowNum = maxRowNum;
+        this.checkpoint = checkpoint;
+        this.parallelism = parallelism;
+        this.savePointStrategy = SavePointStrategy.get(savePointStrategyValue);
+        this.savePointPath = savePointPath;
+        this.config = config;
+        this.gatewayConfig = gatewayConfig;
     }
 
     public JobConfig(String type,boolean useResult, boolean useSession, String session, boolean useRemote, Integer clusterId) {
