@@ -198,7 +198,6 @@ public class StudioServiceImpl implements StudioService {
             Map<String, Object> gatewayConfig = clusterConfigurationService.getGatewayConfig(cluster.getClusterConfigurationId());
             jobConfig.buildGatewayConfig(gatewayConfig);
         }
-        jobConfig.setUseRestAPI(SystemConfiguration.getInstances().isUseRestAPI());
         JobManager jobManager = JobManager.build(jobConfig);
         return jobManager.cancel(jobId);
     }
@@ -216,10 +215,9 @@ public class StudioServiceImpl implements StudioService {
             jobConfig.getGatewayConfig().getClusterConfig().setAppId(cluster.getName());
             jobConfig.setTaskId(cluster.getTaskId());
         }
-        jobConfig.setUseRestAPI(SystemConfiguration.getInstances().isUseRestAPI());
         JobManager jobManager = JobManager.build(jobConfig);
         jobManager.setUseGateway(true);
-        SavePointResult savePointResult = jobManager.savepoint(jobId, savePointType);
+        SavePointResult savePointResult = jobManager.savepoint(jobId, savePointType,null);
         if(Asserts.isNotNull(savePointResult)){
             for(JobInfo item : savePointResult.getJobInfos()){
                 if(Asserts.isEqualsIgnoreCase(jobId,item.getJobId())){

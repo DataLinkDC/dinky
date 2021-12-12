@@ -24,6 +24,7 @@ public class SystemConfiguration {
         add(systemConfiguration.sqlSubmitJarParas);
         add(systemConfiguration.sqlSubmitJarMainAppClass);
         add(systemConfiguration.useRestAPI);
+        add(systemConfiguration.sqlSeparator);
     }};
 
     private Configuration sqlSubmitJarPath = new Configuration(
@@ -53,6 +54,13 @@ public class SystemConfiguration {
             ValueType.BOOLEAN,
             true,
             "在运维 Flink 任务时是否使用 RestAPI"
+    );
+    private Configuration sqlSeparator = new Configuration(
+            "sqlSeparator",
+            "FlinkSQL语句分割符",
+            ValueType.STRING,
+            ";",
+            "Flink SQL 的语句分割符"
     );
 
     public void setConfiguration(JsonNode jsonNode){
@@ -114,6 +122,14 @@ public class SystemConfiguration {
 
     public void setUseRestAPI(boolean useRestAPI) {
         this.useRestAPI.setValue(useRestAPI);
+    }
+
+    public String getSqlSeparator() {
+        return sqlSeparator.getValue().toString();
+    }
+
+    public void setSqlSeparator(String sqlSeparator) {
+        this.sqlSeparator.setValue(sqlSeparator);
     }
 
     enum ValueType{

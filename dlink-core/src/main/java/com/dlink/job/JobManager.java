@@ -6,7 +6,6 @@ import com.dlink.constant.FlinkSQLConstant;
 import com.dlink.executor.EnvironmentSetting;
 import com.dlink.executor.Executor;
 import com.dlink.executor.ExecutorSetting;
-import com.dlink.executor.custom.CustomTableEnvironmentImpl;
 import com.dlink.explainer.Explainer;
 import com.dlink.gateway.Gateway;
 import com.dlink.gateway.GatewayType;
@@ -17,6 +16,7 @@ import com.dlink.gateway.result.GatewayResult;
 import com.dlink.gateway.result.SavePointResult;
 import com.dlink.gateway.result.TestResult;
 import com.dlink.interceptor.FlinkInterceptor;
+import com.dlink.model.SystemConfiguration;
 import com.dlink.parser.SqlType;
 import com.dlink.result.*;
 import com.dlink.session.ExecutorEntity;
@@ -27,14 +27,12 @@ import com.dlink.trans.Operations;
 import com.dlink.utils.SqlUtil;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.flink.runtime.jobgraph.JobGraph;
-import org.apache.flink.table.api.StatementSet;
 import org.apache.flink.table.api.TableResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -57,6 +55,7 @@ public class JobManager {
     private boolean isPlanMode = false;
     private boolean useStatementSet = false;
     private boolean useRestAPI = false;
+    private String sqlSeparator = FlinkSQLConstant.SEPARATOR;
     private GatewayType runMode = GatewayType.LOCAL;
 
     public JobManager() {
@@ -92,6 +91,14 @@ public class JobManager {
 
     public void setUseRestAPI(boolean useRestAPI) {
         this.useRestAPI = useRestAPI;
+    }
+
+    public String getSqlSeparator() {
+        return sqlSeparator;
+    }
+
+    public void setSqlSeparator(String sqlSeparator) {
+        this.sqlSeparator = sqlSeparator;
     }
 
     public JobManager(JobConfig config) {
@@ -179,7 +186,8 @@ public class JobManager {
             handler = JobHandler.build();
         }
         useStatementSet = config.isUseStatementSet();
-        useRestAPI = config.isUseRestAPI();
+        useRestAPI = SystemConfiguration.getInstances().isUseRestAPI();
+        sqlSeparator = SystemConfiguration.getInstances().getSqlSeparator();
         initExecutorSetting();
         createExecutorWithSession();
         return false;
@@ -211,7 +219,7 @@ public class JobManager {
         ready();
         String currentSql = "";
 //        JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement));
-        JobParam jobParam = Explainer.build(executor,useStatementSet).pretreatStatements(SqlUtil.getStatements(statement));
+        JobParam jobParam = Explainer.build(executor,useStatementSet,sqlSeparator).pretreatStatements(SqlUtil.getStatements(statement,sqlSeparator));
         try {
             for (StatementParam item : jobParam.getDdl()) {
                 currentSql = item.getValue();
@@ -223,7 +231,7 @@ public class JobManager {
                     for (StatementParam item : jobParam.getTrans()) {
                         inserts.add(item.getValue());
                     }
-                    currentSql = String.join(FlinkSQLConstant.SEPARATOR, inserts);
+                    currentSql = String.join(sqlSeparator, inserts);
                     JobGraph jobGraph = executor.getJobGraphFromInserts(inserts);
                     GatewayResult gatewayResult = null;
                     if (GatewayType.YARN_APPLICATION.equals(runMode)) {
@@ -242,7 +250,7 @@ public class JobManager {
                         }
                     }
                     if (inserts.size() > 0) {
-                        currentSql = String.join(FlinkSQLConstant.SEPARATOR, inserts);
+                        currentSql = String.join(sqlSeparator, inserts);
                         TableResult tableResult = executor.executeStatementSet(inserts);
                         if (tableResult.getJobClient().isPresent()) {
                             job.setJobId(tableResult.getJobClient().get().getJobID().toHexString());
@@ -258,7 +266,7 @@ public class JobManager {
                         inserts.add(item.getValue());
                         break;
                     }
-                    currentSql = String.join(FlinkSQLConstant.SEPARATOR, inserts);
+                    currentSql = String.join(sqlSeparator, inserts);
                     JobGraph jobGraph = executor.getJobGraphFromInserts(inserts);
                     GatewayResult gatewayResult = null;
                     if (GatewayType.YARN_APPLICATION.equalsValue(config.getType())) {
@@ -316,7 +324,7 @@ public class JobManager {
     }
 
     public IResult executeDDL(String statement) {
-        String[] statements = SqlUtil.getStatements(statement);
+        String[] statements = SqlUtil.getStatements(statement,sqlSeparator);
         try {
             for (String item : statements) {
                 String newStatement = executor.pretreatStatement(item);
@@ -363,15 +371,15 @@ public class JobManager {
     }
 
     public ExplainResult explainSql(String statement) {
-        return Explainer.build(executor,useStatementSet).explainSql(statement);
+        return Explainer.build(executor,useStatementSet,sqlSeparator).explainSql(statement);
     }
 
     public ObjectNode getStreamGraph(String statement) {
-        return Explainer.build(executor,useStatementSet).getStreamGraph(statement);
+        return Explainer.build(executor,useStatementSet,sqlSeparator).getStreamGraph(statement);
     }
 
     public String getJobPlanJson(String statement) {
-        return Explainer.build(executor,useStatementSet).getJobPlanInfo(statement).getJsonPlan();
+        return Explainer.build(executor,useStatementSet,sqlSeparator).getJobPlanInfo(statement).getJsonPlan();
     }
 
     public boolean cancel(String jobId) {
@@ -390,11 +398,11 @@ public class JobManager {
         }
     }
 
-    public SavePointResult savepoint(String jobId,String savePointType) {
+    public SavePointResult savepoint(String jobId,String savePointType,String savePoint) {
         if (useGateway && !useRestAPI) {
             config.getGatewayConfig().setFlinkConfig(FlinkConfig.build(jobId, ActionType.SAVEPOINT.getValue(),
                     savePointType, null));
-            return Gateway.build(config.getGatewayConfig()).savepointJob();
+            return Gateway.build(config.getGatewayConfig()).savepointJob(savePoint);
         } else {
             return FlinkAPI.build(config.getAddress()).savepoints(jobId,savePointType);
         }

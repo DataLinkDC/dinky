@@ -1,0 +1,19 @@
+/* http://127.0.0.1:8888/openapi/explainSql */
+{
+  /* required-start */
+  "jobId":"195352b0a4518e16699983a13205f059",
+  "savePointType":"trigger", // trigger | stop | cancel
+  /* required-end */
+  /* custom-start */
+  "savePoint":"195352b0a4518e16699983a13205f059",
+  "address":"127.0.0.1:8081",
+  "gatewayConfig":{
+    "clusterConfig":{
+      "appId":"application_1637739262398_0032",
+      "flinkConfigPath":"/opt/src/flink-1.13.3_conf/conf",
+      "flinkLibPath":"hdfs:///flink13/lib/flinklib",
+      "yarnConfigPath":"/usr/local/hadoop/hadoop-2.7.7/etc/hadoop"
+    }
+  }
+  /* custom-start */
+}

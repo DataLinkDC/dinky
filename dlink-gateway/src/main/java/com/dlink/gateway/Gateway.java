@@ -55,7 +55,11 @@ public interface Gateway {
 
     SavePointResult savepointCluster();
 
+    SavePointResult savepointCluster(String savePoint);
+
     SavePointResult savepointJob();
+
+    SavePointResult savepointJob(String savePoint);
 
     TestResult test();
 

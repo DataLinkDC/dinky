@@ -42,7 +42,6 @@ public class JobConfig {
     private SavePointStrategy savePointStrategy;
     private String savePointPath;
     private GatewayConfig gatewayConfig;
-    private boolean useRestAPI;
 
     private Map<String,String> config;
 

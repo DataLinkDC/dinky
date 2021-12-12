@@ -1,7 +1,7 @@
 package com.dlink.service;
 
-import com.dlink.dto.APIExecuteSqlDTO;
-import com.dlink.dto.APIExplainSqlDTO;
+import com.dlink.dto.*;
+import com.dlink.gateway.result.SavePointResult;
 import com.dlink.result.APIJobResult;
 import com.dlink.result.ExplainResult;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -21,4 +21,10 @@ public interface APIService {
     ObjectNode getJobPlan(APIExplainSqlDTO apiExplainSqlDTO);
 
     ObjectNode getStreamGraph(APIExplainSqlDTO apiExplainSqlDTO);
+
+    boolean cancel(APICancelDTO apiCancelDTO);
+
+    SavePointResult savepoint(APISavePointDTO apiSavePointDTO);
+
+    APIJobResult executeJar(APIExecuteJarDTO apiExecuteJarDTO);
 }

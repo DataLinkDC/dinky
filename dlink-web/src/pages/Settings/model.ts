@@ -1,10 +1,11 @@
 import {Effect, Reducer} from "umi";
 
 export type SettingsStateType = {
-  sqlSubmitJarPath:string,
-  sqlSubmitJarParas:string,
-  sqlSubmitJarMainAppClass:string,
-  useRestAPI:boolean,
+  sqlSubmitJarPath: string,
+  sqlSubmitJarParas: string,
+  sqlSubmitJarMainAppClass: string,
+  useRestAPI: boolean,
+  sqlSeparator: string,
 };
 
 export type ModelType = {
