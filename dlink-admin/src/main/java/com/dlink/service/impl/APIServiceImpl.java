@@ -1,8 +1,9 @@
 package com.dlink.service.impl;
 
-import com.dlink.dto.APIExecuteSqlDTO;
-import com.dlink.dto.APIExplainSqlDTO;
+import com.dlink.assertion.Asserts;
+import com.dlink.dto.*;
 import com.dlink.gateway.GatewayType;
+import com.dlink.gateway.result.SavePointResult;
 import com.dlink.job.JobConfig;
 import com.dlink.job.JobManager;
 import com.dlink.job.JobResult;
@@ -14,6 +15,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 /**
  * APIServiceImpl
@@ -67,5 +70,33 @@ public class APIServiceImpl implements APIService {
         ObjectNode streamGraph = jobManager.getStreamGraph(apiExplainSqlDTO.getStatement());
         RunTimeUtil.recovery(jobManager);
         return streamGraph;
+    }
+
+    @Override
+    public boolean cancel(APICancelDTO apiCancelDTO) {
+        JobConfig jobConfig = apiCancelDTO.getJobConfig();
+        JobManager jobManager = JobManager.build(jobConfig);
+        boolean cancel = jobManager.cancel(apiCancelDTO.getJobId());
+        RunTimeUtil.recovery(jobManager);
+        return cancel;
+    }
+
+    @Override
+    public SavePointResult savepoint(APISavePointDTO apiSavePointDTO) {
+        JobConfig jobConfig = apiSavePointDTO.getJobConfig();
+        JobManager jobManager = JobManager.build(jobConfig);
+        SavePointResult savepoint = jobManager.savepoint(apiSavePointDTO.getJobId(), apiSavePointDTO.getSavePointType(), apiSavePointDTO.getSavePoint());
+        RunTimeUtil.recovery(jobManager);
+        return savepoint;
+    }
+
+    @Override
+    public APIJobResult executeJar(APIExecuteJarDTO apiExecuteJarDTO) {
+        JobConfig config = apiExecuteJarDTO.getJobConfig();
+        JobManager jobManager = JobManager.build(config);
+        JobResult jobResult = jobManager.executeJar();
+        APIJobResult apiJobResult = APIJobResult.build(jobResult);
+        RunTimeUtil.recovery(jobManager);
+        return apiJobResult;
     }
 }

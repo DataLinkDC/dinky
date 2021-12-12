@@ -35,23 +35,25 @@ public class Explainer {
 
     private Executor executor;
     private boolean useStatementSet;
+    private String sqlSeparator = FlinkSQLConstant.SEPARATOR;
     private ObjectMapper mapper = new ObjectMapper();
 
     public Explainer(Executor executor) {
         this.executor = executor;
     }
 
-    public Explainer(Executor executor, boolean useStatementSet) {
+    public Explainer(Executor executor, boolean useStatementSet,String sqlSeparator) {
         this.executor = executor;
         this.useStatementSet = useStatementSet;
+        this.sqlSeparator = sqlSeparator;
     }
 
     public static Explainer build(Executor executor){
-        return new Explainer(executor,false);
+        return new Explainer(executor,false,";");
     }
 
-    public static Explainer build(Executor executor, boolean useStatementSet){
-        return new Explainer(executor,useStatementSet);
+    public static Explainer build(Executor executor, boolean useStatementSet, String sqlSeparator){
+        return new Explainer(executor,useStatementSet,sqlSeparator);
     }
 
     public JobParam pretreatStatements(String[] statements) {
@@ -77,7 +79,7 @@ public class Explainer {
 
     @Deprecated
     public List<SqlExplainResult> explainSqlResult(String statement) {
-        String[] sqls = SqlUtil.getStatements(statement);
+        String[] sqls = SqlUtil.getStatements(statement,sqlSeparator);
         List<SqlExplainResult> sqlExplainRecords = new ArrayList<>();
         int index = 1;
         for (String item : sqls) {
@@ -121,7 +123,7 @@ public class Explainer {
     }
 
     public ExplainResult explainSql(String statement) {
-        JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement));
+        JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement,sqlSeparator));
         List<SqlExplainResult> sqlExplainRecords = new ArrayList<>();
         int index = 1;
         boolean correct = true;
@@ -211,7 +213,7 @@ public class Explainer {
         for (SqlExplainResult item : sqlExplainRecords) {
             if (Asserts.isNotNull(item.getType())
                     && item.getType().contains(FlinkSQLConstant.DML)) {
-                String[] statements = SqlUtil.getStatements(item.getSql());
+                String[] statements = SqlUtil.getStatements(item.getSql(),sqlSeparator);
                 for(String str : statements){
                     strPlans.add(str);
                 }
@@ -230,7 +232,7 @@ public class Explainer {
         for (SqlExplainResult item : sqlExplainRecords) {
             if (Asserts.isNotNull(item.getType())
                     && item.getType().contains(FlinkSQLConstant.DML)) {
-                String[] statements = SqlUtil.getStatements(item.getSql());
+                String[] statements = SqlUtil.getStatements(item.getSql(),sqlSeparator);
                 for(String str : statements){
                     strPlans.add(str);
                 }

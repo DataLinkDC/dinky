@@ -475,6 +475,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增 OpenAPI 的执行sql、校验sql、获取计划图、获取StreamGraph、获取预览数据接口</Link>
                 </li>
+                <li>
+                  <Link>新增 OpenAPI 的执行Jar、停止、SavePoint接口</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

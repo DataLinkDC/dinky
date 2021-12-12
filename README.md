@@ -319,6 +319,12 @@ AGG BY TOP2(value) as (value,rank);
 
 [SpringBoot]()
 
+## 致谢
+
+感谢 [JetBrains](https://www.jetbrains.com/?from=dlink) 提供的免费开源 License 赞助
+
+[![JetBrains](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/main/jetbrains.svg)](https://www.jetbrains.com/?from=dlink)
+
 ## 近期计划
 
 1.支持同时托管多版本的Flink实例

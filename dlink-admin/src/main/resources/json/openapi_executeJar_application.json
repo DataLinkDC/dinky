@@ -1,0 +1,27 @@
+/* http://127.0.0.1:8888/openapi/executeJar */
+{
+  /* required-start */
+  "type":"yarn-application",
+  "gatewayConfig":{
+    "clusterConfig":{
+      "flinkConfigPath":"/opt/src/flink-1.13.3_conf/conf",
+      "flinkLibPath":"hdfs:///flink13/lib/flinklib",
+      "yarnConfigPath":"/usr/local/hadoop/hadoop-2.7.7/etc/hadoop"
+    },
+    "appConfig":{
+      "userJarPath":"hdfs:///flink12/jar/currencyAppJar.jar",
+      "userJarParas":["--id","2774,2775,2776"," --type","dwd"],
+      "userJarMainAppClass":"com.app.MainApp"
+    },
+    "flinkConfig": {
+      "configuration":{
+        "parallelism.default": 1
+      }
+    }
+  },
+  /* required-end */
+  /* custom-start */
+  "jobName":"openapitest",
+  "savePointPath":"hdfs://ns/flink/savepoints/savepoint-5f4b8c-4326844a6843"
+  /* custom-end */
+}

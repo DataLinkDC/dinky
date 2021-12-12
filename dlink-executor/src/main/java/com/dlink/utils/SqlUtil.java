@@ -11,11 +11,11 @@ import com.dlink.constant.FlinkSQLConstant;
  */
 public class SqlUtil {
 
-    public static String[] getStatements(String sql){
+    public static String[] getStatements(String sql,String sqlSeparator){
         if(Asserts.isNullString(sql)){
             return new String[0];
         }
-        return sql.split(FlinkSQLConstant.SEPARATOR);
+        return sql.split(sqlSeparator);
     }
 
     public static String removeNote(String sql){
