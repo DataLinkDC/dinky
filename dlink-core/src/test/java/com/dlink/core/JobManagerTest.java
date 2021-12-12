@@ -24,43 +24,6 @@ import java.util.List;
 public class JobManagerTest {
 
     @Test
-    public void executeJobTest(){
-        ExecutorSetting setting = new ExecutorSetting(0,1,false,null);
-
-        JobManager jobManager = new JobManager("192.168.123.157:8081","test2",100, setting);
-        String sql1 ="CREATE TABLE student (\n" +
-                "  sid INT,\n" +
-                "  name STRING,\n" +
-                "  PRIMARY KEY (sid) NOT ENFORCED\n" +
-                ") WITH (\n" +
-                "   'connector' = 'jdbc',\n" +
-                "   'url' = 'jdbc:mysql://192.168.24.1:3306/data?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true',\n" +
-                "   'username'='datalink',\n" +
-                "   'password'='datalink',\n" +
-                "   'table-name' = 'student'\n" +
-                ");";
-        String sql2 ="CREATE TABLE man (\n" +
-                "  pid INT,\n" +
-                "  name STRING,\n" +
-                "  PRIMARY KEY (pid) NOT ENFORCED\n" +
-                ") WITH (\n" +
-                "   'connector' = 'jdbc',\n" +
-                "   'url' = 'jdbc:mysql://192.168.24.1:3306/data?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true',\n" +
-                "   'username'='datalink',\n" +
-                "   'password'='datalink',\n" +
-                "   'table-name' = 'man'\n" +
-                ");";
-        String sql3 = "SELECT sid as pid,name from student";
-        List<String> sqls = new ArrayList<>();
-        sqls.add(sql1);
-        sqls.add(sql2);
-        sqls.add(sql3);
-        String sql = sql1+sql2+sql3;
-        JobResult jobResult = jobManager.executeSql(sql);
-        System.out.println(jobResult.isSuccess());
-    }
-
-    @Test
     public void cancelJobSelect(){
 
         JobConfig config = new JobConfig("session-yarn",true, true, "s1", true, 2,

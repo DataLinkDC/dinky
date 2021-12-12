@@ -10,7 +10,7 @@ public interface FlinkSQLConstant {
     /**
      * 分隔符
      */
-    String SEPARATOR = ";";
+    String SEPARATOR = ";\r\n";
     /**
      * DDL 类型
      */

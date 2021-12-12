@@ -27,6 +27,7 @@ import com.dlink.service.StudioService;
 import com.dlink.session.SessionConfig;
 import com.dlink.session.SessionInfo;
 import com.dlink.session.SessionPool;
+import com.dlink.utils.RunTimeUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -62,11 +63,14 @@ public class StudioServiceImpl implements StudioService {
     @Override
     public JobResult executeSql(StudioExecuteDTO studioExecuteDTO) {
         JobConfig config = studioExecuteDTO.getJobConfig();
+        // If you are using a shared session, configure the current jobmanager address
         if(!config.isUseSession()) {
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
         }
         JobManager jobManager = JobManager.build(config);
-        return jobManager.executeSql(studioExecuteDTO.getStatement());
+        JobResult jobResult = jobManager.executeSql(studioExecuteDTO.getStatement());
+        RunTimeUtil.recovery(jobManager);
+        return jobResult;
     }
 
     @Override
@@ -85,8 +89,8 @@ public class StudioServiceImpl implements StudioService {
         if(!config.isUseSession()) {
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
         }
-        JobManager jobManager = JobManager.build(config);
-        return jobManager.explainSql(studioExecuteDTO.getStatement());
+        JobManager jobManager = JobManager.buildPlanMode(config);
+        return jobManager.explainSql(studioExecuteDTO.getStatement()).getSqlExplainResults();
     }
 
     @Override
@@ -96,7 +100,7 @@ public class StudioServiceImpl implements StudioService {
         if(!config.isUseSession()) {
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
         }
-        JobManager jobManager = JobManager.build(config);
+        JobManager jobManager = JobManager.buildPlanMode(config);
         return jobManager.getStreamGraph(studioExecuteDTO.getStatement());
     }
 
@@ -107,7 +111,7 @@ public class StudioServiceImpl implements StudioService {
         if(!config.isUseSession()) {
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
         }
-        JobManager jobManager = JobManager.build(config);
+        JobManager jobManager = JobManager.buildPlanMode(config);
         String planJson = jobManager.getJobPlanJson(studioExecuteDTO.getStatement());
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode objectNode =mapper.createObjectNode();
@@ -194,7 +198,6 @@ public class StudioServiceImpl implements StudioService {
             Map<String, Object> gatewayConfig = clusterConfigurationService.getGatewayConfig(cluster.getClusterConfigurationId());
             jobConfig.buildGatewayConfig(gatewayConfig);
         }
-        jobConfig.setUseRestAPI(SystemConfiguration.getInstances().isUseRestAPI());
         JobManager jobManager = JobManager.build(jobConfig);
         return jobManager.cancel(jobId);
     }
@@ -212,10 +215,9 @@ public class StudioServiceImpl implements StudioService {
             jobConfig.getGatewayConfig().getClusterConfig().setAppId(cluster.getName());
             jobConfig.setTaskId(cluster.getTaskId());
         }
-        jobConfig.setUseRestAPI(SystemConfiguration.getInstances().isUseRestAPI());
         JobManager jobManager = JobManager.build(jobConfig);
         jobManager.setUseGateway(true);
-        SavePointResult savePointResult = jobManager.savepoint(jobId, savePointType);
+        SavePointResult savePointResult = jobManager.savepoint(jobId, savePointType,null);
         if(Asserts.isNotNull(savePointResult)){
             for(JobInfo item : savePointResult.getJobInfos()){
                 if(Asserts.isEqualsIgnoreCase(jobId,item.getJobId())){

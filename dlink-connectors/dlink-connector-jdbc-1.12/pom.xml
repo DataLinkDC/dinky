@@ -139,7 +139,13 @@
             <artifactId>ojdbc8</artifactId>
             <scope>test</scope>
         </dependency>
-
+        <!-- SQLServer test dependencies -->
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <version>8.2.2.jre8</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <!--<build>
         <plugins>

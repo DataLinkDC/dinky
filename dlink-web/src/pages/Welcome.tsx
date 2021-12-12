@@ -447,6 +447,40 @@ export default (): React.ReactNode => {
               </ul>
             </Paragraph>
           </Timeline.Item>
+          <Timeline.Item><Text code>0.5.0</Text> <Text type="secondary">2022-01-??</Text>
+            <p> </p>
+            <Paragraph>
+              <ul>
+                <li>
+                  <Link>新增 JobPlanGraph 来替代 StreamGraph </Link>
+                </li>
+                <li>
+                  <Link>新增 SQLServer Jdbc Connector 的实现</Link>
+                </li>
+                <li>
+                  <Link>修复编辑集群配置测试后保存会新建的bug</Link>
+                </li>
+                <li>
+                  <Link>新增 Local 的运行模式选择并优化 JobManager</Link>
+                </li>
+                <li>
+                  <Link>修复登录页报错弹框</Link>
+                </li>
+                <li>
+                  <Link>优化所有模式的所有功能的执行逻辑</Link>
+                </li>
+                <li>
+                  <Link>新增 SavePoint 的 restAPI 实现</Link>
+                </li>
+                <li>
+                  <Link>新增 OpenAPI 的执行sql、校验sql、获取计划图、获取StreamGraph、获取预览数据接口</Link>
+                </li>
+                <li>
+                  <Link>新增 OpenAPI 的执行Jar、停止、SavePoint接口</Link>
+                </li>
+              </ul>
+            </Paragraph>
+          </Timeline.Item>
         </Timeline>
       </Card>
     </PageContainer>

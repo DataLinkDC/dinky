@@ -48,7 +48,6 @@
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-yarn_2.11</artifactId>
             <version>${flink.version}</version>
-            <!--<scope>provided</scope>-->
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.hadoop</groupId>
@@ -81,7 +80,7 @@
             <artifactId>dlink-common</artifactId>
         </dependency>
     </dependencies>
-    <build>
+    <!--<build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -92,7 +91,7 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
-            <!--打jar包-->
+            &lt;!&ndash;打jar包&ndash;&gt;
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
@@ -138,6 +137,5 @@
                 </executions>
             </plugin>
         </plugins>
-    </build>
-
+    </build>-->
 </project>

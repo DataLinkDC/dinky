@@ -9,12 +9,13 @@ type FlinkConfigProps = {
   sqlSubmitJarParas: SettingsStateType['sqlSubmitJarParas'];
   sqlSubmitJarMainAppClass: SettingsStateType['sqlSubmitJarMainAppClass'];
   useRestAPI: SettingsStateType['useRestAPI'];
+  sqlSeparator: SettingsStateType['sqlSeparator'];
   dispatch: any;
 };
 
 const FlinkConfigView: React.FC<FlinkConfigProps> = (props) => {
 
-  const {sqlSubmitJarPath, sqlSubmitJarParas, sqlSubmitJarMainAppClass,useRestAPI, dispatch} = props;
+  const {sqlSubmitJarPath, sqlSubmitJarParas, sqlSubmitJarMainAppClass,useRestAPI,sqlSeparator, dispatch} = props;
   const [editName, setEditName] = useState<string>('');
   const [formValues, setFormValues] = useState(props);
   const [form] = Form.useForm();
@@ -73,6 +74,18 @@ const FlinkConfigView: React.FC<FlinkConfigProps> = (props) => {
         <Switch checkedChildren="启用" unCheckedChildren="禁用"
                  checked={useRestAPI}
         /></Form.Item>],
+    },{
+      title: 'FlinkSQL语句分割符',
+      description: (
+        editName!='sqlSeparator'?
+          (sqlSeparator?sqlSeparator:'未设置'):(<Input
+            id='sqlSeparator'
+            defaultValue={sqlSeparator}
+            onChange={onChange}
+            placeholder=";" />)),
+      actions: editName!='sqlSeparator'?[<a onClick={({}) => handleEditClick('sqlSeparator')}>修改</a>]:
+        [<a onClick={({}) => handleSaveClick('sqlSeparator')}>保存</a>,
+          <a onClick={({}) => handleCancelClick()}>取消</a>],
     },
   ];
 
@@ -134,4 +147,5 @@ export default connect(({Settings}: { Settings: SettingsStateType }) => ({
   sqlSubmitJarParas: Settings.sqlSubmitJarParas,
   sqlSubmitJarMainAppClass: Settings.sqlSubmitJarMainAppClass,
   useRestAPI: Settings.useRestAPI,
+  sqlSeparator: Settings.sqlSeparator,
 }))(FlinkConfigView);

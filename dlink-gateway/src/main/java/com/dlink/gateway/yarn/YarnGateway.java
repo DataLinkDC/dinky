@@ -32,10 +32,7 @@ import org.apache.hadoop.yarn.exceptions.YarnException;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -63,8 +60,8 @@ public abstract class YarnGateway extends AbstractGateway {
 
     private void initConfig(){
         configuration = GlobalConfiguration.loadConfiguration(config.getClusterConfig().getFlinkConfigPath());
-        if(Asserts.isNotNull(config.getFlinkConfig().getConfigParas())) {
-            addConfigParas(config.getFlinkConfig().getConfigParas());
+        if(Asserts.isNotNull(config.getFlinkConfig().getConfiguration())) {
+            addConfigParas(config.getFlinkConfig().getConfiguration());
         }
         configuration.set(DeploymentOptions.TARGET, getType().getLongValue());
         if(Asserts.isNotNullString(config.getFlinkConfig().getSavePoint())) {
@@ -87,15 +84,19 @@ public abstract class YarnGateway extends AbstractGateway {
         yarnClient.start();
     }
 
-    private void addConfigParas(List<ConfigPara> configParas){
-        if(Asserts.isNotNull(configParas)) {
-            for (ConfigPara configPara : configParas) {
-                configuration.setString(configPara.getKey(), configPara.getValue());
+    private void addConfigParas(Map<String, String> configMap){
+        if(Asserts.isNotNull(configMap)) {
+            for (Map.Entry<String, String> entry : configMap.entrySet()) {
+                this.configuration.setString(entry.getKey(), entry.getValue());
             }
         }
     }
 
     public SavePointResult savepointCluster(){
+        return savepointCluster(null);
+    }
+
+    public SavePointResult savepointCluster(String savePoint){
         if(Asserts.isNull(yarnClient)){
             init();
         }
@@ -126,7 +127,7 @@ public abstract class YarnGateway extends AbstractGateway {
                 jobInfo.setStatus(JobInfo.JobStatus.RUN);
                 jobInfos.add(jobInfo);
             }
-            runSavePointJob(jobInfos,clusterClient);
+            runSavePointJob(jobInfos,clusterClient,savePoint);
             result.setJobInfos(jobInfos);
         }catch (Exception e){
             e.printStackTrace();
@@ -137,6 +138,10 @@ public abstract class YarnGateway extends AbstractGateway {
     }
 
     public SavePointResult savepointJob(){
+        return savepointJob(null);
+    }
+
+    public SavePointResult savepointJob(String savePoint){
         if(Asserts.isNull(yarnClient)){
             init();
         }
@@ -166,7 +171,7 @@ public abstract class YarnGateway extends AbstractGateway {
                 applicationId).getClusterClient()){
             List<JobInfo> jobInfos = new ArrayList<>();
             jobInfos.add(new JobInfo(config.getFlinkConfig().getJobId(),JobInfo.JobStatus.FAIL));
-            runSavePointJob(jobInfos,clusterClient);
+            runSavePointJob(jobInfos,clusterClient,savePoint);
             result.setJobInfos(jobInfos);
         }catch (Exception e){
             e.printStackTrace();
@@ -176,18 +181,7 @@ public abstract class YarnGateway extends AbstractGateway {
         return result;
     }
 
-    private void runSavePointJob(List<JobInfo> jobInfos,ClusterClient<ApplicationId> clusterClient) throws Exception{
-        String savePoint = null;
-        /*String savePoint = FlinkConfig.DEFAULT_SAVEPOINT_PREFIX;
-        if(Asserts.isNotNullString(config.getFlinkConfig().getSavePoint())){
-            savePoint = config.getFlinkConfig().getSavePoint();
-        }
-        if(Asserts.isNotNull(config.getTaskId())){
-            if(savePoint.lastIndexOf("/")!=savePoint.length()){
-                savePoint = savePoint + "/";
-            }
-            savePoint = savePoint + config.getTaskId();
-        }*/
+    private void runSavePointJob(List<JobInfo> jobInfos,ClusterClient<ApplicationId> clusterClient,String savePoint) throws Exception{
         for( JobInfo jobInfo: jobInfos){
             if(ActionType.CANCEL== config.getFlinkConfig().getAction()){
                 clusterClient.cancel(JobID.fromHexString(jobInfo.getJobId()));

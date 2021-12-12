@@ -1,5 +1,6 @@
 package com.dlink.result;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -17,7 +18,7 @@ public class SqlExplainResult {
     private String error;
     private boolean parseTrue;
     private boolean explainTrue;
-    private Date explainTime;
+    private LocalDateTime explainTime;
 
     public Integer getIndex() {
         return index;
@@ -83,11 +84,11 @@ public class SqlExplainResult {
         this.explainTrue = explainTrue;
     }
 
-    public Date getExplainTime() {
+    public LocalDateTime getExplainTime() {
         return explainTime;
     }
 
-    public void setExplainTime(Date explainTime) {
+    public void setExplainTime(LocalDateTime explainTime) {
         this.explainTime = explainTime;
     }
 

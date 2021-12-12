@@ -1,8 +1,8 @@
-import {Effect, Reducer} from "umi";
+import type {Effect, Reducer} from "umi";
 import {
    handleAddOrUpdate
 } from "@/components/Common/crud";
-import {SqlMetaData} from "@/components/Studio/StudioEvent/data";
+import type {SqlMetaData} from "@/components/Studio/StudioEvent/data";
 
 export type ClusterType = {
   id: number,
@@ -67,7 +67,7 @@ export type TaskType = {
   clusterName?: string,
   clusterConfigurationId?: number,
   clusterConfigurationName?: string,
-  jarId?:number,
+  jarId?: number,
   note?: string,
   enabled?: boolean,
   createTime?: Date,
@@ -76,9 +76,9 @@ export type TaskType = {
   session: string;
   maxRowNum: number;
   jobName: string;
-  useResult:boolean;
-  useSession:boolean;
-  useRemote:boolean;
+  useResult: boolean;
+  useSession: boolean;
+  useRemote: boolean;
 };
 
 export type ConsoleType = {
@@ -94,8 +94,8 @@ export type TabsItemType = {
   task?: TaskType;
   console: ConsoleType;
   monaco?: any;
-  isModified:boolean;
-  sqlMetaData?:SqlMetaData;
+  isModified: boolean;
+  sqlMetaData?: SqlMetaData;
 }
 
 export type TabsType = {
@@ -109,7 +109,7 @@ export type ConnectorType = {
 
 export type SessionType = {
   session?: string;
-  sessionConfig?:{
+  sessionConfig?: {
     type?: string;
     useRemote?: boolean;
     clusterId?: number;
@@ -136,10 +136,10 @@ export type StateType = {
   currentPath?: string[];
   tabs?: TabsType;
   session?: SessionType[];
-  result?:{};
+  result?: {};
   rightClickMenu?: boolean;
-  refs?:{
-    history:any;
+  refs?: {
+    history: any;
   };
 };
 
@@ -271,7 +271,7 @@ const Model: ModelType = {
 
   effects: {
     * saveTask({payload}, {call, put}) {
-      let para = payload;
+      const para = payload;
       para.configJson = JSON.stringify(payload.config);
       yield call(handleAddOrUpdate, 'api/task', para);
       yield put({
@@ -299,8 +299,8 @@ const Model: ModelType = {
       };
     },
     saveSql(state, {payload}) {
-      const tabs = state.tabs;
-      let newCurrent = state.current;
+      const {tabs} = state;
+      const newCurrent = state.current;
       newCurrent.value = payload;
       for (let i = 0; i < tabs.panes.length; i++) {
         if (tabs.panes[i].key == tabs.activeKey) {
@@ -333,8 +333,8 @@ const Model: ModelType = {
       };
     },
     saveSqlMetaData(state, {payload}) {
-      let newCurrent = state.current;
-      let newTabs = state.tabs;
+      const newCurrent = state.current;
+      const newTabs = state.tabs;
       if(newCurrent.key == payload.activeKey){
         newCurrent.sqlMetaData = payload.sqlMetaData;
         newCurrent.isModified = payload.isModified;
@@ -371,14 +371,14 @@ const Model: ModelType = {
       };
     },
     deleteTabByKey(state, {payload}) {
-      let newTabs = state.tabs;
+      const newTabs = state.tabs;
       for (let i = 0; i < newTabs.panes.length; i++) {
         if (newTabs.panes[i].key == payload) {
           newTabs.panes.splice(i, 1);
           break;
         }
       }
-      let newCurrent = newTabs.panes[newTabs.panes.length - 1];
+      const newCurrent = newTabs.panes[newTabs.panes.length - 1];
       if (newTabs.activeKey == payload) {
         newTabs.activeKey = newCurrent.key;
       }
@@ -393,7 +393,7 @@ const Model: ModelType = {
       };
     },
     changeActiveKey(state, {payload}) {
-      let tabs = state.tabs;
+      const {tabs} = state;
       tabs.activeKey = payload;
       let newCurrent = state.current;
       for (let i = 0; i < tabs.panes.length; i++) {
@@ -413,7 +413,7 @@ const Model: ModelType = {
       };
     },
     saveTaskData(state, {payload}) {
-      let newTabs = state.tabs;
+      const newTabs = state.tabs;
       for (let i = 0; i < newTabs.panes.length; i++) {
         if (newTabs.panes[i].key == newTabs.activeKey) {
           newTabs.panes[i].task = payload;
