@@ -120,7 +120,7 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
         return new JobPlanInfo(JsonPlanGenerator.generatePlan(getJobGraphFromInserts(statements)));
     }
 
-    public JobGraph getJobGraphFromInserts(List<String> statements) {
+    public StreamGraph getStreamGraphFromInserts(List<String> statements) {
         List<ModifyOperation> modifyOperations = new ArrayList();
         for(String statement : statements){
             List<Operation> operations = getParser().parse(statement);
@@ -137,11 +137,14 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
         }
         List<Transformation<?>> trans = getPlanner().translate(modifyOperations);
         if(execEnv instanceof ExecutorBase){
-            StreamGraph streamGraph = ExecutorUtils.generateStreamGraph(((ExecutorBase) execEnv).getExecutionEnvironment(), trans);
-            return streamGraph.getJobGraph();
+            return ExecutorUtils.generateStreamGraph(((ExecutorBase) execEnv).getExecutionEnvironment(), trans);
         }else{
             throw new TableException("Unsupported SQL query! ExecEnv need a ExecutorBase.");
         }
+    }
+
+    public JobGraph getJobGraphFromInserts(List<String> statements) {
+        return getStreamGraphFromInserts(statements).getJobGraph();
     }
 
     public SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails) {

@@ -49,8 +49,18 @@ public class JobConfig {
     public JobConfig() {
     }
 
+    public JobConfig(String type, boolean useSession, boolean useRemote, boolean useSqlFragment, boolean useStatementSet, Integer parallelism, Map<String, String> config) {
+        this.type = type;
+        this.useSession = useSession;
+        this.useRemote = useRemote;
+        this.useSqlFragment = useSqlFragment;
+        this.useStatementSet = useStatementSet;
+        this.parallelism = parallelism;
+        this.config = config;
+    }
+
     public JobConfig(String type, boolean useResult, boolean useSession, String session, boolean useRemote, Integer clusterId,
-                     Integer clusterConfigurationId,Integer jarId, Integer taskId, String jobName, boolean useSqlFragment,
+                     Integer clusterConfigurationId, Integer jarId, Integer taskId, String jobName, boolean useSqlFragment,
                      boolean useStatementSet, Integer maxRowNum, Integer checkpoint, Integer parallelism,
                      Integer savePointStrategyValue, String savePointPath, Map<String,String> config) {
         this.type = type;

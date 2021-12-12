@@ -470,10 +470,10 @@ export default (): React.ReactNode => {
                   <Link>优化所有模式的所有功能的执行逻辑</Link>
                 </li>
                 <li>
-                  <Link>新增 trigger 的 restAPI 实现</Link>
+                  <Link>新增 SavePoint 的 restAPI 实现</Link>
                 </li>
                 <li>
-                  <Link>新增 OpenAPI 的执行 sql 接口</Link>
+                  <Link>新增 OpenAPI 的执行sql、校验sql、获取计划图、获取StreamGraph、获取预览数据接口</Link>
                 </li>
               </ul>
             </Paragraph>

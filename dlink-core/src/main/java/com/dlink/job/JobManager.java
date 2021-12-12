@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -209,7 +210,8 @@ public class JobManager {
         JobContextHolder.setJob(job);
         ready();
         String currentSql = "";
-        JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement));
+//        JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement));
+        JobParam jobParam = Explainer.build(executor,useStatementSet).pretreatStatements(SqlUtil.getStatements(statement));
         try {
             for (StatementParam item : jobParam.getDdl()) {
                 currentSql = item.getValue();
@@ -313,27 +315,6 @@ public class JobManager {
         }
     }
 
-    private JobParam pretreatStatements(String[] statements) {
-        List<StatementParam> ddl = new ArrayList<>();
-        List<StatementParam> trans = new ArrayList<>();
-        for (String item : statements) {
-            String statement = executor.pretreatStatement(item);
-            if (statement.isEmpty()) {
-                continue;
-            }
-            SqlType operationType = Operations.getOperationType(statement);
-            if (operationType.equals(SqlType.INSERT) || operationType.equals(SqlType.SELECT)) {
-                trans.add(new StatementParam(statement, operationType));
-                if (!useStatementSet) {
-                    break;
-                }
-            } else {
-                ddl.add(new StatementParam(statement, operationType));
-            }
-        }
-        return new JobParam(ddl, trans);
-    }
-
     public IResult executeDDL(String statement) {
         String[] statements = SqlUtil.getStatements(statement);
         try {
@@ -381,16 +362,16 @@ public class JobManager {
         return SessionPool.filter(createUser);
     }
 
-    public List<SqlExplainResult> explainSql(String statement) {
-        return Explainer.build(executor).explainSqlResult(statement);
+    public ExplainResult explainSql(String statement) {
+        return Explainer.build(executor,useStatementSet).explainSql(statement);
     }
 
     public ObjectNode getStreamGraph(String statement) {
-        return Explainer.build(executor).getStreamGraph(statement);
+        return Explainer.build(executor,useStatementSet).getStreamGraph(statement);
     }
 
     public String getJobPlanJson(String statement) {
-        return Explainer.build(executor).getJobPlanInfo(statement).getJsonPlan();
+        return Explainer.build(executor,useStatementSet).getJobPlanInfo(statement).getJsonPlan();
     }
 
     public boolean cancel(String jobId) {

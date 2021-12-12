@@ -5,11 +5,15 @@ import com.dlink.executor.custom.CustomTableEnvironmentImpl;
 import com.dlink.executor.custom.CustomTableResultImpl;
 import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.result.SqlExplainResult;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.graph.JSONGenerator;
+import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.ExplainDetail;
 import org.apache.flink.table.api.StatementSet;
 import org.apache.flink.table.api.TableResult;
@@ -206,6 +210,21 @@ public abstract class Executor {
         }
     }
 
+    public ObjectNode getStreamGraph(List<String> statements){
+        StreamGraph streamGraph = stEnvironment.getStreamGraphFromInserts(statements);
+        JSONGenerator jsonGenerator = new JSONGenerator(streamGraph);
+        String json = jsonGenerator.getJSON();
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode objectNode =mapper.createObjectNode();
+        try {
+            objectNode = (ObjectNode) mapper.readTree(json);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }finally {
+            return objectNode;
+        }
+    }
+
     public JobPlanInfo getJobPlanInfo(List<String> statements){
         return stEnvironment.getJobPlanInfo(statements);
     }
@@ -236,6 +255,14 @@ public abstract class Executor {
             statementSet.addInsertSql(item);
         }
         return statementSet.execute();
+    }
+
+    public String explainStatementSet(List<String> statements){
+        StatementSet statementSet = stEnvironment.createStatementSet();
+        for (String item : statements) {
+            statementSet.addInsertSql(item);
+        }
+        return statementSet.explain();
     }
 
     public void submitSql(String statements){

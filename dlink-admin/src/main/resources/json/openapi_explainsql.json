@@ -1,21 +1,14 @@
-/* http://127.0.0.1:8888/openapi/executeSql */
+/* http://127.0.0.1:8888/openapi/explainSql */
 {
   /* required-start */
-  "type":"yarn-session", // standalone|local
-  "address":"10.1.51.24:8081",
   "statement":"CREATE TABLE Orders (\r\n    order_number INT,\r\n    price        DECIMAL(32,2),\r\n    order_time   TIMESTAMP(3)\r\n) WITH (\r\n  'connector' = 'datagen',\r\n  'rows-per-second' = '1',\r\n  'fields.order_number.kind' = 'sequence',\r\n  'fields.order_number.start' = '1',\r\n  'fields.order_number.end' = '1000'\r\n);\r\nCREATE TABLE pt (\r\nordertotal INT,\r\nnumtotal INT\r\n) WITH (\r\n 'connector' = 'print'\r\n);\r\ninsert into pt select 1 as ordertotal ,sum(order_number)*2 as numtotal from Orders",
   /* required-end */
   /* default-start */
-  "useResult":false,
   "useStatementSet":false,
   "fragment":false,
-  "maxRowNum":100,
-  "checkPoint":0,
   "parallelism":1,
   /* default-start */
   /* custom-start */
-  "jobName":"openapitest",
-  "savePointPath":"hdfs://ns/flink/savepoints/savepoint-5f4b8c-4326844a6843",
   "configuration":{
     "table.exec.resource.default-parallelism":2
   }

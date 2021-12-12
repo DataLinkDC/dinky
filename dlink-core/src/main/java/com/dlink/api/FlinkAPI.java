@@ -2,6 +2,7 @@ package com.dlink.api;
 
 import cn.hutool.http.HttpUtil;
 import cn.hutool.http.Method;
+import com.dlink.assertion.Asserts;
 import com.dlink.constant.FlinkRestAPIConstant;
 import com.dlink.constant.NetConstant;
 import com.dlink.gateway.GatewayType;
@@ -106,23 +107,30 @@ public class FlinkAPI {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         String triggerid = json.get("request-id").asText();
-        while (triggerid != null)
-        {
+        while (triggerid != null) {
             try {
+                Thread.sleep(1000);
                 JsonNode node = get(FlinkRestAPIConstant.JOBS + jobId + FlinkRestAPIConstant.SAVEPOINTS + NetConstant.SLASH + triggerid);
-                JsonNode operation = node.get("operation");
-                String location = operation.get("location").toString();
-                List<JobInfo> jobInfos = new ArrayList<>();
-                jobInfo.setSavePoint(location);
-                jobInfos.add(jobInfo);
-                result.setJobInfos(jobInfos);
-                break;
+                String status = node.get("status").get("id").asText();
+                if(Asserts.isEquals(status,"IN_PROGRESS")){
+                    continue;
+                }
+                if(node.get("operation").has("failure-cause")) {
+                    String failureCause = node.get("operation").get("failure-cause").asText();
+                    if (Asserts.isNotNullString(failureCause)) {
+                        result.fail(failureCause);
+                        break;
+                    }
+                }
+                if(node.get("operation").has("location")) {
+                    String location = node.get("operation").get("location").asText();
+                    List<JobInfo> jobInfos = new ArrayList<>();
+                    jobInfo.setSavePoint(location);
+                    jobInfos.add(jobInfo);
+                    result.setJobInfos(jobInfos);
+                    break;
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 result.fail(e.getMessage());

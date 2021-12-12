@@ -80,13 +80,6 @@ public class Task extends SuperEntity{
         }
         return config;
     }
-    /*public ExecutorSetting buildExecutorSetting(){
-        HashMap configMap = new HashMap();
-        if(config!=null&&!"".equals(clusterName)) {
-            configMap = JSONUtil.toBean(config, HashMap.class);
-        }
-        return new ExecutorSetting(checkPoint,parallelism,fragment,savePointPath,alias,configMap);
-    }*/
 
     public JobConfig buildSubmitConfig(){
         boolean useRemote = true;

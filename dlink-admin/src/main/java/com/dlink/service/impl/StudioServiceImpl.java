@@ -90,7 +90,7 @@ public class StudioServiceImpl implements StudioService {
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
         }
         JobManager jobManager = JobManager.buildPlanMode(config);
-        return jobManager.explainSql(studioExecuteDTO.getStatement());
+        return jobManager.explainSql(studioExecuteDTO.getStatement()).getSqlExplainResults();
     }
 
     @Override

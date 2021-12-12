@@ -36,8 +36,6 @@ public class APIExecuteSqlDTO {
     private Map<String, String> configuration;
     private GatewayConfig gatewayConfig;
 
-    private static final ObjectMapper mapper = new ObjectMapper();
-
     public JobConfig getJobConfig() {
         Integer savePointStrategy = 0;
         if (Asserts.isNotNullString(savePointPath)) {

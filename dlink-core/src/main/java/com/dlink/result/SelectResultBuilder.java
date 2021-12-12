@@ -38,45 +38,6 @@ public class SelectResultBuilder implements ResultBuilder {
         }else{
             return SelectResult.buildFailed();
         }
-        /*String jobId = null;
-        if (tableResult.getJobClient().isPresent()) {
-            jobId = tableResult.getJobClient().get().getJobID().toHexString();
-        }
-        List<TableColumn> columns = tableResult.getTableSchema().getTableColumns();
-        int totalCount = 0;
-        Set<String> column = new LinkedHashSet();
-        String[] columnNames = columns.stream().map(TableColumn::getName).map(s -> s.replace(" ", "")).toArray((x$0) -> {
-            return (new String[x$0]);
-        });
-        if (printRowKind) {
-            columnNames = Stream.concat(Stream.of("op"), Arrays.stream(columnNames)).toArray((x$0) -> {
-                return new String[x$0];
-            });
-        }
-        long numRows = 0L;
-        List<Map<String, Object>> rows = new ArrayList<>();
-        Iterator<Row> it = tableResult.collect();
-        while (it.hasNext()) {
-            if (numRows < maxRowNum) {
-                String[] cols = rowToString(it.next());
-                Map<String, Object> row = new HashMap<>();
-                for (int i = 0; i < cols.length; i++) {
-                    if (i > columnNames.length) {
-                        column.add("UKN" + i);
-                        row.put("UKN" + i, cols[i]);
-                    } else {
-                        column.add(columnNames[i]);
-                        row.put(columnNames[i], cols[i]);
-                    }
-                }
-                rows.add(row);
-            } else {
-                break;
-            }
-            numRows++;
-            totalCount++;
-        }
-        return new SelectResult(rows, totalCount, rows.size(), column, jobId, true);*/
     }
 
 }

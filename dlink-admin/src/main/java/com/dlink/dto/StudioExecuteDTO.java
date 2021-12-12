@@ -23,7 +23,7 @@ public class StudioExecuteDTO {
     // RUN_MODE
     private String type;
     private boolean useResult;
-    private boolean useStatementSet;
+    private boolean statementSet;
     private boolean useSession;
     private String session;
     private boolean useRemote;
@@ -58,7 +58,7 @@ public class StudioExecuteDTO {
         }
         return new JobConfig(
                 type,useResult, useSession, session, useRemote, clusterId,
-                clusterConfigurationId,jarId, taskId, jobName, fragment,useStatementSet,
+                clusterConfigurationId,jarId, taskId, jobName, fragment,statementSet,
                 maxRowNum, checkPoint, parallelism,savePointStrategy, savePointPath,config);
     }
 }
