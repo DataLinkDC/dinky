@@ -6,6 +6,7 @@ import {useState} from "react";
 import { SearchOutlined } from '@ant-design/icons';
 import {showJobData} from "@/components/Studio/StudioEvent/DQL";
 import ProTable from '@ant-design/pro-table';
+import {DIALECT} from "@/components/Studio/conf";
 
 const { Option } = Select;
 const { Title, Paragraph, Text, Link } = Typography;
@@ -101,11 +102,13 @@ const StudioTable = (props:any) => {
   };
   return (
     <div style={{width: '100%'}}>
-      {current.console&&current.console.result.jobId?
+      {current.console&&current.console.result.success?
         (<>
-          <Button type="primary" onClick={showDetail} icon={<SearchOutlined />}>
-            获取最新数据
-          </Button>
+          {current.task.dialect === DIALECT.FLINKSQL ?
+            (<Button type="primary" onClick={showDetail} icon={<SearchOutlined/>}>
+              获取最新数据
+            </Button>):undefined
+          }
           {result.rowData&&result.columns?
             <ProTable dataSource={result.rowData} columns={getColumns(result.columns)} search={false}
                       options={{

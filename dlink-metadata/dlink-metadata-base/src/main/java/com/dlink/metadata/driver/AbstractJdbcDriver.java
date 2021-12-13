@@ -2,6 +2,7 @@ package com.dlink.metadata.driver;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.constant.CommonConstant;
+import com.dlink.metadata.result.SelectResult;
 import com.dlink.model.Column;
 import com.dlink.model.Schema;
 import com.dlink.model.Table;
@@ -241,35 +242,45 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     }
 
     @Override
-    public List<HashMap<String, Object>> query(String sql) {
+    public SelectResult query(String sql,Integer limit) {
+        SelectResult result = new SelectResult();
         List<HashMap<String, Object>> datas = new ArrayList<>();
         List<Column> columns = new ArrayList<>();
+        List<String> columnNameList = new ArrayList<>();
         PreparedStatement preparedStatement = null;
         ResultSet results = null;
+        int count = 0;
         try {
             preparedStatement = conn.prepareStatement(sql);
             results = preparedStatement.executeQuery();
             ResultSetMetaData metaData = results.getMetaData();
             for (int i = 1; i <= metaData.getColumnCount(); i++) {
+                columnNameList.add(metaData.getColumnLabel(i));
                 Column column = new Column();
-                column.setName(metaData.getColumnName(i));
+                column.setName(metaData.getColumnLabel(i));
                 column.setType(metaData.getColumnTypeName(i));
                 column.setJavaType(getTypeConvert().convert(metaData.getColumnTypeName(i)).getType());
                 columns.add(column);
             }
+            result.setColumns(columnNameList);
             while (results.next()) {
                 HashMap<String, Object> data = new HashMap<>();
                 for (int i = 0; i < columns.size(); i++) {
                     data.put(columns.get(i).getName(), getTypeConvert().convertValue(results, columns.get(i).getName(), columns.get(i).getType()));
                 }
                 datas.add(data);
+                count ++;
+                if(count >= limit){
+                    break;
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             close(preparedStatement, results);
         }
-        return datas;
+        result.setRowData(datas);
+        return result;
     }
 
     @Override

@@ -69,6 +69,14 @@ public class StudioServiceImpl implements StudioService {
 
     @Override
     public JobResult executeSql(StudioExecuteDTO studioExecuteDTO) {
+        if(Dialect.SQL.equalsVal(studioExecuteDTO.getDialect())){
+            return executeCommonSql(studioExecuteDTO);
+        }else{
+            return executeFlinkSql(studioExecuteDTO);
+        }
+    }
+
+    private JobResult executeFlinkSql(StudioExecuteDTO studioExecuteDTO) {
         JobConfig config = studioExecuteDTO.getJobConfig();
         // If you are using a shared session, configure the current jobmanager address
         if(!config.isUseSession()) {
@@ -78,6 +86,36 @@ public class StudioServiceImpl implements StudioService {
         JobResult jobResult = jobManager.executeSql(studioExecuteDTO.getStatement());
         RunTimeUtil.recovery(jobManager);
         return jobResult;
+    }
+
+    private JobResult executeCommonSql(StudioExecuteDTO studioExecuteDTO) {
+        JobResult result = new JobResult();
+        result.setStatement(studioExecuteDTO.getStatement());
+        result.setStartTime(LocalDateTime.now());
+        if(Asserts.isNull(studioExecuteDTO.getDatabaseId())){
+            result.setSuccess(false);
+            result.setError("请指定数据源");
+            result.setEndTime(LocalDateTime.now());
+            return result;
+        }else{
+            DataBase dataBase = dataBaseService.getById(studioExecuteDTO.getDatabaseId());
+            if(Asserts.isNull(dataBase)){
+                result.setSuccess(false);
+                result.setError("数据源不存在");
+                result.setEndTime(LocalDateTime.now());
+                return result;
+            }
+            try {
+                com.dlink.metadata.result.SelectResult selectResult = Driver.build(dataBase.getDriverConfig()).connect().query(studioExecuteDTO.getStatement(),studioExecuteDTO.getMaxRowNum());
+                result.setResult(selectResult);
+                result.setSuccess(true);
+            }catch (Exception e){
+                result.setSuccess(false);
+                result.setError(e.getMessage());
+            }
+            result.setEndTime(LocalDateTime.now());
+            return result;
+        }
     }
 
     @Override
@@ -110,9 +148,16 @@ public class StudioServiceImpl implements StudioService {
 
     private List<SqlExplainResult> explainCommonSql(StudioExecuteDTO studioExecuteDTO) {
         if(Asserts.isNull(studioExecuteDTO.getDatabaseId())){
-            return new ArrayList<>();
+            return new ArrayList<SqlExplainResult>(){{
+                add(SqlExplainResult.fail(studioExecuteDTO.getStatement(),"请指定数据源"));
+            }};
         }else{
             DataBase dataBase = dataBaseService.getById(studioExecuteDTO.getDatabaseId());
+            if(Asserts.isNull(dataBase)){
+                return new ArrayList<SqlExplainResult>(){{
+                    add(SqlExplainResult.fail(studioExecuteDTO.getStatement(),"数据源不存在"));
+                }};
+            }
             SqlExplainResult explainResult = Driver.build(dataBase.getDriverConfig()).connect().explain(studioExecuteDTO.getStatement());
             return new ArrayList<SqlExplainResult>(){{
                 add(explainResult);

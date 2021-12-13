@@ -90,7 +90,7 @@ public interface Driver {
 
     boolean execute(String sql);
 
-    List query(String sql);
+    SelectResult query(String sql,Integer limit);
 
     SqlExplainResult explain(String sql);
 

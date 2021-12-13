@@ -2,6 +2,7 @@ package com.dlink.metadata;
 
 import com.dlink.metadata.driver.Driver;
 import com.dlink.metadata.driver.DriverConfig;
+import com.dlink.metadata.result.SelectResult;
 import com.dlink.model.Column;
 import com.dlink.model.Schema;
 import org.junit.Test;
@@ -16,14 +17,15 @@ import java.util.List;
  **/
 public class MysqlTest {
 
+    private static final String IP = "127.0.0.1";
     public Driver getDriver(){
         DriverConfig config = new DriverConfig();
         config.setType("Mysql");
-        config.setIp("10.1.51.25");
+        config.setIp(IP);
         config.setPort(3306);
         config.setUsername("dca");
         config.setPassword("dca");
-        config.setUrl("jdbc:mysql://10.1.51.25:3306/dca?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&autoReconnect=true");
+        config.setUrl("jdbc:mysql://"+IP+":3306/dca?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&autoReconnect=true");
         return Driver.build(config).connect();
     }
 
@@ -31,11 +33,11 @@ public class MysqlTest {
     public void connectTest(){
         DriverConfig config = new DriverConfig();
         config.setType("Mysql");
-        config.setIp("10.1.51.25");
+        config.setIp(IP);
         config.setPort(3306);
         config.setUsername("dca");
         config.setPassword("dca");
-        config.setUrl("jdbc:mysql://10.1.51.25:3306/dca?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&autoReconnect=true");
+        config.setUrl("jdbc:mysql://"+IP+":3306/dca?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&autoReconnect=true");
         String test = Driver.build(config).test();
         System.out.println(test);
         System.out.println("end...");
@@ -58,7 +60,7 @@ public class MysqlTest {
     @Test
     public void queryTest(){
         Driver driver = getDriver();
-        List query = driver.query("select * from MENU");
+        SelectResult query = driver.query("select * from MENU",10);
         System.out.println("end...");
     }
 }
