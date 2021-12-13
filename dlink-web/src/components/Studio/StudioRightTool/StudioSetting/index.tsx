@@ -7,7 +7,7 @@ import {useEffect} from "react";
 import {showTables} from "@/components/Studio/StudioEvent/DDL";
 import {JarStateType} from "@/pages/Jar/model";
 import {Scrollbars} from "react-custom-scrollbars";
-import {RUN_MODE} from "@/components/Studio/StudioRightTool/StudioSetting/conf";
+import {RUN_MODE} from "@/components/Studio/conf";
 
 const {Option} = Select;
 const {Text} = Typography;
@@ -124,7 +124,6 @@ const StudioSetting = (props: any) => {
                       ) : (<Select
                         style={{width: '100%'}}
                         placeholder="选择Flink集群"
-                        defaultValue={0}
                         optionLabelProp="label"
                         onChange={onChangeClusterSession}
                       >
@@ -143,7 +142,6 @@ const StudioSetting = (props: any) => {
                   <Select
                     style={{width: '100%'}}
                     placeholder="选择Flink集群配置"
-                    defaultValue={0}
                     optionLabelProp="label"
                   >
                     {getClusterConfigurationOptions()}

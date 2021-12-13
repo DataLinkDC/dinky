@@ -22,6 +22,7 @@ import java.util.Map;
 public class StudioExecuteDTO {
     // RUN_MODE
     private String type;
+    private String dialect;
     private boolean useResult;
     private boolean statementSet;
     private boolean useSession;
@@ -29,6 +30,7 @@ public class StudioExecuteDTO {
     private boolean useRemote;
     private Integer clusterId;
     private Integer clusterConfigurationId;
+    private Integer databaseId;
     private Integer jarId;
     private boolean fragment;
     private String statement;

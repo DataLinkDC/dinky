@@ -478,6 +478,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增 OpenAPI 的执行Jar、停止、SavePoint接口</Link>
                 </li>
+                <li>
+                  <Link>新增数据源的 Sql 作业语法校验</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

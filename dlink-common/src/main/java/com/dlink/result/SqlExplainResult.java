@@ -20,6 +20,29 @@ public class SqlExplainResult {
     private boolean explainTrue;
     private LocalDateTime explainTime;
 
+    public SqlExplainResult() {
+    }
+
+    public SqlExplainResult(Integer index, String type, String sql, String parse, String explain, String error, boolean parseTrue, boolean explainTrue, LocalDateTime explainTime) {
+        this.index = index;
+        this.type = type;
+        this.sql = sql;
+        this.parse = parse;
+        this.explain = explain;
+        this.error = error;
+        this.parseTrue = parseTrue;
+        this.explainTrue = explainTrue;
+        this.explainTime = explainTime;
+    }
+
+    public static SqlExplainResult success(String type,String sql,String explain){
+        return new SqlExplainResult(1,type,sql,null,explain,null,true,true,LocalDateTime.now());
+    }
+
+    public static SqlExplainResult fail(String sql,String error){
+        return new SqlExplainResult(1,null,sql,null,null,error,false,false,LocalDateTime.now());
+    }
+
     public Integer getIndex() {
         return index;
     }

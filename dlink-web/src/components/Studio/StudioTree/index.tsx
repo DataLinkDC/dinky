@@ -12,7 +12,7 @@ import {
 } from "@/components/Common/crud";
 import UpdateCatalogueForm from './components/UpdateCatalogueForm';
 import {ActionType} from "@ant-design/pro-table";
-import UpdateTaskForm from "@/components/Studio/StudioTree/components/UpdateTaskForm";
+import SimpleTaskForm from "@/components/Studio/StudioTree/components/SimpleTaskForm";
 import { Scrollbars } from 'react-custom-scrollbars';
 const { DirectoryTree } = Tree;
 const {Search} = Input;
@@ -392,7 +392,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
         />
       ) : null}
       {updateTaskModalVisible? (
-        <UpdateTaskForm
+        <SimpleTaskForm
           onSubmit={async (value) => {
             const datas = await handleAddOrUpdateWithResult('/api/catalogue/createTask',value);
             if (datas) {

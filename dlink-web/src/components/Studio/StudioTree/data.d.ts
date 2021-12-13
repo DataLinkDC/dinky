@@ -9,5 +9,6 @@ export type TaskTableListItem = {
   id: number,
   name: string,
   alias: string,
+  dialect: string,
   parentId: number,
 };

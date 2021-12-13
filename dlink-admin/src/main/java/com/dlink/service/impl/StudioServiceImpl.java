@@ -1,7 +1,9 @@
 package com.dlink.service.impl;
 
 import com.dlink.api.FlinkAPI;
+import com.dlink.assertion.Assert;
 import com.dlink.assertion.Asserts;
+import com.dlink.config.Dialect;
 import com.dlink.dto.SessionDTO;
 import com.dlink.dto.StudioDDLDTO;
 import com.dlink.dto.StudioExecuteDTO;
@@ -14,7 +16,9 @@ import com.dlink.gateway.result.SavePointResult;
 import com.dlink.job.JobConfig;
 import com.dlink.job.JobManager;
 import com.dlink.job.JobResult;
+import com.dlink.metadata.driver.Driver;
 import com.dlink.model.Cluster;
+import com.dlink.model.DataBase;
 import com.dlink.model.Savepoints;
 import com.dlink.model.SystemConfiguration;
 import com.dlink.result.IResult;
@@ -22,6 +26,7 @@ import com.dlink.result.SelectResult;
 import com.dlink.result.SqlExplainResult;
 import com.dlink.service.ClusterConfigurationService;
 import com.dlink.service.ClusterService;
+import com.dlink.service.DataBaseService;
 import com.dlink.service.SavepointsService;
 import com.dlink.service.StudioService;
 import com.dlink.session.SessionConfig;
@@ -59,6 +64,8 @@ public class StudioServiceImpl implements StudioService {
     private ClusterConfigurationService clusterConfigurationService;
     @Autowired
     private SavepointsService savepointsService;
+    @Autowired
+    private DataBaseService dataBaseService;
 
     @Override
     public JobResult executeSql(StudioExecuteDTO studioExecuteDTO) {
@@ -85,12 +92,32 @@ public class StudioServiceImpl implements StudioService {
 
     @Override
     public List<SqlExplainResult> explainSql(StudioExecuteDTO studioExecuteDTO) {
+        if( Dialect.SQL.equalsVal(studioExecuteDTO.getDialect())){
+            return explainCommonSql(studioExecuteDTO);
+        }else{
+            return explainFlinkSql(studioExecuteDTO);
+        }
+    }
+
+    private List<SqlExplainResult> explainFlinkSql(StudioExecuteDTO studioExecuteDTO) {
         JobConfig config = studioExecuteDTO.getJobConfig();
         if(!config.isUseSession()) {
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
         }
         JobManager jobManager = JobManager.buildPlanMode(config);
         return jobManager.explainSql(studioExecuteDTO.getStatement()).getSqlExplainResults();
+    }
+
+    private List<SqlExplainResult> explainCommonSql(StudioExecuteDTO studioExecuteDTO) {
+        if(Asserts.isNull(studioExecuteDTO.getDatabaseId())){
+            return new ArrayList<>();
+        }else{
+            DataBase dataBase = dataBaseService.getById(studioExecuteDTO.getDatabaseId());
+            SqlExplainResult explainResult = Driver.build(dataBase.getDriverConfig()).connect().explain(studioExecuteDTO.getStatement());
+            return new ArrayList<SqlExplainResult>(){{
+                add(explainResult);
+            }};
+        }
     }
 
     @Override

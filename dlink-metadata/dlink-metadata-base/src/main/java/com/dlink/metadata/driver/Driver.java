@@ -6,6 +6,7 @@ import com.dlink.metadata.result.SelectResult;
 import com.dlink.model.Column;
 import com.dlink.model.Schema;
 import com.dlink.model.Table;
+import com.dlink.result.SqlExplainResult;
 import com.fasterxml.jackson.databind.JsonNode;
 import sun.misc.Service;
 
@@ -90,5 +91,7 @@ public interface Driver {
     boolean execute(String sql);
 
     List query(String sql);
+
+    SqlExplainResult explain(String sql);
 
 }

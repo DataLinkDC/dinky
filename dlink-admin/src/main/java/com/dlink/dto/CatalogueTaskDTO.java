@@ -1,5 +1,6 @@
 package com.dlink.dto;
 
+import com.dlink.config.Dialect;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,4 +18,5 @@ public class CatalogueTaskDTO {
     private boolean isLeaf;
     private String name;
     private String alias;
+    private String dialect = Dialect.DEFAULT.getValue();
 }

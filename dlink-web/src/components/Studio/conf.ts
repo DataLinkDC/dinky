@@ -5,3 +5,9 @@ export const RUN_MODE = {
   YARN_PER_JOB:'yarn-per-job',
   YARN_APPLICATION:'yarn-application',
 };
+
+export const DIALECT = {
+  FLINKSQL:'FlinkSql',
+  SQL:'Sql',
+  JAVA:'Java',
+};

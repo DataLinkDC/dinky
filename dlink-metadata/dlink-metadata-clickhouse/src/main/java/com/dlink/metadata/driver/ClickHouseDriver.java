@@ -5,6 +5,11 @@ import com.dlink.metadata.convert.ITypeConvert;
 import com.dlink.metadata.query.ClickHouseQuery;
 import com.dlink.metadata.query.IDBQuery;
 import com.dlink.model.Table;
+import com.dlink.result.SqlExplainResult;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * ClickHouseDriver
@@ -41,5 +46,31 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
     @Override
     public String getCreateTableSql(Table table) {
         return null;
+    }
+
+    @Override
+    public SqlExplainResult explain(String sql){
+        boolean correct = true;
+        String error = null;
+        StringBuilder explain = new StringBuilder();
+        PreparedStatement preparedStatement = null;
+        ResultSet results = null;
+        try {
+            preparedStatement = conn.prepareStatement("explain "+sql);
+            results = preparedStatement.executeQuery();
+            while(results.next()){
+                explain.append(getTypeConvert().convertValue(results,"explain", "string")+"\r\n");
+            }
+        } catch (SQLException e) {
+            correct = false;
+            error = e.getMessage();
+        } finally {
+            close(preparedStatement, results);
+        }
+        if(correct) {
+            return SqlExplainResult.success("ClickHouseSql", sql, explain.toString());
+        }else {
+            return SqlExplainResult.fail(sql,error);
+        }
     }
 }

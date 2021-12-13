@@ -5,6 +5,7 @@ import com.dlink.constant.CommonConstant;
 import com.dlink.model.Column;
 import com.dlink.model.Schema;
 import com.dlink.model.Table;
+import com.dlink.result.SqlExplainResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -269,5 +270,31 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
             close(preparedStatement, results);
         }
         return datas;
+    }
+
+    @Override
+    public SqlExplainResult explain(String sql){
+        boolean correct = true;
+        String error = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet results = null;
+        try {
+            preparedStatement = conn.prepareStatement("explain "+sql);
+            results = preparedStatement.executeQuery();
+            if(!results.next()){
+                correct = false;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            correct = false;
+            error = e.getMessage();
+        } finally {
+            close(preparedStatement, results);
+        }
+        if(correct) {
+            return SqlExplainResult.success(null, sql, null);
+        }else {
+            return SqlExplainResult.fail(sql,error);
+        }
     }
 }
