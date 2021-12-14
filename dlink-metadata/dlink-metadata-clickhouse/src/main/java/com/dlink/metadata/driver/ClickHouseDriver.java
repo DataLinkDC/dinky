@@ -2,7 +2,10 @@ package com.dlink.metadata.driver;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.dialect.clickhouse.ast.ClickhouseCreateTableStatement;
+import com.alibaba.druid.sql.dialect.clickhouse.parser.ClickhouseCreateTableParser;
 import com.alibaba.druid.sql.dialect.clickhouse.parser.ClickhouseStatementParser;
+import com.alibaba.druid.sql.dialect.clickhouse.visitor.ClickhouseVisitor;
 import com.dlink.metadata.convert.ClickHouseTypeConvert;
 import com.dlink.metadata.convert.ITypeConvert;
 import com.dlink.metadata.query.ClickHouseQuery;
@@ -71,16 +74,17 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
             while(results.next()){
                 explain.append(getTypeConvert().convertValue(results,"explain", "string")+"\r\n");
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             correct = false;
             error = e.getMessage();
         } finally {
             close(preparedStatement, results);
+            if(correct) {
+                return SqlExplainResult.success(type, sql, explain.toString());
+            }else {
+                return SqlExplainResult.fail(sql,error);
+            }
         }
-        if(correct) {
-            return SqlExplainResult.success(type, sql, explain.toString());
-        }else {
-            return SqlExplainResult.fail(sql,error);
-        }
+
     }
 }

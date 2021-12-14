@@ -297,7 +297,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         try {
             ClickhouseStatementParser parser = new ClickhouseStatementParser(sql);
             SQLStatement sqlStatement = parser.parseStatement();
-            type = sqlStatement.getClass().getName();
+            type = sqlStatement.getClass().getSimpleName();
             if(!(sqlStatement instanceof SQLSelectStatement)){
                 return SqlExplainResult.success(type, sql, "");
             }
@@ -311,11 +311,12 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
             error = e.getMessage();
         } finally {
             close(preparedStatement, results);
+            if(correct) {
+                return SqlExplainResult.success(type, sql, null);
+            }else {
+                return SqlExplainResult.fail(sql,error);
+            }
         }
-        if(correct) {
-            return SqlExplainResult.success(null, sql, null);
-        }else {
-            return SqlExplainResult.fail(sql,error);
-        }
+
     }
 }
