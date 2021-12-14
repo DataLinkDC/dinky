@@ -16,7 +16,7 @@ import java.util.List;
  */
 @Setter
 @Getter
-public class SelectResult extends AbstractResult implements IResult {
+public class JdbcSelectResult extends AbstractResult implements IResult {
     private List<String> columns;
     private List<HashMap<String,Object>> rowData;
     private Integer total;

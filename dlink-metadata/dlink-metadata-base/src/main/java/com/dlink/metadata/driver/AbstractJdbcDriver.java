@@ -1,8 +1,11 @@
 package com.dlink.metadata.driver;
 
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.dialect.clickhouse.parser.ClickhouseStatementParser;
 import com.dlink.assertion.Asserts;
 import com.dlink.constant.CommonConstant;
-import com.dlink.metadata.result.SelectResult;
+import com.dlink.metadata.result.JdbcSelectResult;
 import com.dlink.model.Column;
 import com.dlink.model.Schema;
 import com.dlink.model.Table;
@@ -10,13 +13,7 @@ import com.dlink.result.SqlExplainResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -242,8 +239,8 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     }
 
     @Override
-    public SelectResult query(String sql,Integer limit) {
-        SelectResult result = new SelectResult();
+    public JdbcSelectResult query(String sql, Integer limit) {
+        JdbcSelectResult result = new JdbcSelectResult();
         List<HashMap<String, Object>> datas = new ArrayList<>();
         List<Column> columns = new ArrayList<>();
         List<String> columnNameList = new ArrayList<>();
@@ -253,6 +250,11 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         try {
             preparedStatement = conn.prepareStatement(sql);
             results = preparedStatement.executeQuery();
+            if(Asserts.isNull(results)){
+                result.setSuccess(true);
+                close(preparedStatement, results);
+                return result;
+            }
             ResultSetMetaData metaData = results.getMetaData();
             for (int i = 1; i <= metaData.getColumnCount(); i++) {
                 columnNameList.add(metaData.getColumnLabel(i));
@@ -274,29 +276,37 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                     break;
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            result.setSuccess(true);
+        } catch (Exception e) {
+            result.setError(e.getMessage());
+            result.setSuccess(false);
         } finally {
             close(preparedStatement, results);
+            result.setRowData(datas);
+            return result;
         }
-        result.setRowData(datas);
-        return result;
     }
 
     @Override
     public SqlExplainResult explain(String sql){
         boolean correct = true;
         String error = null;
+        String type = "Sql";
         PreparedStatement preparedStatement = null;
         ResultSet results = null;
         try {
+            ClickhouseStatementParser parser = new ClickhouseStatementParser(sql);
+            SQLStatement sqlStatement = parser.parseStatement();
+            type = sqlStatement.getClass().getName();
+            if(!(sqlStatement instanceof SQLSelectStatement)){
+                return SqlExplainResult.success(type, sql, "");
+            }
             preparedStatement = conn.prepareStatement("explain "+sql);
             results = preparedStatement.executeQuery();
             if(!results.next()){
                 correct = false;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
             correct = false;
             error = e.getMessage();
         } finally {

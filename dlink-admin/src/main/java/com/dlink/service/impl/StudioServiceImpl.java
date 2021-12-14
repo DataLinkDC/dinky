@@ -1,7 +1,6 @@
 package com.dlink.service.impl;
 
 import com.dlink.api.FlinkAPI;
-import com.dlink.assertion.Assert;
 import com.dlink.assertion.Asserts;
 import com.dlink.config.Dialect;
 import com.dlink.dto.SessionDTO;
@@ -17,18 +16,14 @@ import com.dlink.job.JobConfig;
 import com.dlink.job.JobManager;
 import com.dlink.job.JobResult;
 import com.dlink.metadata.driver.Driver;
+import com.dlink.metadata.result.JdbcSelectResult;
 import com.dlink.model.Cluster;
 import com.dlink.model.DataBase;
 import com.dlink.model.Savepoints;
-import com.dlink.model.SystemConfiguration;
 import com.dlink.result.IResult;
 import com.dlink.result.SelectResult;
 import com.dlink.result.SqlExplainResult;
-import com.dlink.service.ClusterConfigurationService;
-import com.dlink.service.ClusterService;
-import com.dlink.service.DataBaseService;
-import com.dlink.service.SavepointsService;
-import com.dlink.service.StudioService;
+import com.dlink.service.*;
 import com.dlink.session.SessionConfig;
 import com.dlink.session.SessionInfo;
 import com.dlink.session.SessionPool;
@@ -105,13 +100,15 @@ public class StudioServiceImpl implements StudioService {
                 result.setEndTime(LocalDateTime.now());
                 return result;
             }
-            try {
-                com.dlink.metadata.result.SelectResult selectResult = Driver.build(dataBase.getDriverConfig()).connect().query(studioExecuteDTO.getStatement(),studioExecuteDTO.getMaxRowNum());
-                result.setResult(selectResult);
+            Driver driver = Driver.build(dataBase.getDriverConfig()).connect();
+            JdbcSelectResult selectResult = driver.query(studioExecuteDTO.getStatement(),studioExecuteDTO.getMaxRowNum());
+            driver.close();
+            result.setResult(selectResult);
+            if(selectResult.isSuccess()){
                 result.setSuccess(true);
-            }catch (Exception e){
+            }else{
                 result.setSuccess(false);
-                result.setError(e.getMessage());
+                result.setError(selectResult.getError());
             }
             result.setEndTime(LocalDateTime.now());
             return result;
@@ -158,7 +155,9 @@ public class StudioServiceImpl implements StudioService {
                     add(SqlExplainResult.fail(studioExecuteDTO.getStatement(),"数据源不存在"));
                 }};
             }
-            SqlExplainResult explainResult = Driver.build(dataBase.getDriverConfig()).connect().explain(studioExecuteDTO.getStatement());
+            Driver driver = Driver.build(dataBase.getDriverConfig()).connect();
+            SqlExplainResult explainResult = driver.explain(studioExecuteDTO.getStatement());
+            driver.close();
             return new ArrayList<SqlExplainResult>(){{
                 add(explainResult);
             }};

@@ -1,5 +1,8 @@
 package com.dlink.metadata.driver;
 
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.dialect.clickhouse.parser.ClickhouseStatementParser;
 import com.dlink.metadata.convert.ClickHouseTypeConvert;
 import com.dlink.metadata.convert.ITypeConvert;
 import com.dlink.metadata.query.ClickHouseQuery;
@@ -52,10 +55,17 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
     public SqlExplainResult explain(String sql){
         boolean correct = true;
         String error = null;
+        String type = "ClickHouseSql";
         StringBuilder explain = new StringBuilder();
         PreparedStatement preparedStatement = null;
         ResultSet results = null;
         try {
+            ClickhouseStatementParser parser = new ClickhouseStatementParser(sql);
+            SQLStatement sqlStatement = parser.parseStatement();
+            type = sqlStatement.getClass().getSimpleName();
+            if(!(sqlStatement instanceof SQLSelectStatement)){
+                return SqlExplainResult.success(type, sql, explain.toString());
+            }
             preparedStatement = conn.prepareStatement("explain "+sql);
             results = preparedStatement.executeQuery();
             while(results.next()){
@@ -68,7 +78,7 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
             close(preparedStatement, results);
         }
         if(correct) {
-            return SqlExplainResult.success("ClickHouseSql", sql, explain.toString());
+            return SqlExplainResult.success(type, sql, explain.toString());
         }else {
             return SqlExplainResult.fail(sql,error);
         }

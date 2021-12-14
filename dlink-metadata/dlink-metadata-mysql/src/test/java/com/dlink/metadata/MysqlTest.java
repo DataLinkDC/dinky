@@ -2,7 +2,7 @@ package com.dlink.metadata;
 
 import com.dlink.metadata.driver.Driver;
 import com.dlink.metadata.driver.DriverConfig;
-import com.dlink.metadata.result.SelectResult;
+import com.dlink.metadata.result.JdbcSelectResult;
 import com.dlink.model.Column;
 import com.dlink.model.Schema;
 import org.junit.Test;
@@ -60,7 +60,7 @@ public class MysqlTest {
     @Test
     public void queryTest(){
         Driver driver = getDriver();
-        SelectResult query = driver.query("select * from MENU",10);
+        JdbcSelectResult query = driver.query("select * from MENU",10);
         System.out.println("end...");
     }
 }

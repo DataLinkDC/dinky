@@ -56,7 +56,7 @@ const StudioMsg = (props:any) => {
 
   return (
     <Typography>
-      {current.console.result.success?(current.task.dialect === DIALECT.SQL ? renderCommonSqlContent():
+      {current.console.result.startTime?(current.task.dialect === DIALECT.SQL ? renderCommonSqlContent():
         renderFlinkSqlContent() ):<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       }
     </Typography>
