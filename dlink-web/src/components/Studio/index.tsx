@@ -21,14 +21,11 @@ type StudioProps = {
   rightClickMenu: StateType['rightClickMenu'];
   dispatch: any;
 };
-const elementwidth = document.documentElement.clientWidth;
-const elementHeight = document.documentElement.clientHeight;
 
 const Studio: React.FC<StudioProps> = (props) => {
 
   const {rightClickMenu, toolHeight, toolLeftWidth,toolRightWidth, dispatch} = props;
   const [form] = Form.useForm();
-
   const VIEW = {
     leftToolWidth: 300,
     marginTop: 116,
@@ -39,13 +36,13 @@ const Studio: React.FC<StudioProps> = (props) => {
     midMargin: 46,
   };
   const [size, setSize] = useState({
-    width: elementwidth - 1,
-    height: elementHeight,
+    width: document.documentElement.clientWidth - 1,
+    height: document.documentElement.clientHeight,
   });
   const onResize = useCallback(() => {
     setSize({
-      width: elementwidth - 1,
-      height: elementHeight,
+      width: document.documentElement.clientWidth - 1,
+      height: document.documentElement.clientHeight,
     })
   }, []);
 
