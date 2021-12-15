@@ -126,20 +126,12 @@
             <groupId>com.dlink</groupId>
             <artifactId>dlink-gateway</artifactId>
         </dependency>
-        <!--<dependency>
+        <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-metadata-clickhouse</artifactId>
             <version>0.5.0-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>ru.yandex.clickhouse</groupId>
-            <artifactId>clickhouse-jdbc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-metadata-mysql</artifactId>
-            <version>0.5.0-SNAPSHOT</version>
-        </dependency>-->
     </dependencies>
     <build>
         <plugins>

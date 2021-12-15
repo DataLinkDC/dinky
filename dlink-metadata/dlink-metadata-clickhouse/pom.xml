@@ -24,7 +24,6 @@
         <dependency>
             <groupId>ru.yandex.clickhouse</groupId>
             <artifactId>clickhouse-jdbc</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

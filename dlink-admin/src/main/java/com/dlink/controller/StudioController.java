@@ -48,7 +48,7 @@ public class StudioController {
     }
 
     /**
-     * 解释Sql
+     * 获取执行图
      */
     @PostMapping("/getStreamGraph")
     public Result getStreamGraph(@RequestBody StudioExecuteDTO studioExecuteDTO)  {
