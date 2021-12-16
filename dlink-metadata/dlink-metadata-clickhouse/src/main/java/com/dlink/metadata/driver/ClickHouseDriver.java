@@ -2,12 +2,11 @@ package com.dlink.metadata.driver;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.dialect.clickhouse.ast.ClickhouseCreateTableStatement;
-import com.alibaba.druid.sql.dialect.clickhouse.parser.ClickhouseCreateTableParser;
-import com.alibaba.druid.sql.dialect.clickhouse.parser.ClickhouseStatementParser;
-import com.alibaba.druid.sql.dialect.clickhouse.visitor.ClickhouseVisitor;
+import com.alibaba.druid.sql.parser.ParserException;
+import com.alibaba.druid.sql.parser.Token;
 import com.dlink.metadata.convert.ClickHouseTypeConvert;
 import com.dlink.metadata.convert.ITypeConvert;
+import com.dlink.metadata.parser.Clickhouse20StatementParser;
 import com.dlink.metadata.query.ClickHouseQuery;
 import com.dlink.metadata.query.IDBQuery;
 import com.dlink.model.Table;
@@ -15,7 +14,8 @@ import com.dlink.result.SqlExplainResult;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * ClickHouseDriver
@@ -55,36 +55,39 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
     }
 
     @Override
-    public SqlExplainResult explain(String sql){
-        boolean correct = true;
-        String error = null;
-        String type = "ClickHouseSql";
+    public List<SqlExplainResult> explain(String sql){
+        List<SqlExplainResult> sqlExplainResults = new ArrayList<>();
         StringBuilder explain = new StringBuilder();
         PreparedStatement preparedStatement = null;
         ResultSet results = null;
+        String current = null;
         try {
-            ClickhouseStatementParser parser = new ClickhouseStatementParser(sql);
-            SQLStatement sqlStatement = parser.parseStatement();
-            type = sqlStatement.getClass().getSimpleName();
-            if(!(sqlStatement instanceof SQLSelectStatement)){
-                return SqlExplainResult.success(type, sql, explain.toString());
+            Clickhouse20StatementParser parser = new Clickhouse20StatementParser(sql);
+            List<SQLStatement> stmtList = new ArrayList<>();
+            parser.parseStatementList(stmtList, -1, null);
+            if (parser.getLexer().token() != Token.EOF) {
+                throw new ParserException("syntax error : " + sql);
             }
-            preparedStatement = conn.prepareStatement("explain "+sql);
-            results = preparedStatement.executeQuery();
-            while(results.next()){
-                explain.append(getTypeConvert().convertValue(results,"explain", "string")+"\r\n");
+            for(SQLStatement item : stmtList){
+                current = item.toString();
+                String type = item.getClass().getSimpleName();
+                if(!(item instanceof SQLSelectStatement)){
+                    sqlExplainResults.add(SqlExplainResult.success(type, current, explain.toString()));
+                    continue;
+                }
+                preparedStatement = conn.prepareStatement("explain "+current);
+                results = preparedStatement.executeQuery();
+                while(results.next()){
+                    explain.append(getTypeConvert().convertValue(results,"explain", "string")+"\r\n");
+                }
+                sqlExplainResults.add(SqlExplainResult.success(type, current, explain.toString()));
             }
         } catch (Exception e) {
-            correct = false;
-            error = e.getMessage();
+            e.printStackTrace();
+            sqlExplainResults.add(SqlExplainResult.fail(current, e.getMessage()));
         } finally {
             close(preparedStatement, results);
-            if(correct) {
-                return SqlExplainResult.success(type, sql, explain.toString());
-            }else {
-                return SqlExplainResult.fail(sql,error);
-            }
+            return sqlExplainResults;
         }
-
     }
 }

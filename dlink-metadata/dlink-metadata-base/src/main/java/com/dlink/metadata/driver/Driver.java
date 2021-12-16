@@ -91,6 +91,6 @@ public interface Driver {
 
     JdbcSelectResult query(String sql, Integer limit);
 
-    SqlExplainResult explain(String sql);
+    List<SqlExplainResult> explain(String sql);
 
 }

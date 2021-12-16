@@ -156,11 +156,9 @@ public class StudioServiceImpl implements StudioService {
                 }};
             }
             Driver driver = Driver.build(dataBase.getDriverConfig()).connect();
-            SqlExplainResult explainResult = driver.explain(studioExecuteDTO.getStatement());
+            List<SqlExplainResult> sqlExplainResults = driver.explain(studioExecuteDTO.getStatement());
             driver.close();
-            return new ArrayList<SqlExplainResult>(){{
-                add(explainResult);
-            }};
+            return sqlExplainResults;
         }
     }
 

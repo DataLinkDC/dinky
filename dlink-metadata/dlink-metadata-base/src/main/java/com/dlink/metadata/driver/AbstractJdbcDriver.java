@@ -1,8 +1,10 @@
 package com.dlink.metadata.driver;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.dialect.clickhouse.parser.ClickhouseStatementParser;
+import com.alibaba.druid.sql.parser.ParserException;
+import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.sql.parser.Token;
 import com.dlink.assertion.Asserts;
 import com.dlink.constant.CommonConstant;
 import com.dlink.metadata.result.JdbcSelectResult;
@@ -13,7 +15,13 @@ import com.dlink.result.SqlExplainResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -288,34 +296,20 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     }
 
     @Override
-    public SqlExplainResult explain(String sql){
-        boolean correct = true;
-        String error = null;
-        String type = "Sql";
-        PreparedStatement preparedStatement = null;
-        ResultSet results = null;
+    public List<SqlExplainResult> explain(String sql){
+        List<SqlExplainResult> sqlExplainResults = new ArrayList<>();
+        String current = null;
         try {
-            ClickhouseStatementParser parser = new ClickhouseStatementParser(sql);
-            SQLStatement sqlStatement = parser.parseStatement();
-            type = sqlStatement.getClass().getSimpleName();
-            if(!(sqlStatement instanceof SQLSelectStatement)){
-                return SqlExplainResult.success(type, sql, "");
-            }
-            preparedStatement = conn.prepareStatement("explain "+sql);
-            results = preparedStatement.executeQuery();
-            if(!results.next()){
-                correct = false;
+            List<SQLStatement> stmtList = SQLUtils.parseStatements(sql,config.getType());
+            for(SQLStatement item : stmtList){
+                current = item.toString();
+                String type = item.getClass().getSimpleName();
+                sqlExplainResults.add(SqlExplainResult.success(type, current, null));
             }
         } catch (Exception e) {
-            correct = false;
-            error = e.getMessage();
+            sqlExplainResults.add(SqlExplainResult.fail(current,e.getMessage()));
         } finally {
-            close(preparedStatement, results);
-            if(correct) {
-                return SqlExplainResult.success(type, sql, null);
-            }else {
-                return SqlExplainResult.fail(sql,error);
-            }
+            return sqlExplainResults;
         }
 
     }
