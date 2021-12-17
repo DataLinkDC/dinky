@@ -1,7 +1,6 @@
 package com.dlink.metadata.driver;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
@@ -22,6 +21,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * ClickHouseDriver
@@ -105,6 +106,11 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
                 String type = item.getClass().getSimpleName();
                 if(!(item instanceof SQLSelectStatement)){
                     if(item instanceof Clickhouse20CreateTableStatement){
+                        Matcher m = Pattern.compile(",\\s*\\)").matcher(sql);
+                        if (m.find()) {
+                            sqlExplainResults.add(SqlExplainResult.fail(sql, "No comma can be added to the last field of Table! "));
+                            break;
+                        }
                         sqlExplainResults.add(checkCreateTable((Clickhouse20CreateTableStatement)item));
                     } else if(item instanceof SQLDropTableStatement){
                         sqlExplainResults.add(checkDropTable((SQLDropTableStatement)item));
@@ -131,7 +137,12 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
 
     private SqlExplainResult checkCreateTable(Clickhouse20CreateTableStatement sqlStatement){
         if(existTable(Table.build(sqlStatement.getTableName()))){
-            return SqlExplainResult.fail(sqlStatement.toString(), "Table "+sqlStatement.getSchema()+"."+sqlStatement.getTableName()+" already exists.");
+            if(sqlStatement.isIfNotExists()){
+                return SqlExplainResult.success(sqlStatement.getClass().getSimpleName(), sqlStatement.toString(), null);
+            }else{
+                String schema = null == sqlStatement.getSchema() ? "" : sqlStatement.getSchema()+".";
+                return SqlExplainResult.fail(sqlStatement.toString(), "Table "+schema+sqlStatement.getTableName()+" already exists.");
+            }
         }else{
             return SqlExplainResult.success(sqlStatement.getClass().getSimpleName(), sqlStatement.toString(), null);
         }
