@@ -1,14 +1,14 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState} from 'react';
 import {Form, Button, Input, Modal} from 'antd';
 
-import type {TableListItem} from '../data.d';
+import  {TaskTableListItem} from "@/pages/Task/data";
 import Switch from "antd/es/switch";
 
 export type UpdateFormProps = {
-  onCancel: (flag?: boolean, formVals?: Partial<TableListItem>) => void;
-  onSubmit: (values: Partial<TableListItem>) => void;
+  onCancel: (flag?: boolean, formVals?: Partial<TaskTableListItem>) => void;
+  onSubmit: (values: Partial<TaskTableListItem>) => void;
   updateModalVisible: boolean;
-  values: Partial<TableListItem>;
+  values: Partial<TaskTableListItem>;
 };
 const FormItem = Form.Item;
 
@@ -18,7 +18,7 @@ const formLayout = {
 };
 
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
-  const [formVals, setFormVals] = useState<Partial<TableListItem>>({
+  const [formVals, setFormVals] = useState<Partial<TaskTableListItem>>({
     id: props.values.id,
     name: props.values.name,
     alias: props.values.alias,
@@ -26,7 +26,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
     checkPoint: props.values.checkPoint,
     savePointPath: props.values.savePointPath,
     parallelism: props.values.parallelism,
-    fragemnt: props.values.fragment,
+    fragment: props.values.fragment,
     clusterId: props.values.clusterId,
     note: props.values.note,
     enabled: props.values.enabled,
@@ -47,7 +47,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
     handleUpdate({...formVals, ...fieldsValue});
   };
 
-  const renderContent = (formVals) => {
+  const renderContent = (formVals:any) => {
     return (
       <>
         <FormItem
@@ -148,7 +148,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           checkPoint: formVals.checkPoint,
           savePointPath: formVals.savePointPath,
           parallelism: formVals.parallelism,
-          fragemnt: formVals.fragemnt,
+          fragment: formVals.fragment,
           clusterId: formVals.clusterId,
           enabled: formVals.enabled,
         }}
