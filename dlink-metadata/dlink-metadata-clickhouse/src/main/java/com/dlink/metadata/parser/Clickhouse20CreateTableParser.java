@@ -38,13 +38,6 @@ public class Clickhouse20CreateTableParser extends SQLCreateTableParser {
             ckStmt.setPartitionBy(expr);
         }
 
-        if (lexer.identifierEquals("PRIMARY")) {
-            lexer.nextToken();
-            accept(Token.KEY);
-            SQLExpr expr = this.exprParser.expr();
-            ckStmt.setPrimaryKey(expr);
-        }
-
         if (lexer.token() == Token.PRIMARY) {
             lexer.nextToken();
             accept(Token.KEY);

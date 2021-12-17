@@ -1,9 +1,14 @@
 package com.dlink.metadata.driver;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.Token;
+import com.dlink.assertion.Asserts;
+import com.dlink.metadata.ast.Clickhouse20CreateTableStatement;
 import com.dlink.metadata.convert.ClickHouseTypeConvert;
 import com.dlink.metadata.convert.ITypeConvert;
 import com.dlink.metadata.parser.Clickhouse20StatementParser;
@@ -14,6 +19,7 @@ import com.dlink.result.SqlExplainResult;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +56,32 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
     }
 
     @Override
+    public List<Table> listTables(String schemaName) {
+        List<Table> tableList = new ArrayList<>();
+        PreparedStatement preparedStatement = null;
+        ResultSet results = null;
+        String sql = getDBQuery().tablesSql(schemaName);
+        try {
+            preparedStatement = conn.prepareStatement(sql);
+            results = preparedStatement.executeQuery();
+            while (results.next()) {
+                String tableName = results.getString(getDBQuery().tableName());
+                if (Asserts.isNotNullString(tableName)) {
+                    Table tableInfo = new Table();
+                    tableInfo.setName(tableName);
+                    tableInfo.setSchema(schemaName);
+                    tableList.add(tableInfo);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(preparedStatement, results);
+        }
+        return tableList;
+    }
+
+    @Override
     public String getCreateTableSql(Table table) {
         return null;
     }
@@ -72,7 +104,13 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
                 current = item.toString();
                 String type = item.getClass().getSimpleName();
                 if(!(item instanceof SQLSelectStatement)){
-                    sqlExplainResults.add(SqlExplainResult.success(type, current, explain.toString()));
+                    if(item instanceof Clickhouse20CreateTableStatement){
+                        sqlExplainResults.add(checkCreateTable((Clickhouse20CreateTableStatement)item));
+                    } else if(item instanceof SQLDropTableStatement){
+                        sqlExplainResults.add(checkDropTable((SQLDropTableStatement)item));
+                    } else {
+                        sqlExplainResults.add(SqlExplainResult.success(type, current, explain.toString()));
+                    }
                     continue;
                 }
                 preparedStatement = conn.prepareStatement("explain "+current);
@@ -88,6 +126,23 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
         } finally {
             close(preparedStatement, results);
             return sqlExplainResults;
+        }
+    }
+
+    private SqlExplainResult checkCreateTable(Clickhouse20CreateTableStatement sqlStatement){
+        if(existTable(Table.build(sqlStatement.getTableName()))){
+            return SqlExplainResult.fail(sqlStatement.toString(), "Table "+sqlStatement.getSchema()+"."+sqlStatement.getTableName()+" already exists.");
+        }else{
+            return SqlExplainResult.success(sqlStatement.getClass().getSimpleName(), sqlStatement.toString(), null);
+        }
+    }
+
+    private SqlExplainResult checkDropTable(SQLDropTableStatement sqlStatement){
+        SQLExprTableSource sqlExprTableSource = sqlStatement.getTableSources().get(0);
+        if(!existTable(Table.build(sqlExprTableSource.getTableName()))){
+            return SqlExplainResult.fail(sqlStatement.toString(), "Table "+sqlExprTableSource.getSchema()+"."+sqlExprTableSource.getTableName()+" not exists.");
+        }else{
+            return SqlExplainResult.success(sqlStatement.getClass().getSimpleName(), sqlStatement.toString(), null);
         }
     }
 }
