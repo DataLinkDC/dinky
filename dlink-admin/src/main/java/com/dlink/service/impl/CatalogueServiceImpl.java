@@ -1,6 +1,7 @@
 package com.dlink.service.impl;
 
 import com.dlink.assertion.Assert;
+import com.dlink.assertion.Asserts;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.dto.CatalogueTaskDTO;
 import com.dlink.mapper.CatalogueMapper;
@@ -40,11 +41,13 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         Task task = new Task();
         task.setName(catalogueTaskDTO.getName());
         task.setAlias(catalogueTaskDTO.getAlias());
+        task.setDialect(catalogueTaskDTO.getDialect());
         taskService.saveOrUpdateTask(task);
         Catalogue catalogue = new Catalogue();
         catalogue.setName(catalogueTaskDTO.getAlias());
         catalogue.setIsLeaf(true);
         catalogue.setTaskId(task.getId());
+        catalogue.setType(catalogueTaskDTO.getDialect());
         catalogue.setParentId(catalogueTaskDTO.getParentId());
         this.save(catalogue);
         return catalogue;

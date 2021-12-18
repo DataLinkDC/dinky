@@ -6,6 +6,7 @@ import {connect} from "umi";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {getDBImage} from "@/pages/DataBase/DB";
 import MysqlForm from "@/pages/DataBase/components/MySqlForm";
+import ClickHouseForm from "@/pages/DataBase/components/ClickHouseForm";
 import {handleAddOrUpdate, handleOption, postAll} from "@/components/Common/crud";
 import {createOrModifyDatabase, testDatabaseConnect} from "@/pages/DataBase/service";
 
@@ -16,7 +17,7 @@ export type UpdateFormProps = {
   values: Partial<DataBaseItem>;
 };
 
-const data = [
+const data:any = [
   {
     type: 'MySql',
   },
@@ -43,7 +44,7 @@ const DBForm: React.FC<UpdateFormProps> = (props) => {
   const [dbType, setDbType] = useState<string>();
 
   const chooseOne = (item:DataBaseItem)=>{
-    if(item.type!='MySql'){
+     if((item.type!='ClickHouse')&&(item.type !='MySql')){
       message.success('敬请期待');
       return;
     }
@@ -88,7 +89,7 @@ const DBForm: React.FC<UpdateFormProps> = (props) => {
           xxl: 4,
         }}
         dataSource={data}
-        renderItem={item => (
+        renderItem={(item:DataBaseItem) => (
           <List.Item onClick={()=>{chooseOne(item)}}>
             <Card>
               <Image
@@ -105,6 +106,17 @@ const DBForm: React.FC<UpdateFormProps> = (props) => {
       <MysqlForm
         onCancel={() => setDbType(undefined)}
         modalVisible={dbType=='MySql'||values.type=='MySql'}
+        values={values}
+        onSubmit={(value) => {
+          onSubmit(value);
+        }}
+        onTest={(value) => {
+          onTest(value);
+        }}
+      />
+      <ClickHouseForm
+        onCancel={() => setDbType(undefined)}
+        modalVisible={dbType=='ClickHouse'||values.type=='ClickHouse'}
         values={values}
         onSubmit={(value) => {
           onSubmit(value);

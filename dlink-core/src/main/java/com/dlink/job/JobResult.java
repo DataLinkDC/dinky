@@ -29,7 +29,10 @@ public class JobResult {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
-    public JobResult(Integer id, JobConfig jobConfig, String jobManagerAddress, Job.JobStatus status, String statement, String jobId, String error, IResult result,  LocalDateTime startTime, LocalDateTime endTime) {
+    public JobResult() {
+    }
+
+    public JobResult(Integer id, JobConfig jobConfig, String jobManagerAddress, Job.JobStatus status, String statement, String jobId, String error, IResult result, LocalDateTime startTime, LocalDateTime endTime) {
         this.id = id;
         this.jobConfig = jobConfig;
         this.jobManagerAddress = jobManagerAddress;

@@ -5,10 +5,8 @@ import com.dlink.metadata.convert.ITypeConvert;
 import com.dlink.metadata.convert.MySqlTypeConvert;
 import com.dlink.metadata.query.IDBQuery;
 import com.dlink.metadata.query.MySqlQuery;
-import com.dlink.metadata.result.SelectResult;
 import com.dlink.model.Column;
 import com.dlink.model.Table;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.ArrayList;
 import java.util.List;

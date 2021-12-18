@@ -12,6 +12,10 @@ const EditorTabs = (props: any) => {
   const {tabs, dispatch, current, toolHeight,width} = props;
 
   const onChange = (activeKey: any) => {
+    dispatch&&dispatch({
+      type: "Studio/saveToolHeight",
+      payload: toolHeight-0.0001,
+    });
     dispatch({
       type: "Studio/changeActiveKey",
       payload: activeKey,
@@ -22,6 +26,10 @@ const EditorTabs = (props: any) => {
     if (action == 'add') {
       add();
     } else if (action == 'remove') {
+      dispatch&&dispatch({
+        type: "Studio/saveToolHeight",
+        payload: toolHeight-0.0001,
+      });
       if (current.isModified) {
         saveTask(current, dispatch);
       }

@@ -32,6 +32,8 @@ public class Task extends SuperEntity{
     @TableField(fill = FieldFill.INSERT)
     private String alias;
 
+    private String dialect;
+
     private String type;
 
     private Integer checkPoint;
@@ -49,6 +51,8 @@ public class Task extends SuperEntity{
     private Integer clusterId;
 
     private Integer clusterConfigurationId;
+
+    private Integer databaseId;
 
     private Integer jarId;
 

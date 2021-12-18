@@ -1,7 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {Form, Button, Input, Modal} from 'antd';
+import {Form, Button, Input, Modal,Select} from 'antd';
 
 import type {TaskTableListItem} from '../data.d';
+import {DIALECT} from "@/components/Studio/conf";
+
+const {Option} = Select;
 
 export type UpdateFormProps = {
   onCancel: (flag?: boolean, formVals?: Partial<TaskTableListItem>) => void;
@@ -11,14 +14,12 @@ export type UpdateFormProps = {
   values: Partial<TaskTableListItem>;
 };
 
-const FormItem = Form.Item;
-
 const formLayout = {
   labelCol: {span: 7},
   wrapperCol: {span: 13},
 };
 
-const UpdateTaskForm: React.FC<UpdateFormProps> = (props) => {
+const SimpleTaskForm: React.FC<UpdateFormProps> = (props) => {
   const [formVals, setFormVals] = useState<Partial<TaskTableListItem>>({
     id: props.values.id,
     name: props.values.name,
@@ -45,18 +46,28 @@ const UpdateTaskForm: React.FC<UpdateFormProps> = (props) => {
   const renderContent = () => {
     return (
       <>
-        <FormItem
+        {isCreate?(<Form.Item
+          label="作业类型" name="dialect"
+          tooltip='指定作业类型，默认为 FlinkSql'
+        >
+          <Select defaultValue={DIALECT.FLINKSQL} value={DIALECT.FLINKSQL}>
+            <Option value={DIALECT.FLINKSQL}>FlinkSql</Option>
+            <Option value={DIALECT.SQL}>Sql</Option>
+            <Option value={DIALECT.JAVA}>Java</Option>
+          </Select>
+        </Form.Item>):undefined}
+        <Form.Item
           name="name"
           label="名称"
           rules={[{required: true, message: '请输入唯一名称！'}]}>
           <Input placeholder="请输入"/>
-        </FormItem>
-        <FormItem
+        </Form.Item>
+        <Form.Item
           name="alias"
           label="别名"
           rules={[{required: true, message: '请输入别名！'}]}>
           <Input placeholder="请输入"/>
-        </FormItem>
+        </Form.Item>
       </>
     );
   };
@@ -89,6 +100,7 @@ const UpdateTaskForm: React.FC<UpdateFormProps> = (props) => {
           id: formVals.id,
           name: formVals.name,
           alias: formVals.alias,
+          dialect: formVals.dialect,
           parentId: formVals.parentId,
         }}
       >
@@ -98,4 +110,4 @@ const UpdateTaskForm: React.FC<UpdateFormProps> = (props) => {
   );
 };
 
-export default UpdateTaskForm;
+export default SimpleTaskForm;

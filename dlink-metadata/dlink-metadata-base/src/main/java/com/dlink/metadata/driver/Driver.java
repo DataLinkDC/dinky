@@ -2,11 +2,11 @@ package com.dlink.metadata.driver;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.exception.MetaDataException;
-import com.dlink.metadata.result.SelectResult;
+import com.dlink.metadata.result.JdbcSelectResult;
 import com.dlink.model.Column;
 import com.dlink.model.Schema;
 import com.dlink.model.Table;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.dlink.result.SqlExplainResult;
 import sun.misc.Service;
 
 import java.util.Iterator;
@@ -89,6 +89,8 @@ public interface Driver {
 
     boolean execute(String sql);
 
-    List query(String sql);
+    JdbcSelectResult query(String sql, Integer limit);
+
+    List<SqlExplainResult> explain(String sql);
 
 }

@@ -471,4 +471,12 @@ INSERT INTO `dlink_user`(`id`, `username`, `password`, `nickname`, `worknum`, `a
 ALTER TABLE `dlink_task`
   CHANGE COLUMN `config` `config_json` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '配置JSON' AFTER `jar_id`;
 
+-- ----------------------------
+-- 0.5.0-SNAPSHOT 2021-12-13
+-- ----------------------------
+ALTER TABLE `dlink_task`
+ADD COLUMN `dialect` varchar(50) NULL COMMENT '方言' AFTER `alias`;
+ALTER TABLE `dlink_task`
+ADD COLUMN `database_id` int(11) NULL COMMENT '数据源ID' AFTER `cluster_configuration_id`;
+
 SET FOREIGN_KEY_CHECKS = 1;

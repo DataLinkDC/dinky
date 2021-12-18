@@ -1,10 +1,17 @@
 package com.dlink.metadata.driver;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.parser.ParserException;
+import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.sql.parser.Token;
 import com.dlink.assertion.Asserts;
 import com.dlink.constant.CommonConstant;
+import com.dlink.metadata.result.JdbcSelectResult;
 import com.dlink.model.Column;
 import com.dlink.model.Schema;
 import com.dlink.model.Table;
+import com.dlink.result.SqlExplainResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -240,34 +247,70 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     }
 
     @Override
-    public List<HashMap<String, Object>> query(String sql) {
+    public JdbcSelectResult query(String sql, Integer limit) {
+        JdbcSelectResult result = new JdbcSelectResult();
         List<HashMap<String, Object>> datas = new ArrayList<>();
         List<Column> columns = new ArrayList<>();
+        List<String> columnNameList = new ArrayList<>();
         PreparedStatement preparedStatement = null;
         ResultSet results = null;
+        int count = 0;
         try {
             preparedStatement = conn.prepareStatement(sql);
             results = preparedStatement.executeQuery();
+            if(Asserts.isNull(results)){
+                result.setSuccess(true);
+                close(preparedStatement, results);
+                return result;
+            }
             ResultSetMetaData metaData = results.getMetaData();
             for (int i = 1; i <= metaData.getColumnCount(); i++) {
+                columnNameList.add(metaData.getColumnLabel(i));
                 Column column = new Column();
-                column.setName(metaData.getColumnName(i));
+                column.setName(metaData.getColumnLabel(i));
                 column.setType(metaData.getColumnTypeName(i));
                 column.setJavaType(getTypeConvert().convert(metaData.getColumnTypeName(i)).getType());
                 columns.add(column);
             }
+            result.setColumns(columnNameList);
             while (results.next()) {
                 HashMap<String, Object> data = new HashMap<>();
                 for (int i = 0; i < columns.size(); i++) {
                     data.put(columns.get(i).getName(), getTypeConvert().convertValue(results, columns.get(i).getName(), columns.get(i).getType()));
                 }
                 datas.add(data);
+                count ++;
+                if(count >= limit){
+                    break;
+                }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            result.setSuccess(true);
+        } catch (Exception e) {
+            result.setError(e.getMessage());
+            result.setSuccess(false);
         } finally {
             close(preparedStatement, results);
+            result.setRowData(datas);
+            return result;
         }
-        return datas;
+    }
+
+    @Override
+    public List<SqlExplainResult> explain(String sql){
+        List<SqlExplainResult> sqlExplainResults = new ArrayList<>();
+        String current = null;
+        try {
+            List<SQLStatement> stmtList = SQLUtils.parseStatements(sql,config.getType());
+            for(SQLStatement item : stmtList){
+                current = item.toString();
+                String type = item.getClass().getSimpleName();
+                sqlExplainResults.add(SqlExplainResult.success(type, current, null));
+            }
+        } catch (Exception e) {
+            sqlExplainResults.add(SqlExplainResult.fail(current,e.getMessage()));
+        } finally {
+            return sqlExplainResults;
+        }
+
     }
 }

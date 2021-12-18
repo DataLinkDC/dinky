@@ -23,7 +23,7 @@ public enum SavePointType{
 
     public static SavePointType get(String value){
         for (SavePointType type : SavePointType.values()) {
-            if(Asserts.isEquals(type.getValue(),value)){
+            if(Asserts.isEqualsIgnoreCase(type.getValue(),value)){
                 return type;
             }
         }

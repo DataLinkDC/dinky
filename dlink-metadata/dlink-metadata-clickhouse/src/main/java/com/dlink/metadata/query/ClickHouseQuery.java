@@ -17,7 +17,7 @@ public class ClickHouseQuery extends AbstractDBQuery {
 
     @Override
     public String tablesSql(String schemaName) {
-        return "show table status WHERE 1=1 ";
+        return "show tables";
     }
 
 

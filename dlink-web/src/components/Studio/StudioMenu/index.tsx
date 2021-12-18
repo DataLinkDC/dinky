@@ -18,6 +18,7 @@ import StudioGraph from "./StudioGraph";
 import {showCluster, showTables, saveTask} from "@/components/Studio/StudioEvent/DDL";
 import {useEffect, useState} from "react";
 import StudioExplain from "../StudioConsole/StudioExplain";
+import {DIALECT} from "@/components/Studio/conf";
 
 const menu = (
   <Menu>
@@ -82,6 +83,12 @@ const StudioMenu = (props: any) => {
         type: "Studio/saveTabs",
         payload: newTabs,
       });
+      if(current.task.dialect === DIALECT.SQL){
+        dispatch && dispatch({
+          type: "Studio/saveResult",
+          payload: res.datas.result,
+        });
+      }
       useSession && showTables(currentSession.session, dispatch);
     })
   };

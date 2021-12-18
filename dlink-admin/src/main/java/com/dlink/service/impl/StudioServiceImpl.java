@@ -2,6 +2,7 @@ package com.dlink.service.impl;
 
 import com.dlink.api.FlinkAPI;
 import com.dlink.assertion.Asserts;
+import com.dlink.config.Dialect;
 import com.dlink.dto.SessionDTO;
 import com.dlink.dto.StudioDDLDTO;
 import com.dlink.dto.StudioExecuteDTO;
@@ -14,16 +15,15 @@ import com.dlink.gateway.result.SavePointResult;
 import com.dlink.job.JobConfig;
 import com.dlink.job.JobManager;
 import com.dlink.job.JobResult;
+import com.dlink.metadata.driver.Driver;
+import com.dlink.metadata.result.JdbcSelectResult;
 import com.dlink.model.Cluster;
+import com.dlink.model.DataBase;
 import com.dlink.model.Savepoints;
-import com.dlink.model.SystemConfiguration;
 import com.dlink.result.IResult;
 import com.dlink.result.SelectResult;
 import com.dlink.result.SqlExplainResult;
-import com.dlink.service.ClusterConfigurationService;
-import com.dlink.service.ClusterService;
-import com.dlink.service.SavepointsService;
-import com.dlink.service.StudioService;
+import com.dlink.service.*;
 import com.dlink.session.SessionConfig;
 import com.dlink.session.SessionInfo;
 import com.dlink.session.SessionPool;
@@ -59,9 +59,19 @@ public class StudioServiceImpl implements StudioService {
     private ClusterConfigurationService clusterConfigurationService;
     @Autowired
     private SavepointsService savepointsService;
+    @Autowired
+    private DataBaseService dataBaseService;
 
     @Override
     public JobResult executeSql(StudioExecuteDTO studioExecuteDTO) {
+        if(Dialect.SQL.equalsVal(studioExecuteDTO.getDialect())){
+            return executeCommonSql(studioExecuteDTO);
+        }else{
+            return executeFlinkSql(studioExecuteDTO);
+        }
+    }
+
+    private JobResult executeFlinkSql(StudioExecuteDTO studioExecuteDTO) {
         JobConfig config = studioExecuteDTO.getJobConfig();
         // If you are using a shared session, configure the current jobmanager address
         if(!config.isUseSession()) {
@@ -71,6 +81,38 @@ public class StudioServiceImpl implements StudioService {
         JobResult jobResult = jobManager.executeSql(studioExecuteDTO.getStatement());
         RunTimeUtil.recovery(jobManager);
         return jobResult;
+    }
+
+    private JobResult executeCommonSql(StudioExecuteDTO studioExecuteDTO) {
+        JobResult result = new JobResult();
+        result.setStatement(studioExecuteDTO.getStatement());
+        result.setStartTime(LocalDateTime.now());
+        if(Asserts.isNull(studioExecuteDTO.getDatabaseId())){
+            result.setSuccess(false);
+            result.setError("请指定数据源");
+            result.setEndTime(LocalDateTime.now());
+            return result;
+        }else{
+            DataBase dataBase = dataBaseService.getById(studioExecuteDTO.getDatabaseId());
+            if(Asserts.isNull(dataBase)){
+                result.setSuccess(false);
+                result.setError("数据源不存在");
+                result.setEndTime(LocalDateTime.now());
+                return result;
+            }
+            Driver driver = Driver.build(dataBase.getDriverConfig()).connect();
+            JdbcSelectResult selectResult = driver.query(studioExecuteDTO.getStatement(),studioExecuteDTO.getMaxRowNum());
+            driver.close();
+            result.setResult(selectResult);
+            if(selectResult.isSuccess()){
+                result.setSuccess(true);
+            }else{
+                result.setSuccess(false);
+                result.setError(selectResult.getError());
+            }
+            result.setEndTime(LocalDateTime.now());
+            return result;
+        }
     }
 
     @Override
@@ -85,12 +127,39 @@ public class StudioServiceImpl implements StudioService {
 
     @Override
     public List<SqlExplainResult> explainSql(StudioExecuteDTO studioExecuteDTO) {
+        if( Dialect.SQL.equalsVal(studioExecuteDTO.getDialect())){
+            return explainCommonSql(studioExecuteDTO);
+        }else{
+            return explainFlinkSql(studioExecuteDTO);
+        }
+    }
+
+    private List<SqlExplainResult> explainFlinkSql(StudioExecuteDTO studioExecuteDTO) {
         JobConfig config = studioExecuteDTO.getJobConfig();
         if(!config.isUseSession()) {
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
         }
         JobManager jobManager = JobManager.buildPlanMode(config);
         return jobManager.explainSql(studioExecuteDTO.getStatement()).getSqlExplainResults();
+    }
+
+    private List<SqlExplainResult> explainCommonSql(StudioExecuteDTO studioExecuteDTO) {
+        if(Asserts.isNull(studioExecuteDTO.getDatabaseId())){
+            return new ArrayList<SqlExplainResult>(){{
+                add(SqlExplainResult.fail(studioExecuteDTO.getStatement(),"请指定数据源"));
+            }};
+        }else{
+            DataBase dataBase = dataBaseService.getById(studioExecuteDTO.getDatabaseId());
+            if(Asserts.isNull(dataBase)){
+                return new ArrayList<SqlExplainResult>(){{
+                    add(SqlExplainResult.fail(studioExecuteDTO.getStatement(),"数据源不存在"));
+                }};
+            }
+            Driver driver = Driver.build(dataBase.getDriverConfig()).connect();
+            List<SqlExplainResult> sqlExplainResults = driver.explain(studioExecuteDTO.getStatement());
+            driver.close();
+            return sqlExplainResults;
+        }
     }
 
     @Override
