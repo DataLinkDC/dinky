@@ -1,8 +1,8 @@
-![logo](_media/dlinklogo.png)
+![logo](_media/dlink.svg)
 
 # Dlink <small>0.4</small>
 
-> Dlink 为 Apache Flink 而生，让 Flink SQL 更加丝滑。
+> Dlink 为 Apache Flink 而生，让 Flink SQL 纵享丝滑。
 
 
 - 交互式 FlinkSQL Studio
@@ -11,4 +11,4 @@
 
 [GitHub](https://github.com/DataLinkDC/dlink)
 [Gitee](https://gitee.com/DataLinkDC/dlink)
-[Get Started](/quickstart)
+[Get Started](/guide/quickstart)

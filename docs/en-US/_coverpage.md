@@ -1,4 +1,4 @@
-![logo](_media/dlinklogo.png)
+![logo](../_media/dlink.svg)
 
 # Dlink <small>0.4</small>
 
@@ -11,4 +11,4 @@
 
 [GitHub](https://github.com/DataLinkDC/dlink)
 [Gitee](https://gitee.com/DataLinkDC/dlink)
-[Get Started](/en-US/guide)
+[Get Started](/en-US/guide/quickstart)
