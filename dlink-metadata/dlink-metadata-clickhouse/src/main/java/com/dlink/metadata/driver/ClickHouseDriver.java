@@ -21,6 +21,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -89,12 +90,14 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
 
     @Override
     public List<SqlExplainResult> explain(String sql){
+        String initialSql = sql;
         List<SqlExplainResult> sqlExplainResults = new ArrayList<>();
         StringBuilder explain = new StringBuilder();
         PreparedStatement preparedStatement = null;
         ResultSet results = null;
         String current = null;
         try {
+            sql = sql.replaceAll("(?i)if exists","");
             Clickhouse20StatementParser parser = new Clickhouse20StatementParser(sql);
             List<SQLStatement> stmtList = new ArrayList<>();
             parser.parseStatementList(stmtList, -1, null);
@@ -113,7 +116,7 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
                         }
                         sqlExplainResults.add(checkCreateTable((Clickhouse20CreateTableStatement)item));
                     } else if(item instanceof SQLDropTableStatement){
-                        sqlExplainResults.add(checkDropTable((SQLDropTableStatement)item));
+                        sqlExplainResults.add(checkDropTable((SQLDropTableStatement)item,initialSql));
                     } else {
                         sqlExplainResults.add(SqlExplainResult.success(type, current, explain.toString()));
                     }
@@ -148,10 +151,14 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
         }
     }
 
-    private SqlExplainResult checkDropTable(SQLDropTableStatement sqlStatement){
+    private SqlExplainResult checkDropTable(SQLDropTableStatement sqlStatement,String sql){
         SQLExprTableSource sqlExprTableSource = sqlStatement.getTableSources().get(0);
         if(!existTable(Table.build(sqlExprTableSource.getTableName()))){
-            return SqlExplainResult.fail(sqlStatement.toString(), "Table "+sqlExprTableSource.getSchema()+"."+sqlExprTableSource.getTableName()+" not exists.");
+            if(Pattern.compile("(?i)if exists").matcher(sql).find()){
+                return SqlExplainResult.success(sqlStatement.getClass().getSimpleName(), sqlStatement.toString(), null);
+            }else{
+                return SqlExplainResult.fail(sqlStatement.toString(), "Table "+sqlExprTableSource.getSchema()+"."+sqlExprTableSource.getTableName()+" not exists.");
+            }
         }else{
             return SqlExplainResult.success(sqlStatement.getClass().getSimpleName(), sqlStatement.toString(), null);
         }
