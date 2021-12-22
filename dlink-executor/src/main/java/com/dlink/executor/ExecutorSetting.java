@@ -2,8 +2,6 @@ package com.dlink.executor;
 
 import com.dlink.assertion.Asserts;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +20,7 @@ import java.util.Map;
 @Setter
 @Getter
 public class ExecutorSetting {
+
     private Integer checkpoint;
     private Integer parallelism;
     private boolean useSqlFragment;
@@ -86,15 +85,17 @@ public class ExecutorSetting {
     }
 
     public static ExecutorSetting build(Integer checkpoint, Integer parallelism, boolean useSqlFragment,boolean useStatementSet, String savePointPath, String jobName, String configJson){
-        JsonNode paras = null;
-        Map<String,String> config = new HashMap<>();
+        List<Map<String,String>> configList = new ArrayList<>();
         if(Asserts.isNotNullString(configJson)) {
             try {
-                paras = mapper.readTree(configJson);
+                configList = mapper.readValue(configJson, ArrayList.class);
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
-            config = mapper.convertValue(paras, new TypeReference<Map<String, String>>(){});
+        }
+        Map<String,String> config = new HashMap<>();
+        for(Map<String,String> item : configList){
+            config.put(item.get("key"),item.get("value"));
         }
         return new ExecutorSetting(checkpoint,parallelism,useSqlFragment,useStatementSet,savePointPath,jobName,config);
     }
