@@ -28,12 +28,12 @@
             <version>${flink.version}</version>
             <scope>provided</scope>
         </dependency>-->
-        <dependency>
+        <!--<dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-java</artifactId>
             <version>${flink.version}</version>
             <scope>provided</scope>
-        </dependency>
+        </dependency>-->
         <!--<dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-clients_${scala.binary.version}</artifactId>

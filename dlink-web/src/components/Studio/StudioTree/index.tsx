@@ -125,6 +125,10 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       for(let item of tabs.panes){
         if(item.key==node.taskId){
           dispatch&&dispatch({
+            type: "Studio/saveToolHeight",
+            payload: toolHeight-0.0001,
+          });
+          dispatch&&dispatch({
             type: "Studio/changeActiveKey",
             payload: node.taskId,
           });

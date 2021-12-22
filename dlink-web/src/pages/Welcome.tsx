@@ -484,6 +484,15 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增数据源的 Sql 作业语句执行</Link>
                 </li>
+                <li>
+                  <Link>优化 ClickHouse SQL 校验逻辑</Link>
+                </li>
+                <li>
+                  <Link>建立官网文档</Link>
+                </li>
+                <li>
+                  <Link>解决 Yarn Application 解析数组异常问题</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

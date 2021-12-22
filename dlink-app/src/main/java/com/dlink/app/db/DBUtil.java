@@ -67,11 +67,11 @@ public class DBUtil {
              ResultSet rs = stmt.executeQuery(sql)) {
             List<String> columnList = new ArrayList<>();
             for(int i =0;i<rs.getMetaData().getColumnCount();i++){
-                columnList.add(rs.getMetaData().getColumnName(i));
+                columnList.add(rs.getMetaData().getColumnLabel(i+1));
             }
             if (rs.next()) {
                 for(int i =0;i<columnList.size();i++){
-                    map.put(columnList.get(i),rs.getString(i));
+                    map.put(columnList.get(i),rs.getString(i+1));
                 }
             }
         }
