@@ -1,5 +1,6 @@
 package com.dlink.job;
 
+import com.dlink.assertion.Asserts;
 import com.dlink.executor.ExecutorSetting;
 import com.dlink.gateway.config.AppConfig;
 import com.dlink.gateway.config.ClusterConfig;
@@ -153,17 +154,17 @@ public class JobConfig {
                 config.get("flinkLibPath").toString(),
                 config.get("hadoopConfigPath").toString()));
         AppConfig appConfig = new AppConfig();
-        if(config.containsKey("userJarPath")){
+        if(config.containsKey("userJarPath") && Asserts.isNotNullString("userJarPath")){
             appConfig.setUserJarPath(config.get("userJarPath").toString());
-            if(config.containsKey("userJarMainAppClass")){
+            if(config.containsKey("userJarMainAppClass") && Asserts.isNotNullString("userJarMainAppClass")){
                 appConfig.setUserJarMainAppClass(config.get("userJarMainAppClass").toString());
             }
-            if(config.containsKey("userJarParas")){
+            if(config.containsKey("userJarParas") && Asserts.isNotNullString("userJarParas")){
                 appConfig.setUserJarParas(config.get("userJarParas").toString().split(" "));
             }
             gatewayConfig.setAppConfig(appConfig);
         }
-        if(config.containsKey("flinkConfig")){
+        if(config.containsKey("flinkConfig") && Asserts.isNotNullString("flinkConfig")){
             gatewayConfig.setFlinkConfig(FlinkConfig.build((Map<String, String>)config.get("flinkConfig")));
         }
     }
