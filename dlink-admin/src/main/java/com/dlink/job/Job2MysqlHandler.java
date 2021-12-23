@@ -66,13 +66,15 @@ public class Job2MysqlHandler implements JobHandler {
         Job job = JobContextHolder.getJob();
         History history = new History();
         history.setId(job.getId());
+        if(Asserts.isNullString(job.getJobId())){
+            job.setJobId("unknown-"+LocalDateTime.now().toString());
+        }
         history.setJobId(job.getJobId());
         history.setStatus(job.getStatus().ordinal());
         history.setEndTime(job.getEndTime());
         if(job.isUseGateway()){
             history.setJobManagerAddress(job.getJobManagerAddress());
         }
-//        history.setResult(JSONUtil.toJsonStr(job.getResult()));
         if(job.isUseGateway()){
             Cluster cluster = clusterService.registersCluster(Cluster.autoRegistersCluster(job.getJobManagerAddress(),
                     job.getJobId(),job.getJobConfig().getJobName()+ LocalDateTime.now(), job.getType().getLongValue(),

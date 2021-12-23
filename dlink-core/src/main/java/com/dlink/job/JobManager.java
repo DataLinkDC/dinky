@@ -306,7 +306,7 @@ public class JobManager {
             LocalDateTime now = LocalDateTime.now();
             job.setEndTime(now);
             job.setStatus(Job.JobStatus.FAILED);
-            String error = now.toString() + ":" + "运行语句：\n" + currentSql + " \n时出现异常:" + e.getMessage() + " \n >>>堆栈信息<<<" + resMsg.toString();
+            String error = now.toString() + ":" + "Exception in executing FlinkSQL:\n" + currentSql + " \nError message: " + e.getMessage() + " \n >>> PrintStackTrace <<<" + resMsg.toString();
             job.setError(error);
             failed();
             close();
@@ -430,7 +430,7 @@ public class JobManager {
             LocalDateTime now = LocalDateTime.now();
             job.setEndTime(now);
             job.setStatus(Job.JobStatus.FAILED);
-            String error = now.toString() + ":" + "运行Jar：\n" + config.getGatewayConfig().getAppConfig().getUserJarPath() + " \n时出现异常:" + e.getMessage() + " \n >>>堆栈信息<<<" + resMsg.toString();
+            String error = now.toString() + ":" + "Exception in executing Jar：\n" + config.getGatewayConfig().getAppConfig().getUserJarPath() + " \nError message: " + e.getMessage() + " \n >>> PrintStackTrace <<<" + resMsg.toString();
             job.setError(error);
             failed();
             close();
