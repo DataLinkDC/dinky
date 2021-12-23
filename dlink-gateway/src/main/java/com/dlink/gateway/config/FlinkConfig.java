@@ -27,7 +27,7 @@ public class FlinkConfig {
     private SavePointType savePointType;
     private String savePoint;
 //    private List<ConfigPara> configParas;
-    private Map<String, String> configuration;
+    private Map<String, String> configuration = new HashMap<>();
 
     private static final ObjectMapper mapper = new ObjectMapper();
 

@@ -237,6 +237,7 @@ public class JobManager {
                     if (GatewayType.YARN_APPLICATION.equals(runMode)) {
                         gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
                     } else {
+                        config.addGatewayConfig(executor.getSetConfig());
                         gatewayResult = Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);
                     }
                     job.setResult(InsertResult.success(gatewayResult.getAppId()));
@@ -272,6 +273,7 @@ public class JobManager {
                     if (GatewayType.YARN_APPLICATION.equalsValue(config.getType())) {
                         gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
                     } else {
+                        config.addGatewayConfig(executor.getSetConfig());
                         gatewayResult = Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);
                     }
                     job.setResult(InsertResult.success(gatewayResult.getAppId()));

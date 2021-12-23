@@ -39,6 +39,7 @@ public abstract class Executor {
     protected CustomTableEnvironmentImpl stEnvironment;
     protected EnvironmentSetting environmentSetting;
     protected ExecutorSetting executorSetting;
+    protected Map<String,Object> setConfig = new HashMap<>();
 
     protected SqlManager sqlManager = new SqlManager();
     protected boolean useSqlFragment = true;
@@ -90,6 +91,14 @@ public abstract class Executor {
 
     public EnvironmentSetting getEnvironmentSetting(){
         return environmentSetting;
+    }
+
+    public Map<String, Object> getSetConfig() {
+        return setConfig;
+    }
+
+    public void setSetConfig(Map<String, Object> setConfig) {
+        this.setConfig = setConfig;
     }
 
     protected void init(){
@@ -293,6 +302,7 @@ public abstract class Executor {
             String value = setOperation.getValue().get().trim();
             Map<String,String> confMap = new HashMap<>();
             confMap.put(key,value);
+            setConfig.put(key,value);
             Configuration configuration = Configuration.fromMap(confMap);
             environment.getConfig().configure(configuration,null);
             stEnvironment.getConfig().addConfiguration(configuration);
@@ -300,6 +310,16 @@ public abstract class Executor {
     }
 
     private void callReset(ResetOperation resetOperation) {
-        // to do nothing
+        if (resetOperation.getKey().isPresent()) {
+            String key = resetOperation.getKey().get().trim();
+            Map<String,String> confMap = new HashMap<>();
+            confMap.put(key,null);
+            setConfig.remove(key);
+            Configuration configuration = Configuration.fromMap(confMap);
+            environment.getConfig().configure(configuration,null);
+            stEnvironment.getConfig().addConfiguration(configuration);
+        }else {
+            setConfig.clear();
+        }
     }
 }

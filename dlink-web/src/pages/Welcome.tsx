@@ -493,6 +493,15 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>解决 Yarn Application 解析数组异常问题</Link>
                 </li>
+                <li>
+                  <Link>解决自定义Jar配置为空会导致异常的bug</Link>
+                </li>
+                <li>
+                  <Link>解决任务提交失败时注册集群报错的bug</Link>
+                </li>
+                <li>
+                  <Link>解决set在perjob和application模式不生效的问题</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

@@ -11,6 +11,7 @@ import com.dlink.session.SessionConfig;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -166,6 +167,24 @@ public class JobConfig {
         }
         if(config.containsKey("flinkConfig") && Asserts.isNotNullString("flinkConfig")){
             gatewayConfig.setFlinkConfig(FlinkConfig.build((Map<String, String>)config.get("flinkConfig")));
+        }
+    }
+
+    public void addGatewayConfig(List<Map<String, String>> configList){
+        if(Asserts.isNull(gatewayConfig)){
+            gatewayConfig = new GatewayConfig();
+        }
+        for(Map<String, String> item : configList){
+            gatewayConfig.getFlinkConfig().getConfiguration().put(item.get("key"),item.get("value"));
+        }
+    }
+
+    public void addGatewayConfig(Map<String, Object> config){
+        if(Asserts.isNull(gatewayConfig)){
+            gatewayConfig = new GatewayConfig();
+        }
+        for (Map.Entry<String, Object> entry : config.entrySet()) {
+            gatewayConfig.getFlinkConfig().getConfiguration().put(entry.getKey(), (String) entry.getValue());
         }
     }
 }
