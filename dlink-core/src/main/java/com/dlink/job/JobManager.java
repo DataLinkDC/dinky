@@ -235,6 +235,7 @@ public class JobManager {
                     JobGraph jobGraph = executor.getJobGraphFromInserts(inserts);
                     GatewayResult gatewayResult = null;
                     if (GatewayType.YARN_APPLICATION.equals(runMode)) {
+                        config.addGatewayConfig(executor.getSetConfig());
                         gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
                     } else {
                         config.addGatewayConfig(executor.getSetConfig());
@@ -271,6 +272,7 @@ public class JobManager {
                     JobGraph jobGraph = executor.getJobGraphFromInserts(inserts);
                     GatewayResult gatewayResult = null;
                     if (GatewayType.YARN_APPLICATION.equalsValue(config.getType())) {
+                        config.addGatewayConfig(executor.getSetConfig());
                         gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
                     } else {
                         config.addGatewayConfig(executor.getSetConfig());
