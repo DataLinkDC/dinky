@@ -502,6 +502,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>解决set在perjob和application模式不生效的问题</Link>
                 </li>
+                <li>
+                  <Link>解决perjob和application模式的任务名无法自定义的问题</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

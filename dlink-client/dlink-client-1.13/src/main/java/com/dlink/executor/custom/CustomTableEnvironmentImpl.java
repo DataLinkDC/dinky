@@ -6,6 +6,7 @@ import org.apache.flink.api.dag.Transformation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.jsonplan.JsonPlanGenerator;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
@@ -137,7 +138,11 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
         }
         List<Transformation<?>> trans = getPlanner().translate(modifyOperations);
         if(execEnv instanceof ExecutorBase){
-            return ExecutorUtils.generateStreamGraph(((ExecutorBase) execEnv).getExecutionEnvironment(), trans);
+            StreamGraph streamGraph = ExecutorUtils.generateStreamGraph(((ExecutorBase) execEnv).getExecutionEnvironment(), trans);
+            if(tableConfig.getConfiguration().containsKey(PipelineOptions.NAME.key())) {
+                streamGraph.setJobName(tableConfig.getConfiguration().getString(PipelineOptions.NAME));
+            }
+            return streamGraph;
         }else{
             throw new TableException("Unsupported SQL query! ExecEnv need a ExecutorBase.");
         }

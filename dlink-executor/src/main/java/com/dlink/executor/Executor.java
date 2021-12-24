@@ -9,6 +9,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -141,8 +142,9 @@ public abstract class Executor {
         useSqlFragment = executorSetting.isUseSqlFragment();
         stEnvironment = CustomTableEnvironmentImpl.create(environment);
         if(executorSetting.getJobName()!=null&&!"".equals(executorSetting.getJobName())){
-            stEnvironment.getConfig().getConfiguration().setString("pipeline.name", executorSetting.getJobName());
+            stEnvironment.getConfig().getConfiguration().setString(PipelineOptions.NAME.key(), executorSetting.getJobName());
         }
+        setConfig.put(PipelineOptions.NAME.key(),executorSetting.getJobName());
         if(executorSetting.getConfig()!=null){
             for (Map.Entry<String, String> entry : executorSetting.getConfig().entrySet()) {
                 stEnvironment.getConfig().getConfiguration().setString(entry.getKey(), entry.getValue());
@@ -154,8 +156,9 @@ public abstract class Executor {
         useSqlFragment = executorSetting.isUseSqlFragment();
         copyCatalog();
         if(executorSetting.getJobName()!=null&&!"".equals(executorSetting.getJobName())){
-            stEnvironment.getConfig().getConfiguration().setString("pipeline.name", executorSetting.getJobName());
+            stEnvironment.getConfig().getConfiguration().setString(PipelineOptions.NAME.key(), executorSetting.getJobName());
         }
+        setConfig.put(PipelineOptions.NAME.key(),executorSetting.getJobName());
         if(executorSetting.getConfig()!=null){
             for (Map.Entry<String, String> entry : executorSetting.getConfig().entrySet()) {
                 stEnvironment.getConfig().getConfiguration().setString(entry.getKey(), entry.getValue());
