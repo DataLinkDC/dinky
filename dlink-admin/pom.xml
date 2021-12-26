@@ -126,12 +126,38 @@
             <groupId>com.dlink</groupId>
             <artifactId>dlink-gateway</artifactId>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-metadata-clickhouse</artifactId>
             <version>0.5.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-yarn_2.11</artifactId>
+            <version>1.13.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-yarn-common</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-common</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-shaded-hadoop-3-uber</artifactId>
+            <version>3.1.1.7.2.1.0-327-9.0</version>
+&lt;!&ndash;            <scope>test</scope>&ndash;&gt;
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+        </dependency>-->
     </dependencies>
     <build>
         <plugins>

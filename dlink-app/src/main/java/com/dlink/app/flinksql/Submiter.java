@@ -37,8 +37,8 @@ public class Submiter {
         if (id == null) {
             throw new SQLException("请指定任务ID");
         }
-        return "select id, name, alias, type,check_point as checkPoint," +
-                "save_point_path as savePointPath, parallelism,fragment,statement_set as statementSet,config_json as config" +
+        return "select id, name, alias as jobName, type,check_point as checkpoint," +
+                "save_point_path as savePointPath, parallelism,fragment as useSqlFragment,statement_set as useStatementSet,config_json as config" +
                 " from dlink_task where id = " + id;
     }
 

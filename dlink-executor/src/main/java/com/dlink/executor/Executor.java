@@ -9,6 +9,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -39,6 +40,7 @@ public abstract class Executor {
     protected CustomTableEnvironmentImpl stEnvironment;
     protected EnvironmentSetting environmentSetting;
     protected ExecutorSetting executorSetting;
+    protected Map<String,Object> setConfig = new HashMap<>();
 
     protected SqlManager sqlManager = new SqlManager();
     protected boolean useSqlFragment = true;
@@ -92,6 +94,14 @@ public abstract class Executor {
         return environmentSetting;
     }
 
+    public Map<String, Object> getSetConfig() {
+        return setConfig;
+    }
+
+    public void setSetConfig(Map<String, Object> setConfig) {
+        this.setConfig = setConfig;
+    }
+
     protected void init(){
         initEnvironment();
         initStreamExecutionEnvironment();
@@ -132,8 +142,9 @@ public abstract class Executor {
         useSqlFragment = executorSetting.isUseSqlFragment();
         stEnvironment = CustomTableEnvironmentImpl.create(environment);
         if(executorSetting.getJobName()!=null&&!"".equals(executorSetting.getJobName())){
-            stEnvironment.getConfig().getConfiguration().setString("pipeline.name", executorSetting.getJobName());
+            stEnvironment.getConfig().getConfiguration().setString(PipelineOptions.NAME.key(), executorSetting.getJobName());
         }
+        setConfig.put(PipelineOptions.NAME.key(),executorSetting.getJobName());
         if(executorSetting.getConfig()!=null){
             for (Map.Entry<String, String> entry : executorSetting.getConfig().entrySet()) {
                 stEnvironment.getConfig().getConfiguration().setString(entry.getKey(), entry.getValue());
@@ -145,8 +156,9 @@ public abstract class Executor {
         useSqlFragment = executorSetting.isUseSqlFragment();
         copyCatalog();
         if(executorSetting.getJobName()!=null&&!"".equals(executorSetting.getJobName())){
-            stEnvironment.getConfig().getConfiguration().setString("pipeline.name", executorSetting.getJobName());
+            stEnvironment.getConfig().getConfiguration().setString(PipelineOptions.NAME.key(), executorSetting.getJobName());
         }
+        setConfig.put(PipelineOptions.NAME.key(),executorSetting.getJobName());
         if(executorSetting.getConfig()!=null){
             for (Map.Entry<String, String> entry : executorSetting.getConfig().entrySet()) {
                 stEnvironment.getConfig().getConfiguration().setString(entry.getKey(), entry.getValue());
@@ -293,6 +305,7 @@ public abstract class Executor {
             String value = setOperation.getValue().get().trim();
             Map<String,String> confMap = new HashMap<>();
             confMap.put(key,value);
+            setConfig.put(key,value);
             Configuration configuration = Configuration.fromMap(confMap);
             environment.getConfig().configure(configuration,null);
             stEnvironment.getConfig().addConfiguration(configuration);
@@ -300,6 +313,16 @@ public abstract class Executor {
     }
 
     private void callReset(ResetOperation resetOperation) {
-        // to do nothing
+        if (resetOperation.getKey().isPresent()) {
+            String key = resetOperation.getKey().get().trim();
+            Map<String,String> confMap = new HashMap<>();
+            confMap.put(key,null);
+            setConfig.remove(key);
+            Configuration configuration = Configuration.fromMap(confMap);
+            environment.getConfig().configure(configuration,null);
+            stEnvironment.getConfig().addConfiguration(configuration);
+        }else {
+            setConfig.clear();
+        }
     }
 }
