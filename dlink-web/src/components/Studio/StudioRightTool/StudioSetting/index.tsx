@@ -108,9 +108,11 @@ const StudioSetting = (props: any) => {
               <Option value={RUN_MODE.YARN_SESSION}>Yarn Session</Option>
               <Option value={RUN_MODE.YARN_PER_JOB}>Yarn Per-Job</Option>
               <Option value={RUN_MODE.YARN_APPLICATION}>Yarn Application</Option>
+              <Option value={RUN_MODE.KUBERNETES_SESSION}>Kubernetes Session</Option>
+              <Option value={RUN_MODE.KUBERNETES_APPLICATION}>Kubernetes Application</Option>
             </Select>
           </Form.Item>
-          {(current.task.type === RUN_MODE.YARN_SESSION || current.task.type === RUN_MODE.STANDALONE) ? (
+          {(current.task.type === RUN_MODE.YARN_SESSION || current.task.type === RUN_MODE.KUBERNETES_SESSION || current.task.type === RUN_MODE.STANDALONE) ? (
             <Row>
               <Col span={24}>
                 <Form.Item label="Flink集群" tooltip={`选择Flink集群进行 ${current.task.type} 模式的远程提交任务`} name="clusterId"
@@ -133,7 +135,7 @@ const StudioSetting = (props: any) => {
                 </Form.Item>
               </Col>
             </Row>) : undefined}
-          {(current.task.type === RUN_MODE.YARN_PER_JOB || current.task.type === RUN_MODE.YARN_APPLICATION) ? (
+          {(current.task.type === RUN_MODE.YARN_PER_JOB || current.task.type === RUN_MODE.YARN_APPLICATION|| current.task.type === RUN_MODE.KUBERNETES_APPLICATION) ? (
             <Row>
               <Col span={24}>
                 <Form.Item label="Flink集群配置" tooltip={`选择Flink集群配置进行 ${current.task.type} 模式的远程提交任务`}
@@ -149,7 +151,7 @@ const StudioSetting = (props: any) => {
                 </Form.Item>
               </Col>
             </Row>) : undefined}
-          {(current.task.type === RUN_MODE.YARN_APPLICATION) ? (
+          {(current.task.type === RUN_MODE.YARN_APPLICATION || current.task.type === RUN_MODE.KUBERNETES_APPLICATION) ? (
             <Row>
               <Col span={24}>
                 <Form.Item label="可执行 Jar"

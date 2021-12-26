@@ -505,6 +505,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>解决perjob和application模式的任务名无法自定义的问题</Link>
                 </li>
+                <li>
+                  <Link>支持 Kubernetes Session 和 Application 模式提交任务</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

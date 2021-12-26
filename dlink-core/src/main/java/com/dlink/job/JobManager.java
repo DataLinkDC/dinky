@@ -137,7 +137,8 @@ public class JobManager {
     }
 
     public static boolean useGateway(String type) {
-        return (GatewayType.YARN_PER_JOB.equalsValue(type) || GatewayType.YARN_APPLICATION.equalsValue(type));
+        return (GatewayType.YARN_PER_JOB.equalsValue(type) || GatewayType.YARN_APPLICATION.equalsValue(type)
+                || GatewayType.KUBERNETES_APPLICATION.equalsValue(type));
     }
 
     private Executor createExecutor() {
@@ -234,7 +235,7 @@ public class JobManager {
                     currentSql = String.join(sqlSeparator, inserts);
                     JobGraph jobGraph = executor.getJobGraphFromInserts(inserts);
                     GatewayResult gatewayResult = null;
-                    if (GatewayType.YARN_APPLICATION.equals(runMode)) {
+                    if (GatewayType.YARN_APPLICATION.equals(runMode)||GatewayType.KUBERNETES_APPLICATION.equals(runMode)) {
                         config.addGatewayConfig(executor.getSetConfig());
                         gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
                     } else {
@@ -271,7 +272,7 @@ public class JobManager {
                     currentSql = String.join(sqlSeparator, inserts);
                     JobGraph jobGraph = executor.getJobGraphFromInserts(inserts);
                     GatewayResult gatewayResult = null;
-                    if (GatewayType.YARN_APPLICATION.equalsValue(config.getType())) {
+                    if (GatewayType.YARN_APPLICATION.equals(runMode)||GatewayType.KUBERNETES_APPLICATION.equals(runMode)) {
                         config.addGatewayConfig(executor.getSetConfig());
                         gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
                     } else {
