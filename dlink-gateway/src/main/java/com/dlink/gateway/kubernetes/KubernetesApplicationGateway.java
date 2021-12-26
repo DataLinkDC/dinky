@@ -1,68 +1,54 @@
-package com.dlink.gateway.yarn;
+package com.dlink.gateway.kubernetes;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.gateway.GatewayType;
 import com.dlink.gateway.config.AppConfig;
-import com.dlink.gateway.config.GatewayConfig;
 import com.dlink.gateway.exception.GatewayException;
 import com.dlink.gateway.result.GatewayResult;
-import com.dlink.gateway.result.YarnResult;
+import com.dlink.gateway.result.KubernetesResult;
 import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.deployment.application.ApplicationConfiguration;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.client.program.ClusterClientProvider;
 import org.apache.flink.configuration.PipelineOptions;
+import org.apache.flink.kubernetes.KubernetesClusterDescriptor;
 import org.apache.flink.runtime.jobgraph.JobGraph;
-import org.apache.flink.yarn.YarnClientYarnClusterInformationRetriever;
-import org.apache.flink.yarn.YarnClusterDescriptor;
-import org.apache.hadoop.yarn.api.records.ApplicationId;
 
 import java.util.Collections;
 
 /**
- * YarnApplicationGateway
+ * KubernetesApplicationGateway
  *
  * @author wenmo
- * @since 2021/10/29
- **/
-public class YarnApplicationGateway extends YarnGateway {
-
-    public YarnApplicationGateway(GatewayConfig config) {
-        super(config);
-    }
-
-    public YarnApplicationGateway() {
-    }
-
+ * @since 2021/12/26 14:59
+ */
+public class KubernetesApplicationGateway extends KubernetesGateway {
     @Override
     public GatewayType getType() {
-        return GatewayType.YARN_APPLICATION;
+        return GatewayType.KUBERNETES_APPLICATION;
     }
 
     @Override
     public GatewayResult submitJobGraph(JobGraph jobGraph) {
-        throw new GatewayException("Couldn't deploy Yarn Application Cluster with job graph.");
+        throw new GatewayException("Couldn't deploy Kubernetes Application Cluster with job graph.");
     }
-    
+
     @Override
     public GatewayResult submitJar() {
-        if(Asserts.isNull(yarnClient)){
+        if(Asserts.isNull(client)){
             init();
         }
-        YarnResult result = YarnResult.build(getType());
+        KubernetesResult result = KubernetesResult.build(getType());
         AppConfig appConfig = config.getAppConfig();
         configuration.set(PipelineOptions.JARS, Collections.singletonList(appConfig.getUserJarPath()));
         ClusterSpecification clusterSpecification = new ClusterSpecification.ClusterSpecificationBuilder().createClusterSpecification();
         ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration(appConfig.getUserJarParas(), appConfig.getUserJarMainAppClass());
-        YarnClusterDescriptor yarnClusterDescriptor = new YarnClusterDescriptor(
-                configuration, yarnConfiguration, yarnClient, YarnClientYarnClusterInformationRetriever.create(yarnClient), true);
-        try {
-            ClusterClientProvider<ApplicationId> clusterClientProvider = yarnClusterDescriptor.deployApplicationCluster(
-                    clusterSpecification,
-                    applicationConfiguration);
-            ClusterClient<ApplicationId> clusterClient = clusterClientProvider.getClusterClient();
-            ApplicationId applicationId = clusterClient.getClusterId();
-            result.setAppId(applicationId.toString());
+        KubernetesClusterDescriptor kubernetesClusterDescriptor = new KubernetesClusterDescriptor(configuration, client);
+        try{
+            ClusterClientProvider<String> clusterClientProvider = kubernetesClusterDescriptor.deployApplicationCluster(clusterSpecification, applicationConfiguration);
+            ClusterClient<String> clusterClient = clusterClientProvider.getClusterClient();
+            String clusterId = clusterClient.getClusterId();
+            result.setClusterId(clusterId);
             result.setWebURL(clusterClient.getWebInterfaceURL());
             result.success();
         }catch (Exception e){
@@ -70,7 +56,7 @@ public class YarnApplicationGateway extends YarnGateway {
             logger.error(e.getMessage());
             result.fail(e.getMessage());
         }finally {
-            yarnClusterDescriptor.close();
+            kubernetesClusterDescriptor.close();
         }
         return result;
     }

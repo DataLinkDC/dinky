@@ -161,6 +161,13 @@
             </includes>
         </fileSet>
         <fileSet>
+            <directory>${project.parent.basedir}/dlink-doc/extends</directory>
+            <outputDirectory>jar</outputDirectory>
+            <includes>
+                <include>Dockerfile</include>
+            </includes>
+        </fileSet>
+        <fileSet>
             <directory>${project.parent.basedir}/dlink-web/dist</directory>
             <outputDirectory>html</outputDirectory>
             <includes>

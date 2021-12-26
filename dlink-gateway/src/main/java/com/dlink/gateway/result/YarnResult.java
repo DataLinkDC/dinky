@@ -12,8 +12,6 @@ import java.time.LocalDateTime;
  * @author wenmo
  * @since 2021/10/29
  **/
-@Getter
-@Setter
 public class YarnResult extends AbstractGatewayResult {
 
     private String appId;
@@ -34,6 +32,14 @@ public class YarnResult extends AbstractGatewayResult {
 
     public String getWebURL() {
         return webURL;
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId;
+    }
+
+    public void setWebURL(String webURL) {
+        this.webURL = webURL;
     }
 
     public static YarnResult build(GatewayType type){

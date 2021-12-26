@@ -1,2 +1,3 @@
 com.dlink.gateway.yarn.YarnApplicationGateway
 com.dlink.gateway.yarn.YarnPerJobGateway
+com.dlink.gateway.kubernetes.KubernetesApplicationGateway

@@ -76,6 +76,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
         >
           <Select defaultValue="Yarn" value="Yarn">
             <Option value="Yarn">Flink On Yarn</Option>
+            <Option value="Kubernetes">Flink On Kubernetes</Option>
           </Select>
         </Form.Item>
         <Divider>Hadoop 配置</Divider>
