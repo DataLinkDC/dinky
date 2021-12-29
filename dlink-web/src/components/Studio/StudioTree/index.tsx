@@ -1,21 +1,19 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useState,Key} from "react";
 import {connect} from "umi";
-import  {DownOutlined, SwitcherOutlined, FrownOutlined, MehOutlined, SmileOutlined,FolderAddOutlined} from "@ant-design/icons";
-import {Tree, Input, Menu, Empty, Button, message, Modal,Tooltip,Row,Col} from 'antd';
+import  {DownOutlined, SwitcherOutlined, FolderAddOutlined} from "@ant-design/icons";
+import {Tree, Menu, Empty, Button, message, Modal,Tooltip,Row,Col} from 'antd';
 import {getCatalogueTreeData} from "@/pages/FlinkSqlStudio/service";
-import {convertToTreeData, DataType, getTreeNodeByKey, TreeDataNode} from "@/components/Studio/StudioTree/Function";
+import {convertToTreeData, getTreeNodeByKey, TreeDataNode} from "@/components/Studio/StudioTree/Function";
 import style from "./index.less";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {
-  getInfoById, handleAddOrUpdate, handleAddOrUpdateWithResult, handleInfo, handleRemove, handleRemoveById,
+  getInfoById, handleAddOrUpdate, handleAddOrUpdateWithResult, handleRemoveById,
   handleSubmit
 } from "@/components/Common/crud";
 import UpdateCatalogueForm from './components/UpdateCatalogueForm';
-import {ActionType} from "@ant-design/pro-table";
 import SimpleTaskForm from "@/components/Studio/StudioTree/components/SimpleTaskForm";
-import { Scrollbars } from 'react-custom-scrollbars';
+import { Scrollbars } from "react-custom-scrollbars";
 const { DirectoryTree } = Tree;
-const {Search} = Input;
 
 
 type StudioTreeProps = {
@@ -34,26 +32,26 @@ type RightClickMenu = {
   categoryName: string
 };
 
-const getParentKey = (key, tree) => {
-  let parentKey;
-  for (let i = 0; i < tree.length; i++) {
-    const node = tree[i];
-    if (node.children) {
-      if (node.children.some(item => item.key === key)) {
-        parentKey = node.key;
-      } else if (getParentKey(key, node.children)) {
-        parentKey = getParentKey(key, node.children);
-      }
-    }
-  }
-  return parentKey;
-};
+// const getParentKey = (key:any, tree:any) => {
+//   let parentKey;
+//   for (let i = 0; i < tree.length; i++) {
+//     const node = tree[i];
+//     if (node.children) {
+//       if (node.children.some((item:any) => item.key === key)) {
+//         parentKey = node.key;
+//       } else if (getParentKey(key, node.children)) {
+//         parentKey = getParentKey(key, node.children);
+//       }
+//     }
+//   }
+//   return parentKey;
+// };
 
 const StudioTree: React.FC<StudioTreeProps> = (props) => {
   const {rightClickMenu,dispatch,tabs,refs,toolHeight} = props;
   const [treeData, setTreeData] = useState<TreeDataNode[]>();
-  const [dataList, setDataList] = useState<[]>();
-  const [expandedKeys, setExpandedKeys] = useState<[]>();
+  //const [dataList, setDataList] = useState<[]>();
+  const [expandedKeys, setExpandedKeys] = useState<Key[]>();
   const [rightClickNodeTreeItem,setRightClickNodeTreeItem] = useState<RightClickMenu>();
   const [updateCatalogueModalVisible, handleUpdateCatalogueModalVisible] = useState<boolean>(false);
   const [updateTaskModalVisible, handleUpdateTaskModalVisible] = useState<boolean>(false);
@@ -62,7 +60,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
   const [taskFormValues, setTaskFormValues] = useState({});
   const [rightClickNode, setRightClickNode] = useState<TreeDataNode>();
   const [available, setAvailable] = useState<boolean>(true);
-  let sref = React.createRef<Scrollbars>();
+  let sref:any = React.createRef<Scrollbars>();
 
   const getTreeData = async () => {
     const result = await getCatalogueTreeData();
@@ -72,12 +70,12 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       list[i].title=list[i].name;
       list[i].key=list[i].id;
     }
-    setDataList(list);
+   // setDataList(list);
     data = convertToTreeData(data, 0);
     setTreeData(data);
   };
 
-  const openByKey = async (key)=>{
+  const openByKey = async (key:any)=>{
     const result = await getCatalogueTreeData();
     let data = result.datas;
     let list = data;
@@ -85,7 +83,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       list[i].title=list[i].name;
       list[i].key=list[i].id;
     }
-    setDataList(list);
+    //setDataList(list);
     data = convertToTreeData(data, 0);
     setTreeData(data);
     let node = getTreeNodeByKey(data,key);
@@ -105,7 +103,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     }else if(key=='CreateCatalogue'){
       createCatalogue(rightClickNode);
     }else if(key=='CreateRootCatalogue'){
-      createRootCatalogue(rightClickNode);
+      createRootCatalogue();
     }else if(key=='CreateTask'){
       createTask(rightClickNode);
     }else if(key=='Rename'){
@@ -115,13 +113,14 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     }
   };
 
-  const toOpen=(node:TreeDataNode)=>{
+  const toOpen=(node:TreeDataNode|undefined)=>{
     if(!available){return}
     setAvailable(false);
     setTimeout(()=>{
       setAvailable(true);
     },200);
-    if(node.isLeaf&&node.taskId) {
+    if(node?.isLeaf&&node.taskId) {
+      // @ts-ignore
       for(let item of tabs.panes){
         if(item.key==node.taskId){
           dispatch&&dispatch({
@@ -138,16 +137,16 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       const result = getInfoById('/api/task',node.taskId);
       result.then(result=>{
         let newTabs = tabs;
-        let newPane = {
-          title: node.name,
-          key: node.taskId,
+        let newPane:any = {
+          title: node!.name,
+          key: node!.taskId,
           value:(result.datas.statement?result.datas.statement:''),
           closable: true,
-          path: node.path,
+          path: node!.path,
           task:{
             session:'',
             maxRowNum: 100,
-            jobName:node.name,
+            jobName:node!.name,
             useResult:false,
             useSession:false,
             useRemote:true,
@@ -158,8 +157,8 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
           },
           monaco: React.createRef(),
         };
-        newTabs.activeKey = node.taskId;
-        newTabs.panes.push(newPane);
+        newTabs!.activeKey = node!.taskId;
+        newTabs!.panes!.push(newPane);
         dispatch&&dispatch({
           type: "Studio/saveTabs",
           payload: newTabs,
@@ -168,13 +167,13 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     }
   };
 
-  const createCatalogue=(node:TreeDataNode)=>{
-    if(!node.isLeaf) {
+  const createCatalogue=(node:TreeDataNode|undefined)=>{
+    if(!node?.isLeaf) {
       handleUpdateCatalogueModalVisible(true);
       setIsCreate(true);
       setCatalogueFormValues({
         isLeaf: false,
-        parentId: node.id,
+        parentId: node?.id,
       });
       getTreeData();
     }else{
@@ -192,7 +191,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     getTreeData();
   };
 
-  const toSubmit=(node:TreeDataNode)=>{
+  const toSubmit=(node:TreeDataNode|undefined)=>{
     Modal.confirm({
       title: '提交作业',
       content: '确定提交该作业到其配置的集群吗？',
@@ -200,7 +199,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       cancelText: '取消',
       onOk:async () => {
         let task = {
-          id:node.taskId,
+          id:node?.taskId,
         };
         setTimeout(()=>{
           refs?.history?.current?.reload();
@@ -210,22 +209,22 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     });
   };
 
-  const toRename=(node:TreeDataNode)=>{
+  const toRename=(node:TreeDataNode|undefined)=>{
     handleUpdateCatalogueModalVisible(true);
     setIsCreate(false);
     setCatalogueFormValues({
-      id: node.id,
-      name: node.name,
+      id: node?.id,
+      name: node?.name,
     });
     getTreeData();
   };
 
-  const createTask=(node:TreeDataNode)=>{
-    if(!node.isLeaf) {
+  const createTask=(node:TreeDataNode|undefined)=>{
+    if(!node?.isLeaf) {
       handleUpdateTaskModalVisible(true);
       setIsCreate(true);
       setTaskFormValues({
-        parentId: node.id,
+        parentId: node?.id,
       });
       //getTreeData();
     }else{
@@ -233,19 +232,19 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     }
   };
 
-  const toDelete= (node:TreeDataNode)=>{
-    let label = (node.taskId==null)?'目录':'作业';
+  const toDelete= (node:TreeDataNode|undefined)=>{
+    let label = (node?.taskId==null)?'目录':'作业';
     Modal.confirm({
       title: `删除${label}`,
       content: `确定删除该${label}吗？`,
       okText: '确认',
       cancelText: '取消',
       onOk:async () => {
-        await handleRemoveById('/api/catalogue',node.id);
-        if(node.taskId) {
+        await handleRemoveById('/api/catalogue',node!.id);
+        if(node?.taskId) {
           dispatch({
             type: "Studio/deleteTabByKey",
-            payload: node.taskId,
+            payload: node?.taskId,
           });
         }
         getTreeData();
@@ -255,10 +254,10 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
 
   const getNodeTreeRightClickMenu = () => {
     const {pageX, pageY} = {...rightClickNodeTreeItem};
-    const tmpStyle = {
+    const tmpStyle:any = {
       position: 'absolute',
-      left: `${pageX - 40}px`,
-      top: `${pageY - 150}px`,
+      left: pageX,
+      top: pageY,
     };
     let menuItems;
     if(rightClickNode&&rightClickNode.isLeaf){
@@ -309,10 +308,12 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
   };
 
   const handleContextMenu = (e: React.MouseEvent, node: TreeDataNode) => {
+    let position = e.currentTarget.getBoundingClientRect();
+    let scrollTop = document.documentElement.scrollTop;
     setRightClickNode(node);
     setRightClickNodeTreeItem({
-      pageX: e.pageX,
-      pageY: e.pageY+sref.current.getScrollTop(),
+      pageX: e.pageX-20,
+      pageY: position.y+sref.current.getScrollTop()+scrollTop-115-position.height,
       id: node.id,
       categoryName: node.name
     });
@@ -322,7 +323,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     });
   };
 
-  const onSelect = (selectedKeys:[], e:any) => {
+  const onSelect = (selectedKeys:Key[], e:any) => {
     if(e.node&&e.node.isLeaf) {
       dispatch({
         type: "Studio/saveCurrentPath",
@@ -336,7 +337,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     setExpandedKeys([]);
   };
 
-  const onExpand=(expandedKeys:[])=>{
+  const onExpand=(expandedKeys:Key[])=>{
     setExpandedKeys(expandedKeys);
   };
 
