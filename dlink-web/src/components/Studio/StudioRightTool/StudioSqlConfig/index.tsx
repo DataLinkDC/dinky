@@ -38,10 +38,12 @@ const StudioSqlConfig = (props: any) => {
   const getDataBaseOptions = () => {
     const itemList = [];
     for (const item of database) {
-      const tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias}</>);
-      itemList.push(<Option key={item.id} value={item.id} label={tag}>
-        {tag}
-      </Option>)
+      if(item.type.toUpperCase() === current.task.dialect.toUpperCase()) {
+        const tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias}</>);
+        itemList.push(<Option key={item.id} value={item.id} label={tag}>
+          {tag}
+        </Option>)
+      }
     }
     return itemList;
   };

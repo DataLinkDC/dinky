@@ -13,6 +13,8 @@ import {
 import UpdateCatalogueForm from './components/UpdateCatalogueForm';
 import SimpleTaskForm from "@/components/Studio/StudioTree/components/SimpleTaskForm";
 import { Scrollbars } from "react-custom-scrollbars";
+import {getIcon} from "@/components/Studio/icon";
+
 const { DirectoryTree } = Tree;
 
 
@@ -32,25 +34,9 @@ type RightClickMenu = {
   categoryName: string
 };
 
-// const getParentKey = (key:any, tree:any) => {
-//   let parentKey;
-//   for (let i = 0; i < tree.length; i++) {
-//     const node = tree[i];
-//     if (node.children) {
-//       if (node.children.some((item:any) => item.key === key)) {
-//         parentKey = node.key;
-//       } else if (getParentKey(key, node.children)) {
-//         parentKey = getParentKey(key, node.children);
-//       }
-//     }
-//   }
-//   return parentKey;
-// };
-
 const StudioTree: React.FC<StudioTreeProps> = (props) => {
   const {rightClickMenu,dispatch,tabs,refs,toolHeight} = props;
   const [treeData, setTreeData] = useState<TreeDataNode[]>();
-  //const [dataList, setDataList] = useState<[]>();
   const [expandedKeys, setExpandedKeys] = useState<Key[]>();
   const [rightClickNodeTreeItem,setRightClickNodeTreeItem] = useState<RightClickMenu>();
   const [updateCatalogueModalVisible, handleUpdateCatalogueModalVisible] = useState<boolean>(false);
@@ -60,7 +46,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
   const [taskFormValues, setTaskFormValues] = useState({});
   const [rightClickNode, setRightClickNode] = useState<TreeDataNode>();
   const [available, setAvailable] = useState<boolean>(true);
-  let sref:any = React.createRef<Scrollbars>();
+  const sref: any = React.createRef<Scrollbars>();
 
   const getTreeData = async () => {
     const result = await getCatalogueTreeData();
@@ -69,8 +55,10 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     for(let i=0;i<list.length;i++){
       list[i].title=list[i].name;
       list[i].key=list[i].id;
+      if(list[i].isLeaf){
+        list[i].icon = getIcon(list[i].type);
+      }
     }
-   // setDataList(list);
     data = convertToTreeData(data, 0);
     setTreeData(data);
   };
@@ -82,8 +70,10 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     for(let i=0;i<list.length;i++){
       list[i].title=list[i].name;
       list[i].key=list[i].id;
+      if(list[i].isLeaf){
+        list[i].icon = getIcon(list[i].type);
+      }
     }
-    //setDataList(list);
     data = convertToTreeData(data, 0);
     setTreeData(data);
     let node = getTreeNodeByKey(data,key);

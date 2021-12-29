@@ -511,6 +511,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增 FlinkSQL 执行环境方言及其应用功能</Link>
                 </li>
+                <li>
+                  <Link>新增 Mysql,Oracle,PostGreSql,ClickHouse,Doris,Java 方言及图标</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

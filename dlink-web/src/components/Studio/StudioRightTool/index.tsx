@@ -8,7 +8,7 @@ import StudioSetting from "./StudioSetting";
 import StudioSavePoint from "./StudioSavePoint";
 import StudioEnvSetting from "./StudioEnvSetting";
 import StudioSqlConfig from "./StudioSqlConfig";
-import {DIALECT} from "@/components/Studio/conf";
+import {DIALECT, isSql} from "@/components/Studio/conf";
 
 const { TabPane } = Tabs;
 
@@ -19,11 +19,16 @@ const StudioRightTool = (props:any) => {
   const {current,form,toolHeight} = props;
 
   const renderContent = () => {
-    switch (current.task.dialect){
-      case DIALECT.SQL: return renderSqlContent();
-      case DIALECT.FLINKSQLENV: return renderEnvContent();
-      default: return renderFlinkSqlContent();
+    if(isSql(current.task.dialect)){
+      return renderSqlContent();
     }
+    if(DIALECT.FLINKSQLENV === current.task.dialect){
+      return renderEnvContent();
+    }
+    if(DIALECT.JAVA === current.task.dialect){
+      return undefined;
+    }
+    return renderFlinkSqlContent();
   };
 
   const renderSqlContent = () => {

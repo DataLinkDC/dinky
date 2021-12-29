@@ -6,6 +6,7 @@ import com.dlink.assertion.Asserts;
 import com.dlink.assertion.Tips;
 import com.dlink.config.Dialect;
 import com.dlink.db.service.impl.SuperServiceImpl;
+import com.dlink.dto.SqlDTO;
 import com.dlink.gateway.GatewayType;
 import com.dlink.job.JobConfig;
 import com.dlink.job.JobManager;
@@ -39,6 +40,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private SavepointsService savepointsService;
     @Autowired
     private JarService jarService;
+    @Autowired
+    private StudioService studioService;
 
     @Value("${spring.datasource.driver-class-name}")
     private String driver;
@@ -57,6 +60,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     public JobResult submitByTaskId(Integer id) {
         Task task = this.getTaskInfoById(id);
         Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
+        if(Dialect.isSql(task.getDialect())){
+            return studioService.executeCommonSql(SqlDTO.build(task.getStatement(),
+                    task.getDatabaseId(),null));
+        }
         boolean isJarTask = isJarTask(task);
         if(!isJarTask&&Asserts.isNotNull(task.getEnvId())){
             Task envTask = getTaskInfoById(task.getEnvId());
