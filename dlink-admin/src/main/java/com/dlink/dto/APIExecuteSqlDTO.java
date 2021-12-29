@@ -20,14 +20,14 @@ import java.util.Map;
  */
 @Getter
 @Setter
-public class APIExecuteSqlDTO {
+public class APIExecuteSqlDTO extends AbstractStatementDTO{
     // RUN_MODE
     private String type;
     private boolean useResult = false;
     private boolean useStatementSet = false;
     private String address;
     private boolean fragment = false;
-    private String statement;
+//    private String statement;
     private String jobName;
     private Integer maxRowNum = 100;
     private Integer checkPoint = 0;

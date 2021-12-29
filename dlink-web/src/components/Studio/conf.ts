@@ -10,6 +10,7 @@ export const RUN_MODE = {
 
 export const DIALECT = {
   FLINKSQL:'FlinkSql',
+  FLINKSQLENV:'FlinkSqlEnv',
   SQL:'Sql',
   JAVA:'Java',
 };

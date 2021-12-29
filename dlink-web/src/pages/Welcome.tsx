@@ -508,6 +508,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>支持 Kubernetes Session 和 Application 模式提交任务</Link>
                 </li>
+                <li>
+                  <Link>新增 FlinkSQL 执行环境方言及其应用功能</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

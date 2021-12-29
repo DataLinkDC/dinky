@@ -56,6 +56,8 @@ public class Task extends SuperEntity{
 
     private Integer jarId;
 
+    private Integer envId;
+
     private String configJson;
 
     private String note;

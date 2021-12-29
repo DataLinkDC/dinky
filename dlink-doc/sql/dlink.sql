@@ -233,6 +233,7 @@ CREATE TABLE `dlink_task`  (
 	`cluster_configuration_id` int(11) NULL DEFAULT NULL COMMENT '集群配置ID',
 	`database_id` int(11) NULL DEFAULT NULL COMMENT '数据源ID',
 	`jar_id` int(11) NULL DEFAULT NULL COMMENT 'jarID',
+	`env_id` int(11) NULL DEFAULT NULL COMMENT '环境ID',
 	`config_json` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '配置JSON',
 	`note` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '注释',
 	`enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT '是否启用',

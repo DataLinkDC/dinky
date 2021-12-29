@@ -479,4 +479,10 @@ ADD COLUMN `dialect` varchar(50) NULL COMMENT '方言' AFTER `alias`;
 ALTER TABLE `dlink_task`
 ADD COLUMN `database_id` int(11) NULL COMMENT '数据源ID' AFTER `cluster_configuration_id`;
 
+-- ----------------------------
+-- 0.5.0-SNAPSHOT 2021-12-29
+-- ----------------------------
+ALTER TABLE `dlink_task`
+ADD COLUMN `env_id` int(11) NULL COMMENT '环境ID' AFTER `jar_id`;
+
 SET FOREIGN_KEY_CHECKS = 1;

@@ -19,6 +19,7 @@
         <result column="cluster_configuration_id" property="clusterConfigurationId" />
         <result column="database_id" property="databaseId" />
         <result column="jar_id" property="jarId" />
+        <result column="env_id" property="envId" />
         <result column="config_json" property="configJson" />
         <result column="note" property="note" />
         <result column="enabled" property="enabled" />
@@ -28,7 +29,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, alias,dialect, type,check_point,save_point_strategy,save_point_path, parallelism,fragment,statement_set,cluster_id,cluster_configuration_id,database_id,jar_id,config_json,note, enabled, create_time, update_time
+        id, name, alias,dialect, type,check_point,save_point_strategy,save_point_path, parallelism,fragment,statement_set,cluster_id,cluster_configuration_id,database_id,jar_id,env_id,config_json,note, enabled, create_time, update_time
     </sql>
 
 

@@ -11,7 +11,7 @@ import StudioLeftTool from "./StudioLeftTool";
 import StudioRightTool from "./StudioRightTool";
 import {
   listSession, showCluster, showDataBase, getFillAllByVersion,
-  showClusterConfiguration, showSessionCluster, showJars
+  showClusterConfiguration, showSessionCluster, showJars, showEnv
 } from "@/components/Studio/StudioEvent/DDL";
 import {loadSettings} from "@/pages/Settings/function";
 import DraggleLayout from "@/components/DraggleLayout";
@@ -62,6 +62,7 @@ const Studio: React.FC<StudioProps> = (props) => {
   showDataBase(dispatch);
   listSession(dispatch);
   showJars(dispatch);
+  showEnv(dispatch);
 
   const onClick = () => {
     if (rightClickMenu) {

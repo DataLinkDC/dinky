@@ -50,6 +50,13 @@ export type DataBaseType = {
   updateTime: Date,
 };
 
+export type EnvType = {
+  id?: number,
+  name?: string,
+  alias?: string,
+  fragment?: boolean,
+};
+
 export type TaskType = {
   id?: number,
   catalogueId?: number,
@@ -71,6 +78,7 @@ export type TaskType = {
   databaseId?: number,
   databaseName?: string,
   jarId?: number,
+  envId?: number,
   note?: string,
   enabled?: boolean,
   createTime?: Date,
@@ -132,6 +140,7 @@ export type StateType = {
   sessionCluster?: ClusterType[];
   clusterConfiguration?: ClusterConfigurationType[];
   database?: DataBaseType[];
+  env?: EnvType[];
   currentSession?: SessionType;
   current?: TabsItemType;
   sql?: string;
@@ -172,6 +181,7 @@ export type ModelType = {
     saveSessionCluster: Reducer<StateType>;
     saveClusterConfiguration: Reducer<StateType>;
     saveDataBase: Reducer<StateType>;
+    saveEnv: Reducer<StateType>;
   };
 };
 
@@ -185,6 +195,7 @@ const Model: ModelType = {
     sessionCluster: [],
     clusterConfiguration: [],
     database: [],
+    env: [],
     currentSession: {
       connectors: [],
     },
@@ -211,6 +222,7 @@ const Model: ModelType = {
         databaseId:undefined,
         databaseName:undefined,
         jarId:undefined,
+        envId:undefined,
         maxRowNum: 100,
         config: [],
         session: '',
@@ -254,6 +266,7 @@ const Model: ModelType = {
           databaseId:undefined,
           databaseName:undefined,
           jarId:undefined,
+          envId:undefined,
           session: '',
           config: [],
           maxRowNum: 100,
@@ -491,6 +504,11 @@ const Model: ModelType = {
       return {
         ...state,
         database: payload,
+      };
+    },saveEnv(state, {payload}) {
+      return {
+        ...state,
+        env: payload,
       };
     },
   },

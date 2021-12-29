@@ -19,7 +19,7 @@ import java.util.Map;
  */
 @Getter
 @Setter
-public class StudioExecuteDTO {
+public class StudioExecuteDTO extends AbstractStatementDTO{
     // RUN_MODE
     private String type;
     private String dialect;
@@ -33,7 +33,7 @@ public class StudioExecuteDTO {
     private Integer databaseId;
     private Integer jarId;
     private boolean fragment;
-    private String statement;
+//    private String statement;
     private String jobName;
     private Integer taskId;
     private Integer maxRowNum;

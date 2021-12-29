@@ -2,6 +2,7 @@ package com.dlink.app.flinksql;
 
 import com.dlink.app.db.DBConfig;
 import com.dlink.app.db.DBUtil;
+import com.dlink.assertion.Asserts;
 import com.dlink.constant.FlinkSQLConstant;
 import com.dlink.executor.Executor;
 import com.dlink.executor.ExecutorSetting;
@@ -38,8 +39,8 @@ public class Submiter {
             throw new SQLException("请指定任务ID");
         }
         return "select id, name, alias as jobName, type,check_point as checkpoint," +
-                "save_point_path as savePointPath, parallelism,fragment as useSqlFragment,statement_set as useStatementSet,config_json as config" +
-                " from dlink_task where id = " + id;
+                "save_point_path as savePointPath, parallelism,fragment as useSqlFragment,statement_set as useStatementSet,config_json as config," +
+                " env_id as envId from dlink_task where id = " + id;
     }
 
     private static String getFlinkSQLStatement(Integer id, DBConfig config) {
@@ -68,13 +69,20 @@ public class Submiter {
         return task;
     }
 
-    public static List<String> getStatements(Integer id, DBConfig config){
-        return Arrays.asList(getFlinkSQLStatement(id, config).split(FlinkSQLConstant.SEPARATOR));
+    public static List<String> getStatements(String sql){
+        return Arrays.asList(sql.split(FlinkSQLConstant.SEPARATOR));
     }
 
     public static void submit(Integer id,DBConfig dbConfig){
         logger.info(LocalDateTime.now() + "开始提交作业 -- "+id);
-        List<String> statements = Submiter.getStatements(id, dbConfig);
+        StringBuilder sb = new StringBuilder();
+        Map<String, String> taskConfig = Submiter.getTaskConfig(id, dbConfig);
+        if(Asserts.isNotNull(taskConfig.get("envId"))){
+            sb.append(getFlinkSQLStatement(Integer.valueOf(taskConfig.get("envId")), dbConfig));
+            sb.append("\r\n");
+        }
+        sb.append(getFlinkSQLStatement(id, dbConfig));
+        List<String> statements = Submiter.getStatements(sb.toString());
         ExecutorSetting executorSetting = ExecutorSetting.build(Submiter.getTaskConfig(id,dbConfig));
         logger.info("作业配置如下： "+executorSetting.toString());
         Executor executor = Executor.buildAppStreamExecutor(executorSetting);

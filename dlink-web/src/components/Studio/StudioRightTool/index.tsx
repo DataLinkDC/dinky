@@ -6,6 +6,7 @@ import styles from "./index.less";
 import StudioConfig from "./StudioConfig";
 import StudioSetting from "./StudioSetting";
 import StudioSavePoint from "./StudioSavePoint";
+import StudioEnvSetting from "./StudioEnvSetting";
 import StudioSqlConfig from "./StudioSqlConfig";
 import {DIALECT} from "@/components/Studio/conf";
 
@@ -17,12 +18,28 @@ const StudioRightTool = (props:any) => {
 
   const {current,form,toolHeight} = props;
 
+  const renderContent = () => {
+    switch (current.task.dialect){
+      case DIALECT.SQL: return renderSqlContent();
+      case DIALECT.FLINKSQLENV: return renderEnvContent();
+      default: return renderFlinkSqlContent();
+    }
+  };
+
   const renderSqlContent = () => {
     return (<>
-      <TabPane tab={<span><ScheduleOutlined /> 执行配置</span>} key="StudioConfig" >
+      <TabPane tab={<span><ScheduleOutlined /> 执行配置</span>} key="StudioSqlConfig" >
         <StudioSqlConfig form={form}/>
       </TabPane>
       </>)
+  };
+
+  const renderEnvContent = () => {
+    return (<>
+      <TabPane tab={<span><SettingOutlined /> 作业配置</span>} key="StudioEnvSetting" >
+        <StudioEnvSetting form={form}/>
+      </TabPane>
+    </>)
   };
 
   const renderFlinkSqlContent = () => {
@@ -32,17 +49,17 @@ const StudioRightTool = (props:any) => {
       <TabPane tab={<span><ScheduleOutlined /> 执行配置</span>} key="StudioConfig" >
         <StudioConfig form={form}/>
       </TabPane>
-      <TabPane tab={<span><ScheduleOutlined /> 保存点</span>} key="3" >
+      <TabPane tab={<span><ScheduleOutlined /> 保存点</span>} key="StudioSavePoint" >
         <StudioSavePoint />
       </TabPane>
-      <TabPane tab={<span><AuditOutlined /> 审计</span>} key="4" >
+      <TabPane tab={<span><AuditOutlined /> 审计</span>} key="Other" >
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       </TabPane></>)
   };
 
   return (
     <Tabs defaultActiveKey="1" size="small" tabPosition="right"  style={{ height: toolHeight}}>
-      {current.task.dialect === DIALECT.SQL ? renderSqlContent(): renderFlinkSqlContent()}
+      {renderContent()}
     </Tabs>
   );
 };

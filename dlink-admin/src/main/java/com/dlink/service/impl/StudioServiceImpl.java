@@ -3,6 +3,7 @@ package com.dlink.service.impl;
 import com.dlink.api.FlinkAPI;
 import com.dlink.assertion.Asserts;
 import com.dlink.config.Dialect;
+import com.dlink.dto.AbstractStatementDTO;
 import com.dlink.dto.SessionDTO;
 import com.dlink.dto.StudioDDLDTO;
 import com.dlink.dto.StudioExecuteDTO;
@@ -20,6 +21,7 @@ import com.dlink.metadata.result.JdbcSelectResult;
 import com.dlink.model.Cluster;
 import com.dlink.model.DataBase;
 import com.dlink.model.Savepoints;
+import com.dlink.model.Task;
 import com.dlink.result.IResult;
 import com.dlink.result.SelectResult;
 import com.dlink.result.SqlExplainResult;
@@ -61,6 +63,17 @@ public class StudioServiceImpl implements StudioService {
     private SavepointsService savepointsService;
     @Autowired
     private DataBaseService dataBaseService;
+    @Autowired
+    private TaskService taskService;
+
+    private void addFlinkSQLEnv(AbstractStatementDTO statementDTO){
+        if(Asserts.isNotNull(statementDTO.getEnvId())){
+            Task task = taskService.getTaskInfoById(statementDTO.getEnvId());
+            if(Asserts.isNotNull(task)&&Asserts.isNotNullString(task.getStatement())) {
+                statementDTO.setStatement(task.getStatement() + "\r\n" + statementDTO.getStatement());
+            }
+        }
+    }
 
     @Override
     public JobResult executeSql(StudioExecuteDTO studioExecuteDTO) {
@@ -72,6 +85,7 @@ public class StudioServiceImpl implements StudioService {
     }
 
     private JobResult executeFlinkSql(StudioExecuteDTO studioExecuteDTO) {
+        addFlinkSQLEnv(studioExecuteDTO);
         JobConfig config = studioExecuteDTO.getJobConfig();
         // If you are using a shared session, configure the current jobmanager address
         if(!config.isUseSession()) {
@@ -135,6 +149,7 @@ public class StudioServiceImpl implements StudioService {
     }
 
     private List<SqlExplainResult> explainFlinkSql(StudioExecuteDTO studioExecuteDTO) {
+        addFlinkSQLEnv(studioExecuteDTO);
         JobConfig config = studioExecuteDTO.getJobConfig();
         if(!config.isUseSession()) {
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
@@ -164,6 +179,7 @@ public class StudioServiceImpl implements StudioService {
 
     @Override
     public ObjectNode getStreamGraph(StudioExecuteDTO studioExecuteDTO) {
+        addFlinkSQLEnv(studioExecuteDTO);
         JobConfig config = studioExecuteDTO.getJobConfig();
         config.setType(GatewayType.LOCAL.getLongValue());
         if(!config.isUseSession()) {
@@ -175,6 +191,7 @@ public class StudioServiceImpl implements StudioService {
 
     @Override
     public ObjectNode getJobPlan(StudioExecuteDTO studioExecuteDTO) {
+        addFlinkSQLEnv(studioExecuteDTO);
         JobConfig config = studioExecuteDTO.getJobConfig();
         config.setType(GatewayType.LOCAL.getLongValue());
         if(!config.isUseSession()) {
