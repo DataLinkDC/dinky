@@ -1,6 +1,7 @@
 package com.dlink.service;
 
 import com.dlink.dto.SessionDTO;
+import com.dlink.dto.SqlDTO;
 import com.dlink.dto.StudioDDLDTO;
 import com.dlink.dto.StudioExecuteDTO;
 import com.dlink.explainer.ca.ColumnCANode;
@@ -24,6 +25,8 @@ import java.util.List;
 public interface StudioService {
 
     JobResult executeSql(StudioExecuteDTO studioExecuteDTO);
+
+    JobResult executeCommonSql(SqlDTO sqlDTO);
 
     IResult executeDDL(StudioDDLDTO studioDDLDTO);
 

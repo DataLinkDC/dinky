@@ -5,6 +5,7 @@ import {StateType} from "@/pages/FlinkSqlStudio/model";
 import styles from './index.less';
 import StudioEdit from '../StudioEdit';
 import {saveTask} from "@/components/Studio/StudioEvent/DDL";
+import { DIALECT } from '../conf';
 
 const {TabPane} = Tabs;
 
@@ -79,7 +80,8 @@ const EditorTabs = (props: any) => {
     >
       {tabs.panes.map(pane => (
         <TabPane tab={pane.title} key={pane.key} closable={pane.closable}>
-          <StudioEdit tabsKey={pane.key} height={(toolHeight - 32)} width={width}/>
+          <StudioEdit tabsKey={pane.key} height={(toolHeight - 32)} width={width}
+                      language={current.task.dialect===DIALECT.JAVA?'java':'sql'}/>
         </TabPane>
       ))}
     </Tabs>

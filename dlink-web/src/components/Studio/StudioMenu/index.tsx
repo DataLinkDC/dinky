@@ -18,7 +18,7 @@ import StudioGraph from "./StudioGraph";
 import {showCluster, showTables, saveTask} from "@/components/Studio/StudioEvent/DDL";
 import {useEffect, useState} from "react";
 import StudioExplain from "../StudioConsole/StudioExplain";
-import {DIALECT} from "@/components/Studio/conf";
+import {DIALECT, isSql} from "@/components/Studio/conf";
 
 const menu = (
   <Menu>
@@ -235,8 +235,7 @@ const StudioMenu = (props: any) => {
       }
     }
     return result;
-  }
-
+  };
 
   const getTextWidth = (text:string, font:string) => {
     var canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
@@ -245,6 +244,7 @@ const StudioMenu = (props: any) => {
     var metrics = context.measureText(text);
     return metrics.width;
   }
+
   const escape2Html = (str:string) => {
     let arrEntities={'lt':'<','gt':'>','nbsp':' ','amp':'&','quot':'"'};
     return str.replace(/&(lt|gt|nbsp|amp|quot);/ig,function(all,t){return arrEntities[t];});
@@ -358,13 +358,15 @@ const StudioMenu = (props: any) => {
                 onClick={onCheckSql}
               />
             </Tooltip>
+            {current.task.dialect === DIALECT.FLINKSQL &&(
             <Tooltip title="获取当前的 FlinkSql 的执行图">
               <Button
                 type="text"
                 icon={<FlagTwoTone/>}
                 onClick={onGetStreamGraph}
               />
-            </Tooltip>
+            </Tooltip>)}
+            {(current.task.dialect === DIALECT.FLINKSQL||isSql( current.task.dialect )) &&(
             <Tooltip title="执行当前的 FlinkSql">
               <Button
                 type="text"
@@ -372,28 +374,29 @@ const StudioMenu = (props: any) => {
                 //loading={loadings[2]}
                 onClick={execute}
               />
-            </Tooltip>
-            <Tooltip title="提交当前的作业到集群">
-              <Button
-                type="text"
-                icon={<RocketTwoTone/>}
-                onClick={submit}
-              />
-            </Tooltip>
-            <Popconfirm
-              title="您确定要停止所有的 FlinkSql 任务吗？"
-              // onConfirm={confirm}
-              //onCancel={cancel}
-              okText="停止"
-              cancelText="取消"
-            >
-              <Tooltip title="停止所有的 FlinkSql 任务，暂不可用">
+            </Tooltip>)}
+            {(current.task.dialect === DIALECT.FLINKSQL||isSql( current.task.dialect )) &&(<>
+              <Tooltip title="提交当前的作业到集群">
                 <Button
                   type="text"
-                  icon={<PauseCircleTwoTone twoToneColor="#ddd"/>}
+                  icon={<RocketTwoTone/>}
+                  onClick={submit}
                 />
               </Tooltip>
-            </Popconfirm>
+              <Popconfirm
+                title="您确定要停止所有的 FlinkSql 任务吗？"
+                // onConfirm={confirm}
+                //onCancel={cancel}
+                okText="停止"
+                cancelText="取消"
+              >
+                <Tooltip title="停止所有的 FlinkSql 任务，暂不可用">
+                  <Button
+                    type="text"
+                    icon={<PauseCircleTwoTone twoToneColor="#ddd"/>}
+                  />
+                </Tooltip>
+              </Popconfirm></>)}
             <Divider type="vertical"/>
             <Button
               type="text"

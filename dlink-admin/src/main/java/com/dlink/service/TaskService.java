@@ -5,6 +5,8 @@ import com.dlink.db.service.ISuperService;
 import com.dlink.job.JobResult;
 import com.dlink.model.Task;
 
+import java.util.List;
+
 /**
  * 作业 服务类
  *
@@ -18,4 +20,6 @@ public interface TaskService extends ISuperService<Task> {
     Task getTaskInfoById(Integer id);
 
     boolean saveOrUpdateTask(Task task);
+
+    List<Task> listFlinkSQLEnv();
 }

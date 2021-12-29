@@ -10,6 +10,26 @@ export const RUN_MODE = {
 
 export const DIALECT = {
   FLINKSQL:'FlinkSql',
+  FLINKSQLENV:'FlinkSqlEnv',
   SQL:'Sql',
+  MYSQL:'Mysql',
+  ORACLE:'Oracle',
+  POSTGRESQL:'PostGreSql',
+  CLICKHOUSE:'ClickHouse',
+  DORIS:'Doris',
   JAVA:'Java',
 };
+
+export const isSql = (type: string)=>{
+  switch (type){
+    case DIALECT.SQL:
+    case DIALECT.MYSQL:
+    case DIALECT.ORACLE:
+    case DIALECT.POSTGRESQL:
+    case DIALECT.CLICKHOUSE:
+    case DIALECT.DORIS:
+      return true;
+    default:
+      return false;
+  }
+}

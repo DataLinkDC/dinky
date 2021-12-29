@@ -52,8 +52,14 @@ const SimpleTaskForm: React.FC<UpdateFormProps> = (props) => {
         >
           <Select defaultValue={DIALECT.FLINKSQL} value={DIALECT.FLINKSQL}>
             <Option value={DIALECT.FLINKSQL}>FlinkSql</Option>
-            <Option value={DIALECT.SQL}>Sql</Option>
+            <Option value={DIALECT.FLINKSQLENV}>FlinkSql 环境</Option>
+            <Option value={DIALECT.MYSQL}>Mysql</Option>
+            <Option value={DIALECT.ORACLE}>Oracle</Option>
+            <Option value={DIALECT.POSTGRESQL}>PostGreSql</Option>
+            <Option value={DIALECT.CLICKHOUSE}>ClickHouse</Option>
+            <Option value={DIALECT.DORIS}>Doris</Option>
             <Option value={DIALECT.JAVA}>Java</Option>
+            <Option value={DIALECT.SQL}>Sql</Option>
           </Select>
         </Form.Item>):undefined}
         <Form.Item

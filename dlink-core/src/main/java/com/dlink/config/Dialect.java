@@ -10,7 +10,9 @@ import com.dlink.assertion.Asserts;
  **/
 public enum  Dialect {
 
-    FLINKSQL("FlinkSql"),SQL("Sql"),JAVA("Java");
+    FLINKSQL("FlinkSql"),FLINKSQLENV("FlinkSqlEnv"),SQL("Sql"),JAVA("Java"),
+    MYSQL("Mysql"),ORACLE("Oracle"),POSTGRESQL("PostGreSql"),CLICKHOUSE("ClickHouse"),
+    DORIS("Doris");
 
     private String value;
 
@@ -35,6 +37,16 @@ public enum  Dialect {
             }
         }
         return Dialect.FLINKSQL;
+    }
+
+    public static boolean isSql(String value){
+        Dialect dialect = Dialect.get(value);
+        switch (dialect){
+            case SQL:case MYSQL:case ORACLE:case POSTGRESQL:case CLICKHOUSE:case DORIS:
+                return true;
+            default:
+                return false;
+        }
     }
 }
 

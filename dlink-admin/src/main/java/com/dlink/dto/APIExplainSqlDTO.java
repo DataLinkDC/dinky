@@ -17,10 +17,10 @@ import java.util.Map;
  */
 @Getter
 @Setter
-public class APIExplainSqlDTO {
+public class APIExplainSqlDTO extends AbstractStatementDTO{
     private boolean useStatementSet = false;
     private boolean fragment = false;
-    private String statement;
+//    private String statement;
     private Integer parallelism;
     private Map<String, String> configuration;
 

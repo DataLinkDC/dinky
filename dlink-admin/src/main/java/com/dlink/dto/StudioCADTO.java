@@ -11,8 +11,8 @@ import lombok.Setter;
  **/
 @Getter
 @Setter
-public class StudioCADTO {
-    private String statement;
+public class StudioCADTO extends AbstractStatementDTO{
+//    private String statement;
     /* 1:单表表级血缘
      * 2:单表字段血缘
      * 3.全局表级血缘

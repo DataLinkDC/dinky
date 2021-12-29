@@ -1,7 +1,7 @@
 import {connect} from "umi";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {Form, InputNumber, Input, Switch, Select, Tag, Row, Col, Badge, Tooltip, Button, Typography, Space} from "antd";
-import {InfoCircleOutlined, PlusOutlined, MinusSquareOutlined, MinusCircleOutlined} from "@ant-design/icons";
+import {InfoCircleOutlined, PlusOutlined, MinusSquareOutlined, MinusCircleOutlined,PaperClipOutlined} from "@ant-design/icons";
 import styles from "./index.less";
 import {useEffect} from "react";
 import {showTables} from "@/components/Studio/StudioEvent/DDL";
@@ -14,13 +14,9 @@ const {Text} = Typography;
 
 const StudioSetting = (props: any) => {
 
-  const {sessionCluster, clusterConfiguration, current, form, dispatch, tabs, currentSession, jars, toolHeight} = props;
+  const {sessionCluster, clusterConfiguration, current, form, dispatch, tabs, currentSession, jars,env, toolHeight} = props;
 
   const getClusterOptions = () => {
-    /* const itemList = [(<Option key={0} value={0} label={(<><Tag color="default">Local</Tag>本地环境</>)}>
-      <Tag color="default">Local</Tag>
-      本地环境
-    </Option>)]; */
     const itemList = [];
     for (const item of sessionCluster) {
       const tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias}</>);
@@ -46,6 +42,18 @@ const StudioSetting = (props: any) => {
     const itemList = [];
     for (const item of jars) {
       const tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias}</>);
+      itemList.push(<Option key={item.id} value={item.id} label={tag}>
+        {tag}
+      </Option>)
+    }
+    return itemList;
+  };
+
+  const getEnvOptions = () => {
+    const itemList = [];
+    for (const item of env) {
+      const tag = (<>{item.enabled ? <Badge status="success"/> : <Badge status="error"/>}
+      {item.fragment ? <PaperClipOutlined /> : undefined}{item.alias}</>);
       itemList.push(<Option key={item.id} value={item.id} label={tag}>
         {tag}
       </Option>)
@@ -152,28 +160,37 @@ const StudioSetting = (props: any) => {
               </Col>
             </Row>) : undefined}
           {(current.task.type === RUN_MODE.YARN_APPLICATION || current.task.type === RUN_MODE.KUBERNETES_APPLICATION) ? (
-            <Row>
-              <Col span={24}>
-                <Form.Item label="可执行 Jar"
-                           tooltip={`选择可执行 Jar 进行 ${current.task.type} 模式的远程提交 Jar 任务。当该参数项存在值时，将只提交可执行 Jar.`}
-                           name="jarId"
-                           className={styles.form_item}>
-                  <Select
-                    style={{width: '100%'}}
-                    placeholder="选择可执行Jar，非必填"
-                    allowClear
-                    optionLabelProp="label"
-                  >
-                    {getJarOptions()}
-                  </Select>
-                </Form.Item>
-              </Col>
-            </Row>) : undefined}
+            <Form.Item label="可执行 Jar"
+                       tooltip={`选择可执行 Jar 进行 ${current.task.type} 模式的远程提交 Jar 任务。当该参数项存在值时，将只提交可执行 Jar.`}
+                       name="jarId"
+                       className={styles.form_item}>
+              <Select
+                style={{width: '100%'}}
+                placeholder="选择可执行Jar，非必填"
+                allowClear
+                optionLabelProp="label"
+              >
+                {getJarOptions()}
+              </Select>
+            </Form.Item>) : undefined}
           <Form.Item
             label="作业名" className={styles.form_item} name="jobName"
             tooltip='设置任务名称，默认为作业名'
           >
             <Input placeholder="自定义作业名"/>
+          </Form.Item>
+          <Form.Item label="FlinkSQL 环境"
+                     tooltip={`选择当前任务的 FlinkSQL 执行环境，会提前执行环境语句，默认无。`}
+                     name="envId"
+                     className={styles.form_item}>
+            <Select
+              style={{width: '100%'}}
+              placeholder="选择 FlinkSQL 环境，非必填"
+              allowClear
+              optionLabelProp="label"
+            >
+              {getEnvOptions()}
+            </Select>
           </Form.Item>
           <Row>
             <Col span={12}>
@@ -285,4 +302,5 @@ export default connect(({Studio, Jar}: { Studio: StateType, Jar: JarStateType })
   currentSession: Studio.currentSession,
   toolHeight: Studio.toolHeight,
   jars: Jar.jars,
+  env: Studio.env,
 }))(StudioSetting);

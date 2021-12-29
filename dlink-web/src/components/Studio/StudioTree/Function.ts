@@ -44,8 +44,7 @@ export function getTreeNodeByKey(node:any[], key:number) {
       if(result){
         return result;
       }
-    }else{
-      return null;
     }
   }
+  return null;
 }

@@ -105,5 +105,13 @@ public class TaskController {
         Task task = taskService.getTaskInfoById(id);
         return Result.succeed(task,"获取成功");
     }
+
+    /**
+     * 获取所有可用的 FlinkSQLEnv
+     */
+    @GetMapping(value = "/listFlinkSQLEnv")
+    public Result listFlinkSQLEnv() {
+        return Result.succeed(taskService.listFlinkSQLEnv(),"获取成功");
+    }
 }
 

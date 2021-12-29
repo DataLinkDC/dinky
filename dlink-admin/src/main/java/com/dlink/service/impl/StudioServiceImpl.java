@@ -3,9 +3,7 @@ package com.dlink.service.impl;
 import com.dlink.api.FlinkAPI;
 import com.dlink.assertion.Asserts;
 import com.dlink.config.Dialect;
-import com.dlink.dto.SessionDTO;
-import com.dlink.dto.StudioDDLDTO;
-import com.dlink.dto.StudioExecuteDTO;
+import com.dlink.dto.*;
 import com.dlink.explainer.ca.CABuilder;
 import com.dlink.explainer.ca.ColumnCANode;
 import com.dlink.explainer.ca.TableCANode;
@@ -20,6 +18,7 @@ import com.dlink.metadata.result.JdbcSelectResult;
 import com.dlink.model.Cluster;
 import com.dlink.model.DataBase;
 import com.dlink.model.Savepoints;
+import com.dlink.model.Task;
 import com.dlink.result.IResult;
 import com.dlink.result.SelectResult;
 import com.dlink.result.SqlExplainResult;
@@ -61,17 +60,30 @@ public class StudioServiceImpl implements StudioService {
     private SavepointsService savepointsService;
     @Autowired
     private DataBaseService dataBaseService;
+    @Autowired
+    private TaskService taskService;
+
+    private void addFlinkSQLEnv(AbstractStatementDTO statementDTO){
+        if(Asserts.isNotNull(statementDTO.getEnvId())){
+            Task task = taskService.getTaskInfoById(statementDTO.getEnvId());
+            if(Asserts.isNotNull(task)&&Asserts.isNotNullString(task.getStatement())) {
+                statementDTO.setStatement(task.getStatement() + "\r\n" + statementDTO.getStatement());
+            }
+        }
+    }
 
     @Override
     public JobResult executeSql(StudioExecuteDTO studioExecuteDTO) {
-        if(Dialect.SQL.equalsVal(studioExecuteDTO.getDialect())){
-            return executeCommonSql(studioExecuteDTO);
+        if(Dialect.isSql(studioExecuteDTO.getDialect())){
+            return executeCommonSql(SqlDTO.build(studioExecuteDTO.getStatement(),
+                    studioExecuteDTO.getDatabaseId(),studioExecuteDTO.getMaxRowNum()));
         }else{
             return executeFlinkSql(studioExecuteDTO);
         }
     }
 
     private JobResult executeFlinkSql(StudioExecuteDTO studioExecuteDTO) {
+        addFlinkSQLEnv(studioExecuteDTO);
         JobConfig config = studioExecuteDTO.getJobConfig();
         // If you are using a shared session, configure the current jobmanager address
         if(!config.isUseSession()) {
@@ -83,17 +95,17 @@ public class StudioServiceImpl implements StudioService {
         return jobResult;
     }
 
-    private JobResult executeCommonSql(StudioExecuteDTO studioExecuteDTO) {
+    public JobResult executeCommonSql(SqlDTO sqlDTO) {
         JobResult result = new JobResult();
-        result.setStatement(studioExecuteDTO.getStatement());
+        result.setStatement(sqlDTO.getStatement());
         result.setStartTime(LocalDateTime.now());
-        if(Asserts.isNull(studioExecuteDTO.getDatabaseId())){
+        if(Asserts.isNull(sqlDTO.getDatabaseId())){
             result.setSuccess(false);
             result.setError("请指定数据源");
             result.setEndTime(LocalDateTime.now());
             return result;
         }else{
-            DataBase dataBase = dataBaseService.getById(studioExecuteDTO.getDatabaseId());
+            DataBase dataBase = dataBaseService.getById(sqlDTO.getDatabaseId());
             if(Asserts.isNull(dataBase)){
                 result.setSuccess(false);
                 result.setError("数据源不存在");
@@ -101,7 +113,7 @@ public class StudioServiceImpl implements StudioService {
                 return result;
             }
             Driver driver = Driver.build(dataBase.getDriverConfig()).connect();
-            JdbcSelectResult selectResult = driver.query(studioExecuteDTO.getStatement(),studioExecuteDTO.getMaxRowNum());
+            JdbcSelectResult selectResult = driver.query(sqlDTO.getStatement(),sqlDTO.getMaxRowNum());
             driver.close();
             result.setResult(selectResult);
             if(selectResult.isSuccess()){
@@ -127,7 +139,7 @@ public class StudioServiceImpl implements StudioService {
 
     @Override
     public List<SqlExplainResult> explainSql(StudioExecuteDTO studioExecuteDTO) {
-        if( Dialect.SQL.equalsVal(studioExecuteDTO.getDialect())){
+        if( Dialect.isSql(studioExecuteDTO.getDialect())){
             return explainCommonSql(studioExecuteDTO);
         }else{
             return explainFlinkSql(studioExecuteDTO);
@@ -135,6 +147,7 @@ public class StudioServiceImpl implements StudioService {
     }
 
     private List<SqlExplainResult> explainFlinkSql(StudioExecuteDTO studioExecuteDTO) {
+        addFlinkSQLEnv(studioExecuteDTO);
         JobConfig config = studioExecuteDTO.getJobConfig();
         if(!config.isUseSession()) {
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
@@ -164,6 +177,7 @@ public class StudioServiceImpl implements StudioService {
 
     @Override
     public ObjectNode getStreamGraph(StudioExecuteDTO studioExecuteDTO) {
+        addFlinkSQLEnv(studioExecuteDTO);
         JobConfig config = studioExecuteDTO.getJobConfig();
         config.setType(GatewayType.LOCAL.getLongValue());
         if(!config.isUseSession()) {
@@ -175,6 +189,7 @@ public class StudioServiceImpl implements StudioService {
 
     @Override
     public ObjectNode getJobPlan(StudioExecuteDTO studioExecuteDTO) {
+        addFlinkSQLEnv(studioExecuteDTO);
         JobConfig config = studioExecuteDTO.getJobConfig();
         config.setType(GatewayType.LOCAL.getLongValue());
         if(!config.isUseSession()) {

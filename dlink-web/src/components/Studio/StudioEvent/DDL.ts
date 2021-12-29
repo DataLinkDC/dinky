@@ -144,6 +144,16 @@ export function showDataBase(dispatch: any) {
     });
   });
 }
+/*--- 刷新 执行环境 ---*/
+export function showEnv(dispatch: any) {
+  const res = getData('api/task/listFlinkSQLEnv');
+  res.then((result) => {
+    result.datas && dispatch && dispatch({
+      type: "Studio/saveEnv",
+      payload: result.datas,
+    });
+  });
+}
 /*--- 刷新 自定义Jar ---*/
 export function showJars(dispatch: any) {
   const res = getData('api/jar/listEnabledAll');
