@@ -1,5 +1,6 @@
 package com.dlink.result;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 /**
@@ -13,9 +14,21 @@ public class AbstractResult {
     protected boolean success;
     protected LocalDateTime startTime;
     protected LocalDateTime endTime;
+    protected long time;
     protected String error;
 
-    public void setStartTime(LocalDateTime startTime){
+    public void success(){
+        this.setEndTime(LocalDateTime.now());
+        this.setSuccess(true);
+    }
+
+    public void error(String error){
+        this.setEndTime(LocalDateTime.now());
+        this.setSuccess(false);
+        this.setError(error);
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }
 
@@ -37,6 +50,10 @@ public class AbstractResult {
 
     public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
+        if (startTime != null && endTime != null) {
+            Duration duration = java.time.Duration.between(startTime, endTime);
+            time = duration.toMillis();
+        }
     }
 
     public String getError() {
@@ -45,5 +62,13 @@ public class AbstractResult {
 
     public void setError(String error) {
         this.error = error;
+    }
+
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
     }
 }

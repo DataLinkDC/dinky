@@ -24,6 +24,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -177,7 +178,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     }
 
     @Override
-    public boolean createTable(Table table) {
+    public boolean createTable(Table table) throws Exception {
         String sql = getCreateTableSql(table).replaceAll("\r\n", " ");
         if (Asserts.isNotNull(sql)) {
             return execute(sql);
@@ -187,7 +188,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     }
 
     @Override
-    public boolean dropTable(Table table) {
+    public boolean dropTable(Table table) throws Exception {
         String sql = getDropTableSql(table).replaceAll("\r\n", " ");
         if (Asserts.isNotNull(sql)) {
             return execute(sql);
@@ -197,7 +198,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     }
 
     @Override
-    public boolean truncateTable(Table table) {
+    public boolean truncateTable(Table table) throws Exception {
         String sql = getTruncateTableSql(table).replaceAll("\r\n", " ");
         if (Asserts.isNotNull(sql)) {
             return execute(sql);
@@ -229,21 +230,23 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     }
 
     @Override
-    public boolean execute(String sql) {
+    public boolean execute(String sql) throws Exception {
         Asserts.checkNullString(sql, "Sql 语句为空");
-        String[] sqls = sql.split(";");
+        boolean res = false;
         try (Statement statement = conn.createStatement()) {
-            for (int i = 0; i < sqls.length; i++) {
-                if (Asserts.isNullString(sqls[i])) {
-                    continue;
-                }
-                statement.execute(sqls[i]);
-            }
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
+            res = statement.execute(sql);
         }
-        return false;
+        return res;
+    }
+
+    @Override
+    public int executeUpdate(String sql) throws Exception {
+        Asserts.checkNullString(sql, "Sql 语句为空");
+        int res = 0;
+        try (Statement statement = conn.createStatement()) {
+            res = statement.executeUpdate(sql);
+        }
+        return res;
     }
 
     @Override
@@ -252,7 +255,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
             limit = 100;
         }
         JdbcSelectResult result = new JdbcSelectResult();
-        List<HashMap<String, Object>> datas = new ArrayList<>();
+        List<LinkedHashMap<String, Object>> datas = new ArrayList<>();
         List<Column> columns = new ArrayList<>();
         List<String> columnNameList = new ArrayList<>();
         PreparedStatement preparedStatement = null;
@@ -277,7 +280,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
             }
             result.setColumns(columnNameList);
             while (results.next()) {
-                HashMap<String, Object> data = new HashMap<>();
+                LinkedHashMap<String, Object> data = new LinkedHashMap<>();
                 for (int i = 0; i < columns.size(); i++) {
                     data.put(columns.get(i).getName(), getTypeConvert().convertValue(results, columns.get(i).getName(), columns.get(i).getType()));
                 }
@@ -296,6 +299,42 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
             result.setRowData(datas);
             return result;
         }
+    }
+
+    @Override
+    public JdbcSelectResult executeSql(String sql, Integer limit) {
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql,config.getType());
+        List<Object> resList = new ArrayList<>();
+        JdbcSelectResult result = JdbcSelectResult.buildResult();
+        for(SQLStatement item : stmtList){
+            String type = item.getClass().getSimpleName();
+            if(type.toUpperCase().contains("SELECT")||type.toUpperCase().contains("SHOW")||type.toUpperCase().contains("DESC")){
+                return query(item.toString(),limit);
+            }else if(type.toUpperCase().contains("INSERT")||type.toUpperCase().contains("UPDATE")||type.toUpperCase().contains("DELETE")){
+                try {
+                    resList.add(executeUpdate(item.toString()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    resList.add(0);
+                    result.setStatusList(resList);
+                    result.error(e.getMessage());
+                    return result;
+                }
+            }else {
+                try {
+                    resList.add(execute(item.toString()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    resList.add(false);
+                    result.setStatusList(resList);
+                    result.error(e.getMessage());
+                    return result;
+                }
+            }
+        }
+        result.setStatusList(resList);
+        result.success();
+        return result;
     }
 
     @Override

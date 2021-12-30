@@ -1,12 +1,12 @@
 import {Typography, Input, Button, Space, Table, Select, Tag, Form, Empty,Tooltip} from "antd";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
-import {useState} from "react";
+import React, {useState} from "react";
 // import Highlighter from 'react-highlight-words';
-import { SearchOutlined } from '@ant-design/icons';
+import {FireOutlined, SearchOutlined} from '@ant-design/icons';
 import {showJobData} from "@/components/Studio/StudioEvent/DQL";
 import ProTable from '@ant-design/pro-table';
-import {DIALECT} from "@/components/Studio/conf";
+import {DIALECT, isSql} from "@/components/Studio/conf";
 
 const { Option } = Select;
 const { Title, Paragraph, Text, Link } = Typography;
@@ -90,7 +90,7 @@ const StudioTable = (props:any) => {
         title: item,
         dataIndex: item,
         key: item,
-        sorter: true,
+        // sorter: true,
         ...getColumnSearchProps(item),
       });
     });
@@ -100,26 +100,40 @@ const StudioTable = (props:any) => {
   const showDetail=()=>{
     showJobData(current.console.result.jobId,dispatch)
   };
+
+  const renderFlinkSQLContent = () => {
+    return (<>
+      <Button type="primary" onClick={showDetail} icon={<SearchOutlined/>}>
+        获取最新数据
+      </Button> &nbsp;
+      {current.console.result.jobId && (<Tag color="blue" key={current.console.result.jobId}>
+        <FireOutlined /> {current.console.result.jobId}
+      </Tag>)}
+      {result.columns?
+        <ProTable dataSource={result.rowData} columns={getColumns(result.columns)} search={false}
+                  options={{
+                    search: false,
+                  }}/>
+        :(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)
+      }
+    </>)
+  }
+
+  const renderSQLContent = () => {
+    return (<>
+      {current.console.result.result?
+        <ProTable dataSource={current.console.result.result.rowData} columns={getColumns(current.console.result.result.columns)} search={false}
+                  options={{
+                    search: false,
+                  }}/>
+        :(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)
+      }
+    </>)
+  }
+
   return (
     <div style={{width: '100%'}}>
-      {current.console&&current.console.result.success?
-        (<>
-          {current.task.dialect === DIALECT.FLINKSQL ?
-            (<Button type="primary" onClick={showDetail} icon={<SearchOutlined/>}>
-              获取最新数据
-            </Button>):undefined
-          }
-          {result.rowData&&result.columns?
-            <ProTable dataSource={result.rowData} columns={getColumns(result.columns)} search={false}
-                      options={{
-                        search: false,
-                      }}/>
-            :(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)
-          }
-          </>):
-        current.console&&current.console.result&&current.console.result.result&&current.console.result.result.rowData&&current.console.result.result.columns?
-        (<ProTable dataSource={current.console.result.result.rowData} columns={getColumns(current.console.result.result.columns)} search={false}
-      />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
+      {isSql(current.task.dialect)?renderSQLContent():renderFlinkSQLContent()}
     </div>
   );
 };

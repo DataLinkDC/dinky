@@ -1,7 +1,6 @@
 package com.dlink.utils;
 
 import com.dlink.assertion.Asserts;
-import com.dlink.constant.FlinkSQLConstant;
 
 /**
  * SqlUtil

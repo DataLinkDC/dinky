@@ -60,7 +60,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
         list[i].icon = getIcon(list[i].type);
       }
     }
-    data = convertToTreeData(data, 0);
+    data = convertToTreeData(list, 0);
     setTreeData(data);
   };
 
@@ -75,7 +75,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
         list[i].icon = getIcon(list[i].type);
       }
     }
-    data = convertToTreeData(data, 0);
+    data = convertToTreeData(list, 0);
     setTreeData(data);
     let node = getTreeNodeByKey(data,key);
     onSelect([],{node:node});

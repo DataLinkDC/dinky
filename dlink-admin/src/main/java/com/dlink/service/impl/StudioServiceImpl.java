@@ -113,7 +113,7 @@ public class StudioServiceImpl implements StudioService {
                 return result;
             }
             Driver driver = Driver.build(dataBase.getDriverConfig()).connect();
-            JdbcSelectResult selectResult = driver.query(sqlDTO.getStatement(),sqlDTO.getMaxRowNum());
+            JdbcSelectResult selectResult = driver.executeSql(sqlDTO.getStatement(),sqlDTO.getMaxRowNum());
             driver.close();
             result.setResult(selectResult);
             if(selectResult.isSuccess()){

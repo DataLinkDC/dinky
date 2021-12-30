@@ -83,12 +83,6 @@ const StudioMenu = (props: any) => {
         type: "Studio/saveTabs",
         payload: newTabs,
       });
-      if(current.task.dialect === DIALECT.SQL){
-        dispatch && dispatch({
-          type: "Studio/saveResult",
-          payload: res.datas.result,
-        });
-      }
       useSession && showTables(currentSession.session, dispatch);
     })
   };

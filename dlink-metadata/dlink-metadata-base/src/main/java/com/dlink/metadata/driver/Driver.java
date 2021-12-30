@@ -9,6 +9,7 @@ import com.dlink.model.Table;
 import com.dlink.result.SqlExplainResult;
 import sun.misc.Service;
 
+import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -67,11 +68,11 @@ public interface Driver {
 
     boolean existTable(Table table);
 
-    boolean createTable(Table table);
+    boolean createTable(Table table) throws Exception;
 
-    boolean dropTable(Table table);
+    boolean dropTable(Table table) throws Exception;
 
-    boolean truncateTable(Table table);
+    boolean truncateTable(Table table) throws Exception;
 
     String getCreateTableSql(Table table);
 
@@ -87,9 +88,13 @@ public interface Driver {
 
     SelectResult select(String sql);*/
 
-    boolean execute(String sql);
+    boolean execute(String sql) throws Exception;
+
+    int executeUpdate(String sql) throws Exception;
 
     JdbcSelectResult query(String sql, Integer limit);
+
+    JdbcSelectResult executeSql(String sql, Integer limit);
 
     List<SqlExplainResult> explain(String sql);
 
