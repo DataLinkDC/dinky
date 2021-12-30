@@ -14,6 +14,7 @@ import UpdateCatalogueForm from './components/UpdateCatalogueForm';
 import SimpleTaskForm from "@/components/Studio/StudioTree/components/SimpleTaskForm";
 import { Scrollbars } from "react-custom-scrollbars";
 import {getIcon} from "@/components/Studio/icon";
+import {showEnv} from "@/components/Studio/StudioEvent/DDL";
 
 const { DirectoryTree } = Tree;
 
@@ -394,6 +395,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
               handleUpdateTaskModalVisible(false);
               setTaskFormValues({});
               openByKey(datas.id);
+              showEnv(dispatch);
               // getTreeData();
               // onSelect([],openByKey(datas.id));
             }

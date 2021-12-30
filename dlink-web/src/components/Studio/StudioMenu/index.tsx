@@ -358,7 +358,7 @@ const StudioMenu = (props: any) => {
                 onClick={onCheckSql}
               />
             </Tooltip>
-            {current.task.dialect === DIALECT.FLINKSQL &&(
+            {(!current.task.dialect||current.task.dialect === DIALECT.FLINKSQL) &&(
             <Tooltip title="获取当前的 FlinkSql 的执行图">
               <Button
                 type="text"
@@ -366,7 +366,7 @@ const StudioMenu = (props: any) => {
                 onClick={onGetStreamGraph}
               />
             </Tooltip>)}
-            {(current.task.dialect === DIALECT.FLINKSQL||isSql( current.task.dialect )) &&(
+            {(!current.task.dialect||current.task.dialect === DIALECT.FLINKSQL||isSql( current.task.dialect )) &&(
             <Tooltip title="执行当前的 FlinkSql">
               <Button
                 type="text"
@@ -375,7 +375,7 @@ const StudioMenu = (props: any) => {
                 onClick={execute}
               />
             </Tooltip>)}
-            {(current.task.dialect === DIALECT.FLINKSQL||isSql( current.task.dialect )) &&(<>
+            {(!current.task.dialect||current.task.dialect === DIALECT.FLINKSQL||isSql( current.task.dialect )) &&(<>
               <Tooltip title="提交当前的作业到集群">
                 <Button
                   type="text"

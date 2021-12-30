@@ -137,4 +137,12 @@ public class DataBaseController {
     public Result getSchemasAndTables(@RequestParam Integer id) {
         return Result.succeed(databaseService.getSchemasAndTables(id),"获取成功");
     }
+
+    /**
+     * 获取元数据的指定表的列
+     */
+    @GetMapping("/listColumns")
+    public Result listColumns(@RequestParam Integer id,@RequestParam String schemaName,@RequestParam String tableName) {
+        return Result.succeed(databaseService.listColumns(id,schemaName,tableName),"获取成功");
+    }
 }
