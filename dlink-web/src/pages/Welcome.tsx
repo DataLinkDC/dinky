@@ -514,6 +514,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增 Mysql,Oracle,PostGreSql,ClickHouse,Doris,Java 方言及图标</Link>
                 </li>
+                <li>
+                  <Link>新增 元数据查看列信息</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>
