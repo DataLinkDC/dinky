@@ -20,4 +20,63 @@ public abstract class AbstractDBQuery implements IDBQuery {
     public String[] columnCustom() {
         return null;
     }
+
+    public String schemaName() {
+        return "SCHEMA";
+    }
+
+    @Override
+    public String catalogName() {
+        return "CATALOG";
+    }
+
+    @Override
+    public String tableName() {
+        return "NAME";
+    }
+
+    @Override
+    public String tableComment() {
+        return "COMMENT";
+    }
+
+    @Override
+    public String tableType() {
+        return "TYPE";
+    }
+
+    @Override
+    public String engine() {
+        return "ENGINE";
+    }
+
+    @Override
+    public String options() {
+        return "OPTIONS";
+    }
+
+    @Override
+    public String columnName() {
+        return "FIELD";
+    }
+
+    @Override
+    public String columnType() {
+        return "TYPE";
+    }
+
+    @Override
+    public String columnComment() {
+        return "COMMENT";
+    }
+
+    @Override
+    public String columnKey() {
+        return "KEY";
+    }
+
+    @Override
+    public String isNotNull() {
+        return "NULL";
+    }
 }

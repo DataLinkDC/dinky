@@ -20,7 +20,8 @@ public class MySqlQuery extends AbstractDBQuery {
 
     @Override
     public String tablesSql(String schemaName) {
-        return "select TABLE_NAME AS `NAME`,TABLE_SCHEMA AS `Database`,TABLE_COMMENT AS COMMENT from information_schema.tables" +
+        return "select TABLE_NAME AS `NAME`,TABLE_SCHEMA AS `Database`,TABLE_COMMENT AS COMMENT,TABLE_CATALOG AS `CATALOG`" +
+                ",TABLE_TYPE AS `TYPE`,ENGINE AS `ENGINE`,CREATE_OPTIONS AS `OPTIONS` from information_schema.tables" +
                 " where TABLE_SCHEMA = '"+schemaName+"'";
     }
 
@@ -34,50 +35,8 @@ public class MySqlQuery extends AbstractDBQuery {
         return "Database";
     }
 
-
-    @Override
-    public String tableName() {
-        return "NAME";
-    }
-
-
-    @Override
-    public String tableComment() {
-        return "COMMENT";
-    }
-
-
-    @Override
-    public String columnName() {
-        return "FIELD";
-    }
-
-
-    @Override
-    public String columnType() {
-        return "TYPE";
-    }
-
-
-    @Override
-    public String columnComment() {
-        return "COMMENT";
-    }
-
-
-    @Override
-    public String columnKey() {
-        return "KEY";
-    }
-
-
     @Override
     public boolean isKeyIdentity(ResultSet results) throws SQLException {
         return "auto_increment".equals(results.getString("Extra"));
-    }
-
-    @Override
-    public String isNotNull() {
-        return "NULL";
     }
 }

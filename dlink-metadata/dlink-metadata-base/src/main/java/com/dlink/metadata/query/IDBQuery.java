@@ -27,6 +27,10 @@ public interface IDBQuery {
      */
     String schemaName();
     /**
+     * catalog 名称
+     */
+    String catalogName();
+    /**
      * 表名称
      */
     String tableName();
@@ -34,6 +38,18 @@ public interface IDBQuery {
      * 表注释
      */
     String tableComment();
+    /**
+     * 表类型
+     */
+    String tableType();
+    /**
+     * 表引擎
+     */
+    String engine();
+    /**
+     * 表配置
+     */
+    String options();
     /**
      * 字段名称
      */
