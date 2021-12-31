@@ -11,6 +11,8 @@
 
  Date: 24/11/2021 09:19:12
 */
+create database if not exists dlink;
+use dlink;
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;

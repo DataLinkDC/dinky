@@ -10,6 +10,7 @@ import com.dlink.model.Task;
 import com.dlink.service.CatalogueService;
 import com.dlink.service.StatementService;
 import com.dlink.service.TaskService;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,9 +31,17 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     @Autowired
     private StatementService statementService;
 
+    @Autowired
+    private CatalogueMapper catalogueMapper;
+
     @Override
     public List<Catalogue> getAllData() {
         return this.list();
+    }
+
+    @Override
+    public Catalogue findByParentIdAndName(Integer parent_id, String name) {
+        return catalogueMapper.findByParentIdAndName(parent_id, name);
     }
 
     @Transactional(rollbackFor=Exception.class)
@@ -42,6 +51,25 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         task.setName(catalogueTaskDTO.getName());
         task.setAlias(catalogueTaskDTO.getAlias());
         task.setDialect(catalogueTaskDTO.getDialect());
+        taskService.saveOrUpdateTask(task);
+        Catalogue catalogue = new Catalogue();
+        catalogue.setName(catalogueTaskDTO.getAlias());
+        catalogue.setIsLeaf(true);
+        catalogue.setTaskId(task.getId());
+        catalogue.setType(catalogueTaskDTO.getDialect());
+        catalogue.setParentId(catalogueTaskDTO.getParentId());
+        this.save(catalogue);
+        return catalogue;
+    }
+
+    @Override
+    public Catalogue createCatalogAndFileTask(CatalogueTaskDTO catalogueTaskDTO, String ment) {
+        Task task = new Task();
+        task.setName(catalogueTaskDTO.getName());
+        task.setAlias(catalogueTaskDTO.getAlias());
+        task.setDialect(catalogueTaskDTO.getDialect());
+        task.setStatement(ment);
+        task.setEnabled(true);
         taskService.saveOrUpdateTask(task);
         Catalogue catalogue = new Catalogue();
         catalogue.setName(catalogueTaskDTO.getAlias());
