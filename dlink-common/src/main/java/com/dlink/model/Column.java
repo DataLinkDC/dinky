@@ -21,13 +21,15 @@ public class Column implements Serializable {
     private String type;
     private String comment;
     private boolean keyFlag;
-    /**
-     * 主键是否为自增类型
-     */
-    private boolean keyIdentityFlag;
-    private String fill;
-    private String isNotNull;
+    private boolean autoIncrement;
+    private String defaultValue;
+    private boolean isNullable;
     private String javaType;
     private String columnFamily;
+    private Integer position;
+    private Integer precision;
+    private Integer scale;
+    private String characterSet;
+    private String collation;
 
 }

@@ -1,5 +1,5 @@
 import {
-  message, Button,Tree, Empty, Select,Tag,
+  Tabs, Button,Tree, Empty, Select,Tag,
   Tooltip
 } from "antd";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
@@ -7,10 +7,10 @@ import {connect} from "umi";
 import {useState} from "react";
 import styles from "./index.less";
 import {
-  ReloadOutlined,
+  TableOutlined,
   DatabaseOutlined,
   DownOutlined,
-  TableOutlined, FireOutlined
+  OrderedListOutlined, FireOutlined
 } from '@ant-design/icons';
 import React from "react";
 import {showMetaDataTable} from "@/components/Studio/StudioEvent/DDL";
@@ -18,24 +18,25 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import {
   ModalForm,
 } from '@ant-design/pro-form';
-import ProDescriptions from "@ant-design/pro-descriptions";
-import StudioPreview from "@/components/Studio/StudioConsole/StudioPreview";
 import Columns from "@/pages/DataBase/Columns";
+import Tables from "@/pages/DataBase/Tables";
 import {TreeDataNode} from "@/components/Studio/StudioTree/Function";
 
 const { DirectoryTree } = Tree;
 const {Option} = Select;
+const { TabPane } = Tabs;
 
 const StudioMetaData = (props: any) => {
 
   const {database,toolHeight, dispatch} = props;
-  const [databaseId, setDataBaseId] = useState<number>();
+  const [databaseId, setDatabaseId] = useState<number>();
   const [treeData, setTreeData] = useState<[]>([]);
   const [modalVisit, setModalVisit] = useState(false);
   const [row, setRow] = useState<TreeDataNode>();
 
-  const onRefreshTreeData = ()=>{
+  const onRefreshTreeData = (databaseId: number)=>{
     if(!databaseId)return;
+    setDatabaseId(databaseId);
     const res = showMetaDataTable(databaseId);
     res.then((result) => {
       let tables = result.datas;
@@ -58,23 +59,18 @@ const StudioMetaData = (props: any) => {
   };
 
   const onChangeDataBase = (value: number)=>{
-    setDataBaseId(value);
-    onRefreshTreeData();
+    onRefreshTreeData(value);
   };
 
   const getDataBaseOptions = ()=>{
-    let itemList = [];
-    for (let item of database) {
-      let tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias}</>);
-      itemList.push(<Option value={item.id} label={tag}>
-        {tag}
-      </Option>)
-    }
-    return itemList;
+    return <>{database.map(({ id, alias, type, enabled }) => (
+      <Option value={id} label={<><Tag color={enabled ? "processing" : "error"}>{type}</Tag>{alias}</>}>
+        <Tag color={enabled ? "processing" : "error"}>{type}</Tag>{alias}
+      </Option>
+    ))}</>
   };
 
   const openColumnInfo = (e: React.MouseEvent, node: TreeDataNode) => {
-    console.log(node);
     if(node.isLeaf){
       setRow(node);
       setModalVisit(true);
@@ -91,13 +87,6 @@ const StudioMetaData = (props: any) => {
       >
         {getDataBaseOptions()}
       </Select>
-      <Tooltip title="刷新元数据">
-        <Button
-          type="text"
-          icon={<ReloadOutlined/>}
-          onClick={onRefreshTreeData}
-        />
-      </Tooltip>
       <Scrollbars style={{height: (toolHeight - 32)}}>
         {treeData.length>0?(
           <DirectoryTree
@@ -110,15 +99,18 @@ const StudioMetaData = (props: any) => {
         />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
       </Scrollbars>
       <ModalForm
-        // title="新建表单"
-        title={ (row?(row.key)+'的':'')+'字段信息'}
+        title={row?.key}
         visible={modalVisit}
+        width={1000}
         onFinish={async () => {
           // setRow(undefined);
           // setModalVisit(false);
         }}
         modalProps={{
-          maskClosable:false
+          maskClosable:false,
+          bodyStyle:{
+            padding: '5px'
+          }
         }}
         onVisibleChange={setModalVisit}
         submitter={{
@@ -128,10 +120,33 @@ const StudioMetaData = (props: any) => {
             },
           },
         }}
+
       >
-        {row?
-        (<Columns dbId={databaseId} schema={row.schema} table={row.table}/>) : (<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
-      </ModalForm>
+        <Tabs defaultActiveKey="2">
+          <TabPane
+            tab={
+              <span>
+          <TableOutlined />
+          表信息
+        </span>
+            }
+            key="tableInfo"
+          >
+            {row?<Tables table={row}/>:<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+          </TabPane>
+          <TabPane
+            tab={
+              <span>
+          <OrderedListOutlined />
+          字段信息
+        </span>
+            }
+            key="columnInfo"
+          >
+            {row? <Columns dbId={databaseId} schema={row.schema} table={row.table}/> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+          </TabPane>
+        </Tabs>
+        </ModalForm>
     </>
   );
 };

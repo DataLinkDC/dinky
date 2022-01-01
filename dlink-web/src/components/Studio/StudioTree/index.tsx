@@ -412,8 +412,6 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
               setTaskFormValues({});
               openByKey(datas.id);
               showEnv(dispatch);
-              // getTreeData();
-              // onSelect([],openByKey(datas.id));
             }
           }}
           onCancel={() => {

@@ -7,6 +7,7 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.dlink.assertion.Asserts;
 import com.dlink.constant.CommonConstant;
+import com.dlink.metadata.query.IDBQuery;
 import com.dlink.metadata.result.JdbcSelectResult;
 import com.dlink.model.Column;
 import com.dlink.model.Schema;
@@ -118,18 +119,25 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         List<Table> tableList = new ArrayList<>();
         PreparedStatement preparedStatement = null;
         ResultSet results = null;
-        String sql = getDBQuery().tablesSql(schemaName);
+        IDBQuery dbQuery = getDBQuery();
+        String sql = dbQuery.tablesSql(schemaName);
         try {
             preparedStatement = conn.prepareStatement(sql);
             results = preparedStatement.executeQuery();
             while (results.next()) {
-                String tableName = results.getString(getDBQuery().tableName());
+                String tableName = results.getString(dbQuery.tableName());
                 if (Asserts.isNotNullString(tableName)) {
                     Table tableInfo = new Table();
                     tableInfo.setName(tableName);
-                    String tableComment = results.getString(getDBQuery().tableComment());
-                    tableInfo.setComment(tableComment);
+                    tableInfo.setComment(results.getString(dbQuery.tableComment()));
                     tableInfo.setSchema(schemaName);
+                    tableInfo.setType(results.getString(dbQuery.tableType()));
+                    tableInfo.setCatalog(results.getString(dbQuery.catalogName()));
+                    tableInfo.setEngine(results.getString(dbQuery.engine()));
+                    tableInfo.setOptions(results.getString(dbQuery.options()));
+                    tableInfo.setRows(results.getLong(dbQuery.rows()));
+                    tableInfo.setCreateTime(results.getDate(dbQuery.createTime()));
+                    tableInfo.setUpdateTime(results.getDate(dbQuery.updateTime()));
                     tableList.add(tableInfo);
                 }
             }
@@ -146,27 +154,28 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         List<Column> columns = new ArrayList<>();
         PreparedStatement preparedStatement = null;
         ResultSet results = null;
-        String tableFieldsSql = getDBQuery().columnsSql(schemaName, tableName);
+        IDBQuery dbQuery = getDBQuery();
+        String tableFieldsSql = dbQuery.columnsSql(schemaName, tableName);
         tableFieldsSql = String.format(tableFieldsSql, tableName);
         try {
             preparedStatement = conn.prepareStatement(tableFieldsSql);
             results = preparedStatement.executeQuery();
             while (results.next()) {
                 Column field = new Column();
-                String columnName = results.getString(getDBQuery().columnName());
-                boolean isId;
-                String key = results.getString(getDBQuery().columnKey());
-                isId = Asserts.isNotNullString(key) && "PRI".equals(key.toUpperCase());
-                if (isId) {
-                    field.setKeyFlag(true);
-                } else {
-                    field.setKeyFlag(false);
-                }
+                String columnName = results.getString(dbQuery.columnName());
+                String key = results.getString(dbQuery.columnKey());
+                field.setKeyFlag(Asserts.isNotNullString(key) && Asserts.isEqualsIgnoreCase("PRI",key));
                 field.setName(columnName);
-                field.setType(results.getString(getDBQuery().columnType()));
+                field.setType(results.getString(dbQuery.columnType()));
                 field.setJavaType(getTypeConvert().convert(field.getType()).getType());
-                field.setComment(results.getString(getDBQuery().columnComment()));
-                field.setIsNotNull(results.getString(getDBQuery().isNotNull()));
+                field.setComment(results.getString(dbQuery.columnComment()));
+                field.setNullable(Asserts.isEqualsIgnoreCase(results.getString(dbQuery.isNullable()),"YES"));
+                field.setCharacterSet(results.getString(dbQuery.characterSet()));
+                field.setCollation(results.getString(dbQuery.collation()));
+                field.setPosition(results.getInt(dbQuery.columnPosition()));
+                field.setPrecision(results.getInt(dbQuery.precision()));
+                field.setScale(results.getInt(dbQuery.scale()));
+                field.setAutoIncrement(Asserts.isEqualsIgnoreCase(results.getString(dbQuery.autoIncrement()),"auto_increment"));
                 columns.add(field);
             }
         } catch (SQLException e) {

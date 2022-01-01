@@ -1,9 +1,9 @@
 import React from "react";
 import { Button, Tooltip } from 'antd';
-import { QuestionCircleOutlined } from '@ant-design/icons';
+import { KeyOutlined,CheckSquareOutlined } from '@ant-design/icons';
 import type { ProColumns } from '@ant-design/pro-table';
 import ProTable, { TableDropdown } from '@ant-design/pro-table';
-import { Column } from "./data";
+import { Column } from "../data";
 import {getData, queryData} from "@/components/Common/crud";
 
 
@@ -14,18 +14,21 @@ const Columns = (props: any) => {
 
   const columns: ProColumns<Column>[] = [
     {
+      title: '序号',
+      dataIndex: 'position',
+      sorter: (a, b) => a.position - b.position,
+    },
+    {
       title: '列名',
       dataIndex: 'name',
       render: (_) => <a>{_}</a>,
-      /*formItemProps: {
-        lightProps: {
-          labelFormatter: (value) => `app-${value}`,
-        },
-      },*/
+      // sorter: (a, b) => a.name - b.name,
+      copyable: true,
     },
     {
       title: '注释',
       dataIndex: 'comment',
+      // ellipsis: true,
     },
     {
       title: '类型',
@@ -34,15 +37,42 @@ const Columns = (props: any) => {
     {
       title: '主键',
       dataIndex: 'keyFlag',
+      render: (_, record) => (
+        <>
+          {record.keyFlag?<KeyOutlined style={{ color:'#FAA100'}} />:undefined}
+        </>
+      ),
     },{
       title: '自增',
-      dataIndex: 'keyIdentityFlag',
-    },{
-      title: '默认值',
-      dataIndex: 'fill',
+      dataIndex: 'autoIncrement',
+      render: (_, record) => (
+        <>
+          {record.autoIncrement?<CheckSquareOutlined style={{ color:'#1296db'}} />:undefined}
+        </>
+      ),
     },{
       title: '非空',
-      dataIndex: 'isNotNull',
+      dataIndex: 'nullable',
+      render: (_, record) => (
+        <>
+          {!record.nullable?<CheckSquareOutlined style={{ color:'#1296db'}} />:undefined}
+        </>
+      ),
+    },{
+      title: '默认值',
+      dataIndex: 'defaultValue',
+    },{
+      title: '精度',
+      dataIndex: 'precision',
+    },{
+      title: '小数范围',
+      dataIndex: 'scale',
+    },{
+      title: '字符集',
+      dataIndex: 'characterSet',
+    },{
+      title: '排序规则',
+      dataIndex: 'collation',
     },{
       title: 'Java 类型',
       dataIndex: 'javaType',
@@ -92,15 +122,15 @@ const Columns = (props: any) => {
           data: msg.datas,
           success: msg.code===0,
         };
-      }
-      }
+      }}
       rowKey="name"
       pagination={{
         pageSize: 10,
       }}
-      search={{
+      /*search={{
         filterType: 'light',
-      }}
+      }}*/
+      search={false}
       /*toolBarRender={() => [
         <Button key="show">查看日志</Button>,
         <Button type="primary" key="primary">

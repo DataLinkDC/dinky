@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,10 +27,9 @@ public class Table implements Serializable, Comparable<Table> {
     private String type;
     private String engine;
     private String options;
-    private String collation;
     private Long rows;
-    private LocalDateTime createTime;
-    private LocalDateTime updateTime;
+    private Date createTime;
+    private Date updateTime;
     private List<Column> columns;
 
     public Table() {

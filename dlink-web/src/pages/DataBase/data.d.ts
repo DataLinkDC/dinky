@@ -17,7 +17,6 @@ export type DataBaseItem = {
   updateTime: Date,
 };
 
-
 export type DataBaseFormProps = {
   name: string,
   alias: string,
@@ -32,3 +31,33 @@ export type DataBaseFormProps = {
   dbVersion: string,
   enabled: boolean,
 }
+
+export type Column = {
+  name: string,
+  type: string,
+  comment: string,
+  keyFlag: boolean,
+  autoIncrement: boolean,
+  defaultValue: string,
+  nullable: string,
+  javaType: string,
+  columnFamily: string,
+  position: number,
+  precision: number,
+  scale: number,
+  characterSet: string,
+  collation: string,
+};
+
+export type Table = {
+  name: string,
+  schema: string,
+  catalog: string,
+  comment: string,
+  type: string,
+  engine: string,
+  options: string,
+  rows: number,
+  createTime: string,
+  updateTime: string,
+};

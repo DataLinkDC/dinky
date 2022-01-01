@@ -56,27 +56,77 @@ public abstract class AbstractDBQuery implements IDBQuery {
     }
 
     @Override
+    public String rows() {
+        return "ROWS";
+    }
+
+    @Override
+    public String createTime() {
+        return "CREATE_TIME";
+    }
+
+    @Override
+    public String updateTime() {
+        return "UPDATE_TIME";
+    }
+
+    @Override
     public String columnName() {
-        return "FIELD";
+        return "COLUMN_NAME";
+    }
+
+    @Override
+    public String columnPosition() {
+        return "ORDINAL_POSITION";
     }
 
     @Override
     public String columnType() {
-        return "TYPE";
+        return "DATA_TYPE";
     }
 
     @Override
     public String columnComment() {
-        return "COMMENT";
+        return "COLUMN_COMMENT";
     }
 
     @Override
     public String columnKey() {
-        return "KEY";
+        return "COLUMN_KEY";
     }
 
     @Override
-    public String isNotNull() {
-        return "NULL";
+    public String autoIncrement() {
+        return "AUTO_INCREMENT";
+    }
+
+    @Override
+    public String defaultValue() {
+        return "COLUMN_DEFAULT";
+    }
+
+    @Override
+    public String isNullable() {
+        return "IS_NULLABLE";
+    }
+
+    @Override
+    public String precision() {
+        return "NUMERIC_PRECISION";
+    }
+
+    @Override
+    public String scale() {
+        return "NUMERIC_SCALE";
+    }
+
+    @Override
+    public String characterSet() {
+        return "CHARACTER_SET_NAME";
+    }
+
+    @Override
+    public String collation() {
+        return "COLLATION_NAME";
     }
 }
