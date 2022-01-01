@@ -23,7 +23,7 @@ const UploadModal:React.FC<UploadModalProps> = (props:any) => {
       }
       if (info.file.status === 'done') {
         console.log('info:',info);
-        if(info.file.response.code == "-1"){
+        if(info.file.response.code === 1){
           message.error(`${info.file.response.msg} `);
         }else{
           message.success(`${info.file.name} file uploaded successfully`);

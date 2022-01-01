@@ -10,7 +10,6 @@ import com.dlink.service.CatalogueService;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
@@ -31,18 +30,15 @@ public class CatalogueController {
     @Autowired
     private CatalogueService catalogueService;
 
-    @Value("${dlink.uploadpath}")
-    private String uploadpath;
-
     @PostMapping("/upload/{id}")
     public Result<String> upload(MultipartFile file,@PathVariable Integer id) {
         //获取上传的路径
-        String filePath = uploadpath;
+        String filePath = System.getProperty("user.dir");
         //获取源文件的名称
         String fileName = file.getOriginalFilename();
-        String zipPath = filePath+fileName;
+        String zipPath = filePath+File.separator+fileName;
         String unzipFileName = fileName.substring(0,fileName.lastIndexOf("."));
-        String unzipPath = filePath+unzipFileName;
+        String unzipPath = filePath+File.separator+unzipFileName;
         File unzipFile = new File(unzipPath);
         File zipFile = new File(zipPath);
         if(unzipFile.exists()){
