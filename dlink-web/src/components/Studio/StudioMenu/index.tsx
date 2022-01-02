@@ -1,7 +1,7 @@
 import styles from "./index.less";
 import {Menu, Dropdown, Tooltip, Row, Col, Popconfirm, notification, Modal, message} from "antd";
 import {
-  PauseCircleTwoTone, CopyTwoTone, DeleteTwoTone, PlayCircleTwoTone, DiffTwoTone,
+  PauseCircleTwoTone, CopyTwoTone, DeleteTwoTone, PlayCircleTwoTone, DiffTwoTone,SnippetsTwoTone,
   FileAddTwoTone, FolderOpenTwoTone, SafetyCertificateTwoTone, SaveTwoTone, FlagTwoTone,
   EnvironmentOutlined, SmileOutlined, RocketTwoTone, QuestionCircleTwoTone, MessageOutlined, ClusterOutlined
 } from "@ant-design/icons";
@@ -19,6 +19,10 @@ import {showCluster, showTables, saveTask} from "@/components/Studio/StudioEvent
 import {useEffect, useState} from "react";
 import StudioExplain from "../StudioConsole/StudioExplain";
 import {DIALECT, isSql} from "@/components/Studio/conf";
+import {
+  ModalForm,
+} from '@ant-design/pro-form';
+import SqlExport from "@/pages/FlinkSqlStudio/SqlExport";
 
 const menu = (
   <Menu>
@@ -31,6 +35,7 @@ const StudioMenu = (props: any) => {
 
   const {tabs, current, currentPath, form, refs, dispatch, currentSession} = props;
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
+  const [exportModalVisible, handleExportModalVisible] = useState<boolean>(false);
   const [graphModalVisible, handleGraphModalVisible] = useState<boolean>(false);
   const [explainData, setExplainData] = useState([]);
   const [graphData, setGraphData] = useState();
@@ -248,6 +253,10 @@ const StudioMenu = (props: any) => {
     saveTask(current,dispatch);
   };
 
+  const exportSql = () => {
+    handleExportModalVisible(true);
+  };
+
   const runMenu = (
     <Menu>
       <Menu.Item onClick={execute}>同步执行</Menu.Item>
@@ -344,6 +353,13 @@ const StudioMenu = (props: any) => {
                 onClick={saveSqlAndSettingToTask}
               />
             </Tooltip>
+            <Tooltip title="导出当前的 Sql 及配置">
+              <Button
+                type="text"
+                icon={<SnippetsTwoTone />}
+                onClick={exportSql}
+              />
+            </Tooltip>
             <Divider type="vertical"/>
             <Tooltip title="检查当前的 FlinkSql">
               <Button
@@ -432,6 +448,27 @@ const StudioMenu = (props: any) => {
       >
         <StudioGraph data={graphData} />
       </Modal>
+      <ModalForm
+        title={`${current.task.alias} 的 ${current.task.dialect} 导出`}
+        visible={exportModalVisible}
+        width={1000}
+        modalProps={{
+          maskClosable:false,
+          bodyStyle:{
+            padding: '5px'
+          }
+        }}
+        onVisibleChange={handleExportModalVisible}
+        submitter={{
+          submitButtonProps: {
+            style: {
+              display: 'none',
+            },
+          },
+        }}
+      >
+        <SqlExport id={current.task.id} />
+      </ModalForm>
     </Row>
   );
 };

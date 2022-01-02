@@ -8,6 +8,7 @@ import com.dlink.config.Dialect;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.dto.SqlDTO;
 import com.dlink.gateway.GatewayType;
+import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.job.JobConfig;
 import com.dlink.job.JobManager;
 import com.dlink.job.JobResult;
@@ -64,55 +65,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             return studioService.executeCommonSql(SqlDTO.build(task.getStatement(),
                     task.getDatabaseId(),null));
         }
-        boolean isJarTask = isJarTask(task);
-        if(!isJarTask&&Asserts.isNotNull(task.getEnvId())){
-            Task envTask = getTaskInfoById(task.getEnvId());
-            if(Asserts.isNotNull(envTask)&&Asserts.isNotNullString(envTask.getStatement())) {
-                task.setStatement(envTask.getStatement() + "\r\n" + task.getStatement());
-            }
-        }
-        JobConfig config = task.buildSubmitConfig();
-        if (!JobManager.useGateway(config.getType())) {
-            config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), task.getClusterId()));
-        } else {
-            Map<String, Object> gatewayConfig = clusterConfigurationService.getGatewayConfig(task.getClusterConfigurationId());
-            if (GatewayType.YARN_APPLICATION.equalsValue(config.getType())||GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType())) {
-                if(!isJarTask) {
-                    SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
-                    gatewayConfig.put("userJarPath", systemConfiguration.getSqlSubmitJarPath());
-                    gatewayConfig.put("userJarParas", systemConfiguration.getSqlSubmitJarParas() + buildParas(config.getTaskId()));
-                    gatewayConfig.put("userJarMainAppClass", systemConfiguration.getSqlSubmitJarMainAppClass());
-                }else{
-                    Jar jar = jarService.getById(task.getJarId());
-                    Assert.check(jar);
-                    gatewayConfig.put("userJarPath", jar.getPath());
-                    gatewayConfig.put("userJarParas", jar.getParas());
-                    gatewayConfig.put("userJarMainAppClass", jar.getMainClass());
-                }
-            }
-            config.buildGatewayConfig(gatewayConfig);
-            config.addGatewayConfig(task.parseConfig());
-        }
-        switch (config.getSavePointStrategy()) {
-            case LATEST:
-                Savepoints latestSavepoints = savepointsService.getLatestSavepointByTaskId(id);
-                if (Asserts.isNotNull(latestSavepoints)) {
-                    config.setSavePointPath(latestSavepoints.getPath());
-                }
-                break;
-            case EARLIEST:
-                Savepoints earliestSavepoints = savepointsService.getEarliestSavepointByTaskId(id);
-                if (Asserts.isNotNull(earliestSavepoints)) {
-                    config.setSavePointPath(earliestSavepoints.getPath());
-                }
-                break;
-            case CUSTOM:
-                break;
-            default:
-                config.setSavePointPath(null);
-        }
+        JobConfig config = buildJobConfig(task);
         JobManager jobManager = JobManager.build(config);
-        if(!isJarTask) {
+        if(!config.isJarTask()) {
             return jobManager.executeSql(task.getStatement());
         }else{
             return jobManager.executeJar();
@@ -180,4 +135,71 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         return this.list(new QueryWrapper<Task>().eq("dialect", Dialect.FLINKSQLENV).eq("enabled",1));
     }
 
+    @Override
+    public String exportSql(Integer id) {
+        Task task = getTaskInfoById(id);
+        Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
+        if(Dialect.isSql(task.getDialect())){
+            return task.getStatement();
+        }
+        JobConfig config = buildJobConfig(task);
+        JobManager jobManager = JobManager.build(config);
+        if(!config.isJarTask()) {
+            return jobManager.exportSql(task.getStatement());
+        }else{
+            return "";
+        }
+    }
+
+    private JobConfig buildJobConfig(Task task){
+        boolean isJarTask = isJarTask(task);
+        if(!isJarTask&&Asserts.isNotNull(task.getEnvId())){
+            Task envTask = getTaskInfoById(task.getEnvId());
+            if(Asserts.isNotNull(envTask)&&Asserts.isNotNullString(envTask.getStatement())) {
+                task.setStatement(envTask.getStatement() + "\r\n" + task.getStatement());
+            }
+        }
+        JobConfig config = task.buildSubmitConfig();
+        config.setJarTask(isJarTask);
+        if (!JobManager.useGateway(config.getType())) {
+            config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), task.getClusterId()));
+        } else {
+            Map<String, Object> gatewayConfig = clusterConfigurationService.getGatewayConfig(task.getClusterConfigurationId());
+            if (GatewayType.YARN_APPLICATION.equalsValue(config.getType())||GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType())) {
+                if(!isJarTask) {
+                    SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
+                    gatewayConfig.put("userJarPath", systemConfiguration.getSqlSubmitJarPath());
+                    gatewayConfig.put("userJarParas", systemConfiguration.getSqlSubmitJarParas() + buildParas(config.getTaskId()));
+                    gatewayConfig.put("userJarMainAppClass", systemConfiguration.getSqlSubmitJarMainAppClass());
+                }else{
+                    Jar jar = jarService.getById(task.getJarId());
+                    Assert.check(jar);
+                    gatewayConfig.put("userJarPath", jar.getPath());
+                    gatewayConfig.put("userJarParas", jar.getParas());
+                    gatewayConfig.put("userJarMainAppClass", jar.getMainClass());
+                }
+            }
+            config.buildGatewayConfig(gatewayConfig);
+            config.addGatewayConfig(task.parseConfig());
+        }
+        switch (config.getSavePointStrategy()) {
+            case LATEST:
+                Savepoints latestSavepoints = savepointsService.getLatestSavepointByTaskId(task.getId());
+                if (Asserts.isNotNull(latestSavepoints)) {
+                    config.setSavePointPath(latestSavepoints.getPath());
+                }
+                break;
+            case EARLIEST:
+                Savepoints earliestSavepoints = savepointsService.getEarliestSavepointByTaskId(task.getId());
+                if (Asserts.isNotNull(earliestSavepoints)) {
+                    config.setSavePointPath(earliestSavepoints.getPath());
+                }
+                break;
+            case CUSTOM:
+                break;
+            default:
+                config.setSavePointPath(null);
+        }
+        return config;
+    }
 }
