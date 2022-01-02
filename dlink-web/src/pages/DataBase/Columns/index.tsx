@@ -1,28 +1,19 @@
 import React from "react";
-import { Button, Tooltip } from 'antd';
-import { KeyOutlined,CheckSquareOutlined } from '@ant-design/icons';
-import type { ProColumns } from '@ant-design/pro-table';
-import ProTable, { TableDropdown } from '@ant-design/pro-table';
-import { Column } from "../data";
-import {getData, queryData} from "@/components/Common/crud";
-
-
+import {KeyOutlined, CheckSquareOutlined} from '@ant-design/icons';
+import DTable from "@/components/Common/DTable";
 
 const Columns = (props: any) => {
 
   const {dbId,table,schema} = props;
 
-  const columns: ProColumns<Column>[] = [
-    {
-      title: '序号',
-      dataIndex: 'position',
-      sorter: (a, b) => a.position - b.position,
-    },
+  const cols = [{
+    title: '序号',
+    dataIndex: 'position',
+    isString: false,
+  },
     {
       title: '列名',
       dataIndex: 'name',
-      render: (_) => <a>{_}</a>,
-      // sorter: (a, b) => a.name - b.name,
       copyable: true,
     },
     {
@@ -42,6 +33,17 @@ const Columns = (props: any) => {
           {record.keyFlag?<KeyOutlined style={{ color:'#FAA100'}} />:undefined}
         </>
       ),
+      filters: [
+        {
+          text: '主键',
+          value: true,
+        },
+        {
+          text: '其他',
+          value: false,
+        },
+      ],
+      openSearch: 'dict',
     },{
       title: '自增',
       dataIndex: 'autoIncrement',
@@ -50,6 +52,17 @@ const Columns = (props: any) => {
           {record.autoIncrement?<CheckSquareOutlined style={{ color:'#1296db'}} />:undefined}
         </>
       ),
+      filters: [
+        {
+          text: '自增',
+          value: true,
+        },
+        {
+          text: '其他',
+          value: false,
+        },
+      ],
+      openSearch: 'dict',
     },{
       title: '非空',
       dataIndex: 'nullable',
@@ -58,15 +71,28 @@ const Columns = (props: any) => {
           {!record.nullable?<CheckSquareOutlined style={{ color:'#1296db'}} />:undefined}
         </>
       ),
+      filters: [
+        {
+          text: '非空',
+          value: true,
+        },
+        {
+          text: '可为空',
+          value: false,
+        },
+      ],
+      openSearch: 'dict',
     },{
       title: '默认值',
       dataIndex: 'defaultValue',
     },{
       title: '精度',
       dataIndex: 'precision',
+      isString: false,
     },{
       title: '小数范围',
       dataIndex: 'scale',
+      isString: false,
     },{
       title: '字符集',
       dataIndex: 'characterSet',
@@ -76,69 +102,11 @@ const Columns = (props: any) => {
     },{
       title: 'Java 类型',
       dataIndex: 'javaType',
-    },
-    /*{
-      title: '类型',
-      dataIndex: 'type',
-      valueType: 'select',
-      valueEnum: {
-        all: { text: '全部' },
-        付小小: { text: '付小小' },
-        曲丽丽: { text: '曲丽丽' },
-        林东东: { text: '林东东' },
-        陈帅帅: { text: '陈帅帅' },
-        兼某某: { text: '兼某某' },
-      },
-    },*/
-    /*{
-      title: '操作',
-      width: '164px',
-      key: 'option',
-      valueType: 'option',
-      render: () => [
-        <a key="link">链路</a>,
-        <a key="link2">报警</a>,
-        <a key="link3">监控</a>,
-        <TableDropdown
-          key="actionGroup"
-          menus={[
-            { key: 'copy', name: '复制' },
-            { key: 'delete', name: '删除' },
-          ]}
-        />,
-      ],
-    },*/
-  ];
-
-
+    },]
   return (
-    <ProTable<Column>
-      columns={columns}
-      style={{width: '100%'}}
-      request={async() =>
-      {
-        const msg = await getData('api/database/listColumns', {id:dbId,schemaName:schema,tableName:table});
-        return {
-          data: msg.datas,
-          success: msg.code===0,
-        };
-      }}
-      rowKey="name"
-      pagination={{
-        pageSize: 10,
-      }}
-      /*search={{
-        filterType: 'light',
-      }}*/
-      search={false}
-      /*toolBarRender={() => [
-        <Button key="show">查看日志</Button>,
-        <Button type="primary" key="primary">
-          创建应用
-        </Button>,
-      ]}*/
-    />
-  );
+    <DTable columns={cols}
+            dataSource={{url:'api/database/listColumns',params:{id:dbId,schemaName:schema,tableName:table}}}/>
+  )
 };
 
 export default Columns;

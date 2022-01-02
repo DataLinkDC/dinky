@@ -122,7 +122,7 @@ const StudioMetaData = (props: any) => {
         }}
 
       >
-        <Tabs defaultActiveKey="2">
+        <Tabs defaultActiveKey="tableInfo" size="small">
           <TabPane
             tab={
               <span>

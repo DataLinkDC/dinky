@@ -136,8 +136,8 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                     tableInfo.setEngine(results.getString(dbQuery.engine()));
                     tableInfo.setOptions(results.getString(dbQuery.options()));
                     tableInfo.setRows(results.getLong(dbQuery.rows()));
-                    tableInfo.setCreateTime(results.getDate(dbQuery.createTime()));
-                    tableInfo.setUpdateTime(results.getDate(dbQuery.updateTime()));
+                    tableInfo.setCreateTime(results.getTimestamp(dbQuery.createTime()));
+                    tableInfo.setUpdateTime(results.getTimestamp(dbQuery.updateTime()));
                     tableList.add(tableInfo);
                 }
             }
