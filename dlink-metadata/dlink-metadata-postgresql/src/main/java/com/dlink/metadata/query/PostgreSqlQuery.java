@@ -67,7 +67,7 @@ public class PostgreSqlQuery extends AbstractDBQuery {
     }
 
     @Override
-    public String isNotNull() {
+    public String isNullable() {
         return null;
     }
 }
