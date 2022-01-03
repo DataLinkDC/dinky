@@ -472,7 +472,7 @@ public class JobManager {
         if(Asserts.isNotNullString(config.getSavePointPath())){
             sb.append("set " + SavepointConfigOptions.SAVEPOINT_PATH + " = " + config.getSavePointPath() + ";\r\n");
         }
-        if(Asserts.isNotNull(config.getGatewayConfig().getFlinkConfig().getConfiguration())) {
+        if(Asserts.isNotNull(config.getGatewayConfig())&&Asserts.isNotNull(config.getGatewayConfig().getFlinkConfig().getConfiguration())) {
             for (Map.Entry<String, String> entry : config.getGatewayConfig().getFlinkConfig().getConfiguration().entrySet()) {
                 sb.append("set " + entry.getKey() + " = " + entry.getValue() + ";\r\n");
             }
@@ -482,8 +482,10 @@ public class JobManager {
             case YARN_PER_JOB:
             case YARN_APPLICATION:
                 sb.append("set " + DeploymentOptions.TARGET.key() + " = " + GatewayType.get(config.getType()).getLongValue() + ";\r\n");
-                sb.append("set " + YarnConfigOptions.PROVIDED_LIB_DIRS.key() + " = " + Collections.singletonList(config.getGatewayConfig().getClusterConfig().getFlinkLibPath()) + ";\r\n");
-                if(Asserts.isNotNullString(config.getGatewayConfig().getFlinkConfig().getJobName())) {
+                if(Asserts.isNotNull(config.getGatewayConfig())) {
+                    sb.append("set " + YarnConfigOptions.PROVIDED_LIB_DIRS.key() + " = " + Collections.singletonList(config.getGatewayConfig().getClusterConfig().getFlinkLibPath()) + ";\r\n");
+                }
+                if(Asserts.isNotNull(config.getGatewayConfig())&&Asserts.isNotNullString(config.getGatewayConfig().getFlinkConfig().getJobName())) {
                     sb.append("set " + YarnConfigOptions.APPLICATION_NAME.key() + " = " + config.getGatewayConfig().getFlinkConfig().getJobName() + ";\r\n");
                 }
         }
