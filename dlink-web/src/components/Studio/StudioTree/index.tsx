@@ -238,11 +238,11 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     }
   };
 
-  const toDelete= (node:TreeDataNode|undefined)=>{
+  const toDelete= (node: TreeDataNode|undefined)=>{
     let label = (node?.taskId==null)?'目录':'作业';
     Modal.confirm({
       title: `删除${label}`,
-      content: `确定删除该${label}吗？`,
+      content: `确定删除该${label}【${node?.name}】吗？`,
       okText: '确认',
       cancelText: '取消',
       onOk:async () => {

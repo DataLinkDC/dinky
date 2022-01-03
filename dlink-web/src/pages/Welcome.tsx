@@ -520,6 +520,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增 FlinkSQL 及 SQL 导出</Link>
                 </li>
+                <li>
+                  <Link>新增 集群与数据源的 Studio 管理交互</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

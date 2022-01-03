@@ -1,6 +1,6 @@
 import {
   message, Button, Table, Empty, Divider,
-  Tooltip, Drawer
+  Tooltip, Drawer, Modal
 } from "antd";
 import ProDescriptions from '@ant-design/pro-descriptions';
 import {StateType} from "@/pages/FlinkSqlStudio/model";
@@ -13,15 +13,18 @@ import {
 } from '@ant-design/icons';
 import React from "react";
 import {showCluster} from "../../StudioEvent/DDL";
-import {handleAddOrUpdate} from "@/components/Common/crud";
+import {handleAddOrUpdate, handleRemove} from "@/components/Common/crud";
 import ClusterForm from "@/pages/Cluster/components/ClusterForm";
 import {Scrollbars} from 'react-custom-scrollbars';
+
+const url = '/api/cluster';
 
 const StudioCluster = (props: any) => {
 
   const {cluster, toolHeight, dispatch} = props;
   const [createModalVisible, handleCreateModalVisible] = useState<boolean>(false);
-  const [row, setRow] = useState<{}>();
+  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  const [row, setRow] = useState<{}>({});
 
   const getColumns = () => {
     return [{
@@ -37,20 +40,18 @@ const StudioCluster = (props: any) => {
 
   const getAllColumns = () => {
     return [{
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+    }, {
+      title: '唯一标识',
+      dataIndex: 'name',
+    }, {
       title: "集群名",
       dataIndex: "alias",
-      key: "alias",
-    }, {
-      title: '名称',
-      dataIndex: 'name',
     },
       {
-        title: '集群ID',
-        dataIndex: 'id',
-      },
-      {
         title: '类型',
-        sorter: true,
         dataIndex: 'type',
         filters: [
           {
@@ -69,6 +70,14 @@ const StudioCluster = (props: any) => {
             text: 'Yarn Application',
             value: 'yarn-application',
           },
+          {
+            text: 'Kubernetes Session',
+            value: 'kubernetes-session',
+          },
+          {
+            text: 'Kubernetes Application',
+            value: 'kubernetes-application',
+          },
         ],
         filterMultiple: false,
         valueEnum: {
@@ -76,21 +85,20 @@ const StudioCluster = (props: any) => {
           'standalone': {text: 'Standalone'},
           'yarn-per-job': {text: 'Yarn Per-Job'},
           'yarn-application': {text: 'Yarn Application'},
+          'kubernetes-session': {text: 'Kubernetes Session'},
+          'kubernetes-application': {text: 'Kubernetes Application'},
         },
       },
       {
         title: 'JobManager HA 地址',
-        sorter: true,
         dataIndex: 'hosts',
         valueType: 'textarea',
       },
       {
         title: '当前 JobManager 地址',
-        sorter: true,
         dataIndex: 'jobManagerHost',
       }, {
         title: '版本',
-        sorter: true,
         dataIndex: 'version',
       },
       {
@@ -114,7 +122,6 @@ const StudioCluster = (props: any) => {
       },
       {
         title: '注释',
-        sorter: true,
         valueType: 'textarea',
         dataIndex: 'note',
       },
@@ -157,6 +164,13 @@ const StudioCluster = (props: any) => {
         },
       },
       {
+        title: '集群配置ID',
+        dataIndex: 'clusterConfigurationId',
+      },{
+        title: '作业ID',
+        dataIndex: 'taskId',
+      },
+      {
         title: '创建时间',
         dataIndex: 'createTime',
         valueType: 'dateTime',
@@ -171,19 +185,11 @@ const StudioCluster = (props: any) => {
         dataIndex: 'option',
         valueType: 'option',
         render: (_, record) => [
-          <a
-            onClick={() => {
-              message.success('敬请期待');
-            }}
-          >
-            详情
-          </a>, <Divider type="vertical"/>, <a
-            onClick={() => {
-              message.success('敬请期待');
-            }}
-          >
-            管理
-          </a>
+          <Button  type="dashed" onClick={() => onModifyCluster(record)}>
+            配置
+          </Button>, <Button danger onClick={() => onDeleteCluster(record)}>
+            删除
+          </Button>
         ],
       },];
   };
@@ -194,6 +200,25 @@ const StudioCluster = (props: any) => {
 
   const onCreateCluster = () => {
     handleCreateModalVisible(true);
+  };
+
+  const onModifyCluster = (record) => {
+    setRow(record);
+    handleUpdateModalVisible(true);
+  };
+
+  const onDeleteCluster = (record) => {
+    Modal.confirm({
+      title: '删除集群',
+      content: `确定删除该集群【${record.alias}】吗？`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk: async () => {
+        await handleRemove(url, [record]);
+        setRow({});
+        onRefreshCluster();
+      }
+    });
   };
 
   return (
@@ -228,12 +253,28 @@ const StudioCluster = (props: any) => {
             handleCreateModalVisible(false);
           }}
           modalVisible={createModalVisible}
+          values={{}}
         />
+        {row && Object.keys(row).length ? (<ClusterForm
+          onSubmit={async (value) => {
+            const success = await handleAddOrUpdate("api/cluster", value);
+            if (success) {
+              handleUpdateModalVisible(false);
+              setRow({});
+              onRefreshCluster();
+            }
+          }}
+          onCancel={() => {
+            handleUpdateModalVisible(false);
+          }}
+          modalVisible={updateModalVisible}
+          values={row}
+        />):undefined}
         <Drawer
           width={600}
-          visible={!!row}
+          visible={!!row?.id}
           onClose={() => {
-            setRow(undefined);
+            setRow({});
           }}
           closable={false}
         >

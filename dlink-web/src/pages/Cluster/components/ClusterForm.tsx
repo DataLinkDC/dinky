@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Form, Button, Input, Modal, Select} from 'antd';
+import {Form, Button, Input, Modal, Select, Switch} from 'antd';
 
 import {ClusterTableListItem} from "@/pages/Cluster/data";
 
@@ -7,6 +7,7 @@ export type ClusterFormProps = {
   onCancel: (flag?: boolean) => void;
   onSubmit: (values: Partial<ClusterTableListItem>) => void;
   modalVisible: boolean;
+  values: Partial<ClusterTableListItem>;
 };
 const Option = Select.Option;
 
@@ -18,6 +19,15 @@ const formLayout = {
 const ClusterForm: React.FC<ClusterFormProps> = (props) => {
 
   const [form] = Form.useForm();
+  const [formVals, setFormVals] = useState<Partial<ClusterTableListItem>>({
+    id: props.values.id,
+    name: props.values.name,
+    alias: props.values.alias,
+    type: props.values.type,
+    hosts: props.values.hosts,
+    note: props.values.note,
+    enabled: props.values.enabled,
+  });
 
   const {
     onSubmit: handleSubmit,
@@ -27,10 +37,12 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
 
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
+    fieldsValue.id= formVals.id;
+    setFormVals(fieldsValue);
     handleSubmit(fieldsValue);
   };
 
-  const renderContent = () => {
+  const renderContent = (formValsPara: Partial<ClusterTableListItem>) => {
     return (
       <>
         <Form.Item
@@ -73,6 +85,12 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
           <Input.TextArea placeholder="请输入文本注释" allowClear
                           autoSize={{minRows: 3, maxRows: 10}}/>
         </Form.Item>
+        <Form.Item
+          name="enabled"
+          label="是否启用">
+          <Switch checkedChildren="启用" unCheckedChildren="禁用"
+                  defaultChecked={formValsPara.enabled}/>
+        </Form.Item>
       </>
     );
   };
@@ -93,7 +111,7 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
       width={640}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title="创建集群"
+      title={formVals.id?"修改集群":"创建集群"}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}
@@ -101,8 +119,9 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
       <Form
         {...formLayout}
         form={form}
+        initialValues={formVals}
       >
-        {renderContent()}
+        {renderContent(formVals)}
       </Form>
     </Modal>
   );
