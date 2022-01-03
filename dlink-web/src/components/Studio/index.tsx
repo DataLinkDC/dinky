@@ -3,7 +3,7 @@ import {connect} from "umi";
 import styles from './index.less';
 import {} from "@ant-design/icons";
 import StudioMenu from "./StudioMenu";
-import {Row, Col, Card, Form, BackTop} from "antd";
+import {Row, Col, Card, Form} from "antd";
 import StudioTabs from "./StudioTabs";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import StudioConsole from "./StudioConsole";
@@ -151,7 +151,6 @@ const Studio: React.FC<StudioProps> = (props) => {
           </Row>
         </DraggleVerticalLayout>
       </Card>
-      <BackTop/>
     </div>
   )
 };

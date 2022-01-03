@@ -33,6 +33,7 @@ public class JobConfig {
     private Integer clusterId;
     private Integer clusterConfigurationId;
     private Integer jarId;
+    private boolean isJarTask=false;
     private String address;
     private Integer taskId;
     private String jobName;

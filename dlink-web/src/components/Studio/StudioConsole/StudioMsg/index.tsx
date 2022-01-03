@@ -3,7 +3,7 @@ import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
 import {FireOutlined, ScheduleOutlined} from '@ant-design/icons';
 import StudioSqlConfig from "@/components/Studio/StudioRightTool/StudioSqlConfig";
-import {DIALECT} from "@/components/Studio/conf";
+import {DIALECT, isSql} from "@/components/Studio/conf";
 
 const { Title, Paragraph, Text, Link } = Typography;
 
@@ -56,7 +56,7 @@ const StudioMsg = (props:any) => {
 
   return (
     <Typography>
-      {current.console.result.startTime?(current.task.dialect === DIALECT.SQL ? renderCommonSqlContent():
+      {current.console.result.startTime?(isSql(current.task.dialect) ? renderCommonSqlContent():
         renderFlinkSqlContent() ):<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       }
     </Typography>

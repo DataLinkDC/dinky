@@ -27,6 +27,10 @@ public interface IDBQuery {
      */
     String schemaName();
     /**
+     * catalog 名称
+     */
+    String catalogName();
+    /**
      * 表名称
      */
     String tableName();
@@ -35,9 +39,37 @@ public interface IDBQuery {
      */
     String tableComment();
     /**
+     * 表类型
+     */
+    String tableType();
+    /**
+     * 表引擎
+     */
+    String engine();
+    /**
+     * 表配置
+     */
+    String options();
+    /**
+     * 表记录数
+     */
+    String rows();
+    /**
+     * 创建时间
+     */
+    String createTime();
+    /**
+     * 更新时间
+     */
+    String updateTime();
+    /**
      * 字段名称
      */
     String columnName();
+    /**
+     * 字段序号
+     */
+    String columnPosition();
     /**
      * 字段类型
      */
@@ -51,6 +83,38 @@ public interface IDBQuery {
      */
     String columnKey();
     /**
+     * 主键自增
+     */
+    String autoIncrement();
+    /**
+     * 默认值
+     */
+    String defaultValue();
+    /**
+     * @return 是否允许为 NULL
+     */
+    String isNullable();
+    /**
+     * @return 精度
+     */
+    String precision();
+    /**
+     * @return 小数范围
+     */
+    String scale();
+    /**
+     * @return 字符集名称
+     */
+    String characterSet();
+    /**
+     * @return 排序规则
+     */
+    String collation();
+    /**
+     * 自定义字段名称
+     */
+    String[] columnCustom();
+    /**
      * 判断主键是否为identity，目前仅对mysql进行检查
      *
      * @param results ResultSet
@@ -58,14 +122,4 @@ public interface IDBQuery {
      * @throws SQLException ignore
      */
     boolean isKeyIdentity(ResultSet results) throws SQLException;
-    /**
-     * 判断字段是否不为null，目前仅对mysql进行检查
-     *
-     * @return 主键是否不为bull
-     */
-    String isNotNull();
-    /**
-     * 自定义字段名称
-     */
-    String[] columnCustom();
 }

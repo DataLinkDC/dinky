@@ -1,16 +1,15 @@
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
-import {Button, Tag, Space, Typography, Divider, Badge, Drawer, Modal} from 'antd';
-import {MessageOutlined,ClusterOutlined,FireOutlined,ReloadOutlined,RocketOutlined} from "@ant-design/icons";
+import {Tag, Space, Typography, Divider, Badge, Modal} from 'antd';
+import {MessageOutlined,ClusterOutlined,FireOutlined,RocketOutlined} from "@ant-design/icons";
 import ProList from '@ant-design/pro-list';
 import {handleRemove, queryData} from "@/components/Common/crud";
 import ProDescriptions from '@ant-design/pro-descriptions';
-import React, {useRef, useState} from "react";
+import React, {useState} from "react";
 import {
   ModalForm,
 } from '@ant-design/pro-form';
 import styles from "./index.less";
-import {ActionType} from "@ant-design/pro-table";
 import {showJobData} from "@/components/Studio/StudioEvent/DQL";
 import StudioPreview from "../StudioPreview";
 
@@ -53,6 +52,7 @@ type HistoryConfig={
   parallelism:number;
   savePointPath:string;
 };
+
 const url = '/api/history';
 const StudioHistory = (props: any) => {
 
@@ -252,12 +252,8 @@ const StudioHistory = (props: any) => {
     }}
       />
         <ModalForm
-          // title="新建表单"
           visible={modalVisit}
           onFinish={async () => {
-            setRow(undefined);
-            setType(undefined);
-            setConfig(undefined);
           }}
           onVisibleChange={setModalVisit}
           submitter={{

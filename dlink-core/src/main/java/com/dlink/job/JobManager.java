@@ -2,6 +2,7 @@ package com.dlink.job;
 
 import com.dlink.api.FlinkAPI;
 import com.dlink.assertion.Asserts;
+import com.dlink.config.Dialect;
 import com.dlink.constant.FlinkSQLConstant;
 import com.dlink.executor.EnvironmentSetting;
 import com.dlink.executor.Executor;
@@ -26,14 +27,22 @@ import com.dlink.session.SessionPool;
 import com.dlink.trans.Operations;
 import com.dlink.utils.SqlUtil;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.flink.configuration.CoreOptions;
+import org.apache.flink.configuration.DeploymentOptions;
+import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.runtime.jobgraph.JobGraph;
+import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
+import org.apache.flink.streaming.api.environment.ExecutionCheckpointingOptions;
 import org.apache.flink.table.api.TableResult;
+import org.apache.flink.yarn.configuration.YarnConfigOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * JobManager
@@ -446,5 +455,41 @@ public class JobManager {
 
     public static TestResult testGateway(GatewayConfig gatewayConfig){
         return Gateway.build(gatewayConfig).test();
+    }
+
+    public String exportSql(String sql){
+        String statement = executor.pretreatStatement(sql);
+        StringBuilder sb = new StringBuilder();
+        if(Asserts.isNotNullString(config.getJobName())){
+            sb.append("set " + PipelineOptions.NAME.key() + " = " + config.getJobName() + ";\r\n");
+        }
+        if(Asserts.isNotNull(config.getParallelism())){
+            sb.append("set " + CoreOptions.DEFAULT_PARALLELISM.key() + " = " + config.getParallelism() + ";\r\n");
+        }
+        if(Asserts.isNotNull(config.getCheckpoint())){
+            sb.append("set " + ExecutionCheckpointingOptions.CHECKPOINTING_INTERVAL.key() + " = " + config.getCheckpoint() + ";\r\n");
+        }
+        if(Asserts.isNotNullString(config.getSavePointPath())){
+            sb.append("set " + SavepointConfigOptions.SAVEPOINT_PATH + " = " + config.getSavePointPath() + ";\r\n");
+        }
+        if(Asserts.isNotNull(config.getGatewayConfig())&&Asserts.isNotNull(config.getGatewayConfig().getFlinkConfig().getConfiguration())) {
+            for (Map.Entry<String, String> entry : config.getGatewayConfig().getFlinkConfig().getConfiguration().entrySet()) {
+                sb.append("set " + entry.getKey() + " = " + entry.getValue() + ";\r\n");
+            }
+        }
+
+        switch (GatewayType.get(config.getType())){
+            case YARN_PER_JOB:
+            case YARN_APPLICATION:
+                sb.append("set " + DeploymentOptions.TARGET.key() + " = " + GatewayType.get(config.getType()).getLongValue() + ";\r\n");
+                if(Asserts.isNotNull(config.getGatewayConfig())) {
+                    sb.append("set " + YarnConfigOptions.PROVIDED_LIB_DIRS.key() + " = " + Collections.singletonList(config.getGatewayConfig().getClusterConfig().getFlinkLibPath()) + ";\r\n");
+                }
+                if(Asserts.isNotNull(config.getGatewayConfig())&&Asserts.isNotNullString(config.getGatewayConfig().getFlinkConfig().getJobName())) {
+                    sb.append("set " + YarnConfigOptions.APPLICATION_NAME.key() + " = " + config.getGatewayConfig().getFlinkConfig().getJobName() + ";\r\n");
+                }
+        }
+        sb.append(statement);
+        return sb.toString();
     }
 }

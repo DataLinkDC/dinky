@@ -514,6 +514,15 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增 Mysql,Oracle,PostGreSql,ClickHouse,Doris,Java 方言及图标</Link>
                 </li>
+                <li>
+                  <Link>新增 元数据查看表和字段信息</Link>
+                </li>
+                <li>
+                  <Link>新增 FlinkSQL 及 SQL 导出</Link>
+                </li>
+                <li>
+                  <Link>新增 集群与数据源的 Studio 管理交互</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

@@ -22,4 +22,6 @@ public interface TaskService extends ISuperService<Task> {
     boolean saveOrUpdateTask(Task task);
 
     List<Task> listFlinkSQLEnv();
+
+    String exportSql(Integer id);
 }

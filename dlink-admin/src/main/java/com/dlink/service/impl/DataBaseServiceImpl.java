@@ -7,6 +7,7 @@ import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.DataBaseMapper;
 import com.dlink.metadata.driver.Driver;
 import com.dlink.metadata.driver.DriverConfig;
+import com.dlink.model.Column;
 import com.dlink.model.DataBase;
 import com.dlink.model.Schema;
 import com.dlink.service.DataBaseService;
@@ -74,6 +75,18 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
         DataBase dataBase = getById(id);
         Asserts.checkNotNull(dataBase,"该数据源不存在！");
         Driver driver = Driver.build(dataBase.getDriverConfig()).connect();
-        return driver.getSchemasAndTables();
+        List<Schema> schemasAndTables = driver.getSchemasAndTables();
+        driver.close();
+        return schemasAndTables;
+    }
+
+    @Override
+    public List<Column> listColumns(Integer id, String schemaName, String tableName) {
+        DataBase dataBase = getById(id);
+        Asserts.checkNotNull(dataBase,"该数据源不存在！");
+        Driver driver = Driver.build(dataBase.getDriverConfig()).connect();
+        List<Column> columns = driver.listColumns(schemaName, tableName);
+        driver.close();
+        return columns;
     }
 }

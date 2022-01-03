@@ -113,5 +113,13 @@ public class TaskController {
     public Result listFlinkSQLEnv() {
         return Result.succeed(taskService.listFlinkSQLEnv(),"获取成功");
     }
+
+    /**
+     * 导出 sql
+     */
+    @GetMapping(value = "/exportSql")
+    public Result exportSql(@RequestParam Integer id) {
+        return Result.succeed(taskService.exportSql(id),"获取成功");
+    }
 }
 

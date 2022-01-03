@@ -74,7 +74,7 @@ public class ClickHouseQuery extends AbstractDBQuery {
     }
 
     @Override
-    public String isNotNull() {
+    public String isNullable() {
         return "NULL";
     }
 }

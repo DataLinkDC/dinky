@@ -1,6 +1,7 @@
 package com.dlink.service;
 
 import com.dlink.db.service.ISuperService;
+import com.dlink.model.Column;
 import com.dlink.model.DataBase;
 import com.dlink.model.Schema;
 
@@ -23,4 +24,6 @@ public interface DataBaseService extends ISuperService<DataBase> {
     List<DataBase> listEnabledAll();
 
     List<Schema> getSchemasAndTables(Integer id);
+
+    List<Column> listColumns(Integer id, String schemaName, String tableName);
 }

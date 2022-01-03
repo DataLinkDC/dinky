@@ -79,7 +79,7 @@ public class OracleQuery extends AbstractDBQuery {
     }
 
     @Override
-    public String isNotNull() {
+    public String isNullable() {
         return "NULLABLE";
     }
 }

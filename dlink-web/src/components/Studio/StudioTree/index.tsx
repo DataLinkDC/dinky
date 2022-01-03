@@ -7,15 +7,14 @@ import {convertToTreeData, getTreeNodeByKey, TreeDataNode} from "@/components/St
 import style from "./index.less";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {
-  getInfoById, handleAddOrUpdate, handleAddOrUpdateWithResult, handleRemoveById,
-  handleSubmit
+  getInfoById, handleAddOrUpdate, handleAddOrUpdateWithResult, handleRemoveById, handleSubmit
 } from "@/components/Common/crud";
 import UpdateCatalogueForm from './components/UpdateCatalogueForm';
 import SimpleTaskForm from "@/components/Studio/StudioTree/components/SimpleTaskForm";
 import { Scrollbars } from "react-custom-scrollbars";
 import {getIcon} from "@/components/Studio/icon";
-
-const { DirectoryTree } = Tree;
+import {showEnv} from "@/components/Studio/StudioEvent/DDL";
+import UploadModal from "@/components/Studio/StudioTree/components/UploadModal";
 
 
 type StudioTreeProps = {
@@ -46,21 +45,30 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
   const [taskFormValues, setTaskFormValues] = useState({});
   const [rightClickNode, setRightClickNode] = useState<TreeDataNode>();
   const [available, setAvailable] = useState<boolean>(true);
+  const [isUploadModalVisible, setIsUploadModalVisible] = useState(false);
+  const [dataList, setDataList] = useState<any[]>([]);
+  const [uploadNodeId, setUploadNodeId] = useState(0);
   const sref: any = React.createRef<Scrollbars>();
+  const { DirectoryTree } = Tree;
 
   const getTreeData = async () => {
     const result = await getCatalogueTreeData();
     let data = result.datas;
     let list = data;
+    let expandList = new Array();
     for(let i=0;i<list.length;i++){
+      if(list[i].parentId == 0|| list[i].parentId == 37){
+        expandList.push(list[i].id)
+      }
       list[i].title=list[i].name;
       list[i].key=list[i].id;
       if(list[i].isLeaf){
         list[i].icon = getIcon(list[i].type);
       }
     }
-    data = convertToTreeData(data, 0);
+    data = convertToTreeData(list, 0);
     setTreeData(data);
+    setDataList(expandList);
   };
 
   const openByKey = async (key:any)=>{
@@ -74,7 +82,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
         list[i].icon = getIcon(list[i].type);
       }
     }
-    data = convertToTreeData(data, 0);
+    data = convertToTreeData(list, 0);
     setTreeData(data);
     let node = getTreeNodeByKey(data,key);
     onSelect([],{node:node});
@@ -94,6 +102,8 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       createCatalogue(rightClickNode);
     }else if(key=='CreateRootCatalogue'){
       createRootCatalogue();
+    } else if(key == 'ShowUploadModal'){
+      showUploadModal(rightClickNode);
     }else if(key=='CreateTask'){
       createTask(rightClickNode);
     }else if(key=='Rename'){
@@ -102,6 +112,12 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       toDelete(rightClickNode);
     }
   };
+
+  const showUploadModal=(node:TreeDataNode|undefined)=>{
+    if(node == undefined) return;
+    setUploadNodeId(node.id);
+    setIsUploadModalVisible(true);
+  }
 
   const toOpen=(node:TreeDataNode|undefined)=>{
     if(!available){return}
@@ -222,11 +238,11 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     }
   };
 
-  const toDelete= (node:TreeDataNode|undefined)=>{
+  const toDelete= (node: TreeDataNode|undefined)=>{
     let label = (node?.taskId==null)?'目录':'作业';
     Modal.confirm({
       title: `删除${label}`,
-      content: `确定删除该${label}吗？`,
+      content: `确定删除该${label}【${node?.name}】吗？`,
       okText: '确认',
       cancelText: '取消',
       onOk:async () => {
@@ -261,6 +277,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       menuItems=(<>
         <Menu.Item key='CreateCatalogue'>{'创建目录'}</Menu.Item>
         <Menu.Item key='CreateRootCatalogue'>{'创建根目录'}</Menu.Item>
+        <Menu.Item key='ShowUploadModal'>{'上传zip包创建工程'}</Menu.Item>
         <Menu.Item key='CreateTask'>{'创建作业'}</Menu.Item>
         <Menu.Item key='Rename'>{'重命名'}</Menu.Item>
         <Menu.Item disabled>{'删除'}</Menu.Item>
@@ -394,8 +411,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
               handleUpdateTaskModalVisible(false);
               setTaskFormValues({});
               openByKey(datas.id);
-              // getTreeData();
-              // onSelect([],openByKey(datas.id));
+              showEnv(dispatch);
             }
           }}
           onCancel={() => {
@@ -408,6 +424,11 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
         />
       ) : null}
       </Scrollbars>
+      <UploadModal visible={isUploadModalVisible} action={`/api/catalogue/upload/${uploadNodeId}`} handleOk={()=>{
+        setIsUploadModalVisible(false);
+        setExpandedKeys(dataList);
+        getTreeData();
+      }} onCancel={()=>{setIsUploadModalVisible(false)}} buttonTitle="上传zip包并创建工程" />
     </div>
   );
 };
