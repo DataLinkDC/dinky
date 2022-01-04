@@ -38,8 +38,4 @@ public class MySqlQuery extends AbstractDBQuery {
         return "Database";
     }
 
-    @Override
-    public boolean isKeyIdentity(ResultSet results) throws SQLException {
-        return "auto_increment".equals(results.getString("Extra"));
-    }
 }

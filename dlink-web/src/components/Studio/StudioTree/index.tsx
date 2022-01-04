@@ -144,7 +144,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       result.then(result=>{
         let newTabs = tabs;
         let newPane:any = {
-          title: node!.name,
+          title: <>{node!.icon} {node!.name}</>,
           key: node!.taskId,
           value:(result.datas.statement?result.datas.statement:''),
           closable: true,

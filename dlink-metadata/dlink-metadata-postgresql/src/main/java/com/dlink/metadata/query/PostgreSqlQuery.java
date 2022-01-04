@@ -17,7 +17,6 @@ public class PostgreSqlQuery extends AbstractDBQuery {
         return "SELECT A.tablename, obj_description(relfilenode, 'pg_class') AS comments FROM pg_tables A, pg_class B WHERE A.schemaname='"+schemaName+"' AND A.tablename = B.relname";
     }
 
-
     @Override
     public String columnsSql(String schemaName,String tableName) {
         return "SELECT A.attname AS name,format_type (A.atttypid,A.atttypmod) AS type,col_description (A.attrelid,A.attnum) AS comment,\n" +
@@ -30,36 +29,30 @@ public class PostgreSqlQuery extends AbstractDBQuery {
         return null;
     }
 
-
     @Override
     public String tableName() {
         return "tablename";
     }
-
 
     @Override
     public String tableComment() {
         return "comments";
     }
 
-
     @Override
     public String columnName() {
         return "name";
     }
-
 
     @Override
     public String columnType() {
         return "type";
     }
 
-
     @Override
     public String columnComment() {
         return "comment";
     }
-
 
     @Override
     public String columnKey() {

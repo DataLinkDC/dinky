@@ -31,46 +31,34 @@ public class ClickHouseQuery extends AbstractDBQuery {
         return "db";
     }
 
-
     @Override
     public String tableName() {
         return "name";
     }
-
 
     @Override
     public String tableComment() {
         return "comment";
     }
 
-
     @Override
     public String columnName() {
         return "name";
     }
-
 
     @Override
     public String columnType() {
         return "type";
     }
 
-
     @Override
     public String columnComment() {
         return "comment";
     }
 
-
     @Override
     public String columnKey() {
         return "KEY";
-    }
-
-
-    @Override
-    public boolean isKeyIdentity(ResultSet results) throws SQLException {
-        return "auto_increment".equals(results.getString("Extra"));
     }
 
     @Override
