@@ -1,7 +1,7 @@
 import Icon from "@ant-design/icons";
 import {DIALECT} from "@/components/Studio/conf";
 
-const svgSize = '21px';
+const svgSize = '20px';
 
 export const getIcon = (type: string)=>{
   switch (type){
