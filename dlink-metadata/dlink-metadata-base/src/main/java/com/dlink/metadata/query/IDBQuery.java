@@ -114,12 +114,4 @@ public interface IDBQuery {
      * 自定义字段名称
      */
     String[] columnCustom();
-    /**
-     * 判断主键是否为identity，目前仅对mysql进行检查
-     *
-     * @param results ResultSet
-     * @return 主键是否为identity
-     * @throws SQLException ignore
-     */
-    boolean isKeyIdentity(ResultSet results) throws SQLException;
 }

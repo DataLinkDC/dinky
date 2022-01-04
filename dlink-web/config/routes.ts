@@ -38,44 +38,45 @@ export default [
     icon: 'task',
     component: './Task',
   },*/
-      {
-        path: '/taskcenter/jar',
-        name: 'jar',
-        icon: 'code-sandbox',
-        component: './Jar',
-      },
+
     ],
   },
   {
-    path: '/clusters',
-    name: 'clusters',
-    icon: 'cluster',
+    path: '/registration',
+    name: 'registration',
+    icon: 'appstore',
     routes: [
       {
-        path: '/clusters/cluster',
+        path: '/registration/cluster',
         name: 'cluster',
         icon: 'cluster',
         component: './Cluster',
       },
       {
-        path: '/clusters/clusterConfiguration',
+        path: '/registration/clusterConfiguration',
         name: 'clusterConfiguration',
         icon: 'setting',
         component: './ClusterConfiguration',
       },
+      {
+        path: '/registration/jar',
+        name: 'jar',
+        icon: 'code-sandbox',
+        component: './Jar',
+      },
+      {
+        path: '/registration/database',
+        name: 'database',
+        icon: 'database',
+        component: './DataBase',
+      },
+      {
+        path: '/registration/document',
+        name: 'document',
+        icon: 'container',
+        component: './Document',
+      },
     ],
-  },
-  {
-    path: '/database',
-    name: 'database',
-    icon: 'database',
-    component: './DataBase',
-  },
-  {
-    path: '/document',
-    name: 'document',
-    icon: 'container',
-    component: './Document',
   },
   {
     path: '/',

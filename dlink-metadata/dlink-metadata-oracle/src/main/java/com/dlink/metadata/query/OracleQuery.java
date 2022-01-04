@@ -42,36 +42,30 @@ public class OracleQuery extends AbstractDBQuery {
         return "OWNER";
     }
 
-
     @Override
     public String tableName() {
         return "TABLE_NAME";
     }
-
 
     @Override
     public String tableComment() {
         return "COMMENTS";
     }
 
-
     @Override
     public String columnName() {
         return "COLUMN_NAME";
     }
-
 
     @Override
     public String columnType() {
         return "DATA_TYPE";
     }
 
-
     @Override
     public String columnComment() {
         return "COMMENTS";
     }
-
 
     @Override
     public String columnKey() {
