@@ -20,12 +20,6 @@
         id, name, task_id, type,parent_id,is_leaf, enabled, create_time, update_time
     </sql>
 
-    <select id="findByParentIdAndName" resultType="com.dlink.model.Catalogue">
-        select a.*
-        from dlink_catalogue a
-        where parent_id=#{parent_id} and name=#{name}
-    </select>
-
     <select id="selectForProTable" resultType="com.dlink.model.Catalogue">
         select
         a.*

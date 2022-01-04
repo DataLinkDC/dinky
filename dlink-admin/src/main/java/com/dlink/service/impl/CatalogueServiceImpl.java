@@ -1,7 +1,6 @@
 package com.dlink.service.impl;
 
-import com.dlink.assertion.Assert;
-import com.dlink.assertion.Asserts;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.dto.CatalogueTaskDTO;
 import com.dlink.mapper.CatalogueMapper;
@@ -10,7 +9,6 @@ import com.dlink.model.Task;
 import com.dlink.service.CatalogueService;
 import com.dlink.service.StatementService;
 import com.dlink.service.TaskService;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +39,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
 
     @Override
     public Catalogue findByParentIdAndName(Integer parent_id, String name) {
-        return catalogueMapper.findByParentIdAndName(parent_id, name);
+        return catalogueMapper.selectOne(Wrappers.<Catalogue>query().eq("parent_id",parent_id).eq("name",name));
     }
 
     @Transactional(rollbackFor=Exception.class)
