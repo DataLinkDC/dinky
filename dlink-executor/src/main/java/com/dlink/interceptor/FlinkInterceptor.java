@@ -4,7 +4,7 @@ import com.dlink.assertion.Asserts;
 import com.dlink.catalog.function.FunctionManager;
 import com.dlink.catalog.function.UDFunction;
 import com.dlink.executor.Executor;
-import com.dlink.executor.custom.CustomTableEnvironmentImpl;
+import com.dlink.executor.CustomTableEnvironmentImpl;
 import com.dlink.trans.Operation;
 import com.dlink.trans.Operations;
 import com.dlink.utils.SqlUtil;
@@ -38,11 +38,8 @@ public class FlinkInterceptor {
     public static boolean build(Executor executor, String statement) {
         Operation operation = Operations.buildOperation(statement);
         if (Asserts.isNotNull(operation)) {
-            operation.build(executor.getCustomTableEnvironmentImpl());
+            operation.build(executor);
             return operation.noExecute();
-        }
-        if(executor.parseAndLoadConfiguration(statement)){
-            return true;
         }
         return false;
     }

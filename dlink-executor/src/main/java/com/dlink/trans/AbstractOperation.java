@@ -1,6 +1,6 @@
 package com.dlink.trans;
 
-import com.dlink.executor.custom.CustomTableEnvironmentImpl;
+import com.dlink.executor.CustomTableEnvironmentImpl;
 
 import java.util.Arrays;
 import java.util.List;

@@ -42,6 +42,7 @@ Dlink 是一个专业的 FlinkSQL Studio，可以在线开发、补全、校验 
 |         |            | 新增 关键字高亮与代码缩略图                            | 0.4.0 |
 |         |            | 新增 选中片段执行                                 | 0.4.0 |
 |         |            | 新增 布局拖拽                                   | 0.4.0 |
+|         |            | 新增 SQL导出                                  | 0.5.0 |
 |         |            | 支持 local 模式下 FlinkSQL 提交                  | 0.4.0 |
 |         |            | 支持 standalone 模式下 FlinkSQL 提交             | 0.4.0 |
 |         |            | 支持 yarn session 模式下 FlinkSQL 提交           | 0.4.0 |

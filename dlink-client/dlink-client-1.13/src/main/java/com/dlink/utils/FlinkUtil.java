@@ -1,12 +1,11 @@
 package com.dlink.utils;
 
+import org.apache.flink.configuration.Configuration;
 import org.apache.flink.table.catalog.CatalogManager;
 import org.apache.flink.table.catalog.ObjectIdentifier;
+import org.apache.flink.table.operations.Operation;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * FlinkUtil
@@ -26,4 +25,5 @@ public class FlinkUtil {
             return new ArrayList<String>();
         }
     }
+
 }

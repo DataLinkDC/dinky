@@ -1,6 +1,6 @@
 package com.dlink.trans.ddl;
 
-import com.dlink.executor.custom.CustomTableEnvironmentImpl;
+import com.dlink.executor.Executor;
 import com.dlink.trans.AbstractOperation;
 import com.dlink.trans.Operation;
 import org.apache.flink.table.api.Table;
@@ -35,9 +35,9 @@ public class CreateAggTableOperation extends AbstractOperation implements Operat
     }
 
     @Override
-    public void build(CustomTableEnvironmentImpl stEnvironment) {
+    public void build(Executor executor) {
         AggTable aggTable = AggTable.build(statement);
-        Table source = stEnvironment.sqlQuery("select * from "+ aggTable.getTable());
+        Table source = executor.getCustomTableEnvironmentImpl().sqlQuery("select * from "+ aggTable.getTable());
         List<String> wheres = aggTable.getWheres();
         if(wheres!=null&&wheres.size()>0) {
             for (String s : wheres) {
@@ -47,6 +47,6 @@ public class CreateAggTableOperation extends AbstractOperation implements Operat
         Table sink = source.groupBy(aggTable.getGroupBy())
                 .flatAggregate(aggTable.getAggBy())
                 .select(aggTable.getColumns());
-        stEnvironment.registerTable(aggTable.getName(), sink);
+        executor.getCustomTableEnvironmentImpl().registerTable(aggTable.getName(), sink);
     }
 }

@@ -1,4 +1,4 @@
-package com.dlink.executor.custom;
+package com.dlink.executor;
 
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.core.execution.JobClient;
@@ -6,7 +6,9 @@ import org.apache.flink.table.api.DataTypes;
 import org.apache.flink.table.api.ResultKind;
 import org.apache.flink.table.api.TableException;
 import org.apache.flink.table.api.TableResult;
-import org.apache.flink.table.api.TableSchema;
+import org.apache.flink.table.catalog.Column;
+import org.apache.flink.table.catalog.ResolvedSchema;
+import org.apache.flink.table.types.DataType;
 import org.apache.flink.table.utils.PrintUtils;
 import org.apache.flink.types.Row;
 import org.apache.flink.util.CloseableIterator;
@@ -14,16 +16,9 @@ import org.apache.flink.util.Preconditions;
 
 import javax.annotation.Nullable;
 import java.io.PrintWriter;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.time.ZoneId;
+import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * 定制CustomTableResultImpl
@@ -31,43 +26,49 @@ import java.util.concurrent.TimeoutException;
  * @since  2021/6/7 22:06
  **/
 @Internal
-class CustomTableResultImpl implements TableResult {
+public class CustomTableResultImpl implements TableResult {
     public static final TableResult TABLE_RESULT_OK =
             CustomTableResultImpl.builder()
                     .resultKind(ResultKind.SUCCESS)
-                    .tableSchema(TableSchema.builder().field("result", DataTypes.STRING()).build())
+                    .schema(ResolvedSchema.of(Column.physical("result", DataTypes.STRING())))
                     .data(Collections.singletonList(Row.of("OK")))
                     .build();
 
     private final JobClient jobClient;
-    private final TableSchema tableSchema;
+    private final ResolvedSchema resolvedSchema;
     private final ResultKind resultKind;
     private final CloseableRowIteratorWrapper data;
     private final PrintStyle printStyle;
+    private final ZoneId sessionTimeZone;
 
     private CustomTableResultImpl(
             @Nullable JobClient jobClient,
-            TableSchema tableSchema,
+            ResolvedSchema resolvedSchema,
             ResultKind resultKind,
             CloseableIterator<Row> data,
-            PrintStyle printStyle) {
+            PrintStyle printStyle,
+            ZoneId sessionTimeZone) {
         this.jobClient = jobClient;
-        this.tableSchema =
-                Preconditions.checkNotNull(tableSchema, "tableSchema should not be null");
+        this.resolvedSchema =
+                Preconditions.checkNotNull(resolvedSchema, "resolvedSchema should not be null");
         this.resultKind = Preconditions.checkNotNull(resultKind, "resultKind should not be null");
         Preconditions.checkNotNull(data, "data should not be null");
         this.data = new CloseableRowIteratorWrapper(data);
         this.printStyle = Preconditions.checkNotNull(printStyle, "printStyle should not be null");
+        this.sessionTimeZone =
+                Preconditions.checkNotNull(sessionTimeZone, "sessionTimeZone should not be null");
     }
 
-    public static TableResult buildTableResult(List<TableSchemaField> fields,List<Row> rows){
+    public static TableResult buildTableResult(List<TableSchemaField> fields, List<Row> rows){
         Builder builder = builder().resultKind(ResultKind.SUCCESS);
         if(fields.size()>0) {
-            TableSchema.Builder tableSchemaBuild = TableSchema.builder();
+            List<String> columnNames = new ArrayList<>();
+            List<DataType> columnTypes = new ArrayList<>();
             for (int i = 0; i < fields.size(); i++) {
-                tableSchemaBuild.field(fields.get(i).getName(),fields.get(i).getType());
+                columnNames.add(fields.get(i).getName());
+                columnTypes.add(fields.get(i).getType());
             }
-            builder.tableSchema(tableSchemaBuild.build()).data(rows);
+            builder.schema(ResolvedSchema.physical(columnNames,columnTypes)).data(rows);
         }
         return builder.build();
     }
@@ -125,8 +126,8 @@ class CustomTableResultImpl implements TableResult {
     }
 
     @Override
-    public TableSchema getTableSchema() {
-        return tableSchema;
+    public ResolvedSchema getResolvedSchema() {
+        return resolvedSchema;
     }
 
     @Override
@@ -149,16 +150,21 @@ class CustomTableResultImpl implements TableResult {
                     ((TableauStyle) printStyle).isDeriveColumnWidthByType();
             boolean printRowKind = ((TableauStyle) printStyle).isPrintRowKind();
             PrintUtils.printAsTableauForm(
-                    getTableSchema(),
+                    getResolvedSchema(),
                     it,
                     new PrintWriter(System.out),
                     maxColumnWidth,
                     nullColumn,
                     deriveColumnWidthByType,
-                    printRowKind);
+                    printRowKind,
+                    sessionTimeZone);
         } else if (printStyle instanceof RawContentStyle) {
             while (it.hasNext()) {
-                System.out.println(String.join(",", PrintUtils.rowToString(it.next())));
+                System.out.println(
+                        String.join(
+                                ",",
+                                PrintUtils.rowToString(
+                                        it.next(), getResolvedSchema(), sessionTimeZone)));
             }
         } else {
             throw new TableException("Unsupported print style: " + printStyle);
@@ -172,11 +178,12 @@ class CustomTableResultImpl implements TableResult {
     /** Builder for creating a {@link CustomTableResultImpl}. */
     public static class Builder {
         private JobClient jobClient = null;
-        private TableSchema tableSchema = null;
+        private ResolvedSchema resolvedSchema = null;
         private ResultKind resultKind = null;
         private CloseableIterator<Row> data = null;
         private PrintStyle printStyle =
                 PrintStyle.tableau(Integer.MAX_VALUE, PrintUtils.NULL_COLUMN, false, false);
+        private ZoneId sessionTimeZone = ZoneId.of("UTC");
 
         private Builder() {}
 
@@ -191,13 +198,13 @@ class CustomTableResultImpl implements TableResult {
         }
 
         /**
-         * Specifies table schema of the execution result.
+         * Specifies schema of the execution result.
          *
-         * @param tableSchema a {@link TableSchema} for the execution result.
+         * @param resolvedSchema a {@link ResolvedSchema} for the execution result.
          */
-        public Builder tableSchema(TableSchema tableSchema) {
-            Preconditions.checkNotNull(tableSchema, "tableSchema should not be null");
-            this.tableSchema = tableSchema;
+        public Builder schema(ResolvedSchema resolvedSchema) {
+            Preconditions.checkNotNull(resolvedSchema, "resolvedSchema should not be null");
+            this.resolvedSchema = resolvedSchema;
             return this;
         }
 
@@ -241,9 +248,17 @@ class CustomTableResultImpl implements TableResult {
             return this;
         }
 
+        /** Specifies session time zone. */
+        public Builder setSessionTimeZone(ZoneId sessionTimeZone) {
+            Preconditions.checkNotNull(sessionTimeZone, "sessionTimeZone should not be null");
+            this.sessionTimeZone = sessionTimeZone;
+            return this;
+        }
+
         /** Returns a {@link TableResult} instance. */
         public TableResult build() {
-            return new CustomTableResultImpl(jobClient, tableSchema, resultKind, data, printStyle);
+            return new CustomTableResultImpl(
+                    jobClient, resolvedSchema, resultKind, data, printStyle, sessionTimeZone);
         }
     }
 

@@ -1,8 +1,5 @@
 package com.dlink.executor;
 
-import com.dlink.executor.custom.CustomTableEnvironmentImpl;
-import com.dlink.executor.custom.CustomTableResultImpl;
-import com.dlink.executor.custom.TableSchemaField;
 import org.apache.flink.table.api.DataTypes;
 import org.apache.flink.table.api.ExpressionParserException;
 import org.apache.flink.table.api.Table;

@@ -14,7 +14,7 @@ public class Operations {
 
     private static Operation[] operations = {
       new CreateAggTableOperation()
-//            , new SetOperation()
+            , new SetOperation()
     };
 
     public static SqlType getSqlTypeFromStatements(String statement){
