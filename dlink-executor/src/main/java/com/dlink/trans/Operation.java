@@ -1,6 +1,6 @@
 package com.dlink.trans;
 
-import com.dlink.executor.custom.CustomTableEnvironmentImpl;
+import com.dlink.executor.Executor;
 
 /**
  * Operation
@@ -14,7 +14,7 @@ public interface Operation {
 
     Operation create(String statement);
 
-    void build(CustomTableEnvironmentImpl stEnvironment);
+    void build(Executor executor);
 
     boolean noExecute();
 }

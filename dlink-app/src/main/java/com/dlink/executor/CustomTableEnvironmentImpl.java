@@ -1,4 +1,4 @@
-package com.dlink.executor.custom;
+package com.dlink.executor;
 
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;

@@ -1,11 +1,11 @@
-package com.dlink.executor.custom;
+package com.dlink.executor;
 
 import com.dlink.result.SqlExplainResult;
-import org.apache.flink.api.common.typeinfo.TypeInformation;
-import org.apache.flink.api.dag.Transformation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.flink.api.common.typeinfo.TypeInformation;
+import org.apache.flink.api.dag.Transformation;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.jsonplan.JsonPlanGenerator;
@@ -34,6 +34,7 @@ import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.operations.QueryOperation;
 import org.apache.flink.table.planner.delegation.ExecutorBase;
 import org.apache.flink.table.planner.utils.ExecutorUtils;
+import org.apache.flink.types.Row;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
             Map<String, String> executorProperties = settings.toExecutorProperties();
             Executor executor = lookupExecutor(executorProperties, executionEnvironment);
             Map<String, String> plannerProperties = settings.toPlannerProperties();
-            Planner planner = (ComponentFactoryService.find(PlannerFactory.class, plannerProperties)).create(plannerProperties, executor, tableConfig, functionCatalog, catalogManager);
+            Planner planner = ( ComponentFactoryService.find(PlannerFactory.class, plannerProperties)).create(plannerProperties, executor, tableConfig, functionCatalog, catalogManager);
             return new CustomTableEnvironmentImpl(catalogManager, moduleManager, tableConfig, executor, functionCatalog, planner, settings.isStreamingMode(), classLoader);
         }
     }
@@ -87,7 +88,7 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
     }
 
     public ObjectNode getStreamGraph(String statement) {
-        List<Operation> operations = super.getParser().parse(statement);
+        List<Operation> operations = super.parser.parse(statement);
         if (operations.size() != 1) {
             throw new TableException("Unsupported SQL query! explainSql() only accepts a single SQL query.");
         } else {
@@ -97,7 +98,7 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
                     modifyOperations.add((ModifyOperation)operations.get(i));
                 }
             }
-            List<Transformation<?>> trans = getPlanner().translate(modifyOperations);
+            List<Transformation<?>> trans = super.planner.translate(modifyOperations);
             if(execEnv instanceof ExecutorBase){
                 StreamGraph streamGraph = ExecutorUtils.generateStreamGraph(((ExecutorBase) execEnv).getExecutionEnvironment(), trans);
                 JSONGenerator jsonGenerator = new JSONGenerator(streamGraph);
@@ -112,7 +113,7 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
                     return objectNode;
                 }
             }else{
-                throw new TableException("Unsupported SQL query! explainSql() need a single SQL to query.");
+                throw new TableException("Unsupported SQL query! ExecEnv need a ExecutorBase.");
             }
         }
     }
@@ -154,7 +155,7 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
 
     public SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails) {
         SqlExplainResult record = new SqlExplainResult();
-        List<Operation> operations = getParser().parse(statement);
+        List<Operation> operations = parser.parse(statement);
         record.setParseTrue(true);
         if (operations.size() != 1) {
             throw new TableException(
@@ -178,7 +179,6 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
         }
         record.setExplainTrue(true);
         if(operationlist.size()==0){
-            //record.setExplain("DDL语句不进行解释。");
             return record;
         }
         record.setExplain(planner.explain(operationlist, extraDetails));
@@ -202,4 +202,7 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
         this.functionCatalog.registerTempSystemAggregateFunction(name, tableAggregateFunction, typeInfo, accTypeInfo);
     }
 
+    public boolean parseAndLoadConfiguration(String statement, StreamExecutionEnvironment environment, Map<String, Object> setMap) {
+        return false;
+    }
 }
