@@ -2,6 +2,7 @@
 
 * Guide
   * [Quick Start](/en-US/guide/quickstart.md)
+  * [Roadmap](/en-US/guide/roadmap.md)
   * [Deploy](/en-US/guide/deploy.md)
   * [Functions](/en-US/guide/functions.md)
   * [Debug](/en-US/guide/debug.md)
@@ -18,6 +19,8 @@
   * [Hive](/en-US/extend/hive.md)
   * [Doris](/en-US/extend/doris.md)
   * [Clickhouse](/en-US/extend/clickhouse.md)
+  * [Hudi](/en-US/extend/hudi.md)
+  * [Iceberg](/en-US/extend/hudi.md)
 
 * Share
   * [Dlink Yarn](/en-US/share/yarnsubmit.md)

@@ -156,17 +156,17 @@ public class JobConfig {
                 config.get("flinkLibPath").toString(),
                 config.get("hadoopConfigPath").toString()));
         AppConfig appConfig = new AppConfig();
-        if(config.containsKey("userJarPath") && Asserts.isNotNullString("userJarPath")){
+        if(config.containsKey("userJarPath") && Asserts.isNotNullString((String) config.get("userJarPath"))){
             appConfig.setUserJarPath(config.get("userJarPath").toString());
-            if(config.containsKey("userJarMainAppClass") && Asserts.isNotNullString("userJarMainAppClass")){
+            if(config.containsKey("userJarMainAppClass") && Asserts.isNotNullString((String) config.get("userJarMainAppClass"))){
                 appConfig.setUserJarMainAppClass(config.get("userJarMainAppClass").toString());
             }
-            if(config.containsKey("userJarParas") && Asserts.isNotNullString("userJarParas")){
+            if(config.containsKey("userJarParas") && Asserts.isNotNullString((String) config.get("userJarParas"))){
                 appConfig.setUserJarParas(config.get("userJarParas").toString().split(" "));
             }
             gatewayConfig.setAppConfig(appConfig);
         }
-        if(config.containsKey("flinkConfig") && Asserts.isNotNullString("flinkConfig")){
+        if(config.containsKey("flinkConfig") && Asserts.isNotNullMap((Map<String, String>) config.get("flinkConfig"))){
             gatewayConfig.setFlinkConfig(FlinkConfig.build((Map<String, String>)config.get("flinkConfig")));
         }
     }
