@@ -2,6 +2,7 @@
   
 * 指南
     * [快速开始](/guide/quickstart.md)
+    * [发展计划](/guide/roadmap.md)
     * [编译部署](/guide/deploy.md)
     * [核心功能](/guide/functions.md)
     * [开发调试](/guide/debug.md)
@@ -18,6 +19,8 @@
     * [Hive 集成](/extend/hive.md)
     * [Doris 集成](/extend/doris.md)
     * [Clickhouse 集成](/extend/clickhouse.md)
+    * [Hudi 集成](/extend/hudi.md)
+    * [Iceberg 集成](/extend/hudi.md)
   
 * 分享
     * [Dlink Yarn 的三种提交实践](/share/yarnsubmit.md)
