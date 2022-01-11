@@ -541,6 +541,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>修改项目名为 Dinky 以及图标</Link>
                 </li>
+                <li>
+                  <Link>优化血缘分析图</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>
