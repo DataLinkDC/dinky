@@ -27,6 +27,8 @@ public class JobConfig {
     // flink run mode
     private String type;
     private boolean useResult;
+    private boolean useChangeLog;
+    private boolean useAutoCancel;
     private boolean useSession;
     private String session;
     private boolean useRemote;
@@ -61,12 +63,14 @@ public class JobConfig {
         this.config = config;
     }
 
-    public JobConfig(String type, boolean useResult, boolean useSession, String session, boolean useRemote, Integer clusterId,
+    public JobConfig(String type, boolean useResult, boolean useChangeLog, boolean useAutoCancel, boolean useSession, String session, boolean useRemote, Integer clusterId,
                      Integer clusterConfigurationId, Integer jarId, Integer taskId, String jobName, boolean useSqlFragment,
                      boolean useStatementSet, Integer maxRowNum, Integer checkpoint, Integer parallelism,
                      Integer savePointStrategyValue, String savePointPath, Map<String,String> config) {
         this.type = type;
         this.useResult = useResult;
+        this.useChangeLog = useChangeLog;
+        this.useAutoCancel = useAutoCancel;
         this.useSession = useSession;
         this.session = session;
         this.useRemote = useRemote;
@@ -85,12 +89,14 @@ public class JobConfig {
         this.config = config;
     }
 
-    public JobConfig(String type, boolean useResult, boolean useSession, String session, boolean useRemote, String address,
+    public JobConfig(String type, boolean useResult, boolean useChangeLog,boolean useAutoCancel, boolean useSession, String session, boolean useRemote, String address,
                      String jobName, boolean useSqlFragment,
                      boolean useStatementSet, Integer maxRowNum, Integer checkpoint, Integer parallelism,
                      Integer savePointStrategyValue, String savePointPath, Map<String,String> config, GatewayConfig gatewayConfig) {
         this.type = type;
         this.useResult = useResult;
+        this.useChangeLog = useChangeLog;
+        this.useAutoCancel = useAutoCancel;
         this.useSession = useSession;
         this.session = session;
         this.useRemote = useRemote;
@@ -107,13 +113,14 @@ public class JobConfig {
         this.gatewayConfig = gatewayConfig;
     }
 
-    public JobConfig(String type,boolean useResult, boolean useSession, String session, boolean useRemote, Integer clusterId) {
+    public JobConfig(String type,boolean useResult, boolean useSession, String session, boolean useRemote, Integer clusterId, Integer maxRowNum) {
         this.type = type;
         this.useResult = useResult;
         this.useSession = useSession;
         this.session = session;
         this.useRemote = useRemote;
         this.clusterId = clusterId;
+        this.maxRowNum = maxRowNum;
     }
 
     public JobConfig(String type,boolean useResult, boolean useSession, boolean useRemote, Integer clusterId,

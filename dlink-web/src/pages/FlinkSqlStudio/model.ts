@@ -88,6 +88,8 @@ export type TaskType = {
   maxRowNum: number;
   jobName: string;
   useResult: boolean;
+  useChangeLog: boolean;
+  useAutoCancel: boolean;
   useSession: boolean;
   useRemote: boolean;
 };
@@ -229,6 +231,8 @@ const Model: ModelType = {
         alias: '草稿',
         dialect: 'FlinkSql',
         useResult:true,
+        useChangeLog:false,
+        useAutoCancel:false,
         useSession:false,
         useRemote:false,
       },
@@ -273,6 +277,8 @@ const Model: ModelType = {
           alias: '草稿',
           dialect: 'FlinkSql',
           useResult:true,
+          useChangeLog:false,
+          useAutoCancel:false,
           useSession:false,
           useRemote:false,
         },

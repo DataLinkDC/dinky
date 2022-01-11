@@ -536,7 +536,7 @@ export default (): React.ReactNode => {
                   <Link>新增 Yarn 的 Kerboros 验证</Link>
                 </li>
                 <li>
-                  <Link>新增 ChangLog 和 Table 的查询实现</Link>
+                  <Link>新增 ChangLog 和 Table 的查询及自动停止实现</Link>
                 </li>
                 <li>
                   <Link>修改项目名为 Dinky 以及图标</Link>

@@ -20,12 +20,14 @@ public class ResultRunnable implements Runnable {
     private TableResult tableResult;
     private Integer maxRowNum;
     private boolean isChangeLog;
+    private boolean isAutoCancel;
     private String nullColumn = "";
 
-    public ResultRunnable(TableResult tableResult, Integer maxRowNum, boolean isChangeLog) {
+    public ResultRunnable(TableResult tableResult, Integer maxRowNum, boolean isChangeLog, boolean isAutoCancel) {
         this.tableResult = tableResult;
         this.maxRowNum = maxRowNum;
         this.isChangeLog = isChangeLog;
+        this.isAutoCancel = isAutoCancel;
     }
 
     @Override
@@ -36,9 +38,9 @@ public class ResultRunnable implements Runnable {
                 ResultPool.put(new SelectResult(jobId, new ArrayList<>(), new LinkedHashSet<>()));
             }
             try {
-                if(isChangeLog) {
+                if (isChangeLog) {
                     catchChangLog(ResultPool.get(jobId));
-                }else{
+                } else {
                     catchData(ResultPool.get(jobId));
                 }
             } catch (Exception e) {
@@ -56,6 +58,9 @@ public class ResultRunnable implements Runnable {
         Iterator<Row> it = tableResult.collect();
         while (it.hasNext()) {
             if (rows.size() >= maxRowNum) {
+                if (isAutoCancel && tableResult.getJobClient().isPresent()) {
+                    tableResult.getJobClient().get().cancel();
+                }
                 break;
             }
             Map<String, Object> map = new LinkedHashMap<>();
@@ -64,9 +69,9 @@ public class ResultRunnable implements Runnable {
             for (int i = 0; i < row.getArity(); ++i) {
                 Object field = row.getField(i);
                 if (field == null) {
-                    map.put(columns.get(i+1), nullColumn);
+                    map.put(columns.get(i + 1), nullColumn);
                 } else {
-                    map.put(columns.get(i+1), StringUtils.arrayAwareToString(field));
+                    map.put(columns.get(i + 1), StringUtils.arrayAwareToString(field));
                 }
             }
             rows.add(map);
@@ -95,7 +100,7 @@ public class ResultRunnable implements Runnable {
             }
             if (RowKind.UPDATE_BEFORE == row.getKind() || RowKind.DELETE == row.getKind()) {
                 rows.remove(map);
-            }else {
+            } else {
                 rows.add(map);
             }
         }

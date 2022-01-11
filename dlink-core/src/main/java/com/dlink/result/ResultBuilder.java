@@ -11,10 +11,10 @@ import org.apache.flink.table.api.TableResult;
  **/
 public interface ResultBuilder {
 
-    static ResultBuilder build(SqlType operationType, Integer maxRowNum, boolean isChangeLog){
+    static ResultBuilder build(SqlType operationType, Integer maxRowNum, boolean isChangeLog, boolean isAutoCancel){
         switch (operationType){
             case SELECT:
-                return new SelectResultBuilder(maxRowNum,isChangeLog);
+                return new SelectResultBuilder(maxRowNum,isChangeLog,isAutoCancel);
             case SHOW:
             case DESCRIBE:
                 return new ShowResultBuilder(false);

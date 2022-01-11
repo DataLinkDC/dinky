@@ -1,16 +1,13 @@
 import {connect} from "umi";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {
-  Form, InputNumber, Input, Switch, Select, Tag, Row, Col, Divider, Tooltip, Button, Badge,
+  Form, InputNumber,Switch, Row, Col, Tooltip, Button, Badge,
   Typography
 } from "antd";
-import {InfoCircleOutlined,PlusOutlined,MinusSquareOutlined} from "@ant-design/icons";
+import {InfoCircleOutlined,MinusSquareOutlined} from "@ant-design/icons";
 import styles from "./index.less";
-import {useEffect, useState} from "react";
-import {showTables} from "@/components/Studio/StudioEvent/DDL";
 import { Scrollbars } from 'react-custom-scrollbars';
 
-const { Option } = Select;
 const { Text } = Typography;
 
 const StudioConfig = (props: any) => {
@@ -70,10 +67,30 @@ const StudioConfig = (props: any) => {
         </Col>
         <Col span={12}>
           <Form.Item
+            label="打印流" className={styles.form_item} name="useChangeLog" valuePropName="checked"
+            tooltip={{ title: '开启打印流，将同步运行并返回含有 op 信息的 ChangeLog，默认不开启且返回最终结果 Table', icon: <InfoCircleOutlined /> }}
+          >
+            <Switch checkedChildren="启用" unCheckedChildren="禁用"
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={12}>
+          <Form.Item
             label="最大行数" className={styles.form_item} name="maxRowNum"
             tooltip='预览数据的最大行数'
           >
             <InputNumber min={1} max={9999} defaultValue={100} />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            label="自动停止" className={styles.form_item} name="useAutoCancel" valuePropName="checked"
+            tooltip={{ title: '开启自动停止，将在捕获最大行数记录后自动停止任务', icon: <InfoCircleOutlined /> }}
+          >
+            <Switch checkedChildren="启用" unCheckedChildren="禁用"
+            />
           </Form.Item>
         </Col>
       </Row>

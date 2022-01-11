@@ -154,6 +154,8 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
             maxRowNum: 100,
             jobName:node!.name,
             useResult:false,
+            useChangeLog:false,
+            useAutoCancel:false,
             useSession:false,
             useRemote:true,
             ...result.datas,

@@ -20,9 +20,10 @@ public class StudioDDLDTO {
     private boolean useRemote;
     private Integer clusterId;
     private String statement;
+    private Integer maxRowNum = 10000;
 
     public JobConfig getJobConfig() {
-        return new JobConfig(type,useResult, useSession, session, useRemote, clusterId);
+        return new JobConfig(type,useResult, useSession, session, useRemote, clusterId,maxRowNum);
     }
 
 }
