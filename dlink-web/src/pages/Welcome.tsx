@@ -62,22 +62,25 @@ export default (): React.ReactNode => {
         </Typography.Text>
         </Paragraph>
         <p> </p>
-        <Timeline pending={<><Text code>0.5.0</Text>
+        <Timeline pending={<><Text code>0.6.0</Text>
           <Text type="secondary">敬请期待</Text>
           <p> </p>
           <Paragraph>
             <ul>
               <li>
-                <Link>支持同时托管多版本的Flink实例</Link>
+                <Link>任务生命周期管理</Link>
               </li>
               <li>
-                <Link>支持K8S多种运行模式</Link>
+                <Link>作业监控及运维</Link>
               </li>
               <li>
-                <Link>支持多种任务调度框架接口</Link>
+                <Link>流作业自动恢复</Link>
               </li>
               <li>
-                <Link>支持UDF动态加载</Link>
+                <Link>作业日志查看</Link>
+              </li>
+              <li>
+                <Link>钉钉报警和推送</Link>
               </li>
             </ul>
           </Paragraph></>} reverse={true}>
@@ -528,6 +531,15 @@ export default (): React.ReactNode => {
                 </li>
                 <li>
                   <Link>升级各版本 Flink 依赖至最新版本以解决核弹问题</Link>
+                </li>
+                <li>
+                  <Link>新增 Yarn 的 Kerboros 验证</Link>
+                </li>
+                <li>
+                  <Link>新增 ChangLog 和 Table 的查询实现</Link>
+                </li>
+                <li>
+                  <Link>修改项目名为 Dinky 以及图标</Link>
                 </li>
               </ul>
             </Paragraph>
