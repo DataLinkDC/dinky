@@ -268,7 +268,7 @@ public class JobManager {
                             job.setJobId(tableResult.getJobClient().get().getJobID().toHexString());
                         }
                         if (config.isUseResult()) {
-                            IResult result = ResultBuilder.build(SqlType.INSERT, maxRowNum, "", true).getResult(tableResult);
+                            IResult result = ResultBuilder.build(SqlType.INSERT, maxRowNum, true).getResult(tableResult);
                             job.setResult(result);
                         }
                     }
@@ -300,7 +300,7 @@ public class JobManager {
                                 job.setJobId(tableResult.getJobClient().get().getJobID().toHexString());
                             }
                             if (config.isUseResult()) {
-                                IResult result = ResultBuilder.build(item.getType(), maxRowNum, "", true).getResult(tableResult);
+                                IResult result = ResultBuilder.build(item.getType(), maxRowNum, true).getResult(tableResult);
                                 job.setResult(result);
                             }
                         }
@@ -351,7 +351,7 @@ public class JobManager {
                 }
                 LocalDateTime startTime = LocalDateTime.now();
                 TableResult tableResult = executor.executeSql(newStatement);
-                IResult result = ResultBuilder.build(operationType, maxRowNum, "", false).getResult(tableResult);
+                IResult result = ResultBuilder.build(operationType, maxRowNum, false).getResult(tableResult);
                 result.setStartTime(startTime);
                 return result;
             }

@@ -18,11 +18,10 @@ import java.util.stream.Stream;
 public class ShowResultBuilder implements ResultBuilder {
 
     private boolean printRowKind;
-    private String nullColumn;
+    private String nullColumn = "";
 
-    public ShowResultBuilder(String nullColumn, boolean printRowKind) {
+    public ShowResultBuilder(boolean printRowKind) {
         this.printRowKind = printRowKind;
-        this.nullColumn = nullColumn;
     }
 
     @Override

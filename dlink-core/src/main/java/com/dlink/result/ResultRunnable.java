@@ -1,12 +1,13 @@
 package com.dlink.result;
 
-import org.apache.flink.table.api.TableColumn;
+import com.dlink.constant.FlinkConstant;
+import com.dlink.utils.FlinkUtil;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.types.Row;
+import org.apache.flink.types.RowKind;
 import org.apache.flink.util.StringUtils;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 /**
  * ResultRunnable
@@ -18,81 +19,85 @@ public class ResultRunnable implements Runnable {
 
     private TableResult tableResult;
     private Integer maxRowNum;
-    private boolean printRowKind;
-    private String nullColumn;
+    private boolean isChangeLog;
+    private String nullColumn = "";
 
-    public ResultRunnable(TableResult tableResult, Integer maxRowNum, boolean printRowKind, String nullColumn) {
+    public ResultRunnable(TableResult tableResult, Integer maxRowNum, boolean isChangeLog) {
         this.tableResult = tableResult;
         this.maxRowNum = maxRowNum;
-        this.printRowKind = printRowKind;
-        this.nullColumn = nullColumn;
+        this.isChangeLog = isChangeLog;
     }
 
     @Override
     public void run() {
-        if(tableResult.getJobClient().isPresent()) {
+        if (tableResult.getJobClient().isPresent()) {
             String jobId = tableResult.getJobClient().get().getJobID().toHexString();
             if (!ResultPool.containsKey(jobId)) {
-                ResultPool.put(new SelectResult(jobId, new ArrayList<Map<String, Object>>(), new LinkedHashSet<String>()));
+                ResultPool.put(new SelectResult(jobId, new ArrayList<>(), new LinkedHashSet<>()));
             }
             try {
-                catchData(ResultPool.get(jobId));
-            }catch (Exception e){
+                if(isChangeLog) {
+                    catchChangLog(ResultPool.get(jobId));
+                }else{
+                    catchData(ResultPool.get(jobId));
+                }
+            } catch (Exception e) {
 
             }
         }
     }
 
-    private void catchData(SelectResult selectResult){
-        List<TableColumn> columns = tableResult.getTableSchema().getTableColumns();
-        String[] columnNames = columns.stream().map(TableColumn::getName).map(s -> s.replace(" ", "")).toArray((x$0) -> {
-            return (new String[x$0]);
-        });
-        if (printRowKind) {
-            columnNames = Stream.concat(Stream.of("op"), Arrays.stream(columnNames)).toArray((x$0) -> {
-                return new String[x$0];
-            });
-        }
-        Set<String> column = new LinkedHashSet(Arrays.asList(columnNames));
+    private void catchChangLog(SelectResult selectResult) {
+        List<String> columns = FlinkUtil.catchColumn(tableResult);
+        columns.add(0, FlinkConstant.OP);
+        Set<String> column = new LinkedHashSet(columns);
         selectResult.setColumns(column);
-        long numRows = 0L;
         List<Map<String, Object>> rows = selectResult.getRowData();
         Iterator<Row> it = tableResult.collect();
         while (it.hasNext()) {
-            if (numRows < maxRowNum) {
-                String[] cols = rowToString(it.next());
-                Map<String, Object> row = new HashMap<>();
-                for (int i = 0; i < cols.length; i++) {
-                    if (i > columnNames.length) {
-                        /*column.add("UKN" + i);
-                        row.put("UKN" + i, cols[i]);*/
-                    } else {
-//                        column.add(columnNames[i]);
-                        row.put(columnNames[i], cols[i]);
-                    }
-                }
-                rows.add(row);
-                numRows++;
-            } else {
+            if (rows.size() >= maxRowNum) {
                 break;
             }
+            Map<String, Object> map = new LinkedHashMap<>();
+            Row row = it.next();
+            map.put(columns.get(0), row.getKind().shortString());
+            for (int i = 0; i < row.getArity(); ++i) {
+                Object field = row.getField(i);
+                if (field == null) {
+                    map.put(columns.get(i+1), nullColumn);
+                } else {
+                    map.put(columns.get(i+1), StringUtils.arrayAwareToString(field));
+                }
+            }
+            rows.add(map);
         }
     }
 
-    private String[] rowToString(Row row) {
-        int len = printRowKind ? row.getArity() + 1 : row.getArity();
-        List<String> fields = new ArrayList(len);
-        if (printRowKind) {
-            fields.add(row.getKind().shortString());
-        }
-        for (int i = 0; i < row.getArity(); ++i) {
-            Object field = row.getField(i);
-            if (field == null) {
-                fields.add(nullColumn);
-            } else {
-                fields.add(StringUtils.arrayAwareToString(field));
+    private void catchData(SelectResult selectResult) {
+        List<String> columns = FlinkUtil.catchColumn(tableResult);
+        Set<String> column = new LinkedHashSet(columns);
+        selectResult.setColumns(column);
+        List<Map<String, Object>> rows = selectResult.getRowData();
+        Iterator<Row> it = tableResult.collect();
+        while (it.hasNext()) {
+            if (rows.size() >= maxRowNum) {
+                break;
+            }
+            Map<String, Object> map = new LinkedHashMap<>();
+            Row row = it.next();
+            for (int i = 0; i < row.getArity(); ++i) {
+                Object field = row.getField(i);
+                if (field == null) {
+                    map.put(columns.get(i), nullColumn);
+                } else {
+                    map.put(columns.get(i), StringUtils.arrayAwareToString(field));
+                }
+            }
+            if (RowKind.UPDATE_BEFORE == row.getKind() || RowKind.DELETE == row.getKind()) {
+                rows.remove(map);
+            }else {
+                rows.add(map);
             }
         }
-        return fields.toArray(new String[0]);
     }
 }

@@ -1,9 +1,8 @@
 package com.dlink.utils;
 
-import org.apache.flink.configuration.Configuration;
+import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.catalog.CatalogManager;
 import org.apache.flink.table.catalog.ObjectIdentifier;
-import org.apache.flink.table.operations.Operation;
 
 import java.util.*;
 
@@ -22,8 +21,11 @@ public class FlinkUtil {
         if (tableOpt.isPresent()) {
             return tableOpt.get().getResolvedSchema().getColumnNames();
         }else{
-            return new ArrayList<String>();
+            return new ArrayList<>();
         }
     }
 
+    public static List<String> catchColumn(TableResult tableResult){
+        return tableResult.getResolvedSchema().getColumnNames();
+    }
 }

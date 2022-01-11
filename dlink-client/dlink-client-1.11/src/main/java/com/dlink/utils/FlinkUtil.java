@@ -1,5 +1,6 @@
 package com.dlink.utils;
 
+import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.catalog.CatalogManager;
 import org.apache.flink.table.catalog.ObjectIdentifier;
 
@@ -25,5 +26,9 @@ public class FlinkUtil {
         }else{
             return new ArrayList<String>();
         }
+    }
+
+    public static List<String> catchColumn(TableResult tableResult){
+        return Arrays.asList(tableResult.getTableSchema().getFieldNames());
     }
 }
