@@ -35,6 +35,9 @@ const StudioExplain = (props: any) => {
   } = props;
 
   useEffect(() => {
+    if(!modalVisible){
+      return;
+    }
     let selectsql = null;
     if (current.monaco.current) {
       let selection = current.monaco.current.editor.getSelection();
@@ -55,7 +58,7 @@ const StudioExplain = (props: any) => {
     result.then(res => {
       setExplainData(res.datas);
     })
-  }, [])
+  }, [modalVisible])
 
   const renderFooter = () => {
     return (
