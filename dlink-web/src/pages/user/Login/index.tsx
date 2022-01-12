@@ -103,8 +103,8 @@ const Login: React.FC = () => {
         <div className={styles.top}>
           <div className={styles.header}>
             <Link to="/">
-              <img alt="logo" className={styles.logo} src="/logo.svg" />
-              <span className={styles.title}>Dlink & Apache Flink</span>
+              <img alt="logo" className={styles.logo} src="/dinky.svg" />
+              <span className={styles.title}>Dinky & Apache Flink</span>
             </Link>
           </div>
           <div className={styles.desc}>

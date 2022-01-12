@@ -6,6 +6,8 @@
   /* required-end */
   /* default-start */
   "useResult":false,
+  "useChangeLog":false,
+  "useAutoCancel":false,
   "useStatementSet":false,
   "fragment":false,
   "maxRowNum":100,

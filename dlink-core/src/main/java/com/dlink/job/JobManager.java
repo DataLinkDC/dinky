@@ -55,7 +55,6 @@ public class JobManager {
     private static final Logger logger = LoggerFactory.getLogger(JobManager.class);
 
     private JobHandler handler;
-    private Integer maxRowNum = 100;
     private EnvironmentSetting environmentSetting;
     private ExecutorSetting executorSetting;
     private JobConfig config;
@@ -268,7 +267,7 @@ public class JobManager {
                             job.setJobId(tableResult.getJobClient().get().getJobID().toHexString());
                         }
                         if (config.isUseResult()) {
-                            IResult result = ResultBuilder.build(SqlType.INSERT, maxRowNum, "", true).getResult(tableResult);
+                            IResult result = ResultBuilder.build(SqlType.INSERT, config.getMaxRowNum(), config.isUseChangeLog(),config.isUseAutoCancel()).getResult(tableResult);
                             job.setResult(result);
                         }
                     }
@@ -300,7 +299,7 @@ public class JobManager {
                                 job.setJobId(tableResult.getJobClient().get().getJobID().toHexString());
                             }
                             if (config.isUseResult()) {
-                                IResult result = ResultBuilder.build(item.getType(), maxRowNum, "", true).getResult(tableResult);
+                                IResult result = ResultBuilder.build(item.getType(), config.getMaxRowNum(), config.isUseChangeLog(),config.isUseAutoCancel()).getResult(tableResult);
                                 job.setResult(result);
                             }
                         }
@@ -351,7 +350,7 @@ public class JobManager {
                 }
                 LocalDateTime startTime = LocalDateTime.now();
                 TableResult tableResult = executor.executeSql(newStatement);
-                IResult result = ResultBuilder.build(operationType, maxRowNum, "", false).getResult(tableResult);
+                IResult result = ResultBuilder.build(operationType, config.getMaxRowNum(), false,false).getResult(tableResult);
                 result.setStartTime(startTime);
                 return result;
             }

@@ -6,7 +6,7 @@ export default () => {
   const intl = useIntl();
   const defaultMessage = intl.formatMessage({
     id: 'app.copyright.produced',
-    defaultMessage: 'Dlink',
+    defaultMessage: 'Dinky',
   });
 
   return (
@@ -14,8 +14,8 @@ export default () => {
       copyright={`2021 ${defaultMessage}`}
       links={[
         {
-          key: 'Dlink',
-          title: 'Dlink',
+          key: 'Dinky',
+          title: 'Dinky',
           href: '',
           blankTarget: true,
         },

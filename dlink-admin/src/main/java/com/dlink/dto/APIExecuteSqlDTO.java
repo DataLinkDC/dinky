@@ -24,6 +24,8 @@ public class APIExecuteSqlDTO extends AbstractStatementDTO{
     // RUN_MODE
     private String type;
     private boolean useResult = false;
+    private boolean useChangeLog = false;
+    private boolean useAutoCancel = false;
     private boolean useStatementSet = false;
     private String address;
     private boolean fragment = false;
@@ -42,7 +44,7 @@ public class APIExecuteSqlDTO extends AbstractStatementDTO{
             savePointStrategy = 3;
         }
         return new JobConfig(
-                type, useResult, false, null, true, address, jobName,
+                type, useResult,useChangeLog, useChangeLog, false, null, true, address, jobName,
                 fragment, useStatementSet, maxRowNum, checkPoint, parallelism, savePointStrategy,
                 savePointPath, configuration, gatewayConfig);
     }

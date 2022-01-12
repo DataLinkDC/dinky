@@ -24,4 +24,8 @@ public interface FlinkConstant {
      * 本地模式host
      */
     String LOCAL_HOST = "localhost:8081";
+    /**
+     * changlog op
+     */
+    String OP = "op";
 }
