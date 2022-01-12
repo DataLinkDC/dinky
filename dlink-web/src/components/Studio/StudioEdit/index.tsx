@@ -141,14 +141,14 @@ const FlinkSqlEditor = (props:any) => {
   const editorDidMountHandle = (editor: any, monaco: any) => {
     monacoInstance.current = monaco;
     editorInstance.current = editor;
-    editor.addCommand(monaco.KeyMod.CtrlCmd|monaco.KeyCode.KEY_1,function (){
+    editor.addCommand(monaco.KeyMod.Alt|monaco.KeyCode.KEY_1,function (){
       props.saveText(tabs,tabIndex);
     })
 
-    editor.addCommand(monaco.KeyMod.CtrlCmd|monaco.KeyCode.KEY_2,function (){
+    editor.addCommand(monaco.KeyMod.Alt|monaco.KeyCode.KEY_2,function (){
       handleModalVisible(true);
     })
-    editor.addCommand(monaco.KeyMod.CtrlCmd|monaco.KeyCode.KEY_3,function (){
+    editor.addCommand(monaco.KeyMod.Alt|monaco.KeyCode.KEY_3,function (){
       editor.getAction(['editor.action.formatDocument'])._run();
     })
     provider.dispose();// 清空提示项
