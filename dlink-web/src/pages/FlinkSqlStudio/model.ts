@@ -425,7 +425,7 @@ const Model: ModelType = {
         newTabs.activeKey = current.key
         newTabs.panes = newTabs.panes.filter(item => keys.includes(item.key));
       } else {
-        newTabs.panes = [state.tabs.panes[0]];
+        newTabs.panes = [];
         newTabs.activeKey = firstKey
       }
     
