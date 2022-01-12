@@ -74,6 +74,7 @@
     "react-helmet-async": "^1.0.4",
     "react-highlight-words": "^0.17.0",
     "react-monaco-editor": "^0.43.0",
+    "sql-formatter": "^4.0.2",
     "umi": "^3.5.0",
     "umi-request": "^1.0.8"
   },

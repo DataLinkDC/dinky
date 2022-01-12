@@ -130,36 +130,7 @@ const StudioMenu = (props: any) => {
   };
 
   const onCheckSql = () => {
-    let selectsql = null;
-    if (current.monaco.current) {
-      let selection = current.monaco.current.editor.getSelection();
-      selectsql = current.monaco.current.editor.getModel().getValueInRange(selection);
-    }
-    if (selectsql == null || selectsql == '') {
-      selectsql = current.value;
-    }
-    let useSession = !!currentSession.session;
-    let param = {
-      ...current.task,
-      useSession: useSession,
-      session: currentSession.session,
-      configJson: JSON.stringify(current.task.config),
-      statement: selectsql,
-    };
-    const taskKey = (Math.random() * 1000) + '';
-    notification.success({
-      message: `新任务【${param.jobName}】正在检查`,
-      description: param.statement.substring(0, 40) + '...',
-      duration: null,
-      key: taskKey,
-      icon: <SmileOutlined style={{color: '#108ee9'}}/>,
-    });
-    const result = explainSql(param);
     handleModalVisible(true);
-    result.then(res => {
-      notification.close(taskKey);
-      setExplainData(res.datas);
-    })
   };
 
   const onGetStreamGraph=()=>{
@@ -431,12 +402,8 @@ const StudioMenu = (props: any) => {
         </Row>
       </Col>
       <StudioExplain
-        onCancel={() => {
-          handleModalVisible(false);
-          setExplainData([]);
-        }}
         modalVisible={modalVisible}
-        data={explainData}
+        onClose={()=>{handleModalVisible(false)}}
       />
       <Modal
         width={1000}
