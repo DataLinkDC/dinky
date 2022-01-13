@@ -87,6 +87,7 @@ Dinky 通过已注册的集群配置来获取对应的 YarnClient 实例。对�
 |         |            | 新增 选中片段执行                                 | 0.4.0 |
 |         |            | 新增 布局拖拽                                   | 0.4.0 |
 |         |            | 新增 SQL导出                                  | 0.5.0 |
+|         |            | 新增 快捷键保存、校验、美化                      | 0.5.0 |
 |         |            | 支持 local 模式下 FlinkSQL 提交                  | 0.4.0 |
 |         |            | 支持 standalone 模式下 FlinkSQL 提交             | 0.4.0 |
 |         |            | 支持 yarn session 模式下 FlinkSQL 提交           | 0.4.0 |
