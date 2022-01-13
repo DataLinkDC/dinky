@@ -14,7 +14,7 @@ import lombok.Setter;
 @Getter
 public class AppConfig {
     private String userJarPath;
-    private String[] userJarParas;
+    private String[] userJarParas = new String[]{};
     private String userJarMainAppClass;
 
     public AppConfig() {
