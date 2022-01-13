@@ -326,7 +326,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       id: node.id,
       categoryName: node.name
     });
-    dispatch&&dispatch({
+    dispatch && dispatch({
       type: "Studio/showRightClickMenu",
       payload: true,
     });
