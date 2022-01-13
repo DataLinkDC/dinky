@@ -27,6 +27,7 @@ import com.dlink.session.SessionConfig;
 import com.dlink.session.SessionInfo;
 import com.dlink.session.SessionPool;
 import com.dlink.utils.RunTimeUtil;
+import com.dlink.utils.UDFUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -89,6 +90,7 @@ public class StudioServiceImpl implements StudioService {
         if(!config.isUseSession()) {
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
         }
+        initUDF(config,studioExecuteDTO.getStatement());
         JobManager jobManager = JobManager.build(config);
         JobResult jobResult = jobManager.executeSql(studioExecuteDTO.getStatement());
         RunTimeUtil.recovery(jobManager);
@@ -152,6 +154,7 @@ public class StudioServiceImpl implements StudioService {
         if(!config.isUseSession()) {
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
         }
+        initUDF(config,studioExecuteDTO.getStatement());
         JobManager jobManager = JobManager.buildPlanMode(config);
         return jobManager.explainSql(studioExecuteDTO.getStatement()).getSqlExplainResults();
     }
@@ -316,5 +319,16 @@ public class StudioServiceImpl implements StudioService {
             return true;
         }
         return false;
+    }
+
+    private void initUDF(JobConfig config,String statement){
+        if(!GatewayType.LOCAL.equalsValue(config.getType())){
+            return;
+        }
+        List<String> udfClassNameList = JobManager.getUDFClassName(statement);
+        for(String item : udfClassNameList){
+            Task task = taskService.getUDFByClassName(item);
+            JobManager.initUDF(item,task.getStatement());
+        }
     }
 }

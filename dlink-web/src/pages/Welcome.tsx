@@ -547,6 +547,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增 快捷键保存、校验、美化</Link>
                 </li>
+                <li>
+                  <Link>新增 UDF Java方言的Local模式的在线编写、调试、动态加载</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

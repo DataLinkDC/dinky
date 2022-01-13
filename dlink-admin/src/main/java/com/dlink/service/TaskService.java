@@ -24,4 +24,6 @@ public interface TaskService extends ISuperService<Task> {
     List<Task> listFlinkSQLEnv();
 
     String exportSql(Integer id);
+
+    Task getUDFByClassName(String className);
 }
