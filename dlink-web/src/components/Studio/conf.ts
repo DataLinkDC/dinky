@@ -21,7 +21,9 @@ export const DIALECT = {
 };
 
 export const CHART = {
-  LINE:'Line',
+  LINE:'折线图',
+  BAR:'条形图',
+  PIE:'饼图',
 };
 
 export const isSql = (dialect: string)=>{

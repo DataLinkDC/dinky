@@ -55,13 +55,13 @@ const StudioConsole = (props: any) => {
         tab={
           <span>
           <BarChartOutlined />
-          统计
+          BI
         </span>
         }
         key="StudioChart"
       >
         <Scrollbars style={{height: consoleHeight}}>
-          <Chart/>
+          <Chart height={consoleHeight} />
         </Scrollbars>
       </TabPane>
       <TabPane

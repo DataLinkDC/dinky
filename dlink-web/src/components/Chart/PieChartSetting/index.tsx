@@ -8,25 +8,20 @@ import React from "react";
 
 const {Option} = Select;
 
-export type LineChartConfig = {
-  padding: string,
-  xField: string,
-  yField: string,
-  seriesField?: string,
-  stepType?: string,
-  xAxis?: {
-    type?: string,
-  },
-  slider?: {},
+export type PieChartConfig = {
+  angleField: string,
+  colorField: string,
+  label: {},
+  interactions: [],
 };
 
-export type LineChartProps = {
-  onChange: (values: Partial<LineChartConfig>) => void;
+export type PieChartProps = {
+  onChange: (values: Partial<PieChartConfig>) => void;
   data: [];
   column: [];
 };
 
-const LineChartSetting: React.FC<LineChartProps> = (props) => {
+const PieChartSetting: React.FC<PieChartProps> = (props) => {
 
   const {current,column,onChange: handleChange,dispatch} = props;
   const [form] = Form.useForm();
@@ -37,23 +32,24 @@ const LineChartSetting: React.FC<LineChartProps> = (props) => {
 
 
   const onValuesChange = (change: any, all: any) => {
-    let config: LineChartConfig = {
-      padding: 'auto',
-      xField: all.xField?all.xField:column[0],
-      yField: all.yField?all.yField:column.length>1?column[1]:column[0],
+    let config: PieChartConfig = {
+      angleField: all.angleField?all.angleField:column[0],
+      colorField: all.colorField?all.colorField:column.length>1?column[1]:column[0],
+      label: {
+        type: 'inner',
+        offset: '-30%',
+        content: ({ percent }) => `${(percent * 100).toFixed(0)}%`,
+        style: {
+          fontSize: 14,
+          textAlign: 'center',
+        },
+      },
+      interactions: [
+        {
+          type: 'element-active',
+        },
+      ],
     };
-    if(all.seriesField){
-      config.seriesField = all.seriesField;
-    }
-    if(all.openStepType){
-      config.stepType = 'hv';
-    }
-    if(all.openSlider){
-      config.slider = {
-        start: 0,
-        end: 0.5,
-      };
-    }
     handleChange(config);
   };
 
@@ -77,7 +73,7 @@ const LineChartSetting: React.FC<LineChartProps> = (props) => {
         <Row>
           <Col span={12}>
             <Form.Item
-              label="x 轴" className={styles.form_item} name="xField"
+              label="弧轴" className={styles.form_item} name="angleField"
             >
               {column&&column.length > 0 ? (
                   <Select allowClear showSearch
@@ -90,7 +86,7 @@ const LineChartSetting: React.FC<LineChartProps> = (props) => {
           </Col>
           <Col span={12}>
             <Form.Item
-              label="y 轴" className={styles.form_item} name="yField"
+              label="颜色" className={styles.form_item} name="colorField"
             >
               {column&&column.length > 1 ? (
                 <Select allowClear showSearch
@@ -102,38 +98,6 @@ const LineChartSetting: React.FC<LineChartProps> = (props) => {
             </Form.Item>
           </Col>
         </Row>
-        <Row>
-          <Col span={12}>
-            <Form.Item
-              label="分组字段" className={styles.form_item} name="seriesField"
-            >
-              {column&&column.length > 0 ? (
-                <Select allowClear showSearch>
-                  {getColumnOptions()}
-                </Select>):(<Select allowClear showSearch>
-                {column&&getColumnOptions()}
-              </Select>)}
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              label="缩略轴" className={styles.form_item} name="openSlider" valuePropName="checked"
-            >
-              <Switch checkedChildren="启用" unCheckedChildren="禁用"
-              />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row>
-          <Col span={12}>
-            <Form.Item
-              label="阶梯线" className={styles.form_item} name="openStepType" valuePropName="checked"
-            >
-              <Switch checkedChildren="启用" unCheckedChildren="禁用"
-              />
-            </Form.Item>
-          </Col>
-        </Row>
       </Form>
     </>
   );
@@ -142,4 +106,4 @@ const LineChartSetting: React.FC<LineChartProps> = (props) => {
 export default connect(({ Studio }: { Studio: StateType }) => ({
   current: Studio.current,
   result: Studio.result,
-}))(LineChartSetting);
+}))(PieChartSetting);

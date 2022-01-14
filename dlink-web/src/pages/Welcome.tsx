@@ -554,7 +554,7 @@ export default (): React.ReactNode => {
                   <Link>新增 编辑器选项卡右键关闭其他和关闭所有</Link>
                 </li>
                 <li>
-                  <Link>新增 统计选项卡的图标支持</Link>
+                  <Link>新增 BI选项卡的折线图、条形图、饼图</Link>
                 </li>
               </ul>
             </Paragraph>

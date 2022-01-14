@@ -96,6 +96,7 @@ export type TaskType = {
 
 export type ConsoleType = {
   result: {};
+  chart: {};
 }
 
 export type TabsItemType = {
@@ -185,6 +186,7 @@ export type ModelType = {
     saveClusterConfiguration: Reducer<StateType>;
     saveDataBase: Reducer<StateType>;
     saveEnv: Reducer<StateType>;
+    saveChart: Reducer<StateType>;
   };
 };
 
@@ -239,6 +241,7 @@ const Model: ModelType = {
       },
       console: {
         result: {},
+        chart: {},
       },
       monaco: {},
       sqlMetaData: undefined,
@@ -285,6 +288,7 @@ const Model: ModelType = {
         },
         console: {
           result: {},
+          chart: {},
         },
         monaco: {},
         sqlMetaData: undefined,
@@ -510,11 +514,25 @@ const Model: ModelType = {
       };
     },
     saveResult(state, {payload}) {
+      // return {
+      //   ...state,
+      //   result: {
+      //     ...payload
+      //   },
+      // };
+      let newTabs = state?.tabs;
+      let newCurrent = state?.current;
+      for (let i = 0; i < newTabs.panes.length; i++) {
+        if (newTabs.panes[i].key === newTabs.activeKey) {
+          newTabs.panes[i].console.result.result = payload;
+          newCurrent = newTabs.panes[i];
+          break;
+        }
+      }
       return {
         ...state,
-        result: {
-          ...payload
-        },
+        current: newCurrent,
+        tabs: newTabs,
       };
     },
     saveCluster(state, {payload}) {
@@ -541,6 +559,21 @@ const Model: ModelType = {
       return {
         ...state,
         env: payload,
+      };
+    },saveChart(state, {payload}) {
+      let newTabs = state?.tabs;
+      let newCurrent = state?.current;
+      for (let i = 0; i < newTabs.panes.length; i++) {
+        if (newTabs.panes[i].key === newTabs.activeKey) {
+          newTabs.panes[i].console.chart = payload;
+          newCurrent = newTabs.panes[i];
+          break;
+        }
+      }
+      return {
+        ...state,
+        current: newCurrent,
+        tabs: newTabs,
       };
     },
   },

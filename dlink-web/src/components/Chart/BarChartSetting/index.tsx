@@ -8,25 +8,23 @@ import React from "react";
 
 const {Option} = Select;
 
-export type LineChartConfig = {
-  padding: string,
+export type BarChartConfig = {
+  isGroup: boolean,
+  isStack: boolean,
+  isPercent: boolean,
   xField: string,
   yField: string,
   seriesField?: string,
-  stepType?: string,
-  xAxis?: {
-    type?: string,
-  },
-  slider?: {},
+  label?: { },
 };
 
-export type LineChartProps = {
-  onChange: (values: Partial<LineChartConfig>) => void;
+export type BarChartProps = {
+  onChange: (values: Partial<BarChartConfig>) => void;
   data: [];
   column: [];
 };
 
-const LineChartSetting: React.FC<LineChartProps> = (props) => {
+const BarChartSetting: React.FC<BarChartProps> = (props) => {
 
   const {current,column,onChange: handleChange,dispatch} = props;
   const [form] = Form.useForm();
@@ -37,22 +35,24 @@ const LineChartSetting: React.FC<LineChartProps> = (props) => {
 
 
   const onValuesChange = (change: any, all: any) => {
-    let config: LineChartConfig = {
-      padding: 'auto',
+    let config: BarChartConfig = {
+      isGroup: all.isGroup,
+      isStack: all.isStack,
+      isPercent: all.isPercent,
       xField: all.xField?all.xField:column[0],
       yField: all.yField?all.yField:column.length>1?column[1]:column[0],
+      label: {
+        position: 'middle',
+        content: (item) => {
+          return item[all.xField];
+        },
+        style: {
+          fill: '#fff',
+        },
+      },
     };
     if(all.seriesField){
       config.seriesField = all.seriesField;
-    }
-    if(all.openStepType){
-      config.stepType = 'hv';
-    }
-    if(all.openSlider){
-      config.slider = {
-        start: 0,
-        end: 0.5,
-      };
     }
     handleChange(config);
   };
@@ -117,7 +117,7 @@ const LineChartSetting: React.FC<LineChartProps> = (props) => {
           </Col>
           <Col span={12}>
             <Form.Item
-              label="缩略轴" className={styles.form_item} name="openSlider" valuePropName="checked"
+              label="分组" className={styles.form_item} name="isGroup" valuePropName="checked"
             >
               <Switch checkedChildren="启用" unCheckedChildren="禁用"
               />
@@ -127,7 +127,15 @@ const LineChartSetting: React.FC<LineChartProps> = (props) => {
         <Row>
           <Col span={12}>
             <Form.Item
-              label="阶梯线" className={styles.form_item} name="openStepType" valuePropName="checked"
+              label="堆叠" className={styles.form_item} name="isStack" valuePropName="checked"
+            >
+              <Switch checkedChildren="启用" unCheckedChildren="禁用"
+              />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label="百分比" className={styles.form_item} name="isPercent" valuePropName="checked"
             >
               <Switch checkedChildren="启用" unCheckedChildren="禁用"
               />
@@ -142,4 +150,4 @@ const LineChartSetting: React.FC<LineChartProps> = (props) => {
 export default connect(({ Studio }: { Studio: StateType }) => ({
   current: Studio.current,
   result: Studio.result,
-}))(LineChartSetting);
+}))(BarChartSetting);

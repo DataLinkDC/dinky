@@ -32,8 +32,8 @@ const StudioTable = (props:any) => {
       {current.console.result.jobId && (<Tag color="blue" key={current.console.result.jobId}>
         <FireOutlined /> {current.console.result.jobId}
       </Tag>)}
-      {result.columns?
-        <DTable dataSource={result.rowData} columns={getColumns(result.columns)}/>
+      {current.console.result.result&&current.console.result.result.columns?
+        <DTable dataSource={current.console.result.result.rowData} columns={getColumns(current.console.result.result.columns)}/>
         :(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)
       }
     </>)
