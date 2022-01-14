@@ -88,7 +88,6 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         }else{
             Task task = new Task();
             task.setId(oldCatalogue.getTaskId());
-            task.setName(catalogue.getName());
             task.setAlias(catalogue.getName());
             taskService.updateById(task);
             this.updateById(catalogue);
