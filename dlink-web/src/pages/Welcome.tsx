@@ -550,6 +550,12 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增 UDF Java方言的Local模式的在线编写、调试、动态加载</Link>
                 </li>
+                <li>
+                  <Link>新增 编辑器选项卡右键关闭其他和关闭所有</Link>
+                </li>
+                <li>
+                  <Link>新增 统计选项卡的图标支持</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

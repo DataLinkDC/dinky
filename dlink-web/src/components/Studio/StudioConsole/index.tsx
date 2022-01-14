@@ -1,7 +1,7 @@
 import {Tabs, Empty} from "antd";
 import {
   CodeOutlined, TableOutlined, RadarChartOutlined, CalendarOutlined, FileSearchOutlined, DesktopOutlined
-  , FunctionOutlined, ApartmentOutlined
+  , FunctionOutlined, ApartmentOutlined,BarChartOutlined
 } from "@ant-design/icons";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
@@ -13,6 +13,7 @@ import StudioFX from "./StudioFX";
 import StudioCA from "./StudioCA";
 import StudioProcess from "./StudioProcess";
 import {Scrollbars} from 'react-custom-scrollbars';
+import Chart from "@/components/Chart";
 
 const {TabPane} = Tabs;
 
@@ -48,6 +49,19 @@ const StudioConsole = (props: any) => {
       >
         <Scrollbars style={{height: consoleHeight}}>
           <StudioTable/>
+        </Scrollbars>
+      </TabPane>
+      <TabPane
+        tab={
+          <span>
+          <BarChartOutlined />
+          统计
+        </span>
+        }
+        key="StudioChart"
+      >
+        <Scrollbars style={{height: consoleHeight}}>
+          <Chart/>
         </Scrollbars>
       </TabPane>
       <TabPane
