@@ -1,5 +1,8 @@
 package com.dlink.executor;
 
+import com.dlink.assertion.Asserts;
+import com.dlink.constant.FlinkSQLConstant;
+import com.dlink.model.SystemConfiguration;
 import org.apache.flink.table.api.DataTypes;
 import org.apache.flink.table.api.ExpressionParserException;
 import org.apache.flink.table.api.Table;
@@ -148,23 +151,24 @@ public final class SqlManager {
      * @throws ExpressionParserException if the name of the variable under the given sql failed.
      */
     public String parseVariable(String statement) {
-        if (statement == null || "".equals(statement)) {
+        if (Asserts.isNullString(statement)) {
             return statement;
         }
-        String[] strs = statement.split(";");
+        String[] strs = statement.split(SystemConfiguration.getInstances().getSqlSeparator());
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < strs.length; i++) {
-            String str = strs[i].trim();
-            if (str.length() == 0) {
+            String str = strs[i];
+            if (str.trim().length() == 0) {
                 continue;
             }
-            if (str.contains(":=")) {
-                String[] strs2 = str.split(":=");
+            str = strs[i];
+            if (str.contains(FlinkSQLConstant.FRAGMENTS)) {
+                String[] strs2 = str.split(FlinkSQLConstant.FRAGMENTS);
                 if (strs2.length >= 2) {
                     if (strs2[0].length() == 0) {
                         throw new ExpressionParserException("Illegal variable name.");
                     }
-                    String valueString = str.substring(str.indexOf(":=") + 2);
+                    String valueString = str.substring(str.indexOf(FlinkSQLConstant.FRAGMENTS) + 2);
                     this.registerSqlFragment(strs2[0], replaceVariable(valueString));
                 } else {
                     throw new ExpressionParserException("Illegal variable definition.");

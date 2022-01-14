@@ -9,6 +9,7 @@ import com.dlink.explainer.trans.TransGenerator;
 import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.job.JobParam;
 import com.dlink.job.StatementParam;
+import com.dlink.model.SystemConfiguration;
 import com.dlink.parser.SqlType;
 import com.dlink.result.ExplainResult;
 import com.dlink.result.SqlExplainResult;
@@ -162,7 +163,7 @@ public class Explainer {
                     }
                 }
                 if (inserts.size() > 0) {
-                    String sqlSet = String.join(FlinkSQLConstant.SEPARATOR, inserts);
+                    String sqlSet = String.join(";\r\n ", inserts);
                     try {
                         record.setExplain(executor.explainStatementSet(inserts));
                         record.setParseTrue(true);

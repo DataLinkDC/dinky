@@ -15,6 +15,7 @@ import com.dlink.job.JobResult;
 import com.dlink.mapper.TaskMapper;
 import com.dlink.model.*;
 import com.dlink.service.*;
+import com.dlink.utils.CustomStringJavaCompiler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -100,6 +101,11 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public boolean saveOrUpdateTask(Task task) {
+        if(Asserts.isNotNullString(task.getDialect()) && Dialect.JAVA.equalsVal(task.getDialect())
+        && Asserts.isNotNullString(task.getStatement()) ){
+            CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(task.getStatement());
+            task.setSavePointPath(compiler.getFullClassName());
+        }
         if (task.getId() != null) {
             this.updateById(task);
             if (task.getStatement() != null) {
@@ -149,6 +155,14 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         }else{
             return "";
         }
+    }
+
+    @Override
+    public Task getUDFByClassName(String className) {
+        Task task = getOne(new QueryWrapper<Task>().eq("dialect", "Java").eq("enabled", 1).eq("save_point_path", className));
+        Assert.check(task);
+        task.setStatement(statementService.getById(task.getId()).getStatement());
+        return task;
     }
 
     private JobConfig buildJobConfig(Task task){

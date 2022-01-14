@@ -1,14 +1,14 @@
-import React, {useEffect, useImperativeHandle, useRef} from 'react';
+import React, {useEffect, useImperativeHandle, useRef,useState} from 'react';
 import * as _monaco from "monaco-editor";
 import MonacoEditor from "react-monaco-editor";
-import {BaseDataSourceField, BaseDataSourceHeader, CompletionItem} from "./data";
-import styles from './index.less';
 import {StateType} from "@/pages/FlinkSqlStudio/model";
-import {connect} from "umi";
+import {connect,Dispatch} from "umi";
 import {DocumentStateType} from "@/pages/Document/model";
 import {DocumentTableListItem} from "@/pages/Document/data";
 import {parseSqlMetaData} from "@/components/Studio/StudioEvent/Utils";
 import {Column, MetaData} from "@/components/Studio/StudioEvent/data";
+import StudioExplain from "@/components/Studio/StudioConsole/StudioExplain";
+import {format} from "sql-formatter";
 
 let provider = {
   dispose: () => {},
@@ -34,11 +34,11 @@ const FlinkSqlEditor = (props:any) => {
       },
     tabs,
     fillDocuments,
-    dispatch,
     } = props;
 
   const editorInstance:any = useRef<any>();
   const monacoInstance: any = useRef();
+  const [modalVisible, handleModalVisible] = useState<boolean>(false);
 
   const getTabIndex = ():number=>{
     for(let i=0;i<tabs.panes.length;i++){
@@ -84,14 +84,7 @@ const FlinkSqlEditor = (props:any) => {
 
   const onChangeHandle = (val: string, event: { changes: { text: any }[] }) => {
     let sqlMetaData = parseSqlMetaData(val);
-    dispatch({
-      type: "Studio/saveSqlMetaData",
-      payload: {
-        activeKey:tabs.panes[tabIndex].key,
-        sqlMetaData,
-        isModified: true,
-      },
-    });
+    props.saveMetaData(sqlMetaData,tabs,tabIndex);
     onChange(val,event);
     /*const curWord = event.changes[0].text;
     if (curWord === ';') {
@@ -100,11 +93,7 @@ const FlinkSqlEditor = (props:any) => {
       return;
     }
     cache.current = val;*/
-    dispatch({
-      type: "Studio/saveSql",
-      payload: val,
-    });
-
+    props.saveSql(val);
   };
 
   const buildSuggestions = () => {
@@ -152,6 +141,16 @@ const FlinkSqlEditor = (props:any) => {
   const editorDidMountHandle = (editor: any, monaco: any) => {
     monacoInstance.current = monaco;
     editorInstance.current = editor;
+    editor.addCommand(monaco.KeyMod.Alt|monaco.KeyCode.KEY_1,function (){
+      props.saveText(tabs,tabIndex);
+    })
+
+    editor.addCommand(monaco.KeyMod.Alt|monaco.KeyCode.KEY_2,function (){
+      handleModalVisible(true);
+    })
+    editor.addCommand(monaco.KeyMod.Alt|monaco.KeyCode.KEY_3,function (){
+      editor.getAction(['editor.action.formatDocument'])._run();
+    })
     provider.dispose();// 清空提示项
     // 提示项设值
     provider = monaco.languages.registerCompletionItemProvider('sql', {
@@ -163,25 +162,62 @@ const FlinkSqlEditor = (props:any) => {
       // quickSuggestions: false,
       // triggerCharacters: ['$', '.', '='],
     });
+    monaco.languages.registerDocumentRangeFormattingEditProvider('sql', {
+      provideDocumentRangeFormattingEdits(model, range, options) {
+        var formatted = format(model.getValueInRange(range), {
+          indent: ' '.repeat(options.tabSize)
+        });
+        return [
+          {
+            range: range,
+            text: formatted
+          }
+        ];
+      }
+    });
     editor.focus();
   };
 
-return (
-  <React.Fragment>
-    <MonacoEditor
-      ref={tabs.panes[tabIndex].monaco}
-      width={width}
-      height={height}
-      language={language}
-      value={tabs.panes[tabIndex].value}
-      options={options}
-      onChange={onChangeHandle}
-      theme="vs-dark"
-      editorDidMount={editorDidMountHandle}
-    />
-  </React.Fragment>
-);
-};
+  return (
+    <React.Fragment>
+      <MonacoEditor
+        ref={tabs.panes[tabIndex].monaco}
+        width={width}
+        height={height}
+        language={language}
+        value={tabs.panes[tabIndex].value}
+        options={options}
+        onChange={onChangeHandle}
+        theme="vs-dark"
+        editorDidMount={editorDidMountHandle}
+      />
+      <StudioExplain
+        modalVisible={modalVisible}
+        onClose={()=>{handleModalVisible(false)}}
+        visible={modalVisible}
+      />
+    </React.Fragment>
+  )
+}
+
+const mapDispatchToProps = (dispatch:Dispatch)=>({
+  saveText:(tabs:any,tabIndex:any)=>dispatch({
+    type: "Studio/saveTask",
+    payload: tabs.panes[tabIndex].task,
+  }),
+  saveSql:(val:any)=>dispatch({
+    type: "Studio/saveSql",
+    payload: val,
+  }),
+  saveMetaData:(sqlMetaData:any,tabs:any,tabIndex:any)=>dispatch({
+             type: "Studio/saveSqlMetaData",
+             payload: {
+               activeKey:tabs.panes[tabIndex].key,
+               sqlMetaData,
+               isModified: true,
+             }
+           })
+})
 
 export default connect(({ Studio,Document }: { Studio: StateType,Document: DocumentStateType }) => ({
   current: Studio.current,
@@ -189,4 +225,4 @@ export default connect(({ Studio,Document }: { Studio: StateType,Document: Docum
   tabs: Studio.tabs,
   monaco: Studio.monaco,
   fillDocuments: Document.fillDocuments,
-}))(FlinkSqlEditor);
+}),mapDispatchToProps)(FlinkSqlEditor);

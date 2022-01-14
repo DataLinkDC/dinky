@@ -48,6 +48,7 @@
   "dependencies": {
     "@ant-design/charts": "^1.2.10",
     "@ant-design/icons": "^4.5.0",
+    "@ant-design/plots": "^1.0.7",
     "@ant-design/pro-descriptions": "^1.6.8",
     "@ant-design/pro-form": "^1.18.3",
     "@ant-design/pro-layout": "^6.18.0",
@@ -74,6 +75,7 @@
     "react-helmet-async": "^1.0.4",
     "react-highlight-words": "^0.17.0",
     "react-monaco-editor": "^0.43.0",
+    "sql-formatter": "^4.0.2",
     "umi": "^3.5.0",
     "umi-request": "^1.0.8"
   },

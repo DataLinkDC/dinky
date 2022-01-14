@@ -87,6 +87,7 @@ Dinky 通过已注册的集群配置来获取对应的 YarnClient 实例。对�
 |         |            | 新增 选中片段执行                                 | 0.4.0 |
 |         |            | 新增 布局拖拽                                   | 0.4.0 |
 |         |            | 新增 SQL导出                                  | 0.5.0 |
+|         |            | 新增 快捷键保存、校验、美化                      | 0.5.0 |
 |         |            | 支持 local 模式下 FlinkSQL 提交                  | 0.4.0 |
 |         |            | 支持 standalone 模式下 FlinkSQL 提交             | 0.4.0 |
 |         |            | 支持 yarn session 模式下 FlinkSQL 提交           | 0.4.0 |
@@ -94,16 +95,19 @@ Dinky 通过已注册的集群配置来获取对应的 YarnClient 实例。对�
 |         |            | 支持 yarn application 模式下 FlinkSQL 提交       | 0.4.0 |
 |         |            | 支持 kubernetes session 模式下 FlinkSQL 提交     | 0.5.0 |
 |         |            | 支持 kubernetes application 模式下 FlinkSQL 提交 | 0.5.0 |
+|         |            | 支持 UDF Java 方言Local模式在线编写、调试、动态加载         | 0.5.0 |
 |         |  Flink 作业  | 支持 yarn application 模式下 Jar 提交            | 0.4.0 |
 |         |            | 支持 k8s application 模式下 Jar 提交             | 0.5.0 |
 |         |            | 支持 作业 Cancel                              | 0.4.0 |
 |         |            | 支持 作业 SavePoint 的 Cancel、Stop、Trigger     | 0.4.0 |
 |         |            | 新增 作业自动从 SavePoint 恢复机制（包含最近、最早、指定一次）     | 0.4.0 |
-|         |            | 新增 UDF java方言代码的开发                        | 0.5.0 |
 |         |  Flink 集群  | 支持 查看已注册集群的作业列表与运维                        | 0.4.0 |
 |         |            | 新增 自动注册 Yarn 创建的集群                        | 0.4.0 |
 |         |    SQL     | 新增 外部数据源的 SQL 校验                          | 0.5.0 |
 |         |            | 新增 外部数据源的 SQL 执行与预览                       | 0.5.0 |
+|         |     BI     | 新增 折线图的渲染                                 | 0.5.0 |
+|         |            | 新增 条形图图的渲染                                | 0.5.0 |
+|         |            | 新增 饼图的渲染                                  | 0.5.0 |
 |         |    元数据     | 新增 查询外部数据源的元数据信息                          | 0.4.0 |
 |         |     归档     | 新增 执行与提交历史                                | 0.4.0 |
 |  运维中心   |     暂无     | 暂无                                        | 0.4.0 |

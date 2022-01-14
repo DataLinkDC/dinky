@@ -19,6 +19,8 @@ import com.dlink.gateway.result.TestResult;
 import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.model.SystemConfiguration;
 import com.dlink.parser.SqlType;
+import com.dlink.pool.ClassEntity;
+import com.dlink.pool.ClassPool;
 import com.dlink.result.*;
 import com.dlink.session.ExecutorEntity;
 import com.dlink.session.SessionConfig;
@@ -26,6 +28,7 @@ import com.dlink.session.SessionInfo;
 import com.dlink.session.SessionPool;
 import com.dlink.trans.Operations;
 import com.dlink.utils.SqlUtil;
+import com.dlink.utils.UDFUtil;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.DeploymentOptions;
@@ -43,6 +46,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * JobManager
@@ -490,5 +495,23 @@ public class JobManager {
         }
         sb.append(statement);
         return sb.toString();
+    }
+
+    public static List<String> getUDFClassName(String statement){
+        Pattern pattern = Pattern.compile("function (.*?)'(.*?)'", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(statement);
+        List<String> classNameList = new ArrayList<>();
+        while (matcher.find()) {
+            classNameList.add(matcher.group(2));
+        }
+        return classNameList;
+    }
+
+    public static void initUDF(String className,String code){
+        if(ClassPool.exist(ClassEntity.build(className,code))){
+            UDFUtil.initClassLoader(className);
+        }else{
+            UDFUtil.buildClass(code);
+        }
     }
 }

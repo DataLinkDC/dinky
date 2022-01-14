@@ -20,14 +20,32 @@ export const DIALECT = {
   JAVA:'Java',
 };
 
-export const isSql = (type: string)=>{
-  switch (type){
+export const CHART = {
+  LINE:'折线图',
+  BAR:'条形图',
+  PIE:'饼图',
+};
+
+export const isSql = (dialect: string)=>{
+  switch (dialect){
     case DIALECT.SQL:
     case DIALECT.MYSQL:
     case DIALECT.ORACLE:
     case DIALECT.POSTGRESQL:
     case DIALECT.CLICKHOUSE:
     case DIALECT.DORIS:
+      return true;
+    default:
+      return false;
+  }
+};
+
+export const isOnline = (type: string)=>{
+  switch (type){
+    case RUN_MODE.LOCAL:
+    case RUN_MODE.STANDALONE:
+    case RUN_MODE.YARN_SESSION:
+    case RUN_MODE.KUBERNETES_SESSION:
       return true;
     default:
       return false;

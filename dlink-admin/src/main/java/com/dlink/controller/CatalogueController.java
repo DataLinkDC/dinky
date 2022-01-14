@@ -206,7 +206,7 @@ public class CatalogueController {
     }
 
     /**
-     * 创建节点和作业
+     * 重命名节点和作业
      */
     @PutMapping("/toRename")
     public Result toRename(@RequestBody Catalogue catalogue) throws Exception {
