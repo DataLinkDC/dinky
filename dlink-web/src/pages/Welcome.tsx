@@ -20,7 +20,7 @@ export default (): React.ReactNode => {
         <Alert
           message={intl.formatMessage({
             id: 'pages.welcome.alertMessage',
-            defaultMessage: '实时计算平台 Dlink & Apache Flink 即将发布，目前为体验版，版本号为 0.5.0-SNAPSHOT。',
+            defaultMessage: '实时计算平台 Dlink & Apache Flink 即将发布，目前为体验版，版本号为 0.5.0。',
           })}
           type="success"
           showIcon
@@ -450,7 +450,7 @@ export default (): React.ReactNode => {
               </ul>
             </Paragraph>
           </Timeline.Item>
-          <Timeline.Item><Text code>0.5.0</Text> <Text type="secondary">2022-01-??</Text>
+          <Timeline.Item><Text code>0.5.0</Text> <Text type="secondary">2022-01-16</Text>
             <p> </p>
             <Paragraph>
               <ul>
