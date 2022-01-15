@@ -229,7 +229,7 @@ public class CustomTableResultImpl implements TableResult {
         }
 
         /**
-         * Specifies an row iterator as the execution result.
+         * Specifies a row iterator as the execution result.
          *
          * @param rowIterator a row iterator as the execution result.
          */
@@ -240,7 +240,7 @@ public class CustomTableResultImpl implements TableResult {
         }
 
         /**
-         * Specifies an row list as the execution result.
+         * Specifies a row list as the execution result.
          *
          * @param rowList a row list as the execution result.
          */
