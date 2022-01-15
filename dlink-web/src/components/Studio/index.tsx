@@ -5,6 +5,7 @@ import {} from "@ant-design/icons";
 import StudioMenu from "./StudioMenu";
 import {Row, Col, Card, Form} from "antd";
 import StudioTabs from "./StudioTabs";
+import StudioHome from "./StudioHome";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import StudioConsole from "./StudioConsole";
 import StudioLeftTool from "./StudioLeftTool";
@@ -16,15 +17,11 @@ import {
 import {loadSettings} from "@/pages/Settings/function";
 import DraggleLayout from "@/components/DraggleLayout";
 import DraggleVerticalLayout from "@/components/DraggleLayout/DraggleVerticalLayout";
+import {Dispatch} from "@@/plugin-dva/connect";
 
-type StudioProps = {
-  rightClickMenu: StateType['rightClickMenu'];
-  dispatch: any;
-};
+const Studio = (props: any) => {
 
-const Studio: React.FC<StudioProps> = (props) => {
-
-  const {rightClickMenu, toolHeight, toolLeftWidth,toolRightWidth, dispatch} = props;
+  const {rightClickMenu, toolHeight, toolLeftWidth,toolRightWidth,tabs,current, dispatch} = props;
   const [form] = Form.useForm();
   const VIEW = {
     leftToolWidth: 300,
@@ -136,7 +133,7 @@ const Studio: React.FC<StudioProps> = (props) => {
                   }}/>
                 </Col>
                 <Col>
-                  <StudioTabs width={size.width - toolRightWidth - toolLeftWidth}/>
+                  {tabs.panes.length === 0 ?<StudioHome width={size.width - toolRightWidth - toolLeftWidth} />:<StudioTabs width={size.width - toolRightWidth - toolLeftWidth}/>}
                 </Col>
               </DraggleLayout>
               <Col id='StudioRightTool' className={styles["vertical-tabs"]}>
@@ -151,6 +148,7 @@ const Studio: React.FC<StudioProps> = (props) => {
           </Row>
         </DraggleVerticalLayout>
       </Card>
+
     </div>
   )
 };
@@ -160,4 +158,6 @@ export default connect(({Studio}: { Studio: StateType }) => ({
   toolHeight: Studio.toolHeight,
   toolLeftWidth: Studio.toolLeftWidth,
   toolRightWidth: Studio.toolRightWidth,
+  tabs: Studio.tabs,
+  current: Studio.current,
 }))(Studio);

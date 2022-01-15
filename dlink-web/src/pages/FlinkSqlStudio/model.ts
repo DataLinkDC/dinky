@@ -204,95 +204,13 @@ const Model: ModelType = {
     currentSession: {
       connectors: [],
     },
-    current: {
-      title: '草稿',
-      key: 0,
-      value: '',
-      closable: false,
-      path: ['草稿'],
-      isModified: false,
-      task: {
-        jobName: '草稿',
-        type: 'local',
-        checkPoint: 0,
-        savePointStrategy: 0,
-        savePointPath: '',
-        parallelism: 1,
-        fragment: true,
-        statementSet: false,
-        clusterId: 0,
-        clusterName: "本地环境",
-        clusterConfigurationId:undefined,
-        clusterConfigurationName:undefined,
-        databaseId:undefined,
-        databaseName:undefined,
-        jarId:undefined,
-        envId:undefined,
-        maxRowNum: 100,
-        config: [],
-        session: '',
-        alias: '草稿',
-        dialect: 'FlinkSql',
-        useResult:true,
-        useChangeLog:false,
-        useAutoCancel:false,
-        useSession:false,
-        useRemote:false,
-      },
-      console: {
-        result: {},
-        chart: {},
-      },
-      monaco: {},
-      sqlMetaData: undefined,
-    },
+    current: undefined,
     sql: '',
     monaco: {},
-    currentPath: ['草稿'],
+    currentPath: ['引导页'],
     tabs: {
       activeKey: 0,
-      panes: [{
-        title: '草稿',
-        key: 0,
-        value: '',
-        closable: false,
-        isModified: false,
-        path: ['草稿'],
-        task: {
-          jobName: '草稿',
-          type: 'local',
-          checkPoint: 0,
-          savePointStrategy: 0,
-          savePointPath: '',
-          parallelism: 1,
-          fragment: true,
-          statementSet: false,
-          clusterId: 0,
-          clusterName: "本地环境",
-          clusterConfigurationId:undefined,
-          clusterConfigurationName:undefined,
-          databaseId:undefined,
-          databaseName:undefined,
-          jarId:undefined,
-          envId:undefined,
-          session: '',
-          config: [],
-          maxRowNum: 100,
-          alias: '草稿',
-          dialect: 'FlinkSql',
-          useResult:true,
-          useChangeLog:false,
-          useAutoCancel:false,
-          useSession:false,
-          useRemote:false,
-        },
-        console: {
-          result: {},
-          chart: {},
-        },
-        monaco: {},
-        sqlMetaData: undefined,
-      }],
+      panes: [],
     },
     session: [],
     result:{},
@@ -381,8 +299,8 @@ const Model: ModelType = {
       }
       return {
         ...state,
-        current: newCurrent,
-        tabs: newTabs,
+        current: {...newCurrent},
+        tabs: {...newTabs},
       };
     },
     saveTabs(state, {payload}) {
@@ -391,6 +309,15 @@ const Model: ModelType = {
         if (payload.panes[i].key == payload.activeKey) {
           newCurrent = payload.panes[i];
         }
+      }
+      if(payload.panes.length === 0){
+        return {
+          ...state,
+          current: undefined,
+          tabs: {
+            ...payload,
+          },
+        };
       }
       return {
         ...state,
@@ -472,16 +399,20 @@ const Model: ModelType = {
     },
     saveTaskData(state, {payload}) {
       const newTabs = state.tabs;
+      const newCurrent = state.current;
       for (let i = 0; i < newTabs.panes.length; i++) {
-        if (newTabs.panes[i].key == newTabs.activeKey) {
+        if (newTabs.panes[i].key === payload.key) {
           newTabs.panes[i].task = payload;
+          newTabs.panes[i].isModified = false;
+          if(newCurrent.key === payload.key){
+            newCurrent = newTabs.panes[i];
+          }
         }
       }
       return {
         ...state,
-        tabs: {
-          ...newTabs,
-        },
+        current: {...newCurrent},
+        tabs: {...newTabs},
       };
     },
     saveSession(state, {payload}) {
@@ -514,13 +445,7 @@ const Model: ModelType = {
       };
     },
     saveResult(state, {payload}) {
-      // return {
-      //   ...state,
-      //   result: {
-      //     ...payload
-      //   },
-      // };
-      let newTabs = state?.tabs;
+      const newTabs = state?.tabs;
       let newCurrent = state?.current;
       for (let i = 0; i < newTabs.panes.length; i++) {
         if (newTabs.panes[i].key === newTabs.activeKey) {
@@ -531,8 +456,8 @@ const Model: ModelType = {
       }
       return {
         ...state,
-        current: newCurrent,
-        tabs: newTabs,
+        current: {...newCurrent},
+        tabs: {...newTabs},
       };
     },
     saveCluster(state, {payload}) {
@@ -572,8 +497,8 @@ const Model: ModelType = {
       }
       return {
         ...state,
-        current: newCurrent,
-        tabs: newTabs,
+        current: {...newCurrent},
+        tabs: {...newTabs},
       };
     },
   },

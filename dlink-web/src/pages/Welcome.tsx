@@ -556,6 +556,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增 BI选项卡的折线图、条形图、饼图</Link>
                 </li>
+                <li>
+                  <Link>修改 草稿为引导页</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

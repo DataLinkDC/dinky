@@ -15,14 +15,15 @@ import { postDataArray} from "@/components/Common/crud";
 import {executeSql, getJobPlan} from "@/pages/FlinkSqlStudio/service";
 import StudioHelp from "./StudioHelp";
 import StudioGraph from "./StudioGraph";
-import {showCluster, showTables, saveTask} from "@/components/Studio/StudioEvent/DDL";
-import {useEffect, useState} from "react";
+import {showCluster, showTables} from "@/components/Studio/StudioEvent/DDL";
+import {useCallback, useEffect, useState} from "react";
 import StudioExplain from "../StudioConsole/StudioExplain";
 import {DIALECT, isOnline, isSql} from "@/components/Studio/conf";
 import {
   ModalForm,
 } from '@ant-design/pro-form';
 import SqlExport from "@/pages/FlinkSqlStudio/SqlExport";
+import {Dispatch} from "@@/plugin-dva/connect";
 
 const menu = (
   <Menu>
@@ -38,6 +39,22 @@ const StudioMenu = (props: any) => {
   const [exportModalVisible, handleExportModalVisible] = useState<boolean>(false);
   const [graphModalVisible, handleGraphModalVisible] = useState<boolean>(false);
   const [graphData, setGraphData] = useState();
+
+  const onKeyDown = useCallback((e) => {
+    if(e.keyCode === 83 && e.ctrlKey === true){
+      e.preventDefault();
+      if(current) {
+        props.saveTask(current);
+      }
+    }
+  }, [current]);
+
+  useEffect(() => {
+    document.addEventListener("keydown", onKeyDown)
+    return () => {
+      document.removeEventListener("keydown", onKeyDown)
+    };
+  }, [current]);
 
   const execute = () => {
     if(!isSql(current.task.dialect)&&!isOnline(current.task.type)){
@@ -224,7 +241,7 @@ const StudioMenu = (props: any) => {
   }
 
   const saveSqlAndSettingToTask = () => {
-    saveTask(current,dispatch);
+    props.saveTask(current);
   };
 
   const exportSql = () => {
@@ -311,6 +328,7 @@ const StudioMenu = (props: any) => {
               </Breadcrumb>
             )}
           </Col>
+          {current?
           <Col span={8}>
             <Button
               type="text"
@@ -401,7 +419,7 @@ const StudioMenu = (props: any) => {
                 onClick={showHelp}
               />
             </Tooltip>
-          </Col>
+          </Col>:undefined}
         </Row>
       </Col>
       <StudioExplain
@@ -418,6 +436,7 @@ const StudioMenu = (props: any) => {
       >
         <StudioGraph data={graphData} />
       </Modal>
+      {current?
       <ModalForm
         title={`${current.task.alias} 的 ${current.task.dialect} 导出`}
         visible={exportModalVisible}
@@ -438,10 +457,18 @@ const StudioMenu = (props: any) => {
         }}
       >
         <SqlExport id={current.task.id} />
-      </ModalForm>
+      </ModalForm>:undefined}
     </Row>
   );
 };
+
+
+const mapDispatchToProps = (dispatch: Dispatch)=>({
+  saveTask:(current: any)=>dispatch({
+    type: "Studio/saveTask",
+    payload: current.task,
+  }),
+});
 
 export default connect(({Studio}: { Studio: StateType }) => ({
   current: Studio.current,
@@ -449,4 +476,4 @@ export default connect(({Studio}: { Studio: StateType }) => ({
   tabs: Studio.tabs,
   refs: Studio.refs,
   currentSession: Studio.currentSession,
-}))(StudioMenu);
+}),mapDispatchToProps)(StudioMenu);

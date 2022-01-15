@@ -6,13 +6,13 @@ import {showJobData} from "@/components/Studio/StudioEvent/DQL";
 import {isSql} from "@/components/Studio/conf";
 import DTable from "@/components/Common/DTable";
 
-const StudioTable = (props:any) => {
+const StudioTable = (props: any) => {
 
-  const {current,result,dispatch} = props;
+  const {current,dispatch} = props;
 
-  const getColumns=(columns:[])=>{
-    let datas:any=[];
-    columns.map((item)=> {
+  const getColumns=(columns: [])=>{
+    let datas: any=[];
+    columns.map((item) => {
       datas.push({
         field: item,
       });
@@ -22,6 +22,7 @@ const StudioTable = (props:any) => {
 
   const showDetail=()=>{
     showJobData(current.console.result.jobId,dispatch)
+    console.log(current.console.result.result);
   };
 
   const renderFlinkSQLContent = () => {
@@ -50,12 +51,11 @@ const StudioTable = (props:any) => {
 
   return (
     <div style={{width: '100%'}}>
-      {isSql(current.task.dialect)?renderSQLContent():renderFlinkSQLContent()}
+      {current?(isSql(current.task.dialect)?renderSQLContent():renderFlinkSQLContent()):undefined}
     </div>
   );
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
   current: Studio.current,
-  result: Studio.result,
 }))(StudioTable);
