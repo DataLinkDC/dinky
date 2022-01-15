@@ -161,7 +161,8 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
             ...result.datas,
           },
           console:{
-            result:[],
+            result: {},
+            chart: {},
           },
           monaco: React.createRef(),
         };

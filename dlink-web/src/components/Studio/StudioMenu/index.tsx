@@ -11,14 +11,14 @@ import Button from "antd/es/button/button";
 import Breadcrumb from "antd/es/breadcrumb/Breadcrumb";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
-import {handleAddOrUpdate, postDataArray} from "@/components/Common/crud";
-import {executeSql, explainSql, getJobPlan} from "@/pages/FlinkSqlStudio/service";
+import { postDataArray} from "@/components/Common/crud";
+import {executeSql, getJobPlan} from "@/pages/FlinkSqlStudio/service";
 import StudioHelp from "./StudioHelp";
 import StudioGraph from "./StudioGraph";
 import {showCluster, showTables, saveTask} from "@/components/Studio/StudioEvent/DDL";
 import {useEffect, useState} from "react";
 import StudioExplain from "../StudioConsole/StudioExplain";
-import {DIALECT, isSql} from "@/components/Studio/conf";
+import {DIALECT, isOnline, isSql} from "@/components/Studio/conf";
 import {
   ModalForm,
 } from '@ant-design/pro-form';
@@ -37,10 +37,13 @@ const StudioMenu = (props: any) => {
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
   const [exportModalVisible, handleExportModalVisible] = useState<boolean>(false);
   const [graphModalVisible, handleGraphModalVisible] = useState<boolean>(false);
-  const [explainData, setExplainData] = useState([]);
   const [graphData, setGraphData] = useState();
 
   const execute = () => {
+    if(!isSql(current.task.dialect)&&!isOnline(current.task.type)){
+      message.warn(`该任务执行模式为【${current.task.type}】，不支持 SQL 查询，请手动保存后使用右侧按钮——作业提交`);
+      return;
+    }
     let selectsql = null;
     if (current.monaco.current) {
       let selection = current.monaco.current.editor.getSelection();
@@ -75,7 +78,7 @@ const StudioMenu = (props: any) => {
       if (res.datas.success) {
         message.success('执行成功');
       } else {
-        message.success('执行失败');
+        message.error('执行失败');
       }
       let newTabs = tabs;
       for (let i = 0; i < newTabs.panes.length; i++) {
@@ -230,8 +233,8 @@ const StudioMenu = (props: any) => {
 
   const runMenu = (
     <Menu>
-      <Menu.Item onClick={execute}>同步执行</Menu.Item>
-      <Menu.Item onClick={submit}>异步提交</Menu.Item>
+      <Menu.Item onClick={execute}>SQL 查询</Menu.Item>
+      <Menu.Item onClick={submit}>提交作业</Menu.Item>
     </Menu>
   );
 
@@ -348,7 +351,7 @@ const StudioMenu = (props: any) => {
               />
             </Tooltip>)}
             {(!current.task.dialect||current.task.dialect === DIALECT.FLINKSQL||isSql( current.task.dialect )) &&(
-            <Tooltip title="执行当前的 FlinkSql">
+            <Tooltip title="执行当前的 SQL">
               <Button
                 type="text"
                 icon={<PlayCircleTwoTone/>}
@@ -357,7 +360,7 @@ const StudioMenu = (props: any) => {
               />
             </Tooltip>)}
             {(!current.task.dialect||current.task.dialect === DIALECT.FLINKSQL||isSql( current.task.dialect )) &&(<>
-              <Tooltip title="提交当前的作业到集群">
+              <Tooltip title="提交当前的作业到集群，提交前请手动保存">
                 <Button
                   type="text"
                   icon={<RocketTwoTone/>}

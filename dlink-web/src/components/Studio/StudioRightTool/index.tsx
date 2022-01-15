@@ -8,6 +8,7 @@ import StudioSetting from "./StudioSetting";
 import StudioSavePoint from "./StudioSavePoint";
 import StudioEnvSetting from "./StudioEnvSetting";
 import StudioSqlConfig from "./StudioSqlConfig";
+import StudioUDFInfo from "./StudioUDFInfo";
 import {DIALECT, isSql} from "@/components/Studio/conf";
 
 const { TabPane } = Tabs;
@@ -26,7 +27,7 @@ const StudioRightTool = (props:any) => {
       return renderEnvContent();
     }
     if(DIALECT.JAVA === current.task.dialect){
-      return undefined;
+      return renderUDFContent();
     }
     return renderFlinkSqlContent();
   };
@@ -43,6 +44,14 @@ const StudioRightTool = (props:any) => {
     return (<>
       <TabPane tab={<span><SettingOutlined /> 作业配置</span>} key="StudioEnvSetting" >
         <StudioEnvSetting form={form}/>
+      </TabPane>
+    </>)
+  };
+
+  const renderUDFContent = () => {
+    return (<>
+      <TabPane tab={<span><SettingOutlined /> UDF信息</span>} key="StudioUDFInfo" >
+        <StudioUDFInfo form={form}/>
       </TabPane>
     </>)
   };

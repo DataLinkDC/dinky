@@ -12,6 +12,7 @@ import {
 import styles from "./index.less";
 import {showJobData} from "@/components/Studio/StudioEvent/DQL";
 import StudioPreview from "../StudioPreview";
+import {getJobData} from "@/pages/FlinkSqlStudio/service";
 
 
 const { Title, Paragraph, Text, Link } = Typography;
@@ -61,14 +62,19 @@ const StudioHistory = (props: any) => {
   const [row, setRow] = useState<HistoryItem>();
   const [config,setConfig] = useState<HistoryConfig>();
   const [type,setType] = useState<number>();
+  const [result,setResult] = useState<{}>();
 
   const showDetail=(row:HistoryItem,type:number)=>{
     setRow(row);
     setModalVisit(true);
     setType(type);
     setConfig(JSON.parse(row.config));
-    if(type==3){
-      showJobData(row.jobId,dispatch)
+    if(type===3){
+      // showJobData(row.jobId,dispatch)
+      const res = getJobData(row.jobId);
+      res.then((resd)=>{
+        setResult(resd.datas);
+      });
     }
   };
 
@@ -341,7 +347,7 @@ const StudioHistory = (props: any) => {
                 </Tag>
               </ProDescriptions.Item>
               <ProDescriptions.Item  span={2} >
-                <StudioPreview style={{width: '100%'}}/>
+                <StudioPreview result={result} style={{width: '100%'}}/>
               </ProDescriptions.Item>
             </ProDescriptions>
           )}

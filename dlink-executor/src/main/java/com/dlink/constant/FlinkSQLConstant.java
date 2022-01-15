@@ -19,4 +19,8 @@ public interface FlinkSQLConstant {
      * DML 类型
      */
     String DML = "DML";
+    /**
+     * 片段 Fragments 标识
+     */
+    String FRAGMENTS = ":=";
 }

@@ -530,7 +530,7 @@ export default (): React.ReactNode => {
                   <Link>修复 set 语法在1.11和1.12的兼容问题</Link>
                 </li>
                 <li>
-                  <Link>升级各版本 Flink 依赖至最新版本以解决核弹问题</Link>
+                  <Link>升级 各版本 Flink 依赖至最新版本以解决核弹问题</Link>
                 </li>
                 <li>
                   <Link>新增 Yarn 的 Kerboros 验证</Link>
@@ -539,10 +539,22 @@ export default (): React.ReactNode => {
                   <Link>新增 ChangLog 和 Table 的查询及自动停止实现</Link>
                 </li>
                 <li>
-                  <Link>修改项目名为 Dinky 以及图标</Link>
+                  <Link>修改 项目名为 Dinky 以及图标</Link>
                 </li>
                 <li>
-                  <Link>优化血缘分析图</Link>
+                  <Link>优化 血缘分析图</Link>
+                </li>
+                <li>
+                  <Link>新增 快捷键保存、校验、美化</Link>
+                </li>
+                <li>
+                  <Link>新增 UDF Java方言的Local模式的在线编写、调试、动态加载</Link>
+                </li>
+                <li>
+                  <Link>新增 编辑器选项卡右键关闭其他和关闭所有</Link>
+                </li>
+                <li>
+                  <Link>新增 BI选项卡的折线图、条形图、饼图</Link>
                 </li>
               </ul>
             </Paragraph>

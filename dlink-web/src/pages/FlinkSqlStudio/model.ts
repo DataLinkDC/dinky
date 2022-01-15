@@ -96,6 +96,7 @@ export type TaskType = {
 
 export type ConsoleType = {
   result: {};
+  chart: {};
 }
 
 export type TabsItemType = {
@@ -172,6 +173,7 @@ export type ModelType = {
     saveMonaco: Reducer<StateType>;
     saveSqlMetaData: Reducer<StateType>;
     saveTabs: Reducer<StateType>;
+    closeTabs: Reducer<StateType>;
     changeActiveKey: Reducer<StateType>;
     saveTaskData: Reducer<StateType>;
     saveSession: Reducer<StateType>;
@@ -184,6 +186,7 @@ export type ModelType = {
     saveClusterConfiguration: Reducer<StateType>;
     saveDataBase: Reducer<StateType>;
     saveEnv: Reducer<StateType>;
+    saveChart: Reducer<StateType>;
   };
 };
 
@@ -238,6 +241,7 @@ const Model: ModelType = {
       },
       console: {
         result: {},
+        chart: {},
       },
       monaco: {},
       sqlMetaData: undefined,
@@ -284,6 +288,7 @@ const Model: ModelType = {
         },
         console: {
           result: {},
+          chart: {},
         },
         monaco: {},
         sqlMetaData: undefined,
@@ -420,6 +425,31 @@ const Model: ModelType = {
         },
       };
     },
+    closeTabs(state, {payload}) {
+      const {deleteType, current} = payload;
+      const newTabs = state.tabs;
+      const firstKey = newTabs.panes[0].key;
+      let newCurrent = newTabs.panes[0];
+      if (deleteType === 'CLOSE_OTHER') {
+        const keys = [firstKey, current.key];
+        newCurrent = {...current};
+        newTabs.activeKey = current.key;
+        newTabs.panes = newTabs.panes.filter(item => keys.includes(item.key));
+      } else {
+        newTabs.panes = [];
+        newTabs.activeKey = firstKey
+      }
+
+      return {
+        ...state,
+        current: {
+          ...newCurrent
+        },
+        tabs: {
+          ...newTabs,
+        }
+      };
+    },
     changeActiveKey(state, {payload}) {
       const {tabs} = state;
       tabs.activeKey = payload;
@@ -484,11 +514,25 @@ const Model: ModelType = {
       };
     },
     saveResult(state, {payload}) {
+      // return {
+      //   ...state,
+      //   result: {
+      //     ...payload
+      //   },
+      // };
+      let newTabs = state?.tabs;
+      let newCurrent = state?.current;
+      for (let i = 0; i < newTabs.panes.length; i++) {
+        if (newTabs.panes[i].key === newTabs.activeKey) {
+          newTabs.panes[i].console.result.result = payload;
+          newCurrent = newTabs.panes[i];
+          break;
+        }
+      }
       return {
         ...state,
-        result: {
-          ...payload
-        },
+        current: newCurrent,
+        tabs: newTabs,
       };
     },
     saveCluster(state, {payload}) {
@@ -515,6 +559,21 @@ const Model: ModelType = {
       return {
         ...state,
         env: payload,
+      };
+    },saveChart(state, {payload}) {
+      let newTabs = state?.tabs;
+      let newCurrent = state?.current;
+      for (let i = 0; i < newTabs.panes.length; i++) {
+        if (newTabs.panes[i].key === newTabs.activeKey) {
+          newTabs.panes[i].console.chart = payload;
+          newCurrent = newTabs.panes[i];
+          break;
+        }
+      }
+      return {
+        ...state,
+        current: newCurrent,
+        tabs: newTabs,
       };
     },
   },
