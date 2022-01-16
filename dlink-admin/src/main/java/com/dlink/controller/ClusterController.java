@@ -40,6 +40,15 @@ public class ClusterController {
     }
 
     /**
+     * 启用和禁用
+     */
+    @PutMapping("/enable")
+    public Result enableCluster(@RequestBody Cluster cluster) throws Exception {
+        clusterService.enableCluster(cluster);
+        return Result.succeed("修改成功");
+    }
+
+    /**
      * 动态查询列表
      */
     @PostMapping

@@ -35,6 +35,7 @@ import org.apache.flink.configuration.DeploymentOptions;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
+import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.apache.flink.streaming.api.environment.ExecutionCheckpointingOptions;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.yarn.configuration.YarnConfigOptions;
@@ -253,6 +254,9 @@ public class JobManager {
                         gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
                     } else {
                         config.addGatewayConfig(executor.getSetConfig());
+                        if(Asserts.isNotNullString(config.getSavePointPath())) {
+                            jobGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(config.getSavePointPath()));
+                        }
                         gatewayResult = Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);
                     }
                     job.setResult(InsertResult.success(gatewayResult.getAppId()));
@@ -290,6 +294,9 @@ public class JobManager {
                         gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
                     } else {
                         config.addGatewayConfig(executor.getSetConfig());
+                        if(Asserts.isNotNullString(config.getSavePointPath())) {
+                            jobGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(config.getSavePointPath()));
+                        }
                         gatewayResult = Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);
                     }
                     job.setResult(InsertResult.success(gatewayResult.getAppId()));

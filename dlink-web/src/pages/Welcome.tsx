@@ -20,7 +20,7 @@ export default (): React.ReactNode => {
         <Alert
           message={intl.formatMessage({
             id: 'pages.welcome.alertMessage',
-            defaultMessage: '实时计算平台 Dlink & Apache Flink 即将发布，目前为体验版，版本号为 0.5.0-SNAPSHOT。',
+            defaultMessage: '实时计算平台 Dlink & Apache Flink 即将发布，目前为体验版，版本号为 0.5.0。',
           })}
           type="success"
           showIcon
@@ -450,7 +450,7 @@ export default (): React.ReactNode => {
               </ul>
             </Paragraph>
           </Timeline.Item>
-          <Timeline.Item><Text code>0.5.0</Text> <Text type="secondary">2022-01-??</Text>
+          <Timeline.Item><Text code>0.5.0</Text> <Text type="secondary">2022-01-16</Text>
             <p> </p>
             <Paragraph>
               <ul>
@@ -555,6 +555,12 @@ export default (): React.ReactNode => {
                 </li>
                 <li>
                   <Link>新增 BI选项卡的折线图、条形图、饼图</Link>
+                </li>
+                <li>
+                  <Link>修改 草稿为引导页</Link>
+                </li>
+                <li>
+                  <Link>修复 批量启用禁用集群、关闭tab无法更新位置及无法取消FlinkSQLEnv的bug</Link>
                 </li>
               </ul>
             </Paragraph>

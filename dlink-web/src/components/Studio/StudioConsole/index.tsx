@@ -19,7 +19,7 @@ const {TabPane} = Tabs;
 
 const StudioConsole = (props: any) => {
 
-  const {height} = props;
+  const {height,current} = props;
   let consoleHeight = (height - 37.6);
   return (
     <Tabs defaultActiveKey="StudioMsg" size="small" tabPosition="top" style={{
@@ -35,7 +35,7 @@ const StudioConsole = (props: any) => {
         key="StudioMsg"
       >
         <Scrollbars style={{height: consoleHeight}}>
-          <StudioMsg/>
+          {current?<StudioMsg/>:<Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
         </Scrollbars>
       </TabPane>
       <TabPane
@@ -48,7 +48,7 @@ const StudioConsole = (props: any) => {
         key="StudioTable"
       >
         <Scrollbars style={{height: consoleHeight}}>
-          <StudioTable/>
+          {current?<StudioTable/>:<Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
         </Scrollbars>
       </TabPane>
       <TabPane
@@ -61,7 +61,7 @@ const StudioConsole = (props: any) => {
         key="StudioChart"
       >
         <Scrollbars style={{height: consoleHeight}}>
-          <Chart height={consoleHeight} />
+          {current? <Chart height={consoleHeight} />:<Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
         </Scrollbars>
       </TabPane>
       <TabPane
@@ -87,7 +87,7 @@ const StudioConsole = (props: any) => {
         key="StudioConsanguinity"
       >
         <Scrollbars style={{height: consoleHeight}}>
-          <StudioCA/>
+          {current?<StudioCA/>:<Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
         </Scrollbars>
       </TabPane>
       <TabPane
@@ -148,4 +148,5 @@ const StudioConsole = (props: any) => {
 
 export default connect(({Studio}: { Studio: StateType }) => ({
   sql: Studio.sql,
+  current: Studio.current,
 }))(StudioConsole);

@@ -27,7 +27,6 @@ import com.dlink.session.SessionConfig;
 import com.dlink.session.SessionInfo;
 import com.dlink.session.SessionPool;
 import com.dlink.utils.RunTimeUtil;
-import com.dlink.utils.UDFUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -65,7 +64,7 @@ public class StudioServiceImpl implements StudioService {
     private TaskService taskService;
 
     private void addFlinkSQLEnv(AbstractStatementDTO statementDTO){
-        if(Asserts.isNotNull(statementDTO.getEnvId())){
+        if(Asserts.isNotNull(statementDTO.getEnvId())&&statementDTO.getEnvId()!=0){
             Task task = taskService.getTaskInfoById(statementDTO.getEnvId());
             if(Asserts.isNotNull(task)&&Asserts.isNotNullString(task.getStatement())) {
                 statementDTO.setStatement(task.getStatement() + "\r\n" + statementDTO.getStatement());

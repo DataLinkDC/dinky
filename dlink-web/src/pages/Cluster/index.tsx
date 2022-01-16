@@ -367,7 +367,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
                         okText: '确认',
                         cancelText: '取消',
                         onOk: async () => {
-                          await updateEnabled(url, selectedRowsState, true);
+                          await updateEnabled(url+'/enable', selectedRowsState, true);
                           setSelectedRows([]);
                           actionRef.current?.reloadAndRest?.();
                         }
@@ -382,7 +382,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
                         okText: '确认',
                         cancelText: '取消',
                         onOk: async () => {
-                          await updateEnabled(url, selectedRowsState, false);
+                          await updateEnabled(url+'/enable', selectedRowsState, false);
                           setSelectedRows([]);
                           actionRef.current?.reloadAndRest?.();
                         }

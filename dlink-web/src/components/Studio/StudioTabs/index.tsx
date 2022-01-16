@@ -4,8 +4,8 @@ import {connect} from 'umi';
 import {StateType} from '@/pages/FlinkSqlStudio/model';
 import styles from './index.less';
 import StudioEdit from '../StudioEdit';
-import {saveTask} from '@/components/Studio/StudioEvent/DDL';
 import {DIALECT} from '../conf';
+import StudioHome from "@/components/Studio/StudioHome";
 
 const {TabPane} = Tabs;
 
@@ -25,17 +25,17 @@ const EditorTabs = (props: any) => {
   };
 
   const onEdit = (targetKey: any, action: any) => {
-    if (action == 'add') {
+    if (action === 'add') {
       add();
-    } else if (action == 'remove') {
+    } else if (action === 'remove') {
       dispatch &&
       dispatch({
         type: 'Studio/saveToolHeight',
         payload: toolHeight - 0.0001,
       });
-      if (current.isModified) {
-        saveTask(current, dispatch);
-      }
+      // if (current.isModified) {
+      //   saveTask(current, dispatch);
+      // }
       remove(targetKey);
     }
   };
@@ -106,6 +106,8 @@ const EditorTabs = (props: any) => {
   );
 
   return (
+    <>
+      {tabs.panes.length === 0?<StudioHome width={width} />:
     <Tabs
       hideAdd
       type="editable-card"
@@ -126,7 +128,8 @@ const EditorTabs = (props: any) => {
           />
         </TabPane>
       ))}
-    </Tabs>
+    </Tabs>}
+      </>
   );
 };
 

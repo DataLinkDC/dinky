@@ -50,7 +50,9 @@ const StudioSetting = (props: any) => {
   };
 
   const getEnvOptions = () => {
-    const itemList = [];
+    const itemList = [<Option key={0} value={0} label='无'>
+      无
+    </Option>];
     for (const item of env) {
       const tag = (<>{item.enabled ? <Badge status="success"/> : <Badge status="error"/>}
       {item.fragment ? <PaperClipOutlined /> : undefined}{item.alias}</>);
@@ -188,6 +190,7 @@ const StudioSetting = (props: any) => {
               placeholder="选择 FlinkSQL 环境，非必填"
               allowClear
               optionLabelProp="label"
+              defaultValue={0} value={0}
             >
               {getEnvOptions()}
             </Select>

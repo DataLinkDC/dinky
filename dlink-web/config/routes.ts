@@ -25,6 +25,7 @@ export default [
     path: '/flinksqlstudio',
     name: 'flinksqlstudio',
     icon: 'consoleSql',
+    footerRender: false,
     component: './FlinkSqlStudio',
   },
   {
