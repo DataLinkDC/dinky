@@ -17,11 +17,10 @@ import {
 import {loadSettings} from "@/pages/Settings/function";
 import DraggleLayout from "@/components/DraggleLayout";
 import DraggleVerticalLayout from "@/components/DraggleLayout/DraggleVerticalLayout";
-import {Dispatch} from "@@/plugin-dva/connect";
 
 const Studio = (props: any) => {
 
-  const {rightClickMenu, toolHeight, toolLeftWidth,toolRightWidth,tabs,current, dispatch} = props;
+  const {rightClickMenu, toolHeight, toolLeftWidth,toolRightWidth,dispatch} = props;
   const [form] = Form.useForm();
   const VIEW = {
     leftToolWidth: 300,
@@ -51,15 +50,17 @@ const Studio = (props: any) => {
     };
   }, [onResize]);
 
-  loadSettings(dispatch);
-  getFillAllByVersion('', dispatch);
-  showCluster(dispatch);
-  showSessionCluster(dispatch);
-  showClusterConfiguration(dispatch);
-  showDataBase(dispatch);
-  listSession(dispatch);
-  showJars(dispatch);
-  showEnv(dispatch);
+  useEffect(() => {
+    loadSettings(dispatch);
+    getFillAllByVersion('', dispatch);
+    showCluster(dispatch);
+    showSessionCluster(dispatch);
+    showClusterConfiguration(dispatch);
+    showDataBase(dispatch);
+    listSession(dispatch);
+    showJars(dispatch);
+    showEnv(dispatch);
+  }, []);
 
   const onClick = () => {
     if (rightClickMenu) {
@@ -133,7 +134,7 @@ const Studio = (props: any) => {
                   }}/>
                 </Col>
                 <Col>
-                  {tabs.panes.length === 0 ?<StudioHome width={size.width - toolRightWidth - toolLeftWidth} />:<StudioTabs width={size.width - toolRightWidth - toolLeftWidth}/>}
+                  <StudioTabs width={size.width - toolRightWidth - toolLeftWidth}/>
                 </Col>
               </DraggleLayout>
               <Col id='StudioRightTool' className={styles["vertical-tabs"]}>
@@ -158,6 +159,4 @@ export default connect(({Studio}: { Studio: StateType }) => ({
   toolHeight: Studio.toolHeight,
   toolLeftWidth: Studio.toolLeftWidth,
   toolRightWidth: Studio.toolRightWidth,
-  tabs: Studio.tabs,
-  current: Studio.current,
 }))(Studio);

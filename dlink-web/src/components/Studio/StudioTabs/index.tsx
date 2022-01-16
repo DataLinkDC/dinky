@@ -5,6 +5,7 @@ import {StateType} from '@/pages/FlinkSqlStudio/model';
 import styles from './index.less';
 import StudioEdit from '../StudioEdit';
 import {DIALECT} from '../conf';
+import StudioHome from "@/components/Studio/StudioHome";
 
 const {TabPane} = Tabs;
 
@@ -105,6 +106,8 @@ const EditorTabs = (props: any) => {
   );
 
   return (
+    <>
+      {tabs.panes.length === 0?<StudioHome width={width} />:
     <Tabs
       hideAdd
       type="editable-card"
@@ -125,7 +128,8 @@ const EditorTabs = (props: any) => {
           />
         </TabPane>
       ))}
-    </Tabs>
+    </Tabs>}
+      </>
   );
 };
 

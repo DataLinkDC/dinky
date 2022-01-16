@@ -317,6 +317,7 @@ const Model: ModelType = {
           tabs: {
             ...payload,
           },
+          currentPath: ['引导页'],
         };
       }
       return {
@@ -328,6 +329,7 @@ const Model: ModelType = {
         tabs: {
           ...payload,
         },
+        currentPath: newCurrent.path,
       };
     },
     deleteTabByKey(state, {payload}) {

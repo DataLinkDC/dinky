@@ -32,5 +32,7 @@ public interface ClusterService extends ISuperService<Cluster> {
 
     Cluster registersCluster(Cluster cluster);
 
+    boolean enableCluster(Cluster cluster);
+
     int clearCluster();
 }

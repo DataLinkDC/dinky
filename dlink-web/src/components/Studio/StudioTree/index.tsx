@@ -126,7 +126,6 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       setAvailable(true);
     },200);
     if(node?.isLeaf&&node.taskId) {
-      // @ts-ignore
       for(let item of tabs.panes){
         if(item.key==node.taskId){
           dispatch&&dispatch({

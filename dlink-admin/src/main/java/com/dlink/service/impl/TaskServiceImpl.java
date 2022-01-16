@@ -167,7 +167,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     private JobConfig buildJobConfig(Task task){
         boolean isJarTask = isJarTask(task);
-        if(!isJarTask&&Asserts.isNotNull(task.getEnvId())){
+        if(!isJarTask&&Asserts.isNotNull(task.getEnvId())&&task.getEnvId()!=0){
             Task envTask = getTaskInfoById(task.getEnvId());
             if(Asserts.isNotNull(envTask)&&Asserts.isNotNullString(envTask.getStatement())) {
                 task.setStatement(envTask.getStatement() + "\r\n" + task.getStatement());

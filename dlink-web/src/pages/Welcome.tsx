@@ -559,6 +559,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>修改 草稿为引导页</Link>
                 </li>
+                <li>
+                  <Link>修复 批量启用禁用集群、关闭tab无法更新位置及无法取消FlinkSQLEnv的bug</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>
