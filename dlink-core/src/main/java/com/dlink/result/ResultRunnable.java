@@ -71,7 +71,7 @@ public class ResultRunnable implements Runnable {
                 if (field == null) {
                     map.put(columns.get(i + 1), nullColumn);
                 } else {
-                    map.put(columns.get(i + 1), StringUtils.arrayAwareToString(field));
+                    map.put(columns.get(i + 1), field);
                 }
             }
             rows.add(map);
@@ -95,7 +95,7 @@ public class ResultRunnable implements Runnable {
                 if (field == null) {
                     map.put(columns.get(i), nullColumn);
                 } else {
-                    map.put(columns.get(i), StringUtils.arrayAwareToString(field));
+                    map.put(columns.get(i), field);
                 }
             }
             if (RowKind.UPDATE_BEFORE == row.getKind() || RowKind.DELETE == row.getKind()) {
