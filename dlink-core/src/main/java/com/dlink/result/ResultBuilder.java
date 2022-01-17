@@ -16,8 +16,9 @@ public interface ResultBuilder {
             case SELECT:
                 return new SelectResultBuilder(maxRowNum,isChangeLog,isAutoCancel);
             case SHOW:
+            case DESC:
             case DESCRIBE:
-                return new ShowResultBuilder(false);
+                return new ShowResultBuilder();
             case INSERT:
                 return new InsertResultBuilder();
             default:

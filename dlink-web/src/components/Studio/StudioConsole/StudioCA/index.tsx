@@ -216,7 +216,7 @@ const StudioCA = (props:any) => {
         key="OneTableCA"
       >
         <div>
-          <div style={{float: "left"}}>
+          <div>
             <Tooltip title="重新计算血缘">
               <Button
                 type="text"
