@@ -66,7 +66,8 @@ public class Explainer {
                 continue;
             }
             SqlType operationType = Operations.getOperationType(statement);
-            if (operationType.equals(SqlType.INSERT) || operationType.equals(SqlType.SELECT)) {
+            if (operationType.equals(SqlType.INSERT) || operationType.equals(SqlType.SELECT)|| operationType.equals(SqlType.SHOW)
+                    || operationType.equals(SqlType.DESCRIBE)|| operationType.equals(SqlType.DESC)) {
                 trans.add(new StatementParam(statement, operationType));
                 if (!useStatementSet) {
                     break;

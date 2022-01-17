@@ -307,7 +307,7 @@ const Model: ModelType = {
       let newCurrent = state.current;
       for (let i = 0; i < payload.panes.length; i++) {
         if (payload.panes[i].key == payload.activeKey) {
-          newCurrent = payload.panes[i];
+          newCurrent = {...payload.panes[i]};
         }
       }
       if(payload.panes.length === 0){
@@ -385,7 +385,7 @@ const Model: ModelType = {
       let newCurrent = state.current;
       for (let i = 0; i < tabs.panes.length; i++) {
         if (tabs.panes[i].key == tabs.activeKey) {
-          newCurrent = tabs.panes[i];
+          newCurrent = {...tabs.panes[i]};
         }
       }
       return {
@@ -404,10 +404,10 @@ const Model: ModelType = {
       const newCurrent = state.current;
       for (let i = 0; i < newTabs.panes.length; i++) {
         if (newTabs.panes[i].key === payload.key) {
-          newTabs.panes[i].task = payload;
+          newTabs.panes[i].task = {...payload};
           newTabs.panes[i].isModified = false;
           if(newCurrent.key === payload.key){
-            newCurrent = newTabs.panes[i];
+            newCurrent = {...newTabs.panes[i]};
           }
         }
       }
@@ -451,8 +451,8 @@ const Model: ModelType = {
       let newCurrent = state?.current;
       for (let i = 0; i < newTabs.panes.length; i++) {
         if (newTabs.panes[i].key === newTabs.activeKey) {
-          newTabs.panes[i].console.result.result = payload;
-          newCurrent = newTabs.panes[i];
+          newTabs.panes[i].console.result.result = {...payload};
+          newCurrent = {...newTabs.panes[i]};
           break;
         }
       }
@@ -492,8 +492,8 @@ const Model: ModelType = {
       let newCurrent = state?.current;
       for (let i = 0; i < newTabs.panes.length; i++) {
         if (newTabs.panes[i].key === newTabs.activeKey) {
-          newTabs.panes[i].console.chart = payload;
-          newCurrent = newTabs.panes[i];
+          newTabs.panes[i].console.chart = {...payload};
+          newCurrent = {...newTabs.panes[i]};
           break;
         }
       }

@@ -20,7 +20,7 @@ Dinky（原 Dlink）：
 
 ## 原理
 
-![](https://github.com/DataLinkDC/dlink/raw/main/dlink-doc/images/main/dinky_principle.png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/main/dinky_principle.png)
 
 ## 功能
 
@@ -31,7 +31,7 @@ Dinky（原 Dlink）：
 |  开发中心   |  FlinkSQL  | 支持 sql-client 所有语法                        | 0.4.0 |
 |         |            | 支持 Flink 所有 Configuration                 | 0.4.0 |
 |         |            | 支持 Flink 所有 Connector                     | 0.4.0 |
-|         |            | 支持 SELECT、SHOW 等查询实时预览                    | 0.4.0 |
+|         |            | 支持 SELECT、SHOW、DESC 等查询实时预览               | 0.4.0 |
 |         |            | 支持 INSERT 语句集                             | 0.4.0 |
 |         |            | 新增 SQL 片段语法                               | 0.4.0 |
 |         |            | 新增 AGGTABLE 表值聚合语法及 UDATF 支持              | 0.4.0 |
@@ -138,6 +138,10 @@ dlink-admin.jar --程序包
 ```
 
 解压后结构如上所示，修改配置文件内容。lib 文件夹下存放 dlink 自身的扩展文件，plugins 文件夹下存放 flink 及 hadoop 的官方扩展文件（ 如果plugins下引入了flink-shaded-hadoop-3-uber 或者其他可能冲突的jar，请手动删除内部的 javax.servlet 等冲突内容）。其中 plugins 中的所有 jar 需要根据版本号自行下载并添加，才能体验完整功能，当然也可以放自己修改的 Flink 源码编译包。extends 文件夹只作为扩展插件的备份管理，不会被 dlink 加载。
+
+请检查 plugins 下是否添加了 flink 对应版本的 flink-dist,flink-table,flink-shaded-hadoop-3-uber 等如上所示的依赖！！！
+请检查 plugins 下是否添加了 flink 对应版本的 flink-dist,flink-table,flink-shaded-hadoop-3-uber 等如上所示的依赖！！！
+请检查 plugins 下是否添加了 flink 对应版本的 flink-dist,flink-table,flink-shaded-hadoop-3-uber 等如上所示的依赖！！！
 
 在Mysql数据库中创建 dlink 数据库并执行初始化脚本 dlink.sql。
 
@@ -323,65 +327,65 @@ QQ社区群：**543709668**，申请备注 “ Dinky ”，不写不批
 
 > 登录页
 
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/login.png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050login.png)
 
 > 首页
 
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/welcome.png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050home.png)
 
-> Studio SQL 开发提示与补全
+> FlinkSQL Studio
 
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/sqldev.png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050flinksqlstudio.png)
 
-> Studio 语法和逻辑检查
+> 自动补全
 
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/sqlcheck.png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050autocomplete.png)
 
-> Studio 批流SELECT预览
+> ChangeLog 预览
 
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/selectpreview.png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050changelog.png)
 
-> Studio 异常反馈
+> BI 折线图
 
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/sqlerror.png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050line.png)
 
-> Studio 进程监控
+> Table 预览
 
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/process.png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050table.png)
 
-> Studio 执行历史
+> 语法校验和逻辑检查
 
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/history.png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050check.png)
 
-> Studio 数据回放
+> JobPlan 预览
 
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/datashow.png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050jobplan.png)
 
-> Studio SavePoint 管理
+> FlinkSQL 导出
 
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/savepoint.png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050export.png)
 
-> Studio 血缘分析
+> 血缘分析
 
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/ca.png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050ca.png)
 
-> Studio 函数浏览
+> Savepoint 管理
 
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/function.png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050savepoint.png)
 
-> Studio 共享会话
+> 共享会话
 
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/session.png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050session.png)
 
-> 集群管理
+> 元数据
 
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/cluster.png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050metadata.png)
+
+> 集群实例
+
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050cluster.png)
 
 
-> 集群配置管理
+> 集群配置
 
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/clusterconfiguration.png)
-
-> 数据源管理
-
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/040/db.png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050clusterconf.png)
