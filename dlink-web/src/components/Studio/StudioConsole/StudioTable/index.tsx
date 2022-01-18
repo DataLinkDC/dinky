@@ -22,17 +22,17 @@ const StudioTable = (props: any) => {
 
   const showDetail=()=>{
     showJobData(current.console.result.jobId,dispatch)
-    console.log(current.console.result.result);
   };
 
   const renderFlinkSQLContent = () => {
     return (<>
+      {(current.console.result.jobId&&(current.console.result.jobId.indexOf('unknown') === -1)) ? (<>
       <Button type="primary" onClick={showDetail} icon={<SearchOutlined/>}>
         获取最新数据
       </Button> &nbsp;
-      {current.console.result.jobId && (<Tag color="blue" key={current.console.result.jobId}>
+      <Tag color="blue" key={current.console.result.jobId}>
         <FireOutlined /> {current.console.result.jobId}
-      </Tag>)}
+      </Tag></>):undefined}
       {current.console.result.result&&current.console.result.result.columns?
         <DTable dataSource={current.console.result.result.rowData} columns={getColumns(current.console.result.result.columns)}/>
         :(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)

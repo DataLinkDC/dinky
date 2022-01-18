@@ -565,6 +565,19 @@ export default (): React.ReactNode => {
               </ul>
             </Paragraph>
           </Timeline.Item>
+          <Timeline.Item><Text code>0.5.1</Text> <Text type="secondary">2022-01-?</Text>
+            <p> </p>
+            <Paragraph>
+              <ul>
+                <li>
+                  <Link>修复 SHOW 和 DESC 的查询预览失效</Link>
+                </li>
+                <li>
+                  <Link>修复 作业非remote作业进行remote语法校验的问题</Link>
+                </li>
+              </ul>
+            </Paragraph>
+          </Timeline.Item>
         </Timeline>
       </Card>
     </PageContainer>

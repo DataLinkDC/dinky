@@ -176,6 +176,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         JobConfig config = task.buildSubmitConfig();
         config.setJarTask(isJarTask);
         if (!JobManager.useGateway(config.getType())) {
+            if(GatewayType.LOCAL.equalsValue(config.getType())){
+                config.setUseRemote(false);
+            }
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), task.getClusterId()));
         } else {
             Map<String, Object> gatewayConfig = clusterConfigurationService.getGatewayConfig(task.getClusterConfigurationId());

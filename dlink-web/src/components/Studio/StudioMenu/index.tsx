@@ -104,10 +104,7 @@ const StudioMenu = (props: any) => {
           break;
         }
       }
-      dispatch && dispatch({
-        type: "Studio/saveTabs",
-        payload: newTabs,
-      });
+      props.saveTabs(newTabs);
       useSession && showTables(currentSession.session, dispatch);
     })
   };
@@ -467,6 +464,9 @@ const mapDispatchToProps = (dispatch: Dispatch)=>({
   saveTask:(current: any)=>dispatch({
     type: "Studio/saveTask",
     payload: current.task,
+  }),saveTabs:(tabs: any)=>dispatch({
+    type: "Studio/saveTabs",
+    payload: tabs,
   }),
 });
 

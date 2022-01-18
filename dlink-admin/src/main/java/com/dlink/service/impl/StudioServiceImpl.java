@@ -87,6 +87,9 @@ public class StudioServiceImpl implements StudioService {
         JobConfig config = studioExecuteDTO.getJobConfig();
         // If you are using a shared session, configure the current jobmanager address
         if(!config.isUseSession()) {
+            if(GatewayType.LOCAL.equalsValue(config.getType())){
+                config.setUseRemote(false);
+            }
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
         }
         initUDF(config,studioExecuteDTO.getStatement());
@@ -132,6 +135,9 @@ public class StudioServiceImpl implements StudioService {
     public IResult executeDDL(StudioDDLDTO studioDDLDTO) {
         JobConfig config = studioDDLDTO.getJobConfig();
         if(!config.isUseSession()) {
+            if(GatewayType.LOCAL.equalsValue(config.getType())){
+                config.setUseRemote(false);
+            }
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioDDLDTO.getClusterId()));
         }
         JobManager jobManager = JobManager.build(config);
@@ -151,6 +157,9 @@ public class StudioServiceImpl implements StudioService {
         addFlinkSQLEnv(studioExecuteDTO);
         JobConfig config = studioExecuteDTO.getJobConfig();
         if(!config.isUseSession()) {
+            if(GatewayType.LOCAL.equalsValue(config.getType())){
+                config.setUseRemote(false);
+            }
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
         }
         initUDF(config,studioExecuteDTO.getStatement());
@@ -183,6 +192,9 @@ public class StudioServiceImpl implements StudioService {
         JobConfig config = studioExecuteDTO.getJobConfig();
         config.setType(GatewayType.LOCAL.getLongValue());
         if(!config.isUseSession()) {
+            if(GatewayType.LOCAL.equalsValue(config.getType())){
+                config.setUseRemote(false);
+            }
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
         }
         JobManager jobManager = JobManager.buildPlanMode(config);
@@ -195,6 +207,9 @@ public class StudioServiceImpl implements StudioService {
         JobConfig config = studioExecuteDTO.getJobConfig();
         config.setType(GatewayType.LOCAL.getLongValue());
         if(!config.isUseSession()) {
+            if(GatewayType.LOCAL.equalsValue(config.getType())){
+                config.setUseRemote(false);
+            }
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
         }
         JobManager jobManager = JobManager.buildPlanMode(config);
