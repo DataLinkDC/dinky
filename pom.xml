@@ -51,6 +51,8 @@
         <maven-assembly-plugin.version>3.2.0</maven-assembly-plugin.version>
         <maven.resource.version>3.2.0</maven.resource.version>
         <junit.version>4.12</junit.version>
+        <!--  `provide` for product environment ,`compile` for dev environment  -->
+        <scope.runtime>compile</scope.runtime>
     </properties>
 
     <dependencyManagement>

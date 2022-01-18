@@ -17,5 +17,6 @@
         <module>dlink-client-1.13</module>
         <module>dlink-client-1.11</module>
         <module>dlink-client-1.14</module>
+        <module>dlink-client-hadoop</module>
     </modules>
 </project>

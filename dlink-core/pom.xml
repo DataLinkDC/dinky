@@ -48,27 +48,27 @@
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-client-1.13</artifactId>
-            <scope>provided</scope>
+            <scope>${scope.runtime}</scope>
         </dependency>
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-executor</artifactId>
-            <scope>provided</scope>
+            <scope>${scope.runtime}</scope>
         </dependency>
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-connector-jdbc-1.13</artifactId>
-            <scope>provided</scope>
+            <scope>${scope.runtime}</scope>
         </dependency>
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-function</artifactId>
-            <scope>provided</scope>
+            <scope>${scope.runtime}</scope>
         </dependency>
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-gateway</artifactId>
-            <scope>provided</scope>
+            <scope>${scope.runtime}</scope>
         </dependency>
     </dependencies>
 </project>
