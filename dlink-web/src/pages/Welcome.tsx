@@ -1,5 +1,4 @@
 import React from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
 import { Card, Alert, Typography,Timeline } from 'antd';
 import { useIntl, FormattedMessage } from 'umi';
 import styles from './Welcome.less';
@@ -15,12 +14,12 @@ const CodePreview: React.FC = ({ children }) => (
 export default (): React.ReactNode => {
   const intl = useIntl();
   return (
-    <PageContainer>
+    <>
       <Card>
         <Alert
           message={intl.formatMessage({
             id: 'pages.welcome.alertMessage',
-            defaultMessage: '实时计算平台 Dlink & Apache Flink 即将发布，目前为体验版，版本号为 0.5.0。',
+            defaultMessage: '实时计算平台 Dinky 即将发布，目前为体验版，版本号为 0.5.0。',
           })}
           type="success"
           showIcon
@@ -575,11 +574,23 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>修复 作业非remote作业进行remote语法校验的问题</Link>
                 </li>
+                <li>
+                  <Link>增加 dlink-client-hadoop 版本定制依赖</Link>
+                </li>
+                <li>
+                  <Link>优化 菜单</Link>
+                </li>
+                <li>
+                  <Link>优化 pom及升级log4j至最新</Link>
+                </li>
+                <li>
+                  <Link>修复 前端多处bug</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>
         </Timeline>
       </Card>
-    </PageContainer>
+    </>
   );
 };

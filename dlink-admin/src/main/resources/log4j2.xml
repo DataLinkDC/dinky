@@ -39,10 +39,4 @@
             <appender-ref ref="RollingFile"/>
         </root>
     </loggers>
-    <!--打印sql日志使用的，additivity是Logger是否继承root中的appender-ref定义的输出位置的标志，默认情况下Logger会继承，若是additivity设为false，则Logger只会在自己标签中的appender-ref里输出，不会在root中的指定的appender-ref里输出，若是additivity设为true，则还会把sql日志输出在root中指定的appender-ref中；level="debug"的原因是Mybatis中SQL语句的日志级别被设为DEBUG，SQL执行结果的日志级别为TRACE，只要将日志级别调整为DEBUG就可以输出SQL语句，而不会输出SQL执行结果-->
-    <logger name="com.dlink.mapper" level="debug" additivity="false">
-        <appender-ref ref="Console"/>
-        <appender-ref ref="RollingFile"/>
-    </logger>
-
 </configuration>

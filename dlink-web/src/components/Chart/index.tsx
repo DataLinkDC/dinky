@@ -18,7 +18,7 @@ const {Option} = Select;
 const Chart = (props:any) => {
 
   const {current,result,height,dispatch} = props;
-  const [config, setConfig] = useState({});
+  const [config, setConfig] = useState(undefined);
   const [type, setType] = useState<string>(CHART.LINE);
   const [form] = Form.useForm();
 
@@ -34,6 +34,7 @@ const Chart = (props:any) => {
 
   const onValuesChange = (change: any, all: any) => {
     if(change.type){
+      setConfig(undefined);
       setType(change.type);
       props.saveChart({type:change.type});
     }
@@ -73,15 +74,23 @@ const Chart = (props:any) => {
     }
     switch (current.console.chart.type){
       case CHART.LINE:
-        return <Line data={current.console.result.result.rowData} {...config} />;
-        case CHART.BAR:
-        return <Bar data={current.console.result.result.rowData} {...config} />;
-        case CHART.PIE:
-          if(config.angleField){
-            return <Pie data={current.console.result.result.rowData} {...config} />;
-          } else {
-            return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
-          }
+        if(config){
+          return <Line data={current.console.result.result.rowData} {...config} />;
+        } else {
+          return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
+        }
+      case CHART.BAR:
+        if(config){
+          return <Bar data={current.console.result.result.rowData} {...config} />;
+        } else {
+          return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
+        }
+      case CHART.PIE:
+        if(config && config.angleField){
+          return <Pie data={current.console.result.result.rowData} {...config} />;
+        } else {
+          return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
+        }
       default:
         return <Line data={current.console.result.result.rowData} {...config} />;
     }

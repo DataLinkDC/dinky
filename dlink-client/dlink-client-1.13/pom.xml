@@ -53,7 +53,7 @@
                     <groupId>org.apache.hadoop</groupId>
                     <artifactId>hadoop-yarn-common</artifactId>
                 </exclusion>
-                <!--<exclusion>
+                <exclusion>
                     <groupId>org.apache.hadoop</groupId>
                     <artifactId>hadoop-common</artifactId>
                 </exclusion>
@@ -68,8 +68,12 @@
                 <exclusion>
                     <groupId>org.apache.hadoop</groupId>
                     <artifactId>hadoop-mapreduce-client-core</artifactId>
-                </exclusion>-->
+                </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-client-hadoop</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>

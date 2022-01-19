@@ -38,7 +38,7 @@
         <lombok.version>1.18.16</lombok.version>
         <jackjson.version>2.11.4</jackjson.version>
         <guava.version>21.0</guava.version>
-        <slf4j.version>1.7.30</slf4j.version>
+        <log4j.version>2.17.1</log4j.version>
         <mysql-connector-java.version>8.0.22</mysql-connector-java.version>
         <ojdbc8.version>12.2.0.1</ojdbc8.version>
         <clickhouse.version>0.2.6</clickhouse.version>
@@ -51,6 +51,8 @@
         <maven-assembly-plugin.version>3.2.0</maven-assembly-plugin.version>
         <maven.resource.version>3.2.0</maven.resource.version>
         <junit.version>4.12</junit.version>
+        <!--  `provided` for product environment ,`compile` for dev environment  -->
+        <scope.runtime>provided</scope.runtime>
     </properties>
 
     <dependencyManagement>
@@ -100,16 +102,21 @@
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
             </dependency>
-            <!--<dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.version}</version>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>${log4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-simple</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>-->
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>1.7.30</version>
+            </dependency>
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
@@ -220,6 +227,11 @@
             <dependency>
                 <groupId>com.dlink</groupId>
                 <artifactId>dlink-executor</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-client-hadoop</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>
