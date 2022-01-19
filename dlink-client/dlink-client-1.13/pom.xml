@@ -74,8 +74,6 @@
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-client-hadoop</artifactId>
-            <version>${project.version}</version>
-            <scope>${scope.runtime}</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
