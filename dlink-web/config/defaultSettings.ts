@@ -12,7 +12,7 @@ const Settings: LayoutSettings & {
   fixedHeader: false,
   fixSiderbar: true,
   colorWeak: false,
-  title: 'Dinky & Apache Flink',
+  title: 'Dinky',
   pwa: false,
   logo: 'dinky.svg',
   iconfontUrl: '',

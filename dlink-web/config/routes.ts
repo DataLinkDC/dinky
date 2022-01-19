@@ -16,12 +16,6 @@ export default [
     ],
   },
   {
-    path: '/welcome',
-    name: 'home',
-    icon: 'home',
-    component: './Welcome',
-  },
-  {
     path: '/flinksqlstudio',
     name: 'flinksqlstudio',
     icon: 'consoleSql',
@@ -81,13 +75,19 @@ export default [
   },
   {
     path: '/',
-    redirect: '/welcome',
+    redirect: '/flinksqlstudio',
   },
   {
     name: 'settings',
     icon: 'setting',
     path: '/settings',
     component: './Settings',
+  },
+  {
+    path: '/welcome',
+    name: 'home',
+    icon: 'home',
+    component: './Welcome',
   },
   {
     component: './404',
