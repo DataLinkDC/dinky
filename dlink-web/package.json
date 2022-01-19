@@ -67,8 +67,11 @@
     "@umijs/plugin-openapi": "^1.2.0",
     "@umijs/route-utils": "^1.0.36",
     "antd": "^4.14.0",
+    "browserslist": "^4.19.1",
+    "caniuse-lite": "^1.0.30001300",
     "classnames": "^2.2.6",
     "dva": "^2.4.0",
+    "isarray": "^2.0.5",
     "lodash": "^4.17.11",
     "lodash.isequal": "^4.5.0",
     "moment": "^2.25.3",
@@ -87,6 +90,7 @@
     "react-monaco-editor": "^0.43.0",
     "sql-formatter": "^4.0.2",
     "umi": "^3.5.0",
+    "umi-request": "^1.4.0",
     "umi-serve": "^1.9.10"
   },
   "devDependencies": {
