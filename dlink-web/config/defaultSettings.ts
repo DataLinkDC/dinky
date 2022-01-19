@@ -12,7 +12,7 @@ const Settings: LayoutSettings & {
   fixedHeader: false,
   fixSiderbar: true,
   colorWeak: false,
-  title: 'Dinky',
+  title: 'Dinky 实时计算平台',
   pwa: false,
   logo: 'dinky.svg',
   iconfontUrl: '',

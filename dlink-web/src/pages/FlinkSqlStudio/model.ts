@@ -261,12 +261,8 @@ const Model: ModelType = {
       }
       return {
         ...state,
-        current: {
-          ...newCurrent
-        },
-        tabs: {
-          ...tabs
-        },
+        current: newCurrent,
+        tabs,
       };
     },
     saveCurrentPath(state, {payload}) {
@@ -299,24 +295,22 @@ const Model: ModelType = {
       }
       return {
         ...state,
-        current: {...newCurrent},
-        tabs: {...newTabs},
+        current: newCurrent,
+        tabs: newTabs,
       };
     },
     saveTabs(state, {payload}) {
       let newCurrent = state.current;
       for (let i = 0; i < payload.panes.length; i++) {
         if (payload.panes[i].key == payload.activeKey) {
-          newCurrent = {...payload.panes[i]};
+          newCurrent = payload.panes[i];
         }
       }
-      if(payload.panes.length === 0){
+      if(payload.panes.length == 0){
         return {
           ...state,
           current: undefined,
-          tabs: {
-            ...payload,
-          },
+          tabs: payload,
           currentPath: ['引导页'],
         };
       }
@@ -326,9 +320,7 @@ const Model: ModelType = {
           ...newCurrent,
           isModified:false,
         },
-        tabs: {
-          ...payload,
-        },
+        tabs: payload,
         currentPath: newCurrent.path,
       };
     },
@@ -340,28 +332,27 @@ const Model: ModelType = {
           break;
         }
       }
-      const newCurrent = newTabs.panes[newTabs.panes.length - 1];
+      const newCurrent = undefined;
+      if(newTabs.panes.length > 0){
+        newCurrent = newTabs.panes[newTabs.panes.length - 1];
+      }
       if (newTabs.activeKey == payload) {
         newTabs.activeKey = newCurrent.key;
       }
       return {
         ...state,
-        current: {
-          ...newCurrent,
-        },
-        tabs: {
-          ...newTabs,
-        },
+        current: newCurrent,
+        tabs: newTabs,
       };
     },
     closeTabs(state, {payload}) {
       const {deleteType, current} = payload;
       const newTabs = state.tabs;
       const firstKey = newTabs.panes[0].key;
-      let newCurrent = newTabs.panes[0];
-      if (deleteType === 'CLOSE_OTHER') {
+      const newCurrent = newTabs.panes[0];
+      if (deleteType == 'CLOSE_OTHER') {
         const keys = [firstKey, current.key];
-        newCurrent = {...current};
+        newCurrent = current;
         newTabs.activeKey = current.key;
         newTabs.panes = newTabs.panes.filter(item => keys.includes(item.key));
       } else {
@@ -371,31 +362,23 @@ const Model: ModelType = {
 
       return {
         ...state,
-        current: {
-          ...newCurrent
-        },
-        tabs: {
-          ...newTabs,
-        }
+        current: newCurrent,
+        tabs: newTabs
       };
     },
     changeActiveKey(state, {payload}) {
-      const {tabs} = state;
-      tabs.activeKey = payload;
+      const newTabs = state.tabs;
       let newCurrent = state.current;
-      for (let i = 0; i < tabs.panes.length; i++) {
-        if (tabs.panes[i].key == tabs.activeKey) {
-          newCurrent = {...tabs.panes[i]};
+      newTabs.activeKey = payload;
+      for (let i = 0; i < newTabs.panes.length; i++) {
+        if (newTabs.panes[i].key == payload) {
+          newCurrent = newTabs.panes[i];
         }
       }
       return {
         ...state,
-        current: {
-          ...newCurrent,
-        },
-        tabs: {
-          ...tabs,
-        },
+        current: newCurrent,
+        tabs: newTabs,
         currentPath: newCurrent.path,
       };
     },
@@ -403,24 +386,24 @@ const Model: ModelType = {
       const newTabs = state.tabs;
       const newCurrent = state.current;
       for (let i = 0; i < newTabs.panes.length; i++) {
-        if (newTabs.panes[i].key === payload.key) {
-          newTabs.panes[i].task = {...payload};
+        if (newTabs.panes[i].key == payload.key) {
+          newTabs.panes[i].task = payload;
           newTabs.panes[i].isModified = false;
-          if(newCurrent.key === payload.key){
-            newCurrent = {...newTabs.panes[i]};
+          if(newCurrent.key == payload.key){
+            newCurrent = newTabs.panes[i];
           }
         }
       }
       return {
         ...state,
-        current: {...newCurrent},
-        tabs: {...newTabs},
+        current: newCurrent,
+        tabs: newTabs,
       };
     },
     saveSession(state, {payload}) {
       return {
         ...state,
-        session: [...payload],
+        session: payload,
       };
     },
     showRightClickMenu(state, {payload}) {
@@ -450,16 +433,16 @@ const Model: ModelType = {
       const newTabs = state?.tabs;
       let newCurrent = state?.current;
       for (let i = 0; i < newTabs.panes.length; i++) {
-        if (newTabs.panes[i].key === newTabs.activeKey) {
-          newTabs.panes[i].console.result.result = {...payload};
-          newCurrent = {...newTabs.panes[i]};
+        if (newTabs.panes[i].key == newTabs.activeKey) {
+          newTabs.panes[i].console.result.result = payload;
+          newCurrent = newTabs.panes[i];
           break;
         }
       }
       return {
         ...state,
-        current: {...newCurrent},
-        tabs: {...newTabs},
+        current: newCurrent,
+        tabs: newTabs,
       };
     },
     saveCluster(state, {payload}) {
@@ -491,16 +474,16 @@ const Model: ModelType = {
       let newTabs = state?.tabs;
       let newCurrent = state?.current;
       for (let i = 0; i < newTabs.panes.length; i++) {
-        if (newTabs.panes[i].key === newTabs.activeKey) {
-          newTabs.panes[i].console.chart = {...payload};
-          newCurrent = {...newTabs.panes[i]};
+        if (newTabs.panes[i].key == newTabs.activeKey) {
+          newTabs.panes[i].console.chart = payload;
+          newCurrent = newTabs.panes[i];
           break;
         }
       }
       return {
         ...state,
-        current: {...newCurrent},
-        tabs: {...newTabs},
+        current: newCurrent,
+        tabs: newTabs,
       };
     },
   },

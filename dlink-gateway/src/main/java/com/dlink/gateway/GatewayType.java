@@ -46,4 +46,26 @@ public enum GatewayType {
         }
         return false;
     }
+
+    public static boolean isDeployCluster(String type){
+        switch (get(type)){
+            case YARN_APPLICATION:
+            case YARN_PER_JOB:
+            case KUBERNETES_APPLICATION:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public boolean isDeployCluster(){
+        switch (value){
+            case "ya":
+            case "ypj":
+            case "ka":
+                return true;
+            default:
+                return false;
+        }
+    }
 }

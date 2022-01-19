@@ -12,7 +12,7 @@ const StudioTable = (props: any) => {
 
   const getColumns=(columns: [])=>{
     let datas: any=[];
-    columns.map((item) => {
+    columns?.map((item) => {
       datas.push({
         field: item,
       });

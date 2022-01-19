@@ -84,9 +84,9 @@ export default [
     component: './Settings',
   },
   {
-    path: '/welcome',
-    name: 'home',
-    icon: 'home',
+    path: '/about',
+    name: 'about',
+    icon: 'smile',
     component: './Welcome',
   },
   {
