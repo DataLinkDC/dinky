@@ -32,12 +32,12 @@ const Studio = (props: any) => {
     midMargin: 46,
   };
   const [size, setSize] = useState({
-    width: document.documentElement.clientWidth - 1,
+    width: document.documentElement.clientWidth,
     height: document.documentElement.clientHeight,
   });
   const onResize = useCallback(() => {
     setSize({
-      width: document.documentElement.clientWidth - 1,
+      width: document.documentElement.clientWidth,
       height: document.documentElement.clientHeight,
     })
   }, []);
@@ -73,7 +73,7 @@ const Studio = (props: any) => {
 
   return (
     <div onClick={onClick} style={{'margin': '-24px'}}>
-      <StudioMenu form={form}/>
+      <StudioMenu form={form} width={size.width} height={size.height}/>
       <Card bordered={false} className={styles.card} size="small" id="studio_card" style={{marginBottom: 0}}>
         <DraggleVerticalLayout
           containerWidth={size.width}

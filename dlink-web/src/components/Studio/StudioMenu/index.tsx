@@ -16,7 +16,7 @@ import {executeSql, getJobPlan} from "@/pages/FlinkSqlStudio/service";
 import StudioHelp from "./StudioHelp";
 import StudioGraph from "./StudioGraph";
 import {showCluster, showTables} from "@/components/Studio/StudioEvent/DDL";
-import {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import StudioExplain from "../StudioConsole/StudioExplain";
 import {DIALECT, isOnline, isSql} from "@/components/Studio/conf";
 import {
@@ -24,6 +24,7 @@ import {
 } from '@ant-design/pro-form';
 import SqlExport from "@/pages/FlinkSqlStudio/SqlExport";
 import {Dispatch} from "@@/plugin-dva/connect";
+import StudioTabs from "@/components/Studio/StudioTabs";
 
 const menu = (
   <Menu>
@@ -34,10 +35,11 @@ const menu = (
 
 const StudioMenu = (props: any) => {
 
-  const {tabs, current, currentPath, form, refs, dispatch, currentSession} = props;
+  const {tabs, current, currentPath, form,width,height, refs, dispatch, currentSession} = props;
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
   const [exportModalVisible, handleExportModalVisible] = useState<boolean>(false);
   const [graphModalVisible, handleGraphModalVisible] = useState<boolean>(false);
+  const [editModalVisible, handleEditModalVisible] = useState<boolean>(false);
   const [graphData, setGraphData] = useState();
 
   const onKeyDown = useCallback((e) => {
@@ -45,6 +47,12 @@ const StudioMenu = (props: any) => {
       e.preventDefault();
       if(current) {
         props.saveTask(current);
+      }
+    }
+    if(e.keyCode === 113){
+      e.preventDefault();
+      if(current) {
+        handleEditModalVisible(true);
       }
     }
   }, [current]);
@@ -455,6 +463,18 @@ const StudioMenu = (props: any) => {
       >
         <SqlExport id={current.task.id} />
       </ModalForm>:undefined}
+      {current?<Modal
+        width={width}
+        bodyStyle={{padding: 0}}
+        style={{top:0,padding:0,margin:0,maxWidth:'100vw'}}
+        destroyOnClose
+        maskClosable={false}
+        closable={false}
+        visible={editModalVisible}
+        footer={null}
+        onCancel={() => handleEditModalVisible(false)}>
+        <StudioTabs width={width} height={height}/>
+      </Modal>:undefined}
     </Row>
   );
 };

@@ -22,7 +22,8 @@ const StudioHome = (props: any) => {
           <Text keyboard>Alt + 1</Text> 保存 <Divider type="vertical" />
           <Text keyboard>Alt + 2</Text> 校验 <Divider type="vertical" />
           <Text keyboard>Alt + 3</Text> 美化 <Divider type="vertical" />
-          <Text keyboard>Esc</Text> 关闭弹框 <Divider type="vertical" />
+          <Text keyboard>F2</Text> 全屏 <Divider type="vertical" />
+          <Text keyboard>Esc</Text> 关闭弹框及全屏 <Divider type="vertical" />
           <Text keyboard>F1</Text> 更多快捷键
         </Paragraph>
         <Paragraph>

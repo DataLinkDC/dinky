@@ -10,7 +10,7 @@ import StudioHome from "@/components/Studio/StudioHome";
 const {TabPane} = Tabs;
 
 const EditorTabs = (props: any) => {
-  const {tabs, dispatch, current, toolHeight, width} = props;
+  const {tabs, dispatch, current, toolHeight, width,height} = props;
 
   const onChange = (activeKey: any) => {
     dispatch &&
@@ -116,13 +116,13 @@ const EditorTabs = (props: any) => {
       activeKey={tabs.activeKey + ''}
       onEdit={onEdit}
       className={styles['edit-tabs']}
-      style={{height: toolHeight}}
+      style={{height: height?height:toolHeight}}
     >
       {tabs.panes.map((pane) => (
         <TabPane tab={Tab(pane)} key={pane.key} closable={pane.closable}>
           <StudioEdit
             tabsKey={pane.key}
-            height={toolHeight - 32}
+            height={height?height:(toolHeight - 32)}
             width={width}
             language={current.task.dialect === DIALECT.JAVA ? 'java' : 'sql'}
           />

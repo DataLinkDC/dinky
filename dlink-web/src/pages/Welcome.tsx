@@ -586,6 +586,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>修复 前端多处bug</Link>
                 </li>
+                <li>
+                  <Link>新增 F2 全屏开发</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>
