@@ -13,6 +13,8 @@ import com.dlink.job.JobConfig;
 import com.dlink.job.JobManager;
 import com.dlink.job.JobResult;
 import com.dlink.mapper.TaskMapper;
+import com.dlink.metadata.driver.Driver;
+import com.dlink.metadata.result.JdbcSelectResult;
 import com.dlink.model.*;
 import com.dlink.service.*;
 import com.dlink.utils.CustomStringJavaCompiler;
@@ -20,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +46,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Autowired
     private JarService jarService;
     @Autowired
-    private StudioService studioService;
+    private DataBaseService dataBaseService;
 
     @Value("${spring.datasource.driver-class-name}")
     private String driver;
@@ -63,7 +66,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Task task = this.getTaskInfoById(id);
         Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
         if(Dialect.isSql(task.getDialect())){
-            return studioService.executeCommonSql(SqlDTO.build(task.getStatement(),
+            return executeCommonSql(SqlDTO.build(task.getStatement(),
                     task.getDatabaseId(),null));
         }
         JobConfig config = buildJobConfig(task);
@@ -72,6 +75,38 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             return jobManager.executeSql(task.getStatement());
         }else{
             return jobManager.executeJar();
+        }
+    }
+
+    private JobResult executeCommonSql(SqlDTO sqlDTO) {
+        JobResult result = new JobResult();
+        result.setStatement(sqlDTO.getStatement());
+        result.setStartTime(LocalDateTime.now());
+        if(Asserts.isNull(sqlDTO.getDatabaseId())){
+            result.setSuccess(false);
+            result.setError("请指定数据源");
+            result.setEndTime(LocalDateTime.now());
+            return result;
+        }else{
+            DataBase dataBase = dataBaseService.getById(sqlDTO.getDatabaseId());
+            if(Asserts.isNull(dataBase)){
+                result.setSuccess(false);
+                result.setError("数据源不存在");
+                result.setEndTime(LocalDateTime.now());
+                return result;
+            }
+            Driver driver = Driver.build(dataBase.getDriverConfig()).connect();
+            JdbcSelectResult selectResult = driver.executeSql(sqlDTO.getStatement(),sqlDTO.getMaxRowNum());
+            driver.close();
+            result.setResult(selectResult);
+            if(selectResult.isSuccess()){
+                result.setSuccess(true);
+            }else{
+                result.setSuccess(false);
+                result.setError(selectResult.getError());
+            }
+            result.setEndTime(LocalDateTime.now());
+            return result;
         }
     }
 
