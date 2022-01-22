@@ -589,6 +589,27 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增 F2 全屏开发</Link>
                 </li>
+                <li>
+                  <Link>升级 SpringBoot 至 2.6.3</Link>
+                </li>
+                <li>
+                  <Link>优化 日志依赖</Link>
+                </li>
+                <li>
+                  <Link>修复 前端 state 赋值 bug</Link>
+                </li>
+                <li>
+                  <Link>修复 异常预览内容溢出 bug</Link>
+                </li>
+                <li>
+                  <Link>修复 数据预览特殊条件下无法获取数据的 bug</Link>
+                </li>
+                <li>
+                  <Link>优化 SQL编辑器性能</Link>
+                </li>
+                <li>
+                  <Link>修复 全屏开发退出后 sql 不同步</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

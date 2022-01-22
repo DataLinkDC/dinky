@@ -35,11 +35,11 @@ const menu = (
 
 const StudioMenu = (props: any) => {
 
-  const {tabs, current, currentPath, form,width,height, refs, dispatch, currentSession} = props;
+  const {isFullScreen, tabs, current, currentPath, form,width,height, refs, dispatch, currentSession} = props;
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
   const [exportModalVisible, handleExportModalVisible] = useState<boolean>(false);
   const [graphModalVisible, handleGraphModalVisible] = useState<boolean>(false);
-  const [editModalVisible, handleEditModalVisible] = useState<boolean>(false);
+  // const [editModalVisible, handleEditModalVisible] = useState<boolean>(false);
   const [graphData, setGraphData] = useState();
 
   const onKeyDown = useCallback((e) => {
@@ -52,7 +52,8 @@ const StudioMenu = (props: any) => {
     if(e.keyCode === 113){
       e.preventDefault();
       if(current) {
-        handleEditModalVisible(true);
+        // handleEditModalVisible(true);
+        props.changeFullScreen(true);
       }
     }
   }, [current]);
@@ -463,16 +464,18 @@ const StudioMenu = (props: any) => {
       >
         <SqlExport id={current.task.id} />
       </ModalForm>:undefined}
-      {current?<Modal
+      {current && isFullScreen?<Modal
         width={width}
         bodyStyle={{padding: 0}}
         style={{top:0,padding:0,margin:0,maxWidth:'100vw'}}
         destroyOnClose
         maskClosable={false}
         closable={false}
-        visible={editModalVisible}
+        visible={isFullScreen}
         footer={null}
-        onCancel={() => handleEditModalVisible(false)}>
+        onCancel={() => {
+         props.changeFullScreen(false);
+        }}>
         <StudioTabs width={width} height={height}/>
       </Modal>:undefined}
     </Row>
@@ -487,10 +490,14 @@ const mapDispatchToProps = (dispatch: Dispatch)=>({
   }),saveTabs:(tabs: any)=>dispatch({
     type: "Studio/saveTabs",
     payload: tabs,
+  }),changeFullScreen:(isFull: boolean)=>dispatch({
+    type: "Studio/changeFullScreen",
+    payload: isFull,
   }),
 });
 
 export default connect(({Studio}: { Studio: StateType }) => ({
+  isFullScreen: Studio.isFullScreen,
   current: Studio.current,
   currentPath: Studio.currentPath,
   tabs: Studio.tabs,

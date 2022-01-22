@@ -20,7 +20,7 @@ import DraggleVerticalLayout from "@/components/DraggleLayout/DraggleVerticalLay
 
 const Studio = (props: any) => {
 
-  const {rightClickMenu, toolHeight, toolLeftWidth,toolRightWidth,dispatch} = props;
+  const {isFullScreen,rightClickMenu, toolHeight, toolLeftWidth,toolRightWidth,dispatch} = props;
   const [form] = Form.useForm();
   const VIEW = {
     leftToolWidth: 300,
@@ -134,7 +134,7 @@ const Studio = (props: any) => {
                   }}/>
                 </Col>
                 <Col>
-                  <StudioTabs width={size.width - toolRightWidth - toolLeftWidth}/>
+                  {!isFullScreen?<StudioTabs width={size.width - toolRightWidth - toolLeftWidth}/>:undefined}
                 </Col>
               </DraggleLayout>
               <Col id='StudioRightTool' className={styles["vertical-tabs"]}>
@@ -155,6 +155,7 @@ const Studio = (props: any) => {
 };
 
 export default connect(({Studio}: { Studio: StateType }) => ({
+  isFullScreen: Studio.isFullScreen,
   rightClickMenu: Studio.rightClickMenu,
   toolHeight: Studio.toolHeight,
   toolLeftWidth: Studio.toolLeftWidth,

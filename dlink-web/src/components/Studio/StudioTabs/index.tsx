@@ -6,33 +6,23 @@ import styles from './index.less';
 import StudioEdit from '../StudioEdit';
 import {DIALECT} from '../conf';
 import StudioHome from "@/components/Studio/StudioHome";
+import {Dispatch} from "@@/plugin-dva/connect";
 
 const {TabPane} = Tabs;
 
 const EditorTabs = (props: any) => {
-  const {tabs, dispatch, current, toolHeight, width,height} = props;
+  const {tabs, current, toolHeight, width,height} = props;
 
   const onChange = (activeKey: any) => {
-    dispatch &&
-    dispatch({
-      type: 'Studio/saveToolHeight',
-      payload: toolHeight - 0.0001,
-    });
-    dispatch({
-      type: 'Studio/changeActiveKey',
-      payload: activeKey,
-    });
+    props.saveToolHeight(toolHeight);
+    props.changeActiveKey(activeKey);
   };
 
   const onEdit = (targetKey: any, action: any) => {
     if (action === 'add') {
       add();
     } else if (action === 'remove') {
-      dispatch &&
-      dispatch({
-        type: 'Studio/saveToolHeight',
-        payload: toolHeight - 0.0001,
-      });
+      props.saveToolHeight(toolHeight-0.0001);
       // if (current.isModified) {
       //   saveTask(current, dispatch);
       // }
@@ -61,23 +51,11 @@ const EditorTabs = (props: any) => {
         newActiveKey = newPanes[0].key;
       }
     }
-    dispatch({
-      type: 'Studio/saveTabs',
-      payload: {
-        activeKey: newActiveKey,
-        panes: newPanes,
-      },
-    });
+    props.saveTabs(newPanes,newActiveKey);
   };
 
   const handleClickMenu = (e: any, current) => {
-    dispatch({
-      type: 'Studio/closeTabs',
-      payload: {
-        deleteType: e.key,
-        current
-      },
-    });
+    props.closeTabs(current,e.key);
   };
 
   const menu = (pane) => (
@@ -118,10 +96,13 @@ const EditorTabs = (props: any) => {
       className={styles['edit-tabs']}
       style={{height: height?height:toolHeight}}
     >
-      {tabs.panes.map((pane) => (
+      {tabs.panes.map((pane,i) => (
         <TabPane tab={Tab(pane)} key={pane.key} closable={pane.closable}>
           <StudioEdit
             tabsKey={pane.key}
+            sql={pane.value}
+            monaco={pane.monaco}
+            // sqlMetaData={pane.sqlMetaData}
             height={height?height:(toolHeight - 32)}
             width={width}
             language={current.task.dialect === DIALECT.JAVA ? 'java' : 'sql'}
@@ -133,9 +114,31 @@ const EditorTabs = (props: any) => {
   );
 };
 
+const mapDispatchToProps = (dispatch: Dispatch)=>({
+  closeTabs:(current: any,key: string)=>dispatch({
+    type: 'Studio/closeTabs',
+    payload: {
+      deleteType: key,
+      current
+    },
+  }),saveTabs:(newPanes: any,newActiveKey: number)=>dispatch({
+    type: 'Studio/saveTabs',
+    payload: {
+      activeKey: newActiveKey,
+      panes: newPanes,
+    },
+  }),saveToolHeight:(toolHeight: number)=>dispatch({
+    type: 'Studio/saveToolHeight',
+    payload: toolHeight - 0.0001,
+  }),changeActiveKey:(activeKey: number)=>dispatch({
+    type: 'Studio/changeActiveKey',
+    payload: activeKey,
+  }),
+})
+
 export default connect(({Studio}: { Studio: StateType }) => ({
   current: Studio.current,
   sql: Studio.sql,
   tabs: Studio.tabs,
   toolHeight: Studio.toolHeight,
-}))(EditorTabs);
+}),mapDispatchToProps)(EditorTabs);
