@@ -21,7 +21,7 @@ const StudioTable = (props: any) => {
   };
 
   const showDetail=()=>{
-    showJobData(current.console.result.jobId,dispatch)
+    showJobData(current.key,current.console.result.jobId,dispatch)
   };
 
   const renderFlinkSQLContent = () => {

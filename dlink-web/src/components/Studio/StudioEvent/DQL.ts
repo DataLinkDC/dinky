@@ -1,6 +1,6 @@
 import {getJobData} from "@/pages/FlinkSqlStudio/service";
 
-export function showJobData(jobId:string,dispatch:any) {
+export function showJobData(key: number,jobId: string,dispatch: any) {
   if(!jobId){
     return;
   }
@@ -8,7 +8,10 @@ export function showJobData(jobId:string,dispatch:any) {
   res.then((result)=>{
     dispatch&&dispatch({
       type: "Studio/saveResult",
-      payload: result.datas,
+      payload: {
+        key,
+        datas: result.datas
+      },
     });
   });
 }
