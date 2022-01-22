@@ -10,7 +10,7 @@ import {
   ModalForm,
 } from '@ant-design/pro-form';
 import styles from "./index.less";
-import {showJobData} from "@/components/Studio/StudioEvent/DQL";
+import {Scrollbars} from 'react-custom-scrollbars';
 import StudioPreview from "../StudioPreview";
 import {getJobData} from "@/pages/FlinkSqlStudio/service";
 
@@ -361,8 +361,10 @@ const StudioHistory = (props: any) => {
                   <FireOutlined /> {row.jobId}
                 </Tag>
               </ProDescriptions.Item>
-              <ProDescriptions.Item >
+              <ProDescriptions.Item>
+              <Scrollbars style={{height: '400px',width:'100%'}}>
                 <pre className={styles.code}>{row.error}</pre>
+              </Scrollbars>
               </ProDescriptions.Item>
             </ProDescriptions>
           )}
