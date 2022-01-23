@@ -159,9 +159,15 @@ public class JobConfig {
 
     public void buildGatewayConfig(Map<String,Object> config){
         gatewayConfig = new GatewayConfig();
-        gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath").toString(),
-                config.get("flinkLibPath").toString(),
-                config.get("hadoopConfigPath").toString()));
+        if(config.containsKey("hadoopConfigPath")) {
+            gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath").toString(),
+                    config.get("flinkLibPath").toString(),
+                    config.get("hadoopConfigPath").toString()));
+        }else {
+            gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath").toString(),
+                    config.get("flinkLibPath").toString(),
+                    ""));
+        }
         AppConfig appConfig = new AppConfig();
         if(config.containsKey("userJarPath") && Asserts.isNotNullString((String) config.get("userJarPath"))){
             appConfig.setUserJarPath(config.get("userJarPath").toString());
@@ -175,6 +181,18 @@ public class JobConfig {
         }
         if(config.containsKey("flinkConfig") && Asserts.isNotNullMap((Map<String, String>) config.get("flinkConfig"))){
             gatewayConfig.setFlinkConfig(FlinkConfig.build((Map<String, String>)config.get("flinkConfig")));
+        }
+        if(config.containsKey("kubernetesConfig")){
+            Map kubernetesConfig = (Map) config.get("kubernetesConfig");
+            if(kubernetesConfig.containsKey("kubernetes.namespace")) {
+                gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.namespace", kubernetesConfig.get("kubernetes.namespace").toString());
+            }
+            if(kubernetesConfig.containsKey("kubernetes.cluster-id")) {
+                gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.cluster-id", kubernetesConfig.get("kubernetes.cluster-id").toString());
+            }
+            if(kubernetesConfig.containsKey("kubernetes.container.image")) {
+                gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.container.image", kubernetesConfig.get("kubernetes.container.image").toString());
+            }
         }
     }
 

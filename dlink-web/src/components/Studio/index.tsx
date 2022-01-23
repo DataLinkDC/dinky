@@ -60,6 +60,7 @@ const Studio = (props: any) => {
     listSession(dispatch);
     showJars(dispatch);
     showEnv(dispatch);
+    onResize();
   }, []);
 
   const onClick = () => {

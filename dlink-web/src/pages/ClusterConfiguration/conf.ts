@@ -9,6 +9,19 @@ export const HADOOP_CONFIG_LIST: Config[] = [{
   lable: 'ha.zookeeper.quorum',
   placeholder: '192.168.123.1:2181,192.168.123.2:2181,192.168.123.3:2181',
 }];
+export const KUBERNETES_CONFIG_LIST: Config[] = [{
+  name: 'kubernetes.namespace',
+  lable: 'kubernetes.namespace',
+  placeholder: 'dlink',
+},{
+  name: 'kubernetes.cluster-id',
+  lable: 'kubernetes.cluster-id',
+  placeholder: 'dlink',
+},{
+  name: 'kubernetes.container.image',
+  lable: 'kubernetes.container.image',
+  placeholder: 'dlink',
+}];
 export const FLINK_CONFIG_LIST: Config[] = [{
   name: 'jobmanager.memory.process.size',
   lable: 'jobmanager.memory.process.size',
@@ -39,6 +52,14 @@ export const FLINK_CONFIG_LIST: Config[] = [{
 export function HADOOP_CONFIG_NAME_LIST () {
   const list: string[] = [];
   HADOOP_CONFIG_LIST.forEach(item => {
+    list.push(item.name);
+  });
+  return list;
+}
+
+export function KUBERNETES_CONFIG_NAME_LIST () {
+  const list: string[] = [];
+  KUBERNETES_CONFIG_LIST.forEach(item => {
     list.push(item.name);
   });
   return list;
