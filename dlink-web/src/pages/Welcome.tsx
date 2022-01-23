@@ -564,7 +564,7 @@ export default (): React.ReactNode => {
               </ul>
             </Paragraph>
           </Timeline.Item>
-          <Timeline.Item><Text code>0.5.1</Text> <Text type="secondary">2022-01-?</Text>
+          <Timeline.Item><Text code>0.5.1</Text> <Text type="secondary">2022-01-23</Text>
             <p> </p>
             <Paragraph>
               <ul>
@@ -615,6 +615,9 @@ export default (): React.ReactNode => {
                 </li>
                 <li>
                   <Link>修复 Flink 1.14 提交任务报错缺类 bug</Link>
+                </li>
+                <li>
+                  <Link>优化 作业配置查看及全屏开发按钮</Link>
                 </li>
               </ul>
             </Paragraph>

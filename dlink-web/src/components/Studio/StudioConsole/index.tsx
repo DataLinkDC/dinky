@@ -67,19 +67,6 @@ const StudioConsole = (props: any) => {
       <TabPane
         tab={
           <span>
-          <RadarChartOutlined/>
-          指标
-        </span>
-        }
-        key="StudioMetrics"
-      >
-        <Scrollbars style={{height: consoleHeight}}>
-          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
-        </Scrollbars>
-      </TabPane>
-      <TabPane
-        tab={
-          <span>
           <ApartmentOutlined/>
           血缘
         </span>
@@ -127,19 +114,6 @@ const StudioConsole = (props: any) => {
       >
         <Scrollbars style={{height: consoleHeight}}>
           <StudioFX/>
-        </Scrollbars>
-      </TabPane>
-      <TabPane
-        tab={
-          <span>
-          <FileSearchOutlined/>
-          文档
-        </span>
-        }
-        key="StudioDocument"
-      >
-        <Scrollbars style={{height: consoleHeight}}>
-          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
         </Scrollbars>
       </TabPane>
     </Tabs>

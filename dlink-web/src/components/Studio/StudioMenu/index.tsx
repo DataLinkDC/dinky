@@ -2,7 +2,7 @@ import styles from "./index.less";
 import {Menu, Dropdown, Tooltip, Row, Col, Popconfirm, notification, Modal, message} from "antd";
 import {
   PauseCircleTwoTone, CopyTwoTone, DeleteTwoTone, PlayCircleTwoTone, DiffTwoTone,SnippetsTwoTone,
-  FileAddTwoTone, FolderOpenTwoTone, SafetyCertificateTwoTone, SaveTwoTone, FlagTwoTone,
+  FileAddTwoTone, FolderOpenTwoTone, SafetyCertificateTwoTone, SaveTwoTone, FlagTwoTone,CodeTwoTone,
   EnvironmentOutlined, SmileOutlined, RocketTwoTone, QuestionCircleTwoTone, MessageOutlined, ClusterOutlined
 } from "@ant-design/icons";
 import Space from "antd/es/space";
@@ -246,6 +246,12 @@ const StudioMenu = (props: any) => {
     return str.replace(/&(lt|gt|nbsp|amp|quot);/ig,function(all,t){return arrEntities[t];});
   }
 
+  const toFullScreen = () => {
+    if(current) {
+      props.changeFullScreen(true);
+    }
+  };
+
   const saveSqlAndSettingToTask = () => {
     props.saveTask(current);
   };
@@ -336,6 +342,13 @@ const StudioMenu = (props: any) => {
           </Col>
           {current?
           <Col span={8}>
+            <Tooltip title="全屏开发">
+              <Button
+                type="text"
+                icon={<CodeTwoTone />}
+                onClick={toFullScreen}
+              />
+            </Tooltip>
             <Button
               type="text"
               icon={<FileAddTwoTone twoToneColor="#ddd"/>}
