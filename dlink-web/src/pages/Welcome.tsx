@@ -610,6 +610,12 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>修复 全屏开发退出后 sql 不同步</Link>
                 </li>
+                <li>
+                  <Link>升级 Flink 1.14.2 到 1.14.3</Link>
+                </li>
+                <li>
+                  <Link>修复 Flink 1.14 提交任务报错缺类 bug</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

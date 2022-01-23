@@ -13,7 +13,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!--<scope.type>provided</scope.type>-->
-        <hadoop.version>2.7.7</hadoop.version>
+        <hadoop.version>3.1.0</hadoop.version>
         <scope.type>compile</scope.type>
     </properties>
 

@@ -19,7 +19,6 @@ const StudioHome = (props: any) => {
         <Title level={5}>快捷键</Title>
         <Paragraph>
           <Text keyboard>Ctrl + s</Text> 保存 <Divider type="vertical" />
-          <Text keyboard>Alt + 1</Text> 保存 <Divider type="vertical" />
           <Text keyboard>Alt + 2</Text> 校验 <Divider type="vertical" />
           <Text keyboard>Alt + 3</Text> 美化 <Divider type="vertical" />
           <Text keyboard>F2</Text> 全屏 <Divider type="vertical" />
