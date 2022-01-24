@@ -19,7 +19,7 @@ export default (): React.ReactNode => {
         <Alert
           message={intl.formatMessage({
             id: 'pages.welcome.alertMessage',
-            defaultMessage: '实时计算平台 Dinky 即将发布，目前为体验版，版本号为 0.5.0。',
+            defaultMessage: '实时计算平台 Dinky 即将发布，目前为体验版，版本号为 0.5.1。',
           })}
           type="success"
           showIcon
@@ -564,7 +564,7 @@ export default (): React.ReactNode => {
               </ul>
             </Paragraph>
           </Timeline.Item>
-          <Timeline.Item><Text code>0.5.1</Text> <Text type="secondary">2022-01-??</Text>
+          <Timeline.Item><Text code>0.5.1</Text> <Text type="secondary">2022-01-24</Text>
             <p> </p>
             <Paragraph>
               <ul>
