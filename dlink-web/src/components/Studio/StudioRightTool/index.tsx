@@ -64,9 +64,7 @@ const StudioRightTool = (props: any) => {
       <TabPane tab={<span><ScheduleOutlined /> 保存点</span>} key="StudioSavePoint" >
         <StudioSavePoint />
       </TabPane>
-      <TabPane tab={<span><AuditOutlined /> 审计</span>} key="Other" >
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-      </TabPane></>)
+      </>)
   };
 
   return (

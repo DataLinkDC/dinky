@@ -99,7 +99,7 @@ Dinky（原 Dlink）：
 
 抢先体验( main 主支)：dlink-0.6.0-SNAPSHOT
 
-稳定版本( 0.5.0 分支)：dlink-0.5.0
+稳定版本( 0.5.1 分支)：dlink-0.5.1
 
 ### 从安装包开始
 

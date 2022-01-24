@@ -28,7 +28,7 @@ const Chart = (props:any) => {
 
   const toRebuild = () => {
     if(!isSql(current.task.dialect)){
-      showJobData(current.console.result.jobId,dispatch);
+      showJobData(current.key,current.console.result.jobId,dispatch);
     }
   };
 

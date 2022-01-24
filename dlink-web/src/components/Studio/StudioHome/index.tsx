@@ -12,17 +12,17 @@ const StudioHome = (props: any) => {
   return (
     <Scrollbars style={{height: toolHeight}}>
       <Typography style={{padding:'15px'}}>
-        <Title level={4}>欢迎使用 Dinky v0.5.0</Title>
+        <Title level={4}>欢迎使用 Dinky v0.5.1</Title>
         <Paragraph>
           <blockquote>实时即未来，Dinky 为 Apache Flink 而生，让 Flink SQL 纵享丝滑，并致力于实时计算平台建设。</blockquote>
         </Paragraph>
         <Title level={5}>快捷键</Title>
         <Paragraph>
           <Text keyboard>Ctrl + s</Text> 保存 <Divider type="vertical" />
-          <Text keyboard>Alt + 1</Text> 保存 <Divider type="vertical" />
           <Text keyboard>Alt + 2</Text> 校验 <Divider type="vertical" />
           <Text keyboard>Alt + 3</Text> 美化 <Divider type="vertical" />
-          <Text keyboard>Esc</Text> 关闭弹框 <Divider type="vertical" />
+          <Text keyboard>F2</Text> 全屏 <Divider type="vertical" />
+          <Text keyboard>Esc</Text> 关闭弹框及全屏 <Divider type="vertical" />
           <Text keyboard>F1</Text> 更多快捷键
         </Paragraph>
         <Paragraph>

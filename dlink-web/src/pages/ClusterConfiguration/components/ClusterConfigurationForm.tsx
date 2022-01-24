@@ -3,7 +3,7 @@ import {Form, Button, Input, Modal, Select,Divider,Space,Switch} from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import type {ClusterConfigurationTableListItem} from "@/pages/ClusterConfiguration/data";
 import {getConfig, getConfigFormValues} from "@/pages/ClusterConfiguration/function";
-import {FLINK_CONFIG_LIST, HADOOP_CONFIG_LIST} from "@/pages/ClusterConfiguration/conf";
+import {FLINK_CONFIG_LIST, HADOOP_CONFIG_LIST, KUBERNETES_CONFIG_LIST} from "@/pages/ClusterConfiguration/conf";
 import type {Config} from "@/pages/ClusterConfiguration/conf";
 import {testClusterConfigurationConnect} from "@/pages/ClusterConfiguration/service";
 
@@ -38,6 +38,10 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
     onCancel: handleModalVisible,
     modalVisible,
   } = props;
+
+  const onValuesChange = (change: any, all: any) => {
+    setFormVals({...formVals,...change});
+  };
 
   const buildConfig = (config: Config[]) =>{
     const itemList: JSX.Element[] = [];
@@ -79,6 +83,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
             <Option value="Kubernetes">Flink On Kubernetes</Option>
           </Select>
         </Form.Item>
+        {formValsPara.type=='Yarn'?<>
         <Divider>Hadoop 配置</Divider>
         <Form.Item
           name="hadoopConfigPath"
@@ -123,7 +128,45 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
             </>
           )}
         </Form.List>
-        </Form.Item>
+        </Form.Item></>:undefined}
+        {formValsPara.type=='Kubernetes'?<>
+          <Divider>Kubernetes 配置</Divider>
+          {buildConfig(KUBERNETES_CONFIG_LIST)}
+          <Form.Item
+            label="其他配置"
+          >
+            <Form.List name="kubernetesConfigList">
+              {(fields, { add, remove }) => (
+                <>
+                  {fields.map(({ key, name, fieldKey, ...restField }) => (
+                    <Space key={key} style={{ display: 'flex' }} align="baseline">
+                      <Form.Item
+                        {...restField}
+                        name={[name, 'name']}
+                        fieldKey={[fieldKey, 'name']}
+                      >
+                        <Input placeholder="name" />
+                      </Form.Item>
+                      <Form.Item
+                        {...restField}
+                        name={[name, 'value']}
+                        fieldKey={[fieldKey, 'value']}
+                      >
+                        <Input placeholder="value" />
+                      </Form.Item>
+                      <MinusCircleOutlined onClick={() => remove(name)} />
+                    </Space>
+                  ))}
+                  <Form.Item>
+                    <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                      添加一个自定义项
+                    </Button>
+                  </Form.Item>
+                </>
+              )}
+            </Form.List>
+          </Form.Item>
+        </>:undefined}
         <Divider>Flink 配置</Divider>
         <Form.Item
           name="flinkLibPath"
@@ -250,6 +293,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
         {...formLayout}
         form={form}
         initialValues={getConfigFormValues(formVals)}
+        onValuesChange={onValuesChange}
       >
         {renderContent(formVals)}
       </Form>

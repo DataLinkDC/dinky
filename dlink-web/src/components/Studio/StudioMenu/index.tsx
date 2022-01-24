@@ -2,7 +2,7 @@ import styles from "./index.less";
 import {Menu, Dropdown, Tooltip, Row, Col, Popconfirm, notification, Modal, message} from "antd";
 import {
   PauseCircleTwoTone, CopyTwoTone, DeleteTwoTone, PlayCircleTwoTone, DiffTwoTone,SnippetsTwoTone,
-  FileAddTwoTone, FolderOpenTwoTone, SafetyCertificateTwoTone, SaveTwoTone, FlagTwoTone,
+  FileAddTwoTone, FolderOpenTwoTone, SafetyCertificateTwoTone, SaveTwoTone, FlagTwoTone,CodeTwoTone,
   EnvironmentOutlined, SmileOutlined, RocketTwoTone, QuestionCircleTwoTone, MessageOutlined, ClusterOutlined
 } from "@ant-design/icons";
 import Space from "antd/es/space";
@@ -16,7 +16,7 @@ import {executeSql, getJobPlan} from "@/pages/FlinkSqlStudio/service";
 import StudioHelp from "./StudioHelp";
 import StudioGraph from "./StudioGraph";
 import {showCluster, showTables} from "@/components/Studio/StudioEvent/DDL";
-import {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import StudioExplain from "../StudioConsole/StudioExplain";
 import {DIALECT, isOnline, isSql} from "@/components/Studio/conf";
 import {
@@ -24,6 +24,7 @@ import {
 } from '@ant-design/pro-form';
 import SqlExport from "@/pages/FlinkSqlStudio/SqlExport";
 import {Dispatch} from "@@/plugin-dva/connect";
+import StudioTabs from "@/components/Studio/StudioTabs";
 
 const menu = (
   <Menu>
@@ -34,10 +35,11 @@ const menu = (
 
 const StudioMenu = (props: any) => {
 
-  const {tabs, current, currentPath, form, refs, dispatch, currentSession} = props;
+  const {isFullScreen, tabs, current, currentPath, form,width,height, refs, dispatch, currentSession} = props;
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
   const [exportModalVisible, handleExportModalVisible] = useState<boolean>(false);
   const [graphModalVisible, handleGraphModalVisible] = useState<boolean>(false);
+  // const [editModalVisible, handleEditModalVisible] = useState<boolean>(false);
   const [graphData, setGraphData] = useState();
 
   const onKeyDown = useCallback((e) => {
@@ -45,6 +47,13 @@ const StudioMenu = (props: any) => {
       e.preventDefault();
       if(current) {
         props.saveTask(current);
+      }
+    }
+    if(e.keyCode === 113){
+      e.preventDefault();
+      if(current) {
+        // handleEditModalVisible(true);
+        props.changeFullScreen(true);
       }
     }
   }, [current]);
@@ -237,6 +246,12 @@ const StudioMenu = (props: any) => {
     return str.replace(/&(lt|gt|nbsp|amp|quot);/ig,function(all,t){return arrEntities[t];});
   }
 
+  const toFullScreen = () => {
+    if(current) {
+      props.changeFullScreen(true);
+    }
+  };
+
   const saveSqlAndSettingToTask = () => {
     props.saveTask(current);
   };
@@ -327,6 +342,13 @@ const StudioMenu = (props: any) => {
           </Col>
           {current?
           <Col span={8}>
+            <Tooltip title="全屏开发">
+              <Button
+                type="text"
+                icon={<CodeTwoTone />}
+                onClick={toFullScreen}
+              />
+            </Tooltip>
             <Button
               type="text"
               icon={<FileAddTwoTone twoToneColor="#ddd"/>}
@@ -455,6 +477,20 @@ const StudioMenu = (props: any) => {
       >
         <SqlExport id={current.task.id} />
       </ModalForm>:undefined}
+      {current && isFullScreen?<Modal
+        width={width}
+        bodyStyle={{padding: 0}}
+        style={{top:0,padding:0,margin:0,maxWidth:'100vw'}}
+        destroyOnClose
+        maskClosable={false}
+        closable={false}
+        visible={isFullScreen}
+        footer={null}
+        onCancel={() => {
+         props.changeFullScreen(false);
+        }}>
+        <StudioTabs width={width} height={height}/>
+      </Modal>:undefined}
     </Row>
   );
 };
@@ -467,10 +503,14 @@ const mapDispatchToProps = (dispatch: Dispatch)=>({
   }),saveTabs:(tabs: any)=>dispatch({
     type: "Studio/saveTabs",
     payload: tabs,
+  }),changeFullScreen:(isFull: boolean)=>dispatch({
+    type: "Studio/changeFullScreen",
+    payload: isFull,
   }),
 });
 
 export default connect(({Studio}: { Studio: StateType }) => ({
+  isFullScreen: Studio.isFullScreen,
   current: Studio.current,
   currentPath: Studio.currentPath,
   tabs: Studio.tabs,

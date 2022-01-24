@@ -5,7 +5,7 @@
     <parent>
         <artifactId>dlink-client</artifactId>
         <groupId>com.dlink</groupId>
-        <version>0.5.0</version>
+        <version>0.5.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -13,7 +13,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!--<scope.type>provided</scope.type>-->
-        <hadoop.version>2.7.7</hadoop.version>
+        <hadoop.version>3.1.0</hadoop.version>
         <scope.type>compile</scope.type>
     </properties>
 

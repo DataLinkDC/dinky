@@ -19,7 +19,7 @@ export default (): React.ReactNode => {
         <Alert
           message={intl.formatMessage({
             id: 'pages.welcome.alertMessage',
-            defaultMessage: '实时计算平台 Dinky 即将发布，目前为体验版，版本号为 0.5.0。',
+            defaultMessage: '实时计算平台 Dinky 即将发布，目前为体验版，版本号为 0.5.1。',
           })}
           type="success"
           showIcon
@@ -564,7 +564,7 @@ export default (): React.ReactNode => {
               </ul>
             </Paragraph>
           </Timeline.Item>
-          <Timeline.Item><Text code>0.5.1</Text> <Text type="secondary">2022-01-?</Text>
+          <Timeline.Item><Text code>0.5.1</Text> <Text type="secondary">2022-01-24</Text>
             <p> </p>
             <Paragraph>
               <ul>
@@ -585,6 +585,42 @@ export default (): React.ReactNode => {
                 </li>
                 <li>
                   <Link>修复 前端多处bug</Link>
+                </li>
+                <li>
+                  <Link>新增 F2 全屏开发</Link>
+                </li>
+                <li>
+                  <Link>升级 SpringBoot 至 2.6.3</Link>
+                </li>
+                <li>
+                  <Link>优化 日志依赖</Link>
+                </li>
+                <li>
+                  <Link>修复 前端 state 赋值 bug</Link>
+                </li>
+                <li>
+                  <Link>修复 异常预览内容溢出 bug</Link>
+                </li>
+                <li>
+                  <Link>修复 数据预览特殊条件下无法获取数据的 bug</Link>
+                </li>
+                <li>
+                  <Link>优化 SQL编辑器性能</Link>
+                </li>
+                <li>
+                  <Link>修复 全屏开发退出后 sql 不同步</Link>
+                </li>
+                <li>
+                  <Link>升级 Flink 1.14.2 到 1.14.3</Link>
+                </li>
+                <li>
+                  <Link>修复 Flink 1.14 提交任务报错缺类 bug</Link>
+                </li>
+                <li>
+                  <Link>优化 作业配置查看及全屏开发按钮</Link>
+                </li>
+                <li>
+                  <Link>新增 K8S集群配置</Link>
                 </li>
               </ul>
             </Paragraph>

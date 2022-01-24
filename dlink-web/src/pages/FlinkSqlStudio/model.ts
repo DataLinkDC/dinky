@@ -136,6 +136,7 @@ export type SessionType = {
 }
 
 export type StateType = {
+  isFullScreen: boolean;
   toolHeight?: number;
   toolRightWidth?: number;
   toolLeftWidth?: number;
@@ -147,7 +148,7 @@ export type StateType = {
   currentSession?: SessionType;
   current?: TabsItemType;
   sql?: string;
-  monaco?: any;
+  // monaco?: any;
   currentPath?: string[];
   tabs?: TabsType;
   session?: SessionType[];
@@ -165,12 +166,13 @@ export type ModelType = {
     saveTask: Effect;
   };
   reducers: {
+    changeFullScreen: Reducer<StateType>;
     saveToolHeight: Reducer<StateType>;
     saveToolRightWidth: Reducer<StateType>;
     saveToolLeftWidth: Reducer<StateType>;
     saveSql: Reducer<StateType>;
     saveCurrentPath: Reducer<StateType>;
-    saveMonaco: Reducer<StateType>;
+    // saveMonaco: Reducer<StateType>;
     saveSqlMetaData: Reducer<StateType>;
     saveTabs: Reducer<StateType>;
     closeTabs: Reducer<StateType>;
@@ -193,6 +195,7 @@ export type ModelType = {
 const Model: ModelType = {
   namespace: 'Studio',
   state: {
+    isFullScreen: false,
     toolHeight: 400,
     toolRightWidth: 300,
     toolLeftWidth: 300,
@@ -206,7 +209,7 @@ const Model: ModelType = {
     },
     current: undefined,
     sql: '',
-    monaco: {},
+    // monaco: {},
     currentPath: ['引导页'],
     tabs: {
       activeKey: 0,
@@ -233,6 +236,12 @@ const Model: ModelType = {
   },
 
   reducers: {
+    changeFullScreen(state, {payload}) {
+      return {
+        ...state,
+        isFullScreen: payload,
+      };
+    },
     saveToolHeight(state, {payload}) {
       return {
         ...state,
@@ -250,19 +259,19 @@ const Model: ModelType = {
       };
     },
     saveSql(state, {payload}) {
-      const {tabs} = state;
+      const newTabs = state.tabs;
       const newCurrent = state.current;
       newCurrent.value = payload;
-      for (let i = 0; i < tabs.panes.length; i++) {
-        if (tabs.panes[i].key == tabs.activeKey) {
-          tabs.panes[i].value = payload;
-          tabs.panes[i].task && (tabs.panes[i].task.statement = payload);
+      for (let i = 0; i < newTabs.panes.length; i++) {
+        if (newTabs.panes[i].key == newTabs.activeKey) {
+          newTabs.panes[i].value = payload;
+          newTabs.panes[i].task && (newTabs.panes[i].task.statement = payload);
         }
       }
       return {
         ...state,
-        current: newCurrent,
-        tabs,
+        current: {...newCurrent},
+        tabs:{...newTabs},
       };
     },
     saveCurrentPath(state, {payload}) {
@@ -271,32 +280,30 @@ const Model: ModelType = {
         currentPath: payload,
       };
     },
-    saveMonaco(state, {payload}) {
+    /*saveMonaco(state, {payload}) {
       return {
         ...state,
-        monaco: {
-          ...payload
-        },
+        monaco:payload,
       };
-    },
+    },*/
     saveSqlMetaData(state, {payload}) {
       const newCurrent = state.current;
       const newTabs = state.tabs;
       if(newCurrent.key == payload.activeKey){
-        newCurrent.sqlMetaData = payload.sqlMetaData;
+        newCurrent.sqlMetaData = {...payload.sqlMetaData};
         newCurrent.isModified = payload.isModified;
       }
       for (let i = 0; i < newTabs.panes.length; i++) {
         if (newTabs.panes[i].key == payload.activeKey) {
-          newTabs.panes[i].sqlMetaData = payload.sqlMetaData;
+          newTabs.panes[i].sqlMetaData = {...payload.sqlMetaData};
           newTabs.panes[i].isModified = payload.isModified;
           break;
         }
       }
       return {
         ...state,
-        current: newCurrent,
-        tabs: newTabs,
+        current: {...newCurrent},
+        tabs: {...newTabs},
       };
     },
     saveTabs(state, {payload}) {
@@ -320,7 +327,7 @@ const Model: ModelType = {
           ...newCurrent,
           isModified:false,
         },
-        tabs: payload,
+        tabs: {...payload},
         currentPath: newCurrent.path,
       };
     },
@@ -341,8 +348,8 @@ const Model: ModelType = {
       }
       return {
         ...state,
-        current: newCurrent,
-        tabs: newTabs,
+        current: {...newCurrent},
+        tabs: {...newTabs},
       };
     },
     closeTabs(state, {payload}) {
@@ -362,23 +369,23 @@ const Model: ModelType = {
 
       return {
         ...state,
-        current: newCurrent,
-        tabs: newTabs
+        current: {...newCurrent},
+        tabs: {...newTabs}
       };
     },
     changeActiveKey(state, {payload}) {
-      const newTabs = state.tabs;
-      let newCurrent = state.current;
-      newTabs.activeKey = payload;
+      const newTabs = state?.tabs;
+      let newCurrent = state?.current;
       for (let i = 0; i < newTabs.panes.length; i++) {
         if (newTabs.panes[i].key == payload) {
+          newTabs.activeKey = payload;
           newCurrent = newTabs.panes[i];
         }
       }
       return {
         ...state,
-        current: newCurrent,
-        tabs: newTabs,
+        current: {...newCurrent},
+        tabs: {...newTabs},
         currentPath: newCurrent.path,
       };
     },
@@ -396,14 +403,14 @@ const Model: ModelType = {
       }
       return {
         ...state,
-        current: newCurrent,
-        tabs: newTabs,
+        current: {...newCurrent},
+        tabs: {...newTabs},
       };
     },
     saveSession(state, {payload}) {
       return {
         ...state,
-        session: payload,
+        session: [...payload],
       };
     },
     showRightClickMenu(state, {payload}) {
@@ -431,44 +438,46 @@ const Model: ModelType = {
     },
     saveResult(state, {payload}) {
       const newTabs = state?.tabs;
-      let newCurrent = state?.current;
+      const newCurrent = state?.current;
       for (let i = 0; i < newTabs.panes.length; i++) {
-        if (newTabs.panes[i].key == newTabs.activeKey) {
-          newTabs.panes[i].console.result.result = payload;
-          newCurrent = newTabs.panes[i];
+        if (newTabs.panes[i].key == payload.key) {
+          newTabs.panes[i].console.result.result = payload.datas;
+          if(newCurrent.key == payload.key){
+            newCurrent.console = newTabs.panes[i].console;
+          }
           break;
         }
       }
       return {
         ...state,
-        current: newCurrent,
-        tabs: newTabs,
+        current: {...newCurrent},
+        tabs: {...newTabs},
       };
     },
     saveCluster(state, {payload}) {
       return {
         ...state,
-        cluster: payload,
+        cluster: [...payload],
       };
     },saveSessionCluster(state, {payload}) {
       return {
         ...state,
-        sessionCluster: payload,
+        sessionCluster: [...payload],
       };
     },saveClusterConfiguration(state, {payload}) {
       return {
         ...state,
-        clusterConfiguration: payload,
+        clusterConfiguration: [...payload],
       };
     },saveDataBase(state, {payload}) {
       return {
         ...state,
-        database: payload,
+        database: [...payload],
       };
     },saveEnv(state, {payload}) {
       return {
         ...state,
-        env: payload,
+        env: [...payload],
       };
     },saveChart(state, {payload}) {
       let newTabs = state?.tabs;
@@ -482,8 +491,8 @@ const Model: ModelType = {
       }
       return {
         ...state,
-        current: newCurrent,
-        tabs: newTabs,
+        current: {...newCurrent},
+        tabs: {...newTabs},
       };
     },
   },

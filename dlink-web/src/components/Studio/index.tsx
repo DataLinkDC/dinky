@@ -20,7 +20,7 @@ import DraggleVerticalLayout from "@/components/DraggleLayout/DraggleVerticalLay
 
 const Studio = (props: any) => {
 
-  const {rightClickMenu, toolHeight, toolLeftWidth,toolRightWidth,dispatch} = props;
+  const {isFullScreen,rightClickMenu, toolHeight, toolLeftWidth,toolRightWidth,dispatch} = props;
   const [form] = Form.useForm();
   const VIEW = {
     leftToolWidth: 300,
@@ -32,12 +32,12 @@ const Studio = (props: any) => {
     midMargin: 46,
   };
   const [size, setSize] = useState({
-    width: document.documentElement.clientWidth - 1,
+    width: document.documentElement.clientWidth,
     height: document.documentElement.clientHeight,
   });
   const onResize = useCallback(() => {
     setSize({
-      width: document.documentElement.clientWidth - 1,
+      width: document.documentElement.clientWidth,
       height: document.documentElement.clientHeight,
     })
   }, []);
@@ -60,6 +60,7 @@ const Studio = (props: any) => {
     listSession(dispatch);
     showJars(dispatch);
     showEnv(dispatch);
+    onResize();
   }, []);
 
   const onClick = () => {
@@ -73,7 +74,7 @@ const Studio = (props: any) => {
 
   return (
     <div onClick={onClick} style={{'margin': '-24px'}}>
-      <StudioMenu form={form}/>
+      <StudioMenu form={form} width={size.width} height={size.height}/>
       <Card bordered={false} className={styles.card} size="small" id="studio_card" style={{marginBottom: 0}}>
         <DraggleVerticalLayout
           containerWidth={size.width}
@@ -134,7 +135,7 @@ const Studio = (props: any) => {
                   }}/>
                 </Col>
                 <Col>
-                  <StudioTabs width={size.width - toolRightWidth - toolLeftWidth}/>
+                  {!isFullScreen?<StudioTabs width={size.width - toolRightWidth - toolLeftWidth}/>:undefined}
                 </Col>
               </DraggleLayout>
               <Col id='StudioRightTool' className={styles["vertical-tabs"]}>
@@ -155,6 +156,7 @@ const Studio = (props: any) => {
 };
 
 export default connect(({Studio}: { Studio: StateType }) => ({
+  isFullScreen: Studio.isFullScreen,
   rightClickMenu: Studio.rightClickMenu,
   toolHeight: Studio.toolHeight,
   toolLeftWidth: Studio.toolLeftWidth,
