@@ -31,6 +31,7 @@ const FlinkSqlEditor = (props:any) => {
       options = {
         selectOnLineNumbers: true,
         renderSideBySide: false,
+        autoIndent:'None',
       },
     sql,
     monaco,
@@ -151,12 +152,13 @@ const FlinkSqlEditor = (props:any) => {
     })
 
     reloadCompletion();
-
     monaco.languages.registerDocumentRangeFormattingEditProvider('sql', {
       provideDocumentRangeFormattingEdits(model, range, options) {
         var formatted = format(model.getValueInRange(range), {
           indent: ' '.repeat(options.tabSize)
         });
+        formatted = formatted.replace(/` ([^`]*) `/g,function (){return '`'+arguments[1].trim()+'`'})
+        formatted = formatted.replace(/\$ {([^}]*)}/g,function (){return '${'+arguments[1].trim()+'}'})
         return [
           {
             range: range,
