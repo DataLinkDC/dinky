@@ -13,6 +13,7 @@ import com.dlink.metadata.convert.ITypeConvert;
 import com.dlink.metadata.parser.Clickhouse20StatementParser;
 import com.dlink.metadata.query.ClickHouseQuery;
 import com.dlink.metadata.query.IDBQuery;
+import com.dlink.model.Column;
 import com.dlink.model.Table;
 import com.dlink.result.SqlExplainResult;
 
@@ -21,7 +22,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -64,6 +64,7 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
         ResultSet results = null;
         String sql = getDBQuery().tablesSql(schemaName);
         try {
+            conn.setSchema(schemaName);
             preparedStatement = conn.prepareStatement(sql);
             results = preparedStatement.executeQuery();
             while (results.next()) {
@@ -83,7 +84,39 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
         return tableList;
     }
 
-    @Override
+
+  @Override
+  public List<Column> listColumns(String schemaName, String tableName) {
+    List<Column> columns = new ArrayList<>();
+    PreparedStatement preparedStatement = null;
+    ResultSet results = null;
+    IDBQuery dbQuery = getDBQuery();
+    String tableFieldsSql = dbQuery.columnsSql(schemaName, tableName);
+    tableFieldsSql = String.format(tableFieldsSql, tableName);
+    try {
+      preparedStatement = conn.prepareStatement(tableFieldsSql);
+      results = preparedStatement.executeQuery();
+      while (results.next()) {
+        Column field = new Column();
+        String columnName = results.getString(dbQuery.columnName());
+        field.setKeyFlag(results.getBoolean(dbQuery.columnKey()));
+        field.setName(columnName);
+        field.setNullable(true);
+        field.setType(results.getString(dbQuery.columnType()));
+        field.setJavaType(getTypeConvert().convert(field.getType()).getType());
+        field.setComment(results.getString(dbQuery.columnComment()));
+        field.setPosition(results.getInt(dbQuery.columnPosition()));
+        columns.add(field);
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    } finally {
+      close(preparedStatement, results);
+    }
+    return columns;
+  }
+
+  @Override
     public String getCreateTableSql(Table table) {
         return null;
     }
