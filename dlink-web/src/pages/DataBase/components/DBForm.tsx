@@ -6,6 +6,7 @@ import {connect} from "umi";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {getDBImage} from "@/pages/DataBase/DB";
 import MysqlForm from "@/pages/DataBase/components/MySqlForm";
+import OracleForm from "@/pages/DataBase/components/OracleForm";
 import SqlServerForm from "@/pages/DataBase/components/SqlServerForm";
 import DorisForm from "@/pages/DataBase/components/DorisForm";
 import ClickHouseForm from "@/pages/DataBase/components/ClickHouseForm";
@@ -113,6 +114,17 @@ const DBForm: React.FC<UpdateFormProps> = (props) => {
       <MysqlForm
         onCancel={() => setDbType(undefined)}
         modalVisible={dbType=='MySql'||values.type=='MySql'}
+        values={values}
+        onSubmit={(value) => {
+          onSubmit(value);
+        }}
+        onTest={(value) => {
+          onTest(value);
+        }}
+      />
+      <OracleForm
+        onCancel={() => setDbType(undefined)}
+        modalVisible={dbType=='Oracle'||values.type=='Oracle'}
         values={values}
         onSubmit={(value) => {
           onSubmit(value);

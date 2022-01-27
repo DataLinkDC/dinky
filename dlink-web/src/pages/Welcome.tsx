@@ -633,7 +633,7 @@ export default (): React.ReactNode => {
                   <Link>优化 sql美化</Link>
                 </li>
                 <li>
-                  <Link>扩展 Doris、SqlServer 数据源注册、元数据、查询和执行</Link>
+                  <Link>扩展 Doris、SqlServer、Oracle 数据源注册、元数据、查询和执行</Link>
                 </li>
               </ul>
             </Paragraph>
