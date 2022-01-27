@@ -14,6 +14,9 @@ export function getDBImage(type:string) {
     case 'clickhouse':
       imageUrl += 'clickhouse.png';
       break;
+    case 'sqlserver':
+      imageUrl += 'sqlserver.jpg';
+      break;
     default:
       imageUrl += 'db.jpg';
   }
