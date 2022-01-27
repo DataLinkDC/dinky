@@ -625,6 +625,19 @@ export default (): React.ReactNode => {
               </ul>
             </Paragraph>
           </Timeline.Item>
+          <Timeline.Item><Text code>0.6.0</Text> <Text type="secondary">2022-03-??</Text>
+            <p> </p>
+            <Paragraph>
+              <ul>
+                <li>
+                  <Link>优化 sql美化</Link>
+                </li>
+                <li>
+                  <Link>扩展 Doris、SqlServer 数据源注册、元数据、查询和执行</Link>
+                </li>
+              </ul>
+            </Paragraph>
+          </Timeline.Item>
         </Timeline>
       </Card>
     </>

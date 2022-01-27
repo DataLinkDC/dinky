@@ -7,6 +7,7 @@ import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {getDBImage} from "@/pages/DataBase/DB";
 import MysqlForm from "@/pages/DataBase/components/MySqlForm";
 import SqlServerForm from "@/pages/DataBase/components/SqlServerForm";
+import DorisForm from "@/pages/DataBase/components/DorisForm";
 import ClickHouseForm from "@/pages/DataBase/components/ClickHouseForm";
 import {createOrModifyDatabase, testDatabaseConnect} from "@/pages/DataBase/service";
 
@@ -32,6 +33,9 @@ const data:any = [
   },
   {
     type: 'SqlServer',
+  },
+  {
+    type: 'Doris',
   },
 ];
 
@@ -120,6 +124,17 @@ const DBForm: React.FC<UpdateFormProps> = (props) => {
       <SqlServerForm
         onCancel={() => setDbType(undefined)}
         modalVisible={dbType=='SqlServer'||values.type=='SqlServer'}
+        values={values}
+        onSubmit={(value) => {
+          onSubmit(value);
+        }}
+        onTest={(value) => {
+          onTest(value);
+        }}
+      />
+      <DorisForm
+        onCancel={() => setDbType(undefined)}
+        modalVisible={dbType=='Doris'||values.type=='Doris'}
         values={values}
         onSubmit={(value) => {
           onSubmit(value);
