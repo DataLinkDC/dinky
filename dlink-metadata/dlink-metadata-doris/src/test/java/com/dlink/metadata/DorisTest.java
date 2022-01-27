@@ -19,11 +19,11 @@ public class DorisTest {
     public void init(){
         DriverConfig config = new DriverConfig();
         config.setType("Doris");
-        config.setIp("10.1.51.26");
+        config.setIp("192.168.68.133");
         config.setPort(9030);
         config.setUsername("root");
-        config.setPassword("dw123456");
-        config.setUrl("jdbc:mysql://10.1.51.26:9030/test");
+        config.setPassword("123456");
+        config.setUrl("jdbc:mysql://192.168.68.133:9030/test");
         try {
             driver =  Driver.build(config).connect();
         }catch (Exception e){
