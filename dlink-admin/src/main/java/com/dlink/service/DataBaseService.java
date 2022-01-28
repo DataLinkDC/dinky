@@ -26,4 +26,6 @@ public interface DataBaseService extends ISuperService<DataBase> {
     List<Schema> getSchemasAndTables(Integer id);
 
     List<Column> listColumns(Integer id, String schemaName, String tableName);
+
+    String getFlinkTableSql(Integer id, String schemaName, String tableName);
 }

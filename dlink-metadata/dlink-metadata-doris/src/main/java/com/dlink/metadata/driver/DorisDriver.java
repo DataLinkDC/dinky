@@ -9,7 +9,9 @@ import com.dlink.model.Column;
 import com.dlink.model.Table;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DorisDriver extends  AbstractJdbcDriver{
     @Override
@@ -79,5 +81,10 @@ public class DorisDriver extends  AbstractJdbcDriver{
         sb.append("DISTRIBUTED BY HASH(" + pks.get(0) + ") BUCKETS 32 ");
         sb.append("PROPERTIES('replication_num' = '1')");
         return sb.toString();
+    }
+
+    @Override
+    public Map<String,String> getFlinkColumnTypeConversion(){
+        return new HashMap<>();
     }
 }

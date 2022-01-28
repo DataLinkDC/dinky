@@ -10,10 +10,12 @@ import com.dlink.metadata.driver.DriverConfig;
 import com.dlink.model.Column;
 import com.dlink.model.DataBase;
 import com.dlink.model.Schema;
+import com.dlink.model.Table;
 import com.dlink.service.DataBaseService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -88,5 +90,15 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
         List<Column> columns = driver.listColumns(schemaName, tableName);
         driver.close();
         return columns;
+    }
+
+    @Override
+    public String getFlinkTableSql(Integer id, String schemaName, String tableName) {
+        DataBase dataBase = getById(id);
+        Asserts.checkNotNull(dataBase,"该数据源不存在！");
+        Driver driver = Driver.build(dataBase.getDriverConfig()).connect();
+        List<Column> columns = driver.listColumns(schemaName, tableName);
+        Table table = Table.build(tableName, schemaName, columns);
+        return table.getFlinkTableSql(dataBase.getName(),driver.getFlinkColumnTypeConversion(),dataBase.getFlinkConfig());
     }
 }

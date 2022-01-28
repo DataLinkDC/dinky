@@ -145,4 +145,12 @@ public class DataBaseController {
     public Result listColumns(@RequestParam Integer id,@RequestParam String schemaName,@RequestParam String tableName) {
         return Result.succeed(databaseService.listColumns(id,schemaName,tableName),"获取成功");
     }
+
+    /**
+     * 获取 FlinkTableSql
+     */
+    @GetMapping("/getFlinkTableSql")
+    public Result getFlinkTableSql(@RequestParam Integer id,@RequestParam String schemaName,@RequestParam String tableName) {
+        return Result.succeed(databaseService.getFlinkTableSql(id,schemaName,tableName),"获取成功");
+    }
 }

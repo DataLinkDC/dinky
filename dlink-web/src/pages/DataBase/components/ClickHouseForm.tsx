@@ -31,6 +31,7 @@ const ClickHouseForm: React.FC<ClickHouseFormProps> = (props) => {
     username: props.values.username,
     password: props.values.password,
     dbVersion: props.values.dbVersion,
+    flinkConfig: props.values.flinkConfig,
     note: props.values.note,
     enabled: props.values.enabled,
   });
@@ -107,6 +108,13 @@ const ClickHouseForm: React.FC<ClickHouseFormProps> = (props) => {
           <Input.Password/>
         </Form.Item>
         <Form.Item
+          name="flinkConfig"
+          label="Flink With 模板"
+        >
+          <TextArea placeholder="'connector' = 'jdbc',..." allowClear
+                    autoSize={{minRows: 3, maxRows: 10}}/>
+        </Form.Item>
+        <Form.Item
           name="note"
           label="注释"
         >
@@ -140,6 +148,7 @@ const ClickHouseForm: React.FC<ClickHouseFormProps> = (props) => {
                 username: formVals.username,
                 password: formVals.password,
                 note: formVals.note,
+                flinkConfig: formVals.flinkConfig,
                 enabled: formVals.enabled,
               }}
             >

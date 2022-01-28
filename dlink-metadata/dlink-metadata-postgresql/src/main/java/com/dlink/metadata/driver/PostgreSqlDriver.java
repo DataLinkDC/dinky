@@ -6,6 +6,9 @@ import com.dlink.metadata.query.IDBQuery;
 import com.dlink.metadata.query.PostgreSqlQuery;
 import com.dlink.model.Table;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * PostgreSqlDriver
  *
@@ -41,5 +44,10 @@ public class PostgreSqlDriver extends AbstractJdbcDriver {
     @Override
     public String getCreateTableSql(Table table) {
         return null;
+    }
+
+    @Override
+    public Map<String,String> getFlinkColumnTypeConversion(){
+        return new HashMap<>();
     }
 }

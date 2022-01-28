@@ -8,7 +8,9 @@ import com.dlink.metadata.query.SqlServerQuery;
 import com.dlink.model.Column;
 import com.dlink.model.Table;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -84,5 +86,10 @@ public class SqlServerDriver  extends AbstractJdbcDriver {
             }
         }
         return sb.toString();
+    }
+
+    @Override
+    public Map<String,String> getFlinkColumnTypeConversion(){
+        return new HashMap<>();
     }
 }

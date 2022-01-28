@@ -35,7 +35,7 @@ export function parseSqlMetaData(sql:string) {
  }
 
  function regMetaData(statement:string){
-   const regTable = new RegExp(/create\s+table\s+(\w+?)\s*\(/, 'ig');
+   const regTable = new RegExp(/create\s+table\s+(.+?)\s*\(/, 'ig');
    let table = RegStr(statement,regTable);
    const regConnector = new RegExp(/connector'\s*=\s*'(\w+?)'/, 'ig');
    let connector = RegStr(statement,regConnector);

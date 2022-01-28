@@ -485,4 +485,10 @@ ADD COLUMN `database_id` int(11) NULL COMMENT '数据源ID' AFTER `cluster_confi
 ALTER TABLE `dlink_task`
 ADD COLUMN `env_id` int(11) NULL COMMENT '环境ID' AFTER `jar_id`;
 
+-- ----------------------------
+-- 0.6.0-SNAPSHOT 2022-01-28
+-- ----------------------------
+ALTER TABLE `dlink_database`
+ADD COLUMN `flink_config` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '环境ID' AFTER `note`;
+
 SET FOREIGN_KEY_CHECKS = 1;
