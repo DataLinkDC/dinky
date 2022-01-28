@@ -14,6 +14,7 @@ export const DIALECT = {
   SQL:'Sql',
   MYSQL:'Mysql',
   ORACLE:'Oracle',
+  SQLSERVER:'SqlServer',
   POSTGRESQL:'PostGreSql',
   CLICKHOUSE:'ClickHouse',
   DORIS:'Doris',
@@ -31,6 +32,7 @@ export const isSql = (dialect: string)=>{
     case DIALECT.SQL:
     case DIALECT.MYSQL:
     case DIALECT.ORACLE:
+    case DIALECT.SQLSERVER:
     case DIALECT.POSTGRESQL:
     case DIALECT.CLICKHOUSE:
     case DIALECT.DORIS:

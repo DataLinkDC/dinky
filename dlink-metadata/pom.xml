@@ -17,6 +17,8 @@
         <module>dlink-metadata-oracle</module>
         <module>dlink-metadata-clickhouse</module>
         <module>dlink-metadata-postgresql</module>
+        <module>dlink-metadata-sqlserver</module>
+        <module>dlink-metadata-doris</module>
     </modules>
 
 

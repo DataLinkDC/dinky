@@ -12,6 +12,7 @@ import org.apache.flink.api.common.JobID;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.configuration.DeploymentOptions;
 import org.apache.flink.configuration.GlobalConfiguration;
+import org.apache.flink.configuration.SecurityOptions;
 import org.apache.flink.runtime.client.JobStatusMessage;
 import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
 import org.apache.flink.runtime.security.SecurityConfiguration;
@@ -69,13 +70,15 @@ public abstract class YarnGateway extends AbstractGateway {
             configuration.set(YarnConfigOptions.APPLICATION_NAME, config.getFlinkConfig().getJobName());
         }
 
-        try {
-            SecurityUtils.install(new SecurityConfiguration(configuration));
-            UserGroupInformation currentUser = UserGroupInformation.getCurrentUser();
-            logger.info("安全认证结束，用户和认证方式:" + currentUser.toString());
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            e.printStackTrace();
+        if(configuration.containsKey(SecurityOptions.KERBEROS_LOGIN_KEYTAB.key())) {
+            try {
+                SecurityUtils.install(new SecurityConfiguration(configuration));
+                UserGroupInformation currentUser = UserGroupInformation.getCurrentUser();
+                logger.info("安全认证结束，用户和认证方式:" + currentUser.toString());
+            } catch (Exception e) {
+                logger.error(e.getMessage());
+                e.printStackTrace();
+            }
         }
 
         YarnLogConfigUtil.setLogConfigFileInConfig(configuration, config.getClusterConfig().getFlinkConfigPath());
