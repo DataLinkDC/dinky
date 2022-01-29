@@ -21,7 +21,7 @@
     * [Clickhouse 集成](/extend/clickhouse.md)
     * [Hudi 集成](/extend/hudi.md)
     * [Iceberg 集成](/extend/hudi.md)
-    * [Flink CDC和Kafka进行多源合并和下游同步更新](/extend/hudi.md)
+    * [Flink CDC和Kafka进行多源合并和下游同步更新](/extend/Flink_CDC_kafka_Multi_source_merger.md)
   
 * 分享
     * [Dlink Yarn 的三种提交实践](/share/yarnsubmit.md)
