@@ -47,9 +47,10 @@ ConnectRecord{topic='mysql_binlog_source.gmall.spu_info', kafkaPartition=null, k
 
 
 
-图1
+![image-20210615115042539](https://s4.ax1x.com/2022/01/29/HSLhNR.png)
 
-图2
+
+![image-20210615115042539](https://s4.ax1x.com/2022/01/29/HSLfE9.png)
 
 
 我们可以看到红框部分，基于 Debezium 格式的 json 可以在 Kafka connector 建表中可以实现表的 CRUD 同步操作。只要总线 Kafka 的 json 格式符合该模式就可以对下游 kafka 进行 CRUD 的同步更新，刚好 Flink CDC 也是基于 Debezium。
