@@ -47,9 +47,9 @@ ConnectRecord{topic='mysql_binlog_source.gmall.spu_info', kafkaPartition=null, k
 ---
 
 
-图1
+![image-20210615115042539](https://s4.ax1x.com/2022/01/29/HSLhNR.png)
 
-图2
+![image-20210615115042539](https://s4.ax1x.com/2022/01/29/HSLfE9.png)
 
 
 我们可以看到红框部分，基于 Debezium 格式的 json 可以在 Kafka connector 建表中可以实现表的 CRUD 同步操作。只要总线 Kafka 的 json 格式符合该模式就可以对下游 kafka 进行 CRUD 的同步更新，刚好 Flink CDC 也是基于 Debezium。
@@ -60,7 +60,8 @@ ConnectRecord{topic='mysql_binlog_source.gmall.spu_info', kafkaPartition=null, k
 
 再往下翻文档：
 
-图3
+![image-20210615115042539](https://s4.ax1x.com/2022/01/29/HSLRHJ.png)
+
 
 可以看到，基于 Debezium-json 格式，可以把上面的 schema 定义的 json 格式的元数据给取出来放在字段里。
 
@@ -289,7 +290,7 @@ PS：没放 schema{}这个对象，看文档说加了识别会影响效率。
 ---
 
 
-图4
+![image-20210615115042539](https://s4.ax1x.com/2022/01/29/HSL441.png)
 
 
 # Dinky 里面进行建表，提交作业
@@ -298,7 +299,8 @@ PS：没放 schema{}这个对象，看文档说加了识别会影响效率。
 ---
 
 
-图5
+![image-20210615115042539](https://s4.ax1x.com/2022/01/29/HSL2B4.png)
+
 
 PS：yarn-session 模式，记得开启预览结果和打印流，不然观察不到数据 changelog
 
@@ -309,25 +311,28 @@ PS：yarn-session 模式，记得开启预览结果和打印流，不然观察�
 ---
 
 
-图6
+![image-20210615115042539](https://s4.ax1x.com/2022/01/29/HSLI9x.png)
 
-图7
+![image-20210615115042539](https://s4.ax1x.com/2022/01/29/HSLo36.png)
 
 可以看到在指定库和表中新增一条数据，在下游 kafka 作业中实现了同步更新，然后试试对数据库该表的记录进行 delete，效果如下：
 
-图8
+![image-20210615115042539](https://s4.ax1x.com/2022/01/29/HSLTgK.png)
+
 
 可以看到"是是是.."这条记录同步删除了。
 
 此时 Flink CDC 的记录是这样：
 
-图9
+![image-20210615115042539](https://s4.ax1x.com/2022/01/29/HSL7jO.png)
+
 
 原理主要是 op 去同步下游 kafka 的 changeLog 里的 op
 
 我们浏览一下 changeLog：（Dinky 选中打印流即可）
 
-图10
+![image-20210615115042539](https://s4.ax1x.com/2022/01/29/HSLbuD.png)
+
 
 可以看到，op 自动识别总线 kafka 发来的 JSON 进行了同步来记录操作。
 
