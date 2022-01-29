@@ -7,10 +7,7 @@ import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.DataBaseMapper;
 import com.dlink.metadata.driver.Driver;
 import com.dlink.metadata.driver.DriverConfig;
-import com.dlink.model.Column;
-import com.dlink.model.DataBase;
-import com.dlink.model.Schema;
-import com.dlink.model.Table;
+import com.dlink.model.*;
 import com.dlink.service.DataBaseService;
 import org.springframework.stereotype.Service;
 
@@ -100,5 +97,39 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
         List<Column> columns = driver.listColumns(schemaName, tableName);
         Table table = Table.build(tableName, schemaName, columns);
         return table.getFlinkTableSql(dataBase.getName(),driver.getFlinkColumnTypeConversion(),dataBase.getFlinkConfig());
+    }
+
+    @Override
+    public String getSqlSelect(Integer id, String schemaName, String tableName) {
+        DataBase dataBase = getById(id);
+        Asserts.checkNotNull(dataBase,"该数据源不存在！");
+        Driver driver = Driver.build(dataBase.getDriverConfig()).connect();
+        List<Column> columns = driver.listColumns(schemaName, tableName);
+        Table table = Table.build(tableName, schemaName, columns);
+        return table.getSqlSelect(dataBase.getName());
+    }
+
+    @Override
+    public String getSqlCreate(Integer id, String schemaName, String tableName) {
+        DataBase dataBase = getById(id);
+        Asserts.checkNotNull(dataBase,"该数据源不存在！");
+        Driver driver = Driver.build(dataBase.getDriverConfig()).connect();
+        List<Column> columns = driver.listColumns(schemaName, tableName);
+        Table table = Table.build(tableName, schemaName, columns);
+        return driver.getCreateTableSql(table);
+    }
+
+    @Override
+    public SqlGeneration getSqlGeneration(Integer id, String schemaName, String tableName) {
+        DataBase dataBase = getById(id);
+        Asserts.checkNotNull(dataBase,"该数据源不存在！");
+        Driver driver = Driver.build(dataBase.getDriverConfig()).connect();
+        List<Column> columns = driver.listColumns(schemaName, tableName);
+        Table table = Table.build(tableName, schemaName, columns);
+        SqlGeneration sqlGeneration = new SqlGeneration();
+        sqlGeneration.setFlinkSqlCreate(table.getFlinkTableSql(dataBase.getName(),driver.getFlinkColumnTypeConversion(),dataBase.getFlinkConfig()));
+        sqlGeneration.setSqlSelect(table.getSqlSelect(dataBase.getName()));
+        sqlGeneration.setSqlCreate(driver.getCreateTableSql(table));
+        return sqlGeneration;
     }
 }

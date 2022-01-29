@@ -147,10 +147,10 @@ public class DataBaseController {
     }
 
     /**
-     * 获取 FlinkTableSql
+     * 获取 SqlGeneration
      */
-    @GetMapping("/getFlinkTableSql")
-    public Result getFlinkTableSql(@RequestParam Integer id,@RequestParam String schemaName,@RequestParam String tableName) {
-        return Result.succeed(databaseService.getFlinkTableSql(id,schemaName,tableName),"获取成功");
+    @GetMapping("/getSqlGeneration")
+    public Result getSqlGeneration(@RequestParam Integer id,@RequestParam String schemaName,@RequestParam String tableName) {
+        return Result.succeed(databaseService.getSqlGeneration(id,schemaName,tableName),"获取成功");
     }
 }

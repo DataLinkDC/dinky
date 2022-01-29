@@ -4,6 +4,7 @@ import com.dlink.db.service.ISuperService;
 import com.dlink.model.Column;
 import com.dlink.model.DataBase;
 import com.dlink.model.Schema;
+import com.dlink.model.SqlGeneration;
 
 import java.util.List;
 
@@ -28,4 +29,10 @@ public interface DataBaseService extends ISuperService<DataBase> {
     List<Column> listColumns(Integer id, String schemaName, String tableName);
 
     String getFlinkTableSql(Integer id, String schemaName, String tableName);
+
+    String getSqlSelect(Integer id, String schemaName, String tableName);
+
+    String getSqlCreate(Integer id, String schemaName, String tableName);
+
+    SqlGeneration getSqlGeneration(Integer id, String schemaName, String tableName);
 }

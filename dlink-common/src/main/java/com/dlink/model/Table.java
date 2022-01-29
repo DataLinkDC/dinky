@@ -71,7 +71,7 @@ public class Table implements Serializable, Comparable<Table> {
         return tableWithSql;
     }
 
-    public String getFlinkTableSql(String catalogName, Map<String, String> typeConversion,String flinkConfig) {
+    public String getFlinkTableSql(String catalogName, Map<String, String> typeConversion, String flinkConfig) {
         StringBuilder sb = new StringBuilder("CREATE TABLE ");
         sb.append(catalogName + "." + schema + "." + name + " (\n");
         List<String> pks = new ArrayList<>();
@@ -101,7 +101,20 @@ public class Table implements Serializable, Comparable<Table> {
         }
         sb.append(") WITH (\n");
         sb.append(getFlinkTableWith(flinkConfig));
-        sb.append(");\n");
+        sb.append("\n);\n");
+        return sb.toString();
+    }
+
+    public String getSqlSelect(String catalogName) {
+        StringBuilder sb = new StringBuilder("SELECT\n");
+        for (int i = 0; i < columns.size(); i++) {
+            sb.append("    ");
+            if (i > 0) {
+                sb.append(",");
+            }
+            sb.append(columns.get(i).getName() + "\n");
+        }
+        sb.append(" FROM " + catalogName + "." + schema + "." + name + ";\n");
         return sb.toString();
     }
 }
