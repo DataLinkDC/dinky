@@ -1,6 +1,6 @@
 # Flink CDC和kafka进行多源合并和下游同步更新
 
----
+
 
 
 编辑:谢帮桂
@@ -8,7 +8,7 @@
 # 前言
 
 
----
+
 
 
 本文主要是针对 Flink SQL 使用 Flink CDC 无法实现多库多表的多源合并问题，以及多源合并后如何对下游 Kafka 同步更新的问题，因为目前 Flink SQL 也只能进行单表 Flink CDC 的作业操作，这会导致数据库 CDC 的连接数过多。
@@ -18,7 +18,7 @@
 # 环境
 
 
----
+
 
 
 |Flink|1.13.3|
@@ -44,7 +44,7 @@ ConnectRecord{topic='mysql_binlog_source.gmall.spu_info', kafkaPartition=null, k
 # 查看文档
 
 
----
+
 
 
 图1
@@ -99,7 +99,7 @@ select * from Kafka_Table where origin_database='gmall' and origin_table = 'spu_
 # 新建Flink CDC的dataStream项目
 
 
----
+
 
 
 ```java
@@ -162,7 +162,7 @@ public class FlinkCDC {
 # 自定义序列化类
 
 
----
+
 
 
 ```java
@@ -286,7 +286,7 @@ PS：没放 schema{}这个对象，看文档说加了识别会影响效率。
 # 总线 Kafka
 
 
----
+
 
 
 图4
@@ -295,7 +295,7 @@ PS：没放 schema{}这个对象，看文档说加了识别会影响效率。
 # Dinky 里面进行建表，提交作业
 
 
----
+
 
 
 图5
