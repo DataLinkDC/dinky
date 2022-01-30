@@ -21,6 +21,7 @@ public enum  SqlType {
     UNLOAD("UNLOAD"),
     SET("SET"),
     RESET("RESET"),
+    EXECUTE("EXECUTE"),
     UNKNOWN("UNKNOWN"),
     ;
 

@@ -638,6 +638,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增 元数据生成 FlinkSQL 和 SQL</Link>
                 </li>
+                <li>
+                  <Link>新增 CDCSOURCE 多源合并任务语法支持</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

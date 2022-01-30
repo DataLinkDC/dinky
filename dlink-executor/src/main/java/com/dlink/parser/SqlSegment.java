@@ -1,5 +1,7 @@
 package com.dlink.parser;
 
+import com.dlink.assertion.Asserts;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -60,6 +62,16 @@ public class SqlSegment {
         this.bodyPieces = new ArrayList<String>();
     }
 
+    public SqlSegment(String type, String segmentRegExp, String bodySplitPattern) {
+        this.type = type;
+        this.start = "";
+        this.body = "";
+        this.end = "";
+        this.segmentRegExp = segmentRegExp;
+        this.bodySplitPattern = bodySplitPattern;
+        this.bodyPieces = new ArrayList<String>();
+    }
+
     /**
      * 从sql中查找符合segmentRegExp的部分，并赋值到start,body,end等三个属性中
      **/
@@ -70,7 +82,9 @@ public class SqlSegment {
             start = matcher.group(1);
             body = matcher.group(2);
             end = matcher.group(3);
-            type = start.replace("\n"," ").replaceAll("\\s{1,}", " ").toUpperCase();
+            if(Asserts.isNullString(type)) {
+                type = start.replace("\n", " ").replaceAll("\\s{1,}", " ").toUpperCase();
+            }
             parseBody();
         }
     }
