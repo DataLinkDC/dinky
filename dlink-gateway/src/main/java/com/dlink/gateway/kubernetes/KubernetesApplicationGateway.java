@@ -53,7 +53,7 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
             result.success();
         }catch (Exception e){
             e.printStackTrace();
-            logger.error(e.getMessage());
+            logger.error("任务提交时发生异常",e);
             result.fail(e.getMessage());
         }finally {
             kubernetesClusterDescriptor.close();
