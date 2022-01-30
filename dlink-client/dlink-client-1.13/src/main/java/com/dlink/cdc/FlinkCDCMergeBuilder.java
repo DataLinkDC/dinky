@@ -19,7 +19,7 @@ import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
  */
 public class FlinkCDCMergeBuilder {
 
-    public static void buildMySqlCDC(StreamExecutionEnvironment env, FlinkCDCConfig config) throws Exception {
+    public static void buildMySqlCDC(StreamExecutionEnvironment env, FlinkCDCConfig config) {
         if(Asserts.isNotNull(config.getParallelism())){
             env.setParallelism(config.getParallelism());
         }
@@ -43,10 +43,7 @@ public class FlinkCDCMergeBuilder {
                 .startupOptions(StartupOptions.latest())
                 .build();
         DataStreamSource<String> streamSource = env.fromSource(sourceFunction, WatermarkStrategy.noWatermarks(), "MySQL Source");
-        streamSource.print();
         streamSource.addSink(getKafkaProducer(config.getBrokers(),config.getTopic()));
-//        JobExecutionResult jobExecutionResult = env.execute(config.getJobName());
-//        return jobExecutionResult.getJobID().toHexString();
     }
 
     private static FlinkKafkaProducer<String> getKafkaProducer(String brokers, String topic) {
