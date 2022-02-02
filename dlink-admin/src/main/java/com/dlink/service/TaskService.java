@@ -26,4 +26,16 @@ public interface TaskService extends ISuperService<Task> {
     String exportSql(Integer id);
 
     Task getUDFByClassName(String className);
+
+    boolean releaseTask(Integer id);
+
+    boolean developTask(Integer id);
+
+    boolean onLineTask(Integer id);
+
+    boolean offLineTask(Integer id);
+
+    boolean cancelTask(Integer id);
+
+    boolean recoveryTask(Integer id);
 }

@@ -53,3 +53,14 @@ export const isOnline = (type: string)=>{
       return false;
   }
 }
+
+export const TASKSTEPS = {
+  UNKNOWN: 0,
+  CREATE: 1,
+  DEVELOP: 2,
+  DEBUG: 3,
+  RELEASE: 4,
+  ONLINE: 5,
+  CANCEL: 6,
+};
+

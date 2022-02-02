@@ -200,3 +200,27 @@ export function showClusterConfiguration(dispatch: any) {
     });
   });
 }
+/*--- 发布作业 ---*/
+export function releaseTask(id: number) {
+  return getData('api/task/releaseTask',{id});
+}
+/*--- 发布作业 ---*/
+export function developTask(id: number) {
+  return getData('api/task/developTask',{id});
+}
+/*--- 上线作业 ---*/
+export function onLineTask(id: number) {
+  return getData('api/task/onLineTask',{id});
+}
+/*--- 下线作业 ---*/
+export function offLineTask(id: number) {
+  return getData('api/task/offLineTask',{id});
+}
+/*--- 注销作业 ---*/
+export function cancelTask(id: number) {
+  return getData('api/task/cancelTask',{id});
+}
+/*--- 恢复作业 ---*/
+export function recoveryTask(id: number) {
+  return getData('api/task/recoveryTask',{id});
+}

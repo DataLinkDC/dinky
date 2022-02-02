@@ -121,5 +121,53 @@ public class TaskController {
     public Result exportSql(@RequestParam Integer id) {
         return Result.succeed(taskService.exportSql(id),"获取成功");
     }
+
+    /**
+     *  发布任务
+     */
+    @GetMapping(value = "/releaseTask")
+    public Result releaseTask(@RequestParam Integer id) {
+        return Result.succeed(taskService.releaseTask(id),"操作成功");
+    }
+
+    /**
+     *  维护任务
+     */
+    @GetMapping(value = "/developTask")
+    public Result developTask(@RequestParam Integer id) {
+        return Result.succeed(taskService.developTask(id),"操作成功");
+    }
+
+    /**
+     *  上线任务
+     */
+    @GetMapping(value = "/onLineTask")
+    public Result onLineTask(@RequestParam Integer id) {
+        return Result.succeed(taskService.onLineTask(id),"操作成功");
+    }
+
+    /**
+     *  下线任务
+     */
+    @GetMapping(value = "/offLineTask")
+    public Result offLineTask(@RequestParam Integer id) {
+        return Result.succeed(taskService.offLineTask(id),"操作成功");
+    }
+
+    /**
+     *  注销任务
+     */
+    @GetMapping(value = "/cancelTask")
+    public Result cancelTask(@RequestParam Integer id) {
+        return Result.succeed(taskService.cancelTask(id),"操作成功");
+    }
+
+    /**
+     *  恢复任务
+     */
+    @GetMapping(value = "/recoveryTask")
+    public Result recoveryTask(@RequestParam Integer id) {
+        return Result.succeed(taskService.recoveryTask(id),"操作成功");
+    }
 }
 
