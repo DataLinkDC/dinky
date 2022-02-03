@@ -1,5 +1,5 @@
 import {Tabs, Empty, Form} from "antd";
-import {SettingOutlined,ScheduleOutlined,AuditOutlined} from "@ant-design/icons";
+import {SettingOutlined,ScheduleOutlined} from "@ant-design/icons";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
 import StudioConfig from "./StudioConfig";
@@ -8,6 +8,7 @@ import StudioSavePoint from "./StudioSavePoint";
 import StudioEnvSetting from "./StudioEnvSetting";
 import StudioSqlConfig from "./StudioSqlConfig";
 import StudioUDFInfo from "./StudioUDFInfo";
+import StudioJarSetting from "./StudioJarSetting";
 import StudioGuide from "./StudioGuide";
 import {DIALECT, isSql} from "@/components/Studio/conf";
 
@@ -20,6 +21,9 @@ const StudioRightTool = (props: any) => {
   const renderContent = () => {
     if(isSql(current.task.dialect)){
       return renderSqlContent();
+    }
+    if(DIALECT.FLINKJAR === current.task.dialect){
+      return renderJarContent();
     }
     if(DIALECT.FLINKSQLENV === current.task.dialect){
       return renderEnvContent();
@@ -36,6 +40,14 @@ const StudioRightTool = (props: any) => {
         <StudioSqlConfig form={form}/>
       </TabPane>
       </>)
+  };
+
+  const renderJarContent = () => {
+    return (<>
+      <TabPane tab={<span><SettingOutlined /> 作业配置</span>} key="StudioJarSetting" >
+        <StudioJarSetting form={form}/>
+      </TabPane>
+    </>)
   };
 
   const renderEnvContent = () => {

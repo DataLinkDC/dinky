@@ -111,10 +111,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         }
     }
 
-    private boolean isJarTask(Task task) {
-        return (GatewayType.YARN_APPLICATION.equalsValue(task.getType()) || GatewayType.KUBERNETES_APPLICATION.equalsValue(task.getType())) && Asserts.isNotNull(task.getJarId());
-    }
-
     @Override
     public Task getTaskInfoById(Integer id) {
         Task task = this.getById(id);
@@ -279,7 +275,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     private JobConfig buildJobConfig(Task task) {
-        boolean isJarTask = isJarTask(task);
+        boolean isJarTask = Dialect.FLINKJAR.equalsVal(task.getDialect());
         if (!isJarTask && Asserts.isNotNull(task.getEnvId()) && task.getEnvId() != 0) {
             Task envTask = getTaskInfoById(task.getEnvId());
             if (Asserts.isNotNull(envTask) && Asserts.isNotNullString(envTask.getStatement())) {

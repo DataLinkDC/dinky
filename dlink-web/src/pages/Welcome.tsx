@@ -644,6 +644,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增 作业生命周期管理</Link>
                 </li>
+                <li>
+                  <Link>新增 FlinkJar Dialect 的管理</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

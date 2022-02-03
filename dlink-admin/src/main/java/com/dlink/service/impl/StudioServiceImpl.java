@@ -1,6 +1,7 @@
 package com.dlink.service.impl;
 
 import com.dlink.api.FlinkAPI;
+import com.dlink.assertion.Assert;
 import com.dlink.assertion.Asserts;
 import com.dlink.config.Dialect;
 import com.dlink.dto.*;
@@ -15,10 +16,7 @@ import com.dlink.job.JobManager;
 import com.dlink.job.JobResult;
 import com.dlink.metadata.driver.Driver;
 import com.dlink.metadata.result.JdbcSelectResult;
-import com.dlink.model.Cluster;
-import com.dlink.model.DataBase;
-import com.dlink.model.Savepoints;
-import com.dlink.model.Task;
+import com.dlink.model.*;
 import com.dlink.result.IResult;
 import com.dlink.result.SelectResult;
 import com.dlink.result.SqlExplainResult;
@@ -92,7 +90,8 @@ public class StudioServiceImpl implements StudioService {
             }
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
         }
-        initUDF(config,studioExecuteDTO.getStatement());
+        // To initialize java udf, but it has a bug in the product environment now.
+        // initUDF(config,studioExecuteDTO.getStatement());
         JobManager jobManager = JobManager.build(config);
         JobResult jobResult = jobManager.executeSql(studioExecuteDTO.getStatement());
         RunTimeUtil.recovery(jobManager);
@@ -162,7 +161,8 @@ public class StudioServiceImpl implements StudioService {
             }
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
         }
-        initUDF(config,studioExecuteDTO.getStatement());
+        // To initialize java udf, but it has a bug in the product environment now.
+        // initUDF(config,studioExecuteDTO.getStatement());
         JobManager jobManager = JobManager.buildPlanMode(config);
         return jobManager.explainSql(studioExecuteDTO.getStatement()).getSqlExplainResults();
     }

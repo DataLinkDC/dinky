@@ -512,7 +512,7 @@ const StudioMenu = (props: any) => {
                 onClick={execute}
               />
             </Tooltip>)}
-            {(!current.task.dialect||current.task.dialect === DIALECT.FLINKSQL||isSql( current.task.dialect )) &&(<>
+            {(!current.task.dialect||current.task.dialect === DIALECT.FLINKSQL||current.task.dialect === DIALECT.FLINKJAR||isSql( current.task.dialect )) &&(<>
               <Tooltip title="提交当前的作业到集群，提交前请手动保存">
                 <Button
                   type="text"

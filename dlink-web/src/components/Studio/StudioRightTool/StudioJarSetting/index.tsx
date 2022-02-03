@@ -1,6 +1,6 @@
 import {connect} from "umi";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
-import {Form, InputNumber, Input, Switch, Select, Tag, Row, Col, Badge, Tooltip, Button, Typography, Space} from "antd";
+import {Form, InputNumber, Input, Switch, Select, Tag, Row, Col, Badge, Tooltip, Button, Space} from "antd";
 import {InfoCircleOutlined, PlusOutlined, MinusSquareOutlined, MinusCircleOutlined,PaperClipOutlined} from "@ant-design/icons";
 import styles from "./index.less";
 import {useEffect} from "react";
@@ -10,15 +10,14 @@ import {Scrollbars} from "react-custom-scrollbars";
 import {RUN_MODE} from "@/components/Studio/conf";
 
 const {Option} = Select;
-const {Text} = Typography;
 
-const StudioSetting = (props: any) => {
+const StudioJarSetting = (props: any) => {
 
-  const {sessionCluster, clusterConfiguration, current, form, dispatch, tabs, currentSession, jars,env, toolHeight} = props;
+  const {clusterConfiguration, current, form, dispatch, tabs, currentSession, jars,env, toolHeight} = props;
 
-  const getClusterOptions = () => {
+  const getClusterConfigurationOptions = () => {
     const itemList = [];
-    for (const item of sessionCluster) {
+    for (const item of clusterConfiguration) {
       const tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias}</>);
       itemList.push(<Option key={item.id} value={item.id} label={tag}>
         {tag}
@@ -27,9 +26,9 @@ const StudioSetting = (props: any) => {
     return itemList;
   };
 
-  const getClusterConfigurationOptions = () => {
+  const getJarOptions = () => {
     const itemList = [];
-    for (const item of clusterConfiguration) {
+    for (const item of jars) {
       const tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias}</>);
       itemList.push(<Option key={item.id} value={item.id} label={tag}>
         {tag}
@@ -101,55 +100,38 @@ const StudioSetting = (props: any) => {
             label="执行模式" className={styles.form_item} name="type"
             tooltip='指定 Flink 任务的执行模式，默认为 Local'
           >
-            <Select defaultValue={RUN_MODE.LOCAL} value={RUN_MODE.LOCAL}>
-              <Option value={RUN_MODE.LOCAL}>Local</Option>
-              <Option value={RUN_MODE.STANDALONE}>Standalone</Option>
-              <Option value={RUN_MODE.YARN_SESSION}>Yarn Session</Option>
-              <Option value={RUN_MODE.YARN_PER_JOB}>Yarn Per-Job</Option>
+            <Select defaultValue={RUN_MODE.YARN_APPLICATION} value={RUN_MODE.YARN_APPLICATION}>
               <Option value={RUN_MODE.YARN_APPLICATION}>Yarn Application</Option>
-              <Option value={RUN_MODE.KUBERNETES_SESSION}>Kubernetes Session</Option>
-              <Option value={RUN_MODE.KUBERNETES_APPLICATION}>Kubernetes Application</Option>
             </Select>
           </Form.Item>
-          {(current.task.type === RUN_MODE.YARN_SESSION || current.task.type === RUN_MODE.KUBERNETES_SESSION || current.task.type === RUN_MODE.STANDALONE) ? (
-            <Row>
-              <Col span={24}>
-                <Form.Item label="Flink集群" tooltip={`选择Flink集群进行 ${current.task.type} 模式的远程提交任务`} name="clusterId"
-                           className={styles.form_item}>
-                  {
-                    currentSession.session ?
-                      (currentSession.sessionConfig && currentSession.sessionConfig.clusterId ?
-                          (<><Badge status="success"/><Text
-                            type="success">{currentSession.sessionConfig.clusterName}</Text></>)
-                          : (<><Badge status="error"/><Text type="danger">本地模式</Text></>)
-                      ) : (<Select
-                        style={{width: '100%'}}
-                        placeholder="选择Flink集群"
-                        optionLabelProp="label"
-                        onChange={onChangeClusterSession}
-                      >
-                        {getClusterOptions()}
-                      </Select>)
-                  }
-                </Form.Item>
-              </Col>
-            </Row>) : undefined}
-          {(current.task.type === RUN_MODE.YARN_PER_JOB || current.task.type === RUN_MODE.YARN_APPLICATION|| current.task.type === RUN_MODE.KUBERNETES_APPLICATION) ? (
-            <Row>
-              <Col span={24}>
-                <Form.Item label="Flink集群配置" tooltip={`选择Flink集群配置进行 ${current.task.type} 模式的远程提交任务`}
-                           name="clusterConfigurationId"
-                           className={styles.form_item}>
-                  <Select
-                    style={{width: '100%'}}
-                    placeholder="选择Flink集群配置"
-                    optionLabelProp="label"
-                  >
-                    {getClusterConfigurationOptions()}
-                  </Select>
-                </Form.Item>
-              </Col>
-            </Row>) : undefined}
+          <Row>
+            <Col span={24}>
+              <Form.Item label="Flink集群配置" tooltip={`选择Flink集群配置进行 ${current.task.type} 模式的远程提交任务`}
+                         name="clusterConfigurationId"
+                         className={styles.form_item}>
+                <Select
+                  style={{width: '100%'}}
+                  placeholder="选择Flink集群配置"
+                  optionLabelProp="label"
+                >
+                  {getClusterConfigurationOptions()}
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+          <Form.Item label="可执行 Jar"
+                     tooltip={`选择可执行 Jar 进行 ${current.task.type} 模式的远程提交 Jar 任务。当该参数项存在值时，将只提交可执行 Jar.`}
+                     name="jarId"
+                     className={styles.form_item}>
+            <Select
+              style={{width: '100%'}}
+              placeholder="选择可执行Jar，非必填"
+              allowClear
+              optionLabelProp="label"
+            >
+              {getJarOptions()}
+            </Select>
+          </Form.Item>
           <Form.Item
             label="作业名" className={styles.form_item} name="jobName"
             tooltip='设置任务名称，默认为作业名'
@@ -281,4 +263,4 @@ export default connect(({Studio, Jar}: { Studio: StateType, Jar: JarStateType })
   toolHeight: Studio.toolHeight,
   jars: Jar.jars,
   env: Studio.env,
-}))(StudioSetting);
+}))(StudioJarSetting);

@@ -492,6 +492,9 @@ ALTER TABLE `dlink_database`
 ADD COLUMN `flink_config` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '环境ID' AFTER `note`;
 
 -- ----------------------------
+-- 0.6.0-SNAPSHOT 2022-02-02
+-- ----------------------------
+-- ----------------------------
 -- Table structure for dlink_job_instance
 -- ----------------------------
 DROP TABLE IF EXISTS `dlink_job_instance`;
@@ -514,5 +517,11 @@ create table dlink_job_instance
 
 ALTER TABLE `dlink_task`
     ADD COLUMN `step` int(11) NULL COMMENT '作业生命周期' AFTER `note`;
+
+-- ----------------------------
+-- 0.6.0-SNAPSHOT 2022-02-03
+-- ----------------------------
+update dlink_task set dialect = 'FlinkJar' where jar_id is not null;
+update dlink_catalogue set type = 'FlinkJar' where task_id in (select id as task_id from dlink_task where jar_id is not null);
 
 SET FOREIGN_KEY_CHECKS = 1;
