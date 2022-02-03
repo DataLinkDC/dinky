@@ -5,6 +5,7 @@ import com.dlink.model.FlinkCDCConfig;
 import com.ververica.cdc.connectors.mysql.source.MySqlSource;
 import com.ververica.cdc.connectors.mysql.source.MySqlSourceBuilder;
 import com.ververica.cdc.connectors.mysql.table.StartupOptions;
+import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
@@ -37,9 +38,8 @@ public class FlinkCDCMergeBuilder {
         if(Asserts.isNotNull(config.getTable())&&config.getTable().size()>0){
             sourceBuilder.tableList(config.getTable().toArray(new String[0]));
         }
-        MySqlSource<String> sourceFunction = sourceBuilder.deserializer(new CustomerDeserialization()) //这里需要自定义序列化格式
-//                .deserializer(new JsonDebeziumDeserializationSchema()) // converts SourceRecord to JSON String
-//                .deserializer(new StringDebeziumDeserializationSchema()) //默认是这个序列化格式
+        MySqlSource<String> sourceFunction = sourceBuilder
+                .deserializer(new JsonDebeziumDeserializationSchema())
                 .startupOptions(StartupOptions.latest())
                 .build();
         DataStreamSource<String> streamSource = env.fromSource(sourceFunction, WatermarkStrategy.noWatermarks(), "MySQL Source");
