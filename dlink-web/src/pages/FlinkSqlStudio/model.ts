@@ -91,7 +91,6 @@ export type TaskType = {
   useChangeLog: boolean;
   useAutoCancel: boolean;
   useSession: boolean;
-  useRemote: boolean;
 };
 
 export type ConsoleType = {
@@ -125,7 +124,6 @@ export type SessionType = {
   session?: string;
   sessionConfig?: {
     type?: string;
-    useRemote?: boolean;
     clusterId?: number;
     clusterName?: string;
     address?: string;

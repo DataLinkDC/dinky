@@ -70,6 +70,13 @@ public class StudioServiceImpl implements StudioService {
         }
     }
 
+    private void buildSession(JobConfig config){
+        // If you are using a shared session, configure the current jobmanager address
+        if(!config.isUseSession()) {
+            config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), config.getClusterId()));
+        }
+    }
+
     @Override
     public JobResult executeSql(StudioExecuteDTO studioExecuteDTO) {
         if(Dialect.isSql(studioExecuteDTO.getDialect())){
@@ -83,13 +90,7 @@ public class StudioServiceImpl implements StudioService {
     private JobResult executeFlinkSql(StudioExecuteDTO studioExecuteDTO) {
         addFlinkSQLEnv(studioExecuteDTO);
         JobConfig config = studioExecuteDTO.getJobConfig();
-        // If you are using a shared session, configure the current jobmanager address
-        if(!config.isUseSession()) {
-            if(GatewayType.LOCAL.equalsValue(config.getType())){
-                config.setUseRemote(false);
-            }
-            config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
-        }
+        buildSession(config);
         // To initialize java udf, but it has a bug in the product environment now.
         // initUDF(config,studioExecuteDTO.getStatement());
         JobManager jobManager = JobManager.build(config);
@@ -134,9 +135,6 @@ public class StudioServiceImpl implements StudioService {
     public IResult executeDDL(StudioDDLDTO studioDDLDTO) {
         JobConfig config = studioDDLDTO.getJobConfig();
         if(!config.isUseSession()) {
-            if(GatewayType.LOCAL.equalsValue(config.getType())){
-                config.setUseRemote(false);
-            }
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioDDLDTO.getClusterId()));
         }
         JobManager jobManager = JobManager.build(config);
@@ -155,12 +153,9 @@ public class StudioServiceImpl implements StudioService {
     private List<SqlExplainResult> explainFlinkSql(StudioExecuteDTO studioExecuteDTO) {
         addFlinkSQLEnv(studioExecuteDTO);
         JobConfig config = studioExecuteDTO.getJobConfig();
-        if(!config.isUseSession()) {
-            if(GatewayType.LOCAL.equalsValue(config.getType())){
-                config.setUseRemote(false);
-            }
-            config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
-        }
+        // If you are using explainSql | getStreamGraph | getJobPlan, make the dialect change to local.
+        config.buildLocal();
+        buildSession(config);
         // To initialize java udf, but it has a bug in the product environment now.
         // initUDF(config,studioExecuteDTO.getStatement());
         JobManager jobManager = JobManager.buildPlanMode(config);
@@ -190,13 +185,9 @@ public class StudioServiceImpl implements StudioService {
     public ObjectNode getStreamGraph(StudioExecuteDTO studioExecuteDTO) {
         addFlinkSQLEnv(studioExecuteDTO);
         JobConfig config = studioExecuteDTO.getJobConfig();
-        config.setType(GatewayType.LOCAL.getLongValue());
-        if(!config.isUseSession()) {
-            if(GatewayType.LOCAL.equalsValue(config.getType())){
-                config.setUseRemote(false);
-            }
-            config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
-        }
+        // If you are using explainSql | getStreamGraph | getJobPlan, make the dialect change to local.
+        config.buildLocal();
+        buildSession(config);
         JobManager jobManager = JobManager.buildPlanMode(config);
         return jobManager.getStreamGraph(studioExecuteDTO.getStatement());
     }
@@ -205,13 +196,9 @@ public class StudioServiceImpl implements StudioService {
     public ObjectNode getJobPlan(StudioExecuteDTO studioExecuteDTO) {
         addFlinkSQLEnv(studioExecuteDTO);
         JobConfig config = studioExecuteDTO.getJobConfig();
-        config.setType(GatewayType.LOCAL.getLongValue());
-        if(!config.isUseSession()) {
-            if(GatewayType.LOCAL.equalsValue(config.getType())){
-                config.setUseRemote(false);
-            }
-            config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioExecuteDTO.getClusterId()));
-        }
+        // If you are using explainSql | getStreamGraph | getJobPlan, make the dialect change to local.
+        config.buildLocal();
+        buildSession(config);
         JobManager jobManager = JobManager.buildPlanMode(config);
         String planJson = jobManager.getJobPlanJson(studioExecuteDTO.getStatement());
         ObjectMapper mapper = new ObjectMapper();
