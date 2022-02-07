@@ -1,9 +1,10 @@
 import styles from "./index.less";
 import {Menu, Dropdown, Tooltip, Row, Col, Popconfirm, notification, Modal, message} from "antd";
 import {
-  PauseCircleTwoTone, CopyTwoTone, DeleteTwoTone, PlayCircleTwoTone, DiffTwoTone,SnippetsTwoTone,
+  PauseCircleTwoTone, CarryOutTwoTone, DeleteTwoTone, PlayCircleTwoTone, CameraTwoTone,SnippetsTwoTone,
   FileAddTwoTone, FolderOpenTwoTone, SafetyCertificateTwoTone, SaveTwoTone, FlagTwoTone,CodeTwoTone,
   EnvironmentOutlined, SmileOutlined, RocketTwoTone, QuestionCircleTwoTone, MessageOutlined, ClusterOutlined
+  , EditTwoTone, RestTwoTone
 } from "@ant-design/icons";
 import Space from "antd/es/space";
 import Divider from "antd/es/divider";
@@ -11,14 +12,21 @@ import Button from "antd/es/button/button";
 import Breadcrumb from "antd/es/breadcrumb/Breadcrumb";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
-import { postDataArray} from "@/components/Common/crud";
+import {CODE, postDataArray} from "@/components/Common/crud";
 import {executeSql, getJobPlan} from "@/pages/FlinkSqlStudio/service";
 import StudioHelp from "./StudioHelp";
 import StudioGraph from "./StudioGraph";
-import {showCluster, showTables} from "@/components/Studio/StudioEvent/DDL";
+import {
+  cancelTask, developTask,
+  offLineTask,
+  onLineTask, recoveryTask,
+  releaseTask,
+  showCluster,
+  showTables
+} from "@/components/Studio/StudioEvent/DDL";
 import React, {useCallback, useEffect, useState} from "react";
 import StudioExplain from "../StudioConsole/StudioExplain";
-import {DIALECT, isOnline, isSql} from "@/components/Studio/conf";
+import {DIALECT, isOnline, isSql, TASKSTEPS} from "@/components/Studio/conf";
 import {
   ModalForm,
 } from '@ant-design/pro-form';
@@ -260,6 +268,114 @@ const StudioMenu = (props: any) => {
     handleExportModalVisible(true);
   };
 
+  const toReleaseTask = () => {
+    Modal.confirm({
+      title: '发布作业',
+      content: `确定发布作业【${current.task.alias}】吗？请确认您的作业是否已经被保存！`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk: async () => {
+        const res = releaseTask(current.task.id);
+        res.then((result) => {
+          result.datas && props.changeTaskStep(current.task.id,TASKSTEPS.RELEASE);
+          if(result.code == CODE.SUCCESS) {
+            message.success(`发布作业【${current.task.alias}】成功`);
+          }
+        });
+      }
+    });
+  };
+
+  const toDevelopTask = () => {
+    Modal.confirm({
+      title: '维护作业',
+      content: `确定维护作业【${current.task.alias}】吗？`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk: async () => {
+        const res = developTask(current.task.id);
+        res.then((result) => {
+          result.datas && props.changeTaskStep(current.task.id,TASKSTEPS.DEVELOP);
+          if(result.code == CODE.SUCCESS) {
+            message.success(`维护作业【${current.task.alias}】成功`);
+          }
+        });
+      }
+    });
+  };
+
+  const toOnLineTask = () => {
+    Modal.confirm({
+      title: '上线作业',
+      content: `确定上线作业【${current.task.alias}】吗？`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk: async () => {
+        const res = onLineTask(current.task.id);
+        res.then((result) => {
+          result.datas && props.changeTaskStep(current.task.id,TASKSTEPS.ONLINE);
+          if(result.code == CODE.SUCCESS) {
+            message.success(`上线作业【${current.task.alias}】成功`);
+          }
+        });
+      }
+    });
+  };
+
+  const toOffLineTask = () => {
+    Modal.confirm({
+      title: '下线作业',
+      content: `确定下线作业【${current.task.alias}】吗？`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk: async () => {
+        const res = offLineTask(current.task.id);
+        res.then((result) => {
+          result.datas && props.changeTaskStep(current.task.id,TASKSTEPS.RELEASE);
+          if(result.code == CODE.SUCCESS) {
+            message.success(`下线作业【${current.task.alias}】成功`);
+          }
+        });
+      }
+    });
+  };
+
+  const toCancelTask = () => {
+    Modal.confirm({
+      title: '注销作业',
+      content: `确定注销作业【${current.task.alias}】吗？`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk: async () => {
+        const res = cancelTask(current.task.id);
+        res.then((result) => {
+          result.datas && props.changeTaskStep(current.task.id,TASKSTEPS.CANCEL);
+          if(result.code == CODE.SUCCESS) {
+            message.success(`注销作业【${current.task.alias}】成功`);
+          }
+        });
+      }
+    });
+  };
+
+  const toRecoveryTask = () => {
+    Modal.confirm({
+      title: '恢复作业',
+      content: `确定恢复作业【${current.task.alias}】吗？`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk: async () => {
+        const res = recoveryTask(current.task.id);
+        res.then((result) => {
+          result.datas && props.changeTaskStep(current.task.id,TASKSTEPS.DEVELOP);
+          if(result.code == CODE.SUCCESS) {
+            message.success(`恢复作业【${current.task.alias}】成功`);
+          }
+        });
+      }
+    });
+  };
+
   const runMenu = (
     <Menu>
       <Menu.Item onClick={execute}>SQL 查询</Menu.Item>
@@ -396,7 +512,7 @@ const StudioMenu = (props: any) => {
                 onClick={execute}
               />
             </Tooltip>)}
-            {(!current.task.dialect||current.task.dialect === DIALECT.FLINKSQL||isSql( current.task.dialect )) &&(<>
+            {(!current.task.dialect||current.task.dialect === DIALECT.FLINKSQL||current.task.dialect === DIALECT.FLINKJAR||isSql( current.task.dialect )) &&(<>
               <Tooltip title="提交当前的作业到集群，提交前请手动保存">
                 <Button
                   type="text"
@@ -404,33 +520,55 @@ const StudioMenu = (props: any) => {
                   onClick={submit}
                 />
               </Tooltip>
-              <Popconfirm
-                title="您确定要停止所有的 FlinkSql 任务吗？"
-                // onConfirm={confirm}
-                //onCancel={cancel}
-                okText="停止"
-                cancelText="取消"
-              >
-                <Tooltip title="停止所有的 FlinkSql 任务，暂不可用">
-                  <Button
-                    type="text"
-                    icon={<PauseCircleTwoTone twoToneColor="#ddd"/>}
-                  />
-                </Tooltip>
-              </Popconfirm></>)}
+              </>)}
             <Divider type="vertical"/>
-            <Button
-              type="text"
-              icon={<DiffTwoTone twoToneColor="#ddd"/>}
-            />
-            <Button
-              type="text"
-              icon={<CopyTwoTone twoToneColor="#ddd"/>}
-            />
-            <Button
-              type="text"
-              icon={<DeleteTwoTone twoToneColor="#ddd"/>}
-            />
+            {current.task.step == TASKSTEPS.DEVELOP ?
+              <Tooltip title="发布，发布后将无法修改">
+                <Button
+                  type="text"
+                  icon={<CameraTwoTone/>}
+                  onClick={toReleaseTask}
+                />
+              </Tooltip>:undefined
+            }{current.task.step == TASKSTEPS.RELEASE ?
+              <><Tooltip title="维护，点击进入编辑状态">
+                <Button
+                  type="text"
+                  icon={<EditTwoTone />}
+                  onClick={toDevelopTask}
+                />
+              </Tooltip><Tooltip title="上线，上线后自动恢复、告警等将生效">
+              <Button
+                type="text"
+                icon={<CarryOutTwoTone />}
+                onClick={toOnLineTask}
+              />
+            </Tooltip></>:undefined
+            }{current.task.step == TASKSTEPS.ONLINE ?
+            <Tooltip title="下线，将进入最新发布状态">
+              <Button
+                type="text"
+                icon={<PauseCircleTwoTone />}
+                onClick={toOffLineTask}
+              />
+            </Tooltip>:undefined
+          }{(current.task.step != TASKSTEPS.ONLINE && current.task.step != TASKSTEPS.CANCEL) ?
+            <Tooltip title="注销，将进入回收站">
+              <Button
+                type="text"
+                icon={<DeleteTwoTone />}
+                onClick={toCancelTask}
+              />
+            </Tooltip>:undefined
+          }{current.task.step == TASKSTEPS.CANCEL ?
+            <Tooltip title="恢复，将进入维护模式">
+              <Button
+                type="text"
+                icon={<RestTwoTone />}
+                onClick={toRecoveryTask}
+              />
+            </Tooltip>:undefined
+          }
             <Tooltip title="查看使用帮助">
               <Button
                 type="text"
@@ -506,6 +644,11 @@ const mapDispatchToProps = (dispatch: Dispatch)=>({
   }),changeFullScreen:(isFull: boolean)=>dispatch({
     type: "Studio/changeFullScreen",
     payload: isFull,
+  }),changeTaskStep:(id: number, step: number)=>dispatch({
+    type: "Studio/changeTaskStep",
+    payload: {
+      id,step
+    },
   }),
 });
 

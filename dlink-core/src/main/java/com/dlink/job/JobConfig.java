@@ -2,6 +2,7 @@ package com.dlink.job;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.executor.ExecutorSetting;
+import com.dlink.gateway.GatewayType;
 import com.dlink.gateway.config.AppConfig;
 import com.dlink.gateway.config.ClusterConfig;
 import com.dlink.gateway.config.FlinkConfig;
@@ -63,7 +64,7 @@ public class JobConfig {
         this.config = config;
     }
 
-    public JobConfig(String type, boolean useResult, boolean useChangeLog, boolean useAutoCancel, boolean useSession, String session, boolean useRemote, Integer clusterId,
+    public JobConfig(String type, boolean useResult, boolean useChangeLog, boolean useAutoCancel, boolean useSession, String session, Integer clusterId,
                      Integer clusterConfigurationId, Integer jarId, Integer taskId, String jobName, boolean useSqlFragment,
                      boolean useStatementSet, Integer maxRowNum, Integer checkpoint, Integer parallelism,
                      Integer savePointStrategyValue, String savePointPath, Map<String,String> config) {
@@ -73,7 +74,7 @@ public class JobConfig {
         this.useAutoCancel = useAutoCancel;
         this.useSession = useSession;
         this.session = session;
-        this.useRemote = useRemote;
+        this.useRemote = true;
         this.clusterId = clusterId;
         this.clusterConfigurationId = clusterConfigurationId;
         this.jarId = jarId;
@@ -212,5 +213,13 @@ public class JobConfig {
         for (Map.Entry<String, Object> entry : config.entrySet()) {
             gatewayConfig.getFlinkConfig().getConfiguration().put(entry.getKey(), (String) entry.getValue());
         }
+    }
+
+    public boolean isUseRemote() {
+        return !GatewayType.LOCAL.equalsValue(type);
+    }
+
+    public void buildLocal(){
+        type = GatewayType.LOCAL.getLongValue();
     }
 }

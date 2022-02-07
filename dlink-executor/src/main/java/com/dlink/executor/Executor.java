@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.runtime.jobgraph.JobGraph;
+import org.apache.flink.runtime.jobgraph.jsonplan.JsonPlanGenerator;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.graph.JSONGenerator;
@@ -232,8 +233,34 @@ public abstract class Executor {
         }
     }
 
+    public ObjectNode getStreamGraphFromDataStream(List<String> statements){
+        for(String statement :  statements){
+            executeSql(statement);
+        }
+        StreamGraph streamGraph = environment.getStreamGraph();
+        JSONGenerator jsonGenerator = new JSONGenerator(streamGraph);
+        String json = jsonGenerator.getJSON();
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode objectNode =mapper.createObjectNode();
+        try {
+            objectNode = (ObjectNode) mapper.readTree(json);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }finally {
+            return objectNode;
+        }
+    }
+
     public JobPlanInfo getJobPlanInfo(List<String> statements){
         return stEnvironment.getJobPlanInfo(statements);
+    }
+
+    public JobPlanInfo getJobPlanInfoFromDataStream(List<String> statements){
+        for(String statement :  statements){
+            executeSql(statement);
+        }
+        StreamGraph streamGraph = environment.getStreamGraph();
+        return new JobPlanInfo(JsonPlanGenerator.generatePlan(streamGraph.getJobGraph()));
     }
 
     public void registerFunction(String name, ScalarFunction function){

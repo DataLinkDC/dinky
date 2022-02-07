@@ -52,6 +52,7 @@ const SimpleTaskForm: React.FC<UpdateFormProps> = (props) => {
         >
           <Select defaultValue={DIALECT.FLINKSQL} value={DIALECT.FLINKSQL}>
             <Option value={DIALECT.FLINKSQL}>{DIALECT.FLINKSQL}</Option>
+            <Option value={DIALECT.FLINKJAR}>{DIALECT.FLINKJAR}</Option>
             <Option value={DIALECT.FLINKSQLENV}>{DIALECT.FLINKSQLENV}</Option>
             <Option value={DIALECT.MYSQL}>{DIALECT.MYSQL}</Option>
             <Option value={DIALECT.ORACLE}>{DIALECT.ORACLE}</Option>

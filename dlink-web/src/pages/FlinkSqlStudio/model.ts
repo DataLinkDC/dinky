@@ -91,7 +91,6 @@ export type TaskType = {
   useChangeLog: boolean;
   useAutoCancel: boolean;
   useSession: boolean;
-  useRemote: boolean;
 };
 
 export type ConsoleType = {
@@ -125,7 +124,6 @@ export type SessionType = {
   session?: string;
   sessionConfig?: {
     type?: string;
-    useRemote?: boolean;
     clusterId?: number;
     clusterName?: string;
     address?: string;
@@ -189,6 +187,7 @@ export type ModelType = {
     saveDataBase: Reducer<StateType>;
     saveEnv: Reducer<StateType>;
     saveChart: Reducer<StateType>;
+    changeTaskStep: Reducer<StateType>;
   };
 };
 
@@ -487,6 +486,23 @@ const Model: ModelType = {
           newTabs.panes[i].console.chart = payload;
           newCurrent = newTabs.panes[i];
           break;
+        }
+      }
+      return {
+        ...state,
+        current: {...newCurrent},
+        tabs: {...newTabs},
+      };
+    },
+    changeTaskStep(state, {payload}) {
+      const newTabs = state.tabs;
+      let newCurrent = state.current;
+      for (let i = 0; i < newTabs.panes.length; i++) {
+        if (newTabs.panes[i].task.id == payload.id) {
+          newTabs.panes[i].task.step = payload.step;
+          if(newCurrent.key == newTabs.panes[i].key){
+            newCurrent = newTabs.panes[i];
+          }
         }
       }
       return {

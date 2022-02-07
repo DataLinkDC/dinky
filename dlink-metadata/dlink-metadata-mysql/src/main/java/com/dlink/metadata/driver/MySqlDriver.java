@@ -9,7 +9,9 @@ import com.dlink.model.Column;
 import com.dlink.model.Table;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * MysqlDriver
@@ -83,4 +85,13 @@ public class MySqlDriver extends AbstractJdbcDriver {
         return sb.toString();
     }
 
+    @Override
+    public Map<String,String> getFlinkColumnTypeConversion(){
+        HashMap<String,String> map = new HashMap<>();
+        map.put("varchar","STRING");
+        map.put("text","STRING");
+        map.put("int","INT");
+        map.put("datetime","TIMESTAMP");
+        return map;
+    }
 }

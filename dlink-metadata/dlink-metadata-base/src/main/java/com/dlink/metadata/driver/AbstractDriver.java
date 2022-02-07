@@ -46,4 +46,5 @@ public abstract class AbstractDriver implements Driver {
     public boolean existTable(Table table){
         return listTables(table.getSchema()).stream().anyMatch(tableItem -> Asserts.isEquals(tableItem.getName(),table.getName()));
     }
+
 }

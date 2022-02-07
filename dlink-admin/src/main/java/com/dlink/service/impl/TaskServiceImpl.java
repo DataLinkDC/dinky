@@ -7,6 +7,7 @@ import com.dlink.assertion.Tips;
 import com.dlink.config.Dialect;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.dto.SqlDTO;
+import com.dlink.exception.BusException;
 import com.dlink.gateway.GatewayType;
 import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.job.JobConfig;
@@ -65,15 +66,15 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     public JobResult submitByTaskId(Integer id) {
         Task task = this.getTaskInfoById(id);
         Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
-        if(Dialect.isSql(task.getDialect())){
+        if (Dialect.isSql(task.getDialect())) {
             return executeCommonSql(SqlDTO.build(task.getStatement(),
-                    task.getDatabaseId(),null));
+                    task.getDatabaseId(), null));
         }
         JobConfig config = buildJobConfig(task);
         JobManager jobManager = JobManager.build(config);
-        if(!config.isJarTask()) {
+        if (!config.isJarTask()) {
             return jobManager.executeSql(task.getStatement());
-        }else{
+        } else {
             return jobManager.executeJar();
         }
     }
@@ -82,36 +83,32 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         JobResult result = new JobResult();
         result.setStatement(sqlDTO.getStatement());
         result.setStartTime(LocalDateTime.now());
-        if(Asserts.isNull(sqlDTO.getDatabaseId())){
+        if (Asserts.isNull(sqlDTO.getDatabaseId())) {
             result.setSuccess(false);
             result.setError("请指定数据源");
             result.setEndTime(LocalDateTime.now());
             return result;
-        }else{
+        } else {
             DataBase dataBase = dataBaseService.getById(sqlDTO.getDatabaseId());
-            if(Asserts.isNull(dataBase)){
+            if (Asserts.isNull(dataBase)) {
                 result.setSuccess(false);
                 result.setError("数据源不存在");
                 result.setEndTime(LocalDateTime.now());
                 return result;
             }
             Driver driver = Driver.build(dataBase.getDriverConfig()).connect();
-            JdbcSelectResult selectResult = driver.executeSql(sqlDTO.getStatement(),sqlDTO.getMaxRowNum());
+            JdbcSelectResult selectResult = driver.executeSql(sqlDTO.getStatement(), sqlDTO.getMaxRowNum());
             driver.close();
             result.setResult(selectResult);
-            if(selectResult.isSuccess()){
+            if (selectResult.isSuccess()) {
                 result.setSuccess(true);
-            }else{
+            } else {
                 result.setSuccess(false);
                 result.setError(selectResult.getError());
             }
             result.setEndTime(LocalDateTime.now());
             return result;
         }
-    }
-
-    private boolean isJarTask(Task task){
-        return (GatewayType.YARN_APPLICATION.equalsValue(task.getType())||GatewayType.KUBERNETES_APPLICATION.equalsValue(task.getType()))&&Asserts.isNotNull(task.getJarId());
     }
 
     @Override
@@ -136,12 +133,22 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public boolean saveOrUpdateTask(Task task) {
-        if(Asserts.isNotNullString(task.getDialect()) && Dialect.JAVA.equalsVal(task.getDialect())
-        && Asserts.isNotNullString(task.getStatement()) ){
+        // to compiler java udf
+        if (Asserts.isNotNullString(task.getDialect()) && Dialect.JAVA.equalsVal(task.getDialect())
+                && Asserts.isNotNullString(task.getStatement())) {
             CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(task.getStatement());
             task.setSavePointPath(compiler.getFullClassName());
         }
+        // if modify task else create task
         if (task.getId() != null) {
+            Task taskInfo = getById(task.getId());
+            Assert.check(taskInfo);
+            if (JobLifeCycle.RELEASE.equalsValue(taskInfo.getStep()) ||
+                    JobLifeCycle.ONLINE.equalsValue(taskInfo.getStep()) ||
+                    JobLifeCycle.CANCEL.equalsValue(taskInfo.getStep())) {
+                throw new BusException("该作业已" + JobLifeCycle.get(taskInfo.getStep()).getLabel() + "，禁止修改！");
+            }
+            task.setStep(JobLifeCycle.DEVELOP.getValue());
             this.updateById(task);
             if (task.getStatement() != null) {
                 Statement statement = new Statement();
@@ -150,6 +157,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 statementService.updateById(statement);
             }
         } else {
+            task.setStep(JobLifeCycle.CREATE.getValue());
             if (task.getCheckPoint() == null) {
                 task.setCheckPoint(0);
             }
@@ -173,21 +181,21 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public List<Task> listFlinkSQLEnv() {
-        return this.list(new QueryWrapper<Task>().eq("dialect", Dialect.FLINKSQLENV).eq("enabled",1));
+        return this.list(new QueryWrapper<Task>().eq("dialect", Dialect.FLINKSQLENV).eq("enabled", 1));
     }
 
     @Override
     public String exportSql(Integer id) {
         Task task = getTaskInfoById(id);
         Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
-        if(Dialect.isSql(task.getDialect())){
+        if (Dialect.isSql(task.getDialect())) {
             return task.getStatement();
         }
         JobConfig config = buildJobConfig(task);
         JobManager jobManager = JobManager.build(config);
-        if(!config.isJarTask()) {
+        if (!config.isJarTask()) {
             return jobManager.exportSql(task.getStatement());
-        }else{
+        } else {
             return "";
         }
     }
@@ -200,30 +208,93 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         return task;
     }
 
-    private JobConfig buildJobConfig(Task task){
-        boolean isJarTask = isJarTask(task);
-        if(!isJarTask&&Asserts.isNotNull(task.getEnvId())&&task.getEnvId()!=0){
+    @Override
+    public boolean releaseTask(Integer id) {
+        Task task = getById(id);
+        Assert.check(task);
+        if (JobLifeCycle.DEVELOP.equalsValue(task.getStep())) {
+            task.setStep(JobLifeCycle.RELEASE.getValue());
+            return updateById(task);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean developTask(Integer id) {
+        Task task = getById(id);
+        Assert.check(task);
+        if (JobLifeCycle.RELEASE.equalsValue(task.getStep())) {
+            task.setStep(JobLifeCycle.DEVELOP.getValue());
+            return updateById(task);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onLineTask(Integer id) {
+        Task task = getById(id);
+        Assert.check(task);
+        if (JobLifeCycle.RELEASE.equalsValue(task.getStep())) {
+            task.setStep(JobLifeCycle.ONLINE.getValue());
+            return updateById(task);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean offLineTask(Integer id) {
+        Task task = getById(id);
+        Assert.check(task);
+        if (JobLifeCycle.ONLINE.equalsValue(task.getStep())) {
+            task.setStep(JobLifeCycle.RELEASE.getValue());
+            return updateById(task);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean cancelTask(Integer id) {
+        Task task = getById(id);
+        Assert.check(task);
+        if (JobLifeCycle.ONLINE != JobLifeCycle.get(task.getStep())) {
+            task.setStep(JobLifeCycle.CANCEL.getValue());
+            return updateById(task);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean recoveryTask(Integer id) {
+        Task task = getById(id);
+        Assert.check(task);
+        if (JobLifeCycle.CANCEL == JobLifeCycle.get(task.getStep())) {
+            task.setStep(JobLifeCycle.DEVELOP.getValue());
+            return updateById(task);
+        }
+        return false;
+    }
+
+    private JobConfig buildJobConfig(Task task) {
+        boolean isJarTask = Dialect.FLINKJAR.equalsVal(task.getDialect());
+        if (!isJarTask && Asserts.isNotNull(task.getEnvId()) && task.getEnvId() != 0) {
             Task envTask = getTaskInfoById(task.getEnvId());
-            if(Asserts.isNotNull(envTask)&&Asserts.isNotNullString(envTask.getStatement())) {
+            if (Asserts.isNotNull(envTask) && Asserts.isNotNullString(envTask.getStatement())) {
                 task.setStatement(envTask.getStatement() + "\r\n" + task.getStatement());
             }
         }
         JobConfig config = task.buildSubmitConfig();
         config.setJarTask(isJarTask);
         if (!JobManager.useGateway(config.getType())) {
-            if(GatewayType.LOCAL.equalsValue(config.getType())){
-                config.setUseRemote(false);
-            }
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), task.getClusterId()));
         } else {
             Map<String, Object> gatewayConfig = clusterConfigurationService.getGatewayConfig(task.getClusterConfigurationId());
-            if (GatewayType.YARN_APPLICATION.equalsValue(config.getType())||GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType())) {
-                if(!isJarTask) {
+            if (GatewayType.YARN_APPLICATION.equalsValue(config.getType()) || GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType())) {
+                if (!isJarTask) {
                     SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
                     gatewayConfig.put("userJarPath", systemConfiguration.getSqlSubmitJarPath());
                     gatewayConfig.put("userJarParas", systemConfiguration.getSqlSubmitJarParas() + buildParas(config.getTaskId()));
                     gatewayConfig.put("userJarMainAppClass", systemConfiguration.getSqlSubmitJarMainAppClass());
-                }else{
+                } else {
                     Jar jar = jarService.getById(task.getJarId());
                     Assert.check(jar);
                     gatewayConfig.put("userJarPath", jar.getPath());

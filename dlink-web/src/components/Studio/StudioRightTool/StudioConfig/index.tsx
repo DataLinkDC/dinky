@@ -1,18 +1,15 @@
 import {connect} from "umi";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {
-  Form, InputNumber,Switch, Row, Col, Tooltip, Button, Badge,
-  Typography
+  Form, InputNumber,Switch, Row, Col, Tooltip, Button,
 } from "antd";
 import {InfoCircleOutlined,MinusSquareOutlined} from "@ant-design/icons";
 import styles from "./index.less";
 import { Scrollbars } from 'react-custom-scrollbars';
 
-const { Text } = Typography;
-
 const StudioConfig = (props: any) => {
 
-  const {current,form,dispatch,tabs,currentSession,toolHeight} = props;
+  const {current,form,dispatch,tabs,toolHeight} = props;
 
   form.setFieldsValue(current.task);
 
@@ -94,16 +91,6 @@ const StudioConfig = (props: any) => {
           </Form.Item>
         </Col>
       </Row>
-      <Form.Item
-        label="远程执行" className={styles.form_item} name="useRemote" valuePropName="checked"
-        tooltip={{ title: '开启远程执行，将在远程集群进行任务执行', icon: <InfoCircleOutlined /> }}
-      >
-        {
-          currentSession.session?
-            (currentSession.sessionConfig&&currentSession.sessionConfig.useRemote?(<><Badge status="success"/><Text type="success">已启用</Text></>):(<><Badge status="error"/><Text type="danger">已禁用</Text></>)
-            ):(<Switch checkedChildren="启用" unCheckedChildren="禁用"/>)
-        }
-      </Form.Item>
     </Form>
       </Scrollbars>
       </>

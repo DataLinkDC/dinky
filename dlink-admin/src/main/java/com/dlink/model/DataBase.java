@@ -38,6 +38,8 @@ public class DataBase extends SuperEntity {
 
     private String note;
 
+    private String flinkConfig;
+
     private String dbVersion;
 
     private boolean status;

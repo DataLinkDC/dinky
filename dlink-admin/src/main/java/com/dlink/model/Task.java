@@ -62,6 +62,8 @@ public class Task extends SuperEntity{
 
     private String note;
 
+    private Integer step;
+
     @TableField(exist = false)
     private String statement;
 

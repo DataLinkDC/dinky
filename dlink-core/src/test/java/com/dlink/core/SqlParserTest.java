@@ -60,4 +60,22 @@ public class SqlParserTest {
         sql=sql.replaceAll("--([^'\r\n]{0,}('[^'\r\n]{0,}'){0,1}[^'\r\n]{0,}){0,}","").trim();
         System.out.println(sql);
     }
+
+    @Test
+    public void createCDCSourceTest(){
+        String sql = "EXECUTE CDCSOURCE demo WITH (\n" +
+                " 'hostname'='127.0.0.1',\n" +
+                " 'port'='3306',\n" +
+                " 'password'='dlink',\n" +
+                " 'hostname'='dlink',\n" +
+                " 'checkpoint'='3000',\n" +
+                " 'parallelism'='1',\n" +
+                " 'database'='dlink:test',\n" +
+                " 'table'='',\n" +
+                " 'topic'='dlinkcdc',\n" +
+                " 'brokers'='127.0.0.1:9092'\n" +
+                ");";
+        Map<String,List<String>> lists = SingleSqlParserFactory.generateParser(sql);
+        System.out.println(lists.toString());
+    }
 }

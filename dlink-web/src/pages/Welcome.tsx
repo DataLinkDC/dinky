@@ -635,6 +635,18 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>扩展 Doris、SqlServer、Oracle 数据源注册、元数据、查询和执行</Link>
                 </li>
+                <li>
+                  <Link>新增 元数据生成 FlinkSQL 和 SQL</Link>
+                </li>
+                <li>
+                  <Link>新增 CDCSOURCE 多源合并任务语法支持</Link>
+                </li>
+                <li>
+                  <Link>新增 作业生命周期管理</Link>
+                </li>
+                <li>
+                  <Link>新增 FlinkJar Dialect 的管理</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

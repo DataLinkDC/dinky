@@ -60,6 +60,7 @@ public class Explainer {
     public JobParam pretreatStatements(String[] statements) {
         List<StatementParam> ddl = new ArrayList<>();
         List<StatementParam> trans = new ArrayList<>();
+        List<StatementParam> execute = new ArrayList<>();
         for (String item : statements) {
             String statement = executor.pretreatStatement(item);
             if (statement.isEmpty()) {
@@ -72,11 +73,13 @@ public class Explainer {
                 if (!useStatementSet) {
                     break;
                 }
+            } else if(operationType.equals(SqlType.EXECUTE)){
+                execute.add(new StatementParam(statement, operationType));
             } else {
                 ddl.add(new StatementParam(statement, operationType));
             }
         }
-        return new JobParam(ddl, trans);
+        return new JobParam(ddl, trans, execute);
     }
 
     @Deprecated
@@ -206,23 +209,63 @@ public class Explainer {
                 }
             }
         }
+        for (StatementParam item : jobParam.getExecute()) {
+            SqlExplainResult record = new SqlExplainResult();
+            try {
+                record = executor.explainSqlRecord(item.getValue());
+                if (Asserts.isNull(record)) {
+                    record = new SqlExplainResult();
+                    executor.getEnvironment().getStreamGraph();
+                }else {
+                    executor.executeSql(item.getValue());
+                }
+                record.setType("DATASTREAM");
+                record.setParseTrue(true);
+            }catch (Exception e){
+                e.printStackTrace();
+                record.setError(e.getMessage());
+                record.setExplainTrue(false);
+                record.setExplainTime(LocalDateTime.now());
+                record.setSql(item.getValue());
+                record.setIndex(index);
+                sqlExplainRecords.add(record);
+                correct = false;
+                break;
+            }
+            record.setExplainTrue(true);
+            record.setExplainTime(LocalDateTime.now());
+            record.setSql(item.getValue());
+            record.setIndex(index++);
+            sqlExplainRecords.add(record);
+        }
         return new ExplainResult(correct,sqlExplainRecords.size(),sqlExplainRecords);
     }
 
     public ObjectNode getStreamGraph(String statement){
         List<SqlExplainResult> sqlExplainRecords = explainSql(statement).getSqlExplainResults();
-        List<String> strPlans = new ArrayList<>();
+        List<String> sqlPlans = new ArrayList<>();
+        List<String> datastreamPlans = new ArrayList<>();
         for (SqlExplainResult item : sqlExplainRecords) {
             if (Asserts.isNotNull(item.getType())
                     && item.getType().contains(FlinkSQLConstant.DML)) {
                 String[] statements = SqlUtil.getStatements(item.getSql(),sqlSeparator);
                 for(String str : statements){
-                    strPlans.add(str);
+                    sqlPlans.add(str);
+                }
+                continue;
+            }
+            if(Asserts.isNotNull(item.getType())
+                    && item.getType().equals(FlinkSQLConstant.DATASTREAM)){
+                String[] statements = SqlUtil.getStatements(item.getSql(),sqlSeparator);
+                for(String str : statements){
+                    datastreamPlans.add(str);
                 }
             }
         }
-        if(strPlans.size()>0){
-            return executor.getStreamGraph(strPlans);
+        if(sqlPlans.size()>0){
+            return executor.getStreamGraph(sqlPlans);
+        }else if(datastreamPlans.size()>0){
+            return executor.getStreamGraphFromDataStream(sqlPlans);
         }else{
             return mapper.createObjectNode();
         }
@@ -230,18 +273,29 @@ public class Explainer {
 
     public JobPlanInfo getJobPlanInfo(String statement){
         List<SqlExplainResult> sqlExplainRecords = explainSql(statement).getSqlExplainResults();
-        List<String> strPlans = new ArrayList<>();
+        List<String> sqlPlans = new ArrayList<>();
+        List<String> datastreamPlans = new ArrayList<>();
         for (SqlExplainResult item : sqlExplainRecords) {
             if (Asserts.isNotNull(item.getType())
                     && item.getType().contains(FlinkSQLConstant.DML)) {
                 String[] statements = SqlUtil.getStatements(item.getSql(),sqlSeparator);
                 for(String str : statements){
-                    strPlans.add(str);
+                    sqlPlans.add(str);
+                }
+                continue;
+            }
+            if(Asserts.isNotNull(item.getType())
+                    && item.getType().equals(FlinkSQLConstant.DATASTREAM)){
+                String[] statements = SqlUtil.getStatements(item.getSql(),sqlSeparator);
+                for(String str : statements){
+                    datastreamPlans.add(str);
                 }
             }
         }
-        if(strPlans.size()>0){
-            return executor.getJobPlanInfo(strPlans);
+        if(sqlPlans.size()>0){
+            return executor.getJobPlanInfo(sqlPlans);
+        }else if(datastreamPlans.size()>0){
+            return executor.getJobPlanInfoFromDataStream(datastreamPlans);
         }else{
             return new JobPlanInfo("");
         }

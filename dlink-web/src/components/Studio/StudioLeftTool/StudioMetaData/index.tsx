@@ -10,7 +10,7 @@ import {
   TableOutlined,
   DatabaseOutlined,
   DownOutlined,
-  OrderedListOutlined, FireOutlined
+  OrderedListOutlined, CodepenOutlined
 } from '@ant-design/icons';
 import React from "react";
 import {showMetaDataTable} from "@/components/Studio/StudioEvent/DDL";
@@ -21,6 +21,7 @@ import {
 import Columns from "@/pages/DataBase/Columns";
 import Tables from "@/pages/DataBase/Tables";
 import {TreeDataNode} from "@/components/Studio/StudioTree/Function";
+import Generation from "@/pages/DataBase/Generation";
 
 const { DirectoryTree } = Tree;
 const {Option} = Select;
@@ -137,13 +138,24 @@ const StudioMetaData = (props: any) => {
           <TabPane
             tab={
               <span>
-          <OrderedListOutlined />
+          <CodepenOutlined />
           字段信息
         </span>
             }
             key="columnInfo"
           >
             {row? <Columns dbId={databaseId} schema={row.schema} table={row.table}/> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+          </TabPane>
+          <TabPane
+            tab={
+              <span>
+          <OrderedListOutlined />
+          SQL 生成
+        </span>
+            }
+            key="sqlGeneration"
+          >
+            {row? <Generation dbId={databaseId} schema={row.schema} table={row.table}/> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
           </TabPane>
         </Tabs>
         </ModalForm>

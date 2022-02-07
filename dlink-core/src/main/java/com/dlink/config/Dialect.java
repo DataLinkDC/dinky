@@ -10,7 +10,7 @@ import com.dlink.assertion.Asserts;
  **/
 public enum  Dialect {
 
-    FLINKSQL("FlinkSql"),FLINKSQLENV("FlinkSqlEnv"),SQL("Sql"),JAVA("Java"),
+    FLINKSQL("FlinkSql"),FLINKJAR("FlinkJar"),FLINKSQLENV("FlinkSqlEnv"),SQL("Sql"),JAVA("Java"),
     MYSQL("Mysql"),ORACLE("Oracle"),SQLSERVER("SqlServer"),POSTGRESQL("PostGreSql"),CLICKHOUSE("ClickHouse"),
     DORIS("Doris");
 

@@ -93,6 +93,7 @@ CREATE TABLE `dlink_database`  (
 	`username` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '用户名',
 	`password` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '密码',
 	`note` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '注释',
+	`flink_config` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'Flink配置',
 	`db_version` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '版本，如oracle的11g，hbase的2.2.3',
 	`status` tinyint(1) NULL DEFAULT 0 COMMENT '状态',
 	`health_time` datetime(0) NULL DEFAULT NULL COMMENT '最近健康时间',
@@ -260,6 +261,7 @@ CREATE TABLE `dlink_task`  (
 	`env_id` int(11) NULL DEFAULT NULL COMMENT '环境ID',
 	`config_json` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '配置JSON',
 	`note` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '注释',
+	`step` int(11) NULL DEFAULT NULL COMMENT '作业生命周期',
 	`enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT '是否启用',
 	`create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
 	`update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
@@ -297,5 +299,25 @@ CREATE TABLE `dlink_user`  (
 )  ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 INSERT INTO `dlink_user`(`id`, `username`, `password`, `nickname`, `worknum`, `avatar`, `mobile`, `enabled`, `is_delete`, `create_time`, `update_time`) VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Admin', NULL, NULL, NULL, 1, 0, '2021-11-28 17:19:27', '2021-11-28 17:19:31');
 
+-- ----------------------------
+-- Table structure for dlink_job_instance
+-- ----------------------------
+DROP TABLE IF EXISTS `dlink_job_instance`;
+create table dlink_job_instance
+(
+    id                   int auto_increment comment '自增主键'
+        primary key,
+    name                 varchar(50) null comment '作业实例名',
+    task_id              int         null comment 'taskID',
+    cluster_id           int         null comment '集群ID',
+    jid                  varchar(50) null comment 'FlinkJobId',
+    status               int         null comment '实例状态',
+    history_id           int         null comment '提交历史ID',
+    create_time          datetime    null comment '创建时间',
+    update_time          datetime    null comment '更新时间',
+    finish_time          int         null comment '完成时间',
+    error                text        null comment '异常日志',
+    failed_restart_count int         null comment '重启次数'
+) comment '作业实例';
 
 SET FOREIGN_KEY_CHECKS = 1;

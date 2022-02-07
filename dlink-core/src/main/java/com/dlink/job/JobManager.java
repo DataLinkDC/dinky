@@ -30,6 +30,7 @@ import com.dlink.trans.Operations;
 import com.dlink.utils.SqlUtil;
 import com.dlink.utils.UDFUtil;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.flink.api.common.JobExecutionResult;
 import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.DeploymentOptions;
 import org.apache.flink.configuration.PipelineOptions;
@@ -37,6 +38,7 @@ import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
 import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.apache.flink.streaming.api.environment.ExecutionCheckpointingOptions;
+import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.yarn.configuration.YarnConfigOptions;
 import org.slf4j.Logger;
@@ -315,6 +317,48 @@ public class JobManager {
                                 job.setResult(result);
                             }
                         }
+                    }
+                }
+            }
+            if (jobParam.getExecute().size() > 0) {
+                if (useGateway) {
+                    for (StatementParam item : jobParam.getExecute()) {
+                        executor.executeSql(item.getValue());
+                        if(!useStatementSet) {
+                            break;
+                        }
+                    }
+                    StreamGraph streamGraph = executor.getEnvironment().getStreamGraph();
+                    streamGraph.setJobName(config.getJobName());
+                    JobGraph jobGraph = streamGraph.getJobGraph();
+                    GatewayResult gatewayResult = null;
+                    if (GatewayType.YARN_APPLICATION.equals(runMode)||GatewayType.KUBERNETES_APPLICATION.equals(runMode)) {
+                        config.addGatewayConfig(executor.getSetConfig());
+                        gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
+                    } else {
+                        config.addGatewayConfig(executor.getSetConfig());
+                        if(Asserts.isNotNullString(config.getSavePointPath())) {
+                            jobGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(config.getSavePointPath()));
+                        }
+                        gatewayResult = Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);
+                    }
+                    job.setResult(InsertResult.success(gatewayResult.getAppId()));
+                    job.setJobId(gatewayResult.getAppId());
+                    job.setJobManagerAddress(formatAddress(gatewayResult.getWebURL()));
+                } else {
+                    for (StatementParam item : jobParam.getExecute()) {
+                        executor.executeSql(item.getValue());
+                        if(!useStatementSet) {
+                            break;
+                        }
+                    }
+                    JobExecutionResult jobExecutionResult = executor.getEnvironment().execute(config.getJobName());
+                    if (jobExecutionResult.isJobExecutionResult()) {
+                        job.setJobId(jobExecutionResult.getJobID().toHexString());
+                    }
+                    if (config.isUseResult()) {
+                        IResult result = ResultBuilder.build(SqlType.EXECUTE, config.getMaxRowNum(), config.isUseChangeLog(),config.isUseAutoCancel()).getResult(null);
+                        job.setResult(result);
                     }
                 }
             }
