@@ -8,7 +8,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
  * @author wenmo
  * @since 2021/5/25 13:48
  **/
-public class LocalStreamExecutor extends Executor {
+public class LocalStreamExecutor extends AbstractStreamExecutor {
 
     public LocalStreamExecutor(ExecutorSetting executorSetting) {
         this.executorSetting = executorSetting;
@@ -16,4 +16,8 @@ public class LocalStreamExecutor extends Executor {
         init();
     }
 
+    @Override
+    CustomTableEnvironment createCustomTableEnvironment() {
+        return CustomTableEnvironmentImpl.create(environment);
+    }
 }

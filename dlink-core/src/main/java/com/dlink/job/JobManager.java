@@ -328,7 +328,7 @@ public class JobManager {
                             break;
                         }
                     }
-                    StreamGraph streamGraph = executor.getEnvironment().getStreamGraph();
+                    StreamGraph streamGraph = executor.getStreamGraph();
                     streamGraph.setJobName(config.getJobName());
                     JobGraph jobGraph = streamGraph.getJobGraph();
                     GatewayResult gatewayResult = null;
@@ -352,7 +352,7 @@ public class JobManager {
                             break;
                         }
                     }
-                    JobExecutionResult jobExecutionResult = executor.getEnvironment().execute(config.getJobName());
+                    JobExecutionResult jobExecutionResult = executor.execute(config.getJobName());
                     if (jobExecutionResult.isJobExecutionResult()) {
                         job.setJobId(jobExecutionResult.getJobID().toHexString());
                     }

@@ -215,7 +215,7 @@ public class Explainer {
                 record = executor.explainSqlRecord(item.getValue());
                 if (Asserts.isNull(record)) {
                     record = new SqlExplainResult();
-                    executor.getEnvironment().getStreamGraph();
+                    executor.getStreamGraph();
                 }else {
                     executor.executeSql(item.getValue());
                 }

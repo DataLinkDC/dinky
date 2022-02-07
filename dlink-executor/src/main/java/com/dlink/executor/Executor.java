@@ -6,6 +6,8 @@ import com.dlink.result.SqlExplainResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.flink.api.common.ExecutionConfig;
+import org.apache.flink.api.common.JobExecutionResult;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.runtime.jobgraph.JobGraph;
@@ -33,7 +35,7 @@ import java.util.Map;
 public abstract class Executor {
 
     protected StreamExecutionEnvironment environment;
-    protected CustomTableEnvironmentImpl stEnvironment;
+    protected CustomTableEnvironment stEnvironment;
     protected EnvironmentSetting environmentSetting;
     protected ExecutorSetting executorSetting;
     protected Map<String,Object> setConfig = new HashMap<>();
@@ -62,23 +64,39 @@ public abstract class Executor {
     }
 
     public static Executor buildLocalExecutor(ExecutorSetting executorSetting){
-        return new LocalStreamExecutor(executorSetting);
+        if(executorSetting.isUseBatchModel()){
+            return new LocalBatchExecutor(executorSetting);
+        }else{
+            return new LocalStreamExecutor(executorSetting);
+        }
     }
 
     public static Executor buildAppStreamExecutor(ExecutorSetting executorSetting){
-        return new AppStreamExecutor(executorSetting);
+        if(executorSetting.isUseBatchModel()){
+            return new AppBatchExecutor(executorSetting);
+        }else{
+            return new AppStreamExecutor(executorSetting);
+        }
     }
 
     public static Executor buildRemoteExecutor(EnvironmentSetting environmentSetting,ExecutorSetting executorSetting){
         environmentSetting.setUseRemote(true);
-        return new RemoteStreamExecutor(environmentSetting,executorSetting);
+        if(executorSetting.isUseBatchModel()){
+            return new RemoteBatchExecutor(environmentSetting,executorSetting);
+        }else{
+            return new RemoteStreamExecutor(environmentSetting,executorSetting);
+        }
     }
+
+    public abstract ExecutionConfig getExecutionConfig();
+
+    public abstract StreamExecutionEnvironment getStreamExecutionEnvironment();
 
     public StreamExecutionEnvironment getEnvironment(){
         return environment;
     }
 
-    public CustomTableEnvironmentImpl getCustomTableEnvironmentImpl(){
+    public CustomTableEnvironment getCustomTableEnvironment(){
         return stEnvironment;
     }
 
@@ -108,35 +126,15 @@ public abstract class Executor {
         updateStreamExecutionEnvironment(executorSetting);
     }
 
-    private void initEnvironment(){
-        if(executorSetting.getCheckpoint()!=null&&executorSetting.getCheckpoint()>0){
-            environment.enableCheckpointing(executorSetting.getCheckpoint());
-        }
-        if(executorSetting.getParallelism()!=null&&executorSetting.getParallelism()>0){
-            environment.setParallelism(executorSetting.getParallelism());
-        }
-        if(executorSetting.getConfig()!=null) {
-            Configuration configuration = Configuration.fromMap(executorSetting.getConfig());
-            environment.getConfig().configure(configuration, null);
-        }
-    }
+    public abstract void initEnvironment();
 
-    private void updateEnvironment(ExecutorSetting executorSetting){
-        if(executorSetting.getCheckpoint()!=null&&executorSetting.getCheckpoint()>0){
-            environment.enableCheckpointing(executorSetting.getCheckpoint());
-        }
-        if(executorSetting.getParallelism()!=null&&executorSetting.getParallelism()>0){
-            environment.setParallelism(executorSetting.getParallelism());
-        }
-        if(executorSetting.getConfig()!=null) {
-            Configuration configuration = Configuration.fromMap(executorSetting.getConfig());
-            environment.getConfig().configure(configuration, null);
-        }
-    }
+    public abstract void updateEnvironment(ExecutorSetting executorSetting);
+
+    abstract CustomTableEnvironment createCustomTableEnvironment();
 
     private void initStreamExecutionEnvironment(){
         useSqlFragment = executorSetting.isUseSqlFragment();
-        stEnvironment = CustomTableEnvironmentImpl.create(environment);
+        stEnvironment = createCustomTableEnvironment();
         if(executorSetting.getJobName()!=null&&!"".equals(executorSetting.getJobName())){
             stEnvironment.getConfig().getConfiguration().setString(PipelineOptions.NAME.key(), executorSetting.getJobName());
         }
@@ -164,7 +162,7 @@ public abstract class Executor {
 
     private void copyCatalog(){
         String[] catalogs = stEnvironment.listCatalogs();
-        CustomTableEnvironmentImpl newstEnvironment = CustomTableEnvironmentImpl.create(environment);
+        CustomTableEnvironment newstEnvironment = createCustomTableEnvironment();
         for (int i = 0; i < catalogs.length; i++) {
             if(stEnvironment.getCatalog(catalogs[i]).isPresent()) {
                 newstEnvironment.getCatalogManager().unregisterCatalog(catalogs[i],true);
@@ -181,6 +179,8 @@ public abstract class Executor {
     private boolean pretreatExecute(String statement){
         return !FlinkInterceptor.build(this,statement);
     }
+
+    public abstract JobExecutionResult execute(String jobName) throws Exception ;
 
     public TableResult executeSql(String statement){
         statement = pretreatStatement(statement);
@@ -233,11 +233,13 @@ public abstract class Executor {
         }
     }
 
+    public abstract StreamGraph getStreamGraph();
+
     public ObjectNode getStreamGraphFromDataStream(List<String> statements){
         for(String statement :  statements){
             executeSql(statement);
         }
-        StreamGraph streamGraph = environment.getStreamGraph();
+        StreamGraph streamGraph = getStreamGraph();
         JSONGenerator jsonGenerator = new JSONGenerator(streamGraph);
         String json = jsonGenerator.getJSON();
         ObjectMapper mapper = new ObjectMapper();
@@ -259,17 +261,17 @@ public abstract class Executor {
         for(String statement :  statements){
             executeSql(statement);
         }
-        StreamGraph streamGraph = environment.getStreamGraph();
+        StreamGraph streamGraph = getStreamGraph();
         return new JobPlanInfo(JsonPlanGenerator.generatePlan(streamGraph.getJobGraph()));
     }
 
-    public void registerFunction(String name, ScalarFunction function){
+    /*public void registerFunction(String name, ScalarFunction function){
         stEnvironment.registerFunction(name,function);
     }
 
     public void createTemporarySystemFunction(String name, Class<? extends UserDefinedFunction> var2){
         stEnvironment.createTemporarySystemFunction(name,var2);
-    }
+    }*/
 
     public CatalogManager getCatalogManager(){
         return stEnvironment.getCatalogManager();
@@ -307,7 +309,5 @@ public abstract class Executor {
         executeStatementSet(statements);
     }
 
-    public boolean parseAndLoadConfiguration(String statement){
-        return stEnvironment.parseAndLoadConfiguration(statement,environment,setConfig);
-    }
+    public abstract boolean parseAndLoadConfiguration(String statement);
 }

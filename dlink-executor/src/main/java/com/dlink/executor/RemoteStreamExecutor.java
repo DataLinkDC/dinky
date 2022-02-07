@@ -8,7 +8,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
  * @author wenmo
  * @since 2021/5/25 14:05
  **/
-public class RemoteStreamExecutor extends Executor {
+public class RemoteStreamExecutor extends AbstractStreamExecutor {
 
     public RemoteStreamExecutor(EnvironmentSetting environmentSetting,ExecutorSetting executorSetting) {
         this.environmentSetting = environmentSetting;
@@ -17,4 +17,8 @@ public class RemoteStreamExecutor extends Executor {
         init();
     }
 
+    @Override
+    CustomTableEnvironment createCustomTableEnvironment() {
+        return CustomTableEnvironmentImpl.create(environment);
+    }
 }

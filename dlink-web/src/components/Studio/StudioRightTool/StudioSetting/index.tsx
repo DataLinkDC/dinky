@@ -14,7 +14,7 @@ const {Text} = Typography;
 
 const StudioSetting = (props: any) => {
 
-  const {sessionCluster, clusterConfiguration, current, form, dispatch, tabs, currentSession, jars,env, toolHeight} = props;
+  const {sessionCluster, clusterConfiguration, current, form, dispatch, tabs, currentSession, env, toolHeight} = props;
 
   const getClusterOptions = () => {
     const itemList = [];
@@ -203,6 +203,17 @@ const StudioSetting = (props: any) => {
                   title: '【增强特性】 开启语句集机制，将把多个 Insert 语句合成一个 JobGraph 再进行提交，Select 语句无效',
                   icon: <InfoCircleOutlined/>
                 }}
+              >
+                <Switch checkedChildren="启用" unCheckedChildren="禁用"
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={12}>
+              <Form.Item
+                label="批模式" className={styles.form_item} name="batchModel" valuePropName="checked"
+                tooltip={{title: '使用批模式', icon: <InfoCircleOutlined/>}}
               >
                 <Switch checkedChildren="启用" unCheckedChildren="禁用"
                 />
