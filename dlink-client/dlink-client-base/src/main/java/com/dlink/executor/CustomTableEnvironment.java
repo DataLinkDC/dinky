@@ -2,9 +2,9 @@ package com.dlink.executor;
 
 import com.dlink.result.SqlExplainResult;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.apache.flink.api.common.ExecutionConfig;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.*;
 import org.apache.flink.table.catalog.Catalog;
@@ -36,7 +36,7 @@ public interface CustomTableEnvironment {
 
     Table sqlQuery(String statement);
 
-    void registerTable(String name,Table table);
+    void registerTable(String name, Table table);
 
     String explainSql(String statement, ExplainDetail... extraDetails);
 
@@ -50,7 +50,7 @@ public interface CustomTableEnvironment {
 
     SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails);
 
-    boolean parseAndLoadConfiguration(String statement, ExecutionConfig config, Map<String,Object> setMap);
+    boolean parseAndLoadConfiguration(String statement, StreamExecutionEnvironment config, Map<String, Object> setMap);
 
     StatementSet createStatementSet();
 }
