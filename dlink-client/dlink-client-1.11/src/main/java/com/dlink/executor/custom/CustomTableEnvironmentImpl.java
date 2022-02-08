@@ -61,6 +61,24 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl {
         return create(executionEnvironment, settings, new TableConfig());
     }
 
+    public CustomTableEnvironmentImpl create( EnvironmentSettings settings, TableConfig tableConfig){
+        return  create(settings,new TableConfig());
+    }
+
+    public static CustomTableEnvironmentImpl create(EnvironmentSettings settings, TableConfig tableConfig) {
+        if (settings.isStreamingMode()) {
+            throw new TableException("StreamTableEnvironment can not run in batch mode for now, please use TableEnvironment.");
+        } else {
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            ModuleManager moduleManager = new ModuleManager();
+            CatalogManager catalogManager = CatalogManager.newBuilder().classLoader(classLoader).config(tableConfig.getConfiguration()).defaultCatalog(settings.getBuiltInCatalogName(), new GenericInMemoryCatalog(settings.getBuiltInCatalogName(), settings.getBuiltInDatabaseName())).executionConfig(executionEnvironment.getConfig()).build();
+            FunctionCatalog functionCatalog = new FunctionCatalog(tableConfig, catalogManager, moduleManager);
+            Map<String, String> plannerProperties = settings.toPlannerProperties();
+            Planner planner = ( ComponentFactoryService.find(PlannerFactory.class, plannerProperties)).create();
+            return new CustomTableEnvironmentImpl(catalogManager, moduleManager, tableConfig, functionCatalog, planner, settings.isStreamingMode(),classLoader);
+        }
+    }
+
     public static CustomTableEnvironmentImpl create(StreamExecutionEnvironment executionEnvironment, EnvironmentSettings settings, TableConfig tableConfig) {
         if (!settings.isStreamingMode()) {
             throw new TableException("StreamTableEnvironment can not run in batch mode for now, please use TableEnvironment.");
