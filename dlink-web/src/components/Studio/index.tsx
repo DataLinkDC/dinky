@@ -5,6 +5,7 @@ import {} from "@ant-design/icons";
 import StudioMenu from "./StudioMenu";
 import {Row, Col, Card, Form} from "antd";
 import StudioTabs from "./StudioTabs";
+import StudioHome from "./StudioHome";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import StudioConsole from "./StudioConsole";
 import StudioLeftTool from "./StudioLeftTool";
@@ -17,14 +18,9 @@ import {loadSettings} from "@/pages/Settings/function";
 import DraggleLayout from "@/components/DraggleLayout";
 import DraggleVerticalLayout from "@/components/DraggleLayout/DraggleVerticalLayout";
 
-type StudioProps = {
-  rightClickMenu: StateType['rightClickMenu'];
-  dispatch: any;
-};
+const Studio = (props: any) => {
 
-const Studio: React.FC<StudioProps> = (props) => {
-
-  const {rightClickMenu, toolHeight, toolLeftWidth,toolRightWidth, dispatch} = props;
+  const {isFullScreen,rightClickMenu, toolHeight, toolLeftWidth,toolRightWidth,dispatch} = props;
   const [form] = Form.useForm();
   const VIEW = {
     leftToolWidth: 300,
@@ -36,12 +32,12 @@ const Studio: React.FC<StudioProps> = (props) => {
     midMargin: 46,
   };
   const [size, setSize] = useState({
-    width: document.documentElement.clientWidth - 1,
+    width: document.documentElement.clientWidth,
     height: document.documentElement.clientHeight,
   });
   const onResize = useCallback(() => {
     setSize({
-      width: document.documentElement.clientWidth - 1,
+      width: document.documentElement.clientWidth,
       height: document.documentElement.clientHeight,
     })
   }, []);
@@ -54,15 +50,18 @@ const Studio: React.FC<StudioProps> = (props) => {
     };
   }, [onResize]);
 
-  loadSettings(dispatch);
-  getFillAllByVersion('', dispatch);
-  showCluster(dispatch);
-  showSessionCluster(dispatch);
-  showClusterConfiguration(dispatch);
-  showDataBase(dispatch);
-  listSession(dispatch);
-  showJars(dispatch);
-  showEnv(dispatch);
+  useEffect(() => {
+    loadSettings(dispatch);
+    getFillAllByVersion('', dispatch);
+    showCluster(dispatch);
+    showSessionCluster(dispatch);
+    showClusterConfiguration(dispatch);
+    showDataBase(dispatch);
+    listSession(dispatch);
+    showJars(dispatch);
+    showEnv(dispatch);
+    onResize();
+  }, []);
 
   const onClick = () => {
     if (rightClickMenu) {
@@ -75,7 +74,7 @@ const Studio: React.FC<StudioProps> = (props) => {
 
   return (
     <div onClick={onClick} style={{'margin': '-24px'}}>
-      <StudioMenu form={form}/>
+      <StudioMenu form={form} width={size.width} height={size.height}/>
       <Card bordered={false} className={styles.card} size="small" id="studio_card" style={{marginBottom: 0}}>
         <DraggleVerticalLayout
           containerWidth={size.width}
@@ -136,7 +135,7 @@ const Studio: React.FC<StudioProps> = (props) => {
                   }}/>
                 </Col>
                 <Col>
-                  <StudioTabs width={size.width - toolRightWidth - toolLeftWidth}/>
+                  {!isFullScreen?<StudioTabs width={size.width - toolRightWidth - toolLeftWidth}/>:undefined}
                 </Col>
               </DraggleLayout>
               <Col id='StudioRightTool' className={styles["vertical-tabs"]}>
@@ -151,11 +150,13 @@ const Studio: React.FC<StudioProps> = (props) => {
           </Row>
         </DraggleVerticalLayout>
       </Card>
+
     </div>
   )
 };
 
 export default connect(({Studio}: { Studio: StateType }) => ({
+  isFullScreen: Studio.isFullScreen,
   rightClickMenu: Studio.rightClickMenu,
   toolHeight: Studio.toolHeight,
   toolLeftWidth: Studio.toolLeftWidth,

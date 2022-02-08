@@ -19,6 +19,8 @@ import com.dlink.gateway.result.TestResult;
 import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.model.SystemConfiguration;
 import com.dlink.parser.SqlType;
+import com.dlink.pool.ClassEntity;
+import com.dlink.pool.ClassPool;
 import com.dlink.result.*;
 import com.dlink.session.ExecutorEntity;
 import com.dlink.session.SessionConfig;
@@ -26,13 +28,17 @@ import com.dlink.session.SessionInfo;
 import com.dlink.session.SessionPool;
 import com.dlink.trans.Operations;
 import com.dlink.utils.SqlUtil;
+import com.dlink.utils.UDFUtil;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.flink.api.common.JobExecutionResult;
 import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.DeploymentOptions;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
+import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.apache.flink.streaming.api.environment.ExecutionCheckpointingOptions;
+import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.yarn.configuration.YarnConfigOptions;
 import org.slf4j.Logger;
@@ -43,6 +49,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * JobManager
@@ -55,7 +63,6 @@ public class JobManager {
     private static final Logger logger = LoggerFactory.getLogger(JobManager.class);
 
     private JobHandler handler;
-    private Integer maxRowNum = 100;
     private EnvironmentSetting environmentSetting;
     private ExecutorSetting executorSetting;
     private JobConfig config;
@@ -249,6 +256,9 @@ public class JobManager {
                         gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
                     } else {
                         config.addGatewayConfig(executor.getSetConfig());
+                        if(Asserts.isNotNullString(config.getSavePointPath())) {
+                            jobGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(config.getSavePointPath()));
+                        }
                         gatewayResult = Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);
                     }
                     job.setResult(InsertResult.success(gatewayResult.getAppId()));
@@ -268,7 +278,7 @@ public class JobManager {
                             job.setJobId(tableResult.getJobClient().get().getJobID().toHexString());
                         }
                         if (config.isUseResult()) {
-                            IResult result = ResultBuilder.build(SqlType.INSERT, maxRowNum, "", true).getResult(tableResult);
+                            IResult result = ResultBuilder.build(SqlType.INSERT, config.getMaxRowNum(), config.isUseChangeLog(),config.isUseAutoCancel()).getResult(tableResult);
                             job.setResult(result);
                         }
                     }
@@ -286,6 +296,9 @@ public class JobManager {
                         gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
                     } else {
                         config.addGatewayConfig(executor.getSetConfig());
+                        if(Asserts.isNotNullString(config.getSavePointPath())) {
+                            jobGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(config.getSavePointPath()));
+                        }
                         gatewayResult = Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);
                     }
                     job.setResult(InsertResult.success(gatewayResult.getAppId()));
@@ -300,10 +313,52 @@ public class JobManager {
                                 job.setJobId(tableResult.getJobClient().get().getJobID().toHexString());
                             }
                             if (config.isUseResult()) {
-                                IResult result = ResultBuilder.build(item.getType(), maxRowNum, "", true).getResult(tableResult);
+                                IResult result = ResultBuilder.build(item.getType(), config.getMaxRowNum(), config.isUseChangeLog(),config.isUseAutoCancel()).getResult(tableResult);
                                 job.setResult(result);
                             }
                         }
+                    }
+                }
+            }
+            if (jobParam.getExecute().size() > 0) {
+                if (useGateway) {
+                    for (StatementParam item : jobParam.getExecute()) {
+                        executor.executeSql(item.getValue());
+                        if(!useStatementSet) {
+                            break;
+                        }
+                    }
+                    StreamGraph streamGraph = executor.getEnvironment().getStreamGraph();
+                    streamGraph.setJobName(config.getJobName());
+                    JobGraph jobGraph = streamGraph.getJobGraph();
+                    GatewayResult gatewayResult = null;
+                    if (GatewayType.YARN_APPLICATION.equals(runMode)||GatewayType.KUBERNETES_APPLICATION.equals(runMode)) {
+                        config.addGatewayConfig(executor.getSetConfig());
+                        gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
+                    } else {
+                        config.addGatewayConfig(executor.getSetConfig());
+                        if(Asserts.isNotNullString(config.getSavePointPath())) {
+                            jobGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(config.getSavePointPath()));
+                        }
+                        gatewayResult = Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);
+                    }
+                    job.setResult(InsertResult.success(gatewayResult.getAppId()));
+                    job.setJobId(gatewayResult.getAppId());
+                    job.setJobManagerAddress(formatAddress(gatewayResult.getWebURL()));
+                } else {
+                    for (StatementParam item : jobParam.getExecute()) {
+                        executor.executeSql(item.getValue());
+                        if(!useStatementSet) {
+                            break;
+                        }
+                    }
+                    JobExecutionResult jobExecutionResult = executor.getEnvironment().execute(config.getJobName());
+                    if (jobExecutionResult.isJobExecutionResult()) {
+                        job.setJobId(jobExecutionResult.getJobID().toHexString());
+                    }
+                    if (config.isUseResult()) {
+                        IResult result = ResultBuilder.build(SqlType.EXECUTE, config.getMaxRowNum(), config.isUseChangeLog(),config.isUseAutoCancel()).getResult(null);
+                        job.setResult(result);
                     }
                 }
             }
@@ -351,7 +406,7 @@ public class JobManager {
                 }
                 LocalDateTime startTime = LocalDateTime.now();
                 TableResult tableResult = executor.executeSql(newStatement);
-                IResult result = ResultBuilder.build(operationType, maxRowNum, "", false).getResult(tableResult);
+                IResult result = ResultBuilder.build(operationType, config.getMaxRowNum(), false,false).getResult(tableResult);
                 result.setStartTime(startTime);
                 return result;
             }
@@ -472,7 +527,7 @@ public class JobManager {
         if(Asserts.isNotNullString(config.getSavePointPath())){
             sb.append("set " + SavepointConfigOptions.SAVEPOINT_PATH + " = " + config.getSavePointPath() + ";\r\n");
         }
-        if(Asserts.isNotNull(config.getGatewayConfig().getFlinkConfig().getConfiguration())) {
+        if(Asserts.isNotNull(config.getGatewayConfig())&&Asserts.isNotNull(config.getGatewayConfig().getFlinkConfig().getConfiguration())) {
             for (Map.Entry<String, String> entry : config.getGatewayConfig().getFlinkConfig().getConfiguration().entrySet()) {
                 sb.append("set " + entry.getKey() + " = " + entry.getValue() + ";\r\n");
             }
@@ -482,12 +537,32 @@ public class JobManager {
             case YARN_PER_JOB:
             case YARN_APPLICATION:
                 sb.append("set " + DeploymentOptions.TARGET.key() + " = " + GatewayType.get(config.getType()).getLongValue() + ";\r\n");
-                sb.append("set " + YarnConfigOptions.PROVIDED_LIB_DIRS.key() + " = " + Collections.singletonList(config.getGatewayConfig().getClusterConfig().getFlinkLibPath()) + ";\r\n");
-                if(Asserts.isNotNullString(config.getGatewayConfig().getFlinkConfig().getJobName())) {
+                if(Asserts.isNotNull(config.getGatewayConfig())) {
+                    sb.append("set " + YarnConfigOptions.PROVIDED_LIB_DIRS.key() + " = " + Collections.singletonList(config.getGatewayConfig().getClusterConfig().getFlinkLibPath()) + ";\r\n");
+                }
+                if(Asserts.isNotNull(config.getGatewayConfig())&&Asserts.isNotNullString(config.getGatewayConfig().getFlinkConfig().getJobName())) {
                     sb.append("set " + YarnConfigOptions.APPLICATION_NAME.key() + " = " + config.getGatewayConfig().getFlinkConfig().getJobName() + ";\r\n");
                 }
         }
         sb.append(statement);
         return sb.toString();
+    }
+
+    public static List<String> getUDFClassName(String statement){
+        Pattern pattern = Pattern.compile("function (.*?)'(.*?)'", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(statement);
+        List<String> classNameList = new ArrayList<>();
+        while (matcher.find()) {
+            classNameList.add(matcher.group(2));
+        }
+        return classNameList;
+    }
+
+    public static void initUDF(String className,String code){
+        if(ClassPool.exist(ClassEntity.build(className,code))){
+            UDFUtil.initClassLoader(className);
+        }else{
+            UDFUtil.buildClass(code);
+        }
     }
 }

@@ -19,4 +19,12 @@ public interface FlinkSQLConstant {
      * DML 类型
      */
     String DML = "DML";
+    /**
+     * DATASTREAM 类型
+     */
+    String DATASTREAM = "DATASTREAM";
+    /**
+     * 片段 Fragments 标识
+     */
+    String FRAGMENTS = ":=";
 }

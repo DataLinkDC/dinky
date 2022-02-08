@@ -1,5 +1,4 @@
 import React from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
 import { Card, Alert, Typography,Timeline } from 'antd';
 import { useIntl, FormattedMessage } from 'umi';
 import styles from './Welcome.less';
@@ -15,12 +14,12 @@ const CodePreview: React.FC = ({ children }) => (
 export default (): React.ReactNode => {
   const intl = useIntl();
   return (
-    <PageContainer>
+    <>
       <Card>
         <Alert
           message={intl.formatMessage({
             id: 'pages.welcome.alertMessage',
-            defaultMessage: '实时计算平台 Dlink & Apache Flink 即将发布，目前为体验版，版本号为 0.4.0。',
+            defaultMessage: '实时计算平台 Dinky 即将发布，目前为体验版，版本号为 0.6.0-SNAPSHOT。',
           })}
           type="success"
           showIcon
@@ -62,22 +61,25 @@ export default (): React.ReactNode => {
         </Typography.Text>
         </Paragraph>
         <p> </p>
-        <Timeline pending={<><Text code>0.5.0</Text>
+        <Timeline pending={<><Text code>0.6.0</Text>
           <Text type="secondary">敬请期待</Text>
           <p> </p>
           <Paragraph>
             <ul>
               <li>
-                <Link>支持同时托管多版本的Flink实例</Link>
+                <Link>任务生命周期管理</Link>
               </li>
               <li>
-                <Link>支持K8S多种运行模式</Link>
+                <Link>作业监控及运维</Link>
               </li>
               <li>
-                <Link>支持多种任务调度框架接口</Link>
+                <Link>流作业自动恢复</Link>
               </li>
               <li>
-                <Link>支持UDF动态加载</Link>
+                <Link>作业日志查看</Link>
+              </li>
+              <li>
+                <Link>钉钉报警和推送</Link>
               </li>
             </ul>
           </Paragraph></>} reverse={true}>
@@ -447,7 +449,7 @@ export default (): React.ReactNode => {
               </ul>
             </Paragraph>
           </Timeline.Item>
-          <Timeline.Item><Text code>0.5.0</Text> <Text type="secondary">2022-01-??</Text>
+          <Timeline.Item><Text code>0.5.0</Text> <Text type="secondary">2022-01-16</Text>
             <p> </p>
             <Paragraph>
               <ul>
@@ -520,11 +522,136 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增 FlinkSQL 及 SQL 导出</Link>
                 </li>
+                <li>
+                  <Link>新增 集群与数据源的 Studio 管理交互</Link>
+                </li>
+                <li>
+                  <Link>修复 set 语法在1.11和1.12的兼容问题</Link>
+                </li>
+                <li>
+                  <Link>升级 各版本 Flink 依赖至最新版本以解决核弹问题</Link>
+                </li>
+                <li>
+                  <Link>新增 Yarn 的 Kerboros 验证</Link>
+                </li>
+                <li>
+                  <Link>新增 ChangLog 和 Table 的查询及自动停止实现</Link>
+                </li>
+                <li>
+                  <Link>修改 项目名为 Dinky 以及图标</Link>
+                </li>
+                <li>
+                  <Link>优化 血缘分析图</Link>
+                </li>
+                <li>
+                  <Link>新增 快捷键保存、校验、美化</Link>
+                </li>
+                <li>
+                  <Link>新增 UDF Java方言的Local模式的在线编写、调试、动态加载</Link>
+                </li>
+                <li>
+                  <Link>新增 编辑器选项卡右键关闭其他和关闭所有</Link>
+                </li>
+                <li>
+                  <Link>新增 BI选项卡的折线图、条形图、饼图</Link>
+                </li>
+                <li>
+                  <Link>修改 草稿为引导页</Link>
+                </li>
+                <li>
+                  <Link>修复 批量启用禁用集群、关闭tab无法更新位置及无法取消FlinkSQLEnv的bug</Link>
+                </li>
+              </ul>
+            </Paragraph>
+          </Timeline.Item>
+          <Timeline.Item><Text code>0.5.1</Text> <Text type="secondary">2022-01-24</Text>
+            <p> </p>
+            <Paragraph>
+              <ul>
+                <li>
+                  <Link>修复 SHOW 和 DESC 的查询预览失效</Link>
+                </li>
+                <li>
+                  <Link>修复 作业非remote作业进行remote语法校验的问题</Link>
+                </li>
+                <li>
+                  <Link>增加 dlink-client-hadoop 版本定制依赖</Link>
+                </li>
+                <li>
+                  <Link>优化 菜单</Link>
+                </li>
+                <li>
+                  <Link>优化 pom及升级log4j至最新</Link>
+                </li>
+                <li>
+                  <Link>修复 前端多处bug</Link>
+                </li>
+                <li>
+                  <Link>新增 F2 全屏开发</Link>
+                </li>
+                <li>
+                  <Link>升级 SpringBoot 至 2.6.3</Link>
+                </li>
+                <li>
+                  <Link>优化 日志依赖</Link>
+                </li>
+                <li>
+                  <Link>修复 前端 state 赋值 bug</Link>
+                </li>
+                <li>
+                  <Link>修复 异常预览内容溢出 bug</Link>
+                </li>
+                <li>
+                  <Link>修复 数据预览特殊条件下无法获取数据的 bug</Link>
+                </li>
+                <li>
+                  <Link>优化 SQL编辑器性能</Link>
+                </li>
+                <li>
+                  <Link>修复 全屏开发退出后 sql 不同步</Link>
+                </li>
+                <li>
+                  <Link>升级 Flink 1.14.2 到 1.14.3</Link>
+                </li>
+                <li>
+                  <Link>修复 Flink 1.14 提交任务报错缺类 bug</Link>
+                </li>
+                <li>
+                  <Link>优化 作业配置查看及全屏开发按钮</Link>
+                </li>
+                <li>
+                  <Link>新增 K8S集群配置</Link>
+                </li>
+              </ul>
+            </Paragraph>
+          </Timeline.Item>
+          <Timeline.Item><Text code>0.6.0</Text> <Text type="secondary">2022-03-??</Text>
+            <p> </p>
+            <Paragraph>
+              <ul>
+                <li>
+                  <Link>优化 sql美化</Link>
+                </li>
+                <li>
+                  <Link>扩展 Doris、SqlServer、Oracle 数据源注册、元数据、查询和执行</Link>
+                </li>
+                <li>
+                  <Link>新增 元数据生成 FlinkSQL 和 SQL</Link>
+                </li>
+                <li>
+                  <Link>新增 CDCSOURCE 多源合并任务语法支持</Link>
+                </li>
+                <li>
+                  <Link>新增 作业生命周期管理</Link>
+                </li>
+                <li>
+                  <Link>新增 FlinkJar Dialect 的管理</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>
         </Timeline>
       </Card>
-    </PageContainer>
+    </>
   );
 };

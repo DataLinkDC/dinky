@@ -1,9 +1,10 @@
 import styles from "./index.less";
 import {Menu, Dropdown, Tooltip, Row, Col, Popconfirm, notification, Modal, message} from "antd";
 import {
-  PauseCircleTwoTone, CopyTwoTone, DeleteTwoTone, PlayCircleTwoTone, DiffTwoTone,SnippetsTwoTone,
-  FileAddTwoTone, FolderOpenTwoTone, SafetyCertificateTwoTone, SaveTwoTone, FlagTwoTone,
+  PauseCircleTwoTone, CarryOutTwoTone, DeleteTwoTone, PlayCircleTwoTone, CameraTwoTone,SnippetsTwoTone,
+  FileAddTwoTone, FolderOpenTwoTone, SafetyCertificateTwoTone, SaveTwoTone, FlagTwoTone,CodeTwoTone,
   EnvironmentOutlined, SmileOutlined, RocketTwoTone, QuestionCircleTwoTone, MessageOutlined, ClusterOutlined
+  , EditTwoTone, RestTwoTone
 } from "@ant-design/icons";
 import Space from "antd/es/space";
 import Divider from "antd/es/divider";
@@ -11,18 +12,27 @@ import Button from "antd/es/button/button";
 import Breadcrumb from "antd/es/breadcrumb/Breadcrumb";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
-import {handleAddOrUpdate, postDataArray} from "@/components/Common/crud";
-import {executeSql, explainSql, getJobPlan} from "@/pages/FlinkSqlStudio/service";
+import {CODE, postDataArray} from "@/components/Common/crud";
+import {executeSql, getJobPlan} from "@/pages/FlinkSqlStudio/service";
 import StudioHelp from "./StudioHelp";
 import StudioGraph from "./StudioGraph";
-import {showCluster, showTables, saveTask} from "@/components/Studio/StudioEvent/DDL";
-import {useEffect, useState} from "react";
+import {
+  cancelTask, developTask,
+  offLineTask,
+  onLineTask, recoveryTask,
+  releaseTask,
+  showCluster,
+  showTables
+} from "@/components/Studio/StudioEvent/DDL";
+import React, {useCallback, useEffect, useState} from "react";
 import StudioExplain from "../StudioConsole/StudioExplain";
-import {DIALECT, isSql} from "@/components/Studio/conf";
+import {DIALECT, isOnline, isSql, TASKSTEPS} from "@/components/Studio/conf";
 import {
   ModalForm,
 } from '@ant-design/pro-form';
 import SqlExport from "@/pages/FlinkSqlStudio/SqlExport";
+import {Dispatch} from "@@/plugin-dva/connect";
+import StudioTabs from "@/components/Studio/StudioTabs";
 
 const menu = (
   <Menu>
@@ -33,14 +43,41 @@ const menu = (
 
 const StudioMenu = (props: any) => {
 
-  const {tabs, current, currentPath, form, refs, dispatch, currentSession} = props;
+  const {isFullScreen, tabs, current, currentPath, form,width,height, refs, dispatch, currentSession} = props;
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
   const [exportModalVisible, handleExportModalVisible] = useState<boolean>(false);
   const [graphModalVisible, handleGraphModalVisible] = useState<boolean>(false);
-  const [explainData, setExplainData] = useState([]);
+  // const [editModalVisible, handleEditModalVisible] = useState<boolean>(false);
   const [graphData, setGraphData] = useState();
 
+  const onKeyDown = useCallback((e) => {
+    if(e.keyCode === 83 && e.ctrlKey === true){
+      e.preventDefault();
+      if(current) {
+        props.saveTask(current);
+      }
+    }
+    if(e.keyCode === 113){
+      e.preventDefault();
+      if(current) {
+        // handleEditModalVisible(true);
+        props.changeFullScreen(true);
+      }
+    }
+  }, [current]);
+
+  useEffect(() => {
+    document.addEventListener("keydown", onKeyDown)
+    return () => {
+      document.removeEventListener("keydown", onKeyDown)
+    };
+  }, [current]);
+
   const execute = () => {
+    if(!isSql(current.task.dialect)&&!isOnline(current.task.type)){
+      message.warn(`该任务执行模式为【${current.task.type}】，不支持 SQL 查询，请手动保存后使用右侧按钮——作业提交`);
+      return;
+    }
     let selectsql = null;
     if (current.monaco.current) {
       let selection = current.monaco.current.editor.getSelection();
@@ -75,7 +112,7 @@ const StudioMenu = (props: any) => {
       if (res.datas.success) {
         message.success('执行成功');
       } else {
-        message.success('执行失败');
+        message.error('执行失败');
       }
       let newTabs = tabs;
       for (let i = 0; i < newTabs.panes.length; i++) {
@@ -84,10 +121,7 @@ const StudioMenu = (props: any) => {
           break;
         }
       }
-      dispatch && dispatch({
-        type: "Studio/saveTabs",
-        payload: newTabs,
-      });
+      props.saveTabs(newTabs);
       useSession && showTables(currentSession.session, dispatch);
     })
   };
@@ -130,36 +164,7 @@ const StudioMenu = (props: any) => {
   };
 
   const onCheckSql = () => {
-    let selectsql = null;
-    if (current.monaco.current) {
-      let selection = current.monaco.current.editor.getSelection();
-      selectsql = current.monaco.current.editor.getModel().getValueInRange(selection);
-    }
-    if (selectsql == null || selectsql == '') {
-      selectsql = current.value;
-    }
-    let useSession = !!currentSession.session;
-    let param = {
-      ...current.task,
-      useSession: useSession,
-      session: currentSession.session,
-      configJson: JSON.stringify(current.task.config),
-      statement: selectsql,
-    };
-    const taskKey = (Math.random() * 1000) + '';
-    notification.success({
-      message: `新任务【${param.jobName}】正在检查`,
-      description: param.statement.substring(0, 40) + '...',
-      duration: null,
-      key: taskKey,
-      icon: <SmileOutlined style={{color: '#108ee9'}}/>,
-    });
-    const result = explainSql(param);
     handleModalVisible(true);
-    result.then(res => {
-      notification.close(taskKey);
-      setExplainData(res.datas);
-    })
   };
 
   const onGetStreamGraph=()=>{
@@ -249,18 +254,132 @@ const StudioMenu = (props: any) => {
     return str.replace(/&(lt|gt|nbsp|amp|quot);/ig,function(all,t){return arrEntities[t];});
   }
 
+  const toFullScreen = () => {
+    if(current) {
+      props.changeFullScreen(true);
+    }
+  };
+
   const saveSqlAndSettingToTask = () => {
-    saveTask(current,dispatch);
+    props.saveTask(current);
   };
 
   const exportSql = () => {
     handleExportModalVisible(true);
   };
 
+  const toReleaseTask = () => {
+    Modal.confirm({
+      title: '发布作业',
+      content: `确定发布作业【${current.task.alias}】吗？请确认您的作业是否已经被保存！`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk: async () => {
+        const res = releaseTask(current.task.id);
+        res.then((result) => {
+          result.datas && props.changeTaskStep(current.task.id,TASKSTEPS.RELEASE);
+          if(result.code == CODE.SUCCESS) {
+            message.success(`发布作业【${current.task.alias}】成功`);
+          }
+        });
+      }
+    });
+  };
+
+  const toDevelopTask = () => {
+    Modal.confirm({
+      title: '维护作业',
+      content: `确定维护作业【${current.task.alias}】吗？`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk: async () => {
+        const res = developTask(current.task.id);
+        res.then((result) => {
+          result.datas && props.changeTaskStep(current.task.id,TASKSTEPS.DEVELOP);
+          if(result.code == CODE.SUCCESS) {
+            message.success(`维护作业【${current.task.alias}】成功`);
+          }
+        });
+      }
+    });
+  };
+
+  const toOnLineTask = () => {
+    Modal.confirm({
+      title: '上线作业',
+      content: `确定上线作业【${current.task.alias}】吗？`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk: async () => {
+        const res = onLineTask(current.task.id);
+        res.then((result) => {
+          result.datas && props.changeTaskStep(current.task.id,TASKSTEPS.ONLINE);
+          if(result.code == CODE.SUCCESS) {
+            message.success(`上线作业【${current.task.alias}】成功`);
+          }
+        });
+      }
+    });
+  };
+
+  const toOffLineTask = () => {
+    Modal.confirm({
+      title: '下线作业',
+      content: `确定下线作业【${current.task.alias}】吗？`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk: async () => {
+        const res = offLineTask(current.task.id);
+        res.then((result) => {
+          result.datas && props.changeTaskStep(current.task.id,TASKSTEPS.RELEASE);
+          if(result.code == CODE.SUCCESS) {
+            message.success(`下线作业【${current.task.alias}】成功`);
+          }
+        });
+      }
+    });
+  };
+
+  const toCancelTask = () => {
+    Modal.confirm({
+      title: '注销作业',
+      content: `确定注销作业【${current.task.alias}】吗？`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk: async () => {
+        const res = cancelTask(current.task.id);
+        res.then((result) => {
+          result.datas && props.changeTaskStep(current.task.id,TASKSTEPS.CANCEL);
+          if(result.code == CODE.SUCCESS) {
+            message.success(`注销作业【${current.task.alias}】成功`);
+          }
+        });
+      }
+    });
+  };
+
+  const toRecoveryTask = () => {
+    Modal.confirm({
+      title: '恢复作业',
+      content: `确定恢复作业【${current.task.alias}】吗？`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk: async () => {
+        const res = recoveryTask(current.task.id);
+        res.then((result) => {
+          result.datas && props.changeTaskStep(current.task.id,TASKSTEPS.DEVELOP);
+          if(result.code == CODE.SUCCESS) {
+            message.success(`恢复作业【${current.task.alias}】成功`);
+          }
+        });
+      }
+    });
+  };
+
   const runMenu = (
     <Menu>
-      <Menu.Item onClick={execute}>同步执行</Menu.Item>
-      <Menu.Item onClick={submit}>异步提交</Menu.Item>
+      <Menu.Item onClick={execute}>SQL 查询</Menu.Item>
+      <Menu.Item onClick={submit}>提交作业</Menu.Item>
     </Menu>
   );
 
@@ -337,7 +456,15 @@ const StudioMenu = (props: any) => {
               </Breadcrumb>
             )}
           </Col>
+          {current?
           <Col span={8}>
+            <Tooltip title="全屏开发">
+              <Button
+                type="text"
+                icon={<CodeTwoTone />}
+                onClick={toFullScreen}
+              />
+            </Tooltip>
             <Button
               type="text"
               icon={<FileAddTwoTone twoToneColor="#ddd"/>}
@@ -377,7 +504,7 @@ const StudioMenu = (props: any) => {
               />
             </Tooltip>)}
             {(!current.task.dialect||current.task.dialect === DIALECT.FLINKSQL||isSql( current.task.dialect )) &&(
-            <Tooltip title="执行当前的 FlinkSql">
+            <Tooltip title="执行当前的 SQL">
               <Button
                 type="text"
                 icon={<PlayCircleTwoTone/>}
@@ -385,41 +512,63 @@ const StudioMenu = (props: any) => {
                 onClick={execute}
               />
             </Tooltip>)}
-            {(!current.task.dialect||current.task.dialect === DIALECT.FLINKSQL||isSql( current.task.dialect )) &&(<>
-              <Tooltip title="提交当前的作业到集群">
+            {(!current.task.dialect||current.task.dialect === DIALECT.FLINKSQL||current.task.dialect === DIALECT.FLINKJAR||isSql( current.task.dialect )) &&(<>
+              <Tooltip title="提交当前的作业到集群，提交前请手动保存">
                 <Button
                   type="text"
                   icon={<RocketTwoTone/>}
                   onClick={submit}
                 />
               </Tooltip>
-              <Popconfirm
-                title="您确定要停止所有的 FlinkSql 任务吗？"
-                // onConfirm={confirm}
-                //onCancel={cancel}
-                okText="停止"
-                cancelText="取消"
-              >
-                <Tooltip title="停止所有的 FlinkSql 任务，暂不可用">
-                  <Button
-                    type="text"
-                    icon={<PauseCircleTwoTone twoToneColor="#ddd"/>}
-                  />
-                </Tooltip>
-              </Popconfirm></>)}
+              </>)}
             <Divider type="vertical"/>
-            <Button
-              type="text"
-              icon={<DiffTwoTone twoToneColor="#ddd"/>}
-            />
-            <Button
-              type="text"
-              icon={<CopyTwoTone twoToneColor="#ddd"/>}
-            />
-            <Button
-              type="text"
-              icon={<DeleteTwoTone twoToneColor="#ddd"/>}
-            />
+            {current.task.step == TASKSTEPS.DEVELOP ?
+              <Tooltip title="发布，发布后将无法修改">
+                <Button
+                  type="text"
+                  icon={<CameraTwoTone/>}
+                  onClick={toReleaseTask}
+                />
+              </Tooltip>:undefined
+            }{current.task.step == TASKSTEPS.RELEASE ?
+              <><Tooltip title="维护，点击进入编辑状态">
+                <Button
+                  type="text"
+                  icon={<EditTwoTone />}
+                  onClick={toDevelopTask}
+                />
+              </Tooltip><Tooltip title="上线，上线后自动恢复、告警等将生效">
+              <Button
+                type="text"
+                icon={<CarryOutTwoTone />}
+                onClick={toOnLineTask}
+              />
+            </Tooltip></>:undefined
+            }{current.task.step == TASKSTEPS.ONLINE ?
+            <Tooltip title="下线，将进入最新发布状态">
+              <Button
+                type="text"
+                icon={<PauseCircleTwoTone />}
+                onClick={toOffLineTask}
+              />
+            </Tooltip>:undefined
+          }{(current.task.step != TASKSTEPS.ONLINE && current.task.step != TASKSTEPS.CANCEL) ?
+            <Tooltip title="注销，将进入回收站">
+              <Button
+                type="text"
+                icon={<DeleteTwoTone />}
+                onClick={toCancelTask}
+              />
+            </Tooltip>:undefined
+          }{current.task.step == TASKSTEPS.CANCEL ?
+            <Tooltip title="恢复，将进入维护模式">
+              <Button
+                type="text"
+                icon={<RestTwoTone />}
+                onClick={toRecoveryTask}
+              />
+            </Tooltip>:undefined
+          }
             <Tooltip title="查看使用帮助">
               <Button
                 type="text"
@@ -427,16 +576,12 @@ const StudioMenu = (props: any) => {
                 onClick={showHelp}
               />
             </Tooltip>
-          </Col>
+          </Col>:undefined}
         </Row>
       </Col>
       <StudioExplain
-        onCancel={() => {
-          handleModalVisible(false);
-          setExplainData([]);
-        }}
         modalVisible={modalVisible}
-        data={explainData}
+        onClose={()=>{handleModalVisible(false)}}
       />
       <Modal
         width={1000}
@@ -448,6 +593,7 @@ const StudioMenu = (props: any) => {
       >
         <StudioGraph data={graphData} />
       </Modal>
+      {current?
       <ModalForm
         title={`${current.task.alias} 的 ${current.task.dialect} 导出`}
         visible={exportModalVisible}
@@ -468,15 +614,49 @@ const StudioMenu = (props: any) => {
         }}
       >
         <SqlExport id={current.task.id} />
-      </ModalForm>
+      </ModalForm>:undefined}
+      {current && isFullScreen?<Modal
+        width={width}
+        bodyStyle={{padding: 0}}
+        style={{top:0,padding:0,margin:0,maxWidth:'100vw'}}
+        destroyOnClose
+        maskClosable={false}
+        closable={false}
+        visible={isFullScreen}
+        footer={null}
+        onCancel={() => {
+         props.changeFullScreen(false);
+        }}>
+        <StudioTabs width={width} height={height}/>
+      </Modal>:undefined}
     </Row>
   );
 };
 
+
+const mapDispatchToProps = (dispatch: Dispatch)=>({
+  saveTask:(current: any)=>dispatch({
+    type: "Studio/saveTask",
+    payload: current.task,
+  }),saveTabs:(tabs: any)=>dispatch({
+    type: "Studio/saveTabs",
+    payload: tabs,
+  }),changeFullScreen:(isFull: boolean)=>dispatch({
+    type: "Studio/changeFullScreen",
+    payload: isFull,
+  }),changeTaskStep:(id: number, step: number)=>dispatch({
+    type: "Studio/changeTaskStep",
+    payload: {
+      id,step
+    },
+  }),
+});
+
 export default connect(({Studio}: { Studio: StateType }) => ({
+  isFullScreen: Studio.isFullScreen,
   current: Studio.current,
   currentPath: Studio.currentPath,
   tabs: Studio.tabs,
   refs: Studio.refs,
   currentSession: Studio.currentSession,
-}))(StudioMenu);
+}),mapDispatchToProps)(StudioMenu);

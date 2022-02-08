@@ -485,4 +485,43 @@ ADD COLUMN `database_id` int(11) NULL COMMENT '数据源ID' AFTER `cluster_confi
 ALTER TABLE `dlink_task`
 ADD COLUMN `env_id` int(11) NULL COMMENT '环境ID' AFTER `jar_id`;
 
+-- ----------------------------
+-- 0.6.0-SNAPSHOT 2022-01-28
+-- ----------------------------
+ALTER TABLE `dlink_database`
+ADD COLUMN `flink_config` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '环境ID' AFTER `note`;
+
+-- ----------------------------
+-- 0.6.0-SNAPSHOT 2022-02-02
+-- ----------------------------
+-- ----------------------------
+-- Table structure for dlink_job_instance
+-- ----------------------------
+DROP TABLE IF EXISTS `dlink_job_instance`;
+create table dlink_job_instance
+(
+    id                   int auto_increment comment '自增主键'
+        primary key,
+    name                 varchar(50) null comment '作业实例名',
+    task_id              int         null comment 'taskID',
+    cluster_id           int         null comment '集群ID',
+    jid                  varchar(50) null comment 'FlinkJobId',
+    status               int         null comment '实例状态',
+    history_id           int         null comment '提交历史ID',
+    create_time          datetime    null comment '创建时间',
+    update_time          datetime    null comment '更新时间',
+    finish_time          int         null comment '完成时间',
+    error                text        null comment '异常日志',
+    failed_restart_count int         null comment '重启次数'
+) comment '作业实例';
+
+ALTER TABLE `dlink_task`
+    ADD COLUMN `step` int(11) NULL COMMENT '作业生命周期' AFTER `note`;
+
+-- ----------------------------
+-- 0.6.0-SNAPSHOT 2022-02-03
+-- ----------------------------
+update dlink_task set dialect = 'FlinkJar' where jar_id is not null;
+update dlink_catalogue set type = 'FlinkJar' where task_id in (select id as task_id from dlink_task where jar_id is not null);
+
 SET FOREIGN_KEY_CHECKS = 1;

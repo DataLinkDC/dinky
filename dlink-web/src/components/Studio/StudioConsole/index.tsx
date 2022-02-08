@@ -1,7 +1,7 @@
 import {Tabs, Empty} from "antd";
 import {
   CodeOutlined, TableOutlined, RadarChartOutlined, CalendarOutlined, FileSearchOutlined, DesktopOutlined
-  , FunctionOutlined, ApartmentOutlined
+  , FunctionOutlined, ApartmentOutlined,BarChartOutlined
 } from "@ant-design/icons";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {connect} from "umi";
@@ -13,12 +13,13 @@ import StudioFX from "./StudioFX";
 import StudioCA from "./StudioCA";
 import StudioProcess from "./StudioProcess";
 import {Scrollbars} from 'react-custom-scrollbars';
+import Chart from "@/components/Chart";
 
 const {TabPane} = Tabs;
 
 const StudioConsole = (props: any) => {
 
-  const {height} = props;
+  const {height,current} = props;
   let consoleHeight = (height - 37.6);
   return (
     <Tabs defaultActiveKey="StudioMsg" size="small" tabPosition="top" style={{
@@ -34,7 +35,7 @@ const StudioConsole = (props: any) => {
         key="StudioMsg"
       >
         <Scrollbars style={{height: consoleHeight}}>
-          <StudioMsg/>
+          {current?<StudioMsg/>:<Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
         </Scrollbars>
       </TabPane>
       <TabPane
@@ -47,20 +48,20 @@ const StudioConsole = (props: any) => {
         key="StudioTable"
       >
         <Scrollbars style={{height: consoleHeight}}>
-          <StudioTable/>
+          {current?<StudioTable/>:<Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
         </Scrollbars>
       </TabPane>
       <TabPane
         tab={
           <span>
-          <RadarChartOutlined/>
-          指标
+          <BarChartOutlined />
+          BI
         </span>
         }
-        key="StudioMetrics"
+        key="StudioChart"
       >
         <Scrollbars style={{height: consoleHeight}}>
-          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
+          {current? <Chart height={consoleHeight} />:<Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
         </Scrollbars>
       </TabPane>
       <TabPane
@@ -73,7 +74,7 @@ const StudioConsole = (props: any) => {
         key="StudioConsanguinity"
       >
         <Scrollbars style={{height: consoleHeight}}>
-          <StudioCA/>
+          {current?<StudioCA/>:<Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
         </Scrollbars>
       </TabPane>
       <TabPane
@@ -115,23 +116,11 @@ const StudioConsole = (props: any) => {
           <StudioFX/>
         </Scrollbars>
       </TabPane>
-      <TabPane
-        tab={
-          <span>
-          <FileSearchOutlined/>
-          文档
-        </span>
-        }
-        key="StudioDocument"
-      >
-        <Scrollbars style={{height: consoleHeight}}>
-          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
-        </Scrollbars>
-      </TabPane>
     </Tabs>
   );
 };
 
 export default connect(({Studio}: { Studio: StateType }) => ({
   sql: Studio.sql,
+  current: Studio.current,
 }))(StudioConsole);

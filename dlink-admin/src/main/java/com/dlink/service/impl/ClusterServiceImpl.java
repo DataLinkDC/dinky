@@ -96,6 +96,14 @@ public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
     }
 
     @Override
+    public boolean enableCluster(Cluster cluster) {
+        Cluster clusterInfo = getById(cluster);
+        clusterInfo.setEnabled(cluster.getEnabled());
+        checkHealth(clusterInfo);
+        return updateById(clusterInfo);
+    }
+
+    @Override
     public int clearCluster() {
         List<Cluster> clusters = listAutoEnable();
         int count = 0;

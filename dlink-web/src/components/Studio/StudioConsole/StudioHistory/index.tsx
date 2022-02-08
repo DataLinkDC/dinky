@@ -10,8 +10,9 @@ import {
   ModalForm,
 } from '@ant-design/pro-form';
 import styles from "./index.less";
-import {showJobData} from "@/components/Studio/StudioEvent/DQL";
+import {Scrollbars} from 'react-custom-scrollbars';
 import StudioPreview from "../StudioPreview";
+import {getJobData} from "@/pages/FlinkSqlStudio/service";
 
 
 const { Title, Paragraph, Text, Link } = Typography;
@@ -38,19 +39,24 @@ type HistoryItem = {
 };
 
 type HistoryConfig={
-  useSession:boolean;
-  session:string;
-  useRemote:boolean;
-  clusterId:number;
-  host:string;
-  useResult:boolean;
-  maxRowNum:number;
-  taskId:number;
-  jobName:string;
-  useSqlFragment:boolean;
-  checkpoint:number;
-  parallelism:number;
-  savePointPath:string;
+  useSession: boolean;
+  session: string;
+  useRemote: boolean;
+  type: string;
+  clusterId: number;
+  clusterConfigurationId: number;
+  host: string;
+  useResult: boolean;
+  useChangeLog: boolean;
+  maxRowNum: number;
+  useAutoCancel: boolean;
+  taskId: number;
+  jobName: string;
+  useSqlFragment: boolean;
+  useStatementSet: boolean;
+  checkpoint: number;
+  parallelism: number;
+  savePointPath: string;
 };
 
 const url = '/api/history';
@@ -61,14 +67,19 @@ const StudioHistory = (props: any) => {
   const [row, setRow] = useState<HistoryItem>();
   const [config,setConfig] = useState<HistoryConfig>();
   const [type,setType] = useState<number>();
+  const [result,setResult] = useState<{}>();
 
   const showDetail=(row:HistoryItem,type:number)=>{
     setRow(row);
     setModalVisit(true);
     setType(type);
     setConfig(JSON.parse(row.config));
-    if(type==3){
-      showJobData(row.jobId,dispatch)
+    if(type===3){
+      // showJobData(row.jobId,dispatch)
+      const res = getJobData(row.jobId);
+      res.then((resd)=>{
+        setResult(resd.datas);
+      });
     }
   };
 
@@ -283,14 +294,26 @@ const StudioHistory = (props: any) => {
               <ProDescriptions.Item label="执行方式" >
                 {config.useRemote?'远程':'本地'}
               </ProDescriptions.Item>
+              <ProDescriptions.Item label="任务类型">
+                {config.type}
+              </ProDescriptions.Item>
               <ProDescriptions.Item label="集群ID">
                 {config.clusterId}
+              </ProDescriptions.Item>
+              <ProDescriptions.Item label="集群配置ID">
+                {config.clusterConfigurationId}
               </ProDescriptions.Item>
               <ProDescriptions.Item label="预览结果" >
                 {config.useResult?'启用':'禁用'}
               </ProDescriptions.Item>
+              <ProDescriptions.Item label="打印流" >
+                {config.useChangeLog?'启用':'禁用'}
+              </ProDescriptions.Item>
               <ProDescriptions.Item label="最大行数">
                 {config.maxRowNum}
+              </ProDescriptions.Item>
+              <ProDescriptions.Item label="自动停止" >
+                {config.useAutoCancel?'启用':'禁用'}
               </ProDescriptions.Item>
               <ProDescriptions.Item span={2} label="JobManagerAddress">
                 {row.jobManagerAddress}
@@ -304,11 +327,17 @@ const StudioHistory = (props: any) => {
               <ProDescriptions.Item label="片段机制">
                 {config.useSqlFragment?'启用':'禁用'}
               </ProDescriptions.Item>
+              <ProDescriptions.Item label="语句集">
+                {config.useStatementSet?'启用':'禁用'}
+              </ProDescriptions.Item>
               <ProDescriptions.Item label="并行度">
                 {config.parallelism}
               </ProDescriptions.Item>
               <ProDescriptions.Item label="CheckPoint">
                 {config.checkpoint}
+              </ProDescriptions.Item>
+              <ProDescriptions.Item label="savePoint 机制">
+                {config.savePointStrategy}
               </ProDescriptions.Item>
               <ProDescriptions.Item label="SavePointPath">
                 {config.savePointPath}
@@ -341,7 +370,7 @@ const StudioHistory = (props: any) => {
                 </Tag>
               </ProDescriptions.Item>
               <ProDescriptions.Item  span={2} >
-                <StudioPreview style={{width: '100%'}}/>
+                <StudioPreview result={result} style={{width: '100%'}}/>
               </ProDescriptions.Item>
             </ProDescriptions>
           )}
@@ -355,8 +384,10 @@ const StudioHistory = (props: any) => {
                   <FireOutlined /> {row.jobId}
                 </Tag>
               </ProDescriptions.Item>
-              <ProDescriptions.Item >
+              <ProDescriptions.Item>
+              <Scrollbars style={{height: '400px',width:'100%'}}>
                 <pre className={styles.code}>{row.error}</pre>
+              </Scrollbars>
               </ProDescriptions.Item>
             </ProDescriptions>
           )}

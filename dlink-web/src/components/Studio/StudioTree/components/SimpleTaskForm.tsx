@@ -51,15 +51,17 @@ const SimpleTaskForm: React.FC<UpdateFormProps> = (props) => {
           tooltip='指定作业类型，默认为 FlinkSql'
         >
           <Select defaultValue={DIALECT.FLINKSQL} value={DIALECT.FLINKSQL}>
-            <Option value={DIALECT.FLINKSQL}>FlinkSql</Option>
-            <Option value={DIALECT.FLINKSQLENV}>FlinkSql 环境</Option>
-            <Option value={DIALECT.MYSQL}>Mysql</Option>
-            <Option value={DIALECT.ORACLE}>Oracle</Option>
-            <Option value={DIALECT.POSTGRESQL}>PostGreSql</Option>
-            <Option value={DIALECT.CLICKHOUSE}>ClickHouse</Option>
-            <Option value={DIALECT.DORIS}>Doris</Option>
-            <Option value={DIALECT.JAVA}>Java</Option>
-            <Option value={DIALECT.SQL}>Sql</Option>
+            <Option value={DIALECT.FLINKSQL}>{DIALECT.FLINKSQL}</Option>
+            <Option value={DIALECT.FLINKJAR}>{DIALECT.FLINKJAR}</Option>
+            <Option value={DIALECT.FLINKSQLENV}>{DIALECT.FLINKSQLENV}</Option>
+            <Option value={DIALECT.MYSQL}>{DIALECT.MYSQL}</Option>
+            <Option value={DIALECT.ORACLE}>{DIALECT.ORACLE}</Option>
+            <Option value={DIALECT.SQLSERVER}>{DIALECT.SQLSERVER}</Option>
+            <Option value={DIALECT.POSTGRESQL}>{DIALECT.POSTGRESQL}</Option>
+            <Option value={DIALECT.CLICKHOUSE}>{DIALECT.CLICKHOUSE}</Option>
+            <Option value={DIALECT.DORIS}>{DIALECT.DORIS}</Option>
+            <Option value={DIALECT.JAVA}>{DIALECT.JAVA}</Option>
+            <Option value={DIALECT.SQL}>{DIALECT.SQL}</Option>
           </Select>
         </Form.Item>):undefined}
         <Form.Item

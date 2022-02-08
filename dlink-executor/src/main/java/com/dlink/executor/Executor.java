@@ -1,8 +1,6 @@
 package com.dlink.executor;
 
 import com.dlink.assertion.Asserts;
-import com.dlink.executor.custom.CustomTableEnvironmentImpl;
-import com.dlink.executor.custom.CustomTableResultImpl;
 import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.result.SqlExplainResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -11,6 +9,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.runtime.jobgraph.JobGraph;
+import org.apache.flink.runtime.jobgraph.jsonplan.JsonPlanGenerator;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.graph.JSONGenerator;
@@ -21,9 +20,6 @@ import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.catalog.CatalogManager;
 import org.apache.flink.table.functions.ScalarFunction;
 import org.apache.flink.table.functions.UserDefinedFunction;
-import org.apache.flink.table.operations.Operation;
-import org.apache.flink.table.operations.command.ResetOperation;
-import org.apache.flink.table.operations.command.SetOperation;
 
 import java.util.HashMap;
 import java.util.List;
@@ -237,8 +233,34 @@ public abstract class Executor {
         }
     }
 
+    public ObjectNode getStreamGraphFromDataStream(List<String> statements){
+        for(String statement :  statements){
+            executeSql(statement);
+        }
+        StreamGraph streamGraph = environment.getStreamGraph();
+        JSONGenerator jsonGenerator = new JSONGenerator(streamGraph);
+        String json = jsonGenerator.getJSON();
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode objectNode =mapper.createObjectNode();
+        try {
+            objectNode = (ObjectNode) mapper.readTree(json);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }finally {
+            return objectNode;
+        }
+    }
+
     public JobPlanInfo getJobPlanInfo(List<String> statements){
         return stEnvironment.getJobPlanInfo(statements);
+    }
+
+    public JobPlanInfo getJobPlanInfoFromDataStream(List<String> statements){
+        for(String statement :  statements){
+            executeSql(statement);
+        }
+        StreamGraph streamGraph = environment.getStreamGraph();
+        return new JobPlanInfo(JsonPlanGenerator.generatePlan(streamGraph.getJobGraph()));
     }
 
     public void registerFunction(String name, ScalarFunction function){
@@ -286,43 +308,6 @@ public abstract class Executor {
     }
 
     public boolean parseAndLoadConfiguration(String statement){
-        List<Operation> operations = stEnvironment.getParser().parse(statement);
-        for(Operation operation : operations){
-            if(operation instanceof SetOperation){
-                callSet((SetOperation)operation);
-                return true;
-            } else if (operation instanceof ResetOperation){
-                callReset((ResetOperation)operation);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void callSet(SetOperation setOperation){
-        if (setOperation.getKey().isPresent() && setOperation.getValue().isPresent()) {
-            String key = setOperation.getKey().get().trim();
-            String value = setOperation.getValue().get().trim();
-            Map<String,String> confMap = new HashMap<>();
-            confMap.put(key,value);
-            setConfig.put(key,value);
-            Configuration configuration = Configuration.fromMap(confMap);
-            environment.getConfig().configure(configuration,null);
-            stEnvironment.getConfig().addConfiguration(configuration);
-        }
-    }
-
-    private void callReset(ResetOperation resetOperation) {
-        if (resetOperation.getKey().isPresent()) {
-            String key = resetOperation.getKey().get().trim();
-            Map<String,String> confMap = new HashMap<>();
-            confMap.put(key,null);
-            setConfig.remove(key);
-            Configuration configuration = Configuration.fromMap(confMap);
-            environment.getConfig().configure(configuration,null);
-            stEnvironment.getConfig().addConfiguration(configuration);
-        }else {
-            setConfig.clear();
-        }
+        return stEnvironment.parseAndLoadConfiguration(statement,environment,setConfig);
     }
 }

@@ -12,6 +12,7 @@ import sun.misc.Service;
 import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -98,4 +99,5 @@ public interface Driver {
 
     List<SqlExplainResult> explain(String sql);
 
+    Map<String,String> getFlinkColumnTypeConversion();
 }

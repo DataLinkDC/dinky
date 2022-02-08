@@ -12,11 +12,6 @@ import java.sql.SQLException;
 public abstract class AbstractDBQuery implements IDBQuery {
 
     @Override
-    public boolean isKeyIdentity(ResultSet results) throws SQLException {
-        return false;
-    }
-
-    @Override
     public String[] columnCustom() {
         return null;
     }

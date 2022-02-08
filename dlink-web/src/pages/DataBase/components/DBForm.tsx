@@ -6,8 +6,10 @@ import {connect} from "umi";
 import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {getDBImage} from "@/pages/DataBase/DB";
 import MysqlForm from "@/pages/DataBase/components/MySqlForm";
+import OracleForm from "@/pages/DataBase/components/OracleForm";
+import SqlServerForm from "@/pages/DataBase/components/SqlServerForm";
+import DorisForm from "@/pages/DataBase/components/DorisForm";
 import ClickHouseForm from "@/pages/DataBase/components/ClickHouseForm";
-import {handleAddOrUpdate, handleOption, postAll} from "@/components/Common/crud";
 import {createOrModifyDatabase, testDatabaseConnect} from "@/pages/DataBase/service";
 
 export type UpdateFormProps = {
@@ -30,6 +32,12 @@ const data:any = [
   {
     type: 'ClickHouse',
   },
+  {
+    type: 'SqlServer',
+  },
+  {
+    type: 'Doris',
+  },
 ];
 
 const DBForm: React.FC<UpdateFormProps> = (props) => {
@@ -44,10 +52,10 @@ const DBForm: React.FC<UpdateFormProps> = (props) => {
   const [dbType, setDbType] = useState<string>();
 
   const chooseOne = (item:DataBaseItem)=>{
-     if((item.type!='ClickHouse')&&(item.type !='MySql')){
+     /*if((item.type!='ClickHouse')&&(item.type !='MySql')){
       message.success('敬请期待');
       return;
-    }
+    }*/
     setDbType(item.type);
   };
 
@@ -106,6 +114,39 @@ const DBForm: React.FC<UpdateFormProps> = (props) => {
       <MysqlForm
         onCancel={() => setDbType(undefined)}
         modalVisible={dbType=='MySql'||values.type=='MySql'}
+        values={values}
+        onSubmit={(value) => {
+          onSubmit(value);
+        }}
+        onTest={(value) => {
+          onTest(value);
+        }}
+      />
+      <OracleForm
+        onCancel={() => setDbType(undefined)}
+        modalVisible={dbType=='Oracle'||values.type=='Oracle'}
+        values={values}
+        onSubmit={(value) => {
+          onSubmit(value);
+        }}
+        onTest={(value) => {
+          onTest(value);
+        }}
+      />
+      <SqlServerForm
+        onCancel={() => setDbType(undefined)}
+        modalVisible={dbType=='SqlServer'||values.type=='SqlServer'}
+        values={values}
+        onSubmit={(value) => {
+          onSubmit(value);
+        }}
+        onTest={(value) => {
+          onTest(value);
+        }}
+      />
+      <DorisForm
+        onCancel={() => setDbType(undefined)}
+        modalVisible={dbType=='Doris'||values.type=='Doris'}
         values={values}
         onSubmit={(value) => {
           onSubmit(value);

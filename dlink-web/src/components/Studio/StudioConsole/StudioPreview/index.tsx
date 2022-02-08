@@ -34,5 +34,5 @@ const StudioPreview = (props:any) => {
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
   current: Studio.current,
-  result: Studio.result,
+  // result: Studio.result,
 }))(StudioPreview);

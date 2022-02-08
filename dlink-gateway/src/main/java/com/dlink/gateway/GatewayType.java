@@ -12,7 +12,8 @@ public enum GatewayType {
 
     LOCAL("l","local"),STANDALONE("s","standalone"),
     YARN_SESSION("ys","yarn-session"),YARN_APPLICATION("ya","yarn-application"),
-    YARN_PER_JOB("ypj","yarn-per-job"),KUBERNETES_APPLICATION("ka","kubernetes-application");
+    YARN_PER_JOB("ypj","yarn-per-job"),KUBERNETES_SESSION("ks","kubernetes-session")
+    ,KUBERNETES_APPLICATION("ka","kubernetes-application");
 
     private String value;
     private String longValue;
@@ -44,5 +45,27 @@ public enum GatewayType {
             return true;
         }
         return false;
+    }
+
+    public static boolean isDeployCluster(String type){
+        switch (get(type)){
+            case YARN_APPLICATION:
+            case YARN_PER_JOB:
+            case KUBERNETES_APPLICATION:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public boolean isDeployCluster(){
+        switch (value){
+            case "ya":
+            case "ypj":
+            case "ka":
+                return true;
+            default:
+                return false;
+        }
     }
 }

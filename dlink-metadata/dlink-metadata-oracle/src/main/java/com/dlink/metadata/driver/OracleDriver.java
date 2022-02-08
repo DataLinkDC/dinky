@@ -8,7 +8,9 @@ import com.dlink.metadata.query.OracleQuery;
 import com.dlink.model.Column;
 import com.dlink.model.Table;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -78,4 +80,8 @@ public class OracleDriver extends AbstractJdbcDriver {
         return sb.toString();
     }
 
+    @Override
+    public Map<String,String> getFlinkColumnTypeConversion(){
+        return new HashMap<>();
+    }
 }

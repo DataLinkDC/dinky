@@ -1,6 +1,6 @@
 export type SqlMetaData = {
-  statement: string,
-  metaData: MetaData[],
+  statement?: string,
+  metaData?: MetaData[],
 };
 export type MetaData = {
   table: string,

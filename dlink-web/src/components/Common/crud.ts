@@ -2,6 +2,11 @@ import request from "umi-request";
 import {TableListParams} from "@/components/Common/data";
 import {message, Modal} from "antd";
 
+export const CODE = {
+  SUCCESS: 0,
+  ERROR: 1,
+};
+
 export async function queryData(url:string,params?: TableListParams) {
   return request(url, {
     method: 'POST',
@@ -69,9 +74,13 @@ export const handleAddOrUpdate = async (url:string,fields: any) => {
   const tipsTitle = fields.id ? "修改" : "添加";
   const hide = message.loading(`正在${tipsTitle}`);
   try {
-    const {msg} = await addOrUpdateData(url,{...fields});
+    const {code,msg} = await addOrUpdateData(url,{...fields});
     hide();
-    message.success(msg);
+    if(code == CODE.SUCCESS){
+      message.success(msg);
+    }else{
+      message.warn(msg);
+    }
     return true;
   } catch (error) {
     hide();
@@ -84,9 +93,13 @@ export const handleAddOrUpdateWithResult = async (url:string,fields: any) => {
   const tipsTitle = fields.id ? "修改" : "添加";
   const hide = message.loading(`正在${tipsTitle}`);
   try {
-    const {msg,datas} = await addOrUpdateData(url,{...fields});
+    const {code, msg,datas} = await addOrUpdateData(url,{...fields});
     hide();
-    message.success(msg);
+    if(code == CODE.SUCCESS){
+      message.success(msg);
+    }else{
+      message.warn(msg);
+    }
     return datas;
   } catch (error) {
     hide();
@@ -99,9 +112,13 @@ export const handleRemove = async (url:string,selectedRows: []) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    const {msg} = await removeData(url,selectedRows.map((row) => row.id));
+    const {code, msg} = await removeData(url,selectedRows.map((row) => row.id));
     hide();
-    message.success(msg);
+    if(code == CODE.SUCCESS){
+      message.success(msg);
+    }else{
+      message.warn(msg);
+    }
     return true;
   } catch (error) {
     hide();
@@ -113,9 +130,13 @@ export const handleRemove = async (url:string,selectedRows: []) => {
 export const handleRemoveById = async (url:string,id: number) => {
   const hide = message.loading('正在删除');
   try {
-    const {msg} = await removeData(url,[id]);
+    const {code, msg} = await removeData(url,[id]);
     hide();
-    message.success(msg);
+    if(code == CODE.SUCCESS){
+      message.success(msg);
+    }else{
+      message.warn(msg);
+    }
     return true;
   } catch (error) {
     hide();
@@ -128,9 +149,13 @@ export const handleSubmit = async (url:string,title:string,selectedRows: any[]) 
   const hide = message.loading('正在'+title);
   if (!selectedRows) return true;
   try {
-    const {msg} = await postDataArray(url,selectedRows.map((row) => row.id));
+    const {code, msg} = await postDataArray(url,selectedRows.map((row) => row.id));
     hide();
-    message.success(msg);
+    if(code == CODE.SUCCESS){
+      message.success(msg);
+    }else{
+      message.warn(msg);
+    }
     return true;
   } catch (error) {
     hide();
@@ -148,9 +173,13 @@ export const updateEnabled = (url:string,selectedRows: [], enabled: boolean) => 
 export const handleOption = async (url:string,title:string,param:any) => {
   const hide = message.loading('正在'+title);
   try {
-    const {msg} = await postAll(url,param);
+    const {code, msg} = await postAll(url,param);
     hide();
-    message.success(msg);
+    if(code == CODE.SUCCESS){
+      message.success(msg);
+    }else{
+      message.warn(msg);
+    }
     return true;
   } catch (error) {
     hide();

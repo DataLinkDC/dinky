@@ -2,6 +2,7 @@ package com.dlink.job;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.executor.ExecutorSetting;
+import com.dlink.gateway.GatewayType;
 import com.dlink.gateway.config.AppConfig;
 import com.dlink.gateway.config.ClusterConfig;
 import com.dlink.gateway.config.FlinkConfig;
@@ -27,6 +28,8 @@ public class JobConfig {
     // flink run mode
     private String type;
     private boolean useResult;
+    private boolean useChangeLog;
+    private boolean useAutoCancel;
     private boolean useSession;
     private String session;
     private boolean useRemote;
@@ -61,15 +64,17 @@ public class JobConfig {
         this.config = config;
     }
 
-    public JobConfig(String type, boolean useResult, boolean useSession, String session, boolean useRemote, Integer clusterId,
+    public JobConfig(String type, boolean useResult, boolean useChangeLog, boolean useAutoCancel, boolean useSession, String session, Integer clusterId,
                      Integer clusterConfigurationId, Integer jarId, Integer taskId, String jobName, boolean useSqlFragment,
                      boolean useStatementSet, Integer maxRowNum, Integer checkpoint, Integer parallelism,
                      Integer savePointStrategyValue, String savePointPath, Map<String,String> config) {
         this.type = type;
         this.useResult = useResult;
+        this.useChangeLog = useChangeLog;
+        this.useAutoCancel = useAutoCancel;
         this.useSession = useSession;
         this.session = session;
-        this.useRemote = useRemote;
+        this.useRemote = true;
         this.clusterId = clusterId;
         this.clusterConfigurationId = clusterConfigurationId;
         this.jarId = jarId;
@@ -85,12 +90,14 @@ public class JobConfig {
         this.config = config;
     }
 
-    public JobConfig(String type, boolean useResult, boolean useSession, String session, boolean useRemote, String address,
+    public JobConfig(String type, boolean useResult, boolean useChangeLog,boolean useAutoCancel, boolean useSession, String session, boolean useRemote, String address,
                      String jobName, boolean useSqlFragment,
                      boolean useStatementSet, Integer maxRowNum, Integer checkpoint, Integer parallelism,
                      Integer savePointStrategyValue, String savePointPath, Map<String,String> config, GatewayConfig gatewayConfig) {
         this.type = type;
         this.useResult = useResult;
+        this.useChangeLog = useChangeLog;
+        this.useAutoCancel = useAutoCancel;
         this.useSession = useSession;
         this.session = session;
         this.useRemote = useRemote;
@@ -107,13 +114,14 @@ public class JobConfig {
         this.gatewayConfig = gatewayConfig;
     }
 
-    public JobConfig(String type,boolean useResult, boolean useSession, String session, boolean useRemote, Integer clusterId) {
+    public JobConfig(String type,boolean useResult, boolean useSession, String session, boolean useRemote, Integer clusterId, Integer maxRowNum) {
         this.type = type;
         this.useResult = useResult;
         this.useSession = useSession;
         this.session = session;
         this.useRemote = useRemote;
         this.clusterId = clusterId;
+        this.maxRowNum = maxRowNum;
     }
 
     public JobConfig(String type,boolean useResult, boolean useSession, boolean useRemote, Integer clusterId,
@@ -152,22 +160,40 @@ public class JobConfig {
 
     public void buildGatewayConfig(Map<String,Object> config){
         gatewayConfig = new GatewayConfig();
-        gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath").toString(),
-                config.get("flinkLibPath").toString(),
-                config.get("hadoopConfigPath").toString()));
+        if(config.containsKey("hadoopConfigPath")) {
+            gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath").toString(),
+                    config.get("flinkLibPath").toString(),
+                    config.get("hadoopConfigPath").toString()));
+        }else {
+            gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath").toString(),
+                    config.get("flinkLibPath").toString(),
+                    ""));
+        }
         AppConfig appConfig = new AppConfig();
-        if(config.containsKey("userJarPath") && Asserts.isNotNullString("userJarPath")){
+        if(config.containsKey("userJarPath") && Asserts.isNotNullString((String) config.get("userJarPath"))){
             appConfig.setUserJarPath(config.get("userJarPath").toString());
-            if(config.containsKey("userJarMainAppClass") && Asserts.isNotNullString("userJarMainAppClass")){
+            if(config.containsKey("userJarMainAppClass") && Asserts.isNotNullString((String) config.get("userJarMainAppClass"))){
                 appConfig.setUserJarMainAppClass(config.get("userJarMainAppClass").toString());
             }
-            if(config.containsKey("userJarParas") && Asserts.isNotNullString("userJarParas")){
+            if(config.containsKey("userJarParas") && Asserts.isNotNullString((String) config.get("userJarParas"))){
                 appConfig.setUserJarParas(config.get("userJarParas").toString().split(" "));
             }
             gatewayConfig.setAppConfig(appConfig);
         }
-        if(config.containsKey("flinkConfig") && Asserts.isNotNullString("flinkConfig")){
+        if(config.containsKey("flinkConfig") && Asserts.isNotNullMap((Map<String, String>) config.get("flinkConfig"))){
             gatewayConfig.setFlinkConfig(FlinkConfig.build((Map<String, String>)config.get("flinkConfig")));
+        }
+        if(config.containsKey("kubernetesConfig")){
+            Map kubernetesConfig = (Map) config.get("kubernetesConfig");
+            if(kubernetesConfig.containsKey("kubernetes.namespace")) {
+                gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.namespace", kubernetesConfig.get("kubernetes.namespace").toString());
+            }
+            if(kubernetesConfig.containsKey("kubernetes.cluster-id")) {
+                gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.cluster-id", kubernetesConfig.get("kubernetes.cluster-id").toString());
+            }
+            if(kubernetesConfig.containsKey("kubernetes.container.image")) {
+                gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.container.image", kubernetesConfig.get("kubernetes.container.image").toString());
+            }
         }
     }
 
@@ -187,5 +213,13 @@ public class JobConfig {
         for (Map.Entry<String, Object> entry : config.entrySet()) {
             gatewayConfig.getFlinkConfig().getConfiguration().put(entry.getKey(), (String) entry.getValue());
         }
+    }
+
+    public boolean isUseRemote() {
+        return !GatewayType.LOCAL.equalsValue(type);
+    }
+
+    public void buildLocal(){
+        type = GatewayType.LOCAL.getLongValue();
     }
 }

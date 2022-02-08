@@ -3,6 +3,7 @@ package com.dlink.job;
 import cn.hutool.json.JSONUtil;
 import com.dlink.assertion.Asserts;
 import com.dlink.context.SpringContextUtils;
+import com.dlink.gateway.GatewayType;
 import com.dlink.model.Cluster;
 import com.dlink.model.History;
 import com.dlink.service.ClusterService;
@@ -66,7 +67,7 @@ public class Job2MysqlHandler implements JobHandler {
         Job job = JobContextHolder.getJob();
         History history = new History();
         history.setId(job.getId());
-        if(Asserts.isNullString(job.getJobId())){
+        if(job.isUseGateway()&&Asserts.isNullString(job.getJobId())){
             job.setJobId("unknown-"+LocalDateTime.now().toString());
         }
         history.setJobId(job.getJobId());

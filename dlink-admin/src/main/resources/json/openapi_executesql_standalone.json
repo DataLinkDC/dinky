@@ -8,6 +8,8 @@
   /* default-start */
   "useResult":false,
   "useStatementSet":false,
+  "useChangeLog":false,
+  "useAutoCancel":false,
   "fragment":false,
   "maxRowNum":100,
   "checkPoint":0,

@@ -126,7 +126,6 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       setAvailable(true);
     },200);
     if(node?.isLeaf&&node.taskId) {
-      // @ts-ignore
       for(let item of tabs.panes){
         if(item.key==node.taskId){
           dispatch&&dispatch({
@@ -144,7 +143,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       result.then(result=>{
         let newTabs = tabs;
         let newPane:any = {
-          title: node!.name,
+          title: <>{node!.icon} {node!.name}</>,
           key: node!.taskId,
           value:(result.datas.statement?result.datas.statement:''),
           closable: true,
@@ -154,12 +153,15 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
             maxRowNum: 100,
             jobName:node!.name,
             useResult:false,
+            useChangeLog:false,
+            useAutoCancel:false,
             useSession:false,
             useRemote:true,
             ...result.datas,
           },
           console:{
-            result:[],
+            result: {},
+            chart: {},
           },
           monaco: React.createRef(),
         };
@@ -238,11 +240,11 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     }
   };
 
-  const toDelete= (node:TreeDataNode|undefined)=>{
+  const toDelete= (node: TreeDataNode|undefined)=>{
     let label = (node?.taskId==null)?'目录':'作业';
     Modal.confirm({
       title: `删除${label}`,
-      content: `确定删除该${label}吗？`,
+      content: `确定删除该${label}【${node?.name}】吗？`,
       okText: '确认',
       cancelText: '取消',
       onOk:async () => {

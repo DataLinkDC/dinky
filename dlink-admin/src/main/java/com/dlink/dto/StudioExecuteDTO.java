@@ -24,16 +24,16 @@ public class StudioExecuteDTO extends AbstractStatementDTO{
     private String type;
     private String dialect;
     private boolean useResult;
+    private boolean useChangeLog;
+    private boolean useAutoCancel;
     private boolean statementSet;
     private boolean useSession;
     private String session;
-    private boolean useRemote;
     private Integer clusterId;
     private Integer clusterConfigurationId;
     private Integer databaseId;
     private Integer jarId;
     private boolean fragment;
-//    private String statement;
     private String jobName;
     private Integer taskId;
     private Integer maxRowNum;
@@ -59,7 +59,7 @@ public class StudioExecuteDTO extends AbstractStatementDTO{
             );
         }
         return new JobConfig(
-                type,useResult, useSession, session, useRemote, clusterId,
+                type,useResult,useChangeLog,useAutoCancel, useSession, session, clusterId,
                 clusterConfigurationId,jarId, taskId, jobName, fragment,statementSet,
                 maxRowNum, checkPoint, parallelism,savePointStrategy, savePointPath,config);
     }

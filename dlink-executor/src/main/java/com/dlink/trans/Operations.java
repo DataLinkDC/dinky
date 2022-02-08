@@ -2,6 +2,7 @@ package com.dlink.trans;
 
 import com.dlink.parser.SqlType;
 import com.dlink.trans.ddl.CreateAggTableOperation;
+import com.dlink.trans.ddl.CreateCDCSourceOperation;
 import com.dlink.trans.ddl.SetOperation;
 
 /**
@@ -14,7 +15,8 @@ public class Operations {
 
     private static Operation[] operations = {
       new CreateAggTableOperation()
-//            , new SetOperation()
+            , new SetOperation()
+            , new CreateCDCSourceOperation()
     };
 
     public static SqlType getSqlTypeFromStatements(String statement){

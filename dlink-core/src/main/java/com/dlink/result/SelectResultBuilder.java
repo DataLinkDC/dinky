@@ -18,20 +18,20 @@ import java.util.stream.Stream;
 public class SelectResultBuilder implements ResultBuilder {
 
     private Integer maxRowNum;
-    private boolean printRowKind;
-    private String nullColumn;
+    private boolean isChangeLog;
+    private boolean isAutoCancel;
 
-    public SelectResultBuilder(Integer maxRowNum, String nullColumn, boolean printRowKind) {
+    public SelectResultBuilder(Integer maxRowNum, boolean isChangeLog, boolean isAutoCancel) {
         this.maxRowNum = maxRowNum;
-        this.printRowKind = printRowKind;
-        this.nullColumn = nullColumn;
+        this.isChangeLog = isChangeLog;
+        this.isAutoCancel = isAutoCancel;
     }
 
     @Override
     public IResult getResult(TableResult tableResult) {
         if (tableResult.getJobClient().isPresent()) {
             String jobId = tableResult.getJobClient().get().getJobID().toHexString();
-            ResultRunnable runnable = new ResultRunnable(tableResult, maxRowNum, printRowKind, nullColumn);
+            ResultRunnable runnable = new ResultRunnable(tableResult, maxRowNum, isChangeLog,isAutoCancel);
             Thread thread = new Thread(runnable, jobId);
             thread.start();
             return SelectResult.buildSuccess(jobId);

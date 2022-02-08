@@ -6,13 +6,13 @@ import {showJobData} from "@/components/Studio/StudioEvent/DQL";
 import {isSql} from "@/components/Studio/conf";
 import DTable from "@/components/Common/DTable";
 
-const StudioTable = (props:any) => {
+const StudioTable = (props: any) => {
 
-  const {current,result,dispatch} = props;
+  const {current,dispatch} = props;
 
-  const getColumns=(columns:[])=>{
-    let datas:any=[];
-    columns.map((item)=> {
+  const getColumns=(columns: [])=>{
+    let datas: any=[];
+    columns?.map((item) => {
       datas.push({
         field: item,
       });
@@ -21,19 +21,20 @@ const StudioTable = (props:any) => {
   };
 
   const showDetail=()=>{
-    showJobData(current.console.result.jobId,dispatch)
+    showJobData(current.key,current.console.result.jobId,dispatch)
   };
 
   const renderFlinkSQLContent = () => {
     return (<>
+      {(current.console.result.jobId&&(current.console.result.jobId.indexOf('unknown') === -1)) ? (<>
       <Button type="primary" onClick={showDetail} icon={<SearchOutlined/>}>
         获取最新数据
       </Button> &nbsp;
-      {current.console.result.jobId && (<Tag color="blue" key={current.console.result.jobId}>
+      <Tag color="blue" key={current.console.result.jobId}>
         <FireOutlined /> {current.console.result.jobId}
-      </Tag>)}
-      {result.columns?
-        <DTable dataSource={result.rowData} columns={getColumns(result.columns)}/>
+      </Tag></>):undefined}
+      {current.console.result.result&&current.console.result.result.columns?
+        <DTable dataSource={current.console.result.result.rowData} columns={getColumns(current.console.result.result.columns)}/>
         :(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)
       }
     </>)
@@ -50,12 +51,11 @@ const StudioTable = (props:any) => {
 
   return (
     <div style={{width: '100%'}}>
-      {isSql(current.task.dialect)?renderSQLContent():renderFlinkSQLContent()}
+      {current?(isSql(current.task.dialect)?renderSQLContent():renderFlinkSQLContent()):undefined}
     </div>
   );
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
   current: Studio.current,
-  result: Studio.result,
 }))(StudioTable);

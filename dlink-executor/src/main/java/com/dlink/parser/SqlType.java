@@ -12,6 +12,7 @@ public enum  SqlType {
     DROP("DROP"),
     ALTER("ALTER"),
     INSERT("INSERT"),
+    DESC("DESC"),
     DESCRIBE("DESCRIBE"),
     EXPLAIN("EXPLAIN"),
     USE("USE"),
@@ -20,6 +21,7 @@ public enum  SqlType {
     UNLOAD("UNLOAD"),
     SET("SET"),
     RESET("RESET"),
+    EXECUTE("EXECUTE"),
     UNKNOWN("UNKNOWN"),
     ;
 

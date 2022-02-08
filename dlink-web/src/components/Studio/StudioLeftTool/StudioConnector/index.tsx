@@ -153,10 +153,10 @@ const StudioConnector = (props: any) => {
   const getColumns = () => {
     let columns: any = [{
       title: "表名",
-      dataIndex: "tablename",
-      key: "tablename",
+      dataIndex: "table name",
+      key: "table name",
       sorter: true,
-      ...getColumnSearchProps("tablename"),
+      ...getColumnSearchProps("table name"),
     }, {
       title: '操作',
       dataIndex: 'option',

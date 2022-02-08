@@ -1,6 +1,7 @@
 package com.dlink.controller;
 
 import com.dlink.api.FlinkAPI;
+import com.dlink.assertion.Asserts;
 import com.dlink.cluster.FlinkClusterInfo;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
@@ -35,7 +36,16 @@ public class ClusterController {
     public Result saveOrUpdate(@RequestBody Cluster cluster) throws Exception {
         cluster.setAutoRegisters(false);
         clusterService.registersCluster(cluster);
-        return Result.succeed("新增成功");
+        return Result.succeed(Asserts.isNotNull(cluster.getId())?"修改成功":"新增成功");
+    }
+
+    /**
+     * 启用和禁用
+     */
+    @PutMapping("/enable")
+    public Result enableCluster(@RequestBody Cluster cluster) throws Exception {
+        clusterService.enableCluster(cluster);
+        return Result.succeed("修改成功");
     }
 
     /**

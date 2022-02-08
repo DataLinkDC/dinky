@@ -26,7 +26,7 @@ public class JobManagerTest {
     @Test
     public void cancelJobSelect(){
 
-        JobConfig config = new JobConfig("session-yarn",true, true, "s1", true, 2,
+        JobConfig config = new JobConfig("session-yarn",true,true, true,true, "s1", 2,
                 null, null,null, "测试", false,false, 100, 0,
                 1, 0,null,new HashMap<>());
         if(config.isUseRemote()) {

@@ -19,9 +19,7 @@ import com.dlink.result.SqlExplainResult;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -162,5 +160,10 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
         }else{
             return SqlExplainResult.success(sqlStatement.getClass().getSimpleName(), sqlStatement.toString(), null);
         }
+    }
+
+    @Override
+    public Map<String,String> getFlinkColumnTypeConversion(){
+        return new HashMap<>();
     }
 }

@@ -38,19 +38,10 @@ const StudioSetting = (props: any) => {
     return itemList;
   };
 
-  const getJarOptions = () => {
-    const itemList = [];
-    for (const item of jars) {
-      const tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias}</>);
-      itemList.push(<Option key={item.id} value={item.id} label={tag}>
-        {tag}
-      </Option>)
-    }
-    return itemList;
-  };
-
   const getEnvOptions = () => {
-    const itemList = [];
+    const itemList = [<Option key={0} value={0} label='无'>
+      无
+    </Option>];
     for (const item of env) {
       const tag = (<>{item.enabled ? <Badge status="success"/> : <Badge status="error"/>}
       {item.fragment ? <PaperClipOutlined /> : undefined}{item.alias}</>);
@@ -159,20 +150,6 @@ const StudioSetting = (props: any) => {
                 </Form.Item>
               </Col>
             </Row>) : undefined}
-          {(current.task.type === RUN_MODE.YARN_APPLICATION || current.task.type === RUN_MODE.KUBERNETES_APPLICATION) ? (
-            <Form.Item label="可执行 Jar"
-                       tooltip={`选择可执行 Jar 进行 ${current.task.type} 模式的远程提交 Jar 任务。当该参数项存在值时，将只提交可执行 Jar.`}
-                       name="jarId"
-                       className={styles.form_item}>
-              <Select
-                style={{width: '100%'}}
-                placeholder="选择可执行Jar，非必填"
-                allowClear
-                optionLabelProp="label"
-              >
-                {getJarOptions()}
-              </Select>
-            </Form.Item>) : undefined}
           <Form.Item
             label="作业名" className={styles.form_item} name="jobName"
             tooltip='设置任务名称，默认为作业名'
@@ -188,6 +165,7 @@ const StudioSetting = (props: any) => {
               placeholder="选择 FlinkSQL 环境，非必填"
               allowClear
               optionLabelProp="label"
+              defaultValue={0} value={0}
             >
               {getEnvOptions()}
             </Select>
