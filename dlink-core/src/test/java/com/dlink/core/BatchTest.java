@@ -1,12 +1,14 @@
 package com.dlink.core;
 
-import com.dlink.executor.CustomBatchTableEnvironmentImpl;
-import org.apache.flink.api.java.ExecutionEnvironment;
-import org.apache.flink.api.java.LocalEnvironment;
+import com.dlink.executor.CustomTableEnvironmentImpl;
+import org.apache.flink.api.common.RuntimeExecutionMode;
+import org.apache.flink.configuration.Configuration;
+import org.apache.flink.configuration.ExecutionOptions;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.EnvironmentSettings;
+import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableEnvironment;
 import org.apache.flink.table.api.TableResult;
-import org.apache.flink.table.api.bridge.java.internal.BatchTableEnvironmentImpl;
 import org.junit.Test;
 
 /**
@@ -17,7 +19,7 @@ import org.junit.Test;
  */
 public class BatchTest {
     @Test
-    public void batchTest(){
+    public void batchTest() {
         String source = "CREATE TABLE Orders (\n" +
                 "    order_number BIGINT,\n" +
                 "    price        DECIMAL(32,2),\n" +
@@ -42,7 +44,7 @@ public class BatchTest {
     }
 
     @Test
-    public void batchTest2(){
+    public void batchTest2() {
         String source = "CREATE TABLE Orders (\n" +
                 "    order_number BIGINT,\n" +
                 "    price        DECIMAL(32,2),\n" +
@@ -53,29 +55,18 @@ public class BatchTest {
                 "  'number-of-rows' = '100'\n" +
                 ")";
         String select = "select order_number,price,order_time from Orders";
-        LocalEnvironment environment = ExecutionEnvironment.createLocalEnvironment();
-        CustomBatchTableEnvironmentImpl batchTableEnvironment = CustomBatchTableEnvironmentImpl.create(environment);
+//        LocalEnvironment environment = ExecutionEnvironment.createLocalEnvironment();
+        StreamExecutionEnvironment environment = StreamExecutionEnvironment.createLocalEnvironment();
+        Configuration configuration = new Configuration();
+        configuration.set(ExecutionOptions.RUNTIME_MODE, RuntimeExecutionMode.BATCH);
+//        configuration.setString("execution.runtime-mode", "STREAMING");
+        TableConfig tableConfig = new TableConfig();
+        tableConfig.addConfiguration(configuration);
+        CustomTableEnvironmentImpl batchTableEnvironment = CustomTableEnvironmentImpl.create(environment,
+                EnvironmentSettings.newInstance().useBlinkPlanner().inBatchMode().build(), tableConfig);
         batchTableEnvironment.executeSql(source);
-        TableResult tableResult = batchTableEnvironment.executeSql(select);
-        tableResult.print();
-    }
-
-    @Test
-    public void batchTest3(){
-        String source = "CREATE TABLE Orders (\n" +
-                "    order_number BIGINT,\n" +
-                "    price        DECIMAL(32,2),\n" +
-                "    buyer        ROW<first_name STRING, last_name STRING>,\n" +
-                "    order_time   TIMESTAMP(3)\n" +
-                ") WITH (\n" +
-                "  'connector' = 'datagen',\n" +
-                "  'number-of-rows' = '100'\n" +
-                ")";
-        String select = "select order_number,price,order_time from Orders";
-        LocalEnvironment environment = ExecutionEnvironment.createLocalEnvironment();
-        CustomBatchTableEnvironmentImpl batchTableEnvironment = CustomBatchTableEnvironmentImpl.create(environment);
-        batchTableEnvironment.executeSql(source);
-        TableResult tableResult = batchTableEnvironment.executeSql(select);
-        tableResult.print();
+        batchTableEnvironment.executeSql(select);
+//        TableResult tableResult = batchTableEnvironment.executeSql(select);
+//        tableResult.print();
     }
 }

@@ -4,10 +4,11 @@ import com.dlink.result.SqlExplainResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.apache.flink.api.common.ExecutionConfig;
+import org.apache.flink.api.common.RuntimeExecutionMode;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.dag.Transformation;
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.configuration.ExecutionOptions;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.jsonplan.JsonPlanGenerator;
@@ -64,24 +65,29 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
         return create(executionEnvironment, EnvironmentSettings.newInstance().build());
     }
 
-    static CustomTableEnvironmentImpl create(StreamExecutionEnvironment executionEnvironment, EnvironmentSettings settings) {
+    public static CustomTableEnvironmentImpl createBatch(StreamExecutionEnvironment executionEnvironment) {
+        Configuration configuration = new Configuration();
+        configuration.set(ExecutionOptions.RUNTIME_MODE, RuntimeExecutionMode.BATCH);
+        TableConfig tableConfig = new TableConfig();
+        tableConfig.addConfiguration(configuration);
+        return create(executionEnvironment, EnvironmentSettings.newInstance().useBlinkPlanner().inBatchMode().build(), tableConfig);
+    }
+
+    public static CustomTableEnvironmentImpl create(StreamExecutionEnvironment executionEnvironment, EnvironmentSettings settings) {
         return create(executionEnvironment, settings, new TableConfig());
     }
 
     public static CustomTableEnvironmentImpl create(StreamExecutionEnvironment executionEnvironment, EnvironmentSettings settings, TableConfig tableConfig) {
-        if (!settings.isStreamingMode()) {
-            throw new TableException("StreamTableEnvironment can not run in batch mode for now, please use TableEnvironment.");
-        } else {
-            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            ModuleManager moduleManager = new ModuleManager();
-            CatalogManager catalogManager = CatalogManager.newBuilder().classLoader(classLoader).config(tableConfig.getConfiguration()).defaultCatalog(settings.getBuiltInCatalogName(), new GenericInMemoryCatalog(settings.getBuiltInCatalogName(), settings.getBuiltInDatabaseName())).executionConfig(executionEnvironment.getConfig()).build();
-            FunctionCatalog functionCatalog = new FunctionCatalog(tableConfig, catalogManager, moduleManager);
-            Map<String, String> executorProperties = settings.toExecutorProperties();
-            Executor executor = lookupExecutor(executorProperties, executionEnvironment);
-            Map<String, String> plannerProperties = settings.toPlannerProperties();
-            Planner planner = (ComponentFactoryService.find(PlannerFactory.class, plannerProperties)).create(plannerProperties, executor, tableConfig, functionCatalog, catalogManager);
-            return new CustomTableEnvironmentImpl(catalogManager, moduleManager, tableConfig, executor, functionCatalog, planner, settings.isStreamingMode(), classLoader);
-        }
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        ModuleManager moduleManager = new ModuleManager();
+        CatalogManager catalogManager = CatalogManager.newBuilder().classLoader(classLoader).config(tableConfig.getConfiguration()).defaultCatalog(settings.getBuiltInCatalogName(), new GenericInMemoryCatalog(settings.getBuiltInCatalogName(), settings.getBuiltInDatabaseName())).executionConfig(executionEnvironment.getConfig()).build();
+        FunctionCatalog functionCatalog = new FunctionCatalog(tableConfig, catalogManager, moduleManager);
+        Map<String, String> executorProperties = settings.toExecutorProperties();
+        Executor executor = lookupExecutor(executorProperties, executionEnvironment);
+        Map<String, String> plannerProperties = settings.toPlannerProperties();
+        Planner planner = (ComponentFactoryService.find(PlannerFactory.class, plannerProperties)).create(plannerProperties, executor, tableConfig, functionCatalog, catalogManager);
+        return new CustomTableEnvironmentImpl(catalogManager, moduleManager, tableConfig, executor, functionCatalog, planner, settings.isStreamingMode(), classLoader);
+
     }
 
     private static Executor lookupExecutor(Map<String, String> executorProperties, StreamExecutionEnvironment executionEnvironment) {
@@ -101,25 +107,25 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
         } else {
             List<ModifyOperation> modifyOperations = new ArrayList<>();
             for (int i = 0; i < operations.size(); i++) {
-                if(operations.get(i) instanceof ModifyOperation){
-                    modifyOperations.add((ModifyOperation)operations.get(i));
+                if (operations.get(i) instanceof ModifyOperation) {
+                    modifyOperations.add((ModifyOperation) operations.get(i));
                 }
             }
             List<Transformation<?>> trans = getPlanner().translate(modifyOperations);
-            if(execEnv instanceof ExecutorBase){
+            if (execEnv instanceof ExecutorBase) {
                 StreamGraph streamGraph = ExecutorUtils.generateStreamGraph(((ExecutorBase) execEnv).getExecutionEnvironment(), trans);
                 JSONGenerator jsonGenerator = new JSONGenerator(streamGraph);
                 String json = jsonGenerator.getJSON();
                 ObjectMapper mapper = new ObjectMapper();
-                ObjectNode objectNode =mapper.createObjectNode();
+                ObjectNode objectNode = mapper.createObjectNode();
                 try {
                     objectNode = (ObjectNode) mapper.readTree(json);
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
-                }finally {
+                } finally {
                     return objectNode;
                 }
-            }else{
+            } else {
                 throw new TableException("Unsupported SQL query! explainSql() need a single SQL to query.");
             }
         }
@@ -131,27 +137,27 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
 
     public StreamGraph getStreamGraphFromInserts(List<String> statements) {
         List<ModifyOperation> modifyOperations = new ArrayList();
-        for(String statement : statements){
+        for (String statement : statements) {
             List<Operation> operations = getParser().parse(statement);
             if (operations.size() != 1) {
                 throw new TableException("Only single statement is supported.");
             } else {
                 Operation operation = operations.get(0);
                 if (operation instanceof ModifyOperation) {
-                    modifyOperations.add((ModifyOperation)operation);
+                    modifyOperations.add((ModifyOperation) operation);
                 } else {
                     throw new TableException("Only insert statement is supported now.");
                 }
             }
         }
         List<Transformation<?>> trans = getPlanner().translate(modifyOperations);
-        if(execEnv instanceof ExecutorBase){
+        if (execEnv instanceof ExecutorBase) {
             StreamGraph streamGraph = ExecutorUtils.generateStreamGraph(((ExecutorBase) execEnv).getExecutionEnvironment(), trans);
-            if(tableConfig.getConfiguration().containsKey(PipelineOptions.NAME.key())) {
+            if (tableConfig.getConfiguration().containsKey(PipelineOptions.NAME.key())) {
                 streamGraph.setJobName(tableConfig.getConfiguration().getString(PipelineOptions.NAME));
             }
             return streamGraph;
-        }else{
+        } else {
             throw new TableException("Unsupported SQL query! ExecEnv need a ExecutorBase.");
         }
     }
@@ -181,11 +187,11 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
                 record.setExplain(operation.asSummaryString());
                 operationlist.remove(i);
                 record.setType("DDL");
-                i=i-1;
+                i = i - 1;
             }
         }
         record.setExplainTrue(true);
-        if(operationlist.size()==0){
+        if (operationlist.size() == 0) {
             //record.setExplain("DDL语句不进行解释。");
             return record;
         }
@@ -210,43 +216,43 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
         this.functionCatalog.registerTempSystemAggregateFunction(name, tableAggregateFunction, typeInfo, accTypeInfo);
     }
 
-    public boolean parseAndLoadConfiguration(String statement, ExecutionConfig executionConfig, Map<String,Object> setMap){
+    public boolean parseAndLoadConfiguration(String statement, StreamExecutionEnvironment environment, Map<String, Object> setMap) {
         List<Operation> operations = getParser().parse(statement);
-        for(Operation operation : operations){
-            if(operation instanceof SetOperation){
-                callSet((SetOperation)operation,executionConfig,setMap);
+        for (Operation operation : operations) {
+            if (operation instanceof SetOperation) {
+                callSet((SetOperation) operation, environment, setMap);
                 return true;
-            } else if (operation instanceof ResetOperation){
-                callReset((ResetOperation)operation,executionConfig,setMap);
+            } else if (operation instanceof ResetOperation) {
+                callReset((ResetOperation) operation, environment, setMap);
                 return true;
             }
         }
         return false;
     }
 
-    private void callSet(SetOperation setOperation, ExecutionConfig executionConfig,Map<String,Object> setMap){
+    private void callSet(SetOperation setOperation, StreamExecutionEnvironment environment, Map<String, Object> setMap) {
         if (setOperation.getKey().isPresent() && setOperation.getValue().isPresent()) {
             String key = setOperation.getKey().get().trim();
             String value = setOperation.getValue().get().trim();
-            Map<String,String> confMap = new HashMap<>();
-            confMap.put(key,value);
-            setMap.put(key,value);
+            Map<String, String> confMap = new HashMap<>();
+            confMap.put(key, value);
+            setMap.put(key, value);
             Configuration configuration = Configuration.fromMap(confMap);
-            executionConfig.configure(configuration,null);
+            environment.getConfig().configure(configuration, null);
             getConfig().addConfiguration(configuration);
         }
     }
 
-    private void callReset(ResetOperation resetOperation, ExecutionConfig executionConfig,Map<String,Object> setMap) {
+    private void callReset(ResetOperation resetOperation, StreamExecutionEnvironment environment, Map<String, Object> setMap) {
         if (resetOperation.getKey().isPresent()) {
             String key = resetOperation.getKey().get().trim();
-            Map<String,String> confMap = new HashMap<>();
-            confMap.put(key,null);
+            Map<String, String> confMap = new HashMap<>();
+            confMap.put(key, null);
             setMap.remove(key);
             Configuration configuration = Configuration.fromMap(confMap);
-            executionConfig.configure(configuration,null);
+            environment.getConfig().configure(configuration, null);
             getConfig().addConfiguration(configuration);
-        }else {
+        } else {
             setMap.clear();
         }
     }

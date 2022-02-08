@@ -1,6 +1,6 @@
 package com.dlink.executor;
 
-import org.apache.flink.api.java.ExecutionEnvironment;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 /**
  * AppBatchExecutor
@@ -8,16 +8,16 @@ import org.apache.flink.api.java.ExecutionEnvironment;
  * @author wenmo
  * @since 2022/2/7 22:14
  */
-public class AppBatchExecutor extends AbstractBatchExecutor {
+public class AppBatchExecutor extends Executor {
 
     public AppBatchExecutor(ExecutorSetting executorSetting) {
         this.executorSetting = executorSetting;
-        this.environment = ExecutionEnvironment.createLocalEnvironment();
+        this.environment = StreamExecutionEnvironment.createLocalEnvironment();
         init();
     }
 
     @Override
     CustomTableEnvironment createCustomTableEnvironment() {
-        return CustomBatchTableEnvironmentImpl.create(environment);
+        return CustomTableEnvironmentImpl.createBatch(environment);
     }
 }
