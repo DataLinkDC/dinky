@@ -30,6 +30,10 @@
         </dependency>
         <dependency>
             <groupId>com.dlink</groupId>
+            <artifactId>dlink-client-base</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.dlink</groupId>
             <artifactId>dlink-executor</artifactId>
         </dependency>
     </dependencies>
