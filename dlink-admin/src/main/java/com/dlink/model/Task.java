@@ -25,7 +25,7 @@ import java.util.Map;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dlink_task")
-public class Task extends SuperEntity{
+public class Task extends SuperEntity {
 
     private static final long serialVersionUID = 5988972129893667154L;
 
@@ -47,6 +47,8 @@ public class Task extends SuperEntity{
     private boolean fragment;
 
     private boolean statementSet;
+
+    private boolean batchModel;
 
     private Integer clusterId;
 
@@ -74,13 +76,13 @@ public class Task extends SuperEntity{
     private List<Savepoints> savepoints;
 
     @TableField(exist = false)
-    private List<Map<String,String>> config = new ArrayList<>();
+    private List<Map<String, String>> config = new ArrayList<>();
 
 
-    public List<Map<String,String>> parseConfig(){
+    public List<Map<String, String>> parseConfig() {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            if(Asserts.isNotNullString(configJson)) {
+            if (Asserts.isNotNullString(configJson)) {
                 config = objectMapper.readValue(configJson, ArrayList.class);
             }
         } catch (JsonProcessingException e) {
@@ -89,16 +91,17 @@ public class Task extends SuperEntity{
         return config;
     }
 
-    public JobConfig buildSubmitConfig(){
+    public JobConfig buildSubmitConfig() {
         boolean useRemote = true;
-        if(clusterId==null||clusterId==0){
+        if (clusterId == null || clusterId == 0) {
             useRemote = false;
         }
-        Map<String,String> map = new HashMap<>();
-        for(Map<String,String> item : config){
-            map.put(item.get("key"),item.get("value"));
+        Map<String, String> map = new HashMap<>();
+        for (Map<String, String> item : config) {
+            map.put(item.get("key"), item.get("value"));
         }
-        return new JobConfig(type,false,false,useRemote,clusterId,clusterConfigurationId,jarId,getId(),alias,fragment,statementSet,checkPoint,parallelism,savePointStrategy,savePointPath,map);
+        return new JobConfig(type, false, false, useRemote, clusterId, clusterConfigurationId, jarId, getId(),
+                alias, fragment, statementSet, batchModel, checkPoint, parallelism, savePointStrategy, savePointPath, map);
     }
 
 }

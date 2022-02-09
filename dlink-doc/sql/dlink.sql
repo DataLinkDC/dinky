@@ -254,6 +254,7 @@ CREATE TABLE `dlink_task`  (
 	`parallelism` int(4) NULL DEFAULT NULL COMMENT 'parallelism',
 	`fragment` tinyint(1) NULL DEFAULT NULL COMMENT 'fragment',
 	`statement_set` tinyint(1) NULL DEFAULT NULL COMMENT '启用语句集',
+	`batch_model` tinyint(1) NULL DEFAULT 0 COMMENT '使用批模式',
 	`cluster_id` int(11) NULL DEFAULT NULL COMMENT 'Flink集群ID',
 	`cluster_configuration_id` int(11) NULL DEFAULT NULL COMMENT '集群配置ID',
 	`database_id` int(11) NULL DEFAULT NULL COMMENT '数据源ID',

@@ -52,10 +52,10 @@ public class SetOperation extends AbstractOperation implements Operation {
         if(Asserts.isNotNullMap(map)&&map.size()==2) {
             Map<String, String> confMap = new HashMap<>();
             confMap.put(StringUtils.join(map.get("SET"), "."), StringUtils.join(map.get("="), ","));
-            executor.getCustomTableEnvironmentImpl().getConfig().addConfiguration(Configuration.fromMap(confMap));
+            executor.getCustomTableEnvironment().getConfig().addConfiguration(Configuration.fromMap(confMap));
             Configuration configuration = Configuration.fromMap(confMap);
-            executor.getEnvironment().getConfig().configure(configuration,null);
-            executor.getCustomTableEnvironmentImpl().getConfig().addConfiguration(configuration);
+            executor.getExecutionConfig().configure(configuration,null);
+            executor.getCustomTableEnvironment().getConfig().addConfiguration(configuration);
         }
     }
 }

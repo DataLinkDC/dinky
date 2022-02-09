@@ -3,14 +3,14 @@ package com.dlink.executor;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 /**
- * LocalStreamExecuter
+ * LocalBatchExecutor
  *
  * @author wenmo
- * @since 2021/5/25 13:48
- **/
-public class LocalStreamExecutor extends Executor {
+ * @since 2022/2/4 0:04
+ */
+public class LocalBatchExecutor extends Executor {
 
-    public LocalStreamExecutor(ExecutorSetting executorSetting) {
+    public LocalBatchExecutor(ExecutorSetting executorSetting) {
         this.executorSetting = executorSetting;
         this.environment = StreamExecutionEnvironment.createLocalEnvironment();
         init();
@@ -18,6 +18,6 @@ public class LocalStreamExecutor extends Executor {
 
     @Override
     CustomTableEnvironment createCustomTableEnvironment() {
-        return CustomTableEnvironmentImpl.create(environment);
+        return CustomTableEnvironmentImpl.createBatch(environment);
     }
 }

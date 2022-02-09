@@ -40,7 +40,7 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
         ,cdcSource.getPassword(),cdcSource.getCheckpoint(),cdcSource.getParallelism(),cdcSource.getDatabase(),cdcSource.getTable()
         ,cdcSource.getTopic(),cdcSource.getBrokers());
         try {
-            FlinkCDCMergeBuilder.buildMySqlCDC(executor.getEnvironment(),config);
+            FlinkCDCMergeBuilder.buildMySqlCDC(executor.getStreamExecutionEnvironment(),config);
         } catch (Exception e) {
             e.printStackTrace();
         }

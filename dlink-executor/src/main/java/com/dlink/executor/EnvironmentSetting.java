@@ -18,6 +18,7 @@ public class EnvironmentSetting {
     private String host;
     private int port;
     private boolean useRemote;
+
     public static final EnvironmentSetting LOCAL = new EnvironmentSetting(false);
 
     public EnvironmentSetting(boolean useRemote) {
