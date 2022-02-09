@@ -1,0 +1,63 @@
+<!-- docs/zh-CN/_sidebar.md -->
+
+
+- [Dinky简介](/zh-CN/introduce.md)
+- 概念和架构
+  - [系统架构](/zh-CN/architecture.md)
+  - [基本概念](/zh-CN/concept.md)
+- [功能](/zh-CN/feature.md)
+- 入门
+  - [下载](/zh-CN/quick_start/download.md)
+  - [编译](/zh-CN/quick_start/build.md)
+  - [部署](/zh-CN/quick_start/deploy.md)
+- 基本使用指南
+- 参考手册
+  - FlinkSQL Studio
+    - 作业和目录创建
+    - 作业开发
+    - 作业配置
+    - 作业管理
+    - 会话管理
+  - 注册中心
+    - 集群实例
+    - 集群配置
+    - jar管理
+    - 数据源管理
+    - 文档管理
+  - 系统设置
+    - 用户管理
+    - Flink设置
+  - 运维中心
+    - 生命周期管理
+    - 作业监控
+  - api
+- 最佳实践
+  - [Yarn提交实践指南](/zh-CN/practice/yarnsubmit.md)
+  - [Dlink 核心概念及实现原理详解](/zh-CN/practice/principle.md)
+  - [AGGTABLE 表值聚合的实践](/zh-CN/practice/aggtable.md)
+- 扩展
+  - 集成
+    - [Flink-CDC集成](/zh-CN/extend/flinkcdc.md)
+    - [Flink-CDC-Kafka多源合并](/zh-CN/extend/Flink_CDC_kafka_Multi_source_merger.md)
+    - [hive集成](/zh-CN/extend/hive.md)
+    - [clickhouse集成](/zh-CN/extend/clickhouse.md) 
+    - [Doris集成](/zh-CN/extend/doris.md) 
+    - [Hudi集成](/zh-CN/extend/hudi.md)
+    - [Iceberg集成](/zh-CN/extend/iceberg.md)
+    - [Flink UDF集成](/zh-CN/extend/udf.md)
+    - [DolphinScheduler集成](/zh-CN/extend/dolphinscheduler.md)
+    - [DataSphereStudio集成](/zh-CN/extend/dataspherestudio.md)
+  - 其他
+    - [扩展Flink版本](/zh-CN/extend/flinkversion.md)
+    - [扩展连接器](/zh-CN/extend/connector.md)
+    - [扩展数据源](/zh-CN/extend/datasource.md)
+    - [FlinkSQL 编辑器自动补全函数](/zh-CN/extend/completion.md)
+- 开发者指南
+- 常见问题
+- 历史版本
+- [近期计划](/zh-CN/others/plans.md)
+- [致谢](/zh-CN/others/thanks.md)
+- [交流与贡献](/zh-CN/others/comminicate.md)
+- [roadmap](/zh-CN/roadmap.md)
+
+    
