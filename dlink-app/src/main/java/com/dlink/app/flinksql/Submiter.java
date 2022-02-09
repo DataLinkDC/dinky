@@ -145,7 +145,7 @@ public class Submiter {
             }
             logger.info("正在执行 FlinkSQL 语句集： " + String.join(FlinkSQLConstant.SEPARATOR, executes));
             try {
-                executor.getEnvironment().execute(executorSetting.getJobName());
+                executor.execute(executorSetting.getJobName());
             } catch (Exception e) {
                 e.printStackTrace();
             }

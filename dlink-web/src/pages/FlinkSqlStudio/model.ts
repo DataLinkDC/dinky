@@ -70,6 +70,7 @@ export type TaskType = {
   parallelism?: number,
   fragment?: boolean,
   statementSet?: boolean,
+  batchModel?: boolean,
   config?: [],
   clusterId?: any,
   clusterName?: string,
@@ -355,7 +356,7 @@ const Model: ModelType = {
       const {deleteType, current} = payload;
       const newTabs = state.tabs;
       const firstKey = newTabs.panes[0].key;
-      const newCurrent = newTabs.panes[0];
+      let newCurrent = newTabs.panes[0];
       if (deleteType == 'CLOSE_OTHER') {
         const keys = [firstKey, current.key];
         newCurrent = current;

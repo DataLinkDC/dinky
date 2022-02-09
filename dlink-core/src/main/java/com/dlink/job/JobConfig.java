@@ -42,6 +42,7 @@ public class JobConfig {
     private String jobName;
     private boolean useSqlFragment;
     private boolean useStatementSet;
+    private boolean useBatchModel;
     private Integer maxRowNum;
     private Integer checkpoint;
     private Integer parallelism;
@@ -66,7 +67,7 @@ public class JobConfig {
 
     public JobConfig(String type, boolean useResult, boolean useChangeLog, boolean useAutoCancel, boolean useSession, String session, Integer clusterId,
                      Integer clusterConfigurationId, Integer jarId, Integer taskId, String jobName, boolean useSqlFragment,
-                     boolean useStatementSet, Integer maxRowNum, Integer checkpoint, Integer parallelism,
+                     boolean useStatementSet, boolean useBatchModel, Integer maxRowNum, Integer checkpoint, Integer parallelism,
                      Integer savePointStrategyValue, String savePointPath, Map<String,String> config) {
         this.type = type;
         this.useResult = useResult;
@@ -82,6 +83,7 @@ public class JobConfig {
         this.jobName = jobName;
         this.useSqlFragment = useSqlFragment;
         this.useStatementSet = useStatementSet;
+        this.useBatchModel = useBatchModel;
         this.maxRowNum = maxRowNum;
         this.checkpoint = checkpoint;
         this.parallelism = parallelism;
@@ -126,7 +128,7 @@ public class JobConfig {
 
     public JobConfig(String type,boolean useResult, boolean useSession, boolean useRemote, Integer clusterId,
                      Integer clusterConfigurationId, Integer jarId, Integer taskId, String jobName, boolean useSqlFragment,
-                     boolean useStatementSet,Integer checkpoint, Integer parallelism, Integer savePointStrategyValue,
+                     boolean useStatementSet,boolean useBatchModel,Integer checkpoint, Integer parallelism, Integer savePointStrategyValue,
                      String savePointPath,Map<String,String> config) {
         this.type = type;
         this.useResult = useResult;
@@ -139,6 +141,7 @@ public class JobConfig {
         this.jobName = jobName;
         this.useSqlFragment = useSqlFragment;
         this.useStatementSet = useStatementSet;
+        this.useBatchModel = useBatchModel;
         this.checkpoint = checkpoint;
         this.parallelism = parallelism;
         this.savePointStrategy = SavePointStrategy.get(savePointStrategyValue);
@@ -147,7 +150,7 @@ public class JobConfig {
     }
 
     public ExecutorSetting getExecutorSetting(){
-        return new ExecutorSetting(checkpoint,parallelism,useSqlFragment,useStatementSet,savePointPath,jobName,config);
+        return new ExecutorSetting(checkpoint,parallelism,useSqlFragment,useStatementSet,useBatchModel,savePointPath,jobName,config);
     }
 
     public void setSessionConfig(SessionConfig sessionConfig){

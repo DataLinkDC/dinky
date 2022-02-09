@@ -3,14 +3,14 @@ package com.dlink.executor;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 /**
- * RemoteStreamExecutor
+ * RemoteBatchExecutor
  *
  * @author wenmo
- * @since 2021/5/25 14:05
- **/
-public class RemoteStreamExecutor extends Executor {
+ * @since 2022/2/7 22:10
+ */
+public class RemoteBatchExecutor extends Executor {
 
-    public RemoteStreamExecutor(EnvironmentSetting environmentSetting, ExecutorSetting executorSetting) {
+    public RemoteBatchExecutor(EnvironmentSetting environmentSetting, ExecutorSetting executorSetting) {
         this.environmentSetting = environmentSetting;
         this.executorSetting = executorSetting;
         this.environment = StreamExecutionEnvironment.createRemoteEnvironment(environmentSetting.getHost(), environmentSetting.getPort());
@@ -19,6 +19,6 @@ public class RemoteStreamExecutor extends Executor {
 
     @Override
     CustomTableEnvironment createCustomTableEnvironment() {
-        return CustomTableEnvironmentImpl.create(environment);
+        return CustomTableEnvironmentImpl.createBatch(environment);
     }
 }

@@ -524,4 +524,10 @@ ALTER TABLE `dlink_task`
 update dlink_task set dialect = 'FlinkJar' where jar_id is not null;
 update dlink_catalogue set type = 'FlinkJar' where task_id in (select id as task_id from dlink_task where jar_id is not null);
 
+-- ----------------------------
+-- 0.6.0-SNAPSHOT 2022-02-07
+-- ----------------------------
+ALTER TABLE `dlink_task`
+    ADD COLUMN `batch_model` tinyint(1) NULL DEFAULT 0 COMMENT '使用批模式' AFTER `statement_set`;
+
 SET FOREIGN_KEY_CHECKS = 1;

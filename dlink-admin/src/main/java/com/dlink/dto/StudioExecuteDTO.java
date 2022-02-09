@@ -27,6 +27,7 @@ public class StudioExecuteDTO extends AbstractStatementDTO{
     private boolean useChangeLog;
     private boolean useAutoCancel;
     private boolean statementSet;
+    private boolean batchModel;
     private boolean useSession;
     private String session;
     private Integer clusterId;
@@ -60,7 +61,7 @@ public class StudioExecuteDTO extends AbstractStatementDTO{
         }
         return new JobConfig(
                 type,useResult,useChangeLog,useAutoCancel, useSession, session, clusterId,
-                clusterConfigurationId,jarId, taskId, jobName, fragment,statementSet,
+                clusterConfigurationId,jarId, taskId, jobName, fragment,statementSet,batchModel,
                 maxRowNum, checkPoint, parallelism,savePointStrategy, savePointPath,config);
     }
 }
