@@ -153,7 +153,11 @@ mkdir plugins
 ```
 https://mvnrepository.com/artifact/org.apache.flink/flink-shaded-hadoop-3-uber?repo=cloudera-repos
 ```
-
+解压后结构如上所示，修改配置文件内容。lib 文件夹下存放 dlink 自身的扩展文件，plugins 文件夹下存放 flink 及 hadoop 的官方扩展文件（ 如果plugins下引入了flink-shaded-hadoop-3-uber 或者其他可能冲突的jar，请手动删除内部的 javax.servlet 等冲突内容）。其中 plugins 中的所有 jar 需要根据版本号自行下载并添加，才能体验完整功能，当然也可以放自己修改的 Flink 源码编译包。extends 文件夹只作为扩展插件的备份管理，不会被 dlink 加载。
+请检查 plugins 下是否添加了 flink 对应版本的 flink-dist,flink-table,flink-shaded-hadoop-3-uber 等如上所示的依赖！！！
+请检查 plugins 下是否添加了 flink 对应版本的 flink-dist,flink-table,flink-shaded-hadoop-3-uber 等如上所示的依赖！！！
+请检查 plugins 下是否添加了 flink 对应版本的 flink-dist,flink-table,flink-shaded-hadoop-3-uber 等如上所示的依赖！！！
+如果plugins下引入了flink-shaded-hadoop-3-uber 的jar，请手动删除内部的 javax.servlet 后既可以访问默认 8888 端口号（如127.0.0.1:8888），正常打开前端页面。
 如果是CDH及HDP使用开源flink-shade对Dlink没有任何影响，其他用到的依赖取决于CDH或者HDP与开源版本的兼容性，需要自行根据兼容性添加依赖即可正常使用 Dlink 的所有功能。
 
 ### 启动Dlink
