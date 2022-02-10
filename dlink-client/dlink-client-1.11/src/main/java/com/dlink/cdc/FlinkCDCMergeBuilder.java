@@ -38,10 +38,26 @@ public class FlinkCDCMergeBuilder {
         if(Asserts.isNotNull(config.getTable())&&config.getTable().size()>0){
             sourceBuilder.tableList(config.getTable().toArray(new String[0]));
         }
-        MySqlSource<String> sourceFunction = sourceBuilder
-                .deserializer(new JsonDebeziumDeserializationSchema())
-                .startupOptions(StartupOptions.latest())
-                .build();
+        MySqlSourceBuilder<String> builder = sourceBuilder
+                .deserializer(new JsonDebeziumDeserializationSchema());
+        if(Asserts.isNotNullString(config.getStartupMode())){
+            switch (config.getStartupMode().toUpperCase()){
+                case "INITIAL":
+                    builder.startupOptions(StartupOptions.initial());
+                    break;
+                case "EARLIEST":
+                    builder.startupOptions(StartupOptions.earliest());
+                    break;
+                case "LATEST":
+                    builder.startupOptions(StartupOptions.latest());
+                    break;
+                default:
+                    builder.startupOptions(StartupOptions.latest());
+            }
+        }else {
+            builder.startupOptions(StartupOptions.latest());
+        }
+        MySqlSource<String> sourceFunction = builder.build();
         DataStreamSource<String> streamSource = env.fromSource(sourceFunction, WatermarkStrategy.noWatermarks(), "MySQL Source");
         streamSource.addSink(getKafkaProducer(config.getBrokers(),config.getTopic()));
     }
