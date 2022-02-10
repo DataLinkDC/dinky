@@ -29,10 +29,11 @@ public class CDCSource {
     private Integer parallelism;
     private List<String> database;
     private List<String> table;
+    private String startupMode;
     private String topic;
     private String brokers;
 
-    public CDCSource(String statement, String name, String hostname, Integer port, String username, String password, Integer checkpoint, Integer parallelism, String topic, String brokers) {
+    public CDCSource(String statement, String name, String hostname, Integer port, String username, String password, Integer checkpoint, Integer parallelism, String startupMode, String topic, String brokers) {
         this.statement = statement;
         this.name = name;
         this.hostname = hostname;
@@ -41,21 +42,7 @@ public class CDCSource {
         this.password = password;
         this.checkpoint = checkpoint;
         this.parallelism = parallelism;
-        this.topic = topic;
-        this.brokers = brokers;
-    }
-
-    public CDCSource(String statement, String name, String hostname, Integer port, String username, String password, Integer checkpoint, Integer parallelism, List<String> database, List<String> table, String topic, String brokers) {
-        this.statement = statement;
-        this.name = name;
-        this.hostname = hostname;
-        this.port = port;
-        this.username = username;
-        this.password = password;
-        this.checkpoint = checkpoint;
-        this.parallelism = parallelism;
-        this.database = database;
-        this.table = table;
+        this.startupMode = startupMode;
         this.topic = topic;
         this.brokers = brokers;
     }
@@ -71,6 +58,7 @@ public class CDCSource {
                 config.get("password"),
                 Integer.valueOf(config.get("checkpoint")),
                 Integer.valueOf(config.get("parallelism")),
+                config.get("startup"),
                 config.get("topic"),
                 config.get("brokers")
         );
@@ -189,5 +177,13 @@ public class CDCSource {
 
     public void setBrokers(String brokers) {
         this.brokers = brokers;
+    }
+
+    public String getStartupMode() {
+        return startupMode;
+    }
+
+    public void setStartupMode(String startupMode) {
+        this.startupMode = startupMode;
     }
 }
