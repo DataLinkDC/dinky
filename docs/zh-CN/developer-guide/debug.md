@@ -61,7 +61,7 @@ IDEA 里 Build → Build  Project 。
 mvn clean install -Dmaven.test.skip=true
 ```
 
-打包最终位于根目录 build 下，`dlink-release-0.5.0-SNAPSHOT.tar.gz` 其大小约为 40 M。
+打包最终位于根目录 build 下，`dlink-release-x.x.x.tar.gz` 其大小约为 40 M。
 
 ### 问题
 
@@ -280,9 +280,7 @@ Dlink 的官网实现，大佬们可以修改或贡献 markdown。多多分享�
 
 注册集群配置 ==> 异步提交 ==> StudioService ==> JobManager ==> Executor ==> TaskId & JDBC ==> Gateway ==> YarnApplicationGateway==> YarnClient ==> dlink-app.jar ==> Executor ==> AppStreamExecutor ==> CustomTableEnvironmentImpl ==> LocalEnvironmentFlink Yarn Application Cluster
 
-## 总结
+## 说明
 
-以为内容为大家带来了 Dlink 的基本功能 IDEA 部署调试步骤，并简单介绍了各模块的作用，也清晰的描述了各执行模式下 FlinkSQL 实现免 Jar 提交的代码思路。在了解以上内容后，相信大家已经可以动手改造 Dlink 了，欢迎大家及时加入 Dlink 社区成为核心贡献者，共建共赢。
-
-后续文章将指引大家如何快速拓展 Dlink 的功能组件，敬请期待。
+以为内容是 Dinky在IDEA 部署调试步骤，并简单介绍了各模块的作用，也清晰的描述了各执行模式下 FlinkSQL 实现免 Jar 提交的代码思路。在了解以上内容后，可以动手改造 Dinky。
 

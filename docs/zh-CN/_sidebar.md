@@ -7,7 +7,6 @@
   - [基本概念](/zh-CN/concept.md)
 - [功能](/zh-CN/feature.md)
 - 入门
-  - [下载](/zh-CN/quick_start/download.md)
   - [编译](/zh-CN/quick_start/build.md)
   - [部署](/zh-CN/quick_start/deploy.md)
 - 基本使用指南
@@ -54,8 +53,6 @@
     - [FlinkSQL 编辑器自动补全函数](/zh-CN/extend/completion.md)
 - 开发者指南
 - 常见问题
-- 历史版本
-- [近期计划](/zh-CN/others/plans.md)
 - [致谢](/zh-CN/others/thanks.md)
 - [交流与贡献](/zh-CN/others/comminicate.md)
 - [roadmap](/zh-CN/roadmap.md)
