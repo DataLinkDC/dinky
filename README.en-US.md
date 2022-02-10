@@ -1,4 +1,4 @@
-<font size=7>[English](README.en-US.md)| 简体中文</font>
+<font size=7>| [简体中文](README.zh-CN.md)</font>
 # Dinky 
 Dinky是一个基于Apache Flink封装的一个可视化的、轻量级可交互式的Studio，可以在线开发、补全、校验 、执行、预览 FlinkSQL，支持 Flink 官方所有语法及其增强语法，并且可以同时对多 Flink 集群实例进行提交、停止、SavePoint 等运维操作。
 
