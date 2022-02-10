@@ -15,7 +15,7 @@
     window.$docsify = {
       name: 'Dinky',
       nameLink: {
-        '/': '/',
+        '/zh-CN/': '/zh-CN/',
         '/en-US/': '/en-US/',
       },
       repo: 'https://github.com/DataLinkDC/dlink',
@@ -26,11 +26,49 @@
       autoHeader: true,
       formatUpdated: '{MM}/{DD} {HH}:{mm}',
       ext: '.md',
-      loadNavbar: true
+      loadNavbar: true,
+      loadSidebar: true,
+      subMaxLevel: 4,
+      auto2top: true,
+      search: {
+            maxAge: 86400000, // 过期时间，单位毫秒，默认一天
+            paths: 'auto',
+            placeholder: '搜索',
+            noData: '没有记录！'
+          },
+            // 分页导航插件
+            pagination: {
+                previousText: '上一页',
+                nextText: '下一页',
+                crossChapter: true,
+                crossChapterText: true
+            },
+            // 文本高亮
+            'flexible-alerts': {
+                style: 'flat',
+                note: {
+                    label: "信息"
+                },
+                tip: {
+                    label: "提示"
+                },
+                warning: {
+                    label: "注意"
+                },
+                attention: {
+                    label: "切记"
+                }
+            },
+            sidebarDisplayLevel: 4,
     }
   </script>
   <!-- Docsify v4 -->
   <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
   <script src="//cdn.jsdelivr.net/npm/docsify-copy-code/dist/docsify-copy-code.min.js"></script>
+  <script  src ="//cdn.jsdelivr.net/npm/docsify-sidebar-collapse/dist/docsify-sidebar-collapse.min.js"></script >
+  <script src="https://unpkg.com/docsify-plugin-flexible-alerts"></script>
+  <script src="//unpkg.com/docsify-pagination/dist/docsify-pagination.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify-sidebar-collapse/dist/sidebar.min.css"/>
+  <script src="//unpkg.com/docsify/lib/plugins/search.js"></script>
 </body>
 </html>

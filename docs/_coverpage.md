@@ -11,4 +11,4 @@
 
 [GitHub](https://github.com/DataLinkDC/dlink)
 [Gitee](https://gitee.com/DataLinkDC/dlink)
-[Get Started](/guide/quickstart)
+[Get Started](/zh-CN/introduce)

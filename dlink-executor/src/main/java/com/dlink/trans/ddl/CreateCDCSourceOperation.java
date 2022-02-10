@@ -38,7 +38,7 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
         CDCSource cdcSource = CDCSource.build(statement);
         FlinkCDCConfig config = new FlinkCDCConfig(cdcSource.getHostname(),cdcSource.getPort(),cdcSource.getUsername()
         ,cdcSource.getPassword(),cdcSource.getCheckpoint(),cdcSource.getParallelism(),cdcSource.getDatabase(),cdcSource.getTable()
-        ,cdcSource.getTopic(),cdcSource.getBrokers());
+        ,cdcSource.getStartupMode(),cdcSource.getTopic(),cdcSource.getBrokers());
         try {
             FlinkCDCMergeBuilder.buildMySqlCDC(executor.getStreamExecutionEnvironment(),config);
         } catch (Exception e) {

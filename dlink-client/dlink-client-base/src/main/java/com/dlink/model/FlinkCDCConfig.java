@@ -18,13 +18,14 @@ public class FlinkCDCConfig {
     private Integer parallelism;
     private List<String> database;
     private List<String> table;
+    private String startupMode;
     private String topic;
     private String brokers;
 
     public FlinkCDCConfig() {
     }
 
-    public FlinkCDCConfig(String hostname, int port, String username, String password, int checkpoint, int parallelism, List<String> database, List<String> table, String topic, String brokers) {
+    public FlinkCDCConfig(String hostname, int port, String username, String password, int checkpoint, int parallelism, List<String> database, List<String> table, String startupMode, String topic, String brokers) {
         this.hostname = hostname;
         this.port = port;
         this.username = username;
@@ -33,6 +34,7 @@ public class FlinkCDCConfig {
         this.parallelism = parallelism;
         this.database = database;
         this.table = table;
+        this.startupMode = startupMode;
         this.topic = topic;
         this.brokers = brokers;
     }
@@ -45,11 +47,11 @@ public class FlinkCDCConfig {
         this.hostname = hostname;
     }
 
-    public int getPort() {
+    public Integer getPort() {
         return port;
     }
 
-    public void setPort(int port) {
+    public void setPort(Integer port) {
         this.port = port;
     }
 
@@ -69,19 +71,19 @@ public class FlinkCDCConfig {
         this.password = password;
     }
 
-    public int getCheckpoint() {
+    public Integer getCheckpoint() {
         return checkpoint;
     }
 
-    public void setCheckpoint(int checkpoint) {
+    public void setCheckpoint(Integer checkpoint) {
         this.checkpoint = checkpoint;
     }
 
-    public int getParallelism() {
+    public Integer getParallelism() {
         return parallelism;
     }
 
-    public void setParallelism(int parallelism) {
+    public void setParallelism(Integer parallelism) {
         this.parallelism = parallelism;
     }
 
@@ -115,5 +117,13 @@ public class FlinkCDCConfig {
 
     public void setBrokers(String brokers) {
         this.brokers = brokers;
+    }
+
+    public String getStartupMode() {
+        return startupMode;
+    }
+
+    public void setStartupMode(String startupMode) {
+        this.startupMode = startupMode;
     }
 }
