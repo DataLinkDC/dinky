@@ -1,6 +1,7 @@
 <font size=7>English|[简体中文](README.zh-CN.md)</font>
 # Dinky 
 Dinky is a visual, lightweight and interactive Studio based on Apache Flink,You can develop, complete, verify, execute, and preview FlinkSQL online, and support all official Flink syntax and its enhanced syntax.In addition, operation and maintenance operations such as submitting, stopping, and saving points can be performed on multiple Flink cluster instances at the same time.
+
 Learn more about Dinky at http://www.dlink.top
 
 ## Main features
