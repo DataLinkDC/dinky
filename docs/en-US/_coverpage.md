@@ -1,6 +1,6 @@
-![logo](../_media/dlink.svg)
+![logo](../_media/dinky.svg)
 
-# Dlink <small>0.4</small>
+# Dlink <small>0.5</small>
 
 > Dlink was born for Apache Flink, making Flink SQL smoother.
 
@@ -11,4 +11,4 @@
 
 [GitHub](https://github.com/DataLinkDC/dlink)
 [Gitee](https://gitee.com/DataLinkDC/dlink)
-[Get Started](/en-US/guide/quickstart)
+[Get Started](/en-US/introduce)
