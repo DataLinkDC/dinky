@@ -27,6 +27,7 @@ import com.dlink.session.SessionConfig;
 import com.dlink.session.SessionInfo;
 import com.dlink.session.SessionPool;
 import com.dlink.trans.Operations;
+import com.dlink.utils.LogUtil;
 import com.dlink.utils.SqlUtil;
 import com.dlink.utils.UDFUtil;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -44,6 +45,8 @@ import org.apache.flink.yarn.configuration.YarnConfigOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -366,16 +369,9 @@ public class JobManager {
             job.setStatus(Job.JobStatus.SUCCESS);
             success();
         } catch (Exception e) {
-            e.printStackTrace();
-            StackTraceElement[] trace = e.getStackTrace();
-            StringBuffer resMsg = new StringBuffer("");
-            for (StackTraceElement s : trace) {
-                resMsg.append(" \n " + s + "  ");
-            }
-            LocalDateTime now = LocalDateTime.now();
-            job.setEndTime(now);
+            String error = LogUtil.getError("Exception in executing FlinkSQL:\n" + currentSql,e);
+            job.setEndTime(LocalDateTime.now());
             job.setStatus(Job.JobStatus.FAILED);
-            String error = now.toString() + ":" + "Exception in executing FlinkSQL:\n" + currentSql + " \nError message: " + e.getMessage() + " \n >>> PrintStackTrace <<<" + resMsg.toString();
             job.setError(error);
             failed();
             close();
@@ -490,16 +486,9 @@ public class JobManager {
             job.setStatus(Job.JobStatus.SUCCESS);
             success();
         } catch (Exception e) {
-            e.printStackTrace();
-            StackTraceElement[] trace = e.getStackTrace();
-            StringBuffer resMsg = new StringBuffer("");
-            for (StackTraceElement s : trace) {
-                resMsg.append(" \n " + s + "  ");
-            }
-            LocalDateTime now = LocalDateTime.now();
-            job.setEndTime(now);
+            String error = LogUtil.getError("Exception in executing Jar：\n" + config.getGatewayConfig().getAppConfig().getUserJarPath(),e);
+            job.setEndTime(LocalDateTime.now());
             job.setStatus(Job.JobStatus.FAILED);
-            String error = now.toString() + ":" + "Exception in executing Jar：\n" + config.getGatewayConfig().getAppConfig().getUserJarPath() + " \nError message: " + e.getMessage() + " \n >>> PrintStackTrace <<<" + resMsg.toString();
             job.setError(error);
             failed();
             close();
