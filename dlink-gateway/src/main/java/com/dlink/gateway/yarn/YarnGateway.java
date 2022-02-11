@@ -8,6 +8,7 @@ import com.dlink.gateway.exception.GatewayException;
 import com.dlink.gateway.model.JobInfo;
 import com.dlink.gateway.result.SavePointResult;
 import com.dlink.gateway.result.TestResult;
+import com.dlink.utils.LogUtil;
 import org.apache.flink.api.common.JobID;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.configuration.DeploymentOptions;
@@ -29,6 +30,8 @@ import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.client.api.YarnClient;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.URI;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -141,6 +144,9 @@ public abstract class YarnGateway extends AbstractGateway {
             result.setJobInfos(jobInfos);
         }catch (Exception e){
             e.printStackTrace();
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            e.printStackTrace(pw);
             logger.error(e.getMessage());
             result.fail(e.getMessage());
         }
@@ -184,9 +190,7 @@ public abstract class YarnGateway extends AbstractGateway {
             runSavePointJob(jobInfos,clusterClient,savePoint);
             result.setJobInfos(jobInfos);
         }catch (Exception e){
-            e.printStackTrace();
-            logger.error(e.getMessage());
-            result.fail(e.getMessage());
+            result.fail(LogUtil.getError(e));
         }
         return result;
     }

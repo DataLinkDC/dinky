@@ -8,6 +8,7 @@ import com.dlink.gateway.exception.GatewayException;
 import com.dlink.gateway.model.JobInfo;
 import com.dlink.gateway.result.SavePointResult;
 import com.dlink.gateway.result.TestResult;
+import com.dlink.utils.LogUtil;
 import org.apache.flink.api.common.JobID;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.configuration.Configuration;
@@ -102,9 +103,7 @@ public abstract class KubernetesGateway extends AbstractGateway {
             runSavePointJob(jobInfos,clusterClient,savePoint);
             result.setJobInfos(jobInfos);
         }catch (Exception e){
-            e.printStackTrace();
-            logger.error(e.getMessage());
-            result.fail(e.getMessage());
+            result.fail(LogUtil.getError(e));
         }
         return null;
     }
@@ -139,9 +138,7 @@ public abstract class KubernetesGateway extends AbstractGateway {
             runSavePointJob(jobInfos,clusterClient,savePoint);
             result.setJobInfos(jobInfos);
         }catch (Exception e){
-            e.printStackTrace();
-            logger.error(e.getMessage());
-            result.fail(e.getMessage());
+            result.fail(LogUtil.getError(e));
         }
         return result;
     }

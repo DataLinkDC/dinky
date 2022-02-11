@@ -7,6 +7,7 @@ import com.dlink.gateway.config.GatewayConfig;
 import com.dlink.gateway.exception.GatewayException;
 import com.dlink.gateway.result.GatewayResult;
 import com.dlink.gateway.result.YarnResult;
+import com.dlink.utils.LogUtil;
 import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.deployment.application.ApplicationConfiguration;
 import org.apache.flink.client.program.ClusterClient;
@@ -66,9 +67,7 @@ public class YarnApplicationGateway extends YarnGateway {
             result.setWebURL(clusterClient.getWebInterfaceURL());
             result.success();
         }catch (Exception e){
-            e.printStackTrace();
-            logger.error("任务提交时发生异常",e);
-            result.fail(e.getMessage());
+            result.fail(LogUtil.getError(e));
         }finally {
             yarnClusterDescriptor.close();
         }
