@@ -260,7 +260,7 @@ const Model: ModelType = {
     },
     saveSql(state, {payload}) {
       const newTabs = state.tabs;
-      const newCurrent = state.current;
+      let newCurrent = state.current;
       newCurrent.value = payload;
       for (let i = 0; i < newTabs.panes.length; i++) {
         if (newTabs.panes[i].key == newTabs.activeKey) {
@@ -287,7 +287,7 @@ const Model: ModelType = {
       };
     },*/
     saveSqlMetaData(state, {payload}) {
-      const newCurrent = state.current;
+      let newCurrent = state.current;
       const newTabs = state.tabs;
       if(newCurrent.key == payload.activeKey){
         newCurrent.sqlMetaData = {...payload.sqlMetaData};
@@ -339,12 +339,14 @@ const Model: ModelType = {
           break;
         }
       }
-      const newCurrent = undefined;
+      let newCurrent = undefined;
       if(newTabs.panes.length > 0){
         newCurrent = newTabs.panes[newTabs.panes.length - 1];
       }
-      if (newTabs.activeKey == payload) {
+      if (newCurrent && (newTabs.activeKey == payload)) {
         newTabs.activeKey = newCurrent.key;
+      }else{
+        newTabs.activeKey = undefined;
       }
       return {
         ...state,
@@ -391,7 +393,7 @@ const Model: ModelType = {
     },
     saveTaskData(state, {payload}) {
       const newTabs = state.tabs;
-      const newCurrent = state.current;
+      let newCurrent = state.current;
       for (let i = 0; i < newTabs.panes.length; i++) {
         if (newTabs.panes[i].key == payload.key) {
           newTabs.panes[i].task = payload;
@@ -438,7 +440,7 @@ const Model: ModelType = {
     },
     saveResult(state, {payload}) {
       const newTabs = state?.tabs;
-      const newCurrent = state?.current;
+      let newCurrent = state?.current;
       for (let i = 0; i < newTabs.panes.length; i++) {
         if (newTabs.panes[i].key == payload.key) {
           newTabs.panes[i].console.result.result = payload.datas;

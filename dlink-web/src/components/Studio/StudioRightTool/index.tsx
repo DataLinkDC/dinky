@@ -81,7 +81,7 @@ const StudioRightTool = (props: any) => {
 
   return (
     <>
-      { current?
+      { current?.task?
     <Tabs defaultActiveKey="1" size="small" tabPosition="right"  style={{ height: toolHeight}}>
       {renderContent()}
     </Tabs>:<StudioGuide toolHeight={toolHeight} />}

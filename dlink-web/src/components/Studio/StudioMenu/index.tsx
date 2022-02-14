@@ -456,7 +456,7 @@ const StudioMenu = (props: any) => {
               </Breadcrumb>
             )}
           </Col>
-          {current?
+          {current?.task?
           <Col span={8}>
             <Tooltip title="全屏开发">
               <Button
@@ -593,7 +593,7 @@ const StudioMenu = (props: any) => {
       >
         <StudioGraph data={graphData} />
       </Modal>
-      {current?
+      {current?.task?
       <ModalForm
         title={`${current.task.alias} 的 ${current.task.dialect} 导出`}
         visible={exportModalVisible}
