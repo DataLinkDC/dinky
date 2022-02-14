@@ -152,7 +152,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
             session:'',
             maxRowNum: 100,
             jobName:node!.name,
-            useResult:false,
+            useResult:true,
             useChangeLog:false,
             useAutoCancel:false,
             useSession:false,
