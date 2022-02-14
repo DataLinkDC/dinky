@@ -23,6 +23,14 @@ public interface IDBQuery {
      */
     String columnsSql(String schemaName,String tableName);
     /**
+     * 建表 SQL
+     */
+    String createTableSql(String schemaName,String tableName);
+    /**
+     * 建表语句列名
+     */
+    String createTableName();
+    /**
      * 数据库、模式、组织名称
      */
     String schemaName();

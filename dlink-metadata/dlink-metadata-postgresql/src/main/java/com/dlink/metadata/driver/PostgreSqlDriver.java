@@ -42,11 +42,6 @@ public class PostgreSqlDriver extends AbstractJdbcDriver {
     }
 
     @Override
-    public String getCreateTableSql(Table table) {
-        return null;
-    }
-
-    @Override
     public Map<String,String> getFlinkColumnTypeConversion(){
         return new HashMap<>();
     }

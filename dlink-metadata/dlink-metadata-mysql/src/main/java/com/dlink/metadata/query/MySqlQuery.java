@@ -1,8 +1,5 @@
 package com.dlink.metadata.query;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 /**
  * MySqlQuery
  *

@@ -43,6 +43,21 @@ public abstract class AbstractDriver implements Driver {
     }
 
     @Override
+    public Table getTable(String schemaName, String tableName) {
+        List<Table> tables = listTables(schemaName);
+        Table table = null;
+        for(Table item : tables){
+            if(Asserts.isEquals(item.getName(),tableName)){
+                table = item;
+            }
+        }
+        if(Asserts.isNotNull(table)) {
+            table.setColumns(listColumns(schemaName, table.getName()));
+        }
+        return table;
+    }
+
+    @Override
     public boolean existTable(Table table){
         return listTables(table.getSchema()).stream().anyMatch(tableItem -> Asserts.isEquals(tableItem.getName(),table.getName()));
     }

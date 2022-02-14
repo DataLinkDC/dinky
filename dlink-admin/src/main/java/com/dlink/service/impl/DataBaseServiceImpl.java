@@ -124,8 +124,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
         DataBase dataBase = getById(id);
         Asserts.checkNotNull(dataBase,"该数据源不存在！");
         Driver driver = Driver.build(dataBase.getDriverConfig()).connect();
-        List<Column> columns = driver.listColumns(schemaName, tableName);
-        Table table = Table.build(tableName, schemaName, columns);
+        Table table = driver.getTable(schemaName, tableName);
         SqlGeneration sqlGeneration = new SqlGeneration();
         sqlGeneration.setFlinkSqlCreate(table.getFlinkTableSql(dataBase.getName(),driver.getFlinkColumnTypeConversion(),dataBase.getFlinkConfig()));
         sqlGeneration.setSqlSelect(table.getSqlSelect(dataBase.getName()));
