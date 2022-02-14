@@ -67,6 +67,8 @@ public interface Driver {
 
     List<Table> getTablesAndColumns(String schemaName);
 
+    Table getTable(String schemaName, String tableName);
+
     boolean existTable(Table table);
 
     boolean createTable(Table table) throws Exception;

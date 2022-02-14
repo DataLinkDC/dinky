@@ -82,7 +82,11 @@ public class Table implements Serializable, Comparable<Table> {
             if (i > 0) {
                 sb.append(",");
             }
-            sb.append(columns.get(i).getName() + " " + type + "\n");
+            sb.append(columns.get(i).getName() + " " + type);
+            if (Asserts.isNotNullString(columns.get(i).getComment())) {
+                sb.append(" COMMENT '"+columns.get(i).getComment() + "'");
+            }
+            sb.append("\n");
             if (columns.get(i).isKeyFlag()) {
                 pks.add(columns.get(i).getName());
             }
@@ -99,7 +103,11 @@ public class Table implements Serializable, Comparable<Table> {
             sb.append("    ,");
             sb.append(pksb);
         }
-        sb.append(") WITH (\n");
+        sb.append(")");
+        if(Asserts.isNotNullString(comment)){
+            sb.append(" COMMENT '"+comment+"'\n");
+        }
+        sb.append(" WITH (\n");
         sb.append(getFlinkTableWith(flinkConfig));
         sb.append("\n);\n");
         return sb.toString();

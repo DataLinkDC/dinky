@@ -83,11 +83,6 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
     }
 
     @Override
-    public String getCreateTableSql(Table table) {
-        return null;
-    }
-
-    @Override
     public List<SqlExplainResult> explain(String sql){
         String initialSql = sql;
         List<SqlExplainResult> sqlExplainResults = new ArrayList<>();

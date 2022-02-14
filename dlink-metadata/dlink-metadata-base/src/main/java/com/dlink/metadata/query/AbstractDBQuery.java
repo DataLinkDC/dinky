@@ -11,6 +11,17 @@ import java.sql.SQLException;
  **/
 public abstract class AbstractDBQuery implements IDBQuery {
 
+
+    @Override
+    public String createTableSql(String schemaName, String tableName) {
+        return "show create table " + schemaName + "." + tableName;
+    }
+
+    @Override
+    public String createTableName() {
+        return "Create Table";
+    }
+
     @Override
     public String[] columnCustom() {
         return null;

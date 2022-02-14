@@ -215,6 +215,26 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     }
 
     @Override
+    public String getCreateTableSql(Table table) {
+        String createTable = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet results = null;
+        String createTableSql = getDBQuery().createTableSql(table.getSchema(),table.getName());
+        try {
+            preparedStatement = conn.prepareStatement(createTableSql);
+            results = preparedStatement.executeQuery();
+            if (results.next()) {
+                createTable = results.getString(getDBQuery().createTableName());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            close(preparedStatement, results);
+        }
+        return createTable;
+    }
+
+    @Override
     public String getDropTableSql(Table table) {
         StringBuilder sb = new StringBuilder();
         sb.append("DROP TABLE ");
