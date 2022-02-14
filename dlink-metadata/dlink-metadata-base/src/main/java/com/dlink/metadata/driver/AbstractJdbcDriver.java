@@ -13,6 +13,7 @@ import com.dlink.model.Column;
 import com.dlink.model.Schema;
 import com.dlink.model.Table;
 import com.dlink.result.SqlExplainResult;
+import com.dlink.utils.LogUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -298,7 +299,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
             }
             result.setSuccess(true);
         } catch (Exception e) {
-            result.setError(e.getMessage());
+            result.setError(LogUtil.getError(e));
             result.setSuccess(false);
         } finally {
             close(preparedStatement, results);
@@ -320,20 +321,18 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                 try {
                     resList.add(executeUpdate(item.toString()));
                 } catch (Exception e) {
-                    e.printStackTrace();
                     resList.add(0);
                     result.setStatusList(resList);
-                    result.error(e.getMessage());
+                    result.error(LogUtil.getError(e));
                     return result;
                 }
             }else {
                 try {
                     resList.add(execute(item.toString()));
                 } catch (Exception e) {
-                    e.printStackTrace();
                     resList.add(false);
                     result.setStatusList(resList);
-                    result.error(e.getMessage());
+                    result.error(LogUtil.getError(e));
                     return result;
                 }
             }
@@ -355,7 +354,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                 sqlExplainResults.add(SqlExplainResult.success(type, current, null));
             }
         } catch (Exception e) {
-            sqlExplainResults.add(SqlExplainResult.fail(current,e.getMessage()));
+            sqlExplainResults.add(SqlExplainResult.fail(current,LogUtil.getError(e)));
         } finally {
             return sqlExplainResults;
         }

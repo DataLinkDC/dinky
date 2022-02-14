@@ -15,6 +15,7 @@ import com.dlink.metadata.query.ClickHouseQuery;
 import com.dlink.metadata.query.IDBQuery;
 import com.dlink.model.Table;
 import com.dlink.result.SqlExplainResult;
+import com.dlink.utils.LogUtil;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -128,8 +129,7 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
                 sqlExplainResults.add(SqlExplainResult.success(type, current, explain.toString()));
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            sqlExplainResults.add(SqlExplainResult.fail(current, e.getMessage()));
+            sqlExplainResults.add(SqlExplainResult.fail(current, LogUtil.getError(e)));
         } finally {
             close(preparedStatement, results);
             return sqlExplainResults;
