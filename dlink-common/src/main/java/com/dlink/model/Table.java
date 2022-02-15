@@ -83,7 +83,7 @@ public class Table implements Serializable, Comparable<Table> {
             }
             sb.append(columns.get(i).getName() + " " + type);
             if (Asserts.isNotNullString(columns.get(i).getComment())) {
-                if(columns.get(i).getComment().contains("\'") || columns.get(i).getComment().contains("\"")) {
+                if(columns.get(i).getComment().contains("\'") | columns.get(i).getComment().contains("\"")) {
                     sb.append(" COMMENT '" + columns.get(i).getComment().replaceAll("\"|'","") + "'");
                 }else {
                     sb.append(" COMMENT '" + columns.get(i).getComment() + "'");
@@ -108,7 +108,7 @@ public class Table implements Serializable, Comparable<Table> {
         }
         sb.append(")");
         if(Asserts.isNotNullString(comment)){
-            if(comment.contains("\'") || comment.contains("\"")) {
+            if(comment.contains("\'") | comment.contains("\"")) {
                 sb.append(" COMMENT '" + comment.replaceAll("\"|'","") + "'\n");
             }else {
                 sb.append(" COMMENT '" + comment + "'\n");
@@ -129,7 +129,7 @@ public class Table implements Serializable, Comparable<Table> {
             }
             String columnComment= columns.get(i).getComment();
 
-            if(columnComment.contains("\'") || columnComment.contains("\"")) {
+            if(columnComment.contains("\'") | columnComment.contains("\"")) {
                 columnComment = columnComment.replaceAll("\"|'","");
             }
             if(Asserts.isNotNullString(columnComment)){
