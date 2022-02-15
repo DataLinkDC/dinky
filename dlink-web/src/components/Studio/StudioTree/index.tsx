@@ -88,13 +88,6 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     let data = result.datas;
     let list = data;
     let expendList: any[] = [];
-    for(let i=0;i<list.length;i++){
-      list[i].title=list[i].name;
-      list[i].key=list[i].id;
-      if(list[i].isLeaf){
-        list[i].icon = getIcon(list[i].type);
-      }
-    }
     list?.map((v: any) => {
       expendList.push(v.id);
       if (v.children) {
@@ -414,8 +407,8 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     setAutoExpandParent(false)
   };
 
-  const loop = data =>
-    data?.map(item => {
+  const loop = (data:any) =>
+    data?.map((item:any) => {
       const index = item.title.indexOf(searchValue);
       const beforeStr = item.title.substr(0, index);
       const afterStr = item.title.substr(index + searchValue.length);
@@ -431,10 +424,14 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
           <span>{item.title}</span>
         );
       if (item.children) {
-        return {icon:item.isLeaf?item.icon:'', title, key: item.key, children: loop(item.children) };
+        return {name:item.name,id:item.id,taskId:item.taskId,parentId:item.parentId,path:item.path,icon:item.isLeaf?item.icon:'', title, key: item.key, children: loop(item.children) };
       }
-
       return {
+        name:item.name,
+        id:item.id,
+        taskId:item.taskId,
+        parentId:item.parentId,
+        path:item.path,
         icon:item.isLeaf?item.icon:'',
         title,
         key: item.key,
