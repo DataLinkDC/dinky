@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -84,7 +83,11 @@ public class Table implements Serializable, Comparable<Table> {
             }
             sb.append(columns.get(i).getName() + " " + type);
             if (Asserts.isNotNullString(columns.get(i).getComment())) {
-                sb.append(" COMMENT '"+columns.get(i).getComment() + "'");
+                if(columns.get(i).getComment().contains("\'") || columns.get(i).getComment().contains("\"")) {
+                    sb.append(" COMMENT '" + columns.get(i).getComment().replaceAll("\"|'","") + "'");
+                }else {
+                    sb.append(" COMMENT '" + columns.get(i).getComment() + "'");
+                }
             }
             sb.append("\n");
             if (columns.get(i).isKeyFlag()) {
@@ -105,7 +108,11 @@ public class Table implements Serializable, Comparable<Table> {
         }
         sb.append(")");
         if(Asserts.isNotNullString(comment)){
-            sb.append(" COMMENT '"+comment+"'\n");
+            if(comment.contains("\'") || comment.contains("\"")) {
+                sb.append(" COMMENT '" + comment.replaceAll("\"|'","") + "'\n");
+            }else {
+                sb.append(" COMMENT '" + comment + "'\n");
+            }
         }
         sb.append(" WITH (\n");
         sb.append(getFlinkTableWith(flinkConfig));
@@ -120,9 +127,23 @@ public class Table implements Serializable, Comparable<Table> {
             if (i > 0) {
                 sb.append(",");
             }
-            sb.append(columns.get(i).getName() + "\n");
+            String columnComment= columns.get(i).getComment();
+
+            if(columnComment.contains("\'") || columnComment.contains("\"")) {
+                columnComment = columnComment.replaceAll("\"|'","");
+            }
+            if(Asserts.isNotNullString(columnComment)){
+                sb.append(columns.get(i).getName() + "  --  " + columnComment + " \n");
+            }else {
+                sb.append(columns.get(i).getName() + " \n");
+
+            }
         }
-        sb.append(" FROM " + catalogName + "." + schema + "." + name + ";\n");
+        if(Asserts.isNotNullString(comment)){
+            sb.append(" FROM " + catalogName + "." + schema + "." + name + ";" + " -- " + comment + "\n");
+        }else {
+            sb.append(" FROM " + catalogName + "." + schema + "." + name +";\n");
+        }
         return sb.toString();
     }
 }
