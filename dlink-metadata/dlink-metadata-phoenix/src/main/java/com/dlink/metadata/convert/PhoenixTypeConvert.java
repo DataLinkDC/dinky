@@ -92,7 +92,7 @@ public class PhoenixTypeConvert implements ITypeConvert {
                 case "VARBINARY":
                     return "VARBINARY";
                 default:
-                    return "VARBINARY";
+                    return "VARCHAR";
             }
         }
     }
