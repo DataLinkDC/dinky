@@ -179,6 +179,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     setTimeout(()=>{
       setAvailable(true);
     },200);
+
     if(node?.isLeaf&&node.taskId) {
       for(let item of tabs.panes){
         if(item.key==node.taskId){
@@ -370,15 +371,15 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     return (treeData&&treeData.length==0)?empty:'';
   };
 
-  const handleContextMenu = (e: React.MouseEvent, node: TreeDataNode) => {
-    let position = e.currentTarget.getBoundingClientRect();
+  const handleContextMenu = (e:any) => {
+    let position = e.event.currentTarget.getBoundingClientRect();
     let scrollTop = document.documentElement.scrollTop;
-    setRightClickNode(node);
+    setRightClickNode(e.node);
     setRightClickNodeTreeItem({
-      pageX: e.pageX-20,
+      pageX: e.event.pageX-20,
       pageY: position.y+sref.current.getScrollTop()+scrollTop-125-position.height,
-      id: node.id,
-      categoryName: node.name
+      id: e.node.id,
+      categoryName: e.node.name
     });
     dispatch&&dispatch({
       type: "Studio/showRightClickMenu",
@@ -424,9 +425,10 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
           <span>{item.title}</span>
         );
       if (item.children) {
-        return {name:item.name,id:item.id,taskId:item.taskId,parentId:item.parentId,path:item.path,icon:item.isLeaf?item.icon:'', title, key: item.key, children: loop(item.children) };
+        return {isLeaf:item.isLeaf,name:item.name,id:item.id,taskId:item.taskId,parentId:item.parentId,path:item.path,icon:item.isLeaf?item.icon:'', title, key: item.key, children: loop(item.children) };
       }
       return {
+        isLeaf:item.isLeaf,
         name:item.name,
         id:item.id,
         taskId:item.taskId,
@@ -462,9 +464,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       <Search style={{marginBottom: 8}} placeholder="Search" onChange={onChange} allowClear={true}/>
         <DirectoryTree
           multiple
-          onRightClick={({event, node}: any) => {
-            handleContextMenu(event, node)
-          }}
+          onRightClick={handleContextMenu}
           onSelect={onSelect}
           switcherIcon={<DownOutlined/>}
           treeData={loop(treeData)}
