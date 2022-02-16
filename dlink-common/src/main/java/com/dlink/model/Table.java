@@ -91,7 +91,7 @@ public class Table implements Serializable, Comparable<Table> {
             }
             sb.append("\n");
             if (columns.get(i).isKeyFlag()) {
-                pks.add("`"+columns.get(i).getName()+"`");
+                pks.add(columns.get(i).getName());
             }
         }
         StringBuilder pksb = new StringBuilder("PRIMARY KEY ( ");
