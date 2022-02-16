@@ -15,15 +15,6 @@ public class AdminTest {
     public void adminTest(){
         String admin = SaSecureUtil.md5("admin");
         System.out.println(admin);
-
-        String str = "g'o\"od\"";
-        if(str.contains("\'") || str.contains("\"")) {
-            System.out.println (str.replaceAll("\"|'","***"));
-//            System.out.println(str.replaceAll("\"|\'", Matcher.quoteReplacement("***")));
-//            System.out.println(" COMMENT '"+ str.replaceAll("\"|'", Matcher.quoteReplacement("***")) + "'");
-        }
-
-
     }
 
 }

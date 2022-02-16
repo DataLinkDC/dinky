@@ -151,7 +151,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
             results = preparedStatement.executeQuery();
             while (results.next()) {
                 Column field = new Column();
-                String columnName = "`"+results.getString(dbQuery.columnName())+"`";
+                String columnName = results.getString(dbQuery.columnName());
                 String key = results.getString(dbQuery.columnKey());
                 field.setKeyFlag(Asserts.isNotNullString(key) && Asserts.isEqualsIgnoreCase("PRI",key));
                 field.setName(columnName);

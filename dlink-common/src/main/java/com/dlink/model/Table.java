@@ -81,7 +81,7 @@ public class Table implements Serializable, Comparable<Table> {
             if (i > 0) {
                 sb.append(",");
             }
-            sb.append(columns.get(i).getName() + " " + type);
+            sb.append("`" + columns.get(i).getName() + "` " + type);
             if (Asserts.isNotNullString(columns.get(i).getComment())) {
                 if(columns.get(i).getComment().contains("\'") | columns.get(i).getComment().contains("\"")) {
                     sb.append(" COMMENT '" + columns.get(i).getComment().replaceAll("\"|'","") + "'");
@@ -91,7 +91,7 @@ public class Table implements Serializable, Comparable<Table> {
             }
             sb.append("\n");
             if (columns.get(i).isKeyFlag()) {
-                pks.add(columns.get(i).getName());
+                pks.add("`"+columns.get(i).getName()+"`");
             }
         }
         StringBuilder pksb = new StringBuilder("PRIMARY KEY ( ");
@@ -99,7 +99,7 @@ public class Table implements Serializable, Comparable<Table> {
             if (i > 0) {
                 pksb.append(",");
             }
-            pksb.append(pks.get(i));
+            pksb.append("`"+pks.get(i)+"`");
         }
         pksb.append(" ) NOT ENFORCED\n");
         if (pks.size() > 0) {
@@ -133,9 +133,9 @@ public class Table implements Serializable, Comparable<Table> {
                 columnComment = columnComment.replaceAll("\"|'","");
             }
             if(Asserts.isNotNullString(columnComment)){
-                sb.append(columns.get(i).getName() + "  --  " + columnComment + " \n");
+                sb.append("`"+columns.get(i).getName() + "`  --  " + columnComment + " \n");
             }else {
-                sb.append(columns.get(i).getName() + " \n");
+                sb.append("`"+columns.get(i).getName() + "` \n");
 
             }
         }
