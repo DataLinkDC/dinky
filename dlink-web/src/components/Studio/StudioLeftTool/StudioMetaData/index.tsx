@@ -41,21 +41,25 @@ const StudioMetaData = (props: any) => {
     const res = showMetaDataTable(databaseId);
     res.then((result) => {
       let tables = result.datas;
-      for(let i=0;i<tables.length;i++){
-        tables[i].title=tables[i].name;
-        tables[i].key=tables[i].name;
-        tables[i].icon = <DatabaseOutlined />;
-        tables[i].children=tables[i].tables;
-        for(let j=0;j<tables[i].children.length;j++){
-          tables[i].children[j].title=tables[i].children[j].name;
-          tables[i].children[j].key=tables[i].name+'.'+tables[i].children[j].name;
-          tables[i].children[j].icon=<TableOutlined />;
-          tables[i].children[j].isLeaf=true;
-          tables[i].children[j].schema=tables[i].name;
-          tables[i].children[j].table=tables[i].children[j].name;
+      if(tables) {
+        for (let i = 0; i < tables.length; i++) {
+          tables[i].title = tables[i].name;
+          tables[i].key = tables[i].name;
+          tables[i].icon = <DatabaseOutlined/>;
+          tables[i].children = tables[i].tables;
+          for (let j = 0; j < tables[i].children.length; j++) {
+            tables[i].children[j].title = tables[i].children[j].name;
+            tables[i].children[j].key = tables[i].name + '.' + tables[i].children[j].name;
+            tables[i].children[j].icon = <TableOutlined/>;
+            tables[i].children[j].isLeaf = true;
+            tables[i].children[j].schema = tables[i].name;
+            tables[i].children[j].table = tables[i].children[j].name;
+          }
         }
+        setTreeData(tables);
+      }else{
+        setTreeData([]);
       }
-      setTreeData(tables);
     });
   };
 
