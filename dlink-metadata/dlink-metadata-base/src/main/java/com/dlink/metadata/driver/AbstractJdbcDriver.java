@@ -2,9 +2,6 @@ package com.dlink.metadata.driver;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLStatementParser;
-import com.alibaba.druid.sql.parser.Token;
 import com.dlink.assertion.Asserts;
 import com.dlink.constant.CommonConstant;
 import com.dlink.metadata.query.IDBQuery;
@@ -17,13 +14,7 @@ import com.dlink.utils.LogUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.*;
 
 /**
@@ -166,7 +157,10 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                 field.setName(columnName);
                 field.setType(results.getString(dbQuery.columnType()));
                 field.setJavaType(getTypeConvert().convert(field.getType()).getType());
-                field.setComment(results.getString(dbQuery.columnComment()));
+
+                String columnComment=results.getString(dbQuery.columnComment()).replaceAll("\"|'","");
+                field.setComment(columnComment);
+
                 field.setNullable(Asserts.isEqualsIgnoreCase(results.getString(dbQuery.isNullable()),"YES"));
                 field.setCharacterSet(results.getString(dbQuery.characterSet()));
                 field.setCollation(results.getString(dbQuery.collation()));
