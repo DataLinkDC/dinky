@@ -42,12 +42,12 @@ public class MySqlDriver extends AbstractJdbcDriver {
     }
 
     @Override
-    public Map<String,String> getFlinkColumnTypeConversion(){
-        HashMap<String,String> map = new HashMap<>();
-        map.put("varchar","STRING");
-        map.put("text","STRING");
-        map.put("int","INT");
-        map.put("datetime","TIMESTAMP");
+    public Map<String, String> getFlinkColumnTypeConversion() {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("VARCHAR", "STRING");
+        map.put("TEXY", "STRING");
+        map.put("INT", "INT");
+        map.put("DATETIME", "TIMESTAMP");
         return map;
     }
 }

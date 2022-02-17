@@ -51,7 +51,7 @@ public class PhoenixDriver extends AbstractJdbcDriver {
         PhoenixTypeConvert phoenixTypeConvert = new PhoenixTypeConvert();
         if (columns != null) {
             for (Column column : columns) {
-                sql.append(", \"" + column.getColumnFamily() + "\".\"" + column.getName() + "\"  " + phoenixTypeConvert.convertToDB(column.getType()));
+                sql.append(", \"" + column.getColumnFamily() + "\".\"" + column.getName() + "\"  " + phoenixTypeConvert.convertToDB(column));
             }
         }
         sql.append(" ) ");

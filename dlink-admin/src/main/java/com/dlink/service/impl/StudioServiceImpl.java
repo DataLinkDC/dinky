@@ -116,7 +116,7 @@ public class StudioServiceImpl implements StudioService {
                 result.setEndTime(LocalDateTime.now());
                 return result;
             }
-            Driver driver = Driver.build(dataBase.getDriverConfig()).connect();
+            Driver driver = Driver.build(dataBase.getDriverConfig());
             JdbcSelectResult selectResult = driver.executeSql(sqlDTO.getStatement(),sqlDTO.getMaxRowNum());
             driver.close();
             result.setResult(selectResult);
@@ -174,7 +174,7 @@ public class StudioServiceImpl implements StudioService {
                     add(SqlExplainResult.fail(studioExecuteDTO.getStatement(),"数据源不存在"));
                 }};
             }
-            Driver driver = Driver.build(dataBase.getDriverConfig()).connect();
+            Driver driver = Driver.build(dataBase.getDriverConfig());
             List<SqlExplainResult> sqlExplainResults = driver.explain(studioExecuteDTO.getStatement());
             driver.close();
             return sqlExplainResults;

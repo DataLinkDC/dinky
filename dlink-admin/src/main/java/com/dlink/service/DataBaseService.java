@@ -35,4 +35,8 @@ public interface DataBaseService extends ISuperService<DataBase> {
     String getSqlCreate(Integer id, String schemaName, String tableName);
 
     SqlGeneration getSqlGeneration(Integer id, String schemaName, String tableName);
+
+    List<String> listEnabledFlinkWith();
+
+    String getEnabledFlinkWithSql();
 }

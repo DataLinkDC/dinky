@@ -27,7 +27,7 @@ public class SqlServerTest {
         config.setPassword("OcP2020123");
         config.setUrl("jdbc:sqlserver://192.168.68.133:1433;DatabaseName=test");
         try {
-            driver = Driver.build(config).connect();
+            driver = Driver.build(config);
         } catch (Exception e) {
             System.err.println("连接创建失败:" + e.getMessage());
         }

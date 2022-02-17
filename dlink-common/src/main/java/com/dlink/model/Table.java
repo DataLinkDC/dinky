@@ -71,13 +71,12 @@ public class Table implements Serializable, Comparable<Table> {
         return tableWithSql;
     }
 
-    public String getFlinkTableSql(String catalogName, Map<String, String> typeConversion, String flinkConfig) {
+    public String getFlinkTableSql(String catalogName, String flinkConfig) {
         StringBuilder sb = new StringBuilder("CREATE TABLE ");
         sb.append(catalogName + "." + schema + "." + name + " (\n");
         List<String> pks = new ArrayList<>();
         for (int i = 0; i < columns.size(); i++) {
-            String type = typeConversion.containsKey(columns.get(i).getType()) ?
-                    typeConversion.get(columns.get(i).getType()) : "STRING";
+            String type = columns.get(i).getJavaType().getFlinkType();
             sb.append("    ");
             if (i > 0) {
                 sb.append(",");

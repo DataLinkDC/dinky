@@ -15,8 +15,9 @@ import java.util.List;
 
 public class DorisTest {
     private Driver driver;
+
     @Before
-    public void init(){
+    public void init() {
         DriverConfig config = new DriverConfig();
         config.setType("Doris");
         config.setIp("192.168.68.133");
@@ -25,8 +26,8 @@ public class DorisTest {
         config.setPassword("123456");
         config.setUrl("jdbc:mysql://192.168.68.133:9030/test");
         try {
-            driver =  Driver.build(config).connect();
-        }catch (Exception e){
+            driver = Driver.build(config);
+        } catch (Exception e) {
             System.err.println("连接创建失败");
             e.printStackTrace();
         }
@@ -46,7 +47,7 @@ public class DorisTest {
     }
 
     @Test
-    public void testSchema(){
+    public void testSchema() {
         //schema && table
         List<Schema> schemasAndTables = driver.getSchemasAndTables();
         for (Schema schemasAndTable : schemasAndTables) {
@@ -58,15 +59,16 @@ public class DorisTest {
     }
 
     @Test
-    public void testColumns(){
+    public void testColumns() {
         // columns
         List<Column> columns = driver.listColumns("test", "scoreinfo");
         for (Column column : columns) {
-            System.out.println(column.getName() + " " + column.getType() + column.getComment() );
+            System.out.println(column.getName() + " " + column.getType() + column.getComment());
         }
     }
+
     @Test
-    public void query(){
+    public void query() {
         JdbcSelectResult selectResult = driver.query("select * from scoreinfo ", 10);
         List<LinkedHashMap<String, Object>> rowData = selectResult.getRowData();
         for (LinkedHashMap<String, Object> rowDatum : rowData) {

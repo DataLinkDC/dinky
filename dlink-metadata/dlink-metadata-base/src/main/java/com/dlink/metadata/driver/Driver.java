@@ -9,7 +9,6 @@ import com.dlink.model.Table;
 import com.dlink.result.SqlExplainResult;
 import sun.misc.Service;
 
-import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -36,11 +35,20 @@ public interface Driver {
     }
 
     static Driver build(DriverConfig config) {
+        String key = config.getName();
+        if (DriverPool.exist(key)) {
+            Driver driver = DriverPool.get(key);
+            if (driver.isHealth()) {
+                return driver;
+            }
+        }
         Optional<Driver> optionalDriver = Driver.get(config);
         if (!optionalDriver.isPresent()) {
-            throw new MetaDataException("不支持数据源类型【" + config.getType() + "】");
+            throw new MetaDataException("不支持数据源类型【" + config.getType() + "】，请在 lib 下添加扩展依赖");
         }
-        return optionalDriver.get();
+        Driver driver = optionalDriver.get().connect();
+        DriverPool.push(key, driver);
+        return driver;
     }
 
     Driver setDriverConfig(DriverConfig config);
@@ -52,6 +60,8 @@ public interface Driver {
     String getName();
 
     String test();
+
+    boolean isHealth();
 
     Driver connect();
 
@@ -101,5 +111,5 @@ public interface Driver {
 
     List<SqlExplainResult> explain(String sql);
 
-    Map<String,String> getFlinkColumnTypeConversion();
+    Map<String, String> getFlinkColumnTypeConversion();
 }

@@ -8,6 +8,7 @@ import com.dlink.model.Schema;
 import com.dlink.model.Table;
 import org.junit.Before;
 import org.junit.Test;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class PhoenixTest {
         config.setType("Phoenix");
         config.setUrl("jdbc:phoenix:xxx");
         try {
-            driver = Driver.build(config).connect();
+            driver = Driver.build(config);
         } catch (Exception e) {
             System.err.println("连接创建失败:" + e.getMessage());
         }
@@ -39,6 +40,7 @@ public class PhoenixTest {
             }
         }
     }
+
     @Test
     public void testListTables() {
         List<Table> tables = driver.listTables("");

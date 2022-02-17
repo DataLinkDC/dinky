@@ -47,6 +47,7 @@
         <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
         <!--<flyway.version>6.4.4</flyway.version>-->
         <sa-token.version>1.28.0</sa-token.version>
+        <commons.version>3.12.0</commons.version>
         <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
         <maven-assembly-plugin.version>3.2.0</maven-assembly-plugin.version>
         <maven.resource.version>3.2.0</maven.resource.version>
@@ -101,6 +102,11 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons.version}</version>
             </dependency>
             <!--<dependency>
                 <groupId>org.apache.logging.log4j</groupId>

@@ -56,7 +56,7 @@ public class OracleDriver extends AbstractJdbcDriver {
             if(i>0){
                 sb.append(",");
             }
-            sb.append(columns.get(i).getName() + " " + getTypeConvert().convertToDB(columns.get(i).getType()));
+            sb.append(columns.get(i).getName() + " " + getTypeConvert().convertToDB(columns.get(i)));
             if(columns.get(i).isNullable()){
                 sb.append(" NOT NULL");
             }

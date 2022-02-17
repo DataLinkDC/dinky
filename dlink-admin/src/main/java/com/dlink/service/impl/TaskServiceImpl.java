@@ -96,7 +96,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 result.setEndTime(LocalDateTime.now());
                 return result;
             }
-            Driver driver = Driver.build(dataBase.getDriverConfig()).connect();
+            Driver driver = Driver.build(dataBase.getDriverConfig());
             JdbcSelectResult selectResult = driver.executeSql(sqlDTO.getStatement(), sqlDTO.getMaxRowNum());
             driver.close();
             result.setResult(selectResult);

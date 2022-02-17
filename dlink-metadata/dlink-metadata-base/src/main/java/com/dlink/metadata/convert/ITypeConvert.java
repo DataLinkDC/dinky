@@ -1,7 +1,7 @@
 package com.dlink.metadata.convert;
 
-import com.dlink.metadata.rules.IColumnType;
 import com.dlink.model.Column;
+import com.dlink.model.ColumnType;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,17 +14,13 @@ import java.sql.SQLException;
  **/
 public interface ITypeConvert {
 
-    default IColumnType convert(Column column) {
-        return convert(column.getType());
-    }
-
     default String convertToDB(Column column) {
         return convertToDB(column.getJavaType());
     }
 
-    IColumnType convert(String columnType);
+    ColumnType convert(Column column);
 
-    String convertToDB(String columnType);
+    String convertToDB(ColumnType columnType);
 
     default Object convertValue(ResultSet results, String columnName, String javaType) throws SQLException {
         switch (javaType.toLowerCase()) {
