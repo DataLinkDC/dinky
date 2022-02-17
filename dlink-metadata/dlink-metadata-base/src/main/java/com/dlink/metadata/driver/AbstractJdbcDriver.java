@@ -166,7 +166,10 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                 field.setName(columnName);
                 field.setType(results.getString(dbQuery.columnType()));
                 field.setJavaType(getTypeConvert().convert(field.getType()).getType());
-                field.setComment(results.getString(dbQuery.columnComment()));
+
+                String columnComment=results.getString(dbQuery.columnComment()).replaceAll("\"|'","");
+                field.setComment(columnComment);
+
                 field.setNullable(Asserts.isEqualsIgnoreCase(results.getString(dbQuery.isNullable()),"YES"));
                 field.setCharacterSet(results.getString(dbQuery.characterSet()));
                 field.setCollation(results.getString(dbQuery.collation()));
