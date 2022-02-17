@@ -8,24 +8,18 @@ import com.dlink.model.Schema;
 import com.dlink.model.Table;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class SqlServerTest {
+public class PhoenixTest {
 
     private Driver driver;
 
     @Before
     public void init() {
         DriverConfig config = new DriverConfig();
-        config.setType("SqlServer");
-        config.setIp("192.168.68.133");
-        config.setPort(1433);
-        config.setUsername("sa");
-        config.setPassword("OcP2020123");
-        config.setUrl("jdbc:sqlserver://192.168.68.133:1433;DatabaseName=test");
+        config.setType("Phoenix");
+        config.setUrl("jdbc:phoenix:xxx");
         try {
             driver = Driver.build(config).connect();
         } catch (Exception e) {
@@ -33,18 +27,6 @@ public class SqlServerTest {
         }
     }
 
-    @Test
-    public void test() throws SQLException {
-        //test
-        String test = driver.test();
-        System.out.println(test);
-        System.out.println("schema && table...");
-        testSchema();
-        System.out.println("columns...");
-        testColumns();
-        System.out.println("query...");
-        query();
-    }
 
     @Test
     public void testSchema() {
@@ -57,11 +39,19 @@ public class SqlServerTest {
             }
         }
     }
+    @Test
+    public void testListTables() {
+        List<Table> tables = driver.listTables("");
+        for (Table table : tables) {
+            System.out.println(table.getName() + "  " + table.getSchema());
+        }
+    }
+
 
     @Test
     public void testColumns() {
         // columns
-        List<Column> columns = driver.listColumns("dbo", "t_user");
+        List<Column> columns = driver.listColumns(null, "ODS_OUTP_PRESC");
         for (Column column : columns) {
             System.out.println(column.getName() + " " + column.getType() + " " + column.getComment());
         }
@@ -69,12 +59,10 @@ public class SqlServerTest {
 
     @Test
     public void query() {
-        JdbcSelectResult selectResult = driver.query("select * from t_user", 10);
+        JdbcSelectResult selectResult = driver.query("select * from ODS_OUTP_PRESC ", 10);
         List<LinkedHashMap<String, Object>> rowData = selectResult.getRowData();
         for (LinkedHashMap<String, Object> rowDatum : rowData) {
             System.out.println(rowDatum);
         }
     }
-
-
 }

@@ -70,7 +70,7 @@ public class DorisTest {
         JdbcSelectResult selectResult = driver.query("select * from scoreinfo ", 10);
         List<LinkedHashMap<String, Object>> rowData = selectResult.getRowData();
         for (LinkedHashMap<String, Object> rowDatum : rowData) {
-            System.out.println(rowData);
+            System.out.println(rowDatum);
         }
     }
 }

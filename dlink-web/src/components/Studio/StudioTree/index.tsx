@@ -1,7 +1,7 @@
 import React, {useEffect, useState,Key} from "react";
 import {connect} from "umi";
 import  {DownOutlined, SwitcherOutlined, FolderAddOutlined} from "@ant-design/icons";
-import {Tree, Menu, Empty, Button, message, Modal,Tooltip,Row,Col} from 'antd';
+import {Tree, Menu, Empty, Button, message, Modal,Tooltip,Row,Col,Input} from 'antd';
 import {getCatalogueTreeData} from "@/pages/FlinkSqlStudio/service";
 import {convertToTreeData, getTreeNodeByKey, TreeDataNode} from "@/components/Studio/StudioTree/Function";
 import style from "./index.less";
@@ -15,7 +15,6 @@ import { Scrollbars } from "react-custom-scrollbars";
 import {getIcon} from "@/components/Studio/icon";
 import {showEnv} from "@/components/Studio/StudioEvent/DDL";
 import UploadModal from "@/components/Studio/StudioTree/components/UploadModal";
-
 
 type StudioTreeProps = {
   rightClickMenu:StateType['rightClickMenu'];
@@ -33,10 +32,41 @@ type RightClickMenu = {
   categoryName: string
 };
 
+//将树形节点改为一维数组
+const generateList = (data: any, list: any[]) => {
+  for (let i = 0; i < data.length; i++) {
+    const node = data[i];
+    const { name, id, parentId,level} = node;
+    list.push({ name, id, key: id, title: name, parentId,level });
+    if (node.children) {
+      generateList(node.children, list);
+    }
+  }
+  return list
+}
+
+// tree树 匹配方法
+const getParentKey = (key: number | string, tree: any): any => {
+  let parentKey
+  for (let i = 0; i < tree.length; i++) {
+    const node = tree[i];
+    if (node.children) {
+      if (node.children.some((item: any) => item.id === key)) {
+        parentKey = node.id;
+      } else if (getParentKey(key, node.children)) {
+        parentKey = getParentKey(key, node.children);
+      }
+    }
+  }
+  // console.log(key, parentKey, tree,)
+  return parentKey;
+}
+
 const StudioTree: React.FC<StudioTreeProps> = (props) => {
   const {rightClickMenu,dispatch,tabs,refs,toolHeight} = props;
   const [treeData, setTreeData] = useState<TreeDataNode[]>();
   const [expandedKeys, setExpandedKeys] = useState<Key[]>();
+  const [defaultExpandedKeys, setDefaultExpandedKeys] = useState<any[]>([]);
   const [rightClickNodeTreeItem,setRightClickNodeTreeItem] = useState<RightClickMenu>();
   const [updateCatalogueModalVisible, handleUpdateCatalogueModalVisible] = useState<boolean>(false);
   const [updateTaskModalVisible, handleUpdateTaskModalVisible] = useState<boolean>(false);
@@ -46,30 +76,54 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
   const [rightClickNode, setRightClickNode] = useState<TreeDataNode>();
   const [available, setAvailable] = useState<boolean>(true);
   const [isUploadModalVisible, setIsUploadModalVisible] = useState(false);
-  const [dataList, setDataList] = useState<any[]>([]);
   const [uploadNodeId, setUploadNodeId] = useState(0);
   const sref: any = React.createRef<Scrollbars>();
   const { DirectoryTree } = Tree;
+  const {Search} = Input;
+  const [searchValue, setSearchValue] = useState('')
+  const [autoExpandParent, setAutoExpandParent] = useState(true);
 
   const getTreeData = async () => {
     const result = await getCatalogueTreeData();
     let data = result.datas;
     let list = data;
-    let expandList = new Array();
-    for(let i=0;i<list.length;i++){
-      if(list[i].parentId == 0|| list[i].parentId == 37){
-        expandList.push(list[i].id)
+    let expendList: any[] = [];
+    list?.map((v: any) => {
+      expendList.push(v.id);
+      if (v.children) {
+        v?.children?.map((item: any) => {
+          expendList.push(item.id);
+        })
       }
-      list[i].title=list[i].name;
-      list[i].key=list[i].id;
-      if(list[i].isLeaf){
-        list[i].icon = getIcon(list[i].type);
-      }
-    }
+    })
     data = convertToTreeData(list, 0);
     setTreeData(data);
-    setDataList(expandList);
+    //默认展开所有
+    setExpandedKeys(expendList|| []);
+    setDefaultExpandedKeys(expendList || []);
   };
+
+  const onChange = (e: any) => {
+    let { value } = e.target
+    if (!value) {
+      setExpandedKeys(defaultExpandedKeys);
+      setSearchValue(value)
+      return
+    }
+    value = String(value).trim()
+    const expandList: any[] = generateList(treeData, [])
+    let expandedKeys: any = expandList.map((item: any) => {
+        if (item && item.name.indexOf(value) > -1) {
+         let key = getParentKey(item.key, treeData);
+          return key;
+        }
+        return null;
+      })
+      .filter((item: any, i: number, self: any) => item && self.indexOf(item) === i)
+    setExpandedKeys(expandedKeys)
+    setSearchValue(value)
+    setAutoExpandParent(true)
+  }
 
   const openByKey = async (key:any)=>{
     const result = await getCatalogueTreeData();
@@ -125,6 +179,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     setTimeout(()=>{
       setAvailable(true);
     },200);
+
     if(node?.isLeaf&&node.taskId) {
       for(let item of tabs.panes){
         if(item.key==node.taskId){
@@ -316,15 +371,15 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     return (treeData&&treeData.length==0)?empty:'';
   };
 
-  const handleContextMenu = (e: React.MouseEvent, node: TreeDataNode) => {
-    let position = e.currentTarget.getBoundingClientRect();
+  const handleContextMenu = (e:any) => {
+    let position = e.event.currentTarget.getBoundingClientRect();
     let scrollTop = document.documentElement.scrollTop;
-    setRightClickNode(node);
+    setRightClickNode(e.node);
     setRightClickNodeTreeItem({
-      pageX: e.pageX-20,
-      pageY: position.y+sref.current.getScrollTop()+scrollTop-115-position.height,
-      id: node.id,
-      categoryName: node.name
+      pageX: e.event.pageX-20,
+      pageY: position.y+sref.current.getScrollTop()+scrollTop-125-position.height,
+      id: e.node.id,
+      categoryName: e.node.name
     });
     dispatch&&dispatch({
       type: "Studio/showRightClickMenu",
@@ -332,6 +387,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     });
   };
 
+  //选中节点时触发
   const onSelect = (selectedKeys:Key[], e:any) => {
     if(e.node&&e.node.isLeaf) {
       dispatch({
@@ -346,9 +402,43 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     setExpandedKeys([]);
   };
 
+  // 树节点展开/收缩
   const onExpand=(expandedKeys:Key[])=>{
     setExpandedKeys(expandedKeys);
+    setAutoExpandParent(false)
   };
+
+  const loop = (data:any) =>
+    data?.map((item:any) => {
+      const index = item.title.indexOf(searchValue);
+      const beforeStr = item.title.substr(0, index);
+      const afterStr = item.title.substr(index + searchValue.length);
+      item.icon = getIcon(item.type);
+      const title =
+        index > -1 ? (
+          <span>
+            {beforeStr}
+            <span className={style['site-tree-search-value']}>{searchValue}</span>
+            {afterStr}
+            </span>
+        ) : (
+          <span>{item.title}</span>
+        );
+      if (item.children) {
+        return {isLeaf:item.isLeaf,name:item.name,id:item.id,taskId:item.taskId,parentId:item.parentId,path:item.path,icon:item.isLeaf?item.icon:'', title, key: item.key, children: loop(item.children) };
+      }
+      return {
+        isLeaf:item.isLeaf,
+        name:item.name,
+        id:item.id,
+        taskId:item.taskId,
+        parentId:item.parentId,
+        path:item.path,
+        icon:item.isLeaf?item.icon:'',
+        title,
+        key: item.key,
+      };
+    });
 
   return (
     <div className={style.tree_div} >
@@ -371,16 +461,16 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
         </Col>
       </Row>
       <Scrollbars  style={{height:(toolHeight-32)}} ref={sref}>
-      {/*<Search style={{marginBottom: 8}} placeholder="Search" onChange={onChange}/>*/}
+      <Search style={{marginBottom: 8}} placeholder="Search" onChange={onChange} allowClear={true}/>
         <DirectoryTree
           multiple
-          onRightClick={({event, node}: any) => {
-            handleContextMenu(event, node)
-          }}
+          onRightClick={handleContextMenu}
           onSelect={onSelect}
           switcherIcon={<DownOutlined/>}
-          treeData={treeData}
-          onExpand ={onExpand }
+          treeData={loop(treeData)}
+          onExpand ={onExpand}
+          autoExpandParent={autoExpandParent}
+          defaultExpandAll
           expandedKeys={expandedKeys}
         />
       {getNodeTreeRightClickMenu()}
@@ -428,7 +518,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       </Scrollbars>
       <UploadModal visible={isUploadModalVisible} action={`/api/catalogue/upload/${uploadNodeId}`} handleOk={()=>{
         setIsUploadModalVisible(false);
-        setExpandedKeys(dataList);
+        setExpandedKeys(defaultExpandedKeys);
         getTreeData();
       }} onCancel={()=>{setIsUploadModalVisible(false)}} buttonTitle="上传zip包并创建工程" />
     </div>
