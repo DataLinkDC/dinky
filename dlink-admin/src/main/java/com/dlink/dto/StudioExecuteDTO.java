@@ -19,7 +19,7 @@ import java.util.Map;
  */
 @Getter
 @Setter
-public class StudioExecuteDTO extends AbstractStatementDTO{
+public class StudioExecuteDTO extends AbstractStatementDTO {
     // RUN_MODE
     private String type;
     private String dialect;
@@ -34,7 +34,6 @@ public class StudioExecuteDTO extends AbstractStatementDTO{
     private Integer clusterConfigurationId;
     private Integer databaseId;
     private Integer jarId;
-    private boolean fragment;
     private String jobName;
     private Integer taskId;
     private Integer maxRowNum;
@@ -46,22 +45,22 @@ public class StudioExecuteDTO extends AbstractStatementDTO{
     private static final ObjectMapper mapper = new ObjectMapper();
 
     public JobConfig getJobConfig() {
-        Map<String,String> config = new HashMap<>();
+        Map<String, String> config = new HashMap<>();
         JsonNode paras = null;
-        if(Asserts.isNotNullString(configJson)) {
+        if (Asserts.isNotNullString(configJson)) {
             try {
                 paras = mapper.readTree(configJson);
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
             paras.forEach((JsonNode node) -> {
-                config.put(node.get("key").asText(), node.get("value").asText());
-                }
+                        config.put(node.get("key").asText(), node.get("value").asText());
+                    }
             );
         }
         return new JobConfig(
-                type,useResult,useChangeLog,useAutoCancel, useSession, session, clusterId,
-                clusterConfigurationId,jarId, taskId, jobName, fragment,statementSet,batchModel,
-                maxRowNum, checkPoint, parallelism,savePointStrategy, savePointPath,config);
+                type, useResult, useChangeLog, useAutoCancel, useSession, session, clusterId,
+                clusterConfigurationId, jarId, taskId, jobName, isFragment(), statementSet, batchModel,
+                maxRowNum, checkPoint, parallelism, savePointStrategy, savePointPath, config);
     }
 }

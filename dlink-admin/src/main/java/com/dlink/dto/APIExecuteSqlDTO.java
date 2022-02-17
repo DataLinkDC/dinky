@@ -20,7 +20,7 @@ import java.util.Map;
  */
 @Getter
 @Setter
-public class APIExecuteSqlDTO extends AbstractStatementDTO{
+public class APIExecuteSqlDTO extends AbstractStatementDTO {
     // RUN_MODE
     private String type;
     private boolean useResult = false;
@@ -28,8 +28,6 @@ public class APIExecuteSqlDTO extends AbstractStatementDTO{
     private boolean useAutoCancel = false;
     private boolean useStatementSet = false;
     private String address;
-    private boolean fragment = false;
-//    private String statement;
     private String jobName;
     private Integer maxRowNum = 100;
     private Integer checkPoint = 0;
@@ -44,8 +42,8 @@ public class APIExecuteSqlDTO extends AbstractStatementDTO{
             savePointStrategy = 3;
         }
         return new JobConfig(
-                type, useResult,useChangeLog, useChangeLog, false, null, true, address, jobName,
-                fragment, useStatementSet, maxRowNum, checkPoint, parallelism, savePointStrategy,
+                type, useResult, useChangeLog, useChangeLog, false, null, true, address, jobName,
+                isFragment(), useStatementSet, maxRowNum, checkPoint, parallelism, savePointStrategy,
                 savePointPath, configuration, gatewayConfig);
     }
 }

@@ -13,10 +13,10 @@ import java.util.regex.Pattern;
  */
 public class SingleSqlParserFactory {
 
-    public static Map<String,List<String>> generateParser(String sql) {
+    public static Map<String, List<String>> generateParser(String sql) {
         BaseSingleSqlParser tmp = null;
 //        sql = sql.replace("\n"," ").replaceAll("\\s{1,}", " ") +" ENDOFSQL";
-        sql = sql.replace("\r\n"," ").replace("\n"," ") +" ENDOFSQL";
+        sql = sql.replace("\r\n", " ").replace("\n", " ") + " ENDOFSQL";
         if (contains(sql, "(insert\\s+into)(.+)(select)(.+)(from)(.+)")) {
             tmp = new InsertSelectSqlParser(sql);
         } else if (contains(sql, "(create\\s+aggtable)(.+)(as\\s+select)(.+)")) {
@@ -37,6 +37,8 @@ public class SingleSqlParserFactory {
         } else if (contains(sql, "(use)(.+)")) {
         } else if (contains(sql, "(set)(.+)")) {
             tmp = new SetSqlParser(sql);
+        } else if (contains(sql, "(show\\s+fragment)\\s+(.+)")) {
+            tmp = new ShowFragmentParser(sql);
         } else {
         }
         return tmp.splitSql2Segment();

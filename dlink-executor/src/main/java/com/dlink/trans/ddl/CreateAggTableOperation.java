@@ -4,6 +4,7 @@ import com.dlink.executor.Executor;
 import com.dlink.trans.AbstractOperation;
 import com.dlink.trans.Operation;
 import org.apache.flink.table.api.Table;
+import org.apache.flink.table.api.TableResult;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
  * @author wenmo
  * @since 2021/6/13 19:24
  */
-public class CreateAggTableOperation extends AbstractOperation implements Operation{
+public class CreateAggTableOperation extends AbstractOperation implements Operation {
 
     private String KEY_WORD = "CREATE AGGTABLE";
 
@@ -35,11 +36,11 @@ public class CreateAggTableOperation extends AbstractOperation implements Operat
     }
 
     @Override
-    public void build(Executor executor) {
+    public TableResult build(Executor executor) {
         AggTable aggTable = AggTable.build(statement);
-        Table source = executor.getCustomTableEnvironment().sqlQuery("select * from "+ aggTable.getTable());
+        Table source = executor.getCustomTableEnvironment().sqlQuery("select * from " + aggTable.getTable());
         List<String> wheres = aggTable.getWheres();
-        if(wheres!=null&&wheres.size()>0) {
+        if (wheres != null && wheres.size() > 0) {
             for (String s : wheres) {
                 source = source.filter(s);
             }
@@ -48,5 +49,6 @@ public class CreateAggTableOperation extends AbstractOperation implements Operat
                 .flatAggregate(aggTable.getAggBy())
                 .select(aggTable.getColumns());
         executor.getCustomTableEnvironment().registerTable(aggTable.getName(), sink);
+        return null;
     }
 }

@@ -11,12 +11,7 @@ import org.apache.flink.table.catalog.exceptions.CatalogException;
 import org.apache.flink.types.Row;
 import org.apache.flink.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,8 +21,9 @@ import static org.apache.flink.util.Preconditions.checkNotNull;
 
 /**
  * Flink Sql Fragment Manager
- * @author  wenmo
- * @since  2021/6/7 22:06
+ *
+ * @author wenmo
+ * @since 2021/6/7 22:06
  **/
 public final class SqlManager {
 
@@ -111,6 +107,16 @@ public final class SqlManager {
         }
     }
 
+    public TableResult getSqlFragmentResult(String sqlFragmentName) {
+        if (Asserts.isNullString(sqlFragmentName)) {
+            return CustomTableResultImpl.buildTableResult(new ArrayList<>(Arrays.asList(new TableSchemaField("fragment", DataTypes.STRING()))), new ArrayList<>());
+        }
+        String sqlFragment = getSqlFragment(sqlFragmentName);
+        List<Row> rows = new ArrayList<>();
+        rows.add(Row.of(sqlFragment));
+        return CustomTableResultImpl.buildTableResult(new ArrayList<>(Arrays.asList(new TableSchemaField("fragment", DataTypes.STRING()))), rows);
+    }
+
     /**
      * Get a fragment of sql under the given name. The sql fragment name must be existed.
      *
@@ -126,7 +132,7 @@ public final class SqlManager {
         for (String key : sqlFragments.keySet()) {
             rows.add(Row.of(key));
         }
-        return CustomTableResultImpl.buildTableResult(new ArrayList<>(Arrays.asList(new TableSchemaField("sql fragment name", DataTypes.STRING()))), rows);
+        return CustomTableResultImpl.buildTableResult(new ArrayList<>(Arrays.asList(new TableSchemaField("fragmentName", DataTypes.STRING()))), rows);
     }
 
     public Iterator getSqlFragmentsIterator() {
@@ -141,9 +147,10 @@ public final class SqlManager {
         return environment.fromValues(keys);
     }
 
-    public boolean checkShowFragments(String sql){
+    public boolean checkShowFragments(String sql) {
         return SHOW_FRAGMENTS.equals(sql.trim().toUpperCase());
     }
+
     /**
      * Parse some variables under the given sql.
      *

@@ -78,4 +78,12 @@ public class SqlParserTest {
         Map<String,List<String>> lists = SingleSqlParserFactory.generateParser(sql);
         System.out.println(lists.toString());
     }
+
+
+    @Test
+    public void showFragmentTest(){
+        String sql = "show fragment test";
+        Map<String,List<String>> lists = SingleSqlParserFactory.generateParser(sql);
+        System.out.println(lists.toString());
+    }
 }

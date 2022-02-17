@@ -1,6 +1,7 @@
 package com.dlink.trans;
 
 import com.dlink.executor.Executor;
+import org.apache.flink.table.api.TableResult;
 
 /**
  * Operation
@@ -14,7 +15,7 @@ public interface Operation {
 
     Operation create(String statement);
 
-    void build(Executor executor);
+    TableResult build(Executor executor);
 
     boolean noExecute();
 }

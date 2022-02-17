@@ -61,28 +61,32 @@ public class StudioServiceImpl implements StudioService {
     @Autowired
     private TaskService taskService;
 
-    private void addFlinkSQLEnv(AbstractStatementDTO statementDTO){
-        if(Asserts.isNotNull(statementDTO.getEnvId())&&statementDTO.getEnvId()!=0){
+    private void addFlinkSQLEnv(AbstractStatementDTO statementDTO) {
+        String flinkWithSql = dataBaseService.getEnabledFlinkWithSql();
+        if (statementDTO.isFragment() && Asserts.isNotNullString(flinkWithSql)) {
+            statementDTO.setStatement(flinkWithSql + "\r\n" + statementDTO.getStatement());
+        }
+        if (Asserts.isNotNull(statementDTO.getEnvId()) && statementDTO.getEnvId() != 0) {
             Task task = taskService.getTaskInfoById(statementDTO.getEnvId());
-            if(Asserts.isNotNull(task)&&Asserts.isNotNullString(task.getStatement())) {
+            if (Asserts.isNotNull(task) && Asserts.isNotNullString(task.getStatement())) {
                 statementDTO.setStatement(task.getStatement() + "\r\n" + statementDTO.getStatement());
             }
         }
     }
 
-    private void buildSession(JobConfig config){
+    private void buildSession(JobConfig config) {
         // If you are using a shared session, configure the current jobmanager address
-        if(!config.isUseSession()) {
+        if (!config.isUseSession()) {
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), config.getClusterId()));
         }
     }
 
     @Override
     public JobResult executeSql(StudioExecuteDTO studioExecuteDTO) {
-        if(Dialect.isSql(studioExecuteDTO.getDialect())){
+        if (Dialect.isSql(studioExecuteDTO.getDialect())) {
             return executeCommonSql(SqlDTO.build(studioExecuteDTO.getStatement(),
-                    studioExecuteDTO.getDatabaseId(),studioExecuteDTO.getMaxRowNum()));
-        }else{
+                    studioExecuteDTO.getDatabaseId(), studioExecuteDTO.getMaxRowNum()));
+        } else {
             return executeFlinkSql(studioExecuteDTO);
         }
     }
@@ -103,26 +107,26 @@ public class StudioServiceImpl implements StudioService {
         JobResult result = new JobResult();
         result.setStatement(sqlDTO.getStatement());
         result.setStartTime(LocalDateTime.now());
-        if(Asserts.isNull(sqlDTO.getDatabaseId())){
+        if (Asserts.isNull(sqlDTO.getDatabaseId())) {
             result.setSuccess(false);
             result.setError("请指定数据源");
             result.setEndTime(LocalDateTime.now());
             return result;
-        }else{
+        } else {
             DataBase dataBase = dataBaseService.getById(sqlDTO.getDatabaseId());
-            if(Asserts.isNull(dataBase)){
+            if (Asserts.isNull(dataBase)) {
                 result.setSuccess(false);
                 result.setError("数据源不存在");
                 result.setEndTime(LocalDateTime.now());
                 return result;
             }
             Driver driver = Driver.build(dataBase.getDriverConfig());
-            JdbcSelectResult selectResult = driver.executeSql(sqlDTO.getStatement(),sqlDTO.getMaxRowNum());
+            JdbcSelectResult selectResult = driver.executeSql(sqlDTO.getStatement(), sqlDTO.getMaxRowNum());
             driver.close();
             result.setResult(selectResult);
-            if(selectResult.isSuccess()){
+            if (selectResult.isSuccess()) {
                 result.setSuccess(true);
-            }else{
+            } else {
                 result.setSuccess(false);
                 result.setError(selectResult.getError());
             }
@@ -134,7 +138,7 @@ public class StudioServiceImpl implements StudioService {
     @Override
     public IResult executeDDL(StudioDDLDTO studioDDLDTO) {
         JobConfig config = studioDDLDTO.getJobConfig();
-        if(!config.isUseSession()) {
+        if (!config.isUseSession()) {
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), studioDDLDTO.getClusterId()));
         }
         JobManager jobManager = JobManager.build(config);
@@ -143,9 +147,9 @@ public class StudioServiceImpl implements StudioService {
 
     @Override
     public List<SqlExplainResult> explainSql(StudioExecuteDTO studioExecuteDTO) {
-        if( Dialect.isSql(studioExecuteDTO.getDialect())){
+        if (Dialect.isSql(studioExecuteDTO.getDialect())) {
             return explainCommonSql(studioExecuteDTO);
-        }else{
+        } else {
             return explainFlinkSql(studioExecuteDTO);
         }
     }
@@ -163,15 +167,15 @@ public class StudioServiceImpl implements StudioService {
     }
 
     private List<SqlExplainResult> explainCommonSql(StudioExecuteDTO studioExecuteDTO) {
-        if(Asserts.isNull(studioExecuteDTO.getDatabaseId())){
-            return new ArrayList<SqlExplainResult>(){{
-                add(SqlExplainResult.fail(studioExecuteDTO.getStatement(),"请指定数据源"));
+        if (Asserts.isNull(studioExecuteDTO.getDatabaseId())) {
+            return new ArrayList<SqlExplainResult>() {{
+                add(SqlExplainResult.fail(studioExecuteDTO.getStatement(), "请指定数据源"));
             }};
-        }else{
+        } else {
             DataBase dataBase = dataBaseService.getById(studioExecuteDTO.getDatabaseId());
-            if(Asserts.isNull(dataBase)){
-                return new ArrayList<SqlExplainResult>(){{
-                    add(SqlExplainResult.fail(studioExecuteDTO.getStatement(),"数据源不存在"));
+            if (Asserts.isNull(dataBase)) {
+                return new ArrayList<SqlExplainResult>() {{
+                    add(SqlExplainResult.fail(studioExecuteDTO.getStatement(), "数据源不存在"));
                 }};
             }
             Driver driver = Driver.build(dataBase.getDriverConfig());
@@ -202,12 +206,12 @@ public class StudioServiceImpl implements StudioService {
         JobManager jobManager = JobManager.buildPlanMode(config);
         String planJson = jobManager.getJobPlanJson(studioExecuteDTO.getStatement());
         ObjectMapper mapper = new ObjectMapper();
-        ObjectNode objectNode =mapper.createObjectNode();
+        ObjectNode objectNode = mapper.createObjectNode();
         try {
             objectNode = (ObjectNode) mapper.readTree(planJson);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             return objectNode;
         }
     }
@@ -219,14 +223,14 @@ public class StudioServiceImpl implements StudioService {
 
     @Override
     public SessionInfo createSession(SessionDTO sessionDTO, String createUser) {
-        if(sessionDTO.isUseRemote()) {
+        if (sessionDTO.isUseRemote()) {
             Cluster cluster = clusterService.getById(sessionDTO.getClusterId());
             SessionConfig sessionConfig = SessionConfig.build(
                     sessionDTO.getType(), true,
                     cluster.getId(), cluster.getAlias(),
                     clusterService.buildEnvironmentAddress(true, sessionDTO.getClusterId()));
             return JobManager.createSession(sessionDTO.getSession(), sessionConfig, createUser);
-        }else{
+        } else {
             SessionConfig sessionConfig = SessionConfig.build(
                     sessionDTO.getType(), false,
                     null, null,
@@ -237,9 +241,9 @@ public class StudioServiceImpl implements StudioService {
 
     @Override
     public boolean clearSession(String session) {
-        if(SessionPool.remove(session)>0){
+        if (SessionPool.remove(session) > 0) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
@@ -267,8 +271,8 @@ public class StudioServiceImpl implements StudioService {
     @Override
     public List<JsonNode> listJobs(Integer clusterId) {
         Cluster cluster = clusterService.getById(clusterId);
-        Asserts.checkNotNull(cluster,"该集群不存在");
-        try{
+        Asserts.checkNotNull(cluster, "该集群不存在");
+        try {
             return FlinkAPI.build(cluster.getJobManagerHost()).listJobs();
         } catch (Exception e) {
             logger.info("查询作业时集群不存在");
@@ -277,12 +281,12 @@ public class StudioServiceImpl implements StudioService {
     }
 
     @Override
-    public boolean cancel(Integer clusterId,String jobId) {
+    public boolean cancel(Integer clusterId, String jobId) {
         Cluster cluster = clusterService.getById(clusterId);
-        Asserts.checkNotNull(cluster,"该集群不存在");
+        Asserts.checkNotNull(cluster, "该集群不存在");
         JobConfig jobConfig = new JobConfig();
         jobConfig.setAddress(cluster.getJobManagerHost());
-        if(Asserts.isNotNull(cluster.getClusterConfigurationId())){
+        if (Asserts.isNotNull(cluster.getClusterConfigurationId())) {
             Map<String, Object> gatewayConfig = clusterConfigurationService.getGatewayConfig(cluster.getClusterConfigurationId());
             jobConfig.buildGatewayConfig(gatewayConfig);
         }
@@ -291,13 +295,13 @@ public class StudioServiceImpl implements StudioService {
     }
 
     @Override
-    public boolean savepoint(Integer clusterId, String jobId, String savePointType,String name) {
+    public boolean savepoint(Integer clusterId, String jobId, String savePointType, String name) {
         Cluster cluster = clusterService.getById(clusterId);
-        Asserts.checkNotNull(cluster,"该集群不存在");
+        Asserts.checkNotNull(cluster, "该集群不存在");
         JobConfig jobConfig = new JobConfig();
         jobConfig.setAddress(cluster.getJobManagerHost());
         jobConfig.setType(cluster.getType());
-        if(Asserts.isNotNull(cluster.getClusterConfigurationId())){
+        if (Asserts.isNotNull(cluster.getClusterConfigurationId())) {
             Map<String, Object> gatewayConfig = clusterConfigurationService.getGatewayConfig(cluster.getClusterConfigurationId());
             jobConfig.buildGatewayConfig(gatewayConfig);
             jobConfig.getGatewayConfig().getClusterConfig().setAppId(cluster.getName());
@@ -305,10 +309,10 @@ public class StudioServiceImpl implements StudioService {
         }
         JobManager jobManager = JobManager.build(jobConfig);
         jobManager.setUseGateway(true);
-        SavePointResult savePointResult = jobManager.savepoint(jobId, savePointType,null);
-        if(Asserts.isNotNull(savePointResult)){
-            for(JobInfo item : savePointResult.getJobInfos()){
-                if(Asserts.isEqualsIgnoreCase(jobId,item.getJobId())){
+        SavePointResult savePointResult = jobManager.savepoint(jobId, savePointType, null);
+        if (Asserts.isNotNull(savePointResult)) {
+            for (JobInfo item : savePointResult.getJobInfos()) {
+                if (Asserts.isEqualsIgnoreCase(jobId, item.getJobId())) {
                     Savepoints savepoints = new Savepoints();
                     savepoints.setName(name);
                     savepoints.setType(savePointType);
@@ -322,14 +326,14 @@ public class StudioServiceImpl implements StudioService {
         return false;
     }
 
-    private void initUDF(JobConfig config,String statement){
-        if(!GatewayType.LOCAL.equalsValue(config.getType())){
+    private void initUDF(JobConfig config, String statement) {
+        if (!GatewayType.LOCAL.equalsValue(config.getType())) {
             return;
         }
         List<String> udfClassNameList = JobManager.getUDFClassName(statement);
-        for(String item : udfClassNameList){
+        for (String item : udfClassNameList) {
             Task task = taskService.getUDFByClassName(item);
-            JobManager.initUDF(item,task.getStatement());
+            JobManager.initUDF(item, task.getStatement());
         }
     }
 }

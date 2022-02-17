@@ -17,14 +17,12 @@ import java.util.Map;
  */
 @Getter
 @Setter
-public class APIExplainSqlDTO extends AbstractStatementDTO{
+public class APIExplainSqlDTO extends AbstractStatementDTO {
     private boolean useStatementSet = false;
-    private boolean fragment = false;
-//    private String statement;
     private Integer parallelism;
     private Map<String, String> configuration;
 
     public JobConfig getJobConfig() {
-        return new JobConfig("local", false, false, fragment, useStatementSet, parallelism, configuration);
+        return new JobConfig("local", false, false, isFragment(), useStatementSet, parallelism, configuration);
     }
 }

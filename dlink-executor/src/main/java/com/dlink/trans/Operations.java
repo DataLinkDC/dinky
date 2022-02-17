@@ -1,9 +1,7 @@
 package com.dlink.trans;
 
 import com.dlink.parser.SqlType;
-import com.dlink.trans.ddl.CreateAggTableOperation;
-import com.dlink.trans.ddl.CreateCDCSourceOperation;
-import com.dlink.trans.ddl.SetOperation;
+import com.dlink.trans.ddl.*;
 
 /**
  * Operations
@@ -14,12 +12,14 @@ import com.dlink.trans.ddl.SetOperation;
 public class Operations {
 
     private static Operation[] operations = {
-      new CreateAggTableOperation()
+            new CreateAggTableOperation()
             , new SetOperation()
             , new CreateCDCSourceOperation()
+            , new ShowFragmentsOperation()
+            , new ShowFragmentOperation()
     };
 
-    public static SqlType getSqlTypeFromStatements(String statement){
+    public static SqlType getSqlTypeFromStatements(String statement) {
         String[] statements = statement.split(";");
         SqlType sqlType = SqlType.UNKNOWN;
         for (String item : statements) {
@@ -27,7 +27,7 @@ public class Operations {
                 continue;
             }
             sqlType = Operations.getOperationType(item);
-            if(sqlType == SqlType.INSERT ||sqlType == SqlType.SELECT){
+            if (sqlType == SqlType.INSERT || sqlType == SqlType.SELECT) {
                 return sqlType;
             }
         }
@@ -46,10 +46,10 @@ public class Operations {
         return type;
     }
 
-    public static Operation buildOperation(String statement){
-        String sql = statement.replace("\n"," ").replaceAll("\\s{1,}", " ").trim().toUpperCase();
+    public static Operation buildOperation(String statement) {
+        String sql = statement.replace("\n", " ").replaceAll("\\s{1,}", " ").trim().toUpperCase();
         for (int i = 0; i < operations.length; i++) {
-            if(sql.startsWith(operations[i].getHandle())){
+            if (sql.startsWith(operations[i].getHandle())) {
                 return operations[i].create(statement);
             }
         }

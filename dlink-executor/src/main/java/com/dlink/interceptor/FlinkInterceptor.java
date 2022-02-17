@@ -3,11 +3,12 @@ package com.dlink.interceptor;
 import com.dlink.assertion.Asserts;
 import com.dlink.catalog.function.FunctionManager;
 import com.dlink.catalog.function.UDFunction;
-import com.dlink.executor.Executor;
 import com.dlink.executor.CustomTableEnvironmentImpl;
+import com.dlink.executor.Executor;
 import com.dlink.trans.Operation;
 import com.dlink.trans.Operations;
 import com.dlink.utils.SqlUtil;
+import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.functions.AggregateFunction;
 import org.apache.flink.table.functions.ScalarFunction;
 import org.apache.flink.table.functions.TableAggregateFunction;
@@ -27,7 +28,7 @@ public class FlinkInterceptor {
 
     public static String pretreatStatement(Executor executor, String statement) {
         statement = SqlUtil.removeNote(statement);
-        if(executor.isUseSqlFragment()) {
+        if (executor.isUseSqlFragment()) {
             statement = executor.getSqlManager().parseVariable(statement);
         }
 //        initFunctions(executor.getCustomTableEnvironmentImpl(), statement);
@@ -35,13 +36,15 @@ public class FlinkInterceptor {
     }
 
     // return false to continue with executeSql
-    public static boolean build(Executor executor, String statement) {
+    public static FlinkInterceptorResult build(Executor executor, String statement) {
+        boolean noExecute = false;
+        TableResult tableResult = null;
         Operation operation = Operations.buildOperation(statement);
         if (Asserts.isNotNull(operation)) {
-            operation.build(executor);
-            return operation.noExecute();
+            tableResult = operation.build(executor);
+            noExecute = operation.noExecute();
         }
-        return false;
+        return FlinkInterceptorResult.build(noExecute, tableResult);
     }
 
     @Deprecated
