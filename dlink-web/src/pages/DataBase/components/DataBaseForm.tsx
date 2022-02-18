@@ -1,17 +1,19 @@
 import React, {useEffect, useState} from 'react';
-import {Form, Button, Input, Space, Select} from 'antd';
+import {Form, Button, Input, Space, Select, Divider} from 'antd';
 
 import Switch from "antd/es/switch";
 import TextArea from "antd/es/input/TextArea";
 import {DataBaseItem} from "@/pages/DataBase/data";
+import {FALLBACK, getDBImage} from "@/pages/DataBase/DB";
 
 
-export type DorisFormProps = {
+export type ClickHouseFormProps = {
   onCancel: (flag?: boolean, formVals?: Partial<DataBaseItem>) => void;
   onSubmit: (values: Partial<DataBaseItem>) => void;
   onTest: (values: Partial<DataBaseItem>) => void;
   modalVisible: boolean;
   values: Partial<DataBaseItem>;
+  type?: string;
 };
 const Option = Select.Option;
 
@@ -20,18 +22,18 @@ const formLayout = {
   wrapperCol: {span: 13},
 };
 
-const DorisForm: React.FC<DorisFormProps> = (props) => {
+const DataBaseForm: React.FC<ClickHouseFormProps> = (props) => {
   const [formVals, setFormVals] = useState<Partial<DataBaseItem>>({
     id: props.values.id,
     name: props.values.name,
     alias: props.values.alias,
-    type: "Doris",
     groupName: props.values.groupName,
     url: props.values.url,
     username: props.values.username,
     password: props.values.password,
     dbVersion: props.values.dbVersion,
     flinkConfig: props.values.flinkConfig,
+    flinkTemplate: props.values.flinkTemplate,
     note: props.values.note,
     enabled: props.values.enabled,
   });
@@ -43,18 +45,19 @@ const DorisForm: React.FC<DorisFormProps> = (props) => {
     onCancel: handleModalVisible,
     modalVisible,
     values,
+    type
   } = props;
 
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
-    setFormVals({...formVals, ...fieldsValue});
-    handleUpdate({...formVals, ...fieldsValue});
+    setFormVals({type,...formVals, ...fieldsValue});
+    handleUpdate({type,...formVals, ...fieldsValue});
   };
 
   const testForm = async () => {
     const fieldsValue = await form.validateFields();
-    setFormVals({...formVals, ...fieldsValue});
-    handleTest({...formVals, ...fieldsValue});
+    setFormVals({type,...formVals, ...fieldsValue});
+    handleTest({type,...formVals, ...fieldsValue});
   };
 
   const onReset = () => {
@@ -64,6 +67,7 @@ const DorisForm: React.FC<DorisFormProps> = (props) => {
   const renderContent = (formVals) => {
     return (
       <>
+        <Divider>{type}</Divider>
         <Form.Item
           name="name"
           label="名称"
@@ -92,7 +96,7 @@ const DorisForm: React.FC<DorisFormProps> = (props) => {
           name="url"
           label="url"
         >
-          <TextArea placeholder="jdbc:mysql://{host}:{port}/{database}" allowClear
+          <TextArea placeholder="请输入格式正确的 url 连接" allowClear
                     autoSize={{minRows: 3, maxRows: 10}}/>
         </Form.Item>
         <Form.Item
@@ -109,9 +113,16 @@ const DorisForm: React.FC<DorisFormProps> = (props) => {
         </Form.Item>
         <Form.Item
           name="flinkConfig"
-          label="Flink With 模板"
+          label="Flink 连接配置"
         >
-          <TextArea placeholder="'connector' = 'doris',..." allowClear
+          <TextArea placeholder="请指定 Flink With 的默认配置" allowClear
+                    autoSize={{minRows: 3, maxRows: 10}}/>
+        </Form.Item>
+        <Form.Item
+          name="flinkTemplate"
+          label="Flink 连接模板"
+        >
+          <TextArea placeholder="请指定 Flink With 的生成模板" allowClear
                     autoSize={{minRows: 3, maxRows: 10}}/>
         </Form.Item>
         <Form.Item
@@ -149,17 +160,20 @@ const DorisForm: React.FC<DorisFormProps> = (props) => {
                 password: formVals.password,
                 note: formVals.note,
                 flinkConfig: formVals.flinkConfig,
+                flinkTemplate: formVals.flinkTemplate,
                 enabled: formVals.enabled,
               }}
             >
               {renderContent(formVals)}
               <Form.Item wrapperCol={{offset: 8, span: 16}}>
                 <Space>
-                  <Button htmlType="button" onClick={()=>{
-                    handleModalVisible(false)
-                  }}>
-                    返回
-                  </Button>
+                  {!formVals.id ?
+                    <Button htmlType="button" onClick={() => {
+                      handleModalVisible(false)
+                    }}>
+                      返回
+                    </Button>:undefined
+                  }
                   <Button htmlType="button" onClick={onReset}>
                     重置
                   </Button>
@@ -178,4 +192,4 @@ const DorisForm: React.FC<DorisFormProps> = (props) => {
   );
 };
 
-export default DorisForm;
+export default DataBaseForm;

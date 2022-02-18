@@ -96,7 +96,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
         Driver driver = Driver.build(dataBase.getDriverConfig());
         List<Column> columns = driver.listColumns(schemaName, tableName);
         Table table = Table.build(tableName, schemaName, columns);
-        return table.getFlinkTableSql(dataBase.getName(), dataBase.getFlinkConfig());
+        return table.getFlinkTableSql(dataBase.getName(), dataBase.getFlinkTemplate());
     }
 
     @Override
@@ -126,7 +126,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
         Driver driver = Driver.build(dataBase.getDriverConfig());
         Table table = driver.getTable(schemaName, tableName);
         SqlGeneration sqlGeneration = new SqlGeneration();
-        sqlGeneration.setFlinkSqlCreate(table.getFlinkTableSql(dataBase.getName(), dataBase.getFlinkConfig()));
+        sqlGeneration.setFlinkSqlCreate(table.getFlinkTableSql(dataBase.getName(), dataBase.getFlinkTemplate()));
         sqlGeneration.setSqlSelect(table.getSqlSelect(dataBase.getName()));
         sqlGeneration.setSqlCreate(driver.getCreateTableSql(table));
         return sqlGeneration;
@@ -138,7 +138,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
         List<String> list = new ArrayList<>();
         for (DataBase dataBase : dataBases) {
             if (Asserts.isNotNullString(dataBase.getFlinkConfig())) {
-                list.add(dataBase.getName() + ":=" + dataBase.getFlinkConfig() + ";\n");
+                list.add(dataBase.getName() + ":=" + dataBase.getFlinkConfig() + "\n;\n");
             }
         }
         return list;

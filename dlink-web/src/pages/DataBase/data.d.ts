@@ -9,6 +9,7 @@ export type DataBaseItem = {
   password: string,
   note: string,
   flinkConfig: string,
+  flinkTemplate: string,
   dbVersion: string,
   status: boolean,
   healthTime: Date,
@@ -17,22 +18,6 @@ export type DataBaseItem = {
   createTime: Date,
   updateTime: Date,
 };
-
-export type DataBaseFormProps = {
-  name: string,
-  alias: string,
-  groupName: string,
-  type: string,
-  ip: string,
-  port: number,
-  url: string,
-  username: string,
-  password: string,
-  note: string,
-  flinkConfig: string,
-  dbVersion: string,
-  enabled: boolean,
-}
 
 export type Column = {
   name: string,

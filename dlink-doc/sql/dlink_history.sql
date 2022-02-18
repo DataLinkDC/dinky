@@ -489,7 +489,7 @@ ADD COLUMN `env_id` int(11) NULL COMMENT '环境ID' AFTER `jar_id`;
 -- 0.6.0-SNAPSHOT 2022-01-28
 -- ----------------------------
 ALTER TABLE `dlink_database`
-ADD COLUMN `flink_config` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '环境ID' AFTER `note`;
+ADD COLUMN `flink_config` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT 'Flink配置' AFTER `note`;
 
 -- ----------------------------
 -- 0.6.0-SNAPSHOT 2022-02-02
@@ -529,5 +529,10 @@ update dlink_catalogue set type = 'FlinkJar' where task_id in (select id as task
 -- ----------------------------
 ALTER TABLE `dlink_task`
     ADD COLUMN `batch_model` tinyint(1) NULL DEFAULT 0 COMMENT '使用批模式' AFTER `statement_set`;
+-- ----------------------------
+-- 0.6.0-SNAPSHOT 2022-02-18
+-- ----------------------------
+ALTER TABLE `dlink_database`
+ADD COLUMN `flink_template` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT 'Flink模板' AFTER `flink_config`;
 
 SET FOREIGN_KEY_CHECKS = 1;

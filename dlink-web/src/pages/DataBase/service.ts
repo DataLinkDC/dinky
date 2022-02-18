@@ -1,8 +1,6 @@
-import request from "umi-request";
-import {getInfoById, handleAddOrUpdate, handleOption, postAll} from "@/components/Common/crud";
+import {getInfoById, handleAddOrUpdate, postAll} from "@/components/Common/crud";
 import {DataBaseItem} from "@/pages/DataBase/data";
 import {message} from "antd";
-import {Protocol} from "puppeteer-core";
 
 export async function createOrModifyDatabase(databse: DataBaseItem) {
   return handleAddOrUpdate('/api/database', databse);

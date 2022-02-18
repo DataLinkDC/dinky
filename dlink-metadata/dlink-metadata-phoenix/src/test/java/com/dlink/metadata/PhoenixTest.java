@@ -19,8 +19,9 @@ public class PhoenixTest {
     @Before
     public void init() {
         DriverConfig config = new DriverConfig();
+        config.setName("phoenix");
         config.setType("Phoenix");
-        config.setUrl("jdbc:phoenix:xxx");
+        config.setUrl("jdbc:phoenix:10.1.51.24:2181");
         try {
             driver = Driver.build(config);
         } catch (Exception e) {
