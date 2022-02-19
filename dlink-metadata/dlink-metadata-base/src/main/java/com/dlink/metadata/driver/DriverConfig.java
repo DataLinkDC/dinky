@@ -14,6 +14,7 @@ import lombok.Setter;
 @Setter
 public class DriverConfig {
 
+    private String name;
     private String type;
     private String driverClassName;
     private String ip;
@@ -25,7 +26,8 @@ public class DriverConfig {
     public DriverConfig() {
     }
 
-    public DriverConfig(String type, String url, String username, String password) {
+    public DriverConfig(String name, String type, String url, String username, String password) {
+        this.name = name;
         this.type = type;
         this.url = url;
         this.username = username;

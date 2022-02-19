@@ -65,6 +65,19 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     }
 
     @Override
+    public boolean isHealth(){
+        try {
+            if(Asserts.isNotNull(conn)){
+                return !conn.isClosed();
+            }
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
     public void close() {
         try {
             if (Asserts.isNotNull(conn)) {
@@ -165,7 +178,6 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                 field.setKeyFlag(Asserts.isNotNullString(key) && Asserts.isEqualsIgnoreCase("PRI",key));
                 field.setName(columnName);
                 field.setType(results.getString(dbQuery.columnType()));
-                field.setJavaType(getTypeConvert().convert(field.getType()).getType());
 
                 String columnComment=results.getString(dbQuery.columnComment()).replaceAll("\"|'","");
                 field.setComment(columnComment);
@@ -177,6 +189,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                 field.setPrecision(results.getInt(dbQuery.precision()));
                 field.setScale(results.getInt(dbQuery.scale()));
                 field.setAutoIncrement(Asserts.isEqualsIgnoreCase(results.getString(dbQuery.autoIncrement()),"auto_increment"));
+                field.setJavaType(getTypeConvert().convert(field));
                 columns.add(field);
             }
         } catch (SQLException e) {
@@ -262,11 +275,10 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     @Override
     public boolean execute(String sql) throws Exception {
         Asserts.checkNullString(sql, "Sql 语句为空");
-        boolean res = false;
         try (Statement statement = conn.createStatement()) {
-            res = statement.execute(sql);
+            statement.execute(sql);
         }
-        return res;
+        return true;
     }
 
     @Override
@@ -305,7 +317,9 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                 Column column = new Column();
                 column.setName(metaData.getColumnLabel(i));
                 column.setType(metaData.getColumnTypeName(i));
-                column.setJavaType(getTypeConvert().convert(metaData.getColumnTypeName(i)).getType());
+                column.setAutoIncrement(metaData.isAutoIncrement(i));
+                column.setNullable(metaData.isNullable(i)==0?false:true);
+                column.setJavaType(getTypeConvert().convert(column));
                 columns.add(column);
             }
             result.setColumns(columnNameList);
@@ -351,9 +365,10 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                 }
             }else {
                 try {
-                    resList.add(execute(item.toString()));
+                    execute(item.toString());
+                    resList.add(1);
                 } catch (Exception e) {
-                    resList.add(false);
+                    resList.add(0);
                     result.setStatusList(resList);
                     result.error(LogUtil.getError(e));
                     return result;

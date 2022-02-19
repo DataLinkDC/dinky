@@ -40,6 +40,8 @@ public class DataBase extends SuperEntity {
 
     private String flinkConfig;
 
+    private String flinkTemplate;
+
     private String dbVersion;
 
     private boolean status;
@@ -48,7 +50,7 @@ public class DataBase extends SuperEntity {
 
     private LocalDateTime heartbeatTime;
 
-    public DriverConfig getDriverConfig(){
-        return new DriverConfig(type,url,username,password);
+    public DriverConfig getDriverConfig() {
+        return new DriverConfig(getName(), type, url, username, password);
     }
 }

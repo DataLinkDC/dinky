@@ -94,6 +94,7 @@ CREATE TABLE `dlink_database`  (
 	`password` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '密码',
 	`note` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '注释',
 	`flink_config` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'Flink配置',
+	`flink_template` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'Flink模板',
 	`db_version` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '版本，如oracle的11g，hbase的2.2.3',
 	`status` tinyint(1) NULL DEFAULT 0 COMMENT '状态',
 	`health_time` datetime(0) NULL DEFAULT NULL COMMENT '最近健康时间',

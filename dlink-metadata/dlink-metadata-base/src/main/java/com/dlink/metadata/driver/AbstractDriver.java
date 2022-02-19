@@ -17,8 +17,6 @@ import java.util.stream.Collectors;
  */
 public abstract class AbstractDriver implements Driver {
 
-//    public Logger logger = LoggerFactory.getLogger(this.getClass());
-
     protected DriverConfig config;
 
     public abstract IDBQuery getDBQuery();
@@ -32,6 +30,10 @@ public abstract class AbstractDriver implements Driver {
     public Driver setDriverConfig(DriverConfig config) {
         this.config = config;
         return this;
+    }
+
+    public boolean isHealth(){
+        return false;
     }
 
     public List<Schema> getSchemasAndTables(){

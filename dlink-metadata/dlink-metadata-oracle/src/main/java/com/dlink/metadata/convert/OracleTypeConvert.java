@@ -1,7 +1,8 @@
 package com.dlink.metadata.convert;
 
-import com.dlink.metadata.rules.DbColumnType;
-import com.dlink.metadata.rules.IColumnType;
+import com.dlink.assertion.Asserts;
+import com.dlink.model.Column;
+import com.dlink.model.ColumnType;
 
 /**
  * OracleTypeConvert
@@ -11,48 +12,53 @@ import com.dlink.metadata.rules.IColumnType;
  **/
 public class OracleTypeConvert implements ITypeConvert {
     @Override
-    public IColumnType convert(String columnType) {
-        String t = columnType.toLowerCase();
+    public ColumnType convert(Column column) {
+        if (Asserts.isNull(column)) {
+            return ColumnType.STRING;
+        }
+        String t = column.getType().toLowerCase();
         if (t.contains("char")) {
-            return DbColumnType.STRING;
-        } else if (t.contains("date") || t.contains("timestamp")) {
-            return DbColumnType.DATE;
+            return ColumnType.STRING;
+        } else if (t.contains("date")) {
+            return ColumnType.DATE;
+        } else if (t.contains("timestamp")) {
+            return ColumnType.TIMESTAMP;
         } else if (t.contains("number")) {
             if (t.matches("number\\(+\\d\\)")) {
-                return DbColumnType.INTEGER;
+                return ColumnType.INTEGER;
             } else if (t.matches("number\\(+\\d{2}+\\)")) {
-                return DbColumnType.LONG;
+                return ColumnType.LONG;
             }
-            return DbColumnType.BIG_DECIMAL;
+            return ColumnType.DECIMAL;
         } else if (t.contains("float")) {
-            return DbColumnType.FLOAT;
+            return ColumnType.FLOAT;
         } else if (t.contains("clob")) {
-            return DbColumnType.STRING;
+            return ColumnType.STRING;
         } else if (t.contains("blob")) {
-            return DbColumnType.BLOB;
-        } else if (t.contains("binary")) {
-            return DbColumnType.BYTE_ARRAY;
-        } else if (t.contains("raw")) {
-            return DbColumnType.BYTE_ARRAY;
+            return ColumnType.BYTES;
         }
-        return DbColumnType.STRING;
+        return ColumnType.STRING;
     }
 
     @Override
-    public String convertToDB(String columnType) {
-        switch (columnType.toLowerCase()){
-            case "string":
-                return "varchar(255)";
-            case "boolean":
-            case "int":
-            case "integer":
-            case "double":
-            case "float":
-                return "number";
-            case "date":
+    public String convertToDB(ColumnType columnType) {
+        switch (columnType) {
+            case STRING:
+                return "varchar";
+            case DATE:
                 return "date";
+            case TIMESTAMP:
+                return "timestamp";
+            case INTEGER:
+            case LONG:
+            case DECIMAL:
+                return "number";
+            case FLOAT:
+                return "float";
+            case BYTES:
+                return "blob";
             default:
-                return "varchar(255)";
+                return "varchar";
         }
     }
 }

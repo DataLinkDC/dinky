@@ -7,6 +7,7 @@ import com.dlink.trans.AbstractOperation;
 import com.dlink.trans.Operation;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.table.api.TableResult;
 
 import java.util.HashMap;
 import java.util.List;
@@ -40,22 +41,23 @@ public class SetOperation extends AbstractOperation implements Operation {
     }
 
     @Override
-    public void build(Executor executor) {
+    public TableResult build(Executor executor) {
         try {
-            if(null != Class.forName("org.apache.log4j.Logger")){
+            if (null != Class.forName("org.apache.log4j.Logger")) {
                 executor.parseAndLoadConfiguration(statement);
-                return;
+                return null;
             }
         } catch (ClassNotFoundException e) {
         }
-        Map<String,List<String>> map = SingleSqlParserFactory.generateParser(statement);
-        if(Asserts.isNotNullMap(map)&&map.size()==2) {
+        Map<String, List<String>> map = SingleSqlParserFactory.generateParser(statement);
+        if (Asserts.isNotNullMap(map) && map.size() == 2) {
             Map<String, String> confMap = new HashMap<>();
             confMap.put(StringUtils.join(map.get("SET"), "."), StringUtils.join(map.get("="), ","));
             executor.getCustomTableEnvironment().getConfig().addConfiguration(Configuration.fromMap(confMap));
             Configuration configuration = Configuration.fromMap(confMap);
-            executor.getExecutionConfig().configure(configuration,null);
+            executor.getExecutionConfig().configure(configuration, null);
             executor.getCustomTableEnvironment().getConfig().addConfiguration(configuration);
         }
+        return null;
     }
 }

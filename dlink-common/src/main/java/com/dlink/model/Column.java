@@ -24,7 +24,7 @@ public class Column implements Serializable {
     private boolean autoIncrement;
     private String defaultValue;
     private boolean isNullable;
-    private String javaType;
+    private ColumnType javaType;
     private String columnFamily;
     private Integer position;
     private Integer precision;

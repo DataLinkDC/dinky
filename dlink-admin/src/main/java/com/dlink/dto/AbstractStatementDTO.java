@@ -10,6 +10,8 @@ public class AbstractStatementDTO {
 
     private String statement;
     private Integer envId;
+    private boolean fragment = false;
+
 
     public String getStatement() {
         return statement;
@@ -25,5 +27,13 @@ public class AbstractStatementDTO {
 
     public void setEnvId(Integer envId) {
         this.envId = envId;
+    }
+
+    public boolean isFragment() {
+        return fragment;
+    }
+
+    public void setFragment(boolean fragment) {
+        this.fragment = fragment;
     }
 }
