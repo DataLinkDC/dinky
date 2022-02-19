@@ -15,7 +15,7 @@
         <source.level>1.8</source.level>
         <target.level>1.8</target.level>
         <dubbo.version>3.0.2.1</dubbo.version>
-        <flink.version>1.13.5</flink.version>
+        <flink.version>1.13.6</flink.version>
         <scala.binary.version>2.11</scala.binary.version>
         <junit.version>4.12</junit.version>
         <spring.version>4.3.16.RELEASE</spring.version>
