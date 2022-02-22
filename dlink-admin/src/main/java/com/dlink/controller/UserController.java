@@ -3,6 +3,7 @@ package com.dlink.controller;
 import com.dlink.assertion.Asserts;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
+import com.dlink.dto.ModifyPasswordDTO;
 import com.dlink.gateway.result.TestResult;
 import com.dlink.model.ClusterConfiguration;
 import com.dlink.model.User;
@@ -89,5 +90,14 @@ public class UserController {
     public Result getOneById(@RequestBody User user) {
         user = userService.getById(user.getId());
         return Result.succeed(user,"获取成功");
+    }
+
+    /**
+     * 修改密码
+     */
+    @PostMapping("/modifyPassword")
+    public Result modifyPassword(@RequestBody ModifyPasswordDTO modifyPasswordDTO) {
+        return userService.modifyPassword(modifyPasswordDTO.getUsername(),modifyPasswordDTO.getPassword(),
+                modifyPasswordDTO.getNewPassword());
     }
 }

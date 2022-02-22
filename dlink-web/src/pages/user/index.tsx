@@ -6,8 +6,9 @@ import {FooterToolbar} from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import {UserTableListItem} from "@/pages/user/data";
-import {handleAddOrUpdate, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
+import {handleAddOrUpdate, handleOption, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
 import UserForm from "@/pages/user/components/UserForm";
+import PasswordForm from "@/pages/user/components/PasswordForm";
 
 const url = '/api/user';
 const UserTableList: React.FC<{}> = (props: any) => {
@@ -15,6 +16,7 @@ const UserTableList: React.FC<{}> = (props: any) => {
   const [row, setRow] = useState<UserTableListItem>();
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  const [passwordModalVisible, handlePasswordModalVisible] = useState<boolean>(false);
   const [formValues, setFormValues] = useState({});
   const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<UserTableListItem[]>([]);
@@ -23,6 +25,9 @@ const UserTableList: React.FC<{}> = (props: any) => {
     if (key === 'edit') {
       setFormValues(currentItem);
       handleUpdateModalVisible(true);
+    } else if (key === 'password') {
+      setFormValues(currentItem);
+      handlePasswordModalVisible(true);
     } else if (key === 'delete') {
       Modal.confirm({
         title: '删除用户',
@@ -44,6 +49,7 @@ const UserTableList: React.FC<{}> = (props: any) => {
       overlay={
         <Menu onClick={({key}) => editAndDelete(key, item)}>
           <Menu.Item key="edit">编辑</Menu.Item>
+          <Menu.Item key="password">修改密码</Menu.Item>
           {item.username=='admin'?'':(<Menu.Item key="delete">删除</Menu.Item>)}
         </Menu>
       }
@@ -239,6 +245,21 @@ const UserTableList: React.FC<{}> = (props: any) => {
           values={{}}
         />
         {formValues && Object.keys(formValues).length ? (
+          <>
+            <PasswordForm
+              onSubmit={async (value) => {
+                const success = await handleOption(url +"/modifyPassword",'修改密码', value);
+                if (success) {
+                  handlePasswordModalVisible(false);
+                  setFormValues({});
+                }
+              }}
+              onCancel={() => {
+                handlePasswordModalVisible(false);
+              }}
+              modalVisible={passwordModalVisible}
+              values={formValues}
+            />
         <UserForm
           onSubmit={async (value) => {
             const success = await handleAddOrUpdate("api/user", value);
@@ -256,7 +277,7 @@ const UserTableList: React.FC<{}> = (props: any) => {
           }}
           modalVisible={updateModalVisible}
           values={formValues}
-        />
+        /></>
           ): null}
         <Drawer
           width={600}
