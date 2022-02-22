@@ -376,8 +376,8 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     let scrollTop = document.documentElement.scrollTop;
     setRightClickNode(e.node);
     setRightClickNodeTreeItem({
-      pageX: e.event.pageX-20,
-      pageY: position.y+sref.current.getScrollTop()+scrollTop-125-position.height,
+      pageX: e.event.pageX-40,
+      pageY: position.y+sref.current.getScrollTop()+scrollTop-145-position.height,
       id: e.node.id,
       categoryName: e.node.name
     });
@@ -460,8 +460,8 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
         </Tooltip>
         </Col>
       </Row>
-      <Scrollbars  style={{height:(toolHeight-32)}} ref={sref}>
       <Search style={{marginBottom: 8}} placeholder="Search" onChange={onChange} allowClear={true}/>
+      <Scrollbars  style={{height:(toolHeight-72)}} ref={sref}>
         <DirectoryTree
           multiple
           onRightClick={handleContextMenu}

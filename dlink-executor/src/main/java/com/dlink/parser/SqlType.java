@@ -6,7 +6,7 @@ package com.dlink.parser;
  * @author wenmo
  * @since 2021/7/3 11:11
  */
-public enum  SqlType {
+public enum SqlType {
     SELECT("SELECT"),
     CREATE("CREATE"),
     DROP("DROP"),
@@ -39,7 +39,15 @@ public enum  SqlType {
         return type;
     }
 
-    public boolean equalsValue(String value){
+    public boolean equalsValue(String value) {
         return type.equalsIgnoreCase(value);
     }
+
+    public boolean isInsert() {
+        if (type.equals("INSERT")) {
+            return true;
+        }
+        return false;
+    }
+
 }

@@ -11,3 +11,10 @@ export type UserTableListItem = {
   worknum?: string;
   mobile?: string;
 };
+
+export type PasswordItem = {
+  username: string;
+  password?: string;
+  newPassword?: string;
+  newPasswordCheck?: string;
+};

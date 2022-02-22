@@ -3,13 +3,12 @@ package com.dlink.job;
 import com.dlink.executor.Executor;
 import com.dlink.executor.ExecutorSetting;
 import com.dlink.gateway.GatewayType;
-import com.dlink.parser.SqlType;
 import com.dlink.result.IResult;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Job
@@ -34,6 +33,7 @@ public class Job {
     private LocalDateTime endTime;
     private Executor executor;
     private boolean useGateway;
+    private List<String> jids;
 
     public enum JobStatus {
         INITIALIZE,

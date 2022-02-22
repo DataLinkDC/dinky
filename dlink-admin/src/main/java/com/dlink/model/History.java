@@ -44,4 +44,13 @@ public class History implements Serializable {
     private String clusterAlias;
     @TableField(exist = false)
     private String taskAlias;
+
+    public JobInstance buildJobInstance() {
+        JobInstance jobInstance = new JobInstance();
+        jobInstance.setHistoryId(id);
+        jobInstance.setClusterId(clusterId);
+        jobInstance.setTaskId(taskId);
+        jobInstance.setName(jobName);
+        return jobInstance;
+    }
 }

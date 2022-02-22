@@ -3,11 +3,13 @@ package com.dlink.job;
 import cn.hutool.json.JSONUtil;
 import com.dlink.assertion.Asserts;
 import com.dlink.context.SpringContextUtils;
-import com.dlink.gateway.GatewayType;
 import com.dlink.model.Cluster;
 import com.dlink.model.History;
+import com.dlink.model.JobInstance;
+import com.dlink.model.JobStatus;
 import com.dlink.service.ClusterService;
 import com.dlink.service.HistoryService;
+import com.dlink.service.JobInstanceService;
 import org.springframework.context.annotation.DependsOn;
 
 import java.time.LocalDateTime;
@@ -23,10 +25,12 @@ public class Job2MysqlHandler implements JobHandler {
 
     private static HistoryService historyService;
     private static ClusterService clusterService;
+    private static JobInstanceService jobInstanceService;
 
     static {
-        historyService = SpringContextUtils.getBean("historyServiceImpl",HistoryService.class);
-        clusterService = SpringContextUtils.getBean("clusterServiceImpl",ClusterService.class);
+        historyService = SpringContextUtils.getBean("historyServiceImpl", HistoryService.class);
+        clusterService = SpringContextUtils.getBean("clusterServiceImpl", ClusterService.class);
+        jobInstanceService = SpringContextUtils.getBean("jobInstanceServiceImpl", JobInstanceService.class);
     }
 
     @Override
@@ -34,9 +38,9 @@ public class Job2MysqlHandler implements JobHandler {
         Job job = JobContextHolder.getJob();
         History history = new History();
         history.setType(job.getType().getLongValue());
-        if(job.isUseGateway()) {
+        if (job.isUseGateway()) {
             history.setClusterConfigurationId(job.getJobConfig().getClusterConfigurationId());
-        }else{
+        } else {
             history.setClusterId(job.getJobConfig().getClusterId());
         }
         history.setJobManagerAddress(job.getJobManagerAddress());
@@ -67,24 +71,38 @@ public class Job2MysqlHandler implements JobHandler {
         Job job = JobContextHolder.getJob();
         History history = new History();
         history.setId(job.getId());
-        if(job.isUseGateway()&&Asserts.isNullString(job.getJobId())){
-            job.setJobId("unknown-"+LocalDateTime.now().toString());
+        if (job.isUseGateway() && Asserts.isNullString(job.getJobId())) {
+            job.setJobId("unknown-" + LocalDateTime.now().toString());
         }
         history.setJobId(job.getJobId());
         history.setStatus(job.getStatus().ordinal());
         history.setEndTime(job.getEndTime());
-        if(job.isUseGateway()){
+        if (job.isUseGateway()) {
             history.setJobManagerAddress(job.getJobManagerAddress());
         }
-        if(job.isUseGateway()){
+        Integer clusterId = job.getJobConfig().getClusterId();
+        if (job.isUseGateway()) {
             Cluster cluster = clusterService.registersCluster(Cluster.autoRegistersCluster(job.getJobManagerAddress(),
-                    job.getJobId(),job.getJobConfig().getJobName()+ LocalDateTime.now(), job.getType().getLongValue(),
-                    job.getJobConfig().getClusterConfigurationId(),job.getJobConfig().getTaskId()));
-            if(Asserts.isNotNull(cluster)){
-                history.setClusterId(cluster.getId());
+                    job.getJobId(), job.getJobConfig().getJobName() + LocalDateTime.now(), job.getType().getLongValue(),
+                    job.getJobConfig().getClusterConfigurationId(), job.getJobConfig().getTaskId()));
+            if (Asserts.isNotNull(cluster)) {
+                clusterId = cluster.getId();
             }
         }
+        history.setClusterId(clusterId);
         historyService.updateById(history);
+        if (Asserts.isNotNullCollection(job.getJids())) {
+            for (String jid : job.getJids()) {
+                JobInstance jobInstance = history.buildJobInstance();
+                jobInstance.setHistoryId(job.getId());
+                jobInstance.setClusterId(clusterId);
+                jobInstance.setTaskId(job.getJobConfig().getTaskId());
+                jobInstance.setName(job.getJobConfig().getJobName());
+                jobInstance.setJid(jid);
+                jobInstance.setStatus(JobStatus.INITIALIZING.getValue());
+                jobInstanceService.save(jobInstance);
+            }
+        }
         return true;
     }
 
