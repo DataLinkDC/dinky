@@ -38,6 +38,11 @@ public class SavePointResult extends AbstractGatewayResult {
         return null;
     }
 
+    @Override
+    public List<String> getJids() {
+        return null;
+    }
+
     public static SavePointResult build(GatewayType type){
         return new SavePointResult(type,LocalDateTime.now());
     }

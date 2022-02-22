@@ -2,7 +2,6 @@ package com.dlink.job;
 
 import com.dlink.api.FlinkAPI;
 import com.dlink.assertion.Asserts;
-import com.dlink.config.Dialect;
 import com.dlink.constant.FlinkSQLConstant;
 import com.dlink.executor.EnvironmentSetting;
 import com.dlink.executor.Executor;
@@ -46,8 +45,6 @@ import org.apache.flink.yarn.configuration.YarnConfigOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -239,7 +236,6 @@ public class JobManager {
         JobContextHolder.setJob(job);
         ready();
         String currentSql = "";
-//        JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement));
         JobParam jobParam = Explainer.build(executor, useStatementSet, sqlSeparator).pretreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
         try {
             for (StatementParam item : jobParam.getDdl()) {
@@ -247,41 +243,40 @@ public class JobManager {
                 executor.executeSql(item.getValue());
             }
             if (jobParam.getTrans().size() > 0) {
+                // Use statement set or gateway only submit inserts.
                 if (useStatementSet && useGateway) {
                     List<String> inserts = new ArrayList<>();
                     for (StatementParam item : jobParam.getTrans()) {
                         inserts.add(item.getValue());
                     }
+
+                    // Use statement set need to merge all insert sql into a sql.
                     currentSql = String.join(sqlSeparator, inserts);
-                    JobGraph jobGraph = executor.getJobGraphFromInserts(inserts);
-                    GatewayResult gatewayResult = null;
-                    if (GatewayType.YARN_APPLICATION.equals(runMode) || GatewayType.KUBERNETES_APPLICATION.equals(runMode)) {
-                        config.addGatewayConfig(executor.getSetConfig());
-                        gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
-                    } else {
-                        config.addGatewayConfig(executor.getSetConfig());
-                        if (Asserts.isNotNullString(config.getSavePointPath())) {
-                            jobGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(config.getSavePointPath()));
-                        }
-                        gatewayResult = Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);
-                    }
+                    GatewayResult gatewayResult = submitByGateway(inserts);
+                    // Use statement set only has one jid.
                     job.setResult(InsertResult.success(gatewayResult.getAppId()));
                     job.setJobId(gatewayResult.getAppId());
+                    job.setJids(gatewayResult.getJids());
                     job.setJobManagerAddress(formatAddress(gatewayResult.getWebURL()));
                 } else if (useStatementSet && !useGateway) {
                     List<String> inserts = new ArrayList<>();
                     for (StatementParam item : jobParam.getTrans()) {
-                        if (item.getType().equals(SqlType.INSERT)) {
+                        if (item.getType().isInsert()) {
                             inserts.add(item.getValue());
                         }
                     }
                     if (inserts.size() > 0) {
                         currentSql = String.join(sqlSeparator, inserts);
+                        // Remote mode can get the table result.
                         TableResult tableResult = executor.executeStatementSet(inserts);
                         if (tableResult.getJobClient().isPresent()) {
                             job.setJobId(tableResult.getJobClient().get().getJobID().toHexString());
+                            job.setJids(new ArrayList<String>() {{
+                                add(job.getJobId());
+                            }});
                         }
                         if (config.isUseResult()) {
+                            // Build insert result.
                             IResult result = ResultBuilder.build(SqlType.INSERT, config.getMaxRowNum(), config.isUseChangeLog(), config.isUseAutoCancel()).getResult(tableResult);
                             job.setResult(result);
                         }
@@ -290,23 +285,14 @@ public class JobManager {
                     List<String> inserts = new ArrayList<>();
                     for (StatementParam item : jobParam.getTrans()) {
                         inserts.add(item.getValue());
+                        // Only can submit the first of insert sql, when not use statement set.
                         break;
                     }
                     currentSql = String.join(sqlSeparator, inserts);
-                    JobGraph jobGraph = executor.getJobGraphFromInserts(inserts);
-                    GatewayResult gatewayResult = null;
-                    if (GatewayType.YARN_APPLICATION.equals(runMode) || GatewayType.KUBERNETES_APPLICATION.equals(runMode)) {
-                        config.addGatewayConfig(executor.getSetConfig());
-                        gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
-                    } else {
-                        config.addGatewayConfig(executor.getSetConfig());
-                        if (Asserts.isNotNullString(config.getSavePointPath())) {
-                            jobGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(config.getSavePointPath()));
-                        }
-                        gatewayResult = Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);
-                    }
+                    GatewayResult gatewayResult = submitByGateway(inserts);
                     job.setResult(InsertResult.success(gatewayResult.getAppId()));
                     job.setJobId(gatewayResult.getAppId());
+                    job.setJids(gatewayResult.getJids());
                     job.setJobManagerAddress(formatAddress(gatewayResult.getWebURL()));
                 } else {
                     for (StatementParam item : jobParam.getTrans()) {
@@ -322,6 +308,9 @@ public class JobManager {
                                 TableResult tableResult = executor.executeSql(item.getValue());
                                 if (tableResult.getJobClient().isPresent()) {
                                     job.setJobId(tableResult.getJobClient().get().getJobID().toHexString());
+                                    job.setJids(new ArrayList<String>() {{
+                                        add(job.getJobId());
+                                    }});
                                 }
                                 if (config.isUseResult()) {
                                     IResult result = ResultBuilder.build(item.getType(), config.getMaxRowNum(), config.isUseChangeLog(), config.isUseAutoCancel()).getResult(tableResult);
@@ -329,6 +318,8 @@ public class JobManager {
                                 }
                             }
                         }
+                        // Only can submit the first of insert sql, when not use statement set.
+                        break;
                     }
                 }
             }
@@ -340,15 +331,14 @@ public class JobManager {
                             break;
                         }
                     }
-                    StreamGraph streamGraph = executor.getStreamGraph();
-                    streamGraph.setJobName(config.getJobName());
-                    JobGraph jobGraph = streamGraph.getJobGraph();
                     GatewayResult gatewayResult = null;
-                    if (GatewayType.YARN_APPLICATION.equals(runMode) || GatewayType.KUBERNETES_APPLICATION.equals(runMode)) {
-                        config.addGatewayConfig(executor.getSetConfig());
+                    config.addGatewayConfig(executor.getSetConfig());
+                    if (runMode.isApplicationMode()) {
                         gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
                     } else {
-                        config.addGatewayConfig(executor.getSetConfig());
+                        StreamGraph streamGraph = executor.getStreamGraph();
+                        streamGraph.setJobName(config.getJobName());
+                        JobGraph jobGraph = streamGraph.getJobGraph();
                         if (Asserts.isNotNullString(config.getSavePointPath())) {
                             jobGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(config.getSavePointPath()));
                         }
@@ -356,6 +346,7 @@ public class JobManager {
                     }
                     job.setResult(InsertResult.success(gatewayResult.getAppId()));
                     job.setJobId(gatewayResult.getAppId());
+                    job.setJids(gatewayResult.getJids());
                     job.setJobManagerAddress(formatAddress(gatewayResult.getWebURL()));
                 } else {
                     for (StatementParam item : jobParam.getExecute()) {
@@ -367,6 +358,9 @@ public class JobManager {
                     JobExecutionResult jobExecutionResult = executor.execute(config.getJobName());
                     if (jobExecutionResult.isJobExecutionResult()) {
                         job.setJobId(jobExecutionResult.getJobID().toHexString());
+                        job.setJids(new ArrayList<String>() {{
+                            add(job.getJobId());
+                        }});
                     }
                     if (config.isUseResult()) {
                         IResult result = ResultBuilder.build(SqlType.EXECUTE, config.getMaxRowNum(), config.isUseChangeLog(), config.isUseAutoCancel()).getResult(null);
@@ -387,6 +381,27 @@ public class JobManager {
         }
         close();
         return job.getJobResult();
+    }
+
+    private GatewayResult submitByGateway(List<String> inserts) {
+        GatewayResult gatewayResult = null;
+
+        // Use gateway need to build gateway config, include flink configeration.
+        config.addGatewayConfig(executor.getSetConfig());
+
+        if (runMode.isApplicationMode()) {
+            // Application mode need to submit dlink-app.jar that in the hdfs or image.
+            gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
+        } else {
+            JobGraph jobGraph = executor.getJobGraphFromInserts(inserts);
+            // Perjob mode need to set savepoint restore path, when recovery from savepoint.
+            if (Asserts.isNotNullString(config.getSavePointPath())) {
+                jobGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(config.getSavePointPath()));
+            }
+            // Perjob mode need to submit job graph.
+            gatewayResult = Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);
+        }
+        return gatewayResult;
     }
 
     private String formatAddress(String webURL) {

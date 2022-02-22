@@ -1,5 +1,7 @@
 package com.dlink.gateway.result;
 
+import java.util.List;
+
 /**
  * GatewayResult
  *
@@ -11,4 +13,6 @@ public interface GatewayResult {
     String getAppId();
 
     String getWebURL();
+
+    List<String> getJids();
 }

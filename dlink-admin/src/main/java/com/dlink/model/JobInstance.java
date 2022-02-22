@@ -1,5 +1,7 @@
 package com.dlink.model;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,10 +27,12 @@ public class JobInstance implements Serializable {
     private Integer taskId;
     private Integer clusterId;
     private String jid;
-    private Integer status;
+    private String status;
     private Integer historyId;
     private String error;
+    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
     private LocalDateTime finishTime;
     private Integer failed_restart_count;

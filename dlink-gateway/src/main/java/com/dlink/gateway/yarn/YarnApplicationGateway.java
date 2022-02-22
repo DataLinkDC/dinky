@@ -13,12 +13,16 @@ import org.apache.flink.client.deployment.application.ApplicationConfiguration;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.client.program.ClusterClientProvider;
 import org.apache.flink.configuration.PipelineOptions;
+import org.apache.flink.runtime.client.JobStatusMessage;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.yarn.YarnClientYarnClusterInformationRetriever;
 import org.apache.flink.yarn.YarnClusterDescriptor;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * YarnApplicationGateway
@@ -44,10 +48,10 @@ public class YarnApplicationGateway extends YarnGateway {
     public GatewayResult submitJobGraph(JobGraph jobGraph) {
         throw new GatewayException("Couldn't deploy Yarn Application Cluster with job graph.");
     }
-    
+
     @Override
     public GatewayResult submitJar() {
-        if(Asserts.isNull(yarnClient)){
+        if (Asserts.isNull(yarnClient)) {
             init();
         }
         YarnResult result = YarnResult.build(getType());
@@ -62,13 +66,21 @@ public class YarnApplicationGateway extends YarnGateway {
                     clusterSpecification,
                     applicationConfiguration);
             ClusterClient<ApplicationId> clusterClient = clusterClientProvider.getClusterClient();
+            Collection<JobStatusMessage> jobStatusMessages = clusterClient.listJobs().get();
+            if (jobStatusMessages.size() > 0) {
+                List<String> jids = new ArrayList<>();
+                for (JobStatusMessage jobStatusMessage : jobStatusMessages) {
+                    jids.add(jobStatusMessage.getJobId().toHexString());
+                }
+                result.setJids(jids);
+            }
             ApplicationId applicationId = clusterClient.getClusterId();
             result.setAppId(applicationId.toString());
             result.setWebURL(clusterClient.getWebInterfaceURL());
             result.success();
-        }catch (Exception e){
+        } catch (Exception e) {
             result.fail(LogUtil.getError(e));
-        }finally {
+        } finally {
             yarnClusterDescriptor.close();
         }
         return result;

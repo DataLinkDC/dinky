@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * YarnResult
@@ -16,6 +17,7 @@ public class YarnResult extends AbstractGatewayResult {
 
     private String appId;
     private String webURL;
+    private List<String> jids;
 
     public YarnResult(GatewayType type, LocalDateTime startTime) {
         super(type, startTime);
@@ -40,6 +42,14 @@ public class YarnResult extends AbstractGatewayResult {
 
     public void setWebURL(String webURL) {
         this.webURL = webURL;
+    }
+
+    public List<String> getJids() {
+        return jids;
+    }
+
+    public void setJids(List<String> jids) {
+        this.jids = jids;
     }
 
     public static YarnResult build(GatewayType type){
