@@ -287,13 +287,15 @@ Flink 的版本取决于 lib 下的 dlink-client-1.13.jar。当前版本默认�
 
 8.[Dlink 在 Flink-mysql-cdc 到 Doris 的实践](https://github.com/DataLinkDC/dlink/blob/main/dlink-doc/doc/Dlink%E5%9C%A8Flink-mysql-cdc%E5%88%B0Doris%E7%9A%84%E5%AE%9E%E8%B7%B5.md)
 
-## 技术栈
+## 技术栈与鸣谢
 
 [Apache Flink](https://github.com/apache/flink)
 
 [Mybatis Plus](https://github.com/baomidou/mybatis-plus)
 
 [ant-design-pro](https://github.com/ant-design/ant-design-pro)
+
+[dolphinscheduler](https://github.com/apache/dolphinscheduler)
 
 [Monaco Editor](https://github.com/Microsoft/monaco-editor)
 
