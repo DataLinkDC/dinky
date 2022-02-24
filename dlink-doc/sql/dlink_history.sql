@@ -540,4 +540,52 @@ ALTER TABLE `dlink_database`
 -- ----------------------------
 ALTER TABLE `dlink_job_instance` MODIFY COLUMN status varchar(50) NULL COMMENT '实例状态';
 
+-- ----------------------------
+-- 0.6.0-SNAPSHOT 2022-02-24
+-- ----------------------------
+DROP TABLE IF EXISTS `dlink_alert_instance`;
+create table dlink_alert_instance
+(
+    id int auto_increment comment '自增主键'
+        primary key,
+    name varchar(50) not null comment '名称',
+    type varchar(50) null comment '类型',
+    params text null comment '配置',
+    enabled tinyint default 1 null comment '是否启用',
+    create_time datetime null comment '创建时间',
+    update_time datetime null comment '更新时间'
+)
+    comment 'Alert实例';
+
+DROP TABLE IF EXISTS `dlink_alert_group`;
+create table dlink_alert_group
+(
+    id int auto_increment comment '自增主键'
+        primary key,
+    name varchar(50) not null comment '名称',
+    alert_instance_ids text null comment 'Alert实例IDS',
+    note varchar(255) null comment '说明',
+    enabled tinyint default 1 null comment '是否启用',
+    create_time datetime null comment '创建时间',
+    update_time datetime null comment '更新时间'
+)
+    comment 'Alert组';
+
+DROP TABLE IF EXISTS `dlink_alert_history`;
+create table dlink_alert_history
+(
+    id int auto_increment comment '自增主键'
+        primary key,
+    alert_group_id int null comment 'Alert组ID',
+    job_instance_id int null comment '作业实例ID',
+    title varchar(255) null comment '标题',
+    content text null comment '正文',
+    status int null comment '状态',
+    log text null comment '日志',
+    create_time datetime null comment '创建时间',
+    update_time datetime null comment '更新时间'
+)
+    comment 'Alert历史';
+
+
 SET FOREIGN_KEY_CHECKS = 1;
