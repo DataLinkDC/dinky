@@ -16,9 +16,13 @@ import java.util.List;
 public interface CatalogueService extends ISuperService<Catalogue> {
 
     List<Catalogue> getAllData();
+
     Catalogue findByParentIdAndName(Integer parent_id, String name);
+
     Catalogue createCatalogueAndTask(CatalogueTaskDTO catalogueTaskDTO);
+
     Catalogue createCatalogAndFileTask(CatalogueTaskDTO catalogueTaskDTO, String ment);
+
     boolean toRename(Catalogue catalogue);
 
     boolean removeCatalogueAndTaskById(Integer id);

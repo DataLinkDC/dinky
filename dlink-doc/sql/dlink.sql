@@ -309,7 +309,7 @@ create table dlink_job_instance
 (
     id                   int auto_increment comment '自增主键'
         primary key,
-    name                 varchar(50) null comment '作业实例名',
+    name                 varchar(255) null comment '作业实例名',
     task_id              int         null comment 'taskID',
     cluster_id           int         null comment '集群ID',
     jid                  varchar(50) null comment 'FlinkJobId',

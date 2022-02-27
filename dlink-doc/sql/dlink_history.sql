@@ -587,5 +587,9 @@ create table dlink_alert_history
 )
     comment 'Alert历史';
 
+-- ----------------------------
+-- 0.6.0-SNAPSHOT 2022-02-25
+-- ----------------------------
+ALTER TABLE `dlink_job_instance` MODIFY COLUMN name varchar(255) NULL COMMENT '作业实例名';
 
 SET FOREIGN_KEY_CHECKS = 1;

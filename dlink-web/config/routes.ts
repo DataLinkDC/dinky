@@ -66,6 +66,24 @@ export default [
         component: './DataBase',
       },
       {
+        path: '/registration/alert',
+        name: 'alert',
+        icon: 'alert',
+        routes: [
+          {
+            path: '/registration/alert/alertInstance',
+            name: 'alertInstance',
+            icon: 'task',
+            component: './AlertInstance',
+          },
+          {
+            path: '/registration/alert/alertGroup',
+            name: 'alertGroup',
+            icon: 'task',
+            component: './AlertGroup',
+          },
+        ],
+      },{
         path: '/registration/document',
         name: 'document',
         icon: 'container',

@@ -12,43 +12,35 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * JobInstance
+ * AlertHistory
  *
  * @author wenmo
- * @since 2022/2/1 16:46
- */
+ * @since 2022/2/24 20:12
+ **/
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("dlink_job_instance")
-public class JobInstance implements Serializable {
+@TableName("dlink_alert_history")
+public class AlertHistory implements Serializable {
 
-    private static final long serialVersionUID = -3410230507904303730L;
+    private static final long serialVersionUID = -7904869940473678282L;
 
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    private String name;
+    private String alertGroupId;
 
-    private Integer taskId;
+    private String jobInstanceId;
 
-    private Integer clusterId;
+    private String title;
 
-    private String jid;
+    private String content;
 
-    private String status;
+    private Integer status;
 
-    private Integer historyId;
-
-    private String error;
+    private String log;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
-
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
-
-    private LocalDateTime finishTime;
-
-    private Integer failed_restart_count;
-
 }
