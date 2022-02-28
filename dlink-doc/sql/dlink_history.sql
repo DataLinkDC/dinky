@@ -510,7 +510,7 @@ create table dlink_job_instance
     history_id           int         null comment '提交历史ID',
     create_time          datetime    null comment '创建时间',
     update_time          datetime    null comment '更新时间',
-    finish_time          int         null comment '完成时间',
+    finish_time          datetime    null comment '完成时间',
     error                text        null comment '异常日志',
     failed_restart_count int         null comment '重启次数'
 ) comment '作业实例';
@@ -591,5 +591,10 @@ create table dlink_alert_history
 -- 0.6.0-SNAPSHOT 2022-02-25
 -- ----------------------------
 ALTER TABLE `dlink_job_instance` MODIFY COLUMN name varchar(255) NULL COMMENT '作业实例名';
+-- ----------------------------
+-- 0.6.0-SNAPSHOT 2022-02-28
+-- ----------------------------
+ALTER TABLE `dlink_job_instance`
+    ADD COLUMN `duration` BIGINT NULL COMMENT '耗时' AFTER `finish_time`;
 
 SET FOREIGN_KEY_CHECKS = 1;

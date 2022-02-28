@@ -2,6 +2,7 @@ package com.dlink.controller;
 
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
+import com.dlink.model.Jar;
 import com.dlink.model.JobInstance;
 import com.dlink.service.JobInstanceService;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -23,14 +24,14 @@ import java.util.List;
 @RequestMapping("/api/jobInstance")
 public class JobInstanceController {
     @Autowired
-    private JobInstanceService JobInstanceService;
+    private JobInstanceService jobInstanceService;
 
     /**
      * 动态查询列表
      */
     @PostMapping
     public ProTableResult<JobInstance> listJobInstances(@RequestBody JsonNode para) {
-        return JobInstanceService.selectForProTable(para);
+        return jobInstanceService.selectForProTable(para);
     }
 
     /**
@@ -42,7 +43,7 @@ public class JobInstanceController {
             List<Integer> error = new ArrayList<>();
             for (final JsonNode item : para){
                 Integer id = item.asInt();
-                if(!JobInstanceService.removeById(id)){
+                if(!jobInstanceService.removeById(id)){
                     error.add(id);
                 }
             }
@@ -61,7 +62,15 @@ public class JobInstanceController {
      */
     @PostMapping("/getOneById")
     public Result getOneById(@RequestBody JobInstance JobInstance) throws Exception {
-        JobInstance = JobInstanceService.getById(JobInstance.getId());
+        JobInstance = jobInstanceService.getById(JobInstance.getId());
         return Result.succeed(JobInstance,"获取成功");
+    }
+
+    /**
+     * 获取状态统计信息
+     */
+    @GetMapping("/getStatusCount")
+    public Result getStatusCount() {
+        return Result.succeed(jobInstanceService.getStatusCount(),"获取成功");
     }
 }
