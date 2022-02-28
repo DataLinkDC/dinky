@@ -1,12 +1,19 @@
 import React, {useEffect, useState} from 'react';
-import {Form, Button, Input, Modal, Select,Divider,Switch} from 'antd';
+import {Form, Button, Input, Modal, Select,Tag,Switch} from 'antd';
 import {AlertGroupTableListItem} from "@/pages/AlertGroup/data";
+import {JarStateType} from "@/pages/Jar/model";
+import {connect} from "umi";
+import {StateType} from "@/pages/FlinkSqlStudio/model";
+import {AlertStateType} from "@/pages/AlertInstance/model";
+import {AlertInstanceTableListItem} from "@/pages/AlertInstance/data";
+import {buildFormData, getFormData} from "@/pages/AlertGroup/function";
 
 export type AlertGroupFormProps = {
   onCancel: (flag?: boolean) => void;
   onSubmit: (values: Partial<AlertGroupTableListItem>) => void;
   modalVisible: boolean;
   values: Partial<AlertGroupTableListItem>;
+  instance: AlertInstanceTableListItem[];
 };
 const Option = Select.Option;
 
@@ -30,12 +37,24 @@ const AlertGroupForm: React.FC<AlertGroupFormProps> = (props) => {
     onSubmit: handleSubmit,
     onCancel: handleModalVisible,
     modalVisible,
+    instance,
   } = props;
+
+  const getAlertInstanceOptions = () => {
+    const itemList = [];
+    for (const item of instance) {
+      const tag = (<><Tag color="processing">{item.type}</Tag>{item.name}</>);
+      itemList.push(<Option key={item.id} value={item.id.toString()} label={tag}>
+        {tag}
+      </Option>)
+    }
+    return itemList;
+  };
 
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
-    setFormVals({...formVals, ...fieldsValue});
-    handleSubmit({...formVals, ...fieldsValue});
+    setFormVals(buildFormData(formVals,fieldsValue));
+    handleSubmit(buildFormData(formVals,fieldsValue));
   };
 
   const renderContent = (formVals) => {
@@ -52,7 +71,14 @@ const AlertGroupForm: React.FC<AlertGroupFormProps> = (props) => {
           label="报警实例"
           help="请选择报警组实例"
         >
-          <Input placeholder="请选择报警实例"/>
+          <Select
+            mode="multiple"
+            style={{width: '100%'}}
+            placeholder="请选择报警实例"
+            optionLabelProp="label"
+          >
+            {getAlertInstanceOptions()}
+          </Select>
         </Form.Item>
         <Form.Item
           name="note"
@@ -95,12 +121,14 @@ const AlertGroupForm: React.FC<AlertGroupFormProps> = (props) => {
       <Form
         {...formLayout}
         form={form}
-        initialValues={formVals}
+        initialValues={getFormData(formVals)}
       >
-        {renderContent(formVals)}
+        {renderContent(getFormData(formVals))}
       </Form>
     </Modal>
   );
 };
 
-export default AlertGroupForm;
+export default connect(({Alert}: { Alert: AlertStateType }) => ({
+  instance: Alert.instance,
+})) (AlertGroupForm);

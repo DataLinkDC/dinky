@@ -83,6 +83,9 @@ const AlertGroupTableList: React.FC<{}> = (props: any) => {
       title: '报警实例',
       sorter: true,
       dataIndex: 'alertInstanceIds',
+      hideInTable: true,
+      hideInForm: true,
+      hideInSearch: true,
     },
     {
       title: '注释',
@@ -153,84 +156,102 @@ const AlertGroupTableList: React.FC<{}> = (props: any) => {
         actionRef={actionRef}
         rowKey="id"
         search={{
-        labelWidth: 120,
-      }}
+          labelWidth: 120,
+        }}
         toolBarRender={() => [
-        <Button type="primary" onClick={() => handleModalVisible(true)}>
-          <PlusOutlined/> 新建
-        </Button>,
-      ]}
+          <Button type="primary" onClick={() => handleModalVisible(true)}>
+            <PlusOutlined/> 新建
+          </Button>,
+        ]}
         request={(params, sorter, filter) => queryData(url, {...params, sorter, filter})}
         columns={columns}
         rowSelection={{
-        onChange: (_, selectedRows) => setSelectedRows(selectedRows),
-      }}
-        />
-        {selectedRowsState?.length > 0 && (
-          <FooterToolbar
-            extra={
-              <div>
-                已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
-                <span>
+          onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+        }}
+      />
+      {selectedRowsState?.length > 0 && (
+        <FooterToolbar
+          extra={
+            <div>
+              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
+              <span>
                 被禁用的集群配置共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} 人
               </span>
-              </div>
-            }
+            </div>
+          }
+        >
+          <Button type="primary" danger
+                  onClick={() => {
+                    Modal.confirm({
+                      title: '删除报警组',
+                      content: '确定删除选中的报警组吗？',
+                      okText: '确认',
+                      cancelText: '取消',
+                      onOk: async () => {
+                        await handleRemove(url, selectedRowsState);
+                        setSelectedRows([]);
+                        actionRef.current?.reloadAndRest?.();
+                      }
+                    });
+                  }}
           >
-            <Button type="primary" danger
-                    onClick={() => {
-                      Modal.confirm({
-                        title: '删除报警组',
-                        content: '确定删除选中的报警组吗？',
-                        okText: '确认',
-                        cancelText: '取消',
-                        onOk: async () => {
-                          await handleRemove(url, selectedRowsState);
-                          setSelectedRows([]);
-                          actionRef.current?.reloadAndRest?.();
-                        }
-                      });
-                    }}
-            >
-              批量删除
-            </Button>
-            <Button type="primary"
-                    onClick={() => {
-                      Modal.confirm({
-                        title: '启用报警组',
-                        content: '确定启用选中的报警组吗？',
-                        okText: '确认',
-                        cancelText: '取消',
-                        onOk: async () => {
-                          await updateEnabled(url, selectedRowsState, true);
-                          setSelectedRows([]);
-                          actionRef.current?.reloadAndRest?.();
-                        }
-                      });
-                    }}
-            >批量启用</Button>
-            <Button danger
-                    onClick={() => {
-                      Modal.confirm({
-                        title: '禁用报警组',
-                        content: '确定禁用选中的报警组吗？',
-                        okText: '确认',
-                        cancelText: '取消',
-                        onOk: async () => {
-                          await updateEnabled(url, selectedRowsState, false);
-                          setSelectedRows([]);
-                          actionRef.current?.reloadAndRest?.();
-                        }
-                      });
-                    }}
-            >批量禁用</Button>
-          </FooterToolbar>
-        )}
+            批量删除
+          </Button>
+          <Button type="primary"
+                  onClick={() => {
+                    Modal.confirm({
+                      title: '启用报警组',
+                      content: '确定启用选中的报警组吗？',
+                      okText: '确认',
+                      cancelText: '取消',
+                      onOk: async () => {
+                        await updateEnabled(url, selectedRowsState, true);
+                        setSelectedRows([]);
+                        actionRef.current?.reloadAndRest?.();
+                      }
+                    });
+                  }}
+          >批量启用</Button>
+          <Button danger
+                  onClick={() => {
+                    Modal.confirm({
+                      title: '禁用报警组',
+                      content: '确定禁用选中的报警组吗？',
+                      okText: '确认',
+                      cancelText: '取消',
+                      onOk: async () => {
+                        await updateEnabled(url, selectedRowsState, false);
+                        setSelectedRows([]);
+                        actionRef.current?.reloadAndRest?.();
+                      }
+                    });
+                  }}
+          >批量禁用</Button>
+        </FooterToolbar>
+      )}
+      <AlertGroupForm
+        onSubmit={async (value) => {
+          const success = await handleAddOrUpdate(url, value);
+          if (success) {
+            handleModalVisible(false);
+            setFormValues({});
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        onCancel={() => {
+          handleModalVisible(false);
+        }}
+        modalVisible={modalVisible}
+        values={{}}
+      />
+      {formValues && Object.keys(formValues).length ? (
         <AlertGroupForm
           onSubmit={async (value) => {
             const success = await handleAddOrUpdate(url, value);
             if (success) {
-              handleModalVisible(false);
+              handleUpdateModalVisible(false);
               setFormValues({});
               if (actionRef.current) {
                 actionRef.current.reload();
@@ -238,55 +259,37 @@ const AlertGroupTableList: React.FC<{}> = (props: any) => {
             }
           }}
           onCancel={() => {
-            handleModalVisible(false);
+            handleUpdateModalVisible(false);
+            setFormValues({});
           }}
-          modalVisible={modalVisible}
-          values={{}}
+          modalVisible={updateModalVisible}
+          values={formValues}
         />
-        {formValues && Object.keys(formValues).length ? (
-          <AlertGroupForm
-            onSubmit={async (value) => {
-              const success = await handleAddOrUpdate(url, value);
-              if (success) {
-                handleUpdateModalVisible(false);
-                setFormValues({});
-                if (actionRef.current) {
-                  actionRef.current.reload();
-                }
-              }
-            }}
-            onCancel={() => {
-              handleUpdateModalVisible(false);
-              setFormValues({});
-            }}
-            modalVisible={updateModalVisible}
-            values={formValues}
-          />
-        ): null}
-        <Drawer
-          width={600}
-          visible={!!row}
-          onClose={() => {
-            setRow(undefined);
-          }}
-          closable={false}
-        >
-          {row?.name && (
-            <ProDescriptions<AlertGroupTableListItem>
-              column={2}
-              title={row?.name}
-              request={async () => ({
+      ): null}
+      <Drawer
+        width={600}
+        visible={!!row}
+        onClose={() => {
+          setRow(undefined);
+        }}
+        closable={false}
+      >
+        {row?.name && (
+          <ProDescriptions<AlertGroupTableListItem>
+            column={2}
+            title={row?.name}
+            request={async () => ({
               data: row || {},
             })}
-              params={{
+            params={{
               id: row?.name,
             }}
-              columns={columns}
-              />
-              )}
-        </Drawer>
+            columns={columns}
+          />
+        )}
+      </Drawer>
     </PageContainer>
-);
+  );
 };
 
 export default AlertGroupTableList;

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -80,5 +81,13 @@ public class AlertInstanceController {
     public Result getOneById(@RequestBody AlertInstance alertInstance) throws Exception {
         alertInstance = alertInstanceService.getById(alertInstance.getId());
         return Result.succeed(alertInstance,"获取成功");
+    }
+
+    /**
+     * 获取可用的报警实例列表
+     */
+    @GetMapping("/listEnabledAll")
+    public Result listEnabledAll() {
+        return Result.succeed(alertInstanceService.listEnabledAll(),"获取成功");
     }
 }
