@@ -18,14 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
@@ -44,6 +37,7 @@ public class WeChatSender {
     private static final String CORP_ID_REGEX = "{corpId}";
     private static final String SECRET_REGEX = "{secret}";
     private static final String TOKEN_REGEX = "{token}";
+    private static final String SHOW_TYPE_REGEX = "{showType}";
     private final String weChatAgentId;
     private final String weChatUsers;
     private final String weChatUserSendMsg;
@@ -71,15 +65,14 @@ public class WeChatSender {
 
     public AlertResult send(String title, String content) {
         AlertResult alertResult = new AlertResult();
-        ;
         List<String> userList = new ArrayList<>();
         if (Asserts.isNotNullString(weChatUsers)) {
             userList = Arrays.asList(weChatUsers.split(","));
         }
         String data = markdownByAlert(title, content);
         String msg = weChatUserSendMsg.replace(USER_REG_EXP, mkString(userList))
-                .replace(AGENT_ID_REG_EXP, weChatAgentId)
-                .replace(MSG_REG_EXP, data);
+                .replace(AGENT_ID_REG_EXP, weChatAgentId).replace(MSG_REG_EXP, data)
+                .replace(SHOW_TYPE_REGEX,showType);
         if (Asserts.isNullString(weChatToken)) {
             alertResult.setMessage("send we chat alert fail,get weChat token error");
             alertResult.setStatus(ALERT_STATUS);
