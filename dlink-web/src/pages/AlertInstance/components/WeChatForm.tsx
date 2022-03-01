@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {Form, Button,Radio, Input, Modal, Divider,Switch} from 'antd';
+import React, {useState} from 'react';
+import {Button, Divider, Form, Input, Modal, Radio, Switch} from 'antd';
 import {AlertInstanceTableListItem} from "@/pages/AlertInstance/data";
 import {buildJSONData, getJSONData} from "@/pages/AlertInstance/function";
 import {ALERT_TYPE} from "@/pages/AlertInstance/conf";
@@ -105,7 +105,7 @@ const WeChatForm: React.FC<AlertInstanceFormProps> = (props) => {
           rules={[{required: true, message: '请输入展示方式！'}]}
         >
           <Radio.Group >
-            <Radio value='table'>表格</Radio>
+            <Radio value='markdown'>MarkDown</Radio>
             <Radio value='text'>文本</Radio>
           </Radio.Group>
         </Form.Item>

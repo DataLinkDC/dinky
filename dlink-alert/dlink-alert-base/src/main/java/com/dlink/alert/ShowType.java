@@ -8,7 +8,7 @@ package com.dlink.alert;
  **/
 public enum  ShowType {
 
-    TABLE(0, "table"),
+    TABLE(0, "markdown"),
     TEXT(1, "text");
 
     private int code;
