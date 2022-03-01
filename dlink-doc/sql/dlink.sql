@@ -367,4 +367,18 @@ create table dlink_alert_history
 )
     comment 'Alert历史';
 
+DROP TABLE IF EXISTS `dlink_job_history`;
+create table dlink_job_history
+(
+    id int comment '实例主键'
+        primary key,
+    job json null comment 'Job信息',
+    exceptions json null comment '异常日志',
+    checkpoints json null comment '保存点',
+    checkpoints_config json null comment '保存点配置',
+    config json null comment '配置',
+    update_time datetime null comment '更新时间'
+)
+    comment 'Job历史详情';
+
 SET FOREIGN_KEY_CHECKS = 1;

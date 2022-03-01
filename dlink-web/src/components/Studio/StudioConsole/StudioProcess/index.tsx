@@ -7,6 +7,7 @@ import ProTable from '@ant-design/pro-table';
 import {cancelJob, savepointJob, showFlinkJobs} from "../../StudioEvent/DDL";
 import {ClusterTableListItem} from "@/pages/Cluster/data";
 import React from "react";
+import JobStatus from "@/components/Common/JobStatus";
 
 const {Option} = Select;
 
@@ -70,36 +71,7 @@ const StudioProcess = (props: any) => {
       dataIndex: "state",
       sorter: true,
       render: (_, row) => {
-        return (
-          <>
-            {(row.state == 'FINISHED') ?
-              (<Tag icon={<CheckCircleOutlined />} color="success">
-                FINISHED
-              </Tag>) :
-              (row.state == 'RUNNING') ?
-                (<Tag icon={<SyncOutlined spin />} color="processing">
-                  RUNNING
-                </Tag>) :
-                (row.state == 'FAILED') ?
-                  (<Tag icon={<CloseCircleOutlined />} color="error">
-                    FAILED
-                  </Tag>) :
-                  (row.state == 'CANCELED') ?
-                    (<Tag icon={<MinusCircleOutlined />} color="default">
-                      CANCELED
-                    </Tag>) :
-                    (row.state == 'INITIALIZE') ?
-                      (<Tag icon={<ClockCircleOutlined />} color="default">
-                        INITIALIZE
-                        </Tag>) :(row.state == 'RESTARTING') ?
-                        (<Tag icon={<ClockCircleOutlined />} color="default">
-                          RESTARTING
-                          </Tag>) :
-                        (<Tag color="default">
-                          UNKNOWEN
-                        </Tag>)
-            }</>)
-          ;
+        return (<JobStatus status={row.state}/>);
       }
     }, {
       title: "开始时间",

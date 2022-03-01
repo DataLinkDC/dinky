@@ -51,7 +51,7 @@ public class JobInstance implements Serializable {
 
     private Long duration;
 
-    private Integer failed_restart_count;
+    private Integer failedRestartCount;
 
     @TableField(exist = false)
     private String type;

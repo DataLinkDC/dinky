@@ -25,8 +25,6 @@ import java.util.Map;
  **/
 public class FlinkAPI {
     private String address;
-    private String jarsId;
-    private String jobId;
 
     public FlinkAPI(String address) {
         this.address = address;
