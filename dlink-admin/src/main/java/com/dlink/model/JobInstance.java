@@ -49,6 +49,17 @@ public class JobInstance implements Serializable {
 
     private LocalDateTime finishTime;
 
+    private Long duration;
+
     private Integer failed_restart_count;
+
+    @TableField(exist = false)
+    private String type;
+
+    @TableField(exist = false)
+    private String clusterAlias;
+
+    @TableField(exist = false)
+    private String jobManagerAddress;
 
 }

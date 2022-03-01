@@ -1,5 +1,7 @@
 package com.dlink.model;
 
+import com.dlink.assertion.Asserts;
+
 /**
  * JobState
  *
@@ -77,5 +79,14 @@ public enum JobStatus {
 
     public String getValue() {
         return value;
+    }
+
+    public static JobStatus get(String value){
+        for (JobStatus type : JobStatus.values()) {
+            if(Asserts.isEqualsIgnoreCase(type.getValue(),value)){
+                return type;
+            }
+        }
+        return JobStatus.UNKNOWN;
     }
 }

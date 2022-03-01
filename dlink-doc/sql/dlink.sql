@@ -317,7 +317,8 @@ create table dlink_job_instance
     history_id           int         null comment '提交历史ID',
     create_time          datetime    null comment '创建时间',
     update_time          datetime    null comment '更新时间',
-    finish_time          int         null comment '完成时间',
+    finish_time          datetime    null comment '完成时间',
+    duration             bigint      null comment '耗时',
     error                text        null comment '异常日志',
     failed_restart_count int         null comment '重启次数'
 ) comment '作业实例';

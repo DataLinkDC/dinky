@@ -164,6 +164,16 @@ export function showJars(dispatch: any) {
     });
   });
 }
+/*--- 刷新 报警实例 ---*/
+export function showAlertInstance(dispatch: any) {
+  const res = getData('api/alertInstance/listEnabledAll');
+  res.then((result) => {
+    result.datas && dispatch && dispatch({
+      type: "Alert/saveInstance",
+      payload: result.datas,
+    });
+  });
+}
 /*--- 刷新 元数据表 ---*/
 export function showMetaDataTable(id:number) {
   return getData('api/database/getSchemasAndTables',{id:id});

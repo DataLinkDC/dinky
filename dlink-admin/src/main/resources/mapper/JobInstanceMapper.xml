@@ -4,11 +4,26 @@
 
     <select id="selectForProTable" resultType="com.dlink.model.JobInstance">
         select
-        a.*
+        a.*,
+        dh.type as type,
+        (select dc.alias FROM dlink_cluster dc where dc.id=a.cluster_id) as clusterAlias
         from
         dlink_job_instance a
+        left join dlink_history dh on a.history_id = dh.id
         <where>
             1=1
+            <if test='param.status!=null and param.status!=""'>
+                and a.status = #{param.status}
+            </if>
+            <if test='param.type!=null and param.type!=""'>
+                and dh.type = #{param.type}
+            </if>
+            <if test='param.name!=null and param.name!=""'>
+                and a.name like "%${param.name}%"
+            </if>
+            <if test='param.jid!=null and param.jid!=""'>
+                and a.jid like "%${param.jid}%"
+            </if>
             <if test='param.createTime!=null and param.createTime!=""'>
                 and a.create_time <![CDATA[>=]]> str_to_date( #{param.createTime},'%Y-%m-%d %H:%i:%s')
                 and a.create_time <![CDATA[<=]]> str_to_date( #{param.createTime},'%Y-%m-%d %H:%i:%s')
@@ -24,5 +39,14 @@
                 ${ew.sqlSegment}
             </if>
         </where>
+    </select>
+
+    <select id="countStatus" resultType="com.dlink.model.JobInstanceCount">
+        select
+        status,
+        count(1) as counts
+        from
+        dlink_job_instance
+        group by status
     </select>
 </mapper>
