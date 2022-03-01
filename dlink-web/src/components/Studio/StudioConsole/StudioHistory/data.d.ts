@@ -1,0 +1,20 @@
+export type HistoryItem = {
+  id: number;
+  clusterId: number;
+  clusterAlias: string;
+  session: string;
+  jobId: string;
+  jobName: string;
+  jobManagerAddress: string;
+  statusText: string;
+  status: number;
+  statement: string;
+  error: string;
+  result: string;
+  config: string;
+  type: string;
+  startTime: string;
+  endTime: string;
+  taskId: number;
+  taskAlias: string;
+};

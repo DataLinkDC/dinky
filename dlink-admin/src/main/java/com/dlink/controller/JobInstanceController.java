@@ -39,20 +39,20 @@ public class JobInstanceController {
      */
     @DeleteMapping
     public Result deleteMul(@RequestBody JsonNode para) {
-        if (para.size()>0){
+        if (para.size() > 0) {
             List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para){
+            for (final JsonNode item : para) {
                 Integer id = item.asInt();
-                if(!jobInstanceService.removeById(id)){
+                if (!jobInstanceService.removeById(id)) {
                     error.add(id);
                 }
             }
-            if(error.size()==0) {
+            if (error.size() == 0) {
                 return Result.succeed("删除成功");
-            }else {
-                return Result.succeed("删除部分成功，但"+error.toString()+"删除失败，共"+error.size()+"次失败。");
+            } else {
+                return Result.succeed("删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
             }
-        }else{
+        } else {
             return Result.failed("请选择要删除的记录");
         }
     }
@@ -63,7 +63,7 @@ public class JobInstanceController {
     @PostMapping("/getOneById")
     public Result getOneById(@RequestBody JobInstance JobInstance) throws Exception {
         JobInstance = jobInstanceService.getById(JobInstance.getId());
-        return Result.succeed(JobInstance,"获取成功");
+        return Result.succeed(JobInstance, "获取成功");
     }
 
     /**
@@ -71,6 +71,14 @@ public class JobInstanceController {
      */
     @GetMapping("/getStatusCount")
     public Result getStatusCount() {
-        return Result.succeed(jobInstanceService.getStatusCount(),"获取成功");
+        return Result.succeed(jobInstanceService.getStatusCount(), "获取成功");
+    }
+
+    /**
+     * 获取Job实例的所有信息
+     */
+    @GetMapping("/getJobInfoDetail")
+    public Result getJobInfoDetail(@RequestParam Integer id) {
+        return Result.succeed(jobInstanceService.getJobInfoDetail(id), "获取成功");
     }
 }

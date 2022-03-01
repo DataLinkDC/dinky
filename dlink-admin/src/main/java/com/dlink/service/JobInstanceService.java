@@ -1,6 +1,7 @@
 package com.dlink.service;
 
 import com.dlink.db.service.ISuperService;
+import com.dlink.model.JobInfoDetail;
 import com.dlink.model.JobInstance;
 import com.dlink.model.JobInstanceStatus;
 
@@ -13,4 +14,6 @@ import com.dlink.model.JobInstanceStatus;
 public interface JobInstanceService extends ISuperService<JobInstance> {
 
     JobInstanceStatus getStatusCount();
+
+    JobInfoDetail getJobInfoDetail(Integer id);
 }

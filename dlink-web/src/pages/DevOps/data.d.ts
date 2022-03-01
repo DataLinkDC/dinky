@@ -1,3 +1,7 @@
+import {ClusterTableListItem} from "@/pages/Cluster/data";
+import {ClusterConfigurationTableListItem} from "@/pages/ClusterConfiguration/data";
+import {HistoryItem} from "@/components/Studio/StudioConsole/StudioHistory/data";
+
 export type JobInstanceTableListItem = {
   id: number,
   name: string,
@@ -24,4 +28,13 @@ export type StatusCount = {
   finished: number,
   failed: number,
   canceled: number,
+}
+
+export type JobInfoDetail = {
+  id: number,
+  instance: JobInstanceTableListItem,
+  cluster: ClusterTableListItem,
+  clusterConfiguration: ClusterConfigurationTableListItem,
+  task: TaskTableListItem,
+  history: HistoryItem
 }

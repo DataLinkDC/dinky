@@ -29,6 +29,12 @@ export default [
     component: './DevOps',
   },
   {
+    path: '/job',
+    name: 'job',
+    component: './DevOps/JobInfo',
+    hideInMenu: true,
+  },
+  {
     path: '/registration',
     name: 'registration',
     icon: 'appstore',

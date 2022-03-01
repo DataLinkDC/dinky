@@ -61,6 +61,7 @@ export default {
   'menu.studio': 'FlinkSql IDE',
   'menu.flinksqlstudio': 'FlinkSQL Studio',
   'menu.devops': '运维中心',
+  'menu.job': '作业实例',
   'menu.registration.jar': 'Jar 管理',
   'menu.registration.document': '文档管理',
   'menu.settings': '系统设置',

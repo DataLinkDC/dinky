@@ -20,6 +20,7 @@ const DevOps = (props:any) => {
     { key: 'CANCELED', status: 'warning', title: '停止', value: 0 },
   ];
   const [statusCount, setStatusCount] = useState<any[]>(statusCountDefault);
+  const [activeKey, setActiveKey] = useState<string>('');
 
   const refreshStatusCount = () => {
     const res = getStatusCount();
@@ -35,16 +36,21 @@ const DevOps = (props:any) => {
       ];
       setStatusCount(items);
     });
-  }
+  };
 
   useEffect(() => {
     refreshStatusCount();
+    let dataPolling = setInterval(refreshStatusCount,3000);
+    return () => {
+      clearInterval(dataPolling);
+    };
   }, []);
 
   return (
     <ProCard
       tabs={{
         onChange: (key) => {
+          setActiveKey(key);
         },
       }}
     >
@@ -69,7 +75,7 @@ const DevOps = (props:any) => {
               backgroundColor: '#fafafa',
             }}
           >
-            <JobInstanceTable status={item.key}/>
+            <JobInstanceTable status={item.key} activeKey={activeKey}/>
           </div>
         </ProCard.TabPane>
       ))}
