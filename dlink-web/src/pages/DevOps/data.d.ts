@@ -38,3 +38,14 @@ export type JobInfoDetail = {
   task: TaskTableListItem,
   history: HistoryItem
 }
+
+export type VerticesTableListItem = {
+  name: string,
+  status: string,
+  metrics: any,
+  parallelism: number,
+  startTime: string,
+  duration: number,
+  endTime: string,
+  tasks:any,
+}

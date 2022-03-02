@@ -34,6 +34,7 @@ type HistoryConfig={
   jobName: string;
   useSqlFragment: boolean;
   useStatementSet: boolean;
+  useBatchModel: boolean;
   checkpoint: number;
   parallelism: number;
   savePointPath: string;
@@ -53,7 +54,7 @@ const StudioHistory = (props: any) => {
     setRow(row);
     setModalVisit(true);
     setType(type);
-    setConfig(JSON.parse(row.config));
+    setConfig(JSON.parse(row.configJson));
     if(type===3){
       // showJobData(row.jobId,dispatch)
       const res = getJobData(row.jobId);

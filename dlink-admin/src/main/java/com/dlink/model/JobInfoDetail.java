@@ -14,6 +14,7 @@ public class JobInfoDetail {
     private ClusterConfiguration clusterConfiguration;
     private Task task;
     private History history;
+    private JobHistory jobHistory;
 
     public JobInfoDetail(Integer id) {
         this.id = id;
@@ -65,5 +66,13 @@ public class JobInfoDetail {
 
     public void setHistory(History history) {
         this.history = history;
+    }
+
+    public JobHistory getJobHistory() {
+        return jobHistory;
+    }
+
+    public void setJobHistory(JobHistory jobHistory) {
+        this.jobHistory = jobHistory;
     }
 }

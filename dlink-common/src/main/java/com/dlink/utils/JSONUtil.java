@@ -124,6 +124,9 @@ public class JSONUtil {
     }
 
     public static String toJsonString(Object object) {
+        if(Asserts.isNull(object)){
+            return null;
+        }
         try {
             return objectMapper.writeValueAsString(object);
         } catch (Exception e) {

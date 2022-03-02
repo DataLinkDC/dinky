@@ -81,12 +81,23 @@ public enum JobStatus {
         return value;
     }
 
-    public static JobStatus get(String value){
+    public static JobStatus get(String value) {
         for (JobStatus type : JobStatus.values()) {
-            if(Asserts.isEqualsIgnoreCase(type.getValue(),value)){
+            if (Asserts.isEqualsIgnoreCase(type.getValue(), value)) {
                 return type;
             }
         }
         return JobStatus.UNKNOWN;
+    }
+
+    public static boolean isDone(String value) {
+        switch (get(value)) {
+            case FAILED:
+            case CANCELED:
+            case FINISHED:
+                return true;
+            default:
+                return false;
+        }
     }
 }

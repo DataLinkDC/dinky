@@ -1,9 +1,12 @@
 package com.dlink.service.impl;
 
 import com.dlink.assertion.Asserts;
+import com.dlink.constant.FlinkRestResultConstant;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.JobInstanceMapper;
+import com.dlink.model.Cluster;
 import com.dlink.model.History;
+import com.dlink.model.JobHistory;
 import com.dlink.model.JobInfoDetail;
 import com.dlink.model.JobInstance;
 import com.dlink.model.JobInstanceCount;
@@ -12,8 +15,10 @@ import com.dlink.model.JobStatus;
 import com.dlink.service.ClusterConfigurationService;
 import com.dlink.service.ClusterService;
 import com.dlink.service.HistoryService;
+import com.dlink.service.JobHistoryService;
 import com.dlink.service.JobInstanceService;
 import com.dlink.service.TaskService;
+import com.dlink.utils.JSONUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +41,8 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     private ClusterService clusterService;
     @Autowired
     private ClusterConfigurationService clusterConfigurationService;
+    @Autowired
+    private JobHistoryService jobHistoryService;
 
     @Override
     public JobInstanceStatus getStatusCount() {
@@ -68,17 +75,44 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
 
     @Override
     public JobInfoDetail getJobInfoDetail(Integer id) {
-        JobInfoDetail jobInfoDetail = new JobInfoDetail(id);
-        JobInstance jobInstance = getById(id);
+        return getJobInfoDetailInfo(getById(id));
+    }
+
+    @Override
+    public JobInfoDetail getJobInfoDetailInfo(JobInstance jobInstance) {
         Asserts.checkNull(jobInstance, "该任务实例不存在");
+        JobInfoDetail jobInfoDetail = new JobInfoDetail(jobInstance.getId());
         jobInfoDetail.setInstance(jobInstance);
         jobInfoDetail.setTask(taskService.getTaskInfoById(jobInstance.getTaskId()));
         jobInfoDetail.setCluster(clusterService.getById(jobInstance.getClusterId()));
+        jobInfoDetail.setJobHistory(jobHistoryService.getJobHistory(jobInstance.getId()));
         History history = historyService.getById(jobInstance.getHistoryId());
+        history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
         jobInfoDetail.setHistory(history);
         if (Asserts.isNotNull(history) && Asserts.isNotNull(history.getClusterConfigurationId())) {
             jobInfoDetail.setClusterConfiguration(clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId()));
         }
         return jobInfoDetail;
+    }
+
+    @Override
+    public JobInstance refreshJobInstance(Integer id) {
+        JobInstance jobInstance = getById(id);
+        Asserts.checkNull(jobInstance, "该任务实例不存在");
+        if(JobStatus.isDone(jobInstance.getStatus())){
+            return jobInstance;
+        }
+        Cluster cluster = clusterService.getById(jobInstance.getClusterId());
+        JobHistory jobHistoryJson = jobHistoryService.refreshJobHistory(id, cluster.getJobManagerHost(), jobInstance.getJid());
+        JobHistory jobHistory = jobHistoryService.getJobHistoryInfo(jobHistoryJson);
+        jobInstance.setDuration(jobHistory.getJob().get(FlinkRestResultConstant.JOB_DURATION).asLong()/1000);
+        jobInstance.setStatus(jobHistory.getJob().get(FlinkRestResultConstant.JOB_STATE).asText());
+        updateById(jobInstance);
+        return jobInstance;
+    }
+
+    @Override
+    public JobInfoDetail refreshJobInfoDetail(Integer id) {
+        return getJobInfoDetailInfo(refreshJobInstance(id));
     }
 }

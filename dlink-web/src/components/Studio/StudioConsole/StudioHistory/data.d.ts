@@ -11,7 +11,8 @@ export type HistoryItem = {
   statement: string;
   error: string;
   result: string;
-  config: string;
+  config: any;
+  configJson: string;
   type: string;
   startTime: string;
   endTime: string;

@@ -165,7 +165,7 @@ CREATE TABLE `dlink_history`  (
                                   `statement` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '语句集',
                                   `error` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '异常信息',
                                   `result` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '结果集',
-                                  `config` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '配置',
+                                  `config_json` json NULL COMMENT '配置JSON',
                                   `start_time` datetime(0) NULL DEFAULT NULL COMMENT '开始时间',
                                   `end_time` datetime(0) NULL DEFAULT NULL COMMENT '结束时间',
                                   `task_id` int(11) NULL DEFAULT NULL COMMENT '作业ID',
@@ -372,11 +372,14 @@ create table dlink_job_history
 (
     id int comment '实例主键'
         primary key,
-    job json null comment 'Job信息',
-    exceptions json null comment '异常日志',
-    checkpoints json null comment '保存点',
-    checkpoints_config json null comment '保存点配置',
-    config json null comment '配置',
+    job_json json null comment 'Job信息',
+    exceptions_json json null comment '异常日志',
+    checkpoints_json json null comment '保存点',
+    checkpoints_config_json json null comment '保存点配置',
+    config_json json null comment '配置',
+    jar_json json null comment 'Jar配置',
+    cluster_json json null comment '集群实例',
+    cluster_configuration_json json null comment '集群配置',
     update_time datetime null comment '更新时间'
 )
     comment 'Job历史详情';

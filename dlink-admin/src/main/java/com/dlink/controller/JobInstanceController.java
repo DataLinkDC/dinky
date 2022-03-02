@@ -81,4 +81,12 @@ public class JobInstanceController {
     public Result getJobInfoDetail(@RequestParam Integer id) {
         return Result.succeed(jobInstanceService.getJobInfoDetail(id), "获取成功");
     }
+
+    /**
+     * 刷新Job实例的所有信息
+     */
+    @GetMapping("/refreshJobInfoDetail")
+    public Result refreshJobInfoDetail(@RequestParam Integer id) {
+        return Result.succeed(jobInstanceService.refreshJobInfoDetail(id), "刷新成功");
+    }
 }

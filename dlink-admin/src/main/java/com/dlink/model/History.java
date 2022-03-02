@@ -2,6 +2,7 @@ package com.dlink.model;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -33,7 +34,9 @@ public class History implements Serializable {
     private String type;
     private String error;
     private String result;
-    private String config;
+    @TableField(exist = false)
+    private ObjectNode config;
+    private String configJson;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private Integer taskId;

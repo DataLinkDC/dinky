@@ -8,9 +8,10 @@ import {Button, Dropdown, Menu, Tag, Space, Typography} from 'antd';
 import {PageContainer} from '@ant-design/pro-layout';
 import ProCard from '@ant-design/pro-card';
 import {JobInfoDetail} from "@/pages/DevOps/data";
-import {getJobInfoDetail} from "@/pages/DevOps/service";
+import {getJobInfoDetail, refreshJobInfoDetail} from "@/pages/DevOps/service";
 import moment from "moment";
 import BaseInfo from "@/pages/DevOps/JobInfo/BaseInfo";
+import Config from "@/pages/DevOps/JobInfo/Config";
 import JobStatus from "@/components/Common/JobStatus";
 
 const {Link} = Typography;
@@ -24,7 +25,7 @@ const JobInfo = (props: any) => {
   const [time, setTime] = useState(() => Date.now());
   const [tabKey, setTabKey] = useState<string>('base');
 
-  const refreshJobInfoDetail = () => {
+  const handleGetJobInfoDetail = () => {
     const res = getJobInfoDetail(id);
     res.then((result) => {
       setJob(result.datas);
@@ -33,12 +34,20 @@ const JobInfo = (props: any) => {
   };
 
   useEffect(() => {
-    refreshJobInfoDetail();
-    let dataPolling = setInterval(refreshJobInfoDetail, 3000);
+    handleGetJobInfoDetail();
+    let dataPolling = setInterval(handleGetJobInfoDetail, 3000);
     return () => {
       clearInterval(dataPolling);
     };
   }, []);
+
+  const handleRefreshJobInfoDetail = () => {
+    const res = refreshJobInfoDetail(id);
+    res.then((result) => {
+      setJob(result.datas);
+      setTime(Date.now());
+    });
+  };
 
   const handleBack = () => {
     history.goBack();
@@ -47,13 +56,13 @@ const JobInfo = (props: any) => {
   return (
     <PageContainer
       header={{
-        title: `${job?.instance.name}`,
+        title: `${job?.instance?.name}`,
         ghost: true,
         extra: [
           <Button key="back" type="dashed" onClick={handleBack}>返回</Button>,
-          <Button key="refresh" icon={<RedoOutlined/>}/>,
+          <Button key="refresh" icon={<RedoOutlined/>} onClick={handleRefreshJobInfoDetail}/>,
           <Button key="flinkwebui">
-            <Link href={`http://${job?.history.jobManagerAddress}`} target="_blank">
+            <Link href={`http://${job?.history?.jobManagerAddress}/#/job/${job?.instance?.jid}/overview`} target="_blank">
               FlinkWebUI
             </Link></Button>,
           <Button key="autorestart" type="primary">智能重启</Button>,
@@ -77,20 +86,20 @@ const JobInfo = (props: any) => {
       }}
       content={<>
         <Space size={0}>
-          {job?.instance.jid ? (
-            <Tag color="blue" key={job?.instance.jid}>
-              <FireOutlined/> {job?.instance.jid}
+          {job?.instance?.jid ? (
+            <Tag color="blue" key={job?.instance?.jid}>
+              <FireOutlined/> {job?.instance?.jid}
             </Tag>
           ) : undefined}
-          <JobStatus status={job?.instance.status}/>
-          {job?.history.type ? (
-            <Tag color="blue" key={job?.history.type}>
-              <RocketOutlined/> {job?.history.type}
+          <JobStatus status={job?.instance?.status}/>
+          {job?.history?.type ? (
+            <Tag color="blue" key={job?.history?.type}>
+              <RocketOutlined/> {job?.history?.type}
             </Tag>
           ) : undefined}
-          {job?.cluster.alias ? (
-            <Tag color="green" key={job?.cluster.alias}>
-              <ClusterOutlined/> {job?.cluster.alias}
+          {job?.cluster?.alias ? (
+            <Tag color="green" key={job?.cluster?.alias}>
+              <ClusterOutlined/> {job?.cluster?.alias}
             </Tag>
           ) : (<Tag color="green" key='local'>
             <ClusterOutlined/> 本地环境
@@ -136,6 +145,7 @@ const JobInfo = (props: any) => {
     >
       <ProCard>
         {tabKey === 'base' ? <BaseInfo job={job}/> : undefined}
+        {tabKey === 'config' ? <Config job={job}/> : undefined}
       </ProCard>
     </PageContainer>
   );

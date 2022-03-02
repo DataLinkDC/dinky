@@ -60,7 +60,7 @@ const DTable = (props: any) => {
   }
 
   useEffect(() => {
-    if(dataSource.url){
+    if(dataSource&&dataSource.url){
       refreshData();
     }
   }, []);
@@ -69,7 +69,7 @@ const DTable = (props: any) => {
     <ProTable
       columns={buildColumn()}
       style={{width: '100%'}}
-      dataSource={dataSource.url?data:dataSource}
+      dataSource={dataSource?(dataSource.url?data:dataSource):[]}
       rowKey="name"
       pagination={{
         pageSize: 10,

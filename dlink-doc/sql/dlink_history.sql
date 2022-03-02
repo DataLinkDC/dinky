@@ -604,14 +604,24 @@ DROP TABLE IF EXISTS `dlink_job_history`;
 create table dlink_job_history
 (
     id int comment '实例主键'
-    primary key,
-    job json null comment 'Job信息',
-    exceptions json null comment '异常日志',
-    checkpoints json null comment '保存点',
-    checkpoints_config json null comment '保存点配置',
-    config json null comment '配置',
+        primary key,
+    job_json json null comment 'Job信息',
+    exceptions_json json null comment '异常日志',
+    checkpoints_json json null comment '保存点',
+    checkpoints_config_json json null comment '保存点配置',
+    config_json json null comment '配置',
+    jar_json json null comment 'Jar配置',
+    cluster_json json null comment '集群实例',
+    cluster_configuration_json json null comment '集群配置',
     update_time datetime null comment '更新时间'
 )
     comment 'Job历史详情';
+
+-- ----------------------------
+-- 0.4.0 2021-03-02
+-- ----------------------------
+ALTER TABLE `dlink_history`
+    CHANGE COLUMN `config` `config_json` json NULL COMMENT '配置JSON' AFTER `result`;
+
 
 SET FOREIGN_KEY_CHECKS = 1;

@@ -2,34 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dlink.mapper.HistoryMapper">
 
-    <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.dlink.model.History">
-        <id column="id" property="id"/>
-        <result column="cluster_id" property="clusterId"/>
-        <result column="cluster_configuration_id" property="clusterConfigurationId"/>
-        <result column="session" property="session"/>
-        <result column="jod_id" property="jobId"/>
-        <result column="job_name" property="jobName"/>
-        <result column="job_manager_address" property="jobManagerAddress"/>
-        <result column="status" property="status"/>
-        <result column="statement" property="statement"/>
-        <result column="type" property="type"/>
-        <result column="error" property="error"/>
-        <result column="result" property="result"/>
-        <result column="config" property="config"/>
-        <result column="start_time" property="startTime"/>
-        <result column="end_time" property="endTime"/>
-        <result column="task_id" property="taskId"/>
-    </resultMap>
-
-    <!-- 通用查询结果列 -->
-    <sql id="Base_Column_List">
-        id,cluster_id,cluster_configuration_id,session,jod_id,job_name,
-        job_manager_address,status,statement,type, error,
-        result,config,start_time,end_time,task_id
-    </sql>
-
-
     <select id="selectForProTable" resultType="com.dlink.model.History">
         select
         a.*,

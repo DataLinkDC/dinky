@@ -16,4 +16,10 @@ public interface JobInstanceService extends ISuperService<JobInstance> {
     JobInstanceStatus getStatusCount();
 
     JobInfoDetail getJobInfoDetail(Integer id);
+
+    JobInfoDetail getJobInfoDetailInfo(JobInstance jobInstance);
+
+    JobInstance refreshJobInstance(Integer id);
+
+    JobInfoDetail refreshJobInfoDetail(Integer id);
 }
