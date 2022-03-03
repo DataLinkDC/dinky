@@ -650,6 +650,54 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增 Batch 引擎</Link>
                 </li>
+                <li>
+                  <Link>优化 异常日志的捕获、反馈与持久化</Link>
+                </li>
+                <li>
+                  <Link>优化 默认启用数据预览等</Link>
+                </li>
+                <li>
+                  <Link>新增 作业目录树关键字搜索框</Link>
+                </li>
+                <li>
+                  <Link>扩展 Phoenix 数据源注册、元数据、查询和执行</Link>
+                </li>
+                <li>
+                  <Link>优化 元数据数据源的的类型转换和连接管理</Link>
+                </li>
+                <li>
+                  <Link>新增 数据源的连接信息片段机制自动注入</Link>
+                </li>
+                <li>
+                  <Link>升级 Flink 1.13.5 至 1.13.6</Link>
+                </li>
+                <li>
+                  <Link>新增 密码修改</Link>
+                </li>
+                <li>
+                  <Link>新增 报警模块（实例和组）</Link>
+                </li>
+                <li>
+                  <Link>新增 钉钉报警</Link>
+                </li>
+                <li>
+                  <Link>新增 微信企业号报警</Link>
+                </li>
+                <li>
+                  <Link>新增 运维中心任务实例功能</Link>
+                </li>
+                <li>
+                  <Link>新增 运维中心任务监控功能</Link>
+                </li>
+                <li>
+                  <Link>新增 运维中心任务监控的FlinkWebUI、智能停止、SavePoint等操作</Link>
+                </li>
+                <li>
+                  <Link>新增 运维中心任务监控的作业总览</Link>
+                </li>
+                <li>
+                  <Link>新增 运维中心任务监控的配置信息</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>
