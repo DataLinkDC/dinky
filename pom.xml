@@ -23,6 +23,8 @@
         <module>dlink-web</module>
         <module>dlink-admin</module>
         <module>dlink-assembly</module>
+        <module>dlink-alert</module>
+        <module>dlink-deamon</module>
 
     </modules>
 
@@ -38,7 +40,6 @@
         <lombok.version>1.18.16</lombok.version>
         <jackjson.version>2.11.4</jackjson.version>
         <guava.version>21.0</guava.version>
-<!--        <log4j.version>2.17.1</log4j.version>-->
         <mysql-connector-java.version>8.0.22</mysql-connector-java.version>
         <ojdbc8.version>12.2.0.1</ojdbc8.version>
         <clickhouse.version>0.2.6</clickhouse.version>
@@ -48,6 +49,7 @@
         <!--<flyway.version>6.4.4</flyway.version>-->
         <sa-token.version>1.28.0</sa-token.version>
         <commons-lang3.version>3.3.2</commons-lang3.version>
+        <httpclient.version>4.4.1</httpclient.version>
         <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
         <maven-assembly-plugin.version>3.2.0</maven-assembly-plugin.version>
         <maven.resource.version>3.2.0</maven.resource.version>
@@ -108,21 +110,6 @@
                 <artifactId>commons-lang3</artifactId>
                 <version>${commons-lang3.version}</version>
             </dependency>
-            <!--<dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-api</artifactId>
-                <version>${log4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-core</artifactId>
-                <version>${log4j.version}</version>
-            </dependency>-->
-            <!--<dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
-                <version>1.7.30</version>
-            </dependency>-->
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
@@ -275,6 +262,21 @@
                 <artifactId>dlink-client-hadoop</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-alert-base</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-deamon</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${httpclient.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <build>
@@ -283,26 +285,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
             </plugin>
-
-            <!-- 将依赖的jar包拷贝到target目录下 -->
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-dependency-plugin</artifactId>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>copy-dependencies</id>-->
-<!--                        <phase>package</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>copy-dependencies</goal>-->
-<!--                        </goals>-->
-<!--                        <configuration>-->
-<!--                            <outputDirectory>${basedir}/target</outputDirectory>-->
-<!--                            <excludeTransitive>false</excludeTransitive>-->
-<!--                            <stripVersion>false</stripVersion>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
         </plugins>
     </build>
 </project>

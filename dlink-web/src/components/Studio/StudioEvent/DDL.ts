@@ -164,6 +164,16 @@ export function showJars(dispatch: any) {
     });
   });
 }
+/*--- 刷新 报警实例 ---*/
+export function showAlertInstance(dispatch: any) {
+  const res = getData('api/alertInstance/listEnabledAll');
+  res.then((result) => {
+    result.datas && dispatch && dispatch({
+      type: "Alert/saveInstance",
+      payload: result.datas,
+    });
+  });
+}
 /*--- 刷新 元数据表 ---*/
 export function showMetaDataTable(id:number) {
   return getData('api/database/getSchemasAndTables',{id:id});
@@ -177,8 +187,8 @@ export function cancelJob(clusterId:number,jobId:string) {
   return getData('api/studio/cancel',{clusterId:clusterId,jobId:jobId});
 }
 /*--- 停止 SavePoint Jobs ---*/
-export function savepointJob(clusterId:number,jobId:string,savePointType:string,name:string) {
-  return getData('api/studio/savepoint',{clusterId,jobId,savePointType,name});
+export function savepointJob(clusterId:number,jobId:string,savePointType:string,name:string,taskId:number) {
+  return getData('api/studio/savepoint',{clusterId,jobId,savePointType,name,taskId});
 }
 /*--- 根据版本号获取所有自动补全的文档 ---*/
 export function getFillAllByVersion(version:string,dispatch: any) {

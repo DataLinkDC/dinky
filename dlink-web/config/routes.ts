@@ -23,18 +23,16 @@ export default [
     component: './FlinkSqlStudio',
   },
   {
-    path: '/taskcenter',
-    name: 'taskcenter',
-    icon: 'partition',
-    routes: [
-      /*{
-    path: '/taskcenter/task',
-    name: 'task',
-    icon: 'task',
-    component: './Task',
-  },*/
-
-    ],
+    path: '/devops',
+    name: 'devops',
+    icon: 'control',
+    component: './DevOps',
+  },
+  {
+    path: '/job',
+    name: 'job',
+    component: './DevOps/JobInfo',
+    hideInMenu: true,
   },
   {
     path: '/registration',
@@ -45,13 +43,18 @@ export default [
         path: '/registration/cluster',
         name: 'cluster',
         icon: 'cluster',
-        component: './Cluster',
-      },
-      {
-        path: '/registration/clusterConfiguration',
-        name: 'clusterConfiguration',
-        icon: 'setting',
-        component: './ClusterConfiguration',
+        routes: [
+          {
+            path: '/registration/cluster/clusterInstance',
+            name: 'clusterInstance',
+            component: './Cluster',
+          },
+          {
+            path: '/registration/cluster/clusterConfiguration',
+            name: 'clusterConfiguration',
+            component: './ClusterConfiguration',
+          },
+        ],
       },
       {
         path: '/registration/jar',
@@ -66,6 +69,22 @@ export default [
         component: './DataBase',
       },
       {
+        path: '/registration/alert',
+        name: 'alert',
+        icon: 'alert',
+        routes: [
+          {
+            path: '/registration/alert/alertInstance',
+            name: 'alertInstance',
+            component: './AlertInstance',
+          },
+          {
+            path: '/registration/alert/alertGroup',
+            name: 'alertGroup',
+            component: './AlertGroup',
+          },
+        ],
+      },{
         path: '/registration/document',
         name: 'document',
         icon: 'container',

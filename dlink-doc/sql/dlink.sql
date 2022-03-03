@@ -165,7 +165,7 @@ CREATE TABLE `dlink_history`  (
                                   `statement` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '语句集',
                                   `error` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '异常信息',
                                   `result` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '结果集',
-                                  `config` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '配置',
+                                  `config_json` json NULL COMMENT '配置JSON',
                                   `start_time` datetime(0) NULL DEFAULT NULL COMMENT '开始时间',
                                   `end_time` datetime(0) NULL DEFAULT NULL COMMENT '结束时间',
                                   `task_id` int(11) NULL DEFAULT NULL COMMENT '作业ID',
@@ -309,7 +309,7 @@ create table dlink_job_instance
 (
     id                   int auto_increment comment '自增主键'
         primary key,
-    name                 varchar(50) null comment '作业实例名',
+    name                 varchar(255) null comment '作业实例名',
     task_id              int         null comment 'taskID',
     cluster_id           int         null comment '集群ID',
     jid                  varchar(50) null comment 'FlinkJobId',
@@ -317,9 +317,71 @@ create table dlink_job_instance
     history_id           int         null comment '提交历史ID',
     create_time          datetime    null comment '创建时间',
     update_time          datetime    null comment '更新时间',
-    finish_time          int         null comment '完成时间',
+    finish_time          datetime    null comment '完成时间',
+    duration             bigint      null comment '耗时',
     error                text        null comment '异常日志',
     failed_restart_count int         null comment '重启次数'
 ) comment '作业实例';
+
+DROP TABLE IF EXISTS `dlink_alert_instance`;
+create table dlink_alert_instance
+(
+    id int auto_increment comment '自增主键'
+        primary key,
+    name varchar(50) not null comment '名称',
+    type varchar(50) null comment '类型',
+    params text null comment '配置',
+    enabled tinyint default 1 null comment '是否启用',
+    create_time datetime null comment '创建时间',
+    update_time datetime null comment '更新时间'
+)
+    comment 'Alert实例';
+
+DROP TABLE IF EXISTS `dlink_alert_group`;
+create table dlink_alert_group
+(
+    id int auto_increment comment '自增主键'
+        primary key,
+    name varchar(50) not null comment '名称',
+    alert_instance_ids text null comment 'Alert实例IDS',
+    note varchar(255) null comment '说明',
+    enabled tinyint default 1 null comment '是否启用',
+    create_time datetime null comment '创建时间',
+    update_time datetime null comment '更新时间'
+)
+    comment 'Alert组';
+
+DROP TABLE IF EXISTS `dlink_alert_history`;
+create table dlink_alert_history
+(
+    id int auto_increment comment '自增主键'
+        primary key,
+    alert_group_id int null comment 'Alert组ID',
+    job_instance_id int null comment '作业实例ID',
+    title varchar(255) null comment '标题',
+    content text null comment '正文',
+    status int null comment '状态',
+    log text null comment '日志',
+    create_time datetime null comment '创建时间',
+    update_time datetime null comment '更新时间'
+)
+    comment 'Alert历史';
+
+DROP TABLE IF EXISTS `dlink_job_history`;
+create table dlink_job_history
+(
+    id int comment '实例主键'
+        primary key,
+    job_json json null comment 'Job信息',
+    exceptions_json json null comment '异常日志',
+    checkpoints_json json null comment '保存点',
+    checkpoints_config_json json null comment '保存点配置',
+    config_json json null comment '配置',
+    jar_json json null comment 'Jar配置',
+    cluster_json json null comment '集群实例',
+    cluster_configuration_json json null comment '集群配置',
+    update_time datetime null comment '更新时间'
+)
+    comment 'Job历史详情';
 
 SET FOREIGN_KEY_CHECKS = 1;

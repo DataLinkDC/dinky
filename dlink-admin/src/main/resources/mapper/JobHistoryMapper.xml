@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlink.mapper.JobHistoryMapper">
+
+
+    <insert id="insert">
+        insert into dlink_job_history (id,job_json,exceptions_json,checkpoints_json,checkpoints_config_json,config_json,
+                                       jar_json,cluster_json,cluster_configuration_json,update_time)
+        values (#{id},#{jobJson},#{exceptionsJson},#{checkpointsJson},#{checkpointsConfigJson},#{configJson},
+                #{jarJson},#{clusterJson},#{clusterConfigurationJson},#{updateTime})
+    </insert>
+
+    <select id="selectForProTable" resultType="com.dlink.model.JobHistory">
+        select
+        a.*
+        from
+        dlink_job_history a
+        <where>
+            1=1
+            <if test='param.id!=null and param.id!=""'>
+                and a.id = #{param.id}
+            </if>
+            <if test='ew.sqlSegment!=null and ew.sqlSegment!="" and !ew.sqlSegment.startsWith(" ORDER BY")'>
+                and
+            </if>
+            <if test='ew.sqlSegment!=null and ew.sqlSegment!=""'>
+                ${ew.sqlSegment}
+            </if>
+        </where>
+    </select>
+</mapper>

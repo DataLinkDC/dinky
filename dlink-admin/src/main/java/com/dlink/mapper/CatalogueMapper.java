@@ -12,6 +12,5 @@ import org.apache.ibatis.annotations.Param;
  * @since 2021/5/28 13:53
  **/
 @Mapper
-public interface CatalogueMapper  extends SuperMapper<Catalogue> {
-    Catalogue findByParentIdAndName(@Param("parent_id")Integer parent_id, @Param("name")String name);
+public interface CatalogueMapper extends SuperMapper<Catalogue> {
 }

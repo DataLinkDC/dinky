@@ -1,15 +1,10 @@
 package com.dlink.job;
 
-import cn.hutool.json.JSONUtil;
 import com.dlink.assertion.Asserts;
 import com.dlink.context.SpringContextUtils;
-import com.dlink.model.Cluster;
-import com.dlink.model.History;
-import com.dlink.model.JobInstance;
-import com.dlink.model.JobStatus;
-import com.dlink.service.ClusterService;
-import com.dlink.service.HistoryService;
-import com.dlink.service.JobInstanceService;
+import com.dlink.model.*;
+import com.dlink.service.*;
+import com.dlink.utils.JSONUtil;
 import org.springframework.context.annotation.DependsOn;
 
 import java.time.LocalDateTime;
@@ -25,12 +20,18 @@ public class Job2MysqlHandler implements JobHandler {
 
     private static HistoryService historyService;
     private static ClusterService clusterService;
+    private static ClusterConfigurationService clusterConfigurationService;
+    private static JarService jarService;
     private static JobInstanceService jobInstanceService;
+    private static JobHistoryService jobHistoryService;
 
     static {
         historyService = SpringContextUtils.getBean("historyServiceImpl", HistoryService.class);
         clusterService = SpringContextUtils.getBean("clusterServiceImpl", ClusterService.class);
+        clusterConfigurationService = SpringContextUtils.getBean("clusterConfigurationServiceImpl", ClusterConfigurationService.class);
+        jarService = SpringContextUtils.getBean("jarServiceImpl", JarService.class);
         jobInstanceService = SpringContextUtils.getBean("jobInstanceServiceImpl", JobInstanceService.class);
+        jobHistoryService = SpringContextUtils.getBean("jobHistoryServiceImpl", JobHistoryService.class);
     }
 
     @Override
@@ -50,7 +51,7 @@ public class Job2MysqlHandler implements JobHandler {
         history.setStatement(job.getStatement());
         history.setStartTime(job.getStartTime());
         history.setTaskId(job.getJobConfig().getTaskId());
-        history.setConfig(JSONUtil.toJsonStr(job.getJobConfig()));
+        history.setConfigJson(JSONUtil.toJsonString(job.getJobConfig()));
         historyService.save(history);
         job.setId(history.getId());
         return true;
@@ -81,16 +82,27 @@ public class Job2MysqlHandler implements JobHandler {
             history.setJobManagerAddress(job.getJobManagerAddress());
         }
         Integer clusterId = job.getJobConfig().getClusterId();
+        Cluster cluster = null;
         if (job.isUseGateway()) {
-            Cluster cluster = clusterService.registersCluster(Cluster.autoRegistersCluster(job.getJobManagerAddress(),
+            cluster = clusterService.registersCluster(Cluster.autoRegistersCluster(job.getJobManagerAddress(),
                     job.getJobId(), job.getJobConfig().getJobName() + LocalDateTime.now(), job.getType().getLongValue(),
                     job.getJobConfig().getClusterConfigurationId(), job.getJobConfig().getTaskId()));
             if (Asserts.isNotNull(cluster)) {
                 clusterId = cluster.getId();
             }
+        }else{
+            cluster = clusterService.getById(clusterId);
         }
         history.setClusterId(clusterId);
         historyService.updateById(history);
+        ClusterConfiguration clusterConfiguration = null;
+        if(Asserts.isNotNull(job.getJobConfig().getClusterConfigurationId())){
+            clusterConfiguration = clusterConfigurationService.getClusterConfigById(job.getJobConfig().getClusterConfigurationId());
+        }
+        Jar jar = null;
+        if(Asserts.isNotNull(job.getJobConfig().getJarId())){
+            jar = jarService.getById(job.getJobConfig().getJarId());
+        }
         if (Asserts.isNotNullCollection(job.getJids())) {
             for (String jid : job.getJids()) {
                 JobInstance jobInstance = history.buildJobInstance();
@@ -101,6 +113,12 @@ public class Job2MysqlHandler implements JobHandler {
                 jobInstance.setJid(jid);
                 jobInstance.setStatus(JobStatus.INITIALIZING.getValue());
                 jobInstanceService.save(jobInstance);
+                JobHistory jobHistory = new JobHistory();
+                jobHistory.setId(jobInstance.getId());
+                jobHistory.setJarJson(JSONUtil.toJsonString(jar));
+                jobHistory.setClusterJson(JSONUtil.toJsonString(cluster));
+                jobHistory.setClusterConfigurationJson(JSONUtil.toJsonString(clusterConfiguration));
+                jobHistoryService.save(jobHistory);
             }
         }
         return true;

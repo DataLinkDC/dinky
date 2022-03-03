@@ -2,6 +2,7 @@ package com.dlink.controller;
 
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
+import com.dlink.model.Jar;
 import com.dlink.model.JobInstance;
 import com.dlink.service.JobInstanceService;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -23,14 +24,14 @@ import java.util.List;
 @RequestMapping("/api/jobInstance")
 public class JobInstanceController {
     @Autowired
-    private JobInstanceService JobInstanceService;
+    private JobInstanceService jobInstanceService;
 
     /**
      * 动态查询列表
      */
     @PostMapping
     public ProTableResult<JobInstance> listJobInstances(@RequestBody JsonNode para) {
-        return JobInstanceService.selectForProTable(para);
+        return jobInstanceService.selectForProTable(para);
     }
 
     /**
@@ -38,20 +39,20 @@ public class JobInstanceController {
      */
     @DeleteMapping
     public Result deleteMul(@RequestBody JsonNode para) {
-        if (para.size()>0){
+        if (para.size() > 0) {
             List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para){
+            for (final JsonNode item : para) {
                 Integer id = item.asInt();
-                if(!JobInstanceService.removeById(id)){
+                if (!jobInstanceService.removeById(id)) {
                     error.add(id);
                 }
             }
-            if(error.size()==0) {
+            if (error.size() == 0) {
                 return Result.succeed("删除成功");
-            }else {
-                return Result.succeed("删除部分成功，但"+error.toString()+"删除失败，共"+error.size()+"次失败。");
+            } else {
+                return Result.succeed("删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
             }
-        }else{
+        } else {
             return Result.failed("请选择要删除的记录");
         }
     }
@@ -61,7 +62,31 @@ public class JobInstanceController {
      */
     @PostMapping("/getOneById")
     public Result getOneById(@RequestBody JobInstance JobInstance) throws Exception {
-        JobInstance = JobInstanceService.getById(JobInstance.getId());
-        return Result.succeed(JobInstance,"获取成功");
+        JobInstance = jobInstanceService.getById(JobInstance.getId());
+        return Result.succeed(JobInstance, "获取成功");
+    }
+
+    /**
+     * 获取状态统计信息
+     */
+    @GetMapping("/getStatusCount")
+    public Result getStatusCount() {
+        return Result.succeed(jobInstanceService.getStatusCount(), "获取成功");
+    }
+
+    /**
+     * 获取Job实例的所有信息
+     */
+    @GetMapping("/getJobInfoDetail")
+    public Result getJobInfoDetail(@RequestParam Integer id) {
+        return Result.succeed(jobInstanceService.getJobInfoDetail(id), "获取成功");
+    }
+
+    /**
+     * 刷新Job实例的所有信息
+     */
+    @GetMapping("/refreshJobInfoDetail")
+    public Result refreshJobInfoDetail(@RequestParam Integer id) {
+        return Result.succeed(jobInstanceService.refreshJobInfoDetail(id), "刷新成功");
     }
 }

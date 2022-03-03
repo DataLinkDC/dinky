@@ -6,6 +6,12 @@ JAR_NAME="./dlink-admin-*.jar"
 # 如果需要将FLINK依赖直接加入启动脚本，在SETTING中增加$FLINK_HOME/lib
 SETTING="-Dloader.path=./lib,./plugins -Ddruid.mysql.usePingMethod=false"
 
+if [ ! -d ${HADOOP_HOME} ];then
+ echo 'WARNING!!!...not find HADOOP_HOME for CLASSPATH.'
+else
+ export HADOOP_HOME="${HADOOP_HOME}"
+fi
+
 # 首次启动时候自动创建plugins文件夹和引用flink\lib包！
 if [ ! -d "./plugins" ];then
 echo 'mkdir plugins now'

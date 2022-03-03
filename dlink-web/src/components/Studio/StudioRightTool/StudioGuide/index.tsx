@@ -17,10 +17,10 @@ const StudioGuide = (props: any) => {
         <Paragraph>
           <ul>
             <li>
-              <Link onClick={()=>{history.push('/registration/cluster')}}>注册集群实例</Link>
+              <Link onClick={()=>{history.push('/registration/cluster/clusterInstance')}}>注册集群实例</Link>
             </li>
             <li>
-              <Link onClick={()=>{history.push('/registration/clusterConfiguration')}}>注册集群配置</Link>
+              <Link onClick={()=>{history.push('/registration/cluster/clusterConfiguration')}}>注册集群配置</Link>
             </li>
             <li>
               <Link onClick={()=>{history.push('/registration/jar')}}>注册 Jar</Link>

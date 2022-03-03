@@ -35,6 +35,7 @@ Dinky（原 Dlink）：
 |  开发中心   |  FlinkSQL  | 支持 sql-client 所有语法                        | 0.4.0 |
 |         |            | 支持 Flink 所有 Configuration                 | 0.4.0 |
 |         |            | 支持 Flink 所有 Connector                     | 0.4.0 |
+|         |            | 支持 Flink 批流两种模式                           | 0.6.0 |
 |         |            | 支持 SELECT、SHOW、DESC 等查询实时预览               | 0.4.0 |
 |         |            | 支持 INSERT 语句集                             | 0.4.0 |
 |         |            | 新增 SQL 片段语法                               | 0.4.0 |
@@ -45,6 +46,7 @@ Dinky（原 Dlink）：
 |         |            | 新增 执行环境的共享与私有会话机制                         | 0.4.0 |
 |         |            | 新增 多种方言的作业目录管理（FlinkSQL、SQL、Java）         | 0.5.0 |
 |         |            | 新增 作业配置与执行配置管理                            | 0.4.0 |
+|         |            | 新增 作业生命周期管理                               | 0.6.0 |
 |         |            | 新增 基于 Explain 的语法校验与逻辑解析                  | 0.4.0 |
 |         |            | 新增 JobPlan 图预览                            | 0.5.0 |
 |         |            | 新增 基于 StreamGraph 的表级血缘分析                 | 0.4.0 |
@@ -70,6 +72,10 @@ Dinky（原 Dlink）：
 |         |            | 新增 作业自动从 SavePoint 恢复机制（包含最近、最早、指定一次）     | 0.4.0 |
 |         |  Flink 集群  | 支持 查看已注册集群的作业列表与运维                        | 0.4.0 |
 |         |            | 新增 自动注册 Yarn 创建的集群                        | 0.4.0 |
+|         |  Flink 版本  | 支持 1.11.0+                                | 0.4.0 |
+|         |            | 支持 1.12.0+                                | 0.4.0 |
+|         |            | 支持 1.13.0+                                | 0.4.0 |
+|         |            | 支持 1.14.0+                                | 0.4.0 |
 |         |    SQL     | 新增 外部数据源的 SQL 校验                          | 0.5.0 |
 |         |            | 新增 外部数据源的 SQL 执行与预览                       | 0.5.0 |
 |         |     BI     | 新增 折线图的渲染                                 | 0.5.0 |
@@ -77,8 +83,25 @@ Dinky（原 Dlink）：
 |         |            | 新增 饼图的渲染                                  | 0.5.0 |
 |         |    元数据     | 新增 查询外部数据源的元数据信息                          | 0.4.0 |
 |         |            | 新增 FlinkSQL 和 SQL 的自动生成                   | 0.6.0 |
+|         |            | 新增 自动将连接信息注入片段机制                          | 0.6.0 |
 |         |     归档     | 新增 执行与提交历史                                | 0.4.0 |
-|  运维中心   |     暂无     | 暂无                                        | 0.4.0 |
+|  运维中心   |     主页     | 新增 任务实例列表                                 | 0.6.0 |
+|         |    作业监控    | 新增 作业总览                                   | 0.6.0 |
+|         |            | 新增 FlinkWebUI 跳转                          | 0.6.0 |
+|         |            | 新增 智能重启                                   |  dev  |
+|         |            | 新增 智能停止                                   | 0.6.0 |
+|         |            | 新增 SavePoint 多种操作                         | 0.6.0 |
+|         |            | 新增 配置信息                                   | 0.6.0 |
+|         |            | 新增 集群信息                                   |  dev  |
+|         |            | 新增 作业快照                                   |  dev  |
+|         |            | 新增 异常信息                                   |  dev  |
+|         |            | 新增 作业日志                                   |  dev  |
+|         |            | 新增 自动调优                                   |  dev  |
+|         |            | 新增 FlinkSQL                               |  dev  |
+|         |            | 新增 数据地图                                   |  dev  |
+|         |            | 新增 即席查询                                   |  dev  |
+|         |            | 新增 历史版本                                   |  dev  |
+|         |            | 新增 告警记录                                   |  dev  |
 |  注册中心   | Flink 集群实例 | 新增 外部 Flink 集群实例注册                        | 0.4.0 |
 |         |            | 新增 外部 Flink 集群实例心态检测与版本获取                 | 0.4.0 |
 |         |            | 新增 外部 Flink 集群手动一键回收                      | 0.4.0 |
@@ -86,8 +109,19 @@ Dinky（原 Dlink）：
 |         |  User Jar  | 新增 外部 User Jar 注册                         | 0.4.0 |
 |         |    数据源     | 新增 Mysql 数据源注册及测试                         | 0.4.0 |
 |         |            | 新增 Oracle 数据源注册及测试                        | 0.4.0 |
-|         |            | 新增 postgreSql 数据源注册及测试                    | 0.4.0 |
+|         |            | 新增 PostgreSql 数据源注册及测试                    | 0.4.0 |
 |         |            | 新增 ClickHouse 数据源注册及测试                    | 0.4.0 |
+|         |            | 新增 Doris 数据源注册及测试                         | 0.6.0 |
+|         |            | 新增 Phoenix 数据源注册及测试                       | 0.6.0 |
+|         |            | 新增 SqlServer 数据源注册及测试                     | 0.6.0 |
+|         |   报警实例管理   | 新增 钉钉报警                                   | 0.6.0 |
+|         |            | 新增 微信企业号报警                                | 0.6.0 |
+|         |   报警组管理    | 新增 报警组管理                                  | 0.6.0 |
+|  系统设置   |    用户管理    | 新增 用户基本管理                                 | 0.5.0 |
+|         |            | 新增 修改密码                                   | 0.6.0 |
+|         |  Flink 设置  | 新增 Application 的通用模板 Jar 配置               | 0.4.0 |
+|         |            | 新增 是否使用 RestAPI 配置                        | 0.4.0 |
+|         |            | 新增 SQL 语句分隔符配置                            | 0.4.0 |
 | OpenApi |     调度     | 新增 submitTask 调度接口                        | 0.5.0 |
 |         |  FlinkSQL  | 新增 executeSql 提交接口                        | 0.5.0 |
 |         |            | 新增 explainSql 验证接口                        | 0.5.0 |
@@ -287,13 +321,15 @@ Flink 的版本取决于 lib 下的 dlink-client-1.13.jar。当前版本默认�
 
 8.[Dlink 在 Flink-mysql-cdc 到 Doris 的实践](https://github.com/DataLinkDC/dlink/blob/main/dlink-doc/doc/Dlink%E5%9C%A8Flink-mysql-cdc%E5%88%B0Doris%E7%9A%84%E5%AE%9E%E8%B7%B5.md)
 
-## 技术栈
+## 技术栈与鸣谢
 
 [Apache Flink](https://github.com/apache/flink)
 
 [Mybatis Plus](https://github.com/baomidou/mybatis-plus)
 
 [ant-design-pro](https://github.com/ant-design/ant-design-pro)
+
+[dolphinscheduler](https://github.com/apache/dolphinscheduler)
 
 [Monaco Editor](https://github.com/Microsoft/monaco-editor)
 

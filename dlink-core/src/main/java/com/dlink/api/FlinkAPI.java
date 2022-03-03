@@ -25,8 +25,6 @@ import java.util.Map;
  **/
 public class FlinkAPI {
     private String address;
-    private String jarsId;
-    private String jobId;
 
     public FlinkAPI(String address) {
         this.address = address;
@@ -141,7 +139,27 @@ public class FlinkAPI {
     }
 
     public String getVersion() {
-        JsonNode result = get(FlinkRestAPIConstant.CONFIG);
+        JsonNode result = get(FlinkRestAPIConstant.FLINK_CONFIG);
         return result.get("flink-version").asText();
+    }
+
+    public JsonNode getJobInfo(String jobId) {
+        return get(FlinkRestAPIConstant.JOBS+jobId);
+    }
+
+    public JsonNode getException(String jobId) {
+        return get(FlinkRestAPIConstant.JOBS+jobId+FlinkRestAPIConstant.EXCEPTIONS);
+    }
+
+    public JsonNode getCheckPoints(String jobId) {
+        return get(FlinkRestAPIConstant.JOBS+jobId+FlinkRestAPIConstant.CHECKPOINTS);
+    }
+
+    public JsonNode getCheckPointsConfig(String jobId) {
+        return get(FlinkRestAPIConstant.JOBS+jobId+FlinkRestAPIConstant.CHECKPOINTS_CONFIG);
+    }
+
+    public JsonNode getJobsConfig(String jobId) {
+        return get(FlinkRestAPIConstant.JOBS+jobId+FlinkRestAPIConstant.CONFIG);
     }
 }

@@ -2,7 +2,10 @@ package com.dlink.mapper;
 
 import com.dlink.db.mapper.SuperMapper;
 import com.dlink.model.JobInstance;
+import com.dlink.model.JobInstanceCount;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * JobInstanceMapper
@@ -12,4 +15,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface JobInstanceMapper extends SuperMapper<JobInstance> {
+
+    List<JobInstanceCount> countStatus();
 }

@@ -295,9 +295,10 @@ public class StudioServiceImpl implements StudioService {
     }
 
     @Override
-    public boolean savepoint(Integer clusterId, String jobId, String savePointType, String name) {
+    public boolean savepoint(Integer taskId, Integer clusterId, String jobId, String savePointType, String name) {
         Cluster cluster = clusterService.getById(clusterId);
         Asserts.checkNotNull(cluster, "该集群不存在");
+        boolean useGateway = false;
         JobConfig jobConfig = new JobConfig();
         jobConfig.setAddress(cluster.getJobManagerHost());
         jobConfig.setType(cluster.getType());
@@ -306,18 +307,21 @@ public class StudioServiceImpl implements StudioService {
             jobConfig.buildGatewayConfig(gatewayConfig);
             jobConfig.getGatewayConfig().getClusterConfig().setAppId(cluster.getName());
             jobConfig.setTaskId(cluster.getTaskId());
+            useGateway = true;
+        }else {
+            jobConfig.setTaskId(taskId);
         }
         JobManager jobManager = JobManager.build(jobConfig);
-        jobManager.setUseGateway(true);
+        jobManager.setUseGateway(useGateway);
         SavePointResult savePointResult = jobManager.savepoint(jobId, savePointType, null);
         if (Asserts.isNotNull(savePointResult)) {
             for (JobInfo item : savePointResult.getJobInfos()) {
-                if (Asserts.isEqualsIgnoreCase(jobId, item.getJobId())) {
+                if (Asserts.isEqualsIgnoreCase(jobId, item.getJobId())&&Asserts.isNotNull(jobConfig.getTaskId())) {
                     Savepoints savepoints = new Savepoints();
                     savepoints.setName(name);
                     savepoints.setType(savePointType);
                     savepoints.setPath(item.getSavePoint());
-                    savepoints.setTaskId(cluster.getTaskId());
+                    savepoints.setTaskId(jobConfig.getTaskId());
                     savepointsService.save(savepoints);
                 }
             }
