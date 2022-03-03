@@ -19,6 +19,7 @@
         <module>dlink-metadata-postgresql</module>
         <module>dlink-metadata-sqlserver</module>
         <module>dlink-metadata-doris</module>
+        <module>dlink-metadata-phoenix</module>
     </modules>
 
 

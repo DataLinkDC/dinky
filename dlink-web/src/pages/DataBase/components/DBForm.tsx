@@ -9,6 +9,7 @@ import MysqlForm from "@/pages/DataBase/components/MySqlForm";
 import OracleForm from "@/pages/DataBase/components/OracleForm";
 import SqlServerForm from "@/pages/DataBase/components/SqlServerForm";
 import DorisForm from "@/pages/DataBase/components/DorisForm";
+import PhoenixForm from "@/pages/DataBase/components/PhoenixForm";
 import ClickHouseForm from "@/pages/DataBase/components/ClickHouseForm";
 import {createOrModifyDatabase, testDatabaseConnect} from "@/pages/DataBase/service";
 
@@ -37,6 +38,9 @@ const data:any = [
   },
   {
     type: 'Doris',
+  },
+  {
+    type: 'Phoenix',
   },
 ];
 
@@ -147,6 +151,17 @@ const DBForm: React.FC<UpdateFormProps> = (props) => {
       <DorisForm
         onCancel={() => setDbType(undefined)}
         modalVisible={dbType=='Doris'||values.type=='Doris'}
+        values={values}
+        onSubmit={(value) => {
+          onSubmit(value);
+        }}
+        onTest={(value) => {
+          onTest(value);
+        }}
+      />
+      <PhoenixForm
+        onCancel={() => setDbType(undefined)}
+        modalVisible={dbType=='Phoenix'||values.type=='Phoenix'}
         values={values}
         onSubmit={(value) => {
           onSubmit(value);

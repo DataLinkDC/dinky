@@ -60,6 +60,7 @@ const SimpleTaskForm: React.FC<UpdateFormProps> = (props) => {
             <Option value={DIALECT.POSTGRESQL}>{DIALECT.POSTGRESQL}</Option>
             <Option value={DIALECT.CLICKHOUSE}>{DIALECT.CLICKHOUSE}</Option>
             <Option value={DIALECT.DORIS}>{DIALECT.DORIS}</Option>
+            <Option value={DIALECT.PHOENIX}>{DIALECT.PHOENIX}</Option>
             <Option value={DIALECT.JAVA}>{DIALECT.JAVA}</Option>
             <Option value={DIALECT.SQL}>{DIALECT.SQL}</Option>
           </Select>

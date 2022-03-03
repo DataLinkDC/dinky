@@ -20,6 +20,9 @@ export function getDBImage(type: string) {
     case 'doris':
       imageUrl += 'doris.jpeg';
       break;
+    case 'phoenix':
+      imageUrl += 'phoenix.png';
+      break;
     default:
       imageUrl += 'db.jpg';
   }

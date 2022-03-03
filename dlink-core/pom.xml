@@ -17,7 +17,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <!--  `provided` for product environment ,`compile` for dev environment  -->
-        <scope.runtime>provided</scope.runtime>
+        <scope.runtime>compile</scope.runtime>
     </properties>
 
     <dependencies>

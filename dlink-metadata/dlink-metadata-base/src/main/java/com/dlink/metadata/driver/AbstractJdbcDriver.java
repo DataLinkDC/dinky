@@ -309,7 +309,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
 
     @Override
     public JdbcSelectResult executeSql(String sql, Integer limit) {
-        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql,config.getType());
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql,config.getType().toLowerCase());
         List<Object> resList = new ArrayList<>();
         JdbcSelectResult result = JdbcSelectResult.buildResult();
         for(SQLStatement item : stmtList){
