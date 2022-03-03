@@ -1,6 +1,7 @@
 import {ClusterTableListItem} from "@/pages/Cluster/data";
 import {ClusterConfigurationTableListItem} from "@/pages/ClusterConfiguration/data";
 import {HistoryItem} from "@/components/Studio/StudioConsole/StudioHistory/data";
+import {JarTableListItem} from "@/pages/Jar/data";
 
 export type JobInstanceTableListItem = {
   id: number,
@@ -28,6 +29,13 @@ export type StatusCount = {
   finished: number,
   failed: number,
   canceled: number,
+  restarting: number,
+  created: number,
+  failing: number,
+  cancelling: number,
+  suspended: number,
+  reconciling: number,
+  unknown: number,
 }
 
 export type JobInfoDetail = {
@@ -35,8 +43,8 @@ export type JobInfoDetail = {
   instance: JobInstanceTableListItem,
   cluster: ClusterTableListItem,
   clusterConfiguration: ClusterConfigurationTableListItem,
-  task: TaskTableListItem,
-  history: HistoryItem
+  history: HistoryItem,
+  jar: JarTableListItem
 }
 
 export type VerticesTableListItem = {
@@ -47,5 +55,5 @@ export type VerticesTableListItem = {
   startTime: string,
   duration: number,
   endTime: string,
-  tasks:any,
+  tasks: any,
 }

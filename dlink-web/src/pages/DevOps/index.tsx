@@ -5,6 +5,7 @@ import JobInstanceTable from "./JobInstanceTable";
 import {getStatusCount} from "@/pages/DevOps/service";
 import {useEffect, useState} from "react";
 import {StatusCount} from "@/pages/DevOps/data";
+import {JOB_STATUS} from "@/components/Common/JobStatus";
 
 const { Statistic } = StatisticCard;
 
@@ -13,11 +14,17 @@ const DevOps = (props:any) => {
   // const {current} = props;
   const statusCountDefault = [
     { key: '', title: '全部', value: 0, total: true },
-    { key: 'INITIALIZING', status: 'default', title: '初始化', value: 0 },
-    { key: 'RUNNING', status: 'success', title: '运行中', value: 0 },
-    { key: 'FINISHED', status: 'processing', title: '已完成', value: 0 },
-    { key: 'FAILED', status: 'error', title: '发生异常', value: 0 },
-    { key: 'CANCELED', status: 'warning', title: '停止', value: 0 },
+    { key: JOB_STATUS.INITIALIZING, status: 'default', title: '初始化', value: 0 },
+    { key: JOB_STATUS.CREATED, status: 'default', title: '创建中', value: 0 },
+    { key: JOB_STATUS.RUNNING, status: 'success', title: '运行中', value: 0 },
+    { key: JOB_STATUS.FINISHED, status: 'processing', title: '已完成', value: 0 },
+    { key: JOB_STATUS.FAILING, status: 'error', title: '异常中', value: 0 },
+    { key: JOB_STATUS.FAILED, status: 'error', title: '已异常', value: 0 },
+    { key: JOB_STATUS.SUSPENDED, status: 'warning', title: '已暂停', value: 0 },
+    { key: JOB_STATUS.CANCELLING, status: 'warning', title: '停止中', value: 0 },
+    { key: JOB_STATUS.CANCELED, status: 'warning', title: '已停止', value: 0 },
+    { key: JOB_STATUS.RESTARTING, status: 'default', title: '重启中', value: 0 },
+    { key: JOB_STATUS.UNKNOWN, status: 'default', title: '未知', value: 0 },
   ];
   const [statusCount, setStatusCount] = useState<any[]>(statusCountDefault);
   const [activeKey, setActiveKey] = useState<string>('');
@@ -28,11 +35,17 @@ const DevOps = (props:any) => {
       const statusCountData: StatusCount = result.datas;
       const items: any = [
         { key: '', title: '全部', value: statusCountData.all, total: true },
-        { key: 'INITIALIZING', status: 'default', title: '初始化', value: statusCountData.initializing },
-        { key: 'RUNNING', status: 'success', title: '运行中', value: statusCountData.running },
-        { key: 'FINISHED', status: 'processing', title: '已完成', value: statusCountData.finished },
-        { key: 'FAILED', status: 'error', title: '发生异常', value: statusCountData.failed },
-        { key: 'CANCELED', status: 'warning', title: '停止', value: statusCountData.canceled },
+        { key: JOB_STATUS.INITIALIZING, status: 'default', title: '初始化', value: statusCountData.initializing },
+        { key: JOB_STATUS.CREATED, status: 'default', title: '创建中', value: statusCountData.created },
+        { key: JOB_STATUS.RUNNING, status: 'success', title: '运行中', value: statusCountData.running },
+        { key: JOB_STATUS.FINISHED, status: 'processing', title: '已完成', value: statusCountData.finished },
+        { key: JOB_STATUS.FAILING, status: 'error', title: '异常中', value: statusCountData.failing },
+        { key: JOB_STATUS.FAILED, status: 'error', title: '已异常', value: statusCountData.failed },
+        { key: JOB_STATUS.SUSPENDED, status: 'warning', title: '已暂停', value: statusCountData.suspended },
+        { key: JOB_STATUS.CANCELLING, status: 'warning', title: '停止中', value: statusCountData.cancelling },
+        { key: JOB_STATUS.CANCELED, status: 'warning', title: '停止', value: statusCountData.canceled },
+        { key: JOB_STATUS.RESTARTING, status: 'default', title: '重启中', value: statusCountData.restarting },
+        { key: JOB_STATUS.UNKNOWN, status: 'default', title: '未知', value: statusCountData.unknown },
       ];
       setStatusCount(items);
     });
@@ -64,7 +77,7 @@ const DevOps = (props:any) => {
               title={item.title}
               value={item.value}
               status={item.status as StatisticProps['status']}
-              style={{ width: 120, borderRight: item.total ? '1px solid #f0f0f0' : undefined }}
+              style={{ width: 80, borderRight: item.total ? '1px solid #f0f0f0' : undefined }}
             />
           }
         >

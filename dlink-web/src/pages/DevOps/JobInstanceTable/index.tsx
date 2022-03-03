@@ -11,6 +11,7 @@ import ProTable from "@ant-design/pro-table";
 import {JobInstanceTableListItem} from "@/pages/DevOps/data";
 import moment from 'moment';
 import {RUN_MODE} from "@/components/Studio/conf";
+import JobStatus from "@/components/Common/JobStatus";
 
 const url = '/api/jobInstance';
 const JobInstanceTable = (props: any) => {
@@ -74,34 +75,7 @@ const JobInstanceTable = (props: any) => {
       hideInSearch: true,
       render: (_, row) => {
         return (
-          <>
-            {(row.status == 'FINISHED') ?
-              (<Tag icon={<CheckCircleOutlined />} color="success">
-                FINISHED
-              </Tag>) :
-              (row.status == 'RUNNING') ?
-                (<Tag icon={<SyncOutlined spin />} color="processing">
-                  RUNNING
-                </Tag>) :
-                (row.status == 'FAILED') ?
-                  (<Tag icon={<CloseCircleOutlined />} color="error">
-                    FAILED
-                  </Tag>) :
-                  (row.status == 'CANCELED') ?
-                    (<Tag icon={<MinusCircleOutlined />} color="default">
-                      CANCELED
-                    </Tag>) :
-                    (row.status == 'INITIALIZING') ?
-                      (<Tag icon={<ClockCircleOutlined />} color="default">
-                        INITIALIZING
-                      </Tag>) :(row.status == 'RESTARTING') ?
-                        (<Tag icon={<ClockCircleOutlined />} color="default">
-                          RESTARTING
-                        </Tag>) :
-                        (<Tag color="default">
-                          UNKNOWEN
-                        </Tag>)
-            }</>)
+          <JobStatus status={row.status}/>)
           ;
       }
     }, {

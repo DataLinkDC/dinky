@@ -67,6 +67,27 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
                     break;
                 case CANCELED:
                     jobInstanceStatus.setCanceled(counts);
+                    break;
+                case RESTARTING:
+                    jobInstanceStatus.setRestarting(counts);
+                    break;
+                case CREATED:
+                    jobInstanceStatus.setCreated(counts);
+                    break;
+                case FAILING:
+                    jobInstanceStatus.setFailed(counts);
+                    break;
+                case CANCELLING:
+                    jobInstanceStatus.setCancelling(counts);
+                    break;
+                case SUSPENDED:
+                    jobInstanceStatus.setSuspended(counts);
+                    break;
+                case RECONCILING:
+                    jobInstanceStatus.setReconciling(counts);
+                    break;
+                case UNKNOWN:
+                    jobInstanceStatus.setUnknown(counts);
             }
         }
         jobInstanceStatus.setAll(total);
@@ -83,7 +104,6 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         Asserts.checkNull(jobInstance, "该任务实例不存在");
         JobInfoDetail jobInfoDetail = new JobInfoDetail(jobInstance.getId());
         jobInfoDetail.setInstance(jobInstance);
-        jobInfoDetail.setTask(taskService.getTaskInfoById(jobInstance.getTaskId()));
         jobInfoDetail.setCluster(clusterService.getById(jobInstance.getClusterId()));
         jobInfoDetail.setJobHistory(jobHistoryService.getJobHistory(jobInstance.getId()));
         History history = historyService.getById(jobInstance.getHistoryId());
@@ -105,6 +125,11 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         Cluster cluster = clusterService.getById(jobInstance.getClusterId());
         JobHistory jobHistoryJson = jobHistoryService.refreshJobHistory(id, cluster.getJobManagerHost(), jobInstance.getJid());
         JobHistory jobHistory = jobHistoryService.getJobHistoryInfo(jobHistoryJson);
+        if(jobHistory.getJob().has(FlinkRestResultConstant.ERRORS)){
+            jobInstance.setStatus(JobStatus.UNKNOWN.getValue());
+            updateById(jobInstance);
+            return jobInstance;
+        }
         jobInstance.setDuration(jobHistory.getJob().get(FlinkRestResultConstant.JOB_DURATION).asLong()/1000);
         jobInstance.setStatus(jobHistory.getJob().get(FlinkRestResultConstant.JOB_STATE).asText());
         updateById(jobInstance);

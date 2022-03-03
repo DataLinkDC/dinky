@@ -8,6 +8,7 @@ package com.dlink.constant;
  **/
 public final class FlinkRestResultConstant {
 
+    public static final String ERRORS = "errors";
     public static final String JOB_DURATION = "duration";
     public static final String JOB_STATE = "state";
 

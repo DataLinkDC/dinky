@@ -13,17 +13,15 @@ public class JobInstanceStatus {
     private Integer finished = 0;
     private Integer failed = 0;
     private Integer canceled = 0;
+    private Integer restarting = 0;
+    private Integer created = 0;
+    private Integer failing = 0;
+    private Integer cancelling = 0;
+    private Integer suspended = 0;
+    private Integer reconciling = 0;
+    private Integer unknown = 0;
 
     public JobInstanceStatus() {
-    }
-
-    public JobInstanceStatus(Integer all, Integer initializing, Integer running, Integer finished, Integer failed, Integer canceled) {
-        this.all = all;
-        this.initializing = initializing;
-        this.running = running;
-        this.finished = finished;
-        this.failed = failed;
-        this.canceled = canceled;
     }
 
     public Integer getAll() {
@@ -72,5 +70,61 @@ public class JobInstanceStatus {
 
     public void setCanceled(Integer canceled) {
         this.canceled = canceled;
+    }
+
+    public Integer getRestarting() {
+        return restarting;
+    }
+
+    public void setRestarting(Integer restarting) {
+        this.restarting = restarting;
+    }
+
+    public Integer getCreated() {
+        return created;
+    }
+
+    public void setCreated(Integer created) {
+        this.created = created;
+    }
+
+    public Integer getFailing() {
+        return failing;
+    }
+
+    public void setFailing(Integer failing) {
+        this.failing = failing;
+    }
+
+    public Integer getCancelling() {
+        return cancelling;
+    }
+
+    public void setCancelling(Integer cancelling) {
+        this.cancelling = cancelling;
+    }
+
+    public Integer getSuspended() {
+        return suspended;
+    }
+
+    public void setSuspended(Integer suspended) {
+        this.suspended = suspended;
+    }
+
+    public Integer getReconciling() {
+        return reconciling;
+    }
+
+    public void setReconciling(Integer reconciling) {
+        this.reconciling = reconciling;
+    }
+
+    public Integer getUnknown() {
+        return unknown;
+    }
+
+    public void setUnknown(Integer unknown) {
+        this.unknown = unknown;
     }
 }

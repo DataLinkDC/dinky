@@ -4,7 +4,7 @@ import {
   EllipsisOutlined, RedoOutlined,
   FireOutlined, ClusterOutlined, RocketOutlined
 } from '@ant-design/icons';
-import {Button, Dropdown, Menu, Tag, Space, Typography} from 'antd';
+import {Button, Dropdown, Menu, Tag, Space, Typography, message, Modal} from 'antd';
 import {PageContainer} from '@ant-design/pro-layout';
 import ProCard from '@ant-design/pro-card';
 import {JobInfoDetail} from "@/pages/DevOps/data";
@@ -12,7 +12,8 @@ import {getJobInfoDetail, refreshJobInfoDetail} from "@/pages/DevOps/service";
 import moment from "moment";
 import BaseInfo from "@/pages/DevOps/JobInfo/BaseInfo";
 import Config from "@/pages/DevOps/JobInfo/Config";
-import JobStatus from "@/components/Common/JobStatus";
+import JobStatus, {isStatusDone} from "@/components/Common/JobStatus";
+import {cancelJob, savepointJob} from "@/components/Studio/StudioEvent/DDL";
 
 const {Link} = Typography;
 
@@ -53,36 +54,88 @@ const JobInfo = (props: any) => {
     history.goBack();
   };
 
+  const handleSavepoint = (key: string) => {
+    if(key=='canceljob'){
+      Modal.confirm({
+        title: '停止任务',
+        content: `确定只停止该作业，不进行 SavePoint 操作吗？`,
+        okText: '确认',
+        cancelText: '取消',
+        onOk: async () => {
+          if (!job?.cluster?.id) return;
+          const res = cancelJob(job?.cluster?.id, job?.instance?.jid);
+          res.then((result) => {
+            if (result.datas == true) {
+              message.success(key+"成功");
+              handleGetJobInfoDetail();
+            } else {
+              message.error(key+"失败");
+            }
+          });
+        }
+      });
+      return;
+    }
+    Modal.confirm({
+      title: key+'任务',
+      content: `确定${key}该作业吗？`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk: async () => {
+        if (!job?.cluster?.id) return;
+        const res = savepointJob(job?.cluster?.id, job?.instance?.jid,key,key,job?.instance?.taskId);
+        res.then((result) => {
+          if (result.datas == true) {
+            message.success(key+"成功");
+            handleGetJobInfoDetail();
+          } else {
+            message.error(key+"失败");
+          }
+        });
+      }
+    });
+  };
+
+  const getButtons = () => {
+    let buttons = [
+      <Button key="back" type="dashed" onClick={handleBack}>返回</Button>,
+    ];
+    if(!isStatusDone(job?.instance?.status as string)){
+      buttons.push(<Button key="refresh" icon={<RedoOutlined/>} onClick={handleRefreshJobInfoDetail}/>);
+      buttons.push(<Button key="flinkwebui">
+        <Link href={`http://${job?.history?.jobManagerAddress}/#/job/${job?.instance?.jid}/overview`} target="_blank">
+          FlinkWebUI
+        </Link></Button>);
+    }
+    buttons.push(<Button key="autorestart" type="primary">智能重启</Button>);
+    if(!isStatusDone(job?.instance?.status as string)){
+      buttons.push(<Button key="autostop" type="primary" danger onClick={()=>{handleSavepoint('cancel')}}>智能停止</Button>);
+      buttons.push(<Dropdown
+        key="dropdown"
+        trigger={['click']}
+        overlay={
+          <Menu onClick={({key}) => handleSavepoint(key)}>
+            <Menu.Item key="trigger">SavePoint触发</Menu.Item>
+            <Menu.Item key="stop">SavePoint暂停</Menu.Item>
+            <Menu.Item key="cancel">SavePoint停止</Menu.Item>
+            <Menu.Item key="canceljob">普通停止</Menu.Item>
+          </Menu>
+        }
+      >
+        <Button key="4" style={{padding: '0 8px'}}>
+          <EllipsisOutlined/>
+        </Button>
+      </Dropdown>);
+    }
+    return buttons;
+  }
+
   return (
     <PageContainer
       header={{
         title: `${job?.instance?.name}`,
         ghost: true,
-        extra: [
-          <Button key="back" type="dashed" onClick={handleBack}>返回</Button>,
-          <Button key="refresh" icon={<RedoOutlined/>} onClick={handleRefreshJobInfoDetail}/>,
-          <Button key="flinkwebui">
-            <Link href={`http://${job?.history?.jobManagerAddress}/#/job/${job?.instance?.jid}/overview`} target="_blank">
-              FlinkWebUI
-            </Link></Button>,
-          <Button key="autorestart" type="primary">智能重启</Button>,
-          <Button key="autostop" type="primary" danger>智能停止</Button>,
-          <Dropdown
-            key="dropdown"
-            trigger={['click']}
-            overlay={
-              <Menu>
-                <Menu.Item key="1">普通停止</Menu.Item>
-                <Menu.Item key="2">SavePoint停止</Menu.Item>
-                <Menu.Item key="3">SavePoint暂停</Menu.Item>
-              </Menu>
-            }
-          >
-            <Button key="4" style={{padding: '0 8px'}}>
-              <EllipsisOutlined/>
-            </Button>
-          </Dropdown>,
-        ],
+        extra: getButtons(),
       }}
       content={<>
         <Space size={0}>

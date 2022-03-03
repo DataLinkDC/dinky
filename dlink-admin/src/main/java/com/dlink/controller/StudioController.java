@@ -153,7 +153,7 @@ public class StudioController {
      */
     @GetMapping("/savepoint")
     public Result savepoint(@RequestParam Integer clusterId,@RequestParam String jobId,
-                            @RequestParam String savePointType,@RequestParam String name)  {
-        return Result.succeed(studioService.savepoint(clusterId,jobId,savePointType,name),"savepoint 成功");
+                            @RequestParam String savePointType,@RequestParam String name,@RequestParam Integer taskId)  {
+        return Result.succeed(studioService.savepoint(taskId,clusterId,jobId,savePointType,name),"savepoint 成功");
     }
 }

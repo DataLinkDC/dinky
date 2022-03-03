@@ -12,7 +12,6 @@ public class JobInfoDetail {
     private JobInstance instance;
     private Cluster cluster;
     private ClusterConfiguration clusterConfiguration;
-    private Task task;
     private History history;
     private JobHistory jobHistory;
 
@@ -50,14 +49,6 @@ public class JobInfoDetail {
 
     public void setClusterConfiguration(ClusterConfiguration clusterConfiguration) {
         this.clusterConfiguration = clusterConfiguration;
-    }
-
-    public Task getTask() {
-        return task;
-    }
-
-    public void setTask(Task task) {
-        this.task = task;
     }
 
     public History getHistory() {
