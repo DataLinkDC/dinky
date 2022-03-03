@@ -4,7 +4,7 @@ import {
   EllipsisOutlined, RedoOutlined,
   FireOutlined, ClusterOutlined, RocketOutlined
 } from '@ant-design/icons';
-import {Button, Dropdown, Menu, Tag, Space, Typography, message, Modal} from 'antd';
+import {Button, Dropdown, Menu, Tag, Space, Typography, message, Modal, Empty} from 'antd';
 import {PageContainer} from '@ant-design/pro-layout';
 import ProCard from '@ant-design/pro-card';
 import {JobInfoDetail} from "@/pages/DevOps/data";
@@ -167,16 +167,6 @@ const JobInfo = (props: any) => {
           closable: false,
         },
         {
-          tab: '配置信息',
-          key: 'config',
-          closable: false,
-        },
-        {
-          tab: 'FlinkSQL',
-          key: 'flinksql',
-          closable: false,
-        },
-        {
           tab: '集群信息',
           key: 'cluster',
           closable: false,
@@ -187,10 +177,51 @@ const JobInfo = (props: any) => {
           closable: false,
         },
         {
+          tab: '异常信息',
+          key: 'exception',
+          closable: false,
+        },
+        {
+          tab: '作业日志',
+          key: 'log',
+          closable: false,
+        },
+        {
+          tab: '自动调优',
+          key: 'optimize',
+          closable: false,
+        },
+        {
+          tab: '配置信息',
+          key: 'config',
+          closable: false,
+        },
+        {
+          tab: 'FlinkSQL',
+          key: 'flinksql',
+          closable: false,
+        },
+        {
+          tab: '数据地图',
+          key: 'datamap',
+          closable: false,
+        },
+        {
+          tab: '即席查询',
+          key: 'olap',
+          closable: false,
+        },
+        {
+          tab: '历史版本',
+          key: 'version',
+          closable: false,
+        },
+        {
           tab: '告警记录',
           key: 'alert',
           closable: false,
         },
+
       ]}
       onTabChange={(key) => {
         setTabKey(key);
@@ -199,6 +230,16 @@ const JobInfo = (props: any) => {
       <ProCard>
         {tabKey === 'base' ? <BaseInfo job={job}/> : undefined}
         {tabKey === 'config' ? <Config job={job}/> : undefined}
+        {tabKey === 'cluster' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
+        {tabKey === 'snapshot' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
+        {tabKey === 'exception' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
+        {tabKey === 'log' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
+        {tabKey === 'optimize' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
+        {tabKey === 'flinksql' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
+        {tabKey === 'datamap' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
+        {tabKey === 'olap' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
+        {tabKey === 'version' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
+        {tabKey === 'alert' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
       </ProCard>
     </PageContainer>
   );
