@@ -150,6 +150,22 @@
                 <include>dlink-metadata-doris-${project.version}.jar</include>
             </includes>
         </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-alert/dlink-alert-dingtalk/target
+            </directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>dlink-alert-dingtalk-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-alert/dlink-alert-wechat/target
+            </directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>dlink-alert-wechat-${project.version}.jar</include>
+            </includes>
+        </fileSet>
         <!-- 将模块dlink-extends的常用jar文件放到打包目录/plugins下 -->
         <!--<fileSet>
             <directory>${project.parent.basedir}/dlink-extends/target

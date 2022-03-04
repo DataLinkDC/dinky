@@ -5,9 +5,12 @@ import com.dlink.context.SpringContextUtils;
 import com.dlink.model.*;
 import com.dlink.service.*;
 import com.dlink.utils.JSONUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.DependsOn;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Job2MysqlHandler
@@ -24,6 +27,7 @@ public class Job2MysqlHandler implements JobHandler {
     private static JarService jarService;
     private static JobInstanceService jobInstanceService;
     private static JobHistoryService jobHistoryService;
+    private static TaskService taskService;
 
     static {
         historyService = SpringContextUtils.getBean("historyServiceImpl", HistoryService.class);
@@ -32,6 +36,7 @@ public class Job2MysqlHandler implements JobHandler {
         jarService = SpringContextUtils.getBean("jarServiceImpl", JarService.class);
         jobInstanceService = SpringContextUtils.getBean("jobInstanceServiceImpl", JobInstanceService.class);
         jobHistoryService = SpringContextUtils.getBean("jobHistoryServiceImpl", JobHistoryService.class);
+        taskService = SpringContextUtils.getBean("taskServiceImpl", TaskService.class);
     }
 
     @Override
@@ -113,12 +118,17 @@ public class Job2MysqlHandler implements JobHandler {
                 jobInstance.setJid(jid);
                 jobInstance.setStatus(JobStatus.INITIALIZING.getValue());
                 jobInstanceService.save(jobInstance);
+                Task task = new Task();
+                task.setId(jobInstance.getTaskId());
+                task.setJobInstanceId(jobInstance.getId());
+                taskService.updateById(task);
                 JobHistory jobHistory = new JobHistory();
                 jobHistory.setId(jobInstance.getId());
                 jobHistory.setJarJson(JSONUtil.toJsonString(jar));
                 jobHistory.setClusterJson(JSONUtil.toJsonString(cluster));
                 jobHistory.setClusterConfigurationJson(JSONUtil.toJsonString(clusterConfiguration));
                 jobHistoryService.save(jobHistory);
+                break;
             }
         }
         return true;

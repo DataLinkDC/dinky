@@ -3,6 +3,8 @@ package com.dlink.service;
 
 import com.dlink.db.service.ISuperService;
 import com.dlink.job.JobResult;
+import com.dlink.model.JobInfoDetail;
+import com.dlink.model.JobInstance;
 import com.dlink.model.Task;
 
 import java.util.List;
@@ -16,6 +18,8 @@ import java.util.List;
 public interface TaskService extends ISuperService<Task> {
 
     JobResult submitByTaskId(Integer id);
+
+    JobResult restartByTaskId(Integer id);
 
     Task getTaskInfoById(Integer id);
 
@@ -38,4 +42,10 @@ public interface TaskService extends ISuperService<Task> {
     boolean cancelTask(Integer id);
 
     boolean recoveryTask(Integer id);
+
+    boolean savepointTask(Integer taskId,String savePointType);
+
+    JobInstance refreshJobInstance(Integer id);
+
+    JobInfoDetail refreshJobInfoDetail(Integer id);
 }

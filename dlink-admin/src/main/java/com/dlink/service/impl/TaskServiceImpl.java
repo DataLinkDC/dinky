@@ -1,24 +1,34 @@
 package com.dlink.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.dlink.alert.Alert;
+import com.dlink.alert.AlertConfig;
+import com.dlink.alert.AlertResult;
 import com.dlink.assertion.Assert;
 import com.dlink.assertion.Asserts;
 import com.dlink.assertion.Tips;
 import com.dlink.config.Dialect;
+import com.dlink.constant.FlinkRestResultConstant;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.dto.SqlDTO;
 import com.dlink.exception.BusException;
 import com.dlink.gateway.GatewayType;
+import com.dlink.gateway.config.SavePointStrategy;
+import com.dlink.gateway.config.SavePointType;
+import com.dlink.gateway.model.JobInfo;
+import com.dlink.gateway.result.SavePointResult;
 import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.job.JobConfig;
 import com.dlink.job.JobManager;
 import com.dlink.job.JobResult;
+import com.dlink.mapper.JobInstanceMapper;
 import com.dlink.mapper.TaskMapper;
 import com.dlink.metadata.driver.Driver;
 import com.dlink.metadata.result.JdbcSelectResult;
 import com.dlink.model.*;
 import com.dlink.service.*;
 import com.dlink.utils.CustomStringJavaCompiler;
+import com.dlink.utils.JSONUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -48,6 +58,14 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private JarService jarService;
     @Autowired
     private DataBaseService dataBaseService;
+    @Autowired
+    private JobInstanceService jobInstanceService;
+    @Autowired
+    private JobHistoryService jobHistoryService;
+    @Autowired
+    private AlertGroupService alertGroupService;
+    @Autowired
+    private AlertHistoryService alertHistoryService;
 
     @Value("${spring.datasource.driver-class-name}")
     private String driver;
@@ -70,6 +88,27 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             return executeCommonSql(SqlDTO.build(task.getStatement(),
                     task.getDatabaseId(), null));
         }
+        JobConfig config = buildJobConfig(task);
+        JobManager jobManager = JobManager.build(config);
+        if (!config.isJarTask()) {
+            return jobManager.executeSql(task.getStatement());
+        } else {
+            return jobManager.executeJar();
+        }
+    }
+
+    @Override
+    public JobResult restartByTaskId(Integer id) {
+        Task task = this.getTaskInfoById(id);
+        Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
+        if(Asserts.isNotNull(task.getJobInstanceId())||task.getJobInstanceId()!=0){
+            savepointTask(task, SavePointType.CANCEL.getValue());
+        }
+        if (Dialect.isSql(task.getDialect())) {
+            return executeCommonSql(SqlDTO.build(task.getStatement(),
+                    task.getDatabaseId(), null));
+        }
+        task.setSavePointStrategy(SavePointStrategy.LATEST.getValue());
         JobConfig config = buildJobConfig(task);
         JobManager jobManager = JobManager.build(config);
         if (!config.isJarTask()) {
@@ -274,6 +313,49 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         return false;
     }
 
+    private boolean savepointTask(Task task, String savePointType) {
+        Asserts.checkNotNull(task, "该任务不存在");
+        Cluster cluster = clusterService.getById(task.getClusterId());
+        Asserts.checkNotNull(cluster, "该集群不存在");
+        Asserts.checkNotNull(task.getJobInstanceId(), "无任务需要SavePoint");
+        JobInstance jobInstance = jobInstanceService.getById(task.getJobInstanceId());
+        Asserts.checkNotNull(jobInstance, "任务实例不存在");
+        String jobId = jobInstance.getJid();
+        boolean useGateway = false;
+        JobConfig jobConfig = new JobConfig();
+        jobConfig.setAddress(cluster.getJobManagerHost());
+        jobConfig.setType(cluster.getType());
+        if (Asserts.isNotNull(cluster.getClusterConfigurationId())) {
+            Map<String, Object> gatewayConfig = clusterConfigurationService.getGatewayConfig(cluster.getClusterConfigurationId());
+            jobConfig.buildGatewayConfig(gatewayConfig);
+            jobConfig.getGatewayConfig().getClusterConfig().setAppId(cluster.getName());
+            useGateway = true;
+        }
+        jobConfig.setTaskId(task.getId());
+        JobManager jobManager = JobManager.build(jobConfig);
+        jobManager.setUseGateway(useGateway);
+        SavePointResult savePointResult = jobManager.savepoint(jobId, savePointType, null);
+        if (Asserts.isNotNull(savePointResult)) {
+            for (JobInfo item : savePointResult.getJobInfos()) {
+                if (Asserts.isEqualsIgnoreCase(jobId, item.getJobId())&&Asserts.isNotNull(jobConfig.getTaskId())) {
+                    Savepoints savepoints = new Savepoints();
+                    savepoints.setName(savePointType);
+                    savepoints.setType(savePointType);
+                    savepoints.setPath(item.getSavePoint());
+                    savepoints.setTaskId(jobConfig.getTaskId());
+                    savepointsService.save(savepoints);
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean savepointTask(Integer taskId, String savePointType) {
+        return savepointTask(getById(taskId),savePointType);
+    }
+
     private JobConfig buildJobConfig(Task task) {
         boolean isJarTask = Dialect.FLINKJAR.equalsVal(task.getDialect());
         if (!isJarTask && task.isFragment()) {
@@ -330,5 +412,65 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 config.setSavePointPath(null);
         }
         return config;
+    }
+
+    @Override
+    public JobInstance refreshJobInstance(Integer id) {
+        JobInstance jobInstance = jobInstanceService.getById(id);
+        Asserts.checkNull(jobInstance, "该任务实例不存在");
+        if(JobStatus.isDone(jobInstance.getStatus())){
+            return jobInstance;
+        }
+        Cluster cluster = clusterService.getById(jobInstance.getClusterId());
+        JobHistory jobHistoryJson = jobHistoryService.refreshJobHistory(id, cluster.getJobManagerHost(), jobInstance.getJid());
+        JobHistory jobHistory = jobHistoryService.getJobHistoryInfo(jobHistoryJson);
+        if(jobHistory.getJob().has(FlinkRestResultConstant.ERRORS)){
+            jobInstance.setStatus(JobStatus.UNKNOWN.getValue());
+        }else{
+            jobInstance.setDuration(jobHistory.getJob().get(FlinkRestResultConstant.JOB_DURATION).asLong()/1000);
+            jobInstance.setStatus(jobHistory.getJob().get(FlinkRestResultConstant.JOB_STATE).asText());
+        }
+        jobInstanceService.updateById(jobInstance);
+        if(JobStatus.isDone(jobInstance.getStatus())){
+            handleJobDone(jobInstance);
+        }
+        return jobInstance;
+    }
+
+    @Override
+    public JobInfoDetail refreshJobInfoDetail(Integer id) {
+        return jobInstanceService.getJobInfoDetailInfo(refreshJobInstance(id));
+    }
+
+    private void handleJobDone(JobInstance jobInstance){
+        Task task = new Task();
+        task.setId(jobInstance.getTaskId());
+        task.setJobInstanceId(0);
+        updateById(task);
+        task = getTaskInfoById(jobInstance.getTaskId());
+        if(Asserts.isNotNull(task.getAlertGroupId())){
+            AlertGroup alertGroup = alertGroupService.getAlertGroupInfo(task.getAlertGroupId());
+            if(Asserts.isNotNull(alertGroup)){
+                for(AlertInstance alertInstance: alertGroup.getInstances()){
+                    sendAlert(alertInstance,jobInstance,task);
+                }
+            }
+        }
+    }
+
+    private void sendAlert(AlertInstance alertInstance,JobInstance jobInstance,Task task){
+        AlertConfig alertConfig = AlertConfig.build(alertInstance.getName(), alertInstance.getType(), JSONUtil.toMap(alertInstance.getParams()));
+        Alert alert = Alert.build(alertConfig);
+        String title = "任务【"+task.getAlias()+"】："+jobInstance.getStatus();
+        String content = "jid【"+jobInstance.getJid()+"】于【"+jobInstance.getUpdateTime().toString()+"】时【"+jobInstance.getStatus()+"】！";
+        AlertResult alertResult = alert.send(title, content);
+        AlertHistory alertHistory = new AlertHistory();
+        alertHistory.setAlertGroupId(task.getAlertGroupId());
+        alertHistory.setJobInstanceId(jobInstance.getId());
+        alertHistory.setTitle(title);
+        alertHistory.setContent(content);
+        alertHistory.setStatus(alertResult.getSuccessCode());
+        alertHistory.setLog(alertResult.getMessage());
+        alertHistoryService.save(alertHistory);
     }
 }

@@ -8,13 +8,14 @@ import {showTables} from "@/components/Studio/StudioEvent/DDL";
 import {JarStateType} from "@/pages/Jar/model";
 import {Scrollbars} from "react-custom-scrollbars";
 import {RUN_MODE} from "@/components/Studio/conf";
+import {AlertStateType} from "@/pages/AlertInstance/model";
 
 const {Option} = Select;
 const {Text} = Typography;
 
 const StudioSetting = (props: any) => {
 
-  const {sessionCluster, clusterConfiguration, current, form, dispatch, tabs, currentSession, env, toolHeight} = props;
+  const {sessionCluster, clusterConfiguration, current, form, dispatch, tabs, currentSession, env,group, toolHeight} = props;
 
   const getClusterOptions = () => {
     const itemList = [];
@@ -44,9 +45,21 @@ const StudioSetting = (props: any) => {
     </Option>];
     for (const item of env) {
       const tag = (<>{item.enabled ? <Badge status="success"/> : <Badge status="error"/>}
-      {item.fragment ? <PaperClipOutlined /> : undefined}{item.alias}</>);
+        {item.fragment ? <PaperClipOutlined /> : undefined}{item.alias}</>);
       itemList.push(<Option key={item.id} value={item.id} label={tag}>
         {tag}
+      </Option>)
+    }
+    return itemList;
+  };
+
+  const getGroupOptions = () => {
+    const itemList = [<Option key={0} value={0} label='禁用'>
+      禁用
+    </Option>];
+    for (const item of group) {
+      itemList.push(<Option key={item.id} value={item.id} label={item.name}>
+        {item.name}
       </Option>)
     }
     return itemList;
@@ -239,6 +252,21 @@ const StudioSetting = (props: any) => {
               <Input placeholder="hdfs://..."/>
             </Form.Item>) : ''
           }
+          <Row>
+            <Col span={24}>
+              <Form.Item label="报警组" tooltip={`选择报警组`} name="alertGroupId"
+                         className={styles.form_item}>
+                <Select
+                  style={{width: '100%'}}
+                  placeholder="选择报警组"
+                  optionLabelProp="label"
+                  defaultValue={0}
+                >
+                  {getGroupOptions()}
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
           <Form.Item
             label="其他配置" className={styles.form_item}
             tooltip={{title: '其他配置项，将被应用于执行环境，如 pipeline.name', icon: <InfoCircleOutlined/>}}
@@ -282,7 +310,7 @@ const StudioSetting = (props: any) => {
   );
 };
 
-export default connect(({Studio, Jar}: { Studio: StateType, Jar: JarStateType }) => ({
+export default connect(({Studio, Jar, Alert}: { Studio: StateType, Jar: JarStateType , Alert: AlertStateType }) => ({
   sessionCluster: Studio.sessionCluster,
   clusterConfiguration: Studio.clusterConfiguration,
   current: Studio.current,
@@ -292,4 +320,5 @@ export default connect(({Studio, Jar}: { Studio: StateType, Jar: JarStateType })
   toolHeight: Studio.toolHeight,
   jars: Jar.jars,
   env: Studio.env,
+  group: Alert.group,
 }))(StudioSetting);

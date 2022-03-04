@@ -107,9 +107,9 @@ const JobInfo = (props: any) => {
           FlinkWebUI
         </Link></Button>);
     }
-    buttons.push(<Button key="autorestart" type="primary">智能重启</Button>);
+    buttons.push(<Button key="autorestart" type="primary">重新上线</Button>);
     if(!isStatusDone(job?.instance?.status as string)){
-      buttons.push(<Button key="autostop" type="primary" danger onClick={()=>{handleSavepoint('cancel')}}>智能停止</Button>);
+      buttons.push(<Button key="autostop" type="primary" danger onClick={()=>{handleSavepoint('cancel')}}>下线</Button>);
       buttons.push(<Dropdown
         key="dropdown"
         trigger={['click']}

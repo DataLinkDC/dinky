@@ -60,11 +60,15 @@ public class Task extends SuperEntity {
 
     private Integer envId;
 
+    private Integer alertGroupId;
+
     private String configJson;
 
     private String note;
 
     private Integer step;
+
+    private Integer jobInstanceId;
 
     @TableField(exist = false)
     private String statement;

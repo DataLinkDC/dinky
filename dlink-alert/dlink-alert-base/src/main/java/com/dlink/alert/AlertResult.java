@@ -7,23 +7,27 @@ package com.dlink.alert;
  * @since 2022/2/23 20:20
  **/
 public class AlertResult {
-    private String status;
+    private boolean success;
     private String message;
 
     public AlertResult() {
     }
 
-    public AlertResult(String status, String message) {
-        this.status = status;
+    public AlertResult(boolean success, String message) {
+        this.success = success;
         this.message = message;
     }
 
-    public String getStatus() {
-        return status;
+    public boolean getSuccess() {
+        return success;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public Integer getSuccessCode() {
+        return success?1:0;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
     }
 
     public String getMessage() {

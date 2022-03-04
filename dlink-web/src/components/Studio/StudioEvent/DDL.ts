@@ -174,6 +174,16 @@ export function showAlertInstance(dispatch: any) {
     });
   });
 }
+/*--- 刷新 报警组 ---*/
+export function showAlertGroup(dispatch: any) {
+  const res = getData('api/alertGroup/listEnabledAll');
+  res.then((result) => {
+    result.datas && dispatch && dispatch({
+      type: "Alert/saveGroup",
+      payload: result.datas,
+    });
+  });
+}
 /*--- 刷新 元数据表 ---*/
 export function showMetaDataTable(id:number) {
   return getData('api/database/getSchemasAndTables',{id:id});

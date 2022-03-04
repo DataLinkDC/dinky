@@ -1,9 +1,12 @@
 package com.dlink.model;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.dlink.db.model.SuperEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.util.List;
 
 /**
  * AlertGroup
@@ -21,4 +24,7 @@ public class AlertGroup extends SuperEntity {
     private String alertInstanceIds;
 
     private String note;
+
+    @TableField(exist = false)
+    private List<AlertInstance> instances;
 }

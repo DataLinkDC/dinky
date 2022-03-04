@@ -34,8 +34,6 @@ import java.util.List;
 public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, JobInstance> implements JobInstanceService {
 
     @Autowired
-    private TaskService taskService;
-    @Autowired
     private HistoryService historyService;
     @Autowired
     private ClusterService clusterService;
@@ -115,29 +113,4 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         return jobInfoDetail;
     }
 
-    @Override
-    public JobInstance refreshJobInstance(Integer id) {
-        JobInstance jobInstance = getById(id);
-        Asserts.checkNull(jobInstance, "该任务实例不存在");
-        if(JobStatus.isDone(jobInstance.getStatus())){
-            return jobInstance;
-        }
-        Cluster cluster = clusterService.getById(jobInstance.getClusterId());
-        JobHistory jobHistoryJson = jobHistoryService.refreshJobHistory(id, cluster.getJobManagerHost(), jobInstance.getJid());
-        JobHistory jobHistory = jobHistoryService.getJobHistoryInfo(jobHistoryJson);
-        if(jobHistory.getJob().has(FlinkRestResultConstant.ERRORS)){
-            jobInstance.setStatus(JobStatus.UNKNOWN.getValue());
-            updateById(jobInstance);
-            return jobInstance;
-        }
-        jobInstance.setDuration(jobHistory.getJob().get(FlinkRestResultConstant.JOB_DURATION).asLong()/1000);
-        jobInstance.setStatus(jobHistory.getJob().get(FlinkRestResultConstant.JOB_STATE).asText());
-        updateById(jobInstance);
-        return jobInstance;
-    }
-
-    @Override
-    public JobInfoDetail refreshJobInfoDetail(Integer id) {
-        return getJobInfoDetailInfo(refreshJobInstance(id));
-    }
 }

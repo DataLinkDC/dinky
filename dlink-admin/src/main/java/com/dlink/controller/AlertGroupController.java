@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -80,5 +81,13 @@ public class AlertGroupController {
     public Result getOneById(@RequestBody AlertGroup alertGroup) throws Exception {
         alertGroup = alertGroupService.getById(alertGroup.getId());
         return Result.succeed(alertGroup,"获取成功");
+    }
+
+    /**
+     * 获取可用的报警组
+     */
+    @GetMapping("/listEnabledAll")
+    public Result listEnabledAll() {
+        return Result.succeed(alertGroupService.listEnabledAll(),"获取成功");
     }
 }
