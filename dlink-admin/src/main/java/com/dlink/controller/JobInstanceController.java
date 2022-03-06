@@ -5,6 +5,7 @@ import com.dlink.common.result.Result;
 import com.dlink.model.Jar;
 import com.dlink.model.JobInstance;
 import com.dlink.service.JobInstanceService;
+import com.dlink.service.TaskService;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,8 @@ import java.util.List;
 public class JobInstanceController {
     @Autowired
     private JobInstanceService jobInstanceService;
+    @Autowired
+    private TaskService taskService;
 
     /**
      * 动态查询列表
@@ -87,6 +90,6 @@ public class JobInstanceController {
      */
     @GetMapping("/refreshJobInfoDetail")
     public Result refreshJobInfoDetail(@RequestParam Integer id) {
-        return Result.succeed(jobInstanceService.refreshJobInfoDetail(id), "刷新成功");
+        return Result.succeed(taskService.refreshJobInfoDetail(id), "刷新成功");
     }
 }

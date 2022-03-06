@@ -12,7 +12,7 @@ import StudioLeftTool from "./StudioLeftTool";
 import StudioRightTool from "./StudioRightTool";
 import {
   listSession, showCluster, showDataBase, getFillAllByVersion,
-  showClusterConfiguration, showSessionCluster, showJars, showEnv,showAlertInstance
+  showClusterConfiguration, showSessionCluster, showJars, showEnv, showAlertInstance, showAlertGroup
 } from "@/components/Studio/StudioEvent/DDL";
 import {loadSettings} from "@/pages/Settings/function";
 import DraggleLayout from "@/components/DraggleLayout";
@@ -60,6 +60,7 @@ const Studio = (props: any) => {
     listSession(dispatch);
     showJars(dispatch);
     showAlertInstance(dispatch);
+    showAlertGroup(dispatch);
     showEnv(dispatch);
     onResize();
   }, []);

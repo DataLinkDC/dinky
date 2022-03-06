@@ -19,7 +19,4 @@ public interface JobInstanceService extends ISuperService<JobInstance> {
 
     JobInfoDetail getJobInfoDetailInfo(JobInstance jobInstance);
 
-    JobInstance refreshJobInstance(Integer id);
-
-    JobInfoDetail refreshJobInfoDetail(Integer id);
 }

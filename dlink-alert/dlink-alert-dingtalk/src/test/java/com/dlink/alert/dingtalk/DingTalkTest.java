@@ -38,6 +38,6 @@ public class DingTalkTest {
         AlertConfig config = AlertConfig.build("test", "DingTalk", DingTalkTest.config);
         Alert alert = Alert.build(config);
         AlertResult result = alert.send("hello word", "UTF-8");
-        Assert.assertEquals("false", result.getStatus());
+        Assert.assertEquals(false, result.getSuccess());
     }
 }

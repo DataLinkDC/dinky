@@ -34,24 +34,24 @@ public class WeChatSenderTest {
     private static Map<String, String> weChatConfig = new HashMap<>();
 
     private String contentTest = "[{\"id\":\"70\","
-        +
-        "\"name\":\"UserBehavior-0--1193959466\","
-        +
-        "\"Job name\":\"Start workflow\","
-        +
-        "\"State\":\"SUCCESS\","
-        +
-        "\"Recovery\":\"NO\","
-        +
-        "\"Run time\":\"1\","
-        +
-        "\"Start time\": \"2018-08-06 10:31:34.0\","
-        +
-        "\"End time\": \"2018-08-06 10:31:49.0\","
-        +
-        "\"Host\": \"192.168.xx.xx\","
-        +
-        "\"Notify group\" :\"4\"}]";
+            +
+            "\"name\":\"UserBehavior-0--1193959466\","
+            +
+            "\"Job name\":\"Start workflow\","
+            +
+            "\"State\":\"SUCCESS\","
+            +
+            "\"Recovery\":\"NO\","
+            +
+            "\"Run time\":\"1\","
+            +
+            "\"Start time\": \"2018-08-06 10:31:34.0\","
+            +
+            "\"End time\": \"2018-08-06 10:31:49.0\","
+            +
+            "\"Host\": \"192.168.xx.xx\","
+            +
+            "\"Notify group\" :\"4\"}]";
 
     /**
      * init WeChatConfig
@@ -64,8 +64,8 @@ public class WeChatSenderTest {
         weChatConfig.put(WeChatConstants.CORP_ID, "CORP_ID");
         weChatConfig.put(WeChatConstants.CHARSET, "UTF-8");
         weChatConfig.put(WeChatConstants.USER_SEND_MSG, "{\"touser\":\"{toUser}\",\"agentid\":{agentId}"
-            +
-            ",\"msgtype\":\"{showType}\",\"{showType}\":{\"content\":\"{msg}\"}}"
+                +
+                ",\"msgtype\":\"{showType}\",\"{showType}\":{\"content\":\"{msg}\"}}"
         );
         weChatConfig.put(WeChatConstants.USERS, "USERS");
         weChatConfig.put(WeChatConstants.TEAM_SEND_MSG, "msg");
@@ -79,7 +79,7 @@ public class WeChatSenderTest {
     public void testSendWeChatTableMsg() {
         WeChatSender weChatSender = new WeChatSender(weChatConfig);
         AlertResult alertResult = weChatSender.send("TABLE-TEST", contentTest);
-        Assert.assertEquals("true", alertResult.getStatus());
+        Assert.assertEquals(true, alertResult.getSuccess());
     }
 
     @Test
@@ -87,6 +87,6 @@ public class WeChatSenderTest {
         weChatConfig.put(WeChatConstants.SHOW_TYPE,ShowType.TEXT.getValue());
         WeChatSender weChatSender = new WeChatSender(weChatConfig);
         AlertResult alertResult = weChatSender.send("TEXT-TEST", contentTest);
-        Assert.assertEquals("true", alertResult.getStatus());
+        Assert.assertEquals(true, alertResult.getSuccess());
     }
 }

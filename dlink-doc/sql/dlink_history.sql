@@ -618,10 +618,16 @@ create table dlink_job_history
     comment 'Job历史详情';
 
 -- ----------------------------
--- 0.4.0 2021-03-02
+-- 0.6.0-SNAPSHOT 2021-03-02
 -- ----------------------------
 ALTER TABLE `dlink_history`
     CHANGE COLUMN `config` `config_json` json NULL COMMENT '配置JSON' AFTER `result`;
-
+-- ----------------------------
+-- 0.6.0-SNAPSHOT 2022-03-04
+-- ----------------------------
+ALTER TABLE `dlink_task`
+    ADD COLUMN `job_instance_id` BIGINT NULL COMMENT '任务实例ID' AFTER `step`;
+ALTER TABLE `dlink_task`
+    ADD COLUMN `alert_group_id` BIGINT NULL COMMENT '报警组ID' AFTER `env_id`;
 
 SET FOREIGN_KEY_CHECKS = 1;

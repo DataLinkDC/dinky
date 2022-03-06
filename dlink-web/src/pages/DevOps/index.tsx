@@ -1,4 +1,3 @@
-import {Typography, Divider, Badge, Empty,Tag} from "antd";
 import ProCard, { StatisticCard } from '@ant-design/pro-card';
 import type { StatisticProps } from '@ant-design/pro-card';
 import JobInstanceTable from "./JobInstanceTable";
@@ -11,11 +10,10 @@ const { Statistic } = StatisticCard;
 
 const DevOps = (props:any) => {
 
-  // const {current} = props;
   const statusCountDefault = [
     { key: '', title: '全部', value: 0, total: true },
+    { key: JOB_STATUS.CREATED, status: 'default', title: '已创建', value: 0 },
     { key: JOB_STATUS.INITIALIZING, status: 'default', title: '初始化', value: 0 },
-    { key: JOB_STATUS.CREATED, status: 'default', title: '创建中', value: 0 },
     { key: JOB_STATUS.RUNNING, status: 'success', title: '运行中', value: 0 },
     { key: JOB_STATUS.FINISHED, status: 'processing', title: '已完成', value: 0 },
     { key: JOB_STATUS.FAILING, status: 'error', title: '异常中', value: 0 },
@@ -35,8 +33,8 @@ const DevOps = (props:any) => {
       const statusCountData: StatusCount = result.datas;
       const items: any = [
         { key: '', title: '全部', value: statusCountData.all, total: true },
+        { key: JOB_STATUS.CREATED, status: 'default', title: '已创建', value: statusCountData.created },
         { key: JOB_STATUS.INITIALIZING, status: 'default', title: '初始化', value: statusCountData.initializing },
-        { key: JOB_STATUS.CREATED, status: 'default', title: '创建中', value: statusCountData.created },
         { key: JOB_STATUS.RUNNING, status: 'success', title: '运行中', value: statusCountData.running },
         { key: JOB_STATUS.FINISHED, status: 'processing', title: '已完成', value: statusCountData.finished },
         { key: JOB_STATUS.FAILING, status: 'error', title: '异常中', value: statusCountData.failing },

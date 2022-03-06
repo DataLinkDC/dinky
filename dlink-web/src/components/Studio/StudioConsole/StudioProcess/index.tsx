@@ -25,7 +25,7 @@ const StudioProcess = (props: any) => {
       cancelText: '取消',
       onOk: async () => {
         if (!clusterId) return;
-        let res = savepointJob(clusterId, currentItem.jid,key,key);
+        let res = savepointJob(clusterId, currentItem.jid,key,key,0);
         res.then((result) => {
           if (result.datas == true) {
             message.success(key+"成功");
@@ -194,15 +194,15 @@ const StudioProcess = (props: any) => {
   return (
     <div style={{width: '100%'}}>
       <Space>
-      <Select
-        // style={{width: '100%'}}
-        placeholder="选择Flink集群"
-        optionLabelProp="label"
-        onChange={onChangeCluster}
-      >
-        {getClusterOptions()}
-      </Select>
-      <Button type="primary" icon={<SearchOutlined />} onClick={onRefreshJobs} />
+        <Select
+          // style={{width: '100%'}}
+          placeholder="选择Flink集群"
+          optionLabelProp="label"
+          onChange={onChangeCluster}
+        >
+          {getClusterOptions()}
+        </Select>
+        <Button type="primary" icon={<SearchOutlined />} onClick={onRefreshJobs} />
       </Space>
       {jobsData.length > 0 ?
         (<ProTable dataSource={jobsData} columns={getColumns()} size="small" search={false} toolBarRender={false}

@@ -27,9 +27,9 @@ public class AlertHistory implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    private String alertGroupId;
+    private Integer alertGroupId;
 
-    private String jobInstanceId;
+    private Integer jobInstanceId;
 
     private String title;
 

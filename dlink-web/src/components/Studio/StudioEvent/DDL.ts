@@ -174,6 +174,16 @@ export function showAlertInstance(dispatch: any) {
     });
   });
 }
+/*--- 刷新 报警组 ---*/
+export function showAlertGroup(dispatch: any) {
+  const res = getData('api/alertGroup/listEnabledAll');
+  res.then((result) => {
+    result.datas && dispatch && dispatch({
+      type: "Alert/saveGroup",
+      payload: result.datas,
+    });
+  });
+}
 /*--- 刷新 元数据表 ---*/
 export function showMetaDataTable(id:number) {
   return getData('api/database/getSchemasAndTables',{id:id});
@@ -185,6 +195,10 @@ export function showFlinkJobs(clusterId:number) {
 /*--- 停止 Flink Jobs ---*/
 export function cancelJob(clusterId:number,jobId:string) {
   return getData('api/studio/cancel',{clusterId:clusterId,jobId:jobId});
+}
+/*--- 重启 Flink Jobs ---*/
+export function restartJob(id: number) {
+  return getData('api/task/restartTask',{id});
 }
 /*--- 停止 SavePoint Jobs ---*/
 export function savepointJob(clusterId:number,jobId:string,savePointType:string,name:string,taskId:number) {

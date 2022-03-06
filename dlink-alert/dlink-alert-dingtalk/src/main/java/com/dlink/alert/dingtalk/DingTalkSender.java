@@ -78,7 +78,7 @@ public class DingTalkSender {
         } catch (Exception e) {
             logger.info("send ding talk alert msg  exception : {}", e.getMessage());
             alertResult = new AlertResult();
-            alertResult.setStatus("false");
+            alertResult.setSuccess(false);
             alertResult.setMessage("send ding talk alert fail.");
         }
         return alertResult;
@@ -202,7 +202,7 @@ public class DingTalkSender {
 
     private AlertResult checkMsgResult(String result) {
         AlertResult alertResult = new AlertResult();
-        alertResult.setStatus("false");
+        alertResult.setSuccess(false);
 
         if (null == result) {
             alertResult.setMessage("send ding talk msg error");
@@ -216,7 +216,7 @@ public class DingTalkSender {
             return alertResult;
         }
         if (response.getErrcode() == 0) {
-            alertResult.setStatus("true");
+            alertResult.setSuccess(true);
             alertResult.setMessage("send ding talk msg success");
             return alertResult;
         }

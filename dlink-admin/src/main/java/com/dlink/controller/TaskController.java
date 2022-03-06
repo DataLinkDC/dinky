@@ -169,5 +169,13 @@ public class TaskController {
     public Result recoveryTask(@RequestParam Integer id) {
         return Result.succeed(taskService.recoveryTask(id),"操作成功");
     }
+
+    /**
+     *  重启任务
+     */
+    @GetMapping(value = "/restartTask")
+    public Result restartTask(@RequestParam Integer id) {
+        return Result.succeed(taskService.restartByTaskId(id),"操作成功");
+    }
 }
 

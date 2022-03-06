@@ -698,6 +698,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增 运维中心任务监控的配置信息</Link>
                 </li>
+                <li>
+                  <Link>新增 运维中心任务监控的智能重启和报警推送</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>
