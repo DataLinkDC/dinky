@@ -196,6 +196,10 @@ export function showFlinkJobs(clusterId:number) {
 export function cancelJob(clusterId:number,jobId:string) {
   return getData('api/studio/cancel',{clusterId:clusterId,jobId:jobId});
 }
+/*--- 重启 Flink Jobs ---*/
+export function restartJob(id: number) {
+  return getData('api/task/restartTask',{id});
+}
 /*--- 停止 SavePoint Jobs ---*/
 export function savepointJob(clusterId:number,jobId:string,savePointType:string,name:string,taskId:number) {
   return getData('api/studio/savepoint',{clusterId,jobId,savePointType,name,taskId});

@@ -101,7 +101,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     public JobResult restartByTaskId(Integer id) {
         Task task = this.getTaskInfoById(id);
         Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
-        if(Asserts.isNotNull(task.getJobInstanceId())||task.getJobInstanceId()!=0){
+        if(Asserts.isNotNull(task.getJobInstanceId())&&task.getJobInstanceId()!=0){
             savepointTask(task, SavePointType.CANCEL.getValue());
         }
         if (Dialect.isSql(task.getDialect())) {

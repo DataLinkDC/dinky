@@ -13,7 +13,7 @@ import moment from "moment";
 import BaseInfo from "@/pages/DevOps/JobInfo/BaseInfo";
 import Config from "@/pages/DevOps/JobInfo/Config";
 import JobStatus, {isStatusDone} from "@/components/Common/JobStatus";
-import {cancelJob, savepointJob} from "@/components/Studio/StudioEvent/DDL";
+import {cancelJob, restartJob, savepointJob} from "@/components/Studio/StudioEvent/DDL";
 
 const {Link} = Typography;
 
@@ -96,6 +96,26 @@ const JobInfo = (props: any) => {
     });
   };
 
+  const handleRestart = () => {
+    Modal.confirm({
+      title: '重新上线任务',
+      content: `确定重新上线该作业吗？`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk: async () => {
+        if (!job?.cluster?.id) return;
+        const res = restartJob(job?.instance?.taskId);
+        res.then((result) => {
+          if (result.datas.success == true) {
+            message.success("重新上线成功");
+          } else {
+            message.error("重新上线失败");
+          }
+        });
+      }
+    });
+  };
+
   const getButtons = () => {
     let buttons = [
       <Button key="back" type="dashed" onClick={handleBack}>返回</Button>,
@@ -107,7 +127,7 @@ const JobInfo = (props: any) => {
           FlinkWebUI
         </Link></Button>);
     }
-    buttons.push(<Button key="autorestart" type="primary">重新上线</Button>);
+    buttons.push(<Button key="autorestart" type="primary" onClick={handleRestart}>重新上线</Button>);
     if(!isStatusDone(job?.instance?.status as string)){
       buttons.push(<Button key="autostop" type="primary" danger onClick={()=>{handleSavepoint('cancel')}}>下线</Button>);
       buttons.push(<Dropdown
