@@ -51,7 +51,7 @@ const StudioMenu = (props: any) => {
   const [graphData, setGraphData] = useState();
 
   const onKeyDown = useCallback((e) => {
-    if(e.keyCode === 83 && e.ctrlKey === true){
+    if(e.keyCode === 83 && (e.ctrlKey === true || e.metaKey)){
       e.preventDefault();
       if(current) {
         props.saveTask(current);
