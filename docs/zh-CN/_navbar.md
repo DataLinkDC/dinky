@@ -6,11 +6,10 @@
 * [下载](/zh-CN/quick_start/download.md)
 
 * 开发者
-  * [开发调试](/zh-CN/developer-guide/debug.md)
+  * [开发调试](/zh-CN/developer-guide/local_debug.md)
   
 * 用户案例
 
 * 语言
     * [中文](/zh-CN/)
     * [En](/en-US/)
-    
