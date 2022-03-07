@@ -28,7 +28,7 @@ public class WeChatConstants {
 
     static final String TEAM_SEND_MSG = "teamSendMsg";
 
-    static final String USER_SEND_MSG = "userSendMsg";
+    static final String USER_SEND_MSG = "{\"touser\":\"{toUser}\",\"agentid\":{agentId},\"msgtype\":\"{showType}\",\"{showType}\":{\"content\":\"{msg}\"}}";
 
     static final String AGENT_ID = "agentId";
 

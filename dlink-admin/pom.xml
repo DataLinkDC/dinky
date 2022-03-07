@@ -127,6 +127,10 @@
         </dependency>
         <dependency>
             <groupId>com.dlink</groupId>
+            <artifactId>dlink-daemon</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.dlink</groupId>
             <artifactId>dlink-executor</artifactId>
         </dependency>
         <dependency>

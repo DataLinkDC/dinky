@@ -701,6 +701,12 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增 运维中心任务监控的智能重启和报警推送</Link>
                 </li>
+                <li>
+                  <Link>新增 实时监控 Flink Job</Link>
+                </li>
+                <li>
+                  <Link>新增 实时自动告警</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

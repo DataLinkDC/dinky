@@ -1,4 +1,4 @@
-package com.dlink.deamon;
+package com.dlink.daemon;
 
 /**
  * DeamonTest
@@ -6,5 +6,5 @@ package com.dlink.deamon;
  * @author wenmo
  * @since 2022/3/2 23:31
  */
-public class DeamonTest {
+public class DaemonTest {
 }

@@ -52,7 +52,7 @@ public class WeChatSender {
         String weChatCorpId = config.get(WeChatConstants.CORP_ID);
         String weChatSecret = config.get(WeChatConstants.SECRET);
         String weChatTokenUrl = WeChatConstants.TOKEN_URL;
-        weChatUserSendMsg = config.get(WeChatConstants.USER_SEND_MSG);
+        weChatUserSendMsg = WeChatConstants.USER_SEND_MSG;
         sendType = config.get(WeChatConstants.SEND_TYPE);
         showType = config.get(WeChatConstants.SHOW_TYPE);
         requireNonNull(showType, WeChatConstants.SHOW_TYPE + " must not null");
@@ -107,8 +107,7 @@ public class WeChatSender {
             } finally {
                 response.close();
             }
-            logger.info("Enterprise WeChat send [{}], param:{}, resp:{}",
-                    url, data, resp);
+//            logger.info("Enterprise WeChat send [{}], param:{}, resp:{}", url, data, resp);
             return resp;
         }
     }

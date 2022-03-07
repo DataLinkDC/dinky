@@ -5,6 +5,8 @@ import com.dlink.model.JobInfoDetail;
 import com.dlink.model.JobInstance;
 import com.dlink.model.JobInstanceStatus;
 
+import java.util.List;
+
 /**
  * JobInstanceService
  *
@@ -14,6 +16,8 @@ import com.dlink.model.JobInstanceStatus;
 public interface JobInstanceService extends ISuperService<JobInstance> {
 
     JobInstanceStatus getStatusCount();
+
+    List<JobInstance> listJobInstanceActive();
 
     JobInfoDetail getJobInfoDetail(Integer id);
 

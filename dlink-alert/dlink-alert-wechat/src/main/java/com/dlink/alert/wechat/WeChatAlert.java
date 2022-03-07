@@ -17,6 +17,7 @@ public class WeChatAlert extends AbstractAlert {
 
     @Override
     public AlertResult send(String title, String content) {
-        return null;
+        WeChatSender sender = new WeChatSender(getConfig().getParam());
+        return sender.send(title, content);
     }
 }

@@ -1,5 +1,6 @@
 package com.dlink.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.assertion.Asserts;
 import com.dlink.constant.FlinkRestResultConstant;
 import com.dlink.db.service.impl.SuperServiceImpl;
@@ -90,6 +91,11 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         }
         jobInstanceStatus.setAll(total);
         return jobInstanceStatus;
+    }
+
+    @Override
+    public List<JobInstance> listJobInstanceActive() {
+        return baseMapper.listJobInstanceActive();
     }
 
     @Override

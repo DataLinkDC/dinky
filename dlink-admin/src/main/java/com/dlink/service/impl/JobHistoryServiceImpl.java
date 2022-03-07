@@ -65,23 +65,27 @@ public class JobHistoryServiceImpl extends SuperServiceImpl<JobHistoryMapper, Jo
 
     @Override
     public JobHistory refreshJobHistory(Integer id, String jobManagerHost, String jobId) {
-        JsonNode jobInfo = FlinkAPI.build(jobManagerHost).getJobInfo(jobId);
-        JsonNode exception = FlinkAPI.build(jobManagerHost).getException(jobId);
-        JsonNode checkPoints = FlinkAPI.build(jobManagerHost).getCheckPoints(jobId);
-        JsonNode checkPointsConfig = FlinkAPI.build(jobManagerHost).getCheckPointsConfig(jobId);
-        JsonNode jobsConfig = FlinkAPI.build(jobManagerHost).getJobsConfig(jobId);
         JobHistory jobHistory = new JobHistory();
         jobHistory.setId(id);
-        jobHistory.setJobJson(JSONUtil.toJsonString(jobInfo));
-        jobHistory.setExceptionsJson(JSONUtil.toJsonString(exception));
-        jobHistory.setCheckpointsJson(JSONUtil.toJsonString(checkPoints));
-        jobHistory.setCheckpointsConfigJson(JSONUtil.toJsonString(checkPointsConfig));
-        jobHistory.setConfigJson(JSONUtil.toJsonString(jobsConfig));
-        if (Asserts.isNotNull(getById(id))) {
-            updateById(jobHistory);
-        } else {
-            save(jobHistory);
+        try {
+            JsonNode jobInfo = FlinkAPI.build(jobManagerHost).getJobInfo(jobId);
+            JsonNode exception = FlinkAPI.build(jobManagerHost).getException(jobId);
+            JsonNode checkPoints = FlinkAPI.build(jobManagerHost).getCheckPoints(jobId);
+            JsonNode checkPointsConfig = FlinkAPI.build(jobManagerHost).getCheckPointsConfig(jobId);
+            JsonNode jobsConfig = FlinkAPI.build(jobManagerHost).getJobsConfig(jobId);
+            jobHistory.setJobJson(JSONUtil.toJsonString(jobInfo));
+            jobHistory.setExceptionsJson(JSONUtil.toJsonString(exception));
+            jobHistory.setCheckpointsJson(JSONUtil.toJsonString(checkPoints));
+            jobHistory.setCheckpointsConfigJson(JSONUtil.toJsonString(checkPointsConfig));
+            jobHistory.setConfigJson(JSONUtil.toJsonString(jobsConfig));
+            if (Asserts.isNotNull(getById(id))) {
+                updateById(jobHistory);
+            } else {
+                save(jobHistory);
+            }
+        }catch (Exception e){
+        }finally {
+            return jobHistory;
         }
-        return jobHistory;
     }
 }
