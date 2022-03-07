@@ -24,7 +24,7 @@
         <module>dlink-admin</module>
         <module>dlink-assembly</module>
         <module>dlink-alert</module>
-        <module>dlink-deamon</module>
+        <module>dlink-daemon</module>
 
     </modules>
 
@@ -269,7 +269,7 @@
             </dependency>
             <dependency>
                 <groupId>com.dlink</groupId>
-                <artifactId>dlink-deamon</artifactId>
+                <artifactId>dlink-daemon</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

@@ -2,15 +2,14 @@ package com.dlink.job;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.context.SpringContextUtils;
+import com.dlink.daemon.task.DaemonFactory;
+import com.dlink.daemon.task.DaemonTaskConfig;
 import com.dlink.model.*;
 import com.dlink.service.*;
 import com.dlink.utils.JSONUtil;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.DependsOn;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Job2MysqlHandler
@@ -95,17 +94,17 @@ public class Job2MysqlHandler implements JobHandler {
             if (Asserts.isNotNull(cluster)) {
                 clusterId = cluster.getId();
             }
-        }else{
+        } else {
             cluster = clusterService.getById(clusterId);
         }
         history.setClusterId(clusterId);
         historyService.updateById(history);
         ClusterConfiguration clusterConfiguration = null;
-        if(Asserts.isNotNull(job.getJobConfig().getClusterConfigurationId())){
+        if (Asserts.isNotNull(job.getJobConfig().getClusterConfigurationId())) {
             clusterConfiguration = clusterConfigurationService.getClusterConfigById(job.getJobConfig().getClusterConfigurationId());
         }
         Jar jar = null;
-        if(Asserts.isNotNull(job.getJobConfig().getJarId())){
+        if (Asserts.isNotNull(job.getJobConfig().getJarId())) {
             jar = jarService.getById(job.getJobConfig().getJarId());
         }
         if (Asserts.isNotNullCollection(job.getJids())) {
@@ -128,6 +127,7 @@ public class Job2MysqlHandler implements JobHandler {
                 jobHistory.setClusterJson(JSONUtil.toJsonString(cluster));
                 jobHistory.setClusterConfigurationJson(JSONUtil.toJsonString(clusterConfiguration));
                 jobHistoryService.save(jobHistory);
+                DaemonFactory.addTask(DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInstance.getId()));
                 break;
             }
         }
