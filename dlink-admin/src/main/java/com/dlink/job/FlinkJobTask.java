@@ -49,10 +49,8 @@ public class FlinkJobTask implements DaemonTask {
         }
         preDealTime = System.currentTimeMillis();
         JobInstance jobInstance = taskService.refreshJobInstance(config.getId());
-        log.info("监控任务："+jobInstance.getId());
         if(!JobStatus.isDone(jobInstance.getStatus())){
             DefaultThreadPool.getInstance().execute(this);
-        };
-
+        }
     }
 }

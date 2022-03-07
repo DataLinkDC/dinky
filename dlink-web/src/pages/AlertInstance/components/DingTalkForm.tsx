@@ -106,7 +106,7 @@ const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
           </Form.Item></>:undefined
         }
         <Form.Item
-          name="IsAtAll"
+          name="isAtAll"
           label="@所有人">
           <Switch checkedChildren="启用" unCheckedChildren="禁用"
                   defaultChecked={formVals.IsAtAll}/>

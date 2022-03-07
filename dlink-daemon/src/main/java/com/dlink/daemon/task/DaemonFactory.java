@@ -2,12 +2,10 @@ package com.dlink.daemon.task;
 
 import com.dlink.daemon.constant.FlinkTaskConstant;
 import com.dlink.daemon.pool.DefaultThreadPool;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import java.util.List;
 
 public class DaemonFactory {
-    private static final Logger log = LoggerFactory.getLogger(DaemonFactory.class);
 
     public static void start(List<DaemonTaskConfig> configList){
         Thread thread = new Thread(() -> {
@@ -30,7 +28,6 @@ public class DaemonFactory {
                 }else if(defaultThreadPool.getWorkCount() > num) {
                     defaultThreadPool.removeWorker(defaultThreadPool.getWorkCount() - num);
                 }
-                log.info(" >>> taskSize:"  + taskSize +  " workCount: "+ defaultThreadPool.getWorkCount());
             }
         });
         thread.start();

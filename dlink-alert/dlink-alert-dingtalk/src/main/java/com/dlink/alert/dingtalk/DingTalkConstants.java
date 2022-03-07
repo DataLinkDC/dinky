@@ -10,29 +10,29 @@ public final class DingTalkConstants {
 
     static final String TYPE = "DingTalk";
 
-    static final String PROXY_ENABLE = "IsEnableProxy";
+    static final String PROXY_ENABLE = "isEnableProxy";
 
-    static final String WEB_HOOK = "WebHook";
+    static final String WEB_HOOK = "webhook";
 
-    static final String KEYWORD = "Keyword";
+    static final String KEYWORD = "keyword";
 
-    static final String SECRET = "Secret";
+    static final String SECRET = "secret";
 
-    static final String MSG_TYPE = "MsgType";
+    static final String MSG_TYPE = "msgType";
 
-    static final String AT_MOBILES = "AtMobiles";
+    static final String AT_MOBILES = "atMobiles";
 
-    static final String AT_USERIDS = "AtUserIds";
+    static final String AT_USERIDS = "atUserIds";
 
-    static final String AT_ALL = "IsAtAll";
+    static final String AT_ALL = "isAtAll";
 
-    static final String PROXY = "Proxy";
+    static final String PROXY = "proxy";
 
-    static final String PORT = "Port";
+    static final String PORT = "port";
 
-    static final String USER = "User";
+    static final String USER = "user";
 
-    static final String PASSWORD = "Password";
+    static final String PASSWORD = "password";
 
     static final String MSG_TYPE_TEXT = "text";
 

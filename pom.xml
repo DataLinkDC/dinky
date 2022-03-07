@@ -18,14 +18,13 @@
         <module>dlink-connectors</module>
         <module>dlink-executor</module>
         <module>dlink-extends</module>
+        <module>dlink-alert</module>
+        <module>dlink-daemon</module>
         <module>dlink-core</module>
         <module>dlink-app</module>
         <module>dlink-web</module>
         <module>dlink-admin</module>
         <module>dlink-assembly</module>
-        <module>dlink-alert</module>
-        <module>dlink-daemon</module>
-
     </modules>
 
     <properties>
