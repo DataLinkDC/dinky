@@ -158,7 +158,8 @@ const FlinkSqlEditor = (props:any) => {
           indent: ' '.repeat(options.tabSize)
         });
         formatted = formatted.replace(/` ([^`]*) `/g,function (){return '`'+arguments[1].trim()+'`'})
-        formatted = formatted.replace(/\$ {([^}]*)}/g,function (){return '${'+arguments[1].trim()+'}'})
+          .replace(/\$ {([^}]*)}/g,function (){return '${'+arguments[1].trim()+'}'})
+          .replace(/\| ([^}]*)\|/g,function (){return '|'+arguments[1].trim()+'|'})
         return [
           {
             range: range,
