@@ -3,6 +3,7 @@ package com.dlink.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.alert.Alert;
 import com.dlink.alert.AlertConfig;
+import com.dlink.alert.AlertMsg;
 import com.dlink.alert.AlertResult;
 import com.dlink.assertion.Assert;
 import com.dlink.assertion.Asserts;
@@ -17,11 +18,9 @@ import com.dlink.gateway.config.SavePointStrategy;
 import com.dlink.gateway.config.SavePointType;
 import com.dlink.gateway.model.JobInfo;
 import com.dlink.gateway.result.SavePointResult;
-import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.job.JobConfig;
 import com.dlink.job.JobManager;
 import com.dlink.job.JobResult;
-import com.dlink.mapper.JobInstanceMapper;
 import com.dlink.mapper.TaskMapper;
 import com.dlink.metadata.driver.Driver;
 import com.dlink.metadata.result.JdbcSelectResult;
@@ -34,6 +33,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -424,7 +424,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Cluster cluster = clusterService.getById(jobInstance.getClusterId());
         JobHistory jobHistoryJson = jobHistoryService.refreshJobHistory(id, cluster.getJobManagerHost(), jobInstance.getJid());
         JobHistory jobHistory = jobHistoryService.getJobHistoryInfo(jobHistoryJson);
-        if(jobHistory.getJob().has(FlinkRestResultConstant.ERRORS)){
+        if(Asserts.isNull(jobHistory.getJob())||jobHistory.getJob().has(FlinkRestResultConstant.ERRORS)){
             jobInstance.setStatus(JobStatus.UNKNOWN.getValue());
         }else{
             jobInstance.setDuration(jobHistory.getJob().get(FlinkRestResultConstant.JOB_DURATION).asLong()/1000);
@@ -443,6 +443,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     private void handleJobDone(JobInstance jobInstance){
+        if(Asserts.isNull(jobInstance.getTaskId())){
+            return;
+        }
         Task task = new Task();
         task.setId(jobInstance.getTaskId());
         task.setJobInstanceId(0);
@@ -451,18 +454,27 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if(Asserts.isNotNull(task.getAlertGroupId())){
             AlertGroup alertGroup = alertGroupService.getAlertGroupInfo(task.getAlertGroupId());
             if(Asserts.isNotNull(alertGroup)){
+                List<AlertMsg> alertMsgList = new ArrayList<>();
+                AlertMsg alertMsg = new AlertMsg();
+                alertMsg.setType("Flink 实时监控");
+                alertMsg.setTime(LocalDateTime.now().toString());
+                alertMsg.setId(jobInstance.getId().toString());
+                alertMsg.setName(task.getAlias());
+                alertMsg.setStatus(jobInstance.getStatus());
+                alertMsg.setContent(jobInstance.getJid());
+                alertMsgList.add(alertMsg);
                 for(AlertInstance alertInstance: alertGroup.getInstances()){
-                    sendAlert(alertInstance,jobInstance,task);
+                    sendAlert(alertInstance,jobInstance,task,alertMsgList);
                 }
             }
         }
     }
 
-    private void sendAlert(AlertInstance alertInstance,JobInstance jobInstance,Task task){
+    private void sendAlert(AlertInstance alertInstance,JobInstance jobInstance,Task task,List<AlertMsg> alertMsgList){
         AlertConfig alertConfig = AlertConfig.build(alertInstance.getName(), alertInstance.getType(), JSONUtil.toMap(alertInstance.getParams()));
         Alert alert = Alert.build(alertConfig);
         String title = "任务【"+task.getAlias()+"】："+jobInstance.getStatus();
-        String content = "jid【"+jobInstance.getJid()+"】于【"+jobInstance.getUpdateTime().toString()+"】时【"+jobInstance.getStatus()+"】！";
+        String content = JSONUtil.toJsonString(alertMsgList);
         AlertResult alertResult = alert.send(title, content);
         AlertHistory alertHistory = new AlertHistory();
         alertHistory.setAlertGroupId(task.getAlertGroupId());

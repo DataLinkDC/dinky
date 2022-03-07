@@ -49,4 +49,13 @@
         dlink_job_instance
         group by status
     </select>
+
+    <select id="listJobInstanceActive" resultType="com.dlink.model.JobInstance">
+        select
+        *
+        from
+        dlink_job_instance
+        where status not in ('FAILED','CANCELED','FINISHED','UNKNOWN')
+        order by id desc
+    </select>
 </mapper>
