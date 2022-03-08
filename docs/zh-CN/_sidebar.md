@@ -20,16 +20,18 @@
   - 注册中心
     - 集群实例
     - 集群配置
+    - [数据源管理](/zh-CN/administrator-guide/register_center/datasource_management.md)
+    - [告警管理](/zh-CN/administrator-guide/register_center/warning.md)
     - jar管理
-    - 数据源管理
     - 文档管理
+  - 元数据管理
   - 系统设置
     - 用户管理
     - Flink设置
   - 运维中心
     - 生命周期管理
     - 作业监控
-  - api
+  - openapi
 - 最佳实践
   - [Yarn提交实践指南](/zh-CN/practice/yarnsubmit.md)
   - [Dlink 核心概念及实现原理详解](/zh-CN/practice/principle.md)
