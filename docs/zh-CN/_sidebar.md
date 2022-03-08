@@ -12,6 +12,7 @@
 - 基本使用指南
 - 参考手册
   - FlinkSQL Studio
+    - [Studio介绍](/zh-CN/administrator-guide/Studio/studio_introduce.md) 
     - 作业和目录创建
     - 作业开发
     - 作业配置
