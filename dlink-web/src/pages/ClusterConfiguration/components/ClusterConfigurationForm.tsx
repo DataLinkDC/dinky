@@ -168,6 +168,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
           </Form.Item>
         </>:undefined}
         <Divider>Flink 配置</Divider>
+        {formValsPara.type=='Yarn'?<>
         <Form.Item
           name="flinkLibPath"
           label="lib 路径"
@@ -176,6 +177,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
         >
           <Input placeholder="值如 hdfs:///flink/lib"/>
         </Form.Item>
+          </>:undefined}
         <Form.Item
           name="flinkConfigPath"
           label="配置文件路径"
