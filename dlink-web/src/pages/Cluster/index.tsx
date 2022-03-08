@@ -18,6 +18,7 @@ import {
   updateEnabled,getData
 } from "@/components/Common/crud";
 import {showCluster,showSessionCluster} from "@/components/Studio/StudioEvent/DDL";
+import {RUN_MODE} from "@/components/Studio/conf";
 
 const TextArea = Input.TextArea;
 const url = '/api/cluster';
@@ -127,19 +128,27 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       filters: [
         {
           text: 'Yarn Session',
-          value: 'yarn-session',
+          value: RUN_MODE.YARN_SESSION,
         },
         {
           text: 'Standalone',
-          value: 'standalone',
+          value: RUN_MODE.STANDALONE,
         },
         {
           text: 'Yarn Per-Job',
-          value: 'yarn-per-job',
+          value: RUN_MODE.YARN_PER_JOB,
         },
         {
           text: 'Yarn Application',
-          value: 'yarn-application',
+          value: RUN_MODE.YARN_APPLICATION,
+        },
+        {
+          text: 'Kubernetes Session',
+          value: RUN_MODE.KUBERNETES_SESSION,
+        },
+        {
+          text: 'Kubernetes Application',
+          value: RUN_MODE.KUBERNETES_APPLICATION,
         },
       ],
       filterMultiple: false,
@@ -148,6 +157,8 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
         'standalone': {text: 'Standalone'},
         'yarn-per-job': {text: 'Yarn Per-Job'},
         'yarn-application': {text: 'Yarn Application'},
+        'kubernetes-session': {text: 'Kubernetes Session'},
+        'kubernetes-application': {text: 'Kubernetes Application'},
       },
     },
     {
