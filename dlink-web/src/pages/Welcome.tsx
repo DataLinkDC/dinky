@@ -710,6 +710,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>优化 K8S Application 提交配置</Link>
                 </li>
+                <li>
+                  <Link>优化 PerJob 和 Application 作业的JID提交检测</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

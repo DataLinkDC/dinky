@@ -53,6 +53,15 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
             ClusterClientProvider<String> clusterClientProvider = kubernetesClusterDescriptor.deployApplicationCluster(clusterSpecification, applicationConfiguration);
             ClusterClient<String> clusterClient = clusterClientProvider.getClusterClient();
             Collection<JobStatusMessage> jobStatusMessages = clusterClient.listJobs().get();
+            int counts = 10;
+            while (jobStatusMessages.size() == 0 && counts > 0) {
+                Thread.sleep(1000);
+                counts--;
+                jobStatusMessages = clusterClient.listJobs().get();
+                if (jobStatusMessages.size() > 0) {
+                    break;
+                }
+            }
             if (jobStatusMessages.size() > 0) {
                 List<String> jids = new ArrayList<>();
                 for (JobStatusMessage jobStatusMessage : jobStatusMessages) {
