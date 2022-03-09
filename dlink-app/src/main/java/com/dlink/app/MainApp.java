@@ -2,10 +2,12 @@ package com.dlink.app;
 
 import com.dlink.app.db.DBConfig;
 import com.dlink.app.flinksql.Submiter;
-import org.apache.flink.api.java.utils.ParameterTool;
+import com.dlink.assertion.Asserts;
+import com.dlink.constant.FlinkParamConstant;
+import com.dlink.utils.FlinkBaseUtil;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.util.Map;
 
 /**
  * MainApp
@@ -16,11 +18,10 @@ import java.time.LocalDateTime;
 public class MainApp {
 
     public static void main(String[] args) throws IOException {
-        ParameterTool parameters = ParameterTool.fromArgs(args);
-        String id = parameters.get("id", null);
-        if (id!=null&&!"".equals(id)) {
-            DBConfig dbConfig = DBConfig.build(parameters);
-            Submiter.submit(Integer.valueOf(id),dbConfig);
-        }
+        Map<String, String> params = FlinkBaseUtil.getParamsFromArgs(args);
+        String id = params.get(FlinkParamConstant.ID);
+        Asserts.checkNullString(id, "请配置入参 id ");
+        DBConfig dbConfig = DBConfig.build(params);
+        Submiter.submit(Integer.valueOf(id), dbConfig);
     }
 }

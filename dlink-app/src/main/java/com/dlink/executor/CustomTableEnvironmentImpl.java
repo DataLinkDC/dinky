@@ -55,7 +55,7 @@ import java.util.Map;
  * @author wenmo
  * @since 2021/6/7 22:06
  **/
-public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements CustomTableEnvironment{
+public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements CustomTableEnvironment {
 
     protected CustomTableEnvironmentImpl(CatalogManager catalogManager, ModuleManager moduleManager, TableConfig tableConfig, Executor executor, FunctionCatalog functionCatalog, Planner planner, boolean isStreamingMode, ClassLoader userClassLoader) {
         super(catalogManager, moduleManager, tableConfig, executor, functionCatalog, planner, isStreamingMode, userClassLoader);

@@ -50,7 +50,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
         name={configItem.name}
         label={configItem.lable}
       >
-        <Input placeholder={configItem.placeholder}/>
+        <Input placeholder={configItem.placeholder} defaultValue={configItem.defaultValue}/>
       </Form.Item>)
     });
     return itemList;

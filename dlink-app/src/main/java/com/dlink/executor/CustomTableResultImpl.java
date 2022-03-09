@@ -59,7 +59,7 @@ public class CustomTableResultImpl implements TableResult {
                 Preconditions.checkNotNull(sessionTimeZone, "sessionTimeZone should not be null");
     }
 
-    public static TableResult buildTableResult(List<TableSchemaField> fields, List<Row> rows){
+    public static TableResult buildTableResult(List<TableSchemaField> fields,List<Row> rows){
         Builder builder = builder().resultKind(ResultKind.SUCCESS);
         if(fields.size()>0) {
             List<String> columnNames = new ArrayList<>();

@@ -707,6 +707,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增 实时自动告警</Link>
                 </li>
+                <li>
+                  <Link>优化 K8S Application 提交配置</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>
