@@ -2,6 +2,7 @@ export type Config = {
   name: string,
   lable: string,
   placeholder: string
+  defaultValue?: string
 }
 
 export const HADOOP_CONFIG_LIST: Config[] = [{
@@ -21,6 +22,11 @@ export const KUBERNETES_CONFIG_LIST: Config[] = [{
   name: 'kubernetes.container.image',
   lable: 'kubernetes.container.image',
   placeholder: 'dlink',
+},{
+  name: 'kubernetes.rest-service.exposed.type',
+  lable: 'kubernetes.rest-service.exposed.type',
+  placeholder: 'NodePort',
+  defaultValue: 'NodePort',
 }];
 export const FLINK_CONFIG_LIST: Config[] = [{
   name: 'jobmanager.memory.process.size',

@@ -1,6 +1,8 @@
 package com.dlink.app.db;
 
-import org.apache.flink.api.java.utils.ParameterTool;
+import com.dlink.constant.FlinkParamConstant;
+
+import java.util.Map;
 
 /**
  * DBConfig
@@ -27,11 +29,11 @@ public class DBConfig {
     }
 
 
-    public static DBConfig build(ParameterTool parameters){
-        return new DBConfig(parameters.get("driver", null),
-                parameters.get("url", null),
-                parameters.get("username", null),
-                parameters.get("password", null));
+    public static DBConfig build(Map<String, String> params){
+        return new DBConfig(params.get(FlinkParamConstant.DRIVER),
+                params.get(FlinkParamConstant.URL),
+                params.get(FlinkParamConstant.USERNAME),
+                params.get(FlinkParamConstant.PASSWORD));
     }
 
     public String getDriver() {
