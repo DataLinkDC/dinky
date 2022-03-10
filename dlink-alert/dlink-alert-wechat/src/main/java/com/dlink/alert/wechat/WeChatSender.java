@@ -155,7 +155,7 @@ public class WeChatSender {
 
                 Map.Entry<String, Object> entry = iterator.next();
                 t.append(WeChatConstants.MARKDOWN_QUOTE);
-                t.append(entry.getKey()).append(":").append(entry.getValue());
+                t.append(entry.getKey()).append("：").append(entry.getValue());
                 t.append(WeChatConstants.MARKDOWN_ENTER);
             }
             contents.append(t);
@@ -179,7 +179,7 @@ public class WeChatSender {
                 Set<Map.Entry<String, Object>> entries = mapItems.entrySet();
                 for (Map.Entry<String, Object> entry : entries) {
                     contents.append(WeChatConstants.MARKDOWN_QUOTE);
-                    contents.append(entry.getKey()).append(":").append(entry.getValue());
+                    contents.append(entry.getKey()).append("：").append(entry.getValue());
                     contents.append(WeChatConstants.MARKDOWN_ENTER);
                 }
 

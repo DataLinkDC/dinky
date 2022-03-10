@@ -10,6 +10,10 @@ public final class DingTalkConstants {
 
     static final String TYPE = "DingTalk";
 
+    static final String MARKDOWN_QUOTE = "- ";
+
+    static final String MARKDOWN_ENTER = "\n";
+
     static final String PROXY_ENABLE = "isEnableProxy";
 
     static final String WEB_HOOK = "webhook";
@@ -18,7 +22,7 @@ public final class DingTalkConstants {
 
     static final String SECRET = "secret";
 
-    static final String MSG_TYPE = "msgType";
+    static final String MSG_TYPE = "msgtype";
 
     static final String AT_MOBILES = "atMobiles";
 
@@ -34,8 +38,5 @@ public final class DingTalkConstants {
 
     static final String PASSWORD = "password";
 
-    static final String MSG_TYPE_TEXT = "text";
-
-    static final String MSG_TYPE_MARKDOWN = "markdown";
 
 }
