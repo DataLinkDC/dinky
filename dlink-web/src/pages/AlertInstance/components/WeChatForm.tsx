@@ -102,7 +102,7 @@ const WeChatForm: React.FC<AlertInstanceFormProps> = (props) => {
         <Form.Item
           name="showType"
           label="展示方式"
-          rules={[{required: true, message: '请输入展示方式！'}]}
+          rules={[{required: true, message: '请选择展示方式！'}]}
         >
           <Radio.Group >
             <Radio value='markdown'>MarkDown</Radio>

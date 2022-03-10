@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {Form, Button, Input, Modal, Divider,Switch} from 'antd';
+import React, {useState} from 'react';
+import {Button, Divider, Form, Input, Modal, Radio, Switch} from 'antd';
 import {AlertInstanceTableListItem} from "@/pages/AlertInstance/data";
 import {buildJSONData, getJSONData} from "@/pages/AlertInstance/function";
 import {ALERT_TYPE} from "@/pages/AlertInstance/conf";
@@ -109,13 +109,23 @@ const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
           name="isAtAll"
           label="@所有人">
           <Switch checkedChildren="启用" unCheckedChildren="禁用"
-                  defaultChecked={formVals.IsAtAll}/>
+                  defaultChecked={formVals.isAtAll}/>
         </Form.Item>
         <Form.Item
           name="enabled"
           label="是否启用">
           <Switch checkedChildren="启用" unCheckedChildren="禁用"
                   defaultChecked={formVals.enabled}/>
+        </Form.Item>
+        <Form.Item
+          name="msgtype"
+          label="展示方式"
+          rules={[{required: true, message: '请选择展示方式！'}]}
+        >
+          <Radio.Group >
+            <Radio value='markdown'>MarkDown</Radio>
+            <Radio value='text'>文本</Radio>
+          </Radio.Group>
         </Form.Item>
       </>
     );

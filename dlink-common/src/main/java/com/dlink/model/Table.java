@@ -72,8 +72,8 @@ public class Table implements Serializable, Comparable<Table> {
     public String getFlinkTableSql(String catalogName, String flinkConfig) {
         StringBuilder sb = new StringBuilder("DROP TABLE IF EXISTS ");
         String fullSchemaName = catalogName + "." + schema + "." + name;
-        sb.append(fullSchemaName + ";\n");
-        sb.append("CREATE TABLE IF NOT EXISTS " + fullSchemaName + " (\n");
+        sb.append(name + ";\n");
+        sb.append("CREATE TABLE IF NOT EXISTS " + name + " (\n");
         List<String> pks = new ArrayList<>();
         for (int i = 0; i < columns.size(); i++) {
             String type = columns.get(i).getJavaType().getFlinkType();
