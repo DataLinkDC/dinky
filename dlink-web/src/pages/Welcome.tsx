@@ -719,6 +719,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>优化 语法检测建议的结果提示</Link>
                 </li>
+                <li>
+                  <Link>修复 Oracle无法正确获取元数据的bug</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

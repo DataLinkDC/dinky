@@ -135,20 +135,41 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         try {
             preparedStatement = conn.prepareStatement(sql);
             results = preparedStatement.executeQuery();
+            ResultSetMetaData metaData = results.getMetaData();
+            List<String> columnList = new ArrayList<>();
+            for (int i = 1; i <= metaData.getColumnCount(); i++) {
+                columnList.add(metaData.getColumnLabel(i));
+            }
             while (results.next()) {
                 String tableName = results.getString(dbQuery.tableName());
                 if (Asserts.isNotNullString(tableName)) {
                     Table tableInfo = new Table();
                     tableInfo.setName(tableName);
-                    tableInfo.setComment(results.getString(dbQuery.tableComment()));
+                    if(columnList.contains(dbQuery.tableComment())) {
+                        tableInfo.setComment(results.getString(dbQuery.tableComment()));
+                    }
                     tableInfo.setSchema(schemaName);
-                    tableInfo.setType(results.getString(dbQuery.tableType()));
-                    tableInfo.setCatalog(results.getString(dbQuery.catalogName()));
-                    tableInfo.setEngine(results.getString(dbQuery.engine()));
-                    tableInfo.setOptions(results.getString(dbQuery.options()));
-                    tableInfo.setRows(results.getLong(dbQuery.rows()));
-                    tableInfo.setCreateTime(results.getTimestamp(dbQuery.createTime()));
-                    tableInfo.setUpdateTime(results.getTimestamp(dbQuery.updateTime()));
+                    if(columnList.contains(dbQuery.tableType())) {
+                        tableInfo.setType(results.getString(dbQuery.tableType()));
+                    }
+                    if(columnList.contains(dbQuery.catalogName())) {
+                        tableInfo.setCatalog(results.getString(dbQuery.catalogName()));
+                    }
+                    if(columnList.contains(dbQuery.engine())) {
+                        tableInfo.setEngine(results.getString(dbQuery.engine()));
+                    }
+                    if(columnList.contains(dbQuery.options())) {
+                        tableInfo.setOptions(results.getString(dbQuery.options()));
+                    }
+                    if(columnList.contains(dbQuery.rows())) {
+                        tableInfo.setRows(results.getLong(dbQuery.rows()));
+                    }
+                    if(columnList.contains(dbQuery.createTime())) {
+                        tableInfo.setCreateTime(results.getTimestamp(dbQuery.createTime()));
+                    }
+                    if(columnList.contains(dbQuery.updateTime())) {
+                        tableInfo.setUpdateTime(results.getTimestamp(dbQuery.updateTime()));
+                    }
                     tableList.add(tableInfo);
                 }
             }
@@ -171,24 +192,47 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         try {
             preparedStatement = conn.prepareStatement(tableFieldsSql);
             results = preparedStatement.executeQuery();
+            ResultSetMetaData metaData = results.getMetaData();
+            List<String> columnList = new ArrayList<>();
+            for (int i = 1; i <= metaData.getColumnCount(); i++) {
+                columnList.add(metaData.getColumnLabel(i));
+            }
             while (results.next()) {
                 Column field = new Column();
                 String columnName = results.getString(dbQuery.columnName());
-                String key = results.getString(dbQuery.columnKey());
-                field.setKeyFlag(Asserts.isNotNullString(key) && Asserts.isEqualsIgnoreCase("PRI",key));
+                if(columnList.contains(dbQuery.columnKey())) {
+                    String key = results.getString(dbQuery.columnKey());
+                    field.setKeyFlag(Asserts.isNotNullString(key) && Asserts.isEqualsIgnoreCase("PRI", key));
+                }
                 field.setName(columnName);
-                field.setType(results.getString(dbQuery.columnType()));
-
-                String columnComment=results.getString(dbQuery.columnComment()).replaceAll("\"|'","");
-                field.setComment(columnComment);
-
-                field.setNullable(Asserts.isEqualsIgnoreCase(results.getString(dbQuery.isNullable()),"YES"));
-                field.setCharacterSet(results.getString(dbQuery.characterSet()));
-                field.setCollation(results.getString(dbQuery.collation()));
-                field.setPosition(results.getInt(dbQuery.columnPosition()));
-                field.setPrecision(results.getInt(dbQuery.precision()));
-                field.setScale(results.getInt(dbQuery.scale()));
-                field.setAutoIncrement(Asserts.isEqualsIgnoreCase(results.getString(dbQuery.autoIncrement()),"auto_increment"));
+                if(columnList.contains(dbQuery.columnType())) {
+                    field.setType(results.getString(dbQuery.columnType()));
+                }
+                if(columnList.contains(dbQuery.columnComment())) {
+                    String columnComment = results.getString(dbQuery.columnComment()).replaceAll("\"|'", "");
+                    field.setComment(columnComment);
+                }
+                if(columnList.contains(dbQuery.isNullable())) {
+                    field.setNullable(Asserts.isEqualsIgnoreCase(results.getString(dbQuery.isNullable()), "YES"));
+                }
+                if(columnList.contains(dbQuery.characterSet())) {
+                    field.setCharacterSet(results.getString(dbQuery.characterSet()));
+                }
+                if(columnList.contains(dbQuery.collation())) {
+                    field.setCollation(results.getString(dbQuery.collation()));
+                }
+                if(columnList.contains(dbQuery.columnPosition())) {
+                    field.setPosition(results.getInt(dbQuery.columnPosition()));
+                }
+                if(columnList.contains(dbQuery.precision())) {
+                    field.setPrecision(results.getInt(dbQuery.precision()));
+                }
+                if(columnList.contains(dbQuery.scale())) {
+                    field.setScale(results.getInt(dbQuery.scale()));
+                }
+                if(columnList.contains(dbQuery.autoIncrement())) {
+                    field.setAutoIncrement(Asserts.isEqualsIgnoreCase(results.getString(dbQuery.autoIncrement()), "auto_increment"));
+                }
                 field.setJavaType(getTypeConvert().convert(field));
                 columns.add(field);
             }
