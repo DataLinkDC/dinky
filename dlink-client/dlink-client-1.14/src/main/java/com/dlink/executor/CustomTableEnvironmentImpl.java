@@ -1,5 +1,6 @@
 package com.dlink.executor;
 
+import com.dlink.assertion.Asserts;
 import com.dlink.result.SqlExplainResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -297,6 +298,9 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
         if (setOperation.getKey().isPresent() && setOperation.getValue().isPresent()) {
             String key = setOperation.getKey().get().trim();
             String value = setOperation.getValue().get().trim();
+            if(Asserts.isNullString(key)||Asserts.isNullString(value)){
+                return;
+            }
             Map<String, String> confMap = new HashMap<>();
             confMap.put(key, value);
             setMap.put(key, value);
@@ -309,6 +313,9 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
     private void callReset(ResetOperation resetOperation, StreamExecutionEnvironment environment, Map<String, Object> setMap) {
         if (resetOperation.getKey().isPresent()) {
             String key = resetOperation.getKey().get().trim();
+            if(Asserts.isNullString(key)){
+                return;
+            }
             Map<String, String> confMap = new HashMap<>();
             confMap.put(key, null);
             setMap.remove(key);

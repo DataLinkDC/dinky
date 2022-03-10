@@ -1,5 +1,6 @@
 package com.dlink.controller;
 
+import com.dlink.alert.AlertPool;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
 import com.dlink.model.AlertInstance;
@@ -37,6 +38,7 @@ public class AlertInstanceController {
     @PutMapping
     public Result saveOrUpdate(@RequestBody AlertInstance alertInstance) throws Exception {
         if(alertInstanceService.saveOrUpdate(alertInstance)){
+            AlertPool.remove(alertInstance.getName());
             return Result.succeed("新增成功");
         }else {
             return Result.failed("新增失败");

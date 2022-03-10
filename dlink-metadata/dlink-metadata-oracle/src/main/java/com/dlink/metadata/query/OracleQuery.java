@@ -53,6 +53,11 @@ public class OracleQuery extends AbstractDBQuery {
     }
 
     @Override
+    public String tableType() {
+        return "TABLE_TYPE";
+    }
+
+    @Override
     public String columnName() {
         return "COLUMN_NAME";
     }

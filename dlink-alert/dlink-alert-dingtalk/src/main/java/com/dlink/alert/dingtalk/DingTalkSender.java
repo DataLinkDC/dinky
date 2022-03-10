@@ -2,9 +2,11 @@ package com.dlink.alert.dingtalk;
 
 import com.dlink.alert.AlertResult;
 import com.dlink.alert.AlertSendResponse;
+import com.dlink.alert.ShowType;
 import com.dlink.assertion.Asserts;
 import com.dlink.utils.JSONUtil;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
@@ -26,10 +28,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * DingTalkSender
@@ -123,13 +122,13 @@ public class DingTalkSender {
 
     private String generateMsgJson(String title, String content) {
         if (Asserts.isNullString(msgType)) {
-            msgType = DingTalkConstants.MSG_TYPE_TEXT;
+            msgType = ShowType.TEXT.getValue();
         }
         Map<String, Object> items = new HashMap<>();
         items.put("msgtype", msgType);
         Map<String, Object> text = new HashMap<>();
         items.put(msgType, text);
-        if (DingTalkConstants.MSG_TYPE_MARKDOWN.equals(msgType)) {
+        if (ShowType.TABLE.getValue().equals(msgType)) {
             generateMarkdownMsg(title, content, text);
         } else {
             generateTextMsg(title, content, text);
@@ -139,18 +138,17 @@ public class DingTalkSender {
     }
 
     private void generateTextMsg(String title, String content, Map<String, Object> text) {
-        StringBuilder builder = new StringBuilder(title);
-        builder.append("\n");
-        builder.append(content);
+        StringBuilder builder = new StringBuilder();
         if (Asserts.isNotNullString(keyword)) {
-            builder.append(" ");
             builder.append(keyword);
+            builder.append("\n");
         }
-        text.put("content", builder.toString());
+        String txt = genrateResultMsg(title, content, builder);
+        text.put("content", txt);
     }
 
     private void generateMarkdownMsg(String title, String content, Map<String, Object> text) {
-        StringBuilder builder = new StringBuilder(content);
+        StringBuilder builder = new StringBuilder("# ");
         if (Asserts.isNotNullString(keyword)) {
             builder.append(" ");
             builder.append(keyword);
@@ -170,8 +168,41 @@ public class DingTalkSender {
                 builder.append(" ");
             });
         }
+        String txt = genrateResultMsg(title, content, builder);
         text.put("title", title);
-        text.put("text", builder.toString());
+        text.put("text", txt);
+    }
+
+    /**
+     *  公共生成 markdown 和 text 消息
+     * @param title 标题
+     * @param content 内容
+     * @param builder 拼接字符串
+     * @return
+     */
+    private String genrateResultMsg(String title, String content, StringBuilder builder) {
+        List<LinkedHashMap> mapSendResultItemsList = JSONUtil.toList(content, LinkedHashMap.class);
+        if (null == mapSendResultItemsList || mapSendResultItemsList.isEmpty()) {
+            logger.error("itemsList is null");
+            throw new RuntimeException("itemsList is null");
+        }
+        for (LinkedHashMap mapItems : mapSendResultItemsList) {
+            Set<Map.Entry<String, Object>> entries = mapItems.entrySet();
+            Iterator<Map.Entry<String, Object>> iterator = entries.iterator();
+            StringBuilder t = new StringBuilder(String.format("`%s`%s", title, DingTalkConstants.MARKDOWN_ENTER));
+
+            while (iterator.hasNext()) {
+
+                Map.Entry<String, Object> entry = iterator.next();
+                t.append(DingTalkConstants.MARKDOWN_QUOTE);
+                t.append(entry.getKey()).append("：").append(entry.getValue());
+                t.append(DingTalkConstants.MARKDOWN_ENTER);
+            }
+            builder.append(t);
+        }
+        byte[] byt = StringUtils.getBytesUtf8(builder.toString());
+        String txt = StringUtils.newStringUtf8(byt);
+        return txt;
     }
 
     private String generateSignedUrl() {

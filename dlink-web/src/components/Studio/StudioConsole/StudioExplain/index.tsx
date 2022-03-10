@@ -6,7 +6,7 @@ import ProList from '@ant-design/pro-list';
 import {explainSql} from "@/pages/FlinkSqlStudio/service";
 import {useRef, useState, useEffect} from "react";
 
-const {Paragraph} = Typography;
+const {Paragraph,Text} = Typography;
 
 type ExplainItem = {
   index: number;
@@ -27,6 +27,7 @@ export type StudioExplainProps = {
 }
 const StudioExplain = (props: any) => {
   const [explainData, setExplainData] = useState([]);
+  const [result, setResult] = useState(<Text>正在校验中...</Text>);
   const {
     onClose,
     modalVisible,
@@ -35,7 +36,7 @@ const StudioExplain = (props: any) => {
   } = props;
 
   useEffect(() => {
-    if(!modalVisible){
+    if (!modalVisible) {
       return;
     }
     let selectsql = null;
@@ -54,11 +55,24 @@ const StudioExplain = (props: any) => {
       configJson: JSON.stringify(current.task.config),
       statement: selectsql,
     };
+    setResult(<Text>正在校验中...</Text>);
+    setExplainData([]);
     const result = explainSql(param);
     result.then(res => {
       setExplainData(res.datas);
+      let errorCount: number = 0;
+      for (let i in res.datas) {
+        if (!res.datas[i].explainTrue || !res.datas[i].parseTrue) {
+          errorCount++;
+        }
+      }
+      if (errorCount == 0) {
+        setResult(<Text type="success">全部正确</Text>);
+      } else {
+        setResult(<Text type="danger">存在错误，共计{errorCount}个</Text>);
+      }
     })
-  }, [modalVisible])
+  }, [modalVisible]);
 
   const renderFooter = () => {
     return (
@@ -162,12 +176,15 @@ const StudioExplain = (props: any) => {
       footer={renderFooter()}
       onCancel={onClose}
     >
+      <Paragraph>
+        <blockquote>{result}</blockquote>
+      </Paragraph>
       {renderContent()}
     </Modal>
   );
 };
 
-export default connect(({Studio}: { Studio: StateType }) => ({
+export default connect(({Studio}: {Studio: StateType}) => ({
   current: Studio.current,
   currentSession: Studio.currentSession,
 }))(StudioExplain);
