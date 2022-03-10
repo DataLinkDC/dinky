@@ -185,33 +185,16 @@ const StudioSetting = (props: any) => {
           </Form.Item>
           <Row>
             <Col span={12}>
-              <Form.Item label="CheckPoint" tooltip="设置Flink任务的检查点步长，0 代表不启用" name="checkPoint"
-                         className={styles.form_item}>
-                <InputNumber min={0} max={999999} defaultValue={0}/>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
               <Form.Item
-                label="Parallelism" className={styles.form_item} name="parallelism"
+                label="任务并行度" className={styles.form_item} name="parallelism"
                 tooltip="设置Flink任务的并行度，最小为 1"
               >
                 <InputNumber min={1} max={9999} defaultValue={1}/>
               </Form.Item>
             </Col>
-          </Row>
-          <Row>
             <Col span={12}>
               <Form.Item
-                label="Fragment" className={styles.form_item} name="fragment" valuePropName="checked"
-                tooltip={{title: '【增强特性】 开启FlinkSql片段机制，使用“:=”进行定义（以“;”结束），“${}”进行调用', icon: <InfoCircleOutlined/>}}
-              >
-                <Switch checkedChildren="启用" unCheckedChildren="禁用"
-                />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="启用语句集" className={styles.form_item} name="statementSet" valuePropName="checked"
+                label="Insert语句集" className={styles.form_item} name="statementSet" valuePropName="checked"
                 tooltip={{
                   title: '【增强特性】 开启语句集机制，将把多个 Insert 语句合成一个 JobGraph 再进行提交，Select 语句无效',
                   icon: <InfoCircleOutlined/>
@@ -223,6 +206,15 @@ const StudioSetting = (props: any) => {
             </Col>
           </Row>
           <Row>
+            <Col span={12}>
+              <Form.Item
+                label="全局变量" className={styles.form_item} name="fragment" valuePropName="checked"
+                tooltip={{title: '【增强特性】 开启FlinkSql全局变量，使用“:=”进行定义（以“;”结束），“${}”进行调用', icon: <InfoCircleOutlined/>}}
+              >
+                <Switch checkedChildren="启用" unCheckedChildren="禁用"
+                />
+              </Form.Item>
+            </Col>
             <Col span={12}>
               <Form.Item
                 label="批模式" className={styles.form_item} name="batchModel" valuePropName="checked"
