@@ -713,6 +713,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>优化 PerJob 和 Application 作业的JID提交检测</Link>
                 </li>
+                <li>
+                  <Link>修复 集群配置参数项为空时无法正常提交perjob任务的bug</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>
