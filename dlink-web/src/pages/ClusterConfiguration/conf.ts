@@ -33,8 +33,8 @@ export const FLINK_CONFIG_LIST: Config[] = [{
   lable: 'jobmanager.memory.process.size',
   placeholder: '1600m',
 }, {
-  name: 'taskmanager.memory.flink.size',
-  lable: 'taskmanager.memory.flink.size',
+  name: 'taskmanager.memory.process.size',
+  lable: 'taskmanager.memory.process.size',
   placeholder: '2048m',
 }, {
   name: 'taskmanager.memory.framework.heap.size',

@@ -716,6 +716,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>修复 集群配置参数项为空时无法正常提交perjob任务的bug</Link>
                 </li>
+                <li>
+                  <Link>优化 语法检测建议的结果提示</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>
