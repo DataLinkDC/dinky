@@ -4,6 +4,7 @@ import com.dlink.assertion.Asserts;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
 import com.dlink.constant.CommonConstant;
+import com.dlink.metadata.driver.DriverPool;
 import com.dlink.model.DataBase;
 import com.dlink.service.DataBaseService;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -36,6 +37,7 @@ public class DataBaseController {
     @PutMapping
     public Result saveOrUpdate(@RequestBody DataBase database) {
         if(databaseService.saveOrUpdateDataBase(database)){
+            DriverPool.remove(database.getName());
             return Result.succeed("更新成功");
         }else {
             return Result.failed("更新失败");
