@@ -722,6 +722,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>修复 Oracle无法正确获取元数据的bug</Link>
                 </li>
+                <li>
+                  <Link>新增 Application 模式自增修正checkpoint和savepoint存储路径</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>
