@@ -728,6 +728,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>修复 报警组刷新当前页面时无法正常显示下拉报警实例</Link>
                 </li>
+                <li>
+                  <Link>优化 当提交作业无法获取JID时变为提交失败</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

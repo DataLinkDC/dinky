@@ -77,10 +77,16 @@ public class Job2MysqlHandler implements JobHandler {
         History history = new History();
         history.setId(job.getId());
         if (job.isUseGateway() && Asserts.isNullString(job.getJobId())) {
-            job.setJobId("unknown-" + LocalDateTime.now().toString());
+            job.setJobId("unknown");
+            history.setStatus(JobStatus.FAILED.ordinal());
+            history.setJobId(job.getJobId());
+            history.setEndTime(job.getEndTime());
+            history.setError("没有获取到任何JID，请自行排查原因");
+            historyService.updateById(history);
+            return false;
         }
-        history.setJobId(job.getJobId());
         history.setStatus(job.getStatus().ordinal());
+        history.setJobId(job.getJobId());
         history.setEndTime(job.getEndTime());
         if (job.isUseGateway()) {
             history.setJobManagerAddress(job.getJobManagerAddress());
