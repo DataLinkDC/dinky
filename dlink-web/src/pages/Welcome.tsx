@@ -722,6 +722,21 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>修复 Oracle无法正确获取元数据的bug</Link>
                 </li>
+                <li>
+                  <Link>新增 Application 模式自增修正checkpoint和savepoint存储路径</Link>
+                </li>
+                <li>
+                  <Link>修复 报警组刷新当前页面时无法正常显示下拉报警实例</Link>
+                </li>
+                <li>
+                  <Link>优化 当提交作业无法获取JID时变为提交失败</Link>
+                </li>
+                <li>
+                  <Link>新增 作业发布时进行语法校验和逻辑检查</Link>
+                </li>
+                <li>
+                  <Link>优化 IDEA调试时的依赖配置</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

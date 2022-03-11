@@ -11,6 +11,7 @@ import com.dlink.gateway.result.TestResult;
 import com.dlink.utils.LogUtil;
 import org.apache.flink.api.common.JobID;
 import org.apache.flink.client.program.ClusterClient;
+import org.apache.flink.configuration.CheckpointingOptions;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.DeploymentOptions;
 import org.apache.flink.configuration.GlobalConfiguration;
@@ -59,6 +60,15 @@ public abstract class KubernetesGateway extends AbstractGateway {
         }
         if(Asserts.isNotNullString(config.getFlinkConfig().getJobName())) {
             configuration.set(KubernetesConfigOptions.CLUSTER_ID, config.getFlinkConfig().getJobName());
+        }
+        if(getType().isApplicationMode()) {
+            String uuid = UUID.randomUUID().toString().replace("-", "");
+            if (configuration.contains(CheckpointingOptions.CHECKPOINTS_DIRECTORY)) {
+                configuration.set(CheckpointingOptions.CHECKPOINTS_DIRECTORY, configuration.getString(CheckpointingOptions.CHECKPOINTS_DIRECTORY) + "/" + uuid);
+            }
+            if (configuration.contains(CheckpointingOptions.SAVEPOINT_DIRECTORY)) {
+                configuration.set(CheckpointingOptions.SAVEPOINT_DIRECTORY, configuration.getString(CheckpointingOptions.SAVEPOINT_DIRECTORY) + "/" + uuid);
+            }
         }
     }
 

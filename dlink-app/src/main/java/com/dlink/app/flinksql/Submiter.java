@@ -9,6 +9,8 @@ import com.dlink.executor.ExecutorSetting;
 import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.parser.SqlType;
 import com.dlink.trans.Operations;
+import org.apache.flink.configuration.CheckpointingOptions;
+import org.apache.flink.streaming.api.environment.CheckpointConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,7 +85,16 @@ public class Submiter {
         }
         sb.append(getFlinkSQLStatement(id, dbConfig));
         List<String> statements = Submiter.getStatements(sb.toString());
-        ExecutorSetting executorSetting = ExecutorSetting.build(Submiter.getTaskConfig(id, dbConfig));
+        ExecutorSetting executorSetting = ExecutorSetting.build(taskConfig);
+        String uuid = UUID.randomUUID().toString().replace("-", "");
+        if(executorSetting.getConfig().containsKey(CheckpointingOptions.CHECKPOINTS_DIRECTORY.key())){
+            executorSetting.getConfig().put(CheckpointingOptions.CHECKPOINTS_DIRECTORY.key(),
+                    executorSetting.getConfig().get(CheckpointingOptions.CHECKPOINTS_DIRECTORY.key())+"/"+uuid);
+        }
+        if(executorSetting.getConfig().containsKey(CheckpointingOptions.SAVEPOINT_DIRECTORY.key())){
+            executorSetting.getConfig().put(CheckpointingOptions.SAVEPOINT_DIRECTORY.key(),
+                    executorSetting.getConfig().get(CheckpointingOptions.SAVEPOINT_DIRECTORY.key())+"/"+uuid);
+        }
         logger.info("作业配置如下： " + executorSetting.toString());
         Executor executor = Executor.buildAppStreamExecutor(executorSetting);
         List<StatementParam> ddl = new ArrayList<>();

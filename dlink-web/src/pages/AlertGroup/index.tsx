@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {DownOutlined,PlusOutlined} from '@ant-design/icons';
 import {ActionType, ProColumns} from "@ant-design/pro-table";
 import {Button, Drawer, Modal, Dropdown, Menu} from 'antd';
@@ -8,6 +8,8 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import {AlertGroupTableListItem} from "@/pages/AlertGroup/data";
 import {handleAddOrUpdate, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
 import AlertGroupForm from "@/pages/AlertGroup/components/AlertGroupForm";
+import {showAlertInstance} from "@/components/Studio/StudioEvent/DDL";
+import {connect} from "umi";
 
 const url = '/api/alertGroup';
 const AlertGroupTableList: React.FC<{}> = (props: any) => {
@@ -18,6 +20,10 @@ const AlertGroupTableList: React.FC<{}> = (props: any) => {
   const [formValues, setFormValues] = useState({});
   const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<AlertGroupTableListItem[]>([]);
+
+  useEffect(() => {
+    showAlertInstance(dispatch);
+  }, []);
 
   const editAndDelete = (key: string | number, currentItem: AlertGroupTableListItem) => {
     if (key === 'edit') {
@@ -292,4 +298,4 @@ const AlertGroupTableList: React.FC<{}> = (props: any) => {
   );
 };
 
-export default AlertGroupTableList;
+export default  connect()(AlertGroupTableList);
