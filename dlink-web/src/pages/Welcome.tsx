@@ -725,6 +725,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增 Application 模式自增修正checkpoint和savepoint存储路径</Link>
                 </li>
+                <li>
+                  <Link>修复 报警组刷新当前页面时无法正常显示下拉报警实例</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>
