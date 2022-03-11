@@ -734,6 +734,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增 作业发布时进行语法校验和逻辑检查</Link>
                 </li>
+                <li>
+                  <Link>优化 IDEA调试时的依赖配置</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>
