@@ -55,6 +55,7 @@
         <junit.version>4.12</junit.version>
         <!--  `provided` for product environment ,`compile` for dev environment  -->
         <scope.runtime>provided</scope.runtime>
+        <scala.binary.version>2.11</scala.binary.version>
     </properties>
 
     <dependencyManagement>

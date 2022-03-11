@@ -65,7 +65,6 @@
     <clickhouse-jdbc.version>0.2.6</clickhouse-jdbc.version>
     <mariadb-java-client.version>2.5.4</mariadb-java-client.version>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <scala.binary.version>2.11</scala.binary.version>
     <derby.version>10.14.2.0</derby.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <mariaDB4j.version>2.4.0</mariaDB4j.version>
