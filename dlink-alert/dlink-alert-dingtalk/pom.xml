@@ -27,7 +27,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <scope>provided</scope>
+            <scope>${scope.runtime}</scope>
         </dependency>
     </dependencies>
 </project>

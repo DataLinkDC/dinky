@@ -33,7 +33,7 @@
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-table-api-java-bridge_${scala.binary.version}</artifactId>
             <version>${flink.version}</version>
-            <scope>provided</scope>
+            <scope>${scope.runtime}</scope>
             <optional>true</optional>
         </dependency>
 
@@ -41,7 +41,7 @@
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-streaming-java_${scala.binary.version}</artifactId>
             <version>${flink.version}</version>
-            <scope>provided</scope>
+            <scope>${scope.runtime}</scope>
         </dependency>
 
         <!-- Postgres dependencies -->
@@ -49,7 +49,7 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>${postgres.version}</version>
-            <scope>provided</scope>
+            <scope>${scope.runtime}</scope>
         </dependency>
 
         <!-- test dependencies -->

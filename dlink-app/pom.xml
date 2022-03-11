@@ -20,13 +20,13 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-<!--            <scope>provided</scope>-->
+<!--            <scope>${scope.runtime}</scope>-->
             <version>8.0.21</version>
         </dependency>
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-client-1.13</artifactId>
-            <scope>provided</scope>
+            <scope>${scope.runtime}</scope>
         </dependency>
         <dependency>
             <groupId>com.dlink</groupId>

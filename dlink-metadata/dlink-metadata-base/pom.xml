@@ -31,7 +31,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
-            <scope>provided</scope>
+            <scope>${scope.runtime}</scope>
         </dependency>
     </dependencies>
 

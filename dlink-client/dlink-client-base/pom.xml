@@ -38,7 +38,7 @@
                 </exclusion>
             </exclusions>
             <version>${flink.version}</version>
-            <scope>provided</scope>
+            <scope>${scope.runtime}</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
@@ -50,7 +50,7 @@
                 </exclusion>
             </exclusions>
             <version>${flink.version}</version>
-            <scope>provided</scope>
+            <scope>${scope.runtime}</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
@@ -62,7 +62,7 @@
                 </exclusion>
             </exclusions>
             <version>${flink.version}</version>
-            <scope>provided</scope>
+            <scope>${scope.runtime}</scope>
         </dependency>
     </dependencies>
     <build>

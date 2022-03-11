@@ -15,7 +15,7 @@
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-client-1.13</artifactId>
-            <scope>provided</scope>
+            <scope>${scope.runtime}</scope>
         </dependency>
     </dependencies>
 

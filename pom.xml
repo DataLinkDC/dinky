@@ -144,7 +144,7 @@
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>${junit.version}</version>
-                <scope>provided</scope>
+                <scope>${scope.runtime}</scope>
             </dependency>
             <!-- flyway -->
             <!--<dependency>
