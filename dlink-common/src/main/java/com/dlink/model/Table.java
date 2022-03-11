@@ -129,10 +129,10 @@ public class Table implements Serializable, Comparable<Table> {
                 sb.append(",");
             }
             String columnComment= columns.get(i).getComment();
-            if(columnComment.contains("\'") | columnComment.contains("\"")) {
-                columnComment = columnComment.replaceAll("\"|'","");
-            }
             if(Asserts.isNotNullString(columnComment)){
+                if (columnComment.contains("\'") | columnComment.contains("\"")) {
+                    columnComment = columnComment.replaceAll("\"|'", "");
+                }
                 sb.append("`"+columns.get(i).getName() + "`  --  " + columnComment + " \n");
             }else {
                 sb.append("`"+columns.get(i).getName() + "` \n");

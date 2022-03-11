@@ -208,7 +208,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                 if(columnList.contains(dbQuery.columnType())) {
                     field.setType(results.getString(dbQuery.columnType()));
                 }
-                if(columnList.contains(dbQuery.columnComment())) {
+                if(columnList.contains(dbQuery.columnComment())&& Asserts.isNotNull(results.getString(dbQuery.columnComment()))) {
                     String columnComment = results.getString(dbQuery.columnComment()).replaceAll("\"|'", "");
                     field.setComment(columnComment);
                 }
