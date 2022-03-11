@@ -14,7 +14,6 @@
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <flink.version>1.13.5</flink.version>
-        <scala.binary.version>2.11</scala.binary.version>
         <mysql-connector-java.version>8.0.22</mysql-connector-java.version>
         <ojdbc8.version>12.2.0.1</ojdbc8.version>
         <mariaDB4j.version>2.4.0</mariaDB4j.version>
