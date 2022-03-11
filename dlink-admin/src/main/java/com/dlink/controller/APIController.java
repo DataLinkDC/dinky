@@ -29,7 +29,7 @@ public class APIController {
 
     @GetMapping(value = "/submitTask")
     public Result submitTask(@RequestParam Integer id) {
-        return Result.succeed(taskService.submitByTaskId(id),"执行成功");
+        return Result.succeed(taskService.submitTask(id),"执行成功");
     }
 
     @PostMapping("/executeSql")

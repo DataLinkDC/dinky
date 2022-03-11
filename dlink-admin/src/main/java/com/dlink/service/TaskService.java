@@ -1,11 +1,14 @@
 package com.dlink.service;
 
 
+import com.dlink.common.result.Result;
 import com.dlink.db.service.ISuperService;
+import com.dlink.dto.StudioExecuteDTO;
 import com.dlink.job.JobResult;
 import com.dlink.model.JobInfoDetail;
 import com.dlink.model.JobInstance;
 import com.dlink.model.Task;
+import com.dlink.result.SqlExplainResult;
 
 import java.util.List;
 
@@ -17,9 +20,11 @@ import java.util.List;
  */
 public interface TaskService extends ISuperService<Task> {
 
-    JobResult submitByTaskId(Integer id);
+    JobResult submitTask(Integer id);
 
-    JobResult restartByTaskId(Integer id);
+    JobResult restartTask(Integer id);
+
+    List<SqlExplainResult> explainTask(Integer id);
 
     Task getTaskInfoById(Integer id);
 
@@ -31,7 +36,7 @@ public interface TaskService extends ISuperService<Task> {
 
     Task getUDFByClassName(String className);
 
-    boolean releaseTask(Integer id);
+    Result releaseTask(Integer id);
 
     boolean developTask(Integer id);
 

@@ -8,6 +8,7 @@ import com.dlink.alert.AlertResult;
 import com.dlink.assertion.Assert;
 import com.dlink.assertion.Asserts;
 import com.dlink.assertion.Tips;
+import com.dlink.common.result.Result;
 import com.dlink.config.Dialect;
 import com.dlink.constant.FlinkRestResultConstant;
 import com.dlink.db.service.impl.SuperServiceImpl;
@@ -25,6 +26,7 @@ import com.dlink.mapper.TaskMapper;
 import com.dlink.metadata.driver.Driver;
 import com.dlink.metadata.result.JdbcSelectResult;
 import com.dlink.model.*;
+import com.dlink.result.SqlExplainResult;
 import com.dlink.service.*;
 import com.dlink.utils.CustomStringJavaCompiler;
 import com.dlink.utils.JSONUtil;
@@ -81,7 +83,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public JobResult submitByTaskId(Integer id) {
+    public JobResult submitTask(Integer id) {
         Task task = this.getTaskInfoById(id);
         Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
         if (Dialect.isSql(task.getDialect())) {
@@ -98,7 +100,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public JobResult restartByTaskId(Integer id) {
+    public JobResult restartTask(Integer id) {
         Task task = this.getTaskInfoById(id);
         Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
         if(Asserts.isNotNull(task.getJobInstanceId())&&task.getJobInstanceId()!=0){
@@ -147,6 +149,42 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             }
             result.setEndTime(LocalDateTime.now());
             return result;
+        }
+    }
+
+    @Override
+    public List<SqlExplainResult> explainTask(Integer id) {
+        Task task = getTaskInfoById(id);
+        if (Dialect.isSql(task.getDialect())) {
+            return explainCommonSqlTask(task);
+        } else {
+            return explainFlinkSqlTask(task);
+        }
+    }
+
+    private List<SqlExplainResult> explainFlinkSqlTask(Task task) {
+        JobConfig config = buildJobConfig(task);
+        config.buildLocal();
+        JobManager jobManager = JobManager.buildPlanMode(config);
+        return jobManager.explainSql(task.getStatement()).getSqlExplainResults();
+    }
+
+    private List<SqlExplainResult> explainCommonSqlTask(Task task) {
+        if (Asserts.isNull(task.getDatabaseId())) {
+            return new ArrayList<SqlExplainResult>() {{
+                add(SqlExplainResult.fail(task.getStatement(), "请指定数据源"));
+            }};
+        } else {
+            DataBase dataBase = dataBaseService.getById(task.getDatabaseId());
+            if (Asserts.isNull(dataBase)) {
+                return new ArrayList<SqlExplainResult>() {{
+                    add(SqlExplainResult.fail(task.getStatement(), "数据源不存在"));
+                }};
+            }
+            Driver driver = Driver.build(dataBase.getDriverConfig());
+            List<SqlExplainResult> sqlExplainResults = driver.explain(task.getStatement());
+            driver.close();
+            return sqlExplainResults;
         }
     }
 
@@ -248,14 +286,24 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public boolean releaseTask(Integer id) {
+    public Result releaseTask(Integer id) {
         Task task = getById(id);
         Assert.check(task);
         if (JobLifeCycle.DEVELOP.equalsValue(task.getStep())) {
+            List<SqlExplainResult> sqlExplainResults = explainTask(id);
+            for(SqlExplainResult sqlExplainResult: sqlExplainResults){
+                if(!sqlExplainResult.isParseTrue()||!sqlExplainResult.isExplainTrue()){
+                    return Result.failed("语法校验和逻辑检查有误，发布失败");
+                }
+            }
             task.setStep(JobLifeCycle.RELEASE.getValue());
-            return updateById(task);
+            if(updateById(task)){
+                return Result.succeed("发布成功");
+            }else {
+                return Result.failed("由于未知原因，发布失败");
+            }
         }
-        return false;
+        return Result.succeed("发布成功");
     }
 
     @Override

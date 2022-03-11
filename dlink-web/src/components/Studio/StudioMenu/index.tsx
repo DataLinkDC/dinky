@@ -277,9 +277,11 @@ const StudioMenu = (props: any) => {
       onOk: async () => {
         const res = releaseTask(current.task.id);
         res.then((result) => {
-          result.datas && props.changeTaskStep(current.task.id,TASKSTEPS.RELEASE);
           if(result.code == CODE.SUCCESS) {
+            props.changeTaskStep(current.task.id,TASKSTEPS.RELEASE);
             message.success(`发布作业【${current.task.alias}】成功`);
+          }else {
+            message.error(`发布作业【${current.task.alias}】失败，原因：\n${result.msg}`);
           }
         });
       }

@@ -731,6 +731,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>优化 当提交作业无法获取JID时变为提交失败</Link>
                 </li>
+                <li>
+                  <Link>新增 作业发布时进行语法校验和逻辑检查</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

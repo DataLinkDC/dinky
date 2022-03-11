@@ -81,7 +81,7 @@ public class TaskController {
             List<Integer> error = new ArrayList<>();
             for (final JsonNode item : para){
                 Integer id = item.asInt();
-                JobResult result = taskService.submitByTaskId(id);
+                JobResult result = taskService.submitTask(id);
                 if(!result.isSuccess()){
                     error.add(id);
                 }
@@ -127,7 +127,7 @@ public class TaskController {
      */
     @GetMapping(value = "/releaseTask")
     public Result releaseTask(@RequestParam Integer id) {
-        return Result.succeed(taskService.releaseTask(id),"操作成功");
+        return taskService.releaseTask(id);
     }
 
     /**
@@ -175,7 +175,7 @@ public class TaskController {
      */
     @GetMapping(value = "/restartTask")
     public Result restartTask(@RequestParam Integer id) {
-        return Result.succeed(taskService.restartByTaskId(id),"操作成功");
+        return Result.succeed(taskService.restartTask(id),"操作成功");
     }
 }
 
