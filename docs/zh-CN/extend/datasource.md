@@ -5,7 +5,7 @@
    - SQLServer
    - PostGreSQL
    - Phoenix
-   - Doris
+   - Doris(Starrocks)
    - ClickHouse 
 
-使用以上数据源,请查阅注册中心[数据源管理](/zh-CN/administrator-guide/register_center/warning.md),配置数据源连接
+使用以上数据源,请查阅注册中心[数据源管理](/zh-CN/administrator-guide/registerCenter/datasource_manage.md),配置数据源连接

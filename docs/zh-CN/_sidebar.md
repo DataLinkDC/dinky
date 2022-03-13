@@ -21,8 +21,8 @@
   - 注册中心
     - 集群实例
     - 集群配置
-    - [数据源管理](/zh-CN/administrator-guide/register_center/datasource_management.md)
-    - [告警管理](/zh-CN/administrator-guide/register_center/warning.md)
+    - [数据源管理](/zh-CN/administrator-guide/registerCenter/datasource_manage.md)
+    - [告警管理](/zh-CN/administrator-guide/registerCenter/warning.md)
     - jar管理
     - 文档管理
   - 元数据管理

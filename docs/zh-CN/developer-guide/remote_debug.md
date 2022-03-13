@@ -38,9 +38,9 @@ mvn clean package -Dmaven.test.skip=true
 
 ## 远程调试环境搭建
 
-### dlink-core模块修改
+### 修改pom文件
 
-需要修改 dlink-core模块下的pom文件，将 provied  改为 complie，修改如下：
+需要修改 dlink根目录下的pom文件，将 provied  改为 complie，修改如下：
 
 ```
 <properties>
@@ -51,66 +51,6 @@ mvn clean package -Dmaven.test.skip=true
         <!--  `provided` for product environment ,`compile` for dev environment  -->
         <scope.runtime>compile</scope.runtime>
     </properties>
-```
-
-###  dlink-admin模块修改
-
-需要修改 dlink-admin模块下的pom文件
-
-- 可在该 pom 下按功能添加其他 Dlink 子组件依赖以及 Flink 和 Hadoop 的第三方依赖。
-
-- 如使用 MySQL数据源及元数据功能，则添加以下内容：
-
-```xml
-<dependency>
-     <groupId>com.dlink</groupId>
-     <artifactId>dlink-gateway</artifactId>
- </dependency>
-<dependency>
-     <groupId>com.dlink</groupId>
-     <artifactId>dlink-metadata-mysql</artifactId>
- </dependency>
- <dependency>
-     <groupId>com.dlink</groupId>
-     <artifactId>dlink-metadata-doris</artifactId>
- </dependency>
- <dependency>
-     <groupId>com.dlink</groupId>
-     <artifactId>dlink-metadata-phoenix</artifactId>
- </dependency>
- <dependency>
-     <groupId>org.apache.phoenix</groupId>
-     <artifactId>phoenix-core</artifactId>
-     <version>4.14.2-HBase-1.4</version>
- </dependency>
- <dependency>
-     <groupId>org.apache.flink</groupId>
-     <artifactId>flink-yarn_2.11</artifactId>
-     <version>1.13.6</version>
- </dependency>
- <dependency>
-     <groupId>org.apache.flink</groupId>
-     <artifactId>flink-shaded-hadoop-3-uber</artifactId>
-     <version>3.1.1.7.2.1.0-327-9.0</version>
- </dependency>
- <dependency>
-     <groupId>log4j</groupId>
-     <artifactId>log4j</artifactId>
-     <version>1.2.17</version>
- </dependency>
-```
-
-**说明：**如使用 Flink Hive 等其他连接器功能，则需要添加相关依赖,以上phoenix，doris，mysql依赖可选，根据情况选择Dinky已经支持的数据源依赖即可。
-
-另外远程调试需要添加[flink-shaded-hadoop-3-uber](https://repository.cloudera.com/artifactory/cloudera-repos/org/apache/flink/flink-shaded-hadoop-3-uber/3.1.1.7.2.9.0-173-9.0/flink-shaded-hadoop-3-uber-3.1.1.7.2.9.0-173-9.0.jar)依赖，如果下载不下来，可以在pom下添加如下依赖：
-
-```
-<repositories>
-    <repository>
-        <id>cloudera</id>
-        <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
-    </repository>
-</repositories>
 ```
 
 ### 修改配置文件
