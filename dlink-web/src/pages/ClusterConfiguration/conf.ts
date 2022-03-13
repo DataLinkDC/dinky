@@ -15,10 +15,6 @@ export const KUBERNETES_CONFIG_LIST: Config[] = [{
   lable: 'kubernetes.namespace',
   placeholder: 'dlink',
 },{
-  name: 'kubernetes.cluster-id',
-  lable: 'kubernetes.cluster-id',
-  placeholder: 'dlink',
-},{
   name: 'kubernetes.container.image',
   lable: 'kubernetes.container.image',
   placeholder: 'dlink',

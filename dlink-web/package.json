@@ -87,10 +87,7 @@
     "react-monaco-editor": "^0.43.0",
     "sql-formatter": "^4.0.2",
     "umi": "^3.5.0",
-    "umi-serve": "^1.9.10",
-    "happypack": "^5.0.1",
-    "terser-webpack-plugin": "^4.2.3",
-    "hap-toolkit": "^1.9.8"
+    "umi-serve": "^1.9.10"
   },
   "devDependencies": {
     "@ant-design/pro-cli": "^2.0.2",
@@ -125,9 +122,6 @@
     "puppeteer-core": "^8.0.0",
     "stylelint": "^13.0.0",
     "swagger-ui-react": "^3.52.3",
-    "hap-toolkit": "^1.9.8",
-    "happypack": "^5.0.1",
-    "terser-webpack-plugin": "^4.2.3",
     "typescript": "^4.2.2"
   },
   "engines": {
