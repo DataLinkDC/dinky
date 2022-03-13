@@ -18,6 +18,9 @@
             <if test='param.type!=null and param.type!=""'>
                 and dh.type = #{param.type}
             </if>
+            <if test='param.step!=null and param.step!=""'>
+                and a.step = #{param.step}
+            </if>
             <if test='param.name!=null and param.name!=""'>
                 and a.name like "%${param.name}%"
             </if>

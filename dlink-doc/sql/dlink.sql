@@ -313,6 +313,7 @@ create table dlink_job_instance
         primary key,
     name                 varchar(255) null comment '作业实例名',
     task_id              int         null comment 'taskID',
+    step              int         null comment '生命周期',
     cluster_id           int         null comment '集群ID',
     jid                  varchar(50) null comment 'FlinkJobId',
     status               varchar(50) null comment '实例状态',

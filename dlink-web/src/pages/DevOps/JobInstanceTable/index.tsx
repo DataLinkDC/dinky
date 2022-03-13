@@ -10,7 +10,7 @@ import type { ProColumns } from '@ant-design/pro-table';
 import ProTable from "@ant-design/pro-table";
 import {JobInstanceTableListItem} from "@/pages/DevOps/data";
 import moment from 'moment';
-import {RUN_MODE} from "@/components/Studio/conf";
+import {RUN_MODE, TASKSTEPS} from "@/components/Studio/conf";
 import JobStatus from "@/components/Common/JobStatus";
 
 const url = '/api/jobInstance';
@@ -24,6 +24,34 @@ const JobInstanceTable = (props: any) => {
       title: "作业名",
       dataIndex: "name",
       sorter: true,
+    },{
+      title: "生命周期",
+      dataIndex: "step",
+      sorter: true,
+      valueType: 'radio',
+      valueEnum: {
+        '': {text: '全部', status: 'ALL'},
+        1: {
+          text: '已创建',
+          status: TASKSTEPS.CREATE,
+        },
+        2: {
+          text: '开发中',
+          status: TASKSTEPS.DEVELOP,
+        },
+        4: {
+          text: '已发布',
+          status: TASKSTEPS.RELEASE,
+        },
+        5: {
+          text: '已上线',
+          status: TASKSTEPS.ONLINE,
+        },
+        0: {
+          text: '未知',
+          status: TASKSTEPS.UNKNOWN,
+        },
+      },
     },{
       title: "运行模式",
       dataIndex: "type",

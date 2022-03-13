@@ -143,15 +143,15 @@ public class TaskController {
      */
     @GetMapping(value = "/onLineTask")
     public Result onLineTask(@RequestParam Integer id) {
-        return Result.succeed(taskService.onLineTask(id),"操作成功");
+        return taskService.onLineTask(id);
     }
 
     /**
      *  下线任务
      */
     @GetMapping(value = "/offLineTask")
-    public Result offLineTask(@RequestParam Integer id) {
-        return Result.succeed(taskService.offLineTask(id),"操作成功");
+    public Result offLineTask(@RequestParam Integer id,@RequestParam String type) {
+        return taskService.offLineTask(id,type);
     }
 
     /**

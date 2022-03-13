@@ -737,6 +737,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>优化 IDEA调试时的依赖配置</Link>
                 </li>
+                <li>
+                  <Link>新增 作业上下线自动提交和停止任务</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

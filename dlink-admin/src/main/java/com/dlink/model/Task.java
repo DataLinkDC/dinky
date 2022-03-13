@@ -104,7 +104,7 @@ public class Task extends SuperEntity {
         for (Map<String, String> item : config) {
             map.put(item.get("key"), item.get("value"));
         }
-        return new JobConfig(type, false, false, useRemote, clusterId, clusterConfigurationId, jarId, getId(),
+        return new JobConfig(type, step, false, false, useRemote, clusterId, clusterConfigurationId, jarId, getId(),
                 alias, fragment, statementSet, batchModel, checkPoint, parallelism, savePointStrategy, savePointPath, map);
     }
 

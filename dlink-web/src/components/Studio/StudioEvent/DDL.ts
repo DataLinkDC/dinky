@@ -237,8 +237,8 @@ export function onLineTask(id: number) {
   return getData('api/task/onLineTask',{id});
 }
 /*--- 下线作业 ---*/
-export function offLineTask(id: number) {
-  return getData('api/task/offLineTask',{id});
+export function offLineTask(id: number, type: string) {
+  return getData('api/task/offLineTask',{id, type});
 }
 /*--- 注销作业 ---*/
 export function cancelTask(id: number) {

@@ -629,5 +629,10 @@ ALTER TABLE `dlink_task`
     ADD COLUMN `job_instance_id` BIGINT NULL COMMENT '任务实例ID' AFTER `step`;
 ALTER TABLE `dlink_task`
     ADD COLUMN `alert_group_id` BIGINT NULL COMMENT '报警组ID' AFTER `env_id`;
+-- ----------------------------
+-- 0.6.0-SNAPSHOT 2022-03-13
+-- ----------------------------
+ALTER TABLE `dlink_job_instance`
+    ADD COLUMN `step` INT NULL COMMENT '生命周期' AFTER `task_id`;
 
 SET FOREIGN_KEY_CHECKS = 1;

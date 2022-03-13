@@ -110,6 +110,7 @@ const StudioMenu = (props: any) => {
     result.then(res => {
       notification.close(taskKey);
       if (res.datas.success) {
+        props.changeTaskJobInstance(current.task.id,res.datas.jobInstanceId);
         message.success('执行成功');
       } else {
         message.error('执行失败');
@@ -154,6 +155,7 @@ const StudioMenu = (props: any) => {
         const res = await postDataArray('/api/task/submit', [task.id]);
         notification.close(taskKey);
         if (res.datas[0].success) {
+          props.changeTaskJobInstance(current.task.id,res.datas[0].jobInstanceId);
           message.success('异步提交成功');
         } else {
           message.success('异步提交失败');
@@ -315,27 +317,51 @@ const StudioMenu = (props: any) => {
       onOk: async () => {
         const res = onLineTask(current.task.id);
         res.then((result) => {
-          result.datas && props.changeTaskStep(current.task.id,TASKSTEPS.ONLINE);
           if(result.code == CODE.SUCCESS) {
+            props.changeTaskStep(current.task.id,TASKSTEPS.ONLINE);
             message.success(`上线作业【${current.task.alias}】成功`);
+          }else {
+            message.error(`上线作业【${current.task.alias}】失败，原因：\n${result.msg}`);
           }
         });
       }
     });
   };
 
-  const toOffLineTask = () => {
+  const handleCancelTask = (type: string) => {
+    Modal.confirm({
+      title: '停止作业',
+      content: `确定停止作业【${current.task.alias}】吗？`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk: async () => {
+        const res = offLineTask(current.task.id,type);
+        res.then((result) => {
+          if(result.code == CODE.SUCCESS) {
+            props.changeTaskJobInstance(current.task.id,0);
+            message.success(`停止作业【${current.task.alias}】成功`);
+          }else {
+            message.error(`停止作业【${current.task.alias}】失败，原因：\n${result.msg}`);
+          }
+        });
+      }
+    });
+  };
+
+  const toOffLineTask = (type: string) => {
     Modal.confirm({
       title: '下线作业',
       content: `确定下线作业【${current.task.alias}】吗？`,
       okText: '确认',
       cancelText: '取消',
       onOk: async () => {
-        const res = offLineTask(current.task.id);
+        const res = offLineTask(current.task.id,type);
         res.then((result) => {
-          result.datas && props.changeTaskStep(current.task.id,TASKSTEPS.RELEASE);
           if(result.code == CODE.SUCCESS) {
+            props.changeTaskStep(current.task.id,TASKSTEPS.RELEASE);
             message.success(`下线作业【${current.task.alias}】成功`);
+          }else {
+            message.error(`下线作业【${current.task.alias}】失败，原因：\n${result.msg}`);
           }
         });
       }
@@ -505,24 +531,34 @@ const StudioMenu = (props: any) => {
                 onClick={onGetStreamGraph}
               />
             </Tooltip>)}
-            {(!current.task.dialect||current.task.dialect === DIALECT.FLINKSQL||isSql( current.task.dialect )) &&(
-            <Tooltip title="执行当前的 SQL">
-              <Button
-                type="text"
-                icon={<PlayCircleTwoTone/>}
-                //loading={loadings[2]}
-                onClick={execute}
-              />
-            </Tooltip>)}
-            {(!current.task.dialect||current.task.dialect === DIALECT.FLINKSQL||current.task.dialect === DIALECT.FLINKJAR||isSql( current.task.dialect )) &&(<>
-              <Tooltip title="提交当前的作业到集群，提交前请手动保存">
+            { current.task.jobInstanceId&&(current.task.jobInstanceId != 0) ?
+              <Tooltip title="停止">
                 <Button
                   type="text"
-                  icon={<RocketTwoTone/>}
-                  onClick={submit}
+                  icon={<PauseCircleTwoTone />}
+                  onClick={()=>handleCancelTask('canceljob')}
                 />
-              </Tooltip>
+              </Tooltip>:<>
+              {(!current.task.dialect||current.task.dialect === DIALECT.FLINKSQL||isSql( current.task.dialect )) &&(
+                <Tooltip title="执行当前的 SQL">
+                  <Button
+                    type="text"
+                    icon={<PlayCircleTwoTone/>}
+                    //loading={loadings[2]}
+                    onClick={execute}
+                  />
+                </Tooltip>)}
+              {(!current.task.dialect||current.task.dialect === DIALECT.FLINKSQL||current.task.dialect === DIALECT.FLINKJAR||isSql( current.task.dialect )) &&(<>
+                <Tooltip title="提交当前的作业到集群，提交前请手动保存">
+                  <Button
+                    type="text"
+                    icon={<RocketTwoTone/>}
+                    onClick={submit}
+                  />
+                </Tooltip>
               </>)}
+              </>
+            }
             <Divider type="vertical"/>
             {current.task.step == TASKSTEPS.DEVELOP ?
               <Tooltip title="发布，发布后将无法修改">
@@ -551,7 +587,7 @@ const StudioMenu = (props: any) => {
               <Button
                 type="text"
                 icon={<PauseCircleTwoTone />}
-                onClick={toOffLineTask}
+                onClick={()=>toOffLineTask('cancel')}
               />
             </Tooltip>:undefined
           }{(current.task.step != TASKSTEPS.ONLINE && current.task.step != TASKSTEPS.CANCEL) ?
@@ -650,6 +686,11 @@ const mapDispatchToProps = (dispatch: Dispatch)=>({
     type: "Studio/changeTaskStep",
     payload: {
       id,step
+    },
+  }),changeTaskJobInstance:(id: number, jobInstanceId: number)=>dispatch({
+    type: "Studio/changeTaskStep",
+    payload: {
+      id,jobInstanceId
     },
   }),
 });

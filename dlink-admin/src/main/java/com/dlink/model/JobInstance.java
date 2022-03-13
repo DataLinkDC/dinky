@@ -31,6 +31,8 @@ public class JobInstance implements Serializable {
 
     private Integer taskId;
 
+    private Integer step;
+
     private Integer clusterId;
 
     private String jid;
