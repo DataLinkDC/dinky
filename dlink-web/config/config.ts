@@ -1,10 +1,14 @@
 // https://umijs.org/config/
-import { defineConfig } from 'umi';
-import { join } from 'path';
+import {defineConfig} from 'umi';
+import {join} from 'path';
 
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
 import routes from './routes';
+
+const HappyPack = require('happypack');
+const happyThreadPool = HappyPack.ThreadPool({ size: require('os').cpus().length })
+const TerserPlugin = require('terser-webpack-plugin');
 
 const { REACT_APP_ENV } = process.env;
 
@@ -69,4 +73,23 @@ export default defineConfig({
       projectName: 'swagger',
     },
   ],
+  chainWebpack: (memo, { webpack }) => {
+    memo.plugin('HappyPack').use(HappyPack, [{
+      id: 'js',
+      loaders: ['babel-loader'],
+      threadPool: happyThreadPool,
+    },
+      memo.plugin('TerserPlugin').use(TerserPlugin, [{
+        parallel: require('os').cpus().length - 1,
+        terserOptions: {
+          compress: {
+            inline: false
+          },
+          mangle: {
+            safari10: true
+          }
+        }
+      }])
+    ])
+  }
 });
