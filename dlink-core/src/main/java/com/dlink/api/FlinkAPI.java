@@ -12,6 +12,7 @@ import com.dlink.gateway.result.SavePointResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,6 +49,16 @@ public class FlinkAPI {
     private JsonNode get(String route){
         String res = HttpUtil.get(NetConstant.HTTP + address + NetConstant.SLASH + route, NetConstant.SERVER_TIME_OUT_ACTIVE);
         return parse(res);
+    }
+
+    /**
+     *  get请求获取jobManger/TaskManager的日志 (结果为字符串并不是json格式)
+     * @param route
+     * @return
+     */
+    private String getResult(String route){
+        String res = HttpUtil.get(NetConstant.HTTP + address + NetConstant.SLASH + route, NetConstant.SERVER_TIME_OUT_ACTIVE);
+        return res;
     }
 
     private JsonNode post(String route, String body) {
@@ -162,4 +173,51 @@ public class FlinkAPI {
     public JsonNode getJobsConfig(String jobId) {
         return get(FlinkRestAPIConstant.JOBS+jobId+FlinkRestAPIConstant.CONFIG);
     }
+
+    public JsonNode getJobManagerMetrics() {
+        return get(FlinkRestAPIConstant.JOB_MANAGER + FlinkRestAPIConstant.METRICS);
+    }
+
+    public JsonNode getJobManagerConfig() {
+        return get(FlinkRestAPIConstant.JOB_MANAGER + FlinkRestAPIConstant.CONFIG);
+    }
+
+    public String getJobManagerLog() {
+        return getResult(FlinkRestAPIConstant.JOB_MANAGER + FlinkRestAPIConstant.LOG);
+    }
+
+    public String getJobManagerStdOut() {
+        return getResult(FlinkRestAPIConstant.JOB_MANAGER + FlinkRestAPIConstant.STDOUT);
+    }
+
+    public JsonNode getJobManagerLogList() {
+        return get(FlinkRestAPIConstant.JOB_MANAGER + FlinkRestAPIConstant.LOGS);
+    }
+
+    public JsonNode getTaskManagers() {
+        return get(FlinkRestAPIConstant.TASK_MANAGER);
+    }
+
+    public JsonNode getTaskManagerMetrics(String containerId) {
+        return get(FlinkRestAPIConstant.TASK_MANAGER + containerId + FlinkRestAPIConstant.METRICS);
+    }
+
+
+    public String getTaskManagerLog(String containerId) {
+        return getResult(FlinkRestAPIConstant.TASK_MANAGER + containerId + FlinkRestAPIConstant.LOG);
+    }
+
+    public String getTaskManagerStdOut(String containerId) {
+        return getResult(FlinkRestAPIConstant.TASK_MANAGER + containerId + FlinkRestAPIConstant.STDOUT);
+    }
+
+    public JsonNode getTaskManagerLogList(String containerId) {
+        return get(FlinkRestAPIConstant.TASK_MANAGER + containerId + FlinkRestAPIConstant.LOGS);
+    }
+
+    public JsonNode getTaskManagerThreadDump(String containerId) {
+        return get(FlinkRestAPIConstant.TASK_MANAGER + containerId + FlinkRestAPIConstant.THREAD_DUMP);
+    }
+
+
 }
