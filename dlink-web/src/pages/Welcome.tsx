@@ -740,6 +740,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增 作业上下线自动提交和停止任务</Link>
                 </li>
+                <li>
+                  <Link>修复 用户未登录时后台报错及鉴权问题</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

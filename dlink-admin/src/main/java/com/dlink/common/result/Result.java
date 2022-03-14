@@ -42,6 +42,10 @@ public class Result<T> implements Serializable {
         return of(null, CodeEnum.ERROR.getCode(), msg);
     }
 
+    public static <T> Result<T> notLogin(String msg) {
+        return of(null, CodeEnum.NOTLOGIN.getCode(), msg);
+    }
+
     public static <T> Result<T> failed(T model, String msg) {
         return of(model, CodeEnum.ERROR.getCode(), msg);
     }
