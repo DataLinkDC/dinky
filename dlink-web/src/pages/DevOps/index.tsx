@@ -6,12 +6,24 @@ import {useEffect, useState} from "react";
 import {StatusCount} from "@/pages/DevOps/data";
 import {JOB_STATUS} from "@/components/Common/JobStatus";
 
+import {Form, Switch} from "antd";
+
 const { Statistic } = StatisticCard;
 
 const DevOps = (props:any) => {
 
+  const [isHistory, setIsHistory] = useState<boolean>(false);
+
+  const handleHistorySwicthChange = (checked: boolean) => {
+    setIsHistory(checked);
+  };
+
+  const renderSwitch = () => {
+    return (<Switch checkedChildren="历史" unCheckedChildren="实例" onChange={handleHistorySwicthChange}/>);
+  };
+
   const statusCountDefault = [
-    { key: '', title: '全部', value: 0, total: true },
+    { key: '', title: renderSwitch(), value: 0, total: true },
     { key: JOB_STATUS.CREATED, status: 'default', title: '已创建', value: 0 },
     { key: JOB_STATUS.INITIALIZING, status: 'default', title: '初始化', value: 0 },
     { key: JOB_STATUS.RUNNING, status: 'success', title: '运行中', value: 0 },
@@ -32,7 +44,7 @@ const DevOps = (props:any) => {
     res.then((result)=>{
       const statusCountData: StatusCount = result.datas;
       const items: any = [
-        { key: '', title: '全部', value: statusCountData.all, total: true },
+        { key: '', title: renderSwitch(), value: statusCountData.all, total: true },
         { key: JOB_STATUS.CREATED, status: 'default', title: '已创建', value: statusCountData.created },
         { key: JOB_STATUS.INITIALIZING, status: 'default', title: '初始化', value: statusCountData.initializing },
         { key: JOB_STATUS.RUNNING, status: 'success', title: '运行中', value: statusCountData.running },
@@ -86,7 +98,7 @@ const DevOps = (props:any) => {
               backgroundColor: '#fafafa',
             }}
           >
-            <JobInstanceTable status={item.key} activeKey={activeKey}/>
+            <JobInstanceTable status={item.key} activeKey={activeKey} isHistory={isHistory}/>
           </div>
         </ProCard.TabPane>
       ))}

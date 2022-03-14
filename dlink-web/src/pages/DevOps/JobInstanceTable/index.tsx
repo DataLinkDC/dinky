@@ -1,22 +1,18 @@
-import {Tag} from 'antd';
 import { history } from 'umi';
-import {
-  CheckCircleOutlined,
-  SyncOutlined, CloseCircleOutlined, MinusCircleOutlined, ClockCircleOutlined, DownOutlined
-} from "@ant-design/icons";
 import {queryData} from "@/components/Common/crud";
 import React, {useState} from "react";
 import type { ProColumns } from '@ant-design/pro-table';
 import ProTable from "@ant-design/pro-table";
 import {JobInstanceTableListItem} from "@/pages/DevOps/data";
 import moment from 'moment';
-import {RUN_MODE, TASKSTEPS} from "@/components/Studio/conf";
+import {RUN_MODE} from "@/components/Studio/conf";
 import JobStatus from "@/components/Common/JobStatus";
+import JobLifeCycle, {JOB_LIFE_CYCLE} from "@/components/Common/JobLifeCycle";
 
 const url = '/api/jobInstance';
 const JobInstanceTable = (props: any) => {
 
-  const {status, activeKey, dispatch} = props;
+  const {status, activeKey,isHistory, dispatch} = props;
   const [time, setTime] = useState(() => Date.now());
 
   const getColumns = () => {
@@ -31,27 +27,26 @@ const JobInstanceTable = (props: any) => {
       valueType: 'radio',
       valueEnum: {
         '': {text: '全部', status: 'ALL'},
-        1: {
-          text: '已创建',
-          status: TASKSTEPS.CREATE,
-        },
         2: {
           text: '开发中',
-          status: TASKSTEPS.DEVELOP,
+          status: JOB_LIFE_CYCLE.DEVELOP,
         },
         4: {
           text: '已发布',
-          status: TASKSTEPS.RELEASE,
+          status: JOB_LIFE_CYCLE.RELEASE,
         },
         5: {
           text: '已上线',
-          status: TASKSTEPS.ONLINE,
+          status: JOB_LIFE_CYCLE.ONLINE,
         },
         0: {
           text: '未知',
-          status: TASKSTEPS.UNKNOWN,
+          status: JOB_LIFE_CYCLE.UNKNOWN,
         },
       },
+      render: (_, row) => {
+        return (<JobLifeCycle step={row.step}/>);
+      }
     },{
       title: "运行模式",
       dataIndex: "type",
@@ -140,7 +135,7 @@ const JobInstanceTable = (props: any) => {
     <><ProTable
       request={(params, sorter, filter) => {
         setTime(Date.now());
-        return queryData(url, {...params,status, sorter: {id: 'descend'}, filter});
+        return queryData(url, {...params,status,isHistory, sorter: {id: 'descend'}, filter});
       }}
       columns={getColumns()}
       size="small"
