@@ -159,7 +159,7 @@ public class TaskController {
      */
     @GetMapping(value = "/cancelTask")
     public Result cancelTask(@RequestParam Integer id) {
-        return Result.succeed(taskService.cancelTask(id),"操作成功");
+        return taskService.cancelTask(id);
     }
 
     /**

@@ -46,7 +46,7 @@ public interface TaskService extends ISuperService<Task> {
 
     Result offLineTask(Integer id, String type);
 
-    boolean cancelTask(Integer id);
+    Result cancelTask(Integer id);
 
     boolean recoveryTask(Integer id);
 

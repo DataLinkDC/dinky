@@ -26,7 +26,16 @@ import {
 } from "@/components/Studio/StudioEvent/DDL";
 import React, {useCallback, useEffect, useState} from "react";
 import StudioExplain from "../StudioConsole/StudioExplain";
-import {DIALECT, isOnline, isSql, TASKSTEPS} from "@/components/Studio/conf";
+import {
+  DIALECT,
+  isDeletedTask,
+  isExecuteSql,
+  isOnline,
+  isRunningTask,
+  isSql,
+  isTask,
+  TASKSTEPS
+} from "@/components/Studio/conf";
 import {
   ModalForm,
 } from '@ant-design/pro-form';
@@ -110,7 +119,7 @@ const StudioMenu = (props: any) => {
     result.then(res => {
       notification.close(taskKey);
       if (res.datas.success) {
-        props.changeTaskJobInstance(current.task.id,res.datas.jobInstanceId);
+        res.datas?.jobInstanceId&&props.changeTaskJobInstance(current.task.id,res.datas?.jobInstanceId);
         message.success('执行成功');
       } else {
         message.error('执行失败');
@@ -155,7 +164,7 @@ const StudioMenu = (props: any) => {
         const res = await postDataArray('/api/task/submit', [task.id]);
         notification.close(taskKey);
         if (res.datas[0].success) {
-          props.changeTaskJobInstance(current.task.id,res.datas[0].jobInstanceId);
+          res.datas[0].jobInstanceId && props.changeTaskJobInstance(current.task.id,res.datas[0].jobInstanceId);
           message.success('异步提交成功');
         } else {
           message.success('异步提交失败');
@@ -317,8 +326,9 @@ const StudioMenu = (props: any) => {
       onOk: async () => {
         const res = onLineTask(current.task.id);
         res.then((result) => {
-          if(result.code == CODE.SUCCESS) {
+          if(result.code === CODE.SUCCESS) {
             props.changeTaskStep(current.task.id,TASKSTEPS.ONLINE);
+            result.datas?.jobInstanceId && props.changeTaskJobInstance(current.task.id,result.datas?.jobInstanceId);
             message.success(`上线作业【${current.task.alias}】成功`);
           }else {
             message.error(`上线作业【${current.task.alias}】失败，原因：\n${result.msg}`);
@@ -337,7 +347,10 @@ const StudioMenu = (props: any) => {
       onOk: async () => {
         const res = offLineTask(current.task.id,type);
         res.then((result) => {
-          if(result.code == CODE.SUCCESS) {
+          if(result.code === CODE.SUCCESS) {
+            if(current.task.step === TASKSTEPS.ONLINE){
+              props.changeTaskStep(current.task.id,TASKSTEPS.RELEASE);
+            }
             props.changeTaskJobInstance(current.task.id,0);
             message.success(`停止作业【${current.task.alias}】成功`);
           }else {
@@ -357,8 +370,9 @@ const StudioMenu = (props: any) => {
       onOk: async () => {
         const res = offLineTask(current.task.id,type);
         res.then((result) => {
-          if(result.code == CODE.SUCCESS) {
+          if(result.code === CODE.SUCCESS) {
             props.changeTaskStep(current.task.id,TASKSTEPS.RELEASE);
+            props.changeTaskJobInstance(current.task.id,0);
             message.success(`下线作业【${current.task.alias}】成功`);
           }else {
             message.error(`下线作业【${current.task.alias}】失败，原因：\n${result.msg}`);
@@ -377,9 +391,11 @@ const StudioMenu = (props: any) => {
       onOk: async () => {
         const res = cancelTask(current.task.id);
         res.then((result) => {
-          result.datas && props.changeTaskStep(current.task.id,TASKSTEPS.CANCEL);
-          if(result.code == CODE.SUCCESS) {
+          if(result.code === CODE.SUCCESS) {
+            props.changeTaskStep(current.task.id,TASKSTEPS.CANCEL);
             message.success(`注销作业【${current.task.alias}】成功`);
+          }else {
+            message.error(`注销作业【${current.task.alias}】失败，原因：\n${result.msg}`);
           }
         });
       }
@@ -404,6 +420,22 @@ const StudioMenu = (props: any) => {
     });
   };
 
+  const isShowGetStreamGraphBtn = () => {
+    return (!current.task.dialect||current.task.dialect === DIALECT.FLINKSQL);
+  };
+
+  const isShowExecuteBtn = () => {
+    return !isDeletedTask(current.task.step) && isExecuteSql( current.task.dialect ) && !isRunningTask(current.task.jobInstanceId);
+  };
+
+  const isShowSubmitBtn = () => {
+    return !isDeletedTask(current.task.step) && isTask( current.task.dialect ) && !isRunningTask(current.task.jobInstanceId);
+  };
+
+  const isShowCancelTaskBtn = () => {
+    return !isDeletedTask(current.task.step) && isTask( current.task.dialect ) && isRunningTask(current.task.jobInstanceId);
+  };
+
   const runMenu = (
     <Menu>
       <Menu.Item onClick={execute}>SQL 查询</Menu.Item>
@@ -414,7 +446,7 @@ const StudioMenu = (props: any) => {
   const getPathItem = (paths) => {
     let itemList = [];
     for (let item of paths) {
-      itemList.push(<Breadcrumb.Item>{item}</Breadcrumb.Item>)
+      itemList.push(<Breadcrumb.Item key={item}>{item}</Breadcrumb.Item>)
     }
     return itemList;
   };
@@ -430,6 +462,7 @@ const StudioMenu = (props: any) => {
       },
     });
   };
+
   return (
     <Row className={styles.container}>
       <Col span={24}>
@@ -470,76 +503,68 @@ const StudioMenu = (props: any) => {
           </Col>
           <Col span={12}>
             {currentSession.session &&
-            (
-              <Breadcrumb className={styles["dw-path"]}>
-                <Divider type="vertical"/>
-                <MessageOutlined/>
-                <Divider type="vertical"/>
-                {currentSession.session}
-                <Divider type="vertical"/>
-                <ClusterOutlined/>
-                <Divider type="vertical"/>
-                {currentSession.sessionConfig.useRemote ?
-                  currentSession.sessionConfig.clusterName : '本地模式'}
-              </Breadcrumb>
-            )}
+              (
+                <Breadcrumb className={styles["dw-path"]}>
+                  <Divider type="vertical"/>
+                  <MessageOutlined/>
+                  <Divider type="vertical"/>
+                  {currentSession.session}
+                  <Divider type="vertical"/>
+                  <ClusterOutlined/>
+                  <Divider type="vertical"/>
+                  {currentSession.sessionConfig.useRemote ?
+                    currentSession.sessionConfig.clusterName : '本地模式'}
+                </Breadcrumb>
+              )}
           </Col>
           {current?.task?
-          <Col span={8}>
-            <Tooltip title="全屏开发">
-              <Button
-                type="text"
-                icon={<CodeTwoTone />}
-                onClick={toFullScreen}
-              />
-            </Tooltip>
-            <Button
-              type="text"
-              icon={<FileAddTwoTone twoToneColor="#ddd"/>}
-            />
-            <Button
-              type="text"
-              icon={<FolderOpenTwoTone twoToneColor="#ddd"/>}
-            />
-            <Tooltip title="保存当前的 FlinkSql 及配置">
-              <Button
-                type="text"
-                icon={<SaveTwoTone/>}
-                onClick={saveSqlAndSettingToTask}
-              />
-            </Tooltip>
-            <Tooltip title="导出当前的 Sql 及配置">
-              <Button
-                type="text"
-                icon={<SnippetsTwoTone />}
-                onClick={exportSql}
-              />
-            </Tooltip>
-            <Divider type="vertical"/>
-            <Tooltip title="检查当前的 FlinkSql">
-              <Button
-                type="text"
-                icon={<SafetyCertificateTwoTone/>}
-                onClick={onCheckSql}
-              />
-            </Tooltip>
-            {(!current.task.dialect||current.task.dialect === DIALECT.FLINKSQL) &&(
-            <Tooltip title="获取当前的 FlinkSql 的执行图">
-              <Button
-                type="text"
-                icon={<FlagTwoTone/>}
-                onClick={onGetStreamGraph}
-              />
-            </Tooltip>)}
-            { current.task.jobInstanceId&&(current.task.jobInstanceId != 0) ?
-              <Tooltip title="停止">
+            <Col span={8}>
+              <Tooltip title="全屏开发">
                 <Button
                   type="text"
-                  icon={<PauseCircleTwoTone />}
-                  onClick={()=>handleCancelTask('canceljob')}
+                  icon={<CodeTwoTone />}
+                  onClick={toFullScreen}
                 />
-              </Tooltip>:<>
-              {(!current.task.dialect||current.task.dialect === DIALECT.FLINKSQL||isSql( current.task.dialect )) &&(
+              </Tooltip>
+              <Button
+                type="text"
+                icon={<FileAddTwoTone twoToneColor="#ddd"/>}
+              />
+              <Button
+                type="text"
+                icon={<FolderOpenTwoTone twoToneColor="#ddd"/>}
+              />
+              <Tooltip title="保存当前的 FlinkSql 及配置">
+                <Button
+                  type="text"
+                  icon={<SaveTwoTone/>}
+                  onClick={saveSqlAndSettingToTask}
+                />
+              </Tooltip>
+              <Tooltip title="导出当前的 Sql 及配置">
+                <Button
+                  type="text"
+                  icon={<SnippetsTwoTone />}
+                  onClick={exportSql}
+                />
+              </Tooltip>
+              <Divider type="vertical"/>
+              <Tooltip title="检查当前的 FlinkSql">
+                <Button
+                  type="text"
+                  icon={<SafetyCertificateTwoTone/>}
+                  onClick={onCheckSql}
+                />
+              </Tooltip>
+              {isShowGetStreamGraphBtn() &&(
+                <Tooltip title="获取当前的 FlinkSql 的执行图">
+                  <Button
+                    type="text"
+                    icon={<FlagTwoTone/>}
+                    onClick={onGetStreamGraph}
+                  />
+                </Tooltip>)}
+              {isShowExecuteBtn() &&(
                 <Tooltip title="执行当前的 SQL">
                   <Button
                     type="text"
@@ -548,7 +573,7 @@ const StudioMenu = (props: any) => {
                     onClick={execute}
                   />
                 </Tooltip>)}
-              {(!current.task.dialect||current.task.dialect === DIALECT.FLINKSQL||current.task.dialect === DIALECT.FLINKJAR||isSql( current.task.dialect )) &&(<>
+              {isShowSubmitBtn() &&(<>
                 <Tooltip title="提交当前的作业到集群，提交前请手动保存">
                   <Button
                     type="text"
@@ -557,64 +582,72 @@ const StudioMenu = (props: any) => {
                   />
                 </Tooltip>
               </>)}
-              </>
-            }
-            <Divider type="vertical"/>
-            {current.task.step == TASKSTEPS.DEVELOP ?
-              <Tooltip title="发布，发布后将无法修改">
-                <Button
-                  type="text"
-                  icon={<CameraTwoTone/>}
-                  onClick={toReleaseTask}
-                />
-              </Tooltip>:undefined
-            }{current.task.step == TASKSTEPS.RELEASE ?
+              {isShowCancelTaskBtn() &&
+                <Tooltip title="停止">
+                  <Button
+                    type="text"
+                    icon={<PauseCircleTwoTone />}
+                    onClick={()=>handleCancelTask('canceljob')}
+                  />
+                </Tooltip>
+              }
+              <Divider type="vertical"/>
+              {current.task.step == TASKSTEPS.DEVELOP ?
+                <Tooltip title="发布，发布后将无法修改">
+                  <Button
+                    type="text"
+                    icon={<CameraTwoTone/>}
+                    onClick={toReleaseTask}
+                  />
+                </Tooltip>:undefined
+              }{current.task.step == TASKSTEPS.RELEASE ?
               <><Tooltip title="维护，点击进入编辑状态">
                 <Button
                   type="text"
                   icon={<EditTwoTone />}
                   onClick={toDevelopTask}
                 />
-              </Tooltip><Tooltip title="上线，上线后自动恢复、告警等将生效">
-              <Button
-                type="text"
-                icon={<CarryOutTwoTone />}
-                onClick={toOnLineTask}
-              />
-            </Tooltip></>:undefined
+              </Tooltip>
+                <Tooltip title="上线，上线后自动恢复、告警等将生效">
+                  <Button
+                    type="text"
+                    icon={<CarryOutTwoTone />}
+                    onClick={toOnLineTask}
+                  />
+                </Tooltip></>:undefined
             }{current.task.step == TASKSTEPS.ONLINE ?
-            <Tooltip title="下线，将进入最新发布状态">
-              <Button
-                type="text"
-                icon={<PauseCircleTwoTone />}
-                onClick={()=>toOffLineTask('cancel')}
-              />
-            </Tooltip>:undefined
-          }{(current.task.step != TASKSTEPS.ONLINE && current.task.step != TASKSTEPS.CANCEL) ?
-            <Tooltip title="注销，将进入回收站">
-              <Button
-                type="text"
-                icon={<DeleteTwoTone />}
-                onClick={toCancelTask}
-              />
-            </Tooltip>:undefined
-          }{current.task.step == TASKSTEPS.CANCEL ?
-            <Tooltip title="恢复，将进入维护模式">
-              <Button
-                type="text"
-                icon={<RestTwoTone />}
-                onClick={toRecoveryTask}
-              />
-            </Tooltip>:undefined
-          }
-            <Tooltip title="查看使用帮助">
-              <Button
-                type="text"
-                icon={<QuestionCircleTwoTone/>}
-                onClick={showHelp}
-              />
-            </Tooltip>
-          </Col>:undefined}
+              <Tooltip title="下线，将进入最新发布状态">
+                <Button
+                  type="text"
+                  icon={<PauseCircleTwoTone />}
+                  onClick={()=>toOffLineTask('cancel')}
+                />
+              </Tooltip>:undefined
+            }{(current.task.step != TASKSTEPS.ONLINE && current.task.step != TASKSTEPS.CANCEL) ?
+              <Tooltip title="注销，将进入回收站">
+                <Button
+                  type="text"
+                  icon={<DeleteTwoTone />}
+                  onClick={toCancelTask}
+                />
+              </Tooltip>:undefined
+            }{current.task.step == TASKSTEPS.CANCEL ?
+              <Tooltip title="恢复，将进入维护模式">
+                <Button
+                  type="text"
+                  icon={<RestTwoTone />}
+                  onClick={toRecoveryTask}
+                />
+              </Tooltip>:undefined
+            }
+              <Tooltip title="查看使用帮助">
+                <Button
+                  type="text"
+                  icon={<QuestionCircleTwoTone/>}
+                  onClick={showHelp}
+                />
+              </Tooltip>
+            </Col>:undefined}
         </Row>
       </Col>
       <StudioExplain
@@ -632,27 +665,27 @@ const StudioMenu = (props: any) => {
         <StudioGraph data={graphData} />
       </Modal>
       {current?.task?
-      <ModalForm
-        title={`${current.task.alias} 的 ${current.task.dialect} 导出`}
-        visible={exportModalVisible}
-        width={1000}
-        modalProps={{
-          maskClosable:false,
-          bodyStyle:{
-            padding: '5px'
-          }
-        }}
-        onVisibleChange={handleExportModalVisible}
-        submitter={{
-          submitButtonProps: {
-            style: {
-              display: 'none',
+        <ModalForm
+          title={`${current.task.alias} 的 ${current.task.dialect} 导出`}
+          visible={exportModalVisible}
+          width={1000}
+          modalProps={{
+            maskClosable:false,
+            bodyStyle:{
+              padding: '5px'
+            }
+          }}
+          onVisibleChange={handleExportModalVisible}
+          submitter={{
+            submitButtonProps: {
+              style: {
+                display: 'none',
+              },
             },
-          },
-        }}
-      >
-        <SqlExport id={current.task.id} />
-      </ModalForm>:undefined}
+          }}
+        >
+          <SqlExport id={current.task.id} />
+        </ModalForm>:undefined}
       {current && isFullScreen?<Modal
         width={width}
         bodyStyle={{padding: 0}}
@@ -663,7 +696,7 @@ const StudioMenu = (props: any) => {
         visible={isFullScreen}
         footer={null}
         onCancel={() => {
-         props.changeFullScreen(false);
+          props.changeFullScreen(false);
         }}>
         <StudioTabs width={width} height={height}/>
       </Modal>:undefined}
@@ -688,7 +721,7 @@ const mapDispatchToProps = (dispatch: Dispatch)=>({
       id,step
     },
   }),changeTaskJobInstance:(id: number, jobInstanceId: number)=>dispatch({
-    type: "Studio/changeTaskStep",
+    type: "Studio/changeTaskJobInstance",
     payload: {
       id,jobInstanceId
     },

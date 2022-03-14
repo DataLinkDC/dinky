@@ -349,7 +349,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 task.setStep(JobLifeCycle.ONLINE.getValue());
                 task.setJobInstanceId(jobResult.getJobInstanceId());
                 if (updateById(task)) {
-                    return Result.succeed("上线成功");
+                    return Result.succeed(jobResult,"上线成功");
                 } else {
                     return Result.failed("由于未知原因，上线失败");
                 }
@@ -383,14 +383,21 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public boolean cancelTask(Integer id) {
+    public Result cancelTask(Integer id) {
         Task task = getById(id);
         Assert.check(task);
         if (JobLifeCycle.ONLINE != JobLifeCycle.get(task.getStep())) {
+            if(Asserts.isNotNull(task.getJobInstanceId())&&task.getJobInstanceId()!=0){
+                return Result.failed("当前有作业正在运行，注销失败，请停止后注销");
+            }
             task.setStep(JobLifeCycle.CANCEL.getValue());
-            return updateById(task);
+            if (updateById(task)) {
+                return Result.succeed("注销成功");
+            } else {
+                return Result.failed("由于未知原因，注销失败");
+            }
         }
-        return false;
+        return Result.failed("当前有作业已上线，无法注销，请下线后注销");
     }
 
     @Override
