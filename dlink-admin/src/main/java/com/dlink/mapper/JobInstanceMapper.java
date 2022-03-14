@@ -19,4 +19,6 @@ public interface JobInstanceMapper extends SuperMapper<JobInstance> {
     List<JobInstanceCount> countStatus();
 
     List<JobInstance> listJobInstanceActive();
+
+    List<JobInstance> listJobInstanceByTaskId(Integer taskId);
 }

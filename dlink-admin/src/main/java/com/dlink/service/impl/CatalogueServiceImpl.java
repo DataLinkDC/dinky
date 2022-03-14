@@ -5,8 +5,10 @@ import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.dto.CatalogueTaskDTO;
 import com.dlink.mapper.CatalogueMapper;
 import com.dlink.model.Catalogue;
+import com.dlink.model.JobInstance;
 import com.dlink.model.Task;
 import com.dlink.service.CatalogueService;
+import com.dlink.service.JobInstanceService;
 import com.dlink.service.StatementService;
 import com.dlink.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,8 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     private TaskService taskService;
     @Autowired
     private StatementService statementService;
-
+    @Autowired
+    private JobInstanceService jobInstanceService;
     @Autowired
     private CatalogueMapper catalogueMapper;
 
@@ -92,6 +95,11 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             task.setAlias(catalogue.getName());
             taskService.updateById(task);
             this.updateById(catalogue);
+            List<JobInstance> jobInstances = jobInstanceService.getJobInstanceByTaskId(oldCatalogue.getTaskId());
+            for (JobInstance jobInstance : jobInstances) {
+                jobInstance.setName(catalogue.getName());
+                jobInstanceService.updateById(jobInstance);
+            }
             return true;
         }
     }

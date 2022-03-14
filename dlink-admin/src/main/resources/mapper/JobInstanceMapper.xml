@@ -61,4 +61,11 @@
         where status not in ('FAILED','CANCELED','FINISHED','UNKNOWN')
         order by id desc
     </select>
+    <select id="listJobInstanceByTaskId" resultType="com.dlink.model.JobInstance">
+        select
+            *
+        from
+            dlink_job_instance
+        where task_id = #{taskId}
+    </select>
 </mapper>
