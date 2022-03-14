@@ -1,5 +1,5 @@
 import styles from "./index.less";
-import {Menu, Dropdown, Tooltip, Row, Col, Popconfirm, notification, Modal, message} from "antd";
+import {Menu, Dropdown, Tooltip, Row, Col, notification, Modal, message} from "antd";
 import {
   PauseCircleTwoTone, CarryOutTwoTone, DeleteTwoTone, PlayCircleTwoTone, CameraTwoTone,SnippetsTwoTone,
   FileAddTwoTone, FolderOpenTwoTone, SafetyCertificateTwoTone, SaveTwoTone, FlagTwoTone,CodeTwoTone,
@@ -28,13 +28,11 @@ import React, {useCallback, useEffect, useState} from "react";
 import StudioExplain from "../StudioConsole/StudioExplain";
 import {
   DIALECT,
-  isDeletedTask,
   isExecuteSql,
   isOnline,
   isRunningTask,
   isSql,
   isTask,
-  TASKSTEPS
 } from "@/components/Studio/conf";
 import {
   ModalForm,
@@ -42,6 +40,7 @@ import {
 import SqlExport from "@/pages/FlinkSqlStudio/SqlExport";
 import {Dispatch} from "@@/plugin-dva/connect";
 import StudioTabs from "@/components/Studio/StudioTabs";
+import {isDeletedTask, JOB_LIFE_CYCLE} from "@/components/Common/JobLifeCycle";
 
 const menu = (
   <Menu>
@@ -289,7 +288,7 @@ const StudioMenu = (props: any) => {
         const res = releaseTask(current.task.id);
         res.then((result) => {
           if(result.code == CODE.SUCCESS) {
-            props.changeTaskStep(current.task.id,TASKSTEPS.RELEASE);
+            props.changeTaskStep(current.task.id,JOB_LIFE_CYCLE.RELEASE);
             message.success(`发布作业【${current.task.alias}】成功`);
           }else {
             message.error(`发布作业【${current.task.alias}】失败，原因：\n${result.msg}`);
@@ -308,7 +307,7 @@ const StudioMenu = (props: any) => {
       onOk: async () => {
         const res = developTask(current.task.id);
         res.then((result) => {
-          result.datas && props.changeTaskStep(current.task.id,TASKSTEPS.DEVELOP);
+          result.datas && props.changeTaskStep(current.task.id,JOB_LIFE_CYCLE.DEVELOP);
           if(result.code == CODE.SUCCESS) {
             message.success(`维护作业【${current.task.alias}】成功`);
           }
@@ -327,7 +326,7 @@ const StudioMenu = (props: any) => {
         const res = onLineTask(current.task.id);
         res.then((result) => {
           if(result.code === CODE.SUCCESS) {
-            props.changeTaskStep(current.task.id,TASKSTEPS.ONLINE);
+            props.changeTaskStep(current.task.id,JOB_LIFE_CYCLE.ONLINE);
             result.datas?.jobInstanceId && props.changeTaskJobInstance(current.task.id,result.datas?.jobInstanceId);
             message.success(`上线作业【${current.task.alias}】成功`);
           }else {
@@ -348,8 +347,8 @@ const StudioMenu = (props: any) => {
         const res = offLineTask(current.task.id,type);
         res.then((result) => {
           if(result.code === CODE.SUCCESS) {
-            if(current.task.step === TASKSTEPS.ONLINE){
-              props.changeTaskStep(current.task.id,TASKSTEPS.RELEASE);
+            if(current.task.step === JOB_LIFE_CYCLE.ONLINE){
+              props.changeTaskStep(current.task.id,JOB_LIFE_CYCLE.RELEASE);
             }
             props.changeTaskJobInstance(current.task.id,0);
             message.success(`停止作业【${current.task.alias}】成功`);
@@ -371,7 +370,7 @@ const StudioMenu = (props: any) => {
         const res = offLineTask(current.task.id,type);
         res.then((result) => {
           if(result.code === CODE.SUCCESS) {
-            props.changeTaskStep(current.task.id,TASKSTEPS.RELEASE);
+            props.changeTaskStep(current.task.id,JOB_LIFE_CYCLE.RELEASE);
             props.changeTaskJobInstance(current.task.id,0);
             message.success(`下线作业【${current.task.alias}】成功`);
           }else {
@@ -392,7 +391,7 @@ const StudioMenu = (props: any) => {
         const res = cancelTask(current.task.id);
         res.then((result) => {
           if(result.code === CODE.SUCCESS) {
-            props.changeTaskStep(current.task.id,TASKSTEPS.CANCEL);
+            props.changeTaskStep(current.task.id,JOB_LIFE_CYCLE.CANCEL);
             message.success(`注销作业【${current.task.alias}】成功`);
           }else {
             message.error(`注销作业【${current.task.alias}】失败，原因：\n${result.msg}`);
@@ -411,7 +410,7 @@ const StudioMenu = (props: any) => {
       onOk: async () => {
         const res = recoveryTask(current.task.id);
         res.then((result) => {
-          result.datas && props.changeTaskStep(current.task.id,TASKSTEPS.DEVELOP);
+          result.datas && props.changeTaskStep(current.task.id,JOB_LIFE_CYCLE.DEVELOP);
           if(result.code == CODE.SUCCESS) {
             message.success(`恢复作业【${current.task.alias}】成功`);
           }
@@ -592,7 +591,7 @@ const StudioMenu = (props: any) => {
                 </Tooltip>
               }
               <Divider type="vertical"/>
-              {current.task.step == TASKSTEPS.DEVELOP ?
+              {current.task.step == JOB_LIFE_CYCLE.DEVELOP ?
                 <Tooltip title="发布，发布后将无法修改">
                   <Button
                     type="text"
@@ -600,7 +599,7 @@ const StudioMenu = (props: any) => {
                     onClick={toReleaseTask}
                   />
                 </Tooltip>:undefined
-              }{current.task.step == TASKSTEPS.RELEASE ?
+              }{current.task.step == JOB_LIFE_CYCLE.RELEASE ?
               <><Tooltip title="维护，点击进入编辑状态">
                 <Button
                   type="text"
@@ -615,7 +614,7 @@ const StudioMenu = (props: any) => {
                     onClick={toOnLineTask}
                   />
                 </Tooltip></>:undefined
-            }{current.task.step == TASKSTEPS.ONLINE ?
+            }{current.task.step == JOB_LIFE_CYCLE.ONLINE ?
               <Tooltip title="下线，将进入最新发布状态">
                 <Button
                   type="text"
@@ -623,7 +622,7 @@ const StudioMenu = (props: any) => {
                   onClick={()=>toOffLineTask('cancel')}
                 />
               </Tooltip>:undefined
-            }{(current.task.step != TASKSTEPS.ONLINE && current.task.step != TASKSTEPS.CANCEL) ?
+            }{(current.task.step != JOB_LIFE_CYCLE.ONLINE && current.task.step != JOB_LIFE_CYCLE.CANCEL) ?
               <Tooltip title="注销，将进入回收站">
                 <Button
                   type="text"
@@ -631,7 +630,7 @@ const StudioMenu = (props: any) => {
                   onClick={toCancelTask}
                 />
               </Tooltip>:undefined
-            }{current.task.step == TASKSTEPS.CANCEL ?
+            }{current.task.step == JOB_LIFE_CYCLE.CANCEL ?
               <Tooltip title="恢复，将进入维护模式">
                 <Button
                   type="text"

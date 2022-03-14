@@ -15,6 +15,7 @@ import Config from "@/pages/DevOps/JobInfo/Config";
 import JobStatus, {isStatusDone} from "@/components/Common/JobStatus";
 import {cancelJob, offLineTask, restartJob} from "@/components/Studio/StudioEvent/DDL";
 import {CODE} from "@/components/Common/crud";
+import JobLifeCycle from "@/components/Common/JobLifeCycle";
 
 const {Link} = Typography;
 
@@ -154,7 +155,7 @@ const JobInfo = (props: any) => {
   return (
     <PageContainer
       header={{
-        title: `${job?.instance?.name}`,
+        title: (<><JobLifeCycle step={job?.instance?.step}/>{job?.instance?.name}</>),
         ghost: true,
         extra: getButtons(),
       }}

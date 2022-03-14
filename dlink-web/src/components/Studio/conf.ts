@@ -101,19 +101,3 @@ export const isOnline = (type: string) => {
   }
 }
 
-export const TASKSTEPS = {
-  UNKNOWN: 0,
-  CREATE: 1,
-  DEVELOP: 2,
-  DEBUG: 3,
-  RELEASE: 4,
-  ONLINE: 5,
-  CANCEL: 6,
-};
-
-export const isDeletedTask = (step: number) => {
-  if (step && step === TASKSTEPS.CANCEL) {
-    return true;
-  }
-  return false;
-};
