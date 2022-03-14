@@ -746,6 +746,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增 作业生命周期与任务实例同步联动</Link>
                 </li>
+                <li>
+                  <Link>修复 用户逻辑删除bug</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>
