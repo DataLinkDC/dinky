@@ -46,7 +46,7 @@
         <banner.version>1.0.2</banner.version>
         <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
         <!--<flyway.version>6.4.4</flyway.version>-->
-        <sa-token.version>1.28.0</sa-token.version>
+        <sa-token.version>1.29.0</sa-token.version>
         <commons-lang3.version>3.3.2</commons-lang3.version>
         <httpclient.version>4.4.1</httpclient.version>
         <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
@@ -56,6 +56,7 @@
         <!--  `provided` for product environment ,`compile` for dev environment  -->
         <scope.runtime>provided</scope.runtime>
         <scala.binary.version>2.11</scala.binary.version>
+        <jedis.version>2.9.0</jedis.version>
     </properties>
 
     <dependencyManagement>
@@ -156,6 +157,28 @@
                 <groupId>cn.dev33</groupId>
                 <artifactId>sa-token-spring-boot-starter</artifactId>
                 <version>${sa-token.version}</version>
+            </dependency>
+            <!--sa-token redis持久化 start-->
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-dao-redis-jackson</artifactId>
+                <version>${sa-token.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>redis.clients</groupId>
+                <artifactId>jedis</artifactId>
+                <version>${jedis.version}</version>
+            </dependency>
+            <!-- sa-token redis持久化 end -->
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-dao-redis-jackson</artifactId>
+                <version>${sa-token.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>redis.clients</groupId>
+                <artifactId>jedis</artifactId>
+                <version>2.9.0</version>
             </dependency>
             <dependency>
                 <groupId>com.dlink</groupId>
