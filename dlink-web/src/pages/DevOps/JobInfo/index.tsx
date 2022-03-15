@@ -19,6 +19,7 @@ import JobLifeCycle from "@/components/Common/JobLifeCycle";
 import Exception from "@/pages/DevOps/JobInfo/Exception";
 import FlinkSQL from "@/pages/DevOps/JobInfo/FlinkSQL";
 import Alert from "@/pages/DevOps/JobInfo/Alert";
+import DataMap from "@/pages/DevOps/JobInfo/DataMap";
 
 const {Link} = Typography;
 
@@ -261,7 +262,7 @@ const JobInfo = (props: any) => {
         {tabKey === 'log' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
         {tabKey === 'optimize' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
         {tabKey === 'flinksql' ? <FlinkSQL job={job}/> : undefined}
-        {tabKey === 'datamap' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
+        {tabKey === 'datamap' ? <DataMap job={job} /> : undefined}
         {tabKey === 'olap' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
         {tabKey === 'version' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
         {tabKey === 'alert' ? <Alert job={job} /> : undefined}

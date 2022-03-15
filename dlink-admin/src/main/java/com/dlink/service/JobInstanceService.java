@@ -1,6 +1,7 @@
 package com.dlink.service;
 
 import com.dlink.db.service.ISuperService;
+import com.dlink.explainer.ca.TableCANode;
 import com.dlink.model.JobInfoDetail;
 import com.dlink.model.JobInstance;
 import com.dlink.model.JobInstanceStatus;
@@ -23,4 +24,5 @@ public interface JobInstanceService extends ISuperService<JobInstance> {
 
     JobInfoDetail getJobInfoDetailInfo(JobInstance jobInstance);
 
+    List<TableCANode> getOneTableColumnCA(Integer id);
 }
