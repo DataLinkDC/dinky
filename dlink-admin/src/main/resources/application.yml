@@ -1,8 +1,8 @@
 spring:
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/dlink?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-    username: dlink
-    password: dlink
+    username: root
+    password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
   application:
     name: dlink
@@ -11,7 +11,25 @@ spring:
 #    clean-disabled: true
 ##    baseline-on-migrate: true
 #    table: dlink_schema_history
-
+# Redis配置
+#sa-token如需依赖redis，请打开redis配置和pom.xml、dlink-admin/pom.xml中依赖
+#  redis:
+#    host: localhost
+#    port: 6379
+##    password:
+#    database: 10
+#    jedis:
+#      pool:
+#        # 连接池最大连接数（使用负值表示没有限制）
+#        max-active: 50
+#        # 连接池最大阻塞等待时间（使用负值表示没有限制）
+#        max-wait: 3000
+#        # 连接池中的最大空闲连接数
+#        max-idle: 20
+#        # 连接池中的最小空闲连接数
+#        min-idle: 5
+#    # 连接超时时间（毫秒）
+#    timeout: 5000
 server:
   port: 8888
 
@@ -26,19 +44,18 @@ mybatis-plus:
   ##### mybatis-plus打印完整sql(只适用于开发环境)
 #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
-
 # Sa-Token 配置
 sa-token:
     # token名称 (同时也是cookie名称)
     token-name: satoken
     # token有效期，单位s 默认10小时, -1代表永不过期
-    timeout: 36000
+    timeout: -1
     # token临时有效期 (指定时间内无操作就视为token过期) 单位: 秒
     activity-timeout: -1
     # 是否允许同一账号并发登录 (为true时允许一起登录, 为false时新登录挤掉旧登录)
-    is-concurrent: false
+    is-concurrent: true
     # 在多人登录同一账号时，是否共用一个token (为true时所有登录共用一个token, 为false时每次登录新建一个token)
-    is-share: true
+    is-share: false
     # token风格
     token-style: uuid
     # 是否输出操作日志
