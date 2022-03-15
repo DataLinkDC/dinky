@@ -116,10 +116,10 @@
 <!--            <groupId>cn.dev33</groupId>-->
 <!--            <artifactId>sa-token-dao-redis-jackson</artifactId>-->
 <!--        </dependency>-->
-        <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>redis.clients</groupId>-->
+<!--            <artifactId>jedis</artifactId>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
