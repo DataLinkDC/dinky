@@ -68,7 +68,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
             <Option value={RUN_MODE.STANDALONE}>Standalone</Option>
             <Option value={RUN_MODE.YARN_SESSION}>Yarn Session</Option>
             <Option value={RUN_MODE.YARN_PER_JOB}>Yarn Per-Job</Option>
-            <Option value={RUN_MODE.YARN_SESSION}>Yarn Application</Option>
+            <Option value={RUN_MODE.YARN_APPLICATION}>Yarn Application</Option>
             <Option value={RUN_MODE.KUBERNETES_SESSION}>Kubernetes Session</Option>
             <Option value={RUN_MODE.KUBERNETES_APPLICATION}>Kubernetes Application</Option>
           </Select>
