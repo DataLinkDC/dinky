@@ -11,7 +11,25 @@ spring:
 #    clean-disabled: true
 ##    baseline-on-migrate: true
 #    table: dlink_schema_history
-
+  # Redis配置
+  #sa-token如需依赖redis，请打开redis配置和pom.xml、dlink-admin/pom.xml中依赖
+  # redis:
+  #   host: localhost
+  #   port: 6379
+  #   password:
+  #   database: 10
+  #   jedis:
+  #     pool:
+  #       # 连接池最大连接数（使用负值表示没有限制）
+  #       max-active: 50
+  #       # 连接池最大阻塞等待时间（使用负值表示没有限制）
+  #       max-wait: 3000
+  #       # 连接池中的最大空闲连接数
+  #       max-idle: 20
+  #       # 连接池中的最小空闲连接数
+  #       min-idle: 5
+  #   # 连接超时时间（毫秒）
+  #   timeout: 5000
 server:
   port: 8888
 
