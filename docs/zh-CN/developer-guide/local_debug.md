@@ -115,11 +115,11 @@ Dinky开发环境配置有两种模式，分别是product环境和compile环境
 - 如果要基于二进制包进行开发，需要切换到对应的分支代码，如0.5.1；
 - 如果想要开发新代码，切换到dev分支即可；
 
-下面说明在启动前如何修改相应的代码，为本地启动做准备。
+下面说明在启动前如何修改相应的代码，为本地启动做准备。修改
 
-### dlink-core模块修改
+### 修改pom文件
 
-需要修改 dlink-core模块下的pom文件，下面以本地开发为例，修改如下：
+需要修改 dlink根目录下的pom文件，下面以本地开发为例，修改如下：
 
 ```
 <properties>
@@ -131,21 +131,6 @@ Dinky开发环境配置有两种模式，分别是product环境和compile环境
         <scope.runtime>compile</scope.runtime>
     </properties>
 ```
-
-###  dlink-admin模块修改
-
-- 可在该 pom 下按功能添加其他 Dlink 子组件依赖以及 Flink 和 Hadoop 的第三方依赖。
-
-- 如使用 MySQL数据源及元数据功能，则添加以下内容：
-
-```xml
-        <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-metadata-mysql</artifactId>
-        </dependency>
-```
-
-如使用 Flink Hive 等其他连接器功能，则需要添加相关依赖
 
 #### 修改配置文件
 

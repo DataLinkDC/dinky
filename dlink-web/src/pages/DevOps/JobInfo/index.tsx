@@ -13,7 +13,12 @@ import moment from "moment";
 import BaseInfo from "@/pages/DevOps/JobInfo/BaseInfo";
 import Config from "@/pages/DevOps/JobInfo/Config";
 import JobStatus, {isStatusDone} from "@/components/Common/JobStatus";
-import {cancelJob, restartJob, savepointJob} from "@/components/Studio/StudioEvent/DDL";
+import {cancelJob, offLineTask, restartJob} from "@/components/Studio/StudioEvent/DDL";
+import {CODE} from "@/components/Common/crud";
+import JobLifeCycle from "@/components/Common/JobLifeCycle";
+import Exception from "@/pages/DevOps/JobInfo/Exception";
+import FlinkSQL from "@/pages/DevOps/JobInfo/FlinkSQL";
+import Alert from "@/pages/DevOps/JobInfo/Alert";
 
 const {Link} = Typography;
 
@@ -65,7 +70,7 @@ const JobInfo = (props: any) => {
           if (!job?.cluster?.id) return;
           const res = cancelJob(job?.cluster?.id, job?.instance?.jid);
           res.then((result) => {
-            if (result.datas == true) {
+            if (result.code == CODE.SUCCESS) {
               message.success(key+"成功");
               handleGetJobInfoDetail();
             } else {
@@ -83,9 +88,9 @@ const JobInfo = (props: any) => {
       cancelText: '取消',
       onOk: async () => {
         if (!job?.cluster?.id) return;
-        const res = savepointJob(job?.cluster?.id, job?.instance?.jid,key,key,job?.instance?.taskId);
+        const res = offLineTask(job?.instance?.taskId,key);
         res.then((result) => {
-          if (result.datas == true) {
+          if (result.code == CODE.SUCCESS) {
             message.success(key+"成功");
             handleGetJobInfoDetail();
           } else {
@@ -106,7 +111,7 @@ const JobInfo = (props: any) => {
         if (!job?.cluster?.id) return;
         const res = restartJob(job?.instance?.taskId);
         res.then((result) => {
-          if (result.datas.success == true) {
+          if (result.code == CODE.SUCCESS) {
             message.success("重新上线成功");
           } else {
             message.error("重新上线失败");
@@ -127,9 +132,9 @@ const JobInfo = (props: any) => {
           FlinkWebUI
         </Link></Button>);
     }
-    buttons.push(<Button key="autorestart" type="primary" onClick={handleRestart}>重新上线</Button>);
+    buttons.push(<Button key="autorestart" type="primary" onClick={handleRestart}>重新{job?.instance?.step == 5?'上线':'启动'}</Button>);
     if(!isStatusDone(job?.instance?.status as string)){
-      buttons.push(<Button key="autostop" type="primary" danger onClick={()=>{handleSavepoint('cancel')}}>下线</Button>);
+      buttons.push(<Button key="autostop" type="primary" danger onClick={()=>{handleSavepoint('cancel')}}>{job?.instance?.step == 5?'下线':'智能停止'}</Button>);
       buttons.push(<Dropdown
         key="dropdown"
         trigger={['click']}
@@ -153,7 +158,7 @@ const JobInfo = (props: any) => {
   return (
     <PageContainer
       header={{
-        title: `${job?.instance?.name}`,
+        title: (<><JobLifeCycle step={job?.instance?.step}/>{job?.instance?.name}</>),
         ghost: true,
         extra: getButtons(),
       }}
@@ -252,14 +257,14 @@ const JobInfo = (props: any) => {
         {tabKey === 'config' ? <Config job={job}/> : undefined}
         {tabKey === 'cluster' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
         {tabKey === 'snapshot' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
-        {tabKey === 'exception' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
+        {tabKey === 'exception' ? <Exception job={job}/> : undefined}
         {tabKey === 'log' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
         {tabKey === 'optimize' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
-        {tabKey === 'flinksql' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
+        {tabKey === 'flinksql' ? <FlinkSQL job={job}/> : undefined}
         {tabKey === 'datamap' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
         {tabKey === 'olap' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
         {tabKey === 'version' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
-        {tabKey === 'alert' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
+        {tabKey === 'alert' ? <Alert job={job} /> : undefined}
       </ProCard>
     </PageContainer>
   );

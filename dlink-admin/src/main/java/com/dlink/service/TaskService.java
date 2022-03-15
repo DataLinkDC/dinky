@@ -22,6 +22,8 @@ public interface TaskService extends ISuperService<Task> {
 
     JobResult submitTask(Integer id);
 
+    JobResult submitTaskToOnline(Integer id);
+
     JobResult restartTask(Integer id);
 
     List<SqlExplainResult> explainTask(Integer id);
@@ -40,11 +42,11 @@ public interface TaskService extends ISuperService<Task> {
 
     boolean developTask(Integer id);
 
-    boolean onLineTask(Integer id);
+    Result onLineTask(Integer id);
 
-    boolean offLineTask(Integer id);
+    Result offLineTask(Integer id, String type);
 
-    boolean cancelTask(Integer id);
+    Result cancelTask(Integer id);
 
     boolean recoveryTask(Integer id);
 

@@ -8,6 +8,8 @@ package com.dlink.constant;
  **/
 public final class FlinkRestAPIConstant {
 
+    public static final String OVERVIEW = "overview";
+
     public static final String FLINK_CONFIG = "config";
 
     public static final String CONFIG = "/config";
@@ -27,5 +29,19 @@ public final class FlinkRestAPIConstant {
     public static final String STOP = "/stop";
 
     public static final String EXCEPTIONS = "/exceptions?maxExceptions=10";
+
+    public static final String JOB_MANAGER = "/jobmanager/";
+
+    public static final String TASK_MANAGER = "/taskmanagers/";
+
+    public static final String METRICS = "/metrics/";
+
+    public static final String LOG = "/log/";
+
+    public static final String LOGS = "/logs/";
+
+    public static final String STDOUT = "/stdout/";
+
+    public static final String THREAD_DUMP = "/thread-dump/";
 
 }

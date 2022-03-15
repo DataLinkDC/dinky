@@ -6,12 +6,24 @@ import {useEffect, useState} from "react";
 import {StatusCount} from "@/pages/DevOps/data";
 import {JOB_STATUS} from "@/components/Common/JobStatus";
 
+import {Form, Switch} from "antd";
+
 const { Statistic } = StatisticCard;
 
 const DevOps = (props:any) => {
 
+  const [isHistory, setIsHistory] = useState<boolean>(false);
+
+  const handleHistorySwicthChange = (checked: boolean) => {
+    setIsHistory(checked);
+  };
+
+  const renderSwitch = () => {
+    return (<Switch checkedChildren="历史" unCheckedChildren="实例" onChange={handleHistorySwicthChange}/>);
+  };
+
   const statusCountDefault = [
-    { key: '', title: '全部', value: 0, total: true },
+    { key: '', title: renderSwitch(), value: 0, total: true },
     { key: JOB_STATUS.CREATED, status: 'default', title: '已创建', value: 0 },
     { key: JOB_STATUS.INITIALIZING, status: 'default', title: '初始化', value: 0 },
     { key: JOB_STATUS.RUNNING, status: 'success', title: '运行中', value: 0 },
@@ -25,14 +37,31 @@ const DevOps = (props:any) => {
     { key: JOB_STATUS.UNKNOWN, status: 'default', title: '未知', value: 0 },
   ];
   const [statusCount, setStatusCount] = useState<any[]>(statusCountDefault);
+  const [statusHistoryCount, setStatusHistoryCount] = useState<any[]>(statusCountDefault);
   const [activeKey, setActiveKey] = useState<string>('');
 
   const refreshStatusCount = () => {
     const res = getStatusCount();
     res.then((result)=>{
-      const statusCountData: StatusCount = result.datas;
+      const statusHistoryCountData: StatusCount = result.datas.history;
+      const historyItems: any = [
+        { key: '', title: renderSwitch(), value: statusHistoryCountData.all, total: true },
+        { key: JOB_STATUS.CREATED, status: 'default', title: '已创建', value: statusHistoryCountData.created },
+        { key: JOB_STATUS.INITIALIZING, status: 'default', title: '初始化', value: statusHistoryCountData.initializing },
+        { key: JOB_STATUS.RUNNING, status: 'success', title: '运行中', value: statusHistoryCountData.running },
+        { key: JOB_STATUS.FINISHED, status: 'processing', title: '已完成', value: statusHistoryCountData.finished },
+        { key: JOB_STATUS.FAILING, status: 'error', title: '异常中', value: statusHistoryCountData.failing },
+        { key: JOB_STATUS.FAILED, status: 'error', title: '已异常', value: statusHistoryCountData.failed },
+        { key: JOB_STATUS.SUSPENDED, status: 'warning', title: '已暂停', value: statusHistoryCountData.suspended },
+        { key: JOB_STATUS.CANCELLING, status: 'warning', title: '停止中', value: statusHistoryCountData.cancelling },
+        { key: JOB_STATUS.CANCELED, status: 'warning', title: '停止', value: statusHistoryCountData.canceled },
+        { key: JOB_STATUS.RESTARTING, status: 'default', title: '重启中', value: statusHistoryCountData.restarting },
+        { key: JOB_STATUS.UNKNOWN, status: 'default', title: '未知', value: statusHistoryCountData.unknown },
+      ];
+      setStatusHistoryCount(historyItems);
+      const statusCountData: StatusCount = result.datas.instance;
       const items: any = [
-        { key: '', title: '全部', value: statusCountData.all, total: true },
+        { key: '', title: renderSwitch(), value: statusCountData.all, total: true },
         { key: JOB_STATUS.CREATED, status: 'default', title: '已创建', value: statusCountData.created },
         { key: JOB_STATUS.INITIALIZING, status: 'default', title: '初始化', value: statusCountData.initializing },
         { key: JOB_STATUS.RUNNING, status: 'success', title: '运行中', value: statusCountData.running },
@@ -65,7 +94,7 @@ const DevOps = (props:any) => {
         },
       }}
     >
-      {statusCount.map((item) => (
+      {(isHistory?statusHistoryCount:statusCount).map((item) => (
         <ProCard.TabPane
           style={{ width: '100%' }}
           key={item.key}
@@ -86,7 +115,7 @@ const DevOps = (props:any) => {
               backgroundColor: '#fafafa',
             }}
           >
-            <JobInstanceTable status={item.key} activeKey={activeKey}/>
+            <JobInstanceTable status={item.key} activeKey={activeKey} isHistory={isHistory}/>
           </div>
         </ProCard.TabPane>
       ))}

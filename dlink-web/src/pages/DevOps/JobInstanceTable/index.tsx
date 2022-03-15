@@ -1,29 +1,57 @@
-import {Tag} from 'antd';
 import { history } from 'umi';
-import {
-  CheckCircleOutlined,
-  SyncOutlined, CloseCircleOutlined, MinusCircleOutlined, ClockCircleOutlined, DownOutlined
-} from "@ant-design/icons";
 import {queryData} from "@/components/Common/crud";
-import React, {useState} from "react";
-import type { ProColumns } from '@ant-design/pro-table';
+import React, {useState, useRef, useEffect} from "react";
+import type { ProColumns,ActionType } from '@ant-design/pro-table';
 import ProTable from "@ant-design/pro-table";
 import {JobInstanceTableListItem} from "@/pages/DevOps/data";
 import moment from 'moment';
 import {RUN_MODE} from "@/components/Studio/conf";
 import JobStatus from "@/components/Common/JobStatus";
+import JobLifeCycle, {JOB_LIFE_CYCLE} from "@/components/Common/JobLifeCycle";
 
 const url = '/api/jobInstance';
 const JobInstanceTable = (props: any) => {
 
-  const {status, activeKey, dispatch} = props;
+  const {status, activeKey,isHistory, dispatch} = props;
   const [time, setTime] = useState(() => Date.now());
+  const ref = useRef<ActionType>();
+
+  useEffect(() => {
+    ref?.current?.reload();
+  }, [isHistory]);
 
   const getColumns = () => {
     const columns: ProColumns<JobInstanceTableListItem>[]  = [{
       title: "作业名",
       dataIndex: "name",
       sorter: true,
+    },{
+      title: "生命周期",
+      dataIndex: "step",
+      sorter: true,
+      valueType: 'radio',
+      valueEnum: {
+        '': {text: '全部', status: 'ALL'},
+        2: {
+          text: '开发中',
+          status: JOB_LIFE_CYCLE.DEVELOP,
+        },
+        4: {
+          text: '已发布',
+          status: JOB_LIFE_CYCLE.RELEASE,
+        },
+        5: {
+          text: '已上线',
+          status: JOB_LIFE_CYCLE.ONLINE,
+        },
+        0: {
+          text: '未知',
+          status: JOB_LIFE_CYCLE.UNKNOWN,
+        },
+      },
+      render: (_, row) => {
+        return (<JobLifeCycle step={row.step}/>);
+      }
     },{
       title: "运行模式",
       dataIndex: "type",
@@ -110,9 +138,10 @@ const JobInstanceTable = (props: any) => {
 
   return (
     <><ProTable
+      actionRef={ref}
       request={(params, sorter, filter) => {
         setTime(Date.now());
-        return queryData(url, {...params,status, sorter: {id: 'descend'}, filter});
+        return queryData(url, {...params,status,isHistory, sorter: {id: 'descend'}, filter});
       }}
       columns={getColumns()}
       size="small"

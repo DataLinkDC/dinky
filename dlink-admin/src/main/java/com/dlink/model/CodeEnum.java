@@ -8,7 +8,8 @@ package com.dlink.model;
  */
 public enum CodeEnum {
     SUCCESS(0),
-    ERROR(1);
+    ERROR(1),
+    NOTLOGIN(401);
 
     private Integer code;
     CodeEnum(Integer code){

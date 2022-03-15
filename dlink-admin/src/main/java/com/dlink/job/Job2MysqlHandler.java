@@ -74,6 +74,7 @@ public class Job2MysqlHandler implements JobHandler {
     @Override
     public boolean success() {
         Job job = JobContextHolder.getJob();
+        Integer taskId = job.getJobConfig().getTaskId();
         History history = new History();
         history.setId(job.getId());
         if (job.isUseGateway() && Asserts.isNullString(job.getJobId())) {
@@ -96,7 +97,7 @@ public class Job2MysqlHandler implements JobHandler {
         if (job.isUseGateway()) {
             cluster = clusterService.registersCluster(Cluster.autoRegistersCluster(job.getJobManagerAddress(),
                     job.getJobId(), job.getJobConfig().getJobName() + LocalDateTime.now(), job.getType().getLongValue(),
-                    job.getJobConfig().getClusterConfigurationId(), job.getJobConfig().getTaskId()));
+                    job.getJobConfig().getClusterConfigurationId(), taskId));
             if (Asserts.isNotNull(cluster)) {
                 clusterId = cluster.getId();
             }
@@ -118,13 +119,15 @@ public class Job2MysqlHandler implements JobHandler {
                 JobInstance jobInstance = history.buildJobInstance();
                 jobInstance.setHistoryId(job.getId());
                 jobInstance.setClusterId(clusterId);
-                jobInstance.setTaskId(job.getJobConfig().getTaskId());
+                jobInstance.setTaskId(taskId);
                 jobInstance.setName(job.getJobConfig().getJobName());
                 jobInstance.setJid(jid);
+                jobInstance.setStep(job.getJobConfig().getStep());
                 jobInstance.setStatus(JobStatus.INITIALIZING.getValue());
                 jobInstanceService.save(jobInstance);
+                job.setJobInstanceId(jobInstance.getId());
                 Task task = new Task();
-                task.setId(jobInstance.getTaskId());
+                task.setId(taskId);
                 task.setJobInstanceId(jobInstance.getId());
                 taskService.updateById(task);
                 JobHistory jobHistory = new JobHistory();

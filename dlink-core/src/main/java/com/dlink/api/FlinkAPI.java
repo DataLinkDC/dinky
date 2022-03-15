@@ -12,6 +12,7 @@ import com.dlink.gateway.result.SavePointResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,9 +46,20 @@ public class FlinkAPI {
         return result;
     }
 
-    private JsonNode get(String route){
+    private JsonNode get(String route) {
         String res = HttpUtil.get(NetConstant.HTTP + address + NetConstant.SLASH + route, NetConstant.SERVER_TIME_OUT_ACTIVE);
         return parse(res);
+    }
+
+    /**
+     * get请求获取jobManger/TaskManager的日志 (结果为字符串并不是json格式)
+     *
+     * @param route
+     * @return
+     */
+    private String getResult(String route) {
+        String res = HttpUtil.get(NetConstant.HTTP + address + NetConstant.SLASH + route, NetConstant.SERVER_TIME_OUT_ACTIVE);
+        return res;
     }
 
     private JsonNode post(String route, String body) {
@@ -56,7 +68,7 @@ public class FlinkAPI {
     }
 
     private JsonNode patch(String route, String body) {
-        String res = HttpUtil.createRequest(Method.PATCH,NetConstant.HTTP + address + NetConstant.SLASH + route).timeout(NetConstant.SERVER_TIME_OUT_ACTIVE).body(body).execute().body();
+        String res = HttpUtil.createRequest(Method.PATCH, NetConstant.HTTP + address + NetConstant.SLASH + route).timeout(NetConstant.SERVER_TIME_OUT_ACTIVE).body(body).execute().body();
         return parse(res);
     }
 
@@ -72,27 +84,27 @@ public class FlinkAPI {
         return joblist;
     }
 
-    public boolean stop(String jobId){
-        get(FlinkRestAPIConstant.JOBS+jobId+FlinkRestAPIConstant.CANCEL);
+    public boolean stop(String jobId) {
+        get(FlinkRestAPIConstant.JOBS + jobId + FlinkRestAPIConstant.CANCEL);
         return true;
     }
 
-    public SavePointResult savepoints(String jobId, String savePointType){
+    public SavePointResult savepoints(String jobId, String savePointType) {
         SavePointType type = SavePointType.get(savePointType);
         String paramType = null;
         SavePointResult result = SavePointResult.build(GatewayType.YARN_PER_JOB);
         JobInfo jobInfo = new JobInfo(jobId);
         Map<String, Object> paramMap = new HashMap<>();
-        switch (type){
+        switch (type) {
             case CANCEL:
                 jobInfo.setStatus(JobInfo.JobStatus.CANCEL);
             case STOP:
-                paramMap.put("drain",false);
+                paramMap.put("drain", false);
                 paramType = FlinkRestAPIConstant.STOP;
                 jobInfo.setStatus(JobInfo.JobStatus.STOP);
                 break;
             case TRIGGER:
-                paramMap.put("cancel-job",false);
+                paramMap.put("cancel-job", false);
                 //paramMap.put("target-directory","hdfs:///flink13/ss1");
                 paramType = FlinkRestAPIConstant.SAVEPOINTS;
                 jobInfo.setStatus(JobInfo.JobStatus.RUN);
@@ -111,17 +123,17 @@ public class FlinkAPI {
                 Thread.sleep(1000);
                 JsonNode node = get(FlinkRestAPIConstant.JOBS + jobId + FlinkRestAPIConstant.SAVEPOINTS + NetConstant.SLASH + triggerid);
                 String status = node.get("status").get("id").asText();
-                if(Asserts.isEquals(status,"IN_PROGRESS")){
+                if (Asserts.isEquals(status, "IN_PROGRESS")) {
                     continue;
                 }
-                if(node.get("operation").has("failure-cause")) {
+                if (node.get("operation").has("failure-cause")) {
                     String failureCause = node.get("operation").get("failure-cause").asText();
                     if (Asserts.isNotNullString(failureCause)) {
                         result.fail(failureCause);
                         break;
                     }
                 }
-                if(node.get("operation").has("location")) {
+                if (node.get("operation").has("location")) {
                     String location = node.get("operation").get("location").asText();
                     List<JobInfo> jobInfos = new ArrayList<>();
                     jobInfo.setSavePoint(location);
@@ -143,23 +155,71 @@ public class FlinkAPI {
         return result.get("flink-version").asText();
     }
 
+    public JsonNode getOverview() {
+        return get(FlinkRestAPIConstant.OVERVIEW);
+    }
+
     public JsonNode getJobInfo(String jobId) {
-        return get(FlinkRestAPIConstant.JOBS+jobId);
+        return get(FlinkRestAPIConstant.JOBS + jobId);
     }
 
     public JsonNode getException(String jobId) {
-        return get(FlinkRestAPIConstant.JOBS+jobId+FlinkRestAPIConstant.EXCEPTIONS);
+        return get(FlinkRestAPIConstant.JOBS + jobId + FlinkRestAPIConstant.EXCEPTIONS);
     }
 
     public JsonNode getCheckPoints(String jobId) {
-        return get(FlinkRestAPIConstant.JOBS+jobId+FlinkRestAPIConstant.CHECKPOINTS);
+        return get(FlinkRestAPIConstant.JOBS + jobId + FlinkRestAPIConstant.CHECKPOINTS);
     }
 
     public JsonNode getCheckPointsConfig(String jobId) {
-        return get(FlinkRestAPIConstant.JOBS+jobId+FlinkRestAPIConstant.CHECKPOINTS_CONFIG);
+        return get(FlinkRestAPIConstant.JOBS + jobId + FlinkRestAPIConstant.CHECKPOINTS_CONFIG);
     }
 
     public JsonNode getJobsConfig(String jobId) {
-        return get(FlinkRestAPIConstant.JOBS+jobId+FlinkRestAPIConstant.CONFIG);
+        return get(FlinkRestAPIConstant.JOBS + jobId + FlinkRestAPIConstant.CONFIG);
+    }
+
+    public JsonNode getJobManagerMetrics() {
+        return get(FlinkRestAPIConstant.JOB_MANAGER + FlinkRestAPIConstant.METRICS);
+    }
+
+    public JsonNode getJobManagerConfig() {
+        return get(FlinkRestAPIConstant.JOB_MANAGER + FlinkRestAPIConstant.CONFIG);
+    }
+
+    public String getJobManagerLog() {
+        return getResult(FlinkRestAPIConstant.JOB_MANAGER + FlinkRestAPIConstant.LOG);
+    }
+
+    public String getJobManagerStdOut() {
+        return getResult(FlinkRestAPIConstant.JOB_MANAGER + FlinkRestAPIConstant.STDOUT);
+    }
+
+    public JsonNode getJobManagerLogList() {
+        return get(FlinkRestAPIConstant.JOB_MANAGER + FlinkRestAPIConstant.LOGS);
+    }
+
+    public JsonNode getTaskManagers() {
+        return get(FlinkRestAPIConstant.TASK_MANAGER);
+    }
+
+    public JsonNode getTaskManagerMetrics(String containerId) {
+        return get(FlinkRestAPIConstant.TASK_MANAGER + containerId + FlinkRestAPIConstant.METRICS);
+    }
+
+    public String getTaskManagerLog(String containerId) {
+        return getResult(FlinkRestAPIConstant.TASK_MANAGER + containerId + FlinkRestAPIConstant.LOG);
+    }
+
+    public String getTaskManagerStdOut(String containerId) {
+        return getResult(FlinkRestAPIConstant.TASK_MANAGER + containerId + FlinkRestAPIConstant.STDOUT);
+    }
+
+    public JsonNode getTaskManagerLogList(String containerId) {
+        return get(FlinkRestAPIConstant.TASK_MANAGER + containerId + FlinkRestAPIConstant.LOGS);
+    }
+
+    public JsonNode getTaskManagerThreadDump(String containerId) {
+        return get(FlinkRestAPIConstant.TASK_MANAGER + containerId + FlinkRestAPIConstant.THREAD_DUMP);
     }
 }

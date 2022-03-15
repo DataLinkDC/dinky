@@ -1,7 +1,5 @@
 package com.dlink.daemon.entity;
 
-import javafx.concurrent.Task;
-
 import java.util.LinkedList;
 
 public class TaskQueue<T> {

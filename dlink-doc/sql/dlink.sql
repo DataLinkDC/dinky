@@ -313,6 +313,7 @@ create table dlink_job_instance
         primary key,
     name                 varchar(255) null comment '作业实例名',
     task_id              int         null comment 'taskID',
+    step              int         null comment '生命周期',
     cluster_id           int         null comment '集群ID',
     jid                  varchar(50) null comment 'FlinkJobId',
     status               varchar(50) null comment '实例状态',
@@ -385,5 +386,7 @@ create table dlink_job_history
     update_time datetime null comment '更新时间'
 )
     comment 'Job历史详情';
+
+CREATE INDEX dlink_job_instance_task_id_IDX USING BTREE ON dlink_job_instance (task_id);
 
 SET FOREIGN_KEY_CHECKS = 1;

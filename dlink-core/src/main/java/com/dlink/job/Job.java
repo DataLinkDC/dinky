@@ -20,6 +20,7 @@ import java.util.List;
 @Setter
 public class Job {
     private Integer id;
+    private Integer jobInstanceId;
     private JobConfig jobConfig;
     private String jobManagerAddress;
     private JobStatus status;
@@ -59,6 +60,6 @@ public class Job {
     }
 
     public JobResult getJobResult() {
-        return new JobResult(id, jobConfig, jobManagerAddress, status, statement, jobId, error, result, startTime, endTime);
+        return new JobResult(id, jobInstanceId, jobConfig, jobManagerAddress, status, statement, jobId, error, result, startTime, endTime);
     }
 }

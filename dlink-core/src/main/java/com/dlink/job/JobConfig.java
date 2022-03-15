@@ -27,6 +27,8 @@ public class JobConfig {
 
     // flink run mode
     private String type;
+    // task JobLifeCycle
+    private Integer step;
     private boolean useResult;
     private boolean useChangeLog;
     private boolean useAutoCancel;
@@ -126,11 +128,12 @@ public class JobConfig {
         this.maxRowNum = maxRowNum;
     }
 
-    public JobConfig(String type,boolean useResult, boolean useSession, boolean useRemote, Integer clusterId,
+    public JobConfig(String type, Integer step,boolean useResult, boolean useSession, boolean useRemote, Integer clusterId,
                      Integer clusterConfigurationId, Integer jarId, Integer taskId, String jobName, boolean useSqlFragment,
                      boolean useStatementSet,boolean useBatchModel,Integer checkpoint, Integer parallelism, Integer savePointStrategyValue,
                      String savePointPath,Map<String,String> config) {
         this.type = type;
+        this.step = step;
         this.useResult = useResult;
         this.useSession = useSession;
         this.useRemote = useRemote;

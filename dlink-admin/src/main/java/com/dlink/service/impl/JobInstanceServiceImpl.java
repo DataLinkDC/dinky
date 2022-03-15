@@ -44,8 +44,13 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     private JobHistoryService jobHistoryService;
 
     @Override
-    public JobInstanceStatus getStatusCount() {
-        List<JobInstanceCount> jobInstanceCounts = baseMapper.countStatus();
+    public JobInstanceStatus getStatusCount(boolean isHistory) {
+        List<JobInstanceCount> jobInstanceCounts = null;
+        if(isHistory){
+            jobInstanceCounts = baseMapper.countHistoryStatus();
+        }else{
+            jobInstanceCounts = baseMapper.countStatus();
+        }
         JobInstanceStatus jobInstanceStatus = new JobInstanceStatus();
         Integer total = 0;
         for (JobInstanceCount item : jobInstanceCounts) {

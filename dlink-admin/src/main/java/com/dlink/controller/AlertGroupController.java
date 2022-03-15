@@ -3,7 +3,9 @@ package com.dlink.controller;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
 import com.dlink.model.AlertGroup;
+import com.dlink.model.AlertHistory;
 import com.dlink.service.AlertGroupService;
+import com.dlink.service.AlertHistoryService;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,8 @@ import java.util.List;
 public class AlertGroupController {
     @Autowired
     private AlertGroupService alertGroupService;
+    @Autowired
+    private AlertHistoryService alertHistoryService;
 
     /**
      * 新增或者更新
@@ -89,5 +93,13 @@ public class AlertGroupController {
     @GetMapping("/listEnabledAll")
     public Result listEnabledAll() {
         return Result.succeed(alertGroupService.listEnabledAll(),"获取成功");
+    }
+
+    /**
+     * 动态查询列表
+     */
+    @PostMapping("/history")
+    public ProTableResult<AlertHistory> listAlertHistory(@RequestBody JsonNode para) {
+        return alertHistoryService.selectForProTable(para);
     }
 }

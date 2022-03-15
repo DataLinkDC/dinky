@@ -80,6 +80,7 @@ export type TaskType = {
   databaseName?: string,
   jarId?: number,
   envId?: number,
+  jobInstanceId?: number,
   note?: string,
   enabled?: boolean,
   createTime?: Date,
@@ -189,6 +190,7 @@ export type ModelType = {
     saveEnv: Reducer<StateType>;
     saveChart: Reducer<StateType>;
     changeTaskStep: Reducer<StateType>;
+    changeTaskJobInstance: Reducer<StateType>;
   };
 };
 
@@ -503,6 +505,23 @@ const Model: ModelType = {
       for (let i = 0; i < newTabs.panes.length; i++) {
         if (newTabs.panes[i].task.id == payload.id) {
           newTabs.panes[i].task.step = payload.step;
+          if(newCurrent.key == newTabs.panes[i].key){
+            newCurrent = newTabs.panes[i];
+          }
+        }
+      }
+      return {
+        ...state,
+        current: {...newCurrent},
+        tabs: {...newTabs},
+      };
+    },
+    changeTaskJobInstance(state, {payload}) {
+      const newTabs = state.tabs;
+      let newCurrent = state.current;
+      for (let i = 0; i < newTabs.panes.length; i++) {
+        if (newTabs.panes[i].task.id == payload.id) {
+          newTabs.panes[i].task.jobInstanceId = payload.jobInstanceId;
           if(newCurrent.key == newTabs.panes[i].key){
             newCurrent = newTabs.panes[i];
           }

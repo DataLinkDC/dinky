@@ -19,6 +19,7 @@ import com.dlink.gateway.config.SavePointStrategy;
 import com.dlink.gateway.config.SavePointType;
 import com.dlink.gateway.model.JobInfo;
 import com.dlink.gateway.result.SavePointResult;
+import com.dlink.job.Job;
 import com.dlink.job.JobConfig;
 import com.dlink.job.JobManager;
 import com.dlink.job.JobResult;
@@ -100,10 +101,28 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
+    public JobResult submitTaskToOnline(Integer id) {
+        Task task = this.getTaskInfoById(id);
+        Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
+        task.setStep(JobLifeCycle.ONLINE.getValue());
+        if (Dialect.isSql(task.getDialect())) {
+            return executeCommonSql(SqlDTO.build(task.getStatement(),
+                    task.getDatabaseId(), null));
+        }
+        JobConfig config = buildJobConfig(task);
+        JobManager jobManager = JobManager.build(config);
+        if (!config.isJarTask()) {
+            return jobManager.executeSql(task.getStatement());
+        } else {
+            return jobManager.executeJar();
+        }
+    }
+
+    @Override
     public JobResult restartTask(Integer id) {
         Task task = this.getTaskInfoById(id);
         Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
-        if(Asserts.isNotNull(task.getJobInstanceId())&&task.getJobInstanceId()!=0){
+        if (Asserts.isNotNull(task.getJobInstanceId()) && task.getJobInstanceId() != 0) {
             savepointTask(task, SavePointType.CANCEL.getValue());
         }
         if (Dialect.isSql(task.getDialect())) {
@@ -291,15 +310,15 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Assert.check(task);
         if (JobLifeCycle.DEVELOP.equalsValue(task.getStep())) {
             List<SqlExplainResult> sqlExplainResults = explainTask(id);
-            for(SqlExplainResult sqlExplainResult: sqlExplainResults){
-                if(!sqlExplainResult.isParseTrue()||!sqlExplainResult.isExplainTrue()){
+            for (SqlExplainResult sqlExplainResult : sqlExplainResults) {
+                if (!sqlExplainResult.isParseTrue() || !sqlExplainResult.isExplainTrue()) {
                     return Result.failed("语法校验和逻辑检查有误，发布失败");
                 }
             }
             task.setStep(JobLifeCycle.RELEASE.getValue());
-            if(updateById(task)){
+            if (updateById(task)) {
                 return Result.succeed("发布成功");
-            }else {
+            } else {
                 return Result.failed("由于未知原因，发布失败");
             }
         }
@@ -318,36 +337,67 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public boolean onLineTask(Integer id) {
+    public Result onLineTask(Integer id) {
         Task task = getById(id);
         Assert.check(task);
         if (JobLifeCycle.RELEASE.equalsValue(task.getStep())) {
-            task.setStep(JobLifeCycle.ONLINE.getValue());
-            return updateById(task);
+            if(Asserts.isNotNull(task.getJobInstanceId())&&task.getJobInstanceId()!=0){
+                return Result.failed("当前发布状态下有作业正在运行，上线失败，请停止后上线");
+            }
+            JobResult jobResult = submitTaskToOnline(id);
+            if (Job.JobStatus.SUCCESS == jobResult.getStatus()) {
+                task.setStep(JobLifeCycle.ONLINE.getValue());
+                task.setJobInstanceId(jobResult.getJobInstanceId());
+                if (updateById(task)) {
+                    return Result.succeed(jobResult,"上线成功");
+                } else {
+                    return Result.failed("由于未知原因，上线失败");
+                }
+            } else {
+                return Result.failed("上线失败，原因：" + jobResult.getError());
+            }
         }
-        return false;
+        return Result.failed("上线失败，作业不存在。");
     }
 
     @Override
-    public boolean offLineTask(Integer id) {
+    public Result offLineTask(Integer id, String type) {
         Task task = getById(id);
         Assert.check(task);
-        if (JobLifeCycle.ONLINE.equalsValue(task.getStep())) {
-            task.setStep(JobLifeCycle.RELEASE.getValue());
-            return updateById(task);
+        if (Asserts.isNullString(type)) {
+            type = SavePointType.CANCEL.getValue();
         }
-        return false;
+        if (savepointTask(id, type)) {
+            if(!JobLifeCycle.ONLINE.equalsValue(task.getStep())){
+                return Result.succeed("停止成功");
+            }
+            task.setStep(JobLifeCycle.RELEASE.getValue());
+            if (updateById(task)) {
+                return Result.succeed("下线成功");
+            } else {
+                return Result.failed("由于未知原因，下线失败");
+            }
+        } else {
+            return Result.failed("SavePoint失败，下线失败");
+        }
     }
 
     @Override
-    public boolean cancelTask(Integer id) {
+    public Result cancelTask(Integer id) {
         Task task = getById(id);
         Assert.check(task);
         if (JobLifeCycle.ONLINE != JobLifeCycle.get(task.getStep())) {
+            if(Asserts.isNotNull(task.getJobInstanceId())&&task.getJobInstanceId()!=0){
+                return Result.failed("当前有作业正在运行，注销失败，请停止后注销");
+            }
             task.setStep(JobLifeCycle.CANCEL.getValue());
-            return updateById(task);
+            if (updateById(task)) {
+                return Result.succeed("注销成功");
+            } else {
+                return Result.failed("由于未知原因，注销失败");
+            }
         }
-        return false;
+        return Result.failed("当前有作业已上线，无法注销，请下线后注销");
     }
 
     @Override
@@ -367,7 +417,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Asserts.checkNotNull(cluster, "该集群不存在");
         Asserts.checkNotNull(task.getJobInstanceId(), "无任务需要SavePoint");
         JobInstance jobInstance = jobInstanceService.getById(task.getJobInstanceId());
-        Asserts.checkNotNull(jobInstance, "任务实例不存在");
+        if(Asserts.isNull(jobInstance)){
+            return true;
+        }
         String jobId = jobInstance.getJid();
         boolean useGateway = false;
         JobConfig jobConfig = new JobConfig();
@@ -382,10 +434,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         jobConfig.setTaskId(task.getId());
         JobManager jobManager = JobManager.build(jobConfig);
         jobManager.setUseGateway(useGateway);
+        if("canceljob".equals(savePointType)){
+            return jobManager.cancel(jobId);
+        }
         SavePointResult savePointResult = jobManager.savepoint(jobId, savePointType, null);
         if (Asserts.isNotNull(savePointResult)) {
             for (JobInfo item : savePointResult.getJobInfos()) {
-                if (Asserts.isEqualsIgnoreCase(jobId, item.getJobId())&&Asserts.isNotNull(jobConfig.getTaskId())) {
+                if (Asserts.isEqualsIgnoreCase(jobId, item.getJobId()) && Asserts.isNotNull(jobConfig.getTaskId())) {
                     Savepoints savepoints = new Savepoints();
                     savepoints.setName(savePointType);
                     savepoints.setType(savePointType);
@@ -401,7 +456,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public boolean savepointTask(Integer taskId, String savePointType) {
-        return savepointTask(getById(taskId),savePointType);
+        return savepointTask(getById(taskId), savePointType);
     }
 
     private JobConfig buildJobConfig(Task task) {
@@ -466,20 +521,20 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     public JobInstance refreshJobInstance(Integer id) {
         JobInstance jobInstance = jobInstanceService.getById(id);
         Asserts.checkNull(jobInstance, "该任务实例不存在");
-        if(JobStatus.isDone(jobInstance.getStatus())){
+        if (JobStatus.isDone(jobInstance.getStatus())) {
             return jobInstance;
         }
         Cluster cluster = clusterService.getById(jobInstance.getClusterId());
         JobHistory jobHistoryJson = jobHistoryService.refreshJobHistory(id, cluster.getJobManagerHost(), jobInstance.getJid());
         JobHistory jobHistory = jobHistoryService.getJobHistoryInfo(jobHistoryJson);
-        if(Asserts.isNull(jobHistory.getJob())||jobHistory.getJob().has(FlinkRestResultConstant.ERRORS)){
+        if (Asserts.isNull(jobHistory.getJob()) || jobHistory.getJob().has(FlinkRestResultConstant.ERRORS)) {
             jobInstance.setStatus(JobStatus.UNKNOWN.getValue());
-        }else{
-            jobInstance.setDuration(jobHistory.getJob().get(FlinkRestResultConstant.JOB_DURATION).asLong()/1000);
+        } else {
+            jobInstance.setDuration(jobHistory.getJob().get(FlinkRestResultConstant.JOB_DURATION).asLong() / 1000);
             jobInstance.setStatus(jobHistory.getJob().get(FlinkRestResultConstant.JOB_STATE).asText());
         }
         jobInstanceService.updateById(jobInstance);
-        if(JobStatus.isDone(jobInstance.getStatus())){
+        if (JobStatus.isDone(jobInstance.getStatus())) {
             handleJobDone(jobInstance);
         }
         return jobInstance;
@@ -490,18 +545,21 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         return jobInstanceService.getJobInfoDetailInfo(refreshJobInstance(id));
     }
 
-    private void handleJobDone(JobInstance jobInstance){
-        if(Asserts.isNull(jobInstance.getTaskId())){
+    private void handleJobDone(JobInstance jobInstance) {
+        if (Asserts.isNull(jobInstance.getTaskId())) {
             return;
         }
-        Task task = new Task();
-        task.setId(jobInstance.getTaskId());
-        task.setJobInstanceId(0);
-        updateById(task);
-        task = getTaskInfoById(jobInstance.getTaskId());
-        if(Asserts.isNotNull(task.getAlertGroupId())){
+        Task task = getTaskInfoById(jobInstance.getTaskId());
+        Task updateTask = new Task();
+        updateTask.setId(jobInstance.getTaskId());
+        updateTask.setJobInstanceId(0);
+        if (!JobLifeCycle.ONLINE.equalsValue(task.getStep())) {
+            updateById(updateTask);
+            return;
+        }
+        if (Asserts.isNotNull(task.getAlertGroupId())) {
             AlertGroup alertGroup = alertGroupService.getAlertGroupInfo(task.getAlertGroupId());
-            if(Asserts.isNotNull(alertGroup)){
+            if (Asserts.isNotNull(alertGroup)) {
                 List<AlertMsg> alertMsgList = new ArrayList<>();
                 AlertMsg alertMsg = new AlertMsg();
                 alertMsg.setType("Flink 实时监控");
@@ -511,17 +569,19 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 alertMsg.setStatus(jobInstance.getStatus());
                 alertMsg.setContent(jobInstance.getJid());
                 alertMsgList.add(alertMsg);
-                for(AlertInstance alertInstance: alertGroup.getInstances()){
-                    sendAlert(alertInstance,jobInstance,task,alertMsgList);
+                for (AlertInstance alertInstance : alertGroup.getInstances()) {
+                    sendAlert(alertInstance, jobInstance, task, alertMsgList);
                 }
             }
         }
+        updateTask.setStep(JobLifeCycle.RELEASE.getValue());
+        updateById(updateTask);
     }
 
-    private void sendAlert(AlertInstance alertInstance,JobInstance jobInstance,Task task,List<AlertMsg> alertMsgList){
+    private void sendAlert(AlertInstance alertInstance, JobInstance jobInstance, Task task, List<AlertMsg> alertMsgList) {
         AlertConfig alertConfig = AlertConfig.build(alertInstance.getName(), alertInstance.getType(), JSONUtil.toMap(alertInstance.getParams()));
         Alert alert = Alert.build(alertConfig);
-        String title = "任务【"+task.getAlias()+"】："+jobInstance.getStatus();
+        String title = "任务【" + task.getAlias() + "】：" + jobInstance.getStatus();
         String content = JSONUtil.toJsonString(alertMsgList);
         AlertResult alertResult = alert.send(title, content);
         AlertHistory alertHistory = new AlertHistory();

@@ -1,9 +1,7 @@
-import React, {useEffect, useState} from 'react';
-import {Form, Button, Input, Modal, Select,Tag,Switch} from 'antd';
+import React, {useState} from 'react';
+import {Button, Form, Input, Modal, Select, Switch, Tag} from 'antd';
 import {AlertGroupTableListItem} from "@/pages/AlertGroup/data";
-import {JarStateType} from "@/pages/Jar/model";
 import {connect} from "umi";
-import {StateType} from "@/pages/FlinkSqlStudio/model";
 import {AlertStateType} from "@/pages/AlertInstance/model";
 import {AlertInstanceTableListItem} from "@/pages/AlertInstance/data";
 import {buildFormData, getFormData} from "@/pages/AlertGroup/function";
@@ -69,7 +67,7 @@ const AlertGroupForm: React.FC<AlertGroupFormProps> = (props) => {
         <Form.Item
           name="alertInstanceIds"
           label="报警实例"
-          help="请选择报警组实例"
+          rules={[{required: true, message: '请选择报警组实例！'}]}
         >
           <Select
             mode="multiple"

@@ -737,6 +737,33 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>优化 IDEA调试时的依赖配置</Link>
                 </li>
+                <li>
+                  <Link>新增 作业上下线自动提交和停止任务</Link>
+                </li>
+                <li>
+                  <Link>修复 用户未登录时后台报错及鉴权问题</Link>
+                </li>
+                <li>
+                  <Link>新增 作业生命周期与任务实例同步联动</Link>
+                </li>
+                <li>
+                  <Link>修复 用户逻辑删除bug</Link>
+                </li>
+                <li>
+                  <Link>新增 运维中心的作业实例与历史切换</Link>
+                </li>
+                <li>
+                  <Link>新增 运维中心的异常信息实现</Link>
+                </li>
+                <li>
+                  <Link>新增 运维中心的FlinkSQL实现</Link>
+                </li>
+                <li>
+                  <Link>新增 运维中心的报警记录实现</Link>
+                </li>
+                <li>
+                  <Link>修复 kubernetes集群配置相关显示bug</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

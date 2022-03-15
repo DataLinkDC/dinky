@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface JobInstanceService extends ISuperService<JobInstance> {
 
-    JobInstanceStatus getStatusCount();
+    JobInstanceStatus getStatusCount(boolean isHistory);
 
     List<JobInstance> listJobInstanceActive();
 
