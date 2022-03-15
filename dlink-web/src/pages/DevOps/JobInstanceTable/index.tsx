@@ -1,7 +1,7 @@
 import { history } from 'umi';
 import {queryData} from "@/components/Common/crud";
-import React, {useState} from "react";
-import type { ProColumns } from '@ant-design/pro-table';
+import React, {useState, useRef, useEffect} from "react";
+import type { ProColumns,ActionType } from '@ant-design/pro-table';
 import ProTable from "@ant-design/pro-table";
 import {JobInstanceTableListItem} from "@/pages/DevOps/data";
 import moment from 'moment';
@@ -14,6 +14,11 @@ const JobInstanceTable = (props: any) => {
 
   const {status, activeKey,isHistory, dispatch} = props;
   const [time, setTime] = useState(() => Date.now());
+  const ref = useRef<ActionType>();
+
+  useEffect(() => {
+    ref?.current?.reload();
+  }, [isHistory]);
 
   const getColumns = () => {
     const columns: ProColumns<JobInstanceTableListItem>[]  = [{
@@ -133,6 +138,7 @@ const JobInstanceTable = (props: any) => {
 
   return (
     <><ProTable
+      actionRef={ref}
       request={(params, sorter, filter) => {
         setTime(Date.now());
         return queryData(url, {...params,status,isHistory, sorter: {id: 'descend'}, filter});

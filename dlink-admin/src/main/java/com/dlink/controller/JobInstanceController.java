@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -74,7 +75,10 @@ public class JobInstanceController {
      */
     @GetMapping("/getStatusCount")
     public Result getStatusCount() {
-        return Result.succeed(jobInstanceService.getStatusCount(), "获取成功");
+        HashMap<String,Object> result = new HashMap<>();
+        result.put("history",jobInstanceService.getStatusCount(true));
+        result.put("instance",jobInstanceService.getStatusCount(false));
+        return Result.succeed(result, "获取成功");
     }
 
     /**
