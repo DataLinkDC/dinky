@@ -9,6 +9,9 @@
         dlink_alert_history a
         <where>
             1=1
+            <if test='param.jobInstanceId!=null and param.jobInstanceId!=""'>
+                and a.job_instance_id = #{param.jobInstanceId}
+            </if>
             <if test='param.createTime!=null and param.createTime!=""'>
                 and a.create_time <![CDATA[>=]]> str_to_date( #{param.createTime},'%Y-%m-%d %H:%i:%s')
             </if>

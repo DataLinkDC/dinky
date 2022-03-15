@@ -1,0 +1,74 @@
+import { Typography} from 'antd';
+import ProTable from '@ant-design/pro-table';
+import {ProColumns} from "@ant-design/pro-table";
+import {queryData} from "@/components/Common/crud";
+
+const { Text } = Typography;
+type AlertHistoryTableListItem = {
+  title: string,
+  content: string,
+  status: number,
+  log: string,
+  createTime: string,
+}
+
+
+const Alert = (props: any) => {
+
+  const url = '/api/alertGroup';
+  const {job} = props;
+
+  const columns: ProColumns<AlertHistoryTableListItem>[] = [
+    {
+      title: '标题',
+      dataIndex: 'title',
+      render: (dom, entity) => {
+        return  <Text style={{ width: 200 }} ellipsis={{ tooltip:entity.title }}>{entity.title}</Text>;
+      },
+    },
+    {
+      title: '正文',
+      dataIndex: 'content',
+      render: (dom, entity) => {
+        return  <Text style={{ width: 500 }} ellipsis={{ tooltip:entity.content }}>{entity.content}</Text>;
+      },
+    },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      sorter: true,
+      render: (dom, entity) => {
+        return  entity.status === 1?<Text type="success">成功</Text>:<Text type="danger">失败</Text>;
+      },
+    },
+    {
+      title: '日志',
+      dataIndex: 'log',
+      render: (dom, entity) => {
+        return  <Text style={{ width: 500 }} ellipsis={{ tooltip:entity.log }}>{entity.log}</Text>;
+      },
+    },
+    {
+      title: '报警时间',
+      dataIndex: 'createTime',
+      valueType: 'dateTime',
+    },
+  ];
+
+  return (<>
+    <ProTable
+      columns={columns}
+      style={{width: '100%'}}
+      request={(params, sorter, filter) => queryData(url+'/history', {...params, jobInstanceId:job.instance?.id,sorter, filter})}
+      rowKey="name"
+      pagination={{
+        pageSize: 10,
+      }}
+      toolBarRender={false}
+      search={false}
+      size="small"
+    />
+  </>)
+};
+
+export default Alert;

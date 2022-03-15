@@ -752,6 +752,15 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增 运维中心的作业实例与历史切换</Link>
                 </li>
+                <li>
+                  <Link>新增 运维中心的异常信息实现</Link>
+                </li>
+                <li>
+                  <Link>新增 运维中心的FlinkSQL实现</Link>
+                </li>
+                <li>
+                  <Link>新增 运维中心的报警记录实现</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

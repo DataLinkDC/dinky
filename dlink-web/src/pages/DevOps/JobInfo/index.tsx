@@ -16,6 +16,9 @@ import JobStatus, {isStatusDone} from "@/components/Common/JobStatus";
 import {cancelJob, offLineTask, restartJob} from "@/components/Studio/StudioEvent/DDL";
 import {CODE} from "@/components/Common/crud";
 import JobLifeCycle from "@/components/Common/JobLifeCycle";
+import Exception from "@/pages/DevOps/JobInfo/Exception";
+import FlinkSQL from "@/pages/DevOps/JobInfo/FlinkSQL";
+import Alert from "@/pages/DevOps/JobInfo/Alert";
 
 const {Link} = Typography;
 
@@ -254,14 +257,14 @@ const JobInfo = (props: any) => {
         {tabKey === 'config' ? <Config job={job}/> : undefined}
         {tabKey === 'cluster' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
         {tabKey === 'snapshot' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
-        {tabKey === 'exception' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
+        {tabKey === 'exception' ? <Exception job={job}/> : undefined}
         {tabKey === 'log' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
         {tabKey === 'optimize' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
-        {tabKey === 'flinksql' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
+        {tabKey === 'flinksql' ? <FlinkSQL job={job}/> : undefined}
         {tabKey === 'datamap' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
         {tabKey === 'olap' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
         {tabKey === 'version' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
-        {tabKey === 'alert' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
+        {tabKey === 'alert' ? <Alert job={job} /> : undefined}
       </ProCard>
     </PageContainer>
   );
