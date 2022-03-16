@@ -12,7 +12,7 @@ public enum  Dialect {
 
     FLINKSQL("FlinkSql"),FLINKJAR("FlinkJar"),FLINKSQLENV("FlinkSqlEnv"),SQL("Sql"),JAVA("Java"),
     MYSQL("Mysql"),ORACLE("Oracle"),SQLSERVER("SqlServer"),POSTGRESQL("PostGreSql"),CLICKHOUSE("ClickHouse"),
-    DORIS("Doris");
+    DORIS("Doris"),PHOENIX("Phoenix");
 
     private String value;
 
@@ -42,7 +42,7 @@ public enum  Dialect {
     public static boolean isSql(String value){
         Dialect dialect = Dialect.get(value);
         switch (dialect){
-            case SQL:case MYSQL:case ORACLE:case SQLSERVER:case POSTGRESQL:case CLICKHOUSE:case DORIS:
+            case SQL:case MYSQL:case ORACLE:case SQLSERVER:case POSTGRESQL:case CLICKHOUSE:case DORIS: case PHOENIX:
                 return true;
             default:
                 return false;

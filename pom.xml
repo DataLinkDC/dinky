@@ -56,10 +56,17 @@
         <!--  `provided` for product environment ,`compile` for dev environment  -->
         <scope.runtime>provided</scope.runtime>
         <scala.binary.version>2.11</scala.binary.version>
+        <protobuf-java.version>2.5.0</protobuf-java.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <!--解决mysql与phoenix依赖冲突-->
+            <dependency>
+                <groupId>com.google.protobuf</groupId>
+                <artifactId>protobuf-java</artifactId>
+                <version>${protobuf-java.version}</version>
+            </dependency>
             <!-- hutool java工具类库  -->
             <dependency>
                 <groupId>cn.hutool</groupId>
