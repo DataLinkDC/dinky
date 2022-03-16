@@ -634,5 +634,9 @@ ALTER TABLE `dlink_task`
 -- ----------------------------
 ALTER TABLE `dlink_job_instance`
     ADD COLUMN `step` INT NULL COMMENT '生命周期' AFTER `task_id`;
+-- ----------------------------
+-- 0.6.0-SNAPSHOT 2022-03-15
+-- ----------------------------
+CREATE INDEX dlink_job_instance_task_id_IDX USING BTREE ON dlink_job_instance (task_id);
 
 SET FOREIGN_KEY_CHECKS = 1;

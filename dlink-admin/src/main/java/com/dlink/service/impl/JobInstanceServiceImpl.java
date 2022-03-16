@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.assertion.Asserts;
 import com.dlink.constant.FlinkRestResultConstant;
 import com.dlink.db.service.impl.SuperServiceImpl;
+import com.dlink.explainer.ca.CABuilder;
+import com.dlink.explainer.ca.TableCANode;
 import com.dlink.mapper.JobInstanceMapper;
 import com.dlink.model.Cluster;
 import com.dlink.model.History;
@@ -44,8 +46,13 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     private JobHistoryService jobHistoryService;
 
     @Override
-    public JobInstanceStatus getStatusCount() {
-        List<JobInstanceCount> jobInstanceCounts = baseMapper.countStatus();
+    public JobInstanceStatus getStatusCount(boolean isHistory) {
+        List<JobInstanceCount> jobInstanceCounts = null;
+        if(isHistory){
+            jobInstanceCounts = baseMapper.countHistoryStatus();
+        }else{
+            jobInstanceCounts = baseMapper.countStatus();
+        }
         JobInstanceStatus jobInstanceStatus = new JobInstanceStatus();
         Integer total = 0;
         for (JobInstanceCount item : jobInstanceCounts) {
@@ -117,6 +124,11 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
             jobInfoDetail.setClusterConfiguration(clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId()));
         }
         return jobInfoDetail;
+    }
+
+    @Override
+    public List<TableCANode> getOneTableColumnCA(Integer id) {
+        return CABuilder.getOneTableColumnCAByStatement(getJobInfoDetail(id).getHistory().getStatement());
     }
 
 }

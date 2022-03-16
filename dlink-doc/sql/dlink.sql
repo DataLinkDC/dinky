@@ -387,4 +387,6 @@ create table dlink_job_history
 )
     comment 'Job历史详情';
 
+CREATE INDEX dlink_job_instance_task_id_IDX USING BTREE ON dlink_job_instance (task_id);
+
 SET FOREIGN_KEY_CHECKS = 1;

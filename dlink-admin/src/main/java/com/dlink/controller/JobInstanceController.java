@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -74,7 +75,10 @@ public class JobInstanceController {
      */
     @GetMapping("/getStatusCount")
     public Result getStatusCount() {
-        return Result.succeed(jobInstanceService.getStatusCount(), "获取成功");
+        HashMap<String,Object> result = new HashMap<>();
+        result.put("history",jobInstanceService.getStatusCount(true));
+        result.put("instance",jobInstanceService.getStatusCount(false));
+        return Result.succeed(result, "获取成功");
     }
 
     /**
@@ -91,5 +95,13 @@ public class JobInstanceController {
     @GetMapping("/refreshJobInfoDetail")
     public Result refreshJobInfoDetail(@RequestParam Integer id) {
         return Result.succeed(taskService.refreshJobInfoDetail(id), "刷新成功");
+    }
+
+    /**
+     * 获取单表的血缘分析
+     */
+    @GetMapping("/getOneTableColumnCA")
+    public Result getOneTableColumnCA(@RequestParam Integer id) {
+        return Result.succeed(jobInstanceService.getOneTableColumnCA(id), "刷新成功");
     }
 }

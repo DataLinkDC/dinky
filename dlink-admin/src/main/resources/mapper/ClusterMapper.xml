@@ -61,6 +61,6 @@
         from
         dlink_cluster a
         where enabled = 1
-        and (type = 'standalone' or type = 'yarn-session')
+        and (type = 'standalone' or type = 'yarn-session'or type = 'kubernetes-session')
     </select>
 </mapper>

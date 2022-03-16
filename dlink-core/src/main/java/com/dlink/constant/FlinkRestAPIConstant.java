@@ -8,6 +8,8 @@ package com.dlink.constant;
  **/
 public final class FlinkRestAPIConstant {
 
+    public static final String OVERVIEW = "overview";
+
     public static final String FLINK_CONFIG = "config";
 
     public static final String CONFIG = "/config";

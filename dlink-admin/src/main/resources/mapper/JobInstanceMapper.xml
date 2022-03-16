@@ -9,6 +9,12 @@
         (select dc.alias FROM dlink_cluster dc where dc.id=a.cluster_id) as clusterAlias
         from
         dlink_job_instance a
+        <if test='!(param.isHistory!=null and param.isHistory==true)'>
+            inner join (
+            select max(ji.id) as id from dlink_job_instance ji
+            group by ji.task_id
+            ) snap on snap.id = a.id
+        </if>
         left join dlink_history dh on a.history_id = dh.id
         <where>
             1=1
@@ -46,18 +52,31 @@
 
     <select id="countStatus" resultType="com.dlink.model.JobInstanceCount">
         select
-        status,
-        count(1) as counts
+            a.status,
+            count(1) as counts
         from
-        dlink_job_instance
+            dlink_job_instance a
+                inner join (
+                select max(ji.id) as id from dlink_job_instance ji
+                group by ji.task_id
+            ) snap on snap.id = a.id
+        group by status
+    </select>
+
+    <select id="countHistoryStatus" resultType="com.dlink.model.JobInstanceCount">
+        select
+            status,
+            count(1) as counts
+        from
+            dlink_job_instance
         group by status
     </select>
 
     <select id="listJobInstanceActive" resultType="com.dlink.model.JobInstance">
         select
-        *
+            *
         from
-        dlink_job_instance
+            dlink_job_instance
         where status not in ('FAILED','CANCELED','FINISHED','UNKNOWN')
         order by id desc
     </select>
