@@ -7,7 +7,7 @@ import com.dlink.model.ColumnType;
 public class PhoenixTypeConvert implements ITypeConvert {
     @Override
     public ColumnType convert(Column column) {
-        if (Asserts.isNull(column)) {
+        if (Asserts.isNull(column)||Asserts.isNull(column.getType())) {
             return ColumnType.STRING;
         }
         String t = column.getType().toLowerCase();

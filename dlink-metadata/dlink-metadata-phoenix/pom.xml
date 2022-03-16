@@ -32,6 +32,10 @@
             <version>4.14.2-HBase-1.4</version>
 <!--            <scope>test</scope>-->
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
 
     </dependencies>
 </project>

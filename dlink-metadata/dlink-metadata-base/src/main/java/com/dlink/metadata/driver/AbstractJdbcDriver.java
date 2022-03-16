@@ -2,9 +2,6 @@ package com.dlink.metadata.driver;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLStatementParser;
-import com.alibaba.druid.sql.parser.Token;
 import com.dlink.assertion.Asserts;
 import com.dlink.constant.CommonConstant;
 import com.dlink.metadata.query.IDBQuery;
@@ -17,13 +14,7 @@ import com.dlink.utils.LogUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.*;
 
 /**
@@ -389,6 +380,12 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         }
     }
 
+    /**
+     * 如果执行多条语句返回最后一条语句执行结果
+     * @param sql
+     * @param limit
+     * @return
+     */
     @Override
     public JdbcSelectResult executeSql(String sql, Integer limit) {
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql,config.getType().toLowerCase());
@@ -396,11 +393,12 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         JdbcSelectResult result = JdbcSelectResult.buildResult();
         for(SQLStatement item : stmtList){
             String type = item.getClass().getSimpleName();
-            if(type.toUpperCase().contains("SELECT")||type.toUpperCase().contains("SHOW")||type.toUpperCase().contains("DESC")){
-                return query(item.toString(),limit);
+            if(type.toUpperCase().contains("SELECT")||type.toUpperCase().contains("SHOW")||type.toUpperCase().contains("DESC")||type.toUpperCase().contains("SQLEXPLAINSTATEMENT")){
+                result = query(item.toString(),limit);
             }else if(type.toUpperCase().contains("INSERT")||type.toUpperCase().contains("UPDATE")||type.toUpperCase().contains("DELETE")){
                 try {
                     resList.add(executeUpdate(item.toString()));
+                    result.setStatusList(resList);
                 } catch (Exception e) {
                     resList.add(0);
                     result.setStatusList(resList);
@@ -411,6 +409,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                 try {
                     execute(item.toString());
                     resList.add(1);
+                    result.setStatusList(resList);
                 } catch (Exception e) {
                     resList.add(0);
                     result.setStatusList(resList);
@@ -419,7 +418,6 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                 }
             }
         }
-        result.setStatusList(resList);
         result.success();
         return result;
     }
