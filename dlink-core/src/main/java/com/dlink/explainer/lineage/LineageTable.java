@@ -1,5 +1,8 @@
 package com.dlink.explainer.lineage;
 
+import com.dlink.explainer.ca.TableCA;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,6 +17,18 @@ public class LineageTable {
     private List<LineageColumn> columns;
 
     public LineageTable() {
+    }
+
+    public static LineageTable build(TableCA tableCA){
+        LineageTable lineageTable = new LineageTable();
+        lineageTable.setId(tableCA.getId().toString());
+        lineageTable.setName(tableCA.getName());
+        List<LineageColumn> columnList = new ArrayList<>();
+        for(String columnName: tableCA.getFields()){
+            columnList.add(LineageColumn.build(columnName,columnName));
+        }
+        lineageTable.setColumns(columnList);
+        return lineageTable;
     }
 
     public String getId() {

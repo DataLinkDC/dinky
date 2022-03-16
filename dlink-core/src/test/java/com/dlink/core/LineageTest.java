@@ -1,13 +1,8 @@
 package com.dlink.core;
 
-import com.dlink.explainer.ca.CABuilder;
-import com.dlink.explainer.ca.ColumnCANode;
-import com.dlink.explainer.ca.TableCANode;
 import com.dlink.explainer.lineage.LineageBuilder;
 import com.dlink.explainer.lineage.LineageResult;
 import org.junit.Test;
-
-import java.util.List;
 
 /**
  * LineageTest

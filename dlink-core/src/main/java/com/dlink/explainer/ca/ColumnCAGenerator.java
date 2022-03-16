@@ -7,6 +7,7 @@ import com.dlink.explainer.trans.OperatorTrans;
 import com.dlink.explainer.trans.SinkTrans;
 import com.dlink.explainer.trans.SourceTrans;
 import com.dlink.explainer.trans.Trans;
+import com.dlink.utils.MapParseUtils;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import java.util.Set;
  * @author wenmo
  * @since 2021/6/22
  **/
+@Deprecated
 public class ColumnCAGenerator implements CAGenerator {
     private List<Trans> transList;
     private Map<Integer, Trans> transMaps;
@@ -33,7 +35,7 @@ public class ColumnCAGenerator implements CAGenerator {
     private Set<NodeRel> columnCASRel;
     private ICA sinkTableCA = null;
     private String sinkTableName;
-    private Integer index = 0;
+    private Integer index = 1;
     private List<Integer> sinkColumns;
     private List<Integer> sourceColumns;
 
@@ -151,15 +153,12 @@ public class ColumnCAGenerator implements CAGenerator {
     }
 
     private void searchSelect(TableCA tableCA, ColumnCA columnCA, OperatorTrans trans, String operation, String alias) {
-        if(Asserts.isEquals(operation,columnCA.getAlias())||operation.contains(" " + columnCA.getAlias() + " ") ||
-                operation.contains("(" + columnCA.getAlias() + " ") ||
-                operation.contains(" " + columnCA.getAlias() + ")")) {
+        if(MapParseUtils.hasField(operation,columnCA.getAlias())) {
             boolean isHad = false;
             Integer cid = null;
             for (int j = 0; j < this.columnCAS.size(); j++) {
                 ColumnCA columnCA1 = (ColumnCA) this.columnCAS.get(j);
-                if (columnCA1.getTableCA().getId() == tableCA.getId() &&
-                        columnCA1.getName().equals(operation)) {
+                if (columnCA1.getTableCA().getId() == tableCA.getId() && columnCA1.getName().equals(alias)) {
                     isHad = true;
                     cid = columnCA1.getId();
                     break;
@@ -167,10 +166,8 @@ public class ColumnCAGenerator implements CAGenerator {
             }
             if (!isHad) {
                 cid = index++;
-                String columnOperation = operation.replaceAll(" " + columnCA.getAlias() + " "," " + columnCA.getOperation() + " ")
-                .replaceAll("\\(" + columnCA.getAlias() + " "," " + columnCA.getOperation() + " ")
-                .replaceAll(" " + columnCA.getAlias() + "\\)"," " + columnCA.getOperation() + " ");
-                ColumnCA columnCA2 = new ColumnCA(cid, operation, alias, operation, operation,columnOperation, tableCA,trans);
+//                String columnOperation = MapParseUtils.replaceField(operation,columnCA.getAlias(),columnCA.getOperation());
+                ColumnCA columnCA2 = new ColumnCA(cid, alias, alias, alias, alias,operation, tableCA,trans);
                 this.columnCASMaps.put(cid, columnCA2);
                 this.columnCAS.add(columnCA2);
                 buildColumnCAFields(tableCA, trans.getParentId(), columnCA2);

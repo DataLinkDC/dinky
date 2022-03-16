@@ -1,79 +1,35 @@
 import {Tabs, Empty} from 'antd';
-import CodeShow from "@/components/Common/CodeShow";
-import {LineageTable} from 'react-lineage-dag';
+import {getLineage} from "@/pages/DevOps/service";
+import {useEffect, useState} from "react";
+import Lineage, {getInit} from "@/components/Lineage";
 const {TabPane} = Tabs;
 
 const DataMap = (props: any) => {
 
   const {job} = props;
+  const [data, setData] = useState(getInit());
 
-  const data = {
-    tables: [
-      {
-        id: '1',
-        name: 'table-1',
-        columns: [
-          {
-            name: 'id',
-            title: 'id'
-          },
-          {
-            name: 'age',
-            title: 'age'
-          }
-        ]
-      },
-      {
-        id: '2',
-        name: 'table-2',
-        columns: [
-          {
-            name: 'id',
-            title: 'id'
-          },
-          {
-            name: 'age',
-            title: 'age'
-          }
-        ]
-      },
-      {
-        id: '3',
-        name: 'table-3',
-        columns: [
-          {
-            name: 'id',
-            title: 'id'
-          },
-          {
-            name: 'age',
-            title: 'age'
-          }
-        ]
-      }
-    ],
-    relations: [
-      {
-        srcTableId: '1',
-        tgtTableId: '2',
-        // srcTableColName: 'id',
-        // tgtTableColName: 'age'
-      },
-      {
-        srcTableId: '1',
-        tgtTableId: '3',
-        // srcTableColName: 'id',
-        // tgtTableColName: 'age'
-      }
-    ]
+  const getData = () => {
+    const res = getLineage(job.instance?.id);
+    res.then((result)=>{
+      result.datas.tables.forEach(table => {
+        table.isExpand = true;
+        table.isFold = false;
+      });
+      setData(result.datas);
+    });
   };
 
+  useEffect(() => {
+    getData();
+  }, []);
+
   return (<>
-    <Tabs defaultActiveKey="OneCA" size="small" tabPosition="top" style={{
+    <Tabs defaultActiveKey="Lineage" size="small" tabPosition="top" style={{
       border: "1px solid #f0f0f0"
     }}>
-      <TabPane tab={<span>血缘分析</span>} key="OneCA">
-        <LineageTable {...data} onEachFrame={() => { }}/>
+      <TabPane tab={<span>血缘分析</span>} key="Lineage">
+        <Lineage datas={data}/>
       </TabPane>
     </Tabs>
   </>)

@@ -13,6 +13,15 @@ public class LineageColumn {
     public LineageColumn() {
     }
 
+    public LineageColumn(String name, String title) {
+        this.name = name;
+        this.title = title;
+    }
+
+    public static LineageColumn build(String name, String title){
+        return new LineageColumn(name,title);
+    }
+
     public String getName() {
         return name;
     }

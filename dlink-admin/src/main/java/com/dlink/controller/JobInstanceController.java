@@ -98,10 +98,10 @@ public class JobInstanceController {
     }
 
     /**
-     * 获取单表的血缘分析
+     * 获取单任务实例的血缘分析
      */
-    @GetMapping("/getOneTableColumnCA")
-    public Result getOneTableColumnCA(@RequestParam Integer id) {
-        return Result.succeed(jobInstanceService.getOneTableColumnCA(id), "刷新成功");
+    @GetMapping("/getLineage")
+    public Result getLineage(@RequestParam Integer id) {
+        return Result.succeed(jobInstanceService.getLineage(id), "刷新成功");
     }
 }

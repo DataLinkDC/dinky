@@ -12,6 +12,7 @@ import java.util.Set;
  * @author wenmo
  * @since 2021/6/23 11:03
  **/
+@Deprecated
 public class CABuilder {
 
     public static List<TableCANode> getOneTableCAByStatement(String statement){
@@ -53,6 +54,7 @@ public class CABuilder {
         return tableCANodes;
     }
 
+    @Deprecated
     public static List<ColumnCANode> getColumnCAByStatement(String statement){
         List<ColumnCANode> columnCANodes = new ArrayList<>();
         FlinkSqlPlus plus = FlinkSqlPlus.build();

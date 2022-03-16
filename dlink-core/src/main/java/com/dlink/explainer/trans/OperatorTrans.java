@@ -16,16 +16,21 @@ import java.util.Map;
 public class OperatorTrans extends AbstractTrans implements Trans {
 
     private List<Field> select;
+    private List<String> fields;
     private List<String> joinType;
     private String where;
     private List<String> leftInputSpec;
     private List<String> rightInputSpec;
 
     public final static String TRANS_TYPE = "Operator";
-    private final static String FIELD_SEPARATOR = " AS ";
+    private final static String FIELD_AS = " AS ";
 
     public List<Field> getSelect() {
         return select;
+    }
+
+    public List<String> getFields() {
+        return fields;
     }
 
     public List<String> getJoinType() {
@@ -60,31 +65,32 @@ public class OperatorTrans extends AbstractTrans implements Trans {
         name = pact;
         Map map = MapParseUtils.parseForSelect(contents);
         translateSelect((ArrayList<String>) map.get("select"));
+        fields = (ArrayList<String>) map.get("fields");
         joinType = (ArrayList<String>) map.get("joinType");
-        where = map.containsKey("where")?map.get("where").toString():null;
+        where = map.containsKey("where") ? map.get("where").toString() : null;
         leftInputSpec = (ArrayList<String>) map.get("leftInputSpec");
         rightInputSpec = (ArrayList<String>) map.get("rightInputSpec");
     }
 
-    private void translateSelect(ArrayList<String> fieldStrs){
-        if(fieldStrs!=null&&fieldStrs.size()>0) {
+    private void translateSelect(ArrayList<String> fieldStrs) {
+        if (fieldStrs != null && fieldStrs.size() > 0) {
             select = new ArrayList<>();
             for (int i = 0; i < fieldStrs.size(); i++) {
-                String fieldStr = fieldStrs.get(i);
-                if(fieldStr.toUpperCase().contains(FIELD_SEPARATOR)){
-                    String [] fieldNames = fieldStr.split(FIELD_SEPARATOR);
-                    if(fieldNames.length==2) {
-                        select.add(new Field(fieldNames[0], fieldNames[1]));
-                    }else if(fieldNames.length==1) {
-                        select.add(new Field(fieldNames[0]));
-                    }else{
+                String fieldStr = fieldStrs.get(i).trim();
+                if (fieldStr.toUpperCase().contains(FIELD_AS)) {
+                    String[] fieldNames = fieldStr.split(FIELD_AS);
+                    if (fieldNames.length == 2) {
+                        select.add(new Field(fieldNames[0].trim(), fieldNames[1].trim()));
+                    } else if (fieldNames.length == 1) {
+                        select.add(new Field(fieldNames[0].trim()));
+                    } else {
                         List<String> fieldNameList = new ArrayList<>();
-                        for (int j = 0; j < fieldNames.length-1; j++) {
+                        for (int j = 0; j < fieldNames.length - 1; j++) {
                             fieldNameList.add(fieldNames[j]);
                         }
-                        select.add(new Field(StringUtils.join(fieldNameList,FIELD_SEPARATOR),fieldNames[fieldNames.length-1]));
+                        select.add(new Field(StringUtils.join(fieldNameList, FIELD_AS).trim(), fieldNames[fieldNames.length - 1].trim()));
                     }
-                }else{
+                } else {
                     select.add(new Field(fieldStr));
                 }
             }
