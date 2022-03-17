@@ -1,11 +1,7 @@
 package com.dlink.app.db;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +14,6 @@ import java.util.Map;
  * @since 2021/10/27
  **/
 public class DBUtil {
-
 
     private static Connection getConnection(DBConfig config) throws IOException {
         Connection conn = null;
@@ -42,7 +37,7 @@ public class DBUtil {
         }
     }
 
-    public static String getOneByID(String sql,DBConfig config) throws SQLException, IOException {
+    public static String getOneByID(String sql, DBConfig config) throws SQLException, IOException {
         Connection conn = getConnection(config);
         String result = null;
         try (Statement stmt = conn.createStatement();
@@ -60,18 +55,18 @@ public class DBUtil {
         return result;
     }
 
-    public static Map<String,String> getMapByID(String sql,DBConfig config) throws SQLException, IOException {
+    public static Map<String, String> getMapByID(String sql, DBConfig config) throws SQLException, IOException {
         Connection conn = getConnection(config);
-        HashMap<String,String> map = new HashMap();
+        HashMap<String, String> map = new HashMap();
         try (Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             List<String> columnList = new ArrayList<>();
-            for(int i =0;i<rs.getMetaData().getColumnCount();i++){
-                columnList.add(rs.getMetaData().getColumnLabel(i+1));
+            for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
+                columnList.add(rs.getMetaData().getColumnLabel(i + 1));
             }
             if (rs.next()) {
-                for(int i =0;i<columnList.size();i++){
-                    map.put(columnList.get(i),rs.getString(i+1));
+                for (int i = 0; i < columnList.size(); i++) {
+                    map.put(columnList.get(i), rs.getString(i + 1));
                 }
             }
         }
@@ -79,19 +74,19 @@ public class DBUtil {
         return map;
     }
 
-    public static List<Map<String,String>> getListByID(String sql,DBConfig config) throws SQLException, IOException {
+    public static List<Map<String, String>> getListByID(String sql, DBConfig config) throws SQLException, IOException {
         Connection conn = getConnection(config);
-        List<Map<String,String>> list = new ArrayList<>();
+        List<Map<String, String>> list = new ArrayList<>();
         try (Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             List<String> columnList = new ArrayList<>();
-            for(int i =0;i<rs.getMetaData().getColumnCount();i++){
+            for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
                 columnList.add(rs.getMetaData().getColumnName(i));
             }
             while (rs.next()) {
-                HashMap<String,String> map = new HashMap();
-                for(int i =0;i<columnList.size();i++){
-                    map.put(columnList.get(i),rs.getString(i));
+                HashMap<String, String> map = new HashMap();
+                for (int i = 0; i < columnList.size(); i++) {
+                    map.put(columnList.get(i), rs.getString(i));
                 }
                 list.add(map);
             }
