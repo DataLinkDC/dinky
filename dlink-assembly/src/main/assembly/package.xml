@@ -132,7 +132,15 @@
                 <include>dlink-metadata-postgresql-${project.version}.jar</include>
             </includes>
         </fileSet>
-
+        <!-- 将模块dlink-metadata的jar文件放到打包目录/lib下 -->
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-metadata/dlink-metadata-hive/target
+            </directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>dlink-metadata-hive-${project.version}.jar</include>
+            </includes>
+        </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}/dlink-metadata/dlink-metadata-sqlserver/target
             </directory>

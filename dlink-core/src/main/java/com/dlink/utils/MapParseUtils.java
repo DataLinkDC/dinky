@@ -8,6 +8,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -105,6 +107,54 @@ public class MapParseUtils {
         return nestIndexList;
     }
 
+    public static List<String> getSelectList(String inStr) {
+        List<String> selects = new ArrayList<>();
+        int startIndex = inStr.indexOf("=[") + 2;
+        if (inStr == null || inStr.isEmpty()) {
+            return selects;
+        }
+        Deque<Integer> stack = new LinkedList<>();
+        for (int i = 0; i < inStr.length(); i++) {
+            if (inStr.charAt(i) == ',' && stack.size() == 0) {
+                selects.add(inStr.substring(startIndex, i));
+                startIndex = i + 1;
+            }
+            if (inStr.charAt(i) == '(') {
+                stack.push(i);
+            }
+            if (inStr.charAt(i) == ')') {
+                stack.pop();
+            }
+        }
+        if (startIndex < inStr.length()) {
+            selects.add(inStr.substring(startIndex, inStr.length() - 1));
+        }
+        return selects;
+    }
+
+    public static boolean hasField(String fragement, String field) {
+        if(field.startsWith("$")){
+            field = field.substring(1,field.length());
+        }
+        String sign = "([^a-zA-Z0-9_]?)";
+        Pattern p = Pattern.compile(sign + field + sign);
+        Matcher m = p.matcher(fragement);
+        while (m.find()) {
+            return true;
+        }
+        return false;
+    }
+
+    public static String replaceField(String operation, String field, String fragement) {
+        String newOperation = operation;
+        String sign = "([^a-zA-Z0-9_]?)";
+        Pattern p = Pattern.compile(sign + field + sign);
+        Matcher m = p.matcher(operation);
+        while (m.find()) {
+            newOperation = newOperation.substring(0,m.start(1)+1)+ fragement + newOperation.substring(m.end(1)+1,newOperation.length());
+        }
+        return newOperation;
+    }
 
     /**
      * 转换map
@@ -180,27 +230,7 @@ public class MapParseUtils {
      */
     public static Map parseForSelect(String inStr) {
         Map map = new HashMap();
-        List<Integer> bracketsList = getBracketsList(inStr);
-        String mapKey = getMapKey(inStr);
-        List<String> list = new ArrayList<>();
-        int size = bracketsList.size();
-        if (size % 2 != 0) {
-            // 此处若size部位偶数 则返回空   可能会存在问题
-            return map;
-        } else {
-            int numSize = size / 2;//括号对数
-            for (int i = 0; i < numSize; i++) {
-                String msgStr = "";
-                if (2 * i + 2 >= size) {
-                    msgStr = inStr.substring(bracketsList.get(2 * i), inStr.lastIndexOf("]"));
-                } else {
-                    msgStr = inStr.substring(bracketsList.get(2 * i), bracketsList.get(2 * i + 2));
-                    msgStr = msgStr.substring(0, msgStr.lastIndexOf(",") > 0 ? msgStr.lastIndexOf(",") : msgStr.length());
-                }
-                list.add(msgStr);
-            }
-        }
-        map.put(mapKey, list);
+        map.put(getMapKey(inStr), getSelectList(inStr));
         return map;
     }
 

@@ -96,4 +96,12 @@ public class JobInstanceController {
     public Result refreshJobInfoDetail(@RequestParam Integer id) {
         return Result.succeed(taskService.refreshJobInfoDetail(id), "刷新成功");
     }
+
+    /**
+     * 获取单任务实例的血缘分析
+     */
+    @GetMapping("/getLineage")
+    public Result getLineage(@RequestParam Integer id) {
+        return Result.succeed(jobInstanceService.getLineage(id), "刷新成功");
+    }
 }

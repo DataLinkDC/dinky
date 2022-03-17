@@ -764,6 +764,12 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>修复 kubernetes集群配置相关显示bug</Link>
                 </li>
+                <li>
+                  <Link>新增 运维中心血缘分析——字段级</Link>
+                </li>
+                <li>
+                  <Link>优化 Studio血缘分析为字段级</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

@@ -8,6 +8,8 @@ import com.dlink.dto.*;
 import com.dlink.explainer.ca.CABuilder;
 import com.dlink.explainer.ca.ColumnCANode;
 import com.dlink.explainer.ca.TableCANode;
+import com.dlink.explainer.lineage.LineageBuilder;
+import com.dlink.explainer.lineage.LineageResult;
 import com.dlink.gateway.GatewayType;
 import com.dlink.gateway.model.JobInfo;
 import com.dlink.gateway.result.SavePointResult;
@@ -254,18 +256,9 @@ public class StudioServiceImpl implements StudioService {
     }
 
     @Override
-    public List<TableCANode> getOneTableCAByStatement(String statement) {
-        return CABuilder.getOneTableCAByStatement(statement);
-    }
-
-    @Override
-    public List<TableCANode> getOneTableColumnCAByStatement(String statement) {
-        return CABuilder.getOneTableColumnCAByStatement(statement);
-    }
-
-    @Override
-    public List<ColumnCANode> getColumnCAByStatement(String statement) {
-        return CABuilder.getColumnCAByStatement(statement);
+    public LineageResult getLineage(StudioCADTO studioCADTO) {
+        addFlinkSQLEnv(studioCADTO);
+        return LineageBuilder.getLineage(studioCADTO.getStatement());
     }
 
     @Override

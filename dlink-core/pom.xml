@@ -107,6 +107,11 @@
         </dependency>
         <dependency>
             <groupId>com.dlink</groupId>
+            <artifactId>dlink-metadata-hive</artifactId>
+            <scope>${scope.runtime}</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dlink</groupId>
             <artifactId>dlink-metadata-postgresql</artifactId>
             <scope>${scope.runtime}</scope>
         </dependency>

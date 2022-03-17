@@ -81,15 +81,11 @@ public class StudioController {
     }
 
     /**
-     * 获取单表的血缘分析
+     * 获取单任务实例的血缘分析
      */
-    @PostMapping("/getCAByStatement")
-    public Result getCAByStatement(@RequestBody StudioCADTO studioCADTO)  {
-        switch (studioCADTO.getType()){
-            case 1:return Result.succeed(studioService.getOneTableColumnCAByStatement(studioCADTO.getStatement()),"执行成功");
-            case 2:return Result.succeed(studioService.getColumnCAByStatement(studioCADTO.getStatement()),"执行成功");
-            default:return Result.failed("敬请期待");
-        }
+    @PostMapping("/getLineage")
+    public Result getLineage(@RequestBody StudioCADTO studioCADTO) {
+        return Result.succeed(studioService.getLineage(studioCADTO), "刷新成功");
     }
 
     /**

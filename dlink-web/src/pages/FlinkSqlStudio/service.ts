@@ -64,8 +64,8 @@ export async function getCatalogueTreeData(params?: StudioParam) {
   });
 }
 
-export async function getCAByStatement(params: CAParam) {
-  return request<API.Result>('/api/studio/getCAByStatement', {
+export async function getLineage(params: CAParam) {
+  return request<API.Result>('/api/studio/getLineage', {
     method: 'POST',
     data: {
       ...params,

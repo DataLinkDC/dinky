@@ -1,11 +1,9 @@
 package com.dlink.service;
 
-import com.dlink.dto.SessionDTO;
-import com.dlink.dto.SqlDTO;
-import com.dlink.dto.StudioDDLDTO;
-import com.dlink.dto.StudioExecuteDTO;
+import com.dlink.dto.*;
 import com.dlink.explainer.ca.ColumnCANode;
 import com.dlink.explainer.ca.TableCANode;
+import com.dlink.explainer.lineage.LineageResult;
 import com.dlink.job.JobResult;
 import com.dlink.result.IResult;
 import com.dlink.result.SelectResult;
@@ -44,11 +42,7 @@ public interface StudioService {
 
     List<SessionInfo> listSession(String createUser);
 
-    List<TableCANode> getOneTableCAByStatement(String statement);
-
-    List<TableCANode> getOneTableColumnCAByStatement(String statement);
-
-    List<ColumnCANode> getColumnCAByStatement(String statement);
+    LineageResult getLineage(StudioCADTO studioCADTO);
 
     List<JsonNode> listJobs(Integer clusterId);
 
