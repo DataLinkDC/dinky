@@ -14,7 +14,7 @@ import java.util.Map;
  **/
 public interface SysConfigService extends ISuperService<SysConfig> {
 
-    Map<String,Object> getAll();
+    Map<String, Object> getAll();
 
     void initSysConfig();
 

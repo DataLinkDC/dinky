@@ -1,4 +1,4 @@
-/* http://127.0.0.1:8888/openapi/explainSql */
+/* http://127.0.0.1:8888/openapi/savepoint */
 {
   /* required-start */
   "jobId":"195352b0a4518e16699983a13205f059",

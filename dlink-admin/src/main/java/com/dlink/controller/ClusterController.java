@@ -36,7 +36,7 @@ public class ClusterController {
     public Result saveOrUpdate(@RequestBody Cluster cluster) throws Exception {
         cluster.setAutoRegisters(false);
         clusterService.registersCluster(cluster);
-        return Result.succeed(Asserts.isNotNull(cluster.getId())?"修改成功":"新增成功");
+        return Result.succeed(Asserts.isNotNull(cluster.getId()) ? "修改成功" : "新增成功");
     }
 
     /**
@@ -61,20 +61,20 @@ public class ClusterController {
      */
     @DeleteMapping
     public Result deleteMul(@RequestBody JsonNode para) {
-        if (para.size()>0){
+        if (para.size() > 0) {
             List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para){
+            for (final JsonNode item : para) {
                 Integer id = item.asInt();
-                if(!clusterService.removeById(id)){
+                if (!clusterService.removeById(id)) {
                     error.add(id);
                 }
             }
-            if(error.size()==0) {
+            if (error.size() == 0) {
                 return Result.succeed("删除成功");
-            }else {
-                return Result.succeed("删除部分成功，但"+error.toString()+"删除失败，共"+error.size()+"次失败。");
+            } else {
+                return Result.succeed("删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
             }
-        }else{
+        } else {
             return Result.failed("请选择要删除的记录");
         }
     }
@@ -85,7 +85,7 @@ public class ClusterController {
     @PostMapping("/getOneById")
     public Result getOneById(@RequestBody Cluster cluster) throws Exception {
         cluster = clusterService.getById(cluster.getId());
-        return Result.succeed(cluster,"获取成功");
+        return Result.succeed(cluster, "获取成功");
     }
 
     /**
@@ -93,8 +93,8 @@ public class ClusterController {
      */
     @GetMapping("/listEnabledAll")
     public Result listEnabledAll() {
-        List<Cluster >clusters = clusterService.listEnabledAll();
-        return Result.succeed(clusters,"获取成功");
+        List<Cluster> clusters = clusterService.listEnabledAll();
+        return Result.succeed(clusters, "获取成功");
     }
 
     /**
@@ -102,8 +102,8 @@ public class ClusterController {
      */
     @GetMapping("/listSessionEnable")
     public Result listSessionEnable() {
-        List<Cluster >clusters = clusterService.listSessionEnable();
-        return Result.succeed(clusters,"获取成功");
+        List<Cluster> clusters = clusterService.listSessionEnable();
+        return Result.succeed(clusters, "获取成功");
     }
 
     /**
@@ -124,7 +124,7 @@ public class ClusterController {
      */
     @GetMapping("/clear")
     public Result clear() {
-        return Result.succeed(clusterService.clearCluster(),"回收完成");
+        return Result.succeed(clusterService.clearCluster(), "回收完成");
     }
 
 }

@@ -36,10 +36,10 @@ public class DataBaseController {
      */
     @PutMapping
     public Result saveOrUpdate(@RequestBody DataBase database) {
-        if(databaseService.saveOrUpdateDataBase(database)){
+        if (databaseService.saveOrUpdateDataBase(database)) {
             DriverPool.remove(database.getName());
             return Result.succeed("更新成功");
-        }else {
+        } else {
             return Result.failed("更新失败");
         }
     }
@@ -57,20 +57,20 @@ public class DataBaseController {
      */
     @DeleteMapping
     public Result deleteMul(@RequestBody JsonNode para) {
-        if (para.size()>0){
+        if (para.size() > 0) {
             List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para){
+            for (final JsonNode item : para) {
                 Integer id = item.asInt();
-                if(!databaseService.removeById(id)){
+                if (!databaseService.removeById(id)) {
                     error.add(id);
                 }
             }
-            if(error.size()==0) {
+            if (error.size() == 0) {
                 return Result.succeed("删除成功");
-            }else {
-                return Result.succeed("删除部分成功，但"+error.toString()+"删除失败，共"+error.size()+"次失败。");
+            } else {
+                return Result.succeed("删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
             }
-        }else{
+        } else {
             return Result.failed("请选择要删除的记录");
         }
     }
@@ -81,7 +81,7 @@ public class DataBaseController {
     @PostMapping("/getOneById")
     public Result getOneById(@RequestBody DataBase database) {
         database = databaseService.getById(database.getId());
-        return Result.succeed(database,"获取成功");
+        return Result.succeed(database, "获取成功");
     }
 
     /**
@@ -90,18 +90,19 @@ public class DataBaseController {
     @GetMapping("/listEnabledAll")
     public Result listEnabledAll() {
         List<DataBase> dataBases = databaseService.listEnabledAll();
-        return Result.succeed(dataBases,"获取成功");
+        return Result.succeed(dataBases, "获取成功");
     }
+
     /**
      * 连接测试
      */
     @PostMapping("/testConnect")
     public Result testConnect(@RequestBody DataBase database) {
         String msg = databaseService.testConnect(database);
-        boolean isHealthy =  Asserts.isEquals(CommonConstant.HEALTHY,msg);
-        if(isHealthy){
+        boolean isHealthy = Asserts.isEquals(CommonConstant.HEALTHY, msg);
+        if (isHealthy) {
             return Result.succeed("数据源连接测试成功!");
-        }else{
+        } else {
             return Result.failed(msg);
         }
     }
@@ -126,10 +127,10 @@ public class DataBaseController {
     @GetMapping("/checkHeartBeatById")
     public Result checkHeartBeatById(@RequestParam Integer id) {
         DataBase dataBase = databaseService.getById(id);
-        Asserts.checkNotNull(dataBase,"该数据源不存在！");
+        Asserts.checkNotNull(dataBase, "该数据源不存在！");
         databaseService.checkHeartBeat(dataBase);
         databaseService.updateById(dataBase);
-        return Result.succeed(dataBase,"状态刷新完成");
+        return Result.succeed(dataBase, "状态刷新完成");
     }
 
     /**
@@ -137,22 +138,22 @@ public class DataBaseController {
      */
     @GetMapping("/getSchemasAndTables")
     public Result getSchemasAndTables(@RequestParam Integer id) {
-        return Result.succeed(databaseService.getSchemasAndTables(id),"获取成功");
+        return Result.succeed(databaseService.getSchemasAndTables(id), "获取成功");
     }
 
     /**
      * 获取元数据的指定表的列
      */
     @GetMapping("/listColumns")
-    public Result listColumns(@RequestParam Integer id,@RequestParam String schemaName,@RequestParam String tableName) {
-        return Result.succeed(databaseService.listColumns(id,schemaName,tableName),"获取成功");
+    public Result listColumns(@RequestParam Integer id, @RequestParam String schemaName, @RequestParam String tableName) {
+        return Result.succeed(databaseService.listColumns(id, schemaName, tableName), "获取成功");
     }
 
     /**
      * 获取 SqlGeneration
      */
     @GetMapping("/getSqlGeneration")
-    public Result getSqlGeneration(@RequestParam Integer id,@RequestParam String schemaName,@RequestParam String tableName) {
-        return Result.succeed(databaseService.getSqlGeneration(id,schemaName,tableName),"获取成功");
+    public Result getSqlGeneration(@RequestParam Integer id, @RequestParam String schemaName, @RequestParam String tableName) {
+        return Result.succeed(databaseService.getSqlGeneration(id, schemaName, tableName), "获取成功");
     }
 }

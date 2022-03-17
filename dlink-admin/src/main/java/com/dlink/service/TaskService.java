@@ -3,7 +3,6 @@ package com.dlink.service;
 
 import com.dlink.common.result.Result;
 import com.dlink.db.service.ISuperService;
-import com.dlink.dto.StudioExecuteDTO;
 import com.dlink.job.JobResult;
 import com.dlink.model.JobInfoDetail;
 import com.dlink.model.JobInstance;
@@ -50,7 +49,7 @@ public interface TaskService extends ISuperService<Task> {
 
     boolean recoveryTask(Integer id);
 
-    boolean savepointTask(Integer taskId,String savePointType);
+    boolean savepointTask(Integer taskId, String savePointType);
 
     JobInstance refreshJobInstance(Integer id);
 

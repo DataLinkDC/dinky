@@ -39,10 +39,10 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
 
     @Override
     public Catalogue findByParentIdAndName(Integer parent_id, String name) {
-        return catalogueMapper.selectOne(Wrappers.<Catalogue>query().eq("parent_id",parent_id).eq("name",name));
+        return catalogueMapper.selectOne(Wrappers.<Catalogue>query().eq("parent_id", parent_id).eq("name", name));
     }
 
-    @Transactional(rollbackFor=Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Catalogue createCatalogueAndTask(CatalogueTaskDTO catalogueTaskDTO) {
         Task task = new Task();
@@ -79,13 +79,13 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         return catalogue;
     }
 
-    @Transactional(rollbackFor=Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public boolean toRename(Catalogue catalogue) {
         Catalogue oldCatalogue = this.getById(catalogue.getId());
-        if(oldCatalogue==null){
+        if (oldCatalogue == null) {
             return false;
-        }else{
+        } else {
             Task task = new Task();
             task.setId(oldCatalogue.getTaskId());
             task.setName(catalogue.getName());
@@ -99,10 +99,10 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     @Override
     public boolean removeCatalogueAndTaskById(Integer id) {
         Catalogue catalogue = this.getById(id);
-        if(catalogue==null){
+        if (catalogue == null) {
             return false;
-        }else{
-            if(catalogue.getTaskId()!=null) {
+        } else {
+            if (catalogue.getTaskId() != null) {
                 taskService.removeById(catalogue.getTaskId());
                 statementService.removeById(catalogue.getTaskId());
             }

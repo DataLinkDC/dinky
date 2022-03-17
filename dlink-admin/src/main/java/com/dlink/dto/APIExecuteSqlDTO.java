@@ -3,13 +3,9 @@ package com.dlink.dto;
 import com.dlink.assertion.Asserts;
 import com.dlink.gateway.config.GatewayConfig;
 import com.dlink.job.JobConfig;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**

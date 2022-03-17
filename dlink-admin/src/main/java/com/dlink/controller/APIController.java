@@ -29,46 +29,46 @@ public class APIController {
 
     @GetMapping(value = "/submitTask")
     public Result submitTask(@RequestParam Integer id) {
-        return Result.succeed(taskService.submitTask(id),"执行成功");
+        return Result.succeed(taskService.submitTask(id), "执行成功");
     }
 
     @PostMapping("/executeSql")
-    public Result executeSql(@RequestBody APIExecuteSqlDTO apiExecuteSqlDTO)  {
-        return Result.succeed(apiService.executeSql(apiExecuteSqlDTO),"执行成功");
+    public Result executeSql(@RequestBody APIExecuteSqlDTO apiExecuteSqlDTO) {
+        return Result.succeed(apiService.executeSql(apiExecuteSqlDTO), "执行成功");
     }
 
     @PostMapping("/explainSql")
-    public Result explainSql(@RequestBody APIExplainSqlDTO apiExecuteSqlDTO)  {
-        return Result.succeed(apiService.explainSql(apiExecuteSqlDTO),"执行成功");
+    public Result explainSql(@RequestBody APIExplainSqlDTO apiExecuteSqlDTO) {
+        return Result.succeed(apiService.explainSql(apiExecuteSqlDTO), "执行成功");
     }
 
     @PostMapping("/getJobPlan")
-    public Result getJobPlan(@RequestBody APIExplainSqlDTO apiExecuteSqlDTO)  {
-        return Result.succeed(apiService.getJobPlan(apiExecuteSqlDTO),"执行成功");
+    public Result getJobPlan(@RequestBody APIExplainSqlDTO apiExecuteSqlDTO) {
+        return Result.succeed(apiService.getJobPlan(apiExecuteSqlDTO), "执行成功");
     }
 
     @PostMapping("/getStreamGraph")
-    public Result getStreamGraph(@RequestBody APIExplainSqlDTO apiExecuteSqlDTO)  {
-        return Result.succeed(apiService.getStreamGraph(apiExecuteSqlDTO),"执行成功");
+    public Result getStreamGraph(@RequestBody APIExplainSqlDTO apiExecuteSqlDTO) {
+        return Result.succeed(apiService.getStreamGraph(apiExecuteSqlDTO), "执行成功");
     }
 
     @GetMapping("/getJobData")
-    public Result getJobData(@RequestParam String jobId)  {
-        return Result.succeed(studioService.getJobData(jobId),"获取成功");
+    public Result getJobData(@RequestParam String jobId) {
+        return Result.succeed(studioService.getJobData(jobId), "获取成功");
     }
 
     @PostMapping("/cancel")
-    public Result cancel(@RequestBody APICancelDTO apiCancelDTO)  {
-        return Result.succeed(apiService.cancel(apiCancelDTO),"执行成功");
+    public Result cancel(@RequestBody APICancelDTO apiCancelDTO) {
+        return Result.succeed(apiService.cancel(apiCancelDTO), "执行成功");
     }
 
     @PostMapping("/savepoint")
-    public Result savepoint(@RequestBody APISavePointDTO apiSavePointDTO)  {
-        return Result.succeed(apiService.savepoint(apiSavePointDTO),"执行成功");
+    public Result savepoint(@RequestBody APISavePointDTO apiSavePointDTO) {
+        return Result.succeed(apiService.savepoint(apiSavePointDTO), "执行成功");
     }
 
     @PostMapping("/executeJar")
-    public Result executeJar(@RequestBody APIExecuteJarDTO apiExecuteJarDTO)  {
-        return Result.succeed(apiService.executeJar(apiExecuteJarDTO),"执行成功");
+    public Result executeJar(@RequestBody APIExecuteJarDTO apiExecuteJarDTO) {
+        return Result.succeed(apiService.executeJar(apiExecuteJarDTO), "执行成功");
     }
 }

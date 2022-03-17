@@ -20,7 +20,7 @@ public class SavepointsServiceImpl extends SuperServiceImpl<SavepointsMapper, Sa
 
     @Override
     public List<Savepoints> listSavepointsByTaskId(Integer taskId) {
-        return list(new QueryWrapper<Savepoints>().eq("task_id",taskId));
+        return list(new QueryWrapper<Savepoints>().eq("task_id", taskId));
     }
 
     @Override

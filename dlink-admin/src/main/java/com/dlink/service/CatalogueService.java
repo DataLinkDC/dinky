@@ -3,7 +3,6 @@ package com.dlink.service;
 import com.dlink.db.service.ISuperService;
 import com.dlink.dto.CatalogueTaskDTO;
 import com.dlink.model.Catalogue;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 

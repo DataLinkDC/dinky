@@ -12,7 +12,7 @@ import org.junit.Test;
 public class AdminTest {
 
     @Test
-    public void adminTest(){
+    public void adminTest() {
         String admin = SaSecureUtil.md5("admin");
         System.out.println(admin);
     }

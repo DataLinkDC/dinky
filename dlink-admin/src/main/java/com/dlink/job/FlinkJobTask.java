@@ -40,7 +40,7 @@ public class FlinkJobTask implements DaemonTask {
     @Override
     public void dealTask() {
         long gap = System.currentTimeMillis() - this.preDealTime;
-        if(gap < FlinkTaskConstant.TIME_SLEEP){
+        if (gap < FlinkTaskConstant.TIME_SLEEP) {
             try {
                 Thread.sleep(FlinkTaskConstant.TIME_SLEEP);
             } catch (InterruptedException e) {
@@ -49,7 +49,7 @@ public class FlinkJobTask implements DaemonTask {
         }
         preDealTime = System.currentTimeMillis();
         JobInstance jobInstance = taskService.refreshJobInstance(config.getId());
-        if(!JobStatus.isDone(jobInstance.getStatus())){
+        if (!JobStatus.isDone(jobInstance.getStatus())) {
             DefaultThreadPool.getInstance().execute(this);
         }
     }

@@ -341,7 +341,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Task task = getById(id);
         Assert.check(task);
         if (JobLifeCycle.RELEASE.equalsValue(task.getStep())) {
-            if(Asserts.isNotNull(task.getJobInstanceId())&&task.getJobInstanceId()!=0){
+            if (Asserts.isNotNull(task.getJobInstanceId()) && task.getJobInstanceId() != 0) {
                 return Result.failed("当前发布状态下有作业正在运行，上线失败，请停止后上线");
             }
             JobResult jobResult = submitTaskToOnline(id);
@@ -349,7 +349,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 task.setStep(JobLifeCycle.ONLINE.getValue());
                 task.setJobInstanceId(jobResult.getJobInstanceId());
                 if (updateById(task)) {
-                    return Result.succeed(jobResult,"上线成功");
+                    return Result.succeed(jobResult, "上线成功");
                 } else {
                     return Result.failed("由于未知原因，上线失败");
                 }
@@ -368,7 +368,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             type = SavePointType.CANCEL.getValue();
         }
         if (savepointTask(id, type)) {
-            if(!JobLifeCycle.ONLINE.equalsValue(task.getStep())){
+            if (!JobLifeCycle.ONLINE.equalsValue(task.getStep())) {
                 return Result.succeed("停止成功");
             }
             task.setStep(JobLifeCycle.RELEASE.getValue());
@@ -387,7 +387,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Task task = getById(id);
         Assert.check(task);
         if (JobLifeCycle.ONLINE != JobLifeCycle.get(task.getStep())) {
-            if(Asserts.isNotNull(task.getJobInstanceId())&&task.getJobInstanceId()!=0){
+            if (Asserts.isNotNull(task.getJobInstanceId()) && task.getJobInstanceId() != 0) {
                 return Result.failed("当前有作业正在运行，注销失败，请停止后注销");
             }
             task.setStep(JobLifeCycle.CANCEL.getValue());
@@ -417,7 +417,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Asserts.checkNotNull(cluster, "该集群不存在");
         Asserts.checkNotNull(task.getJobInstanceId(), "无任务需要SavePoint");
         JobInstance jobInstance = jobInstanceService.getById(task.getJobInstanceId());
-        if(Asserts.isNull(jobInstance)){
+        if (Asserts.isNull(jobInstance)) {
             return true;
         }
         String jobId = jobInstance.getJid();
@@ -434,7 +434,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         jobConfig.setTaskId(task.getId());
         JobManager jobManager = JobManager.build(jobConfig);
         jobManager.setUseGateway(useGateway);
-        if("canceljob".equals(savePointType)){
+        if ("canceljob".equals(savePointType)) {
             return jobManager.cancel(jobId);
         }
         SavePointResult savePointResult = jobManager.savepoint(jobId, savePointType, null);

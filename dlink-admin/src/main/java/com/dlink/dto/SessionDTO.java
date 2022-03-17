@@ -1,6 +1,5 @@
 package com.dlink.dto;
 
-import com.dlink.session.SessionConfig;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,5 +16,4 @@ public class SessionDTO {
     private String type;
     private boolean useRemote;
     private Integer clusterId;
-
 }

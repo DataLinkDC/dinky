@@ -36,9 +36,9 @@ public class StatementController {
      */
     @PutMapping
     public Result saveOrUpdate(@RequestBody Statement statement) throws Exception {
-        if(statementService.saveOrUpdate(statement)){
+        if (statementService.saveOrUpdate(statement)) {
             return Result.succeed("新增成功");
-        }else {
+        } else {
             return Result.failed("新增失败");
         }
     }
@@ -56,21 +56,21 @@ public class StatementController {
      */
     @DeleteMapping
     public Result deleteMul(@RequestBody JsonNode para) {
-        if (para.size()>0){
+        if (para.size() > 0) {
             boolean isAdmin = false;
             List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para){
+            for (final JsonNode item : para) {
                 Integer id = item.asInt();
-                if(!statementService.removeById(id)){
+                if (!statementService.removeById(id)) {
                     error.add(id);
                 }
             }
-            if(error.size()==0&&!isAdmin) {
+            if (error.size() == 0 && !isAdmin) {
                 return Result.succeed("删除成功");
-            }else {
-                return Result.succeed("删除部分成功，但"+error.toString()+"删除失败，共"+error.size()+"次失败。");
+            } else {
+                return Result.succeed("删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
             }
-        }else{
+        } else {
             return Result.failed("请选择要删除的记录");
         }
     }
@@ -81,7 +81,7 @@ public class StatementController {
     @PostMapping("/getOneById")
     public Result getOneById(@RequestBody Statement statement) throws Exception {
         statement = statementService.getById(statement.getId());
-        return Result.succeed(statement,"获取成功");
+        return Result.succeed(statement, "获取成功");
     }
 
 }

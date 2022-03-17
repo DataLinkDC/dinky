@@ -7,7 +7,6 @@ import com.dlink.mapper.SysConfigMapper;
 import com.dlink.model.SysConfig;
 import com.dlink.model.SystemConfiguration;
 import com.dlink.service.SysConfigService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
@@ -30,10 +29,10 @@ public class SysConfigServiceImpl extends SuperServiceImpl<SysConfigMapper, SysC
 
     @Override
     public Map<String, Object> getAll() {
-        Map<String,Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         List<SysConfig> sysConfigs = list();
-        for(SysConfig item : sysConfigs){
-            map.put(item.getName(),item.getValue());
+        for (SysConfig item : sysConfigs) {
+            map.put(item.getName(), item.getValue());
         }
         SystemConfiguration.getInstances().addConfiguration(map);
         return map;
@@ -46,7 +45,7 @@ public class SysConfigServiceImpl extends SuperServiceImpl<SysConfigMapper, SysC
 
     @Override
     public void updateSysConfigByJson(JsonNode node) {
-        if (node!=null&&node.isObject()) {
+        if (node != null && node.isObject()) {
             Iterator<Map.Entry<String, JsonNode>> it = node.fields();
             while (it.hasNext()) {
                 Map.Entry<String, JsonNode> entry = it.next();
@@ -55,10 +54,10 @@ public class SysConfigServiceImpl extends SuperServiceImpl<SysConfigMapper, SysC
                 SysConfig config = getOne(new QueryWrapper<SysConfig>().eq("name", name));
                 SysConfig newConfig = new SysConfig();
                 newConfig.setValue(value);
-                if(Asserts.isNull(config)){
+                if (Asserts.isNull(config)) {
                     newConfig.setName(name);
                     save(newConfig);
-                }else {
+                } else {
                     newConfig.setId(config.getId());
                     updateById(newConfig);
                 }

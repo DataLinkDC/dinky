@@ -1,7 +1,6 @@
 package com.dlink.model;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.dlink.assertion.Asserts;
 import com.dlink.db.annotation.Save;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -19,7 +18,7 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dlink_user")
-public class User implements Serializable{
+public class User implements Serializable {
 
     private static final long serialVersionUID = -1077801296270024204L;
 
