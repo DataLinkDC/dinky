@@ -66,6 +66,22 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
 
 
     @Override
+    public Table getTable(String schemaName, String tableName) {
+        List<Table> tables = listTables(schemaName);
+        Table table = null;
+        for(Table item : tables){
+            if(Asserts.isEquals(item.getName(),tableName)){
+                table = item;
+                break;
+            }
+        }
+        if(Asserts.isNotNull(table)) {
+            table.setColumns(listColumns(schemaName, table.getName()));
+        }
+        return table;
+    }
+
+    @Override
     public List<Table> listTables(String schemaName) {
         List<Table> tableList = new ArrayList<>();
         PreparedStatement preparedStatement = null;

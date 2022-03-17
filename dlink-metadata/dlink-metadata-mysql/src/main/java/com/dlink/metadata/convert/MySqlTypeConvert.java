@@ -35,6 +35,8 @@ public class MySqlTypeConvert implements ITypeConvert {
             return ColumnType.TIMESTAMP;
         } else if (t.contains("date")) {
             return ColumnType.DATE;
+        } else if (t.contains("timestamp")) {
+            return ColumnType.TIMESTAMP;
         } else if (t.contains("time")) {
             return ColumnType.TIME;
         } else if (t.contains("char") || t.contains("text")) {
