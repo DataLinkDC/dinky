@@ -68,17 +68,17 @@ public class LineageColumnGenerator {
             Trans trans = entry.getValue();
             if (trans instanceof SinkTrans) {
                 TableCA tableCA = new TableCA((SinkTrans) trans);
-                matchSinkField(tableCA,trans);
+                matchSinkField(tableCA, trans);
                 searchColumnCAId(tableCA);
             }
         }
         chainRelation();
     }
 
-    private void matchSinkField(TableCA tableCA,Trans trans){
-        for(ColumnCA columnCA: columnCAS){
-            for(String fieldName: tableCA.getFields()){
-                if(columnCA.getName().equals(fieldName)){
+    private void matchSinkField(TableCA tableCA, Trans trans) {
+        for (ColumnCA columnCA : columnCAS) {
+            for (String fieldName : tableCA.getFields()) {
+                if (columnCA.getName().equals(fieldName)) {
                     int cid = index++;
                     ColumnCA sinkColumnCA = new ColumnCA(cid, fieldName, fieldName, fieldName, fieldName, fieldName, tableCA, trans);
                     columnCASMaps.put(cid, sinkColumnCA);
@@ -124,7 +124,7 @@ public class LineageColumnGenerator {
                     break;
                 }
             }
-            if(columnCA.getId()==cid){
+            if (columnCA.getId() == cid) {
                 return;
             }
             if (!isHad) {
@@ -176,20 +176,22 @@ public class LineageColumnGenerator {
     }
 
     private void chainRelation() {
-        Set<NodeRel> nodeRelsChain = new HashSet<>();
         for (Integer item : sourceColumns) {
-            nodeRelsChain.add(new NodeRel(item, getNextSuf(item)));
+            buildSinkSuf(item, item);
         }
-        columnCASRelChain = nodeRelsChain;
     }
 
-    private Integer getNextSuf(Integer sufId) {
+    private void buildSinkSuf(Integer preId, Integer sourcePreId) {
         for (NodeRel nodeRel : columnCASRel) {
-            if (nodeRel.getPreId() == sufId) {
-                return getNextSuf(nodeRel.getSufId());
+            if (nodeRel.getPreId() == preId) {
+                Integer nextSufId = nodeRel.getSufId();
+                if (sinkColumns.contains(nextSufId)) {
+                    columnCASRelChain.add(new NodeRel(sourcePreId, nextSufId));
+                    continue;
+                }
+                buildSinkSuf(nextSufId, sourcePreId);
             }
         }
-        return sufId;
     }
 
     public Map<Integer, Trans> getTransMaps() {

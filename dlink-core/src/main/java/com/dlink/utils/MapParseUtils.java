@@ -115,6 +115,11 @@ public class MapParseUtils {
         }
         Deque<Integer> stack = new LinkedList<>();
         for (int i = 0; i < inStr.length(); i++) {
+            if (inStr.charAt(i) == ']' && stack.size() == 0) {
+                selects.add(inStr.substring(startIndex, i));
+                startIndex = i + 1;
+                return selects;
+            }
             if (inStr.charAt(i) == ',' && stack.size() == 0) {
                 selects.add(inStr.substring(startIndex, i));
                 startIndex = i + 1;
