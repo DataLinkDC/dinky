@@ -28,7 +28,7 @@ public class LineageTest {
                 ") WITH (\n" +
                 " 'connector' = 'print'\n" +
                 ");\n" +
-                "insert into TT select a||c A ,b B from ST";
+                "insert into TT select a||c A ,b||c B from ST";
         LineageResult result = LineageBuilder.getLineage(sql);
         System.out.println("end");
     }
