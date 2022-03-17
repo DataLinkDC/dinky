@@ -770,6 +770,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>优化 Studio血缘分析为字段级</Link>
                 </li>
+                <li>
+                  <Link>新增 Hive 数据源注册、元数据、查询和执行</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

@@ -127,9 +127,9 @@ public abstract class Executor {
     }
 
     public void initEnvironment() {
-        if (executorSetting.getCheckpoint() != null && executorSetting.getCheckpoint() > 0) {
+        /*if (executorSetting.getCheckpoint() != null && executorSetting.getCheckpoint() > 0) {
             environment.enableCheckpointing(executorSetting.getCheckpoint());
-        }
+        }*/
         if (executorSetting.getParallelism() != null && executorSetting.getParallelism() > 0) {
             environment.setParallelism(executorSetting.getParallelism());
         }
@@ -140,9 +140,9 @@ public abstract class Executor {
     }
 
     public void updateEnvironment(ExecutorSetting executorSetting) {
-        if (executorSetting.getCheckpoint() != null && executorSetting.getCheckpoint() > 0) {
+        /*if (executorSetting.getCheckpoint() != null && executorSetting.getCheckpoint() > 0) {
             environment.enableCheckpointing(executorSetting.getCheckpoint());
-        }
+        }*/
         if (executorSetting.getParallelism() != null && executorSetting.getParallelism() > 0) {
             environment.setParallelism(executorSetting.getParallelism());
         }
