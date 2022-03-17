@@ -140,9 +140,9 @@ public class Table implements Serializable, Comparable<Table> {
             }
         }
         if(Asserts.isNotNullString(comment)){
-            sb.append(" FROM " + catalogName + "." + schema + "." + name + ";" + " -- " + comment + "\n");
+            sb.append(" FROM " + schema + "." + name + ";" + " -- " + comment + "\n");
         }else {
-            sb.append(" FROM " + catalogName + "." + schema + "." + name +";\n");
+            sb.append(" FROM " +  schema + "." + name +";\n");
         }
         return sb.toString();
     }

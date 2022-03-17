@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Modal,Image,List,Card} from 'antd';
+import {Card, Image, List, Modal} from 'antd';
 
 import {DataBaseItem} from '../data.d';
 import {connect} from "umi";
@@ -36,6 +36,9 @@ const data:any = [
   },
   {
     type: 'Phoenix',
+  },
+  {
+    type: 'Hive',
   },
 ];
 

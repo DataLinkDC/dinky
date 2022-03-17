@@ -264,6 +264,11 @@
             </dependency>
             <dependency>
                 <groupId>com.dlink</groupId>
+                <artifactId>dlink-metadata-hive</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
                 <artifactId>dlink-metadata-phoenix</artifactId>
                 <version>${project.version}</version>
             </dependency>
