@@ -22,6 +22,9 @@ export function getDBImage(type: string) {
     case 'phoenix':
       imageUrl += 'phoenix.png';
       break;
+    case 'hive':
+      imageUrl += 'hive.png';
+      break;
     default:
       imageUrl += 'db.jpg';
   }
