@@ -86,7 +86,7 @@ public class DingTalkSender {
     private String sendMsg(String title, String content) throws IOException {
         String msg = generateMsgJson(title, content);
         String httpUrl = url;
-        if(Asserts.isNotNullString(secret)){
+        if (Asserts.isNotNullString(secret)) {
             httpUrl = generateSignedUrl();
         }
         HttpPost httpPost = new HttpPost(httpUrl);
@@ -174,8 +174,9 @@ public class DingTalkSender {
     }
 
     /**
-     *  公共生成 markdown 和 text 消息
-     * @param title 标题
+     * 公共生成 markdown 和 text 消息
+     *
+     * @param title   标题
      * @param content 内容
      * @param builder 拼接字符串
      * @return
@@ -213,7 +214,7 @@ public class DingTalkSender {
             Mac mac = Mac.getInstance("HmacSHA256");
             mac.init(new SecretKeySpec(secret.getBytes("UTF-8"), "HmacSHA256"));
             byte[] signData = mac.doFinal(stringToSign.getBytes("UTF-8"));
-            sign = URLEncoder.encode(new String(Base64.encodeBase64(signData)),"UTF-8");
+            sign = URLEncoder.encode(new String(Base64.encodeBase64(signData)), "UTF-8");
         } catch (Exception e) {
             logger.error("generate sign error, message:{}", e);
         }

@@ -23,7 +23,7 @@ public class StudioDDLDTO {
     private Integer maxRowNum = 10000;
 
     public JobConfig getJobConfig() {
-        return new JobConfig(type,useResult, useSession, session, useRemote, clusterId,maxRowNum);
+        return new JobConfig(type, useResult, useSession, session, useRemote, clusterId, maxRowNum);
     }
 
 }

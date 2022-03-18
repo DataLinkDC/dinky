@@ -1,8 +1,8 @@
 import styles from "./index.less";
 import {Menu, Dropdown, Tooltip, Row, Col, notification, Modal, message} from "antd";
 import {
-  PauseCircleTwoTone, CarryOutTwoTone, DeleteTwoTone, PlayCircleTwoTone, CameraTwoTone,SnippetsTwoTone,
-  FileAddTwoTone, FolderOpenTwoTone, SafetyCertificateTwoTone, SaveTwoTone, FlagTwoTone,CodeTwoTone,
+  PauseCircleTwoTone, CarryOutTwoTone, DeleteTwoTone, PlayCircleTwoTone, CameraTwoTone, SnippetsTwoTone,
+  FileAddTwoTone, FolderOpenTwoTone, SafetyCertificateTwoTone, SaveTwoTone, FlagTwoTone, CodeTwoTone,
   EnvironmentOutlined, SmileOutlined, RocketTwoTone, QuestionCircleTwoTone, MessageOutlined, ClusterOutlined
   , EditTwoTone, RestTwoTone
 } from "@ant-design/icons";
@@ -51,7 +51,7 @@ const menu = (
 
 const StudioMenu = (props: any) => {
 
-  const {isFullScreen, tabs, current, currentPath, form,width,height, refs, dispatch, currentSession} = props;
+  const {isFullScreen, tabs, current, currentPath, form, width, height, refs, dispatch, currentSession} = props;
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
   const [exportModalVisible, handleExportModalVisible] = useState<boolean>(false);
   const [graphModalVisible, handleGraphModalVisible] = useState<boolean>(false);
@@ -59,15 +59,15 @@ const StudioMenu = (props: any) => {
   const [graphData, setGraphData] = useState();
 
   const onKeyDown = useCallback((e) => {
-    if(e.keyCode === 83 && (e.ctrlKey === true || e.metaKey)){
+    if (e.keyCode === 83 && (e.ctrlKey === true || e.metaKey)) {
       e.preventDefault();
-      if(current) {
+      if (current) {
         props.saveTask(current);
       }
     }
-    if(e.keyCode === 113){
+    if (e.keyCode === 113) {
       e.preventDefault();
-      if(current) {
+      if (current) {
         // handleEditModalVisible(true);
         props.changeFullScreen(true);
       }
@@ -82,7 +82,7 @@ const StudioMenu = (props: any) => {
   }, [current]);
 
   const execute = () => {
-    if(!isSql(current.task.dialect)&&!isOnline(current.task.type)){
+    if (!isSql(current.task.dialect) && !isOnline(current.task.type)) {
       message.warn(`该任务执行模式为【${current.task.type}】，不支持 SQL 查询，请手动保存后使用右侧按钮——作业提交`);
       return;
     }
@@ -97,6 +97,7 @@ const StudioMenu = (props: any) => {
     let useSession = !!currentSession.session;
     let param = {
       ...current.task,
+      taskId: current.task.id,
       useSession: useSession,
       session: currentSession.session,
       configJson: JSON.stringify(current.task.config),
@@ -118,7 +119,7 @@ const StudioMenu = (props: any) => {
     result.then(res => {
       notification.close(taskKey);
       if (res.datas.success) {
-        res.datas?.jobInstanceId&&props.changeTaskJobInstance(current.task.id,res.datas?.jobInstanceId);
+        res.datas?.jobInstanceId && props.changeTaskJobInstance(current.task.id, res.datas?.jobInstanceId);
         message.success('执行成功');
       } else {
         message.error('执行失败');
@@ -163,7 +164,7 @@ const StudioMenu = (props: any) => {
         const res = await postDataArray('/api/task/submit', [task.id]);
         notification.close(taskKey);
         if (res.datas[0].success) {
-          res.datas[0].jobInstanceId && props.changeTaskJobInstance(current.task.id,res.datas[0].jobInstanceId);
+          res.datas[0].jobInstanceId && props.changeTaskJobInstance(current.task.id, res.datas[0].jobInstanceId);
           message.success('异步提交成功');
         } else {
           message.success('异步提交失败');
@@ -177,7 +178,7 @@ const StudioMenu = (props: any) => {
     handleModalVisible(true);
   };
 
-  const onGetStreamGraph=()=>{
+  const onGetStreamGraph = () => {
     let selectsql = null;
     if (current.monaco.current) {
       let selection = current.monaco.current.editor.getSelection();
@@ -196,36 +197,38 @@ const StudioMenu = (props: any) => {
     };
     const res = getJobPlan(param);
     handleGraphModalVisible(true);
-    res.then((result)=>{
-      if(result.code==0){
+    res.then((result) => {
+      if (result.code == 0) {
         setGraphData(buildGraphData(result.datas));
-      }else{
+      } else {
         setGraphData(undefined);
       }
     })
   };
 
-  const buildGraphData=(data)=>{
+  const buildGraphData = (data) => {
     let edges = [];
-    for(let i in data.nodes){
-      data.nodes[i].id=data.nodes[i].id.toString();
-      data.nodes[i].value={
-        title:data.nodes[i].pact,
+    for (let i in data.nodes) {
+      data.nodes[i].id = data.nodes[i].id.toString();
+      data.nodes[i].value = {
+        title: data.nodes[i].pact,
         items: [
           {
             text: getRangeText(data.nodes[i].description),
           },
           {
             text: '\r\nParallelism: ',
-            value: '\r\n  '+data.nodes[i].parallelism,
+            value: '\r\n  ' + data.nodes[i].parallelism,
           },
         ],
       };
-      if(data.nodes[i].inputs){
-        for(let j in data.nodes[i].inputs){
-          edges.push({source: data.nodes[i].inputs[j].id.toString(),
+      if (data.nodes[i].inputs) {
+        for (let j in data.nodes[i].inputs) {
+          edges.push({
+            source: data.nodes[i].inputs[j].id.toString(),
             target: data.nodes[i].id.toString(),
-            value: data.nodes[i].inputs[j].ship_strategy})
+            value: data.nodes[i].inputs[j].ship_strategy
+          })
         }
       }
     }
@@ -233,17 +236,17 @@ const StudioMenu = (props: any) => {
     return data;
   };
 
-  const getRangeText = (str:string) => {
+  const getRangeText = (str: string) => {
     str = escape2Html(str);
     var canvas = getRangeText.canvas || (getRangeText.canvas = document.createElement("canvas"));
     var context = canvas.getContext("2d");
     context.font = "10px sans-serif";
     let result = '';
     let count = 1;
-    for(let i=0,len=str.length;i<len;i++){
+    for (let i = 0, len = str.length; i < len; i++) {
       result += str[i];
       let width = context.measureText(result).width;
-      if(width >= 110*count) {
+      if (width >= 110 * count) {
         result += '\r\n';
         count++;
       }
@@ -251,7 +254,7 @@ const StudioMenu = (props: any) => {
     return result;
   };
 
-  const getTextWidth = (text:string, font:string) => {
+  const getTextWidth = (text: string, font: string) => {
     var canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
     var context = canvas.getContext("2d");
     context.font = font;
@@ -259,13 +262,15 @@ const StudioMenu = (props: any) => {
     return metrics.width;
   }
 
-  const escape2Html = (str:string) => {
-    let arrEntities={'lt':'<','gt':'>','nbsp':' ','amp':'&','quot':'"'};
-    return str.replace(/&(lt|gt|nbsp|amp|quot);/ig,function(all,t){return arrEntities[t];});
+  const escape2Html = (str: string) => {
+    let arrEntities = {'lt': '<', 'gt': '>', 'nbsp': ' ', 'amp': '&', 'quot': '"'};
+    return str.replace(/&(lt|gt|nbsp|amp|quot);/ig, function (all, t) {
+      return arrEntities[t];
+    });
   }
 
   const toFullScreen = () => {
-    if(current) {
+    if (current) {
       props.changeFullScreen(true);
     }
   };
@@ -287,10 +292,10 @@ const StudioMenu = (props: any) => {
       onOk: async () => {
         const res = releaseTask(current.task.id);
         res.then((result) => {
-          if(result.code == CODE.SUCCESS) {
-            props.changeTaskStep(current.task.id,JOB_LIFE_CYCLE.RELEASE);
+          if (result.code == CODE.SUCCESS) {
+            props.changeTaskStep(current.task.id, JOB_LIFE_CYCLE.RELEASE);
             message.success(`发布作业【${current.task.alias}】成功`);
-          }else {
+          } else {
             message.error(`发布作业【${current.task.alias}】失败，原因：\n${result.msg}`);
           }
         });
@@ -307,8 +312,8 @@ const StudioMenu = (props: any) => {
       onOk: async () => {
         const res = developTask(current.task.id);
         res.then((result) => {
-          result.datas && props.changeTaskStep(current.task.id,JOB_LIFE_CYCLE.DEVELOP);
-          if(result.code == CODE.SUCCESS) {
+          result.datas && props.changeTaskStep(current.task.id, JOB_LIFE_CYCLE.DEVELOP);
+          if (result.code == CODE.SUCCESS) {
             message.success(`维护作业【${current.task.alias}】成功`);
           }
         });
@@ -325,11 +330,11 @@ const StudioMenu = (props: any) => {
       onOk: async () => {
         const res = onLineTask(current.task.id);
         res.then((result) => {
-          if(result.code === CODE.SUCCESS) {
-            props.changeTaskStep(current.task.id,JOB_LIFE_CYCLE.ONLINE);
-            result.datas?.jobInstanceId && props.changeTaskJobInstance(current.task.id,result.datas?.jobInstanceId);
+          if (result.code === CODE.SUCCESS) {
+            props.changeTaskStep(current.task.id, JOB_LIFE_CYCLE.ONLINE);
+            result.datas?.jobInstanceId && props.changeTaskJobInstance(current.task.id, result.datas?.jobInstanceId);
             message.success(`上线作业【${current.task.alias}】成功`);
-          }else {
+          } else {
             message.error(`上线作业【${current.task.alias}】失败，原因：\n${result.msg}`);
           }
         });
@@ -344,15 +349,15 @@ const StudioMenu = (props: any) => {
       okText: '确认',
       cancelText: '取消',
       onOk: async () => {
-        const res = offLineTask(current.task.id,type);
+        const res = offLineTask(current.task.id, type);
         res.then((result) => {
-          if(result.code === CODE.SUCCESS) {
-            if(current.task.step === JOB_LIFE_CYCLE.ONLINE){
-              props.changeTaskStep(current.task.id,JOB_LIFE_CYCLE.RELEASE);
+          if (result.code === CODE.SUCCESS) {
+            if (current.task.step === JOB_LIFE_CYCLE.ONLINE) {
+              props.changeTaskStep(current.task.id, JOB_LIFE_CYCLE.RELEASE);
             }
-            props.changeTaskJobInstance(current.task.id,0);
+            props.changeTaskJobInstance(current.task.id, 0);
             message.success(`停止作业【${current.task.alias}】成功`);
-          }else {
+          } else {
             message.error(`停止作业【${current.task.alias}】失败，原因：\n${result.msg}`);
           }
         });
@@ -367,13 +372,13 @@ const StudioMenu = (props: any) => {
       okText: '确认',
       cancelText: '取消',
       onOk: async () => {
-        const res = offLineTask(current.task.id,type);
+        const res = offLineTask(current.task.id, type);
         res.then((result) => {
-          if(result.code === CODE.SUCCESS) {
-            props.changeTaskStep(current.task.id,JOB_LIFE_CYCLE.RELEASE);
-            props.changeTaskJobInstance(current.task.id,0);
+          if (result.code === CODE.SUCCESS) {
+            props.changeTaskStep(current.task.id, JOB_LIFE_CYCLE.RELEASE);
+            props.changeTaskJobInstance(current.task.id, 0);
             message.success(`下线作业【${current.task.alias}】成功`);
-          }else {
+          } else {
             message.error(`下线作业【${current.task.alias}】失败，原因：\n${result.msg}`);
           }
         });
@@ -390,10 +395,10 @@ const StudioMenu = (props: any) => {
       onOk: async () => {
         const res = cancelTask(current.task.id);
         res.then((result) => {
-          if(result.code === CODE.SUCCESS) {
-            props.changeTaskStep(current.task.id,JOB_LIFE_CYCLE.CANCEL);
+          if (result.code === CODE.SUCCESS) {
+            props.changeTaskStep(current.task.id, JOB_LIFE_CYCLE.CANCEL);
             message.success(`注销作业【${current.task.alias}】成功`);
-          }else {
+          } else {
             message.error(`注销作业【${current.task.alias}】失败，原因：\n${result.msg}`);
           }
         });
@@ -410,8 +415,8 @@ const StudioMenu = (props: any) => {
       onOk: async () => {
         const res = recoveryTask(current.task.id);
         res.then((result) => {
-          result.datas && props.changeTaskStep(current.task.id,JOB_LIFE_CYCLE.DEVELOP);
-          if(result.code == CODE.SUCCESS) {
+          result.datas && props.changeTaskStep(current.task.id, JOB_LIFE_CYCLE.DEVELOP);
+          if (result.code == CODE.SUCCESS) {
             message.success(`恢复作业【${current.task.alias}】成功`);
           }
         });
@@ -420,19 +425,19 @@ const StudioMenu = (props: any) => {
   };
 
   const isShowGetStreamGraphBtn = () => {
-    return (!current.task.dialect||current.task.dialect === DIALECT.FLINKSQL);
+    return (!current.task.dialect || current.task.dialect === DIALECT.FLINKSQL);
   };
 
   const isShowExecuteBtn = () => {
-    return !isDeletedTask(current.task.step) && isExecuteSql( current.task.dialect ) && !isRunningTask(current.task.jobInstanceId);
+    return !isDeletedTask(current.task.step) && isExecuteSql(current.task.dialect) && !isRunningTask(current.task.jobInstanceId);
   };
 
   const isShowSubmitBtn = () => {
-    return !isDeletedTask(current.task.step) && isTask( current.task.dialect ) && !isRunningTask(current.task.jobInstanceId);
+    return !isDeletedTask(current.task.step) && isTask(current.task.dialect) && !isRunningTask(current.task.jobInstanceId);
   };
 
   const isShowCancelTaskBtn = () => {
-    return !isDeletedTask(current.task.step) && isTask( current.task.dialect ) && isRunningTask(current.task.jobInstanceId);
+    return !isDeletedTask(current.task.step) && isTask(current.task.dialect) && isRunningTask(current.task.jobInstanceId);
   };
 
   const runMenu = (
@@ -516,12 +521,12 @@ const StudioMenu = (props: any) => {
                 </Breadcrumb>
               )}
           </Col>
-          {current?.task?
+          {current?.task ?
             <Col span={8}>
               <Tooltip title="全屏开发">
                 <Button
                   type="text"
-                  icon={<CodeTwoTone />}
+                  icon={<CodeTwoTone/>}
                   onClick={toFullScreen}
                 />
               </Tooltip>
@@ -543,7 +548,7 @@ const StudioMenu = (props: any) => {
               <Tooltip title="导出当前的 Sql 及配置">
                 <Button
                   type="text"
-                  icon={<SnippetsTwoTone />}
+                  icon={<SnippetsTwoTone/>}
                   onClick={exportSql}
                 />
               </Tooltip>
@@ -555,7 +560,7 @@ const StudioMenu = (props: any) => {
                   onClick={onCheckSql}
                 />
               </Tooltip>
-              {isShowGetStreamGraphBtn() &&(
+              {isShowGetStreamGraphBtn() && (
                 <Tooltip title="获取当前的 FlinkSql 的执行图">
                   <Button
                     type="text"
@@ -563,7 +568,7 @@ const StudioMenu = (props: any) => {
                     onClick={onGetStreamGraph}
                   />
                 </Tooltip>)}
-              {isShowExecuteBtn() &&(
+              {isShowExecuteBtn() && (
                 <Tooltip title="执行当前的 SQL">
                   <Button
                     type="text"
@@ -572,7 +577,7 @@ const StudioMenu = (props: any) => {
                     onClick={execute}
                   />
                 </Tooltip>)}
-              {isShowSubmitBtn() &&(<>
+              {isShowSubmitBtn() && (<>
                 <Tooltip title="提交当前的作业到集群，提交前请手动保存">
                   <Button
                     type="text"
@@ -585,8 +590,8 @@ const StudioMenu = (props: any) => {
                 <Tooltip title="停止">
                   <Button
                     type="text"
-                    icon={<PauseCircleTwoTone />}
-                    onClick={()=>handleCancelTask('canceljob')}
+                    icon={<PauseCircleTwoTone/>}
+                    onClick={() => handleCancelTask('canceljob')}
                   />
                 </Tooltip>
               }
@@ -598,46 +603,46 @@ const StudioMenu = (props: any) => {
                     icon={<CameraTwoTone/>}
                     onClick={toReleaseTask}
                   />
-                </Tooltip>:undefined
+                </Tooltip> : undefined
               }{current.task.step == JOB_LIFE_CYCLE.RELEASE ?
               <><Tooltip title="维护，点击进入编辑状态">
                 <Button
                   type="text"
-                  icon={<EditTwoTone />}
+                  icon={<EditTwoTone/>}
                   onClick={toDevelopTask}
                 />
               </Tooltip>
                 <Tooltip title="上线，上线后自动恢复、告警等将生效">
                   <Button
                     type="text"
-                    icon={<CarryOutTwoTone />}
+                    icon={<CarryOutTwoTone/>}
                     onClick={toOnLineTask}
                   />
-                </Tooltip></>:undefined
+                </Tooltip></> : undefined
             }{current.task.step == JOB_LIFE_CYCLE.ONLINE ?
               <Tooltip title="下线，将进入最新发布状态">
                 <Button
                   type="text"
-                  icon={<PauseCircleTwoTone />}
-                  onClick={()=>toOffLineTask('cancel')}
+                  icon={<PauseCircleTwoTone/>}
+                  onClick={() => toOffLineTask('cancel')}
                 />
-              </Tooltip>:undefined
+              </Tooltip> : undefined
             }{(current.task.step != JOB_LIFE_CYCLE.ONLINE && current.task.step != JOB_LIFE_CYCLE.CANCEL) ?
               <Tooltip title="注销，将进入回收站">
                 <Button
                   type="text"
-                  icon={<DeleteTwoTone />}
+                  icon={<DeleteTwoTone/>}
                   onClick={toCancelTask}
                 />
-              </Tooltip>:undefined
+              </Tooltip> : undefined
             }{current.task.step == JOB_LIFE_CYCLE.CANCEL ?
               <Tooltip title="恢复，将进入维护模式">
                 <Button
                   type="text"
-                  icon={<RestTwoTone />}
+                  icon={<RestTwoTone/>}
                   onClick={toRecoveryTask}
                 />
-              </Tooltip>:undefined
+              </Tooltip> : undefined
             }
               <Tooltip title="查看使用帮助">
                 <Button
@@ -646,12 +651,14 @@ const StudioMenu = (props: any) => {
                   onClick={showHelp}
                 />
               </Tooltip>
-            </Col>:undefined}
+            </Col> : undefined}
         </Row>
       </Col>
       <StudioExplain
         modalVisible={modalVisible}
-        onClose={()=>{handleModalVisible(false)}}
+        onClose={() => {
+          handleModalVisible(false)
+        }}
       />
       <Modal
         width={1000}
@@ -661,16 +668,16 @@ const StudioMenu = (props: any) => {
         visible={graphModalVisible}
         onCancel={() => handleGraphModalVisible(false)}
       >
-        <StudioGraph data={graphData} />
+        <StudioGraph data={graphData}/>
       </Modal>
-      {current?.task?
+      {current?.task ?
         <ModalForm
           title={`${current.task.alias} 的 ${current.task.dialect} 导出`}
           visible={exportModalVisible}
           width={1000}
           modalProps={{
-            maskClosable:false,
-            bodyStyle:{
+            maskClosable: false,
+            bodyStyle: {
               padding: '5px'
             }
           }}
@@ -683,12 +690,12 @@ const StudioMenu = (props: any) => {
             },
           }}
         >
-          <SqlExport id={current.task.id} />
-        </ModalForm>:undefined}
-      {current && isFullScreen?<Modal
+          <SqlExport id={current.task.id}/>
+        </ModalForm> : undefined}
+      {current && isFullScreen ? <Modal
         width={width}
         bodyStyle={{padding: 0}}
-        style={{top:0,padding:0,margin:0,maxWidth:'100vw'}}
+        style={{top: 0, padding: 0, margin: 0, maxWidth: '100vw'}}
         destroyOnClose
         maskClosable={false}
         closable={false}
@@ -698,31 +705,31 @@ const StudioMenu = (props: any) => {
           props.changeFullScreen(false);
         }}>
         <StudioTabs width={width} height={height}/>
-      </Modal>:undefined}
+      </Modal> : undefined}
     </Row>
   );
 };
 
 
-const mapDispatchToProps = (dispatch: Dispatch)=>({
-  saveTask:(current: any)=>dispatch({
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  saveTask: (current: any) => dispatch({
     type: "Studio/saveTask",
     payload: current.task,
-  }),saveTabs:(tabs: any)=>dispatch({
+  }), saveTabs: (tabs: any) => dispatch({
     type: "Studio/saveTabs",
     payload: tabs,
-  }),changeFullScreen:(isFull: boolean)=>dispatch({
+  }), changeFullScreen: (isFull: boolean) => dispatch({
     type: "Studio/changeFullScreen",
     payload: isFull,
-  }),changeTaskStep:(id: number, step: number)=>dispatch({
+  }), changeTaskStep: (id: number, step: number) => dispatch({
     type: "Studio/changeTaskStep",
     payload: {
-      id,step
+      id, step
     },
-  }),changeTaskJobInstance:(id: number, jobInstanceId: number)=>dispatch({
+  }), changeTaskJobInstance: (id: number, jobInstanceId: number) => dispatch({
     type: "Studio/changeTaskJobInstance",
     payload: {
-      id,jobInstanceId
+      id, jobInstanceId
     },
   }),
 });
@@ -734,4 +741,4 @@ export default connect(({Studio}: { Studio: StateType }) => ({
   tabs: Studio.tabs,
   refs: Studio.refs,
   currentSession: Studio.currentSession,
-}),mapDispatchToProps)(StudioMenu);
+}), mapDispatchToProps)(StudioMenu);

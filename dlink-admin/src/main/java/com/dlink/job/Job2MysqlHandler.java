@@ -4,6 +4,7 @@ import com.dlink.assertion.Asserts;
 import com.dlink.context.SpringContextUtils;
 import com.dlink.daemon.task.DaemonFactory;
 import com.dlink.daemon.task.DaemonTaskConfig;
+import com.dlink.gateway.GatewayType;
 import com.dlink.model.*;
 import com.dlink.service.*;
 import com.dlink.utils.JSONUtil;
@@ -114,7 +115,7 @@ public class Job2MysqlHandler implements JobHandler {
         if (Asserts.isNotNull(job.getJobConfig().getJarId())) {
             jar = jarService.getById(job.getJobConfig().getJarId());
         }
-        if (Asserts.isNotNullCollection(job.getJids())) {
+        if (Asserts.isNotNullCollection(job.getJids()) && !GatewayType.LOCAL.equalsValue(job.getJobConfig().getType())) {
             for (String jid : job.getJids()) {
                 JobInstance jobInstance = history.buildJobInstance();
                 jobInstance.setHistoryId(job.getId());

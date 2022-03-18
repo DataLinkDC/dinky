@@ -1,7 +1,6 @@
 package com.dlink.service;
 
 import com.dlink.db.service.ISuperService;
-import com.dlink.explainer.ca.TableCANode;
 import com.dlink.explainer.lineage.LineageResult;
 import com.dlink.model.JobInfoDetail;
 import com.dlink.model.JobInstance;
@@ -26,4 +25,6 @@ public interface JobInstanceService extends ISuperService<JobInstance> {
     JobInfoDetail getJobInfoDetailInfo(JobInstance jobInstance);
 
     LineageResult getLineage(Integer id);
+
+    JobInstance getJobInstanceByTaskId(Integer id);
 }

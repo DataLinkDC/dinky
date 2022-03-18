@@ -1,8 +1,6 @@
 package com.dlink.service;
 
 import com.dlink.dto.*;
-import com.dlink.explainer.ca.ColumnCANode;
-import com.dlink.explainer.ca.TableCANode;
 import com.dlink.explainer.lineage.LineageResult;
 import com.dlink.job.JobResult;
 import com.dlink.result.IResult;
@@ -46,7 +44,7 @@ public interface StudioService {
 
     List<JsonNode> listJobs(Integer clusterId);
 
-    boolean cancel(Integer clusterId,String jobId);
+    boolean cancel(Integer clusterId, String jobId);
 
-    boolean savepoint(Integer taskId,Integer clusterId,String jobId,String savePointType,String name);
+    boolean savepoint(Integer taskId, Integer clusterId, String jobId, String savePointType, String name);
 }

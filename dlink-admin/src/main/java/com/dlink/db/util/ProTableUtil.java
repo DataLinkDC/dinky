@@ -22,9 +22,9 @@ public class ProTableUtil {
      * @Param [para, wrapper, camelToUnderscore, isDelete]
      **/
     public static void autoQuery(JsonNode para, QueryWrapper<?> wrapper, boolean camelToUnderscore, boolean isDelete) {
-        buildDelete(wrapper,camelToUnderscore,isDelete);
+        buildDelete(wrapper, camelToUnderscore, isDelete);
         JsonNode sortField = para.get("sorter");
-        if(sortField!=null) {
+        if (sortField != null) {
             Iterator<Map.Entry<String, JsonNode>> fields = sortField.fields();
             while (fields.hasNext()) {
                 Map.Entry<String, JsonNode> entry = fields.next();
@@ -32,7 +32,7 @@ public class ProTableUtil {
             }
         }
         JsonNode filter = para.get("filter");
-        if(filter!=null) {
+        if (filter != null) {
             Iterator<Map.Entry<String, JsonNode>> fields2 = filter.fields();
             while (fields2.hasNext()) {
                 Map.Entry<String, JsonNode> entry = fields2.next();
@@ -41,7 +41,7 @@ public class ProTableUtil {
         }
     }
 
-    private static void buildDelete( QueryWrapper<?> wrapper, boolean camelToUnderscore, boolean isDelete){
+    private static void buildDelete(QueryWrapper<?> wrapper, boolean camelToUnderscore, boolean isDelete) {
         if (isDelete) {
             if (camelToUnderscore) {
                 wrapper.eq(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, "is_delete"), 0);
@@ -50,41 +50,41 @@ public class ProTableUtil {
             }
         }
     }
-    
-    private static void buildSort(String sortField,String sortValue,QueryWrapper<?> wrapper, boolean camelToUnderscore){
+
+    private static void buildSort(String sortField, String sortValue, QueryWrapper<?> wrapper, boolean camelToUnderscore) {
         if (sortField != null && sortValue != null) {
             if (camelToUnderscore) {
                 sortField = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, sortField);
             }
             if (sortValue.equals("descend")) {
-                if(!sortField.contains(".")) {
+                if (!sortField.contains(".")) {
                     wrapper.orderByDesc("a." + sortField);
                 }
             } else {
-                if(!sortField.contains(".")) {
+                if (!sortField.contains(".")) {
                     wrapper.orderByAsc("a." + sortField);
                 }
             }
         }
     }
 
-    private static void buildFilter(String searchField,JsonNode searchValue,QueryWrapper<?> wrapper, boolean camelToUnderscore){
+    private static void buildFilter(String searchField, JsonNode searchValue, QueryWrapper<?> wrapper, boolean camelToUnderscore) {
         if (searchField != null && !searchField.equals("") && searchValue != null) {
             if (camelToUnderscore) {
                 searchField = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, searchField);
             }
             final String field = searchField;
             List<String> searchValues = new ArrayList<>();
-            String type ="String";
-            if (searchValue.isArray()){
-                for (final JsonNode objNode : searchValue){
-                    if(objNode.getNodeType()==JsonNodeType.NUMBER){
-                        type ="Number";
+            String type = "String";
+            if (searchValue.isArray()) {
+                for (final JsonNode objNode : searchValue) {
+                    if (objNode.getNodeType() == JsonNodeType.NUMBER) {
+                        type = "Number";
                     }
                     searchValues.add(objNode.asText());
                 }
             }
-            if(searchValues.size()>0) {
+            if (searchValues.size() > 0) {
                 if ("Number".equals(type)) {
                     wrapper.and(qw -> {
                         for (int i = 0; i < searchValues.size(); i++) {
@@ -109,6 +109,7 @@ public class ProTableUtil {
             }
         }
     }
+
     /**
      * @return void
      * @Author wenmo
@@ -119,15 +120,13 @@ public class ProTableUtil {
     public static void autoSetFromPara(QueryWrapper<?> wrapper, JsonNode para, String[] blackarr, String[] writearr, boolean camelToUnderscore) {
         List<String> blacklist = Arrays.asList(blackarr);
         List<String> writelist = Arrays.asList(writearr);
-        if (para.isObject())
-        {
+        if (para.isObject()) {
             Iterator<Map.Entry<String, JsonNode>> it = para.fields();
-            while (it.hasNext())
-            {
+            while (it.hasNext()) {
                 Map.Entry<String, JsonNode> entry = it.next();
                 String mapKey = entry.getKey();
                 if (blacklist.indexOf(mapKey) == -1 || writelist.indexOf(mapKey) > -1) {
-                    if(entry.getValue().getNodeType()== JsonNodeType.NUMBER) {
+                    if (entry.getValue().getNodeType() == JsonNodeType.NUMBER) {
                         Double mapValue = entry.getValue().asDouble();
                         if (mapValue != null) {
                             if (camelToUnderscore) {
@@ -136,9 +135,9 @@ public class ProTableUtil {
                                 wrapper.eq(mapKey, mapValue);
                             }
                         }
-                    }else{
+                    } else {
                         String mapValue = entry.getValue().asText();
-                        if (mapValue != null&&!"".equals(mapValue)) {
+                        if (mapValue != null && !"".equals(mapValue)) {
                             if (camelToUnderscore) {
                                 wrapper.eq(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, mapKey), mapValue);
                             } else {
@@ -175,7 +174,7 @@ public class ProTableUtil {
         autoQuery(para, wrapper, true, false);
     }
 
-    public static void autoQueryDefalut(JsonNode para, QueryWrapper<?> wrapper,boolean isDelete) {
+    public static void autoQueryDefalut(JsonNode para, QueryWrapper<?> wrapper, boolean isDelete) {
         autoQuery(para, wrapper, true, isDelete);
     }
 

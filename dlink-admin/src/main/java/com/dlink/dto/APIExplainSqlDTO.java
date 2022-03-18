@@ -1,8 +1,5 @@
 package com.dlink.dto;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.gateway.GatewayType;
-import com.dlink.gateway.config.GatewayConfig;
 import com.dlink.job.JobConfig;
 import lombok.Getter;
 import lombok.Setter;

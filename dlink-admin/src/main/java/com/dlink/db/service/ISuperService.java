@@ -20,6 +20,6 @@ public interface ISuperService<T> extends IService<T> {
 
     ProTableResult<T> selectForProTable(JsonNode para, boolean isDelete);
 
-    ProTableResult<T> selectForProTable(JsonNode para,Map<String, Object> paraMap);
+    ProTableResult<T> selectForProTable(JsonNode para, Map<String, Object> paraMap);
 
 }

@@ -30,9 +30,9 @@ public class SavepointsController {
      */
     @PutMapping
     public Result saveOrUpdate(@RequestBody Savepoints savepoints) throws Exception {
-        if(savepointsService.saveOrUpdate(savepoints)){
+        if (savepointsService.saveOrUpdate(savepoints)) {
             return Result.succeed("新增成功");
-        }else {
+        } else {
             return Result.failed("新增失败");
         }
     }
@@ -50,20 +50,20 @@ public class SavepointsController {
      */
     @DeleteMapping
     public Result deleteMul(@RequestBody JsonNode para) {
-        if (para.size()>0){
+        if (para.size() > 0) {
             List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para){
+            for (final JsonNode item : para) {
                 Integer id = item.asInt();
-                if(!savepointsService.removeById(id)){
+                if (!savepointsService.removeById(id)) {
                     error.add(id);
                 }
             }
-            if(error.size()==0) {
+            if (error.size() == 0) {
                 return Result.succeed("删除成功");
-            }else {
-                return Result.succeed("删除部分成功，但"+error.toString()+"删除失败，共"+error.size()+"次失败。");
+            } else {
+                return Result.succeed("删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
             }
-        }else{
+        } else {
             return Result.failed("请选择要删除的记录");
         }
     }
@@ -74,7 +74,7 @@ public class SavepointsController {
     @PostMapping("/getOneById")
     public Result getOneById(@RequestBody Savepoints savepoints) throws Exception {
         savepoints = savepointsService.getById(savepoints.getId());
-        return Result.succeed(savepoints,"获取成功");
+        return Result.succeed(savepoints, "获取成功");
     }
 
     /**
@@ -82,6 +82,6 @@ public class SavepointsController {
      */
     @GetMapping("/listSavepointsByTaskId")
     public Result listSavepointsByTaskId(@RequestParam Integer taskID) throws Exception {
-        return Result.succeed(savepointsService.listSavepointsByTaskId(taskID),"获取成功");
+        return Result.succeed(savepointsService.listSavepointsByTaskId(taskID), "获取成功");
     }
 }

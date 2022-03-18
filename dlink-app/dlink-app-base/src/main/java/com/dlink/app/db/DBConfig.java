@@ -24,12 +24,12 @@ public class DBConfig {
         this.password = password;
     }
 
-    public static DBConfig build(String driver, String url, String username, String password){
-        return new DBConfig(driver,url,username,password);
+    public static DBConfig build(String driver, String url, String username, String password) {
+        return new DBConfig(driver, url, username, password);
     }
 
 
-    public static DBConfig build(Map<String, String> params){
+    public static DBConfig build(Map<String, String> params) {
         return new DBConfig(params.get(FlinkParamConstant.DRIVER),
                 params.get(FlinkParamConstant.URL),
                 params.get(FlinkParamConstant.USERNAME),

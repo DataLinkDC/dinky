@@ -15,6 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.dlink.assertion.Asserts.isNotNull;
+import static com.dlink.assertion.Asserts.isNull;
+
 /**
  * CatalogueServiceImpl
  *
@@ -29,9 +32,6 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     @Autowired
     private StatementService statementService;
 
-    @Autowired
-    private CatalogueMapper catalogueMapper;
-
     @Override
     public List<Catalogue> getAllData() {
         return this.list();
@@ -39,10 +39,10 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
 
     @Override
     public Catalogue findByParentIdAndName(Integer parent_id, String name) {
-        return catalogueMapper.selectOne(Wrappers.<Catalogue>query().eq("parent_id",parent_id).eq("name",name));
+        return baseMapper.selectOne(Wrappers.<Catalogue>query().eq("parent_id", parent_id).eq("name", name));
     }
 
-    @Transactional(rollbackFor=Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Catalogue createCatalogueAndTask(CatalogueTaskDTO catalogueTaskDTO) {
         Task task = new Task();
@@ -79,13 +79,13 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         return catalogue;
     }
 
-    @Transactional(rollbackFor=Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public boolean toRename(Catalogue catalogue) {
         Catalogue oldCatalogue = this.getById(catalogue.getId());
-        if(oldCatalogue==null){
+        if (isNull(oldCatalogue)) {
             return false;
-        }else{
+        } else {
             Task task = new Task();
             task.setId(oldCatalogue.getTaskId());
             task.setName(catalogue.getName());
@@ -99,15 +99,26 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     @Override
     public boolean removeCatalogueAndTaskById(Integer id) {
         Catalogue catalogue = this.getById(id);
-        if(catalogue==null){
+        if (isNull(catalogue)) {
             return false;
-        }else{
-            if(catalogue.getTaskId()!=null) {
+        } else {
+            if (isNotNull(catalogue.getTaskId())) {
                 taskService.removeById(catalogue.getTaskId());
                 statementService.removeById(catalogue.getTaskId());
             }
             this.removeById(id);
             return true;
+        }
+    }
+
+    @Override
+    public boolean moveCatalogue(Integer id, Integer parentId) {
+        Catalogue catalogue = this.getById(id);
+        if (isNull(catalogue)) {
+            return false;
+        } else {
+            catalogue.setParentId(parentId);
+            return updateById(catalogue);
         }
     }
 }

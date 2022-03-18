@@ -19,7 +19,7 @@ import java.util.Map;
  **/
 public class DingTalkTest {
 
-    private static  Map<String, String> config = new HashMap<>();
+    private static Map<String, String> config = new HashMap<>();
     private String contentTest = "[{\"id\":\"70\","
             +
             "\"name\":\"UserBehavior-0--1193959466\","
@@ -39,6 +39,7 @@ public class DingTalkTest {
             "\"Host\": \"192.168.xx.xx\","
             +
             "\"Notify group\" :\"4\"}]";
+
     @Before
     public void initDingTalkConfig() {
 
@@ -53,7 +54,7 @@ public class DingTalkTest {
     }
 
     @Test
-    public void sendMarkDownMsgTest(){
+    public void sendMarkDownMsgTest() {
         AlertConfig config = AlertConfig.build("MarkDownTest", "DingTalk", DingTalkTest.config);
         Alert alert = Alert.build(config);
         AlertResult result = alert.send("Dlinky钉钉告警测试", contentTest);
@@ -61,7 +62,7 @@ public class DingTalkTest {
     }
 
     @Test
-    public void sendTextMsgTest(){
+    public void sendTextMsgTest() {
         config.put(DingTalkConstants.MSG_TYPE, ShowType.TEXT.getValue());
         AlertConfig config = AlertConfig.build("TextMsgTest", "DingTalk", DingTalkTest.config);
         Alert alert = Alert.build(config);

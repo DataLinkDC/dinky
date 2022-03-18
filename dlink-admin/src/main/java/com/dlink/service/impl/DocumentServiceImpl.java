@@ -21,9 +21,9 @@ public class DocumentServiceImpl extends SuperServiceImpl<DocumentMapper, Docume
 
     @Override
     public List<Document> getFillAllByVersion(String version) {
-        if(Asserts.isNotNullString(version)) {
+        if (Asserts.isNotNullString(version)) {
             return baseMapper.selectList(new QueryWrapper<Document>().eq("version", version).eq("enabled", 1));
-        }else{
+        } else {
             return baseMapper.selectList(new QueryWrapper<Document>().eq("enabled", 1));
         }
     }

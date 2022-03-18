@@ -11,6 +11,8 @@ import com.dlink.assertion.Tips;
 import com.dlink.common.result.Result;
 import com.dlink.config.Dialect;
 import com.dlink.constant.FlinkRestResultConstant;
+import com.dlink.daemon.task.DaemonFactory;
+import com.dlink.daemon.task.DaemonTaskConfig;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.dto.SqlDTO;
 import com.dlink.exception.BusException;
@@ -19,10 +21,7 @@ import com.dlink.gateway.config.SavePointStrategy;
 import com.dlink.gateway.config.SavePointType;
 import com.dlink.gateway.model.JobInfo;
 import com.dlink.gateway.result.SavePointResult;
-import com.dlink.job.Job;
-import com.dlink.job.JobConfig;
-import com.dlink.job.JobManager;
-import com.dlink.job.JobResult;
+import com.dlink.job.*;
 import com.dlink.mapper.TaskMapper;
 import com.dlink.metadata.driver.Driver;
 import com.dlink.metadata.result.JdbcSelectResult;
@@ -35,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -123,7 +123,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Task task = this.getTaskInfoById(id);
         Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
         if (Asserts.isNotNull(task.getJobInstanceId()) && task.getJobInstanceId() != 0) {
-            savepointTask(task, SavePointType.CANCEL.getValue());
+            savepointJobInstance(task.getJobInstanceId(), SavePointType.CANCEL.getValue());
         }
         if (Dialect.isSql(task.getDialect())) {
             return executeCommonSql(SqlDTO.build(task.getStatement(),
@@ -222,8 +222,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             if (statement != null) {
                 task.setStatement(statement.getStatement());
             }
+            if (Asserts.isNull(task.getJobInstanceId()) || task.getJobInstanceId() == 0) {
+                JobInstance jobInstance = jobInstanceService.getJobInstanceByTaskId(id);
+                if (Asserts.isNotNull(jobInstance) && !JobStatus.isDone(jobInstance.getStatus())) {
+                    task.setJobInstanceId(jobInstance.getId());
+                }
+            }
         }
-
         return task;
     }
 
@@ -306,7 +311,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public Result releaseTask(Integer id) {
-        Task task = getById(id);
+        Task task = getTaskInfoById(id);
         Assert.check(task);
         if (JobLifeCycle.DEVELOP.equalsValue(task.getStep())) {
             List<SqlExplainResult> sqlExplainResults = explainTask(id);
@@ -327,7 +332,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public boolean developTask(Integer id) {
-        Task task = getById(id);
+        Task task = getTaskInfoById(id);
         Assert.check(task);
         if (JobLifeCycle.RELEASE.equalsValue(task.getStep())) {
             task.setStep(JobLifeCycle.DEVELOP.getValue());
@@ -338,10 +343,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public Result onLineTask(Integer id) {
-        Task task = getById(id);
+        Task task = getTaskInfoById(id);
         Assert.check(task);
         if (JobLifeCycle.RELEASE.equalsValue(task.getStep())) {
-            if(Asserts.isNotNull(task.getJobInstanceId())&&task.getJobInstanceId()!=0){
+            if (Asserts.isNotNull(task.getJobInstanceId()) && task.getJobInstanceId() != 0) {
                 return Result.failed("当前发布状态下有作业正在运行，上线失败，请停止后上线");
             }
             JobResult jobResult = submitTaskToOnline(id);
@@ -349,7 +354,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 task.setStep(JobLifeCycle.ONLINE.getValue());
                 task.setJobInstanceId(jobResult.getJobInstanceId());
                 if (updateById(task)) {
-                    return Result.succeed(jobResult,"上线成功");
+                    return Result.succeed(jobResult, "上线成功");
                 } else {
                     return Result.failed("由于未知原因，上线失败");
                 }
@@ -361,14 +366,35 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
+    public Result reOnLineTask(Integer id) {
+        Task task = this.getTaskInfoById(id);
+        Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
+        if (Asserts.isNotNull(task.getJobInstanceId()) && task.getJobInstanceId() != 0) {
+            savepointJobInstance(task.getJobInstanceId(), SavePointType.CANCEL.getValue());
+        }
+        JobResult jobResult = submitTaskToOnline(id);
+        if (Job.JobStatus.SUCCESS == jobResult.getStatus()) {
+            task.setStep(JobLifeCycle.ONLINE.getValue());
+            task.setJobInstanceId(jobResult.getJobInstanceId());
+            if (updateById(task)) {
+                return Result.succeed(jobResult, "重新上线成功");
+            } else {
+                return Result.failed("由于未知原因，重新上线失败");
+            }
+        } else {
+            return Result.failed("重新上线失败，原因：" + jobResult.getError());
+        }
+    }
+
+    @Override
     public Result offLineTask(Integer id, String type) {
-        Task task = getById(id);
+        Task task = getTaskInfoById(id);
         Assert.check(task);
         if (Asserts.isNullString(type)) {
             type = SavePointType.CANCEL.getValue();
         }
         if (savepointTask(id, type)) {
-            if(!JobLifeCycle.ONLINE.equalsValue(task.getStep())){
+            if (!JobLifeCycle.ONLINE.equalsValue(task.getStep())) {
                 return Result.succeed("停止成功");
             }
             task.setStep(JobLifeCycle.RELEASE.getValue());
@@ -384,10 +410,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public Result cancelTask(Integer id) {
-        Task task = getById(id);
+        Task task = getTaskInfoById(id);
         Assert.check(task);
         if (JobLifeCycle.ONLINE != JobLifeCycle.get(task.getStep())) {
-            if(Asserts.isNotNull(task.getJobInstanceId())&&task.getJobInstanceId()!=0){
+            if (Asserts.isNotNull(task.getJobInstanceId()) && task.getJobInstanceId() != 0) {
                 return Result.failed("当前有作业正在运行，注销失败，请停止后注销");
             }
             task.setStep(JobLifeCycle.CANCEL.getValue());
@@ -402,7 +428,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public boolean recoveryTask(Integer id) {
-        Task task = getById(id);
+        Task task = getTaskInfoById(id);
         Assert.check(task);
         if (JobLifeCycle.CANCEL == JobLifeCycle.get(task.getStep())) {
             task.setStep(JobLifeCycle.DEVELOP.getValue());
@@ -411,15 +437,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         return false;
     }
 
-    private boolean savepointTask(Task task, String savePointType) {
-        Asserts.checkNotNull(task, "该任务不存在");
-        Cluster cluster = clusterService.getById(task.getClusterId());
-        Asserts.checkNotNull(cluster, "该集群不存在");
-        Asserts.checkNotNull(task.getJobInstanceId(), "无任务需要SavePoint");
-        JobInstance jobInstance = jobInstanceService.getById(task.getJobInstanceId());
-        if(Asserts.isNull(jobInstance)){
+    private boolean savepointJobInstance(Integer jobInstanceId, String savePointType) {
+        JobInstance jobInstance = jobInstanceService.getById(jobInstanceId);
+        if (Asserts.isNull(jobInstance)) {
             return true;
         }
+        Cluster cluster = clusterService.getById(jobInstance.getClusterId());
+        Asserts.checkNotNull(cluster, "该集群不存在");
         String jobId = jobInstance.getJid();
         boolean useGateway = false;
         JobConfig jobConfig = new JobConfig();
@@ -431,10 +455,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             jobConfig.getGatewayConfig().getClusterConfig().setAppId(cluster.getName());
             useGateway = true;
         }
-        jobConfig.setTaskId(task.getId());
+        jobConfig.setTaskId(jobInstance.getTaskId());
         JobManager jobManager = JobManager.build(jobConfig);
         jobManager.setUseGateway(useGateway);
-        if("canceljob".equals(savePointType)){
+        if ("canceljob".equals(savePointType)) {
             return jobManager.cancel(jobId);
         }
         SavePointResult savePointResult = jobManager.savepoint(jobId, savePointType, null);
@@ -456,7 +480,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public boolean savepointTask(Integer taskId, String savePointType) {
-        return savepointTask(getById(taskId), savePointType);
+        Task task = getTaskInfoById(taskId);
+        return savepointJobInstance(task.getJobInstanceId(), savePointType);
     }
 
     private JobConfig buildJobConfig(Task task) {
@@ -518,12 +543,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public JobInstance refreshJobInstance(Integer id) {
+    public JobInstance refreshJobInstance(Integer id, boolean isCoercive) {
         JobInstance jobInstance = jobInstanceService.getById(id);
         Asserts.checkNull(jobInstance, "该任务实例不存在");
-        if (JobStatus.isDone(jobInstance.getStatus())) {
+        if (!isCoercive && !inRefreshPlan(jobInstance)) {
             return jobInstance;
         }
+        String status = jobInstance.getStatus();
         Cluster cluster = clusterService.getById(jobInstance.getClusterId());
         JobHistory jobHistoryJson = jobHistoryService.refreshJobHistory(id, cluster.getJobManagerHost(), jobInstance.getJid());
         JobHistory jobHistory = jobHistoryService.getJobHistoryInfo(jobHistoryJson);
@@ -533,16 +559,29 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             jobInstance.setDuration(jobHistory.getJob().get(FlinkRestResultConstant.JOB_DURATION).asLong() / 1000);
             jobInstance.setStatus(jobHistory.getJob().get(FlinkRestResultConstant.JOB_STATE).asText());
         }
-        jobInstanceService.updateById(jobInstance);
-        if (JobStatus.isDone(jobInstance.getStatus())) {
+        if (JobStatus.isDone(jobInstance.getStatus()) && !status.equals(jobInstance.getStatus())) {
+            jobInstance.setFinishTime(LocalDateTime.now());
             handleJobDone(jobInstance);
         }
+        if (isCoercive) {
+            DaemonFactory.addTask(DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInstance.getId()));
+        }
+        jobInstanceService.updateById(jobInstance);
         return jobInstance;
+    }
+
+    private boolean inRefreshPlan(JobInstance jobInstance) {
+        if ((!JobStatus.isDone(jobInstance.getStatus())) || (Asserts.isNotNull(jobInstance.getFinishTime())
+                && Duration.between(jobInstance.getFinishTime(), LocalDateTime.now()).toMinutes() < 1)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
     public JobInfoDetail refreshJobInfoDetail(Integer id) {
-        return jobInstanceService.getJobInfoDetailInfo(refreshJobInstance(id));
+        return jobInstanceService.getJobInfoDetailInfo(refreshJobInstance(id, true));
     }
 
     private void handleJobDone(JobInstance jobInstance) {
@@ -553,7 +592,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Task updateTask = new Task();
         updateTask.setId(jobInstance.getTaskId());
         updateTask.setJobInstanceId(0);
-        if (!JobLifeCycle.ONLINE.equalsValue(task.getStep())) {
+        if (!JobLifeCycle.ONLINE.equalsValue(jobInstance.getStep())) {
             updateById(updateTask);
             return;
         }

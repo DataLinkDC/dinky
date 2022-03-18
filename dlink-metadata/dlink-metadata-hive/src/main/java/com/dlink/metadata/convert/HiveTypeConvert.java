@@ -50,6 +50,8 @@ public class HiveTypeConvert implements ITypeConvert {
                 return ColumnType.JAVA_LANG_DOUBLE;
             }
             return ColumnType.DOUBLE;
+        } else if (t.contains("timestamp")) {
+            return ColumnType.TIMESTAMP;
         } else if (t.contains("date")) {
             return ColumnType.STRING;
         } else if (t.contains("datetime")) {
@@ -90,6 +92,8 @@ public class HiveTypeConvert implements ITypeConvert {
             case INT:
             case INTEGER:
                 return "int";
+            case TIMESTAMP:
+                return "timestamp";
             default:
                 return "varchar";
         }

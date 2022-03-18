@@ -1,13 +1,9 @@
 package com.dlink.service.impl;
 
 import com.dlink.api.FlinkAPI;
-import com.dlink.assertion.Assert;
 import com.dlink.assertion.Asserts;
 import com.dlink.config.Dialect;
 import com.dlink.dto.*;
-import com.dlink.explainer.ca.CABuilder;
-import com.dlink.explainer.ca.ColumnCANode;
-import com.dlink.explainer.ca.TableCANode;
 import com.dlink.explainer.lineage.LineageBuilder;
 import com.dlink.explainer.lineage.LineageResult;
 import com.dlink.gateway.GatewayType;
@@ -18,7 +14,10 @@ import com.dlink.job.JobManager;
 import com.dlink.job.JobResult;
 import com.dlink.metadata.driver.Driver;
 import com.dlink.metadata.result.JdbcSelectResult;
-import com.dlink.model.*;
+import com.dlink.model.Cluster;
+import com.dlink.model.DataBase;
+import com.dlink.model.Savepoints;
+import com.dlink.model.Task;
 import com.dlink.result.IResult;
 import com.dlink.result.SelectResult;
 import com.dlink.result.SqlExplainResult;
@@ -301,7 +300,7 @@ public class StudioServiceImpl implements StudioService {
             jobConfig.getGatewayConfig().getClusterConfig().setAppId(cluster.getName());
             jobConfig.setTaskId(cluster.getTaskId());
             useGateway = true;
-        }else {
+        } else {
             jobConfig.setTaskId(taskId);
         }
         JobManager jobManager = JobManager.build(jobConfig);
@@ -309,7 +308,7 @@ public class StudioServiceImpl implements StudioService {
         SavePointResult savePointResult = jobManager.savepoint(jobId, savePointType, null);
         if (Asserts.isNotNull(savePointResult)) {
             for (JobInfo item : savePointResult.getJobInfos()) {
-                if (Asserts.isEqualsIgnoreCase(jobId, item.getJobId())&&Asserts.isNotNull(jobConfig.getTaskId())) {
+                if (Asserts.isEqualsIgnoreCase(jobId, item.getJobId()) && Asserts.isNotNull(jobConfig.getTaskId())) {
                     Savepoints savepoints = new Savepoints();
                     savepoints.setName(name);
                     savepoints.setType(savePointType);

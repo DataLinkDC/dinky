@@ -22,7 +22,7 @@ public class SqlDTO {
         this.maxRowNum = maxRowNum;
     }
 
-    public static SqlDTO build(String statement, Integer databaseId, Integer maxRowNum){
-        return new SqlDTO(statement,databaseId,maxRowNum);
+    public static SqlDTO build(String statement, Integer databaseId, Integer maxRowNum) {
+        return new SqlDTO(statement, databaseId, maxRowNum);
     }
 }

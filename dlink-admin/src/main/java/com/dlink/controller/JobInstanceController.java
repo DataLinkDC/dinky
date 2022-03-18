@@ -75,9 +75,9 @@ public class JobInstanceController {
      */
     @GetMapping("/getStatusCount")
     public Result getStatusCount() {
-        HashMap<String,Object> result = new HashMap<>();
-        result.put("history",jobInstanceService.getStatusCount(true));
-        result.put("instance",jobInstanceService.getStatusCount(false));
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("history", jobInstanceService.getStatusCount(true));
+        result.put("instance", jobInstanceService.getStatusCount(false));
         return Result.succeed(result, "获取成功");
     }
 

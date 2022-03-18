@@ -64,6 +64,9 @@ const JobStatus = (props: JobStatusFormProps) => {
               </Tag>) : (status === 'RESTARTING') ?
                 (<Tag icon={<ClockCircleOutlined/>} color="default">
                   RESTARTING
+                </Tag>) : (status === 'CREATED') ?
+                (<Tag icon={<ClockCircleOutlined/>} color="default">
+                  CREATED
                 </Tag>) :
                 (<Tag icon={<QuestionCircleOutlined />} color="default">
                   UNKNOWEN

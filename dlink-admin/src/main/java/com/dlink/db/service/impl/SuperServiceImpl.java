@@ -22,7 +22,7 @@ import java.util.Map;
  * @since 2021/5/25
  **/
 public class SuperServiceImpl<M extends SuperMapper<T>, T> extends ServiceImpl<M, T> implements ISuperService<T> {
-    
+
     @Override
     public ProTableResult<T> selectForProTable(JsonNode para) {
         Integer current = para.has("current") ? para.get("current").asInt() : 1;
@@ -37,11 +37,11 @@ public class SuperServiceImpl<M extends SuperMapper<T>, T> extends ServiceImpl<M
     }
 
     @Override
-    public ProTableResult<T> selectForProTable(JsonNode para,boolean isDelete) {
+    public ProTableResult<T> selectForProTable(JsonNode para, boolean isDelete) {
         Integer current = para.has("current") ? para.get("current").asInt() : 1;
         Integer pageSize = para.has("pageSize") ? para.get("pageSize").asInt() : 10;
         QueryWrapper<T> queryWrapper = new QueryWrapper<>();
-        ProTableUtil.autoQueryDefalut(para, queryWrapper,isDelete);
+        ProTableUtil.autoQueryDefalut(para, queryWrapper, isDelete);
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> param = mapper.convertValue(para, Map.class);
         Page<T> page = new Page<>(current, pageSize);
@@ -50,21 +50,21 @@ public class SuperServiceImpl<M extends SuperMapper<T>, T> extends ServiceImpl<M
     }
 
     @Override
-    public ProTableResult<T> selectForProTable(JsonNode para,Map<String, Object> paraMap) {
+    public ProTableResult<T> selectForProTable(JsonNode para, Map<String, Object> paraMap) {
         Integer current = para.has("current") ? para.get("current").asInt() : 1;
         Integer pageSize = para.has("pageSize") ? para.get("pageSize").asInt() : 10;
         QueryWrapper<T> queryWrapper = new QueryWrapper<>();
         ProTableUtil.autoQueryDefalut(para, queryWrapper);
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> param = mapper.convertValue(para, Map.class);
-        if(Asserts.isNotNull(paraMap)){
+        if (Asserts.isNotNull(paraMap)) {
             for (Map.Entry<String, Object> entry : paraMap.entrySet()) {
-                param.put(entry.getKey(),entry.getValue());
+                param.put(entry.getKey(), entry.getValue());
             }
         }
         Page<T> page = new Page<>(current, pageSize);
         List<T> list = baseMapper.selectForProTable(page, queryWrapper, param);
         return ProTableResult.<T>builder().success(true).data(list).total(page.getTotal()).current(current).pageSize(pageSize).build();
     }
-    
+
 }

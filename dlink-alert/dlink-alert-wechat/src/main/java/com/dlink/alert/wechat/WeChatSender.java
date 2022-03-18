@@ -72,7 +72,7 @@ public class WeChatSender {
         String data = markdownByAlert(title, content);
         String msg = weChatUserSendMsg.replace(USER_REG_EXP, mkString(userList))
                 .replace(AGENT_ID_REG_EXP, weChatAgentId).replace(MSG_REG_EXP, data)
-                .replace(SHOW_TYPE_REGEX,showType);
+                .replace(SHOW_TYPE_REGEX, showType);
         if (Asserts.isNullString(weChatToken)) {
             alertResult.setMessage("send we chat alert fail,get weChat token error");
             alertResult.setSuccess(false);

@@ -109,15 +109,23 @@ public class MapParseUtils {
 
     public static List<String> getSelectList(String inStr) {
         List<String> selects = new ArrayList<>();
-        int startIndex = inStr.indexOf("=[") + 2;
         if (inStr == null || inStr.isEmpty()) {
             return selects;
         }
+        int startIndex = -1;
+        // lineage only need select or field
+        if (inStr.contains("select=[")) {
+            startIndex = inStr.indexOf("select=[") + 8;
+        } else if (inStr.contains("field=[")) {
+            startIndex = inStr.indexOf("field=[") + 7;
+        }
+        if (startIndex < 0) {
+            return selects;
+        }
         Deque<Integer> stack = new LinkedList<>();
-        for (int i = 0; i < inStr.length(); i++) {
+        for (int i = startIndex; i < inStr.length(); i++) {
             if (inStr.charAt(i) == ']' && stack.size() == 0) {
                 selects.add(inStr.substring(startIndex, i));
-                startIndex = i + 1;
                 return selects;
             }
             if (inStr.charAt(i) == ',' && stack.size() == 0) {
@@ -138,12 +146,12 @@ public class MapParseUtils {
     }
 
     public static boolean hasField(String fragement, String field) {
-        if(field.startsWith("$")){
-            field = field.substring(1,field.length());
+        if (field.startsWith("$")) {
+            field = field.substring(1, field.length());
         }
-        String sign = "([^a-zA-Z0-9_]?)";
+        String sign = "([^a-zA-Z0-9_])";
         Pattern p = Pattern.compile(sign + field + sign);
-        Matcher m = p.matcher(fragement);
+        Matcher m = p.matcher(" " + fragement + " ");
         while (m.find()) {
             return true;
         }
@@ -152,11 +160,11 @@ public class MapParseUtils {
 
     public static String replaceField(String operation, String field, String fragement) {
         String newOperation = operation;
-        String sign = "([^a-zA-Z0-9_]?)";
+        String sign = "([^a-zA-Z0-9_])";
         Pattern p = Pattern.compile(sign + field + sign);
         Matcher m = p.matcher(operation);
         while (m.find()) {
-            newOperation = newOperation.substring(0,m.start(1)+1)+ fragement + newOperation.substring(m.end(1)+1,newOperation.length());
+            newOperation = newOperation.substring(0, m.start(1) + 1) + fragement + newOperation.substring(m.end(1) + 1, newOperation.length());
         }
         return newOperation;
     }
@@ -235,7 +243,7 @@ public class MapParseUtils {
      */
     public static Map parseForSelect(String inStr) {
         Map map = new HashMap();
-        map.put(getMapKey(inStr), getSelectList(inStr));
+        map.put(getMapKeyOnlySelectOrField(inStr), getSelectList(inStr));
         return map;
     }
 
@@ -269,6 +277,18 @@ public class MapParseUtils {
             return "";
         }
         return splitStr.substring(0, splitStr.indexOf("=[")).replace(" ", "");
+    }
+
+    public static String getMapKeyOnlySelectOrField(String splitStr) {
+        if (splitStr == null || splitStr.indexOf("=[") == -1) {
+            return "";
+        }
+        if (splitStr.contains("select=[")) {
+            return "select";
+        } else if (splitStr.contains("field=[")) {
+            return "field";
+        }
+        return "";
     }
 
     /**
