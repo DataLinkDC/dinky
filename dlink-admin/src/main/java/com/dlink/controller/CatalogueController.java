@@ -217,4 +217,16 @@ public class CatalogueController {
             return Result.failed("重命名失败");
         }
     }
+
+    /**
+     * 重命名节点和作业
+     */
+    @PutMapping("/moveCatalogue")
+    public Result moveCatalogue(@RequestBody Catalogue catalogue) throws Exception {
+        if (catalogueService.moveCatalogue(catalogue.getId(), catalogue.getParentId())) {
+            return Result.succeed(true, "移动成功");
+        } else {
+            return Result.failed(false, "移动失败");
+        }
+    }
 }
