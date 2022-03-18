@@ -773,6 +773,12 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增 Hive 数据源注册、元数据、查询和执行</Link>
                 </li>
+                <li>
+                  <Link>新增 作业剪切和粘贴</Link>
+                </li>
+                <li>
+                  <Link>新增 实时任务监控容错机制</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

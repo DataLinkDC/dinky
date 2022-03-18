@@ -117,4 +117,9 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         return LineageBuilder.getLineage(getJobInfoDetail(id).getHistory().getStatement());
     }
 
+    @Override
+    public JobInstance getJobInstanceByTaskId(Integer id) {
+        return baseMapper.getJobInstanceByTaskId(id);
+    }
+
 }

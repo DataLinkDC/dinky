@@ -43,6 +43,8 @@ public interface TaskService extends ISuperService<Task> {
 
     Result onLineTask(Integer id);
 
+    Result reOnLineTask(Integer id);
+
     Result offLineTask(Integer id, String type);
 
     Result cancelTask(Integer id);
@@ -51,7 +53,7 @@ public interface TaskService extends ISuperService<Task> {
 
     boolean savepointTask(Integer taskId, String savePointType);
 
-    JobInstance refreshJobInstance(Integer id);
+    JobInstance refreshJobInstance(Integer id, boolean isCoercive);
 
     JobInfoDetail refreshJobInfoDetail(Integer id);
 }

@@ -4,7 +4,6 @@ import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
 import com.dlink.job.JobResult;
 import com.dlink.model.Task;
-import com.dlink.result.SubmitResult;
 import com.dlink.service.TaskService;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
@@ -174,8 +173,12 @@ public class TaskController {
      * 重启任务
      */
     @GetMapping(value = "/restartTask")
-    public Result restartTask(@RequestParam Integer id) {
-        return Result.succeed(taskService.restartTask(id), "操作成功");
+    public Result restartTask(@RequestParam Integer id, @RequestParam Boolean isOnLine) {
+        if (isOnLine) {
+            return taskService.reOnLineTask(id);
+        } else {
+            return Result.succeed(taskService.restartTask(id), "重启成功");
+        }
     }
 }
 

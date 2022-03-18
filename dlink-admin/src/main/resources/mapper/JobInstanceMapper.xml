@@ -51,33 +51,35 @@
     </select>
 
     <select id="countStatus" resultType="com.dlink.model.JobInstanceCount">
-        select
-            a.status,
-            count(1) as counts
-        from
-            dlink_job_instance a
-                inner join (
-                select max(ji.id) as id from dlink_job_instance ji
-                group by ji.task_id
-            ) snap on snap.id = a.id
+        select a.status,
+               count(1) as counts
+        from dlink_job_instance a
+                 inner join (
+            select max(ji.id) as id
+            from dlink_job_instance ji
+            group by ji.task_id
+        ) snap on snap.id = a.id
         group by status
     </select>
 
     <select id="countHistoryStatus" resultType="com.dlink.model.JobInstanceCount">
-        select
-            status,
-            count(1) as counts
-        from
-            dlink_job_instance
+        select status,
+               count(1) as counts
+        from dlink_job_instance
         group by status
     </select>
 
     <select id="listJobInstanceActive" resultType="com.dlink.model.JobInstance">
-        select
-            *
-        from
-            dlink_job_instance
-        where status not in ('FAILED','CANCELED','FINISHED','UNKNOWN')
+        select *
+        from dlink_job_instance
+        where status not in ('FAILED', 'CANCELED', 'FINISHED', 'UNKNOWN')
         order by id desc
+    </select>
+
+    <select id="getJobInstanceByTaskId" resultType="com.dlink.model.JobInstance">
+        select *
+        from dlink_job_instance
+        where task_id = #{id}
+        order by id desc limit 1
     </select>
 </mapper>
