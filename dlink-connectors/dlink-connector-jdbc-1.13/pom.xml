@@ -139,18 +139,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <!--<build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                </configuration>
-            </plugin>
-        </plugins>
-        <finalName>${project.artifactId}</finalName>
-    </build>-->
 
 </project>
