@@ -8,7 +8,7 @@ package com.dlink.utils;
  **/
 public class RunTimeUtil {
 
-    public static void recovery(Object obj){
+    public static void recovery(Object obj) {
         obj = null;
         System.gc();
     }
