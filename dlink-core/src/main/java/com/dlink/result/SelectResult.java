@@ -16,17 +16,17 @@ import java.util.Set;
  **/
 @Setter
 @Getter
-public class SelectResult extends AbstractResult implements IResult{
+public class SelectResult extends AbstractResult implements IResult {
 
     private String jobID;
-    private List<Map<String,Object>> rowData;
+    private List<Map<String, Object>> rowData;
     private Integer total;
     private Integer currentCount;
     private Set<String> columns;
     private boolean isDestroyed;
 
     public SelectResult(List<Map<String, Object>> rowData, Integer total, Integer currentCount, Set<String> columns,
-                        String jobID,boolean success) {
+                        String jobID, boolean success) {
         this.rowData = rowData;
         this.total = total;
         this.currentCount = currentCount;
@@ -37,7 +37,7 @@ public class SelectResult extends AbstractResult implements IResult{
         this.isDestroyed = false;
     }
 
-    public SelectResult(String jobID,List<Map<String, Object>> rowData, Set<String> columns) {
+    public SelectResult(String jobID, List<Map<String, Object>> rowData, Set<String> columns) {
         this.jobID = jobID;
         this.rowData = rowData;
         this.total = rowData.size();
@@ -58,15 +58,15 @@ public class SelectResult extends AbstractResult implements IResult{
         return jobID;
     }
 
-    public static SelectResult buildDestruction(String jobID){
-        return new SelectResult(jobID,true,false);
+    public static SelectResult buildDestruction(String jobID) {
+        return new SelectResult(jobID, true, false);
     }
 
-    public static SelectResult buildSuccess(String jobID){
-        return new SelectResult(jobID,false,true);
+    public static SelectResult buildSuccess(String jobID) {
+        return new SelectResult(jobID, false, true);
     }
 
-    public static SelectResult buildFailed(){
-        return new SelectResult(null,false,false);
+    public static SelectResult buildFailed() {
+        return new SelectResult(null, false, false);
     }
 }

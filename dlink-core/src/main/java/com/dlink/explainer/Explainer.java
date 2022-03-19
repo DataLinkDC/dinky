@@ -24,7 +24,9 @@ import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import org.apache.flink.table.catalog.CatalogManager;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Explainer
@@ -50,7 +52,7 @@ public class Explainer {
         this.sqlSeparator = sqlSeparator;
     }
 
-    public void init(){
+    public void init() {
         sqlSeparator = SystemConfiguration.getInstances().getSqlSeparator();
     }
 

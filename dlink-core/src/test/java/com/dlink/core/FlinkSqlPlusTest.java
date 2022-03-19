@@ -1,20 +1,8 @@
 package com.dlink.core;
 
-import com.dlink.executor.Executor;
-import com.dlink.executor.ExecutorSetting;
-import com.dlink.explainer.ca.CABuilder;
-import com.dlink.explainer.ca.TableCANode;
-import com.dlink.explainer.ca.TableCAResult;
-import com.dlink.job.JobManager;
-import com.dlink.parser.SingleSqlParserFactory;
 import com.dlink.plus.FlinkSqlPlus;
-import com.dlink.result.SubmitResult;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * FlinkSqlPlusTest
@@ -25,7 +13,7 @@ import java.util.Map;
 public class FlinkSqlPlusTest {
 
     @Test
-    public void getJobPlanInfo(){
+    public void getJobPlanInfo() {
         String sql = "jdbcconfig:='connector' = 'jdbc',\n" +
                 "    'url' = 'jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true',\n" +
                 "    'username'='dlink',\n" +

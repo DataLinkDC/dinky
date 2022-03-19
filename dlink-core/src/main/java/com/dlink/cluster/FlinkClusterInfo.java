@@ -28,7 +28,7 @@ public class FlinkClusterInfo {
         this.version = version;
     }
 
-    public static FlinkClusterInfo build(String jobManagerAddress, String version){
+    public static FlinkClusterInfo build(String jobManagerAddress, String version) {
         return new FlinkClusterInfo(true, jobManagerAddress, version);
     }
 }

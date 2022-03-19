@@ -19,13 +19,13 @@ public class LineageTable {
     public LineageTable() {
     }
 
-    public static LineageTable build(TableCA tableCA){
+    public static LineageTable build(TableCA tableCA) {
         LineageTable lineageTable = new LineageTable();
         lineageTable.setId(tableCA.getId().toString());
         lineageTable.setName(tableCA.getName());
         List<LineageColumn> columnList = new ArrayList<>();
-        for(String columnName: tableCA.getFields()){
-            columnList.add(LineageColumn.build(columnName,columnName));
+        for (String columnName : tableCA.getFields()) {
+            columnList.add(LineageColumn.build(columnName, columnName));
         }
         lineageTable.setColumns(columnList);
         return lineageTable;

@@ -6,8 +6,6 @@ import com.dlink.assertion.Asserts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.SocketTimeoutException;
-
 /**
  * FlinkCluster
  *
@@ -18,33 +16,33 @@ public class FlinkCluster {
 
     private static Logger logger = LoggerFactory.getLogger(FlinkCluster.class);
 
-    public static FlinkClusterInfo testFlinkJobManagerIP(String hosts,String host) {
-        if(Asserts.isNotNullString(host)) {
+    public static FlinkClusterInfo testFlinkJobManagerIP(String hosts, String host) {
+        if (Asserts.isNotNullString(host)) {
             FlinkClusterInfo info = executeSocketTest(host);
-            if(info.isEffective()){
+            if (info.isEffective()) {
                 return info;
             }
         }
         String[] servers = hosts.split(",");
         for (String server : servers) {
             FlinkClusterInfo info = executeSocketTest(server);
-            if(info.isEffective()){
+            if (info.isEffective()) {
                 return info;
             }
         }
         return FlinkClusterInfo.INEFFECTIVE;
     }
-    
-    private static FlinkClusterInfo executeSocketTest(String host){
+
+    private static FlinkClusterInfo executeSocketTest(String host) {
         try {
             String res = FlinkAPI.build(host).getVersion();
             if (Asserts.isNotNullString(res)) {
-                return FlinkClusterInfo.build(host,res);
+                return FlinkClusterInfo.build(host, res);
             }
         } catch (IORuntimeException e) {
-            logger.info("Flink jobManager 地址排除 -- "+ host);
+            logger.info("Flink jobManager 地址排除 -- " + host);
         } catch (Exception e) {
-            logger.error(e.getMessage(),e);
+            logger.error(e.getMessage(), e);
         }
         return FlinkClusterInfo.INEFFECTIVE;
     }

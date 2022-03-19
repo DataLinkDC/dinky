@@ -7,16 +7,10 @@ import com.dlink.explainer.ca.TableCA;
 import com.dlink.explainer.trans.Field;
 import com.dlink.explainer.trans.OperatorTrans;
 import com.dlink.explainer.trans.SinkTrans;
-import com.dlink.explainer.trans.SourceTrans;
 import com.dlink.explainer.trans.Trans;
 import com.dlink.utils.MapParseUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * LineageColumnGenerator

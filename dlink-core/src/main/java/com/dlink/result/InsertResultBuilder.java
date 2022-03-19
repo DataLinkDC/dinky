@@ -1,6 +1,5 @@
 package com.dlink.result;
 
-import com.dlink.constant.FlinkSQLConstant;
 import org.apache.flink.table.api.TableResult;
 
 /**
@@ -13,11 +12,11 @@ public class InsertResultBuilder implements ResultBuilder {
 
     @Override
     public IResult getResult(TableResult tableResult) {
-        if(tableResult.getJobClient().isPresent()){
+        if (tableResult.getJobClient().isPresent()) {
             String jobId = tableResult.getJobClient().get().getJobID().toHexString();
-            return new InsertResult(jobId,true);
-        }else{
-            return new InsertResult(null,false);
+            return new InsertResult(jobId, true);
+        } else {
+            return new InsertResult(null, false);
         }
     }
 }

@@ -5,7 +5,6 @@ import com.dlink.utils.FlinkUtil;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.types.Row;
 import org.apache.flink.types.RowKind;
-import org.apache.flink.util.StringUtils;
 
 import java.util.*;
 

@@ -18,7 +18,7 @@ import java.util.Set;
 @Getter
 public class DDLResult extends AbstractResult implements IResult {
 
-    private List<Map<String,Object>> rowData;
+    private List<Map<String, Object>> rowData;
     private Integer total;
     private Set<String> columns;
 

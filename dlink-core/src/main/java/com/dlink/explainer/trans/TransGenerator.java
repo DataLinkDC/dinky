@@ -43,7 +43,7 @@ public class TransGenerator {
         for (JsonNode node : nodes) {
             String pact = node.get("pact").asText();
             Trans trans = getTrans(pact);
-            Asserts.checkNotNull(trans,"该转换无法被解析，原文如下：" + pact);
+            Asserts.checkNotNull(trans, "该转换无法被解析，原文如下：" + pact);
             trans.build(node);
             nodemap.put(trans.getId(), trans);
         }

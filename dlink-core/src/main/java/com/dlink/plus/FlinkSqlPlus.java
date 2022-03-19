@@ -7,7 +7,6 @@ import com.dlink.explainer.ca.TableCAResult;
 import com.dlink.result.SqlExplainResult;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
-import org.apache.flink.table.api.ExplainDetail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +27,7 @@ public class FlinkSqlPlus {
         this.explainer = new Explainer(executor);
     }
 
-    public static FlinkSqlPlus build(){
+    public static FlinkSqlPlus build() {
         return new FlinkSqlPlus(Executor.build());
     }
 
@@ -57,7 +56,7 @@ public class FlinkSqlPlus {
         try {
             return new SqlResult(executor.executeSql(sql));
         } catch (Exception e) {
-            return new SqlResult(false,e.getMessage());
+            return new SqlResult(false, e.getMessage());
         }
     }
 

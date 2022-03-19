@@ -1,20 +1,10 @@
 package com.dlink.explainer.ca;
 
 import com.dlink.assertion.Asserts;
-import com.dlink.explainer.trans.Field;
-import com.dlink.explainer.trans.OperatorTrans;
-import com.dlink.explainer.trans.SinkTrans;
-import com.dlink.explainer.trans.SourceTrans;
-import com.dlink.explainer.trans.Trans;
+import com.dlink.explainer.trans.*;
 import org.apache.commons.collections.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

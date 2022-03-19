@@ -1,11 +1,7 @@
 package com.dlink.explainer.ca;
 
 import com.dlink.assertion.Asserts;
-import com.dlink.explainer.trans.Field;
-import com.dlink.explainer.trans.OperatorTrans;
-import com.dlink.explainer.trans.SinkTrans;
-import com.dlink.explainer.trans.SourceTrans;
-import com.dlink.explainer.trans.Trans;
+import com.dlink.explainer.trans.*;
 import lombok.Getter;
 import lombok.Setter;
 
