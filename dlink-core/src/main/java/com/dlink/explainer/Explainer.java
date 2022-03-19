@@ -41,12 +41,17 @@ public class Explainer {
 
     public Explainer(Executor executor) {
         this.executor = executor;
+        init();
     }
 
     public Explainer(Executor executor, boolean useStatementSet, String sqlSeparator) {
         this.executor = executor;
         this.useStatementSet = useStatementSet;
         this.sqlSeparator = sqlSeparator;
+    }
+
+    public void init(){
+        sqlSeparator = SystemConfiguration.getInstances().getSqlSeparator();
     }
 
     public static Explainer build(Executor executor) {
