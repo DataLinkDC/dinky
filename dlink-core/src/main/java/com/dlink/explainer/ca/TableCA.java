@@ -1,11 +1,15 @@
 package com.dlink.explainer.ca;
 
+import com.dlink.assertion.Asserts;
+import com.dlink.explainer.trans.Field;
+import com.dlink.explainer.trans.OperatorTrans;
 import com.dlink.explainer.trans.SinkTrans;
 import com.dlink.explainer.trans.SourceTrans;
 import com.dlink.explainer.trans.Trans;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,7 +22,7 @@ import java.util.Set;
  **/
 @Getter
 @Setter
-public class TableCA implements ICA{
+public class TableCA implements ICA {
     private Integer id;
     private Integer parentId;
     private String name;
@@ -63,13 +67,53 @@ public class TableCA implements ICA{
         this.type = trans.getPact();
     }
 
-    public static TableCA build(Trans trans){
-        if(trans instanceof SourceTrans){
-            return new TableCA((SourceTrans)trans);
-        }else if(trans instanceof SinkTrans){
-            return new TableCA((SinkTrans)trans);
-        }else{
-            return TableCA.EMPTY;
+    public TableCA(OperatorTrans trans) {
+        List<String> tableList = trans.getTable();
+        this.id = trans.getId();
+        this.parentId = trans.getParentId();
+        this.name = trans.getName();
+        List<Field> select = trans.getSelect();
+        List<String> fieldList = new ArrayList<>();
+        for (Field field : select) {
+            fieldList.add(field.getAlias());
+        }
+        this.fields = fieldList;
+        this.useFields = fieldList;
+        this.parallelism = trans.getParallelism();
+        this.type = trans.getPact();
+        if (tableList.size() > 0) {
+            String tableStr = tableList.get(0);
+            String[] strings = tableStr.split("\\.");
+            if (strings.length > 2) {
+                this.catalog = strings[0];
+                this.database = strings[1];
+                this.table = strings[2];
+            } else if (strings.length == 2) {
+                this.catalog = "default_catalog";
+                this.database = strings[0];
+                this.table = strings[1];
+            } else if (strings.length == 1) {
+                this.catalog = "default_catalog";
+                this.database = "default_database";
+                this.table = strings[0];
+            }
+        }
+    }
+
+    public static TableCA build(Trans trans) {
+        if (trans instanceof SourceTrans) {
+            return new TableCA((SourceTrans) trans);
+        } else if (trans instanceof SinkTrans) {
+            return new TableCA((SinkTrans) trans);
+        } else if (trans instanceof OperatorTrans) {
+            OperatorTrans operatorTrans = (OperatorTrans) trans;
+            if (Asserts.isNotNullCollection(operatorTrans.getTable())) {
+                return new TableCA(operatorTrans);
+            } else {
+                return null;
+            }
+        } else {
+            return null;
         }
     }
 

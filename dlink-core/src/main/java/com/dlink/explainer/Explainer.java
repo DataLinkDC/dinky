@@ -357,29 +357,60 @@ public class Explainer {
             generator.setTableCAS(tableGenerator.getTables());
             generator.translate();
             ColumnCAResult columnCAResult = new ColumnCAResult(generator);
-            modifySinkColumn(columnCAResult);
+            correctColumn(columnCAResult);
             results.add(columnCAResult);
         }
         return results;
     }
 
-    private void modifySinkColumn(ColumnCAResult columnCAResult) {
+    private void correctColumn(ColumnCAResult columnCAResult) {
         for (TableCA tableCA : columnCAResult.getTableCAS()) {
+            CatalogManager catalogManager = executor.getCatalogManager();
+            List<String> columnList = FlinkUtil.getFieldNamesFromCatalogManager(catalogManager, tableCA.getCatalog(), tableCA.getDatabase(), tableCA.getTable());
+            List<String> fields = tableCA.getFields();
+            List<String> oldFields = new ArrayList<>();
+            oldFields.addAll(fields);
             if (tableCA.getType().equals("Data Sink")) {
-                CatalogManager catalogManager = executor.getCatalogManager();
-                List<String> columnList = FlinkUtil.getFieldNamesFromCatalogManager(catalogManager, tableCA.getCatalog(), tableCA.getDatabase(), tableCA.getTable());
-                List<String> fields = tableCA.getFields();
                 for (int i = 0; i < columnList.size(); i++) {
                     String sinkColumnName = columnList.get(i);
-                    if(!sinkColumnName.equals(fields.get(i))){
+                    if (!sinkColumnName.equals(oldFields.get(i))) {
                         for (Map.Entry<Integer, ColumnCA> item : columnCAResult.getColumnCASMaps().entrySet()) {
                             ColumnCA columnCA = item.getValue();
-                            if(columnCA.getTableId()==tableCA.getId()&&columnCA.getName().equals(fields.get(i))){
+                            if (columnCA.getTableId() == tableCA.getId() && columnCA.getName().equals(oldFields.get(i))) {
                                 columnCA.setName(sinkColumnName);
-                                fields.set(i,sinkColumnName);
+                                fields.set(i, sinkColumnName);
                             }
                         }
                     }
+                }
+            }
+        }
+        for (TableCA tableCA : columnCAResult.getTableCAS()) {
+            CatalogManager catalogManager = executor.getCatalogManager();
+            List<String> columnList = FlinkUtil.getFieldNamesFromCatalogManager(catalogManager, tableCA.getCatalog(), tableCA.getDatabase(), tableCA.getTable());
+            List<String> fields = tableCA.getFields();
+            int i = 0;
+            while (i < fields.size()) {
+                if (!columnList.contains(fields.get(i))) {
+                    List<Integer> idList = new ArrayList<>();
+                    for (Map.Entry<Integer, ColumnCA> item : columnCAResult.getColumnCASMaps().entrySet()) {
+                        if (item.getValue().getName().equals(fields.get(i)) && item.getValue().getTableId() == tableCA.getId()) {
+                            idList.add(item.getValue().getId());
+                            break;
+                        }
+                    }
+                    for (Integer id : idList) {
+                        for (NodeRel nodeRel : columnCAResult.getColumnCASRelChain()) {
+                            if (nodeRel.getPreId() == id) {
+                                columnCAResult.getColumnCASMaps().remove(id);
+                                columnCAResult.getColumnCASRelChain().remove(nodeRel);
+                                break;
+                            }
+                        }
+                    }
+                    fields.remove(i);
+                } else {
+                    i++;
                 }
             }
         }
