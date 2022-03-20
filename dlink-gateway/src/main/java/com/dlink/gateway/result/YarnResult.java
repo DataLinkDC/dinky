@@ -1,8 +1,6 @@
 package com.dlink.gateway.result;
 
 import com.dlink.gateway.GatewayType;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -52,8 +50,8 @@ public class YarnResult extends AbstractGatewayResult {
         this.jids = jids;
     }
 
-    public static YarnResult build(GatewayType type){
-        return new YarnResult(type,LocalDateTime.now());
+    public static YarnResult build(GatewayType type) {
+        return new YarnResult(type, LocalDateTime.now());
     }
 
 }

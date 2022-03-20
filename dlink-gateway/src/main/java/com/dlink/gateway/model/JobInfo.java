@@ -25,12 +25,12 @@ public class JobInfo {
         this.status = status;
     }
 
-    public enum JobStatus{
-        RUN("run"),STOP("stop"),CANCEL("cancel"),FAIL("fail");
+    public enum JobStatus {
+        RUN("run"), STOP("stop"), CANCEL("cancel"), FAIL("fail");
 
         private String value;
 
-        JobStatus(String value){
+        JobStatus(String value) {
             this.value = value;
         }
     }

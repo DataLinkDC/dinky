@@ -20,14 +20,14 @@ import java.util.ServiceLoader;
  **/
 public interface Gateway {
 
-    static Optional<Gateway> get(GatewayConfig config){
-        Asserts.checkNotNull(config,"配置不能为空");
-        Asserts.checkNotNull(config.getType(),"配置类型不能为空");
+    static Optional<Gateway> get(GatewayConfig config) {
+        Asserts.checkNotNull(config, "配置不能为空");
+        Asserts.checkNotNull(config.getType(), "配置类型不能为空");
         ServiceLoader<Gateway> loader = ServiceLoader.load(Gateway.class);
         Iterator<Gateway> iterator = loader.iterator();
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             Gateway gateway = iterator.next();
-            if(gateway.canHandle(config.getType())){
+            if (gateway.canHandle(config.getType())) {
                 gateway.setGatewayConfig(config);
                 return Optional.of(gateway);
             }
@@ -35,10 +35,10 @@ public interface Gateway {
         return Optional.empty();
     }
 
-    static Gateway build(GatewayConfig config){
+    static Gateway build(GatewayConfig config) {
         Optional<Gateway> optionalGateway = Gateway.get(config);
-        if(!optionalGateway.isPresent()){
-            throw new GatewayException("不支持 Flink Gateway 类型【"+config.getType().getLongValue()+"】,请添加扩展包");
+        if (!optionalGateway.isPresent()) {
+            throw new GatewayException("不支持 Flink Gateway 类型【" + config.getType().getLongValue() + "】,请添加扩展包");
         }
         return optionalGateway.get();
     }
