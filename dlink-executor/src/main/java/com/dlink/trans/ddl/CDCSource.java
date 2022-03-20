@@ -2,7 +2,6 @@ package com.dlink.trans.ddl;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.parser.SingleSqlParserFactory;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -62,10 +61,10 @@ public class CDCSource {
                 config.get("topic"),
                 config.get("brokers")
         );
-        if(Asserts.isNotNullString(config.get("database"))){
+        if (Asserts.isNotNullString(config.get("database"))) {
             cdcSource.setDatabase(Arrays.asList(config.get("database").split(":")));
         }
-        if(Asserts.isNotNullString(config.get("table"))){
+        if (Asserts.isNotNullString(config.get("table"))) {
             cdcSource.setTable(Arrays.asList(config.get("table").split(":")));
         }
         return cdcSource;
@@ -76,8 +75,8 @@ public class CDCSource {
         Pattern p = Pattern.compile("'(.*?)'\\s*=\\s*'(.*?)'");
         for (int i = 0; i < list.size(); i++) {
             Matcher m = p.matcher(list.get(i));
-            if(m.find()){
-                map.put(m.group(1),m.group(2));
+            if (m.find()) {
+                map.put(m.group(1), m.group(2));
             }
         }
         return map;

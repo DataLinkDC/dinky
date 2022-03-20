@@ -28,8 +28,8 @@ public class ExecutorSetting {
     private boolean useStatementSet;
     private String savePointPath;
     private String jobName;
-    private Map<String,String> config;
-    public static final ExecutorSetting DEFAULT = new ExecutorSetting(0,1,true);
+    private Map<String, String> config;
+    public static final ExecutorSetting DEFAULT = new ExecutorSetting(0, 1, true);
     private static final ObjectMapper mapper = new ObjectMapper();
 
     public ExecutorSetting(boolean useSqlFragment) {
@@ -75,7 +75,7 @@ public class ExecutorSetting {
         this.config = config;
     }
 
-    public ExecutorSetting(Integer checkpoint, Integer parallelism, boolean useSqlFragment,boolean useStatementSet,
+    public ExecutorSetting(Integer checkpoint, Integer parallelism, boolean useSqlFragment, boolean useStatementSet,
                            boolean useBatchModel, String savePointPath, String jobName, Map<String, String> config) {
         this.checkpoint = checkpoint;
         this.parallelism = parallelism;
@@ -87,29 +87,29 @@ public class ExecutorSetting {
         this.config = config;
     }
 
-    public static ExecutorSetting build(Integer checkpoint, Integer parallelism, boolean useSqlFragment,boolean useStatementSet,boolean useBatchModel, String savePointPath, String jobName, String configJson){
-        List<Map<String,String>> configList = new ArrayList<>();
-        if(Asserts.isNotNullString(configJson)) {
+    public static ExecutorSetting build(Integer checkpoint, Integer parallelism, boolean useSqlFragment, boolean useStatementSet, boolean useBatchModel, String savePointPath, String jobName, String configJson) {
+        List<Map<String, String>> configList = new ArrayList<>();
+        if (Asserts.isNotNullString(configJson)) {
             try {
                 configList = mapper.readValue(configJson, ArrayList.class);
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
         }
-        Map<String,String> config = new HashMap<>();
-        for(Map<String,String> item : configList){
-            config.put(item.get("key"),item.get("value"));
+        Map<String, String> config = new HashMap<>();
+        for (Map<String, String> item : configList) {
+            config.put(item.get("key"), item.get("value"));
         }
-        return new ExecutorSetting(checkpoint,parallelism,useSqlFragment,useStatementSet,useBatchModel,savePointPath,jobName,config);
+        return new ExecutorSetting(checkpoint, parallelism, useSqlFragment, useStatementSet, useBatchModel, savePointPath, jobName, config);
     }
 
-    public static ExecutorSetting build(Map<String,String> settingMap){
+    public static ExecutorSetting build(Map<String, String> settingMap) {
         Integer checkpoint = null;
         Integer parallelism = null;
-        if(settingMap.containsKey("checkpoint")&&!"".equals(settingMap.get("checkpoint"))){
+        if (settingMap.containsKey("checkpoint") && !"".equals(settingMap.get("checkpoint"))) {
             checkpoint = Integer.valueOf(settingMap.get("checkpoint"));
         }
-        if(settingMap.containsKey("parallelism")&&!"".equals(settingMap.get("parallelism"))){
+        if (settingMap.containsKey("parallelism") && !"".equals(settingMap.get("parallelism"))) {
             parallelism = Integer.valueOf(settingMap.get("parallelism"));
         }
         return build(checkpoint,
