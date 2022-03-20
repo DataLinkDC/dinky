@@ -38,7 +38,7 @@ public class Clickhouse20Lexer extends Lexer {
         super.keywords = DEFAULT_KEYWORDS;
     }
 
-    public Clickhouse20Lexer(String input, SQLParserFeature... features){
+    public Clickhouse20Lexer(String input, SQLParserFeature... features) {
         super(input);
         super.keywords = DEFAULT_KEYWORDS;
         for (SQLParserFeature feature : features) {

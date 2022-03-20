@@ -23,7 +23,7 @@ public class ColumnCANode implements Serializable {
     private String value;
     private String type;
     private String operation;
-//    private Tables tables;
+    //    private Tables tables;
 //    private Columns columns;
     private List<ColumnCANode> children;
 

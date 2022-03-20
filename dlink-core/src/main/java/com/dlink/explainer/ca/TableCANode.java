@@ -23,7 +23,7 @@ public class TableCANode implements Serializable {
     private String value;
     private String type;
     private Integer columnSize;
-//    private Tables tables;
+    //    private Tables tables;
     private List<String> columns;
     private List<TableCANode> children;
 
@@ -39,7 +39,7 @@ public class TableCANode implements Serializable {
         this.value = value;
     }
 
-    public TableCANode(Integer id,String name, List<String> columns) {
+    public TableCANode(Integer id, String name, List<String> columns) {
         this.id = id.toString();
         this.name = name;
         this.title = name;

@@ -28,11 +28,11 @@ import java.util.Arrays;
 
 public class Clickhouse20ExprParser extends SQLExprParser {
     private final static String[] AGGREGATE_FUNCTIONS;
-    private final static long[]   AGGREGATE_FUNCTIONS_CODES;
+    private final static long[] AGGREGATE_FUNCTIONS_CODES;
 
     static {
-        String[] strings = { "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER",
-                "ROWNUMBER" };
+        String[] strings = {"AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER",
+                "ROWNUMBER"};
         AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv1a_64_lower(strings, true);
         AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
         for (String str : strings) {
@@ -42,17 +42,17 @@ public class Clickhouse20ExprParser extends SQLExprParser {
         }
     }
 
-    public Clickhouse20ExprParser(String sql){
+    public Clickhouse20ExprParser(String sql) {
         this(new Clickhouse20Lexer(sql));
         this.lexer.nextToken();
     }
 
-    public Clickhouse20ExprParser(String sql, SQLParserFeature... features){
+    public Clickhouse20ExprParser(String sql, SQLParserFeature... features) {
         this(new Clickhouse20Lexer(sql, features));
         this.lexer.nextToken();
     }
 
-    public Clickhouse20ExprParser(Lexer lexer){
+    public Clickhouse20ExprParser(Lexer lexer) {
         super(lexer);
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
         this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;

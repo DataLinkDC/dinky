@@ -7,9 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,43 +34,43 @@ public class GatewayConfig {
         appConfig = new AppConfig();
     }
 
-    public static GatewayConfig build(JsonNode para){
+    public static GatewayConfig build(JsonNode para) {
         GatewayConfig config = new GatewayConfig();
-        if(para.has("taskId")) {
+        if (para.has("taskId")) {
             config.setTaskId(para.get("taskId").asInt());
         }
         config.setType(GatewayType.get(para.get("type").asText()));
-        if(para.has("flinkConfigPath")) {
+        if (para.has("flinkConfigPath")) {
             config.getClusterConfig().setFlinkConfigPath(para.get("flinkConfigPath").asText());
         }
-        if(para.has("flinkLibPath")) {
+        if (para.has("flinkLibPath")) {
             config.getClusterConfig().setFlinkLibPath(para.get("flinkLibPath").asText());
         }
-        if(para.has("yarnConfigPath")) {
+        if (para.has("yarnConfigPath")) {
             config.getClusterConfig().setYarnConfigPath(para.get("yarnConfigPath").asText());
         }
-        if(para.has("jobName")) {
+        if (para.has("jobName")) {
             config.getFlinkConfig().setJobName(para.get("jobName").asText());
         }
-        if(para.has("userJarPath")) {
+        if (para.has("userJarPath")) {
             config.getAppConfig().setUserJarPath(para.get("userJarPath").asText());
         }
-        if(para.has("userJarParas")) {
+        if (para.has("userJarParas")) {
             config.getAppConfig().setUserJarParas(para.get("userJarParas").asText().split("\\s+"));
         }
-        if(para.has("userJarMainAppClass")) {
+        if (para.has("userJarMainAppClass")) {
             config.getAppConfig().setUserJarMainAppClass(para.get("userJarMainAppClass").asText());
         }
-        if(para.has("savePoint")) {
+        if (para.has("savePoint")) {
             config.getFlinkConfig().setSavePoint(para.get("savePoint").asText());
         }
-        if(para.has("configParas")) {
+        if (para.has("configParas")) {
             try {
                 Map<String, String> configMap = new HashMap<>();
                 JsonNode paras = mapper.readTree(para.get("configParas").asText());
-                paras.forEach((JsonNode node)-> {
-                    configMap.put(node.get("key").asText(),node.get("value").asText());
-                    }
+                paras.forEach((JsonNode node) -> {
+                            configMap.put(node.get("key").asText(), node.get("value").asText());
+                        }
                 );
                 config.getFlinkConfig().setConfiguration(configMap);
             } catch (JsonProcessingException e) {

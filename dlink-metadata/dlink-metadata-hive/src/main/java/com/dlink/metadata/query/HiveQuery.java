@@ -2,7 +2,7 @@ package com.dlink.metadata.query;
 
 import com.dlink.metadata.constant.HiveConstant;
 
-public class HiveQuery extends AbstractDBQuery{
+public class HiveQuery extends AbstractDBQuery {
     @Override
     public String schemaAllSql() {
         return HiveConstant.QUERY_ALL_DATABASE;
@@ -28,6 +28,7 @@ public class HiveQuery extends AbstractDBQuery{
     public String createTableName() {
         return "createtab_stmt";
     }
+
     @Override
     public String tableName() {
         return "tab_name";

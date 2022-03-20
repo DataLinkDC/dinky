@@ -25,6 +25,6 @@ public class SqlUtil {
     }
 
     public static String replaceAllParam(String sql, String name, String value) {
-        return sql.replaceAll("\\$\\{"+name+"\\}",value);
+        return sql.replaceAll("\\$\\{" + name + "\\}", value);
     }
 }

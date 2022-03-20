@@ -8,11 +8,11 @@ import com.dlink.assertion.Asserts;
  * @author wenmo
  * @since 2021/12/13
  **/
-public enum  Dialect {
+public enum Dialect {
 
-    FLINKSQL("FlinkSql"),FLINKJAR("FlinkJar"),FLINKSQLENV("FlinkSqlEnv"),SQL("Sql"),JAVA("Java"),
-    MYSQL("Mysql"),ORACLE("Oracle"),SQLSERVER("SqlServer"),POSTGRESQL("PostGreSql"),CLICKHOUSE("ClickHouse"),
-    DORIS("Doris"),PHOENIX("Phoenix"),HIVE("Hive");
+    FLINKSQL("FlinkSql"), FLINKJAR("FlinkJar"), FLINKSQLENV("FlinkSqlEnv"), SQL("Sql"), JAVA("Java"),
+    MYSQL("Mysql"), ORACLE("Oracle"), SQLSERVER("SqlServer"), POSTGRESQL("PostGreSql"), CLICKHOUSE("ClickHouse"),
+    DORIS("Doris"), PHOENIX("Phoenix"), HIVE("Hive");
 
     private String value;
 
@@ -26,23 +26,31 @@ public enum  Dialect {
         return value;
     }
 
-    public boolean equalsVal(String valueText){
-        return Asserts.isEqualsIgnoreCase(value,valueText);
+    public boolean equalsVal(String valueText) {
+        return Asserts.isEqualsIgnoreCase(value, valueText);
     }
 
-    public static Dialect get(String value){
+    public static Dialect get(String value) {
         for (Dialect type : Dialect.values()) {
-            if(Asserts.isEqualsIgnoreCase(type.getValue(),value)){
+            if (Asserts.isEqualsIgnoreCase(type.getValue(), value)) {
                 return type;
             }
         }
         return Dialect.FLINKSQL;
     }
 
-    public static boolean isSql(String value){
+    public static boolean isSql(String value) {
         Dialect dialect = Dialect.get(value);
-        switch (dialect){
-            case SQL:case MYSQL:case ORACLE:case SQLSERVER:case POSTGRESQL:case CLICKHOUSE:case DORIS: case PHOENIX: case HIVE:
+        switch (dialect) {
+            case SQL:
+            case MYSQL:
+            case ORACLE:
+            case SQLSERVER:
+            case POSTGRESQL:
+            case CLICKHOUSE:
+            case DORIS:
+            case PHOENIX:
+            case HIVE:
                 return true;
             default:
                 return false;

@@ -16,8 +16,10 @@ import java.util.Map;
 public class OperatorTrans extends AbstractTrans implements Trans {
 
     private List<Field> select;
+    private List<String> table;
     private List<String> fields;
     private List<String> joinType;
+    private List<String> lookup;
     private String where;
     private List<String> leftInputSpec;
     private List<String> rightInputSpec;
@@ -49,6 +51,14 @@ public class OperatorTrans extends AbstractTrans implements Trans {
         return rightInputSpec;
     }
 
+    public List<String> getTable() {
+        return table;
+    }
+
+    public List<String> getLookup() {
+        return lookup;
+    }
+
     @Override
     public String getHandle() {
         return TRANS_TYPE;
@@ -66,7 +76,9 @@ public class OperatorTrans extends AbstractTrans implements Trans {
         Map map = MapParseUtils.parseForSelect(contents);
         translateSelect((ArrayList<String>) map.get("select"));
         fields = (ArrayList<String>) map.get("fields");
+        table = (ArrayList<String>) map.get("table");
         joinType = (ArrayList<String>) map.get("joinType");
+        lookup = (ArrayList<String>) map.get("lookup");
         where = map.containsKey("where") ? map.get("where").toString() : null;
         leftInputSpec = (ArrayList<String>) map.get("leftInputSpec");
         rightInputSpec = (ArrayList<String>) map.get("rightInputSpec");

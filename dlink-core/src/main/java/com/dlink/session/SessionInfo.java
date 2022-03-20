@@ -26,8 +26,8 @@ public class SessionInfo {
         this.createTime = createTime;
     }
 
-    public static SessionInfo build(ExecutorEntity executorEntity){
-        return new SessionInfo(executorEntity.getSessionId(),executorEntity.getSessionConfig(),executorEntity.getCreateUser(),executorEntity.getCreateTime());
+    public static SessionInfo build(ExecutorEntity executorEntity) {
+        return new SessionInfo(executorEntity.getSessionId(), executorEntity.getSessionConfig(), executorEntity.getCreateUser(), executorEntity.getCreateTime());
     }
 
 }

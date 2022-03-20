@@ -18,8 +18,8 @@ public class LineageColumn {
         this.title = title;
     }
 
-    public static LineageColumn build(String name, String title){
-        return new LineageColumn(name,title);
+    public static LineageColumn build(String name, String title) {
+        return new LineageColumn(name, title);
     }
 
     public String getName() {

@@ -1,13 +1,12 @@
 package com.dlink.result;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  * 解释结果
  *
- * @author  wenmo
- * @since  2021/6/7 22:06
+ * @author wenmo
+ * @since 2021/6/7 22:06
  **/
 public class SqlExplainResult {
     private Integer index;
@@ -35,12 +34,12 @@ public class SqlExplainResult {
         this.explainTime = explainTime;
     }
 
-    public static SqlExplainResult success(String type,String sql,String explain){
-        return new SqlExplainResult(1,type,sql,null,explain,null,true,true,LocalDateTime.now());
+    public static SqlExplainResult success(String type, String sql, String explain) {
+        return new SqlExplainResult(1, type, sql, null, explain, null, true, true, LocalDateTime.now());
     }
 
-    public static SqlExplainResult fail(String sql,String error){
-        return new SqlExplainResult(1,null,sql,null,null,error,false,false,LocalDateTime.now());
+    public static SqlExplainResult fail(String sql, String error) {
+        return new SqlExplainResult(1, null, sql, null, null, error, false, false, LocalDateTime.now());
     }
 
     public Integer getIndex() {

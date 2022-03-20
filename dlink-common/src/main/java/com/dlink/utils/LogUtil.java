@@ -18,33 +18,33 @@ public class LogUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(LogUtil.class);
 
-    public static String getError(Exception e){
+    public static String getError(Exception e) {
 //        e.printStackTrace();
         String error = null;
-        try(StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw)){
+        try (StringWriter sw = new StringWriter();
+             PrintWriter pw = new PrintWriter(sw)) {
             e.printStackTrace(pw);
             error = sw.toString();
             logger.error(error);
         } catch (IOException ioe) {
             ioe.printStackTrace();
-        }finally {
+        } finally {
             return error;
         }
     }
 
-    public static String getError(String msg,Exception e){
+    public static String getError(String msg, Exception e) {
 //        e.printStackTrace();
         String error = null;
-        try(StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw)){
+        try (StringWriter sw = new StringWriter();
+             PrintWriter pw = new PrintWriter(sw)) {
             e.printStackTrace(pw);
             LocalDateTime now = LocalDateTime.now();
             error = now.toString() + ": " + msg + " \nError message:\n " + sw.toString();
             logger.error(error);
         } catch (IOException ioe) {
             ioe.printStackTrace();
-        }finally {
+        } finally {
             return error;
         }
     }

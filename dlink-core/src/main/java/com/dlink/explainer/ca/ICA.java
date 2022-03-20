@@ -1,6 +1,7 @@
 package com.dlink.explainer.ca;
 
 public interface ICA {
-    Integer getId() ;
+    Integer getId();
+
     String getTableName();
 }

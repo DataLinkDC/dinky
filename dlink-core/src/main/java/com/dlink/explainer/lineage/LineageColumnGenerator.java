@@ -7,16 +7,10 @@ import com.dlink.explainer.ca.TableCA;
 import com.dlink.explainer.trans.Field;
 import com.dlink.explainer.trans.OperatorTrans;
 import com.dlink.explainer.trans.SinkTrans;
-import com.dlink.explainer.trans.SourceTrans;
 import com.dlink.explainer.trans.Trans;
 import com.dlink.utils.MapParseUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * LineageColumnGenerator
@@ -47,40 +41,40 @@ public class LineageColumnGenerator {
     }
 
     public void translate() {
-        for (Map.Entry<Integer, Trans> entry : transMaps.entrySet()) {
-            Trans trans = entry.getValue();
-            if (trans instanceof SourceTrans) {
-                TableCA tableCA = new TableCA((SourceTrans) trans);
-                for (String fieldName : tableCA.getFields()) {
-                    int id = index++;
-                    ColumnCA columnCA = new ColumnCA(id, fieldName, fieldName, fieldName, fieldName, fieldName, tableCA, trans);
-                    columnCASMaps.put(id, columnCA);
-                    columnCAS.add(columnCA);
-                }
-                for (ColumnCA columnCA : columnCAS) {
-                    if (columnCA.getTableCA().getId() == tableCA.getId()) {
-                        buildColumnCAFields(tableCA, tableCA.getParentId(), columnCA);
-                    }
-                }
+        for (TableCA tableCA : tableCAS) {
+            for (String fieldName : tableCA.getFields()) {
+                int id = index++;
+                ColumnCA columnCA = new ColumnCA(id, fieldName, fieldName, fieldName, fieldName, fieldName, tableCA);
+                columnCASMaps.put(id, columnCA);
+                columnCAS.add(columnCA);
+                buildColumnCAFields(tableCA, tableCA.getParentId(), columnCA);
             }
+            /*for (ColumnCA columnCA : columnCAS) {
+                if (columnCA.getTableCA().getId() == tableCA.getId()) {
+                    buildColumnCAFields(tableCA, tableCA.getParentId(), columnCA);
+                }
+            }*/
         }
         for (Map.Entry<Integer, Trans> entry : transMaps.entrySet()) {
             Trans trans = entry.getValue();
             if (trans instanceof SinkTrans) {
                 TableCA tableCA = new TableCA((SinkTrans) trans);
-                matchSinkField(tableCA, trans);
+                matchSinkField(tableCA);
                 searchColumnCAId(tableCA);
             }
         }
         chainRelation();
     }
 
-    private void matchSinkField(TableCA tableCA, Trans trans) {
+    private void matchSinkField(TableCA tableCA) {
         for (ColumnCA columnCA : columnCAS) {
+            if (columnCA.getTableId() == tableCA.getId()) {
+                continue;
+            }
             for (String fieldName : tableCA.getFields()) {
                 if (columnCA.getName().equals(fieldName)) {
                     int cid = index++;
-                    ColumnCA sinkColumnCA = new ColumnCA(cid, fieldName, fieldName, fieldName, fieldName, fieldName, tableCA, trans);
+                    ColumnCA sinkColumnCA = new ColumnCA(cid, fieldName, fieldName, fieldName, fieldName, fieldName, tableCA);
                     columnCASMaps.put(cid, sinkColumnCA);
                     columnCASRel.add(new NodeRel(columnCA.getId(), cid));
                 }
@@ -90,6 +84,9 @@ public class LineageColumnGenerator {
 
     private void buildColumnCAFields(TableCA tableCA, Integer id, ColumnCA columnCA) {
         if (transMaps.get(id) instanceof OperatorTrans) {
+            if (tableCA.getId() == id) {
+                return;
+            }
             OperatorTrans trans = (OperatorTrans) transMaps.get(id);
             List<Field> selects = trans.getSelect();
             if (Asserts.isNotNull(selects)) {
@@ -129,7 +126,7 @@ public class LineageColumnGenerator {
             }
             if (!isHad) {
                 cid = index++;
-                ColumnCA columnCA2 = new ColumnCA(cid, alias, alias, alias, alias, operation, tableCA, trans);
+                ColumnCA columnCA2 = new ColumnCA(cid, alias, alias, alias, alias, operation, tableCA);
                 columnCASMaps.put(cid, columnCA2);
                 buildColumnCAFields(tableCA, trans.getParentId(), columnCA2);
             }

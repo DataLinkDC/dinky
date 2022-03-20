@@ -1,8 +1,6 @@
 package com.dlink.explainer.ca;
 
 import com.dlink.explainer.lineage.LineageColumnGenerator;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.List;
 import java.util.Map;

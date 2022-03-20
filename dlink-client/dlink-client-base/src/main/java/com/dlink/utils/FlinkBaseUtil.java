@@ -14,14 +14,14 @@ import java.util.Map;
  */
 public class FlinkBaseUtil {
 
-    public static Map<String,String> getParamsFromArgs(String[] args){
-        Map<String,String> params = new HashMap<>();
+    public static Map<String, String> getParamsFromArgs(String[] args) {
+        Map<String, String> params = new HashMap<>();
         ParameterTool parameters = ParameterTool.fromArgs(args);
-        params.put(FlinkParamConstant.ID,parameters.get(FlinkParamConstant.ID, null));
-        params.put(FlinkParamConstant.DRIVER,parameters.get(FlinkParamConstant.DRIVER, null));
-        params.put(FlinkParamConstant.URL,parameters.get(FlinkParamConstant.URL, null));
-        params.put(FlinkParamConstant.USERNAME,parameters.get(FlinkParamConstant.USERNAME, null));
-        params.put(FlinkParamConstant.PASSWORD,parameters.get(FlinkParamConstant.PASSWORD, null));
+        params.put(FlinkParamConstant.ID, parameters.get(FlinkParamConstant.ID, null));
+        params.put(FlinkParamConstant.DRIVER, parameters.get(FlinkParamConstant.DRIVER, null));
+        params.put(FlinkParamConstant.URL, parameters.get(FlinkParamConstant.URL, null));
+        params.put(FlinkParamConstant.USERNAME, parameters.get(FlinkParamConstant.USERNAME, null));
+        params.put(FlinkParamConstant.PASSWORD, parameters.get(FlinkParamConstant.PASSWORD, null));
         return params;
     }
 }

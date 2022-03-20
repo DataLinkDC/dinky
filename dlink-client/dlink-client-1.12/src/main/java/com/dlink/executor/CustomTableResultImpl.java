@@ -2,11 +2,7 @@ package com.dlink.executor;
 
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.core.execution.JobClient;
-import org.apache.flink.table.api.DataTypes;
-import org.apache.flink.table.api.ResultKind;
-import org.apache.flink.table.api.TableException;
-import org.apache.flink.table.api.TableResult;
-import org.apache.flink.table.api.TableSchema;
+import org.apache.flink.table.api.*;
 import org.apache.flink.table.utils.PrintUtils;
 import org.apache.flink.types.Row;
 import org.apache.flink.util.CloseableIterator;
@@ -18,17 +14,13 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 
 /**
  * 定制CustomTableResultImpl
- * @author  wenmo
- * @since  2021/6/7 22:06
+ *
+ * @author wenmo
+ * @since 2021/6/7 22:06
  **/
 @Internal
 class CustomTableResultImpl implements TableResult {
@@ -60,12 +52,12 @@ class CustomTableResultImpl implements TableResult {
         this.printStyle = Preconditions.checkNotNull(printStyle, "printStyle should not be null");
     }
 
-    public static TableResult buildTableResult(List<TableSchemaField> fields,List<Row> rows){
+    public static TableResult buildTableResult(List<TableSchemaField> fields, List<Row> rows) {
         Builder builder = builder().resultKind(ResultKind.SUCCESS);
-        if(fields.size()>0) {
+        if (fields.size() > 0) {
             TableSchema.Builder tableSchemaBuild = TableSchema.builder();
             for (int i = 0; i < fields.size(); i++) {
-                tableSchemaBuild.field(fields.get(i).getName(),fields.get(i).getType());
+                tableSchemaBuild.field(fields.get(i).getName(), fields.get(i).getType());
             }
             builder.tableSchema(tableSchemaBuild.build()).data(rows);
         }
@@ -169,7 +161,9 @@ class CustomTableResultImpl implements TableResult {
         return new Builder();
     }
 
-    /** Builder for creating a {@link CustomTableResultImpl}. */
+    /**
+     * Builder for creating a {@link CustomTableResultImpl}.
+     */
     public static class Builder {
         private JobClient jobClient = null;
         private TableSchema tableSchema = null;
@@ -178,7 +172,8 @@ class CustomTableResultImpl implements TableResult {
         private PrintStyle printStyle =
                 PrintStyle.tableau(Integer.MAX_VALUE, PrintUtils.NULL_COLUMN, false, false);
 
-        private Builder() {}
+        private Builder() {
+        }
 
         /**
          * Specifies job client which associates the submitted Flink job.
@@ -234,20 +229,26 @@ class CustomTableResultImpl implements TableResult {
             return this;
         }
 
-        /** Specifies print style. Default is {@link TableauStyle} with max integer column width. */
+        /**
+         * Specifies print style. Default is {@link TableauStyle} with max integer column width.
+         */
         public Builder setPrintStyle(PrintStyle printStyle) {
             Preconditions.checkNotNull(printStyle, "printStyle should not be null");
             this.printStyle = printStyle;
             return this;
         }
 
-        /** Returns a {@link TableResult} instance. */
+        /**
+         * Returns a {@link TableResult} instance.
+         */
         public TableResult build() {
             return new CustomTableResultImpl(jobClient, tableSchema, resultKind, data, printStyle);
         }
     }
 
-    /** Root interface for all print styles. */
+    /**
+     * Root interface for all print styles.
+     */
     public interface PrintStyle {
         /**
          * Create a tableau print style with given max column width, null column, change mode
@@ -275,7 +276,9 @@ class CustomTableResultImpl implements TableResult {
         }
     }
 
-    /** print the result schema and content as tableau form. */
+    /**
+     * print the result schema and content as tableau form.
+     */
     private static final class TableauStyle implements PrintStyle {
         /**
          * A flag to indicate whether the column width is derived from type (true) or content
@@ -285,7 +288,9 @@ class CustomTableResultImpl implements TableResult {
 
         private final int maxColumnWidth;
         private final String nullColumn;
-        /** A flag to indicate whether print row kind info. */
+        /**
+         * A flag to indicate whether print row kind info.
+         */
         private final boolean printRowKind;
 
         private TableauStyle(
@@ -319,7 +324,8 @@ class CustomTableResultImpl implements TableResult {
     /**
      * only print the result content as raw form. column delimiter is ",", row delimiter is "\n".
      */
-    private static final class RawContentStyle implements PrintStyle {}
+    private static final class RawContentStyle implements PrintStyle {
+    }
 
     /**
      * A {@link CloseableIterator} wrapper class that can return whether the first row is ready.

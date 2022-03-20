@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Clickhouse20CreateTableStatement extends SQLCreateTableStatement {
-    protected final List<SQLAssignItem> settings    = new ArrayList<SQLAssignItem>();
+    protected final List<SQLAssignItem> settings = new ArrayList<SQLAssignItem>();
     private SQLOrderBy orderBy;
     private SQLExpr partitionBy;
     private SQLExpr primaryKey;

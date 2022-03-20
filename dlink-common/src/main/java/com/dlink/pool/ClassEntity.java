@@ -28,14 +28,14 @@ public class ClassEntity {
         this.classByte = classByte;
     }
 
-    public static ClassEntity build(String name, String code){
-        return new ClassEntity(name,code);
+    public static ClassEntity build(String name, String code) {
+        return new ClassEntity(name, code);
     }
 
     public boolean equals(ClassEntity entity) {
-        if (Asserts.isEquals(name, entity.getName()) && Asserts.isEquals(code, entity.getCode())){
+        if (Asserts.isEquals(name, entity.getName()) && Asserts.isEquals(code, entity.getCode())) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }

@@ -83,9 +83,9 @@ public class Table implements Serializable, Comparable<Table> {
             }
             sb.append("`" + columns.get(i).getName() + "` " + type);
             if (Asserts.isNotNullString(columns.get(i).getComment())) {
-                if(columns.get(i).getComment().contains("\'") | columns.get(i).getComment().contains("\"")) {
-                    sb.append(" COMMENT '" + columns.get(i).getComment().replaceAll("\"|'","") + "'");
-                }else {
+                if (columns.get(i).getComment().contains("\'") | columns.get(i).getComment().contains("\"")) {
+                    sb.append(" COMMENT '" + columns.get(i).getComment().replaceAll("\"|'", "") + "'");
+                } else {
                     sb.append(" COMMENT '" + columns.get(i).getComment() + "'");
                 }
             }
@@ -99,7 +99,7 @@ public class Table implements Serializable, Comparable<Table> {
             if (i > 0) {
                 pksb.append(",");
             }
-            pksb.append("`"+pks.get(i)+"`");
+            pksb.append("`" + pks.get(i) + "`");
         }
         pksb.append(" ) NOT ENFORCED\n");
         if (pks.size() > 0) {
@@ -107,10 +107,10 @@ public class Table implements Serializable, Comparable<Table> {
             sb.append(pksb);
         }
         sb.append(")");
-        if(Asserts.isNotNullString(comment)){
-            if(comment.contains("\'") | comment.contains("\"")) {
-                sb.append(" COMMENT '" + comment.replaceAll("\"|'","") + "'\n");
-            }else {
+        if (Asserts.isNotNullString(comment)) {
+            if (comment.contains("\'") | comment.contains("\"")) {
+                sb.append(" COMMENT '" + comment.replaceAll("\"|'", "") + "'\n");
+            } else {
                 sb.append(" COMMENT '" + comment + "'\n");
             }
         }
@@ -128,21 +128,21 @@ public class Table implements Serializable, Comparable<Table> {
             if (i > 0) {
                 sb.append(",");
             }
-            String columnComment= columns.get(i).getComment();
-            if(Asserts.isNotNullString(columnComment)){
+            String columnComment = columns.get(i).getComment();
+            if (Asserts.isNotNullString(columnComment)) {
                 if (columnComment.contains("\'") | columnComment.contains("\"")) {
                     columnComment = columnComment.replaceAll("\"|'", "");
                 }
-                sb.append("`"+columns.get(i).getName() + "`  --  " + columnComment + " \n");
-            }else {
-                sb.append("`"+columns.get(i).getName() + "` \n");
+                sb.append("`" + columns.get(i).getName() + "`  --  " + columnComment + " \n");
+            } else {
+                sb.append("`" + columns.get(i).getName() + "` \n");
 
             }
         }
-        if(Asserts.isNotNullString(comment)){
+        if (Asserts.isNotNullString(comment)) {
             sb.append(" FROM " + schema + "." + name + ";" + " -- " + comment + "\n");
-        }else {
-            sb.append(" FROM " +  schema + "." + name +";\n");
+        } else {
+            sb.append(" FROM " + schema + "." + name + ";\n");
         }
         return sb.toString();
     }

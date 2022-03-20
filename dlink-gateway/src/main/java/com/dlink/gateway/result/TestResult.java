@@ -23,11 +23,11 @@ public class TestResult {
         this.error = error;
     }
 
-    public static TestResult success(){
-        return new TestResult(true,null);
+    public static TestResult success() {
+        return new TestResult(true, null);
     }
 
-    public static TestResult fail(String error){
-        return new TestResult(false,error);
+    public static TestResult fail(String error) {
+        return new TestResult(false, error);
     }
 }

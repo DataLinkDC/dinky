@@ -15,11 +15,11 @@ public class OracleQuery extends AbstractDBQuery {
 
     @Override
     public String tablesSql(String schemaName) {
-        return "SELECT * FROM ALL_TAB_COMMENTS WHERE OWNER='"+schemaName+"'";
+        return "SELECT * FROM ALL_TAB_COMMENTS WHERE OWNER='" + schemaName + "'";
     }
 
     @Override
-    public String columnsSql(String schemaName,String tableName) {
+    public String columnsSql(String schemaName, String tableName) {
         return "SELECT A.COLUMN_NAME, CASE WHEN A.DATA_TYPE='NUMBER' THEN "
                 + "(CASE WHEN A.DATA_PRECISION IS NULL THEN A.DATA_TYPE "
                 + "WHEN NVL(A.DATA_SCALE, 0) > 0 THEN A.DATA_TYPE||'('||A.DATA_PRECISION||','||A.DATA_SCALE||')' "
@@ -31,10 +31,10 @@ public class OracleQuery extends AbstractDBQuery {
                 + "  and pcc.owner = upper(A.OWNER)"
                 + "  and pcc.table_name = upper(A.TABLE_NAME)),0,'','PRI') KEY "
                 + "FROM ALL_TAB_COLUMNS A "
-                + " INNER JOIN ALL_COL_COMMENTS B ON A.TABLE_NAME = B.TABLE_NAME AND A.COLUMN_NAME = B.COLUMN_NAME AND B.OWNER = '"+schemaName+"'"
-                + " LEFT JOIN ALL_CONSTRAINTS D ON D.TABLE_NAME = A.TABLE_NAME AND D.CONSTRAINT_TYPE = 'P' AND D.OWNER = '"+schemaName+"'"
-                + " LEFT JOIN ALL_CONS_COLUMNS C ON C.CONSTRAINT_NAME = D.CONSTRAINT_NAME AND C.COLUMN_NAME=A.COLUMN_NAME AND C.OWNER = '"+schemaName+"'"
-                + "WHERE A.OWNER = '"+schemaName+"' AND A.TABLE_NAME = '"+tableName+"' ORDER BY A.COLUMN_ID ";
+                + " INNER JOIN ALL_COL_COMMENTS B ON A.TABLE_NAME = B.TABLE_NAME AND A.COLUMN_NAME = B.COLUMN_NAME AND B.OWNER = '" + schemaName + "'"
+                + " LEFT JOIN ALL_CONSTRAINTS D ON D.TABLE_NAME = A.TABLE_NAME AND D.CONSTRAINT_TYPE = 'P' AND D.OWNER = '" + schemaName + "'"
+                + " LEFT JOIN ALL_CONS_COLUMNS C ON C.CONSTRAINT_NAME = D.CONSTRAINT_NAME AND C.COLUMN_NAME=A.COLUMN_NAME AND C.OWNER = '" + schemaName + "'"
+                + "WHERE A.OWNER = '" + schemaName + "' AND A.TABLE_NAME = '" + tableName + "' ORDER BY A.COLUMN_ID ";
     }
 
     @Override

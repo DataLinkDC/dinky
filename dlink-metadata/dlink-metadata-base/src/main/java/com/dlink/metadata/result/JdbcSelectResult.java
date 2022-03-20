@@ -2,12 +2,9 @@ package com.dlink.metadata.result;
 
 import com.dlink.result.AbstractResult;
 import com.dlink.result.IResult;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -19,29 +16,31 @@ import java.util.List;
  */
 public class JdbcSelectResult extends AbstractResult implements IResult {
     private List<String> columns;
-    private List<LinkedHashMap<String,Object>> rowData;
+    private List<LinkedHashMap<String, Object>> rowData;
     private Integer total;
     private Integer page;
     private Integer limit;
 
     private static final String STATUS = "status";
-    private static final List<String> STATUS_COLUMN = new ArrayList<String>(){{ add("status"); }};
+    private static final List<String> STATUS_COLUMN = new ArrayList<String>() {{
+        add("status");
+    }};
 
     public JdbcSelectResult() {
     }
 
-    public static JdbcSelectResult buildResult(){
+    public static JdbcSelectResult buildResult() {
         JdbcSelectResult result = new JdbcSelectResult();
         result.setStartTime(LocalDateTime.now());
         return result;
     }
 
-    public void setStatusList(List<Object> statusList){
+    public void setStatusList(List<Object> statusList) {
         this.setColumns(STATUS_COLUMN);
-        List<LinkedHashMap<String,Object>> dataList = new ArrayList<>();
-        for(Object item: statusList){
-            LinkedHashMap map = new LinkedHashMap<String,Object>();
-            map.put(STATUS,item);
+        List<LinkedHashMap<String, Object>> dataList = new ArrayList<>();
+        for (Object item : statusList) {
+            LinkedHashMap map = new LinkedHashMap<String, Object>();
+            map.put(STATUS, item);
             dataList.add(map);
         }
         this.setRowData(dataList);

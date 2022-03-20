@@ -20,8 +20,8 @@ public class LineageResult {
         this.relations = relations;
     }
 
-    public static LineageResult build(List<LineageTable> tables, List<LineageRelation> relations){
-        return new LineageResult(tables,relations);
+    public static LineageResult build(List<LineageTable> tables, List<LineageRelation> relations) {
+        return new LineageResult(tables, relations);
     }
 
     public List<LineageTable> getTables() {
