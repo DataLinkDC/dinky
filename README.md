@@ -8,16 +8,6 @@ Dinky 架构于 Apache Flink，增强 Flink 的应用与体验，探索流式数
 
 最后，Dinky 的发展皆归功于 Apache Flink 等其他优秀的开源项目的指导与成果。
 
-## 由来
-
-Dinky（原 Dlink）：
-
-1.Dinky 英译为 “ 小巧而精致的 ” ，最直观的表明了它的特征：轻量级但又具备复杂的大数据开发能力。
-
-2.为 “ Data Integrate No Knotty ” 的首字母组合，英译 “ 数据整合不难 ”，寓意 “ 易于建设批流一体平台及应用 ”。
-
-3.从 Dlink 改名为 Dinky 过渡平滑，更加形象的阐明了开源项目的目标，始终指引参与者们 “不忘初心，方得始终 ”。
-
 ## 发展
 
 [![Stargazers over time](https://starchart.cc/DataLinkDC/dlink.svg)](https://starchart.cc/DataLinkDC/dlink)
@@ -38,7 +28,7 @@ Dinky（原 Dlink）：
 |         |            | 支持 Flink 批流两种模式                           | 0.6.0 |
 |         |            | 支持 SELECT、SHOW、DESC 等查询实时预览               | 0.4.0 |
 |         |            | 支持 INSERT 语句集                             | 0.4.0 |
-|         |            | 新增 SQL 片段语法                               | 0.4.0 |
+|         |            | 新增 SQL 片段语法（全局变量）                         | 0.4.0 |
 |         |            | 新增 AGGTABLE 表值聚合语法及 UDATF 支持              | 0.4.0 |
 |         |            | 新增 CDCSOURCE 多源合并语法支持                     | 0.6.0 |
 |         |            | 新增 FlinkSQLEnv 执行环境复用                     | 0.5.0 |
@@ -142,9 +132,9 @@ Dinky（原 Dlink）：
 
 ### 版本
 
-抢先体验( main 主支)：dlink-0.6.0-SNAPSHOT
+抢先体验( main 主支)：dlink-0.6.1-SNAPSHOT
 
-稳定版本( 0.5.1 分支)：dlink-0.5.1
+稳定版本( 0.6.0 分支)：dlink-0.6.0
 
 ### 从安装包开始
 
@@ -247,6 +237,7 @@ Nginx 如何部署请见百度或谷歌。
 ```java
 dlink -- 父项目
 |-dlink-admin -- 管理中心
+|-dlink-alert -- 报警中心
 |-dlink-app -- Application Jar
 |-dlink-assembly -- 打包配置
 |-dlink-client -- Client 中心
@@ -256,8 +247,8 @@ dlink -- 父项目
 | |-dlink-client-1.14 -- Client-1.14 实现
 |-dlink-common -- 通用中心
 |-dlink-connectors -- Connectors 中心
-| |-dlink-connector-jdbc -- Jdbc 扩展
-|-dlink-core -- 执行中心
+|-dlink-core -- 核心模块
+|-dlink-daemon -- 守护线程模块
 |-dlink-doc -- 文档
 | |-bin -- 启动脚本
 | |-config -- 配置文件
@@ -269,11 +260,6 @@ dlink -- 父项目
 |-dlink-function -- 函数中心
 |-dlink-gateway -- Flink 网关中心
 |-dlink-metadata -- 元数据中心
-| |-dlink-metadata-base -- 元数据基础组件
-| |-dlink-metadata-clickhouse -- 元数据- clickhouse 实现
-| |-dlink-metadata-mysql -- 元数据- mysql 实现
-| |-dlink-metadata-oracle -- 元数据- oracle 实现
-| |-dlink-metadata-postgresql -- 元数据- postgresql 实现
 |-dlink-web -- React 前端
 ```
 
@@ -300,7 +286,7 @@ mvn clean install -Dmaven.test.skip=true
 
 #### 扩展Metadata
 
-遵循SPI。请参考 dlink-meta-mysql 的实现。
+遵循SPI。请参考 dlink-metadata-mysql 的实现。
 
 #### 扩展其他版本的Flink
 
@@ -326,6 +312,8 @@ Flink 的版本取决于 lib 下的 dlink-client-1.13.jar。当前版本默认�
 
 8.[Dlink 在 Flink-mysql-cdc 到 Doris 的实践](https://github.com/DataLinkDC/dlink/blob/main/dlink-doc/doc/Dlink%E5%9C%A8Flink-mysql-cdc%E5%88%B0Doris%E7%9A%84%E5%AE%9E%E8%B7%B5.md)
 
+更多文档请查阅官方网址...
+
 ## 技术栈与鸣谢
 
 [Apache Flink](https://github.com/apache/flink)
@@ -348,15 +336,17 @@ Flink 的版本取决于 lib 下的 dlink-client-1.13.jar。当前版本默认�
 
 ## 近期计划
 
-1.任务生命周期管理
+1.多租户及命名空间
 
-2.作业监控及运维
+2.全局血缘与影响分析
 
-3.流作业自动恢复
+3.统一元数据管理
 
-4.作业日志查看
+4.Flink 元数据持久化
 
-5.钉钉报警和推送
+5.多版本 Flink-Client Server
+
+6.整库千表同步
 
 ## 交流与贡献
 
@@ -372,67 +362,46 @@ QQ社区群：**543709668**，申请备注 “ Dinky ”，不写不批
 
 ## 运行截图
 
-> 登录页
-
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050login.png)
-
-> 首页
-
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050home.png)
-
 > FlinkSQL Studio
 
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050flinksqlstudio.png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/060/flinksqlstudio.png)
 
-> 自动补全
+> 实时预览
 
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050autocomplete.png)
-
-> ChangeLog 预览
-
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050changelog.png)
-
-> BI 折线图
-
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050line.png)
-
-> Table 预览
-
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050table.png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/060/selectpreview.png)
 
 > 语法校验和逻辑检查
 
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050check.png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/060/checksql.png)
 
-> JobPlan 预览
+> JobPlan
 
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050jobplan.png)
-
-> FlinkSQL 导出
-
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050export.png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/060/jobplan.png)
 
 > 血缘分析
 
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050ca.png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/060/lineage.png)
 
-> Savepoint 管理
+> BI 展示
 
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050savepoint.png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/060/charts.png)
 
-> 共享会话
+> 元数据查询
 
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050session.png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/060/metadata.png)
 
-> 元数据
+> 实时任务监控
 
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050metadata.png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/060/monitor.png)
 
-> 集群实例
+> 作业信息
 
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050cluster.png)
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/060/jobinfo.png)
 
+> 数据地图
 
-> 集群配置
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/060/datamap.png)
 
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050clusterconf.png)
+> 数据源注册
+
+![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/060/datasource.png)

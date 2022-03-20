@@ -73,7 +73,7 @@ export default (): React.ReactNode => {
                 <Link>全局血缘与影响分析</Link>
               </li>
               <li>
-                <Link>元数据中心</Link>
+                <Link>统一元数据管理</Link>
               </li>
               <li>
                 <Link>Flink 元数据持久化</Link>
