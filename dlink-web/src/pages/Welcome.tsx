@@ -779,6 +779,9 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>新增 实时任务监控容错机制</Link>
                 </li>
+                <li>
+                  <Link>修复 Doris无法获取到列的主键信息</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>

@@ -193,7 +193,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                 String columnName = results.getString(dbQuery.columnName());
                 if (columnList.contains(dbQuery.columnKey())) {
                     String key = results.getString(dbQuery.columnKey());
-                    field.setKeyFlag(Asserts.isNotNullString(key) && Asserts.isEqualsIgnoreCase("PRI", key));
+                    field.setKeyFlag(Asserts.isNotNullString(key) && Asserts.isEqualsIgnoreCase(dbQuery.isPK(), key));
                 }
                 field.setName(columnName);
                 if (columnList.contains(dbQuery.columnType())) {

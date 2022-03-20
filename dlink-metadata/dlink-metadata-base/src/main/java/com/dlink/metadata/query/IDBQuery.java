@@ -146,4 +146,9 @@ public interface IDBQuery {
      * 自定义字段名称
      */
     String[] columnCustom();
+
+    /**
+     * @return 主键值
+     */
+    String isPK();
 }

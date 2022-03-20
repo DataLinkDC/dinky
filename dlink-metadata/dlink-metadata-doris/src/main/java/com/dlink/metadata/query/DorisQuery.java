@@ -101,4 +101,9 @@ public class DorisQuery extends AbstractDBQuery {
     public String autoIncrement() {
         return "Default";
     }
+
+    @Override
+    public String isPK() {
+        return "YES";
+    }
 }

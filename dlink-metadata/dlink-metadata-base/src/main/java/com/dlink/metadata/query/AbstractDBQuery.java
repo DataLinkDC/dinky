@@ -132,4 +132,9 @@ public abstract class AbstractDBQuery implements IDBQuery {
     public String collation() {
         return "COLLATION_NAME";
     }
+
+    @Override
+    public String isPK() {
+        return "PRI";
+    }
 }
