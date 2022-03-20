@@ -1,22 +1,18 @@
 package com.dlink.metadata.parser;
 
 import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
-import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.SQLCreateTableParser;
-import com.alibaba.druid.sql.parser.SQLParserFeature;
-import com.alibaba.druid.sql.parser.SQLStatementParser;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.parser.*;
 
 public class Clickhouse20StatementParser extends SQLStatementParser {
     public Clickhouse20StatementParser(String sql) {
-        super (new Clickhouse20ExprParser(sql));
+        super(new Clickhouse20ExprParser(sql));
     }
 
     public Clickhouse20StatementParser(String sql, SQLParserFeature... features) {
-        super (new Clickhouse20ExprParser(sql, features));
+        super(new Clickhouse20ExprParser(sql, features));
     }
 
-    public Clickhouse20StatementParser(Lexer lexer){
+    public Clickhouse20StatementParser(Lexer lexer) {
         super(new Clickhouse20ExprParser(lexer));
     }
 

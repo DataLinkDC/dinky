@@ -11,6 +11,7 @@ public interface IColumnType {
      * 获取字段类型
      */
     String getType();
+
     /**
      * 获取字段类型完整名
      */

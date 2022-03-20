@@ -35,7 +35,7 @@ public class Clickhouse20ExportParameterVisitor extends Clickhouse20OutputVisito
      */
     private final boolean requireParameterizedOutput;
 
-    public Clickhouse20ExportParameterVisitor(final List<Object> parameters, final Appendable appender, final boolean wantParameterizedOutput){
+    public Clickhouse20ExportParameterVisitor(final List<Object> parameters, final Appendable appender, final boolean wantParameterizedOutput) {
         super(appender, true);
         this.parameters = parameters;
         this.requireParameterizedOutput = wantParameterizedOutput;
@@ -45,21 +45,21 @@ public class Clickhouse20ExportParameterVisitor extends Clickhouse20OutputVisito
         this(new ArrayList<Object>());
     }
 
-    public Clickhouse20ExportParameterVisitor(final List<Object> parameters){
-        this(parameters,new StringBuilder(),false);
+    public Clickhouse20ExportParameterVisitor(final List<Object> parameters) {
+        this(parameters, new StringBuilder(), false);
     }
 
     public Clickhouse20ExportParameterVisitor(final Appendable appender) {
-        this(new ArrayList<Object>(),appender,true);
+        this(new ArrayList<Object>(), appender, true);
     }
-    
+
     public List<Object> getParameters() {
         return parameters;
     }
 
     @Override
     public boolean visit(SQLSelectItem x) {
-        if(requireParameterizedOutput){
+        if (requireParameterizedOutput) {
             return super.visit(x);
         }
         return false;
@@ -67,7 +67,7 @@ public class Clickhouse20ExportParameterVisitor extends Clickhouse20OutputVisito
 
     @Override
     public boolean visit(SQLOrderBy x) {
-        if(requireParameterizedOutput){
+        if (requireParameterizedOutput) {
             return super.visit(x);
         }
         return false;
@@ -75,7 +75,7 @@ public class Clickhouse20ExportParameterVisitor extends Clickhouse20OutputVisito
 
     @Override
     public boolean visit(SQLSelectGroupByClause x) {
-        if(requireParameterizedOutput){
+        if (requireParameterizedOutput) {
             return super.visit(x);
         }
         return false;
@@ -83,7 +83,7 @@ public class Clickhouse20ExportParameterVisitor extends Clickhouse20OutputVisito
 
     @Override
     public boolean visit(SQLMethodInvokeExpr x) {
-        if(requireParameterizedOutput){
+        if (requireParameterizedOutput) {
             return super.visit(x);
         }
         ExportParameterVisitorUtils.exportParamterAndAccept(this.parameters, x.getArguments());
@@ -93,7 +93,7 @@ public class Clickhouse20ExportParameterVisitor extends Clickhouse20OutputVisito
 
     @Override
     public boolean visit(SQLInListExpr x) {
-        if(requireParameterizedOutput){
+        if (requireParameterizedOutput) {
             return super.visit(x);
         }
         ExportParameterVisitorUtils.exportParamterAndAccept(this.parameters, x.getTargetList());
@@ -103,7 +103,7 @@ public class Clickhouse20ExportParameterVisitor extends Clickhouse20OutputVisito
 
     @Override
     public boolean visit(SQLBetweenExpr x) {
-        if(requireParameterizedOutput){
+        if (requireParameterizedOutput) {
             return super.visit(x);
         }
         ExportParameterVisitorUtils.exportParameter(this.parameters, x);
@@ -111,7 +111,7 @@ public class Clickhouse20ExportParameterVisitor extends Clickhouse20OutputVisito
     }
 
     public boolean visit(SQLBinaryOpExpr x) {
-        if(requireParameterizedOutput){
+        if (requireParameterizedOutput) {
             return super.visit(x);
         }
         ExportParameterVisitorUtils.exportParameter(this.parameters, x);

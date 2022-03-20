@@ -16,11 +16,10 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- *
  * @author lcg
- * @operate 
+ * @operate
  * @date 2022/2/16 16:50
- * @return 
+ * @return
  */
 public class PhoenixDriver extends AbstractJdbcDriver {
     @Override
@@ -84,6 +83,7 @@ public class PhoenixDriver extends AbstractJdbcDriver {
     /**
      * 解决phoenix SQL多语句执行问题
      * phoenix SQL中不能执行带;语句
+     *
      * @param sql
      * @return
      */
@@ -93,7 +93,7 @@ public class PhoenixDriver extends AbstractJdbcDriver {
 
     @Override
     public JdbcSelectResult query(String sql, Integer limit) {
-        return super.query(parsePhoenixSql(sql),limit);
+        return super.query(parsePhoenixSql(sql), limit);
     }
 
     @Override
