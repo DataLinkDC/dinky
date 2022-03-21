@@ -66,6 +66,22 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
 
 
     @Override
+    public Table getTable(String schemaName, String tableName) {
+        List<Table> tables = listTables(schemaName);
+        Table table = null;
+        for (Table item : tables) {
+            if (Asserts.isEquals(item.getName(), tableName)) {
+                table = item;
+                break;
+            }
+        }
+        if (Asserts.isNotNull(table)) {
+            table.setColumns(listColumns(schemaName, table.getName()));
+        }
+        return table;
+    }
+
+    @Override
     public List<Table> listTables(String schemaName) {
         List<Table> tableList = new ArrayList<>();
         PreparedStatement preparedStatement = null;
@@ -85,17 +101,17 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
                 if (Asserts.isNotNullString(tableName)) {
                     Table tableInfo = new Table();
                     tableInfo.setName(tableName);
-                    if(columnList.contains(dbQuery.tableComment())) {
+                    if (columnList.contains(dbQuery.tableComment())) {
                         tableInfo.setComment(results.getString(dbQuery.tableComment()));
                     }
                     tableInfo.setSchema(schemaName);
-                    if(columnList.contains(dbQuery.tableType())) {
+                    if (columnList.contains(dbQuery.tableType())) {
                         tableInfo.setType(results.getString(dbQuery.tableType()));
                     }
-                    if(columnList.contains(dbQuery.catalogName())) {
+                    if (columnList.contains(dbQuery.catalogName())) {
                         tableInfo.setCatalog(results.getString(dbQuery.catalogName()));
                     }
-                    if(columnList.contains(dbQuery.engine())) {
+                    if (columnList.contains(dbQuery.engine())) {
                         tableInfo.setEngine(results.getString(dbQuery.engine()));
                     }
                     tableList.add(tableInfo);
@@ -115,7 +131,7 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
     }
 
     @Override
-    public List<Schema> listSchemas()  {
+    public List<Schema> listSchemas() {
 
         List<Schema> schemas = new ArrayList<>();
         PreparedStatement preparedStatement = null;
@@ -157,21 +173,20 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
             for (int i = 1; i <= metaData.getColumnCount(); i++) {
                 columnList.add(metaData.getColumnLabel(i));
             }
-            Integer positionId=1;
+            Integer positionId = 1;
             while (results.next()) {
                 Column field = new Column();
                 if (StringUtils.isEmpty(results.getString(dbQuery.columnName()))) {
                     break;
-                }
-                else{
-                    if(columnList.contains(dbQuery.columnName())){
+                } else {
+                    if (columnList.contains(dbQuery.columnName())) {
                         String columnName = results.getString(dbQuery.columnName());
                         field.setName(columnName);
                     }
-                    if(columnList.contains(dbQuery.columnType())) {
+                    if (columnList.contains(dbQuery.columnType())) {
                         field.setType(results.getString(dbQuery.columnType()));
                     }
-                    if(columnList.contains(dbQuery.columnComment()) && Asserts.isNotNull(results.getString(dbQuery.columnComment()))) {
+                    if (columnList.contains(dbQuery.columnComment()) && Asserts.isNotNull(results.getString(dbQuery.columnComment()))) {
                         String columnComment = results.getString(dbQuery.columnComment()).replaceAll("\"|'", "");
                         field.setComment(columnComment);
                     }
@@ -193,7 +208,7 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
         StringBuilder createTable = new StringBuilder();
         PreparedStatement preparedStatement = null;
         ResultSet results = null;
-        String createTableSql = getDBQuery().createTableSql(table.getSchema(),table.getName());
+        String createTableSql = getDBQuery().createTableSql(table.getSchema(), table.getName());
         try {
             preparedStatement = conn.prepareStatement(createTableSql);
             results = preparedStatement.executeQuery();

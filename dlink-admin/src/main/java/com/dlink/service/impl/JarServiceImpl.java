@@ -19,6 +19,6 @@ import java.util.List;
 public class JarServiceImpl extends SuperServiceImpl<JarMapper, Jar> implements JarService {
     @Override
     public List<Jar> listEnabledAll() {
-        return list(new QueryWrapper<Jar>().eq("enabled",1));
+        return list(new QueryWrapper<Jar>().eq("enabled", 1));
     }
 }

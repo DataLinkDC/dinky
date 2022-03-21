@@ -30,17 +30,17 @@ public class AbstractOperation {
         this.statement = statement;
     }
 
-    public boolean checkFunctionExist(CustomTableEnvironmentImpl stEnvironment,String key){
+    public boolean checkFunctionExist(CustomTableEnvironmentImpl stEnvironment, String key) {
         String[] udfs = stEnvironment.listUserDefinedFunctions();
         List<String> udflist = Arrays.asList(udfs);
-        if(udflist.contains(key.toLowerCase())){
+        if (udflist.contains(key.toLowerCase())) {
             return true;
-        }else {
+        } else {
             return false;
         }
     }
 
-    public boolean noExecute(){
+    public boolean noExecute() {
         return true;
     }
 }

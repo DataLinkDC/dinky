@@ -6,8 +6,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * Dlink 启动器
- * @author  wenmo
- * @since  2021/5/28
+ *
+ * @author wenmo
+ * @since 2021/5/28
  */
 @EnableTransactionManagement
 @SpringBootApplication

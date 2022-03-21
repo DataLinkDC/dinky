@@ -19,7 +19,7 @@ public class SessionConfig {
     private String clusterName;
     private String address;
 
-    public enum SessionType{
+    public enum SessionType {
         PUBLIC,
         PRIVATE
     }
@@ -32,11 +32,11 @@ public class SessionConfig {
         this.address = address;
     }
 
-    public static SessionConfig build(String type, boolean useRemote, Integer clusterId, String clusterName, String address){
-        return new SessionConfig(SessionType.valueOf(type),useRemote,clusterId,clusterName,address);
+    public static SessionConfig build(String type, boolean useRemote, Integer clusterId, String clusterName, String address) {
+        return new SessionConfig(SessionType.valueOf(type), useRemote, clusterId, clusterName, address);
     }
 
-    public ExecutorSetting getExecutorSetting(){
+    public ExecutorSetting getExecutorSetting() {
         return new ExecutorSetting(true);
     }
 

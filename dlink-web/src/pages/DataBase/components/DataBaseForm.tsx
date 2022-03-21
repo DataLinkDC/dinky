@@ -1,10 +1,9 @@
-import React, {useEffect, useState} from 'react';
-import {Form, Button, Input, Space, Select, Divider} from 'antd';
+import React, {useState} from 'react';
+import {Button, Divider, Form, Input, Select, Space} from 'antd';
 
 import Switch from "antd/es/switch";
 import TextArea from "antd/es/input/TextArea";
 import {DataBaseItem} from "@/pages/DataBase/data";
-import {FALLBACK, getDBImage} from "@/pages/DataBase/DB";
 
 
 export type ClickHouseFormProps = {
@@ -111,7 +110,9 @@ const DataBaseForm: React.FC<ClickHouseFormProps> = (props) => {
         >
           <Input.Password/>
         </Form.Item>
-        <Form.Item
+        {type !== "Hive" &&
+          <>
+         <Form.Item
           name="flinkConfig"
           label="Flink 连接配置"
         >
@@ -125,6 +126,7 @@ const DataBaseForm: React.FC<ClickHouseFormProps> = (props) => {
           <TextArea placeholder="请指定 Flink With 的生成模板" allowClear
                     autoSize={{minRows: 3, maxRows: 10}}/>
         </Form.Item>
+          </>}
         <Form.Item
           name="note"
           label="注释"

@@ -15,5 +15,5 @@ public interface JobHistoryService extends ISuperService<JobHistory> {
 
     JobHistory getJobHistoryInfo(JobHistory jobHistory);
 
-    JobHistory refreshJobHistory(Integer id,String jobManagerHost,String jobId);
+    JobHistory refreshJobHistory(Integer id, String jobManagerHost, String jobId);
 }

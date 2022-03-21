@@ -28,7 +28,7 @@ public class RunResult {
     public RunResult() {
     }
 
-    public RunResult(String sessionId, String statement, String flinkHost, Integer flinkPort,ExecutorSetting setting,String jobName) {
+    public RunResult(String sessionId, String statement, String flinkHost, Integer flinkPort, ExecutorSetting setting, String jobName) {
         this.sessionId = sessionId;
         this.statement = statement;
         this.flinkHost = flinkHost;

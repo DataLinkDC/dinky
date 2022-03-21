@@ -28,19 +28,19 @@ public class AlertGroupServiceImpl extends SuperServiceImpl<AlertGroupMapper, Al
 
     @Override
     public List<AlertGroup> listEnabledAll() {
-        return list(new QueryWrapper<AlertGroup>().eq("enabled",1));
+        return list(new QueryWrapper<AlertGroup>().eq("enabled", 1));
     }
 
     @Override
     public AlertGroup getAlertGroupInfo(Integer id) {
         AlertGroup alertGroup = getById(id);
-        if(Asserts.isNull(alertGroup)||Asserts.isNullString(alertGroup.getAlertInstanceIds())){
+        if (Asserts.isNull(alertGroup) || Asserts.isNullString(alertGroup.getAlertInstanceIds())) {
             return alertGroup;
         }
         String[] alertInstanceIds = alertGroup.getAlertInstanceIds().split(",");
         List<AlertInstance> alertInstanceList = new ArrayList<>();
-        for(String alertInstanceId: alertInstanceIds){
-            if(Asserts.isNullString(alertInstanceId)||alertInstanceId.equals("0")){
+        for (String alertInstanceId : alertInstanceIds) {
+            if (Asserts.isNullString(alertInstanceId) || alertInstanceId.equals("0")) {
                 continue;
             }
             alertInstanceList.add(alertInstanceService.getById(Integer.valueOf(alertInstanceId)));

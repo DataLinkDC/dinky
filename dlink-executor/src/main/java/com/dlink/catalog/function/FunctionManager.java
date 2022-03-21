@@ -17,7 +17,7 @@ import java.util.Map;
 @Deprecated
 public class FunctionManager {
 
-    private static Map<String,UDFunction> functions = new HashMap<String,UDFunction>(){
+    private static Map<String, UDFunction> functions = new HashMap<String, UDFunction>() {
         {
             put(FlinkFunctionConstant.GET_KEY,
                     new UDFunction(FlinkFunctionConstant.GET_KEY,
@@ -34,12 +34,12 @@ public class FunctionManager {
         }
     };
 
-    public static Map<String,UDFunction> getUsedFunctions(String statement){
-        Map<String,UDFunction> map = new HashMap<>();
+    public static Map<String, UDFunction> getUsedFunctions(String statement) {
+        Map<String, UDFunction> map = new HashMap<>();
         String sql = statement.toLowerCase();
         for (Map.Entry<String, UDFunction> entry : functions.entrySet()) {
-            if(sql.contains(entry.getKey().toLowerCase())){
-                map.put(entry.getKey(),entry.getValue());
+            if (sql.contains(entry.getKey().toLowerCase())) {
+                map.put(entry.getKey(), entry.getValue());
             }
         }
         return map;

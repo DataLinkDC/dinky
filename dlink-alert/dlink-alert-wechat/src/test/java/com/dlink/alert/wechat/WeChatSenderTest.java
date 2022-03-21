@@ -84,7 +84,7 @@ public class WeChatSenderTest {
 
     @Test
     public void testSendWeChatTextMsg() {
-        weChatConfig.put(WeChatConstants.SHOW_TYPE,ShowType.TEXT.getValue());
+        weChatConfig.put(WeChatConstants.SHOW_TYPE, ShowType.TEXT.getValue());
         WeChatSender weChatSender = new WeChatSender(weChatConfig);
         AlertResult alertResult = weChatSender.send("TEXT-TEST", contentTest);
         Assert.assertEquals(true, alertResult.getSuccess());

@@ -18,7 +18,7 @@ public class HistoryServiceImpl extends SuperServiceImpl<HistoryMapper, History>
     @Override
     public boolean removeHistoryById(Integer id) {
         History history = getById(id);
-        if(history!=null){
+        if (history != null) {
             ResultPool.remove(history.getJobId());
         }
         return removeById(id);

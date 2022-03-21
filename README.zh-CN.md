@@ -1,124 +1,153 @@
-<font size=7>[English](README.en-US.md)|简体中文</font>
-# Dinky 
-Dinky是一个基于Apache Flink封装的一个可视化的、轻量级可交互式的Studio，可以在线开发、补全、校验 、执行、预览 FlinkSQL，支持 Flink 官方所有语法及其增强语法，并且可以同时对多 Flink 集群实例进行提交、停止、SavePoint 等运维操作。
+# Dinky
 
-了解更多有关Dinky的信息请查阅:http://www.dlink.top
+[![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
+[![Total Lines](https://tokei.rs/b1/github/DataLinkDC/dlink?category=lines)](https://github.com/DataLinkDC/dlink)
+[![CN doc](https://img.shields.io/badge/文档-中文版-blue.svg)](README_zh_CN.md)
+[![EN doc](https://img.shields.io/badge/document-English-blue.svg)](README.md)
 
-## 主要功能
+[![Stargazers over time](https://starchart.cc/DataLinkDC/dlink.svg)](https://starchart.cc/DataLinkDC/dlink)
 
-## 编译
+## 简介
 
-详见[编译](https://github.com/DataLinkDC/dlink/blob/dev/docs/zh-CN/quick_start/build.md)
+实时即未来，Dlink 为 Apache Flink 而生，让 Flink SQL 纵享丝滑，并致力于实时计算平台建设。
 
-## 安装
+Dinky 基于 Apache Flink 实现 Dlink ，增强 Flink 的应用与体验，探索流式数仓。即站在巨人肩膀上创新与实践，Dinky 在未来批流一体的发展趋势下潜力无限。
 
-详见[安装](https://github.com/DataLinkDC/dlink/blob/dev/docs/zh-CN/quick_start/deploy.md)
+最后，Dinky 的发展皆归功于 Apache Flink 等其他优秀的开源项目的指导与成果。
 
-## 技术栈
+## 特点
+
+一个基于 `Apache Flink` 二次开发且 `易扩展` 的 `一站式` 开发运维 `FlinkSQL` 及 `SQL` 的实时计算平台。致力于解决 `实时` 与 `离线` 数据开发、数仓建设流程中大量复杂的 `数据口径`，使 `实时、准实时、离线一体`的数据开发平台在数据治理流程中`开箱即用`。
+
+其主要目标如下：
+
+- 可视化交互式 FlinkSQL 和 SQL 的数据开发平台：自动提示补全、语法高亮、调试执行、语法校验、语句美化、全局变量等
+- 支持全面的多版本的 FlinkSQL 作业提交方式：Local、Standalone、Yarn Session、Yarn Per-Job、Kubernetes Session、Kubernetes Application
+- 支持 Apache Flink 所有的 Connector、UDF、CDC等
+- 支持 FlinkSQL 语法增强：兼容 Apache Flink SQL、表值聚合函数、全局变量、CDC多源合并、执行环境、语句合并、共享会话等
+- 支持易扩展的 SQL 作业提交方式：ClickHouse、Doris、Hive、Mysql、Oracle、Phoenix、PostgreSql、SqlServer 等
+- 支持实时调试预览 Table 和 ChangeLog 数据及图形展示
+- 支持语法逻辑检查、作业执行计划、字段级血缘分析等
+- 支持 Flink 元数据、数据源元数据查询及管理
+- 支持实时任务运维：作业上线下线、作业信息、集群信息、作业快照、异常信息、作业日志、数据地图、即席查询、历史版本、报警记录等
+- 支持作为多版本 FlinkSQL Server 的能力以及 OpenApi
+- 支持易扩展的实时作业报警及报警组：钉钉、微信企业号等
+- 支持完全托管的 SavePoint 启动机制：最近一次、最早一次、指定一次等
+- 支持多种资源管理：集群实例、集群配置、Jar、数据源、报警组、报警实例、文档、用户、系统配置等
+- 更多隐藏功能等待小伙伴们探索
+
+## 原理
+
+![dinky_principle](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/main/dinky_principle.png)
+
+## 精彩瞬间
+
+> FlinkSQL Studio
+
+![flinksqlstudio](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/060/flinksqlstudio.png)
+
+> 实时调试预览
+
+![selectpreview](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/060/selectpreview.png)
+
+> 语法和逻辑检查
+
+![checksql](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/060/checksql.png)
+
+> JobPlan
+
+![jobplan](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/060/jobplan.png)
+
+> 字段级血缘分析
+
+![lineage](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/060/lineage.png)
+
+> BI 展示
+
+![charts](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/060/charts.png)
+
+> 元数据查询
+
+![metadata](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/060/metadata.png)
+
+> 实时任务监控
+
+![monitor](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/060/monitor.png)
+
+> 实时作业信息
+
+![jobinfo](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/060/jobinfo.png)
+
+> 数据地图
+
+![datamap](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/060/datamap.png)
+
+> 数据源注册
+
+![datasource](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/060/datasource.png)
+
+## 功能
+
+详见 [功能](https://github.com/DataLinkDC/dlink/blob/dev/docs/zh-CN/feature.md)
+
+## 近期计划
+
+- 多租户及命名空间
+
+- 全局血缘与影响分析
+
+- 统一元数据管理
+
+- Flink 元数据持久化
+
+- 多版本 Flink-Client Server
+
+- 整库千表同步
+
+## 参与贡献
+
+欢迎您为社区贡献自己的力量，共建共赢，贡献流程请参考： [[参与贡献](https://github.com/DataLinkDC/dlink/blob/dev/docs/zh-CN/developer-guide/how_contribute.md)]
+
+## 如何部署
+
+详见 [编译](https://github.com/DataLinkDC/dlink/blob/dev/docs/zh-CN/quick_start/build.md) 和 [安装](https://github.com/DataLinkDC/dlink/blob/dev/docs/zh-CN/quick_start/deploy.md) 。
+
+## 如何升级到最新
+
+执行 sql 目录下的 dlink_history.sql 中的部分升级语句，依据是通过版本号与日期来判断从何处开始执行，请不要直接执行全部 sql。
+
+## 感谢
+
+站在巨人的肩膀上，Dinky 才得以诞生。对此我们对使用的所有开源软件及其社区表示衷心的感谢！我们也希望自己不仅是开源的受益者，也能成为开源的贡献者，也希望对开源有同样热情和信念的伙伴加入进来，一起为开源献出一份力！致谢列表如下：
+
 [Apache Flink](https://github.com/apache/flink)
 
-[Mybatis Plus](https://github.com/baomidou/mybatis-plus)
+[Apache Dolphinscheduler](https://github.com/apache/dolphinscheduler)
 
-[ant-design-pro](https://github.com/ant-design/ant-design-pro)
+[Ant-Design-Pro](https://github.com/ant-design/ant-design-pro)
+
+[Mybatis Plus](https://github.com/baomidou/mybatis-plus)
 
 [Monaco Editor](https://github.com/Microsoft/monaco-editor)
 
 [SpringBoot]()
 
-## License
+感谢 [JetBrains](https://www.jetbrains.com/?from=dlink) 提供的免费开源 License 赞助。
 
-## 致谢
-感谢 [JetBrains](https://www.jetbrains.com/?from=dlink) 提供的免费开源 License 赞助
+[![JetBrains](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/main/jetbrains.svg)](https://www.jetbrains.com/?from=dlink)
 
-[![JetBrains](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/main/jetbrains.svg)](https://www.jetbrains.com/?from=dlink)
+## 获得帮助
 
-## 近期计划
+1.提交 issue
 
-1.任务生命周期管理
+2.进入微信用户社区群（推荐，添加微信号 wenmo_ai 邀请进群）和QQ用户社区群（**543709668**）交流，申请备注 “ Dinky + 企业名 + 职位”，不写不批
 
-2.作业监控及运维
+3.关注微信公众号获取相关内容的文章（最新消息获取建议关注）：[DataLink数据中台](https://mmbiz.qpic.cn/mmbiz_jpg/dyicwnSlTFTp6w4PuJruFaLV6uShCJDkzqwtnbQJrQ90yKDuuIC8tyMU5DK69XZibibx7EPPBRQ3ic81se5UQYs21g/0?wx_fmt=jpeg)
 
-3.流作业自动恢复
+4.关注 bilibili UP 主（是文末呀）获取最新视频教学
 
-4.作业日志查看
+5.访问 [GithubPages](https://datalinkdc.github.io/dlink/#/) 或 [官网](http://www.dlink.top/#/) 网址，阅读最新文档手册
 
-5.钉钉报警和推送
+## 版权
 
-## 交流与贡献
-
-欢迎您加入社区交流分享，也欢迎您为社区贡献自己的力量。
-
-在此非常感谢大家的支持~
-
-QQ社区群：**543709668**，申请备注 “ Dinky ”，不写不批
-
-微信社区群（推荐）：添加微信号 wenmo_ai 邀请进群，申请备注 “ Dinky + 企业名 + 职位”，不写不批
-
-公众号（最新消息获取建议关注）：[DataLink数据中台](https://mmbiz.qpic.cn/mmbiz_jpg/dyicwnSlTFTp6w4PuJruFaLV6uShCJDkzqwtnbQJrQ90yKDuuIC8tyMU5DK69XZibibx7EPPBRQ3ic81se5UQYs21g/0?wx_fmt=jpeg)
-
-## 运行截图
-
-> 登录页
-
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050login.png)
-
-> 首页
-
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050home.png)
-
-> FlinkSQL Studio
-
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050flinksqlstudio.png)
-
-> 自动补全
-
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050autocomplete.png)
-
-> ChangeLog 预览
-
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050changelog.png)
-
-> BI 折线图
-
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050line.png)
-
-> Table 预览
-
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050table.png)
-
-> 语法校验和逻辑检查
-
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050check.png)
-
-> JobPlan 预览
-
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050jobplan.png)
-
-> FlinkSQL 导出
-
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050export.png)
-
-> 血缘分析
-
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050ca.png)
-
-> Savepoint 管理
-
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050savepoint.png)
-
-> 共享会话
-
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050session.png)
-
-> 元数据
-
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050metadata.png)
-
-> 集群实例
-
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050cluster.png)
-
-
-> 集群配置
-
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/050/050clusterconf.png)
+请参考 [LICENSE](https://github.com/DataLinkDC/dlink/blob/main/LICENSE) 文件。

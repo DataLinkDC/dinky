@@ -31,8 +31,8 @@ public class ClassPool {
         return false;
     }
 
-    public static Integer push(ClassEntity executorEntity){
-        if(exist(executorEntity.getName())){
+    public static Integer push(ClassEntity executorEntity) {
+        if (exist(executorEntity.getName())) {
             remove(executorEntity.getName());
         }
         classList.add(executorEntity);

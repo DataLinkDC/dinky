@@ -1,8 +1,5 @@
 package com.dlink.metadata.query;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 /**
  * ClickHouseQuery
  *
@@ -22,8 +19,8 @@ public class ClickHouseQuery extends AbstractDBQuery {
 
 
     @Override
-    public String columnsSql(String schemaName,String tableName) {
-        return "desc `"+tableName+"`";
+    public String columnsSql(String schemaName, String tableName) {
+        return "desc `" + tableName + "`";
     }
 
     @Override

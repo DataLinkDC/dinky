@@ -30,9 +30,9 @@ public class SysConfigController {
      */
     @PutMapping
     public Result saveOrUpdate(@RequestBody SysConfig sysConfig) throws Exception {
-        if(sysConfigService.saveOrUpdate(sysConfig)){
+        if (sysConfigService.saveOrUpdate(sysConfig)) {
             return Result.succeed("新增成功");
-        }else {
+        } else {
             return Result.failed("新增失败");
         }
     }
@@ -50,20 +50,20 @@ public class SysConfigController {
      */
     @DeleteMapping
     public Result deleteMul(@RequestBody JsonNode para) {
-        if (para.size()>0){
+        if (para.size() > 0) {
             List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para){
+            for (final JsonNode item : para) {
                 Integer id = item.asInt();
-                if(!sysConfigService.removeById(id)){
+                if (!sysConfigService.removeById(id)) {
                     error.add(id);
                 }
             }
-            if(error.size()==0) {
+            if (error.size() == 0) {
                 return Result.succeed("删除成功");
-            }else {
-                return Result.succeed("删除部分成功，但"+error.toString()+"删除失败，共"+error.size()+"次失败。");
+            } else {
+                return Result.succeed("删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
             }
-        }else{
+        } else {
             return Result.failed("请选择要删除的记录");
         }
     }
@@ -74,7 +74,7 @@ public class SysConfigController {
     @PostMapping("/getOneById")
     public Result getOneById(@RequestBody SysConfig sysConfig) throws Exception {
         sysConfig = sysConfigService.getById(sysConfig.getId());
-        return Result.succeed(sysConfig,"获取成功");
+        return Result.succeed(sysConfig, "获取成功");
     }
 
     /**
@@ -82,7 +82,7 @@ public class SysConfigController {
      */
     @GetMapping("/getAll")
     public Result getAll() {
-        return Result.succeed(sysConfigService.getAll(),"获取成功");
+        return Result.succeed(sysConfigService.getAll(), "获取成功");
     }
 
     /**

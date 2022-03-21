@@ -31,19 +31,19 @@ public class AggTable {
         this.aggBy = aggBy;
     }
 
-    public static AggTable build(String statement){
-        Map<String,List<String>> map = SingleSqlParserFactory.generateParser(statement);
+    public static AggTable build(String statement) {
+        Map<String, List<String>> map = SingleSqlParserFactory.generateParser(statement);
         return new AggTable(statement,
-                getString(map,"CREATE AGGTABLE"),
-                getString(map,"SELECT"),
-                getString(map,"FROM"),
+                getString(map, "CREATE AGGTABLE"),
+                getString(map, "SELECT"),
+                getString(map, "FROM"),
                 map.get("WHERE"),
-                getString(map,"GROUP BY"),
-                getString(map,"AGG BY"));
+                getString(map, "GROUP BY"),
+                getString(map, "AGG BY"));
     }
 
-    private static String getString(Map<String,List<String>> map,String key){
-        return StringUtils.join(map.get(key),",");
+    private static String getString(Map<String, List<String>> map, String key) {
+        return StringUtils.join(map.get(key), ",");
     }
 
     public String getStatement() {

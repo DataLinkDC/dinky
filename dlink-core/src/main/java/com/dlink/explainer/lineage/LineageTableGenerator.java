@@ -1,6 +1,8 @@
 package com.dlink.explainer.lineage;
 
+import com.dlink.assertion.Asserts;
 import com.dlink.explainer.ca.TableCA;
+import com.dlink.explainer.trans.OperatorTrans;
 import com.dlink.explainer.trans.SinkTrans;
 import com.dlink.explainer.trans.SourceTrans;
 import com.dlink.explainer.trans.Trans;
@@ -24,10 +26,10 @@ public class LineageTableGenerator {
     public LineageTableGenerator() {
     }
 
-    public static LineageTableGenerator build(List<Trans> transList){
+    public static LineageTableGenerator build(List<Trans> transList) {
         LineageTableGenerator generator = new LineageTableGenerator();
         Map<Integer, Trans> map = new HashMap<>();
-        for (Trans trans: transList) {
+        for (Trans trans : transList) {
             map.put(trans.getId(), trans);
         }
         generator.setTransMaps(map);
@@ -40,6 +42,11 @@ public class LineageTableGenerator {
                 tables.add(TableCA.build(entry.getValue()));
             } else if (entry.getValue() instanceof SinkTrans) {
                 tables.add(TableCA.build(entry.getValue()));
+            } else if (entry.getValue() instanceof OperatorTrans) {
+                TableCA tableCA = TableCA.build(entry.getValue());
+                if (Asserts.isNotNull(tableCA)) {
+                    tables.add(tableCA);
+                }
             }
         }
     }

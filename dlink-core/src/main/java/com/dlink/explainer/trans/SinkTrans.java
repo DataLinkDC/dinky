@@ -71,9 +71,9 @@ public class SinkTrans extends AbstractTrans implements Trans {
     public void translate() {
         Map map = MapParseUtils.parse(contents);
         ArrayList<String> tables = (ArrayList<String>) map.get("table");
-        if(tables!=null&&tables.size()>0) {
+        if (tables != null && tables.size() > 0) {
             name = tables.get(0);
-            String [] names = tables.get(0).split("\\.");
+            String[] names = tables.get(0).split("\\.");
             if (names.length >= 3) {
                 catalog = names[0];
                 database = names[1];

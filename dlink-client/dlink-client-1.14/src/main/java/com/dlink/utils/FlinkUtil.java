@@ -16,19 +16,19 @@ import java.util.Optional;
  */
 public class FlinkUtil {
 
-    public static List<String> getFieldNamesFromCatalogManager(CatalogManager catalogManager, String catalog, String database, String table){
+    public static List<String> getFieldNamesFromCatalogManager(CatalogManager catalogManager, String catalog, String database, String table) {
         Optional<CatalogManager.TableLookupResult> tableOpt = catalogManager.getTable(
                 ObjectIdentifier.of(catalog, database, table)
         );
         if (tableOpt.isPresent()) {
             return tableOpt.get().getResolvedSchema().getColumnNames();
-        }else{
+        } else {
             return new ArrayList<String>();
         }
     }
 
 
-    public static List<String> catchColumn(TableResult tableResult){
+    public static List<String> catchColumn(TableResult tableResult) {
         return tableResult.getResolvedSchema().getColumnNames();
     }
 }

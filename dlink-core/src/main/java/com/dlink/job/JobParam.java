@@ -17,6 +17,7 @@ public class JobParam {
         this.ddl = ddl;
         this.trans = trans;
     }
+
     public JobParam(List<StatementParam> ddl, List<StatementParam> trans, List<StatementParam> execute) {
         this.ddl = ddl;
         this.trans = trans;

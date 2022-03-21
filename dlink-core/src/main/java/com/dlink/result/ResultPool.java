@@ -11,33 +11,33 @@ import java.util.Map;
  */
 public class ResultPool {
 
-    private static volatile Map<String,SelectResult> results = new HashMap<String,SelectResult>();
+    private static volatile Map<String, SelectResult> results = new HashMap<String, SelectResult>();
 
-    public static boolean containsKey(String key){
+    public static boolean containsKey(String key) {
         return results.containsKey(key);
     }
 
     public static void put(SelectResult result) {
-        results.put(result.getJobId(),result);
+        results.put(result.getJobId(), result);
     }
 
-    public static SelectResult get(String key){
-        if(results.containsKey(key)){
+    public static SelectResult get(String key) {
+        if (results.containsKey(key)) {
             return results.get(key);
-        }else{
+        } else {
             return SelectResult.buildDestruction(key);
         }
     }
 
-    public static boolean remove(String key){
-        if(results.containsKey(key)){
+    public static boolean remove(String key) {
+        if (results.containsKey(key)) {
             results.remove(key);
             return true;
         }
         return false;
     }
 
-    public static void clear(){
+    public static void clear() {
         results.clear();
     }
 

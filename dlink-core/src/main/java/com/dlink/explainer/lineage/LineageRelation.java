@@ -24,9 +24,10 @@ public class LineageRelation {
         this.tgtTableColName = tgtTableColName;
     }
 
-    public static LineageRelation build(String id, String srcTableId, String tgtTableId, String srcTableColName, String tgtTableColName){
-        return new LineageRelation(id,srcTableId,tgtTableId,srcTableColName,tgtTableColName);
+    public static LineageRelation build(String id, String srcTableId, String tgtTableId, String srcTableColName, String tgtTableColName) {
+        return new LineageRelation(id, srcTableId, tgtTableId, srcTableColName, tgtTableColName);
     }
+
     public String getId() {
         return id;
     }

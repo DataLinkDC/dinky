@@ -6,7 +6,7 @@ package com.dlink.alert;
  * @author wenmo
  * @since 2022/2/23 21:32
  **/
-public enum  ShowType {
+public enum ShowType {
 
     TABLE(0, "markdown"),
     TEXT(1, "text");

@@ -30,9 +30,9 @@ public class DocumentController {
      */
     @PutMapping
     public Result saveOrUpdate(@RequestBody Document document) throws Exception {
-        if(documentService.saveOrUpdate(document)){
+        if (documentService.saveOrUpdate(document)) {
             return Result.succeed("新增成功");
-        }else {
+        } else {
             return Result.failed("新增失败");
         }
     }
@@ -50,20 +50,20 @@ public class DocumentController {
      */
     @DeleteMapping
     public Result deleteMul(@RequestBody JsonNode para) {
-        if (para.size()>0){
+        if (para.size() > 0) {
             List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para){
+            for (final JsonNode item : para) {
                 Integer id = item.asInt();
-                if(!documentService.removeById(id)){
+                if (!documentService.removeById(id)) {
                     error.add(id);
                 }
             }
-            if(error.size()==0) {
+            if (error.size() == 0) {
                 return Result.succeed("删除成功");
-            }else {
-                return Result.succeed("删除部分成功，但"+error.toString()+"删除失败，共"+error.size()+"次失败。");
+            } else {
+                return Result.succeed("删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
             }
-        }else{
+        } else {
             return Result.failed("请选择要删除的记录");
         }
     }
@@ -74,7 +74,7 @@ public class DocumentController {
     @PostMapping("/getOneById")
     public Result getOneById(@RequestBody Document document) throws Exception {
         document = documentService.getById(document.getId());
-        return Result.succeed(document,"获取成功");
+        return Result.succeed(document, "获取成功");
     }
 
     /**
@@ -82,6 +82,6 @@ public class DocumentController {
      */
     @GetMapping("/getFillAllByVersion")
     public Result getFillAllByVersion(@RequestParam String version) {
-        return Result.succeed(documentService.getFillAllByVersion(version),"获取成功");
+        return Result.succeed(documentService.getFillAllByVersion(version), "获取成功");
     }
 }

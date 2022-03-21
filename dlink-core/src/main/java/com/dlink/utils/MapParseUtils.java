@@ -1,13 +1,6 @@
 package com.dlink.utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -109,15 +102,23 @@ public class MapParseUtils {
 
     public static List<String> getSelectList(String inStr) {
         List<String> selects = new ArrayList<>();
-        int startIndex = inStr.indexOf("=[") + 2;
         if (inStr == null || inStr.isEmpty()) {
             return selects;
         }
+        int startIndex = -1;
+        // lineage only need select or field
+        if (inStr.contains("select=[")) {
+            startIndex = inStr.indexOf("select=[") + 8;
+        } else if (inStr.contains("field=[")) {
+            startIndex = inStr.indexOf("field=[") + 7;
+        }
+        if (startIndex < 0) {
+            return selects;
+        }
         Deque<Integer> stack = new LinkedList<>();
-        for (int i = 0; i < inStr.length(); i++) {
+        for (int i = startIndex; i < inStr.length(); i++) {
             if (inStr.charAt(i) == ']' && stack.size() == 0) {
                 selects.add(inStr.substring(startIndex, i));
-                startIndex = i + 1;
                 return selects;
             }
             if (inStr.charAt(i) == ',' && stack.size() == 0) {
@@ -137,13 +138,51 @@ public class MapParseUtils {
         return selects;
     }
 
-    public static boolean hasField(String fragement, String field) {
-        if(field.startsWith("$")){
-            field = field.substring(1,field.length());
+    private static Map<String, List<String>> getKeyAndValues(String inStr) {
+        Map<String, List<String>> map = new HashMap<>();
+        if (inStr == null || inStr.isEmpty()) {
+            return map;
         }
-        String sign = "([^a-zA-Z0-9_]?)";
+        Deque<Integer> stack = new LinkedList<>();
+        int startIndex = 0;
+        String key = null;
+        for (int i = 0; i < inStr.length(); i++) {
+            char currentChar = inStr.charAt(i);
+            if (stack.size() == 0 && currentChar == '[') {
+                key = inStr.substring(startIndex, i - 1).trim();
+                map.put(key, new ArrayList<>());
+                startIndex = i + 1;
+                continue;
+            }
+            if (stack.size() == 0 && currentChar == ']') {
+                map.get(key).add(inStr.substring(startIndex, i).trim());
+                startIndex = i + 2;
+                key = null;
+                continue;
+            }
+            if (key != null && stack.size() == 0 && currentChar == ',') {
+                map.get(key).add(inStr.substring(startIndex, i).trim());
+                startIndex = i + 1;
+                continue;
+            }
+            if (currentChar == '(') {
+                stack.push(i);
+                continue;
+            }
+            if (currentChar == ')') {
+                stack.pop();
+            }
+        }
+        return map;
+    }
+
+    public static boolean hasField(String fragement, String field) {
+        if (field.startsWith("$")) {
+            field = field.substring(1, field.length());
+        }
+        String sign = "([^a-zA-Z0-9_])";
         Pattern p = Pattern.compile(sign + field + sign);
-        Matcher m = p.matcher(fragement);
+        Matcher m = p.matcher(" " + fragement + " ");
         while (m.find()) {
             return true;
         }
@@ -152,11 +191,11 @@ public class MapParseUtils {
 
     public static String replaceField(String operation, String field, String fragement) {
         String newOperation = operation;
-        String sign = "([^a-zA-Z0-9_]?)";
+        String sign = "([^a-zA-Z0-9_])";
         Pattern p = Pattern.compile(sign + field + sign);
         Matcher m = p.matcher(operation);
         while (m.find()) {
-            newOperation = newOperation.substring(0,m.start(1)+1)+ fragement + newOperation.substring(m.end(1)+1,newOperation.length());
+            newOperation = newOperation.substring(0, m.start(1) + 1) + fragement + newOperation.substring(m.end(1) + 1, newOperation.length());
         }
         return newOperation;
     }
@@ -234,9 +273,9 @@ public class MapParseUtils {
      * @date 2021/8/20 15:03
      */
     public static Map parseForSelect(String inStr) {
-        Map map = new HashMap();
-        map.put(getMapKey(inStr), getSelectList(inStr));
-        return map;
+//        Map map = new HashMap();
+//        map.put(getMapKeyOnlySelectOrField(inStr), getSelectList(inStr));
+        return getKeyAndValues(inStr);
     }
 
     /**
@@ -269,6 +308,18 @@ public class MapParseUtils {
             return "";
         }
         return splitStr.substring(0, splitStr.indexOf("=[")).replace(" ", "");
+    }
+
+    public static String getMapKeyOnlySelectOrField(String splitStr) {
+        if (splitStr == null || splitStr.indexOf("=[") == -1) {
+            return "";
+        }
+        if (splitStr.contains("select=[")) {
+            return "select";
+        } else if (splitStr.contains("field=[")) {
+            return "field";
+        }
+        return "";
     }
 
     /**

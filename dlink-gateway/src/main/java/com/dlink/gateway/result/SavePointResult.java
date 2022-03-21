@@ -43,8 +43,8 @@ public class SavePointResult extends AbstractGatewayResult {
         return null;
     }
 
-    public static SavePointResult build(GatewayType type){
-        return new SavePointResult(type,LocalDateTime.now());
+    public static SavePointResult build(GatewayType type) {
+        return new SavePointResult(type, LocalDateTime.now());
     }
 
 }

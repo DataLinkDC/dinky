@@ -23,8 +23,8 @@ public abstract class AbstractDriver implements Driver {
 
     public abstract ITypeConvert getTypeConvert();
 
-    public boolean canHandle(String type){
-        return Asserts.isEqualsIgnoreCase(getType(),type);
+    public boolean canHandle(String type) {
+        return Asserts.isEqualsIgnoreCase(getType(), type);
     }
 
     public Driver setDriverConfig(DriverConfig config) {
@@ -32,36 +32,36 @@ public abstract class AbstractDriver implements Driver {
         return this;
     }
 
-    public boolean isHealth(){
+    public boolean isHealth() {
         return false;
     }
 
-    public List<Schema> getSchemasAndTables(){
+    public List<Schema> getSchemasAndTables() {
         return listSchemas().stream().peek(schema -> schema.setTables(listTables(schema.getName()))).sorted().collect(Collectors.toList());
     }
 
-    public List<Table> getTablesAndColumns(String schema){
-        return listTables(schema).stream().peek(table -> table.setColumns(listColumns(schema,table.getName()))).sorted().collect(Collectors.toList());
+    public List<Table> getTablesAndColumns(String schema) {
+        return listTables(schema).stream().peek(table -> table.setColumns(listColumns(schema, table.getName()))).sorted().collect(Collectors.toList());
     }
 
     @Override
     public Table getTable(String schemaName, String tableName) {
         List<Table> tables = listTables(schemaName);
         Table table = null;
-        for(Table item : tables){
-            if(Asserts.isEquals(item.getName(),tableName)){
+        for (Table item : tables) {
+            if (Asserts.isEquals(item.getName(), tableName)) {
                 table = item;
             }
         }
-        if(Asserts.isNotNull(table)) {
+        if (Asserts.isNotNull(table)) {
             table.setColumns(listColumns(schemaName, table.getName()));
         }
         return table;
     }
 
     @Override
-    public boolean existTable(Table table){
-        return listTables(table.getSchema()).stream().anyMatch(tableItem -> Asserts.isEquals(tableItem.getName(),table.getName()));
+    public boolean existTable(Table table) {
+        return listTables(table.getSchema()).stream().anyMatch(tableItem -> Asserts.isEquals(tableItem.getName(), table.getName()));
     }
 
 }

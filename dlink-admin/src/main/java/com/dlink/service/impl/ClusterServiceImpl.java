@@ -27,7 +27,7 @@ public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
 
     @Override
     public FlinkClusterInfo checkHeartBeat(String hosts, String host) {
-        return FlinkCluster.testFlinkJobManagerIP(hosts,host);
+        return FlinkCluster.testFlinkJobManagerIP(hosts, host);
     }
 
     @Override
@@ -35,11 +35,11 @@ public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
         Assert.check(cluster);
         FlinkClusterInfo info = FlinkCluster.testFlinkJobManagerIP(cluster.getHosts(), cluster.getJobManagerHost());
         String host = null;
-        if(info.isEffective()){
+        if (info.isEffective()) {
             host = info.getJobManagerAddress();
         }
         Assert.checkHost(host);
-        if(!host.equals(cluster.getJobManagerHost())){
+        if (!host.equals(cluster.getJobManagerHost())) {
             cluster.setJobManagerHost(host);
             updateById(cluster);
         }
@@ -48,9 +48,9 @@ public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
 
     @Override
     public String buildEnvironmentAddress(boolean useRemote, Integer id) {
-        if(useRemote&&id!=0) {
+        if (useRemote && id != 0) {
             return buildRemoteEnvironmentAddress(id);
-        }else{
+        } else {
             return buildLocalEnvironmentAddress();
         }
     }
@@ -64,8 +64,8 @@ public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
     public String buildLocalEnvironmentAddress() {
         try {
             InetAddress inetAddress = InetAddress.getLocalHost();
-            if(inetAddress!=null) {
-                return inetAddress.getHostAddress()+ NetConstant.COLON+FlinkConstant.FLINK_REST_DEFAULT_PORT;
+            if (inetAddress != null) {
+                return inetAddress.getHostAddress() + NetConstant.COLON + FlinkConstant.FLINK_REST_DEFAULT_PORT;
             }
         } catch (UnknownHostException e) {
             e.printStackTrace();
@@ -75,7 +75,7 @@ public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
 
     @Override
     public List<Cluster> listEnabledAll() {
-        return this.list(new QueryWrapper<Cluster>().eq("enabled",1));
+        return this.list(new QueryWrapper<Cluster>().eq("enabled", 1));
     }
 
     @Override
@@ -85,7 +85,7 @@ public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
 
     @Override
     public List<Cluster> listAutoEnable() {
-        return list(new QueryWrapper<Cluster>().eq("enabled",1).eq("auto_registers",1));
+        return list(new QueryWrapper<Cluster>().eq("enabled", 1).eq("auto_registers", 1));
     }
 
     @Override
@@ -107,21 +107,21 @@ public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
     public int clearCluster() {
         List<Cluster> clusters = listAutoEnable();
         int count = 0;
-        for(Cluster item : clusters){
-            if((!checkHealth(item))&&removeById(item)){
-                count ++;
+        for (Cluster item : clusters) {
+            if ((!checkHealth(item)) && removeById(item)) {
+                count++;
             }
         }
         return count;
     }
 
-    private boolean checkHealth(Cluster cluster){
+    private boolean checkHealth(Cluster cluster) {
         FlinkClusterInfo info = checkHeartBeat(cluster.getHosts(), cluster.getJobManagerHost());
-        if(!info.isEffective()){
+        if (!info.isEffective()) {
             cluster.setJobManagerHost("");
             cluster.setStatus(0);
             return false;
-        }else{
+        } else {
             cluster.setJobManagerHost(info.getJobManagerAddress());
             cluster.setStatus(1);
             cluster.setVersion(info.getVersion());

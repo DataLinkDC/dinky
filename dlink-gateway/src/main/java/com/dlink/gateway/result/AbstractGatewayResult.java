@@ -34,12 +34,12 @@ public abstract class AbstractGatewayResult implements GatewayResult {
         this.exceptionMsg = exceptionMsg;
     }
 
-    public void success(){
+    public void success() {
         this.isSuccess = true;
         this.endTime = LocalDateTime.now();
     }
 
-    public void fail(String error){
+    public void fail(String error) {
         this.isSuccess = false;
         this.endTime = LocalDateTime.now();
         this.exceptionMsg = error;

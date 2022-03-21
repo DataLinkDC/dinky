@@ -55,7 +55,7 @@
     - [DolphinScheduler集成](/zh-CN/extend/dolphinscheduler.md)
     - [DataSphereStudio集成](/zh-CN/extend/dataspherestudio.md)
 - 开发者指南
-  - [如何贡献](/zh-CN/developer-guide/how_contribute.md)
+  - [参与贡献](/zh-CN/developer-guide/how_contribute.md)
   - [本地调试](/zh-CN/developer-guide/local_debug.md)
   - [远程调试](/zh-CN/developer-guide/remote_debug.md)
 - [常见问题](/zh-CN/FAQ.md)

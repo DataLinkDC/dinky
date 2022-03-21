@@ -40,7 +40,7 @@ public class WebExceptionHandler {
 
     @ExceptionHandler
     public Result unknownException(Exception e) {
-        logger.error("ERROR:",e);
+        logger.error("ERROR:", e);
         return Result.failed("系统出现错误, 请联系平台管理员!");
     }
 }

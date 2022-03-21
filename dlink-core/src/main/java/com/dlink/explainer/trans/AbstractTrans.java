@@ -47,48 +47,48 @@ public abstract class AbstractTrans {
 
     abstract void translate();
 
-    public static String matchType(String str){
+    public static String matchType(String str) {
         Pattern p = Pattern.compile("(.*?)\\(");
         Matcher m = p.matcher(str);
         String type = null;
-        if(m.find()){
+        if (m.find()) {
             type = m.group(0).replaceAll("\\(", "").trim();
-        }else{
+        } else {
             type = str;
         }
         return type;
     }
 
-    public static String matchPact(String str){
+    public static String matchPact(String str) {
         Pattern p = Pattern.compile(": (.*?)$");
         Matcher m = p.matcher(str);
         String pact = null;
-        if(m.find()){
+        if (m.find()) {
             pact = m.group(0).replaceAll(": ", "").trim();
-        }else{
+        } else {
             pact = str;
         }
         return pact;
     }
 
-    public static String matchContents(String str){
+    public static String matchContents(String str) {
         Pattern p = Pattern.compile("\\((.*?)$");
         Matcher m = p.matcher(str);
         String contents = null;
-        if(m.find()){
+        if (m.find()) {
             contents = m.group(0).replaceFirst("\\(", "").trim();
             contents = contents.substring(0, contents.lastIndexOf(")"));
-        }else{
+        } else {
             contents = str;
         }
         return contents;
     }
 
-    public static String matchStage(String str){
+    public static String matchStage(String str) {
         Pattern p = Pattern.compile("Stage (.*?) :");
         Matcher m = p.matcher(str);
         String type = null;
-        if(m.find()){
+        if (m.find()) {
             type = m.group(0).replaceFirst("Stage ", "").replaceFirst(" :", "").trim();
         }
         return type;

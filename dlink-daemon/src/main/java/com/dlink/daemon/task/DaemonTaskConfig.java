@@ -14,8 +14,8 @@ public class DaemonTaskConfig {
         this.id = id;
     }
 
-    public static DaemonTaskConfig build(String type,Integer id){
-        return new DaemonTaskConfig(type,id);
+    public static DaemonTaskConfig build(String type, Integer id) {
+        return new DaemonTaskConfig(type, id);
     }
 
     public String getType() {

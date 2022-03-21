@@ -1,7 +1,6 @@
 package com.dlink.metadata.constant;
 
 /**
- *
  * @operate sqlServer常量
  * @date 2022/1/26 14:11
  * @return

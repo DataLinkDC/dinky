@@ -25,7 +25,7 @@ public class SubmitResult {
     public SubmitResult() {
     }
 
-    public static SubmitResult error(String error){
+    public static SubmitResult error(String error) {
         return new SubmitResult(false, error);
     }
 
@@ -34,7 +34,7 @@ public class SubmitResult {
         this.error = error;
     }
 
-    public SubmitResult(String sessionId, List<String> statements, String flinkHost,String jobName) {
+    public SubmitResult(String sessionId, List<String> statements, String flinkHost, String jobName) {
         this.sessionId = sessionId;
         this.statements = statements;
         this.flinkHost = flinkHost;

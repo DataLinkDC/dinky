@@ -3,6 +3,7 @@ package com.dlink.daemon.task;
 import com.dlink.assertion.Asserts;
 import com.dlink.daemon.exception.DaemonTaskException;
 import sun.misc.Service;
+
 import java.util.Iterator;
 import java.util.Optional;
 
@@ -31,8 +32,8 @@ public interface DaemonTask {
 
     DaemonTask setConfig(DaemonTaskConfig config);
 
-    default boolean canHandle(String type){
-        return Asserts.isEqualsIgnoreCase(getType(),type);
+    default boolean canHandle(String type) {
+        return Asserts.isEqualsIgnoreCase(getType(), type);
     }
 
     String getType();

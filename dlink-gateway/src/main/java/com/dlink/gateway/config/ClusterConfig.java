@@ -26,8 +26,8 @@ public class ClusterConfig {
         this.yarnConfigPath = yarnConfigPath;
     }
 
-    public static ClusterConfig build(String flinkConfigPath, String flinkLibPath, String yarnConfigPath){
-        return new ClusterConfig(flinkConfigPath,flinkLibPath,yarnConfigPath);
+    public static ClusterConfig build(String flinkConfigPath, String flinkLibPath, String yarnConfigPath) {
+        return new ClusterConfig(flinkConfigPath, flinkLibPath, yarnConfigPath);
     }
 
     @Override
