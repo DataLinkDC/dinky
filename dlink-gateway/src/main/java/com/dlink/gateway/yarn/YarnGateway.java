@@ -9,6 +9,7 @@ import com.dlink.gateway.model.JobInfo;
 import com.dlink.gateway.result.SavePointResult;
 import com.dlink.gateway.result.TestResult;
 import com.dlink.utils.LogUtil;
+
 import org.apache.flink.api.common.JobID;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.configuration.CheckpointingOptions;
@@ -110,7 +111,9 @@ public abstract class YarnGateway extends AbstractGateway {
     private void addConfigParas(Map<String, String> configMap) {
         if (Asserts.isNotNull(configMap)) {
             for (Map.Entry<String, String> entry : configMap.entrySet()) {
-                this.configuration.setString(entry.getKey(), entry.getValue());
+                if (Asserts.isAllNotNullString(entry.getKey(), entry.getValue())) {
+                    this.configuration.setString(entry.getKey(), entry.getValue());
+                }
             }
         }
     }
@@ -134,15 +137,15 @@ public abstract class YarnGateway extends AbstractGateway {
         ApplicationId applicationId = clusterClientFactory.getClusterId(configuration);
         if (applicationId == null) {
             throw new GatewayException(
-                    "No cluster id was specified. Please specify a cluster to which you would like to connect.");
+                "No cluster id was specified. Please specify a cluster to which you would like to connect.");
         }
         /*YarnClusterDescriptor clusterDescriptor = clusterClientFactory
                 .createClusterDescriptor(
                         configuration);*/
         YarnClusterDescriptor clusterDescriptor = new YarnClusterDescriptor(
-                configuration, yarnConfiguration, yarnClient, YarnClientYarnClusterInformationRetriever.create(yarnClient), true);
+            configuration, yarnConfiguration, yarnClient, YarnClientYarnClusterInformationRetriever.create(yarnClient), true);
         try (ClusterClient<ApplicationId> clusterClient = clusterDescriptor.retrieve(
-                applicationId).getClusterClient()) {
+            applicationId).getClusterClient()) {
             List<JobInfo> jobInfos = new ArrayList<>();
             CompletableFuture<Collection<JobStatusMessage>> listJobsFuture = clusterClient.listJobs();
             for (JobStatusMessage jobStatusMessage : listJobsFuture.get()) {
@@ -173,7 +176,7 @@ public abstract class YarnGateway extends AbstractGateway {
         }
         if (Asserts.isNull(config.getFlinkConfig().getJobId())) {
             throw new GatewayException(
-                    "No job id was specified. Please specify a job to which you would like to savepont.");
+                "No job id was specified. Please specify a job to which you would like to savepont.");
         }
         /*if(Asserts.isNotNullString(config.getClusterConfig().getYarnConfigPath())) {
             configuration = GlobalConfiguration.loadConfiguration(config.getClusterConfig().getYarnConfigPath());
@@ -186,15 +189,15 @@ public abstract class YarnGateway extends AbstractGateway {
         ApplicationId applicationId = clusterClientFactory.getClusterId(configuration);
         if (Asserts.isNull(applicationId)) {
             throw new GatewayException(
-                    "No cluster id was specified. Please specify a cluster to which you would like to connect.");
+                "No cluster id was specified. Please specify a cluster to which you would like to connect.");
         }
         /*YarnClusterDescriptor clusterDescriptor = clusterClientFactory
                 .createClusterDescriptor(
                         configuration);*/
         YarnClusterDescriptor clusterDescriptor = new YarnClusterDescriptor(
-                configuration, yarnConfiguration, yarnClient, YarnClientYarnClusterInformationRetriever.create(yarnClient), true);
+            configuration, yarnConfiguration, yarnClient, YarnClientYarnClusterInformationRetriever.create(yarnClient), true);
         try (ClusterClient<ApplicationId> clusterClient = clusterDescriptor.retrieve(
-                applicationId).getClusterClient()) {
+            applicationId).getClusterClient()) {
             List<JobInfo> jobInfos = new ArrayList<>();
             jobInfos.add(new JobInfo(config.getFlinkConfig().getJobId(), JobInfo.JobStatus.FAIL));
             runSavePointJob(jobInfos, clusterClient, savePoint);
