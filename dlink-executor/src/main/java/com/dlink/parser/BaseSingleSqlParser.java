@@ -39,11 +39,11 @@ public abstract class BaseSingleSqlParser {
     /**
      * 将originalSql劈分成一个个片段
      **/
-    protected Map<String,List<String>> splitSql2Segment() {
-        Map<String,List<String>> map = new HashMap<>();
+    protected Map<String, List<String>> splitSql2Segment() {
+        Map<String, List<String>> map = new HashMap<>();
         for (SqlSegment sqlSegment : segments) {
             sqlSegment.parse(originalSql);
-            if(Asserts.isNotNullString(sqlSegment.getStart())) {
+            if (Asserts.isNotNullString(sqlSegment.getStart())) {
 //                map.put(sqlSegment.getStart().toUpperCase(), sqlSegment.getBodyPieces());
                 map.put(sqlSegment.getType().toUpperCase(), sqlSegment.getBodyPieces());
             }

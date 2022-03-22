@@ -12,7 +12,7 @@ public class TaskQueue<T> {
     public void enqueue(T task) {
         synchronized (lock) {
             lock.notifyAll();
-            tasks.addLast( task );
+            tasks.addLast(task);
         }
     }
 

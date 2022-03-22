@@ -1,12 +1,10 @@
 package com.dlink.alert;
 
 import com.dlink.assertion.Asserts;
-import com.dlink.exception.MetaDataException;
 import sun.misc.Service;
 
 import java.util.Iterator;
 import java.util.Optional;
-import java.util.ServiceLoader;
 
 /**
  * Alert
@@ -44,8 +42,8 @@ public interface Alert {
 
     Alert setConfig(AlertConfig config);
 
-    default boolean canHandle(String type){
-        return Asserts.isEqualsIgnoreCase(getType(),type);
+    default boolean canHandle(String type) {
+        return Asserts.isEqualsIgnoreCase(getType(), type);
     }
 
     String getType();

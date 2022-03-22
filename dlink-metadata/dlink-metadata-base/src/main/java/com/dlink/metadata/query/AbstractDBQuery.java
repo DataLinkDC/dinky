@@ -1,8 +1,5 @@
 package com.dlink.metadata.query;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 /**
  * AbstractDBQuery
  *
@@ -134,5 +131,10 @@ public abstract class AbstractDBQuery implements IDBQuery {
     @Override
     public String collation() {
         return "COLLATION_NAME";
+    }
+
+    @Override
+    public String isPK() {
+        return "PRI";
     }
 }

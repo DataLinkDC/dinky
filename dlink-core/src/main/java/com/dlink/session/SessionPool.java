@@ -25,10 +25,10 @@ public class SessionPool {
         return false;
     }
 
-    public static Integer push(ExecutorEntity executorEntity){
+    public static Integer push(ExecutorEntity executorEntity) {
         if (executorList.size() >= FlinkConstant.DEFAULT_SESSION_COUNT * FlinkConstant.DEFAULT_FACTOR) {
             executorList.remove(0);
-        }else if(executorList.size() >= FlinkConstant.DEFAULT_SESSION_COUNT){
+        } else if (executorList.size() >= FlinkConstant.DEFAULT_SESSION_COUNT) {
             executorList.clear();
         }
         executorList.add(executorEntity);
@@ -55,17 +55,17 @@ public class SessionPool {
         return null;
     }
 
-    public static List<ExecutorEntity> list(){
+    public static List<ExecutorEntity> list() {
         return executorList;
     }
 
-    public static List<SessionInfo> filter(String createUser){
+    public static List<SessionInfo> filter(String createUser) {
         List<SessionInfo> sessionInfos = new ArrayList<>();
         for (ExecutorEntity item : executorList) {
-            if(item.getSessionConfig().getType()== SessionConfig.SessionType.PUBLIC){
+            if (item.getSessionConfig().getType() == SessionConfig.SessionType.PUBLIC) {
                 sessionInfos.add(SessionInfo.build(item));
-            }else{
-                if(createUser!=null&&createUser.equals(item.getCreateUser())){
+            } else {
+                if (createUser != null && createUser.equals(item.getCreateUser())) {
                     sessionInfos.add(SessionInfo.build(item));
                 }
             }
@@ -73,11 +73,11 @@ public class SessionPool {
         return sessionInfos;
     }
 
-    public static SessionInfo getInfo(String sessionId){
+    public static SessionInfo getInfo(String sessionId) {
         ExecutorEntity executorEntity = get(sessionId);
-        if(executorEntity!=null){
+        if (executorEntity != null) {
             return SessionInfo.build(executorEntity);
-        }else {
+        } else {
             return null;
         }
     }

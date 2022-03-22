@@ -1,11 +1,9 @@
 package com.dlink.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.dlink.assertion.Assert;
 import com.dlink.assertion.Asserts;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.gateway.GatewayType;
-import com.dlink.gateway.config.AppConfig;
 import com.dlink.gateway.config.ClusterConfig;
 import com.dlink.gateway.config.FlinkConfig;
 import com.dlink.gateway.config.GatewayConfig;
@@ -13,8 +11,6 @@ import com.dlink.gateway.result.TestResult;
 import com.dlink.job.JobManager;
 import com.dlink.mapper.ClusterConfigurationMapper;
 import com.dlink.model.ClusterConfiguration;
-import com.dlink.model.Jar;
-import com.dlink.model.SystemConfiguration;
 import com.dlink.service.ClusterConfigurationService;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +24,7 @@ import java.util.Map;
  * @since 2021/11/6 20:54
  */
 @Service
-public class ClusterConfigurationServiceImpl extends SuperServiceImpl<ClusterConfigurationMapper,ClusterConfiguration> implements ClusterConfigurationService {
+public class ClusterConfigurationServiceImpl extends SuperServiceImpl<ClusterConfigurationMapper, ClusterConfiguration> implements ClusterConfigurationService {
     @Override
     public ClusterConfiguration getClusterConfigById(Integer id) {
         ClusterConfiguration clusterConfiguration = baseMapper.selectById(id);
@@ -38,7 +34,7 @@ public class ClusterConfigurationServiceImpl extends SuperServiceImpl<ClusterCon
 
     @Override
     public List<ClusterConfiguration> listEnabledAll() {
-        return this.list(new QueryWrapper<ClusterConfiguration>().eq("enabled",1));
+        return this.list(new QueryWrapper<ClusterConfiguration>().eq("enabled", 1));
     }
 
     @Override
@@ -52,30 +48,30 @@ public class ClusterConfigurationServiceImpl extends SuperServiceImpl<ClusterCon
         clusterConfiguration.parseConfig();
         Map<String, Object> config = clusterConfiguration.getConfig();
         GatewayConfig gatewayConfig = new GatewayConfig();
-        if(config.containsKey("hadoopConfigPath")) {
+        if (config.containsKey("hadoopConfigPath")) {
             gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath").toString(),
                     config.get("flinkLibPath").toString(),
                     config.get("hadoopConfigPath").toString()));
-        }else {
+        } else {
             gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath").toString(),
                     config.get("flinkLibPath").toString(),
                     ""));
         }
-        if(config.containsKey("flinkConfig")){
-            gatewayConfig.setFlinkConfig(FlinkConfig.build((Map<String, String>)config.get("flinkConfig")));
+        if (config.containsKey("flinkConfig")) {
+            gatewayConfig.setFlinkConfig(FlinkConfig.build((Map<String, String>) config.get("flinkConfig")));
         }
-        if(Asserts.isEqualsIgnoreCase(clusterConfiguration.getType(),"Yarn")){
+        if (Asserts.isEqualsIgnoreCase(clusterConfiguration.getType(), "Yarn")) {
             gatewayConfig.setType(GatewayType.YARN_PER_JOB);
-        }else if(Asserts.isEqualsIgnoreCase(clusterConfiguration.getType(),"Kubernetes")){
+        } else if (Asserts.isEqualsIgnoreCase(clusterConfiguration.getType(), "Kubernetes")) {
             gatewayConfig.setType(GatewayType.KUBERNETES_APPLICATION);
             Map kubernetesConfig = (Map) config.get("kubernetesConfig");
-            if(kubernetesConfig.containsKey("kubernetes.namespace")) {
+            if (kubernetesConfig.containsKey("kubernetes.namespace")) {
                 gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.namespace", kubernetesConfig.get("kubernetes.namespace").toString());
             }
-            if(kubernetesConfig.containsKey("kubernetes.cluster-id")) {
+            if (kubernetesConfig.containsKey("kubernetes.cluster-id")) {
                 gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.cluster-id", kubernetesConfig.get("kubernetes.cluster-id").toString());
             }
-            if(kubernetesConfig.containsKey("kubernetes.container.image")) {
+            if (kubernetesConfig.containsKey("kubernetes.container.image")) {
                 gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.container.image", kubernetesConfig.get("kubernetes.container.image").toString());
             }
         }

@@ -1,8 +1,6 @@
 package com.dlink.service.impl;
 
-import com.dlink.assertion.Asserts;
 import com.dlink.dto.*;
-import com.dlink.gateway.GatewayType;
 import com.dlink.gateway.result.SavePointResult;
 import com.dlink.job.JobConfig;
 import com.dlink.job.JobManager;
@@ -15,8 +13,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 /**
  * APIServiceImpl
@@ -52,12 +48,12 @@ public class APIServiceImpl implements APIService {
         JobManager jobManager = JobManager.buildPlanMode(config);
         String planJson = jobManager.getJobPlanJson(apiExplainSqlDTO.getStatement());
         ObjectMapper mapper = new ObjectMapper();
-        ObjectNode objectNode =mapper.createObjectNode();
+        ObjectNode objectNode = mapper.createObjectNode();
         try {
             objectNode = (ObjectNode) mapper.readTree(planJson);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             RunTimeUtil.recovery(jobManager);
             return objectNode;
         }

@@ -75,9 +75,9 @@ public class JobInstanceController {
      */
     @GetMapping("/getStatusCount")
     public Result getStatusCount() {
-        HashMap<String,Object> result = new HashMap<>();
-        result.put("history",jobInstanceService.getStatusCount(true));
-        result.put("instance",jobInstanceService.getStatusCount(false));
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("history", jobInstanceService.getStatusCount(true));
+        result.put("instance", jobInstanceService.getStatusCount(false));
         return Result.succeed(result, "获取成功");
     }
 
@@ -95,5 +95,13 @@ public class JobInstanceController {
     @GetMapping("/refreshJobInfoDetail")
     public Result refreshJobInfoDetail(@RequestParam Integer id) {
         return Result.succeed(taskService.refreshJobInfoDetail(id), "刷新成功");
+    }
+
+    /**
+     * 获取单任务实例的血缘分析
+     */
+    @GetMapping("/getLineage")
+    public Result getLineage(@RequestParam Integer id) {
+        return Result.succeed(jobInstanceService.getLineage(id), "刷新成功");
     }
 }

@@ -13,7 +13,7 @@ public class SqlResult {
     private boolean isSuccess = true;
     private String errorMsg;
 
-    public static SqlResult NULL = new SqlResult(false,"未检测到有效的Sql");
+    public static SqlResult NULL = new SqlResult(false, "未检测到有效的Sql");
 
     public SqlResult(TableResult tableResult) {
         this.tableResult = tableResult;

@@ -6,7 +6,7 @@ package com.dlink.trans;
  * @author wenmo
  * @since 2021/6/13 19:34
  */
-public interface CreateOperation extends Operation{
+public interface CreateOperation extends Operation {
 
     //void create(CustomTableEnvironmentImpl stEnvironment);
 }

@@ -55,7 +55,7 @@ public class KubernetesResult extends AbstractGatewayResult {
         this.jids = jids;
     }
 
-    public static KubernetesResult build(GatewayType type){
-        return new KubernetesResult(type,LocalDateTime.now());
+    public static KubernetesResult build(GatewayType type) {
+        return new KubernetesResult(type, LocalDateTime.now());
     }
 }

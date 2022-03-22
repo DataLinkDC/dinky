@@ -16,10 +16,12 @@ import java.util.Map;
 public class SystemConfiguration {
 
     private static volatile SystemConfiguration systemConfiguration = new SystemConfiguration();
+
     public static SystemConfiguration getInstances() {
         return systemConfiguration;
     }
-    private static final List<Configuration> CONFIGURATION_LIST = new ArrayList<Configuration>(){{
+
+    private static final List<Configuration> CONFIGURATION_LIST = new ArrayList<Configuration>() {{
         add(systemConfiguration.sqlSubmitJarPath);
         add(systemConfiguration.sqlSubmitJarParas);
         add(systemConfiguration.sqlSubmitJarMainAppClass);
@@ -63,12 +65,12 @@ public class SystemConfiguration {
             "Flink SQL 的语句分割符"
     );
 
-    public void setConfiguration(JsonNode jsonNode){
-        for(Configuration item : CONFIGURATION_LIST){
-            if(!jsonNode.has(item.getName())){
+    public void setConfiguration(JsonNode jsonNode) {
+        for (Configuration item : CONFIGURATION_LIST) {
+            if (!jsonNode.has(item.getName())) {
                 continue;
             }
-            switch (item.getType()){
+            switch (item.getType()) {
                 case BOOLEAN:
                     item.setValue(jsonNode.get(item.getName()).asBoolean());
                     break;
@@ -81,12 +83,12 @@ public class SystemConfiguration {
         }
     }
 
-    public void addConfiguration(Map<String,Object> map){
-        for(Configuration item : CONFIGURATION_LIST){
-            if(map.containsKey(item.getName())&&item.getType().equals(ValueType.BOOLEAN)){
-                map.put(item.getName(), Asserts.isEqualsIgnoreCase("true",map.get(item.getName()).toString()));
+    public void addConfiguration(Map<String, Object> map) {
+        for (Configuration item : CONFIGURATION_LIST) {
+            if (map.containsKey(item.getName()) && item.getType().equals(ValueType.BOOLEAN)) {
+                map.put(item.getName(), Asserts.isEqualsIgnoreCase("true", map.get(item.getName()).toString()));
             }
-            if(!map.containsKey(item.getName())) {
+            if (!map.containsKey(item.getName())) {
                 map.put(item.getName(), item.getValue());
             }
         }
@@ -132,11 +134,11 @@ public class SystemConfiguration {
         this.sqlSeparator.setValue(sqlSeparator);
     }
 
-    enum ValueType{
-        STRING,INT,DOUBLE,FLOAT,BOOLEAN,DATE
+    enum ValueType {
+        STRING, INT, DOUBLE, FLOAT, BOOLEAN, DATE
     }
 
-    public class Configuration{
+    public class Configuration {
         private String name;
         private String label;
         private ValueType type;

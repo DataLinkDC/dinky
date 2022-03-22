@@ -37,7 +37,7 @@ public class DefaultThreadPool implements ThreadPool {
     public static DefaultThreadPool getInstance() {
         if (defaultThreadPool == null) {
             synchronized (DefaultThreadPool.class) {
-                if(defaultThreadPool == null){
+                if (defaultThreadPool == null) {
                     defaultThreadPool = new DefaultThreadPool();
                 }
             }

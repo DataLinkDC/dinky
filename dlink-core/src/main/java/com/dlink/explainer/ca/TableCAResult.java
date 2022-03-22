@@ -10,7 +10,7 @@ import java.util.List;
  **/
 public class TableCAResult {
     private String sinkName;
-    private List<ICA> sourceTableCAS ;
+    private List<ICA> sourceTableCAS;
     private ICA sinkTableCA;
 
     public TableCAResult(TableCAGenerator generator) {

@@ -26,7 +26,7 @@ import java.time.LocalDateTime;
  */
 @Setter
 @Getter
-public class SuperEntity<T extends Model<?>> extends Model<T> implements Serializable{
+public class SuperEntity<T extends Model<?>> extends Model<T> implements Serializable {
     /**
      * 主键ID
      */

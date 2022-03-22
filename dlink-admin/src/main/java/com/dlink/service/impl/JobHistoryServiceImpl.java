@@ -26,36 +26,36 @@ public class JobHistoryServiceImpl extends SuperServiceImpl<JobHistoryMapper, Jo
 
     @Override
     public JobHistory getJobHistoryInfo(JobHistory jobHistory) {
-        if(Asserts.isNotNull(jobHistory)){
-            if(Asserts.isNotNullString(jobHistory.getJobJson())){
+        if (Asserts.isNotNull(jobHistory)) {
+            if (Asserts.isNotNullString(jobHistory.getJobJson())) {
                 jobHistory.setJob(JSONUtil.parseObject(jobHistory.getJobJson()));
                 jobHistory.setJobJson(null);
             }
-            if(Asserts.isNotNullString(jobHistory.getExceptionsJson())){
+            if (Asserts.isNotNullString(jobHistory.getExceptionsJson())) {
                 jobHistory.setExceptions(JSONUtil.parseObject(jobHistory.getExceptionsJson()));
                 jobHistory.setExceptionsJson(null);
             }
-            if(Asserts.isNotNullString(jobHistory.getCheckpointsJson())){
+            if (Asserts.isNotNullString(jobHistory.getCheckpointsJson())) {
                 jobHistory.setCheckpoints(JSONUtil.parseObject(jobHistory.getCheckpointsJson()));
                 jobHistory.setCheckpointsJson(null);
             }
-            if(Asserts.isNotNullString(jobHistory.getCheckpointsConfigJson())){
+            if (Asserts.isNotNullString(jobHistory.getCheckpointsConfigJson())) {
                 jobHistory.setCheckpointsConfig(JSONUtil.parseObject(jobHistory.getCheckpointsConfigJson()));
                 jobHistory.setCheckpointsConfigJson(null);
             }
-            if(Asserts.isNotNullString(jobHistory.getConfigJson())){
+            if (Asserts.isNotNullString(jobHistory.getConfigJson())) {
                 jobHistory.setConfig(JSONUtil.parseObject(jobHistory.getConfigJson()));
                 jobHistory.setConfigJson(null);
             }
-            if(Asserts.isNotNullString(jobHistory.getJarJson())){
+            if (Asserts.isNotNullString(jobHistory.getJarJson())) {
                 jobHistory.setJar(JSONUtil.parseObject(jobHistory.getJarJson()));
                 jobHistory.setJarJson(null);
             }
-            if(Asserts.isNotNullString(jobHistory.getClusterJson())){
+            if (Asserts.isNotNullString(jobHistory.getClusterJson())) {
                 jobHistory.setCluster(JSONUtil.parseObject(jobHistory.getClusterJson()));
                 jobHistory.setClusterJson(null);
             }
-            if(Asserts.isNotNullString(jobHistory.getClusterConfigurationJson())){
+            if (Asserts.isNotNullString(jobHistory.getClusterConfigurationJson())) {
                 jobHistory.setClusterConfiguration(JSONUtil.parseObject(jobHistory.getClusterConfigurationJson()));
                 jobHistory.setClusterConfigurationJson(null);
             }
@@ -83,8 +83,8 @@ public class JobHistoryServiceImpl extends SuperServiceImpl<JobHistoryMapper, Jo
             } else {
                 save(jobHistory);
             }
-        }catch (Exception e){
-        }finally {
+        } catch (Exception e) {
+        } finally {
             return jobHistory;
         }
     }

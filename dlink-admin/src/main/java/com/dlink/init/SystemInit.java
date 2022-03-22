@@ -38,11 +38,11 @@ public class SystemInit implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         sysConfigService.initSysConfig();
         List<JobInstance> jobInstances = jobInstanceService.listJobInstanceActive();
-        List<DaemonTaskConfig> configList =new ArrayList<>();
-        for(JobInstance jobInstance: jobInstances){
-            configList.add(new DaemonTaskConfig(FlinkJobTask.TYPE,jobInstance.getId()));
+        List<DaemonTaskConfig> configList = new ArrayList<>();
+        for (JobInstance jobInstance : jobInstances) {
+            configList.add(new DaemonTaskConfig(FlinkJobTask.TYPE, jobInstance.getId()));
         }
-        log.info("启动的任务数量:"+ configList.size());
+        log.info("启动的任务数量:" + configList.size());
         DaemonFactory.start(configList);
     }
 }

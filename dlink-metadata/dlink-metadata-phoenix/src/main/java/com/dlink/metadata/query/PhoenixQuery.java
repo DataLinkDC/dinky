@@ -77,7 +77,6 @@ public class PhoenixQuery extends AbstractDBQuery {
     }
 
 
-
     public String isNullable() {
         return "NULLABLE";
     }

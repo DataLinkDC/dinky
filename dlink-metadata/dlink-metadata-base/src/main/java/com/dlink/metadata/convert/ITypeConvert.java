@@ -1,5 +1,6 @@
 package com.dlink.metadata.convert;
 
+import com.dlink.assertion.Asserts;
 import com.dlink.model.Column;
 import com.dlink.model.ColumnType;
 
@@ -23,6 +24,9 @@ public interface ITypeConvert {
     String convertToDB(ColumnType columnType);
 
     default Object convertValue(ResultSet results, String columnName, String javaType) throws SQLException {
+        if (Asserts.isNull(javaType)) {
+            return results.getString(columnName);
+        }
         switch (javaType.toLowerCase()) {
             case "string":
                 return results.getString(columnName);
@@ -32,6 +36,7 @@ public interface ITypeConvert {
                 return results.getInt(columnName);
             case "float":
                 return results.getFloat(columnName);
+            case "bigint":
             case "decimal":
                 return results.getBigDecimal(columnName);
             case "date":

@@ -23,7 +23,7 @@ public class AlertResult {
     }
 
     public Integer getSuccessCode() {
-        return success?1:0;
+        return success ? 1 : 0;
     }
 
     public void setSuccess(boolean success) {

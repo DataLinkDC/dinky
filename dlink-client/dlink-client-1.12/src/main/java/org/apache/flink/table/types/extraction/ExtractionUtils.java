@@ -21,48 +21,28 @@ package org.apache.flink.table.types.extraction;
 import com.dlink.pool.ClassPool;
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.api.common.typeutils.TypeSerializer;
+import org.apache.flink.shaded.asm7.org.objectweb.asm.*;
 import org.apache.flink.table.api.DataTypes;
 import org.apache.flink.table.api.ValidationException;
 import org.apache.flink.table.catalog.DataTypeFactory;
 import org.apache.flink.table.types.DataType;
 import org.apache.flink.table.types.logical.StructuredType;
 
-import org.apache.flink.shaded.asm7.org.objectweb.asm.ClassReader;
-import org.apache.flink.shaded.asm7.org.objectweb.asm.ClassVisitor;
-import org.apache.flink.shaded.asm7.org.objectweb.asm.Label;
-import org.apache.flink.shaded.asm7.org.objectweb.asm.MethodVisitor;
-import org.apache.flink.shaded.asm7.org.objectweb.asm.Opcodes;
-
 import javax.annotation.Nullable;
-
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Executable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Parameter;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.lang.reflect.*;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.apache.flink.shaded.asm7.org.objectweb.asm.Type.getConstructorDescriptor;
 import static org.apache.flink.shaded.asm7.org.objectweb.asm.Type.getMethodDescriptor;
 
-/** Utilities for performing reflection tasks. */
+/**
+ * Utilities for performing reflection tasks.
+ */
 @Internal
 public final class ExtractionUtils {
 
@@ -70,7 +50,9 @@ public final class ExtractionUtils {
     // Methods shared across packages
     // --------------------------------------------------------------------------------------------
 
-    /** Collects methods of the given name. */
+    /**
+     * Collects methods of the given name.
+     */
     public static List<Method> collectMethods(Class<?> function, String methodName) {
         return Arrays.stream(function.getMethods())
                 .filter(method -> method.getName().equals(methodName))
@@ -130,7 +112,9 @@ public final class ExtractionUtils {
         return clz == null || ExtractionUtils.isAssignable(clz, param, true);
     }
 
-    /** Creates a method signature string like {@code int eval(Integer, String)}. */
+    /**
+     * Creates a method signature string like {@code int eval(Integer, String)}.
+     */
     public static String createMethodSignatureString(
             String methodName, Class<?>[] parameters, @Nullable Class<?> returnType) {
         final StringBuilder builder = new StringBuilder();
@@ -299,7 +283,9 @@ public final class ExtractionUtils {
         return false;
     }
 
-    /** Checks whether a field is directly readable without a getter. */
+    /**
+     * Checks whether a field is directly readable without a getter.
+     */
     public static boolean isStructuredFieldDirectlyReadable(Field field) {
         final int m = field.getModifiers();
 
@@ -307,7 +293,9 @@ public final class ExtractionUtils {
         return Modifier.isPublic(m);
     }
 
-    /** Checks whether a field is directly writable without a setter or constructor. */
+    /**
+     * Checks whether a field is directly writable without a setter or constructor.
+     */
     public static boolean isStructuredFieldDirectlyWritable(Field field) {
         final int m = field.getModifiers();
 
@@ -324,12 +312,16 @@ public final class ExtractionUtils {
     // Methods intended for this package
     // --------------------------------------------------------------------------------------------
 
-    /** Helper method for creating consistent exceptions during extraction. */
+    /**
+     * Helper method for creating consistent exceptions during extraction.
+     */
     static ValidationException extractionError(String message, Object... args) {
         return extractionError(null, message, args);
     }
 
-    /** Helper method for creating consistent exceptions during extraction. */
+    /**
+     * Helper method for creating consistent exceptions during extraction.
+     */
     static ValidationException extractionError(Throwable cause, String message, Object... args) {
         return new ValidationException(String.format(message, args), cause);
     }
@@ -358,8 +350,11 @@ public final class ExtractionUtils {
         return typeHierarchy;
     }
 
-    /** Converts a {@link Type} to {@link Class} if possible, {@code null} otherwise. */
-    static @Nullable Class<?> toClass(Type type) {
+    /**
+     * Converts a {@link Type} to {@link Class} if possible, {@code null} otherwise.
+     */
+    static @Nullable
+    Class<?> toClass(Type type) {
         if (type instanceof Class) {
             return (Class<?>) type;
         } else if (type instanceof ParameterizedType) {
@@ -370,7 +365,9 @@ public final class ExtractionUtils {
         return null;
     }
 
-    /** Creates a raw data type. */
+    /**
+     * Creates a raw data type.
+     */
     @SuppressWarnings({"unchecked", "rawtypes"})
     static DataType createRawType(
             DataTypeFactory typeFactory,
@@ -404,7 +401,9 @@ public final class ExtractionUtils {
         }
     }
 
-    /** Resolves a {@link TypeVariable} using the given type hierarchy if possible. */
+    /**
+     * Resolves a {@link TypeVariable} using the given type hierarchy if possible.
+     */
     static Type resolveVariable(List<Type> typeHierarchy, TypeVariable<?> variable) {
         // iterate through hierarchy from top to bottom until type variable gets a non-variable
         // assigned
@@ -427,7 +426,8 @@ public final class ExtractionUtils {
         return variable;
     }
 
-    private static @Nullable Type resolveVariableInParameterizedType(
+    private static @Nullable
+    Type resolveVariableInParameterizedType(
             TypeVariable<?> variable, ParameterizedType currentType) {
         final Class<?> currentRaw = (Class<?>) currentType.getRawType();
         final TypeVariable<?>[] currentVariables = currentRaw.getTypeParameters();
@@ -465,7 +465,9 @@ public final class ExtractionUtils {
         }
     }
 
-    /** Returns the fields of a class for a {@link StructuredType}. */
+    /**
+     * Returns the fields of a class for a {@link StructuredType}.
+     */
     static List<Field> collectStructuredFields(Class<?> clazz) {
         final List<Field> fields = new ArrayList<>();
         while (clazz != Object.class) {
@@ -482,7 +484,9 @@ public final class ExtractionUtils {
         return fields;
     }
 
-    /** Validates if a field is properly readable either directly or through a getter. */
+    /**
+     * Validates if a field is properly readable either directly or through a getter.
+     */
     static void validateStructuredFieldReadability(Class<?> clazz, Field field) {
         // field is accessible
         if (isStructuredFieldDirectlyReadable(field)) {
@@ -525,7 +529,9 @@ public final class ExtractionUtils {
                 field.getName(), clazz.getName());
     }
 
-    /** Returns the boxed type of a primitive type. */
+    /**
+     * Returns the boxed type of a primitive type.
+     */
     static Type primitiveToWrapper(Type type) {
         if (type instanceof Class) {
             return primitiveToWrapper((Class<?>) type);
@@ -533,7 +539,9 @@ public final class ExtractionUtils {
         return type;
     }
 
-    /** Collects all methods that qualify as methods of a {@link StructuredType}. */
+    /**
+     * Collects all methods that qualify as methods of a {@link StructuredType}.
+     */
     static List<Method> collectStructuredMethods(Class<?> clazz) {
         final List<Method> methods = new ArrayList<>();
         while (clazz != Object.class) {
@@ -584,7 +592,9 @@ public final class ExtractionUtils {
     // Parameter Extraction Utilities
     // --------------------------------------------------------------------------------------------
 
-    /** Result of the extraction in {@link #extractAssigningConstructor(Class, List)}. */
+    /**
+     * Result of the extraction in {@link #extractAssigningConstructor(Class, List)}.
+     */
     static class AssigningConstructor {
         public final Constructor<?> constructor;
         public final List<String> parameterNames;
@@ -599,7 +609,8 @@ public final class ExtractionUtils {
      * Checks whether the given constructor takes all of the given fields with matching (possibly
      * primitive) type and name. An assigning constructor can define the order of fields.
      */
-    static @Nullable AssigningConstructor extractAssigningConstructor(
+    static @Nullable
+    AssigningConstructor extractAssigningConstructor(
             Class<?> clazz, List<Field> fields) {
         AssigningConstructor foundConstructor = null;
         for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
@@ -623,8 +634,11 @@ public final class ExtractionUtils {
         return foundConstructor;
     }
 
-    /** Extracts the parameter names of a method if possible. */
-    static @Nullable List<String> extractMethodParameterNames(Method method) {
+    /**
+     * Extracts the parameter names of a method if possible.
+     */
+    static @Nullable
+    List<String> extractMethodParameterNames(Method method) {
         return extractExecutableNames(method);
     }
 
@@ -632,7 +646,8 @@ public final class ExtractionUtils {
      * Extracts ordered parameter names from a constructor that takes all of the given fields with
      * matching (possibly primitive) type and name.
      */
-    private static @Nullable List<String> extractConstructorParameterNames(
+    private static @Nullable
+    List<String> extractConstructorParameterNames(
             Constructor<?> constructor, List<Field> fields) {
         final Type[] parameterTypes = constructor.getGenericParameterTypes();
 
@@ -659,7 +674,8 @@ public final class ExtractionUtils {
         return parameterNames;
     }
 
-    private static @Nullable List<String> extractExecutableNames(Executable executable) {
+    private static @Nullable
+    List<String> extractExecutableNames(Executable executable) {
         final int offset;
         if (!Modifier.isStatic(executable.getModifiers())) {
             // remove "this" as first parameter
@@ -705,7 +721,7 @@ public final class ExtractionUtils {
 
     private static ClassReader getClassReader(Class<?> cls) {
         final String className = cls.getName().replaceFirst("^.*\\.", "") + ".class";
-        if(ClassPool.exist(cls.getName())){
+        if (ClassPool.exist(cls.getName())) {
             return new ClassReader(ClassPool.get(cls.getName()).getClassByte());
         }
         try {
@@ -798,8 +814,8 @@ public final class ExtractionUtils {
      * href="http://docs.oracle.com/javase/specs/">The Java Language Specification</a></em>,
      * sections 5.1.1, 5.1.2 and 5.1.4 for details.
      *
-     * @param cls the Class to check, may be null
-     * @param toClass the Class to try to assign into, returns false if null
+     * @param cls        the Class to check, may be null
+     * @param toClass    the Class to try to assign into, returns false if null
      * @param autoboxing whether to use implicit autoboxing/unboxing between primitives and wrappers
      * @return {@code true} if assignment possible
      */
@@ -876,7 +892,9 @@ public final class ExtractionUtils {
         return toClass.isAssignableFrom(cls);
     }
 
-    /** Maps primitive {@code Class}es to their corresponding wrapper {@code Class}. */
+    /**
+     * Maps primitive {@code Class}es to their corresponding wrapper {@code Class}.
+     */
     private static final Map<Class<?>, Class<?>> primitiveWrapperMap = new HashMap<>();
 
     static {
@@ -891,7 +909,9 @@ public final class ExtractionUtils {
         primitiveWrapperMap.put(Void.TYPE, Void.TYPE);
     }
 
-    /** Maps wrapper {@code Class}es to their corresponding primitive types. */
+    /**
+     * Maps wrapper {@code Class}es to their corresponding primitive types.
+     */
     private static final Map<Class<?>, Class<?>> wrapperPrimitiveMap = new HashMap<>();
 
     static {
@@ -910,7 +930,7 @@ public final class ExtractionUtils {
      *
      * @param cls the class to convert, may be null
      * @return the wrapper class for {@code cls} or {@code cls} if {@code cls} is not a primitive.
-     *     {@code null} if null input.
+     * {@code null} if null input.
      * @since 2.1
      */
     public static Class<?> primitiveToWrapper(final Class<?> cls) {
@@ -931,7 +951,7 @@ public final class ExtractionUtils {
      *
      * @param cls the class to convert, may be <b>null</b>
      * @return the corresponding primitive type if {@code cls} is a wrapper class, <b>null</b>
-     *     otherwise
+     * otherwise
      * @see #primitiveToWrapper(Class)
      * @since 2.4
      */

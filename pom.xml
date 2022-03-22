@@ -7,7 +7,7 @@
     <groupId>com.dlink</groupId>
     <artifactId>dlink</artifactId>
     <packaging>pom</packaging>
-    <version>0.6.0-SNAPSHOT</version>
+    <version>0.6.0</version>
 
     <modules>
         <module>dlink-common</module>
@@ -56,11 +56,18 @@
         <!--  `provided` for product environment ,`compile` for dev environment  -->
         <scope.runtime>provided</scope.runtime>
         <scala.binary.version>2.11</scala.binary.version>
+        <protobuf-java.version>2.5.0</protobuf-java.version>
         <jedis.version>2.9.0</jedis.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <!--解决mysql与phoenix依赖冲突-->
+            <dependency>
+                <groupId>com.google.protobuf</groupId>
+                <artifactId>protobuf-java</artifactId>
+                <version>${protobuf-java.version}</version>
+            </dependency>
             <!-- hutool java工具类库  -->
             <dependency>
                 <groupId>cn.hutool</groupId>
@@ -257,6 +264,11 @@
             </dependency>
             <dependency>
                 <groupId>com.dlink</groupId>
+                <artifactId>dlink-metadata-hive</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
                 <artifactId>dlink-metadata-phoenix</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -293,6 +305,11 @@
             <dependency>
                 <groupId>com.dlink</groupId>
                 <artifactId>dlink-daemon</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-app-base</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

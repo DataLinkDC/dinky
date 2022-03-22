@@ -16,11 +16,11 @@ public interface UserService extends ISuperService<User> {
 
     boolean modifyUser(User user);
 
-    Result modifyPassword(String username, String password,String newPassword);
+    Result modifyPassword(String username, String password, String newPassword);
 
     boolean removeUser(Integer id);
 
-    Result loginUser(String username, String password,boolean isRemember);
+    Result loginUser(String username, String password, boolean isRemember);
 
     User getUserByUsername(String username);
 }

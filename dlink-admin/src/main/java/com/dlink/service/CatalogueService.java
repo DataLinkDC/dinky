@@ -3,7 +3,6 @@ package com.dlink.service;
 import com.dlink.db.service.ISuperService;
 import com.dlink.dto.CatalogueTaskDTO;
 import com.dlink.model.Catalogue;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -26,4 +25,6 @@ public interface CatalogueService extends ISuperService<Catalogue> {
     boolean toRename(Catalogue catalogue);
 
     boolean removeCatalogueAndTaskById(Integer id);
+
+    boolean moveCatalogue(Integer id, Integer parentId);
 }

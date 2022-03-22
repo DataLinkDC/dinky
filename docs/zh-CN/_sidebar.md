@@ -13,32 +13,37 @@
 - 参考手册
   - FlinkSQL Studio
     - [Studio介绍](/zh-CN/administrator-guide/Studio/studio_introduce.md) 
-    - 作业和目录创建
+    - 作业管理
     - 作业开发
     - 作业配置
-    - 作业管理
-    - 会话管理
+    - 作业提交
   - 注册中心
-    - 集群实例
-    - 集群配置
+    - [集群管理](/zh-CN/administrator-guide/registerCenter/cluster_manage.md)
     - [数据源管理](/zh-CN/administrator-guide/registerCenter/datasource_manage.md)
     - [告警管理](/zh-CN/administrator-guide/registerCenter/warning.md)
-    - jar管理
+    - [jar管理](/zh-CN/administrator-guide/registerCenter/jar_manager.md)
     - 文档管理
-  - 元数据管理
+  - [元数据管理](/zh-CN/administrator-guide/metadata.md)
+  - [快速使用快捷键](/zh-CN/administrator-guide/Hotkey.md)
   - 系统设置
-    - 用户管理
-    - Flink设置
+    - [用户管理](/zh-CN/administrator-guide/system_setting/user_management.md)
+    - [Flink设置](/zh-CN/administrator-guide/system_setting/Flink_Setting.md)
   - 运维中心
     - 生命周期管理
     - 作业监控
   - openapi
+- 扩展
+  - 集成
+  - 其他
+    - [扩展Flink版本](/zh-CN/extend/flinkversion.md)
+    - [扩展连接器](/zh-CN/extend/connector.md)
+    - [扩展数据源](/zh-CN/extend/datasource.md)
+    - [FlinkSQL 编辑器自动补全函数](/zh-CN/extend/completion.md)
 - 最佳实践
   - [Yarn提交实践指南](/zh-CN/practice/yarnsubmit.md)
   - [Dlink 核心概念及实现原理详解](/zh-CN/practice/principle.md)
   - [AGGTABLE 表值聚合的实践](/zh-CN/practice/aggtable.md)
-- 扩展
-  - 集成
+  - 集成指南
     - [Flink-CDC集成](/zh-CN/extend/flinkcdc.md)
     - [Flink-CDC-Kafka多源合并](/zh-CN/extend/Flink_CDC_kafka_Multi_source_merger.md)
     - [hive集成](/zh-CN/extend/hive.md)
@@ -49,13 +54,11 @@
     - [Flink UDF集成](/zh-CN/extend/udf.md)
     - [DolphinScheduler集成](/zh-CN/extend/dolphinscheduler.md)
     - [DataSphereStudio集成](/zh-CN/extend/dataspherestudio.md)
-  - 其他
-    - [扩展Flink版本](/zh-CN/extend/flinkversion.md)
-    - [扩展连接器](/zh-CN/extend/connector.md)
-    - [扩展数据源](/zh-CN/extend/datasource.md)
-    - [FlinkSQL 编辑器自动补全函数](/zh-CN/extend/completion.md)
 - 开发者指南
-- 常见问题
+  - [参与贡献](/zh-CN/developer-guide/how_contribute.md)
+  - [本地调试](/zh-CN/developer-guide/local_debug.md)
+  - [远程调试](/zh-CN/developer-guide/remote_debug.md)
+- [常见问题](/zh-CN/FAQ.md)
 - [致谢](/zh-CN/others/thanks.md)
 - [交流与贡献](/zh-CN/others/comminicate.md)
 - [roadmap](/zh-CN/roadmap.md)

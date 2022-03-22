@@ -19,7 +19,7 @@ export default (): React.ReactNode => {
         <Alert
           message={intl.formatMessage({
             id: 'pages.welcome.alertMessage',
-            defaultMessage: '实时计算平台 Dinky 即将发布，目前为体验版，版本号为 0.6.0-SNAPSHOT。',
+            defaultMessage: '实时计算平台 Dinky 即将发布，目前为体验版，版本号为 0.6.0。',
           })}
           type="success"
           showIcon
@@ -61,25 +61,28 @@ export default (): React.ReactNode => {
         </Typography.Text>
         </Paragraph>
         <p> </p>
-        <Timeline pending={<><Text code>0.6.0</Text>
+        <Timeline pending={<><Text code>0.7.0</Text>
           <Text type="secondary">敬请期待</Text>
           <p> </p>
           <Paragraph>
             <ul>
               <li>
-                <Link>任务生命周期管理</Link>
+                <Link>多租户及命名空间</Link>
               </li>
               <li>
-                <Link>作业监控及运维</Link>
+                <Link>全局血缘与影响分析</Link>
               </li>
               <li>
-                <Link>流作业自动恢复</Link>
+                <Link>统一元数据管理</Link>
               </li>
               <li>
-                <Link>作业日志查看</Link>
+                <Link>Flink 元数据持久化</Link>
               </li>
               <li>
-                <Link>钉钉报警和推送</Link>
+                <Link>多版本 Flink-Client Server</Link>
+              </li>
+              <li>
+                <Link>整库千表同步</Link>
               </li>
             </ul>
           </Paragraph></>} reverse={true}>
@@ -625,7 +628,7 @@ export default (): React.ReactNode => {
               </ul>
             </Paragraph>
           </Timeline.Item>
-          <Timeline.Item><Text code>0.6.0</Text> <Text type="secondary">2022-03-??</Text>
+          <Timeline.Item><Text code>0.6.0</Text> <Text type="secondary">2022-03-20</Text>
             <p> </p>
             <Paragraph>
               <ul>
@@ -763,6 +766,24 @@ export default (): React.ReactNode => {
                 </li>
                 <li>
                   <Link>修复 kubernetes集群配置相关显示bug</Link>
+                </li>
+                <li>
+                  <Link>新增 运维中心血缘分析——字段级</Link>
+                </li>
+                <li>
+                  <Link>优化 Studio血缘分析为字段级</Link>
+                </li>
+                <li>
+                  <Link>新增 Hive 数据源注册、元数据、查询和执行</Link>
+                </li>
+                <li>
+                  <Link>新增 作业剪切和粘贴</Link>
+                </li>
+                <li>
+                  <Link>新增 实时任务监控容错机制</Link>
+                </li>
+                <li>
+                  <Link>修复 Doris无法获取到列的主键信息</Link>
                 </li>
               </ul>
             </Paragraph>

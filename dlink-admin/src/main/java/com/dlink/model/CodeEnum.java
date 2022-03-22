@@ -12,7 +12,8 @@ public enum CodeEnum {
     NOTLOGIN(401);
 
     private Integer code;
-    CodeEnum(Integer code){
+
+    CodeEnum(Integer code) {
         this.code = code;
     }
 

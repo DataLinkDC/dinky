@@ -12,5 +12,6 @@ import java.util.List;
  * @since 2021/6/3 14:35
  **/
 public interface DocumentService extends ISuperService<Document> {
+
     List<Document> getFillAllByVersion(String version);
 }

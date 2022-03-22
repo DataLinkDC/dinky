@@ -61,7 +61,7 @@ public class UserController {
             List<Integer> error = new ArrayList<>();
             for (final JsonNode item : para) {
                 Integer id = item.asInt();
-                if(checkAdmin(id)){
+                if (checkAdmin(id)) {
                     error.add(id);
                     continue;
                 }
@@ -89,7 +89,7 @@ public class UserController {
     @PostMapping("/getOneById")
     public Result getOneById(@RequestBody User user) {
         user = userService.getById(user.getId());
-        return Result.succeed(user,"获取成功");
+        return Result.succeed(user, "获取成功");
     }
 
     /**
@@ -97,7 +97,7 @@ public class UserController {
      */
     @PostMapping("/modifyPassword")
     public Result modifyPassword(@RequestBody ModifyPasswordDTO modifyPasswordDTO) {
-        return userService.modifyPassword(modifyPasswordDTO.getUsername(),modifyPasswordDTO.getPassword(),
+        return userService.modifyPassword(modifyPasswordDTO.getUsername(), modifyPasswordDTO.getPassword(),
                 modifyPasswordDTO.getNewPassword());
     }
 }

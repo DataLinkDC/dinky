@@ -7,5 +7,6 @@
    - Phoenix
    - Doris(Starrocks)
    - ClickHouse 
+   - Hive
 
 使用以上数据源,请查阅注册中心[数据源管理](/zh-CN/administrator-guide/registerCenter/datasource_manage.md),配置数据源连接

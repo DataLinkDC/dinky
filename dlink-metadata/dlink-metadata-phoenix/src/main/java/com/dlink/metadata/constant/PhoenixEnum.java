@@ -1,7 +1,6 @@
 package com.dlink.metadata.constant;
 
 /**
- *
  * @author lcg
  * @operate Phoenix常用数据类型及对应code
  * @date 2022/2/16 16:49
@@ -25,24 +24,27 @@ public enum PhoenixEnum {
     VARBINARY(-3);
 
     int dataTypeCode;
+
     PhoenixEnum(int dataTypeCode) {
         this.dataTypeCode = dataTypeCode;
     }
-    public  int getDataTypeCode(){
+
+    public int getDataTypeCode() {
         return dataTypeCode;
     }
 
     /**
      * 获取数字 对应的数据类型  默认返回VARCHAR（无对应）  ， 传参为空时返回为null
+     *
      * @param dataTypeCode
      * @return
      */
-    public static PhoenixEnum getDataTypeEnum(Integer dataTypeCode){
-        if(dataTypeCode == null){
+    public static PhoenixEnum getDataTypeEnum(Integer dataTypeCode) {
+        if (dataTypeCode == null) {
             return null;
-        }else {
+        } else {
             for (PhoenixEnum typeEnum : PhoenixEnum.values()) {
-                if(dataTypeCode.equals(typeEnum.dataTypeCode)){
+                if (dataTypeCode.equals(typeEnum.dataTypeCode)) {
                     return typeEnum;
                 }
             }

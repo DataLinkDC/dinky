@@ -31,17 +31,17 @@ public class EnvironmentSetting {
         this.useRemote = true;
     }
 
-    public static EnvironmentSetting build(String address){
-        Asserts.checkNull(address,"Flink 地址不能为空");
+    public static EnvironmentSetting build(String address) {
+        Asserts.checkNull(address, "Flink 地址不能为空");
         String[] strs = address.split(NetConstant.COLON);
         if (strs.length >= 2) {
-            return new EnvironmentSetting(strs[0],Integer.parseInt(strs[1]));
+            return new EnvironmentSetting(strs[0], Integer.parseInt(strs[1]));
         } else {
-            return new EnvironmentSetting(strs[0],FlinkConstant.FLINK_REST_DEFAULT_PORT);
+            return new EnvironmentSetting(strs[0], FlinkConstant.FLINK_REST_DEFAULT_PORT);
         }
     }
 
-    public String getAddress(){
+    public String getAddress() {
         return host + NetConstant.COLON + port;
     }
 

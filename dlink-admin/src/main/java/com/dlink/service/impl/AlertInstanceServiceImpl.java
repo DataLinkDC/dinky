@@ -19,6 +19,6 @@ import java.util.List;
 public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapper, AlertInstance> implements AlertInstanceService {
     @Override
     public List<AlertInstance> listEnabledAll() {
-        return list(new QueryWrapper<AlertInstance>().eq("enabled",1));
+        return list(new QueryWrapper<AlertInstance>().eq("enabled", 1));
     }
 }

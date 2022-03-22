@@ -5,11 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.operations.OperationUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * SourceTrans
@@ -79,7 +75,7 @@ public class SourceTrans extends AbstractTrans implements Trans {
         ArrayList<ArrayList<Object>> tables = (ArrayList<ArrayList<Object>>) map.get("table");
         ArrayList<Object> names = tables.get(0);
         if (names.size() == 4) {
-            project = (ArrayList<String>)((Map) names.get(3)).get("project");
+            project = (ArrayList<String>) ((Map) names.get(3)).get("project");
             names.remove(3);
         }
         name = StringUtils.join(names, ".");

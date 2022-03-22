@@ -1,15 +1,15 @@
 package com.dlink.metadata.query;
 
 import com.dlink.metadata.constant.SqlServerConstant;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- *
  * @author lcg
- * @operate 
+ * @operate
  * @date 2022/1/26 15:42
- * @return 
+ * @return
  */
 public class SqlServerQuery extends AbstractDBQuery {
 
@@ -25,7 +25,7 @@ public class SqlServerQuery extends AbstractDBQuery {
 
     @Override
     public String columnsSql(String schemaName, String tableName) {
-          return String.format(SqlServerConstant.QUERY_COLUMNS_SQL, tableName);
+        return String.format(SqlServerConstant.QUERY_COLUMNS_SQL, tableName);
     }
 
     @Override

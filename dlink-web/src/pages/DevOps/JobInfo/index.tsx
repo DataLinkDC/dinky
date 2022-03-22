@@ -15,10 +15,11 @@ import Config from "@/pages/DevOps/JobInfo/Config";
 import JobStatus, {isStatusDone} from "@/components/Common/JobStatus";
 import {cancelJob, offLineTask, restartJob} from "@/components/Studio/StudioEvent/DDL";
 import {CODE} from "@/components/Common/crud";
-import JobLifeCycle from "@/components/Common/JobLifeCycle";
+import JobLifeCycle, {JOB_LIFE_CYCLE} from "@/components/Common/JobLifeCycle";
 import Exception from "@/pages/DevOps/JobInfo/Exception";
 import FlinkSQL from "@/pages/DevOps/JobInfo/FlinkSQL";
 import Alert from "@/pages/DevOps/JobInfo/Alert";
+import DataMap from "@/pages/DevOps/JobInfo/DataMap";
 
 const {Link} = Typography;
 
@@ -60,7 +61,7 @@ const JobInfo = (props: any) => {
   };
 
   const handleSavepoint = (key: string) => {
-    if(key=='canceljob'){
+    if (key == 'canceljob') {
       Modal.confirm({
         title: '停止任务',
         content: `确定只停止该作业，不进行 SavePoint 操作吗？`,
@@ -71,10 +72,10 @@ const JobInfo = (props: any) => {
           const res = cancelJob(job?.cluster?.id, job?.instance?.jid);
           res.then((result) => {
             if (result.code == CODE.SUCCESS) {
-              message.success(key+"成功");
+              message.success(key + "成功");
               handleGetJobInfoDetail();
             } else {
-              message.error(key+"失败");
+              message.error(key + "失败");
             }
           });
         }
@@ -82,19 +83,19 @@ const JobInfo = (props: any) => {
       return;
     }
     Modal.confirm({
-      title: key+'任务',
+      title: key + '任务',
       content: `确定${key}该作业吗？`,
       okText: '确认',
       cancelText: '取消',
       onOk: async () => {
         if (!job?.cluster?.id) return;
-        const res = offLineTask(job?.instance?.taskId,key);
+        const res = offLineTask(job?.instance?.taskId, key);
         res.then((result) => {
           if (result.code == CODE.SUCCESS) {
-            message.success(key+"成功");
+            message.success(key + "成功");
             handleGetJobInfoDetail();
           } else {
-            message.error(key+"失败");
+            message.error(key + "失败");
           }
         });
       }
@@ -109,7 +110,7 @@ const JobInfo = (props: any) => {
       cancelText: '取消',
       onOk: async () => {
         if (!job?.cluster?.id) return;
-        const res = restartJob(job?.instance?.taskId);
+        const res = restartJob(job?.instance?.taskId, job?.instance?.step == JOB_LIFE_CYCLE.ONLINE);
         res.then((result) => {
           if (result.code == CODE.SUCCESS) {
             message.success("重新上线成功");
@@ -125,16 +126,19 @@ const JobInfo = (props: any) => {
     let buttons = [
       <Button key="back" type="dashed" onClick={handleBack}>返回</Button>,
     ];
-    if(!isStatusDone(job?.instance?.status as string)){
-      buttons.push(<Button key="refresh" icon={<RedoOutlined/>} onClick={handleRefreshJobInfoDetail}/>);
+    buttons.push(<Button key="refresh" icon={<RedoOutlined/>} onClick={handleRefreshJobInfoDetail}/>);
+    if (!isStatusDone(job?.instance?.status as string)) {
       buttons.push(<Button key="flinkwebui">
         <Link href={`http://${job?.history?.jobManagerAddress}/#/job/${job?.instance?.jid}/overview`} target="_blank">
           FlinkWebUI
         </Link></Button>);
     }
-    buttons.push(<Button key="autorestart" type="primary" onClick={handleRestart}>重新{job?.instance?.step == 5?'上线':'启动'}</Button>);
-    if(!isStatusDone(job?.instance?.status as string)){
-      buttons.push(<Button key="autostop" type="primary" danger onClick={()=>{handleSavepoint('cancel')}}>{job?.instance?.step == 5?'下线':'智能停止'}</Button>);
+    buttons.push(<Button key="autorestart" type="primary"
+                         onClick={handleRestart}>重新{job?.instance?.step == 5 ? '上线' : '启动'}</Button>);
+    if (!isStatusDone(job?.instance?.status as string)) {
+      buttons.push(<Button key="autostop" type="primary" danger onClick={() => {
+        handleSavepoint('cancel')
+      }}>{job?.instance?.step == 5 ? '下线' : '智能停止'}</Button>);
       buttons.push(<Dropdown
         key="dropdown"
         trigger={['click']}
@@ -255,16 +259,16 @@ const JobInfo = (props: any) => {
       <ProCard>
         {tabKey === 'base' ? <BaseInfo job={job}/> : undefined}
         {tabKey === 'config' ? <Config job={job}/> : undefined}
-        {tabKey === 'cluster' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
-        {tabKey === 'snapshot' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
+        {tabKey === 'cluster' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/> : undefined}
+        {tabKey === 'snapshot' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/> : undefined}
         {tabKey === 'exception' ? <Exception job={job}/> : undefined}
-        {tabKey === 'log' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
-        {tabKey === 'optimize' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
+        {tabKey === 'log' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/> : undefined}
+        {tabKey === 'optimize' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/> : undefined}
         {tabKey === 'flinksql' ? <FlinkSQL job={job}/> : undefined}
-        {tabKey === 'datamap' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
-        {tabKey === 'olap' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
-        {tabKey === 'version' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : undefined}
-        {tabKey === 'alert' ? <Alert job={job} /> : undefined}
+        {tabKey === 'datamap' ? <DataMap job={job}/> : undefined}
+        {tabKey === 'olap' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/> : undefined}
+        {tabKey === 'version' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/> : undefined}
+        {tabKey === 'alert' ? <Alert job={job}/> : undefined}
       </ProCard>
     </PageContainer>
   );

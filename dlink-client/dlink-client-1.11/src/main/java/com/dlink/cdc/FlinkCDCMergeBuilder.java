@@ -21,10 +21,10 @@ import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
 public class FlinkCDCMergeBuilder {
 
     public static void buildMySqlCDC(StreamExecutionEnvironment env, FlinkCDCConfig config) {
-        if(Asserts.isNotNull(config.getParallelism())){
+        if (Asserts.isNotNull(config.getParallelism())) {
             env.setParallelism(config.getParallelism());
         }
-        if(Asserts.isNotNull(config.getCheckpoint())){
+        if (Asserts.isNotNull(config.getCheckpoint())) {
             env.enableCheckpointing(config.getCheckpoint());
         }
         MySqlSourceBuilder<String> sourceBuilder = MySqlSource.<String>builder()
@@ -32,16 +32,16 @@ public class FlinkCDCMergeBuilder {
                 .port(config.getPort())
                 .username(config.getUsername())
                 .password(config.getPassword());
-        if(Asserts.isNotNull(config.getDatabase())&&config.getDatabase().size()>0){
+        if (Asserts.isNotNull(config.getDatabase()) && config.getDatabase().size() > 0) {
             sourceBuilder.databaseList(config.getDatabase().toArray(new String[0]));
         }
-        if(Asserts.isNotNull(config.getTable())&&config.getTable().size()>0){
+        if (Asserts.isNotNull(config.getTable()) && config.getTable().size() > 0) {
             sourceBuilder.tableList(config.getTable().toArray(new String[0]));
         }
         MySqlSourceBuilder<String> builder = sourceBuilder
                 .deserializer(new JsonDebeziumDeserializationSchema());
-        if(Asserts.isNotNullString(config.getStartupMode())){
-            switch (config.getStartupMode().toUpperCase()){
+        if (Asserts.isNotNullString(config.getStartupMode())) {
+            switch (config.getStartupMode().toUpperCase()) {
                 case "INITIAL":
                     builder.startupOptions(StartupOptions.initial());
                     break;
@@ -54,12 +54,12 @@ public class FlinkCDCMergeBuilder {
                 default:
                     builder.startupOptions(StartupOptions.latest());
             }
-        }else {
+        } else {
             builder.startupOptions(StartupOptions.latest());
         }
         MySqlSource<String> sourceFunction = builder.build();
         DataStreamSource<String> streamSource = env.fromSource(sourceFunction, WatermarkStrategy.noWatermarks(), "MySQL Source");
-        streamSource.addSink(getKafkaProducer(config.getBrokers(),config.getTopic()));
+        streamSource.addSink(getKafkaProducer(config.getBrokers(), config.getTopic()));
     }
 
     private static FlinkKafkaProducer<String> getKafkaProducer(String brokers, String topic) {

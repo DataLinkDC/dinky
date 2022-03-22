@@ -21,7 +21,7 @@ public class PhoenixTest {
         DriverConfig config = new DriverConfig();
         config.setName("phoenix");
         config.setType("Phoenix");
-        config.setUrl("jdbc:phoenix:10.1.51.24:2181");
+        config.setUrl("jdbc:phoenix:zxbd-test-hbase:2181");
         try {
             driver = Driver.build(config);
         } catch (Exception e) {

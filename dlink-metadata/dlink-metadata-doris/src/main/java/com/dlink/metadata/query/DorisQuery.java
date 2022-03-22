@@ -5,7 +5,7 @@ import com.dlink.metadata.constant.DorisConstant;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class DorisQuery extends AbstractDBQuery{
+public class DorisQuery extends AbstractDBQuery {
     @Override
     public String schemaAllSql() {
         return DorisConstant.QUERY_ALL_DATABASE;
@@ -81,6 +81,7 @@ public class DorisQuery extends AbstractDBQuery{
     public String collation() {
         return "Default";
     }
+
     @Override
     public String columnPosition() {
         return "Default";
@@ -90,12 +91,19 @@ public class DorisQuery extends AbstractDBQuery{
     public String precision() {
         return "Default";
     }
+
     @Override
     public String scale() {
         return "Default";
     }
+
     @Override
     public String autoIncrement() {
         return "Default";
+    }
+
+    @Override
+    public String isPK() {
+        return "YES";
     }
 }

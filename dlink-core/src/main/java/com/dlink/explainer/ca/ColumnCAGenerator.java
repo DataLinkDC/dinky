@@ -2,20 +2,11 @@ package com.dlink.explainer.ca;
 
 
 import com.dlink.assertion.Asserts;
-import com.dlink.explainer.trans.Field;
-import com.dlink.explainer.trans.OperatorTrans;
-import com.dlink.explainer.trans.SinkTrans;
-import com.dlink.explainer.trans.SourceTrans;
-import com.dlink.explainer.trans.Trans;
+import com.dlink.explainer.trans.*;
+import com.dlink.utils.MapParseUtils;
 import org.apache.commons.collections.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * ColumnCAGenerator
@@ -23,6 +14,7 @@ import java.util.Set;
  * @author wenmo
  * @since 2021/6/22
  **/
+@Deprecated
 public class ColumnCAGenerator implements CAGenerator {
     private List<Trans> transList;
     private Map<Integer, Trans> transMaps;
@@ -33,7 +25,7 @@ public class ColumnCAGenerator implements CAGenerator {
     private Set<NodeRel> columnCASRel;
     private ICA sinkTableCA = null;
     private String sinkTableName;
-    private Integer index = 0;
+    private Integer index = 1;
     private List<Integer> sinkColumns;
     private List<Integer> sourceColumns;
 
@@ -63,7 +55,7 @@ public class ColumnCAGenerator implements CAGenerator {
                 for (int j = 0; j < sourceFields.size(); j++) {
                     String fieldName = sourceFields.get(j);
                     Integer id = index++;
-                    ColumnCA columnCA = new ColumnCA(id, fieldName, fieldName, fieldName, fieldName,fieldName, tableCA,transList.get(i));
+                    ColumnCA columnCA = new ColumnCA(id, fieldName, fieldName, fieldName, fieldName, fieldName, tableCA);
                     this.columnCASMaps.put(id, columnCA);
                     this.columnCAS.add(columnCA);
                 }
@@ -85,34 +77,34 @@ public class ColumnCAGenerator implements CAGenerator {
         }
     }
 
-    private void searchColumnCAId(TableCA tableCA){
+    private void searchColumnCAId(TableCA tableCA) {
         List<Integer> sufOnly = new ArrayList<>();
         for (NodeRel nodeRel : this.columnCASRel) {
-            if(!sufOnly.contains(nodeRel.getSufId())) {
+            if (!sufOnly.contains(nodeRel.getSufId())) {
                 sufOnly.add(nodeRel.getSufId());
             }
         }
         for (NodeRel nodeRel : this.columnCASRel) {
-            if(sufOnly.contains(nodeRel.getPreId())) {
+            if (sufOnly.contains(nodeRel.getPreId())) {
                 sufOnly.remove(nodeRel.getPreId());
             }
         }
         List<Integer> preOnly = new ArrayList<>();
         for (NodeRel nodeRel : this.columnCASRel) {
-            if(!preOnly.contains(nodeRel.getPreId())) {
+            if (!preOnly.contains(nodeRel.getPreId())) {
                 preOnly.add(nodeRel.getPreId());
             }
         }
         for (NodeRel nodeRel : this.columnCASRel) {
-            if(preOnly.contains(nodeRel.getSufId())) {
+            if (preOnly.contains(nodeRel.getSufId())) {
                 preOnly.remove(nodeRel.getSufId());
             }
         }
         for (int i = 0; i < sufOnly.size(); i++) {
-            ColumnCA columnCA = (ColumnCA)this.columnCASMaps.get(sufOnly.get(i));
+            ColumnCA columnCA = (ColumnCA) this.columnCASMaps.get(sufOnly.get(i));
             List<String> fields = tableCA.getFields();
             for (int j = 0; j < fields.size(); j++) {
-                if(columnCA.getAlias().equals(fields.get(j))){
+                if (columnCA.getAlias().equals(fields.get(j))) {
                     tableCA.getColumnCAIds().add(sufOnly.get(i));
                     break;
                 }
@@ -151,15 +143,12 @@ public class ColumnCAGenerator implements CAGenerator {
     }
 
     private void searchSelect(TableCA tableCA, ColumnCA columnCA, OperatorTrans trans, String operation, String alias) {
-        if(Asserts.isEquals(operation,columnCA.getAlias())||operation.contains(" " + columnCA.getAlias() + " ") ||
-                operation.contains("(" + columnCA.getAlias() + " ") ||
-                operation.contains(" " + columnCA.getAlias() + ")")) {
+        if (MapParseUtils.hasField(operation, columnCA.getAlias())) {
             boolean isHad = false;
             Integer cid = null;
             for (int j = 0; j < this.columnCAS.size(); j++) {
                 ColumnCA columnCA1 = (ColumnCA) this.columnCAS.get(j);
-                if (columnCA1.getTableCA().getId() == tableCA.getId() &&
-                        columnCA1.getName().equals(operation)) {
+                if (columnCA1.getTableCA().getId() == tableCA.getId() && columnCA1.getName().equals(alias)) {
                     isHad = true;
                     cid = columnCA1.getId();
                     break;
@@ -167,10 +156,8 @@ public class ColumnCAGenerator implements CAGenerator {
             }
             if (!isHad) {
                 cid = index++;
-                String columnOperation = operation.replaceAll(" " + columnCA.getAlias() + " "," " + columnCA.getOperation() + " ")
-                .replaceAll("\\(" + columnCA.getAlias() + " "," " + columnCA.getOperation() + " ")
-                .replaceAll(" " + columnCA.getAlias() + "\\)"," " + columnCA.getOperation() + " ");
-                ColumnCA columnCA2 = new ColumnCA(cid, operation, alias, operation, operation,columnOperation, tableCA,trans);
+//                String columnOperation = MapParseUtils.replaceField(operation,columnCA.getAlias(),columnCA.getOperation());
+                ColumnCA columnCA2 = new ColumnCA(cid, alias, alias, alias, alias, operation, tableCA);
                 this.columnCASMaps.put(cid, columnCA2);
                 this.columnCAS.add(columnCA2);
                 buildColumnCAFields(tableCA, trans.getParentId(), columnCA2);

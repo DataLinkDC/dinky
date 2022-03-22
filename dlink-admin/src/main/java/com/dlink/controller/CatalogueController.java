@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,17 +32,17 @@ public class CatalogueController {
     private CatalogueService catalogueService;
 
     @PostMapping("/upload/{id}")
-    public Result<String> upload(MultipartFile file,@PathVariable Integer id) {
+    public Result<String> upload(MultipartFile file, @PathVariable Integer id) {
         //获取上传的路径
         String filePath = System.getProperty("user.dir");
         //获取源文件的名称
         String fileName = file.getOriginalFilename();
-        String zipPath = filePath+File.separator+fileName;
-        String unzipFileName = fileName.substring(0,fileName.lastIndexOf("."));
-        String unzipPath = filePath+File.separator+unzipFileName;
+        String zipPath = filePath + File.separator + fileName;
+        String unzipFileName = fileName.substring(0, fileName.lastIndexOf("."));
+        String unzipPath = filePath + File.separator + unzipFileName;
         File unzipFile = new File(unzipPath);
         File zipFile = new File(zipPath);
-        if(unzipFile.exists()){
+        if (unzipFile.exists()) {
             FileUtil.del(zipFile);
             return Result.failed("工程已存在");
         }
@@ -49,55 +50,55 @@ public class CatalogueController {
             //文件写入上传的路径
             FileUtil.writeBytes(file.getBytes(), zipPath);
             Thread.sleep(1L);
-            if(!unzipFile.exists()){
-                ZipUtil.unzip(zipPath,filePath);
+            if (!unzipFile.exists()) {
+                ZipUtil.unzip(zipPath, filePath);
                 Catalogue cata = getCatalogue(id, unzipFileName);
-                traverseFile(unzipPath,cata);
+                traverseFile(unzipPath, cata);
             }
         } catch (Exception e) {
             return Result.failed(e.getMessage());
-        }finally {
+        } finally {
             FileUtil.del(zipFile);
         }
         return Result.succeed("上传zip包并创建工程成功");
     }
 
 
-    private void traverseFile(String sourcePath, Catalogue catalog) throws Exception{
+    private void traverseFile(String sourcePath, Catalogue catalog) throws Exception {
         File file = new File(sourcePath);
         File[] fs = file.listFiles();
-        if(fs == null){
+        if (fs == null) {
             throw new RuntimeException("目录层级有误");
         }
         for (File fl : fs) {
-            if(fl.isFile()){
+            if (fl.isFile()) {
                 System.out.println(fl.getName());
                 CatalogueTaskDTO dto = getCatalogueTaskDTO(fl.getName(), catalogueService.findByParentIdAndName(catalog.getParentId(), catalog.getName()).getId());
                 String fileText = getFileText(fl);
-                catalogueService.createCatalogAndFileTask(dto,fileText);
-            }else{
+                catalogueService.createCatalogAndFileTask(dto, fileText);
+            } else {
                 Catalogue newCata = getCatalogue(catalogueService.findByParentIdAndName(catalog.getParentId(), catalog.getName()).getId(), fl.getName());
-                traverseFile(fl.getPath(),newCata);
+                traverseFile(fl.getPath(), newCata);
             }
         }
     }
 
-    private String getFileText(File sourceFile){
+    private String getFileText(File sourceFile) {
         StringBuilder sb = new StringBuilder();
         BufferedReader br = null;
-        try{
-            if(sourceFile.isFile() && sourceFile.exists()){
+        try {
+            if (sourceFile.isFile() && sourceFile.exists()) {
                 InputStreamReader isr = new InputStreamReader(new FileInputStream(sourceFile));
                 br = new BufferedReader(isr);
                 String lineText = null;
-                while ((lineText = br.readLine()) != null){
+                while ((lineText = br.readLine()) != null) {
                     sb.append(lineText).append("\n");
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-        }finally {
-            if(br != null){
+        } finally {
+            if (br != null) {
                 try {
                     br.close();
                 } catch (IOException e) {
@@ -108,7 +109,7 @@ public class CatalogueController {
         return sb.toString();
     }
 
-    private Catalogue getCatalogue(Integer parentId, String name){
+    private Catalogue getCatalogue(Integer parentId, String name) {
         Catalogue subcata = new Catalogue();
         subcata.setTaskId(null);
         subcata.setName(name);
@@ -119,9 +120,9 @@ public class CatalogueController {
         return subcata;
     }
 
-    private CatalogueTaskDTO getCatalogueTaskDTO(String alias, Integer parentId){
+    private CatalogueTaskDTO getCatalogueTaskDTO(String alias, Integer parentId) {
         CatalogueTaskDTO catalogueTaskDTO = new CatalogueTaskDTO();
-        catalogueTaskDTO.setName(UUID.randomUUID().toString().substring(0,6)+alias);
+        catalogueTaskDTO.setName(UUID.randomUUID().toString().substring(0, 6) + alias);
         catalogueTaskDTO.setAlias(alias);
         catalogueTaskDTO.setId(null);
         catalogueTaskDTO.setParentId(parentId);
@@ -135,9 +136,9 @@ public class CatalogueController {
      */
     @PutMapping
     public Result saveOrUpdate(@RequestBody Catalogue catalogue) throws Exception {
-        if(catalogueService.saveOrUpdate(catalogue)){
+        if (catalogueService.saveOrUpdate(catalogue)) {
             return Result.succeed("创建成功");
-        }else {
+        } else {
             return Result.failed("创建失败");
         }
     }
@@ -155,21 +156,21 @@ public class CatalogueController {
      */
     @DeleteMapping
     public Result deleteMul(@RequestBody JsonNode para) {
-        if (para.size()>0){
+        if (para.size() > 0) {
             boolean isAdmin = false;
             List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para){
+            for (final JsonNode item : para) {
                 Integer id = item.asInt();
-                if(!catalogueService.removeCatalogueAndTaskById(id)){
+                if (!catalogueService.removeCatalogueAndTaskById(id)) {
                     error.add(id);
                 }
             }
-            if(error.size()==0&&!isAdmin) {
+            if (error.size() == 0 && !isAdmin) {
                 return Result.succeed("删除成功");
-            }else {
-                return Result.succeed("删除部分成功，但"+error.toString()+"删除失败，共"+error.size()+"次失败。");
+            } else {
+                return Result.succeed("删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
             }
-        }else{
+        } else {
             return Result.failed("请选择要删除的记录");
         }
     }
@@ -180,7 +181,7 @@ public class CatalogueController {
     @PostMapping("/getOneById")
     public Result getOneById(@RequestBody Catalogue catalogue) throws Exception {
         catalogue = catalogueService.getById(catalogue.getId());
-        return Result.succeed(catalogue,"获取成功");
+        return Result.succeed(catalogue, "获取成功");
     }
 
     /**
@@ -189,7 +190,7 @@ public class CatalogueController {
     @PostMapping("/getCatalogueTreeData")
     public Result getCatalogueTreeData() throws Exception {
         List<Catalogue> catalogues = catalogueService.getAllData();
-        return Result.succeed(catalogues,"获取成功");
+        return Result.succeed(catalogues, "获取成功");
     }
 
     /**
@@ -198,9 +199,9 @@ public class CatalogueController {
     @PutMapping("/createTask")
     public Result createTask(@RequestBody CatalogueTaskDTO catalogueTaskDTO) throws Exception {
         Catalogue catalogue = catalogueService.createCatalogueAndTask(catalogueTaskDTO);
-        if(catalogue.getId()!=null){
-            return Result.succeed(catalogue,"创建成功");
-        }else {
+        if (catalogue.getId() != null) {
+            return Result.succeed(catalogue, "创建成功");
+        } else {
             return Result.failed("创建失败");
         }
     }
@@ -210,10 +211,22 @@ public class CatalogueController {
      */
     @PutMapping("/toRename")
     public Result toRename(@RequestBody Catalogue catalogue) throws Exception {
-        if(catalogueService.toRename(catalogue)){
+        if (catalogueService.toRename(catalogue)) {
             return Result.succeed("重命名成功");
-        }else {
+        } else {
             return Result.failed("重命名失败");
+        }
+    }
+
+    /**
+     * 重命名节点和作业
+     */
+    @PutMapping("/moveCatalogue")
+    public Result moveCatalogue(@RequestBody Catalogue catalogue) throws Exception {
+        if (catalogueService.moveCatalogue(catalogue.getId(), catalogue.getParentId())) {
+            return Result.succeed(true, "移动成功");
+        } else {
+            return Result.failed(false, "移动失败");
         }
     }
 }

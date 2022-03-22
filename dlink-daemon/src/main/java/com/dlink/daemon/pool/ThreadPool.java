@@ -3,13 +3,12 @@ package com.dlink.daemon.pool;
 import com.dlink.daemon.task.DaemonTask;
 
 /**
- *
  * @author lcg
- * @operate 
+ * @operate
  * @date 2022/3/7 10:36
- * @return 
+ * @return
  */
-public interface ThreadPool{
+public interface ThreadPool {
 
     //执行任务
     void execute(DaemonTask daemonTask);

@@ -31,10 +31,10 @@ public class AdminController {
      */
     @PostMapping("/login")
     public Result login(@RequestBody LoginUTO loginUTO) {
-        if(Asserts.isNull(loginUTO.isAutoLogin())){
+        if (Asserts.isNull(loginUTO.isAutoLogin())) {
             loginUTO.setAutoLogin(false);
         }
-        return userService.loginUser(loginUTO.getUsername(), loginUTO.getPassword(),loginUTO.isAutoLogin());
+        return userService.loginUser(loginUTO.getUsername(), loginUTO.getPassword(), loginUTO.isAutoLogin());
     }
 
     /**
@@ -51,9 +51,9 @@ public class AdminController {
      */
     @GetMapping("/current")
     public Result current() throws Exception {
-        try{
+        try {
             return Result.succeed(StpUtil.getSession().get("user"), "获取成功");
-        }catch (Exception e){
+        } catch (Exception e) {
             return Result.failed("获取失败");
         }
     }

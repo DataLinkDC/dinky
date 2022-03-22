@@ -1,11 +1,9 @@
 package com.dlink.job;
 
-import com.dlink.executor.ExecutorSetting;
 import com.dlink.result.IResult;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -39,7 +37,7 @@ public class JobResult {
         this.jobConfig = jobConfig;
         this.jobManagerAddress = jobManagerAddress;
         this.status = status;
-        this.success = (status==(Job.JobStatus.SUCCESS))?true:false;
+        this.success = (status == (Job.JobStatus.SUCCESS)) ? true : false;
         this.statement = statement;
         this.jobId = jobId;
         this.error = error;

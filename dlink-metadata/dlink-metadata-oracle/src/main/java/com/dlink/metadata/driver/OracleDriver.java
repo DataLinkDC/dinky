@@ -53,21 +53,21 @@ public class OracleDriver extends AbstractJdbcDriver {
         sb.append(table.getName() + " (");
         List<Column> columns = table.getColumns();
         for (int i = 0; i < columns.size(); i++) {
-            if(i>0){
+            if (i > 0) {
                 sb.append(",");
             }
             sb.append(columns.get(i).getName() + " " + getTypeConvert().convertToDB(columns.get(i)));
-            if(columns.get(i).isNullable()){
+            if (columns.get(i).isNullable()) {
                 sb.append(" NOT NULL");
             }
         }
         sb.append(");");
         sb.append("\r\n");
         List<Column> pks = columns.stream().filter(column -> column.isKeyFlag()).collect(Collectors.toList());
-        if(Asserts.isNotNullCollection(pks)) {
+        if (Asserts.isNotNullCollection(pks)) {
             sb.append("ALTER TABLE " + table.getName() + " ADD CONSTRAINT " + table.getName() + "_PK PRIMARY KEY (");
             for (int i = 0; i < pks.size(); i++) {
-                if(i>0){
+                if (i > 0) {
                     sb.append(",");
                 }
                 sb.append(pks.get(i).getName());
@@ -75,13 +75,13 @@ public class OracleDriver extends AbstractJdbcDriver {
             sb.append(");\r\n");
         }
         for (int i = 0; i < columns.size(); i++) {
-            sb.append("COMMENT ON COLUMN "+table.getName()+"."+columns.get(i).getName()+" IS '"+columns.get(i).getComment()+"';");
+            sb.append("COMMENT ON COLUMN " + table.getName() + "." + columns.get(i).getName() + " IS '" + columns.get(i).getComment() + "';");
         }
         return sb.toString();
     }
 
     @Override
-    public Map<String,String> getFlinkColumnTypeConversion(){
+    public Map<String, String> getFlinkColumnTypeConversion() {
         return new HashMap<>();
     }
 }

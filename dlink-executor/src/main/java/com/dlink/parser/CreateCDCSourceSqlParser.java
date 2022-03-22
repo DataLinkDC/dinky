@@ -14,7 +14,7 @@ public class CreateCDCSourceSqlParser extends BaseSingleSqlParser {
 
     @Override
     protected void initializeSegments() {
-        segments.add(new SqlSegment("CDCSOURCE","(execute\\s+cdcsource\\s+)(.+)(\\s+with\\s+\\()", "[,]"));
-        segments.add(new SqlSegment("WITH","(with\\s+\\()(.+)(\\))", "[,]"));
+        segments.add(new SqlSegment("CDCSOURCE", "(execute\\s+cdcsource\\s+)(.+)(\\s+with\\s+\\()", "[,]"));
+        segments.add(new SqlSegment("WITH", "(with\\s+\\()(.+)(\\))", "[,]"));
     }
 }

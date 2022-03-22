@@ -1,24 +1,12 @@
 package com.dlink.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.assertion.Asserts;
-import com.dlink.constant.FlinkRestResultConstant;
 import com.dlink.db.service.impl.SuperServiceImpl;
+import com.dlink.explainer.lineage.LineageBuilder;
+import com.dlink.explainer.lineage.LineageResult;
 import com.dlink.mapper.JobInstanceMapper;
-import com.dlink.model.Cluster;
-import com.dlink.model.History;
-import com.dlink.model.JobHistory;
-import com.dlink.model.JobInfoDetail;
-import com.dlink.model.JobInstance;
-import com.dlink.model.JobInstanceCount;
-import com.dlink.model.JobInstanceStatus;
-import com.dlink.model.JobStatus;
-import com.dlink.service.ClusterConfigurationService;
-import com.dlink.service.ClusterService;
-import com.dlink.service.HistoryService;
-import com.dlink.service.JobHistoryService;
-import com.dlink.service.JobInstanceService;
-import com.dlink.service.TaskService;
+import com.dlink.model.*;
+import com.dlink.service.*;
 import com.dlink.utils.JSONUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,9 +34,9 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     @Override
     public JobInstanceStatus getStatusCount(boolean isHistory) {
         List<JobInstanceCount> jobInstanceCounts = null;
-        if(isHistory){
+        if (isHistory) {
             jobInstanceCounts = baseMapper.countHistoryStatus();
-        }else{
+        } else {
             jobInstanceCounts = baseMapper.countStatus();
         }
         JobInstanceStatus jobInstanceStatus = new JobInstanceStatus();
@@ -122,6 +110,16 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
             jobInfoDetail.setClusterConfiguration(clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId()));
         }
         return jobInfoDetail;
+    }
+
+    @Override
+    public LineageResult getLineage(Integer id) {
+        return LineageBuilder.getLineage(getJobInfoDetail(id).getHistory().getStatement());
+    }
+
+    @Override
+    public JobInstance getJobInstanceByTaskId(Integer id) {
+        return baseMapper.getJobInstanceByTaskId(id);
     }
 
 }

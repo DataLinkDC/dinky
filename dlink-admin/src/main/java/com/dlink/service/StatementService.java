@@ -10,5 +10,6 @@ import com.dlink.model.Statement;
  * @since 2021/5/28 13:45
  **/
 public interface StatementService extends ISuperService<Statement> {
+
     boolean insert(Statement statement);
 }

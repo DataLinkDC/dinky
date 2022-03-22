@@ -11,3 +11,7 @@ export function getJobInfoDetail(id: number) {
 export function refreshJobInfoDetail(id: number) {
   return getData("api/jobInstance/refreshJobInfoDetail",{id});
 }
+
+export function getLineage(id: number) {
+  return getData("api/jobInstance/getLineage",{id});
+}

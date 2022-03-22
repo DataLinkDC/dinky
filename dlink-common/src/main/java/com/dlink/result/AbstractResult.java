@@ -17,12 +17,12 @@ public class AbstractResult {
     protected long time;
     protected String error;
 
-    public void success(){
+    public void success() {
         this.setEndTime(LocalDateTime.now());
         this.setSuccess(true);
     }
 
-    public void error(String error){
+    public void error(String error) {
         this.setEndTime(LocalDateTime.now());
         this.setSuccess(false);
         this.setError(error);

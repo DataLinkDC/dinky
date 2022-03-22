@@ -34,8 +34,8 @@ public class APIJobResult {
         this.endTime = endTime;
     }
 
-    public static APIJobResult build(JobResult jobResult){
-        return new APIJobResult(jobResult.getJobManagerAddress(),jobResult.getStatus(),jobResult.isSuccess(),
-                jobResult.getJobId(),jobResult.getError(),jobResult.getStartTime(),jobResult.getEndTime());
+    public static APIJobResult build(JobResult jobResult) {
+        return new APIJobResult(jobResult.getJobManagerAddress(), jobResult.getStatus(), jobResult.isSuccess(),
+                jobResult.getJobId(), jobResult.getError(), jobResult.getStartTime(), jobResult.getEndTime());
     }
 }

@@ -82,7 +82,7 @@ public class SqlSegment {
             start = matcher.group(1);
             body = matcher.group(2);
             end = matcher.group(3);
-            if(Asserts.isNullString(type)) {
+            if (Asserts.isNullString(type)) {
                 type = start.replace("\n", " ").replaceAll("\\s{1,}", " ").toUpperCase();
             }
             parseBody();

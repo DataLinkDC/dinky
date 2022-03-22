@@ -26,11 +26,11 @@ public class AppConfig {
         this.userJarMainAppClass = userJarMainAppClass;
     }
 
-    public static AppConfig build(String userJarPath, String userJarParasStr, String userJarMainAppClass){
-        if(Asserts.isNotNullString(userJarParasStr)){
-            return new AppConfig(userJarPath,userJarParasStr.split(" "),userJarMainAppClass);
-        }else{
-            return new AppConfig(userJarPath,new String[]{},userJarMainAppClass);
+    public static AppConfig build(String userJarPath, String userJarParasStr, String userJarMainAppClass) {
+        if (Asserts.isNotNullString(userJarParasStr)) {
+            return new AppConfig(userJarPath, userJarParasStr.split(" "), userJarMainAppClass);
+        } else {
+            return new AppConfig(userJarPath, new String[]{}, userJarMainAppClass);
 
         }
     }
