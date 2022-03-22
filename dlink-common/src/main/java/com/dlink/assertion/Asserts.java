@@ -25,9 +25,31 @@ public class Asserts {
         return isNull(str) || "".equals(str);
     }
 
+    public static boolean isAllNullString(String... str) {
+        boolean isNull = true;
+        for (String item : str) {
+            if (isNotNullString(item)) {
+                isNull = false;
+            }
+        }
+        return isNull;
+    }
+
+
     public static boolean isNotNullString(String str) {
         return !isNullString(str);
     }
+
+    public static boolean isAllNotNullString(String... str) {
+        boolean isNotNull = true;
+        for (String item : str) {
+            if (isNullString(item)) {
+                isNotNull = false;
+            }
+        }
+        return isNotNull;
+    }
+
 
     public static boolean isEquals(String str1, String str2) {
         if (isNull(str1) && isNull(str2)) {
