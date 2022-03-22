@@ -58,7 +58,7 @@
   - [参与贡献](/zh-CN/developer-guide/how_contribute.md)
   - [本地调试](/zh-CN/developer-guide/local_debug.md)
   - [远程调试](/zh-CN/developer-guide/remote_debug.md)
-- 常见问题
+- [常见问题](/zh-CN/FAQ.md)
 - [致谢](/zh-CN/others/thanks.md)
 - [交流与贡献](/zh-CN/others/comminicate.md)
 - [roadmap](/zh-CN/roadmap.md)
