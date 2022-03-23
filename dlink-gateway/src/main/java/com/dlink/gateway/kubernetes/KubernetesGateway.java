@@ -9,6 +9,7 @@ import com.dlink.gateway.model.JobInfo;
 import com.dlink.gateway.result.SavePointResult;
 import com.dlink.gateway.result.TestResult;
 import com.dlink.utils.LogUtil;
+
 import org.apache.flink.api.common.JobID;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.configuration.CheckpointingOptions;
@@ -78,7 +79,9 @@ public abstract class KubernetesGateway extends AbstractGateway {
     private void addConfigParas(Map<String, String> configMap) {
         if (Asserts.isNotNull(configMap)) {
             for (Map.Entry<String, String> entry : configMap.entrySet()) {
-                this.configuration.setString(entry.getKey(), entry.getValue());
+                if (Asserts.isAllNotNullString(entry.getKey(), entry.getValue())) {
+                    this.configuration.setString(entry.getKey(), entry.getValue());
+                }
             }
         }
     }
@@ -100,7 +103,7 @@ public abstract class KubernetesGateway extends AbstractGateway {
         }
         KubernetesClusterDescriptor clusterDescriptor = clusterClientFactory.createClusterDescriptor(configuration);
         try (ClusterClient<String> clusterClient = clusterDescriptor.retrieve(
-                clusterId).getClusterClient()) {
+            clusterId).getClusterClient()) {
             List<JobInfo> jobInfos = new ArrayList<>();
             CompletableFuture<Collection<JobStatusMessage>> listJobsFuture = clusterClient.listJobs();
             for (JobStatusMessage jobStatusMessage : listJobsFuture.get()) {

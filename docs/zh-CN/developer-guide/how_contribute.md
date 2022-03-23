@@ -26,22 +26,13 @@
 
 ## 参与文档贡献
 
-首先要下载 [Dinky源码](https://github.com/DataLinkDC/dlink/tree/dev) ，下载完成后，需要安装nodejs和npm。详细安装步骤可以查阅本地调试。由于Dinky文档是有 [docsify](https://docsify.js.org/#/zh-cn/quickstart) 维护。因此需要在dinky根目录执行如下命令，在本地方可启动：
-
-```shell
-# 推荐全局安装 docsify-cli 工具
-npm i docsify-cli -g
-# 运行 docsify serve 启动一个本地服务器
-docsify serve docs
-```
-
-可以方便地实时预览效果。默认访问地址 [http://localhost:3000](http://localhost:3000/)
+请查阅 [文档贡献](/zh-CN/developer-guide/document.md)
 
 ## 参与代码贡献
 
-调试请查阅 [本地调试](/zh-CN/developer-guide/local_debug.md) 或 [远程调试](/zh-CN/developer-guide/remote_debug.md)
+IDEA 调试请查阅 [本地调试](/zh-CN/developer-guide/local_debug.md) 及 [远程调试](/zh-CN/developer-guide/remote_debug.md)
 
-贡献参考[参与贡献 Issue 需知]()，[参与贡献 Pull Request 需知]()，[参与贡献 CommitMessage 需知]()
+贡献请查阅 [Issue 需知](/zh-CN/developer-guide/issue.md)，[Pull Request 需知](/zh-CN/developer-guide/pull_request.md)，[Commit Message 需知](/zh-CN/developer-guide/commit_message.md)
 
 ## 如何领取 Issue，提交 Pull Request
 
@@ -49,8 +40,8 @@ docsify serve docs
 
 - 所有的 Bug 与新 Feature 建议使用 Issues Page 进行管理。
 - 如果想要开发实现某个 Feature 功能，请先回复该功能所关联的 Issue，表明你当前正在这个 Issue 上工作。 并在回复的时候为自己设置一个最后期限，并添加到回复内容中。
-- 你应该新建一个分支来开始你的工作，分支的名字参考[参与贡献 Pull Request 需知]()。比如，你想完成 feature 功能并提交了 Issue demo，那么你的 branch 名字应为 feature-demo。 功能名称可与导师讨论后确定。
-- 完成后，发送一个 Pull Request 到 Dinky 的 dev 分支，提交过程具体请参考下面《[提交代码流程]()》。
+- 你应该新建一个分支来开始你的工作，分支的名字参考 [Pull Request 需知](/zh-CN/developer-guide/pull_request.md)。比如，你想完成 feature 功能并提交了 Issue demo，那么你的 branch 名字应为 feature-demo。 功能名称可与导师讨论后确定。
+- 完成后，发送一个 Pull Request 到 Dinky 的 dev 分支，提交过程具体请参考下面《[提交代码须知](/zh-CN/developer-guide/commit_code.md)》。
 
 如果是想提交 Pull Request 完成某一个 Feature 或者修复某个 Bug，这里都建议大家从小处做起，完成一个小功能就提交一次，每次别改动太多文件，改动文件太多也会给 Reviewer 造成很大的心理压力，建议通过多次 Pull Request 的方式完成。
 
