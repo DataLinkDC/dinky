@@ -45,7 +45,7 @@ public class MySqlDriver extends AbstractJdbcDriver {
     public Map<String, String> getFlinkColumnTypeConversion() {
         HashMap<String, String> map = new HashMap<>();
         map.put("VARCHAR", "STRING");
-        map.put("TEXY", "STRING");
+        map.put("TEXT", "STRING");
         map.put("INT", "INT");
         map.put("DATETIME", "TIMESTAMP");
         return map;
