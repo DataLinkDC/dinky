@@ -1,3 +1,3 @@
 #!/bin/sh
 
-mvn clean package -Dmaven.test.skip=true
+mvn -T 1C clean package -Dmaven.test.skip=true
