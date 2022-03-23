@@ -37,6 +37,7 @@ public interface ITypeConvert {
             case "float":
                 return results.getFloat(columnName);
             case "bigint":
+                return results.getLong(columnName);
             case "decimal":
                 return results.getBigDecimal(columnName);
             case "date":

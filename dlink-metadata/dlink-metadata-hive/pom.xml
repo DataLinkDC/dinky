@@ -21,7 +21,11 @@
             <groupId>com.dlink</groupId>
             <artifactId>dlink-metadata-base</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-starter</artifactId>
+            <scope>provided</scope>
+        </dependency>
 <!--        <dependency>-->
 <!--            <groupId>org.apache.hive</groupId>-->
 <!--            <artifactId>hive-metastore</artifactId>-->

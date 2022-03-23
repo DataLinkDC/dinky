@@ -6,19 +6,15 @@ import com.dlink.metadata.convert.HiveTypeConvert;
 import com.dlink.metadata.convert.ITypeConvert;
 import com.dlink.metadata.query.HiveQuery;
 import com.dlink.metadata.query.IDBQuery;
+import com.dlink.metadata.result.JdbcSelectResult;
 import com.dlink.model.Column;
 import com.dlink.model.Schema;
 import com.dlink.model.Table;
+import com.dlink.utils.LogUtil;
 import org.apache.commons.lang3.StringUtils;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.*;
+import java.util.*;
 
 public class HiveDriver extends AbstractJdbcDriver implements Driver {
 
@@ -222,6 +218,72 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
         }
         return createTable.toString();
     }
+
+
+    @Override
+    public int executeUpdate(String sql) throws Exception {
+        Asserts.checkNullString(sql, "Sql 语句为空");
+        String querySQL = sql.trim().replaceAll(";$", "");
+        int res = 0;
+        try (Statement statement = conn.createStatement()) {
+            res = statement.executeUpdate(querySQL);
+        }
+        return res;
+    }
+
+    @Override
+    public JdbcSelectResult query(String sql, Integer limit) {
+        if (Asserts.isNull(limit)) {
+            limit = 100;
+        }
+        JdbcSelectResult result = new JdbcSelectResult();
+        List<LinkedHashMap<String, Object>> datas = new ArrayList<>();
+        List<Column> columns = new ArrayList<>();
+        List<String> columnNameList = new ArrayList<>();
+        PreparedStatement preparedStatement = null;
+        ResultSet results = null;
+        int count = 0;
+        try {
+            String querySQL = sql.trim().replaceAll(";$", "");
+            preparedStatement = conn.prepareStatement(querySQL);
+            results = preparedStatement.executeQuery();
+            if (Asserts.isNull(results)) {
+                result.setSuccess(true);
+                close(preparedStatement, results);
+                return result;
+            }
+            ResultSetMetaData metaData = results.getMetaData();
+            for (int i = 1; i <= metaData.getColumnCount(); i++) {
+                columnNameList.add(metaData.getColumnLabel(i));
+                Column column = new Column();
+                column.setName(metaData.getColumnLabel(i));
+                column.setType(metaData.getColumnTypeName(i));
+                column.setAutoIncrement(metaData.isAutoIncrement(i));
+                column.setNullable(metaData.isNullable(i) == 0 ? false : true);
+                column.setJavaType(getTypeConvert().convert(column));
+                columns.add(column);
+            }
+            result.setColumns(columnNameList);
+            while (results.next()) {
+                LinkedHashMap<String, Object> data = new LinkedHashMap<>();
+                for (int i = 0; i < columns.size(); i++) {
+                    data.put(columns.get(i).getName(), getTypeConvert().convertValue(results, columns.get(i).getName(), columns.get(i).getType()));
+                }
+                datas.add(data);
+                count++;
+                if (count >= limit) {
+                    break;
+                }
+            }
+            result.setSuccess(true);
+        } catch (Exception e) {
+            result.setError(LogUtil.getError(e));
+            result.setSuccess(false);
+        } finally {
+            close(preparedStatement, results);
+            result.setRowData(datas);
+            return result;
+        }    }
 
     @Override
     public IDBQuery getDBQuery() {
