@@ -101,6 +101,15 @@ public interface FieldNamedPreparedStatement extends AutoCloseable {
      */
     int[] executeBatch() throws SQLException;
 
+
+    /**
+     * Phoenix add Batch method
+     *
+     * @see PreparedStatement#executeBatch()
+     */
+    void executeUpdate() throws SQLException;
+
+
     /**
      * Sets the designated parameter to SQL <code>NULL</code>.
      *

@@ -19,12 +19,12 @@
 package org.apache.flink.connector.phoenix.split;
 
 import org.apache.flink.annotation.Experimental;
-import org.apache.flink.connector.phoenix.JdbcInputFormat;
+import org.apache.flink.connector.phoenix.PhoenixInputFormat;
 
 import java.io.Serializable;
 
 /**
- * This interface is used by the {@link JdbcInputFormat} to compute the list of parallel query to
+ * This interface is used by the {@link PhoenixInputFormat} to compute the list of parallel query to
  * run (i.e. splits). Each query will be parameterized using a row of the matrix provided by each
  * {@link JdbcParameterValuesProvider} implementation.
  */

@@ -22,19 +22,17 @@ import org.apache.flink.annotation.VisibleForTesting;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.java.typeutils.RowTypeInfo;
 import org.apache.flink.connector.phoenix.internal.connection.JdbcConnectionProvider;
-import org.apache.flink.connector.phoenix.internal.connection.SimpleJdbcConnectionProvider;
+import org.apache.flink.connector.phoenix.internal.connection.PhoneixJdbcConnectionProvider;
 import org.apache.flink.connector.phoenix.internal.options.JdbcLookupOptions;
 import org.apache.flink.connector.phoenix.internal.options.JdbcOptions;
 import org.apache.flink.connector.phoenix.statement.FieldNamedPreparedStatementImpl;
 import org.apache.flink.connector.phoenix.utils.JdbcTypeUtil;
 import org.apache.flink.connector.phoenix.utils.JdbcUtils;
+import org.apache.flink.shaded.guava18.com.google.common.cache.Cache;
+import org.apache.flink.shaded.guava18.com.google.common.cache.CacheBuilder;
 import org.apache.flink.table.functions.FunctionContext;
 import org.apache.flink.table.functions.TableFunction;
 import org.apache.flink.types.Row;
-
-import org.apache.flink.shaded.guava18.com.google.common.cache.Cache;
-import org.apache.flink.shaded.guava18.com.google.common.cache.CacheBuilder;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,9 +61,9 @@ import static org.apache.flink.util.Preconditions.checkNotNull;
  * <p>Support cache the result to avoid frequent accessing to remote databases. 1.The cacheMaxSize
  * is -1 means not use cache. 2.For real-time data, you need to set the TTL of cache.
  */
-public class JdbcLookupFunction extends TableFunction<Row> {
+public class PhoenixLookupFunction extends TableFunction<Row> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(JdbcLookupFunction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PhoenixLookupFunction.class);
     private static final long serialVersionUID = 2L;
 
     private final String query;
@@ -83,13 +81,13 @@ public class JdbcLookupFunction extends TableFunction<Row> {
     private transient PreparedStatement statement;
     private transient Cache<Row, List<Row>> cache;
 
-    public JdbcLookupFunction(
+    public PhoenixLookupFunction(
             JdbcOptions options,
             JdbcLookupOptions lookupOptions,
             String[] fieldNames,
             TypeInformation[] fieldTypes,
             String[] keyNames) {
-        this.connectionProvider = new SimpleJdbcConnectionProvider(options);
+        this.connectionProvider = new PhoneixJdbcConnectionProvider(options);
         this.fieldNames = fieldNames;
         this.fieldTypes = fieldTypes;
         this.keyNames = keyNames;
@@ -255,7 +253,7 @@ public class JdbcLookupFunction extends TableFunction<Row> {
         return keyTypes;
     }
 
-    /** Builder for a {@link JdbcLookupFunction}. */
+    /** Builder for a {@link PhoenixLookupFunction}. */
     public static class Builder {
         private JdbcOptions options;
         private JdbcLookupOptions lookupOptions;
@@ -298,7 +296,7 @@ public class JdbcLookupFunction extends TableFunction<Row> {
          *
          * @return Configured JdbcLookupFunction
          */
-        public JdbcLookupFunction build() {
+        public PhoenixLookupFunction build() {
             checkNotNull(options, "No JdbcOptions supplied.");
             if (lookupOptions == null) {
                 lookupOptions = JdbcLookupOptions.builder().build();
@@ -307,7 +305,7 @@ public class JdbcLookupFunction extends TableFunction<Row> {
             checkNotNull(fieldTypes, "No fieldTypes supplied.");
             checkNotNull(keyNames, "No keyNames supplied.");
 
-            return new JdbcLookupFunction(options, lookupOptions, fieldNames, fieldTypes, keyNames);
+            return new PhoenixLookupFunction(options, lookupOptions, fieldNames, fieldTypes, keyNames);
         }
     }
 }

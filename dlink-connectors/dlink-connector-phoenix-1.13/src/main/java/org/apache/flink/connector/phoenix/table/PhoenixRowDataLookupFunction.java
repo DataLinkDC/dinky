@@ -23,11 +23,13 @@ import org.apache.flink.annotation.VisibleForTesting;
 import org.apache.flink.connector.phoenix.dialect.JdbcDialect;
 import org.apache.flink.connector.phoenix.dialect.JdbcDialects;
 import org.apache.flink.connector.phoenix.internal.connection.JdbcConnectionProvider;
-import org.apache.flink.connector.phoenix.internal.connection.SimpleJdbcConnectionProvider;
-import org.apache.flink.connector.phoenix.internal.options.JdbcLookupOptions;
-import org.apache.flink.connector.phoenix.internal.options.JdbcOptions;
-import org.apache.flink.connector.phoenix.statement.FieldNamedPreparedStatement;
+import org.apache.flink.connector.phoenix.internal.connection.PhoneixJdbcConnectionProvider;
 import org.apache.flink.connector.phoenix.internal.converter.JdbcRowConverter;
+import org.apache.flink.connector.phoenix.internal.options.JdbcLookupOptions;
+import org.apache.flink.connector.phoenix.internal.options.PhoenixJdbcOptions;
+import org.apache.flink.connector.phoenix.statement.FieldNamedPreparedStatement;
+import org.apache.flink.shaded.guava18.com.google.common.cache.Cache;
+import org.apache.flink.shaded.guava18.com.google.common.cache.CacheBuilder;
 import org.apache.flink.table.data.GenericRowData;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.functions.FunctionContext;
@@ -35,10 +37,6 @@ import org.apache.flink.table.functions.TableFunction;
 import org.apache.flink.table.types.DataType;
 import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.table.types.logical.RowType;
-
-import org.apache.flink.shaded.guava18.com.google.common.cache.Cache;
-import org.apache.flink.shaded.guava18.com.google.common.cache.CacheBuilder;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,9 +54,9 @@ import static org.apache.flink.util.Preconditions.checkNotNull;
 
 /** A lookup function for {@link JdbcDynamicTableSource}. */
 @Internal
-public class JdbcRowDataLookupFunction extends TableFunction<RowData> {
+public class PhoenixRowDataLookupFunction extends TableFunction<RowData> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(JdbcRowDataLookupFunction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PhoenixRowDataLookupFunction.class);
     private static final long serialVersionUID = 2L;
 
     private final String query;
@@ -75,8 +73,8 @@ public class JdbcRowDataLookupFunction extends TableFunction<RowData> {
     private transient FieldNamedPreparedStatement statement;
     private transient Cache<RowData, List<RowData>> cache;
 
-    public JdbcRowDataLookupFunction(
-            JdbcOptions options,
+    public PhoenixRowDataLookupFunction(
+            PhoenixJdbcOptions options,
             JdbcLookupOptions lookupOptions,
             String[] fieldNames,
             DataType[] fieldTypes,
@@ -86,7 +84,7 @@ public class JdbcRowDataLookupFunction extends TableFunction<RowData> {
         checkNotNull(fieldNames, "No fieldNames supplied.");
         checkNotNull(fieldTypes, "No fieldTypes supplied.");
         checkNotNull(keyNames, "No keyNames supplied.");
-        this.connectionProvider = new SimpleJdbcConnectionProvider(options);
+        this.connectionProvider = new PhoneixJdbcConnectionProvider(options,options.getNamespaceMappingEnabled(),options.getMapSystemTablesToNamespace());
         this.keyNames = keyNames;
         List<String> nameList = Arrays.asList(fieldNames);
         this.keyTypes =

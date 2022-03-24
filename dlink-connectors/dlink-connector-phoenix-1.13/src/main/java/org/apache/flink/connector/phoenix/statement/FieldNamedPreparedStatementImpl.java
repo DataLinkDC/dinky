@@ -51,7 +51,12 @@ public class FieldNamedPreparedStatementImpl implements FieldNamedPreparedStatem
 
     @Override
     public void addBatch() throws SQLException {
-        statement.addBatch();
+        statement.executeUpdate();
+    }
+
+    @Override
+    public void executeUpdate() throws SQLException {
+        statement.executeUpdate();
     }
 
     @Override

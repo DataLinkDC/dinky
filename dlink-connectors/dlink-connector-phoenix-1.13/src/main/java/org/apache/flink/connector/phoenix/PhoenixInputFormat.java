@@ -93,11 +93,11 @@ import java.util.Arrays;
  * @see DriverManager
  */
 @Experimental
-public class JdbcInputFormat extends RichInputFormat<Row, InputSplit>
+public class PhoenixInputFormat extends RichInputFormat<Row, InputSplit>
         implements ResultTypeQueryable<Row> {
 
     protected static final long serialVersionUID = 2L;
-    protected static final Logger LOG = LoggerFactory.getLogger(JdbcInputFormat.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(PhoenixInputFormat.class);
 
     protected JdbcConnectionProvider connectionProvider;
     protected String queryTemplate;
@@ -118,7 +118,7 @@ public class JdbcInputFormat extends RichInputFormat<Row, InputSplit>
     protected boolean hasNext;
     protected Object[][] parameterValues;
 
-    public JdbcInputFormat() {
+    public PhoenixInputFormat() {
     }
 
     @Override
@@ -339,73 +339,73 @@ public class JdbcInputFormat extends RichInputFormat<Row, InputSplit>
      *
      * @return builder
      */
-    public static JdbcInputFormatBuilder buildJdbcInputFormat() {
-        return new JdbcInputFormatBuilder();
+    public static PhoenixInputFormatBuilder buildJdbcInputFormat() {
+        return new PhoenixInputFormatBuilder();
     }
 
     /**
-     * Builder for {@link JdbcInputFormat}.
+     * Builder for {@link PhoenixInputFormat}.
      */
-    public static class JdbcInputFormatBuilder {
+    public static class PhoenixInputFormatBuilder {
         private final JdbcConnectionOptions.JdbcConnectionOptionsBuilder connOptionsBuilder;
-        private final JdbcInputFormat format;
+        private final PhoenixInputFormat format;
 
-        public JdbcInputFormatBuilder() {
+        public PhoenixInputFormatBuilder() {
             //this.connOptionsBuilder = new JdbcConnectionOptions.JdbcConnectionOptionsBuilder();
             this.connOptionsBuilder = new JdbcConnectionOptions.JdbcConnectionOptionsBuilder();
-            this.format = new JdbcInputFormat();
+            this.format = new PhoenixInputFormat();
             // using TYPE_FORWARD_ONLY for high performance reads
             this.format.resultSetType = ResultSet.TYPE_FORWARD_ONLY;
             this.format.resultSetConcurrency = ResultSet.CONCUR_READ_ONLY;
         }
 
-        public JdbcInputFormatBuilder setUsername(String username) {
+        public PhoenixInputFormatBuilder setUsername(String username) {
             connOptionsBuilder.withUsername(username);
             return this;
         }
 
-        public JdbcInputFormatBuilder setPassword(String password) {
+        public PhoenixInputFormatBuilder setPassword(String password) {
             connOptionsBuilder.withPassword(password);
             return this;
         }
 
-        public JdbcInputFormatBuilder setDrivername(String drivername) {
+        public PhoenixInputFormatBuilder setDrivername(String drivername) {
             connOptionsBuilder.withDriverName(drivername);
             return this;
         }
 
-        public JdbcInputFormatBuilder setDBUrl(String dbURL) {
+        public PhoenixInputFormatBuilder setDBUrl(String dbURL) {
             connOptionsBuilder.withUrl(dbURL);
             return this;
         }
 
-        public JdbcInputFormatBuilder setQuery(String query) {
+        public PhoenixInputFormatBuilder setQuery(String query) {
             format.queryTemplate = query;
             return this;
         }
 
-        public JdbcInputFormatBuilder setResultSetType(int resultSetType) {
+        public PhoenixInputFormatBuilder setResultSetType(int resultSetType) {
             format.resultSetType = resultSetType;
             return this;
         }
 
-        public JdbcInputFormatBuilder setResultSetConcurrency(int resultSetConcurrency) {
+        public PhoenixInputFormatBuilder setResultSetConcurrency(int resultSetConcurrency) {
             format.resultSetConcurrency = resultSetConcurrency;
             return this;
         }
 
-        public JdbcInputFormatBuilder setParametersProvider(
+        public PhoenixInputFormatBuilder setParametersProvider(
                 JdbcParameterValuesProvider parameterValuesProvider) {
             format.parameterValues = parameterValuesProvider.getParameterValues();
             return this;
         }
 
-        public JdbcInputFormatBuilder setRowTypeInfo(RowTypeInfo rowTypeInfo) {
+        public PhoenixInputFormatBuilder setRowTypeInfo(RowTypeInfo rowTypeInfo) {
             format.rowTypeInfo = rowTypeInfo;
             return this;
         }
 
-        public JdbcInputFormatBuilder setFetchSize(int fetchSize) {
+        public PhoenixInputFormatBuilder setFetchSize(int fetchSize) {
             Preconditions.checkArgument(
                     fetchSize == Integer.MIN_VALUE || fetchSize > 0,
                     "Illegal value %s for fetchSize, has to be positive or Integer.MIN_VALUE.",
@@ -414,23 +414,23 @@ public class JdbcInputFormat extends RichInputFormat<Row, InputSplit>
             return this;
         }
 
-        public JdbcInputFormatBuilder setAutoCommit(Boolean autoCommit) {
+        public PhoenixInputFormatBuilder setAutoCommit(Boolean autoCommit) {
             format.autoCommit = autoCommit;
             return this;
         }
 
-        public JdbcInputFormatBuilder setNamespaceMappingEnabled(Boolean namespaceMappingEnabled) {
+        public PhoenixInputFormatBuilder setNamespaceMappingEnabled(Boolean namespaceMappingEnabled) {
             format.namespaceMappingEnabled = namespaceMappingEnabled;
             return this;
         }
 
-        public JdbcInputFormatBuilder setMapSystemTablesEnabled(Boolean mapSystemTablesEnabled) {
+        public PhoenixInputFormatBuilder setMapSystemTablesEnabled(Boolean mapSystemTablesEnabled) {
             format.mapSystemTablesEnabled = mapSystemTablesEnabled;
             return this;
         }
 
 
-        public JdbcInputFormat finish() {
+        public PhoenixInputFormat finish() {
             format.connectionProvider =
                     //new SimpleJdbcConnectionProvider(connOptionsBuilder.build());
                     new PhoneixJdbcConnectionProvider(connOptionsBuilder.build(), format.namespaceMappingEnabled, format.namespaceMappingEnabled);

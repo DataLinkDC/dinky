@@ -27,8 +27,6 @@ import org.apache.flink.connector.phoenix.JdbcExecutionOptions;
 import org.apache.flink.connector.phoenix.internal.AbstractJdbcOutputFormat;
 import org.apache.flink.connector.phoenix.internal.GenericJdbcSinkFunction;
 import org.apache.flink.connector.phoenix.internal.JdbcBatchingOutputFormat;
-import org.apache.flink.connector.phoenix.internal.PhoenixSinkFunction;
-import org.apache.flink.connector.phoenix.internal.connection.PhoneixJdbcConnectionProvider;
 import org.apache.flink.connector.phoenix.internal.executor.JdbcBatchStatementExecutor;
 import org.apache.flink.connector.phoenix.internal.options.JdbcOptions;
 import org.apache.flink.connector.phoenix.utils.JdbcTypeUtil;
@@ -48,7 +46,7 @@ import java.util.Objects;
 import static org.apache.flink.util.Preconditions.checkNotNull;
 
 /** An upsert {@link UpsertStreamTableSink} for JDBC. */
-public class JdbcUpsertTableSink implements UpsertStreamTableSink<Row> {
+public class PhoenixUpsertTableSink implements UpsertStreamTableSink<Row> {
 
     private final TableSchema schema;
     private final JdbcOptions options;
@@ -59,7 +57,7 @@ public class JdbcUpsertTableSink implements UpsertStreamTableSink<Row> {
     private String[] keyFields;
     private boolean isAppendOnly;
 
-    private JdbcUpsertTableSink(
+    private PhoenixUpsertTableSink(
             TableSchema schema,
             JdbcOptions options,
             int flushMaxSize,
@@ -97,11 +95,6 @@ public class JdbcUpsertTableSink implements UpsertStreamTableSink<Row> {
 
     @Override
     public DataStreamSink<?> consumeDataStream(DataStream<Tuple2<Boolean, Row>> dataStream) {
-        // sql types
-        int[] jdbcSqlTypes =
-                Arrays.stream(schema.getFieldTypes())
-                        .mapToInt(JdbcTypeUtil::typeInformationToSqlType)
-                        .toArray();
 
         return dataStream
                 .addSink(new GenericJdbcSinkFunction<>(newFormat()))
@@ -166,8 +159,8 @@ public class JdbcUpsertTableSink implements UpsertStreamTableSink<Row> {
                             + Arrays.toString(fieldTypes));
         }
 
-        JdbcUpsertTableSink copy =
-                new JdbcUpsertTableSink(
+        PhoenixUpsertTableSink copy =
+                new PhoenixUpsertTableSink(
                         schema, options, flushMaxSize, flushIntervalMills, maxRetryTime);
         copy.keyFields = keyFields;
         return copy;
@@ -179,8 +172,8 @@ public class JdbcUpsertTableSink implements UpsertStreamTableSink<Row> {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof JdbcUpsertTableSink) {
-            JdbcUpsertTableSink sink = (JdbcUpsertTableSink) o;
+        if (o instanceof PhoenixUpsertTableSink) {
+            PhoenixUpsertTableSink sink = (PhoenixUpsertTableSink) o;
             return Objects.equals(schema, sink.schema)
                     && Objects.equals(options, sink.options)
                     && Objects.equals(flushMaxSize, sink.flushMaxSize)
@@ -193,7 +186,7 @@ public class JdbcUpsertTableSink implements UpsertStreamTableSink<Row> {
         }
     }
 
-    /** Builder for a {@link JdbcUpsertTableSink}. */
+    /** Builder for a {@link PhoenixUpsertTableSink}. */
     public static class Builder {
         protected TableSchema schema;
         private JdbcOptions options;
@@ -234,10 +227,10 @@ public class JdbcUpsertTableSink implements UpsertStreamTableSink<Row> {
             return this;
         }
 
-        public JdbcUpsertTableSink build() {
+        public PhoenixUpsertTableSink build() {
             checkNotNull(schema, "No schema supplied.");
             checkNotNull(options, "No options supplied.");
-            return new JdbcUpsertTableSink(
+            return new PhoenixUpsertTableSink(
                     schema, options, flushMaxSize, flushIntervalMills, maxRetryTimes);
         }
     }

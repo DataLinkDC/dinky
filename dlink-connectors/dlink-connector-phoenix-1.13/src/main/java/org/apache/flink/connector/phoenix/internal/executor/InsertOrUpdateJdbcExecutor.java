@@ -20,6 +20,7 @@ package org.apache.flink.connector.phoenix.internal.executor;
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.connector.phoenix.JdbcStatementBuilder;
 
+import org.apache.flink.connector.phoenix.table.PhoenixUpsertTableSink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +42,7 @@ import static org.apache.flink.util.Preconditions.checkNotNull;
  * and inserting otherwise. Used in Table API.
  *
  * @deprecated This has been replaced with {@link TableInsertOrUpdateStatementExecutor}, will remove
- *     this once {@link org.apache.flink.connector.phoenix.table.JdbcUpsertTableSink} is removed.
+ *     this once {@link PhoenixUpsertTableSink} is removed.
  */
 @Internal
 public final class InsertOrUpdateJdbcExecutor<R, K, V> implements JdbcBatchStatementExecutor<R> {
@@ -103,10 +104,8 @@ public final class InsertOrUpdateJdbcExecutor<R, K, V> implements JdbcBatchState
             for (Map.Entry<K, V> entry : batch.entrySet()) {
                 processOneRowInBatch(entry.getKey(), entry.getValue());
             }
-           //updateStatement.executeBatch();
-           //insertStatement.executeBatch();
-           //batch.clear();
             conn.commit();
+            batch.clear();
         }
     }
 
@@ -114,11 +113,8 @@ public final class InsertOrUpdateJdbcExecutor<R, K, V> implements JdbcBatchState
         if (exist(pk)) {
             updateSetter.accept(updateStatement, row);
             updateStatement.executeUpdate();
-
-            //updateStatement.addBatch();
         } else {
             insertSetter.accept(insertStatement, row);
-           // insertStatement.addBatch();
             insertStatement.executeUpdate();
         }
     }

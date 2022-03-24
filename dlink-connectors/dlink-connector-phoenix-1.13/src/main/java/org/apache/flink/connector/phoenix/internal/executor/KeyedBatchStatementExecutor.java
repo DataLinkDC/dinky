@@ -72,12 +72,11 @@ class KeyedBatchStatementExecutor<T, K> implements JdbcBatchStatementExecutor<T>
         if (!batch.isEmpty()) {
             for (K entry : batch) {
                 parameterSetter.accept(st, entry);
-                //st.addBatch();
                 st.executeUpdate();
             }
-            //st.executeBatch();
-            //batch.clear();
+            LOG.info("connection commit datasize：" + batch.size());
             conn.commit();
+            batch.clear();
         }
     }
 

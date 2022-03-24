@@ -125,7 +125,7 @@ public class PhoenixTableSourceSinkFactory
         TableSchema schema =
                 TableSchemaUtils.getPhysicalSchema(descriptorProperties.getTableSchema(SCHEMA));
 
-        return JdbcTableSource.builder()
+        return PhoenixTableSource.builder()
                 .setOptions(getJdbcOptions(descriptorProperties))
                 .setReadOptions(getJdbcReadOptions(descriptorProperties))
                 .setLookupOptions(getJdbcLookupOptions(descriptorProperties))
@@ -140,8 +140,8 @@ public class PhoenixTableSourceSinkFactory
         TableSchema schema =
                 TableSchemaUtils.getPhysicalSchema(descriptorProperties.getTableSchema(SCHEMA));
 
-        final JdbcUpsertTableSink.Builder builder =
-                JdbcUpsertTableSink.builder()
+        final PhoenixUpsertTableSink.Builder builder =
+                PhoenixUpsertTableSink.builder()
                         .setOptions(getJdbcOptions(descriptorProperties))
                         .setTableSchema(schema);
 

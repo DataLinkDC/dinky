@@ -85,12 +85,10 @@ public final class TableInsertOrUpdateStatementExecutor
     private void processOneRowInBatch(RowData pk, RowData row) throws SQLException {
         if (exist(pk)) {
             updateSetter.toExternal(row, updateStatement);
-            //updateStatement.addBatch();
-            updateStatement.executeBatch();
+            updateStatement.addBatch();
         } else {
             insertSetter.toExternal(row, insertStatement);
-            //insertStatement.addBatch();
-            insertStatement.executeBatch();
+            insertStatement.addBatch();
         }
     }
 
@@ -103,9 +101,6 @@ public final class TableInsertOrUpdateStatementExecutor
 
     @Override
     public void executeBatch(Connection conn) throws SQLException {
-        //updateStatement.executeBatch();
-        //insertStatement.executeBatch();
-
         conn.commit();
     }
 

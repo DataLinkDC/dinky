@@ -481,7 +481,7 @@ public class JobManager {
             try {
                 return FlinkAPI.build(config.getAddress()).stop(jobId);
             } catch (Exception e) {
-                logger.info("停止作业时集群不存在");
+                logger.error("停止作业时集群不存在: " + e);
             }
             return false;
         }

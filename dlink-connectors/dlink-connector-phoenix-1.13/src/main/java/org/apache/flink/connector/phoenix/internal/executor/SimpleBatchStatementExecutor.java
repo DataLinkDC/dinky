@@ -60,7 +60,6 @@ class SimpleBatchStatementExecutor<T, V> implements JdbcBatchStatementExecutor<T
 
     @Override
     public void addToBatch(T record) {
-        LOG.info("添加数据：" + record.toString());
         batch.add(valueTransformer.apply(record));
     }
 
@@ -69,12 +68,9 @@ class SimpleBatchStatementExecutor<T, V> implements JdbcBatchStatementExecutor<T
         if (!batch.isEmpty()) {
             for (V r : batch) {
                 parameterSetter.accept(st, r);
-                //st.addBatch();
                 st.executeUpdate();
             }
-            //st.executeBatch();
-
-            LOG.info("提交数据：" +batch.size() );
+            LOG.info("connection commit dataSize：" + batch.size());
             connection.commit();
             batch.clear();
         }

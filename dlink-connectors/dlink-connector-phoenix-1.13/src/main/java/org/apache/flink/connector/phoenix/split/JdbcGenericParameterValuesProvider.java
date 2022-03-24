@@ -19,13 +19,13 @@
 package org.apache.flink.connector.phoenix.split;
 
 import org.apache.flink.annotation.Experimental;
-import org.apache.flink.connector.phoenix.JdbcInputFormat;
+import org.apache.flink.connector.phoenix.PhoenixInputFormat;
 
 import java.io.Serializable;
 
 /**
  * This splits generator actually does nothing but wrapping the query parameters computed by the
- * user before creating the {@link JdbcInputFormat} instance.
+ * user before creating the {@link PhoenixInputFormat} instance.
  */
 @Experimental
 public class JdbcGenericParameterValuesProvider implements JdbcParameterValuesProvider {

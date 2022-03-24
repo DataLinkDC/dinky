@@ -8,11 +8,12 @@ import org.apache.flink.connector.phoenix.internal.options.PhoenixJdbcOptions;
 import org.apache.flink.connector.phoenix.split.JdbcNumericBetweenParametersProvider;
 import org.apache.flink.table.api.TableSchema;
 import org.apache.flink.table.connector.ChangelogMode;
-import org.apache.flink.table.connector.source.DynamicTableSource;
-import org.apache.flink.table.connector.source.InputFormatProvider;
-import org.apache.flink.table.connector.source.ScanTableSource;
+import org.apache.flink.table.connector.source.*;
+import org.apache.flink.table.connector.source.abilities.SupportsLimitPushDown;
+import org.apache.flink.table.connector.source.abilities.SupportsProjectionPushDown;
 import org.apache.flink.table.types.logical.RowType;
 import org.apache.flink.table.utils.TableSchemaUtils;
+import org.apache.flink.util.Preconditions;
 
 import java.util.Objects;
 
@@ -22,7 +23,8 @@ import java.util.Objects;
  * @author gy
  * @since 2022/3/17 10:40
  **/
-public class PhoenixDynamicTableSource implements ScanTableSource {
+public class PhoenixDynamicTableSource implements ScanTableSource, LookupTableSource, SupportsProjectionPushDown,
+        SupportsLimitPushDown {
 
     private final PhoenixJdbcOptions options;
     private final JdbcReadOptions readOptions;
@@ -38,6 +40,28 @@ public class PhoenixDynamicTableSource implements ScanTableSource {
         this.physicalSchema = physicalSchema;
         this.dialectName = options.getDialect().dialectName();
 
+    }
+
+    @Override
+    public LookupTableSource.LookupRuntimeProvider getLookupRuntimeProvider(LookupTableSource.LookupContext context) {
+        // JDBC only support non-nested look up keys
+        String[] keyNames = new String[context.getKeys().length];
+        for (int i = 0; i < keyNames.length; i++) {
+            int[] innerKeyArr = context.getKeys()[i];
+            Preconditions.checkArgument(
+                    innerKeyArr.length == 1, "JDBC only support non-nested look up keys");
+            keyNames[i] = physicalSchema.getFieldNames()[innerKeyArr[0]];
+        }
+        final RowType rowType = (RowType) physicalSchema.toRowDataType().getLogicalType();
+
+        return TableFunctionProvider.of(
+                new PhoenixRowDataLookupFunction(
+                        options,
+                        lookupOptions,
+                        physicalSchema.getFieldNames(),
+                        physicalSchema.getFieldDataTypes(),
+                        keyNames,
+                        rowType));
     }
 
     @Override
@@ -82,11 +106,11 @@ public class PhoenixDynamicTableSource implements ScanTableSource {
     public ChangelogMode getChangelogMode() {
         return ChangelogMode.insertOnly();
     }
-
+    @Override
     public boolean supportsNestedProjection() {
         return false;
     }
-
+    @Override
     public void applyProjection(int[][] projectedFields) {
         this.physicalSchema = TableSchemaUtils.projectSchema(this.physicalSchema, projectedFields);
     }

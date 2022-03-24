@@ -19,7 +19,7 @@
 package org.apache.flink.connector.phoenix.table;
 
 import org.apache.flink.api.java.typeutils.RowTypeInfo;
-import org.apache.flink.connector.phoenix.JdbcInputFormat;
+import org.apache.flink.connector.phoenix.PhoenixInputFormat;
 import org.apache.flink.connector.phoenix.dialect.JdbcDialect;
 import org.apache.flink.connector.phoenix.internal.options.JdbcLookupOptions;
 import org.apache.flink.connector.phoenix.internal.options.JdbcOptions;
@@ -48,7 +48,7 @@ import static org.apache.flink.table.types.utils.TypeConversions.fromDataTypeToL
 import static org.apache.flink.util.Preconditions.checkNotNull;
 
 /** {@link TableSource} for JDBC. */
-public class JdbcTableSource
+public class PhoenixTableSource
         implements StreamTableSource<Row>, ProjectableTableSource<Row>, LookupableTableSource<Row> {
 
     private final JdbcOptions options;
@@ -60,7 +60,7 @@ public class JdbcTableSource
     private final int[] selectFields;
     private final DataType producedDataType;
 
-    private JdbcTableSource(
+    private PhoenixTableSource(
             JdbcOptions options,
             JdbcReadOptions readOptions,
             JdbcLookupOptions lookupOptions,
@@ -68,7 +68,7 @@ public class JdbcTableSource
         this(options, readOptions, lookupOptions, schema, null);
     }
 
-    private JdbcTableSource(
+    private PhoenixTableSource(
             JdbcOptions options,
             JdbcReadOptions readOptions,
             JdbcLookupOptions lookupOptions,
@@ -112,7 +112,7 @@ public class JdbcTableSource
     @Override
     public TableFunction<Row> getLookupFunction(String[] lookupKeys) {
         final RowTypeInfo rowTypeInfo = (RowTypeInfo) fromDataTypeToLegacyInfo(producedDataType);
-        return JdbcLookupFunction.builder()
+        return PhoenixLookupFunction.builder()
                 .setOptions(options)
                 .setLookupOptions(lookupOptions)
                 .setFieldTypes(rowTypeInfo.getFieldTypes())
@@ -128,7 +128,7 @@ public class JdbcTableSource
 
     @Override
     public TableSource<Row> projectFields(int[] fields) {
-        return new JdbcTableSource(options, readOptions, lookupOptions, schema, fields);
+        return new PhoenixTableSource(options, readOptions, lookupOptions, schema, fields);
     }
 
     @Override
@@ -156,10 +156,10 @@ public class JdbcTableSource
         return new Builder();
     }
 
-    private JdbcInputFormat getInputFormat() {
+    private PhoenixInputFormat getInputFormat() {
         final RowTypeInfo rowTypeInfo = (RowTypeInfo) fromDataTypeToLegacyInfo(producedDataType);
-        JdbcInputFormat.JdbcInputFormatBuilder builder =
-                JdbcInputFormat.buildJdbcInputFormat()
+        PhoenixInputFormat.PhoenixInputFormatBuilder builder =
+                PhoenixInputFormat.buildJdbcInputFormat()
                         .setDrivername(options.getDriverName())
                         .setDBUrl(options.getDbURL())
                         .setRowTypeInfo(
@@ -210,8 +210,8 @@ public class JdbcTableSource
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof JdbcTableSource) {
-            JdbcTableSource source = (JdbcTableSource) o;
+        if (o instanceof PhoenixTableSource) {
+            PhoenixTableSource source = (PhoenixTableSource) o;
             return Objects.equals(options, source.options)
                     && Objects.equals(readOptions, source.readOptions)
                     && Objects.equals(lookupOptions, source.lookupOptions)
@@ -222,7 +222,7 @@ public class JdbcTableSource
         }
     }
 
-    /** Builder for a {@link JdbcTableSource}. */
+    /** Builder for a {@link PhoenixTableSource}. */
     public static class Builder {
 
         private JdbcOptions options;
@@ -265,7 +265,7 @@ public class JdbcTableSource
          *
          * @return Configured JdbcTableSource
          */
-        public JdbcTableSource build() {
+        public PhoenixTableSource build() {
             checkNotNull(options, "No options supplied.");
             checkNotNull(schema, "No schema supplied.");
             if (readOptions == null) {
@@ -274,7 +274,7 @@ public class JdbcTableSource
             if (lookupOptions == null) {
                 lookupOptions = JdbcLookupOptions.builder().build();
             }
-            return new JdbcTableSource(options, readOptions, lookupOptions, schema);
+            return new PhoenixTableSource(options, readOptions, lookupOptions, schema);
         }
     }
 }
