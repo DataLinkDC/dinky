@@ -505,6 +505,7 @@ public class JobManager {
             GatewayResult gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
             job.setResult(InsertResult.success(gatewayResult.getAppId()));
             job.setJobId(gatewayResult.getAppId());
+            job.setJids(gatewayResult.getJids());
             job.setJobManagerAddress(formatAddress(gatewayResult.getWebURL()));
             job.setEndTime(LocalDateTime.now());
             job.setStatus(Job.JobStatus.SUCCESS);
