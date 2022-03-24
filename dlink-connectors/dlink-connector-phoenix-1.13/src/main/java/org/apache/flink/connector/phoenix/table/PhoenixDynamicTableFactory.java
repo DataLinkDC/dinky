@@ -132,6 +132,8 @@ public class PhoenixDynamicTableFactory implements DynamicTableSourceFactory, Dy
         Set<ConfigOption<?>> requiredOptions = new HashSet();
         requiredOptions.add(URL);
         requiredOptions.add(TABLE_NAME);
+        requiredOptions.add(SCHEMA_NAMESPACE_MAPPING_ENABLE);
+        requiredOptions.add(SCHEMA_MAP_SYSTEMTABLE_ENABLE);
         return requiredOptions;
     }
 
@@ -154,8 +156,8 @@ public class PhoenixDynamicTableFactory implements DynamicTableSourceFactory, Dy
         optionalOptions.add(SINK_MAX_RETRIES);
         optionalOptions.add(FactoryUtil.SINK_PARALLELISM);
         optionalOptions.add(MAX_RETRY_TIMEOUT);
-        optionalOptions.add(SCHEMA_NAMESPACE_MAPPING_ENABLE);
-        optionalOptions.add(SCHEMA_MAP_SYSTEMTABLE_ENABLE);
+        //optionalOptions.add(SCHEMA_NAMESPACE_MAPPING_ENABLE);
+        //optionalOptions.add(SCHEMA_MAP_SYSTEMTABLE_ENABLE);
         return optionalOptions;
     }
 

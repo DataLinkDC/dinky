@@ -76,7 +76,7 @@ class TableJdbcUpsertOutputFormat
 
     @Override
     public void open(int taskNumber, int numTasks) throws IOException {
-        //super.open(taskNumber, numTasks);
+        super.open(taskNumber, numTasks);
         try {
             conn = connectionProvider.getOrEstablishConnection();
         } catch (Exception e) {

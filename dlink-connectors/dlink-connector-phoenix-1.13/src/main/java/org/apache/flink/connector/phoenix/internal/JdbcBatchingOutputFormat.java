@@ -190,7 +190,7 @@ public class JdbcBatchingOutputFormat<
         for (int i = 0; i <= executionOptions.getMaxRetries(); i++) {
             try {
                 attemptFlush();
-                conn.commit();
+                //conn.commit();
                 batchCount = 0;
                 break;
             } catch (SQLException e) {
@@ -236,8 +236,8 @@ public class JdbcBatchingOutputFormat<
 
             if (batchCount > 0) {
                 try {
-                    flush();
                     LOG.info("关闭连接前 刷写数据 !!! batchCount: "+batchCount);
+                    flush();
                 } catch (Exception e) {
                     LOG.warn("Writing records to JDBC failed.", e);
                     throw new RuntimeException("Writing records to JDBC failed.", e);

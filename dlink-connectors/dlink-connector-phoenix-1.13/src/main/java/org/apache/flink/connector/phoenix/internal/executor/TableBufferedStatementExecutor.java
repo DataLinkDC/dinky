@@ -38,7 +38,7 @@ public final class TableBufferedStatementExecutor implements JdbcBatchStatementE
     private final Function<RowData, RowData> valueTransform;
     private final List<RowData> buffer = new ArrayList<>();
 
-    public TableBufferedStatementExecutor(
+    public  TableBufferedStatementExecutor(
             JdbcBatchStatementExecutor<RowData> statementExecutor,
             Function<RowData, RowData> valueTransform) {
         this.statementExecutor = statementExecutor;
