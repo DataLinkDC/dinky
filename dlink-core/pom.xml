@@ -129,7 +129,6 @@
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-connector-phoenix-1.13</artifactId>
-            <version>0.6.0</version>
             <scope>${scope.runtime}</scope>
         </dependency>
 
