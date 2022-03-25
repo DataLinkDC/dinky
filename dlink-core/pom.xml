@@ -125,5 +125,12 @@
             <artifactId>dlink-metadata-phoenix</artifactId>
             <scope>${scope.runtime}</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-connector-phoenix-1.13</artifactId>
+            <scope>${scope.runtime}</scope>
+        </dependency>
+
     </dependencies>
 </project>

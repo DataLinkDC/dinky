@@ -1,0 +1,9 @@
+/* http://127.0.0.1:8888/openapi/savepointTask */
+{
+  /* required-start */
+  "taskId":"1",
+  /* required-end */
+  /* custom-start */
+  "type":"trigger" // trigger | stop | cancel | canceljob
+  /* custom-start */
+}
