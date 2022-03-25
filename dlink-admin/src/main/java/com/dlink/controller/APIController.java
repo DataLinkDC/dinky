@@ -71,4 +71,10 @@ public class APIController {
     public Result executeJar(@RequestBody APIExecuteJarDTO apiExecuteJarDTO) {
         return Result.succeed(apiService.executeJar(apiExecuteJarDTO), "执行成功");
     }
+
+    @PostMapping("/savepointTask")
+    public Result savepointTask(@RequestBody APISavePointTaskDTO apiSavePointTaskDTO) {
+        return Result.succeed(taskService.savepointTask(apiSavePointTaskDTO.getTaskId(),apiSavePointTaskDTO.getType()), "执行成功");
+    }
+
 }
