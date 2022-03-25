@@ -35,7 +35,7 @@
         <spring-boot-dependencies.version>2.6.3</spring-boot-dependencies.version>
         <hutool.version>5.1.4</hutool.version>
         <druid-starter>1.2.8</druid-starter>
-        <mybatis-plus-boot-starter.version>3.4.0</mybatis-plus-boot-starter.version>
+        <mybatis-plus-boot-starter.version>3.5.1</mybatis-plus-boot-starter.version>
         <lombok.version>1.18.16</lombok.version>
         <jackjson.version>2.11.4</jackjson.version>
         <guava.version>21.0</guava.version>
