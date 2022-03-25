@@ -1,11 +1,8 @@
 package com.dlink.db.config;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.baomidou.mybatisplus.core.parser.ISqlParser;
-import com.baomidou.mybatisplus.core.parser.ISqlParserFilter;
-import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.tenant.TenantHandler;
-import com.baomidou.mybatisplus.extension.plugins.tenant.TenantSqlParser;
+
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.dlink.db.handler.DateMetaObjectHandler;
 import com.dlink.db.properties.MybatisPlusFillProperties;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +24,8 @@ public class MybatisPlusConfigure {
     private MybatisPlusFillProperties autoFillProperties;
 
     @Bean
-    public PaginationInterceptor paginationInterceptor() {
-        PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
+    public PaginationInnerInterceptor paginationInterceptor() {
+        PaginationInnerInterceptor paginationInterceptor = new PaginationInnerInterceptor();
         return paginationInterceptor;
     }
 
