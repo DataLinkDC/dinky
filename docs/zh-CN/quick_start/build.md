@@ -198,7 +198,25 @@ mvn clean install -Dmaven.test.skip=true
 
 以上就是Dinky源码编译的详细步骤，Dinky如何安装部署，请查看下一章节[Dinky部署](/zh-CN/quick_start/deploy.md)
 
-
+> **常见问题**：
+>
+> clone 过程中报错：
+>
+> - `fatal: unable to access 'https://github.com/DataLinkDC/dlink.git/': Encountered end of file`
+>
+>   解决办法：
+>
+>   ~~~shell
+>   git config --global --unset https.proxy
+>   ~~~
+>
+> - `error: RPC failed; result=35, HTTP code = 0 fatal: The remote end hung up unexpectedly`、
+>
+>   解决办法：设置 Git 的 http 缓存大小
+>
+>   ~~~shell
+>   git config --global http.postBuffer 50m
+>   ~~~
 
 
 
