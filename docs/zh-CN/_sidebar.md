@@ -10,7 +10,7 @@
   - [编译](/zh-CN/quick_start/build.md)
   - [部署](/zh-CN/quick_start/deploy.md)
 - 使用手册
-  - FlinkSQL Studio
+  - 数据开发
     - [Studio介绍](/zh-CN/administrator-guide/Studio/studio_introduce.md)
     - 作业管理
     - 作业开发
@@ -30,28 +30,29 @@
   - 运维中心
     - 生命周期管理
     - 作业监控
-  - openapi
+  - [OpenAPI](/zh-CN/api/openapi.md)
 - 扩展
+  - [集成](/zh-CN/extend/integrate.md)
   - 功能扩展
     - [扩展Flink版本](/zh-CN/extend/flinkversion.md)
     - [扩展连接器](/zh-CN/extend/connector.md)
     - [扩展数据源](/zh-CN/extend/datasource.md)
     - [FlinkSQL 编辑器自动补全函数](/zh-CN/extend/completion.md)
-  - 集成生态
-    - [Flink-CDC集成](/zh-CN/extend/flinkcdc.md)
-    - [Flink-CDC-Kafka多源合并](/zh-CN/extend/Flink_CDC_kafka_Multi_source_merger.md)
-    - [hive集成](/zh-CN/extend/hive.md)
-    - [clickhouse集成](/zh-CN/extend/clickhouse.md)
-    - [Doris集成](/zh-CN/extend/doris.md)
-    - [Hudi集成](/zh-CN/extend/hudi.md)
-    - [Iceberg集成](/zh-CN/extend/iceberg.md)
-    - [Flink UDF集成](/zh-CN/extend/udf.md)
-    - [DolphinScheduler集成](/zh-CN/extend/dolphinscheduler.md)
-    - [DataSphereStudio集成](/zh-CN/extend/dataspherestudio.md)
-- 实践分享
-  - [Yarn提交实践指南](/zh-CN/practice/yarnsubmit.md)
-  - [Dlink 核心概念及实现原理详解](/zh-CN/practice/principle.md)
-  - [AGGTABLE 表值聚合的实践](/zh-CN/practice/aggtable.md)
+  - 实践指南
+    - [Yarn提交实践指南](/zh-CN/practice/yarnsubmit.md)
+    - [Dlink 核心概念及实现原理详解](/zh-CN/practice/principle.md)
+    - [AGGTABLE 表值聚合的实践](/zh-CN/practice/aggtable.md)
+    - 集成指南
+      - [Flink-CDC集成](/zh-CN/extend/flinkcdc.md)
+      - [Flink-CDC-Kafka多源合并](/zh-CN/extend/Flink_CDC_kafka_Multi_source_merger.md)
+      - [hive集成](/zh-CN/extend/hive.md)
+      - [clickhouse集成](/zh-CN/extend/clickhouse.md)
+      - [Doris集成](/zh-CN/extend/doris.md)
+      - [Hudi集成](/zh-CN/extend/hudi.md)
+      - [Iceberg集成](/zh-CN/extend/iceberg.md)
+      - [Flink UDF集成](/zh-CN/extend/udf.md)
+      - [DolphinScheduler集成](/zh-CN/extend/dolphinscheduler.md)
+      - [DataSphereStudio集成](/zh-CN/extend/dataspherestudio.md)
 - 开发者指南
   - 参与贡献
     - [如何贡献](/zh-CN/developer-guide/how_contribute.md)
