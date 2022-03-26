@@ -60,9 +60,9 @@ public class WeChatSenderTest {
     @Before
     public void initWeChatConfig() {
         // Just for this test, I will delete these configurations before this PR is merged
-        weChatConfig.put(WeChatConstants.AGENT_ID, "1000002");
-        weChatConfig.put(WeChatConstants.SECRET, "V2w-9JDqSrF2wVW0eno6Vnrxbe6WZMHvO1Z1Hwj3JGg");
-        weChatConfig.put(WeChatConstants.CORP_ID, "ww4ae244b25dda07cb");
+        weChatConfig.put(WeChatConstants.AGENT_ID, "AGENT_ID");
+        weChatConfig.put(WeChatConstants.SECRET, "SECRET");
+        weChatConfig.put(WeChatConstants.CORP_ID, "CORP_ID");
         weChatConfig.put(WeChatConstants.CHARSET, "UTF-8");
         weChatConfig.put(WeChatConstants.USER_SEND_MSG, "{\"touser\":\"{toUser}\",\"agentid\":{agentId}"
                 +
@@ -93,7 +93,7 @@ public class WeChatSenderTest {
 
     @Test
     public void testChatMarkDownMsg() throws IOException {
-        weChatConfig.put(WeChatConstants.WEBHOOK, "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=822d17a1-d6e5-43c2-a566-4846fe13396c");
+        weChatConfig.put(WeChatConstants.WEBHOOK, "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=8xxxxxxxxxxxxxxxxx6fe13396c");
         weChatConfig.put(WeChatConstants.SEND_TYPE, WeChatType.CHAT.getValue());
         weChatConfig.put(WeChatConstants.USER_SEND_MSG,WeChatConstants.WEBHOOK_TEMPLATE);
         weChatConfig.put(WeChatConstants.SHOW_TYPE, ShowType.TABLE.getValue());
