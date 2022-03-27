@@ -6,7 +6,7 @@
   - [系统架构](/zh-CN/architecture.md)
   - [基本概念](/zh-CN/concept.md)
 - [功能](/zh-CN/feature.md)
-- 入门
+- 编译与部署
   - [编译](/zh-CN/quick_start/build.md)
   - [部署](/zh-CN/quick_start/deploy.md)
 - [dinky概览](/zh-CN/dinky_overview.md)
@@ -15,19 +15,10 @@
   -  其他数据源作业快速入门
 - 使用手册
   - 数据开发
-    - [数据开发概览](/zh-CN/administrator-guide/Studio/studio_introduce.md)
-      - 概述
-      - 支持上下游存储
-      - 管理控制台介绍
-      - 开发控制台介绍
-    - 作业管理
-      - 创建目录
-      - 创建根目录
-      - 创建作业
-      - 重命名作业
-      - 移动作业
-      - 删除作业
-      - 关闭作业
+    - 开发控制台介绍
+      - [功能介绍](/zh-CN/administrator-guide/Studio/development_control/function_introduce.md)
+      - [组件介绍](/zh-CN/administrator-guide/Studio/development_control/component_introduce.md)
+    - [作业管理](/zh-CN/administrator-guide/Studio/job_manage.md)
     - 作业开发
       - 开发
       - 提交
