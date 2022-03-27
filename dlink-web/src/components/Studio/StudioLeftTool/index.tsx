@@ -1,6 +1,6 @@
 import {Tabs, Empty} from "antd";
 import {BarsOutlined,DatabaseOutlined,AppstoreOutlined,ClusterOutlined,MessageOutlined,FireOutlined,FunctionOutlined} from "@ant-design/icons";
-import {StateType} from "@/pages/FlinkSqlStudio/model";
+import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import styles from "./index.less";
 import StudioTree from "../StudioTree";

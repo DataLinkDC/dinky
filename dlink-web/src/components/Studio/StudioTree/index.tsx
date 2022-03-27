@@ -2,10 +2,10 @@ import React, {useEffect, useState, Key} from "react";
 import {connect} from "umi";
 import {DownOutlined, SwitcherOutlined, FolderAddOutlined} from "@ant-design/icons";
 import {Tree, Menu, Empty, Button, message, Modal, Tooltip, Row, Col, Input} from 'antd';
-import {getCatalogueTreeData} from "@/pages/FlinkSqlStudio/service";
+import {getCatalogueTreeData} from "@/pages/DataStudio/service";
 import {convertToTreeData, getTreeNodeByKey, TreeDataNode} from "@/components/Studio/StudioTree/Function";
 import style from "./index.less";
-import {StateType} from "@/pages/FlinkSqlStudio/model";
+import {StateType} from "@/pages/DataStudio/model";
 import {
   getInfoById, handleAddOrUpdate, handleAddOrUpdateWithResult, handleRemoveById, handleSubmit
 } from "@/components/Common/crud";

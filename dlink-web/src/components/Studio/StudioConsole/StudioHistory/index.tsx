@@ -1,4 +1,4 @@
-import {StateType} from "@/pages/FlinkSqlStudio/model";
+import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import {Tag, Space, Typography, Divider, Badge, Modal} from 'antd';
 import {MessageOutlined,ClusterOutlined,FireOutlined,RocketOutlined} from "@ant-design/icons";
@@ -12,7 +12,7 @@ import {
 import styles from "./index.less";
 import {Scrollbars} from 'react-custom-scrollbars';
 import StudioPreview from "../StudioPreview";
-import {getJobData} from "@/pages/FlinkSqlStudio/service";
+import {getJobData} from "@/pages/DataStudio/service";
 import {HistoryItem} from "@/components/Studio/StudioConsole/StudioHistory/data";
 
 

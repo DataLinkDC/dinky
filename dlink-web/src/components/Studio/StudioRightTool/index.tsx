@@ -1,6 +1,6 @@
 import {Tabs, Empty, Form} from "antd";
 import {SettingOutlined,ScheduleOutlined} from "@ant-design/icons";
-import {StateType} from "@/pages/FlinkSqlStudio/model";
+import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import StudioConfig from "./StudioConfig";
 import StudioSetting from "./StudioSetting";

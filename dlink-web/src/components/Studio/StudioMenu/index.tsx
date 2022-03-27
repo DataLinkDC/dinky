@@ -10,10 +10,10 @@ import Space from "antd/es/space";
 import Divider from "antd/es/divider";
 import Button from "antd/es/button/button";
 import Breadcrumb from "antd/es/breadcrumb/Breadcrumb";
-import {StateType} from "@/pages/FlinkSqlStudio/model";
+import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import {CODE, postDataArray} from "@/components/Common/crud";
-import {executeSql, getJobPlan} from "@/pages/FlinkSqlStudio/service";
+import {executeSql, getJobPlan} from "@/pages/DataStudio/service";
 import StudioHelp from "./StudioHelp";
 import StudioGraph from "./StudioGraph";
 import {
@@ -37,7 +37,7 @@ import {
 import {
   ModalForm,
 } from '@ant-design/pro-form';
-import SqlExport from "@/pages/FlinkSqlStudio/SqlExport";
+import SqlExport from "@/pages/DataStudio/SqlExport";
 import {Dispatch} from "@@/plugin-dva/connect";
 import StudioTabs from "@/components/Studio/StudioTabs";
 import {isDeletedTask, JOB_LIFE_CYCLE} from "@/components/Common/JobLifeCycle";

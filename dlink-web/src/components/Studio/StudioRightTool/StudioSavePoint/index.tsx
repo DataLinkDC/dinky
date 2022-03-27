@@ -6,7 +6,7 @@ import ProTable from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import {queryData} from "@/components/Common/crud";
 import {SavePointTableListItem} from "@/components/Studio/StudioRightTool/StudioSavePoint/data";
-import {StateType} from "@/pages/FlinkSqlStudio/model";
+import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import { Scrollbars } from 'react-custom-scrollbars';
 

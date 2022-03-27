@@ -1,9 +1,9 @@
-import {StateType} from "@/pages/FlinkSqlStudio/model";
+import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import {Button, Tag, Space, Typography, Modal,} from 'antd';
 import {ConsoleSqlOutlined} from "@ant-design/icons";
 import ProList from '@ant-design/pro-list';
-import {explainSql} from "@/pages/FlinkSqlStudio/service";
+import {explainSql} from "@/pages/DataStudio/service";
 import {useRef, useState, useEffect} from "react";
 
 const {Paragraph,Text} = Typography;

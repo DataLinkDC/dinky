@@ -1,7 +1,7 @@
 import {message, Tabs, Menu, Dropdown} from 'antd';
 import React, {useState} from 'react';
 import {connect} from 'umi';
-import {StateType} from '@/pages/FlinkSqlStudio/model';
+import {StateType} from '@/pages/DataStudio/model';
 import styles from './index.less';
 import StudioEdit from '../StudioEdit';
 import {DIALECT} from '../conf';

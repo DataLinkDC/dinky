@@ -3,7 +3,7 @@ import {
   Tooltip, Drawer, Modal
 } from "antd";
 import ProDescriptions from '@ant-design/pro-descriptions';
-import {StateType} from "@/pages/FlinkSqlStudio/model";
+import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import {useState} from "react";
 import styles from "./index.less";
