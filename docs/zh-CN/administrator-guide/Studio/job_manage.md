@@ -84,7 +84,7 @@ Dinky数据开发控制台，目前支持的数据源作业开发详情请参考
 
 当您作业比较多的时候，可以通过搜索功能，找到对应的作业或者目录。不管是搜索作业还是搜索目录都很方便。
 
-![搜索](http://www.aiwenmo.com/dinky/dev/docs/%E6%90%9C%E7%B4%A2.png)
+![作业目录搜索](http://www.aiwenmo.com/dinky/dev/docs/%E4%BD%9C%E4%B8%9A%E7%9B%AE%E5%BD%95%E6%90%9C%E7%B4%A2.png)
 
 ## 删除
 
