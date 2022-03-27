@@ -9,13 +9,36 @@
 - 入门
   - [编译](/zh-CN/quick_start/build.md)
   - [部署](/zh-CN/quick_start/deploy.md)
+- [dinky概览](/zh-CN/dinky_overview.md)
+-  快速入门指南
+  -  FlinkSQL 作业快速入门
+  -  其他数据源作业快速入门
 - 使用手册
   - 数据开发
-    - [Studio介绍](/zh-CN/administrator-guide/Studio/studio_introduce.md)
+    - [数据开发概览](/zh-CN/administrator-guide/Studio/studio_introduce.md)
+      - 概述
+      - 支持上下游存储
+      - 管理控制台介绍
+      - 开发控制台介绍
     - 作业管理
+      - 创建目录
+      - 创建根目录
+      - 创建作业
+      - 重命名作业
+      - 移动作业
+      - 删除作业
+      - 关闭作业
     - 作业开发
-    - 作业配置
-    - 作业提交
+      - 开发
+      - 提交
+    - 运维管理
+      - 作业配置
+      - 执行配置
+      - 保存点
+    - 作业监控
+    - 开发参考
+      - 上下游存储
+      - FlinkSQL参考
   - 注册中心
     - [集群管理](/zh-CN/administrator-guide/registerCenter/cluster_manage.md)
     - [数据源管理](/zh-CN/administrator-guide/registerCenter/datasource_manage.md)
