@@ -1,8 +1,8 @@
 import {AlertInstanceTableListItem} from "@/pages/AlertInstance/data";
 
 export const getJSONData = (values: AlertInstanceTableListItem) => {
-  if(!values||!values.params||values.params==''){
-    return {};
+  if(!values.params||values.params==''){
+    return values;
   }
   let data = JSON.parse(values.params);
   return {...data,...values};
