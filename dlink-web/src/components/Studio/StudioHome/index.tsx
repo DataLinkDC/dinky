@@ -1,7 +1,7 @@
 import {Typography,Divider} from 'antd';
 import React from 'react';
 import {connect} from 'umi';
-import {StateType} from '@/pages/FlinkSqlStudio/model';
+import {StateType} from '@/pages/DataStudio/model';
 import {Scrollbars} from 'react-custom-scrollbars';
 
 const {Title, Paragraph, Text} = Typography;

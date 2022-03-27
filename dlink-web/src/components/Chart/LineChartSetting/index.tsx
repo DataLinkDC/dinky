@@ -1,5 +1,5 @@
 import {Button, Tag, Row, Col, Form, Select, Empty, Switch} from "antd";
-import {StateType} from "@/pages/FlinkSqlStudio/model";
+import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import styles from "./index.less";
 import {FireOutlined, SearchOutlined, RedoOutlined, InfoCircleOutlined} from '@ant-design/icons';

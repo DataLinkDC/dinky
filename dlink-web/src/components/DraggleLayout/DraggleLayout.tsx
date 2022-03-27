@@ -2,7 +2,7 @@ import React, {useRef, useState} from 'react';
 import useDraggable from '../../hooks/useDraggable';
 import styles from './DraggleLayout.less';
 import {connect} from "umi";
-import {StateType} from "@/pages/FlinkSqlStudio/model";
+import {StateType} from "@/pages/DataStudio/model";
 
 function DraggleLayout({
                          children, // 两列布局

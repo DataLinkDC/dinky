@@ -1,5 +1,5 @@
 import {Input, Button, Space, Empty} from "antd";
-import {StateType} from "@/pages/FlinkSqlStudio/model";
+import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import {useState} from "react";
 import { SearchOutlined } from '@ant-design/icons';
