@@ -3,7 +3,7 @@ import {
   CodeOutlined, TableOutlined, RadarChartOutlined, CalendarOutlined, FileSearchOutlined, DesktopOutlined
   , FunctionOutlined, ApartmentOutlined,BarChartOutlined
 } from "@ant-design/icons";
-import {StateType} from "@/pages/FlinkSqlStudio/model";
+import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import styles from "./index.less";
 import StudioMsg from "./StudioMsg";

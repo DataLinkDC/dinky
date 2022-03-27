@@ -1,5 +1,5 @@
 import {Typography, Divider, Badge, Empty,Tag} from "antd";
-import {StateType} from "@/pages/FlinkSqlStudio/model";
+import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import {FireOutlined, ScheduleOutlined} from '@ant-design/icons';
 import StudioSqlConfig from "@/components/Studio/StudioRightTool/StudioSqlConfig";

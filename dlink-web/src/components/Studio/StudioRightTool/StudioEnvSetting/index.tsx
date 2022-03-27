@@ -1,5 +1,5 @@
 import {connect} from "umi";
-import {StateType} from "@/pages/FlinkSqlStudio/model";
+import {StateType} from "@/pages/DataStudio/model";
 import {Form, Switch, Row, Col,Tooltip, Button} from "antd";
 import {InfoCircleOutlined,MinusSquareOutlined} from "@ant-design/icons";
 import styles from "./index.less";

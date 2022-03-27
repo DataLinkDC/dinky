@@ -3,7 +3,7 @@ import {Card, Image, List, Modal} from 'antd';
 
 import {DataBaseItem} from '../data.d';
 import {connect} from "umi";
-import {StateType} from "@/pages/FlinkSqlStudio/model";
+import {StateType} from "@/pages/DataStudio/model";
 import {FALLBACK, getDBImage} from "@/pages/DataBase/DB";
 import DataBaseForm from "@/pages/DataBase/components/DataBaseForm";
 import {createOrModifyDatabase, testDatabaseConnect} from "@/pages/DataBase/service";

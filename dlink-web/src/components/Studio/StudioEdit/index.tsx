@@ -1,7 +1,7 @@
 import React, {useEffect, useImperativeHandle, useRef,useState} from 'react';
 import * as _monaco from "monaco-editor";
 import MonacoEditor from "react-monaco-editor";
-import {StateType} from "@/pages/FlinkSqlStudio/model";
+import {StateType} from "@/pages/DataStudio/model";
 import {connect,Dispatch} from "umi";
 import {DocumentStateType} from "@/pages/Document/model";
 import {DocumentTableListItem} from "@/pages/Document/data";

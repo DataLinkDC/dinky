@@ -1,4 +1,4 @@
-import {getJobData} from "@/pages/FlinkSqlStudio/service";
+import {getJobData} from "@/pages/DataStudio/service";
 
 export function showJobData(key: number,jobId: string,dispatch: any) {
   if(!jobId){

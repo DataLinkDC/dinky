@@ -2,7 +2,7 @@ import {
   Tabs, Button,Tree, Empty, Select,Tag,
   Tooltip
 } from "antd";
-import {StateType} from "@/pages/FlinkSqlStudio/model";
+import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import {useState} from "react";
 import styles from "./index.less";

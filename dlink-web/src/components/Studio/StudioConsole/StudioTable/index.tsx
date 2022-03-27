@@ -1,5 +1,5 @@
 import {Button, Tag, Empty} from "antd";
-import {StateType} from "@/pages/FlinkSqlStudio/model";
+import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import {FireOutlined, SearchOutlined} from '@ant-design/icons';
 import {showJobData} from "@/components/Studio/StudioEvent/DQL";
