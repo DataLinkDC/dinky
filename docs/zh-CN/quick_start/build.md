@@ -25,7 +25,7 @@ npm install -g npm@7.19.0
 
 ### Linux 版本
 
-[下载地址]( <https://registry.npmmirror.com/-/binary/node/v14.19.0/node-v14.19.0.tar.gz>)
+[下载地址](https://nodejs.org/download/release/v14.19.1/node-v14.19.1-linux-x64.tar.gz)
 
 下载完成后，安装配置即可，操作如下：
 
