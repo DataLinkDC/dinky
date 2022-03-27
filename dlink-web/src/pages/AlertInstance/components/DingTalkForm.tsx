@@ -43,7 +43,7 @@ const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
     handleSubmit(buildJSONData(formVals,fieldsValue));
   };
 
-  const renderContent = (formVals) => {
+  const renderContent = () => {
     return (
       <>
         <Divider>钉钉配置</Divider>
