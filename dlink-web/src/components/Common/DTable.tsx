@@ -63,7 +63,7 @@ const DTable = (props: any) => {
     if(dataSource&&dataSource.url){
       refreshData();
     }
-  }, []);
+  }, [dataSource]);
 
   return (
     <ProTable
