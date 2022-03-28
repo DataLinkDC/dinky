@@ -125,7 +125,7 @@ const WeChatForm: React.FC<AlertInstanceFormProps> = (props) => {
           label="发送信息"
           rules={[{required: true, message: '请输入发送信息！'}]}
         >
-          <Input placeholder="请输入发送信息"/>
+          <Input defaultValue='{"touser":"{toUser}","agentid":{agentId},"msgtype":"{showType}","{showType}":{"content":"{msg}"}}' disabled placeholder="请输入发送信息"/>
         </Form.Item>
         <Form.Item
           name="agentId"
@@ -136,16 +136,34 @@ const WeChatForm: React.FC<AlertInstanceFormProps> = (props) => {
         </Form.Item>
         </>
         }
-        <Form.Item
-          name="showType"
-          label="展示方式"
-          rules={[{required: true, message: '请选择展示方式！'}]}
-        >
-          <Radio.Group >
-            <Radio value='markdown'>MarkDown</Radio>
-            <Radio value='text'>文本</Radio>
-          </Radio.Group>
-        </Form.Item>
+        { (vals.sendType === "群聊")  ?
+          <div hidden>
+            <Form.Item
+              name="showType"
+              label="展示方式"
+              rules={[{required: true, message: '请选择展示方式！'}]}
+            >
+              <Radio.Group >
+                <Radio value='markdown'>MarkDown</Radio>
+                <Radio value='text'>文本</Radio>
+              </Radio.Group>
+            </Form.Item>
+          </div>
+           :
+          <>
+            <Form.Item
+              name="showType"
+              label="展示方式"
+              rules={[{required: true, message: '请选择展示方式！'}]}
+            >
+              <Radio.Group >
+                <Radio value='markdown'>MarkDown</Radio>
+                <Radio value='text'>文本</Radio>
+              </Radio.Group>
+            </Form.Item>
+          </>
+        }
+
         <Form.Item
           name="enabled"
           label="是否启用">
