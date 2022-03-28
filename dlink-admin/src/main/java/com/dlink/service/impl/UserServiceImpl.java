@@ -46,9 +46,6 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         if (Asserts.isNull(user.getId())) {
             return false;
         }
-        if (Asserts.isNotNull(user.getPassword())) {
-            user.setPassword(SaSecureUtil.md5(user.getPassword()));
-        }
         return updateById(user);
     }
 
