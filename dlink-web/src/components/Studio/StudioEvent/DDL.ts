@@ -1,6 +1,6 @@
-import {executeDDL} from "@/pages/FlinkSqlStudio/service";
+import {executeDDL} from "@/pages/DataStudio/service";
 import FlinkSQL from "./FlinkSQL";
-import {SessionType} from "@/pages/FlinkSqlStudio/model";
+import {SessionType} from "@/pages/DataStudio/model";
 import {Modal, message} from "antd";
 import {addOrUpdateData, getData, handleRemove} from "@/components/Common/crud";
 

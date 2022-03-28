@@ -1,5 +1,5 @@
 import {Empty, Tag, Divider, Tooltip, message, Select, Button, Space, Modal,Dropdown,Menu} from "antd";
-import {StateType} from "@/pages/FlinkSqlStudio/model";
+import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import {useState} from "react";
 import {SearchOutlined,CheckCircleOutlined,SyncOutlined,CloseCircleOutlined,ClockCircleOutlined,MinusCircleOutlined,DownOutlined} from '@ant-design/icons';

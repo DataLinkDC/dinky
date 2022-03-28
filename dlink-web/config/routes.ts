@@ -16,11 +16,11 @@ export default [
     ],
   },
   {
-    path: '/flinksqlstudio',
-    name: 'flinksqlstudio',
+    path: '/datastudio',
+    name: 'datastudio',
     icon: 'consoleSql',
     footerRender: false,
-    component: './FlinkSqlStudio',
+    component: './DataStudio',
   },
   {
     path: '/devops',
@@ -94,7 +94,7 @@ export default [
   },
   {
     path: '/',
-    redirect: '/flinksqlstudio',
+    redirect: '/datastudio',
   },
   {
     name: 'settings',

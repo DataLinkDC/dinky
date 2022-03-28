@@ -3,7 +3,7 @@ import {Form, Button, Input, Modal,Select,Tag,Switch} from 'antd';
 
 import {SessionItem} from '../data.d';
 import {connect} from "umi";
-import {StateType} from "@/pages/FlinkSqlStudio/model";
+import {StateType} from "@/pages/DataStudio/model";
 
 export type UpdateFormProps = {
   onCancel: (flag?: boolean, formVals?: Partial<SessionItem>) => void;

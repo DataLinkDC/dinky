@@ -43,7 +43,7 @@ const WeChatForm: React.FC<AlertInstanceFormProps> = (props) => {
     handleSubmit(buildJSONData(formVals,fieldsValue));
   };
 
-  const renderContent = (formVals) => {
+  const renderContent = (vals) => {
     return (
       <>
         <Divider>微信企业号配置</Divider>
@@ -65,7 +65,7 @@ const WeChatForm: React.FC<AlertInstanceFormProps> = (props) => {
             <Radio value='群聊'>群聊</Radio>
           </Radio.Group>
         </Form.Item>
-        { (formVals.sendType === "群聊")  &&
+        { (vals.sendType == "群聊")  ?
           <>
             <Form.Item
               name="webhook"
@@ -85,9 +85,9 @@ const WeChatForm: React.FC<AlertInstanceFormProps> = (props) => {
               validateTrigger={['onChange', 'onBlur']}
               label="@所有人">
               <Switch checkedChildren="启用" unCheckedChildren="禁用"
-                      defaultChecked={formVals.isAtAll}/>
+                      defaultChecked={vals.isAtAll}/>
             </Form.Item>
-            { (  formVals.sendType === "群聊" && formVals.isAtAll===false )&&
+            { ( !vals.isAtAll )&&
               <Form.Item
                 name="users"
                 label="被@用户"
@@ -97,8 +97,7 @@ const WeChatForm: React.FC<AlertInstanceFormProps> = (props) => {
               </Form.Item>
             }
           </>
-        }
-        { formVals.sendType === "应用" &&
+        :
         <>
         <Form.Item
           name="corpId"
@@ -126,7 +125,7 @@ const WeChatForm: React.FC<AlertInstanceFormProps> = (props) => {
           label="发送信息"
           rules={[{required: true, message: '请输入发送信息！'}]}
         >
-          <Input placeholder="请输入发送信息"/>
+          <Input defaultValue='{"touser":"{toUser}","agentid":{agentId},"msgtype":"{showType}","{showType}":{"content":"{msg}"}}' disabled placeholder="请输入发送信息"/>
         </Form.Item>
         <Form.Item
           name="agentId"
@@ -137,21 +136,39 @@ const WeChatForm: React.FC<AlertInstanceFormProps> = (props) => {
         </Form.Item>
         </>
         }
-        <Form.Item
-          name="showType"
-          label="展示方式"
-          rules={[{required: true, message: '请选择展示方式！'}]}
-        >
-          <Radio.Group >
-            <Radio value='markdown'>MarkDown</Radio>
-            <Radio value='text'>文本</Radio>
-          </Radio.Group>
-        </Form.Item>
+        { (vals.sendType === "群聊")  ?
+          <div hidden>
+            <Form.Item
+              name="showType"
+              label="展示方式"
+              rules={[{required: true, message: '请选择展示方式！'}]}
+            >
+              <Radio.Group >
+                <Radio value='markdown'>MarkDown</Radio>
+                <Radio value='text'>文本</Radio>
+              </Radio.Group>
+            </Form.Item>
+          </div>
+           :
+          <>
+            <Form.Item
+              name="showType"
+              label="展示方式"
+              rules={[{required: true, message: '请选择展示方式！'}]}
+            >
+              <Radio.Group >
+                <Radio value='markdown'>MarkDown</Radio>
+                <Radio value='text'>文本</Radio>
+              </Radio.Group>
+            </Form.Item>
+          </>
+        }
+
         <Form.Item
           name="enabled"
           label="是否启用">
           <Switch checkedChildren="启用" unCheckedChildren="禁用"
-                  defaultChecked={formVals.enabled}/>
+                  defaultChecked={vals.enabled}/>
         </Form.Item>
       </>
     );

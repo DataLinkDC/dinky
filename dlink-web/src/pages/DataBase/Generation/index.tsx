@@ -22,7 +22,7 @@ const Generation = (props: any) => {
 
   useEffect(() => {
     getSqlGeneration();
-  }, []);
+  }, [dbId,table,schema]);
 
   return (<>
     <Paragraph>

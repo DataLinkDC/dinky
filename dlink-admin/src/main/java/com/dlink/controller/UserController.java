@@ -89,6 +89,7 @@ public class UserController {
     @PostMapping("/getOneById")
     public Result getOneById(@RequestBody User user) {
         user = userService.getById(user.getId());
+        user.setPassword(null);
         return Result.succeed(user, "获取成功");
     }
 
