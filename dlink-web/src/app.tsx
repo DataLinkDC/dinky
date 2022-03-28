@@ -29,7 +29,7 @@ export async function getInitialState(): Promise<{
     try {
       const result = await queryCurrentUser();
       const currentUser: API.CurrentUser = {
-        name: result.datas.nickname,
+        name: result.datas.nickname || result.datas.username,
         avatar: result.datas.avatar?result.datas.avatar:'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
         userid: result.datas.username,
         notifyCount: 0,
