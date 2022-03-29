@@ -72,11 +72,4 @@ COPY --from=build-stage /tmp/dist /app
 COPY --from=plugin-stage /app/lib /app/plugins
 
 
-CMD ["java",\
-     "-Dloader.path=./lib,./plugins",\
-     "-Ddruid.mysql.usePingMethod=false",\
-     "-jar",\
-     "-Xms512M",\
-     "-Xmx2048M",\
-     "./dlink-admin-*.jar" ]
-
+CMD [ "/bin/sh", "-c", "java -Dloader.path=./lib,./plugins -Ddruid.mysql.usePingMethod=false -jar -Xms512M -Xmx2048M ./dlink-admin-*.jar" ]
