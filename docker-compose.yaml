@@ -8,7 +8,7 @@ services:
     build:
       context: .
       dockerfile: ./docker/server/Dockerfile
-    command: [ "/bin/sh", "-c", "java -Dloader.path=./lib,./plugins -Ddruid.mysql.usePingMethod=false -jar -Xms512M -Xmx2048M ./dlink-admin-*.jar" ]
+#    command: [ "/bin/sh", "-c", "java -Dloader.path=./lib,./plugins -Ddruid.mysql.usePingMethod=false -jar -Xms512M -Xmx2048M ./dlink-admin-*.jar" ]
 #    volumes:
 #      # 挂载dinky lib/plugins 目录
 #      - ./docker/dinky/lib:/app/lib
@@ -52,10 +52,10 @@ services:
       MYSQL_DATABASE: dlink
       MYSQL_USER: dlink
       MYSQL_PASSWORD: dlink
-#    healthcheck:
-#      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
-#      timeout: 20s
-#      retries: 10
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
     restart: unless-stopped
 
 

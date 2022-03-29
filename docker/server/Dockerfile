@@ -56,7 +56,7 @@ RUN tar zxvf /tmp/flink-1.13.3-bin-scala_2.12.tgz -C /app --strip-components=1
 # stage 1, build stage
 FROM maven:3.8.4-jdk-8 as build-stage
 WORKDIR /app
-COPY --from=deps-stage /usr/share/maven/ref/repository /usr/share/maven/ref/repository
+COPY --from=deps-stage /root/.m2/repository /root/.m2/repository
 COPY --from=deps-stage /app/ /app
 ADD .  /app
 RUN mvn clean package -Dmaven.test.skip=true
