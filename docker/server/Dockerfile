@@ -44,8 +44,7 @@ ADD ./dlink-client/dlink-client-1.14/pom.xml ./dlink-client/dlink-client-1.14/po
 ADD ./dlink-client/dlink-client-1.13/pom.xml ./dlink-client/dlink-client-1.13/pom.xml
 ADD ./dlink-function/pom.xml ./dlink-function/pom.xml
 ADD ./dlink-web/pom.xml ./dlink-web/pom.xml
-ADD ./docker/server/maven-settings.xml /tmp/maven-settings.xml
-RUN mvn -T 1C -B -s /tmp/maven-settings.xml dependency:go-offline --fail-never || true
+RUN mvn -T 1C -B dependency:go-offline --fail-never || true
 
 # stage 0, 引入plugins
 FROM maven:3.8.4-jdk-8 as plugin-stage
@@ -60,8 +59,7 @@ WORKDIR /app
 COPY --from=deps-stage /usr/share/maven/ref/repository /usr/share/maven/ref/repository
 COPY --from=deps-stage /app/ /app
 ADD .  /app
-ADD ./docker/server/maven-settings.xml /tmp/maven-settings.xml
-RUN mvn -s /tmp/maven-settings.xml clean package -Dmaven.test.skip=true
+RUN mvn clean package -Dmaven.test.skip=true
 RUN mkdir /tmp/dist
 RUN tar zxvf ./build/dlink-release-*.tar.gz -C /tmp/dist --strip-components=1
 
