@@ -52,10 +52,10 @@ services:
       MYSQL_DATABASE: dlink
       MYSQL_USER: dlink
       MYSQL_PASSWORD: dlink
-    healthcheck:
-      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
-      timeout: 20s
-      retries: 10
+#    healthcheck:
+#      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+#      timeout: 20s
+#      retries: 10
     restart: unless-stopped
 
 
