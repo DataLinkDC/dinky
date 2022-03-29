@@ -157,9 +157,10 @@ const FlinkSqlEditor = (props:any) => {
         var formatted = format(model.getValueInRange(range), {
           indent: ' '.repeat(options.tabSize)
         });
-        formatted = formatted.replace(/` ([^`]*) `/g,function (){return '`'+arguments[1].trim()+'`'})
-          .replace(/\$ {([^}]*)}/g,function (){return '${'+arguments[1].trim()+'}'})
-          .replace(/\| ([^}]*)\|/g,function (){return '|'+arguments[1].trim()+'|'})
+        formatted = formatted.replaceAll(/` ([^`]*) `/g,function (){return '`'+arguments[1].trim()+'`'})
+          .replaceAll(/\$ {([^}]*)}/g,function (){return '${'+arguments[1].trim()+'}'})
+          .replaceAll(/\| ([^}]*)\|/g,function (){return '|'+arguments[1].trim()+'|'})
+          .replaceAll(/ - /g,function (){return '-'});
         return [
           {
             range: range,
