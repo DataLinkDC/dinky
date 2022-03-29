@@ -4,7 +4,7 @@ import {
   PauseCircleTwoTone, CarryOutTwoTone, DeleteTwoTone, PlayCircleTwoTone, CameraTwoTone, SnippetsTwoTone,
   FileAddTwoTone, FolderOpenTwoTone, SafetyCertificateTwoTone, SaveTwoTone, FlagTwoTone, CodeTwoTone,
   EnvironmentOutlined, SmileOutlined, RocketTwoTone, QuestionCircleTwoTone, MessageOutlined, ClusterOutlined
-  , EditTwoTone, RestTwoTone
+  , EditTwoTone, RestTwoTone, ShrinkOutlined
 } from "@ant-design/icons";
 import Space from "antd/es/space";
 import Divider from "antd/es/divider";
@@ -698,7 +698,16 @@ const StudioMenu = (props: any) => {
         style={{top: 0, padding: 0, margin: 0, maxWidth: '100vw'}}
         destroyOnClose
         maskClosable={false}
-        closable={false}
+        closable={true}
+        closeIcon={
+          <Tooltip title="退出全屏">
+            <Button
+              icon={<ShrinkOutlined/>}
+              type="primary"
+              style={{position: "fixed", right: "0"}}>
+              退出
+            </Button>
+          </Tooltip>}
         visible={isFullScreen}
         footer={null}
         onCancel={() => {
