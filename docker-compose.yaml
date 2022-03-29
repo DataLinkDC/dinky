@@ -8,7 +8,7 @@ services:
     build:
       context: .
       dockerfile: ./docker/server/Dockerfile
-    command: 'java -Dloader.path=./lib,./plugins -Ddruid.mysql.usePingMethod=false -jar ./dlink-admin-*.jar'
+    command: [ "/bin/sh", "-c", "java -Dloader.path=./lib,./plugins -Ddruid.mysql.usePingMethod=false -jar -Xms512M -Xmx2048M ./dlink-admin-*.jar" ]
 #    volumes:
 #      # 挂载dinky lib/plugins 目录
 #      - ./docker/dinky/lib:/app/lib

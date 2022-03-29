@@ -74,7 +74,7 @@ COPY --from=build-stage /tmp/dist /app
 COPY --from=plugin-stage /app/lib /app/plugins
 
 
-CMD /C ["java",\
+CMD ["java",\
      "-Dloader.path=./lib,./plugins",\
      "-Ddruid.mysql.usePingMethod=false",\
      "-jar",\
