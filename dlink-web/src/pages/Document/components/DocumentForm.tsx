@@ -145,7 +145,7 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
           label="填充值"
           rules={[{required: true, message: '请输入填充值！'}]}
         >
-          <TextArea placeholder="请输入填充值,编辑器内使用名称触发提示 eg: 如果希望在函数LTRIM(parms)中输入参数 则语法为: ${1:}  此时的1代表第一个光标 如需多个 数字+1即可 tab键切换光标 ; 如不需要参数则直接输入期望填充值"
+          <TextArea placeholder="请输入填充值,编辑器内使用名称触发提示 eg: 如果希望在函数LTRIM(parms)中输入参数 则语法为: LTRIM(${1:})  此时的1代表第一个光标 如需多个 数字+1即可 tab键切换光标 ; 如不需要参数则直接输入期望填充值"
                     allowClear
                     autoSize={{minRows: 3, maxRows: 10}}/>
         </FormItem>
