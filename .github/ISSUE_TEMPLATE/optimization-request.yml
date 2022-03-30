@@ -14,8 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-name: Feature request
-description: Suggest an idea for this project
+name: Optimization request
+description: Suggest a optimization for this project
 title: "[Optimization][Module Name] Optimization title"
 labels: [ "optimization", "Waiting for reply" ]
 body:
