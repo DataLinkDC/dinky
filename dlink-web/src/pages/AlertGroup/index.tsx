@@ -1,9 +1,8 @@
 import React, {useEffect, useRef, useState} from "react";
-import {DownOutlined,PlusOutlined} from '@ant-design/icons';
-import {ActionType, ProColumns} from "@ant-design/pro-table";
-import {Button, Drawer, Modal, Dropdown, Menu} from 'antd';
-import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
-import ProTable from '@ant-design/pro-table';
+import {DownOutlined, PlusOutlined} from '@ant-design/icons';
+import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
+import {Button, Drawer, Dropdown, Menu, Modal} from 'antd';
+import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import {AlertGroupTableListItem} from "@/pages/AlertGroup/data";
 import {handleAddOrUpdate, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
@@ -181,7 +180,7 @@ const AlertGroupTableList: React.FC<{}> = (props: any) => {
             <div>
               已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
               <span>
-                被禁用的集群配置共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} 人
+                被禁用的报警组共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} 人
               </span>
             </div>
           }
