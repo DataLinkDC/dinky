@@ -257,7 +257,7 @@ public class StudioServiceImpl implements StudioService {
     @Override
     public LineageResult getLineage(StudioCADTO studioCADTO) {
         addFlinkSQLEnv(studioCADTO);
-        return LineageBuilder.getLineage(studioCADTO.getStatement());
+        return LineageBuilder.getLineage(studioCADTO.getStatement(), studioCADTO.getStatementSet());
     }
 
     @Override

@@ -21,14 +21,24 @@ public class FlinkSqlPlus {
 
     private Executor executor;
     private Explainer explainer;
+    private boolean statementSet;
 
     public FlinkSqlPlus(Executor executor) {
         this.executor = executor;
         this.explainer = new Explainer(executor);
     }
 
+    public FlinkSqlPlus(Executor executor, boolean statementSet) {
+        this.executor = executor;
+        this.explainer = new Explainer(executor, statementSet);
+    }
+
     public static FlinkSqlPlus build() {
-        return new FlinkSqlPlus(Executor.build());
+        return build(true);
+    }
+
+    public static FlinkSqlPlus build(boolean statementSet) {
+        return new FlinkSqlPlus(Executor.build(), statementSet);
     }
 
     public List<SqlResult> executeSql(String sql) {
