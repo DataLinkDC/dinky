@@ -20,8 +20,8 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 -- Table structure for dlink_catalogue
 -- ----------------------------
-DROP TABLE IF EXISTS `dlink_catalogue`;
-CREATE TABLE `dlink_catalogue`  (
+--  DROP TABLE IF EXISTS `dlink_catalogue`;
+CREATE TABLE if not exists `dlink_catalogue`  (
                                     `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
                                     `task_id` int(11) NULL DEFAULT NULL COMMENT '任务ID',
                                     `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '名称',
@@ -38,8 +38,8 @@ CREATE TABLE `dlink_catalogue`  (
 -- ----------------------------
 -- Table structure for dlink_cluster
 -- ----------------------------
-DROP TABLE IF EXISTS `dlink_cluster`;
-CREATE TABLE `dlink_cluster`  (
+-- DROP TABLE IF EXISTS `dlink_cluster`;
+CREATE TABLE  if not exists `dlink_cluster`  (
                                   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
                                   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '名称',
                                   `alias` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '别名',
@@ -58,8 +58,8 @@ CREATE TABLE `dlink_cluster`  (
 -- ----------------------------
 -- Table structure for dlink_task
 -- ----------------------------
-DROP TABLE IF EXISTS `dlink_task`;
-CREATE TABLE `dlink_task`  (
+-- DROP TABLE IF EXISTS `dlink_task`;
+CREATE TABLE  if not exists  `dlink_task`  (
                                `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
                                `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '名称',
                                `alias` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '别名',
@@ -80,8 +80,8 @@ CREATE TABLE `dlink_task`  (
 -- ----------------------------
 -- Table structure for dlink_task_statement
 -- ----------------------------
-DROP TABLE IF EXISTS `dlink_task_statement`;
-CREATE TABLE `dlink_task_statement`  (
+-- DROP TABLE IF EXISTS `dlink_task_statement`;
+CREATE TABLE  if not exists  `dlink_task_statement`  (
                                          `id` int(11) NOT NULL COMMENT 'ID',
                                          `statement` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '语句',
                                          PRIMARY KEY (`id`) USING BTREE
@@ -90,8 +90,8 @@ CREATE TABLE `dlink_task_statement`  (
 -- ----------------------------
 -- Table structure for dlink_flink_document
 -- ----------------------------
-DROP TABLE IF EXISTS `dlink_flink_document`;
-CREATE TABLE `dlink_flink_document`  (
+-- DROP TABLE IF EXISTS `dlink_flink_document`;
+CREATE TABLE if not exists  `dlink_flink_document`  (
                                          `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
                                          `category` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '文档类型',
                                          `type` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '类型',
@@ -337,8 +337,8 @@ INSERT INTO `dlink_flink_document` VALUES (217, 'Function', 'UDF', '表值聚合
 -- ----------------------------
 -- Table structure for dlink_history
 -- ----------------------------
-DROP TABLE IF EXISTS `dlink_history`;
-CREATE TABLE `dlink_history`  (
+-- DROP TABLE IF EXISTS `dlink_history`;
+CREATE TABLE if not exists  `dlink_history`  (
                                   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
                                   `cluster_id` int(11) NOT NULL DEFAULT 0 COMMENT '集群ID',
                                   `session` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '会话',
@@ -365,8 +365,8 @@ ALTER TABLE `dlink_task`
 -- ----------------------------
 -- Table structure for dlink_database
 -- ----------------------------
-DROP TABLE IF EXISTS `dlink_database`;
-CREATE TABLE `dlink_database`  (
+-- DROP TABLE IF EXISTS `dlink_database`;
+CREATE TABLE  if not exists `dlink_database`  (
                                    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
                                    `name` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '数据源名',
                                    `alias` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '数据源标题',
@@ -396,7 +396,7 @@ ALTER TABLE `dlink_flink_document`
     ADD COLUMN `fill_value` varchar(255) NULL COMMENT '填充值' AFTER `description`;
 
 
-CREATE TABLE `dlink_cluster_configuration` (
+CREATE TABLE  if not exists  `dlink_cluster_configuration` (
                                                `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
                                                `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '名称',
                                                `alias` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '别名',
@@ -410,7 +410,7 @@ CREATE TABLE `dlink_cluster_configuration` (
                                                PRIMARY KEY (`id`)
 )  ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
-CREATE TABLE `dlink_jar` (
+CREATE TABLE  if not exists  `dlink_jar` (
                              `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
                              `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '名称',
                              `alias` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '别名',
@@ -434,7 +434,7 @@ ALTER TABLE `dlink_task`
 alter table dlink_history
     add cluster_configuration_id int(11) null COMMENT '集群配置ID' after cluster_id;
 
-CREATE TABLE `dlink_sys_config` (
+CREATE TABLE  if not exists  `dlink_sys_config` (
                                     `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
                                     `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '配置名',
                                     `value` text CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '值',
@@ -455,7 +455,7 @@ ALTER TABLE `dlink_cluster`
 ALTER TABLE `dlink_cluster`
     ADD COLUMN `task_id` int(11) NULL COMMENT '任务ID' AFTER `cluster_configuration_id`;
 
-CREATE TABLE `dlink_savepoints` (
+CREATE TABLE  if not exists `dlink_savepoints` (
                                     `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
                                     `task_id` int(11) NOT NULL COMMENT '任务ID',
                                     `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '名称',
@@ -477,7 +477,7 @@ ALTER TABLE `dlink_task`
 -- ----------------------------
 -- 0.4.0-SNAPSHOT 2021-11-28
 -- ----------------------------
-CREATE TABLE `dlink_user`  (
+CREATE TABLE if not exists  `dlink_user`  (
                                `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
                                `username` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '登录名',
                                `password` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '密码',
@@ -525,8 +525,8 @@ ALTER TABLE `dlink_database`
 -- ----------------------------
 -- Table structure for dlink_job_instance
 -- ----------------------------
-DROP TABLE IF EXISTS `dlink_job_instance`;
-create table dlink_job_instance
+-- DROP TABLE IF EXISTS `dlink_job_instance`;
+create table if not exists  dlink_job_instance
 (
     id                   int auto_increment comment '自增主键'
         primary key,
@@ -571,8 +571,8 @@ ALTER TABLE `dlink_job_instance` MODIFY COLUMN status varchar(50) NULL COMMENT '
 -- ----------------------------
 -- 0.6.0-SNAPSHOT 2022-02-24
 -- ----------------------------
-DROP TABLE IF EXISTS `dlink_alert_instance`;
-create table dlink_alert_instance
+-- DROP TABLE IF EXISTS `dlink_alert_instance`;
+create table if not exists  dlink_alert_instance
 (
     id int auto_increment comment '自增主键'
         primary key,
@@ -585,8 +585,8 @@ create table dlink_alert_instance
 )
     comment 'Alert实例';
 
-DROP TABLE IF EXISTS `dlink_alert_group`;
-create table dlink_alert_group
+-- DROP TABLE IF EXISTS `dlink_alert_group`;
+create table  if not exists  dlink_alert_group
 (
     id int auto_increment comment '自增主键'
         primary key,
@@ -599,8 +599,8 @@ create table dlink_alert_group
 )
     comment 'Alert组';
 
-DROP TABLE IF EXISTS `dlink_alert_history`;
-create table dlink_alert_history
+-- DROP TABLE IF EXISTS `dlink_alert_history`;
+create table  if not exists  dlink_alert_history
 (
     id int auto_increment comment '自增主键'
         primary key,
@@ -628,8 +628,8 @@ ALTER TABLE `dlink_job_instance`
 -- ----------------------------
 -- 0.6.0-SNAPSHOT 2022-03-01
 -- ----------------------------
-DROP TABLE IF EXISTS `dlink_job_history`;
-create table dlink_job_history
+-- DROP TABLE IF EXISTS `dlink_job_history`;
+create table  if not exists  dlink_job_history
 (
     id int comment '实例主键'
         primary key,
