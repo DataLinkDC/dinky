@@ -19,7 +19,7 @@ export default (): React.ReactNode => {
         <Alert
           message={intl.formatMessage({
             id: 'pages.welcome.alertMessage',
-            defaultMessage: '实时计算平台 Dinky 即将发布，目前为体验版，版本号为 0.6.0。',
+            defaultMessage: '实时计算平台 Dinky 即将发布，目前为体验版，版本号为 0.6.1。',
           })}
           type="success"
           showIcon
@@ -784,6 +784,76 @@ export default (): React.ReactNode => {
                 </li>
                 <li>
                   <Link>修复 Doris无法获取到列的主键信息</Link>
+                </li>
+              </ul>
+            </Paragraph>
+          </Timeline.Item>
+          <Timeline.Item><Text code>0.6.1</Text> <Text type="secondary">2022-04-01</Text>
+            <p> </p>
+            <Paragraph>
+              <ul>
+                <li>
+                  <Link>新增 issue 模板</Link>
+                </li>
+                <li>
+                  <Link>修复 Jar 任务存在空配置时提交失败的 bug</Link>
+                </li>
+                <li>
+                  <Link>修复 Mysql 字段类型转换的 bug</Link>
+                </li>
+                <li>
+                  <Link>修复 Hive 多语句查询失败的 bug</Link>
+                </li>
+                <li>
+                  <Link>修复 Jar 任务无法被运维中心监控的 bug</Link>
+                </li>
+                <li>
+                  <Link>新增 Phoenix 的 Flink Connector</Link>
+                </li>
+                <li>
+                  <Link>升级 mybatis-plus-boot-starter 至最新版本 3.5.1</Link>
+                </li>
+                <li>
+                  <Link>新增 savepointTask 的 Open API</Link>
+                </li>
+                <li>
+                  <Link>新增 WeChat WebHook 报警方式</Link>
+                </li>
+                <li>
+                  <Link>修复 报警实例表单联动的 bug</Link>
+                </li>
+                <li>
+                  <Link>修复 数据源元数据表信息切换无效的 bug</Link>
+                </li>
+                <li>
+                  <Link>修复 用户信息修改导致密码被二次加密的 bug</Link>
+                </li>
+                <li>
+                  <Link>修复 启动文件的编码格式为 LF</Link>
+                </li>
+                <li>
+                  <Link>新增 数据开发全屏的退出按钮</Link>
+                </li>
+                <li>
+                  <Link>修复 FlinkSQL 美化时出现空格的 bug</Link>
+                </li>
+                <li>
+                  <Link>修复 停止 per-job 任务无法销毁集群实例的 bug</Link>
+                </li>
+                <li>
+                  <Link>优化 文档管理表单</Link>
+                </li>
+                <li>
+                  <Link>修复 字段级血缘的无法解析语句集的 bug</Link>
+                </li>
+                <li>
+                  <Link>修复 字段级血缘的无法解析语句集的 bug</Link>
+                </li>
+                <li>
+                  <Link>修复 钉钉报警表单无法正确展示的 bug</Link>
+                </li>
+                <li>
+                  <Link>修复 FlinkSQL 执行或提交由于空配置导致的 bug</Link>
                 </li>
               </ul>
             </Paragraph>
