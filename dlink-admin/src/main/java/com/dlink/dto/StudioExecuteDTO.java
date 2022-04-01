@@ -5,6 +5,7 @@ import com.dlink.job.JobConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -50,17 +51,19 @@ public class StudioExecuteDTO extends AbstractStatementDTO {
         if (Asserts.isNotNullString(configJson)) {
             try {
                 paras = mapper.readTree(configJson);
+                paras.forEach((JsonNode node) -> {
+                        if (!node.isNull()) {
+                            config.put(node.get("key").asText(), node.get("value").asText());
+                        }
+                    }
+                );
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
-            paras.forEach((JsonNode node) -> {
-                        config.put(node.get("key").asText(), node.get("value").asText());
-                    }
-            );
         }
         return new JobConfig(
-                type, useResult, useChangeLog, useAutoCancel, useSession, session, clusterId,
-                clusterConfigurationId, jarId, taskId, jobName, isFragment(), statementSet, batchModel,
-                maxRowNum, checkPoint, parallelism, savePointStrategy, savePointPath, config);
+            type, useResult, useChangeLog, useAutoCancel, useSession, session, clusterId,
+            clusterConfigurationId, jarId, taskId, jobName, isFragment(), statementSet, batchModel,
+            maxRowNum, checkPoint, parallelism, savePointStrategy, savePointPath, config);
     }
 }
