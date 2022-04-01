@@ -45,5 +45,6 @@ export type StudioParam = {
 }
 export type CAParam = {
   statement: string,
+  statementSet: boolean,
   type: number,
 }

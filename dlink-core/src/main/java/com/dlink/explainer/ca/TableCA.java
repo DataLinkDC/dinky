@@ -67,7 +67,6 @@ public class TableCA implements ICA {
         List<String> tableList = trans.getTable();
         this.id = trans.getId();
         this.parentId = trans.getParentId();
-        this.name = trans.getName();
         List<Field> select = trans.getSelect();
         List<String> fieldList = new ArrayList<>();
         for (Field field : select) {
@@ -94,6 +93,7 @@ public class TableCA implements ICA {
                 this.table = strings[0];
             }
         }
+        this.name = this.catalog + "." + this.database + "." + this.table;
     }
 
     public static TableCA build(Trans trans) {

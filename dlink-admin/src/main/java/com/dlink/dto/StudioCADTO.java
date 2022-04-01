@@ -13,5 +13,6 @@ import lombok.Setter;
 @Setter
 public class StudioCADTO extends AbstractStatementDTO {
     // It's useless for the time being
+    private Boolean statementSet;
     private Integer type;
 }
