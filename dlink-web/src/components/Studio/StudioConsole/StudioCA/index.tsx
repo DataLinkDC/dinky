@@ -16,6 +16,7 @@ const StudioCA = (props: any) => {
   const handleLineage=()=>{
     const res = getLineage({
       statement:current.value,
+      statementSet:current.task.statementSet,
       type: 1,
     });
     res.then((result)=>{
