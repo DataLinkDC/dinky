@@ -43,7 +43,7 @@ const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
     handleSubmit(buildJSONData(formVals,fieldsValue));
   };
 
-  const renderContent = () => {
+  const renderContent = (vals) => {
     return (
       <>
         <Divider>钉钉配置</Divider>
@@ -77,9 +77,9 @@ const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
           name="isEnableProxy"
           label="开启代理">
           <Switch checkedChildren="是" unCheckedChildren="否"
-                  defaultChecked={formVals.isEnableProxy}/>
+                  defaultChecked={vals.isEnableProxy}/>
         </Form.Item>
-        {formVals.isEnableProxy?<>
+        {vals.isEnableProxy?<>
           <Form.Item
             name="proxy"
             label="代理"
@@ -109,13 +109,13 @@ const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
           name="isAtAll"
           label="@所有人">
           <Switch checkedChildren="启用" unCheckedChildren="禁用"
-                  defaultChecked={formVals.isAtAll}/>
+                  defaultChecked={vals.isAtAll}/>
         </Form.Item>
         <Form.Item
           name="enabled"
           label="是否启用">
           <Switch checkedChildren="启用" unCheckedChildren="禁用"
-                  defaultChecked={formVals.enabled}/>
+                  defaultChecked={vals.enabled}/>
         </Form.Item>
         <Form.Item
           name="msgtype"
