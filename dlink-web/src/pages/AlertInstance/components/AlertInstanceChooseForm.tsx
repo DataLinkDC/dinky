@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Modal,List,Card} from 'antd';
+import {Card, List, Modal} from 'antd';
 
 import {AlertInstanceTableListItem} from '../data.d';
 import {connect} from "umi";
@@ -9,6 +9,7 @@ import {AlertStateType} from "@/pages/AlertInstance/model";
 import DingTalkForm from "@/pages/AlertInstance/components/DingTalkForm";
 import {createOrModifyAlertInstance} from "@/pages/AlertInstance/service";
 import WeChatForm from "@/pages/AlertInstance/components/WeChatForm";
+import FeiShuForm from "@/pages/AlertInstance/components/FeiShuForm";
 
 export type UpdateFormProps = {
   onCancel: (flag?: boolean, formVals?: Partial<AlertInstanceTableListItem>) => void;
@@ -95,6 +96,19 @@ const AlertInstanceChooseForm: React.FC<UpdateFormProps> = (props) => {
             handleChooseModalVisible();
           }}
           modalVisible={values?.type == ALERT_TYPE.WECHAT || alertType == ALERT_TYPE.WECHAT}
+          values={values}
+          onSubmit={(value) => {
+            onSubmit(value);
+          }}
+        />:undefined
+      }
+      {(values?.type == ALERT_TYPE.FEISHU || alertType == ALERT_TYPE.FEISHU)?
+        <FeiShuForm
+          onCancel={() => {
+            setAlertType(undefined);
+            handleChooseModalVisible();
+          }}
+          modalVisible={values?.type == ALERT_TYPE.FEISHU || alertType == ALERT_TYPE.FEISHU}
           values={values}
           onSubmit={(value) => {
             onSubmit(value);
