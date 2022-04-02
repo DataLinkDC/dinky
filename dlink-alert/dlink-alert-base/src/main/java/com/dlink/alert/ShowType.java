@@ -8,8 +8,11 @@ package com.dlink.alert;
  **/
 public enum ShowType {
 
-    TABLE(0, "markdown"),
-    TEXT(1, "text");
+    TABLE(0, "markdown"), // 通用markdown格式
+    TEXT(1, "text"), //通用文本格式
+    POST(2, "post"), // 飞书的富文本msgType
+    ATTACHMENT(3, "attachment"), // 邮件相关  普通邮件
+    TABLE_ATTACHMENT(4, "table attachment"); // 邮件相关 邮件表格类型
 
     private int code;
     private String value;
