@@ -54,6 +54,8 @@ import com.dlink.utils.LogUtil;
  **/
 public abstract class YarnGateway extends AbstractGateway {
 
+    public static final String HADOOP_CONFIG = "fs.hdfs.hadoopconf";
+
     protected YarnConfiguration yarnConfiguration;
     protected YarnClient yarnClient;
 
@@ -81,6 +83,10 @@ public abstract class YarnGateway extends AbstractGateway {
         configuration.set(YarnConfigOptions.PROVIDED_LIB_DIRS, Collections.singletonList(config.getClusterConfig().getFlinkLibPath()));
         if (Asserts.isNotNullString(config.getFlinkConfig().getJobName())) {
             configuration.set(YarnConfigOptions.APPLICATION_NAME, config.getFlinkConfig().getJobName());
+        }
+
+        if (Asserts.isNotNullString(config.getClusterConfig().getYarnConfigPath())) {
+            configuration.setString(HADOOP_CONFIG, config.getClusterConfig().getYarnConfigPath());
         }
 
         if (configuration.containsKey(SecurityOptions.KERBEROS_LOGIN_KEYTAB.key())) {
