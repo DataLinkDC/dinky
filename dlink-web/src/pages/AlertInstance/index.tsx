@@ -1,12 +1,11 @@
 import React, {useRef, useState} from "react";
 import {DownOutlined, PlusOutlined} from '@ant-design/icons';
-import {ActionType, ProColumns} from "@ant-design/pro-table";
-import {Button, message, Input, Drawer, Modal, Dropdown, Menu} from 'antd';
-import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
-import ProTable from '@ant-design/pro-table';
+import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
+import {Button, Drawer, Dropdown, Menu, Modal} from 'antd';
+import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import {AlertInstanceTableListItem} from "@/pages/AlertInstance/data";
-import {handleAddOrUpdate, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
+import {handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
 import AlertInstanceChooseForm from "@/pages/AlertInstance/components/AlertInstanceChooseForm";
 
 const url = '/api/alertInstance';
@@ -92,12 +91,16 @@ const AlertInstanceTableList: React.FC<{}> = (props: any) => {
         },{
           text: 'WeChat',
           value: 'WeChat',
+        },{
+          text: 'FeiShu',
+          value: 'FeiShu',
         }
       ],
       filterMultiple: false,
       valueEnum: {
         'DingTalk': {text: 'DingTalk'},
         'WeChat': {text: 'WeChat'},
+        'FeiShu': {text: 'FeiShu'},
       },
     },
     {
