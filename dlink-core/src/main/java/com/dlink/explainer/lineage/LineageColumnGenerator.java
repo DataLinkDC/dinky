@@ -68,7 +68,7 @@ public class LineageColumnGenerator {
 
     private void matchSinkField(TableCA tableCA) {
         for (ColumnCA columnCA : columnCAS) {
-            if (columnCA.getTableId() == tableCA.getId()) {
+            if (columnCA.getTableId().equals(tableCA.getId())) {
                 continue;
             }
             for (String fieldName : tableCA.getFields()) {
@@ -84,7 +84,7 @@ public class LineageColumnGenerator {
 
     private void buildColumnCAFields(TableCA tableCA, Integer id, ColumnCA columnCA) {
         if (transMaps.get(id) instanceof OperatorTrans) {
-            if (tableCA.getId() == id) {
+            if (tableCA.getId().equals(id)) {
                 return;
             }
             OperatorTrans trans = (OperatorTrans) transMaps.get(id);
@@ -115,13 +115,13 @@ public class LineageColumnGenerator {
             Integer cid = null;
             for (Map.Entry<Integer, ColumnCA> item : columnCASMaps.entrySet()) {
                 ColumnCA columnCA1 = item.getValue();
-                if (columnCA1.getTableCA().getId() == tableCA.getId() && columnCA1.getName().equals(alias)) {
+                if (columnCA1.getTableCA().getId().equals(tableCA.getId()) && columnCA1.getName().equals(alias)) {
                     isHad = true;
                     cid = columnCA1.getId();
                     break;
                 }
             }
-            if (columnCA.getId() == cid) {
+            if (columnCA.getId().equals(cid)) {
                 return;
             }
             if (!isHad) {
@@ -180,7 +180,7 @@ public class LineageColumnGenerator {
 
     private void buildSinkSuf(Integer preId, Integer sourcePreId) {
         for (NodeRel nodeRel : columnCASRel) {
-            if (nodeRel.getPreId() == preId) {
+            if (nodeRel.getPreId().equals(preId) ) {
                 Integer nextSufId = nodeRel.getSufId();
                 if (sinkColumns.contains(nextSufId)) {
                     columnCASRelChain.add(new NodeRel(sourcePreId, nextSufId));

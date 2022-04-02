@@ -82,7 +82,7 @@ public class CABuilder {
         Set<NodeRel> columnCASRel = result.getColumnCASRel();
         boolean hasChildren = false;
         for (NodeRel nodeRel : columnCASRel) {
-            if (columnId == nodeRel.getSufId()) {
+            if (columnId.equals(nodeRel.getSufId())) {
                 ColumnCA childca = (ColumnCA) result.getColumnCASMaps().get(nodeRel.getPreId());
 //                operation = operation.replaceAll(childca.getAlias().replaceAll("\\$","\\\\$"),childca.getOperation());
                 operation = operation.replaceAll(childca.getAlias()
