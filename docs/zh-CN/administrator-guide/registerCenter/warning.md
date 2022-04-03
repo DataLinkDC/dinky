@@ -7,17 +7,13 @@
 
 首先要进入<span style="">注册中心</span>，选择<span>报警管理</span>，然后选择左侧的报警实例管理，创建一个告警实例。然后选择对应的报警插件(当前支持钉钉及企业微信)。然后选择报警组管理，创建一个报警组。
 
-
-
 ## 报警实例管理
 
 新建一个报警实例，选择新建
 
-![image-20220313231030171](http://www.aiwenmo.com/dinky/dev/docs/image-20220313231030171.png)
+![alert_instance_list](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/registerCenter/warning/alert_instance_list.png)
 
-![image-20220313231641014](http://www.aiwenmo.com/dinky/dev/docs/image-20220313231641014.png)
-
-
+![create_alert_instance](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/registerCenter/warning/create_alert_instance.png)
 
 点击<span>钉钉或者企业微信</span>,创建报警实例配置。报警实例配置完成，就可以创建报警组。
 
@@ -25,15 +21,15 @@
 
 新建一个报警组，选择新建
 
-![image-20220313232311137](http://www.aiwenmo.com/dinky/dev/docs/image-20220313232311137.png)
+![alert_group_list](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/registerCenter/warning/alert_group_list.png)
 
-![image-20220313232557068](http://www.aiwenmo.com/dinky/dev/docs/image-20220313232557068.png)
+![create_alert_group](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/registerCenter/warning/create_alert_group.jpg)
 
 ## 钉钉
 
 如果用户使用钉钉进行报警，请在报警实例中选择报警实例管理，选择新建<span>钉钉</span>报警实例。钉钉的配置如下：
 
-![image-20220313233200594](http://www.aiwenmo.com/dinky/dev/docs/image-20220313233200594.png)
+![create_dingdingtalk_alert](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/registerCenter/warning/create_dingdingtalk_alert.png)
 
 **参数配置：**
 
@@ -48,17 +44,15 @@
 
 **说明:** 自定义机器人发送消息时，在“被@人列表”里面的人员收到该消息时，会有@消息提醒。
 
-[自定义机器人接入开发文档](https://open.dingtalk.com/document/robots/custom-robot-access)   
+[钉钉-开发者文档](https://open.dingtalk.com/document/robots/custom-robot-access)
 
 ## 企业微信
-
-
 
 如果用户使用企业微信进行报警，请在报警实例中选择报警实例管理，选择新建<span>企业微信</span>报警实例。
 
 ### 微信企业应用配置
 
-![image-20220328212335387](http://www.aiwenmo.com/dinky/dev/docs/image-20220328212335387.png)
+![create_wechat_alert](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/registerCenter/warning/create_wechat_app_alert.png)
 
 **参数配置：**
 
@@ -74,7 +68,7 @@
 
 ### 微信企业群聊配置
 
-![image-20220328212631158](http://www.aiwenmo.com/dinky/dev/docs/image-20220328212631158.png)
+![create_wechat_chat_alert](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/registerCenter/warning/create_wechat_chat_alert.png)
 
 **参数配置：**
 
@@ -91,6 +85,65 @@
 
 其中发送方式分别对应企微文档：
 
-   [应用](https://work.weixin.qq.com/api/doc/90000/90135/90236)  [群聊](https://work.weixin.qq.com/api/doc/90000/90135/90248)
+[应用-开发者文档](https://work.weixin.qq.com/api/doc/90000/90135/90236)  
+[群聊-开发者文档](https://work.weixin.qq.com/api/doc/90000/90135/90248)
 
-   发送消息对应文档中的 content，与此相对应的值的变量为 {msg}
+发送消息对应文档中的 content，与此相对应的值的变量为 {msg}
+
+
+## 飞书
+
+如果用户使用飞书进行报警，请在报警实例中选择报警实例管理，选择新建<span>飞书</span>报警实例。
+
+
+![create_feishu_alert](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/registerCenter/warning/create_feishu_alert.png)
+
+**参数配置：**
+
+- **名称：** 自定义;
+- **发送方式:** 群聊；
+- **WebHook地址:** Webhook地址，如https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxxx
+- **关键字:** 作为发送信息的title 标记；
+- **@所有人:** 默认禁用，如果@所有人需要开启；
+- **被@用户:**飞书的用户ID；
+- **是否启用:** 默认禁用，需要开启；
+- **展示方式类型:** 支持富文本和纯文本；
+
+**说明:** @所有人与被@用户可相互切换
+
+[飞书-自定义机器人接入开发文档](https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN)
+
+
+## 邮箱
+
+如果用户使用邮箱进行报警，请在报警实例中选择报警实例管理，选择新建<span>邮箱</span>报警实例。
+
+
+![create_email_alert](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/registerCenter/warning/create_email_alert.png)
+
+**参数配置：**
+
+- **名称：** 自定义;
+- **发送方式:** 邮件发送；
+- **收件人:** 收件人邮箱,多个使用逗号分开；
+- **抄送人:** 抄送人邮箱,多个使用逗号分开；
+- **邮件服务器Host:** 邮件服务器主机；
+- **邮件服务器Port:** 邮件服务器端口；
+- **发送者sender昵称:** 发送者到目标邮箱的显示昵称；
+- **是否开启邮箱验证:** 
+  - 是
+      - **邮箱用户名:** 邮箱；
+      - **邮箱密码:** 邮箱密码；
+  - 否
+    - 表单无显示
+- **是否开启tls证书验证:** 是/否；
+- **是否开启SSL验证:**
+    - 是
+        - **受信任域:** 自行设置 可设置为*；
+    - 否
+        - 表单无显示
+- **是否启用:** 默认禁用，需要开启；
+- **展示方式类型:** 
+  - 支持文本 表格 附件 附件+表格；
+  - PS: 需要注意的是 当选择  附件 || 附件+表格 时:
+    - **XLS存放目录:** 非必填 默认路径为: /tmp/xls

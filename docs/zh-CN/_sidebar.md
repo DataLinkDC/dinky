@@ -35,7 +35,7 @@
     - [数据源管理](/zh-CN/administrator-guide/registerCenter/datasource_manage.md)
     - [告警管理](/zh-CN/administrator-guide/registerCenter/warning.md)
     - [jar管理](/zh-CN/administrator-guide/registerCenter/jar_manager.md)
-    - 文档管理
+    - [文档管理](/zh-CN/administrator-guide/registerCenter/document_manager.md)
   - [元数据管理](/zh-CN/administrator-guide/metadata.md)
   - [快速使用快捷键](/zh-CN/administrator-guide/Hotkey.md)
   - 系统设置

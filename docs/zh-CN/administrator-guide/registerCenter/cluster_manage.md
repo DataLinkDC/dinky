@@ -20,11 +20,9 @@
 
 首先进入注册中心的集群管理中的集群实例管理，新建一个集群实例，点击新建，添加Flink集群，参数配置完成后，点击提交即可。
 
-![实例新建](http://www.aiwenmo.com/dinky/dev/docs/%E5%AE%9E%E4%BE%8B%E6%96%B0%E5%BB%BA.png)
+![cluster_manager_list](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/registerCenter/cluster_manager/cluster_manager_list.png)
 
-![实例配置提交](http://www.aiwenmo.com/dinky/dev/docs/%E5%AE%9E%E4%BE%8B%E9%85%8D%E7%BD%AE%E6%8F%90%E4%BA%A4.png)
-
-![实例配置提交1](http://www.aiwenmo.com/dinky/dev/docs/%E5%AE%9E%E4%BE%8B%E9%85%8D%E7%BD%AE%E6%8F%90%E4%BA%A41.png)
+![create_flink_cluster](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/registerCenter/cluster_manager/create_flink_cluster.png)
 
 **参数配置说明：** 
 
