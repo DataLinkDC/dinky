@@ -128,7 +128,7 @@ public class DingTalkSender {
         items.put("msgtype", msgType);
         Map<String, Object> text = new HashMap<>();
         items.put(msgType, text);
-        if (ShowType.TABLE.getValue().equals(msgType)) {
+        if (ShowType.MARKDOWN.getValue().equals(msgType)) {
             generateMarkdownMsg(title, content, text);
         } else {
             generateTextMsg(title, content, text);
