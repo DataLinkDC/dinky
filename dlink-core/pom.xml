@@ -87,6 +87,16 @@
         </dependency>
         <dependency>
             <groupId>com.dlink</groupId>
+            <artifactId>dlink-alert-feishu</artifactId>
+            <scope>${scope.runtime}</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-alert-email</artifactId>
+            <scope>${scope.runtime}</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dlink</groupId>
             <artifactId>dlink-metadata-mysql</artifactId>
             <scope>${scope.runtime}</scope>
         </dependency>

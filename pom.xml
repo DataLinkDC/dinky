@@ -309,6 +309,16 @@
             </dependency>
             <dependency>
                 <groupId>com.dlink</groupId>
+                <artifactId>dlink-alert-feishu</artifactId>
+                <version>${project.version}</version>
+             </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-alert-email</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
                 <artifactId>dlink-daemon</artifactId>
                 <version>${project.version}</version>
             </dependency>

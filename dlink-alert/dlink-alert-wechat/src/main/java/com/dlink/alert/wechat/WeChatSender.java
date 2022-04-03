@@ -182,7 +182,7 @@ public class WeChatSender {
 
     private String markdownByAlert(String title, String content,List<String> userList) {
         String result = "";
-        if (showType.equals(ShowType.TABLE.getValue())) {
+        if (showType.equals(ShowType.MARKDOWN.getValue())) {
             result = markdownTable(title, content,userList,sendType);
         } else if (showType.equals(ShowType.TEXT.getValue())) {
             result = markdownText(title, content,userList,sendType);
