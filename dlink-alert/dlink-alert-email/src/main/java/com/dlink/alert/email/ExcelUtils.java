@@ -1,6 +1,6 @@
 package com.dlink.alert.email;
 
-import com.dlink.alert.email.exception.AlertEmailException;
+import com.dlink.alert.AlertException;
 import com.dlink.utils.JSONUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.ss.usermodel.*;
@@ -39,14 +39,14 @@ public final class ExcelUtils {
         File file = new File(xlsFilePath);
         if (!file.exists() && !file.mkdirs()) {
             logger.error("Create xlsx directory error, path:{}", xlsFilePath);
-            throw new AlertEmailException("Create xlsx directory error");
+            throw new AlertException("Create xlsx directory error");
         }
 
         List<LinkedHashMap> itemsList = JSONUtil.toList(content, LinkedHashMap.class);
 
         if (CollectionUtils.isEmpty(itemsList)) {
             logger.error("itemsList is null");
-            throw new AlertEmailException("itemsList is null");
+            throw new AlertException("itemsList is null");
         }
 
         LinkedHashMap<String, Object> headerMap = itemsList.get(0);
@@ -103,7 +103,7 @@ public final class ExcelUtils {
             wb.write(fos);
             wb.dispose();
         } catch (Exception e) {
-            throw new AlertEmailException("generate excel error", e);
+            throw new AlertException("generate excel error", e);
         }
     }
 

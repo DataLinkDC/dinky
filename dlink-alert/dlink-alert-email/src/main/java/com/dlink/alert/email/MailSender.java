@@ -1,9 +1,9 @@
 
 package com.dlink.alert.email;
 
+import com.dlink.alert.AlertException;
 import com.dlink.alert.AlertResult;
 import com.dlink.alert.ShowType;
-import com.dlink.alert.email.exception.AlertEmailException;
 import com.dlink.alert.email.template.AlertTemplate;
 import com.dlink.alert.email.template.DefaultHTMLTemplate;
 import com.sun.mail.smtp.SMTPProvider;
@@ -52,7 +52,7 @@ public final class MailSender {
     public MailSender(Map<String, String> config) {
         String receiversConfig = config.get(EmailConstants.NAME_PLUGIN_DEFAULT_EMAIL_RECEIVERS);
         if (receiversConfig == null || "".equals(receiversConfig)) {
-            throw new AlertEmailException(EmailConstants.NAME_PLUGIN_DEFAULT_EMAIL_RECEIVERS + mustNotNull);
+            throw new AlertException(EmailConstants.NAME_PLUGIN_DEFAULT_EMAIL_RECEIVERS + mustNotNull);
         }
 
         receivers = Arrays.asList(receiversConfig.split(","));
