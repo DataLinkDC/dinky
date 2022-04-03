@@ -45,7 +45,7 @@ public class DingTalkTest {
 
         config.put(DingTalkConstants.KEYWORD, "Dlinky-Fink 钉钉告警测试");
         config.put(DingTalkConstants.WEB_HOOK, "url");
-        config.put(DingTalkConstants.MSG_TYPE, ShowType.TABLE.getValue());
+        config.put(DingTalkConstants.MSG_TYPE, ShowType.MARKDOWN.getValue());
 
         config.put(DingTalkConstants.PROXY_ENABLE, "false");
         config.put(DingTalkConstants.PASSWORD, "password");

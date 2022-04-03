@@ -94,6 +94,9 @@ const AlertInstanceTableList: React.FC<{}> = (props: any) => {
         },{
           text: 'FeiShu',
           value: 'FeiShu',
+        },{
+          text: 'Email',
+          value: 'Email',
         }
       ],
       filterMultiple: false,
@@ -101,6 +104,7 @@ const AlertInstanceTableList: React.FC<{}> = (props: any) => {
         'DingTalk': {text: 'DingTalk'},
         'WeChat': {text: 'WeChat'},
         'FeiShu': {text: 'FeiShu'},
+        'Email': {text: 'Email'},
       },
     },
     {

@@ -70,7 +70,7 @@ public class WeChatSenderTest {
         );
         weChatConfig.put(WeChatConstants.USERS, "all");
         weChatConfig.put(WeChatConstants.TEAM_SEND_MSG, "msg");
-        weChatConfig.put(WeChatConstants.SHOW_TYPE, ShowType.TABLE.getValue());// default is "table"
+        weChatConfig.put(WeChatConstants.SHOW_TYPE, ShowType.MARKDOWN.getValue());// default is "table"
         weChatConfig.put(WeChatConstants.SEND_TYPE, WeChatType.APP.getValue());
 
     }
@@ -96,7 +96,7 @@ public class WeChatSenderTest {
         weChatConfig.put(WeChatConstants.WEBHOOK, "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=8xxxxxxxxxxxxxxxxx6fe13396c");
         weChatConfig.put(WeChatConstants.SEND_TYPE, WeChatType.CHAT.getValue());
         weChatConfig.put(WeChatConstants.USER_SEND_MSG,WeChatConstants.WEBHOOK_TEMPLATE);
-        weChatConfig.put(WeChatConstants.SHOW_TYPE, ShowType.TABLE.getValue());
+        weChatConfig.put(WeChatConstants.SHOW_TYPE, ShowType.MARKDOWN.getValue());
         weChatConfig.put(WeChatConstants.KEYWORD, "Dlinky企微WEBHOOK  MarkDown方式 告警测试");
         WeChatSender weChatSender = new WeChatSender(weChatConfig);
         AlertResult alertResult = weChatSender.send("TEXT-TEST", contentTest);

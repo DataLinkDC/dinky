@@ -10,6 +10,7 @@ import DingTalkForm from "@/pages/AlertInstance/components/DingTalkForm";
 import {createOrModifyAlertInstance} from "@/pages/AlertInstance/service";
 import WeChatForm from "@/pages/AlertInstance/components/WeChatForm";
 import FeiShuForm from "@/pages/AlertInstance/components/FeiShuForm";
+import EmailForm from "@/pages/AlertInstance/components/EmailForm";
 
 export type UpdateFormProps = {
   onCancel: (flag?: boolean, formVals?: Partial<AlertInstanceTableListItem>) => void;
@@ -109,6 +110,19 @@ const AlertInstanceChooseForm: React.FC<UpdateFormProps> = (props) => {
             handleChooseModalVisible();
           }}
           modalVisible={values?.type == ALERT_TYPE.FEISHU || alertType == ALERT_TYPE.FEISHU}
+          values={values}
+          onSubmit={(value) => {
+            onSubmit(value);
+          }}
+        />:undefined
+      }
+      {(values?.type == ALERT_TYPE.EMAIL || alertType == ALERT_TYPE.EMAIL)?
+        <EmailForm
+          onCancel={() => {
+            setAlertType(undefined);
+            handleChooseModalVisible();
+          }}
+          modalVisible={values?.type == ALERT_TYPE.EMAIL || alertType == ALERT_TYPE.EMAIL}
           values={values}
           onSubmit={(value) => {
             onSubmit(value);
