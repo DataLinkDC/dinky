@@ -1,6 +1,13 @@
+
+## 数据源管理列表
+![database_manager_list](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/registerCenter/database_manager/database_manager_list.png)
+
+## 创建数据源
 当用户使用Dinky做为数据开发工具时,用户首先需要进入<span style=''>注册中心数据源管理</span>,新建数据库连接即可。
 
-![image-20220310221602049](http://www.aiwenmo.com/dinky/dev/docs/image-20220310221602049.png)
+![create_database_jdbc](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/registerCenter/database_manager/create_database_jdbc.png)
+
+![create_database_jdbc_mysql](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/registerCenter/database_manager/create_database_jdbc_mysql.png)
 
 **名称:** 输入英文唯一标识;
 
