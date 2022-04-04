@@ -78,7 +78,7 @@ public final class EmailConstants {
     public static final String HTML_HEADER_PREFIX = "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>"
         + "<html>"
         + "<head>"
-        + "<title>Dlinky</title>"
+        + "<title>Dinky</title>"
         + "<meta name='Keywords' content=''>"
         + "<meta name='Description' content=''>"
         + "<style type=\"text/css\">"

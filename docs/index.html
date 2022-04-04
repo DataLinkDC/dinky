@@ -9,6 +9,13 @@
   <link rel="icon" type="image/x-ico" href="./_media/dinky.png" />
   <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
 </head>
+<style>
+  .footer {
+    background-color: rgba(245, 245, 245, 0.31);
+    color: #424549;
+    padding: 1rem 1rem 1rem 1rem;
+  }
+</style>
 <body>
 <div id="app">加载中</div>
 <script>
@@ -60,6 +67,19 @@
                 }
             },
             sidebarDisplayLevel: 4,
+        plugins: [
+            function pageFooter(hook, vm) {
+                var footer = [
+                  '<footer class="footer" style="text-align: center">',
+                    '<span ><a href="https://github.com/DataLinkDC/dlink">Dinky</a></span>&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://github.com/DataLinkDC/dlink.git"><image src="_media/github.png"></image></a><br><br>',
+                    '<span>&copy;2022 Produced by DataLink Community .</span>',
+                    '</footer>',
+                ].join('');
+                hook.afterEach(function (html) {
+                    return html + footer;
+                });
+            },
+        ],
     }
   </script>
 <!-- Docsify v4 -->
