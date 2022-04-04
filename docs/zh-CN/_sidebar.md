@@ -11,22 +11,27 @@
   - [部署](/zh-CN/quick_start/deploy.md)
 - [dinky概览](/zh-CN/dinky_overview.md)
 -  快速入门指南
-  -  FlinkSQL 作业快速入门
+  -  FlinkSQL作业快速入门
   -  其他数据源作业快速入门
 - 使用手册
+  - 实例管理
+    - 项目空间管理
+  - 权限管理
   - 数据开发
     - 开发控制台介绍
       - [功能介绍](/zh-CN/administrator-guide/Studio/development_control/function_introduce.md)
       - [组件介绍](/zh-CN/administrator-guide/Studio/development_control/component_introduce.md)
-    - [作业管理](/zh-CN/administrator-guide/Studio/job_manage.md)
     - 作业开发
-      - 开发
-      - 提交
-    - 运维管理
+      - [模式介绍](/zh-CN/administrator-guide/Studio/job_dev/clustermode_introduction.md)
+      - [环境配置](/zh-CN/administrator-guide/Studio/job_dev/env_config.md)
+      - FlinkSQL开发指南
+        - [概述](/zh-CN/administrator-guide/Studio/job_dev/flinksql_guide/summary.md)
+      - 其他数据源开发指南
+    - 作业运维
+      - [作业管理](/zh-CN/administrator-guide/Studio/job_ops/job_manage.md)
       - 作业配置
-      - 执行配置
-      - 保存点
-    - 作业监控
+      - 作业提交
+      - 作业日志
     - 开发参考
       - 上下游存储
       - FlinkSQL参考
@@ -35,7 +40,7 @@
     - [数据源管理](/zh-CN/administrator-guide/registerCenter/datasource_manage.md)
     - [告警管理](/zh-CN/administrator-guide/registerCenter/warning.md)
     - [jar管理](/zh-CN/administrator-guide/registerCenter/jar_manager.md)
-    - [文档管理](/zh-CN/administrator-guide/registerCenter/document_manager.md)
+    - 文档管理
   - [元数据管理](/zh-CN/administrator-guide/metadata.md)
   - [快速使用快捷键](/zh-CN/administrator-guide/Hotkey.md)
   - 系统设置
