@@ -8,5 +8,5 @@
   * [远程调试](/zh-CN/developer-guide/remote_debug.md)
 * 用户案例
 * 语言
-    * [中文](/zh-CN/)
-    * [En](/en-US/)
+    * [:cn: 中文](/)
+    * [:us: English](/en-US/)
