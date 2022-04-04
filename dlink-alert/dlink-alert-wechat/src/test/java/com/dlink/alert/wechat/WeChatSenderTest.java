@@ -79,7 +79,7 @@ public class WeChatSenderTest {
     @Test
     public void testSendAPPMarkDownMsg() {
         WeChatSender weChatSender = new WeChatSender(weChatConfig);
-        AlertResult alertResult = weChatSender.send("Dlinky企微APP MarkDown方式 告警测试", contentTest);
+        AlertResult alertResult = weChatSender.send("Dinky企微APP MarkDown方式 告警测试", contentTest);
         Assert.assertEquals(true, alertResult.getSuccess());
     }
 
@@ -87,7 +87,7 @@ public class WeChatSenderTest {
     public void testSendAPPTextMsg() {
         weChatConfig.put(WeChatConstants.SHOW_TYPE, ShowType.TEXT.getValue());
         WeChatSender weChatSender = new WeChatSender(weChatConfig);
-        AlertResult alertResult = weChatSender.send("Dlinky企微APP TEXT方式 告警测试", contentTest);
+        AlertResult alertResult = weChatSender.send("Dinky企微APP TEXT方式 告警测试", contentTest);
         Assert.assertEquals(true, alertResult.getSuccess());
     }
 
@@ -97,7 +97,7 @@ public class WeChatSenderTest {
         weChatConfig.put(WeChatConstants.SEND_TYPE, WeChatType.CHAT.getValue());
         weChatConfig.put(WeChatConstants.USER_SEND_MSG,WeChatConstants.WEBHOOK_TEMPLATE);
         weChatConfig.put(WeChatConstants.SHOW_TYPE, ShowType.MARKDOWN.getValue());
-        weChatConfig.put(WeChatConstants.KEYWORD, "Dlinky企微WEBHOOK  MarkDown方式 告警测试");
+        weChatConfig.put(WeChatConstants.KEYWORD, "Dinky企微WEBHOOK  MarkDown方式 告警测试");
         WeChatSender weChatSender = new WeChatSender(weChatConfig);
         AlertResult alertResult = weChatSender.send("TEXT-TEST", contentTest);
         Assert.assertEquals(true, alertResult.getSuccess());
@@ -110,7 +110,7 @@ public class WeChatSenderTest {
         weChatConfig.put(WeChatConstants.SEND_TYPE, WeChatType.CHAT.getValue());
         weChatConfig.put(WeChatConstants.USER_SEND_MSG,WeChatConstants.WEBHOOK_TEMPLATE);
         weChatConfig.put(WeChatConstants.SHOW_TYPE, ShowType.TEXT.getValue());
-        weChatConfig.put(WeChatConstants.KEYWORD, "Dlinky企微WEBHOOK  TEXT方式 告警测试");
+        weChatConfig.put(WeChatConstants.KEYWORD, "Dinky企微WEBHOOK  TEXT方式 告警测试");
         WeChatSender weChatSender = new WeChatSender(weChatConfig);
         AlertResult alertResult = weChatSender.send("TEXT-TEST", contentTest);
         Assert.assertEquals(true, alertResult.getSuccess());

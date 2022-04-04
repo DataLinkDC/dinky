@@ -19,7 +19,7 @@ public class EmailSenderTest {
     private static Map<String, String> emailConfig = new HashMap<>();
     private static AlertTemplate alertTemplate;
 
-    String title = "Dlinky Email Alert";
+    String title = "Dinky Email Alert";
     String content = "[{\"id\":\"69\","
             + "\"name\":\"UserBehavior-0--1193959466\","
             + "\"Job name\": \"Start workflow\","

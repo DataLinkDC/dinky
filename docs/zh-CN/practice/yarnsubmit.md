@@ -17,7 +17,7 @@
 
 ### 执行 Hello World
 
-万物都具有 Hello World 的第一步，当然 Dlinky 也是具有的。我们选取了基于 datagen 的流查询作为第一行 Flink Sql。具体如下：
+万物都具有 Hello World 的第一步，当然 Dinky 也是具有的。我们选取了基于 datagen 的流查询作为第一行 Flink Sql。具体如下：
 
 ```sql
 CREATE TABLE Orders (

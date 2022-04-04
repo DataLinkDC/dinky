@@ -105,7 +105,6 @@ CREATE TABLE `dlink_database`  (
                                    PRIMARY KEY (`id`) USING BTREE,
                                    UNIQUE INDEX `db_index`(`name`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-# This PR is mainly to execute only the JJ file when the user installs dlinky for the first time
 
 
 -- ----------------------------

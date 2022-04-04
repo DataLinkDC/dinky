@@ -40,7 +40,7 @@ public class FeiShuSenderTest {
     @Before
     public void initFeiShuConfig() {
         feiShuConfig.put(FeiShuConstants.WEB_HOOK, "https://open.feishu.cn/open-apis/bot/v2/hook/aea3cd7f13154854541dsadsadas08f2a9");
-        feiShuConfig.put(FeiShuConstants.KEY_WORD, "Dlinky 飞书WebHook 告警测试");
+        feiShuConfig.put(FeiShuConstants.KEY_WORD, "Dinky 飞书WebHook 告警测试");
         feiShuConfig.put(FeiShuConstants.MSG_TYPE,"text");
         feiShuConfig.put(FeiShuConstants.AT_ALL, "false");
         feiShuConfig.put(FeiShuConstants.AT_USERS, "user1,user2,user3");
@@ -49,7 +49,7 @@ public class FeiShuSenderTest {
     @Test
     public void testTextTypeSend() {
         AlertMsg alertMsg = new AlertMsg();
-        alertMsg.setName("Dlinky 飞书WebHook 告警测试");
+        alertMsg.setName("Dinky 飞书WebHook 告警测试");
         alertMsg.setContent(alertMsgContentTemplate);
         FeiShuSender feiShuSender = new FeiShuSender(feiShuConfig);
         AlertResult alertResult = feiShuSender.send(alertMsg.getName(),alertMsg.getContent());
@@ -60,7 +60,7 @@ public class FeiShuSenderTest {
     public void testPostTypeSend() {
         feiShuConfig.put(FeiShuConstants.MSG_TYPE,"post");
         AlertMsg alertMsg = new AlertMsg();
-        alertMsg.setName("Dlinky 飞书WebHook 告警测试");
+        alertMsg.setName("Dinky 飞书WebHook 告警测试");
         alertMsg.setContent(alertMsgContentTemplate);
         FeiShuSender feiShuSender = new FeiShuSender(feiShuConfig);
         AlertResult alertResult = feiShuSender.send(alertMsg.getName(),alertMsg.getContent());
