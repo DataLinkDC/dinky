@@ -3,7 +3,9 @@
 
  ### 注册 Session 集群
 
-![image-20211128225423360](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTqSas1xKRbibnZdGY1iagC3X6iaAIees3BsUONXbIocdRUI0WWVSzibPpltibBbMmWgfWJ0AklUlPF9Ugw/0?wx_fmt=png)
+![register_session_cluster](http://www.aiwenmo.com/dinky/docs/zh-CN/practice/yarnsubmit/register_session_cluster.png)
+
+ ### 创建 Session 集群
 
 进入集群中心进行远程集群的注册。点击新建按钮配置远程集群的参数。图中示例配置了一个 Flink on Yarn 的高可用集群，其中 JobManager HA 地址需要填写集群中所有可能被作为 JobManager 的 RestAPI 地址，多个地址间使用英文逗号分隔。表单提交时可能需要较长时间的等待，因为 dlink 正在努力的计算当前活跃的 JobManager 地址。
 
@@ -15,7 +17,7 @@
 
 ### 执行 Hello World
 
-万物都具有 Hello World 的第一步，当然 dlink 也是具有的。我们选取了基于 datagen 的流查询作为第一行 Flink Sql。具体如下：
+万物都具有 Hello World 的第一步，当然 Dlinky 也是具有的。我们选取了基于 datagen 的流查询作为第一行 Flink Sql。具体如下：
 
 ```sql
 CREATE TABLE Orders (
@@ -32,15 +34,15 @@ select order_number,price,order_time from Orders
 
 该例子使用到了 datagen，需要在 dlink 的 plugins 目录下添加 flink-table.jar。
 
-点击 Flink Sql Studio 进入开发页面：
+点击 **数据开发** 进入开发页面：
 
-![image-20211128230416447](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTqSas1xKRbibnZdGY1iagC3X6RuS3kibG0jJnDjoUicX7sN63UN6j7Osg4lWh5SelOw0hp4Vj6icFAuDkA/0?wx_fmt=png)
+![data_devops](http://www.aiwenmo.com/dinky/docs/zh-CN/practice/yarnsubmit/data_devops.png)
 
 在中央的编辑器中编辑 Flink Sql。
 
 右边作业配置：
 
-1. 执行模式：选中 yarn-session；
+1. 执行模式：选中 Yarn-session；
 2. Flink 集群：选中上文注册的测试集群；
 3. SavePoint 策略：选中禁用；
 4. 按需进行其他配置。
@@ -54,13 +56,13 @@ select order_number,price,order_time from Orders
 
 ### 预览数据
 
-![image-20211128231230335](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTqSas1xKRbibnZdGY1iagC3X6leQx4mfqsdwVftlEUXSFWnEzOTJGrCGHUKo98SpIn11WkZquEwwjpg/0?wx_fmt=png)
+![data_devops_showdata](http://www.aiwenmo.com/dinky/docs/zh-CN/practice/yarnsubmit/data_devops_showdata.png)
 
 切换到历史选项卡点击刷新可以查看提交进度。切换到结果选项卡，等待片刻点击获取最新数据即可预览 SELECT。
 
 ### 停止任务
 
-![image-20211128231523703](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTqSas1xKRbibnZdGY1iagC3X6koYZDQqzsawPOCTP64ycdUZlib5oJA9vo9fpX43DNTmibY60ojZv44zQ/0?wx_fmt=png)
+![data_devops_showprocess](http://www.aiwenmo.com/dinky/docs/zh-CN/practice/yarnsubmit/data_devops_showprocess.png)
 
 切换到进程选项卡，选则对应的集群实例，查询当前任务，可执行停止操作。
 
@@ -70,7 +72,7 @@ select order_number,price,order_time from Orders
 
 进入集群中心——集群配置，注册配置。
 
-![image-20211128231914983](https://mmbiz.qpic.cn/mmbiz_png/dyicwnSlTFTqSas1xKRbibnZdGY1iagC3X6Vcw98k4yfgR2dSo3BUhxdtpRdd8A7NLyXkZhFibhiciarp9DTY415UehQ/0?wx_fmt=png)
+![create_cluster_settiong](http://www.aiwenmo.com/dinky/docs/zh-CN/practice/yarnsubmit/create_cluster_settiong.png)
 
 1. Hadoop 配置文件路径：指定配置文件路径（末尾无/），需要包含以下文件：core-site.xml,hdfs-site.xml,yarn-site.xml；
 2. Flink 配置 lib 路径：指定 lib 的 hdfs 路径（末尾无/），需要包含 Flink 运行时的所有依赖，即 flink 的 lib 目录下的所有 jar；

@@ -1,21 +1,28 @@
-如何创建报警实例及报警组，在0.6版本以后，用户可以创建报警实例及报警组，监控FlinkSQL作业。一个报警组可以使用多个报警实例，用户就可以进一步收到报警通知。收到的报警通知如下：
+如何创建报警实例及报警组，在0.6版本以后，用户可以创建报警实例及报警组，监控 FlinkSQL 作业。一个报警组可以使用多个报警实例，用户就可以进一步收到报警通知。收到的报警通知如下：
 
-- unknow
+- unknown
 - stop
 - cancel
 - finished
 
-首先要进入<span style="">注册中心</span>，选择<span>报警管理</span>，然后选择左侧的报警实例管理，创建一个告警实例。然后选择对应的报警插件(当前支持钉钉及企业微信)。然后选择报警组管理，创建一个报警组。
+首先要进入**注册中心** > **报警管理**，然后选择左侧的报警实例管理，创建一个告警实例。然后选择对应的报警插件。然后选择报警组管理，创建一个报警组。
 
+目前Dlinky支持的报警插件有：
+- **[钉钉](#钉钉)方式告警 :** WebHook
+- **[企业微信](#企业微信)方式告警 :** 包含 **应用** **群聊**
+- **[飞书](#飞书)方式告警 :** WebHook 
+- **[邮箱](#邮箱)方式告警 :**  通过邮件发送报警通知
 ## 报警实例管理
 
-新建一个报警实例，选择新建
-
+### 告警实例列表
 ![alert_instance_list](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/registerCenter/warning/alert_instance_list.png)
+
+### 创建告警实例
+**注册中心** > **报警管理**，选择**新建**
 
 ![create_alert_instance](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/registerCenter/warning/create_alert_instance.png)
 
-点击<span>钉钉或者企业微信</span>,创建报警实例配置。报警实例配置完成，就可以创建报警组。
+点击以上告警实例类型,创建报警实例配置。报警实例配置完成，就可以创建报警组。
 
 ## 报警组管理
 
@@ -27,7 +34,7 @@
 
 ## 钉钉
 
-如果用户使用钉钉进行报警，请在报警实例中选择报警实例管理，选择新建<span>钉钉</span>报警实例。钉钉的配置如下：
+如果用户使用钉钉进行报警，请进入**注册中心** > **报警管理** > **报警实例管理**，点击**新建** 选择**钉钉**报警实例。
 
 ![create_dingdingtalk_alert](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/registerCenter/warning/create_dingdingtalk_alert.png)
 
@@ -35,12 +42,12 @@
 
 - **名称：** 自定义;
 - **地址:** Webhook,格式如下：https://oapi.dingtalk.com/robot/send?access_token=???????
-- **关键字：** 安全设置的自定义关键词，钉钉关键字和dinky中的关键字保持一致即可；
+- **关键字：** 安全设置的自定义关键词，钉钉关键字和 Dinky 中的关键字保持一致即可；
 - **密令:** 安全设置的加签;
 - **开启代理:** 默认否（一般默认）
 - **@所有人:** 默认禁用，需要开启；
 - **是否启用:** 默认禁用，需要开启；
-- **展示方式类型:** 支持MarkDown和文本；
+- **展示方式类型:** 支持 MarkDown 和文本；
 
 **说明:** 自定义机器人发送消息时，在“被@人列表”里面的人员收到该消息时，会有@消息提醒。
 
@@ -48,7 +55,7 @@
 
 ## 企业微信
 
-如果用户使用企业微信进行报警，请在报警实例中选择报警实例管理，选择新建<span>企业微信</span>报警实例。
+如果用户使用企业微信进行报警，请进入**注册中心** > **报警管理** > **报警实例管理**，点击**新建** 选择**企业微信**报警实例。
 
 ### 微信企业应用配置
 
@@ -63,7 +70,7 @@
 - **发送消息:** 接口中定义的msg,如{"touser":"{toUser}","agentid":{agentId}","msgtype":"{showType}","{showType}":{"content":"{msg}"}}
 - **代理ID:**询问企业微信管理员即可；
 - **发送方式:** 应用；
-- **展示方式类型:** 支持MarkDown和文本；
+- **展示方式类型:** 支持 MarkDown 和文本；
 - **是否启用:** 默认禁用，需要开启；
 
 ### 微信企业群聊配置
@@ -93,7 +100,7 @@
 
 ## 飞书
 
-如果用户使用飞书进行报警，请在报警实例中选择报警实例管理，选择新建<span>飞书</span>报警实例。
+如果用户使用飞书进行报警，请进入**注册中心** > **报警管理** > **报警实例管理**，点击**新建** 选择**飞书**报警实例。
 
 
 ![create_feishu_alert](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/registerCenter/warning/create_feishu_alert.png)
@@ -102,7 +109,7 @@
 
 - **名称：** 自定义;
 - **发送方式:** 群聊；
-- **WebHook地址:** Webhook地址，如https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxxx
+- **WebHook地址:** Webhook 地址，如https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxxx
 - **关键字:** 作为发送信息的title 标记；
 - **@所有人:** 默认禁用，如果@所有人需要开启；
 - **被@用户:**飞书的用户ID；
@@ -116,7 +123,7 @@
 
 ## 邮箱
 
-如果用户使用邮箱进行报警，请在报警实例中选择报警实例管理，选择新建<span>邮箱</span>报警实例。
+如果用户使用邮箱进行报警，请进入**注册中心** > **报警管理** > **报警实例管理**，点击**新建** 选择**邮箱**报警实例。
 
 
 ![create_email_alert](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/registerCenter/warning/create_email_alert.png)

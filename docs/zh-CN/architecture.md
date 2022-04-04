@@ -1,1 +1,1 @@
-![Dinky](http://www.aiwenmo.com/dinky/main/dinky.png)
+![Dinky](http://www.aiwenmo.com/dinky/docs/zh-CN/architecture/dinky.png)

@@ -1,24 +1,24 @@
-当用户提交FlinkSQL作业时，首先要保证安装了Flink集群。Flink当前支持的集群模式包括：
+当用户提交 FlinkSQL 作业时，首先要保证安装了 Flink 集群。Flink 当前支持的集群模式包括：
 
-- StandAlone集群
-- Yarn集群
-- Kubernetes集群
+- StandAlone 集群
+- Yarn 集群
+- Kubernetes 集群
 
-对于以上的三种集群而言，Dinky为用户提供了两种集群管理方式，一种是集群实例管理，一种是集群配置管理。
+对于以上的三种集群而言，Dinky 为用户提供了两种集群管理方式，一种是集群实例管理，一种是集群配置管理。
 
 **需要说明的是:**
 
-- StandAlone集群适用于既可以做为查询使用，又可以将作业异步提交到远程集群
-- Yarn Session和Kubernetes Session适用于既可以做为查询使用，又可以将作业异步提交到远程集群
-- Yarn Perjob,Yarn Application和Kubernetes Application适用于异步提交
+- StandAlone 集群适用于既可以做为查询使用，又可以将作业异步提交到远程集群
+- Yarn Session 和 Kubernetes Session 适用于既可以做为查询使用，又可以将作业异步提交到远程集群
+- Yarn Perjob,Yarn Application 和 Kubernetes Application 适用于异步提交
 
 ## 集群实例管理
 
-集群实例管理适用于StandAlone，Yarn Session和Kubernetes Session这三种类型配置。
+集群实例管理适用于 StandAlone，Yarn Session 和 Kubernetes Session 这三种类型配置。
 
 ### 集群配置
 
-首先进入注册中心的集群管理中的集群实例管理，新建一个集群实例，点击新建，添加Flink集群，参数配置完成后，点击提交即可。
+首先进入**注册中心** > **集群管理** > **集群实例管理**，新建一个**集群实例**，点击**新建**，添加Flink集群，参数配置完成后，点击提交即可。
 
 ![cluster_manager_list](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/registerCenter/cluster_manager/cluster_manager_list.png)
 
@@ -32,11 +32,11 @@
 - **JobManager HA地址:** JobManager的RestAPI地址，当有多个RestAPI地址时。采用英文逗号隔开
 - **注释:** 自定义
 
-当集群实例配置完成后，点击心跳，会出现检测心跳
+当集群实例配置完成后，点击**心跳**，会出现检测心跳
 
 ![心跳检查](http://www.aiwenmo.com/dinky/dev/docs/%E5%BF%83%E8%B7%B3%E6%A3%80%E6%9F%A5.png)
 
-点击回收，会将过去的集群实例进行回收
+点击**回收**，会将过去的集群实例进行回收
 
 ![回收](http://www.aiwenmo.com/dinky/dev/docs/%E5%9B%9E%E6%94%B6.png)
 
@@ -46,7 +46,7 @@
 
 当集群配置完成后，用户可以对集群实例做编辑修改。
 
-首先进入注册中心集群实例管理，在列表中找到对应的集群实例，点击"编辑"后，编辑集群
+首先进入**注册中心** > **集群实例管理**，在列表中找到对应的集群实例，点击**编辑**，编辑集群
 
 ![集群实例编辑](http://www.aiwenmo.com/dinky/dev/docs/%E9%9B%86%E7%BE%A4%E5%AE%9E%E4%BE%8B%E7%BC%96%E8%BE%91.png)
 
@@ -56,7 +56,7 @@
 
 用户可以对所添加的集群实例进行删除。
 
-首先进入注册中心中的集群实例管理，在列表中找到对应的集群实例，点击"删除"后，删除集群!
+首先进入入**注册中心** > **集群实例管理**，在列表中找到对应的集群实例，点击**删除**后，删除集群!
 
 ![集群实例删除](http://www.aiwenmo.com/dinky/dev/docs/%E9%9B%86%E7%BE%A4%E5%AE%9E%E4%BE%8B%E5%88%A0%E9%99%A4.png)
 
@@ -74,7 +74,7 @@
 
 ### 集群配置
 
-首先进入注册中心的集群管理中的集群配置管理，点击"新建"后，可以创建集群配置，参数配置完成后，点击"测试"及"完成"即可。
+首先进入**注册中心** > **集群管理** > **集群配置管理**，点击**新建**后，可以创建集群配置，参数配置完成后，点击**测试**及**完成**即可。
 
 ![创建集群配置1](http://www.aiwenmo.com/dinky/dev/docs/%E5%88%9B%E5%BB%BA%E9%9B%86%E7%BE%A4%E9%85%8D%E7%BD%AE1.png)
 
@@ -98,7 +98,7 @@
   - **注释:** 自定义
   - **是否启用:** 默认禁用，需要开启
 
-参数配置完成后，点击"测试"，会显示测试连接成功。
+参数配置完成后，点击**测试**，会显示测试连接成功。
 
 ![集群测试](http://www.aiwenmo.com/dinky/dev/docs/%E9%9B%86%E7%BE%A4%E6%B5%8B%E8%AF%95.png)
 
@@ -108,7 +108,7 @@
 
 当集群配置完成后，用户可以对集群配置做编辑修改。
 
-首先进入注册中心集群配置管理，在列表中找到对应的集群名称，点击"编辑"后，维护集群配置
+首先进入**注册中心** > **集群配置管理**，在列表中找到对应的集群名称，点击**编辑**后，维护集群配置
 
 ![集群配置编辑](http://www.aiwenmo.com/dinky/dev/docs/%E9%9B%86%E7%BE%A4%E9%85%8D%E7%BD%AE%E7%BC%96%E8%BE%91.png)
 
@@ -118,7 +118,7 @@
 
 用户可以对所添加的集群配置进行删除。
 
-首先进入注册中心中的集群配置管理，，在列表中找到对应的集群，点击"删除"后，删除集群
+首先进入**注册中心** > **集群配置管理**，，在列表中找到对应的集群，点击**删除**后，删除集群
 
 ![集群配置删除](http://www.aiwenmo.com/dinky/dev/docs/%E9%9B%86%E7%BE%A4%E9%85%8D%E7%BD%AE%E5%88%A0%E9%99%A4.png)
 

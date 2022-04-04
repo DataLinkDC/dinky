@@ -1,4 +1,4 @@
-# Flink CDC和kafka进行多源合并和下游同步更新
+# Flink CDC 和 Kafka 进行多源合并和下游同步更新
 
 
 
@@ -13,7 +13,7 @@
 
 本文主要是针对 Flink SQL 使用 Flink CDC 无法实现多库多表的多源合并问题，以及多源合并后如何对下游 Kafka 同步更新的问题，因为目前 Flink SQL 也只能进行单表 Flink CDC 的作业操作，这会导致数据库 CDC 的连接数过多。
 
-但是 Flink CDC 的 dataStream API 是可以进行多库多表的同步操作的，本文希望利用 Flink CDC 的 dataStream API 进行多源合并后导入一个总线 Kafka，下游只需连接总线 kafka 就可以实现 Flink SQL 的多源合并问题，资源复用。
+但是 Flink CDC 的 DataStream API 是可以进行多库多表的同步操作的，本文希望利用 Flink CDC 的 DataStream API 进行多源合并后导入一个总线 Kafka，下游只需连接总线 Kafka 就可以实现 Flink SQL 的多源合并问题，资源复用。
 
 # 环境
 
@@ -37,9 +37,9 @@ ConnectRecord{topic='mysql_binlog_source.gmall.spu_info', kafkaPartition=null, k
 
 可以看到，这种格式的 JSON，传给下游有很大的问题，要实现多源合并和同步更新，我们要解决以下两个问题。
 
-**①总线Kafka传来的json，无法识别源库和源表来进行具体的表创建操作，因为不是固定的json格式，建表WHIT配置里也无法指定具体的库和表。**
+**①总线 Kafka 传来的 Json，无法识别源库和源表来进行具体的表创建操作，因为不是固定的 Json 格式，建表 with 配置里也无法指定具体的库和表。**
 
-**②总线Kafka传来的json如何进行CRUD等事件对Kafka流的同步操作，特别是Delete，下游kafka如何感知来更新ChangeLog。**
+**②总线 Kafka 传来的 Json 如何进行 CRUD 等事件对  Kafka 流的同步操作，特别是 Delete，下游 kafka 如何感知来更新 ChangeLog。**
 
 # 查看文档
 
@@ -58,7 +58,7 @@ ConnectRecord{topic='mysql_binlog_source.gmall.spu_info', kafkaPartition=null, k
 
 那这里就已经解决了问题②。
 
-剩下问题①，如何解决传来的多库多表进行指定表和库的识别，毕竟建表语句没有进行where的设置参数。
+剩下问题①，如何解决传来的多库多表进行指定表和库的识别，毕竟建表语句没有进行 where 的设置参数。
 
 再往下翻文档：
 
@@ -94,9 +94,9 @@ select * from Kafka_Table where origin_database='gmall' and origin_table = 'spu_
 那这样问题②就解决了。
 那我们现在就要做两个事情:
 
-**①写一个Flink CDC的dataStream项目进行多库多表同步，传给总线Kafka。**
+**①写一个Flink CDC 的 DataStream 项目进行多库多表同步，传给总线 Kafka。**
 
-**②自定义总线Kafka的json格式。**
+**②自定义总线 Kafka 的 json 格式。**
 
 # 新建Flink CDC的dataStream项目
 
