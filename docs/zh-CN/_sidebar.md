@@ -22,10 +22,13 @@
       - [功能介绍](/zh-CN/administrator-guide/Studio/development_control/function_introduce.md)
       - [组件介绍](/zh-CN/administrator-guide/Studio/development_control/component_introduce.md)
     - 作业开发
-      - [模式介绍](/zh-CN/administrator-guide/Studio/job_dev/clustermode_introduction.md)
+      - [作业托管概述](/zh-CN/administrator-guide/Studio/job_dev/job_hosting.md)
       - [环境配置](/zh-CN/administrator-guide/Studio/job_dev/env_config.md)
       - FlinkSQL开发指南
         - [概述](/zh-CN/administrator-guide/Studio/job_dev/flinksql_guide/summary.md)
+        - [作业开发](/zh-CN/administrator-guide/Studio/job_dev/flinksql_guide/flinksql_job_dev.md)
+        - [作业提交](/zh-CN/administrator-guide/Studio/job_dev/flinksql_guide/flinksql_job_submit.md)
+        - [作业调试](/zh-CN/administrator-guide/Studio/job_dev/flinksql_guide/job_debug.md)
       - 其他数据源开发指南
     - 作业运维
       - [作业管理](/zh-CN/administrator-guide/Studio/job_ops/job_manage.md)
