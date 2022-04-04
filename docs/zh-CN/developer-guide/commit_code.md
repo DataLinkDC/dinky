@@ -1,6 +1,6 @@
 # 提交代码
 
-* 首先从远端仓库 *https://github.com/DataLinkDC/dlink.git*  fork一份代码到自己的仓库中
+* 首先从远端仓库 *https://github.com/DataLinkDC/dlink.git*  fork 一份代码到自己的仓库中
 
 * 远端仓库中目前有三个分支：
 

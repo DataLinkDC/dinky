@@ -1,4 +1,4 @@
-## 文档管理List
+## 文档管理列表
 
 ![document_manager_list](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/registerCenter/document_manager/document_manager_list.png)
 

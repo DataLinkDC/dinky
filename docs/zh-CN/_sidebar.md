@@ -9,7 +9,7 @@
 - 编译与部署
   - [编译](/zh-CN/quick_start/build.md)
   - [部署](/zh-CN/quick_start/deploy.md)
-- [dinky概览](/zh-CN/dinky_overview.md)
+- [Dinky概览](/zh-CN/dinky_overview.md)
 -  快速入门指南
   -  FlinkSQL作业快速入门
   -  其他数据源作业快速入门
@@ -85,4 +85,5 @@
 - [常见问题](/zh-CN/FAQ.md)
 - [致谢](/zh-CN/others/thanks.md)
 - [交流与贡献](/zh-CN/others/comminicate.md)
-- [roadmap](/zh-CN/roadmap.md)
+- [RoadMap](/zh-CN/roadmap.md)
+- [近期计划](/zh-CN/others/plans.md)

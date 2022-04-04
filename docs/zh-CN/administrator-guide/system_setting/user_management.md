@@ -1,18 +1,21 @@
-系统设置中的用户管理功能，包含添加或删除用户、修改密码等。此用户管理中的用户仅限于登录Dinky界面。
+系统设置中的用户管理功能，包含添加或删除用户、修改密码等。此用户管理中的用户仅限于登录 Dinky 界面。
 
 **默认用户名/密码:** admin/admin
+
+## 用户管理
+
+![user_manager](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/system_setting/user_management/user_manager.png)
 
 ## 添加用户
 
 当用户使用非admin用户登录时，可以添加一个新用户，通过新用户登录Dinky。
+- **普通用户**创建好后，**默认密码**是 **123456**，
+- 如果需要修改密码，请查看[修改密码](#密码修改)。
 
-首先要进入<span style="">系统设置</span>，选择<span>用户管理</span>，新建。
+进入 **系统设置**，选择  **用户管理**，**新建**。
 
-![用户新建](http://www.aiwenmo.com/dinky/dev/docs/%E7%94%A8%E6%88%B7%E6%96%B0%E5%BB%BA.png)
+![create_user](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/system_setting/user_management/create_user.png)
 
-进入后，会出现用户创建界面
-
-![](http://www.aiwenmo.com/dinky/dev/docs/%E5%88%9B%E5%BB%BA%E7%94%A8%E6%88%B7.png)
 
 **参数配置：**
 
@@ -24,45 +27,44 @@
 
 ## 删除用户
 
-但用户不使用某个创建的普通用户时，可以进行删除。首先进入<span style="">系统设置</span>，选择<span>用户管理</span>，点击对应用户的删除即可。
+但用户不使用某个创建的普通用户时，可以进行删除。首先进入 **系统设置**，选择 **用户管理**，点击对应用户的**删除**即可。
 
-![用户删除](http://www.aiwenmo.com/dinky/dev/docs/%E7%94%A8%E6%88%B7%E5%88%A0%E9%99%A4.png)
+![delete_user](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/system_setting/user_management/delete_user.png)
 
-![用户删除1](http://www.aiwenmo.com/dinky/dev/docs/%E7%94%A8%E6%88%B7%E5%88%A0%E9%99%A41.png)
+![delete_user_ok](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/system_setting/user_management/delete_user_ok.png)
 
 
 
-**说明:** admin用户在dinky是最高权限用户，无法删除，只能修改密码
+**说明:** admin 用户在 Dinky 是最高权限用户，无法删除，只能修改密码
 
 ## 用户配置及编辑
 
-用户配置或者编辑是为了用户修改用户的基本信息，首先进入<span style="">系统设置</span>，选择<span>用户管理</span>，点击对应用户的配置或者编辑。接下来就可以维护用户信息。
+用户配置或者编辑是为了用户修改用户的基本信息，首先进入 **系统设置**，选择 **用户管理**，点击对应用户的**配置**或者**编辑**。接下来就可以维护用户信息。
 
-![用户编辑及配置](http://www.aiwenmo.com/dinky/dev/docs/%E7%94%A8%E6%88%B7%E7%BC%96%E8%BE%91%E5%8F%8A%E9%85%8D%E7%BD%AE.png)
-
-![维护用户](http://www.aiwenmo.com/dinky/dev/docs/%E7%BB%B4%E6%8A%A4%E7%94%A8%E6%88%B7.png)
+![update_user](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/system_setting/user_management/update_user.png)
 
 
 
 ## 密码修改
 
-普通用户创建好后，默认密码是123456，admin用户密码是admin。为避免信息泄露，在生产环境建议用户修改密码。
+- 普通用户创建好后，**默认密码**是 **123456**，
+- **admin 用户**密码是 **admin** 。为避免信息泄露，**在生产环境建议用户修改密码**。
 
-首先进入<span style="">系统设置</span>，选择<span>用户管理</span>，点击对应用户的密码修改即可。
+首先进入 **系统设置**，选择 **用户管理**，点击对应用户的密码修改即可。
 
-![image-20220314235010502](http://www.aiwenmo.com/dinky/dev/docs/image-20220314235010502.png)
+![update_passwd](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/system_setting/user_management/update_passwd.png)
 
-![修改密码1](http://www.aiwenmo.com/dinky/dev/docs/%E4%BF%AE%E6%94%B9%E5%AF%86%E7%A0%811.png)
-
-
-
-当密码修改成功后，用户可以选择界面右上角的退出登录,既可通过新密码登录Dinky。
-
-![image-20220314224207098](http://www.aiwenmo.com/dinky/dev/docs/image-20220314224207098.png)
+![update_passwd_ok](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/system_setting/user_management/update_passwd_ok.png)
 
 
 
-![image-20220314224454102](http://www.aiwenmo.com/dinky/dev/docs/image-20220314224454102.png)
+当密码修改成功后，用户可以选择界面**右上角**的**退出登录**,既可通过新密码登录 Dinky。
+
+![loginout](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/system_setting/user_management/loginout.png)
+
+
+
+![login](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/system_setting/user_management/login.png)
 
 
 

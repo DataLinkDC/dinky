@@ -2,7 +2,7 @@
 
 ### 发行说明
 
-dinky 版本的[发行说明](/zh-CN/release_notes/dinky-0.6.1.md)
+Dinky 版本的[发行说明](/zh-CN/release_notes/dinky-0.6.1.md)
 
 ### 当前稳定版本 0.6.1
 
