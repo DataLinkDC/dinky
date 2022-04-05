@@ -16,5 +16,5 @@ public interface AlertInstanceService extends ISuperService<AlertInstance> {
 
     List<AlertInstance> listEnabledAll();
 
-    AlertResult getAlerTesttResult(AlertInstance alertInstance);
+    AlertResult testAlert(AlertInstance alertInstance);
 }
