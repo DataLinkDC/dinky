@@ -10,7 +10,7 @@
 
 2.在左侧菜单栏，右键 **目录**
 
-3.新建目录或作业，请参考作业运维中的 **[作业管理](/zh-CN/administrator-guide/Studio/job_devops/job_manage.md)**
+3.新建目录或作业，请参考作业运维中的 **[作业管理](/zh-CN/administrator_guide/studio/job_devops/job_manage.md)**
 
 4.在新建文件的对话框，填写作业信息
 
@@ -48,15 +48,15 @@ from datagen_source;
 
 新建作业如下图：
 
-![](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/Studio/job_dev/flinksql_guide/flinksql_job_dev/job_dev.png)
+![](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/studio/job_dev/flinksql_guide/flinksql_job_dev/job_dev.png)
 
 6.在作业开发页面右侧 **执行配置**，填写配置信息
 
 |  类型  | 配置项          | 备注                                                                                                                       |
 |:----:|:-------------|:-------------------------------------------------------------------------------------------------------------------------|
-| 作业配置 | 执行模式         | 区别请参考:[作业托管概述](/zh-CN/administrator-guide/Studio/job_dev/job_hosting.md)                                                 |
-| 作业配置 | 集群实例         | Standalone 和 Session 执行模式需要选择集群实例，请参考：[集群实例管理](/zh-CN/administrator-guide/registerCenter/cluster_manage?id=集群实例管理)       |
-| 作业配置 | 集群配置         | Per-Job 和 Application 执行模式需要选择集群配置，请参考：[集群配置管理](/zh-CN/administrator-guide/registerCenter/cluster_manage?id=集群配置管理)      |
+| 作业配置 | 执行模式         | 区别请参考:[作业托管概述](/zh-CN/administrator_guide/studio/job_dev/job_hosting.md)                                                 |
+| 作业配置 | 集群实例         | Standalone 和 Session 执行模式需要选择集群实例，请参考：[集群实例管理](/zh-CN/administrator_guide/register_center/cluster_manage?id=集群实例管理)      |
+| 作业配置 | 集群配置         | Per-Job 和 Application 执行模式需要选择集群配置，请参考：[集群配置管理](/zh-CN/administrator_guide/register_center/cluster_manage?id=集群配置管理)     |
 | 作业配置 | FlinkSQL 环境  | 选择已创建的 FlinkSQLEnv，如果没有则不选                                                                                               |
 | 作业配置 | 任务并行度        | 指定作业级任务并行度，默认为 1                                                                                                         |
 | 作业配置 | Insert 语句集   | 默认禁用，开启后将 SQL编辑器中编写的多个 Insert 语句合并为一个 JobGraph 进行提交                                                                      |
@@ -68,6 +68,6 @@ from datagen_source;
 
 作业配置如下图：
 
-![job_config](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/Studio/job_dev/flinksql_guide/flinksql_job_dev/job_config.png)
+![job_config](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/studio/job_dev/flinksql_guide/flinksql_job_dev/job_config.png)
 
 **注意：** 请及时手动保存作业信息，以免丢失

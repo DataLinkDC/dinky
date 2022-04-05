@@ -11,8 +11,8 @@
   - [部署](/zh-CN/deploy/deploy.md)
 - [Dinky 概览](/zh-CN/dinky_overview.md)
 -  快速入门指南
-  -  FlinkSQL作业快速入门
-  -  其他数据源作业快速入门
+  -  FlinkSQL 作业快速入门
+  -  DB SQL 作业快速入门
 - 使用手册
   - 实例管理
     - 项目空间管理
@@ -24,12 +24,13 @@
     - 作业开发
       - [作业概述](/zh-CN/administrator_guide/studio/job_dev/job_hosting.md)
       - [环境配置](/zh-CN/administrator_guide/studio/job_dev/env_config.md)
-      - FlinkSQL开发指南
+      - FlinkSQL 开发指南
         - [概述](/zh-CN/administrator_guide/studio/job_dev/flinksql_guide/summary.md)
         - [作业开发](/zh-CN/administrator_guide/studio/job_dev/flinksql_guide/flinksql_job_dev.md)
         - [作业提交](/zh-CN/administrator_guide/studio/job_dev/flinksql_guide/flinksql_job_submit.md)
         - [作业调试](/zh-CN/administrator_guide/studio/job_dev/flinksql_guide/job_debug.md)
-      - 其他数据源开发指南
+      - DB SQL 开发指南
+      - [快捷键指南](/zh-CN/administrator_guide/hotkey.md)
     - 作业运维
       - [作业管理](/zh-CN/administrator_guide/studio/job_ops/job_manage.md)
       - 作业配置
@@ -45,7 +46,6 @@
     - [jar管理](/zh-CN/administrator_guide/register_center/jar_manager.md)
     - 文档管理
   - [元数据管理](/zh-CN/administrator_guide/metadata.md)
-  - [快速使用快捷键](/zh-CN/administrator_guide/hotkey.md)
   - 系统设置
     - [用户管理](/zh-CN/administrator_guide/system_setting/user_management.md)
     - [Flink设置](/zh-CN/administrator_guide/system_setting/Flink_Setting.md)
