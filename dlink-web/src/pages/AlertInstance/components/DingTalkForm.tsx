@@ -42,7 +42,7 @@ const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
   const sendTestForm = async () => {
     const fieldsValue = await form.validateFields();
     setFormVals(buildJSONData(formVals,fieldsValue));
-    handleTest({...formVals, ...fieldsValue});
+    handleTest(buildJSONData(formVals,fieldsValue));
   };
 
   const submitForm = async () => {
@@ -143,7 +143,7 @@ const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
     return (
       <>
         <Button onClick={() => handleModalVisible(false)}>取消</Button>
-        <Button  type="primary" danger htmlType="button" onClick={sendTestForm}>测试</Button>
+        <Button type="primary" onClick={() => sendTestForm()}>测试</Button>
         <Button type="primary" onClick={() => submitForm()}>
           完成
         </Button>

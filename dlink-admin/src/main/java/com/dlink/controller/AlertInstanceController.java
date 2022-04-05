@@ -7,7 +7,9 @@ import com.dlink.common.result.Result;
 import com.dlink.model.AlertInstance;
 import com.dlink.service.AlertInstanceService;
 import com.fasterxml.jackson.databind.JsonNode;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -93,14 +95,11 @@ public class AlertInstanceController {
      */
     @PostMapping("/sendTest")
     public Result sendTest(@RequestBody AlertInstance alertInstance) throws Exception {
-        AlertResult alertResult = alertInstanceService.getAlerTesttResult(alertInstance);
+        AlertResult alertResult = alertInstanceService.testAlert(alertInstance);
         if (alertResult.getSuccess()) {
             return Result.succeed("发送成功");
-        }else {
+        } else {
             return Result.failed("发送失败");
         }
     }
-
-
-
 }
