@@ -7,6 +7,7 @@ import {ALERT_TYPE} from "@/pages/AlertInstance/conf";
 export type AlertInstanceFormProps = {
   onCancel: (flag?: boolean) => void;
   onSubmit: (values: Partial<AlertInstanceTableListItem>) => void;
+  onTest: (values: Partial<AlertInstanceTableListItem>) => void;
   modalVisible: boolean;
   values: Partial<AlertInstanceTableListItem>;
 };
@@ -29,6 +30,7 @@ const FeiShuForm: React.FC<AlertInstanceFormProps> = (props) => {
 
   const {
     onSubmit: handleSubmit,
+    onTest: handleTest,
     onCancel: handleModalVisible,
     modalVisible,
   } = props;
@@ -41,6 +43,12 @@ const FeiShuForm: React.FC<AlertInstanceFormProps> = (props) => {
     const fieldsValue = await form.validateFields();
     setFormVals(buildJSONData(formVals,fieldsValue));
     handleSubmit(buildJSONData(formVals,fieldsValue));
+  };
+
+  const sendTestForm = async () => {
+    const fieldsValue = await form.getFieldsValue();
+    setFormVals({...formVals, ...fieldsValue});
+    handleTest({...formVals, ...fieldsValue});
   };
 
   const renderContent = (vals) => {
@@ -144,6 +152,7 @@ const FeiShuForm: React.FC<AlertInstanceFormProps> = (props) => {
     return (
       <>
         <Button onClick={() => handleModalVisible(false)}>取消</Button>
+        <Button type="primary" danger htmlType="button"  onClick={sendTestForm}>测试</Button>
         <Button type="primary" onClick={() => submitForm()}>
           完成
         </Button>
