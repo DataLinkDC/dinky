@@ -1,6 +1,6 @@
 ![logo](../_media/dinky.svg)
 
-# Dlink <small>0.5</small>
+# Dlink <small>0.6</small>
 
 > Dlink was born for Apache Flink, making Flink SQL smoother.
 

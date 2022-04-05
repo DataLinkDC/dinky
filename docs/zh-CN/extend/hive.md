@@ -1,8 +1,8 @@
 ## 前言
 
-最近有很多小伙伴问，dlink 如何连接 Hive 进行数据开发？
+最近有很多小伙伴问，Dinky 如何连接 Hive 进行数据开发？
 
-关于 dlink 连接 Hive 的步骤同 Flink 的 `sql-client ` ，只不过它没有默认加载的配置文件。下文将详细讲述对 Hive 操作的全过程。
+关于 Dinky 连接 Hive 的步骤同 Flink 的 `sql-client ` ，只不过它没有默认加载的配置文件。下文将详细讲述对 Hive 操作的全过程。
 
 ## 准备工作
 
@@ -10,9 +10,9 @@
 
 我们先来梳理下本教程的各个组件版本：
 
-|  组件  |  版本  |
-| :----: | :----: |
-| Dlink  | 0.3.2  |
+|   组件   |  版本  |
+|:------:| :----: |
+| Dinky  | 0.3.2  |
 | Flink  | 1.12.4 |
 | Hadoop | 2.7.7  |
 |  Hive  | 2.3.6  |
@@ -20,11 +20,11 @@
 
 再来梳理下本教程的各个插件版本：
 
-|   所属组件    |            插件            |         版本          |
-| :-----------: | :------------------------: | :-------------------: |
-|     Dlink     |        dlink-client        |         1.12          |
-| Dlink & Flink |  flink-sql-connector-hive  |   2.3.6_2.11-1.12.3   |
-| Dlink & Flink | flink-shaded-hadoop-3-uber | 3.1.1.7.2.8.0-224-9.0 |
+|     所属组件      |            插件            |         版本          |
+|:-------------:| :------------------------: | :-------------------: |
+|     Dinky     |        dlink-client        |         1.12          |
+| Dinky & Flink |  flink-sql-connector-hive  |   2.3.6_2.11-1.12.3   |
+| Dinky & Flink | flink-shaded-hadoop-3-uber | 3.1.1.7.2.8.0-224-9.0 |
 
 ## 部署扩展
 
@@ -45,7 +45,7 @@ USE CATALOG myhive;
 select * from htest
 ```
 
-在 Dlink 编辑器中输入以上 sql ，创建 Hive Catalog，并查询一张表。
+在 Dinky 编辑器中输入以上 sql ，创建 Hive Catalog，并查询一张表。
 
 其中，`hive-conf-dir` 需要指定 `hive-site.xml` 的路径，其他同 Flink 官方解释。
 

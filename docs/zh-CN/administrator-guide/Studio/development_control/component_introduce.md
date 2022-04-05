@@ -1,28 +1,37 @@
-数据开发是基于React JavaScript库开发的SQL交互式界面工具。目前在Dinky中支持的方言有：
- - FlinkSQL
- - FlinkSQLEnv
- - MySQL
- - PostgreSQL
+目前支持的方言有：
+ - FlinkSql
+ - FlinkJar
+ - FlinkSqlEnv
+ - Mysql
+ - PostGreSql
  - Oracle
- - SQLServer
+ - SqlServer
  - Phoenix
  - Hive
- - Doris(Starrocks)
- - Clickhouse
- - java 
+ - Doris(StarRocks)
+ - ClickHouse
+ - Java 
 
-**FlinkSQL支持**
+## FlinkSql
 
- FlinkSQL作为Flink上的SQL计算引擎,结合Dinky中的数据开发。使得FlinkSQL开发更加简化,不需要写一行Java或者Scala代码。
- 只要FlinkSQL本身支持的语法，SQL-Client支持的语法，Dinky数据开发上也完全支持。
+支持 Apache Flink sql-client 的绝大多数 FlinkSQL 语法，其中部分语法被优化，详见。
 
-**Java支持**
+## FlinkJar
 
-当写一些UDF及UDTF函数时,可以在Studio上编写代码,并可以在local模式下测试，并最终发布。当前Java只适合一些UDF及UDTF函数。
+支持用户自定义的 Flink Jar 任务的配置，详见。
 
-**数据库支持**
+## FlinkSqlEnv
 
-目前支持的数据库,都可以在数据开发上做ETL及通过OpenAPI做周期性调度。
+支持将 FlinkSQL 封装为执行环境，供 FlinkSQL 任务使用，详见。在执行 FlinkSQL 时，会先执行 FlinkSqlEnv 内的语句。
+
+## DB sql
+
+支持对应数据源的原生 sql 方言，详见。
+
+## Java
+
+支持书写 Java 的 UDF 等，并自动加载至 Local 模式。（当前存在 Bug，请不要使用）
+
 
  
 

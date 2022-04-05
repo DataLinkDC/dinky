@@ -1,7 +1,7 @@
 <!-- docs/zh-CN/_sidebar.md -->
 
 
-- [Dinky简介](/zh-CN/introduce.md)
+- [Dinky 简介](/zh-CN/introduce.md)
 - 概念和架构
   - [系统架构](/zh-CN/architecture.md)
   - [基本概念](/zh-CN/concept.md)
@@ -9,24 +9,32 @@
 - 编译与部署
   - [编译](/zh-CN/quick_start/build.md)
   - [部署](/zh-CN/quick_start/deploy.md)
-- [dinky概览](/zh-CN/dinky_overview.md)
+- [Dinky 概览](/zh-CN/dinky_overview.md)
 -  快速入门指南
-  -  FlinkSQL 作业快速入门
+  -  FlinkSQL作业快速入门
   -  其他数据源作业快速入门
 - 使用手册
+  - 实例管理
+    - 项目空间管理
+  - 权限管理
   - 数据开发
-    - 开发控制台介绍
+    - 基本介绍
       - [功能介绍](/zh-CN/administrator-guide/Studio/development_control/function_introduce.md)
-      - [组件介绍](/zh-CN/administrator-guide/Studio/development_control/component_introduce.md)
-    - [作业管理](/zh-CN/administrator-guide/Studio/job_manage.md)
+      - [方言介绍](/zh-CN/administrator-guide/Studio/development_control/component_introduce.md)
     - 作业开发
-      - 开发
-      - 提交
-    - 运维管理
+      - [作业概述](/zh-CN/administrator-guide/Studio/job_dev/job_hosting.md)
+      - [环境配置](/zh-CN/administrator-guide/Studio/job_dev/env_config.md)
+      - FlinkSQL开发指南
+        - [概述](/zh-CN/administrator-guide/Studio/job_dev/flinksql_guide/summary.md)
+        - [作业开发](/zh-CN/administrator-guide/Studio/job_dev/flinksql_guide/flinksql_job_dev.md)
+        - [作业提交](/zh-CN/administrator-guide/Studio/job_dev/flinksql_guide/flinksql_job_submit.md)
+        - [作业调试](/zh-CN/administrator-guide/Studio/job_dev/flinksql_guide/job_debug.md)
+      - 其他数据源开发指南
+    - 作业运维
+      - [作业管理](/zh-CN/administrator-guide/Studio/job_ops/job_manage.md)
       - 作业配置
-      - 执行配置
-      - 保存点
-    - 作业监控
+      - 作业提交
+      - 作业日志
     - 开发参考
       - 上下游存储
       - FlinkSQL参考
@@ -80,4 +88,5 @@
 - [常见问题](/zh-CN/FAQ.md)
 - [致谢](/zh-CN/others/thanks.md)
 - [交流与贡献](/zh-CN/others/comminicate.md)
-- [roadmap](/zh-CN/roadmap.md)
+- [RoadMap](/zh-CN/roadmap.md)
+- [近期计划](/zh-CN/others/plans.md)
