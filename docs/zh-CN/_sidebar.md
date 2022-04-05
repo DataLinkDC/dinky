@@ -7,8 +7,8 @@
   - [基本概念](/zh-CN/concept.md)
 - [功能](/zh-CN/feature.md)
 - 编译与部署
-  - [编译](/zh-CN/quick_start/build.md)
-  - [部署](/zh-CN/quick_start/deploy.md)
+  - [编译](/zh-CN/deploy/build.md)
+  - [部署](/zh-CN/deploy/deploy.md)
 - [Dinky 概览](/zh-CN/dinky_overview.md)
 -  快速入门指南
   -  FlinkSQL作业快速入门
@@ -19,19 +19,19 @@
   - 权限管理
   - 数据开发
     - 基本介绍
-      - [功能介绍](/zh-CN/administrator-guide/Studio/development_control/function_introduce.md)
-      - [方言介绍](/zh-CN/administrator-guide/Studio/development_control/component_introduce.md)
+      - [功能介绍](/zh-CN/administrator_guide/studio/development_control/function_introduce.md)
+      - [方言介绍](/zh-CN/administrator_guide/studio/development_control/component_introduce.md)
     - 作业开发
-      - [作业概述](/zh-CN/administrator-guide/Studio/job_dev/job_hosting.md)
-      - [环境配置](/zh-CN/administrator-guide/Studio/job_dev/env_config.md)
+      - [作业概述](/zh-CN/administrator_guide/studio/job_dev/job_hosting.md)
+      - [环境配置](/zh-CN/administrator_guide/studio/job_dev/env_config.md)
       - FlinkSQL开发指南
-        - [概述](/zh-CN/administrator-guide/Studio/job_dev/flinksql_guide/summary.md)
-        - [作业开发](/zh-CN/administrator-guide/Studio/job_dev/flinksql_guide/flinksql_job_dev.md)
-        - [作业提交](/zh-CN/administrator-guide/Studio/job_dev/flinksql_guide/flinksql_job_submit.md)
-        - [作业调试](/zh-CN/administrator-guide/Studio/job_dev/flinksql_guide/job_debug.md)
+        - [概述](/zh-CN/administrator_guide/studio/job_dev/flinksql_guide/summary.md)
+        - [作业开发](/zh-CN/administrator_guide/studio/job_dev/flinksql_guide/flinksql_job_dev.md)
+        - [作业提交](/zh-CN/administrator_guide/studio/job_dev/flinksql_guide/flinksql_job_submit.md)
+        - [作业调试](/zh-CN/administrator_guide/studio/job_dev/flinksql_guide/job_debug.md)
       - 其他数据源开发指南
     - 作业运维
-      - [作业管理](/zh-CN/administrator-guide/Studio/job_ops/job_manage.md)
+      - [作业管理](/zh-CN/administrator_guide/studio/job_ops/job_manage.md)
       - 作业配置
       - 作业提交
       - 作业日志
@@ -39,16 +39,16 @@
       - 上下游存储
       - FlinkSQL参考
   - 注册中心
-    - [集群管理](/zh-CN/administrator-guide/registerCenter/cluster_manage.md)
-    - [数据源管理](/zh-CN/administrator-guide/registerCenter/datasource_manage.md)
-    - [告警管理](/zh-CN/administrator-guide/registerCenter/warning.md)
-    - [jar管理](/zh-CN/administrator-guide/registerCenter/jar_manager.md)
+    - [集群管理](/zh-CN/administrator_guide/register_center/cluster_manage.md)
+    - [数据源管理](/zh-CN/administrator_guide/register_center/datasource_manage.md)
+    - [告警管理](/zh-CN/administrator_guide/register_center/warning.md)
+    - [jar管理](/zh-CN/administrator_guide/register_center/jar_manager.md)
     - 文档管理
-  - [元数据管理](/zh-CN/administrator-guide/metadata.md)
-  - [快速使用快捷键](/zh-CN/administrator-guide/Hotkey.md)
+  - [元数据管理](/zh-CN/administrator_guide/metadata.md)
+  - [快速使用快捷键](/zh-CN/administrator_guide/hotkey.md)
   - 系统设置
-    - [用户管理](/zh-CN/administrator-guide/system_setting/user_management.md)
-    - [Flink设置](/zh-CN/administrator-guide/system_setting/Flink_Setting.md)
+    - [用户管理](/zh-CN/administrator_guide/system_setting/user_management.md)
+    - [Flink设置](/zh-CN/administrator_guide/system_setting/Flink_Setting.md)
   - 运维中心
     - 生命周期管理
     - 作业监控
@@ -77,14 +77,14 @@
       - [DataSphereStudio集成](/zh-CN/extend/dataspherestudio.md)
 - 开发者指南
   - 参与贡献
-    - [如何贡献](/zh-CN/developer-guide/how_contribute.md)
-    - [文档贡献](/zh-CN/developer-guide/document.md)
-    - [Issue 须知](/zh-CN/developer-guide/issue.md)
-    - [Pull Request 须知](/zh-CN/developer-guide/pull_request.md)
-    - [Commit Message 须知](/zh-CN/developer-guide/commit_message.md)
-    - [提交代码须知](/zh-CN/developer-guide/commit_code.md)
-  - [本地调试](/zh-CN/developer-guide/local_debug.md)
-  - [远程调试](/zh-CN/developer-guide/remote_debug.md)
+    - [如何贡献](/zh-CN/developer_guide/how_contribute.md)
+    - [文档贡献](/zh-CN/developer_guide/document.md)
+    - [Issue 须知](/zh-CN/developer_guide/issue.md)
+    - [Pull Request 须知](/zh-CN/developer_guide/pull_request.md)
+    - [Commit Message 须知](/zh-CN/developer_guide/commit_message.md)
+    - [提交代码须知](/zh-CN/developer_guide/commit_code.md)
+  - [本地调试](/zh-CN/developer_guide/local_debug.md)
+  - [远程调试](/zh-CN/developer_guide/remote_debug.md)
 - [常见问题](/zh-CN/FAQ.md)
 - [致谢](/zh-CN/others/thanks.md)
 - [交流与贡献](/zh-CN/others/comminicate.md)
