@@ -7,7 +7,7 @@ import {ALERT_CONFIG_LIST, ALERT_TYPE, AlertConfig} from "@/pages/AlertInstance/
 import {getAlertIcon} from "@/pages/AlertInstance/icon";
 import {AlertStateType} from "@/pages/AlertInstance/model";
 import DingTalkForm from "@/pages/AlertInstance/components/DingTalkForm";
-import {createOrModifyAlertInstance} from "@/pages/AlertInstance/service";
+import {createOrModifyAlertInstance, sendTest} from "@/pages/AlertInstance/service";
 import WeChatForm from "@/pages/AlertInstance/components/WeChatForm";
 import FeiShuForm from "@/pages/AlertInstance/components/FeiShuForm";
 import EmailForm from "@/pages/AlertInstance/components/EmailForm";
@@ -42,6 +42,11 @@ const AlertInstanceChooseForm: React.FC<UpdateFormProps> = (props) => {
       handleUpdate(value);
     }
   };
+
+  const onTest = async (value:any)=>{
+    await sendTest(value);
+  };
+
 
   return (
     <Modal
@@ -88,6 +93,9 @@ const AlertInstanceChooseForm: React.FC<UpdateFormProps> = (props) => {
           onSubmit={(value) => {
             onSubmit(value);
           }}
+          onTest={(value) => {
+            onTest(value);
+          }}
         />:undefined
       }
       {(values?.type == ALERT_TYPE.WECHAT || alertType == ALERT_TYPE.WECHAT)?
@@ -100,6 +108,9 @@ const AlertInstanceChooseForm: React.FC<UpdateFormProps> = (props) => {
           values={values}
           onSubmit={(value) => {
             onSubmit(value);
+          }}
+          onTest={(value) => {
+            onTest(value);
           }}
         />:undefined
       }
@@ -114,6 +125,9 @@ const AlertInstanceChooseForm: React.FC<UpdateFormProps> = (props) => {
           onSubmit={(value) => {
             onSubmit(value);
           }}
+          onTest={(value) => {
+            onTest(value);
+          }}
         />:undefined
       }
       {(values?.type == ALERT_TYPE.EMAIL || alertType == ALERT_TYPE.EMAIL)?
@@ -126,6 +140,9 @@ const AlertInstanceChooseForm: React.FC<UpdateFormProps> = (props) => {
           values={values}
           onSubmit={(value) => {
             onSubmit(value);
+          }}
+          onTest={(value) => {
+            onTest(value);
           }}
         />:undefined
       }
