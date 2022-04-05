@@ -1,10 +1,79 @@
-Dinky 做为一站式的实时计算平台，可以托管数据库及 Flink。全托管的 Flink 集群模式支持 local、Session、Per-job 和 Application 四种模式，四种模式有如下区别：
+Dinky 做为一站式的实时计算平台，可以托管 Flink 和数据库的作业。
 
-- **local:** Flink自带，无需任何配置，一个简单的 Mini 集群；
-- **Session 集群：** 多个作业可以复用相同的JM，可以提高JM资源利用率。因此适用于大量占用资源比较小或任务启停比较频繁的小并发作业，可以有效节约资源开销。Yarn 和 K8S 均适用；
-- **Per-job 集群:** 作业之间资源隔离，每个作业都需要一个独立的JM，因为小任务JM的资源利用率较低，因此适用于占用资源比较大或持续稳定运行的作业。Yarn 适用；
-- **Application 集群:** 在 Application 模式下，每个作业创建一个集群，这些作业会被视为属于同一个应用，在同一个集群中执行（如果在 Per-Job 模式下，就会启动多个集群）。可见，Application 模式本质上是 Session 和 Per-Job 模式的折衷。Yarn 和 K8S 均适用；
+## FlinkSQL
 
-Dinky 上如何托管 Flink 集群，请参考[集群管理](/zh-CN/administrator-guide/registerCenter/cluster_manage.md)
+### Local
 
-其他数据库的托管请参考[数据源管理](/zh-CN/administrator-guide/registerCenter/datasource_manage.md)
+Dinky 内置的 Flink MiniCluster，如果提交任务至 Local 模式则将在 Dinky 内部运行该作业。
+
+**特点：** 不需要外部 Flink 集群，资源受限。
+
+**适用于：** 语法校验、查看 JobPlan、查看字段级血缘、执行资源占用非常小的批作业。
+
+**注意：** 请不要提交流任务至 Local，如果提交了，你将无法关闭它，只能重启 Dinky。
+
+### Standalone
+
+Dinky 将通过 JobManager 的 Rest 端口提交 FlinkSQL 作业至外部的 Flink Standalone 集群。
+
+**特点：** 作业资源共享，启动快，不依赖 Yarn 或 K8S。
+
+**适用于：** 批作业、Flink OLAP 查询、资源占用小的流作业。
+
+### Yarn Session
+
+Dinky 将通过 JobManager 的 Rest 端口提交 FlinkSQL 作业至外部的 Flink Yarn Session 集群。
+
+**特点：** 作业资源共享，启动快。
+
+**适用于：** 作业资源共享，启动快，批作业、Flink OLAP 查询、资源占用小的流作业。
+
+**注意：** 需要手动启动 Yarn Session 集群并注册到 Dinky 的集群实例，请参考[集群管理](/zh-CN/administrator-guide/registerCenter/cluster_manage.md)。
+
+### Yarn Per-Job
+
+Dinky 将通过 Yarn 来创建 Flink Yarn Per-Job 集群。
+
+**特点：** 作业资源隔离，启动慢，每个 JobGraph 创建一个集群。
+
+**适用于：** 资源占用较多的批作业和流作业。
+
+**注意：** 需要在 Dinky 的集群配置中注册相关的 Hadoop 和 Flink 配置，请参考[集群管理](/zh-CN/administrator-guide/registerCenter/cluster_manage.md)。
+
+### Yarn Application
+
+Dinky 将通过 Yarn 来创建 Flink Yarn Application 集群。
+
+**特点：** 作业资源隔离，启动慢，节约网络资源，所有 JobGraph 只创建一个集群。
+
+**适用于：** 资源占用较多的批作业和流作业。
+
+**注意：** 需要在 Dinky 的集群配置中注册相关的 Hadoop 和 Flink 配置，请参考[集群管理](/zh-CN/administrator-guide/registerCenter/cluster_manage.md)。
+
+### Kubernetes Session
+
+Dinky 将通过暴露的 NodePort 端口提交 FlinkSQL 作业至外部的 Flink Kubernetes Session 集群。
+
+**特点：** 作业资源隔离，启动快，动态扩容。
+
+**注意：** 需要在 Dinky 的集群配置中注册相关的 Kubernetes 和 Flink 配置，请参考[集群管理](/zh-CN/administrator-guide/registerCenter/cluster_manage.md)。
+
+**适用于：** 作业资源隔离，启动快，动态扩容，批作业、Flink OLAP 查询、资源占用小的流作业。
+
+### Kubernetes Application
+
+Dinky 将通过 dlink-app 镜像创建的 Flink Kubernetes Application 集群。
+
+**特点：** 作业资源隔离，启动慢，动态扩容，节约网络资源，所有 JobGraph 只创建一个集群。
+
+**适用于：** 作业资源隔离，启动慢，动态扩容，节约网络资源，资源占用较多的批作业和流作业。
+
+**注意：** 需要在 Dinky 的集群配置中注册相关的 Kubernetes 和 Flink 配置，请参考[集群管理](/zh-CN/administrator-guide/registerCenter/cluster_manage.md)。
+
+## DB SQL
+
+Dinky 将把 sql 提交到对应的数据源执行。
+
+**适用于：** 原生 SQL 查询、执行。
+
+**注意：** 需要在数据源中心注册数据库，请参考[数据源管理](/zh-CN/administrator-guide/registerCenter/datasource_manage.md)
