@@ -1,21 +1,22 @@
-完成作业开发和上线后，您需要在数据开发页面启动作业至运行阶段。此外，作业在暂停或者停止后需要恢复时，需要启动作业。
+## 功能说明
 
-## 限制说明
+- **执行当前的 SQL：** 提交执行未保存的作业配置，并可以同步获取 SELECT、SHOW 等执行结果，常用于 Local、Standalone、Session 执行模式；
+- **异步提交：** 提交执行最近保存的作业配置，可用于所有执行模式；
+- **发布** 发布当前作业的最近保存的作业配置，发布后无法修改；
+- **上线** 提交已发布的作业配置，可触发报警；
+- **下线** 停止已上线的作业，并触发 SavePoint；
+- **停止** 只停止已提交的作业；
+- **维护** 使已发布的作业进入维护状态，可以被修改；
+- **注销** 标记作业为注销不可用状态。
 
-- 异步提交后，无法接收告警信息，而发布上线后可以接收告警信息，自动恢复作业等；
-- 异步提交后，无法及时看到作业的详细情况，而发布上线可以看到作业的详细情况；
+## 常用场景
 
-## 启动场景
-
-- **上线后启动：** 您可以全新启动（无状态）。
-- **暂停后启动：** 暂停作业时，如果你选择了Savepoint策略。系统将按照以下情况进行处理
-  - 如果您选择 Savepoint 策略，在暂停前执行一次Savepoint，则作业暂停后启动恢复时，系统会从最新的Savepoint状态恢复；
-  - 如果您禁用 Savepoint 策略，则作业暂停后启动恢复时，系统会从最新的Checkpoint状态恢复；
-- **停止后启动：** 停止作业时，根据您选择 Savepoint 策略，作业在停止时是否执行一次Savepoint，系统将按照以下情况进行处理：
-  - 如果选择 Savepoint 策略，那么作业会先进行Savepoint后进入停止流程。在作业停止后，系统会自动清除作业相关的Checkpoint信息；
-  - 如果 Savepoint 策略禁用，那么作业会进入停止流程。在作业停止后，系统会自动清除作业相关的Checkpoint信息；
-
-作业停止后启动时，您可以全新启动（无状态）；或者从所选Savepoint开始恢复作业。
+- **查看 FlinkSQL 执行结果：** 执行当前的 SQL。
+- **提交作业：** 异步提交。
+- **上线作业：** SavePoint 最近一次 + 上线。
+- **下线作业：** 下线。
+- **升级作业：** 下线后上线。
+- **全新上线作业：** SavePoint 禁用 + 上线。
 
 ## Flink作业启动操作步骤
 
@@ -29,12 +30,8 @@
 
 ![async_submit](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/Studio/job_dev/flinksql_guide/flinksql_job_submit/async_submit.png)
 
-
-
 作业启动发布上线如下图：
 
 ![online](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator-guide/Studio/job_dev/flinksql_guide/flinksql_job_submit/online.png)
-
-
 
 有关发布上线的详细内容，请参考运维中心

@@ -1,7 +1,7 @@
 <!-- docs/zh-CN/_sidebar.md -->
 
 
-- [Dinky简介](/zh-CN/introduce.md)
+- [Dinky 简介](/zh-CN/introduce.md)
 - 概念和架构
   - [系统架构](/zh-CN/architecture.md)
   - [基本概念](/zh-CN/concept.md)
@@ -9,7 +9,7 @@
 - 编译与部署
   - [编译](/zh-CN/quick_start/build.md)
   - [部署](/zh-CN/quick_start/deploy.md)
-- [Dinky概览](/zh-CN/dinky_overview.md)
+- [Dinky 概览](/zh-CN/dinky_overview.md)
 -  快速入门指南
   -  FlinkSQL作业快速入门
   -  其他数据源作业快速入门
@@ -18,11 +18,11 @@
     - 项目空间管理
   - 权限管理
   - 数据开发
-    - 开发控制台介绍
+    - 基本介绍
       - [功能介绍](/zh-CN/administrator-guide/Studio/development_control/function_introduce.md)
-      - [组件介绍](/zh-CN/administrator-guide/Studio/development_control/component_introduce.md)
+      - [方言介绍](/zh-CN/administrator-guide/Studio/development_control/component_introduce.md)
     - 作业开发
-      - [作业托管概述](/zh-CN/administrator-guide/Studio/job_dev/job_hosting.md)
+      - [作业概述](/zh-CN/administrator-guide/Studio/job_dev/job_hosting.md)
       - [环境配置](/zh-CN/administrator-guide/Studio/job_dev/env_config.md)
       - FlinkSQL开发指南
         - [概述](/zh-CN/administrator-guide/Studio/job_dev/flinksql_guide/summary.md)

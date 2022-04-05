@@ -1,34 +1,51 @@
 ## Flink 环境配置
 
-### Session 集群
+### Local
 
-Session 集群适用于非生产环境的开发测试环境，您可以使用 Session 集群模式部署或调试作业，提高作业 Job Manager 的资源使用率。
+只需要在 Dinky 根目录下的 plugins 文件夹下添加 Flink lib 与 connector 等 Jar 即可。
 
-如何创建 Session 集群，请参考注册中心[集群管理](/zh-CN/administrator-guide/registerCenter/cluster_manage.md)的集群实例管理
+### Standalone 集群
 
-### Per-job 集群
+根据 Flink 官网手动部署一个 Flink Standalone 集群，并注册到 **集群实例** 中。
 
-Per-job 集群适用于生产环境，您可以使用 Per-job 集群模式部署或提交作业
+如何注册 Standalone 集群，请参考[集群管理](/zh-CN/administrator-guide/registerCenter/cluster_manage.md)的集群实例管理。
 
-如何创建 Session 集群，请参考注册中心[集群管理](/zh-CN/administrator-guide/registerCenter/cluster_manage.md)的集群配置管理
+### Yarn Session 集群
 
-### Application 集群
+根据 Flink 官网手动部署一个 Flink Yarn Session 集群，并注册到 **集群实例** 中。
 
-Per-job 集群适用于生产环境，您可以使用 Per-job 集群模式部署或提交作业
+如何注册 Yarn Session 集群，请参考[集群管理](/zh-CN/administrator-guide/registerCenter/cluster_manage.md)的集群实例管理。
 
-如何创建 Session 集群，请参考注册中心[集群管理](/zh-CN/administrator-guide/registerCenter/cluster_manage.md)的集群配置管理
+### Yarn Per-Job 集群
 
+在 **注册中心 > 集群管理 > 集群配置管理** 中注册 Hadoop 与 Flink 相关配置。
 
-### 说明
+如何注册 Yarn Per-Job 的集群配置，请参考[集群管理](/zh-CN/administrator-guide/registerCenter/cluster_manage.md)的集群配置管理。
 
-如果是 Session 集群有如下建议：
+### Yarn Application 集群
 
-- 对于单并发的小作业，建议整个集群的作业总数不超过100个；
-- 对于复杂作业，建议单作业最大并发数不超过512，64个并发的中等规模作业单集群不多于32个。否则可能会出现心跳超时等问题影响集群稳定性。此时，您需要增大心跳间隔和心跳超时时间；
-- 如果您需要同时运行更多的任务，则需要增加 Session 集群的资源配置；
+1.在 **注册中心 > 集群管理 > 集群配置管理** 中注册 Hadoop 与 Flink 相关配置；
+
+2.将 dlink-app.jar 上传到 **系统设置 > Flink 设置** 中的 **提交 FlinkSQL 的 Jar 文件路径** 的 hdfs 配置地址。
+
+如何注册 Yarn Application 的集群配置，请参考[集群管理](/zh-CN/administrator-guide/registerCenter/cluster_manage.md)的集群配置管理。
+
+### Kubernetes Session 集群
+
+根据 Flink 官网手动部署一个 Flink Kubernetes Session 集群，并暴露 **NodePort**， 注册到 **集群实例** 中。
+
+如何注册 Kubernetes Session 集群，请参考[集群管理](/zh-CN/administrator-guide/registerCenter/cluster_manage.md)的集群实例管理。
+
+### Kubernetes Application 集群
+
+1.在 **注册中心 > 集群管理 > 集群配置管理** 中注册 Kubernetes 与 Flink 相关配置；
+
+2.将 dlink-app.jar 打包成完整的 Flink 镜像，在 **系统设置 > Flink 设置** 中的 **提交 FlinkSQL 的 Jar 文件路径** 的配置 dlink-app.jar 的 local 地址。
+
+如何注册 Kubernetes Application 的集群配置，请参考[集群管理](/zh-CN/administrator-guide/registerCenter/cluster_manage.md)的集群配置管理。
 
 ## 其他数据源环境配置
 
-Dinky 虽然是在 Flink 基础之上开发而言，为了让用户一站式开发，扩展了额外的数据源。极大的方便了用户进行 FlinkSQL 的编写。
+手动部署外部数据源，然后注册到 **数据源管理** 。
 
-如何创建外部数据源，请参考注册中心的[数据源管理](/zh-CN/administrator-guide/registerCenter/datasource_manage.md)。当前 Dinky 支持的数据源请参考功能扩展中的[扩展数据源](/zh-CN/extend/datasource.md)
+如何注册外部数据源，请参考[数据源管理](/zh-CN/administrator-guide/registerCenter/datasource_manage.md)。当前 Dinky 支持的数据源请参考功能扩展中的[扩展数据源](/zh-CN/extend/datasource.md)
