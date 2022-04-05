@@ -1,6 +1,7 @@
 package com.dlink.alert;
 
 import com.dlink.assertion.Asserts;
+
 import sun.misc.Service;
 
 import java.util.Iterator;
@@ -38,6 +39,14 @@ public interface Alert {
         Alert driver = optionalDriver.get();
         AlertPool.push(key, driver);
         return driver;
+    }
+
+    static Alert buildTest(AlertConfig config) {
+        Optional<Alert> optionalDriver = Alert.get(config);
+        if (!optionalDriver.isPresent()) {
+            throw new AlertException("不支持报警组件类型【" + config.getType() + "】，请在 lib 下添加扩展依赖");
+        }
+        return optionalDriver.get();
     }
 
     Alert setConfig(AlertConfig config);
