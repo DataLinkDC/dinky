@@ -1,0 +1,6 @@
+build/
+.idea/
+.git/
+dlink-web/node/
+dlink-web/node_modules/
+dlink-web/dist/
