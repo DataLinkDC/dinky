@@ -1,7 +1,5 @@
 package com.dlink.service.impl;
 
-import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.alert.Alert;
 import com.dlink.alert.AlertConfig;
@@ -32,6 +30,7 @@ import com.dlink.result.SqlExplainResult;
 import com.dlink.service.*;
 import com.dlink.utils.CustomStringJavaCompiler;
 import com.dlink.utils.JSONUtil;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -91,7 +90,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
         if (Dialect.isSql(task.getDialect())) {
             return executeCommonSql(SqlDTO.build(task.getStatement(),
-                    task.getDatabaseId(), null));
+                task.getDatabaseId(), null));
         }
         JobConfig config = buildJobConfig(task);
         JobManager jobManager = JobManager.build(config);
@@ -109,7 +108,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         task.setStep(JobLifeCycle.ONLINE.getValue());
         if (Dialect.isSql(task.getDialect())) {
             return executeCommonSql(SqlDTO.build(task.getStatement(),
-                    task.getDatabaseId(), null));
+                task.getDatabaseId(), null));
         }
         JobConfig config = buildJobConfig(task);
         JobManager jobManager = JobManager.build(config);
@@ -129,7 +128,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         }
         if (Dialect.isSql(task.getDialect())) {
             return executeCommonSql(SqlDTO.build(task.getStatement(),
-                    task.getDatabaseId(), null));
+                task.getDatabaseId(), null));
         }
         task.setSavePointStrategy(SavePointStrategy.LATEST.getValue());
         JobConfig config = buildJobConfig(task);
@@ -238,7 +237,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     public boolean saveOrUpdateTask(Task task) {
         // to compiler java udf
         if (Asserts.isNotNullString(task.getDialect()) && Dialect.JAVA.equalsVal(task.getDialect())
-                && Asserts.isNotNullString(task.getStatement())) {
+            && Asserts.isNotNullString(task.getStatement())) {
             CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(task.getStatement());
             task.setSavePointPath(compiler.getFullClassName());
         }
@@ -247,8 +246,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             Task taskInfo = getById(task.getId());
             Assert.check(taskInfo);
             if (JobLifeCycle.RELEASE.equalsValue(taskInfo.getStep()) ||
-                    JobLifeCycle.ONLINE.equalsValue(taskInfo.getStep()) ||
-                    JobLifeCycle.CANCEL.equalsValue(taskInfo.getStep())) {
+                JobLifeCycle.ONLINE.equalsValue(taskInfo.getStep()) ||
+                JobLifeCycle.CANCEL.equalsValue(taskInfo.getStep())) {
                 throw new BusException("该作业已" + JobLifeCycle.get(taskInfo.getStep()).getLabel() + "，禁止修改！");
             }
             task.setStep(JobLifeCycle.DEVELOP.getValue());
@@ -528,18 +527,18 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 Savepoints latestSavepoints = savepointsService.getLatestSavepointByTaskId(task.getId());
                 if (Asserts.isNotNull(latestSavepoints)) {
                     config.setSavePointPath(latestSavepoints.getPath());
-                    config.getConfig().put(SavepointConfigOptions.SAVEPOINT_PATH.key(),latestSavepoints.getPath());
+                    config.getConfig().put("execution.savepoint.path", latestSavepoints.getPath());
                 }
                 break;
             case EARLIEST:
                 Savepoints earliestSavepoints = savepointsService.getEarliestSavepointByTaskId(task.getId());
                 if (Asserts.isNotNull(earliestSavepoints)) {
                     config.setSavePointPath(earliestSavepoints.getPath());
-                    config.getConfig().put(SavepointConfigOptions.SAVEPOINT_PATH.key(),earliestSavepoints.getPath());
+                    config.getConfig().put("execution.savepoint.path", earliestSavepoints.getPath());
                 }
                 break;
             case CUSTOM:
-                config.getConfig().put(SavepointConfigOptions.SAVEPOINT_PATH.key(),config.getSavePointPath());
+                config.getConfig().put("execution.savepoint.path", config.getSavePointPath());
                 break;
             default:
                 config.setSavePointPath(null);
@@ -577,7 +576,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     private boolean inRefreshPlan(JobInstance jobInstance) {
         if ((!JobStatus.isDone(jobInstance.getStatus())) || (Asserts.isNotNull(jobInstance.getFinishTime())
-                && Duration.between(jobInstance.getFinishTime(), LocalDateTime.now()).toMinutes() < 1)) {
+            && Duration.between(jobInstance.getFinishTime(), LocalDateTime.now()).toMinutes() < 1)) {
             return true;
         } else {
             return false;
