@@ -1,5 +1,7 @@
 package com.dlink.service.impl;
 
+import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.alert.Alert;
 import com.dlink.alert.AlertConfig;
@@ -526,15 +528,18 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 Savepoints latestSavepoints = savepointsService.getLatestSavepointByTaskId(task.getId());
                 if (Asserts.isNotNull(latestSavepoints)) {
                     config.setSavePointPath(latestSavepoints.getPath());
+                    config.getConfig().put(SavepointConfigOptions.SAVEPOINT_PATH.key(),latestSavepoints.getPath());
                 }
                 break;
             case EARLIEST:
                 Savepoints earliestSavepoints = savepointsService.getEarliestSavepointByTaskId(task.getId());
                 if (Asserts.isNotNull(earliestSavepoints)) {
                     config.setSavePointPath(earliestSavepoints.getPath());
+                    config.getConfig().put(SavepointConfigOptions.SAVEPOINT_PATH.key(),earliestSavepoints.getPath());
                 }
                 break;
             case CUSTOM:
+                config.getConfig().put(SavepointConfigOptions.SAVEPOINT_PATH.key(),config.getSavePointPath());
                 break;
             default:
                 config.setSavePointPath(null);
