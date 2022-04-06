@@ -72,7 +72,7 @@ public final class FeiShuSender {
         String jsonResult ="";
         byte[] byt = StringUtils.getBytesUtf8(formatContent(alertMsg));
         String contentResult = StringUtils.newStringUtf8(byt);
-        String userIdsToText = mkUserIdsToText(atUserIds);
+        String userIdsToText = mkUserIds(org.apache.commons.lang3.StringUtils.isBlank(atUserIds)? "all": atUserIds);
         if (StringUtils.equals(ShowType.TEXT.getValue(), msgType)) {
             jsonResult = FeiShuConstants.FEI_SHU_TEXT_TEMPLATE.replace(MSG_TYPE_REGX, msgType)
                     .replace(MSG_RESULT_REGX, contentResult).replace(FEI_SHU_USER_REGX, userIdsToText).replaceAll("/n", "\\\\n");
@@ -84,33 +84,24 @@ public final class FeiShuSender {
         return jsonResult;
     }
 
-    private  String mkUserIdsToText(String users){
+    private  String mkUserIds(String users){
         String userIdsToText="";
         String[] userList = users.split(",");
-            if (org.apache.commons.lang3.StringUtils.isEmpty(users) && Boolean.TRUE.equals(atAll)) {
-                if (msgType.equals(ShowType.TEXT.getValue())) {
-                    userIdsToText="<at user_id=\\\"all\\\">所有人</at>";
-                }else{
-                    userIdsToText="{\"tag\":\"at\",\"user_id\":\"all\",\"user_name\":\"所有人\"}";
-                }
-            } else {
-                if (msgType.equals(ShowType.TEXT.getValue())) {
-                    StringBuilder sb = new StringBuilder();
-                    for (String user : userList) {
-                        sb.append("<at user_id=\\\"").append(user).append("\\\"></at>");
-                    }
-                    userIdsToText = sb.toString();
-                }else{
-                    StringBuilder sb = new StringBuilder();
-                    for (String user : userList) {
-                        sb.append("{\"tag\":\"at\",\"user_id\":\"").append(user).append("\"},");
-                    }
-                    sb.deleteCharAt(sb.length()-1);
-                    userIdsToText = sb.toString();
-                }
-
+        if (msgType.equals(ShowType.TEXT.getValue())) {
+            StringBuilder sb = new StringBuilder();
+            for (String user : userList) {
+                sb.append("<at user_id=\\\"").append(user).append("\\\"></at>");
             }
-            return userIdsToText;
+            userIdsToText = sb.toString();
+        }else{
+            StringBuilder sb = new StringBuilder();
+            for (String user : userList) {
+                sb.append("{\"tag\":\"at\",\"user_id\":\"").append(user).append("\"},");
+            }
+            sb.deleteCharAt(sb.length()-1);
+            userIdsToText = sb.toString();
+        }
+        return userIdsToText;
     }
 
     public static AlertResult checkSendFeiShuSendMsgResult(String result) {
