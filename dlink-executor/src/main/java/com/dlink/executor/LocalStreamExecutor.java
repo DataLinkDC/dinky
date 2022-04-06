@@ -1,6 +1,10 @@
 package com.dlink.executor;
 
+import org.apache.flink.configuration.Configuration;
+import org.apache.flink.configuration.DeploymentOptions;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+
+import com.dlink.assertion.Asserts;
 
 /**
  * LocalStreamExecuter
@@ -12,7 +16,12 @@ public class LocalStreamExecutor extends Executor {
 
     public LocalStreamExecutor(ExecutorSetting executorSetting) {
         this.executorSetting = executorSetting;
-        this.environment = StreamExecutionEnvironment.createLocalEnvironment();
+        if (Asserts.isNotNull(executorSetting.getConfig())) {
+            Configuration configuration = Configuration.fromMap(executorSetting.getConfig());
+            this.environment = StreamExecutionEnvironment.createLocalEnvironment(configuration);
+        } else {
+            this.environment = StreamExecutionEnvironment.createLocalEnvironment();
+        }
         init();
     }
 
