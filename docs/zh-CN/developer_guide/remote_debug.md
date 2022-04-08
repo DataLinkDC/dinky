@@ -6,13 +6,13 @@
 - Flink on yarn
 - Flink on K8S
 
-需要说明的是远程调试不需要在服务器部署相应的Dinky安装包，在对应的IDE启动Dlink类，即可完成对作业的远程执行和Debug。到目前为止，远程调试已经打通yarn session模式，也希望有感兴趣的小伙伴贡献其他几种模式的远程调试模式。
+需要说明的是远程调试不需要在服务器部署相应的 Dinky 安装包，在对应的 IDE 启动 `dlink-admin/src/main/java/com/dlink/Dlink.java` 类，即可完成对作业的远程执行和Debug。到目前为止，远程调试已经打通yarn session模式，也希望有感兴趣的小伙伴贡献其他几种模式的远程调试模式。
 
-**前提条件：** 在进行远程调试过程中，必须要进行一次编译，这样做的原因是为了生成Dinky各个模块或者各个包的jar包文件，为远程提交到集群做准备。此方式类似与在服务器部署Dinky后，Dinky启动需要各个Dinky的包或者模块对应的jar包文件，方可正常启动。
+**前提条件：** 在进行远程调试过程中，必须要进行一次 `install`，这样做的原因是为了生成 Dinky 各个模块或者各个包的jar包文件，为远程提交到集群做准备。此方式类似与在服务器部署 Dinky 后，Dinky 启动需要各个 Dinky 的包或者模块对应的 jar 包文件，方可正常启动。
 
-对于开发者来说，如何在IDEA中对作业进行远程调试及提交。下面以yarn session模式为例。
+对于开发者来说，如何在 IDEA 中对作业进行远程调试及提交。下面以 Yarn Session 模式为例。
 
-**说明:** 环境准备及源码导入IDEA，请参考本地调试
+**说明:** 环境准备及源码导入 IDEA，请参考本地调试
 
 ## 编译
 
@@ -24,23 +24,22 @@ mvn clean package -Dmaven.test.skip=true
 
 ### 图形化编译
 
-![install](http://www.aiwenmo.com/dinky/dev/docs/install.png)
+![install](http://www.aiwenmo.com/dinky/docs/zh-CN/developer-guide/remote_debug/local_package_install.jpg)
+图形化编译，需要跳过 test ，并进行 clean ==> install。
 
-图形化编译，需要跳过test，并进行clean ==> install。
-
-**注意：**如果不执行install 生成的 jar安装不到本地 别的依赖就识别不到本地仓库这些包  所以可能导依赖的时候会报错 CustomTableEnvironmentImpl 这个类未定义 。
+**注意：**如果不执行 install 生成的 jar安装不到本地 别的依赖就识别不到本地仓库这些包  所以可能导依赖的时候会报错 CustomTableEnvironmentImpl 这个类未定义 。
 
 **说明:** 
 
-​     1.如果不想单独编译前端，在dlink-web模块的pom下有<span style="color:fuchsia">frontend-maven-plugins</span>插件，可直接前后端编译；
+​     1.如果不想单独编译前端，在 dlink-web 模块的 pom 下有``frontend-maven-plugins``，可直接前后端编译；
 
-​     2.如果要分开编译，在后端编译完成后，需要在dlink-web下执行<span style="color:fuchsia"> npm i --force </span> ;  
+​     2.如果要分开编译，在后端编译完成后，需要在 dlink-web 下执行 ``npm i --force ``;  
 
 ## 远程调试环境搭建
 
 ### 修改pom文件
 
-需要修改 dlink根目录下的pom文件，将 provied  改为 complie，修改如下：
+需要修改 dlink 根目录下的 pom 文件，将 provied  改为 complie，修改如下：
 
 ```
 <properties>
@@ -55,7 +54,7 @@ mvn clean package -Dmaven.test.skip=true
 
 ### 修改配置文件
 
-修改dlink根目录下/dlink-admin/src/main/resources/application.ym文件
+修改 dlink 根目录下 /dlink-admin/src/main/resources/application.ym文件
 
 配置数据库连接信息：
 
@@ -109,32 +108,35 @@ sa-token:
 
 ### 初始化数据库
 
-在MySQL数据库创建 dlink 用户并在 dlink 数据库中执行 dlink-doc/sql/dlink.sql 文件。此外 dlink-doc/sql/dlink_history.sql 标识了各版本的升级 sql。
+在 MySQL 数据库创建 dlink 用户并在 dlink 数据库中执行 dlink-doc/sql/dlink.sql 文件。此外 dlink-doc/sql/dlink_history.sql 标识了各版本的升级 sql。
 
-以上文件修改完成后，就可以启动Dinky。
+以上文件修改完成后，就可以启动 Dinky。
 
 ### 集群配置文件
 
-- **hadoop配置文件: ** core-site.xml   hdfs-site.xml   yarn-site.xml  hive-site.xml;
+- **hadoop配置文件:** core-site.xml   hdfs-site.xml   yarn-site.xml  hive-site.xml;
 - **Flink配置文件：** flink-conf.yaml；
 
-**注意:** hive-site.xml需要使用到hivecatalog时添加;
+**注意:** hive-site.xml 需要使用到 Hive Catalog 时添加;
 
 ### 添加plugins 插件依赖
 
-根据job的场景自行选择插件依赖jar,  注意需要将该目录添加为项目库,如下所示：
+根据 job 的场景自行选择插件依赖 jar, 选择需要的 jars , 注意需要将该目录添加为全局库,如下所示：
 
-![lib](http://www.aiwenmo.com/dinky/dev/docs/lib.png)
+![lib](http://www.aiwenmo.com/dinky/docs/zh-CN/developer-guide/remote_debug/jars_add_to_repo.jpg)
+
+![choose_addrepo_global](http://www.aiwenmo.com/dinky/docs/zh-CN/developer-guide/remote_debug/choose_addrepo_global.jpg)
 
 
 
-### 启动yarn session集群
+
+### 启动 Yarn Session 集群
 
 ```
 yarn-session.sh -n 2 -jm 1024 -tm 4096 -s 6 -d
 ```
 
-### 启动Dinky服务
+### 启动 Dinky 服务
 
 启动 dlink-admin 下的 Dlink 启动类，可见 8888 端口。
 
@@ -142,7 +144,7 @@ yarn-session.sh -n 2 -jm 1024 -tm 4096 -s 6 -d
 
 输入 admin/admin 登录。
 
-**说明：** 在dinky 0.6版本后，不需要额外启动前端，启动后端后便可访问 127.0.0.1:8888
+**说明：** 在 Dinky-0.6 版本后，不需要额外启动前端，启动后端后便可访问 `127.0.0.1:8888`
 
 
 
@@ -269,31 +271,31 @@ insert into sink_order_mysql_goods_order_pay select * from source_order_my
 
 ### 作业提交检查
 
-**SQL逻辑语法校验**
+**SQL 逻辑语法校验**
 
-![](http://www.aiwenmo.com/dinky/dev/docs/SQL%E8%AF%AD%E6%B3%95%E6%A3%80%E6%9F%A5.png)
+![check_sql](http://www.aiwenmo.com/dinky/docs/zh-CN/developer-guide/remote_debug/check_sql.jpg)
 
 **获取JobPlan**
 
-![](http://www.aiwenmo.com/dinky/dev/docs/JobPlan.png)
+![check_sql](http://www.aiwenmo.com/dinky/docs/zh-CN/developer-guide/remote_debug/job_plan.jpg)
 
-**Flink Web UI查看作业**
+**Flink Web UI 查看作业**
 
-![flinkwebui](http://www.aiwenmo.com/dinky/dev/docs/flinkwebui.png)
+![job_flinkwebui](http://www.aiwenmo.com/dinky/docs/zh-CN/developer-guide/remote_debug/job_flinkwebui.png)
 
-**查看是否同步到hive**
+**查看是否同步到 Hive**
 
-![hive](http://www.aiwenmo.com/dinky/dev/docs/hive.png)
+![is_sync_hive_table](http://www.aiwenmo.com/dinky/docs/zh-CN/developer-guide/remote_debug/is_sync_hive_table.png)
 
-**运维中心查看JOB 提交状态**
+**运维中心查看 JOB 提交状态**
 
-![运维中心](http://www.aiwenmo.com/dinky/dev/docs/%E8%BF%90%E7%BB%B4%E4%B8%AD%E5%BF%83.png)
+![job_davops_center](http://www.aiwenmo.com/dinky/docs/zh-CN/developer-guide/remote_debug/job_davops_center.png)
+
+**运维中心查看 JOB 详情**
+![job_davops_center](http://www.aiwenmo.com/dinky/docs/zh-CN/developer-guide/remote_debug/devops_job_detail.png)
 
 
-
-**注意事项:** 如果拉去了新代码，远程调试环境一定要检查一遍，以防各种报错。
-
-​    
+**注意事项:** 如果拉取了新代码，远程调试环境一定要检查一遍，以防各种报错。
 
 
 

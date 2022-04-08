@@ -59,6 +59,7 @@
     - [扩展Flink版本](/zh-CN/extend/flinkversion.md)
     - [扩展连接器](/zh-CN/extend/connector.md)
     - [扩展数据源](/zh-CN/extend/datasource.md)
+    - [扩展报警插件](/zh-CN/extend/alert.md)
     - [FlinkSQL 编辑器自动补全函数](/zh-CN/extend/completion.md)
   - 实践指南
     - [Yarn提交实践指南](/zh-CN/practice/yarnsubmit.md)
