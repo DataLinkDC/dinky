@@ -51,9 +51,9 @@ FROM maven:3.8.4-jdk-8 as plugin-stage
 WORKDIR /app
 ADD https://archive.apache.org/dist/flink/flink-1.13.3/flink-1.13.3-bin-scala_2.12.tgz /tmp
 RUN tar zxvf /tmp/flink-1.13.3-bin-scala_2.12.tgz -C /app --strip-components=1
-ADD https://repo1.maven.org/maven2/com/ververica/flink-connector-mysql-cdc/2.2.0/flink-connector-mysql-cdc-2.2.0.jar /app
-ADD https://repo1.maven.org/maven2/org/apache/flink/flink-connector-jdbc_2.12/1.13.3/flink-connector-jdbc_2.12-1.13.3.jar /app
-ADD https://repo.maven.apache.org/maven2/mysql/mysql-connector-java/8.0.28/mysql-connector-java-8.0.28.jar /app
+ADD https://repo1.maven.org/maven2/com/ververica/flink-connector-mysql-cdc/2.2.0/flink-connector-mysql-cdc-2.2.0.jar /app/lib
+ADD https://repo1.maven.org/maven2/org/apache/flink/flink-connector-jdbc_2.12/1.13.3/flink-connector-jdbc_2.12-1.13.3.jar /app/lib
+ADD https://repo.maven.apache.org/maven2/mysql/mysql-connector-java/8.0.28/mysql-connector-java-8.0.28.jar /app/lib
 
 
 # stage 1, build stage
