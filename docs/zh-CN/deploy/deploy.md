@@ -5,8 +5,8 @@
 Dinky 不依赖任何外部的 Hadoop 或者 Flink 环境，可以单独部署在 flink、 hadoop 和 K8S 集群之外，完全解耦，支持同时连接多个不同的集群实例进行运维。
 
 ```
-tar -zxvf dlink-release-0.6.1.tar.gz
-mv dlink-release-0.6.1 dlink
+tar -zxvf dlink-release-{version}.tar.gz
+mv dlink-release-{version} dlink
 cd dlink
 ```
 

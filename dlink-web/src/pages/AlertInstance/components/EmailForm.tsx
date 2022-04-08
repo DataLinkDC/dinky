@@ -17,7 +17,7 @@ const formLayout = {
   wrapperCol: {span: 13},
 };
 
-const FeiShuForm: React.FC<AlertInstanceFormProps> = (props) => {
+const EmailForm: React.FC<AlertInstanceFormProps> = (props) => {
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<AlertInstanceTableListItem>>({
@@ -212,4 +212,4 @@ const FeiShuForm: React.FC<AlertInstanceFormProps> = (props) => {
   );
 };
 
-export default FeiShuForm;
+export default EmailForm;
