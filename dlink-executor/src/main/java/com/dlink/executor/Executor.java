@@ -11,6 +11,7 @@ import org.apache.flink.api.common.ExecutionConfig;
 import org.apache.flink.api.common.JobExecutionResult;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.PipelineOptions;
+import org.apache.flink.core.execution.JobClient;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.jsonplan.JsonPlanGenerator;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
@@ -204,6 +205,10 @@ public abstract class Executor {
 
     public JobExecutionResult execute(String jobName) throws Exception {
         return environment.execute(jobName);
+    }
+
+    public JobClient executeAsync(String jobName) throws Exception {
+        return environment.executeAsync(jobName);
     }
 
     public TableResult executeSql(String statement) {

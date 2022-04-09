@@ -11,7 +11,7 @@
 
 ## NodeJS 安装部署
 
-### Windows版本
+### Windows 版本
 
 [下载地址]( <https://registry.npmmirror.com/-/binary/node/v14.19.0/node-v14.19.0-x64.msi>)
 
@@ -44,11 +44,11 @@ source /etc/profile #刷新环境变量
 npm install -g npm@7.19.0
 ```
 
-## MySQL部署
+## MySQL 部署
 
 MySQL版本选择5.6+
 
-### Windows版本
+### Windows 版本
 
 [下载地址](<https://dev.mysql.com/downloads/file/?id=510038>)
 
@@ -124,7 +124,7 @@ SHOW VARIABLES LIKE 'collation_%'; 排序规则
 
 ## Maven 安装部署
 
-### Windows版本
+### Windows 版本
 
 [下载地址](<https://dlcdn.apache.org/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.zip>)
 
@@ -161,9 +161,9 @@ source /etc/profile
 
 以上环境准备就绪后，接下来就可以开始Dinky的编译。
 
-## Dinky编译
+## Dinky 编译
 
-### Windows编译
+### Windows 编译
 
 #### 直接编译
 
@@ -173,9 +173,9 @@ source /etc/profile
 mvn clean install -Dmaven.test.skip=true
 ```
 
-切换到Dinky根目录下得build文件夹下，即可出现编译后的安装包
+切换到 Dinky 根目录下得 build 文件夹下，即可出现编译后的安装包
 
-#### IDEA编译
+#### IDEA 编译
 
 ```
 创建 远程克隆项目 
@@ -183,9 +183,9 @@ maven ->> dlink->> 生命周期->> 跳过测试 ->> 双击install
 打包完成后 安装包见项目根下  build 文件夹下
 ```
 
-说明：如果要对dinky做二次开发，请参考[开发调试](/zh-CN/developer-guide/debug.md)
+说明：如果要对 Dinky 做二次开发，请参考[开发调试](/zh-CN/developer-guide/debug.md)
 
-### Linux编译
+### Linux 编译
 
 ```
 yum -y install git
@@ -194,9 +194,9 @@ cd dlink
 mvn clean install -Dmaven.test.skip=true
 ```
 
-切换到Dinky根目录下得build文件夹下，即可出现编译后的安装包。
+切换到 Dinky 根目录下得 build 文件夹下，即可出现编译后的安装包。
 
-以上就是Dinky源码编译的详细步骤，Dinky如何安装部署，请查看下一章节[Dinky部署](/zh-CN/quick_start/deploy.md)
+以上就是 Dinky 源码编译的详细步骤，Dinky 如何安装部署，请查看下一章节[Dinky部署](/zh-CN/quick_start/deploy.md)
 
 
 

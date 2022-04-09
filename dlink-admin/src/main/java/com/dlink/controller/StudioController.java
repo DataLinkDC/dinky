@@ -9,7 +9,9 @@ import com.dlink.job.JobResult;
 import com.dlink.result.IResult;
 import com.dlink.service.StudioService;
 import com.fasterxml.jackson.databind.JsonNode;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,7 +62,11 @@ public class StudioController {
      */
     @PostMapping("/getJobPlan")
     public Result getJobPlan(@RequestBody StudioExecuteDTO studioExecuteDTO) {
-        return Result.succeed(studioService.getJobPlan(studioExecuteDTO), "获取作业计划成功");
+        try {
+            return Result.succeed(studioService.getJobPlan(studioExecuteDTO), "获取作业计划成功");
+        } catch (Exception e) {
+            return Result.failed("目前只支持获取 INSERT 语句的作业计划");
+        }
     }
 
     /**
