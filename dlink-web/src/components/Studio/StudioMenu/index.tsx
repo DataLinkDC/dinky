@@ -198,9 +198,10 @@ const StudioMenu = (props: any) => {
     const res = getJobPlan(param);
     handleGraphModalVisible(true);
     res.then((result) => {
-      if (result.code == 0) {
+      if (result.code == CODE.SUCCESS) {
         setGraphData(buildGraphData(result.datas));
       } else {
+        message.error(`获取作业执行计划失败，原因：\n${result.msg}`);
         setGraphData(undefined);
       }
     })
