@@ -35,6 +35,7 @@ import org.apache.flink.api.common.JobExecutionResult;
 import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.DeploymentOptions;
 import org.apache.flink.configuration.PipelineOptions;
+import org.apache.flink.core.execution.JobClient;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
 import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
@@ -355,9 +356,9 @@ public class JobManager {
                             break;
                         }
                     }
-                    JobExecutionResult jobExecutionResult = executor.execute(config.getJobName());
-                    if (jobExecutionResult.isJobExecutionResult()) {
-                        job.setJobId(jobExecutionResult.getJobID().toHexString());
+                    JobClient jobClient = executor.executeAsync(config.getJobName());
+                    if (Asserts.isNotNull(jobClient)) {
+                        job.setJobId(jobClient.getJobID().toHexString());
                         job.setJids(new ArrayList<String>() {{
                             add(job.getJobId());
                         }});
