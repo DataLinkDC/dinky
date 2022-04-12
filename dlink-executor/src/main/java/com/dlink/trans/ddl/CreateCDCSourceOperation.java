@@ -1,11 +1,12 @@
 package com.dlink.trans.ddl;
 
+import org.apache.flink.table.api.TableResult;
+
 import com.dlink.cdc.FlinkCDCMergeBuilder;
 import com.dlink.executor.Executor;
 import com.dlink.model.FlinkCDCConfig;
 import com.dlink.trans.AbstractOperation;
 import com.dlink.trans.Operation;
-import org.apache.flink.table.api.TableResult;
 
 /**
  * CreateCDCSourceOperation
@@ -37,9 +38,9 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
     @Override
     public TableResult build(Executor executor) {
         CDCSource cdcSource = CDCSource.build(statement);
-        FlinkCDCConfig config = new FlinkCDCConfig(cdcSource.getHostname(), cdcSource.getPort(), cdcSource.getUsername()
-                , cdcSource.getPassword(), cdcSource.getCheckpoint(), cdcSource.getParallelism(), cdcSource.getDatabase(), cdcSource.getTable()
-                , cdcSource.getStartupMode(), cdcSource.getTopic(), cdcSource.getBrokers());
+        FlinkCDCConfig config = new FlinkCDCConfig(cdcSource.getType(), cdcSource.getHostname(), cdcSource.getPort(), cdcSource.getUsername()
+            , cdcSource.getPassword(), cdcSource.getCheckpoint(), cdcSource.getParallelism(), cdcSource.getDatabase(), cdcSource.getSchema()
+            , cdcSource.getTable(), cdcSource.getStartupMode(), cdcSource.getTopic(), cdcSource.getBrokers());
         try {
             FlinkCDCMergeBuilder.buildMySqlCDC(executor.getStreamExecutionEnvironment(), config);
         } catch (Exception e) {

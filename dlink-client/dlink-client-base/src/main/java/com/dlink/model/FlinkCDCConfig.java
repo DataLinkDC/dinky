@@ -1,7 +1,5 @@
 package com.dlink.model;
 
-import java.util.List;
-
 /**
  * FlinkCDCConfig
  *
@@ -10,14 +8,16 @@ import java.util.List;
  */
 public class FlinkCDCConfig {
 
+    private String type;
     private String hostname;
     private Integer port;
     private String username;
     private String password;
     private Integer checkpoint;
     private Integer parallelism;
-    private List<String> database;
-    private List<String> table;
+    private String database;
+    private String schema;
+    private String table;
     private String startupMode;
     private String topic;
     private String brokers;
@@ -25,7 +25,9 @@ public class FlinkCDCConfig {
     public FlinkCDCConfig() {
     }
 
-    public FlinkCDCConfig(String hostname, int port, String username, String password, int checkpoint, int parallelism, List<String> database, List<String> table, String startupMode, String topic, String brokers) {
+    public FlinkCDCConfig(String type, String hostname, int port, String username, String password, int checkpoint, int parallelism, String database, String schema, String table, String startupMode,
+                          String topic, String brokers) {
+        this.type = type;
         this.hostname = hostname;
         this.port = port;
         this.username = username;
@@ -33,10 +35,19 @@ public class FlinkCDCConfig {
         this.checkpoint = checkpoint;
         this.parallelism = parallelism;
         this.database = database;
+        this.schema = schema;
         this.table = table;
         this.startupMode = startupMode;
         this.topic = topic;
         this.brokers = brokers;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getHostname() {
@@ -87,19 +98,27 @@ public class FlinkCDCConfig {
         this.parallelism = parallelism;
     }
 
-    public List<String> getDatabase() {
+    public String getDatabase() {
         return database;
     }
 
-    public void setDatabase(List<String> database) {
+    public void setDatabase(String database) {
         this.database = database;
     }
 
-    public List<String> getTable() {
+    public String getSchema() {
+        return schema;
+    }
+
+    public void setSchema(String schema) {
+        this.schema = schema;
+    }
+
+    public String getTable() {
         return table;
     }
 
-    public void setTable(List<String> table) {
+    public void setTable(String table) {
         this.table = table;
     }
 
