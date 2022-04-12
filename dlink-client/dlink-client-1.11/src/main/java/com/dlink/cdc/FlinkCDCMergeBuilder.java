@@ -5,8 +5,6 @@ import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
 
-import com.alibaba.ververica.cdc.connectors.mysql.MySQLSource;
-import com.alibaba.ververica.cdc.debezium.StringDebeziumDeserializationSchema;
 import com.dlink.assertion.Asserts;
 import com.dlink.model.FlinkCDCConfig;
 
@@ -25,20 +23,7 @@ public class FlinkCDCMergeBuilder {
         if (Asserts.isNotNull(config.getCheckpoint())) {
             env.enableCheckpointing(config.getCheckpoint());
         }
-        MySQLSource.Builder<String> sourceBuilder = MySQLSource.<String>builder()
-            .hostname(config.getHostname())
-            .port(config.getPort())
-            .username(config.getUsername())
-            .password(config.getPassword());
-        if (Asserts.isNotNull(config.getDatabase()) && config.getDatabase().size() > 0) {
-            sourceBuilder.databaseList(config.getDatabase().toArray(new String[0]));
-        }
-        if (Asserts.isNotNull(config.getTable()) && config.getTable().size() > 0) {
-            sourceBuilder.tableList(config.getTable().toArray(new String[0]));
-        }
-        sourceBuilder
-            .deserializer(new StringDebeziumDeserializationSchema());
-        DataStreamSource<String> streamSource = env.addSource(sourceBuilder.build(), "MySQL CDC Source");
+        DataStreamSource<String> streamSource = CDCBuilderFactory.buildCDCBuilder(config).build(env);
         streamSource.addSink(getKafkaProducer(config.getBrokers(), config.getTopic()));
     }
 
