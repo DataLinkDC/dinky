@@ -1,23 +1,23 @@
 package com.dlink.trans.ddl;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.parser.SingleSqlParserFactory;
-
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.dlink.assertion.Asserts;
+import com.dlink.parser.SingleSqlParserFactory;
+
 /**
- * TODO
+ * CDCSource
  *
  * @author wenmo
  * @since 2022/1/29 23:30
  */
 public class CDCSource {
 
+    private String type;
     private String statement;
     private String name;
     private String hostname;
@@ -26,13 +26,16 @@ public class CDCSource {
     private String password;
     private Integer checkpoint;
     private Integer parallelism;
-    private List<String> database;
-    private List<String> table;
+    private String database;
+    private String schema;
+    private String table;
     private String startupMode;
     private String topic;
     private String brokers;
 
-    public CDCSource(String statement, String name, String hostname, Integer port, String username, String password, Integer checkpoint, Integer parallelism, String startupMode, String topic, String brokers) {
+    public CDCSource(String type, String statement, String name, String hostname, Integer port, String username, String password, Integer checkpoint, Integer parallelism, String startupMode,
+                     String topic, String brokers) {
+        this.type = type;
         this.statement = statement;
         this.name = name;
         this.hostname = hostname;
@@ -49,23 +52,28 @@ public class CDCSource {
     public static CDCSource build(String statement) {
         Map<String, List<String>> map = SingleSqlParserFactory.generateParser(statement);
         Map<String, String> config = getKeyValue(map.get("WITH"));
-        CDCSource cdcSource = new CDCSource(statement,
-                map.get("CDCSOURCE").toString(),
-                config.get("hostname"),
-                Integer.valueOf(config.get("port")),
-                config.get("username"),
-                config.get("password"),
-                Integer.valueOf(config.get("checkpoint")),
-                Integer.valueOf(config.get("parallelism")),
-                config.get("startup"),
-                config.get("topic"),
-                config.get("brokers")
+        CDCSource cdcSource = new CDCSource(
+            config.get("type"),
+            statement,
+            map.get("CDCSOURCE").toString(),
+            config.get("hostname"),
+            Integer.valueOf(config.get("port")),
+            config.get("username"),
+            config.get("password"),
+            Integer.valueOf(config.get("checkpoint")),
+            Integer.valueOf(config.get("parallelism")),
+            config.get("startup"),
+            config.get("topic"),
+            config.get("brokers")
         );
         if (Asserts.isNotNullString(config.get("database"))) {
-            cdcSource.setDatabase(Arrays.asList(config.get("database").split(":")));
+            cdcSource.setDatabase(config.get("database"));
+        }
+        if (Asserts.isNotNullString(config.get("schema"))) {
+            cdcSource.setSchema(config.get("schema"));
         }
         if (Asserts.isNotNullString(config.get("table"))) {
-            cdcSource.setTable(Arrays.asList(config.get("table").split(":")));
+            cdcSource.setTable(config.get("table"));
         }
         return cdcSource;
     }
@@ -74,12 +82,20 @@ public class CDCSource {
         Map<String, String> map = new HashMap<>();
         Pattern p = Pattern.compile("'(.*?)'\\s*=\\s*'(.*?)'");
         for (int i = 0; i < list.size(); i++) {
-            Matcher m = p.matcher(list.get(i));
+            Matcher m = p.matcher(list.get(i) + "'");
             if (m.find()) {
                 map.put(m.group(1), m.group(2));
             }
         }
         return map;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getStatement() {
@@ -146,19 +162,27 @@ public class CDCSource {
         this.parallelism = parallelism;
     }
 
-    public List<String> getDatabase() {
+    public String getDatabase() {
         return database;
     }
 
-    public void setDatabase(List<String> database) {
+    public void setDatabase(String database) {
         this.database = database;
     }
 
-    public List<String> getTable() {
+    public String getSchema() {
+        return schema;
+    }
+
+    public void setSchema(String schema) {
+        this.schema = schema;
+    }
+
+    public String getTable() {
         return table;
     }
 
-    public void setTable(List<String> table) {
+    public void setTable(String table) {
         this.table = table;
     }
 

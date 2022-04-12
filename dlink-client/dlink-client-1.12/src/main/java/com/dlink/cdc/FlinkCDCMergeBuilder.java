@@ -9,6 +9,7 @@ import com.alibaba.ververica.cdc.connectors.mysql.MySQLSource;
 import com.alibaba.ververica.cdc.connectors.mysql.table.StartupOptions;
 import com.alibaba.ververica.cdc.debezium.StringDebeziumDeserializationSchema;
 import com.dlink.assertion.Asserts;
+import com.dlink.constant.FlinkParamConstant;
 import com.dlink.model.FlinkCDCConfig;
 
 /**
@@ -26,37 +27,7 @@ public class FlinkCDCMergeBuilder {
         if (Asserts.isNotNull(config.getCheckpoint())) {
             env.enableCheckpointing(config.getCheckpoint());
         }
-        MySQLSource.Builder<String> sourceBuilder = MySQLSource.<String>builder()
-            .hostname(config.getHostname())
-            .port(config.getPort())
-            .username(config.getUsername())
-            .password(config.getPassword());
-        if (Asserts.isNotNull(config.getDatabase()) && config.getDatabase().size() > 0) {
-            sourceBuilder.databaseList(config.getDatabase().toArray(new String[0]));
-        }
-        if (Asserts.isNotNull(config.getTable()) && config.getTable().size() > 0) {
-            sourceBuilder.tableList(config.getTable().toArray(new String[0]));
-        }
-        sourceBuilder
-            .deserializer(new StringDebeziumDeserializationSchema());
-        if (Asserts.isNotNullString(config.getStartupMode())) {
-            switch (config.getStartupMode().toUpperCase()) {
-                case "INITIAL":
-                    sourceBuilder.startupOptions(StartupOptions.initial());
-                    break;
-                case "EARLIEST":
-                    sourceBuilder.startupOptions(StartupOptions.earliest());
-                    break;
-                case "LATEST":
-                    sourceBuilder.startupOptions(StartupOptions.latest());
-                    break;
-                default:
-                    sourceBuilder.startupOptions(StartupOptions.latest());
-            }
-        } else {
-            sourceBuilder.startupOptions(StartupOptions.latest());
-        }
-        DataStreamSource<String> streamSource = env.addSource(sourceBuilder.build(), "MySQL CDC Source");
+        DataStreamSource<String> streamSource = CDCBuilderFactory.buildCDCBuilder(config).build(env);
         streamSource.addSink(getKafkaProducer(config.getBrokers(), config.getTopic()));
     }
 
