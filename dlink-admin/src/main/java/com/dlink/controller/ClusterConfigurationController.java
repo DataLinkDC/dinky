@@ -39,7 +39,7 @@ public class ClusterConfigurationController {
     @PutMapping
     public Result saveOrUpdate(@RequestBody ClusterConfiguration clusterConfiguration) {
         TestResult testResult = clusterConfigurationService.testGateway(clusterConfiguration);
-        clusterConfiguration.setAvailable(testResult.isAvailable());
+        clusterConfiguration.setIsAvailable(testResult.isAvailable());
         if (clusterConfigurationService.saveOrUpdate(clusterConfiguration)) {
             return Result.succeed(Asserts.isNotNull(clusterConfiguration.getId()) ? "修改成功" : "新增成功");
         } else {

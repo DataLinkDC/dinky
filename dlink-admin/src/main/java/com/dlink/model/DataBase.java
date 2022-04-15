@@ -44,7 +44,7 @@ public class DataBase extends SuperEntity {
 
     private String dbVersion;
 
-    private boolean status;
+    private Boolean status;
 
     private LocalDateTime healthTime;
 

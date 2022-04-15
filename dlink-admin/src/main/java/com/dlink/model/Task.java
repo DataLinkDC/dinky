@@ -44,11 +44,11 @@ public class Task extends SuperEntity {
 
     private Integer parallelism;
 
-    private boolean fragment;
+    private Boolean fragment;
 
-    private boolean statementSet;
+    private Boolean statementSet;
 
-    private boolean batchModel;
+    private Boolean batchModel;
 
     private Integer clusterId;
 
