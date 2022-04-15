@@ -35,7 +35,7 @@ public class Cluster extends SuperEntity {
 
     private String note;
 
-    private boolean autoRegisters;
+    private Boolean autoRegisters;
 
     private Integer clusterConfigurationId;
 
