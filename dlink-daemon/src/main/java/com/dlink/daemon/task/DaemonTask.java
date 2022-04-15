@@ -1,19 +1,17 @@
 package com.dlink.daemon.task;
 
+import java.util.Optional;
+import java.util.ServiceLoader;
+
 import com.dlink.assertion.Asserts;
 import com.dlink.daemon.exception.DaemonTaskException;
-import sun.misc.Service;
-
-import java.util.Iterator;
-import java.util.Optional;
 
 public interface DaemonTask {
 
     static Optional<DaemonTask> get(DaemonTaskConfig config) {
         Asserts.checkNotNull(config, "线程任务配置不能为空");
-        Iterator<DaemonTask> providers = Service.providers(DaemonTask.class);
-        while (providers.hasNext()) {
-            DaemonTask daemonTask = providers.next();
+        ServiceLoader<DaemonTask> daemonTasks = ServiceLoader.load(DaemonTask.class);
+        for (DaemonTask daemonTask : daemonTasks) {
             if (daemonTask.canHandle(config.getType())) {
                 return Optional.of(daemonTask.setConfig(config));
             }
