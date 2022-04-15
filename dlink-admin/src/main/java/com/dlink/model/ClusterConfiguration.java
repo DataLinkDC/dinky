@@ -33,7 +33,7 @@ public class ClusterConfiguration extends SuperEntity {
 
     private String configJson;
 
-    private boolean isAvailable;
+    private Boolean isAvailable;
 
     private String note;
 
