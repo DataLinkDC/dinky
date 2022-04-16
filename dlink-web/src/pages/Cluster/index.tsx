@@ -317,7 +317,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
           href={`http://${record.jobManagerHost}/#/overview`}
           target="_blank"
         >
-          Flink WebUI
+          FlinkWebUI
         </Button>,
         <MoreBtn key="more" item={record}/>,
       ],

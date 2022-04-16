@@ -34,10 +34,10 @@ export function isStatusDone(type: string){
     case JOB_STATUS.FAILED:
     case JOB_STATUS.CANCELED:
     case JOB_STATUS.FINISHED:
-    case JOB_STATUS.RUNNING:
-      return false;
-    default:
+    case JOB_STATUS.UNKNOWN:
       return true;
+    default:
+      return false;
   }
 };
 
