@@ -98,6 +98,7 @@ public class FlinkAPI {
         switch (type) {
             case CANCEL:
                 jobInfo.setStatus(JobInfo.JobStatus.CANCEL);
+                break;
             case STOP:
                 paramMap.put("drain", false);
                 paramType = FlinkRestAPIConstant.STOP;
@@ -127,7 +128,7 @@ public class FlinkAPI {
                     continue;
                 }
                 if (node.get("operation").has("failure-cause")) {
-                    String failureCause = node.get("operation").get("failure-cause").asText();
+                    String failureCause = node.get("operation").get("failure-cause").toString();
                     if (Asserts.isNotNullString(failureCause)) {
                         result.fail(failureCause);
                         break;
