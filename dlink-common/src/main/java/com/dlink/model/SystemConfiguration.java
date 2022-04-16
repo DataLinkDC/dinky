@@ -61,7 +61,7 @@ public class SystemConfiguration {
             "sqlSeparator",
             "FlinkSQL语句分割符",
             ValueType.STRING,
-            ";",
+            ";\r\n",
             "Flink SQL 的语句分割符"
     );
 
