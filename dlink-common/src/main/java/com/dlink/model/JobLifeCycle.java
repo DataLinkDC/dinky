@@ -34,7 +34,7 @@ public enum JobLifeCycle {
 
     public static JobLifeCycle get(Integer value) {
         for (JobLifeCycle item : JobLifeCycle.values()) {
-            if (item.getValue() == value) {
+            if (item.getValue().equals(value)) {
                 return item;
             }
         }
@@ -42,7 +42,7 @@ public enum JobLifeCycle {
     }
 
     public boolean equalsValue(Integer step) {
-        if (value == step) {
+        if (value.equals(step)) {
             return true;
         }
         return false;
