@@ -97,6 +97,8 @@ public class FlinkAPI {
         Map<String, Object> paramMap = new HashMap<>();
         switch (type) {
             case CANCEL:
+                paramMap.put("cancel-job", true);
+                paramType = FlinkRestAPIConstant.SAVEPOINTS;
                 jobInfo.setStatus(JobInfo.JobStatus.CANCEL);
                 break;
             case STOP:
