@@ -335,7 +335,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         JobManager jobManager = JobManager.build(jobConfig);
         jobManager.setUseGateway(useGateway);
         SavePointResult savePointResult = jobManager.savepoint(jobId, savePointType, null);
-        if (Asserts.isNotNull(savePointResult)) {
+        if (Asserts.isNotNull(savePointResult.getJobInfos())) {
             for (JobInfo item : savePointResult.getJobInfos()) {
                 if (Asserts.isEqualsIgnoreCase(jobId, item.getJobId())&&Asserts.isNotNull(jobConfig.getTaskId())) {
                     Savepoints savepoints = new Savepoints();
