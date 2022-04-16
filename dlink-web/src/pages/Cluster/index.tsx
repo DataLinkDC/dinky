@@ -1,23 +1,25 @@
-import {DownOutlined, HeartOutlined, PlusOutlined, UserOutlined,ClearOutlined} from '@ant-design/icons';
-import {Button, message, Input, Drawer, Modal} from 'antd';
-import React, {useState, useRef} from 'react';
-import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
-import type {ProColumns, ActionType} from '@ant-design/pro-table';
+import {ClearOutlined, DownOutlined, HeartOutlined, PlusOutlined} from '@ant-design/icons';
+import {Button, Drawer, Input, message, Modal} from 'antd';
+import React, {useRef, useState} from 'react';
+import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
+import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
 import type {ClusterTableListItem} from './data.d';
 
-import styles from './index.less';
-
 import Dropdown from "antd/es/dropdown/dropdown";
 import Menu from "antd/es/menu";
 import {
-  handleAddOrUpdate, handleOption, handleRemove, queryData,
-  updateEnabled,getData
+  getData,
+  handleAddOrUpdate,
+  handleOption,
+  handleRemove,
+  queryData,
+  updateEnabled
 } from "@/components/Common/crud";
-import {showCluster,showSessionCluster} from "@/components/Studio/StudioEvent/DDL";
+import {showCluster, showSessionCluster} from "@/components/Studio/StudioEvent/DDL";
 import {RUN_MODE} from "@/components/Studio/conf";
 
 const TextArea = Input.TextArea;
@@ -311,6 +313,12 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
         >
           配置
         </a>,
+        <Button type="link"
+          href={`http://${record.jobManagerHost}/#/overview`}
+          target="_blank"
+        >
+          Flink WebUI
+        </Button>,
         <MoreBtn key="more" item={record}/>,
       ],
     },
