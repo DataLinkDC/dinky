@@ -5,6 +5,7 @@ import com.dlink.executor.ExecutorSetting;
 import com.dlink.gateway.GatewayType;
 import com.dlink.gateway.config.*;
 import com.dlink.session.SessionConfig;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -164,12 +165,12 @@ public class JobConfig {
         gatewayConfig = new GatewayConfig();
         if (config.containsKey("hadoopConfigPath")) {
             gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath").toString(),
-                    config.get("flinkLibPath").toString(),
-                    config.get("hadoopConfigPath").toString()));
+                config.get("flinkLibPath").toString(),
+                config.get("hadoopConfigPath").toString()));
         } else {
             gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath").toString(),
-                    config.get("flinkLibPath").toString(),
-                    ""));
+                config.get("flinkLibPath").toString(),
+                ""));
         }
         AppConfig appConfig = new AppConfig();
         if (config.containsKey("userJarPath") && Asserts.isNotNullString((String) config.get("userJarPath"))) {
@@ -204,7 +205,9 @@ public class JobConfig {
             gatewayConfig = new GatewayConfig();
         }
         for (Map<String, String> item : configList) {
-            gatewayConfig.getFlinkConfig().getConfiguration().put(item.get("key"), item.get("value"));
+            if (Asserts.isNotNull(item)) {
+                gatewayConfig.getFlinkConfig().getConfiguration().put(item.get("key"), item.get("value"));
+            }
         }
     }
 
