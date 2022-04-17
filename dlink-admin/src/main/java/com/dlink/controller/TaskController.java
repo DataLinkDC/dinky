@@ -6,7 +6,10 @@ import com.dlink.job.JobResult;
 import com.dlink.model.Task;
 import com.dlink.service.TaskService;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +34,19 @@ public class TaskController {
      */
     @PutMapping
     public Result saveOrUpdate(@RequestBody Task task) throws Exception {
+        // Judge whether other configurations is null
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode jsonNode = mapper.readTree(task.getConfigJson());
+            for (JsonNode node : jsonNode) {
+                String conf = node.asText();
+                if ("null".equals(conf)) {
+                    return Result.failed("其他配置为空，操作失败");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (taskService.saveOrUpdateTask(task)) {
             return Result.succeed("操作成功");
         } else {

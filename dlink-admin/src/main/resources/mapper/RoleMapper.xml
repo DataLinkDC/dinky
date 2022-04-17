@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlink.mapper.RoleMapper">
+    <sql id="baseSql">
+        id,tenant_id, role_code, role_name, note, create_time,update_time
+    </sql>
+    <select id="selectForProTable" resultType="com.dlink.model.Role">
+        select
+        <include refid="baseSql"/>
+        from
+        dlink_role
+        <where>
+            1=1
+            <if test='param.tenantId!=null and param.tenantId!=""'>
+                and tenant_id = #{param.tenantId}
+            </if>
+        </where>
+    </select>
+</mapper>

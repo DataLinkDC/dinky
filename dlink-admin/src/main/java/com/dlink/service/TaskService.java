@@ -8,6 +8,7 @@ import com.dlink.model.JobInfoDetail;
 import com.dlink.model.JobInstance;
 import com.dlink.model.Task;
 import com.dlink.result.SqlExplainResult;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.util.List;
 
@@ -29,7 +30,7 @@ public interface TaskService extends ISuperService<Task> {
 
     Task getTaskInfoById(Integer id);
 
-    boolean saveOrUpdateTask(Task task);
+    boolean saveOrUpdateTask(Task task) ;
 
     List<Task> listFlinkSQLEnv();
 
