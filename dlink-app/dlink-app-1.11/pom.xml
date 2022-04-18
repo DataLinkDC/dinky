@@ -33,6 +33,10 @@
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-client-1.11</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-flink-1.11</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>

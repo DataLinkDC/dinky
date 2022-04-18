@@ -13,5 +13,5 @@ public final class FlinkParamConstant {
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
 
-    public static final String SPLIT = ";";
+    public static final String SPLIT = ",";
 }

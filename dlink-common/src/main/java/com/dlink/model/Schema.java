@@ -1,11 +1,11 @@
 package com.dlink.model;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Schema
@@ -29,6 +29,10 @@ public class Schema implements Serializable, Comparable<Schema> {
     public Schema(String name, List<Table> tables) {
         this.name = name;
         this.tables = tables;
+    }
+
+    public static Schema build(String name) {
+        return new Schema(name);
     }
 
     @Override
