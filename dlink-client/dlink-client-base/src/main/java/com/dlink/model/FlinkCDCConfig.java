@@ -1,5 +1,8 @@
 package com.dlink.model;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * FlinkCDCConfig
  *
@@ -19,14 +22,14 @@ public class FlinkCDCConfig {
     private String schema;
     private String table;
     private String startupMode;
-    private String topic;
-    private String brokers;
+    private Map<String, String> sink;
+    private List<Schema> schemaList;
 
     public FlinkCDCConfig() {
     }
 
     public FlinkCDCConfig(String type, String hostname, int port, String username, String password, int checkpoint, int parallelism, String database, String schema, String table, String startupMode,
-                          String topic, String brokers) {
+                          Map<String, String> sink) {
         this.type = type;
         this.hostname = hostname;
         this.port = port;
@@ -38,8 +41,7 @@ public class FlinkCDCConfig {
         this.schema = schema;
         this.table = table;
         this.startupMode = startupMode;
-        this.topic = topic;
-        this.brokers = brokers;
+        this.sink = sink;
     }
 
     public String getType() {
@@ -122,20 +124,12 @@ public class FlinkCDCConfig {
         this.table = table;
     }
 
-    public String getTopic() {
-        return topic;
+    public Map<String, String> getSink() {
+        return sink;
     }
 
-    public void setTopic(String topic) {
-        this.topic = topic;
-    }
-
-    public String getBrokers() {
-        return brokers;
-    }
-
-    public void setBrokers(String brokers) {
-        this.brokers = brokers;
+    public void setSink(Map<String, String> sink) {
+        this.sink = sink;
     }
 
     public String getStartupMode() {
@@ -144,5 +138,13 @@ public class FlinkCDCConfig {
 
     public void setStartupMode(String startupMode) {
         this.startupMode = startupMode;
+    }
+
+    public List<Schema> getSchemaList() {
+        return schemaList;
+    }
+
+    public void setSchemaList(List<Schema> schemaList) {
+        this.schemaList = schemaList;
     }
 }
