@@ -13,11 +13,12 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <flink.version>1.13.6</flink.version>
-        <flinkcdc.version>2.2.0</flinkcdc.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <flink.version>1.13.6</flink.version>
+        <flinkcdc.version>2.2.0</flinkcdc.version>
         <junit.version>4.12</junit.version>
     </properties>
 

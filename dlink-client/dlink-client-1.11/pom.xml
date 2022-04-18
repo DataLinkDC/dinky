@@ -12,11 +12,12 @@
     <artifactId>dlink-client-1.11</artifactId>
     <properties>
         <java.version>1.8</java.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <flink.version>1.11.6</flink.version>
-        <flinkcdc.version>1.1.0</flinkcdc.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <flink.version>1.11.6</flink.version>
+        <flinkcdc.version>1.1.0</flinkcdc.version>
         <junit.version>4.12</junit.version>
     </properties>
 

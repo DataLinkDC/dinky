@@ -159,7 +159,11 @@
             <artifactId>dlink-gateway</artifactId>
         </dependency>
     </dependencies>
+
+
     <build>
+        <finalName>${project.artifactId}-${project.version}</finalName>
+
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -236,6 +240,5 @@
                 </executions>
             </plugin>
         </plugins>
-        <finalName>${project.artifactId}-${project.version}</finalName>
     </build>
 </project>
