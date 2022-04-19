@@ -13,6 +13,7 @@ import com.dlink.metadata.convert.ITypeConvert;
 import com.dlink.metadata.parser.Clickhouse20StatementParser;
 import com.dlink.metadata.query.ClickHouseQuery;
 import com.dlink.metadata.query.IDBQuery;
+import com.dlink.model.Schema;
 import com.dlink.model.Table;
 import com.dlink.result.SqlExplainResult;
 import com.dlink.utils.LogUtil;
@@ -34,9 +35,10 @@ import java.util.regex.Pattern;
  * @since 2021/7/21 17:14
  **/
 public class ClickHouseDriver extends AbstractJdbcDriver {
+
     @Override
     String getDriverClass() {
-        return "ru.yandex.clickhouse.ClickHouseDriver";
+        return "com.clickhouse.jdbc.ClickHouseDriver";
     }
 
     @Override
@@ -57,6 +59,30 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
     @Override
     public String getName() {
         return "ClickHouse OLAP 数据库";
+    }
+
+    @Override
+    public List<Schema> listSchemas() {
+        List<Schema> schemas = new ArrayList<>();
+        PreparedStatement preparedStatement = null;
+        ResultSet results = null;
+        String schemasSql = getDBQuery().schemaAllSql();
+        try {
+            preparedStatement = conn.prepareStatement(schemasSql);
+            results = preparedStatement.executeQuery();
+            while (results.next()) {
+                String schemaName= results.getMetaData().getSchemaName(0);
+                if (Asserts.isNotNullString(schemaName)) {
+                    Schema schema = new Schema(schemaName);
+                    schemas.add(schema);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            close(preparedStatement, results);
+        }
+        return schemas;
     }
 
     @Override

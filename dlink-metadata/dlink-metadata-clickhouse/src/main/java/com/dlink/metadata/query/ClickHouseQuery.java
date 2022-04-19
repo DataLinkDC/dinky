@@ -9,7 +9,7 @@ package com.dlink.metadata.query;
 public class ClickHouseQuery extends AbstractDBQuery {
     @Override
     public String schemaAllSql() {
-        return "show databases";
+        return "SELECT currentDatabase()";
     }
 
     @Override
@@ -25,7 +25,7 @@ public class ClickHouseQuery extends AbstractDBQuery {
 
     @Override
     public String schemaName() {
-        return "db";
+        return "database";
     }
 
     @Override
