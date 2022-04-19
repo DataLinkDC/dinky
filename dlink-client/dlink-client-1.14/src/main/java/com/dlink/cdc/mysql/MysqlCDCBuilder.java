@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.cdc.AbstractCDCBuilder;
@@ -52,6 +53,12 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
 
     @Override
     public DataStreamSource<String> build(StreamExecutionEnvironment env) {
+        Properties properties = new Properties();
+        for (Map.Entry<String, String> entry : config.getDebezium().entrySet()) {
+            if (Asserts.isNotNullString(entry.getKey()) && Asserts.isNotNullString(entry.getValue())) {
+                properties.setProperty(entry.getKey(), entry.getValue());
+            }
+        }
         MySqlSourceBuilder<String> sourceBuilder = MySqlSource.<String>builder()
             .hostname(config.getHostname())
             .port(config.getPort())
@@ -67,6 +74,7 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
             sourceBuilder.tableList(table);
         }
         sourceBuilder.deserializer(new JsonDebeziumDeserializationSchema());
+        sourceBuilder.debeziumProperties(properties);
         if (Asserts.isNotNullString(config.getStartupMode())) {
             switch (config.getStartupMode().toUpperCase()) {
                 case "INITIAL":
@@ -133,11 +141,17 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         }
         sb.append(" FROM ");
         sb.append(sourceName);
-       /* sb.append(" WHERE database_name = '");
+        sb.append(" WHERE database_name = '");
         sb.append(table.getSchema());
         sb.append("' and table_name = '");
         sb.append(table.getName());
-        sb.append("'");*/
+        sb.append("'");
         return sb.toString();
+    }
+
+
+    @Override
+    public String getSchemaFieldName() {
+        return "db";
     }
 }

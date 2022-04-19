@@ -53,10 +53,11 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
         CDCSource cdcSource = CDCSource.build(statement);
         FlinkCDCConfig config = new FlinkCDCConfig(cdcSource.getType(), cdcSource.getHostname(), cdcSource.getPort(), cdcSource.getUsername()
             , cdcSource.getPassword(), cdcSource.getCheckpoint(), cdcSource.getParallelism(), cdcSource.getDatabase(), cdcSource.getSchema()
-            , cdcSource.getTable(), cdcSource.getStartupMode(), cdcSource.getSink());
+            , cdcSource.getTable(), cdcSource.getStartupMode(),cdcSource.getDebezium(), cdcSource.getSink());
         try {
             CDCBuilder cdcBuilder = CDCBuilderFactory.buildCDCBuilder(config);
             Map<String, Map<String, String>> allConfigMap = cdcBuilder.parseMetaDataConfigs();
+            config.setSchemaFieldName(cdcBuilder.getSchemaFieldName());
             List<Schema> schemaList = new ArrayList<>();
             final List<String> schemaNameList = cdcBuilder.getSchemaList();
             final List<String> tableRegList = cdcBuilder.getTableList();
@@ -69,11 +70,15 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                 Driver driver = Driver.build(driverConfig);
                 final List<Table> tables = driver.getTablesAndColumns(schemaName);
                 for (Table table : tables) {
-                    for (String tableReg : tableRegList) {
-                        if (table.getSchemaTableName().matches(tableReg) && !schema.getTables().contains(Table.build(table.getName()))) {
-                            schema.getTables().add(table);
-                            break;
+                    if(Asserts.isNotNullCollection(tableRegList)){
+                        for (String tableReg : tableRegList) {
+                            if (table.getSchemaTableName().matches(tableReg) && !schema.getTables().contains(Table.build(table.getName()))) {
+                                schema.getTables().add(table);
+                                break;
+                            }
                         }
+                    }else {
+                        schema.getTables().add(table);
                     }
                 }
                 schemaList.add(schema);

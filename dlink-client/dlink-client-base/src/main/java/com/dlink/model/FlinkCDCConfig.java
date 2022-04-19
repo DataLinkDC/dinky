@@ -22,14 +22,16 @@ public class FlinkCDCConfig {
     private String schema;
     private String table;
     private String startupMode;
+    private Map<String, String> debezium;
     private Map<String, String> sink;
     private List<Schema> schemaList;
+    private String schemaFieldName;
 
     public FlinkCDCConfig() {
     }
 
     public FlinkCDCConfig(String type, String hostname, int port, String username, String password, int checkpoint, int parallelism, String database, String schema, String table, String startupMode,
-                          Map<String, String> sink) {
+                          Map<String, String> debezium, Map<String, String> sink) {
         this.type = type;
         this.hostname = hostname;
         this.port = port;
@@ -41,6 +43,7 @@ public class FlinkCDCConfig {
         this.schema = schema;
         this.table = table;
         this.startupMode = startupMode;
+        this.debezium = debezium;
         this.sink = sink;
     }
 
@@ -146,5 +149,21 @@ public class FlinkCDCConfig {
 
     public void setSchemaList(List<Schema> schemaList) {
         this.schemaList = schemaList;
+    }
+
+    public String getSchemaFieldName() {
+        return schemaFieldName;
+    }
+
+    public void setSchemaFieldName(String schemaFieldName) {
+        this.schemaFieldName = schemaFieldName;
+    }
+
+    public Map<String, String> getDebezium() {
+        return debezium;
+    }
+
+    public void setDebezium(Map<String, String> debezium) {
+        this.debezium = debezium;
     }
 }

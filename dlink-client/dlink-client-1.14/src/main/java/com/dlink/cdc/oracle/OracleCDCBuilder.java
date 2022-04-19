@@ -6,6 +6,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.cdc.AbstractCDCBuilder;
@@ -48,6 +49,12 @@ public class OracleCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
 
     @Override
     public DataStreamSource<String> build(StreamExecutionEnvironment env) {
+        Properties properties = new Properties();
+        for (Map.Entry<String, String> entry : config.getDebezium().entrySet()) {
+            if (Asserts.isNotNullString(entry.getKey()) && Asserts.isNotNullString(entry.getValue())) {
+                properties.setProperty(entry.getKey(), entry.getValue());
+            }
+        }
         OracleSource.Builder<String> sourceBuilder = OracleSource.<String>builder()
             .hostname(config.getHostname())
             .port(config.getPort())
@@ -63,6 +70,7 @@ public class OracleCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
             sourceBuilder.tableList(table);
         }
         sourceBuilder.deserializer(new JsonDebeziumDeserializationSchema());
+        sourceBuilder.debeziumProperties(properties);
         if (Asserts.isNotNullString(config.getStartupMode())) {
             switch (config.getStartupMode().toUpperCase()) {
                 case "INITIAL":
