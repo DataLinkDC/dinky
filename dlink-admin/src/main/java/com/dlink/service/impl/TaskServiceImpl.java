@@ -223,11 +223,11 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             if (statement != null) {
                 task.setStatement(statement.getStatement());
             }
-            if (Asserts.isNull(task.getJobInstanceId()) || task.getJobInstanceId() == 0) {
-                JobInstance jobInstance = jobInstanceService.getJobInstanceByTaskId(id);
-                if (Asserts.isNotNull(jobInstance) && !JobStatus.isDone(jobInstance.getStatus())) {
-                    task.setJobInstanceId(jobInstance.getId());
-                }
+            JobInstance jobInstance = jobInstanceService.getJobInstanceByTaskId(id);
+            if (Asserts.isNotNull(jobInstance) && !JobStatus.isDone(jobInstance.getStatus())) {
+                task.setJobInstanceId(jobInstance.getId());
+            }else {
+                task.setJobInstanceId(0);
             }
         }
         return task;
