@@ -63,4 +63,8 @@ public abstract class AbstractCDCBuilder {
         Collections.addAll(tableList, tables);
         return tableList;
     }
+
+    public String getSchemaFieldName() {
+        return "db";
+    }
 }

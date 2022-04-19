@@ -30,4 +30,6 @@ public interface CDCBuilder {
     Map<String, Map<String, String>> parseMetaDataConfigs();
 
     String getInsertSQL(Table table, String sourceName);
+
+    String getSchemaFieldName();
 }

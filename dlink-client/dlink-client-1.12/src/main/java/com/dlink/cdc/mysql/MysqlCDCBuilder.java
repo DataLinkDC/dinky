@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import com.alibaba.ververica.cdc.connectors.mysql.MySQLSource;
 import com.alibaba.ververica.cdc.connectors.mysql.table.StartupOptions;
@@ -50,6 +51,12 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
 
     @Override
     public DataStreamSource<String> build(StreamExecutionEnvironment env) {
+        Properties properties = new Properties();
+        for (Map.Entry<String, String> entry : config.getDebezium().entrySet()) {
+            if (Asserts.isNotNullString(entry.getKey()) && Asserts.isNotNullString(entry.getValue())) {
+                properties.setProperty(entry.getKey(), entry.getValue());
+            }
+        }
         MySQLSource.Builder<String> sourceBuilder = MySQLSource.<String>builder()
             .hostname(config.getHostname())
             .port(config.getPort())
@@ -61,8 +68,8 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         if (Asserts.isNotNullString(config.getTable())) {
             sourceBuilder.tableList(config.getTable().split(FlinkParamConstant.SPLIT));
         }
-        sourceBuilder
-            .deserializer(new StringDebeziumDeserializationSchema());
+        sourceBuilder.deserializer(new StringDebeziumDeserializationSchema());
+        sourceBuilder.debeziumProperties(properties);
         if (Asserts.isNotNullString(config.getStartupMode())) {
             switch (config.getStartupMode().toUpperCase()) {
                 case "INITIAL":

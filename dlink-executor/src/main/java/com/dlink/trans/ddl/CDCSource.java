@@ -30,10 +30,11 @@ public class CDCSource {
     private String schema;
     private String table;
     private String startupMode;
+    private Map<String, String> debezium;
     private Map<String, String> sink;
 
     public CDCSource(String type, String statement, String name, String hostname, Integer port, String username, String password, Integer checkpoint, Integer parallelism, String startupMode,
-                     Map<String, String> sink) {
+                     Map<String, String> debezium, Map<String, String> sink) {
         this.type = type;
         this.statement = statement;
         this.name = name;
@@ -44,12 +45,23 @@ public class CDCSource {
         this.checkpoint = checkpoint;
         this.parallelism = parallelism;
         this.startupMode = startupMode;
+        this.debezium = debezium;
         this.sink = sink;
     }
 
     public static CDCSource build(String statement) {
         Map<String, List<String>> map = SingleSqlParserFactory.generateParser(statement);
         Map<String, String> config = getKeyValue(map.get("WITH"));
+        Map<String, String> debezium = new HashMap<>();
+        for (Map.Entry<String, String> entry : config.entrySet()) {
+            if (entry.getKey().startsWith("debezium.")) {
+                String key = entry.getKey();
+                key = key.replace("debezium.", "");
+                if (!debezium.containsKey(key)) {
+                    debezium.put(entry.getKey().replace("debezium.", ""), entry.getValue());
+                }
+            }
+        }
         Map<String, String> sink = new HashMap<>();
         for (Map.Entry<String, String> entry : config.entrySet()) {
             if (entry.getKey().startsWith("sink.")) {
@@ -71,6 +83,7 @@ public class CDCSource {
             Integer.valueOf(config.get("checkpoint")),
             Integer.valueOf(config.get("parallelism")),
             config.get("startup"),
+            debezium,
             sink
         );
         if (Asserts.isNotNullString(config.get("database"))) {
@@ -207,5 +220,13 @@ public class CDCSource {
 
     public void setStartupMode(String startupMode) {
         this.startupMode = startupMode;
+    }
+
+    public Map<String, String> getDebezium() {
+        return debezium;
+    }
+
+    public void setDebezium(Map<String, String> debezium) {
+        this.debezium = debezium;
     }
 }

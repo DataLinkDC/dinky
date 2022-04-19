@@ -63,6 +63,7 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
                 .build());
         } else {
             final List<Schema> schemaList = config.getSchemaList();
+            final String schemaFieldName = config.getSchemaFieldName();
             if (Asserts.isNotNullCollection(schemaList)) {
                 SingleOutputStreamOperator<Map> mapOperator = dataStreamSource.map(new MapFunction<String, Map>() {
                     @Override
@@ -80,7 +81,7 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
                             public boolean filter(Map value) throws Exception {
                                 LinkedHashMap source = (LinkedHashMap) value.get("source");
                                 return tableName.equals(source.get("table").toString())
-                                    && schemaName.equals(source.get("db").toString());
+                                    && schemaName.equals(source.get(schemaFieldName).toString());
                             }
                         });
                         SingleOutputStreamOperator<String> stringOperator = filterOperator.map(new MapFunction<Map, String>() {
