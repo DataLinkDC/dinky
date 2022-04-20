@@ -90,6 +90,11 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.doris</groupId>
+            <artifactId>flink-doris-connector-1.12_2.12</artifactId>
+            <version>1.0.3</version>
+        </dependency>
     </dependencies>
 
 </project>
