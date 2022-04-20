@@ -62,4 +62,9 @@ public class ClickHouseQuery extends AbstractDBQuery {
     public String isNullable() {
         return "NULL";
     }
+    
+    @Override
+    public String createTableName() {
+        return "statement";
+    }
 }
