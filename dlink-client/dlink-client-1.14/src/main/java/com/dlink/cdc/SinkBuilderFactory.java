@@ -1,6 +1,7 @@
 package com.dlink.cdc;
 
 import com.dlink.assertion.Asserts;
+import com.dlink.cdc.doris.DorisSinkBuilder;
 import com.dlink.cdc.jdbc.JdbcSinkBuilder;
 import com.dlink.cdc.kafka.KafkaSinkBuilder;
 import com.dlink.exception.FlinkClientException;
@@ -17,6 +18,7 @@ public class SinkBuilderFactory {
     private static SinkBuilder[] sinkBuilders = {
         new KafkaSinkBuilder(),
         new JdbcSinkBuilder(),
+        new DorisSinkBuilder()
     };
 
     public static SinkBuilder buildSinkBuilder(FlinkCDCConfig config) {

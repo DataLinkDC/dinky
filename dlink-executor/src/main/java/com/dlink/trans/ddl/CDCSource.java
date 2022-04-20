@@ -56,9 +56,9 @@ public class CDCSource {
         for (Map.Entry<String, String> entry : config.entrySet()) {
             if (entry.getKey().startsWith("debezium.")) {
                 String key = entry.getKey();
-                key = key.replace("debezium.", "");
+                key = key.replaceFirst("debezium.", "");
                 if (!debezium.containsKey(key)) {
-                    debezium.put(entry.getKey().replace("debezium.", ""), entry.getValue());
+                    debezium.put(key, entry.getValue());
                 }
             }
         }
@@ -66,9 +66,9 @@ public class CDCSource {
         for (Map.Entry<String, String> entry : config.entrySet()) {
             if (entry.getKey().startsWith("sink.")) {
                 String key = entry.getKey();
-                key = key.replace("sink.", "");
+                key = key.replaceFirst("sink.", "");
                 if (!sink.containsKey(key)) {
-                    sink.put(entry.getKey().replace("sink.", ""), entry.getValue());
+                    sink.put(key, entry.getValue());
                 }
             }
         }
