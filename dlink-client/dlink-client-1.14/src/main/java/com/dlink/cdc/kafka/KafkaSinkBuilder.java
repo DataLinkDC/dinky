@@ -6,9 +6,12 @@ import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.connector.kafka.sink.KafkaRecordSerializationSchema;
 import org.apache.flink.connector.kafka.sink.KafkaSink;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.table.data.RowData;
+import org.apache.flink.table.types.logical.LogicalType;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -41,6 +44,11 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
     }
 
     @Override
+    public void addSink(DataStream<RowData> rowDataDataStream, String schemaTableName, List<String> columnNameList, List<LogicalType> columnTypeList) {
+
+    }
+
+    @Override
     public String getHandle() {
         return KEY_WORD;
     }
@@ -51,7 +59,11 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
     }
 
     @Override
-    public DataStreamSource build(CDCBuilder cdcBuilder, StreamExecutionEnvironment env, CustomTableEnvironment customTableEnvironment, DataStreamSource<String> dataStreamSource) {
+    public DataStreamSource build(
+        CDCBuilder cdcBuilder,
+        StreamExecutionEnvironment env,
+        CustomTableEnvironment customTableEnvironment,
+        DataStreamSource<String> dataStreamSource) {
         if (Asserts.isNotNullString(config.getSink().get("topic"))) {
             dataStreamSource.sinkTo(KafkaSink.<String>builder()
                 .setBootstrapServers(config.getSink().get("brokers"))

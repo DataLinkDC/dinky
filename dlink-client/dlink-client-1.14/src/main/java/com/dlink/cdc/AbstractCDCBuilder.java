@@ -44,7 +44,7 @@ public abstract class AbstractCDCBuilder {
         List<String> tableList = getTableList();
         for (String tableName : tableList) {
             if (Asserts.isNotNullString(tableName) && tableName.contains(".")) {
-                String[] names = tableName.split(".");
+                String[] names = tableName.split("\\.");
                 if (!schemaList.contains(names[0])) {
                     schemaList.add(names[0]);
                 }
