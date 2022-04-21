@@ -6,21 +6,17 @@ import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.Token;
-import com.dlink.assertion.Asserts;
 import com.dlink.metadata.ast.Clickhouse20CreateTableStatement;
 import com.dlink.metadata.convert.ClickHouseTypeConvert;
 import com.dlink.metadata.convert.ITypeConvert;
 import com.dlink.metadata.parser.Clickhouse20StatementParser;
 import com.dlink.metadata.query.ClickHouseQuery;
 import com.dlink.metadata.query.IDBQuery;
-import com.dlink.model.Schema;
 import com.dlink.model.Table;
 import com.dlink.result.SqlExplainResult;
 import com.dlink.utils.LogUtil;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +34,8 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
 
     @Override
     String getDriverClass() {
-        return "com.clickhouse.jdbc.ClickHouseDriver";
+//        return "com.clickhouse.jdbc.ClickHouseDriver";
+        return "ru.yandex.clickhouse.ClickHouseDriver";
     }
 
     @Override
@@ -59,56 +56,6 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
     @Override
     public String getName() {
         return "ClickHouse OLAP 数据库";
-    }
-
-    @Override
-    public List<Schema> listSchemas() {
-        List<Schema> schemas = new ArrayList<>();
-        PreparedStatement preparedStatement = null;
-        ResultSet results = null;
-        String schemasSql = getDBQuery().schemaAllSql();
-        try {
-            preparedStatement = conn.prepareStatement(schemasSql);
-            results = preparedStatement.executeQuery();
-            while (results.next()) {
-                String schemaName= results.getMetaData().getSchemaName(0);
-                if (Asserts.isNotNullString(schemaName)) {
-                    Schema schema = new Schema(schemaName);
-                    schemas.add(schema);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            close(preparedStatement, results);
-        }
-        return schemas;
-    }
-
-    @Override
-    public List<Table> listTables(String schemaName) {
-        List<Table> tableList = new ArrayList<>();
-        PreparedStatement preparedStatement = null;
-        ResultSet results = null;
-        String sql = getDBQuery().tablesSql(schemaName);
-        try {
-            preparedStatement = conn.prepareStatement(sql);
-            results = preparedStatement.executeQuery();
-            while (results.next()) {
-                String tableName = results.getString(getDBQuery().tableName());
-                if (Asserts.isNotNullString(tableName)) {
-                    Table tableInfo = new Table();
-                    tableInfo.setName(tableName);
-                    tableInfo.setSchema(schemaName);
-                    tableList.add(tableInfo);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            close(preparedStatement, results);
-        }
-        return tableList;
     }
 
     @Override
