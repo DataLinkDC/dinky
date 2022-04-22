@@ -1,23 +1,10 @@
-import {
-  Tabs, Button,Tree, Empty, Select,Tag,
-  Tooltip
-} from "antd";
+import {Button, Empty, Modal, Select, Tabs, Tag, Tree} from "antd";
 import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
-import {useState} from "react";
-import styles from "./index.less";
-import {
-  TableOutlined,
-  DatabaseOutlined,
-  DownOutlined,
-  OrderedListOutlined, CodepenOutlined
-} from '@ant-design/icons';
-import React from "react";
+import React, {useState} from "react";
+import {CodepenOutlined, DatabaseOutlined, DownOutlined, OrderedListOutlined, TableOutlined} from '@ant-design/icons';
 import {showMetaDataTable} from "@/components/Studio/StudioEvent/DDL";
-import { Scrollbars } from 'react-custom-scrollbars';
-import {
-  ModalForm,
-} from '@ant-design/pro-form';
+import {Scrollbars} from 'react-custom-scrollbars';
 import Columns from "@/pages/DataBase/Columns";
 import Tables from "@/pages/DataBase/Tables";
 import {TreeDataNode} from "@/components/Studio/StudioTree/Function";
@@ -103,29 +90,18 @@ const StudioMetaData = (props: any) => {
           }}
         />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
       </Scrollbars>
-      <ModalForm
+      <Modal
         title={row?.key}
         visible={modalVisit}
         width={1000}
-        onFinish={async () => {
-          // setRow(undefined);
-          // setModalVisit(false);
-        }}
-        modalProps={{
-          maskClosable:false,
-          bodyStyle:{
-            padding: '5px'
-          }
-        }}
-        onVisibleChange={setModalVisit}
-        submitter={{
-          submitButtonProps: {
-            style: {
-              display: 'none',
-            },
-          },
-        }}
-
+        footer={[
+          <Button key="back" onClick={() => {
+            setRow(undefined);
+            setModalVisit(false);
+          }}>
+            关闭
+          </Button>,
+        ]}
       >
         <Tabs defaultActiveKey="tableInfo" size="small">
           <TabPane
@@ -162,7 +138,7 @@ const StudioMetaData = (props: any) => {
             {row? <Generation dbId={databaseId} schema={row.schema} table={row.table}/> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
           </TabPane>
         </Tabs>
-        </ModalForm>
+        </Modal>
     </>
   );
 };
