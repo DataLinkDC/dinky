@@ -12,20 +12,32 @@ public class ClickHouseQuery extends AbstractDBQuery {
         return "show databases";
     }
 
+    /**
+     * 获取模式名称下的所有表，从元数据表中获取获取
+     *
+     * @param schemaName 模式名称
+     * @return String
+     */
     @Override
     public String tablesSql(String schemaName) {
-        return "show tables";
+        return "select name from system.tables where 1=1 and database='" + schemaName + "'";
     }
 
-
+    /**
+     * 从元数据表中获取表字段信息
+     *
+     * @param schemaName 模式名称
+     * @param tableName  表名
+     * @return String
+     */
     @Override
     public String columnsSql(String schemaName, String tableName) {
-        return "desc `" + tableName + "`";
+        return "select  * from system.columns where 1=1 and database='" + schemaName + "' and table='" + tableName + "'";
     }
 
     @Override
     public String schemaName() {
-        return "db";
+        return "name";
     }
 
     @Override
@@ -55,11 +67,21 @@ public class ClickHouseQuery extends AbstractDBQuery {
 
     @Override
     public String columnKey() {
-        return "KEY";
+        return "is_in_primary_key";
     }
 
     @Override
     public String isNullable() {
         return "NULL";
+    }
+
+    @Override
+    public String createTableName() {
+        return "statement";
+    }
+
+    @Override
+    public String isPK() {
+        return "1";
     }
 }
