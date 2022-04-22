@@ -69,6 +69,11 @@ const StudioMetaData = (props: any) => {
     }
   }
 
+  const cancelHandle = () => {
+    setRow(undefined);
+    setModalVisit(false);
+  }
+
   return (
     <>
       <Select
@@ -94,10 +99,12 @@ const StudioMetaData = (props: any) => {
         title={row?.key}
         visible={modalVisit}
         width={1000}
+        onCancel={()=>{
+          cancelHandle();
+        }}
         footer={[
           <Button key="back" onClick={() => {
-            setRow(undefined);
-            setModalVisit(false);
+            cancelHandle();
           }}>
             关闭
           </Button>,
