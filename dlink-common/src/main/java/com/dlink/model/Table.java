@@ -48,6 +48,10 @@ public class Table implements Serializable, Comparable<Table> {
         return Asserts.isNullString(schema) ? name : schema + "." + name;
     }
 
+    public String getSchemaTableNameWithUnderline() {
+        return Asserts.isNullString(schema) ? name : schema + "_" + name;
+    }
+
     @Override
     public int compareTo(Table o) {
         return this.name.compareTo(o.getName());

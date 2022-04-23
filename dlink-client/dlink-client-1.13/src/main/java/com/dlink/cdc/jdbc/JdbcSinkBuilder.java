@@ -60,8 +60,9 @@ public class JdbcSinkBuilder extends AbstractSinkBuilder implements SinkBuilder 
 
     @Override
     public void addSink(
+        StreamExecutionEnvironment env,
         DataStream<RowData> rowDataDataStream,
-        String schemaTableName,
+        Table table,
         List<String> columnNameList,
         List<LogicalType> columnTypeList) {
 
@@ -116,7 +117,7 @@ public class JdbcSinkBuilder extends AbstractSinkBuilder implements SinkBuilder 
         if (sink.containsKey("username")) {
             jdbcOptionsBuilder.setUsername(sink.get("username"));
         }
-        jdbcOptionsBuilder.setTableName(schemaTableName);
+        jdbcOptionsBuilder.setTableName(table.getSchemaTableName());
         builder.setOptions(jdbcOptionsBuilder.build());
         builder.setTableSchema(TableSchema.fromTypeInfo(rowDataDataStream.getType()));
         /*JdbcUpsertTableSink build = builder.build();

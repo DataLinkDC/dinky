@@ -93,7 +93,7 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
                             }
                         });
                         stringOperator.addSink(new FlinkKafkaProducer<String>(config.getSink().get("brokers"),
-                            table.getSchemaTableName(),
+                            table.getSchemaTableNameWithUnderline(),
                             new SimpleStringSchema()));
                     }
                 }
@@ -104,8 +104,9 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
 
     @Override
     public void addSink(
+        StreamExecutionEnvironment env,
         DataStream<RowData> rowDataDataStream,
-        String schemaTableName,
+        Table table,
         List<String> columnNameList,
         List<LogicalType> columnTypeList) {
     }

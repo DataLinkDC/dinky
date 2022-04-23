@@ -151,8 +151,9 @@ public abstract class AbstractSinkBuilder {
     }
 
     public abstract void addSink(
+        StreamExecutionEnvironment env,
         DataStream<RowData> rowDataDataStream,
-        String schemaTableName,
+        Table table,
         List<String> columnNameList,
         List<LogicalType> columnTypeList);
 
@@ -172,7 +173,7 @@ public abstract class AbstractSinkBuilder {
                     List<LogicalType> columnTypeList = new ArrayList<>();
                     buildColumn(columnNameList, columnTypeList, table.getColumns());
                     DataStream<RowData> rowDataDataStream = buildRowData(filterOperator, columnNameList, columnTypeList);
-                    addSink(rowDataDataStream, table.getSchemaTableName(), columnNameList, columnTypeList);
+                    addSink(env, rowDataDataStream, table, columnNameList, columnTypeList);
                 }
             }
         }
