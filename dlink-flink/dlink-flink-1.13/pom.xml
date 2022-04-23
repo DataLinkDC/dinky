@@ -120,5 +120,10 @@
             <artifactId>flink-doris-connector-1.13_2.12</artifactId>
             <version>1.0.3</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.hudi</groupId>
+            <artifactId>hudi-flink_2.11</artifactId>
+            <version>0.10.1</version>
+        </dependency>
     </dependencies>
 </project>
