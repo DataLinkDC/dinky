@@ -10,6 +10,7 @@
     <version>0.6.2</version>
 
     <modules>
+        <module>dlink-flink</module>
         <module>dlink-common</module>
         <module>dlink-client</module>
         <module>dlink-gateway</module>
@@ -32,13 +33,13 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        
+
         <spring-boot-dependencies.version>2.6.6</spring-boot-dependencies.version>
         <hutool.version>5.7.22</hutool.version>
         <druid-starter>1.2.8</druid-starter>
         <mybatis-plus-boot-starter.version>3.5.1</mybatis-plus-boot-starter.version>
         <lombok.version>1.18.22</lombok.version>
-        <jackson.version>2.13.2</jackson.version>
+        <jackjson.version>2.13.2</jackjson.version>
         <guava.version>31.1-jre</guava.version>
         <mysql-connector-java.version>8.0.28</mysql-connector-java.version>
         <ojdbc8.version>12.2.0.1</ojdbc8.version>
@@ -51,12 +52,16 @@
         <commons-lang3.version>3.3.2</commons-lang3.version>
         <httpclient.version>4.4.1</httpclient.version>
         <junit.version>4.12</junit.version>
+        <!--  `provided` for product environment ,`compile` for dev environment  -->
+        <scope.runtime>provided</scope.runtime>
+        <!--  modify flink version  -->
+        <dlink.flink.version>1.13</dlink.flink.version>
+
         <scala.binary.version>2.11</scala.binary.version>
         <protobuf-java.version>2.5.0</protobuf-java.version>
         <jedis.version>2.9.0</jedis.version>
 
-        <!--  `provided` for product environment ,`compile` for dev environment  -->
-        <scope.runtime>provided</scope.runtime>
+        <!-- plugin -->
         <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
         <maven-assembly-plugin.version>3.2.0</maven-assembly-plugin.version>
         <maven.resource.version>3.2.0</maven.resource.version>
@@ -103,12 +108,12 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
-                <version>${jackson.version}</version>
+                <version>${jackjson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>${jackson.version}</version>
+                <version>${jackjson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>
@@ -211,12 +216,22 @@
             </dependency>
             <dependency>
                 <groupId>com.dlink</groupId>
+                <artifactId>dlink-connector-jdbc-1.11</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
                 <artifactId>dlink-connector-jdbc-1.12</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.dlink</groupId>
                 <artifactId>dlink-connector-jdbc-1.13</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-connector-jdbc-1.14</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -330,17 +345,40 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-flink-1.11</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-flink-1.12</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-flink-1.13</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-flink-1.14</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
                 <version>${httpclient.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.2</version>
             </plugin>
         </plugins>
     </build>

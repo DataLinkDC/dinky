@@ -30,11 +30,11 @@ public class CDCSource {
     private String schema;
     private String table;
     private String startupMode;
-    private String topic;
-    private String brokers;
+    private Map<String, String> debezium;
+    private Map<String, String> sink;
 
     public CDCSource(String type, String statement, String name, String hostname, Integer port, String username, String password, Integer checkpoint, Integer parallelism, String startupMode,
-                     String topic, String brokers) {
+                     Map<String, String> debezium, Map<String, String> sink) {
         this.type = type;
         this.statement = statement;
         this.name = name;
@@ -45,13 +45,33 @@ public class CDCSource {
         this.checkpoint = checkpoint;
         this.parallelism = parallelism;
         this.startupMode = startupMode;
-        this.topic = topic;
-        this.brokers = brokers;
+        this.debezium = debezium;
+        this.sink = sink;
     }
 
     public static CDCSource build(String statement) {
         Map<String, List<String>> map = SingleSqlParserFactory.generateParser(statement);
         Map<String, String> config = getKeyValue(map.get("WITH"));
+        Map<String, String> debezium = new HashMap<>();
+        for (Map.Entry<String, String> entry : config.entrySet()) {
+            if (entry.getKey().startsWith("debezium.")) {
+                String key = entry.getKey();
+                key = key.replace("debezium.", "");
+                if (!debezium.containsKey(key)) {
+                    debezium.put(entry.getKey().replace("debezium.", ""), entry.getValue());
+                }
+            }
+        }
+        Map<String, String> sink = new HashMap<>();
+        for (Map.Entry<String, String> entry : config.entrySet()) {
+            if (entry.getKey().startsWith("sink.")) {
+                String key = entry.getKey();
+                key = key.replace("sink.", "");
+                if (!sink.containsKey(key)) {
+                    sink.put(entry.getKey().replace("sink.", ""), entry.getValue());
+                }
+            }
+        }
         CDCSource cdcSource = new CDCSource(
             config.get("type"),
             statement,
@@ -63,8 +83,8 @@ public class CDCSource {
             Integer.valueOf(config.get("checkpoint")),
             Integer.valueOf(config.get("parallelism")),
             config.get("startup"),
-            config.get("topic"),
-            config.get("brokers")
+            debezium,
+            sink
         );
         if (Asserts.isNotNullString(config.get("database"))) {
             cdcSource.setDatabase(config.get("database"));
@@ -186,20 +206,12 @@ public class CDCSource {
         this.table = table;
     }
 
-    public String getTopic() {
-        return topic;
+    public Map<String, String> getSink() {
+        return sink;
     }
 
-    public void setTopic(String topic) {
-        this.topic = topic;
-    }
-
-    public String getBrokers() {
-        return brokers;
-    }
-
-    public void setBrokers(String brokers) {
-        this.brokers = brokers;
+    public void setSink(Map<String, String> sink) {
+        this.sink = sink;
     }
 
     public String getStartupMode() {
@@ -208,5 +220,13 @@ public class CDCSource {
 
     public void setStartupMode(String startupMode) {
         this.startupMode = startupMode;
+    }
+
+    public Map<String, String> getDebezium() {
+        return debezium;
+    }
+
+    public void setDebezium(Map<String, String> debezium) {
+        this.debezium = debezium;
     }
 }
