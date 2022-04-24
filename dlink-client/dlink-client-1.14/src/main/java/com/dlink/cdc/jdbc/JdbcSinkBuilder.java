@@ -1,6 +1,7 @@
 package com.dlink.cdc.jdbc;
 
 import org.apache.flink.streaming.api.datastream.DataStream;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.types.logical.LogicalType;
 
@@ -9,6 +10,7 @@ import java.util.List;
 import com.dlink.cdc.AbstractSinkBuilder;
 import com.dlink.cdc.SinkBuilder;
 import com.dlink.model.FlinkCDCConfig;
+import com.dlink.model.Table;
 
 /**
  * MysqlCDCBuilder
@@ -29,7 +31,12 @@ public class JdbcSinkBuilder extends AbstractSinkBuilder implements SinkBuilder 
     }
 
     @Override
-    public void addSink(DataStream<RowData> rowDataDataStream, String schemaTableName, List<String> columnNameList, List<LogicalType> columnTypeList) {
+    public void addSink(
+        StreamExecutionEnvironment env,
+        DataStream<RowData> rowDataDataStream,
+        Table table,
+        List<String> columnNameList,
+        List<LogicalType> columnTypeList) {
 
     }
 

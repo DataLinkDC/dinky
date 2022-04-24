@@ -4,6 +4,7 @@ import org.apache.doris.flink.cfg.DorisExecutionOptions;
 import org.apache.doris.flink.cfg.DorisOptions;
 import org.apache.doris.flink.cfg.DorisReadOptions;
 import org.apache.doris.flink.cfg.DorisSink;
+import org.apache.doris.flink.cfg.DorisStreamOptions;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.data.RowData;
@@ -81,7 +82,7 @@ public class DorisSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
                 dorisExecutionOptionsBuilder.build(),
                 DorisOptions.builder()
                     .setFenodes(config.getSink().get("fenodes"))
-                    .setTableIdentifier(table.getSchemaTableName())
+                    .setTableIdentifier(getSinkSchemaName(table) + "." + getSinkTableName(table))
                     .setUsername(config.getSink().get("username"))
                     .setPassword(config.getSink().get("password")).build()
             ));
