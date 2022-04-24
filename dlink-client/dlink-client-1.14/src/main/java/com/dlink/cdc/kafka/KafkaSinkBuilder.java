@@ -44,7 +44,12 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
     }
 
     @Override
-    public void addSink(DataStream<RowData> rowDataDataStream, String schemaTableName, List<String> columnNameList, List<LogicalType> columnTypeList) {
+    public void addSink(
+        StreamExecutionEnvironment env,
+        DataStream<RowData> rowDataDataStream,
+        Table table,
+        List<String> columnNameList,
+        List<LogicalType> columnTypeList) {
 
     }
 
@@ -106,7 +111,7 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
                         stringOperator.sinkTo(KafkaSink.<String>builder()
                             .setBootstrapServers(config.getSink().get("brokers"))
                             .setRecordSerializer(KafkaRecordSerializationSchema.builder()
-                                .setTopic(table.getSchemaTableName())
+                                .setTopic(getSinkTableName(table))
                                 .setValueSerializationSchema(new SimpleStringSchema())
                                 .build()
                             )

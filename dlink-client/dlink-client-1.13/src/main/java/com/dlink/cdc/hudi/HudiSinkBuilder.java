@@ -60,6 +60,8 @@ public class HudiSinkBuilder extends AbstractSinkBuilder implements SinkBuilder,
         final String[] columnNames = columnNameList.toArray(new String[columnNameList.size()]);
         final LogicalType[] columnTypes = columnTypeList.toArray(new LogicalType[columnTypeList.size()]);
 
+        final String tableName = getSinkTableName(table);
+
         Integer parallelism = 1;
         boolean isMor = true;
         Map<String, String> sink = config.getSink();
@@ -68,17 +70,17 @@ public class HudiSinkBuilder extends AbstractSinkBuilder implements SinkBuilder,
             parallelism = Integer.valueOf(sink.get("parallelism"));
         }
         if (configuration.contains(FlinkOptions.PATH)) {
-            configuration.set(FlinkOptions.PATH, configuration.getValue(FlinkOptions.PATH) + table.getSchemaTableNameWithUnderline());
+            configuration.set(FlinkOptions.PATH, configuration.getValue(FlinkOptions.PATH) + tableName);
         }
         if (sink.containsKey(FlinkOptions.TABLE_TYPE.key())) {
             isMor = HoodieTableType.MERGE_ON_READ.name().equals(sink.get(FlinkOptions.TABLE_TYPE.key()));
         }
-        configuration.set(FlinkOptions.TABLE_NAME, table.getSchemaTableNameWithUnderline());
-        configuration.set(FlinkOptions.HIVE_SYNC_DB, table.getSchema());
-        configuration.set(FlinkOptions.HIVE_SYNC_TABLE, table.getName());
+        configuration.set(FlinkOptions.TABLE_NAME, tableName);
+        configuration.set(FlinkOptions.HIVE_SYNC_DB, getSinkSchemaName(table));
+        configuration.set(FlinkOptions.HIVE_SYNC_TABLE, tableName);
         RowType rowType = RowType.of(false, columnTypes, columnNames);
         configuration.setString(FlinkOptions.SOURCE_AVRO_SCHEMA,
-            AvroSchemaConverter.convertToSchema(rowType, table.getSchemaTableNameWithUnderline()).toString());
+            AvroSchemaConverter.convertToSchema(rowType, tableName).toString());
 
         DataStream<HoodieRecord> hoodieRecordDataStream = Pipelines.bootstrap(configuration, rowType, parallelism, rowDataDataStream);
         DataStream<Object> pipeline = Pipelines.hoodieStreamWrite(configuration, parallelism, hoodieRecordDataStream);

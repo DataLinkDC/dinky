@@ -151,8 +151,9 @@ public abstract class AbstractSinkBuilder {
     }
 
     public abstract void addSink(
+        StreamExecutionEnvironment env,
         DataStream<RowData> rowDataDataStream,
-        String schemaTableName,
+        Table table,
         List<String> columnNameList,
         List<LogicalType> columnTypeList);
 
@@ -172,7 +173,7 @@ public abstract class AbstractSinkBuilder {
                     List<LogicalType> columnTypeList = new ArrayList<>();
                     buildColumn(columnNameList, columnTypeList, table.getColumns());
                     DataStream<RowData> rowDataDataStream = buildRowData(filterOperator, columnNameList, columnTypeList);
-                    addSink(rowDataDataStream, table.getSchemaTableName(), columnNameList, columnTypeList);
+                    addSink(env, rowDataDataStream, table, columnNameList, columnTypeList);
                 }
             }
         }
@@ -229,5 +230,39 @@ public abstract class AbstractSinkBuilder {
         } else {
             return value;
         }
+    }
+
+    protected String getSinkSchemaName(Table table) {
+        String schemaName = table.getSchema();
+        if (config.getSink().containsKey("sink.db")) {
+            schemaName = config.getSink().get("sink.db");
+        }
+        return schemaName;
+    }
+
+    protected String getSinkTableName(Table table) {
+        String tableName = table.getName();
+        if (config.getSink().containsKey("table.prefix.schema")) {
+            if (Boolean.valueOf(config.getSink().get("table.prefix.schema"))) {
+                tableName = table.getSchema() + "_" + tableName;
+            }
+        }
+        if (config.getSink().containsKey("table.prefix")) {
+            tableName = config.getSink().get("table.prefix") + tableName;
+        }
+        if (config.getSink().containsKey("table.suffix")) {
+            tableName = tableName + config.getSink().get("table.suffix");
+        }
+        if (config.getSink().containsKey("table.lower")) {
+            if (Boolean.valueOf(config.getSink().get("table.lower"))) {
+                tableName = tableName.toLowerCase();
+            }
+        }
+        if (config.getSink().containsKey("table.upper")) {
+            if (Boolean.valueOf(config.getSink().get("table.upper"))) {
+                tableName = tableName.toUpperCase();
+            }
+        }
+        return tableName;
     }
 }
