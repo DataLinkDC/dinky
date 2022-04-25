@@ -26,7 +26,7 @@ import com.dlink.model.Table;
  **/
 public class DorisSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, Serializable {
 
-    private final static String KEY_WORD = "doris";
+    private final static String KEY_WORD = "datastream-doris";
     private static final long serialVersionUID = 8330362249137471854L;
 
     public DorisSinkBuilder() {

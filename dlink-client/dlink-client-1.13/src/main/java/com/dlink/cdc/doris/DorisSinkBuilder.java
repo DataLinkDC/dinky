@@ -4,7 +4,6 @@ import org.apache.doris.flink.cfg.DorisExecutionOptions;
 import org.apache.doris.flink.cfg.DorisOptions;
 import org.apache.doris.flink.cfg.DorisReadOptions;
 import org.apache.doris.flink.cfg.DorisSink;
-import org.apache.doris.flink.cfg.DorisStreamOptions;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.data.RowData;
@@ -27,7 +26,7 @@ import com.dlink.model.Table;
  **/
 public class DorisSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, Serializable {
 
-    private final static String KEY_WORD = "doris";
+    private final static String KEY_WORD = "datastream-doris";
     private static final long serialVersionUID = 8330362249137471854L;
 
     public DorisSinkBuilder() {

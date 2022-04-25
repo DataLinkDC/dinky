@@ -103,26 +103,4 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         }
         return allConfigMap;
     }
-
-    @Override
-    public String getInsertSQL(Table table, String sourceName) {
-        StringBuilder sb = new StringBuilder("INSERT INTO ");
-        sb.append(table.getName());
-        sb.append(" SELECT\n");
-        for (int i = 0; i < table.getColumns().size(); i++) {
-            sb.append("    ");
-            if (i > 0) {
-                sb.append(",");
-            }
-            sb.append("`" + table.getColumns().get(i).getName() + "` \n");
-        }
-        sb.append(" FROM ");
-        sb.append(sourceName);
-       /* sb.append(" WHERE database_name = '");
-        sb.append(table.getSchema());
-        sb.append("' and table_name = '");
-        sb.append(table.getName());
-        sb.append("'");*/
-        return sb.toString();
-    }
 }
