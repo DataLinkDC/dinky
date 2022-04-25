@@ -7,6 +7,7 @@ import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.jsonplan.JsonPlanGenerator;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
+import org.apache.flink.streaming.api.TimeCharacteristic;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.graph.JSONGenerator;
@@ -16,6 +17,7 @@ import org.apache.flink.table.api.ExplainDetail;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableException;
+import org.apache.flink.table.api.ValidationException;
 import org.apache.flink.table.api.internal.TableEnvironmentImpl;
 import org.apache.flink.table.catalog.CatalogManager;
 import org.apache.flink.table.catalog.FunctionCatalog;
@@ -24,26 +26,26 @@ import org.apache.flink.table.delegation.Executor;
 import org.apache.flink.table.delegation.ExecutorFactory;
 import org.apache.flink.table.delegation.Planner;
 import org.apache.flink.table.delegation.PlannerFactory;
+import org.apache.flink.table.expressions.Expression;
+import org.apache.flink.table.expressions.ExpressionParser;
 import org.apache.flink.table.factories.ComponentFactoryService;
-import org.apache.flink.table.functions.AggregateFunction;
-import org.apache.flink.table.functions.TableAggregateFunction;
-import org.apache.flink.table.functions.TableFunction;
-import org.apache.flink.table.functions.UserDefinedFunctionHelper;
 import org.apache.flink.table.module.ModuleManager;
 import org.apache.flink.table.operations.ExplainOperation;
+import org.apache.flink.table.operations.JavaDataStreamQueryOperation;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.operations.QueryOperation;
 import org.apache.flink.table.planner.delegation.ExecutorBase;
 import org.apache.flink.table.planner.utils.ExecutorUtils;
-import org.apache.flink.types.Row;
+import org.apache.flink.table.typeutils.FieldInfoUtils;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-import com.dlink.exception.FlinkClientException;
 import com.dlink.result.SqlExplainResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -272,40 +274,63 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
         return record;
     }
 
-    public <T> void registerFunction(String name, TableFunction<T> tableFunction) {
-        TypeInformation<T> typeInfo = UserDefinedFunctionHelper.getReturnTypeOfTableFunction(tableFunction);
-        this.functionCatalog.registerTempSystemTableFunction(name, tableFunction, typeInfo);
-    }
-
-    public <T, ACC> void registerFunction(String name, AggregateFunction<T, ACC> aggregateFunction) {
-        TypeInformation<T> typeInfo = UserDefinedFunctionHelper.getReturnTypeOfAggregateFunction(aggregateFunction);
-        TypeInformation<ACC> accTypeInfo = UserDefinedFunctionHelper.getAccumulatorTypeOfAggregateFunction(aggregateFunction);
-        this.functionCatalog.registerTempSystemAggregateFunction(name, aggregateFunction, typeInfo, accTypeInfo);
-    }
-
-    public <T, ACC> void registerFunction(String name, TableAggregateFunction<T, ACC> tableAggregateFunction) {
-        TypeInformation<T> typeInfo = UserDefinedFunctionHelper.getReturnTypeOfAggregateFunction(tableAggregateFunction);
-        TypeInformation<ACC> accTypeInfo = UserDefinedFunctionHelper.getAccumulatorTypeOfAggregateFunction(tableAggregateFunction);
-        this.functionCatalog.registerTempSystemAggregateFunction(name, tableAggregateFunction, typeInfo, accTypeInfo);
-    }
-
     public boolean parseAndLoadConfiguration(String statement, StreamExecutionEnvironment environment, Map<String, Object> setMap) {
         return false;
     }
 
+    public <T> Table fromDataStream(DataStream<T> dataStream, Expression... fields) {
+        JavaDataStreamQueryOperation<T> queryOperation =
+            asQueryOperation(dataStream, Optional.of(Arrays.asList(fields)));
 
-    @Override
-    public Table fromChangelogStream(DataStream<Row> dataStream) {
-        throw new FlinkClientException("Flink 1.12 not support");
+        return createTable(queryOperation);
+    }
+
+    public <T> Table fromDataStream(DataStream<T> dataStream, String fields) {
+        List<Expression> expressions = ExpressionParser.parseExpressionList(fields);
+        return fromDataStream(dataStream, expressions.toArray(new Expression[0]));
     }
 
     @Override
-    public <T> void registerDataStream(String name, DataStream<T> dataStream) {
-        throw new FlinkClientException("Flink 1.12 not support");
+    public <T> void createTemporaryView(String path, DataStream<T> dataStream, String fields) {
+        createTemporaryView(path, fromDataStream(dataStream, fields));
     }
 
     @Override
-    public <T> void createTemporaryView(String path, DataStream<T> dataStream) {
-        throw new FlinkClientException("Flink 1.12 not support");
+    public <T> void createTemporaryView(
+        String path, DataStream<T> dataStream, Expression... fields) {
+        createTemporaryView(path, fromDataStream(dataStream, fields));
+    }
+
+    private <T> JavaDataStreamQueryOperation<T> asQueryOperation(
+        DataStream<T> dataStream, Optional<List<Expression>> fields) {
+        TypeInformation<T> streamType = dataStream.getType();
+
+        // get field names and types for all non-replaced fields
+        FieldInfoUtils.TypeInfoSchema typeInfoSchema =
+            fields.map(
+                    f -> {
+                        FieldInfoUtils.TypeInfoSchema fieldsInfo =
+                            FieldInfoUtils.getFieldsInfo(
+                                streamType, f.toArray(new Expression[0]));
+
+                        // check if event-time is enabled
+                        validateTimeCharacteristic(fieldsInfo.isRowtimeDefined());
+                        return fieldsInfo;
+                    })
+                .orElseGet(() -> FieldInfoUtils.getFieldsInfo(streamType));
+
+        return new JavaDataStreamQueryOperation<>(
+            dataStream, typeInfoSchema.getIndices(), typeInfoSchema.toTableSchema());
+    }
+
+    private void validateTimeCharacteristic(boolean isRowtimeDefined) {
+        if (isRowtimeDefined
+            && executionEnvironment.getStreamTimeCharacteristic()
+            != TimeCharacteristic.EventTime) {
+            throw new ValidationException(
+                String.format(
+                    "A rowtime attribute requires an EventTime time characteristic in stream environment. But is: %s",
+                    executionEnvironment.getStreamTimeCharacteristic()));
+        }
     }
 }

@@ -6,6 +6,7 @@ import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.ExplainDetail;
+import org.apache.flink.table.api.Schema;
 import org.apache.flink.table.api.StatementSet;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableConfig;
@@ -14,6 +15,7 @@ import org.apache.flink.table.catalog.Catalog;
 import org.apache.flink.table.catalog.CatalogManager;
 import org.apache.flink.table.delegation.Parser;
 import org.apache.flink.table.delegation.Planner;
+import org.apache.flink.table.expressions.Expression;
 import org.apache.flink.types.Row;
 
 import java.util.List;
@@ -63,11 +65,11 @@ public interface CustomTableEnvironment {
 
     StatementSet createStatementSet();
 
-    Table fromChangelogStream(DataStream<Row> dataStream);
+    <T> void createTemporaryView(String path, DataStream<T> dataStream, Expression... fields);
 
-    <T> void registerDataStream(String name, DataStream<T> dataStream);
+    <T> void createTemporaryView(String path, DataStream<T> dataStream, String fields);
 
-    <T> void createTemporaryView(String path, DataStream<T> dataStream);
+//    <T> void createTemporaryView(String path, DataStream<T> dataStream, Schema schema);
 
     Parser getParser();
 

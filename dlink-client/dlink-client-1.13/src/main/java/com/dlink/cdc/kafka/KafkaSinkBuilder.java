@@ -33,7 +33,7 @@ import com.dlink.model.Table;
  **/
 public class KafkaSinkBuilder extends AbstractSinkBuilder implements SinkBuilder {
 
-    private final static String KEY_WORD = "kafka";
+    private final static String KEY_WORD = "datastream-kafka";
 
     public KafkaSinkBuilder() {
     }

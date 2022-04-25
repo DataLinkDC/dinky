@@ -79,8 +79,12 @@ public class Table implements Serializable, Comparable<Table> {
     }
 
     public String getFlinkTableSql(String flinkConfig) {
+        return getFlinkDDL(flinkConfig,name);
+    }
+
+    public String getFlinkDDL(String flinkConfig, String tableName) {
         StringBuilder sb = new StringBuilder();
-        sb.append("CREATE TABLE IF NOT EXISTS " + name + " (\n");
+        sb.append("CREATE TABLE IF NOT EXISTS " + tableName + " (\n");
         List<String> pks = new ArrayList<>();
         for (int i = 0; i < columns.size(); i++) {
             String type = columns.get(i).getJavaType().getFlinkType();
@@ -122,7 +126,7 @@ public class Table implements Serializable, Comparable<Table> {
             }
         }
         sb.append(" WITH (\n");
-        sb.append(getFlinkTableWith(flinkConfig));
+        sb.append(flinkConfig);
         sb.append(")\n");
         return sb.toString();
     }
@@ -204,9 +208,9 @@ public class Table implements Serializable, Comparable<Table> {
         return sb.toString();
     }
 
-    public String getCDCSqlInsertIntoBySourceName(String sourceName, String schemaName, String tableName) {
+    public String getCDCSqlInsert(String targetName, String sourceName) {
         StringBuilder sb = new StringBuilder("INSERT INTO ");
-        sb.append(name);
+        sb.append(targetName);
         sb.append(" SELECT\n");
         for (int i = 0; i < columns.size(); i++) {
             sb.append("    ");
@@ -217,11 +221,6 @@ public class Table implements Serializable, Comparable<Table> {
         }
         sb.append(" FROM ");
         sb.append(sourceName);
-        sb.append(" WHERE database_name = '");
-        sb.append(schemaName);
-        sb.append("' and table_name = '");
-        sb.append(tableName);
-        sb.append("'");
         return sb.toString();
     }
 }

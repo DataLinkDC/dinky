@@ -19,7 +19,6 @@ import com.dlink.cdc.CDCBuilder;
 import com.dlink.constant.ClientConstant;
 import com.dlink.constant.FlinkParamConstant;
 import com.dlink.model.FlinkCDCConfig;
-import com.dlink.model.Table;
 
 /**
  * MysqlCDCBuilder
@@ -120,27 +119,5 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
             allConfigMap.put(schema, configMap);
         }
         return allConfigMap;
-    }
-
-    @Override
-    public String getInsertSQL(Table table, String sourceName) {
-        StringBuilder sb = new StringBuilder("INSERT INTO ");
-        sb.append(table.getName());
-        sb.append(" SELECT\n");
-        for (int i = 0; i < table.getColumns().size(); i++) {
-            sb.append("    ");
-            if (i > 0) {
-                sb.append(",");
-            }
-            sb.append("`" + table.getColumns().get(i).getName() + "` \n");
-        }
-        sb.append(" FROM ");
-        sb.append(sourceName);
-       /* sb.append(" WHERE database_name = '");
-        sb.append(table.getSchema());
-        sb.append("' and table_name = '");
-        sb.append(table.getName());
-        sb.append("'");*/
-        return sb.toString();
     }
 }

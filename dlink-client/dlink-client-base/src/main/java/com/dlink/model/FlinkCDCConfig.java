@@ -131,6 +131,39 @@ public class FlinkCDCConfig {
         return sink;
     }
 
+    private boolean skip(String key) {
+        switch (key) {
+            case "db":
+            case "table.prefix":
+            case "table.suffix":
+            case "table.upper":
+            case "table.lower":
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public String getSinkConfigurationString() {
+        StringBuilder sb = new StringBuilder();
+        int index = 0;
+        for (Map.Entry<String, String> entry : sink.entrySet()) {
+            if (skip(entry.getKey())) {
+                continue;
+            }
+            if (index > 0) {
+                sb.append(",");
+            }
+            sb.append("'");
+            sb.append(entry.getKey());
+            sb.append("' = '");
+            sb.append(entry.getValue());
+            sb.append("'\n");
+            index++;
+        }
+        return sb.toString();
+    }
+
     public void setSink(Map<String, String> sink) {
         this.sink = sink;
     }

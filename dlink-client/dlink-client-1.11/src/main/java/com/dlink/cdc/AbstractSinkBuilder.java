@@ -12,6 +12,7 @@ import org.apache.flink.table.data.DecimalData;
 import org.apache.flink.table.data.GenericRowData;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.data.StringData;
+import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.types.logical.BigIntType;
 import org.apache.flink.table.types.logical.BooleanType;
 import org.apache.flink.table.types.logical.DecimalType;
@@ -49,6 +50,7 @@ import com.dlink.model.Table;
 public abstract class AbstractSinkBuilder {
 
     protected FlinkCDCConfig config;
+    protected List<ModifyOperation> modifyOperations = new ArrayList();
 
     public AbstractSinkBuilder() {
     }
@@ -220,6 +222,9 @@ public abstract class AbstractSinkBuilder {
     }
 
     protected Object convertValue(Object value, LogicalType logicalType) {
+        if (value == null) {
+            return null;
+        }
         if (logicalType instanceof VarCharType) {
             return StringData.fromString((String) value);
         } else if (logicalType instanceof DecimalType) {

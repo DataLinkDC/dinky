@@ -13,7 +13,6 @@ import com.dlink.cdc.AbstractCDCBuilder;
 import com.dlink.cdc.CDCBuilder;
 import com.dlink.constant.ClientConstant;
 import com.dlink.model.FlinkCDCConfig;
-import com.dlink.model.Table;
 import com.ververica.cdc.connectors.oracle.OracleSource;
 import com.ververica.cdc.connectors.oracle.table.StartupOptions;
 import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
@@ -107,27 +106,5 @@ public class OracleCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
             allConfigList.put(schema, configMap);
         }
         return allConfigList;
-    }
-
-    @Override
-    public String getInsertSQL(Table table, String sourceName) {
-        StringBuilder sb = new StringBuilder("INSERT INTO ");
-        sb.append(table.getName());
-        sb.append(" SELECT\n");
-        for (int i = 0; i < table.getColumns().size(); i++) {
-            sb.append("    ");
-            if (i > 0) {
-                sb.append(",");
-            }
-            sb.append("`" + table.getColumns().get(i).getName() + "` \n");
-        }
-        sb.append(" FROM ");
-        sb.append(sourceName);
-        sb.append(" WHERE schema_name = '");
-        sb.append(table.getSchema());
-        sb.append("' and table_name = '");
-        sb.append(table.getName());
-        sb.append("'");
-        return sb.toString();
     }
 }

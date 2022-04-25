@@ -12,6 +12,7 @@ import org.apache.flink.table.data.DecimalData;
 import org.apache.flink.table.data.GenericRowData;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.data.StringData;
+import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.types.logical.BigIntType;
 import org.apache.flink.table.types.logical.BooleanType;
 import org.apache.flink.table.types.logical.DecimalType;
@@ -49,6 +50,7 @@ import com.dlink.model.Table;
 public abstract class AbstractSinkBuilder {
 
     protected FlinkCDCConfig config;
+    protected List<ModifyOperation> modifyOperations = new ArrayList();
 
     public AbstractSinkBuilder() {
     }
@@ -162,17 +164,23 @@ public abstract class AbstractSinkBuilder {
         StreamExecutionEnvironment env,
         CustomTableEnvironment customTableEnvironment,
         DataStreamSource<String> dataStreamSource) {
+
         final List<Schema> schemaList = config.getSchemaList();
         final String schemaFieldName = config.getSchemaFieldName();
+
         if (Asserts.isNotNullCollection(schemaList)) {
             SingleOutputStreamOperator<Map> mapOperator = deserialize(dataStreamSource);
             for (Schema schema : schemaList) {
                 for (Table table : schema.getTables()) {
                     SingleOutputStreamOperator<Map> filterOperator = shunt(mapOperator, table, schemaFieldName);
+
                     List<String> columnNameList = new ArrayList<>();
                     List<LogicalType> columnTypeList = new ArrayList<>();
+
                     buildColumn(columnNameList, columnTypeList, table.getColumns());
+
                     DataStream<RowData> rowDataDataStream = buildRowData(filterOperator, columnNameList, columnTypeList);
+
                     addSink(env, rowDataDataStream, table, columnNameList, columnTypeList);
                 }
             }
@@ -220,6 +228,9 @@ public abstract class AbstractSinkBuilder {
     }
 
     protected Object convertValue(Object value, LogicalType logicalType) {
+        if (value == null) {
+            return null;
+        }
         if (logicalType instanceof VarCharType) {
             return StringData.fromString((String) value);
         } else if (logicalType instanceof DecimalType) {
@@ -232,7 +243,7 @@ public abstract class AbstractSinkBuilder {
         }
     }
 
-    protected String getSinkSchemaName(Table table){
+    protected String getSinkSchemaName(Table table) {
         String schemaName = table.getSchema();
         if (config.getSink().containsKey("sink.db")) {
             schemaName = config.getSink().get("sink.db");
@@ -240,7 +251,7 @@ public abstract class AbstractSinkBuilder {
         return schemaName;
     }
 
-    protected String getSinkTableName(Table table){
+    protected String getSinkTableName(Table table) {
         String tableName = table.getName();
         if (config.getSink().containsKey("table.prefix.schema")) {
             if (Boolean.valueOf(config.getSink().get("table.prefix.schema"))) {
@@ -265,4 +276,5 @@ public abstract class AbstractSinkBuilder {
         }
         return tableName;
     }
+
 }
