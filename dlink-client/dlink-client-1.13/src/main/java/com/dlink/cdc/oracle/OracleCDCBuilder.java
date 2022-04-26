@@ -13,7 +13,6 @@ import com.dlink.cdc.AbstractCDCBuilder;
 import com.dlink.cdc.CDCBuilder;
 import com.dlink.constant.ClientConstant;
 import com.dlink.model.FlinkCDCConfig;
-import com.dlink.model.Table;
 import com.ververica.cdc.connectors.oracle.OracleSource;
 import com.ververica.cdc.connectors.oracle.table.StartupOptions;
 import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
@@ -78,8 +77,6 @@ public class OracleCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
                 case "LATEST":
                     sourceBuilder.startupOptions(StartupOptions.latest());
                     break;
-                default:
-                    sourceBuilder.startupOptions(StartupOptions.latest());
             }
         } else {
             sourceBuilder.startupOptions(StartupOptions.latest());
