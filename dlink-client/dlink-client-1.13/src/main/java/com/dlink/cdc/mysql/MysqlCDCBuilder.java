@@ -85,8 +85,6 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
                 case "LATEST":
                     sourceBuilder.startupOptions(StartupOptions.latest());
                     break;
-                default:
-                    sourceBuilder.startupOptions(StartupOptions.latest());
             }
         } else {
             sourceBuilder.startupOptions(StartupOptions.latest());

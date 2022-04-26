@@ -53,7 +53,7 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
         CDCSource cdcSource = CDCSource.build(statement);
         FlinkCDCConfig config = new FlinkCDCConfig(cdcSource.getType(), cdcSource.getHostname(), cdcSource.getPort(), cdcSource.getUsername()
             , cdcSource.getPassword(), cdcSource.getCheckpoint(), cdcSource.getParallelism(), cdcSource.getDatabase(), cdcSource.getSchema()
-            , cdcSource.getTable(), cdcSource.getStartupMode(),cdcSource.getDebezium(), cdcSource.getSink());
+            , cdcSource.getTable(), cdcSource.getStartupMode(), cdcSource.getDebezium(), cdcSource.getSink());
         try {
             CDCBuilder cdcBuilder = CDCBuilderFactory.buildCDCBuilder(config);
             Map<String, Map<String, String>> allConfigMap = cdcBuilder.parseMetaDataConfigs();
@@ -68,16 +68,18 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                 }
                 DriverConfig driverConfig = DriverConfig.build(allConfigMap.get(schemaName));
                 Driver driver = Driver.build(driverConfig);
-                final List<Table> tables = driver.getTablesAndColumns(schemaName);
+                final List<Table> tables = driver.listTables(schemaName);
                 for (Table table : tables) {
-                    if(Asserts.isNotNullCollection(tableRegList)){
+                    if (Asserts.isNotNullCollection(tableRegList)) {
                         for (String tableReg : tableRegList) {
                             if (table.getSchemaTableName().matches(tableReg) && !schema.getTables().contains(Table.build(table.getName()))) {
+                                table.setColumns(driver.listColumns(schemaName, table.getName()));
                                 schema.getTables().add(table);
                                 break;
                             }
                         }
-                    }else {
+                    } else {
+                        table.setColumns(driver.listColumns(schemaName, table.getName()));
                         schema.getTables().add(table);
                     }
                 }

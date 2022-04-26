@@ -9,13 +9,13 @@ import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.table.data.DecimalData;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
+import org.apache.flink.table.types.logical.DateType;
 import org.apache.flink.table.types.logical.DecimalType;
 import org.apache.flink.table.types.logical.LogicalType;
-import org.apache.flink.table.types.logical.VarCharType;
+import org.apache.flink.table.types.logical.TimestampType;
 import org.apache.flink.table.types.utils.TypeConversions;
 import org.apache.flink.types.Row;
 import org.apache.flink.types.RowKind;
@@ -23,6 +23,8 @@ import org.apache.flink.util.Collector;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -76,32 +78,32 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                 public void flatMap(Map value, Collector<Row> out) throws Exception {
                     switch (value.get("op").toString()) {
                         case "c":
-                            Row irow = Row.withNames(RowKind.INSERT);
+                            Row irow = Row.withPositions(RowKind.INSERT, columnNameList.size());
                             Map idata = (Map) value.get("after");
                             for (int i = 0; i < columnNameList.size(); i++) {
-                                irow.setField(columnNameList.get(i), convertValue(idata.get(columnNameList.get(i)), columnTypeList.get(i)));
+                                irow.setField(i, convertValue(idata.get(columnNameList.get(i)), columnTypeList.get(i)));
                             }
                             out.collect(irow);
                             break;
                         case "d":
-                            Row drow = Row.withNames(RowKind.DELETE);
+                            Row drow = Row.withPositions(RowKind.DELETE, columnNameList.size());
                             Map ddata = (Map) value.get("before");
                             for (int i = 0; i < columnNameList.size(); i++) {
-                                drow.setField(columnNameList.get(i), convertValue(ddata.get(columnNameList.get(i)), columnTypeList.get(i)));
+                                drow.setField(i, convertValue(ddata.get(columnNameList.get(i)), columnTypeList.get(i)));
                             }
                             out.collect(drow);
                             break;
                         case "u":
-                            Row ubrow = Row.withNames(RowKind.UPDATE_BEFORE);
+                            Row ubrow = Row.withPositions(RowKind.UPDATE_BEFORE, columnNameList.size());
                             Map ubdata = (Map) value.get("before");
                             for (int i = 0; i < columnNameList.size(); i++) {
-                                ubrow.setField(columnNameList.get(i), convertValue(ubdata.get(columnNameList.get(i)), columnTypeList.get(i)));
+                                ubrow.setField(i, convertValue(ubdata.get(columnNameList.get(i)), columnTypeList.get(i)));
                             }
                             out.collect(ubrow);
-                            Row uarow = Row.withNames(RowKind.UPDATE_AFTER);
+                            Row uarow = Row.withPositions(RowKind.UPDATE_AFTER, columnNameList.size());
                             Map uadata = (Map) value.get("after");
                             for (int i = 0; i < columnNameList.size(); i++) {
-                                uarow.setField(columnNameList.get(i), convertValue(uadata.get(columnNameList.get(i)), columnTypeList.get(i)));
+                                uarow.setField(i, convertValue(uadata.get(columnNameList.get(i)), columnTypeList.get(i)));
                             }
                             out.collect(uarow);
                             break;
@@ -117,7 +119,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
         List<String> columnNameList) {
 
         String sinkTableName = getSinkTableName(table);
-
+//        Boolean dateToString = Boolean.valueOf(config.getSink().get("field.convertType.dateToString"));
         customTableEnvironment.createTemporaryView(table.getSchemaTableNameWithUnderline(), rowDataDataStream, StringUtils.join(columnNameList, ","));
         customTableEnvironment.executeSql(table.getFlinkDDL(getSinkConfigurationString(table), sinkTableName));
 
@@ -172,13 +174,12 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
         if (value == null) {
             return null;
         }
-        if (logicalType instanceof VarCharType) {
-            return value;
+        if (logicalType instanceof DateType) {
+            return Instant.ofEpochMilli((long) value).atZone(ZoneId.systemDefault()).toLocalDate();
+        } else if (logicalType instanceof TimestampType) {
+            return Instant.ofEpochMilli((long) value).atZone(ZoneId.systemDefault()).toLocalDateTime();
         } else if (logicalType instanceof DecimalType) {
-            final DecimalType decimalType = ((DecimalType) logicalType);
-            final int precision = decimalType.getPrecision();
-            final int scala = decimalType.getScale();
-            return DecimalData.fromBigDecimal(new BigDecimal((String) value), precision, scala);
+            return new BigDecimal((String) value);
         } else {
             return value;
         }
