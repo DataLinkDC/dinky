@@ -151,7 +151,7 @@ public class PhoenixInputFormat extends RichInputFormat<Row, InputSplit>
             String replaceQuery = StringUtils.replace(initQuery, "\"", "'");
             LOG.info("openInputFormat replaceQuery :" +replaceQuery);
 
-            statement = dbConn.prepareStatement(replaceQuery, resultSetType, resultSetConcurrency);
+            statement = dbConn.prepareStatement(initQuery, resultSetType, resultSetConcurrency);
             if (fetchSize == Integer.MIN_VALUE || fetchSize > 0) {
                 statement.setFetchSize(fetchSize);
             }
