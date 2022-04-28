@@ -26,14 +26,33 @@ Dinky 通过调用 flink-yarn 模块进行二次开发。
 
 Dinky 也支持通过调用 JobManager 的 RestAPI 对任务进行管理等操作，系统配置可以控制开启和停用。
 
+<big>**Local**</big>
+
+Dinky 自身的 Flink 环境，通过 plugins 下的 Flink 依赖进行构建，主要用于语法校验和逻辑检查、生成 JobPlan 和 JobGraph、字段血缘分析等功能。
+注意：目前请不要用该模式执行或提交流作业，将会无法关闭，需要重启进程才可。
+
+<big>**Standalone**</big>
+
+Dinky 通过已注册的 Flink Standalone 集群实例可以对远程集群进行 FlinkSQL 的提交、Catalog 的交互式管理以及对 SELECT 和 SHOW 等语句的执行结果预览。
+
 <big>**Yarn-Session**</big>
 
-Dinky 通过已注册的 Flink Session 集群实例可以对 Standalone 和 Yarn-Session 两种集群进行 FlinkSQL 的提交、Catalog 的交互式管理以及对 SELECT 和 SHOW 等语句的执行结果预览。
+Dinky 通过已注册的 Flink Yarn Session 集群实例可以对远程集群进行 FlinkSQL 的提交、Catalog 的交互式管理以及对 SELECT 和 SHOW 等语句的执行结果预览。
 
 <big>**Yarn-Per-Job**</big>
 
-Dinky 通过已注册的集群配置来获取对应的 YarnClient 实例，然后将本地解析生产的 JobGraph 与 Configuration 提交至 Yarn 来创建 Flink-Per-Job 应用。
+Dinky 通过已注册的集群配置来获取对应的 YarnClient 实例，然后将 Local 模式解析生成的 JobGraph 与 Configuration 提交至 Yarn 来创建 Flink Per-Job 应用。
 
 <big>**Yarn-Application**</big>
 
 Dinky 通过已注册的集群配置来获取对应的 YarnClient 实例。对于 User Jar，将 Jar 相关配置与 Configuration 提交至 Yarn 来创建 Flink-Application 应用；对于 Flink SQL，Dinky 则将作业 ID 及数据库连接配置作为 Main 入参和 dlink-app.jar 以及 Configuration 提交至 Yarn 来创建 Flink-Application 应用。
+
+<big>**Kubernetes-Session**</big>
+
+Dinky 通过已注册的 Flink Kubernetes Session 集群实例可以对远程集群进行 FlinkSQL 的提交、Catalog 的交互式管理以及对 SELECT 和 SHOW 等语句的执行结果预览。
+注意需要暴露 NodePort。
+
+<big>**Kubernetes-Application**</big>
+
+Dinky 通过已注册的集群配置来获取对应的 FlinkKubeClient 实例。对于 Flink SQL，Dinky 则将作业 ID 及数据库连接配置作为 Main 入参和定制的 dlink-app.jar 镜像以及 Configuration 提交至 Yarn 来创建 Flink-Application 应用。
+注意需要自己打包 dlink-app 镜像，具体见文章。

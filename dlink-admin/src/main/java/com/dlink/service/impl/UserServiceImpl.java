@@ -33,7 +33,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         }
         user.setPassword(SaSecureUtil.md5(user.getPassword()));
         user.setEnabled(true);
-        user.setDelete(false);
+        user.setIsDelete(false);
         if (save(user)) {
             return Result.succeed("注册成功");
         } else {
@@ -45,9 +45,6 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     public boolean modifyUser(User user) {
         if (Asserts.isNull(user.getId())) {
             return false;
-        }
-        if (Asserts.isNotNull(user.getPassword())) {
-            user.setPassword(SaSecureUtil.md5(user.getPassword()));
         }
         return updateById(user);
     }
@@ -72,7 +69,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     public boolean removeUser(Integer id) {
         User user = new User();
         user.setId(id);
-        user.setDelete(true);
+        user.setIsDelete(true);
         return updateById(user);
     }
 
@@ -87,10 +84,10 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             return Result.failed("密码不能为空");
         }
         if (Asserts.isEquals(SaSecureUtil.md5(password), userPassword)) {
-            if (user.isDelete()) {
+            if (user.getIsDelete()) {
                 return Result.failed("账号不存在");
             }
-            if (!user.isEnabled()) {
+            if (!user.getEnabled()) {
                 return Result.failed("账号已被禁用");
             }
             StpUtil.login(user.getId(), isRemember);
@@ -105,7 +102,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     public User getUserByUsername(String username) {
         User user = getOne(new QueryWrapper<User>().eq("username", username).eq("is_delete", 0));
         if (Asserts.isNotNull(user)) {
-            user.setAdmin(Asserts.isEqualsIgnoreCase(username, "admin"));
+            user.setIsAdmin(Asserts.isEqualsIgnoreCase(username, "admin"));
         }
         return user;
     }

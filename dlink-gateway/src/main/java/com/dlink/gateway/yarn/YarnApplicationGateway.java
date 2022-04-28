@@ -73,7 +73,7 @@ public class YarnApplicationGateway extends YarnGateway {
                 applicationConfiguration);
             ClusterClient<ApplicationId> clusterClient = clusterClientProvider.getClusterClient();
             Collection<JobStatusMessage> jobStatusMessages = clusterClient.listJobs().get();
-            int counts = 10;
+            int counts = 30;
             while (jobStatusMessages.size() == 0 && counts > 0) {
                 Thread.sleep(1000);
                 counts--;
@@ -88,7 +88,6 @@ public class YarnApplicationGateway extends YarnGateway {
                     jids.add(jobStatusMessage.getJobId().toHexString());
                 }
                 result.setJids(jids);
-                logger.info("JIDS =" + StringUtils.join(jids, ","));
             }
             ApplicationId applicationId = clusterClient.getClusterId();
             result.setAppId(applicationId.toString());

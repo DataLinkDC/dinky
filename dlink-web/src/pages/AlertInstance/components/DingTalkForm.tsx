@@ -7,6 +7,7 @@ import {ALERT_TYPE} from "@/pages/AlertInstance/conf";
 export type AlertInstanceFormProps = {
   onCancel: (flag?: boolean) => void;
   onSubmit: (values: Partial<AlertInstanceTableListItem>) => void;
+  onTest: (values: Partial<AlertInstanceTableListItem>) => void;
   modalVisible: boolean;
   values: Partial<AlertInstanceTableListItem>;
 };
@@ -30,11 +31,18 @@ const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
   const {
     onSubmit: handleSubmit,
     onCancel: handleModalVisible,
+    onTest: handleTest,
     modalVisible,
   } = props;
 
   const onValuesChange = (change: any,all: any)=>{
     setFormVals({...formVals,...change});
+  };
+
+  const sendTestForm = async () => {
+    const fieldsValue = await form.validateFields();
+    setFormVals(buildJSONData(formVals,fieldsValue));
+    handleTest(buildJSONData(formVals,fieldsValue));
   };
 
   const submitForm = async () => {
@@ -43,7 +51,7 @@ const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
     handleSubmit(buildJSONData(formVals,fieldsValue));
   };
 
-  const renderContent = (formVals) => {
+  const renderContent = (vals) => {
     return (
       <>
         <Divider>钉钉配置</Divider>
@@ -77,9 +85,9 @@ const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
           name="isEnableProxy"
           label="开启代理">
           <Switch checkedChildren="是" unCheckedChildren="否"
-                  defaultChecked={formVals.isEnableProxy}/>
+                  defaultChecked={vals.isEnableProxy}/>
         </Form.Item>
-        {formVals.isEnableProxy?<>
+        {vals.isEnableProxy?<>
           <Form.Item
             name="proxy"
             label="代理"
@@ -109,13 +117,13 @@ const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
           name="isAtAll"
           label="@所有人">
           <Switch checkedChildren="启用" unCheckedChildren="禁用"
-                  defaultChecked={formVals.isAtAll}/>
+                  defaultChecked={vals.isAtAll}/>
         </Form.Item>
         <Form.Item
           name="enabled"
           label="是否启用">
           <Switch checkedChildren="启用" unCheckedChildren="禁用"
-                  defaultChecked={formVals.enabled}/>
+                  defaultChecked={vals.enabled}/>
         </Form.Item>
         <Form.Item
           name="msgtype"
@@ -135,6 +143,7 @@ const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
     return (
       <>
         <Button onClick={() => handleModalVisible(false)}>取消</Button>
+        <Button type="primary" onClick={() => sendTestForm()}>测试</Button>
         <Button type="primary" onClick={() => submitForm()}>
           完成
         </Button>

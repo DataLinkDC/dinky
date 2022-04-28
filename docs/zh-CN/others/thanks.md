@@ -12,4 +12,4 @@
 
 此外，感谢 [JetBrains](https://www.jetbrains.com/?from=dlink) 提供的免费开源 License 赞助
 
-[![JetBrains](https://github.com/DataLinkDC/dlink/raw/main/dlink-doc/images/main/jetbrains.svg)](https://www.jetbrains.com/?from=dlink)
+[![JetBrains](http://www.aiwenmo.com/dinky/docs/zh-CN/others/thanks/jetbrains.svg)](https://www.jetbrains.com/?from=dlink)

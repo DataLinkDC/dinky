@@ -12,6 +12,7 @@ import org.junit.Test;
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.UUID;
 
 public class SqlServerTest {
 
@@ -20,6 +21,7 @@ public class SqlServerTest {
     @Before
     public void init() {
         DriverConfig config = new DriverConfig();
+        config.setName(UUID.randomUUID().toString());
         config.setType("SqlServer");
         config.setIp("192.168.68.133");
         config.setPort(1433);

@@ -1,5 +1,6 @@
 package com.dlink.controller;
 
+import com.dlink.assertion.Asserts;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
 import com.dlink.gateway.result.TestResult;
@@ -38,11 +39,11 @@ public class ClusterConfigurationController {
     @PutMapping
     public Result saveOrUpdate(@RequestBody ClusterConfiguration clusterConfiguration) {
         TestResult testResult = clusterConfigurationService.testGateway(clusterConfiguration);
-        clusterConfiguration.setAvailable(testResult.isAvailable());
+        clusterConfiguration.setIsAvailable(testResult.isAvailable());
         if (clusterConfigurationService.saveOrUpdate(clusterConfiguration)) {
-            return Result.succeed("新增成功");
+            return Result.succeed(Asserts.isNotNull(clusterConfiguration.getId()) ? "修改成功" : "新增成功");
         } else {
-            return Result.failed("新增失败");
+            return Result.failed(Asserts.isNotNull(clusterConfiguration.getId()) ? "修改失败" : "新增失败");
         }
     }
 

@@ -9,7 +9,7 @@ package com.dlink.alert.wechat;
 public enum WeChatType {
 
     APP(1, "应用"),
-    APPCHAT(2, "群聊");
+    CHAT(2, "群聊");
 
     private final int code;
     private final String value;

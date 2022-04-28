@@ -17,12 +17,12 @@ Dinky 基于 Apache Flink 实现 Dlink ，增强 Flink 的应用与体验，探�
 
 ## 特点
 
-一个基于 `Apache Flink` 二次开发且 `易扩展` 的 `一站式` 开发运维 `FlinkSQL` 及 `SQL` 的实时计算平台。致力于解决 `实时` 与 `离线` 数据开发、数仓建设流程中大量复杂的 `数据口径`，使 `实时、准实时、离线一体`的数据开发平台在数据治理流程中`开箱即用`。
+一个 `开箱即用` 、`易扩展` ，以 `Apache Flink` 为基础，连接 `OLAP` 和 `数据湖` 等众多框架的 `一站式` 实时计算平台，致力于 `流批一体` 和 `湖仓一体` 的建设与实践。
 
 其主要目标如下：
 
 - 可视化交互式 FlinkSQL 和 SQL 的数据开发平台：自动提示补全、语法高亮、调试执行、语法校验、语句美化、全局变量等
-- 支持全面的多版本的 FlinkSQL 作业提交方式：Local、Standalone、Yarn Session、Yarn Per-Job、Kubernetes Session、Kubernetes Application
+- 支持全面的多版本的 FlinkSQL 作业提交方式：Local、Standalone、Yarn Session、Yarn Per-Job、Yarn Application、Kubernetes Session、Kubernetes Application
 - 支持 Apache Flink 所有的 Connector、UDF、CDC等
 - 支持 FlinkSQL 语法增强：兼容 Apache Flink SQL、表值聚合函数、全局变量、CDC多源合并、执行环境、语句合并、共享会话等
 - 支持易扩展的 SQL 作业提交方式：ClickHouse、Doris、Hive、Mysql、Oracle、Phoenix、PostgreSql、SqlServer 等
@@ -92,17 +92,12 @@ Dinky 基于 Apache Flink 实现 Dlink ，增强 Flink 的应用与体验，探�
 
 ## 近期计划
 
-- 多租户及命名空间
-
-- 全局血缘与影响分析
-
-- 统一元数据管理
-
-- Flink 元数据持久化
-
-- 多版本 Flink-Client Server
-
-- 整库千表同步
+- [ ]  多租户及命名空间
+- [ ]  全局血缘与影响分析
+- [ ]  统一元数据管理
+- [ ]  Flink 元数据持久化
+- [ ]  多版本 Flink-Client Server
+- [ ]  整库千表同步
 
 ## 参与贡献
 
@@ -114,7 +109,8 @@ Dinky 基于 Apache Flink 实现 Dlink ，增强 Flink 的应用与体验，探�
 
 ## 如何升级到最新
 
-执行 sql 目录下的 dlink_history.sql 中的部分升级语句，依据是通过版本号与日期来判断从何处开始执行，请不要直接执行全部 sql。
+由于功能较多，所以 bug 及优化点较多，强烈建议你使用或升级到最新版本。
+替换最新 Dinky 所有依赖包 ，执行 sql 目录下的 dlink_history.sql 中的部分升级语句，依据是通过版本号与日期来判断从何处开始执行，请不要直接执行全部 sql。
 
 ## 感谢
 

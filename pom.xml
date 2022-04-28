@@ -7,9 +7,10 @@
     <groupId>com.dlink</groupId>
     <artifactId>dlink</artifactId>
     <packaging>pom</packaging>
-    <version>0.6.1-SNAPSHOT</version>
+    <version>0.6.2</version>
 
     <modules>
+        <module>dlink-flink</module>
         <module>dlink-common</module>
         <module>dlink-client</module>
         <module>dlink-gateway</module>
@@ -35,7 +36,7 @@
         <spring-boot-dependencies.version>2.6.3</spring-boot-dependencies.version>
         <hutool.version>5.1.4</hutool.version>
         <druid-starter>1.2.8</druid-starter>
-        <mybatis-plus-boot-starter.version>3.4.0</mybatis-plus-boot-starter.version>
+        <mybatis-plus-boot-starter.version>3.5.1</mybatis-plus-boot-starter.version>
         <lombok.version>1.18.16</lombok.version>
         <jackjson.version>2.11.4</jackjson.version>
         <guava.version>21.0</guava.version>
@@ -55,6 +56,8 @@
         <junit.version>4.12</junit.version>
         <!--  `provided` for product environment ,`compile` for dev environment  -->
         <scope.runtime>provided</scope.runtime>
+        <!--  modify flink version  -->
+        <dlink.flink.version>1.13</dlink.flink.version>
         <scala.binary.version>2.11</scala.binary.version>
         <protobuf-java.version>2.5.0</protobuf-java.version>
         <jedis.version>2.9.0</jedis.version>
@@ -209,12 +212,27 @@
             </dependency>
             <dependency>
                 <groupId>com.dlink</groupId>
+                <artifactId>dlink-connector-jdbc-1.11</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
                 <artifactId>dlink-connector-jdbc-1.12</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.dlink</groupId>
                 <artifactId>dlink-connector-jdbc-1.13</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-connector-jdbc-1.14</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-connector-phoenix-1.13</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -304,12 +322,42 @@
             </dependency>
             <dependency>
                 <groupId>com.dlink</groupId>
+                <artifactId>dlink-alert-feishu</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-alert-email</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
                 <artifactId>dlink-daemon</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.dlink</groupId>
                 <artifactId>dlink-app-base</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-flink-1.11</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-flink-1.12</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-flink-1.13</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-flink-1.14</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

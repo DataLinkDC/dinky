@@ -43,9 +43,9 @@ public class DingTalkTest {
     @Before
     public void initDingTalkConfig() {
 
-        config.put(DingTalkConstants.KEYWORD, "Dlinky-Fink 钉钉告警测试");
+        config.put(DingTalkConstants.KEYWORD, "Dinky-Fink 钉钉告警测试");
         config.put(DingTalkConstants.WEB_HOOK, "url");
-        config.put(DingTalkConstants.MSG_TYPE, ShowType.TABLE.getValue());
+        config.put(DingTalkConstants.MSG_TYPE, ShowType.MARKDOWN.getValue());
 
         config.put(DingTalkConstants.PROXY_ENABLE, "false");
         config.put(DingTalkConstants.PASSWORD, "password");
@@ -57,7 +57,7 @@ public class DingTalkTest {
     public void sendMarkDownMsgTest() {
         AlertConfig config = AlertConfig.build("MarkDownTest", "DingTalk", DingTalkTest.config);
         Alert alert = Alert.build(config);
-        AlertResult result = alert.send("Dlinky钉钉告警测试", contentTest);
+        AlertResult result = alert.send("Dinky钉钉告警测试", contentTest);
         Assert.assertEquals(true, result.getSuccess());
     }
 
@@ -66,7 +66,7 @@ public class DingTalkTest {
         config.put(DingTalkConstants.MSG_TYPE, ShowType.TEXT.getValue());
         AlertConfig config = AlertConfig.build("TextMsgTest", "DingTalk", DingTalkTest.config);
         Alert alert = Alert.build(config);
-        AlertResult result = alert.send("Dlinky钉钉告警测试", contentTest);
+        AlertResult result = alert.send("Dinky钉钉告警测试", contentTest);
         Assert.assertEquals(true, result.getSuccess());
     }
 

@@ -17,6 +17,7 @@ import com.dlink.result.ExplainResult;
 import com.dlink.result.SqlExplainResult;
 import com.dlink.trans.Operations;
 import com.dlink.utils.FlinkUtil;
+import com.dlink.utils.LogUtil;
 import com.dlink.utils.SqlUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -43,6 +44,13 @@ public class Explainer {
 
     public Explainer(Executor executor) {
         this.executor = executor;
+        this.useStatementSet = true;
+        init();
+    }
+
+    public Explainer(Executor executor, boolean useStatementSet) {
+        this.executor = executor;
+        this.useStatementSet = useStatementSet;
         init();
     }
 
@@ -147,8 +155,7 @@ public class Explainer {
                 }
                 executor.executeSql(item.getValue());
             } catch (Exception e) {
-                e.printStackTrace();
-                record.setError(e.getMessage());
+                record.setError(LogUtil.getError(e));
                 record.setExplainTrue(false);
                 record.setExplainTime(LocalDateTime.now());
                 record.setSql(item.getValue());
@@ -179,8 +186,7 @@ public class Explainer {
                         record.setParseTrue(true);
                         record.setExplainTrue(true);
                     } catch (Exception e) {
-                        e.printStackTrace();
-                        record.setError(e.getMessage());
+                        record.setError(LogUtil.getError(e));
                         record.setParseTrue(false);
                         record.setExplainTrue(false);
                         correct = false;
@@ -200,8 +206,7 @@ public class Explainer {
                         record.setParseTrue(true);
                         record.setExplainTrue(true);
                     } catch (Exception e) {
-                        e.printStackTrace();
-                        record.setError(e.getMessage());
+                        record.setError(LogUtil.getError(e));
                         record.setParseTrue(false);
                         record.setExplainTrue(false);
                         correct = false;
@@ -228,8 +233,7 @@ public class Explainer {
                 record.setType("DATASTREAM");
                 record.setParseTrue(true);
             } catch (Exception e) {
-                e.printStackTrace();
-                record.setError(e.getMessage());
+                record.setError(LogUtil.getError(e));
                 record.setExplainTrue(false);
                 record.setExplainTime(LocalDateTime.now());
                 record.setSql(item.getValue());
@@ -356,8 +360,9 @@ public class Explainer {
             }
         }
         List<ColumnCAResult> results = new ArrayList<>();
-        for (int i = 0; i < strPlans.size(); i++) {
-            List<Trans> trans = translateTrans(translateObjectNode(strPlans.get(i)));
+        // statementsets
+        if (useStatementSet) {
+            List<Trans> trans = translateTrans(translateObjectNode(strPlans));
             LineageColumnGenerator generator = LineageColumnGenerator.build(trans);
             LineageTableGenerator tableGenerator = LineageTableGenerator.build(trans);
             tableGenerator.translate();
@@ -365,7 +370,20 @@ public class Explainer {
             generator.translate();
             ColumnCAResult columnCAResult = new ColumnCAResult(generator);
             correctColumn(columnCAResult);
+            correctSinkSets(columnCAResult);
             results.add(columnCAResult);
+        } else {
+            for (int i = 0; i < strPlans.size(); i++) {
+                List<Trans> trans = translateTrans(translateObjectNode(strPlans.get(i)));
+                LineageColumnGenerator generator = LineageColumnGenerator.build(trans);
+                LineageTableGenerator tableGenerator = LineageTableGenerator.build(trans);
+                tableGenerator.translate();
+                generator.setTableCAS(tableGenerator.getTables());
+                generator.translate();
+                ColumnCAResult columnCAResult = new ColumnCAResult(generator);
+                correctColumn(columnCAResult);
+                results.add(columnCAResult);
+            }
         }
         return results;
     }
@@ -383,7 +401,7 @@ public class Explainer {
                     if (!sinkColumnName.equals(oldFields.get(i))) {
                         for (Map.Entry<Integer, ColumnCA> item : columnCAResult.getColumnCASMaps().entrySet()) {
                             ColumnCA columnCA = item.getValue();
-                            if (columnCA.getTableId() == tableCA.getId() && columnCA.getName().equals(oldFields.get(i))) {
+                            if (columnCA.getTableId().equals(tableCA.getId()) && columnCA.getName().equals(oldFields.get(i))) {
                                 columnCA.setName(sinkColumnName);
                                 fields.set(i, sinkColumnName);
                             }
@@ -397,22 +415,13 @@ public class Explainer {
             List<String> columnList = FlinkUtil.getFieldNamesFromCatalogManager(catalogManager, tableCA.getCatalog(), tableCA.getDatabase(), tableCA.getTable());
             List<String> fields = tableCA.getFields();
             int i = 0;
+            List<Integer> idList = new ArrayList<>();
             while (i < fields.size()) {
                 if (!columnList.contains(fields.get(i))) {
-                    List<Integer> idList = new ArrayList<>();
                     for (Map.Entry<Integer, ColumnCA> item : columnCAResult.getColumnCASMaps().entrySet()) {
-                        if (item.getValue().getName().equals(fields.get(i)) && item.getValue().getTableId() == tableCA.getId()) {
+                        if (item.getValue().getName().equals(fields.get(i)) && item.getValue().getTableId().equals(tableCA.getId())) {
                             idList.add(item.getValue().getId());
                             break;
-                        }
-                    }
-                    for (Integer id : idList) {
-                        for (NodeRel nodeRel : columnCAResult.getColumnCASRelChain()) {
-                            if (nodeRel.getPreId() == id) {
-                                columnCAResult.getColumnCASMaps().remove(id);
-                                columnCAResult.getColumnCASRelChain().remove(nodeRel);
-                                break;
-                            }
                         }
                     }
                     fields.remove(i);
@@ -420,10 +429,55 @@ public class Explainer {
                     i++;
                 }
             }
+            for (Integer id : idList) {
+                for (NodeRel nodeRel : columnCAResult.getColumnCASRelChain()) {
+                    if (nodeRel.getPreId().equals(id)) {
+                        columnCAResult.getColumnCASMaps().remove(id);
+                        columnCAResult.getColumnCASRelChain().remove(nodeRel);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    private void correctSinkSets(ColumnCAResult columnCAResult) {
+        for (TableCA tableCA : columnCAResult.getTableCAS()) {
+            if (tableCA.getType().equals("Data Sink")) {
+                for (Map.Entry<Integer, ColumnCA> item : columnCAResult.getColumnCASMaps().entrySet()) {
+                    if (item.getValue().getTableId().equals(tableCA.getId())) {
+                        List<NodeRel> addNodeRels = new ArrayList<>();
+                        List<NodeRel> delNodeRels = new ArrayList<>();
+                        for (NodeRel nodeRel : columnCAResult.getColumnCASRelChain()) {
+                            if (nodeRel.getPreId().equals(item.getValue().getId())) {
+                                for (NodeRel nodeRel2 : columnCAResult.getColumnCASRelChain()) {
+                                    if (columnCAResult.getColumnCASMaps().containsKey(nodeRel2.getSufId()) && columnCAResult.getColumnCASMaps().containsKey(nodeRel2.getPreId()) && columnCAResult.getColumnCASMaps().containsKey(nodeRel.getSufId()) &&
+                                            columnCAResult.getColumnCASMaps().get(nodeRel2.getSufId()).getTableId().equals(columnCAResult.getColumnCASMaps().get(nodeRel.getSufId()).getTableId()) &&
+                                            columnCAResult.getColumnCASMaps().get(nodeRel2.getSufId()).getName().equals(columnCAResult.getColumnCASMaps().get(nodeRel.getSufId()).getName()) &&
+                                            !columnCAResult.getColumnCASMaps().get(nodeRel2.getPreId()).getType().equals("Data Sink")) {
+                                        addNodeRels.add(new NodeRel(nodeRel2.getPreId(),nodeRel.getPreId()));
+                                    }
+                                }
+                                delNodeRels.add(nodeRel);
+                            }
+                        }
+                        for (NodeRel nodeRel : addNodeRels){
+                            columnCAResult.getColumnCASRelChain().add(nodeRel);
+                        }
+                        for (NodeRel nodeRel : delNodeRels){
+                            columnCAResult.getColumnCASRelChain().remove(nodeRel);
+                        }
+                    }
+                }
+            }
         }
     }
 
     private ObjectNode translateObjectNode(String statement) {
+        return executor.getStreamGraph(statement);
+    }
+
+    private ObjectNode translateObjectNode(List<String> statement) {
         return executor.getStreamGraph(statement);
     }
 

@@ -1,7 +1,7 @@
 import React, {useEffect, useImperativeHandle, useRef,useState} from 'react';
 import * as _monaco from "monaco-editor";
 import MonacoEditor from "react-monaco-editor";
-import {StateType} from "@/pages/FlinkSqlStudio/model";
+import {StateType} from "@/pages/DataStudio/model";
 import {connect,Dispatch} from "umi";
 import {DocumentStateType} from "@/pages/Document/model";
 import {DocumentTableListItem} from "@/pages/Document/data";
@@ -157,9 +157,10 @@ const FlinkSqlEditor = (props:any) => {
         var formatted = format(model.getValueInRange(range), {
           indent: ' '.repeat(options.tabSize)
         });
-        formatted = formatted.replace(/` ([^`]*) `/g,function (){return '`'+arguments[1].trim()+'`'})
-          .replace(/\$ {([^}]*)}/g,function (){return '${'+arguments[1].trim()+'}'})
-          .replace(/\| ([^}]*)\|/g,function (){return '|'+arguments[1].trim()+'|'})
+        formatted = formatted.replaceAll(/` ([^`]*) `/g,function (){return '`'+arguments[1].trim()+'`'})
+          .replaceAll(/\$ {([^}]*)}/g,function (){return '${'+arguments[1].trim()+'}'})
+          .replaceAll(/\| ([^}]*)\|/g,function (){return '|'+arguments[1].trim()+'|'})
+          .replaceAll(/ - /g,function (){return '-'});
         return [
           {
             range: range,

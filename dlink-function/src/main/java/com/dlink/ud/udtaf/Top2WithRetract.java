@@ -39,13 +39,13 @@ public class Top2WithRetract extends TableAggregateFunction<Tuple2<Integer, Inte
         }
     }
 
-    public void retract(Top2WithRetractAccumulator acc, Integer v){
-        if (v == acc.first) {
+    public void retract(Top2WithRetractAccumulator acc, Integer v) {
+        if (v.equals(acc.first)) {
             acc.oldFirst = acc.first;
             acc.oldSecond = acc.second;
             acc.first = acc.second;
             acc.second = Integer.MIN_VALUE;
-        } else if (v == acc.second) {
+        } else if (v.equals(acc.second)) {
             acc.oldSecond = acc.second;
             acc.second = Integer.MIN_VALUE;
         }

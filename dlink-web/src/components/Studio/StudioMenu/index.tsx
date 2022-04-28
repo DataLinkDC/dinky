@@ -4,16 +4,16 @@ import {
   PauseCircleTwoTone, CarryOutTwoTone, DeleteTwoTone, PlayCircleTwoTone, CameraTwoTone, SnippetsTwoTone,
   FileAddTwoTone, FolderOpenTwoTone, SafetyCertificateTwoTone, SaveTwoTone, FlagTwoTone, CodeTwoTone,
   EnvironmentOutlined, SmileOutlined, RocketTwoTone, QuestionCircleTwoTone, MessageOutlined, ClusterOutlined
-  , EditTwoTone, RestTwoTone
+  , EditTwoTone, RestTwoTone, ShrinkOutlined
 } from "@ant-design/icons";
 import Space from "antd/es/space";
 import Divider from "antd/es/divider";
 import Button from "antd/es/button/button";
 import Breadcrumb from "antd/es/breadcrumb/Breadcrumb";
-import {StateType} from "@/pages/FlinkSqlStudio/model";
+import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import {CODE, postDataArray} from "@/components/Common/crud";
-import {executeSql, getJobPlan} from "@/pages/FlinkSqlStudio/service";
+import {executeSql, getJobPlan} from "@/pages/DataStudio/service";
 import StudioHelp from "./StudioHelp";
 import StudioGraph from "./StudioGraph";
 import {
@@ -37,7 +37,7 @@ import {
 import {
   ModalForm,
 } from '@ant-design/pro-form';
-import SqlExport from "@/pages/FlinkSqlStudio/SqlExport";
+import SqlExport from "@/pages/DataStudio/SqlExport";
 import {Dispatch} from "@@/plugin-dva/connect";
 import StudioTabs from "@/components/Studio/StudioTabs";
 import {isDeletedTask, JOB_LIFE_CYCLE} from "@/components/Common/JobLifeCycle";
@@ -198,9 +198,10 @@ const StudioMenu = (props: any) => {
     const res = getJobPlan(param);
     handleGraphModalVisible(true);
     res.then((result) => {
-      if (result.code == 0) {
+      if (result.code == CODE.SUCCESS) {
         setGraphData(buildGraphData(result.datas));
       } else {
+        message.error(`获取作业执行计划失败，原因：\n${result.msg}`);
         setGraphData(undefined);
       }
     })
@@ -698,7 +699,16 @@ const StudioMenu = (props: any) => {
         style={{top: 0, padding: 0, margin: 0, maxWidth: '100vw'}}
         destroyOnClose
         maskClosable={false}
-        closable={false}
+        closable={true}
+        closeIcon={
+          <Tooltip title="退出全屏">
+            <Button
+              icon={<ShrinkOutlined/>}
+              type="primary"
+              style={{position: "fixed", right: "0"}}>
+              退出
+            </Button>
+          </Tooltip>}
         visible={isFullScreen}
         footer={null}
         onCancel={() => {

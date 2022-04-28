@@ -1,16 +1,7 @@
 package com.dlink.gateway.yarn;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.gateway.AbstractGateway;
-import com.dlink.gateway.config.ActionType;
-import com.dlink.gateway.config.GatewayConfig;
-import com.dlink.gateway.exception.GatewayException;
-import com.dlink.gateway.model.JobInfo;
-import com.dlink.gateway.result.SavePointResult;
-import com.dlink.gateway.result.TestResult;
-import com.dlink.utils.LogUtil;
-
 import org.apache.flink.api.common.JobID;
+import org.apache.flink.client.deployment.ClusterRetrieveException;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.configuration.CheckpointingOptions;
 import org.apache.flink.configuration.DeploymentOptions;
@@ -35,8 +26,25 @@ import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+
+import com.dlink.assertion.Asserts;
+import com.dlink.gateway.AbstractGateway;
+import com.dlink.gateway.config.ActionType;
+import com.dlink.gateway.config.GatewayConfig;
+import com.dlink.gateway.config.SavePointType;
+import com.dlink.gateway.exception.GatewayException;
+import com.dlink.gateway.model.JobInfo;
+import com.dlink.gateway.result.SavePointResult;
+import com.dlink.gateway.result.TestResult;
+import com.dlink.utils.LogUtil;
 
 /**
  * YarnSubmiter
@@ -45,6 +53,8 @@ import java.util.concurrent.CompletableFuture;
  * @since 2021/10/29
  **/
 public abstract class YarnGateway extends AbstractGateway {
+
+    public static final String HADOOP_CONFIG = "fs.hdfs.hadoopconf";
 
     protected YarnConfiguration yarnConfiguration;
     protected YarnClient yarnClient;
@@ -73,6 +83,10 @@ public abstract class YarnGateway extends AbstractGateway {
         configuration.set(YarnConfigOptions.PROVIDED_LIB_DIRS, Collections.singletonList(config.getClusterConfig().getFlinkLibPath()));
         if (Asserts.isNotNullString(config.getFlinkConfig().getJobName())) {
             configuration.set(YarnConfigOptions.APPLICATION_NAME, config.getFlinkConfig().getJobName());
+        }
+
+        if (Asserts.isNotNullString(config.getClusterConfig().getYarnConfigPath())) {
+            configuration.setString(HADOOP_CONFIG, config.getClusterConfig().getYarnConfigPath());
         }
 
         if (configuration.containsKey(SecurityOptions.KERBEROS_LOGIN_KEYTAB.key())) {
@@ -205,6 +219,13 @@ public abstract class YarnGateway extends AbstractGateway {
         } catch (Exception e) {
             result.fail(LogUtil.getError(e));
         }
+        if (ActionType.CANCEL == config.getFlinkConfig().getAction() || SavePointType.CANCEL.equals(config.getFlinkConfig().getSavePointType())) {
+            try {
+                autoCancelCluster(clusterDescriptor.retrieve(applicationId).getClusterClient());
+            } catch (ClusterRetrieveException e) {
+                e.printStackTrace();
+            }
+        }
         return result;
     }
 
@@ -233,6 +254,19 @@ public abstract class YarnGateway extends AbstractGateway {
                 default:
             }
         }
+    }
+
+    private void autoCancelCluster(ClusterClient<ApplicationId> clusterClient) {
+        Executors.newCachedThreadPool().submit(() -> {
+            try {
+                Thread.sleep(3000);
+                clusterClient.shutDownCluster();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                clusterClient.close();
+            }
+        });
     }
 
     public TestResult test() {

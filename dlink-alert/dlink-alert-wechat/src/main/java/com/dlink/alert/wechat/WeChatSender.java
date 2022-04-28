@@ -1,6 +1,5 @@
 package com.dlink.alert.wechat;
 
-import com.dlink.alert.AlertException;
 import com.dlink.alert.AlertResult;
 import com.dlink.alert.AlertSendResponse;
 import com.dlink.alert.ShowType;
@@ -45,17 +44,24 @@ public class WeChatSender {
     private final String weChatToken;
     private final String sendType;
     private final String showType;
+    private final String webhookUrl;
+    private final String KeyWord ;
+    private final Boolean atAll;
 
     WeChatSender(Map<String, String> config) {
-        weChatAgentId = config.get(WeChatConstants.AGENT_ID);
-        weChatUsers = config.get(WeChatConstants.USERS);
-        String weChatCorpId = config.get(WeChatConstants.CORP_ID);
-        String weChatSecret = config.get(WeChatConstants.SECRET);
-        String weChatTokenUrl = WeChatConstants.TOKEN_URL;
-        weChatUserSendMsg = WeChatConstants.USER_SEND_MSG;
         sendType = config.get(WeChatConstants.SEND_TYPE);
+        weChatAgentId =sendType.equals(WeChatType.CHAT.getValue())? "" : config.get(WeChatConstants.AGENT_ID);
+        atAll = Boolean.valueOf(config.get(WeChatConstants.AT_ALL));
+        weChatUsers =sendType.equals(WeChatType.CHAT.getValue())?( atAll && config.get(WeChatConstants.USERS) == null ? "": config.get(WeChatConstants.USERS)): config.get(WeChatConstants.USERS);
+        String weChatCorpId = sendType.equals(WeChatType.CHAT.getValue())? "" :config.get(WeChatConstants.CORP_ID);
+        String weChatSecret = sendType.equals(WeChatType.CHAT.getValue())? "" :config.get(WeChatConstants.SECRET);
+        String weChatTokenUrl =sendType.equals(WeChatType.CHAT.getValue())? "" : WeChatConstants.TOKEN_URL;
+        weChatUserSendMsg = WeChatConstants.USER_SEND_MSG;
         showType = config.get(WeChatConstants.SHOW_TYPE);
         requireNonNull(showType, WeChatConstants.SHOW_TYPE + " must not null");
+        webhookUrl= config.get(WeChatConstants.WEBHOOK);
+        KeyWord = config.get(WeChatConstants.KEYWORD);
+        if (sendType.equals(WeChatType.CHAT.getValue())) requireNonNull(webhookUrl, WeChatConstants.WEBHOOK + " must not null");
         weChatTokenUrlReplace = weChatTokenUrl
                 .replace(CORP_ID_REGEX, weChatCorpId)
                 .replace(SECRET_REGEX, weChatSecret);
@@ -69,11 +75,27 @@ public class WeChatSender {
         if (Asserts.isNotNullString(weChatUsers)) {
             userList = Arrays.asList(weChatUsers.split(","));
         }
-        String data = markdownByAlert(title, content);
-        String msg = weChatUserSendMsg.replace(USER_REG_EXP, mkString(userList))
-                .replace(AGENT_ID_REG_EXP, weChatAgentId).replace(MSG_REG_EXP, data)
-                .replace(SHOW_TYPE_REGEX, showType);
-        if (Asserts.isNullString(weChatToken)) {
+        if(atAll){
+            userList.add("ALL");
+        }
+
+        String data ="";
+        if (sendType.equals(WeChatType.CHAT.getValue())) {
+            data = markdownByAlert(KeyWord, content ,userList);;
+        }else{
+            data = markdownByAlert(title, content, userList);
+        }
+        String msg ="";
+        if (sendType.equals(WeChatType.APP.getValue())) {
+            msg= weChatUserSendMsg.replace(USER_REG_EXP, mkUserString(userList))
+                    .replace(AGENT_ID_REG_EXP, weChatAgentId).replace(MSG_REG_EXP, data)
+                    .replace(SHOW_TYPE_REGEX, showType);
+        }else{
+            msg= WeChatConstants.WEBHOOK_TEMPLATE.replace(SHOW_TYPE_REGEX, showType)
+                    .replace(MSG_REG_EXP, data);
+        }
+
+        if (sendType.equals(WeChatType.APP.getValue()) && Asserts.isNullString(weChatToken)) {
             alertResult.setMessage("send we chat alert fail,get weChat token error");
             alertResult.setSuccess(false);
             return alertResult;
@@ -81,8 +103,8 @@ public class WeChatSender {
         String enterpriseWeChatPushUrlReplace = "";
         if (sendType.equals(WeChatType.APP.getValue())) {
             enterpriseWeChatPushUrlReplace = WeChatConstants.PUSH_URL.replace(TOKEN_REGEX, weChatToken);
-        } else if (sendType.equals(WeChatType.APPCHAT.getValue())) {
-            enterpriseWeChatPushUrlReplace = WeChatConstants.APP_CHAT_PUSH_URL.replace(TOKEN_REGEX, weChatToken);
+        } else if (sendType.equals(WeChatType.CHAT.getValue())) {
+            enterpriseWeChatPushUrlReplace =  webhookUrl;
         }
         try {
             return checkWeChatSendMsgResult(post(enterpriseWeChatPushUrlReplace, msg));
@@ -112,7 +134,18 @@ public class WeChatSender {
         }
     }
 
-    private static String mkString(Iterable<String> list) {
+
+    private static String mkUserList(Iterable<String> list) {
+        StringBuilder sb = new StringBuilder("[");
+        for (String name : list) {
+            sb.append("\"").append(name).append("\",");
+        }
+        sb.deleteCharAt(sb.length() - 1);
+        sb.append("]");
+        return sb.toString();
+    }
+
+    private static String mkUserString(Iterable<String> list) {
         if (Asserts.isNull(list)) {
             return null;
         }
@@ -129,22 +162,62 @@ public class WeChatSender {
         return sb.toString();
     }
 
-    private String markdownByAlert(String title, String content) {
+    /**
+     *@Author: zhumingye
+     *@date: 2022/3/26
+     *@Description: 将用户列表转换为<@用户名> </@用户名>的格式
+     * @param userList
+     * @return java.lang.String
+     */
+    private static String mkMarkDownAtUsers(List<String> userList){
+
+        StringBuilder builder = new StringBuilder();
+        if (Asserts.isNotNull(userList)) {
+            userList.forEach(value -> {
+                builder.append("<@").append(value).append("> ");
+            });
+        }
+        return builder.toString();
+    }
+
+    private String markdownByAlert(String title, String content,List<String> userList) {
         String result = "";
-        if (showType.equals(ShowType.TABLE.getValue())) {
-            result = markdownTable(title, content);
+        if (showType.equals(ShowType.MARKDOWN.getValue())) {
+            result = markdownTable(title, content,userList,sendType);
         } else if (showType.equals(ShowType.TEXT.getValue())) {
-            result = markdownText(title, content);
+            result = markdownText(title, content,userList,sendType);
         }
         return result;
     }
 
-    private static String markdownTable(String title, String content) {
+    private static String markdownTable(String title, String content, List<String> userList, String sendType) {
+        return getMsgResult(title, content,userList,sendType);
+    }
+
+
+    private static String markdownText(String title, String content, List<String> userList, String sendType) {
+        return getMsgResult(title, content,userList,sendType);
+    }
+
+
+    /**
+     *@Author: zhumingye
+     *@date: 2022/3/25
+     *@Description: 创建公共方法 用于创建发送消息文本
+     * @param title 发送标题
+     * @param content 发送内容
+     * @param sendType
+     * @return java.lang.String
+     *@throws
+     */
+    private static String getMsgResult(String title, String content, List<String> userList, String sendType) {
+
         List<LinkedHashMap> mapItemsList = JSONUtil.toList(content, LinkedHashMap.class);
         if (null == mapItemsList || mapItemsList.isEmpty()) {
             logger.error("itemsList is null");
             throw new RuntimeException("itemsList is null");
         }
+        String markDownAtUsers = mkMarkDownAtUsers(userList);
         StringBuilder contents = new StringBuilder(200);
         for (LinkedHashMap mapItems : mapItemsList) {
             Set<Map.Entry<String, Object>> entries = mapItems.entrySet();
@@ -160,34 +233,12 @@ public class WeChatSender {
             }
             contents.append(t);
         }
-
+        if (sendType.equals(WeChatType.CHAT.getValue())) {
+            contents.append(markDownAtUsers);
+        }
         return contents.toString();
     }
 
-    private static String markdownText(String title, String content) {
-        if (Asserts.isNotNullString(content)) {
-            List<LinkedHashMap> mapItemsList = JSONUtil.toList(content, LinkedHashMap.class);
-            if (null == mapItemsList || mapItemsList.isEmpty()) {
-                logger.error("itemsList is null");
-                throw new AlertException("itemsList is null");
-            }
-
-            StringBuilder contents = new StringBuilder(100);
-            contents.append(String.format("`%s`%n", title));
-            for (LinkedHashMap mapItems : mapItemsList) {
-
-                Set<Map.Entry<String, Object>> entries = mapItems.entrySet();
-                for (Map.Entry<String, Object> entry : entries) {
-                    contents.append(WeChatConstants.MARKDOWN_QUOTE);
-                    contents.append(entry.getKey()).append("：").append(entry.getValue());
-                    contents.append(WeChatConstants.MARKDOWN_ENTER);
-                }
-
-            }
-            return contents.toString();
-        }
-        return null;
-    }
 
 
     private String getToken() {

@@ -29,14 +29,14 @@ export async function getInitialState(): Promise<{
     try {
       const result = await queryCurrentUser();
       const currentUser: API.CurrentUser = {
-        name: result.datas.nickname,
+        name: result.datas.nickname || result.datas.username,
         avatar: result.datas.avatar?result.datas.avatar:'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
         userid: result.datas.username,
         notifyCount: 0,
         unreadCount: 0,
-        access: result.datas.admin?'admin':'',
+        access: result.datas.isAdmin?'admin':'',
         phone: result.datas.mobile,
-        isAdmin:result.datas.admin,
+        isAdmin:result.datas.isAdmin,
         worknum:result.datas.worknum,
       };
       return currentUser;

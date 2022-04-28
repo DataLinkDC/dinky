@@ -6,7 +6,7 @@ import StudioMenu from "./StudioMenu";
 import {Row, Col, Card, Form} from "antd";
 import StudioTabs from "./StudioTabs";
 import StudioHome from "./StudioHome";
-import {StateType} from "@/pages/FlinkSqlStudio/model";
+import {StateType} from "@/pages/DataStudio/model";
 import StudioConsole from "./StudioConsole";
 import StudioLeftTool from "./StudioLeftTool";
 import StudioRightTool from "./StudioRightTool";

@@ -85,6 +85,7 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
         IDBQuery dbQuery = getDBQuery();
         String sql = dbQuery.tablesSql(schemaName);
         try {
+            execute(String.format(HiveConstant.USE_DB, schemaName));
             preparedStatement = conn.prepareStatement(sql);
             results = preparedStatement.executeQuery();
             ResultSetMetaData metaData = results.getMetaData();
@@ -113,7 +114,7 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
                     tableList.add(tableInfo);
                 }
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             close(preparedStatement, results);

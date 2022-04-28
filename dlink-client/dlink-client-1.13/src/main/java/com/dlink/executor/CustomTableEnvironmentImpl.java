@@ -1,10 +1,5 @@
 package com.dlink.executor;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.result.SqlExplainResult;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.flink.api.common.RuntimeExecutionMode;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.dag.Transformation;
@@ -14,13 +9,17 @@ import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.jsonplan.JsonPlanGenerator;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
+import org.apache.flink.streaming.api.TimeCharacteristic;
+import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.graph.JSONGenerator;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.ExplainDetail;
+import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableException;
+import org.apache.flink.table.api.ValidationException;
 import org.apache.flink.table.api.internal.TableEnvironmentImpl;
 import org.apache.flink.table.catalog.CatalogManager;
 import org.apache.flink.table.catalog.FunctionCatalog;
@@ -29,6 +28,8 @@ import org.apache.flink.table.delegation.Executor;
 import org.apache.flink.table.delegation.ExecutorFactory;
 import org.apache.flink.table.delegation.Planner;
 import org.apache.flink.table.delegation.PlannerFactory;
+import org.apache.flink.table.expressions.Expression;
+import org.apache.flink.table.expressions.ExpressionParser;
 import org.apache.flink.table.factories.ComponentFactoryService;
 import org.apache.flink.table.functions.AggregateFunction;
 import org.apache.flink.table.functions.TableAggregateFunction;
@@ -36,6 +37,7 @@ import org.apache.flink.table.functions.TableFunction;
 import org.apache.flink.table.functions.UserDefinedFunctionHelper;
 import org.apache.flink.table.module.ModuleManager;
 import org.apache.flink.table.operations.ExplainOperation;
+import org.apache.flink.table.operations.JavaDataStreamQueryOperation;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.operations.QueryOperation;
@@ -43,12 +45,21 @@ import org.apache.flink.table.operations.command.ResetOperation;
 import org.apache.flink.table.operations.command.SetOperation;
 import org.apache.flink.table.planner.delegation.ExecutorBase;
 import org.apache.flink.table.planner.utils.ExecutorUtils;
+import org.apache.flink.table.typeutils.FieldInfoUtils;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
+import com.dlink.assertion.Asserts;
+import com.dlink.result.SqlExplainResult;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * 定制TableEnvironmentImpl
@@ -58,8 +69,28 @@ import java.util.Map;
  **/
 public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements CustomTableEnvironment {
 
-    protected CustomTableEnvironmentImpl(CatalogManager catalogManager, ModuleManager moduleManager, TableConfig tableConfig, Executor executor, FunctionCatalog functionCatalog, Planner planner, boolean isStreamingMode, ClassLoader userClassLoader) {
-        super(catalogManager, moduleManager, tableConfig, executor, functionCatalog, planner, isStreamingMode, userClassLoader);
+    private final StreamExecutionEnvironment executionEnvironment;
+
+    public CustomTableEnvironmentImpl(
+        CatalogManager catalogManager,
+        ModuleManager moduleManager,
+        FunctionCatalog functionCatalog,
+        TableConfig tableConfig,
+        StreamExecutionEnvironment executionEnvironment,
+        Planner planner,
+        Executor executor,
+        boolean isStreamingMode,
+        ClassLoader userClassLoader) {
+        super(
+            catalogManager,
+            moduleManager,
+            tableConfig,
+            executor,
+            functionCatalog,
+            planner,
+            isStreamingMode,
+            userClassLoader);
+        this.executionEnvironment = executionEnvironment;
     }
 
     public static CustomTableEnvironmentImpl create(StreamExecutionEnvironment executionEnvironment) {
@@ -74,30 +105,77 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
         return create(executionEnvironment, EnvironmentSettings.newInstance().useBlinkPlanner().inBatchMode().build(), tableConfig);
     }
 
-    public static CustomTableEnvironmentImpl create(StreamExecutionEnvironment executionEnvironment, EnvironmentSettings settings) {
+    public static CustomTableEnvironmentImpl create(
+        StreamExecutionEnvironment executionEnvironment,
+        EnvironmentSettings settings) {
         return create(executionEnvironment, settings, new TableConfig());
     }
 
-    public static CustomTableEnvironmentImpl create(StreamExecutionEnvironment executionEnvironment, EnvironmentSettings settings, TableConfig tableConfig) {
+    public static CustomTableEnvironmentImpl create(
+        StreamExecutionEnvironment executionEnvironment,
+        EnvironmentSettings settings,
+        TableConfig tableConfig) {
+
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
         ModuleManager moduleManager = new ModuleManager();
-        CatalogManager catalogManager = CatalogManager.newBuilder().classLoader(classLoader).config(tableConfig.getConfiguration()).defaultCatalog(settings.getBuiltInCatalogName(), new GenericInMemoryCatalog(settings.getBuiltInCatalogName(), settings.getBuiltInDatabaseName())).executionConfig(executionEnvironment.getConfig()).build();
+
+        CatalogManager catalogManager =
+            CatalogManager.newBuilder()
+                .classLoader(classLoader)
+                .config(tableConfig.getConfiguration())
+                .defaultCatalog(
+                    settings.getBuiltInCatalogName(),
+                    new GenericInMemoryCatalog(
+                        settings.getBuiltInCatalogName(),
+                        settings.getBuiltInDatabaseName()))
+                .executionConfig(executionEnvironment.getConfig())
+                .build();
+
         FunctionCatalog functionCatalog = new FunctionCatalog(tableConfig, catalogManager, moduleManager);
+
         Map<String, String> executorProperties = settings.toExecutorProperties();
         Executor executor = lookupExecutor(executorProperties, executionEnvironment);
-        Map<String, String> plannerProperties = settings.toPlannerProperties();
-        Planner planner = (ComponentFactoryService.find(PlannerFactory.class, plannerProperties)).create(plannerProperties, executor, tableConfig, functionCatalog, catalogManager);
-        return new CustomTableEnvironmentImpl(catalogManager, moduleManager, tableConfig, executor, functionCatalog, planner, settings.isStreamingMode(), classLoader);
 
+        Map<String, String> plannerProperties = settings.toPlannerProperties();
+        Planner planner =
+            ComponentFactoryService.find(PlannerFactory.class, plannerProperties)
+                .create(
+                    plannerProperties,
+                    executor,
+                    tableConfig,
+                    functionCatalog,
+                    catalogManager);
+
+        return new CustomTableEnvironmentImpl(
+            catalogManager,
+            moduleManager,
+            functionCatalog,
+            tableConfig,
+            executionEnvironment,
+            planner,
+            executor,
+            settings.isStreamingMode(),
+            classLoader);
     }
 
-    private static Executor lookupExecutor(Map<String, String> executorProperties, StreamExecutionEnvironment executionEnvironment) {
+    private static Executor lookupExecutor(
+        Map<String, String> executorProperties,
+        StreamExecutionEnvironment executionEnvironment) {
         try {
-            ExecutorFactory executorFactory = ComponentFactoryService.find(ExecutorFactory.class, executorProperties);
-            Method createMethod = executorFactory.getClass().getMethod("create", Map.class, StreamExecutionEnvironment.class);
-            return (Executor) createMethod.invoke(executorFactory, executorProperties, executionEnvironment);
-        } catch (Exception var4) {
-            throw new TableException("Could not instantiate the executor. Make sure a planner module is on the classpath", var4);
+            ExecutorFactory executorFactory =
+                ComponentFactoryService.find(ExecutorFactory.class, executorProperties);
+            Method createMethod =
+                executorFactory
+                    .getClass()
+                    .getMethod("create", Map.class, StreamExecutionEnvironment.class);
+
+            return (Executor)
+                createMethod.invoke(executorFactory, executorProperties, executionEnvironment);
+        } catch (Exception e) {
+            throw new TableException(
+                "Could not instantiate the executor. Make sure a planner module is on the classpath",
+                e);
         }
     }
 
@@ -173,7 +251,7 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
         record.setParseTrue(true);
         if (operations.size() != 1) {
             throw new TableException(
-                    "Unsupported SQL query! explainSql() only accepts a single SQL query.");
+                "Unsupported SQL query! explainSql() only accepts a single SQL query.");
         }
         List<Operation> operationlist = new ArrayList<>(operations);
         for (int i = 0; i < operationlist.size(); i++) {
@@ -261,6 +339,45 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
             getConfig().addConfiguration(configuration);
         } else {
             setMap.clear();
+        }
+    }
+
+    public <T> Table fromDataStream(DataStream<T> dataStream, String fields) {
+        List<Expression> expressions = ExpressionParser.parseExpressionList(fields);
+        return this.fromDataStream(dataStream, (Expression[]) expressions.toArray(new Expression[0]));
+    }
+
+    public <T> Table fromDataStream(DataStream<T> dataStream, Expression... fields) {
+        JavaDataStreamQueryOperation<T> queryOperation = this.asQueryOperation(dataStream, Optional.of(Arrays.asList(fields)));
+        return this.createTable(queryOperation);
+    }
+
+    @Override
+    public <T> void createTemporaryView(String path, DataStream<T> dataStream, String fields) {
+        this.createTemporaryView(path, this.fromDataStream(dataStream, fields));
+    }
+
+    @Override
+    public <T> void createTemporaryView(String path, DataStream<T> dataStream, Expression... fields) {
+        this.createTemporaryView(path, this.fromDataStream(dataStream, fields));
+    }
+
+    private <T> JavaDataStreamQueryOperation<T> asQueryOperation(DataStream<T> dataStream, Optional<List<Expression>> fields) {
+        TypeInformation<T> streamType = dataStream.getType();
+        FieldInfoUtils.TypeInfoSchema typeInfoSchema = (FieldInfoUtils.TypeInfoSchema) fields.map((f) -> {
+            FieldInfoUtils.TypeInfoSchema fieldsInfo = FieldInfoUtils.getFieldsInfo(streamType, (Expression[]) f.toArray(new Expression[0]));
+            this.validateTimeCharacteristic(fieldsInfo.isRowtimeDefined());
+            return fieldsInfo;
+        }).orElseGet(() -> {
+            return FieldInfoUtils.getFieldsInfo(streamType);
+        });
+        return new JavaDataStreamQueryOperation(dataStream, typeInfoSchema.getIndices(), typeInfoSchema.toResolvedSchema());
+    }
+
+    private void validateTimeCharacteristic(boolean isRowtimeDefined) {
+        if (isRowtimeDefined && this.executionEnvironment.getStreamTimeCharacteristic() != TimeCharacteristic.EventTime) {
+            throw new ValidationException(
+                String.format("A rowtime attribute requires an EventTime time characteristic in stream environment. But is: %s", this.executionEnvironment.getStreamTimeCharacteristic()));
         }
     }
 }

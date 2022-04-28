@@ -22,6 +22,14 @@ public class WeChatConstants {
 
     static final String TOKEN_URL = "https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid={corpId}&corpsecret={secret}";
 
+    static final String WEBHOOK = "webhook";
+
+    static final String WEBHOOK_TEMPLATE = "{\"msgtype\":\"{showType}\",\"{showType}\":{\"content\":\"{msg} \"}}";
+
+    static final String KEYWORD = "keyword";
+
+    static final String AT_ALL = "isAtAll";
+
     static final String CORP_ID = "corpId";
 
     static final String SECRET = "secret";

@@ -1,9 +1,9 @@
 import { Tabs,Tooltip,Button } from "antd";
 import {SearchOutlined} from "@ant-design/icons";
-import {StateType} from "@/pages/FlinkSqlStudio/model";
+import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import styles from "./index.less";
-import {getLineage} from "@/pages/FlinkSqlStudio/service";
+import {getLineage} from "@/pages/DataStudio/service";
 import {useState} from "react";
 import Lineage, {getInit} from "@/components/Lineage";
 
@@ -16,6 +16,7 @@ const StudioCA = (props: any) => {
   const handleLineage=()=>{
     const res = getLineage({
       statement:current.value,
+      statementSet:current.task.statementSet,
       type: 1,
     });
     res.then((result)=>{
