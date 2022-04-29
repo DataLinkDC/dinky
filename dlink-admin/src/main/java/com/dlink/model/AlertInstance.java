@@ -19,5 +19,7 @@ public class AlertInstance extends SuperEntity {
 
     private String type;
 
+    private String name;
+
     private String params;
 }
