@@ -77,6 +77,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                 @Override
                 public void flatMap(Map value, Collector<Row> out) throws Exception {
                     switch (value.get("op").toString()) {
+                        case "r":
                         case "c":
                             Row irow = Row.withPositions(RowKind.INSERT, columnNameList.size());
                             Map idata = (Map) value.get("after");
@@ -119,9 +120,8 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
         List<String> columnNameList) {
 
         String sinkTableName = getSinkTableName(table);
-//        Boolean dateToString = Boolean.valueOf(config.getSink().get("field.convertType.dateToString"));
         customTableEnvironment.createTemporaryView(table.getSchemaTableNameWithUnderline(), rowDataDataStream, StringUtils.join(columnNameList, ","));
-        customTableEnvironment.executeSql(table.getFlinkDDL(getSinkConfigurationString(table), sinkTableName));
+        customTableEnvironment.executeSql(getFlinkDDL(table, sinkTableName));
 
         List<Operation> operations = customTableEnvironment.getParser().parse(table.getCDCSqlInsert(sinkTableName, table.getSchemaTableNameWithUnderline()));
         if (operations.size() > 0) {
@@ -168,6 +168,56 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
             }
         }
         return dataStreamSource;
+    }
+
+    public String getFlinkDDL(Table table, String tableName) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("CREATE TABLE IF NOT EXISTS ");
+        sb.append(tableName);
+        sb.append(" (\n");
+        List<String> pks = new ArrayList<>();
+        for (int i = 0; i < table.getColumns().size(); i++) {
+            String type = table.getColumns().get(i).getJavaType().getFlinkType();
+            sb.append("    ");
+            if (i > 0) {
+                sb.append(",");
+            }
+            sb.append("`");
+            sb.append(table.getColumns().get(i).getName());
+            sb.append("` ");
+            sb.append(convertSinkColumnType(type));
+            sb.append("\n");
+            if (table.getColumns().get(i).isKeyFlag()) {
+                pks.add(table.getColumns().get(i).getName());
+            }
+        }
+        StringBuilder pksb = new StringBuilder("PRIMARY KEY ( ");
+        for (int i = 0; i < pks.size(); i++) {
+            if (i > 0) {
+                pksb.append(",");
+            }
+            pksb.append("`");
+            pksb.append(pks.get(i));
+            pksb.append("`");
+        }
+        pksb.append(" ) NOT ENFORCED\n");
+        if (pks.size() > 0) {
+            sb.append("    ,");
+            sb.append(pksb);
+        }
+        sb.append(") WITH (\n");
+        sb.append(getSinkConfigurationString(table));
+        sb.append(")\n");
+        return sb.toString();
+    }
+
+    protected String convertSinkColumnType(String type) {
+        if (config.getSink().get("connector").equals("hudi")) {
+            if (type.equals("TIMESTAMP")) {
+                return "TIMESTAMP(3)";
+            }
+        }
+        return type;
     }
 
     protected Object convertValue(Object value, LogicalType logicalType) {

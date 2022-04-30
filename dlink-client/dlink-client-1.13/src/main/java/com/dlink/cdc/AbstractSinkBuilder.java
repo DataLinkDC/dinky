@@ -119,6 +119,7 @@ public abstract class AbstractSinkBuilder {
                 @Override
                 public void flatMap(Map value, Collector<RowData> out) throws Exception {
                     switch (value.get("op").toString()) {
+                        case "r":
                         case "c":
                             GenericRowData igenericRowData = new GenericRowData(columnNameList.size());
                             igenericRowData.setRowKind(RowKind.INSERT);

@@ -17,7 +17,7 @@ import com.dlink.parser.SingleSqlParserFactory;
  */
 public class CDCSource {
 
-    private String type;
+    private String connector;
     private String statement;
     private String name;
     private String hostname;
@@ -33,9 +33,9 @@ public class CDCSource {
     private Map<String, String> debezium;
     private Map<String, String> sink;
 
-    public CDCSource(String type, String statement, String name, String hostname, Integer port, String username, String password, Integer checkpoint, Integer parallelism, String startupMode,
+    public CDCSource(String connector, String statement, String name, String hostname, Integer port, String username, String password, Integer checkpoint, Integer parallelism, String startupMode,
                      Map<String, String> debezium, Map<String, String> sink) {
-        this.type = type;
+        this.connector = connector;
         this.statement = statement;
         this.name = name;
         this.hostname = hostname;
@@ -73,7 +73,7 @@ public class CDCSource {
             }
         }
         CDCSource cdcSource = new CDCSource(
-            config.get("type"),
+            config.get("connector"),
             statement,
             map.get("CDCSOURCE").toString(),
             config.get("hostname"),
@@ -82,7 +82,7 @@ public class CDCSource {
             config.get("password"),
             Integer.valueOf(config.get("checkpoint")),
             Integer.valueOf(config.get("parallelism")),
-            config.get("startup"),
+            config.get("scan.startup.mode"),
             debezium,
             sink
         );
@@ -110,12 +110,12 @@ public class CDCSource {
         return map;
     }
 
-    public String getType() {
-        return type;
+    public String getConnector() {
+        return connector;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setConnector(String connector) {
+        this.connector = connector;
     }
 
     public String getStatement() {
