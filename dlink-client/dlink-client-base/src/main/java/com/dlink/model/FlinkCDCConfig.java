@@ -21,6 +21,7 @@ public class FlinkCDCConfig {
     private String database;
     private String schema;
     private String table;
+    private List<String> schemaTableNameList;
     private String startupMode;
     private Map<String, String> debezium;
     private Map<String, String> sink;
@@ -129,6 +130,47 @@ public class FlinkCDCConfig {
 
     public Map<String, String> getSink() {
         return sink;
+    }
+
+    public List<String> getSchemaTableNameList() {
+        return schemaTableNameList;
+    }
+
+    public void setSchemaTableNameList(List<String> schemaTableNameList) {
+        this.schemaTableNameList = schemaTableNameList;
+    }
+
+    private boolean skip(String key) {
+        switch (key) {
+            case "sink.db":
+            case "table.prefix":
+            case "table.suffix":
+            case "table.upper":
+            case "table.lower":
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public String getSinkConfigurationString() {
+        StringBuilder sb = new StringBuilder();
+        int index = 0;
+        for (Map.Entry<String, String> entry : sink.entrySet()) {
+            if (skip(entry.getKey())) {
+                continue;
+            }
+            if (index > 0) {
+                sb.append(",");
+            }
+            sb.append("'");
+            sb.append(entry.getKey());
+            sb.append("' = '");
+            sb.append(entry.getValue());
+            sb.append("'\n");
+            index++;
+        }
+        return sb.toString();
     }
 
     public void setSink(Map<String, String> sink) {

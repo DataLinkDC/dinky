@@ -18,7 +18,6 @@ import com.dlink.cdc.CDCBuilder;
 import com.dlink.constant.ClientConstant;
 import com.dlink.constant.FlinkParamConstant;
 import com.dlink.model.FlinkCDCConfig;
-import com.dlink.model.Table;
 
 /**
  * MysqlCDCBuilder
@@ -61,11 +60,18 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
             .port(config.getPort())
             .username(config.getUsername())
             .password(config.getPassword());
-        if (Asserts.isNotNullString(config.getDatabase())) {
-            sourceBuilder.databaseList(config.getDatabase().split(FlinkParamConstant.SPLIT));
+        String database = config.getDatabase();
+        if (Asserts.isNotNullString(database)) {
+            String[] databases = database.split(FlinkParamConstant.SPLIT);
+            sourceBuilder.databaseList(databases);
+        } else {
+            sourceBuilder.databaseList(new String[0]);
         }
-        if (Asserts.isNotNullString(config.getTable())) {
-            sourceBuilder.tableList(config.getTable().split(FlinkParamConstant.SPLIT));
+        List<String> schemaTableNameList = config.getSchemaTableNameList();
+        if (Asserts.isNotNullCollection(schemaTableNameList)) {
+            sourceBuilder.tableList(schemaTableNameList.toArray(new String[schemaTableNameList.size()]));
+        } else {
+            sourceBuilder.tableList(new String[0]);
         }
         sourceBuilder.deserializer(new StringDebeziumDeserializationSchema());
         sourceBuilder.debeziumProperties(properties);
@@ -75,11 +81,19 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
     public List<String> getSchemaList() {
         List<String> schemaList = new ArrayList<>();
         String schema = config.getDatabase();
-        if (Asserts.isNullString(schema)) {
-            return schemaList;
+        if (Asserts.isNotNullString(schema)) {
+            String[] schemas = schema.split(FlinkParamConstant.SPLIT);
+            Collections.addAll(schemaList, schemas);
         }
-        String[] schemas = schema.split(FlinkParamConstant.SPLIT);
-        Collections.addAll(schemaList, schemas);
+        List<String> tableList = getTableList();
+        for (String tableName : tableList) {
+            if (Asserts.isNotNullString(tableName) && tableName.contains(".")) {
+                String[] names = tableName.split("\\\\.");
+                if (!schemaList.contains(names[0])) {
+                    schemaList.add(names[0]);
+                }
+            }
+        }
         return schemaList;
     }
 
@@ -102,27 +116,5 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
             allConfigMap.put(schema, configMap);
         }
         return allConfigMap;
-    }
-
-    @Override
-    public String getInsertSQL(Table table, String sourceName) {
-        StringBuilder sb = new StringBuilder("INSERT INTO ");
-        sb.append(table.getName());
-        sb.append(" SELECT\n");
-        for (int i = 0; i < table.getColumns().size(); i++) {
-            sb.append("    ");
-            if (i > 0) {
-                sb.append(",");
-            }
-            sb.append("`" + table.getColumns().get(i).getName() + "` \n");
-        }
-        sb.append(" FROM ");
-        sb.append(sourceName);
-       /* sb.append(" WHERE database_name = '");
-        sb.append(table.getSchema());
-        sb.append("' and table_name = '");
-        sb.append(table.getName());
-        sb.append("'");*/
-        return sb.toString();
     }
 }

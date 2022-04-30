@@ -128,13 +128,6 @@ const WeChatForm: React.FC<AlertInstanceFormProps> = (props) => {
           <Input placeholder="请输入用户"/>
         </Form.Item>
         <Form.Item
-          name="userSendMsg"
-          label="发送信息"
-          rules={[{required: true, message: '请输入发送信息！'}]}
-        >
-          <Input defaultValue='{"touser":"{toUser}","agentid":{agentId},"msgtype":"{showType}","{showType}":{"content":"{msg}"}}' disabled placeholder="请输入发送信息"/>
-        </Form.Item>
-        <Form.Item
           name="agentId"
           label="代理ID"
           rules={[{required: true, message: '请输入代理ID！'}]}

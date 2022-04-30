@@ -17,7 +17,6 @@ import com.dlink.cdc.CDCBuilder;
 import com.dlink.constant.ClientConstant;
 import com.dlink.constant.FlinkParamConstant;
 import com.dlink.model.FlinkCDCConfig;
-import com.dlink.model.Table;
 import com.ververica.cdc.connectors.mysql.source.MySqlSource;
 import com.ververica.cdc.connectors.mysql.source.MySqlSourceBuilder;
 import com.ververica.cdc.connectors.mysql.table.StartupOptions;
@@ -31,7 +30,7 @@ import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
  **/
 public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
 
-    private String KEY_WORD = "mysql-cdc";
+    private final static String KEY_WORD = "mysql-cdc";
     private final static String METADATA_TYPE = "MySql";
 
     public MysqlCDCBuilder() {
@@ -68,26 +67,25 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         if (Asserts.isNotNullString(database)) {
             String[] databases = database.split(FlinkParamConstant.SPLIT);
             sourceBuilder.databaseList(databases);
+        } else {
+            sourceBuilder.databaseList(new String[0]);
         }
-        String table = config.getTable();
-        if (Asserts.isNotNullString(table)) {
-            sourceBuilder.tableList(table);
+        List<String> schemaTableNameList = config.getSchemaTableNameList();
+        if (Asserts.isNotNullCollection(schemaTableNameList)) {
+            sourceBuilder.tableList(schemaTableNameList.toArray(new String[schemaTableNameList.size()]));
+        } else {
+            sourceBuilder.tableList(new String[0]);
         }
         sourceBuilder.deserializer(new JsonDebeziumDeserializationSchema());
         sourceBuilder.debeziumProperties(properties);
         if (Asserts.isNotNullString(config.getStartupMode())) {
-            switch (config.getStartupMode().toUpperCase()) {
-                case "INITIAL":
+            switch (config.getStartupMode().toLowerCase()) {
+                case "initial":
                     sourceBuilder.startupOptions(StartupOptions.initial());
                     break;
-                case "EARLIEST":
-                    sourceBuilder.startupOptions(StartupOptions.earliest());
-                    break;
-                case "LATEST":
+                case "latest-offset":
                     sourceBuilder.startupOptions(StartupOptions.latest());
                     break;
-                default:
-                    sourceBuilder.startupOptions(StartupOptions.latest());
             }
         } else {
             sourceBuilder.startupOptions(StartupOptions.latest());
@@ -98,11 +96,19 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
     public List<String> getSchemaList() {
         List<String> schemaList = new ArrayList<>();
         String schema = config.getDatabase();
-        if (Asserts.isNullString(schema)) {
-            return schemaList;
+        if (Asserts.isNotNullString(schema)) {
+            String[] schemas = schema.split(FlinkParamConstant.SPLIT);
+            Collections.addAll(schemaList, schemas);
         }
-        String[] schemas = schema.split(FlinkParamConstant.SPLIT);
-        Collections.addAll(schemaList, schemas);
+        List<String> tableList = getTableList();
+        for (String tableName : tableList) {
+            if (Asserts.isNotNullString(tableName) && tableName.contains(".")) {
+                String[] names = tableName.split("\\\\.");
+                if (!schemaList.contains(names[0])) {
+                    schemaList.add(names[0]);
+                }
+            }
+        }
         return schemaList;
     }
 
@@ -126,29 +132,6 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         }
         return allConfigMap;
     }
-
-    @Override
-    public String getInsertSQL(Table table, String sourceName) {
-        StringBuilder sb = new StringBuilder("INSERT INTO ");
-        sb.append(table.getName());
-        sb.append(" SELECT\n");
-        for (int i = 0; i < table.getColumns().size(); i++) {
-            sb.append("    ");
-            if (i > 0) {
-                sb.append(",");
-            }
-            sb.append("`" + table.getColumns().get(i).getName() + "` \n");
-        }
-        sb.append(" FROM ");
-        sb.append(sourceName);
-        sb.append(" WHERE database_name = '");
-        sb.append(table.getSchema());
-        sb.append("' and table_name = '");
-        sb.append(table.getName());
-        sb.append("'");
-        return sb.toString();
-    }
-
 
     @Override
     public String getSchemaFieldName() {

@@ -6,9 +6,12 @@ import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.connector.kafka.sink.KafkaRecordSerializationSchema;
 import org.apache.flink.connector.kafka.sink.KafkaSink;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.table.data.RowData;
+import org.apache.flink.table.types.logical.LogicalType;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,13 +34,23 @@ import com.dlink.model.Table;
  **/
 public class KafkaSinkBuilder extends AbstractSinkBuilder implements SinkBuilder {
 
-    private final static String KEY_WORD = "kafka";
+    private final static String KEY_WORD = "datastream-kafka";
 
     public KafkaSinkBuilder() {
     }
 
     public KafkaSinkBuilder(FlinkCDCConfig config) {
         super(config);
+    }
+
+    @Override
+    public void addSink(
+        StreamExecutionEnvironment env,
+        DataStream<RowData> rowDataDataStream,
+        Table table,
+        List<String> columnNameList,
+        List<LogicalType> columnTypeList) {
+
     }
 
     @Override
@@ -51,7 +64,11 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
     }
 
     @Override
-    public DataStreamSource build(CDCBuilder cdcBuilder, StreamExecutionEnvironment env, CustomTableEnvironment customTableEnvironment, DataStreamSource<String> dataStreamSource) {
+    public DataStreamSource build(
+        CDCBuilder cdcBuilder,
+        StreamExecutionEnvironment env,
+        CustomTableEnvironment customTableEnvironment,
+        DataStreamSource<String> dataStreamSource) {
         if (Asserts.isNotNullString(config.getSink().get("topic"))) {
             dataStreamSource.sinkTo(KafkaSink.<String>builder()
                 .setBootstrapServers(config.getSink().get("brokers"))
@@ -94,7 +111,7 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
                         stringOperator.sinkTo(KafkaSink.<String>builder()
                             .setBootstrapServers(config.getSink().get("brokers"))
                             .setRecordSerializer(KafkaRecordSerializationSchema.builder()
-                                .setTopic(table.getSchemaTableName())
+                                .setTopic(getSinkTableName(table))
                                 .setValueSerializationSchema(new SimpleStringSchema())
                                 .build()
                             )

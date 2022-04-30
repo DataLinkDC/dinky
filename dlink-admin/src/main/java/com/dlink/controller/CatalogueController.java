@@ -85,11 +85,10 @@ public class CatalogueController {
 
     private String getFileText(File sourceFile) {
         StringBuilder sb = new StringBuilder();
-        BufferedReader br = null;
-        try {
+        try (InputStreamReader isr = new InputStreamReader(new FileInputStream(sourceFile));
+             BufferedReader br = new BufferedReader(isr);) {
             if (sourceFile.isFile() && sourceFile.exists()) {
-                InputStreamReader isr = new InputStreamReader(new FileInputStream(sourceFile));
-                br = new BufferedReader(isr);
+
                 String lineText = null;
                 while ((lineText = br.readLine()) != null) {
                     sb.append(lineText).append("\n");
@@ -97,14 +96,6 @@ public class CatalogueController {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
         return sb.toString();
     }

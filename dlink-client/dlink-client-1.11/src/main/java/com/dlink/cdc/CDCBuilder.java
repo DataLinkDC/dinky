@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.dlink.model.FlinkCDCConfig;
-import com.dlink.model.Table;
 
 /**
  * CDCBuilder
@@ -28,8 +27,6 @@ public interface CDCBuilder {
     List<String> getTableList();
 
     Map<String, Map<String, String>> parseMetaDataConfigs();
-
-    String getInsertSQL(Table table, String sourceName);
 
     String getSchemaFieldName();
 }
