@@ -21,6 +21,7 @@ public class FlinkCDCConfig {
     private String database;
     private String schema;
     private String table;
+    private List<String> schemaTableNameList;
     private String startupMode;
     private Map<String, String> debezium;
     private Map<String, String> sink;
@@ -129,6 +130,14 @@ public class FlinkCDCConfig {
 
     public Map<String, String> getSink() {
         return sink;
+    }
+
+    public List<String> getSchemaTableNameList() {
+        return schemaTableNameList;
+    }
+
+    public void setSchemaTableNameList(List<String> schemaTableNameList) {
+        this.schemaTableNameList = schemaTableNameList;
     }
 
     private boolean skip(String key) {

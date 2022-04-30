@@ -9,13 +9,13 @@ import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.table.data.DecimalData;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
+import org.apache.flink.table.types.logical.DateType;
 import org.apache.flink.table.types.logical.DecimalType;
 import org.apache.flink.table.types.logical.LogicalType;
-import org.apache.flink.table.types.logical.VarCharType;
+import org.apache.flink.table.types.logical.TimestampType;
 import org.apache.flink.table.types.utils.TypeConversions;
 import org.apache.flink.types.Row;
 import org.apache.flink.types.RowKind;
@@ -23,6 +23,8 @@ import org.apache.flink.util.Collector;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +77,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                 @Override
                 public void flatMap(Map value, Collector<Row> out) throws Exception {
                     switch (value.get("op").toString()) {
+                        case "r":
                         case "c":
                             Row irow = Row.ofKind(RowKind.INSERT);
                             Map idata = (Map) value.get("after");
@@ -117,9 +120,8 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
         List<String> columnNameList) {
 
         String sinkTableName = getSinkTableName(table);
-
         customTableEnvironment.createTemporaryView(table.getSchemaTableNameWithUnderline(), rowDataDataStream, StringUtils.join(columnNameList, ","));
-        customTableEnvironment.executeSql(table.getFlinkDDL(getSinkConfigurationString(table), sinkTableName));
+        customTableEnvironment.executeSql(getFlinkDDL(table, sinkTableName));
 
         List<Operation> operations = customTableEnvironment.getParser().parse(table.getCDCSqlInsert(sinkTableName, table.getSchemaTableNameWithUnderline()));
         if (operations.size() > 0) {
@@ -168,17 +170,66 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
         return dataStreamSource;
     }
 
+    public String getFlinkDDL(Table table, String tableName) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("CREATE TABLE IF NOT EXISTS ");
+        sb.append(tableName);
+        sb.append(" (\n");
+        List<String> pks = new ArrayList<>();
+        for (int i = 0; i < table.getColumns().size(); i++) {
+            String type = table.getColumns().get(i).getJavaType().getFlinkType();
+            sb.append("    ");
+            if (i > 0) {
+                sb.append(",");
+            }
+            sb.append("`");
+            sb.append(table.getColumns().get(i).getName());
+            sb.append("` ");
+            sb.append(convertSinkColumnType(type));
+            sb.append("\n");
+            if (table.getColumns().get(i).isKeyFlag()) {
+                pks.add(table.getColumns().get(i).getName());
+            }
+        }
+        StringBuilder pksb = new StringBuilder("PRIMARY KEY ( ");
+        for (int i = 0; i < pks.size(); i++) {
+            if (i > 0) {
+                pksb.append(",");
+            }
+            pksb.append("`");
+            pksb.append(pks.get(i));
+            pksb.append("`");
+        }
+        pksb.append(" ) NOT ENFORCED\n");
+        if (pks.size() > 0) {
+            sb.append("    ,");
+            sb.append(pksb);
+        }
+        sb.append(") WITH (\n");
+        sb.append(getSinkConfigurationString(table));
+        sb.append(")\n");
+        return sb.toString();
+    }
+
+    protected String convertSinkColumnType(String type) {
+        if (config.getSink().get("connector").equals("hudi")) {
+            if (type.equals("TIMESTAMP")) {
+                return "TIMESTAMP(3)";
+            }
+        }
+        return type;
+    }
+
     protected Object convertValue(Object value, LogicalType logicalType) {
         if (value == null) {
             return null;
         }
-        if (logicalType instanceof VarCharType) {
-            return value;
+        if (logicalType instanceof DateType) {
+            return Instant.ofEpochMilli((long) value).atZone(ZoneId.systemDefault()).toLocalDate();
+        } else if (logicalType instanceof TimestampType) {
+            return Instant.ofEpochMilli((long) value).atZone(ZoneId.systemDefault()).toLocalDateTime();
         } else if (logicalType instanceof DecimalType) {
-            final DecimalType decimalType = ((DecimalType) logicalType);
-            final int precision = decimalType.getPrecision();
-            final int scala = decimalType.getScale();
-            return DecimalData.fromBigDecimal(new BigDecimal((String) value), precision, scala);
+            return new BigDecimal((String) value);
         } else {
             return value;
         }

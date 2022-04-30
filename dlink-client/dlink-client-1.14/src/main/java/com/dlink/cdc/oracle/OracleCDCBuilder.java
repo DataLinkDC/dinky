@@ -12,6 +12,7 @@ import com.dlink.assertion.Asserts;
 import com.dlink.cdc.AbstractCDCBuilder;
 import com.dlink.cdc.CDCBuilder;
 import com.dlink.constant.ClientConstant;
+import com.dlink.constant.FlinkParamConstant;
 import com.dlink.model.FlinkCDCConfig;
 import com.ververica.cdc.connectors.oracle.OracleSource;
 import com.ververica.cdc.connectors.oracle.table.StartupOptions;
@@ -25,9 +26,8 @@ import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
  **/
 public class OracleCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
 
-    private String KEY_WORD = "oracle-cdc";
-    private final static String METADATA_TYPE = "MySql";
-
+    private final static String KEY_WORD = "oracle-cdc";
+    private final static String METADATA_TYPE = "Oracle";
 
     public OracleCDCBuilder() {
     }
@@ -62,24 +62,27 @@ public class OracleCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
             .database(config.getDatabase());
         String schema = config.getSchema();
         if (Asserts.isNotNullString(schema)) {
-            sourceBuilder.schemaList(schema);
+            String[] schemas = schema.split(FlinkParamConstant.SPLIT);
+            sourceBuilder.schemaList(schemas);
+        } else {
+            sourceBuilder.schemaList(new String[0]);
         }
-        String table = config.getTable();
-        if (Asserts.isNotNullString(table)) {
-            sourceBuilder.tableList(table);
+        List<String> schemaTableNameList = config.getSchemaTableNameList();
+        if (Asserts.isNotNullCollection(schemaTableNameList)) {
+            sourceBuilder.tableList(schemaTableNameList.toArray(new String[schemaTableNameList.size()]));
+        } else {
+            sourceBuilder.tableList(new String[0]);
         }
         sourceBuilder.deserializer(new JsonDebeziumDeserializationSchema());
         sourceBuilder.debeziumProperties(properties);
         if (Asserts.isNotNullString(config.getStartupMode())) {
-            switch (config.getStartupMode().toUpperCase()) {
-                case "INITIAL":
+            switch (config.getStartupMode().toLowerCase()) {
+                case "initial":
                     sourceBuilder.startupOptions(StartupOptions.initial());
                     break;
-                case "LATEST":
+                case "latest-offset":
                     sourceBuilder.startupOptions(StartupOptions.latest());
                     break;
-                default:
-                    sourceBuilder.startupOptions(StartupOptions.latest());
             }
         } else {
             sourceBuilder.startupOptions(StartupOptions.latest());
