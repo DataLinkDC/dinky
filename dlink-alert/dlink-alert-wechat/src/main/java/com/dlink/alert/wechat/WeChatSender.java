@@ -81,7 +81,7 @@ public class WeChatSender {
 
         String data ="";
         if (sendType.equals(WeChatType.CHAT.getValue())) {
-            data = markdownByAlert(KeyWord, content ,userList);;
+            data = markdownByAlert(title, content ,userList);;
         }else{
             data = markdownByAlert(title, content, userList);
         }

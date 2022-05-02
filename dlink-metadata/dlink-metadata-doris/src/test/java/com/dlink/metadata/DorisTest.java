@@ -12,6 +12,7 @@ import org.junit.Test;
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.UUID;
 
 public class DorisTest {
     private Driver driver;
@@ -19,6 +20,7 @@ public class DorisTest {
     @Before
     public void init() {
         DriverConfig config = new DriverConfig();
+        config.setName(UUID.randomUUID().toString());
         config.setType("Doris");
         config.setIp("192.168.68.133");
         config.setPort(9030);

@@ -14,6 +14,7 @@ import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.jsonplan.JsonPlanGenerator;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
+import org.apache.flink.streaming.api.TimeCharacteristic;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.graph.JSONGenerator;
@@ -39,6 +40,8 @@ import org.apache.flink.table.delegation.Executor;
 import org.apache.flink.table.delegation.ExecutorFactory;
 import org.apache.flink.table.delegation.Planner;
 import org.apache.flink.table.expressions.ApiExpressionUtils;
+import org.apache.flink.table.expressions.Expression;
+import org.apache.flink.table.expressions.ExpressionParser;
 import org.apache.flink.table.factories.FactoryUtil;
 import org.apache.flink.table.factories.PlannerFactoryUtil;
 import org.apache.flink.table.functions.AggregateFunction;
@@ -47,6 +50,7 @@ import org.apache.flink.table.functions.TableFunction;
 import org.apache.flink.table.functions.UserDefinedFunctionHelper;
 import org.apache.flink.table.module.ModuleManager;
 import org.apache.flink.table.operations.ExplainOperation;
+import org.apache.flink.table.operations.JavaDataStreamQueryOperation;
 import org.apache.flink.table.operations.JavaExternalQueryOperation;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
@@ -55,15 +59,18 @@ import org.apache.flink.table.operations.command.ResetOperation;
 import org.apache.flink.table.operations.command.SetOperation;
 import org.apache.flink.table.operations.utils.OperationTreeBuilder;
 import org.apache.flink.table.planner.delegation.DefaultExecutor;
+import org.apache.flink.table.typeutils.FieldInfoUtils;
 import org.apache.flink.types.Row;
 import org.apache.flink.util.Preconditions;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -343,79 +350,59 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
         }
     }
 
-    @Override
-    public Table fromChangelogStream(DataStream<Row> dataStream) {
-        return fromStreamInternal(dataStream, null, null, ChangelogMode.all());
+    public <T> Table fromDataStream(DataStream<T> dataStream, Expression... fields) {
+        JavaDataStreamQueryOperation<T> queryOperation =
+            asQueryOperation(dataStream, Optional.of(Arrays.asList(fields)));
+
+        return createTable(queryOperation);
+    }
+
+    public <T> Table fromDataStream(DataStream<T> dataStream, String fields) {
+        List<Expression> expressions = ExpressionParser.parseExpressionList(fields);
+        return fromDataStream(dataStream, expressions.toArray(new Expression[0]));
     }
 
     @Override
-    public <T> void registerDataStream(String name, DataStream<T> dataStream) {
-        createTemporaryView(name, dataStream);
+    public <T> void createTemporaryView(String path, DataStream<T> dataStream, String fields) {
+        createTemporaryView(path, fromDataStream(dataStream, fields));
     }
 
     @Override
-    public <T> void createTemporaryView(String path, DataStream<T> dataStream) {
-        createTemporaryView(
-            path, fromStreamInternal(dataStream, null, path, ChangelogMode.insertOnly()));
+    public <T> void createTemporaryView(
+        String path, DataStream<T> dataStream, Expression... fields) {
+        createTemporaryView(path, fromDataStream(dataStream, fields));
     }
 
-    private <T> Table fromStreamInternal(
-        DataStream<T> dataStream,
-        @Nullable Schema schema,
-        @Nullable String viewPath,
-        ChangelogMode changelogMode) {
-        Preconditions.checkNotNull(dataStream, "Data stream must not be null.");
-        Preconditions.checkNotNull(changelogMode, "Changelog mode must not be null.");
+    private <T> JavaDataStreamQueryOperation<T> asQueryOperation(
+        DataStream<T> dataStream, Optional<List<Expression>> fields) {
+        TypeInformation<T> streamType = dataStream.getType();
 
-        if (dataStream.getExecutionEnvironment() != executionEnvironment) {
+        // get field names and types for all non-replaced fields
+        FieldInfoUtils.TypeInfoSchema typeInfoSchema =
+            fields.map(
+                    f -> {
+                        FieldInfoUtils.TypeInfoSchema fieldsInfo =
+                            FieldInfoUtils.getFieldsInfo(
+                                streamType, f.toArray(new Expression[0]));
+
+                        // check if event-time is enabled
+                        validateTimeCharacteristic(fieldsInfo.isRowtimeDefined());
+                        return fieldsInfo;
+                    })
+                .orElseGet(() -> FieldInfoUtils.getFieldsInfo(streamType));
+
+        return new JavaDataStreamQueryOperation<>(
+            dataStream, typeInfoSchema.getIndices(), typeInfoSchema.toResolvedSchema());
+    }
+
+    private void validateTimeCharacteristic(boolean isRowtimeDefined) {
+        if (isRowtimeDefined
+            && executionEnvironment.getStreamTimeCharacteristic()
+            != TimeCharacteristic.EventTime) {
             throw new ValidationException(
-                "The DataStream's StreamExecutionEnvironment must be identical to the one that "
-                    + "has been passed to the StreamTableEnvironment during instantiation.");
+                String.format(
+                    "A rowtime attribute requires an EventTime time characteristic in stream environment. But is: %s",
+                    executionEnvironment.getStreamTimeCharacteristic()));
         }
-
-        final CatalogManager catalogManager = getCatalogManager();
-        final SchemaResolver schemaResolver = catalogManager.getSchemaResolver();
-        final OperationTreeBuilder operationTreeBuilder = getOperationTreeBuilder();
-
-        final UnresolvedIdentifier unresolvedIdentifier;
-        if (viewPath != null) {
-            unresolvedIdentifier = getParser().parseIdentifier(viewPath);
-        } else {
-            unresolvedIdentifier =
-                UnresolvedIdentifier.of("Unregistered_DataStream_Source_" + dataStream.getId());
-        }
-        final ObjectIdentifier objectIdentifier =
-            catalogManager.qualifyIdentifier(unresolvedIdentifier);
-
-        final SchemaTranslator.ConsumingResult schemaTranslationResult =
-            SchemaTranslator.createConsumingResult(
-                catalogManager.getDataTypeFactory(), dataStream.getType(), schema);
-
-        final ResolvedSchema resolvedSchema =
-            schemaTranslationResult.getSchema().resolve(schemaResolver);
-
-        final QueryOperation scanOperation =
-            new JavaExternalQueryOperation<>(
-                objectIdentifier,
-                dataStream,
-                schemaTranslationResult.getPhysicalDataType(),
-                schemaTranslationResult.isTopLevelRecord(),
-                changelogMode,
-                resolvedSchema);
-
-        final List<String> projections = schemaTranslationResult.getProjections();
-        if (projections == null) {
-            return createTable(scanOperation);
-        }
-
-        final QueryOperation projectOperation =
-            operationTreeBuilder.project(
-                projections.stream()
-                    .map(ApiExpressionUtils::unresolvedRef)
-                    .collect(Collectors.toList()),
-                scanOperation);
-
-        return createTable(projectOperation);
     }
-
 }

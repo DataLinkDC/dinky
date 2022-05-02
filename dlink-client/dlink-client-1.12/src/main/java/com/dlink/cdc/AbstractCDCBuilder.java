@@ -36,15 +36,14 @@ public abstract class AbstractCDCBuilder {
     public List<String> getSchemaList() {
         List<String> schemaList = new ArrayList<>();
         String schema = config.getSchema();
-        if (Asserts.isNullString(schema)) {
-            return schemaList;
+        if (Asserts.isNotNullString(schema)) {
+            String[] schemas = schema.split(FlinkParamConstant.SPLIT);
+            Collections.addAll(schemaList, schemas);
         }
-        String[] schemas = schema.split(FlinkParamConstant.SPLIT);
-        Collections.addAll(schemaList, schemas);
         List<String> tableList = getTableList();
         for (String tableName : tableList) {
             if (Asserts.isNotNullString(tableName) && tableName.contains(".")) {
-                String[] names = tableName.split(".");
+                String[] names = tableName.split("\\\\.");
                 if (!schemaList.contains(names[0])) {
                     schemaList.add(names[0]);
                 }
@@ -65,6 +64,6 @@ public abstract class AbstractCDCBuilder {
     }
 
     public String getSchemaFieldName() {
-        return "db";
+        return "schema";
     }
 }
