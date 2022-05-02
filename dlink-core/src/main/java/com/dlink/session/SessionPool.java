@@ -1,10 +1,9 @@
 package com.dlink.session;
 
-import com.dlink.constant.FlinkConstant;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * SessionPool
@@ -14,71 +13,52 @@ import java.util.Vector;
  **/
 public class SessionPool {
 
-    private static volatile List<ExecutorEntity> executorList = new Vector<>(FlinkConstant.DEFAULT_SESSION_COUNT);
+    // sessionId:entity
+    private static volatile ConcurrentHashMap<String, ExecutorEntity> executorMap = new ConcurrentHashMap<>();
 
     public static boolean exist(String sessionId) {
-        for (ExecutorEntity executorEntity : executorList) {
-            if (executorEntity.getSessionId().equals(sessionId)) {
-                return true;
-            }
-        }
-        return false;
+        return executorMap.containsKey(sessionId);
     }
 
-    public static Integer push(ExecutorEntity executorEntity) {
-        if (executorList.size() >= FlinkConstant.DEFAULT_SESSION_COUNT * FlinkConstant.DEFAULT_FACTOR) {
-            executorList.remove(0);
-        } else if (executorList.size() >= FlinkConstant.DEFAULT_SESSION_COUNT) {
-            executorList.clear();
+    public static boolean push(ExecutorEntity executorEntity) {
+        // As long as the changed session is alive, it should be stored correctly
+        if (!exist(executorEntity.getSessionId())) {
+            executorMap.put(executorEntity.getSessionId(), executorEntity);
         }
-        executorList.add(executorEntity);
-        return executorList.size();
+        return true;
     }
 
-    public static Integer remove(String sessionId) {
-        int count = executorList.size();
-        for (int i = 0; i < executorList.size(); i++) {
-            if (sessionId.equals(executorList.get(i).getSessionId())) {
-                executorList.remove(i);
-                break;
-            }
+    public static boolean remove(String sessionId) {
+        if (exist(sessionId)) {
+            executorMap.remove(sessionId);
         }
-        return count - executorList.size();
+        return true;
     }
 
     public static ExecutorEntity get(String sessionId) {
-        for (ExecutorEntity executorEntity : executorList) {
-            if (executorEntity.getSessionId().equals(sessionId)) {
-                return executorEntity;
-            }
-        }
-        return null;
+        return executorMap.getOrDefault(sessionId, null);
     }
 
     public static List<ExecutorEntity> list() {
-        return executorList;
+        return executorMap.values().stream().collect(ArrayList::new, List::add, List::addAll);
     }
 
-    public static List<SessionInfo> filter(String createUser) {
-        List<SessionInfo> sessionInfos = new ArrayList<>();
-        for (ExecutorEntity item : executorList) {
-            if (item.getSessionConfig().getType() == SessionConfig.SessionType.PUBLIC) {
-                sessionInfos.add(SessionInfo.build(item));
-            } else {
-                if (createUser != null && createUser.equals(item.getCreateUser())) {
-                    sessionInfos.add(SessionInfo.build(item));
-                }
-            }
-        }
-        return sessionInfos;
+    public static List<SessionInfo> filter(final String createUser) {
+        return executorMap.values().stream()
+                .filter(Objects::nonNull)
+                .filter(entity -> {
+                    return entity.getSessionConfig().getType() == SessionConfig.SessionType.PUBLIC ||
+                            (entity.getCreateUser().equals(createUser));
+                })
+                .map(SessionInfo::build)
+                .collect(ArrayList::new, List::add, List::addAll);
     }
 
     public static SessionInfo getInfo(String sessionId) {
         ExecutorEntity executorEntity = get(sessionId);
         if (executorEntity != null) {
             return SessionInfo.build(executorEntity);
-        } else {
-            return null;
         }
+        return null;
     }
 }

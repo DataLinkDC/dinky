@@ -234,19 +234,15 @@ public class StudioServiceImpl implements StudioService {
         } else {
             SessionConfig sessionConfig = SessionConfig.build(
                     sessionDTO.getType(), false,
-                    null, null,
-                    clusterService.buildEnvironmentAddress(false, null));
+                    null, "local",
+                    clusterService.buildEnvironmentAddress(false, 0));
             return JobManager.createSession(sessionDTO.getSession(), sessionConfig, createUser);
         }
     }
 
     @Override
-    public boolean clearSession(String session) {
-        if (SessionPool.remove(session) > 0) {
-            return true;
-        } else {
-            return false;
-        }
+    public boolean clearSession(String sessionId) {
+        return SessionPool.remove(sessionId);
     }
 
     @Override

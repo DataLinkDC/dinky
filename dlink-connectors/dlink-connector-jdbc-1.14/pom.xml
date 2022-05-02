@@ -70,7 +70,6 @@
         </dependency>
 
         <!-- Postgres test dependencies -->
-
         <dependency>
             <groupId>com.opentable.components</groupId>
             <artifactId>otj-pg-embedded</artifactId>

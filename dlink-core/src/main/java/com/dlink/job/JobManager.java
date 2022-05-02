@@ -441,9 +441,9 @@ public class JobManager {
         return ResultPool.get(jobId);
     }
 
-    public static SessionInfo createSession(String session, SessionConfig sessionConfig, String createUser) {
-        if (SessionPool.exist(session)) {
-            return SessionPool.getInfo(session);
+    public static SessionInfo createSession(String sessionId, SessionConfig sessionConfig, String createUser) {
+        if (SessionPool.exist(sessionId)) {
+            return SessionPool.getInfo(sessionId);
         }
         Executor sessionExecutor = null;
         if (sessionConfig.isUseRemote()) {
@@ -451,7 +451,7 @@ public class JobManager {
         } else {
             sessionExecutor = Executor.buildLocalExecutor(sessionConfig.getExecutorSetting());
         }
-        ExecutorEntity executorEntity = new ExecutorEntity(session, sessionConfig, createUser, LocalDateTime.now(), sessionExecutor);
+        ExecutorEntity executorEntity = new ExecutorEntity(sessionId, sessionConfig, createUser, LocalDateTime.now(), sessionExecutor);
         SessionPool.push(executorEntity);
         return SessionInfo.build(executorEntity);
     }

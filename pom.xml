@@ -38,7 +38,7 @@
         <hutool.version>5.7.22</hutool.version>
         <druid-starter>1.2.8</druid-starter>
         <mybatis-plus-boot-starter.version>3.5.1</mybatis-plus-boot-starter.version>
-        <lombok.version>1.18.22</lombok.version>
+        <lombok.version>1.18.24</lombok.version>
         <jackjson.version>2.13.2</jackjson.version>
         <guava.version>31.1-jre</guava.version>
         <mysql-connector-java.version>8.0.28</mysql-connector-java.version>
