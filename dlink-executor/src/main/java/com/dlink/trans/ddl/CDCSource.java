@@ -31,10 +31,11 @@ public class CDCSource {
     private String table;
     private String startupMode;
     private Map<String, String> debezium;
+    private Map<String, String> source;
     private Map<String, String> sink;
 
     public CDCSource(String connector, String statement, String name, String hostname, Integer port, String username, String password, Integer checkpoint, Integer parallelism, String startupMode,
-                     Map<String, String> debezium, Map<String, String> sink) {
+                     Map<String, String> debezium, Map<String, String> source, Map<String, String> sink) {
         this.connector = connector;
         this.statement = statement;
         this.name = name;
@@ -46,6 +47,7 @@ public class CDCSource {
         this.parallelism = parallelism;
         this.startupMode = startupMode;
         this.debezium = debezium;
+        this.source = source;
         this.sink = sink;
     }
 
@@ -59,6 +61,16 @@ public class CDCSource {
                 key = key.replaceFirst("debezium.", "");
                 if (!debezium.containsKey(key)) {
                     debezium.put(key, entry.getValue());
+                }
+            }
+        }
+        Map<String, String> source = new HashMap<>();
+        for (Map.Entry<String, String> entry : config.entrySet()) {
+            if (entry.getKey().startsWith("source.")) {
+                String key = entry.getKey();
+                key = key.replaceFirst("source.", "");
+                if (!source.containsKey(key)) {
+                    source.put(key, entry.getValue());
                 }
             }
         }
@@ -84,16 +96,17 @@ public class CDCSource {
             Integer.valueOf(config.get("parallelism")),
             config.get("scan.startup.mode"),
             debezium,
+            source,
             sink
         );
-        if (Asserts.isNotNullString(config.get("database"))) {
-            cdcSource.setDatabase(config.get("database"));
+        if (Asserts.isNotNullString(config.get("database-name"))) {
+            cdcSource.setDatabase(config.get("database-name"));
         }
-        if (Asserts.isNotNullString(config.get("schema"))) {
-            cdcSource.setSchema(config.get("schema"));
+        if (Asserts.isNotNullString(config.get("schema-name"))) {
+            cdcSource.setSchema(config.get("schema-name"));
         }
-        if (Asserts.isNotNullString(config.get("table"))) {
-            cdcSource.setTable(config.get("table"));
+        if (Asserts.isNotNullString(config.get("table-name"))) {
+            cdcSource.setTable(config.get("table-name"));
         }
         return cdcSource;
     }
@@ -228,5 +241,13 @@ public class CDCSource {
 
     public void setDebezium(Map<String, String> debezium) {
         this.debezium = debezium;
+    }
+
+    public Map<String, String> getSource() {
+        return source;
+    }
+
+    public void setSource(Map<String, String> source) {
+        this.source = source;
     }
 }
