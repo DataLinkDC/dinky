@@ -4,8 +4,8 @@ import {
   ClockCircleOutlined,
   CloseCircleOutlined,
   MinusCircleOutlined,
-  SyncOutlined,
-  QuestionCircleOutlined
+  QuestionCircleOutlined,
+  SyncOutlined
 } from "@ant-design/icons";
 
 export type JobStatusFormProps = {

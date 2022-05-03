@@ -2,18 +2,23 @@ package com.dlink.executor;
 
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.core.execution.JobClient;
-import org.apache.flink.table.api.*;
+import org.apache.flink.table.api.DataTypes;
+import org.apache.flink.table.api.ResultKind;
+import org.apache.flink.table.api.TableException;
+import org.apache.flink.table.api.TableResult;
+import org.apache.flink.table.api.TableSchema;
 import org.apache.flink.table.utils.PrintUtils;
 import org.apache.flink.types.Row;
 import org.apache.flink.util.CloseableIterator;
 import org.apache.flink.util.Preconditions;
 
-import javax.annotation.Nullable;
 import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+
+import javax.annotation.Nullable;
 
 /**
  * 定制TableResultImpl
@@ -24,11 +29,11 @@ import java.util.Optional;
 @Internal
 class CustomTableResultImpl implements TableResult {
     public static final TableResult TABLE_RESULT_OK =
-            CustomTableResultImpl.builder()
-                    .resultKind(ResultKind.SUCCESS)
-                    .tableSchema(TableSchema.builder().field("result", DataTypes.STRING()).build())
-                    .data(Collections.singletonList(Row.of("OK")))
-                    .build();
+        CustomTableResultImpl.builder()
+            .resultKind(ResultKind.SUCCESS)
+            .tableSchema(TableSchema.builder().field("result", DataTypes.STRING()).build())
+            .data(Collections.singletonList(Row.of("OK")))
+            .build();
 
     private final JobClient jobClient;
     private final TableSchema tableSchema;
@@ -37,14 +42,14 @@ class CustomTableResultImpl implements TableResult {
     private final PrintStyle printStyle;
 
     private CustomTableResultImpl(
-            @Nullable JobClient jobClient,
-            TableSchema tableSchema,
-            ResultKind resultKind,
-            CloseableIterator<Row> data,
-            PrintStyle printStyle) {
+        @Nullable JobClient jobClient,
+        TableSchema tableSchema,
+        ResultKind resultKind,
+        CloseableIterator<Row> data,
+        PrintStyle printStyle) {
         this.jobClient = jobClient;
         this.tableSchema =
-                Preconditions.checkNotNull(tableSchema, "tableSchema should not be null");
+            Preconditions.checkNotNull(tableSchema, "tableSchema should not be null");
         this.resultKind = Preconditions.checkNotNull(resultKind, "resultKind should not be null");
         this.data = Preconditions.checkNotNull(data, "data should not be null");
         this.printStyle = Preconditions.checkNotNull(printStyle, "printStyle should not be null");
@@ -89,14 +94,14 @@ class CustomTableResultImpl implements TableResult {
             int maxColumnWidth = ((TableauStyle) printStyle).getMaxColumnWidth();
             String nullColumn = ((TableauStyle) printStyle).getNullColumn();
             boolean deriveColumnWidthByType =
-                    ((TableauStyle) printStyle).isDeriveColumnWidthByType();
+                ((TableauStyle) printStyle).isDeriveColumnWidthByType();
             PrintUtils.printAsTableauForm(
-                    getTableSchema(),
-                    it,
-                    new PrintWriter(System.out),
-                    maxColumnWidth,
-                    nullColumn,
-                    deriveColumnWidthByType);
+                getTableSchema(),
+                it,
+                new PrintWriter(System.out),
+                maxColumnWidth,
+                nullColumn,
+                deriveColumnWidthByType);
         } else if (printStyle instanceof RawContentStyle) {
             while (it.hasNext()) {
                 System.out.println(String.join(",", PrintUtils.rowToString(it.next())));
@@ -119,7 +124,7 @@ class CustomTableResultImpl implements TableResult {
         private ResultKind resultKind = null;
         private CloseableIterator<Row> data = null;
         private PrintStyle printStyle =
-                PrintStyle.tableau(Integer.MAX_VALUE, PrintUtils.NULL_COLUMN, false);
+            PrintStyle.tableau(Integer.MAX_VALUE, PrintUtils.NULL_COLUMN, false);
 
         private Builder() {
         }
@@ -205,9 +210,9 @@ class CustomTableResultImpl implements TableResult {
          * prints the result schema and content as tableau form.
          */
         static PrintStyle tableau(
-                int maxColumnWidth, String nullColumn, boolean deriveColumnWidthByType) {
+            int maxColumnWidth, String nullColumn, boolean deriveColumnWidthByType) {
             Preconditions.checkArgument(
-                    maxColumnWidth > 0, "maxColumnWidth should be greater than 0");
+                maxColumnWidth > 0, "maxColumnWidth should be greater than 0");
             Preconditions.checkNotNull(nullColumn, "nullColumn should not be null");
             return new TableauStyle(maxColumnWidth, nullColumn, deriveColumnWidthByType);
         }
@@ -235,7 +240,7 @@ class CustomTableResultImpl implements TableResult {
         private final String nullColumn;
 
         private TableauStyle(
-                int maxColumnWidth, String nullColumn, boolean deriveColumnWidthByType) {
+            int maxColumnWidth, String nullColumn, boolean deriveColumnWidthByType) {
             this.deriveColumnWidthByType = deriveColumnWidthByType;
             this.maxColumnWidth = maxColumnWidth;
             this.nullColumn = nullColumn;

@@ -17,6 +17,7 @@ import com.dlink.result.ExplainResult;
 import com.dlink.result.SqlExplainResult;
 import com.dlink.trans.Operations;
 import com.dlink.utils.FlinkUtil;
+import com.dlink.utils.LogUtil;
 import com.dlink.utils.SqlUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -154,8 +155,7 @@ public class Explainer {
                 }
                 executor.executeSql(item.getValue());
             } catch (Exception e) {
-                e.printStackTrace();
-                record.setError(e.getMessage());
+                record.setError(LogUtil.getError(e));
                 record.setExplainTrue(false);
                 record.setExplainTime(LocalDateTime.now());
                 record.setSql(item.getValue());
@@ -186,8 +186,7 @@ public class Explainer {
                         record.setParseTrue(true);
                         record.setExplainTrue(true);
                     } catch (Exception e) {
-                        e.printStackTrace();
-                        record.setError(e.getMessage());
+                        record.setError(LogUtil.getError(e));
                         record.setParseTrue(false);
                         record.setExplainTrue(false);
                         correct = false;
@@ -207,8 +206,7 @@ public class Explainer {
                         record.setParseTrue(true);
                         record.setExplainTrue(true);
                     } catch (Exception e) {
-                        e.printStackTrace();
-                        record.setError(e.getMessage());
+                        record.setError(LogUtil.getError(e));
                         record.setParseTrue(false);
                         record.setExplainTrue(false);
                         correct = false;
@@ -235,8 +233,7 @@ public class Explainer {
                 record.setType("DATASTREAM");
                 record.setParseTrue(true);
             } catch (Exception e) {
-                e.printStackTrace();
-                record.setError(e.getMessage());
+                record.setError(LogUtil.getError(e));
                 record.setExplainTrue(false);
                 record.setExplainTime(LocalDateTime.now());
                 record.setSql(item.getValue());

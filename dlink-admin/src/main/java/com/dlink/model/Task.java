@@ -8,6 +8,7 @@ import com.dlink.db.model.SuperEntity;
 import com.dlink.job.JobConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 任务
@@ -44,11 +46,11 @@ public class Task extends SuperEntity {
 
     private Integer parallelism;
 
-    private boolean fragment;
+    private Boolean fragment;
 
-    private boolean statementSet;
+    private Boolean statementSet;
 
-    private boolean batchModel;
+    private Boolean batchModel;
 
     private Integer clusterId;
 
@@ -102,10 +104,12 @@ public class Task extends SuperEntity {
         }
         Map<String, String> map = new HashMap<>();
         for (Map<String, String> item : config) {
-            map.put(item.get("key"), item.get("value"));
+            if (Asserts.isNotNull(item)) {
+                map.put(item.get("key"), item.get("value"));
+            }
         }
         return new JobConfig(type, step, false, false, useRemote, clusterId, clusterConfigurationId, jarId, getId(),
-                alias, fragment, statementSet, batchModel, checkPoint, parallelism, savePointStrategy, savePointPath, map);
+            alias, fragment, statementSet, batchModel, checkPoint, parallelism, savePointStrategy, savePointPath, map);
     }
 
 }

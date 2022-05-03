@@ -1,20 +1,17 @@
 package com.dlink.controller;
 
 import com.dlink.alert.AlertPool;
+import com.dlink.alert.AlertResult;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
 import com.dlink.model.AlertInstance;
 import com.dlink.service.AlertInstanceService;
 import com.fasterxml.jackson.databind.JsonNode;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,5 +88,18 @@ public class AlertInstanceController {
     @GetMapping("/listEnabledAll")
     public Result listEnabledAll() {
         return Result.succeed(alertInstanceService.listEnabledAll(), "获取成功");
+    }
+
+    /**
+     * 发送告警实例的测试信息
+     */
+    @PostMapping("/sendTest")
+    public Result sendTest(@RequestBody AlertInstance alertInstance) throws Exception {
+        AlertResult alertResult = alertInstanceService.testAlert(alertInstance);
+        if (alertResult.getSuccess()) {
+            return Result.succeed("发送成功");
+        } else {
+            return Result.failed("发送失败");
+        }
     }
 }

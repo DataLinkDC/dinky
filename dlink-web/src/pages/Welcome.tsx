@@ -19,7 +19,7 @@ export default (): React.ReactNode => {
         <Alert
           message={intl.formatMessage({
             id: 'pages.welcome.alertMessage',
-            defaultMessage: '实时计算平台 Dinky 即将发布，目前为体验版，版本号为 0.6.1。',
+            defaultMessage: '实时计算平台 Dinky 即将发布，目前为体验版，版本号为 0.6.2。',
           })}
           type="success"
           showIcon
@@ -854,6 +854,97 @@ export default (): React.ReactNode => {
                 </li>
                 <li>
                   <Link>修复 FlinkSQL 执行或提交由于空配置导致的 bug</Link>
+                </li>
+              </ul>
+            </Paragraph>
+          </Timeline.Item>
+          <Timeline.Item><Text code>0.6.2</Text> <Text type="secondary">2022-04-17</Text>
+            <p> </p>
+            <Paragraph>
+              <ul>
+                <li>
+                  <Link>新增 飞书报警</Link>
+                </li>
+                <li>
+                  <Link>新增 邮件报警</Link>
+                </li>
+                <li>
+                  <Link>新增 报警实例测试功能</Link>
+                </li>
+                <li>
+                  <Link>新增 docker 镜像文件</Link>
+                </li>
+                <li>
+                  <Link>新增 Remote mode（Standalone、Yarn Session、Kubernetes Session）从 SavePoint 恢复作业</Link>
+                </li>
+                <li>
+                  <Link>新增 Oracle CDC 多源合并</Link>
+                </li>
+                <li>
+                  <Link>新增 版本为 0.6.2</Link>
+                </li>
+                <li>
+                  <Link>优化 检查 FlinkSQL 不通过时返回全部的异常信息</Link>
+                </li>
+                <li>
+                  <Link>优化 Hive 的 pom</Link>
+                </li>
+                <li>
+                  <Link>优化 httpclient 的依赖</Link>
+                </li>
+                <li>
+                  <Link>优化 报警、数据源、线程任务的 SPI 机制</Link>
+                </li>
+                <li>
+                  <Link>优化 CDC 多源合并</Link>
+                </li>
+                <li>
+                  <Link>优化 运维中心始终显示 FlinkWebUI 按钮</Link>
+                </li>
+                <li>
+                  <Link>优化 集群实例显示 FlinkWebUI 按钮</Link>
+                </li>
+                <li>
+                  <Link>修复 Integer 类型判断方式从 “==” 改为 “equals”</Link>
+                </li>
+                <li>
+                  <Link>修复 Flink 的 hadoop_conf 配置未生效</Link>
+                </li>
+                <li>
+                  <Link>修复 报警测试的最新配置未生效</Link>
+                </li>
+                <li>
+                  <Link>修复 飞书报警使用 “@all” 时会触发异常</Link>
+                </li>
+                <li>
+                  <Link>修复 install 项目失败</Link>
+                </li>
+                <li>
+                  <Link>修复 Hive 构建 sql 的异常</Link>
+                </li>
+                <li>
+                  <Link>修复 特殊字符导致全局变量替换失败</Link>
+                </li>
+                <li>
+                  <Link>修复 不支持查看执行图 sql 的展示异常</Link>
+                </li>
+                <li>
+                  <Link>修复 CDC 多源合并 Remote 提交的任务同步问题</Link>
+                </li>
+                <li>
+                  <Link>修复 修改集群配置后显示 “新增成功”</Link>
+                </li>
+                <li>
+                  <Link>修复 Flink Oracle Connector 读取 Date 和 Timestamp 类型的异常</Link>
+                </li>
+                <li>
+                  <Link>修复 MybatsPlus 实体类 boolean 默认为 false 导致业务错误的异常</Link>
+                </li>
+                <li>
+                  <Link>修复 修复系统配置的 sql 分隔符默认为 “;\r\n”</Link>
+                </li>
+                <li>
+                  <Link>修复 任务失败导致的循环问题</Link>
                 </li>
               </ul>
             </Paragraph>

@@ -5,7 +5,7 @@
     <parent>
         <artifactId>dlink</artifactId>
         <groupId>com.dlink</groupId>
-        <version>0.6.1</version>
+        <version>0.6.2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
@@ -47,7 +47,7 @@
         </dependency>
         <dependency>
             <groupId>com.dlink</groupId>
-            <artifactId>dlink-client-1.13</artifactId>
+            <artifactId>dlink-client-${dlink.flink.version}</artifactId>
             <scope>${scope.runtime}</scope>
         </dependency>
         <dependency>
@@ -57,7 +57,12 @@
         </dependency>
         <dependency>
             <groupId>com.dlink</groupId>
-            <artifactId>dlink-connector-jdbc-1.13</artifactId>
+            <artifactId>dlink-connector-jdbc-${dlink.flink.version}</artifactId>
+            <scope>${scope.runtime}</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-flink-${dlink.flink.version}</artifactId>
             <scope>${scope.runtime}</scope>
         </dependency>
         <dependency>
@@ -83,6 +88,16 @@
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-alert-wechat</artifactId>
+            <scope>${scope.runtime}</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-alert-feishu</artifactId>
+            <scope>${scope.runtime}</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-alert-email</artifactId>
             <scope>${scope.runtime}</scope>
         </dependency>
         <dependency>

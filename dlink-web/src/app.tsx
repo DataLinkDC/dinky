@@ -34,9 +34,9 @@ export async function getInitialState(): Promise<{
         userid: result.datas.username,
         notifyCount: 0,
         unreadCount: 0,
-        access: result.datas.admin?'admin':'',
+        access: result.datas.isAdmin?'admin':'',
         phone: result.datas.mobile,
-        isAdmin:result.datas.admin,
+        isAdmin:result.datas.isAdmin,
         worknum:result.datas.worknum,
       };
       return currentUser;

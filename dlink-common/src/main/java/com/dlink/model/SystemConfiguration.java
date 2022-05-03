@@ -1,11 +1,11 @@
 package com.dlink.model;
 
-import com.dlink.assertion.Asserts;
-import com.fasterxml.jackson.databind.JsonNode;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import com.dlink.assertion.Asserts;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * SystemConfiguration
@@ -30,39 +30,39 @@ public class SystemConfiguration {
     }};
 
     private Configuration sqlSubmitJarPath = new Configuration(
-            "sqlSubmitJarPath",
-            "FlinkSQL提交Jar路径",
-            ValueType.STRING,
-            "hdfs:///dlink/jar/dlink-app.jar",
-            "用于指定Applcation模式提交FlinkSQL的Jar的路径"
+        "sqlSubmitJarPath",
+        "FlinkSQL提交Jar路径",
+        ValueType.STRING,
+        "hdfs:///dlink/jar/dlink-app.jar",
+        "用于指定Applcation模式提交FlinkSQL的Jar的路径"
     );
     private Configuration sqlSubmitJarParas = new Configuration(
-            "sqlSubmitJarParas",
-            "FlinkSQL提交Jar参数",
-            ValueType.STRING,
-            "",
-            "用于指定Applcation模式提交FlinkSQL的Jar的参数"
+        "sqlSubmitJarParas",
+        "FlinkSQL提交Jar参数",
+        ValueType.STRING,
+        "",
+        "用于指定Applcation模式提交FlinkSQL的Jar的参数"
     );
     private Configuration sqlSubmitJarMainAppClass = new Configuration(
-            "sqlSubmitJarMainAppClass",
-            "FlinkSQL提交Jar主类",
-            ValueType.STRING,
-            "com.dlink.app.MainApp",
-            "用于指定Applcation模式提交FlinkSQL的Jar的主类"
+        "sqlSubmitJarMainAppClass",
+        "FlinkSQL提交Jar主类",
+        ValueType.STRING,
+        "com.dlink.app.MainApp",
+        "用于指定Applcation模式提交FlinkSQL的Jar的主类"
     );
     private Configuration useRestAPI = new Configuration(
-            "useRestAPI",
-            "使用 RestAPI",
-            ValueType.BOOLEAN,
-            true,
-            "在运维 Flink 任务时是否使用 RestAPI"
+        "useRestAPI",
+        "使用 RestAPI",
+        ValueType.BOOLEAN,
+        true,
+        "在运维 Flink 任务时是否使用 RestAPI"
     );
     private Configuration sqlSeparator = new Configuration(
-            "sqlSeparator",
-            "FlinkSQL语句分割符",
-            ValueType.STRING,
-            ";",
-            "Flink SQL 的语句分割符"
+        "sqlSeparator",
+        "FlinkSQL语句分割符",
+        ValueType.STRING,
+        ";\r\n|;\n",
+        "Flink SQL 的语句分割符"
     );
 
     public void setConfiguration(JsonNode jsonNode) {

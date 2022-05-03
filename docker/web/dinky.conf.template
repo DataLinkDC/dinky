@@ -1,0 +1,30 @@
+server {
+    listen       80;
+    listen       [::]:80;
+    server_name  localhost;
+    root         /app;
+    gzip on;
+    gzip_min_length 1k;
+    gzip_comp_level 9;
+    gzip_types text/plain application/javascript application/x-javascript text/css application/xml text/javascript application/x-httpd-php image/jpeg image/gif image/png;
+    gzip_vary on;
+    gzip_disable "MSIE [1-6]\.";
+
+    location / {
+        index  index.html index.htm;
+        try_files $uri $uri/ /index.html;
+    }
+    error_page 404 /404.html;
+    location = /404.html {
+    }
+
+    error_page 500 502 503 504 /50x.html;
+    location = /50x.html {
+    }
+    
+    location ^~ /api {
+        proxy_pass http://${API_HOST}:${API_PORT};
+        proxy_set_header   X-Forwarded-Proto $scheme;
+        proxy_set_header   X-Real-IP         $remote_addr;
+    }
+}

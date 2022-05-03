@@ -5,7 +5,7 @@
     <parent>
         <artifactId>dlink</artifactId>
         <groupId>com.dlink</groupId>
-        <version>0.6.1</version>
+        <version>0.6.2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -41,8 +41,18 @@
         </dependency>
         <dependency>
             <groupId>com.dlink</groupId>
-            <artifactId>dlink-client-1.13</artifactId>
-            <scope>provided</scope>
+            <artifactId>dlink-client-${dlink.flink.version}</artifactId>
+            <scope>${scope.runtime}</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-flink-${dlink.flink.version}</artifactId>
+            <scope>${scope.runtime}</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-client-hadoop</artifactId>
+            <scope>${scope.runtime}</scope>
         </dependency>
     </dependencies>
 

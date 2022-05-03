@@ -5,7 +5,7 @@
     <parent>
         <artifactId>dlink-metadata</artifactId>
         <groupId>com.dlink</groupId>
-        <version>0.6.1</version>
+        <version>0.6.2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -24,7 +24,13 @@
         <dependency>
             <groupId>com.oracle.database.jdbc</groupId>
             <artifactId>ojdbc8</artifactId>
-<!--            <scope>test</scope>-->
+            <scope>${scope.runtime}</scope>
+        </dependency>
+        <dependency>
+            <groupId>cn.easyproject</groupId>
+            <artifactId>orai18n</artifactId>
+            <version>12.1.0.2.0</version>
+            <scope>${scope.runtime}</scope>
         </dependency>
     </dependencies>
 </project>
