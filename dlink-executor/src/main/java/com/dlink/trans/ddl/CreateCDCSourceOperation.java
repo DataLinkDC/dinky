@@ -71,19 +71,21 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                 Driver driver = Driver.build(driverConfig);
                 final List<Table> tables = driver.listTables(schemaName);
                 for (Table table : tables) {
-                    if (Asserts.isNotNullCollection(tableRegList)) {
-                        for (String tableReg : tableRegList) {
-                            if (table.getSchemaTableName().matches(tableReg) && !schema.getTables().contains(Table.build(table.getName()))) {
-                                table.setColumns(driver.listColumns(schemaName, table.getName()));
-                                schema.getTables().add(table);
-                                schemaTableNameList.add(table.getSchemaTableName());
-                                break;
+                    if (!Asserts.isEquals(table.getType(), "VIEW")) {
+                        if (Asserts.isNotNullCollection(tableRegList)) {
+                            for (String tableReg : tableRegList) {
+                                if (table.getSchemaTableName().matches(tableReg) && !schema.getTables().contains(Table.build(table.getName()))) {
+                                    table.setColumns(driver.listColumns(schemaName, table.getName()));
+                                    schema.getTables().add(table);
+                                    schemaTableNameList.add(table.getSchemaTableName());
+                                    break;
+                                }
                             }
+                        } else {
+                            table.setColumns(driver.listColumns(schemaName, table.getName()));
+                            schemaTableNameList.add(table.getSchemaTableName());
+                            schema.getTables().add(table);
                         }
-                    } else {
-                        table.setColumns(driver.listColumns(schemaName, table.getName()));
-                        schemaTableNameList.add(table.getSchemaTableName());
-                        schema.getTables().add(table);
                     }
                 }
                 schemaList.add(schema);
