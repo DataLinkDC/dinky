@@ -1,5 +1,6 @@
 package com.dlink.cdc.sql;
 
+import com.dlink.model.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
@@ -12,10 +13,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
-import org.apache.flink.table.types.logical.DateType;
-import org.apache.flink.table.types.logical.DecimalType;
-import org.apache.flink.table.types.logical.LogicalType;
-import org.apache.flink.table.types.logical.TimestampType;
+import org.apache.flink.table.types.logical.*;
 import org.apache.flink.table.types.utils.TypeConversions;
 import org.apache.flink.types.Row;
 import org.apache.flink.types.RowKind;
@@ -34,9 +32,6 @@ import com.dlink.cdc.AbstractSinkBuilder;
 import com.dlink.cdc.CDCBuilder;
 import com.dlink.cdc.SinkBuilder;
 import com.dlink.executor.CustomTableEnvironment;
-import com.dlink.model.FlinkCDCConfig;
-import com.dlink.model.Schema;
-import com.dlink.model.Table;
 import com.dlink.utils.SqlUtil;
 
 /**
@@ -120,10 +115,11 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
         List<String> columnNameList) {
 
         String sinkTableName = getSinkTableName(table);
-        customTableEnvironment.createTemporaryView(table.getSchemaTableNameWithUnderline(), rowDataDataStream, StringUtils.join(columnNameList, ","));
+        String viewName="VIEW_"+table.getSchemaTableNameWithUnderline();
+        customTableEnvironment.createTemporaryView(viewName, rowDataDataStream, StringUtils.join(columnNameList, ","));
         customTableEnvironment.executeSql(getFlinkDDL(table, sinkTableName));
 
-        List<Operation> operations = customTableEnvironment.getParser().parse(table.getCDCSqlInsert(sinkTableName, table.getSchemaTableNameWithUnderline()));
+        List<Operation> operations = customTableEnvironment.getParser().parse(table.getCDCSqlInsert(sinkTableName, viewName));
         if (operations.size() > 0) {
             Operation operation = operations.get(0);
             if (operation instanceof ModifyOperation) {
