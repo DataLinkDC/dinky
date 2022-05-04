@@ -32,7 +32,7 @@ import com.dlink.model.Table;
  */
 public class HudiSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, Serializable {
 
-    private final static String KEY_WORD = "hudi";
+    private final static String KEY_WORD = "datastream-hudi";
     private static final long serialVersionUID = 5324199407472847422L;
 
     public HudiSinkBuilder() {
