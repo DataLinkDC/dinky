@@ -6,13 +6,13 @@ JAR_NAME="./dlink-admin-*.jar"
 # 如果需要将FLINK依赖直接加入启动脚本，在SETTING中增加$FLINK_HOME/lib
 SETTING="-Dloader.path=./lib,./plugins -Ddruid.mysql.usePingMethod=false"
 
-if [ ! -d ${HADOOP_HOME} ]; then
-  echo 'WARNING!!!...not find HADOOP_HOME for CLASSPATH.'
-else
-  export HADOOP_HOME="${HADOOP_HOME}"
-fi
+#if [ ! -d ${HADOOP_HOME} ]; then
+#  echo 'WARNING!!!...not find HADOOP_HOME for CLASSPATH.'
+#else
+#  export HADOOP_HOME="${HADOOP_HOME}"
+#fi
 
-PIDFILE="dink.pid"
+PIDFILE="dlink.pid"
 #检查PID path 是否存在
 PIDPATH="$(cd "$(dirname "$0")";pwd)/run"
 if [ -d ${PIDPATH} ];then
@@ -33,14 +33,14 @@ fi
 if [ ! -d "./plugins" ]; then
   echo 'mkdir plugins now'
   mkdir plugins
-  cd plugins
-  if [ ! -d ${FLINK_HOME} ]; then
-    echo 'WARNING!!!...没有找到FLINK_HOME环境变量，无法引用Flink/lib到plugins，请手动引用或复制Flink jar到plugins文件夹'
-    echo 'WARNING!!!...not find FLINK_HOME environment variable to reference Flink/lib to plugins, please reference or copy Flink jar to the plugins folder manually!!'
-  else
-    ln -s ${FLINK_HOME}/lib
-    cd ..
-  fi
+#  cd plugins
+#  if [ ! -d ${FLINK_HOME} ]; then
+#    echo 'WARNING!!!...没有找到FLINK_HOME环境变量，无法引用Flink/lib到plugins，请手动引用或复制Flink jar到plugins文件夹'
+#    echo 'WARNING!!!...not find FLINK_HOME environment variable to reference Flink/lib to plugins, please reference or copy Flink jar to the plugins folder manually!!'
+#  else
+#    ln -s ${FLINK_HOME}/lib
+#    cd ..
+#  fi
 fi
 
 # 如果输入格式不对，给出提示！
