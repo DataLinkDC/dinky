@@ -2,14 +2,24 @@ package com.dlink.service.impl;
 
 import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.stp.StpUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.assertion.Asserts;
 import com.dlink.common.result.Result;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.UserMapper;
 import com.dlink.model.User;
+import com.dlink.model.UserRole;
+import com.dlink.service.UserRoleService;
 import com.dlink.service.UserService;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * UserServiceImpl
@@ -21,24 +31,75 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implements UserService {
 
     private static final String DEFAULT_PASSWORD = "123456";
+    @Autowired
+    private UserRoleService userRoleService;
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
-    public Result registerUser(User user) {
-        User userByUsername = getUserByUsername(user.getUsername());
-        if (Asserts.isNotNull(userByUsername)) {
-            return Result.failed("该账号已存在");
-        }
-        if (Asserts.isNullString(user.getPassword())) {
-            user.setPassword(DEFAULT_PASSWORD);
-        }
-        user.setPassword(SaSecureUtil.md5(user.getPassword()));
-        user.setEnabled(true);
-        user.setIsDelete(false);
-        if (save(user)) {
-            return Result.succeed("注册成功");
+    public Result registerOrUpdateUser(JsonNode para) {
+        String id = para.get("id").asText(null);
+        JsonNode userRoleJsonNode = para.get("roleId");
+
+        User user = new User();
+        user.setUsername(para.get("username").asText());
+        user.setPassword(SaSecureUtil.md5(para.get("password").asText()));
+        user.setNickname(para.get("nickname").asText());
+        user.setWorknum(para.get("worknum").asText());
+        user.setMobile(para.get("mobile").asText());
+
+        // add user
+        if (Asserts.isNull(id)) {
+            User userByUsername = getUserByUsername(user.getUsername());
+            if (Asserts.isNotNull(userByUsername)) {
+                return Result.failed("该账号已存在");
+            }
+            if (Asserts.isNullString(user.getPassword())) {
+                user.setPassword(DEFAULT_PASSWORD);
+            }
+
+            user.setEnabled(true);
+            user.setIsDelete(false);
+            boolean result = save(user);
+
+            List<UserRole> userRoleList = new ArrayList<>();
+            for (JsonNode ids : userRoleJsonNode) {
+                UserRole userRole = new UserRole();
+                userRole.setUserId(user.getId());
+                userRole.setRoleId(ids.asInt());
+                userRoleList.add(userRole);
+            }
+            // save or update role namespace relation
+            boolean userRoleResult = userRoleService.saveOrUpdateBatch(userRoleList, 1000);
+            if (result && userRoleResult) {
+                return Result.succeed("注册成功");
+            } else {
+                return Result.failed("该账号已存在");
+            }
         } else {
-            return Result.failed("该账号已存在");
+            // update user
+            int userID = Integer.parseInt(id);
+            user.setId(userID);
+            boolean result = modifyUser(user);
+
+            // update user role relation
+            int record = userRoleService.delete(userID);
+            List<UserRole> userRoleList = new ArrayList<>();
+            for (JsonNode ids : userRoleJsonNode) {
+                UserRole userRole = new UserRole();
+                userRole.setUserId(userID);
+                userRole.setRoleId(ids.asInt());
+                userRoleList.add(userRole);
+            }
+            // save or update role namespace relation
+            boolean userRoleResult = userRoleService.saveOrUpdateBatch(userRoleList, 1000);
+
+            if (result && record > 0 && userRoleResult) {
+                return Result.succeed("修改成功");
+            } else {
+                return Result.failed("修改失败");
+            }
         }
+
     }
 
     @Override
@@ -65,12 +126,15 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         return Result.failed("密码修改失败");
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public boolean removeUser(Integer id) {
         User user = new User();
         user.setId(id);
         user.setIsDelete(true);
-        return updateById(user);
+        boolean result = updateById(user);
+        int record = userRoleService.delete(user.getId());
+        return result && record > 0;
     }
 
     @Override

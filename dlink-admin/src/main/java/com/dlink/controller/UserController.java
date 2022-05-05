@@ -1,22 +1,19 @@
 package com.dlink.controller;
 
-import com.dlink.assertion.Asserts;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
 import com.dlink.dto.ModifyPasswordDTO;
-import com.dlink.gateway.result.TestResult;
-import com.dlink.model.ClusterConfiguration;
 import com.dlink.model.User;
 import com.dlink.service.UserService;
 import com.fasterxml.jackson.databind.JsonNode;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * UserController
@@ -35,13 +32,8 @@ public class UserController {
      * 新增或者更新
      */
     @PutMapping
-    public Result saveOrUpdate(@RequestBody User user) {
-        if (Asserts.isNull(user.getId())) {
-            return userService.registerUser(user);
-        } else {
-            userService.modifyUser(user);
-            return Result.succeed("修改成功");
-        }
+    public Result saveOrUpdate(@RequestBody JsonNode para) {
+        return userService.registerOrUpdateUser(para);
     }
 
     /**
@@ -99,6 +91,6 @@ public class UserController {
     @PostMapping("/modifyPassword")
     public Result modifyPassword(@RequestBody ModifyPasswordDTO modifyPasswordDTO) {
         return userService.modifyPassword(modifyPasswordDTO.getUsername(), modifyPasswordDTO.getPassword(),
-                modifyPasswordDTO.getNewPassword());
+            modifyPasswordDTO.getNewPassword());
     }
 }

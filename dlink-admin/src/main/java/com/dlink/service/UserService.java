@@ -3,6 +3,7 @@ package com.dlink.service;
 import com.dlink.common.result.Result;
 import com.dlink.db.service.ISuperService;
 import com.dlink.model.User;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * UserService
@@ -12,7 +13,7 @@ import com.dlink.model.User;
  */
 public interface UserService extends ISuperService<User> {
 
-    Result registerUser(User user);
+    Result registerOrUpdateUser(JsonNode para);
 
     boolean modifyUser(User user);
 

@@ -673,3 +673,94 @@ SET FOREIGN_KEY_CHECKS = 1;
 alter table dlink_task alter column fragment set default 0;
 alter table dlink_task alter column statement_set set default 0;
 alter table dlink_cluster_configuration modify column is_available  tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否可用';
+
+-- 0.6.2-SNAPSHOT 2022-05-05
+-- ----------------------------
+DROP TABLE IF EXISTS dlink_tenant;
+CREATE TABLE IF NOT EXISTS dlink_tenant
+(
+    id          int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+    tenant_code varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '租户编码',
+    note        varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '注释',
+    create_time datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+    update_time datetime(0) NULL DEFAULT NULL COMMENT '最近修改时间',
+    PRIMARY KEY (id) USING BTREE
+    ) ENGINE = InnoDB AUTO_INCREMENT = 37 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '租户' ROW_FORMAT = Dynamic;
+
+DROP TABLE IF EXISTS dlink_role;
+CREATE TABLE IF NOT EXISTS dlink_role
+(
+    id           int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+    tenant_id     int(11)  NOT NULL  COMMENT '租户ID',
+    role_code    varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '角色编码',
+    role_name    varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '角色名称',
+    note           varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '注释',
+    create_time  datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+    update_time  datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+    PRIMARY KEY (id)
+    ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci  COMMENT = '角色'  ROW_FORMAT = Dynamic;
+
+DROP TABLE IF EXISTS dlink_user_role;
+CREATE TABLE IF NOT EXISTS dlink_user_role
+(
+    id           int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+    user_id int(11) NOT NULL COMMENT '用户ID',
+    role_id int(11) NOT NULL COMMENT '角色ID',
+    enabled       tinyint(1) NOT NULL DEFAULT 1 COMMENT '是否启用',
+    create_time  datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+    update_time  datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+    PRIMARY KEY (id),
+    UNIQUE KEY `dlink_user_role_un` (user_id,role_id)
+    ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci  COMMENT = '用户与角色关系'  ROW_FORMAT = Dynamic;
+
+
+DROP TABLE IF EXISTS dlink_namespace;
+CREATE TABLE IF NOT EXISTS dlink_namespace
+(
+    id             int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+    tenant_id     int(11)  NOT NULL  COMMENT '租户ID',
+    namespace_code varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '命名空间编码',
+    enabled        tinyint(1) NOT NULL DEFAULT 1 COMMENT '是否启用',
+    note           varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '注释',
+    create_time    datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+    update_time    datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+    PRIMARY KEY (id)
+    ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci  COMMENT = '命名空间'  ROW_FORMAT = Dynamic;
+
+DROP TABLE IF EXISTS dlink_role_namespace;
+CREATE TABLE IF NOT EXISTS dlink_role_namespace
+(
+    id           int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+    role_id int(11) NOT NULL COMMENT '用户ID',
+    namespace_id int(11) NOT NULL COMMENT '名称空间ID',
+    create_time  datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+    update_time  datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+    PRIMARY KEY (id),
+    UNIQUE KEY ` dlink_role_namespace_un` (role_id,namespace_id)
+    ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci  COMMENT = '角色与名称空间关系'  ROW_FORMAT = Dynamic;
+
+
+DROP TABLE IF EXISTS dlink_resource;
+CREATE TABLE IF NOT EXISTS dlink_resource
+(
+    id            int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+    tenant_id     int(11)  NOT NULL  COMMENT '租户ID',
+    resource_code varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '资源编码编码',
+    enabled       tinyint(1) NOT NULL DEFAULT 1 COMMENT '是否启用',
+    note          varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '注释',
+    create_time   datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+    update_time   datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+    PRIMARY KEY (id)
+    ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci  COMMENT = '资源'  ROW_FORMAT = Dynamic;
+
+DROP TABLE IF EXISTS dlink_role_resource;
+CREATE TABLE IF NOT EXISTS dlink_role_resource
+(
+    id           int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+    role_id int(11) NOT NULL COMMENT '用户ID',
+    resource_id int(11) NOT NULL COMMENT '资源ID',
+    create_time  datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+    update_time  datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+    PRIMARY KEY (id),
+    UNIQUE KEY `dlink_role_resource_un` (role_id,resource_id)
+    ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci  COMMENT = '角色与名称空间关系'  ROW_FORMAT = Dynamic;

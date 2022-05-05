@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlink.mapper.UserRoleMapper">
+    <sql id="baseSql">
+        id,user_id,role_id,enabled
+    </sql>
+    <select id="selectForProTable" resultType="com.dlink.model.UserRole">
+        select
+        <include refid="baseSql"/>
+        from
+        dlink_user_role
+        <where>
+            1=1
+            <if test='param.userId!=null and param.userId!=""'>
+                and user_id = #{param.userId}
+            </if>
+            <if test='param.roleId!=null and param.roleId!=""'>
+                and role_id = #{param.roleId}
+            </if>
+            <if test='ew.sqlSegment!=null and ew.sqlSegment!="" and !ew.sqlSegment.startsWith(" ORDER BY")'>
+                and
+            </if>
+            <if test='ew.sqlSegment!=null and ew.sqlSegment!=""'>
+                ${ew.sqlSegment}
+            </if>
+        </where>
+    </select>
+</mapper>

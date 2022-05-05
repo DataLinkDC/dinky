@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlink.mapper.RoleMapper">
+    <sql id="baseSql">
+        id,tenant_id, role_code, role_name, note, create_time,update_time
+    </sql>
+    <select id="selectForProTable" resultType="com.dlink.model.Role">
+        select
+        <include refid="baseSql"/>
+        from
+        dlink_role
+        <where>
+            1=1
+            <if test='param.tenantId!=null and param.tenantId!=""'>
+                and tenant_id = #{param.tenantId}
+            </if>
+            <if test='param.roleCode!=null and param.roleCode!=""'>
+                and role_code = #{param.roleCode}
+            </if>
+            <if test='param.roleName!=null and param.roleName!=""'>
+                and role_name like "%${param.roleName}%"
+            </if>
+            <if test='param.createTime!=null and param.createTime!=""'>
+                and create_time <![CDATA[>=]]> str_to_date( #{param.createTime},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test='param.updateTime!=null and param.updateTime!=""'>
+                and update_time <![CDATA[>=]]> str_to_date( #{param.updateTime},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test='ew.sqlSegment!=null and ew.sqlSegment!="" and !ew.sqlSegment.startsWith(" ORDER BY")'>
+                and
+            </if>
+            <if test='ew.sqlSegment!=null and ew.sqlSegment!=""'>
+                ${ew.sqlSegment}
+            </if>
+        </where>
+    </select>
+</mapper>

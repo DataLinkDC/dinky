@@ -623,6 +623,8 @@ CREATE TABLE IF NOT EXISTS dlink_user_role
     user_id int(11) NOT NULL COMMENT '用户ID',
     role_id int(11) NOT NULL COMMENT '角色ID',
     enabled       tinyint(1) NOT NULL DEFAULT 1 COMMENT '是否启用',
+    create_time  datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+    update_time  datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
     PRIMARY KEY (id),
     UNIQUE KEY `dlink_user_role_un` (user_id,role_id)
     ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci  COMMENT = '用户与角色关系'  ROW_FORMAT = Dynamic;
@@ -647,6 +649,8 @@ CREATE TABLE IF NOT EXISTS dlink_role_namespace
     id           int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
     role_id int(11) NOT NULL COMMENT '用户ID',
     namespace_id int(11) NOT NULL COMMENT '名称空间ID',
+    create_time  datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+    update_time  datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
     PRIMARY KEY (id),
     UNIQUE KEY ` dlink_role_namespace_un` (role_id,namespace_id)
     ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci  COMMENT = '角色与名称空间关系'  ROW_FORMAT = Dynamic;
@@ -671,6 +675,8 @@ CREATE TABLE IF NOT EXISTS dlink_role_resource
     id           int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
     role_id int(11) NOT NULL COMMENT '用户ID',
     resource_id int(11) NOT NULL COMMENT '资源ID',
+    create_time  datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+    update_time  datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
     PRIMARY KEY (id),
     UNIQUE KEY `dlink_role_resource_un` (role_id,resource_id)
     ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci  COMMENT = '角色与名称空间关系'  ROW_FORMAT = Dynamic;
