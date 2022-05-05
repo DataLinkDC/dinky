@@ -31,12 +31,7 @@ public class TenantController {
      */
     @PutMapping
     public Result saveOrUpdate(@RequestBody Tenant tenant) {
-        Integer tenantId = tenant.getId();
-        if (tenantService.saveOrUpdate(tenant)) {
-            return Result.succeed(Asserts.isNotNull(tenantId) ? "修改成功" : "新增成功");
-        } else {
-            return Result.failed(Asserts.isNotNull(tenantId) ? "修改失败" : "新增失败");
-        }
+        return tenantService.saveOrUpdateTenant(tenant);
     }
 
     /**

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.assertion.Asserts;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
@@ -13,6 +14,7 @@ import com.dlink.model.Namespace;
 import com.dlink.model.Resource;
 import com.dlink.model.Role;
 import com.dlink.model.Tenant;
+import com.dlink.model.User;
 import com.dlink.service.NamespaceService;
 import com.dlink.service.ResourceService;
 import com.dlink.service.RoleService;
@@ -29,6 +31,40 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> im
 
     @Autowired
     private ResourceService resourceService;
+
+    @Override
+    public Result saveOrUpdateTenant(Tenant tenant) {
+        Integer tenantId = tenant.getId();
+        if (Asserts.isNull(tenantId)) {
+            Tenant tenantByTenantCode = getTenantByTenantCode(tenant.getTenantCode());
+            if (Asserts.isNotNull(tenantByTenantCode)) {
+                return Result.failed("该租户已存在");
+            }
+            tenant.setIsDelete(false);
+            if (save(tenant)) {
+                return Result.succeed("新增成功");
+            }
+            return Result.failed("新增失败");
+        } else {
+            if (modifyTenant(tenant)) {
+                return Result.failed("修改成功");
+            }
+            return Result.failed("新增失败");
+        }
+    }
+
+    @Override
+    public Tenant getTenantByTenantCode(String tenantCode) {
+        return getOne(new QueryWrapper<Tenant>().eq("tenant_code", tenantCode).eq("is_delete", 0));
+    }
+
+    @Override
+    public boolean modifyTenant(Tenant tenant) {
+        if (Asserts.isNull(tenant.getId())) {
+            return false;
+        }
+        return updateById(tenant);
+    }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -64,5 +100,4 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> im
         }
         return Result.failed("删除租户不存在");
     }
-
 }

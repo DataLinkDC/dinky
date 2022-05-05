@@ -598,6 +598,7 @@ CREATE TABLE IF NOT EXISTS dlink_tenant
     id          int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
     tenant_code varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '租户编码',
     note        varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '注释',
+    is_delete   tinyint(1) default 0 not null comment '是否被删除',
     create_time datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
     update_time datetime(0) NULL DEFAULT NULL COMMENT '最近修改时间',
     PRIMARY KEY (id) USING BTREE
