@@ -294,4 +294,16 @@ public abstract class AbstractSinkBuilder {
         return tableName;
     }
 
+    protected List<String> getPKList(Table table){
+        List<String> pks = new ArrayList<>();
+        if(Asserts.isNullCollection(table.getColumns())){
+            return pks;
+        }
+        for(Column column: table.getColumns()){
+            if(column.isKeyFlag()){
+                pks.add(column.getName());
+            }
+        }
+        return pks;
+    }
 }

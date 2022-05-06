@@ -237,6 +237,10 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
 
     protected String getSinkConfigurationString(Table table) {
         String configurationString = SqlUtil.replaceAllParam(config.getSinkConfigurationString(), "schemaName", getSinkSchemaName(table));
-        return SqlUtil.replaceAllParam(configurationString, "tableName", getSinkTableName(table));
+        configurationString = SqlUtil.replaceAllParam(configurationString, "tableName", getSinkTableName(table));
+        if (configurationString.contains("${pkList}")) {
+            configurationString = SqlUtil.replaceAllParam(configurationString, "pkList", StringUtils.join(getPKList(table), "."));
+        }
+        return configurationString;
     }
 }
