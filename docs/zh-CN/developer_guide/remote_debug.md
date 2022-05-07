@@ -24,7 +24,7 @@ mvn clean package -Dmaven.test.skip=true
 
 ### 图形化编译
 
-![install](http://www.aiwenmo.com/dinky/docs/zh-CN/developer-guide/remote_debug/local_package_install.jpg)
+![install](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/remote_debug/local_package_install.jpg)
 图形化编译，需要跳过 test ，并进行 clean ==> install。
 
 **注意：**如果不执行 install 生成的 jar安装不到本地 别的依赖就识别不到本地仓库这些包  所以可能导依赖的时候会报错 CustomTableEnvironmentImpl 这个类未定义 。
@@ -123,9 +123,9 @@ sa-token:
 
 根据 job 的场景自行选择插件依赖 jar, 选择需要的 jars , 注意需要将该目录添加为全局库,如下所示：
 
-![lib](http://www.aiwenmo.com/dinky/docs/zh-CN/developer-guide/remote_debug/jars_add_to_repo.jpg)
+![lib](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/remote_debug/jars_add_to_repo.jpg)
 
-![choose_addrepo_global](http://www.aiwenmo.com/dinky/docs/zh-CN/developer-guide/remote_debug/choose_addrepo_global.jpg)
+![choose_addrepo_global](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/remote_debug/choose_addrepo_global.jpg)
 
 
 
@@ -273,26 +273,26 @@ insert into sink_order_mysql_goods_order_pay select * from source_order_my
 
 **SQL 逻辑语法校验**
 
-![check_sql](http://www.aiwenmo.com/dinky/docs/zh-CN/developer-guide/remote_debug/check_sql.jpg)
+![check_sql](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/remote_debug/check_sql.jpg)
 
 **获取JobPlan**
 
-![check_sql](http://www.aiwenmo.com/dinky/docs/zh-CN/developer-guide/remote_debug/job_plan.jpg)
+![check_sql](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/remote_debug/job_plan.jpg)
 
 **Flink Web UI 查看作业**
 
-![job_flinkwebui](http://www.aiwenmo.com/dinky/docs/zh-CN/developer-guide/remote_debug/job_flinkwebui.png)
+![job_flinkwebui](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/remote_debug/job_flinkwebui.png)
 
 **查看是否同步到 Hive**
 
-![is_sync_hive_table](http://www.aiwenmo.com/dinky/docs/zh-CN/developer-guide/remote_debug/is_sync_hive_table.png)
+![is_sync_hive_table](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/remote_debug/is_sync_hive_table.png)
 
 **运维中心查看 JOB 提交状态**
 
-![job_davops_center](http://www.aiwenmo.com/dinky/docs/zh-CN/developer-guide/remote_debug/job_davops_center.png)
+![job_davops_center](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/remote_debug/job_davops_center.png)
 
 **运维中心查看 JOB 详情**
-![job_davops_center](http://www.aiwenmo.com/dinky/docs/zh-CN/developer-guide/remote_debug/devops_job_detail.png)
+![job_davops_center](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/remote_debug/devops_job_detail.png)
 
 
 **注意事项:** 如果拉取了新代码，远程调试环境一定要检查一遍，以防各种报错。
