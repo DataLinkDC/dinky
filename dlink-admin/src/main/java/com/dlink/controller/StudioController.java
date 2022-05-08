@@ -65,7 +65,8 @@ public class StudioController {
         try {
             return Result.succeed(studioService.getJobPlan(studioExecuteDTO), "获取作业计划成功");
         } catch (Exception e) {
-            return Result.failed("目前只支持获取 INSERT 语句的作业计划");
+            e.printStackTrace();
+            return Result.failed(e.getMessage());
         }
     }
 
