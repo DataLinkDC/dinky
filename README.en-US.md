@@ -26,6 +26,7 @@ Dinky 基于 Apache Flink 实现 Dlink ，增强 Flink 的应用与体验，探�
 - 支持 Apache Flink 所有的 Connector、UDF、CDC等
 - 支持 FlinkSQL 语法增强：兼容 Apache Flink SQL、表值聚合函数、全局变量、CDC多源合并、执行环境、语句合并、共享会话等
 - 支持易扩展的 SQL 作业提交方式：ClickHouse、Doris、Hive、Mysql、Oracle、Phoenix、PostgreSql、SqlServer 等
+- 支持 FlinkCDC （Source 合并）整库实时入仓入湖
 - 支持实时调试预览 Table 和 ChangeLog 数据及图形展示
 - 支持语法逻辑检查、作业执行计划、字段级血缘分析等
 - 支持 Flink 元数据、数据源元数据查询及管理
@@ -101,7 +102,7 @@ Dinky 基于 Apache Flink 实现 Dlink ，增强 Flink 的应用与体验，探�
 
 ## 参与贡献
 
-欢迎您为社区贡献自己的力量，共建共赢，贡献流程请参考： [[参与贡献](https://github.com/DataLinkDC/dlink/blob/dev/docs/zh-CN/developer-guide/how_contribute.md)]
+欢迎您为社区贡献自己的力量，共建共赢，贡献流程请参考： [[参与贡献](https://github.com/DataLinkDC/dlink/blob/dev/docs/zh-CN/developer_guide/how_contribute.md)]
 
 ## 如何部署
 

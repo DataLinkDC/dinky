@@ -19,6 +19,7 @@
         <module>dlink-app-1.14</module>
         <module>dlink-app-1.12</module>
         <module>dlink-app-1.11</module>
+        <module>dlink-app-1.15</module>
     </modules>
 
     <properties>

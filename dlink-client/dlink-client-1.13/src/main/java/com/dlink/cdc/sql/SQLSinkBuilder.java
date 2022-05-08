@@ -1,6 +1,7 @@
 package com.dlink.cdc.sql;
 
 import com.dlink.model.*;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
@@ -115,7 +116,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
         List<String> columnNameList) {
 
         String sinkTableName = getSinkTableName(table);
-        String viewName="VIEW_"+table.getSchemaTableNameWithUnderline();
+        String viewName = "VIEW_" + table.getSchemaTableNameWithUnderline();
         customTableEnvironment.createTemporaryView(viewName, rowDataDataStream, StringUtils.join(columnNameList, ","));
         customTableEnvironment.executeSql(getFlinkDDL(table, sinkTableName));
 
@@ -233,6 +234,10 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
 
     protected String getSinkConfigurationString(Table table) {
         String configurationString = SqlUtil.replaceAllParam(config.getSinkConfigurationString(), "schemaName", getSinkSchemaName(table));
-        return SqlUtil.replaceAllParam(configurationString, "tableName", getSinkTableName(table));
+        configurationString = SqlUtil.replaceAllParam(configurationString, "tableName", getSinkTableName(table));
+        if (configurationString.contains("${pkList}")) {
+            configurationString = SqlUtil.replaceAllParam(configurationString, "pkList", StringUtils.join(getPKList(table), "."));
+        }
+        return configurationString;
     }
 }

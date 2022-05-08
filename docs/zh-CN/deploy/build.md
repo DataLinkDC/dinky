@@ -183,7 +183,7 @@ maven ->> dlink->> 生命周期->> 跳过测试 ->> 双击install
 打包完成后 安装包见项目根下  build 文件夹下
 ```
 
-说明：如果要对 Dinky 做二次开发，请参考[开发调试](/zh-CN/developer-guide/debug.md)
+说明：如果要对 Dinky 做二次开发，请参考[开发调试](/zh-CN/developer_guide/debug.md)
 
 ### Linux 编译
 
