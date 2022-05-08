@@ -9,6 +9,7 @@ import java.util.List;
  * @since 2021/11/16
  */
 public class JobParam {
+    private List<String> statements;
     private List<StatementParam> ddl;
     private List<StatementParam> trans;
     private List<StatementParam> execute;
@@ -18,10 +19,19 @@ public class JobParam {
         this.trans = trans;
     }
 
-    public JobParam(List<StatementParam> ddl, List<StatementParam> trans, List<StatementParam> execute) {
+    public JobParam(List<String> statements, List<StatementParam> ddl, List<StatementParam> trans, List<StatementParam> execute) {
+        this.statements = statements;
         this.ddl = ddl;
         this.trans = trans;
         this.execute = execute;
+    }
+
+    public List<String> getStatements() {
+        return statements;
+    }
+
+    public void setStatements(List<String> statements) {
+        this.statements = statements;
     }
 
     public List<StatementParam> getDdl() {
