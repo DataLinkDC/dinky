@@ -1,5 +1,7 @@
 package org.apache.flink.connector.jdbc.internal.converter;
 
+import oracle.sql.CLOB;
+
 import org.apache.flink.table.data.DecimalData;
 import org.apache.flink.table.data.StringData;
 import org.apache.flink.table.data.TimestampData;
@@ -83,7 +85,14 @@ public class OracleRowConverter extends AbstractJdbcRowConverter {
                 };
             case CHAR:
             case VARCHAR:
-                return val -> StringData.fromString((String) val);
+                return (val) -> {
+                    if(val instanceof CLOB){
+                        CLOB clob = (CLOB) val;
+                        return  StringData.fromString(clob == null ? null : clob.stringValue());
+                    }else {
+                        return StringData.fromString((String) val);
+                    }
+                };
             case BINARY:
             case VARBINARY:
                 return val -> val;
