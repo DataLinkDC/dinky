@@ -223,11 +223,11 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             if (statement != null) {
                 task.setStatement(statement.getStatement());
             }
-            if (Asserts.isNull(task.getJobInstanceId()) || task.getJobInstanceId() == 0) {
-                JobInstance jobInstance = jobInstanceService.getJobInstanceByTaskId(id);
-                if (Asserts.isNotNull(jobInstance) && !JobStatus.isDone(jobInstance.getStatus())) {
-                    task.setJobInstanceId(jobInstance.getId());
-                }
+            JobInstance jobInstance = jobInstanceService.getJobInstanceByTaskId(id);
+            if (Asserts.isNotNull(jobInstance) && !JobStatus.isDone(jobInstance.getStatus())) {
+                task.setJobInstanceId(jobInstance.getId());
+            }else {
+                task.setJobInstanceId(0);
             }
         }
         return task;
@@ -463,7 +463,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             return jobManager.cancel(jobId);
         }
         SavePointResult savePointResult = jobManager.savepoint(jobId, savePointType, null);
-        if (Asserts.isNotNull(savePointResult)) {
+        if (Asserts.isNotNull(savePointResult.getJobInfos())) {
             for (JobInfo item : savePointResult.getJobInfos()) {
                 if (Asserts.isEqualsIgnoreCase(jobId, item.getJobId()) && Asserts.isNotNull(jobConfig.getTaskId())) {
                     Savepoints savepoints = new Savepoints();
@@ -487,7 +487,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     private JobConfig buildJobConfig(Task task) {
         boolean isJarTask = Dialect.FLINKJAR.equalsVal(task.getDialect());
-        if (!isJarTask && task.isFragment()) {
+        if (!isJarTask && task.getFragment()) {
             String flinkWithSql = dataBaseService.getEnabledFlinkWithSql();
             if (Asserts.isNotNullString(flinkWithSql)) {
                 task.setStatement(flinkWithSql + "\r\n" + task.getStatement());

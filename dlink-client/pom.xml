@@ -5,7 +5,7 @@
     <parent>
         <artifactId>dlink</artifactId>
         <groupId>com.dlink</groupId>
-        <version>0.6.2-SNAPSHOT</version>
+        <version>0.6.4-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -19,5 +19,6 @@
         <module>dlink-client-1.14</module>
         <module>dlink-client-hadoop</module>
         <module>dlink-client-base</module>
+        <module>dlink-client-1.15</module>
     </modules>
 </project>
