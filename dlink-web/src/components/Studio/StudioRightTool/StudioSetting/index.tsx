@@ -163,12 +163,6 @@ const StudioSetting = (props: any) => {
                 </Form.Item>
               </Col>
             </Row>) : undefined}
-          <Form.Item
-            label="作业名" className={styles.form_item} name="jobName"
-            tooltip='设置任务名称，默认为作业名'
-          >
-            <Input placeholder="自定义作业名"/>
-          </Form.Item>
           <Form.Item label="FlinkSQL 环境"
                      tooltip={`选择当前任务的 FlinkSQL 执行环境，会提前执行环境语句，默认无。`}
                      name="envId"

@@ -12,21 +12,27 @@ import org.apache.flink.table.data.DecimalData;
 import org.apache.flink.table.data.GenericRowData;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.data.StringData;
+import org.apache.flink.table.data.TimestampData;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.types.logical.BigIntType;
 import org.apache.flink.table.types.logical.BooleanType;
+import org.apache.flink.table.types.logical.DateType;
 import org.apache.flink.table.types.logical.DecimalType;
 import org.apache.flink.table.types.logical.DoubleType;
 import org.apache.flink.table.types.logical.FloatType;
 import org.apache.flink.table.types.logical.IntType;
 import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.table.types.logical.SmallIntType;
+import org.apache.flink.table.types.logical.TimestampType;
 import org.apache.flink.table.types.logical.TinyIntType;
 import org.apache.flink.table.types.logical.VarCharType;
 import org.apache.flink.types.RowKind;
 import org.apache.flink.util.Collector;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -113,6 +119,7 @@ public abstract class AbstractSinkBuilder {
                 @Override
                 public void flatMap(Map value, Collector<RowData> out) throws Exception {
                     switch (value.get("op").toString()) {
+                        case "r":
                         case "c":
                             GenericRowData igenericRowData = new GenericRowData(columnNameList.size());
                             igenericRowData.setRowKind(RowKind.INSERT);
@@ -195,7 +202,7 @@ public abstract class AbstractSinkBuilder {
         }
     }
 
-    protected LogicalType getLogicalType(ColumnType columnType) {
+    public LogicalType getLogicalType(ColumnType columnType) {
         switch (columnType) {
             case STRING:
                 return new VarCharType();
@@ -218,10 +225,16 @@ public abstract class AbstractSinkBuilder {
             case JAVA_LANG_DOUBLE:
                 return new DoubleType();
             case DECIMAL:
-                return new DecimalType();
+                return new DecimalType(columnType.getPrecision(), columnType.getScale());
             case INT:
             case INTEGER:
                 return new IntType();
+            case DATE:
+            case LOCALDATE:
+                return new DateType();
+            case LOCALDATETIME:
+            case TIMESTAMP:
+                return new TimestampType();
             default:
                 return new VarCharType();
         }
@@ -233,11 +246,15 @@ public abstract class AbstractSinkBuilder {
         }
         if (logicalType instanceof VarCharType) {
             return StringData.fromString((String) value);
+        } else if (logicalType instanceof DateType) {
+            return StringData.fromString(Instant.ofEpochMilli((long) value).atZone(ZoneId.systemDefault()).toLocalDate().toString());
+        } else if (logicalType instanceof TimestampType) {
+            return TimestampData.fromTimestamp(Timestamp.from(Instant.ofEpochMilli((long) value)));
         } else if (logicalType instanceof DecimalType) {
             final DecimalType decimalType = ((DecimalType) logicalType);
             final int precision = decimalType.getPrecision();
-            final int scala = decimalType.getScale();
-            return DecimalData.fromBigDecimal(new BigDecimal((String) value), precision, scala);
+            final int scale = decimalType.getScale();
+            return DecimalData.fromBigDecimal(new BigDecimal((String) value), precision, scale);
         } else {
             return value;
         }
@@ -275,5 +292,18 @@ public abstract class AbstractSinkBuilder {
             }
         }
         return tableName;
+    }
+
+    protected List<String> getPKList(Table table){
+        List<String> pks = new ArrayList<>();
+        if(Asserts.isNullCollection(table.getColumns())){
+            return pks;
+        }
+        for(Column column: table.getColumns()){
+            if(column.isKeyFlag()){
+                pks.add(column.getName());
+            }
+        }
+        return pks;
     }
 }

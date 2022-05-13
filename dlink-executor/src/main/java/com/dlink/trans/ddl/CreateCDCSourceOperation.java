@@ -51,9 +51,9 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
     @Override
     public TableResult build(Executor executor) {
         CDCSource cdcSource = CDCSource.build(statement);
-        FlinkCDCConfig config = new FlinkCDCConfig(cdcSource.getType(), cdcSource.getHostname(), cdcSource.getPort(), cdcSource.getUsername()
+        FlinkCDCConfig config = new FlinkCDCConfig(cdcSource.getConnector(), cdcSource.getHostname(), cdcSource.getPort(), cdcSource.getUsername()
             , cdcSource.getPassword(), cdcSource.getCheckpoint(), cdcSource.getParallelism(), cdcSource.getDatabase(), cdcSource.getSchema()
-            , cdcSource.getTable(), cdcSource.getStartupMode(), cdcSource.getDebezium(), cdcSource.getSink());
+            , cdcSource.getTable(), cdcSource.getStartupMode(), cdcSource.getDebezium(), cdcSource.getSource(), cdcSource.getSink());
         try {
             CDCBuilder cdcBuilder = CDCBuilderFactory.buildCDCBuilder(config);
             Map<String, Map<String, String>> allConfigMap = cdcBuilder.parseMetaDataConfigs();
@@ -61,6 +61,7 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
             List<Schema> schemaList = new ArrayList<>();
             final List<String> schemaNameList = cdcBuilder.getSchemaList();
             final List<String> tableRegList = cdcBuilder.getTableList();
+            final List<String> schemaTableNameList = new ArrayList<>();
             for (String schemaName : schemaNameList) {
                 Schema schema = Schema.build(schemaName);
                 if (!allConfigMap.containsKey(schemaName)) {
@@ -70,21 +71,26 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                 Driver driver = Driver.build(driverConfig);
                 final List<Table> tables = driver.listTables(schemaName);
                 for (Table table : tables) {
-                    if (Asserts.isNotNullCollection(tableRegList)) {
-                        for (String tableReg : tableRegList) {
-                            if (table.getSchemaTableName().matches(tableReg) && !schema.getTables().contains(Table.build(table.getName()))) {
-                                table.setColumns(driver.listColumns(schemaName, table.getName()));
-                                schema.getTables().add(table);
-                                break;
+                    if (!Asserts.isEquals(table.getType(), "VIEW")) {
+                        if (Asserts.isNotNullCollection(tableRegList)) {
+                            for (String tableReg : tableRegList) {
+                                if (table.getSchemaTableName().matches(tableReg) && !schema.getTables().contains(Table.build(table.getName()))) {
+                                    table.setColumns(driver.listColumns(schemaName, table.getName()));
+                                    schema.getTables().add(table);
+                                    schemaTableNameList.add(table.getSchemaTableName());
+                                    break;
+                                }
                             }
+                        } else {
+                            table.setColumns(driver.listColumns(schemaName, table.getName()));
+                            schemaTableNameList.add(table.getSchemaTableName());
+                            schema.getTables().add(table);
                         }
-                    } else {
-                        table.setColumns(driver.listColumns(schemaName, table.getName()));
-                        schema.getTables().add(table);
                     }
                 }
                 schemaList.add(schema);
             }
+            config.setSchemaTableNameList(schemaTableNameList);
             config.setSchemaList(schemaList);
             StreamExecutionEnvironment streamExecutionEnvironment = executor.getStreamExecutionEnvironment();
             if (Asserts.isNotNull(config.getParallelism())) {

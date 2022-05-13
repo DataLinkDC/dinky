@@ -8,9 +8,12 @@ import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.table.types.logical.RowType;
 import org.apache.hudi.common.model.HoodieRecord;
 import org.apache.hudi.common.model.HoodieTableType;
+import org.apache.hudi.common.model.WriteOperationType;
 import org.apache.hudi.configuration.FlinkOptions;
+import org.apache.hudi.configuration.OptionsResolver;
 import org.apache.hudi.sink.utils.Pipelines;
 import org.apache.hudi.util.AvroSchemaConverter;
+import org.apache.hudi.util.StreamerUtil;
 
 import java.io.Serializable;
 import java.util.List;
@@ -78,16 +81,38 @@ public class HudiSinkBuilder extends AbstractSinkBuilder implements SinkBuilder,
         configuration.set(FlinkOptions.TABLE_NAME, tableName);
         configuration.set(FlinkOptions.HIVE_SYNC_DB, getSinkSchemaName(table));
         configuration.set(FlinkOptions.HIVE_SYNC_TABLE, tableName);
+
+        long ckpTimeout = rowDataDataStream.getExecutionEnvironment()
+            .getCheckpointConfig().getCheckpointTimeout();
+        configuration.setLong(FlinkOptions.WRITE_COMMIT_ACK_TIMEOUT, ckpTimeout);
+
         RowType rowType = RowType.of(false, columnTypes, columnNames);
         configuration.setString(FlinkOptions.SOURCE_AVRO_SCHEMA,
-            AvroSchemaConverter.convertToSchema(rowType, tableName).toString());
+            AvroSchemaConverter.convertToSchema(rowType).toString());
 
-        DataStream<HoodieRecord> hoodieRecordDataStream = Pipelines.bootstrap(configuration, rowType, parallelism, rowDataDataStream);
-        DataStream<Object> pipeline = Pipelines.hoodieStreamWrite(configuration, parallelism, hoodieRecordDataStream);
+        // bulk_insert mode
+        final String writeOperation = configuration.get(FlinkOptions.OPERATION);
+        if (WriteOperationType.fromValue(writeOperation) == WriteOperationType.BULK_INSERT) {
+            Pipelines.bulkInsert(configuration, rowType, rowDataDataStream);
+        } else
+            // Append mode
+            if (OptionsResolver.isAppendMode(configuration)) {
+                Pipelines.append(configuration, rowType, rowDataDataStream);
+            } else {
 
-        if (isMor) {
-            Pipelines.clean(configuration, pipeline);
-            Pipelines.compact(configuration, pipeline);
-        }
+                DataStream<HoodieRecord> hoodieRecordDataStream = Pipelines.bootstrap(configuration, rowType, parallelism, rowDataDataStream);
+                DataStream<Object> pipeline = Pipelines.hoodieStreamWrite(configuration, parallelism, hoodieRecordDataStream);
+
+                // compaction
+                if (StreamerUtil.needsAsyncCompaction(configuration)) {
+                    Pipelines.compact(configuration, pipeline);
+                } else {
+                    Pipelines.clean(configuration, pipeline);
+                }
+                if (isMor) {
+                    Pipelines.clean(configuration, pipeline);
+                    Pipelines.compact(configuration, pipeline);
+                }
+            }
     }
 }

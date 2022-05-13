@@ -21,8 +21,10 @@ public class FlinkCDCConfig {
     private String database;
     private String schema;
     private String table;
+    private List<String> schemaTableNameList;
     private String startupMode;
     private Map<String, String> debezium;
+    private Map<String, String> source;
     private Map<String, String> sink;
     private List<Schema> schemaList;
     private String schemaFieldName;
@@ -30,8 +32,9 @@ public class FlinkCDCConfig {
     public FlinkCDCConfig() {
     }
 
-    public FlinkCDCConfig(String type, String hostname, int port, String username, String password, int checkpoint, int parallelism, String database, String schema, String table, String startupMode,
-                          Map<String, String> debezium, Map<String, String> sink) {
+    public FlinkCDCConfig(String type, String hostname, Integer port, String username, String password, Integer checkpoint, Integer parallelism, String database, String schema, String table,
+                          String startupMode,
+                          Map<String, String> debezium, Map<String, String> source, Map<String, String> sink) {
         this.type = type;
         this.hostname = hostname;
         this.port = port;
@@ -44,6 +47,7 @@ public class FlinkCDCConfig {
         this.table = table;
         this.startupMode = startupMode;
         this.debezium = debezium;
+        this.source = source;
         this.sink = sink;
     }
 
@@ -123,12 +127,28 @@ public class FlinkCDCConfig {
         return table;
     }
 
+    public Map<String, String> getSource() {
+        return source;
+    }
+
+    public void setSource(Map<String, String> source) {
+        this.source = source;
+    }
+
     public void setTable(String table) {
         this.table = table;
     }
 
     public Map<String, String> getSink() {
         return sink;
+    }
+
+    public List<String> getSchemaTableNameList() {
+        return schemaTableNameList;
+    }
+
+    public void setSchemaTableNameList(List<String> schemaTableNameList) {
+        this.schemaTableNameList = schemaTableNameList;
     }
 
     private boolean skip(String key) {
