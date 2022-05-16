@@ -66,17 +66,30 @@ public class SqlParserTest {
     @Test
     public void createCDCSourceTest() {
         String sql = "EXECUTE CDCSOURCE demo WITH (\n" +
-            " 'type'='mysql-cdc',\n" +
-            " 'hostname'='127.0.0.1',\n" +
-            " 'port'='3306',\n" +
-            " 'password'='dlink',\n" +
-            " 'hostname'='dlink',\n" +
-            " 'checkpoint'='3000',\n" +
-            " 'parallelism'='1',\n" +
-            " 'database'='dlink,test',\n" +
-            " 'table'='',\n" +
-            " 'topic'='dlinkcdc',\n" +
-            " 'brokers'='127.0.0.1:9092'\n" +
+            "  'connector' = 'mysql-cdc',\n" +
+            "  'hostname' = '10.1.51.25',\n" +
+            "  'port' = '3306',\n" +
+            "  'username' = 'dfly',\n" +
+            "  'password' = 'Dareway@2020',\n" +
+            "  'checkpoint' = '3000',\n" +
+            "  'scan.startup.mode' = 'initial',\n" +
+            "  'parallelism' = '1',\n" +
+            "  -- 'database-name'='test',\n" +
+            "  'table-name' = 'test\\.student,\n" +
+            " test\\.score',\n" +
+            "  -- 'sink.connector'='datastream-doris',\n" +
+            "  'sink.connector' = 'doris',\n" +
+            "  'sink.fenodes' = '10.1.51.26:8030',\n" +
+            "  'sink.username' = 'root',\n" +
+            "  'sink.password' = 'dw123456',\n" +
+            "  'sink.sink.batch.size' = '1',\n" +
+            "  'sink.sink.max-retries' = '1',\n" +
+            "  'sink.sink.batch.interval' = '60000',\n" +
+            "  'sink.sink.db' = 'test',\n" +
+            "  'sink.table.prefix' = 'ODS_',\n" +
+            "  'sink.table.upper' = 'true',\n" +
+            "  'sink.table.identifier' = '${schemaName}.${tableName}',\n" +
+            "  'sink.sink.enable-delete' = 'true'\n" +
             ");";
         Map<String, List<String>> lists = SingleSqlParserFactory.generateParser(sql);
         System.out.println(lists.toString());

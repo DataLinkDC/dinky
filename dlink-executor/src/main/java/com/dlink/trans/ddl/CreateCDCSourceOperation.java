@@ -74,15 +74,15 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                     if (!Asserts.isEquals(table.getType(), "VIEW")) {
                         if (Asserts.isNotNullCollection(tableRegList)) {
                             for (String tableReg : tableRegList) {
-                                if (table.getSchemaTableName().matches(tableReg) && !schema.getTables().contains(Table.build(table.getName()))) {
-                                    table.setColumns(driver.listColumns(schemaName, table.getName()));
+                                if (table.getSchemaTableName().matches(tableReg.trim()) && !schema.getTables().contains(Table.build(table.getName()))) {
+                                    table.setColumns(driver.listColumnsSortByPK(schemaName, table.getName()));
                                     schema.getTables().add(table);
                                     schemaTableNameList.add(table.getSchemaTableName());
                                     break;
                                 }
                             }
                         } else {
-                            table.setColumns(driver.listColumns(schemaName, table.getName()));
+                            table.setColumns(driver.listColumnsSortByPK(schemaName, table.getName()));
                             schemaTableNameList.add(table.getSchemaTableName());
                             schema.getTables().add(table);
                         }
