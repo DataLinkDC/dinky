@@ -508,85 +508,93 @@ INSERT INTO `dlink_user`(`id`, `username`, `password`, `nickname`, `worknum`, `a
 -- Table structure for dlink_job_instance
 -- ----------------------------
 DROP TABLE IF EXISTS `dlink_job_instance`;
-create table dlink_job_instance
-(
-    id                   int auto_increment comment '自增主键'
-        primary key,
-    name                 varchar(255) null comment '作业实例名',
-    task_id              int         null comment 'taskID',
-    step              int         null comment '生命周期',
-    cluster_id           int         null comment '集群ID',
-    jid                  varchar(50) null comment 'FlinkJobId',
-    status               varchar(50) null comment '实例状态',
-    history_id           int         null comment '提交历史ID',
-    create_time          datetime    null comment '创建时间',
-    update_time          datetime    null comment '更新时间',
-    finish_time          datetime    null comment '完成时间',
-    duration             bigint      null comment '耗时',
-    error                text        null comment '异常日志',
-    failed_restart_count int         null comment '重启次数'
-) comment '作业实例';
+CREATE TABLE `dlink_job_instance` (
+                                      `id` int NOT NULL AUTO_INCREMENT COMMENT '自增主键',
+                                      `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '作业实例名',
+                                      `task_id` int DEFAULT NULL COMMENT 'taskID',
+                                      `step` int DEFAULT NULL COMMENT '生命周期',
+                                      `cluster_id` int DEFAULT NULL COMMENT '集群ID',
+                                      `jid` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'FlinkJobId',
+                                      `status` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '实例状态',
+                                      `history_id` int DEFAULT NULL COMMENT '提交历史ID',
+                                      `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+                                      `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+                                      `finish_time` datetime DEFAULT NULL COMMENT '完成时间',
+                                      `duration` bigint DEFAULT NULL COMMENT '耗时',
+                                      `error` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '异常日志',
+                                      `failed_restart_count` int DEFAULT NULL COMMENT '重启次数',
+                                      PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='作业实例';
 
+-- ----------------------------
+-- Table structure for dlink_alert_instance
+-- ----------------------------
 DROP TABLE IF EXISTS `dlink_alert_instance`;
-create table dlink_alert_instance
-(
-    id int auto_increment comment '自增主键'
-        primary key,
-    name varchar(50) not null comment '名称',
-    type varchar(50) null comment '类型',
-    params text null comment '配置',
-    enabled tinyint default 1 null comment '是否启用',
-    create_time datetime null comment '创建时间',
-    update_time datetime null comment '更新时间'
-)
-    comment 'Alert实例';
+CREATE TABLE `dlink_alert_instance` (
+                                        `id` int NOT NULL AUTO_INCREMENT COMMENT '自增主键',
+                                        `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称',
+                                        `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '类型',
+                                        `params` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '配置',
+                                        `enabled` tinyint DEFAULT '1' COMMENT '是否启用',
+                                        `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+                                        `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+                                        PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='Alert实例';
 
+
+-- ----------------------------
+-- Table structure for dlink_alert_group
+-- ----------------------------
 DROP TABLE IF EXISTS `dlink_alert_group`;
-create table dlink_alert_group
-(
-    id int auto_increment comment '自增主键'
-        primary key,
-    name varchar(50) not null comment '名称',
-    alert_instance_ids text null comment 'Alert实例IDS',
-    note varchar(255) null comment '说明',
-    enabled tinyint default 1 null comment '是否启用',
-    create_time datetime null comment '创建时间',
-    update_time datetime null comment '更新时间'
-)
-    comment 'Alert组';
+CREATE TABLE `dlink_alert_group` (
+                                     `id` int NOT NULL AUTO_INCREMENT COMMENT '自增主键',
+                                     `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称',
+                                     `alert_instance_ids` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Alert实例IDS',
+                                     `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '说明',
+                                     `enabled` tinyint DEFAULT '1' COMMENT '是否启用',
+                                     `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+                                     `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+                                     PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='Alert组';
 
+
+-- ----------------------------
+-- Table structure for dlink_alert_history
+-- ----------------------------
 DROP TABLE IF EXISTS `dlink_alert_history`;
-create table dlink_alert_history
-(
-    id int auto_increment comment '自增主键'
-        primary key,
-    alert_group_id int null comment 'Alert组ID',
-    job_instance_id int null comment '作业实例ID',
-    title varchar(255) null comment '标题',
-    content text null comment '正文',
-    status int null comment '状态',
-    log text null comment '日志',
-    create_time datetime null comment '创建时间',
-    update_time datetime null comment '更新时间'
-)
-    comment 'Alert历史';
+CREATE TABLE `dlink_alert_history` (
+                                       `id` int NOT NULL AUTO_INCREMENT COMMENT '自增主键',
+                                       `alert_group_id` int DEFAULT NULL COMMENT 'Alert组ID',
+                                       `job_instance_id` int DEFAULT NULL COMMENT '作业实例ID',
+                                       `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '标题',
+                                       `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '正文',
+                                       `status` int DEFAULT NULL COMMENT '状态',
+                                       `log` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '日志',
+                                       `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+                                       `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+                                       PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='Alert历史';
 
+
+
+-- ----------------------------
+-- Table structure for dlink_job_history
+-- ----------------------------
 DROP TABLE IF EXISTS `dlink_job_history`;
-create table dlink_job_history
-(
-    id int comment '实例主键'
-        primary key,
-    job_json json null comment 'Job信息',
-    exceptions_json json null comment '异常日志',
-    checkpoints_json json null comment '保存点',
-    checkpoints_config_json json null comment '保存点配置',
-    config_json json null comment '配置',
-    jar_json json null comment 'Jar配置',
-    cluster_json json null comment '集群实例',
-    cluster_configuration_json json null comment '集群配置',
-    update_time datetime null comment '更新时间'
-)
-    comment 'Job历史详情';
+CREATE TABLE `dlink_job_history` (
+                                     `id` int NOT NULL COMMENT '实例主键',
+                                     `job_json` json DEFAULT NULL COMMENT 'Job信息',
+                                     `exceptions_json` json DEFAULT NULL COMMENT '异常日志',
+                                     `checkpoints_json` json DEFAULT NULL COMMENT '保存点',
+                                     `checkpoints_config_json` json DEFAULT NULL COMMENT '保存点配置',
+                                     `config_json` json DEFAULT NULL COMMENT '配置',
+                                     `jar_json` json DEFAULT NULL COMMENT 'Jar配置',
+                                     `cluster_json` json DEFAULT NULL COMMENT '集群实例',
+                                     `cluster_configuration_json` json DEFAULT NULL COMMENT '集群配置',
+                                     `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+                                     PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='Job历史详情';
+
 
 CREATE INDEX dlink_job_instance_task_id_IDX USING BTREE ON dlink_job_instance (task_id);
 
