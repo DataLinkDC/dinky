@@ -13,40 +13,42 @@ import com.dlink.model.ColumnType;
 public class MySqlTypeConvert implements ITypeConvert {
     @Override
     public ColumnType convert(Column column) {
+        ColumnType columnType = ColumnType.STRING;
         if (Asserts.isNull(column)) {
-            return ColumnType.STRING;
+            return columnType;
         }
         String t = column.getType().toLowerCase();
         if (t.contains("tinyint")) {
-            return ColumnType.INTEGER;
+            columnType = ColumnType.INTEGER;
         } else if (t.contains("smallint") || t.contains("tinyint unsigned")) {
-            return ColumnType.SHORT;
+            columnType = ColumnType.SHORT;
         } else if (t.contains("bigint unsigned") || t.contains("numeric") || t.contains("decimal")) {
-            return ColumnType.DECIMAL;
+            columnType = ColumnType.DECIMAL;
         } else if (t.contains("bigint") || t.contains("int unsigned")) {
-            return ColumnType.LONG;
+            columnType = ColumnType.LONG;
         } else if (t.contains("float")) {
-            return ColumnType.FLOAT;
+            columnType = ColumnType.FLOAT;
         } else if (t.contains("double")) {
-            return ColumnType.DOUBLE;
+            columnType = ColumnType.DOUBLE;
         } else if (t.contains("boolean") || t.contains("tinyint(1)")) {
-            return ColumnType.BOOLEAN;
+            columnType = ColumnType.BOOLEAN;
         } else if (t.contains("datetime")) {
-            return ColumnType.TIMESTAMP;
+            columnType = ColumnType.TIMESTAMP;
         } else if (t.contains("date")) {
-            return ColumnType.DATE;
+            columnType = ColumnType.DATE;
         } else if (t.contains("timestamp")) {
-            return ColumnType.TIMESTAMP;
+            columnType = ColumnType.TIMESTAMP;
         } else if (t.contains("time")) {
-            return ColumnType.TIME;
+            columnType = ColumnType.TIME;
         } else if (t.contains("char") || t.contains("text")) {
-            return ColumnType.STRING;
+            columnType = ColumnType.STRING;
         } else if (t.contains("binary") || t.contains("blob")) {
-            return ColumnType.BYTES;
+            columnType = ColumnType.BYTES;
         } else if (t.contains("int") || t.contains("mediumint") || t.contains("smallint unsigned")) {
-            return ColumnType.INTEGER;
+            columnType = ColumnType.INTEGER;
         }
-        return ColumnType.STRING;
+        columnType.setPrecisionAndScale(column.getPrecision(), column.getScale());
+        return columnType;
     }
 
     @Override
