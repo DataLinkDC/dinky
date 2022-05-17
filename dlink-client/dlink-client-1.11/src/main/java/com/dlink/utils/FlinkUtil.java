@@ -1,5 +1,7 @@
 package com.dlink.utils;
 
+import org.apache.flink.api.common.JobID;
+import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.catalog.CatalogManager;
 import org.apache.flink.table.catalog.ObjectIdentifier;
@@ -8,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 /**
  * FlinkUtil
@@ -30,5 +33,17 @@ public class FlinkUtil {
 
     public static List<String> catchColumn(TableResult tableResult) {
         return Arrays.asList(tableResult.getTableSchema().getFieldNames());
+    }
+
+    public static String triggerSavepoint(ClusterClient clusterClient, String jobId, String savePoint) throws ExecutionException, InterruptedException {
+        return clusterClient.triggerSavepoint(JobID.fromHexString(jobId), savePoint).get().toString();
+    }
+
+    public static String stopWithSavepoint(ClusterClient clusterClient, String jobId, String savePoint) throws ExecutionException, InterruptedException {
+        return clusterClient.stopWithSavepoint(JobID.fromHexString(jobId), true, savePoint).get().toString();
+    }
+
+    public static String cancelWithSavepoint(ClusterClient clusterClient, String jobId, String savePoint) throws ExecutionException, InterruptedException {
+        return clusterClient.cancelWithSavepoint(JobID.fromHexString(jobId), savePoint).get().toString();
     }
 }
