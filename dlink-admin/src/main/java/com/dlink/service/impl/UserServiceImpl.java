@@ -133,6 +133,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         user.setId(id);
         user.setIsDelete(true);
         boolean result = updateById(user);
+        // delete user role relation
         int record = userRoleService.delete(user.getId());
         return result && record > 0;
     }

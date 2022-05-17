@@ -1,19 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dlink.mapper.RoleMapper">
-    <sql id="baseSql">
-        id,tenant_id, role_code, role_name, note, create_time,update_time
+    <resultMap id="roleResultMap" type="com.dlink.model.Role">
+        <id property="id" column="id"/>
+        <result property="tenantId" column="tenant_id"/>
+        <result property="roleCode" column="role_code"/>
+        <result property="roleName" column="role_name"/>
+        <result property="note" column="note"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <collection property="resourceList" ofType="com.dlink.model.Resource" resultMap="resourceResultMap"></collection>
+        <collection property="namespaceList" ofType="com.dlink.model.Namespace" resultMap="namespaceResultMap"></collection>
+    </resultMap>
+    <resultMap id="resourceResultMap" type="com.dlink.model.Resource">
+        <id property="id" column="id"/>
+        <result property="tenantId" column="tenant_id"/>
+        <result property="resourceCode" column="resource_code"/>
+        <result property="enabled" column="enabled"/>
+        <result property="note" column="note"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <resultMap id="namespaceResultMap" type="com.dlink.model.Namespace">
+        <id property="id" column="id"/>
+        <result property="tenantId" column="tenant_id"/>
+        <result property="namespaceCode" column="namespace_code"/>
+        <result property="enabled" column="enabled"/>
+        <result property="note" column="note"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <sql id="role">
+        select dr.id
+              ,dr.tenant_id
+              ,dr.role_code
+              ,dr.role_name
+              ,dr.note
+              ,dr.create_time
+              ,dr.update_time
+              ,dres.id as dres_id
+              ,dres.resource_code
+              ,dres.enabled
+              ,dres.note
+              ,dres.create_time as dre_create_time
+              ,dres.update_time dre_update_time
+              ,dn.id as dn_id
+              ,dn.namespace_code
+              ,dn.enabled
+              ,dn.note dn_note
+              ,dn.create_time as dn_create_time
+              ,dn.update_time dn_update_time
+         from dlink_role dr
+         join dlink_role_resource drr
+           on dr.id =  drr.role_id
+         join dlink_resource dres
+           on drr.role_id  = dres.id
+         join dlink_role_namespace drn
+           on dr.id =  drn.role_id
+         join dlink_namespace dn
+           on drn.namespace_id = dn.id
     </sql>
-    <select id="selectForProTable" resultType="com.dlink.model.Role">
-        select
-        <include refid="baseSql"/>
-        from
-        dlink_role
+    <select id="selectForProTable" resultMap="roleResultMap">
+        <include refid="role"></include>
         <where>
             1=1
-            <if test='param.tenantId!=null and param.tenantId!=""'>
-                and tenant_id = #{param.tenantId}
-            </if>
             <if test='param.roleCode!=null and param.roleCode!=""'>
                 and role_code = #{param.roleCode}
             </if>

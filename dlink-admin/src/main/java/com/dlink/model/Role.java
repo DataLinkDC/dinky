@@ -1,12 +1,14 @@
 package com.dlink.model;
 
 import com.baomidou.mybatisplus.annotation.*;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * role
@@ -53,4 +55,16 @@ public class Role implements Serializable {
      */
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
+
+    /**
+     * resource list
+     */
+    @TableField(exist = false)
+    private List<Resource> resourceList;
+
+    /**
+     * namespace list
+     */
+    @TableField(exist = false)
+    private List<Namespace> namespaceList;
 }

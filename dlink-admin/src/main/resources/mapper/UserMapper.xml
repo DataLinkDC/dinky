@@ -1,25 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dlink.mapper.UserMapper">
-
-    <select id="selectForProTable" resultType="com.dlink.model.User">
-        select
-        a.*
-        from
-        dlink_user a
+    <resultMap id="userResultMap" type="com.dlink.model.User">
+        <id property="id" column="id" />
+        <result property="username" column="username" />
+        <result property="password" column="password" />
+        <result property="nickname" column="nickname" />
+        <result property="worknum" column="worknum" />
+        <result property="avatar" column="avatar" />
+        <result property="mobile" column="mobile" />
+        <result property="enabled" column="enabled" />
+        <result property="isDelete" column="is_delete" />
+        <result property="createTime" column="create_time" />
+        <result property="updateTime" column="update_time" />
+        <collection property="roles"  ofType="com.dlink.model.Role" resultMap="roleResultMap" ></collection>
+    </resultMap>
+    <resultMap id="roleResultMap" type="com.dlink.model.Role">
+        <result property="tenantId" column="tenant_id" />
+        <result property="roleCode" column="role_code" />
+        <result property="roleName" column="role_name" />
+        <result property="note" column="note" />
+        <result property="createTime" column="create_time" />
+        <result property="updateTime" column="update_time" />
+    </resultMap>
+    <sql id="user_role">
+      select  du.id
+             ,du.username
+             ,du.password
+             ,du.nickname
+             ,du.worknum
+             ,du.avatar
+             ,du.mobile
+             ,du.enabled
+             ,du.is_delete
+             ,du.create_time
+             ,du.update_time
+             ,dr.tenant_id
+             ,dr.role_code
+             ,dr.role_name
+        from dlink_user du
+        join dlink_user_role dur
+          on du.id = dur.user_id
+        join dlink_role dr
+          on dur.role_id = dr.id
+    </sql>
+    <select id="selectForProTable" resultMap="userResultMap">
+        <include refid="user_role"></include>
         <where>
             1=1
             <if test='param.username!=null and param.username!=""'>
-                and a.username like "%${param.username}%"
+                and du.username like "%${param.username}%"
             </if>
             <if test='param.nickname!=null and param.nickname!=""'>
-                and a.nickname like "%${param.nickname}%"
+                and du.nickname like "%${param.nickname}%"
             </if>
             <if test='param.createTime!=null and param.createTime!=""'>
-                and a.create_time <![CDATA[>=]]> str_to_date( #{param.createTime},'%Y-%m-%d %H:%i:%s')
+                and du.create_time <![CDATA[>=]]> str_to_date( #{param.createTime},'%Y-%m-%d %H:%i:%s')
             </if>
             <if test='param.updateTime!=null and param.updateTime!=""'>
-                and a.update_time <![CDATA[>=]]> str_to_date( #{param.updateTime},'%Y-%m-%d %H:%i:%s')
+                and du.update_time <![CDATA[>=]]> str_to_date( #{param.updateTime},'%Y-%m-%d %H:%i:%s')
             </if>
             <if test='ew.sqlSegment!=null and ew.sqlSegment!="" and !ew.sqlSegment.startsWith(" ORDER BY")'>
                 and

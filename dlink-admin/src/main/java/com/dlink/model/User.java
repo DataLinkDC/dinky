@@ -2,12 +2,15 @@ package com.dlink.model;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.dlink.db.annotation.Save;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotNull;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * User
@@ -50,4 +53,7 @@ public class User implements Serializable {
 
     @TableField(exist = false)
     private Boolean isAdmin;
+
+    @TableField(exist = false)
+    private List<UserRole> roles;
 }

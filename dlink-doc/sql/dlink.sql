@@ -623,7 +623,6 @@ CREATE TABLE IF NOT EXISTS dlink_user_role
     id           int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
     user_id int(11) NOT NULL COMMENT '用户ID',
     role_id int(11) NOT NULL COMMENT '角色ID',
-    enabled       tinyint(1) NOT NULL DEFAULT 1 COMMENT '是否启用',
     create_time  datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
     update_time  datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
     PRIMARY KEY (id),

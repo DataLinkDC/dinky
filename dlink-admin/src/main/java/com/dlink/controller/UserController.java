@@ -40,7 +40,7 @@ public class UserController {
      * 动态查询列表
      */
     @PostMapping
-    public ProTableResult<User> listClusterConfigs(@RequestBody JsonNode para) {
+    public ProTableResult<User> listUsers(@RequestBody JsonNode para) {
         return userService.selectForProTable(para, true);
     }
 
