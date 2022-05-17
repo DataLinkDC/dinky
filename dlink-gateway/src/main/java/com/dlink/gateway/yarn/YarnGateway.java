@@ -1,5 +1,6 @@
 package com.dlink.gateway.yarn;
 
+import com.dlink.utils.FlinkUtil;
 import org.apache.flink.api.common.JobID;
 import org.apache.flink.client.deployment.ClusterRetrieveException;
 import org.apache.flink.client.program.ClusterClient;
@@ -238,18 +239,15 @@ public abstract class YarnGateway extends AbstractGateway {
             }
             switch (config.getFlinkConfig().getSavePointType()) {
                 case TRIGGER:
-                    CompletableFuture<String> triggerFuture = clusterClient.triggerSavepoint(JobID.fromHexString(jobInfo.getJobId()), savePoint);
-                    jobInfo.setSavePoint(triggerFuture.get());
+                    jobInfo.setSavePoint(FlinkUtil.triggerSavepoint(clusterClient,jobInfo.getJobId(),savePoint));
                     break;
                 case STOP:
-                    CompletableFuture<String> stopFuture = clusterClient.stopWithSavepoint(JobID.fromHexString(jobInfo.getJobId()), true, savePoint);
+                    jobInfo.setSavePoint(FlinkUtil.stopWithSavepoint(clusterClient,jobInfo.getJobId(),savePoint));
                     jobInfo.setStatus(JobInfo.JobStatus.STOP);
-                    jobInfo.setSavePoint(stopFuture.get());
                     break;
                 case CANCEL:
-                    CompletableFuture<String> cancelFuture = clusterClient.cancelWithSavepoint(JobID.fromHexString(jobInfo.getJobId()), savePoint);
+                    jobInfo.setSavePoint(FlinkUtil.cancelWithSavepoint(clusterClient,jobInfo.getJobId(),savePoint));
                     jobInfo.setStatus(JobInfo.JobStatus.CANCEL);
-                    jobInfo.setSavePoint(cancelFuture.get());
                     break;
                 default:
             }
