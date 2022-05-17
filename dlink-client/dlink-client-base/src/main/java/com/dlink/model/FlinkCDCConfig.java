@@ -28,13 +28,14 @@ public class FlinkCDCConfig {
     private Map<String, String> sink;
     private List<Schema> schemaList;
     private String schemaFieldName;
+    private Map<String, String> sinkColumnSort;
 
     public FlinkCDCConfig() {
     }
 
     public FlinkCDCConfig(String type, String hostname, Integer port, String username, String password, Integer checkpoint, Integer parallelism, String database, String schema, String table,
                           String startupMode,
-                          Map<String, String> debezium, Map<String, String> source, Map<String, String> sink) {
+                          Map<String, String> debezium, Map<String, String> source, Map<String, String> sink, Map<String, String> sinkColumnSort) {
         this.type = type;
         this.hostname = hostname;
         this.port = port;
@@ -49,6 +50,7 @@ public class FlinkCDCConfig {
         this.debezium = debezium;
         this.source = source;
         this.sink = sink;
+        this.sinkColumnSort = sinkColumnSort;
     }
 
     public String getType() {
@@ -218,5 +220,13 @@ public class FlinkCDCConfig {
 
     public void setDebezium(Map<String, String> debezium) {
         this.debezium = debezium;
+    }
+
+    public Map<String, String> getSinkColumnSort() {
+        return sinkColumnSort;
+    }
+
+    public void setSinkColumnSort(Map<String, String> sinkColumnSort) {
+        this.sinkColumnSort = sinkColumnSort;
     }
 }

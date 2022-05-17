@@ -33,9 +33,10 @@ public class CDCSource {
     private Map<String, String> debezium;
     private Map<String, String> source;
     private Map<String, String> sink;
+    private Map<String, String> sinkColumnSort;
 
     public CDCSource(String connector, String statement, String name, String hostname, Integer port, String username, String password, Integer checkpoint, Integer parallelism, String startupMode,
-                     Map<String, String> debezium, Map<String, String> source, Map<String, String> sink) {
+                     Map<String, String> debezium, Map<String, String> source, Map<String, String> sink, Map<String, String> sinkColumnSort) {
         this.connector = connector;
         this.statement = statement;
         this.name = name;
@@ -49,6 +50,7 @@ public class CDCSource {
         this.debezium = debezium;
         this.source = source;
         this.sink = sink;
+        this.sinkColumnSort = sinkColumnSort;
     }
 
     public static CDCSource build(String statement) {
@@ -84,20 +86,28 @@ public class CDCSource {
                 }
             }
         }
+        // for sorting sink columns
+        Map<String, String> sinkColumnSort = new HashMap<>();
+        for (String entry : config.get("sinkColumnSort").split(";")) {
+            String[] tmp = entry.split(":", 2);
+            sinkColumnSort.put(tmp[0], tmp[1].replaceAll("\\s*", ""));
+        }
+
         CDCSource cdcSource = new CDCSource(
-            config.get("connector"),
-            statement,
-            map.get("CDCSOURCE").toString(),
-            config.get("hostname"),
-            Integer.valueOf(config.get("port")),
-            config.get("username"),
-            config.get("password"),
-            Integer.valueOf(config.get("checkpoint")),
-            Integer.valueOf(config.get("parallelism")),
-            config.get("scan.startup.mode"),
-            debezium,
-            source,
-            sink
+                config.get("connector"),
+                statement,
+                map.get("CDCSOURCE").toString(),
+                config.get("hostname"),
+                Integer.valueOf(config.get("port")),
+                config.get("username"),
+                config.get("password"),
+                Integer.valueOf(config.get("checkpoint")),
+                Integer.valueOf(config.get("parallelism")),
+                config.get("scan.startup.mode"),
+                debezium,
+                source,
+                sink,
+                sinkColumnSort
         );
         if (Asserts.isNotNullString(config.get("database-name"))) {
             cdcSource.setDatabase(config.get("database-name"));
@@ -249,5 +259,12 @@ public class CDCSource {
 
     public void setSource(Map<String, String> source) {
         this.source = source;
+    }
+
+    public Map<String, String> getSinkColumnSort() {
+        return sinkColumnSort;
+    }
+    public void setSinkColumnSort(Map<String, String> sinkColumnSort) {
+        this.sinkColumnSort = sinkColumnSort;
     }
 }

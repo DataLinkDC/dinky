@@ -5,6 +5,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.TableResult;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -52,8 +53,8 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
     public TableResult build(Executor executor) {
         CDCSource cdcSource = CDCSource.build(statement);
         FlinkCDCConfig config = new FlinkCDCConfig(cdcSource.getConnector(), cdcSource.getHostname(), cdcSource.getPort(), cdcSource.getUsername()
-            , cdcSource.getPassword(), cdcSource.getCheckpoint(), cdcSource.getParallelism(), cdcSource.getDatabase(), cdcSource.getSchema()
-            , cdcSource.getTable(), cdcSource.getStartupMode(), cdcSource.getDebezium(), cdcSource.getSource(), cdcSource.getSink());
+                , cdcSource.getPassword(), cdcSource.getCheckpoint(), cdcSource.getParallelism(), cdcSource.getDatabase(), cdcSource.getSchema()
+                , cdcSource.getTable(), cdcSource.getStartupMode(), cdcSource.getDebezium(), cdcSource.getSource(), cdcSource.getSink(), cdcSource.getSinkColumnSort());
         try {
             CDCBuilder cdcBuilder = CDCBuilderFactory.buildCDCBuilder(config);
             Map<String, Map<String, String>> allConfigMap = cdcBuilder.parseMetaDataConfigs();
@@ -71,18 +72,27 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                 Driver driver = Driver.build(driverConfig);
                 final List<Table> tables = driver.listTables(schemaName);
                 for (Table table : tables) {
+                    List<String> customSort = Arrays.asList(config.getSinkColumnSort().getOrDefault(table.getName(), "").split(","));
                     if (!Asserts.isEquals(table.getType(), "VIEW")) {
                         if (Asserts.isNotNullCollection(tableRegList)) {
                             for (String tableReg : tableRegList) {
                                 if (table.getSchemaTableName().matches(tableReg.trim()) && !schema.getTables().contains(Table.build(table.getName()))) {
-                                    table.setColumns(driver.listColumnsSortByPK(schemaName, table.getName()));
+                                    if (customSort.size() > 1) {
+                                        table.setColumns(driver.listColumnsSortByCustom(schemaName, table.getName(), customSort));
+                                    } else {
+                                        table.setColumns(driver.listColumnsSortByPK(schemaName, table.getName()));
+                                    }
                                     schema.getTables().add(table);
                                     schemaTableNameList.add(table.getSchemaTableName());
                                     break;
                                 }
                             }
                         } else {
-                            table.setColumns(driver.listColumnsSortByPK(schemaName, table.getName()));
+                            if (customSort.size() > 1) {
+                                table.setColumns(driver.listColumnsSortByCustom(schemaName, table.getName(), customSort));
+                            } else {
+                                table.setColumns(driver.listColumnsSortByPK(schemaName, table.getName()));
+                            }
                             schemaTableNameList.add(table.getSchemaTableName());
                             schema.getTables().add(table);
                         }

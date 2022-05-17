@@ -73,6 +73,8 @@ public interface Driver {
 
     List<Column> listColumnsSortByPK(String schemaName, String tableName);
 
+    List<Column> listColumnsSortByCustom(String schemaName, String tableName, List<String> customSort);
+
     List<Schema> getSchemasAndTables();
 
     List<Table> getTablesAndColumns(String schemaName);

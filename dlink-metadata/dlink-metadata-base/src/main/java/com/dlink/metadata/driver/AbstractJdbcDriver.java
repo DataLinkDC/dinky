@@ -253,6 +253,13 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     }
 
     @Override
+    public List<Column> listColumnsSortByCustom(String schemaName, String tableName, List<String> customSort) {
+        List<Column> columnList = listColumns(schemaName, tableName);
+        columnList.sort(Comparator.comparingInt(o -> !customSort.contains(o.getName()) ? Integer.MAX_VALUE : customSort.indexOf(o.getName())));
+        return columnList;
+    }
+
+    @Override
     public boolean createTable(Table table) throws Exception {
         String sql = getCreateTableSql(table).replaceAll("\r\n", " ");
         if (Asserts.isNotNull(sql)) {
