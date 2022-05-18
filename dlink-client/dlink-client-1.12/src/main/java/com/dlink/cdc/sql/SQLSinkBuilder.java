@@ -1,5 +1,8 @@
 package com.dlink.cdc.sql;
 
+import com.dlink.model.Column;
+import com.dlink.model.ColumnType;
+import com.dlink.utils.LogUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
@@ -53,7 +56,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
     public SQLSinkBuilder() {
     }
 
-    public SQLSinkBuilder(FlinkCDCConfig config) {
+    private SQLSinkBuilder(FlinkCDCConfig config) {
         super(config);
     }
 
@@ -62,7 +65,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
 
     }
 
-    protected DataStream<Row> buildRow(
+    private DataStream<Row> buildRow(
         SingleOutputStreamOperator<Map> filterOperator,
         List<String> columnNameList,
         List<LogicalType> columnTypeList) {
@@ -113,17 +116,24 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
             }, rowTypeInfo);
     }
 
-    public void addTableSink(
+    private void addTableSink(
         CustomTableEnvironment customTableEnvironment,
         DataStream<Row> rowDataDataStream,
         Table table,
         List<String> columnNameList) {
 
         String sinkTableName = getSinkTableName(table);
-        customTableEnvironment.createTemporaryView(table.getSchemaTableNameWithUnderline(), rowDataDataStream, StringUtils.join(columnNameList, ","));
-        customTableEnvironment.executeSql(getFlinkDDL(table, sinkTableName));
-
-        List<Operation> operations = customTableEnvironment.getParser().parse(table.getCDCSqlInsert(sinkTableName, table.getSchemaTableNameWithUnderline()));
+        String viewName = "VIEW_" + table.getSchemaTableNameWithUnderline();
+        customTableEnvironment.createTemporaryView(viewName, rowDataDataStream, StringUtils.join(columnNameList, ","));
+        logger.info("Create " + viewName + " temporaryView successful...");
+        String flinkDDL = getFlinkDDL(table, sinkTableName);
+        logger.info(flinkDDL);
+        customTableEnvironment.executeSql(flinkDDL);
+        logger.info("Create " + sinkTableName + " FlinkSQL DDL successful...");
+        String cdcSqlInsert = getCDCSqlInsert(table, sinkTableName, viewName);
+        logger.info(cdcSqlInsert);
+        List<Operation> operations = customTableEnvironment.getParser().parse(cdcSqlInsert);
+        logger.info("Create " + sinkTableName + " FlinkSQL insert into successful...");
         if (operations.size() > 0) {
             Operation operation = operations.get(0);
             if (operation instanceof ModifyOperation) {
@@ -152,25 +162,35 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
         final String schemaFieldName = config.getSchemaFieldName();
         if (Asserts.isNotNullCollection(schemaList)) {
             SingleOutputStreamOperator<Map> mapOperator = deserialize(dataStreamSource);
+            logger.info("Build deserialize successful...");
             for (Schema schema : schemaList) {
                 for (Table table : schema.getTables()) {
-                    SingleOutputStreamOperator<Map> filterOperator = shunt(mapOperator, table, schemaFieldName);
-                    List<String> columnNameList = new ArrayList<>();
-                    List<LogicalType> columnTypeList = new ArrayList<>();
-                    buildColumn(columnNameList, columnTypeList, table.getColumns());
-                    DataStream<Row> rowDataDataStream = buildRow(filterOperator, columnNameList, columnTypeList);
-                    addTableSink(customTableEnvironment, rowDataDataStream, table, columnNameList);
+                    try {
+                        SingleOutputStreamOperator<Map> filterOperator = shunt(mapOperator, table, schemaFieldName);
+                        logger.info("Build " + table.getSchemaTableName() + " shunt successful...");
+                        List<String> columnNameList = new ArrayList<>();
+                        List<LogicalType> columnTypeList = new ArrayList<>();
+                        buildColumn(columnNameList, columnTypeList, table.getColumns());
+                        DataStream<Row> rowDataDataStream = buildRow(filterOperator, columnNameList, columnTypeList);
+                        logger.info("Build " + table.getSchemaTableName() + " flatMap successful...");
+                        logger.info("Start build " + table.getSchemaTableName() + " sink...");
+                        addTableSink(customTableEnvironment, rowDataDataStream, table, columnNameList);
+                    } catch (Exception e) {
+                        logger.error("Build " + table.getSchemaTableName() + " cdc sync failed...");
+                        logger.error(LogUtil.getError(e));
+                    }
                 }
             }
             List<Transformation<?>> trans = customTableEnvironment.getPlanner().translate(modifyOperations);
             for (Transformation<?> item : trans) {
                 env.addOperator(item);
             }
+            logger.info("A total of " + trans.size() + " table cdc sync were build successfull...");
         }
         return dataStreamSource;
     }
 
-    public String getFlinkDDL(Table table, String tableName) {
+    private String getFlinkDDL(Table table, String tableName) {
         StringBuilder sb = new StringBuilder();
         sb.append("CREATE TABLE IF NOT EXISTS ");
         sb.append(tableName);
@@ -211,7 +231,31 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
         return sb.toString();
     }
 
-    protected String convertSinkColumnType(String type) {
+    private String getCDCSqlInsert(Table table, String targetName, String sourceName) {
+        StringBuilder sb = new StringBuilder("INSERT INTO ");
+        sb.append(targetName);
+        sb.append(" SELECT\n");
+        for (int i = 0; i < table.getColumns().size(); i++) {
+            sb.append("    ");
+            if (i > 0) {
+                sb.append(",");
+            }
+            sb.append(getColumnProcessing(table.getColumns().get(i)) + " \n");
+        }
+        sb.append(" FROM ");
+        sb.append(sourceName);
+        return sb.toString();
+    }
+
+    private String getColumnProcessing(Column column) {
+        if ("true".equals(config.getSink().get("column.replace.line-break")) && ColumnType.STRING.equals(column.getJavaType())) {
+            return "REGEXP_REPLACE(`" + column.getName() + "`, '\\n', '') AS `" + column.getName() + "`";
+        } else {
+            return "`" + column.getName() + "`";
+        }
+    }
+
+    private String convertSinkColumnType(String type) {
         if (config.getSink().get("connector").equals("hudi")) {
             if (type.equals("TIMESTAMP")) {
                 return "TIMESTAMP(3)";
@@ -235,7 +279,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
         }
     }
 
-    protected String getSinkConfigurationString(Table table) {
+    private String getSinkConfigurationString(Table table) {
         String configurationString = SqlUtil.replaceAllParam(config.getSinkConfigurationString(), "schemaName", getSinkSchemaName(table));
         configurationString = SqlUtil.replaceAllParam(configurationString, "tableName", getSinkTableName(table));
         if (configurationString.contains("${pkList}")) {

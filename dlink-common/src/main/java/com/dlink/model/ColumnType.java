@@ -60,7 +60,11 @@ public enum ColumnType {
 
     public String getFlinkType() {
         if (flinkType.equals("DECIMAL")) {
-            return flinkType + "(" + precision + "," + scale + ")";
+            if (precision == null || precision == 0) {
+                return flinkType + "(" + 38 + "," + scale + ")";
+            } else {
+                return flinkType + "(" + precision + "," + scale + ")";
+            }
         } else {
             return flinkType;
         }
