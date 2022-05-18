@@ -260,6 +260,20 @@
             </includes>
         </fileSet>
         <fileSet>
+            <directory>${project.parent.basedir}/dlink-client/dlink-client-base/target</directory>
+            <outputDirectory>jar</outputDirectory>
+            <includes>
+                <include>dlink-client-base-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-common/target</directory>
+            <outputDirectory>jar</outputDirectory>
+            <includes>
+                <include>dlink-common-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
             <directory>${project.parent.basedir}/dlink-doc/extends</directory>
             <outputDirectory>jar</outputDirectory>
             <includes>
