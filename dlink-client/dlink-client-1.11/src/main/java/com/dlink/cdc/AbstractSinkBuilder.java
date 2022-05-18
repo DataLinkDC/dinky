@@ -39,6 +39,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.dlink.assertion.Asserts;
 import com.dlink.executor.CustomTableEnvironment;
 import com.dlink.model.Column;
@@ -54,6 +57,8 @@ import com.dlink.model.Table;
  * @since 2022/4/12 21:28
  **/
 public abstract class AbstractSinkBuilder {
+
+    protected static final Logger logger = LoggerFactory.getLogger(AbstractSinkBuilder.class);
 
     protected FlinkCDCConfig config;
     protected List<ModifyOperation> modifyOperations = new ArrayList();
@@ -225,7 +230,11 @@ public abstract class AbstractSinkBuilder {
             case JAVA_LANG_DOUBLE:
                 return new DoubleType();
             case DECIMAL:
-                return new DecimalType(columnType.getPrecision(), columnType.getScale());
+                if(columnType.getPrecision() == null || columnType.getPrecision() == 0){
+                    return new DecimalType(38, columnType.getScale());
+                }else{
+                    return new DecimalType(columnType.getPrecision(), columnType.getScale());
+                }
             case INT:
             case INTEGER:
                 return new IntType();
