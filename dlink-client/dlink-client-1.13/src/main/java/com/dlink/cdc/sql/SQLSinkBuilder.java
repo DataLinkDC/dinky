@@ -268,11 +268,25 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
             return null;
         }
         if (logicalType instanceof DateType) {
-            return Instant.ofEpochMilli((long) value).atZone(ZoneId.systemDefault()).toLocalDate();
+            if(value instanceof Integer){
+                return Instant.ofEpochMilli(((Integer) value).longValue()).atZone(ZoneId.systemDefault()).toLocalDate();
+            }else {
+                return Instant.ofEpochMilli((long) value).atZone(ZoneId.systemDefault()).toLocalDate();
+            }
         } else if (logicalType instanceof TimestampType) {
-            return Instant.ofEpochMilli((long) value).atZone(ZoneId.systemDefault()).toLocalDateTime();
+            if(value instanceof Integer){
+                return Instant.ofEpochMilli(((Integer) value).longValue()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+            }else {
+                return Instant.ofEpochMilli((long) value).atZone(ZoneId.systemDefault()).toLocalDateTime();
+            }
         } else if (logicalType instanceof DecimalType) {
             return new BigDecimal((String) value);
+        } else if (logicalType instanceof BigIntType) {
+            if(value instanceof Integer){
+                return ((Integer) value).longValue();
+            }else {
+                return value;
+            }
         } else {
             return value;
         }

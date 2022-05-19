@@ -15,6 +15,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
+import org.apache.flink.table.types.logical.BigIntType;
 import org.apache.flink.table.types.logical.DateType;
 import org.apache.flink.table.types.logical.DecimalType;
 import org.apache.flink.table.types.logical.LogicalType;
@@ -269,11 +270,25 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
             return null;
         }
         if (logicalType instanceof DateType) {
-            return Instant.ofEpochMilli((long) value).atZone(ZoneId.systemDefault()).toLocalDate();
+            if(value instanceof Integer){
+                return Instant.ofEpochMilli(((Integer) value).longValue()).atZone(ZoneId.systemDefault()).toLocalDate();
+            }else {
+                return Instant.ofEpochMilli((long) value).atZone(ZoneId.systemDefault()).toLocalDate();
+            }
         } else if (logicalType instanceof TimestampType) {
-            return Instant.ofEpochMilli((long) value).atZone(ZoneId.systemDefault()).toLocalDateTime();
+            if(value instanceof Integer){
+                return Instant.ofEpochMilli(((Integer) value).longValue()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+            }else {
+                return Instant.ofEpochMilli((long) value).atZone(ZoneId.systemDefault()).toLocalDateTime();
+            }
         } else if (logicalType instanceof DecimalType) {
             return new BigDecimal((String) value);
+        } else if (logicalType instanceof BigIntType) {
+            if(value instanceof Integer){
+                return ((Integer) value).longValue();
+            }else {
+                return value;
+            }
         } else {
             return value;
         }
