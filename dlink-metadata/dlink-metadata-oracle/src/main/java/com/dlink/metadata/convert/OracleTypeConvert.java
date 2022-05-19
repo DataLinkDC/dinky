@@ -28,7 +28,7 @@ public class OracleTypeConvert implements ITypeConvert {
             if (t.matches("number\\(+\\d\\)")) {
                 columnType = ColumnType.INTEGER;
             } else if (t.matches("number\\(+\\d{2}+\\)")) {
-                columnType = ColumnType.LONG;
+                columnType = ColumnType.JAVA_LANG_LONG;
             } else {
                 columnType = ColumnType.DECIMAL;
             }

@@ -83,6 +83,7 @@ public class Explainer {
         List<StatementParam> ddl = new ArrayList<>();
         List<StatementParam> trans = new ArrayList<>();
         List<StatementParam> execute = new ArrayList<>();
+        List<String> statementList = new ArrayList<>();
         for (String item : statements) {
             String statement = executor.pretreatStatement(item);
             if (statement.isEmpty()) {
@@ -92,6 +93,7 @@ public class Explainer {
             if (operationType.equals(SqlType.INSERT) || operationType.equals(SqlType.SELECT) || operationType.equals(SqlType.SHOW)
                 || operationType.equals(SqlType.DESCRIBE) || operationType.equals(SqlType.DESC)) {
                 trans.add(new StatementParam(statement, operationType));
+                statementList.add(statement);
                 if (!useStatementSet) {
                     break;
                 }
@@ -99,9 +101,10 @@ public class Explainer {
                 execute.add(new StatementParam(statement, operationType));
             } else {
                 ddl.add(new StatementParam(statement, operationType));
+                statementList.add(statement);
             }
         }
-        return new JobParam(Arrays.asList(statements), ddl, trans, execute);
+        return new JobParam(statementList, ddl, trans, execute);
     }
 
     public List<SqlExplainResult> explainSqlResult(String statement) {
@@ -259,9 +262,13 @@ public class Explainer {
 
     public ObjectNode getStreamGraph(String statement) {
         JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
-
+        if (jobParam.getDdl().size() > 0) {
+            for(StatementParam statementParam: jobParam.getDdl()){
+                executor.executeSql(statementParam.getValue());
+            }
+        }
         if (jobParam.getTrans().size() > 0) {
-            return executor.getStreamGraph(jobParam.getStatements());
+            return executor.getStreamGraph(jobParam.getTransStatement());
         } else if (jobParam.getExecute().size() > 0) {
             List<String> datastreamPlans = new ArrayList<>();
             for (StatementParam item : jobParam.getExecute()) {
@@ -275,9 +282,13 @@ public class Explainer {
 
     public JobPlanInfo getJobPlanInfo(String statement) {
         JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
-
+        if (jobParam.getDdl().size() > 0) {
+            for(StatementParam statementParam: jobParam.getDdl()){
+                executor.executeSql(statementParam.getValue());
+            }
+        }
         if (jobParam.getTrans().size() > 0) {
-            return executor.getJobPlanInfo(jobParam.getStatements());
+            return executor.getJobPlanInfo(jobParam.getTransStatement());
         } else if (jobParam.getExecute().size() > 0) {
             List<String> datastreamPlans = new ArrayList<>();
             for (StatementParam item : jobParam.getExecute()) {

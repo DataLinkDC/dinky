@@ -1,5 +1,6 @@
 package com.dlink.job;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,6 +45,14 @@ public class JobParam {
 
     public List<StatementParam> getTrans() {
         return trans;
+    }
+
+    public List<String> getTransStatement() {
+        List<String> statementList = new ArrayList<>();
+        for(StatementParam statementParam: trans){
+            statementList.add(statementParam.getValue());
+        }
+        return statementList;
     }
 
     public void setTrans(List<StatementParam> trans) {
