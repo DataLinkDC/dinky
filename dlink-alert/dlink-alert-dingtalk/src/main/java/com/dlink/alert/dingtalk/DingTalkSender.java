@@ -168,6 +168,7 @@ public class DingTalkSender {
                 builder.append(" ");
             });
         }
+        builder.append("\n\n");
         String txt = genrateResultMsg(title, content, builder);
         text.put("title", title);
         text.put("text", txt);
@@ -226,9 +227,13 @@ public class DingTalkSender {
         String[] atMobileArray = Asserts.isNotNullString(atMobiles) ? atMobiles.split(",") : new String[0];
         String[] atUserArray = Asserts.isNotNullString(atUserIds) ? atUserIds.split(",") : new String[0];
         boolean isAtAll = Objects.isNull(atAll) ? false : atAll;
-        at.put("atMobiles", atMobileArray);
-        at.put("atUserIds", atUserArray);
         at.put("isAtAll", isAtAll);
+        if (atMobileArray.length > 0){
+            at.put("atMobiles", atMobileArray);
+        }
+        if (atMobileArray.length > 0){
+            at.put("atUserIds", atUserArray);
+        }
         items.put("at", at);
     }
 
