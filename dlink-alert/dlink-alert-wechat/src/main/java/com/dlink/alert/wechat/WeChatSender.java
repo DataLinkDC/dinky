@@ -43,7 +43,7 @@ public class WeChatSender {
     private final String weChatTokenUrlReplace;
     private final String weChatToken;
     private final String sendType;
-    private final String showType;
+    private static String showType;
     private final String webhookUrl;
     private final String KeyWord ;
     private final Boolean atAll;
@@ -76,7 +76,7 @@ public class WeChatSender {
             userList = Arrays.asList(weChatUsers.split(","));
         }
         if(atAll){
-            userList.add("ALL");
+            userList.add("所有人");
         }
 
         String data ="";
@@ -171,10 +171,14 @@ public class WeChatSender {
      */
     private static String mkMarkDownAtUsers(List<String> userList){
 
-        StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder("\n");
         if (Asserts.isNotNull(userList)) {
             userList.forEach(value -> {
-                builder.append("<@").append(value).append("> ");
+                if (value.equals("所有人") && showType.equals(ShowType.TEXT.getValue())) {
+                    builder.append("@所有人 ");
+                }else{
+                    builder.append("<@").append(value).append("> ");
+                }
             });
         }
         return builder.toString();
