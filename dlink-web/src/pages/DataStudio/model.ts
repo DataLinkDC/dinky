@@ -378,6 +378,7 @@ const Model: ModelType = {
       };
     },
     changeActiveKey(state, {payload}) {
+      payload = parseInt(payload);
       const newTabs = state?.tabs;
       let newCurrent = state?.current;
       for (let i = 0; i < newTabs.panes.length; i++) {
