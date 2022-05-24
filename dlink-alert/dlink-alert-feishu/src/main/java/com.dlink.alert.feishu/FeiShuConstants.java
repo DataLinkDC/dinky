@@ -8,7 +8,7 @@ package com.dlink.alert.feishu;
 public final class FeiShuConstants {
     static final String TYPE = "FeiShu";
     static final String MARKDOWN_QUOTE = "> ";
-    static final String MARKDOWN_ENTER = "\n";
+    static final String MARKDOWN_ENTER = "/n";
     static final String WEB_HOOK = "webhook";
     static final String KEY_WORD = "keyword";
     static final String SECRET = "secret";
@@ -21,7 +21,7 @@ public final class FeiShuConstants {
     static final String AT_ALL = "isAtAll";
     static final String AT_USERS = "users";
     static final String FEI_SHU_TEXT_TEMPLATE = "{\"msg_type\":\"{msg_type}\",\"content\":{\"{msg_type}\":\"{msg} {users} \" }}";
-    static final String FEI_SHU_POST_TEMPLATE ="{\"msg_type\":\"{msg_type}\",\"content\":{\"{msg_type}\":{\"zh_cn\":{\"title\":\"{keyword}\",\"content\":[[{\"tag\":\"text\",\"text\":\"{msg}\"},{users}]]}}}}";
+    static final String FEI_SHU_POST_TEMPLATE ="{\"msg_type\":\"{msg_type}\",\"content\":{\"{msg_type}\":{\"zh_cn\":{\"title\":\"{keyword}\",\"content\":[[{\"tag\":\"text\",\"un_escape\": true,\"text\":\"{msg}\"},{users}]]}}}}";
 
     private FeiShuConstants() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");

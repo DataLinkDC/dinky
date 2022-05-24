@@ -138,14 +138,13 @@ public final class FeiShuSender {
             }
 
             StringBuilder contents = new StringBuilder(100);
-            contents.append(String.format("`%s`/n ", alertMsg.getName()));
+            contents.append(String.format("`%s`"+FeiShuConstants.MARKDOWN_ENTER, alertMsg.getName()));
             for (Map map : list) {
                 for (Entry<String, Object> entry : (Iterable<Entry<String, Object>>) map.entrySet()) {
                     String key = entry.getKey();
                     String value = entry.getValue().toString();
                     contents.append(FeiShuConstants.MARKDOWN_QUOTE);
-                    contents.append(key + "：" + value);
-                    contents.append(" /n ");
+                    contents.append(key + "：" + value).append(FeiShuConstants.MARKDOWN_ENTER);
                 }
             }
             return contents.toString();
