@@ -1,5 +1,17 @@
 package com.dlink.service.impl;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.alert.Alert;
 import com.dlink.alert.AlertConfig;
@@ -11,6 +23,7 @@ import com.dlink.assertion.Tips;
 import com.dlink.common.result.Result;
 import com.dlink.config.Dialect;
 import com.dlink.constant.FlinkRestResultConstant;
+import com.dlink.constant.NetConstant;
 import com.dlink.daemon.task.DaemonFactory;
 import com.dlink.daemon.task.DaemonTaskConfig;
 import com.dlink.db.service.impl.SuperServiceImpl;
@@ -21,25 +34,43 @@ import com.dlink.gateway.config.SavePointStrategy;
 import com.dlink.gateway.config.SavePointType;
 import com.dlink.gateway.model.JobInfo;
 import com.dlink.gateway.result.SavePointResult;
-import com.dlink.job.*;
+import com.dlink.job.FlinkJobTask;
+import com.dlink.job.Job;
+import com.dlink.job.JobConfig;
+import com.dlink.job.JobManager;
+import com.dlink.job.JobResult;
 import com.dlink.mapper.TaskMapper;
 import com.dlink.metadata.driver.Driver;
 import com.dlink.metadata.result.JdbcSelectResult;
-import com.dlink.model.*;
+import com.dlink.model.AlertGroup;
+import com.dlink.model.AlertHistory;
+import com.dlink.model.AlertInstance;
+import com.dlink.model.Cluster;
+import com.dlink.model.DataBase;
+import com.dlink.model.Jar;
+import com.dlink.model.JobHistory;
+import com.dlink.model.JobInfoDetail;
+import com.dlink.model.JobInstance;
+import com.dlink.model.JobLifeCycle;
+import com.dlink.model.JobStatus;
+import com.dlink.model.Savepoints;
+import com.dlink.model.Statement;
+import com.dlink.model.SystemConfiguration;
+import com.dlink.model.Task;
 import com.dlink.result.SqlExplainResult;
-import com.dlink.service.*;
+import com.dlink.service.AlertGroupService;
+import com.dlink.service.AlertHistoryService;
+import com.dlink.service.ClusterConfigurationService;
+import com.dlink.service.ClusterService;
+import com.dlink.service.DataBaseService;
+import com.dlink.service.JarService;
+import com.dlink.service.JobHistoryService;
+import com.dlink.service.JobInstanceService;
+import com.dlink.service.SavepointsService;
+import com.dlink.service.StatementService;
+import com.dlink.service.TaskService;
 import com.dlink.utils.CustomStringJavaCompiler;
 import com.dlink.utils.JSONUtil;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 任务 服务实现类
@@ -79,6 +110,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private String username;
     @Value("${spring.datasource.password}")
     private String password;
+    @Value("${server.port}")
+    private String serverPort;
 
     private String buildParas(Integer id) {
         return "--id " + id + " --driver " + driver + " --url " + url + " --username " + username + " --password " + password;
@@ -226,7 +259,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             JobInstance jobInstance = jobInstanceService.getJobInstanceByTaskId(id);
             if (Asserts.isNotNull(jobInstance) && !JobStatus.isDone(jobInstance.getStatus())) {
                 task.setJobInstanceId(jobInstance.getId());
-            }else {
+            } else {
                 task.setJobInstanceId(0);
             }
         }
@@ -586,6 +619,19 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public JobInfoDetail refreshJobInfoDetail(Integer id) {
         return jobInstanceService.getJobInfoDetailInfo(refreshJobInstance(id, true));
+    }
+
+    @Override
+    public String getTaskAPIAddress() {
+        try {
+            InetAddress inetAddress = InetAddress.getLocalHost();
+            if (inetAddress != null) {
+                return inetAddress.getHostAddress() + NetConstant.COLON + serverPort;
+            }
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        return "127.0.0.1:" + serverPort;
     }
 
     private void handleJobDone(JobInstance jobInstance) {
