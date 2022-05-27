@@ -75,6 +75,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
   const [isCreate, setIsCreate] = useState<boolean>(true);
   const [catalogueFormValues, setCatalogueFormValues] = useState({});
   const [taskFormValues, setTaskFormValues] = useState({});
+  const [activeNode, setActiveNode] = useState({});
   const [rightClickNode, setRightClickNode] = useState<TreeDataNode>();
   const [available, setAvailable] = useState<boolean>(true);
   const [isUploadModalVisible, setIsUploadModalVisible] = useState(false);
@@ -245,7 +246,6 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
         isLeaf: false,
         parentId: node?.id,
       });
-      getTreeData();
     } else {
       message.error('只能在目录上创建目录');
     }
@@ -258,7 +258,6 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       isLeaf: false,
       parentId: 0,
     });
-    getTreeData();
   };
 
   const toSubmit = (node: TreeDataNode | undefined) => {
@@ -279,14 +278,14 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     });
   };
 
-  const toRename = (node: TreeDataNode | undefined) => {
+  const toRename = (node: TreeDataNode) => {
     handleUpdateCatalogueModalVisible(true);
     setIsCreate(false);
+    setActiveNode(node);
     setCatalogueFormValues({
       id: node?.id,
       name: node?.name,
     });
-    getTreeData();
   };
 
   const toCut = (node: TreeDataNode | undefined) => {
@@ -312,7 +311,6 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       setTaskFormValues({
         parentId: node?.id,
       });
-      //getTreeData();
     } else {
       message.error('只能在目录上创建作业');
     }
@@ -523,7 +521,14 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
               if (success) {
                 handleUpdateCatalogueModalVisible(false);
                 setCatalogueFormValues({});
-                getTreeData()
+                getTreeData();
+                dispatch({
+                  type: "Studio/renameTab",
+                  payload: {
+                    key: value.id,
+                    name: <>{activeNode.icon} {value.name}</>
+                  },
+                });
               }
             }}
             onCancel={() => {
