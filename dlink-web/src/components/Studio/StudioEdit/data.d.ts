@@ -47,4 +47,5 @@ export type CAParam = {
   statement: string,
   statementSet: boolean,
   type: number,
+  dialect?: string,
 }

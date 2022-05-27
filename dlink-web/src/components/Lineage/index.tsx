@@ -25,7 +25,6 @@ const Lineage = (props: any) => {
       tables: [],
       relations: []
     };
-    debugger;
     allData.relations.forEach(relation => {
       if (relation.srcTableId !== tableId) {
         return;
