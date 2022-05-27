@@ -1,7 +1,5 @@
 import type {Effect, Reducer} from "umi";
-import {
-   handleAddOrUpdate
-} from "@/components/Common/crud";
+
 import type {SqlMetaData} from "@/components/Studio/StudioEvent/data";
 
 export type ClusterType = {
@@ -17,83 +15,6 @@ export type ClusterType = {
   createTime: Date,
   updateTime: Date,
 }
-
-export type ClusterConfigurationType = {
-  id: number,
-  name: string,
-  alias: string,
-  type: string,
-  config: any,
-  available: boolean,
-  note: string,
-  enabled: boolean,
-  createTime: Date,
-  updateTime: Date,
-}
-
-export type DataBaseType = {
-  id: number,
-  name: string,
-  alias: string,
-  groupName: string,
-  type: string,
-  url: string,
-  username: string,
-  password: string,
-  note: string,
-  dbVersion: string,
-  status: boolean,
-  healthTime: Date,
-  heartbeatTime: Date,
-  enabled: boolean,
-  createTime: Date,
-  updateTime: Date,
-};
-
-export type EnvType = {
-  id?: number,
-  name?: string,
-  alias?: string,
-  fragment?: boolean,
-};
-
-export type TaskType = {
-  id?: number,
-  catalogueId?: number,
-  name?: string,
-  alias?: string,
-  dialect?: string,
-  type?: string,
-  checkPoint?: number,
-  savePointStrategy?: number,
-  savePointPath?: string,
-  parallelism?: number,
-  fragment?: boolean,
-  statementSet?: boolean,
-  batchModel?: boolean,
-  config?: [],
-  clusterId?: any,
-  clusterName?: string,
-  clusterConfigurationId?: number,
-  clusterConfigurationName?: string,
-  databaseId?: number,
-  databaseName?: string,
-  jarId?: number,
-  envId?: number,
-  jobInstanceId?: number,
-  note?: string,
-  enabled?: boolean,
-  createTime?: Date,
-  updateTime?: Date,
-  statement?: string,
-  session: string;
-  maxRowNum: number;
-  jobName: string;
-  useResult: boolean;
-  useChangeLog: boolean;
-  useAutoCancel: boolean;
-  useSession: boolean;
-};
 
 export type ConsoleType = {
   result: {};
@@ -142,9 +63,6 @@ export type StateType = {
   toolLeftWidth?: number;
   cluster?: ClusterType[];
   sessionCluster?: ClusterType[];
-  clusterConfiguration?: ClusterConfigurationType[];
-  database?: DataBaseType[];
-  env?: EnvType[];
   currentSession?: SessionType;
   current?: TabsItemType;
   sql?: string;
@@ -163,7 +81,7 @@ export type ModelType = {
   namespace: string;
   state: StateType;
   effects: {
-    saveTask: Effect;
+
   };
   reducers: {
     changeFullScreen: Reducer<StateType>;
@@ -177,7 +95,6 @@ export type ModelType = {
     saveTabs: Reducer<StateType>;
     closeTabs: Reducer<StateType>;
     changeActiveKey: Reducer<StateType>;
-    saveTaskData: Reducer<StateType>;
     saveSession: Reducer<StateType>;
     showRightClickMenu: Reducer<StateType>;
     refreshCurrentSession: Reducer<StateType>;
@@ -185,11 +102,7 @@ export type ModelType = {
     saveResult: Reducer<StateType>;
     saveCluster: Reducer<StateType>;
     saveSessionCluster: Reducer<StateType>;
-    saveClusterConfiguration: Reducer<StateType>;
-    saveDataBase: Reducer<StateType>;
-    saveEnv: Reducer<StateType>;
     saveChart: Reducer<StateType>;
-    changeTaskStep: Reducer<StateType>;
     changeTaskJobInstance: Reducer<StateType>;
   };
 };
@@ -203,9 +116,6 @@ const Model: ModelType = {
     toolLeftWidth: 300,
     cluster: [],
     sessionCluster: [],
-    clusterConfiguration: [],
-    database: [],
-    env: [],
     currentSession: {
       connectors: [],
     },
@@ -226,15 +136,6 @@ const Model: ModelType = {
   },
 
   effects: {
-    * saveTask({payload}, {call, put}) {
-      const para = payload;
-      para.configJson = JSON.stringify(payload.config);
-      yield call(handleAddOrUpdate, 'api/task', para);
-      yield put({
-        type: 'saveTaskData',
-        payload,
-      });
-    },
   },
 
   reducers: {
@@ -394,24 +295,6 @@ const Model: ModelType = {
         currentPath: newCurrent.path,
       };
     },
-    saveTaskData(state, {payload}) {
-      const newTabs = state.tabs;
-      let newCurrent = state.current;
-      for (let i = 0; i < newTabs.panes.length; i++) {
-        if (newTabs.panes[i].key == payload.key) {
-          newTabs.panes[i].task = payload;
-          newTabs.panes[i].isModified = false;
-          if(newCurrent.key == payload.key){
-            newCurrent = newTabs.panes[i];
-          }
-        }
-      }
-      return {
-        ...state,
-        current: {...newCurrent},
-        tabs: {...newTabs},
-      };
-    },
     saveSession(state, {payload}) {
       return {
         ...state,
@@ -469,21 +352,6 @@ const Model: ModelType = {
         ...state,
         sessionCluster: [...payload],
       };
-    },saveClusterConfiguration(state, {payload}) {
-      return {
-        ...state,
-        clusterConfiguration: [...payload],
-      };
-    },saveDataBase(state, {payload}) {
-      return {
-        ...state,
-        database: [...payload],
-      };
-    },saveEnv(state, {payload}) {
-      return {
-        ...state,
-        env: [...payload],
-      };
     },saveChart(state, {payload}) {
       let newTabs = state?.tabs;
       let newCurrent = state?.current;
@@ -492,23 +360,6 @@ const Model: ModelType = {
           newTabs.panes[i].console.chart = payload;
           newCurrent = newTabs.panes[i];
           break;
-        }
-      }
-      return {
-        ...state,
-        current: {...newCurrent},
-        tabs: {...newTabs},
-      };
-    },
-    changeTaskStep(state, {payload}) {
-      const newTabs = state.tabs;
-      let newCurrent = state.current;
-      for (let i = 0; i < newTabs.panes.length; i++) {
-        if (newTabs.panes[i].task.id == payload.id) {
-          newTabs.panes[i].task.step = payload.step;
-          if(newCurrent.key == newTabs.panes[i].key){
-            newCurrent = newTabs.panes[i];
-          }
         }
       }
       return {

@@ -6,6 +6,8 @@ import styles from "./index.less";
 import {useEffect} from "react";
 import {showTables} from "@/components/Studio/StudioEvent/DDL";
 import {JarStateType} from "@/pages/Jar/model";
+import {EnvStateType} from "@/pages/DevOps/model";
+import {ConfigurationStateType} from "@/pages/ClusterConfiguration/model";
 import {Scrollbars} from "react-custom-scrollbars";
 import {RUN_MODE} from "@/components/Studio/conf";
 import {AlertStateType} from "@/pages/AlertInstance/model";
@@ -296,15 +298,15 @@ const StudioSetting = (props: any) => {
   );
 };
 
-export default connect(({Studio, Jar, Alert}: { Studio: StateType, Jar: JarStateType , Alert: AlertStateType }) => ({
+export default connect(({Studio, Jar, Alert,Env,Configuration}: { Studio: StateType, Jar: JarStateType , Alert: AlertStateType,Env:EnvStateType,Configuration:ConfigurationStateType }) => ({
   sessionCluster: Studio.sessionCluster,
-  clusterConfiguration: Studio.clusterConfiguration,
+  clusterConfiguration: Configuration.clusterConfiguration,
   current: Studio.current,
   tabs: Studio.tabs,
   session: Studio.session,
   currentSession: Studio.currentSession,
   toolHeight: Studio.toolHeight,
   jars: Jar.jars,
-  env: Studio.env,
+  env: Env.env,
   group: Alert.group,
 }))(StudioSetting);

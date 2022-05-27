@@ -12,7 +12,7 @@ export function saveTask(current: any, dispatch: any) {
       statement: current.value,
     };
     dispatch && dispatch({
-      type: "Studio/saveTask",
+      type: "Task/saveTask",
       payload: task,
     });
   }
@@ -148,7 +148,7 @@ export function showDataBase(dispatch: any) {
   const res = getData('api/database/listEnabledAll');
   res.then((result) => {
     result.datas && dispatch && dispatch({
-      type: "Studio/saveDataBase",
+      type: "DataBase/saveDataBase",
       payload: result.datas,
     });
   });
@@ -159,7 +159,7 @@ export function showEnv(dispatch: any) {
   const res = getData('api/task/listFlinkSQLEnv');
   res.then((result) => {
     result.datas && dispatch && dispatch({
-      type: "Studio/saveEnv",
+      type: "Env/saveEnv",
       payload: result.datas,
     });
   });
@@ -239,7 +239,7 @@ export function showClusterConfiguration(dispatch: any) {
   const res = getData('api/clusterConfiguration/listEnabledAll');
   res.then((result) => {
     result.datas && dispatch && dispatch({
-      type: "Studio/saveClusterConfiguration",
+      type: "Configuration/saveClusterConfiguration",
       payload: result.datas,
     });
   });
