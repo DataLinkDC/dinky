@@ -55,9 +55,9 @@ const StudioMetaData = (props: any) => {
   };
 
   const getDataBaseOptions = ()=>{
-    return <>{database.map(({ id, alias, type, enabled }) => (
-      <Option value={id} label={<><Tag color={enabled ? "processing" : "error"}>{type}</Tag>{alias}</>}>
-        <Tag color={enabled ? "processing" : "error"}>{type}</Tag>{alias}
+    return <>{database.map(({ id, name, alias, type, enabled }) => (
+      <Option  value={id} label={<><Tag color={enabled ? "processing" : "error"}>{type}</Tag>{ alias === "" ? name:alias}</>}>
+       <Tag color={enabled ? "processing" : "error"}>{type}</Tag>{ alias === "" ? name:alias}
       </Option>
     ))}</>
   };
@@ -77,7 +77,7 @@ const StudioMetaData = (props: any) => {
   return (
     <>
       <Select
-        // style={{width: '100%'}}
+        style={{width: '90%'}}
         placeholder="选择数据源"
         optionLabelProp="label"
         onChange={onChangeDataBase}

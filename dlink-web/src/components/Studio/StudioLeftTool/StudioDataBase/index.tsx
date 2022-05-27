@@ -31,7 +31,7 @@ const StudioDataBase = (props: any) => {
       key: "alias",
       sorter: true,
       render: (dom, entity) => {
-        return <a onClick={() => setRow(entity)}>{dom}</a>;
+        return <a onClick={() => setRow(entity)}>{entity.alias === "" ? entity.name : entity.alias}</a>;
       },
     }];
   };
