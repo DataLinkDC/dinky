@@ -186,7 +186,7 @@ const StudioDataBase = (props: any) => {
   const onDeleteDataBase = (record) => {
     Modal.confirm({
       title: '删除数据源',
-      content: `确定删除该数据源【${record.alias}】吗？`,
+      content: `确定删除该数据源【${record.alias === "" ? record.name : record.alias}】吗？`,
       okText: '确认',
       cancelText: '取消',
       onOk: async () => {
