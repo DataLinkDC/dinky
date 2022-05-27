@@ -18,6 +18,7 @@ const StudioCA = (props: any) => {
     const res = getLineage({
       statement:current.value,
       statementSet:current.task.statementSet,
+      dialect:current.task.dialect,
       type: 1,
     });
     res.then((result)=>{
