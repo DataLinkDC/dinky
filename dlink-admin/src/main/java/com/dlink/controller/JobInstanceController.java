@@ -1,19 +1,26 @@
 package com.dlink.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
-import com.dlink.model.Jar;
 import com.dlink.model.JobInstance;
 import com.dlink.service.JobInstanceService;
 import com.dlink.service.TaskService;
 import com.fasterxml.jackson.databind.JsonNode;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * JobInstanceController
@@ -35,7 +42,7 @@ public class JobInstanceController {
      */
     @PostMapping
     public ProTableResult<JobInstance> listJobInstances(@RequestBody JsonNode para) {
-        return jobInstanceService.selectForProTable(para);
+        return jobInstanceService.listJobInstances(para);
     }
 
     /**
