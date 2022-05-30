@@ -16,4 +16,5 @@ public class StudioCADTO extends AbstractStatementDTO {
     private Boolean statementSet;
     private Integer type;
     private String dialect;
+    private Integer databaseId;
 }

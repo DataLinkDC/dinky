@@ -11,6 +11,9 @@ import com.dlink.assertion.Asserts;
 import com.dlink.explainer.lineage.LineageRelation;
 import com.dlink.explainer.lineage.LineageResult;
 import com.dlink.explainer.lineage.LineageTable;
+import com.dlink.metadata.driver.Driver;
+import com.dlink.metadata.driver.DriverConfig;
+import com.dlink.model.Column;
 
 import java.util.*;
 
@@ -122,30 +125,41 @@ public class LineageBuilder {
         return LineageResult.build(tables, relations);
     }
 
-    public static LineageResult getSqlLineage(String statement,String type) {
+    public static LineageResult getSqlLineage(String statement, String type, DriverConfig driverConfig) {
         List<LineageTable> tables = new ArrayList<>();
         List<LineageRelation> relations = new ArrayList<>();
         Map<Integer, List<List<TableStat.Column>>> srcMap = new HashMap<>();
         Map<Integer, List<TableStat.Column>> tgtMap = new HashMap<>();
         Map<String, String> tableMap = new HashMap<>();
         List<TableStat.Column> allColumnList = new ArrayList<>();
-
+        String[] sqls = statement.split(";");
         try {
-            List<SQLStatement> sqlStatements = SQLUtils.parseStatements(statement.toLowerCase(), type);
+            List<SQLStatement> sqlStatements = SQLUtils.parseStatements(statement, type);
             for (int n = 0; n < sqlStatements.size(); n++) {
                 SQLStatement sqlStatement = sqlStatements.get(n);
                 List<List<TableStat.Column>> srcLists = new ArrayList<>();
                 List<TableStat.Column> tgtList = new ArrayList<>();
                 //只考虑insert语句
                 if (sqlStatement instanceof SQLInsertStatement) {
-                    String targetTable = ((SQLInsertStatement) sqlStatement).getTableName().toString();
+                    String targetTable = ((SQLInsertStatement) sqlStatement).getTableName().toString().replace("`", "").replace("\"", "");
                     List<SQLExpr> columns = ((SQLInsertStatement) sqlStatement).getColumns();
                     //处理target表中字段
-                    for (SQLExpr column : columns) {
-                        if (column instanceof SQLPropertyExpr) {
-                            tgtList.add(new TableStat.Column(targetTable, ((SQLPropertyExpr) column).getName().replace("`", "").replace("\"", "")));
-                        } else if (column instanceof SQLIdentifierExpr) {
-                            tgtList.add(new TableStat.Column(targetTable, ((SQLIdentifierExpr) column).getName().replace("`", "").replace("\"", "")));
+                    if (columns.size() <= 0 || sqls[n].contains("*")) {
+                        Driver driver = Driver.build(driverConfig);
+                        if(!targetTable.contains(".")){
+                            return null;
+                        }
+                        List<Column> columns1 = driver.listColumns(targetTable.split("\\.")[0], targetTable.split("\\.")[1]);
+                        for (Column column : columns1) {
+                            tgtList.add(new TableStat.Column(targetTable, column.getName()));
+                        }
+                    } else {
+                        for (SQLExpr column : columns) {
+                            if (column instanceof SQLPropertyExpr) {
+                                tgtList.add(new TableStat.Column(targetTable, ((SQLPropertyExpr) column).getName().replace("`", "").replace("\"", "")));
+                            } else if (column instanceof SQLIdentifierExpr) {
+                                tgtList.add(new TableStat.Column(targetTable, ((SQLIdentifierExpr) column).getName().replace("`", "").replace("\"", "")));
+                            }
                         }
                     }
                     //处理select  生成srcLists
