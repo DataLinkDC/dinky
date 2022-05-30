@@ -35,6 +35,7 @@ import com.dlink.gateway.config.SavePointType;
 import com.dlink.gateway.model.JobInfo;
 import com.dlink.gateway.result.SavePointResult;
 import com.dlink.job.FlinkJobTask;
+import com.dlink.job.FlinkJobTaskPool;
 import com.dlink.job.Job;
 import com.dlink.job.JobConfig;
 import com.dlink.job.JobManager;
@@ -47,6 +48,7 @@ import com.dlink.model.AlertHistory;
 import com.dlink.model.AlertInstance;
 import com.dlink.model.Cluster;
 import com.dlink.model.DataBase;
+import com.dlink.model.History;
 import com.dlink.model.Jar;
 import com.dlink.model.JobHistory;
 import com.dlink.model.JobInfoDetail;
@@ -63,6 +65,7 @@ import com.dlink.service.AlertHistoryService;
 import com.dlink.service.ClusterConfigurationService;
 import com.dlink.service.ClusterService;
 import com.dlink.service.DataBaseService;
+import com.dlink.service.HistoryService;
 import com.dlink.service.JarService;
 import com.dlink.service.JobHistoryService;
 import com.dlink.service.JobInstanceService;
@@ -101,6 +104,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private AlertGroupService alertGroupService;
     @Autowired
     private AlertHistoryService alertHistoryService;
+    @Autowired
+    private HistoryService historyService;
 
     @Value("${spring.datasource.driver-class-name}")
     private String driver;
@@ -581,30 +586,53 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public JobInstance refreshJobInstance(Integer id, boolean isCoercive) {
-        JobInstance jobInstance = jobInstanceService.getById(id);
-        Asserts.checkNull(jobInstance, "该任务实例不存在");
-        if (!isCoercive && !inRefreshPlan(jobInstance)) {
-            return jobInstance;
-        }
-        String status = jobInstance.getStatus();
-        Cluster cluster = clusterService.getById(jobInstance.getClusterId());
-        JobHistory jobHistoryJson = jobHistoryService.refreshJobHistory(id, cluster.getJobManagerHost(), jobInstance.getJid());
-        JobHistory jobHistory = jobHistoryService.getJobHistoryInfo(jobHistoryJson);
-        if (Asserts.isNull(jobHistory.getJob()) || jobHistory.getJob().has(FlinkRestResultConstant.ERRORS)) {
-            jobInstance.setStatus(JobStatus.UNKNOWN.getValue());
+        JobInfoDetail jobInfoDetail;
+        FlinkJobTaskPool pool = FlinkJobTaskPool.getInstance();
+        String key = id.toString();
+        if (pool.exist(key)) {
+            jobInfoDetail = pool.get(key);
         } else {
-            jobInstance.setDuration(jobHistory.getJob().get(FlinkRestResultConstant.JOB_DURATION).asLong() / 1000);
-            jobInstance.setStatus(jobHistory.getJob().get(FlinkRestResultConstant.JOB_STATE).asText());
+            jobInfoDetail = new JobInfoDetail(id);
+            JobInstance jobInstance = jobInstanceService.getById(id);
+            Asserts.checkNull(jobInstance, "该任务实例不存在");
+            jobInfoDetail.setInstance(jobInstance);
+            Cluster cluster = clusterService.getById(jobInstance.getClusterId());
+            jobInfoDetail.setCluster(cluster);
+            History history = historyService.getById(jobInstance.getHistoryId());
+            history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
+            if (Asserts.isNotNull(history) && Asserts.isNotNull(history.getClusterConfigurationId())) {
+                jobInfoDetail.setClusterConfiguration(clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId()));
+            }
+            jobInfoDetail.setHistory(history);
+            pool.push(key, jobInfoDetail);
         }
-        if (JobStatus.isDone(jobInstance.getStatus()) && !status.equals(jobInstance.getStatus())) {
-            jobInstance.setFinishTime(LocalDateTime.now());
-            handleJobDone(jobInstance);
+        if (!isCoercive && !inRefreshPlan(jobInfoDetail.getInstance())) {
+            return jobInfoDetail.getInstance();
+        }
+        JobHistory jobHistoryJson = jobHistoryService.refreshJobHistory(id, jobInfoDetail.getCluster().getJobManagerHost(), jobInfoDetail.getInstance().getJid(), jobInfoDetail.isNeedSave());
+        JobHistory jobHistory = jobHistoryService.getJobHistoryInfo(jobHistoryJson);
+        jobInfoDetail.setJobHistory(jobHistory);
+        String status = jobInfoDetail.getInstance().getStatus();
+        boolean jobStatusChanged = false;
+        if (Asserts.isNull(jobInfoDetail.getJobHistory().getJob()) || jobInfoDetail.getJobHistory().getJob().has(FlinkRestResultConstant.ERRORS)) {
+            jobInfoDetail.getInstance().setStatus(JobStatus.UNKNOWN.getValue());
+        } else {
+            jobInfoDetail.getInstance().setDuration(jobInfoDetail.getJobHistory().getJob().get(FlinkRestResultConstant.JOB_DURATION).asLong() / 1000);
+            jobInfoDetail.getInstance().setStatus(jobInfoDetail.getJobHistory().getJob().get(FlinkRestResultConstant.JOB_STATE).asText());
+        }
+        if (JobStatus.isDone(jobInfoDetail.getInstance().getStatus()) && !status.equals(jobInfoDetail.getInstance().getStatus())) {
+            jobStatusChanged = true;
+            jobInfoDetail.getInstance().setFinishTime(LocalDateTime.now());
+            handleJobDone(jobInfoDetail.getInstance());
         }
         if (isCoercive) {
-            DaemonFactory.addTask(DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInstance.getId()));
+            DaemonFactory.addTask(DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInfoDetail.getInstance().getId()));
         }
-        jobInstanceService.updateById(jobInstance);
-        return jobInstance;
+        if (jobStatusChanged || jobInfoDetail.isNeedSave()) {
+            jobInstanceService.updateById(jobInfoDetail.getInstance());
+        }
+        pool.refresh(jobInfoDetail);
+        return jobInfoDetail.getInstance();
     }
 
     private boolean inRefreshPlan(JobInstance jobInstance) {

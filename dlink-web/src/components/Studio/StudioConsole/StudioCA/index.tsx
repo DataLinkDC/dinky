@@ -7,6 +7,7 @@ import {getLineage, getStreamGraph} from "@/pages/DataStudio/service";
 import {useState} from "react";
 import Lineage, {getInit} from "@/components/Lineage";
 import CodeShow from "@/components/Common/CodeShow";
+import {DIALECT} from "@/components/Studio/conf";
 
 const { TabPane } = Tabs;
 
@@ -14,10 +15,13 @@ const StudioCA = (props: any) => {
   const {current} = props;
   const [data, setData] = useState(getInit());
 
+  debugger;
   const handleLineage=()=>{
     const res = getLineage({
       statement:current.value,
       statementSet:current.task.statementSet,
+      dialect:current.task.dialect,
+      databaseId:current.task.databaseId,
       type: 1,
     });
     res.then((result)=>{
@@ -62,15 +66,17 @@ const StudioCA = (props: any) => {
                   计算血缘
                 </Button>
               </Tooltip>
-              <Tooltip title="导出 StreamGraphPlan">
-                <Button
-                  type="text"
-                  icon={<SnippetsOutlined />}
-                  onClick={handleExportStreamGraphPlan}
-                >
-                  StreamGraphPlan
-                </Button>
-              </Tooltip>
+              {(!current.task.dialect || current.task.dialect == DIALECT.FLINKSQL) ?
+                <Tooltip title="导出 StreamGraphPlan">
+                  <Button
+                    type="text"
+                    icon={<SnippetsOutlined/>}
+                    onClick={handleExportStreamGraphPlan}
+                  >
+                    StreamGraphPlan
+                  </Button>
+                </Tooltip> : undefined
+              }
             </>}
     >
       <TabPane tab={<span>血缘分析</span>} key="Lineage">
