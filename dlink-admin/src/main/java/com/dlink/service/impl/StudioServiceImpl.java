@@ -257,10 +257,17 @@ public class StudioServiceImpl implements StudioService {
     @Override
     public LineageResult getLineage(StudioCADTO studioCADTO) {
         if (Asserts.isNotNullString(studioCADTO.getDialect()) && !studioCADTO.getDialect().equalsIgnoreCase("flinksql")) {
+            if(Asserts.isNull(studioCADTO.getDatabaseId())){
+                return null;
+            }
+            DataBase dataBase = dataBaseService.getById(studioCADTO.getDatabaseId());
+            if (Asserts.isNull(dataBase)) {
+                return null;
+            }
             if(studioCADTO.getDialect().equalsIgnoreCase("doris")){
-                return com.dlink.explainer.sqlLineage.LineageBuilder.getSqlLineage(studioCADTO.getStatement(),"mysql");
+                return com.dlink.explainer.sqlLineage.LineageBuilder.getSqlLineage(studioCADTO.getStatement(), "mysql", dataBase.getDriverConfig());
             } else {
-                return com.dlink.explainer.sqlLineage.LineageBuilder.getSqlLineage(studioCADTO.getStatement(),studioCADTO.getDialect().toLowerCase());
+                return com.dlink.explainer.sqlLineage.LineageBuilder.getSqlLineage(studioCADTO.getStatement(), studioCADTO.getDialect().toLowerCase(), dataBase.getDriverConfig());
             }
         } else {
             addFlinkSQLEnv(studioCADTO);
