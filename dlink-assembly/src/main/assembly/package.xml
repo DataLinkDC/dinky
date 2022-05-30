@@ -12,7 +12,11 @@
         <fileSet>
             <directory>${project.parent.basedir}/dlink-doc/bin</directory>
             <outputDirectory>./</outputDirectory>
+            <lineEnding>unix</lineEnding>
             <fileMode>0755</fileMode>
+            <includes>
+                <include>auto.sh</include>
+            </includes>
         </fileSet>
 
         <!-- 打包dlink-doc中的配置文件到打包目录/sql下 -->
