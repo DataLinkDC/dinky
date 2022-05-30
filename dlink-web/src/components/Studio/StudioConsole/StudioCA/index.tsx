@@ -19,6 +19,7 @@ const StudioCA = (props: any) => {
       statement:current.value,
       statementSet:current.task.statementSet,
       dialect:current.task.dialect,
+      databaseId:current.task.databaseId,
       type: 1,
     });
     res.then((result)=>{
