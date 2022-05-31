@@ -158,6 +158,7 @@ public class FlinkCDCConfig {
             case "table.suffix":
             case "table.upper":
             case "table.lower":
+            case "table.sinkDate":
                 return true;
             default:
                 return false;

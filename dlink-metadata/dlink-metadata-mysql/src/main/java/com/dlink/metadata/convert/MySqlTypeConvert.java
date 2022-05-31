@@ -18,7 +18,7 @@ public class MySqlTypeConvert implements ITypeConvert {
         }
         String t = column.getType().toLowerCase();
         if (t.contains("tinyint")) {
-            return ColumnType.BYTE;
+            return ColumnType.INTEGER;
         } else if (t.contains("smallint") || t.contains("tinyint unsigned")) {
             return ColumnType.SHORT;
         } else if (t.contains("bigint unsigned") || t.contains("numeric") || t.contains("decimal")) {

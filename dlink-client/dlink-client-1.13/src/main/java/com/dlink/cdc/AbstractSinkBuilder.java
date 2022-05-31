@@ -1,5 +1,6 @@
 package com.dlink.cdc;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.api.common.functions.FilterFunction;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.functions.MapFunction;
@@ -196,6 +197,17 @@ public abstract class AbstractSinkBuilder {
     }
 
     protected void buildColumn(List<String> columnNameList, List<LogicalType> columnTypeList, List<Column> columns) {
+        if (config.getSink().containsKey("table.sinkDate") && StringUtils.isNotBlank(config.getSink().getOrDefault("table.sinkDate",null))) {
+            Column column = new Column();
+            column.setName(config.getSink().get("table.sinkDate"));
+            ColumnType timestamp = ColumnType.TIMESTAMP;
+            column.setJavaType(timestamp);
+            column.setType("datetime");
+            column.setCharacterSet("utf8mb4");
+            column.setCollation("utf8mb4_general_ci");
+            columns.add(column);
+            column.setPosition(columns.size());
+        }
         for (Column column : columns) {
             columnNameList.add(column.getName());
             columnTypeList.add(getLogicalType(column.getJavaType()));
