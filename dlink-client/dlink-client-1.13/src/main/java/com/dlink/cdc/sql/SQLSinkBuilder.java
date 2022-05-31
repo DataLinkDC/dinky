@@ -277,8 +277,12 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
             if(value instanceof Integer){
                 return Instant.ofEpochMilli(((Integer) value).longValue()).atZone(ZoneId.systemDefault()).toLocalDateTime();
             }else {
+                 if (value instanceof String){
+                     return Instant.parse((String)value).atZone(ZoneId.systemDefault()).toLocalDateTime();
+                }
                 return Instant.ofEpochMilli((long) value).atZone(ZoneId.systemDefault()).toLocalDateTime();
             }
+
         } else if (logicalType instanceof DecimalType) {
             return new BigDecimal((String) value);
         } else if (logicalType instanceof BigIntType) {
