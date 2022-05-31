@@ -202,9 +202,9 @@ public abstract class AbstractSinkBuilder {
     }
 
     protected void buildColumn(List<String> columnNameList, List<LogicalType> columnTypeList, List<Column> columns) {
-        if (config.getSink().containsKey("table.sinkDate") && StringUtils.isNotBlank(config.getSink().getOrDefault("table.sinkDate",null))) {
+        if (config.getSink().containsKey("table.sinkTimeColumn") && StringUtils.isNotBlank(config.getSink().getOrDefault("table.sinkTimeColumn",null))) {
             Column column = new Column();
-            column.setName(config.getSink().get("table.sinkDate"));
+            column.setName(config.getSink().get("table.sinkTimeColumn"));
             ColumnType timestamp = ColumnType.TIMESTAMP;
             column.setJavaType(timestamp);
             column.setType("datetime");

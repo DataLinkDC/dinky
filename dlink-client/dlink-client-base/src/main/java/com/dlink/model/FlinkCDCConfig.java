@@ -158,7 +158,7 @@ public class FlinkCDCConfig {
             case "table.suffix":
             case "table.upper":
             case "table.lower":
-            case "table.sinkDate":
+            case "table.sinkTimeColumn":
             case "column.replace.line-break":
             case "table.sinkDate":
                 return true;
