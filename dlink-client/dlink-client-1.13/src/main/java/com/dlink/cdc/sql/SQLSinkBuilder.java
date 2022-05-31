@@ -81,7 +81,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                             for (int i = 0; i < idata.size(); i++) {
                                 irow.setField(i, convertValue(idata.get(columnNameList.get(i)), columnTypeList.get(i)));
                             }
-                            // 计算长度是否需要加sinkDate
+                            // 计算长度是否需要加sinkTimeColumn
                             if (columnNameList.size()-idata.size()>=1) {
                                 int size = columnNameList.size()-1;
                                 irow.setField(size, convertValue(System.currentTimeMillis(), columnTypeList.get(size)));
