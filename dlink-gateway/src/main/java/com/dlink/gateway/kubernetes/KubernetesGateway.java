@@ -131,11 +131,6 @@ public abstract class KubernetesGateway extends AbstractGateway {
         if (Asserts.isNull(config.getFlinkConfig().getJobId())) {
             throw new GatewayException("No job id was specified. Please specify a job to which you would like to savepont.");
         }
-        if (Asserts.isNotNullString(config.getClusterConfig().getYarnConfigPath())) {
-            configuration = GlobalConfiguration.loadConfiguration(config.getClusterConfig().getYarnConfigPath());
-        } else {
-            configuration = new Configuration();
-        }
         SavePointResult result = SavePointResult.build(getType());
         configuration.set(KubernetesConfigOptions.CLUSTER_ID, config.getClusterConfig().getAppId());
         KubernetesClusterClientFactory clusterClientFactory = new KubernetesClusterClientFactory();
