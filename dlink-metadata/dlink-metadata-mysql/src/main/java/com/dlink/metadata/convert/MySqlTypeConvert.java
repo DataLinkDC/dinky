@@ -18,13 +18,9 @@ public class MySqlTypeConvert implements ITypeConvert {
             return columnType;
         }
         String t = column.getType().toLowerCase();
-        if (t.contains("tinyint")) {
-            columnType = ColumnType.BYTE;
-        } else if (t.contains("smallint") || t.contains("tinyint unsigned")) {
-            columnType = ColumnType.SHORT;
-        } else if (t.contains("bigint unsigned") || t.contains("numeric") || t.contains("decimal")) {
+        if (t.contains("numeric") || t.contains("decimal")) {
             columnType = ColumnType.DECIMAL;
-        } else if (t.contains("bigint") || t.contains("int unsigned")) {
+        } else if (t.contains("bigint")) {
             columnType = ColumnType.LONG;
         } else if (t.contains("float")) {
             columnType = ColumnType.FLOAT;
@@ -44,7 +40,7 @@ public class MySqlTypeConvert implements ITypeConvert {
             columnType = ColumnType.STRING;
         } else if (t.contains("binary") || t.contains("blob")) {
             columnType = ColumnType.BYTES;
-        } else if (t.contains("int") || t.contains("mediumint") || t.contains("smallint unsigned")) {
+        } else if (t.contains("tinyint") || t.contains("mediumint") || t.contains("smallint") || t.contains("int") ) {
             columnType = ColumnType.INTEGER;
         }
         columnType.setPrecisionAndScale(column.getPrecision(), column.getScale());
