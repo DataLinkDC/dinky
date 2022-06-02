@@ -1,5 +1,6 @@
 package com.dlink.cdc;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.api.common.functions.FilterFunction;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.functions.MapFunction;
@@ -38,6 +39,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -201,6 +206,17 @@ public abstract class AbstractSinkBuilder {
     }
 
     protected void buildColumn(List<String> columnNameList, List<LogicalType> columnTypeList, List<Column> columns) {
+        if (config.getSink().containsKey("table.sinkTimeColumn") && StringUtils.isNotBlank(config.getSink().getOrDefault("table.sinkTimeColumn",null))) {
+            Column column = new Column();
+            column.setName(config.getSink().get("table.sinkTimeColumn"));
+            ColumnType timestamp = ColumnType.TIMESTAMP;
+            column.setJavaType(timestamp);
+            column.setType("datetime");
+            column.setCharacterSet("utf8mb4");
+            column.setCollation("utf8mb4_general_ci");
+            columns.add(column);
+            column.setPosition(columns.size());
+        }
         for (Column column : columns) {
             columnNameList.add(column.getName());
             columnTypeList.add(getLogicalType(column.getJavaType()));
@@ -285,10 +301,16 @@ public abstract class AbstractSinkBuilder {
             }
         }
         if (config.getSink().containsKey("table.prefix")) {
-            tableName = config.getSink().get("table.prefix") + tableName;
+            AtomicReference<String> prefix = new AtomicReference<>(config.getSink().get("table.prefix"));
+            List<String> reColumn = getReColumn(config.getSink().get("table.prefix"));
+            replaceElValue(reColumn,prefix,table);
+            tableName = prefix.get() + tableName;
         }
         if (config.getSink().containsKey("table.suffix")) {
-            tableName = tableName + config.getSink().get("table.suffix");
+            AtomicReference<String> suffix = new AtomicReference<>(config.getSink().get("table.suffix"));
+            List<String> reColumn = getReColumn(config.getSink().get("table.suffix"));
+            replaceElValue(reColumn,suffix,table);
+            tableName = suffix.get() + tableName;
         }
         if (config.getSink().containsKey("table.lower")) {
             if (Boolean.valueOf(config.getSink().get("table.lower"))) {
@@ -301,6 +323,47 @@ public abstract class AbstractSinkBuilder {
             }
         }
         return tableName;
+    }
+
+    /**
+     * 给表替换表达式中值，（前缀后缀）
+     * @param list 筛选出来的表达式字符
+     * @param str 源字符串
+     * @param table 表
+     *
+     */
+    protected void replaceElValue(List<String> list, AtomicReference<String> str, Table table){
+        list.stream()
+                .collect(Collectors.toMap(x->x, x->{
+                    String replace = x.replace("$", "").replace("{", "").replace("}", "");
+                    if ("schemaName".equals(replace)){
+                        return table.getSchema();
+                    }
+                    if ("tableName".equals(replace)){
+                        return table.getName();
+                    }
+                    return "";
+                }))
+                .forEach((key,value)->{
+                    str.set(str.get().replace(key, value));
+                });
+    }
+
+    /**
+     * 解析出${name}表达式
+     * @param str 字符串
+     * @return 返回匹配的正则字符
+     */
+    protected List<String> getReColumn(String str){
+
+        String pattern= "\\$\\{\\w.*}";
+        Pattern r = Pattern.compile(pattern);
+        Matcher m = r.matcher(str);
+        List<String> list =new ArrayList<>();
+        while (m.find()) {
+            list.add(m.group());
+        }
+        return list;
     }
 
     protected List<String> getPKList(Table table){
