@@ -50,18 +50,16 @@ public class ClusterConfigurationServiceImpl extends SuperServiceImpl<ClusterCon
         GatewayConfig gatewayConfig = new GatewayConfig();
         if (config.containsKey("hadoopConfigPath")) {
             gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath").toString(),
-                    config.get("flinkLibPath").toString(),
-                    config.get("hadoopConfigPath").toString()));
+                config.get("flinkLibPath").toString(),
+                config.get("hadoopConfigPath").toString()));
         } else {
-            gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath").toString(),
-                    config.get("flinkLibPath").toString(),
-                    ""));
+            gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath").toString()));
         }
         if (config.containsKey("flinkConfig")) {
             gatewayConfig.setFlinkConfig(FlinkConfig.build((Map<String, String>) config.get("flinkConfig")));
         }
         if (Asserts.isEqualsIgnoreCase(clusterConfiguration.getType(), "Yarn")) {
-            gatewayConfig.setType(GatewayType.YARN_PER_JOB);
+            gatewayConfig.setType(GatewayType.YARN_APPLICATION);
         } else if (Asserts.isEqualsIgnoreCase(clusterConfiguration.getType(), "Kubernetes")) {
             gatewayConfig.setType(GatewayType.KUBERNETES_APPLICATION);
             Map kubernetesConfig = (Map) config.get("kubernetesConfig");
