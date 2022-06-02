@@ -62,10 +62,11 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         String connectionPoolSize = config.getSource().get("connection.pool.size");
         String heartbeatInterval = config.getSource().get("heartbeat.interval");
 
-        Properties properties = new Properties();
+        Properties debeziumProperties = new Properties();
+        debeziumProperties.setProperty("bigint.unsigned.handling.mode","long");
         for (Map.Entry<String, String> entry : config.getDebezium().entrySet()) {
             if (Asserts.isNotNullString(entry.getKey()) && Asserts.isNotNullString(entry.getValue())) {
-                properties.setProperty(entry.getKey(), entry.getValue());
+                debeziumProperties.setProperty(entry.getKey(), entry.getValue());
             }
         }
 
@@ -90,7 +91,7 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         }
 
         sourceBuilder.deserializer(new JsonDebeziumDeserializationSchema());
-        sourceBuilder.debeziumProperties(properties);
+        sourceBuilder.debeziumProperties(debeziumProperties);
 
         if (Asserts.isNotNullString(config.getStartupMode())) {
             switch (config.getStartupMode().toLowerCase()) {
@@ -132,7 +133,6 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         if (Asserts.isNotNullString(heartbeatInterval)) {
             sourceBuilder.heartbeatInterval(Duration.ofMillis(Long.valueOf(heartbeatInterval)));
         }
-
         return env.fromSource(sourceBuilder.build(), WatermarkStrategy.noWatermarks(), "MySQL CDC Source");
     }
 

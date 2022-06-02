@@ -28,6 +28,8 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.cdc.AbstractSinkBuilder;
@@ -68,7 +70,12 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
 
         TypeInformation<?>[] typeInformations = TypeConversions.fromDataTypeToLegacyInfo(TypeConversions.fromLogicalToDataType(columnTypes));
         RowTypeInfo rowTypeInfo = new RowTypeInfo(typeInformations, columnNames);
-
+        AtomicInteger runSize = new AtomicInteger(columnNameList.size());
+        AtomicBoolean isEnableSinkTimeColumn = new AtomicBoolean(false);
+        if (StringUtils.isNotBlank(config.getSink().getOrDefault("table.sinkTimeColumn",""))){
+            runSize.getAndDecrement();
+            isEnableSinkTimeColumn.set(true);
+        }
         return filterOperator
                 .flatMap(new FlatMapFunction<Map, Row>() {
                     @Override
@@ -78,15 +85,17 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                             case "c":
                                 Row irow = Row.withPositions(RowKind.INSERT, columnNameList.size());
                                 Map idata = (Map) value.get("after");
-                                for (int i = 0; i < idata.size(); i++) {
+
+                                for (int i = 0; i < runSize.get(); i++) {
                                     irow.setField(i, convertValue(idata.get(columnNameList.get(i)), columnTypeList.get(i)));
                                 }
                                 // 计算长度是否需要加sinkTimeColumn
-                                if (columnNameList.size() - idata.size() >= 1) {
-                                    int size = columnNameList.size() - 1;
-                                    irow.setField(size, convertValue(System.currentTimeMillis(), columnTypeList.get(size)));
+                                if (isEnableSinkTimeColumn.get()) {
+                                    
+                                    irow.setField(runSize.get(), convertValue(value.get("ts_ms"), columnTypeList.get(runSize.get())));
                                 }
                                 out.collect(irow);
+
                                 break;
                             case "d":
                                 Row drow = Row.withPositions(RowKind.DELETE, columnNameList.size());
@@ -279,7 +288,6 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
             } else if (value instanceof String) {
                 return Instant.parse((String) value).atZone(ZoneId.systemDefault()).toLocalDateTime();
             } else {
-
                 return Instant.ofEpochMilli((long) value).atZone(ZoneId.systemDefault()).toLocalDateTime();
             }
         } else if (logicalType instanceof DecimalType) {
