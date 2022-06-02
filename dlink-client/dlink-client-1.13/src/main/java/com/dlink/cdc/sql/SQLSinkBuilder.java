@@ -91,7 +91,6 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                                 }
                                 // 计算长度是否需要加sinkTimeColumn
                                 if (isEnableSinkTimeColumn.get()) {
-                                    
                                     irow.setField(runSize.get(), convertValue(value.get("ts_ms"), columnTypeList.get(runSize.get())));
                                 }
                                 out.collect(irow);
@@ -100,22 +99,34 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                             case "d":
                                 Row drow = Row.withPositions(RowKind.DELETE, columnNameList.size());
                                 Map ddata = (Map) value.get("before");
-                                for (int i = 0; i < columnNameList.size(); i++) {
+                                for (int i = 0; i < runSize.get(); i++) {
                                     drow.setField(i, convertValue(ddata.get(columnNameList.get(i)), columnTypeList.get(i)));
+                                }
+                                // 计算长度是否需要加sinkTimeColumn
+                                if (isEnableSinkTimeColumn.get()) {
+                                    drow.setField(runSize.get(), convertValue(value.get("ts_ms"), columnTypeList.get(runSize.get())));
                                 }
                                 out.collect(drow);
                                 break;
                             case "u":
                                 Row ubrow = Row.withPositions(RowKind.UPDATE_BEFORE, columnNameList.size());
                                 Map ubdata = (Map) value.get("before");
-                                for (int i = 0; i < columnNameList.size(); i++) {
+                                for (int i = 0; i < runSize.get(); i++) {
                                     ubrow.setField(i, convertValue(ubdata.get(columnNameList.get(i)), columnTypeList.get(i)));
+                                }
+                                // 计算长度是否需要加sinkTimeColumn
+                                if (isEnableSinkTimeColumn.get()) {
+                                    ubrow.setField(runSize.get(), convertValue(value.get("ts_ms"), columnTypeList.get(runSize.get())));
                                 }
                                 out.collect(ubrow);
                                 Row uarow = Row.withPositions(RowKind.UPDATE_AFTER, columnNameList.size());
                                 Map uadata = (Map) value.get("after");
-                                for (int i = 0; i < columnNameList.size(); i++) {
+                                for (int i = 0; i < runSize.get(); i++) {
                                     uarow.setField(i, convertValue(uadata.get(columnNameList.get(i)), columnTypeList.get(i)));
+                                }
+                                // 计算长度是否需要加sinkTimeColumn
+                                if (isEnableSinkTimeColumn.get()) {
+                                    uarow.setField(runSize.get(), convertValue(value.get("ts_ms"), columnTypeList.get(runSize.get())));
                                 }
                                 out.collect(uarow);
                                 break;
