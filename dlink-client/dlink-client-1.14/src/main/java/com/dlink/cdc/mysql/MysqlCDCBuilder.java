@@ -62,10 +62,22 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         String connectionPoolSize = config.getSource().get("connection.pool.size");
         String heartbeatInterval = config.getSource().get("heartbeat.interval");
 
-        Properties properties = new Properties();
+        Properties debeziumProperties = new Properties();
+        // 为部分转换添加默认值
+        debeziumProperties.setProperty("bigint.unsigned.handling.mode","long");
+        debeziumProperties.setProperty("decimal.handling.mode","string");
+
         for (Map.Entry<String, String> entry : config.getDebezium().entrySet()) {
             if (Asserts.isNotNullString(entry.getKey()) && Asserts.isNotNullString(entry.getValue())) {
-                properties.setProperty(entry.getKey(), entry.getValue());
+                debeziumProperties.setProperty(entry.getKey(), entry.getValue());
+            }
+        }
+
+        // 添加jdbc参数注入
+        Properties jdbcProperties = new Properties();
+        for (Map.Entry<String, String> entry : config.getJdbc().entrySet()) {
+            if (Asserts.isNotNullString(entry.getKey()) && Asserts.isNotNullString(entry.getValue())) {
+                jdbcProperties.setProperty(entry.getKey(), entry.getValue());
             }
         }
 
@@ -90,7 +102,8 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         }
 
         sourceBuilder.deserializer(new JsonDebeziumDeserializationSchema());
-        sourceBuilder.debeziumProperties(properties);
+        sourceBuilder.debeziumProperties(debeziumProperties);
+        sourceBuilder.jdbcProperties(jdbcProperties);
 
         if (Asserts.isNotNullString(config.getStartupMode())) {
             switch (config.getStartupMode().toLowerCase()) {
