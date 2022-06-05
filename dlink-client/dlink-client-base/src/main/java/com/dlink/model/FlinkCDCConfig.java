@@ -25,6 +25,7 @@ public class FlinkCDCConfig {
     private String startupMode;
     private Map<String, String> debezium;
     private Map<String, String> source;
+    private Map<String, String> jdbc;
     private Map<String, String> sink;
     private List<Schema> schemaList;
     private String schemaFieldName;
@@ -34,7 +35,7 @@ public class FlinkCDCConfig {
 
     public FlinkCDCConfig(String type, String hostname, Integer port, String username, String password, Integer checkpoint, Integer parallelism, String database, String schema, String table,
                           String startupMode,
-                          Map<String, String> debezium, Map<String, String> source, Map<String, String> sink) {
+                          Map<String, String> debezium, Map<String, String> source, Map<String, String> sink,Map<String, String> jdbc) {
         this.type = type;
         this.hostname = hostname;
         this.port = port;
@@ -49,6 +50,7 @@ public class FlinkCDCConfig {
         this.debezium = debezium;
         this.source = source;
         this.sink = sink;
+        this.jdbc = jdbc;
     }
 
     public String getType() {
@@ -215,6 +217,14 @@ public class FlinkCDCConfig {
 
     public Map<String, String> getDebezium() {
         return debezium;
+    }
+
+    public Map<String, String> getJdbc() {
+        return jdbc;
+    }
+
+    public void setJdbc(Map<String, String> jdbc) {
+        this.jdbc = jdbc;
     }
 
     public void setDebezium(Map<String, String> debezium) {
