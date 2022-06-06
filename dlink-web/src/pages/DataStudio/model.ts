@@ -360,16 +360,14 @@ const Model: ModelType = {
     closeTabs(state, {payload}) {
       const {deleteType, current} = payload;
       const newTabs = state.tabs;
-      const firstKey = newTabs.panes[0].key;
       let newCurrent = newTabs.panes[0];
       if (deleteType == 'CLOSE_OTHER') {
-        const keys = [firstKey, current.key];
+        const keys = [current.key];
         newCurrent = current;
         newTabs.activeKey = current.key;
         newTabs.panes = newTabs.panes.filter(item => keys.includes(item.key));
       } else {
         newTabs.panes = [];
-        newTabs.activeKey = firstKey
       }
 
       return {
