@@ -168,9 +168,7 @@ public class JobConfig {
                 config.get("flinkLibPath").toString(),
                 config.get("hadoopConfigPath").toString()));
         } else {
-            gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath").toString(),
-                config.get("flinkLibPath").toString(),
-                ""));
+            gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath").toString()));
         }
         AppConfig appConfig = new AppConfig();
         if (config.containsKey("userJarPath") && Asserts.isNotNullString((String) config.get("userJarPath"))) {
