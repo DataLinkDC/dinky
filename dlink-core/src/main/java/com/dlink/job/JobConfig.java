@@ -169,7 +169,7 @@ public class JobConfig {
                 config.get("hadoopConfigPath").toString()));
         } else {
             gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath").toString(),
-                config.get("flinkLibPath").toString(),
+                "",
                 ""));
         }
         AppConfig appConfig = new AppConfig();
