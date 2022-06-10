@@ -42,31 +42,4 @@ public class BatchTest {
         TableResult tableResult = tEnv.executeSql(select);
         tableResult.print();
     }
-
-    @Test
-    public void batchTest2() {
-        String source = "CREATE TABLE Orders (\n" +
-                "    order_number BIGINT,\n" +
-                "    price        DECIMAL(32,2),\n" +
-                "    buyer        ROW<first_name STRING, last_name STRING>,\n" +
-                "    order_time   TIMESTAMP(3)\n" +
-                ") WITH (\n" +
-                "  'connector' = 'datagen',\n" +
-                "  'number-of-rows' = '100'\n" +
-                ")";
-        String select = "select order_number,price,order_time from Orders";
-//        LocalEnvironment environment = ExecutionEnvironment.createLocalEnvironment();
-        StreamExecutionEnvironment environment = StreamExecutionEnvironment.createLocalEnvironment();
-        Configuration configuration = new Configuration();
-        configuration.set(ExecutionOptions.RUNTIME_MODE, RuntimeExecutionMode.BATCH);
-//        configuration.setString("execution.runtime-mode", "STREAMING");
-        TableConfig tableConfig = new TableConfig();
-        tableConfig.addConfiguration(configuration);
-        CustomTableEnvironmentImpl batchTableEnvironment = CustomTableEnvironmentImpl.create(environment,
-                EnvironmentSettings.newInstance().useBlinkPlanner().inBatchMode().build(), tableConfig);
-        batchTableEnvironment.executeSql(source);
-        batchTableEnvironment.executeSql(select);
-//        TableResult tableResult = batchTableEnvironment.executeSql(select);
-//        tableResult.print();
-    }
 }

@@ -119,6 +119,18 @@ const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
           <Switch checkedChildren="启用" unCheckedChildren="禁用"
                   defaultChecked={vals.isAtAll}/>
         </Form.Item>
+        {vals.isAtAll ? undefined :
+          <>
+            <Form.Item
+              name="atMobiles"
+              label="@手机号"
+              rules={[{required: true, message: '请输入@手机号！'}]}
+            >
+              <Input placeholder="请输入@手机号 多个使用英文逗号分开 "/>
+            </Form.Item>
+          </>
+        }
+
         <Form.Item
           name="enabled"
           label="是否启用">

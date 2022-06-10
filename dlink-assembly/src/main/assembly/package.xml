@@ -12,7 +12,11 @@
         <fileSet>
             <directory>${project.parent.basedir}/dlink-doc/bin</directory>
             <outputDirectory>./</outputDirectory>
+            <lineEnding>unix</lineEnding>
             <fileMode>0755</fileMode>
+            <includes>
+                <include>auto.sh</include>
+            </includes>
         </fileSet>
 
         <!-- 打包dlink-doc中的配置文件到打包目录/sql下 -->
@@ -257,6 +261,20 @@
             <outputDirectory>jar</outputDirectory>
             <includes>
                 <include>dlink-app-1.15-${project.version}-jar-with-dependencies.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-client/dlink-client-base/target</directory>
+            <outputDirectory>jar</outputDirectory>
+            <includes>
+                <include>dlink-client-base-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-common/target</directory>
+            <outputDirectory>jar</outputDirectory>
+            <includes>
+                <include>dlink-common-${project.version}.jar</include>
             </includes>
         </fileSet>
         <fileSet>

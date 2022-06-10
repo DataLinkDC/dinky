@@ -191,6 +191,7 @@ export type ModelType = {
     saveChart: Reducer<StateType>;
     changeTaskStep: Reducer<StateType>;
     changeTaskJobInstance: Reducer<StateType>;
+    renameTab: Reducer<StateType>;
   };
 };
 
@@ -359,16 +360,14 @@ const Model: ModelType = {
     closeTabs(state, {payload}) {
       const {deleteType, current} = payload;
       const newTabs = state.tabs;
-      const firstKey = newTabs.panes[0].key;
       let newCurrent = newTabs.panes[0];
       if (deleteType == 'CLOSE_OTHER') {
-        const keys = [firstKey, current.key];
+        const keys = [current.key];
         newCurrent = current;
         newTabs.activeKey = current.key;
         newTabs.panes = newTabs.panes.filter(item => keys.includes(item.key));
       } else {
         newTabs.panes = [];
-        newTabs.activeKey = firstKey
       }
 
       return {
@@ -378,6 +377,7 @@ const Model: ModelType = {
       };
     },
     changeActiveKey(state, {payload}) {
+      payload = parseInt(payload);
       const newTabs = state?.tabs;
       let newCurrent = state?.current;
       for (let i = 0; i < newTabs.panes.length; i++) {
@@ -531,6 +531,36 @@ const Model: ModelType = {
         ...state,
         current: {...newCurrent},
         tabs: {...newTabs},
+      };
+    },
+    renameTab(state, {payload}) {
+      const newTabs = state.tabs;
+      let newCurrent = state.current;
+      for (let i = 0; i < newTabs.panes.length; i++) {
+        if (newTabs.panes[i].key == payload.key) {
+          newTabs.panes[i].title = payload.name;
+          newTabs.panes[i].task.alias = payload.name;
+        }
+        if (newTabs.panes[i].key == newCurrent.key) {
+          newCurrent.title = payload.name;
+          newCurrent.task.alias = payload.name;
+        }
+      }
+      if(newTabs.panes.length == 0){
+        return {
+          ...state,
+          current: undefined,
+          tabs: newTabs,
+          currentPath: ['引导页'],
+        };
+      }
+      return {
+        ...state,
+        current: {
+          ...newCurrent,
+        },
+        tabs: {...newTabs},
+        currentPath: newCurrent.path,
       };
     },
   },

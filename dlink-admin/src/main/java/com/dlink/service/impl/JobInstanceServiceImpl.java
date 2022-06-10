@@ -1,17 +1,35 @@
 package com.dlink.service.impl;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.db.service.impl.SuperServiceImpl;
-import com.dlink.explainer.lineage.LineageBuilder;
-import com.dlink.explainer.lineage.LineageResult;
-import com.dlink.mapper.JobInstanceMapper;
-import com.dlink.model.*;
-import com.dlink.service.*;
-import com.dlink.utils.JSONUtil;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.dlink.assertion.Asserts;
+import com.dlink.common.result.ProTableResult;
+import com.dlink.db.service.impl.SuperServiceImpl;
+import com.dlink.db.util.ProTableUtil;
+import com.dlink.explainer.lineage.LineageBuilder;
+import com.dlink.explainer.lineage.LineageResult;
+import com.dlink.job.FlinkJobTaskPool;
+import com.dlink.mapper.JobInstanceMapper;
+import com.dlink.model.History;
+import com.dlink.model.JobInfoDetail;
+import com.dlink.model.JobInstance;
+import com.dlink.model.JobInstanceCount;
+import com.dlink.model.JobInstanceStatus;
+import com.dlink.model.JobStatus;
+import com.dlink.service.ClusterConfigurationService;
+import com.dlink.service.ClusterService;
+import com.dlink.service.HistoryService;
+import com.dlink.service.JobHistoryService;
+import com.dlink.service.JobInstanceService;
+import com.dlink.utils.JSONUtil;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * JobInstanceServiceImpl
@@ -99,15 +117,22 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     @Override
     public JobInfoDetail getJobInfoDetailInfo(JobInstance jobInstance) {
         Asserts.checkNull(jobInstance, "该任务实例不存在");
-        JobInfoDetail jobInfoDetail = new JobInfoDetail(jobInstance.getId());
-        jobInfoDetail.setInstance(jobInstance);
-        jobInfoDetail.setCluster(clusterService.getById(jobInstance.getClusterId()));
-        jobInfoDetail.setJobHistory(jobHistoryService.getJobHistory(jobInstance.getId()));
-        History history = historyService.getById(jobInstance.getHistoryId());
-        history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
-        jobInfoDetail.setHistory(history);
-        if (Asserts.isNotNull(history) && Asserts.isNotNull(history.getClusterConfigurationId())) {
-            jobInfoDetail.setClusterConfiguration(clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId()));
+        JobInfoDetail jobInfoDetail;
+        FlinkJobTaskPool pool = FlinkJobTaskPool.getInstance();
+        String key = jobInstance.getId().toString();
+        if (pool.exist(key)) {
+            jobInfoDetail = pool.get(key);
+        } else {
+            jobInfoDetail = new JobInfoDetail(jobInstance.getId());
+            jobInfoDetail.setInstance(jobInstance);
+            jobInfoDetail.setCluster(clusterService.getById(jobInstance.getClusterId()));
+            jobInfoDetail.setJobHistory(jobHistoryService.getJobHistory(jobInstance.getId()));
+            History history = historyService.getById(jobInstance.getHistoryId());
+            history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
+            jobInfoDetail.setHistory(history);
+            if (Asserts.isNotNull(history) && Asserts.isNotNull(history.getClusterConfigurationId())) {
+                jobInfoDetail.setClusterConfiguration(clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId()));
+            }
         }
         return jobInfoDetail;
     }
@@ -121,6 +146,29 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     @Override
     public JobInstance getJobInstanceByTaskId(Integer id) {
         return baseMapper.getJobInstanceByTaskId(id);
+    }
+
+    @Override
+    public ProTableResult<JobInstance> listJobInstances(JsonNode para) {
+        Integer current = para.has("current") ? para.get("current").asInt() : 1;
+        Integer pageSize = para.has("pageSize") ? para.get("pageSize").asInt() : 10;
+        QueryWrapper<JobInstance> queryWrapper = new QueryWrapper<>();
+        ProTableUtil.autoQueryDefalut(para, queryWrapper);
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> param = mapper.convertValue(para, Map.class);
+        Page<JobInstance> page = new Page<>(current, pageSize);
+        List<JobInstance> list = baseMapper.selectForProTable(page, queryWrapper, param);
+        FlinkJobTaskPool pool = FlinkJobTaskPool.getInstance();
+        for (int i = 0; i < list.size(); i++) {
+            if (pool.exist(list.get(i).getId().toString())) {
+                list.get(i).setStatus(pool.get(list.get(i).getId().toString()).getInstance().getStatus());
+                list.get(i).setUpdateTime(pool.get(list.get(i).getId().toString()).getInstance().getUpdateTime());
+                list.get(i).setFinishTime(pool.get(list.get(i).getId().toString()).getInstance().getFinishTime());
+                list.get(i).setError(pool.get(list.get(i).getId().toString()).getInstance().getError());
+                list.get(i).setDuration(pool.get(list.get(i).getId().toString()).getInstance().getDuration());
+            }
+        }
+        return ProTableResult.<JobInstance>builder().success(true).data(list).total(page.getTotal()).current(current).pageSize(pageSize).build();
     }
 
 }

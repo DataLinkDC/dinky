@@ -236,6 +236,23 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     }
 
     @Override
+    public List<Column> listColumnsSortByPK(String schemaName, String tableName) {
+        List<Column> columnList = listColumns(schemaName, tableName);
+        List<Column> columnListSortByPK = new ArrayList<>();
+        for(Column column: columnList){
+            if(column.isKeyFlag()){
+                columnListSortByPK.add(column);
+            }
+        }
+        for(Column column: columnList){
+            if(!column.isKeyFlag()){
+                columnListSortByPK.add(column);
+            }
+        }
+        return columnListSortByPK;
+    }
+
+    @Override
     public boolean createTable(Table table) throws Exception {
         String sql = getCreateTableSql(table).replaceAll("\r\n", " ");
         if (Asserts.isNotNull(sql)) {

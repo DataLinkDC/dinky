@@ -8,6 +8,7 @@ import com.dlink.gateway.exception.GatewayException;
 import com.dlink.gateway.model.JobInfo;
 import com.dlink.gateway.result.SavePointResult;
 import com.dlink.gateway.result.TestResult;
+import com.dlink.utils.FlinkUtil;
 import com.dlink.utils.LogUtil;
 
 import org.apache.flink.api.common.JobID;
@@ -130,11 +131,6 @@ public abstract class KubernetesGateway extends AbstractGateway {
         if (Asserts.isNull(config.getFlinkConfig().getJobId())) {
             throw new GatewayException("No job id was specified. Please specify a job to which you would like to savepont.");
         }
-        if (Asserts.isNotNullString(config.getClusterConfig().getYarnConfigPath())) {
-            configuration = GlobalConfiguration.loadConfiguration(config.getClusterConfig().getYarnConfigPath());
-        } else {
-            configuration = new Configuration();
-        }
         SavePointResult result = SavePointResult.build(getType());
         configuration.set(KubernetesConfigOptions.CLUSTER_ID, config.getClusterConfig().getAppId());
         KubernetesClusterClientFactory clusterClientFactory = new KubernetesClusterClientFactory();
@@ -163,18 +159,15 @@ public abstract class KubernetesGateway extends AbstractGateway {
             }
             switch (config.getFlinkConfig().getSavePointType()) {
                 case TRIGGER:
-                    CompletableFuture<String> triggerFuture = clusterClient.triggerSavepoint(JobID.fromHexString(jobInfo.getJobId()), savePoint);
-                    jobInfo.setSavePoint(triggerFuture.get());
+                    jobInfo.setSavePoint(FlinkUtil.triggerSavepoint(clusterClient,jobInfo.getJobId(),savePoint));
                     break;
                 case STOP:
-                    CompletableFuture<String> stopFuture = clusterClient.stopWithSavepoint(JobID.fromHexString(jobInfo.getJobId()), true, savePoint);
+                    jobInfo.setSavePoint(FlinkUtil.stopWithSavepoint(clusterClient,jobInfo.getJobId(),savePoint));
                     jobInfo.setStatus(JobInfo.JobStatus.STOP);
-                    jobInfo.setSavePoint(stopFuture.get());
                     break;
                 case CANCEL:
-                    CompletableFuture<String> cancelFuture = clusterClient.cancelWithSavepoint(JobID.fromHexString(jobInfo.getJobId()), savePoint);
+                    jobInfo.setSavePoint(FlinkUtil.cancelWithSavepoint(clusterClient,jobInfo.getJobId(),savePoint));
                     jobInfo.setStatus(JobInfo.JobStatus.CANCEL);
-                    jobInfo.setSavePoint(cancelFuture.get());
                     break;
                 default:
             }
