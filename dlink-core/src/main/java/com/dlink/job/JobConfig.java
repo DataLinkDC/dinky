@@ -185,15 +185,10 @@ public class JobConfig {
             gatewayConfig.setFlinkConfig(FlinkConfig.build((Map<String, String>) config.get("flinkConfig")));
         }
         if (config.containsKey("kubernetesConfig")) {
-            Map kubernetesConfig = (Map) config.get("kubernetesConfig");
-            if (kubernetesConfig.containsKey("kubernetes.namespace")) {
-                gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.namespace", kubernetesConfig.get("kubernetes.namespace").toString());
-            }
-            if (kubernetesConfig.containsKey("kubernetes.cluster-id")) {
-                gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.cluster-id", kubernetesConfig.get("kubernetes.cluster-id").toString());
-            }
-            if (kubernetesConfig.containsKey("kubernetes.container.image")) {
-                gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.container.image", kubernetesConfig.get("kubernetes.container.image").toString());
+            Map<String,Object> kubernetesConfig = (Map<String,Object>) config.get("kubernetesConfig");
+            //构建GatewayConfig时，将k8s集群默认配置和自定义参数配置加载到FlinkConfig里
+            for(Map.Entry<String,Object> entry:kubernetesConfig.entrySet()){
+                gatewayConfig.getFlinkConfig().getConfiguration().put(entry.getKey(),entry.getValue().toString());
             }
         }
     }
