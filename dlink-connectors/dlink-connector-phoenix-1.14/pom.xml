@@ -5,7 +5,7 @@
     <parent>
         <artifactId>dlink-connectors</artifactId>
         <groupId>com.dlink</groupId>
-        <version>0.6.2-SNAPSHOT</version>
+        <version>0.6.5-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -18,24 +18,16 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <junit.version>4.12</junit.version>
-       <!-- <scope.runtime>compile</scope.runtime>-->
+            <!--  compile/provided-->
         <phoenix.scope.runtime>provided</phoenix.scope.runtime>
     </properties>
 
     <dependencies>
-<!--
-        <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-connector-jdbc_${scala.binary.version}</artifactId>
-            <version>${flink.version}</version>
-        </dependency>
--->
-
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-table-api-java-bridge_${scala.binary.version}</artifactId>
             <version>${flink.version}</version>
-            <!--<scope>provided</scope>-->
+
             <scope>${phoenix.scope.runtime}</scope>
             <optional>true</optional>
         </dependency>
@@ -55,7 +47,6 @@
             <version>${flink.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
-           <!-- <scope>${phoenix.scope.runtime}</scope>-->
         </dependency>
 
         <!-- A planner dependency won't be necessary once FLIP-32 has been completed. -->
@@ -64,27 +55,8 @@
             <artifactId>flink-table-planner_${scala.binary.version}</artifactId>
             <version>${flink.version}</version>
             <scope>test</scope>
-           <!-- <scope>${phoenix.scope.runtime}</scope>-->
         </dependency>
 
-<!--
-        <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-table-planner-blink_${scala.binary.version}</artifactId>
-            <version>${flink.version}</version>
-            <type>test-jar</type>
-            <scope>test</scope>
-           &lt;!&ndash; <scope>${phoenix.scope.runtime}</scope>&ndash;&gt;
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-table-planner-blink_${scala.binary.version}</artifactId>
-            <version>${flink.version}</version>
-            <scope>test</scope>
-            &lt;!&ndash;<scope>${phoenix.scope.runtime}</scope>&ndash;&gt;
-        </dependency>
--->
         <!-- A planner dependency won't be necessary once FLIP-32 has been completed. -->
         <dependency>
             <groupId>org.apache.flink</groupId>
@@ -92,14 +64,21 @@
             <version>${flink.version}</version>
             <scope>test</scope>
         </dependency>
+
+
+<!--        <dependency>
+            <groupId>org.apache.phoenix</groupId>
+            <artifactId>phoenix-core</artifactId>
+            <version>4.14.2-HBase-1.4</version>
+            <scope>${scope.runtime}</scope>
+        </dependency>-->
 
 
         <dependency>
             <groupId>org.apache.phoenix</groupId>
             <artifactId>phoenix-core</artifactId>
-            <version>4.14.2-HBase-1.4</version>
-            <!--            <scope>test</scope>-->
-            <!--<scope>${scope.runtime}</scope>-->
+            <version>5.0.0-HBase-2.0</version>
+            <scope>${scope.runtime}</scope>
         </dependency>
     </dependencies>
 </project>
