@@ -108,8 +108,11 @@ public class Task extends SuperEntity {
                 map.put(item.get("key"), item.get("value"));
             }
         }
-        return new JobConfig(type, step, false, false, useRemote, clusterId, clusterConfigurationId, jarId, getId(),
-            alias, fragment, statementSet, batchModel, checkPoint, parallelism, savePointStrategy, savePointPath, map);
+        int jid = Asserts.isNull(jarId) ? 0 : jarId;
+        boolean fg = Asserts.isNull(fragment) ? false : fragment;
+        boolean sts = Asserts.isNull(statementSet) ? false : statementSet;
+        return new JobConfig(type, step, false, false, useRemote, clusterId, clusterConfigurationId,jid, getId(),
+            alias, fg, sts, batchModel, checkPoint, parallelism, savePointStrategy, savePointPath, map);
     }
 
 }
