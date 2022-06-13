@@ -525,7 +525,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     private JobConfig buildJobConfig(Task task) {
         boolean isJarTask = Dialect.FLINKJAR.equalsVal(task.getDialect());
-        if (!isJarTask && task.getFragment()) {
+        if (!isJarTask && Asserts.isNotNull(task.getFragment())?task.getFragment():false) {
             String flinkWithSql = dataBaseService.getEnabledFlinkWithSql();
             if (Asserts.isNotNullString(flinkWithSql)) {
                 task.setStatement(flinkWithSql + "\r\n" + task.getStatement());
