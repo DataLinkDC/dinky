@@ -1,5 +1,6 @@
 package com.dlink.service.impl;
 
+import com.dlink.constant.FlinkRestResultConstant;
 import org.springframework.stereotype.Service;
 
 import com.dlink.api.FlinkAPI;
@@ -70,6 +71,9 @@ public class JobHistoryServiceImpl extends SuperServiceImpl<JobHistoryMapper, Jo
         jobHistory.setId(id);
         try {
             JsonNode jobInfo = FlinkAPI.build(jobManagerHost).getJobInfo(jobId);
+            if(jobInfo.has(FlinkRestResultConstant.ERRORS)){
+                return jobHistory;
+            }
             JsonNode exception = FlinkAPI.build(jobManagerHost).getException(jobId);
             JsonNode checkPoints = FlinkAPI.build(jobManagerHost).getCheckPoints(jobId);
             JsonNode checkPointsConfig = FlinkAPI.build(jobManagerHost).getCheckPointsConfig(jobId);
@@ -87,6 +91,7 @@ public class JobHistoryServiceImpl extends SuperServiceImpl<JobHistoryMapper, Jo
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             return jobHistory;
         }
