@@ -13,18 +13,20 @@ public class SelectResultBuilder implements ResultBuilder {
     private Integer maxRowNum;
     private boolean isChangeLog;
     private boolean isAutoCancel;
+    private String timeZone;
 
-    public SelectResultBuilder(Integer maxRowNum, boolean isChangeLog, boolean isAutoCancel) {
+    public SelectResultBuilder(Integer maxRowNum, boolean isChangeLog, boolean isAutoCancel, String timeZone) {
         this.maxRowNum = maxRowNum;
         this.isChangeLog = isChangeLog;
         this.isAutoCancel = isAutoCancel;
+        this.timeZone = timeZone;
     }
 
     @Override
     public IResult getResult(TableResult tableResult) {
         if (tableResult.getJobClient().isPresent()) {
             String jobId = tableResult.getJobClient().get().getJobID().toHexString();
-            ResultRunnable runnable = new ResultRunnable(tableResult, maxRowNum, isChangeLog, isAutoCancel);
+            ResultRunnable runnable = new ResultRunnable(tableResult, maxRowNum, isChangeLog, isAutoCancel, timeZone);
             Thread thread = new Thread(runnable, jobId);
             thread.start();
             return SelectResult.buildSuccess(jobId);
