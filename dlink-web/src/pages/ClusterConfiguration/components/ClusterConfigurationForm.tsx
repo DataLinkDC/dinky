@@ -182,9 +182,9 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
           name="flinkConfigPath"
           label="配置文件路径"
           rules={[{required: true, message: '请输入 flink-conf.yaml 路径！'}]}
-          help="指定 flink-conf.yaml 的具体路径"
+          help="指定 flink-conf.yaml 的路径（末尾无/）"
         >
-          <Input placeholder="值如 /usr/local/dlink/conf/flink-conf.yaml"/>
+          <Input placeholder="值如 /usr/local/dlink/conf"/>
         </Form.Item>
         <Divider orientation="left" plain>自定义配置（高优先级）</Divider>
         {buildConfig(FLINK_CONFIG_LIST)}
