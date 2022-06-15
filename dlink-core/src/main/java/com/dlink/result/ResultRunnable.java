@@ -1,12 +1,21 @@
 package com.dlink.result;
 
-import com.dlink.constant.FlinkConstant;
-import com.dlink.utils.FlinkUtil;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.types.Row;
 import org.apache.flink.types.RowKind;
 
-import java.util.*;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import com.dlink.constant.FlinkConstant;
+import com.dlink.utils.FlinkUtil;
 
 /**
  * ResultRunnable
@@ -20,13 +29,15 @@ public class ResultRunnable implements Runnable {
     private Integer maxRowNum;
     private boolean isChangeLog;
     private boolean isAutoCancel;
+    private String timeZone = ZoneId.systemDefault().getId();
     private String nullColumn = "";
 
-    public ResultRunnable(TableResult tableResult, Integer maxRowNum, boolean isChangeLog, boolean isAutoCancel) {
+    public ResultRunnable(TableResult tableResult, Integer maxRowNum, boolean isChangeLog, boolean isAutoCancel, String timeZone) {
         this.tableResult = tableResult;
         this.maxRowNum = maxRowNum;
         this.isChangeLog = isChangeLog;
         this.isAutoCancel = isAutoCancel;
+        this.timeZone = timeZone;
     }
 
     @Override
@@ -70,7 +81,11 @@ public class ResultRunnable implements Runnable {
                 if (field == null) {
                     map.put(columns.get(i + 1), nullColumn);
                 } else {
-                    map.put(columns.get(i + 1), field);
+                    if (field instanceof Instant) {
+                        map.put(columns.get(i + 1), ((Instant) field).atZone(ZoneId.of(timeZone)).toLocalDateTime().toString());
+                    } else {
+                        map.put(columns.get(i + 1), field);
+                    }
                 }
             }
             rows.add(map);
@@ -94,7 +109,11 @@ public class ResultRunnable implements Runnable {
                 if (field == null) {
                     map.put(columns.get(i), nullColumn);
                 } else {
-                    map.put(columns.get(i), field);
+                    if (field instanceof Instant) {
+                        map.put(columns.get(i), ((Instant) field).atZone(ZoneId.of(timeZone)).toLocalDateTime().toString());
+                    } else {
+                        map.put(columns.get(i), field);
+                    }
                 }
             }
             if (RowKind.UPDATE_BEFORE == row.getKind() || RowKind.DELETE == row.getKind()) {
