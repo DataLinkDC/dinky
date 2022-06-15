@@ -91,7 +91,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
           rules={[{required: true, message: '请输入 hadoop 配置文件路径！'}]}
           help="指定配置文件路径（末尾无/），需要包含以下文件：core-site.xml,hdfs-site.xml,yarn-site.xml"
         >
-          <Input placeholder="值如 /usr/local/dlink/conf"/>
+          <Input placeholder="值如 /etc/hadoop/conf"/>
         </Form.Item>
         <Divider orientation="left" plain>自定义配置（高优先级）</Divider>
         {buildConfig(HADOOP_CONFIG_LIST)}
@@ -184,7 +184,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
           rules={[{required: true, message: '请输入 flink-conf.yaml 路径！'}]}
           help="指定 flink-conf.yaml 的路径（末尾无/）"
         >
-          <Input placeholder="值如 /usr/local/dlink/conf"/>
+          <Input placeholder="值如 /opt/module/flink/conf"/>
         </Form.Item>
         <Divider orientation="left" plain>自定义配置（高优先级）</Divider>
         {buildConfig(FLINK_CONFIG_LIST)}
