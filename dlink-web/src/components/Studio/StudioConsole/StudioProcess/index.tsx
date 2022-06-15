@@ -164,7 +164,7 @@ const StudioProcess = (props: any) => {
   const getClusterOptions = () => {
     let itemList = [];
     for (let item of cluster) {
-      let tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias}</>);
+      let tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias === "" ? item.name : item.alias}</>);
       itemList.push(<Option value={item.id} label={tag}>
         {tag}
       </Option>)
