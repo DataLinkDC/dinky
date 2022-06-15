@@ -201,11 +201,10 @@
             </includes>
         </fileSet>
         <fileSet>
-            <directory>${project.parent.basedir}/dlink-alert/dlink-alert-email/target
-            </directory>
+            <directory>${project.parent.basedir}/dlink-alert/dlink-alert-email/target</directory>
             <outputDirectory>lib</outputDirectory>
             <includes>
-                <include>dlink-alert-email-${project.version}.jar</include>
+                <include>dlink-alert-email-${project.version}-jar-with-dependencies.jar</include>
             </includes>
         </fileSet>
         <!-- 将模块dlink-extends的常用jar文件放到打包目录/plugins下 -->
