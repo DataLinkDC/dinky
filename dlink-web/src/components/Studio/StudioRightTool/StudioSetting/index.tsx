@@ -20,7 +20,7 @@ const StudioSetting = (props: any) => {
   const getClusterOptions = () => {
     const itemList = [];
     for (const item of sessionCluster) {
-      const tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias}</>);
+      const tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias === "" ? item.name : item.alias}</>);
       itemList.push(<Option key={item.id} value={item.id} label={tag}>
         {tag}
       </Option>)
@@ -31,7 +31,7 @@ const StudioSetting = (props: any) => {
   const getClusterConfigurationOptions = () => {
     const itemList = [];
     for (const item of clusterConfiguration) {
-      const tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias}</>);
+      const tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias === "" ? item.name : item.alias}</>);
       itemList.push(<Option key={item.id} value={item.id} label={tag}>
         {tag}
       </Option>)

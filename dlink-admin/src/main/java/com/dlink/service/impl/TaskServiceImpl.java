@@ -525,7 +525,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     private JobConfig buildJobConfig(Task task) {
         boolean isJarTask = Dialect.FLINKJAR.equalsVal(task.getDialect());
-        if (!isJarTask && task.getFragment()) {
+        if (!isJarTask && Asserts.isNotNull(task.getFragment())?task.getFragment():false) {
             String flinkWithSql = dataBaseService.getEnabledFlinkWithSql();
             if (Asserts.isNotNullString(flinkWithSql)) {
                 task.setStatement(flinkWithSql + "\r\n" + task.getStatement());
@@ -604,6 +604,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 jobInfoDetail.setClusterConfiguration(clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId()));
             }
             jobInfoDetail.setHistory(history);
+            jobInfoDetail.setJobHistory(jobHistoryService.getJobHistory(id));
             pool.push(key, jobInfoDetail);
         }
         if (!isCoercive && !inRefreshPlan(jobInfoDetail.getInstance())) {
@@ -611,10 +612,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         }
         JobHistory jobHistoryJson = jobHistoryService.refreshJobHistory(id, jobInfoDetail.getCluster().getJobManagerHost(), jobInfoDetail.getInstance().getJid(), jobInfoDetail.isNeedSave());
         JobHistory jobHistory = jobHistoryService.getJobHistoryInfo(jobHistoryJson);
+        if (JobStatus.isDone(jobInfoDetail.getInstance().getStatus()) && Asserts.isNull(jobHistory.getJob())) {
+            return jobInfoDetail.getInstance();
+        }
         jobInfoDetail.setJobHistory(jobHistory);
         String status = jobInfoDetail.getInstance().getStatus();
         boolean jobStatusChanged = false;
-        if (Asserts.isNull(jobInfoDetail.getJobHistory().getJob()) || jobInfoDetail.getJobHistory().getJob().has(FlinkRestResultConstant.ERRORS)) {
+        if (Asserts.isNull(jobInfoDetail.getJobHistory().getJob()) || Asserts.isNull(jobInfoDetail.getJobHistory().getJob())) {
             jobInfoDetail.getInstance().setStatus(JobStatus.UNKNOWN.getValue());
         } else {
             jobInfoDetail.getInstance().setDuration(jobInfoDetail.getJobHistory().getJob().get(FlinkRestResultConstant.JOB_DURATION).asLong() / 1000);
