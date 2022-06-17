@@ -119,7 +119,7 @@ public class Explainer {
                 if (Asserts.isNullString(sql)) {
                     continue;
                 }
-                SqlType operationType = Operations.getOperationType(item);
+                SqlType operationType = Operations.getOperationType(sql);
                 if (operationType.equals(SqlType.INSERT) || operationType.equals(SqlType.SELECT)) {
                     record = executor.explainSqlRecord(sql);
                     if (Asserts.isNull(record)) {
