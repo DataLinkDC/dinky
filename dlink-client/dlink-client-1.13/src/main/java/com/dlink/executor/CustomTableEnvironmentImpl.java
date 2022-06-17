@@ -253,28 +253,23 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
             throw new TableException(
                 "Unsupported SQL query! explainSql() only accepts a single SQL query.");
         }
-        List<Operation> operationlist = new ArrayList<>(operations);
-        for (int i = 0; i < operationlist.size(); i++) {
-            Operation operation = operationlist.get(i);
-            if (operation instanceof ModifyOperation) {
-                record.setType("Modify DML");
-            } else if (operation instanceof ExplainOperation) {
-                record.setType("Explain DML");
-            } else if (operation instanceof QueryOperation) {
-                record.setType("Query DML");
-            } else {
-                record.setExplain(operation.asSummaryString());
-                operationlist.remove(i);
-                record.setType("DDL");
-                i = i - 1;
-            }
+        Operation operation = operations.get(0);
+        if (operation instanceof ModifyOperation) {
+            record.setType("Modify DML");
+        } else if (operation instanceof ExplainOperation) {
+            record.setType("Explain DML");
+        } else if (operation instanceof QueryOperation) {
+            record.setType("Query DML");
+        } else {
+            record.setExplain(operation.asSummaryString());
+            record.setType("DDL");
         }
         record.setExplainTrue(true);
-        if (operationlist.size() == 0) {
+        if ("DDL".equals(record.getType())) {
             //record.setExplain("DDL语句不进行解释。");
             return record;
         }
-        record.setExplain(planner.explain(operationlist, extraDetails));
+        record.setExplain(planner.explain(operations, extraDetails));
         return record;
     }
 
