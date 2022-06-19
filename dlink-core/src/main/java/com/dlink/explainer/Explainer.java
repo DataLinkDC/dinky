@@ -212,7 +212,7 @@ public class Explainer {
                 for (StatementParam item : jobParam.getTrans()) {
                     SqlExplainResult record = new SqlExplainResult();
                     try {
-                        record.setExplain(executor.explainSql(item.getValue()));
+                        record = executor.explainSqlRecord(item.getValue());
                         record.setParseTrue(true);
                         record.setExplainTrue(true);
                     } catch (Exception e) {
