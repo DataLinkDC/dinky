@@ -1,7 +1,14 @@
 package com.dlink.cdc.sql;
 
-import com.dlink.model.Column;
-import com.dlink.model.ColumnType;
+import com.dlink.assertion.Asserts;
+import com.dlink.cdc.AbstractSinkBuilder;
+import com.dlink.cdc.CDCBuilder;
+import com.dlink.cdc.SinkBuilder;
+import com.dlink.executor.CustomTableEnvironment;
+import com.dlink.model.FlinkCDCConfig;
+import com.dlink.model.Schema;
+import com.dlink.model.Table;
+import com.dlink.utils.FlinkBaseUtil;
 import com.dlink.utils.LogUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.api.common.functions.FlatMapFunction;
@@ -15,11 +22,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
-import org.apache.flink.table.types.logical.BigIntType;
-import org.apache.flink.table.types.logical.DateType;
-import org.apache.flink.table.types.logical.DecimalType;
-import org.apache.flink.table.types.logical.LogicalType;
-import org.apache.flink.table.types.logical.TimestampType;
+import org.apache.flink.table.types.logical.*;
 import org.apache.flink.table.types.utils.TypeConversions;
 import org.apache.flink.types.Row;
 import org.apache.flink.types.RowKind;
@@ -32,16 +35,6 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import com.dlink.assertion.Asserts;
-import com.dlink.cdc.AbstractSinkBuilder;
-import com.dlink.cdc.CDCBuilder;
-import com.dlink.cdc.SinkBuilder;
-import com.dlink.executor.CustomTableEnvironment;
-import com.dlink.model.FlinkCDCConfig;
-import com.dlink.model.Schema;
-import com.dlink.model.Table;
-import com.dlink.utils.SqlUtil;
 
 /**
  * SQLSinkBuilder
@@ -117,21 +110,23 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                 }, rowTypeInfo);
     }
 
-    public void addTableSink(
+    private void addTableSink(
             CustomTableEnvironment customTableEnvironment,
             DataStream<Row> rowDataDataStream,
             Table table,
             List<String> columnNameList) {
 
+        String sinkSchemaName = getSinkSchemaName(table);
         String sinkTableName = getSinkTableName(table);
+        String pkList = StringUtils.join(getPKList(table), ".");
         String viewName = "VIEW_" + table.getSchemaTableNameWithUnderline();
         customTableEnvironment.createTemporaryView(viewName, rowDataDataStream, StringUtils.join(columnNameList, ","));
         logger.info("Create " + viewName + " temporaryView successful...");
-        String flinkDDL = getFlinkDDL(table, sinkTableName);
+        String flinkDDL = FlinkBaseUtil.getFlinkDDL(table, sinkTableName, config, sinkSchemaName, sinkTableName, pkList);
         logger.info(flinkDDL);
         customTableEnvironment.executeSql(flinkDDL);
         logger.info("Create " + sinkTableName + " FlinkSQL DDL successful...");
-        String cdcSqlInsert = getCDCSqlInsert(table, sinkTableName, viewName);
+        String cdcSqlInsert = FlinkBaseUtil.getCDCSqlInsert(table, sinkTableName, viewName, config);
         logger.info(cdcSqlInsert);
         List<Operation> operations = customTableEnvironment.getParser().parse(cdcSqlInsert);
         logger.info("Create " + sinkTableName + " FlinkSQL insert into successful...");
@@ -191,80 +186,6 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
         return dataStreamSource;
     }
 
-    private String getFlinkDDL(Table table, String tableName) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("CREATE TABLE IF NOT EXISTS ");
-        sb.append(tableName);
-        sb.append(" (\n");
-        List<String> pks = new ArrayList<>();
-        for (int i = 0; i < table.getColumns().size(); i++) {
-            String type = table.getColumns().get(i).getJavaType().getFlinkType();
-            sb.append("    ");
-            if (i > 0) {
-                sb.append(",");
-            }
-            sb.append("`");
-            sb.append(table.getColumns().get(i).getName());
-            sb.append("` ");
-            sb.append(convertSinkColumnType(type));
-            sb.append("\n");
-            if (table.getColumns().get(i).isKeyFlag()) {
-                pks.add(table.getColumns().get(i).getName());
-            }
-        }
-        StringBuilder pksb = new StringBuilder("PRIMARY KEY ( ");
-        for (int i = 0; i < pks.size(); i++) {
-            if (i > 0) {
-                pksb.append(",");
-            }
-            pksb.append("`");
-            pksb.append(pks.get(i));
-            pksb.append("`");
-        }
-        pksb.append(" ) NOT ENFORCED\n");
-        if (pks.size() > 0) {
-            sb.append("    ,");
-            sb.append(pksb);
-        }
-        sb.append(") WITH (\n");
-        sb.append(getSinkConfigurationString(table));
-        sb.append(")\n");
-        return sb.toString();
-    }
-
-    private String getCDCSqlInsert(Table table, String targetName, String sourceName) {
-        StringBuilder sb = new StringBuilder("INSERT INTO ");
-        sb.append(targetName);
-        sb.append(" SELECT\n");
-        for (int i = 0; i < table.getColumns().size(); i++) {
-            sb.append("    ");
-            if (i > 0) {
-                sb.append(",");
-            }
-            sb.append(getColumnProcessing(table.getColumns().get(i)) + " \n");
-        }
-        sb.append(" FROM ");
-        sb.append(sourceName);
-        return sb.toString();
-    }
-
-    private String getColumnProcessing(Column column) {
-        if ("true".equals(config.getSink().get("column.replace.line-break")) && ColumnType.STRING.equals(column.getJavaType())) {
-            return "REGEXP_REPLACE(`" + column.getName() + "`, '\\n', '') AS `" + column.getName() + "`";
-        } else {
-            return "`" + column.getName() + "`";
-        }
-    }
-
-    private String convertSinkColumnType(String type) {
-        if (config.getSink().get("connector").equals("hudi")) {
-            if (type.equals("TIMESTAMP")) {
-                return "TIMESTAMP(3)";
-            }
-        }
-        return type;
-    }
-
     protected Object convertValue(Object value, LogicalType logicalType) {
         if (value == null) {
             return null;
@@ -294,14 +215,5 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
         } else {
             return value;
         }
-    }
-
-    private String getSinkConfigurationString(Table table) {
-        String configurationString = SqlUtil.replaceAllParam(config.getSinkConfigurationString(), "schemaName", getSinkSchemaName(table));
-        configurationString = SqlUtil.replaceAllParam(configurationString, "tableName", getSinkTableName(table));
-        if (configurationString.contains("${pkList}")) {
-            configurationString = SqlUtil.replaceAllParam(configurationString, "pkList", StringUtils.join(getPKList(table), "."));
-        }
-        return configurationString;
     }
 }
