@@ -11,10 +11,14 @@ import {connect} from "umi";
 import { Scrollbars } from 'react-custom-scrollbars';
 
 const url = '/api/savepoints';
-const StudioSavePoint: React.FC<{}> = (props: any) => {
+const StudioSavePoint = (props: any) => {
   const {current,toolHeight,dispatch} = props;
   const [row, setRow] = useState<SavePointTableListItem>();
   const actionRef = useRef<ActionType>();
+
+  if(current.key){
+    actionRef.current?.reloadAndRest?.();
+  }
 
   const columns: ProColumns<SavePointTableListItem>[] = [
     {

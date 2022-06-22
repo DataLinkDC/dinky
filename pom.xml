@@ -7,7 +7,7 @@
     <groupId>com.dlink</groupId>
     <artifactId>dlink</artifactId>
     <packaging>pom</packaging>
-    <version>0.6.4-SNAPSHOT</version>
+    <version>0.6.5-SNAPSHOT</version>
 
     <modules>
         <module>dlink-flink</module>
@@ -61,6 +61,9 @@
         <scala.binary.version>2.11</scala.binary.version>
         <protobuf-java.version>2.5.0</protobuf-java.version>
         <jedis.version>2.9.0</jedis.version>
+        <javax.mail>1.6.2</javax.mail>
+        <poi.version>4.1.2</poi.version>
+        <commons-email>1.5</commons-email>
     </properties>
 
     <dependencyManagement>
@@ -374,6 +377,32 @@
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
                 <version>${httpclient.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>${poi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>${poi.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.poi</groupId>
+                        <artifactId>poi-ooxml-schemas</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-email</artifactId>
+                <version>${commons-email}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.mail</groupId>
+                <artifactId>javax.mail</artifactId>
+                <version>${javax.mail}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -10,11 +10,20 @@ import com.dlink.assertion.Asserts;
  */
 public class SqlUtil {
 
+    private static final String SEMICOLON = ";";
+
     public static String[] getStatements(String sql, String sqlSeparator) {
         if (Asserts.isNullString(sql)) {
             return new String[0];
         }
-        return sql.split(sqlSeparator);
+
+        String[] splits = sql.split(sqlSeparator);
+        String lastStatement = splits[splits.length - 1].trim();
+        if (lastStatement.endsWith(SEMICOLON)){
+            splits[splits.length - 1] = lastStatement.substring(0,lastStatement.length()-1);
+        }
+
+        return splits;
     }
 
     public static String removeNote(String sql) {

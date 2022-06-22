@@ -5,7 +5,7 @@
     <parent>
         <artifactId>dlink</artifactId>
         <groupId>com.dlink</groupId>
-        <version>0.6.4-SNAPSHOT</version>
+        <version>0.6.5-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -157,6 +157,22 @@
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-gateway</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-email</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
         </dependency>
     </dependencies>
     <build>

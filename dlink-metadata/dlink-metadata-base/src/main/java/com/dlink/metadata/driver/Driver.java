@@ -42,7 +42,7 @@ public interface Driver {
         }
         Optional<Driver> optionalDriver = Driver.get(config);
         if (!optionalDriver.isPresent()) {
-            throw new MetaDataException("不支持数据源类型【" + config.getType() + "】，请在 lib 下添加扩展依赖");
+            throw new MetaDataException("缺少数据源类型【" + config.getType() + "】的依赖，请在 lib 下添加对应的扩展依赖");
         }
         Driver driver = optionalDriver.get().connect();
         DriverPool.push(key, driver);
@@ -70,6 +70,8 @@ public interface Driver {
     List<Table> listTables(String schemaName);
 
     List<Column> listColumns(String schemaName, String tableName);
+
+    List<Column> listColumnsSortByPK(String schemaName, String tableName);
 
     List<Schema> getSchemasAndTables();
 

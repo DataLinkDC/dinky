@@ -50,10 +50,11 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
 
     @Override
     public TableResult build(Executor executor) {
+        logger.info("Start build CDCSOURCE Task...");
         CDCSource cdcSource = CDCSource.build(statement);
         FlinkCDCConfig config = new FlinkCDCConfig(cdcSource.getConnector(), cdcSource.getHostname(), cdcSource.getPort(), cdcSource.getUsername()
             , cdcSource.getPassword(), cdcSource.getCheckpoint(), cdcSource.getParallelism(), cdcSource.getDatabase(), cdcSource.getSchema()
-            , cdcSource.getTable(), cdcSource.getStartupMode(), cdcSource.getDebezium(), cdcSource.getSource(), cdcSource.getSink());
+            , cdcSource.getTable(), cdcSource.getStartupMode(), cdcSource.getDebezium(), cdcSource.getSource(), cdcSource.getSink(),cdcSource.getJdbc());
         try {
             CDCBuilder cdcBuilder = CDCBuilderFactory.buildCDCBuilder(config);
             Map<String, Map<String, String>> allConfigMap = cdcBuilder.parseMetaDataConfigs();
@@ -74,15 +75,15 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                     if (!Asserts.isEquals(table.getType(), "VIEW")) {
                         if (Asserts.isNotNullCollection(tableRegList)) {
                             for (String tableReg : tableRegList) {
-                                if (table.getSchemaTableName().matches(tableReg) && !schema.getTables().contains(Table.build(table.getName()))) {
-                                    table.setColumns(driver.listColumns(schemaName, table.getName()));
+                                if (table.getSchemaTableName().matches(tableReg.trim()) && !schema.getTables().contains(Table.build(table.getName()))) {
+                                    table.setColumns(driver.listColumnsSortByPK(schemaName, table.getName()));
                                     schema.getTables().add(table);
                                     schemaTableNameList.add(table.getSchemaTableName());
                                     break;
                                 }
                             }
                         } else {
-                            table.setColumns(driver.listColumns(schemaName, table.getName()));
+                            table.setColumns(driver.listColumnsSortByPK(schemaName, table.getName()));
                             schemaTableNameList.add(table.getSchemaTableName());
                             schema.getTables().add(table);
                         }
@@ -90,17 +91,25 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                 }
                 schemaList.add(schema);
             }
+            logger.info("A total of " + schemaTableNameList.size() + " tables were detected...");
+            for (int i = 0; i < schemaTableNameList.size(); i++) {
+                logger.info((i + 1) + ": " + schemaTableNameList.get(i));
+            }
             config.setSchemaTableNameList(schemaTableNameList);
             config.setSchemaList(schemaList);
             StreamExecutionEnvironment streamExecutionEnvironment = executor.getStreamExecutionEnvironment();
             if (Asserts.isNotNull(config.getParallelism())) {
                 streamExecutionEnvironment.setParallelism(config.getParallelism());
+                logger.info("Set parallelism: " + config.getParallelism());
             }
             if (Asserts.isNotNull(config.getCheckpoint())) {
                 streamExecutionEnvironment.enableCheckpointing(config.getCheckpoint());
+                logger.info("Set checkpoint: " + config.getCheckpoint());
             }
             DataStreamSource<String> streamSource = cdcBuilder.build(streamExecutionEnvironment);
+            logger.info("Build " + config.getType() + " successful...");
             SinkBuilderFactory.buildSinkBuilder(config).build(cdcBuilder, streamExecutionEnvironment, executor.getCustomTableEnvironment(), streamSource);
+            logger.info("Build CDCSOURCE Task successful!");
         } catch (Exception e) {
             e.printStackTrace();
         }

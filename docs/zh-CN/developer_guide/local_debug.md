@@ -104,7 +104,7 @@ npm build
 Dinky开发环境配置有两种模式，分别是product环境和compile环境
 
 - product：此环境适合已经存在安装包，可进行远程调试，此模式需要外部环境安装Flink；
-- compile：此环境适合二次开发或者熟悉源码，此模式不需要额外安装Flink,通过Flink自带的local模式变可调试开发  
+- compile：此环境适合二次开发或者熟悉源码，此模式不需要额外安装Flink,通过Flink自带的local模式便可调试开发  
 
 ## Dinky本地开发环境
 

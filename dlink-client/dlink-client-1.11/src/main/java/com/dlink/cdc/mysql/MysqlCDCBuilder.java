@@ -87,6 +87,7 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         }
         List<String> tableList = getTableList();
         for (String tableName : tableList) {
+            tableName = tableName.trim();
             if (Asserts.isNotNullString(tableName) && tableName.contains(".")) {
                 String[] names = tableName.split("\\\\.");
                 if (!schemaList.contains(names[0])) {

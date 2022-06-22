@@ -9,11 +9,11 @@ import {
   EditOutlined,
   EllipsisOutlined,
   CheckCircleOutlined,
-  ExclamationCircleOutlined
+  ExclamationCircleOutlined, DeleteOutlined
 } from '@ant-design/icons';
-import {Progress, Tag, Button, Space, Badge, Typography, Image, Row, Col, Card, Avatar} from 'antd';
+import {Progress, Tag, Button, Space, Badge, Typography, Image, Row, Col, Card, Avatar, Modal} from 'antd';
 import ProList from '@ant-design/pro-list';
-import {queryData} from "@/components/Common/crud";
+import {handleRemove, queryData} from "@/components/Common/crud";
 import {getDBImage} from "@/pages/DataBase/DB";
 import DBForm from "./components/DBForm";
 import {ActionType} from "@ant-design/pro-table";
@@ -21,6 +21,7 @@ import {ActionType} from "@ant-design/pro-table";
 import styles from './index.less';
 import {DataBaseItem} from "@/pages/DataBase/data";
 import {checkHeartBeat} from "@/pages/DataBase/service";
+import {showDataBase} from "@/components/Studio/StudioEvent/DDL";
 
 const {Text} = Typography;
 
@@ -32,10 +33,15 @@ const cardBodyStyle = {
 };
 
 const DataBaseTableList: React.FC<{}> = (props: any) => {
-
+  const { dispatch} = props;
   const [chooseDBModalVisible, handleDBFormModalVisible] = useState<boolean>(false);
   const [values, setValues] = useState<any>({});
   const actionRef = useRef<ActionType>();
+
+
+  const onRefreshDataBase = () => {
+    showDataBase(dispatch);
+  };
 
   const onEdit = (row: DataBaseItem) => {
     setValues(row);
@@ -45,6 +51,20 @@ const DataBaseTableList: React.FC<{}> = (props: any) => {
   const onCheckHeartBeat = (row: DataBaseItem) => {
     checkHeartBeat(row.id);
     actionRef.current?.reloadAndRest?.();
+  };
+
+  const onDeleteDataBase = (row: DataBaseItem) => {
+    Modal.confirm({
+      title: '删除数据源',
+      content: `确定删除该数据源【${row.alias === "" ? row.name : row.alias}】吗？`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk: async () => {
+        await handleRemove('api/database', [row]);
+        onRefreshDataBase();
+        actionRef.current?.reloadAndRest?.();
+      }
+    });
   };
 
   return (
@@ -89,6 +109,9 @@ const DataBaseTableList: React.FC<{}> = (props: any) => {
                 }}/>,
                 <EditOutlined key="edit" onClick={() => {
                   onEdit(row);
+                }}/>,
+                <DeleteOutlined key="delete" onClick={() => {
+                  onDeleteDataBase(row);
                 }}/>,
                 <EllipsisOutlined key="ellipsis"/>,
               ]}

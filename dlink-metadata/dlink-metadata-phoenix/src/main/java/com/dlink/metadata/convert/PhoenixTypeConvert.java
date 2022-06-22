@@ -7,53 +7,81 @@ import com.dlink.model.ColumnType;
 public class PhoenixTypeConvert implements ITypeConvert {
     @Override
     public ColumnType convert(Column column) {
-        if (Asserts.isNull(column) || Asserts.isNull(column.getType())) {
-            return ColumnType.STRING;
+        ColumnType columnType = ColumnType.STRING;
+        if (Asserts.isNull(column)) {
+            return columnType;
         }
         String t = column.getType().toLowerCase();
+        boolean isNullable = !column.isKeyFlag() && column.isNullable();
         if (t.contains("char") || t.contains("varchar") || t.contains("text") ||
-                t.contains("nchar") || t.contains("nvarchar") || t.contains("ntext")
-                || t.contains("uniqueidentifier") || t.contains("sql_variant")) {
-            return ColumnType.STRING;
+            t.contains("nchar") || t.contains("nvarchar") || t.contains("ntext")
+            || t.contains("uniqueidentifier") || t.contains("sql_variant")) {
+            columnType = ColumnType.STRING;
         } else if (t.contains("bigint")) {
-            return ColumnType.LONG;
+            if (isNullable) {
+                columnType = ColumnType.JAVA_LANG_LONG;
+            } else {
+                columnType = ColumnType.LONG;
+            }
         } else if (t.contains("int") || t.contains("tinyint") || t.contains("smallint") || t.contains("integer")) {
-            return ColumnType.INTEGER;
+            if (isNullable) {
+                columnType = ColumnType.INTEGER;
+            } else {
+                columnType = ColumnType.INT;
+            }
         } else if (t.contains("float")) {
-            return ColumnType.FLOAT;
+            if (isNullable) {
+                columnType = ColumnType.JAVA_LANG_FLOAT;
+            } else {
+                columnType = ColumnType.FLOAT;
+            }
         } else if (t.contains("decimal") || t.contains("money") || t.contains("smallmoney")
-                || t.contains("numeric")) {
-            return ColumnType.DECIMAL;
+            || t.contains("numeric")) {
+            columnType = ColumnType.DECIMAL;
         } else if (t.contains("double")) {
-            return ColumnType.DOUBLE;
+            if (isNullable) {
+                columnType = ColumnType.JAVA_LANG_DOUBLE;
+            } else {
+                columnType = ColumnType.DOUBLE;
+            }
         } else if (t.contains("boolean")) {
-            return ColumnType.BOOLEAN;
+            if (isNullable) {
+                columnType = ColumnType.JAVA_LANG_BOOLEAN;
+            } else {
+                columnType = ColumnType.BOOLEAN;
+            }
         } else if (t.contains("smalldatetime") || t.contains("datetime")) {
-            return ColumnType.TIMESTAMP;
+            columnType = ColumnType.TIMESTAMP;
         } else if (t.contains("timestamp") || t.contains("binary") || t.contains("varbinary") || t.contains("image")) {
-            return ColumnType.BYTES;
+            columnType = ColumnType.BYTES;
         } else if (t.contains("time")) {
-            return ColumnType.TIME;
+            columnType = ColumnType.TIME;
         } else if (t.contains("date")) {
-            return ColumnType.DATE;
+            columnType = ColumnType.DATE;
         }
-        return ColumnType.STRING;
+        columnType.setPrecisionAndScale(column.getPrecision(), column.getScale());
+        return columnType;
     }
 
     @Override
     public String convertToDB(ColumnType columnType) {
         switch (columnType) {
             case INTEGER:
+            case INT:
                 return "integer";
             case DOUBLE:
+            case JAVA_LANG_DOUBLE:
                 return "double";
             case LONG:
+            case JAVA_LANG_LONG:
                 return "bigint";
             case FLOAT:
+            case JAVA_LANG_FLOAT:
                 return "float";
             case DECIMAL:
                 return "decimal";
             case BOOLEAN:
+            case JAVA_LANG_BOOLEAN:
                 return "boolean";
             case TIME:
                 return "time";

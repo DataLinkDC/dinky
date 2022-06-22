@@ -31,11 +31,12 @@ public class CDCSource {
     private String table;
     private String startupMode;
     private Map<String, String> debezium;
+    private Map<String, String> jdbc;
     private Map<String, String> source;
     private Map<String, String> sink;
 
     public CDCSource(String connector, String statement, String name, String hostname, Integer port, String username, String password, Integer checkpoint, Integer parallelism, String startupMode,
-                     Map<String, String> debezium, Map<String, String> source, Map<String, String> sink) {
+                     Map<String, String> debezium, Map<String, String> source, Map<String, String> sink, Map<String, String> jdbc) {
         this.connector = connector;
         this.statement = statement;
         this.name = name;
@@ -47,6 +48,7 @@ public class CDCSource {
         this.parallelism = parallelism;
         this.startupMode = startupMode;
         this.debezium = debezium;
+        this.jdbc = jdbc;
         this.source = source;
         this.sink = sink;
     }
@@ -74,6 +76,18 @@ public class CDCSource {
                 }
             }
         }
+        // jdbc参数(jdbc.properties.*)
+        Map<String, String> jdbc = new HashMap<>();
+        for (Map.Entry<String, String> entry : config.entrySet()) {
+            if (entry.getKey().startsWith("jdbc.properties.")) {
+                String key = entry.getKey();
+                key = key.replaceFirst("jdbc.properties.", "");
+                if (!jdbc.containsKey(key)) {
+                    jdbc.put(key, entry.getValue());
+                }
+            }
+        }
+
         Map<String, String> sink = new HashMap<>();
         for (Map.Entry<String, String> entry : config.entrySet()) {
             if (entry.getKey().startsWith("sink.")) {
@@ -85,19 +99,20 @@ public class CDCSource {
             }
         }
         CDCSource cdcSource = new CDCSource(
-            config.get("connector"),
-            statement,
-            map.get("CDCSOURCE").toString(),
-            config.get("hostname"),
-            Integer.valueOf(config.get("port")),
-            config.get("username"),
-            config.get("password"),
-            Integer.valueOf(config.get("checkpoint")),
-            Integer.valueOf(config.get("parallelism")),
-            config.get("scan.startup.mode"),
-            debezium,
-            source,
-            sink
+                config.get("connector"),
+                statement,
+                map.get("CDCSOURCE").toString(),
+                config.get("hostname"),
+                Integer.valueOf(config.get("port")),
+                config.get("username"),
+                config.get("password"),
+                Integer.valueOf(config.get("checkpoint")),
+                Integer.valueOf(config.get("parallelism")),
+                config.get("scan.startup.mode"),
+                debezium,
+                source,
+                sink,
+                jdbc
         );
         if (Asserts.isNotNullString(config.get("database-name"))) {
             cdcSource.setDatabase(config.get("database-name"));
@@ -249,5 +264,13 @@ public class CDCSource {
 
     public void setSource(Map<String, String> source) {
         this.source = source;
+    }
+
+    public Map<String, String> getJdbc() {
+        return jdbc;
+    }
+
+    public void setJdbc(Map<String, String> jdbc) {
+        this.jdbc = jdbc;
     }
 }

@@ -14,9 +14,11 @@ public class JobInfoDetail {
     private ClusterConfiguration clusterConfiguration;
     private History history;
     private JobHistory jobHistory;
+    private Integer refreshCount;
 
     public JobInfoDetail(Integer id) {
         this.id = id;
+        this.refreshCount = 0;
     }
 
     public Integer getId() {
@@ -65,5 +67,16 @@ public class JobInfoDetail {
 
     public void setJobHistory(JobHistory jobHistory) {
         this.jobHistory = jobHistory;
+    }
+
+    public void refresh() {
+        refreshCount = refreshCount + 1;
+        if (isNeedSave()) {
+            refreshCount = 0;
+        }
+    }
+
+    public boolean isNeedSave() {
+        return refreshCount % 60 == 0;
     }
 }

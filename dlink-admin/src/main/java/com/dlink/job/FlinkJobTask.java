@@ -1,5 +1,12 @@
 package com.dlink.job;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.DependsOn;
+
 import com.dlink.assertion.Asserts;
 import com.dlink.context.SpringContextUtils;
 import com.dlink.daemon.constant.FlinkTaskConstant;
@@ -9,12 +16,6 @@ import com.dlink.daemon.task.DaemonTaskConfig;
 import com.dlink.model.JobInstance;
 import com.dlink.model.JobStatus;
 import com.dlink.service.TaskService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.DependsOn;
-
-import java.time.Duration;
-import java.time.LocalDateTime;
 
 @DependsOn("springContextUtils")
 public class FlinkJobTask implements DaemonTask {
@@ -54,8 +55,10 @@ public class FlinkJobTask implements DaemonTask {
         preDealTime = System.currentTimeMillis();
         JobInstance jobInstance = taskService.refreshJobInstance(config.getId(), false);
         if ((!JobStatus.isDone(jobInstance.getStatus())) || (Asserts.isNotNull(jobInstance.getFinishTime())
-                && Duration.between(jobInstance.getFinishTime(), LocalDateTime.now()).toMinutes() < 1)) {
+            && Duration.between(jobInstance.getFinishTime(), LocalDateTime.now()).toMinutes() < 1)) {
             DefaultThreadPool.getInstance().execute(this);
+        } else {
+            FlinkJobTaskPool.getInstance().remove(config.getId().toString());
         }
     }
 }

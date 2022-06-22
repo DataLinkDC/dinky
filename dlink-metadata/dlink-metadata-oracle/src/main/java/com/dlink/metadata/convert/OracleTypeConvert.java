@@ -18,6 +18,7 @@ public class OracleTypeConvert implements ITypeConvert {
             return columnType;
         }
         String t = column.getType().toLowerCase();
+        boolean isNullable = !column.isKeyFlag() && column.isNullable();
         if (t.contains("char")) {
             columnType = ColumnType.STRING;
         } else if (t.contains("date")) {
@@ -26,14 +27,26 @@ public class OracleTypeConvert implements ITypeConvert {
             columnType = ColumnType.TIMESTAMP;
         } else if (t.contains("number")) {
             if (t.matches("number\\(+\\d\\)")) {
-                columnType = ColumnType.INTEGER;
+                if (isNullable) {
+                    columnType = ColumnType.INTEGER;
+                } else {
+                    columnType = ColumnType.INT;
+                }
             } else if (t.matches("number\\(+\\d{2}+\\)")) {
-                columnType = ColumnType.LONG;
+                if (isNullable) {
+                    columnType = ColumnType.JAVA_LANG_LONG;
+                } else {
+                    columnType = ColumnType.LONG;
+                }
             } else {
                 columnType = ColumnType.DECIMAL;
             }
         } else if (t.contains("float")) {
-            columnType = ColumnType.FLOAT;
+            if (isNullable) {
+                columnType = ColumnType.JAVA_LANG_FLOAT;
+            } else {
+                columnType = ColumnType.FLOAT;
+            }
         } else if (t.contains("clob")) {
             columnType = ColumnType.STRING;
         } else if (t.contains("blob")) {
@@ -53,10 +66,13 @@ public class OracleTypeConvert implements ITypeConvert {
             case TIMESTAMP:
                 return "timestamp";
             case INTEGER:
+            case INT:
             case LONG:
+            case JAVA_LANG_LONG:
             case DECIMAL:
                 return "number";
             case FLOAT:
+            case JAVA_LANG_FLOAT:
                 return "float";
             case BYTES:
                 return "blob";
