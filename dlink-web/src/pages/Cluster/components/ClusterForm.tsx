@@ -48,14 +48,14 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
       <>
         <Form.Item
           name="name"
-          label="标识"
+          label="名称"
           rules={[{required: true, message: '请输入名称！'}]}>
           <Input placeholder="请输入唯一英文标识"/>
         </Form.Item>
 
         <Form.Item
           name="alias"
-          label="名称"
+          label="别名"
         >
           <Input placeholder="请输入名称"/>
         </Form.Item>
