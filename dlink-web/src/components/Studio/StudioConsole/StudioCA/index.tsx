@@ -15,7 +15,6 @@ const StudioCA = (props: any) => {
   const {current} = props;
   const [data, setData] = useState(getInit());
 
-  debugger;
   const handleLineage=()=>{
     const res = getLineage({
       statement:current.value,
