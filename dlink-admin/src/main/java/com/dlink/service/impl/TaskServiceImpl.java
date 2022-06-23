@@ -678,6 +678,14 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if (Asserts.isNull(dto.getVersion()) || Asserts.isNull(dto.getId())) {
             return false;
         }
+        Task taskInfo = getTaskInfoById(dto.getId());
+
+        if (JobLifeCycle.RELEASE.equalsValue(taskInfo.getStep()) ||
+                JobLifeCycle.ONLINE.equalsValue(taskInfo.getStep()) ||
+                JobLifeCycle.CANCEL.equalsValue(taskInfo.getStep())) {
+            throw new BusException("该作业已" + JobLifeCycle.get(taskInfo.getStep()).getLabel() + "，禁止回滚！");
+        }
+
         LambdaQueryWrapper<TaskVersion> queryWrapper = new LambdaQueryWrapper<TaskVersion>().
                 eq(TaskVersion::getTaskId, dto.getId()).
                 eq(TaskVersion::getVersionId, dto.getVersion());
