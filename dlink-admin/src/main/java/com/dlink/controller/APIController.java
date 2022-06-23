@@ -1,5 +1,9 @@
 package com.dlink.controller;
 
+import com.dlink.assertion.Asserts;
+import com.dlink.model.JobInstance;
+import com.dlink.model.Task;
+import com.dlink.service.JobInstanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,6 +42,8 @@ public class APIController {
     private StudioService studioService;
     @Autowired
     private TaskService taskService;
+    @Autowired
+    private JobInstanceService jobInstanceService;
 
     @GetMapping("/submitTask")
     public Result submitTask(@RequestParam Integer id) {
@@ -119,5 +125,21 @@ public class APIController {
     @GetMapping("/reOnLineTask")
     public Result reOnLineTask(@RequestParam Integer id) {
         return taskService.reOnLineTask(id);
+    }
+
+    /**
+     * 获取Job实例的所有信息
+     */
+    @GetMapping("/getJobInfoDetail")
+    public Result getJobInfoDetail(@RequestParam Integer id) {
+        return Result.succeed(jobInstanceService.getJobInfoDetail(id), "获取成功");
+    }
+
+    /**
+     * 通过 taskId 获取 Task 对应的 Job 实例的所有信息
+     */
+    @GetMapping("/getJobInfoDetailByTaskId")
+    public Result getJobInfoDetailByTaskId(@RequestParam Integer id) {
+        return Result.succeed(jobInstanceService.getJobInstanceByTaskId(id), "获取成功");
     }
 }
