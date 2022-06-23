@@ -668,3 +668,43 @@ SET FOREIGN_KEY_CHECKS = 1;
 alter table dlink_task alter column fragment set default 0;
 alter table dlink_task alter column statement_set set default 0;
 alter table dlink_cluster_configuration modify column is_available  tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否可用';
+
+
+-- 0.6.5-SNAPSHOT 2022-06-22
+-- ----------------------------
+alter table dlink_task
+    ADD COLUMN `version_id` INT NULL COMMENT '版本号ID' ;
+
+CREATE TABLE `dlink_task_version` (
+                                      `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+                                      `task_id` int(11) NOT NULL COMMENT '作业ID ',
+                                      `version_id` int(11) NOT NULL COMMENT '版本ID ',
+                                      `statement` text COMMENT 'flink sql 内容',
+                                      `name` varchar(255) NOT NULL COMMENT '名称',
+                                      `alias` varchar(255) DEFAULT NULL COMMENT '别名',
+                                      `dialect` varchar(50) DEFAULT NULL COMMENT '方言',
+                                      `type` varchar(50) DEFAULT NULL COMMENT '类型',
+                                      `check_point` int(11) DEFAULT NULL COMMENT 'CheckPoint ',
+                                      `save_point_strategy` int(1) unsigned zerofill DEFAULT NULL COMMENT 'SavePoint策略',
+                                      `save_point_path` varchar(255) DEFAULT NULL COMMENT 'SavePointPath',
+                                      `parallelism` int(4) DEFAULT NULL COMMENT 'parallelism',
+                                      `fragment` tinyint(1) DEFAULT '0' COMMENT 'fragment',
+                                      `statement_set` tinyint(1) DEFAULT '0' COMMENT '启用语句集',
+                                      `batch_model` tinyint(1) DEFAULT '0' COMMENT '使用批模式',
+                                      `cluster_id` int(11) DEFAULT NULL COMMENT 'Flink集群ID',
+                                      `cluster_configuration_id` int(11) DEFAULT NULL COMMENT '集群配置ID',
+                                      `database_id` int(11) DEFAULT NULL COMMENT '数据源ID',
+                                      `jar_id` int(11) DEFAULT NULL COMMENT 'jarID',
+                                      `env_id` int(11) DEFAULT NULL COMMENT '环境ID',
+                                      `alert_group_id` int(11) DEFAULT NULL COMMENT '报警组ID',
+                                      `config_json` text COMMENT '配置JSON',
+                                      `note` varchar(255) DEFAULT NULL COMMENT '注释',
+                                      `step` int(11) DEFAULT NULL COMMENT '作业生命周期',
+                                      `job_instance_id` int(11) DEFAULT NULL COMMENT '作业实例ID',
+                                      `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否启用',
+                                      `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+                                      `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+                                      PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='作业历史版本';
+
+

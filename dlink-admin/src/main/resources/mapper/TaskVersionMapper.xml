@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlink.mapper.TaskVersionMapper">
+    <resultMap id="BaseResultMap" type="com.dlink.model.TaskVersion">
+        <!--@mbg.generated-->
+        <!--@Table dlink_task_version-->
+        <id column="id" property="id"/>
+        <result column="task_id" property="taskId"/>
+        <result column="version_id" property="versionId"/>
+        <result column="statement" property="statement"/>
+        <result column="name" property="name"/>
+        <result column="alias" property="alias"/>
+        <result column="dialect" property="dialect"/>
+        <result column="type" property="type"/>
+        <result column="check_point" property="checkPoint"/>
+        <result column="save_point_strategy" property="savePointStrategy"/>
+        <result column="save_point_path" property="savePointPath"/>
+        <result column="parallelism" property="parallelism"/>
+        <result column="fragment" property="fragment"/>
+        <result column="statement_set" property="statementSet"/>
+        <result column="batch_model" property="batchModel"/>
+        <result column="cluster_id" property="clusterId"/>
+        <result column="cluster_configuration_id" property="clusterConfigurationId"/>
+        <result column="database_id" property="databaseId"/>
+        <result column="jar_id" property="jarId"/>
+        <result column="env_id" property="envId"/>
+        <result column="alert_group_id" property="alertGroupId"/>
+        <result column="config_json" property="configJson"/>
+        <result column="note" property="note"/>
+        <result column="step" property="step"/>
+        <result column="job_instance_id" property="jobInstanceId"/>
+        <result column="enabled" property="enabled"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id,
+        task_id,
+        version_id,
+        `statement`,
+        `name`,
+        `alias`,
+        dialect,
+        `type`,
+        check_point,
+        save_point_strategy,
+        save_point_path,
+        parallelism,
+        fragment,
+        statement_set,
+        batch_model,
+        cluster_id,
+        cluster_configuration_id,
+        database_id,
+        jar_id,
+        env_id,
+        alert_group_id,
+        config_json,
+        note,
+        step,
+        job_instance_id,
+        enabled,
+        create_time,
+        update_time
+    </sql>
+
+    <select id="getTaskMaxVersionByTaskId" resultMap="BaseResultMap">
+        select *
+        from (select max(version_id)
+              from dlink_task_version
+              where task_id = #{taskId}) b
+    </select>
+</mapper>

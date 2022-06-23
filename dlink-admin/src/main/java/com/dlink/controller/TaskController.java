@@ -3,6 +3,8 @@ package com.dlink.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.dlink.dto.TaskRollbackVersionDTO;
+import com.dlink.model.TaskVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -136,6 +138,22 @@ public class TaskController {
     @GetMapping(value = "/releaseTask")
     public Result releaseTask(@RequestParam Integer id) {
         return taskService.releaseTask(id);
+    }
+
+
+    @GetMapping("/version")
+    public Result getVersionsByTaskId(@RequestParam Integer id) {
+        List<TaskVersion> taskVersionList = taskService.getVersionsByTaskId(id);
+        return Result.succeed(taskVersionList, "获取成功");
+    }
+
+    @PutMapping("/rollbackTask")
+    public Result rollbackTask(@RequestBody TaskRollbackVersionDTO dto) throws Exception {
+        if (taskService.rollbackTask(dto)) {
+            return Result.succeed("操作成功");
+        } else {
+            return Result.failed("操作失败");
+        }
     }
 
     /**
