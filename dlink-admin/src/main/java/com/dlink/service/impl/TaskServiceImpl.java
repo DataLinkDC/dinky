@@ -20,6 +20,7 @@ import com.dlink.daemon.task.DaemonTaskConfig;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.dto.SqlDTO;
 import com.dlink.dto.TaskRollbackVersionDTO;
+import com.dlink.dto.TaskVersionConfigureDTO;
 import com.dlink.exception.BusException;
 import com.dlink.gateway.GatewayType;
 import com.dlink.gateway.config.SavePointStrategy;
@@ -45,6 +46,7 @@ import java.net.UnknownHostException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -265,6 +267,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 throw new BusException("该作业已" + JobLifeCycle.get(taskInfo.getStep()).getLabel() + "，禁止修改！");
             }
             task.setStep(JobLifeCycle.DEVELOP.getValue());
+            taskInfo.setVersionId(taskInfo.getVersionId());
             this.updateById(task);
             if (task.getStatement() != null) {
                 Statement statement = new Statement();
@@ -338,14 +341,16 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             task.setStep(JobLifeCycle.RELEASE.getValue());
 
             List<TaskVersion> taskVersions = taskVersionService.getTaskVersionByTaskId(task.getId());
-            List<Integer> versionIds = taskVersions.stream().map(TaskVersion::getTaskId).collect(Collectors.toList());
+            List<Integer> versionIds = taskVersions.stream().map(TaskVersion::getVersionId).collect(Collectors.toList());
             Map<Integer, TaskVersion> versionMap = taskVersions.stream().collect(Collectors.toMap(TaskVersion::getVersionId, t -> t));
 
             TaskVersion taskVersion = new TaskVersion();
             BeanUtil.copyProperties(task, taskVersion);
+            TaskVersionConfigureDTO taskVersionConfigureDTO = new TaskVersionConfigureDTO();
+            BeanUtil.copyProperties(task, taskVersionConfigureDTO);
+            taskVersion.setTaskConfigure(taskVersionConfigureDTO);
             taskVersion.setTaskId(taskVersion.getId());
             taskVersion.setId(null);
-            taskVersion.setUpdateTime(null);
             if (Asserts.isNull(task.getVersionId())) {
                 //首次发布，新增版本
                 taskVersion.setVersionId(1);
@@ -357,12 +362,12 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 //2、md5值与上一个版本一致
                 TaskVersion version = versionMap.get(task.getVersionId());
                 version.setId(null);
-                version.setUpdateTime(null);
+
                 if (versionIds.contains(task.getVersionId()) && !taskVersion.equals(version)
-                        //||  !versionIds.contains(task.getVersionId()) && !taskVersion.equals(version)
+                    //||  !versionIds.contains(task.getVersionId()) && !taskVersion.equals(version)
                 ) {
-                    taskVersion.setVersionId(version.getVersionId() + 1);
-                    task.setVersionId(version.getVersionId() + 1);
+                    taskVersion.setVersionId(Collections.max(versionIds) + 1);
+                    task.setVersionId(Collections.max(versionIds) + 1);
                     taskVersionService.save(taskVersion);
                 }
             }
@@ -694,7 +699,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
         Task updateTask = new Task();
         BeanUtil.copyProperties(taskVersion, updateTask);
+        BeanUtil.copyProperties(taskVersion.getTaskConfigure(), updateTask);
         updateTask.setId(taskVersion.getTaskId());
+        updateTask.setStep(JobLifeCycle.DEVELOP.getValue());
         baseMapper.updateById(updateTask);
 
         Statement statement = new Statement();
