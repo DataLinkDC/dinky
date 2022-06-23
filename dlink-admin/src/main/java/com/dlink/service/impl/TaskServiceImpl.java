@@ -345,25 +345,28 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             BeanUtil.copyProperties(task, taskVersion);
             taskVersion.setTaskId(taskVersion.getId());
             taskVersion.setId(null);
+            taskVersion.setUpdateTime(null);
             if (Asserts.isNull(task.getVersionId())) {
                 //首次发布，新增版本
                 taskVersion.setVersionId(1);
                 task.setVersionId(1);
+                taskVersionService.save(taskVersion);
             } else {
                 //说明存在版本，需要判断是否 是回退后的老版本
                 //1、版本号存在
                 //2、md5值与上一个版本一致
                 TaskVersion version = versionMap.get(task.getVersionId());
                 version.setId(null);
-                if (versionIds.contains(task.getVersionId()) && !taskVersion.equals(version) ||
-                        !versionIds.contains(task.getVersionId()) && !taskVersion.equals(version)) {
-
+                version.setUpdateTime(null);
+                if (versionIds.contains(task.getVersionId()) && !taskVersion.equals(version)
+                        //||  !versionIds.contains(task.getVersionId()) && !taskVersion.equals(version)
+                ) {
                     taskVersion.setVersionId(version.getVersionId() + 1);
                     task.setVersionId(version.getVersionId() + 1);
-
+                    taskVersionService.save(taskVersion);
                 }
             }
-            taskVersionService.save(taskVersion);
+
             if (updateById(task)) {
                 return Result.succeed("发布成功");
             } else {
