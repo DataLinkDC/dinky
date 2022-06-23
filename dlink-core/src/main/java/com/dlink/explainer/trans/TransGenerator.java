@@ -58,7 +58,7 @@ public class TransGenerator {
         for (Map.Entry<Integer, Trans> entry : nodemap.entrySet()) {
             Trans trans = entry.getValue();
             List<Predecessor> predecessors = trans.getPredecessors();
-            if (Asserts.isNull(predecessors)) {
+            if (Asserts.isNullCollection(predecessors)) {
                 continue;
             }
             for (int i = 0; i < predecessors.size(); i++) {
