@@ -400,8 +400,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             } else {
                 return Result.failed("上线失败，原因：" + jobResult.getError());
             }
+        }else if (JobLifeCycle.ONLINE.equalsValue(task.getStep())) {
+            return Result.failed("上线失败，当前作业已上线。");
         }
-        return Result.failed("上线失败，作业不存在。");
+        return Result.failed("上线失败，当前作业未发布。");
     }
 
     @Override
