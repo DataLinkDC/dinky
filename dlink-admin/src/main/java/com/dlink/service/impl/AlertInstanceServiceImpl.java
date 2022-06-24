@@ -2,6 +2,7 @@ package com.dlink.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.alert.*;
+import com.dlink.assertion.Asserts;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.AlertInstanceMapper;
 import com.dlink.model.AlertInstance;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -33,15 +35,30 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
         AlertConfig alertConfig = AlertConfig.build(alertInstance.getName(), alertInstance.getType(), JSONUtil.toMap(alertInstance.getParams()));
         Alert alert = Alert.buildTest(alertConfig);
         String currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-        String testSendMsg = "[{\"type\":\"Flink 实时监控\"," +
-            "\"time\":\"" + currentDateTime + "\"," +
-            "\"id\":\"" + UUID.randomUUID() + "\"," +
-            "\"name\":\"此信息仅用于测试告警信息是否发送正常 ! 请忽略此信息！\"," +
-            "\"status\":\"Test\"," +
-            "\"content\" :\"" + UUID.randomUUID() + "\"}]";
-        List<AlertMsg> lists = JSONUtil.toList(testSendMsg, AlertMsg.class);
-        String title = "任务【测试任务】：" + alertInstance.getType() + " 报警 !";
-        String content = JSONUtil.toJsonString(lists);
-        return alert.send(title, content);
+        String uuid = UUID.randomUUID().toString();
+
+        AlertMsg alertMsg = new AlertMsg();
+        alertMsg.setAlertType("实时告警监控");
+        alertMsg.setAlertTime(currentDateTime);
+        alertMsg.setJobID(uuid);
+        alertMsg.setJobName("测试任务");
+        alertMsg.setJobType("SQL");
+        alertMsg.setJobStatus("FAILED");
+        alertMsg.setJobStartTime(currentDateTime);
+        alertMsg.setJobEndTime(currentDateTime);
+        alertMsg.setJobDuration("1 Seconds");
+        String linkUrl = "http://cdh1:8081/#/job/"+ uuid+"/overview";
+        String exceptionUrl = "http://cdh1:8081/#/job/"+uuid+"/exceptions";
+
+        Map<String, String> map = JSONUtil.toMap(alertInstance.getParams());
+        if ( map.get("msgtype").equals(ShowType.MARKDOWN.getValue())) {
+            alertMsg.setLinkUrl("[跳转至该任务的 FlinkWeb](" + linkUrl + ")");
+            alertMsg.setExceptionUrl("[点击查看该任务的异常日志](" + exceptionUrl + ")");
+        }else {
+            alertMsg.setLinkUrl(linkUrl);
+            alertMsg.setExceptionUrl(exceptionUrl);
+        }
+        String title = "任务【"+alertMsg.getJobName()+"】：" +alertMsg.getJobStatus() + "!";
+        return alert.send(title, alertMsg.toString());
     }
 }
