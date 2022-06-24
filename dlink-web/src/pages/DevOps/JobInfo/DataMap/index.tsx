@@ -7,9 +7,10 @@ const {TabPane} = Tabs;
 const DataMap = (props: any) => {
 
   const {job} = props;
-  const [data, setData] = useState(getInit());
+  const [data, setData] = useState(undefined);
 
   const getData = () => {
+    setData(undefined);
     const res = getLineage(job.instance?.id);
     res.then((result)=>{
       result.datas.tables.forEach(table => {
@@ -29,7 +30,7 @@ const DataMap = (props: any) => {
       border: "1px solid #f0f0f0"
     }}>
       <TabPane tab={<span>血缘分析</span>} key="Lineage">
-        <Lineage datas={data}/>
+        {data?<Lineage datas={data}/>:<Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
       </TabPane>
     </Tabs>
   </>)

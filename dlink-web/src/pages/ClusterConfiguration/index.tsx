@@ -116,7 +116,7 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
     },
     {
       title: '是否可用',
-      dataIndex: 'available',
+      dataIndex: 'isAvailable',
       hideInForm: true,
       hideInSearch: true,
       hideInTable: false,

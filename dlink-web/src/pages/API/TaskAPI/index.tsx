@@ -67,6 +67,17 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
+          作业实例
+        </span>
+        }
+        key="taskInstance"
+      >
+        <CodeShow code={`curl http://${address}/openapi/getJobInfoDetailByTaskId?id=${(task ? task.id : '1')}`} language='shell'
+                  height='500px' theme="vs-dark"/>
+      </TabPane>
+      <TabPane
+        tab={
+          <span>
           SavePoint 触发
         </span>
         }

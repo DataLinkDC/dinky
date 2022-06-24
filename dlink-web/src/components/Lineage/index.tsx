@@ -1,7 +1,7 @@
 import {LineageTable} from 'react-lineage-dag';
-import {useEffect, useState, useRef} from "react";
+import {useState, useRef} from "react";
 import LineageOps from "@/components/Lineage/LineageOps";
-
+import * as _ from 'lodash';
 
 export const getInit = () => {
   return {
@@ -15,8 +15,8 @@ const Lineage = (props: any) => {
   const {datas} = props;
 
   const cvsRef = useRef(null);
-  const [data, setData] = useState(getInit());
-  const [allData, setAllData] = useState(getInit());
+  const [data, setData] = useState(datas);
+  const [allData, setAllData] = useState(datas);
   const [relayout, setRelayout] = useState(false);
   const [focus, setFocus] = useState(false);
 
@@ -41,78 +41,66 @@ const Lineage = (props: any) => {
   };
 
   const onAction = (action, tableId) => {
+    const newData = _.cloneDeep(data);
     switch (action) {
       case 'expand': {
-        const table = data.tables.find(t => t.id === tableId);
+        const table = newData.tables.find(t => t.id === tableId);
         table.isExpand = true;
         const children = getChildren(tableId);
         children.tables.forEach(table => {
-          if(data.tables.some(t => t.id === table.id)) {
+          if (newData.tables.some(t => t.id === table.id)) {
             return;
           }
-          data.tables.push(table);
+          newData.tables.push(table);
         });
         children.relations.forEach(relation => {
-          if(data.relations.some(r => r.id === relation.id)) {
+          if (newData.relations.some(r => r.id === relation.id)) {
             return;
           }
-          data.relations.push(relation);
+          newData.relations.push(relation);
         });
-        setData({...data});
+        setData({...newData});
         break;
       }
       case 'shrink': {
-        const table = data.tables.find(t => t.id === tableId);
+        const table = newData.tables.find(t => t.id === tableId);
         table.isExpand = false;
         const children = getChildren(tableId);
         children.tables.forEach(table => {
-          const index = data.tables.findIndex(t => t.id === table.id);
-          data.tables.splice(index, 1);
+          const index = newData.tables.findIndex(t => t.id === table.id);
+          newData.tables.splice(index, 1);
         });
         children.relations.forEach(relation => {
-          const index = data.relations.findIndex(r => r.id === relation.id);
-          data.relations.splice(index, 1);
+          const index = newData.relations.findIndex(r => r.id === relation.id);
+          newData.relations.splice(index, 1);
         });
-        setData({...data});
+        setData({...newData});
         break;
       }
       case 'fold': {
-        data.tables.forEach(table => {
+        newData.tables.forEach(table => {
           if (table.id !== tableId) {
             return;
           }
           table.isFold = false;
         });
-        data.tables = [...data.tables];
-        setData({...data});
+        newData.tables = [...newData.tables];
+        setData({...newData});
         break;
       }
       case 'unfold': {
-        data.tables.forEach(table => {
+        newData.tables.forEach(table => {
           if (table.id !== tableId) {
             return;
           }
           table.isFold = true;
         });
-        data.tables = [...data.tables];
-        setData({...data});
+        newData.tables = [...newData.tables];
+        setData({...newData});
         break;
       }
     }
   };
-
-  const getData = () => {
-    setData(datas);
-    let newDatas = {
-      tables: [...datas.tables],
-      relations: [...datas.relations]
-    };
-    setAllData(newDatas);
-  };
-
-  useEffect(() => {
-    getData();
-  }, [datas]);
 
   data.tables.forEach(table => {
     table.operators = LineageOps({
@@ -123,23 +111,25 @@ const Lineage = (props: any) => {
     })
   });
 
-  return (<LineageTable {...data}
-                        onLoaded={(canvas) => {
-                          cvsRef.current = canvas;
-                        }}
-                        onEachFrame={() => {
-                          if (!cvsRef.current) {
-                            return;
-                          }
-                          if (relayout) {
-                            cvsRef.current.relayout();
-                            setRelayout(false);
-                          }
-                          if (focus) {
-                            cvsRef.current.focusNode(focus);
-                            setFocus(false);
-                          }
-                        }}/>)
+  return (
+    <LineageTable
+      {...data}
+      onLoaded={(canvas) => {
+        cvsRef.current = canvas;
+      }}
+      onEachFrame={() => {
+        if (!cvsRef.current) {
+          return;
+        }
+        if (relayout) {
+          cvsRef.current.relayout();
+          setRelayout(false);
+        }
+        if (focus) {
+          cvsRef.current.focusNode(focus);
+          setFocus(false);
+        }
+      }}/>)
 };
 
 export default Lineage;
