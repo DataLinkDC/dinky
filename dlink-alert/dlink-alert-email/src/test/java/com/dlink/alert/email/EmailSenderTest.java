@@ -1,11 +1,13 @@
 package com.dlink.alert.email;
 
+import com.dlink.alert.AlertMsg;
 import com.dlink.alert.AlertResult;
 import com.dlink.alert.ShowType;
 import com.dlink.alert.email.template.AlertTemplate;
 import com.dlink.alert.email.template.DefaultHTMLTemplate;
 import com.dlink.utils.JSONUtil;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -20,19 +22,28 @@ public class EmailSenderTest {
     private static AlertTemplate alertTemplate;
 
     String title = "Dinky Email Alert";
-    String content = "[{\"id\":\"69\","
-            + "\"name\":\"UserBehavior-0--1193959466\","
-            + "\"Job name\": \"Start workflow\","
-            + "\"State\": \"SUCCESS\","
-            + "\"Recovery\":\"NO\","
-            + "\"Run time\": \"1\","
-            + "\"Start time\": \"2018-08-06 10:31:34.0\","
-            + "\"End time\": \"2018-08-06 10:31:49.0\","
-            + "\"Host\": \"192.168.xx.xx\","
-            + "\"Notify group\" :\"4\"}]";
+    private AlertMsg alertMsg = new AlertMsg();
 
-    @BeforeClass
-    public static void initEmailConfig() {
+
+    @Before
+    public void initEmailConfig() {
+
+        String uuid = UUID.randomUUID().toString();
+
+        alertMsg.setAlertType("实时告警监控");
+        alertMsg.setAlertTime("2018-08-06 10:31:34.0");
+        alertMsg.setJobID(uuid);
+        alertMsg.setJobName("测试任务");
+        alertMsg.setJobType("SQL");
+        alertMsg.setJobStatus("FAILED");
+        alertMsg.setJobStartTime("2018-08-06 10:31:34.0");
+        alertMsg.setJobEndTime("2018-08-06 10:31:49.0");
+        alertMsg.setJobDuration("23 Seconds");
+        String linkUrl = "[跳转至该任务的FlinkWeb](http://cdh1:8081/#/job/"+uuid+"/overview)";
+        alertMsg.setLinkUrl(linkUrl);
+        String exceptionUrl = "[点击查看该任务的异常日志](http://cdh1:8081/#/job/"+uuid+"/exceptions)";
+        alertMsg.setExceptionUrl(exceptionUrl);
+
         emailConfig.put(EmailConstants.NAME_MAIL_PROTOCOL, "smtp");
         emailConfig.put(EmailConstants.NAME_MAIL_SMTP_HOST, "smtp.mxhichina.com");
         emailConfig.put(EmailConstants.NAME_MAIL_SMTP_PORT, "465");
@@ -52,7 +63,7 @@ public class EmailSenderTest {
 
     @Test
     public void testTextSendMails() {
-        AlertResult alertResult = mailSender.send(title, content);
+        AlertResult alertResult = mailSender.send(title, alertMsg.toString());
         Assert.assertEquals(true, alertResult.getSuccess()); // 格式需要调整
     }
 
@@ -61,7 +72,7 @@ public class EmailSenderTest {
     public void testSendTableMail() {
         emailConfig.put(EmailConstants.NAME_SHOW_TYPE, ShowType.TABLE.getValue());
         mailSender = new MailSender(emailConfig);
-        AlertResult alertResult = mailSender.send(title, content);
+        AlertResult alertResult = mailSender.send(title, alertMsg.toString());
         Assert.assertEquals(true, alertResult.getSuccess());
     }
 
@@ -69,7 +80,7 @@ public class EmailSenderTest {
     public void testAttachmentFile() {
         emailConfig.put(EmailConstants.NAME_SHOW_TYPE, ShowType.ATTACHMENT.getValue());
         mailSender = new MailSender(emailConfig);
-        AlertResult alertResult = mailSender.send(title, content);
+        AlertResult alertResult = mailSender.send(title, alertMsg.toString());
         Assert.assertEquals(true, alertResult.getSuccess());
     }
 
@@ -77,13 +88,13 @@ public class EmailSenderTest {
     public void testTableAttachmentFile() {
         emailConfig.put(EmailConstants.NAME_SHOW_TYPE, ShowType.TABLE_ATTACHMENT.getValue());
         mailSender = new MailSender(emailConfig);
-        AlertResult alertResult = mailSender.send(title, content);
+        AlertResult alertResult = mailSender.send(title, alertMsg.toString());
         Assert.assertEquals(true, alertResult.getSuccess());
     }
 
     @Test
     public void testGenTextEmail() {
-        List<LinkedHashMap> linkedHashMaps = JSONUtil.toList(content, LinkedHashMap.class);
+        List<LinkedHashMap> linkedHashMaps = JSONUtil.toList(alertMsg.toString(), LinkedHashMap.class);
         if (linkedHashMaps.size() > EmailConstants.NUMBER_1000) {
             linkedHashMaps = linkedHashMaps.subList(0, EmailConstants.NUMBER_1000);
         }

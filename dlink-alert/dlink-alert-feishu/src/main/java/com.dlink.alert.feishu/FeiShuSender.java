@@ -17,8 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 /**
@@ -68,9 +67,9 @@ public final class FeiShuSender {
         }
     }
 
-    private  String toJsonSendMsg(AlertMsg alertMsg) {
+    private  String toJsonSendMsg(String title, String content) {
         String jsonResult ="";
-        byte[] byt = StringUtils.getBytesUtf8(formatContent(alertMsg));
+        byte[] byt = StringUtils.getBytesUtf8(formatContent(title,content));
         String contentResult = StringUtils.newStringUtf8(byt);
         String userIdsToText = mkUserIds(org.apache.commons.lang3.StringUtils.isBlank(atUserIds)? "all": atUserIds);
         if (StringUtils.equals(ShowType.TEXT.getValue(), msgType)) {
@@ -130,17 +129,19 @@ public final class FeiShuSender {
         return alertResult;
     }
 
-    public static String formatContent(AlertMsg alertMsg) {
-        if (alertMsg.getContent() != null) {
-            List<Map> list = JSONUtil.toList(alertMsg.getContent(), Map.class);
-            if (list.isEmpty()) {
-                return alertMsg.getName() + alertMsg.getContent();
-            }
-
+    public static String formatContent(String title, String content) {
+        List<LinkedHashMap> mapSendResultItemsList = JSONUtil.toList(content, LinkedHashMap.class);
+        if (null == mapSendResultItemsList || mapSendResultItemsList.isEmpty()) {
+            logger.error("itemsList is null");
+            throw new RuntimeException("itemsList is null");
+        }
             StringBuilder contents = new StringBuilder(100);
-            contents.append(String.format("`%s`"+FeiShuConstants.MARKDOWN_ENTER, alertMsg.getName()));
-            for (Map map : list) {
-                for (Entry<String, Object> entry : (Iterable<Entry<String, Object>>) map.entrySet()) {
+            contents.append(String.format("`%s` %s",title,FeiShuConstants.MARKDOWN_ENTER));
+            for (LinkedHashMap mapItems : mapSendResultItemsList) {
+                Set<Entry<String, Object>> entries = mapItems.entrySet();
+                Iterator<Entry<String, Object>> iterator = entries.iterator();
+                while (iterator.hasNext()) { {
+                    Map.Entry<String, Object> entry = iterator.next();
                     String key = entry.getKey();
                     String value = entry.getValue().toString();
                     contents.append(FeiShuConstants.MARKDOWN_QUOTE);
@@ -154,11 +155,8 @@ public final class FeiShuSender {
 
     public AlertResult send(String title,String content) {
         AlertResult alertResult;
-        AlertMsg alertMsg = new AlertMsg();
-        alertMsg.setName(title);
-        alertMsg.setContent(content);
         try {
-            String resp = sendMsg(alertMsg);
+            String resp = sendMsg(title, content);
             return checkSendFeiShuSendMsgResult(resp);
         } catch (Exception e) {
             logger.info("send fei shu alert msg  exception : {}", e.getMessage());
@@ -169,9 +167,9 @@ public final class FeiShuSender {
         return alertResult;
     }
 
-    private String sendMsg(AlertMsg alertMsg) throws IOException {
+    private String sendMsg(String title,String content) throws IOException {
 
-        String msgToJson = toJsonSendMsg(alertMsg);
+        String msgToJson = toJsonSendMsg(title,content);
         HttpPost httpPost = HttpRequestUtil.constructHttpPost(url, msgToJson);
         CloseableHttpClient httpClient;
         httpClient = HttpRequestUtil.getHttpClient(enableProxy, proxy, port, user, password);
@@ -190,7 +188,7 @@ public final class FeiShuSender {
             } finally {
                 response.close();
             }
-            logger.info("Fei Shu send title :{} ,content :{}, resp: {}", alertMsg.getName(), alertMsg.getContent(), resp);
+            logger.info("Fei Shu send title :{} ,content :{}, resp: {}", title, content, resp);
             return resp;
         } finally {
             httpClient.close();
