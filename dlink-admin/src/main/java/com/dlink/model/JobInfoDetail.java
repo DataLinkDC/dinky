@@ -14,6 +14,7 @@ public class JobInfoDetail {
     private ClusterConfiguration clusterConfiguration;
     private History history;
     private JobHistory jobHistory;
+    private JobManagerConfiguration jobManagerConfiguration;
     private Integer refreshCount;
 
     public JobInfoDetail(Integer id) {
@@ -51,6 +52,13 @@ public class JobInfoDetail {
 
     public void setClusterConfiguration(ClusterConfiguration clusterConfiguration) {
         this.clusterConfiguration = clusterConfiguration;
+    }
+
+    public void setJobManagerConfiguration(JobManagerConfiguration jobMangerConfiguration) {
+        this.jobManagerConfiguration = jobMangerConfiguration;
+    }
+    public JobManagerConfiguration getJobManagerConfiguration() {
+        return jobManagerConfiguration;
     }
 
     public History getHistory() {

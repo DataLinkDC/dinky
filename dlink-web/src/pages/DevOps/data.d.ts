@@ -45,6 +45,8 @@ export type JobInfoDetail = {
   cluster: ClusterTableListItem,
   clusterConfiguration: ClusterConfigurationTableListItem,
   history: HistoryItem,
+  jobHistory: JobHistoryItem,
+  jobManagerConfiguration : JobManagerConfiguration
   jar: JarTableListItem
 }
 
@@ -58,3 +60,28 @@ export type VerticesTableListItem = {
   endTime: string,
   tasks: any,
 }
+
+
+
+export type JobHistoryItem = {
+  id: number,
+  job: string,
+  exceptions: string,
+  checkpoints: string,
+  checkpointsConfig: string,
+  config: string,
+  jar: string,
+  cluster: string,
+  clusterConfiguration: string,
+  updateTime: string,
+}
+
+
+
+export type JobManagerConfiguration = {
+  metrics: string ,
+  jobManagerConfig: string,
+  jobManagerLog : string,
+  jobManagerStdout: string,
+}
+
