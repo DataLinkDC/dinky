@@ -2,6 +2,7 @@ package com.dlink.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.alert.*;
+import com.dlink.api.FlinkAPI;
 import com.dlink.assertion.Assert;
 import com.dlink.assertion.Asserts;
 import com.dlink.assertion.Tips;
@@ -40,10 +41,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 任务 服务实现类
@@ -572,6 +570,40 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             jobInfoDetail.setCluster(cluster);
             History history = historyService.getById(jobInstance.getHistoryId());
             history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
+
+            JobManagerConfiguration jobManagerConfiguration = new JobManagerConfiguration();
+            if(Asserts.isNotNullString(history.getJobManagerAddress())) {
+                FlinkAPI flinkAPI = FlinkAPI.build(history.getJobManagerAddress());
+
+                Map<String, String> jobManagerMetricsMap = new HashMap<String, String>(); //获取jobManager metrics
+                List<LinkedHashMap> jobManagerMetricsItemsList = JSONUtil.toList(JSONUtil.toJsonString(flinkAPI.getJobManagerMetrics()), LinkedHashMap.class);
+                jobManagerMetricsItemsList.forEach(mapItems -> {
+                    String configKey = (String) mapItems.get("id");
+                    String configValue = (String) mapItems.get("value");
+                    if (Asserts.isNotNullString( configKey) && Asserts.isNotNullString(configValue)) {
+                        jobManagerMetricsMap.put(configKey, configValue);
+                    }
+                });
+                Map<String, String> jobManagerConfigMap = new HashMap<String, String>();//获取jobManager配置信息
+                List<LinkedHashMap> jobManagerConfigMapItemsList = JSONUtil.toList(JSONUtil.toJsonString(flinkAPI.getJobManagerConfig()), LinkedHashMap.class);
+                jobManagerConfigMapItemsList.forEach(mapItems -> {
+                    String configKey = (String) mapItems.get("key");
+                    String configValue = (String) mapItems.get("value");
+                    if (Asserts.isNotNullString( configKey) && Asserts.isNotNullString(configValue)) {
+                        jobManagerConfigMap.put(configKey, configValue);
+                    }
+                });
+                String jobMangerLog = flinkAPI.getJobManagerLog(); //获取jobManager日志
+                String jobManagerStdOut = flinkAPI.getJobManagerStdOut(); //获取jobManager标准输出日志
+
+                jobManagerConfiguration.setMetrics(jobManagerMetricsMap);
+                jobManagerConfiguration.setJobManagerConfig(jobManagerConfigMap);
+                jobManagerConfiguration.setJobManagerLog(jobMangerLog);
+                jobManagerConfiguration.setJobManagerStdout(jobManagerStdOut);
+
+                jobInfoDetail.setJobManagerConfiguration(jobManagerConfiguration);
+            }
+
             if (Asserts.isNotNull(history) && Asserts.isNotNull(history.getClusterConfigurationId())) {
                 jobInfoDetail.setClusterConfiguration(clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId()));
             }
