@@ -72,6 +72,8 @@ public class Task extends SuperEntity {
 
     private Integer jobInstanceId;
 
+    private Integer versionId;
+
     @TableField(exist = false)
     private String statement;
 
