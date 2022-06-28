@@ -1,13 +1,8 @@
 package com.dlink.service.impl;
 
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.dlink.api.FlinkAPI;
 import com.dlink.assertion.Asserts;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.db.service.impl.SuperServiceImpl;
@@ -16,20 +11,15 @@ import com.dlink.explainer.lineage.LineageBuilder;
 import com.dlink.explainer.lineage.LineageResult;
 import com.dlink.job.FlinkJobTaskPool;
 import com.dlink.mapper.JobInstanceMapper;
-import com.dlink.model.History;
-import com.dlink.model.JobInfoDetail;
-import com.dlink.model.JobInstance;
-import com.dlink.model.JobInstanceCount;
-import com.dlink.model.JobInstanceStatus;
-import com.dlink.model.JobStatus;
-import com.dlink.service.ClusterConfigurationService;
-import com.dlink.service.ClusterService;
-import com.dlink.service.HistoryService;
-import com.dlink.service.JobHistoryService;
-import com.dlink.service.JobInstanceService;
+import com.dlink.model.*;
+import com.dlink.service.*;
 import com.dlink.utils.JSONUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
 
 /**
  * JobInstanceServiceImpl
@@ -133,9 +123,142 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
             if (Asserts.isNotNull(history) && Asserts.isNotNull(history.getClusterConfigurationId())) {
                 jobInfoDetail.setClusterConfiguration(clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId()));
             }
+            JobManagerConfiguration jobManagerConfiguration = new JobManagerConfiguration();
+            Set<TaskManagerConfiguration> taskManagerConfigurationList = new HashSet<>();
+            if (Asserts.isNotNullString(history.getJobManagerAddress())) { // 如果有jobManager地址，则使用该地址
+                FlinkAPI flinkAPI = FlinkAPI.build(history.getJobManagerAddress());
+
+                // 获取jobManager的配置信息 开始
+                buildJobManagerConfiguration(jobManagerConfiguration, flinkAPI);
+                // 获取jobManager的配置信息 结束
+
+                // 获取taskManager的配置信息 开始
+                JsonNode taskManagerContainers = flinkAPI.getTaskManagers(); //获取taskManager列表
+                buildTaskManagerConfiguration(taskManagerConfigurationList, flinkAPI, taskManagerContainers);
+                // 获取taskManager的配置信息 结束
+
+            }
+            jobInfoDetail.setJobManagerConfiguration(jobManagerConfiguration);
+            jobInfoDetail.setTaskManagerConfiguration(taskManagerConfigurationList);
+
         }
         return jobInfoDetail;
     }
+
+    /**
+     * @Author: zhumingye
+     * @date: 2022/6/27
+     * @Description: buildTaskManagerConfiguration
+     * @Params: [taskManagerConfigurationList, flinkAPI, taskManagerContainers]
+     * @return void
+     */
+    private void buildTaskManagerConfiguration(Set<TaskManagerConfiguration> taskManagerConfigurationList, FlinkAPI flinkAPI, JsonNode taskManagerContainers) {
+
+        if (Asserts.isNotNull(taskManagerContainers)) {
+            JsonNode taskmanagers = taskManagerContainers.get("taskmanagers");
+            for (JsonNode taskManagers : taskmanagers) {
+                TaskManagerConfiguration taskManagerConfiguration = new TaskManagerConfiguration();
+
+                /**
+                 * 解析 taskManager 的配置信息
+                 */
+                String containerId = taskManagers.get("id").asText();// 获取container id
+                String containerPath =  taskManagers.get("path").asText(); // 获取container path
+                Integer dataPort = taskManagers.get("dataPort").asInt(); // 获取container dataPort
+                Integer jmxPort =taskManagers.get("jmxPort").asInt(); // 获取container jmxPort
+                Long timeSinceLastHeartbeat =taskManagers.get("timeSinceLastHeartbeat").asLong(); // 获取container timeSinceLastHeartbeat
+                Integer slotsNumber =taskManagers.get("slotsNumber").asInt(); // 获取container slotsNumber
+                Integer freeSlots = taskManagers.get("freeSlots").asInt(); // 获取container freeSlots
+                String totalResource =  JSONUtil.toJsonString(taskManagers.get("totalResource")); // 获取container totalResource
+                String freeResource =  JSONUtil.toJsonString(taskManagers.get("freeResource") ); // 获取container freeResource
+                String hardware = JSONUtil.toJsonString(taskManagers.get("hardware") ); // 获取container hardware
+                String memoryConfiguration = JSONUtil.toJsonString(taskManagers.get("memoryConfiguration") ); // 获取container memoryConfiguration
+                Asserts.checkNull(containerId, "获取不到 containerId , containerId不能为空");
+                JsonNode taskManagerMetrics = flinkAPI.getTaskManagerMetrics(containerId);//获取taskManager metrics
+                String taskManagerLog = flinkAPI.getTaskManagerLog(containerId);//获取taskManager日志
+                String taskManagerThreadDumps = JSONUtil.toJsonString(flinkAPI.getTaskManagerThreadDump(containerId).get("threadInfos"));//获取taskManager线程dumps
+                String taskManagerStdOut = flinkAPI.getTaskManagerStdOut(containerId);//获取taskManager标准输出日志
+
+                Map<String, String> taskManagerMetricsMap = new HashMap<String, String>(); //获取taskManager metrics
+                List<LinkedHashMap> taskManagerMetricsItemsList = JSONUtil.toList(JSONUtil.toJsonString(taskManagerMetrics), LinkedHashMap.class);
+                taskManagerMetricsItemsList.forEach(mapItems -> {
+                    String configKey = (String) mapItems.get("id");
+                    String configValue = (String) mapItems.get("value");
+                    if (Asserts.isNotNullString(configKey) && Asserts.isNotNullString(configValue)) {
+                        taskManagerMetricsMap.put(configKey, configValue);
+                    }
+                });
+
+                /**
+                 * TaskManagerConfiguration 赋值
+                 */
+                taskManagerConfiguration.setContainerId(containerId);
+                taskManagerConfiguration.setContainerPath(containerPath);
+                taskManagerConfiguration.setDataPort(dataPort);
+                taskManagerConfiguration.setJmxPort(jmxPort);
+                taskManagerConfiguration.setTimeSinceLastHeartbeat(timeSinceLastHeartbeat);
+                taskManagerConfiguration.setSlotsNumber(slotsNumber);
+                taskManagerConfiguration.setFreeSlots(freeSlots);
+                taskManagerConfiguration.setTotalResource(totalResource);
+                taskManagerConfiguration.setFreeResource(freeResource);
+                taskManagerConfiguration.setHardware(hardware);
+                taskManagerConfiguration.setMemoryConfiguration(memoryConfiguration);
+
+                /**
+                 * TaskContainerConfigInfo 赋值
+                 */
+                TaskContainerConfigInfo taskContainerConfigInfo = new TaskContainerConfigInfo();
+                taskContainerConfigInfo.setMetrics(taskManagerMetricsMap);
+                taskContainerConfigInfo.setTaskManagerLog(taskManagerLog);
+                taskContainerConfigInfo.setTaskManagerThreadDump(taskManagerThreadDumps);
+                taskContainerConfigInfo.setTaskManagerStdout(taskManagerStdOut);
+
+
+                taskManagerConfiguration.setTaskContainerConfigInfo(taskContainerConfigInfo);
+
+                // 将taskManagerConfiguration添加到set集合中
+                taskManagerConfigurationList.add(taskManagerConfiguration);
+            }
+        }
+    }
+
+    /**
+     * @Author: zhumingye
+     * @date: 2022/6/27
+     * @Description: buildJobManagerConfiguration
+     * @Params: [jobManagerConfiguration, flinkAPI]
+     * @return void
+     */
+    private void buildJobManagerConfiguration(JobManagerConfiguration jobManagerConfiguration, FlinkAPI flinkAPI) {
+
+        Map<String, String> jobManagerMetricsMap = new HashMap<String, String>(); //获取jobManager metrics
+        List<LinkedHashMap> jobManagerMetricsItemsList = JSONUtil.toList(JSONUtil.toJsonString(flinkAPI.getJobManagerMetrics()), LinkedHashMap.class);
+        jobManagerMetricsItemsList.forEach(mapItems -> {
+            String configKey = (String) mapItems.get("id");
+            String configValue = (String) mapItems.get("value");
+            if (Asserts.isNotNullString(configKey) && Asserts.isNotNullString(configValue)) {
+                jobManagerMetricsMap.put(configKey, configValue);
+            }
+        });
+        Map<String, String> jobManagerConfigMap = new HashMap<String, String>();//获取jobManager配置信息
+        List<LinkedHashMap> jobManagerConfigMapItemsList = JSONUtil.toList(JSONUtil.toJsonString(flinkAPI.getJobManagerConfig()), LinkedHashMap.class);
+        jobManagerConfigMapItemsList.forEach(mapItems -> {
+            String configKey = (String) mapItems.get("key");
+            String configValue = (String) mapItems.get("value");
+            if (Asserts.isNotNullString(configKey) && Asserts.isNotNullString(configValue)) {
+                jobManagerConfigMap.put(configKey, configValue);
+            }
+        });
+        String jobMangerLog = flinkAPI.getJobManagerLog(); //获取jobManager日志
+        String jobManagerStdOut = flinkAPI.getJobManagerStdOut(); //获取jobManager标准输出日志
+
+        jobManagerConfiguration.setMetrics(jobManagerMetricsMap);
+        jobManagerConfiguration.setJobManagerConfig(jobManagerConfigMap);
+        jobManagerConfiguration.setJobManagerLog(jobMangerLog);
+        jobManagerConfiguration.setJobManagerStdout(jobManagerStdOut);
+    }
+
+
 
     @Override
     public LineageResult getLineage(Integer id) {
