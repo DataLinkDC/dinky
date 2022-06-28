@@ -42,8 +42,8 @@ mybatis-plus:
       id-type: auto
   configuration:
   ##### mybatis-plus打印完整sql(只适用于开发环境)
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-#    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
 
 # Sa-Token 配置
 sa-token:
