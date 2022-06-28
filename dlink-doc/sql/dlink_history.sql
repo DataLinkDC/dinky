@@ -684,27 +684,8 @@ CREATE TABLE `dlink_task_version` (
                                       `alias` varchar(255) DEFAULT NULL COMMENT '别名',
                                       `dialect` varchar(50) DEFAULT NULL COMMENT '方言',
                                       `type` varchar(50) DEFAULT NULL COMMENT '类型',
-                                      `check_point` int(11) DEFAULT NULL COMMENT 'CheckPoint ',
-                                      `save_point_strategy` int(1) unsigned zerofill DEFAULT NULL COMMENT 'SavePoint策略',
-                                      `save_point_path` varchar(255) DEFAULT NULL COMMENT 'SavePointPath',
-                                      `parallelism` int(4) DEFAULT NULL COMMENT 'parallelism',
-                                      `fragment` tinyint(1) DEFAULT '0' COMMENT 'fragment',
-                                      `statement_set` tinyint(1) DEFAULT '0' COMMENT '启用语句集',
-                                      `batch_model` tinyint(1) DEFAULT '0' COMMENT '使用批模式',
-                                      `cluster_id` int(11) DEFAULT NULL COMMENT 'Flink集群ID',
-                                      `cluster_configuration_id` int(11) DEFAULT NULL COMMENT '集群配置ID',
-                                      `database_id` int(11) DEFAULT NULL COMMENT '数据源ID',
-                                      `jar_id` int(11) DEFAULT NULL COMMENT 'jarID',
-                                      `env_id` int(11) DEFAULT NULL COMMENT '环境ID',
-                                      `alert_group_id` int(11) DEFAULT NULL COMMENT '报警组ID',
-                                      `config_json` text COMMENT '配置JSON',
-                                      `note` varchar(255) DEFAULT NULL COMMENT '注释',
-                                      `step` int(11) DEFAULT NULL COMMENT '作业生命周期',
-                                      `job_instance_id` int(11) DEFAULT NULL COMMENT '作业实例ID',
-                                      `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否启用',
+                                      `task_configure` text NOT NULL COMMENT '作业配置',
                                       `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-                                      `update_time` datetime DEFAULT NULL COMMENT '更新时间',
                                       PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='作业历史版本';
-
 
