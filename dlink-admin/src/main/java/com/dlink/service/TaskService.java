@@ -61,7 +61,7 @@ public interface TaskService extends ISuperService<Task> {
 
     String getTaskAPIAddress();
 
-    boolean rollbackTask(TaskRollbackVersionDTO dto);
+    Result rollbackTask(TaskRollbackVersionDTO dto);
 
     List<TaskVersion> getVersionsByTaskId(Integer id);
 }

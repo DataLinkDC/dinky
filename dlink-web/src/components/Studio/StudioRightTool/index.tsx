@@ -5,6 +5,7 @@ import {connect} from "umi";
 import StudioConfig from "./StudioConfig";
 import StudioSetting from "./StudioSetting";
 import StudioSavePoint from "./StudioSavePoint";
+import StudioHistory from "./StudioHistory";
 import StudioEnvSetting from "./StudioEnvSetting";
 import StudioSqlConfig from "./StudioSqlConfig";
 import StudioUDFInfo from "./StudioUDFInfo";
@@ -75,6 +76,9 @@ const StudioRightTool = (props: any) => {
       </TabPane>
       <TabPane tab={<span><ScheduleOutlined /> 保存点</span>} key="StudioSavePoint" >
         <StudioSavePoint />
+      </TabPane>
+      <TabPane tab={<span><ScheduleOutlined /> 版本历史</span>} key="StudioHistory" >
+        <StudioHistory />
       </TabPane>
       </>)
   };

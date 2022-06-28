@@ -21,6 +21,4 @@ public interface TaskVersionService extends ISuperService<TaskVersion> {
      */
     List<TaskVersion> getTaskVersionByTaskId(Integer taskId);
 
-
-    TaskVersion getTaskMaxVersionByTaskId(Integer taskId);
 }

@@ -3,7 +3,6 @@ package com.dlink.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.dlink.alert.Alert;
 import com.dlink.alert.AlertConfig;
 import com.dlink.alert.AlertMsg;
@@ -679,21 +678,22 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public boolean rollbackTask(TaskRollbackVersionDTO dto) {
-        if (Asserts.isNull(dto.getVersion()) || Asserts.isNull(dto.getId())) {
-            return false;
+    public Result rollbackTask(TaskRollbackVersionDTO dto) {
+        if (Asserts.isNull(dto.getVersionId()) || Asserts.isNull(dto.getId())) {
+            return Result.failed("版本指定失败");
         }
         Task taskInfo = getTaskInfoById(dto.getId());
 
         if (JobLifeCycle.RELEASE.equalsValue(taskInfo.getStep()) ||
                 JobLifeCycle.ONLINE.equalsValue(taskInfo.getStep()) ||
                 JobLifeCycle.CANCEL.equalsValue(taskInfo.getStep())) {
-            throw new BusException("该作业已" + JobLifeCycle.get(taskInfo.getStep()).getLabel() + "，禁止回滚！");
+            //throw new BusException("该作业已" + JobLifeCycle.get(taskInfo.getStep()).getLabel() + "，禁止回滚！");
+            return Result.failed("该作业已" + JobLifeCycle.get(taskInfo.getStep()).getLabel() + "，禁止回滚！");
         }
 
         LambdaQueryWrapper<TaskVersion> queryWrapper = new LambdaQueryWrapper<TaskVersion>().
                 eq(TaskVersion::getTaskId, dto.getId()).
-                eq(TaskVersion::getVersionId, dto.getVersion());
+                eq(TaskVersion::getVersionId, dto.getVersionId());
 
         TaskVersion taskVersion = taskVersionService.getOne(queryWrapper);
 
@@ -707,8 +707,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Statement statement = new Statement();
         statement.setStatement(taskVersion.getStatement());
         statement.setId(taskVersion.getTaskId());
-
-        return statementService.updateById(statement);
+        statementService.updateById(statement);
+        return  Result.succeed("回滚版本成功！");
     }
 
     @Override

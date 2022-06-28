@@ -12,5 +12,5 @@ import java.io.Serializable;
 @Data
 public class TaskRollbackVersionDTO implements Serializable {
     private Integer id;
-    private Integer version;
+    private Integer versionId;
 }
