@@ -24,7 +24,7 @@ public class WeChatConstants {
 
     static final String WEBHOOK = "webhook";
 
-    static final String WEBHOOK_TEMPLATE = "{\"msgtype\":\"{showType}\",\"{showType}\":{\"content\":\"{msg} \"}}";
+    static final String WEBHOOK_TEMPLATE = "{\"msgtype\":\"{msgtype}\",\"{msgtype}\":{\"content\":\"{msg} \"}}";
 
     static final String KEYWORD = "keyword";
 
@@ -36,7 +36,7 @@ public class WeChatConstants {
 
     static final String TEAM_SEND_MSG = "teamSendMsg";
 
-    static final String USER_SEND_MSG = "{\"touser\":\"{toUser}\",\"agentid\":{agentId},\"msgtype\":\"{showType}\",\"{showType}\":{\"content\":\"{msg}\"}}";
+    static final String USER_SEND_MSG = "{\"touser\":\"{toUser}\",\"agentid\":{agentId},\"msgtype\":\"{msgtype}\",\"{msgtype}\":{\"content\":\"{msg}\"}}";
 
     static final String AGENT_ID = "agentId";
 
@@ -44,6 +44,6 @@ public class WeChatConstants {
 
     static final String SEND_TYPE = "sendType";
 
-    static final String SHOW_TYPE = "showType";
+    static final String SHOW_TYPE = "msgtype";
 
 }

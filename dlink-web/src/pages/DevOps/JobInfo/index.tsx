@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {history, useLocation} from 'umi';
 import {ClusterOutlined, EllipsisOutlined, FireOutlined, RedoOutlined, RocketOutlined} from '@ant-design/icons';
 import {Button, Dropdown, Empty, Menu, message, Modal, Space, Tag, Typography} from 'antd';
@@ -17,6 +17,8 @@ import Exception from "@/pages/DevOps/JobInfo/Exception";
 import FlinkSQL from "@/pages/DevOps/JobInfo/FlinkSQL";
 import Alert from "@/pages/DevOps/JobInfo/Alert";
 import DataMap from "@/pages/DevOps/JobInfo/DataMap";
+import CheckPoints from "@/pages/DevOps/JobInfo/CheckPoints";
+import ClusterConfiguration from "@/pages/DevOps/JobInfo/ClusterConfiguration";
 
 const {Link} = Typography;
 
@@ -257,8 +259,8 @@ const JobInfo = (props: any) => {
       <ProCard>
         {tabKey === 'base' ? <BaseInfo job={job}/> : undefined}
         {tabKey === 'config' ? <Config job={job}/> : undefined}
-        {tabKey === 'cluster' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/> : undefined}
-        {tabKey === 'snapshot' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/> : undefined}
+        {tabKey === 'cluster' ? <ClusterConfiguration job={job}/> : undefined}
+        {tabKey === 'snapshot' ? <CheckPoints job={job}/> : undefined}
         {tabKey === 'exception' ? <Exception job={job}/> : undefined}
         {tabKey === 'log' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/> : undefined}
         {tabKey === 'optimize' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/> : undefined}

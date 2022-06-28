@@ -137,7 +137,7 @@ const WeChatForm: React.FC<AlertInstanceFormProps> = (props) => {
         </>
         }
         <Form.Item
-          name="showType"
+          name="msgtype"
           label="展示方式"
           rules={[{required: true, message: '请选择展示方式！'}]}
         >

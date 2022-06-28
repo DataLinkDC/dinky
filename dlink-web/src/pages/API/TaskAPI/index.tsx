@@ -72,7 +72,7 @@ const TaskAPI = (props: any) => {
         }
         key="taskInstance"
       >
-        <CodeShow code={`curl http://${address}/openapi/getJobInfoDetailByTaskId?id=${(task ? task.id : '1')}`} language='shell'
+        <CodeShow code={`curl http://${address}/openapi/getJobInstanceByTaskId?id=${(task ? task.id : '1')}`} language='shell'
                   height='500px' theme="vs-dark"/>
       </TabPane>
       <TabPane

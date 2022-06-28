@@ -36,7 +36,7 @@ public class WeChatSender {
     private static final String CORP_ID_REGEX = "{corpId}";
     private static final String SECRET_REGEX = "{secret}";
     private static final String TOKEN_REGEX = "{token}";
-    private static final String SHOW_TYPE_REGEX = "{showType}";
+    private static final String SHOW_TYPE_REGEX = "{msgtype}";
     private final String weChatAgentId;
     private final String weChatUsers;
     private final String weChatUserSendMsg;

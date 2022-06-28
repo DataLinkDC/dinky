@@ -128,18 +128,18 @@ public class APIController {
     }
 
     /**
-     * 获取Job实例的所有信息
+     * 获取Job实例的信息
      */
-    @GetMapping("/getJobInfoDetail")
-    public Result getJobInfoDetail(@RequestParam Integer id) {
-        return Result.succeed(jobInstanceService.getJobInfoDetail(id), "获取成功");
+    @GetMapping("/getJobInstance")
+    public Result getJobInstance(@RequestParam Integer id) {
+        return Result.succeed(jobInstanceService.getById(id), "获取成功");
     }
 
     /**
-     * 通过 taskId 获取 Task 对应的 Job 实例的所有信息
+     * 通过 taskId 获取 Task 对应的 Job 实例的信息
      */
-    @GetMapping("/getJobInfoDetailByTaskId")
-    public Result getJobInfoDetailByTaskId(@RequestParam Integer id) {
+    @GetMapping("/getJobInstanceByTaskId")
+    public Result getJobInstanceByTaskId(@RequestParam Integer id) {
         return Result.succeed(jobInstanceService.getJobInstanceByTaskId(id), "获取成功");
     }
 }
