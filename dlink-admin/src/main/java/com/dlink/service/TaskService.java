@@ -1,15 +1,17 @@
 package com.dlink.service;
 
 
-import java.util.List;
-
 import com.dlink.common.result.Result;
 import com.dlink.db.service.ISuperService;
+import com.dlink.dto.TaskRollbackVersionDTO;
 import com.dlink.job.JobResult;
 import com.dlink.model.JobInfoDetail;
 import com.dlink.model.JobInstance;
 import com.dlink.model.Task;
+import com.dlink.model.TaskVersion;
 import com.dlink.result.SqlExplainResult;
+
+import java.util.List;
 
 /**
  * 作业 服务类
@@ -58,4 +60,8 @@ public interface TaskService extends ISuperService<Task> {
     JobInfoDetail refreshJobInfoDetail(Integer id);
 
     String getTaskAPIAddress();
+
+    Result rollbackTask(TaskRollbackVersionDTO dto);
+
+    List<TaskVersion> getVersionsByTaskId(Integer id);
 }
