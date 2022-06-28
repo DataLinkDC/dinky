@@ -22,7 +22,7 @@ public class LineageTable {
     public static LineageTable build(TableCA tableCA) {
         LineageTable lineageTable = new LineageTable();
         lineageTable.setId(tableCA.getId().toString());
-        lineageTable.setName(tableCA.getName());
+        lineageTable.setName(tableCA.getTableName());
         List<LineageColumn> columnList = new ArrayList<>();
         for (String columnName : tableCA.getFields()) {
             columnList.add(LineageColumn.build(columnName, columnName));

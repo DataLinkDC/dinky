@@ -1,4 +1,4 @@
-import {Tabs, Tooltip, Button, Modal, message} from "antd";
+import {Tabs, Tooltip, Button, Modal, message, Empty} from "antd";
 import {SearchOutlined, SnippetsOutlined} from "@ant-design/icons";
 import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
@@ -13,10 +13,10 @@ const { TabPane } = Tabs;
 
 const StudioCA = (props: any) => {
   const {current} = props;
-  const [data, setData] = useState(getInit());
+  const [data, setData] = useState(undefined);
 
-  debugger;
   const handleLineage=()=>{
+    setData(undefined);
     const res = getLineage({
       statement:current.value,
       statementSet:current.task.statementSet,
@@ -80,7 +80,7 @@ const StudioCA = (props: any) => {
             </>}
     >
       <TabPane tab={<span>血缘分析</span>} key="Lineage">
-        <Lineage datas={data}/>
+        {data?<Lineage datas={data}/>:<Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
       </TabPane>
     </Tabs>
   </>)

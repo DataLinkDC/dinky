@@ -5,7 +5,7 @@ export type ClusterConfigurationTableListItem = {
   type: string,
   config: any,
   configJson: string,
-  available: boolean,
+  isAvailable: boolean,
   note: string,
   enabled: boolean,
   createTime: Date,

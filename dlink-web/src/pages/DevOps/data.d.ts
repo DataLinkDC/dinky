@@ -2,6 +2,7 @@ import {ClusterTableListItem} from "@/pages/Cluster/data";
 import {ClusterConfigurationTableListItem} from "@/pages/ClusterConfiguration/data";
 import {HistoryItem} from "@/components/Studio/StudioConsole/StudioHistory/data";
 import {JarTableListItem} from "@/pages/Jar/data";
+import {List} from "antd";
 
 export type JobInstanceTableListItem = {
   id: number,
@@ -45,6 +46,9 @@ export type JobInfoDetail = {
   cluster: ClusterTableListItem,
   clusterConfiguration: ClusterConfigurationTableListItem,
   history: HistoryItem,
+  jobHistory: JobHistoryItem,
+  jobManagerConfiguration : JobManagerConfiguration
+  taskManagerConfiguration : List<TaskManagerConfiguration>
   jar: JarTableListItem
 }
 
@@ -58,3 +62,55 @@ export type VerticesTableListItem = {
   endTime: string,
   tasks: any,
 }
+
+
+
+export type JobHistoryItem = {
+  id: number,
+  job: string,
+  exceptions: string,
+  checkpoints: string,
+  checkpointsConfig: string,
+  config: string,
+  jar: string,
+  cluster: string,
+  clusterConfiguration: string,
+  updateTime: string,
+}
+
+
+
+export type JobManagerConfiguration = {
+  metrics: string ,
+  jobManagerConfig: string,
+  jobManagerLog : string,
+  jobManagerStdout: string,
+}
+
+
+export type TaskManagerConfiguration = {
+  containerId: string ,
+  containerPath: string,
+  dataPort : number,
+  jmxPort: number,
+  timeSinceLastHeartbeat: number,
+  slotsNumber: number,
+  freeSlots: number,
+  totalResource: string,
+  freeResource: string,
+  hardware: string,
+  memoryConfiguration: string,
+  taskContainerConfigInfo: TaskContainerConfigInfo,
+}
+
+
+
+
+export type TaskContainerConfigInfo = {
+  metrics: string ,
+  taskManagerLog: string ,
+  taskManagerStdout : string,
+  taskManagerThreadDump: string,
+}
+
+

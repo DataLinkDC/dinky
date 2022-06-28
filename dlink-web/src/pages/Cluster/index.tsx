@@ -302,7 +302,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
     {
       title: '操作',
       dataIndex: 'option',
-      tooltip: 'FLinkWebUI连接 当集群状态为`可用`时! 支持 SESSION | STANDALONE',
+      tooltip: 'FLinkWebUI连接 当集群状态为`可用`时! 支持 KUBERNETES 之外的模式',
       valueType: 'option',
       render: (_, record) => [
         <a
@@ -314,7 +314,11 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
           配置
         </a>,
         <MoreBtn key="more" item={record}/>,
-        ((record.status && (record.type === RUN_MODE.YARN_SESSION || record.type === RUN_MODE.STANDALONE )) ?
+        ((record.status && (record.type === RUN_MODE.YARN_SESSION
+                              || record.type === RUN_MODE.STANDALONE
+                              || record.type === RUN_MODE.YARN_APPLICATION
+                              || record.type === RUN_MODE.YARN_PER_JOB
+                          )) ?
           <>
             <Button type="link" title={`http://${record.jobManagerHost}/#/overview`}
                     href={`http://${record.jobManagerHost}/#/overview`}
