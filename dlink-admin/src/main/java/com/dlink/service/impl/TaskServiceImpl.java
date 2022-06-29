@@ -1,5 +1,7 @@
 package com.dlink.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.alert.*;
 import com.dlink.api.FlinkAPI;
@@ -14,6 +16,8 @@ import com.dlink.daemon.task.DaemonFactory;
 import com.dlink.daemon.task.DaemonTaskConfig;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.dto.SqlDTO;
+import com.dlink.dto.TaskRollbackVersionDTO;
+import com.dlink.dto.TaskVersionConfigureDTO;
 import com.dlink.exception.BusException;
 import com.dlink.gateway.GatewayType;
 import com.dlink.gateway.config.SavePointStrategy;
@@ -35,6 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
@@ -43,6 +48,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 任务 服务实现类
@@ -75,6 +81,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private AlertHistoryService alertHistoryService;
     @Autowired
     private HistoryService historyService;
+    @Resource
+    private TaskVersionService taskVersionService;
 
     @Value("${spring.datasource.driver-class-name}")
     private String driver;
@@ -329,13 +337,84 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 }
             }
             task.setStep(JobLifeCycle.RELEASE.getValue());
-            if (updateById(task)) {
+            Task newTask = createTaskVersionSnapshot(task);
+            if (updateById(newTask)) {
                 return Result.succeed("发布成功");
             } else {
                 return Result.failed("由于未知原因，发布失败");
             }
         }
         return Result.succeed("发布成功");
+    }
+
+
+    public Task createTaskVersionSnapshot(Task task) {
+        List<TaskVersion> taskVersions = taskVersionService.getTaskVersionByTaskId(task.getId());
+        List<Integer> versionIds = taskVersions.stream().map(TaskVersion::getVersionId).collect(Collectors.toList());
+        Map<Integer, TaskVersion> versionMap = taskVersions.stream().collect(Collectors.toMap(TaskVersion::getVersionId, t -> t));
+
+        TaskVersion taskVersion = new TaskVersion();
+        BeanUtil.copyProperties(task, taskVersion);
+        TaskVersionConfigureDTO taskVersionConfigureDTO = new TaskVersionConfigureDTO();
+        BeanUtil.copyProperties(task, taskVersionConfigureDTO);
+        taskVersion.setTaskConfigure(taskVersionConfigureDTO);
+        taskVersion.setTaskId(taskVersion.getId());
+        taskVersion.setId(null);
+        if (Asserts.isNull(task.getVersionId())) {
+            //首次发布，新增版本
+            taskVersion.setVersionId(1);
+            task.setVersionId(1);
+            taskVersionService.save(taskVersion);
+        } else {
+            //说明存在版本，需要判断是否 是回退后的老版本
+            //1、版本号存在
+            //2、md5值与上一个版本一致
+            TaskVersion version = versionMap.get(task.getVersionId());
+            version.setId(null);
+
+            if (versionIds.contains(task.getVersionId()) && !taskVersion.equals(version)
+                //||  !versionIds.contains(task.getVersionId()) && !taskVersion.equals(version)
+            ) {
+                taskVersion.setVersionId(Collections.max(versionIds) + 1);
+                task.setVersionId(Collections.max(versionIds) + 1);
+                taskVersionService.save(taskVersion);
+            }
+        }
+        return task;
+    }
+
+    @Override
+    public Result rollbackTask(TaskRollbackVersionDTO dto) {
+        if (Asserts.isNull(dto.getVersionId()) || Asserts.isNull(dto.getId())) {
+            return Result.failed("版本指定失败");
+        }
+        Task taskInfo = getTaskInfoById(dto.getId());
+
+        if (JobLifeCycle.RELEASE.equalsValue(taskInfo.getStep()) ||
+                JobLifeCycle.ONLINE.equalsValue(taskInfo.getStep()) ||
+                JobLifeCycle.CANCEL.equalsValue(taskInfo.getStep())) {
+            //throw new BusException("该作业已" + JobLifeCycle.get(taskInfo.getStep()).getLabel() + "，禁止回滚！");
+            return Result.failed("该作业已" + JobLifeCycle.get(taskInfo.getStep()).getLabel() + "，禁止回滚！");
+        }
+
+        LambdaQueryWrapper<TaskVersion> queryWrapper = new LambdaQueryWrapper<TaskVersion>().
+                eq(TaskVersion::getTaskId, dto.getId()).
+                eq(TaskVersion::getVersionId, dto.getVersionId());
+
+        TaskVersion taskVersion = taskVersionService.getOne(queryWrapper);
+
+        Task updateTask = new Task();
+        BeanUtil.copyProperties(taskVersion, updateTask);
+        BeanUtil.copyProperties(taskVersion.getTaskConfigure(), updateTask);
+        updateTask.setId(taskVersion.getTaskId());
+        updateTask.setStep(JobLifeCycle.DEVELOP.getValue());
+        baseMapper.updateById(updateTask);
+
+        Statement statement = new Statement();
+        statement.setStatement(taskVersion.getStatement());
+        statement.setId(taskVersion.getTaskId());
+        statementService.updateById(statement);
+        return Result.succeed("回滚版本成功！");
     }
 
     @Override

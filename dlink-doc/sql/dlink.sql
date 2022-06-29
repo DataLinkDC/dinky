@@ -470,9 +470,29 @@ CREATE TABLE `dlink_task`  (
                                `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT '是否启用',
                                `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
                                `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+                               `version_id` int(11) DEFAULT NULL COMMENT '版本Id',
                                PRIMARY KEY (`id`) USING BTREE,
                                UNIQUE INDEX `idx_name`(`name`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 33 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '作业' ROW_FORMAT = Dynamic;
+
+
+-- ----------------------------
+-- Table structure for dlink_task_version
+-- ----------------------------
+DROP TABLE IF EXISTS `dlink_task_version`;
+CREATE TABLE `dlink_task_version` (
+                                      `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+                                      `task_id` int(11) NOT NULL COMMENT '作业ID ',
+                                      `version_id` int(11) NOT NULL COMMENT '版本ID ',
+                                      `statement` text COMMENT 'flink sql 内容',
+                                      `name` varchar(255) NOT NULL COMMENT '名称',
+                                      `alias` varchar(255) DEFAULT NULL COMMENT '别名',
+                                      `dialect` varchar(50) DEFAULT NULL COMMENT '方言',
+                                      `type` varchar(50) DEFAULT NULL COMMENT '类型',
+                                      `task_configure` text NOT NULL COMMENT '作业配置',
+                                      `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+                                      PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='作业历史版本';
 
 -- ----------------------------
 -- Table structure for dlink_task_statement
