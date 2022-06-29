@@ -3,7 +3,7 @@
  - FlinkJar
  - FlinkSqlEnv
  - Mysql
- - PostGreSql
+ - PostgreSql
  - Oracle
  - SqlServer
  - Phoenix
