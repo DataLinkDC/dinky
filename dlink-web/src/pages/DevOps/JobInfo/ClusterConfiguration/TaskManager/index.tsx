@@ -9,7 +9,6 @@ import {HomeOutlined} from "@ant-design/icons";
 
 const {TabPane} = Tabs;
 
-// TODO: 此页面需要根据设置的3秒刷新时间，自动刷新数据
 const TaskManagerConfigurationForm = (props: any) => {
   const {job} = props;
   const actionRef = useRef<ActionType>();
