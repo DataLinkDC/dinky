@@ -3,7 +3,6 @@ import CodeShow from "@/components/Common/CodeShow";
 
 const {TabPane} = Tabs;
 
-// TODO: 此页面需要根据设置的3秒刷新时间，自动刷新数据
 const JobManagerConfiguration = (props: any) => {
   const {job} = props;
 
