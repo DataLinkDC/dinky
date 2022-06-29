@@ -23,6 +23,7 @@ import java.util.Date;
 @NoArgsConstructor
 @TableName(value = "dlink_task_version", autoResultMap = true)
 public class TaskVersion implements Serializable {
+    private static final long serialVersionUID = 1L;
     /**
      * ID
      */
@@ -79,12 +80,4 @@ public class TaskVersion implements Serializable {
      */
     @TableField(value = "create_time")
     private Date createTime;
-
-    private static final long serialVersionUID = 1L;
-
-
-
-
-
-
 }

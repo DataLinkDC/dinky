@@ -336,46 +336,49 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 }
             }
             task.setStep(JobLifeCycle.RELEASE.getValue());
-
-            List<TaskVersion> taskVersions = taskVersionService.getTaskVersionByTaskId(task.getId());
-            List<Integer> versionIds = taskVersions.stream().map(TaskVersion::getVersionId).collect(Collectors.toList());
-            Map<Integer, TaskVersion> versionMap = taskVersions.stream().collect(Collectors.toMap(TaskVersion::getVersionId, t -> t));
-
-            TaskVersion taskVersion = new TaskVersion();
-            BeanUtil.copyProperties(task, taskVersion);
-            TaskVersionConfigureDTO taskVersionConfigureDTO = new TaskVersionConfigureDTO();
-            BeanUtil.copyProperties(task, taskVersionConfigureDTO);
-            taskVersion.setTaskConfigure(taskVersionConfigureDTO);
-            taskVersion.setTaskId(taskVersion.getId());
-            taskVersion.setId(null);
-            if (Asserts.isNull(task.getVersionId())) {
-                //首次发布，新增版本
-                taskVersion.setVersionId(1);
-                task.setVersionId(1);
-                taskVersionService.save(taskVersion);
-            } else {
-                //说明存在版本，需要判断是否 是回退后的老版本
-                //1、版本号存在
-                //2、md5值与上一个版本一致
-                TaskVersion version = versionMap.get(task.getVersionId());
-                version.setId(null);
-
-                if (versionIds.contains(task.getVersionId()) && !taskVersion.equals(version)
-                    //||  !versionIds.contains(task.getVersionId()) && !taskVersion.equals(version)
-                ) {
-                    taskVersion.setVersionId(Collections.max(versionIds) + 1);
-                    task.setVersionId(Collections.max(versionIds) + 1);
-                    taskVersionService.save(taskVersion);
-                }
-            }
-
-            if (updateById(task)) {
+            Task newTask = createTaskVersionSnapshot(task);
+            if (updateById(newTask)) {
                 return Result.succeed("发布成功");
             } else {
                 return Result.failed("由于未知原因，发布失败");
             }
         }
         return Result.succeed("发布成功");
+    }
+
+    public Task createTaskVersionSnapshot(Task task) {
+        List<TaskVersion> taskVersions = taskVersionService.getTaskVersionByTaskId(task.getId());
+        List<Integer> versionIds = taskVersions.stream().map(TaskVersion::getVersionId).collect(Collectors.toList());
+        Map<Integer, TaskVersion> versionMap = taskVersions.stream().collect(Collectors.toMap(TaskVersion::getVersionId, t -> t));
+
+        TaskVersion taskVersion = new TaskVersion();
+        BeanUtil.copyProperties(task, taskVersion);
+        TaskVersionConfigureDTO taskVersionConfigureDTO = new TaskVersionConfigureDTO();
+        BeanUtil.copyProperties(task, taskVersionConfigureDTO);
+        taskVersion.setTaskConfigure(taskVersionConfigureDTO);
+        taskVersion.setTaskId(taskVersion.getId());
+        taskVersion.setId(null);
+        if (Asserts.isNull(task.getVersionId())) {
+            //首次发布，新增版本
+            taskVersion.setVersionId(1);
+            task.setVersionId(1);
+            taskVersionService.save(taskVersion);
+        } else {
+            //说明存在版本，需要判断是否 是回退后的老版本
+            //1、版本号存在
+            //2、md5值与上一个版本一致
+            TaskVersion version = versionMap.get(task.getVersionId());
+            version.setId(null);
+
+            if (versionIds.contains(task.getVersionId()) && !taskVersion.equals(version)
+                //||  !versionIds.contains(task.getVersionId()) && !taskVersion.equals(version)
+            ) {
+                taskVersion.setVersionId(Collections.max(versionIds) + 1);
+                task.setVersionId(Collections.max(versionIds) + 1);
+                taskVersionService.save(taskVersion);
+            }
+        }
+        return task;
     }
 
     @Override
@@ -409,7 +412,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             } else {
                 return Result.failed("上线失败，原因：" + jobResult.getError());
             }
-        }else if (JobLifeCycle.ONLINE.equalsValue(task.getStep())) {
+        } else if (JobLifeCycle.ONLINE.equalsValue(task.getStep())) {
             return Result.failed("上线失败，当前作业已上线。");
         }
         return Result.failed("上线失败，当前作业未发布。");
@@ -613,7 +616,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
 
             JobManagerConfiguration jobManagerConfiguration = new JobManagerConfiguration();
-            if(Asserts.isNotNullString(history.getJobManagerAddress())) {
+            if (Asserts.isNotNullString(history.getJobManagerAddress())) {
                 FlinkAPI flinkAPI = FlinkAPI.build(history.getJobManagerAddress());
 
                 Map<String, String> jobManagerMetricsMap = new HashMap<String, String>(); //获取jobManager metrics
@@ -621,7 +624,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 jobManagerMetricsItemsList.forEach(mapItems -> {
                     String configKey = (String) mapItems.get("id");
                     String configValue = (String) mapItems.get("value");
-                    if (Asserts.isNotNullString( configKey) && Asserts.isNotNullString(configValue)) {
+                    if (Asserts.isNotNullString(configKey) && Asserts.isNotNullString(configValue)) {
                         jobManagerMetricsMap.put(configKey, configValue);
                     }
                 });
@@ -630,7 +633,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 jobManagerConfigMapItemsList.forEach(mapItems -> {
                     String configKey = (String) mapItems.get("key");
                     String configValue = (String) mapItems.get("value");
-                    if (Asserts.isNotNullString( configKey) && Asserts.isNotNullString(configValue)) {
+                    if (Asserts.isNotNullString(configKey) && Asserts.isNotNullString(configValue)) {
                         jobManagerConfigMap.put(configKey, configValue);
                     }
                 });
@@ -710,14 +713,15 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         }
         return "127.0.0.1:" + serverPort;
     }
-    private String getDuration(long jobStartTimeMills ,long jobEndTimeMills ) {
+
+    private String getDuration(long jobStartTimeMills, long jobEndTimeMills) {
         Instant startTime = Instant.ofEpochMilli(jobStartTimeMills);
         Instant endTime = Instant.ofEpochMilli(jobEndTimeMills);
 
         long days = ChronoUnit.DAYS.between(startTime, endTime);
         long hours = ChronoUnit.HOURS.between(startTime, endTime);
         long minutes = ChronoUnit.MINUTES.between(startTime, endTime);
-        long seconds = ChronoUnit.SECONDS.between(startTime, endTime) ;
+        long seconds = ChronoUnit.SECONDS.between(startTime, endTime);
         String duration = days + "天 " + (hours - (days * 24)) + "小时 " + (minutes - (hours * 60)) + "分 " + (seconds - (minutes * 60)) + "秒";
         return duration;
     }
@@ -754,7 +758,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         statement.setStatement(taskVersion.getStatement());
         statement.setId(taskVersion.getTaskId());
         statementService.updateById(statement);
-        return  Result.succeed("回滚版本成功！");
+        return Result.succeed("回滚版本成功！");
     }
 
     @Override
@@ -788,7 +792,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         long asLongStartTime = jsonNodes.get("start-time").asLong(); //获取任务历史信息的start-time
         long asLongEndTime = jsonNodes.get("end-time").asLong(); //获取任务历史信息的end-time
 
-        if (asLongEndTime < asLongStartTime){
+        if (asLongEndTime < asLongStartTime) {
             asLongEndTime = System.currentTimeMillis();
         }
         String startTime = dateFormat.format(asLongStartTime);
@@ -798,7 +802,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
         String clusterJson = jobHistory.getClusterJson(); //获取任务历史信息的clusterJson 主要获取 jobManagerHost
         ObjectNode clusterJsonNodes = JSONUtil.parseObject(clusterJson);
-        String  jobManagerHost = clusterJsonNodes.get("jobManagerHost").asText();
+        String jobManagerHost = clusterJsonNodes.get("jobManagerHost").asText();
 
         if (Asserts.isNotNull(task.getAlertGroupId())) {
             AlertGroup alertGroup = alertGroupService.getAlertGroupInfo(task.getAlertGroupId());
@@ -822,7 +826,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                     if (map.get("msgtype").equals(ShowType.MARKDOWN.getValue())) {
                         alertMsg.setLinkUrl("[跳转至该任务的 FlinkWeb](" + linkUrl + ")");
                         alertMsg.setExceptionUrl("[点击查看该任务的异常日志](" + exceptionUrl + ")");
-                    }else {
+                    } else {
                         alertMsg.setLinkUrl(linkUrl);
                         alertMsg.setExceptionUrl(exceptionUrl);
                     }

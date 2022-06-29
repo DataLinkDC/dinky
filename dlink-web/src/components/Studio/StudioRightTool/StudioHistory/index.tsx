@@ -1,17 +1,15 @@
 import {useRef, useState} from "react";
 import {MinusSquareOutlined} from '@ant-design/icons';
 import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
-import {Button, Col, Drawer, message, Modal, Row, Space, Tooltip} from 'antd';
+import {Button, Col, Drawer, Modal, Row, Space, Tooltip} from 'antd';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import {CODE, queryData} from "@/components/Common/crud";
+import {queryData, handleOption} from "@/components/Common/crud";
 import {
-  TaskHistoryRollbackItem,
   TaskHistoryTableListItem
 } from "@/components/Studio/StudioRightTool/StudioHistory/data";
 import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import {Scrollbars} from 'react-custom-scrollbars';
-import request from "umi-request";
 
 const url = '/api/task/version';
 const StudioHistory = (props: any) => {
@@ -51,46 +49,17 @@ const StudioHistory = (props: any) => {
     {
       title: '操作',
       valueType: 'option',
-      align:"center",
-      render: (text, record,index) => (
+      align: "center",
+      render: (text, record, index) => (
         <Space size="middle">
-          <Button type="link" onClick={()=>onDeleteDataBase(record)} >回滚</Button>
+          <Button type="link" onClick={() => onRollBackVersion(record)}>回滚</Button>
         </Space>
       )
     },
   ];
 
-  async function rollback(url: string, taskHistoryRollbackItem: TaskHistoryRollbackItem) {
-    return request(url, {
-      method: 'PUT',
-      body: JSON.stringify(taskHistoryRollbackItem),
-      headers: {
-        'content-type': 'application/json',
-      },
-    });
-  }
 
-  async function handleRollback(url: string, taskHistoryRollbackItem: TaskHistoryRollbackItem) {
-    const hide = message.loading('正在回滚');
-    if (!taskHistoryRollbackItem) return true;
-    try {
-      const {code, msg} = await rollback(url, taskHistoryRollbackItem);
-      if (code == CODE.SUCCESS) {
-        message.success(msg);
-      } else {
-        message.warn(msg);
-      }
-      return true;
-    } catch (error) {
-      hide();
-      message.error('回滚失败，请确认此作业是否处于可编辑状态后再次重试');
-      return false;
-    }
-
-  }
-
-
-  const onDeleteDataBase = (row: TaskHistoryTableListItem) => {
+  const onRollBackVersion = (row: TaskHistoryTableListItem) => {
     Modal.confirm({
       title: '回滚Flink SQL版本',
       content: `确定回滚Flink SQL版本至【${row.versionId === "" ? row.versionId : row.versionId}】吗？`,
@@ -100,7 +69,7 @@ const StudioHistory = (props: any) => {
         const TaskHistoryRollbackItem = {
           id: current.key, versionId: row.versionId
         }
-        await handleRollback('api/task/rollbackTask', TaskHistoryRollbackItem);
+        await handleOption('api/task/rollbackTask', "回滚Flink SQL版本", TaskHistoryRollbackItem);
         actionRef.current?.reloadAndRest?.();
       }
     });
