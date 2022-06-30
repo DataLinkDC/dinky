@@ -137,4 +137,9 @@ public abstract class AbstractDBQuery implements IDBQuery {
     public String isPK() {
         return "PRI";
     }
+
+    @Override
+    public String nullableValue() {
+        return "YES";
+    }
 }
