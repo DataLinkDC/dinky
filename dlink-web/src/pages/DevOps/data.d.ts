@@ -47,8 +47,8 @@ export type JobInfoDetail = {
   clusterConfiguration: ClusterConfigurationTableListItem,
   history: HistoryItem,
   jobHistory: JobHistoryItem,
-  jobManagerConfiguration : JobManagerConfiguration
-  taskManagerConfiguration : List<TaskManagerConfiguration>
+  jobManagerConfiguration: JobManagerConfiguration
+  taskManagerConfiguration: List<TaskManagerConfiguration>
   jar: JarTableListItem
 }
 
@@ -63,8 +63,6 @@ export type VerticesTableListItem = {
   tasks: any,
 }
 
-
-
 export type JobHistoryItem = {
   id: number,
   job: string,
@@ -78,20 +76,17 @@ export type JobHistoryItem = {
   updateTime: string,
 }
 
-
-
 export type JobManagerConfiguration = {
-  metrics: string ,
-  jobManagerConfig: string,
-  jobManagerLog : string,
+  metrics: any,
+  jobManagerConfig: any,
+  jobManagerLog: string,
   jobManagerStdout: string,
 }
 
-
 export type TaskManagerConfiguration = {
-  containerId: string ,
+  containerId: string,
   containerPath: string,
-  dataPort : number,
+  dataPort: number,
   jmxPort: number,
   timeSinceLastHeartbeat: number,
   slotsNumber: number,
@@ -103,25 +98,9 @@ export type TaskManagerConfiguration = {
   taskContainerConfigInfo: TaskContainerConfigInfo,
 }
 
-
-
-
 export type TaskContainerConfigInfo = {
-  metrics: string ,
-  taskManagerLog: string ,
-  taskManagerStdout : string,
+  metrics: any,
+  taskManagerLog: string,
+  taskManagerStdout: string,
   taskManagerThreadDump: string,
-}
-
-
-export  type CheckPointsDetailInfo = {
-  jobID: number,
-  historyID: number,
-  id: number,
-  status: string,
-  end_to_end_duration: number,
-  external_path : string,
-  latest_ack_timestamp: number,
-  state_size: number,
-  trigger_timestamp: number,
 }

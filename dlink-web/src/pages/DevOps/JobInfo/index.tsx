@@ -18,7 +18,8 @@ import FlinkSQL from "@/pages/DevOps/JobInfo/FlinkSQL";
 import Alert from "@/pages/DevOps/JobInfo/Alert";
 import DataMap from "@/pages/DevOps/JobInfo/DataMap";
 import CheckPoints from "@/pages/DevOps/JobInfo/CheckPoints";
-import ClusterConfiguration from "@/pages/DevOps/JobInfo/ClusterConfiguration";
+import FlinkClusterInfo from "@/pages/DevOps/JobInfo/FlinkClusterInfo";
+
 
 const {Link} = Typography;
 
@@ -126,13 +127,10 @@ const JobInfo = (props: any) => {
       <Button key="back" type="dashed" onClick={handleBack}>返回</Button>,
     ];
     buttons.push(<Button key="refresh" icon={<RedoOutlined/>} onClick={handleRefreshJobInfoDetail}/>);
-    // if (job?.instance?.status as string === JOB_STATUS.RUNNING || job?.instance?.status as string ===JOB_STATUS.FAILED ||
-    //   job?.instance?.status as string === JOB_STATUS.CANCELED || job?.instance?.status as string === JOB_STATUS.FINISHED) {
-      buttons.push(<Button key="flinkwebui">
-        <Link href={`http://${job?.history?.jobManagerAddress}/#/job/${job?.instance?.jid}/overview`} target="_blank">
-          FlinkWebUI
-        </Link></Button>);
-    // }
+    buttons.push(<Button key="flinkwebui">
+      <Link href={`http://${job?.history?.jobManagerAddress}/#/job/${job?.instance?.jid}/overview`} target="_blank">
+        FlinkWebUI
+      </Link></Button>);
     buttons.push(<Button key="autorestart" type="primary"
                          onClick={handleRestart}>重新{job?.instance?.step == 5 ? '上线' : '启动'}</Button>);
     if (!isStatusDone(job?.instance?.status as string)) {
@@ -259,7 +257,7 @@ const JobInfo = (props: any) => {
       <ProCard>
         {tabKey === 'base' ? <BaseInfo job={job}/> : undefined}
         {tabKey === 'config' ? <Config job={job}/> : undefined}
-        {tabKey === 'cluster' ? <ClusterConfiguration job={job}/> : undefined}
+        {tabKey === 'cluster' ? <FlinkClusterInfo job={job}/> : undefined}
         {tabKey === 'snapshot' ? <CheckPoints job={job}/> : undefined}
         {tabKey === 'exception' ? <Exception job={job}/> : undefined}
         {tabKey === 'log' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/> : undefined}
