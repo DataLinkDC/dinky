@@ -1,9 +1,34 @@
 package com.dlink.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.dlink.alert.*;
+import com.dlink.alert.Alert;
+import com.dlink.alert.AlertConfig;
+import com.dlink.alert.AlertMsg;
+import com.dlink.alert.AlertResult;
+import com.dlink.alert.ShowType;
 import com.dlink.api.FlinkAPI;
 import com.dlink.assertion.Assert;
 import com.dlink.assertion.Asserts;
@@ -24,31 +49,55 @@ import com.dlink.gateway.config.SavePointStrategy;
 import com.dlink.gateway.config.SavePointType;
 import com.dlink.gateway.model.JobInfo;
 import com.dlink.gateway.result.SavePointResult;
-import com.dlink.job.*;
+import com.dlink.job.BuildConfiguration;
+import com.dlink.job.FlinkJobTask;
+import com.dlink.job.FlinkJobTaskPool;
+import com.dlink.job.Job;
+import com.dlink.job.JobConfig;
+import com.dlink.job.JobManager;
+import com.dlink.job.JobResult;
 import com.dlink.mapper.TaskMapper;
 import com.dlink.metadata.driver.Driver;
 import com.dlink.metadata.result.JdbcSelectResult;
-import com.dlink.model.*;
+import com.dlink.model.AlertGroup;
+import com.dlink.model.AlertHistory;
+import com.dlink.model.AlertInstance;
+import com.dlink.model.Cluster;
+import com.dlink.model.DataBase;
+import com.dlink.model.History;
+import com.dlink.model.Jar;
+import com.dlink.model.JobHistory;
+import com.dlink.model.JobInfoDetail;
+import com.dlink.model.JobInstance;
+import com.dlink.model.JobLifeCycle;
+import com.dlink.model.JobManagerConfiguration;
+import com.dlink.model.JobStatus;
+import com.dlink.model.Savepoints;
+import com.dlink.model.Statement;
+import com.dlink.model.SystemConfiguration;
+import com.dlink.model.Task;
+import com.dlink.model.TaskManagerConfiguration;
+import com.dlink.model.TaskVersion;
 import com.dlink.result.SqlExplainResult;
-import com.dlink.service.*;
+import com.dlink.service.AlertGroupService;
+import com.dlink.service.AlertHistoryService;
+import com.dlink.service.ClusterConfigurationService;
+import com.dlink.service.ClusterService;
+import com.dlink.service.DataBaseService;
+import com.dlink.service.HistoryService;
+import com.dlink.service.JarService;
+import com.dlink.service.JobHistoryService;
+import com.dlink.service.JobInstanceService;
+import com.dlink.service.SavepointsService;
+import com.dlink.service.StatementService;
+import com.dlink.service.TaskService;
+import com.dlink.service.TaskVersionService;
 import com.dlink.utils.CustomStringJavaCompiler;
 import com.dlink.utils.JSONUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
-import java.util.stream.Collectors;
+import cn.hutool.core.bean.BeanUtil;
 
 /**
  * 任务 服务实现类
@@ -105,7 +154,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
         if (Dialect.isSql(task.getDialect())) {
             return executeCommonSql(SqlDTO.build(task.getStatement(),
-                    task.getDatabaseId(), null));
+                task.getDatabaseId(), null));
         }
         JobConfig config = buildJobConfig(task);
         JobManager jobManager = JobManager.build(config);
@@ -123,7 +172,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         task.setStep(JobLifeCycle.ONLINE.getValue());
         if (Dialect.isSql(task.getDialect())) {
             return executeCommonSql(SqlDTO.build(task.getStatement(),
-                    task.getDatabaseId(), null));
+                task.getDatabaseId(), null));
         }
         JobConfig config = buildJobConfig(task);
         JobManager jobManager = JobManager.build(config);
@@ -143,7 +192,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         }
         if (Dialect.isSql(task.getDialect())) {
             return executeCommonSql(SqlDTO.build(task.getStatement(),
-                    task.getDatabaseId(), null));
+                task.getDatabaseId(), null));
         }
         task.setSavePointStrategy(SavePointStrategy.LATEST.getValue());
         JobConfig config = buildJobConfig(task);
@@ -252,7 +301,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     public boolean saveOrUpdateTask(Task task) {
         // to compiler java udf
         if (Asserts.isNotNullString(task.getDialect()) && Dialect.JAVA.equalsVal(task.getDialect())
-                && Asserts.isNotNullString(task.getStatement())) {
+            && Asserts.isNotNullString(task.getStatement())) {
             CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(task.getStatement());
             task.setSavePointPath(compiler.getFullClassName());
         }
@@ -261,8 +310,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             Task taskInfo = getById(task.getId());
             Assert.check(taskInfo);
             if (JobLifeCycle.RELEASE.equalsValue(taskInfo.getStep()) ||
-                    JobLifeCycle.ONLINE.equalsValue(taskInfo.getStep()) ||
-                    JobLifeCycle.CANCEL.equalsValue(taskInfo.getStep())) {
+                JobLifeCycle.ONLINE.equalsValue(taskInfo.getStep()) ||
+                JobLifeCycle.CANCEL.equalsValue(taskInfo.getStep())) {
                 throw new BusException("该作业已" + JobLifeCycle.get(taskInfo.getStep()).getLabel() + "，禁止修改！");
             }
             task.setStep(JobLifeCycle.DEVELOP.getValue());
@@ -391,15 +440,15 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Task taskInfo = getTaskInfoById(dto.getId());
 
         if (JobLifeCycle.RELEASE.equalsValue(taskInfo.getStep()) ||
-                JobLifeCycle.ONLINE.equalsValue(taskInfo.getStep()) ||
-                JobLifeCycle.CANCEL.equalsValue(taskInfo.getStep())) {
+            JobLifeCycle.ONLINE.equalsValue(taskInfo.getStep()) ||
+            JobLifeCycle.CANCEL.equalsValue(taskInfo.getStep())) {
             //throw new BusException("该作业已" + JobLifeCycle.get(taskInfo.getStep()).getLabel() + "，禁止回滚！");
             return Result.failed("该作业已" + JobLifeCycle.get(taskInfo.getStep()).getLabel() + "，禁止回滚！");
         }
 
         LambdaQueryWrapper<TaskVersion> queryWrapper = new LambdaQueryWrapper<TaskVersion>().
-                eq(TaskVersion::getTaskId, dto.getId()).
-                eq(TaskVersion::getVersionId, dto.getVersionId());
+            eq(TaskVersion::getTaskId, dto.getId()).
+            eq(TaskVersion::getVersionId, dto.getVersionId());
 
         TaskVersion taskVersion = taskVersionService.getOne(queryWrapper);
 
@@ -712,7 +761,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     private boolean inRefreshPlan(JobInstance jobInstance) {
         if ((!JobStatus.isDone(jobInstance.getStatus())) || (Asserts.isNotNull(jobInstance.getFinishTime())
-                && Duration.between(jobInstance.getFinishTime(), LocalDateTime.now()).toMinutes() < 1)) {
+            && Duration.between(jobInstance.getFinishTime(), LocalDateTime.now()).toMinutes() < 1)) {
             return true;
         } else {
             return false;
@@ -721,7 +770,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public JobInfoDetail refreshJobInfoDetail(Integer id) {
-        return jobInstanceService.getJobInfoDetailInfo(refreshJobInstance(id, true));
+        return jobInstanceService.refreshJobInfoDetailInfo(refreshJobInstance(id, true));
     }
 
     @Override

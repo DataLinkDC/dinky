@@ -58,6 +58,15 @@ const StudioTaskInfo = (props: any) => {
           <Descriptions.Item label="方言">
             {current.task.dialect}
           </Descriptions.Item>
+          <Descriptions.Item label="版本">
+            {current.task.versionId}
+          </Descriptions.Item>
+          <Descriptions.Item label="创建于">
+            {current.task.createTime}
+          </Descriptions.Item>
+          <Descriptions.Item label="更新于">
+            {current.task.updateTime}
+          </Descriptions.Item>
         </Descriptions>
         <Form
           form={form}

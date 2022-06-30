@@ -2,7 +2,9 @@ package com.dlink.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,9 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dlink.api.FlinkAPI;
+import com.dlink.assertion.Asserts;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
+import com.dlink.job.BuildConfiguration;
 import com.dlink.model.JobInstance;
+import com.dlink.model.JobManagerConfiguration;
+import com.dlink.model.TaskManagerConfiguration;
 import com.dlink.service.JobInstanceService;
 import com.dlink.service.TaskService;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -110,5 +117,32 @@ public class JobInstanceController {
     @GetMapping("/getLineage")
     public Result getLineage(@RequestParam Integer id) {
         return Result.succeed(jobInstanceService.getLineage(id), "刷新成功");
+    }
+
+    /**
+     * 获取 JobManager 的信息
+     */
+    @GetMapping("/getJobManagerInfo")
+    public Result getJobManagerInfo(@RequestParam String address) {
+        JobManagerConfiguration jobManagerConfiguration = new JobManagerConfiguration();
+        if (Asserts.isNotNullString(address)) {
+            FlinkAPI flinkAPI = FlinkAPI.build(address);
+            BuildConfiguration.buildJobManagerConfiguration(jobManagerConfiguration, flinkAPI);
+        }
+        return Result.succeed(jobManagerConfiguration, "获取成功");
+    }
+
+    /**
+     * 获取 TaskManager 的信息
+     */
+    @GetMapping("/getTaskManagerInfo")
+    public Result getTaskManagerInfo(@RequestParam String address) {
+        Set<TaskManagerConfiguration> taskManagerConfigurationList = new HashSet<>();
+        if (Asserts.isNotNullString(address)) {
+            FlinkAPI flinkAPI = FlinkAPI.build(address);
+            JsonNode taskManagerContainers = flinkAPI.getTaskManagers();
+            BuildConfiguration.buildTaskManagerConfiguration(taskManagerConfigurationList, flinkAPI, taskManagerContainers);
+        }
+        return Result.succeed(taskManagerConfigurationList, "获取成功");
     }
 }

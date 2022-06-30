@@ -1,29 +1,35 @@
 package com.dlink.service.impl;
 
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.dlink.api.FlinkAPI;
 import com.dlink.assertion.Asserts;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.db.util.ProTableUtil;
 import com.dlink.explainer.lineage.LineageBuilder;
 import com.dlink.explainer.lineage.LineageResult;
-import com.dlink.job.BuildConfiguration;
 import com.dlink.job.FlinkJobTaskPool;
 import com.dlink.mapper.JobInstanceMapper;
-import com.dlink.model.*;
-import com.dlink.service.*;
+import com.dlink.model.History;
+import com.dlink.model.JobInfoDetail;
+import com.dlink.model.JobInstance;
+import com.dlink.model.JobInstanceCount;
+import com.dlink.model.JobInstanceStatus;
+import com.dlink.model.JobStatus;
+import com.dlink.service.ClusterConfigurationService;
+import com.dlink.service.ClusterService;
+import com.dlink.service.HistoryService;
+import com.dlink.service.JobHistoryService;
+import com.dlink.service.JobInstanceService;
 import com.dlink.utils.JSONUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * JobInstanceServiceImpl
@@ -111,6 +117,28 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     @Override
     public JobInfoDetail getJobInfoDetailInfo(JobInstance jobInstance) {
         Asserts.checkNull(jobInstance, "该任务实例不存在");
+        String key = jobInstance.getId().toString();
+        FlinkJobTaskPool pool = FlinkJobTaskPool.getInstance();
+        if (pool.exist(key)) {
+            return pool.get(key);
+        } else {
+            JobInfoDetail jobInfoDetail = new JobInfoDetail(jobInstance.getId());
+            jobInfoDetail.setInstance(jobInstance);
+            jobInfoDetail.setCluster(clusterService.getById(jobInstance.getClusterId()));
+            jobInfoDetail.setJobHistory(jobHistoryService.getJobHistory(jobInstance.getId()));
+            History history = historyService.getById(jobInstance.getHistoryId());
+            history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
+            jobInfoDetail.setHistory(history);
+            if (Asserts.isNotNull(history.getClusterConfigurationId())) {
+                jobInfoDetail.setClusterConfiguration(clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId()));
+            }
+            return jobInfoDetail;
+        }
+    }
+
+    @Override
+    public JobInfoDetail refreshJobInfoDetailInfo(JobInstance jobInstance) {
+        Asserts.checkNull(jobInstance, "该任务实例不存在");
         JobInfoDetail jobInfoDetail;
         FlinkJobTaskPool pool = FlinkJobTaskPool.getInstance();
         String key = jobInstance.getId().toString();
@@ -125,31 +153,13 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         if (Asserts.isNotNull(history) && Asserts.isNotNull(history.getClusterConfigurationId())) {
             jobInfoDetail.setClusterConfiguration(clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId()));
         }
-        JobManagerConfiguration jobManagerConfiguration = new JobManagerConfiguration();
-        Set<TaskManagerConfiguration> taskManagerConfigurationList = new HashSet<>();
-        if (Asserts.isNotNullString(history.getJobManagerAddress()) && JobStatus.RUNNING.getValue().equals(jobInfoDetail.getInstance().getStatus())) { // 如果有jobManager地址，则使用该地址
-            FlinkAPI flinkAPI = FlinkAPI.build(history.getJobManagerAddress());
-
-            // 获取jobManager的配置信息 开始
-            BuildConfiguration.buildJobManagerConfiguration(jobManagerConfiguration, flinkAPI);
-            // 获取jobManager的配置信息 结束
-
-            // 获取taskManager的配置信息 开始
-            JsonNode taskManagerContainers = flinkAPI.getTaskManagers(); //获取taskManager列表
-            BuildConfiguration.buildTaskManagerConfiguration(taskManagerConfigurationList, flinkAPI, taskManagerContainers);
-            // 获取taskManager的配置信息 结束
-
-        }
-        jobInfoDetail.setJobManagerConfiguration(jobManagerConfiguration);
-        jobInfoDetail.setTaskManagerConfiguration(taskManagerConfigurationList);
         if (pool.exist(key)) {
-            pool.refresh(jobInfoDetail);;
+            pool.refresh(jobInfoDetail);
         } else {
-            pool.push(key,jobInfoDetail);
+            pool.push(key, jobInfoDetail);
         }
         return jobInfoDetail;
     }
-
 
 
     @Override
