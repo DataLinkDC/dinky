@@ -25,6 +25,9 @@ export function parseNumStr(num: number) {
 }
 
 export function parseMilliSecondStr(second_time: number) {
+  if(((second_time/1000) %60) < 1){
+    return second_time + "毫秒";
+  }
   return parseSecondStr(second_time/1000);
 }
 
