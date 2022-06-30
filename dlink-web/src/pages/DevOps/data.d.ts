@@ -114,3 +114,14 @@ export type TaskContainerConfigInfo = {
 }
 
 
+export  type CheckPointsDetailInfo = {
+  jobID: number,
+  historyID: number,
+  id: number,
+  status: string,
+  end_to_end_duration: number,
+  external_path : string,
+  latest_ack_timestamp: number,
+  state_size: number,
+  trigger_timestamp: number,
+}
