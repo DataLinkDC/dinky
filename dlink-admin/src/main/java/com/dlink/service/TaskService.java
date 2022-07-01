@@ -63,4 +63,5 @@ public interface TaskService extends ISuperService<Task> {
 
     Result rollbackTask(TaskRollbackVersionDTO dto);
 
+    Integer queryAllSizeByName(String name);
 }

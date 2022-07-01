@@ -29,4 +29,11 @@
             </if>
         </where>
     </select>
+
+
+    <select id="queryAllSizeByName" resultType="java.lang.Integer">
+        SELECT count(*)
+        from dlink_task
+        where `name` REGEXP '${name}_[0-9]$'
+    </select>
 </mapper>

@@ -786,6 +786,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         return "127.0.0.1:" + serverPort;
     }
 
+    @Override
+    public Integer queryAllSizeByName(String name) {
+
+        return baseMapper.queryAllSizeByName(name);
+    }
+
+
     private String getDuration(long jobStartTimeMills, long jobEndTimeMills) {
         Instant startTime = Instant.ofEpochMilli(jobStartTimeMills);
         Instant endTime = Instant.ofEpochMilli(jobEndTimeMills);
