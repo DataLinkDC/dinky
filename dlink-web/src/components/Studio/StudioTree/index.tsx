@@ -7,7 +7,7 @@ import {convertToTreeData, getTreeNodeByKey, TreeDataNode} from "@/components/St
 import style from "./index.less";
 import {StateType} from "@/pages/DataStudio/model";
 import {
-  getInfoById, handleAddOrUpdate, handleAddOrUpdateWithResult, handleRemoveById, handleSubmit
+  getInfoById, handleAddOrUpdate, handleAddOrUpdateWithResult, handleOption, handleRemoveById, handleSubmit
 } from "@/components/Common/crud";
 import UpdateCatalogueForm from './components/UpdateCatalogueForm';
 import SimpleTaskForm from "@/components/Studio/StudioTree/components/SimpleTaskForm";
@@ -170,6 +170,8 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       toCut(rightClickNode);
     } else if (key == 'Paste') {
       toPaste(rightClickNode);
+    }else if (key == 'Copy') {
+      toCopy(rightClickNode);
     }
   };
 
@@ -304,6 +306,18 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     }
   };
 
+  const toCopy = async (node: TreeDataNode | undefined) => {
+    let catalogues = {
+      taskId:node?.taskId,
+      parentId: node?.id
+    };
+    const datas =   await handleOption('/api/catalogue/copyTask',"复制作业",catalogues);
+
+    if (datas) {
+      getTreeData();
+    }
+  };
+
   const createTask = (node: TreeDataNode | undefined) => {
     if (!node?.isLeaf) {
       handleUpdateTaskModalVisible(true);
@@ -349,6 +363,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
         <Menu.Item key='Open'>{'打开'}</Menu.Item>
         <Menu.Item key='Submit'>{'异步提交'}</Menu.Item>
         <Menu.Item key='Rename'>{'重命名'}</Menu.Item>
+        <Menu.Item key='Copy'>{'复制'}</Menu.Item>
         <Menu.Item key='Cut'>{'剪切'}</Menu.Item>
         {cutId && <Menu.Item key='Paste'>{'粘贴'}</Menu.Item>}
         <Menu.Item key='Delete'>{'删除'}</Menu.Item>
@@ -360,6 +375,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
         <Menu.Item key='ShowUploadModal'>{'上传zip包创建工程'}</Menu.Item>
         <Menu.Item key='CreateTask'>{'创建作业'}</Menu.Item>
         <Menu.Item key='Rename'>{'重命名'}</Menu.Item>
+        <Menu.Item key='Copy'>{'复制'}</Menu.Item>
         <Menu.Item key='Cut'>{'剪切'}</Menu.Item>
         {cutId && <Menu.Item key='Paste'>{'粘贴'}</Menu.Item>}
         <Menu.Item disabled>{'删除'}</Menu.Item>
@@ -369,6 +385,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
         <Menu.Item key='CreateCatalogue'>{'创建目录'}</Menu.Item>
         <Menu.Item key='CreateTask'>{'创建作业'}</Menu.Item>
         <Menu.Item key='Rename'>{'重命名'}</Menu.Item>
+       <Menu.Item key='Copy'>{'复制'}</Menu.Item>
         <Menu.Item key='Cut'>{'剪切'}</Menu.Item>
         {cutId && <Menu.Item key='Paste'>{'粘贴'}</Menu.Item>}
         <Menu.Item key='Delete'>{'删除'}</Menu.Item>
