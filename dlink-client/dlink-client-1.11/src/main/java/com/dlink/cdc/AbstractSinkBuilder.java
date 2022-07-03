@@ -14,18 +14,7 @@ import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.data.StringData;
 import org.apache.flink.table.data.TimestampData;
 import org.apache.flink.table.operations.ModifyOperation;
-import org.apache.flink.table.types.logical.BigIntType;
-import org.apache.flink.table.types.logical.BooleanType;
-import org.apache.flink.table.types.logical.DateType;
-import org.apache.flink.table.types.logical.DecimalType;
-import org.apache.flink.table.types.logical.DoubleType;
-import org.apache.flink.table.types.logical.FloatType;
-import org.apache.flink.table.types.logical.IntType;
-import org.apache.flink.table.types.logical.LogicalType;
-import org.apache.flink.table.types.logical.SmallIntType;
-import org.apache.flink.table.types.logical.TimestampType;
-import org.apache.flink.table.types.logical.TinyIntType;
-import org.apache.flink.table.types.logical.VarCharType;
+import org.apache.flink.table.types.logical.*;
 import org.apache.flink.types.RowKind;
 import org.apache.flink.util.Collector;
 
@@ -251,6 +240,8 @@ public abstract class AbstractSinkBuilder {
             case LOCALDATETIME:
             case TIMESTAMP:
                 return new TimestampType();
+            case BYTES:
+                return new VarBinaryType(Integer.MAX_VALUE);
             default:
                 return new VarCharType();
         }
