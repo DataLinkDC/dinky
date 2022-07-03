@@ -1,5 +1,7 @@
 package com.dlink.cdc.sql;
 
+import com.dlink.utils.FlinkBaseUtil;
+import com.dlink.utils.LogUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
@@ -12,11 +14,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
-import org.apache.flink.table.types.logical.BigIntType;
-import org.apache.flink.table.types.logical.DateType;
-import org.apache.flink.table.types.logical.DecimalType;
-import org.apache.flink.table.types.logical.LogicalType;
-import org.apache.flink.table.types.logical.TimestampType;
+import org.apache.flink.table.types.logical.*;
 import org.apache.flink.table.types.utils.TypeConversions;
 import org.apache.flink.types.Row;
 import org.apache.flink.types.RowKind;
@@ -35,12 +33,12 @@ import com.dlink.cdc.AbstractSinkBuilder;
 import com.dlink.cdc.CDCBuilder;
 import com.dlink.cdc.SinkBuilder;
 import com.dlink.executor.CustomTableEnvironment;
+
+import javax.xml.bind.DatatypeConverter;
 import com.dlink.model.FlinkCDCConfig;
 import com.dlink.model.Schema;
 import com.dlink.model.Table;
-import com.dlink.utils.FlinkBaseUtil;
 import com.dlink.utils.JSONUtil;
-import com.dlink.utils.LogUtil;
 
 /**
  * SQLSinkBuilder
@@ -222,6 +220,13 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
         } else if (logicalType instanceof BigIntType) {
             if (value instanceof Integer) {
                 return ((Integer) value).longValue();
+            } else {
+                return value;
+            }
+        } else if (logicalType instanceof VarBinaryType) {
+            // VARBINARY AND BINARY is converted to String with encoding base64 in FlinkCDC.
+            if (value instanceof String) {
+                return DatatypeConverter.parseBase64Binary((String) value);
             } else {
                 return value;
             }

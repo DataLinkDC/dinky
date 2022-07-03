@@ -12,16 +12,13 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
-import org.apache.flink.table.types.logical.BigIntType;
-import org.apache.flink.table.types.logical.DateType;
-import org.apache.flink.table.types.logical.DecimalType;
-import org.apache.flink.table.types.logical.LogicalType;
-import org.apache.flink.table.types.logical.TimestampType;
+import org.apache.flink.table.types.logical.*;
 import org.apache.flink.table.types.utils.TypeConversions;
 import org.apache.flink.types.Row;
 import org.apache.flink.types.RowKind;
 import org.apache.flink.util.Collector;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -220,6 +217,13 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
         } else if (logicalType instanceof BigIntType) {
             if (value instanceof Integer) {
                 return ((Integer) value).longValue();
+            } else {
+                return value;
+            }
+        } else if (logicalType instanceof VarBinaryType) {
+            // VARBINARY AND BINARY is converted to String with encoding base64 in FlinkCDC.
+            if (value instanceof String) {
+                return DatatypeConverter.parseBase64Binary((String) value);
             } else {
                 return value;
             }
