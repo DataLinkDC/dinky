@@ -220,4 +220,14 @@ public class CatalogueController {
             return Result.failed(false, "移动失败");
         }
     }
+
+    @PostMapping("/copyTask")
+    public Result copyTask(@RequestBody Catalogue catalogue) throws Exception {
+
+        if ( catalogueService.copyTask(catalogue)) {
+            return Result.succeed("复制作业成功");
+        } else {
+            return Result.failed("复制作业失败");
+        }
+    }
 }

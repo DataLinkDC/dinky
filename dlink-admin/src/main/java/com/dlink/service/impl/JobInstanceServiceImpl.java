@@ -117,25 +117,50 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     @Override
     public JobInfoDetail getJobInfoDetailInfo(JobInstance jobInstance) {
         Asserts.checkNull(jobInstance, "该任务实例不存在");
-        JobInfoDetail jobInfoDetail;
-        FlinkJobTaskPool pool = FlinkJobTaskPool.getInstance();
         String key = jobInstance.getId().toString();
+        FlinkJobTaskPool pool = FlinkJobTaskPool.getInstance();
         if (pool.exist(key)) {
-            jobInfoDetail = pool.get(key);
+            return pool.get(key);
         } else {
-            jobInfoDetail = new JobInfoDetail(jobInstance.getId());
+            JobInfoDetail jobInfoDetail = new JobInfoDetail(jobInstance.getId());
             jobInfoDetail.setInstance(jobInstance);
             jobInfoDetail.setCluster(clusterService.getById(jobInstance.getClusterId()));
             jobInfoDetail.setJobHistory(jobHistoryService.getJobHistory(jobInstance.getId()));
             History history = historyService.getById(jobInstance.getHistoryId());
             history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
             jobInfoDetail.setHistory(history);
-            if (Asserts.isNotNull(history) && Asserts.isNotNull(history.getClusterConfigurationId())) {
+            if (Asserts.isNotNull(history.getClusterConfigurationId())) {
                 jobInfoDetail.setClusterConfiguration(clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId()));
             }
+            return jobInfoDetail;
+        }
+    }
+
+    @Override
+    public JobInfoDetail refreshJobInfoDetailInfo(JobInstance jobInstance) {
+        Asserts.checkNull(jobInstance, "该任务实例不存在");
+        JobInfoDetail jobInfoDetail;
+        FlinkJobTaskPool pool = FlinkJobTaskPool.getInstance();
+        String key = jobInstance.getId().toString();
+
+        jobInfoDetail = new JobInfoDetail(jobInstance.getId());
+        jobInfoDetail.setInstance(jobInstance);
+        jobInfoDetail.setCluster(clusterService.getById(jobInstance.getClusterId()));
+        jobInfoDetail.setJobHistory(jobHistoryService.getJobHistory(jobInstance.getId()));
+        History history = historyService.getById(jobInstance.getHistoryId());
+        history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
+        jobInfoDetail.setHistory(history);
+        if (Asserts.isNotNull(history) && Asserts.isNotNull(history.getClusterConfigurationId())) {
+            jobInfoDetail.setClusterConfiguration(clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId()));
+        }
+        if (pool.exist(key)) {
+            pool.refresh(jobInfoDetail);
+        } else {
+            pool.push(key, jobInfoDetail);
         }
         return jobInfoDetail;
     }
+
 
     @Override
     public LineageResult getLineage(Integer id) {

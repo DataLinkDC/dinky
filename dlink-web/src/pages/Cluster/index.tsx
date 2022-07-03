@@ -302,7 +302,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
     {
       title: '操作',
       dataIndex: 'option',
-      tooltip: 'FLinkWebUI连接 当集群状态为`可用`时! 支持 SESSION | STANDALONE',
+      tooltip: 'FLinkWebUI连接 当集群状态为`可用`时! 支持 KUBERNETES 之外的模式',
       valueType: 'option',
       render: (_, record) => [
         <a

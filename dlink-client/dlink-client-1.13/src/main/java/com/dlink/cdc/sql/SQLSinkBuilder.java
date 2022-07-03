@@ -1,7 +1,5 @@
 package com.dlink.cdc.sql;
 
-import com.dlink.model.*;
-
 import com.dlink.utils.FlinkBaseUtil;
 import com.dlink.utils.LogUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -35,7 +33,12 @@ import com.dlink.cdc.AbstractSinkBuilder;
 import com.dlink.cdc.CDCBuilder;
 import com.dlink.cdc.SinkBuilder;
 import com.dlink.executor.CustomTableEnvironment;
-import com.dlink.utils.SqlUtil;
+
+import javax.xml.bind.DatatypeConverter;
+import com.dlink.model.FlinkCDCConfig;
+import com.dlink.model.Schema;
+import com.dlink.model.Table;
+import com.dlink.utils.JSONUtil;
 
 /**
  * SQLSinkBuilder
@@ -61,9 +64,10 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
     }
 
     private DataStream<Row> buildRow(
-            SingleOutputStreamOperator<Map> filterOperator,
-            List<String> columnNameList,
-            List<LogicalType> columnTypeList) {
+        SingleOutputStreamOperator<Map> filterOperator,
+        List<String> columnNameList,
+        List<LogicalType> columnTypeList,
+        String schemaTableName) {
         final String[] columnNames = columnNameList.toArray(new String[columnNameList.size()]);
         final LogicalType[] columnTypes = columnTypeList.toArray(new LogicalType[columnTypeList.size()]);
 
@@ -71,9 +75,10 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
         RowTypeInfo rowTypeInfo = new RowTypeInfo(typeInformations, columnNames);
 
         return filterOperator
-                .flatMap(new FlatMapFunction<Map, Row>() {
-                    @Override
-                    public void flatMap(Map value, Collector<Row> out) throws Exception {
+            .flatMap(new FlatMapFunction<Map, Row>() {
+                @Override
+                public void flatMap(Map value, Collector<Row> out) throws Exception {
+                    try {
                         switch (value.get("op").toString()) {
                             case "r":
                             case "c":
@@ -107,15 +112,19 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                                 out.collect(uarow);
                                 break;
                         }
+                    } catch (Exception e) {
+                        logger.error("SchameTable: {} - Row: {} - Exception: {}", schemaTableName, JSONUtil.toJsonString(value), e.getCause().getMessage());
+                        throw e;
                     }
-                }, rowTypeInfo);
+                }
+            }, rowTypeInfo);
     }
 
     private void addTableSink(
-            CustomTableEnvironment customTableEnvironment,
-            DataStream<Row> rowDataDataStream,
-            Table table,
-            List<String> columnNameList) {
+        CustomTableEnvironment customTableEnvironment,
+        DataStream<Row> rowDataDataStream,
+        Table table,
+        List<String> columnNameList) {
 
         String sinkSchemaName = getSinkSchemaName(table);
         String sinkTableName = getSinkTableName(table);
@@ -151,10 +160,10 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
 
     @Override
     public DataStreamSource build(
-            CDCBuilder cdcBuilder,
-            StreamExecutionEnvironment env,
-            CustomTableEnvironment customTableEnvironment,
-            DataStreamSource<String> dataStreamSource) {
+        CDCBuilder cdcBuilder,
+        StreamExecutionEnvironment env,
+        CustomTableEnvironment customTableEnvironment,
+        DataStreamSource<String> dataStreamSource) {
         final List<Schema> schemaList = config.getSchemaList();
         final String schemaFieldName = config.getSchemaFieldName();
         if (Asserts.isNotNullCollection(schemaList)) {
@@ -162,18 +171,19 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
             logger.info("Build deserialize successful...");
             for (Schema schema : schemaList) {
                 for (Table table : schema.getTables()) {
+                    final String schemaTableName = table.getSchemaTableName();
                     try {
                         SingleOutputStreamOperator<Map> filterOperator = shunt(mapOperator, table, schemaFieldName);
-                        logger.info("Build " + table.getSchemaTableName() + " shunt successful...");
+                        logger.info("Build " + schemaTableName + " shunt successful...");
                         List<String> columnNameList = new ArrayList<>();
                         List<LogicalType> columnTypeList = new ArrayList<>();
                         buildColumn(columnNameList, columnTypeList, table.getColumns());
-                        DataStream<Row> rowDataDataStream = buildRow(filterOperator, columnNameList, columnTypeList);
-                        logger.info("Build " + table.getSchemaTableName() + " flatMap successful...");
-                        logger.info("Start build " + table.getSchemaTableName() + " sink...");
+                        DataStream<Row> rowDataDataStream = buildRow(filterOperator, columnNameList, columnTypeList, schemaTableName);
+                        logger.info("Build " + schemaTableName + " flatMap successful...");
+                        logger.info("Start build " + schemaTableName + " sink...");
                         addTableSink(customTableEnvironment, rowDataDataStream, table, columnNameList);
                     } catch (Exception e) {
-                        logger.error("Build " + table.getSchemaTableName() + " cdc sync failed...");
+                        logger.error("Build " + schemaTableName + " cdc sync failed...");
                         logger.error(LogUtil.getError(e));
                     }
                 }
@@ -210,6 +220,13 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
         } else if (logicalType instanceof BigIntType) {
             if (value instanceof Integer) {
                 return ((Integer) value).longValue();
+            } else {
+                return value;
+            }
+        } else if (logicalType instanceof VarBinaryType) {
+            // VARBINARY AND BINARY is converted to String with encoding base64 in FlinkCDC.
+            if (value instanceof String) {
+                return DatatypeConverter.parseBase64Binary((String) value);
             } else {
                 return value;
             }

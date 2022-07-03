@@ -8,7 +8,6 @@ import com.dlink.db.model.SuperEntity;
 import com.dlink.job.JobConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -16,7 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * 任务
@@ -71,6 +69,8 @@ public class Task extends SuperEntity {
     private Integer step;
 
     private Integer jobInstanceId;
+
+    private Integer versionId;
 
     @TableField(exist = false)
     private String statement;

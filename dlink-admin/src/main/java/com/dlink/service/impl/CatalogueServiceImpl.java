@@ -1,10 +1,15 @@
 package com.dlink.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.dto.CatalogueTaskDTO;
 import com.dlink.mapper.CatalogueMapper;
 import com.dlink.model.Catalogue;
+import com.dlink.model.JobLifeCycle;
+import com.dlink.model.Statement;
 import com.dlink.model.Task;
 import com.dlink.service.CatalogueService;
 import com.dlink.service.StatementService;
@@ -120,5 +125,51 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             catalogue.setParentId(parentId);
             return updateById(catalogue);
         }
+    }
+
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean copyTask(Catalogue catalogue) {
+
+        if (ObjectUtil.isNull(catalogue.getTaskId())) {
+            return false;
+        }
+
+        Task oldTask = taskService.getById(catalogue.getTaskId());
+
+        if (ObjectUtil.isNull(oldTask)) {
+            return false;
+        }
+        //查询作业名称
+        int size = taskService.queryAllSizeByName(oldTask.getName());
+
+        Task newTask = new Task();
+        BeanUtil.copyProperties(oldTask, newTask);
+        newTask.setId(null);
+        //设置复制后的作业名称为：原名称+自增序列
+        size = size + 1;
+        newTask.setName(oldTask.getName() + "_" + size);
+        newTask.setAlias(oldTask.getAlias() + "_" + size );
+        newTask.setStep(JobLifeCycle.DEVELOP.getValue());
+        taskService.save(newTask);
+
+        Statement statementServiceById = statementService.getById(catalogue.getTaskId());
+        //新建作业的sql语句
+        Statement statement = new Statement();
+        statement.setStatement(statementServiceById.getStatement());
+        statement.setId(newTask.getId());
+        statementService.save(statement);
+
+        Catalogue one = this.getOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, catalogue.getTaskId()));
+
+        catalogue.setName(newTask.getAlias());
+        catalogue.setIsLeaf(one.getIsLeaf());
+        catalogue.setTaskId(newTask.getId());
+        catalogue.setType(one.getType());
+        catalogue.setParentId(one.getParentId());
+
+        return this.save(catalogue);
+
     }
 }

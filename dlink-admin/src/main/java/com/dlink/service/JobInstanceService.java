@@ -26,6 +26,8 @@ public interface JobInstanceService extends ISuperService<JobInstance> {
 
     JobInfoDetail getJobInfoDetailInfo(JobInstance jobInstance);
 
+    JobInfoDetail refreshJobInfoDetailInfo(JobInstance jobInstance);
+
     LineageResult getLineage(Integer id);
 
     JobInstance getJobInstanceByTaskId(Integer id);
