@@ -129,10 +129,13 @@ public class JdbcBatchingOutputFormat<
                             () -> {
                                 synchronized (JdbcBatchingOutputFormat.this) {
                                     if (!closed) {
-                                        try {
-                                            flush();
-                                        } catch (Exception e) {
-                                            flushException = e;
+                                        //if batch count > 0  to flush
+                                        if (batchCount > 0) {
+                                            try {
+                                                flush();
+                                            } catch (Exception e) {
+                                                flushException = e;
+                                            }
                                         }
                                     }
                                 }

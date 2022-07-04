@@ -61,7 +61,8 @@ public final class TableSimpleStatementExecutor implements JdbcBatchStatementExe
 
     @Override
     public void executeBatch(Connection conn) throws SQLException {
-        st.executeBatch();
+        //st.executeBatch();
+        conn.commit();
     }
 
     @Override
