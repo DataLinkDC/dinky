@@ -52,8 +52,8 @@ public class PhoenixDynamicTableFactory implements DynamicTableSourceFactory, Dy
     private static final ConfigOption<Duration> SINK_BUFFER_FLUSH_INTERVAL = ConfigOptions.key("sink.buffer-flush.interval").durationType().defaultValue(Duration.ofSeconds(1L)).withDescription("The flush interval mills, over this time, asynchronous threads will flush data.");
     private static final ConfigOption<Integer> SINK_MAX_RETRIES = ConfigOptions.key("sink.max-retries").intType().defaultValue(3).withDescription("The max retry times if writing records to database failed.");
 
-    public static final ConfigOption<Boolean> SCHEMA_NAMESPACE_MAPPING_ENABLE = ConfigOptions.key("phoenix.schema.isNamespaceMappingEnabled").booleanType().defaultValue(false).withDescription("The JDBC phoenix Schema isNamespaceMappingEnabled.");
-    public static final ConfigOption<Boolean> SCHEMA_MAP_SYSTEMTABLE_ENABLE = ConfigOptions.key("phoenix.schema.mapSystemTablesToNamespace").booleanType().defaultValue(false).withDescription("The JDBC phoenix mapSystemTablesToNamespace.");
+    public static final ConfigOption<Boolean> SCHEMA_NAMESPACE_MAPPING_ENABLE = ConfigOptions.key("phoenix.schema.isnamespacemappingenabled").booleanType().defaultValue(false).withDescription("The JDBC phoenix Schema isNamespaceMappingEnabled.");
+    public static final ConfigOption<Boolean> SCHEMA_MAP_SYSTEMTABLE_ENABLE = ConfigOptions.key("phoenix.schema.mapsystemtablestonamespace").booleanType().defaultValue(false).withDescription("The JDBC phoenix mapSystemTablesToNamespace.");
 
     @Override
     public DynamicTableSink createDynamicTableSink(Context context) {
@@ -73,7 +73,6 @@ public class PhoenixDynamicTableFactory implements DynamicTableSourceFactory, Dy
         helper.validate();
         this.validateConfigOptions(config);
         TableSchema physicalSchema = TableSchemaUtils.getPhysicalSchema(context.getCatalogTable().getSchema());
-        //return new JdbcDynamicTableSource(this.getJdbcOptions(helper.getOptions()), this.getJdbcReadOptions(helper.getOptions()), this.getJdbcLookupOptions(helper.getOptions()), physicalSchema);
         return new PhoenixDynamicTableSource(this.getJdbcOptions(helper.getOptions()), this.getJdbcReadOptions(helper.getOptions()), this.getJdbcLookupOptions(helper.getOptions()),physicalSchema);
 
     }

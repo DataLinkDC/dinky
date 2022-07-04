@@ -52,7 +52,7 @@ import java.util.concurrent.TimeUnit;
 import static org.apache.flink.util.Preconditions.checkArgument;
 import static org.apache.flink.util.Preconditions.checkNotNull;
 
-/** A lookup function for {@link JdbcDynamicTableSource}. */
+/** A lookup function for {@link PhoenixRowDataLookupFunction}. */
 @Internal
 public class PhoenixRowDataLookupFunction extends TableFunction<RowData> {
 
@@ -208,6 +208,7 @@ public class PhoenixRowDataLookupFunction extends TableFunction<RowData> {
     private void establishConnectionAndStatement() throws SQLException, ClassNotFoundException {
         Connection dbConn = connectionProvider.getOrEstablishConnection();
         statement = FieldNamedPreparedStatement.prepareStatement(dbConn, query, keyNames);
+        LOG.info("executor query SQL : "+query);
     }
 
     @Override
