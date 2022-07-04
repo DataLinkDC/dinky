@@ -296,7 +296,7 @@ public class Explainer {
             }
             return executor.getJobPlanInfoFromDataStream(datastreamPlans);
         } else {
-            return new JobPlanInfo("");
+            throw new RuntimeException("create jobPlan failed, the job not contain insert statement. ");
         }
     }
 
