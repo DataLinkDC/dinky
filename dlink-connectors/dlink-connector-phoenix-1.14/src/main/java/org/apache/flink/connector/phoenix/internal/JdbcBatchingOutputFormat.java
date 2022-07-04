@@ -130,10 +130,13 @@ public class JdbcBatchingOutputFormat<
                             () -> {
                                 synchronized (JdbcBatchingOutputFormat.this) {
                                     if (!closed) {
-                                        try {
-                                            flush();
-                                        } catch (Exception e) {
-                                            flushException = e;
+                                        //if batch count > 0  to flush
+                                        if (batchCount > 0) {
+                                            try {
+                                                flush();
+                                            } catch (Exception e) {
+                                                flushException = e;
+                                            }
                                         }
                                     }
                                 }
@@ -190,6 +193,7 @@ public class JdbcBatchingOutputFormat<
 
         for (int i = 0; i <= executionOptions.getMaxRetries(); i++) {
             try {
+                LOG.debug("pre flush size = {} , retry times = {}", batchCount,i);
                 attemptFlush();
                 //conn.commit();
                 batchCount = 0;
