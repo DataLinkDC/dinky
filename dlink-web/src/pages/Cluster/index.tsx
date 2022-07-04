@@ -5,8 +5,6 @@ import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import CreateForm from './components/CreateForm';
-import UpdateForm from './components/UpdateForm';
 import type {ClusterTableListItem} from './data.d';
 
 import Dropdown from "antd/es/dropdown/dropdown";
@@ -21,13 +19,14 @@ import {
 } from "@/components/Common/crud";
 import {showCluster, showSessionCluster} from "@/components/Studio/StudioEvent/DDL";
 import {RUN_MODE} from "@/components/Studio/conf";
+import ClusterForm from "@/pages/Cluster/components/ClusterForm";
 
 const TextArea = Input.TextArea;
 const url = '/api/cluster';
 
 const ClusterTableList: React.FC<{}> = (props: any) => {
   const {dispatch} = props;
-  const [createModalVisible, handleModalVisible] = useState<boolean>(false);
+  const [modalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [formValues, setFormValues] = useState({});
   const actionRef = useRef<ActionType>();
@@ -303,6 +302,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
     {
       title: '操作',
       dataIndex: 'option',
+      tooltip: 'FLinkWebUI连接 当集群状态为`可用`时! 支持 KUBERNETES 之外的模式',
       valueType: 'option',
       render: (_, record) => [
         <a
@@ -313,13 +313,22 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
         >
           配置
         </a>,
-        <Button type="link"
-          href={`http://${record.jobManagerHost}/#/overview`}
-          target="_blank"
-        >
-          FlinkWebUI
-        </Button>,
         <MoreBtn key="more" item={record}/>,
+        ((record.status && (record.type === RUN_MODE.YARN_SESSION
+                              || record.type === RUN_MODE.STANDALONE
+                              || record.type === RUN_MODE.YARN_APPLICATION
+                              || record.type === RUN_MODE.YARN_PER_JOB
+                          )) ?
+          <>
+            <Button type="link" title={`http://${record.jobManagerHost}/#/overview`}
+                    href={`http://${record.jobManagerHost}/#/overview`}
+                    target="_blank"
+            >
+              FlinkWebUI
+            </Button>
+          </>
+          : undefined
+        ),
       ],
     },
   ];
@@ -356,7 +365,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
               <div>
                 已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
                 <span>
-                被禁用的集群共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} 人
+                被禁用的集群共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} 个
               </span>
               </div>
             }
@@ -410,26 +419,26 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
             >批量禁用</Button>
           </FooterToolbar>
         )}
-        <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>
-          <ProTable<ClusterTableListItem, ClusterTableListItem>
+        <ClusterForm
           onSubmit={async (value) => {
-          const success = await handleAddOrUpdate(url, value);
-          if (success) {
-            handleModalVisible(false);
-            if (actionRef.current) {
-              actionRef.current.reload();
+            const success = await handleAddOrUpdate(url, value);
+            if (success) {
+              handleModalVisible(false);
+              setFormValues({});
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+              showCluster(dispatch);
+              showSessionCluster(dispatch);
             }
-            showCluster(dispatch);
-            showSessionCluster(dispatch);
-          }
-        }}
-          rowKey="id"
-          type="form"
-          columns={columns}
-          />
-        </CreateForm>
+          }}
+          onCancel={() => handleModalVisible(false)}
+          modalVisible={modalVisible}
+          values={{}}
+        >
+        </ClusterForm>
         {formValues && Object.keys(formValues).length ? (
-          <UpdateForm
+          <ClusterForm
             onSubmit={async (value) => {
               const success = await handleAddOrUpdate(url, value);
               if (success) {
@@ -446,10 +455,10 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
               handleUpdateModalVisible(false);
               setFormValues({});
             }}
-            updateModalVisible={updateModalVisible}
+            modalVisible={updateModalVisible}
             values={formValues}
           />
-        ) : null}
+        ) : undefined}
 
         <Drawer
           width={600}

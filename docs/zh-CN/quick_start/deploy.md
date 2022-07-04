@@ -136,7 +136,7 @@ $nginx -s reload
 Dinky 需要具备自身的 Flink 环境，该 Flink 环境的实现需要用户自己在 Dinky 根目录下创建 plugins 文件夹并上传相关的 Flink 依赖，如 flink-dist, flink-table 等，具体见下文。当然也可在启动文件中指定 FLINK_HOME，但不建议这样做。  
 
 Dinky 当前版本的 yarn 的 perjob 与 application 执行模式依赖 flink-shade-hadoop ，如果你的 Hadoop 版本为 2+ 或 3+，需要额外添加 flink-shade-hadoop-uber-3 包，请手动删除该包内部的 javax.servlet 等冲突内容。
-当然如果你的 Hadoop 为 3+ 也可以自行编译对于版本的 dlink-client-hadoop.jar 以替代 uber 包，
+当然如果你的 Hadoop 为 3+ 也可以自行编译对应版本的 dlink-client-hadoop.jar 以替代 uber 包，
 
 ```
 #创建目录

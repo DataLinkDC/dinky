@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @Author: zhumingye
@@ -18,52 +19,46 @@ public class FeiShuSenderTest {
 
 
     private static Map<String, String> feiShuConfig = new HashMap<>();
+    private AlertMsg alertMsg = new AlertMsg();
 
-    String alertMsgContentTemplate = "[\n"
-            + "  {\n"
-            + "    \"owner\": \"dlink\",\n"
-            + "    \"processEndTime\": \"2021-01-29 19:01:11\",\n"
-            + "    \"processHost\": \"10.81.129.4:5678\",\n"
-            + "    \"processId\": 2926,\n"
-            + "    \"processName\": \"3-20210129190038108\",\n"
-            + "    \"processStartTime\": \"2021-01-29 19:00:38\",\n"
-            + "    \"processState\": \"SUCCESS\",\n"
-            + "    \"processType\": \"START_PROCESS\",\n"
-            + "    \"projectId\": 2,\n"
-            + "    \"projectName\": \"testdelproject\",\n"
-            + "    \"recovery\": \"NO\",\n"
-            + "    \"retryTimes\": 0,\n"
-            + "    \"runTimes\": 1,\n"
-            + "    \"taskId\": 0\n"
-            + "  }\n"
-            + "]";
     @Before
     public void initFeiShuConfig() {
-        feiShuConfig.put(FeiShuConstants.WEB_HOOK, "https://open.feishu.cn/open-apis/bot/v2/hook/aea3cd7f13154854541dsadsadas08f2a9");
+        String uuid = UUID.randomUUID().toString();
+
+        alertMsg.setAlertType("实时告警监控");
+        alertMsg.setAlertTime("2018-08-06 10:31:34.0");
+        alertMsg.setJobID(uuid);
+        alertMsg.setJobName("测试任务");
+        alertMsg.setJobType("SQL");
+        alertMsg.setJobStatus("FAILED");
+        alertMsg.setJobStartTime("2018-08-06 10:31:34.0");
+        alertMsg.setJobEndTime("2018-08-06 10:31:49.0");
+        alertMsg.setJobDuration("23 Seconds");
+        String linkUrl = "[跳转至该任务的FlinkWeb](http://cdh1:8081/#/job/"+uuid+"/overview)";
+        alertMsg.setLinkUrl(linkUrl);
+        String exceptionUrl = "[点击查看该任务的异常日志](http://cdh1:8081/#/job/"+uuid+"/exceptions)";
+        alertMsg.setExceptionUrl(exceptionUrl);
+
+
+        feiShuConfig.put(FeiShuConstants.WEB_HOOK, "https://open.feishu.cn/open-apis/bot/v2/hook/aea3cd7f-75b4-45cd-abea-2c0dc808f2a9");
         feiShuConfig.put(FeiShuConstants.KEY_WORD, "Dinky 飞书WebHook 告警测试");
         feiShuConfig.put(FeiShuConstants.MSG_TYPE,"text");
-        feiShuConfig.put(FeiShuConstants.AT_ALL, "false");
-        feiShuConfig.put(FeiShuConstants.AT_USERS, "user1,user2,user3");
+        feiShuConfig.put(FeiShuConstants.AT_ALL, "true");
+        feiShuConfig.put(FeiShuConstants.AT_USERS, "zhumingye");
     }
 
     @Test
     public void testTextTypeSend() {
-        AlertMsg alertMsg = new AlertMsg();
-        alertMsg.setName("Dinky 飞书WebHook 告警测试");
-        alertMsg.setContent(alertMsgContentTemplate);
         FeiShuSender feiShuSender = new FeiShuSender(feiShuConfig);
-        AlertResult alertResult = feiShuSender.send(alertMsg.getName(),alertMsg.getContent());
+        AlertResult alertResult = feiShuSender.send("FeiShu Alert", alertMsg.toString());
         Assert.assertEquals(true, alertResult.getSuccess());
     }
 
     @Test
     public void testPostTypeSend() {
         feiShuConfig.put(FeiShuConstants.MSG_TYPE,"post");
-        AlertMsg alertMsg = new AlertMsg();
-        alertMsg.setName("Dinky 飞书WebHook 告警测试");
-        alertMsg.setContent(alertMsgContentTemplate);
         FeiShuSender feiShuSender = new FeiShuSender(feiShuConfig);
-        AlertResult alertResult = feiShuSender.send(alertMsg.getName(),alertMsg.getContent());
+        AlertResult alertResult = feiShuSender.send("FeiShu Alert", alertMsg.toString());
         Assert.assertEquals(true, alertResult.getSuccess());
     }
 

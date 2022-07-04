@@ -60,7 +60,7 @@ const AlertGroupForm: React.FC<AlertGroupFormProps> = (props) => {
       <>
         <Form.Item
           name="name"
-          label="标识"
+          label="名称"
           rules={[{required: true, message: '请输入名称！'}]}>
           <Input placeholder="请输入唯一英文标识"/>
         </Form.Item>

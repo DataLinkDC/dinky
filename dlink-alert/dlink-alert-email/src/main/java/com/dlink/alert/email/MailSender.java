@@ -37,7 +37,7 @@ public final class MailSender {
     private final String mailProtocol = "SMTP";
     private final String mailSmtpHost;
     private final String mailSmtpPort;
-    private final String mailSenderEmail;
+    private final String mailSenderNickName;
     private final String enableSmtpAuth;
     private final String mailUser;
     private final String mailPasswd;
@@ -70,8 +70,8 @@ public final class MailSender {
         mailSmtpPort = config.get(EmailConstants.NAME_MAIL_SMTP_PORT);
         requireNonNull(mailSmtpPort, EmailConstants.NAME_MAIL_SMTP_PORT + mustNotNull);
 
-        mailSenderEmail = config.get(EmailConstants.NAME_MAIL_SENDER);
-        requireNonNull(mailSenderEmail, EmailConstants.NAME_MAIL_SENDER + mustNotNull);
+        mailSenderNickName = config.get(EmailConstants.NAME_MAIL_SENDER);
+        requireNonNull(mailSenderNickName, EmailConstants.NAME_MAIL_SENDER + mustNotNull);
 
         enableSmtpAuth = config.get(EmailConstants.NAME_MAIL_SMTP_AUTH);
 
@@ -137,7 +137,7 @@ public final class MailSender {
             try {
                 Session session = getSession();
                 email.setMailSession(session);
-                email.setFrom(mailSenderEmail);
+                email.setFrom(mailUser, mailSenderNickName);
                 email.setCharset(EmailConstants.UTF_8);
                 if (CollectionUtils.isNotEmpty(receivers)) {
                     // receivers mail
@@ -230,7 +230,7 @@ public final class MailSender {
         // 2. creating mail: Creating a MimeMessage
         MimeMessage msg = new MimeMessage(session);
         // 3. set sender
-        msg.setFrom(new InternetAddress(mailSenderEmail));
+        msg.setFrom(new InternetAddress(mailUser));
         // 4. set receivers
         for (String receiver : receivers) {
             msg.addRecipients(Message.RecipientType.TO, InternetAddress.parse(receiver));

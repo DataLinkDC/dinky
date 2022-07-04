@@ -7,61 +7,75 @@ import com.dlink.model.ColumnType;
 public class HiveTypeConvert implements ITypeConvert {
     @Override
     public ColumnType convert(Column column) {
+        ColumnType columnType = ColumnType.STRING;
         if (Asserts.isNull(column)) {
-            return ColumnType.STRING;
+            return columnType;
         }
         String t = column.getType().toLowerCase().trim();
+        boolean isNullable = !column.isKeyFlag() && column.isNullable();
         if (t.contains("char")) {
-            return ColumnType.STRING;
+            columnType = ColumnType.STRING;
         } else if (t.contains("boolean")) {
-            if (column.isNullable()) {
-                return ColumnType.JAVA_LANG_BOOLEAN;
+            if (isNullable) {
+                columnType = ColumnType.JAVA_LANG_BOOLEAN;
+            } else {
+                columnType = ColumnType.BOOLEAN;
             }
-            return ColumnType.BOOLEAN;
         } else if (t.contains("tinyint")) {
-            if (column.isNullable()) {
-                return ColumnType.JAVA_LANG_BYTE;
+            if (isNullable) {
+                columnType = ColumnType.JAVA_LANG_BYTE;
+            } else {
+                columnType = ColumnType.BYTE;
             }
-            return ColumnType.BYTE;
         } else if (t.contains("smallint")) {
-            if (column.isNullable()) {
-                return ColumnType.JAVA_LANG_SHORT;
+            if (isNullable) {
+                columnType = ColumnType.JAVA_LANG_SHORT;
+            } else {
+                columnType = ColumnType.SHORT;
             }
-            return ColumnType.SHORT;
         } else if (t.contains("bigint")) {
-            if (column.isNullable()) {
-                return ColumnType.JAVA_LANG_LONG;
+            if (isNullable) {
+                columnType = ColumnType.JAVA_LANG_LONG;
+            } else {
+                columnType = ColumnType.LONG;
             }
-            return ColumnType.LONG;
         } else if (t.contains("largeint")) {
-            return ColumnType.STRING;
+            columnType = ColumnType.STRING;
         } else if (t.contains("int")) {
-            if (column.isNullable()) {
-                return ColumnType.INTEGER;
+            if (isNullable) {
+                columnType = ColumnType.INTEGER;
+            } else {
+                columnType = ColumnType.INT;
             }
-            return ColumnType.INT;
         } else if (t.contains("float")) {
-            if (column.isNullable()) {
-                return ColumnType.JAVA_LANG_FLOAT;
+            if (isNullable) {
+                columnType = ColumnType.JAVA_LANG_FLOAT;
+            } else {
+                columnType = ColumnType.FLOAT;
             }
-            return ColumnType.FLOAT;
         } else if (t.contains("double")) {
-            if (column.isNullable()) {
-                return ColumnType.JAVA_LANG_DOUBLE;
+            if (isNullable) {
+                columnType = ColumnType.JAVA_LANG_DOUBLE;
+            } else {
+                columnType = ColumnType.DOUBLE;
             }
-            return ColumnType.DOUBLE;
         } else if (t.contains("timestamp")) {
-            return ColumnType.TIMESTAMP;
+            columnType = ColumnType.TIMESTAMP;
         } else if (t.contains("date")) {
-            return ColumnType.STRING;
+            columnType = ColumnType.STRING;
         } else if (t.contains("datetime")) {
-            return ColumnType.STRING;
+            columnType = ColumnType.STRING;
         } else if (t.contains("decimal")) {
-            return ColumnType.DECIMAL;
+            columnType = ColumnType.DECIMAL;
         } else if (t.contains("time")) {
-            return ColumnType.DOUBLE;
+            if (isNullable) {
+                columnType = ColumnType.JAVA_LANG_DOUBLE;
+            } else {
+                columnType = ColumnType.DOUBLE;
+            }
         }
-        return ColumnType.STRING;
+        columnType.setPrecisionAndScale(column.getPrecision(), column.getScale());
+        return columnType;
     }
 
     @Override

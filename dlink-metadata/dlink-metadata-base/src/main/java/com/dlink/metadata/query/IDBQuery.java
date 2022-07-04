@@ -151,4 +151,9 @@ public interface IDBQuery {
      * @return 主键值
      */
     String isPK();
+
+    /**
+     * @return 允许为空的值
+     */
+    String nullableValue();
 }

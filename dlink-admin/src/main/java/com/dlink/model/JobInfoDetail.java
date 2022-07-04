@@ -1,5 +1,7 @@
 package com.dlink.model;
 
+import java.util.Set;
+
 /**
  * JobInfoDetail
  *
@@ -14,6 +16,8 @@ public class JobInfoDetail {
     private ClusterConfiguration clusterConfiguration;
     private History history;
     private JobHistory jobHistory;
+    private JobManagerConfiguration jobManagerConfiguration;
+    private Set<TaskManagerConfiguration> taskManagerConfiguration;
     private Integer refreshCount;
 
     public JobInfoDetail(Integer id) {
@@ -52,6 +56,22 @@ public class JobInfoDetail {
     public void setClusterConfiguration(ClusterConfiguration clusterConfiguration) {
         this.clusterConfiguration = clusterConfiguration;
     }
+
+    public void setJobManagerConfiguration(JobManagerConfiguration jobMangerConfiguration) {
+        this.jobManagerConfiguration = jobMangerConfiguration;
+    }
+    public JobManagerConfiguration getJobManagerConfiguration() {
+        return jobManagerConfiguration;
+    }
+
+
+    public void setTaskManagerConfiguration(Set<TaskManagerConfiguration> taskManagerConfiguration) {
+        this.taskManagerConfiguration = taskManagerConfiguration;
+    }
+    public Set<TaskManagerConfiguration> getTaskManagerConfiguration() {
+        return taskManagerConfiguration;
+    }
+
 
     public History getHistory() {
         return history;

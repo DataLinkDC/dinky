@@ -1,26 +1,18 @@
 package com.dlink.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
+import com.dlink.dto.TaskRollbackVersionDTO;
 import com.dlink.job.JobResult;
 import com.dlink.model.Task;
 import com.dlink.service.TaskService;
 import com.fasterxml.jackson.databind.JsonNode;
-
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 任务 Controller
@@ -136,6 +128,13 @@ public class TaskController {
     @GetMapping(value = "/releaseTask")
     public Result releaseTask(@RequestParam Integer id) {
         return taskService.releaseTask(id);
+    }
+
+
+    @PostMapping("/rollbackTask")
+    public Result rollbackTask(@RequestBody TaskRollbackVersionDTO dto) throws Exception {
+
+       return taskService.rollbackTask(dto);
     }
 
     /**

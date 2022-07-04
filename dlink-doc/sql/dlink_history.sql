@@ -668,3 +668,25 @@ SET FOREIGN_KEY_CHECKS = 1;
 alter table dlink_task alter column fragment set default 0;
 alter table dlink_task alter column statement_set set default 0;
 alter table dlink_cluster_configuration modify column is_available  tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否可用';
+
+
+
+-- 0.6.5-SNAPSHOT 2022-06-28
+-- ----------------------------
+alter table dlink_task
+    ADD COLUMN `version_id` INT NULL COMMENT '版本号ID' ;
+
+CREATE TABLE `dlink_task_version` (
+                                      `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+                                      `task_id` int(11) NOT NULL COMMENT '作业ID ',
+                                      `version_id` int(11) NOT NULL COMMENT '版本ID ',
+                                      `statement` text COMMENT 'flink sql 内容',
+                                      `name` varchar(255) NOT NULL COMMENT '名称',
+                                      `alias` varchar(255) DEFAULT NULL COMMENT '别名',
+                                      `dialect` varchar(50) DEFAULT NULL COMMENT '方言',
+                                      `type` varchar(50) DEFAULT NULL COMMENT '类型',
+                                      `task_configure` text NOT NULL COMMENT '作业配置',
+                                      `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+                                      PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='作业历史版本';
+
