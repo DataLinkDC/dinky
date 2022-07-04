@@ -87,7 +87,7 @@ public class PhoenixJdbcDynamicOutputFormatBuilder implements Serializable {
         if (dmlOptions.getKeyFields().isPresent() && dmlOptions.getKeyFields().get().length > 0) {
             // upsert query
             return new JdbcBatchingOutputFormat<>(
-                    new PhoneixJdbcConnectionProvider(jdbcOptions),
+                    new PhoneixJdbcConnectionProvider(jdbcOptions,jdbcOptions.getNamespaceMappingEnabled(),jdbcOptions.getMapSystemTablesToNamespace()),
                     executionOptions,
                     ctx ->
                             createBufferReduceExecutor(
@@ -101,7 +101,7 @@ public class PhoenixJdbcDynamicOutputFormatBuilder implements Serializable {
                             .getInsertIntoStatement(
                                     dmlOptions.getTableName(), dmlOptions.getFieldNames());
             return new JdbcBatchingOutputFormat<>(
-                    new PhoneixJdbcConnectionProvider(jdbcOptions),
+                    new PhoneixJdbcConnectionProvider(jdbcOptions,jdbcOptions.getNamespaceMappingEnabled(),jdbcOptions.getMapSystemTablesToNamespace()),
                     executionOptions,
                     ctx ->
                             createSimpleBufferedExecutor(
