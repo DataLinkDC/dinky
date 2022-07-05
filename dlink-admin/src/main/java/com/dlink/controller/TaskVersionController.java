@@ -42,8 +42,14 @@ public class TaskVersionController {
         BeanUtil.copyProperties(versionProTableResult, versionHistoryDTOProTableResult);
         List<TaskVersionHistoryDTO> collect = versionProTableResult.getData().stream().map(t -> {
             TaskVersionHistoryDTO versionHistoryDTO = new TaskVersionHistoryDTO();
-            versionHistoryDTO.setVersionId(t.getVersionId());
             versionHistoryDTO.setId(t.getId());
+            versionHistoryDTO.setTaskId(t.getTaskId());
+            versionHistoryDTO.setName(t.getName());
+            versionHistoryDTO.setAlias(t.getAlias());
+            versionHistoryDTO.setDialect(t.getDialect());
+            versionHistoryDTO.setType(t.getType());
+            versionHistoryDTO.setStatement(t.getStatement());
+            versionHistoryDTO.setVersionId(t.getVersionId());
             versionHistoryDTO.setCreateTime(t.getCreateTime());
             return versionHistoryDTO;
         }).collect(Collectors.toList());

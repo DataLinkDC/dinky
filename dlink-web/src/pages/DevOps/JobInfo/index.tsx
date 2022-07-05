@@ -19,6 +19,7 @@ import Alert from "@/pages/DevOps/JobInfo/Alert";
 import DataMap from "@/pages/DevOps/JobInfo/DataMap";
 import CheckPoints from "@/pages/DevOps/JobInfo/CheckPoints";
 import FlinkClusterInfo from "@/pages/DevOps/JobInfo/FlinkClusterInfo";
+import TaskVersionInfo from "@/pages/DevOps/JobInfo/Version";
 
 
 const {Link} = Typography;
@@ -265,7 +266,7 @@ const JobInfo = (props: any) => {
         {tabKey === 'flinksql' ? <FlinkSQL job={job}/> : undefined}
         {tabKey === 'datamap' ? <DataMap job={job}/> : undefined}
         {tabKey === 'olap' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/> : undefined}
-        {tabKey === 'version' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/> : undefined}
+        {tabKey === 'version' ? <TaskVersionInfo job={job} /> : undefined}
         {tabKey === 'alert' ? <Alert job={job}/> : undefined}
       </ProCard>
     </PageContainer>
