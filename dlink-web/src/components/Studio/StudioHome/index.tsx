@@ -12,7 +12,7 @@ const StudioHome = (props: any) => {
   return (
     <Scrollbars style={{height: toolHeight}}>
       <Typography style={{padding:'15px'}}>
-        <Title level={4}>欢迎使用 Dinky v0.6.5</Title>
+        <Title level={4}>欢迎使用 Dinky v0.6.6-SNAPSHOT</Title>
         <Paragraph>
           <blockquote>实时即未来，Dinky 为 Apache Flink 而生，让 Flink SQL 纵享丝滑，并致力于实时计算平台建设。</blockquote>
         </Paragraph>
