@@ -104,3 +104,18 @@ export type TaskContainerConfigInfo = {
   taskManagerStdout: string,
   taskManagerThreadDump: string,
 }
+
+
+
+export type TaskVersion = {
+  id: number,
+  taskId: number,
+  name: string,
+  alias: string,
+  dialect: string,
+  type: string,
+  versionId: number,
+  statement: string,
+  createTime: string,
+}
+
