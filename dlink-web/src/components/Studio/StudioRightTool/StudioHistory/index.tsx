@@ -1,18 +1,15 @@
 import React, {useRef, useState} from "react";
-import {MinusSquareOutlined} from '@ant-design/icons';
+import {MinusSquareOutlined, RocketOutlined, SyncOutlined} from '@ant-design/icons';
 import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
-import {Button, Col, Drawer, Modal, Row, Tooltip} from 'antd';
+import {Button, Col, Drawer, Modal, Row, Tag, Tooltip} from 'antd';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import {handleOption, queryData} from "@/components/Common/crud";
 import {Scrollbars} from "react-custom-scrollbars";
 import {TaskHistoryTableListItem} from "@/components/Studio/StudioRightTool/StudioHistory/data";
 import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
-import ReactDiffViewer, {DiffMethod} from "react-diff-viewer";
-import Prism from "prismjs";
-import "prismjs/components/prism-apex";
-import "prismjs/components/prism-sql";
 import moment from "moment";
+import {MonacoDiffEditor} from "react-monaco-editor";
 
 
 const url = '/api/task/version';
@@ -21,10 +18,10 @@ const url = '/api/task/version';
 const StudioHistory = (props: any) => {
   const {current, toolHeight} = props;
   const [row, setRow] = useState<TaskHistoryTableListItem>();
-  const [versionDiffRow, setVersionDiffRow] = useState<TaskHistoryTableListItem>();
   const actionRef = useRef<ActionType>();
 
   const [versionDiffVisible, setVersionDiffVisible] = useState<boolean>(false);
+  const [versionDiffRow, setVersionDiffRow] = useState<TaskHistoryTableListItem>();
 
   if (current.key) {
     actionRef.current?.reloadAndRest?.();
@@ -34,83 +31,17 @@ const StudioHistory = (props: any) => {
     setVersionDiffVisible(false);
   }
 
-  // TODO: 关键词搜索参考 https://codesandbox.io/s/diff-viewer-r2fdt , 语言设置会报错,语言设置在 `highlightSyntax` 代码(参考: https://codesandbox.io/s/vzgxh?file=/src/App.js:16808-16974)
-
-  const VersionDiffProps = () => {
-    // const [searchValue, setSearchValue] = React.useState("");
-    // const highlightSyntax = str => {
-    //   let text = str;
-    //   if (searchValue) {
-    //     text = reactStringReplace(str, searchValue, match => (
-    //       <span style={{backgroundColor: "green"}}>{match}</span>
-    //     ));
-    //   }
-    //   return <>{text}</>
-    const highlightSyntax = str => {
-      return  str ? (
-        <pre
-          style={{ display: "inline" }}
-          dangerouslySetInnerHTML={{
-            __html: Prism.highlight(str, Prism.languages.sql, "sql")
-          }}
-        />
-      ) : (
-        <></>
-      );
-
-    };
-    // const onSearchChange = ({target: {...value}}) => setSearchValue(value);
-
-
-    const versionDiffStyles = {
-      variables: {
-        dark: {
-          diffViewerBackground: "#5d7b9f",
-          diffViewerTitleBackground: "#244ae1",
-          highlightBackground: "#0775f3",
-          emptyLineBackground: "rgba(161,163,166,0.94)",
-          codeFoldContentColor: "rgba(123,61,154,0.83)",
-          codeFoldGutterBackground: "#6F767E",
-          codeFoldBackground: "#E2E4E5",
-        },
-        light: {
-          codeFoldGutterBackground: "#6F767E",
-          codeFoldBackground: "#E2E4E5",
-          emptyLineBackground: "#6897BB",
-
-        }
-      }
-    };
-
-
+  const VersionDiffForm = () => {
 
     let leftTitle = "Version：【" + versionDiffRow?.versionId + "】   创建时间: 【" + (moment(versionDiffRow?.createTime).format('YYYY-MM-DD HH:mm:ss')) + "】";
     let rightTitle = "Version：【当前编辑版本】 创建时间: 【" + (moment(current?.task?.createTime).format('YYYY-MM-DD HH:mm:ss')) + "】 最后更新时间: 【" + (moment(current?.task?.updateTime).format('YYYY-MM-DD HH:mm:ss')) + "】"
 
+    let originalValue= versionDiffRow?.statement;
+    let currentValue= current?.task?.statement;
 
     return (
       <>
-        {/*<Search id="searchBar" title={"Search："} onChange={onSearchChange} style={{width: "300px"}}/><br/>*/}
-        <ReactDiffViewer
-          oldValue={versionDiffRow?.statement}
-          newValue={current?.task?.statement}
-          compareMethod={DiffMethod.CHARS}
-          leftTitle={leftTitle}
-          rightTitle={rightTitle}
-          splitView={true}
-          useDarkTheme={false}
-          styles={versionDiffStyles}
-          renderContent={highlightSyntax}
-        />
-      </>
-    );
-  };
-
-
-  const versionDiffForm = () => {
-    return (
-      <>
-        <Modal title="Version Diff" visible={versionDiffVisible} destroyOnClose={true} width={"85%"}
+        <Modal title={"Version Diff"} visible={versionDiffVisible} destroyOnClose={true} width={"85%"}
                bodyStyle={{height: "700px"}}
                onCancel={() => {
                  cancelHandle();
@@ -122,9 +53,17 @@ const StudioHistory = (props: any) => {
                    关闭
                  </Button>,
                ]}>
-          <Scrollbars style={{height: "100%"}}>
+          <div style={{display:"flex",flexDirection:"row", justifyContent: "space-between"}}>
+            <Tag color="green" style={{height:"20px"}} >
+              <RocketOutlined/> {leftTitle}
+            </Tag>
+            <Tag color="blue" style={{height:"20px"}}>
+              <SyncOutlined spin/> {rightTitle}
+            </Tag>
+          </div><br/>
+          <Scrollbars style={{height: "98%"}}>
             <React.StrictMode>
-              <VersionDiffProps/>
+              <MonacoDiffEditor language={"sql"} theme={"vs-dark"} original={originalValue} value={currentValue}/>
             </React.StrictMode>
           </Scrollbars>
         </Modal>
@@ -164,7 +103,7 @@ const StudioHistory = (props: any) => {
       render: (text, record, index) => (
         <>
           <Button type="link" onClick={() => onRollBackVersion(record)}>回滚</Button>
-          <Button type="link" onClick={() => {
+          <Button type="link" title={"只和当前编辑器内的内容对比"} onClick={() => {
             setVersionDiffRow(record)
             setVersionDiffVisible(true)
           }}>版本对比</Button>
@@ -236,7 +175,7 @@ const StudioHistory = (props: any) => {
           )}
         </Drawer>
       </Scrollbars>
-      {versionDiffForm()}
+      {VersionDiffForm()}
     </>
   );
 };
