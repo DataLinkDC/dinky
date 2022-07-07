@@ -1,13 +1,14 @@
-import { history } from 'umi';
+import {history} from 'umi';
 import {queryData} from "@/components/Common/crud";
-import React, {useState, useRef, useEffect} from "react";
-import type { ProColumns,ActionType } from '@ant-design/pro-table';
+import React, {useEffect, useRef, useState} from "react";
+import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from "@ant-design/pro-table";
 import {JobInstanceTableListItem} from "@/pages/DevOps/data";
 import moment from 'moment';
 import {RUN_MODE} from "@/components/Studio/conf";
 import JobStatus from "@/components/Common/JobStatus";
 import JobLifeCycle, {JOB_LIFE_CYCLE} from "@/components/Common/JobLifeCycle";
+import {parseSecondStr} from "@/components/Common/function";
 
 const url = '/api/jobInstance';
 const JobInstanceTable = (props: any) => {
@@ -128,10 +129,11 @@ const JobInstanceTable = (props: any) => {
       hideInSearch: true,
     }, {
       title: "耗时",
-      dataIndex: "duration",
       sorter: true,
-      valueType: 'second',
       hideInSearch: true,
+      render: (_, row) => {
+        return parseSecondStr(row.duration);
+      }
     },];
     return columns;
   };
