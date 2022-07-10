@@ -26,6 +26,7 @@
         <module>dlink-web</module>
         <module>dlink-admin</module>
         <module>dlink-assembly</module>
+        <module>dlink-catalog</module>
     </modules>
 
     <properties>
