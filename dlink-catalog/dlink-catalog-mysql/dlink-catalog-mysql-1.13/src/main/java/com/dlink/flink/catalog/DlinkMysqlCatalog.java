@@ -590,10 +590,6 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
                     String dataType = crs.getString("data_type");
 
                     builder.column(colName, dataType);
-                    String cDesc = crs.getString("description");
-                    if (null != cDesc && cDesc.length() > 0) {
-                        builder.withComment(cDesc);
-                    }
                 }
                 cStat.close();
                 // 3、取出query
@@ -815,7 +811,7 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
                             colIStat.setString(3,
                                 dataType.getLogicalType().asSerializableString());
                             colIStat.setObject(4, null);
-                            colIStat.setString(5, pCol.getComment().orElse(""));
+                            colIStat.setString(5, "");
                             colIStat.setInt(6, id);
                             colIStat.setObject(7, null); // view没有主键
                             colIStat.addBatch();

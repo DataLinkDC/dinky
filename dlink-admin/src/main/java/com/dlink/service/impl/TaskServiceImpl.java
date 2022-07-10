@@ -344,6 +344,42 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
+    public Task initDefaultFlinkSQLEnv() {
+        String separator = SystemConfiguration.getInstances().getSqlSeparator();
+        separator = separator.replace("\\r", "\r").replace("\\n", "\n");
+        Task defaultFlinkSQLEnvTask = new Task();
+        defaultFlinkSQLEnvTask.setId(1);
+        defaultFlinkSQLEnvTask.setName("dlink_default_catalog");
+        defaultFlinkSQLEnvTask.setAlias("DefaultCatalog");
+        defaultFlinkSQLEnvTask.setDialect(Dialect.FLINKSQLENV.getValue());
+        StringBuilder sb = new StringBuilder();
+        sb.append("create catalog myCatalog with(\n");
+        sb.append("    'type' = 'dlink_mysql',\n");
+        sb.append("    'username' = '");
+        sb.append(username);
+        sb.append("',\n");
+        sb.append("    'password' = '");
+        sb.append(password);
+        sb.append("',\n");
+        sb.append("    'url' = '");
+        sb.append(url);
+        sb.append("'\n");
+        sb.append(")");
+        sb.append(separator);
+        sb.append("use catalog myCatalog");
+        sb.append(separator);
+        defaultFlinkSQLEnvTask.setStatement(sb.toString());
+        defaultFlinkSQLEnvTask.setFragment(true);
+        defaultFlinkSQLEnvTask.setEnabled(true);
+        saveOrUpdate(defaultFlinkSQLEnvTask);
+        Statement statement = new Statement();
+        statement.setId(1);
+        statement.setStatement(sb.toString());
+        statementService.saveOrUpdate(statement);
+        return defaultFlinkSQLEnvTask;
+    }
+
+    @Override
     public String exportSql(Integer id) {
         Task task = getTaskInfoById(id);
         Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
@@ -617,7 +653,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 task.setStatement(flinkWithSql + "\r\n" + task.getStatement());
             }
         }
-        if (!isJarTask && Asserts.isNotNull(task.getEnvId()) && task.getEnvId() != 0) {
+        if (!isJarTask && Asserts.isNotNull(task.getEnvId()) && !task.getEnvId().equals(0)) {
             Task envTask = getTaskInfoById(task.getEnvId());
             if (Asserts.isNotNull(envTask) && Asserts.isNotNullString(envTask.getStatement())) {
                 task.setStatement(envTask.getStatement() + "\r\n" + task.getStatement());
