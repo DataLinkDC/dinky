@@ -1,11 +1,8 @@
 package com.dlink.init;
 
-import com.dlink.daemon.task.DaemonFactory;
-import com.dlink.daemon.task.DaemonTaskConfig;
-import com.dlink.job.FlinkJobTask;
-import com.dlink.model.JobInstance;
-import com.dlink.service.JobInstanceService;
-import com.dlink.service.SysConfigService;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +11,13 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.dlink.daemon.task.DaemonFactory;
+import com.dlink.daemon.task.DaemonTaskConfig;
+import com.dlink.job.FlinkJobTask;
+import com.dlink.model.JobInstance;
+import com.dlink.service.JobInstanceService;
+import com.dlink.service.SysConfigService;
+import com.dlink.service.TaskService;
 
 /**
  * SystemInit
@@ -33,10 +35,13 @@ public class SystemInit implements ApplicationRunner {
     private SysConfigService sysConfigService;
     @Autowired
     private JobInstanceService jobInstanceService;
+    @Autowired
+    private TaskService taskService;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
         sysConfigService.initSysConfig();
+        taskService.initDefaultFlinkSQLEnv();
         List<JobInstance> jobInstances = jobInstanceService.listJobInstanceActive();
         List<DaemonTaskConfig> configList = new ArrayList<>();
         for (JobInstance jobInstance : jobInstances) {
