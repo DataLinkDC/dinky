@@ -1,7 +1,7 @@
 package com.dlink.admin;
 
 
-import com.dlink.service.security.SecurityAspect;
+import com.dlink.security.SecurityAspect;
 import org.junit.Assert;
 import org.junit.Test;
 
