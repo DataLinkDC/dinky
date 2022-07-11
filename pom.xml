@@ -26,6 +26,7 @@
         <module>dlink-web</module>
         <module>dlink-admin</module>
         <module>dlink-assembly</module>
+        <module>dlink-catalog</module>
     </modules>
 
     <properties>
@@ -216,6 +217,21 @@
             <dependency>
                 <groupId>com.dlink</groupId>
                 <artifactId>dlink-client-1.15</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-catalog-mysql-1.13</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-catalog-mysql-1.14</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-catalog-mysql-1.15</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

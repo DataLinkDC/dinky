@@ -10,7 +10,6 @@ import com.dlink.job.JobResult;
 import com.dlink.model.JobInfoDetail;
 import com.dlink.model.JobInstance;
 import com.dlink.model.Task;
-import com.dlink.model.TaskVersion;
 import com.dlink.result.SqlExplainResult;
 
 /**
@@ -34,6 +33,8 @@ public interface TaskService extends ISuperService<Task> {
     boolean saveOrUpdateTask(Task task);
 
     List<Task> listFlinkSQLEnv();
+
+    Task initDefaultFlinkSQLEnv();
 
     String exportSql(Integer id);
 

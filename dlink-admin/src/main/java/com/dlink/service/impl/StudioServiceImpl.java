@@ -1,9 +1,24 @@
 package com.dlink.service.impl;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.dlink.api.FlinkAPI;
 import com.dlink.assertion.Asserts;
 import com.dlink.config.Dialect;
-import com.dlink.dto.*;
+import com.dlink.dto.AbstractStatementDTO;
+import com.dlink.dto.SessionDTO;
+import com.dlink.dto.SqlDTO;
+import com.dlink.dto.StudioCADTO;
+import com.dlink.dto.StudioDDLDTO;
+import com.dlink.dto.StudioExecuteDTO;
 import com.dlink.explainer.lineage.LineageBuilder;
 import com.dlink.explainer.lineage.LineageResult;
 import com.dlink.gateway.GatewayType;
@@ -21,7 +36,12 @@ import com.dlink.model.Task;
 import com.dlink.result.IResult;
 import com.dlink.result.SelectResult;
 import com.dlink.result.SqlExplainResult;
-import com.dlink.service.*;
+import com.dlink.service.ClusterConfigurationService;
+import com.dlink.service.ClusterService;
+import com.dlink.service.DataBaseService;
+import com.dlink.service.SavepointsService;
+import com.dlink.service.StudioService;
+import com.dlink.service.TaskService;
 import com.dlink.session.SessionConfig;
 import com.dlink.session.SessionInfo;
 import com.dlink.session.SessionPool;
@@ -30,15 +50,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * StudioServiceImpl
@@ -67,7 +78,7 @@ public class StudioServiceImpl implements StudioService {
         if (statementDTO.isFragment() && Asserts.isNotNullString(flinkWithSql)) {
             statementDTO.setStatement(flinkWithSql + "\r\n" + statementDTO.getStatement());
         }
-        if (Asserts.isNotNull(statementDTO.getEnvId()) && statementDTO.getEnvId() != 0) {
+        if (Asserts.isNotNull(statementDTO.getEnvId()) && !statementDTO.getEnvId().equals(0)) {
             Task task = taskService.getTaskInfoById(statementDTO.getEnvId());
             if (Asserts.isNotNull(task) && Asserts.isNotNullString(task.getStatement())) {
                 statementDTO.setStatement(task.getStatement() + "\r\n" + statementDTO.getStatement());
@@ -86,7 +97,7 @@ public class StudioServiceImpl implements StudioService {
     public JobResult executeSql(StudioExecuteDTO studioExecuteDTO) {
         if (Dialect.isSql(studioExecuteDTO.getDialect())) {
             return executeCommonSql(SqlDTO.build(studioExecuteDTO.getStatement(),
-                    studioExecuteDTO.getDatabaseId(), studioExecuteDTO.getMaxRowNum()));
+                studioExecuteDTO.getDatabaseId(), studioExecuteDTO.getMaxRowNum()));
         } else {
             return executeFlinkSql(studioExecuteDTO);
         }
@@ -227,15 +238,15 @@ public class StudioServiceImpl implements StudioService {
         if (sessionDTO.isUseRemote()) {
             Cluster cluster = clusterService.getById(sessionDTO.getClusterId());
             SessionConfig sessionConfig = SessionConfig.build(
-                    sessionDTO.getType(), true,
-                    cluster.getId(), cluster.getAlias(),
-                    clusterService.buildEnvironmentAddress(true, sessionDTO.getClusterId()));
+                sessionDTO.getType(), true,
+                cluster.getId(), cluster.getAlias(),
+                clusterService.buildEnvironmentAddress(true, sessionDTO.getClusterId()));
             return JobManager.createSession(sessionDTO.getSession(), sessionConfig, createUser);
         } else {
             SessionConfig sessionConfig = SessionConfig.build(
-                    sessionDTO.getType(), false,
-                    null, null,
-                    clusterService.buildEnvironmentAddress(false, null));
+                sessionDTO.getType(), false,
+                null, null,
+                clusterService.buildEnvironmentAddress(false, null));
             return JobManager.createSession(sessionDTO.getSession(), sessionConfig, createUser);
         }
     }
@@ -257,14 +268,14 @@ public class StudioServiceImpl implements StudioService {
     @Override
     public LineageResult getLineage(StudioCADTO studioCADTO) {
         if (Asserts.isNotNullString(studioCADTO.getDialect()) && !studioCADTO.getDialect().equalsIgnoreCase("flinksql")) {
-            if(Asserts.isNull(studioCADTO.getDatabaseId())){
+            if (Asserts.isNull(studioCADTO.getDatabaseId())) {
                 return null;
             }
             DataBase dataBase = dataBaseService.getById(studioCADTO.getDatabaseId());
             if (Asserts.isNull(dataBase)) {
                 return null;
             }
-            if(studioCADTO.getDialect().equalsIgnoreCase("doris")){
+            if (studioCADTO.getDialect().equalsIgnoreCase("doris")) {
                 return com.dlink.explainer.sqlLineage.LineageBuilder.getSqlLineage(studioCADTO.getStatement(), "mysql", dataBase.getDriverConfig());
             } else {
                 return com.dlink.explainer.sqlLineage.LineageBuilder.getSqlLineage(studioCADTO.getStatement(), studioCADTO.getDialect().toLowerCase(), dataBase.getDriverConfig());
