@@ -16,7 +16,7 @@ public class SecurityTest {
                 "\\n'url' = 'jdbc:mysql://localhost:4000/test?useUnicode=yes&characterEncoding=UTF-8&useSSL=false'," +
                 "\\n   'username' = 'root',\\n 'password' = 'wwz@test'\\n;";
 
-        String out = SecurityAspect.mask(sql);
+        String out = SecurityAspect.mask(sql, SecurityAspect.SENSITIVE, SecurityAspect.MASK);
 
         // System.out.println(out);
 

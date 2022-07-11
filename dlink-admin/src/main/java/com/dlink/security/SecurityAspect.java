@@ -11,6 +11,7 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -22,7 +23,7 @@ public class SecurityAspect {
 
     // 敏感信息的pattern :
     //  'password' = 'wwz@test'
-    private static final String SENSITIVE = "'password'\\s+=\\s+'.+?'";
+    public static final String SENSITIVE = "'password'\\s+=\\s+'.+?'";
 
     // 敏感信息屏蔽码
     public static final String MASK = "'password'='******'";
@@ -40,7 +41,7 @@ public class SecurityAspect {
             }
             for (SqlExplainResult explainResult : sqlExplainResults) {
                 String sql = explainResult.getSql();
-                explainResult.setSql(mask(sql));
+                explainResult.setSql(mask(sql, SENSITIVE, MASK));
             }
         }
 
@@ -53,7 +54,7 @@ public class SecurityAspect {
             for (Object obj : list) {
                 History history = (History) obj;
                 String statement = history.getStatement();
-                history.setStatement(mask(statement));
+                history.setStatement(mask(statement, SENSITIVE, MASK));
             }
         }
 
@@ -62,7 +63,7 @@ public class SecurityAspect {
             History history = ((History) ((Result<?>) returnValue).getDatas());
             if (null != history) {
                 String statement = history.getStatement();
-                history.setStatement(mask(statement));
+                history.setStatement(mask(statement, SENSITIVE, MASK));
             }
         }
     }
@@ -71,15 +72,20 @@ public class SecurityAspect {
     /**
      * 将info中的敏感信息中打码
      *
-     * @param info
+     * @param info              包含敏感信息的字符串
+     * @param passwordPattern   敏感信息的regex
+     * @param mask              屏蔽码
      * @return
      */
-    public static String mask(String info) {
-        Pattern p = Pattern.compile(SENSITIVE);
+    public static String mask(String info, String passwordPattern, String mask) {
+        if (null == info || null == passwordPattern || null == mask) {
+            return info;
+        }
+        Pattern p = Pattern.compile(passwordPattern);
         Matcher m = p.matcher(info);
         StringBuffer sb = new StringBuffer();
         while (m.find()) {
-            m.appendReplacement(sb, MASK);
+            m.appendReplacement(sb, mask);
         }
         m.appendTail(sb);
 
