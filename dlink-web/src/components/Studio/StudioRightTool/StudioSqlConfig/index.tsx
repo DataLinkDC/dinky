@@ -5,6 +5,7 @@ import {
 } from "antd";
 import {MinusSquareOutlined} from "@ant-design/icons";
 import styles from "./index.less";
+import { DataStateType} from "@/pages/DataBase/model";
 import {useEffect, useState} from "react";
 import { Scrollbars } from 'react-custom-scrollbars';
 
@@ -98,8 +99,8 @@ const StudioSqlConfig = (props: any) => {
   );
 };
 
-export default connect(({Studio}: { Studio: StateType }) => ({
-  database: Studio.database,
+export default connect(({Studio,DataBase}: { Studio: StateType,DataBase:DataStateType}) => ({
+  database: DataBase.database,
   current: Studio.current,
   tabs: Studio.tabs,
   toolHeight: Studio.toolHeight,

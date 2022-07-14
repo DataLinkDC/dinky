@@ -1,4 +1,4 @@
-import {Effect, Reducer} from "umi";
+import { Reducer} from "umi";
 import {JarTableListItem} from "@/pages/Jar/data";
 
 export type JarStateType = {

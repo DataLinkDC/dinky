@@ -747,7 +747,7 @@ const StudioMenu = (props: any) => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   saveTask: (current: any) => dispatch({
-    type: "Studio/saveTask",
+    type: "Task/saveTask",
     payload: current.task,
   }), saveTabs: (tabs: any) => dispatch({
     type: "Studio/saveTabs",

@@ -5,6 +5,8 @@ import {InfoCircleOutlined, PlusOutlined, MinusSquareOutlined, MinusCircleOutlin
 import styles from "./index.less";
 import {useEffect} from "react";
 import {JarStateType} from "@/pages/Jar/model";
+import {EnvStateType} from "@/pages/DevOps/model";
+import {ConfigurationStateType} from "@/pages/ClusterConfiguration/model";
 import {Scrollbars} from "react-custom-scrollbars";
 import {RUN_MODE} from "@/components/Studio/conf";
 
@@ -192,14 +194,14 @@ const StudioJarSetting = (props: any) => {
   );
 };
 
-export default connect(({Studio, Jar}: { Studio: StateType, Jar: JarStateType }) => ({
+export default connect(({Studio, Jar,Env,Configuration}: { Studio: StateType, Jar: JarStateType,Env:EnvStateType,Configuration:ConfigurationStateType }) => ({
   sessionCluster: Studio.sessionCluster,
-  clusterConfiguration: Studio.clusterConfiguration,
+  clusterConfiguration: Configuration.clusterConfiguration,
   current: Studio.current,
   tabs: Studio.tabs,
   session: Studio.session,
   currentSession: Studio.currentSession,
   toolHeight: Studio.toolHeight,
   jars: Jar.jars,
-  env: Studio.env,
+  env: Env.env,
 }))(StudioJarSetting);

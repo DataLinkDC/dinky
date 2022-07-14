@@ -3,6 +3,7 @@ import {
   Tooltip, Drawer, Modal
 } from "antd";
 import {StateType} from "@/pages/DataStudio/model";
+import {DataStateType} from "@/pages/DataBase/model";
 import {connect} from "umi";
 import {useState} from "react";
 import styles from "./index.less";
@@ -256,7 +257,7 @@ const StudioDataBase = (props: any) => {
   );
 };
 
-export default connect(({Studio}: { Studio: StateType }) => ({
-  database: Studio.database,
+export default connect(({Studio,DataBase}: { Studio: StateType, DataBase: DataStateType }) => ({
+  database: DataBase.database,
   toolHeight: Studio.toolHeight,
 }))(StudioDataBase);

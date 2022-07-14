@@ -1,5 +1,6 @@
 import {Button, Empty, Modal, Select, Tabs, Tag, Tree} from "antd";
 import {StateType} from "@/pages/DataStudio/model";
+import {DataStateType} from "@/pages/DataBase/model";
 import {connect} from "umi";
 import React, {useState} from "react";
 import {CodepenOutlined, DatabaseOutlined, DownOutlined, OrderedListOutlined, TableOutlined} from '@ant-design/icons';
@@ -150,7 +151,7 @@ const StudioMetaData = (props: any) => {
   );
 };
 
-export default connect(({Studio}: { Studio: StateType }) => ({
-  database: Studio.database,
+export default connect(({Studio,DataBase}: { Studio: StateType,DataBase: DataStateType}) => ({
+  database: DataBase.database,
   toolHeight: Studio.toolHeight,
 }))(StudioMetaData);
