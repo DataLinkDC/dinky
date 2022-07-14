@@ -100,7 +100,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
     @Override
     public User getUserByUsername(String username) {
-        User user = getOne(new QueryWrapper<User>().eq("username", username).eq("is_delete", 0));
+        User user = getOne(new QueryWrapper<User>().eq("username", username));
         if (Asserts.isNotNull(user)) {
             user.setIsAdmin(Asserts.isEqualsIgnoreCase(username, "admin"));
         }
