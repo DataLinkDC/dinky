@@ -254,7 +254,7 @@ const CheckPoints = (props: any) => {
         render: (dom, entity) => {
           return <>
             {entity.status === 'COMPLETED' ?
-              <Button disabled title="暂不可用" onClick={() => recoveryCheckPoint(entity)}>此处恢复</Button> : undefined}
+              <Button title="暂不可用" onClick={() => recoveryCheckPoint(entity)}>此处恢复</Button> : undefined}
           </>
         },
       },
