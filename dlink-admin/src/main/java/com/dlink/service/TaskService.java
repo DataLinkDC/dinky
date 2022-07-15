@@ -1,8 +1,6 @@
 package com.dlink.service;
 
 
-import java.util.List;
-
 import com.dlink.common.result.Result;
 import com.dlink.db.service.ISuperService;
 import com.dlink.dto.TaskRollbackVersionDTO;
@@ -11,6 +9,8 @@ import com.dlink.model.JobInfoDetail;
 import com.dlink.model.JobInstance;
 import com.dlink.model.Task;
 import com.dlink.result.SqlExplainResult;
+
+import java.util.List;
 
 /**
  * 作业 服务类
@@ -22,9 +22,9 @@ public interface TaskService extends ISuperService<Task> {
 
     JobResult submitTask(Integer id);
 
-    JobResult submitTaskToOnline(Integer id);
+    JobResult submitTaskToOnline(Task dtoTask, Integer id);
 
-    JobResult restartTask(Integer id);
+    JobResult restartTask(Integer id, String savePointPath);
 
     List<SqlExplainResult> explainTask(Integer id);
 
@@ -46,7 +46,7 @@ public interface TaskService extends ISuperService<Task> {
 
     Result onLineTask(Integer id);
 
-    Result reOnLineTask(Integer id);
+    Result reOnLineTask(Integer id, String savePointPath);
 
     Result offLineTask(Integer id, String type);
 
