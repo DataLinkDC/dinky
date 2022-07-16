@@ -16,6 +16,7 @@
         <!--<scala.version>2.11.12</scala.version>-->
         <scala.binary.version>2.11</scala.binary.version>
         <hbase.version>1.4.3</hbase.version>
+        <hadoop.version>2.4.1</hadoop.version>
         <!--<flink.shaded.version>9.0</flink.shaded.version>-->
         <fastjson.version>1.2.7</fastjson.version>
         <flink.version>1.14.3</flink.version>
