@@ -119,3 +119,25 @@ export type TaskVersion = {
   createTime: string,
 }
 
+
+export  type CheckPointsDetailInfo = {
+  jobID: number,
+  historyID: number,
+  id: number,
+  status: string,
+  end_to_end_duration: number,
+  external_path : string,
+  latest_ack_timestamp: number,
+  state_size: number,
+  trigger_timestamp: number,
+}
+
+
+export  type SavePointInfo = {
+  id: number,
+  taskId: number,
+  name: string,
+  type: string,
+  path: string,
+  createTime: Date,
+}
