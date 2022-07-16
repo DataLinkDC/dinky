@@ -140,11 +140,16 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
         logger.info(cdcSqlInsert);
         List<Operation> operations = customTableEnvironment.getParser().parse(cdcSqlInsert);
         logger.info("Create " + sinkTableName + " FlinkSQL insert into successful...");
-        if (operations.size() > 0) {
-            Operation operation = operations.get(0);
-            if (operation instanceof ModifyOperation) {
-                modifyOperations.add((ModifyOperation) operation);
+        try {
+            if (operations.size() > 0) {
+                Operation operation = operations.get(0);
+                if (operation instanceof ModifyOperation) {
+                    modifyOperations.add((ModifyOperation) operation);
+                }
             }
+        }catch (Exception e) {
+            logger.error("Translate to plan occur exception: {}", e);
+            throw e;
         }
     }
 
