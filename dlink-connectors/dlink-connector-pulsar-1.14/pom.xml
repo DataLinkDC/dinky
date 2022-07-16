@@ -19,10 +19,18 @@
         <hadoop.version>2.4.1</hadoop.version>
         <!--<flink.shaded.version>9.0</flink.shaded.version>-->
         <fastjson.version>1.2.7</fastjson.version>
-        <flink.version>1.14.3</flink.version>
+        <flink.version>1.14.5</flink.version>
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-common</artifactId>
+            <version>0.6.6-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.pulsar</groupId>
             <artifactId>pulsar-client</artifactId>
@@ -37,18 +45,18 @@
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-connector-pulsar_2.11</artifactId>
-            <version>1.14.3</version>
+            <version>${flink.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-json</artifactId>
-            <version>1.14.3</version>
+            <version>${flink.version}</version>
         </dependency>
         <!-- test -->
         <!--<dependency>-->
         <!--<groupId>org.apache.flink</groupId>-->
         <!--<artifactId>flink-streaming-java_2.11</artifactId>-->
-        <!--<version>1.14.3</version>-->
+        <!--<version>${flink.version}</version>-->
         <!--&lt;!&ndash;<scope>test</scope>&ndash;&gt;-->
         <!--</dependency>-->
 
@@ -238,13 +246,6 @@
         <!--</exclusion>-->
         <!--</exclusions>-->
         <!--</dependency>-->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>${fastjson.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
 
     </dependencies>
 
@@ -314,7 +315,7 @@
                                 <!--suppress UnresolvedMavenProperty -->
                                 <copy todir="${buildJarPath}/../build/connectors">
                                     <fileset dir="target/">
-                                        <include name="${project.artifactId}-${project.version}.jar" />
+                                        <include name="${project.artifactId}-${project.version}.jar"/>
                                     </fileset>
                                 </copy>
 

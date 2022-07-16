@@ -18,9 +18,10 @@
 
 package com.dlink.connector.pulsar;
 
-import com.alibaba.fastjson.JSONObject;
 import com.dlink.connector.pulsar.util.PulsarConnectionHolder;
 import com.dlink.connector.pulsar.util.PulsarProducerHolder;
+import com.dlink.utils.JSONUtil;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.api.common.functions.RuntimeContext;
 import org.apache.flink.api.common.serialization.SerializationSchema;
@@ -240,8 +241,11 @@ public class PulsarSinkFunction<T> extends RichSinkFunction<T>
 
 
     public String getKey(String strValue) {
-        JSONObject jsonObject = JSONObject.parseObject(strValue);
-        String key = jsonObject.getString("key");
+//        JSONObject jsonObject = JSONObject.parseObject(strValue);
+//        JSONObject jsonObject = JSONUtil.parseObject(strValue);
+//        String key = jsonObject.getString("key");
+        ArrayNode jsonNodes = JSONUtil.parseArray(strValue);
+        String key = String.valueOf(jsonNodes.get("key"));
         return key == null ? "" : key;
     }
 
