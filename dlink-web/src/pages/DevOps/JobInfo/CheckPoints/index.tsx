@@ -10,7 +10,8 @@ import {
 import {parseByteStr, parseMilliSecondStr, parseSecondStr} from "@/components/Common/function";
 import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
 import {useRef} from "react";
-import {CheckPointsDetailInfo} from "@/pages/DevOps/data";
+import {CheckPointsDetailInfo, SavePointInfo} from "@/pages/DevOps/data";
+import {queryData} from "@/components/Common/crud";
 
 const {TabPane} = Tabs;
 
@@ -21,7 +22,7 @@ const CheckPoints = (props: any) => {
   const getOverview = () => {
     return (
       <>
-        {(job?.jobHistory?.checkpoints) ?
+        {JSON.stringify(job?.jobHistory?.checkpoints).includes("errors") ?  <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/> :
           <Descriptions bordered size="small" column={1}>
             <Descriptions.Item label="CheckPoint Counts">
               <Tag color="blue" title={"Total"}>
@@ -71,9 +72,7 @@ const CheckPoints = (props: any) => {
                 }
               </Tag>
             </Descriptions.Item>
-
           </Descriptions>
-          : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
         }
       </>
     )
@@ -84,7 +83,7 @@ const CheckPoints = (props: any) => {
 
     return (
       <>
-        {(job?.jobHistory?.checkpoints) ?
+        {JSON.stringify(job?.jobHistory?.checkpoints).includes("errors") ?  <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/> :
           <Descriptions bordered size="small" column={1}>
             <Descriptions.Item label="End to End Duration">
               <Tag color="blue" title={"Max"}>
@@ -146,7 +145,6 @@ const CheckPoints = (props: any) => {
               </Tag>
             </Descriptions.Item>
           </Descriptions>
-          : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
         }
       </>
     )
@@ -282,7 +280,7 @@ const CheckPoints = (props: any) => {
 
     return (
       <>
-        {(job?.jobHistory?.checkpointsConfig) ?
+        {JSON.stringify(job?.jobHistory?.checkpointsConfig).includes("errors") ?  <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/> :
           <Descriptions bordered size="small" column={1}>
             <Descriptions.Item label="Checkpointing Mode">
               <Tag color="blue" title={"Checkpointing Mode"}>
@@ -352,12 +350,70 @@ const CheckPoints = (props: any) => {
               </Tag>
             </Descriptions.Item>
           </Descriptions>
-          : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
         }
       </>
     )
   }
 
+
+  function getSavePoint() {
+    const url = '/api/savepoints';
+
+    const columns: ProColumns<SavePointInfo>[] = [
+      {
+        title: 'ID',
+        align: 'center',
+        dataIndex: 'id',
+        hideInTable: true,
+      },
+      {
+        title: '任务ID',
+        align: 'center',
+        dataIndex: 'taskId',
+        hideInTable: true,
+      },
+      {
+        title: '名称',
+        align: 'center',
+        dataIndex: 'name',
+      },
+      {
+        title: '类型',
+        align: 'center',
+        dataIndex: 'type',
+      },
+      {
+        title: '存储位置',
+        align: 'center',
+        copyable: true,
+        dataIndex: 'path',
+      },
+      {
+        title: '触发时间',
+        align: 'center',
+        valueType: 'dateTime',
+        dataIndex: 'createTime',
+      },
+    ];
+
+
+    return (
+      <>
+        <ProTable<SavePointInfo>
+          columns={columns}
+          style={{width: '100%'}}
+          request={(params, sorter, filter) => queryData(url, {taskId: job?.instance.taskId, ...params, sorter, filter})}
+          actionRef={actionRef}
+          rowKey="id"
+          pagination={{
+            pageSize: 10,
+          }}
+          search={false}
+          size="small"
+        />
+      </>
+    )
+  }
 
   return (<>
     <Tabs defaultActiveKey="overview" size="small" tabPosition="top" style={{
@@ -378,6 +434,10 @@ const CheckPoints = (props: any) => {
       <TabPane tab={<span>&nbsp; Configraution &nbsp;</span>} key="configraution">
         {getConfigraution()}
       </TabPane>
+
+      <TabPane tab={<span>&nbsp; SavePoint &nbsp;</span>} key="savepoint">
+      {getSavePoint()}
+    </TabPane>
     </Tabs>
   </>)
 };
