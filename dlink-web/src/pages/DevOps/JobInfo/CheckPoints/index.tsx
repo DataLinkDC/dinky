@@ -1,4 +1,4 @@
-import {Button, Descriptions, Empty, Modal, Tabs, Tag} from 'antd';
+import {Button, Descriptions, Empty, message, Modal, Tabs, Tag} from 'antd';
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
@@ -11,7 +11,9 @@ import {parseByteStr, parseMilliSecondStr, parseSecondStr} from "@/components/Co
 import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
 import {useRef} from "react";
 import {CheckPointsDetailInfo, SavePointInfo} from "@/pages/DevOps/data";
-import {queryData} from "@/components/Common/crud";
+import {CODE, queryData} from "@/components/Common/crud";
+import {selectSavePointRestartTask} from "@/pages/DevOps/service";
+import {JOB_LIFE_CYCLE} from "@/components/Common/JobLifeCycle";
 
 const {TabPane} = Tabs;
 
@@ -160,7 +162,14 @@ const CheckPoints = (props: any) => {
       onOk: async () => {
         // TODO: handleRecoveryCheckPoint
         // await handleRecoveryCheckPoint('api/task/recoveryCheckPoint', [row]);
-        actionRef.current?.reload?.();
+        const res = selectSavePointRestartTask(job?.instance?.taskId, job?.instance?.step == JOB_LIFE_CYCLE.ONLINE, row.external_path);
+        res.then((result) => {
+          if (result.code == CODE.SUCCESS) {
+            message.success("恢复作业成功");
+          } else {
+            message.error("恢复作业失败");
+          }
+        });
       }
     });
   }
