@@ -18,7 +18,6 @@
 
 package com.dlink.connector.pulsar;
 
-import com.sun.istack.internal.Nullable;
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.api.common.serialization.SerializationSchema;
 import org.apache.flink.table.connector.ChangelogMode;
@@ -29,6 +28,7 @@ import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.types.DataType;
 import org.apache.flink.types.RowKind;
 
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
