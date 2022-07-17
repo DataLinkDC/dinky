@@ -14,6 +14,7 @@ import {CheckPointsDetailInfo, SavePointInfo} from "@/pages/DevOps/data";
 import {CODE, queryData} from "@/components/Common/crud";
 import {selectSavePointRestartTask} from "@/pages/DevOps/service";
 import {JOB_LIFE_CYCLE} from "@/components/Common/JobLifeCycle";
+import {history, useLocation} from 'umi';
 
 const {TabPane} = Tabs;
 
@@ -165,6 +166,7 @@ const CheckPoints = (props: any) => {
         const res = selectSavePointRestartTask(job?.instance?.taskId, job?.instance?.step == JOB_LIFE_CYCLE.ONLINE, row.external_path);
         res.then((result) => {
           if (result.code == CODE.SUCCESS) {
+            history.goBack();
             message.success("恢复作业成功");
           } else {
             message.error("恢复作业失败");
