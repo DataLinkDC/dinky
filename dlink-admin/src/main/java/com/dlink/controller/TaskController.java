@@ -183,9 +183,21 @@ public class TaskController {
     @GetMapping(value = "/restartTask")
     public Result restartTask(@RequestParam Integer id, @RequestParam Boolean isOnLine) {
         if (isOnLine) {
-            return taskService.reOnLineTask(id);
+            return taskService.reOnLineTask(id, null);
         } else {
-            return Result.succeed(taskService.restartTask(id), "重启成功");
+            return Result.succeed(taskService.restartTask(id, null), "重启成功");
+        }
+    }
+
+    /**
+     * 选择保存点重启任务
+     */
+    @GetMapping(value = "/selectSavePointRestartTask")
+    public Result selectSavePointRestartTask(@RequestParam Integer id, @RequestParam Boolean isOnLine, @RequestParam String savePointPath) {
+        if (isOnLine) {
+            return taskService.reOnLineTask(id, savePointPath);
+        } else {
+            return Result.succeed(taskService.restartTask(id, savePointPath), "重启成功");
         }
     }
 

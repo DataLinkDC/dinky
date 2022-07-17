@@ -18,7 +18,6 @@
 
 package com.dlink.connector.pulsar;
 
-import com.sun.istack.internal.Nullable;
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.api.common.serialization.SerializationSchema;
 import org.apache.flink.table.connector.ChangelogMode;
@@ -73,7 +72,7 @@ public class PulsarDynamicSink implements DynamicTableSink {
     /**
      * Optional format for encoding to Pulsar.
      */
-    protected final @Nullable
+    protected final
     EncodingFormat<SerializationSchema<RowData>> encodingFormat;
 
     // --------------------------------------------------------------------------------------------
@@ -113,7 +112,7 @@ public class PulsarDynamicSink implements DynamicTableSink {
 
     public PulsarDynamicSink(
             DataType physicalDataType,
-            @Nullable EncodingFormat<SerializationSchema<RowData>> encodingFormat,
+            EncodingFormat<SerializationSchema<RowData>> encodingFormat,
             String topic,
             String service_url,
             String update_mode,

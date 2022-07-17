@@ -23,3 +23,7 @@ export function getJobManagerInfo(address: string) {
 export function getTaskManagerInfo(address: string) {
   return getData("api/jobInstance/getTaskManagerInfo", {address});
 }
+
+export function selectSavePointRestartTask(id: number,isOnLine: boolean, savePointPath: string) {
+  return getData("api/task/selectSavePointRestartTask", {id,isOnLine,savePointPath});
+}

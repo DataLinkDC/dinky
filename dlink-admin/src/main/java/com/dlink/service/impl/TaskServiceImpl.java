@@ -1,25 +1,6 @@
 package com.dlink.service.impl;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.alert.Alert;
@@ -89,8 +70,25 @@ import com.dlink.service.TaskVersionService;
 import com.dlink.utils.CustomStringJavaCompiler;
 import com.dlink.utils.JSONUtil;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
-import cn.hutool.core.bean.BeanUtil;
+import javax.annotation.Resource;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 任务 服务实现类
@@ -159,8 +157,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public JobResult submitTaskToOnline(Integer id) {
-        Task task = this.getTaskInfoById(id);
+    public JobResult submitTaskToOnline(Task dtoTask, Integer id) {
+        final Task task = (dtoTask == null ? this.getTaskInfoById(id) : dtoTask);
         Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
         task.setStep(JobLifeCycle.ONLINE.getValue());
         if (Dialect.isSql(task.getDialect())) {
@@ -177,7 +175,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public JobResult restartTask(Integer id) {
+    public JobResult restartTask(Integer id, String savePointPath) {
         Task task = this.getTaskInfoById(id);
         Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
         if (Asserts.isNotNull(task.getJobInstanceId()) && task.getJobInstanceId() != 0) {
@@ -187,7 +185,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             return executeCommonSql(SqlDTO.build(task.getStatement(),
                 task.getDatabaseId(), null));
         }
-        task.setSavePointStrategy(SavePointStrategy.LATEST.getValue());
+        if (StringUtils.isBlank(savePointPath)){
+            task.setSavePointStrategy(SavePointStrategy.LATEST.getValue());
+        }else {
+            task.setSavePointStrategy(SavePointStrategy.CUSTOM.getValue());
+            task.setSavePointPath(savePointPath);
+            updateById(task);
+        }
         JobConfig config = buildJobConfig(task);
         JobManager jobManager = JobManager.build(config);
         if (!config.isJarTask()) {
@@ -196,6 +200,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             return jobManager.executeJar();
         }
     }
+
+
 
     private JobResult executeCommonSql(SqlDTO sqlDTO) {
         JobResult result = new JobResult();
@@ -508,13 +514,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public Result onLineTask(Integer id) {
-        Task task = getTaskInfoById(id);
+        final Task task = getTaskInfoById(id);
         Assert.check(task);
         if (JobLifeCycle.RELEASE.equalsValue(task.getStep())) {
             if (Asserts.isNotNull(task.getJobInstanceId()) && task.getJobInstanceId() != 0) {
                 return Result.failed("当前发布状态下有作业正在运行，上线失败，请停止后上线");
             }
-            JobResult jobResult = submitTaskToOnline(id);
+            final JobResult jobResult = submitTaskToOnline(task, id);
             if (Job.JobStatus.SUCCESS == jobResult.getStatus()) {
                 task.setStep(JobLifeCycle.ONLINE.getValue());
                 task.setJobInstanceId(jobResult.getJobInstanceId());
@@ -533,13 +539,17 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public Result reOnLineTask(Integer id) {
-        Task task = this.getTaskInfoById(id);
+    public Result reOnLineTask(Integer id, String savePointPath) {
+        final Task task = this.getTaskInfoById(id);
         Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
         if (Asserts.isNotNull(task.getJobInstanceId()) && task.getJobInstanceId() != 0) {
             savepointJobInstance(task.getJobInstanceId(), SavePointType.CANCEL.getValue());
         }
-        JobResult jobResult = submitTaskToOnline(id);
+        if (StringUtils.isNotBlank(savePointPath)){
+            task.setSavePointStrategy(SavePointStrategy.CUSTOM.getValue());
+            task.setSavePointPath(savePointPath);
+        }
+       final JobResult jobResult = submitTaskToOnline(task, id);
         if (Job.JobStatus.SUCCESS == jobResult.getStatus()) {
             task.setStep(JobLifeCycle.ONLINE.getValue());
             task.setJobInstanceId(jobResult.getJobInstanceId());
