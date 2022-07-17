@@ -166,8 +166,8 @@ const CheckPoints = (props: any) => {
         const res = selectSavePointRestartTask(job?.instance?.taskId, job?.instance?.step == JOB_LIFE_CYCLE.ONLINE, row.external_path);
         res.then((result) => {
           if (result.code == CODE.SUCCESS) {
-            history.goBack();
             message.success("恢复作业成功");
+            history.goBack();
           } else {
             message.error("恢复作业失败");
           }
