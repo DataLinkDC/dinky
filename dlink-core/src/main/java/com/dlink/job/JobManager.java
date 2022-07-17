@@ -426,6 +426,7 @@ public class JobManager {
     public IResult executeDDL(String statement) {
         String[] statements = SqlUtil.getStatements(statement, sqlSeparator);
         try {
+            IResult result = null;
             for (String item : statements) {
                 String newStatement = executor.pretreatStatement(item);
                 if (newStatement.trim().isEmpty()) {
@@ -437,10 +438,10 @@ public class JobManager {
                 }
                 LocalDateTime startTime = LocalDateTime.now();
                 TableResult tableResult = executor.executeSql(newStatement);
-                IResult result = ResultBuilder.build(operationType, config.getMaxRowNum(), false, false, executor.getTimeZone()).getResult(tableResult);
+                result = ResultBuilder.build(operationType, config.getMaxRowNum(), false, false, executor.getTimeZone()).getResult(tableResult);
                 result.setStartTime(startTime);
-                return result;
             }
+            return result;
         } catch (Exception e) {
             e.printStackTrace();
         }

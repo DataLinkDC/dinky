@@ -1,6 +1,6 @@
-import {executeDDL} from "@/pages/DataStudio/service";
+import {executeDDL, getMSCatalogs} from "@/pages/DataStudio/service";
 import FlinkSQL from "./FlinkSQL";
-import {SessionType} from "@/pages/DataStudio/model";
+import {MetaStoreCatalogType, SessionType, TaskType} from "@/pages/DataStudio/model";
 import {Modal, message} from "antd";
 import {addOrUpdateData, getData, handleRemove} from "@/components/Common/crud";
 
@@ -273,4 +273,36 @@ export function cancelTask(id: number) {
 /*--- 恢复作业 ---*/
 export function recoveryTask(id: number) {
   return getData('api/task/recoveryTask', {id});
+}
+
+/*--- 刷新 MetaStore Catalogs ---*/
+export async function showMetaStoreCatalogs(task: TaskType, dispatch: any) {
+  if (!task?.dialect) {
+    return;
+  }
+  let param = {
+    envId: task.envId,
+    fragment: task.fragment,
+    dialect: task.dialect,
+    databaseId: task.databaseId,
+  };
+  const result = getMSCatalogs(param);
+  result.then(res => {
+    const catalogs: MetaStoreCatalogType[] = [];
+    if (res.datas) {
+      for (let i = 0; i < res.datas.length; i++) {
+        catalogs.push({
+          name: res.datas[i].name,
+          databases: res.datas[i].schemas,
+        });
+      }
+    }
+    dispatch && dispatch({
+      type: "Studio/saveMetaStore",
+      payload: {
+        activeKey: task.id,
+        metaStore: catalogs
+      },
+    });
+  })
 }

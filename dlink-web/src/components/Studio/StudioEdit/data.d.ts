@@ -43,6 +43,15 @@ export type StudioParam = {
   checkPoint?: number,
   savePointPath?: string,
 }
+
+export type StudioMetaStoreParam = {
+  statement?: string,
+  fragment?: boolean,
+  dialect?: string,
+  envId?: number,
+  databaseId?: number,
+}
+
 export type CAParam = {
   statement: string,
   statementSet: boolean,

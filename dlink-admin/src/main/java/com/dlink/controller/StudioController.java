@@ -1,24 +1,30 @@
 package com.dlink.controller;
 
-import com.dlink.assertion.Asserts;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.dlink.common.result.Result;
 import com.dlink.dto.SessionDTO;
 import com.dlink.dto.StudioCADTO;
 import com.dlink.dto.StudioDDLDTO;
 import com.dlink.dto.StudioExecuteDTO;
-import com.dlink.explainer.lineage.LineageResult;
+import com.dlink.dto.StudioMetaStoreDTO;
 import com.dlink.job.JobResult;
 import com.dlink.result.IResult;
 import com.dlink.service.StudioService;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * StudioController
@@ -160,5 +166,21 @@ public class StudioController {
     public Result savepoint(@RequestParam Integer clusterId, @RequestParam String jobId,
                             @RequestParam String savePointType, @RequestParam String name, @RequestParam Integer taskId) {
         return Result.succeed(studioService.savepoint(taskId, clusterId, jobId, savePointType, name), "savepoint 成功");
+    }
+
+    /**
+     * 获取 Meta Store Catalog 和 Database
+     */
+    @PostMapping("/getMSCatalogs")
+    public Result getMSCatalogs(@RequestBody StudioMetaStoreDTO studioMetaStoreDTO) {
+        return Result.succeed(studioService.getMSCatalogs(studioMetaStoreDTO), "获取成功");
+    }
+
+    /**
+     * 获取 Meta Store Table
+     */
+    @PostMapping("/getMSTables")
+    public Result getMSTables(@RequestBody StudioMetaStoreDTO studioMetaStoreDTO) {
+        return Result.succeed(studioService.getMSTables(studioMetaStoreDTO), "获取成功");
     }
 }

@@ -13,7 +13,7 @@ import UpdateCatalogueForm from './components/UpdateCatalogueForm';
 import SimpleTaskForm from "@/components/Studio/StudioTree/components/SimpleTaskForm";
 import {Scrollbars} from "react-custom-scrollbars";
 import {getIcon} from "@/components/Studio/icon";
-import {showEnv} from "@/components/Studio/StudioEvent/DDL";
+import {showEnv, showMetaStoreCatalogs} from "@/components/Studio/StudioEvent/DDL";
 import UploadModal from "@/components/Studio/StudioTree/components/UploadModal";
 
 type StudioTreeProps = {
@@ -170,7 +170,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       toCut(rightClickNode);
     } else if (key == 'Paste') {
       toPaste(rightClickNode);
-    }else if (key == 'Copy') {
+    } else if (key == 'Copy') {
       toCopy(rightClickNode);
     }
   };
@@ -229,6 +229,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
             chart: {},
           },
           monaco: React.createRef(),
+          metaStore: []
         };
         newTabs!.activeKey = node!.taskId;
         newTabs!.panes!.push(newPane);
@@ -236,6 +237,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
           type: "Studio/saveTabs",
           payload: newTabs,
         });
+        showMetaStoreCatalogs(result.datas, dispatch);
       })
     }
   };
@@ -308,10 +310,10 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
 
   const toCopy = async (node: TreeDataNode | undefined) => {
     let catalogues = {
-      taskId:node?.taskId,
+      taskId: node?.taskId,
       parentId: node?.id
     };
-    const datas =   await handleOption('/api/catalogue/copyTask',"复制作业",catalogues);
+    const datas = await handleOption('/api/catalogue/copyTask', "复制作业", catalogues);
 
     if (datas) {
       getTreeData();
@@ -385,7 +387,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
         <Menu.Item key='CreateCatalogue'>{'创建目录'}</Menu.Item>
         <Menu.Item key='CreateTask'>{'创建作业'}</Menu.Item>
         <Menu.Item key='Rename'>{'重命名'}</Menu.Item>
-       <Menu.Item key='Copy'>{'复制'}</Menu.Item>
+        <Menu.Item key='Copy'>{'复制'}</Menu.Item>
         <Menu.Item key='Cut'>{'剪切'}</Menu.Item>
         {cutId && <Menu.Item key='Paste'>{'粘贴'}</Menu.Item>}
         <Menu.Item key='Delete'>{'删除'}</Menu.Item>
