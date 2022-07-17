@@ -9,6 +9,8 @@ package com.dlink.model;
 public enum CodeEnum {
     SUCCESS(0),
     ERROR(1),
+
+    EXCEPTION(5),
     NOTLOGIN(401);
 
     private Integer code;

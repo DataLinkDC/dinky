@@ -2,6 +2,9 @@ package com.dlink.model;
 
 import com.dlink.assertion.Asserts;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * JobState
  *
@@ -100,6 +103,15 @@ public enum JobStatus {
             default:
                 return false;
         }
+    }
+
+    public static List<JobStatus> getAllDoneStatus() {
+        final List<JobStatus> list = new ArrayList<>(4);
+        list.add(FAILED);
+        list.add(CANCELED);
+        list.add(FINISHED);
+        list.add(UNKNOWN);
+        return list;
     }
 
 }

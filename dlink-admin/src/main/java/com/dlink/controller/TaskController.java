@@ -4,14 +4,26 @@ import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
 import com.dlink.dto.TaskRollbackVersionDTO;
 import com.dlink.job.JobResult;
+import com.dlink.model.JobLifeCycle;
+import com.dlink.model.JobStatus;
 import com.dlink.model.Task;
 import com.dlink.service.TaskService;
+import com.dlink.utils.TaskOneClickOperatingUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -208,5 +220,63 @@ public class TaskController {
     public Result getTaskAPIAddress() {
         return Result.succeed(taskService.getTaskAPIAddress(), "重启成功");
     }
+
+
+    /**
+     * 查询对应操作的任务列表
+     *
+     * @param operating
+     * @return
+     */
+    @GetMapping("/queryOnClickOperatingTask")
+    public Result<List<Task>> queryOnClickOperatingTask(@RequestParam("operating") Integer operating) {
+        if (operating == null) {
+            return Result.failed("操作不正确");
+        }
+        switch (operating) {
+            case 1:
+                return taskService.queryOnLineTaskByDoneStatus(Arrays.asList(JobLifeCycle.RELEASE), JobStatus.getAllDoneStatus(), true);
+            case 2:
+                return taskService.queryOnLineTaskByDoneStatus(Arrays.asList(JobLifeCycle.ONLINE), Collections.singletonList(JobStatus.RUNNING), false);
+            default:
+                return Result.failed("操作不正确");
+        }
+    }
+
+
+    /**
+     * 一键操作任务
+     *
+     * @param operating
+     * @return
+     */
+    @PostMapping("/onClickOperatingTask")
+    public Result onClickOperatingTask(@RequestBody JsonNode operating) {
+        if (operating == null) {
+            return Result.failed("操作不正确");
+        }
+        switch (operating.get("operating").asInt(-1)) {
+            case 1:
+                return TaskOneClickOperatingUtil.oneClickOnline(TaskOneClickOperatingUtil.parseJsonNode(operating)
+                        , operating.get("selectLatestSavepoint").asBoolean());
+            case 2:
+                return TaskOneClickOperatingUtil.onClickOffline(TaskOneClickOperatingUtil.parseJsonNode(operating));
+            default:
+                return Result.failed("操作不正确");
+        }
+    }
+
+
+    /**
+     * 查询一键操作任务状态
+     *
+     * @return
+     */
+    @GetMapping("/queryOneClickOperatingTaskStatus")
+    public Result queryOneClickOperatingTaskStatus() {
+        return TaskOneClickOperatingUtil.queryOneClickOperatingTaskStatus();
+    }
+
+
 }
 

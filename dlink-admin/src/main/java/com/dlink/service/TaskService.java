@@ -7,8 +7,11 @@ import com.dlink.dto.TaskRollbackVersionDTO;
 import com.dlink.job.JobResult;
 import com.dlink.model.JobInfoDetail;
 import com.dlink.model.JobInstance;
+import com.dlink.model.JobLifeCycle;
+import com.dlink.model.JobStatus;
 import com.dlink.model.Task;
 import com.dlink.result.SqlExplainResult;
+import com.dlink.result.TaskOperatingResult;
 
 import java.util.List;
 
@@ -65,4 +68,10 @@ public interface TaskService extends ISuperService<Task> {
     Result rollbackTask(TaskRollbackVersionDTO dto);
 
     Integer queryAllSizeByName(String name);
+
+    Result<List<Task>> queryOnLineTaskByDoneStatus(List<JobLifeCycle> jobLifeCycle, List<JobStatus> jobStatuses, boolean includeNull);
+
+    void selectSavepointOnLineTask(TaskOperatingResult taskOperatingResult);
+
+    void selectSavepointOffLineTask(TaskOperatingResult taskOperatingResult);
 }

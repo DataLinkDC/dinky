@@ -73,8 +73,10 @@ import com.dlink.model.Savepoints;
 import com.dlink.model.Statement;
 import com.dlink.model.SystemConfiguration;
 import com.dlink.model.Task;
+import com.dlink.model.TaskOperatingStatus;
 import com.dlink.model.TaskVersion;
 import com.dlink.result.SqlExplainResult;
+import com.dlink.result.TaskOperatingResult;
 import com.dlink.service.AlertGroupService;
 import com.dlink.service.AlertHistoryService;
 import com.dlink.service.ClusterConfigurationService;
@@ -90,8 +92,30 @@ import com.dlink.service.TaskService;
 import com.dlink.service.TaskVersionService;
 import com.dlink.utils.CustomStringJavaCompiler;
 import com.dlink.utils.JSONUtil;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.github.yulichang.wrapper.MPJLambdaWrapper;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import cn.hutool.core.bean.BeanUtil;
 
 /**
@@ -905,5 +929,90 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         alertHistory.setStatus(alertResult.getSuccessCode());
         alertHistory.setLog(alertResult.getMessage());
         alertHistoryService.save(alertHistory);
+    }
+
+    @Override
+    public Result<List<Task>> queryOnLineTaskByDoneStatus(List<JobLifeCycle> jobLifeCycle, List<JobStatus> jobStatuses, boolean includeNull) {
+        final MPJLambdaWrapper<Task> wrapper = new MPJLambdaWrapper<Task>()
+                .select(Task::getId, Task::getName)
+                .leftJoin(JobInstance.class, JobInstance::getId, Task::getJobInstanceId)
+                .in(Task::getStep, jobLifeCycle.stream().filter(Objects::nonNull).map(JobLifeCycle::getValue).collect(Collectors.toList()))
+                .eq(Task::getEnabled, 1);
+        if (includeNull) {
+            wrapper.and(wp -> wp.isNull(JobInstance::getStatus).or().in(JobInstance::getStatus, jobStatuses));
+        } else {
+            wrapper.in(JobInstance::getStatus, jobStatuses);
+        }
+        final List<Task> taskList = this.list(wrapper);
+        return Result.succeed(taskList);
+    }
+
+
+    @Override
+    public void selectSavepointOnLineTask(TaskOperatingResult taskOperatingResult) {
+        final JobInstance jobInstanceByTaskId = jobInstanceService.getJobInstanceByTaskId(taskOperatingResult.getTask().getId());
+        if (jobInstanceByTaskId == null){
+            startGoingLiveTask(taskOperatingResult, null);
+            return;
+        }
+        if (!JobStatus.isDone(jobInstanceByTaskId.getStatus())){
+            taskOperatingResult.setStatus(TaskOperatingStatus.TASK_STATUS_NO_DONE);
+            return;
+        }
+        if (!taskOperatingResult.isSelectLatestSavepoint()){
+            startGoingLiveTask(taskOperatingResult, null);
+            return;
+        }
+        findTheConditionSavePointToOnline(taskOperatingResult, jobInstanceByTaskId);
+    }
+
+    private void findTheConditionSavePointToOnline(TaskOperatingResult taskOperatingResult, JobInstance jobInstanceByTaskId) {
+        final LambdaQueryWrapper<JobHistory> queryWrapper = new LambdaQueryWrapper<JobHistory>()
+                .select(JobHistory::getId, JobHistory::getCheckpointsJson)
+                .eq(JobHistory::getId, jobInstanceByTaskId.getId());
+        final JobHistory jobHistory = jobHistoryService.getOne(queryWrapper);
+        if (jobHistory != null && StringUtils.isNotBlank(jobHistory.getCheckpointsJson())) {
+            final ObjectNode jsonNodes = JSONUtil.parseObject(jobHistory.getCheckpointsJson());
+            final ArrayNode history = jsonNodes.withArray("history");
+            if (!history.isEmpty()){
+                startGoingLiveTask(taskOperatingResult, findTheConditionSavePoint(history));
+                return;
+            }
+        }
+        startGoingLiveTask(taskOperatingResult, null);
+    }
+
+
+
+    private void startGoingLiveTask(TaskOperatingResult taskOperatingResult, String savepointPath) {
+        taskOperatingResult.setStatus(TaskOperatingStatus.OPERATING);
+        final Result result = reOnLineTask(taskOperatingResult.getTask().getId(), savepointPath);
+        taskOperatingResult.parseResult(result);
+    }
+
+
+    private String findTheConditionSavePoint(ArrayNode history){
+        JsonNode  latestCompletedJsonNode = null;
+        for (JsonNode item : history) {
+            if (!"COMPLETED".equals(item.get("status").asText())){
+                continue;
+            }
+            if (latestCompletedJsonNode == null){
+                latestCompletedJsonNode = item;
+                continue;
+            }
+            if (latestCompletedJsonNode.get("id").asInt() < item.get("id").asInt(-1)){
+                latestCompletedJsonNode = item;
+            }
+        }
+        return latestCompletedJsonNode == null ? null : latestCompletedJsonNode.get("external_path").asText();
+    }
+
+
+    @Override
+    public void selectSavepointOffLineTask(TaskOperatingResult taskOperatingResult) {
+        taskOperatingResult.setStatus(TaskOperatingStatus.OPERATING);
+        final Result result = offLineTask(taskOperatingResult.getTask().getId(), SavePointType.CANCEL.getValue());
+        taskOperatingResult.parseResult(result);
     }
 }
