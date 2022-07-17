@@ -1,6 +1,27 @@
 package com.dlink.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
+import org.apache.commons.lang3.StringUtils;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.alert.Alert;
@@ -70,25 +91,8 @@ import com.dlink.service.TaskVersionService;
 import com.dlink.utils.CustomStringJavaCompiler;
 import com.dlink.utils.JSONUtil;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import cn.hutool.core.bean.BeanUtil;
 
 /**
  * 任务 服务实现类
@@ -185,9 +189,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             return executeCommonSql(SqlDTO.build(task.getStatement(),
                 task.getDatabaseId(), null));
         }
-        if (StringUtils.isBlank(savePointPath)){
+        if (StringUtils.isBlank(savePointPath)) {
             task.setSavePointStrategy(SavePointStrategy.LATEST.getValue());
-        }else {
+        } else {
             task.setSavePointStrategy(SavePointStrategy.CUSTOM.getValue());
             task.setSavePointPath(savePointPath);
             updateById(task);
@@ -200,7 +204,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             return jobManager.executeJar();
         }
     }
-
 
 
     private JobResult executeCommonSql(SqlDTO sqlDTO) {
@@ -359,7 +362,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         defaultFlinkSQLEnvTask.setAlias("DefaultCatalog");
         defaultFlinkSQLEnvTask.setDialect(Dialect.FLINKSQLENV.getValue());
         StringBuilder sb = new StringBuilder();
-        sb.append("create catalog myCatalog with(\n");
+        sb.append("create catalog my_catalog with(\n");
         sb.append("    'type' = 'dlink_mysql',\n");
         sb.append("    'username' = '");
         sb.append(username);
@@ -372,7 +375,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         sb.append("'\n");
         sb.append(")");
         sb.append(separator);
-        sb.append("use catalog myCatalog");
+        sb.append("use catalog my_catalog");
         sb.append(separator);
         defaultFlinkSQLEnvTask.setStatement(sb.toString());
         defaultFlinkSQLEnvTask.setFragment(true);
@@ -545,11 +548,11 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if (Asserts.isNotNull(task.getJobInstanceId()) && task.getJobInstanceId() != 0) {
             savepointJobInstance(task.getJobInstanceId(), SavePointType.CANCEL.getValue());
         }
-        if (StringUtils.isNotBlank(savePointPath)){
+        if (StringUtils.isNotBlank(savePointPath)) {
             task.setSavePointStrategy(SavePointStrategy.CUSTOM.getValue());
             task.setSavePointPath(savePointPath);
         }
-       final JobResult jobResult = submitTaskToOnline(task, id);
+        final JobResult jobResult = submitTaskToOnline(task, id);
         if (Job.JobStatus.SUCCESS == jobResult.getStatus()) {
             task.setStep(JobLifeCycle.ONLINE.getValue());
             task.setJobInstanceId(jobResult.getJobInstanceId());

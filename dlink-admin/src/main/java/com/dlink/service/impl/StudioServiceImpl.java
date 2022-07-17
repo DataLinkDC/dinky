@@ -2,6 +2,7 @@ package com.dlink.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +20,7 @@ import com.dlink.dto.SqlDTO;
 import com.dlink.dto.StudioCADTO;
 import com.dlink.dto.StudioDDLDTO;
 import com.dlink.dto.StudioExecuteDTO;
+import com.dlink.dto.StudioMetaStoreDTO;
 import com.dlink.explainer.lineage.LineageBuilder;
 import com.dlink.explainer.lineage.LineageResult;
 import com.dlink.gateway.GatewayType;
@@ -29,10 +31,14 @@ import com.dlink.job.JobManager;
 import com.dlink.job.JobResult;
 import com.dlink.metadata.driver.Driver;
 import com.dlink.metadata.result.JdbcSelectResult;
+import com.dlink.model.Catalog;
 import com.dlink.model.Cluster;
 import com.dlink.model.DataBase;
 import com.dlink.model.Savepoints;
+import com.dlink.model.Schema;
+import com.dlink.model.Table;
 import com.dlink.model.Task;
+import com.dlink.result.DDLResult;
 import com.dlink.result.IResult;
 import com.dlink.result.SelectResult;
 import com.dlink.result.SqlExplainResult;
@@ -111,6 +117,15 @@ public class StudioServiceImpl implements StudioService {
         // initUDF(config,studioExecuteDTO.getStatement());
         JobManager jobManager = JobManager.build(config);
         JobResult jobResult = jobManager.executeSql(studioExecuteDTO.getStatement());
+        RunTimeUtil.recovery(jobManager);
+        return jobResult;
+    }
+
+    private IResult executeMSFlinkSql(StudioMetaStoreDTO studioMetaStoreDTO) {
+        addFlinkSQLEnv(studioMetaStoreDTO);
+        JobConfig config = studioMetaStoreDTO.getJobConfig();
+        JobManager jobManager = JobManager.build(config);
+        IResult jobResult = jobManager.executeDDL(studioMetaStoreDTO.getStatement());
         RunTimeUtil.recovery(jobManager);
         return jobResult;
     }
@@ -346,6 +361,84 @@ public class StudioServiceImpl implements StudioService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<Catalog> getMSCatalogs(StudioMetaStoreDTO studioMetaStoreDTO) {
+        List<Catalog> catalogs = new ArrayList<>();
+        if (Dialect.isSql(studioMetaStoreDTO.getDialect())) {
+            DataBase dataBase = dataBaseService.getById(studioMetaStoreDTO.getDatabaseId());
+            if (!Asserts.isNull(dataBase)) {
+                Catalog defaultCatalog = Catalog.build("default_catalog");
+                Driver driver = Driver.build(dataBase.getDriverConfig());
+                defaultCatalog.setSchemas(driver.listSchemas());
+                catalogs.add(defaultCatalog);
+            }
+        } else {
+            studioMetaStoreDTO.setStatement("SHOW CATALOGS");
+            IResult result = executeMSFlinkSql(studioMetaStoreDTO);
+            if (result instanceof DDLResult) {
+                DDLResult ddlResult = (DDLResult) result;
+                Iterator<String> iterator = ddlResult.getColumns().iterator();
+                if (iterator.hasNext()) {
+                    String key = iterator.next();
+                    List<Map<String, Object>> rowData = ddlResult.getRowData();
+                    for (Map<String, Object> item : rowData) {
+                        catalogs.add(Catalog.build(item.get(key).toString()));
+                    }
+                }
+                for (Catalog catalog : catalogs) {
+                    String statement = "USE CATALOG " + catalog.getName() + ";\r\nSHOW DATABASES";
+                    studioMetaStoreDTO.setStatement(statement);
+                    IResult tableResult = executeMSFlinkSql(studioMetaStoreDTO);
+                    if (result instanceof DDLResult) {
+                        DDLResult tableDDLResult = (DDLResult) tableResult;
+                        Iterator<String> tableIterator = tableDDLResult.getColumns().iterator();
+                        if (tableIterator.hasNext()) {
+                            String key = tableIterator.next();
+                            List<Map<String, Object>> rowData = tableDDLResult.getRowData();
+                            List<Schema> schemas = new ArrayList<>();
+                            for (Map<String, Object> item : rowData) {
+                                schemas.add(Schema.build(item.get(key).toString()));
+                            }
+                            catalog.setSchemas(schemas);
+                        }
+                    }
+                }
+            }
+        }
+        return catalogs;
+    }
+
+    @Override
+    public List<Table> getMSTables(StudioMetaStoreDTO studioMetaStoreDTO) {
+        List<Table> tables = new ArrayList<>();
+        if (Dialect.isSql(studioMetaStoreDTO.getDialect())) {
+            DataBase dataBase = dataBaseService.getById(studioMetaStoreDTO.getDatabaseId());
+            if (Asserts.isNotNull(dataBase)) {
+                Driver driver = Driver.build(dataBase.getDriverConfig());
+                tables.addAll(driver.listTables(studioMetaStoreDTO.getDatabase()));
+            }
+        } else {
+            String statement = "USE CATALOG " + studioMetaStoreDTO.getCatalog() + ";\r\n" +
+                "USE " + studioMetaStoreDTO.getDatabase() + ";\r\nSHOW TABLES";
+            studioMetaStoreDTO.setStatement(statement);
+            IResult result = executeMSFlinkSql(studioMetaStoreDTO);
+            if (result instanceof DDLResult) {
+                DDLResult ddlResult = (DDLResult) result;
+                Iterator<String> iterator = ddlResult.getColumns().iterator();
+                if (iterator.hasNext()) {
+                    String key = iterator.next();
+                    List<Map<String, Object>> rowData = ddlResult.getRowData();
+                    for (Map<String, Object> item : rowData) {
+                        Table table = Table.build(item.get(key).toString(), studioMetaStoreDTO.getDatabase());
+                        table.setCatalog(studioMetaStoreDTO.getCatalog());
+                        tables.add(table);
+                    }
+                }
+            }
+        }
+        return tables;
     }
 
     private void initUDF(JobConfig config, String statement) {

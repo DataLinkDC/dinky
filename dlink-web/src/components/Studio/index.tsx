@@ -24,9 +24,9 @@ const Studio = (props: any) => {
   const [form] = Form.useForm();
   const VIEW = {
     leftToolWidth: 300,
-    marginTop: 116,
+    marginTop: 84,
     topHeight: 35.6,
-    bottomHeight: 153.6,
+    bottomHeight: 127,
     rightMargin: 32,
     leftMargin: 36,
     midMargin: 46,
@@ -152,7 +152,6 @@ const Studio = (props: any) => {
           </Row>
         </DraggleVerticalLayout>
       </Card>
-
     </div>
   )
 };
