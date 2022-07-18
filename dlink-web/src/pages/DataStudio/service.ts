@@ -82,8 +82,8 @@ export async function getMSCatalogs(params: StudioMetaStoreParam) {
   });
 }
 
-export async function getMSTables(params: StudioMetaStoreParam) {
-  return request<API.Result>('/api/studio/getMSTables', {
+export async function getMSSchemaInfo(params: StudioMetaStoreParam) {
+  return request<API.Result>('/api/studio/getMSSchemaInfo', {
     method: 'POST',
     data: {
       ...params,

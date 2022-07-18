@@ -1,15 +1,10 @@
 package com.dlink.dto;
 
-import lombok.Getter;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import com.dlink.assertion.Asserts;
 import com.dlink.gateway.GatewayType;
 import com.dlink.job.JobConfig;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * StudioMetaStoreDTO
@@ -18,9 +13,11 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @since 2022/7/16 23:18
  */
 @Getter
+@Setter
 public class StudioMetaStoreDTO extends AbstractStatementDTO {
     private String catalog;
     private String database;
+    private String table;
     private String dialect;
     private Integer databaseId;
 

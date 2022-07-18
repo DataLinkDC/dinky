@@ -21,6 +21,10 @@ public class Schema implements Serializable, Comparable<Schema> {
 
     private String name;
     private List<Table> tables = new ArrayList<>();
+    private List<String> views = new ArrayList<>();
+    private List<String> functions = new ArrayList<>();
+    private List<String> userFunctions = new ArrayList<>();
+    private List<String> modules = new ArrayList<>();
 
     public Schema(String name) {
         this.name = name;

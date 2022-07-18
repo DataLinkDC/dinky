@@ -144,6 +144,10 @@ export type MetaStoreCatalogType = {
 export type MetaStoreDataBaseType = {
   name: string;
   tables: MetaStoreTableType[];
+  views: string[];
+  functions: string[];
+  userFunctions: string[];
+  modules: string[];
 }
 
 export type MetaStoreTableType = {
