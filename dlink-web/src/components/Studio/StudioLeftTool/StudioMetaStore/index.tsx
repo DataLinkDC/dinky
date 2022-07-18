@@ -1,21 +1,26 @@
 import {Button, Col, Empty, message, Modal, Row, Select, Tabs, Tooltip, Tree} from "antd";
-import {MetaStoreTableType, StateType} from "@/pages/DataStudio/model";
+import {MetaStoreDataBaseType, MetaStoreTableType, StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import React, {useState} from "react";
 import {
+  AppstoreOutlined,
+  BlockOutlined,
   CodepenOutlined,
   DownOutlined,
+  FunctionOutlined,
   OrderedListOutlined,
   ReloadOutlined,
-  TableOutlined
+  TableOutlined,
 } from '@ant-design/icons';
 import {Scrollbars} from 'react-custom-scrollbars';
 import Columns from "@/pages/DataBase/Columns";
 import Tables from "@/pages/DataBase/Tables";
 import {TreeDataNode} from "@/components/Studio/StudioTree/Function";
 import Generation from "@/pages/DataBase/Generation";
-import {getMSTables} from "@/pages/DataStudio/service";
+import {getMSSchemaInfo} from "@/pages/DataStudio/service";
 import {Dispatch} from "@@/plugin-dva/connect";
+import {DIALECT} from "@/components/Studio/conf";
+import FlinkColumns from "@/pages/Flink/FlinkColumns";
 
 const {DirectoryTree} = Tree;
 const {Option, OptGroup} = Select;
@@ -53,17 +58,18 @@ const StudioMetaStore = (props: any) => {
       catalog: catalogTmp,
       database: databaseTmp,
     };
-    const result = getMSTables(param);
+    const result = getMSSchemaInfo(param);
     result.then(res => {
       const tables: MetaStoreTableType[] = [];
-      if (res.datas) {
-        for (let i = 0; i < res.datas.length; i++) {
+      if (res.datas.tables) {
+        for (let i = 0; i < res.datas.tables.length; i++) {
           tables.push({
-            name: res.datas[i].name,
-            columns: res.datas[i].columns,
+            name: res.datas.tables[i].name,
+            columns: res.datas.tables[i].columns,
           });
         }
       }
+      const treeDataTmp: [] = [];
       const tablesData: [] = [];
       for (let i = 0; i < tables.length; i++) {
         tablesData.push({
@@ -74,9 +80,111 @@ const StudioMetaStore = (props: any) => {
           isLeaf: true,
           catalog: catalogTmp,
           database: databaseTmp,
+          isTable: true
         })
       }
-      setTreeData(tablesData);
+      treeDataTmp.push({
+        name: 'tables',
+        title: 'tables',
+        key: 'tables',
+        catalog: catalogTmp,
+        database: databaseTmp,
+        children: tablesData,
+      });
+
+      const viewsData: [] = [];
+      if (res.datas.views) {
+        for (let i = 0; i < res.datas.views.length; i++) {
+          viewsData.push({
+            name: res.datas.views[i],
+            title: res.datas.views[i],
+            key: res.datas.views[i],
+            icon: <BlockOutlined/>,
+            isLeaf: true,
+            catalog: catalogTmp,
+            database: databaseTmp,
+          });
+        }
+      }
+      treeDataTmp.push({
+        name: 'views',
+        title: 'views',
+        key: 'views',
+        catalog: catalogTmp,
+        database: databaseTmp,
+        children: viewsData,
+      });
+
+      const functionsData: [] = [];
+      if (res.datas.functions) {
+        for (let i = 0; i < res.datas.functions.length; i++) {
+          functionsData.push({
+            name: res.datas.functions[i],
+            title: res.datas.functions[i],
+            key: res.datas.functions[i],
+            icon: <FunctionOutlined/>,
+            isLeaf: true,
+            catalog: catalogTmp,
+            database: databaseTmp,
+          });
+        }
+      }
+      treeDataTmp.push({
+        name: 'functions',
+        title: 'functions',
+        key: 'functions',
+        catalog: catalogTmp,
+        database: databaseTmp,
+        children: functionsData,
+      });
+
+      const userFunctionsData: [] = [];
+      if (res.datas.userFunctions) {
+        for (let i = 0; i < res.datas.userFunctions.length; i++) {
+          userFunctionsData.push({
+            name: res.datas.userFunctions[i],
+            title: res.datas.userFunctions[i],
+            key: res.datas.userFunctions[i],
+            icon: <FunctionOutlined/>,
+            isLeaf: true,
+            catalog: catalogTmp,
+            database: databaseTmp,
+          });
+        }
+      }
+      treeDataTmp.push({
+        name: 'userFunctions',
+        title: 'user functions',
+        key: 'userFunctions',
+        catalog: catalogTmp,
+        database: databaseTmp,
+        children: userFunctionsData,
+      });
+
+      const modulesData: [] = [];
+      if (res.datas.modules) {
+        for (let i = 0; i < res.datas.modules.length; i++) {
+          modulesData.push({
+            name: res.datas.modules[i],
+            title: res.datas.modules[i],
+            key: res.datas.modules[i],
+            icon: <AppstoreOutlined/>,
+            isLeaf: true,
+            catalog: catalogTmp,
+            database: databaseTmp,
+          });
+        }
+      }
+      treeDataTmp.push({
+        name: 'modules',
+        title: 'modules',
+        key: 'modules',
+        catalog: catalogTmp,
+        database: databaseTmp,
+        children: modulesData,
+      });
+
+      setTreeData(treeDataTmp);
       props.saveMetaStoreTable(current.key, catalogTmp, databaseTmp, tables);
       message.success(`刷新 Catalog 成功`);
     })
@@ -105,16 +213,16 @@ const StudioMetaStore = (props: any) => {
   };
 
   const openColumnInfo = (e: React.MouseEvent, node: TreeDataNode) => {
-    if (node.isLeaf) {
+    if (node.isLeaf && node.isTable) {
       setRow(node);
       setModalVisit(true);
     }
-  }
+  };
 
   const cancelHandle = () => {
     setRow(undefined);
     setModalVisit(false);
-  }
+  };
 
   return (
     <>
@@ -184,8 +292,12 @@ const StudioMetaStore = (props: any) => {
             }
             key="columnInfo"
           >
-            {row ? <Columns dbId={current.task.databaseId} schema={row.database} table={row.name}/> :
-              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
+            {row ?
+              (current.task.dialect === DIALECT.FLINKSQL ?
+                  <FlinkColumns envId={current.task.envId} catalog={row.catalog} database={row.database}
+                                table={row.name}/>
+                  : <Columns dbId={current.task.databaseId} schema={row.database} table={row.name}/>
+              ) : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
           </TabPane>
           <TabPane
             tab={
@@ -196,8 +308,11 @@ const StudioMetaStore = (props: any) => {
             }
             key="sqlGeneration"
           >
-            {row ? <Generation dbId={current.task.databaseId} schema={row.database} table={row.name}/> :
-              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
+            {row ?
+              (current.task.dialect === DIALECT.FLINKSQL ?
+                  undefined
+                  : <Generation dbId={current.task.databaseId} schema={row.database} table={row.name}/>
+              ) : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
           </TabPane>
         </Tabs>
       </Modal>

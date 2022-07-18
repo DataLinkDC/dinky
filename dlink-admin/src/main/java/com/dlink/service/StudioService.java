@@ -11,7 +11,8 @@ import com.dlink.dto.StudioMetaStoreDTO;
 import com.dlink.explainer.lineage.LineageResult;
 import com.dlink.job.JobResult;
 import com.dlink.model.Catalog;
-import com.dlink.model.Table;
+import com.dlink.model.FlinkColumn;
+import com.dlink.model.Schema;
 import com.dlink.result.IResult;
 import com.dlink.result.SelectResult;
 import com.dlink.result.SqlExplainResult;
@@ -57,5 +58,7 @@ public interface StudioService {
 
     List<Catalog> getMSCatalogs(StudioMetaStoreDTO studioMetaStoreDTO);
 
-    List<Table> getMSTables(StudioMetaStoreDTO studioMetaStoreDTO);
+    Schema getMSSchemaInfo(StudioMetaStoreDTO studioMetaStoreDTO);
+
+    List<FlinkColumn> getMSFlinkColumns(StudioMetaStoreDTO studioMetaStoreDTO);
 }

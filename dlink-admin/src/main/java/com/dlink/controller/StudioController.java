@@ -177,10 +177,23 @@ public class StudioController {
     }
 
     /**
-     * 获取 Meta Store Table
+     * 获取 Meta Store Schema/Database 信息
      */
-    @PostMapping("/getMSTables")
-    public Result getMSTables(@RequestBody StudioMetaStoreDTO studioMetaStoreDTO) {
-        return Result.succeed(studioService.getMSTables(studioMetaStoreDTO), "获取成功");
+    @PostMapping("/getMSSchemaInfo")
+    public Result getMSSchemaInfo(@RequestBody StudioMetaStoreDTO studioMetaStoreDTO) {
+        return Result.succeed(studioService.getMSSchemaInfo(studioMetaStoreDTO), "获取成功");
+    }
+
+    /**
+     * 获取 Meta Store Flink Column 信息
+     */
+    @GetMapping("/getMSFlinkColumns")
+    public Result getMSFlinkColumns(@RequestParam Integer envId, @RequestParam String catalog, @RequestParam String database, @RequestParam String table) {
+        StudioMetaStoreDTO studioMetaStoreDTO = new StudioMetaStoreDTO();
+        studioMetaStoreDTO.setEnvId(envId);
+        studioMetaStoreDTO.setCatalog(catalog);
+        studioMetaStoreDTO.setDatabase(database);
+        studioMetaStoreDTO.setTable(table);
+        return Result.succeed(studioService.getMSFlinkColumns(studioMetaStoreDTO), "获取成功");
     }
 }
