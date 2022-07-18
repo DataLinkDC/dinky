@@ -223,21 +223,34 @@ public class TaskController {
 
 
     /**
+     * 查询所有目录
+     *
+     * @return
+     */
+    @GetMapping("/queryAllCatalogue")
+    public Result queryAllCatalogue() {
+        return taskService.queryAllCatalogue();
+    }
+
+    /**
      * 查询对应操作的任务列表
      *
      * @param operating
      * @return
      */
     @GetMapping("/queryOnClickOperatingTask")
-    public Result<List<Task>> queryOnClickOperatingTask(@RequestParam("operating") Integer operating) {
+    public Result<List<Task>> queryOnClickOperatingTask(@RequestParam("operating") Integer operating
+            , @RequestParam("catalogueId") Integer catalogueId) {
         if (operating == null) {
             return Result.failed("操作不正确");
         }
         switch (operating) {
             case 1:
-                return taskService.queryOnLineTaskByDoneStatus(Arrays.asList(JobLifeCycle.RELEASE), JobStatus.getAllDoneStatus(), true);
+                return taskService.queryOnLineTaskByDoneStatus(Arrays.asList(JobLifeCycle.RELEASE)
+                        , JobStatus.getAllDoneStatus(), true, catalogueId);
             case 2:
-                return taskService.queryOnLineTaskByDoneStatus(Arrays.asList(JobLifeCycle.ONLINE), Collections.singletonList(JobStatus.RUNNING), false);
+                return taskService.queryOnLineTaskByDoneStatus(Arrays.asList(JobLifeCycle.ONLINE)
+                        , Collections.singletonList(JobStatus.RUNNING), false, catalogueId);
             default:
                 return Result.failed("操作不正确");
         }

@@ -1,6 +1,9 @@
 package com.dlink.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.lang.tree.TreeNode;
+import cn.hutool.core.lang.tree.TreeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.alert.Alert;
@@ -39,6 +42,7 @@ import com.dlink.metadata.result.JdbcSelectResult;
 import com.dlink.model.AlertGroup;
 import com.dlink.model.AlertHistory;
 import com.dlink.model.AlertInstance;
+import com.dlink.model.Catalogue;
 import com.dlink.model.Cluster;
 import com.dlink.model.DataBase;
 import com.dlink.model.History;
@@ -58,6 +62,7 @@ import com.dlink.result.SqlExplainResult;
 import com.dlink.result.TaskOperatingResult;
 import com.dlink.service.AlertGroupService;
 import com.dlink.service.AlertHistoryService;
+import com.dlink.service.CatalogueService;
 import com.dlink.service.ClusterConfigurationService;
 import com.dlink.service.ClusterService;
 import com.dlink.service.DataBaseService;
@@ -75,6 +80,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -129,6 +135,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private HistoryService historyService;
     @Resource
     private TaskVersionService taskVersionService;
+    @Autowired
+    private CatalogueService catalogueService;
 
     @Value("${spring.datasource.driver-class-name}")
     private String driver;
@@ -909,11 +917,55 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         alertHistoryService.save(alertHistory);
     }
 
+
     @Override
-    public Result<List<Task>> queryOnLineTaskByDoneStatus(List<JobLifeCycle> jobLifeCycle, List<JobStatus> jobStatuses, boolean includeNull) {
+    public Result queryAllCatalogue() {
+        final LambdaQueryWrapper<Catalogue> queryWrapper = new LambdaQueryWrapper<Catalogue>()
+                .select(Catalogue::getId, Catalogue::getName, Catalogue::getParentId)
+                .eq(Catalogue::getIsLeaf, 0)
+                .eq(Catalogue::getEnabled, 1)
+                .isNull(Catalogue::getTaskId);
+        final List<Catalogue> catalogueList = catalogueService.list(queryWrapper);
+        return Result.succeed(TreeUtil.build(dealWithCatalogue(catalogueList), -1).get(0));
+    }
+
+    private List<TreeNode<Integer>> dealWithCatalogue(List<Catalogue> catalogueList) {
+        final List<TreeNode<Integer>> treeNodes = new ArrayList<>(8);
+        treeNodes.add(new TreeNode<>(-1, null, "全部", -1));
+        treeNodes.add(new TreeNode<>(0, -1, "全部", 0));
+        if (CollectionUtils.isEmpty(catalogueList)) {
+            return treeNodes;
+        }
+        for (int i = 0; i < catalogueList.size(); i++) {
+            final Catalogue catalogue = catalogueList.get(i);
+            if (Objects.isNull(catalogue)) {
+                continue;
+            }
+            treeNodes.add(new TreeNode<>(catalogue.getId(), catalogue.getParentId(), catalogue.getName(), i + 1));
+        }
+        return treeNodes;
+    }
+
+    @Override
+    public Result<List<Task>> queryOnLineTaskByDoneStatus(List<JobLifeCycle> jobLifeCycle, List<JobStatus> jobStatuses
+            , boolean includeNull, Integer catalogueId) {
+        final Tree<Integer> node = ((Tree<Integer>) queryAllCatalogue().getDatas())
+                .getNode(Objects.isNull(catalogueId) ? 0 : catalogueId);
+        final List<Integer> parentIds = new ArrayList<>(0);
+        parentIds.add(node.getId());
+        childrenNodeParse(node, parentIds);
+        final List<Task> taskList = getTasks(jobLifeCycle, jobStatuses, includeNull, parentIds);
+        return Result.succeed(taskList);
+    }
+
+    private List<Task> getTasks(List<JobLifeCycle> jobLifeCycle, List<JobStatus> jobStatuses, boolean includeNull, List<Integer> parentIds) {
         final MPJLambdaWrapper<Task> wrapper = new MPJLambdaWrapper<Task>()
                 .select(Task::getId, Task::getName)
+                .leftJoin(Catalogue.class, Catalogue::getTaskId, Task::getId)
                 .leftJoin(JobInstance.class, JobInstance::getId, Task::getJobInstanceId)
+                .in(Catalogue::getParentId, parentIds)
+                .isNotNull(Catalogue::getTaskId)
+                .eq(Catalogue::getIsLeaf, 1)
                 .in(Task::getStep, jobLifeCycle.stream().filter(Objects::nonNull).map(JobLifeCycle::getValue).collect(Collectors.toList()))
                 .eq(Task::getEnabled, 1);
         if (includeNull) {
@@ -921,8 +973,21 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         } else {
             wrapper.in(JobInstance::getStatus, jobStatuses);
         }
-        final List<Task> taskList = this.list(wrapper);
-        return Result.succeed(taskList);
+        return this.list(wrapper);
+    }
+
+    private void childrenNodeParse(Tree<Integer> node, List<Integer> parentIds) {
+        final List<Tree<Integer>> children = node.getChildren();
+        if (CollectionUtils.isEmpty(children)) {
+            return;
+        }
+        for (Tree<Integer> child : children) {
+            parentIds.add(child.getId());
+            if (!child.hasChild()) {
+                continue;
+            }
+            childrenNodeParse(child, parentIds);
+        }
     }
 
 

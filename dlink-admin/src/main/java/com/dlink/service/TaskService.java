@@ -69,7 +69,10 @@ public interface TaskService extends ISuperService<Task> {
 
     Integer queryAllSizeByName(String name);
 
-    Result<List<Task>> queryOnLineTaskByDoneStatus(List<JobLifeCycle> jobLifeCycle, List<JobStatus> jobStatuses, boolean includeNull);
+    Result queryAllCatalogue();
+
+    Result<List<Task>> queryOnLineTaskByDoneStatus(List<JobLifeCycle> jobLifeCycle
+            , List<JobStatus> jobStatuses, boolean includeNull, Integer catalogueId);
 
     void selectSavepointOnLineTask(TaskOperatingResult taskOperatingResult);
 

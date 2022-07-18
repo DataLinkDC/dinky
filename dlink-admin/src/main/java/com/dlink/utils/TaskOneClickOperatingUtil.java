@@ -46,7 +46,7 @@ public class TaskOneClickOperatingUtil {
         }
         final TaskService taskService = SpringContextUtils.getBeanByClass(TaskService.class);
         if (CollectionUtils.isEmpty(tasks)) {
-            final Result<List<Task>> listResult = taskService.queryOnLineTaskByDoneStatus(Arrays.asList(JobLifeCycle.RELEASE), JobStatus.getAllDoneStatus(), true);
+            final Result<List<Task>> listResult = taskService.queryOnLineTaskByDoneStatus(Arrays.asList(JobLifeCycle.RELEASE), JobStatus.getAllDoneStatus(), true, 0);
             if (CollectionUtils.isEmpty(listResult.getDatas())) {
                 return Result.succeed("没有需要上线的任务");
             }
@@ -63,7 +63,7 @@ public class TaskOneClickOperatingUtil {
         }
         final TaskService taskService = SpringContextUtils.getBeanByClass(TaskService.class);
         if (CollectionUtils.isEmpty(tasks)) {
-            final Result<List<Task>> listResult = taskService.queryOnLineTaskByDoneStatus(Arrays.asList(JobLifeCycle.ONLINE), Collections.singletonList(JobStatus.RUNNING), false);
+            final Result<List<Task>> listResult = taskService.queryOnLineTaskByDoneStatus(Arrays.asList(JobLifeCycle.ONLINE), Collections.singletonList(JobStatus.RUNNING), false, 0);
             if (CollectionUtils.isEmpty(listResult.getDatas())) {
                 return Result.succeed("没有需要下线的任务");
             }
