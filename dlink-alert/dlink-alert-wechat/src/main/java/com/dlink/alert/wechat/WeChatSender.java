@@ -65,7 +65,12 @@ public class WeChatSender {
         weChatTokenUrlReplace = weChatTokenUrl
                 .replace(CORP_ID_REGEX, weChatCorpId)
                 .replace(SECRET_REGEX, weChatSecret);
-        weChatToken = getToken();
+        if (sendType.equals(WeChatType.CHAT.getValue())) {
+            requireNonNull(webhookUrl, WeChatConstants.WEBHOOK + " must not null");
+            weChatToken = webhookUrl.substring(webhookUrl.indexOf("access_token=") + 1);
+        } else {
+            weChatToken = getToken();
+        }
     }
 
 
@@ -125,6 +130,7 @@ public class WeChatSender {
             try {
                 HttpEntity entity = response.getEntity();
                 resp = EntityUtils.toString(entity, WeChatConstants.CHARSET);
+                logger.debug("Wechat sender response : {}", resp);
                 EntityUtils.consume(entity);
             } finally {
                 response.close();
