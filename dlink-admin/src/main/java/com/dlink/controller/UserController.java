@@ -101,4 +101,23 @@ public class UserController {
         return userService.modifyPassword(modifyPasswordDTO.getUsername(), modifyPasswordDTO.getPassword(),
                 modifyPasswordDTO.getNewPassword());
     }
+    /**
+     * give user grant role
+     *
+     * @return
+     */
+    @PutMapping(value = "/grantRole")
+    public Result grantRole(@RequestBody JsonNode para) {
+        return userService.grantRole(para);
+    }
+
+    /**
+     * remove user grant role
+     *
+     * @return
+     */
+    @PutMapping(value = "/removeGrantRole")
+    public Result removeGrantRole(@RequestBody JsonNode para) {
+        return userService.removeGrantRole(para);
+    }
 }

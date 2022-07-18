@@ -1,8 +1,13 @@
 package com.dlink.service;
 
+import java.util.List;
+
 import com.dlink.common.result.Result;
 import com.dlink.db.service.ISuperService;
+import com.dlink.model.Role;
+import com.dlink.model.Tenant;
 import com.dlink.model.User;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * UserService
@@ -23,4 +28,11 @@ public interface UserService extends ISuperService<User> {
     Result loginUser(String username, String password, boolean isRemember);
 
     User getUserByUsername(String username);
+
+    Result grantRole(JsonNode para);
+
+    Result removeGrantRole(JsonNode para);
+
+    Result getTenants(String username);
+
 }

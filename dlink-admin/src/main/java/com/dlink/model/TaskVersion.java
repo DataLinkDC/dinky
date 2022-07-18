@@ -31,6 +31,11 @@ public class TaskVersion implements Serializable {
     private Integer id;
 
     /**
+     * tenant id
+     */
+    private Integer tenantId;
+
+    /**
      * 作业ID
      */
     @TableField(value = "task_id")
