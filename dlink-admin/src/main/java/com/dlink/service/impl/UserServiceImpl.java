@@ -180,20 +180,17 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     public Result getTenants(String username) {
         User user = getUserByUsername(username);
         if (Asserts.isNull(user)) {
-            return Result.failed("该账号不存在");
+            return Result.failed("该账号不存在,获取租户失败");
         }
 
         List<UserRole> userRoles = userRoleService.getUserRoleByUserId(user.getId());
         if (userRoles.size() == 0) {
-            return Result.failed("用户未绑定角色");
+            return Result.failed("用户未绑定角色,获取租户失败");
         }
         Set<Integer> roleIds = new HashSet<>();
         userRoles.forEach(userRole -> roleIds.add(userRole.getRoleId()));
 
         List<Role> roles = roleService.getRoleByIds(roleIds);
-        if (roles.size() == 0) {
-            return Result.failed("用户角色未绑定租户");
-        }
         Set<Integer> tenantIds = new HashSet<>();
         roles.forEach(role -> tenantIds.add(role.getTenantId()));
         List<Tenant> tenants = tenantService.getTenantByIds(tenantIds);
