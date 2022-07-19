@@ -7,6 +7,7 @@ import com.dlink.model.CodeEnum;
 import com.dlink.model.JobLifeCycle;
 import com.dlink.model.JobStatus;
 import com.dlink.model.Task;
+import com.dlink.model.TaskOperatingSavepointSelect;
 import com.dlink.model.TaskOperatingStatus;
 import com.dlink.result.TaskOperatingResult;
 import com.dlink.service.TaskService;
@@ -40,7 +41,7 @@ public class TaskOneClickOperatingUtil {
 
     private final static AtomicBoolean oneClickOfflineThreadStatus = new AtomicBoolean(false);
 
-    public static synchronized Result oneClickOnline(List<Task> tasks, boolean selectLatestSavepoint) {
+    public static synchronized Result oneClickOnline(List<Task> tasks, TaskOperatingSavepointSelect taskOperatingSavepointSelect) {
         if (oneClickOnlineThreadStatus.get() || oneClickOfflineThreadStatus.get()) {
             return Result.failed("存在一键上线或者下线操作，请稍后重试");
         }
@@ -52,7 +53,7 @@ public class TaskOneClickOperatingUtil {
             }
             tasks = listResult.getDatas();
         }
-        oneClickOnlineCache = tasks.stream().map(task -> new TaskOperatingResult(task, selectLatestSavepoint)).collect(Collectors.toList());
+        oneClickOnlineCache = tasks.stream().map(task -> new TaskOperatingResult(task, taskOperatingSavepointSelect)).collect(Collectors.toList());
         new OneClickOperatingThread("oneClickOnlineThread", oneClickOnlineCache, oneClickOnlineThreadStatus, taskService::selectSavepointOnLineTask).start();
         return Result.succeed("success");
     }

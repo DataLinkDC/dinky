@@ -3,6 +3,7 @@ package com.dlink.result;
 import com.dlink.common.result.Result;
 import com.dlink.model.CodeEnum;
 import com.dlink.model.Task;
+import com.dlink.model.TaskOperatingSavepointSelect;
 import com.dlink.model.TaskOperatingStatus;
 import lombok.Data;
 
@@ -22,18 +23,18 @@ public class TaskOperatingResult {
 
     private String message;
 
-    private boolean selectLatestSavepoint;
+    private TaskOperatingSavepointSelect taskOperatingSavepointSelect;
 
     public TaskOperatingResult(Task task) {
         this.task = task;
         this.status = TaskOperatingStatus.INIT;
-        this.selectLatestSavepoint = false;
+        this.taskOperatingSavepointSelect = TaskOperatingSavepointSelect.DEFAULT_CONFIG;
     }
 
-    public TaskOperatingResult(Task task, boolean selectLatestSavepoint) {
+    public TaskOperatingResult(Task task, TaskOperatingSavepointSelect taskOperatingSavepointSelect) {
         this.task = task;
         this.status = TaskOperatingStatus.INIT;
-        this.selectLatestSavepoint = selectLatestSavepoint;
+        this.taskOperatingSavepointSelect = taskOperatingSavepointSelect;
     }
 
     public void parseResult(Result result) {

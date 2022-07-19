@@ -56,6 +56,7 @@ import com.dlink.model.Savepoints;
 import com.dlink.model.Statement;
 import com.dlink.model.SystemConfiguration;
 import com.dlink.model.Task;
+import com.dlink.model.TaskOperatingSavepointSelect;
 import com.dlink.model.TaskOperatingStatus;
 import com.dlink.model.TaskVersion;
 import com.dlink.result.SqlExplainResult;
@@ -1002,7 +1003,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             taskOperatingResult.setStatus(TaskOperatingStatus.TASK_STATUS_NO_DONE);
             return;
         }
-        if (!taskOperatingResult.isSelectLatestSavepoint()){
+        if (taskOperatingResult.getTaskOperatingSavepointSelect().equals(TaskOperatingSavepointSelect.DEFAULT_CONFIG)){
             startGoingLiveTask(taskOperatingResult, null);
             return;
         }

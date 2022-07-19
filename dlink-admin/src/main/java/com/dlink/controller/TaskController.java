@@ -7,6 +7,7 @@ import com.dlink.job.JobResult;
 import com.dlink.model.JobLifeCycle;
 import com.dlink.model.JobStatus;
 import com.dlink.model.Task;
+import com.dlink.model.TaskOperatingSavepointSelect;
 import com.dlink.service.TaskService;
 import com.dlink.utils.TaskOneClickOperatingUtil;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -265,13 +266,14 @@ public class TaskController {
      */
     @PostMapping("/onClickOperatingTask")
     public Result onClickOperatingTask(@RequestBody JsonNode operating) {
-        if (operating == null) {
+        if (operating == null || operating.get("operating") == null) {
             return Result.failed("操作不正确");
         }
-        switch (operating.get("operating").asInt(-1)) {
+        switch (operating.get("operating").asInt()) {
             case 1:
+                final JsonNode savepointSelect = operating.get("taskOperatingSavepointSelect");
                 return TaskOneClickOperatingUtil.oneClickOnline(TaskOneClickOperatingUtil.parseJsonNode(operating)
-                        , operating.get("selectLatestSavepoint").asBoolean());
+                        , TaskOperatingSavepointSelect.valueByCode(savepointSelect == null ? 0 : savepointSelect.asInt()));
             case 2:
                 return TaskOneClickOperatingUtil.onClickOffline(TaskOneClickOperatingUtil.parseJsonNode(operating));
             default:
