@@ -132,12 +132,3 @@ export  type CheckPointsDetailInfo = {
   trigger_timestamp: number,
 }
 
-
-export  type SavePointInfo = {
-  id: number,
-  taskId: number,
-  name: string,
-  type: string,
-  path: string,
-  createTime: Date,
-}
