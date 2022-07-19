@@ -19,7 +19,8 @@
 
 package com.dlink.utils;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -34,7 +35,7 @@ import java.io.FileWriter;
  * copyright : 版权信息 Apache LICENSE-2.0
  */
 public class CopyrightUtil {
-	private static Logger log = Logger.getLogger(CopyrightUtil.class);
+	private static Logger log = LoggerFactory.getLogger(CopyrightUtil.class);
 	public  static String dir = "d:\\your-dir";
 	public  static String fileEndWithStr = ".less";
 	public  static String copyright = "/*\n" +
