@@ -1,5 +1,5 @@
 import request from 'umi-request';
-import {CAParam, StudioParam} from "@/components/Studio/StudioEdit/data";
+import {CAParam, StudioMetaStoreParam, StudioParam} from "@/components/Studio/StudioEdit/data";
 
 export async function executeSql(params: StudioParam) {
   return request<API.Result>('/api/studio/executeSql', {
@@ -46,7 +46,7 @@ export async function getJobPlan(params: StudioParam) {
   });
 }
 
-export async function getJobData(jobId:string) {
+export async function getJobData(jobId: string) {
   return request<API.Result>('/api/studio/getJobData', {
     method: 'GET',
     params: {
@@ -66,6 +66,24 @@ export async function getCatalogueTreeData(params?: StudioParam) {
 
 export async function getLineage(params: CAParam) {
   return request<API.Result>('/api/studio/getLineage', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
+
+export async function getMSCatalogs(params: StudioMetaStoreParam) {
+  return request<API.Result>('/api/studio/getMSCatalogs', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
+
+export async function getMSSchemaInfo(params: StudioMetaStoreParam) {
+  return request<API.Result>('/api/studio/getMSSchemaInfo', {
     method: 'POST',
     data: {
       ...params,

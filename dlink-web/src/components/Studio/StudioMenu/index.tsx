@@ -483,7 +483,7 @@ const StudioMenu = (props: any) => {
 
   return (
     <Row className={styles.container}>
-      <Col span={24}>
+      {/*<Col span={24}>
         <div>
           <Space>
             <Dropdown overlay={menu}>
@@ -508,14 +508,14 @@ const StudioMenu = (props: any) => {
             </Dropdown>
           </Space>
         </div>
-      </Col>
+      </Col>*/}
       <Divider className={styles["ant-divider-horizontal-0"]}/>
       <Col span={24}>
         <Row>
           <Col span={16}>
             <Breadcrumb className={styles["dw-path"]}>
-              <EnvironmentOutlined/>
-              <Divider type="vertical"/>
+              <EnvironmentOutlined style={{lineHeight: '32px'}}/>
+              <Divider type="vertical" style={{height: 'unset'}}/>
               {getPathItem(currentPath)}
             </Breadcrumb>
             {currentSession.session &&
@@ -659,7 +659,7 @@ const StudioMenu = (props: any) => {
               <Tooltip title="查看 API">
                 <Button
                   type="text"
-                  icon={<ApiTwoTone />}
+                  icon={<ApiTwoTone/>}
                   onClick={showAPI}
                 />
               </Tooltip>
