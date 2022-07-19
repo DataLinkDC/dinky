@@ -13,6 +13,4 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface StatementMapper extends SuperMapper<Statement> {
 
-    int insert(Statement statement);
-
 }

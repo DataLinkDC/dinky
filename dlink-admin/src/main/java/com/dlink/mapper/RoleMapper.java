@@ -7,11 +7,12 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * role mapper interface
  */
 @Mapper
 public interface RoleMapper extends SuperMapper<Role> {
-    List<Role> getRoleByIds(@Param("roleIds") List<Integer> roleIds);
+    List<Role> getRoleByIds(@Param("roleIds") Set<Integer> roleIds);
 }

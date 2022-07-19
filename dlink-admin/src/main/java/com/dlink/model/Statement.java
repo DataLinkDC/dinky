@@ -1,5 +1,6 @@
 package com.dlink.model;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,6 +23,9 @@ public class Statement implements Serializable {
     private Integer id;
 
     private Integer tenantId;
+
+    @TableField(value = "task_id")
+    private Integer taskId;
 
     private String statement;
 }

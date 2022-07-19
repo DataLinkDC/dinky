@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.common.result.ProTableResult;
@@ -99,7 +100,7 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
     }
 
     @Override
-    public List<Role> getRoleByIds(List<Integer> roleIds) {
+    public List<Role> getRoleByIds(Set<Integer> roleIds) {
         return baseMapper.getRoleByIds(roleIds);
     }
 

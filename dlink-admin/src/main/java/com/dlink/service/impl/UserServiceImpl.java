@@ -4,7 +4,9 @@ import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.stp.StpUtil;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.assertion.Asserts;
@@ -185,14 +187,14 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         if (userRoles.size() == 0) {
             return Result.failed("用户未绑定角色");
         }
-        List<Integer> roleIds = new ArrayList<>();
+        Set<Integer> roleIds = new HashSet<>();
         userRoles.forEach(userRole -> roleIds.add(userRole.getRoleId()));
 
         List<Role> roles = roleService.getRoleByIds(roleIds);
         if (roles.size() == 0) {
             return Result.failed("用户角色未绑定租户");
         }
-        List<Integer> tenantIds = new ArrayList<>();
+        Set<Integer> tenantIds = new HashSet<>();
         roles.forEach(role -> tenantIds.add(role.getTenantId()));
         List<Tenant> tenants = tenantService.getTenantByIds(tenantIds);
         return Result.succeed(tenants, "获取成功");

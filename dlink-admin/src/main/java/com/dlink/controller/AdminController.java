@@ -69,7 +69,7 @@ public class AdminController {
      * get tenant
      */
     @RequestMapping("/geTenants")
-    public Result getTenants(@RequestParam("") String username) {
+    public Result getTenants(@RequestParam("username") String username) {
         return userService.getTenants(username);
     }
 }

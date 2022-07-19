@@ -3,6 +3,7 @@ package com.dlink.service;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Set;
 
 import com.dlink.common.result.Result;
 import com.dlink.db.service.ISuperService;
@@ -21,6 +22,6 @@ public interface RoleService extends ISuperService<Role> {
 
     Result saveOrUpdateRole(JsonNode para);
 
-    List<Role> getRoleByIds(List<Integer> roleIds);
+    List<Role> getRoleByIds(Set<Integer> roleIds);
 
 }

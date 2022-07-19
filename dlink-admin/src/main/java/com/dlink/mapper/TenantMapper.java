@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Set;
 
 import com.dlink.db.mapper.SuperMapper;
 import com.dlink.model.Role;
@@ -14,5 +15,5 @@ import com.dlink.model.Tenant;
  */
 @Mapper
 public interface TenantMapper extends SuperMapper<Tenant> {
-    List<Tenant> getTenantByIds(@Param("tenantIds") List<Integer> tenantIds);
+    List<Tenant> getTenantByIds(@Param("tenantIds") Set<Integer> tenantIds);
 }

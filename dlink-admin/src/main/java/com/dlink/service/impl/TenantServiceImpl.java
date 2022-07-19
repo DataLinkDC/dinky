@@ -1,6 +1,7 @@
 package com.dlink.service.impl;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -96,7 +97,7 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> im
     }
 
     @Override
-    public List<Tenant> getTenantByIds(List<Integer> tenantIds) {
+    public List<Tenant> getTenantByIds(Set<Integer> tenantIds) {
         return baseMapper.getTenantByIds(tenantIds);
     }
 }

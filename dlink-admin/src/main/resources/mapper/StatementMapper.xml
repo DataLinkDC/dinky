@@ -11,10 +11,6 @@
         id,statement
     </sql>
 
-    <insert id="insert">
-        insert into dlink_task_statement (id,statement) values (#{id},#{statement})
-    </insert>
-
     <select id="selectForProTable" resultType="com.dlink.model.Task">
         select
         a.*

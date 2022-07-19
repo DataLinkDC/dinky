@@ -4,6 +4,7 @@ package com.dlink.service;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Set;
 
 import com.dlink.common.result.Result;
 import com.dlink.db.service.ISuperService;
@@ -39,6 +40,6 @@ public interface TenantService extends ISuperService<Tenant> {
      */
     boolean modifyTenant(Tenant tenant);
 
-    List<Tenant> getTenantByIds(List<Integer> tenantIds);
+    List<Tenant> getTenantByIds(Set<Integer> tenantIds);
 
 }
