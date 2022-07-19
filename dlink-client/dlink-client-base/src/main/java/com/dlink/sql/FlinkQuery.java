@@ -6,7 +6,7 @@ package com.dlink.sql;
  * @author wenmo
  * @since 2022/7/18 18:43
  **/
-public abstract class AbstractFlinkQuery {
+public class FlinkQuery {
 
     public static String separator() {
         return ";\r\n";
