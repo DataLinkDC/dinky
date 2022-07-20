@@ -13,6 +13,7 @@
         <module>dlink-flink</module>
         <module>dlink-common</module>
         <module>dlink-client</module>
+        <module>dlink-catalog</module>
         <module>dlink-gateway</module>
         <module>dlink-function</module>
         <module>dlink-metadata</module>
@@ -26,7 +27,6 @@
         <module>dlink-web</module>
         <module>dlink-admin</module>
         <module>dlink-assembly</module>
-        <module>dlink-catalog</module>
     </modules>
 
     <properties>
