@@ -22,8 +22,12 @@ package com.dlink.service.impl;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
@@ -38,8 +42,14 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import com.dlink.model.*;
+import com.dlink.service.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -77,42 +87,13 @@ import com.dlink.job.JobResult;
 import com.dlink.mapper.TaskMapper;
 import com.dlink.metadata.driver.Driver;
 import com.dlink.metadata.result.JdbcSelectResult;
-import com.dlink.model.AlertGroup;
-import com.dlink.model.AlertHistory;
-import com.dlink.model.AlertInstance;
-import com.dlink.model.Cluster;
-import com.dlink.model.DataBase;
-import com.dlink.model.History;
-import com.dlink.model.Jar;
-import com.dlink.model.JobHistory;
-import com.dlink.model.JobInfoDetail;
-import com.dlink.model.JobInstance;
-import com.dlink.model.JobLifeCycle;
-import com.dlink.model.JobStatus;
-import com.dlink.model.Savepoints;
-import com.dlink.model.Statement;
-import com.dlink.model.SystemConfiguration;
-import com.dlink.model.Task;
-import com.dlink.model.TaskVersion;
 import com.dlink.result.SqlExplainResult;
-import com.dlink.service.AlertGroupService;
-import com.dlink.service.AlertHistoryService;
-import com.dlink.service.ClusterConfigurationService;
-import com.dlink.service.ClusterService;
-import com.dlink.service.DataBaseService;
-import com.dlink.service.HistoryService;
-import com.dlink.service.JarService;
-import com.dlink.service.JobHistoryService;
-import com.dlink.service.JobInstanceService;
-import com.dlink.service.SavepointsService;
-import com.dlink.service.StatementService;
-import com.dlink.service.TaskService;
-import com.dlink.service.TaskVersionService;
 import com.dlink.utils.CustomStringJavaCompiler;
 import com.dlink.utils.JSONUtil;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.bean.BeanUtil;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 任务 服务实现类
@@ -145,6 +126,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private AlertHistoryService alertHistoryService;
     @Autowired
     private HistoryService historyService;
+    @Autowired
+    @Lazy
+    private CatalogueService catalogueService;
     @Resource
     private TaskVersionService taskVersionService;
 
@@ -825,6 +809,201 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     public Integer queryAllSizeByName(String name) {
 
         return baseMapper.queryAllSizeByName(name);
+    }
+
+    @Override
+    public String exportJsonByTaskId(Integer taskId) {
+        ObjectMapper mapper = new ObjectMapper();
+        Task task = getTaskInfoById(taskId);
+        if (Asserts.isNotNull(task.getClusterId())) {
+            Cluster cluster = clusterService.getById(task.getClusterId());
+            if (Asserts.isNotNull(cluster)) {
+                task.setClusterName(cluster.getName());
+            }
+        }
+        // path
+        JsonNode jsonNode = task.parseJsonNode(mapper);
+        ((ObjectNode)jsonNode).put("path",getTaskPathByTaskId(taskId));
+        // clusterConfigurationName
+        if (Asserts.isNotNull(task.getClusterConfigurationId())) {
+            ClusterConfiguration clusterConfiguration = clusterConfigurationService.getById(task.getClusterConfigurationId());
+            ((ObjectNode) jsonNode).put("clusterConfigurationName", Asserts.isNotNull(clusterConfiguration) ? clusterConfiguration.getName() : null);
+        }
+        // databaseName
+        if (Asserts.isNotNull(task.getDatabaseId())) {
+            DataBase dataBase = dataBaseService.getById(task.getDatabaseId());
+            ((ObjectNode) jsonNode).put("databaseName", Asserts.isNotNull(dataBase) ? dataBase.getName() : null);
+        }
+        // jarName
+        if (Asserts.isNotNull(task.getJarId())) {
+            Jar jar = jarService.getById(task.getJarId());
+            ((ObjectNode) jsonNode).put("jarName", Asserts.isNotNull(jar) ? jar.getName() : null);
+        }
+        // envName
+        if (Asserts.isNotNull(task.getEnvId())) {
+            Task envTask = getById(task.getEnvId());
+            ((ObjectNode) jsonNode).put("envName", Asserts.isNotNull(envTask) ? envTask.getName() : null);
+        }
+        // alertGroupName
+        if (Asserts.isNotNull(task.getAlertGroupId())) {
+            AlertGroup alertGroup = alertGroupService.getById(task.getAlertGroupId());
+            ((ObjectNode) jsonNode).put("alertGroupName", Asserts.isNotNull(alertGroup) ? alertGroup.getName() : null);
+        }
+        return jsonNode.toString();
+    }
+
+    @Override
+    public String exportJsonByTaskIds(JsonNode para) {
+        StringBuilder tasksJson = new StringBuilder();
+        tasksJson.append("[");
+        for (final JsonNode item : para.get("taskIds")) {
+            Integer id = item.asInt();
+            tasksJson.append(exportJsonByTaskId(id)+",");
+        }
+        tasksJson.deleteCharAt(tasksJson.length()-1);
+        tasksJson.append("]");
+        return tasksJson.toString();
+    }
+
+    @Override
+    public Result uploadTaskJson(MultipartFile file) throws Exception {
+        if (file == null || file.getSize() == 0) {
+            return Result.failed("上传失败，找不到文件");
+        }
+        String fileName = file.getOriginalFilename().split("\\.")[0];
+        if (file.isEmpty() || file.getSize() <= 0 || fileName == null || "".equals(fileName)) {
+            return Result.failed("传入的文件数据为空");
+        }
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonNode = mapper.readTree(getStrByJsonFile(file));
+        return buildTaskByJsonNode(jsonNode, mapper);
+    }
+
+    public Result buildTaskByJsonNode(JsonNode jsonNode,ObjectMapper mapper) throws JsonProcessingException {
+        List<JsonNode> jsonNodes = new ArrayList<>();
+        if (jsonNode.isArray()) {
+            for(JsonNode a: jsonNode){
+                /*if(a.get("dialect").asText().equals("FlinkSqlEnv")){
+                    jsonNodes.add(0,a);
+                }else{
+                    jsonNodes.add(a);
+                }*/
+                jsonNodes.add(a);
+            }
+        } else {
+            jsonNodes.add(jsonNode);
+        }
+        int errorNumber = 0;
+        List<Task> tasks = new ArrayList<>();
+        for(JsonNode json : jsonNodes){
+            Task task = mapper.treeToValue(json, Task.class);
+            if(Asserts.isNotNull(task.getClusterName())){
+                Cluster cluster = clusterService.getOne(new QueryWrapper<Cluster>().eq("name", task.getClusterName()));
+                if(Asserts.isNotNull(cluster)){
+                    task.setClusterId(cluster.getId());
+                }
+            }
+            if(Asserts.isNotNull(task.getClusterConfigurationName())){
+                ClusterConfiguration clusterConfiguration = clusterConfigurationService
+                        .getOne(new QueryWrapper<ClusterConfiguration>().eq("name", task.getClusterConfigurationName()));
+                if(Asserts.isNotNull(clusterConfiguration)){
+                    task.setClusterConfigurationId(clusterConfiguration.getId());
+                }
+            }
+            if(Asserts.isNotNull(task.getDatabaseName())){
+                DataBase dataBase = dataBaseService.getOne(new QueryWrapper<DataBase>().eq("name", task.getDatabaseName()));
+                if(Asserts.isNotNull(dataBase)){
+                    task.setDatabaseId(dataBase.getId());
+                }
+            }
+            if(Asserts.isNotNull(task.getJarName())){
+                Jar jar = jarService.getOne(new QueryWrapper<Jar>().eq("name", task.getJarName()));
+                if(Asserts.isNotNull(jar)){
+                    task.setJarId(jar.getId());
+                }
+            }
+            /*if(Asserts.isNotNull(task.getEnvName())){
+                Task task1 = getOne(new QueryWrapper<Task>().eq("name", task.getEnvName()));
+                if(Asserts.isNotNull(task1)){
+                    task.setEnvId(task1.getId());
+                }
+            }*/
+            if(Asserts.isNotNull(task.getAlertGroupName())){
+                AlertGroup alertGroup = alertGroupService.getOne(new QueryWrapper<AlertGroup>().eq("name", task.getAlertGroupName()));
+                if(Asserts.isNotNull(alertGroup)){
+                    task.setAlertGroupId(alertGroup.getId());
+                }
+            }
+            // 路径生成
+            String[] paths = task.getPath().split("/");
+            Integer parentId = catalogueService.addDependCatalogue(paths);
+            Task task1 = getOne(new QueryWrapper<Task>().eq("name", task.getName()));
+            if(Asserts.isNotNull(task1)){
+                errorNumber++;
+                continue;
+            }
+            Integer step = task.getStep();
+            this.saveOrUpdateTask(task);
+            if (!JobLifeCycle.CREATE.getValue().equals(step)){
+                task.setStep(step);
+                updateById(task);
+            }
+            if(Asserts.isNotNull(task.getEnvName())){
+                tasks.add(task);
+            }
+            Catalogue catalogue = new Catalogue(task.getAlias(),task.getId(),task.getDialect(),parentId,true);
+            catalogueService.saveOrUpdate(catalogue);
+        }
+        for(Task task: tasks){
+            Task task1 = getOne(new QueryWrapper<Task>().eq("name", task.getEnvName()));
+            if(Asserts.isNotNull(task1)){
+                task.setEnvId(task1.getId());
+                this.saveOrUpdateTask(task);
+            }
+        }
+        if (errorNumber > 0 && errorNumber == jsonNodes.size()) {
+            return Result.failed("一共" + jsonNodes.size() + "个作业,全部导入失败");
+        } else if(errorNumber > 0) {
+            return Result.failed("一共" + jsonNodes.size() + "个作业,其中成功导入" + (jsonNode.size() - errorNumber) + "个,失败" + errorNumber + "个");
+        }
+        return Result.succeed("成功导入" + jsonNodes.size() + "个作业");
+    }
+
+    public String getStrByJsonFile(MultipartFile jsonFile){
+        String jsonStr = "";
+        try {
+            Reader reader = new InputStreamReader(jsonFile.getInputStream(), StandardCharsets.UTF_8);
+            int ch = 0;
+            StringBuffer sb = new StringBuffer();
+            while ((ch = reader.read()) != -1) {
+                sb.append((char) ch);
+            }
+            reader.close();
+            jsonStr = sb.toString();
+            return jsonStr;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public String getTaskPathByTaskId(Integer taskId){
+        StringBuilder path = new StringBuilder();
+        path.append(getById(taskId).getAlias());
+        Catalogue catalogue = catalogueService.getOne(new QueryWrapper<Catalogue>().eq("task_id", taskId));
+        if(Asserts.isNull(catalogue)){
+            return path.toString();
+        }
+        int catalogueId = catalogue.getParentId();
+        do {
+            catalogue = catalogueService.getById(catalogueId);
+            if(Asserts.isNull(catalogue)){
+                return path.toString();
+            }
+            path.insert(0, catalogue.getName() + "/");
+            catalogueId = catalogue.getParentId();
+        } while (catalogueId != 0);
+        return path.toString();
     }
 
 

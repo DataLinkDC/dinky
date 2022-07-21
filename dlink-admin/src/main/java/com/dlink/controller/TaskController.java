@@ -30,6 +30,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -228,5 +229,30 @@ public class TaskController {
     public Result getTaskAPIAddress() {
         return Result.succeed(taskService.getTaskAPIAddress(), "重启成功");
     }
+
+    /**
+     * 导出json
+     */
+    @GetMapping(value = "/exportJsonByTaskId")
+    public Result exportJsonByTaskId(@RequestParam Integer id) {
+        return Result.succeed(taskService.exportJsonByTaskId(id),"获取成功");
+    }
+
+    /**
+     * 导出json数组
+     */
+    @PostMapping(value = "/exportJsonByTaskIds")
+    public Result exportJsonByTaskIds(@RequestBody JsonNode para) {
+        return Result.succeed(taskService.exportJsonByTaskIds(para),"获取成功");
+    }
+
+    /**
+     * json文件上传  导入task
+     */
+    @PostMapping(value="/uploadTaskJson")
+    public Result uploadTaskJson(@RequestParam("file") MultipartFile file) throws Exception {
+        return taskService.uploadTaskJson(file);
+    }
+
 }
 
