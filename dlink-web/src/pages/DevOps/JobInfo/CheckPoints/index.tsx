@@ -25,7 +25,8 @@ const CheckPoints = (props: any) => {
   const getOverview = () => {
     return (
       <>
-        {JSON.stringify(job?.jobHistory?.checkpoints).includes("errors") ?  <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/> :
+        {JSON.stringify(job?.jobHistory?.checkpoints).includes("errors") ?
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/> :
           <Descriptions bordered size="small" column={1}>
             <Descriptions.Item label="CheckPoint Counts">
               <Tag color="blue" title={"Total"}>
@@ -86,7 +87,8 @@ const CheckPoints = (props: any) => {
 
     return (
       <>
-        {JSON.stringify(job?.jobHistory?.checkpoints).includes("errors") ?  <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/> :
+        {JSON.stringify(job?.jobHistory?.checkpoints).includes("errors") ?
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/> :
           <Descriptions bordered size="small" column={1}>
             <Descriptions.Item label="End to End Duration">
               <Tag color="blue" title={"Max"}>
@@ -291,7 +293,8 @@ const CheckPoints = (props: any) => {
 
     return (
       <>
-        {JSON.stringify(job?.jobHistory?.checkpointsConfig).includes("errors") ?  <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/> :
+        {JSON.stringify(job?.jobHistory?.checkpointsConfig).includes("errors") ?
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/> :
           <Descriptions bordered size="small" column={1}>
             <Descriptions.Item label="Checkpointing Mode">
               <Tag color="blue" title={"Checkpointing Mode"}>
@@ -413,7 +416,11 @@ const CheckPoints = (props: any) => {
         <ProTable<SavePointInfo>
           columns={columns}
           style={{width: '100%'}}
-          request={(params, sorter, filter) => queryData(url, {taskId: job?.instance.taskId, ...params, sorter, filter})}
+          request={(params, sorter, filter) => queryData(url, {
+            taskId: job?.instance.taskId, ...params,
+            sorter,
+            filter
+          })}
           actionRef={actionRef}
           rowKey="id"
           pagination={{
@@ -427,6 +434,7 @@ const CheckPoints = (props: any) => {
   }
 
   return (<>
+    {(job?.jobHistory?.checkpoints || job?.jobHistory?.checkpointsConfig) &&
     <Tabs defaultActiveKey="overview" size="small" tabPosition="top" style={{
       border: "1px solid #f0f0f0",
     }}>
@@ -447,9 +455,9 @@ const CheckPoints = (props: any) => {
       </TabPane>
 
       <TabPane tab={<span>&nbsp; SavePoint &nbsp;</span>} key="savepoint">
-      {getSavePoint()}
-    </TabPane>
-    </Tabs>
+        {getSavePoint()}
+      </TabPane>
+    </Tabs>}
   </>)
 };
 
