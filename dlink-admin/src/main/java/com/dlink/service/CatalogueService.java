@@ -49,4 +49,6 @@ public interface CatalogueService extends ISuperService<Catalogue> {
     boolean moveCatalogue(Integer id, Integer parentId);
 
     boolean copyTask(Catalogue catalogue);
+
+    Integer addDependCatalogue(String[] catalogueNames);
 }

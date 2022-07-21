@@ -27,7 +27,9 @@ import com.dlink.assertion.Asserts;
 import com.dlink.db.model.SuperEntity;
 import com.dlink.job.JobConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -104,6 +106,23 @@ public class Task extends SuperEntity {
     @TableField(exist = false)
     private List<Map<String, String>> config = new ArrayList<>();
 
+    @TableField(exist = false)
+    private String path;
+
+    @TableField(exist = false)
+    private String jarName;
+
+    @TableField(exist = false)
+    private String clusterConfigurationName;
+
+    @TableField(exist = false)
+    private String databaseName;
+
+    @TableField(exist = false)
+    private String envName;
+
+    @TableField(exist = false)
+    private String alertGroupName;
 
     public List<Map<String, String>> parseConfig() {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -133,6 +152,32 @@ public class Task extends SuperEntity {
         boolean sts = Asserts.isNull(statementSet) ? false : statementSet;
         return new JobConfig(type, step, false, false, useRemote, clusterId, clusterConfigurationId,jid, getId(),
             alias, fg, sts, batchModel, checkPoint, parallelism, savePointStrategy, savePointPath, map);
+    }
+
+    public JsonNode parseJsonNode(){
+        ObjectMapper mapper = new ObjectMapper();
+        return parseJsonNode(mapper);
+    }
+    public JsonNode parseJsonNode(ObjectMapper mapper){
+        JsonNode jsonNode = mapper.createObjectNode();
+        ((ObjectNode)jsonNode).put("name",this.getName());
+        ((ObjectNode)jsonNode).put("alias",this.alias);
+        ((ObjectNode)jsonNode).put("dialect",this.dialect);
+        ((ObjectNode)jsonNode).put("type",this.type);
+        ((ObjectNode)jsonNode).put("statement",this.statement);
+        ((ObjectNode)jsonNode).put("checkPoint",this.checkPoint);
+        ((ObjectNode)jsonNode).put("savePointStrategy",this.savePointStrategy);
+        ((ObjectNode)jsonNode).put("savePointPath",this.savePointPath);
+        ((ObjectNode)jsonNode).put("parallelism",this.parallelism);
+        ((ObjectNode)jsonNode).put("fragment",this.fragment);
+        ((ObjectNode)jsonNode).put("statementSet",this.statementSet);
+        ((ObjectNode)jsonNode).put("batchModel",this.batchModel);
+        ((ObjectNode)jsonNode).put("clusterName",this.clusterName);
+        ((ObjectNode)jsonNode).put("configJson",this.configJson);
+        ((ObjectNode)jsonNode).put("note",this.note);
+        ((ObjectNode)jsonNode).put("step",this.step);
+        ((ObjectNode)jsonNode).put("enabled",this.getEnabled());
+        return jsonNode;
     }
 
 }
