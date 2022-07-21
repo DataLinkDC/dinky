@@ -21,8 +21,10 @@
 package com.dlink.service;
 
 import com.dlink.alert.AlertResult;
+import com.dlink.common.result.Result;
 import com.dlink.db.service.ISuperService;
 import com.dlink.model.AlertInstance;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.List;
 
@@ -37,4 +39,6 @@ public interface AlertInstanceService extends ISuperService<AlertInstance> {
     List<AlertInstance> listEnabledAll();
 
     AlertResult testAlert(AlertInstance alertInstance);
+
+    Result deleteAlertInstance(JsonNode para);
 }

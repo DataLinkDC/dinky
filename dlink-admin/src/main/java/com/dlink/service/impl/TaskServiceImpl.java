@@ -894,6 +894,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 String exceptionUrl = "http://" + jobManagerHost + "/#/job/" + jobInstance.getJid() + "/exceptions";
 
                 for (AlertInstance alertInstance : alertGroup.getInstances()) {
+                    if (alertInstance == null){
+                        continue;
+                    }
                     Map<String, String> map = JSONUtil.toMap(alertInstance.getParams());
                     if (map.get("msgtype").equals(ShowType.MARKDOWN.getValue())) {
                         alertMsg.setLinkUrl("[跳转至该任务的 FlinkWeb](" + linkUrl + ")");
