@@ -23,7 +23,9 @@ package com.dlink.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.dlink.assertion.Asserts;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.dto.CatalogueTaskDTO;
 import com.dlink.mapper.CatalogueMapper;
@@ -34,6 +36,7 @@ import com.dlink.model.Task;
 import com.dlink.service.CatalogueService;
 import com.dlink.service.StatementService;
 import com.dlink.service.TaskService;
+import org.apache.kafka.common.internals.Topic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -191,5 +194,25 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
 
         return this.save(catalogue);
 
+    }
+
+    @Override
+    public Integer addDependCatalogue(String[] catalogueNames){
+        Integer parentId = 0;
+        for (int i = 0; i < catalogueNames.length - 1; i++) {
+            String catalogueName = catalogueNames[i];
+            Catalogue catalogue = getOne(new QueryWrapper<Catalogue>().eq("name", catalogueName).eq("parent_id", parentId).last(" limit 1"));
+            if (Asserts.isNotNull(catalogue)) {
+                parentId = catalogue.getId();
+                continue;
+            }
+            catalogue = new Catalogue();
+            catalogue.setName(catalogueName);
+            catalogue.setParentId(parentId);
+            catalogue.setIsLeaf(false);
+            this.save(catalogue);
+            parentId = catalogue.getId();
+        }
+        return parentId;
     }
 }

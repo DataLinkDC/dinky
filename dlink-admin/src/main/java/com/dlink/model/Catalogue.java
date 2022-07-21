@@ -45,4 +45,15 @@ public class Catalogue extends SuperEntity {
     private Integer parentId;
 
     private Boolean isLeaf;
+
+    public Catalogue() {
+    }
+
+    public Catalogue(String name, Integer taskId, String type, Integer parentId, Boolean isLeaf) {
+        this.setName(name);
+        this.taskId = taskId;
+        this.type = type;
+        this.parentId = parentId;
+        this.isLeaf = isLeaf;
+    }
 }

@@ -22,11 +22,8 @@ package com.dlink.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.dlink.alert.Alert;
-import com.dlink.alert.AlertConfig;
-import com.dlink.alert.AlertMsg;
-import com.dlink.alert.AlertResult;
-import com.dlink.alert.ShowType;
+import com.dlink.alert.*;
+import com.dlink.assertion.Asserts;
 import com.dlink.common.result.Result;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.AlertInstanceMapper;
@@ -35,6 +32,7 @@ import com.dlink.model.AlertInstance;
 import com.dlink.service.AlertGroupService;
 import com.dlink.service.AlertInstanceService;
 import com.dlink.utils.JSONUtil;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
@@ -103,7 +101,6 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
         String title = "任务【"+alertMsg.getJobName()+"】：" +alertMsg.getJobStatus() + "!";
         return alert.send(title, alertMsg.toString());
     }
-
 
     @Override
     public Result deleteAlertInstance(JsonNode para) {
