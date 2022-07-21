@@ -99,7 +99,10 @@ public class Submiter {
         StringBuilder sb = new StringBuilder();
         Map<String, String> taskConfig = Submiter.getTaskConfig(id, dbConfig);
         if (Asserts.isNotNull(taskConfig.get("envId"))) {
-            sb.append(getFlinkSQLStatement(Integer.valueOf(taskConfig.get("envId")), dbConfig));
+            String envId = getFlinkSQLStatement(Integer.valueOf(taskConfig.get("envId")), dbConfig);
+            if (Asserts.isNotNullString(envId)) {
+                sb.append(envId);
+            }
             sb.append("\r\n");
         }
         sb.append(getFlinkSQLStatement(id, dbConfig));
