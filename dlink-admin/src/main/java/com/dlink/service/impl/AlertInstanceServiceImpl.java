@@ -22,8 +22,11 @@ package com.dlink.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.dlink.alert.*;
-import com.dlink.assertion.Asserts;
+import com.dlink.alert.Alert;
+import com.dlink.alert.AlertConfig;
+import com.dlink.alert.AlertMsg;
+import com.dlink.alert.AlertResult;
+import com.dlink.alert.ShowType;
 import com.dlink.common.result.Result;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.AlertInstanceMapper;
@@ -32,7 +35,6 @@ import com.dlink.model.AlertInstance;
 import com.dlink.service.AlertGroupService;
 import com.dlink.service.AlertInstanceService;
 import com.dlink.utils.JSONUtil;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
@@ -48,6 +50,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -131,6 +134,9 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
         }
         final Map<Integer, String> result = new HashMap<>(8);
         for (Map.Entry<Integer, Set<Integer>> entry : alertGroupInformation.entrySet()) {
+            if (entry.getKey() == null){
+                continue;
+            }
             final Set<Integer> groupIdSet = entry.getValue();
             for (Integer groupId : groupIdSet) {
                 final String instanceIdString = result.get(groupId);
@@ -138,18 +144,20 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
                         : instanceIdString + "," + entry.getKey());
             }
         }
-        updateAlertGroupInformation(result);
+        updateAlertGroupInformation(result, alertGroupInformation.get(null));
     }
 
-    private void updateAlertGroupInformation(Map<Integer, String> result) {
+    private void updateAlertGroupInformation(Map<Integer, String> result, Set<Integer> groupIdSet) {
         final LocalDateTime now = LocalDateTime.now();
-        final List<AlertGroup> list = result.entrySet().stream().map(entry -> {
-            final AlertGroup alertGroup = new AlertGroup();
-            alertGroup.setId(entry.getKey());
-            alertGroup.setAlertInstanceIds(entry.getValue());
-            alertGroup.setUpdateTime(now);
-            return alertGroup;
-        }).collect(Collectors.toList());
+        final List<AlertGroup> list = groupIdSet.stream().filter(Objects::nonNull)
+                .map(groupId -> {
+                    final AlertGroup alertGroup = new AlertGroup();
+                    alertGroup.setId(groupId);
+                    final String groupIds = result.get(groupId);
+                    alertGroup.setAlertInstanceIds(groupIds == null ? "" : groupIds);
+                    alertGroup.setUpdateTime(now);
+                    return alertGroup;
+                }).collect(Collectors.toList());
         alertGroupService.updateBatchById(list);
     }
 
@@ -162,9 +170,12 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
             return new HashMap<>(0);
         }
         final Map<Integer, Set<Integer>> map = new HashMap<>(list.size());
+        final Set<Integer> groupIdSet = new HashSet<>();
         for (AlertGroup alertGroup : list) {
             buildGroup(map, alertGroup);
+            groupIdSet.add(alertGroup.getId());
         }
+        map.put(null, groupIdSet);
         return map;
     }
 
