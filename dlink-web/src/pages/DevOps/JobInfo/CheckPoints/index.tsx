@@ -1,3 +1,23 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+
 import {Button, Descriptions, Empty, message, Modal, Tabs, Tag} from 'antd';
 import {
   CheckCircleOutlined,
@@ -10,11 +30,13 @@ import {
 import {parseByteStr, parseMilliSecondStr, parseSecondStr} from "@/components/Common/function";
 import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
 import {useRef} from "react";
-import {CheckPointsDetailInfo, SavePointInfo} from "@/pages/DevOps/data";
+import {CheckPointsDetailInfo} from "@/pages/DevOps/data";
 import {CODE, queryData} from "@/components/Common/crud";
 import {selectSavePointRestartTask} from "@/pages/DevOps/service";
 import {JOB_LIFE_CYCLE} from "@/components/Common/JobLifeCycle";
-import {history, useLocation} from 'umi';
+import {history} from 'umi';
+import {SavePointTableListItem} from "@/components/Studio/StudioRightTool/StudioSavePoint/data";
+import moment from "moment";
 
 const {TabPane} = Tabs;
 
@@ -22,57 +44,78 @@ const CheckPoints = (props: any) => {
 
   const {job} = props;
   const actionRef = useRef<ActionType>();
-  const getOverview = () => {
+
+  const JsonParseObject = (item : any ) =>{
+    return  JSON.parse(JSON.stringify(item))
+  }
+
+
+  const getOverview = (checkpoints: any) => {
+
+    let counts = JsonParseObject(checkpoints.counts)
+    let latest = JsonParseObject(checkpoints.latest)
+
     return (
       <>
         {JSON.stringify(job?.jobHistory?.checkpoints).includes("errors") ?
           <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/> :
           <Descriptions bordered size="small" column={1}>
             <Descriptions.Item label="CheckPoint Counts">
-              <Tag color="blue" title={"Total"}>
-                <RocketOutlined/> Total: {job?.jobHistory?.checkpoints['counts']['total']}
+              <Tag color="blue" title={"Total"} >
+                <RocketOutlined/> Total: {counts.total}
               </Tag>
               <Tag color="red" title={"Failed"}>
-                <CloseCircleOutlined/> Failed: {job?.jobHistory?.checkpoints['counts']['failed']}
+                <CloseCircleOutlined/> Failed: {counts.failed}
               </Tag>
               <Tag color="cyan" title={"Restored"}>
-                <ExclamationCircleOutlined/> Restored: {job?.jobHistory?.checkpoints['counts']['restored']}
+                <ExclamationCircleOutlined/> Restored: {counts.restored}
               </Tag>
               <Tag color="green" title={"Completed"}>
-                <CheckCircleOutlined/> Completed: {job?.jobHistory?.checkpoints['counts']['completed']}
+                <CheckCircleOutlined/> Completed: {counts.completed}
               </Tag>
               <Tag color="orange" title={"In Progress"}>
-                <SyncOutlined spin/> In Progress: {job?.jobHistory?.checkpoints['counts']['in_progress']}
+                <SyncOutlined spin/> In Progress: {counts.in_progress}
               </Tag>
             </Descriptions.Item>
 
             <Descriptions.Item label="Latest Completed CheckPoint">
               <Tag color="green" title={"Latest Completed CheckPoint"}>
-                {job?.jobHistory?.checkpoints['latest']['completed'] === null ? 'None' :
-                  job?.jobHistory?.checkpoints['latest']['completed']['external_path']
+                {latest.completed  === null ? 'None' :
+                  JsonParseObject(latest.completed).external_path
                 }
               </Tag>
             </Descriptions.Item>
 
             <Descriptions.Item label="Latest Failed CheckPoint">
+              {latest.failed === null ?
               <Tag color="red" title={"Latest Failed CheckPoint"}>
-                {job?.jobHistory?.checkpoints['latest']['failed'] === null ? 'None' :
-                  job?.jobHistory?.checkpoints['latest']['failed']['external_path']
-                }
-              </Tag>
+                {'None'}
+              </Tag> :
+                <>
+                  <Tag color="red" title={"Latest Failed CheckPoint"}>
+                    {"id： " + JsonParseObject(latest.failed).id}
+                  </Tag>
+                  <Tag color="red" title={"Latest Failed CheckPoint"}>
+                    { "Fail Time： " + moment(JsonParseObject(latest.failed).failure_timestamp).format('YYYY-MM-DD HH:mm:ss')}
+                </Tag>
+                  <Tag color="red" title={"Latest Failed CheckPoint"}>
+                    {"Cause： " + JsonParseObject(latest.failed).failure_message}
+                </Tag>
+                </>
+              }
             </Descriptions.Item>
 
             <Descriptions.Item label="Latest Restored">
               <Tag color="cyan" title={"Latest Restored"}>
-                {job?.jobHistory?.checkpoints['latest']['restored'] === null ? 'None' :
-                  job?.jobHistory?.checkpoints['latest']['restored']['external_path']}
+                {latest.restored === null ? 'None' :
+                  JsonParseObject(latest.restored).external_path}
               </Tag>
             </Descriptions.Item>
 
             <Descriptions.Item label="Latest Savepoint">
               <Tag color="purple" title={"Latest Savepoint"}>
-                {job?.jobHistory?.checkpoints['latest']['savepoint'] === null ? 'None' :
-                  job?.jobHistory?.checkpoints['latest']['savepoint']['external_path']
+                {latest.savepoint === null ? 'None' :
+                  JsonParseObject(latest.savepoint).external_path
                 }
               </Tag>
             </Descriptions.Item>
@@ -84,6 +127,13 @@ const CheckPoints = (props: any) => {
 
   const getSummary = () => {
 
+  const getSummary = (checkpoints : any) => {
+
+    let end_to_end_duration = JsonParseObject(JsonParseObject(checkpoints.summary)).end_to_end_duration
+    let state_size = JsonParseObject(JsonParseObject(checkpoints.summary)).state_size
+    let processed_data = JsonParseObject(JsonParseObject(checkpoints.summary)).processed_data
+    let persisted_data = JsonParseObject(JsonParseObject(checkpoints.summary)).persisted_data
+    let alignment_buffered = JsonParseObject(JsonParseObject(checkpoints.summary)).alignment_buffered
 
     return (
       <>
@@ -92,61 +142,61 @@ const CheckPoints = (props: any) => {
           <Descriptions bordered size="small" column={1}>
             <Descriptions.Item label="End to End Duration">
               <Tag color="blue" title={"Max"}>
-                <RocketOutlined/> Max: {parseSecondStr(job?.jobHistory?.checkpoints['summary']['end_to_end_duration']['max'])}
+                <RocketOutlined/> Max: {parseSecondStr(end_to_end_duration.max)}
               </Tag>
               <Tag color="green" title={"Min"}>
-                <RocketOutlined/> Min: {parseSecondStr(job?.jobHistory?.checkpoints['summary']['end_to_end_duration']['min'])}
+                <RocketOutlined/> Min: {parseSecondStr(end_to_end_duration.min)}
               </Tag>
               <Tag color="orange" title={"Avg"}>
-                <RocketOutlined/> Avg: {parseSecondStr(job?.jobHistory?.checkpoints['summary']['end_to_end_duration']['avg'])}
+                <RocketOutlined/> Avg: {parseSecondStr(end_to_end_duration.avg)}
               </Tag>
             </Descriptions.Item>
 
             <Descriptions.Item label="Checkpointed Data Size">
               <Tag color="blue" title={"Max"}>
-                <RocketOutlined/> Max: {parseByteStr(job?.jobHistory?.checkpoints['summary']['state_size']['max'])}
+                <RocketOutlined/> Max: {parseByteStr(state_size.max)}
               </Tag>
               <Tag color="green" title={"Min"}>
-                <RocketOutlined/> Min: {parseByteStr(job?.jobHistory?.checkpoints['summary']['state_size']['min'])}
+                <RocketOutlined/> Min: {parseByteStr(state_size.min)}
               </Tag>
               <Tag color="orange" title={"Avg"}>
-                <RocketOutlined/> Avg: {parseByteStr(job?.jobHistory?.checkpoints['summary']['state_size']['avg'])}
+                <RocketOutlined/> Avg: {parseByteStr(state_size.avg)}
               </Tag>
             </Descriptions.Item>
 
             <Descriptions.Item label="Processed (persisted) in-flight data">
               <Tag color="blue" title={"Max"}>
-                <RocketOutlined/> Max: {job?.jobHistory?.checkpoints['summary']['processed_data']['max']}
+                <RocketOutlined/> Max: {processed_data.max}
               </Tag>
               <Tag color="green" title={"Min"}>
-                <RocketOutlined/> Min: {job?.jobHistory?.checkpoints['summary']['processed_data']['min']}
+                <RocketOutlined/> Min: {processed_data.min}
               </Tag>
               <Tag color="orange" title={"Avg"}>
-                <RocketOutlined/> Avg: {job?.jobHistory?.checkpoints['summary']['processed_data']['avg']}
+                <RocketOutlined/> Avg: {processed_data.avg}
               </Tag>
             </Descriptions.Item>
 
             <Descriptions.Item label="Persisted data">
               <Tag color="blue" title={"Max"}>
-                <RocketOutlined/> Max: {job?.jobHistory?.checkpoints['summary']['persisted_data']['max']}
+                <RocketOutlined/> Max: {persisted_data.max}
               </Tag>
               <Tag color="green" title={"Min"}>
-                <RocketOutlined/> Min: {job?.jobHistory?.checkpoints['summary']['persisted_data']['min']}
+                <RocketOutlined/> Min: {persisted_data.min}
               </Tag>
               <Tag color="orange" title={"Avg"}>
-                <RocketOutlined/> Avg: {job?.jobHistory?.checkpoints['summary']['persisted_data']['avg']}
+                <RocketOutlined/> Avg: {persisted_data.avg}
               </Tag>
             </Descriptions.Item>
 
             <Descriptions.Item label="Alignment Buffered">
               <Tag color="blue" title={"Max"}>
-                <RocketOutlined/> Max: {job?.jobHistory?.checkpoints['summary']['alignment_buffered']['max']}
+                <RocketOutlined/> Max: {alignment_buffered.max}
               </Tag>
               <Tag color="green" title={"Min"}>
-                <RocketOutlined/> Min: {job?.jobHistory?.checkpoints['summary']['alignment_buffered']['min']}
+                <RocketOutlined/> Min: {alignment_buffered.min}
               </Tag>
               <Tag color="orange" title={"Avg"}>
-                <RocketOutlined/> Avg: {job?.jobHistory?.checkpoints['summary']['alignment_buffered']['avg']}
+                <RocketOutlined/> Avg: {alignment_buffered.avg}
               </Tag>
             </Descriptions.Item>
           </Descriptions>
@@ -163,8 +213,6 @@ const CheckPoints = (props: any) => {
       okText: '确认',
       cancelText: '取消',
       onOk: async () => {
-        // TODO: handleRecoveryCheckPoint
-        // await handleRecoveryCheckPoint('api/task/recoveryCheckPoint', [row]);
         const res = selectSavePointRestartTask(job?.instance?.taskId, job?.instance?.step == JOB_LIFE_CYCLE.ONLINE, row.external_path);
         res.then((result) => {
           if (result.code == CODE.SUCCESS) {
@@ -178,10 +226,10 @@ const CheckPoints = (props: any) => {
     });
   }
 
-  const getHistory = () => {
+  const getHistory = (checkpoints : any) => {
 
     const checkPointsList: CheckPointsDetailInfo[] = [];
-    job?.jobHistory?.checkpoints['history']?.forEach((entity: CheckPointsDetailInfo) => {
+    checkpoints?.history?.forEach((entity: CheckPointsDetailInfo) => {
         return checkPointsList.push({
           jobID: job?.id,
           historyID: job?.jobHistory.id,
@@ -258,7 +306,7 @@ const CheckPoints = (props: any) => {
         render: (dom, entity) => {
           return <>
             {entity.status === 'COMPLETED' ?
-              <Button title="暂不可用" onClick={() => recoveryCheckPoint(entity)}>此处恢复</Button> : undefined}
+              <Button  onClick={() => recoveryCheckPoint(entity)}>此处恢复</Button> : undefined}
           </>
         },
       },
@@ -289,8 +337,8 @@ const CheckPoints = (props: any) => {
   }
 
 
-  const getConfigraution = () => {
-
+  const getConfiguration = (checkpointsConfig : any) => {
+    let checkpointsConfigInfo = JsonParseObject(checkpointsConfig)
     return (
       <>
         {JSON.stringify(job?.jobHistory?.checkpointsConfig).includes("errors") ?
@@ -298,61 +346,61 @@ const CheckPoints = (props: any) => {
           <Descriptions bordered size="small" column={1}>
             <Descriptions.Item label="Checkpointing Mode">
               <Tag color="blue" title={"Checkpointing Mode"}>
-                {job?.jobHistory?.checkpointsConfig['mode'].toUpperCase()}
+                {checkpointsConfigInfo.mode.toUpperCase()}
               </Tag>
             </Descriptions.Item>
 
             <Descriptions.Item label="Checkpoint Storage">
               <Tag color="blue" title={"Checkpoint Storage"}>
-                {job?.jobHistory?.checkpointsConfig['checkpoint_storage'] ? job?.jobHistory?.checkpointsConfig['checkpoint_storage'] : 'Disabled'}
+                {checkpointsConfigInfo.checkpoint_storage ? checkpointsConfigInfo.checkpoint_storage  : 'Disabled'}
               </Tag>
             </Descriptions.Item>
 
             <Descriptions.Item label="State Backend">
               <Tag color="blue" title={"State Backend"}>
-                {job?.jobHistory?.checkpointsConfig['state_backend'] ? job?.jobHistory?.checkpointsConfig['state_backend'] : 'Disabled'}
+                {checkpointsConfigInfo.state_backend  ? checkpointsConfigInfo.state_backend : 'Disabled'}
               </Tag>
             </Descriptions.Item>
 
             <Descriptions.Item label="Interval">
               <Tag color="blue" title={"Interval"}>
-                {job?.jobHistory?.checkpointsConfig['interval']}
+                {checkpointsConfigInfo.interval }
               </Tag>
             </Descriptions.Item>
 
             <Descriptions.Item label="Timeout">
               <Tag color="blue" title={"Timeout"}>
-                {(job?.jobHistory?.checkpointsConfig['timeout'])}
+                {checkpointsConfigInfo.timeout}
               </Tag>
             </Descriptions.Item>
 
             <Descriptions.Item label="Minimum Pause Between Checkpoints">
               <Tag color="blue" title={"Minimum Pause Between Checkpoints"}>
-                {(job?.jobHistory?.checkpointsConfig['min_pause'])}
+                {checkpointsConfigInfo.min_pause}
               </Tag>
             </Descriptions.Item>
 
             <Descriptions.Item label="Maximum Concurrent Checkpoints">
               <Tag color="blue" title={"Maximum Concurrent Checkpoints"}>
-                {job?.jobHistory?.checkpointsConfig['max_concurrent']}
+                {checkpointsConfigInfo.max_concurrent}
               </Tag>
             </Descriptions.Item>
 
             <Descriptions.Item label="Unaligned Checkpoints ">
               <Tag color="blue" title={"Unaligned Checkpoints"}>
-                {job?.jobHistory?.checkpointsConfig['unaligned_checkpoints'] ? 'Enabled' : 'Disabled'}
+                {checkpointsConfigInfo.unaligned_checkpoints  ? 'Enabled' : 'Disabled'}
               </Tag>
             </Descriptions.Item>
 
             <Descriptions.Item label="Persist Checkpoints Externally Enabled">
               <Tag color="blue" title={"Persist Checkpoints Externally Enabled"}>
-                {job?.jobHistory?.checkpointsConfig['externalization']['enabled'] ? 'Enabled' : 'Disabled'}
+                {JsonParseObject(checkpointsConfigInfo.externalization).enabled ? 'Enabled' : 'Disabled'}
               </Tag>
             </Descriptions.Item>
-            {job?.jobHistory?.checkpointsConfig['externalization']['enabled'] && (
+            {JsonParseObject(checkpointsConfigInfo.externalization).enabled && (
               <Descriptions.Item label="Delete On Cancellation">
                 <Tag color="blue" title={"Delete On Cancellation"}>
-                  {job?.jobHistory?.checkpointsConfig['externalization']['delete_on_cancellation'] ? 'Enabled' : 'Disabled'}
+                  { JsonParseObject(checkpointsConfigInfo.externalization).delete_on_cancellation ? 'Enabled' : 'Disabled'}
                 </Tag>
               </Descriptions.Item>
             )}
@@ -360,7 +408,7 @@ const CheckPoints = (props: any) => {
 
             <Descriptions.Item label="Tolerable Failed Checkpoints">
               <Tag color="blue" title={"Tolerable Failed Checkpoints"}>
-                {job?.jobHistory?.checkpointsConfig['tolerable_failed_checkpoints']}
+                {checkpointsConfigInfo.tolerable_failed_checkpoints}
               </Tag>
             </Descriptions.Item>
           </Descriptions>
@@ -373,7 +421,7 @@ const CheckPoints = (props: any) => {
   function getSavePoint() {
     const url = '/api/savepoints';
 
-    const columns: ProColumns<SavePointInfo>[] = [
+    const columns: ProColumns<SavePointTableListItem>[] = [
       {
         title: 'ID',
         align: 'center',
@@ -413,7 +461,7 @@ const CheckPoints = (props: any) => {
 
     return (
       <>
-        <ProTable<SavePointInfo>
+        <ProTable<SavePointTableListItem>
           columns={columns}
           style={{width: '100%'}}
           request={(params, sorter, filter) => queryData(url, {
@@ -439,19 +487,27 @@ const CheckPoints = (props: any) => {
       border: "1px solid #f0f0f0",
     }}>
       <TabPane tab={<span>&nbsp; Overview &nbsp;</span>} key="overview">
-        {getOverview()}
+        { !JSON.stringify(job?.jobHistory?.checkpoints).includes("errors") ?
+          getOverview(JsonParseObject(job?.jobHistory?.checkpoints)) :
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
       </TabPane>
 
       <TabPane tab={<span>&nbsp; History &nbsp;</span>} key="history">
-        {getHistory()}
+        {getHistory(JsonParseObject(job?.jobHistory?.checkpoints))}
       </TabPane>
 
       <TabPane tab={<span>&nbsp; Summary &nbsp;</span>} key="summary">
-        {getSummary()}
+        { !JSON.stringify(job?.jobHistory?.checkpoints).includes("errors") ?
+          getSummary(JsonParseObject(job?.jobHistory?.checkpoints)) :
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
+        }
       </TabPane>
 
-      <TabPane tab={<span>&nbsp; Configraution &nbsp;</span>} key="configraution">
-        {getConfigraution()}
+      <TabPane tab={<span>&nbsp; Configuration &nbsp;</span>} key="configuration">
+        { !JSON.stringify(job?.jobHistory?.checkpointsConfig).includes("errors") ?
+          getConfiguration(JsonParseObject(job?.jobHistory?.checkpointsConfig)) :
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
+        }
       </TabPane>
 
       <TabPane tab={<span>&nbsp; SavePoint &nbsp;</span>} key="savepoint">
