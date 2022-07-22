@@ -33,7 +33,7 @@ const DataMap = (props: any) => {
     setData(undefined);
     const res = getLineage(job.instance?.id);
     res.then((result)=>{
-      result.datas.tables.forEach(table => {
+      result.datas?.tables.forEach(table => {
         table.isExpand = true;
         table.isFold = false;
       });
