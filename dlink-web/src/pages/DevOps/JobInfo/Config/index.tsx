@@ -26,9 +26,10 @@ const {Text, Link} = Typography;
 const Config = (props: any) => {
 
   const {job} = props;
+  // @ts-ignore
   return (<>
     {
-      job?.jobHistory?.config && <>
+      job?.history && <>
         <>
           <Descriptions bordered size="small" title={"Dinky Job Configuration"}>
             <Descriptions.Item label="执行模式">{job?.history?.type ? (
@@ -66,39 +67,39 @@ const Config = (props: any) => {
           </Descriptions>
         </>
         <br/><br/>
-        <>
+        {job?.jobHistory?.config && <>
           {!JSON.stringify(job?.jobHistory?.config).includes("errors") &&
-          <Descriptions bordered size="small" title={"Flink Job Configuration"}>
-            <Descriptions.Item label="Execution Mode">
-              <Tag color="blue" title={"Execution Mode"}>
-                {job?.jobHistory?.config['execution-config']['execution-mode']}
-              </Tag>
-            </Descriptions.Item>
-            <Descriptions.Item label="Restart Strategy">
-              <Tag color="blue" title={"Restart Strategy"}>
-                {job?.jobHistory?.config['execution-config']['restart-strategy']}
-              </Tag>
-            </Descriptions.Item>
+            <Descriptions bordered size="small" title={"Flink Job Configuration"}>
+              <Descriptions.Item label="Execution Mode">
+                <Tag color="blue" title={"Execution Mode"}>
+                  {job?.jobHistory?.config['execution-config']['execution-mode']}
+                </Tag>
+              </Descriptions.Item>
+              <Descriptions.Item label="Restart Strategy">
+                <Tag color="blue" title={"Restart Strategy"}>
+                  {job?.jobHistory?.config['execution-config']['restart-strategy']}
+                </Tag>
+              </Descriptions.Item>
 
-            <Descriptions.Item label="Job Parallelism">
-              <Tag color="blue" title={"Job Parallelism"}>
-                {job?.jobHistory?.config['execution-config']['job-parallelism']}
-              </Tag>
-            </Descriptions.Item>
+              <Descriptions.Item label="Job Parallelism">
+                <Tag color="blue" title={"Job Parallelism"}>
+                  {job?.jobHistory?.config['execution-config']['job-parallelism']}
+                </Tag>
+              </Descriptions.Item>
 
-            <Descriptions.Item label="Object Reuse Mode">
-              <Tag color="blue" title={"Object Reuse Mode"}>
-                {job?.jobHistory?.config['execution-config']['object-reuse-mode'].toString()}
-              </Tag>
-            </Descriptions.Item>
+              <Descriptions.Item label="Object Reuse Mode">
+                <Tag color="blue" title={"Object Reuse Mode"}>
+                  {job?.jobHistory?.config['execution-config']['object-reuse-mode'].toString()}
+                </Tag>
+              </Descriptions.Item>
 
-            <Descriptions.Item label="Flink User Configuration" span={3}>
-              <Text
-                code>{JSON.stringify(job?.jobHistory?.config['execution-config']['user-config'])}</Text>
-            </Descriptions.Item>
-          </Descriptions>
+              <Descriptions.Item label="Flink User Configuration" span={3}>
+                <Text
+                  code>{JSON.stringify(job?.jobHistory?.config['execution-config']['user-config'])}</Text>
+              </Descriptions.Item>
+            </Descriptions>
           }
-        </>
+        </>}
       </>
     }
   </>)
