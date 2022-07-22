@@ -26,78 +26,81 @@ const {Text, Link} = Typography;
 const Config = (props: any) => {
 
   const {job} = props;
-
   return (<>
-    <>
-      <Descriptions bordered size="small" title={"Dinky Job Configuration"}>
-      <Descriptions.Item label="执行模式">{job?.history?.type ? (
-        <Tag color="blue" key={job?.history?.type}>
-          <RocketOutlined/> {job?.history?.type}
-        </Tag>
-      ) : undefined}
-      </Descriptions.Item>
-      <Descriptions.Item label="集群实例">
-        {job?.cluster?.alias ? <Link>{job?.cluster?.alias}</Link> : '-'}
-      </Descriptions.Item>
-      <Descriptions.Item label="集群配置">
-        {job?.clusterConfiguration?.alias ? <Link>{job?.clusterConfiguration?.alias}</Link> : '-'}
-      </Descriptions.Item>
-      <Descriptions.Item label="共享会话">
-        {job?.history?.session ? <Link>{job?.history?.session}</Link> : '禁用'}
-      </Descriptions.Item>
-      <Descriptions.Item label="片段机制">{job?.history?.config.useSqlFragment ? '启用' : '禁用'}</Descriptions.Item>
-      <Descriptions.Item label="语句集">{job?.history?.config.useStatementSet ? '启用' : '禁用'}</Descriptions.Item>
-      <Descriptions.Item label="任务类型">{job?.history?.config.isJarTask ? 'Jar' : 'FlinkSQL'}</Descriptions.Item>
-      <Descriptions.Item label="批模式">{job?.history?.config.useBatchModel ? '启用' : '禁用'}</Descriptions.Item>
-      <Descriptions.Item label="CheckPoint">{job?.history?.config.checkpoint}</Descriptions.Item>
-      <Descriptions.Item label="SavePoint机制">
-        {job?.history?.config.savePointStrategy == 'NONE' ? '禁用' :
-          job?.history?.config.savePointStrategy == 'LATEST' ? '最近一次' :
-            job?.history?.config.savePointStrategy == 'EARLIEST' ? '最早一次' :
-              job?.history?.config.savePointStrategy == 'CUSTOM' ? '指定一次' : '禁用'}
-      </Descriptions.Item>
-      <Descriptions.Item label="SavePoint" span={2}>{job?.history?.config.savePointPath}</Descriptions.Item>
-      {job?.jar ? <>
-        <Descriptions.Item label="Jar 路径">{job?.jar?.path}</Descriptions.Item>
-        <Descriptions.Item label="Jar 主类">{job?.jar?.mainClass}</Descriptions.Item>
-        <Descriptions.Item label="Jar 入参">{job?.jar?.paras}</Descriptions.Item>
-      </> : undefined}
-    </Descriptions>
-    </>
-    <br/><br/>
-    <>
-      { ! JSON.stringify(job?.jobHistory?.config).includes("errors") &&
-        <Descriptions bordered size="small" title={"Flink Job Configuration"}>
-          <Descriptions.Item label="Execution Mode">
-            <Tag color="blue" title={"Execution Mode"}>
-              {job?.jobHistory?.config['execution-config']['execution-mode']}
-            </Tag>
-          </Descriptions.Item>
-          <Descriptions.Item label="Restart Strategy">
-            <Tag color="blue" title={"Restart Strategy"}>
-              {job?.jobHistory?.config['execution-config']['restart-strategy']}
-            </Tag>
-          </Descriptions.Item>
+    {
+      job?.jobHistory?.config && <>
+        <>
+          <Descriptions bordered size="small" title={"Dinky Job Configuration"}>
+            <Descriptions.Item label="执行模式">{job?.history?.type ? (
+              <Tag color="blue" key={job?.history?.type}>
+                <RocketOutlined/> {job?.history?.type}
+              </Tag>
+            ) : undefined}
+            </Descriptions.Item>
+            <Descriptions.Item label="集群实例">
+              {job?.cluster?.alias ? <Link>{job?.cluster?.alias}</Link> : '-'}
+            </Descriptions.Item>
+            <Descriptions.Item label="集群配置">
+              {job?.clusterConfiguration?.alias ? <Link>{job?.clusterConfiguration?.alias}</Link> : '-'}
+            </Descriptions.Item>
+            <Descriptions.Item label="共享会话">
+              {job?.history?.session ? <Link>{job?.history?.session}</Link> : '禁用'}
+            </Descriptions.Item>
+            <Descriptions.Item label="片段机制">{job?.history?.config.useSqlFragment ? '启用' : '禁用'}</Descriptions.Item>
+            <Descriptions.Item label="语句集">{job?.history?.config.useStatementSet ? '启用' : '禁用'}</Descriptions.Item>
+            <Descriptions.Item label="任务类型">{job?.history?.config.isJarTask ? 'Jar' : 'FlinkSQL'}</Descriptions.Item>
+            <Descriptions.Item label="批模式">{job?.history?.config.useBatchModel ? '启用' : '禁用'}</Descriptions.Item>
+            <Descriptions.Item label="CheckPoint">{job?.history?.config.checkpoint}</Descriptions.Item>
+            <Descriptions.Item label="SavePoint机制">
+              {job?.history?.config.savePointStrategy == 'NONE' ? '禁用' :
+                job?.history?.config.savePointStrategy == 'LATEST' ? '最近一次' :
+                  job?.history?.config.savePointStrategy == 'EARLIEST' ? '最早一次' :
+                    job?.history?.config.savePointStrategy == 'CUSTOM' ? '指定一次' : '禁用'}
+            </Descriptions.Item>
+            <Descriptions.Item label="SavePoint" span={2}>{job?.history?.config.savePointPath}</Descriptions.Item>
+            {job?.jar ? <>
+              <Descriptions.Item label="Jar 路径">{job?.jar?.path}</Descriptions.Item>
+              <Descriptions.Item label="Jar 主类">{job?.jar?.mainClass}</Descriptions.Item>
+              <Descriptions.Item label="Jar 入参">{job?.jar?.paras}</Descriptions.Item>
+            </> : undefined}
+          </Descriptions>
+        </>
+        <br/><br/>
+        <>
+          {!JSON.stringify(job?.jobHistory?.config).includes("errors") &&
+          <Descriptions bordered size="small" title={"Flink Job Configuration"}>
+            <Descriptions.Item label="Execution Mode">
+              <Tag color="blue" title={"Execution Mode"}>
+                {job?.jobHistory?.config['execution-config']['execution-mode']}
+              </Tag>
+            </Descriptions.Item>
+            <Descriptions.Item label="Restart Strategy">
+              <Tag color="blue" title={"Restart Strategy"}>
+                {job?.jobHistory?.config['execution-config']['restart-strategy']}
+              </Tag>
+            </Descriptions.Item>
 
-          <Descriptions.Item label="Job Parallelism">
-            <Tag color="blue" title={"Job Parallelism"}>
-              {job?.jobHistory?.config['execution-config']['job-parallelism']}
-            </Tag>
-          </Descriptions.Item>
+            <Descriptions.Item label="Job Parallelism">
+              <Tag color="blue" title={"Job Parallelism"}>
+                {job?.jobHistory?.config['execution-config']['job-parallelism']}
+              </Tag>
+            </Descriptions.Item>
 
-          <Descriptions.Item label="Object Reuse Mode">
-            <Tag color="blue" title={"Object Reuse Mode"}>
-              {job?.jobHistory?.config['execution-config']['object-reuse-mode'].toString()}
-            </Tag>
-          </Descriptions.Item>
+            <Descriptions.Item label="Object Reuse Mode">
+              <Tag color="blue" title={"Object Reuse Mode"}>
+                {job?.jobHistory?.config['execution-config']['object-reuse-mode'].toString()}
+              </Tag>
+            </Descriptions.Item>
 
-          <Descriptions.Item label="Flink User Configuration" span={3}>
-            <Text
-              code>{JSON.stringify(job?.jobHistory?.config['execution-config']['user-config'])}</Text>
-          </Descriptions.Item>
-        </Descriptions>
-      }
-    </>
+            <Descriptions.Item label="Flink User Configuration" span={3}>
+              <Text
+                code>{JSON.stringify(job?.jobHistory?.config['execution-config']['user-config'])}</Text>
+            </Descriptions.Item>
+          </Descriptions>
+          }
+        </>
+      </>
+    }
   </>)
 };
 

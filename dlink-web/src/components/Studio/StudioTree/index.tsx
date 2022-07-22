@@ -20,14 +20,21 @@
 
 import React, {useEffect, useState, Key} from "react";
 import {connect} from "umi";
-import {DownOutlined, SwitcherOutlined, FolderAddOutlined} from "@ant-design/icons";
-import {Tree, Menu, Empty, Button, message, Modal, Tooltip, Row, Col, Input} from 'antd';
+import {DownOutlined, SwitcherOutlined, FolderAddOutlined, UploadOutlined, DownloadOutlined} from "@ant-design/icons";
+import {Tree, Menu, Empty, Button, message, Modal, Tooltip, Row, Col, Input, Upload} from 'antd';
+import type { UploadProps } from 'antd';
 import {getCatalogueTreeData} from "@/pages/DataStudio/service";
 import {convertToTreeData, getTreeNodeByKey, TreeDataNode} from "@/components/Studio/StudioTree/Function";
 import style from "./index.less";
 import {StateType} from "@/pages/DataStudio/model";
 import {
-  getInfoById, handleAddOrUpdate, handleAddOrUpdateWithResult, handleOption, handleRemoveById, handleSubmit
+  handleData,
+  getInfoById,
+  handleAddOrUpdate,
+  handleAddOrUpdateWithResult,
+  handleOption,
+  handleRemoveById,
+  handleSubmit, CODE, postAll,
 } from "@/components/Common/crud";
 import UpdateCatalogueForm from './components/UpdateCatalogueForm';
 import SimpleTaskForm from "@/components/Studio/StudioTree/components/SimpleTaskForm";
@@ -104,6 +111,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
   const [searchValue, setSearchValue] = useState('');
   const [autoExpandParent, setAutoExpandParent] = useState(true);
   const [cutId, setCutId] = useState<number | undefined>(undefined);
+  const [exportTaskIds, setExportTaskIds] = useState<any[]>([]);
 
   const getTreeData = async () => {
     const result = await getCatalogueTreeData();
@@ -123,6 +131,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     //默认展开所有
     setExpandedKeys(expendList || []);
     setDefaultExpandedKeys(expendList || []);
+    setExportTaskIds([]);
   };
 
   const onChange = (e: any) => {
@@ -192,6 +201,8 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       toPaste(rightClickNode);
     } else if (key == 'Copy') {
       toCopy(rightClickNode);
+    }else if (key == 'ExportJson') {
+      toExportJson(rightClickNode);
     }
   };
 
@@ -340,6 +351,54 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     }
   };
 
+  const toExportJson = async (node: TreeDataNode | undefined) => {
+    let taskId = node?.taskId;
+    const datas = await handleData('/api/task/exportJsonByTaskId',{id:taskId});
+    if (datas) {
+      let data = JSON.parse(datas);
+      saveJSON(data,data.alias);
+      message.success('导出json成功');
+    }
+  };
+
+  const toExportSelectedTaskJson = async () => {
+    if (exportTaskIds.length <= 0) {
+      message.warn("请先选择要导出的作业");
+    } else {
+      try {
+        const {code, datas, msg} = await postAll('/api/task/exportJsonByTaskIds', {taskIds:exportTaskIds});
+        if (code == CODE.SUCCESS) {
+          saveJSON(datas);
+          message.success('导出json成功');
+        } else {
+          message.warn(msg);
+        }
+      } catch (error) {
+        message.error('获取失败，请重试');
+      }
+    }
+  }
+
+  const saveJSON = (data:any, filename?:any) => {
+    if (!data) {
+      message.error("保存的json数据为空");
+      return;
+    }
+    if (!filename)
+      filename = new Date().toLocaleDateString().replaceAll("/", "-");
+    if (typeof data === 'object') {
+      data = JSON.stringify(data, undefined, 4)
+    }
+    let blob = new Blob([data], {type: 'text/json'}),
+      e = document.createEvent('MouseEvents'),
+      a = document.createElement('a')
+    a.download = filename + '.json'
+    a.href = window.URL.createObjectURL(blob)
+    a.dataset.downloadurl = ['text/json', a.download, a.href].join(':')
+    e.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
+    a.dispatchEvent(e)
+  }
+
   const createTask = (node: TreeDataNode | undefined) => {
     if (!node?.isLeaf) {
       handleUpdateTaskModalVisible(true);
@@ -384,6 +443,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       menuItems = (<>
         <Menu.Item key='Open'>{'打开'}</Menu.Item>
         <Menu.Item key='Submit'>{'异步提交'}</Menu.Item>
+        <Menu.Item key='ExportJson'>{'导出Json'}</Menu.Item>
         <Menu.Item key='Rename'>{'重命名'}</Menu.Item>
         <Menu.Item key='Copy'>{'复制'}</Menu.Item>
         <Menu.Item key='Cut'>{'剪切'}</Menu.Item>
@@ -462,6 +522,13 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       });
       toOpen(e.node);
     }
+    let taskIds = [];
+    for (let i = 0; i < e.selectedNodes.length; i++) {
+      if(e.selectedNodes[i].isLeaf){
+        taskIds.push(e.selectedNodes[i].taskId);
+      }
+    }
+    setExportTaskIds(taskIds);
   };
 
   const offExpandAll = () => {
@@ -517,6 +584,27 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       };
     });
 
+  const uProps: UploadProps = {
+    name: 'file',
+    action: '/api/task/uploadTaskJson',
+    accept: 'application/json',
+    headers: {
+      authorization: 'authorization-text',
+    },
+    onChange(info) {
+      if (info.file.status === 'done') {
+        if(info.file.response.code == CODE.SUCCESS){
+          message.success(info.file.response.msg);
+        }else{
+          message.warn(info.file.response.msg);
+        }
+        getTreeData();
+      } else if (info.file.status === 'error') {
+        message.error(`${info.file.name} 上传失败`);
+      }
+    },
+  };
+
   return (
     <div className={style.tree_div}>
       <Row>
@@ -535,6 +623,21 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
               onClick={offExpandAll}
             />
           </Tooltip>
+          <Tooltip title="导出json">
+            <Button
+              type="text"
+              icon={<DownloadOutlined />}
+              onClick={toExportSelectedTaskJson}
+            />
+          </Tooltip>
+          <Upload {...uProps}>
+            <Tooltip title="导入json">
+              <Button
+                type="text"
+                icon={<UploadOutlined/>}
+              />
+            </Tooltip>
+          </Upload>
         </Col>
       </Row>
       <Search style={{marginBottom: 8}} placeholder="Search" onChange={onChange} allowClear={true}/>

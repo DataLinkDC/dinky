@@ -32,6 +32,8 @@ import com.dlink.service.JobHistoryService;
 import com.dlink.utils.JSONUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import java.util.Objects;
+
 /**
  * JobHistoryServiceImpl
  *
@@ -92,7 +94,8 @@ public class JobHistoryServiceImpl extends SuperServiceImpl<JobHistoryMapper, Jo
         try {
             JsonNode jobInfo = FlinkAPI.build(jobManagerHost).getJobInfo(jobId);
             if(jobInfo.has(FlinkRestResultConstant.ERRORS)){
-                return jobHistory;
+                final JobHistory dbHistory = getById(id);
+                return Objects.isNull(dbHistory) ? jobHistory : dbHistory;
             }
             JsonNode exception = FlinkAPI.build(jobManagerHost).getException(jobId);
             JsonNode checkPoints = FlinkAPI.build(jobManagerHost).getCheckPoints(jobId);

@@ -208,6 +208,21 @@ export const handleOption = async (url:string,title:string,param:any) => {
   }
 };
 
+export const handleData = async (url:string,id:any) => {
+  try {
+    const {code,datas,msg} = await getData(url,id);
+    if(code == CODE.SUCCESS){
+      return datas;
+    }else{
+      message.warn(msg);
+      return false;
+    }
+  } catch (error) {
+    message.error('获取失败，请重试');
+    return false;
+  }
+};
+
 export const handleInfo = async (url:string,id:number) => {
   try {
     const {datas} = await getInfoById(url,id);

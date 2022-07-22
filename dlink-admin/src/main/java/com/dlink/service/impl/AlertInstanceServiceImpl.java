@@ -20,20 +20,40 @@
 
 package com.dlink.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.dlink.alert.*;
+import com.dlink.alert.Alert;
+import com.dlink.alert.AlertConfig;
+import com.dlink.alert.AlertMsg;
+import com.dlink.alert.AlertResult;
+import com.dlink.alert.ShowType;
+import com.dlink.common.result.Result;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.AlertInstanceMapper;
+import com.dlink.model.AlertGroup;
 import com.dlink.model.AlertInstance;
+import com.dlink.service.AlertGroupService;
 import com.dlink.service.AlertInstanceService;
 import com.dlink.utils.JSONUtil;
+import com.fasterxml.jackson.databind.JsonNode;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * AlertInstanceServiceImpl
@@ -43,6 +63,10 @@ import java.util.UUID;
  **/
 @Service
 public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapper, AlertInstance> implements AlertInstanceService {
+
+    @Autowired
+    private AlertGroupService alertGroupService;
+
     @Override
     public List<AlertInstance> listEnabledAll() {
         return list(new QueryWrapper<AlertInstance>().eq("enabled", 1));
@@ -78,5 +102,98 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
         }
         String title = "任务【"+alertMsg.getJobName()+"】：" +alertMsg.getJobStatus() + "!";
         return alert.send(title, alertMsg.toString());
+    }
+
+
+    @Override
+    public Result deleteAlertInstance(JsonNode para) {
+        if (para.size() > 0) {
+            final Map<Integer, Set<Integer>> alertGroupInformation = getAlertGroupInformation();
+            final List<Integer> error = new ArrayList<>();
+            for (final JsonNode item : para) {
+                Integer id = item.asInt();
+                if (!this.removeById(id)) {
+                    error.add(id);
+                }
+                alertGroupInformation.remove(id);
+            }
+            writeBackGroupInformation(alertGroupInformation);
+            if (error.size() == 0) {
+                return Result.succeed("删除成功");
+            } else {
+                return Result.succeed("删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
+            }
+        } else {
+            return Result.failed("请选择要删除的记录");
+        }
+    }
+
+    private void writeBackGroupInformation(Map<Integer, Set<Integer>> alertGroupInformation){
+        if (MapUtils.isEmpty(alertGroupInformation)){
+            return;
+        }
+        final Map<Integer, String> result = new HashMap<>(8);
+        for (Map.Entry<Integer, Set<Integer>> entry : alertGroupInformation.entrySet()) {
+            if (entry.getKey() == null){
+                continue;
+            }
+            final Set<Integer> groupIdSet = entry.getValue();
+            for (Integer groupId : groupIdSet) {
+                final String instanceIdString = result.get(groupId);
+                result.put(groupId, instanceIdString == null ? "" + entry.getKey()
+                        : instanceIdString + "," + entry.getKey());
+            }
+        }
+        updateAlertGroupInformation(result, alertGroupInformation.get(null));
+    }
+
+    private void updateAlertGroupInformation(Map<Integer, String> result, Set<Integer> groupIdSet) {
+        final LocalDateTime now = LocalDateTime.now();
+        final List<AlertGroup> list = groupIdSet.stream().filter(Objects::nonNull)
+                .map(groupId -> {
+                    final AlertGroup alertGroup = new AlertGroup();
+                    alertGroup.setId(groupId);
+                    final String groupIds = result.get(groupId);
+                    alertGroup.setAlertInstanceIds(groupIds == null ? "" : groupIds);
+                    alertGroup.setUpdateTime(now);
+                    return alertGroup;
+                }).collect(Collectors.toList());
+        alertGroupService.updateBatchById(list);
+    }
+
+
+    private Map<Integer, Set<Integer>> getAlertGroupInformation(){
+        final LambdaQueryWrapper<AlertGroup> select = new LambdaQueryWrapper<AlertGroup>()
+                .select(AlertGroup::getId, AlertGroup::getAlertInstanceIds);
+        final List<AlertGroup> list = alertGroupService.list(select);
+        if (CollectionUtils.isEmpty(list)){
+            return new HashMap<>(0);
+        }
+        final Map<Integer, Set<Integer>> map = new HashMap<>(list.size());
+        final Set<Integer> groupIdSet = new HashSet<>();
+        for (AlertGroup alertGroup : list) {
+            buildGroup(map, alertGroup);
+            groupIdSet.add(alertGroup.getId());
+        }
+        map.put(null, groupIdSet);
+        return map;
+    }
+
+    private void buildGroup(Map<Integer, Set<Integer>> map, AlertGroup alertGroup) {
+        if (StringUtils.isBlank(alertGroup.getAlertInstanceIds())){
+            return;
+        }
+        for (String instanceId : alertGroup.getAlertInstanceIds().split(",")) {
+            if (StringUtils.isBlank(instanceId)){
+                continue;
+            }
+            final Integer instanceIdInt = Integer.valueOf(instanceId);
+            Set<Integer> groupIdSet = map.get(instanceIdInt);
+            if (CollectionUtils.isEmpty(groupIdSet)){
+                groupIdSet = new HashSet<>();
+                map.put(instanceIdInt, groupIdSet);
+            }
+            groupIdSet.add(alertGroup.getId());
+        }
     }
 }

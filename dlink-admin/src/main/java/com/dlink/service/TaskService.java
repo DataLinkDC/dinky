@@ -29,6 +29,8 @@ import com.dlink.model.JobInfoDetail;
 import com.dlink.model.JobInstance;
 import com.dlink.model.Task;
 import com.dlink.result.SqlExplainResult;
+import com.fasterxml.jackson.databind.JsonNode;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -85,4 +87,10 @@ public interface TaskService extends ISuperService<Task> {
     Result rollbackTask(TaskRollbackVersionDTO dto);
 
     Integer queryAllSizeByName(String name);
+
+    String exportJsonByTaskId(Integer taskId);
+
+    String exportJsonByTaskIds(JsonNode para);
+
+    Result uploadTaskJson(MultipartFile file) throws Exception;
 }

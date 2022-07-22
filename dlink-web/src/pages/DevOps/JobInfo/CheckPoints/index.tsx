@@ -45,8 +45,8 @@ const CheckPoints = (props: any) => {
   const {job} = props;
   const actionRef = useRef<ActionType>();
 
-  const JsonParseObject = (item : any ) =>{
-    return  JSON.parse(JSON.stringify(item))
+  const JsonParseObject = (item: any) => {
+    return JSON.parse(JSON.stringify(item))
   }
 
 
@@ -57,9 +57,11 @@ const CheckPoints = (props: any) => {
 
     return (
       <>
+        {JSON.stringify(job?.jobHistory?.checkpoints).includes("errors") ?
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/> :
           <Descriptions bordered size="small" column={1}>
             <Descriptions.Item label="CheckPoint Counts">
-              <Tag color="blue" title={"Total"} >
+              <Tag color="blue" title={"Total"}>
                 <RocketOutlined/> Total: {counts.total}
               </Tag>
               <Tag color="red" title={"Failed"}>
@@ -78,7 +80,7 @@ const CheckPoints = (props: any) => {
 
             <Descriptions.Item label="Latest Completed CheckPoint">
               <Tag color="green" title={"Latest Completed CheckPoint"}>
-                {latest.completed  === null ? 'None' :
+                {latest.completed === null ? 'None' :
                   JsonParseObject(latest.completed).external_path
                 }
               </Tag>
@@ -86,19 +88,19 @@ const CheckPoints = (props: any) => {
 
             <Descriptions.Item label="Latest Failed CheckPoint">
               {latest.failed === null ?
-              <Tag color="red" title={"Latest Failed CheckPoint"}>
-                {'None'}
-              </Tag> :
+                <Tag color="red" title={"Latest Failed CheckPoint"}>
+                  {'None'}
+                </Tag> :
                 <>
                   <Tag color="red" title={"Latest Failed CheckPoint"}>
                     {"id： " + JsonParseObject(latest.failed).id}
                   </Tag>
                   <Tag color="red" title={"Latest Failed CheckPoint"}>
-                    { "Fail Time： " + moment(JsonParseObject(latest.failed).failure_timestamp).format('YYYY-MM-DD HH:mm:ss')}
-                </Tag>
+                    {"Fail Time： " + moment(JsonParseObject(latest.failed).failure_timestamp).format('YYYY-MM-DD HH:mm:ss')}
+                  </Tag>
                   <Tag color="red" title={"Latest Failed CheckPoint"}>
                     {"Cause： " + JsonParseObject(latest.failed).failure_message}
-                </Tag>
+                  </Tag>
                 </>
               }
             </Descriptions.Item>
@@ -118,12 +120,12 @@ const CheckPoints = (props: any) => {
               </Tag>
             </Descriptions.Item>
           </Descriptions>
+        }
       </>
     )
   }
 
-
-  const getSummary = (checkpoints : any) => {
+  const getSummary = (checkpoints: any) => {
 
     let end_to_end_duration = JsonParseObject(JsonParseObject(checkpoints.summary)).end_to_end_duration
     let state_size = JsonParseObject(JsonParseObject(checkpoints.summary)).state_size
@@ -133,6 +135,8 @@ const CheckPoints = (props: any) => {
 
     return (
       <>
+        {JSON.stringify(job?.jobHistory?.checkpoints).includes("errors") ?
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/> :
           <Descriptions bordered size="small" column={1}>
             <Descriptions.Item label="End to End Duration">
               <Tag color="blue" title={"Max"}>
@@ -194,6 +198,7 @@ const CheckPoints = (props: any) => {
               </Tag>
             </Descriptions.Item>
           </Descriptions>
+        }
       </>
     )
   }
@@ -219,7 +224,7 @@ const CheckPoints = (props: any) => {
     });
   }
 
-  const getHistory = (checkpoints : any) => {
+  const getHistory = (checkpoints: any) => {
 
     const checkPointsList: CheckPointsDetailInfo[] = [];
     checkpoints?.history?.forEach((entity: CheckPointsDetailInfo) => {
@@ -299,7 +304,7 @@ const CheckPoints = (props: any) => {
         render: (dom, entity) => {
           return <>
             {entity.status === 'COMPLETED' ?
-              <Button  onClick={() => recoveryCheckPoint(entity)}>此处恢复</Button> : undefined}
+              <Button onClick={() => recoveryCheckPoint(entity)}>此处恢复</Button> : undefined}
           </>
         },
       },
@@ -330,10 +335,12 @@ const CheckPoints = (props: any) => {
   }
 
 
-  const getConfiguration = (checkpointsConfig : any) => {
+  const getConfiguration = (checkpointsConfig: any) => {
     let checkpointsConfigInfo = JsonParseObject(checkpointsConfig)
     return (
       <>
+        {JSON.stringify(job?.jobHistory?.checkpointsConfig).includes("errors") ?
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/> :
           <Descriptions bordered size="small" column={1}>
             <Descriptions.Item label="Checkpointing Mode">
               <Tag color="blue" title={"Checkpointing Mode"}>
@@ -343,19 +350,19 @@ const CheckPoints = (props: any) => {
 
             <Descriptions.Item label="Checkpoint Storage">
               <Tag color="blue" title={"Checkpoint Storage"}>
-                {checkpointsConfigInfo.checkpoint_storage ? checkpointsConfigInfo.checkpoint_storage  : 'Disabled'}
+                {checkpointsConfigInfo.checkpoint_storage ? checkpointsConfigInfo.checkpoint_storage : 'Disabled'}
               </Tag>
             </Descriptions.Item>
 
             <Descriptions.Item label="State Backend">
               <Tag color="blue" title={"State Backend"}>
-                {checkpointsConfigInfo.state_backend  ? checkpointsConfigInfo.state_backend : 'Disabled'}
+                {checkpointsConfigInfo.state_backend ? checkpointsConfigInfo.state_backend : 'Disabled'}
               </Tag>
             </Descriptions.Item>
 
             <Descriptions.Item label="Interval">
               <Tag color="blue" title={"Interval"}>
-                {checkpointsConfigInfo.interval }
+                {checkpointsConfigInfo.interval}
               </Tag>
             </Descriptions.Item>
 
@@ -379,7 +386,7 @@ const CheckPoints = (props: any) => {
 
             <Descriptions.Item label="Unaligned Checkpoints ">
               <Tag color="blue" title={"Unaligned Checkpoints"}>
-                {checkpointsConfigInfo.unaligned_checkpoints  ? 'Enabled' : 'Disabled'}
+                {checkpointsConfigInfo.unaligned_checkpoints ? 'Enabled' : 'Disabled'}
               </Tag>
             </Descriptions.Item>
 
@@ -391,7 +398,7 @@ const CheckPoints = (props: any) => {
             {JsonParseObject(checkpointsConfigInfo.externalization).enabled && (
               <Descriptions.Item label="Delete On Cancellation">
                 <Tag color="blue" title={"Delete On Cancellation"}>
-                  { JsonParseObject(checkpointsConfigInfo.externalization).delete_on_cancellation ? 'Enabled' : 'Disabled'}
+                  {JsonParseObject(checkpointsConfigInfo.externalization).delete_on_cancellation ? 'Enabled' : 'Disabled'}
                 </Tag>
               </Descriptions.Item>
             )}
@@ -403,6 +410,7 @@ const CheckPoints = (props: any) => {
               </Tag>
             </Descriptions.Item>
           </Descriptions>
+        }
       </>
     )
   }
@@ -454,7 +462,11 @@ const CheckPoints = (props: any) => {
         <ProTable<SavePointTableListItem>
           columns={columns}
           style={{width: '100%'}}
-          request={(params, sorter, filter) => queryData(url, {taskId: job?.instance.taskId, ...params, sorter, filter})}
+          request={(params, sorter, filter) => queryData(url, {
+            taskId: job?.instance.taskId, ...params,
+            sorter,
+            filter
+          })}
           actionRef={actionRef}
           rowKey="id"
           pagination={{
@@ -468,11 +480,12 @@ const CheckPoints = (props: any) => {
   }
 
   return (<>
+    {(job?.jobHistory?.checkpoints || job?.jobHistory?.checkpointsConfig) &&
     <Tabs defaultActiveKey="overview" size="small" tabPosition="top" style={{
       border: "1px solid #f0f0f0",
     }}>
       <TabPane tab={<span>&nbsp; Overview &nbsp;</span>} key="overview">
-        { !JSON.stringify(job?.jobHistory?.checkpoints).includes("errors") ?
+        {!JSON.stringify(job?.jobHistory?.checkpoints).includes("errors") ?
           getOverview(JsonParseObject(job?.jobHistory?.checkpoints)) :
           <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
       </TabPane>
@@ -482,24 +495,23 @@ const CheckPoints = (props: any) => {
       </TabPane>
 
       <TabPane tab={<span>&nbsp; Summary &nbsp;</span>} key="summary">
-        { !JSON.stringify(job?.jobHistory?.checkpoints).includes("errors") ?
+        {!JSON.stringify(job?.jobHistory?.checkpoints).includes("errors") ?
           getSummary(JsonParseObject(job?.jobHistory?.checkpoints)) :
           <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
         }
       </TabPane>
 
       <TabPane tab={<span>&nbsp; Configuration &nbsp;</span>} key="configuration">
-        { !JSON.stringify(job?.jobHistory?.checkpointsConfig).includes("errors") ?
+        {!JSON.stringify(job?.jobHistory?.checkpointsConfig).includes("errors") ?
           getConfiguration(JsonParseObject(job?.jobHistory?.checkpointsConfig)) :
           <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
         }
       </TabPane>
 
       <TabPane tab={<span>&nbsp; SavePoint &nbsp;</span>} key="savepoint">
-      {getSavePoint()}
-    </TabPane>
-    </Tabs>
+        {getSavePoint()}
+      </TabPane>
+    </Tabs>}
   </>)
 };
-
 export default CheckPoints;
