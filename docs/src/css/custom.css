@@ -1,0 +1,167 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+:root {
+  --ifm-color-primary: #2e8555;
+  --ifm-color-primary-dark: #29784c;
+  --ifm-color-primary-darker: #277148;
+  --ifm-color-primary-darkest: #205d3b;
+  --ifm-color-primary-light: #33925d;
+  --ifm-color-primary-lighter: #359962;
+  --ifm-color-primary-lightest: #3cad6e;
+  --ifm-code-font-size: 95%;
+}
+
+/* For readability concerns, you should choose a lighter palette in dark mode. */
+[data-theme='dark'] {
+  --ifm-color-primary: #25c2a0;
+  --ifm-color-primary-dark: #21af90;
+  --ifm-color-primary-darker: #1fa588;
+  --ifm-color-primary-darkest: #1a8870;
+  --ifm-color-primary-light: #29d5b0;
+  --ifm-color-primary-lighter: #32d8b4;
+  --ifm-color-primary-lightest: #4fddbf;
+}
+
+.docusaurus-highlight-code-line {
+  background-color: rgba(0, 0, 0, 0.1);
+  display: block;
+  margin: 0 calc(-1 * var(--ifm-pre-padding));
+  padding: 0 var(--ifm-pre-padding);
+}
+
+[data-theme='dark'] .docusaurus-highlight-code-line {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.structure .image img{
+  width:90%;
+  margin-left: 2rem;
+  margin-right:2rem;
+}
+.structure .text{
+  width:50%;
+  font-family: PingFangSC-Medium;
+  text-align:left ;
+}
+.title {
+  margin-top: 50px;
+  color: #0e0e0e;
+  text-align:left;
+  font-size:1.9rem;
+  font-family:PingFangSC-Medium
+}
+.sub-title {
+  width:100%;
+  text-align:left;
+  font-family:PingFangSC-Light;
+  font-size:1.3rem;
+  color: #0a0a0a;
+  padding:0;
+  line-height:1.8rem
+}
+.description {
+  width:100%;
+  margin:0 auto;
+  font-size:1.4rem;
+  color: #030303;
+  opacity:.6;
+  padding:1.3rem 0 0
+}
+.action-button {
+  margin-top:2rem;
+  display:inline-block;
+  font-size:1rem;
+  color:#5169ac;
+  border:1px solid #5169ac;
+  padding:.4rem 2.8rem;
+  transition:background-color .1s ease;
+  box-sizing:border-box;
+}
+.action-button:hover {
+  color:#fff;
+  background-color:#5169ac;
+  text-decoration:none;
+}
+
+
+.container .desc{
+  width: 100%;
+  high: auto;
+  display:flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.container .hero__title{
+  font-size:2.5rem;
+  font-family:PingFangSC-Medium;
+  color:#fff;
+  text-align:center;
+  margin-bottom:1rem;
+}
+.container .desc_left{
+  width:50%;
+}
+.container .desc_left .hero__title{
+  font-size:2.5rem;
+  font-family:PingFangSC-Medium;
+  color:#fff;
+  text-align:center;
+  margin-bottom:1rem;
+}
+.container .desc_left .hero__subtitle{
+  text-align:center;
+  margin-bottom:1rem;
+}
+
+.container .desc .desc_left .hero_desc{
+  text-align:center;
+  margin-bottom:1rem;
+}
+
+.container .desc .desc_right{
+  display:flex;
+  position: relative;
+  width:100%;
+  height: 20%;
+}
+.container  .desc .desc_right img .fly_svg{
+  width:100%;
+  height:40%;
+}
+/*a:link {color: blue; text-decoration:none;} !*  未访问：蓝色、无下划线  *!*/
+/*a:active { color: red; } !* //激活：红色 *!*/
+/*a:visited {color:purple;text-decoration:none;} !* //已访问：紫色、无下划线 *!*/
+a:hover {color: #05b7b2; text-decoration:none;}  /* //鼠标移近：有颜色、无下划线  */
+/*a:hover { text-decoration:none;}  !* //鼠标移近：无下划线  *!*/
+
+h2.blogPostTitle_node_modules-\@docusaurus-theme-classic-lib-next-theme-BlogPostItem-styles-module a {
+  font-size: 1.3rem;
+}
+h1.blogPostTitle_node_modules-\@docusaurus-theme-classic-lib-next-theme-BlogPostItem-styles-module{
+  font-size: 1.8rem;
+}
