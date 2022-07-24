@@ -23,6 +23,7 @@ SET `key` = `value`;
 - [Flink1.13](https://nightlies.apache.org/flink/flink-docs-release-1.13/docs/dev/table/config/#overview)
 
 - [Flink1.14](https://nightlies.apache.org/flink/flink-docs-release-1.14/docs/dev/table/config/#overview)
+- [Flink1.15](https://nightlies.apache.org/flink/flink-docs-release-1.15/docs/dev/table/config/#overview)
 
 :::warning 注意事项
 
