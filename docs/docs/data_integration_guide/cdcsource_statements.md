@@ -37,6 +37,22 @@ Dinky 提供了各式各样的 sink 方式，通过修改语句参数可以实�
 
 CDCSOURCE 语句用于将上游指定数据库的所有表的数据采用一个任务同步到下游系统。
 
+:::warning **Yarn Session**, **Standalone** 模式下 注意事项
+在**Yarn Session**, **Standalone** 模式下,使用整库同步需要将 dlink 的一些依赖放入 Flink/lib 下, 依赖如下:
+1. jar/dlink-client-base-${version}.jar
+2. jar/dlink-common-${version}.jar
+3. lib/dlink-client-${version}.jar
+
+注意: 放入 Flink/lib 下后需要重启 Flink 集群
+:::
+
+:::warning **Pre Job**, **Application** 模式下 注意事项
+在**Pre Job**, **Application** 模式下,使用整库同步需要将 dlink 的一些依赖放入 HDFS, 依赖如下:
+1. jar/dlink-client-base-${version}.jar
+2. jar/dlink-common-${version}.jar
+3. lib/dlink-client-${version}.jar
+:::
+
 ### 语法结构
 
 ```sql

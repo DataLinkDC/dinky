@@ -41,3 +41,5 @@ docs/node_modules
 docs/.cache-loader
 docs/package-lock.json
 docs/build
+docs/yarn.lock
+docs/*.log

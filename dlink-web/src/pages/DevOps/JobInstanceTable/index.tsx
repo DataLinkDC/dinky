@@ -173,7 +173,7 @@ const JobInstanceTable = (props: any) => {
       headerTitle={`上次更新时间：${moment(time).format('HH:mm:ss')}`}
       polling={status==activeKey?3000:undefined}
       pagination={{
-        pageSize: 5,
+        pageSize: 10,
       }}
       onRow={ record => {
         return {

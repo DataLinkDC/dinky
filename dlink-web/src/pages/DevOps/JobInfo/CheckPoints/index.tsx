@@ -233,6 +233,7 @@ const CheckPoints = (props: any) => {
           historyID: job?.jobHistory.id,
           id: entity.id,
           status: entity.status,
+          checkpoint_type: entity.checkpoint_type,
           end_to_end_duration: entity.end_to_end_duration,
           external_path: entity.external_path,
           latest_ack_timestamp: entity.latest_ack_timestamp,
@@ -272,6 +273,11 @@ const CheckPoints = (props: any) => {
         render: (dom, entity) => {
           return entity.end_to_end_duration === null ? 'None' : parseMilliSecondStr(entity.end_to_end_duration);
         },
+      },
+      {
+        title: '类型',
+        align: 'center',
+        dataIndex: 'checkpoint_type',
       },
       {
         title: '存储位置',

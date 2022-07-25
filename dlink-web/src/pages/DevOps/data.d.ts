@@ -145,6 +145,7 @@ export  type CheckPointsDetailInfo = {
   historyID: number,
   id: number,
   status: string,
+  checkpoint_type: string,
   end_to_end_duration: number,
   external_path : string,
   latest_ack_timestamp: number,
