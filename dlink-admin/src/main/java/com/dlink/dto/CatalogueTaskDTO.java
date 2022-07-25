@@ -14,6 +14,7 @@ import lombok.Setter;
 @Setter
 public class CatalogueTaskDTO {
     private Integer id;
+    private Integer tenantId;
     private Integer parentId;
     private boolean isLeaf;
     private String name;

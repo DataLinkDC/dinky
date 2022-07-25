@@ -34,6 +34,7 @@ import com.dlink.common.result.Result;
 import com.dlink.config.Dialect;
 import com.dlink.constant.FlinkRestResultConstant;
 import com.dlink.constant.NetConstant;
+import com.dlink.context.RequestContext;
 import com.dlink.daemon.task.DaemonFactory;
 import com.dlink.daemon.task.DaemonTaskConfig;
 import com.dlink.db.service.impl.SuperServiceImpl;
@@ -312,6 +313,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             if (task.getStatement() != null) {
                 Statement statement = new Statement();
                 statement.setId(task.getId());
+                statement.setTenantId(task.getTenantId());
                 statement.setStatement(task.getStatement());
                 statementService.updateById(statement);
             }
@@ -332,6 +334,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             if (task.getStatement() == null) {
                 task.setStatement("");
             }
+            statement.setTenantId(task.getTenantId());
             statement.setStatement(task.getStatement());
             statementService.insert(statement);
         }
@@ -346,10 +349,11 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public Task initDefaultFlinkSQLEnv() {
         String separator = SystemConfiguration.getInstances().getSqlSeparator();
+        Integer tenantId = (Integer) RequestContext.get();
         separator = separator.replace("\\r", "\r").replace("\\n", "\n");
         Task defaultFlinkSQLEnvTask = new Task();
-        defaultFlinkSQLEnvTask.setId(1);
-        defaultFlinkSQLEnvTask.setTenantId(1);
+        defaultFlinkSQLEnvTask.setId(tenantId);
+        defaultFlinkSQLEnvTask.setTenantId(tenantId);
         defaultFlinkSQLEnvTask.setName("dlink_default_catalog");
         defaultFlinkSQLEnvTask.setAlias("DefaultCatalog");
         defaultFlinkSQLEnvTask.setDialect(Dialect.FLINKSQLENV.getValue());
@@ -374,9 +378,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         defaultFlinkSQLEnvTask.setEnabled(true);
         saveOrUpdate(defaultFlinkSQLEnvTask);
         Statement statement = new Statement();
-        statement.setId(1);
-        statement.setTenantId(1);
-        statement.setTaskId(1);
+        statement.setId(defaultFlinkSQLEnvTask.getId());
+        statement.setTenantId(tenantId);
         statement.setStatement(sb.toString());
         statementService.saveOrUpdate(statement);
         return defaultFlinkSQLEnvTask;

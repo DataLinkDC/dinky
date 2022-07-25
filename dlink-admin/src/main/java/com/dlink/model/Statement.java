@@ -24,8 +24,5 @@ public class Statement implements Serializable {
 
     private Integer tenantId;
 
-    @TableField(value = "task_id")
-    private Integer taskId;
-
     private String statement;
 }

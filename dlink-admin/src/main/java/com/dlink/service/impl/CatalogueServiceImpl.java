@@ -51,11 +51,13 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     @Override
     public Catalogue createCatalogueAndTask(CatalogueTaskDTO catalogueTaskDTO) {
         Task task = new Task();
+        task.setTenantId(catalogueTaskDTO.getTenantId());
         task.setName(catalogueTaskDTO.getName());
         task.setAlias(catalogueTaskDTO.getAlias());
         task.setDialect(catalogueTaskDTO.getDialect());
         taskService.saveOrUpdateTask(task);
         Catalogue catalogue = new Catalogue();
+        catalogue.setTenantId(catalogueTaskDTO.getTenantId());
         catalogue.setName(catalogueTaskDTO.getAlias());
         catalogue.setIsLeaf(true);
         catalogue.setTaskId(task.getId());
@@ -94,6 +96,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             Task task = new Task();
             task.setId(oldCatalogue.getTaskId());
             task.setName(catalogue.getName());
+            task.setTenantId(catalogue.getTenantId());
             task.setAlias(catalogue.getName());
             taskService.updateById(task);
             this.updateById(catalogue);
@@ -157,8 +160,9 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         Statement statementServiceById = statementService.getById(catalogue.getTaskId());
         //新建作业的sql语句
         Statement statement = new Statement();
-        statement.setStatement(statementServiceById.getStatement());
         statement.setId(newTask.getId());
+        statement.setTenantId(newTask.getTenantId());
+        statement.setStatement(statementServiceById.getStatement());
         statementService.save(statement);
 
         Catalogue one = this.getOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, catalogue.getTaskId()));

@@ -35,8 +35,9 @@ public class ClusterController {
     @PutMapping
     public Result saveOrUpdate(@RequestBody Cluster cluster) throws Exception {
         cluster.setAutoRegisters(false);
+        Integer id = cluster.getId();
         clusterService.registersCluster(cluster);
-        return Result.succeed(Asserts.isNotNull(cluster.getId()) ? "修改成功" : "新增成功");
+        return Result.succeed(Asserts.isNotNull(id) ? "修改成功" : "新增成功");
     }
 
     /**

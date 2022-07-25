@@ -4,12 +4,12 @@ import com.dlink.assertion.Asserts;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
 import com.dlink.dto.ModifyPasswordDTO;
-import com.dlink.gateway.result.TestResult;
-import com.dlink.model.ClusterConfiguration;
 import com.dlink.model.User;
 import com.dlink.service.UserService;
 import com.fasterxml.jackson.databind.JsonNode;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -99,8 +99,9 @@ public class UserController {
     @PostMapping("/modifyPassword")
     public Result modifyPassword(@RequestBody ModifyPasswordDTO modifyPasswordDTO) {
         return userService.modifyPassword(modifyPasswordDTO.getUsername(), modifyPasswordDTO.getPassword(),
-                modifyPasswordDTO.getNewPassword());
+            modifyPasswordDTO.getNewPassword());
     }
+
     /**
      * give user grant role
      *
@@ -119,5 +120,15 @@ public class UserController {
     @PutMapping(value = "/removeGrantRole")
     public Result removeGrantRole(@RequestBody JsonNode para) {
         return userService.removeGrantRole(para);
+    }
+
+    /**
+     * get roles
+     *
+     * @return
+     */
+    @PostMapping(value = "/getRoles")
+    public Result getRoles(@RequestBody JsonNode para) {
+        return userService.getRoles(para);
     }
 }

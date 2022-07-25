@@ -24,4 +24,6 @@ public interface RoleService extends ISuperService<Role> {
 
     List<Role> getRoleByIds(Set<Integer> roleIds);
 
+    List<Role> getRoleByTenantIdAndIds(String tenantId, Set<Integer> roleIds);
+
 }

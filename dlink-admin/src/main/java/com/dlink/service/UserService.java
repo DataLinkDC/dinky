@@ -35,4 +35,5 @@ public interface UserService extends ISuperService<User> {
 
     Result getTenants(String username);
 
+    Result getRoles(JsonNode para);
 }

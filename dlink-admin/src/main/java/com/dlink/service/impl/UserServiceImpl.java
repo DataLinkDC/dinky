@@ -196,4 +196,17 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         List<Tenant> tenants = tenantService.getTenantByIds(tenantIds);
         return Result.succeed(tenants, "获取成功");
     }
+
+    @Override
+    public Result getRoles(JsonNode para) {
+        int userId = para.get("userId").asInt();
+        String tenantId = para.get("tenantId").asText();
+
+        List<UserRole> userRoles = userRoleService.getUserRoleByUserId(userId);
+        Set<Integer> roleIds = new HashSet<>();
+        userRoles.forEach(userRole -> roleIds.add(userRole.getRoleId()));
+
+        List<Role> roles = roleService.getRoleByTenantIdAndIds(tenantId, roleIds);
+        return Result.succeed(roles);
+    }
 }

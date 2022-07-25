@@ -509,12 +509,10 @@ CREATE TABLE `dlink_task_version` (
 -- ----------------------------
 DROP TABLE IF EXISTS `dlink_task_statement`;
 CREATE TABLE `dlink_task_statement`  (
-                                         `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+                                         `id` int(11) NOT NULL COMMENT 'ID',
                                          `tenant_id` int  not null comment '租户ID',
-                                         `task_id` int(11) NOT NULL COMMENT '作业ID ',
                                          `statement` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '语句',
-                                         PRIMARY KEY (`id`) USING BTREE,
-                                         UNIQUE KEY `dlink_task_statement_un` (`tenant_id`,`task_id`)
+                                         UNIQUE KEY `dlink_task_statement_un` (`tenant_id`,`id`)
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '语句' ROW_FORMAT = Dynamic;
 
 -- ----------------------------

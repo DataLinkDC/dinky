@@ -104,4 +104,9 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
         return baseMapper.getRoleByIds(roleIds);
     }
 
+    @Override
+    public List<Role> getRoleByTenantIdAndIds(String tenantId, Set<Integer> roleIds) {
+        return baseMapper.getRoleByTenantIdAndIds(tenantId, roleIds);
+    }
+
 }

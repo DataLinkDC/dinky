@@ -9,7 +9,8 @@
         <result property="note" column="note"/>
         <result property="createTime" column="create_time"/>
         <result property="updateTime" column="update_time"/>
-        <collection property="namespaces" ofType="com.dlink.model.Namespace" resultMap="namespaceResultMap"></collection>
+        <collection property="namespaces" ofType="com.dlink.model.Namespace"
+                    resultMap="namespaceResultMap"></collection>
     </resultMap>
     <resultMap id="namespaceResultMap" type="com.dlink.model.Namespace">
         <id property="id" column="id"/>
@@ -35,10 +36,10 @@
              , dn.create_time as dn_create_time
              , dn.update_time    dn_update_time
         from dlink_role dr
-                 join dlink_role_namespace drn
-                      on dr.id = drn.role_id
-                 join dlink_namespace dn
-                      on drn.namespace_id = dn.id
+        join dlink_role_namespace drn
+          on dr.id = drn.role_id
+        join dlink_namespace dn
+         on drn.namespace_id = dn.id
     </sql>
     <select id="selectForProTable" resultMap="roleResultMap">
         <include refid="role"></include>
@@ -66,18 +67,40 @@
     </select>
 
     <select id="getRoleByIds" resultType="com.dlink.model.Role">
-    select  id
-           ,tenant_id
-           ,role_code
-           ,role_name
-           ,is_delete
-           ,note
-           ,create_time
-           ,update_time
-       from dlink_role
-      where id in
-     <foreach collection="roleIds"  item="id" separator="," open="(" close=")" index="">
-           #{id}
-     </foreach>
+        select id
+              ,tenant_id
+              ,role_code
+              ,role_name
+              ,is_delete
+              ,note
+              ,create_time
+              ,update_time
+         from dlink_role
+        where role_id = in
+        <foreach collection="roleIds" item="id" separator="," open="(" close=")" index="">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="getRoleByTenantIdAndIds" resultType="com.dlink.model.Role">
+        select  id
+               ,tenant_id
+               ,role_code
+               ,role_name
+               ,is_delete
+               ,note
+               ,create_time
+               ,update_time
+          from dlink_role
+        <where>
+            1=1
+            <if test='tenantId!=null and tenantId!=""'>
+                and tenant_id = '${tenantId}'
+            </if>
+            and id in
+            <foreach collection="roleIds" item="id" separator="," open="(" close=")" index="">
+                #{id}
+            </foreach>
+        </where>
     </select>
 </mapper>
