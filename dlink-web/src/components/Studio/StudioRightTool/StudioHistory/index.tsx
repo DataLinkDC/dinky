@@ -83,7 +83,12 @@ const StudioHistory = (props: any) => {
           </div><br/>
           <Scrollbars style={{height: "98%"}}>
             <React.StrictMode>
-              <MonacoDiffEditor options={{readOnly: true}} language={"sql"} theme={"vs-dark"} original={originalValue} value={currentValue}/>
+              <MonacoDiffEditor  options={{
+                readOnly: true,
+                selectOnLineNumbers: true,
+                lineDecorationsWidth: 20,
+                mouseWheelZoom: true
+              }} language={"sql"} theme={"vs-dark"} original={originalValue} value={currentValue}/>
             </React.StrictMode>
           </Scrollbars>
         </Modal>
