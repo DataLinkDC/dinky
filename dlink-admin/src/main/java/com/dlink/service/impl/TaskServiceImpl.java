@@ -757,7 +757,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         jobInfoDetail.setJobHistory(jobHistory);
         String status = jobInfoDetail.getInstance().getStatus();
         boolean jobStatusChanged = false;
-        if (Asserts.isNull(jobInfoDetail.getJobHistory().getJob()) || Asserts.isNull(jobInfoDetail.getJobHistory().getJob())) {
+        if (Asserts.isNull(jobInfoDetail.getJobHistory().getJob())) {
             jobInfoDetail.getInstance().setStatus(JobStatus.UNKNOWN.getValue());
         } else {
             jobInfoDetail.getInstance().setDuration(jobInfoDetail.getJobHistory().getJob().get(FlinkRestResultConstant.JOB_DURATION).asLong() / 1000);
