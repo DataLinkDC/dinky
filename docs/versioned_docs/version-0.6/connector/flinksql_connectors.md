@@ -18,6 +18,7 @@ Dinky 实时计算平台支持支持 Flink 1.11、Flink 1.12、Flink 1.13、Flin
 - [Flink1.13](https://nightlies.apache.org/flink/flink-docs-release-1.13/docs/connectors/table/overview/)
 - [Flink1.14](https://nightlies.apache.org/flink/flink-docs-release-1.14/docs/connectors/table/overview/)
 - [Flink1.15](https://nightlies.apache.org/flink/flink-docs-release-1.15/docs/connectors/table/overview/)
+
 另外非 Flink 官网支持的 Connector 详见 github：
 
 - [Flink-CDC](https://github.com/ververica/flink-cdc-connectors/releases/)

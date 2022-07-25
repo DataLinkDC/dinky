@@ -23,6 +23,7 @@ title: Catalog 管理
 | Flink1.12  | 详见[Flink1.12](https://nightlies.apache.org/flink/flink-docs-release-1.12/dev/table/catalogs.html)说明 |
 | Flink1.13  | 详见[Flink1.13](https://nightlies.apache.org/flink/flink-docs-release-1.13/dev/table/catalogs.html)说明 |
 | Flink1.14  | 详见[Flink1.14](https://nightlies.apache.org/flink/flink-docs-release-1.14/dev/table/catalogs.html)说明 |
+| Flink1.15  | 详见[Flink1.15](https://nightlies.apache.org/flink/flink-docs-release-1.15/dev/table/catalogs.html)说明 |
 
 ### 前提条件
 
