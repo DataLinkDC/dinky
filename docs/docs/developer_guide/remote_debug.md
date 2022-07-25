@@ -189,6 +189,11 @@ hive-site.xml 需要使用到 Hive Catalog 时添加
 ![choose_addrepo_global](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/remote_debug/choose_addrepo_global.png)   
 ![create_repo](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/remote_debug/create_repo.png)
 
+:::warning 注意事项
+如果是整库同步场景下请将级别设置为全局库 ,模块选中所有 
+:::
+
+
 
 ### 启动 Yarn Session 集群
 

@@ -27,8 +27,6 @@ const Config = (props: any) => {
 
   const {job} = props;
   return (<>
-    {
-      job?.jobHistory?.config && <>
         <>
           <Descriptions bordered size="small" title={"Dinky Job Configuration"}>
             <Descriptions.Item label="执行模式">{job?.history?.type ? (
@@ -67,7 +65,7 @@ const Config = (props: any) => {
         </>
         <br/><br/>
         <>
-          {!JSON.stringify(job?.jobHistory?.config).includes("errors") &&
+          {(!JSON.stringify(job?.jobHistory?.config).includes("errors") && !job?.jobHistory?.config ) &&
           <Descriptions bordered size="small" title={"Flink Job Configuration"}>
             <Descriptions.Item label="Execution Mode">
               <Tag color="blue" title={"Execution Mode"}>
@@ -100,8 +98,7 @@ const Config = (props: any) => {
           }
         </>
       </>
-    }
-  </>)
+   )
 };
 
 export default Config;

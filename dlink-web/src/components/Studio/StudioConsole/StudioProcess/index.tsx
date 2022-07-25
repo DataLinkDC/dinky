@@ -18,16 +18,15 @@
  */
 
 
-import {Empty, Tag, Divider, Tooltip, message, Select, Button, Space, Modal,Dropdown,Menu} from "antd";
+import {Button, Divider, Dropdown, Empty, Menu, message, Modal, Select, Space, Tag, Tooltip} from "antd";
 import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
-import {useState} from "react";
-import {SearchOutlined,CheckCircleOutlined,SyncOutlined,CloseCircleOutlined,ClockCircleOutlined,MinusCircleOutlined,DownOutlined} from '@ant-design/icons';
+import React, {useState} from "react";
+import {DownOutlined, SearchOutlined} from '@ant-design/icons';
 import ProTable from '@ant-design/pro-table';
 import {cancelJob, savepointJob, showFlinkJobs} from "../../StudioEvent/DDL";
-import {ClusterTableListItem} from "@/pages/Cluster/data";
-import React from "react";
 import JobStatus from "@/components/Common/JobStatus";
+import {parseSecondStr} from "@/components/Common/function";
 
 const {Option} = Select;
 
@@ -110,9 +109,10 @@ const StudioProcess = (props: any) => {
       valueType: 'dateTime',
     }, {
       title: "耗时",
-      dataIndex: "duration",
       sorter: true,
-      valueType: 'second',
+      render: (_, row) => {
+        return (parseSecondStr(row.duration))
+      }
     }, {
       title: "tasks",
       dataIndex: "tasks",

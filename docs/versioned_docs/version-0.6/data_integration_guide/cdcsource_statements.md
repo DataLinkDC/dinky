@@ -17,7 +17,7 @@ Dinky 定义了 CDCSOURCE 整库同步的语法，该语法和 CDAS 作用相似
 
 ![source_merge](http://www.aiwenmo.com/dinky/docs/zh-CN/data_integration_guide/cdcsource_statementssource_merge.png)
 
-面对建立的数据库连接过多，Binlog 重复读取会造成源库的巨大压力，上文分享采用了 source 合并的优化，尝试合并同一作业中的 source，如果都是读的同一数据源，则会被合并成一个 source 节点。
+   面对建立的数据库连接过多，Binlog 重复读取会造成源库的巨大压力，上文分享采用了 source 合并的优化，尝试合并同一作业中的 source，如果都是读的同一数据源，则会被合并成一个 source 节点。
 
 ​    Dinky 采用的是只构建一个 source，然后根据 schema、database、table 进行分流处理，分别 sink 到对应的表。
 
@@ -45,6 +45,26 @@ dlink-client-1.1x-0.x.x.jar
 dlink-client-base-0.x.x.jar
 dlink-common-0.x.x.jar
 ```
+=======
+:::warning **Yarn Session**, **Standalone** 模式下 注意事项
+
+在**Yarn Session**, **Standalone** 模式下,使用整库同步需要将 dlink 的一些依赖放入 Flink/lib 下, 依赖如下:
+1. jar/dlink-client-base-${version}.jar
+2. jar/dlink-common-${version}.jar
+3. lib/dlink-client-${version}.jar
+
+注意: 放入 Flink/lib 下后需要重启 Flink 集群
+:::
+
+:::warning **Pre Job**, **Application** 模式下 注意事项
+
+
+
+在**Pre Job**, **Application** 模式下,使用整库同步需要将 dlink 的一些依赖放入 HDFS, 依赖如下:
+1. jar/dlink-client-base-${version}.jar
+2. jar/dlink-common-${version}.jar
+3. lib/dlink-client-${version}.jar
+:::
 
 ### 语法结构
 

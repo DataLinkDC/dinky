@@ -142,8 +142,10 @@ $nginx -s reload
 
 Dinky 需要具备自身的 Flink 环境，该 Flink 环境的实现需要用户自己在 Dinky 根目录下创建 plugins 文件夹并上传相关的 Flink 依赖，如 flink-dist, flink-table 等，具体见下文。当然也可在启动文件中指定 FLINK_HOME，但不建议这样做。  
 
+:::warning  注意事项
 Dinky 当前版本的 yarn 的 perjob 与 application 执行模式依赖 flink-shade-hadoop ，如果你的 Hadoop 版本为 2+ 或 3+，需要额外添加 flink-shade-hadoop-uber-3 包，请手动删除该包内部的 javax.servlet 等冲突内容。
 当然如果你的 Hadoop 为 3+ 也可以自行编译对于版本的 dlink-client-hadoop.jar 以替代 uber 包，
+:::
 
 ```
 #创建目录
@@ -163,15 +165,26 @@ https://mvnrepository.com/artifact/org.apache.flink/flink-shaded-hadoop-3-uber?r
 config/ -- 配置文件
 |- application.yml
 extends/ -- 扩展
-|- dlink-client-1.11.jar
-|- dlink-client-1.12.jar
-|- dlink-client-1.14.jar
+|- dlink-client-1.11.jar -- 适配 Flink1.11.x
+|- dlink-client-1.12.jar -- 适配 Flink1.12.x
+|- dlink-client-1.14.jar -- 适配 Flink1.14.x
+|- dlink-client-1.15.jar -- 适配 Flink1.15.x
 html/ -- 前端编译产物
-jar/ -- dlink application 模式提交 sql 用到的 jar
+jar/ 
+  |- dlink-app-1.11.jar -- dlink application 模式提交 sql 用到的 jar 适配 Flink1.11.x
+  |- dlink-app-1.12.jar -- dlink application 模式提交 sql 用到的 jar 适配 Flink1.12.x
+  |- dlink-app-1.13.jar -- dlink application 模式提交 sql 用到的 jar 适配 Flink1.13.x
+  |- dlink-app-1.14.jar -- dlink application 模式提交 sql 用到的 jar 适配 Flink1.14.x
+  |- dlink-app-1.15.jar -- dlink application 模式提交 sql 用到的 jar 适配 Flink1.15.x
+  |- dlink-client-base.jar  -- 整库同步场景下需要的包 
+  |- dlink-common.jar -- 整库同步场景下需要的包
 lib/ -- 内部组件
 |- dlink-alert-dingtalk.jar 
+|- dlink-alert-email.jar 
+|- dlink-alert-feishu.jar 
 |- dlink-alert-wechat.jar 
-|- dlink-client-1.13.jar 
+|- dlink-client-1.13.jar  -- 适配 Flink1.13.x,默认
+|- dlink-catalog-mysql.jar -- dlink 的 catalog实现 
 |- dlink-connector-jdbc.jar
 |- dlink-function.jar
 |- dlink-metadata-clickhouse.jar
@@ -195,6 +208,7 @@ plugins/
 sql/ 
 |- dlink.sql -- Mysql初始化脚本
 |- dlink_history.sql -- Mysql各版本及时间点升级脚本
+|- dlinkmysqlcatalog.sql -- dlink 的 catalog 表 SQL 脚本
 auto.sh --启动停止脚本
 dlink-admin.jar --主程序包
 ```
@@ -220,42 +234,6 @@ $sh auto.sh status
    Dinky 不依赖于 Nginx， Nginx 可选
 :::
 
-
-
-## Docker部署
-[👉DockerHub](https://hub.docker.com/r/ylyue/dinky)
-### Docker 部署参考命令：
-```bash
-docker run -it --name=dinky -p8888:8888 \ 
- -e spring.datasource.url=jdbc:mysql://localhost:3306/dlink?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true \ 
- -e spring.datasource.username=root \ 
- -e spring.datasource.password=11eb441842a9491c90168c6f76c2eed4 \ 
- -v /opt/docker/dinky/plugins:/opt/dinky/plugins \
- -v /opt/docker/dinky/lib:/opt/dinky/lib \
- -v /opt/docker/dinky/jar:/opt/dinky/jar \
- registry.cn-beijing.aliyuncs.com/yue-open/dinky:0.6.4-flink1.15
-```
-
-### 环境变量与挂载点：
-- SpringBoot 标准项目，`-e`可以用于替换[application.yml](https://gitee.com/DataLinkDC/Dinky/blob/0.6.4/dlink-admin/src/main/resources/application.yml)文件中的配置
-- `/opt/dinky/plugins`挂载点，用于挂载Flink SQL开发中需要依赖的jar包
-- `/opt/dinky/lib`挂载点（非必须），用于挂载Dinky内部组件，当你需要时再挂载出来
-- `/opt/dinky/jar`挂载点（非必须），用于挂载dlink application模式提交sql用到的jar，当你需要时再挂载出来
-
-### MySQL 数据库的初始化脚本：
-- [👉Gitee Releases 界面](https://gitee.com/DataLinkDC/Dinky/releases)下载对应版本的releases包，获得Mysql初始化脚本
-- [👉Dinky官网 Releases 界面](http://www.dlink.top/download/download)下载对应版本的releases包，获得Mysql初始化脚本
-- mysql需自行部署8.x版本，参考：[👉Centos Docker MySQL8 安装与初始化配置](https://blog.csdn.net/u013600314/article/details/80521778?spm=1001.2014.3001.5502)
-
-:::tip 版本号0.6.4-flink1.15：
-- `0.6.4`代表Dinky版本号
-- `flink1.15`代表Flink版本号，即默认提供了flink1.15的相关默认依赖，你任然可以替换`plugins、lib、jar`挂载点的相关依赖包，使之支持Flink其他版本，如：flink:1.15-scala_2.12.15
-:::
-
-:::tip Dinky与Flink：
-- 此镜像仓库只是让你部署起了 Dinky 开发平台，因此你任然还需部署 Flink 集群
-- Flink集群部署参考 [Flink官方文档](https://nightlies.apache.org/flink/flink-docs-release-1.15/zh/docs/deployment/resource-providers/standalone/docker/)
-:::
 
 
 

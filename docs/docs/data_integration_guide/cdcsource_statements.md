@@ -45,6 +45,22 @@ dlink-client-1.1x-0.x.x.jar
 dlink-client-base-0.x.x.jar
 dlink-common-0.x.x.jar
 ```
+=======
+:::warning **Yarn Session**, **Standalone** 模式下 注意事项
+在**Yarn Session**, **Standalone** 模式下,使用整库同步需要将 dlink 的一些依赖放入 Flink/lib 下, 依赖如下:
+1. jar/dlink-client-base-${version}.jar
+2. jar/dlink-common-${version}.jar
+3. lib/dlink-client-${version}.jar
+
+注意: 放入 Flink/lib 下后需要重启 Flink 集群
+:::
+
+:::warning **Pre Job**, **Application** 模式下 注意事项
+在**Pre Job**, **Application** 模式下,使用整库同步需要将 dlink 的一些依赖放入 HDFS, 依赖如下:
+1. jar/dlink-client-base-${version}.jar
+2. jar/dlink-common-${version}.jar
+3. lib/dlink-client-${version}.jar
+:::
 
 ### 语法结构
 
