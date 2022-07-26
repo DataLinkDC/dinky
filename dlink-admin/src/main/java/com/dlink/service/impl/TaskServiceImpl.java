@@ -347,9 +347,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public Task initDefaultFlinkSQLEnv() {
+    public Task initDefaultFlinkSQLEnv(Integer tenantId) {
         String separator = SystemConfiguration.getInstances().getSqlSeparator();
-        Integer tenantId = (Integer) RequestContext.get();
         separator = separator.replace("\\r", "\r").replace("\\n", "\n");
         Task defaultFlinkSQLEnvTask = new Task();
         defaultFlinkSQLEnvTask.setId(tenantId);

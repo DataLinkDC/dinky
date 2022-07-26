@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.assertion.Asserts;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
+import com.dlink.context.RequestContext;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.TenantMapper;
 import com.dlink.model.Namespace;
@@ -18,6 +19,7 @@ import com.dlink.model.Role;
 import com.dlink.model.Tenant;
 import com.dlink.service.NamespaceService;
 import com.dlink.service.RoleService;
+import com.dlink.service.TaskService;
 import com.dlink.service.TenantService;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -30,6 +32,9 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> im
     @Autowired
     private NamespaceService namespaceService;
 
+    @Autowired
+    private TaskService taskService;
+
 
     @Override
     public Result saveOrUpdateTenant(Tenant tenant) {
@@ -41,6 +46,8 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> im
             }
             tenant.setIsDelete(false);
             if (save(tenant)) {
+                RequestContext.set(tenant.getId());
+                taskService.initDefaultFlinkSQLEnv(tenant.getId());
                 return Result.succeed("新增成功");
             }
             return Result.failed("新增失败");

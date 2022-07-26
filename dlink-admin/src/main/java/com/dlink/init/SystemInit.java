@@ -49,8 +49,8 @@ public class SystemInit implements ApplicationRunner {
         List<DaemonTaskConfig> configList = new ArrayList<>();
         sysConfigService.initSysConfig();
         for (Tenant tenant : tenants) {
-            RequestContext.set(Integer.valueOf(tenant.getId()));
-            taskService.initDefaultFlinkSQLEnv();
+            RequestContext.set(tenant.getId());
+            taskService.initDefaultFlinkSQLEnv(tenant.getId());
             List<JobInstance> jobInstances = jobInstanceService.listJobInstanceActive();
             for (JobInstance jobInstance : jobInstances) {
                 configList.add(new DaemonTaskConfig(FlinkJobTask.TYPE, jobInstance.getId()));
