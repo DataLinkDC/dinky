@@ -5,18 +5,12 @@ import cn.dev33.satoken.stp.StpUtil;
 import com.dlink.assertion.Asserts;
 import com.dlink.common.result.Result;
 import com.dlink.dto.LoginUTO;
-import com.dlink.model.Role;
-import com.dlink.model.Task;
-import com.dlink.model.Tenant;
-import com.dlink.model.User;
 import com.dlink.service.UserService;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 /**
