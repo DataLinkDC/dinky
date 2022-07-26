@@ -274,22 +274,22 @@ public final class MailSender {
         props.setProperty(EmailConstants.MAIL_SMTP_HOST, mailSmtpHost);
         props.setProperty(EmailConstants.MAIL_SMTP_PORT, mailSmtpPort);
 
-        if (StringUtils.isNotEmpty(EmailConstants.MAIL_SMTP_AUTH) && StringUtils.isNotEmpty(enableSmtpAuth)){
+        if (StringUtils.isNotEmpty(enableSmtpAuth)){
             props.setProperty(EmailConstants.MAIL_SMTP_AUTH, enableSmtpAuth);
         }
-        if (StringUtils.isNotEmpty(EmailConstants.MAIL_TRANSPORT_PROTOCOL) && StringUtils.isNotEmpty(mailProtocol)){
+        if ( StringUtils.isNotEmpty(mailProtocol)){
             props.setProperty(EmailConstants.MAIL_TRANSPORT_PROTOCOL, mailProtocol);
         }
 
-        if (StringUtils.isNotEmpty(EmailConstants.MAIL_SMTP_SSL_ENABLE)&& StringUtils.isNotEmpty(mailUseSSL)){
+        if (StringUtils.isNotEmpty(mailUseSSL)){
             props.setProperty(EmailConstants.MAIL_SMTP_SSL_ENABLE, mailUseSSL);
         }
 
-        if (StringUtils.isNotEmpty(EmailConstants.MAIL_SMTP_STARTTLS_ENABLE) && StringUtils.isNotEmpty(mailUseStartTLS)){
+        if (StringUtils.isNotEmpty(mailUseStartTLS)){
             props.setProperty(EmailConstants.MAIL_SMTP_STARTTLS_ENABLE, mailUseStartTLS);
         }
 
-        if (StringUtils.isNotEmpty(EmailConstants.MAIL_SMTP_SSL_TRUST) && StringUtils.isNotEmpty(sslTrust)){
+        if (StringUtils.isNotEmpty(sslTrust)){
             props.setProperty(EmailConstants.MAIL_SMTP_SSL_TRUST, sslTrust);
         }
 
