@@ -102,13 +102,10 @@ public final class MailSender {
         requireNonNull(mailPasswd, EmailConstants.NAME_MAIL_PASSWD + mustNotNull);
 
         mailUseStartTLS = config.get(EmailConstants.NAME_MAIL_SMTP_STARTTLS_ENABLE);
-        requireNonNull(mailUseStartTLS, EmailConstants.NAME_MAIL_SMTP_STARTTLS_ENABLE + mustNotNull);
 
         mailUseSSL = config.get(EmailConstants.NAME_MAIL_SMTP_SSL_ENABLE);
-        requireNonNull(mailUseSSL, EmailConstants.NAME_MAIL_SMTP_SSL_ENABLE + mustNotNull);
 
         sslTrust = config.get(EmailConstants.NAME_MAIL_SMTP_SSL_TRUST);
-        requireNonNull(sslTrust, EmailConstants.NAME_MAIL_SMTP_SSL_TRUST + mustNotNull);
 
         showType = config.get(EmailConstants.NAME_SHOW_TYPE);
         requireNonNull(showType, EmailConstants.NAME_SHOW_TYPE + mustNotNull);
@@ -276,11 +273,25 @@ public final class MailSender {
         Properties props = new Properties();
         props.setProperty(EmailConstants.MAIL_SMTP_HOST, mailSmtpHost);
         props.setProperty(EmailConstants.MAIL_SMTP_PORT, mailSmtpPort);
-        props.setProperty(EmailConstants.MAIL_SMTP_AUTH, enableSmtpAuth);
-        props.setProperty(EmailConstants.MAIL_TRANSPORT_PROTOCOL, mailProtocol);
-        props.setProperty(EmailConstants.MAIL_SMTP_STARTTLS_ENABLE, mailUseStartTLS);
-        props.setProperty(EmailConstants.MAIL_SMTP_SSL_ENABLE, mailUseSSL);
-        props.setProperty(EmailConstants.MAIL_SMTP_SSL_TRUST, sslTrust);
+
+        if (StringUtils.isNotEmpty(enableSmtpAuth)){
+            props.setProperty(EmailConstants.MAIL_SMTP_AUTH, enableSmtpAuth);
+        }
+        if ( StringUtils.isNotEmpty(mailProtocol)){
+            props.setProperty(EmailConstants.MAIL_TRANSPORT_PROTOCOL, mailProtocol);
+        }
+
+        if (StringUtils.isNotEmpty(mailUseSSL)){
+            props.setProperty(EmailConstants.MAIL_SMTP_SSL_ENABLE, mailUseSSL);
+        }
+
+        if (StringUtils.isNotEmpty(mailUseStartTLS)){
+            props.setProperty(EmailConstants.MAIL_SMTP_STARTTLS_ENABLE, mailUseStartTLS);
+        }
+
+        if (StringUtils.isNotEmpty(sslTrust)){
+            props.setProperty(EmailConstants.MAIL_SMTP_SSL_TRUST, sslTrust);
+        }
 
         Authenticator auth = new Authenticator() {
             @Override
