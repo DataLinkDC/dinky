@@ -32,8 +32,6 @@ spring:
   #       min-idle: 5
   #   # 连接超时时间（毫秒）
   #   timeout: 5000
-  main:
-    allow-circular-references: true
 server:
   port: 8888
 
