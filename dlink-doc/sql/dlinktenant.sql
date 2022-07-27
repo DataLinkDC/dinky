@@ -386,6 +386,7 @@ CREATE TABLE `dlink_history`  (
 DROP TABLE IF EXISTS `dlink_jar`;
 CREATE TABLE `dlink_jar`  (
                               `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+                              `tenant_id` int  not null comment '租户ID',
                               `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '名称',
                               `alias` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '别名',
                               `type` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '类型',
@@ -396,7 +397,8 @@ CREATE TABLE `dlink_jar`  (
                               `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT '是否启用',
                               `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
                               `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
-                              PRIMARY KEY (`id`) USING BTREE
+                              PRIMARY KEY (`id`) USING BTREE,
+                              UNIQUE KEY `dlink_jar_un` (`tenant_id`,`name`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------

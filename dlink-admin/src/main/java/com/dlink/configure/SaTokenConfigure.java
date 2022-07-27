@@ -39,6 +39,7 @@ public class SaTokenConfigure implements WebMvcConfigurer {
                 .addPathPatterns("/api/savepoints/**")
                 .addPathPatterns("/api/statement/**")
                 .addPathPatterns("/api/task/**")
-                .addPathPatterns("/api/role/**");
+                .addPathPatterns("/api/role/**")
+                .addPathPatterns("/api/jar/*");
     }
 }
