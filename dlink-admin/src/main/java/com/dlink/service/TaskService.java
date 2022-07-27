@@ -27,10 +27,13 @@ import com.dlink.dto.TaskRollbackVersionDTO;
 import com.dlink.job.JobResult;
 import com.dlink.model.JobInfoDetail;
 import com.dlink.model.JobInstance;
+import com.dlink.model.JobLifeCycle;
+import com.dlink.model.JobStatus;
 import com.dlink.model.Task;
 import com.dlink.result.SqlExplainResult;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.web.multipart.MultipartFile;
+import com.dlink.result.TaskOperatingResult;
 
 import java.util.List;
 
@@ -93,4 +96,14 @@ public interface TaskService extends ISuperService<Task> {
     String exportJsonByTaskIds(JsonNode para);
 
     Result uploadTaskJson(MultipartFile file) throws Exception;
+
+    Result queryAllCatalogue();
+
+    Result<List<Task>> queryOnLineTaskByDoneStatus(List<JobLifeCycle> jobLifeCycle
+            , List<JobStatus> jobStatuses, boolean includeNull, Integer catalogueId);
+
+    void selectSavepointOnLineTask(TaskOperatingResult taskOperatingResult);
+
+    void selectSavepointOffLineTask(TaskOperatingResult taskOperatingResult);
+
 }
