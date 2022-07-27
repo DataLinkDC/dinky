@@ -29,8 +29,8 @@ import moment from 'moment';
 import {RUN_MODE} from "@/components/Studio/conf";
 import JobStatus from "@/components/Common/JobStatus";
 import JobLifeCycle, {JOB_LIFE_CYCLE} from "@/components/Common/JobLifeCycle";
-import OpsStatusModal from "../OpsStatusModal/index";
-import StatusDetailedModal from "../StatusDetailedModal/index";
+import OpsStatusModal from "@/pages/DevOps/OpsStatusModel/index";
+import StatusDetailedModal from "@/pages/DevOps/StatusDetailedModel/index";
 import {
   queryOneClickOperatingTaskStatus,
   onClickOperatingTask,
