@@ -18,23 +18,25 @@
  */
 
 
-import React, {useEffect, useState, Key} from "react";
+import React, {Key, useEffect, useState} from "react";
 import {connect} from "umi";
-import {DownOutlined, SwitcherOutlined, FolderAddOutlined, UploadOutlined, DownloadOutlined} from "@ant-design/icons";
-import {Tree, Menu, Empty, Button, message, Modal, Tooltip, Row, Col, Input, Upload} from 'antd';
-import type { UploadProps } from 'antd';
+import {DownloadOutlined, DownOutlined, FolderAddOutlined, SwitcherOutlined, UploadOutlined} from "@ant-design/icons";
+import type {UploadProps} from 'antd';
+import {Button, Col, Empty, Input, Menu, message, Modal, Row, Tooltip, Tree, Upload} from 'antd';
 import {getCatalogueTreeData} from "@/pages/DataStudio/service";
 import {convertToTreeData, getTreeNodeByKey, TreeDataNode} from "@/components/Studio/StudioTree/Function";
 import style from "./index.less";
 import {StateType} from "@/pages/DataStudio/model";
 import {
-  handleData,
+  CODE,
   getInfoById,
   handleAddOrUpdate,
   handleAddOrUpdateWithResult,
+  handleData,
   handleOption,
   handleRemoveById,
-  handleSubmit, CODE, postAll,
+  handleSubmit,
+  postAll,
 } from "@/components/Common/crud";
 import UpdateCatalogueForm from './components/UpdateCatalogueForm';
 import SimpleTaskForm from "@/components/Studio/StudioTree/components/SimpleTaskForm";
@@ -591,6 +593,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     headers: {
       authorization: 'authorization-text',
     },
+    showUploadList: false,
     onChange(info) {
       if (info.file.status === 'done') {
         if(info.file.response.code == CODE.SUCCESS){
