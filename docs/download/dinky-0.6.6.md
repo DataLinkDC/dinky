@@ -14,6 +14,12 @@ title: 0.6.6 release
 
 Dinky 0.6.6 是一个优化修复的版本。
 
+:::warning 注意
+此版本有表结构变更 <br/>
+需要执行 **sql/dlinkmysqlcatalog.sql** 文件
+:::
+
+
 ### 新功能
 
 - 新增 DevOps 的作业历史版本列表
