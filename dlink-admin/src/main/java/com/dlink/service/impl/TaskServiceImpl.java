@@ -34,7 +34,6 @@ import com.dlink.common.result.Result;
 import com.dlink.config.Dialect;
 import com.dlink.constant.FlinkRestResultConstant;
 import com.dlink.constant.NetConstant;
-import com.dlink.context.RequestContext;
 import com.dlink.daemon.task.DaemonFactory;
 import com.dlink.daemon.task.DaemonTaskConfig;
 import com.dlink.db.service.impl.SuperServiceImpl;
@@ -313,7 +312,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             if (task.getStatement() != null) {
                 Statement statement = new Statement();
                 statement.setId(task.getId());
-                statement.setTenantId(task.getTenantId());
                 statement.setStatement(task.getStatement());
                 statementService.updateById(statement);
             }
@@ -334,7 +332,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             if (task.getStatement() == null) {
                 task.setStatement("");
             }
-            statement.setTenantId(task.getTenantId());
             statement.setStatement(task.getStatement());
             statementService.insert(statement);
         }
@@ -347,17 +344,16 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public Task initDefaultFlinkSQLEnv(Integer tenantId) {
+    public Task initDefaultFlinkSQLEnv() {
         String separator = SystemConfiguration.getInstances().getSqlSeparator();
         separator = separator.replace("\\r", "\r").replace("\\n", "\n");
         Task defaultFlinkSQLEnvTask = new Task();
-        defaultFlinkSQLEnvTask.setId(tenantId);
-        defaultFlinkSQLEnvTask.setTenantId(tenantId);
+        defaultFlinkSQLEnvTask.setId(1);
         defaultFlinkSQLEnvTask.setName("dlink_default_catalog");
         defaultFlinkSQLEnvTask.setAlias("DefaultCatalog");
         defaultFlinkSQLEnvTask.setDialect(Dialect.FLINKSQLENV.getValue());
         StringBuilder sb = new StringBuilder();
-        sb.append("create catalog myCatalog with(\n");
+        sb.append("create catalog my_catalog with(\n");
         sb.append("    'type' = 'dlink_mysql',\n");
         sb.append("    'username' = '");
         sb.append(username);
@@ -370,15 +366,14 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         sb.append("'\n");
         sb.append(")");
         sb.append(separator);
-        sb.append("use catalog myCatalog");
+        sb.append("use catalog my_catalog");
         sb.append(separator);
         defaultFlinkSQLEnvTask.setStatement(sb.toString());
         defaultFlinkSQLEnvTask.setFragment(true);
         defaultFlinkSQLEnvTask.setEnabled(true);
         saveOrUpdate(defaultFlinkSQLEnvTask);
         Statement statement = new Statement();
-        statement.setId(defaultFlinkSQLEnvTask.getId());
-        statement.setTenantId(tenantId);
+        statement.setId(1);
         statement.setStatement(sb.toString());
         statementService.saveOrUpdate(statement);
         return defaultFlinkSQLEnvTask;

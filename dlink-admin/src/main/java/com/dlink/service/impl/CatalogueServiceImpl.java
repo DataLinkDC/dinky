@@ -51,7 +51,6 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     @Override
     public Catalogue createCatalogueAndTask(CatalogueTaskDTO catalogueTaskDTO) {
         Task task = new Task();
-        task.setTenantId(catalogueTaskDTO.getTenantId());
         task.setName(catalogueTaskDTO.getName());
         task.setAlias(catalogueTaskDTO.getAlias());
         task.setDialect(catalogueTaskDTO.getDialect());
@@ -96,7 +95,6 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             Task task = new Task();
             task.setId(oldCatalogue.getTaskId());
             task.setName(catalogue.getName());
-            task.setTenantId(catalogue.getTenantId());
             task.setAlias(catalogue.getName());
             taskService.updateById(task);
             this.updateById(catalogue);
@@ -161,7 +159,6 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         //新建作业的sql语句
         Statement statement = new Statement();
         statement.setId(newTask.getId());
-        statement.setTenantId(newTask.getTenantId());
         statement.setStatement(statementServiceById.getStatement());
         statementService.save(statement);
 

@@ -66,7 +66,6 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> im
             tenant.setIsDelete(false);
             if (save(tenant)) {
                 RequestContext.set(tenant.getId());
-                taskService.initDefaultFlinkSQLEnv(tenant.getId());
                 return Result.succeed("新增成功");
             }
             return Result.failed("新增失败");
