@@ -53,7 +53,7 @@ const StatusDetailedModal: React.FC<IStatusDetailedModal> = (props): React.React
     </Tooltip>,
     width: 150
   }, {
-    title: '是否选择最新点位',
+    title: '点位配置选择',
     dataIndex: 'taskOperatingSavepointSelect',
   }].filter((item) => {
     if (item.dataIndex === 'taskOperatingSavepointSelect') {
