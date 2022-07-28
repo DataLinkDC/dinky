@@ -20,39 +20,10 @@
 
 package com.dlink.service.impl;
 
-import com.dlink.result.TaskOperatingResult;
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-
-import com.dlink.model.*;
-import com.dlink.service.*;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.lang.tree.TreeNode;
+import cn.hutool.core.lang.tree.TreeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.alert.Alert;
@@ -88,19 +59,76 @@ import com.dlink.job.JobResult;
 import com.dlink.mapper.TaskMapper;
 import com.dlink.metadata.driver.Driver;
 import com.dlink.metadata.result.JdbcSelectResult;
+import com.dlink.model.AlertGroup;
+import com.dlink.model.AlertHistory;
+import com.dlink.model.AlertInstance;
+import com.dlink.model.Catalogue;
+import com.dlink.model.Cluster;
+import com.dlink.model.ClusterConfiguration;
+import com.dlink.model.DataBase;
+import com.dlink.model.History;
+import com.dlink.model.Jar;
+import com.dlink.model.JobHistory;
+import com.dlink.model.JobInfoDetail;
+import com.dlink.model.JobInstance;
+import com.dlink.model.JobLifeCycle;
+import com.dlink.model.JobStatus;
+import com.dlink.model.Savepoints;
+import com.dlink.model.Statement;
+import com.dlink.model.SystemConfiguration;
+import com.dlink.model.Task;
+import com.dlink.model.TaskOperatingSavepointSelect;
+import com.dlink.model.TaskOperatingStatus;
+import com.dlink.model.TaskVersion;
 import com.dlink.result.SqlExplainResult;
+import com.dlink.result.TaskOperatingResult;
+import com.dlink.service.AlertGroupService;
+import com.dlink.service.AlertHistoryService;
+import com.dlink.service.CatalogueService;
+import com.dlink.service.ClusterConfigurationService;
+import com.dlink.service.ClusterService;
+import com.dlink.service.DataBaseService;
+import com.dlink.service.HistoryService;
+import com.dlink.service.JarService;
+import com.dlink.service.JobHistoryService;
+import com.dlink.service.JobInstanceService;
+import com.dlink.service.SavepointsService;
+import com.dlink.service.StatementService;
+import com.dlink.service.TaskService;
+import com.dlink.service.TaskVersionService;
 import com.dlink.utils.CustomStringJavaCompiler;
 import com.dlink.utils.JSONUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.collections4.CollectionUtils;
-
-
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.lang.tree.Tree;
-import cn.hutool.core.lang.tree.TreeNode;
-import cn.hutool.core.lang.tree.TreeUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 任务 服务实现类
@@ -1158,21 +1186,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     private List<Task> getTasks(List<JobLifeCycle> jobLifeCycle, List<JobStatus> jobStatuses
             , boolean includeNull, List<Integer> parentIds) {
-//        final MPJLambdaWrapper<Task> wrapper = new MPJLambdaWrapper<Task>()
-//                .select(Task::getId, Task::getName)
-//                .leftJoin(Catalogue.class, Catalogue::getTaskId, Task::getId)
-//                .leftJoin(JobInstance.class, JobInstance::getId, Task::getJobInstanceId)
-//                .in(Catalogue::getParentId, parentIds)
-//                .isNotNull(Catalogue::getTaskId)
-//                .eq(Catalogue::getIsLeaf, 1)
-//                .in(Task::getStep, jobLifeCycle.stream().filter(Objects::nonNull).map(JobLifeCycle::getValue).collect(Collectors.toList()))
-//                .eq(Task::getEnabled, 1);
-//        if (includeNull) {
-//            wrapper.and(wp -> wp.isNull(JobInstance::getStatus).or().in(JobInstance::getStatus, jobStatuses));
-//        } else {
-//            wrapper.in(JobInstance::getStatus, jobStatuses);
-//        }
-//        return this.list(wrapper);
         return this.baseMapper.queryOnLineTaskByDoneStatus(parentIds
                 , jobLifeCycle.stream().filter(Objects::nonNull).map(JobLifeCycle::getValue).collect(Collectors.toList())
                 , includeNull
