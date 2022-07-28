@@ -20,17 +20,16 @@
 
 import ProCard, { StatisticCard } from '@ant-design/pro-card';
 import type { StatisticProps } from '@ant-design/pro-card';
-import JobInstanceTable from "./JobInstanceTable";
-import {getStatusCount} from "@/pages/DevOps/service";
+import JobInstanceTable from "./JobInstanceTable/index";
+import {getStatusCount,queryOneClickOperatingTaskStatus} from "@/pages/DevOps/service";
 import {useEffect, useState} from "react";
 import {StatusCount} from "@/pages/DevOps/data";
 import {JOB_STATUS} from "@/components/Common/JobStatus";
-
-import {Form, Switch} from "antd";
+import {Switch} from "antd";
 
 const { Statistic } = StatisticCard;
 
-const DevOps = (props:any) => {
+const DevOps = () => {
 
   const [isHistory, setIsHistory] = useState<boolean>(false);
 
@@ -59,9 +58,14 @@ const DevOps = (props:any) => {
   const [statusCount, setStatusCount] = useState<any[]>(statusCountDefault);
   const [statusHistoryCount, setStatusHistoryCount] = useState<any[]>(statusCountDefault);
   const [activeKey, setActiveKey] = useState<string>('');
+  const [taskStatus, setTaskStatus] = useState<any>({});
 
   const refreshStatusCount = () => {
     const res = getStatusCount();
+    const taskStatusRes = queryOneClickOperatingTaskStatus();
+    taskStatusRes.then((result)=>{
+      setTaskStatus(result)
+    })
     res.then((result)=>{
       const statusHistoryCountData: StatusCount = result.datas.history;
       const historyItems: any = [
@@ -135,7 +139,7 @@ const DevOps = (props:any) => {
               backgroundColor: '#fafafa',
             }}
           >
-            <JobInstanceTable status={item.key} activeKey={activeKey} isHistory={isHistory}/>
+            <JobInstanceTable taskStatus={taskStatus} status={item.key} activeKey={activeKey} isHistory={isHistory}/>
           </div>
         </ProCard.TabPane>
       ))}
