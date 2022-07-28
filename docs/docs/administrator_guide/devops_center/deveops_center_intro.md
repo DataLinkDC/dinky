@@ -17,7 +17,7 @@ title: 运维中心概述
 |   作业实例   |  查看及修改 FlinkSQL 的作业实例状态  |
 |   作业总览   |    查看 FlinkSQL 各监控指标     |
 |   集群信息   |   查看 FlinkSQL 的集群实例信息    |
-|   作业快照   |                          |
+| 作业快照 | 查看 该任务的 CheckPoint SavePoint <br/>并且可以基于某一个 CheckPoint/SavePoint 重启该任务 |
 |   异常信息   |  查看 FlinkSQL 启动及运行时的异常   |
 |   作业日志   |     完整的 FlinkSQL 日志      |
 |   自动调优   |            -             |
