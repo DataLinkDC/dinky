@@ -23,6 +23,9 @@ package com.dlink.mapper;
 import com.dlink.db.mapper.SuperMapper;
 import com.dlink.model.Task;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * 作业 Mapper 接口
@@ -34,4 +37,8 @@ import org.apache.ibatis.annotations.Mapper;
 public interface TaskMapper extends SuperMapper<Task> {
 
     Integer queryAllSizeByName(String name);
+
+    List<Task> queryOnLineTaskByDoneStatus(@Param("parentIds") List<Integer> parentIds
+            , @Param("stepIds") List<Integer> stepIds, @Param("includeNull") boolean includeNull
+            , @Param("jobStatuses") List<String> jobStatuses);
 }

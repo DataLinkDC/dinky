@@ -36,4 +36,24 @@
         from dlink_task
         where `name` REGEXP '${name}_[0-9]$'
     </select>
+
+    <select id="queryOnLineTaskByDoneStatus" resultType="com.dlink.model.Task">
+        select t.id as id, t.name as name
+        from dlink_task t
+        left join dlink_catalogue c on c.task_id = t.id
+        left join dlink_job_instance i on i.id = c.job_instance_id
+        where
+            c.parent_id in <foreach collection="parentIds" item="parentId" open="(" close=")" separator=","> #{parentId} </foreach>
+            and c.task_id is not null
+            and c.is_leaf = 1
+            and t.step in <foreach collection="stepIds" item="stepId" open="(" close=")" separator=","> #{stepId} </foreach>
+            and t.enabled = 1
+        <if test="includeNull == true">
+            and ((i.status is null) or (i.status in <foreach collection="jobStatuses" item="jobStatus" open="(" close=")" separator=","> #{jobStatus} </foreach>))
+        </if>
+        <if test="includeNull != true">
+            and i.status in <foreach collection="jobStatuses" item="jobStatus" open="(" close=")" separator=","> #{jobStatus} </foreach>
+        </if>
+    </select>
+
 </mapper>

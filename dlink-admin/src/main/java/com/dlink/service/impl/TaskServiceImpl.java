@@ -51,7 +51,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -92,15 +91,10 @@ import com.dlink.metadata.result.JdbcSelectResult;
 import com.dlink.result.SqlExplainResult;
 import com.dlink.utils.CustomStringJavaCompiler;
 import com.dlink.utils.JSONUtil;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.tree.Tree;
@@ -1162,22 +1156,27 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         return Result.succeed(taskList);
     }
 
-    private List<Task> getTasks(List<JobLifeCycle> jobLifeCycle, List<JobStatus> jobStatuses, boolean includeNull, List<Integer> parentIds) {
-        final MPJLambdaWrapper<Task> wrapper = new MPJLambdaWrapper<Task>()
-                .select(Task::getId, Task::getName)
-                .leftJoin(Catalogue.class, Catalogue::getTaskId, Task::getId)
-                .leftJoin(JobInstance.class, JobInstance::getId, Task::getJobInstanceId)
-                .in(Catalogue::getParentId, parentIds)
-                .isNotNull(Catalogue::getTaskId)
-                .eq(Catalogue::getIsLeaf, 1)
-                .in(Task::getStep, jobLifeCycle.stream().filter(Objects::nonNull).map(JobLifeCycle::getValue).collect(Collectors.toList()))
-                .eq(Task::getEnabled, 1);
-        if (includeNull) {
-            wrapper.and(wp -> wp.isNull(JobInstance::getStatus).or().in(JobInstance::getStatus, jobStatuses));
-        } else {
-            wrapper.in(JobInstance::getStatus, jobStatuses);
-        }
-        return this.list(wrapper);
+    private List<Task> getTasks(List<JobLifeCycle> jobLifeCycle, List<JobStatus> jobStatuses
+            , boolean includeNull, List<Integer> parentIds) {
+//        final MPJLambdaWrapper<Task> wrapper = new MPJLambdaWrapper<Task>()
+//                .select(Task::getId, Task::getName)
+//                .leftJoin(Catalogue.class, Catalogue::getTaskId, Task::getId)
+//                .leftJoin(JobInstance.class, JobInstance::getId, Task::getJobInstanceId)
+//                .in(Catalogue::getParentId, parentIds)
+//                .isNotNull(Catalogue::getTaskId)
+//                .eq(Catalogue::getIsLeaf, 1)
+//                .in(Task::getStep, jobLifeCycle.stream().filter(Objects::nonNull).map(JobLifeCycle::getValue).collect(Collectors.toList()))
+//                .eq(Task::getEnabled, 1);
+//        if (includeNull) {
+//            wrapper.and(wp -> wp.isNull(JobInstance::getStatus).or().in(JobInstance::getStatus, jobStatuses));
+//        } else {
+//            wrapper.in(JobInstance::getStatus, jobStatuses);
+//        }
+//        return this.list(wrapper);
+        return this.baseMapper.queryOnLineTaskByDoneStatus(parentIds
+                , jobLifeCycle.stream().filter(Objects::nonNull).map(JobLifeCycle::getValue).collect(Collectors.toList())
+                , includeNull
+                , jobStatuses.stream().map(JobStatus::name).collect(Collectors.toList()));
     }
 
     private void childrenNodeParse(Tree<Integer> node, List<Integer> parentIds) {
