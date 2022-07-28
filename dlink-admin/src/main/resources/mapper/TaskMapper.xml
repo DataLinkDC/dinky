@@ -41,7 +41,7 @@
         select t.id as id, t.name as name
         from dlink_task t
         left join dlink_catalogue c on c.task_id = t.id
-        left join dlink_job_instance i on i.id = c.job_instance_id
+        left join dlink_job_instance i on i.id = t.job_instance_id
         where
             c.parent_id in <foreach collection="parentIds" item="parentId" open="(" close=")" separator=","> #{parentId} </foreach>
             and c.task_id is not null
