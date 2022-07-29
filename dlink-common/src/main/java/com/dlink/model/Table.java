@@ -20,16 +20,15 @@
 
 package com.dlink.model;
 
+import com.dlink.assertion.Asserts;
+import com.dlink.utils.SqlUtil;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import com.dlink.assertion.Asserts;
-import com.dlink.utils.SqlUtil;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Table
@@ -39,7 +38,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class Table implements Serializable, Comparable<Table> {
+public class Table implements Serializable, Comparable<Table>, Cloneable {
 
     private static final long serialVersionUID = 4209205512472367171L;
 
@@ -99,7 +98,7 @@ public class Table implements Serializable, Comparable<Table> {
     }
 
     public String getFlinkTableSql(String flinkConfig) {
-        return getFlinkDDL(flinkConfig,name);
+        return getFlinkDDL(flinkConfig, name);
     }
 
     public String getFlinkDDL(String flinkConfig, String tableName) {
@@ -242,5 +241,16 @@ public class Table implements Serializable, Comparable<Table> {
         sb.append(" FROM ");
         sb.append(sourceName);
         return sb.toString();
+    }
+
+    @Override
+    public Object clone() {
+        Table table = null;
+        try {
+            table = (Table) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return table;
     }
 }
