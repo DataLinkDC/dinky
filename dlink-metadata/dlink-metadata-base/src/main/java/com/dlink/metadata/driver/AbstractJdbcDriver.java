@@ -45,7 +45,7 @@ import java.util.*;
  **/
 public abstract class AbstractJdbcDriver extends AbstractDriver {
 
-    private static Logger logger = LoggerFactory.getLogger(AbstractJdbcDriver.class);
+    protected static Logger logger = LoggerFactory.getLogger(AbstractJdbcDriver.class);
 
     protected Connection conn;
 
@@ -134,6 +134,28 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
             close(preparedStatement, results);
         }
         return schemas;
+    }
+
+    @Override
+    public boolean existSchema(String schemaName) {
+        return listSchemas().stream().anyMatch(schemaItem -> Asserts.isEquals(schemaItem.getName(), schemaName));
+    }
+
+    @Override
+    public boolean createSchema(String schemaName) throws Exception {
+        String sql = generateCreateSchemaSql(schemaName).replaceAll("\r\n", " ");
+        if (Asserts.isNotNull(sql)) {
+            return execute(sql);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public String generateCreateSchemaSql(String schemaName) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("CREATE DATABASE ").append(schemaName);
+        return sb.toString();
     }
 
     @Override
@@ -283,6 +305,16 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     }
 
     @Override
+    public boolean generateCreateTable(Table table) throws Exception {
+        String sql = generateCreateTableSql(table).replaceAll("\r\n", " ");
+        if (Asserts.isNotNull(sql)) {
+            return execute(sql);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
     public boolean dropTable(Table table) throws Exception {
         String sql = getDropTableSql(table).replaceAll("\r\n", " ");
         if (Asserts.isNotNull(sql)) {
@@ -341,6 +373,13 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
             sb.append(table.getSchema() + ".");
         }
         sb.append(table.getName());
+        return sb.toString();
+    }
+
+    //todu impl by subclass
+    @Override
+    public String generateCreateTableSql(Table table) {
+        StringBuilder sb = new StringBuilder();
         return sb.toString();
     }
 

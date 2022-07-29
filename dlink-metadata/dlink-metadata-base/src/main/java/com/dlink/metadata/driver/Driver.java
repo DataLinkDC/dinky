@@ -87,6 +87,12 @@ public interface Driver {
 
     List<Schema> listSchemas();
 
+    boolean existSchema(String schemaName);
+
+    boolean createSchema(String schemaName) throws Exception;
+
+    String generateCreateSchemaSql(String schemaName);
+
     List<Table> listTables(String schemaName);
 
     List<Column> listColumns(String schemaName, String tableName);
@@ -103,6 +109,8 @@ public interface Driver {
 
     boolean createTable(Table table) throws Exception;
 
+    boolean generateCreateTable(Table table) throws Exception;
+
     boolean dropTable(Table table) throws Exception;
 
     boolean truncateTable(Table table) throws Exception;
@@ -112,6 +120,8 @@ public interface Driver {
     String getDropTableSql(Table table);
 
     String getTruncateTableSql(Table table);
+
+    String generateCreateTableSql(Table table);
 
    /* boolean insert(Table table, JsonNode data);
 

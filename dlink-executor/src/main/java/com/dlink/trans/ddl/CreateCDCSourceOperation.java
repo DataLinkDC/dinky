@@ -20,18 +20,10 @@
 
 package com.dlink.trans.ddl;
 
-import org.apache.flink.streaming.api.datastream.DataStreamSource;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.table.api.TableResult;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import com.dlink.assertion.Asserts;
 import com.dlink.cdc.CDCBuilder;
 import com.dlink.cdc.CDCBuilderFactory;
-import com.dlink.cdc.SinkBuilderFactory;
+import com.dlink.cdc.SinkBuilder;
 import com.dlink.executor.Executor;
 import com.dlink.metadata.driver.Driver;
 import com.dlink.metadata.driver.DriverConfig;
@@ -40,6 +32,16 @@ import com.dlink.model.Schema;
 import com.dlink.model.Table;
 import com.dlink.trans.AbstractOperation;
 import com.dlink.trans.Operation;
+import com.dlink.utils.SqlUtil;
+import org.apache.flink.streaming.api.datastream.DataStreamSource;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.table.api.TableResult;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static com.dlink.cdc.SinkBuilderFactory.buildSinkBuilder;
 
 /**
  * CreateCDCSourceOperation
@@ -73,8 +75,8 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
         logger.info("Start build CDCSOURCE Task...");
         CDCSource cdcSource = CDCSource.build(statement);
         FlinkCDCConfig config = new FlinkCDCConfig(cdcSource.getConnector(), cdcSource.getHostname(), cdcSource.getPort(), cdcSource.getUsername()
-            , cdcSource.getPassword(), cdcSource.getCheckpoint(), cdcSource.getParallelism(), cdcSource.getDatabase(), cdcSource.getSchema()
-            , cdcSource.getTable(), cdcSource.getStartupMode(), cdcSource.getDebezium(), cdcSource.getSource(), cdcSource.getSink(),cdcSource.getJdbc());
+                , cdcSource.getPassword(), cdcSource.getCheckpoint(), cdcSource.getParallelism(), cdcSource.getDatabase(), cdcSource.getSchema()
+                , cdcSource.getTable(), cdcSource.getStartupMode(), cdcSource.getDebezium(), cdcSource.getSource(), cdcSource.getSink(), cdcSource.getJdbc());
         try {
             CDCBuilder cdcBuilder = CDCBuilderFactory.buildCDCBuilder(config);
             Map<String, Map<String, String>> allConfigMap = cdcBuilder.parseMetaDataConfigs();
@@ -83,11 +85,13 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
             final List<String> schemaNameList = cdcBuilder.getSchemaList();
             final List<String> tableRegList = cdcBuilder.getTableList();
             final List<String> schemaTableNameList = new ArrayList<>();
+            SinkBuilder sinkBuilder = buildSinkBuilder(config);
             for (String schemaName : schemaNameList) {
                 Schema schema = Schema.build(schemaName);
                 if (!allConfigMap.containsKey(schemaName)) {
                     continue;
                 }
+                Driver sinkDriver = checkAndCreateSinkSchema(config, schemaName);
                 DriverConfig driverConfig = DriverConfig.build(allConfigMap.get(schemaName));
                 Driver driver = Driver.build(driverConfig);
                 final List<Table> tables = driver.listTables(schemaName);
@@ -106,6 +110,13 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                             table.setColumns(driver.listColumnsSortByPK(schemaName, table.getName()));
                             schemaTableNameList.add(table.getSchemaTableName());
                             schema.getTables().add(table);
+                        }
+
+                        if (null != sinkDriver) {
+                            Table sinkTable = (Table) table.clone();
+                            sinkTable.setSchema(sinkBuilder.getSinkSchemaName(table));
+                            sinkTable.setName(sinkBuilder.getSinkTableName(table));
+                            checkAndCreateSinkTable(sinkDriver, sinkTable);
                         }
                     }
                 }
@@ -128,11 +139,48 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
             }
             DataStreamSource<String> streamSource = cdcBuilder.build(streamExecutionEnvironment);
             logger.info("Build " + config.getType() + " successful...");
-            SinkBuilderFactory.buildSinkBuilder(config).build(cdcBuilder, streamExecutionEnvironment, executor.getCustomTableEnvironment(), streamSource);
+            sinkBuilder.build(cdcBuilder, streamExecutionEnvironment, executor.getCustomTableEnvironment(), streamSource);
             logger.info("Build CDCSOURCE Task successful!");
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    Driver checkAndCreateSinkSchema(FlinkCDCConfig config, String schemaName) throws Exception {
+        String type = null;
+        Map<String, String> sink = config.getSink();
+        String connector = sink.get("connector");
+        String url = sink.get("url");
+        if (Asserts.isEqualsIgnoreCase(connector, "doris") ||
+                Asserts.isEqualsIgnoreCase(connector, "starrocks")) {
+            type = "Doris";
+        } else if (Asserts.isEqualsIgnoreCase(connector, "clickhouse")) {
+            type = "ClickHouse";
+        } else if (Asserts.isEqualsIgnoreCase(connector, "jdbc")) {
+            if (url.startsWith("jdbc:mysql")) {
+                type = "MySQL";
+            } else if (url.startsWith("jdbc:postgresql")) {
+                type = "PostgreSql";
+            }
+        }
+        if (Asserts.isNull(type)) {
+            return null;
+        }
+        String schema = SqlUtil.replaceAllParam(sink.get("sink.db"), "schemaName", schemaName);
+        DriverConfig driverConfig = new DriverConfig(url, type, url, sink.get("username"), sink.get("password"));
+        Driver driver = Driver.build(driverConfig);
+        if (!driver.existSchema(schema)) {
+            driver.createSchema(schema);
+        }
+        sink.put("sink.db", schema);
+        sink.put("url", url + "/" + schema);
+        return driver;
+    }
+
+    void checkAndCreateSinkTable(Driver driver, Table table) throws Exception {
+        if (null != driver && !driver.existTable(table)) {
+            driver.generateCreateTable(table);
+        }
     }
 }
