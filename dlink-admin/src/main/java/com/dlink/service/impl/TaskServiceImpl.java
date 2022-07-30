@@ -20,38 +20,10 @@
 
 package com.dlink.service.impl;
 
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-
-import com.dlink.model.*;
-import com.dlink.service.*;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Service;
-
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.lang.tree.TreeNode;
+import cn.hutool.core.lang.tree.TreeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.alert.Alert;
@@ -87,13 +59,76 @@ import com.dlink.job.JobResult;
 import com.dlink.mapper.TaskMapper;
 import com.dlink.metadata.driver.Driver;
 import com.dlink.metadata.result.JdbcSelectResult;
+import com.dlink.model.AlertGroup;
+import com.dlink.model.AlertHistory;
+import com.dlink.model.AlertInstance;
+import com.dlink.model.Catalogue;
+import com.dlink.model.Cluster;
+import com.dlink.model.ClusterConfiguration;
+import com.dlink.model.DataBase;
+import com.dlink.model.History;
+import com.dlink.model.Jar;
+import com.dlink.model.JobHistory;
+import com.dlink.model.JobInfoDetail;
+import com.dlink.model.JobInstance;
+import com.dlink.model.JobLifeCycle;
+import com.dlink.model.JobStatus;
+import com.dlink.model.Savepoints;
+import com.dlink.model.Statement;
+import com.dlink.model.SystemConfiguration;
+import com.dlink.model.Task;
+import com.dlink.model.TaskOperatingSavepointSelect;
+import com.dlink.model.TaskOperatingStatus;
+import com.dlink.model.TaskVersion;
 import com.dlink.result.SqlExplainResult;
+import com.dlink.result.TaskOperatingResult;
+import com.dlink.service.AlertGroupService;
+import com.dlink.service.AlertHistoryService;
+import com.dlink.service.CatalogueService;
+import com.dlink.service.ClusterConfigurationService;
+import com.dlink.service.ClusterService;
+import com.dlink.service.DataBaseService;
+import com.dlink.service.HistoryService;
+import com.dlink.service.JarService;
+import com.dlink.service.JobHistoryService;
+import com.dlink.service.JobInstanceService;
+import com.dlink.service.SavepointsService;
+import com.dlink.service.StatementService;
+import com.dlink.service.TaskService;
+import com.dlink.service.TaskVersionService;
 import com.dlink.utils.CustomStringJavaCompiler;
 import com.dlink.utils.JSONUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import cn.hutool.core.bean.BeanUtil;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 任务 服务实现类
@@ -126,11 +161,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private AlertHistoryService alertHistoryService;
     @Autowired
     private HistoryService historyService;
-    @Autowired
-    @Lazy
-    private CatalogueService catalogueService;
     @Resource
     private TaskVersionService taskVersionService;
+    @Autowired
+    private CatalogueService catalogueService;
 
     @Value("${spring.datasource.driver-class-name}")
     private String driver;
@@ -757,7 +791,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         jobInfoDetail.setJobHistory(jobHistory);
         String status = jobInfoDetail.getInstance().getStatus();
         boolean jobStatusChanged = false;
-        if (Asserts.isNull(jobInfoDetail.getJobHistory().getJob()) || Asserts.isNull(jobInfoDetail.getJobHistory().getJob())) {
+        if (Asserts.isNull(jobInfoDetail.getJobHistory().getJob())) {
             jobInfoDetail.getInstance().setStatus(JobStatus.UNKNOWN.getValue());
         } else {
             jobInfoDetail.getInstance().setDuration(jobInfoDetail.getJobHistory().getJob().get(FlinkRestResultConstant.JOB_DURATION).asLong() / 1000);
@@ -1107,5 +1141,137 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         alertHistory.setStatus(alertResult.getSuccessCode());
         alertHistory.setLog(alertResult.getMessage());
         alertHistoryService.save(alertHistory);
+    }
+
+
+    @Override
+    public Result queryAllCatalogue() {
+        final LambdaQueryWrapper<Catalogue> queryWrapper = new LambdaQueryWrapper<Catalogue>()
+                .select(Catalogue::getId, Catalogue::getName, Catalogue::getParentId)
+                .eq(Catalogue::getIsLeaf, 0)
+                .eq(Catalogue::getEnabled, 1)
+                .isNull(Catalogue::getTaskId);
+        final List<Catalogue> catalogueList = catalogueService.list(queryWrapper);
+        return Result.succeed(TreeUtil.build(dealWithCatalogue(catalogueList), -1).get(0));
+    }
+
+    private List<TreeNode<Integer>> dealWithCatalogue(List<Catalogue> catalogueList) {
+        final List<TreeNode<Integer>> treeNodes = new ArrayList<>(8);
+        treeNodes.add(new TreeNode<>(-1, null, "全部", -1));
+        treeNodes.add(new TreeNode<>(0, -1, "全部", 0));
+        if (CollectionUtils.isEmpty(catalogueList)) {
+            return treeNodes;
+        }
+        for (int i = 0; i < catalogueList.size(); i++) {
+            final Catalogue catalogue = catalogueList.get(i);
+            if (Objects.isNull(catalogue)) {
+                continue;
+            }
+            treeNodes.add(new TreeNode<>(catalogue.getId(), catalogue.getParentId(), catalogue.getName(), i + 1));
+        }
+        return treeNodes;
+    }
+
+    @Override
+    public Result<List<Task>> queryOnLineTaskByDoneStatus(List<JobLifeCycle> jobLifeCycle, List<JobStatus> jobStatuses
+            , boolean includeNull, Integer catalogueId) {
+        final Tree<Integer> node = ((Tree<Integer>) queryAllCatalogue().getDatas())
+                .getNode(Objects.isNull(catalogueId) ? 0 : catalogueId);
+        final List<Integer> parentIds = new ArrayList<>(0);
+        parentIds.add(node.getId());
+        childrenNodeParse(node, parentIds);
+        final List<Task> taskList = getTasks(jobLifeCycle, jobStatuses, includeNull, parentIds);
+        return Result.succeed(taskList);
+    }
+
+    private List<Task> getTasks(List<JobLifeCycle> jobLifeCycle, List<JobStatus> jobStatuses
+            , boolean includeNull, List<Integer> parentIds) {
+        return this.baseMapper.queryOnLineTaskByDoneStatus(parentIds
+                , jobLifeCycle.stream().filter(Objects::nonNull).map(JobLifeCycle::getValue).collect(Collectors.toList())
+                , includeNull
+                , jobStatuses.stream().map(JobStatus::name).collect(Collectors.toList()));
+    }
+
+    private void childrenNodeParse(Tree<Integer> node, List<Integer> parentIds) {
+        final List<Tree<Integer>> children = node.getChildren();
+        if (CollectionUtils.isEmpty(children)) {
+            return;
+        }
+        for (Tree<Integer> child : children) {
+            parentIds.add(child.getId());
+            if (!child.hasChild()) {
+                continue;
+            }
+            childrenNodeParse(child, parentIds);
+        }
+    }
+
+
+    @Override
+    public void selectSavepointOnLineTask(TaskOperatingResult taskOperatingResult) {
+        final JobInstance jobInstanceByTaskId = jobInstanceService.getJobInstanceByTaskId(taskOperatingResult.getTask().getId());
+        if (jobInstanceByTaskId == null){
+            startGoingLiveTask(taskOperatingResult, null);
+            return;
+        }
+        if (!JobStatus.isDone(jobInstanceByTaskId.getStatus())){
+            taskOperatingResult.setStatus(TaskOperatingStatus.TASK_STATUS_NO_DONE);
+            return;
+        }
+        if (taskOperatingResult.getTaskOperatingSavepointSelect().equals(TaskOperatingSavepointSelect.DEFAULT_CONFIG)){
+            startGoingLiveTask(taskOperatingResult, null);
+            return;
+        }
+        findTheConditionSavePointToOnline(taskOperatingResult, jobInstanceByTaskId);
+    }
+
+    private void findTheConditionSavePointToOnline(TaskOperatingResult taskOperatingResult, JobInstance jobInstanceByTaskId) {
+        final LambdaQueryWrapper<JobHistory> queryWrapper = new LambdaQueryWrapper<JobHistory>()
+                .select(JobHistory::getId, JobHistory::getCheckpointsJson)
+                .eq(JobHistory::getId, jobInstanceByTaskId.getId());
+        final JobHistory jobHistory = jobHistoryService.getOne(queryWrapper);
+        if (jobHistory != null && StringUtils.isNotBlank(jobHistory.getCheckpointsJson())) {
+            final ObjectNode jsonNodes = JSONUtil.parseObject(jobHistory.getCheckpointsJson());
+            final ArrayNode history = jsonNodes.withArray("history");
+            if (!history.isEmpty()){
+                startGoingLiveTask(taskOperatingResult, findTheConditionSavePoint(history));
+                return;
+            }
+        }
+        startGoingLiveTask(taskOperatingResult, null);
+    }
+
+
+
+    private void startGoingLiveTask(TaskOperatingResult taskOperatingResult, String savepointPath) {
+        taskOperatingResult.setStatus(TaskOperatingStatus.OPERATING);
+        final Result result = reOnLineTask(taskOperatingResult.getTask().getId(), savepointPath);
+        taskOperatingResult.parseResult(result);
+    }
+
+
+    private String findTheConditionSavePoint(ArrayNode history){
+        JsonNode  latestCompletedJsonNode = null;
+        for (JsonNode item : history) {
+            if (!"COMPLETED".equals(item.get("status").asText())){
+                continue;
+            }
+            if (latestCompletedJsonNode == null){
+                latestCompletedJsonNode = item;
+                continue;
+            }
+            if (latestCompletedJsonNode.get("id").asInt() < item.get("id").asInt(-1)){
+                latestCompletedJsonNode = item;
+            }
+        }
+        return latestCompletedJsonNode == null ? null : latestCompletedJsonNode.get("external_path").asText();
+    }
+
+
+    @Override
+    public void selectSavepointOffLineTask(TaskOperatingResult taskOperatingResult) {
+        taskOperatingResult.setStatus(TaskOperatingStatus.OPERATING);
+        final Result result = offLineTask(taskOperatingResult.getTask().getId(), SavePointType.CANCEL.getValue());
+        taskOperatingResult.parseResult(result);
     }
 }

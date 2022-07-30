@@ -29,13 +29,11 @@ import com.dlink.assertion.Asserts;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.dto.CatalogueTaskDTO;
 import com.dlink.mapper.CatalogueMapper;
-import com.dlink.model.Catalogue;
-import com.dlink.model.JobLifeCycle;
-import com.dlink.model.Statement;
-import com.dlink.model.Task;
+import com.dlink.model.*;
 import com.dlink.service.CatalogueService;
 import com.dlink.service.StatementService;
 import com.dlink.service.TaskService;
+import com.dlink.service.TaskVersionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,6 +56,9 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     private TaskService taskService;
     @Autowired
     private StatementService statementService;
+
+    @Autowired
+    private TaskVersionService taskVersionService;
 
     @Override
     public List<Catalogue> getAllData() {
@@ -132,6 +133,10 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             if (isNotNull(catalogue.getTaskId())) {
                 taskService.removeById(catalogue.getTaskId());
                 statementService.removeById(catalogue.getTaskId());
+                List<TaskVersion> taskVersionList = taskVersionService.getTaskVersionByTaskId(catalogue.getTaskId());
+                if(taskVersionList.size() > 0 ){
+                    taskVersionService.removeByIds(taskVersionList);
+                }
             }
             this.removeById(id);
             return true;

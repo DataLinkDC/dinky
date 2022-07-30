@@ -35,7 +35,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-boot-dependencies.version>2.6.3</spring-boot-dependencies.version>
-        <hutool.version>5.1.4</hutool.version>
+        <hutool.version>5.8.4</hutool.version>
         <druid-starter>1.2.8</druid-starter>
         <mybatis-plus-boot-starter.version>3.5.1</mybatis-plus-boot-starter.version>
         <lombok.version>1.18.16</lombok.version>

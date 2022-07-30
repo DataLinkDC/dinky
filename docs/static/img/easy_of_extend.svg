@@ -1,0 +1,17 @@
+<svg t="1649493834883" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1686"
+  width="200" height="200">
+  <title>Powered by React</title>
+  <path d="M960 352h-294.4V64H960zM358.4 960H64v-288h294.4z" fill="#337DFF" opacity=".8" p-id="1687">
+  </path>
+  <path d="M595.2 883.2h-448V441.6h448z" fill="#337DFF" opacity=".9" p-id="1688"></path>
+  <path d="M518.4 537.6H224v281.6h294.4z" fill="#8CDDFE" p-id="1689"></path>
+  <path
+    d="M960 64h-83.2v76.8H960zM428.8 64H345.6v76.8h83.2zM147.2 364.8H64v76.8h83.2z m0 512H64v76.8h83.2z m531.2 6.4H595.2V960h83.2zM960 582.4h-83.2v76.8H960z"
+    fill="#2347FA" p-id="1690"></path>
+  <path d="M876.8 582.4h-448V140.8h448z" fill="#337DFF" opacity=".9" p-id="1691"></path>
+  <path d="M800 236.8H505.6v281.6h294.4z" fill="#8CDDFE" p-id="1692"></path>
+  <path d="M716.8 313.6H473.6v236.8h243.2z" fill="#337DFF" opacity=".8" p-id="1693"></path>
+  <path d="M550.4 492.8H307.2v236.8h243.2z" fill="#337DFF" opacity=".8" p-id="1694"></path>
+  <path d="M633.6 403.2H390.4V640h243.2z" fill="#2347FA" p-id="1695"></path>
+  <path d="M435.2 524.8L512 601.6l76.8-76.8L512 441.6z" fill="#FFFFFF" p-id="1696"></path>
+</svg>
