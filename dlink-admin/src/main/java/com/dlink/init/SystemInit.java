@@ -38,8 +38,6 @@ public class SystemInit implements ApplicationRunner {
     private JobInstanceService jobInstanceService;
     @Autowired
     private TaskService taskService;
-    @Autowired
-    private TenantService tenantService;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {

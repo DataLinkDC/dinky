@@ -2,7 +2,6 @@ package com.dlink.mapper;
 
 import com.dlink.db.mapper.SuperMapper;
 import com.dlink.model.Task;
-import com.dlink.model.UserRole;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
