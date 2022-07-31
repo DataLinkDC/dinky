@@ -17,27 +17,10 @@
  *
  */
 
+package com.dlink.service;
 
-package com.dlink.dto;
+import com.dlink.db.service.ISuperService;
+import com.dlink.model.RoleNamespace;
 
-import com.dlink.config.Dialect;
-import lombok.Getter;
-import lombok.Setter;
-
-/**
- * CatalogueTaskDTO
- *
- * @author wenmo
- * @since 2021/6/1 20:16
- */
-@Getter
-@Setter
-public class CatalogueTaskDTO {
-    private Integer id;
-    private Integer tenantId;
-    private Integer parentId;
-    private boolean isLeaf;
-    private String name;
-    private String alias;
-    private String dialect = Dialect.DEFAULT.getValue();
+public interface RoleNamespaceService extends ISuperService<RoleNamespace> {
 }

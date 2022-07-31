@@ -27,7 +27,9 @@ import com.dlink.gateway.result.TestResult;
 import com.dlink.model.ClusterConfiguration;
 import com.dlink.service.ClusterConfigurationService;
 import com.fasterxml.jackson.databind.JsonNode;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,12 +60,13 @@ public class ClusterConfigurationController {
      */
     @PutMapping
     public Result saveOrUpdate(@RequestBody ClusterConfiguration clusterConfiguration) {
+        Integer id = clusterConfiguration.getId();
         TestResult testResult = clusterConfigurationService.testGateway(clusterConfiguration);
         clusterConfiguration.setIsAvailable(testResult.isAvailable());
         if (clusterConfigurationService.saveOrUpdate(clusterConfiguration)) {
-            return Result.succeed(Asserts.isNotNull(clusterConfiguration.getId()) ? "修改成功" : "新增成功");
+            return Result.succeed(Asserts.isNotNull(id) ? "修改成功" : "新增成功");
         } else {
-            return Result.failed(Asserts.isNotNull(clusterConfiguration.getId()) ? "修改失败" : "新增失败");
+            return Result.failed(Asserts.isNotNull(id) ? "修改失败" : "新增失败");
         }
     }
 

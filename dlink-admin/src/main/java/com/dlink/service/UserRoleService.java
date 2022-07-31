@@ -17,27 +17,39 @@
  *
  */
 
+package com.dlink.service;
 
-package com.dlink.dto;
+import org.apache.ibatis.annotations.Param;
 
-import com.dlink.config.Dialect;
-import lombok.Getter;
-import lombok.Setter;
+import java.util.List;
 
-/**
- * CatalogueTaskDTO
- *
- * @author wenmo
- * @since 2021/6/1 20:16
- */
-@Getter
-@Setter
-public class CatalogueTaskDTO {
-    private Integer id;
-    private Integer tenantId;
-    private Integer parentId;
-    private boolean isLeaf;
-    private String name;
-    private String alias;
-    private String dialect = Dialect.DEFAULT.getValue();
+import com.dlink.db.service.ISuperService;
+import com.dlink.model.UserRole;
+
+
+public interface UserRoleService extends ISuperService<UserRole> {
+    /**
+     * delete user role relation by user id
+     *
+     * @param userId user id
+     * @return delete row num
+     */
+    int delete(int userId);
+
+    /**
+     * query user role relation by userId
+     *
+     * @param userId user id
+     * @return delete row num
+     */
+    List<UserRole> getUserRoleByUserId(int userId);
+
+    /**
+     * delete user role relation by userId  and roleId
+     *
+     * @param userRoleList
+     * @return
+     */
+    int deleteBathRelation(List<UserRole> userRoleList);
 }
+

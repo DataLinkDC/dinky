@@ -17,43 +17,48 @@
  *
  */
 
-
 package com.dlink.service;
 
+
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
+import java.util.Set;
 
 import com.dlink.common.result.Result;
 import com.dlink.db.service.ISuperService;
-import com.dlink.model.Role;
 import com.dlink.model.Tenant;
-import com.dlink.model.User;
 import com.fasterxml.jackson.databind.JsonNode;
 
-/**
- * UserService
- *
- * @author wenmo
- * @since 2021/11/28 13:39
- */
-public interface UserService extends ISuperService<User> {
+public interface TenantService extends ISuperService<Tenant> {
+    /**
+     * delete tenant by id
+     *
+     * @param para tenant id
+     * @return delete result code
+     */
+    Result deleteTenantById(JsonNode para);
 
-    Result registerUser(User user);
+    /**
+     * add  or update tenant
+     *
+     * @param tenant tenant info
+     * @return add or update code
+     */
+    Result saveOrUpdateTenant(Tenant tenant);
 
-    boolean modifyUser(User user);
+    /**
+     * @param tenantCode tenant code
+     * @return Tenant
+     */
+    Tenant getTenantByTenantCode(String tenantCode);
 
-    Result modifyPassword(String username, String password, String newPassword);
+    /**
+     * @param tenant tenant info
+     * @return modify code
+     */
+    boolean modifyTenant(Tenant tenant);
 
-    boolean removeUser(Integer id);
+    List<Tenant> getTenantByIds(Set<Integer> tenantIds);
 
-    Result loginUser(String username, String password, boolean isRemember);
-
-    User getUserByUsername(String username);
-
-    Result grantRole(JsonNode para);
-
-    Result removeGrantRole(JsonNode para);
-
-    Result getTenants(String username);
-
-    Result getRoles(JsonNode para);
 }

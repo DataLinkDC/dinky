@@ -17,36 +17,75 @@
  *
  */
 
-
 package com.dlink.model;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.dlink.db.model.SuperEntity;
+import com.baomidou.mybatisplus.annotation.*;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
+import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * AlertGroup
- *
- * @author wenmo
- * @since 2022/2/24 19:58
- **/
+ * role
+ */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("dlink_alert_group")
-public class AlertGroup extends SuperEntity {
+@TableName("dlink_role")
+public class Role implements Serializable {
 
-    private static final long serialVersionUID = 7027411164191682344L;
+    private static final long serialVersionUID = 6877230738922824958L;
 
+    /**
+     * id
+     */
+    @TableId(value = "id", type = IdType.AUTO)
+    private Integer id;
+
+    /**
+     * tenant id
+     */
     private Integer tenantId;
 
-    private String alertInstanceIds;
+    /**
+     * role code
+     */
+    private String roleCode;
 
+    /**
+     * role name
+     */
+    private String roleName;
+
+
+    /**
+     * is delete
+     */
+    private String isDelete;
+
+    /**
+     * note
+     */
     private String note;
 
+    /**
+     * create time
+     */
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime createTime;
+
+    /**
+     * update time
+     */
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
+
+    /**
+     * namespace list
+     */
     @TableField(exist = false)
-    private List<AlertInstance> instances;
+    private List<Namespace> namespaces;
 }

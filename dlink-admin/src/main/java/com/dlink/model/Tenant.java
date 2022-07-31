@@ -17,45 +17,57 @@
  *
  */
 
-
 package com.dlink.model;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.dlink.db.model.SuperEntity;
+import com.baomidou.mybatisplus.annotation.*;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
- * Catalogue
- *
- * @author wenmo
- * @since 2021/5/28 13:51
- **/
+ * tenant use to isolate data
+ */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("dlink_catalogue")
-public class Catalogue extends SuperEntity {
+@TableName("dlink_tenant")
+public class Tenant implements Serializable {
 
-    private static final long serialVersionUID = 4659379420249868394L;
+    private static final long serialVersionUID = -7782313413034278131L;
+    /**
+     * id
+     */
+    @TableId(value = "id", type = IdType.AUTO)
+    private Integer id;
 
-    private Integer tenantId;
+    /**
+     * code
+     */
+    private String tenantCode;
 
-    private Integer taskId;
+    /**
+     * note
+     */
+    private String note;
 
-    private String type;
+    /**
+     * is delete
+     */
+    private Boolean isDelete;
 
-    private Integer parentId;
+    /**
+     * create time
+     */
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime createTime;
 
-    private Boolean isLeaf;
+    /**
+     * update time
+     */
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
 
-    public Catalogue() {
-    }
-
-    public Catalogue(String name, Integer taskId, String type, Integer parentId, Boolean isLeaf) {
-        this.setName(name);
-        this.taskId = taskId;
-        this.type = type;
-        this.parentId = parentId;
-        this.isLeaf = isLeaf;
-    }
 }

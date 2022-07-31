@@ -17,27 +17,32 @@
  *
  */
 
+package com.dlink.service;
 
-package com.dlink.dto;
+import org.apache.ibatis.annotations.Param;
 
-import com.dlink.config.Dialect;
-import lombok.Getter;
-import lombok.Setter;
+import java.util.List;
+import java.util.Set;
 
-/**
- * CatalogueTaskDTO
- *
- * @author wenmo
- * @since 2021/6/1 20:16
- */
-@Getter
-@Setter
-public class CatalogueTaskDTO {
-    private Integer id;
-    private Integer tenantId;
-    private Integer parentId;
-    private boolean isLeaf;
-    private String name;
-    private String alias;
-    private String dialect = Dialect.DEFAULT.getValue();
+import com.dlink.common.result.Result;
+import com.dlink.db.service.ISuperService;
+import com.dlink.model.Role;
+import com.dlink.model.UserRole;
+import com.fasterxml.jackson.databind.JsonNode;
+
+public interface RoleService extends ISuperService<Role> {
+    /**
+     * delete role
+     *
+     * @param para role id
+     * @return delete result code
+     */
+    Result deleteRoleById(JsonNode para);
+
+    Result saveOrUpdateRole(JsonNode para);
+
+    List<Role> getRoleByIds(Set<Integer> roleIds);
+
+    List<Role> getRoleByTenantIdAndIds(String tenantId, Set<Integer> roleIds);
+
 }

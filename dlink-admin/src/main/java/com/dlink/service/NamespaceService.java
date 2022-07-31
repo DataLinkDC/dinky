@@ -17,27 +17,20 @@
  *
  */
 
+package com.dlink.service;
 
-package com.dlink.dto;
+import com.dlink.common.result.Result;
+import com.dlink.db.service.ISuperService;
+import com.dlink.model.Namespace;
+import com.fasterxml.jackson.databind.JsonNode;
 
-import com.dlink.config.Dialect;
-import lombok.Getter;
-import lombok.Setter;
+public interface NamespaceService extends ISuperService<Namespace> {
+    /**
+     * delete namespace by id
+     *
+     * @param para namespace id
+     * @return delete result code
+     */
+    Result deleteNamespaceById(JsonNode para);
 
-/**
- * CatalogueTaskDTO
- *
- * @author wenmo
- * @since 2021/6/1 20:16
- */
-@Getter
-@Setter
-public class CatalogueTaskDTO {
-    private Integer id;
-    private Integer tenantId;
-    private Integer parentId;
-    private boolean isLeaf;
-    private String name;
-    private String alias;
-    private String dialect = Dialect.DEFAULT.getValue();
 }

@@ -79,6 +79,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         task.setDialect(catalogueTaskDTO.getDialect());
         taskService.saveOrUpdateTask(task);
         Catalogue catalogue = new Catalogue();
+        catalogue.setTenantId(catalogueTaskDTO.getTenantId());
         catalogue.setName(catalogueTaskDTO.getAlias());
         catalogue.setIsLeaf(true);
         catalogue.setTaskId(task.getId());
@@ -184,8 +185,8 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         Statement statementServiceById = statementService.getById(catalogue.getTaskId());
         //新建作业的sql语句
         Statement statement = new Statement();
-        statement.setStatement(statementServiceById.getStatement());
         statement.setId(newTask.getId());
+        statement.setStatement(statementServiceById.getStatement());
         statementService.save(statement);
 
         Catalogue one = this.getOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, catalogue.getTaskId()));

@@ -51,6 +51,7 @@ public class Task extends SuperEntity {
 
     private static final long serialVersionUID = 5988972129893667154L;
 
+
     @TableField(fill = FieldFill.INSERT)
     private String alias;
 

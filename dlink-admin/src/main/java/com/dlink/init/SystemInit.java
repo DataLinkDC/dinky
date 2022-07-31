@@ -38,6 +38,7 @@ import com.dlink.model.JobInstance;
 import com.dlink.service.JobInstanceService;
 import com.dlink.service.SysConfigService;
 import com.dlink.service.TaskService;
+import com.dlink.service.TenantService;
 
 /**
  * SystemInit

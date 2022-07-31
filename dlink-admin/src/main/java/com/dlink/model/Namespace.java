@@ -17,48 +17,65 @@
  *
  */
 
-
 package com.dlink.model;
 
-import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+
 /**
- * AlertHistory
- *
- * @author wenmo
- * @since 2022/2/24 20:12
- **/
+ * namespace used to control permissions
+ */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("dlink_alert_history")
-public class AlertHistory implements Serializable {
+@TableName("dlink_namespace")
+public class Namespace implements Serializable {
 
-    private static final long serialVersionUID = -7904869940473678282L;
+    private static final long serialVersionUID = -5960332046748903443L;
 
+    /**
+     * id
+     */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
+    /**
+     * tenant id
+     */
     private Integer tenantId;
 
-    private Integer alertGroupId;
+    /**
+     * namespace code
+     */
+    private String namespaceCode;
 
-    private Integer jobInstanceId;
+    /**
+     * is enabled
+     */
+    private Boolean enabled;
 
-    private String title;
+    /**
+     * note
+     */
+    private String note;
 
-    private String content;
-
-    private Integer status;
-
-    private String log;
-
+    /**
+     * create time
+     */
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
+
+    /**
+     * update time
+     */
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 }

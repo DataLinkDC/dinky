@@ -21,11 +21,15 @@
 package com.dlink.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
+
 import com.dlink.assertion.Asserts;
 import com.dlink.common.result.Result;
 import com.dlink.dto.LoginUTO;
 import com.dlink.service.UserService;
+
 import lombok.extern.slf4j.Slf4j;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -73,5 +77,13 @@ public class AdminController {
         } catch (Exception e) {
             return Result.failed("获取失败");
         }
+    }
+
+    /**
+     * get tenant
+     */
+    @RequestMapping("/geTenants")
+    public Result getTenants(@RequestParam("username") String username) {
+        return userService.getTenants(username);
     }
 }

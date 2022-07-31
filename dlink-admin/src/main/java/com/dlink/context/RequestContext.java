@@ -17,27 +17,23 @@
  *
  */
 
-
-package com.dlink.dto;
-
-import com.dlink.config.Dialect;
-import lombok.Getter;
-import lombok.Setter;
+package com.dlink.context;
 
 /**
- * CatalogueTaskDTO
- *
- * @author wenmo
- * @since 2021/6/1 20:16
+ * request context
  */
-@Getter
-@Setter
-public class CatalogueTaskDTO {
-    private Integer id;
-    private Integer tenantId;
-    private Integer parentId;
-    private boolean isLeaf;
-    private String name;
-    private String alias;
-    private String dialect = Dialect.DEFAULT.getValue();
+public class RequestContext {
+    private static final ThreadLocal<Object> threadLocal = new ThreadLocal<>();
+
+    public static void set(Object value) {
+        threadLocal.set(value);
+    }
+
+    public static Object get() {
+        return threadLocal.get();
+    }
+
+    public static void remove() {
+        threadLocal.remove();
+    }
 }

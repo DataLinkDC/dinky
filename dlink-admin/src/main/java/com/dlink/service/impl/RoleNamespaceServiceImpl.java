@@ -17,27 +17,16 @@
  *
  */
 
+package com.dlink.service.impl;
 
-package com.dlink.dto;
+import org.springframework.stereotype.Service;
 
-import com.dlink.config.Dialect;
-import lombok.Getter;
-import lombok.Setter;
+import com.dlink.db.service.impl.SuperServiceImpl;
+import com.dlink.mapper.RoleNamespaceMapper;
+import com.dlink.model.RoleNamespace;
+import com.dlink.service.RoleNamespaceService;
 
-/**
- * CatalogueTaskDTO
- *
- * @author wenmo
- * @since 2021/6/1 20:16
- */
-@Getter
-@Setter
-public class CatalogueTaskDTO {
-    private Integer id;
-    private Integer tenantId;
-    private Integer parentId;
-    private boolean isLeaf;
-    private String name;
-    private String alias;
-    private String dialect = Dialect.DEFAULT.getValue();
+@Service
+public class RoleNamespaceServiceImpl extends SuperServiceImpl<RoleNamespaceMapper, RoleNamespace> implements RoleNamespaceService {
+
 }

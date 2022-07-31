@@ -43,6 +43,8 @@ public class DataBase extends SuperEntity {
 
     private static final long serialVersionUID = -5002272138861566408L;
 
+    private Integer tenantId;
+
     @TableField(fill = FieldFill.INSERT)
     private String alias;
 

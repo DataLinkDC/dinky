@@ -17,27 +17,24 @@
  *
  */
 
+package com.dlink.mapper;
 
-package com.dlink.dto;
+import com.dlink.db.mapper.SuperMapper;
+import com.dlink.model.Role;
 
-import com.dlink.config.Dialect;
-import lombok.Getter;
-import lombok.Setter;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Set;
 
 /**
- * CatalogueTaskDTO
- *
- * @author wenmo
- * @since 2021/6/1 20:16
+ * role mapper interface
  */
-@Getter
-@Setter
-public class CatalogueTaskDTO {
-    private Integer id;
-    private Integer tenantId;
-    private Integer parentId;
-    private boolean isLeaf;
-    private String name;
-    private String alias;
-    private String dialect = Dialect.DEFAULT.getValue();
+@Mapper
+public interface RoleMapper extends SuperMapper<Role> {
+
+    List<Role> getRoleByIds(@Param("roleIds") Set<Integer> roleIds);
+
+    List<Role> getRoleByTenantIdAndIds(@Param("tenantId") String tenantId, @Param("roleIds") Set<Integer> roleIds);
 }
