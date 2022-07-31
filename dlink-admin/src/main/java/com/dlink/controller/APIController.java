@@ -1,29 +1,34 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+
 package com.dlink.controller;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.model.JobInstance;
-import com.dlink.model.Task;
-import com.dlink.service.JobInstanceService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.dlink.common.result.Result;
-import com.dlink.dto.APICancelDTO;
-import com.dlink.dto.APIExecuteJarDTO;
-import com.dlink.dto.APIExecuteSqlDTO;
-import com.dlink.dto.APIExplainSqlDTO;
-import com.dlink.dto.APISavePointDTO;
-import com.dlink.dto.APISavePointTaskDTO;
+import com.dlink.dto.*;
 import com.dlink.service.APIService;
+import com.dlink.service.JobInstanceService;
 import com.dlink.service.StudioService;
 import com.dlink.service.TaskService;
-
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * APIController
@@ -100,7 +105,15 @@ public class APIController {
      */
     @GetMapping("/restartTask")
     public Result restartTask(@RequestParam Integer id) {
-        return Result.succeed(taskService.restartTask(id), "重启成功");
+        return Result.succeed(taskService.restartTask(id, null), "重启成功");
+    }
+
+    /**
+     * 选择保存点重启任务
+     */
+    @GetMapping("/selectSavePointRestartTask")
+    public Result restartTask(@RequestParam Integer id, @RequestParam String savePointPath) {
+        return Result.succeed(taskService.restartTask(id, savePointPath), "重启成功");
     }
 
     /**
@@ -124,7 +137,16 @@ public class APIController {
      */
     @GetMapping("/reOnLineTask")
     public Result reOnLineTask(@RequestParam Integer id) {
-        return taskService.reOnLineTask(id);
+        return taskService.reOnLineTask(id, null);
+    }
+
+
+    /**
+     * 选择保存点重新上线任务
+     */
+    @GetMapping("/selectSavePointReOnLineTask")
+    public Result selectSavePointReOnLineTask(@RequestParam Integer id, @RequestParam String savePointPath) {
+        return taskService.reOnLineTask(id, savePointPath);
     }
 
     /**

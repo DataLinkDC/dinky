@@ -1,3 +1,23 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+
 
 package com.dlink.alert.email;
 
@@ -82,13 +102,10 @@ public final class MailSender {
         requireNonNull(mailPasswd, EmailConstants.NAME_MAIL_PASSWD + mustNotNull);
 
         mailUseStartTLS = config.get(EmailConstants.NAME_MAIL_SMTP_STARTTLS_ENABLE);
-        requireNonNull(mailUseStartTLS, EmailConstants.NAME_MAIL_SMTP_STARTTLS_ENABLE + mustNotNull);
 
         mailUseSSL = config.get(EmailConstants.NAME_MAIL_SMTP_SSL_ENABLE);
-        requireNonNull(mailUseSSL, EmailConstants.NAME_MAIL_SMTP_SSL_ENABLE + mustNotNull);
 
         sslTrust = config.get(EmailConstants.NAME_MAIL_SMTP_SSL_TRUST);
-        requireNonNull(sslTrust, EmailConstants.NAME_MAIL_SMTP_SSL_TRUST + mustNotNull);
 
         showType = config.get(EmailConstants.NAME_SHOW_TYPE);
         requireNonNull(showType, EmailConstants.NAME_SHOW_TYPE + mustNotNull);
@@ -256,11 +273,25 @@ public final class MailSender {
         Properties props = new Properties();
         props.setProperty(EmailConstants.MAIL_SMTP_HOST, mailSmtpHost);
         props.setProperty(EmailConstants.MAIL_SMTP_PORT, mailSmtpPort);
-        props.setProperty(EmailConstants.MAIL_SMTP_AUTH, enableSmtpAuth);
-        props.setProperty(EmailConstants.MAIL_TRANSPORT_PROTOCOL, mailProtocol);
-        props.setProperty(EmailConstants.MAIL_SMTP_STARTTLS_ENABLE, mailUseStartTLS);
-        props.setProperty(EmailConstants.MAIL_SMTP_SSL_ENABLE, mailUseSSL);
-        props.setProperty(EmailConstants.MAIL_SMTP_SSL_TRUST, sslTrust);
+
+        if (StringUtils.isNotEmpty(enableSmtpAuth)){
+            props.setProperty(EmailConstants.MAIL_SMTP_AUTH, enableSmtpAuth);
+        }
+        if ( StringUtils.isNotEmpty(mailProtocol)){
+            props.setProperty(EmailConstants.MAIL_TRANSPORT_PROTOCOL, mailProtocol);
+        }
+
+        if (StringUtils.isNotEmpty(mailUseSSL)){
+            props.setProperty(EmailConstants.MAIL_SMTP_SSL_ENABLE, mailUseSSL);
+        }
+
+        if (StringUtils.isNotEmpty(mailUseStartTLS)){
+            props.setProperty(EmailConstants.MAIL_SMTP_STARTTLS_ENABLE, mailUseStartTLS);
+        }
+
+        if (StringUtils.isNotEmpty(sslTrust)){
+            props.setProperty(EmailConstants.MAIL_SMTP_SSL_TRUST, sslTrust);
+        }
 
         Authenticator auth = new Authenticator() {
             @Override

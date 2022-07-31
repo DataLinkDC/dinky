@@ -1,7 +1,27 @@
-import {executeDDL} from "@/pages/DataStudio/service";
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+
+import {executeDDL, getMSCatalogs} from "@/pages/DataStudio/service";
 import FlinkSQL from "./FlinkSQL";
-import {SessionType} from "@/pages/DataStudio/model";
-import {Modal, message} from "antd";
+import {MetaStoreCatalogType, SessionType, TaskType} from "@/pages/DataStudio/model";
+import {message, Modal} from "antd";
 import {addOrUpdateData, getData, handleRemove} from "@/components/Common/crud";
 
 /*--- 保存sql ---*/
@@ -273,4 +293,36 @@ export function cancelTask(id: number) {
 /*--- 恢复作业 ---*/
 export function recoveryTask(id: number) {
   return getData('api/task/recoveryTask', {id});
+}
+
+/*--- 刷新 MetaStore Catalogs ---*/
+export async function showMetaStoreCatalogs(task: TaskType, dispatch: any) {
+  if (!task?.dialect) {
+    return;
+  }
+  let param = {
+    envId: task.envId,
+    fragment: task.fragment,
+    dialect: task.dialect,
+    databaseId: task.databaseId,
+  };
+  const result = getMSCatalogs(param);
+  result.then(res => {
+    const catalogs: MetaStoreCatalogType[] = [];
+    if (res.datas) {
+      for (let i = 0; i < res.datas.length; i++) {
+        catalogs.push({
+          name: res.datas[i].name,
+          databases: res.datas[i].schemas,
+        });
+      }
+    }
+    dispatch && dispatch({
+      type: "Studio/saveMetaStore",
+      payload: {
+        activeKey: task.id,
+        metaStore: catalogs
+      },
+    });
+  })
 }

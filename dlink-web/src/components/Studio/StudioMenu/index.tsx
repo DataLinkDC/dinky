@@ -1,3 +1,23 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+
 import styles from "./index.less";
 import {Menu, Dropdown, Tooltip, Row, Col, notification, Modal, message} from "antd";
 import {
@@ -483,7 +503,7 @@ const StudioMenu = (props: any) => {
 
   return (
     <Row className={styles.container}>
-      <Col span={24}>
+      {/*<Col span={24}>
         <div>
           <Space>
             <Dropdown overlay={menu}>
@@ -508,14 +528,14 @@ const StudioMenu = (props: any) => {
             </Dropdown>
           </Space>
         </div>
-      </Col>
+      </Col>*/}
       <Divider className={styles["ant-divider-horizontal-0"]}/>
       <Col span={24}>
         <Row>
           <Col span={16}>
             <Breadcrumb className={styles["dw-path"]}>
-              <EnvironmentOutlined/>
-              <Divider type="vertical"/>
+              <EnvironmentOutlined style={{lineHeight: '32px'}}/>
+              <Divider type="vertical" style={{height: 'unset'}}/>
               {getPathItem(currentPath)}
             </Breadcrumb>
             {currentSession.session &&
@@ -659,7 +679,7 @@ const StudioMenu = (props: any) => {
               <Tooltip title="查看 API">
                 <Button
                   type="text"
-                  icon={<ApiTwoTone />}
+                  icon={<ApiTwoTone/>}
                   onClick={showAPI}
                 />
               </Tooltip>

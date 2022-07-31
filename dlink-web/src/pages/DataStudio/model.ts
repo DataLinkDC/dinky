@@ -1,6 +1,26 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+
 import type {Effect, Reducer} from "umi";
 import {
-   handleAddOrUpdate
+  handleAddOrUpdate
 } from "@/components/Common/crud";
 import type {SqlMetaData} from "@/components/Studio/StudioEvent/data";
 
@@ -111,6 +131,7 @@ export type TabsItemType = {
   monaco?: any;
   isModified: boolean;
   sqlMetaData?: SqlMetaData;
+  metaStore?: MetaStoreCatalogType[]
 }
 
 export type TabsType = {
@@ -133,6 +154,30 @@ export type SessionType = {
   createUser?: string;
   createTime?: string;
   connectors: ConnectorType[];
+}
+
+export type MetaStoreCatalogType = {
+  name: string;
+  databases: MetaStoreDataBaseType[];
+}
+
+export type MetaStoreDataBaseType = {
+  name: string;
+  tables: MetaStoreTableType[];
+  views: string[];
+  functions: string[];
+  userFunctions: string[];
+  modules: string[];
+}
+
+export type MetaStoreTableType = {
+  name: string;
+  columns: MetaStoreColumnType[];
+}
+
+export type MetaStoreColumnType = {
+  name: string;
+  type: string;
 }
 
 export type StateType = {
@@ -174,6 +219,8 @@ export type ModelType = {
     saveCurrentPath: Reducer<StateType>;
     // saveMonaco: Reducer<StateType>;
     saveSqlMetaData: Reducer<StateType>;
+    saveMetaStore: Reducer<StateType>;
+    saveMetaStoreTable: Reducer<StateType>;
     saveTabs: Reducer<StateType>;
     closeTabs: Reducer<StateType>;
     changeActiveKey: Reducer<StateType>;
@@ -219,10 +266,10 @@ const Model: ModelType = {
       panes: [],
     },
     session: [],
-    result:{},
+    result: {},
     rightClickMenu: false,
-    refs:{
-      history:{},
+    refs: {
+      history: {},
     }
   },
 
@@ -250,12 +297,12 @@ const Model: ModelType = {
         ...state,
         toolHeight: payload,
       };
-    },saveToolRightWidth(state, {payload}) {
+    }, saveToolRightWidth(state, {payload}) {
       return {
         ...state,
         toolRightWidth: payload,
       };
-    },saveToolLeftWidth(state, {payload}) {
+    }, saveToolLeftWidth(state, {payload}) {
       return {
         ...state,
         toolLeftWidth: payload,
@@ -274,7 +321,7 @@ const Model: ModelType = {
       return {
         ...state,
         current: {...newCurrent},
-        tabs:{...newTabs},
+        tabs: {...newTabs},
       };
     },
     saveCurrentPath(state, {payload}) {
@@ -292,7 +339,7 @@ const Model: ModelType = {
     saveSqlMetaData(state, {payload}) {
       let newCurrent = state.current;
       const newTabs = state.tabs;
-      if(newCurrent.key == payload.activeKey){
+      if (newCurrent.key == payload.activeKey) {
         newCurrent.sqlMetaData = {...payload.sqlMetaData};
         newCurrent.isModified = payload.isModified;
       }
@@ -309,6 +356,50 @@ const Model: ModelType = {
         tabs: {...newTabs},
       };
     },
+    saveMetaStore(state, {payload}) {
+      let newCurrent = state.current;
+      const newTabs = state.tabs;
+      if (newCurrent.key == payload.activeKey) {
+        newCurrent.metaStore = [...payload.metaStore];
+      }
+      for (let i = 0; i < newTabs.panes.length; i++) {
+        if (newTabs.panes[i].key == payload.activeKey) {
+          newTabs.panes[i].metaStore = [...payload.metaStore];
+          break;
+        }
+      }
+      return {
+        ...state,
+        current: {...newCurrent},
+        tabs: {...newTabs},
+      };
+    },
+    saveMetaStoreTable(state, {payload}) {
+      let newCurrent = state.current;
+      const newTabs = state.tabs;
+      if (newCurrent.key == payload.activeKey) {
+        for (let i = 0; i < newCurrent.metaStore.length; i++) {
+          if (newCurrent.metaStore[i].name === payload.catalog) {
+            for (let j = 0; j < newCurrent.metaStore[i].databases.length; j++) {
+              if (newCurrent.metaStore[i].databases[j].name === payload.database) {
+                newCurrent.metaStore[i].databases[j].tables = [...payload.tables]
+              }
+            }
+          }
+        }
+      }
+      for (let i = 0; i < newTabs.panes.length; i++) {
+        if (newTabs.panes[i].key == payload.activeKey) {
+          newTabs.panes[i] = {...newCurrent};
+          break;
+        }
+      }
+      return {
+        ...state,
+        current: {...newCurrent},
+        tabs: {...newTabs},
+      };
+    },
     saveTabs(state, {payload}) {
       let newCurrent = state.current;
       for (let i = 0; i < payload.panes.length; i++) {
@@ -316,7 +407,7 @@ const Model: ModelType = {
           newCurrent = payload.panes[i];
         }
       }
-      if(payload.panes.length == 0){
+      if (payload.panes.length == 0) {
         return {
           ...state,
           current: undefined,
@@ -328,7 +419,7 @@ const Model: ModelType = {
         ...state,
         current: {
           ...newCurrent,
-          isModified:false,
+          isModified: false,
         },
         tabs: {...payload},
         currentPath: newCurrent.path,
@@ -343,12 +434,12 @@ const Model: ModelType = {
         }
       }
       let newCurrent = undefined;
-      if(newTabs.panes.length > 0){
+      if (newTabs.panes.length > 0) {
         newCurrent = newTabs.panes[newTabs.panes.length - 1];
       }
       if (newCurrent && (newTabs.activeKey == payload)) {
         newTabs.activeKey = newCurrent.key;
-      }else{
+      } else {
         newTabs.activeKey = undefined;
       }
       return {
@@ -400,7 +491,7 @@ const Model: ModelType = {
         if (newTabs.panes[i].key == payload.key) {
           newTabs.panes[i].task = payload;
           newTabs.panes[i].isModified = false;
-          if(newCurrent.key == payload.key){
+          if (newCurrent.key == payload.key) {
             newCurrent = newTabs.panes[i];
           }
         }
@@ -446,7 +537,7 @@ const Model: ModelType = {
       for (let i = 0; i < newTabs.panes.length; i++) {
         if (newTabs.panes[i].key == payload.key) {
           newTabs.panes[i].console.result.result = payload.datas;
-          if(newCurrent.key == payload.key){
+          if (newCurrent.key == payload.key) {
             newCurrent.console = newTabs.panes[i].console;
           }
           break;
@@ -463,27 +554,27 @@ const Model: ModelType = {
         ...state,
         cluster: [...payload],
       };
-    },saveSessionCluster(state, {payload}) {
+    }, saveSessionCluster(state, {payload}) {
       return {
         ...state,
         sessionCluster: [...payload],
       };
-    },saveClusterConfiguration(state, {payload}) {
+    }, saveClusterConfiguration(state, {payload}) {
       return {
         ...state,
         clusterConfiguration: [...payload],
       };
-    },saveDataBase(state, {payload}) {
+    }, saveDataBase(state, {payload}) {
       return {
         ...state,
         database: [...payload],
       };
-    },saveEnv(state, {payload}) {
+    }, saveEnv(state, {payload}) {
       return {
         ...state,
         env: [...payload],
       };
-    },saveChart(state, {payload}) {
+    }, saveChart(state, {payload}) {
       let newTabs = state?.tabs;
       let newCurrent = state?.current;
       for (let i = 0; i < newTabs.panes.length; i++) {
@@ -505,7 +596,7 @@ const Model: ModelType = {
       for (let i = 0; i < newTabs.panes.length; i++) {
         if (newTabs.panes[i].task.id == payload.id) {
           newTabs.panes[i].task.step = payload.step;
-          if(newCurrent.key == newTabs.panes[i].key){
+          if (newCurrent.key == newTabs.panes[i].key) {
             newCurrent = newTabs.panes[i];
           }
         }
@@ -522,7 +613,7 @@ const Model: ModelType = {
       for (let i = 0; i < newTabs.panes.length; i++) {
         if (newTabs.panes[i].task.id == payload.id) {
           newTabs.panes[i].task.jobInstanceId = payload.jobInstanceId;
-          if(newCurrent.key == newTabs.panes[i].key){
+          if (newCurrent.key == newTabs.panes[i].key) {
             newCurrent = newTabs.panes[i];
           }
         }
@@ -546,7 +637,7 @@ const Model: ModelType = {
           newCurrent.task.alias = payload.name;
         }
       }
-      if(newTabs.panes.length == 0){
+      if (newTabs.panes.length == 0) {
         return {
           ...state,
           current: undefined,

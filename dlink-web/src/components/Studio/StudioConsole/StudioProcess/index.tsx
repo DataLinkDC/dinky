@@ -1,13 +1,32 @@
-import {Empty, Tag, Divider, Tooltip, message, Select, Button, Space, Modal,Dropdown,Menu} from "antd";
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+
+import {Button, Divider, Dropdown, Empty, Menu, message, Modal, Select, Space, Tag, Tooltip} from "antd";
 import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
-import {useState} from "react";
-import {SearchOutlined,CheckCircleOutlined,SyncOutlined,CloseCircleOutlined,ClockCircleOutlined,MinusCircleOutlined,DownOutlined} from '@ant-design/icons';
+import React, {useState} from "react";
+import {DownOutlined, SearchOutlined} from '@ant-design/icons';
 import ProTable from '@ant-design/pro-table';
 import {cancelJob, savepointJob, showFlinkJobs} from "../../StudioEvent/DDL";
-import {ClusterTableListItem} from "@/pages/Cluster/data";
-import React from "react";
 import JobStatus from "@/components/Common/JobStatus";
+import {parseSecondStr} from "@/components/Common/function";
 
 const {Option} = Select;
 
@@ -90,9 +109,10 @@ const StudioProcess = (props: any) => {
       valueType: 'dateTime',
     }, {
       title: "耗时",
-      dataIndex: "duration",
       sorter: true,
-      valueType: 'second',
+      render: (_, row) => {
+        return (parseSecondStr(row.duration))
+      }
     }, {
       title: "tasks",
       dataIndex: "tasks",

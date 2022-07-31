@@ -1,19 +1,39 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+
 package com.dlink.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.dlink.assertion.Asserts;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.dto.CatalogueTaskDTO;
 import com.dlink.mapper.CatalogueMapper;
-import com.dlink.model.Catalogue;
-import com.dlink.model.JobLifeCycle;
-import com.dlink.model.Statement;
-import com.dlink.model.Task;
+import com.dlink.model.*;
 import com.dlink.service.CatalogueService;
 import com.dlink.service.StatementService;
 import com.dlink.service.TaskService;
+import com.dlink.service.TaskVersionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +56,9 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     private TaskService taskService;
     @Autowired
     private StatementService statementService;
+
+    @Autowired
+    private TaskVersionService taskVersionService;
 
     @Override
     public List<Catalogue> getAllData() {
@@ -111,6 +134,10 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             if (isNotNull(catalogue.getTaskId())) {
                 taskService.removeById(catalogue.getTaskId());
                 statementService.removeById(catalogue.getTaskId());
+                List<TaskVersion> taskVersionList = taskVersionService.getTaskVersionByTaskId(catalogue.getTaskId());
+                if(taskVersionList.size() > 0 ){
+                    taskVersionService.removeByIds(taskVersionList);
+                }
             }
             this.removeById(id);
             return true;
@@ -172,5 +199,25 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
 
         return this.save(catalogue);
 
+    }
+
+    @Override
+    public Integer addDependCatalogue(String[] catalogueNames){
+        Integer parentId = 0;
+        for (int i = 0; i < catalogueNames.length - 1; i++) {
+            String catalogueName = catalogueNames[i];
+            Catalogue catalogue = getOne(new QueryWrapper<Catalogue>().eq("name", catalogueName).eq("parent_id", parentId).last(" limit 1"));
+            if (Asserts.isNotNull(catalogue)) {
+                parentId = catalogue.getId();
+                continue;
+            }
+            catalogue = new Catalogue();
+            catalogue.setName(catalogueName);
+            catalogue.setParentId(parentId);
+            catalogue.setIsLeaf(false);
+            this.save(catalogue);
+            parentId = catalogue.getId();
+        }
+        return parentId;
     }
 }

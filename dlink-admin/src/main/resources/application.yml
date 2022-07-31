@@ -6,11 +6,14 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   application:
     name: dlink
-  #  flyway:
-  #    enabled: false
-  #    clean-disabled: true
-  ##    baseline-on-migrate: true
-  #    table: dlink_schema_history
+  main:
+    allow-circular-references: true
+#  flyway:
+#    enabled: false
+#    clean-disabled: true
+##    baseline-on-migrate: true
+#    table: dlink_schema_history
+
   # Redis配置
   #sa-token如需依赖redis，请打开redis配置和pom.xml、dlink-admin/pom.xml中依赖
   # redis:

@@ -1,16 +1,35 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+
 import ProCard, { StatisticCard } from '@ant-design/pro-card';
 import type { StatisticProps } from '@ant-design/pro-card';
-import JobInstanceTable from "./JobInstanceTable";
-import {getStatusCount} from "@/pages/DevOps/service";
+import JobInstanceTable from "./JobInstanceTable/index";
+import {getStatusCount,queryOneClickOperatingTaskStatus} from "@/pages/DevOps/service";
 import {useEffect, useState} from "react";
 import {StatusCount} from "@/pages/DevOps/data";
 import {JOB_STATUS} from "@/components/Common/JobStatus";
-
-import {Form, Switch} from "antd";
+import {Switch} from "antd";
 
 const { Statistic } = StatisticCard;
 
-const DevOps = (props:any) => {
+const DevOps = () => {
 
   const [isHistory, setIsHistory] = useState<boolean>(false);
 
@@ -39,9 +58,14 @@ const DevOps = (props:any) => {
   const [statusCount, setStatusCount] = useState<any[]>(statusCountDefault);
   const [statusHistoryCount, setStatusHistoryCount] = useState<any[]>(statusCountDefault);
   const [activeKey, setActiveKey] = useState<string>('');
+  const [taskStatus, setTaskStatus] = useState<any>({});
 
   const refreshStatusCount = () => {
     const res = getStatusCount();
+    const taskStatusRes = queryOneClickOperatingTaskStatus();
+    taskStatusRes.then((result)=>{
+      setTaskStatus(result)
+    })
     res.then((result)=>{
       const statusHistoryCountData: StatusCount = result.datas.history;
       const historyItems: any = [
@@ -115,7 +139,7 @@ const DevOps = (props:any) => {
               backgroundColor: '#fafafa',
             }}
           >
-            <JobInstanceTable status={item.key} activeKey={activeKey} isHistory={isHistory}/>
+            <JobInstanceTable taskStatus={taskStatus} status={item.key} activeKey={activeKey} isHistory={isHistory}/>
           </div>
         </ProCard.TabPane>
       ))}

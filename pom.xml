@@ -7,12 +7,13 @@
     <groupId>com.dlink</groupId>
     <artifactId>dlink</artifactId>
     <packaging>pom</packaging>
-    <version>0.6.6-SNAPSHOT</version>
+    <version>0.6.6</version>
 
     <modules>
         <module>dlink-flink</module>
         <module>dlink-common</module>
         <module>dlink-client</module>
+        <module>dlink-catalog</module>
         <module>dlink-gateway</module>
         <module>dlink-function</module>
         <module>dlink-metadata</module>
@@ -26,7 +27,6 @@
         <module>dlink-web</module>
         <module>dlink-admin</module>
         <module>dlink-assembly</module>
-        <module>dlink-catalog</module>
     </modules>
 
     <properties>
@@ -35,7 +35,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-boot-dependencies.version>2.6.3</spring-boot-dependencies.version>
-        <hutool.version>5.1.4</hutool.version>
+        <hutool.version>5.8.4</hutool.version>
         <druid-starter>1.2.8</druid-starter>
         <mybatis-plus-boot-starter.version>3.5.1</mybatis-plus-boot-starter.version>
         <lombok.version>1.18.16</lombok.version>

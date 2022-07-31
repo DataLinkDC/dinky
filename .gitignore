@@ -28,8 +28,18 @@ target/*
 *.lst
 */target/*
 */*/target/*
+*/*/*/target/*
 dlink-web/node_modules/*
 dlink-web/node/*
 dlink-web/dist/*
 dlink-admin/src/main/resources/static/*
 dependency-reduced-pom.xml
+
+# Dinky Docs gitignore
+docs/.docusaurus
+docs/node_modules
+docs/.cache-loader
+docs/package-lock.json
+docs/build
+docs/yarn.lock
+docs/*.log

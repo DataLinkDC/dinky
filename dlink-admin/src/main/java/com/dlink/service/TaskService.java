@@ -1,7 +1,25 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+
 package com.dlink.service;
 
-
-import java.util.List;
 
 import com.dlink.common.result.Result;
 import com.dlink.db.service.ISuperService;
@@ -9,8 +27,15 @@ import com.dlink.dto.TaskRollbackVersionDTO;
 import com.dlink.job.JobResult;
 import com.dlink.model.JobInfoDetail;
 import com.dlink.model.JobInstance;
+import com.dlink.model.JobLifeCycle;
+import com.dlink.model.JobStatus;
 import com.dlink.model.Task;
 import com.dlink.result.SqlExplainResult;
+import com.fasterxml.jackson.databind.JsonNode;
+import org.springframework.web.multipart.MultipartFile;
+import com.dlink.result.TaskOperatingResult;
+
+import java.util.List;
 
 /**
  * 作业 服务类
@@ -22,9 +47,9 @@ public interface TaskService extends ISuperService<Task> {
 
     JobResult submitTask(Integer id);
 
-    JobResult submitTaskToOnline(Integer id);
+    JobResult submitTaskToOnline(Task dtoTask, Integer id);
 
-    JobResult restartTask(Integer id);
+    JobResult restartTask(Integer id, String savePointPath);
 
     List<SqlExplainResult> explainTask(Integer id);
 
@@ -46,7 +71,7 @@ public interface TaskService extends ISuperService<Task> {
 
     Result onLineTask(Integer id);
 
-    Result reOnLineTask(Integer id);
+    Result reOnLineTask(Integer id, String savePointPath);
 
     Result offLineTask(Integer id, String type);
 
@@ -65,4 +90,20 @@ public interface TaskService extends ISuperService<Task> {
     Result rollbackTask(TaskRollbackVersionDTO dto);
 
     Integer queryAllSizeByName(String name);
+
+    String exportJsonByTaskId(Integer taskId);
+
+    String exportJsonByTaskIds(JsonNode para);
+
+    Result uploadTaskJson(MultipartFile file) throws Exception;
+
+    Result queryAllCatalogue();
+
+    Result<List<Task>> queryOnLineTaskByDoneStatus(List<JobLifeCycle> jobLifeCycle
+            , List<JobStatus> jobStatuses, boolean includeNull, Integer catalogueId);
+
+    void selectSavepointOnLineTask(TaskOperatingResult taskOperatingResult);
+
+    void selectSavepointOffLineTask(TaskOperatingResult taskOperatingResult);
+
 }

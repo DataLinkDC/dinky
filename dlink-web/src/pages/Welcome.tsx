@@ -1,3 +1,23 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+
 import React from 'react';
 import { Card, Alert, Typography,Timeline } from 'antd';
 import { useIntl, FormattedMessage } from 'umi';
@@ -19,7 +39,7 @@ export default (): React.ReactNode => {
         <Alert
           message={intl.formatMessage({
             id: 'pages.welcome.alertMessage',
-            defaultMessage: '实时计算平台 Dinky 即将发布，目前为体验版，版本号为 0.6.6-SNAPSHOT。',
+            defaultMessage: '实时计算平台 Dinky 即将发布，目前为体验版，版本号为 0.6.6。',
           })}
           type="success"
           showIcon
@@ -1242,6 +1262,103 @@ export default (): React.ReactNode => {
                 </li>
                 <li>
                   <Link>优化所有报警的发送信息</Link>
+                </li>
+              </ul>
+            </Paragraph>
+          </Timeline.Item>
+          <Timeline.Item><Text code>0.6.6</Text> <Text type="secondary">2022-07-23</Text>
+            <p> </p>
+            <Paragraph>
+              <ul>
+                <li>
+                  <Link>新增运维中心的作业历史版本列表</Link>
+                </li>
+                <li>
+                  <Link>新增数据开发的历史版本对比功能</Link>
+                </li>
+                <li>
+                  <Link>新增 Flink MySql Catalog</Link>
+                </li>
+                <li>
+                  <Link>新增 FlinkSQLEnv 默认的 Flink Mysql Catalog</Link>
+                </li>
+                <li>
+                  <Link>新增 1.13 版本 Doris 连接默认隐藏 __DORIS_DELETE_</Link>
+                </li>
+                <li>
+                  <Link>新增 dlink-connector-pulsar</Link>
+                </li>
+                <li>
+                  <Link>新增选择 Checkpoint 重启任务</Link>
+                </li>
+                <li>
+                  <Link>升级 Flink 1.15.0 到 1.15.1</Link>
+                </li>
+                <li>
+                  <Link>新增数据开发的元存储查看</Link>
+                </li>
+                <li>
+                  <Link>新增数据开发的 Flink 元存储信息和列详情</Link>
+                </li>
+                <li>
+                  <Link>添加和更新开源协议头</Link>
+                </li>
+                <li>
+                  <Link>新增作业批量导出导入 Json 文件</Link>
+                </li>
+                <li>
+                  <Link>修复 Flink-connector-phoenix 问题</Link>
+                </li>
+                <li>
+                  <Link>修复作业实例导致的内存溢出</Link>
+                </li>
+                <li>
+                  <Link>升级 Flink 版本和修复 CDC 的问题</Link>
+                </li>
+                <li>
+                  <Link>修复任务实例耗时解析错误的问题</Link>
+                </li>
+                <li>
+                  <Link>修复 Catalog SPI 和 sql 的问题</Link>
+                </li>
+                <li>
+                  <Link>修复运维中心的 Checkpoint 错误以及添加 Savepoint 信息</Link>
+                </li>
+                <li>
+                  <Link>捕获 SQLSinkBuilder 中 translateToPlan 的异常</Link>
+                </li>
+                <li>
+                  <Link>修复打包时发生的异常</Link>
+                </li>
+                <li>
+                  <Link>修复 CopyrightUtil 问题</Link>
+                </li>
+                <li>
+                  <Link>修复 Flink Yarn Application 提交失败的问题</Link>
+                </li>
+                <li>
+                  <Link>修复报警实例删除的问题</Link>
+                </li>
+                <li>
+                  <Link>允许依赖环路</Link>
+                </li>
+                <li>
+                  <Link>删除未被引用的类</Link>
+                </li>
+                <li>
+                  <Link>修复作业历史字段 null 的问题</Link>
+                </li>
+                <li>
+                  <Link>优化 Flinksql 执行图获取失败时的返回提示</Link>
+                </li>
+                <li>
+                  <Link>从 API 中移除敏感信息如密码</Link>
+                </li>
+                <li>
+                  <Link>修复已被删除的用户登录，显示信息不正确问题</Link>
+                </li>
+                <li>
+                  <Link>优化运维中心的 Checkpoint 页面</Link>
                 </li>
               </ul>
             </Paragraph>

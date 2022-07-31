@@ -1,5 +1,25 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+
 import request from 'umi-request';
-import {CAParam, StudioParam} from "@/components/Studio/StudioEdit/data";
+import {CAParam, StudioMetaStoreParam, StudioParam} from "@/components/Studio/StudioEdit/data";
 
 export async function executeSql(params: StudioParam) {
   return request<API.Result>('/api/studio/executeSql', {
@@ -46,7 +66,7 @@ export async function getJobPlan(params: StudioParam) {
   });
 }
 
-export async function getJobData(jobId:string) {
+export async function getJobData(jobId: string) {
   return request<API.Result>('/api/studio/getJobData', {
     method: 'GET',
     params: {
@@ -66,6 +86,24 @@ export async function getCatalogueTreeData(params?: StudioParam) {
 
 export async function getLineage(params: CAParam) {
   return request<API.Result>('/api/studio/getLineage', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
+
+export async function getMSCatalogs(params: StudioMetaStoreParam) {
+  return request<API.Result>('/api/studio/getMSCatalogs', {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
+
+export async function getMSSchemaInfo(params: StudioMetaStoreParam) {
+  return request<API.Result>('/api/studio/getMSSchemaInfo', {
     method: 'POST',
     data: {
       ...params,

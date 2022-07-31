@@ -1,24 +1,50 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+
 package com.dlink.controller;
 
-import com.dlink.assertion.Asserts;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.dlink.common.result.Result;
 import com.dlink.dto.SessionDTO;
 import com.dlink.dto.StudioCADTO;
 import com.dlink.dto.StudioDDLDTO;
 import com.dlink.dto.StudioExecuteDTO;
-import com.dlink.explainer.lineage.LineageResult;
+import com.dlink.dto.StudioMetaStoreDTO;
 import com.dlink.job.JobResult;
 import com.dlink.result.IResult;
 import com.dlink.service.StudioService;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * StudioController
@@ -160,5 +186,34 @@ public class StudioController {
     public Result savepoint(@RequestParam Integer clusterId, @RequestParam String jobId,
                             @RequestParam String savePointType, @RequestParam String name, @RequestParam Integer taskId) {
         return Result.succeed(studioService.savepoint(taskId, clusterId, jobId, savePointType, name), "savepoint 成功");
+    }
+
+    /**
+     * 获取 Meta Store Catalog 和 Database
+     */
+    @PostMapping("/getMSCatalogs")
+    public Result getMSCatalogs(@RequestBody StudioMetaStoreDTO studioMetaStoreDTO) {
+        return Result.succeed(studioService.getMSCatalogs(studioMetaStoreDTO), "获取成功");
+    }
+
+    /**
+     * 获取 Meta Store Schema/Database 信息
+     */
+    @PostMapping("/getMSSchemaInfo")
+    public Result getMSSchemaInfo(@RequestBody StudioMetaStoreDTO studioMetaStoreDTO) {
+        return Result.succeed(studioService.getMSSchemaInfo(studioMetaStoreDTO), "获取成功");
+    }
+
+    /**
+     * 获取 Meta Store Flink Column 信息
+     */
+    @GetMapping("/getMSFlinkColumns")
+    public Result getMSFlinkColumns(@RequestParam Integer envId, @RequestParam String catalog, @RequestParam String database, @RequestParam String table) {
+        StudioMetaStoreDTO studioMetaStoreDTO = new StudioMetaStoreDTO();
+        studioMetaStoreDTO.setEnvId(envId);
+        studioMetaStoreDTO.setCatalog(catalog);
+        studioMetaStoreDTO.setDatabase(database);
+        studioMetaStoreDTO.setTable(table);
+        return Result.succeed(studioService.getMSFlinkColumns(studioMetaStoreDTO), "获取成功");
     }
 }

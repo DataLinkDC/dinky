@@ -1,17 +1,44 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+
 package com.dlink.controller;
 
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
 import com.dlink.dto.TaskRollbackVersionDTO;
 import com.dlink.job.JobResult;
+import com.dlink.model.JobLifeCycle;
+import com.dlink.model.JobStatus;
 import com.dlink.model.Task;
+import com.dlink.model.TaskOperatingSavepointSelect;
 import com.dlink.service.TaskService;
+import com.dlink.utils.TaskOneClickOperatingUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -183,9 +210,21 @@ public class TaskController {
     @GetMapping(value = "/restartTask")
     public Result restartTask(@RequestParam Integer id, @RequestParam Boolean isOnLine) {
         if (isOnLine) {
-            return taskService.reOnLineTask(id);
+            return taskService.reOnLineTask(id, null);
         } else {
-            return Result.succeed(taskService.restartTask(id), "重启成功");
+            return Result.succeed(taskService.restartTask(id, null), "重启成功");
+        }
+    }
+
+    /**
+     * 选择保存点重启任务
+     */
+    @GetMapping(value = "/selectSavePointRestartTask")
+    public Result selectSavePointRestartTask(@RequestParam Integer id, @RequestParam Boolean isOnLine, @RequestParam String savePointPath) {
+        if (isOnLine) {
+            return taskService.reOnLineTask(id, savePointPath);
+        } else {
+            return Result.succeed(taskService.restartTask(id, savePointPath), "重启成功");
         }
     }
 
@@ -196,5 +235,100 @@ public class TaskController {
     public Result getTaskAPIAddress() {
         return Result.succeed(taskService.getTaskAPIAddress(), "重启成功");
     }
+
+    /**
+     * 导出json
+     */
+    @GetMapping(value = "/exportJsonByTaskId")
+    public Result exportJsonByTaskId(@RequestParam Integer id) {
+        return Result.succeed(taskService.exportJsonByTaskId(id),"获取成功");
+    }
+
+    /**
+     * 导出json数组
+     */
+    @PostMapping(value = "/exportJsonByTaskIds")
+    public Result exportJsonByTaskIds(@RequestBody JsonNode para) {
+        return Result.succeed(taskService.exportJsonByTaskIds(para),"获取成功");
+    }
+
+    /**
+     * json文件上传  导入task
+     */
+    @PostMapping(value="/uploadTaskJson")
+    public Result uploadTaskJson(@RequestParam("file") MultipartFile file) throws Exception {
+        return taskService.uploadTaskJson(file);
+    }
+
+    /**
+     * 查询所有目录
+     *
+     * @return
+     */
+    @GetMapping("/queryAllCatalogue")
+    public Result queryAllCatalogue() {
+        return taskService.queryAllCatalogue();
+    }
+
+    /**
+     * 查询对应操作的任务列表
+     *
+     * @param operating
+     * @return
+     */
+    @GetMapping("/queryOnClickOperatingTask")
+    public Result<List<Task>> queryOnClickOperatingTask(@RequestParam("operating") Integer operating
+            , @RequestParam("catalogueId") Integer catalogueId) {
+        if (operating == null) {
+            return Result.failed("操作不正确");
+        }
+        switch (operating) {
+            case 1:
+                return taskService.queryOnLineTaskByDoneStatus(Arrays.asList(JobLifeCycle.RELEASE)
+                        , JobStatus.getAllDoneStatus(), true, catalogueId);
+            case 2:
+                return taskService.queryOnLineTaskByDoneStatus(Arrays.asList(JobLifeCycle.ONLINE)
+                        , Collections.singletonList(JobStatus.RUNNING), false, catalogueId);
+            default:
+                return Result.failed("操作不正确");
+        }
+    }
+
+
+    /**
+     * 一键操作任务
+     *
+     * @param operating
+     * @return
+     */
+    @PostMapping("/onClickOperatingTask")
+    public Result onClickOperatingTask(@RequestBody JsonNode operating) {
+        if (operating == null || operating.get("operating") == null) {
+            return Result.failed("操作不正确");
+        }
+        switch (operating.get("operating").asInt()) {
+            case 1:
+                final JsonNode savepointSelect = operating.get("taskOperatingSavepointSelect");
+                return TaskOneClickOperatingUtil.oneClickOnline(TaskOneClickOperatingUtil.parseJsonNode(operating)
+                        , TaskOperatingSavepointSelect.valueByCode(savepointSelect == null ? 0 : savepointSelect.asInt()));
+            case 2:
+                return TaskOneClickOperatingUtil.onClickOffline(TaskOneClickOperatingUtil.parseJsonNode(operating));
+            default:
+                return Result.failed("操作不正确");
+        }
+    }
+
+
+    /**
+     * 查询一键操作任务状态
+     *
+     * @return
+     */
+    @GetMapping("/queryOneClickOperatingTaskStatus")
+    public Result queryOneClickOperatingTaskStatus() {
+        return TaskOneClickOperatingUtil.queryOneClickOperatingTaskStatus();
+    }
+
+
 }
 
