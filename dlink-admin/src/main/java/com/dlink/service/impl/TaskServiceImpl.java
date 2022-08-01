@@ -786,12 +786,12 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         JobHistory jobHistoryJson = jobHistoryService.refreshJobHistory(id, jobInfoDetail.getCluster().getJobManagerHost(), jobInfoDetail.getInstance().getJid(), jobInfoDetail.isNeedSave());
         JobHistory jobHistory = jobHistoryService.getJobHistoryInfo(jobHistoryJson);
         jobInfoDetail.setJobHistory(jobHistory);
-        if (JobStatus.isDone(jobInfoDetail.getInstance().getStatus()) && Asserts.isNull(jobHistory.getJob())) {
+        if (JobStatus.isDone(jobInfoDetail.getInstance().getStatus()) && (Asserts.isNull(jobHistory.getJob()) || jobHistory.isError())) {
             return jobInfoDetail.getInstance();
         }
         String status = jobInfoDetail.getInstance().getStatus();
         boolean jobStatusChanged = false;
-        if (Asserts.isNull(jobInfoDetail.getJobHistory().getJob())) {
+        if (Asserts.isNull(jobInfoDetail.getJobHistory().getJob()) || jobInfoDetail.getJobHistory().isError()) {
             jobInfoDetail.getInstance().setStatus(JobStatus.UNKNOWN.getValue());
         } else {
             jobInfoDetail.getInstance().setDuration(jobInfoDetail.getJobHistory().getJob().get(FlinkRestResultConstant.JOB_DURATION).asLong() / 1000);

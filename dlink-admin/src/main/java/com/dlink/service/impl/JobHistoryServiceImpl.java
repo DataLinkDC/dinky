@@ -95,7 +95,11 @@ public class JobHistoryServiceImpl extends SuperServiceImpl<JobHistoryMapper, Jo
             JsonNode jobInfo = FlinkAPI.build(jobManagerHost).getJobInfo(jobId);
             if(jobInfo.has(FlinkRestResultConstant.ERRORS)){
                 final JobHistory dbHistory = getById(id);
-                return Objects.isNull(dbHistory) ? jobHistory : dbHistory;
+                if (Objects.nonNull(dbHistory)) {
+                    jobHistory = dbHistory;
+                }
+                jobHistory.setError(true);
+                return jobHistory;
             }
             JsonNode exception = FlinkAPI.build(jobManagerHost).getException(jobId);
             JsonNode checkPoints = FlinkAPI.build(jobManagerHost).getCheckPoints(jobId);
