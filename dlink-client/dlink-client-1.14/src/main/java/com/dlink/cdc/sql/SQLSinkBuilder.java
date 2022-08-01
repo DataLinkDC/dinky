@@ -83,10 +83,10 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
     }
 
     private DataStream<Row> buildRow(
-        SingleOutputStreamOperator<Map> filterOperator,
-        List<String> columnNameList,
-        List<LogicalType> columnTypeList,
-        String schemaTableName) {
+            DataStream<Map> filterOperator,
+            List<String> columnNameList,
+            List<LogicalType> columnTypeList,
+            String schemaTableName) {
         final String[] columnNames = columnNameList.toArray(new String[columnNameList.size()]);
         final LogicalType[] columnTypes = columnTypeList.toArray(new LogicalType[columnTypeList.size()]);
 
@@ -94,49 +94,49 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
         RowTypeInfo rowTypeInfo = new RowTypeInfo(typeInformations, columnNames);
 
         return filterOperator
-            .flatMap(new FlatMapFunction<Map, Row>() {
-                @Override
-                public void flatMap(Map value, Collector<Row> out) throws Exception {
-                    try {
-                        switch (value.get("op").toString()) {
-                            case "r":
-                            case "c":
-                                Row irow = Row.withPositions(RowKind.INSERT, columnNameList.size());
-                                Map idata = (Map) value.get("after");
-                                for (int i = 0; i < columnNameList.size(); i++) {
-                                    irow.setField(i, convertValue(idata.get(columnNameList.get(i)), columnTypeList.get(i)));
-                                }
-                                out.collect(irow);
-                                break;
-                            case "d":
-                                Row drow = Row.withPositions(RowKind.DELETE, columnNameList.size());
-                                Map ddata = (Map) value.get("before");
-                                for (int i = 0; i < columnNameList.size(); i++) {
-                                    drow.setField(i, convertValue(ddata.get(columnNameList.get(i)), columnTypeList.get(i)));
-                                }
-                                out.collect(drow);
-                                break;
-                            case "u":
-                                Row ubrow = Row.withPositions(RowKind.UPDATE_BEFORE, columnNameList.size());
-                                Map ubdata = (Map) value.get("before");
-                                for (int i = 0; i < columnNameList.size(); i++) {
-                                    ubrow.setField(i, convertValue(ubdata.get(columnNameList.get(i)), columnTypeList.get(i)));
-                                }
-                                out.collect(ubrow);
-                                Row uarow = Row.withPositions(RowKind.UPDATE_AFTER, columnNameList.size());
-                                Map uadata = (Map) value.get("after");
-                                for (int i = 0; i < columnNameList.size(); i++) {
-                                    uarow.setField(i, convertValue(uadata.get(columnNameList.get(i)), columnTypeList.get(i)));
-                                }
-                                out.collect(uarow);
-                                break;
+                .flatMap(new FlatMapFunction<Map, Row>() {
+                    @Override
+                    public void flatMap(Map value, Collector<Row> out) throws Exception {
+                        try {
+                            switch (value.get("op").toString()) {
+                                case "r":
+                                case "c":
+                                    Row irow = Row.ofKind(RowKind.INSERT);
+                                    Map idata = (Map) value.get("after");
+                                    for (int i = 0; i < columnNameList.size(); i++) {
+                                        irow.setField(i, convertValue(idata.get(columnNameList.get(i)), columnTypeList.get(i)));
+                                    }
+                                    out.collect(irow);
+                                    break;
+                                case "d":
+                                    Row drow = Row.ofKind(RowKind.DELETE);
+                                    Map ddata = (Map) value.get("before");
+                                    for (int i = 0; i < columnNameList.size(); i++) {
+                                        drow.setField(i, convertValue(ddata.get(columnNameList.get(i)), columnTypeList.get(i)));
+                                    }
+                                    out.collect(drow);
+                                    break;
+                                case "u":
+                                    Row ubrow = Row.ofKind(RowKind.UPDATE_BEFORE);
+                                    Map ubdata = (Map) value.get("before");
+                                    for (int i = 0; i < columnNameList.size(); i++) {
+                                        ubrow.setField(i, convertValue(ubdata.get(columnNameList.get(i)), columnTypeList.get(i)));
+                                    }
+                                    out.collect(ubrow);
+                                    Row uarow = Row.ofKind(RowKind.UPDATE_AFTER);
+                                    Map uadata = (Map) value.get("after");
+                                    for (int i = 0; i < columnNameList.size(); i++) {
+                                        uarow.setField(i, convertValue(uadata.get(columnNameList.get(i)), columnTypeList.get(i)));
+                                    }
+                                    out.collect(uarow);
+                                    break;
+                            }
+                        } catch (Exception e) {
+                            logger.error("SchameTable: {} - Row: {} - Exception: {}", schemaTableName, JSONUtil.toJsonString(value), e.getCause().getMessage());
+                            throw e;
                         }
-                    } catch (Exception e) {
-                        logger.error("SchameTable: {} - Row: {} - Exception: {}", schemaTableName, JSONUtil.toJsonString(value), e.getCause().getMessage());
-                        throw e;
                     }
-                }
-            }, rowTypeInfo);
+                }, rowTypeInfo);
     }
 
     private void addTableSink(
