@@ -115,8 +115,7 @@ public class JobHistoryServiceImpl extends SuperServiceImpl<JobHistoryMapper, Jo
             }
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            return jobHistory;
         }
+        return jobHistory;
     }
 }
