@@ -20,7 +20,16 @@
 
 package com.dlink.cdc.sql;
 
+import com.dlink.assertion.Asserts;
+import com.dlink.cdc.AbstractSinkBuilder;
+import com.dlink.cdc.CDCBuilder;
+import com.dlink.cdc.SinkBuilder;
+import com.dlink.executor.CustomTableEnvironment;
+import com.dlink.model.FlinkCDCConfig;
+import com.dlink.model.Schema;
+import com.dlink.model.Table;
 import com.dlink.utils.FlinkBaseUtil;
+import com.dlink.utils.JSONUtil;
 import com.dlink.utils.LogUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.api.common.functions.FlatMapFunction;
@@ -41,25 +50,14 @@ import org.apache.flink.table.types.utils.TypeConversions;
 import org.apache.flink.types.Row;
 import org.apache.flink.types.RowKind;
 import org.apache.flink.util.Collector;
+import org.apache.flink.util.OutputTag;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.*;
-
-import com.dlink.assertion.Asserts;
-import com.dlink.cdc.AbstractSinkBuilder;
-import com.dlink.cdc.CDCBuilder;
-import com.dlink.cdc.SinkBuilder;
-import com.dlink.executor.CustomTableEnvironment;
-
-import javax.xml.bind.DatatypeConverter;
-import com.dlink.model.FlinkCDCConfig;
-import com.dlink.model.Schema;
-import com.dlink.model.Table;
-import com.dlink.utils.JSONUtil;
-import org.apache.flink.util.OutputTag;
 
 /**
  * SQLSinkBuilder
@@ -257,7 +255,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                     OutputTag<Map> outputTag = new OutputTag<Map>(sinkTableName) {
                     };
                     tagMap.put(table, outputTag);
-                    tableMap.put(table.getSchema()+"_"+table.getName(), table);
+                    tableMap.put(table.getSchema()+"."+table.getName(), table);
 
                 }
             }
@@ -269,7 +267,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                 public void processElement(Map map, ProcessFunction<Map, Map>.Context ctx, Collector<Map> out) throws Exception {
                     LinkedHashMap source = (LinkedHashMap) map.get("source");
                     try {
-                        Table table = tableMap.get(source.get("db").toString() + "_" + source.get("table").toString());
+                        Table table = tableMap.get(source.get("db").toString() + "." + source.get("table").toString());
                         OutputTag<Map> outputTag = tagMap.get(table);
                         ctx.output(outputTag, map);
                     } catch (Exception e) {

@@ -20,8 +20,14 @@
 
 package com.dlink.cdc.kafka;
 
-import org.apache.flink.api.common.functions.FilterFunction;
-import org.apache.flink.api.common.functions.MapFunction;
+import com.dlink.assertion.Asserts;
+import com.dlink.cdc.AbstractSinkBuilder;
+import com.dlink.cdc.CDCBuilder;
+import com.dlink.cdc.SinkBuilder;
+import com.dlink.executor.CustomTableEnvironment;
+import com.dlink.model.FlinkCDCConfig;
+import com.dlink.model.Schema;
+import com.dlink.model.Table;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.connector.base.DeliveryGuarantee;
 import org.apache.flink.connector.kafka.sink.KafkaRecordSerializationSchema;
@@ -34,22 +40,13 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.ProcessFunction;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.types.logical.LogicalType;
+import org.apache.flink.util.Collector;
+import org.apache.flink.util.OutputTag;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.dlink.assertion.Asserts;
-import com.dlink.cdc.AbstractSinkBuilder;
-import com.dlink.cdc.CDCBuilder;
-import com.dlink.cdc.SinkBuilder;
-import com.dlink.executor.CustomTableEnvironment;
-import com.dlink.model.FlinkCDCConfig;
-import com.dlink.model.Schema;
-import com.dlink.model.Table;
-import org.apache.flink.util.Collector;
-import org.apache.flink.util.OutputTag;
 
 /**
  * MysqlCDCBuilder
@@ -118,7 +115,7 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
                         OutputTag<String> outputTag = new OutputTag<String>(sinkTableName) {
                         };
                         tagMap.put(table, outputTag);
-                        tableMap.put(table.getSchema() + "_" + table.getName(), table);
+                        tableMap.put(table.getSchema() + "." + table.getName(), table);
                     }
                 }
 
@@ -128,7 +125,7 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
                         LinkedHashMap source = (LinkedHashMap) map.get("source");
                         try {
                             String result = objectMapper.writeValueAsString(map);
-                            Table table = tableMap.get(source.get("db").toString() + "_" + source.get("table").toString());
+                            Table table = tableMap.get(source.get("db").toString() + "." + source.get("table").toString());
                             OutputTag<String> outputTag = tagMap.get(table);
                             ctx.output(outputTag, result);
                         } catch (Exception e) {
