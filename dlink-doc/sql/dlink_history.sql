@@ -798,3 +798,23 @@ alter table dlink_alert_history add column tenant_id int  not null comment '租�
 
 alter table dlink_task_version add column tenant_id int  not null comment '租户ID' after task_id;
 alter table dlink_task_version add unique key `dlink_task_version_un` (`task_id`,`tenant_id`);
+
+
+-- 0.7-SNAPSHOT 2022-08-02
+-------------------------
+-- DROP TABLE IF EXISTS `dlink_fragment`;
+CREATE TABLE `dlink_fragment` (
+                                  `id` int NOT NULL AUTO_INCREMENT COMMENT '实例主键',
+                                  `tenant_id` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '租户ID',
+                                  `name` varchar(50) COLLATE utf8mb4_general_ci NOT NULL COMMENT '唯一名称',
+                                  `alias` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '别名',
+                                  `fragment_value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '变量值',
+                                  `fill_value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '名称拼接变量值',
+                                  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '说明/描述',
+                                  `enabled` tinyint DEFAULT '1' COMMENT '是否启用',
+                                  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+                                  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+                                  PRIMARY KEY (`id`) USING BTREE,
+                                  UNIQUE KEY `un_idx1` (`name`) USING BTREE,
+                                  UNIQUE KEY `un_idx2` (`tenant_id`,`name`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='全局变量';
