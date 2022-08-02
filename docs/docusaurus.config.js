@@ -71,9 +71,9 @@ const config = {
           // Please change this to your repo.
           editUrl: ({locale, versionDocsDirPath, docPath}) => {
             if (locale !== 'zh-cn') {
-              return `https://github.com/DataLinkDC/dinky-website/tree/master/i18n/${locale}/${docPath}`;
+              return `https://github.com/DataLinkDC/dlink/tree/master/docs/i18n/${locale}/${docPath}`;
             }
-            return `https://github.com/DataLinkDC/dinky-website/tree/master/${versionDocsDirPath}/${docPath}`;
+            return `https://github.com/DataLinkDC/dlink/tree/master/docs/${versionDocsDirPath}/${docPath}`;
           },
         },
        blog: {
@@ -90,12 +90,12 @@ const config = {
          readingTime: ({content, frontMatter, defaultReadingTime}) =>
              defaultReadingTime({content, options: {wordsPerMinute: 300}}), // 阅读时间 md文件中如果不写 date: 此属性 默认是当前时间
          // Please change this to your repo.
-         editUrl: ({locale, versionDocsDirPath, docPath}) => { // 博客页面修改编辑按钮
-           if (locale !== 'zh-cn') {
-             return `https://github.com/DataLinkDC/dinky-website/tree/master/i18n/${locale}/${docPath}`;
-           }
-           return `https://github.com/DataLinkDC/dinky-website/tree/master/${versionDocsDirPath}/${docPath}`;
-         },
+         // editUrl: ({locale, versionDocsDirPath, docPath}) => { // 博客页面修改编辑按钮
+         //   if (locale !== 'zh-cn') {
+         //     return `https://github.com/DataLinkDC/dlink/tree/master/docs/i18n/${locale}/${docPath}`;
+         //   }
+         //   return `https://github.com/DataLinkDC/dlink/tree/master/docs/${versionDocsDirPath}/${docPath}`;
+         // },
        },
         theme: {
           customCss: require.resolve('./src/css/custom.css'), // 自定义css文件
@@ -270,10 +270,10 @@ const config = {
           routeBasePath: 'download',
           editUrl: ({locale, versionDocsDirPath, docPath}) => {
             if (locale !== 'zh-cn') {
-              return `https://github.com/DataLinkDC/dinky-website/tree/master/i18n/${locale}/${docPath}`;
+              return `https://github.com/DataLinkDC/dlink/tree/master/docs/i18n/${locale}/${docPath}`;
             }
-            return `https://github.com/DataLinkDC/dinky-website/tree/master/${versionDocsDirPath}/${docPath}`;
-          },
+            return `https://github.com/DataLinkDC/dlink/tree/master/docs/${versionDocsDirPath}/${docPath}`;
+            },
           sidebarPath: require.resolve('./sidebars.js'),
         },
       ],
