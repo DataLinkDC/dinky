@@ -204,6 +204,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
 
                 }
             }
+            final String schemaFieldName = config.getSchemaFieldName();
             ObjectMapper objectMapper = new ObjectMapper();
             SingleOutputStreamOperator<Map> mapOperator = dataStreamSource.map(x -> objectMapper.readValue(x,Map.class)).returns(Map.class);
 
@@ -212,7 +213,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                 public void processElement(Map map, ProcessFunction<Map, Map>.Context ctx, Collector<Map> out) throws Exception {
                     LinkedHashMap source = (LinkedHashMap) map.get("source");
                     try {
-                        Table table = tableMap.get(source.get("db").toString() + "." + source.get("table").toString());
+                        Table table = tableMap.get(source.get(schemaFieldName).toString() + "." + source.get("table").toString());
                         OutputTag<Map> outputTag = tagMap.get(table);
                         ctx.output(outputTag, map);
                     } catch (Exception e) {

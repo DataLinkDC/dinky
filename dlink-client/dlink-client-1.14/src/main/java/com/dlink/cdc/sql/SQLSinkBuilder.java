@@ -25,10 +25,12 @@ import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.dag.Transformation;
 import org.apache.flink.api.java.typeutils.RowTypeInfo;
+import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.functions.ProcessFunction;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
@@ -43,9 +45,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.cdc.AbstractSinkBuilder;
@@ -58,6 +58,7 @@ import com.dlink.model.Table;
 import com.dlink.utils.FlinkBaseUtil;
 import com.dlink.utils.JSONUtil;
 import com.dlink.utils.LogUtil;
+import org.apache.flink.util.OutputTag;
 
 /**
  * SQLSinkBuilder
@@ -189,29 +190,56 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
         CustomTableEnvironment customTableEnvironment,
         DataStreamSource<String> dataStreamSource) {
         final List<Schema> schemaList = config.getSchemaList();
-        final String schemaFieldName = config.getSchemaFieldName();
         if (Asserts.isNotNullCollection(schemaList)) {
-            SingleOutputStreamOperator<Map> mapOperator = deserialize(dataStreamSource);
+
             logger.info("Build deserialize successful...");
+            Map<Table, OutputTag<Map>> tagMap = new HashMap<>();
+            Map<String, Table> tableMap = new HashMap<>();
             for (Schema schema : schemaList) {
                 for (Table table : schema.getTables()) {
-                    final String schemaTableName = table.getSchemaTableName();
-                    try {
-                        SingleOutputStreamOperator<Map> filterOperator = shunt(mapOperator, table, schemaFieldName);
-                        logger.info("Build " + schemaTableName + " shunt successful...");
-                        List<String> columnNameList = new ArrayList<>();
-                        List<LogicalType> columnTypeList = new ArrayList<>();
-                        buildColumn(columnNameList, columnTypeList, table.getColumns());
-                        DataStream<Row> rowDataDataStream = buildRow(filterOperator, columnNameList, columnTypeList, schemaTableName);
-                        logger.info("Build " + schemaTableName + " flatMap successful...");
-                        logger.info("Start build " + schemaTableName + " sink...");
-                        addTableSink(customTableEnvironment, rowDataDataStream, table, columnNameList);
-                    } catch (Exception e) {
-                        logger.error("Build " + schemaTableName + " cdc sync failed...");
-                        logger.error(LogUtil.getError(e));
-                    }
+                    String sinkTableName = getSinkTableName(table);
+                    OutputTag<Map> outputTag = new OutputTag<Map>(sinkTableName) {
+                    };
+                    tagMap.put(table, outputTag);
+                    tableMap.put(table.getSchema()+"."+table.getName(), table);
+
                 }
             }
+            final String schemaFieldName = config.getSchemaFieldName();
+            ObjectMapper objectMapper = new ObjectMapper();
+            SingleOutputStreamOperator<Map> mapOperator = dataStreamSource.map(x -> objectMapper.readValue(x,Map.class)).returns(Map.class);
+
+            SingleOutputStreamOperator<Map> processOperator = mapOperator.process(new ProcessFunction<Map, Map>() {
+                @Override
+                public void processElement(Map map, ProcessFunction<Map, Map>.Context ctx, Collector<Map> out) throws Exception {
+                    LinkedHashMap source = (LinkedHashMap) map.get("source");
+                    try {
+                        Table table = tableMap.get(source.get(schemaFieldName).toString() + "." + source.get("table").toString());
+                        OutputTag<Map> outputTag = tagMap.get(table);
+                        ctx.output(outputTag, map);
+                    } catch (Exception e) {
+                        out.collect(map);
+                    }
+                }
+            });
+            tagMap.forEach((table,tag) -> {
+                final String schemaTableName = table.getSchemaTableName();
+                try {
+                    DataStream<Map> filterOperator = shunt(processOperator, table, tag);
+                    logger.info("Build " + schemaTableName + " shunt successful...");
+                    List<String> columnNameList = new ArrayList<>();
+                    List<LogicalType> columnTypeList = new ArrayList<>();
+                    buildColumn(columnNameList, columnTypeList, table.getColumns());
+                    DataStream<Row> rowDataDataStream = buildRow(filterOperator, columnNameList, columnTypeList, schemaTableName).rebalance();
+                    logger.info("Build " + schemaTableName + " flatMap successful...");
+                    logger.info("Start build " + schemaTableName + " sink...");
+                    addTableSink(customTableEnvironment, rowDataDataStream, table, columnNameList);
+                } catch (Exception e) {
+                    logger.error("Build " + schemaTableName + " cdc sync failed...");
+                    logger.error(LogUtil.getError(e));
+                }
+            });
+
             List<Transformation<?>> trans = customTableEnvironment.getPlanner().translate(modifyOperations);
             for (Transformation<?> item : trans) {
                 env.addOperator(item);

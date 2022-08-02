@@ -100,6 +100,7 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
             ObjectMapper objectMapper = new ObjectMapper();
             SingleOutputStreamOperator<Map> mapOperator = dataStreamSource.map(x -> objectMapper.readValue(x,Map.class)).returns(Map.class);
             final List<Schema> schemaList = config.getSchemaList();
+            final String schemaFieldName = config.getSchemaFieldName();
             if (Asserts.isNotNullCollection(schemaList)) {
 
                 for (Schema schema : schemaList) {
@@ -117,7 +118,7 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
                         LinkedHashMap source = (LinkedHashMap) map.get("source");
                         try {
                             String result = objectMapper.writeValueAsString(map);
-                            Table table = tableMap.get(source.get("db").toString() + "." + source.get("table").toString());
+                            Table table = tableMap.get(source.get(schemaFieldName).toString() + "." + source.get("table").toString());
                             OutputTag<String> outputTag = tagMap.get(table);
                             ctx.output(outputTag, result);
                         } catch (Exception e) {
