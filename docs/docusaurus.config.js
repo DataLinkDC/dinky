@@ -37,7 +37,7 @@ const config = {
   onDuplicateRoutes: 'warn', // Docusaurus 在检测到重复的路由时的行为 |  Behavior of docusaurus when duplicate routes are detected  ->  类型：'ignore' | 'log' | 'warn' | 'error' | 'throw'
   favicon: 'dinky_logo.svg', // 左侧logo  | left logo
   organizationName: 'DataLinkDC', // 拥有此源的 GitHub 用户或组织。 用于部署命令。 |  The GitHub user or organization that owns this source. Command for deployment.
-  projectName: 'dinky-website', // GitHub 源的名称。 用于部署命令。 | The name of the GitHub repository. Command for deployment.
+  projectName: 'dlink', // GitHub 源的名称。 用于部署命令。 | The name of the GitHub repository. Command for deployment.
   deploymentBranch: 'main', // GitHub Pages 的部署分支。 用于部署命令。 | The branch to deploy to GitHub Pages. Command for deployment.
   customFields:{ // 自定义字段 | Custom fields
     structTitle: 'Dinky',
