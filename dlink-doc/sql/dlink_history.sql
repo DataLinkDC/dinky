@@ -704,6 +704,8 @@ CREATE TABLE IF NOT EXISTS dlink_tenant
     PRIMARY KEY (id) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT '租户' ;
 
+INSERT INTO `dlink_tenant`(`id`, `tenant_code`, `is_delete`, `note`, `create_time`, `update_time`) VALUES (1, 'public', 1, '公共租户', '2022-08-03 12:51:38', '2022-08-03 12:51:41');
+
 -- DROP TABLE IF EXISTS dlink_role;
 CREATE TABLE IF NOT EXISTS dlink_role
 (
@@ -716,9 +718,8 @@ CREATE TABLE IF NOT EXISTS dlink_role
     create_time datetime     null comment '创建时间',
     update_time datetime     null comment '更新时间',
     PRIMARY KEY (id) USING BTREE,
-    UNIQUE KEY `dlink_role_un` (`role_code`,`tenant_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC comment '角色' ;
-
+    UNIQUE KEY `dlink_role_un` (`role_code`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC comment '角色' ;
 -- DROP TABLE IF EXISTS dlink_namespace;
 CREATE TABLE IF NOT EXISTS  dlink_namespace
 (
@@ -799,6 +800,25 @@ alter table dlink_alert_history add column tenant_id int  not null comment '租�
 alter table dlink_task_version add column tenant_id int  not null comment '租户ID' after task_id;
 alter table dlink_task_version add unique key `dlink_task_version_un` (`task_id`,`tenant_id`);
 
+alter table dlink_history add column tenant_id int  not null comment '租户ID' after id;
+
+-- 修改历史表的租户编号为默认public租户
+UPDATE `dlink_alert_group` SET `tenant_id` = 1 ;
+UPDATE `dlink_alert_history` SET `tenant_id` = 1;
+UPDATE `dlink_alert_instance` SET `tenant_id` = 1;
+UPDATE `dlink_catalogue` SET `tenant_id` = 1;
+UPDATE `dlink_cluster` SET `tenant_id` = 1
+UPDATE `dlink_cluster_configuration` SET `tenant_id` = 1 ;
+UPDATE `dlink_database` SET `tenant_id` = 1 ;
+UPDATE `dlink_history` SET `tenant_id` = 1;
+UPDATE `dlink_jar` SET `tenant_id` = 1 ;
+UPDATE `dlink_job_instance` SET `tenant_id` = 1 ;
+UPDATE `dlink_savepoints` SET `tenant_id` = 1;
+UPDATE `dlink_task` SET `tenant_id` = 1 ;
+UPDATE `dlink_task_statement` SET `tenant_id` = 1;
+UPDATE `dlink_task_version` SET `tenant_id` = 1;
+
+
 
 -- 0.7-SNAPSHOT 2022-08-02
 -------------------------
@@ -818,3 +838,5 @@ CREATE TABLE `dlink_fragment` (
                                   UNIQUE KEY `un_idx1` (`name`) USING BTREE,
                                   UNIQUE KEY `un_idx2` (`tenant_id`,`name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='全局变量';
+
+UPDATE `dlink_fragment` SET `tenant_id` = '1' ;

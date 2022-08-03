@@ -650,6 +650,7 @@ CREATE TABLE IF NOT EXISTS dlink_tenant
     update_time datetime             null comment '最近修改时间',
     PRIMARY KEY (id) USING BTREE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT '租户' ;
+INSERT INTO `dlink_tenant`(`id`, `tenant_code`, `is_delete`, `note`, `create_time`, `update_time`) VALUES (1, 'public', 1, '公共租户', '2022-08-03 12:51:38', '2022-08-03 12:51:41');
 
 DROP TABLE IF EXISTS dlink_role;
 CREATE TABLE IF NOT EXISTS dlink_role
@@ -663,7 +664,7 @@ CREATE TABLE IF NOT EXISTS dlink_role
     create_time datetime     null comment '创建时间',
     update_time datetime     null comment '更新时间',
     PRIMARY KEY (id) USING BTREE,
-    UNIQUE KEY `dlink_role_un` (`role_code`,`tenant_id`)
+    UNIQUE KEY `dlink_role_un` (`role_code`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC comment '角色' ;
 
 DROP TABLE IF EXISTS dlink_namespace;
