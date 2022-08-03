@@ -76,7 +76,7 @@
               ,create_time
               ,update_time
          from dlink_role
-        where role_id = in
+        where id in
         <foreach collection="roleIds" item="id" separator="," open="(" close=")" index="">
             #{id}
         </foreach>
