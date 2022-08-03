@@ -148,10 +148,14 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
     }
 
     Driver checkAndCreateSinkSchema(FlinkCDCConfig config, String schemaName) throws Exception {
-        String type = null;
         Map<String, String> sink = config.getSink();
+        String autoCreate = sink.get("auto.create");
+        if (!Asserts.isEqualsIgnoreCase(autoCreate, "true")) {
+            return null;
+        }
         String connector = sink.get("connector");
         String url = sink.get("url");
+        String type = null;
         if (Asserts.isEqualsIgnoreCase(connector, "doris") ||
                 Asserts.isEqualsIgnoreCase(connector, "starrocks")) {
             type = "Doris";
@@ -162,6 +166,12 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                 type = "MySQL";
             } else if (url.startsWith("jdbc:postgresql")) {
                 type = "PostgreSql";
+            } else if (url.startsWith("jdbc:oracle")) {
+                type = "Oracle";
+            } else if (url.startsWith("jdbc:sqlserver")) {
+                type = "SQLServer";
+            } else if (url.startsWith("jdbc:pivotal")) {
+                type = "Greenplum";
             }
         }
         if (Asserts.isNull(type)) {
