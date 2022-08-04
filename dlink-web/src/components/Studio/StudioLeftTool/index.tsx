@@ -18,19 +18,19 @@
  */
 
 
-import {Tabs, Empty} from "antd";
+import {Empty, Tabs} from "antd";
 import {
-  BarsOutlined,
-  DatabaseOutlined,
   AppstoreOutlined,
+  BarsOutlined,
+  CloudOutlined,
   ClusterOutlined,
-  MessageOutlined,
+  DatabaseOutlined,
+  FunctionOutlined,
   InsertRowAboveOutlined,
-  FunctionOutlined
+  MessageOutlined
 } from "@ant-design/icons";
 import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
-import styles from "./index.less";
 import StudioTree from "../StudioTree";
 import StudioConnector from "./StudioConnector";
 import React from "react";
@@ -38,6 +38,7 @@ import StudioDataBase from "./StudioDataBase";
 import StudioCluster from "./StudioCluster";
 import StudioMetaData from "./StudioMetaData";
 import StudioMetaStore from "./StudioMetaStore";
+import StudioFragment from "@/components/Studio/StudioLeftTool/StudioFragment";
 
 const {TabPane} = Tabs;
 
@@ -63,6 +64,9 @@ const StudioLeftTool = (props: any) => {
       </TabPane>
       <TabPane tab={<span><AppstoreOutlined/> 元数据</span>} key="MetaData">
         <StudioMetaData/>
+      </TabPane>
+      <TabPane tab={<span><CloudOutlined/> 全局变量</span>} key="fragment">
+        <StudioFragment/>
       </TabPane>
       <TabPane tab={<span><FunctionOutlined/> 函数</span>} key="Function">
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>

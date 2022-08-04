@@ -68,14 +68,14 @@
 
     <select id="getRoleByIds" resultType="com.dlink.model.Role">
         select id
-              ,tenant_id
-              ,role_code
-              ,role_name
-              ,is_delete
-              ,note
-              ,create_time
-              ,update_time
-         from dlink_role
+        ,tenant_id
+        ,role_code
+        ,role_name
+        ,is_delete
+        ,note
+        ,create_time
+        ,update_time
+        from dlink_role
         where id in
         <foreach collection="roleIds" item="id" separator="," open="(" close=")" index="">
             #{id}

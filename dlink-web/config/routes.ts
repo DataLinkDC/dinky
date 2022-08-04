@@ -109,6 +109,42 @@ export default [
         name: 'document',
         icon: 'container',
         component: './Document',
+      },{
+        path: '/registration/fragment',
+        name: 'fragment',
+        icon: "cloud",
+        component: './FragmentVariable',
+      },
+    ],
+  },
+  {
+    name: 'resourcecenter',
+    icon: 'CodeSandboxOutlined',
+    path: '/resourcecenter',
+    routes: [
+      {
+        path: '/resourcecenter/usermanager',
+        name: 'usermanager',
+        icon: 'UserOutlined',
+        component: './ResourceCenter/UserManager',
+      },
+      {
+        path: '/resourcecenter/namespacemanager',
+        name: 'namespacemanager',
+        icon: 'EnvironmentOutlined',
+        component: './ResourceCenter/NameSpaceManager',
+      },
+      {
+        path: '/resourcecenter/rolemanager',
+        name: 'rolemanager',
+        icon: 'TeamOutlined',
+        component: './ResourceCenter/RoleManager',
+      },
+      {
+        path: '/resourcecenter/tenantmanager',
+        name: 'tenantmanager',
+        icon: 'SecurityScanOutlined',
+        component: './ResourceCenter/TenantManager',
       },
     ],
   },
