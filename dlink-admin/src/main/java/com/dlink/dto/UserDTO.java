@@ -17,29 +17,21 @@
  *
  */
 
+package com.dlink.dto;
 
-import {Tabs} from "antd";
-import VersionList from "@/pages/DevOps/JobInfo/Version/VersionList";
-import VersionTimeLineList from "@/pages/DevOps/JobInfo/Version/VersionTimeLineList";
+import com.dlink.model.User;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-const {TabPane} = Tabs;
-const TaskVersionInfo = (props: any) => {
-  const {job} = props;
+import java.util.List;
 
-  return (<>
-    <Tabs defaultActiveKey="overview" size="small" tabPosition="top" style={{
-      border: "1px solid #f0f0f0",
-    }}>
-      <TabPane tab={<span>&nbsp; 版本列表 &nbsp;</span>} key="versionlist">
-        <VersionList job={job}/>
-      </TabPane>
 
-      <TabPane tab={<span>&nbsp; TimeLine &nbsp;</span>} key="timeline">
-        <VersionTimeLineList job={job}/>
-      </TabPane>
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class UserDTO {
+    private User user;
+    private List<RoleDTO> roleDTOList;
 
-    </Tabs>
-  </>)
-};
-
-export default TaskVersionInfo;
+}

@@ -19,7 +19,7 @@
 
 
 import React, {useState} from 'react';
-import {Button, Form, Input, Modal} from 'antd';
+import {Button, Form, Input, Modal, Switch} from 'antd';
 import {NameSpaceTableListItem} from "@/pages/ResourceCenter/NamespaceManager/data";
 
 export type TenantFormProps = {
@@ -64,23 +64,29 @@ const NameSpaceForm: React.FC<TenantFormProps> = (props) => {
     return (
       <>
         <Form.Item
-          name="roleCode"
-          label="角色编号"
-          rules={[{required: true, message: '请输入角色唯一编码！'}]}>
-          <Input placeholder="请输入角色唯一编码"/>
+          name="namespaceCode"
+          label="命名空间编号"
+          rules={[{required: true, message: '请输入命名空间唯一编码！'}]}>
+          <Input placeholder="请输入命名空间唯一编码"/>
         </Form.Item>
         <Form.Item
-          name="roleName"
-          label="角色名称"
-          rules={[{required: true, message: '请输入角色名称！'}]}>
-          <Input placeholder="请输入角色名称"/>
+          name="tenantId"
+          label="所属租户"
+          >
+          <Input disabled defaultValue={formValsPara.tenantId}/>
         </Form.Item>
         <Form.Item
           name="note"
           label="注释"
         >
-          <Input.TextArea placeholder="请输入文本注释" allowClear
+          <Input.TextArea placeholder="请输入描述信息" allowClear
                           autoSize={{minRows: 3, maxRows: 10}}/>
+        </Form.Item>
+        <Form.Item
+          name="enabled"
+          label="是否启用">
+          <Switch checkedChildren="启用" unCheckedChildren="禁用"
+                  defaultChecked={formValsPara.enabled}/>
         </Form.Item>
       </>
     );
@@ -102,7 +108,7 @@ const NameSpaceForm: React.FC<TenantFormProps> = (props) => {
       width={640}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title={formVals.id ? "修改角色" : "创建角色"}
+      title={formVals.id ? "修改命名空间" : "创建命名空间"}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}

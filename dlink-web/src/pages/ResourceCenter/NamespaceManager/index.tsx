@@ -28,7 +28,7 @@ import {handleRemove, queryData} from "@/components/Common/crud";
 import {NameSpaceTableListItem} from "@/pages/ResourceCenter/NamespaceManager/data";
 import NameSpaceForm from "@/pages/ResourceCenter/NamespaceManager/components/NameSpaceForm";
 
-const url = '/api/role';
+const url = '/api/namespace';
 
 const NameSpaceFormList: React.FC<{}> = (props: any) => {
   const [row, setRow] = useState<NameSpaceTableListItem>();
@@ -43,8 +43,8 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
       handleModalVisible(true);
     } else if (key === 'delete') {
       Modal.confirm({
-        title: '删除角色',
-        content: '确定删除该角色吗？',
+        title: '删除命名空间',
+        content: '确定删除该命名空间吗？',
         okText: '确认',
         cancelText: '取消',
         onOk: async () => {
@@ -84,35 +84,31 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: '角色编码',
-      dataIndex: 'roleCode',
-    },
-    {
       title: '角色名称',
       dataIndex: 'roleName',
     },
     {
-      title: '租户编码',
-      dataIndex: 'tenantId',
+      title: '命名空间编码',
+      dataIndex: 'namespaceCode',
     },
     {
-      title: '是否删除',
-      dataIndex: 'isDelete',
+      title: '是否启用',
+      dataIndex: 'enabled',
       hideInTable: false,
       filters: [
         {
-          text: '未删除',
+          text: '已启用',
           value: 1,
         },
         {
-          text: '已删除',
+          text: '未启用',
           value: 0,
         },
       ],
       filterMultiple: false,
       valueEnum: {
-        true: {text: '未删除', status: 'Success'},
-        false: {text: '已删除', status: 'Error'},
+        true: {text: '已启用', status: 'Success'},
+        false: {text: '未启用', status: 'Error'},
       },
     },
     {
@@ -155,7 +151,7 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
   return (
     <PageContainer>
       <ProTable<NameSpaceTableListItem>
-        headerTitle="角色管理"
+        headerTitle="命名空间管理"
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -178,7 +174,7 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
             <div>
               已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
               <span>
-  被删除的角色共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.isDelete ? 1 : 0), 0)} 个
+  被删除的命名空间共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} 个
   </span>
             </div>
           }
@@ -186,8 +182,8 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
           <Button type="primary" danger
                   onClick={() => {
                     Modal.confirm({
-                      title: '删除角色',
-                      content: '确定删除选中的角色吗？',
+                      title: '删除命名空间',
+                      content: '确定删除选中的命名空间吗？',
                       okText: '确认',
                       cancelText: '取消',
                       onOk: async () => {

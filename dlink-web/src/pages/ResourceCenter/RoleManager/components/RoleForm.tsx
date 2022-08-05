@@ -19,7 +19,7 @@
 
 
 import React, {useState} from 'react';
-import {Button, Form, Input, Modal} from 'antd';
+import {Button, Form, Input, Modal, Select} from 'antd';
 import {RoleTableListItem} from '../data';
 
 export type TenantFormProps = {
@@ -56,7 +56,7 @@ const RoleForm: React.FC<TenantFormProps> = (props) => {
 
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
-    // fieldsValue.id = formVals.id;
+    fieldsValue.id = formVals.id;
     setFormVals(fieldsValue);
     handleSubmit(fieldsValue);
   };
@@ -75,6 +75,18 @@ const RoleForm: React.FC<TenantFormProps> = (props) => {
           label="角色名称"
           rules={[{required: true, message: '请输入角色名称！'}]}>
           <Input placeholder="请输入角色名称"/>
+        </Form.Item>
+        <Form.Item
+          name="tenantId"
+          label="所属租户"
+          rules={[{required: true, message: '请选择角色！'}]}
+        >
+        <Select>
+          <Select.Option value="租户A">租户A</Select.Option>
+          <Select.Option value="租户B">租户B</Select.Option>
+          <Select.Option value="租户C">租户C</Select.Option>
+          <Select.Option value="租户D">租户D</Select.Option>
+        </Select>
         </Form.Item>
         <Form.Item
           name="note"

@@ -20,10 +20,8 @@
 package com.dlink.model;
 
 import com.baomidou.mybatisplus.annotation.*;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -64,7 +62,7 @@ public class Role implements Serializable {
     /**
      * is delete
      */
-    private String isDelete;
+    private Boolean isDelete;
 
     /**
      * note
