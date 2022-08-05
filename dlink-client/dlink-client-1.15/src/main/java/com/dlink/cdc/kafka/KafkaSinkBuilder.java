@@ -116,7 +116,7 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
                         OutputTag<String> outputTag = new OutputTag<String>(sinkTableName) {
                         };
                         tagMap.put(table, outputTag);
-                        tableMap.put(table.getSchema() + "." + table.getName(), table);
+                        tableMap.put(table.getSchemaTableName(), table);
                     }
                 }
 

@@ -200,7 +200,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                     OutputTag<Map> outputTag = new OutputTag<Map>(sinkTableName) {
                     };
                     tagMap.put(table, outputTag);
-                    tableMap.put(table.getSchema()+"."+table.getName(), table);
+                    tableMap.put(table.getSchemaTableName(), table);
 
                 }
             }
