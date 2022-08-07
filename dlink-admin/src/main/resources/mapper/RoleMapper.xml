@@ -43,7 +43,7 @@
          on drn.namespace_id = dn.id
     </sql>
     <select id="selectForProTable" resultMap="roleResultMap">
---         <include refid="role"></include>
+       <!-- <include refid="role"></include>-->
         select
         dr.*
         from dlink_role dr
