@@ -10,15 +10,15 @@ JobManager 作为 Dinky 的作业管理的统一入口，负责 Flink 的各种�
 
 **Executor**
 
-Executor 是 Dinky 定制的 FlinkSQL 执行器，来模拟真实的 Flink 执行环境，负责 FlinkSQL 的 Catalog 管理、UDF管理、片段管理、配置管理、语句集管理、语法校验、逻辑验证、计划优化、生成 JobGraph、本地执行、远程提交、SELECT 及 SHOW 预览等核心功能。
+Executor 是 Dinky 定制的 FlinkSQL 执行器，来模拟真实的 Flink 执行环境，负责 FlinkSQL 的 Catalog 管理、UDF管理、全局变量管理、配置管理、语句集管理、语法校验、生成 JobGraph、本地执行、远程提交、SELECT 及 SHOW 预览等核心功能。
 
 **Interceptor**
 
-Interceptor 是 Dinky 的 Flink 执行拦截器，负责对其进行片段解析、UDF注册、SET 和 AGGTABLE 等增强语法解析。
+Interceptor 是 Dinky 的 Flink 执行拦截器，负责对其进行变量解析、UDF注册、整库同步、SET 和 AGGTABLE 等增强语法解析。
 
 **Gateway**
 
-Gateway 并非是开源项目 flink-sql-gateway，而是 Dinky 自己定制的 Gateway，负责进行基于 Yarn 环境的任务提交与管理，主要有Yarn-Per-Job 和 Yarn-Application  的 FlinkSQL 提交、停止、SavePoint 以及配置测试，而 User Jar 目前只开放了 Yarn-Application 的提交。
+Gateway 是 Dinky 自己定制的 Gateway，负责进行基于 Yarn 与 K8S 环境的任务提交与管理，主要有 Yarn Per-Job 和 Yarn/K8S Application 的 FlinkSQL 提交、停止、SavePoint 以及配置测试，而 User Jar 目前只开放了 Yarn-Application 的提交。
 
 **Flink SDK**
 
@@ -30,7 +30,7 @@ Dinky 通过调用 flink-yarn 模块进行二次开发。
 
 **Flink API**
 
-Dinky 也支持通过调用 JobManager 的 RestAPI 对任务进行管理等操作，系统配置可以控制开启和停用。
+Dinky 也支持通过调用 Flink JobManager 的 RestAPI 对任务进行管理等操作，系统配置可以控制开启和停用。
 
 **Local**
 
