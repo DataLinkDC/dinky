@@ -784,10 +784,10 @@ alter table dlink_jar add column tenant_id int  not null comment '租户ID' afte
 alter table dlink_jar add unique key `dlink_jar_un` (`tenant_id`,`name`);
 
 alter table dlink_savepoints add column tenant_id int  not null comment '租户ID' after task_id;
-# alter table dlink_savepoints add unique key `dlink_savepoints_un` (`task_id`,`tenant_id`); -- 无法达到唯一索引的效果 如果添加可以额外增加一个字段(path 因为path是唯一的) -- 暂时不执行
+alter table dlink_savepoints add unique key `dlink_savepoints_un` (`task_id`,`tenant_id`,`path`);
 
 alter table dlink_job_instance add column tenant_id int  not null comment '租户ID' after name;
-# alter table dlink_job_instance add unique key `dlink_job_instance_un` (`tenant_id`,`name`,`task_id`); -- 无法达到唯一索引的效果 如果添加可以额外增加一个字段(history_id 因为history_id是唯一的) -- 去除
+alter table dlink_job_instance add unique key `dlink_job_instance_un` (`tenant_id`,`name`,`task_id`,`history_id`);
 
 alter table dlink_alert_instance add column tenant_id int  not null comment '租户ID' after name;
 alter table dlink_alert_instance add unique key `dlink_alert_instance_un` (`name`,`tenant_id`);
@@ -798,7 +798,7 @@ alter table dlink_alert_group add unique key `dlink_alert_instance_un` (`name`,`
 alter table dlink_alert_history add column tenant_id int  not null comment '租户ID' after id;
 
 alter table dlink_task_version add column tenant_id int  not null comment '租户ID' after task_id;
-# alter table dlink_task_version add unique key `dlink_task_version_un` (`task_id`,`tenant_id`); -- 无法达到唯一索引的效果 如果添加可以额外增加一个字段(version_id 因为history_id是唯一的) -- 暂时不执行
+alter table dlink_task_version add unique key `dlink_task_version_un` (`task_id`,`tenant_id`,`version_id`);
 
 alter table dlink_history add column tenant_id int  not null comment '租户ID' after id;
 

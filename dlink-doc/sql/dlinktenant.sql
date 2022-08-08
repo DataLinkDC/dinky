@@ -1,14 +1,11 @@
 /*
  Navicat Premium Data Transfer
-
  Source Server Type    : MySQL
  Source Server Version : 80013
  Source Schema         : dlink
-
  Target Server Type    : MySQL
  Target Server Version : 80013
  File Encoding         : 65001
-
  Date: 24/11/2021 09:19:12
 */
 create database if not exists dlink;
@@ -414,7 +411,7 @@ CREATE TABLE `dlink_savepoints`  (
                                      `path` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '路径',
                                      `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
                                      PRIMARY KEY (`id`) USING BTREE,
-                                     UNIQUE KEY `dlink_savepoints_un` (`task_id`,`tenant_id`)
+                                     UNIQUE KEY `dlink_savepoints_un` (`task_id`,`tenant_id`,`path`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -503,7 +500,7 @@ CREATE TABLE `dlink_task_version` (
                                       `task_configure` text NOT NULL COMMENT '作业配置',
                                       `create_time` datetime DEFAULT NULL COMMENT '创建时间',
                                       PRIMARY KEY (`id`) USING BTREE,
-                                      UNIQUE KEY `dlink_task_version_un` (`task_id`,`tenant_id`)
+                                      UNIQUE KEY `dlink_task_version_un` (`task_id`,`tenant_id`,`version_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='作业历史版本';
 
 -- ----------------------------
@@ -558,7 +555,7 @@ CREATE TABLE `dlink_job_instance` (
                                       `error` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '异常日志',
                                       `failed_restart_count` int DEFAULT NULL COMMENT '重启次数',
                                       PRIMARY KEY (`id`) USING BTREE,
-                                      UNIQUE KEY `dlink_job_instance_un` (`tenant_id`,`name`,`task_id`)
+                                      UNIQUE KEY `dlink_job_instance_un` (`tenant_id`,`name`,`task_id`,`history_id)`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='作业实例';
 
 -- ----------------------------
@@ -644,7 +641,7 @@ CREATE TABLE IF NOT EXISTS dlink_tenant
 (
     id          int auto_increment comment 'ID',
     tenant_code varchar(64)          not null comment '租户编码',
-    is_delete   tinyint(1) default 0 not null comment '是否被删除',
+    is_delete   tinyint(1) default 0  not null comment '是否被删除',
     note        varchar(255)         null comment '注释',
     create_time datetime             null comment '创建时间',
     update_time datetime             null comment '最近修改时间',
@@ -673,7 +670,7 @@ CREATE TABLE IF NOT EXISTS  dlink_namespace
     id             int auto_increment comment 'ID',
     tenant_id      int                  not null comment '租户ID',
     namespace_code varchar(64)          not null comment '命名空间编码',
-    enabled        tinyint(1) default 1 not null comment '是否启用',
+    enabled        tinyint(1) default 0 not null comment '是否启用',
     note           varchar(255)         null comment '注释',
     create_time    datetime             null comment '创建时间',
     update_time    datetime             null comment '更新时间',
