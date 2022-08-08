@@ -102,7 +102,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                             switch (value.get("op").toString()) {
                                 case "r":
                                 case "c":
-                                    Row irow = Row.ofKind(RowKind.INSERT);
+                                    Row irow = Row.withPositions(RowKind.INSERT, columnNameList.size());
                                     Map idata = (Map) value.get("after");
                                     for (int i = 0; i < columnNameList.size(); i++) {
                                         irow.setField(i, convertValue(idata.get(columnNameList.get(i)), columnTypeList.get(i)));
@@ -110,7 +110,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                                     out.collect(irow);
                                     break;
                                 case "d":
-                                    Row drow = Row.ofKind(RowKind.DELETE);
+                                    Row drow = Row.withPositions(RowKind.DELETE, columnNameList.size());
                                     Map ddata = (Map) value.get("before");
                                     for (int i = 0; i < columnNameList.size(); i++) {
                                         drow.setField(i, convertValue(ddata.get(columnNameList.get(i)), columnTypeList.get(i)));
@@ -118,13 +118,13 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                                     out.collect(drow);
                                     break;
                                 case "u":
-                                    Row ubrow = Row.ofKind(RowKind.UPDATE_BEFORE);
+                                    Row ubrow = Row.withPositions(RowKind.UPDATE_BEFORE, columnNameList.size());
                                     Map ubdata = (Map) value.get("before");
                                     for (int i = 0; i < columnNameList.size(); i++) {
                                         ubrow.setField(i, convertValue(ubdata.get(columnNameList.get(i)), columnTypeList.get(i)));
                                     }
                                     out.collect(ubrow);
-                                    Row uarow = Row.ofKind(RowKind.UPDATE_AFTER);
+                                    Row uarow = Row.withPositions(RowKind.UPDATE_AFTER, columnNameList.size());
                                     Map uadata = (Map) value.get("after");
                                     for (int i = 0; i < columnNameList.size(); i++) {
                                         uarow.setField(i, convertValue(uadata.get(columnNameList.get(i)), columnTypeList.get(i)));
