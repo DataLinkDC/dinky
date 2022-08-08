@@ -20,22 +20,6 @@
 
 package com.dlink.cdc.kafka;
 
-import org.apache.flink.api.common.functions.FilterFunction;
-import org.apache.flink.api.common.functions.MapFunction;
-import org.apache.flink.api.common.serialization.SimpleStringSchema;
-import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.flink.streaming.api.datastream.DataStream;
-import org.apache.flink.streaming.api.datastream.DataStreamSource;
-import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
-import org.apache.flink.table.data.RowData;
-import org.apache.flink.table.types.logical.LogicalType;
-
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.dlink.assertion.Asserts;
 import com.dlink.cdc.AbstractSinkBuilder;
 import com.dlink.cdc.CDCBuilder;
@@ -44,6 +28,23 @@ import com.dlink.executor.CustomTableEnvironment;
 import com.dlink.model.FlinkCDCConfig;
 import com.dlink.model.Schema;
 import com.dlink.model.Table;
+import org.apache.flink.api.common.serialization.SimpleStringSchema;
+import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.flink.streaming.api.datastream.DataStream;
+import org.apache.flink.streaming.api.datastream.DataStreamSource;
+import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.functions.ProcessFunction;
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
+import org.apache.flink.table.data.RowData;
+import org.apache.flink.table.types.logical.LogicalType;
+import org.apache.flink.util.Collector;
+import org.apache.flink.util.OutputTag;
+
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * MysqlCDCBuilder
@@ -89,44 +90,48 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
         CustomTableEnvironment customTableEnvironment,
         DataStreamSource<String> dataStreamSource) {
         if (Asserts.isNotNullString(config.getSink().get("topic"))) {
-            dataStreamSource.addSink(new FlinkKafkaProducer<String>(config.getSink().get("brokers"),
-                config.getSink().get("topic"),
-                new SimpleStringSchema()));
+            dataStreamSource.addSink(new FlinkKafkaProducer<>(config.getSink().get("brokers"),
+                    config.getSink().get("topic"),
+                    new SimpleStringSchema()));
         } else {
+
+            Map<Table, OutputTag<String>> tagMap = new HashMap<>();
+            Map<String, Table> tableMap = new HashMap<>();
+            ObjectMapper objectMapper = new ObjectMapper();
+            SingleOutputStreamOperator<Map> mapOperator = dataStreamSource.map(x -> objectMapper.readValue(x,Map.class)).returns(Map.class);
             final List<Schema> schemaList = config.getSchemaList();
             final String schemaFieldName = config.getSchemaFieldName();
             if (Asserts.isNotNullCollection(schemaList)) {
-                SingleOutputStreamOperator<Map> mapOperator = dataStreamSource.map(new MapFunction<String, Map>() {
-                    @Override
-                    public Map map(String value) throws Exception {
-                        ObjectMapper objectMapper = new ObjectMapper();
-                        return objectMapper.readValue(value, Map.class);
-                    }
-                });
+
                 for (Schema schema : schemaList) {
                     for (Table table : schema.getTables()) {
-                        final String tableName = table.getName();
-                        final String schemaName = table.getSchema();
-                        SingleOutputStreamOperator<Map> filterOperator = mapOperator.filter(new FilterFunction<Map>() {
-                            @Override
-                            public boolean filter(Map value) throws Exception {
-                                LinkedHashMap source = (LinkedHashMap) value.get("source");
-                                return tableName.equals(source.get("table").toString())
-                                    && schemaName.equals(source.get(schemaFieldName).toString());
-                            }
-                        });
-                        SingleOutputStreamOperator<String> stringOperator = filterOperator.map(new MapFunction<Map, String>() {
-                            @Override
-                            public String map(Map value) throws Exception {
-                                ObjectMapper objectMapper = new ObjectMapper();
-                                return objectMapper.writeValueAsString(value);
-                            }
-                        });
-                        stringOperator.addSink(new FlinkKafkaProducer<String>(config.getSink().get("brokers"),
-                            getSinkTableName(table),
-                            new SimpleStringSchema()));
+                        String sinkTableName = getSinkTableName(table);
+                        OutputTag<String> outputTag = new OutputTag<String>(sinkTableName) {
+                        };
+                        tagMap.put(table, outputTag);
+                        tableMap.put(table.getSchemaTableName(), table);
                     }
                 }
+
+                SingleOutputStreamOperator<String> process = mapOperator.process(new ProcessFunction<Map, String>() {
+                    @Override
+                    public void processElement(Map map, ProcessFunction<Map, String>.Context ctx, Collector<String> out) throws Exception {
+                        LinkedHashMap source = (LinkedHashMap) map.get("source");
+                        try {
+                            String result = objectMapper.writeValueAsString(map);
+                            Table table = tableMap.get(source.get(schemaFieldName).toString() + "." + source.get("table").toString());
+                            OutputTag<String> outputTag = tagMap.get(table);
+                            ctx.output(outputTag, result);
+                        } catch (Exception e) {
+                            out.collect(objectMapper.writeValueAsString(map));
+                        }
+                    }
+                });
+                tagMap.forEach((k, v) -> {
+                    String topic = getSinkTableName(k);
+                    process.getSideOutput(v).rebalance().addSink(new FlinkKafkaProducer<>(config.getSink().get("brokers"),
+                            topic, new SimpleStringSchema())).name(topic);
+                });
             }
         }
         return dataStreamSource;

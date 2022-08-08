@@ -37,7 +37,7 @@ const config = {
   onDuplicateRoutes: 'warn', // Docusaurus 在检测到重复的路由时的行为 |  Behavior of docusaurus when duplicate routes are detected  ->  类型：'ignore' | 'log' | 'warn' | 'error' | 'throw'
   favicon: 'dinky_logo.svg', // 左侧logo  | left logo
   organizationName: 'DataLinkDC', // 拥有此源的 GitHub 用户或组织。 用于部署命令。 |  The GitHub user or organization that owns this source. Command for deployment.
-  projectName: 'dinky-website', // GitHub 源的名称。 用于部署命令。 | The name of the GitHub repository. Command for deployment.
+  projectName: 'dlink', // GitHub 源的名称。 用于部署命令。 | The name of the GitHub repository. Command for deployment.
   deploymentBranch: 'main', // GitHub Pages 的部署分支。 用于部署命令。 | The branch to deploy to GitHub Pages. Command for deployment.
   customFields:{ // 自定义字段 | Custom fields
     structTitle: 'Dinky',
@@ -71,9 +71,9 @@ const config = {
           // Please change this to your repo.
           editUrl: ({locale, versionDocsDirPath, docPath}) => {
             if (locale !== 'zh-cn') {
-              return `https://github.com/DataLinkDC/dinky-website/tree/master/i18n/${locale}/${docPath}`;
+              return `https://github.com/DataLinkDC/dlink/tree/master/docs/i18n/${locale}/${docPath}`;
             }
-            return `https://github.com/DataLinkDC/dinky-website/tree/master/${versionDocsDirPath}/${docPath}`;
+            return `https://github.com/DataLinkDC/dlink/tree/master/docs/${versionDocsDirPath}/${docPath}`;
           },
         },
        blog: {
@@ -90,12 +90,12 @@ const config = {
          readingTime: ({content, frontMatter, defaultReadingTime}) =>
              defaultReadingTime({content, options: {wordsPerMinute: 300}}), // 阅读时间 md文件中如果不写 date: 此属性 默认是当前时间
          // Please change this to your repo.
-         editUrl: ({locale, versionDocsDirPath, docPath}) => { // 博客页面修改编辑按钮
-           if (locale !== 'zh-cn') {
-             return `https://github.com/DataLinkDC/dinky-website/tree/master/i18n/${locale}/${docPath}`;
-           }
-           return `https://github.com/DataLinkDC/dinky-website/tree/master/${versionDocsDirPath}/${docPath}`;
-         },
+         // editUrl: ({locale, versionDocsDirPath, docPath}) => { // 博客页面修改编辑按钮
+         //   if (locale !== 'zh-cn') {
+         //     return `https://github.com/DataLinkDC/dlink/tree/master/docs/i18n/${locale}/${docPath}`;
+         //   }
+         //   return `https://github.com/DataLinkDC/dlink/tree/master/docs/${versionDocsDirPath}/${docPath}`;
+         // },
        },
         theme: {
           customCss: require.resolve('./src/css/custom.css'), // 自定义css文件
@@ -270,10 +270,10 @@ const config = {
           routeBasePath: 'download',
           editUrl: ({locale, versionDocsDirPath, docPath}) => {
             if (locale !== 'zh-cn') {
-              return `https://github.com/DataLinkDC/dinky-website/tree/master/i18n/${locale}/${docPath}`;
+              return `https://github.com/DataLinkDC/dlink/tree/master/docs/i18n/${locale}/${docPath}`;
             }
-            return `https://github.com/DataLinkDC/dinky-website/tree/master/${versionDocsDirPath}/${docPath}`;
-          },
+            return `https://github.com/DataLinkDC/dlink/tree/master/docs/${versionDocsDirPath}/${docPath}`;
+            },
           sidebarPath: require.resolve('./sidebars.js'),
         },
       ],
