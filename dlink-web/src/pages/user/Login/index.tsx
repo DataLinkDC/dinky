@@ -18,36 +18,19 @@
  */
 
 
-import {
-  AlipayCircleOutlined,
-  LockOutlined,
-  MobileOutlined,
-  TaobaoCircleOutlined,
-  UserOutlined,
-  WeiboCircleOutlined,
-} from '@ant-design/icons';
-import { Alert, Space, message, Tabs } from 'antd';
-import React, { useState } from 'react';
-import ProForm, { ProFormCaptcha, ProFormCheckbox, ProFormText } from '@ant-design/pro-form';
-import { useIntl, Link, history, FormattedMessage, SelectLang, useModel } from 'umi';
+import {LockOutlined, UserOutlined,} from '@ant-design/icons';
+import {Button, message, Modal} from 'antd';
+import React, {useState} from 'react';
+import ProForm, {ProFormCheckbox, ProFormText} from '@ant-design/pro-form';
+import {FormattedMessage, history, Link, SelectLang, useIntl, useModel} from 'umi';
 import Footer from '@/components/Footer';
-import { login } from '@/services/ant-design-pro/api';
-import { getFakeCaptcha } from '@/services/ant-design-pro/login';
+import {login} from '@/services/ant-design-pro/api';
+import {CheckCard} from '@ant-design/pro-components';
 
 import styles from './index.less';
+import {getData} from "@/components/Common/crud";
+import {TenantTableListItem} from "@/pages/ResourceCenter/TenantManager/data";
 
-const LoginMessage: React.FC<{
-  content: string;
-}> = ({ content }) => (
-  <Alert
-    style={{
-      marginBottom: 24,
-    }}
-    message={content}
-    type="error"
-    showIcon
-  />
-);
 
 /** 此方法会跳转到 redirect 参数所在的位置 */
 const goto = () => {
@@ -65,6 +48,8 @@ const Login: React.FC = () => {
   const [type, setType] = useState<string>('password');
   const { initialState, setInitialState } = useModel('@@initialState');
   const [isLogin, setIsLogin] = useState<boolean>(true);
+  const [chooseTenant, setChooseTenant] = useState<boolean>(false);
+  const [tenantiId, setTenantId] = useState<number>(0);
 
   const intl = useIntl();
 
@@ -116,6 +101,61 @@ const Login: React.FC = () => {
   };
   //const {code } = userLoginState;
 
+
+  const generateTenantsList =(values: API.LoginParams) =>{
+    /*使用 CheckCard :  https://procomponents.ant.design/components/check-card */
+    const formList: JSX.Element[] =[]
+    const res = getData("/api/geTenants",{username: values?.username});
+    res.then((result)=>{
+      if(result.datas){
+        result?.datas.forEach((item : TenantTableListItem) => {
+          formList.push(
+            <>
+              <CheckCard
+                avatar="https://gw.alipayobjects.com/zos/bmw-prod/f601048d-61c2-44d0-bf57-ca1afe7fd92e.svg"
+                title={item?.tenantCode}
+                value={item?.id}
+                description={item?.note}
+                defaultChecked={result?.datas?.length === 1}
+                onClick={(e) => {
+                  console.log('clicked',e?.target);
+                }}
+              />
+            </>
+          )
+        })
+      }
+      })
+    return formList;
+  }
+
+  const handleShowTenant = (item: any) =>{
+    return (
+      <div style={{width: "1100px"}}>
+        <Modal title="请选择租户" visible={chooseTenant} destroyOnClose={true} width={"60%"}
+               onCancel={()=>{
+                 setChooseTenant(false);
+               }}
+               footer={[
+                 <Button key="back" onClick={() => {
+                   setChooseTenant(false);
+                 }}>
+                   关闭
+                 </Button>,
+                 <Button type="primary" onSubmit={() => {
+                   // todo: 登录
+                   console.log(userLoginState,'--------')
+                    // handleSubmit(item as API.LoginParams);
+                 }} >
+                   确定
+                 </Button>
+               ]}>
+          {generateTenantsList(item)}
+        </Modal>
+      </div>
+    )
+
+  }
   return (
     <div className={styles.container}>
       <div className={styles.lang}>{SelectLang && <SelectLang />}</div>
@@ -156,7 +196,9 @@ const Login: React.FC = () => {
             }}
             onFinish={async (values) => {
               values.grant_type = 'password';
-              handleSubmit(values as API.LoginParams);
+              // await handleSubmit(values as API.LoginParams);
+              setUserLoginState(values);
+              setChooseTenant(true)
             }}
           >
             {type === 'password' && (
@@ -228,6 +270,7 @@ const Login: React.FC = () => {
           </ProForm>
         </div>
       </div>
+      {handleShowTenant(userLoginState)}
       <Footer />
     </div>
   );

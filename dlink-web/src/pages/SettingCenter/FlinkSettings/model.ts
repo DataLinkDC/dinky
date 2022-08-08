@@ -18,22 +18,48 @@
  */
 
 
-package com.dlink.dto;
+import {Reducer} from "umi";
 
-import lombok.Getter;
-import lombok.Setter;
+export type SettingsStateType = {
+  sqlSubmitJarPath: string,
+  sqlSubmitJarParas: string,
+  sqlSubmitJarMainAppClass: string,
+  useRestAPI: boolean,
+  sqlSeparator: string,
+};
 
-/**
- * LoginUTO
- *
- * @author wenmo
- * @since 2021/11/28 17:02
- */
-@Getter
-@Setter
-public class LoginUTO {
-    private String username;
-    private String password;
-    private Integer tenantId;
-    private boolean autoLogin;
-}
+export type ModelType = {
+  namespace: string;
+  state: SettingsStateType;
+  effects: {
+  };
+  reducers: {
+    saveSettings: Reducer<SettingsStateType>;
+  };
+};
+
+const SettingsModel: ModelType = {
+  namespace: 'Settings',
+  state: {
+    sqlSubmitJarPath:'',
+    sqlSubmitJarParas:'',
+    sqlSubmitJarMainAppClass:'',
+    useRestAPI:true,
+  },
+
+  effects: {
+
+  },
+
+  reducers: {
+    saveSettings(state, {payload}) {
+      return {
+        ...state,
+        ...payload,
+      };
+    },
+
+  },
+};
+
+export default SettingsModel;
