@@ -19,11 +19,11 @@
 
 
 export type TenantTableListItem = {
-  id: number;
-  tenantCode: string;
-  isDelete: boolean;
-  note: string;
-  createTime: Date;
-  updateTime: Date;
+  id?: number;
+  tenantCode?: string;
+  isDelete?: boolean;
+  note?: string;
+  createTime?: Date;
+  updateTime?: Date;
 };
 

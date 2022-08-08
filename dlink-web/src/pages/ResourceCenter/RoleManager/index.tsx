@@ -125,13 +125,11 @@ const RoleFormList: React.FC<{}> = (props: any) => {
       dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',
-      hideInTable: true
     },
     {
       title: '最近更新时间',
       dataIndex: 'updateTime',
       sorter: true,
-      hideInTable: true,
       valueType: 'dateTime',
     },
     {

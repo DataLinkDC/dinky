@@ -155,8 +155,15 @@ export default [
   {
     name: 'settings',
     icon: 'setting',
-    path: '/settings',
-    component: './Settings',
+    path: '/settingcenter',
+    routes: [
+      {
+        path: '/settingcenter/flinksettings',
+        name: 'flinkConfig',
+        icon: 'setting',
+        component: './SettingCenter/FlinkSettings',
+      },
+    ],
   },
   {
     path: '/about',

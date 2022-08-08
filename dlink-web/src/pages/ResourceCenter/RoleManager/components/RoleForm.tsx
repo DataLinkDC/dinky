@@ -38,14 +38,14 @@ const RoleForm: React.FC<TenantFormProps> = (props) => {
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<RoleTableListItem>>({
-    id: props?.values?.id,
-    tenantId: props?.values?.tenantId,
-    roleCode: props?.values?.roleCode,
-    roleName: props?.values?.roleName,
-    isDelete: props?.values?.isDelete,
-    note: props?.values?.note,
-    createTime: props?.values?.createTime,
-    updateTime: props?.values?.updateTime,
+    id: props.values.id,
+    tenantId: props.values.tenantId,
+    roleCode: props.values.roleCode,
+    roleName: props.values.roleName,
+    isDelete: props.values.isDelete,
+    note: props.values.note,
+    createTime: props.values.createTime,
+    updateTime: props.values.updateTime,
   });
 
   const {
