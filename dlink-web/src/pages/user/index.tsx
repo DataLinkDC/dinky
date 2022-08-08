@@ -20,15 +20,14 @@
 
 import React, {useRef, useState} from "react";
 import {DownOutlined, PlusOutlined} from '@ant-design/icons';
-import {ActionType, ProColumns} from "@ant-design/pro-table";
-import {Button, Drawer, Modal, Dropdown, Menu} from 'antd';
+import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
+import {Button, Drawer, Dropdown, Menu, Modal} from 'antd';
 import {FooterToolbar} from '@ant-design/pro-layout';
-import ProTable from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import {UserTableListItem} from "@/pages/user/data";
 import {handleAddOrUpdate, handleOption, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
-import UserForm from "@/pages/user/components/UserForm";
-import PasswordForm from "@/pages/user/components/PasswordForm";
+import UserForm from "@/pages/ResourceCenter/UserManager/components/UserForm";
+import PasswordForm from "@/pages/ResourceCenter/UserManager/components/PasswordForm";
 
 const url = '/api/user';
 const UserTableList: React.FC<{}> = (props: any) => {

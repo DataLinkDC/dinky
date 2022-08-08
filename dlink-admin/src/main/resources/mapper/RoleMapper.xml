@@ -6,6 +6,7 @@
         <result property="tenantId" column="tenant_id"/>
         <result property="roleCode" column="role_code"/>
         <result property="roleName" column="role_name"/>
+        <result property="isDelete" column="is_delete"/>
         <result property="note" column="note"/>
         <result property="createTime" column="create_time"/>
         <result property="updateTime" column="update_time"/>
@@ -42,7 +43,10 @@
          on drn.namespace_id = dn.id
     </sql>
     <select id="selectForProTable" resultMap="roleResultMap">
-        <include refid="role"></include>
+       <!-- <include refid="role"></include>-->
+        select
+        dr.*
+        from dlink_role dr
         <where>
             1=1
             <if test='param.roleCode!=null and param.roleCode!=""'>

@@ -24,10 +24,11 @@ import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
 import {Button, Drawer, Dropdown, Menu, Modal} from 'antd';
 import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import {UserTableListItem} from "@/pages/user/data";
 import {handleAddOrUpdate, handleOption, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
-import UserForm from "@/pages/user/components/UserForm";
-import PasswordForm from "@/pages/user/components/PasswordForm";
+import {UserTableListItem} from "@/pages/ResourceCenter/UserManager/data";
+import UserForm from "@/pages/ResourceCenter/UserManager/components/UserForm";
+import PasswordForm from "@/pages/ResourceCenter/UserManager/components/PasswordForm";
+
 
 const url = '/api/user';
 const UserTableList: React.FC<{}> = (props: any) => {
@@ -160,6 +161,14 @@ const UserTableList: React.FC<{}> = (props: any) => {
           }}
         >
           配置
+        </a>,
+        <a
+          onClick={() => {
+            handleUpdateModalVisible(true);
+            setFormValues(record);
+          }}
+        >
+          关联角色
         </a>,
         <MoreBtn key="more" item={record}/>,
       ],

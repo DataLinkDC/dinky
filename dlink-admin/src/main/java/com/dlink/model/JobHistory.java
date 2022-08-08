@@ -45,6 +45,8 @@ public class JobHistory implements Serializable {
 
     private Integer id;
 
+    private Integer tenantId;
+
     @TableField(exist = false)
     private ObjectNode job;
 

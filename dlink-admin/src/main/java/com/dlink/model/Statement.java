@@ -41,5 +41,7 @@ public class Statement implements Serializable {
 
     private Integer id;
 
+    private Integer tenantId;
+
     private String statement;
 }

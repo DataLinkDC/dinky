@@ -26,11 +26,7 @@ import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.lang.tree.TreeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.dlink.alert.Alert;
-import com.dlink.alert.AlertConfig;
-import com.dlink.alert.AlertMsg;
-import com.dlink.alert.AlertResult;
-import com.dlink.alert.ShowType;
+import com.dlink.alert.*;
 import com.dlink.assertion.Assert;
 import com.dlink.assertion.Asserts;
 import com.dlink.assertion.Tips;
@@ -50,52 +46,14 @@ import com.dlink.gateway.config.SavePointStrategy;
 import com.dlink.gateway.config.SavePointType;
 import com.dlink.gateway.model.JobInfo;
 import com.dlink.gateway.result.SavePointResult;
-import com.dlink.job.FlinkJobTask;
-import com.dlink.job.FlinkJobTaskPool;
-import com.dlink.job.Job;
-import com.dlink.job.JobConfig;
-import com.dlink.job.JobManager;
-import com.dlink.job.JobResult;
+import com.dlink.job.*;
 import com.dlink.mapper.TaskMapper;
 import com.dlink.metadata.driver.Driver;
 import com.dlink.metadata.result.JdbcSelectResult;
-import com.dlink.model.AlertGroup;
-import com.dlink.model.AlertHistory;
-import com.dlink.model.AlertInstance;
-import com.dlink.model.Catalogue;
-import com.dlink.model.Cluster;
-import com.dlink.model.ClusterConfiguration;
-import com.dlink.model.DataBase;
-import com.dlink.model.History;
-import com.dlink.model.Jar;
-import com.dlink.model.JobHistory;
-import com.dlink.model.JobInfoDetail;
-import com.dlink.model.JobInstance;
-import com.dlink.model.JobLifeCycle;
-import com.dlink.model.JobStatus;
-import com.dlink.model.Savepoints;
-import com.dlink.model.Statement;
-import com.dlink.model.SystemConfiguration;
-import com.dlink.model.Task;
-import com.dlink.model.TaskOperatingSavepointSelect;
-import com.dlink.model.TaskOperatingStatus;
-import com.dlink.model.TaskVersion;
+import com.dlink.model.*;
 import com.dlink.result.SqlExplainResult;
 import com.dlink.result.TaskOperatingResult;
-import com.dlink.service.AlertGroupService;
-import com.dlink.service.AlertHistoryService;
-import com.dlink.service.CatalogueService;
-import com.dlink.service.ClusterConfigurationService;
-import com.dlink.service.ClusterService;
-import com.dlink.service.DataBaseService;
-import com.dlink.service.HistoryService;
-import com.dlink.service.JarService;
-import com.dlink.service.JobHistoryService;
-import com.dlink.service.JobInstanceService;
-import com.dlink.service.SavepointsService;
-import com.dlink.service.StatementService;
-import com.dlink.service.TaskService;
-import com.dlink.service.TaskVersionService;
+import com.dlink.service.*;
 import com.dlink.utils.CustomStringJavaCompiler;
 import com.dlink.utils.JSONUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -122,12 +80,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -391,12 +344,18 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public Task initDefaultFlinkSQLEnv() {
+    public Task initDefaultFlinkSQLEnv(Integer tenantId) {
+
+
         String separator = SystemConfiguration.getInstances().getSqlSeparator();
         separator = separator.replace("\\r", "\r").replace("\\n", "\n");
-        Task defaultFlinkSQLEnvTask = new Task();
-        defaultFlinkSQLEnvTask.setId(1);
-        defaultFlinkSQLEnvTask.setName("dlink_default_catalog");
+        String name = "dlink_default_catalog";
+        Task defaultFlinkSQLEnvTask = baseMapper.selectByName(name);
+        if (null == defaultFlinkSQLEnvTask) {
+            defaultFlinkSQLEnvTask = new Task();
+        }
+//        defaultFlinkSQLEnvTask.setId(1);
+        defaultFlinkSQLEnvTask.setName(name);
         defaultFlinkSQLEnvTask.setAlias("DefaultCatalog");
         defaultFlinkSQLEnvTask.setDialect(Dialect.FLINKSQLENV.getValue());
         StringBuilder sb = new StringBuilder();
@@ -417,10 +376,11 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         sb.append(separator);
         defaultFlinkSQLEnvTask.setStatement(sb.toString());
         defaultFlinkSQLEnvTask.setFragment(true);
+        defaultFlinkSQLEnvTask.setTenantId(tenantId);
         defaultFlinkSQLEnvTask.setEnabled(true);
         saveOrUpdate(defaultFlinkSQLEnvTask);
         Statement statement = new Statement();
-        statement.setId(1);
+        statement.setId(defaultFlinkSQLEnvTask.getId());
         statement.setStatement(sb.toString());
         statementService.saveOrUpdate(statement);
         return defaultFlinkSQLEnvTask;
