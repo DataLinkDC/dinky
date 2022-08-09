@@ -20,8 +20,7 @@
 
 import React, {useState} from 'react';
 import {Button, Form, Input, Modal} from 'antd';
-import {TenantTableListItem} from "@/pages/ResourceCenter/TenantManager/data";
-import {getTenantTableListData} from "@/pages/ResourceCenter/TenantManager/function";
+import {TenantTableListItem} from "@/pages/ResourceCenter/data.d";
 
 export type TenantFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -34,6 +33,7 @@ const formLayout = {
   labelCol: {span: 7},
   wrapperCol: {span: 13},
 };
+const FormItem = Form.Item;
 
 const TenantForm: React.FC<TenantFormProps> = (props) => {
 
@@ -55,26 +55,28 @@ const TenantForm: React.FC<TenantFormProps> = (props) => {
 
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
-    setFormVals(fieldsValue);
-    handleSubmit(fieldsValue);
+    fieldsValue.id = formVals.id;
+    setFormVals({...formVals,...fieldsValue});
+    handleSubmit({...formVals,...fieldsValue});
   };
 
   const renderContent = (formVals: Partial<TenantTableListItem>) => {
     return (
       <>
-        <Form.Item
+        <FormItem
           name="tenantCode"
           label="唯一编码"
           rules={[{required: true, message: '请输入租户唯一编码！'}]}>
           <Input allowClear placeholder="请输入租户唯一编码"/>
-        </Form.Item>
-        <Form.Item
+        </FormItem>
+        <FormItem
           name="note"
           label="注释"
+          rules={[{required: true, message: '请输入租户注释/描述信息！'}]}
         >
-          <Input.TextArea placeholder="请输入文本注释" allowClear
+          <Input.TextArea placeholder="请输入租户注释/描述信息" allowClear
                           autoSize={{minRows: 3, maxRows: 10}}/>
-        </Form.Item>
+        </FormItem>
       </>
     );
   };
@@ -95,7 +97,7 @@ const TenantForm: React.FC<TenantFormProps> = (props) => {
       width={640}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title={formVals?.id ? "修改租户" : "创建租户"}
+      title={formVals.id ? "修改租户" : "创建租户"}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}
@@ -103,9 +105,9 @@ const TenantForm: React.FC<TenantFormProps> = (props) => {
       <Form
         {...formLayout}
         form={form}
-        initialValues={getTenantTableListData(formVals)}
+        initialValues={formVals}
       >
-        {renderContent(getTenantTableListData(formVals))}
+        {renderContent(formVals)}
       </Form>
     </Modal>
   );
