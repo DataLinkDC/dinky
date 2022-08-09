@@ -37,18 +37,21 @@
              , dn.create_time as dn_create_time
              , dn.update_time    dn_update_time
         from dlink_role dr
-        join dlink_role_namespace drn
-          on dr.id = drn.role_id
-        join dlink_namespace dn
-         on drn.namespace_id = dn.id
     </sql>
-    <select id="selectForProTable" resultMap="roleResultMap">
-       <!-- <include refid="role"></include>-->
-        select
-        dr.*
+    <select id="selectForProTable" resultMap="com.dlink.model.Role">
+        select  dr.id
+              , dr.tenant_id
+              , dr.role_code
+              , dr.role_name
+              , dr.note
+              , dr.create_time
+              , dr.update_time
         from dlink_role dr
         <where>
             1=1
+            <if test='param.tenantId!=null and param.tenantId!=""'>
+                and tenant_id = '${param.tenantId}'
+            </if>
             <if test='param.roleCode!=null and param.roleCode!=""'>
                 and role_code = '${param.roleCode}'
             </if>

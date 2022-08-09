@@ -414,7 +414,7 @@ CREATE TABLE `dlink_savepoints`  (
                                      `path` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '路径',
                                      `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
                                      PRIMARY KEY (`id`) USING BTREE,
-                                     UNIQUE KEY `dlink_savepoints_un` (`task_id`,`tenant_id`)
+                                     UNIQUE KEY `dlink_savepoints_un` (`task_id`,`tenant_id`,`path`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -503,7 +503,7 @@ CREATE TABLE `dlink_task_version` (
                                       `task_configure` text NOT NULL COMMENT '作业配置',
                                       `create_time` datetime DEFAULT NULL COMMENT '创建时间',
                                       PRIMARY KEY (`id`) USING BTREE,
-                                      UNIQUE KEY `dlink_task_version_un` (`task_id`,`tenant_id`)
+                                      UNIQUE KEY `dlink_task_version_un` (`task_id`,`tenant_id`,`version_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='作业历史版本';
 
 -- ----------------------------
@@ -558,7 +558,7 @@ CREATE TABLE `dlink_job_instance` (
                                       `error` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '异常日志',
                                       `failed_restart_count` int DEFAULT NULL COMMENT '重启次数',
                                       PRIMARY KEY (`id`) USING BTREE,
-                                      UNIQUE KEY `dlink_job_instance_un` (`tenant_id`,`name`,`task_id`)
+                                      UNIQUE KEY `dlink_job_instance_un` (`tenant_id`,`name`,`task_id`,`history_id)`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='作业实例';
 
 -- ----------------------------
