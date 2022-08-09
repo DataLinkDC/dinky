@@ -58,8 +58,8 @@ const RoleForm: React.FC<TenantFormProps> = (props) => {
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
     fieldsValue.id = formVals.id;
-    setFormVals(fieldsValue);
-    handleSubmit(fieldsValue);
+    setFormVals({...formVals,...fieldsValue});
+    handleSubmit({...formVals,...fieldsValue});
   };
 
   const renderContent = (formValsPara: Partial<RoleTableListItem>) => {
@@ -81,9 +81,8 @@ const RoleForm: React.FC<TenantFormProps> = (props) => {
           hidden={true}
           name="tenantId"
           label="所属租户"
-          rules={[{required: true, message: '输入所属租户！'}]}
         >
-          <Input defaultValue={getStorageTenantId()} placeholder="所属租户"/>
+          <Input disabled defaultValue={getStorageTenantId()}/>
         </Form.Item>
         <Form.Item
           name="note"

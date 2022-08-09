@@ -57,8 +57,8 @@ const NameSpaceForm: React.FC<TenantFormProps> = (props) => {
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
     fieldsValue.id = formVals.id;
-    setFormVals(fieldsValue);
-    handleSubmit(fieldsValue);
+    setFormVals({...formVals,...fieldsValue});
+    handleSubmit({...formVals,...fieldsValue});
   };
 
   const renderContent = (formValsPara: Partial<NameSpaceTableListItem>) => {
