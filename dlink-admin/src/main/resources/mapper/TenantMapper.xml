@@ -36,7 +36,8 @@
               ,create_time
               ,update_time
          from dlink_tenant
-        where id in
+        where  1=1
+          and  id in
         <foreach collection="tenantIds"  item="id" separator="," open="(" close=")" index="">
             #{id}
         </foreach>
