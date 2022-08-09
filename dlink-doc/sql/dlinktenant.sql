@@ -1,11 +1,14 @@
 /*
  Navicat Premium Data Transfer
+
  Source Server Type    : MySQL
  Source Server Version : 80013
  Source Schema         : dlink
+
  Target Server Type    : MySQL
  Target Server Version : 80013
  File Encoding         : 65001
+
  Date: 24/11/2021 09:19:12
 */
 create database if not exists dlink;
@@ -641,7 +644,7 @@ CREATE TABLE IF NOT EXISTS dlink_tenant
 (
     id          int auto_increment comment 'ID',
     tenant_code varchar(64)          not null comment '租户编码',
-    is_delete   tinyint(1) default 0  not null comment '是否被删除',
+    is_delete   tinyint(1) default 0 not null comment '是否被删除',
     note        varchar(255)         null comment '注释',
     create_time datetime             null comment '创建时间',
     update_time datetime             null comment '最近修改时间',
@@ -670,7 +673,7 @@ CREATE TABLE IF NOT EXISTS  dlink_namespace
     id             int auto_increment comment 'ID',
     tenant_id      int                  not null comment '租户ID',
     namespace_code varchar(64)          not null comment '命名空间编码',
-    enabled        tinyint(1) default 0 not null comment '是否启用',
+    enabled        tinyint(1) default 1 not null comment '是否启用',
     note           varchar(255)         null comment '注释',
     create_time    datetime             null comment '创建时间',
     update_time    datetime             null comment '更新时间',

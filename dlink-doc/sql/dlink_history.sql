@@ -1,16 +1,13 @@
 /*
  Navicat Premium Data Transfer
-
  Source Server         : 10.1.51.25
  Source Server Type    : MySQL
  Source Server Version : 80013
  Source Host           : 10.1.51.25:3306
  Source Schema         : dlink
-
  Target Server Type    : MySQL
  Target Server Version : 80013
  File Encoding         : 65001
-
  Date: 28/05/2021 18:56:01
 */
 
@@ -719,7 +716,7 @@ CREATE TABLE IF NOT EXISTS dlink_role
     update_time datetime     null comment '更新时间',
     PRIMARY KEY (id) USING BTREE,
     UNIQUE KEY `dlink_role_un` (`role_code`)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC comment '角色' ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC comment '角色' ;
 -- DROP TABLE IF EXISTS dlink_namespace;
 CREATE TABLE IF NOT EXISTS  dlink_namespace
 (
@@ -784,10 +781,10 @@ alter table dlink_jar add column tenant_id int  not null comment '租户ID' afte
 alter table dlink_jar add unique key `dlink_jar_un` (`tenant_id`,`name`);
 
 alter table dlink_savepoints add column tenant_id int  not null comment '租户ID' after task_id;
-alter table dlink_savepoints add unique key `dlink_savepoints_un` (`task_id`,`tenant_id`,`path`);
+ alter table dlink_savepoints add unique key `dlink_savepoints_un` (`task_id`,`tenant_id`,`path`);
 
 alter table dlink_job_instance add column tenant_id int  not null comment '租户ID' after name;
-alter table dlink_job_instance add unique key `dlink_job_instance_un` (`tenant_id`,`name`,`task_id`,`history_id`);
+ alter table dlink_job_instance add unique key `dlink_job_instance_un` (`tenant_id`,`name`,`task_id`,`history_id`);
 
 alter table dlink_alert_instance add column tenant_id int  not null comment '租户ID' after name;
 alter table dlink_alert_instance add unique key `dlink_alert_instance_un` (`name`,`tenant_id`);
@@ -798,7 +795,7 @@ alter table dlink_alert_group add unique key `dlink_alert_instance_un` (`name`,`
 alter table dlink_alert_history add column tenant_id int  not null comment '租户ID' after id;
 
 alter table dlink_task_version add column tenant_id int  not null comment '租户ID' after task_id;
-alter table dlink_task_version add unique key `dlink_task_version_un` (`task_id`,`tenant_id`,`version_id`);
+ alter table dlink_task_version add unique key `dlink_task_version_un` (`task_id`,`tenant_id`,`version_id`);
 
 alter table dlink_history add column tenant_id int  not null comment '租户ID' after id;
 alter table dlink_job_history add column tenant_id int  not null comment '租户ID' after id;
