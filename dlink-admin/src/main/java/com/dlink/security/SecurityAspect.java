@@ -24,6 +24,7 @@ package com.dlink.security;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
 import com.dlink.model.History;
+import com.dlink.model.JobInfoDetail;
 import com.dlink.result.ExplainResult;
 import com.dlink.result.SqlExplainResult;
 import org.aspectj.lang.JoinPoint;
@@ -53,9 +54,27 @@ public class SecurityAspect {
     public void afterReturning(JoinPoint joinPoint, Object returnValue) {
 
         // mask sql for explain
+        // openapi/explainSql
         if (returnValue instanceof Result<?> && ((Result<?>) returnValue).getDatas() instanceof ExplainResult) {
             ExplainResult exp = ((ExplainResult) ((Result<?>) returnValue).getDatas());
             List<SqlExplainResult> sqlExplainResults = exp.getSqlExplainResults();
+            if (CollectionUtils.isEmpty(sqlExplainResults)) {
+                return;
+            }
+            for (SqlExplainResult explainResult : sqlExplainResults) {
+                String sql = explainResult.getSql();
+                explainResult.setSql(mask(sql, SENSITIVE, MASK));
+            }
+        }
+
+        // /api/studio/explainSql
+        if (returnValue instanceof Result<?> && ((Result<?>) returnValue).getDatas() instanceof List<?> ) {
+            List<?> list = (List<?>) ((Result<?>) returnValue).getDatas();
+            if (list.isEmpty() || !(list.get(0)  instanceof SqlExplainResult)) {
+                return;
+            }
+            List<SqlExplainResult> exp = ((List<SqlExplainResult>) ((Result<?>) returnValue).getDatas());
+            List<SqlExplainResult> sqlExplainResults = exp;
             if (CollectionUtils.isEmpty(sqlExplainResults)) {
                 return;
             }
@@ -81,6 +100,16 @@ public class SecurityAspect {
         // mask statement for history
         if (returnValue instanceof Result<?> && ((Result<?>) returnValue).getDatas() instanceof History) {
             History history = ((History) ((Result<?>) returnValue).getDatas());
+            if (null != history) {
+                String statement = history.getStatement();
+                history.setStatement(mask(statement, SENSITIVE, MASK));
+            }
+        }
+
+        // /getJobInfoDetail
+        if (returnValue instanceof Result<?> && ((Result<?>) returnValue).getDatas() instanceof JobInfoDetail) {
+            JobInfoDetail jobInfoDetail = ((JobInfoDetail) ((Result<?>) returnValue).getDatas());
+            History history = jobInfoDetail.getHistory();
             if (null != history) {
                 String statement = history.getStatement();
                 history.setStatement(mask(statement, SENSITIVE, MASK));

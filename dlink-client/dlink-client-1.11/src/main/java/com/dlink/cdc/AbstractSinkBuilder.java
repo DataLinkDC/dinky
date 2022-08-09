@@ -37,6 +37,7 @@ import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.types.logical.*;
 import org.apache.flink.types.RowKind;
 import org.apache.flink.util.Collector;
+import org.apache.flink.util.OutputTag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,7 +111,13 @@ public abstract class AbstractSinkBuilder {
             }
         });
     }
+    protected DataStream<Map> shunt(
+            SingleOutputStreamOperator<Map> processOperator,
+            Table table,
+            OutputTag<Map> tag) {
 
+        return processOperator.getSideOutput(tag);
+    }
     protected DataStream<RowData> buildRowData(
         SingleOutputStreamOperator<Map> filterOperator,
         List<String> columnNameList,
