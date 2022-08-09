@@ -38,3 +38,37 @@ export type PasswordItem = {
   newPassword?: string;
   newPasswordCheck?: string;
 };
+
+
+export type TenantTableListItem = {
+  id?: number;
+  tenantCode?: string;
+  isDelete?: boolean;
+  note?: string;
+  createTime?: Date;
+  updateTime?: Date;
+};
+
+
+export type RoleTableListItem = {
+  id?: number;
+  tenantId?: number;
+  roleCode?: string;
+  roleName?: string;
+  isDelete?: boolean;
+  note?: string;
+  createTime?: Date;
+  updateTime?: Date;
+};
+
+
+export type NameSpaceTableListItem = {
+  id?: number;
+  tenantId?: number;
+  namespaceCode?: string;
+  enabled?: boolean;
+  note?: string;
+  createTime?: Date;
+  updateTime?: Date;
+};
+

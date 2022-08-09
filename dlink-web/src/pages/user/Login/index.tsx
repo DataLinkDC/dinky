@@ -18,36 +18,19 @@
  */
 
 
-import {
-  AlipayCircleOutlined,
-  LockOutlined,
-  MobileOutlined,
-  TaobaoCircleOutlined,
-  UserOutlined,
-  WeiboCircleOutlined,
-} from '@ant-design/icons';
-import { Alert, Space, message, Tabs } from 'antd';
-import React, { useState } from 'react';
-import ProForm, { ProFormCaptcha, ProFormCheckbox, ProFormText } from '@ant-design/pro-form';
-import { useIntl, Link, history, FormattedMessage, SelectLang, useModel } from 'umi';
+import {LockOutlined, UserOutlined,} from '@ant-design/icons';
+import {Button, message, Modal} from 'antd';
+import React, {useEffect, useState} from 'react';
+import ProForm, {ProFormCheckbox, ProFormText} from '@ant-design/pro-form';
+import {FormattedMessage, history, Link, SelectLang, useIntl, useModel} from 'umi';
 import Footer from '@/components/Footer';
-import { login } from '@/services/ant-design-pro/api';
-import { getFakeCaptcha } from '@/services/ant-design-pro/login';
+import {login} from '@/services/ant-design-pro/api';
+import {CheckCard} from '@ant-design/pro-components';
 
 import styles from './index.less';
+import {getData} from "@/components/Common/crud";
+import {TenantTableListItem} from "@/pages/ResourceCenter/TenantManager/data";
 
-const LoginMessage: React.FC<{
-  content: string;
-}> = ({ content }) => (
-  <Alert
-    style={{
-      marginBottom: 24,
-    }}
-    message={content}
-    type="error"
-    showIcon
-  />
-);
 
 /** 此方法会跳转到 redirect 参数所在的位置 */
 const goto = () => {
@@ -62,10 +45,13 @@ const goto = () => {
 const Login: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
+  const [userParamsState, setUserParamsState] = useState<API.LoginParams>({});
   const [type, setType] = useState<string>('password');
   const { initialState, setInitialState } = useModel('@@initialState');
   const [isLogin, setIsLogin] = useState<boolean>(true);
-
+  const [chooseTenant, setChooseTenant] = useState<boolean>(false);
+  const [tenantId, setTenantId] = useState<number>(0);
+  const [tenant, setTenant] = useState<TenantTableListItem[]>([]);
   const intl = useIntl();
 
   const fetchUserInfo = async () => {
@@ -77,6 +63,20 @@ const Login: React.FC = () => {
       });
     }
   };
+
+
+  useEffect(() => {
+    // 调用接口
+    const { username} = userParamsState
+    if (!username) { return }
+    getData("/api/geTenants",{username}).then(result  => {
+      setTenant(result?.datas);
+    })
+  },[
+    userParamsState?.username
+  ])
+
+
 
   const handleSubmit = async (values: API.LoginParams) => {
     if(!isLogin) {return;}
@@ -115,6 +115,57 @@ const Login: React.FC = () => {
     setSubmitting(false);
   };
   //const {code } = userLoginState;
+
+
+  const handleShowTenant =  (item: API.LoginParams) =>{
+
+    return <>
+      <Modal title="请选择租户"  visible={chooseTenant} destroyOnClose={true} width={"60%"}
+             onCancel={()=>{
+               setChooseTenant(false);
+             }}
+             footer={[
+               <Button key="back" onClick={() => {
+                 setChooseTenant(false);
+               }}>
+                 关闭
+               </Button>,
+               <Button type="primary" key="submit" loading={submitting}
+                 onClick={async () => {
+                   userParamsState.tenantId = tenantId;
+                   localStorage.setItem("dlink-tenantId",tenantId.toString());
+                   await handleSubmit(userParamsState);
+                 }}>
+                 确定
+               </Button>
+             ]}>
+        <CheckCard.Group
+          multiple={false}
+          onChange={(value) => {
+            setTenantId(value as number)
+            userParamsState.tenantId = tenantId;
+          }}
+        >
+          {tenant?.map((item : any) => {
+            // console.log(item)
+            return <>
+              <CheckCard
+                size={"default"}
+                key={item?.id}
+                avatar="https://gw.alipayobjects.com/zos/bmw-prod/f601048d-61c2-44d0-bf57-ca1afe7fd92e.svg"
+                title={item?.tenantCode}
+                value={item?.id}
+                description={item?.note}
+                defaultChecked={tenant?.length === 1}
+              />
+            </>
+          })}
+        </CheckCard.Group>
+      </Modal>
+    </>
+  }
+
+
 
   return (
     <div className={styles.container}>
@@ -156,7 +207,10 @@ const Login: React.FC = () => {
             }}
             onFinish={async (values) => {
               values.grant_type = 'password';
-              handleSubmit(values as API.LoginParams);
+              // await handleSubmit(values as API.LoginParams);
+              setUserLoginState(values);
+              setUserParamsState(values);
+              setChooseTenant(true)
             }}
           >
             {type === 'password' && (
@@ -226,10 +280,13 @@ const Login: React.FC = () => {
               </a>
             </div>
           </ProForm>
+          {/*<ChooseTenant visible={chooseTenant} handleShowTenant={handleShowTenant} />*/}
         </div>
       </div>
       <Footer />
+      {handleShowTenant(userParamsState)}
     </div>
+
   );
 };
 

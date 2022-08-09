@@ -21,8 +21,8 @@
 import React, {useEffect, useState} from 'react';
 import {Form, Input, List, Switch} from 'antd';
 import {connect} from "umi";
-import {SettingsStateType} from "@/pages/Settings/model";
-import {saveSettings} from "@/pages/Settings/function";
+import {SettingsStateType} from "@/pages/SettingCenter/FlinkSettings/model";
+import {saveSettings} from "@/pages/SettingCenter/FlinkSettings/function";
 
 type FlinkConfigProps = {
   sqlSubmitJarPath: SettingsStateType['sqlSubmitJarPath'];

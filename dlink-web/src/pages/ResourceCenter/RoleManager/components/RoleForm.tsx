@@ -19,8 +19,9 @@
 
 
 import React, {useState} from 'react';
-import {Button, Form, Input, Modal, Select} from 'antd';
-import {RoleTableListItem} from '../data';
+import {Button, Form, Input, Modal} from 'antd';
+import {RoleTableListItem} from "@/pages/ResourceCenter/data.d";
+import {getStorageTenantId} from "@/components/Common/crud";
 
 export type TenantFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -38,14 +39,14 @@ const RoleForm: React.FC<TenantFormProps> = (props) => {
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<RoleTableListItem>>({
-    id: props?.values?.id,
-    tenantId: props?.values?.tenantId,
-    roleCode: props?.values?.roleCode,
-    roleName: props?.values?.roleName,
-    isDelete: props?.values?.isDelete,
-    note: props?.values?.note,
-    createTime: props?.values?.createTime,
-    updateTime: props?.values?.updateTime,
+    id: props.values?.id,
+    tenantId: props.values?.tenantId,
+    roleCode: props.values?.roleCode,
+    roleName: props.values?.roleName,
+    isDelete: props.values?.isDelete,
+    note: props.values?.note,
+    createTime: props.values?.createTime,
+    updateTime: props.values?.updateTime,
   });
 
   const {
@@ -57,8 +58,8 @@ const RoleForm: React.FC<TenantFormProps> = (props) => {
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
     fieldsValue.id = formVals.id;
-    setFormVals(fieldsValue);
-    handleSubmit(fieldsValue);
+    setFormVals({...formVals,...fieldsValue});
+    handleSubmit({...formVals,...fieldsValue});
   };
 
   const renderContent = (formValsPara: Partial<RoleTableListItem>) => {
@@ -77,16 +78,11 @@ const RoleForm: React.FC<TenantFormProps> = (props) => {
           <Input placeholder="请输入角色名称"/>
         </Form.Item>
         <Form.Item
+          hidden={true}
           name="tenantId"
           label="所属租户"
-          rules={[{required: true, message: '请选择角色！'}]}
         >
-        <Select>
-          <Select.Option value="租户A">租户A</Select.Option>
-          <Select.Option value="租户B">租户B</Select.Option>
-          <Select.Option value="租户C">租户C</Select.Option>
-          <Select.Option value="租户D">租户D</Select.Option>
-        </Select>
+          <Input disabled defaultValue={getStorageTenantId()}/>
         </Form.Item>
         <Form.Item
           name="note"

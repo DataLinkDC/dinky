@@ -107,6 +107,7 @@ declare namespace API {
     username?: string;
     password?: string;
     autoLogin?: boolean;
+    tenantId?: number;
     type?: string;
     grant_type?: string;
   };
