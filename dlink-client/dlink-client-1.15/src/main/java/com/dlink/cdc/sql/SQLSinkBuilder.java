@@ -260,11 +260,11 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
             }
         } else if (logicalType instanceof TimestampType) {
             if (value instanceof Integer) {
-                return Instant.ofEpochMilli(((Integer) value).longValue()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+                return Instant.ofEpochMilli(((Integer) value).longValue()).atZone(ZoneId.of("UTC")).toLocalDateTime();
             } else if (value instanceof String) {
                 return Instant.parse((String) value).atZone(ZoneId.systemDefault()).toLocalDateTime();
             } else {
-                return Instant.ofEpochMilli((long) value).atZone(ZoneId.systemDefault()).toLocalDateTime();
+                return Instant.ofEpochMilli((long) value).atZone(ZoneId.of("UTC")).toLocalDateTime();
             }
         } else if (logicalType instanceof DecimalType) {
             return new BigDecimal((String) value);
