@@ -38,14 +38,14 @@ const RoleForm: React.FC<TenantFormProps> = (props) => {
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<RoleTableListItem>>({
-    id: props.values.id,
-    tenantId: props.values.tenantId,
-    roleCode: props.values.roleCode,
-    roleName: props.values.roleName,
-    isDelete: props.values.isDelete,
-    note: props.values.note,
-    createTime: props.values.createTime,
-    updateTime: props.values.updateTime,
+    id: props.values?.id,
+    tenantId: props.values?.tenantId,
+    roleCode: props.values?.roleCode,
+    roleName: props.values?.roleName,
+    isDelete: props.values?.isDelete,
+    note: props.values?.note,
+    createTime: props.values?.createTime,
+    updateTime: props.values?.updateTime,
   });
 
   const {
@@ -82,10 +82,10 @@ const RoleForm: React.FC<TenantFormProps> = (props) => {
           rules={[{required: true, message: '请选择角色！'}]}
         >
         <Select>
-          <Select.Option value="租户A">租户A</Select.Option>
-          <Select.Option value="租户B">租户B</Select.Option>
-          <Select.Option value="租户C">租户C</Select.Option>
-          <Select.Option value="租户D">租户D</Select.Option>
+          <Select.Option value="1">租户A</Select.Option>
+          <Select.Option value="2">租户B</Select.Option>
+          <Select.Option value="3">租户C</Select.Option>
+          <Select.Option value="4">租户D</Select.Option>
         </Select>
         </Form.Item>
         <Form.Item

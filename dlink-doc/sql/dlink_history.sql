@@ -801,6 +801,7 @@ alter table dlink_task_version add column tenant_id int  not null comment '租�
 # alter table dlink_task_version add unique key `dlink_task_version_un` (`task_id`,`tenant_id`); -- 无法达到唯一索引的效果 如果添加可以额外增加一个字段(version_id 因为history_id是唯一的) -- 暂时不执行
 
 alter table dlink_history add column tenant_id int  not null comment '租户ID' after id;
+alter table dlink_job_history add column tenant_id int  not null comment '租户ID' after id;
 
 -- 修改历史表的租户编号为默认public租户
 UPDATE `dlink_alert_group` SET `tenant_id` = 1 ;
@@ -817,6 +818,7 @@ UPDATE `dlink_savepoints` SET `tenant_id` = 1;
 UPDATE `dlink_task` SET `tenant_id` = 1 ;
 UPDATE `dlink_task_statement` SET `tenant_id` = 1;
 UPDATE `dlink_task_version` SET `tenant_id` = 1;
+UPDATE `dlink_job_history` SET `tenant_id` = 1;
 
 
 

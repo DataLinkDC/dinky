@@ -19,13 +19,13 @@
 
 
 export type RoleTableListItem = {
-  id: number;
-  tenantId: number;
-  roleCode: string;
-  roleName: string;
-  isDelete: boolean;
-  note: string;
-  createTime: Date;
-  updateTime: Date;
+  id?: number;
+  tenantId?: number;
+  roleCode?: string;
+  roleName?: string;
+  isDelete?: boolean;
+  note?: string;
+  createTime?: Date;
+  updateTime?: Date;
 };
 

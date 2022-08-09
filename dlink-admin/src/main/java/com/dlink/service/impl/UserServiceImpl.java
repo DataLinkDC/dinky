@@ -27,6 +27,7 @@ import com.dlink.assertion.Asserts;
 import com.dlink.common.result.Result;
 import com.dlink.context.RequestContext;
 import com.dlink.db.service.impl.SuperServiceImpl;
+import com.dlink.dto.LoginUTO;
 import com.dlink.dto.RoleDTO;
 import com.dlink.dto.UserDTO;
 import com.dlink.mapper.UserMapper;
@@ -119,16 +120,16 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     }
 
     @Override
-    public Result loginUser(String username, String password, boolean isRemember) {
-        User user = getUserByUsername(username);
+    public Result loginUser(LoginUTO loginUTO) {
+        User user = getUserByUsername(loginUTO.getUsername());
         if (Asserts.isNull(user)) {
             return Result.failed("账号或密码错误");
         }
         String userPassword = user.getPassword();
-        if (Asserts.isNullString(password)) {
+        if (Asserts.isNullString(loginUTO.getPassword())) {
             return Result.failed("密码不能为空");
         }
-        if (Asserts.isEquals(SaSecureUtil.md5(password), userPassword)) {
+        if (Asserts.isEquals(SaSecureUtil.md5(loginUTO.getPassword()), userPassword)) {
             if (user.getIsDelete()) {
                 return Result.failed("账号不存在");
             }
@@ -151,9 +152,11 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
                     RequestContext.remove();
                 }
             }
+            // 将前端入参 租户id 放入上下文
+            RequestContext.set(loginUTO.getTenantId());
             userDTO.setUser(user);
             userDTO.setRoleDTOList(roleDTOList);
-            StpUtil.login(user.getId(), isRemember);
+            StpUtil.login(user.getId(), loginUTO.isAutoLogin());
             StpUtil.getSession().set("user", userDTO);
             return Result.succeed(userDTO, "登录成功");
         } else {

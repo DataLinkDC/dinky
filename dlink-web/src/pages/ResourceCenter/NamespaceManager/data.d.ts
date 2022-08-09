@@ -19,12 +19,12 @@
 
 
 export type NameSpaceTableListItem = {
-  id: number;
-  tenantId: number;
-  namespaceCode: string;
-  enabled: boolean;
-  note: string;
-  createTime: Date;
-  updateTime: Date;
+  id?: number;
+  tenantId?: number;
+  namespaceCode?: string;
+  enabled?: boolean;
+  note?: string;
+  createTime?: Date;
+  updateTime?: Date;
 };
 

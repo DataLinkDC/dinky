@@ -38,13 +38,13 @@ const NameSpaceForm: React.FC<TenantFormProps> = (props) => {
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<NameSpaceTableListItem>>({
-    id: props.values.id,
-    tenantId: props.values.tenantId,
-    namespaceCode: props.values.namespaceCode,
-    enabled: props.values.enabled,
-    note: props.values.note,
-    createTime: props.values.createTime,
-    updateTime: props.values.updateTime,
+    id: props.values?.id,
+    tenantId: props.values?.tenantId,
+    namespaceCode: props.values?.namespaceCode,
+    enabled: props.values?.enabled,
+    note: props.values?.note,
+    createTime: props.values?.createTime,
+    updateTime: props.values?.updateTime,
   });
 
   const {
