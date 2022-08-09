@@ -24,23 +24,24 @@ import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
 import {Button, Drawer, Dropdown, Menu, Modal} from 'antd';
 import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import {handleRemove, queryData} from "@/components/Common/crud";
-import {NameSpaceTableListItem} from "@/pages/ResourceCenter/NamespaceManager/data";
+import {handleAddOrUpdate, handleRemove, queryData} from "@/components/Common/crud";
+import {NameSpaceTableListItem} from "@/pages/ResourceCenter/data.d";
 import NameSpaceForm from "@/pages/ResourceCenter/NamespaceManager/components/NameSpaceForm";
 
 const url = '/api/namespace';
 
 const NameSpaceFormList: React.FC<{}> = (props: any) => {
   const [row, setRow] = useState<NameSpaceTableListItem>();
-  const [values, setValues] = useState<NameSpaceTableListItem>();
+  const [formValues, setFormValues] = useState<NameSpaceTableListItem>();
+  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<NameSpaceTableListItem[]>([]);
 
   const editAndDelete = (key: string | number, currentItem: NameSpaceTableListItem) => {
     if (key === 'edit') {
-      setValues(currentItem);
-      handleModalVisible(true);
+      handleUpdateModalVisible(true);
+      setFormValues(currentItem);
     } else if (key === 'delete') {
       Modal.confirm({
         title: '删除命名空间',
@@ -84,12 +85,15 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: '角色名称',
-      dataIndex: 'roleName',
-    },
-    {
       title: '命名空间编码',
       dataIndex: 'namespaceCode',
+      render: (dom, entity) => {
+        return <a onClick={() => setRow(entity)}>{dom}</a>;
+      },
+    },
+    {
+      title: '所属租户',
+      dataIndex: 'tenantId',
     },
     {
       title: '是否启用',
@@ -137,8 +141,8 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
       render: (_, record) => [
         <a
           onClick={() => {
-            handleModalVisible(true);
-            setValues(record);
+            handleUpdateModalVisible(true);
+            setFormValues(record);
           }}
         >
           配置
@@ -198,16 +202,45 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
           </Button>
         </FooterToolbar>
       )}
-      <NameSpaceForm onCancel={() => {
-        handleModalVisible(false);
-        setValues(undefined);
-      }}
-                modalVisible={modalVisible}
-                onSubmit={() => {
-                  actionRef.current?.reloadAndRest?.();
-                }}
-                values={values as NameSpaceTableListItem}
+      <NameSpaceForm
+        onSubmit={async (value) => {
+          const success = await handleAddOrUpdate(url, value);
+          if (success) {
+            handleModalVisible(false);
+            setFormValues({});
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        onCancel={() => {
+          handleModalVisible(false);
+        }}
+        modalVisible={modalVisible}
+        values={{}}
       />
+      {
+        formValues && Object.keys(formValues).length ? (
+          <NameSpaceForm
+            onSubmit={async (value) => {
+              const success = await handleAddOrUpdate(url, value);
+              if (success) {
+                handleUpdateModalVisible(false);
+                setFormValues({});
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
+              }
+            }}
+            onCancel={() => {
+              handleUpdateModalVisible(false);
+              setFormValues({});
+            }}
+            modalVisible={modalVisible}
+            values={formValues}
+          />
+        ) : undefined
+      }
       <Drawer
         width={600}
         visible={!!row}

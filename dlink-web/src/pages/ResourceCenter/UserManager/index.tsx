@@ -25,7 +25,7 @@ import {Button, Drawer, Dropdown, Menu, Modal} from 'antd';
 import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import {handleAddOrUpdate, handleOption, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
-import {UserTableListItem} from "@/pages/ResourceCenter/UserManager/data";
+import {UserTableListItem} from "@/pages/ResourceCenter/data.d";
 import UserForm from "@/pages/ResourceCenter/UserManager/components/UserForm";
 import PasswordForm from "@/pages/ResourceCenter/UserManager/components/PasswordForm";
 

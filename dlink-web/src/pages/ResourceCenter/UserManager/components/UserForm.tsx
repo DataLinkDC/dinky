@@ -20,7 +20,7 @@
 
 import React, {useState} from 'react';
 import {Button, Form, Input, Modal, Switch} from 'antd';
-import {UserTableListItem} from "@/pages/ResourceCenter/UserManager/data";
+import {UserTableListItem} from "@/pages/ResourceCenter/data.d";
 
 export type UserFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -61,7 +61,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
     handleSubmit({ ...formVals, ...fieldsValue });
   };
 
-  const renderContent = (formVals) => {
+  const renderContent = (formVals: Partial<UserTableListItem>) => {
     return (
       <>
         <Form.Item

@@ -19,8 +19,9 @@
 
 
 import React, {useState} from 'react';
-import {Button, Form, Input, Modal, Select} from 'antd';
-import {RoleTableListItem} from '../data';
+import {Button, Form, Input, Modal} from 'antd';
+import {RoleTableListItem} from "@/pages/ResourceCenter/data.d";
+import {getStorageTenantId} from "@/components/Common/crud";
 
 export type TenantFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -77,16 +78,12 @@ const RoleForm: React.FC<TenantFormProps> = (props) => {
           <Input placeholder="请输入角色名称"/>
         </Form.Item>
         <Form.Item
+          hidden={true}
           name="tenantId"
           label="所属租户"
-          rules={[{required: true, message: '请选择角色！'}]}
+          rules={[{required: true, message: '输入所属租户！'}]}
         >
-        <Select>
-          <Select.Option value="1">租户A</Select.Option>
-          <Select.Option value="2">租户B</Select.Option>
-          <Select.Option value="3">租户C</Select.Option>
-          <Select.Option value="4">租户D</Select.Option>
-        </Select>
+          <Input defaultValue={getStorageTenantId()} placeholder="所属租户"/>
         </Form.Item>
         <Form.Item
           name="note"

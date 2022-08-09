@@ -132,10 +132,8 @@ const Login: React.FC = () => {
                </Button>,
                <Button type="primary" key="submit" loading={submitting}
                  onClick={async () => {
-                   // todo: 登录
                    userParamsState.tenantId = tenantId;
                    localStorage.setItem("dlink-tenantId",tenantId.toString());
-                   console.log(userParamsState,'--------')
                    await handleSubmit(userParamsState);
                  }}>
                  确定
@@ -144,7 +142,6 @@ const Login: React.FC = () => {
         <CheckCard.Group
           multiple={false}
           onChange={(value) => {
-            console.log('value', value);
             setTenantId(value as number)
             userParamsState.tenantId = tenantId;
           }}
