@@ -51,6 +51,7 @@ import org.apache.flink.types.Row;
 import org.apache.flink.types.RowKind;
 import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
+import org.jetbrains.annotations.NotNull;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.Serializable;
@@ -83,10 +84,10 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable 
     }
 
     private DataStream<Row> buildRow(
-        SingleOutputStreamOperator<Map> filterOperator,
-        List<String> columnNameList,
-        List<LogicalType> columnTypeList,
-        String schemaTableName) {
+            @NotNull SingleOutputStreamOperator<Map> filterOperator,
+            List<String> columnNameList,
+            List<LogicalType> columnTypeList,
+            String schemaTableName) {
         final String[] columnNames = columnNameList.toArray(new String[columnNameList.size()]);
         final LogicalType[] columnTypes = columnTypeList.toArray(new LogicalType[columnTypeList.size()]);
 
@@ -255,9 +256,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable 
                     OutputTag<Map> outputTag = new OutputTag<Map>(sinkTableName) {
                     };
                     tagMap.put(table, outputTag);
-
                     tableMap.put(table.getSchemaTableName(), table);
-
                 }
             }
             final String schemaFieldName = config.getSchemaFieldName();

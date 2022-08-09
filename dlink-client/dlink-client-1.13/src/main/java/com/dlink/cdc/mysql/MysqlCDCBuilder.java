@@ -75,6 +75,7 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         String connectMaxRetries = config.getSource().get("connect.max-retries");
         String connectionPoolSize = config.getSource().get("connection.pool.size");
         String heartbeatInterval = config.getSource().get("heartbeat.interval");
+        String schemaChanges = config.getSource().get("schema.changes");
 
         Properties debeziumProperties = new Properties();
         // 为部分转换添加默认值
@@ -101,8 +102,9 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
                 .username(config.getUsername())
                 .password(config.getPassword());
 
-        String schemaChanges = config.getSource().get("schema.changes");
-        sourceBuilder.includeSchemaChanges(Asserts.isEqualsIgnoreCase(schemaChanges, "true"));
+        if (Asserts.isEqualsIgnoreCase(schemaChanges, "true")) {
+            sourceBuilder.includeSchemaChanges(true);
+        }
 
         if (Asserts.isNotNullString(database)) {
             String[] databases = database.split(FlinkParamConstant.SPLIT);

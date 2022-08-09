@@ -176,6 +176,7 @@ public class FlinkCDCConfig {
     private boolean skip(String key) {
         switch (key) {
             case "sink.db":
+            case "auto.create":
             case "table.prefix":
             case "table.suffix":
             case "table.upper":
