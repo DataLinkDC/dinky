@@ -86,4 +86,5 @@ public class Role implements Serializable {
      */
     @TableField(exist = false)
     private List<Namespace> namespaces;
+
 }

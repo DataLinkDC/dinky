@@ -25,4 +25,12 @@
             </if>
         </where>
     </select>
+
+    <delete id="deleteByRoleIds" parameterType="java.util.List">
+        DELETE FROM dlink_role_namespace
+        WHERE role_id IN
+        <foreach collection="roleIds" item="item" open="(" separator="," close=")">
+            ${item}
+        </foreach>
+    </delete>
 </mapper>

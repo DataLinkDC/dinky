@@ -64,7 +64,6 @@ public class SystemInit implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        sysConfigService.initSysConfig();
 //        taskService.initDefaultFlinkSQLEnv(1);
 //        List<JobInstance> jobInstances = jobInstanceService.listJobInstanceActive();
 //        List<DaemonTaskConfig> configList = new ArrayList<>();

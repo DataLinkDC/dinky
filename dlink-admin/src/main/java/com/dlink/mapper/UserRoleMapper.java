@@ -30,4 +30,11 @@ public interface UserRoleMapper extends SuperMapper<UserRole> {
      * @return int
      */
     int deleteBathRelation(@Param("userRoleList") List<UserRole> userRoleList);
+
+    /**
+     * delete user role relation by role id
+     * @param roleId role id
+     * @return
+     */
+    int deleteByRoleIds(@Param("roleIds") List<Integer> roleIds);
 }

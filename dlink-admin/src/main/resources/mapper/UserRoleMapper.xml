@@ -34,18 +34,19 @@
         where user_id =  (#{userId})
     </select>
 
-    <delete id="deleteBath" parameterType="java.util.List">
-        DELETE FROM t_employee WHERE id IN
-        <foreach collection="list" item="item" open="(" separator="," close=")">
-            #{item.id}
-        </foreach>
-    </delete>
-
     <delete id="deleteBathRelation" parameterType="java.util.List">
         delete from dlink_user_role
          where (user_id,role_id) in
       <foreach item="item" index="index" collection="userRoleList" open="(" separator="," close=")">
         (#{item.userId},#{item.roleId})
       </foreach>
+    </delete>
+
+    <delete id="deleteByRoleIds" parameterType="java.util.List">
+        DELETE FROM dlink_user_role
+        WHERE role_id IN
+        <foreach collection="roleIds" item="item" open="(" separator="," close=")">
+            ${item}
+        </foreach>
     </delete>
 </mapper>

@@ -37,12 +37,14 @@ public interface RoleService extends ISuperService<Role> {
      * @param para role id
      * @return delete result code
      */
-    Result deleteRoleById(JsonNode para);
+    Result deleteRoleByIds(JsonNode para);
 
     Result saveOrUpdateRole(JsonNode para);
 
     List<Role> getRoleByIds(Set<Integer> roleIds);
 
     List<Role> getRoleByTenantIdAndIds(String tenantId, Set<Integer> roleIds);
+
+    boolean deleteByIds(List<Integer> ids);
 
 }

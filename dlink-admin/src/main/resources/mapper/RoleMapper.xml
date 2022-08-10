@@ -37,8 +37,12 @@
              , dn.create_time as dn_create_time
              , dn.update_time    dn_update_time
         from dlink_role dr
+        join dlink_role_namespace drn
+          on dr.id = drn.role_id
+        join dlink_namespace dn
+         on drn.namespace_id = dn.id
     </sql>
-    <select id="selectForProTable" resultMap="com.dlink.model.Role">
+    <select id="selectForProTable" resultType="com.dlink.model.Role">
         select  dr.id
               , dr.tenant_id
               , dr.role_code
