@@ -87,4 +87,7 @@ public class JobHistory implements Serializable {
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
+
+    @TableField(exist = false)
+    private boolean error;
 }
