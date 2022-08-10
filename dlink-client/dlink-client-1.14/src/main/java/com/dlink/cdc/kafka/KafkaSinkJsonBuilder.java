@@ -8,9 +8,11 @@ import com.dlink.executor.CustomTableEnvironment;
 import com.dlink.model.FlinkCDCConfig;
 import com.dlink.model.Schema;
 import com.dlink.model.Table;
+import com.dlink.utils.ObjectConvertUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import org.apache.flink.api.common.functions.FilterFunction;
 import org.apache.flink.api.common.functions.MapFunction;
@@ -29,6 +31,7 @@ import javax.xml.bind.DatatypeConverter;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -59,7 +62,7 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements SinkBui
 
     @Override
     public SinkBuilder create(FlinkCDCConfig config) {
-        return new KafkaSinkBuilder(config);
+        return new KafkaSinkJsonBuilder(config);
     }
 
     @Override
@@ -170,42 +173,7 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements SinkBui
 
     @Override
     protected Object convertValue(Object value, LogicalType logicalType) {
-        if (value == null) {
-            return null;
-        }
-        if (logicalType instanceof DateType) {
-            ZoneId utc = ZoneId.of("UTC");
-            if (value instanceof Integer) {
-                return Instant.ofEpochMilli(((Integer) value).longValue()).atZone(utc).toLocalDate();
-            } else {
-                return Instant.ofEpochMilli((long) value).atZone(utc).toLocalDate();
-            }
-        } else if (logicalType instanceof TimestampType) {
-            if (value instanceof Integer) {
-                return Instant.ofEpochMilli(((Integer) value).longValue()).atZone(ZoneId.of("UTC")).toLocalDateTime();
-            } else if (value instanceof String) {
-                return Instant.parse((String) value).atZone(ZoneId.systemDefault()).toLocalDateTime();
-            } else {
-                return Instant.ofEpochMilli((long) value).atZone(ZoneId.of("UTC")).toLocalDateTime();
-            }
-        } else if (logicalType instanceof DecimalType) {
-            return new BigDecimal((String) value);
-        } else if (logicalType instanceof BigIntType) {
-            if (value instanceof Integer) {
-                return ((Integer) value).longValue();
-            } else {
-                return value;
-            }
-        } else if (logicalType instanceof VarBinaryType) {
-            // VARBINARY AND BINARY is converted to String with encoding base64 in FlinkCDC.
-            if (value instanceof String) {
-                return DatatypeConverter.parseBase64Binary((String) value);
-            } else {
-                return value;
-            }
-        } else {
-            return value;
-        }
+        return ObjectConvertUtil.convertValue(value,logicalType);
     }
 
     private void convertAttr(List<String> columnNameList,List<LogicalType> columnTypeList,Map value,String op,int is_deleted,

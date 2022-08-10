@@ -5,6 +5,7 @@ import com.dlink.cdc.SinkBuilder;
 import com.dlink.model.Column;
 import com.dlink.model.FlinkCDCConfig;
 import com.dlink.model.Table;
+import com.dlink.utils.ObjectConvertUtil;
 import com.starrocks.connector.flink.row.sink.StarRocksTableRowTransformer;
 import com.starrocks.connector.flink.table.sink.StarRocksDynamicSinkFunction;
 import com.starrocks.connector.flink.table.sink.StarRocksSinkOptions;
@@ -23,6 +24,8 @@ import org.apache.flink.table.types.utils.TypeConversions;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,9 +39,9 @@ public class StarrocksSinkBuilder extends AbstractSinkBuilder implements SinkBui
 
     private final static String KEY_WORD = "datastream-starrocks";
     private static final long serialVersionUID = 8330362249137431824L;
+    private final ZoneId sinkZoneIdUTC = ZoneId.of("UTC");
 
     public StarrocksSinkBuilder() {
-        logger.info("==========datastream-starrocks");
     }
 
     public StarrocksSinkBuilder(FlinkCDCConfig config) {
@@ -92,7 +95,6 @@ public class StarrocksSinkBuilder extends AbstractSinkBuilder implements SinkBui
                     .withProperty("password", sink.get("password"))
                     .withProperty("table-name", getSinkTableName(table))
                     .withProperty("database-name", getSinkSchemaName(table))
-                    .withProperty("database-name", getSinkSchemaName(table))
                     .withProperty("sink.properties.format", "json")
                     .withProperty("sink.properties.strip_outer_array", "true")
                     // 设置并行度，多并行度情况下需要考虑如何保证数据有序性
@@ -116,35 +118,18 @@ public class StarrocksSinkBuilder extends AbstractSinkBuilder implements SinkBui
 
     @Override
     protected Object convertValue(Object value, LogicalType logicalType) {
-        if (value == null) {
+        Object object = ObjectConvertUtil.convertValue(value, logicalType, sinkZoneIdUTC);
+        if (object == null) {
             return null;
         }
-        if (logicalType instanceof VarCharType) {
-            return StringData.fromString((String) value);
-        }else  if (logicalType instanceof DateType) {
-            ZoneId utc = ZoneId.of("UTC");
-            long l = 0;
+        if(logicalType instanceof TimestampType && object instanceof LocalDateTime){
+            return TimestampData.fromLocalDateTime((LocalDateTime) object);
+        }else if(logicalType instanceof DateType){
             if (value instanceof Integer) {
-               l = Instant.ofEpochSecond((int) value).atZone(utc).toEpochSecond();
-            } else {
-               l = Instant.ofEpochMilli((long) value).atZone(utc).toEpochSecond();
+                return Instant.ofEpochSecond((int) value).atZone(sinkZoneIdUTC).toEpochSecond();
             }
-            return Integer.parseInt(String.valueOf(l));
-        } else if (logicalType instanceof TimestampType) {
-            ZoneId utc = ZoneId.systemDefault();
-            if (value instanceof Integer) {
-                return TimestampData.fromLocalDateTime(Instant.ofEpochMilli(((Integer) value).longValue()).atZone(utc).toLocalDateTime());
-            } else if (value instanceof String) {
-                return TimestampData.fromLocalDateTime(Instant.parse((String) value).atZone(utc).toLocalDateTime());
-            }
-            return TimestampData.fromLocalDateTime(Instant.ofEpochMilli((long) value).atZone(utc).toLocalDateTime());
-        } else if (logicalType instanceof DecimalType) {
-            final DecimalType decimalType = ((DecimalType) logicalType);
-            final int precision = decimalType.getPrecision();
-            final int scale = decimalType.getScale();
-            return DecimalData.fromBigDecimal(new BigDecimal((String) value), precision, scale);
-        } else {
-            return value;
+            return Instant.ofEpochMilli((long) value).atZone(sinkZoneIdUTC).toEpochSecond();
         }
+        return object;
     }
 }
