@@ -37,5 +37,11 @@
             <artifactId>dlink-connector-jdbc-1.13</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.starrocks</groupId>
+            <artifactId>flink-connector-starrocks</artifactId>
+            <version>1.2.3_flink-1.13_2.11</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

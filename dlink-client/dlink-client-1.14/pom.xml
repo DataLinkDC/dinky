@@ -32,5 +32,16 @@
             <artifactId>dlink-flink-1.14</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.starrocks</groupId>
+            <artifactId>flink-connector-starrocks</artifactId>
+            <version>1.2.3_flink-1.14_2.11</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>
