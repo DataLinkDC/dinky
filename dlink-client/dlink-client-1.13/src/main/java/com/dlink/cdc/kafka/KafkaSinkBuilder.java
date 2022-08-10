@@ -41,6 +41,7 @@ import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -52,7 +53,7 @@ import java.util.Map;
  * @author wenmo
  * @since 2022/4/12 21:29
  **/
-public class KafkaSinkBuilder extends AbstractSinkBuilder  {
+public class KafkaSinkBuilder extends AbstractSinkBuilder implements Serializable {
 
     private final static String KEY_WORD = "datastream-kafka";
 

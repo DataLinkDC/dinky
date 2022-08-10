@@ -65,7 +65,7 @@ import java.util.*;
  * @author wenmo
  * @since 2022/4/25 23:02
  */
-public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, Serializable {
+public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable {
 
     private final static String KEY_WORD = "sql";
     private static final long serialVersionUID = -3699685106324048226L;
