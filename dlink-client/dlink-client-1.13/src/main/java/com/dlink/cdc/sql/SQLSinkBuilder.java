@@ -65,10 +65,11 @@ import java.util.*;
  * @author wenmo
  * @since 2022/4/25 23:02
  */
-public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable {
+public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, Serializable {
 
     private final static String KEY_WORD = "sql";
     private static final long serialVersionUID = -3699685106324048226L;
+    private ZoneId sinkTimeZone = ZoneId.of("UTC");
 
     public SQLSinkBuilder() {
     }
@@ -139,10 +140,10 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable 
                 }, rowTypeInfo);
     }
     private void addTableSink(
-            CustomTableEnvironment customTableEnvironment,
-            DataStream<Row> rowDataDataStream,
-            Table table,
-            List<String> columnNameList) {
+        CustomTableEnvironment customTableEnvironment,
+        DataStream<Row> rowDataDataStream,
+        Table table,
+        List<String> columnNameList) {
 
         String sinkSchemaName = getSinkSchemaName(table);
         String sinkTableName = getSinkTableName(table);
@@ -183,10 +184,15 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable 
 
     @Override
     public DataStreamSource build(
-            CDCBuilder cdcBuilder,
-            StreamExecutionEnvironment env,
-            CustomTableEnvironment customTableEnvironment,
-            DataStreamSource<String> dataStreamSource) {
+        CDCBuilder cdcBuilder,
+        StreamExecutionEnvironment env,
+        CustomTableEnvironment customTableEnvironment,
+        DataStreamSource<String> dataStreamSource) {
+        final String timeZone = config.getSink().get("timezone");
+        config.getSink().remove("timezone");
+        if (Asserts.isNotNullString(timeZone)){
+            sinkTimeZone = ZoneId.of(timeZone);
+        }
         final List<Schema> schemaList = config.getSchemaList();
         if (Asserts.isNotNullCollection(schemaList)) {
 
@@ -254,17 +260,17 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable 
         }
         if (logicalType instanceof DateType) {
             if (value instanceof Integer) {
-                return Instant.ofEpochMilli(((Integer) value).longValue()).atZone(ZoneId.systemDefault()).toLocalDate();
+                return Instant.ofEpochMilli(((Integer) value).longValue()).atZone(sinkTimeZone).toLocalDate();
             } else {
                 return Instant.ofEpochMilli((long) value).atZone(ZoneId.systemDefault()).toLocalDate();
             }
         } else if (logicalType instanceof TimestampType) {
             if (value instanceof Integer) {
-                return Instant.ofEpochMilli(((Integer) value).longValue()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+                return Instant.ofEpochMilli(((Integer) value).longValue()).atZone(sinkTimeZone).toLocalDateTime();
             } else if (value instanceof String) {
-                return Instant.parse((String) value).atZone(ZoneId.systemDefault()).toLocalDateTime();
+                return Instant.parse((String) value).atZone(sinkTimeZone).toLocalDateTime();
             } else {
-                return Instant.ofEpochMilli((long) value).atZone(ZoneId.systemDefault()).toLocalDateTime();
+                return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDateTime();
             }
         } else if (logicalType instanceof DecimalType) {
             return new BigDecimal((String) value);

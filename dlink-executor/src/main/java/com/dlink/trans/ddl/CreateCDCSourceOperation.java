@@ -153,34 +153,10 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
         if (!Asserts.isEqualsIgnoreCase(autoCreate, "true")) {
             return null;
         }
-        String connector = sink.get("connector");
         String url = sink.get("url");
-        String type = null;
-        if (Asserts.isEqualsIgnoreCase(connector, "doris") ||
-                Asserts.isEqualsIgnoreCase(connector, "starrocks")) {
-            type = "Doris";
-        } else if (Asserts.isEqualsIgnoreCase(connector, "clickhouse")) {
-            type = "ClickHouse";
-        } else if (Asserts.isEqualsIgnoreCase(connector, "jdbc")) {
-            if (url.startsWith("jdbc:mysql")) {
-                type = "MySQL";
-            } else if (url.startsWith("jdbc:postgresql")) {
-                type = "PostgreSql";
-            } else if (url.startsWith("jdbc:oracle")) {
-                type = "Oracle";
-            } else if (url.startsWith("jdbc:sqlserver")) {
-                type = "SQLServer";
-            } else if (url.startsWith("jdbc:pivotal")) {
-                type = "Greenplum";
-            }
-        }
-        if (Asserts.isNull(type)) {
-            return null;
-        }
         String schema = SqlUtil.replaceAllParam(sink.get("sink.db"), "schemaName", schemaName);
-        DriverConfig driverConfig = new DriverConfig(url, type, url, sink.get("username"), sink.get("password"));
-        Driver driver = Driver.build(driverConfig);
-        if (!driver.existSchema(schema)) {
+        Driver driver = Driver.build(sink.get("connector"), url, sink.get("username"), sink.get("password"));
+        if (null != driver && !driver.existSchema(schema)) {
             driver.createSchema(schema);
         }
         sink.put("sink.db", schema);
