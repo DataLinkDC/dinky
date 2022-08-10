@@ -26,6 +26,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.dlink.model.History;
+import com.dlink.service.HistoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,6 +103,8 @@ public class StudioServiceImpl implements StudioService {
     private DataBaseService dataBaseService;
     @Autowired
     private TaskService taskService;
+    @Autowired
+    private HistoryService historyService;
 
     private void addFlinkSQLEnv(AbstractStatementDTO statementDTO) {
         String flinkWithSql = dataBaseService.getEnabledFlinkWithSql();
@@ -352,7 +357,10 @@ public class StudioServiceImpl implements StudioService {
     @Override
     public boolean savepoint(Integer taskId, Integer clusterId, String jobId, String savePointType, String name) {
         Cluster cluster = clusterService.getById(clusterId);
+        History history = historyService.getOne(new QueryWrapper<History>().eq("job_id", jobId));
+    
         Asserts.checkNotNull(cluster, "该集群不存在");
+        Asserts.checkNotNull(history, "该job不存在");
         boolean useGateway = false;
         JobConfig jobConfig = new JobConfig();
         jobConfig.setAddress(cluster.getJobManagerHost());
@@ -361,10 +369,10 @@ public class StudioServiceImpl implements StudioService {
             Map<String, Object> gatewayConfig = clusterConfigurationService.getGatewayConfig(cluster.getClusterConfigurationId());
             jobConfig.buildGatewayConfig(gatewayConfig);
             jobConfig.getGatewayConfig().getClusterConfig().setAppId(cluster.getName());
-            jobConfig.setTaskId(cluster.getTaskId());
+            jobConfig.setTaskId(history.getTaskId());
             useGateway = true;
         } else {
-            jobConfig.setTaskId(taskId);
+            jobConfig.setTaskId(history.getTaskId());
         }
         JobManager jobManager = JobManager.build(jobConfig);
         jobManager.setUseGateway(useGateway);
