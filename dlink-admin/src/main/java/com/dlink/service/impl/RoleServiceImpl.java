@@ -59,8 +59,10 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
     @Override
     public Result saveOrUpdateRole(JsonNode para) {
         Role role = new Role();
-        String id = para.get("id").asText(null);
-
+        String id = null;
+        if (para.has("id")) {
+            id = para.get("id").asText(null);
+        }
         role.setTenantId(para.get("tenantId").asInt());
         role.setRoleCode(para.get("roleCode").asText());
         role.setRoleName(para.get("roleName").asText());
@@ -93,29 +95,19 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public Result deleteRoleById(JsonNode para) {
-        for (JsonNode item : para) {
-            Integer id = item.asInt();
-            Role role = getById(id);
-            if (Asserts.isNull(role)) {
-                return Result.failed("角色不存在");
-            }
-            ProTableResult<RoleNamespace> roleNamespaceProTableResult = roleNamespaceService.selectForProTable(para);
-            if (roleNamespaceProTableResult.getData().size() > 0) {
-                return Result.failed("删除角色失败，该角色已绑定名称空间");
-            }
-            ProTableResult<UserRole> userRoleProTableResult = userRoleService.selectForProTable(para);
-            if (userRoleProTableResult.getData().size() > 0) {
-                return Result.failed("删除角色失败，该角色已绑定用户");
-            }
-            boolean result = removeById(id);
-            if (result) {
-                return Result.succeed("删除角色成功");
-            } else {
-                return Result.failed("删除角色失败");
-            }
+    public Result deleteRoleByIds(JsonNode para) {
+        List<Integer> roleIds = new ArrayList<>();
+        JsonNode ids = para.get("ids");
+        for (JsonNode id : ids) {
+            roleIds.add(id.asInt());
         }
-        return Result.failed("删除角色不存在");
+        boolean roleNamespaceResult = roleNamespaceService.deleteByRoleIds(roleIds);
+        boolean userRoleResult = userRoleService.deleteByRoleIds(roleIds);
+        boolean result = deleteByIds(roleIds);
+        if (roleNamespaceResult && userRoleResult && result) {
+            return Result.failed("删除角色成功");
+        }
+        return Result.failed("删除角色失败");
     }
 
     @Override
@@ -126,6 +118,10 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
     @Override
     public List<Role> getRoleByTenantIdAndIds(String tenantId, Set<Integer> roleIds) {
         return baseMapper.getRoleByTenantIdAndIds(tenantId, roleIds);
+    }
+    @Override
+    public boolean deleteByIds(List<Integer> ids) {
+        return baseMapper.deleteByIds(ids) > 0;
     }
 
 }

@@ -19,8 +19,16 @@
 
 package com.dlink.service;
 
+import java.util.List;
+
 import com.dlink.db.service.ISuperService;
 import com.dlink.model.RoleNamespace;
 
 public interface RoleNamespaceService extends ISuperService<RoleNamespace> {
+    /**
+     * delete user role relation by role id
+     * @param roleIds role id
+     * @return
+     */
+    boolean deleteByRoleIds(List<Integer> roleIds);
 }

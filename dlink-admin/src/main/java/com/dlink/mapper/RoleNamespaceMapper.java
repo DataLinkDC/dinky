@@ -20,6 +20,9 @@
 package com.dlink.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 import com.dlink.db.mapper.SuperMapper;
 import com.dlink.model.RoleNamespace;
@@ -29,5 +32,10 @@ import com.dlink.model.RoleNamespace;
  */
 @Mapper
 public interface RoleNamespaceMapper extends SuperMapper<RoleNamespace> {
-
+    /**
+     * delete user role relation by role id
+     * @param roleId role id
+     * @return
+     */
+    int deleteByRoleIds(@Param("roleIds") List<Integer> roleIds);
 }

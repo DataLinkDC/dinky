@@ -19,7 +19,10 @@
 
 package com.dlink.service.impl;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.RoleNamespaceMapper;
@@ -28,5 +31,8 @@ import com.dlink.service.RoleNamespaceService;
 
 @Service
 public class RoleNamespaceServiceImpl extends SuperServiceImpl<RoleNamespaceMapper, RoleNamespace> implements RoleNamespaceService {
-
+    @Override
+    public boolean deleteByRoleIds(List<Integer> roleIds) {
+        return baseMapper.deleteByRoleIds(roleIds) > 0;
+    }
 }

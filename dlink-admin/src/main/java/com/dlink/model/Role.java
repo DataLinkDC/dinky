@@ -81,9 +81,4 @@ public class Role implements Serializable {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
-    /**
-     * namespace list
-     */
-    @TableField(exist = false)
-    private List<Namespace> namespaces;
 }

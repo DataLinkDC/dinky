@@ -64,6 +64,14 @@ public class SystemInit implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+//        taskService.initDefaultFlinkSQLEnv(1);
+//        List<JobInstance> jobInstances = jobInstanceService.listJobInstanceActive();
+//        List<DaemonTaskConfig> configList = new ArrayList<>();
+//        for (JobInstance jobInstance : jobInstances) {
+//            configList.add(new DaemonTaskConfig(FlinkJobTask.TYPE, jobInstance.getId()));
+//        }
+        List<Tenant> tenants = tenantService.list();
+        List<DaemonTaskConfig> configList = new ArrayList<>();
         sysConfigService.initSysConfig();
 //        taskService.initDefaultFlinkSQLEnv(1);
 //        List<JobInstance> jobInstances = jobInstanceService.listJobInstanceActive();

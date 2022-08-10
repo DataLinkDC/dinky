@@ -60,8 +60,8 @@ public class RoleController {
      * @return delete result code
      */
     @DeleteMapping
-    public Result deleteRoleById(@RequestBody JsonNode para) {
-        return roleService.deleteRoleById(para);
+    public Result deleteRoleByIds(@RequestBody JsonNode para) {
+        return roleService.deleteRoleByIds(para);
     }
 
     /**
