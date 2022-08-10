@@ -65,7 +65,7 @@ import java.util.*;
  * @author wenmo
  * @since 2022/4/25 23:02
  */
-public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, Serializable {
+public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable {
 
     private final static String KEY_WORD = "sql";
     private static final long serialVersionUID = -3699685106324048226L;
@@ -82,62 +82,6 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
 
     }
 
-    private DataStream<Row> buildRow(
-        SingleOutputStreamOperator<Map> filterOperator,
-        List<String> columnNameList,
-        List<LogicalType> columnTypeList,
-        String schemaTableName) {
-        final String[] columnNames = columnNameList.toArray(new String[columnNameList.size()]);
-        final LogicalType[] columnTypes = columnTypeList.toArray(new LogicalType[columnTypeList.size()]);
-
-        TypeInformation<?>[] typeInformations = TypeConversions.fromDataTypeToLegacyInfo(TypeConversions.fromLogicalToDataType(columnTypes));
-        RowTypeInfo rowTypeInfo = new RowTypeInfo(typeInformations, columnNames);
-
-        return filterOperator
-            .flatMap(new FlatMapFunction<Map, Row>() {
-                @Override
-                public void flatMap(Map value, Collector<Row> out) throws Exception {
-                    try {
-                        switch (value.get("op").toString()) {
-                            case "r":
-                            case "c":
-                                Row irow = Row.withPositions(RowKind.INSERT, columnNameList.size());
-                                Map idata = (Map) value.get("after");
-                                for (int i = 0; i < columnNameList.size(); i++) {
-                                    irow.setField(i, convertValue(idata.get(columnNameList.get(i)), columnTypeList.get(i)));
-                                }
-                                out.collect(irow);
-                                break;
-                            case "d":
-                                Row drow = Row.withPositions(RowKind.DELETE, columnNameList.size());
-                                Map ddata = (Map) value.get("before");
-                                for (int i = 0; i < columnNameList.size(); i++) {
-                                    drow.setField(i, convertValue(ddata.get(columnNameList.get(i)), columnTypeList.get(i)));
-                                }
-                                out.collect(drow);
-                                break;
-                            case "u":
-                                Row ubrow = Row.withPositions(RowKind.UPDATE_BEFORE, columnNameList.size());
-                                Map ubdata = (Map) value.get("before");
-                                for (int i = 0; i < columnNameList.size(); i++) {
-                                    ubrow.setField(i, convertValue(ubdata.get(columnNameList.get(i)), columnTypeList.get(i)));
-                                }
-                                out.collect(ubrow);
-                                Row uarow = Row.withPositions(RowKind.UPDATE_AFTER, columnNameList.size());
-                                Map uadata = (Map) value.get("after");
-                                for (int i = 0; i < columnNameList.size(); i++) {
-                                    uarow.setField(i, convertValue(uadata.get(columnNameList.get(i)), columnTypeList.get(i)));
-                                }
-                                out.collect(uarow);
-                                break;
-                        }
-                    } catch (Exception e) {
-                        logger.error("SchameTable: {} - Row: {} - Exception: {}", schemaTableName, JSONUtil.toJsonString(value), e.getCause().getMessage());
-                        throw e;
-                    }
-                }
-            }, rowTypeInfo);
-    }
     private DataStream<Row> buildRow(
             DataStream<Map> filterOperator,
             List<String> columnNameList,
@@ -157,7 +101,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                             switch (value.get("op").toString()) {
                                 case "r":
                                 case "c":
-                                    Row irow = Row.ofKind(RowKind.INSERT);
+                                    Row irow = Row.withPositions(RowKind.INSERT, columnNameList.size());
                                     Map idata = (Map) value.get("after");
                                     for (int i = 0; i < columnNameList.size(); i++) {
                                         irow.setField(i, convertValue(idata.get(columnNameList.get(i)), columnTypeList.get(i)));
@@ -165,7 +109,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                                     out.collect(irow);
                                     break;
                                 case "d":
-                                    Row drow = Row.ofKind(RowKind.DELETE);
+                                    Row drow = Row.withPositions(RowKind.DELETE, columnNameList.size());
                                     Map ddata = (Map) value.get("before");
                                     for (int i = 0; i < columnNameList.size(); i++) {
                                         drow.setField(i, convertValue(ddata.get(columnNameList.get(i)), columnTypeList.get(i)));
@@ -173,13 +117,13 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                                     out.collect(drow);
                                     break;
                                 case "u":
-                                    Row ubrow = Row.ofKind(RowKind.UPDATE_BEFORE);
+                                    Row ubrow = Row.withPositions(RowKind.UPDATE_BEFORE, columnNameList.size());
                                     Map ubdata = (Map) value.get("before");
                                     for (int i = 0; i < columnNameList.size(); i++) {
                                         ubrow.setField(i, convertValue(ubdata.get(columnNameList.get(i)), columnTypeList.get(i)));
                                     }
                                     out.collect(ubrow);
-                                    Row uarow = Row.ofKind(RowKind.UPDATE_AFTER);
+                                    Row uarow = Row.withPositions(RowKind.UPDATE_AFTER, columnNameList.size());
                                     Map uadata = (Map) value.get("after");
                                     for (int i = 0; i < columnNameList.size(); i++) {
                                         uarow.setField(i, convertValue(uadata.get(columnNameList.get(i)), columnTypeList.get(i)));
@@ -195,10 +139,10 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                 }, rowTypeInfo);
     }
     private void addTableSink(
-        CustomTableEnvironment customTableEnvironment,
-        DataStream<Row> rowDataDataStream,
-        Table table,
-        List<String> columnNameList) {
+            CustomTableEnvironment customTableEnvironment,
+            DataStream<Row> rowDataDataStream,
+            Table table,
+            List<String> columnNameList) {
 
         String sinkSchemaName = getSinkSchemaName(table);
         String sinkTableName = getSinkTableName(table);
@@ -239,10 +183,10 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
 
     @Override
     public DataStreamSource build(
-        CDCBuilder cdcBuilder,
-        StreamExecutionEnvironment env,
-        CustomTableEnvironment customTableEnvironment,
-        DataStreamSource<String> dataStreamSource) {
+            CDCBuilder cdcBuilder,
+            StreamExecutionEnvironment env,
+            CustomTableEnvironment customTableEnvironment,
+            DataStreamSource<String> dataStreamSource) {
         final List<Schema> schemaList = config.getSchemaList();
         if (Asserts.isNotNullCollection(schemaList)) {
 
