@@ -69,6 +69,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
 
     private final static String KEY_WORD = "sql";
     private static final long serialVersionUID = -3699685106324048226L;
+    private ZoneId sinkTimeZone = ZoneId.of("UTC");
 
     public SQLSinkBuilder() {
     }
@@ -188,6 +189,11 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
         StreamExecutionEnvironment env,
         CustomTableEnvironment customTableEnvironment,
         DataStreamSource<String> dataStreamSource) {
+        final String timeZone = config.getSink().get("timezone");
+        config.getSink().remove("timezone");
+        if (Asserts.isNotNullString(timeZone)){
+            sinkTimeZone = ZoneId.of(timeZone);
+        }
         final List<Schema> schemaList = config.getSchemaList();
         if (Asserts.isNotNullCollection(schemaList)) {
 
@@ -254,15 +260,15 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
         }
         if (logicalType instanceof DateType) {
             if (value instanceof Integer) {
-                return Instant.ofEpochMilli(((Integer) value).longValue()).atZone(ZoneId.systemDefault()).toLocalDate();
+                return Instant.ofEpochMilli(((Integer) value).longValue()).atZone(sinkTimeZone).toLocalDate();
             } else {
-                return Instant.ofEpochMilli((long) value).atZone(ZoneId.systemDefault()).toLocalDate();
+                return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDate();
             }
         } else if (logicalType instanceof TimestampType) {
             if (value instanceof Integer) {
-                return Instant.ofEpochMilli(((Integer) value).longValue()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+                return Instant.ofEpochMilli(((Integer) value).longValue()).atZone(sinkTimeZone).toLocalDateTime();
             } else {
-                return Instant.ofEpochMilli((long) value).atZone(ZoneId.systemDefault()).toLocalDateTime();
+                return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDateTime();
             }
         } else if (logicalType instanceof DecimalType) {
             return new BigDecimal((String) value);

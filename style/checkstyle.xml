@@ -222,10 +222,10 @@
         <module name="UnusedImports"/>
 
         <module name="ImportOrder">
-            <property name="staticGroups" value="org.apache.dolphinscheduler,org.apache,java,javax,org,com"/>
+            <property name="staticGroups" value="com.dlink,org.apache,java,javax,org,com"/>
             <property name="separatedStaticGroups" value="true"/>
 
-            <property name="groups" value="org.apache.dolphinscheduler,org.apache,java,javax,org,com"/>
+            <property name="groups" value="com.dlink,org.apache,java,javax,org,com"/>
             <property name="ordered" value="true"/>
             <property name="separated" value="true"/>
             <property name="option" value="top"/>

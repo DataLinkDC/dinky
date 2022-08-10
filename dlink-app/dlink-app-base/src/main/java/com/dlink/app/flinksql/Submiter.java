@@ -103,7 +103,7 @@ public class Submiter {
             if (Asserts.isNotNullString(envId)) {
                 sb.append(envId);
             }
-            sb.append("\r\n");
+            sb.append("\n");
         }
         sb.append(getFlinkSQLStatement(id, dbConfig));
         List<String> statements = Submiter.getStatements(sb.toString());
