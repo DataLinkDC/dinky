@@ -70,7 +70,7 @@ public class YarnPerJobGateway extends YarnGateway {
         YarnClusterDescriptor yarnClusterDescriptor = new YarnClusterDescriptor(
                 configuration, yarnConfiguration, yarnClient, YarnClientYarnClusterInformationRetriever.create(yarnClient), true);
         try {
-            ClusterClientProvider<ApplicationId> clusterClientProvider = yarnClusterDescriptor.deployJobCluster(clusterSpecification, jobGraph, false);
+            ClusterClientProvider<ApplicationId> clusterClientProvider = yarnClusterDescriptor.deployJobCluster(clusterSpecification, jobGraph, true);
             ClusterClient<ApplicationId> clusterClient = clusterClientProvider.getClusterClient();
             ApplicationId applicationId = clusterClient.getClusterId();
             result.setAppId(applicationId.toString());
