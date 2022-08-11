@@ -55,6 +55,8 @@ export type RoleTableListItem = {
   tenantId?: number;
   roleCode?: string;
   roleName?: string;
+  namespaceIds?: string;
+  namespaces?: NameSpaceTableListItem[];
   isDelete?: boolean;
   note?: string;
   createTime?: Date;

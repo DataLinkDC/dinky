@@ -19,12 +19,8 @@
 
 package com.dlink.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.assertion.Asserts;
-import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.NamespaceMapper;
@@ -33,6 +29,9 @@ import com.dlink.model.RoleNamespace;
 import com.dlink.service.NamespaceService;
 import com.dlink.service.RoleNamespaceService;
 import com.fasterxml.jackson.databind.JsonNode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class NamespaceServiceImpl extends SuperServiceImpl<NamespaceMapper, Namespace> implements NamespaceService {
@@ -49,8 +48,8 @@ public class NamespaceServiceImpl extends SuperServiceImpl<NamespaceMapper, Name
             if (Asserts.isNull(namespace)) {
                 return Result.failed("名称空间不存在");
             }
-            ProTableResult<RoleNamespace> roleNamespaceProTableResult = roleNamespaceService.selectForProTable(para);
-            if (roleNamespaceProTableResult.getData().size() > 0) {
+            Long roleNamespaceCount = roleNamespaceService.getBaseMapper().selectCount(new QueryWrapper<RoleNamespace>().eq("namespace_id", id));
+            if (roleNamespaceCount > 0) {
                 return Result.failed("删除名称空间失败，该名称空间被角色绑定");
             }
             boolean result = removeById(id);

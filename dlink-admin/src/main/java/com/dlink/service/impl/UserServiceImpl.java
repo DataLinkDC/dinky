@@ -247,6 +247,6 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         userRoles.forEach(userRole -> roleIds.add(userRole.getRoleId()));
 
         List<Role> roles = roleService.getRoleByTenantIdAndIds(tenantId, roleIds);
-        return Result.succeed(roles);
+        return Result.succeed(roles, "获取成功");
     }
 }

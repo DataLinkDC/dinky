@@ -24,17 +24,9 @@ import com.dlink.common.result.Result;
 import com.dlink.model.Role;
 import com.dlink.service.RoleService;
 import com.fasterxml.jackson.databind.JsonNode;
-
 import lombok.extern.slf4j.Slf4j;
-
-
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -60,10 +52,9 @@ public class RoleController {
      * @return delete result code
      */
     @DeleteMapping
-    public Result deleteRoleByIds(@RequestBody JsonNode para) {
-        return roleService.deleteRoleByIds(para);
+    public Result deleteMul(@RequestBody JsonNode para) {
+        return roleService.deleteRoles(para);
     }
-
     /**
      * query role list
      */

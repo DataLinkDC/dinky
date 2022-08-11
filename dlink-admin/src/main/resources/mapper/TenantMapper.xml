@@ -8,7 +8,7 @@
         select
         <include refid="baseSql"/>
         from
-        dlink_tenant
+        dlink_tenant a
         <where>
             1=1
             <if test='param.tenantCode!=null and param.tenantCode!=""'>
@@ -35,7 +35,7 @@
               ,note
               ,create_time
               ,update_time
-         from dlink_tenant
+         from dlink_tenant a
         where  1=1
           and  id in
         <foreach collection="tenantIds"  item="id" separator="," open="(" close=")" index="">

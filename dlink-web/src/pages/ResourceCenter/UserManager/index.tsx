@@ -28,7 +28,7 @@ import {handleAddOrUpdate, handleOption, handleRemove, queryData, updateEnabled}
 import {UserTableListItem} from "@/pages/ResourceCenter/data.d";
 import UserForm from "@/pages/ResourceCenter/UserManager/components/UserForm";
 import PasswordForm from "@/pages/ResourceCenter/UserManager/components/PasswordForm";
-
+import TableTransferFrom from "@/pages/ResourceCenter/UserManager/components/TableTransfer";
 
 const url = '/api/user';
 const UserTableList: React.FC<{}> = (props: any) => {
@@ -36,6 +36,7 @@ const UserTableList: React.FC<{}> = (props: any) => {
   const [row, setRow] = useState<UserTableListItem>();
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  const [handleGrantRole, setHandleGrantRole] = useState<boolean>(false);
   const [passwordModalVisible, handlePasswordModalVisible] = useState<boolean>(false);
   const [formValues, setFormValues] = useState({});
   const actionRef = useRef<ActionType>();
@@ -79,6 +80,31 @@ const UserTableList: React.FC<{}> = (props: any) => {
       </a>
     </Dropdown>
   );
+
+  const handleGrantRoleForm = () =>{
+    return (
+      <div style={{width: "55%",height: "800px"}}>
+        <Modal title="添加角色" visible={handleGrantRole} destroyOnClose={true} width={"55%"}
+               onCancel={()=>{
+                 setHandleGrantRole(false);
+               }}
+               footer={[
+                 <Button key="back" onClick={() => {
+                   setHandleGrantRole(false);
+                 }}>
+                   关闭
+                 </Button>,
+                 <Button type="primary" onClick={() => {
+                    setHandleGrantRole(false);
+                 }}>
+                   确认
+                 </Button>,
+               ]}>
+          <TableTransferFrom />
+        </Modal>
+      </div>
+    )
+  }
 
   const columns: ProColumns<UserTableListItem>[] = [
     {
@@ -330,6 +356,7 @@ const UserTableList: React.FC<{}> = (props: any) => {
             />
           )}
         </Drawer>
+        {handleGrantRoleForm()}
       </PageContainer>
     </>
   );
