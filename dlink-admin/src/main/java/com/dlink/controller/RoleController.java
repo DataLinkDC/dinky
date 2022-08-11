@@ -60,6 +60,6 @@ public class RoleController {
      */
     @PostMapping
     public ProTableResult<Role> listRoles(@RequestBody JsonNode para) {
-        return roleService.selectForProTable(para);
+        return roleService.selectForProTable(para,true);
     }
 }

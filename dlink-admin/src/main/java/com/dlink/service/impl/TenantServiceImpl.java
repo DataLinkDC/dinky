@@ -108,8 +108,8 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> im
             if (tenantNamespaceCount > 0) {
                 return Result.failed("删除租户失败，该租户已绑定名称空间");
             }
-
-            boolean result = removeById(id);
+            tenant.setIsDelete(true);
+            boolean result = updateById(tenant);
             if (result) {
                 return Result.succeed("删除成功");
             } else {

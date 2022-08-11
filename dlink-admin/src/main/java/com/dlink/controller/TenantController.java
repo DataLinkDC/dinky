@@ -19,22 +19,14 @@
 
 package com.dlink.controller;
 
-import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.dlink.assertion.Asserts;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
 import com.dlink.model.Tenant;
 import com.dlink.service.TenantService;
 import com.fasterxml.jackson.databind.JsonNode;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -69,6 +61,6 @@ public class TenantController {
      */
     @PostMapping
     public ProTableResult<Tenant> listTenants(@RequestBody JsonNode para) {
-        return tenantService.selectForProTable(para);
+        return tenantService.selectForProTable(para,true);
     }
 }

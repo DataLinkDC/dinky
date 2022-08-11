@@ -101,32 +101,33 @@ const RoleFormList: React.FC<{}> = (props: any) => {
     },
     {
       title: '所属租户',
-      render: (dom, entity) => {
-        return entity.tenant.tenantCode;
-      },
-    },
-    {
-      title: '是否删除',
-      dataIndex: 'isDelete',
-      hideInForm: true,
       hideInSearch: true,
-      hideInTable: false,
-      filters: [
-        {
-          text: '未删除',
-          value: 0,
-        },
-        {
-          text: '已删除',
-          value: 1,
-        },
-      ],
-      filterMultiple: false,
-      valueEnum: {
-        true: {text: '已删除', status: 'Error'},
-        false: {text: '未删除', status: 'Success'},
+      render: (dom, entity) => {
+        return entity?.tenant?.tenantCode || '';
       },
     },
+    // {
+    //   title: '是否删除',
+    //   dataIndex: 'isDelete',
+    //   hideInForm: true,
+    //   hideInSearch: true,
+    //   hideInTable: false,
+    //   filters: [
+    //     {
+    //       text: '未删除',
+    //       value: 0,
+    //     },
+    //     {
+    //       text: '已删除',
+    //       value: 1,
+    //     },
+    //   ],
+    //   filterMultiple: false,
+    //   valueEnum: {
+    //     true: {text: '已删除', status: 'Error'},
+    //     false: {text: '未删除', status: 'Success'},
+    //   },
+    // },
     {
       title: '备注',
       dataIndex: 'note',

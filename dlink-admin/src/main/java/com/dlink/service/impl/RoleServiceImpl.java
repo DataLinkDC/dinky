@@ -119,7 +119,9 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
                 Integer id = item.asInt();
                 boolean roleNameSpaceRemove =  roleNamespaceService.remove(new QueryWrapper<RoleNamespace>().eq("role_id", id));
                 boolean userRoleRemove = userRoleService.remove(new QueryWrapper<UserRole>().eq("role_id", id));
-                boolean removeById = roleService.removeById(id);
+                Role role = getById(id);
+                role.setIsDelete(true);
+                boolean removeById = roleService.updateById(role);
                 if (!removeById && !roleNameSpaceRemove && !userRoleRemove) {
                     error.add(id);
                 }
@@ -149,8 +151,8 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
     }
 
     @Override
-    public ProTableResult<Role> selectForProTable(JsonNode para) {
-        ProTableResult<Role> roleProTableResult = super.selectForProTable(para);
+    public ProTableResult<Role> selectForProTable(JsonNode para,boolean isDelete) {
+        ProTableResult<Role> roleProTableResult = super.selectForProTable(para,isDelete);
         roleProTableResult.getData().forEach(role -> {
             List<Namespace> namespaceArrayList = new ArrayList<>();
             List<Integer> idsList = new ArrayList<>();
