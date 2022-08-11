@@ -190,7 +190,7 @@ const UserTableList: React.FC<{}> = (props: any) => {
         </a>,
         <a
           onClick={() => {
-            handleUpdateModalVisible(true);
+            setHandleGrantRole(true);
             setFormValues(record);
           }}
         >
