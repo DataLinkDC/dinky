@@ -92,7 +92,6 @@ public class DorisTypeConvert implements ITypeConvert {
                 columnType = ColumnType.DOUBLE;
             }
         }
-        columnType.setPrecisionAndScale(column.getPrecision(), column.getScale());
         return columnType;
     }
 

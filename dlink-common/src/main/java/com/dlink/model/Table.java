@@ -107,7 +107,7 @@ public class Table implements Serializable, Comparable<Table> {
         sb.append("CREATE TABLE IF NOT EXISTS " + tableName + " (\n");
         List<String> pks = new ArrayList<>();
         for (int i = 0; i < columns.size(); i++) {
-            String type = columns.get(i).getJavaType().getFlinkType();
+            String type = columns.get(i).getFlinkType();
             sb.append("    ");
             if (i > 0) {
                 sb.append(",");
@@ -158,7 +158,7 @@ public class Table implements Serializable, Comparable<Table> {
         sb.append("CREATE TABLE IF NOT EXISTS " + name + " (\n");
         List<String> pks = new ArrayList<>();
         for (int i = 0; i < columns.size(); i++) {
-            String type = columns.get(i).getJavaType().getFlinkType();
+            String type = columns.get(i).getFlinkType();
             sb.append("    ");
             if (i > 0) {
                 sb.append(",");

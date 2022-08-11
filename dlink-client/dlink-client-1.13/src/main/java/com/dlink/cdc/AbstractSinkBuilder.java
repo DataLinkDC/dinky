@@ -212,12 +212,12 @@ public abstract class AbstractSinkBuilder {
     protected void buildColumn(List<String> columnNameList, List<LogicalType> columnTypeList, List<Column> columns) {
         for (Column column : columns) {
             columnNameList.add(column.getName());
-            columnTypeList.add(getLogicalType(column.getJavaType()));
+            columnTypeList.add(getLogicalType(column));
         }
     }
 
-    public LogicalType getLogicalType(ColumnType columnType) {
-        switch (columnType) {
+    public LogicalType getLogicalType(Column column) {
+        switch (column.getJavaType()) {
             case STRING:
                 return new VarCharType();
             case BOOLEAN:
@@ -239,10 +239,10 @@ public abstract class AbstractSinkBuilder {
             case JAVA_LANG_DOUBLE:
                 return new DoubleType();
             case DECIMAL:
-                if (columnType.getPrecision() == null || columnType.getPrecision() == 0) {
-                    return new DecimalType(38, columnType.getScale());
+                if (column.getPrecision() == null || column.getPrecision() == 0) {
+                    return new DecimalType(38, column.getScale());
                 } else {
-                    return new DecimalType(columnType.getPrecision(), columnType.getScale());
+                    return new DecimalType(column.getPrecision(), column.getScale());
                 }
             case INT:
             case INTEGER:
