@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
 
 /**
- * 监听任务yarn-par启动和结束,并在结束是kill
+ * 监听任务yarn-par启动和结束,并在结束时kill
  *
  * @author duhanmin
  * @since 2022/4/25 23:02
@@ -71,6 +71,9 @@ public class YarnJobListener implements JobListener {
         }
     }
 
+    /**
+     * 监听flink应用执行结束事件
+     */
     @Override
     public void onJobExecuted(JobExecutionResult jobExecutionResult, Throwable throwable) {
         Process process = null;
