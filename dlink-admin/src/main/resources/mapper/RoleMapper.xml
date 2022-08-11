@@ -37,19 +37,20 @@
              , dn.create_time as dn_create_time
              , dn.update_time    dn_update_time
         from dlink_role dr
-        join dlink_role_namespace drn
-          on dr.id = drn.role_id
-        join dlink_namespace dn
-         on drn.namespace_id = dn.id
+                 join dlink_role_namespace drn
+                      on dr.id = drn.role_id
+                 join dlink_namespace dn
+                      on drn.namespace_id = dn.id
     </sql>
     <select id="selectForProTable" resultType="com.dlink.model.Role">
-        select  dr.id
-              , dr.tenant_id
-              , dr.role_code
-              , dr.role_name
-              , dr.note
-              , dr.create_time
-              , dr.update_time
+        select dr.id
+        , dr.tenant_id
+        , dr.role_code
+        , dr.is_delete
+        , dr.role_name
+        , dr.note
+        , dr.create_time
+        , dr.update_time
         from dlink_role dr
         <where>
             1=1
@@ -94,15 +95,15 @@
     </select>
 
     <select id="getRoleByTenantIdAndIds" resultType="com.dlink.model.Role">
-        select  id
-               ,tenant_id
-               ,role_code
-               ,role_name
-               ,is_delete
-               ,note
-               ,create_time
-               ,update_time
-          from dlink_role
+        select id
+        ,tenant_id
+        ,role_code
+        ,role_name
+        ,is_delete
+        ,note
+        ,create_time
+        ,update_time
+        from dlink_role
         <where>
             1=1
             <if test='tenantId!=null and tenantId!=""'>

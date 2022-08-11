@@ -53,8 +53,11 @@ export type TenantTableListItem = {
 export type RoleTableListItem = {
   id?: number;
   tenantId?: number;
+  tenant: TenantTableListItem;
   roleCode?: string;
   roleName?: string;
+  namespaceIds?: string;
+  namespaces?: NameSpaceTableListItem[];
   isDelete?: boolean;
   note?: string;
   createTime?: Date;
@@ -65,6 +68,7 @@ export type RoleTableListItem = {
 export type NameSpaceTableListItem = {
   id?: number;
   tenantId?: number;
+  tenant: TenantTableListItem;
   namespaceCode?: string;
   enabled?: boolean;
   note?: string;

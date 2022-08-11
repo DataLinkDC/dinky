@@ -93,7 +93,9 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
     },
     {
       title: '所属租户',
-      dataIndex: 'tenantId',
+      render: (dom, entity) => {
+        return entity.tenant.tenantCode;
+      },
     },
     {
       title: '是否启用',
@@ -178,7 +180,7 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
             <div>
               已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
               <span>
-  被删除的命名空间共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} 个
+  被禁用的命名空间共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} 个
   </span>
             </div>
           }
@@ -236,7 +238,7 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
               handleUpdateModalVisible(false);
               setFormValues({});
             }}
-            modalVisible={modalVisible}
+            modalVisible={updateModalVisible}
             values={formValues}
           />
         ) : undefined

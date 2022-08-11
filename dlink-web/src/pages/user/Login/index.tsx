@@ -156,7 +156,6 @@ const Login: React.FC = () => {
                 title={item?.tenantCode}
                 value={item?.id}
                 description={item?.note}
-                defaultChecked={tenant?.length === 1}
               />
             </>
           })}

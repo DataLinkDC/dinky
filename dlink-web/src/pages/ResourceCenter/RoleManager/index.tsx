@@ -18,19 +18,22 @@
  */
 
 
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {DownOutlined, PlusOutlined} from '@ant-design/icons';
 import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
 import {Button, Drawer, Dropdown, Menu, Modal} from 'antd';
 import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import {handleAddOrUpdate, handleRemove, queryData} from "@/components/Common/crud";
+import {getStorageTenantId, handleAddOrUpdate, handleRemove, queryData} from "@/components/Common/crud";
 import {RoleTableListItem} from "@/pages/ResourceCenter/data.d";
 import RoleForm from "@/pages/ResourceCenter/RoleManager/components/RoleForm";
+import {getNameSpaceList} from "@/pages/ResourceCenter/service";
+import {connect} from "umi";
 
 const url = '/api/role';
 
 const RoleFormList: React.FC<{}> = (props: any) => {
+  const {dispatch} = props;
   const [row, setRow] = useState<RoleTableListItem>();
   const [formValues, setFormValues] = useState<RoleTableListItem>();
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
@@ -38,10 +41,14 @@ const RoleFormList: React.FC<{}> = (props: any) => {
   const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<RoleTableListItem[]>([]);
 
+  useEffect(() => {
+    getNameSpaceList(dispatch);
+  }, []);
+
   const editAndDelete = (key: string | number, currentItem: RoleTableListItem) => {
     if (key === 'edit') {
-      handleUpdateModalVisible(true);
       setFormValues(currentItem);
+      handleUpdateModalVisible(true);
     } else if (key === 'delete') {
       Modal.confirm({
         title: '删除角色',
@@ -93,8 +100,10 @@ const RoleFormList: React.FC<{}> = (props: any) => {
       dataIndex: 'roleName',
     },
     {
-      title: '租户编码',
-      dataIndex: 'tenantId',
+      title: '所属租户',
+      render: (dom, entity) => {
+        return entity.tenant.tenantCode;
+      },
     },
     {
       title: '是否删除',
@@ -167,7 +176,7 @@ const RoleFormList: React.FC<{}> = (props: any) => {
             <PlusOutlined/> 新建
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryData(url, {...params, sorter, filter})}
+        request={(params, sorter, filter) => queryData(url, {tenantId: getStorageTenantId(), sorter, filter})}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
@@ -179,7 +188,7 @@ const RoleFormList: React.FC<{}> = (props: any) => {
             <div>
               已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
               <span>
-  被删除的角色共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.isDelete ? 1 : 0), 0)} 个
+  被删除的角色共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.isDelete ? 0 : 1), 0)} 个
   </span>
             </div>
           }
@@ -268,4 +277,4 @@ const RoleFormList: React.FC<{}> = (props: any) => {
   );
 };
 
-export default RoleFormList;
+export default connect()(RoleFormList);

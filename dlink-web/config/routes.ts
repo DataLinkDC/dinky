@@ -129,16 +129,16 @@ export default [
         component: './ResourceCenter/UserManager',
       },
       {
-        path: '/resourcecenter/namespacemanager',
-        name: 'namespacemanager',
-        icon: 'EnvironmentOutlined',
-        component: './ResourceCenter/NameSpaceManager',
-      },
-      {
         path: '/resourcecenter/rolemanager',
         name: 'rolemanager',
         icon: 'TeamOutlined',
         component: './ResourceCenter/RoleManager',
+      },
+      {
+        path: '/resourcecenter/namespacemanager',
+        name: 'namespacemanager',
+        icon: 'BulbOutlined',
+        component: './ResourceCenter/NameSpaceManager',
       },
       {
         path: '/resourcecenter/tenantmanager',

@@ -17,35 +17,22 @@
  *
  */
 
-package com.dlink.model;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.dlink.db.model.SuperEntity;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import {RoleTableListItem} from "@/pages/ResourceCenter/data.d";
 
-/**
- * FragmentVariable
- *
- * @author zhumingye
- * @since 2022/7/29
- */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-@TableName("dlink_fragment")
-public class FragmentVariable extends SuperEntity {
+export const getFormData = (values: RoleTableListItem) => {
+  let namespaceIds:string [] = [];
+  if(values&&values.namespaceIds && values.namespaceIds!=''){
+    namespaceIds = values.namespaceIds.split(',');
+  }
+  return {...values,namespaceIds:namespaceIds};
+}
 
-    @TableField(fill = FieldFill.INSERT)
-    private String alias;
-    private Integer tenantId;
-    private String fragmentValue;
-    private String fillValue;
-    private String note;
-
+export const buildFormData = (values: RoleTableListItem,params: any) => {
+  let newValue = values;
+  if(params.namespaceIds){
+    newValue.namespaceIds = params.namespaceIds.join(',');
+    delete params.namespaceIds;
+  }
+  return {...newValue,...params};
 }

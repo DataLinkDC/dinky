@@ -19,6 +19,7 @@
 
 package com.dlink.service;
 
+import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
 import com.dlink.db.service.ISuperService;
 import com.dlink.model.Namespace;
@@ -33,4 +34,6 @@ public interface NamespaceService extends ISuperService<Namespace> {
      */
     Result deleteNamespaceById(JsonNode para);
 
+    @Override
+    ProTableResult<Namespace> selectForProTable(JsonNode para);
 }

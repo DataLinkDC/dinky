@@ -17,35 +17,29 @@
  *
  */
 
-package com.dlink.model;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.dlink.db.model.SuperEntity;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import {queryData} from "@/components/Common/crud";
 
-/**
- * FragmentVariable
- *
- * @author zhumingye
- * @since 2022/7/29
- */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-@TableName("dlink_fragment")
-public class FragmentVariable extends SuperEntity {
-
-    @TableField(fill = FieldFill.INSERT)
-    private String alias;
-    private Integer tenantId;
-    private String fragmentValue;
-    private String fillValue;
-    private String note;
-
+/*--- 刷新 NameSpace ---*/
+export function getNameSpaceList(dispatch: any) {
+  const res = queryData('/api/namespace');
+  res.then((result) => {
+    result.data && dispatch && dispatch({
+      type: "NameSpace/saveNameSpace",
+      payload: result.data,
+    });
+  });
 }
+
+
+/*--- 获取角色 ---*/
+export function getRoleList(dispatch: any) {
+  const res = queryData('/api/role');
+  res.then((result) => {
+    result.data && dispatch && dispatch({
+      type: "Role/getRoleList",
+      payload: result.data,
+    });
+  });
+}
+
