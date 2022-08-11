@@ -24,7 +24,10 @@ import React, {useEffect, useState} from 'react';
 import {getData} from "@/components/Common/crud";
 import {RoleTableListItem} from "@/pages/ResourceCenter/data.d";
 
-
+// TODO:
+//  1.表单渲染数据
+//  2.给用户分配角色
+//  3.给该用户删除角色
 // 给用户分配角色接口 /api/user/grantRole 数据结构: [1,2,3]
 // 删除角色接口 /api/user/removeGrantRole 数据结构: [1,2,3]
 // 获取用户角色接口 /api/user/getRole 数据结构: userId: 1,tenantId: 1
@@ -40,7 +43,14 @@ interface TableTransferProps extends TransferProps<RoleTableListItem> {
 const TableTransfer = ({leftColumns, rightColumns, ...restProps}: TableTransferProps) => (
   <Transfer
     titles={['未选', '已选']}
-    locale={ {itemUnit: "项" , itemsUnit: "项" ,searchPlaceholder: "请输入角色名称搜索" ,  notFoundContent: "未找到相关数据"} }
+    locale={ {
+      itemUnit: "项" ,
+      itemsUnit: "项" ,
+      searchPlaceholder: "请输入角色名称搜索" ,
+      notFoundContent: "未找到相关数据",
+      selectAll: "全选" ,
+      selectInvert: "反选" ,
+  } }
     showSelectAll
     showSearch={true}
     {...restProps}>
