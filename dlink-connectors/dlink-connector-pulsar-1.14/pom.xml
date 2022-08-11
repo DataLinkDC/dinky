@@ -42,6 +42,14 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!--新增 pulsar-client-api jar 解决找不到SubscriptionType报错-->
+        <dependency>
+            <groupId>org.apache.pulsar</groupId>
+            <artifactId>pulsar-client-api</artifactId>
+            <version>${pulsar.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-connector-pulsar_2.11</artifactId>
