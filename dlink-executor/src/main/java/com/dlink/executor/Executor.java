@@ -65,6 +65,10 @@ public abstract class Executor {
     protected SqlManager sqlManager = new SqlManager();
     protected boolean useSqlFragment = true;
 
+    public StreamExecutionEnvironment getEnvironment() {
+        return environment;
+    }
+
     public SqlManager getSqlManager() {
         return sqlManager;
     }

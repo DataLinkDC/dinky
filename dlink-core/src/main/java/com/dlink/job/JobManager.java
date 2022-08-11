@@ -20,6 +20,7 @@
 
 package com.dlink.job;
 
+import com.dlink.executor.YarnJobListener;
 import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.DeploymentOptions;
 import org.apache.flink.configuration.PipelineOptions;
@@ -190,6 +191,11 @@ public class JobManager {
         initEnvironmentSetting();
         if (!runMode.equals(GatewayType.LOCAL) && !useGateway && config.isUseRemote()) {
             executor = Executor.buildRemoteExecutor(environmentSetting, config.getExecutorSetting());
+            if (runMode.equals(GatewayType.YARN_PER_JOB)) {
+                YarnJobListener yarnJobListener = new YarnJobListener(executor.getEnvironment());
+                String jobId = yarnJobListener.getJobId();
+                logger.info("Submit jobId: {}", jobId);
+            }
             return executor;
         } else {
             executor = Executor.buildLocalExecutor(config.getExecutorSetting());
