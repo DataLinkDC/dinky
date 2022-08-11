@@ -100,8 +100,10 @@ const RoleFormList: React.FC<{}> = (props: any) => {
       dataIndex: 'roleName',
     },
     {
-      title: '租户编码',
-      dataIndex: 'tenantId',
+      title: '所属租户',
+      render: (dom, entity) => {
+        return entity.tenant.tenantCode;
+      },
     },
     {
       title: '是否删除',

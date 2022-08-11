@@ -93,4 +93,10 @@ public class Role implements Serializable {
     @TableField(exist = false)
     private String namespaceIds;
 
+    /**
+     * tenant
+     */
+    @TableField(exist = false)
+    private Tenant tenant;
+
 }

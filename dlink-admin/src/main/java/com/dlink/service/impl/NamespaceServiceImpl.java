@@ -21,13 +21,16 @@ package com.dlink.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.assertion.Asserts;
+import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.NamespaceMapper;
 import com.dlink.model.Namespace;
 import com.dlink.model.RoleNamespace;
+import com.dlink.model.Tenant;
 import com.dlink.service.NamespaceService;
 import com.dlink.service.RoleNamespaceService;
+import com.dlink.service.TenantService;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +41,19 @@ public class NamespaceServiceImpl extends SuperServiceImpl<NamespaceMapper, Name
 
     @Autowired
     private RoleNamespaceService roleNamespaceService;
+
+    @Autowired
+    private TenantService tenantService;
+
+    @Override
+    public ProTableResult<Namespace> selectForProTable(JsonNode para) {
+        ProTableResult<Namespace> namespaceProTableResult = super.selectForProTable(para);
+        namespaceProTableResult.getData().forEach(namespace -> {
+            Tenant tenant = tenantService.getBaseMapper().selectById(namespace.getTenantId());
+            namespace.setTenant(tenant);
+        });
+        return namespaceProTableResult;
+    }
 
     @Transactional(rollbackFor = Exception.class)
     @Override

@@ -93,7 +93,9 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
     },
     {
       title: '所属租户',
-      dataIndex: 'tenantId',
+      render: (dom, entity) => {
+        return entity.tenant.tenantCode;
+      },
     },
     {
       title: '是否启用',

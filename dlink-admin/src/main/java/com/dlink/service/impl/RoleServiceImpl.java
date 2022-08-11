@@ -25,14 +25,8 @@ import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.RoleMapper;
-import com.dlink.model.Namespace;
-import com.dlink.model.Role;
-import com.dlink.model.RoleNamespace;
-import com.dlink.model.UserRole;
-import com.dlink.service.NamespaceService;
-import com.dlink.service.RoleNamespaceService;
-import com.dlink.service.RoleService;
-import com.dlink.service.UserRoleService;
+import com.dlink.model.*;
+import com.dlink.service.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,6 +54,9 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
 
     @Autowired
     private RoleService roleService;
+
+    @Autowired
+    private TenantService  tenantService;
     @Autowired
     private NamespaceService namespaceService;
 
@@ -157,11 +154,13 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
         roleProTableResult.getData().forEach(role -> {
             List<Namespace> namespaceArrayList = new ArrayList<>();
             List<Integer> idsList = new ArrayList<>();
+            Tenant tenant = tenantService.getBaseMapper().selectById(role.getTenantId());
             roleNamespaceService.list(new QueryWrapper<RoleNamespace>().eq("role_id", role.getId())).forEach(roleNamespace -> {
                 Namespace namespaceServiceById = namespaceService.getById(roleNamespace.getNamespaceId());
                 namespaceArrayList.add(namespaceServiceById);
                 idsList.add(roleNamespace.getNamespaceId());
             });
+            role.setTenant(tenant);
             role.setNamespaces(namespaceArrayList);
             String result = idsList.stream().map(Object::toString).collect(Collectors.joining(","));
             role.setNamespaceIds(result);
