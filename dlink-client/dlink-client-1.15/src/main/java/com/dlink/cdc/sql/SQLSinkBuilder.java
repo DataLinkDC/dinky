@@ -69,6 +69,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
 
     private final static String KEY_WORD = "sql";
     private static final long serialVersionUID = -3699685106324048226L;
+    private ZoneId sinkTimeZone = ZoneId.of("UTC");
 
     public SQLSinkBuilder() {
     }
@@ -101,7 +102,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                             switch (value.get("op").toString()) {
                                 case "r":
                                 case "c":
-                                    Row irow = Row.ofKind(RowKind.INSERT);
+                                    Row irow = Row.withPositions(RowKind.INSERT, columnNameList.size());
                                     Map idata = (Map) value.get("after");
                                     for (int i = 0; i < columnNameList.size(); i++) {
                                         irow.setField(i, convertValue(idata.get(columnNameList.get(i)), columnTypeList.get(i)));
@@ -109,7 +110,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                                     out.collect(irow);
                                     break;
                                 case "d":
-                                    Row drow = Row.ofKind(RowKind.DELETE);
+                                    Row drow = Row.withPositions(RowKind.DELETE, columnNameList.size());
                                     Map ddata = (Map) value.get("before");
                                     for (int i = 0; i < columnNameList.size(); i++) {
                                         drow.setField(i, convertValue(ddata.get(columnNameList.get(i)), columnTypeList.get(i)));
@@ -117,13 +118,13 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                                     out.collect(drow);
                                     break;
                                 case "u":
-                                    Row ubrow = Row.ofKind(RowKind.UPDATE_BEFORE);
+                                    Row ubrow = Row.withPositions(RowKind.UPDATE_BEFORE, columnNameList.size());
                                     Map ubdata = (Map) value.get("before");
                                     for (int i = 0; i < columnNameList.size(); i++) {
                                         ubrow.setField(i, convertValue(ubdata.get(columnNameList.get(i)), columnTypeList.get(i)));
                                     }
                                     out.collect(ubrow);
-                                    Row uarow = Row.ofKind(RowKind.UPDATE_AFTER);
+                                    Row uarow = Row.withPositions(RowKind.UPDATE_AFTER, columnNameList.size());
                                     Map uadata = (Map) value.get("after");
                                     for (int i = 0; i < columnNameList.size(); i++) {
                                         uarow.setField(i, convertValue(uadata.get(columnNameList.get(i)), columnTypeList.get(i)));
@@ -188,6 +189,11 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
         StreamExecutionEnvironment env,
         CustomTableEnvironment customTableEnvironment,
         DataStreamSource<String> dataStreamSource) {
+        final String timeZone = config.getSink().get("timezone");
+        config.getSink().remove("timezone");
+        if (Asserts.isNotNullString(timeZone)){
+            sinkTimeZone = ZoneId.of(timeZone);
+        }
         final List<Schema> schemaList = config.getSchemaList();
         if (Asserts.isNotNullCollection(schemaList)) {
 
@@ -254,17 +260,17 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
         }
         if (logicalType instanceof DateType) {
             if (value instanceof Integer) {
-                return Instant.ofEpochMilli(((Integer) value).longValue()).atZone(ZoneId.systemDefault()).toLocalDate();
+                return Instant.ofEpochMilli(((Integer) value).longValue()).atZone(sinkTimeZone).toLocalDate();
             } else {
-                return Instant.ofEpochMilli((long) value).atZone(ZoneId.systemDefault()).toLocalDate();
+                return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDate();
             }
         } else if (logicalType instanceof TimestampType) {
             if (value instanceof Integer) {
-                return Instant.ofEpochMilli(((Integer) value).longValue()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+                return Instant.ofEpochMilli(((Integer) value).longValue()).atZone(sinkTimeZone).toLocalDateTime();
             } else if (value instanceof String) {
-                return Instant.parse((String) value).atZone(ZoneId.systemDefault()).toLocalDateTime();
+                return Instant.parse((String) value).atZone(sinkTimeZone).toLocalDateTime();
             } else {
-                return Instant.ofEpochMilli((long) value).atZone(ZoneId.systemDefault()).toLocalDateTime();
+                return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDateTime();
             }
         } else if (logicalType instanceof DecimalType) {
             return new BigDecimal((String) value);

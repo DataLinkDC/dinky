@@ -30,7 +30,7 @@ public interface CommonConstant {
     /**
      * 项目版本号(banner使用)
      */
-    String PROJECT_VERSION = "0.6.6";
+    String PROJECT_VERSION = "0.6.7-SNAPSHOT";
     /**
      * 实例健康
      */
