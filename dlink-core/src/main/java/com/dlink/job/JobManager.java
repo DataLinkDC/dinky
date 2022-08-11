@@ -193,8 +193,8 @@ public class JobManager {
             executor = Executor.buildRemoteExecutor(environmentSetting, config.getExecutorSetting());
             if (runMode.equals(GatewayType.YARN_PER_JOB)) {
                 YarnJobListener yarnJobListener = new YarnJobListener(executor.getEnvironment());
-                String jobId = yarnJobListener.getJobId();
-                logger.info("Submit jobId: {}", jobId);
+                String appId = yarnJobListener.getAppId();
+                logger.info("Submit jobId: {}", appId);
             }
             return executor;
         } else {
