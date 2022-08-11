@@ -52,4 +52,16 @@ public class Column implements Serializable {
     private String characterSet;
     private String collation;
 
+    public String getFlinkType() {
+        String flinkType = javaType.getFlinkType();
+        if (flinkType.equals("DECIMAL")) {
+            if (precision == null || precision == 0) {
+                return flinkType + "(" + 38 + "," + scale + ")";
+            } else {
+                return flinkType + "(" + precision + "," + scale + ")";
+            }
+        } else {
+            return flinkType;
+        }
+    }
 }

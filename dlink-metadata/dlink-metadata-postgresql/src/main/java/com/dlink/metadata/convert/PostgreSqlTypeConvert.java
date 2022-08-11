@@ -90,7 +90,6 @@ public class PostgreSqlTypeConvert implements ITypeConvert {
         } else if (t.contains("array")) {
             columnType = ColumnType.T;
         }
-        columnType.setPrecisionAndScale(column.getPrecision(), column.getScale());
         return columnType;
     }
 

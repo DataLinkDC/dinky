@@ -79,7 +79,6 @@ public class PhoenixTypeConvert implements ITypeConvert {
         } else if (t.contains("date")) {
             columnType = ColumnType.DATE;
         }
-        columnType.setPrecisionAndScale(column.getPrecision(), column.getScale());
         return columnType;
     }
 
