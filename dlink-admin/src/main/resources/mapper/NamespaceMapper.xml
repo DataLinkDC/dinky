@@ -15,7 +15,7 @@
                 and tenant_id = #{param.tenantId}
             </if>
             <if test='param.namespaceCode!=null and param.namespaceCode!=""'>
-                and namespace_code = #{param.namespaceCode}
+                and namespace_code like "%${param.namespaceCode}%"
             </if>
             <if test='param.createTime!=null and param.createTime!=""'>
                 and create_time <![CDATA[>=]]> str_to_date( #{param.createTime},'%Y-%m-%d %H:%i:%s')

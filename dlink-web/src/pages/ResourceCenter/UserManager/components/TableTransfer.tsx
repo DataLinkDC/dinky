@@ -21,7 +21,7 @@ import type {ColumnsType, TableRowSelection} from 'antd/es/table/interface';
 import type {TransferDirection, TransferProps} from 'antd/es/transfer';
 import difference from 'lodash/difference';
 import React, {useEffect, useState} from 'react';
-import {getData} from "@/components/Common/crud";
+import {queryData} from "@/components/Common/crud";
 import {RoleTableListItem} from "@/pages/ResourceCenter/data.d";
 
 // TODO:
@@ -51,7 +51,7 @@ const TableTransfer = ({leftColumns, rightColumns, ...restProps}: TableTransferP
       selectAll: "全选" ,
       selectInvert: "反选" ,
   } }
-    showSelectAll
+    showSelectAll={false}
     showSearch={true}
     {...restProps}>
     {({
@@ -108,10 +108,11 @@ const TableTransferFrom: React.FC = () => {
   const [roleTableList, setRoleTableList] = useState<RoleTableListItem[]>([]);
 
   useEffect(() => {
-    getData('/api/role', {}).then(result => {
+    queryData('/api/role', {}).then(result => {
       setRoleTableList(result.data);
     });
   }, []);
+
 
 
   const leftTableColumns: ColumnsType<RoleTableListItem> = [
@@ -130,7 +131,7 @@ const TableTransferFrom: React.FC = () => {
     },
   ];
 
-  const rightTableColumns: ColumnsType<Pick<RoleTableListItem, 'roleCode'>> = [
+  const rightTableColumns: ColumnsType<RoleTableListItem> = [
     {
       dataIndex: 'roleCode',
       title: '角色编码',
@@ -147,20 +148,9 @@ const TableTransferFrom: React.FC = () => {
   ];
 
 
-  //
-  // const mockData: RoleTableListItem[] = roleTableList.forEach((item) => (
-  //   {
-  //     key: item.id,
-  //     id: item.id,
-  //     roleCode: item.roleCode,
-  //     roleName: item.roleName,
-  //     note: item.note,
-  //     isDelete: item.isDelete,
-  //   }
-  // ))
-
-
   const onChange = (nextTargetKeys: string[]) => {
+    console.log('onChange', nextTargetKeys);
+    alert('onChange: ' + nextTargetKeys.join(','));
     setTargetKeys(nextTargetKeys);
   };
 

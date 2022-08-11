@@ -24,7 +24,7 @@ import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
 import {Button, Drawer, Dropdown, Menu, Modal} from 'antd';
 import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import {handleAddOrUpdate, handleRemove, queryData} from "@/components/Common/crud";
+import {handleAddOrUpdate, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
 import {NameSpaceTableListItem} from "@/pages/ResourceCenter/data.d";
 import NameSpaceForm from "@/pages/ResourceCenter/NamespaceManager/components/NameSpaceForm";
 
@@ -93,6 +93,7 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
     },
     {
       title: '所属租户',
+      hideInSearch: true,
       render: (dom, entity) => {
         return entity.tenant.tenantCode;
       },
@@ -101,6 +102,7 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
       title: '是否启用',
       dataIndex: 'enabled',
       hideInTable: false,
+      hideInSearch: true,
       filters: [
         {
           text: '已启用',
@@ -127,13 +129,11 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
       dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',
-      hideInTable: true
     },
     {
       title: '最近更新时间',
       dataIndex: 'updateTime',
       sorter: true,
-      hideInTable: true,
       valueType: 'dateTime',
     },
     {
@@ -202,6 +202,36 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
           >
             批量删除
           </Button>
+          <Button type="primary"
+                  onClick={() => {
+                    Modal.confirm({
+                      title: '启用命名空间',
+                      content: '确定启用选中的命名空间吗？',
+                      okText: '确认',
+                      cancelText: '取消',
+                      onOk: async () => {
+                        await updateEnabled(url, selectedRowsState, true);
+                        setSelectedRows([]);
+                        actionRef.current?.reloadAndRest?.();
+                      }
+                    });
+                  }}
+          >批量启用</Button>
+          <Button danger
+                  onClick={() => {
+                    Modal.confirm({
+                      title: '禁用命名空间',
+                      content: '确定禁用选中的命名空间吗？',
+                      okText: '确认',
+                      cancelText: '取消',
+                      onOk: async () => {
+                        await updateEnabled(url, selectedRowsState, false);
+                        setSelectedRows([]);
+                        actionRef.current?.reloadAndRest?.();
+                      }
+                    });
+                  }}
+          >批量禁用</Button>
         </FooterToolbar>
       )}
       <NameSpaceForm

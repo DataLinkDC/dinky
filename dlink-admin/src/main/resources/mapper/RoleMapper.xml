@@ -43,15 +43,9 @@
                       on drn.namespace_id = dn.id
     </sql>
     <select id="selectForProTable" resultType="com.dlink.model.Role">
-        select dr.id
-        , dr.tenant_id
-        , dr.role_code
-        , dr.is_delete
-        , dr.role_name
-        , dr.note
-        , dr.create_time
-        , dr.update_time
-        from dlink_role dr
+        select
+            a.*
+        from dlink_role a
         <where>
             1=1
             <if test='param.tenantId!=null and param.tenantId!=""'>
