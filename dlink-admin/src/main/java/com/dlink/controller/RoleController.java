@@ -42,8 +42,8 @@ public class RoleController {
      * @return delete result code
      */
     @PutMapping
-    public Result saveOrUpdateRole(@RequestBody JsonNode para) {
-        return roleService.saveOrUpdateRole(para);
+    public Result saveOrUpdateRole(@RequestBody Role role) {
+        return roleService.saveOrUpdateRole(role);
     }
 
     /**
