@@ -18,7 +18,7 @@
  */
 import {Table, Transfer} from 'antd';
 import type {ColumnsType, TableRowSelection} from 'antd/es/table/interface';
-import type {TransferDirection, TransferProps} from 'antd/es/transfer';
+import type {TransferProps} from 'antd/es/transfer';
 import difference from 'lodash/difference';
 import React, {useEffect, useState} from 'react';
 import {queryData} from "@/components/Common/crud";
@@ -162,9 +162,6 @@ const TableTransferFrom: React.FC = () => {
   };
 
 
-  const handleSearch = (dir: TransferDirection, value: string) => {
-    console.log('search:', dir, value);
-  };
 
   return (
     <TableTransfer
@@ -175,7 +172,6 @@ const TableTransferFrom: React.FC = () => {
       pagination
       onChange={onChange}
       onSelectChange={onSelectChange}
-      onSearch={handleSearch}
       filterOption={(inputValue, item) =>
         item.roleCode!.indexOf(inputValue) !== -1 || item.roleName!.indexOf(inputValue) !== -1
       }
