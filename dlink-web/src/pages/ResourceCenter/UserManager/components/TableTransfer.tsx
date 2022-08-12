@@ -43,14 +43,12 @@ interface TableTransferProps extends TransferProps<RoleTableListItem> {
 const TableTransfer = ({leftColumns, rightColumns, ...restProps}: TableTransferProps) => (
   <Transfer
     titles={['未选', '已选']}
-    locale={ {
-      itemUnit: "项" ,
-      itemsUnit: "项" ,
-      searchPlaceholder: "请输入角色名称搜索" ,
-      notFoundContent: "未找到相关数据",
-      selectAll: "全选" ,
-      selectInvert: "反选" ,
-  } }
+    locale={{
+      itemUnit: "项",
+      itemsUnit: "项",
+      searchPlaceholder: "请输入角色名称搜索",
+
+    }}
     showSelectAll={false}
     showSearch={true}
     {...restProps}>
@@ -86,13 +84,16 @@ const TableTransfer = ({leftColumns, rightColumns, ...restProps}: TableTransferP
           rowSelection={rowSelection}
           columns={columns}
           dataSource={filteredItems}
-          size="small"
+          pagination={false}
+          size="large"
           rowKey='id'
-          style={{pointerEvents: isDelete ? 'none' : undefined}}
+          style={{
+            height: '350px',
+            pointerEvents: isDelete ? 'none' : undefined}}
           onRow={({id, isDelete: itemDisabled}) => ({
             onClick: () => {
               if (itemDisabled || isDelete) return;
-              onItemSelect(id as unknown as string, !listSelectedKeys.includes(id as unknown as string));
+              onItemSelect(id , !listSelectedKeys.includes(id));
             },
           })}
         />
@@ -106,6 +107,14 @@ const TableTransferFrom: React.FC = () => {
 
   const [targetKeys, setTargetKeys] = useState<string[]>([]);
   const [roleTableList, setRoleTableList] = useState<RoleTableListItem[]>([]);
+  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
+  const onSelectChange = (
+    sourceSelectedKeys: string[],
+    targetSelectedKeys: string[],
+  ) => {
+    const newSelectedKeys = [...sourceSelectedKeys, ...targetSelectedKeys];
+    setSelectedKeys(newSelectedKeys);
+  };
 
   useEffect(() => {
     queryData('/api/role', {}).then(result => {
@@ -149,8 +158,6 @@ const TableTransferFrom: React.FC = () => {
 
 
   const onChange = (nextTargetKeys: string[]) => {
-    console.log('onChange', nextTargetKeys);
-    alert('onChange: ' + nextTargetKeys.join(','));
     setTargetKeys(nextTargetKeys);
   };
 
@@ -163,7 +170,11 @@ const TableTransferFrom: React.FC = () => {
     <TableTransfer
       dataSource={roleTableList}
       targetKeys={targetKeys}
+      selectedKeys={selectedKeys}
+      rowKey={itme => itme.id}
+      pagination
       onChange={onChange}
+      onSelectChange={onSelectChange}
       onSearch={handleSearch}
       filterOption={(inputValue, item) =>
         item.roleCode!.indexOf(inputValue) !== -1 || item.roleName!.indexOf(inputValue) !== -1
