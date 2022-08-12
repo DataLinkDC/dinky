@@ -83,8 +83,7 @@ const UserTableList: React.FC<{}> = (props: any) => {
 
   const handleGrantRoleForm = () =>{
     return (
-      <div style={{width: "55%",height: "800px"}}>
-        <Modal title="添加角色" visible={handleGrantRole} destroyOnClose={true} width={"55%"}
+        <Modal title="添加角色" visible={handleGrantRole} destroyOnClose={true} width={"1500px"}
                onCancel={()=>{
                  setHandleGrantRole(false);
                }}
@@ -102,7 +101,6 @@ const UserTableList: React.FC<{}> = (props: any) => {
                ]}>
           <TableTransferFrom />
         </Modal>
-      </div>
     )
   }
 

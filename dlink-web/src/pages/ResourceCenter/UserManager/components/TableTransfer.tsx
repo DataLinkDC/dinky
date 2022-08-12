@@ -22,6 +22,7 @@ import type {TransferProps} from 'antd/es/transfer';
 import difference from 'lodash/difference';
 import React, {useEffect, useState} from 'react';
 import {queryData} from "@/components/Common/crud";
+import {Scrollbars} from 'react-custom-scrollbars';
 import {RoleTableListItem} from "@/pages/ResourceCenter/data.d";
 
 // TODO:
@@ -79,24 +80,30 @@ const TableTransfer = ({leftColumns, rightColumns, ...restProps}: TableTransferP
         selectedRowKeys: listSelectedKeys,
       };
 
-      return (
-        <Table
-          rowSelection={rowSelection}
-          columns={columns}
-          dataSource={filteredItems}
-          pagination={false}
-          size="large"
-          rowKey='id'
-          style={{
-            height: '350px',
-            pointerEvents: isDelete ? 'none' : undefined}}
-          onRow={({id, isDelete: itemDisabled}) => ({
-            onClick: () => {
-              if (itemDisabled || isDelete) return;
-              onItemSelect(id , !listSelectedKeys.includes(id));
-            },
-          })}
-        />
+      return (<>
+          <Scrollbars style={{height: '520px', width: '100%'}}>
+            <Table
+              rowSelection={rowSelection}
+              columns={columns}
+              pagination={{
+                  pageSize: 7,
+                }}
+              dataSource={filteredItems}
+              size="large"
+              rowKey='id'
+              style={{
+                height: '350px',
+                pointerEvents: isDelete ? 'none' : undefined
+              }}
+              onRow={({id, isDelete: itemDisabled}) => ({
+                onClick: () => {
+                  if (itemDisabled || isDelete) return;
+                  onItemSelect(id, !listSelectedKeys.includes(id));
+                },
+              })}
+            />
+          </Scrollbars>
+        </>
       );
     }}
   </Transfer>
@@ -121,7 +128,6 @@ const TableTransferFrom: React.FC = () => {
       setRoleTableList(result.data);
     });
   }, []);
-
 
 
   const leftTableColumns: ColumnsType<RoleTableListItem> = [
@@ -162,24 +168,21 @@ const TableTransferFrom: React.FC = () => {
   };
 
 
-
-  return (
-   <>
-     <TableTransfer
-       dataSource={roleTableList}
-       targetKeys={targetKeys}
-       selectedKeys={selectedKeys}
-       rowKey={itme => itme.id}
-       pagination
-       onChange={onChange}
-       onSelectChange={onSelectChange}
-       filterOption={(inputValue, item) =>
-         item.roleCode!.indexOf(inputValue) !== -1 || item.roleName!.indexOf(inputValue) !== -1
-       }
-       leftColumns={leftTableColumns}
-       rightColumns={rightTableColumns}
-     />
-   </>
+  return (<>
+      <TableTransfer
+        dataSource={roleTableList}
+        targetKeys={targetKeys}
+        selectedKeys={selectedKeys}
+        rowKey={itme => itme.id}
+        onChange={onChange}
+        onSelectChange={onSelectChange}
+        filterOption={(inputValue, item) =>
+          item.roleCode!.indexOf(inputValue) !== -1 || item.roleName!.indexOf(inputValue) !== -1
+        }
+        leftColumns={leftTableColumns}
+        rightColumns={rightTableColumns}
+      />
+    </>
   );
 };
 export default TableTransferFrom;
