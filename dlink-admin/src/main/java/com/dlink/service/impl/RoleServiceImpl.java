@@ -56,56 +56,38 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
     private RoleService roleService;
 
     @Autowired
-    private TenantService  tenantService;
+    private TenantService tenantService;
     @Autowired
     private NamespaceService namespaceService;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public Result saveOrUpdateRole(JsonNode para) {
-        String roleCode = para.get("roleCode").asText();
-        String roleName =  para.get("roleName").asText();
-        String note =  para.get("note").asText();
-        String namespaceIds = para.get("namespaceIds").asText();
-        Integer tenantId =  para.get("tenantId").asInt();
-        Integer roleResult ;
-        Boolean insertResult = false;
-        Role  roleCodeBean = getOne(new QueryWrapper<Role>().eq("role_code", roleCode).eq("tenant_id", tenantId));
-        if (Asserts.isNotNull(roleCodeBean)) {
-            LOG.info("roleCode is exist, roleCode:{} , exec update", roleCode);
-            roleCodeBean.setTenantId(tenantId);
-            roleCodeBean.setRoleName(roleName);
-            roleCodeBean.setNote(note);
-            baseMapper.update(roleCodeBean, new QueryWrapper<Role>().eq("id", roleCodeBean.getId()));
-            roleResult = roleCodeBean.getId();
-            insertResult = true;
-        }else {
-            LOG.info("roleCode is not exist, roleCode:{} , exec insert", roleCode);
-            Role role = new Role();
-            role.setRoleCode(roleCode);
-            role.setTenantId(tenantId);
-            role.setRoleName(roleName);
-            role.setNote(note);
-            baseMapper.insert(role);
-            roleResult = role.getId();
-            insertResult = true;
+    public Result saveOrUpdateRole(Role role) {
+        if (Asserts.isNull(role.getId())) {
+            Role roleCode = roleService.getOne(new QueryWrapper<Role>().eq("role_code", role.getRoleCode()));
+            if (Asserts.isNotNull(roleCode)) {
+                return Result.failed("角色编号:【" + role.getRoleCode() + "】已存在");
+            }
         }
-
-        List<RoleNamespace> roleNamespaceList = new ArrayList<>();
-        String[] idsList = namespaceIds.split(",");
-        for (String namespaceId : idsList) {
-            RoleNamespace roleNamespace = new RoleNamespace();
-            roleNamespace.setRoleId(roleResult);
-            roleNamespace.setNamespaceId(Integer.valueOf(namespaceId));
-            roleNamespaceList.add(roleNamespace);
+        boolean roleSaveOrUpdate = saveOrUpdate(role);
+        boolean roleNamespaceSaveOrUpdate = false;
+        if (roleSaveOrUpdate) {
+            List<RoleNamespace> roleNamespaceList = roleNamespaceService.getBaseMapper().selectList(new QueryWrapper<RoleNamespace>().eq("role_id", role.getId()));
+            roleNamespaceService.removeByIds(roleNamespaceList.stream().map(RoleNamespace::getId).collect(Collectors.toList()));
+            List<RoleNamespace> arrayListRoleNamespace = new ArrayList<>();
+            String[] idsList = role.getNamespaceIds().split(",");
+            for (String namespaceId : idsList) {
+                RoleNamespace roleNamespace = new RoleNamespace();
+                roleNamespace.setRoleId(role.getId());
+                roleNamespace.setNamespaceId(Integer.valueOf(namespaceId));
+                arrayListRoleNamespace.add(roleNamespace);
+            }
+            roleNamespaceSaveOrUpdate = roleNamespaceService.saveBatch(arrayListRoleNamespace);
         }
-        // save or update role namespace relation // TODO: 新增正常，更新报错 原因是:role_namespace中有唯一索引，(role_id,namespace_id)
-        boolean roleNamespaceResult = roleNamespaceService.saveOrUpdateBatch(roleNamespaceList, 1000);
-
-        if (insertResult && roleNamespaceResult) {
-            return Result.succeed(Asserts.isNotNull(roleResult) ? "新增成功" : "修改成功");
+        if (roleSaveOrUpdate && roleNamespaceSaveOrUpdate) {
+            return Result.succeed("保存成功");
         } else {
-            return Result.failed(Asserts.isNotNull(roleResult) ? "新增失败" : "修改失败");
+            return Result.failed("保存失败");
         }
     }
 
@@ -117,7 +99,7 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
             List<Integer> error = new ArrayList<>();
             for (final JsonNode item : para) {
                 Integer id = item.asInt();
-                boolean roleNameSpaceRemove =  roleNamespaceService.remove(new QueryWrapper<RoleNamespace>().eq("role_id", id));
+                boolean roleNameSpaceRemove = roleNamespaceService.remove(new QueryWrapper<RoleNamespace>().eq("role_id", id));
                 boolean userRoleRemove = userRoleService.remove(new QueryWrapper<UserRole>().eq("role_id", id));
                 Role role = getById(id);
                 role.setIsDelete(true);
@@ -145,14 +127,15 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
     public List<Role> getRoleByTenantIdAndIds(String tenantId, Set<Integer> roleIds) {
         return baseMapper.getRoleByTenantIdAndIds(tenantId, roleIds);
     }
+
     @Override
     public boolean deleteByIds(List<Integer> ids) {
         return baseMapper.deleteByIds(ids) > 0;
     }
 
     @Override
-    public ProTableResult<Role> selectForProTable(JsonNode para,boolean isDelete) {
-        ProTableResult<Role> roleProTableResult = super.selectForProTable(para,isDelete);
+    public ProTableResult<Role> selectForProTable(JsonNode para, boolean isDelete) {
+        ProTableResult<Role> roleProTableResult = super.selectForProTable(para, isDelete);
         roleProTableResult.getData().forEach(role -> {
             List<Namespace> namespaceArrayList = new ArrayList<>();
             List<Integer> idsList = new ArrayList<>();

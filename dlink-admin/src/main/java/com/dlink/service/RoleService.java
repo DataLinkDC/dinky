@@ -37,7 +37,7 @@ public interface RoleService extends ISuperService<Role> {
      */
     Result deleteRoles(JsonNode para);
 
-    Result saveOrUpdateRole(JsonNode para);
+    Result saveOrUpdateRole(Role role);
 
     List<Role> getRoleByIds(Set<Integer> roleIds);
 

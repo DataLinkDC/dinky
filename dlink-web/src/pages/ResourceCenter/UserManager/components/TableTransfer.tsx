@@ -164,20 +164,22 @@ const TableTransferFrom: React.FC = () => {
 
 
   return (
-    <TableTransfer
-      dataSource={roleTableList}
-      targetKeys={targetKeys}
-      selectedKeys={selectedKeys}
-      rowKey={itme => itme.id}
-      pagination
-      onChange={onChange}
-      onSelectChange={onSelectChange}
-      filterOption={(inputValue, item) =>
-        item.roleCode!.indexOf(inputValue) !== -1 || item.roleName!.indexOf(inputValue) !== -1
-      }
-      leftColumns={leftTableColumns}
-      rightColumns={rightTableColumns}
-    />
+   <>
+     <TableTransfer
+       dataSource={roleTableList}
+       targetKeys={targetKeys}
+       selectedKeys={selectedKeys}
+       rowKey={itme => itme.id}
+       pagination
+       onChange={onChange}
+       onSelectChange={onSelectChange}
+       filterOption={(inputValue, item) =>
+         item.roleCode!.indexOf(inputValue) !== -1 || item.roleName!.indexOf(inputValue) !== -1
+       }
+       leftColumns={leftTableColumns}
+       rightColumns={rightTableColumns}
+     />
+   </>
   );
 };
 export default TableTransferFrom;
