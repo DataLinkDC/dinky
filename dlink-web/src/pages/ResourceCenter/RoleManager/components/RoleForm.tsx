@@ -69,7 +69,7 @@ const RoleForm: React.FC<TenantFormProps> = (props) => {
     const itemList: JSX.Element[] = [];
     for (const item of nameSpaces) {
       const tag = (<><Tag color="processing">{item.namespaceCode}</Tag>{item.namespaceCode}</>);
-      itemList.push(<Option key={item.id} value={item.id} label={tag}>
+      itemList.push(<Option key={item.namespaceCode} value={item.id?.toString()} label={tag}>
         {tag}
       </Option>)
     }
@@ -137,7 +137,7 @@ const RoleForm: React.FC<TenantFormProps> = (props) => {
 
   return (
     <Modal
-      width={640}
+      width={1000}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
       title={formVals.id ? "修改角色" : "创建角色"}
