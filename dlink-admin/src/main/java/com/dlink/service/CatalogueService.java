@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.service;
 
 import com.dlink.db.service.ISuperService;
@@ -36,7 +35,7 @@ public interface CatalogueService extends ISuperService<Catalogue> {
 
     List<Catalogue> getAllData();
 
-    Catalogue findByParentIdAndName(Integer parent_id, String name);
+    Catalogue findByParentIdAndName(Integer parentId, String name);
 
     Catalogue createCatalogueAndTask(CatalogueTaskDTO catalogueTaskDTO);
 

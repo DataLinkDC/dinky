@@ -17,11 +17,11 @@
  *
  */
 
-
 package com.dlink.mapper;
 
 import com.dlink.db.mapper.SuperMapper;
 import com.dlink.model.Statement;
+
 import org.apache.ibatis.annotations.Mapper;
 
 /**

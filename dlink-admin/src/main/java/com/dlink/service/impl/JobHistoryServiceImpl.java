@@ -17,22 +17,22 @@
  *
  */
 
-
 package com.dlink.service.impl;
-
-import com.dlink.constant.FlinkRestResultConstant;
-import org.springframework.stereotype.Service;
 
 import com.dlink.api.FlinkAPI;
 import com.dlink.assertion.Asserts;
+import com.dlink.constant.FlinkRestResultConstant;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.JobHistoryMapper;
 import com.dlink.model.JobHistory;
 import com.dlink.service.JobHistoryService;
 import com.dlink.utils.JSONUtil;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.Objects;
+
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * JobHistoryServiceImpl
@@ -93,7 +93,7 @@ public class JobHistoryServiceImpl extends SuperServiceImpl<JobHistoryMapper, Jo
         jobHistory.setId(id);
         try {
             JsonNode jobInfo = FlinkAPI.build(jobManagerHost).getJobInfo(jobId);
-            if(jobInfo.has(FlinkRestResultConstant.ERRORS)){
+            if (jobInfo.has(FlinkRestResultConstant.ERRORS)) {
                 final JobHistory dbHistory = getById(id);
                 if (Objects.nonNull(dbHistory)) {
                     jobHistory = dbHistory;

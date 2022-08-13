@@ -17,12 +17,11 @@
  *
  */
 
-
 package com.dlink.model;
 
-import lombok.Data;
-
 import java.util.Map;
+
+import lombok.Data;
 
 /**
  * @program: dlink
@@ -34,7 +33,7 @@ import java.util.Map;
 @Data
 public class JobManagerConfiguration {
 
-    private Map<String, String> metrics ;
+    private Map<String, String> metrics;
 
     private Map<String, String> jobManagerConfig;
 

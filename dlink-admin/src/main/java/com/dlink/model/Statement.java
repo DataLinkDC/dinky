@@ -17,14 +17,14 @@
  *
  */
 
-
 package com.dlink.model;
 
+import java.io.Serializable;
+
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.io.Serializable;
 
 /**
  * Statement
