@@ -19,7 +19,6 @@
 
 package com.dlink.utils;
 
-import cn.hutool.core.exceptions.ExceptionUtil;
 import com.dlink.common.result.Result;
 import com.dlink.context.SpringContextUtils;
 import com.dlink.model.CodeEnum;
@@ -30,10 +29,8 @@ import com.dlink.model.TaskOperatingSavepointSelect;
 import com.dlink.model.TaskOperatingStatus;
 import com.dlink.result.TaskOperatingResult;
 import com.dlink.service.TaskService;
-import com.fasterxml.jackson.databind.JsonNode;
+
 import org.apache.commons.collections4.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,10 +42,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
+import cn.hutool.core.exceptions.ExceptionUtil;
+
 /**
  * @author mydq
  * @version 1.0
- * @date 2022/7/16 20:26
  **/
 public class TaskOneClickOperatingUtil {
 
@@ -56,9 +59,9 @@ public class TaskOneClickOperatingUtil {
 
     private static List<TaskOperatingResult> oneClickOfflineCache = new ArrayList<>(0);
 
-    private final static AtomicBoolean oneClickOnlineThreadStatus = new AtomicBoolean(false);
+    private static final AtomicBoolean oneClickOnlineThreadStatus = new AtomicBoolean(false);
 
-    private final static AtomicBoolean oneClickOfflineThreadStatus = new AtomicBoolean(false);
+    private static final AtomicBoolean oneClickOfflineThreadStatus = new AtomicBoolean(false);
 
     public static synchronized Result oneClickOnline(List<Task> tasks, TaskOperatingSavepointSelect taskOperatingSavepointSelect) {
         if (oneClickOnlineThreadStatus.get() || oneClickOfflineThreadStatus.get()) {
@@ -118,7 +121,6 @@ public class TaskOneClickOperatingUtil {
         return result;
     }
 
-
     private static class OneClickOperatingThread extends Thread {
 
         private static final Logger LOGGER = LoggerFactory.getLogger(OneClickOperatingThread.class);
@@ -167,8 +169,6 @@ public class TaskOneClickOperatingUtil {
                     , taskOperatingResult.getTask().getId(), taskOperatingResult.getTask().getName(), e);
         }
 
-
     }
-
 
 }

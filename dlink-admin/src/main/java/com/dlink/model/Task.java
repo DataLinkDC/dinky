@@ -17,26 +17,27 @@
  *
  */
 
-
 package com.dlink.model;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.dlink.assertion.Asserts;
 import com.dlink.db.model.SuperEntity;
 import com.dlink.job.JobConfig;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * 任务
@@ -154,11 +155,12 @@ public class Task extends SuperEntity {
             alias, fg, sts, batchModel, checkPoint, parallelism, savePointStrategy, savePointPath, map);
     }
 
-    public JsonNode parseJsonNode(){
+    public JsonNode parseJsonNode() {
         ObjectMapper mapper = new ObjectMapper();
         return parseJsonNode(mapper);
     }
-    public JsonNode parseJsonNode(ObjectMapper mapper){
+
+    public JsonNode parseJsonNode(ObjectMapper mapper) {
         JsonNode jsonNode = mapper.createObjectNode();
         ((ObjectNode)jsonNode).put("name",this.getName());
         ((ObjectNode)jsonNode).put("alias",this.alias);

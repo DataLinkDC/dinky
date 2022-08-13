@@ -17,16 +17,16 @@
  *
  */
 
-
 package com.dlink.service;
 
 import com.dlink.alert.AlertResult;
 import com.dlink.common.result.Result;
 import com.dlink.db.service.ISuperService;
 import com.dlink.model.AlertInstance;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.List;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * AlertInstanceService

@@ -17,9 +17,7 @@
  *
  */
 
-
 package com.dlink.security;
-
 
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
@@ -27,16 +25,16 @@ import com.dlink.model.History;
 import com.dlink.model.JobInfoDetail;
 import com.dlink.result.ExplainResult;
 import com.dlink.result.SqlExplainResult;
+
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
-
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Aspect
 @Component
@@ -49,8 +47,7 @@ public class SecurityAspect {
     // 敏感信息屏蔽码
     public static final String MASK = "'password'='******'";
 
-
-    @AfterReturning(pointcut = "execution(* com.dlink.controller..*.*(..))", returning="returnValue")
+    @AfterReturning(pointcut = "execution(* com.dlink.controller..*.*(..))", returning = "returnValue")
     public void afterReturning(JoinPoint joinPoint, Object returnValue) {
 
         // mask sql for explain
@@ -68,7 +65,7 @@ public class SecurityAspect {
         }
 
         // /api/studio/explainSql
-        if (returnValue instanceof Result<?> && ((Result<?>) returnValue).getDatas() instanceof List<?> ) {
+        if (returnValue instanceof Result<?> && ((Result<?>) returnValue).getDatas() instanceof List<?>) {
             List<?> list = (List<?>) ((Result<?>) returnValue).getDatas();
             if (list.isEmpty() || !(list.get(0)  instanceof SqlExplainResult)) {
                 return;
@@ -116,7 +113,6 @@ public class SecurityAspect {
             }
         }
     }
-
 
     /**
      * 将info中的敏感信息中打码

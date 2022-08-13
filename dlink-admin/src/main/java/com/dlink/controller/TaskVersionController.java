@@ -17,24 +17,26 @@
  *
  */
 
-
 package com.dlink.controller;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.dto.TaskVersionHistoryDTO;
 import com.dlink.model.TaskVersion;
 import com.dlink.service.TaskVersionService;
-import com.fasterxml.jackson.databind.JsonNode;
-import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import cn.hutool.core.bean.BeanUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 任务版本 Controller

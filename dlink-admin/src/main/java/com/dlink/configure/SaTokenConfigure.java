@@ -17,13 +17,13 @@
  *
  */
 
-
 package com.dlink.configure;
 
-import cn.dev33.satoken.interceptor.SaRouteInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import cn.dev33.satoken.interceptor.SaRouteInterceptor;
 
 /**
  * SaTokenConfigure

@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.model;
 
 import java.util.Set;
@@ -80,18 +79,18 @@ public class JobInfoDetail {
     public void setJobManagerConfiguration(JobManagerConfiguration jobMangerConfiguration) {
         this.jobManagerConfiguration = jobMangerConfiguration;
     }
+
     public JobManagerConfiguration getJobManagerConfiguration() {
         return jobManagerConfiguration;
     }
 
-
     public void setTaskManagerConfiguration(Set<TaskManagerConfiguration> taskManagerConfiguration) {
         this.taskManagerConfiguration = taskManagerConfiguration;
     }
+
     public Set<TaskManagerConfiguration> getTaskManagerConfiguration() {
         return taskManagerConfiguration;
     }
-
 
     public History getHistory() {
         return history;
