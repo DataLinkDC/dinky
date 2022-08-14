@@ -39,6 +39,7 @@ const UserTableList: React.FC<{}> = (props: any) => {
   const [handleGrantRole, setHandleGrantRole] = useState<boolean>(false);
   const [passwordModalVisible, handlePasswordModalVisible] = useState<boolean>(false);
   const [formValues, setFormValues] = useState({});
+  const [roleRelFormValues, setRoleRelFormValues] = useState({});
   const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<UserTableListItem[]>([]);
 
@@ -81,26 +82,31 @@ const UserTableList: React.FC<{}> = (props: any) => {
     </Dropdown>
   );
 
-  const handleGrantRoleForm = () =>{
+  const handleGrantRoleForm = () => {
     return (
-        <Modal title="添加角色" visible={handleGrantRole} destroyOnClose={true} width={"1500px"}
-               onCancel={()=>{
+      <Modal title="添加角色" visible={handleGrantRole} destroyOnClose={true} width={"1500px"}
+             onCancel={() => {
+               setHandleGrantRole(false);
+             }}
+             footer={[
+               <Button key="back" onClick={() => {
                  setHandleGrantRole(false);
-               }}
-               footer={[
-                 <Button key="back" onClick={() => {
-                   setHandleGrantRole(false);
-                 }}>
-                   关闭
-                 </Button>,
-                 <Button type="primary" onClick={() => {
-                    setHandleGrantRole(false);
-                 }}>
-                   确认
-                 </Button>,
-               ]}>
-          <TableTransferFrom />
-        </Modal>
+               }}>
+                 关闭
+               </Button>,
+               <Button type="primary" onClick={() => {
+                 console.log(formValues);
+                 console.log(roleRelFormValues);
+                 // to save
+                 setHandleGrantRole(false);
+               }}>
+                 确认
+               </Button>,
+             ]}>
+        <TableTransferFrom user={formValues} onChange={(value) => {
+          setRoleRelFormValues(value);
+        }}/>
+      </Modal>
     )
   }
 

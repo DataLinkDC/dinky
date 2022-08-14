@@ -21,9 +21,9 @@ import type {ColumnsType, TableRowSelection} from 'antd/es/table/interface';
 import type {TransferProps} from 'antd/es/transfer';
 import difference from 'lodash/difference';
 import React, {useEffect, useState} from 'react';
-import {queryData} from "@/components/Common/crud";
+import {getData} from "@/components/Common/crud";
 import {Scrollbars} from 'react-custom-scrollbars';
-import {RoleTableListItem} from "@/pages/ResourceCenter/data.d";
+import {RoleTableListItem, UserTableListItem} from "@/pages/ResourceCenter/data.d";
 
 // TODO:
 //  1.表单渲染数据
@@ -86,8 +86,8 @@ const TableTransfer = ({leftColumns, rightColumns, ...restProps}: TableTransferP
               rowSelection={rowSelection}
               columns={columns}
               pagination={{
-                  pageSize: 7,
-                }}
+                pageSize: 7,
+              }}
               dataSource={filteredItems}
               size="large"
               rowKey='id'
@@ -109,8 +109,14 @@ const TableTransfer = ({leftColumns, rightColumns, ...restProps}: TableTransferP
   </Transfer>
 );
 
+export type TableTransferFromProps = {
+  user: Partial<UserTableListItem>;
+  onChange: (values: string[]) => void;
+};
 
-const TableTransferFrom: React.FC = () => {
+const TableTransferFrom: React.FC = (props: TableTransferFromProps) => {
+
+  const {user, onChange: handleChange} = props;
 
   const [targetKeys, setTargetKeys] = useState<string[]>([]);
   const [roleTableList, setRoleTableList] = useState<RoleTableListItem[]>([]);
@@ -124,11 +130,12 @@ const TableTransferFrom: React.FC = () => {
   };
 
   useEffect(() => {
-    queryData('/api/role', {}).then(result => {
-      setRoleTableList(result.data);
+    getData('/api/role/getRolesAndIdsByUserId', {id: user.id}).then(result => {
+      setRoleTableList(result.datas.roles);
+      setTargetKeys(result.datas.roleIds);
+      handleChange(result.datas.roleIds);
     });
   }, []);
-
 
   const leftTableColumns: ColumnsType<RoleTableListItem> = [
     {
@@ -165,6 +172,7 @@ const TableTransferFrom: React.FC = () => {
 
   const onChange = (nextTargetKeys: string[]) => {
     setTargetKeys(nextTargetKeys);
+    handleChange(nextTargetKeys);
   };
 
 

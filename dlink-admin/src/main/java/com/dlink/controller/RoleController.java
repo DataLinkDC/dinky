@@ -19,14 +19,30 @@
 
 package com.dlink.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
 import com.dlink.model.Role;
+import com.dlink.model.UserRole;
 import com.dlink.service.RoleService;
+import com.dlink.service.UserRoleService;
 import com.fasterxml.jackson.databind.JsonNode;
+
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -35,6 +51,8 @@ public class RoleController {
 
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private UserRoleService userRoleService;
 
     /**
      * create or update role
@@ -55,11 +73,29 @@ public class RoleController {
     public Result deleteMul(@RequestBody JsonNode para) {
         return roleService.deleteRoles(para);
     }
+
     /**
      * query role list
      */
     @PostMapping
     public ProTableResult<Role> listRoles(@RequestBody JsonNode para) {
-        return roleService.selectForProTable(para,true);
+        return roleService.selectForProTable(para, true);
+    }
+
+    /**
+     * 获取所有的角色列表以及当前用户的角色 ids
+     */
+    @GetMapping(value = "/getRolesAndIdsByUserId")
+    public Result getRolesAndIdsByUserId(@RequestParam Integer id) {
+        List<Role> roleList = roleService.list();
+        Map result = new HashMap();
+        result.put("roles", roleList);
+        List<UserRole> userRoleList = userRoleService.getUserRoleByUserId(id);
+        List<Integer> userRoleIds = new ArrayList<>();
+        for (UserRole userRole : userRoleList) {
+            userRoleIds.add(userRole.getRoleId());
+        }
+        result.put("roleIds", userRoleIds);
+        return Result.succeed(result, "获取成功");
     }
 }
