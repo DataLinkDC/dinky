@@ -24,22 +24,23 @@ import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
 import {Button, Drawer, Dropdown, Menu, Modal} from 'antd';
 import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import {handleRemove, queryData} from "@/components/Common/crud";
-import {TenantTableListItem} from "@/pages/ResourceCenter/TenantManager/data";
+import {handleAddOrUpdate, handleRemove, queryData} from "@/components/Common/crud";
+import {TenantTableListItem} from "@/pages/ResourceCenter/data.d";
 import TenantForm from "@/pages/ResourceCenter/TenantManager/components/TenantForm";
 
 const url = '/api/tenant';
 const TenantFormList: React.FC<{}> = (props: any) => {
   const [row, setRow] = useState<TenantTableListItem>();
-  const [values, setValues] = useState<TenantTableListItem>();
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
+  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<TenantTableListItem[]>([]);
+  const [formValues, setFormValues] = useState({});
 
   const editAndDelete = (key: string | number, currentItem: TenantTableListItem) => {
     if (key === 'edit') {
-      setValues(currentItem);
-      handleModalVisible(true);
+      handleUpdateModalVisible(true);
+      setFormValues(currentItem);
     } else if (key === 'delete') {
       Modal.confirm({
         title: '删除租户',
@@ -78,35 +79,37 @@ const TenantFormList: React.FC<{}> = (props: any) => {
       hideInTable: true,
       hideInSearch: true,
       sorter: true,
-      render: (dom, entity) => {
-        return <a onClick={() => setRow(entity)}>{dom}</a>;
-      },
     },
     {
       title: '租户编码',
       tip: '编码是唯一的',
       dataIndex: 'tenantCode',
-    },
-    {
-      title: '是否删除',
-      dataIndex: 'isDelete',
-      hideInTable: false,
-      filters: [
-        {
-          text: '未删除',
-          value: 1,
-        },
-        {
-          text: '已删除',
-          value: 0,
-        },
-      ],
-      filterMultiple: false,
-      valueEnum: {
-        true: {text: '未删除', status: 'Success'},
-        false: {text: '已删除', status: 'Error'},
+      render: (dom, entity) => {
+        return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
     },
+    // {
+    //   title: '是否删除',
+    //   dataIndex: 'isDelete',
+    //   hideInForm: true,
+    //   hideInSearch: true,
+    //   hideInTable: false,
+    //   filters: [
+    //     {
+    //       text: '未删除',
+    //       value: 0,
+    //     },
+    //     {
+    //       text: '已删除',
+    //       value: 1,
+    //     },
+    //   ],
+    //   filterMultiple: false,
+    //   valueEnum: {
+    //     true: {text: '已删除', status: 'Error'},
+    //     false: {text: '未删除', status: 'Success'},
+    //   },
+    // },
     {
       title: '备注',
       dataIndex: 'note',
@@ -115,30 +118,26 @@ const TenantFormList: React.FC<{}> = (props: any) => {
     {
       title: '创建时间',
       dataIndex: 'createTime',
-      sorter: true,
       valueType: 'dateTime',
-      hideInTable: true
     },
     {
       title: '最近更新时间',
       dataIndex: 'updateTime',
-      sorter: true,
-      hideInTable: true,
       valueType: 'dateTime',
     },
     {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      render: (_, record) => [
-        <a
+      render: (_, record:TenantTableListItem) => [
+        <Button type={"link"}
           onClick={() => {
-            handleModalVisible(true);
-            setValues(record);
+            handleUpdateModalVisible(true);
+            setFormValues(record);
           }}
         >
           配置
-        </a>,
+        </Button>,
         <MoreBtn key="more" item={record}/>,
       ],
     },
@@ -170,7 +169,7 @@ const TenantFormList: React.FC<{}> = (props: any) => {
             <div>
               已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
               <span>
-  被删除的租户共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.isDelete ? 1 : 0), 0)} 个
+  被删除的租户共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.isDelete ? 0 : 1), 0)} 个
   </span>
             </div>
           }
@@ -194,16 +193,45 @@ const TenantFormList: React.FC<{}> = (props: any) => {
           </Button>
         </FooterToolbar>
       )}
-      <TenantForm onCancel={() => {
-        handleModalVisible(false);
-        setValues(undefined);
-      }}
-       modalVisible={modalVisible}
-       onSubmit={() => {
-         actionRef.current?.reloadAndRest?.();
-       }}
-       values={values as TenantTableListItem}
+      <TenantForm
+        onSubmit={async (value) => {
+          const success = await handleAddOrUpdate(url, value);
+          if (success) {
+            handleModalVisible(false);
+            setFormValues({});
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        onCancel={() => {
+          handleModalVisible(false);
+        }}
+        modalVisible={modalVisible}
+        values={{}}
       />
+      {
+        formValues && Object.keys(formValues).length ? (
+          <TenantForm
+            onSubmit={async (value) => {
+              const success = await handleAddOrUpdate(url, value);
+              if (success) {
+                handleUpdateModalVisible(false);
+                setFormValues({});
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
+              }
+            }}
+            onCancel={() => {
+              handleUpdateModalVisible(false);
+              setFormValues({});
+            }}
+            modalVisible={updateModalVisible}
+            values={formValues}
+          />
+        ) : undefined
+      }
       <Drawer
         width={600}
         visible={!!row}

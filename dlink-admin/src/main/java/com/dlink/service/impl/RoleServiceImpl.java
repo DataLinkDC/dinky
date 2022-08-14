@@ -19,28 +19,25 @@
 
 package com.dlink.service.impl;
 
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.assertion.Asserts;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.RoleMapper;
-import com.dlink.model.Role;
-import com.dlink.model.RoleNamespace;
-import com.dlink.model.UserRole;
-import com.dlink.service.RoleNamespaceService;
-import com.dlink.service.RoleService;
-import com.dlink.service.UserRoleService;
+import com.dlink.model.*;
+import com.dlink.service.*;
 import com.fasterxml.jackson.databind.JsonNode;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * role service impl
@@ -48,74 +45,77 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implements RoleService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(RoleServiceImpl.class);
     @Autowired
     private RoleNamespaceService roleNamespaceService;
 
     @Autowired
     private UserRoleService userRoleService;
 
+    @Autowired
+    private RoleService roleService;
+
+    @Autowired
+    private TenantService tenantService;
+    @Autowired
+    private NamespaceService namespaceService;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public Result saveOrUpdateRole(JsonNode para) {
-        Role role = new Role();
-        String id = para.get("id").asText(null);
-
-        role.setTenantId(para.get("tenantId").asInt());
-        role.setRoleCode(para.get("roleCode").asText());
-        role.setRoleName(para.get("roleName").asText());
-        role.setNote(para.get("note").asText());
-        if (StringUtils.isNotEmpty(id)) {
-            role.setId(Integer.valueOf(id));
+    public Result saveOrUpdateRole(Role role) {
+        if (Asserts.isNull(role.getId())) {
+            Role roleCode = roleService.getOne(new QueryWrapper<Role>().eq("role_code", role.getRoleCode()));
+            if (Asserts.isNotNull(roleCode)) {
+                return Result.failed("角色编号:【" + role.getRoleCode() + "】已存在");
+            }
         }
-
-        // save or update role
-        boolean roleResult = saveOrUpdate(role);
-
-        List<RoleNamespace> roleNamespaceList = new ArrayList<>();
-        JsonNode namespaceJsonNode = para.get("namespaceIds");
-        for (JsonNode ids : namespaceJsonNode) {
-            RoleNamespace roleNamespace = new RoleNamespace();
-            roleNamespace.setRoleId(role.getId());
-            roleNamespace.setNamespaceId(ids.asInt());
-            roleNamespaceList.add(roleNamespace);
+        boolean roleSaveOrUpdate = saveOrUpdate(role);
+        boolean roleNamespaceSaveOrUpdate = false;
+        if (roleSaveOrUpdate) {
+            List<RoleNamespace> roleNamespaceList = roleNamespaceService.getBaseMapper().selectList(new QueryWrapper<RoleNamespace>().eq("role_id", role.getId()));
+            roleNamespaceService.removeByIds(roleNamespaceList.stream().map(RoleNamespace::getId).collect(Collectors.toList()));
+            List<RoleNamespace> arrayListRoleNamespace = new ArrayList<>();
+            String[] idsList = role.getNamespaceIds().split(",");
+            for (String namespaceId : idsList) {
+                RoleNamespace roleNamespace = new RoleNamespace();
+                roleNamespace.setRoleId(role.getId());
+                roleNamespace.setNamespaceId(Integer.valueOf(namespaceId));
+                arrayListRoleNamespace.add(roleNamespace);
+            }
+            roleNamespaceSaveOrUpdate = roleNamespaceService.saveBatch(arrayListRoleNamespace);
         }
-        // save or update role namespace relation
-        boolean roleNamespaceResult = roleNamespaceService.saveOrUpdateBatch(roleNamespaceList, 1000);
-
-        if (roleResult && roleNamespaceResult) {
-            return Result.failed(Asserts.isNotNull(id) ? "修改成功" : "新增成功");
+        if (roleSaveOrUpdate && roleNamespaceSaveOrUpdate) {
+            return Result.succeed("保存成功");
         } else {
-            return Result.failed(Asserts.isNotNull(id) ? "修改失败" : "新增失败");
+            return Result.failed("保存失败");
         }
     }
 
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public Result deleteRoleById(JsonNode para) {
-        for (JsonNode item : para) {
-            Integer id = item.asInt();
-            Role role = getById(id);
-            if (Asserts.isNull(role)) {
-                return Result.failed("角色不存在");
+    public Result deleteRoles(JsonNode para) {
+        if (para.size() > 0) {
+            List<Integer> error = new ArrayList<>();
+            for (final JsonNode item : para) {
+                Integer id = item.asInt();
+                boolean roleNameSpaceRemove = roleNamespaceService.remove(new QueryWrapper<RoleNamespace>().eq("role_id", id));
+                boolean userRoleRemove = userRoleService.remove(new QueryWrapper<UserRole>().eq("role_id", id));
+                Role role = getById(id);
+                role.setIsDelete(true);
+                boolean removeById = roleService.updateById(role);
+                if (!removeById && !roleNameSpaceRemove && !userRoleRemove) {
+                    error.add(id);
+                }
             }
-            ProTableResult<RoleNamespace> roleNamespaceProTableResult = roleNamespaceService.selectForProTable(para);
-            if (roleNamespaceProTableResult.getData().size() > 0) {
-                return Result.failed("删除角色失败，该角色已绑定名称空间");
-            }
-            ProTableResult<UserRole> userRoleProTableResult = userRoleService.selectForProTable(para);
-            if (userRoleProTableResult.getData().size() > 0) {
-                return Result.failed("删除角色失败，该角色已绑定用户");
-            }
-            boolean result = removeById(id);
-            if (result) {
-                return Result.succeed("删除角色成功");
+            if (error.size() == 0) {
+                return Result.succeed("删除成功");
             } else {
-                return Result.failed("删除角色失败");
+                return Result.succeed("删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
             }
+        } else {
+            return Result.failed("请选择要删除的记录");
         }
-        return Result.failed("删除角色不存在");
     }
 
     @Override
@@ -128,4 +128,28 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
         return baseMapper.getRoleByTenantIdAndIds(tenantId, roleIds);
     }
 
+    @Override
+    public boolean deleteByIds(List<Integer> ids) {
+        return baseMapper.deleteByIds(ids) > 0;
+    }
+
+    @Override
+    public ProTableResult<Role> selectForProTable(JsonNode para, boolean isDelete) {
+        ProTableResult<Role> roleProTableResult = super.selectForProTable(para, isDelete);
+        roleProTableResult.getData().forEach(role -> {
+            List<Namespace> namespaceArrayList = new ArrayList<>();
+            List<Integer> idsList = new ArrayList<>();
+            Tenant tenant = tenantService.getBaseMapper().selectById(role.getTenantId());
+            roleNamespaceService.list(new QueryWrapper<RoleNamespace>().eq("role_id", role.getId())).forEach(roleNamespace -> {
+                Namespace namespaceServiceById = namespaceService.getById(roleNamespace.getNamespaceId());
+                namespaceArrayList.add(namespaceServiceById);
+                idsList.add(roleNamespace.getNamespaceId());
+            });
+            role.setTenant(tenant);
+            role.setNamespaces(namespaceArrayList);
+            String result = idsList.stream().map(Object::toString).collect(Collectors.joining(","));
+            role.setNamespaceIds(result);
+        });
+        return roleProTableResult;
+    }
 }

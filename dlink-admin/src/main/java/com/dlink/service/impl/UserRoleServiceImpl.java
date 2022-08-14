@@ -22,6 +22,7 @@ package com.dlink.service.impl;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -48,5 +49,10 @@ public class UserRoleServiceImpl extends SuperServiceImpl<UserRoleMapper, UserRo
     @Override
     public int deleteBathRelation(List<UserRole> userRoleList) {
         return baseMapper.deleteBathRelation(userRoleList);
+    }
+
+    @Override
+    public boolean deleteByRoleIds(List<Integer> roleIds) {
+        return baseMapper.deleteByRoleIds(roleIds) > 0;
     }
 }

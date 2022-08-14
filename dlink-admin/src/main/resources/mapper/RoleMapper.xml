@@ -6,6 +6,7 @@
         <result property="tenantId" column="tenant_id"/>
         <result property="roleCode" column="role_code"/>
         <result property="roleName" column="role_name"/>
+        <result property="isDelete" column="is_delete"/>
         <result property="note" column="note"/>
         <result property="createTime" column="create_time"/>
         <result property="updateTime" column="update_time"/>
@@ -36,15 +37,20 @@
              , dn.create_time as dn_create_time
              , dn.update_time    dn_update_time
         from dlink_role dr
-        join dlink_role_namespace drn
-          on dr.id = drn.role_id
-        join dlink_namespace dn
-         on drn.namespace_id = dn.id
+                 join dlink_role_namespace drn
+                      on dr.id = drn.role_id
+                 join dlink_namespace dn
+                      on drn.namespace_id = dn.id
     </sql>
-    <select id="selectForProTable" resultMap="roleResultMap">
-        <include refid="role"></include>
+    <select id="selectForProTable" resultType="com.dlink.model.Role">
+        select
+            a.*
+        from dlink_role a
         <where>
             1=1
+            <if test='param.tenantId!=null and param.tenantId!=""'>
+                and tenant_id = '${param.tenantId}'
+            </if>
             <if test='param.roleCode!=null and param.roleCode!=""'>
                 and role_code = '${param.roleCode}'
             </if>
@@ -83,15 +89,15 @@
     </select>
 
     <select id="getRoleByTenantIdAndIds" resultType="com.dlink.model.Role">
-        select  id
-               ,tenant_id
-               ,role_code
-               ,role_name
-               ,is_delete
-               ,note
-               ,create_time
-               ,update_time
-          from dlink_role
+        select id
+        ,tenant_id
+        ,role_code
+        ,role_name
+        ,is_delete
+        ,note
+        ,create_time
+        ,update_time
+        from dlink_role
         <where>
             1=1
             <if test='tenantId!=null and tenantId!=""'>

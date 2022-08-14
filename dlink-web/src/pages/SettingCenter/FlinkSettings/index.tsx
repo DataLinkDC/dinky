@@ -18,23 +18,32 @@
  */
 
 
-export type UserTableListItem = {
-  id?: number;
-  enabled?: boolean;
-  isDelete?: string;
-  createTime?: Date;
-  updateTime?: Date;
-  username?: string;
-  nickname?: string;
-  password?: string;
-  avatar?: string;
-  worknum?: string;
-  mobile?: string;
+import React from 'react';
+import FlinkConfigView from './components/flinkConfig';
+import {connect} from "umi";
+import {PageContainer} from "@ant-design/pro-layout";
+import {SettingsStateType} from "@/pages/SettingCenter/FlinkSettings/model";
+import {loadSettings} from "@/pages/SettingCenter/FlinkSettings/function";
+
+
+type SettingsProps = {
+  dispatch:any;
 };
 
-export type PasswordItem = {
-  username: string;
-  password?: string;
-  newPassword?: string;
-  newPasswordCheck?: string;
+const Settings: React.FC<SettingsProps> = (props) => {
+
+  const {dispatch} = props;
+  loadSettings(dispatch);
+
+
+  return (
+      <PageContainer>
+          <FlinkConfigView />
+      </PageContainer>
+  );
 };
+export default connect(({Settings}: { Settings: SettingsStateType }) => ({
+  sqlSubmitJarPath: Settings.sqlSubmitJarPath,
+  sqlSubmitJarParas: Settings.sqlSubmitJarParas,
+  sqlSubmitJarMainAppClass: Settings.sqlSubmitJarMainAppClass,
+}))(Settings);

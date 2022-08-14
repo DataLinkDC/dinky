@@ -18,28 +18,48 @@
  */
 
 
-import {Tabs} from "antd";
-import VersionList from "@/pages/DevOps/JobInfo/Version/VersionList";
-import VersionTimeLineList from "@/pages/DevOps/JobInfo/Version/VersionTimeLineList";
+import {Reducer} from "umi";
 
-const {TabPane} = Tabs;
-const TaskVersionInfo = (props: any) => {
-  const {job} = props;
-
-  return (<>
-    <Tabs defaultActiveKey="overview" size="small" tabPosition="top" style={{
-      border: "1px solid #f0f0f0",
-    }}>
-      <TabPane tab={<span>&nbsp; 版本列表 &nbsp;</span>} key="versionlist">
-        <VersionList job={job}/>
-      </TabPane>
-
-      <TabPane tab={<span>&nbsp; TimeLine &nbsp;</span>} key="timeline">
-        <VersionTimeLineList job={job}/>
-      </TabPane>
-
-    </Tabs>
-  </>)
+export type SettingsStateType = {
+  sqlSubmitJarPath: string,
+  sqlSubmitJarParas: string,
+  sqlSubmitJarMainAppClass: string,
+  useRestAPI: boolean,
+  sqlSeparator: string,
 };
 
-export default TaskVersionInfo;
+export type ModelType = {
+  namespace: string;
+  state: SettingsStateType;
+  effects: {
+  };
+  reducers: {
+    saveSettings: Reducer<SettingsStateType>;
+  };
+};
+
+const SettingsModel: ModelType = {
+  namespace: 'Settings',
+  state: {
+    sqlSubmitJarPath:'',
+    sqlSubmitJarParas:'',
+    sqlSubmitJarMainAppClass:'',
+    useRestAPI:true,
+  },
+
+  effects: {
+
+  },
+
+  reducers: {
+    saveSettings(state, {payload}) {
+      return {
+        ...state,
+        ...payload,
+      };
+    },
+
+  },
+};
+
+export default SettingsModel;

@@ -24,10 +24,11 @@ import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
 import {Button, Drawer, Dropdown, Menu, Modal} from 'antd';
 import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import {UserTableListItem} from "@/pages/user/data";
 import {handleAddOrUpdate, handleOption, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
-import UserForm from "@/pages/user/components/UserForm";
-import PasswordForm from "@/pages/user/components/PasswordForm";
+import {UserTableListItem} from "@/pages/ResourceCenter/data.d";
+import UserForm from "@/pages/ResourceCenter/UserManager/components/UserForm";
+import PasswordForm from "@/pages/ResourceCenter/UserManager/components/PasswordForm";
+import TableTransferFrom from "@/pages/ResourceCenter/UserManager/components/TableTransfer";
 
 const url = '/api/user';
 const UserTableList: React.FC<{}> = (props: any) => {
@@ -35,6 +36,7 @@ const UserTableList: React.FC<{}> = (props: any) => {
   const [row, setRow] = useState<UserTableListItem>();
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  const [handleGrantRole, setHandleGrantRole] = useState<boolean>(false);
   const [passwordModalVisible, handlePasswordModalVisible] = useState<boolean>(false);
   const [formValues, setFormValues] = useState({});
   const actionRef = useRef<ActionType>();
@@ -78,6 +80,29 @@ const UserTableList: React.FC<{}> = (props: any) => {
       </a>
     </Dropdown>
   );
+
+  const handleGrantRoleForm = () =>{
+    return (
+        <Modal title="添加角色" visible={handleGrantRole} destroyOnClose={true} width={"1500px"}
+               onCancel={()=>{
+                 setHandleGrantRole(false);
+               }}
+               footer={[
+                 <Button key="back" onClick={() => {
+                   setHandleGrantRole(false);
+                 }}>
+                   关闭
+                 </Button>,
+                 <Button type="primary" onClick={() => {
+                    setHandleGrantRole(false);
+                 }}>
+                   确认
+                 </Button>,
+               ]}>
+          <TableTransferFrom />
+        </Modal>
+    )
+  }
 
   const columns: ProColumns<UserTableListItem>[] = [
     {
@@ -160,6 +185,14 @@ const UserTableList: React.FC<{}> = (props: any) => {
           }}
         >
           配置
+        </a>,
+        <a
+          onClick={() => {
+            setHandleGrantRole(true);
+            setFormValues(record);
+          }}
+        >
+          关联角色
         </a>,
         <MoreBtn key="more" item={record}/>,
       ],
@@ -321,6 +354,7 @@ const UserTableList: React.FC<{}> = (props: any) => {
             />
           )}
         </Drawer>
+        {handleGrantRoleForm()}
       </PageContainer>
     </>
   );

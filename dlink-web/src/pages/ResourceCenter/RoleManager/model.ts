@@ -18,33 +18,29 @@
  */
 
 
-import {Effect, Reducer} from "umi";
+import {NameSpaceTableListItem, RoleTableListItem} from "@/pages/ResourceCenter/data.d";
+import {Reducer} from "@@/plugin-dva/connect";
 
-export type SettingsStateType = {
-  sqlSubmitJarPath: string,
-  sqlSubmitJarParas: string,
-  sqlSubmitJarMainAppClass: string,
-  useRestAPI: boolean,
-  sqlSeparator: string,
+export type NameSpaceStateType = {
+  role:RoleTableListItem[],
+  nameSpaces: NameSpaceTableListItem[],
 };
-
-export type ModelType = {
+export type NameSpaceModelType = {
   namespace: string;
-  state: SettingsStateType;
+  state: NameSpaceStateType;
   effects: {
   };
   reducers: {
-    saveSettings: Reducer<SettingsStateType>;
+    saveRole: Reducer<NameSpaceStateType>;
+    saveNameSpace: Reducer<NameSpaceStateType>;
   };
 };
 
-const SettingsModel: ModelType = {
-  namespace: 'Settings',
+const NameSpaceModel: NameSpaceModelType = {
+  namespace: 'NameSpace',
   state: {
-    sqlSubmitJarPath:'',
-    sqlSubmitJarParas:'',
-    sqlSubmitJarMainAppClass:'',
-    useRestAPI:true,
+    role:[],
+    nameSpaces:[],
   },
 
   effects: {
@@ -52,14 +48,19 @@ const SettingsModel: ModelType = {
   },
 
   reducers: {
-    saveSettings(state, {payload}) {
+    saveRole(state, {payload}) {
       return {
         ...state,
-        ...payload,
+        role: payload,
       };
     },
-
+    saveNameSpace(state, {payload}) {
+      return {
+        ...state,
+        nameSpaces: payload,
+      };
+    },
   },
 };
 
-export default SettingsModel;
+export default NameSpaceModel;

@@ -20,7 +20,7 @@
 
 import React, {useState} from 'react';
 import {Button, Form, Input, Modal} from 'antd';
-import {PasswordItem} from "@/pages/ResourceCenter/UserManager/data";
+import {PasswordItem} from "@/pages/ResourceCenter/data.d";
 
 export type PasswordFormProps = {
   onCancel: (flag?: boolean) => void;

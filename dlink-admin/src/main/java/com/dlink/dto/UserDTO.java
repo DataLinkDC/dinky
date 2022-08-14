@@ -17,13 +17,21 @@
  *
  */
 
+package com.dlink.dto;
 
-export type TenantTableListItem = {
-  id: number;
-  tenantCode: string;
-  isDelete: boolean;
-  note: string;
-  createTime: Date;
-  updateTime: Date;
-};
+import com.dlink.model.User;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.util.List;
+
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class UserDTO {
+    private User user;
+    private List<RoleDTO> roleDTOList;
+
+}

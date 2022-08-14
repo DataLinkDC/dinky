@@ -43,7 +43,7 @@ public class FragmentVariable extends SuperEntity {
 
     @TableField(fill = FieldFill.INSERT)
     private String alias;
-    private String tenantId;
+    private Integer tenantId;
     private String fragmentValue;
     private String fillValue;
     private String note;

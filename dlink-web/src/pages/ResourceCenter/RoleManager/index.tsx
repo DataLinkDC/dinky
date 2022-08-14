@@ -18,29 +18,37 @@
  */
 
 
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {DownOutlined, PlusOutlined} from '@ant-design/icons';
 import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
 import {Button, Drawer, Dropdown, Menu, Modal} from 'antd';
 import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import {handleRemove, queryData} from "@/components/Common/crud";
-import {RoleTableListItem} from "@/pages/ResourceCenter/RoleManager/data";
+import {getStorageTenantId, handleAddOrUpdate, handleRemove, queryData} from "@/components/Common/crud";
+import {RoleTableListItem} from "@/pages/ResourceCenter/data.d";
 import RoleForm from "@/pages/ResourceCenter/RoleManager/components/RoleForm";
+import {getNameSpaceList} from "@/pages/ResourceCenter/service";
+import {connect} from "umi";
 
 const url = '/api/role';
 
 const RoleFormList: React.FC<{}> = (props: any) => {
+  const {dispatch} = props;
   const [row, setRow] = useState<RoleTableListItem>();
-  const [values, setValues] = useState<RoleTableListItem>();
+  const [formValues, setFormValues] = useState<RoleTableListItem>();
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
+  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<RoleTableListItem[]>([]);
 
+  useEffect(() => {
+    getNameSpaceList(dispatch);
+  }, []);
+
   const editAndDelete = (key: string | number, currentItem: RoleTableListItem) => {
     if (key === 'edit') {
-      setValues(currentItem);
-      handleModalVisible(true);
+      setFormValues(currentItem);
+      handleUpdateModalVisible(true);
     } else if (key === 'delete') {
       Modal.confirm({
         title: '删除角色',
@@ -79,42 +87,47 @@ const RoleFormList: React.FC<{}> = (props: any) => {
       hideInTable: true,
       hideInSearch: true,
       sorter: true,
-      render: (dom, entity) => {
-        return <a onClick={() => setRow(entity)}>{dom}</a>;
-      },
     },
     {
       title: '角色编码',
       dataIndex: 'roleCode',
+      render: (dom, entity) => {
+        return <a onClick={() => setRow(entity)}>{dom}</a>;
+      },
     },
     {
       title: '角色名称',
       dataIndex: 'roleName',
     },
     {
-      title: '租户编码',
-      dataIndex: 'tenantId',
-    },
-    {
-      title: '是否删除',
-      dataIndex: 'isDelete',
-      hideInTable: false,
-      filters: [
-        {
-          text: '未删除',
-          value: 1,
-        },
-        {
-          text: '已删除',
-          value: 0,
-        },
-      ],
-      filterMultiple: false,
-      valueEnum: {
-        true: {text: '未删除', status: 'Success'},
-        false: {text: '已删除', status: 'Error'},
+      title: '所属租户',
+      hideInSearch: true,
+      render: (dom, entity) => {
+        return entity?.tenant?.tenantCode || '';
       },
     },
+    // {
+    //   title: '是否删除',
+    //   dataIndex: 'isDelete',
+    //   hideInForm: true,
+    //   hideInSearch: true,
+    //   hideInTable: false,
+    //   filters: [
+    //     {
+    //       text: '未删除',
+    //       value: 0,
+    //     },
+    //     {
+    //       text: '已删除',
+    //       value: 1,
+    //     },
+    //   ],
+    //   filterMultiple: false,
+    //   valueEnum: {
+    //     true: {text: '已删除', status: 'Error'},
+    //     false: {text: '未删除', status: 'Success'},
+    //   },
+    // },
     {
       title: '备注',
       dataIndex: 'note',
@@ -125,13 +138,11 @@ const RoleFormList: React.FC<{}> = (props: any) => {
       dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',
-      hideInTable: true
     },
     {
       title: '最近更新时间',
       dataIndex: 'updateTime',
       sorter: true,
-      hideInTable: true,
       valueType: 'dateTime',
     },
     {
@@ -139,14 +150,14 @@ const RoleFormList: React.FC<{}> = (props: any) => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        <a
+        <Button type={"link"}
           onClick={() => {
-            handleModalVisible(true);
-            setValues(record);
+            handleUpdateModalVisible(true);
+            setFormValues(record);
           }}
         >
           配置
-        </a>,
+        </Button>,
         <MoreBtn key="more" item={record}/>,
       ],
     },
@@ -166,7 +177,7 @@ const RoleFormList: React.FC<{}> = (props: any) => {
             <PlusOutlined/> 新建
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryData(url, {...params, sorter, filter})}
+        request={(params, sorter, filter) => queryData(url, {tenantId: getStorageTenantId(), sorter, filter})}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
@@ -178,7 +189,7 @@ const RoleFormList: React.FC<{}> = (props: any) => {
             <div>
               已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
               <span>
-  被删除的角色共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.isDelete ? 1 : 0), 0)} 个
+  被删除的角色共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.isDelete ? 0 : 1), 0)} 个
   </span>
             </div>
           }
@@ -202,16 +213,45 @@ const RoleFormList: React.FC<{}> = (props: any) => {
           </Button>
         </FooterToolbar>
       )}
-      <RoleForm onCancel={() => {
-        handleModalVisible(false);
-        setValues(undefined);
-      }}
-       modalVisible={modalVisible}
-       onSubmit={() => {
-         actionRef.current?.reloadAndRest?.();
-       }}
-       values={values as RoleTableListItem}
+      <RoleForm
+        onSubmit={async (value) => {
+          const success = await handleAddOrUpdate(url, value);
+          if (success) {
+            handleModalVisible(false);
+            setFormValues({});
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        onCancel={() => {
+          handleModalVisible(false);
+        }}
+        modalVisible={modalVisible}
+        values={{}}
       />
+      {
+        formValues && Object.keys(formValues).length ? (
+          <RoleForm
+            onSubmit={async (value) => {
+              const success = await handleAddOrUpdate(url, value);
+              if (success) {
+                handleUpdateModalVisible(false);
+                setFormValues({});
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
+              }
+            }}
+            onCancel={() => {
+              handleUpdateModalVisible(false);
+              setFormValues({});
+            }}
+            modalVisible={updateModalVisible}
+            values={formValues}
+          />
+        ) : undefined
+      }
       <Drawer
         width={600}
         visible={!!row}
@@ -238,4 +278,4 @@ const RoleFormList: React.FC<{}> = (props: any) => {
   );
 };
 
-export default RoleFormList;
+export default connect()(RoleFormList);

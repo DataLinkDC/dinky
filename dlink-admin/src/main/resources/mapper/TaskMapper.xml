@@ -37,6 +37,13 @@
         where `name` REGEXP '${name}_[0-9]$'
     </select>
 
+    <select id="selectByName" resultType="com.dlink.model.Task">
+        select
+            *
+        from dlink_task
+        where name = #{name}
+    </select>
+
     <select id="queryOnLineTaskByDoneStatus" resultType="com.dlink.model.Task">
         select t.id as id, t.name as name
         from dlink_task t

@@ -19,16 +19,8 @@
 
 package com.dlink.service.impl;
 
-import java.util.List;
-import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.assertion.Asserts;
-import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
 import com.dlink.context.RequestContext;
 import com.dlink.db.service.impl.SuperServiceImpl;
@@ -41,6 +33,12 @@ import com.dlink.service.RoleService;
 import com.dlink.service.TaskService;
 import com.dlink.service.TenantService;
 import com.fasterxml.jackson.databind.JsonNode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> implements TenantService {
@@ -101,17 +99,17 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> im
                 return Result.failed("租户不存在");
             }
 
-            ProTableResult<Role> roleProTableResult = roleService.selectForProTable(para);
-            if (roleProTableResult.getData().size() > 0) {
+            Long tenantRoleCount = roleService.getBaseMapper().selectCount(new QueryWrapper<Role>().eq("tenant_id", id));
+            if (tenantRoleCount > 0) {
                 return Result.failed("删除租户失败，该租户已绑定角色");
             }
 
-            ProTableResult<Namespace> namespaceProTableResult = namespaceService.selectForProTable(para);
-            if (namespaceProTableResult.getData().size() > 0) {
+            Long tenantNamespaceCount = namespaceService.getBaseMapper().selectCount(new QueryWrapper<Namespace>().eq("tenant_id", id));
+            if (tenantNamespaceCount > 0) {
                 return Result.failed("删除租户失败，该租户已绑定名称空间");
             }
-
-            boolean result = removeById(id);
+            tenant.setIsDelete(true);
+            boolean result = updateById(tenant);
             if (result) {
                 return Result.succeed("删除成功");
             } else {

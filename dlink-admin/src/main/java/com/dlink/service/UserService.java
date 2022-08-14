@@ -20,12 +20,9 @@
 
 package com.dlink.service;
 
-import java.util.List;
-
 import com.dlink.common.result.Result;
 import com.dlink.db.service.ISuperService;
-import com.dlink.model.Role;
-import com.dlink.model.Tenant;
+import com.dlink.dto.LoginUTO;
 import com.dlink.model.User;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -45,7 +42,7 @@ public interface UserService extends ISuperService<User> {
 
     boolean removeUser(Integer id);
 
-    Result loginUser(String username, String password, boolean isRemember);
+    Result loginUser(LoginUTO loginUTO);
 
     User getUserByUsername(String username);
 

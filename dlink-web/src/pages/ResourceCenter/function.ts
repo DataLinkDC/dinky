@@ -18,28 +18,21 @@
  */
 
 
-import {Tabs} from "antd";
-import VersionList from "@/pages/DevOps/JobInfo/Version/VersionList";
-import VersionTimeLineList from "@/pages/DevOps/JobInfo/Version/VersionTimeLineList";
+import {RoleTableListItem} from "@/pages/ResourceCenter/data.d";
 
-const {TabPane} = Tabs;
-const TaskVersionInfo = (props: any) => {
-  const {job} = props;
+export const getFormData = (values: RoleTableListItem) => {
+  let namespaceIds:string [] = [];
+  if(values&&values.namespaceIds && values.namespaceIds!=''){
+    namespaceIds = values.namespaceIds.split(',');
+  }
+  return {...values,namespaceIds:namespaceIds};
+}
 
-  return (<>
-    <Tabs defaultActiveKey="overview" size="small" tabPosition="top" style={{
-      border: "1px solid #f0f0f0",
-    }}>
-      <TabPane tab={<span>&nbsp; 版本列表 &nbsp;</span>} key="versionlist">
-        <VersionList job={job}/>
-      </TabPane>
-
-      <TabPane tab={<span>&nbsp; TimeLine &nbsp;</span>} key="timeline">
-        <VersionTimeLineList job={job}/>
-      </TabPane>
-
-    </Tabs>
-  </>)
-};
-
-export default TaskVersionInfo;
+export const buildFormData = (values: RoleTableListItem,params: any) => {
+  let newValue = values;
+  if(params.namespaceIds){
+    newValue.namespaceIds = params.namespaceIds.join(',');
+    delete params.namespaceIds;
+  }
+  return {...newValue,...params};
+}

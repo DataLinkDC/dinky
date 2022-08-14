@@ -19,14 +19,20 @@
 
 
 import React, {useState} from 'react';
-import {Button, Form, Input, Modal} from 'antd';
-import {RoleTableListItem} from '../data';
+import {Button, Form, Input, Modal, Select, Tag} from 'antd';
+import {NameSpaceTableListItem, RoleTableListItem} from "@/pages/ResourceCenter/data.d";
+import {getStorageTenantId} from "@/components/Common/crud";
+import {connect} from "umi";
+import {NameSpaceStateType} from "@/pages/ResourceCenter/RoleManager/model";
+import {buildFormData, getFormData} from "@/pages/ResourceCenter/function";
+
 
 export type TenantFormProps = {
   onCancel: (flag?: boolean) => void;
   onSubmit: (values: Partial<RoleTableListItem>) => void;
   modalVisible: boolean;
   values: Partial<RoleTableListItem>;
+  nameSpaces: NameSpaceTableListItem[];
 };
 
 const formLayout = {
@@ -34,34 +40,51 @@ const formLayout = {
   wrapperCol: {span: 13},
 };
 
+const Option = Select.Option;
+
+
 const RoleForm: React.FC<TenantFormProps> = (props) => {
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<RoleTableListItem>>({
-    id: props?.values?.id,
-    tenantId: props?.values?.tenantId,
-    roleCode: props?.values?.roleCode,
-    roleName: props?.values?.roleName,
-    isDelete: props?.values?.isDelete,
-    note: props?.values?.note,
-    createTime: props?.values?.createTime,
-    updateTime: props?.values?.updateTime,
+    id: props.values?.id,
+    tenantId: props.values?.tenantId,
+    roleCode: props.values?.roleCode,
+    namespaceIds: props.values?.namespaceIds,
+    roleName: props.values?.roleName,
+    isDelete: props.values?.isDelete,
+    note: props.values?.note,
+    createTime: props.values?.createTime,
+    updateTime: props.values?.updateTime,
   });
 
   const {
     onSubmit: handleSubmit,
     onCancel: handleModalVisible,
     modalVisible,
+    nameSpaces,
   } = props;
+
+  const getNameSpaceOptions = () => {
+    const itemList: JSX.Element[] = [];
+    for (const item of nameSpaces) {
+      const tag = (<><Tag color="processing">{item.namespaceCode}</Tag>{item.namespaceCode}</>);
+      itemList.push(<Option key={item.namespaceCode} value={item.id?.toString()} label={tag}>
+        {tag}
+      </Option>)
+    }
+    return itemList;
+  };
 
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
     // fieldsValue.id = formVals.id;
-    setFormVals(fieldsValue);
-    handleSubmit(fieldsValue);
+    fieldsValue.tenantId = getStorageTenantId();
+    setFormVals(buildFormData(formVals,fieldsValue));
+    handleSubmit(buildFormData(formVals,fieldsValue));
   };
 
-  const renderContent = (formValsPara: Partial<RoleTableListItem>) => {
+  const renderContent = (formVals) => {
     return (
       <>
         <Form.Item
@@ -75,6 +98,20 @@ const RoleForm: React.FC<TenantFormProps> = (props) => {
           label="角色名称"
           rules={[{required: true, message: '请输入角色名称！'}]}>
           <Input placeholder="请输入角色名称"/>
+        </Form.Item>
+        <Form.Item
+          name="namespaceIds"
+          label="命名空间"
+          rules={[{required: true, message: '请选择命名空间！'}]}
+        >
+          <Select
+            mode="multiple"
+            style={{width: '100%'}}
+            placeholder="请选择命名空间"
+            optionLabelProp="label"
+          >
+            {getNameSpaceOptions()}
+          </Select>
         </Form.Item>
         <Form.Item
           name="note"
@@ -100,7 +137,7 @@ const RoleForm: React.FC<TenantFormProps> = (props) => {
 
   return (
     <Modal
-      width={640}
+      width={1000}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
       title={formVals.id ? "修改角色" : "创建角色"}
@@ -111,12 +148,13 @@ const RoleForm: React.FC<TenantFormProps> = (props) => {
       <Form
         {...formLayout}
         form={form}
-        initialValues={formVals}
+        initialValues={getFormData(formVals)}
       >
-        {renderContent(formVals)}
+        {renderContent(getFormData(formVals))}
       </Form>
     </Modal>
   );
 };
-
-export default RoleForm;
+export default connect(({NameSpace}: { NameSpace: NameSpaceStateType }) => ({
+  nameSpaces: NameSpace.nameSpaces,
+})) (RoleForm);
