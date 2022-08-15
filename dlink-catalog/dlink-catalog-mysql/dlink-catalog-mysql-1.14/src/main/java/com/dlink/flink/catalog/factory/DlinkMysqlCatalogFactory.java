@@ -19,7 +19,14 @@
 
 package com.dlink.flink.catalog.factory;
 
+import static com.dlink.flink.catalog.factory.DlinkMysqlCatalogFactoryOptions.PASSWORD;
+import static com.dlink.flink.catalog.factory.DlinkMysqlCatalogFactoryOptions.URL;
+import static com.dlink.flink.catalog.factory.DlinkMysqlCatalogFactoryOptions.USERNAME;
+
+import static org.apache.flink.table.factories.FactoryUtil.PROPERTY_VERSION;
+
 import com.dlink.flink.catalog.DlinkMysqlCatalog;
+
 import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.table.catalog.Catalog;
 import org.apache.flink.table.factories.CatalogFactory;
@@ -27,9 +34,6 @@ import org.apache.flink.table.factories.FactoryUtil;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import static com.dlink.flink.catalog.factory.DlinkMysqlCatalogFactoryOptions.*;
-import static org.apache.flink.table.factories.FactoryUtil.PROPERTY_VERSION;
 
 /**
  * Factory for {@link DlinkMysqlCatalog}.
