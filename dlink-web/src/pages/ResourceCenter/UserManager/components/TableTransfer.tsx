@@ -114,7 +114,7 @@ export type TableTransferFromProps = {
   onChange: (values: string[]) => void;
 };
 
-const TableTransferFrom: React.FC = (props: TableTransferFromProps) => {
+const TableTransferFrom = (props: TableTransferFromProps) => {
 
   const {user, onChange: handleChange} = props;
 

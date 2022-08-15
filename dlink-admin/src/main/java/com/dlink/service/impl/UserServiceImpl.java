@@ -136,7 +136,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             if (!user.getEnabled()) {
                 return Result.failed("账号已被禁用");
             }
-            UserDTO userDTO= new UserDTO();
+            UserDTO userDTO = new UserDTO();
             List<RoleDTO> roleDTOList = new ArrayList<>();
             List<UserRole> userRoles = userRoleService.getUserRoleByUserId(user.getId());
             List<Tenant> tenantList = tenantService.list();
@@ -174,23 +174,28 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Result grantRole(JsonNode para) {
-        List<UserRole> userRoleList = new ArrayList<>();
-        Integer userId = para.get("userId").asInt();
-        JsonNode userRoleJsonNode = para.get("roles");
-
-        for (JsonNode ids : userRoleJsonNode) {
-            UserRole userRole = new UserRole();
-            userRole.setUserId(userId);
-            userRole.setRoleId(ids.asInt());
-            userRoleList.add(userRole);
-        }
-        // save or update user role
-        boolean result = userRoleService.saveOrUpdateBatch(userRoleList, 1000);
-        if (result) {
-            return Result.succeed("用户授权角色成功");
+        if (para.size() > 0) {
+            List<UserRole> userRoleList = new ArrayList<>();
+            Integer userId = para.get("userId").asInt();
+            userRoleService.remove(new QueryWrapper<UserRole>().eq("user_id", userId));
+            JsonNode userRoleJsonNode = para.get("roles");
+            for (JsonNode ids : userRoleJsonNode) {
+                UserRole userRole = new UserRole();
+                userRole.setUserId(userId);
+                userRole.setRoleId(ids.asInt());
+                userRoleList.add(userRole);
+            }
+            // save or update user role
+            boolean result = userRoleService.saveOrUpdateBatch(userRoleList, 1000);
+            if (result) {
+                return Result.succeed("用户授权角色成功");
+            } else {
+                return Result.failed("用户授权角色失败");
+            }
         } else {
-            return Result.failed("用户授权角色失败");
+            return Result.failed("请选择要授权的角色");
         }
     }
 

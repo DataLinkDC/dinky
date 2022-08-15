@@ -132,6 +132,7 @@ const RoleFormList: React.FC<{}> = (props: any) => {
       title: '备注',
       dataIndex: 'note',
       hideInSearch: true,
+      ellipsis: true,
     },
     {
       title: '创建时间',

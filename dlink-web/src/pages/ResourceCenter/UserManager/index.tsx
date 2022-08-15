@@ -82,6 +82,7 @@ const UserTableList: React.FC<{}> = (props: any) => {
     </Dropdown>
   );
 
+
   const handleGrantRoleForm = () => {
     return (
       <Modal title="添加角色" visible={handleGrantRole} destroyOnClose={true} width={"1500px"}
@@ -94,12 +95,21 @@ const UserTableList: React.FC<{}> = (props: any) => {
                }}>
                  关闭
                </Button>,
-               <Button type="primary" onClick={() => {
-                 console.log(formValues);
-                 console.log(roleRelFormValues);
+               <Button type="primary" onClick={async () => {
                  // to save
-                 setHandleGrantRole(false);
-               }}>
+                 const success = await handleAddOrUpdate("api/user/grantRole", {
+                   userId: formValues.id,
+                   roles: roleRelFormValues
+                 });
+                 if (success) {
+                   setHandleGrantRole(false);
+                   setFormValues({});
+                   if (actionRef.current) {
+                     actionRef.current.reload();
+                   }
+                 }
+               }}
+               >
                  确认
                </Button>,
              ]}>
