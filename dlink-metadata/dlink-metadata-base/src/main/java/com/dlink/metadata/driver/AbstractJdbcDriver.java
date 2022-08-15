@@ -92,13 +92,13 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     }
 
     private void assembleConfig(DriverConfig config) {
-        dataSource.setName(config.getName());
+        dataSource.setName(config.getName().replaceAll(":",""));
         dataSource.setUrl(config.getUrl());
         dataSource.setDriverClassName(getDriverClass());
         dataSource.setUsername(config.getUsername());
         dataSource.setPassword(config.getPassword());
         dataSource.setValidationQuery("select 1");
-        dataSource.setTestOnBorrow(true);
+        dataSource.setTestOnBorrow(false);
         dataSource.setTestWhileIdle(true);
         dataSource.setBreakAfterAcquireFailure(true);
         dataSource.setFailFast(true);

@@ -31,6 +31,7 @@ import com.dlink.model.Table;
 import com.dlink.utils.FlinkBaseUtil;
 import com.dlink.utils.JSONUtil;
 import com.dlink.utils.LogUtil;
+import com.dlink.utils.SplitUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
@@ -139,11 +140,12 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                     }
                 }, rowTypeInfo);
     }
+
     private void addTableSink(
-        CustomTableEnvironment customTableEnvironment,
-        DataStream<Row> rowDataDataStream,
-        Table table,
-        List<String> columnNameList) {
+            CustomTableEnvironment customTableEnvironment,
+            DataStream<Row> rowDataDataStream,
+            Table table,
+            List<String> columnNameList) {
 
         String sinkSchemaName = getSinkSchemaName(table);
         String sinkTableName = getSinkTableName(table);
@@ -166,7 +168,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                     modifyOperations.add((ModifyOperation) operation);
                 }
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             logger.error("Translate to plan occur exception: {}", e);
             throw e;
         }
@@ -184,13 +186,13 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
 
     @Override
     public DataStreamSource build(
-        CDCBuilder cdcBuilder,
-        StreamExecutionEnvironment env,
-        CustomTableEnvironment customTableEnvironment,
-        DataStreamSource<String> dataStreamSource) {
+            CDCBuilder cdcBuilder,
+            StreamExecutionEnvironment env,
+            CustomTableEnvironment customTableEnvironment,
+            DataStreamSource<String> dataStreamSource) {
         final String timeZone = config.getSink().get("timezone");
         config.getSink().remove("timezone");
-        if (Asserts.isNotNullString(timeZone)){
+        if (Asserts.isNotNullString(timeZone)) {
             sinkTimeZone = ZoneId.of(timeZone);
         }
         final List<Schema> schemaList = config.getSchemaList();
@@ -208,19 +210,18 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                     tagMap.put(table, outputTag);
 
                     tableMap.put(table.getSchemaTableName(splitConfMap), table);
-
                 }
             }
             final String schemaFieldName = config.getSchemaFieldName();
             ObjectMapper objectMapper = new ObjectMapper();
-            SingleOutputStreamOperator<Map> mapOperator = dataStreamSource.map(x -> objectMapper.readValue(x,Map.class)).returns(Map.class);
+            SingleOutputStreamOperator<Map> mapOperator = dataStreamSource.map(x -> objectMapper.readValue(x, Map.class)).returns(Map.class);
 
             SingleOutputStreamOperator<Map> processOperator = mapOperator.process(new ProcessFunction<Map, Map>() {
                 @Override
                 public void processElement(Map map, ProcessFunction<Map, Map>.Context ctx, Collector<Map> out) throws Exception {
                     LinkedHashMap source = (LinkedHashMap) map.get("source");
                     try {
-                        Table table = tableMap.get(source.get(schemaFieldName).toString() + "." + source.get("table").toString());
+                        Table table = tableMap.get(SplitUtil.getReValue(source.get(schemaFieldName).toString(), splitConfMap) + "." + SplitUtil.getReValue(source.get("table").toString(), splitConfMap));
                         OutputTag<Map> outputTag = tagMap.get(table);
                         ctx.output(outputTag, map);
                     } catch (Exception e) {
@@ -228,7 +229,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                     }
                 }
             });
-            tagMap.forEach((table,tag) -> {
+            tagMap.forEach((table, tag) -> {
                 final String schemaTableName = table.getSchemaTableName();
                 try {
                     DataStream<Map> filterOperator = shunt(processOperator, table, tag);
