@@ -27,7 +27,6 @@ import lombok.Data;
  * @author wenmo
  * @since 2022/3/7 18:30
  **/
-
 @Data
 public class AlertMsg {
 

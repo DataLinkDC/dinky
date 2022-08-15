@@ -17,19 +17,24 @@
  *
  */
 
-
 package com.dlink.alert.email.template;
+
+import static java.util.Objects.requireNonNull;
 
 import com.dlink.alert.ShowType;
 import com.dlink.alert.email.EmailConstants;
 import com.dlink.utils.JSONUtil;
+
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.*;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * @Author: zhumingye
@@ -41,7 +46,7 @@ public class DefaultHTMLTemplate implements AlertTemplate {
     public static final Logger logger = LoggerFactory.getLogger(DefaultHTMLTemplate.class);
 
     @Override
-    public String getMessageFromTemplate(String title , String content, ShowType showType, boolean showAll) {
+    public String getMessageFromTemplate(String title, String content, ShowType showType, boolean showAll) {
 
         switch (showType) {
             case TABLE:
@@ -60,7 +65,7 @@ public class DefaultHTMLTemplate implements AlertTemplate {
      * @param showAll weather to show all
      * @return alert message
      */
-    private String getTableTypeMessage(String title ,String content, boolean showAll) {
+    private String getTableTypeMessage(String title,String content, boolean showAll) {
 
         if (StringUtils.isNotEmpty(content)) {
             List<LinkedHashMap> mapItemsList = JSONUtil.toList(content,LinkedHashMap.class);
@@ -107,7 +112,7 @@ public class DefaultHTMLTemplate implements AlertTemplate {
      * @param content message content
      * @return alert message
      */
-    private String getTextTypeMessage(String title ,String content) {
+    private String getTextTypeMessage(String title, String content) {
         StringBuilder stringBuilder = new StringBuilder(100);
 
         if (StringUtils.isNotEmpty(content)) {
