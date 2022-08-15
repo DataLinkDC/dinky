@@ -199,6 +199,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
             logger.info("Build deserialize successful...");
             Map<Table, OutputTag<Map>> tagMap = new HashMap<>();
             Map<String, Table> tableMap = new HashMap<>();
+            Map<String, String> splitConfMap = config.getSplit();
             for (Schema schema : schemaList) {
                 for (Table table : schema.getTables()) {
                     String sinkTableName = getSinkTableName(table);
@@ -206,7 +207,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                     };
                     tagMap.put(table, outputTag);
 
-                    tableMap.put(table.getSchemaTableName(), table);
+                    tableMap.put(table.getSchemaTableName(splitConfMap), table);
 
                 }
             }

@@ -20,15 +20,16 @@
 package com.dlink.model;
 
 import com.dlink.assertion.Asserts;
+import com.dlink.utils.SplitUtil;
 import com.dlink.utils.SqlUtil;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import lombok.Getter;
-import lombok.Setter;
+import java.util.Map;
 
 /**
  * Table
@@ -54,6 +55,9 @@ public class Table implements Serializable, Comparable<Table> {
     private Date updateTime;
     private List<Column> columns;
 
+    private TableType tableType = TableType.SINGLE_DATABASE_AND_TABLE;
+    private List<String> schemaTableNameList;
+
     public Table() {
     }
 
@@ -69,6 +73,14 @@ public class Table implements Serializable, Comparable<Table> {
 
     public String getSchemaTableNameWithUnderline() {
         return Asserts.isNullString(schema) ? name : schema + "_" + name;
+    }
+
+    public String getSchemaTableName(Map<String, String> split) {
+        if (SplitUtil.isEnabled(split)) {
+            String reValue = SplitUtil.getReValue(name, split);
+            return Asserts.isNullString(schema) ? reValue : SplitUtil.getReValue(schema, split) + "." + reValue;
+        }
+        return Asserts.isNullString(schema) ? name : schema + "." + name;
     }
 
     @Override
@@ -98,7 +110,7 @@ public class Table implements Serializable, Comparable<Table> {
     }
 
     public String getFlinkTableSql(String flinkConfig) {
-        return getFlinkDDL(flinkConfig,name);
+        return getFlinkDDL(flinkConfig, name);
     }
 
     public String getFlinkDDL(String flinkConfig, String tableName) {

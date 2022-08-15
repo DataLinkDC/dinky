@@ -28,10 +28,7 @@ import com.dlink.model.Schema;
 import com.dlink.model.Table;
 import com.dlink.result.SqlExplainResult;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.ServiceLoader;
+import java.util.*;
 
 /**
  * Driver
@@ -132,4 +129,5 @@ public interface Driver {
     List<SqlExplainResult> explain(String sql);
 
     Map<String, String> getFlinkColumnTypeConversion();
+    Set<Table> getTables(List<String> tableRegList, Map<String, String> split);
 }
