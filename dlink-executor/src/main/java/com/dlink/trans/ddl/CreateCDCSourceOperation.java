@@ -20,7 +20,6 @@
 
 package com.dlink.trans.ddl;
 
-import cn.hutool.core.convert.Convert;
 import com.dlink.assertion.Asserts;
 import com.dlink.cdc.CDCBuilder;
 import com.dlink.cdc.CDCBuilderFactory;
@@ -34,6 +33,7 @@ import com.dlink.model.Schema;
 import com.dlink.model.Table;
 import com.dlink.trans.AbstractOperation;
 import com.dlink.trans.Operation;
+import com.dlink.utils.SplitUtil;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.TableResult;
@@ -48,7 +48,7 @@ import java.util.*;
  */
 public class CreateCDCSourceOperation extends AbstractOperation implements Operation {
 
-    private String KEY_WORD = "EXECUTE CDCSOURCE";
+    private final String KEY_WORD = "EXECUTE CDCSOURCE";
 
     public CreateCDCSourceOperation() {
     }
@@ -83,7 +83,7 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
             final List<String> tableRegList = cdcBuilder.getTableList();
             final List<String> schemaTableNameList = new ArrayList<>();
             // add 判断是否开启支持分库模式
-            if (Convert.toBool(config.getSplit().getOrDefault("enable","false"))){
+            if (SplitUtil.isEnabled(cdcSource.getSplit())){
                 DriverConfig driverConfig = DriverConfig.build(((MysqlCDCBuilder)cdcBuilder).parseMetaDataConfig());
                 Driver driver = Driver.build(driverConfig);
 
