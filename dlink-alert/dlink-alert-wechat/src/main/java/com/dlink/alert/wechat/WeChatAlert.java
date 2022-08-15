@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.alert.wechat;
 
 import com.dlink.alert.AbstractAlert;
