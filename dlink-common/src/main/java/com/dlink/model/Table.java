@@ -17,16 +17,15 @@
  *
  */
 
-
 package com.dlink.model;
+
+import com.dlink.assertion.Asserts;
+import com.dlink.utils.SqlUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import com.dlink.assertion.Asserts;
-import com.dlink.utils.SqlUtil;
 
 import lombok.Getter;
 import lombok.Setter;
