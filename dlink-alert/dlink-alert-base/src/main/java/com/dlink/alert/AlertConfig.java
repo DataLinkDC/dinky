@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.alert;
 
 import java.util.Map;
