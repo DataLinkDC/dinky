@@ -17,13 +17,12 @@
  *
  */
 
-
 package com.dlink.model;
+
+import java.io.Serializable;
 
 import lombok.Getter;
 import lombok.Setter;
-
-import java.io.Serializable;
 
 /**
  * Column

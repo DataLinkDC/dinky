@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.assertion;
 
 import com.dlink.exception.RunTimeException;
@@ -55,7 +54,6 @@ public class Asserts {
         return isNull;
     }
 
-
     public static boolean isNotNullString(String str) {
         return !isNullString(str);
     }
@@ -69,7 +67,6 @@ public class Asserts {
         }
         return isNotNull;
     }
-
 
     public static boolean isEquals(String str1, String str2) {
         if (isNull(str1) && isNull(str2)) {
