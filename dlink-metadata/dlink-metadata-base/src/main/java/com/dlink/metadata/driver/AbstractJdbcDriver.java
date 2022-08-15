@@ -525,4 +525,9 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     public Map<String, String> getFlinkColumnTypeConversion() {
         return new HashMap<>();
     }
+
+    @Override
+    public Set<Table> getTables(List<String> tableRegList, Map<String, String> split) {
+        return null;
+    }
 }
