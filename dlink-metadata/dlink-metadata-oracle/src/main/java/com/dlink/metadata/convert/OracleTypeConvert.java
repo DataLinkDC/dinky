@@ -72,7 +72,6 @@ public class OracleTypeConvert implements ITypeConvert {
         } else if (t.contains("blob")) {
             columnType = ColumnType.BYTES;
         }
-        columnType.setPrecisionAndScale(column.getPrecision(), column.getScale());
         return columnType;
     }
 

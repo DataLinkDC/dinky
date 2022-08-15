@@ -17,8 +17,18 @@
  *
  */
 
-
 package com.dlink.controller;
+
+import com.dlink.api.FlinkAPI;
+import com.dlink.assertion.Asserts;
+import com.dlink.common.result.ProTableResult;
+import com.dlink.common.result.Result;
+import com.dlink.job.BuildConfiguration;
+import com.dlink.model.JobInstance;
+import com.dlink.model.JobManagerConfiguration;
+import com.dlink.model.TaskManagerConfiguration;
+import com.dlink.service.JobInstanceService;
+import com.dlink.service.TaskService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,16 +45,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dlink.api.FlinkAPI;
-import com.dlink.assertion.Asserts;
-import com.dlink.common.result.ProTableResult;
-import com.dlink.common.result.Result;
-import com.dlink.job.BuildConfiguration;
-import com.dlink.model.JobInstance;
-import com.dlink.model.JobManagerConfiguration;
-import com.dlink.model.TaskManagerConfiguration;
-import com.dlink.service.JobInstanceService;
-import com.dlink.service.TaskService;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.extern.slf4j.Slf4j;
@@ -99,9 +99,9 @@ public class JobInstanceController {
      * 获取指定ID的信息
      */
     @PostMapping("/getOneById")
-    public Result getOneById(@RequestBody JobInstance JobInstance) throws Exception {
-        JobInstance = jobInstanceService.getById(JobInstance.getId());
-        return Result.succeed(JobInstance, "获取成功");
+    public Result getOneById(@RequestBody JobInstance jobInstance) throws Exception {
+        jobInstance = jobInstanceService.getById(jobInstance.getId());
+        return Result.succeed(jobInstance, "获取成功");
     }
 
     /**

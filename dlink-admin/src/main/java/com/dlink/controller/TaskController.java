@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.controller;
 
 import com.dlink.common.result.ProTableResult;
@@ -30,16 +29,26 @@ import com.dlink.model.Task;
 import com.dlink.model.TaskOperatingSavepointSelect;
 import com.dlink.service.TaskService;
 import com.dlink.utils.TaskOneClickOperatingUtil;
-import com.fasterxml.jackson.databind.JsonNode;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 任务 Controller
@@ -157,11 +166,10 @@ public class TaskController {
         return taskService.releaseTask(id);
     }
 
-
     @PostMapping("/rollbackTask")
     public Result rollbackTask(@RequestBody TaskRollbackVersionDTO dto) throws Exception {
 
-       return taskService.rollbackTask(dto);
+        return taskService.rollbackTask(dto);
     }
 
     /**
@@ -255,7 +263,7 @@ public class TaskController {
     /**
      * json文件上传  导入task
      */
-    @PostMapping(value="/uploadTaskJson")
+    @PostMapping(value = "/uploadTaskJson")
     public Result uploadTaskJson(@RequestParam("file") MultipartFile file) throws Exception {
         return taskService.uploadTaskJson(file);
     }
@@ -328,7 +336,6 @@ public class TaskController {
     public Result queryOneClickOperatingTaskStatus() {
         return TaskOneClickOperatingUtil.queryOneClickOperatingTaskStatus();
     }
-
 
 }
 

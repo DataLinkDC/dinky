@@ -121,7 +121,7 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
             sourceBuilder.tableList(new String[0]);
         }
 
-        sourceBuilder.deserializer(new JsonDebeziumDeserializationSchema());
+        sourceBuilder.deserializer(new MysqlJsonDebeziumDeserializationSchema());
         sourceBuilder.debeziumProperties(debeziumProperties);
         sourceBuilder.jdbcProperties(jdbcProperties);
 

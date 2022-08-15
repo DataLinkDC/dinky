@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.model;
 
 import java.io.Serializable;

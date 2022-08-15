@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.utils;
 
 import com.dlink.assertion.Asserts;
@@ -39,8 +38,8 @@ public class SqlUtil {
 
         String[] splits = sql.replaceAll(";\r\n",";\n").split(sqlSeparator);
         String lastStatement = splits[splits.length - 1].trim();
-        if (lastStatement.endsWith(SEMICOLON)){
-            splits[splits.length - 1] = lastStatement.substring(0,lastStatement.length()-1);
+        if (lastStatement.endsWith(SEMICOLON)) {
+            splits[splits.length - 1] = lastStatement.substring(0, lastStatement.length() - 1);
         }
 
         return splits;

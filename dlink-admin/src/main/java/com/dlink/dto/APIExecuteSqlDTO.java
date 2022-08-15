@@ -17,16 +17,16 @@
  *
  */
 
-
 package com.dlink.dto;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.gateway.config.GatewayConfig;
 import com.dlink.job.JobConfig;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.Map;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * APIExecuteSqlDTO

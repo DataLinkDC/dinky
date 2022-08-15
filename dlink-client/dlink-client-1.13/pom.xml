@@ -5,7 +5,7 @@
     <parent>
         <artifactId>dlink-client</artifactId>
         <groupId>com.dlink</groupId>
-        <version>0.6.6</version>
+        <version>0.6.7-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -35,6 +35,12 @@
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-connector-jdbc-1.13</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.starrocks</groupId>
+            <artifactId>flink-connector-starrocks</artifactId>
+            <version>1.2.3_flink-1.13_2.11</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

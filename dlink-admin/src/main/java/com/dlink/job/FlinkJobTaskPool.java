@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.job;
 
 import com.dlink.model.JobInfoDetail;
@@ -38,7 +37,7 @@ public class FlinkJobTaskPool extends AbstractPool<JobInfoDetail> {
 
     private static FlinkJobTaskPool instance = new FlinkJobTaskPool();
 
-    public static FlinkJobTaskPool getInstance(){
+    public static FlinkJobTaskPool getInstance() {
         return instance;
     }
 

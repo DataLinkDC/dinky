@@ -17,19 +17,18 @@
  *
  */
 
-
-
 package com.dlink.alert.wechat;
 
 import com.dlink.alert.AlertResult;
 import com.dlink.alert.ShowType;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * WeChatSenderTest
@@ -79,7 +78,6 @@ public class WeChatSenderTest {
 
     }
 
-
     @Test
     public void testSendAPPMarkDownMsg() {
         WeChatSender weChatSender = new WeChatSender(weChatConfig);
@@ -106,7 +104,6 @@ public class WeChatSenderTest {
         AlertResult alertResult = weChatSender.send("TEXT-TEST", contentTest);
         Assert.assertEquals(true, alertResult.getSuccess());
     }
-
 
     @Test
     public void testChatTextMsg() throws IOException {
