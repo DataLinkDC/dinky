@@ -17,8 +17,19 @@
  *
  */
 
-
 package com.dlink.cdc.sql;
+
+import com.dlink.assertion.Asserts;
+import com.dlink.cdc.AbstractSinkBuilder;
+import com.dlink.cdc.CDCBuilder;
+import com.dlink.cdc.SinkBuilder;
+import com.dlink.executor.CustomTableEnvironment;
+import com.dlink.model.FlinkCDCConfig;
+import com.dlink.model.Schema;
+import com.dlink.model.Table;
+import com.dlink.utils.FlinkBaseUtil;
+import com.dlink.utils.JSONUtil;
+import com.dlink.utils.LogUtil;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.api.common.functions.FlatMapFunction;
@@ -34,31 +45,29 @@ import org.apache.flink.streaming.api.functions.ProcessFunction;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
-import org.apache.flink.table.types.logical.*;
+import org.apache.flink.table.types.logical.BigIntType;
+import org.apache.flink.table.types.logical.DateType;
+import org.apache.flink.table.types.logical.DecimalType;
+import org.apache.flink.table.types.logical.LogicalType;
+import org.apache.flink.table.types.logical.TimestampType;
+import org.apache.flink.table.types.logical.VarBinaryType;
 import org.apache.flink.table.types.utils.TypeConversions;
 import org.apache.flink.types.Row;
 import org.apache.flink.types.RowKind;
 import org.apache.flink.util.Collector;
+import org.apache.flink.util.OutputTag;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.cdc.AbstractSinkBuilder;
-import com.dlink.cdc.CDCBuilder;
-import com.dlink.cdc.SinkBuilder;
-import com.dlink.executor.CustomTableEnvironment;
-import com.dlink.model.FlinkCDCConfig;
-import com.dlink.model.Schema;
-import com.dlink.model.Table;
-import com.dlink.utils.FlinkBaseUtil;
-import com.dlink.utils.JSONUtil;
-import com.dlink.utils.LogUtil;
-import org.apache.flink.util.OutputTag;
+import javax.xml.bind.DatatypeConverter;
 
 /**
  * SQLSinkBuilder
@@ -68,7 +77,7 @@ import org.apache.flink.util.OutputTag;
  */
 public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, Serializable {
 
-    private final static String KEY_WORD = "sql";
+    private static final String KEY_WORD = "sql";
     private static final long serialVersionUID = -3699685106324048226L;
     private ZoneId sinkTimeZone = ZoneId.of("UTC");
 
@@ -168,7 +177,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                     modifyOperations.add((ModifyOperation) operation);
                 }
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             logger.error("Translate to plan occur exception: {}", e);
             throw e;
         }
@@ -192,7 +201,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
         DataStreamSource<String> dataStreamSource) {
         final String timeZone = config.getSink().get("timezone");
         config.getSink().remove("timezone");
-        if (Asserts.isNotNullString(timeZone)){
+        if (Asserts.isNotNullString(timeZone)) {
             sinkTimeZone = ZoneId.of(timeZone);
         }
         final List<Schema> schemaList = config.getSchemaList();

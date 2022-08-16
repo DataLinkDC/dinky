@@ -17,17 +17,15 @@
  *
  */
 
-
 package com.dlink.cdc;
+
+import com.dlink.model.FlinkCDCConfig;
 
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 import java.util.List;
 import java.util.Map;
-
-import com.dlink.model.FlinkCDCConfig;
-import com.dlink.model.Table;
 
 /**
  * CDCBuilder
