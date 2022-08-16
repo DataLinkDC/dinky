@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.app.db;
 
 import com.dlink.constant.FlinkParamConstant;
@@ -48,7 +47,6 @@ public class DBConfig {
         return new DBConfig(driver, url, username, password);
     }
 
-
     public static DBConfig build(Map<String, String> params) {
         return new DBConfig(params.get(FlinkParamConstant.DRIVER),
                 params.get(FlinkParamConstant.URL),
@@ -74,11 +72,11 @@ public class DBConfig {
 
     @Override
     public String toString() {
-        return "DBConfig{" +
-                "driver='" + driver + '\'' +
-                ", url='" + url + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                '}';
+        return "DBConfig{"
+                + "driver='" + driver + '\''
+                + ", url='" + url + '\''
+                + ", username='" + username + '\''
+                + ", password='" + password + '\''
+                + '}';
     }
 }

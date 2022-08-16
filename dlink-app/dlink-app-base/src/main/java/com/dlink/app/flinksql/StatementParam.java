@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.app.flinksql;
 
 import com.dlink.parser.SqlType;

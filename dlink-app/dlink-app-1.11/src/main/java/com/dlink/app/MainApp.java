@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.app;
 
 import com.dlink.app.db.DBConfig;
