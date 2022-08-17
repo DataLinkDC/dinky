@@ -17,31 +17,37 @@
  *
  */
 
-
 package com.dlink.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.util.ObjectUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import static com.dlink.assertion.Asserts.isNotNull;
+import static com.dlink.assertion.Asserts.isNull;
+
 import com.dlink.assertion.Asserts;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.dto.CatalogueTaskDTO;
 import com.dlink.mapper.CatalogueMapper;
-import com.dlink.model.*;
+import com.dlink.model.Catalogue;
+import com.dlink.model.JobLifeCycle;
+import com.dlink.model.Statement;
+import com.dlink.model.Task;
+import com.dlink.model.TaskVersion;
 import com.dlink.service.CatalogueService;
 import com.dlink.service.StatementService;
 import com.dlink.service.TaskService;
 import com.dlink.service.TaskVersionService;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
-import static com.dlink.assertion.Asserts.isNotNull;
-import static com.dlink.assertion.Asserts.isNull;
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
 
 /**
  * CatalogueServiceImpl
@@ -66,8 +72,8 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     }
 
     @Override
-    public Catalogue findByParentIdAndName(Integer parent_id, String name) {
-        return baseMapper.selectOne(Wrappers.<Catalogue>query().eq("parent_id", parent_id).eq("name", name));
+    public Catalogue findByParentIdAndName(Integer parentId, String name) {
+        return baseMapper.selectOne(Wrappers.<Catalogue>query().eq("parent_id", parentId).eq("name", name));
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -134,7 +140,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
                 taskService.removeById(catalogue.getTaskId());
                 statementService.removeById(catalogue.getTaskId());
                 List<TaskVersion> taskVersionList = taskVersionService.getTaskVersionByTaskId(catalogue.getTaskId());
-                if(taskVersionList.size() > 0 ){
+                if (taskVersionList.size() > 0) {
                     taskVersionService.removeByIds(taskVersionList);
                 }
             }
@@ -153,7 +159,6 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             return updateById(catalogue);
         }
     }
-
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -177,7 +182,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         //设置复制后的作业名称为：原名称+自增序列
         size = size + 1;
         newTask.setName(oldTask.getName() + "_" + size);
-        newTask.setAlias(oldTask.getAlias() + "_" + size );
+        newTask.setAlias(oldTask.getAlias() + "_" + size);
         newTask.setStep(JobLifeCycle.DEVELOP.getValue());
         taskService.save(newTask);
 
@@ -201,7 +206,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     }
 
     @Override
-    public Integer addDependCatalogue(String[] catalogueNames){
+    public Integer addDependCatalogue(String[] catalogueNames) {
         Integer parentId = 0;
         for (int i = 0; i < catalogueNames.length - 1; i++) {
             String catalogueName = catalogueNames[i];

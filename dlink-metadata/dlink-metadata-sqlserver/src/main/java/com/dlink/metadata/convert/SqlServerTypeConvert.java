@@ -80,7 +80,6 @@ public class SqlServerTypeConvert implements ITypeConvert {
         } else if (t.contains("timestamp") || t.contains("binary") || t.contains("varbinary") || t.contains("image")) {
             columnType = ColumnType.BYTES;
         }
-        columnType.setPrecisionAndScale(column.getPrecision(), column.getScale());
         return columnType;
     }
 

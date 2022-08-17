@@ -17,16 +17,15 @@
  *
  */
 
-
 package com.dlink.model;
+
+import com.dlink.assertion.Asserts;
+import com.dlink.utils.SqlUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import com.dlink.assertion.Asserts;
-import com.dlink.utils.SqlUtil;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -107,7 +106,7 @@ public class Table implements Serializable, Comparable<Table> {
         sb.append("CREATE TABLE IF NOT EXISTS " + tableName + " (\n");
         List<String> pks = new ArrayList<>();
         for (int i = 0; i < columns.size(); i++) {
-            String type = columns.get(i).getJavaType().getFlinkType();
+            String type = columns.get(i).getFlinkType();
             sb.append("    ");
             if (i > 0) {
                 sb.append(",");
@@ -158,7 +157,7 @@ public class Table implements Serializable, Comparable<Table> {
         sb.append("CREATE TABLE IF NOT EXISTS " + name + " (\n");
         List<String> pks = new ArrayList<>();
         for (int i = 0; i < columns.size(); i++) {
-            String type = columns.get(i).getJavaType().getFlinkType();
+            String type = columns.get(i).getFlinkType();
             sb.append("    ");
             if (i > 0) {
                 sb.append(",");

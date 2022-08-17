@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.app.flinksql;
 
 import com.dlink.app.db.DBConfig;
@@ -29,14 +28,21 @@ import com.dlink.executor.ExecutorSetting;
 import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.parser.SqlType;
 import com.dlink.trans.Operations;
+
 import org.apache.flink.configuration.CheckpointingOptions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * FlinkSQLFactory
@@ -59,9 +65,9 @@ public class Submiter {
         if (id == null) {
             throw new SQLException("请指定任务ID");
         }
-        return "select id, name, alias as jobName, type,check_point as checkpoint," +
-                "save_point_path as savePointPath, parallelism,fragment as useSqlFragment,statement_set as useStatementSet,config_json as config," +
-                " env_id as envId,batch_model AS useBatchModel from dlink_task where id = " + id;
+        return "select id, name, alias as jobName, type,check_point as checkpoint,"
+                + "save_point_path as savePointPath, parallelism,fragment as useSqlFragment,statement_set as useStatementSet,config_json as config,"
+                + " env_id as envId,batch_model AS useBatchModel from dlink_task where id = " + id;
     }
 
     private static String getFlinkSQLStatement(Integer id, DBConfig config) {

@@ -17,11 +17,8 @@
  *
  */
 
-
 package com.dlink.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.alert.Alert;
 import com.dlink.alert.AlertConfig;
 import com.dlink.alert.AlertMsg;
@@ -35,12 +32,10 @@ import com.dlink.model.AlertInstance;
 import com.dlink.service.AlertGroupService;
 import com.dlink.service.AlertInstanceService;
 import com.dlink.utils.JSONUtil;
-import com.fasterxml.jackson.databind.JsonNode;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -54,6 +49,13 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * AlertInstanceServiceImpl
@@ -89,21 +91,20 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
         alertMsg.setJobStartTime(currentDateTime);
         alertMsg.setJobEndTime(currentDateTime);
         alertMsg.setJobDuration("1 Seconds");
-        String linkUrl = "http://cdh1:8081/#/job/"+ uuid+"/overview";
-        String exceptionUrl = "http://cdh1:8081/#/job/"+uuid+"/exceptions";
+        String linkUrl = "http://cdh1:8081/#/job/" + uuid + "/overview";
+        String exceptionUrl = "http://cdh1:8081/#/job/" + uuid + "/exceptions";
 
         Map<String, String> map = JSONUtil.toMap(alertInstance.getParams());
-        if ( map.get("msgtype").equals(ShowType.MARKDOWN.getValue())) {
+        if (map.get("msgtype").equals(ShowType.MARKDOWN.getValue())) {
             alertMsg.setLinkUrl("[跳转至该任务的 FlinkWeb](" + linkUrl + ")");
             alertMsg.setExceptionUrl("[点击查看该任务的异常日志](" + exceptionUrl + ")");
-        }else {
+        } else {
             alertMsg.setLinkUrl(linkUrl);
             alertMsg.setExceptionUrl(exceptionUrl);
         }
-        String title = "任务【"+alertMsg.getJobName()+"】：" +alertMsg.getJobStatus() + "!";
+        String title = "任务【" + alertMsg.getJobName() + "】：" + alertMsg.getJobStatus() + "!";
         return alert.send(title, alertMsg.toString());
     }
-
 
     @Override
     public Result deleteAlertInstance(JsonNode para) {
@@ -128,13 +129,13 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
         }
     }
 
-    private void writeBackGroupInformation(Map<Integer, Set<Integer>> alertGroupInformation){
-        if (MapUtils.isEmpty(alertGroupInformation)){
+    private void writeBackGroupInformation(Map<Integer, Set<Integer>> alertGroupInformation) {
+        if (MapUtils.isEmpty(alertGroupInformation)) {
             return;
         }
         final Map<Integer, String> result = new HashMap<>(8);
         for (Map.Entry<Integer, Set<Integer>> entry : alertGroupInformation.entrySet()) {
-            if (entry.getKey() == null){
+            if (entry.getKey() == null) {
                 continue;
             }
             final Set<Integer> groupIdSet = entry.getValue();
@@ -161,12 +162,11 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
         alertGroupService.updateBatchById(list);
     }
 
-
-    private Map<Integer, Set<Integer>> getAlertGroupInformation(){
+    private Map<Integer, Set<Integer>> getAlertGroupInformation() {
         final LambdaQueryWrapper<AlertGroup> select = new LambdaQueryWrapper<AlertGroup>()
                 .select(AlertGroup::getId, AlertGroup::getAlertInstanceIds);
         final List<AlertGroup> list = alertGroupService.list(select);
-        if (CollectionUtils.isEmpty(list)){
+        if (CollectionUtils.isEmpty(list)) {
             return new HashMap<>(0);
         }
         final Map<Integer, Set<Integer>> map = new HashMap<>(list.size());
@@ -180,16 +180,16 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
     }
 
     private void buildGroup(Map<Integer, Set<Integer>> map, AlertGroup alertGroup) {
-        if (StringUtils.isBlank(alertGroup.getAlertInstanceIds())){
+        if (StringUtils.isBlank(alertGroup.getAlertInstanceIds())) {
             return;
         }
         for (String instanceId : alertGroup.getAlertInstanceIds().split(",")) {
-            if (StringUtils.isBlank(instanceId)){
+            if (StringUtils.isBlank(instanceId)) {
                 continue;
             }
             final Integer instanceIdInt = Integer.valueOf(instanceId);
             Set<Integer> groupIdSet = map.get(instanceIdInt);
-            if (CollectionUtils.isEmpty(groupIdSet)){
+            if (CollectionUtils.isEmpty(groupIdSet)) {
                 groupIdSet = new HashSet<>();
                 map.put(instanceIdInt, groupIdSet);
             }

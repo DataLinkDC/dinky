@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.alert.feishu;
 
 import org.apache.http.HttpHost;

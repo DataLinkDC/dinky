@@ -17,14 +17,14 @@
  *
  */
 
-
 package com.dlink.model;
+
+import com.dlink.assertion.Asserts;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.dlink.assertion.Asserts;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
@@ -42,12 +42,12 @@ public class SystemConfiguration {
     }
 
     private static final List<Configuration> CONFIGURATION_LIST = new ArrayList<Configuration>() {{
-        add(systemConfiguration.sqlSubmitJarPath);
-        add(systemConfiguration.sqlSubmitJarParas);
-        add(systemConfiguration.sqlSubmitJarMainAppClass);
-        add(systemConfiguration.useRestAPI);
-        add(systemConfiguration.sqlSeparator);
-    }};
+            add(systemConfiguration.sqlSubmitJarPath);
+            add(systemConfiguration.sqlSubmitJarParas);
+            add(systemConfiguration.sqlSubmitJarMainAppClass);
+            add(systemConfiguration.useRestAPI);
+            add(systemConfiguration.sqlSeparator);
+        }};
 
     private Configuration sqlSubmitJarPath = new Configuration(
         "sqlSubmitJarPath",

@@ -17,32 +17,47 @@
  *
  */
 
-
-
 package com.dlink.alert.email;
+
+import static java.util.Objects.requireNonNull;
 
 import com.dlink.alert.AlertException;
 import com.dlink.alert.AlertResult;
 import com.dlink.alert.ShowType;
 import com.dlink.alert.email.template.AlertTemplate;
 import com.dlink.alert.email.template.DefaultHTMLTemplate;
-import com.sun.mail.smtp.SMTPProvider;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import javax.activation.CommandMap;
 import javax.activation.MailcapCommandMap;
-import javax.mail.*;
-import javax.mail.internet.*;
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.MimeUtility;
 
-import static java.util.Objects.requireNonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.sun.mail.smtp.SMTPProvider;
 
 /**
  * MailSender 邮件发送器
@@ -179,7 +194,7 @@ public final class MailSender {
 
                 String partContent = (showType.equals(ShowType.ATTACHMENT.getValue())
                     ? "Please see the attachment " + title + EmailConstants.EXCEL_SUFFIX_XLSX
-                    : htmlTable(title ,content, false));
+                    : htmlTable(title, content, false));
 
                 attachment(title, content, partContent);
 
@@ -201,8 +216,8 @@ public final class MailSender {
      * @param showAll if show the whole content
      * @return the html table form
      */
-    private String htmlTable(String title,String content, boolean showAll) {
-        return alertTemplate.getMessageFromTemplate(title ,content, ShowType.TABLE, showAll);
+    private String htmlTable(String title, String content, boolean showAll) {
+        return alertTemplate.getMessageFromTemplate(title, content, ShowType.TABLE, showAll);
     }
 
     /**
@@ -211,7 +226,7 @@ public final class MailSender {
      * @param content the content
      * @return the html table form
      */
-    private String htmlTable(String title,String content) {
+    private String htmlTable(String title, String content) {
         return htmlTable(title,content, true);
     }
 
@@ -221,8 +236,8 @@ public final class MailSender {
      * @param content the content
      * @return text in html form
      */
-    private String htmlText(String title ,String content) {
-        return alertTemplate.getMessageFromTemplate(title,content, ShowType.TEXT);
+    private String htmlText(String title, String content) {
+        return alertTemplate.getMessageFromTemplate(title, content, ShowType.TEXT);
     }
 
     /**
@@ -274,22 +289,22 @@ public final class MailSender {
         props.setProperty(EmailConstants.MAIL_SMTP_HOST, mailSmtpHost);
         props.setProperty(EmailConstants.MAIL_SMTP_PORT, mailSmtpPort);
 
-        if (StringUtils.isNotEmpty(enableSmtpAuth)){
+        if (StringUtils.isNotEmpty(enableSmtpAuth)) {
             props.setProperty(EmailConstants.MAIL_SMTP_AUTH, enableSmtpAuth);
         }
-        if ( StringUtils.isNotEmpty(mailProtocol)){
+        if (StringUtils.isNotEmpty(mailProtocol)) {
             props.setProperty(EmailConstants.MAIL_TRANSPORT_PROTOCOL, mailProtocol);
         }
 
-        if (StringUtils.isNotEmpty(mailUseSSL)){
+        if (StringUtils.isNotEmpty(mailUseSSL)) {
             props.setProperty(EmailConstants.MAIL_SMTP_SSL_ENABLE, mailUseSSL);
         }
 
-        if (StringUtils.isNotEmpty(mailUseStartTLS)){
+        if (StringUtils.isNotEmpty(mailUseStartTLS)) {
             props.setProperty(EmailConstants.MAIL_SMTP_STARTTLS_ENABLE, mailUseStartTLS);
         }
 
-        if (StringUtils.isNotEmpty(sslTrust)){
+        if (StringUtils.isNotEmpty(sslTrust)) {
             props.setProperty(EmailConstants.MAIL_SMTP_SSL_TRUST, sslTrust);
         }
 
@@ -360,9 +375,9 @@ public final class MailSender {
          * to send information, you can use HTML tags in mail content because of the use of HtmlEmail
          */
         if (showType.equals(ShowType.TABLE.getValue())) {
-            email.setMsg(htmlTable(title ,content));
+            email.setMsg(htmlTable(title, content));
         } else if (showType.equals(ShowType.TEXT.getValue())) {
-            email.setMsg(htmlText(title ,content));
+            email.setMsg(htmlText(title, content));
         }
 
         // send

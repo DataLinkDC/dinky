@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.dto;
 
 import lombok.Getter;

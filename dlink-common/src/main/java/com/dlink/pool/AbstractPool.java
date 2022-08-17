@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.pool;
 
 import java.util.Map;
@@ -28,15 +27,12 @@ import java.util.Map;
  * @author wenmo
  * @since 2022/5/28 19:40
  */
-public abstract class AbstractPool<T>{
+public abstract class AbstractPool<T> {
 
     public abstract Map<String, T> getMap();
 
     public boolean exist(String key) {
-        if (getMap().containsKey(key)) {
-            return true;
-        }
-        return false;
+        return getMap().containsKey(key);
     }
 
     public int push(String key, T entity) {

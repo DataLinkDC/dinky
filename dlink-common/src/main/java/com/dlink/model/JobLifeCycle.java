@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.model;
 
 /**
@@ -50,7 +49,6 @@ public enum JobLifeCycle {
     public String getLabel() {
         return label;
     }
-
 
     public static JobLifeCycle get(Integer value) {
         for (JobLifeCycle item : JobLifeCycle.values()) {

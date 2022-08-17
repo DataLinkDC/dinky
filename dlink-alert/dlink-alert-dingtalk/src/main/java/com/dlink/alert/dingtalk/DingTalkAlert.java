@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.alert.dingtalk;
 
 import com.dlink.alert.AbstractAlert;

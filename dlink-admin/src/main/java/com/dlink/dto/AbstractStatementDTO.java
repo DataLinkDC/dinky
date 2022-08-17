@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.dto;
 
 /**
@@ -31,7 +30,6 @@ public class AbstractStatementDTO {
     private String statement;
     private Integer envId;
     private boolean fragment = false;
-
 
     public String getStatement() {
         return statement;

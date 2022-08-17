@@ -22,7 +22,6 @@ package com.dlink.model;
 /**
  * @author mydq
  * @version 1.0
- * @date 2022/7/16 21:13
  **/
 public enum TaskOperatingStatus {
 
@@ -45,7 +44,6 @@ public enum TaskOperatingStatus {
 
     private String message;
 
-
     TaskOperatingStatus(Integer code, String name, String message) {
         this.code = code;
         this.name = name;
@@ -63,6 +61,5 @@ public enum TaskOperatingStatus {
     public String getMessage() {
         return message;
     }
-
 
 }
