@@ -39,6 +39,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.TableResult;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * CreateCDCSourceOperation
@@ -73,7 +74,7 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
         CDCSource cdcSource = CDCSource.build(statement);
         FlinkCDCConfig config = new FlinkCDCConfig(cdcSource.getConnector(), cdcSource.getHostname(), cdcSource.getPort(), cdcSource.getUsername()
                 , cdcSource.getPassword(), cdcSource.getCheckpoint(), cdcSource.getParallelism(), cdcSource.getDatabase(), cdcSource.getSchema()
-                , cdcSource.getTable(), cdcSource.getStartupMode(), cdcSource.getDebezium(),cdcSource.getSplit(), cdcSource.getSource(), cdcSource.getSink(),cdcSource.getJdbc());
+                , cdcSource.getTable(), cdcSource.getStartupMode(), cdcSource.getDebezium(), cdcSource.getSplit(), cdcSource.getSource(), cdcSource.getSink(), cdcSource.getJdbc());
         try {
             CDCBuilder cdcBuilder = CDCBuilderFactory.buildCDCBuilder(config);
             Map<String, Map<String, String>> allConfigMap = cdcBuilder.parseMetaDataConfigs();
@@ -83,21 +84,24 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
             final List<String> tableRegList = cdcBuilder.getTableList();
             final List<String> schemaTableNameList = new ArrayList<>();
             // add 判断是否开启支持分库模式
-            if (SplitUtil.isEnabled(cdcSource.getSplit())){
-                DriverConfig driverConfig = DriverConfig.build(((MysqlCDCBuilder)cdcBuilder).parseMetaDataConfig());
+            if (SplitUtil.isEnabled(cdcSource.getSplit())) {
+                DriverConfig driverConfig = DriverConfig.build(((MysqlCDCBuilder) cdcBuilder).parseMetaDataConfig());
                 Driver driver = Driver.build(driverConfig);
 
-                Set<Table> tables =driver.getTables(tableRegList, cdcSource.getSplit());
+                // 这直接传正则过去
+                schemaTableNameList.addAll(tableRegList.stream().map(x->x.replaceFirst("\\\\.",".")).collect(Collectors.toList()));
+
+                Set<Table> tables = driver.getTables(tableRegList, cdcSource.getSplit());
                 for (Table table : tables) {
                     String schemaName = table.getSchema();
                     Schema schema = Schema.build(schemaName);
                     schema.setTables(Collections.singletonList(table));
                     table.setColumns(driver.listColumnsSortByPK(schemaName, table.getName()));
-                    schemaTableNameList.addAll(table.getSchemaTableNameList());
+//                    schemaTableNameList.addAll(table.getSchemaTableNameList());
                     schemaList.add(schema);
                 }
 
-            }else {
+            } else {
                 for (String schemaName : schemaNameList) {
                     Schema schema = Schema.build(schemaName);
                     if (!allConfigMap.containsKey(schemaName)) {
