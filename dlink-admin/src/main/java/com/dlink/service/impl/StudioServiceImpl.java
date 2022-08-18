@@ -383,7 +383,9 @@ public class StudioServiceImpl implements StudioService {
             jobConfig.setTaskId(history.getTaskId());
             useGateway = true;
         } else {
-            jobConfig.setTaskId(history.getTaskId());
+            if (!taskId.equals(0)) {
+                jobConfig.setTaskId(history.getTaskId());
+            }
         }
         JobManager jobManager = JobManager.build(jobConfig);
         jobManager.setUseGateway(useGateway);
