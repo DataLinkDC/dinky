@@ -109,6 +109,11 @@ export default [
         name: 'document',
         icon: 'container',
         component: './Document',
+      },{
+        path: '/registration/fragment',
+        name: 'fragment',
+        icon: "cloud",
+        component: './FragmentVariable',
       },
     ],
   },
