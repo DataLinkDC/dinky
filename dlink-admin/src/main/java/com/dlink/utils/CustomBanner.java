@@ -17,16 +17,15 @@
  *
  */
 
-
 package com.dlink.utils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.nepxion.banner.BannerConstant;
 import com.nepxion.banner.Description;
 import com.nepxion.banner.DescriptionBanner;
 import com.nepxion.banner.LogoBanner;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * CustomBanner

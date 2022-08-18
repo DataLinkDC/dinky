@@ -17,26 +17,37 @@
  *
  */
 
-
 package com.dlink.controller;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.ZipUtil;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
 import com.dlink.dto.CatalogueTaskDTO;
 import com.dlink.model.Catalogue;
 import com.dlink.service.CatalogueService;
-import com.fasterxml.jackson.databind.JsonNode;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.ZipUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * CatalogueController
@@ -83,7 +94,6 @@ public class CatalogueController {
         return Result.succeed("上传zip包并创建工程成功");
     }
 
-
     private void traverseFile(String sourcePath, Catalogue catalog) throws Exception {
         File file = new File(sourcePath);
         File[] fs = file.listFiles();
@@ -92,7 +102,6 @@ public class CatalogueController {
         }
         for (File fl : fs) {
             if (fl.isFile()) {
-                System.out.println(fl.getName());
                 CatalogueTaskDTO dto = getCatalogueTaskDTO(fl.getName(), catalogueService.findByParentIdAndName(catalog.getParentId(), catalog.getName()).getId());
                 String fileText = getFileText(fl);
                 catalogueService.createCatalogAndFileTask(dto, fileText);
@@ -244,7 +253,7 @@ public class CatalogueController {
     @PostMapping("/copyTask")
     public Result copyTask(@RequestBody Catalogue catalogue) throws Exception {
 
-        if ( catalogueService.copyTask(catalogue)) {
+        if (catalogueService.copyTask(catalogue)) {
             return Result.succeed("复制作业成功");
         } else {
             return Result.failed("复制作业失败");

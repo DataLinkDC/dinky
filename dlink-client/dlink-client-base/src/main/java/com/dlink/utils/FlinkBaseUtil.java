@@ -75,7 +75,7 @@ public class FlinkBaseUtil {
         sb.append("` (\n");
         List<String> pks = new ArrayList<>();
         for (int i = 0; i < table.getColumns().size(); i++) {
-            String type = table.getColumns().get(i).getJavaType().getFlinkType();
+            String type = table.getColumns().get(i).getFlinkType();
             sb.append("    ");
             if (i > 0) {
                 sb.append(",");

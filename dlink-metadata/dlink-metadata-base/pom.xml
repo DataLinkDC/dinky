@@ -5,7 +5,7 @@
     <parent>
         <artifactId>dlink-metadata</artifactId>
         <groupId>com.dlink</groupId>
-        <version>0.6.6</version>
+        <version>0.6.7-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -31,7 +31,6 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 

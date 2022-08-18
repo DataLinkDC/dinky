@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.result;
 
 import java.time.LocalDateTime;
@@ -136,16 +135,16 @@ public class SqlExplainResult {
 
     @Override
     public String toString() {
-        return "SqlExplainRecord{" +
-                "index=" + index +
-                ", type='" + type + '\'' +
-                ", sql='" + sql + '\'' +
-                ", parse='" + parse + '\'' +
-                ", explain='" + explain + '\'' +
-                ", error='" + error + '\'' +
-                ", parseTrue=" + parseTrue +
-                ", explainTrue=" + explainTrue +
-                ", explainTime=" + explainTime +
-                '}';
+        return "SqlExplainRecord{"
+                + "index=" + index
+                + ", type='" + type + '\''
+                + ", sql='" + sql + '\''
+                + ", parse='" + parse + '\''
+                + ", explain='" + explain + '\''
+                + ", error='" + error + '\''
+                + ", parseTrue=" + parseTrue
+                + ", explainTrue=" + explainTrue
+                + ", explainTime=" + explainTime
+                + '}';
     }
 }

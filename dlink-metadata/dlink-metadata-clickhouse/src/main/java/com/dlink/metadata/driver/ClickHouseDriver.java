@@ -112,7 +112,7 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
                     }
                     continue;
                 }
-                preparedStatement = conn.prepareStatement("explain " + current);
+                preparedStatement =  conn.get().prepareStatement("explain " + current);
                 results = preparedStatement.executeQuery();
                 while (results.next()) {
                     explain.append(getTypeConvert().convertValue(results, "explain", "string") + "\r\n");

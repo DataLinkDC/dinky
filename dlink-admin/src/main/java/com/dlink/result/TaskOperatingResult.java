@@ -24,12 +24,12 @@ import com.dlink.model.CodeEnum;
 import com.dlink.model.Task;
 import com.dlink.model.TaskOperatingSavepointSelect;
 import com.dlink.model.TaskOperatingStatus;
+
 import lombok.Data;
 
 /**
  * @author mydq
  * @version 1.0
- * @date 2022/7/16 21:09
  **/
 @Data
 public class TaskOperatingResult {

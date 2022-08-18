@@ -17,9 +17,7 @@
  *
  */
 
-
 package com.dlink.alert.email.template;
-
 
 import com.dlink.alert.ShowType;
 

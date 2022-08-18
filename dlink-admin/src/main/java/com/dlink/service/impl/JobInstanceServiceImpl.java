@@ -17,17 +17,8 @@
  *
  */
 
-
 package com.dlink.service.impl;
 
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dlink.assertion.Asserts;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.db.service.impl.SuperServiceImpl;
@@ -48,6 +39,15 @@ import com.dlink.service.HistoryService;
 import com.dlink.service.JobHistoryService;
 import com.dlink.service.JobInstanceService;
 import com.dlink.utils.JSONUtil;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -180,7 +180,6 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         }
         return jobInfoDetail;
     }
-
 
     @Override
     public LineageResult getLineage(Integer id) {

@@ -106,7 +106,7 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
         String sql = dbQuery.tablesSql(schemaName);
         try {
             execute(String.format(HiveConstant.USE_DB, schemaName));
-            preparedStatement = conn.prepareStatement(sql);
+            preparedStatement = conn.get().prepareStatement(sql);
             results = preparedStatement.executeQuery();
             ResultSetMetaData metaData = results.getMetaData();
             List<String> columnList = new ArrayList<>();
@@ -155,7 +155,7 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
         ResultSet results = null;
         String schemasSql = getDBQuery().schemaAllSql();
         try {
-            preparedStatement = conn.prepareStatement(schemasSql);
+            preparedStatement = conn.get().prepareStatement(schemasSql);
             results = preparedStatement.executeQuery();
             while (results.next()) {
                 String schemaName = results.getString(getDBQuery().schemaName());
@@ -183,7 +183,7 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
         IDBQuery dbQuery = getDBQuery();
         String tableFieldsSql = dbQuery.columnsSql(schemaName, tableName);
         try {
-            preparedStatement = conn.prepareStatement(tableFieldsSql);
+            preparedStatement = conn.get().prepareStatement(tableFieldsSql);
             results = preparedStatement.executeQuery();
             ResultSetMetaData metaData = results.getMetaData();
             List<String> columnList = new ArrayList<>();
@@ -227,7 +227,7 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
         ResultSet results = null;
         String createTableSql = getDBQuery().createTableSql(table.getSchema(), table.getName());
         try {
-            preparedStatement = conn.prepareStatement(createTableSql);
+            preparedStatement = conn.get().prepareStatement(createTableSql);
             results = preparedStatement.executeQuery();
             while (results.next()) {
                 createTable.append(results.getString(getDBQuery().createTableName())).append("\n");
@@ -246,7 +246,7 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
         Asserts.checkNullString(sql, "Sql 语句为空");
         String querySQL = sql.trim().replaceAll(";$", "");
         int res = 0;
-        try (Statement statement = conn.createStatement()) {
+        try (Statement statement = conn.get().createStatement()) {
             res = statement.executeUpdate(querySQL);
         }
         return res;
@@ -266,7 +266,7 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
         int count = 0;
         try {
             String querySQL = sql.trim().replaceAll(";$", "");
-            preparedStatement = conn.prepareStatement(querySQL);
+            preparedStatement = conn.get().prepareStatement(querySQL);
             results = preparedStatement.executeQuery();
             if (Asserts.isNull(results)) {
                 result.setSuccess(true);

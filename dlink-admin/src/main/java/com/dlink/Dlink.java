@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink;
 
 import org.springframework.boot.SpringApplication;

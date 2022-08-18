@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.service.impl;
 
 import java.time.LocalDateTime;
@@ -77,6 +76,18 @@ import com.dlink.session.SessionInfo;
 import com.dlink.session.SessionPool;
 import com.dlink.sql.FlinkQuery;
 import com.dlink.utils.RunTimeUtil;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -223,14 +234,14 @@ public class StudioServiceImpl implements StudioService {
     private List<SqlExplainResult> explainCommonSql(StudioExecuteDTO studioExecuteDTO) {
         if (Asserts.isNull(studioExecuteDTO.getDatabaseId())) {
             return new ArrayList<SqlExplainResult>() {{
-                add(SqlExplainResult.fail(studioExecuteDTO.getStatement(), "请指定数据源"));
-            }};
+                    add(SqlExplainResult.fail(studioExecuteDTO.getStatement(), "请指定数据源"));
+                }};
         } else {
             DataBase dataBase = dataBaseService.getById(studioExecuteDTO.getDatabaseId());
             if (Asserts.isNull(dataBase)) {
                 return new ArrayList<SqlExplainResult>() {{
-                    add(SqlExplainResult.fail(studioExecuteDTO.getStatement(), "数据源不存在"));
-                }};
+                        add(SqlExplainResult.fail(studioExecuteDTO.getStatement(), "数据源不存在"));
+                    }};
             }
             Driver driver = Driver.build(dataBase.getDriverConfig());
             List<SqlExplainResult> sqlExplainResults = driver.explain(studioExecuteDTO.getStatement());
@@ -451,8 +462,8 @@ public class StudioServiceImpl implements StudioService {
                 tables.addAll(driver.listTables(studioMetaStoreDTO.getDatabase()));
             }
         } else {
-            String baseStatement = FlinkQuery.useCatalog(studioMetaStoreDTO.getCatalog()) + FlinkQuery.separator() +
-                FlinkQuery.useDatabase(studioMetaStoreDTO.getDatabase()) + FlinkQuery.separator();
+            String baseStatement = FlinkQuery.useCatalog(studioMetaStoreDTO.getCatalog()) + FlinkQuery.separator()
+                + FlinkQuery.useDatabase(studioMetaStoreDTO.getDatabase()) + FlinkQuery.separator();
             // show tables
             String tableStatement = baseStatement + FlinkQuery.showTables();
             studioMetaStoreDTO.setStatement(tableStatement);
@@ -489,8 +500,8 @@ public class StudioServiceImpl implements StudioService {
         if (Dialect.isSql(studioMetaStoreDTO.getDialect())) {
             // nothing to do
         } else {
-            String baseStatement = FlinkQuery.useCatalog(studioMetaStoreDTO.getCatalog()) + FlinkQuery.separator() +
-                FlinkQuery.useDatabase(studioMetaStoreDTO.getDatabase()) + FlinkQuery.separator();
+            String baseStatement = FlinkQuery.useCatalog(studioMetaStoreDTO.getCatalog()) + FlinkQuery.separator()
+                + FlinkQuery.useDatabase(studioMetaStoreDTO.getDatabase()) + FlinkQuery.separator();
             // desc tables
             String tableStatement = baseStatement + FlinkQuery.descTable(studioMetaStoreDTO.getTable());
             studioMetaStoreDTO.setStatement(tableStatement);
