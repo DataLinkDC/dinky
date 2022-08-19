@@ -17,9 +17,9 @@
  *
  */
 
-
-
 package org.apache.flink.connector.phoenix.dialect;
+
+import static java.lang.String.format;
 
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.connector.phoenix.internal.converter.JdbcRowConverter;
@@ -31,8 +31,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static java.lang.String.format;
 
 /** Handle the SQL dialect of jdbc driver. */
 @Internal

@@ -17,9 +17,24 @@
  *
  */
 
-
-
 package com.dlink.connector.pulsar;
+
+import static com.dlink.connector.pulsar.util.PulsarConnectorOptions.ADMIN_URL;
+import static com.dlink.connector.pulsar.util.PulsarConnectorOptions.DERIVE_SCHEMA;
+import static com.dlink.connector.pulsar.util.PulsarConnectorOptions.SERVICE_URL;
+import static com.dlink.connector.pulsar.util.PulsarConnectorOptions.SINK_PARALLELISM;
+import static com.dlink.connector.pulsar.util.PulsarConnectorOptions.SOURCE_PARALLELISM;
+import static com.dlink.connector.pulsar.util.PulsarConnectorOptions.SUBSCRIPTION_INITIAL_POSITION;
+import static com.dlink.connector.pulsar.util.PulsarConnectorOptions.SUBSCRIPTION_INITIAL_POSITION_TIMESTAMP;
+import static com.dlink.connector.pulsar.util.PulsarConnectorOptions.SUBSCRIPTION_NAME;
+import static com.dlink.connector.pulsar.util.PulsarConnectorOptions.SUBSCRIPTION_TYPE;
+import static com.dlink.connector.pulsar.util.PulsarConnectorOptions.ScanStartupMode;
+import static com.dlink.connector.pulsar.util.PulsarConnectorOptions.TOPIC;
+import static com.dlink.connector.pulsar.util.PulsarConnectorOptions.UPDATE_MODE;
+import static com.dlink.connector.pulsar.util.PulsarConnectorOptions.VERSION;
+import static com.dlink.connector.pulsar.util.PulsarConnectorOptionsUtil.PROPERTIES_CLIENT_PREFIX;
+import static com.dlink.connector.pulsar.util.PulsarConnectorOptionsUtil.PROPERTIES_PREFIX;
+import static com.dlink.connector.pulsar.util.PulsarConnectorOptionsUtil.getPulsarProperties;
 
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.api.common.serialization.DeserializationSchema;
@@ -35,21 +50,23 @@ import org.apache.flink.table.connector.format.Format;
 import org.apache.flink.table.connector.sink.DynamicTableSink;
 import org.apache.flink.table.connector.source.DynamicTableSource;
 import org.apache.flink.table.data.RowData;
-import org.apache.flink.table.factories.*;
+import org.apache.flink.table.factories.DeserializationFormatFactory;
+import org.apache.flink.table.factories.DynamicTableSinkFactory;
+import org.apache.flink.table.factories.DynamicTableSourceFactory;
+import org.apache.flink.table.factories.FactoryUtil;
 import org.apache.flink.table.factories.FactoryUtil.TableFactoryHelper;
+import org.apache.flink.table.factories.SerializationFormatFactory;
 import org.apache.flink.table.types.DataType;
 import org.apache.pulsar.client.api.SubscriptionType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
-import static com.dlink.connector.pulsar.util.PulsarConnectorOptions.*;
-import static com.dlink.connector.pulsar.util.PulsarConnectorOptionsUtil.*;
+import javax.annotation.Nullable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Factory for creating configured instances of {@link PulsarDynamicSource} and {
@@ -112,7 +129,7 @@ public class PulsarDynamicTableFactory
                         DeserializationFormatFactory.class, FactoryUtil.FORMAT);
 
         // validate all options
-//        helper.validate();
+        // helper.validate();
         helper.validateExcept(PROPERTIES_PREFIX, PROPERTIES_CLIENT_PREFIX);
 
         // get the validated options
@@ -157,7 +174,6 @@ public class PulsarDynamicTableFactory
         final String update_mode = tableOptions.get(UPDATE_MODE);
         final Integer sinkParallelism = tableOptions.get(SINK_PARALLELISM);
 
-
         helper.validateExcept(PROPERTIES_PREFIX, PROPERTIES_CLIENT_PREFIX);
 
         final EncodingFormat<SerializationSchema<RowData>> encodingFormat =
@@ -166,8 +182,7 @@ public class PulsarDynamicTableFactory
 
         //校验sql建表时是否指定主键约束
         //我们一般使用flink自动推导出来的主键，不显式设置主键约束，所以这个校验方法暂时不使用
-//        validatePKConstraints(
-//                update_mode, context.getObjectIdentifier(), context.getCatalogTable(), encodingFormat);
+        //validatePKConstraints(update_mode, context.getObjectIdentifier(), context.getCatalogTable(), encodingFormat);
 
         final DataType physicalDataType =
                 context.getCatalogTable().getSchema().toPhysicalRowDataType();
@@ -184,25 +199,24 @@ public class PulsarDynamicTableFactory
         );
     }
 
-
     //校验sql建表时是否指定主键约束
     private static void validatePKConstraints(
-            @Nullable String update_mode, ObjectIdentifier tableName, CatalogTable catalogTable, Format format) {
+            @Nullable String updateMode, ObjectIdentifier tableName, CatalogTable catalogTable, Format format) {
 
-        if (!update_mode.equals("append") && !update_mode.equals("upsert")) {
+        if (!updateMode.equals("append") && !updateMode.equals("upsert")) {
             throw new ValidationException(
                     String.format(
                             "The Pulsar table '%s' with update-mode should be 'append' or 'upsert'",
                             tableName.asSummaryString()));
         } else if (catalogTable.getSchema().getPrimaryKey().isPresent()
-                && update_mode.equals("append")) {
+                && updateMode.equals("append")) {
             throw new ValidationException(
                     String.format(
                             "The Pulsar table '%s' with append update-mode doesn't support defining PRIMARY KEY constraint"
                                     + " on the table, because it can't guarantee the semantic of primary key.",
                             tableName.asSummaryString()));
         } else if (!catalogTable.getSchema().getPrimaryKey().isPresent()
-                && update_mode.equals("upsert")) {
+                && updateMode.equals("upsert")) {
             throw new ValidationException(
                     "'upsert' tables require to define a PRIMARY KEY constraint. "
                             + "The PRIMARY KEY specifies which columns should be read from or write to the Pulsar message key. "
@@ -214,8 +228,8 @@ public class PulsarDynamicTableFactory
             DataType physicalDataType,
             @Nullable EncodingFormat<SerializationSchema<RowData>> encodingFormat,
             String topic,
-            String service_url,
-            String update_mode,
+            String serviceUrl,
+            String updateMode,
             Properties pulsarProducerProperties,
             Properties pulsarClientProperties,
             Integer sinkParallelism) {
@@ -223,8 +237,8 @@ public class PulsarDynamicTableFactory
                 physicalDataType,
                 encodingFormat,
                 topic,
-                service_url,
-                update_mode,
+                serviceUrl,
+                updateMode,
                 pulsarProducerProperties,
                 pulsarClientProperties,
                 sinkParallelism);

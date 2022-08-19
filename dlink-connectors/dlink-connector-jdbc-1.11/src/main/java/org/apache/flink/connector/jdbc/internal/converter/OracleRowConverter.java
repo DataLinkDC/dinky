@@ -17,11 +17,7 @@
  *
  */
 
-
-
 package org.apache.flink.connector.jdbc.internal.converter;
-
-import oracle.sql.CLOB;
 
 import org.apache.flink.table.data.DecimalData;
 import org.apache.flink.table.data.StringData;
@@ -36,6 +32,8 @@ import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+
+import oracle.sql.CLOB;
 
 /**
  * Runtime converter that responsible to convert between JDBC object and Flink internal object for
@@ -87,7 +85,7 @@ public class OracleRowConverter extends AbstractJdbcRowConverter {
                 return val ->
                     val instanceof BigInteger
                         ? DecimalData.fromBigDecimal(
-                        new BigDecimal((BigInteger) val, 0), precision, scale)
+                            new BigDecimal((BigInteger) val, 0), precision, scale)
                         : DecimalData.fromBigDecimal((BigDecimal) val, precision, scale);
             case DATE:
                 return val -> (int) (((Date) val).toLocalDate().toEpochDay());
@@ -96,21 +94,21 @@ public class OracleRowConverter extends AbstractJdbcRowConverter {
             case TIMESTAMP_WITH_TIME_ZONE:
             case TIMESTAMP_WITHOUT_TIME_ZONE:
                 return (val) -> {
-                    if(val instanceof LocalDateTime){
+                    if (val instanceof LocalDateTime) {
                         return TimestampData.fromLocalDateTime((LocalDateTime)val);
-                    }else if(val instanceof oracle.sql.TIMESTAMP){
+                    } else if (val instanceof oracle.sql.TIMESTAMP) {
                         return TimestampData.fromTimestamp(Timestamp.valueOf(((oracle.sql.TIMESTAMP) val).stringValue()));
-                    }else{
+                    } else {
                         return TimestampData.fromTimestamp((Timestamp) val);
                     }
                 };
             case CHAR:
             case VARCHAR:
                 return (val) -> {
-                    if(val instanceof CLOB){
+                    if (val instanceof CLOB) {
                         CLOB clob = (CLOB) val;
                         return  StringData.fromString(clob == null ? null : clob.stringValue());
-                    }else {
+                    } else {
                         return StringData.fromString((String) val);
                     }
                 };

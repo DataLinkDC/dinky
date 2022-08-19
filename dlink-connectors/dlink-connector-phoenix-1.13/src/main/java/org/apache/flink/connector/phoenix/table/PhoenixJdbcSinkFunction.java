@@ -17,7 +17,6 @@
  *
  */
 
-
 package org.apache.flink.connector.phoenix.table;
 
 import org.apache.flink.runtime.state.FunctionInitializationContext;

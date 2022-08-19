@@ -17,11 +17,16 @@
  *
  */
 
-
 package org.apache.flink.connector.phoenix.statement;
 
 import java.math.BigDecimal;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
 
 /**
  * This is a wrapper around {@link PreparedStatement} and allows the users to set parameters by name

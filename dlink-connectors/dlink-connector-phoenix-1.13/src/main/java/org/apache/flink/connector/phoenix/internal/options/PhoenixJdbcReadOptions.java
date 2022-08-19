@@ -17,10 +17,7 @@
  *
  */
 
-
 package org.apache.flink.connector.phoenix.internal.options;
-
-import org.apache.flink.connector.phoenix.internal.options.JdbcReadOptions;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -83,7 +80,13 @@ public class PhoenixJdbcReadOptions implements Serializable {
             return false;
         } else {
             PhoenixJdbcReadOptions options = (PhoenixJdbcReadOptions)o;
-            return Objects.equals(this.query, options.query) && Objects.equals(this.partitionColumnName, options.partitionColumnName) && Objects.equals(this.partitionLowerBound, options.partitionLowerBound) && Objects.equals(this.partitionUpperBound, options.partitionUpperBound) && Objects.equals(this.numPartitions, options.numPartitions) && Objects.equals(this.fetchSize, options.fetchSize) && Objects.equals(this.autoCommit, options.autoCommit);
+            return Objects.equals(this.query, options.query)
+                    && Objects.equals(this.partitionColumnName, options.partitionColumnName)
+                    && Objects.equals(this.partitionLowerBound, options.partitionLowerBound)
+                    && Objects.equals(this.partitionUpperBound, options.partitionUpperBound)
+                    && Objects.equals(this.numPartitions, options.numPartitions)
+                    && Objects.equals(this.fetchSize, options.fetchSize)
+                    && Objects.equals(this.autoCommit, options.autoCommit);
         }
     }
 
