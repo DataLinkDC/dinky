@@ -17,30 +17,21 @@
  *
  */
 
-package com.dlink.app;
+package com.dlink.service.impl;
 
-import java.io.IOException;
-import java.util.Map;
+import com.dlink.db.service.impl.SuperServiceImpl;
+import com.dlink.mapper.FragmentVariableMapper;
+import com.dlink.model.FragmentVariable;
+import com.dlink.service.FragmentVariableService;
+import org.springframework.stereotype.Service;
 
-import com.dlink.app.db.DBConfig;
-import com.dlink.app.flinksql.Submiter;
-import com.dlink.assertion.Asserts;
-import com.dlink.constant.FlinkParamConstant;
-import com.dlink.utils.FlinkBaseUtil;
 
 /**
- * MainApp
+ * FragmentVariableServiceImpl
  *
- * @author wenmo
- * @since 2021/10/27
- **/
-public class MainApp {
-
-    public static void main(String[] args) throws IOException {
-        Map<String, String> params = FlinkBaseUtil.getParamsFromArgs(args);
-        String id = params.get(FlinkParamConstant.ID);
-        Asserts.checkNullString(id, "请配置入参 id ");
-        DBConfig dbConfig = DBConfig.build(params);
-        Submiter.submit(Integer.valueOf(id), dbConfig);
-    }
+ * @author zhumingye
+ * @since 2022/8/18
+ */
+@Service
+public class FragmentVariableServiceImpl extends SuperServiceImpl<FragmentVariableMapper, FragmentVariable> implements FragmentVariableService {
 }

@@ -30,6 +30,8 @@ import com.dlink.model.Column;
 import com.dlink.model.Table;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.sql.DataSource;
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
@@ -91,9 +93,10 @@ public class PhoenixDriver extends AbstractJdbcDriver {
             Properties properties = new Properties();
             properties.put("phoenix.schema.isNamespaceMappingEnabled", "true");
             properties.put("phoenix.schema.mapSystemTablesToNamespac", "true");
-            conn = DriverManager.getConnection(config.getUrl(), properties);
+            Connection connection = DriverManager.getConnection(config.getUrl(), properties);
+            conn.set(connection);
             //设置为自动提交，否则upsert语句不生效
-            conn.setAutoCommit(true);
+            connection.setAutoCommit(true);
         } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException(e);
         }

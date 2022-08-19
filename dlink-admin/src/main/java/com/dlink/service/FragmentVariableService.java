@@ -17,30 +17,18 @@
  *
  */
 
-package com.dlink.app;
+package com.dlink.service;
 
-import java.io.IOException;
-import java.util.Map;
 
-import com.dlink.app.db.DBConfig;
-import com.dlink.app.flinksql.Submiter;
-import com.dlink.assertion.Asserts;
-import com.dlink.constant.FlinkParamConstant;
-import com.dlink.utils.FlinkBaseUtil;
+import com.dlink.db.service.ISuperService;
+import com.dlink.model.FragmentVariable;
 
 /**
- * MainApp
+ * FragmentVariableService
  *
- * @author wenmo
- * @since 2021/10/27
- **/
-public class MainApp {
+ * @author zhumingye
+ * @since 2022/8/18
+ */
+public interface FragmentVariableService extends ISuperService<FragmentVariable> {
 
-    public static void main(String[] args) throws IOException {
-        Map<String, String> params = FlinkBaseUtil.getParamsFromArgs(args);
-        String id = params.get(FlinkParamConstant.ID);
-        Asserts.checkNullString(id, "请配置入参 id ");
-        DBConfig dbConfig = DBConfig.build(params);
-        Submiter.submit(Integer.valueOf(id), dbConfig);
-    }
 }

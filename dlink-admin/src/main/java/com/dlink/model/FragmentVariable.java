@@ -17,30 +17,33 @@
  *
  */
 
-package com.dlink.app;
+package com.dlink.model;
 
-import java.io.IOException;
-import java.util.Map;
-
-import com.dlink.app.db.DBConfig;
-import com.dlink.app.flinksql.Submiter;
-import com.dlink.assertion.Asserts;
-import com.dlink.constant.FlinkParamConstant;
-import com.dlink.utils.FlinkBaseUtil;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.dlink.db.model.SuperEntity;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
- * MainApp
+ * FragmentVariable
  *
- * @author wenmo
- * @since 2021/10/27
- **/
-public class MainApp {
+ * @author zhumingye
+ * @since 2022/8/18
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = false)
+@TableName("dlink_fragment")
+public class FragmentVariable extends SuperEntity {
 
-    public static void main(String[] args) throws IOException {
-        Map<String, String> params = FlinkBaseUtil.getParamsFromArgs(args);
-        String id = params.get(FlinkParamConstant.ID);
-        Asserts.checkNullString(id, "请配置入参 id ");
-        DBConfig dbConfig = DBConfig.build(params);
-        Submiter.submit(Integer.valueOf(id), dbConfig);
-    }
+    @TableField(fill = FieldFill.INSERT)
+    private String alias;
+    private String fragmentValue;
+    private String note;
+
 }

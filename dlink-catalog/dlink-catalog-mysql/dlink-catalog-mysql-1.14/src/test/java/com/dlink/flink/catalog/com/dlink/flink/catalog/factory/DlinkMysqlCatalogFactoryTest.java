@@ -17,23 +17,24 @@
  *
  */
 
-
 package com.dlink.flink.catalog.com.dlink.flink.catalog.factory;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import com.dlink.flink.catalog.DlinkMysqlCatalog;
 import com.dlink.flink.catalog.factory.DlinkMysqlCatalogFactoryOptions;
+
 import org.apache.flink.table.catalog.Catalog;
 import org.apache.flink.table.catalog.CommonCatalogOptions;
 import org.apache.flink.table.factories.FactoryUtil;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class DlinkMysqlCatalogFactoryTest {
 
