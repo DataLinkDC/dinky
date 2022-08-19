@@ -91,7 +91,7 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                 // 这直接传正则过去
                 schemaTableNameList.addAll(tableRegList.stream().map(x->x.replaceFirst("\\\\.",".")).collect(Collectors.toList()));
 
-                Set<Table> tables = driver.getTables(tableRegList, cdcSource.getSplit());
+                Set<Table> tables = driver.getSplitTables(tableRegList, cdcSource.getSplit());
                 for (Table table : tables) {
                     String schemaName = table.getSchema();
                     Schema schema = Schema.build(schemaName);

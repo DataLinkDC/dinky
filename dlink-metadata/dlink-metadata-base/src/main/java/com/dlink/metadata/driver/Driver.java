@@ -28,7 +28,10 @@ import com.dlink.model.Schema;
 import com.dlink.model.Table;
 import com.dlink.result.SqlExplainResult;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.ServiceLoader;
 
 /**
  * Driver
@@ -36,7 +39,7 @@ import java.util.*;
  * @author wenmo
  * @since 2021/7/19 23:15
  */
-public interface Driver {
+public interface Driver extends SplitTable {
 
     static Optional<Driver> get(DriverConfig config) {
         Asserts.checkNotNull(config, "数据源配置不能为空");
@@ -129,5 +132,4 @@ public interface Driver {
     List<SqlExplainResult> explain(String sql);
 
     Map<String, String> getFlinkColumnTypeConversion();
-    Set<Table> getTables(List<String> tableRegList, Map<String, String> split);
 }
