@@ -47,10 +47,6 @@
             <artifactId>dlink-metadata-base</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-metadata-mysql</artifactId>
-        </dependency>
     </dependencies>
 
 </project>
