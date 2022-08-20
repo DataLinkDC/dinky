@@ -19,9 +19,9 @@
 
 package org.apache.flink.connector.phoenix.internal.options;
 
-import javax.annotation.Nullable;
-
 import java.io.Serializable;
+
+import javax.annotation.Nullable;
 
 /** Jdbc query type options. */
 abstract class JdbcTypedQueryOptions implements Serializable {

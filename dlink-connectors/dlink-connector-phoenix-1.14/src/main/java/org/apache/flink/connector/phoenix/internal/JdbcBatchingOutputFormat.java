@@ -17,8 +17,10 @@
  *
  */
 
-
 package org.apache.flink.connector.phoenix.internal;
+
+import static org.apache.flink.connector.phoenix.utils.JdbcUtils.setRecordToStatement;
+import static org.apache.flink.util.Preconditions.checkNotNull;
 
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.api.common.functions.RuntimeContext;
@@ -32,14 +34,10 @@ import org.apache.flink.connector.phoenix.internal.options.JdbcDmlOptions;
 import org.apache.flink.connector.phoenix.internal.options.JdbcOptions;
 import org.apache.flink.connector.phoenix.statement.FieldNamedPreparedStatementImpl;
 import org.apache.flink.connector.phoenix.utils.JdbcUtils;
-
 import org.apache.flink.types.Row;
 import org.apache.flink.util.Preconditions;
 import org.apache.flink.util.concurrent.ExecutorThreadFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Connection;
@@ -51,8 +49,10 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
-import static org.apache.flink.connector.phoenix.utils.JdbcUtils.setRecordToStatement;
-import static org.apache.flink.util.Preconditions.checkNotNull;
+import javax.annotation.Nonnull;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** A JDBC outputFormat that supports batching records before writing records to database. */
 @Internal
@@ -148,7 +148,6 @@ public class JdbcBatchingOutputFormat<
                             TimeUnit.MILLISECONDS);
         }
 
-
     }
 
     private JdbcExec createAndOpenStatementExecutor(
@@ -243,7 +242,7 @@ public class JdbcBatchingOutputFormat<
 
             if (batchCount > 0) {
                 try {
-                    LOG.info("关闭连接前 刷写数据 !!! batchCount: "+batchCount);
+                    LOG.info("关闭连接前 刷写数据 !!! batchCount: " + batchCount);
                     flush();
                 } catch (Exception e) {
                     LOG.warn("Writing records to JDBC failed.", e);
@@ -338,7 +337,6 @@ public class JdbcBatchingOutputFormat<
                             .withKeyFields(keyFields)
                             .withFieldTypes(fieldTypes)
                             .build();
-
 
             if (dml.getKeyFields().isPresent() && dml.getKeyFields().get().length > 0) {
                 return new TableJdbcUpsertOutputFormat(

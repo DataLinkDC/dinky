@@ -17,10 +17,12 @@
  *
  */
 
-
 package com.dlink.connector.pulsar;
 
+import static org.apache.flink.util.Preconditions.checkNotNull;
+
 import com.dlink.connector.pulsar.util.PulsarConnectorOptions;
+
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.serialization.DeserializationSchema;
@@ -44,14 +46,12 @@ import org.apache.flink.table.connector.source.abilities.SupportsWatermarkPushDo
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.types.DataType;
 import org.apache.pulsar.client.api.SubscriptionType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.Properties;
 
-import static org.apache.flink.util.Preconditions.checkNotNull;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author DarrenDa
@@ -80,7 +80,6 @@ public class PulsarDynamicSource
 
     /** Watermark strategy that is used to generate per-partition watermark. */
     protected WatermarkStrategy<RowData> watermarkStrategy;
-
 
     public PulsarDynamicSource(
             String serviceUrl,
@@ -128,7 +127,6 @@ public class PulsarDynamicSource
 
         final PulsarSource<RowData> pulsarSource =
                 createPulsarSource(deserializer);
-
 
         return new DataStreamScanProvider() {
             @Override
@@ -180,13 +178,11 @@ public class PulsarDynamicSource
         return "Pulsar Table Source";
     }
 
-
     //---------------------------------------------------------------------------------------------
     protected PulsarSource<RowData> createPulsarSource(
             DeserializationSchema<RowData> deserializer) {
 
         final PulsarSourceBuilder<RowData> pulsarSourceBuilder = PulsarSource.builder();
-
 
         pulsarSourceBuilder
                 .setConfig(PulsarSourceOptions.PULSAR_ENABLE_AUTO_ACKNOWLEDGE_MESSAGE, true)
@@ -239,6 +235,5 @@ public class PulsarDynamicSource
     public void applyWatermark(WatermarkStrategy<RowData> watermarkStrategy) {
         this.watermarkStrategy = watermarkStrategy;
     }
-
 
 }
