@@ -20,9 +20,10 @@
 
 package com.dlink.executor;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.constant.FlinkSQLConstant;
-import com.dlink.model.SystemConfiguration;
+import static java.lang.String.format;
+import static org.apache.flink.util.Preconditions.checkArgument;
+import static org.apache.flink.util.Preconditions.checkNotNull;
+
 import org.apache.flink.table.api.DataTypes;
 import org.apache.flink.table.api.ExpressionParserException;
 import org.apache.flink.table.api.Table;
@@ -31,13 +32,18 @@ import org.apache.flink.table.catalog.exceptions.CatalogException;
 import org.apache.flink.types.Row;
 import org.apache.flink.util.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static java.lang.String.format;
-import static org.apache.flink.util.Preconditions.checkArgument;
-import static org.apache.flink.util.Preconditions.checkNotNull;
+import com.dlink.assertion.Asserts;
+import com.dlink.constant.FlinkSQLConstant;
+import com.dlink.model.SystemConfiguration;
 
 /**
  * Flink Sql Fragment Manager
@@ -73,16 +79,29 @@ public final class SqlManager {
      */
     public void registerSqlFragment(String sqlFragmentName, String sqlFragment) {
         checkArgument(
-                !StringUtils.isNullOrWhitespaceOnly(sqlFragmentName),
-                "sql fragment name cannot be null or empty.");
+            !StringUtils.isNullOrWhitespaceOnly(sqlFragmentName),
+            "sql fragment name cannot be null or empty.");
         checkNotNull(sqlFragment, "sql fragment cannot be null");
 
         if (sqlFragments.containsKey(sqlFragmentName)) {
             throw new CatalogException(
-                    format("The fragment of sql %s already exists.", sqlFragmentName));
+                format("The fragment of sql %s already exists.", sqlFragmentName));
         }
 
         sqlFragments.put(sqlFragmentName, sqlFragment);
+    }
+
+    /**
+     * Registers a fragment map of sql under the given name. The sql fragment name must be unique.
+     *
+     * @param sqlFragmentMap a fragment map of sql to register
+     * @throws CatalogException if the registration of the sql fragment under the given name failed.
+     *                          But at the moment, with CatalogException, not SqlException
+     */
+    public void registerSqlFragment(Map<String, String> sqlFragmentMap) {
+        if (Asserts.isNotNull(sqlFragmentMap)) {
+            sqlFragments.putAll(sqlFragmentMap);
+        }
     }
 
     /**
@@ -96,14 +115,14 @@ public final class SqlManager {
      */
     public void unregisterSqlFragment(String sqlFragmentName, boolean ignoreIfNotExists) {
         checkArgument(
-                !StringUtils.isNullOrWhitespaceOnly(sqlFragmentName),
-                "sql fragmentName name cannot be null or empty.");
+            !StringUtils.isNullOrWhitespaceOnly(sqlFragmentName),
+            "sql fragmentName name cannot be null or empty.");
 
         if (sqlFragments.containsKey(sqlFragmentName)) {
             sqlFragments.remove(sqlFragmentName);
         } else if (!ignoreIfNotExists) {
             throw new CatalogException(
-                    format("The fragment of sql %s does not exist.", sqlFragmentName));
+                format("The fragment of sql %s does not exist.", sqlFragmentName));
         }
     }
 
@@ -116,14 +135,14 @@ public final class SqlManager {
      */
     public String getSqlFragment(String sqlFragmentName) {
         checkArgument(
-                !StringUtils.isNullOrWhitespaceOnly(sqlFragmentName),
-                "sql fragmentName name cannot be null or empty.");
+            !StringUtils.isNullOrWhitespaceOnly(sqlFragmentName),
+            "sql fragmentName name cannot be null or empty.");
 
         if (sqlFragments.containsKey(sqlFragmentName)) {
             return sqlFragments.get(sqlFragmentName);
         } else {
             throw new CatalogException(
-                    format("The fragment of sql %s does not exist.", sqlFragmentName));
+                format("The fragment of sql %s does not exist.", sqlFragmentName));
         }
     }
 
