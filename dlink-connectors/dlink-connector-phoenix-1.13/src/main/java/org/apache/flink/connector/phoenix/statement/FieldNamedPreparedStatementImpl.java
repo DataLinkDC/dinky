@@ -17,19 +17,23 @@
  *
  */
 
-
-
 package org.apache.flink.connector.phoenix.statement;
 
+import static org.apache.flink.util.Preconditions.checkArgument;
+import static org.apache.flink.util.Preconditions.checkNotNull;
+
 import java.math.BigDecimal;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.apache.flink.util.Preconditions.checkArgument;
-import static org.apache.flink.util.Preconditions.checkNotNull;
 
 /** Simple implementation of {@link FieldNamedPreparedStatement}. */
 public class FieldNamedPreparedStatementImpl implements FieldNamedPreparedStatement {

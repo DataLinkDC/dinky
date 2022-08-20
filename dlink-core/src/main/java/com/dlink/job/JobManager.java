@@ -212,6 +212,7 @@ public class JobManager {
         } else {
             createExecutor();
         }
+        executor.getSqlManager().registerSqlFragment(config.getVariables());
         return executor;
     }
 

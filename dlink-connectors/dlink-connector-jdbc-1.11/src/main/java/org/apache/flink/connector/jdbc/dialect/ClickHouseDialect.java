@@ -17,7 +17,6 @@
  *
  */
 
-
 package org.apache.flink.connector.jdbc.dialect;
 
 import org.apache.flink.connector.jdbc.internal.converter.ClickHouseRowConverter;

@@ -71,7 +71,7 @@ public class JobConfig {
     private SavePointStrategy savePointStrategy;
     private String savePointPath;
     private GatewayConfig gatewayConfig;
-
+    private Map<String, String> variables;
     private Map<String, String> config;
 
     public JobConfig() {
@@ -90,7 +90,7 @@ public class JobConfig {
     public JobConfig(String type, boolean useResult, boolean useChangeLog, boolean useAutoCancel, boolean useSession, String session, Integer clusterId,
                      Integer clusterConfigurationId, Integer jarId, Integer taskId, String jobName, boolean useSqlFragment,
                      boolean useStatementSet, boolean useBatchModel, Integer maxRowNum, Integer checkpoint, Integer parallelism,
-                     Integer savePointStrategyValue, String savePointPath, Map<String, String> config) {
+                     Integer savePointStrategyValue, String savePointPath, Map<String, String> variables, Map<String, String> config) {
         this.type = type;
         this.useResult = useResult;
         this.useChangeLog = useChangeLog;
@@ -111,6 +111,7 @@ public class JobConfig {
         this.parallelism = parallelism;
         this.savePointStrategy = SavePointStrategy.get(savePointStrategyValue);
         this.savePointPath = savePointPath;
+        this.variables = variables;
         this.config = config;
     }
 
@@ -208,10 +209,10 @@ public class JobConfig {
             gatewayConfig.setFlinkConfig(FlinkConfig.build((Map<String, String>) config.get("flinkConfig")));
         }
         if (config.containsKey("kubernetesConfig")) {
-            Map<String,Object> kubernetesConfig = (Map<String,Object>) config.get("kubernetesConfig");
+            Map<String, Object> kubernetesConfig = (Map<String, Object>) config.get("kubernetesConfig");
             //构建GatewayConfig时，将k8s集群默认配置和自定义参数配置加载到FlinkConfig里
-            for (Map.Entry<String,Object> entry:kubernetesConfig.entrySet()) {
-                gatewayConfig.getFlinkConfig().getConfiguration().put(entry.getKey(),entry.getValue().toString());
+            for (Map.Entry<String, Object> entry : kubernetesConfig.entrySet()) {
+                gatewayConfig.getFlinkConfig().getConfiguration().put(entry.getKey(), entry.getValue().toString());
             }
         }
     }

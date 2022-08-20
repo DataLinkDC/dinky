@@ -19,6 +19,10 @@
 
 package org.apache.flink.connector.phoenix.internal;
 
+import static org.apache.flink.connector.phoenix.utils.JdbcUtils.getPrimaryKey;
+import static org.apache.flink.connector.phoenix.utils.JdbcUtils.setRecordToStatement;
+import static org.apache.flink.util.Preconditions.checkArgument;
+
 import org.apache.flink.annotation.VisibleForTesting;
 import org.apache.flink.api.common.functions.RuntimeContext;
 import org.apache.flink.api.java.tuple.Tuple2;
@@ -30,9 +34,6 @@ import org.apache.flink.connector.phoenix.internal.options.JdbcDmlOptions;
 import org.apache.flink.connector.phoenix.statement.FieldNamedPreparedStatementImpl;
 import org.apache.flink.types.Row;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -40,9 +41,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.function.Function;
 
-import static org.apache.flink.connector.phoenix.utils.JdbcUtils.getPrimaryKey;
-import static org.apache.flink.connector.phoenix.utils.JdbcUtils.setRecordToStatement;
-import static org.apache.flink.util.Preconditions.checkArgument;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class TableJdbcUpsertOutputFormat
         extends JdbcBatchingOutputFormat<
@@ -121,8 +121,6 @@ class TableJdbcUpsertOutputFormat
             deleteExecutor.addToBatch(extracted);
         }
     }
-
-
 
     @Override
     public synchronized void close() {

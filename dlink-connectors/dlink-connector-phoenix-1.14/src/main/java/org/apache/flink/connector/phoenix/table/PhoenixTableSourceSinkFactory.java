@@ -17,9 +17,41 @@
  *
  */
 
-
-
 package org.apache.flink.connector.phoenix.table;
+
+import static org.apache.flink.connector.phoenix.utils.PhoenixJdbcValidator.CONNECTOR_CONNECTION_MAX_RETRY_TIMEOUT;
+import static org.apache.flink.connector.phoenix.utils.PhoenixJdbcValidator.CONNECTOR_DRIVER;
+import static org.apache.flink.connector.phoenix.utils.PhoenixJdbcValidator.CONNECTOR_LOOKUP_CACHE_MAX_ROWS;
+import static org.apache.flink.connector.phoenix.utils.PhoenixJdbcValidator.CONNECTOR_LOOKUP_CACHE_TTL;
+import static org.apache.flink.connector.phoenix.utils.PhoenixJdbcValidator.CONNECTOR_LOOKUP_MAX_RETRIES;
+import static org.apache.flink.connector.phoenix.utils.PhoenixJdbcValidator.CONNECTOR_PASSWORD;
+import static org.apache.flink.connector.phoenix.utils.PhoenixJdbcValidator.CONNECTOR_READ_FETCH_SIZE;
+import static org.apache.flink.connector.phoenix.utils.PhoenixJdbcValidator.CONNECTOR_READ_PARTITION_COLUMN;
+import static org.apache.flink.connector.phoenix.utils.PhoenixJdbcValidator.CONNECTOR_READ_PARTITION_LOWER_BOUND;
+import static org.apache.flink.connector.phoenix.utils.PhoenixJdbcValidator.CONNECTOR_READ_PARTITION_NUM;
+import static org.apache.flink.connector.phoenix.utils.PhoenixJdbcValidator.CONNECTOR_READ_PARTITION_UPPER_BOUND;
+import static org.apache.flink.connector.phoenix.utils.PhoenixJdbcValidator.CONNECTOR_READ_QUERY;
+import static org.apache.flink.connector.phoenix.utils.PhoenixJdbcValidator.CONNECTOR_TABLE;
+import static org.apache.flink.connector.phoenix.utils.PhoenixJdbcValidator.CONNECTOR_TYPE_VALUE_JDBC;
+import static org.apache.flink.connector.phoenix.utils.PhoenixJdbcValidator.CONNECTOR_URL;
+import static org.apache.flink.connector.phoenix.utils.PhoenixJdbcValidator.CONNECTOR_USERNAME;
+import static org.apache.flink.connector.phoenix.utils.PhoenixJdbcValidator.CONNECTOR_WRITE_FLUSH_INTERVAL;
+import static org.apache.flink.connector.phoenix.utils.PhoenixJdbcValidator.CONNECTOR_WRITE_FLUSH_MAX_ROWS;
+import static org.apache.flink.connector.phoenix.utils.PhoenixJdbcValidator.CONNECTOR_WRITE_MAX_RETRIES;
+import static org.apache.flink.connector.phoenix.utils.PhoenixJdbcValidator.PHOENIX_SCHEMA_MAP_SYSTEMTABLE_ENABLE;
+import static org.apache.flink.connector.phoenix.utils.PhoenixJdbcValidator.PHOENIX_SCHEMA_NAMESPACE_MAPPING_ENABLE;
+import static org.apache.flink.table.descriptors.ConnectorDescriptorValidator.CONNECTOR_PROPERTY_VERSION;
+import static org.apache.flink.table.descriptors.ConnectorDescriptorValidator.CONNECTOR_TYPE;
+import static org.apache.flink.table.descriptors.DescriptorProperties.COMMENT;
+import static org.apache.flink.table.descriptors.DescriptorProperties.EXPR;
+import static org.apache.flink.table.descriptors.DescriptorProperties.WATERMARK;
+import static org.apache.flink.table.descriptors.DescriptorProperties.WATERMARK_ROWTIME;
+import static org.apache.flink.table.descriptors.DescriptorProperties.WATERMARK_STRATEGY_DATA_TYPE;
+import static org.apache.flink.table.descriptors.DescriptorProperties.WATERMARK_STRATEGY_EXPR;
+import static org.apache.flink.table.descriptors.Schema.SCHEMA;
+import static org.apache.flink.table.descriptors.Schema.SCHEMA_DATA_TYPE;
+import static org.apache.flink.table.descriptors.Schema.SCHEMA_NAME;
+import static org.apache.flink.table.descriptors.Schema.SCHEMA_TYPE;
 
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.connector.phoenix.dialect.JdbcDialects;
@@ -37,17 +69,11 @@ import org.apache.flink.table.sources.StreamTableSource;
 import org.apache.flink.table.utils.TableSchemaUtils;
 import org.apache.flink.types.Row;
 
-import java.util.*;
-
-import static org.apache.flink.connector.phoenix.utils.PhoenixJdbcValidator.*;
-import static org.apache.flink.table.descriptors.ConnectorDescriptorValidator.CONNECTOR_PROPERTY_VERSION;
-import static org.apache.flink.table.descriptors.ConnectorDescriptorValidator.CONNECTOR_TYPE;
-
-import static org.apache.flink.table.descriptors.DescriptorProperties.*;
-
-import static org.apache.flink.table.descriptors.Schema.*;
-
-
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class PhoenixTableSourceSinkFactory
         implements StreamTableSourceFactory<Row>, StreamTableSinkFactory<Tuple2<Boolean, Row>> {
@@ -114,10 +140,6 @@ public class PhoenixTableSourceSinkFactory
 
         // comment
         properties.add(COMMENT);
-
-
-
-
 
         return properties;
     }

@@ -17,13 +17,10 @@
  *
  */
 
-
 package org.apache.flink.connector.phoenix.internal.connection;
 
 import org.apache.flink.connector.phoenix.JdbcConnectionOptions;
 import org.apache.flink.util.Preconditions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.sql.Connection;
@@ -32,6 +29,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * PhoneixJdbcConnectionProvider
@@ -103,7 +103,9 @@ public class PhoneixJdbcConnectionProvider implements JdbcConnectionProvider, Se
             return this.connection;
         } else {
             if (this.jdbcOptions.getDriverName() == null) {
-                this.connection = DriverManager.getConnection(this.jdbcOptions.getDbURL(), (String) this.jdbcOptions.getUsername().orElse((String) null), (String) this.jdbcOptions.getPassword().orElse((String) null));
+                this.connection = DriverManager.getConnection(this.jdbcOptions.getDbURL(),
+                        (String) this.jdbcOptions.getUsername().orElse((String) null),
+                        (String) this.jdbcOptions.getPassword().orElse((String) null));
             } else {
                 Driver driver = this.getLoadedDriver();
                 Properties info = new Properties();

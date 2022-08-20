@@ -17,8 +17,9 @@
  *
  */
 
-
 package org.apache.flink.connector.phoenix.utils;
+
+import static org.apache.flink.table.descriptors.Schema.SCHEMA;
 
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.connector.phoenix.dialect.JdbcDialect;
@@ -30,8 +31,6 @@ import org.apache.flink.table.utils.TableSchemaUtils;
 import org.apache.flink.util.Preconditions;
 
 import java.util.Optional;
-
-import static org.apache.flink.table.descriptors.Schema.SCHEMA;
 
 /** The validator for JDBC. */
 @Internal
