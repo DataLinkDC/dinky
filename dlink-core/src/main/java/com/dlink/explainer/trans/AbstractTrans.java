@@ -17,10 +17,7 @@
  *
  */
 
-
 package com.dlink.explainer.trans;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +41,6 @@ public abstract class AbstractTrans {
     protected String pact;
     protected Integer parallelism;
     protected List<Predecessor> predecessors;
-
 
     public void build(JsonNode node) {
         id = node.get("id").asInt();

@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.plus;
 
 import org.apache.flink.table.api.TableResult;

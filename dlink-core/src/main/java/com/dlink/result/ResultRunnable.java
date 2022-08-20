@@ -17,8 +17,10 @@
  *
  */
 
-
 package com.dlink.result;
+
+import com.dlink.constant.FlinkConstant;
+import com.dlink.utils.FlinkUtil;
 
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.types.Row;
@@ -33,9 +35,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import com.dlink.constant.FlinkConstant;
-import com.dlink.utils.FlinkUtil;
 
 /**
  * ResultRunnable

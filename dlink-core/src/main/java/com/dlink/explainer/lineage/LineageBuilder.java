@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.explainer.lineage;
 
 import com.dlink.explainer.ca.ColumnCAResult;
@@ -25,7 +24,12 @@ import com.dlink.explainer.ca.NodeRel;
 import com.dlink.explainer.ca.TableCA;
 import com.dlink.plus.FlinkSqlPlus;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * LineageBuilder
@@ -51,14 +55,15 @@ public class LineageBuilder {
             }
             Set<String> keySet = new HashSet<>();
             for (NodeRel nodeRel : item.getColumnCASRelChain()) {
-                if( item.getColumnCASMaps().containsKey(nodeRel.getPreId())&&item.getColumnCASMaps().containsKey(nodeRel.getSufId())
-                && !item.getColumnCASMaps().get(nodeRel.getPreId()).getTableId().equals(item.getColumnCASMaps().get(nodeRel.getSufId()).getTableId())) {
-                    String key = item.getColumnCASMaps().get(nodeRel.getPreId()).getTableId().toString() + "@" +
-                            item.getColumnCASMaps().get(nodeRel.getSufId()).getTableId().toString() + "@" +
-                            item.getColumnCASMaps().get(nodeRel.getPreId()).getName() + "@" +
-                            item.getColumnCASMaps().get(nodeRel.getSufId()).getName();
+                if (item.getColumnCASMaps().containsKey(nodeRel.getPreId())
+                        && item.getColumnCASMaps().containsKey(nodeRel.getSufId())
+                        && !item.getColumnCASMaps().get(nodeRel.getPreId()).getTableId().equals(item.getColumnCASMaps().get(nodeRel.getSufId()).getTableId())) {
+                    String key = item.getColumnCASMaps().get(nodeRel.getPreId()).getTableId().toString() + "@"
+                            + item.getColumnCASMaps().get(nodeRel.getSufId()).getTableId().toString() + "@"
+                            + item.getColumnCASMaps().get(nodeRel.getPreId()).getName() + "@"
+                            + item.getColumnCASMaps().get(nodeRel.getSufId()).getName();
                     //去重
-                    if(!keySet.contains(key)){
+                    if (!keySet.contains(key)) {
                         index++;
                         relations.add(LineageRelation.build(index + "",
                                 item.getColumnCASMaps().get(nodeRel.getPreId()).getTableId().toString(),
@@ -87,18 +92,18 @@ public class LineageBuilder {
         }
         //重复表合并
         Map<String,String> correctTableIdMap = new HashMap<>();
-        for(List<LineageTable> tableList : repeatTablesList){
+        for (List<LineageTable> tableList : repeatTablesList) {
             LineageTable newTable = new LineageTable();
             Set<String> columnKeySet = new HashSet<>();
-            for(LineageTable table: tableList){
-                if(newTable.getId() == null || newTable.getName() == null){
+            for (LineageTable table: tableList) {
+                if (newTable.getId() == null || newTable.getName() == null) {
                     newTable.setId(table.getId());
                     newTable.setName(table.getName());
                     newTable.setColumns(new ArrayList<>());
                 }
-                for(LineageColumn column : table.getColumns()){
+                for (LineageColumn column : table.getColumns()) {
                     String key = column.getName() + "@&" + column.getTitle();
-                    if(!columnKeySet.contains(key)){
+                    if (!columnKeySet.contains(key)) {
                         newTable.getColumns().add(column);
                         columnKeySet.add(key);
                     }
@@ -109,11 +114,11 @@ public class LineageBuilder {
             tables.add(newTable);
         }
         //关系中id重新指向
-        for (LineageRelation relation : relations){
-            if(correctTableIdMap.containsKey(relation.getSrcTableId())){
+        for (LineageRelation relation : relations) {
+            if (correctTableIdMap.containsKey(relation.getSrcTableId())) {
                 relation.setSrcTableId(correctTableIdMap.get(relation.getSrcTableId()));
             }
-            if(correctTableIdMap.containsKey(relation.getTgtTableId())){
+            if (correctTableIdMap.containsKey(relation.getTgtTableId())) {
                 relation.setTgtTableId(correctTableIdMap.get(relation.getTgtTableId()));
             }
         }

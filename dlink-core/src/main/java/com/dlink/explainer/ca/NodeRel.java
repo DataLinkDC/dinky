@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.explainer.ca;
 
 import java.util.Objects;
@@ -55,11 +54,15 @@ public class NodeRel {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         NodeRel nodeRel = (NodeRel) o;
-        return Objects.equals(preId, nodeRel.preId) &&
-                Objects.equals(sufId, nodeRel.sufId);
+        return Objects.equals(preId, nodeRel.preId)
+                && Objects.equals(sufId, nodeRel.sufId);
     }
 
     @Override

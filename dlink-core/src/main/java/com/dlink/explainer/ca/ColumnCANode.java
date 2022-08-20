@@ -17,14 +17,13 @@
  *
  */
 
-
 package com.dlink.explainer.ca;
-
-import lombok.Getter;
-import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * ColumnCANode
@@ -43,12 +42,9 @@ public class ColumnCANode implements Serializable {
     private String value;
     private String type;
     private String operation;
-    //    private Tables tables;
-//    private Columns columns;
     private List<ColumnCANode> children;
 
     public ColumnCANode() {
     }
-
 
 }

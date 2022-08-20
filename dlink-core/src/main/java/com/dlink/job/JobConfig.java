@@ -17,20 +17,23 @@
  *
  */
 
-
 package com.dlink.job;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.executor.ExecutorSetting;
 import com.dlink.gateway.GatewayType;
-import com.dlink.gateway.config.*;
+import com.dlink.gateway.config.AppConfig;
+import com.dlink.gateway.config.ClusterConfig;
+import com.dlink.gateway.config.FlinkConfig;
+import com.dlink.gateway.config.GatewayConfig;
+import com.dlink.gateway.config.SavePointStrategy;
 import com.dlink.session.SessionConfig;
-
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.List;
 import java.util.Map;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * JobConfig
@@ -207,7 +210,7 @@ public class JobConfig {
         if (config.containsKey("kubernetesConfig")) {
             Map<String,Object> kubernetesConfig = (Map<String,Object>) config.get("kubernetesConfig");
             //构建GatewayConfig时，将k8s集群默认配置和自定义参数配置加载到FlinkConfig里
-            for(Map.Entry<String,Object> entry:kubernetesConfig.entrySet()){
+            for (Map.Entry<String,Object> entry:kubernetesConfig.entrySet()) {
                 gatewayConfig.getFlinkConfig().getConfiguration().put(entry.getKey(),entry.getValue().toString());
             }
         }
