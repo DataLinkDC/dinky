@@ -19,9 +19,6 @@
 
 package com.dlink.executor;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.result.SqlExplainResult;
-
 import org.apache.flink.api.common.RuntimeExecutionMode;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.dag.Transformation;
@@ -62,6 +59,7 @@ import org.apache.flink.table.operations.QueryOperation;
 import org.apache.flink.table.operations.command.ResetOperation;
 import org.apache.flink.table.operations.command.SetOperation;
 import org.apache.flink.table.planner.delegation.DefaultExecutor;
+import org.apache.flink.table.planner.plan.optimize.program.FlinkChainedProgram;
 import org.apache.flink.table.typeutils.FieldInfoUtils;
 
 import java.lang.reflect.Method;
@@ -72,6 +70,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.dlink.assertion.Asserts;
+import com.dlink.model.LineageRel;
+import com.dlink.result.SqlExplainResult;
+import com.dlink.utils.FlinkStreamProgramWithoutPhysical;
+import com.dlink.utils.LineageContext;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -85,6 +88,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements CustomTableEnvironment {
 
     private final StreamExecutionEnvironment executionEnvironment;
+    private final FlinkChainedProgram flinkChainedProgram;
 
     public CustomTableEnvironmentImpl(
         CatalogManager catalogManager,
@@ -106,6 +110,7 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
             isStreamingMode,
             userClassLoader);
         this.executionEnvironment = executionEnvironment;
+        this.flinkChainedProgram = FlinkStreamProgramWithoutPhysical.buildProgram((Configuration) executionEnvironment.getConfiguration());
     }
 
     public static CustomTableEnvironmentImpl create(StreamExecutionEnvironment executionEnvironment) {
@@ -347,6 +352,12 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
     @Override
     public <T> void createTemporaryView(String path, DataStream<T> dataStream, String fields) {
         createTemporaryView(path, fromDataStream(dataStream, fields));
+    }
+
+    @Override
+    public List<LineageRel> getLineage(String statement) {
+        LineageContext lineageContext = new LineageContext(flinkChainedProgram, this);
+        return lineageContext.getLineage(statement);
     }
 
     @Override

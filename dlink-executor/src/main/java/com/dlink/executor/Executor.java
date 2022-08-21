@@ -22,6 +22,7 @@ package com.dlink.executor;
 import com.dlink.assertion.Asserts;
 import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.interceptor.FlinkInterceptorResult;
+import com.dlink.model.LineageRel;
 import com.dlink.result.SqlExplainResult;
 
 import org.apache.flink.api.common.ExecutionConfig;
@@ -45,6 +46,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.dlink.utils.LineageContext;
+import com.dlink.utils.SqlUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -376,5 +379,9 @@ public abstract class Executor {
 
     public boolean parseAndLoadConfiguration(String statement) {
         return stEnvironment.parseAndLoadConfiguration(statement, environment, setConfig);
+    }
+
+    public List<LineageRel> getLineage(String statement){
+        return stEnvironment.getLineage(statement);
     }
 }

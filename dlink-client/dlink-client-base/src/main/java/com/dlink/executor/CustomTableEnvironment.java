@@ -19,6 +19,7 @@
 
 package com.dlink.executor;
 
+import com.dlink.model.LineageRel;
 import com.dlink.result.SqlExplainResult;
 
 import org.apache.flink.runtime.jobgraph.JobGraph;
@@ -92,4 +93,6 @@ public interface CustomTableEnvironment {
     Parser getParser();
 
     Planner getPlanner();
+
+    List<LineageRel> getLineage(String statement);
 }

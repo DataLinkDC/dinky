@@ -20,6 +20,7 @@
 package com.dlink.executor;
 
 import com.dlink.assertion.Asserts;
+import com.dlink.model.LineageRel;
 import com.dlink.result.SqlExplainResult;
 
 import org.apache.flink.api.common.RuntimeExecutionMode;
@@ -313,6 +314,11 @@ public class CustomTableEnvironmentImpl extends AbstractStreamTableEnvironmentIm
     @Override
     public <T> void createTemporaryView(String path, DataStream<T> dataStream, String fields) {
         createTemporaryView(path, fromDataStream(dataStream, fields));
+    }
+
+    @Override
+    public List<LineageRel> getLineage(String statement) {
+        return null;
     }
 
     @Override

@@ -56,6 +56,7 @@ import com.dlink.model.DataBase;
 import com.dlink.model.FlinkColumn;
 import com.dlink.model.Savepoints;
 import com.dlink.model.Schema;
+import com.dlink.model.SystemConfiguration;
 import com.dlink.model.Table;
 import com.dlink.model.Task;
 import com.dlink.result.DDLResult;
@@ -322,7 +323,11 @@ public class StudioServiceImpl implements StudioService {
             }
         } else {
             addFlinkSQLEnv(studioCADTO);
-            return LineageBuilder.getLineage(studioCADTO.getStatement(), studioCADTO.getStatementSet());
+            if (SystemConfiguration.getInstances().isUseLogicalPlan()) {
+                return LineageBuilder.getColumnLineageByLogicalPlan(studioCADTO.getStatement());
+            } else {
+                return LineageBuilder.getLineage(studioCADTO.getStatement());
+            }
         }
     }
 
