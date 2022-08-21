@@ -17,14 +17,14 @@
  *
  */
 
-
 package com.dlink.gateway.result;
 
 import com.dlink.gateway.GatewayType;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * AbstractGatewayResult
