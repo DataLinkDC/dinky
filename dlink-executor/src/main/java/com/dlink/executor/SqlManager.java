@@ -17,12 +17,16 @@
  *
  */
 
-
 package com.dlink.executor;
 
-import static java.lang.String.format;
 import static org.apache.flink.util.Preconditions.checkArgument;
 import static org.apache.flink.util.Preconditions.checkNotNull;
+
+import static java.lang.String.format;
+
+import com.dlink.assertion.Asserts;
+import com.dlink.constant.FlinkSQLConstant;
+import com.dlink.model.SystemConfiguration;
 
 import org.apache.flink.table.api.DataTypes;
 import org.apache.flink.table.api.ExpressionParserException;
@@ -40,10 +44,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.dlink.assertion.Asserts;
-import com.dlink.constant.FlinkSQLConstant;
-import com.dlink.model.SystemConfiguration;
 
 /**
  * Flink Sql Fragment Manager

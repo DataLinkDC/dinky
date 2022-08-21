@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.catalog.function;
 
 import org.apache.flink.table.functions.FunctionDefinition;
