@@ -17,33 +17,53 @@
  *
  */
 
-
-
 package org.apache.flink.table.types.extraction;
 
+import static org.apache.flink.shaded.asm7.org.objectweb.asm.Type.getConstructorDescriptor;
+import static org.apache.flink.shaded.asm7.org.objectweb.asm.Type.getMethodDescriptor;
+
 import com.dlink.pool.ClassPool;
+
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.api.common.typeutils.TypeSerializer;
-import org.apache.flink.shaded.asm7.org.objectweb.asm.*;
+import org.apache.flink.shaded.asm7.org.objectweb.asm.ClassReader;
+import org.apache.flink.shaded.asm7.org.objectweb.asm.ClassVisitor;
+import org.apache.flink.shaded.asm7.org.objectweb.asm.Label;
+import org.apache.flink.shaded.asm7.org.objectweb.asm.MethodVisitor;
+import org.apache.flink.shaded.asm7.org.objectweb.asm.Opcodes;
 import org.apache.flink.table.api.DataTypes;
 import org.apache.flink.table.api.ValidationException;
 import org.apache.flink.table.catalog.DataTypeFactory;
 import org.apache.flink.table.types.DataType;
 import org.apache.flink.table.types.logical.StructuredType;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Executable;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.TypeVariable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.apache.flink.shaded.asm7.org.objectweb.asm.Type.getConstructorDescriptor;
-import static org.apache.flink.shaded.asm7.org.objectweb.asm.Type.getMethodDescriptor;
+import javax.annotation.Nullable;
 
 /**
  * Utilities for performing reflection tasks.
@@ -384,8 +404,7 @@ public final class ExtractionUtils {
     /**
      * Converts a {@link Type} to {@link Class} if possible, {@code null} otherwise.
      */
-    static @Nullable
-    Class<?> toClass(Type type) {
+    static @Nullable Class<?> toClass(Type type) {
         if (type instanceof Class) {
             return (Class<?>) type;
         } else if (type instanceof ParameterizedType) {
@@ -457,8 +476,7 @@ public final class ExtractionUtils {
         return variable;
     }
 
-    private static @Nullable
-    Type resolveVariableInParameterizedType(
+    private static @Nullable Type resolveVariableInParameterizedType(
             TypeVariable<?> variable, ParameterizedType currentType) {
         final Class<?> currentRaw = (Class<?>) currentType.getRawType();
         final TypeVariable<?>[] currentVariables = currentRaw.getTypeParameters();
@@ -640,8 +658,7 @@ public final class ExtractionUtils {
      * Checks whether the given constructor takes all of the given fields with matching (possibly
      * primitive) type and name. An assigning constructor can define the order of fields.
      */
-    public static @Nullable
-    AssigningConstructor extractAssigningConstructor(
+    public static @Nullable AssigningConstructor extractAssigningConstructor(
             Class<?> clazz, List<Field> fields) {
         AssigningConstructor foundConstructor = null;
         for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
@@ -668,8 +685,7 @@ public final class ExtractionUtils {
     /**
      * Extracts the parameter names of a method if possible.
      */
-    static @Nullable
-    List<String> extractMethodParameterNames(Method method) {
+    static @Nullable List<String> extractMethodParameterNames(Method method) {
         return extractExecutableNames(method);
     }
 
@@ -677,8 +693,7 @@ public final class ExtractionUtils {
      * Extracts ordered parameter names from a constructor that takes all of the given fields with
      * matching (possibly primitive and lenient) type and name.
      */
-    private static @Nullable
-    List<String> extractConstructorParameterNames(
+    private static @Nullable List<String> extractConstructorParameterNames(
             Constructor<?> constructor, List<Field> fields) {
         final Type[] parameterTypes = constructor.getGenericParameterTypes();
 
@@ -715,8 +730,7 @@ public final class ExtractionUtils {
         return fieldNames;
     }
 
-    private static @Nullable
-    List<String> extractExecutableNames(Executable executable) {
+    private static @Nullable List<String> extractExecutableNames(Executable executable) {
         final int offset;
         if (!Modifier.isStatic(executable.getModifiers())) {
             // remove "this" as first parameter

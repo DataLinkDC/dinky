@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.cdc.kafka;
 
 import com.dlink.assertion.Asserts;
@@ -28,6 +27,7 @@ import com.dlink.executor.CustomTableEnvironment;
 import com.dlink.model.FlinkCDCConfig;
 import com.dlink.model.Schema;
 import com.dlink.model.Table;
+
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.connector.base.DeliveryGuarantee;
 import org.apache.flink.connector.kafka.sink.KafkaRecordSerializationSchema;
@@ -56,7 +56,7 @@ import java.util.Map;
  **/
 public class KafkaSinkBuilder extends AbstractSinkBuilder implements SinkBuilder {
 
-    private final static String KEY_WORD = "datastream-kafka";
+    private static final String KEY_WORD = "datastream-kafka";
 
     public KafkaSinkBuilder() {
     }

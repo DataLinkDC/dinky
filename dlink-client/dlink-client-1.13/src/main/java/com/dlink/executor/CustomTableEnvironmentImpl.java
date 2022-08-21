@@ -17,8 +17,10 @@
  *
  */
 
-
 package com.dlink.executor;
+
+import com.dlink.assertion.Asserts;
+import com.dlink.result.SqlExplainResult;
 
 import org.apache.flink.api.common.RuntimeExecutionMode;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
@@ -51,10 +53,6 @@ import org.apache.flink.table.delegation.PlannerFactory;
 import org.apache.flink.table.expressions.Expression;
 import org.apache.flink.table.expressions.ExpressionParser;
 import org.apache.flink.table.factories.ComponentFactoryService;
-import org.apache.flink.table.functions.AggregateFunction;
-import org.apache.flink.table.functions.TableAggregateFunction;
-import org.apache.flink.table.functions.TableFunction;
-import org.apache.flink.table.functions.UserDefinedFunctionHelper;
 import org.apache.flink.table.module.ModuleManager;
 import org.apache.flink.table.operations.ExplainOperation;
 import org.apache.flink.table.operations.JavaDataStreamQueryOperation;
@@ -75,8 +73,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.result.SqlExplainResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
