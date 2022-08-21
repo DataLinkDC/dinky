@@ -17,11 +17,14 @@
  *
  */
 
-
 package com.dlink.metadata.parser;
 
 import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
-import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.sql.parser.Lexer;
+import com.alibaba.druid.sql.parser.SQLCreateTableParser;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
+import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.sql.parser.Token;
 
 public class Clickhouse20StatementParser extends SQLStatementParser {
     public Clickhouse20StatementParser(String sql) {
@@ -35,7 +38,6 @@ public class Clickhouse20StatementParser extends SQLStatementParser {
     public Clickhouse20StatementParser(Lexer lexer) {
         super(new Clickhouse20ExprParser(lexer));
     }
-
 
     @Override
     public SQLWithSubqueryClause parseWithQuery() {

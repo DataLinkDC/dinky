@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.metadata.driver;
 
 import com.dlink.metadata.constant.PhoenixConstant;
@@ -28,21 +27,15 @@ import com.dlink.metadata.query.PhoenixQuery;
 import com.dlink.metadata.result.JdbcSelectResult;
 import com.dlink.model.Column;
 import com.dlink.model.Table;
+
 import org.apache.commons.lang3.StringUtils;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
 
-/**
- * @author lcg
- * @operate
- * @date 2022/2/16 16:50
- * @return
- */
 public class PhoenixDriver extends AbstractJdbcDriver {
     @Override
     public IDBQuery getDBQuery() {
