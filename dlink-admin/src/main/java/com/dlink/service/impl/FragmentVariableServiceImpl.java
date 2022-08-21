@@ -19,11 +19,17 @@
 
 package com.dlink.service.impl;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.FragmentVariableMapper;
 import com.dlink.model.FragmentVariable;
 import com.dlink.service.FragmentVariableService;
-import org.springframework.stereotype.Service;
 
 
 /**
@@ -34,4 +40,18 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class FragmentVariableServiceImpl extends SuperServiceImpl<FragmentVariableMapper, FragmentVariable> implements FragmentVariableService {
+    @Override
+    public List<FragmentVariable> listEnabledAll() {
+        return list(new QueryWrapper<FragmentVariable>().eq("enabled", 1));
+    }
+
+    @Override
+    public Map<String, String> listEnabledVariables() {
+        List<FragmentVariable> fragmentVariables = listEnabledAll();
+        Map<String, String> variables = new LinkedHashMap<>();
+        for (FragmentVariable fragmentVariable : fragmentVariables) {
+            variables.put(fragmentVariable.getName(), fragmentVariable.getFragmentValue());
+        }
+        return variables;
+    }
 }

@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.explainer.lineage;
 
 import com.dlink.explainer.ca.TableCA;

@@ -17,13 +17,12 @@
  *
  */
 
-
 package com.dlink.session;
+
+import java.time.LocalDateTime;
 
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
 
 /**
  * SessionInfo

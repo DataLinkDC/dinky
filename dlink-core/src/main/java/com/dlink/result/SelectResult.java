@@ -17,16 +17,15 @@
  *
  */
 
-
 package com.dlink.result;
-
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * SelectResult
@@ -53,7 +52,7 @@ public class SelectResult extends AbstractResult implements IResult {
         this.columns = columns;
         this.jobID = jobID;
         this.success = success;
-//        this.endTime = LocalDateTime.now();
+        //this.endTime = LocalDateTime.now();
         this.isDestroyed = false;
     }
 

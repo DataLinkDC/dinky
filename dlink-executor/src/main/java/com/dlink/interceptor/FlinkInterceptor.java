@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.interceptor;
 
 import com.dlink.assertion.Asserts;
@@ -25,6 +24,7 @@ import com.dlink.executor.Executor;
 import com.dlink.trans.Operation;
 import com.dlink.trans.Operations;
 import com.dlink.utils.SqlUtil;
+
 import org.apache.flink.table.api.TableResult;
 
 /**

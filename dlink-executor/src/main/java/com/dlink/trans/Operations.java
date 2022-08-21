@@ -17,11 +17,14 @@
  *
  */
 
-
 package com.dlink.trans;
 
 import com.dlink.parser.SqlType;
-import com.dlink.trans.ddl.*;
+import com.dlink.trans.ddl.CreateAggTableOperation;
+import com.dlink.trans.ddl.CreateCDCSourceOperation;
+import com.dlink.trans.ddl.SetOperation;
+import com.dlink.trans.ddl.ShowFragmentOperation;
+import com.dlink.trans.ddl.ShowFragmentsOperation;
 
 /**
  * Operations
@@ -32,7 +35,7 @@ import com.dlink.trans.ddl.*;
 public class Operations {
 
     private static Operation[] operations = {
-            new CreateAggTableOperation()
+        new CreateAggTableOperation()
             , new SetOperation()
             , new CreateCDCSourceOperation()
             , new ShowFragmentsOperation()

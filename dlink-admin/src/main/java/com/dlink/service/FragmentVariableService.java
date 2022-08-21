@@ -20,6 +20,9 @@
 package com.dlink.service;
 
 
+import java.util.List;
+import java.util.Map;
+
 import com.dlink.db.service.ISuperService;
 import com.dlink.model.FragmentVariable;
 
@@ -31,4 +34,7 @@ import com.dlink.model.FragmentVariable;
  */
 public interface FragmentVariableService extends ISuperService<FragmentVariable> {
 
+    List<FragmentVariable> listEnabledAll();
+
+    Map<String, String> listEnabledVariables();
 }

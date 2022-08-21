@@ -17,10 +17,10 @@
  *
  */
 
-
 package com.dlink.gateway.config;
 
 import com.dlink.assertion.Asserts;
+
 import lombok.Getter;
 import lombok.Setter;
 

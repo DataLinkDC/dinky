@@ -17,14 +17,20 @@
  *
  */
 
-
 package com.dlink.result;
 
 import com.dlink.utils.FlinkUtil;
+
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.types.Row;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * ShowResultBuilder

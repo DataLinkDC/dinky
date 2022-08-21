@@ -17,9 +17,10 @@
  *
  */
 
-
 package com.dlink.explainer.sqlLineage;
+
 import java.util.Iterator;
+
 public class TreeNodeIterator<T> implements Iterator<TreeNode<T>> {
 
     private ProcessStages doNext;

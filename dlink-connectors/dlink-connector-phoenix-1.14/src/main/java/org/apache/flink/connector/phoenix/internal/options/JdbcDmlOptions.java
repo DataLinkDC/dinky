@@ -17,18 +17,17 @@
  *
  */
 
-
-
 package org.apache.flink.connector.phoenix.internal.options;
 
 import org.apache.flink.connector.phoenix.dialect.JdbcDialect;
 import org.apache.flink.util.Preconditions;
 
-import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import javax.annotation.Nullable;
 
 /** JDBC sink DML options. */
 public class JdbcDmlOptions extends JdbcTypedQueryOptions {

@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.explainer.ca;
 
 import com.dlink.plus.FlinkSqlPlus;
@@ -104,7 +103,7 @@ public class CABuilder {
         for (NodeRel nodeRel : columnCASRel) {
             if (columnId.equals(nodeRel.getSufId())) {
                 ColumnCA childca = (ColumnCA) result.getColumnCASMaps().get(nodeRel.getPreId());
-//                operation = operation.replaceAll(childca.getAlias().replaceAll("\\$","\\\\$"),childca.getOperation());
+                //operation = operation.replaceAll(childca.getAlias().replaceAll("\\$","\\\\$"),childca.getOperation());
                 operation = operation.replaceAll(childca.getAlias()
                         .replaceAll("\\)", ""), childca.getOperation());
                 buildColumnCANodeChildren(children, result, nodeRel.getPreId(), operation);
