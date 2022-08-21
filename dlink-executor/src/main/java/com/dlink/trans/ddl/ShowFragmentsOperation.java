@@ -17,12 +17,12 @@
  *
  */
 
-
 package com.dlink.trans.ddl;
 
 import com.dlink.executor.Executor;
 import com.dlink.trans.AbstractOperation;
 import com.dlink.trans.Operation;
+
 import org.apache.flink.table.api.TableResult;
 
 /**
@@ -33,7 +33,7 @@ import org.apache.flink.table.api.TableResult;
  **/
 public class ShowFragmentsOperation extends AbstractOperation implements Operation {
 
-    private String KEY_WORD = "SHOW FRAGMENTS";
+    private static final String KEY_WORD = "SHOW FRAGMENTS";
 
     public ShowFragmentsOperation() {
     }
