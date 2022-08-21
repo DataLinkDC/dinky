@@ -1,4 +1,4 @@
-package com.dlink.cdc.mssql;
+package com.dlink.cdc.sqlserver;
 
 import com.ververica.cdc.connectors.shaded.org.apache.kafka.connect.json.JsonConverter;
 import com.ververica.cdc.connectors.shaded.org.apache.kafka.connect.source.SourceRecord;
@@ -19,21 +19,21 @@ import java.util.Map;
  * @author: jack zhong
  * @date 8/2/221:43 PM
  */
-public class MssqlJsonDebeziumDeserializationSchema implements DebeziumDeserializationSchema<String> {
+public class SqlServerJsonDebeziumDeserializationSchema implements DebeziumDeserializationSchema<String> {
     private static final long serialVersionUID = 1L;
     private transient JsonConverter jsonConverter;
     private final Boolean includeSchema;
     private Map<String, Object> customConverterConfigs;
 
-    public MssqlJsonDebeziumDeserializationSchema() {
+    public SqlServerJsonDebeziumDeserializationSchema() {
         this(false);
     }
 
-    public MssqlJsonDebeziumDeserializationSchema(Boolean includeSchema) {
+    public SqlServerJsonDebeziumDeserializationSchema(Boolean includeSchema) {
         this.includeSchema = includeSchema;
     }
 
-    public MssqlJsonDebeziumDeserializationSchema(Boolean includeSchema, Map<String, Object> customConverterConfigs) {
+    public SqlServerJsonDebeziumDeserializationSchema(Boolean includeSchema, Map<String, Object> customConverterConfigs) {
         this.includeSchema = includeSchema;
         this.customConverterConfigs = customConverterConfigs;
     }

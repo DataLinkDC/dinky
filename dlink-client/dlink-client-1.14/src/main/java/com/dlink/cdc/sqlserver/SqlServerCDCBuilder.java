@@ -1,4 +1,4 @@
-package com.dlink.cdc.mssql;
+package com.dlink.cdc.sqlserver;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.cdc.AbstractCDCBuilder;
@@ -27,16 +27,16 @@ import java.util.Properties;
  * @author 郑文豪
  * @date 2022/8/12 18:00
  */
-public class MssqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
-    protected static final Logger logger = LoggerFactory.getLogger(MssqlCDCBuilder.class);
+public class SqlServerCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
+    protected static final Logger logger = LoggerFactory.getLogger(SqlServerCDCBuilder.class);
 
     private final static String KEY_WORD = "sqlserver-cdc";
     private final static String METADATA_TYPE = "SqlServer";
 
-    public MssqlCDCBuilder() {
+    public SqlServerCDCBuilder() {
     }
 
-    public MssqlCDCBuilder(FlinkCDCConfig config) {
+    public SqlServerCDCBuilder(FlinkCDCConfig config) {
         super(config);
     }
 
@@ -47,7 +47,7 @@ public class MssqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
 
     @Override
     public CDCBuilder create(FlinkCDCConfig config) {
-        return new MssqlCDCBuilder(config);
+        return new SqlServerCDCBuilder(config);
     }
 
     @Override
@@ -86,9 +86,8 @@ public class MssqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         } else {
             sourceBuilder.tableList(new String[0]);
         }
-        sourceBuilder.deserializer(new MssqlJsonDebeziumDeserializationSchema());
-        sourceBuilder.debeziumProperties(debeziumProperties);
-        sourceBuilder.debeziumProperties(jdbcProperties);
+        sourceBuilder.deserializer(new JsonDebeziumDeserializationSchema());
+//        sourceBuilder.deserializer(new MssqlJsonDebeziumDeserializationSchema());
         if (Asserts.isNotNullString(config.getStartupMode())) {
             switch (config.getStartupMode().toLowerCase()) {
                 case "initial":
@@ -101,6 +100,7 @@ public class MssqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         } else {
             sourceBuilder.startupOptions(StartupOptions.latest());
         }
+        sourceBuilder.debeziumProperties(debeziumProperties);
         return env.addSource(sourceBuilder.build(), "SqlServer CDC Source");
     }
 

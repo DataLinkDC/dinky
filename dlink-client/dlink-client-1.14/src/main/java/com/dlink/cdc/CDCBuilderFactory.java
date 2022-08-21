@@ -21,9 +21,9 @@
 package com.dlink.cdc;
 
 import com.dlink.assertion.Asserts;
-import com.dlink.cdc.mssql.MssqlCDCBuilder;
 import com.dlink.cdc.mysql.MysqlCDCBuilder;
 import com.dlink.cdc.oracle.OracleCDCBuilder;
+import com.dlink.cdc.sqlserver.SqlServerCDCBuilder;
 import com.dlink.exception.FlinkClientException;
 import com.dlink.model.FlinkCDCConfig;
 
@@ -36,7 +36,7 @@ import com.dlink.model.FlinkCDCConfig;
 public class CDCBuilderFactory {
     private static CDCBuilder[] cdcBuilders = {
             new MysqlCDCBuilder(),
-            new MssqlCDCBuilder(),
+            new SqlServerCDCBuilder(),
             new OracleCDCBuilder()
     };
 
