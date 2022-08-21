@@ -17,16 +17,16 @@
  *
  */
 
-
 package com.dlink.gateway.result;
 
 import com.dlink.gateway.GatewayType;
 import com.dlink.gateway.model.JobInfo;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * TODO

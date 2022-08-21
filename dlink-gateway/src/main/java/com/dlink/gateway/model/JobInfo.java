@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.gateway.model;
 
 import lombok.Getter;
