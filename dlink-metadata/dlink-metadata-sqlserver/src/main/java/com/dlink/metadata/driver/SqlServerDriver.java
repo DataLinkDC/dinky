@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.metadata.driver;
 
 import com.dlink.metadata.constant.SqlServerConstant;
@@ -33,12 +32,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author lcg
- * @operate
- * @date 2022/1/26 14:23
- * @return
- */
 public class SqlServerDriver extends AbstractJdbcDriver {
     @Override
     public IDBQuery getDBQuery() {

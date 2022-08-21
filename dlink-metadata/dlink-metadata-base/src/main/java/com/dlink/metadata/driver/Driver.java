@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.metadata.driver;
 
 import com.dlink.assertion.Asserts;
@@ -28,7 +27,6 @@ import com.dlink.model.Schema;
 import com.dlink.model.Table;
 import com.dlink.result.SqlExplainResult;
 
-import javax.sql.DataSource;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -81,7 +79,6 @@ public interface Driver {
         }
     }
 
-
     Driver setDriverConfig(DriverConfig config);
 
     boolean canHandle(String type);
@@ -126,7 +123,7 @@ public interface Driver {
 
     String getTruncateTableSql(Table table);
 
-   /* boolean insert(Table table, JsonNode data);
+    /* boolean insert(Table table, JsonNode data);
 
     boolean update(Table table, JsonNode data);
 

@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.metadata;
 
 import com.dlink.metadata.driver.Driver;
@@ -25,10 +24,11 @@ import com.dlink.metadata.driver.DriverConfig;
 import com.dlink.metadata.result.JdbcSelectResult;
 import com.dlink.model.Column;
 import com.dlink.model.Schema;
-import org.junit.Test;
 
 import java.util.List;
 import java.util.UUID;
+
+import org.junit.Test;
 
 /**
  * OracleTest

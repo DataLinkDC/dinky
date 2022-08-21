@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.metadata.query;
 
 /**
@@ -39,9 +38,10 @@ public class PostgreSqlQuery extends AbstractDBQuery {
 
     @Override
     public String columnsSql(String schemaName, String tableName) {
-        return "SELECT A.attname AS name,format_type (A.atttypid,A.atttypmod) AS type,col_description (A.attrelid,A.attnum) AS comment,\n" +
-                "(CASE WHEN (SELECT COUNT (*) FROM pg_constraint AS PC WHERE A.attnum = PC.conkey[1] AND PC.contype = 'p') > 0 THEN 'PRI' ELSE '' END) AS key \n" +
-                "FROM pg_class AS C,pg_attribute AS A WHERE A.attrelid='" + schemaName + "." + tableName + "'::regclass AND A.attrelid= C.oid AND A.attnum> 0 AND NOT A.attisdropped ORDER  BY A.attnum";
+        return "SELECT A.attname AS name,format_type (A.atttypid,A.atttypmod) AS type,col_description (A.attrelid,A.attnum) AS comment,\n"
+                + "(CASE WHEN (SELECT COUNT (*) FROM pg_constraint AS PC WHERE A.attnum = PC.conkey[1] AND PC.contype = 'p') > 0 THEN 'PRI' ELSE '' END) AS key \n"
+                + "FROM pg_class AS C,pg_attribute AS A WHERE A.attrelid='" + schemaName + "." + tableName
+                + "'::regclass AND A.attrelid= C.oid AND A.attnum> 0 AND NOT A.attisdropped ORDER  BY A.attnum";
     }
 
     @Override
