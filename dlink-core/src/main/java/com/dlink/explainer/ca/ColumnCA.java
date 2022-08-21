@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.explainer.ca;
 
 import java.util.List;
@@ -54,17 +53,6 @@ public class ColumnCA implements ICA {
         this.tableName = tableCA.getName();
         this.type = tableCA.getType();
     }
-
-   /* public ColumnCA(Integer id, List<Integer> parentId, String name, String alias, String columnName, String familyName, String type, TableCA tableCA) {
-        this.id = id;
-        this.parentId = parentId;
-        this.name = name;
-        this.alias = alias;
-        this.columnName = columnName;
-        this.familyName = familyName;
-        this.type = type;
-        this.tableCA = tableCA;
-    }*/
 
     public Integer getId() {
         return id;

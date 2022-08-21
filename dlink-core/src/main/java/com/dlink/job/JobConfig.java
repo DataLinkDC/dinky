@@ -17,11 +17,7 @@
  *
  */
 
-
 package com.dlink.job;
-
-import java.util.List;
-import java.util.Map;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.executor.ExecutorSetting;
@@ -32,6 +28,9 @@ import com.dlink.gateway.config.FlinkConfig;
 import com.dlink.gateway.config.GatewayConfig;
 import com.dlink.gateway.config.SavePointStrategy;
 import com.dlink.session.SessionConfig;
+
+import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;

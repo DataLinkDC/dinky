@@ -17,16 +17,8 @@
  *
  */
 
-
 package com.dlink.explainer.sqlLineage;
 
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
-import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
-import com.alibaba.druid.stat.TableStat;
 import com.dlink.assertion.Asserts;
 import com.dlink.explainer.lineage.LineageRelation;
 import com.dlink.explainer.lineage.LineageResult;
@@ -35,10 +27,23 @@ import com.dlink.metadata.driver.Driver;
 import com.dlink.metadata.driver.DriverConfig;
 import com.dlink.model.Column;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.stat.TableStat;
 
 public class LineageBuilder {
-    public static LineageResult getSqlLineageByOne(String statement ,String type) {
+    public static LineageResult getSqlLineageByOne(String statement, String type) {
         List<LineageTable> tables = new ArrayList<>();
         List<LineageRelation> relations = new ArrayList<>();
         try {
@@ -166,7 +171,7 @@ public class LineageBuilder {
                     //处理target表中字段
                     if (columns.size() <= 0 || sqls[n].contains("*")) {
                         Driver driver = Driver.build(driverConfig);
-                        if(!targetTable.contains(".")){
+                        if (!targetTable.contains(".")) {
                             return null;
                         }
                         List<Column> columns1 = driver.listColumns(targetTable.split("\\.")[0], targetTable.split("\\.")[1]);

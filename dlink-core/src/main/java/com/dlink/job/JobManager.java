@@ -17,31 +17,7 @@
  *
  */
 
-
 package com.dlink.job;
-
-import org.apache.flink.configuration.CoreOptions;
-import org.apache.flink.configuration.DeploymentOptions;
-import org.apache.flink.configuration.PipelineOptions;
-import org.apache.flink.core.execution.JobClient;
-import org.apache.flink.runtime.jobgraph.JobGraph;
-import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
-import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
-import org.apache.flink.streaming.api.environment.ExecutionCheckpointingOptions;
-import org.apache.flink.streaming.api.graph.StreamGraph;
-import org.apache.flink.table.api.TableResult;
-import org.apache.flink.yarn.configuration.YarnConfigOptions;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.dlink.api.FlinkAPI;
 import com.dlink.assertion.Asserts;
@@ -79,6 +55,30 @@ import com.dlink.trans.Operations;
 import com.dlink.utils.LogUtil;
 import com.dlink.utils.SqlUtil;
 import com.dlink.utils.UDFUtil;
+
+import org.apache.flink.configuration.CoreOptions;
+import org.apache.flink.configuration.DeploymentOptions;
+import org.apache.flink.configuration.PipelineOptions;
+import org.apache.flink.core.execution.JobClient;
+import org.apache.flink.runtime.jobgraph.JobGraph;
+import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
+import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
+import org.apache.flink.streaming.api.environment.ExecutionCheckpointingOptions;
+import org.apache.flink.streaming.api.graph.StreamGraph;
+import org.apache.flink.table.api.TableResult;
+import org.apache.flink.yarn.configuration.YarnConfigOptions;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
@@ -300,9 +300,11 @@ public class JobManager {
                         TableResult tableResult = executor.executeStatementSet(inserts);
                         if (tableResult.getJobClient().isPresent()) {
                             job.setJobId(tableResult.getJobClient().get().getJobID().toHexString());
-                            job.setJids(new ArrayList<String>() {{
-                                add(job.getJobId());
-                            }});
+                            job.setJids(new ArrayList<String>() {
+                                {
+                                    add(job.getJobId());
+                                }
+                            });
                         }
                         if (config.isUseResult()) {
                             // Build insert result.
@@ -339,9 +341,11 @@ public class JobManager {
                                 TableResult tableResult = executor.executeSql(item.getValue());
                                 if (tableResult.getJobClient().isPresent()) {
                                     job.setJobId(tableResult.getJobClient().get().getJobID().toHexString());
-                                    job.setJids(new ArrayList<String>() {{
-                                        add(job.getJobId());
-                                    }});
+                                    job.setJids(new ArrayList<String>() {
+                                        {
+                                            add(job.getJobId());
+                                        }
+                                    });
                                 }
                                 if (config.isUseResult()) {
                                     IResult result =
@@ -390,9 +394,11 @@ public class JobManager {
                     JobClient jobClient = executor.executeAsync(config.getJobName());
                     if (Asserts.isNotNull(jobClient)) {
                         job.setJobId(jobClient.getJobID().toHexString());
-                        job.setJids(new ArrayList<String>() {{
-                            add(job.getJobId());
-                        }});
+                        job.setJids(new ArrayList<String>() {
+                            {
+                                add(job.getJobId());
+                            }
+                        });
                     }
                     if (config.isUseResult()) {
                         IResult result = ResultBuilder.build(SqlType.EXECUTE, config.getMaxRowNum(), config.isUseChangeLog(), config.isUseAutoCancel(), executor.getTimeZone()).getResult(null);

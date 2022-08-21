@@ -17,11 +17,8 @@
  *
  */
 
-
 package com.dlink.api;
 
-import cn.hutool.http.HttpUtil;
-import cn.hutool.http.Method;
 import com.dlink.assertion.Asserts;
 import com.dlink.constant.FlinkRestAPIConstant;
 import com.dlink.constant.NetConstant;
@@ -29,11 +26,19 @@ import com.dlink.gateway.GatewayType;
 import com.dlink.gateway.config.SavePointType;
 import com.dlink.gateway.model.JobInfo;
 import com.dlink.gateway.result.SavePointResult;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.*;
+import cn.hutool.http.HttpUtil;
+import cn.hutool.http.Method;
 
 /**
  * FlinkAPI
@@ -238,6 +243,7 @@ public class FlinkAPI {
     public String getJobManagerStdOut() {
         return getResult(FlinkRestAPIConstant.JOB_MANAGER + FlinkRestAPIConstant.STDOUT);
     }
+
     /**
      * @Author: zhumingye
      * @date: 2022/6/24
@@ -247,6 +253,7 @@ public class FlinkAPI {
     public JsonNode getJobManagerLogList() {
         return get(FlinkRestAPIConstant.JOB_MANAGER + FlinkRestAPIConstant.LOGS);
     }
+
     /**
      * @Author: zhumingye
      * @date: 2022/6/24
@@ -257,6 +264,7 @@ public class FlinkAPI {
     public String getJobManagerLogFileDetail(String logName) {
         return getResult(FlinkRestAPIConstant.JOB_MANAGER + FlinkRestAPIConstant.LOGS + logName);
     }
+
     /**
      * @Author: zhumingye
      * @date: 2022/6/24
@@ -278,12 +286,13 @@ public class FlinkAPI {
         JsonNode jsonNode = get(type + FlinkRestAPIConstant.METRICS);
         StringBuilder sb = new StringBuilder();
         Iterator<JsonNode> jsonNodeIterator = jsonNode.elements();
-        while(jsonNodeIterator.hasNext()) {
+        while (jsonNodeIterator.hasNext()) {
             JsonNode node = jsonNodeIterator.next();
             sb.append(node.get("id").asText()).append(",");
         }
         return sb.deleteCharAt(sb.length() - 1).toString();
     }
+
     /**
      * @Author: zhumingye
      * @date: 2022/6/24
@@ -291,9 +300,9 @@ public class FlinkAPI {
      * @return JsonNode
      */
     public JsonNode getTaskManagerMetrics(String containerId) {
-        JsonNode TaskManagerMetricsJsonNode = get(FlinkRestAPIConstant.TASK_MANAGER + containerId + FlinkRestAPIConstant.METRICS + FlinkRestAPIConstant.GET + buildMetricsParms(FlinkRestAPIConstant.JOB_MANAGER));
-        return TaskManagerMetricsJsonNode;
+        return get(FlinkRestAPIConstant.TASK_MANAGER + containerId + FlinkRestAPIConstant.METRICS + FlinkRestAPIConstant.GET + buildMetricsParms(FlinkRestAPIConstant.JOB_MANAGER));
     }
+
     /**
      * @Author: zhumingye
      * @date: 2022/6/24
@@ -304,6 +313,7 @@ public class FlinkAPI {
     public String getTaskManagerLog(String containerId) {
         return getResult(FlinkRestAPIConstant.TASK_MANAGER + containerId + FlinkRestAPIConstant.LOG);
     }
+
     /**
      * @Author: zhumingye
      * @date: 2022/6/24
@@ -314,6 +324,7 @@ public class FlinkAPI {
     public String getTaskManagerStdOut(String containerId) {
         return getResult(FlinkRestAPIConstant.TASK_MANAGER + containerId + FlinkRestAPIConstant.STDOUT);
     }
+
     /**
      * @Author: zhumingye
      * @date: 2022/6/24

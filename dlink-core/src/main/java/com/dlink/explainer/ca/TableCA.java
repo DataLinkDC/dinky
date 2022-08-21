@@ -17,18 +17,22 @@
  *
  */
 
-
 package com.dlink.explainer.ca;
 
 import com.dlink.assertion.Asserts;
-import com.dlink.explainer.trans.*;
-import lombok.Getter;
-import lombok.Setter;
+import com.dlink.explainer.trans.Field;
+import com.dlink.explainer.trans.OperatorTrans;
+import com.dlink.explainer.trans.SinkTrans;
+import com.dlink.explainer.trans.SourceTrans;
+import com.dlink.explainer.trans.Trans;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * TableCA
@@ -135,17 +139,17 @@ public class TableCA implements ICA {
 
     @Override
     public String toString() {
-        return "TableCA{" +
-                "id=" + id +
-                ", parentId=" + parentId +
-                ", name='" + name + '\'' +
-                ", catalog='" + catalog + '\'' +
-                ", database='" + database + '\'' +
-                ", table='" + table + '\'' +
-                ", fields=" + fields +
-                ", useFields=" + useFields +
-                ", parallelism=" + parallelism +
-                '}';
+        return "TableCA{"
+                + "id=" + id
+                + ", parentId=" + parentId
+                + ", name='" + name + '\''
+                + ", catalog='" + catalog + '\''
+                + ", database='" + database + '\''
+                + ", table='" + table + '\''
+                + ", fields=" + fields
+                + ", useFields=" + useFields
+                + ", parallelism=" + parallelism
+                + '}';
     }
 
     @Override
