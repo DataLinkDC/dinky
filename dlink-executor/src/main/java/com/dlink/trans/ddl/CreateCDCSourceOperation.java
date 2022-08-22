@@ -24,7 +24,6 @@ import com.dlink.assertion.Asserts;
 import com.dlink.cdc.CDCBuilder;
 import com.dlink.cdc.CDCBuilderFactory;
 import com.dlink.cdc.SinkBuilderFactory;
-import com.dlink.cdc.mysql.MysqlCDCBuilder;
 import com.dlink.executor.Executor;
 import com.dlink.metadata.driver.Driver;
 import com.dlink.metadata.driver.DriverConfig;
@@ -85,21 +84,22 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
             final List<String> schemaTableNameList = new ArrayList<>();
             // add 判断是否开启支持分库模式
             if (SplitUtil.isEnabled(cdcSource.getSplit())) {
-                DriverConfig driverConfig = DriverConfig.build(((MysqlCDCBuilder) cdcBuilder).parseMetaDataConfig());
-                Driver driver = Driver.build(driverConfig);
+                    DriverConfig driverConfig = DriverConfig.build(cdcBuilder.parseMetaDataConfig());
+                    Driver driver = Driver.build(driverConfig);
 
-                // 这直接传正则过去
-                schemaTableNameList.addAll(tableRegList.stream().map(x->x.replaceFirst("\\\\.",".")).collect(Collectors.toList()));
+                    // 这直接传正则过去
+                    schemaTableNameList.addAll(tableRegList.stream().map(x -> x.replaceFirst("\\\\.", ".")).collect(Collectors.toList()));
 
-                Set<Table> tables = driver.getSplitTables(tableRegList, cdcSource.getSplit());
-                for (Table table : tables) {
-                    String schemaName = table.getSchema();
-                    Schema schema = Schema.build(schemaName);
-                    schema.setTables(Collections.singletonList(table));
-                    table.setColumns(driver.listColumnsSortByPK(schemaName, table.getName()));
+                    Set<Table> tables = driver.getSplitTables(tableRegList, cdcSource.getSplit());
+
+                    for (Table table : tables) {
+                        String schemaName = table.getSchema();
+                        Schema schema = Schema.build(schemaName);
+                        schema.setTables(Collections.singletonList(table));
+                        table.setColumns(driver.listColumnsSortByPK(schemaName, table.getName()));
 //                    schemaTableNameList.addAll(table.getSchemaTableNameList());
-                    schemaList.add(schema);
-                }
+                        schemaList.add(schema);
+                    }
 
             } else {
                 for (String schemaName : schemaNameList) {
