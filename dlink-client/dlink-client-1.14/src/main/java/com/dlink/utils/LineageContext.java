@@ -135,7 +135,7 @@ public class LineageContext {
     /**
      * Calling each program's optimize method in sequence.
      */
-    public RelNode optimize(RelNode relNode) {
+    private RelNode optimize(RelNode relNode) {
         return flinkChainedProgram.optimize(relNode, new StreamOptimizeContext() {
             @Override
             public boolean isBatchMode() {
@@ -149,7 +149,7 @@ public class LineageContext {
 
             @Override
             public FunctionCatalog getFunctionCatalog() {
-                return ((PlannerBase) tableEnv.getPlanner()).getFlinkContext().getFunctionCatalog();
+                return getPlanner().getFlinkContext().getFunctionCatalog();
             }
 
             @Override
@@ -159,17 +159,18 @@ public class LineageContext {
 
             @Override
             public SqlExprToRexConverterFactory getSqlExprToRexConverterFactory() {
-                return relNode.getCluster().getPlanner().getContext().unwrap(FlinkContext.class).getSqlExprToRexConverterFactory();
+                return getPlanner().getFlinkContext().getSqlExprToRexConverterFactory();
             }
 
             @Override
             public <C> C unwrap(Class<C> clazz) {
-                return StreamOptimizeContext.super.unwrap(clazz);
+                return getPlanner().getFlinkContext().unwrap(clazz);
+
             }
 
             @Override
             public FlinkRelBuilder getFlinkRelBuilder() {
-                return ((PlannerBase) tableEnv.getPlanner()).getRelBuilder();
+                return getPlanner().getRelBuilder();
             }
 
             @Override
@@ -185,6 +186,11 @@ public class LineageContext {
             @Override
             public MiniBatchInterval getMiniBatchInterval() {
                 return MiniBatchInterval.NONE;
+            }
+
+
+            private PlannerBase getPlanner() {
+                return (PlannerBase) tableEnv.getPlanner();
             }
         });
     }
