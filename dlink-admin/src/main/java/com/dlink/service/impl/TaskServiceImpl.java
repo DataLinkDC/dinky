@@ -978,7 +978,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             String[] paths = task.getPath().split("/");
             Integer parentId = catalogueService.addDependCatalogue(paths);
             Task task1 = getOne(new QueryWrapper<Task>().eq("name", task.getName()));
-            if (Asserts.isNotNull(task1)) {
+            if (Asserts.isNull(task1)) {
                 errorNumber++;
                 continue;
             }
