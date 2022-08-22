@@ -19,6 +19,8 @@
 
 package com.dlink.explainer.lineage;
 
+import java.util.Objects;
+
 /**
  * LineageRelation
  *
@@ -35,12 +37,23 @@ public class LineageRelation {
     public LineageRelation() {
     }
 
+    public LineageRelation(String srcTableId, String tgtTableId, String srcTableColName, String tgtTableColName) {
+        this.srcTableId = srcTableId;
+        this.tgtTableId = tgtTableId;
+        this.srcTableColName = srcTableColName;
+        this.tgtTableColName = tgtTableColName;
+    }
+
     public LineageRelation(String id, String srcTableId, String tgtTableId, String srcTableColName, String tgtTableColName) {
         this.id = id;
         this.srcTableId = srcTableId;
         this.tgtTableId = tgtTableId;
         this.srcTableColName = srcTableColName;
         this.tgtTableColName = tgtTableColName;
+    }
+
+    public static LineageRelation build(String srcTableId, String tgtTableId, String srcTableColName, String tgtTableColName) {
+        return new LineageRelation(srcTableId, tgtTableId, srcTableColName, tgtTableColName);
     }
 
     public static LineageRelation build(String id, String srcTableId, String tgtTableId, String srcTableColName, String tgtTableColName) {
@@ -85,5 +98,23 @@ public class LineageRelation {
 
     public void setTgtTableColName(String tgtTableColName) {
         this.tgtTableColName = tgtTableColName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        LineageRelation that = (LineageRelation) o;
+        return Objects.equals(srcTableId, that.srcTableId) && Objects.equals(tgtTableId, that.tgtTableId) && Objects.equals(srcTableColName, that.srcTableColName) &&
+            Objects.equals(tgtTableColName, that.tgtTableColName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(srcTableId, tgtTableId, srcTableColName, tgtTableColName);
     }
 }

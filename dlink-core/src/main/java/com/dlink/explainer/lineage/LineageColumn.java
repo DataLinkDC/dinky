@@ -19,6 +19,8 @@
 
 package com.dlink.explainer.lineage;
 
+import java.util.Objects;
+
 /**
  * LineageColumn
  *
@@ -55,5 +57,22 @@ public class LineageColumn {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        LineageColumn that = (LineageColumn) o;
+        return Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }

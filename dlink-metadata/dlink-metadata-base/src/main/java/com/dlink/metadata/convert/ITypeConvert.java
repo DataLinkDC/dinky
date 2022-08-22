@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.metadata.convert;
 
 import com.dlink.assertion.Asserts;
