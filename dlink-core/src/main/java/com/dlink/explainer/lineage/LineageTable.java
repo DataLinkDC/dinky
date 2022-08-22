@@ -19,10 +19,10 @@
 
 package com.dlink.explainer.lineage;
 
-import com.dlink.explainer.ca.TableCA;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.dlink.explainer.ca.TableCA;
 
 /**
  * LineageTable
@@ -36,6 +36,16 @@ public class LineageTable {
     private List<LineageColumn> columns;
 
     public LineageTable() {
+    }
+
+    public LineageTable(String id, String name) {
+        this.id = id;
+        this.name = name;
+        this.columns = new ArrayList<>();
+    }
+
+    public static LineageTable build(String id, String name) {
+        return new LineageTable(id, name);
     }
 
     public static LineageTable build(TableCA tableCA) {
