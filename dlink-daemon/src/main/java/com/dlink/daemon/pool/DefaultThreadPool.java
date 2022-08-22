@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.daemon.pool;
 
 import com.dlink.daemon.entity.TaskQueue;
@@ -32,7 +31,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * @author lcg
  * @operate
- * @date 2022/3/7 10:36
  * @return
  */
 public class DefaultThreadPool implements ThreadPool {
@@ -77,7 +75,9 @@ public class DefaultThreadPool implements ThreadPool {
         synchronized (lock) {
             if (num + this.workerNum.get() > MAX_WORKER_NUM) {
                 num = MAX_WORKER_NUM - this.workerNum.get();
-                if (num <= 0) return;
+                if (num <= 0) {
+                    return;
+                }
             }
             for (int i = 0; i < num; i++) {
                 TaskWorker worker = new TaskWorker(queue);
@@ -95,7 +95,9 @@ public class DefaultThreadPool implements ThreadPool {
         synchronized (lock) {
             if (num >= this.workerNum.get()) {
                 num = this.workerNum.get() - MIN_WORKER_NUM;
-                if (num <= 0) return;
+                if (num <= 0) {
+                    return;
+                }
             }
             int count = num - 1;
             while (count >= 0) {
@@ -125,7 +127,6 @@ public class DefaultThreadPool implements ThreadPool {
     public int getTaskSize() {
         return queue.getTaskSize();
     }
-
 
     public int getWorkCount() {
         synchronized (lock) {

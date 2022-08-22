@@ -17,15 +17,16 @@
  *
  */
 
-
 package com.dlink.core;
 
 import com.dlink.api.FlinkAPI;
 import com.dlink.gateway.result.SavePointResult;
-import com.fasterxml.jackson.databind.JsonNode;
-import org.junit.Test;
 
 import java.util.List;
+
+import org.junit.Test;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * FlinkRestAPITest
@@ -55,7 +56,6 @@ public class FlinkRestAPITest {
     public void stopTest() {
         FlinkAPI.build(address).stop("0727f796fcf9e07d89e724f7e15598cf");
     }
-
 
     @Test
     public void getCheckPointsDetailInfoTest() {
@@ -87,13 +87,11 @@ public class FlinkRestAPITest {
         System.out.println(jobManagerConfig.toString());
     }
 
-
     @Test
     public void getJobManagerLogTest() {
         String jobManagerLog = FlinkAPI.build(address).getJobManagerLog();
         System.out.println(jobManagerLog);
     }
-
 
     @Test
     public void getJobManagerStdOutTest() {
@@ -106,6 +104,7 @@ public class FlinkRestAPITest {
         JsonNode jobManagerLogList = FlinkAPI.build(address).getJobManagerLogList();
         System.out.println(jobManagerLogList.toString());
     }
+
     @Test
     public void getJobManagerLogListToDetailTest() {
         String jobManagerLogList = FlinkAPI.build(address).getJobManagerLogFileDetail("jobmanager.log");
@@ -124,7 +123,6 @@ public class FlinkRestAPITest {
         System.out.println(taskManagerMetrics.toString());
     }
 
-
     @Test
     public void getTaskManagerLogTest() {
         String taskManagerLog = FlinkAPI.build(address).getTaskManagerLog("container_e46_1655948912029_0061_01_000002");
@@ -142,6 +140,7 @@ public class FlinkRestAPITest {
         JsonNode taskManagerLogList = FlinkAPI.build(address).getTaskManagerLogList("container_e46_1655948912029_0061_01_000002");
         System.out.println(taskManagerLogList.toString());
     }
+
     @Test
     public void getTaskManagerLogListToDetail() {
         String taskManagerLogDetail = FlinkAPI.build(address).getTaskManagerLogFileDeatil("container_e46_1655948912029_0061_01_000002","taskmanager.log");

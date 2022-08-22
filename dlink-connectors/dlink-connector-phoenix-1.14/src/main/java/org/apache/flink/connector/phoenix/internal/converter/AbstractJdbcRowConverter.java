@@ -17,24 +17,36 @@
  *
  */
 
-
 package org.apache.flink.connector.phoenix.internal.converter;
+
+import static org.apache.flink.util.Preconditions.checkNotNull;
 
 import org.apache.flink.connector.phoenix.statement.FieldNamedPreparedStatement;
 import org.apache.flink.connector.phoenix.utils.JdbcTypeUtil;
-import org.apache.flink.table.data.*;
-import org.apache.flink.table.types.logical.*;
+import org.apache.flink.table.data.DecimalData;
+import org.apache.flink.table.data.GenericRowData;
+import org.apache.flink.table.data.RowData;
+import org.apache.flink.table.data.StringData;
+import org.apache.flink.table.data.TimestampData;
+import org.apache.flink.table.types.logical.DecimalType;
+import org.apache.flink.table.types.logical.LogicalType;
+import org.apache.flink.table.types.logical.LogicalTypeRoot;
+import org.apache.flink.table.types.logical.RowType;
+import org.apache.flink.table.types.logical.TimestampType;
 import org.apache.flink.table.types.utils.TypeConversions;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.sql.*;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-
-import static org.apache.flink.util.Preconditions.checkNotNull;
 
 /** Base class for all converters that convert between JDBC object and Flink internal object. */
 public abstract class AbstractJdbcRowConverter implements JdbcRowConverter {

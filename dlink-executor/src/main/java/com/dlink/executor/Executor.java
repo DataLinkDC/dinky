@@ -17,16 +17,14 @@
  *
  */
 
-
 package com.dlink.executor;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.interceptor.FlinkInterceptorResult;
+import com.dlink.model.LineageRel;
 import com.dlink.result.SqlExplainResult;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.apache.flink.api.common.ExecutionConfig;
 import org.apache.flink.api.common.JobExecutionResult;
 import org.apache.flink.configuration.Configuration;
@@ -47,6 +45,12 @@ import org.apache.flink.table.catalog.CatalogManager;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.dlink.utils.LineageContext;
+import com.dlink.utils.SqlUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * Executor
@@ -375,5 +379,9 @@ public abstract class Executor {
 
     public boolean parseAndLoadConfiguration(String statement) {
         return stEnvironment.parseAndLoadConfiguration(statement, environment, setConfig);
+    }
+
+    public List<LineageRel> getLineage(String statement){
+        return stEnvironment.getLineage(statement);
     }
 }

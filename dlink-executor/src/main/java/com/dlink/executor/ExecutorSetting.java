@@ -17,19 +17,20 @@
  *
  */
 
-
 package com.dlink.executor;
 
 import com.dlink.assertion.Asserts;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * ExecutorSetting
@@ -107,7 +108,8 @@ public class ExecutorSetting {
         this.config = config;
     }
 
-    public static ExecutorSetting build(Integer checkpoint, Integer parallelism, boolean useSqlFragment, boolean useStatementSet, boolean useBatchModel, String savePointPath, String jobName, String configJson) {
+    public static ExecutorSetting build(Integer checkpoint, Integer parallelism, boolean useSqlFragment, boolean useStatementSet,
+                                        boolean useBatchModel, String savePointPath, String jobName, String configJson) {
         List<Map<String, String>> configList = new ArrayList<>();
         if (Asserts.isNotNullString(configJson)) {
             try {
@@ -144,14 +146,14 @@ public class ExecutorSetting {
 
     @Override
     public String toString() {
-        return "ExecutorSetting{" +
-                "checkpoint=" + checkpoint +
-                ", parallelism=" + parallelism +
-                ", useSqlFragment=" + useSqlFragment +
-                ", useStatementSet=" + useStatementSet +
-                ", savePointPath='" + savePointPath + '\'' +
-                ", jobName='" + jobName + '\'' +
-                ", config=" + config +
-                '}';
+        return "ExecutorSetting{"
+                + "checkpoint=" + checkpoint
+                + ", parallelism=" + parallelism
+                + ", useSqlFragment=" + useSqlFragment
+                + ", useStatementSet=" + useStatementSet
+                + ", savePointPath='" + savePointPath + '\''
+                + ", jobName='" + jobName + '\''
+                + ", config=" + config
+                + '}';
     }
 }

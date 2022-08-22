@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.cdc;
 
 import com.dlink.assertion.Asserts;

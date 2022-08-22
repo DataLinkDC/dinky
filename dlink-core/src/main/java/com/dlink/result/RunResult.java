@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.result;
 
 import com.dlink.executor.ExecutorSetting;

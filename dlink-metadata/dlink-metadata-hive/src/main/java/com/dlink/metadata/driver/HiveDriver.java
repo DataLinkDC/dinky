@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.metadata.driver;
 
 import com.dlink.assertion.Asserts;
@@ -31,55 +30,21 @@ import com.dlink.model.Column;
 import com.dlink.model.Schema;
 import com.dlink.model.Table;
 import com.dlink.utils.LogUtil;
+
 import org.apache.commons.lang3.StringUtils;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class HiveDriver extends AbstractJdbcDriver implements Driver {
-
-
-//    @Override
-//    public Table getTable(String schemaName, String tableName) {
-//        List<Table> tables = listTables(schemaName);
-//        Table table = null;
-//        for(Table item : tables){
-//            if(Asserts.isEquals(item.getName(),tableName)){
-//                table = item;
-//            }
-//        }
-//        if(Asserts.isNotNull(table)) {
-//            List<Column> columnList = new ArrayList<>();// 接收排除 Detailed Table Information 之后的 Column对象
-//            List<Column> columnListWithExt = listColumns(schemaName, table.getName()); //获取所有的 Column对象
-//
-//            Column columnExtInfoToTable = columnListWithExt.get(columnListWithExt.size() - 1); //获取 Detailed Table Information 下方解析该值 并赋值给Table的属性
-//            String extenedInfo = columnExtInfoToTable.getType(); //获取 Detailed Table Information 的值
-//            /**
-//             * 解析 Detailed Table Information 开始
-//             */
-//
-//            System.out.println(extenedInfo);
-//
-//            /**
-//             * 解析 Detailed Table Information 结束
-//             */
-//
-//
-//            for (int i = 0; i < columnListWithExt.size(); i++) {
-//                Column columnExt = columnListWithExt.get(i);
-//                if (!columnExt.getName().contains(HiveConstant.DETAILED_TABLE_INFO)){// 排除 Detailed Table Information
-//                    Column columnBean = new Column();
-//                    columnBean.setName(columnExt.getName());
-//                    columnBean.setType(columnExt.getType());
-//                    columnBean.setComment(columnExt.getComment());
-//                    columnList.add(columnBean);
-//                }
-//            }
-//            table.setColumns(columnList);
-//        }
-//        return table;
-//    }
-
 
     @Override
     public Table getTable(String schemaName, String tableName) {
@@ -240,7 +205,6 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
         return createTable.toString();
     }
 
-
     @Override
     public int executeUpdate(String sql) throws Exception {
         Asserts.checkNullString(sql, "Sql 语句为空");
@@ -330,7 +294,6 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
     public String getName() {
         return "Hive";
     }
-
 
     @Override
     public Map<String, String> getFlinkColumnTypeConversion() {

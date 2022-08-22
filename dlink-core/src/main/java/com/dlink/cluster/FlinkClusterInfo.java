@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.cluster;
 
 import lombok.Getter;

@@ -17,10 +17,10 @@
  *
  */
 
-
 package com.dlink.trans.ddl;
 
 import com.dlink.parser.SingleSqlParserFactory;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;

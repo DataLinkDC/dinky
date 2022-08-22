@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.metadata.query;
 
 import com.dlink.metadata.constant.DorisConstant;
@@ -46,42 +45,35 @@ public class DorisQuery extends AbstractDBQuery {
         return "Database";
     }
 
-
     @Override
     public String tableName() {
         return "NAME";
     }
-
 
     @Override
     public String tableComment() {
         return "COMMENT";
     }
 
-
     @Override
     public String columnName() {
         return "Field";
     }
-
 
     @Override
     public String columnType() {
         return "Type";
     }
 
-
     @Override
     public String columnComment() {
         return "Comment";
     }
 
-
     @Override
     public String columnKey() {
         return "Key";
     }
-
 
     public boolean isKeyIdentity(ResultSet results) throws SQLException {
         return "auto_increment".equals(results.getString("Extra"));

@@ -17,8 +17,6 @@
  *
  */
 
-
-
 package org.apache.flink.connector.phoenix.internal.executor;
 
 import org.apache.flink.api.java.tuple.Tuple2;

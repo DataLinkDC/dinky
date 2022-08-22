@@ -11,9 +11,6 @@
 
  Date: 24/11/2021 09:19:12
 */
-create database if not exists dlink;
-use dlink;
-
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
@@ -617,5 +614,24 @@ CREATE TABLE `dlink_job_history` (
 
 
 CREATE INDEX dlink_job_instance_task_id_IDX USING BTREE ON dlink_job_instance (task_id);
+
+
+-- ----------------------------
+-- Table structure for dlink_fragment
+-- ----------------------------
+DROP TABLE IF EXISTS `dlink_fragment`;
+CREATE TABLE `dlink_fragment` (
+                                  `id` int NOT NULL AUTO_INCREMENT COMMENT '实例主键',
+                                  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '唯一名称',
+                                  `alias` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '别名',
+                                  `fragment_value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '变量值',
+                                  `note` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '说明/描述',
+                                  `enabled` tinyint DEFAULT '1' COMMENT '是否启用',
+                                  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+                                  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+                                  PRIMARY KEY (`id`) USING BTREE,
+                                  UNIQUE KEY `un_idx1` (`name`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='全局变量';
+
 
 SET FOREIGN_KEY_CHECKS = 1;

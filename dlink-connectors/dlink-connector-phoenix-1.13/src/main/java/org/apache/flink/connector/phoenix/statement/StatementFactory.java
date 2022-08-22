@@ -17,8 +17,6 @@
  *
  */
 
-
-
 package org.apache.flink.connector.phoenix.statement;
 
 import java.sql.Connection;

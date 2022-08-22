@@ -17,13 +17,8 @@
  *
  */
 
-
 package com.dlink.metadata.driver;
 
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.DruidPooledConnection;
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLStatement;
 import com.dlink.assertion.Asserts;
 import com.dlink.constant.CommonConstant;
 import com.dlink.metadata.query.IDBQuery;
@@ -33,11 +28,27 @@ import com.dlink.model.Schema;
 import com.dlink.model.Table;
 import com.dlink.result.SqlExplainResult;
 import com.dlink.utils.LogUtil;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.*;
-import java.util.*;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledConnection;
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLStatement;
 
 /**
  * AbstractJdbcDriver
@@ -396,7 +407,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     public boolean execute(String sql) throws Exception {
         Asserts.checkNullString(sql, "Sql 语句为空");
         try (Statement statement = conn.get().createStatement()) {
-//            logger.info("执行sql的连接id：" + ((DruidPooledConnection) conn).getTransactionInfo().getId());
+            //logger.info("执行sql的连接id：" + ((DruidPooledConnection) conn).getTransactionInfo().getId());
             statement.execute(sql);
         }
         return true;
