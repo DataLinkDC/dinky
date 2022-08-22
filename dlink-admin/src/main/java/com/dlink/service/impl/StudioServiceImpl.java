@@ -365,15 +365,22 @@ public class StudioServiceImpl implements StudioService {
         JobConfig jobConfig = new JobConfig();
         jobConfig.setAddress(cluster.getJobManagerHost());
         jobConfig.setType(cluster.getType());
+        //如果用户选择用dlink平台来托管集群信息 说明任务一定是从dlink发起提交的
         if (Asserts.isNotNull(cluster.getClusterConfigurationId())) {
             Map<String, Object> gatewayConfig = clusterConfigurationService.getGatewayConfig(cluster.getClusterConfigurationId());
             jobConfig.buildGatewayConfig(gatewayConfig);
             jobConfig.getGatewayConfig().getClusterConfig().setAppId(cluster.getName());
             jobConfig.setTaskId(history.getTaskId());
             useGateway = true;
-        } else {
+        }
+        //用户选择外部的平台来托管集群信息，但是集群上的任务不一定是通过dlink提交的
+        else if(Asserts.isNotNull(clusterId)) {
             if (!taskId.equals(0)) {
                 jobConfig.setTaskId(history.getTaskId());
+            }
+            //如果不为0 说明是由外部平台托管集群信息
+            else{
+                jobConfig.setTaskId(taskId);
             }
         }
         JobManager jobManager = JobManager.build(jobConfig);
