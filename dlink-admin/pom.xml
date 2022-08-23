@@ -196,83 +196,30 @@
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
     </dependencies>
+
     <build>
+        <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring-boot-dependencies.version}</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.0.0</version>
                 <configuration>
-                    <layout>ZIP</layout>
-                    <mainClass>com.dlink.Dlink</mainClass>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.apache.flink</groupId>
-                            <artifactId>flink-*</artifactId>
-                        </exclude>
-                    </excludes>
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <descriptors>
+                        <descriptor>src/main/assembly/package.xml</descriptor>
+                    </descriptors>
                 </configuration>
                 <executions>
                     <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
                         <goals>
-                            <goal>repackage</goal>
+                            <goal>single</goal>
                         </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!--<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.1.0</version>
-                <configuration>
-                    &lt;!&ndash;<outputDirectory>${project.build.directory}/app/bin</outputDirectory>&ndash;&gt;
-                    &lt;!&ndash;这些配置将写入到MANIFEST.MF文件中&ndash;&gt;
-                    <archive>
-                        &lt;!&ndash;指定程序入口&ndash;&gt;
-                        <manifest>
-                            &lt;!&ndash;<addClasspath>true</addClasspath>&ndash;&gt;
-                            <classpathPrefix>../lib/</classpathPrefix>
-                            <mainClass>com.dlink.Dlink</mainClass>
-                        </manifest>
-                        &lt;!&ndash; (配置文件外置目录) &ndash;&gt;
-                        <manifestEntries>
-                            <Class-Path>../config/</Class-Path>
-                        </manifestEntries>
-                    </archive>
-                    <excludes>
-                        <exclude>**/*.xml</exclude>
-                        <exclude>**/*.conf</exclude>
-                        <exclude>**/*.properties</exclude>
-                        <exclude>**/*/*.json</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>-->
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>${maven.resource.version}</version>
-                <executions>
-                    <execution>
-                        <id>copy-static</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>src/main/resources/static</outputDirectory>
-                            <overwrite>true</overwrite>
-                            <resources>
-                                <resource>
-                                    <!-- 因为dlink-web打包目录在项目跟目录，所以从这里复制 -->
-                                    <directory>../dlink-web/dist</directory>
-                                </resource>
-                            </resources>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
-        <finalName>${project.artifactId}-${project.version}</finalName>
     </build>
 </project>

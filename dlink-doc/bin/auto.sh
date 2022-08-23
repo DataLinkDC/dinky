@@ -1,11 +1,9 @@
 #!/bin/bash
 # 定义变量
-# 要运行的jar包路径，加不加引号都行。 注意：等号两边 不能 有空格，否则会提示command找不到
-JAR_NAME="./dlink-admin-*.jar"
-#java -Djava.ext.dirs=$JAVA_HOME/jre/lib/ext:$JAVA_HOME/jre/lib:./lib -classpath ."/lib/*.jar" -jar dlink-admin-*.jar
-# 如果需要将FLINK依赖直接加入启动脚本，在SETTING中增加$FLINK_HOME/lib
-SETTING="-Dloader.path=./lib,./plugins -Ddruid.mysql.usePingMethod=false"
-
+# 要运行的jar包路径，加不加引号都行。 注意：等号两边不能有空格，否则会提示command找不到
+JAR_NAME="dlink-admin"
+# 如果需要将 FLINK 依赖直接加入启动脚本，在 CLASS_PATH 中末尾追加 :$FLINK_HOME/lib/*
+CLASS_PATH="./lib/*:config:html:./plugins/*"
 #if [ ! -d ${HADOOP_HOME} ]; then
 #  echo 'WARNING!!!...not find HADOOP_HOME for CLASSPATH.'
 #else
@@ -57,7 +55,7 @@ start() {
 
   pid=$(cat ${PIDPATH}/${PIDFILE})
   if [ -z $pid ]; then
-    nohup java $SETTING -jar -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M $JAR_NAME >dlink.log 2>&1 &
+    nohup java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none -cp ${CLASS_PATH} com.dlink.Dlink >dlink.log 2>&1 &
     echo $! >${PIDPATH}/${PIDFILE}
     echo "........................................Start Dlink Successfully........................................"
 
