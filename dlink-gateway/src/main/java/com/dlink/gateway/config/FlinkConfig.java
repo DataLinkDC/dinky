@@ -17,18 +17,19 @@
  *
  */
 
-
 package com.dlink.gateway.config;
 
 import com.dlink.assertion.Asserts;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * FlinkConfig
@@ -86,10 +87,8 @@ public class FlinkConfig {
                 e.printStackTrace();
             }
             paras.forEach((JsonNode node) -> {
-                        configMap.put(node.get("key").asText(), node.get("value").asText());
-//                        configParasList.add(new ConfigPara(node.get("key").asText(), node.get("value").asText()));
-                    }
-            );
+                configMap.put(node.get("key").asText(), node.get("value").asText());
+            });
         }
         return new FlinkConfig(jobName, jobId, ActionType.get(actionStr), SavePointType.get(savePointTypeStr), savePoint, configMap);
     }

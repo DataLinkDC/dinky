@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.job;
 
 import com.dlink.parser.SqlType;

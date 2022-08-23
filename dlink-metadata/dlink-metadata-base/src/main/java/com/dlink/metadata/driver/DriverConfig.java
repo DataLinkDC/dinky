@@ -17,15 +17,14 @@
  *
  */
 
-
 package com.dlink.metadata.driver;
 
-
 import com.dlink.assertion.Asserts;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.Map;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * DriverConfig

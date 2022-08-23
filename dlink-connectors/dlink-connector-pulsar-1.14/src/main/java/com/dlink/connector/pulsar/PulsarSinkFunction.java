@@ -17,14 +17,12 @@
  *
  */
 
-
-
 package com.dlink.connector.pulsar;
 
 import com.dlink.connector.pulsar.util.PulsarConnectionHolder;
 import com.dlink.connector.pulsar.util.PulsarProducerHolder;
 import com.dlink.utils.JSONUtil;
-import com.fasterxml.jackson.databind.node.ArrayNode;
+
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.api.common.functions.RuntimeContext;
 import org.apache.flink.api.common.serialization.SerializationSchema;
@@ -37,16 +35,26 @@ import org.apache.flink.streaming.api.operators.StreamingRuntimeContext;
 import org.apache.flink.util.ExceptionUtils;
 import org.apache.flink.util.SerializableObject;
 import org.apache.pulsar.PulsarVersion;
-import org.apache.pulsar.client.api.*;
+import org.apache.pulsar.client.api.ClientBuilder;
+import org.apache.pulsar.client.api.CompressionType;
+import org.apache.pulsar.client.api.HashingScheme;
+import org.apache.pulsar.client.api.MessageId;
+import org.apache.pulsar.client.api.Producer;
+import org.apache.pulsar.client.api.ProducerBuilder;
+import org.apache.pulsar.client.api.PulsarClient;
+import org.apache.pulsar.client.api.TypedMessageBuilder;
 import org.apache.pulsar.client.impl.PulsarClientImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 /**
  * The sink function for Pulsar.
@@ -101,7 +109,6 @@ public class PulsarSinkFunction<T> extends RichSinkFunction<T>
      */
     protected long pendingRecords;
 
-
     public PulsarSinkFunction(
             String topic,
             String serviceUrl,
@@ -125,7 +132,7 @@ public class PulsarSinkFunction<T> extends RichSinkFunction<T>
             LOG.info("Starting FlinkPulsarProducer ({}/{}) to produce into (※) pulsar topic {}",
                     ctx.getIndexOfThisSubtask() + 1, ctx.getNumberOfParallelSubtasks(), topic);
 
-//            this.producer = createProducer();
+            //this.producer = createProducer();
             this.producer = createReusedProducer();
             LOG.info("Pulsar producer has been created.");
 
@@ -166,7 +173,6 @@ public class PulsarSinkFunction<T> extends RichSinkFunction<T>
         LOG.info("end open.");
     }
 
-
     @Override
     public void invoke(T value, Context context) throws Exception {
         LOG.info("start to invoke, send pular message.");
@@ -192,22 +198,11 @@ public class PulsarSinkFunction<T> extends RichSinkFunction<T>
 
     }
 
-
     @Override
     public void close() throws Exception {
 
         //采用pulsar producer复用的方式，close方法不要具体实现，否则producer会被关闭
         LOG.error("PulsarProducerBase Class close function called");
-//        closed = true;
-//
-//        if (producer != null) {
-//            try {
-//                producer.close();
-//            } catch (IOException e) {
-//                LOG.warn("Exception occurs while closing Pulsar producer.", e);
-//            }
-//            this.producer = null;
-//        }
         checkErroneous();
     }
 
@@ -242,11 +237,7 @@ public class PulsarSinkFunction<T> extends RichSinkFunction<T>
         // nothing to do.
     }
 
-
     public String getKey(String strValue) {
-//        JSONObject jsonObject = JSONObject.parseObject(strValue);
-//        JSONObject jsonObject = JSONUtil.parseObject(strValue);
-//        String key = jsonObject.getString("key");
         ArrayNode jsonNodes = JSONUtil.parseArray(strValue);
         String key = String.valueOf(jsonNodes.get("key"));
         return key == null ? "" : key;
@@ -266,22 +257,10 @@ public class PulsarSinkFunction<T> extends RichSinkFunction<T>
                 .blockIfQueueFull(Boolean.TRUE)
                 .compressionType(CompressionType.LZ4)
                 .hashingScheme(HashingScheme.JavaStringHash)
-//                .batchingMaxPublishDelay(100, TimeUnit.MILLISECONDS)
+                //.batchingMaxPublishDelay(100, TimeUnit.MILLISECONDS)
                 .loadConf((Map) pulsarProducerProperties);//实现配置透传功能
         Producer producer = producerBuilder.create();
         return producer;
-
-//        return PulsarClient.builder()
-//                .serviceUrl(serviceUrl)
-//                .build()
-//                .newProducer()
-//                .loadConf((Map)properties)//实现配置透传功能
-//                .topic(topic)
-//                .blockIfQueueFull(Boolean.TRUE)
-//                .compressionType(CompressionType.LZ4)
-//                .hashingScheme(HashingScheme.JavaStringHash)
-//                .batchingMaxPublishDelay(100, TimeUnit.MILLISECONDS)
-//                .create();
     }
 
     //获取复用的Pulsar Producer
@@ -292,8 +271,8 @@ public class PulsarSinkFunction<T> extends RichSinkFunction<T>
         LOG.info("current pulsar version is " + PulsarVersion.getVersion());
 
         LOG.info("now create producer, topic is :" + topic);
-//        ProducerConfigurationData configuration = new ProducerConfigurationData();
-//        configuration.setHashingScheme(HashingScheme.JavaStringHash);
+        // ProducerConfigurationData configuration = new ProducerConfigurationData();
+        // configuration.setHashingScheme(HashingScheme.JavaStringHash);
         return PulsarProducerHolder.getProducer(topic, pulsarProducerProperties, client);
 
     }
@@ -320,7 +299,6 @@ public class PulsarSinkFunction<T> extends RichSinkFunction<T>
         this.flushOnCheckpoint = flush;
     }
 
-
     protected void checkErroneous() throws Exception {
         Exception e = asyncException;
         if (e != null) {
@@ -343,15 +321,11 @@ public class PulsarSinkFunction<T> extends RichSinkFunction<T>
         }
     }
 
-
     /**
      * Flush pending records.
      */
     protected void flush() throws Exception {
         producer.flush();
     }
-
-    ;
-
 
 }

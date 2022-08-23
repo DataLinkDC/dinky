@@ -17,8 +17,9 @@
  *
  */
 
-
 package com.dlink.connector.pulsar;
+
+import static org.apache.flink.util.Preconditions.checkNotNull;
 
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.api.common.serialization.SerializationSchema;
@@ -33,8 +34,6 @@ import org.apache.flink.types.RowKind;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-
-import static org.apache.flink.util.Preconditions.checkNotNull;
 
 /**
  * @author DarrenDa
@@ -74,8 +73,7 @@ public class PulsarDynamicSink implements DynamicTableSink {
     /**
      * Optional format for encoding to Pulsar.
      */
-    protected final
-    EncodingFormat<SerializationSchema<RowData>> encodingFormat;
+    protected final EncodingFormat<SerializationSchema<RowData>> encodingFormat;
 
     // --------------------------------------------------------------------------------------------
     // Pulsar-specific attributes
@@ -116,8 +114,8 @@ public class PulsarDynamicSink implements DynamicTableSink {
             DataType physicalDataType,
             EncodingFormat<SerializationSchema<RowData>> encodingFormat,
             String topic,
-            String service_url,
-            String update_mode,
+            String serviceUrl,
+            String updateMode,
             Properties pulsarProducerProperties,
             Properties pulsarClientProperties,
             Integer sinkParallelism) {
@@ -129,8 +127,8 @@ public class PulsarDynamicSink implements DynamicTableSink {
         this.metadataKeys = Collections.emptyList();
         // Pulsar-specific attributes
         this.topic = checkNotNull(topic, "Topic must not be null.");
-        this.serviceUrl = checkNotNull(service_url, "Service url must not be null.");
-        this.updateMode = checkNotNull(update_mode, "Update mode must not be null.");
+        this.serviceUrl = checkNotNull(serviceUrl, "Service url must not be null.");
+        this.updateMode = checkNotNull(updateMode, "Update mode must not be null.");
         this.pulsarProducerProperties = checkNotNull(pulsarProducerProperties, "pulsarProducerProperties must not be null.");
         this.pulsarClientProperties = checkNotNull(pulsarClientProperties, "pulsarClientProperties must not be null.");
         this.sinkParallelism = sinkParallelism;
@@ -145,12 +143,9 @@ public class PulsarDynamicSink implements DynamicTableSink {
         } else {
             return ChangelogMode.newBuilder()
                     .addContainedKind(RowKind.INSERT)
-//                    .addContainedKind(RowKind.UPDATE_BEFORE)
-//                    .addContainedKind(RowKind.DELETE)
                     .addContainedKind(RowKind.UPDATE_AFTER)
                     .build();
         }
-//        return encodingFormat.getChangelogMode();
     }
 
     @Override
@@ -173,7 +168,6 @@ public class PulsarDynamicSink implements DynamicTableSink {
 
     }
 
-
     @Override
     public DynamicTableSink copy() {
         final PulsarDynamicSink copy =
@@ -194,6 +188,5 @@ public class PulsarDynamicSink implements DynamicTableSink {
     public String asSummaryString() {
         return "Pulsar table sink";
     }
-
 
 }

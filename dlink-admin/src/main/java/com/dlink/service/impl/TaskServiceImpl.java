@@ -81,6 +81,7 @@ import com.dlink.service.CatalogueService;
 import com.dlink.service.ClusterConfigurationService;
 import com.dlink.service.ClusterService;
 import com.dlink.service.DataBaseService;
+import com.dlink.service.FragmentVariableService;
 import com.dlink.service.HistoryService;
 import com.dlink.service.JarService;
 import com.dlink.service.JobHistoryService;
@@ -169,6 +170,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private TaskVersionService taskVersionService;
     @Autowired
     private CatalogueService catalogueService;
+    @Autowired
+    private FragmentVariableService fragmentVariableService;
 
     @Value("${spring.datasource.driver-class-name}")
     private String driver;
@@ -756,6 +759,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             default:
                 config.setSavePointPath(null);
         }
+        config.setVariables(fragmentVariableService.listEnabledVariables());
         return config;
     }
 

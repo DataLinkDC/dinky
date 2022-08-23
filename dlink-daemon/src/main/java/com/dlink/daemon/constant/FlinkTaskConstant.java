@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.daemon.constant;
 
 public interface FlinkTaskConstant {

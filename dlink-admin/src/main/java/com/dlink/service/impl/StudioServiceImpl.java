@@ -19,6 +19,36 @@
 
 package com.dlink.service.impl;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
+
+import com.dlink.model.History;
+import com.dlink.service.HistoryService;
 import com.dlink.api.FlinkAPI;
 import com.dlink.assertion.Asserts;
 import com.dlink.config.Dialect;
@@ -45,6 +75,7 @@ import com.dlink.model.DataBase;
 import com.dlink.model.FlinkColumn;
 import com.dlink.model.Savepoints;
 import com.dlink.model.Schema;
+import com.dlink.model.SystemConfiguration;
 import com.dlink.model.Table;
 import com.dlink.model.Task;
 import com.dlink.result.DDLResult;
@@ -54,6 +85,7 @@ import com.dlink.result.SqlExplainResult;
 import com.dlink.service.ClusterConfigurationService;
 import com.dlink.service.ClusterService;
 import com.dlink.service.DataBaseService;
+import com.dlink.service.FragmentVariableService;
 import com.dlink.service.SavepointsService;
 import com.dlink.service.StudioService;
 import com.dlink.service.TaskService;
@@ -85,9 +117,9 @@ import java.util.Map;
  */
 @Service
 public class StudioServiceImpl implements StudioService {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(StudioServiceImpl.class);
-    
+
     @Autowired
     private ClusterService clusterService;
     @Autowired
@@ -99,7 +131,11 @@ public class StudioServiceImpl implements StudioService {
     @Autowired
     private TaskService taskService;
     
+    @Autowired
+    private FragmentVariableService fragmentVariableService;
+
     private void addFlinkSQLEnv(AbstractStatementDTO statementDTO) {
+        statementDTO.setVariables(fragmentVariableService.listEnabledVariables());
         String flinkWithSql = dataBaseService.getEnabledFlinkWithSql();
         if (statementDTO.isFragment() && Asserts.isNotNullString(flinkWithSql)) {
             statementDTO.setStatement(flinkWithSql + "\r\n" + statementDTO.getStatement());
@@ -111,14 +147,14 @@ public class StudioServiceImpl implements StudioService {
             }
         }
     }
-    
+
     private void buildSession(JobConfig config) {
         // If you are using a shared session, configure the current jobmanager address
         if (!config.isUseSession()) {
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), config.getClusterId()));
         }
     }
-    
+
     @Override
     public JobResult executeSql(StudioExecuteDTO studioExecuteDTO) {
         if (Dialect.isSql(studioExecuteDTO.getDialect())) {
@@ -128,7 +164,7 @@ public class StudioServiceImpl implements StudioService {
             return executeFlinkSql(studioExecuteDTO);
         }
     }
-    
+
     private JobResult executeFlinkSql(StudioExecuteDTO studioExecuteDTO) {
         addFlinkSQLEnv(studioExecuteDTO);
         JobConfig config = studioExecuteDTO.getJobConfig();
@@ -140,7 +176,7 @@ public class StudioServiceImpl implements StudioService {
         RunTimeUtil.recovery(jobManager);
         return jobResult;
     }
-    
+
     private IResult executeMSFlinkSql(StudioMetaStoreDTO studioMetaStoreDTO) {
         addFlinkSQLEnv(studioMetaStoreDTO);
         JobConfig config = studioMetaStoreDTO.getJobConfig();
@@ -149,7 +185,7 @@ public class StudioServiceImpl implements StudioService {
         RunTimeUtil.recovery(jobManager);
         return jobResult;
     }
-    
+
     public JobResult executeCommonSql(SqlDTO sqlDTO) {
         JobResult result = new JobResult();
         result.setStatement(sqlDTO.getStatement());
@@ -181,7 +217,7 @@ public class StudioServiceImpl implements StudioService {
             return result;
         }
     }
-    
+
     @Override
     public IResult executeDDL(StudioDDLDTO studioDDLDTO) {
         JobConfig config = studioDDLDTO.getJobConfig();
@@ -191,7 +227,7 @@ public class StudioServiceImpl implements StudioService {
         JobManager jobManager = JobManager.build(config);
         return jobManager.executeDDL(studioDDLDTO.getStatement());
     }
-    
+
     @Override
     public List<SqlExplainResult> explainSql(StudioExecuteDTO studioExecuteDTO) {
         if (Dialect.isSql(studioExecuteDTO.getDialect())) {
@@ -200,7 +236,7 @@ public class StudioServiceImpl implements StudioService {
             return explainFlinkSql(studioExecuteDTO);
         }
     }
-    
+
     private List<SqlExplainResult> explainFlinkSql(StudioExecuteDTO studioExecuteDTO) {
         addFlinkSQLEnv(studioExecuteDTO);
         JobConfig config = studioExecuteDTO.getJobConfig();
@@ -212,7 +248,7 @@ public class StudioServiceImpl implements StudioService {
         JobManager jobManager = JobManager.buildPlanMode(config);
         return jobManager.explainSql(studioExecuteDTO.getStatement()).getSqlExplainResults();
     }
-    
+
     private List<SqlExplainResult> explainCommonSql(StudioExecuteDTO studioExecuteDTO) {
         if (Asserts.isNull(studioExecuteDTO.getDatabaseId())) {
             return new ArrayList<SqlExplainResult>() {{
@@ -231,7 +267,7 @@ public class StudioServiceImpl implements StudioService {
             return sqlExplainResults;
         }
     }
-    
+
     @Override
     public ObjectNode getStreamGraph(StudioExecuteDTO studioExecuteDTO) {
         addFlinkSQLEnv(studioExecuteDTO);
@@ -242,7 +278,7 @@ public class StudioServiceImpl implements StudioService {
         JobManager jobManager = JobManager.buildPlanMode(config);
         return jobManager.getStreamGraph(studioExecuteDTO.getStatement());
     }
-    
+
     @Override
     public ObjectNode getJobPlan(StudioExecuteDTO studioExecuteDTO) {
         addFlinkSQLEnv(studioExecuteDTO);
@@ -262,12 +298,12 @@ public class StudioServiceImpl implements StudioService {
             return objectNode;
         }
     }
-    
+
     @Override
     public SelectResult getJobData(String jobId) {
         return JobManager.getJobData(jobId);
     }
-    
+
     @Override
     public SessionInfo createSession(SessionDTO sessionDTO, String createUser) {
         if (sessionDTO.isUseRemote()) {
@@ -285,7 +321,7 @@ public class StudioServiceImpl implements StudioService {
             return JobManager.createSession(sessionDTO.getSession(), sessionConfig, createUser);
         }
     }
-    
+
     @Override
     public boolean clearSession(String session) {
         if (SessionPool.remove(session) > 0) {
@@ -294,12 +330,12 @@ public class StudioServiceImpl implements StudioService {
             return false;
         }
     }
-    
+
     @Override
     public List<SessionInfo> listSession(String createUser) {
         return JobManager.listSession(createUser);
     }
-    
+
     @Override
     public LineageResult getLineage(StudioCADTO studioCADTO) {
         if (Asserts.isNotNullString(studioCADTO.getDialect()) && !studioCADTO.getDialect().equalsIgnoreCase("flinksql")) {
@@ -317,10 +353,14 @@ public class StudioServiceImpl implements StudioService {
             }
         } else {
             addFlinkSQLEnv(studioCADTO);
-            return LineageBuilder.getLineage(studioCADTO.getStatement(), studioCADTO.getStatementSet());
+            if (SystemConfiguration.getInstances().isUseLogicalPlan()) {
+                return LineageBuilder.getColumnLineageByLogicalPlan(studioCADTO.getStatement());
+            } else {
+                return LineageBuilder.getLineage(studioCADTO.getStatement());
+            }
         }
     }
-    
+
     @Override
     public List<JsonNode> listJobs(Integer clusterId) {
         Cluster cluster = clusterService.getById(clusterId);
@@ -332,7 +372,7 @@ public class StudioServiceImpl implements StudioService {
         }
         return new ArrayList<>();
     }
-    
+
     @Override
     public boolean cancel(Integer clusterId, String jobId) {
         Cluster cluster = clusterService.getById(clusterId);
@@ -346,7 +386,7 @@ public class StudioServiceImpl implements StudioService {
         JobManager jobManager = JobManager.build(jobConfig);
         return jobManager.cancel(jobId);
     }
-    
+
     @Override
     public boolean savepoint(Integer taskId, Integer clusterId, String jobId, String savePointType, String name) {
         Cluster cluster = clusterService.getById(clusterId);
@@ -390,7 +430,7 @@ public class StudioServiceImpl implements StudioService {
         }
         return false;
     }
-    
+
     @Override
     public List<Catalog> getMSCatalogs(StudioMetaStoreDTO studioMetaStoreDTO) {
         List<Catalog> catalogs = new ArrayList<>();
@@ -437,7 +477,7 @@ public class StudioServiceImpl implements StudioService {
         }
         return catalogs;
     }
-    
+
     @Override
     public Schema getMSSchemaInfo(StudioMetaStoreDTO studioMetaStoreDTO) {
         Schema schema = Schema.build(studioMetaStoreDTO.getDatabase());
@@ -480,7 +520,7 @@ public class StudioServiceImpl implements StudioService {
         schema.setTables(tables);
         return schema;
     }
-    
+
     @Override
     public List<FlinkColumn> getMSFlinkColumns(StudioMetaStoreDTO studioMetaStoreDTO) {
         List<FlinkColumn> columns = new ArrayList<>();
@@ -513,7 +553,7 @@ public class StudioServiceImpl implements StudioService {
         }
         return columns;
     }
-    
+
     private List<String> showInfo(StudioMetaStoreDTO studioMetaStoreDTO, String baseStatement, String statement) {
         List<String> infos = new ArrayList<>();
         String tableStatement = baseStatement + statement;
@@ -532,7 +572,7 @@ public class StudioServiceImpl implements StudioService {
         }
         return infos;
     }
-    
+
     private void initUDF(JobConfig config, String statement) {
         if (!GatewayType.LOCAL.equalsValue(config.getType())) {
             return;

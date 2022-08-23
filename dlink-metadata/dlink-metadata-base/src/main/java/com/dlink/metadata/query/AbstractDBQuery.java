@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.metadata.query;
 
 /**
@@ -27,7 +26,6 @@ package com.dlink.metadata.query;
  * @since 2021/7/20 13:50
  **/
 public abstract class AbstractDBQuery implements IDBQuery {
-
 
     @Override
     public String createTableSql(String schemaName, String tableName) {

@@ -17,13 +17,16 @@
  *
  */
 
-
 package com.dlink.cdc;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.executor.CustomTableEnvironment;
-import com.dlink.model.*;
+import com.dlink.model.Column;
+import com.dlink.model.FlinkCDCConfig;
+import com.dlink.model.Schema;
+import com.dlink.model.Table;
 import com.dlink.utils.JSONUtil;
+
 import org.apache.flink.api.common.functions.FilterFunction;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.functions.MapFunction;
@@ -32,20 +35,41 @@ import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.table.data.*;
+import org.apache.flink.table.data.DecimalData;
+import org.apache.flink.table.data.GenericRowData;
+import org.apache.flink.table.data.RowData;
+import org.apache.flink.table.data.StringData;
+import org.apache.flink.table.data.TimestampData;
 import org.apache.flink.table.operations.ModifyOperation;
-import org.apache.flink.table.types.logical.*;
+import org.apache.flink.table.types.logical.BigIntType;
+import org.apache.flink.table.types.logical.BooleanType;
+import org.apache.flink.table.types.logical.DateType;
+import org.apache.flink.table.types.logical.DecimalType;
+import org.apache.flink.table.types.logical.DoubleType;
+import org.apache.flink.table.types.logical.FloatType;
+import org.apache.flink.table.types.logical.IntType;
+import org.apache.flink.table.types.logical.LogicalType;
+import org.apache.flink.table.types.logical.SmallIntType;
+import org.apache.flink.table.types.logical.TimestampType;
+import org.apache.flink.table.types.logical.TinyIntType;
+import org.apache.flink.table.types.logical.VarBinaryType;
+import org.apache.flink.table.types.logical.VarCharType;
 import org.apache.flink.types.RowKind;
 import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * AbstractCDCBuilder
@@ -111,6 +135,7 @@ public abstract class AbstractSinkBuilder {
             }
         });
     }
+
     protected DataStream<Map> shunt(
             SingleOutputStreamOperator<Map> processOperator,
             Table table,
@@ -118,6 +143,7 @@ public abstract class AbstractSinkBuilder {
 
         return processOperator.getSideOutput(tag);
     }
+
     protected DataStream<RowData> buildRowData(
         SingleOutputStreamOperator<Map> filterOperator,
         List<String> columnNameList,

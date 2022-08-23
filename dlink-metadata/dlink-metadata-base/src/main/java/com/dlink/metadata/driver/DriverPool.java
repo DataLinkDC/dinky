@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.metadata.driver;
 
 import java.util.Map;

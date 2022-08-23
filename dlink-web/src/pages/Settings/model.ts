@@ -17,22 +17,21 @@
  *
  */
 
-
-import {Effect, Reducer} from "umi";
+import {Reducer} from "umi";
 
 export type SettingsStateType = {
   sqlSubmitJarPath: string,
   sqlSubmitJarParas: string,
   sqlSubmitJarMainAppClass: string,
   useRestAPI: boolean,
+  useLogicalPlan: boolean,
   sqlSeparator: string,
 };
 
 export type ModelType = {
   namespace: string;
   state: SettingsStateType;
-  effects: {
-  };
+  effects: {};
   reducers: {
     saveSettings: Reducer<SettingsStateType>;
   };
@@ -41,15 +40,13 @@ export type ModelType = {
 const SettingsModel: ModelType = {
   namespace: 'Settings',
   state: {
-    sqlSubmitJarPath:'',
-    sqlSubmitJarParas:'',
-    sqlSubmitJarMainAppClass:'',
-    useRestAPI:true,
+    sqlSubmitJarPath: '',
+    sqlSubmitJarParas: '',
+    sqlSubmitJarMainAppClass: '',
+    useRestAPI: true,
   },
 
-  effects: {
-
-  },
+  effects: {},
 
   reducers: {
     saveSettings(state, {payload}) {
