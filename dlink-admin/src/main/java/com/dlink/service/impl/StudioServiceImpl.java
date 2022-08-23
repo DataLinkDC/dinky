@@ -140,7 +140,7 @@ public class StudioServiceImpl implements StudioService {
         JobConfig config = studioExecuteDTO.getJobConfig();
         buildSession(config);
         // To initialize java udf, but it has a bug in the product environment now.
-        // initUDF(config,studioExecuteDTO.getStatement());
+        initUDF(config, studioExecuteDTO.getStatement());
         JobManager jobManager = JobManager.build(config);
         JobResult jobResult = jobManager.executeSql(studioExecuteDTO.getStatement());
         RunTimeUtil.recovery(jobManager);
