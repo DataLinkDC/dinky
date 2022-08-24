@@ -116,7 +116,7 @@ public class FlinkSqlPlus {
         return explainer.getJobPlanInfo(statement);
     }
 
-    public List<LineageRel> getLineage(String statement){
+    public List<LineageRel> getLineage(String statement) {
         return explainer.getLineage(statement);
     }
 }
