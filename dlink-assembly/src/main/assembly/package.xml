@@ -18,10 +18,10 @@
             <directory>${project.parent.basedir}/dlink-admin/target/classes</directory>
             <outputDirectory>config</outputDirectory>
             <includes>
-                <include>**/*.properties</include>
-                <include>**/*.yml</include>
-                <include>**/*.yaml</include>
-                <include>**/*.xml</include>
+                <include>*.properties</include>
+                <include>*.yml</include>
+                <include>*.yaml</include>
+                <include>*.xml</include>
             </includes>
         </fileSet>
         <fileSet>
@@ -30,9 +30,6 @@
             <includes>
                 <include>*.jar</include>
             </includes>
-        </fileSet>
-        <fileSet>
-            <outputDirectory>plugins</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}/dlink-doc/sql</directory>
