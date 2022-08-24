@@ -28,7 +28,6 @@ import com.dlink.executor.ExecutorSetting;
 import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.parser.SqlType;
 import com.dlink.trans.Operations;
-
 import org.apache.flink.configuration.CheckpointingOptions;
 
 import java.io.IOException;
@@ -51,7 +50,6 @@ import org.slf4j.LoggerFactory;
  * @since 2021/10/27
  **/
 public class Submiter {
-
     private static final Logger logger = LoggerFactory.getLogger(Submiter.class);
 
     private static String getQuerySQL(Integer id) throws SQLException {
@@ -75,10 +73,9 @@ public class Submiter {
         try {
             statement = DBUtil.getOneByID(getQuerySQL(id), config);
         } catch (IOException | SQLException e) {
-            e.printStackTrace();
-            logger.error(LocalDateTime.now().toString() + " --> 获取 FlinkSQL 异常，ID 为" + id);
-            logger.error(LocalDateTime.now().toString() + "连接信息为：" + config.toString());
-            logger.error(LocalDateTime.now().toString() + "异常信息为：" + e.getMessage());
+            logger.error("{} --> 获取 FlinkSQL 配置异常，ID 为 {}, \n" +
+                    "连接信息为：{} \n" +
+                    "异常信息为：{} ", LocalDateTime.now(), id, config.toString(), e.getMessage(), e);
         }
         return statement;
     }
@@ -88,10 +85,9 @@ public class Submiter {
         try {
             task = DBUtil.getMapByID(getTaskInfo(id), config);
         } catch (IOException | SQLException e) {
-            e.printStackTrace();
-            logger.error(LocalDateTime.now().toString() + " --> 获取 FlinkSQL 配置异常，ID 为" + id);
-            logger.error(LocalDateTime.now().toString() + "连接信息为：" + config.toString());
-            logger.error(LocalDateTime.now().toString() + "异常信息为：" + e.getMessage());
+            logger.error("{} --> 获取 FlinkSQL 配置异常，ID 为 {}, \n" +
+                    "连接信息为：{} \n" +
+                    "异常信息为：{} ", LocalDateTime.now(), id, config.toString(), e.getMessage(), e);
         }
         return task;
     }
@@ -123,7 +119,7 @@ public class Submiter {
             executorSetting.getConfig().put(CheckpointingOptions.SAVEPOINT_DIRECTORY.key(),
                     executorSetting.getConfig().get(CheckpointingOptions.SAVEPOINT_DIRECTORY.key()) + "/" + uuid);
         }
-        logger.info("作业配置如下： " + executorSetting.toString());
+        logger.info("作业配置如下： {}", executorSetting);
         Executor executor = Executor.buildAppStreamExecutor(executorSetting);
         List<StatementParam> ddl = new ArrayList<>();
         List<StatementParam> trans = new ArrayList<>();
@@ -185,10 +181,10 @@ public class Submiter {
             logger.info("正在执行 FlinkSQL 语句集： " + String.join(FlinkSQLConstant.SEPARATOR, executes));
             try {
                 executor.execute(executorSetting.getJobName());
+                logger.info("执行成功");
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("执行失败, {}", e.getMessage(), e);
             }
-            logger.info("执行成功");
         }
         logger.info(LocalDateTime.now() + "任务提交成功");
         System.out.println(LocalDateTime.now() + "任务提交成功");
