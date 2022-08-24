@@ -86,8 +86,8 @@ public class SqlServerCDCBuilder extends AbstractCDCBuilder implements CDCBuilde
         } else {
             sourceBuilder.tableList(new String[0]);
         }
-        sourceBuilder.deserializer(new JsonDebeziumDeserializationSchema());
-//        sourceBuilder.deserializer(new MssqlJsonDebeziumDeserializationSchema());
+//        sourceBuilder.deserializer(new JsonDebeziumDeserializationSchema());
+        sourceBuilder.deserializer(new SqlServerJsonDebeziumDeserializationSchema());
         if (Asserts.isNotNullString(config.getStartupMode())) {
             switch (config.getStartupMode().toLowerCase()) {
                 case "initial":
@@ -101,7 +101,8 @@ public class SqlServerCDCBuilder extends AbstractCDCBuilder implements CDCBuilde
             sourceBuilder.startupOptions(StartupOptions.latest());
         }
         sourceBuilder.debeziumProperties(debeziumProperties);
-        return env.addSource(sourceBuilder.build(), "SqlServer CDC Source");
+        final DataStreamSource<String> sqlServer_cdc_source = env.addSource(sourceBuilder.build(), "SqlServer CDC Source");
+        return sqlServer_cdc_source;
     }
 
     @Override
@@ -149,6 +150,6 @@ public class SqlServerCDCBuilder extends AbstractCDCBuilder implements CDCBuilde
 
     @Override
     public String getSchemaFieldName() {
-        return "db";
+        return "schema";
     }
 }

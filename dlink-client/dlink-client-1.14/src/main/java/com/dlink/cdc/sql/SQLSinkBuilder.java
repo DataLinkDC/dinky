@@ -233,6 +233,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                         OutputTag<Map> outputTag = tagMap.get(table);
                         ctx.output(outputTag, map);
                     } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
                         out.collect(map);
                     }
                 }
