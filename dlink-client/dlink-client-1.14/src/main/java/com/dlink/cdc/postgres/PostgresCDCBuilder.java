@@ -42,15 +42,15 @@ import java.util.Properties;
  * @author mengyejiang
  * @since 2022/8/21 10:00
  **/
-public class postgresCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
+public class PostgresCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
 
     private final static String KEY_WORD = "postgres-cdc";
     private final static String METADATA_TYPE = "PostgreSql";
 
-    public postgresCDCBuilder() {
+    public PostgresCDCBuilder() {
     }
 
-    public postgresCDCBuilder(FlinkCDCConfig config) {
+    public PostgresCDCBuilder(FlinkCDCConfig config) {
         super(config);
     }
 
@@ -61,7 +61,7 @@ public class postgresCDCBuilder extends AbstractCDCBuilder implements CDCBuilder
 
     @Override
     public CDCBuilder create(FlinkCDCConfig config) {
-        return new postgresCDCBuilder(config);
+        return new PostgresCDCBuilder(config);
     }
 
     @Override

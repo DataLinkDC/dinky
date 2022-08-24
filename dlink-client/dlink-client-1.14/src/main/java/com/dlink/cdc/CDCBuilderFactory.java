@@ -22,7 +22,7 @@ package com.dlink.cdc;
 import com.dlink.assertion.Asserts;
 import com.dlink.cdc.mysql.MysqlCDCBuilder;
 import com.dlink.cdc.oracle.OracleCDCBuilder;
-import com.dlink.cdc.postgres.postgresCDCBuilder;
+import com.dlink.cdc.postgres.PostgresCDCBuilder;
 import com.dlink.exception.FlinkClientException;
 import com.dlink.model.FlinkCDCConfig;
 
@@ -37,7 +37,7 @@ public class CDCBuilderFactory {
     private static CDCBuilder[] cdcBuilders = {
         new MysqlCDCBuilder(),
         new OracleCDCBuilder(),
-            new postgresCDCBuilder()
+            new PostgresCDCBuilder()
     };
 
     public static CDCBuilder buildCDCBuilder(FlinkCDCConfig config) {
