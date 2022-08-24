@@ -17,19 +17,19 @@
  *
  */
 
-
 package org.apache.flink.connector.phoenix.internal;
 
 import org.apache.flink.api.common.io.RichOutputFormat;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.connector.phoenix.internal.connection.JdbcConnectionProvider;
 import org.apache.flink.util.Preconditions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.Flushable;
 import java.io.IOException;
 import java.sql.Connection;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Base jdbc outputFormat. */
 public abstract class AbstractJdbcOutputFormat<T> extends RichOutputFormat<T> implements Flushable {

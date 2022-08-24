@@ -17,13 +17,9 @@
  *
  */
 
-
 package org.apache.flink.connector.phoenix.internal.executor;
 
 import org.apache.flink.connector.phoenix.JdbcStatementBuilder;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -31,6 +27,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A {@link JdbcBatchStatementExecutor} that executes supplied statement for given the records

@@ -17,9 +17,7 @@
  *
  */
 
-
 package com.dlink.ud.udtaf;
-
 
 import org.apache.flink.table.functions.TableAggregateFunction;
 import org.apache.flink.util.Collector;
@@ -39,7 +37,6 @@ public class RowsToMap extends TableAggregateFunction<String, Map> {
     public Map createAccumulator() {
         return new HashMap();
     }
-
 
     public void accumulate(Map acc, String cls, Object v, String key) {
         String[] keys = key.split(",");

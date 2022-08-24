@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.metadata;
 
 import com.dlink.metadata.driver.Driver;
@@ -26,11 +25,12 @@ import com.dlink.metadata.result.JdbcSelectResult;
 import com.dlink.model.Column;
 import com.dlink.model.Schema;
 import com.dlink.model.Table;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
 
 public class PhoenixTest {
 
@@ -48,7 +48,6 @@ public class PhoenixTest {
             System.err.println("连接创建失败:" + e.getMessage());
         }
     }
-
 
     @Test
     public void testSchema() {
@@ -69,7 +68,6 @@ public class PhoenixTest {
             System.out.println(table.getName() + "  " + table.getSchema());
         }
     }
-
 
     @Test
     public void testColumns() {

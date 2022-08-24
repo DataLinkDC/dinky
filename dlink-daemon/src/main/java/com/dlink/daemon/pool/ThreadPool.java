@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.daemon.pool;
 
 import com.dlink.daemon.task.DaemonTask;
@@ -25,7 +24,6 @@ import com.dlink.daemon.task.DaemonTask;
 /**
  * @author lcg
  * @operate
- * @date 2022/3/7 10:36
  * @return
  */
 public interface ThreadPool {

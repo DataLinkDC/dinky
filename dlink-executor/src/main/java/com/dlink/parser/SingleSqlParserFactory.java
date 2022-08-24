@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.parser;
 
 import java.util.List;
@@ -35,7 +34,7 @@ public class SingleSqlParserFactory {
 
     public static Map<String, List<String>> generateParser(String sql) {
         BaseSingleSqlParser tmp = null;
-//        sql = sql.replace("\n"," ").replaceAll("\\s{1,}", " ") +" ENDOFSQL";
+        //sql = sql.replace("\n"," ").replaceAll("\\s{1,}", " ") +" ENDOFSQL";
         sql = sql.replace("\r\n", " ").replace("\n", " ") + " ENDOFSQL";
         if (contains(sql, "(insert\\s+into)(.+)(select)(.+)(from)(.+)")) {
             tmp = new InsertSelectSqlParser(sql);
@@ -59,7 +58,6 @@ public class SingleSqlParserFactory {
             tmp = new SetSqlParser(sql);
         } else if (contains(sql, "(show\\s+fragment)\\s+(.+)")) {
             tmp = new ShowFragmentParser(sql);
-        } else {
         }
         return tmp.splitSql2Segment();
     }

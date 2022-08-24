@@ -19,6 +19,17 @@
 
 package com.dlink.service.impl;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.dlink.api.FlinkAPI;
 import com.dlink.assertion.Asserts;
 import com.dlink.config.Dialect;
@@ -45,6 +56,7 @@ import com.dlink.model.DataBase;
 import com.dlink.model.FlinkColumn;
 import com.dlink.model.Savepoints;
 import com.dlink.model.Schema;
+import com.dlink.model.SystemConfiguration;
 import com.dlink.model.Table;
 import com.dlink.model.Task;
 import com.dlink.result.DDLResult;
@@ -54,6 +66,7 @@ import com.dlink.result.SqlExplainResult;
 import com.dlink.service.ClusterConfigurationService;
 import com.dlink.service.ClusterService;
 import com.dlink.service.DataBaseService;
+import com.dlink.service.FragmentVariableService;
 import com.dlink.service.SavepointsService;
 import com.dlink.service.StudioService;
 import com.dlink.service.TaskService;
@@ -62,18 +75,6 @@ import com.dlink.session.SessionInfo;
 import com.dlink.session.SessionPool;
 import com.dlink.sql.FlinkQuery;
 import com.dlink.utils.RunTimeUtil;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -100,8 +101,11 @@ public class StudioServiceImpl implements StudioService {
     private DataBaseService dataBaseService;
     @Autowired
     private TaskService taskService;
+    @Autowired
+    private FragmentVariableService fragmentVariableService;
 
     private void addFlinkSQLEnv(AbstractStatementDTO statementDTO) {
+        statementDTO.setVariables(fragmentVariableService.listEnabledVariables());
         String flinkWithSql = dataBaseService.getEnabledFlinkWithSql();
         if (statementDTO.isFragment() && Asserts.isNotNullString(flinkWithSql)) {
             statementDTO.setStatement(flinkWithSql + "\r\n" + statementDTO.getStatement());
@@ -136,7 +140,7 @@ public class StudioServiceImpl implements StudioService {
         JobConfig config = studioExecuteDTO.getJobConfig();
         buildSession(config);
         // To initialize java udf, but it has a bug in the product environment now.
-        // initUDF(config,studioExecuteDTO.getStatement());
+        initUDF(config, studioExecuteDTO.getStatement());
         JobManager jobManager = JobManager.build(config);
         JobResult jobResult = jobManager.executeSql(studioExecuteDTO.getStatement());
         RunTimeUtil.recovery(jobManager);
@@ -218,14 +222,14 @@ public class StudioServiceImpl implements StudioService {
     private List<SqlExplainResult> explainCommonSql(StudioExecuteDTO studioExecuteDTO) {
         if (Asserts.isNull(studioExecuteDTO.getDatabaseId())) {
             return new ArrayList<SqlExplainResult>() {{
-                    add(SqlExplainResult.fail(studioExecuteDTO.getStatement(), "请指定数据源"));
-                }};
+                add(SqlExplainResult.fail(studioExecuteDTO.getStatement(), "请指定数据源"));
+            }};
         } else {
             DataBase dataBase = dataBaseService.getById(studioExecuteDTO.getDatabaseId());
             if (Asserts.isNull(dataBase)) {
                 return new ArrayList<SqlExplainResult>() {{
-                        add(SqlExplainResult.fail(studioExecuteDTO.getStatement(), "数据源不存在"));
-                    }};
+                    add(SqlExplainResult.fail(studioExecuteDTO.getStatement(), "数据源不存在"));
+                }};
             }
             Driver driver = Driver.build(dataBase.getDriverConfig());
             List<SqlExplainResult> sqlExplainResults = driver.explain(studioExecuteDTO.getStatement());
@@ -319,7 +323,11 @@ public class StudioServiceImpl implements StudioService {
             }
         } else {
             addFlinkSQLEnv(studioCADTO);
-            return LineageBuilder.getLineage(studioCADTO.getStatement(), studioCADTO.getStatementSet());
+            if (SystemConfiguration.getInstances().isUseLogicalPlan()) {
+                return LineageBuilder.getColumnLineageByLogicalPlan(studioCADTO.getStatement());
+            } else {
+                return LineageBuilder.getLineage(studioCADTO.getStatement());
+            }
         }
     }
 

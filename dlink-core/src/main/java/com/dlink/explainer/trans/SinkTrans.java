@@ -17,9 +17,7 @@
  *
  */
 
-
 package com.dlink.explainer.trans;
-
 
 import com.dlink.utils.MapParseUtils;
 
@@ -40,7 +38,7 @@ public class SinkTrans extends AbstractTrans implements Trans {
     private String table;
     private List<String> fields;
 
-    public final static String TRANS_TYPE = "Data Sink";
+    public static final String TRANS_TYPE = "Data Sink";
 
     public SinkTrans() {
     }

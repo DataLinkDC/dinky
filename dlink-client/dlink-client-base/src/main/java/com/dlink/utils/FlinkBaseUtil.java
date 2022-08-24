@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.utils;
 
 import com.dlink.constant.FlinkParamConstant;
@@ -25,6 +24,7 @@ import com.dlink.model.Column;
 import com.dlink.model.ColumnType;
 import com.dlink.model.FlinkCDCConfig;
 import com.dlink.model.Table;
+
 import org.apache.flink.api.java.utils.ParameterTool;
 
 import java.util.ArrayList;

@@ -9,10 +9,7 @@ import com.dlink.model.FlinkCDCConfig;
 import com.dlink.model.Schema;
 import com.dlink.model.Table;
 import com.dlink.utils.ObjectConvertUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+
 import org.apache.flink.api.common.functions.FilterFunction;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
@@ -23,27 +20,28 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.ProcessFunction;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
 import org.apache.flink.table.data.RowData;
-import org.apache.flink.table.types.logical.*;
+import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.util.Collector;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+
 /**
  * @className: com.dlink.cdc.kafka.KafkaSinkSimpleBuilder
  */
 public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements SinkBuilder, Serializable {
 
-    private final static String KEY_WORD = "datastream-kafka-json";
+    private static final String KEY_WORD = "datastream-kafka-json";
     private transient ObjectMapper objectMapper;
 
     public KafkaSinkJsonBuilder() {
@@ -69,7 +67,7 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements SinkBui
             StreamExecutionEnvironment env,
             CustomTableEnvironment customTableEnvironment,
             DataStreamSource<String> dataStreamSource) {
-        try{
+        try {
             SingleOutputStreamOperator<Map> mapOperator = dataStreamSource.map(new MapFunction<String, Map>() {
                 @Override
                 public Map map(String value) throws Exception {
@@ -99,42 +97,42 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements SinkBui
                         List<String> columnNameList = new LinkedList<>();
                         List<LogicalType> columnTypeList = new LinkedList<>();
                         buildColumn(columnNameList, columnTypeList, table.getColumns());
-                        SingleOutputStreamOperator<String> stringOperator =filterOperator.process(new ProcessFunction<Map, String>() {
+                        SingleOutputStreamOperator<String> stringOperator = filterOperator.process(new ProcessFunction<Map, String>() {
                             @Override
                             public void processElement(Map value, Context context, Collector<String> collector) throws Exception {
                                 Map after = null;
                                 Map before = null;
-                                String ts_ms = value.get("ts_ms").toString();
+                                String tsMs = value.get("ts_ms").toString();
                                 try {
                                     switch (value.get("op").toString()) {
                                         case "r":
                                         case "c":
                                             after = (Map) value.get("after");
-                                            convertAttr(columnNameList,columnTypeList,after,value.get("op").toString(),0,schemaName,tableName,ts_ms);
+                                            convertAttr(columnNameList, columnTypeList, after, value.get("op").toString(), 0, schemaName, tableName, tsMs);
                                             break;
                                         case "u":
                                             before = (Map) value.get("before");
-                                            convertAttr(columnNameList,columnTypeList,before,value.get("op").toString(),1,schemaName,tableName,ts_ms);
+                                            convertAttr(columnNameList, columnTypeList, before, value.get("op").toString(), 1, schemaName, tableName, tsMs);
 
                                             after = (Map) value.get("after");
-                                            convertAttr(columnNameList,columnTypeList,after,value.get("op").toString(),0,schemaName,tableName,ts_ms);
+                                            convertAttr(columnNameList, columnTypeList, after,value.get("op").toString(), 0, schemaName, tableName, tsMs);
                                             break;
                                         case "d":
                                             before = (Map) value.get("before");
-                                            convertAttr(columnNameList,columnTypeList,before,value.get("op").toString(),1,schemaName,tableName,ts_ms);
+                                            convertAttr(columnNameList, columnTypeList, before, value.get("op").toString(), 1, schemaName, tableName, tsMs);
                                             break;
                                     }
                                 } catch (Exception e) {
                                     logger.error("SchameTable: {} - Exception:", e);
                                     throw e;
                                 }
-                                if(objectMapper == null){
+                                if (objectMapper == null) {
                                     initializeObjectMapper();
                                 }
-                                if(before != null){
+                                if (before != null) {
                                     collector.collect(objectMapper.writeValueAsString(before));
                                 }
-                                if(after != null){
+                                if (after != null) {
                                     collector.collect(objectMapper.writeValueAsString(after));
                                 }
                             }
@@ -145,7 +143,7 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements SinkBui
                     }
                 }
             }
-        }catch (Exception ex){
+        } catch (Exception ex) {
             logger.error("kafka sink error:",ex);
         }
         return dataStreamSource;
@@ -174,18 +172,18 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements SinkBui
         return ObjectConvertUtil.convertValue(value,logicalType);
     }
 
-    private void convertAttr(List<String> columnNameList,List<LogicalType> columnTypeList,Map value,String op,int is_deleted,
-                             String schemaName,String tableName,String ts_ms){
+    private void convertAttr(List<String> columnNameList, List<LogicalType> columnTypeList, Map value, String op, int isDeleted,
+                             String schemaName, String tableName, String tsMs) {
         for (int i = 0; i < columnNameList.size(); i++) {
             String columnName = columnNameList.get(i);
             Object columnNameValue = value.remove(columnName);
             Object columnNameNewVal = convertValue(columnNameValue, columnTypeList.get(i));
             value.put(columnName, columnNameNewVal);
         }
-        value.put("__op",op);
-        value.put("is_deleted",Integer.valueOf(is_deleted));
-        value.put("db",schemaName);
-        value.put("table",tableName);
-        value.put("ts_ms",ts_ms);
+        value.put("__op", op);
+        value.put("is_deleted", Integer.valueOf(isDeleted));
+        value.put("db", schemaName);
+        value.put("table", tableName);
+        value.put("ts_ms", tsMs);
     }
 }

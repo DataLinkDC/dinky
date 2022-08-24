@@ -17,13 +17,25 @@
  *
  */
 
-
 package com.dlink.explainer;
+
+import org.apache.flink.runtime.rest.messages.JobPlanInfo;
+import org.apache.flink.table.catalog.CatalogManager;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.constant.FlinkSQLConstant;
 import com.dlink.executor.Executor;
-import com.dlink.explainer.ca.*;
+import com.dlink.explainer.ca.ColumnCA;
+import com.dlink.explainer.ca.ColumnCAResult;
+import com.dlink.explainer.ca.NodeRel;
+import com.dlink.explainer.ca.TableCA;
+import com.dlink.explainer.ca.TableCAGenerator;
+import com.dlink.explainer.ca.TableCAResult;
 import com.dlink.explainer.lineage.LineageColumnGenerator;
 import com.dlink.explainer.lineage.LineageTableGenerator;
 import com.dlink.explainer.trans.Trans;
@@ -31,6 +43,7 @@ import com.dlink.explainer.trans.TransGenerator;
 import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.job.JobParam;
 import com.dlink.job.StatementParam;
+import com.dlink.model.LineageRel;
 import com.dlink.model.SystemConfiguration;
 import com.dlink.parser.SqlType;
 import com.dlink.result.ExplainResult;
@@ -41,13 +54,6 @@ import com.dlink.utils.LogUtil;
 import com.dlink.utils.SqlUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.apache.flink.runtime.rest.messages.JobPlanInfo;
-import org.apache.flink.table.catalog.CatalogManager;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Explainer
@@ -132,7 +138,7 @@ public class Explainer {
                 if (Asserts.isNullString(sql)) {
                     continue;
                 }
-                SqlType operationType = Operations.getOperationType(item);
+                SqlType operationType = Operations.getOperationType(sql);
                 if (operationType.equals(SqlType.INSERT) || operationType.equals(SqlType.SELECT)) {
                     record = executor.explainSqlRecord(sql);
                     if (Asserts.isNull(record)) {
@@ -276,7 +282,7 @@ public class Explainer {
     public ObjectNode getStreamGraph(String statement) {
         JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
         if (jobParam.getDdl().size() > 0) {
-            for(StatementParam statementParam: jobParam.getDdl()){
+            for (StatementParam statementParam : jobParam.getDdl()) {
                 executor.executeSql(statementParam.getValue());
             }
         }
@@ -296,7 +302,7 @@ public class Explainer {
     public JobPlanInfo getJobPlanInfo(String statement) {
         JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
         if (jobParam.getDdl().size() > 0) {
-            for(StatementParam statementParam: jobParam.getDdl()){
+            for (StatementParam statementParam : jobParam.getDdl()) {
                 executor.executeSql(statementParam.getValue());
             }
         }
@@ -453,11 +459,12 @@ public class Explainer {
                         for (NodeRel nodeRel : columnCAResult.getColumnCASRelChain()) {
                             if (nodeRel.getPreId().equals(item.getValue().getId())) {
                                 for (NodeRel nodeRel2 : columnCAResult.getColumnCASRelChain()) {
-                                    if (columnCAResult.getColumnCASMaps().containsKey(nodeRel2.getSufId()) && columnCAResult.getColumnCASMaps().containsKey(nodeRel2.getPreId()) &&
-                                        columnCAResult.getColumnCASMaps().containsKey(nodeRel.getSufId()) &&
-                                        columnCAResult.getColumnCASMaps().get(nodeRel2.getSufId()).getTableId().equals(columnCAResult.getColumnCASMaps().get(nodeRel.getSufId()).getTableId()) &&
-                                        columnCAResult.getColumnCASMaps().get(nodeRel2.getSufId()).getName().equals(columnCAResult.getColumnCASMaps().get(nodeRel.getSufId()).getName()) &&
-                                        !columnCAResult.getColumnCASMaps().get(nodeRel2.getPreId()).getType().equals("Data Sink")) {
+                                    if (columnCAResult.getColumnCASMaps().containsKey(nodeRel2.getSufId())
+                                        && columnCAResult.getColumnCASMaps().containsKey(nodeRel2.getPreId())
+                                        && columnCAResult.getColumnCASMaps().containsKey(nodeRel.getSufId())
+                                        && columnCAResult.getColumnCASMaps().get(nodeRel2.getSufId()).getTableId().equals(columnCAResult.getColumnCASMaps().get(nodeRel.getSufId()).getTableId())
+                                        && columnCAResult.getColumnCASMaps().get(nodeRel2.getSufId()).getName().equals(columnCAResult.getColumnCASMaps().get(nodeRel.getSufId()).getName())
+                                        && !columnCAResult.getColumnCASMaps().get(nodeRel2.getPreId()).getType().equals("Data Sink")) {
                                         addNodeRels.add(new NodeRel(nodeRel2.getPreId(), nodeRel.getPreId()));
                                     }
                                 }
@@ -488,4 +495,27 @@ public class Explainer {
         return new TransGenerator(plan).translateTrans();
     }
 
+    public List<LineageRel> getLineage(String statement) {
+        String[] sqls = SqlUtil.getStatements(statement, sqlSeparator);
+        List<LineageRel> lineageRelList = new ArrayList<>();
+        for (String item : sqls) {
+            String sql = "";
+            try {
+                sql = FlinkInterceptor.pretreatStatement(executor, item);
+                if (Asserts.isNullString(sql)) {
+                    continue;
+                }
+                SqlType operationType = Operations.getOperationType(sql);
+                if (operationType.equals(SqlType.INSERT)) {
+                    lineageRelList.addAll(executor.getLineage(sql));
+                } else {
+                    executor.executeSql(sql);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                break;
+            }
+        }
+        return lineageRelList;
+    }
 }

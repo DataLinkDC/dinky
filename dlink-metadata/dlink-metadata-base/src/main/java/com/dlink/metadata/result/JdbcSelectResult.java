@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.metadata.result;
 
 import com.dlink.result.AbstractResult;
@@ -42,9 +41,11 @@ public class JdbcSelectResult extends AbstractResult implements IResult {
     private Integer limit;
 
     private static final String STATUS = "status";
-    private static final List<String> STATUS_COLUMN = new ArrayList<String>() {{
-        add("status");
-    }};
+    private static final List<String> STATUS_COLUMN = new ArrayList<String>() {
+        {
+            add("status");
+        }
+    };
 
     public JdbcSelectResult() {
     }

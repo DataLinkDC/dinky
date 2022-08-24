@@ -17,8 +17,9 @@
  *
  */
 
-
 package com.dlink.metadata.parser;
+
+import com.dlink.metadata.ast.Clickhouse20CreateTableStatement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
@@ -28,7 +29,6 @@ import com.alibaba.druid.sql.parser.SQLCreateTableParser;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
-import com.dlink.metadata.ast.Clickhouse20CreateTableStatement;
 
 public class Clickhouse20CreateTableParser extends SQLCreateTableParser {
     public Clickhouse20CreateTableParser(SQLExprParser exprParser) {

@@ -20,6 +20,7 @@
 package com.dlink.utils;
 
 import com.dlink.assertion.Asserts;
+import com.dlink.model.SystemConfiguration;
 
 /**
  * SqlUtil
@@ -31,12 +32,16 @@ public class SqlUtil {
 
     private static final String SEMICOLON = ";";
 
+    public static String[] getStatements(String sql) {
+        return getStatements(sql, SystemConfiguration.getInstances().getSqlSeparator());
+    }
+
     public static String[] getStatements(String sql, String sqlSeparator) {
         if (Asserts.isNullString(sql)) {
             return new String[0];
         }
 
-        String[] splits = sql.replaceAll(";\r\n",";\n").split(sqlSeparator);
+        String[] splits = sql.replaceAll(";\r\n", ";\n").split(sqlSeparator);
         String lastStatement = splits[splits.length - 1].trim();
         if (lastStatement.endsWith(SEMICOLON)) {
             splits[splits.length - 1] = lastStatement.substring(0, lastStatement.length() - 1);

@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.daemon.task;
 
 import com.dlink.daemon.constant.FlinkTaskConstant;

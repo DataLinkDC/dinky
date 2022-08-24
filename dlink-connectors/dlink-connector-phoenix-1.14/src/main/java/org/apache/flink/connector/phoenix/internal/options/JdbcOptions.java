@@ -17,20 +17,18 @@
  *
  */
 
-
-
 package org.apache.flink.connector.phoenix.internal.options;
+
+import static org.apache.flink.util.Preconditions.checkNotNull;
 
 import org.apache.flink.connector.phoenix.JdbcConnectionOptions;
 import org.apache.flink.connector.phoenix.dialect.JdbcDialect;
 import org.apache.flink.connector.phoenix.dialect.JdbcDialects;
 
-import javax.annotation.Nullable;
-
 import java.util.Objects;
 import java.util.Optional;
 
-import static org.apache.flink.util.Preconditions.checkNotNull;
+import javax.annotation.Nullable;
 
 /** Options for the JDBC connector. */
 public class JdbcOptions extends JdbcConnectionOptions {
@@ -54,7 +52,7 @@ public class JdbcOptions extends JdbcConnectionOptions {
             int connectionCheckTimeoutSeconds,
             boolean namespaceMappingEnabled,
             boolean mapSystemTablesEnabled
-            ) {
+    ) {
         super(dbURL, driverName, username, password, connectionCheckTimeoutSeconds);
         this.tableName = tableName;
         this.dialect = dialect;

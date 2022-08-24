@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.ud.udf;
 
 import org.apache.flink.table.functions.ScalarFunction;

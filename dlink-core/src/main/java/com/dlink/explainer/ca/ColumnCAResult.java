@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.explainer.ca;
 
 import com.dlink.explainer.lineage.LineageColumnGenerator;
