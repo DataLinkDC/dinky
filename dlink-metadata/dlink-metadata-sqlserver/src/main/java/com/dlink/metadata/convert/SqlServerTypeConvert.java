@@ -69,6 +69,8 @@ public class SqlServerTypeConvert implements ITypeConvert {
             } else {
                 columnType = ColumnType.FLOAT;
             }
+        } else if (t.contains("date") ) {
+            columnType = ColumnType.DATE;
         } else if (t.contains("smalldatetime") || t.contains("datetime")) {
             columnType = ColumnType.TIMESTAMP;
         } else if (t.contains("timestamp") || t.contains("binary") || t.contains("varbinary") || t.contains("image")) {
