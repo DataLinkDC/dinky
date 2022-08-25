@@ -73,7 +73,7 @@ public class ResultRunnable implements Runnable {
                     catchData(ResultPool.get(jobId));
                 }
             } catch (Exception e) {
-
+                e.printStackTrace();
             }
         }
     }

@@ -43,7 +43,7 @@ public class LineageRel {
 
     private String targetColumn;
 
-    private final static String DELIMITER = ".";
+    private static final String DELIMITER = ".";
 
     public LineageRel(String sourceCatalog, String sourceDatabase, String sourceTable, String sourceColumn, String targetCatalog, String targetDatabase, String targetTable,
                       String targetColumn) {

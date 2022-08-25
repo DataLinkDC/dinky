@@ -19,6 +19,8 @@
 
 package com.dlink.utils;
 
+import com.dlink.model.LineageRel;
+
 import org.apache.calcite.plan.RelOptTable;
 import org.apache.calcite.rel.RelNode;
 import org.apache.calcite.rel.core.Snapshot;
@@ -34,7 +36,6 @@ import org.apache.flink.table.catalog.CatalogManager;
 import org.apache.flink.table.catalog.FunctionCatalog;
 import org.apache.flink.table.operations.CatalogSinkModifyOperation;
 import org.apache.flink.table.operations.Operation;
-import org.apache.flink.table.planner.calcite.FlinkContext;
 import org.apache.flink.table.planner.calcite.FlinkRelBuilder;
 import org.apache.flink.table.planner.calcite.SqlExprToRexConverterFactory;
 import org.apache.flink.table.planner.delegation.PlannerBase;
@@ -46,8 +47,6 @@ import org.apache.flink.table.planner.plan.trait.MiniBatchInterval;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
-import com.dlink.model.LineageRel;
 
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -188,10 +187,10 @@ public class LineageContext {
                 return MiniBatchInterval.NONE;
             }
 
-
             private PlannerBase getPlanner() {
                 return (PlannerBase) tableEnv.getPlanner();
             }
+
         });
     }
 

@@ -35,10 +35,10 @@ import com.dlink.model.FlinkCDCConfig;
  **/
 public class CDCBuilderFactory {
     private static CDCBuilder[] cdcBuilders = {
-            new MysqlCDCBuilder(),
-            new OracleCDCBuilder(),
-            new SqlServerCDCBuilder(),
-            new PostgresCDCBuilder()
+        new MysqlCDCBuilder(),
+        new OracleCDCBuilder(),
+        new SqlServerCDCBuilder(),
+        new PostgresCDCBuilder()
     };
 
     public static CDCBuilder buildCDCBuilder(FlinkCDCConfig config) {

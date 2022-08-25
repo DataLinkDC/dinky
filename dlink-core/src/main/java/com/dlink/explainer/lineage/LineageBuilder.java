@@ -19,18 +19,18 @@
 
 package com.dlink.explainer.lineage;
 
+import com.dlink.explainer.ca.ColumnCAResult;
+import com.dlink.explainer.ca.NodeRel;
+import com.dlink.explainer.ca.TableCA;
+import com.dlink.model.LineageRel;
+import com.dlink.plus.FlinkSqlPlus;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import com.dlink.explainer.ca.ColumnCAResult;
-import com.dlink.explainer.ca.NodeRel;
-import com.dlink.explainer.ca.TableCA;
-import com.dlink.model.LineageRel;
-import com.dlink.plus.FlinkSqlPlus;
 
 /**
  * LineageBuilder

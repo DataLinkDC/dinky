@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.cdc.postgres;
 
 import com.dlink.assertion.Asserts;
@@ -26,8 +25,7 @@ import com.dlink.cdc.CDCBuilder;
 import com.dlink.constant.ClientConstant;
 import com.dlink.constant.FlinkParamConstant;
 import com.dlink.model.FlinkCDCConfig;
-import com.ververica.cdc.connectors.postgres.PostgreSQLSource;
-import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
+
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
@@ -35,6 +33,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
+import com.ververica.cdc.connectors.postgres.PostgreSQLSource;
+import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
 
 /**
  * postgresCDCBuilder
@@ -44,8 +45,8 @@ import java.util.Properties;
  **/
 public class PostgresCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
 
-    private final static String KEY_WORD = "postgres-cdc";
-    private final static String METADATA_TYPE = "PostgreSql";
+    private static final String KEY_WORD = "postgres-cdc";
+    private static final String METADATA_TYPE = "PostgreSql";
 
     public PostgresCDCBuilder() {
     }

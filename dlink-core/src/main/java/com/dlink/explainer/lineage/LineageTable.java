@@ -19,10 +19,10 @@
 
 package com.dlink.explainer.lineage;
 
+import com.dlink.explainer.ca.TableCA;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.dlink.explainer.ca.TableCA;
 
 /**
  * LineageTable

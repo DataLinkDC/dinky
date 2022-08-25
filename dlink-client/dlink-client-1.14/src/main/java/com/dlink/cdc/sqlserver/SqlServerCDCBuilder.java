@@ -6,13 +6,9 @@ import com.dlink.cdc.CDCBuilder;
 import com.dlink.constant.ClientConstant;
 import com.dlink.constant.FlinkParamConstant;
 import com.dlink.model.FlinkCDCConfig;
-import com.ververica.cdc.connectors.sqlserver.SqlServerSource;
-import com.ververica.cdc.connectors.sqlserver.table.StartupOptions;
-import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
+
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,17 +17,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.ververica.cdc.connectors.sqlserver.SqlServerSource;
+import com.ververica.cdc.connectors.sqlserver.table.StartupOptions;
+
 /**
  * sql server CDC
  *
  * @author 郑文豪
- * @date 2022/8/12 18:00
  */
 public class SqlServerCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
     protected static final Logger logger = LoggerFactory.getLogger(SqlServerCDCBuilder.class);
 
-    private final static String KEY_WORD = "sqlserver-cdc";
-    private final static String METADATA_TYPE = "SqlServer";
+    private static final String KEY_WORD = "sqlserver-cdc";
+    private static final String METADATA_TYPE = "SqlServer";
 
     public SqlServerCDCBuilder() {
     }
@@ -55,8 +56,8 @@ public class SqlServerCDCBuilder extends AbstractCDCBuilder implements CDCBuilde
         String database = config.getDatabase();
         Properties debeziumProperties = new Properties();
         // 为部分转换添加默认值
-//        debeziumProperties.setProperty("bigint.unsigned.handling.mode", "long");
-//        debeziumProperties.setProperty("decimal.handling.mode", "string");
+        //debeziumProperties.setProperty("bigint.unsigned.handling.mode", "long");
+        //debeziumProperties.setProperty("decimal.handling.mode", "string");
         for (Map.Entry<String, String> entry : config.getDebezium().entrySet()) {
             if (Asserts.isNotNullString(entry.getKey()) && Asserts.isNotNullString(entry.getValue())) {
                 debeziumProperties.setProperty(entry.getKey(), entry.getValue());
@@ -86,7 +87,7 @@ public class SqlServerCDCBuilder extends AbstractCDCBuilder implements CDCBuilde
         } else {
             sourceBuilder.tableList(new String[0]);
         }
-//        sourceBuilder.deserializer(new JsonDebeziumDeserializationSchema());
+        //sourceBuilder.deserializer(new JsonDebeziumDeserializationSchema());
         sourceBuilder.deserializer(new SqlServerJsonDebeziumDeserializationSchema());
         if (Asserts.isNotNullString(config.getStartupMode())) {
             switch (config.getStartupMode().toLowerCase()) {
@@ -96,6 +97,7 @@ public class SqlServerCDCBuilder extends AbstractCDCBuilder implements CDCBuilde
                 case "latest-offset":
                     sourceBuilder.startupOptions(StartupOptions.latest());
                     break;
+                default:
             }
         } else {
             sourceBuilder.startupOptions(StartupOptions.latest());

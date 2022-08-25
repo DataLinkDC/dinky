@@ -50,10 +50,10 @@ public class SingleSqlParserFactory {
             tmp = new UpdateSqlParser(sql);
         } else if (contains(sql, "(insert\\s+into)(.+)(values)(.+)")) {
             tmp = new InsertSqlParser(sql);
-        } else if (contains(sql, "(create\\s+table)(.+)")) {
-        } else if (contains(sql, "(create\\s+database)(.+)")) {
-        } else if (contains(sql, "(show\\s+databases)")) {
-        } else if (contains(sql, "(use)(.+)")) {
+        //} else if (contains(sql, "(create\\s+table)(.+)")) {
+        //} else if (contains(sql, "(create\\s+database)(.+)")) {
+        //} else if (contains(sql, "(show\\s+databases)")) {
+        //} else if (contains(sql, "(use)(.+)")) {
         } else if (contains(sql, "(set)(.+)")) {
             tmp = new SetSqlParser(sql);
         } else if (contains(sql, "(show\\s+fragment)\\s+(.+)")) {

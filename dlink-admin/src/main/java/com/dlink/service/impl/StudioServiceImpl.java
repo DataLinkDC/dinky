@@ -19,21 +19,6 @@
 
 package com.dlink.service.impl;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import com.dlink.api.FlinkAPI;
 import com.dlink.assertion.Asserts;
 import com.dlink.config.Dialect;
@@ -79,6 +64,22 @@ import com.dlink.session.SessionInfo;
 import com.dlink.session.SessionPool;
 import com.dlink.sql.FlinkQuery;
 import com.dlink.utils.RunTimeUtil;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * StudioServiceImpl
@@ -222,15 +223,19 @@ public class StudioServiceImpl implements StudioService {
     
     private List<SqlExplainResult> explainCommonSql(StudioExecuteDTO studioExecuteDTO) {
         if (Asserts.isNull(studioExecuteDTO.getDatabaseId())) {
-            return new ArrayList<SqlExplainResult>() {{
-                add(SqlExplainResult.fail(studioExecuteDTO.getStatement(), "请指定数据源"));
-            }};
+            return new ArrayList<SqlExplainResult>() {
+                {
+                    add(SqlExplainResult.fail(studioExecuteDTO.getStatement(), "请指定数据源"));
+                }
+            };
         } else {
             DataBase dataBase = dataBaseService.getById(studioExecuteDTO.getDatabaseId());
             if (Asserts.isNull(dataBase)) {
-                return new ArrayList<SqlExplainResult>() {{
-                    add(SqlExplainResult.fail(studioExecuteDTO.getStatement(), "数据源不存在"));
-                }};
+                return new ArrayList<SqlExplainResult>() {
+                    {
+                        add(SqlExplainResult.fail(studioExecuteDTO.getStatement(), "数据源不存在"));
+                    }
+                };
             }
             Driver driver = Driver.build(dataBase.getDriverConfig());
             List<SqlExplainResult> sqlExplainResults = driver.explain(studioExecuteDTO.getStatement());
@@ -314,9 +319,9 @@ public class StudioServiceImpl implements StudioService {
                 return null;
             }
             if (studioCADTO.getDialect().equalsIgnoreCase("doris")) {
-                return com.dlink.explainer.sqlLineage.LineageBuilder.getSqlLineage(studioCADTO.getStatement(), "mysql", dataBase.getDriverConfig());
+                return com.dlink.explainer.sqllineage.LineageBuilder.getSqlLineage(studioCADTO.getStatement(), "mysql", dataBase.getDriverConfig());
             } else {
-                return com.dlink.explainer.sqlLineage.LineageBuilder.getSqlLineage(studioCADTO.getStatement(), studioCADTO.getDialect().toLowerCase(), dataBase.getDriverConfig());
+                return com.dlink.explainer.sqllineage.LineageBuilder.getSqlLineage(studioCADTO.getStatement(), studioCADTO.getDialect().toLowerCase(), dataBase.getDriverConfig());
             }
         } else {
             addFlinkSQLEnv(studioCADTO);
