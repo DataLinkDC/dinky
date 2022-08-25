@@ -123,6 +123,7 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements SinkBui
                                             before = (Map) value.get("before");
                                             convertAttr(columnNameList, columnTypeList, before, value.get("op").toString(), 1, schemaName, tableName, tsMs);
                                             break;
+                                        default:
                                     }
                                 } catch (Exception e) {
                                     logger.error("SchameTable: {} - Exception:", e);

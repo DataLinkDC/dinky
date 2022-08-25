@@ -19,6 +19,12 @@
 
 package com.dlink.executor;
 
+import com.dlink.assertion.Asserts;
+import com.dlink.model.LineageRel;
+import com.dlink.result.SqlExplainResult;
+import com.dlink.utils.FlinkStreamProgramWithoutPhysical;
+import com.dlink.utils.LineageContext;
+
 import org.apache.flink.api.common.RuntimeExecutionMode;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.dag.Transformation;
@@ -70,11 +76,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.model.LineageRel;
-import com.dlink.result.SqlExplainResult;
-import com.dlink.utils.FlinkStreamProgramWithoutPhysical;
-import com.dlink.utils.LineageContext;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;

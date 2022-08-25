@@ -68,6 +68,7 @@ public class SetOperation extends AbstractOperation implements Operation {
                 return null;
             }
         } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
         Map<String, List<String>> map = SingleSqlParserFactory.generateParser(statement);
         if (Asserts.isNotNullMap(map) && map.size() == 2) {
