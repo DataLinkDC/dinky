@@ -109,8 +109,10 @@ public class LineageRelation {
             return false;
         }
         LineageRelation that = (LineageRelation) o;
-        return Objects.equals(srcTableId, that.srcTableId) && Objects.equals(tgtTableId, that.tgtTableId) && Objects.equals(srcTableColName, that.srcTableColName) &&
-            Objects.equals(tgtTableColName, that.tgtTableColName);
+        return Objects.equals(srcTableId, that.srcTableId)
+                && Objects.equals(tgtTableId, that.tgtTableId)
+                && Objects.equals(srcTableColName, that.srcTableColName)
+                && Objects.equals(tgtTableColName, that.tgtTableColName);
     }
 
     @Override

@@ -133,6 +133,8 @@ public class FlinkAPI {
                 //paramMap.put("target-directory","hdfs:///flink13/ss1");
                 paramType = FlinkRestAPIConstant.SAVEPOINTS;
                 jobInfo.setStatus(JobInfo.JobStatus.RUN);
+                break;
+            default:
         }
         ObjectMapper mapper = new ObjectMapper();
         JsonNode json = null;

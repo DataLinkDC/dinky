@@ -596,6 +596,8 @@ public class JobManager {
                 if (Asserts.isNotNull(config.getGatewayConfig()) && Asserts.isNotNullString(config.getGatewayConfig().getFlinkConfig().getJobName())) {
                     sb.append("set " + YarnConfigOptions.APPLICATION_NAME.key() + " = " + config.getGatewayConfig().getFlinkConfig().getJobName() + ";\r\n");
                 }
+                break;
+            default:
         }
         sb.append(statement);
         return sb.toString();

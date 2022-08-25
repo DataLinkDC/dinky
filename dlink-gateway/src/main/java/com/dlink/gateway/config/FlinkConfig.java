@@ -77,7 +77,7 @@ public class FlinkConfig {
     }
 
     public static FlinkConfig build(String jobName, String jobId, String actionStr, String savePointTypeStr, String savePoint, String configParasStr) {
-//        List<ConfigPara> configParasList = new ArrayList<>();
+        //List<ConfigPara> configParasList = new ArrayList<>();
         Map<String, String> configMap = new HashMap<>();
         JsonNode paras = null;
         if (Asserts.isNotNullString(configParasStr)) {

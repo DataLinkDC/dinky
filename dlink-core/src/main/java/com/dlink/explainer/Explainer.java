@@ -19,14 +19,6 @@
 
 package com.dlink.explainer;
 
-import org.apache.flink.runtime.rest.messages.JobPlanInfo;
-import org.apache.flink.table.catalog.CatalogManager;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import com.dlink.assertion.Asserts;
 import com.dlink.constant.FlinkSQLConstant;
 import com.dlink.executor.Executor;
@@ -52,6 +44,15 @@ import com.dlink.trans.Operations;
 import com.dlink.utils.FlinkUtil;
 import com.dlink.utils.LogUtil;
 import com.dlink.utils.SqlUtil;
+
+import org.apache.flink.runtime.rest.messages.JobPlanInfo;
+import org.apache.flink.table.catalog.CatalogManager;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 

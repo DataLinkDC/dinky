@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.cdc.oracle;
+package com.dlink.cdc.postgres;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.cdc.AbstractCDCBuilder;
@@ -34,25 +34,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import com.ververica.cdc.connectors.oracle.OracleSource;
-import com.ververica.cdc.connectors.oracle.table.StartupOptions;
+import com.ververica.cdc.connectors.postgres.PostgreSQLSource;
 import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
 
 /**
- * MysqlCDCBuilder
+ * postgresCDCBuilder
  *
- * @author wenmo
- * @since 2022/4/12 21:29
+ * @author mengyejiang
+ * @since 2022/8/21 10:00
  **/
-public class OracleCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
+public class PostgresCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
 
-    private static final String KEY_WORD = "oracle-cdc";
-    private static final String METADATA_TYPE = "Oracle";
+    private static final String KEY_WORD = "postgres-cdc";
+    private static final String METADATA_TYPE = "PostgreSql";
 
-    public OracleCDCBuilder() {
+    public PostgresCDCBuilder() {
     }
 
-    public OracleCDCBuilder(FlinkCDCConfig config) {
+    public PostgresCDCBuilder(FlinkCDCConfig config) {
         super(config);
     }
 
@@ -63,23 +62,28 @@ public class OracleCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
 
     @Override
     public CDCBuilder create(FlinkCDCConfig config) {
-        return new OracleCDCBuilder(config);
+        return new PostgresCDCBuilder(config);
     }
 
     @Override
     public DataStreamSource<String> build(StreamExecutionEnvironment env) {
-        Properties properties = new Properties();
+
+        String decodingPluginName = config.getSource().get("decoding.plugin.name");
+        String slotName = config.getSource().get("slot.name");
+
+        Properties debeziumProperties = new Properties();
         for (Map.Entry<String, String> entry : config.getDebezium().entrySet()) {
             if (Asserts.isNotNullString(entry.getKey()) && Asserts.isNotNullString(entry.getValue())) {
-                properties.setProperty(entry.getKey(), entry.getValue());
+                debeziumProperties.setProperty(entry.getKey(), entry.getValue());
             }
         }
-        OracleSource.Builder<String> sourceBuilder = OracleSource.<String>builder()
+
+        PostgreSQLSource.Builder<String> sourceBuilder = PostgreSQLSource.<String>builder()
             .hostname(config.getHostname())
             .port(config.getPort())
+            .database(config.getDatabase())
             .username(config.getUsername())
-            .password(config.getPassword())
-            .database(config.getDatabase());
+            .password(config.getPassword());
         String schema = config.getSchema();
         if (Asserts.isNotNullString(schema)) {
             String[] schemas = schema.split(FlinkParamConstant.SPLIT);
@@ -93,42 +97,39 @@ public class OracleCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         } else {
             sourceBuilder.tableList(new String[0]);
         }
+
         sourceBuilder.deserializer(new JsonDebeziumDeserializationSchema());
-        sourceBuilder.debeziumProperties(properties);
-        if (Asserts.isNotNullString(config.getStartupMode())) {
-            switch (config.getStartupMode().toLowerCase()) {
-                case "initial":
-                    sourceBuilder.startupOptions(StartupOptions.initial());
-                    break;
-                case "latest-offset":
-                    sourceBuilder.startupOptions(StartupOptions.latest());
-                    break;
-                default:
-            }
-        } else {
-            sourceBuilder.startupOptions(StartupOptions.latest());
+        sourceBuilder.debeziumProperties(debeziumProperties);
+
+        if (Asserts.isNotNullString(decodingPluginName)) {
+            sourceBuilder.decodingPluginName(decodingPluginName);
         }
-        return env.addSource(sourceBuilder.build(), "Oracle CDC Source");
+
+        if (Asserts.isNotNullString(slotName)) {
+            sourceBuilder.slotName(slotName);
+        }
+
+        return env.addSource(sourceBuilder.build(),"Postgres CDC Source");
     }
 
     public Map<String, Map<String, String>> parseMetaDataConfigs() {
-        Map<String, Map<String, String>> allConfigList = new HashMap<>();
+        Map<String, Map<String, String>> allConfigMap = new HashMap<>();
         List<String> schemaList = getSchemaList();
         for (String schema : schemaList) {
             Map<String, String> configMap = new HashMap<>();
             configMap.put(ClientConstant.METADATA_TYPE, METADATA_TYPE);
-            StringBuilder sb = new StringBuilder("jdbc:oracle:thin:@");
+            StringBuilder sb = new StringBuilder("jdbc:postgresql://");
             sb.append(config.getHostname());
             sb.append(":");
             sb.append(config.getPort());
-            sb.append(":");
+            sb.append("/");
             sb.append(config.getDatabase());
             configMap.put(ClientConstant.METADATA_NAME, sb.toString());
             configMap.put(ClientConstant.METADATA_URL, sb.toString());
             configMap.put(ClientConstant.METADATA_USERNAME, config.getUsername());
             configMap.put(ClientConstant.METADATA_PASSWORD, config.getPassword());
-            allConfigList.put(schema, configMap);
+            allConfigMap.put(schema, configMap);
         }
-        return allConfigList;
+        return allConfigMap;
     }
 }

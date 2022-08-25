@@ -145,7 +145,17 @@
         </dependency>
         <dependency>
             <groupId>com.ververica</groupId>
+            <artifactId>flink-sql-connector-sqlserver-cdc</artifactId>
+            <version>${flinkcdc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ververica</groupId>
             <artifactId>flink-sql-connector-oracle-cdc</artifactId>
+            <version>${flinkcdc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ververica</groupId>
+            <artifactId>flink-sql-connector-postgres-cdc</artifactId>
             <version>${flinkcdc.version}</version>
         </dependency>
         <dependency>

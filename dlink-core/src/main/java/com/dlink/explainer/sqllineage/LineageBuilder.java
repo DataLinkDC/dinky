@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.explainer.sqlLineage;
+package com.dlink.explainer.sqllineage;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.explainer.lineage.LineageRelation;

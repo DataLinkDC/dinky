@@ -141,6 +141,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                                     }
                                     out.collect(uarow);
                                     break;
+                                default:
                             }
                         } catch (Exception e) {
                             logger.error("SchameTable: {} - Row: {} - Exception: {}", schemaTableName, JSONUtil.toJsonString(value), e.getCause().getMessage());
@@ -233,6 +234,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                         OutputTag<Map> outputTag = tagMap.get(table);
                         ctx.output(outputTag, map);
                     } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
                         out.collect(map);
                     }
                 }
