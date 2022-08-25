@@ -1,9 +1,5 @@
 package com.dlink.cdc.sqlserver;
 
-import com.ververica.cdc.connectors.shaded.org.apache.kafka.connect.json.JsonConverter;
-import com.ververica.cdc.connectors.shaded.org.apache.kafka.connect.source.SourceRecord;
-import com.ververica.cdc.connectors.shaded.org.apache.kafka.connect.storage.ConverterType;
-import com.ververica.cdc.debezium.DebeziumDeserializationSchema;
 import org.apache.flink.api.common.typeinfo.BasicTypeInfo;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.util.Collector;
@@ -12,12 +8,16 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ververica.cdc.connectors.shaded.org.apache.kafka.connect.json.JsonConverter;
+import com.ververica.cdc.connectors.shaded.org.apache.kafka.connect.source.SourceRecord;
+import com.ververica.cdc.connectors.shaded.org.apache.kafka.connect.storage.ConverterType;
+import com.ververica.cdc.debezium.DebeziumDeserializationSchema;
+
 /**
  * @version 1.0
  * @className: com.dlink.cdc.mysql.MysqlJsonDebeziumDeserializationSchema
  * @Description:
  * @author: jack zhong
- * @date 8/2/221:43 PM
  */
 public class SqlServerJsonDebeziumDeserializationSchema implements DebeziumDeserializationSchema<String> {
     private static final long serialVersionUID = 1L;

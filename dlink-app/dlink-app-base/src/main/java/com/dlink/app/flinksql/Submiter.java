@@ -28,6 +28,7 @@ import com.dlink.executor.ExecutorSetting;
 import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.parser.SqlType;
 import com.dlink.trans.Operations;
+
 import org.apache.flink.configuration.CheckpointingOptions;
 
 import java.io.IOException;
@@ -73,9 +74,7 @@ public class Submiter {
         try {
             statement = DBUtil.getOneByID(getQuerySQL(id), config);
         } catch (IOException | SQLException e) {
-            logger.error("{} --> 获取 FlinkSQL 配置异常，ID 为 {}, \n" +
-                    "连接信息为：{} \n" +
-                    "异常信息为：{} ", LocalDateTime.now(), id, config.toString(), e.getMessage(), e);
+            logger.error("{} --> 获取 FlinkSQL 配置异常，ID 为 {}, 连接信息为：{} ,异常信息为：{} ", LocalDateTime.now(), id, config.toString(), e.getMessage(), e);
         }
         return statement;
     }
@@ -85,9 +84,7 @@ public class Submiter {
         try {
             task = DBUtil.getMapByID(getTaskInfo(id), config);
         } catch (IOException | SQLException e) {
-            logger.error("{} --> 获取 FlinkSQL 配置异常，ID 为 {}, \n" +
-                    "连接信息为：{} \n" +
-                    "异常信息为：{} ", LocalDateTime.now(), id, config.toString(), e.getMessage(), e);
+            logger.error("{} --> 获取 FlinkSQL 配置异常，ID 为 {}, 连接信息为：{} ,异常信息为：{} ", LocalDateTime.now(), id, config.toString(), e.getMessage(), e);
         }
         return task;
     }

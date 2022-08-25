@@ -19,12 +19,11 @@
 
 package com.dlink.service;
 
+import com.dlink.db.service.ISuperService;
+import com.dlink.model.FragmentVariable;
 
 import java.util.List;
 import java.util.Map;
-
-import com.dlink.db.service.ISuperService;
-import com.dlink.model.FragmentVariable;
 
 /**
  * FragmentVariableService

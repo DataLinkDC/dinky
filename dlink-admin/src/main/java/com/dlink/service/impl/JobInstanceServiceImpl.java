@@ -119,6 +119,8 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
                     break;
                 case UNKNOWN:
                     jobInstanceStatus.setUnknown(counts);
+                    break;
+                default:
             }
         }
         jobInstanceStatus.setAll(total);

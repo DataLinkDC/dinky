@@ -57,8 +57,8 @@ import org.slf4j.LoggerFactory;
 /** A JDBC outputFormat that supports batching records before writing records to database. */
 @Internal
 public class JdbcBatchingOutputFormat<
-                In, JdbcIn, JdbcExec extends JdbcBatchStatementExecutor<JdbcIn>>
-        extends AbstractJdbcOutputFormat<In> {
+        I, J, E extends JdbcBatchStatementExecutor<J>>
+        extends AbstractJdbcOutputFormat<I> {
 
     /**
      * An interface to extract a value from given argument.
@@ -85,10 +85,10 @@ public class JdbcBatchingOutputFormat<
     private static final Logger LOG = LoggerFactory.getLogger(JdbcBatchingOutputFormat.class);
 
     private final JdbcExecutionOptions executionOptions;
-    private final StatementExecutorFactory<JdbcExec> statementExecutorFactory;
-    private final RecordExtractor<In, JdbcIn> jdbcRecordExtractor;
+    private final StatementExecutorFactory<E> statementExecutorFactory;
+    private final RecordExtractor<I, J> jdbcRecordExtractor;
 
-    private transient JdbcExec jdbcStatementExecutor;
+    private transient E jdbcStatementExecutor;
     private transient int batchCount = 0;
     private transient volatile boolean closed = false;
 
@@ -100,8 +100,8 @@ public class JdbcBatchingOutputFormat<
     public JdbcBatchingOutputFormat(
             @Nonnull JdbcConnectionProvider connectionProvider,
             @Nonnull JdbcExecutionOptions executionOptions,
-            @Nonnull StatementExecutorFactory<JdbcExec> statementExecutorFactory,
-            @Nonnull RecordExtractor<In, JdbcIn> recordExtractor) {
+            @Nonnull StatementExecutorFactory<E> statementExecutorFactory,
+            @Nonnull RecordExtractor<I, J> recordExtractor) {
         super(connectionProvider);
         this.executionOptions = checkNotNull(executionOptions);
         this.statementExecutorFactory = checkNotNull(statementExecutorFactory);
@@ -150,9 +150,9 @@ public class JdbcBatchingOutputFormat<
 
     }
 
-    private JdbcExec createAndOpenStatementExecutor(
-            StatementExecutorFactory<JdbcExec> statementExecutorFactory) throws IOException {
-        JdbcExec exec = statementExecutorFactory.apply(getRuntimeContext());
+    private E createAndOpenStatementExecutor(
+            StatementExecutorFactory<E> statementExecutorFactory) throws IOException {
+        E exec = statementExecutorFactory.apply(getRuntimeContext());
         try {
             exec.prepareStatements(connectionProvider.getConnection());
         } catch (SQLException e) {
@@ -168,7 +168,7 @@ public class JdbcBatchingOutputFormat<
     }
 
     @Override
-    public final synchronized void writeRecord(In record) throws IOException {
+    public final synchronized void writeRecord(I record) throws IOException {
         checkFlushException();
 
         try {
@@ -184,7 +184,7 @@ public class JdbcBatchingOutputFormat<
         }
     }
 
-    protected void addToBatch(In original, JdbcIn extracted) throws SQLException {
+    protected void addToBatch(I original, J extracted) throws SQLException {
         jdbcStatementExecutor.addToBatch(extracted);
     }
 

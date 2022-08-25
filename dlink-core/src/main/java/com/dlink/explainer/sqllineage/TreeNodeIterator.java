@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.explainer.sqlLineage;
+package com.dlink.explainer.sqllineage;
 
 import java.util.Iterator;
 

@@ -39,16 +39,16 @@ import org.apache.flink.table.planner.plan.rules.FlinkStreamRuleSets;
  * @since 2022/8/20 23:33
  */
 public class FlinkStreamProgramWithoutPhysical {
-    private final static String SUBQUERY_REWRITE = "subquery_rewrite";
-    private final static String TEMPORAL_JOIN_REWRITE = "temporal_join_rewrite";
-    private final static String DECORRELATE = "decorrelate";
-    private final static String DEFAULT_REWRITE = "default_rewrite";
-    private final static String PREDICATE_PUSHDOWN = "predicate_pushdown";
-    private final static String JOIN_REORDER = "join_reorder";
-    private final static String PROJECT_REWRITE = "project_rewrite";
-    private final static String LOGICAL = "logical";
-    private final static String LOGICAL_REWRITE = "logical_rewrite";
-    private final static String TIME_INDICATOR = "time_indicator";
+    private static final String SUBQUERY_REWRITE = "subquery_rewrite";
+    private static final String TEMPORAL_JOIN_REWRITE = "temporal_join_rewrite";
+    private static final String DECORRELATE = "decorrelate";
+    private static final String DEFAULT_REWRITE = "default_rewrite";
+    private static final String PREDICATE_PUSHDOWN = "predicate_pushdown";
+    private static final String JOIN_REORDER = "join_reorder";
+    private static final String PROJECT_REWRITE = "project_rewrite";
+    private static final String LOGICAL = "logical";
+    private static final String LOGICAL_REWRITE = "logical_rewrite";
+    private static final String TIME_INDICATOR = "time_indicator";
 
     public static FlinkChainedProgram buildProgram(Configuration config) {
         FlinkChainedProgram chainedProgram = new FlinkChainedProgram();

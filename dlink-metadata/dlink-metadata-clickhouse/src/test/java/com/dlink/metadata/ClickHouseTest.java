@@ -25,7 +25,6 @@ import com.dlink.metadata.driver.DriverConfig;
 import com.dlink.metadata.result.JdbcSelectResult;
 import com.dlink.model.Column;
 import com.dlink.model.Schema;
-import com.dlink.utils.JSONUtil;
 
 import java.util.List;
 
@@ -55,30 +54,30 @@ public class ClickHouseTest {
     @Test
     public void connectTest() {
         String test = getDriver().test();
-        System.out.println(test);
-        System.out.println("end...");
+        //System.out.println(test);
+        //System.out.println("end...");
     }
 
     @Test
     public void schemaTest() {
         List<Schema> schemasAndTables = getDriver().getSchemasAndTables();
-        System.out.println(JSONUtil.toJsonString(schemasAndTables));
-        System.out.println("end...");
+        //System.out.println(JSONUtil.toJsonString(schemasAndTables));
+        //System.out.println("end...");
     }
 
     @Test
     public void columnTest() {
         Driver driver = getDriver();
         List<Column> columns = driver.listColumns("xxx", "xxx");
-        System.out.println(JSONUtil.toJsonString(columns));
-        System.out.println("end...");
+        //System.out.println(JSONUtil.toJsonString(columns));
+        //System.out.println("end...");
     }
 
     @Test
     public void queryTest() {
         Driver driver = getDriver();
         JdbcSelectResult query = driver.query("select * from xxx", 10);
-        System.out.println(JSONUtil.toJsonString(query));
-        System.out.println("end...");
+        //System.out.println(JSONUtil.toJsonString(query));
+        //System.out.println("end...");
     }
 }

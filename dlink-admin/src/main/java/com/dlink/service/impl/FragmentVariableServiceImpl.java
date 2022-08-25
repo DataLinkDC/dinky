@@ -19,6 +19,11 @@
 
 package com.dlink.service.impl;
 
+import com.dlink.db.service.impl.SuperServiceImpl;
+import com.dlink.mapper.FragmentVariableMapper;
+import com.dlink.model.FragmentVariable;
+import com.dlink.service.FragmentVariableService;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,10 +31,6 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.dlink.db.service.impl.SuperServiceImpl;
-import com.dlink.mapper.FragmentVariableMapper;
-import com.dlink.model.FragmentVariable;
-import com.dlink.service.FragmentVariableService;
 
 
 /**
