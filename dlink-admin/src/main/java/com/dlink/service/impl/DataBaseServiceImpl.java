@@ -24,6 +24,7 @@ import com.dlink.constant.CommonConstant;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.DataBaseMapper;
 import com.dlink.metadata.driver.Driver;
+import com.dlink.metadata.result.JdbcSelectResult;
 import com.dlink.model.Column;
 import com.dlink.model.DataBase;
 import com.dlink.model.Schema;
@@ -142,6 +143,15 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
         List<Column> columns = driver.listColumns(schemaName, tableName);
         Table table = Table.build(tableName, schemaName, columns);
         return driver.getCreateTableSql(table);
+    }
+
+    @Override
+    public JdbcSelectResult queryData(Integer id, String schemaName, String tableName, Integer limit) {
+        DataBase dataBase = getById(id);
+        Asserts.checkNotNull(dataBase, "该数据源不存在！");
+        Driver driver = Driver.build(dataBase.getDriverConfig());
+        JdbcSelectResult result = driver.query("select * from "+schemaName+"."+tableName, limit);
+        return result;
     }
 
     @Override

@@ -179,6 +179,14 @@ public class DataBaseController {
     }
 
     /**
+     * 获取元数据的指定表的列
+     */
+    @GetMapping("/queryData")
+    public Result queryData(@RequestParam Integer id, @RequestParam String schemaName, @RequestParam String tableName, @RequestParam int limit) {
+        return Result.succeed(databaseService.queryData(id, schemaName, tableName,limit), "获取成功");
+    }
+
+    /**
      * 获取 SqlGeneration
      */
     @GetMapping("/getSqlGeneration")
