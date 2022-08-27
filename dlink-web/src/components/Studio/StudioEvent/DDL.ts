@@ -222,6 +222,10 @@ export function showAlertGroup(dispatch: any) {
 export function showMetaDataTable(id: number) {
   return getData('api/database/getSchemasAndTables', {id: id});
 }
+/*--- 刷新 数据表样例数据 ---*/
+export function showTableData(id: number,schemaName:String,tableName:String,limit:number) {
+  return getData('api/database/queryData', {id: id,schemaName:schemaName,tableName:tableName,limit:limit});
+}
 
 /*--- 刷新 Flink Jobs ---*/
 export function showFlinkJobs(clusterId: number) {

@@ -134,6 +134,19 @@ export default [
     component: './Welcome',
   },
   {
+    path: '/datacenter',
+    name: 'datacenter',
+    icon: 'database',
+    routes: [
+      {
+        component: './DataCenter/MetaData',
+        path: '/datacenter/metadata',
+        name: 'metadata',
+        icon: 'cluster',
+      },
+    ],
+  },
+  {
     component: './404',
   },
 ];
