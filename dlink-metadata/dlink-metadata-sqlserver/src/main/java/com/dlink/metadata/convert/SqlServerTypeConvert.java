@@ -61,7 +61,7 @@ public class SqlServerTypeConvert implements ITypeConvert {
                 columnType = ColumnType.DOUBLE;
             }
         } else if (t.contains("decimal") || t.contains("money") || t.contains("smallmoney")
-            || t.contains("numeric")) {
+                || t.contains("numeric")) {
             columnType = ColumnType.DECIMAL;
         } else if (t.contains("real")) {
             if (isNullable) {
@@ -69,6 +69,8 @@ public class SqlServerTypeConvert implements ITypeConvert {
             } else {
                 columnType = ColumnType.FLOAT;
             }
+        } else if (t.contains("date")) {
+            columnType = ColumnType.DATE;
         } else if (t.contains("smalldatetime") || t.contains("datetime")) {
             columnType = ColumnType.TIMESTAMP;
         } else if (t.contains("timestamp") || t.contains("binary") || t.contains("varbinary") || t.contains("image")) {
