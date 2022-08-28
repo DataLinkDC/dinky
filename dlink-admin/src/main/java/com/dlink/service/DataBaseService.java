@@ -53,6 +53,7 @@ public interface DataBaseService extends ISuperService<DataBase> {
     String getSqlSelect(Integer id, String schemaName, String tableName);
 
     String getSqlCreate(Integer id, String schemaName, String tableName);
+
     JdbcSelectResult queryData(Integer id, String schemaName, String tableName, Integer limit);
 
     SqlGeneration getSqlGeneration(Integer id, String schemaName, String tableName);

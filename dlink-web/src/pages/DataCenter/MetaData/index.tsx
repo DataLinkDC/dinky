@@ -148,9 +148,9 @@ const Container: React.FC<{}> = (props: any) => {
                       {row? <Generation dbId={databaseId} schema={row.schema} table={row.table}/> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
                     </TabPane>
 
-                    <TabPane tab={<span><ForkOutlined />血缘关系</span>} key="--">
-                      开发ing
-                    </TabPane>
+                    {/*<TabPane tab={<span><ForkOutlined />血缘关系</span>} key="--">*/}
+                    {/*  开发ing*/}
+                    {/*</TabPane>*/}
 
 
                   </Tabs>

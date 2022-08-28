@@ -150,7 +150,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
         DataBase dataBase = getById(id);
         Asserts.checkNotNull(dataBase, "该数据源不存在！");
         Driver driver = Driver.build(dataBase.getDriverConfig());
-        JdbcSelectResult result = driver.query("select * from "+schemaName+"."+tableName, limit);
+        JdbcSelectResult result = driver.query("select * from " + schemaName + "." + tableName, limit);
         return result;
     }
 
