@@ -55,6 +55,20 @@ export default [
     hideInMenu: true,
   },
   {
+    path: '/datacenter',
+    name: 'datacenter',
+    icon: 'database',
+    routes: [
+      {
+        component: './DataCenter/MetaData',
+        path: '/datacenter/metadata',
+        name: 'metadata',
+        icon: 'cluster',
+      },
+    ],
+  },
+
+  {
     path: '/registration',
     name: 'registration',
     icon: 'appstore',
@@ -132,19 +146,6 @@ export default [
     name: 'about',
     icon: 'smile',
     component: './Welcome',
-  },
-  {
-    path: '/datacenter',
-    name: 'datacenter',
-    icon: 'database',
-    routes: [
-      {
-        component: './DataCenter/MetaData',
-        path: '/datacenter/metadata',
-        name: 'metadata',
-        icon: 'cluster',
-      },
-    ],
   },
   {
     component: './404',

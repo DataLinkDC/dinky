@@ -5,14 +5,13 @@ import React, {Key, useEffect, useState} from "react";
 import {
   showMetaDataTable
 } from "@/components/Studio/StudioEvent/DDL";
-// @ts-ignore
 import {Scrollbars} from 'react-custom-scrollbars';
 import {getData} from "@/components/Common/crud";
 import {
   BarsOutlined,
   ConsoleSqlOutlined,
   DatabaseOutlined,
-  DownOutlined, ForkOutlined,
+  DownOutlined,
   ReadOutlined,
   TableOutlined
 } from "@ant-design/icons";
@@ -103,7 +102,7 @@ const Container: React.FC<{}> = (props: any) => {
       <div>
         <>
           <Row gutter={24}>
-            <Col className="gutter-row" span={4}>
+            <Col span={4}>
               <Select
                 style={{width: '90%'}}
                 placeholder="选择数据源"
@@ -128,9 +127,9 @@ const Container: React.FC<{}> = (props: any) => {
             </Col>
 
 
-            <Col className="gutter-row" span={20}>
+            <Col  span={20}>
               <div>
-                <div id="components-tabs-demo-basic">
+                <div>
                   <Tabs defaultActiveKey="describe" onChange={callback}>
 
                     <TabPane tab={<span><ReadOutlined />描述</span>} key="describe">
