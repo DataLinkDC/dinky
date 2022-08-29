@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.job;
 
 import com.dlink.assertion.Asserts;
@@ -25,12 +24,26 @@ import com.dlink.context.SpringContextUtils;
 import com.dlink.daemon.task.DaemonFactory;
 import com.dlink.daemon.task.DaemonTaskConfig;
 import com.dlink.gateway.GatewayType;
-import com.dlink.model.*;
-import com.dlink.service.*;
+import com.dlink.model.Cluster;
+import com.dlink.model.ClusterConfiguration;
+import com.dlink.model.History;
+import com.dlink.model.Jar;
+import com.dlink.model.JobHistory;
+import com.dlink.model.JobInstance;
+import com.dlink.model.JobStatus;
+import com.dlink.model.Task;
+import com.dlink.service.ClusterConfigurationService;
+import com.dlink.service.ClusterService;
+import com.dlink.service.HistoryService;
+import com.dlink.service.JarService;
+import com.dlink.service.JobHistoryService;
+import com.dlink.service.JobInstanceService;
+import com.dlink.service.TaskService;
 import com.dlink.utils.JSONUtil;
-import org.springframework.context.annotation.DependsOn;
 
 import java.time.LocalDateTime;
+
+import org.springframework.context.annotation.DependsOn;
 
 /**
  * Job2MysqlHandler

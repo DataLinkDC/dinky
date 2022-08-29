@@ -84,7 +84,6 @@ public class MySqlTypeConvert implements ITypeConvert {
                 columnType = ColumnType.INT;
             }
         }
-        columnType.setPrecisionAndScale(column.getPrecision(), column.getScale());
         return columnType;
     }
 

@@ -5,7 +5,7 @@
     <parent>
         <artifactId>dlink-client</artifactId>
         <groupId>com.dlink</groupId>
-        <version>0.6.6</version>
+        <version>0.6.7-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -30,6 +30,17 @@
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-flink-1.14</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.starrocks</groupId>
+            <artifactId>flink-connector-starrocks</artifactId>
+            <version>1.2.3_flink-1.14_2.11</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

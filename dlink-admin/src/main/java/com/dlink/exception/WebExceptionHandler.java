@@ -17,13 +17,12 @@
  *
  */
 
-
 package com.dlink.exception;
-
-import cn.dev33.satoken.exception.NotLoginException;
 
 import com.dlink.common.result.Result;
 import com.dlink.model.CodeEnum;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +32,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletResponse;
+import cn.dev33.satoken.exception.NotLoginException;
 
 /**
  * WebExceptionHandler

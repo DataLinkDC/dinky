@@ -17,8 +17,6 @@
  *
  */
 
-
-
 package com.dlink.alert.email;
 
 /**

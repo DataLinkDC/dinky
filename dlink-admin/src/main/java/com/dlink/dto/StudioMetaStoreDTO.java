@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.dto;
 
 import com.dlink.gateway.GatewayType;

@@ -17,18 +17,18 @@
  *
  */
 
-
 package com.dlink.model;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.utils.SqlUtil;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Table
@@ -98,7 +98,7 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
     }
 
     public String getFlinkTableSql(String flinkConfig) {
-        return getFlinkDDL(flinkConfig, name);
+        return getFlinkDDL(flinkConfig,name);
     }
 
     public String getFlinkDDL(String flinkConfig, String tableName) {
@@ -106,7 +106,7 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
         sb.append("CREATE TABLE IF NOT EXISTS " + tableName + " (\n");
         List<String> pks = new ArrayList<>();
         for (int i = 0; i < columns.size(); i++) {
-            String type = columns.get(i).getJavaType().getFlinkType();
+            String type = columns.get(i).getFlinkType();
             sb.append("    ");
             if (i > 0) {
                 sb.append(",");
@@ -157,7 +157,7 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
         sb.append("CREATE TABLE IF NOT EXISTS " + name + " (\n");
         List<String> pks = new ArrayList<>();
         for (int i = 0; i < columns.size(); i++) {
-            String type = columns.get(i).getJavaType().getFlinkType();
+            String type = columns.get(i).getFlinkType();
             sb.append("    ");
             if (i > 0) {
                 sb.append(",");

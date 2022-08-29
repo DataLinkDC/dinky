@@ -17,16 +17,17 @@
  *
  */
 
-
 package com.dlink.model;
+
+import com.dlink.db.model.SuperEntity;
+
+import java.util.List;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.dlink.db.model.SuperEntity;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.util.List;
 
 /**
  * AlertGroup

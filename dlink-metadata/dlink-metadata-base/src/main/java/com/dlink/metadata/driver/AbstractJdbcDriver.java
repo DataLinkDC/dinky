@@ -20,6 +20,7 @@
 
 package com.dlink.metadata.driver;
 
+import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.dlink.assertion.Asserts;
@@ -49,6 +50,8 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
 
     protected Connection conn;
 
+    private DruidDataSource dataSource;
+
     abstract String getDriverClass();
 
     @Override
@@ -64,11 +67,51 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         return CommonConstant.HEALTHY;
     }
 
+    public DruidDataSource getDataSource() throws SQLException {
+        if (null == dataSource) {
+            synchronized (this) {
+                if (null == dataSource) {
+                    this.dataSource = new DruidDataSource();
+                    assembleConfig(config);
+                    dataSource.init();
+                }
+            }
+        }
+        return dataSource;
+    }
+
+    public Driver setDriverConfig(DriverConfig config) {
+        this.config = config;
+        try {
+            this.dataSource = getDataSource();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        assembleConfig(config);
+        return this;
+    }
+
+    private void assembleConfig(DriverConfig config) {
+        dataSource.setName(config.getName());
+        dataSource.setUrl(config.getUrl());
+        dataSource.setDriverClassName(getDriverClass());
+        dataSource.setUsername(config.getUsername());
+        dataSource.setPassword(config.getPassword());
+        dataSource.setValidationQuery("select 1");
+        dataSource.setTestOnBorrow(true);
+        dataSource.setTestWhileIdle(true);
+        dataSource.setBreakAfterAcquireFailure(true);
+        dataSource.setFailFast(true);
+        dataSource.setInitialSize(1);
+        dataSource.setMaxActive(8);
+        dataSource.setMinIdle(5);
+    }
+
     @Override
     public Driver connect() {
         try {
             Class.forName(getDriverClass());
-            conn = DriverManager.getConnection(config.getUrl(), config.getUsername(), config.getPassword());
+            conn = getDataSource().getConnection();
         } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException(e);
         }

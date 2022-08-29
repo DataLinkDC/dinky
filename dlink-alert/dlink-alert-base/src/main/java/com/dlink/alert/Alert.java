@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.alert;
 
 import com.dlink.assertion.Asserts;

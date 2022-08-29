@@ -17,9 +17,7 @@
  *
  */
 
-
 package com.dlink.exception;
-
 
 /**
  * JobException

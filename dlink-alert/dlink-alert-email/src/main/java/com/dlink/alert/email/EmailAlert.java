@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.alert.email;
 
 import com.dlink.alert.AbstractAlert;
@@ -37,7 +36,7 @@ public class EmailAlert extends AbstractAlert {
 
     @Override
     public AlertResult send(String title, String content) {
-        MailSender mailSender=new MailSender(getConfig().getParam());
-        return mailSender.send(title,content);
+        MailSender mailSender = new MailSender(getConfig().getParam());
+        return mailSender.send(title, content);
     }
 }

@@ -112,11 +112,12 @@ public class PulsarSqlCase {
                 ") WITH (\n" +
                 "  'connector' = 'pulsar',\n" +
                 "  'connector.version' = 'universal',\n" +
-                "  'connector.topic' = 'persistent://dlink/dev/context.pulsar',\n" +
-                "  'connector.service-url' = 'pulsar://pulsar-dlink-n.stream.com:6650',\n" +
-                "  'connector.subscription-name' = 'tmp_print_detail',\n" +
-                "  'connector.subscription-type' = 'Shared',\n" +
-                "  'connector.subscription-initial-position' = 'Latest',\n" +
+                "  'connector.topic' = 'persistent://public/default/zjj_json2',\n" +
+                "  'connector.service-url' = 'pulsar://172.26.5.174:6650',\n" +
+                "  'connector.admin-url' = 'http://172.26.5.174:8089',\n" +
+                "  'connector.subscription-name' = 'zjj2',\n" +
+                "  'connector.subscription-type' = 'Key_Shared',\n" +
+                "  'connector.subscription-initial-position' = 'Earliest',\n" +
                 "  'update-mode' = 'append',\n" +
                 "  'format' = 'json',\n" +
                 "  'format.derive-schema' = 'true'\n" +

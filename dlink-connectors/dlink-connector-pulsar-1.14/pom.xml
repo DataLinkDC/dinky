@@ -5,7 +5,7 @@
     <parent>
         <artifactId>dlink-connectors</artifactId>
         <groupId>com.dlink</groupId>
-        <version>0.6.6</version>
+        <version>0.6.7-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -27,7 +27,7 @@
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-common</artifactId>
-            <version>0.6.6</version>
+            <version>0.6.7-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
 
@@ -42,6 +42,14 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!--新增 pulsar-client-api jar 解决找不到SubscriptionType报错-->
+        <dependency>
+            <groupId>org.apache.pulsar</groupId>
+            <artifactId>pulsar-client-api</artifactId>
+            <version>${pulsar.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-connector-pulsar_2.11</artifactId>
