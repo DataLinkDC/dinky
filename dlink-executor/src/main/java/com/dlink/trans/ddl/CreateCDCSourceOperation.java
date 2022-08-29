@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.trans.ddl;
 
 import com.dlink.assertion.Asserts;
@@ -43,6 +42,14 @@ import java.util.Map;
 
 import static com.dlink.cdc.SinkBuilderFactory.buildSinkBuilder;
 
+import org.apache.flink.streaming.api.datastream.DataStreamSource;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.table.api.TableResult;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 /**
  * CreateCDCSourceOperation
  *
@@ -51,7 +58,7 @@ import static com.dlink.cdc.SinkBuilderFactory.buildSinkBuilder;
  */
 public class CreateCDCSourceOperation extends AbstractOperation implements Operation {
 
-    private String KEY_WORD = "EXECUTE CDCSOURCE";
+    private static final String KEY_WORD = "EXECUTE CDCSOURCE";
 
     public CreateCDCSourceOperation() {
     }

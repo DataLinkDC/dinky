@@ -17,13 +17,13 @@
  *
  */
 
-
 package com.dlink.cdc.doris;
 
 import com.dlink.cdc.AbstractSinkBuilder;
 import com.dlink.cdc.SinkBuilder;
 import com.dlink.model.FlinkCDCConfig;
 import com.dlink.model.Table;
+
 import org.apache.doris.flink.cfg.DorisExecutionOptions;
 import org.apache.doris.flink.cfg.DorisOptions;
 import org.apache.doris.flink.cfg.DorisReadOptions;
@@ -45,7 +45,7 @@ import java.util.Map;
  **/
 public class DorisSinkBuilder extends AbstractSinkBuilder implements Serializable {
 
-    private final static String KEY_WORD = "datastream-doris";
+    private static final String KEY_WORD = "datastream-doris";
     private static final long serialVersionUID = 8330362249137471854L;
 
     public DorisSinkBuilder() {

@@ -19,6 +19,8 @@
 
 package com.dlink.dto;
 
+import java.util.Map;
+
 /**
  * AbstractStatementDTO
  *
@@ -30,6 +32,7 @@ public class AbstractStatementDTO {
     private String statement;
     private Integer envId;
     private boolean fragment = false;
+    private Map<String, String> variables;
 
     public String getStatement() {
         return statement;
@@ -53,5 +56,13 @@ public class AbstractStatementDTO {
 
     public void setFragment(boolean fragment) {
         this.fragment = fragment;
+    }
+
+    public Map<String, String> getVariables() {
+        return variables;
+    }
+
+    public void setVariables(Map<String, String> variables) {
+        this.variables = variables;
     }
 }

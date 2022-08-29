@@ -17,14 +17,12 @@
  *
  */
 
-
 package org.apache.flink.connector.phoenix.internal.options;
+
+import org.apache.flink.util.Preconditions;
 
 import java.io.Serializable;
 import java.util.Objects;
-import org.apache.flink.annotation.PublicEvolving;
-import org.apache.flink.util.Preconditions;
-
 
 public class PhoenixJdbcExecutionOptions implements Serializable {
     public static final int DEFAULT_MAX_RETRY_TIMES = 3;

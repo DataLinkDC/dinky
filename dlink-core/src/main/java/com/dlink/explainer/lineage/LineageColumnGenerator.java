@@ -17,15 +17,7 @@
  *
  */
 
-
 package com.dlink.explainer.lineage;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.explainer.ca.ColumnCA;
@@ -37,6 +29,13 @@ import com.dlink.explainer.trans.Predecessor;
 import com.dlink.explainer.trans.SinkTrans;
 import com.dlink.explainer.trans.Trans;
 import com.dlink.utils.MapParseUtils;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * LineageColumnGenerator

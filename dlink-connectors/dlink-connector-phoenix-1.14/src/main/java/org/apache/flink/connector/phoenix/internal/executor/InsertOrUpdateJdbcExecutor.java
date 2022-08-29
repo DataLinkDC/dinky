@@ -17,18 +17,13 @@
  *
  */
 
-
-
 package org.apache.flink.connector.phoenix.internal.executor;
+
+import static org.apache.flink.util.Preconditions.checkNotNull;
 
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.connector.phoenix.JdbcStatementBuilder;
-
 import org.apache.flink.connector.phoenix.table.PhoenixUpsertTableSink;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.Nonnull;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -39,7 +34,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import static org.apache.flink.util.Preconditions.checkNotNull;
+import javax.annotation.Nonnull;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link JdbcBatchStatementExecutor} that provides upsert semantics by updating row if it exists

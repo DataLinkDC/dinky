@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.gateway.kubernetes;
 
 import com.dlink.assertion.Asserts;

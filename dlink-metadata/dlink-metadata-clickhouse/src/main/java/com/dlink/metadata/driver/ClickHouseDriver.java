@@ -17,15 +17,8 @@
  *
  */
 
-
 package com.dlink.metadata.driver;
 
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.Token;
 import com.dlink.metadata.ast.Clickhouse20CreateTableStatement;
 import com.dlink.metadata.convert.ClickHouseTypeConvert;
 import com.dlink.metadata.convert.ITypeConvert;
@@ -36,13 +29,21 @@ import com.dlink.model.Table;
 import com.dlink.result.SqlExplainResult;
 import com.dlink.utils.LogUtil;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.parser.ParserException;
+import com.alibaba.druid.sql.parser.Token;
 
 /**
  * ClickHouseDriver
@@ -54,7 +55,6 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
 
     @Override
     String getDriverClass() {
-//        return "com.clickhouse.jdbc.ClickHouseDriver";
         return "ru.yandex.clickhouse.ClickHouseDriver";
     }
 
@@ -112,7 +112,7 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
                     }
                     continue;
                 }
-                preparedStatement = conn.prepareStatement("explain " + current);
+                preparedStatement =  conn.get().prepareStatement("explain " + current);
                 results = preparedStatement.executeQuery();
                 while (results.next()) {
                     explain.append(getTypeConvert().convertValue(results, "explain", "string") + "\r\n");

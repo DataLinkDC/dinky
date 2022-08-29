@@ -17,14 +17,14 @@
  *
  */
 
-
 package com.dlink.executor;
 
 import com.dlink.assertion.Asserts;
+import com.dlink.model.LineageRel;
 import com.dlink.result.SqlExplainResult;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.dlink.utils.FlinkStreamProgramWithoutPhysical;
+import com.dlink.utils.LineageContext;
+
 import org.apache.flink.api.common.RuntimeExecutionMode;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.dag.Transformation;
@@ -41,7 +41,6 @@ import org.apache.flink.streaming.api.graph.JSONGenerator;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.ExplainDetail;
-import org.apache.flink.table.api.Schema;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableException;
@@ -50,40 +49,25 @@ import org.apache.flink.table.api.internal.TableEnvironmentImpl;
 import org.apache.flink.table.catalog.CatalogManager;
 import org.apache.flink.table.catalog.FunctionCatalog;
 import org.apache.flink.table.catalog.GenericInMemoryCatalog;
-import org.apache.flink.table.catalog.ObjectIdentifier;
-import org.apache.flink.table.catalog.ResolvedSchema;
-import org.apache.flink.table.catalog.SchemaResolver;
-import org.apache.flink.table.catalog.SchemaTranslator;
-import org.apache.flink.table.catalog.UnresolvedIdentifier;
-import org.apache.flink.table.connector.ChangelogMode;
 import org.apache.flink.table.delegation.Executor;
 import org.apache.flink.table.delegation.ExecutorFactory;
 import org.apache.flink.table.delegation.Planner;
-import org.apache.flink.table.expressions.ApiExpressionUtils;
 import org.apache.flink.table.expressions.Expression;
 import org.apache.flink.table.expressions.ExpressionParser;
 import org.apache.flink.table.factories.FactoryUtil;
 import org.apache.flink.table.factories.PlannerFactoryUtil;
-import org.apache.flink.table.functions.AggregateFunction;
-import org.apache.flink.table.functions.TableAggregateFunction;
-import org.apache.flink.table.functions.TableFunction;
-import org.apache.flink.table.functions.UserDefinedFunctionHelper;
 import org.apache.flink.table.module.ModuleManager;
 import org.apache.flink.table.operations.ExplainOperation;
 import org.apache.flink.table.operations.JavaDataStreamQueryOperation;
-import org.apache.flink.table.operations.JavaExternalQueryOperation;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.operations.QueryOperation;
 import org.apache.flink.table.operations.command.ResetOperation;
 import org.apache.flink.table.operations.command.SetOperation;
-import org.apache.flink.table.operations.utils.OperationTreeBuilder;
 import org.apache.flink.table.planner.delegation.DefaultExecutor;
+import org.apache.flink.table.planner.plan.optimize.program.FlinkChainedProgram;
 import org.apache.flink.table.typeutils.FieldInfoUtils;
-import org.apache.flink.types.Row;
-import org.apache.flink.util.Preconditions;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -91,7 +75,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * 定制TableEnvironmentImpl
@@ -102,6 +89,7 @@ import java.util.stream.Collectors;
 public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements CustomTableEnvironment {
 
     private final StreamExecutionEnvironment executionEnvironment;
+    private final FlinkChainedProgram flinkChainedProgram;
 
     public CustomTableEnvironmentImpl(
         CatalogManager catalogManager,
@@ -123,6 +111,7 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
             isStreamingMode,
             userClassLoader);
         this.executionEnvironment = executionEnvironment;
+        this.flinkChainedProgram = FlinkStreamProgramWithoutPhysical.buildProgram((Configuration) executionEnvironment.getConfiguration());
     }
 
     public static CustomTableEnvironmentImpl create(StreamExecutionEnvironment executionEnvironment) {
@@ -364,6 +353,12 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
     @Override
     public <T> void createTemporaryView(String path, DataStream<T> dataStream, String fields) {
         createTemporaryView(path, fromDataStream(dataStream, fields));
+    }
+
+    @Override
+    public List<LineageRel> getLineage(String statement) {
+        LineageContext lineageContext = new LineageContext(flinkChainedProgram, this);
+        return lineageContext.getLineage(statement);
     }
 
     @Override

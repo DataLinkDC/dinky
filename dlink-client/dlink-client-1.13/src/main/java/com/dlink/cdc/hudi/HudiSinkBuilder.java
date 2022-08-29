@@ -17,13 +17,13 @@
  *
  */
 
-
 package com.dlink.cdc.hudi;
 
 import com.dlink.cdc.AbstractSinkBuilder;
 import com.dlink.cdc.SinkBuilder;
 import com.dlink.model.FlinkCDCConfig;
 import com.dlink.model.Table;
+
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -51,7 +51,7 @@ import java.util.Map;
  */
 public class HudiSinkBuilder extends AbstractSinkBuilder implements Serializable {
 
-    private final static String KEY_WORD = "datastream-hudi";
+    private static final String KEY_WORD = "datastream-hudi";
     private static final long serialVersionUID = 5324199407472847422L;
 
     public HudiSinkBuilder() {

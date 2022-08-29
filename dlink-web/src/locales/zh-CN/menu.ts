@@ -63,6 +63,7 @@ export default {
   'menu.job': '作业实例',
   'menu.registration.jar': 'Jar 管理',
   'menu.registration.document': '文档管理',
+  'menu.registration.fragment': '全局变量管理',
   'menu.settings': '系统设置',
   'menu.dev.flink': 'Flink 计算框架',
   'menu.dev.flink.docs': '官方文档',

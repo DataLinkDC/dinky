@@ -17,8 +17,10 @@
  *
  */
 
-
 package com.dlink.executor;
+
+import com.dlink.model.LineageRel;
+import com.dlink.result.SqlExplainResult;
 
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.dag.Transformation;
@@ -66,7 +68,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.dlink.result.SqlExplainResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -102,7 +103,6 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
             userClassLoader);
         this.executionEnvironment = executionEnvironment;
     }
-
 
     public static CustomTableEnvironmentImpl create(StreamExecutionEnvironment executionEnvironment) {
         return create(executionEnvironment, EnvironmentSettings.newInstance().build());
@@ -174,7 +174,6 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
             settings.isStreamingMode(),
             classLoader);
     }
-
 
     private static Executor lookupExecutor(
         Map<String, String> executorProperties,
@@ -308,6 +307,11 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
     @Override
     public <T> void createTemporaryView(String path, DataStream<T> dataStream, String fields) {
         createTemporaryView(path, fromDataStream(dataStream, fields));
+    }
+
+    @Override
+    public List<LineageRel> getLineage(String statement) {
+        return null;
     }
 
     @Override

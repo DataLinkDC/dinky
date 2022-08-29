@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.cdc.mysql;
 
 import com.dlink.assertion.Asserts;
@@ -26,16 +25,22 @@ import com.dlink.cdc.CDCBuilder;
 import com.dlink.constant.ClientConstant;
 import com.dlink.constant.FlinkParamConstant;
 import com.dlink.model.FlinkCDCConfig;
-import com.ververica.cdc.connectors.mysql.source.MySqlSource;
-import com.ververica.cdc.connectors.mysql.source.MySqlSourceBuilder;
-import com.ververica.cdc.connectors.mysql.table.StartupOptions;
-import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
+
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import com.ververica.cdc.connectors.mysql.source.MySqlSource;
+import com.ververica.cdc.connectors.mysql.source.MySqlSourceBuilder;
+import com.ververica.cdc.connectors.mysql.table.StartupOptions;
 
 /**
  * MysqlCDCBuilder
@@ -45,8 +50,8 @@ import java.util.*;
  **/
 public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
 
-    private final static String KEY_WORD = "mysql-cdc";
-    private final static String METADATA_TYPE = "MySql";
+    private static final String KEY_WORD = "mysql-cdc";
+    private static final String METADATA_TYPE = "MySql";
 
     public MysqlCDCBuilder() {
     }
@@ -79,8 +84,8 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
 
         Properties debeziumProperties = new Properties();
         // 为部分转换添加默认值
-        debeziumProperties.setProperty("bigint.unsigned.handling.mode", "long");
-        debeziumProperties.setProperty("decimal.handling.mode", "string");
+        debeziumProperties.setProperty("bigint.unsigned.handling.mode","long");
+        debeziumProperties.setProperty("decimal.handling.mode","string");
 
         for (Map.Entry<String, String> entry : config.getDebezium().entrySet()) {
             if (Asserts.isNotNullString(entry.getKey()) && Asserts.isNotNullString(entry.getValue())) {
@@ -97,10 +102,10 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         }
 
         MySqlSourceBuilder<String> sourceBuilder = MySqlSource.<String>builder()
-                .hostname(config.getHostname())
-                .port(config.getPort())
-                .username(config.getUsername())
-                .password(config.getPassword());
+            .hostname(config.getHostname())
+            .port(config.getPort())
+            .username(config.getUsername())
+            .password(config.getPassword());
 
         if (Asserts.isEqualsIgnoreCase(schemaChanges, "true")) {
             sourceBuilder.includeSchemaChanges(true);
@@ -132,6 +137,7 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
                 case "latest-offset":
                     sourceBuilder.startupOptions(StartupOptions.latest());
                     break;
+                default:
             }
         } else {
             sourceBuilder.startupOptions(StartupOptions.latest());

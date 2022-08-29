@@ -17,9 +17,7 @@
  *
  */
 
-
 package org.apache.flink.connector.phoenix.internal.converter;
-
 
 import org.apache.flink.table.types.logical.RowType;
 
