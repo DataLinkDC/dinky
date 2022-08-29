@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.metadata;
 
 import com.dlink.metadata.driver.Driver;
@@ -26,13 +25,14 @@ import com.dlink.metadata.result.JdbcSelectResult;
 import com.dlink.model.Column;
 import com.dlink.model.Schema;
 import com.dlink.model.Table;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
+
+import org.junit.Before;
+import org.junit.Test;
 
 public class SqlServerTest {
 
@@ -97,6 +97,5 @@ public class SqlServerTest {
             System.out.println(rowDatum);
         }
     }
-
 
 }

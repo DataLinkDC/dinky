@@ -17,18 +17,16 @@
  *
  */
 
-
-
 package org.apache.flink.connector.phoenix.utils;
 
 import org.apache.flink.types.Row;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Utils for jdbc connectors. */
 public class JdbcUtils {

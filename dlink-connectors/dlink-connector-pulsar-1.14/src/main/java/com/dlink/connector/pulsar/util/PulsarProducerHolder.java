@@ -17,17 +17,21 @@
  *
  */
 
-
 package com.dlink.connector.pulsar.util;
 
-import org.apache.pulsar.client.api.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.pulsar.client.api.CompressionType;
+import org.apache.pulsar.client.api.HashingScheme;
+import org.apache.pulsar.client.api.Producer;
+import org.apache.pulsar.client.api.ProducerBuilder;
+import org.apache.pulsar.client.api.PulsarClient;
 
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author DarrenDa
@@ -71,19 +75,10 @@ public class PulsarProducerHolder {
                     compressionType(CompressionType.LZ4).
                     topic(defaultTopicName).
                     hashingScheme(HashingScheme.JavaStringHash).
-//                    batchingMaxPublishDelay(100, TimeUnit.MILLISECONDS).
-        loadConf((Map) properties);
+                    //batchingMaxPublishDelay(100, TimeUnit.MILLISECONDS).
+                    loadConf((Map) properties);
             Producer<byte[]> producer = producerBuilder.create();
             return producer;
-
-//            return client.newProducer().
-//                    blockIfQueueFull(Boolean.TRUE).
-//                    compressionType(CompressionType.LZ4).
-//                    topic(defaultTopicName).
-//                    hashingScheme(HashingScheme.JavaStringHash).
-////                    batchingMaxPublishDelay(100, TimeUnit.MILLISECONDS).
-//                    loadConf((Map)properties).
-//                    create();
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("创建Producer失败", e);

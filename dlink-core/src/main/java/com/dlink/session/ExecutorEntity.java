@@ -17,14 +17,14 @@
  *
  */
 
-
 package com.dlink.session;
 
 import com.dlink.executor.Executor;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * FlinkEntity

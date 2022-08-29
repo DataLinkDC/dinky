@@ -1,21 +1,26 @@
 package com.dlink.utils;
 
-import org.apache.flink.table.types.logical.*;
+import org.apache.flink.table.types.logical.BigIntType;
+import org.apache.flink.table.types.logical.DateType;
+import org.apache.flink.table.types.logical.DecimalType;
+import org.apache.flink.table.types.logical.LogicalType;
+import org.apache.flink.table.types.logical.TimestampType;
+import org.apache.flink.table.types.logical.VarBinaryType;
 
-import javax.xml.bind.DatatypeConverter;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneId;
+
+import javax.xml.bind.DatatypeConverter;
 
 /**
  * @className: com.dlink.utils.ObjectConvertUtil
  * @Description:
  * @author: jack zhong
- * @date 8/10/222:49 PM
  */
 public class ObjectConvertUtil {
 
-    public static Object convertValue(Object value, LogicalType logicalType){
+    public static Object convertValue(Object value, LogicalType logicalType) {
         return ObjectConvertUtil.convertValue(value,logicalType,null);
     }
 
@@ -23,7 +28,7 @@ public class ObjectConvertUtil {
         if (value == null) {
             return null;
         }
-        if(sinkTimeZone == null){
+        if (sinkTimeZone == null) {
             sinkTimeZone = ZoneId.of("UTC");
         }
         if (logicalType instanceof DateType) {

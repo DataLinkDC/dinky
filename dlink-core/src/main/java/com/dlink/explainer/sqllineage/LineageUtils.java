@@ -17,19 +17,36 @@
  *
  */
 
+package com.dlink.explainer.sqllineage;
 
-package com.dlink.explainer.sqlLineage;
-
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.expr.*;
-import com.alibaba.druid.sql.ast.statement.*;
 import com.dlink.assertion.Asserts;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
+import com.alibaba.druid.sql.ast.statement.SQLUnionQueryTableSource;
 
 public class LineageUtils {
 
@@ -59,8 +76,7 @@ public class LineageUtils {
             SQLSelectQueryBlock sqlSelectQueryBlock = (SQLSelectQueryBlock) sqlSelectQuery;
             // 获取字段列表
             List<SQLSelectItem> selectItems = sqlSelectQueryBlock.getSelectList();
-            selectItems.forEach(x ->
-            {
+            selectItems.forEach(x -> {
                 // 处理---------------------
                 String column = Asserts.isNullString(x.getAlias()) ? x.toString() : x.getAlias();
 
@@ -122,8 +138,7 @@ public class LineageUtils {
      * @param table
      */
     private static void handlerSQLUnionQueryTableSource(TreeNode<LineageColumn> node, SQLUnionQueryTableSource table, String type) {
-        node.getAllLeafs().stream().filter(e -> !e.getData().getIsEnd()).forEach(e ->
-        {
+        node.getAllLeafs().stream().filter(e -> !e.getData().getIsEnd()).forEach(e -> {
             columnLineageAnalyzer(table.getUnion().toString(), type, e);
         });
     }
@@ -135,8 +150,7 @@ public class LineageUtils {
      * @param table
      */
     private static void handlerSQLSubqueryTableSource(TreeNode<LineageColumn> node, SQLTableSource table, String type) {
-        node.getAllLeafs().stream().filter(e -> !e.getData().getIsEnd()).forEach(e ->
-        {
+        node.getAllLeafs().stream().filter(e -> !e.getData().getIsEnd()).forEach(e -> {
             if (Asserts.isNotNullString(e.getData().getSourceTableName())) {
                 if (e.getData().getSourceTableName().equals(table.getAlias())) {
                     columnLineageAnalyzer(((SQLSubqueryTableSource) table).getSelect().toString(), type, e);
@@ -157,8 +171,7 @@ public class LineageUtils {
                                                   SQLJoinTableSource table, String type) {
         // 处理---------------------
         // 子查询作为表
-        node.getAllLeafs().stream().filter(e -> !e.getData().getIsEnd()).forEach(e ->
-        {
+        node.getAllLeafs().stream().filter(e -> !e.getData().getIsEnd()).forEach(e -> {
             if (table.getLeft() instanceof SQLJoinTableSource) {
                 handlerSQLJoinTableSource(node, (SQLJoinTableSource) table.getLeft(), type);
             } else if (table.getLeft() instanceof SQLExprTableSource) {
@@ -171,8 +184,7 @@ public class LineageUtils {
                 handlerSQLUnionQueryTableSource(node, (SQLUnionQueryTableSource) table.getLeft(), type);
             }
         });
-        node.getAllLeafs().stream().filter(e -> !e.getData().getIsEnd()).forEach(e ->
-        {
+        node.getAllLeafs().stream().filter(e -> !e.getData().getIsEnd()).forEach(e -> {
             if (table.getRight() instanceof SQLJoinTableSource) {
                 handlerSQLJoinTableSource(node, (SQLJoinTableSource) table.getRight(), type);
             } else if (table.getRight() instanceof SQLExprTableSource) {
@@ -199,8 +211,7 @@ public class LineageUtils {
         String tableName = tableSource.getExpr() instanceof SQLPropertyExpr ? ((
                 SQLPropertyExpr) tableSource.getExpr()).getName().replace("`", "").replace("\"", "") : "";
         String alias = Asserts.isNotNullString(tableSource.getAlias()) ? tableSource.getAlias().replace("`", "").replace("\"", "") : "";
-        node.getChildren().forEach(e ->
-        {
+        node.getChildren().forEach(e -> {
             e.getChildren().forEach(f -> {
                 if (!f.getData().getIsEnd() && (f.getData().getSourceTableName() == null || f.getData().getSourceTableName().equals(tableName) || f
                         .getData().getSourceTableName().equals(alias))) {
@@ -271,8 +282,7 @@ public class LineageUtils {
                 node.getData().setIsEnd(true);
             }
         } else {
-            expr.getArguments().forEach(expr1 ->
-            {
+            expr.getArguments().forEach(expr1 -> {
                 handlerExpr(expr1, node);
             });
         }
@@ -285,8 +295,7 @@ public class LineageUtils {
      * @param node
      */
     public static void visitSQLAggregateExpr(SQLAggregateExpr expr, TreeNode<LineageColumn> node) {
-        expr.getArguments().forEach(expr1 ->
-        {
+        expr.getArguments().forEach(expr1 -> {
             handlerExpr(expr1, node);
         });
     }
@@ -299,8 +308,7 @@ public class LineageUtils {
      */
     public static void visitSQLCaseExpr(SQLCaseExpr expr, TreeNode<LineageColumn> node) {
         handlerExpr(expr.getValueExpr(), node);
-        expr.getItems().forEach(expr1 ->
-        {
+        expr.getItems().forEach(expr1 -> {
             handlerExpr(expr1.getValueExpr(), node);
         });
         handlerExpr(expr.getElseExpr(), node);

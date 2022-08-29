@@ -17,7 +17,6 @@
  *
  */
 
-
 package org.apache.flink.connector.phoenix.internal;
 
 import org.apache.flink.annotation.Internal;
@@ -29,8 +28,9 @@ import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction;
 import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
 import org.apache.flink.util.Preconditions;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
+
+import javax.annotation.Nonnull;
 
 /** A generic SinkFunction for JDBC. */
 @Internal

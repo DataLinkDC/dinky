@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.daemon.exception;
 
 public class DaemonTaskException extends RuntimeException {

@@ -17,7 +17,6 @@
  *
  */
 
-
 import React, {useEffect, useState} from 'react';
 import {Form, Input, List, Switch} from 'antd';
 import {connect} from "umi";
@@ -29,106 +28,127 @@ type FlinkConfigProps = {
   sqlSubmitJarParas: SettingsStateType['sqlSubmitJarParas'];
   sqlSubmitJarMainAppClass: SettingsStateType['sqlSubmitJarMainAppClass'];
   useRestAPI: SettingsStateType['useRestAPI'];
+  useLogicalPlan: SettingsStateType['useLogicalPlan'];
   sqlSeparator: SettingsStateType['sqlSeparator'];
   dispatch: any;
 };
 
 const FlinkConfigView: React.FC<FlinkConfigProps> = (props) => {
 
-  const {sqlSubmitJarPath, sqlSubmitJarParas, sqlSubmitJarMainAppClass,useRestAPI,sqlSeparator, dispatch} = props;
+  const {
+    sqlSubmitJarPath,
+    sqlSubmitJarParas,
+    sqlSubmitJarMainAppClass,
+    useRestAPI,
+    useLogicalPlan,
+    sqlSeparator,
+    dispatch
+  } = props;
   const [editName, setEditName] = useState<string>('');
   const [formValues, setFormValues] = useState(props);
   const [form] = Form.useForm();
 
-  useEffect(()=>{
+  useEffect(() => {
     form.setFieldsValue(props);
-  },[props]);
+  }, [props]);
 
   const getData = () => [
     {
       title: '提交FlinkSQL的Jar文件路径',
       description: (
-        editName!='sqlSubmitJarPath'?
-          (sqlSubmitJarPath?sqlSubmitJarPath:'未设置'):(
+        editName != 'sqlSubmitJarPath' ?
+          (sqlSubmitJarPath ? sqlSubmitJarPath : '未设置') : (
             <Input
-            id='sqlSubmitJarPath'
-            defaultValue={sqlSubmitJarPath}
-            onChange={onChange}
-            placeholder="hdfs:///dlink/jar/dlink-app.jar" />)),
-      actions: editName!='sqlSubmitJarPath'?[<a onClick={({}) => handleEditClick('sqlSubmitJarPath')}>修改</a>]:
+              id='sqlSubmitJarPath'
+              defaultValue={sqlSubmitJarPath}
+              onChange={onChange}
+              placeholder="hdfs:///dlink/jar/dlink-app.jar"/>)),
+      actions: editName != 'sqlSubmitJarPath' ? [<a onClick={({}) => handleEditClick('sqlSubmitJarPath')}>修改</a>] :
         [<a onClick={({}) => handleSaveClick('sqlSubmitJarPath')}>保存</a>,
-        <a onClick={({}) => handleCancelClick()}>取消</a>],
+          <a onClick={({}) => handleCancelClick()}>取消</a>],
     },
     {
       title: '提交FlinkSQL的Jar的主类入参',
       description: (
-        editName!='sqlSubmitJarParas'?
-          (sqlSubmitJarParas?sqlSubmitJarParas:'未设置'):(<Input
+        editName != 'sqlSubmitJarParas' ?
+          (sqlSubmitJarParas ? sqlSubmitJarParas : '未设置') : (<Input
             id='sqlSubmitJarParas'
             defaultValue={sqlSubmitJarParas}
             onChange={onChange}
-            placeholder="" />)),
-      actions: editName!='sqlSubmitJarParas'?[<a onClick={({}) => handleEditClick('sqlSubmitJarParas')}>修改</a>]:
+            placeholder=""/>)),
+      actions: editName != 'sqlSubmitJarParas' ? [<a onClick={({}) => handleEditClick('sqlSubmitJarParas')}>修改</a>] :
         [<a onClick={({}) => handleSaveClick('sqlSubmitJarParas')}>保存</a>,
           <a onClick={({}) => handleCancelClick()}>取消</a>],
     },
     {
       title: '提交FlinkSQL的Jar的主类',
       description: (
-        editName!='sqlSubmitJarMainAppClass'?
-          (sqlSubmitJarMainAppClass?sqlSubmitJarMainAppClass:'未设置'):(<Input
+        editName != 'sqlSubmitJarMainAppClass' ?
+          (sqlSubmitJarMainAppClass ? sqlSubmitJarMainAppClass : '未设置') : (<Input
             id='sqlSubmitJarMainAppClass'
             defaultValue={sqlSubmitJarMainAppClass}
             onChange={onChange}
-            placeholder="com.dlink.app.MainApp" />)),
-      actions: editName!='sqlSubmitJarMainAppClass'?[<a onClick={({}) => handleEditClick('sqlSubmitJarMainAppClass')}>修改</a>]:
+            placeholder="com.dlink.app.MainApp"/>)),
+      actions: editName != 'sqlSubmitJarMainAppClass' ? [<a
+          onClick={({}) => handleEditClick('sqlSubmitJarMainAppClass')}>修改</a>] :
         [<a onClick={({}) => handleSaveClick('sqlSubmitJarMainAppClass')}>保存</a>,
           <a onClick={({}) => handleCancelClick()}>取消</a>],
-    },{
+    }, {
       title: '使用 RestAPI',
       description: '启用后，Flink 任务的 savepoint、停止等操作将通过 JobManager 的 RestAPI 进行',
       actions: [
         <Form.Item
           name="useRestAPI" valuePropName="checked"
         >
-        <Switch checkedChildren="启用" unCheckedChildren="禁用"
-                 checked={useRestAPI}
-        /></Form.Item>],
-    },{
+          <Switch checkedChildren="启用" unCheckedChildren="禁用"
+                  checked={useRestAPI}
+          /></Form.Item>],
+    }, {
       title: 'FlinkSQL语句分割符',
       description: (
-        editName!='sqlSeparator'?
-          (sqlSeparator?sqlSeparator:'未设置'):(<Input
+        editName != 'sqlSeparator' ?
+          (sqlSeparator ? sqlSeparator : '未设置') : (<Input
             id='sqlSeparator'
             defaultValue={sqlSeparator}
             onChange={onChange}
-            placeholder=";" />)),
-      actions: editName!='sqlSeparator'?[<a onClick={({}) => handleEditClick('sqlSeparator')}>修改</a>]:
+            placeholder=";"/>)),
+      actions: editName != 'sqlSeparator' ? [<a onClick={({}) => handleEditClick('sqlSeparator')}>修改</a>] :
         [<a onClick={({}) => handleSaveClick('sqlSeparator')}>保存</a>,
           <a onClick={({}) => handleCancelClick()}>取消</a>],
+    },
+    {
+      title: '使用逻辑计划计算血缘',
+      description: '在计算 Flink 任务的字段血缘分析时是否基于逻辑计划进行，只支持 1.14 版本',
+      actions: [
+        <Form.Item
+          name="useLogicalPlan" valuePropName="checked"
+        >
+          <Switch checkedChildren="启用" unCheckedChildren="禁用"
+                  checked={useLogicalPlan}
+          /></Form.Item>],
     },
   ];
 
   const onChange = e => {
     let values = {};
-    values[e.target.id]=e.target.value;
-    setFormValues({...formValues,...values});
+    values[e.target.id] = e.target.value;
+    setFormValues({...formValues, ...values});
   };
 
-  const onValuesChange = (change:any,all:any) => {
+  const onValuesChange = (change: any, all: any) => {
     let values = {};
-    for(let key in change){
-      values[key]=all[key];
+    for (let key in change) {
+      values[key] = all[key];
     }
     saveSettings(values, dispatch);
   };
 
-  const handleEditClick = (name:string)=>{
+  const handleEditClick = (name: string) => {
     setEditName(name);
   };
 
-  const handleSaveClick = (name:string)=>{
-    if(formValues[name]!=props[name]) {
+  const handleSaveClick = (name: string) => {
+    if (formValues[name] != props[name]) {
       let values = {};
       values[name] = formValues[name];
       saveSettings(values, dispatch);
@@ -136,7 +156,7 @@ const FlinkConfigView: React.FC<FlinkConfigProps> = (props) => {
     setEditName('');
   };
 
-  const handleCancelClick = ()=>{
+  const handleCancelClick = () => {
     setFormValues(props);
     setEditName('');
   };
@@ -149,15 +169,15 @@ const FlinkConfigView: React.FC<FlinkConfigProps> = (props) => {
         layout="vertical"
         onValuesChange={onValuesChange}
       >
-      <List
-        itemLayout="horizontal"
-        dataSource={data}
-        renderItem={(item) => (
-          <List.Item actions={item.actions}>
-            <List.Item.Meta title={item.title} description={item.description}/>
-          </List.Item>
-        )}
-      />
+        <List
+          itemLayout="horizontal"
+          dataSource={data}
+          renderItem={(item) => (
+            <List.Item actions={item.actions}>
+              <List.Item.Meta title={item.title} description={item.description}/>
+            </List.Item>
+          )}
+        />
       </Form>
     </>
   );
@@ -167,5 +187,6 @@ export default connect(({Settings}: { Settings: SettingsStateType }) => ({
   sqlSubmitJarParas: Settings.sqlSubmitJarParas,
   sqlSubmitJarMainAppClass: Settings.sqlSubmitJarMainAppClass,
   useRestAPI: Settings.useRestAPI,
+  useLogicalPlan: Settings.useLogicalPlan,
   sqlSeparator: Settings.sqlSeparator,
 }))(FlinkConfigView);

@@ -1,14 +1,10 @@
 <assembly>
     <id>${project.version}</id>
-
     <formats>
         <format>tar.gz</format>
     </formats>
-
     <includeBaseDirectory>true</includeBaseDirectory>
-
     <fileSets>
-        <!-- 打包dlink-doc中的bin目录到 打包目录下 -->
         <fileSet>
             <directory>${project.parent.basedir}/dlink-doc/bin</directory>
             <outputDirectory>./</outputDirectory>
@@ -18,8 +14,23 @@
                 <include>auto.sh</include>
             </includes>
         </fileSet>
-
-        <!-- 打包dlink-doc中的配置文件到打包目录/sql下 -->
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-admin/target/classes</directory>
+            <outputDirectory>config</outputDirectory>
+            <includes>
+                <include>*.properties</include>
+                <include>*.yml</include>
+                <include>*.yaml</include>
+                <include>*.xml</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-admin/target/dlink-admin/lib</directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>*.jar</include>
+            </includes>
+        </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}/dlink-doc/sql</directory>
             <outputDirectory>sql</outputDirectory>
@@ -27,33 +38,19 @@
                 <include>*.sql</include>
             </includes>
         </fileSet>
-
-        <!-- 打包dlink-admin中的配置文件到打包目录/config下 -->
-        <fileSet>
-            <directory>${project.parent.basedir}/dlink-admin/src/main/resources/
-            </directory>
-            <outputDirectory>config</outputDirectory>
-            <includes>
-                <include>application.yml</include>
-            </includes>
-        </fileSet>
-
-        <!-- 将模块dlink-admin的jar文件放到打包目录下 -->
-        <fileSet>
+        <!--<fileSet>
             <directory>${project.parent.basedir}/dlink-admin/target
             </directory>
             <outputDirectory>./</outputDirectory>
             <includes>
                 <include>dlink-admin-${project.version}.jar</include>
             </includes>
-        </fileSet>
-
-        <!-- 将模块dlink-client的jar文件放到打包目录/lib下 -->
+        </fileSet>-->
         <fileSet>
-            <directory>${project.parent.basedir}/dlink-client/dlink-client-1.13/target</directory>
+            <directory>${project.parent.basedir}/dlink-client/dlink-client-1.14/target</directory>
             <outputDirectory>lib</outputDirectory>
             <includes>
-                <include>dlink-client-1.13-${project.version}.jar</include>
+                <include>dlink-client-1.14-${project.version}.jar</include>
             </includes>
         </fileSet>
         <fileSet>
@@ -71,6 +68,13 @@
             </includes>
         </fileSet>
         <fileSet>
+            <directory>${project.parent.basedir}/dlink-client/dlink-client-1.13/target</directory>
+            <outputDirectory>extends</outputDirectory>
+            <includes>
+                <include>dlink-client-1.13-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
             <directory>${project.parent.basedir}/dlink-client/dlink-client-1.14/target</directory>
             <outputDirectory>extends</outputDirectory>
             <includes>
@@ -84,16 +88,62 @@
                 <include>dlink-client-1.15-${project.version}.jar</include>
             </includes>
         </fileSet>
-        <!-- 将模块dlink-connectors的jar文件放到打包目录/lib下 -->
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-connectors/dlink-connector-jdbc-1.14/target</directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>dlink-connector-jdbc-1.14-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-connectors/dlink-connector-doris-1.13/target</directory>
+            <outputDirectory>extends</outputDirectory>
+            <includes>
+                <include>dlink-connector-doris-1.13-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-connectors/dlink-connector-jdbc-1.11/target</directory>
+            <outputDirectory>extends</outputDirectory>
+            <includes>
+                <include>dlink-connector-jdbc-1.11-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-connectors/dlink-connector-jdbc-1.12/target</directory>
+            <outputDirectory>extends</outputDirectory>
+            <includes>
+                <include>dlink-connector-jdbc-1.12-${project.version}.jar</include>
+            </includes>
+        </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}/dlink-connectors/dlink-connector-jdbc-1.13/target</directory>
-            <outputDirectory>lib</outputDirectory>
+            <outputDirectory>extends</outputDirectory>
             <includes>
                 <include>dlink-connector-jdbc-1.13-${project.version}.jar</include>
             </includes>
         </fileSet>
-
-        <!-- 将模块dlink-function的jar文件放到打包目录/lib下 -->
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-connectors/dlink-connector-jdbc-1.14/target</directory>
+            <outputDirectory>extends</outputDirectory>
+            <includes>
+                <include>dlink-connector-jdbc-1.14-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-connectors/dlink-connector-phoenix-1.13/target</directory>
+            <outputDirectory>extends</outputDirectory>
+            <includes>
+                <include>dlink-connector-phoenix-1.13-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-connectors/dlink-connector-phoenix-1.14/target</directory>
+            <outputDirectory>extends</outputDirectory>
+            <includes>
+                <include>dlink-connector-phoenix-1.14-${project.version}.jar</include>
+            </includes>
+        </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}/dlink-function/target
             </directory>
@@ -102,8 +152,6 @@
                 <include>dlink-function-${project.version}.jar</include>
             </includes>
         </fileSet>
-
-        <!-- 将模块dlink-metadata的jar文件放到打包目录/lib下 -->
         <fileSet>
             <directory>${project.parent.basedir}/dlink-metadata/dlink-metadata-clickhouse/target
             </directory>
@@ -112,37 +160,14 @@
                 <include>dlink-metadata-clickhouse-${project.version}.jar</include>
             </includes>
         </fileSet>
-
-        <!-- 将模块dlink-metadata的jar文件放到打包目录/lib下 -->
         <fileSet>
-            <directory>${project.parent.basedir}/dlink-metadata/dlink-metadata-mysql/target
+            <directory>${project.parent.basedir}/dlink-metadata/dlink-metadata-doris/target
             </directory>
             <outputDirectory>lib</outputDirectory>
             <includes>
-                <include>dlink-metadata-mysql-${project.version}.jar</include>
+                <include>dlink-metadata-doris-${project.version}.jar</include>
             </includes>
         </fileSet>
-
-        <!-- 将模块dlink-metadata的jar文件放到打包目录/lib下 -->
-        <fileSet>
-            <directory>${project.parent.basedir}/dlink-metadata/dlink-metadata-oracle/target
-            </directory>
-            <outputDirectory>lib</outputDirectory>
-            <includes>
-                <include>dlink-metadata-oracle-${project.version}.jar</include>
-            </includes>
-        </fileSet>
-
-        <!-- 将模块dlink-metadata的jar文件放到打包目录/lib下 -->
-        <fileSet>
-            <directory>${project.parent.basedir}/dlink-metadata/dlink-metadata-postgresql/target
-            </directory>
-            <outputDirectory>lib</outputDirectory>
-            <includes>
-                <include>dlink-metadata-postgresql-${project.version}.jar</include>
-            </includes>
-        </fileSet>
-        <!-- 将模块dlink-metadata的jar文件放到打包目录/lib下 -->
         <fileSet>
             <directory>${project.parent.basedir}/dlink-metadata/dlink-metadata-hive/target
             </directory>
@@ -152,20 +177,19 @@
             </includes>
         </fileSet>
         <fileSet>
-            <directory>${project.parent.basedir}/dlink-metadata/dlink-metadata-sqlserver/target
+            <directory>${project.parent.basedir}/dlink-metadata/dlink-metadata-mysql/target
             </directory>
             <outputDirectory>lib</outputDirectory>
             <includes>
-                <include>dlink-metadata-sqlserver-${project.version}.jar</include>
+                <include>dlink-metadata-mysql-${project.version}.jar</include>
             </includes>
         </fileSet>
-
         <fileSet>
-            <directory>${project.parent.basedir}/dlink-metadata/dlink-metadata-doris/target
+            <directory>${project.parent.basedir}/dlink-metadata/dlink-metadata-oracle/target
             </directory>
             <outputDirectory>lib</outputDirectory>
             <includes>
-                <include>dlink-metadata-doris-${project.version}.jar</include>
+                <include>dlink-metadata-oracle-${project.version}.jar</include>
             </includes>
         </fileSet>
         <fileSet>
@@ -177,6 +201,22 @@
             </includes>
         </fileSet>
         <fileSet>
+            <directory>${project.parent.basedir}/dlink-metadata/dlink-metadata-postgresql/target
+            </directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>dlink-metadata-postgresql-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-metadata/dlink-metadata-sqlserver/target
+            </directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>dlink-metadata-sqlserver-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
             <directory>${project.parent.basedir}/dlink-alert/dlink-alert-dingtalk/target
             </directory>
             <outputDirectory>lib</outputDirectory>
@@ -185,11 +225,11 @@
             </includes>
         </fileSet>
         <fileSet>
-            <directory>${project.parent.basedir}/dlink-alert/dlink-alert-wechat/target
+            <directory>${project.parent.basedir}/dlink-alert/dlink-alert-email/target
             </directory>
             <outputDirectory>lib</outputDirectory>
             <includes>
-                <include>dlink-alert-wechat-${project.version}.jar</include>
+                <include>dlink-alert-email-${project.version}.jar</include>
             </includes>
         </fileSet>
         <fileSet>
@@ -201,33 +241,13 @@
             </includes>
         </fileSet>
         <fileSet>
-            <directory>${project.parent.basedir}/dlink-alert/dlink-alert-email/target
+            <directory>${project.parent.basedir}/dlink-alert/dlink-alert-wechat/target
             </directory>
             <outputDirectory>lib</outputDirectory>
             <includes>
-                <include>dlink-alert-email-${project.version}.jar</include>
+                <include>dlink-alert-wechat-${project.version}.jar</include>
             </includes>
         </fileSet>
-        <!-- 将模块dlink-extends的常用jar文件放到打包目录/plugins下 -->
-        <!--<fileSet>
-            <directory>${project.parent.basedir}/dlink-extends/target
-            </directory>
-            <outputDirectory>plugins</outputDirectory>
-            <includes>
-            </includes>
-        </fileSet>-->
-
-        <!-- 将模块dlink-extends的jar文件放到打包目录/extends下 -->
-        <!--<fileSet>
-            <directory>${project.parent.basedir}/dlink-extends/target
-            </directory>
-            <outputDirectory>extends</outputDirectory>
-            <includes>
-                <include>flink-sql-connector-*.jar</include>
-                <include>ojdbc8-*.jar</include>
-                <include>clickhouse-jdbc-*.jar</include>
-            </includes>
-        </fileSet>-->
         <fileSet>
             <directory>${project.parent.basedir}/dlink-app/dlink-app-1.11/target</directory>
             <outputDirectory>jar</outputDirectory>
@@ -264,21 +284,32 @@
             </includes>
         </fileSet>
         <fileSet>
-            <directory>${project.parent.basedir}/dlink-catalog/dlink-catalog-mysql/dlink-catalog-mysql-1.13/target</directory>
+            <directory>${project.parent.basedir}/dlink-catalog/dlink-catalog-mysql/dlink-catalog-mysql-1.14/target
+            </directory>
             <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>dlink-catalog-mysql-1.14-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-catalog/dlink-catalog-mysql/dlink-catalog-mysql-1.13/target
+            </directory>
+            <outputDirectory>extends</outputDirectory>
             <includes>
                 <include>dlink-catalog-mysql-1.13-${project.version}.jar</include>
             </includes>
         </fileSet>
         <fileSet>
-            <directory>${project.parent.basedir}/dlink-catalog/dlink-catalog-mysql/dlink-catalog-mysql-1.14/target</directory>
+            <directory>${project.parent.basedir}/dlink-catalog/dlink-catalog-mysql/dlink-catalog-mysql-1.14/target
+            </directory>
             <outputDirectory>extends</outputDirectory>
             <includes>
                 <include>dlink-catalog-mysql-1.14-${project.version}.jar</include>
             </includes>
         </fileSet>
         <fileSet>
-            <directory>${project.parent.basedir}/dlink-catalog/dlink-catalog-mysql/dlink-catalog-mysql-1.15/target</directory>
+            <directory>${project.parent.basedir}/dlink-catalog/dlink-catalog-mysql/dlink-catalog-mysql-1.15/target
+            </directory>
             <outputDirectory>extends</outputDirectory>
             <includes>
                 <include>dlink-catalog-mysql-1.15-${project.version}.jar</include>

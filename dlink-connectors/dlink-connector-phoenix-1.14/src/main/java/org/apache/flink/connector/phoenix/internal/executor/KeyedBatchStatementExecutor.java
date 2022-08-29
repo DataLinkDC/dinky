@@ -17,14 +17,9 @@
  *
  */
 
-
-
 package org.apache.flink.connector.phoenix.internal.executor;
 
 import org.apache.flink.connector.phoenix.JdbcStatementBuilder;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -32,6 +27,9 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A {@link JdbcBatchStatementExecutor} that extracts SQL keys from the supplied stream elements and

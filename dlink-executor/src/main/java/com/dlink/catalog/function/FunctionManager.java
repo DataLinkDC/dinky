@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.catalog.function;
 
 import com.dlink.constant.FlinkFunctionConstant;

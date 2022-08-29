@@ -17,13 +17,14 @@
  *
  */
 
-
 package com.dlink.utils;
 
 import com.dlink.pool.ClassEntity;
 import com.dlink.pool.ClassPool;
-import groovy.lang.GroovyClassLoader;
+
 import org.codehaus.groovy.control.CompilerConfiguration;
+
+import groovy.lang.GroovyClassLoader;
 
 /**
  * UDFUtil
@@ -58,6 +59,6 @@ public class UDFUtil {
         groovyClassLoader.setShouldRecompile(true);
         groovyClassLoader.defineClass(classEntity.getName(), classEntity.getClassByte());
         Thread.currentThread().setContextClassLoader(groovyClassLoader);
-//        Class<?> clazz = groovyClassLoader.parseClass(codeSource,"com.dlink.ud.udf.SubstringFunction");
+        //Class<?> clazz = groovyClassLoader.parseClass(codeSource,"com.dlink.ud.udf.SubstringFunction");
     }
 }

@@ -17,10 +17,10 @@
  *
  */
 
-
 package com.dlink.daemon.entity;
 
 import com.dlink.daemon.task.DaemonTask;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +37,7 @@ public class TaskWorker implements Runnable {
 
     @Override
     public void run() {
-//        log.info("TaskWorker run");
+        //log.info("TaskWorker run");
         while (running) {
             DaemonTask daemonTask = queue.dequeue();
             if (daemonTask != null) {
@@ -51,7 +51,7 @@ public class TaskWorker implements Runnable {
     }
 
     public void shutdown() {
-//        log.info(Thread.currentThread().getName() + "TaskWorker shutdown");
+        //log.info(Thread.currentThread().getName() + "TaskWorker shutdown");
         running = false;
     }
 }

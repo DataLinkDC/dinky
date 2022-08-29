@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.gateway.yarn;
 
 import com.dlink.assertion.Asserts;
@@ -29,7 +28,6 @@ import com.dlink.gateway.result.GatewayResult;
 import com.dlink.gateway.result.YarnResult;
 import com.dlink.utils.LogUtil;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.deployment.application.ApplicationConfiguration;
 import org.apache.flink.client.program.ClusterClient;

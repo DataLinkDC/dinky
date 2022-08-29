@@ -17,7 +17,6 @@
  *
  */
 
-
 package org.apache.flink.connector.jdbc.dialect;
 
 import java.util.Arrays;

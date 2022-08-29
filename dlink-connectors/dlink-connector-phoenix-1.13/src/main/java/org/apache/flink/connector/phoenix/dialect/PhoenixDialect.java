@@ -17,7 +17,6 @@
  *
  */
 
-
 package org.apache.flink.connector.phoenix.dialect;
 
 import org.apache.flink.connector.phoenix.internal.converter.JdbcRowConverter;
@@ -126,7 +125,6 @@ public class PhoenixDialect extends AbstractDialect {
 
     @Override
     public List<LogicalTypeRoot> unsupportedTypes() {
-
 
         return Arrays.asList(
                 LogicalTypeRoot.BINARY,

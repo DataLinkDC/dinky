@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.ud.udtaf;
 
 import org.apache.flink.api.java.tuple.Tuple2;

@@ -17,14 +17,12 @@
  *
  */
 
-
 package com.dlink.executor;
 
-import org.apache.flink.configuration.Configuration;
-import org.apache.flink.configuration.DeploymentOptions;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-
 import com.dlink.assertion.Asserts;
+
+import org.apache.flink.configuration.Configuration;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 /**
  * RemoteBatchExecutor

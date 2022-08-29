@@ -21,7 +21,7 @@
 <module name="Checker">
     <property name="charset" value="UTF-8"/>
 
-    <property name="severity" value="info"/>
+<!--    <property name="severity" value="error"/>-->
 
     <property name="fileExtensions" value="java, properties, xml"/>
 
@@ -35,6 +35,7 @@
     </module>
 
     <module name="RegexpSingleline">
+        <property name="severity" value="warning"/>
         <property name="format" value="System\.out\.println"/>
         <property name="message" value="Prohibit invoking System.out.println in source code !"/>
     </module>
@@ -222,6 +223,7 @@
         <module name="UnusedImports"/>
 
         <module name="ImportOrder">
+<!--            <property name="severity" value="error"/>-->
             <property name="staticGroups" value="com.dlink,org.apache,java,javax,org,com"/>
             <property name="separatedStaticGroups" value="true"/>
 
@@ -230,6 +232,7 @@
             <property name="separated" value="true"/>
             <property name="option" value="top"/>
             <property name="sortStaticImportsAlphabetically" value="true"/>
+            <message key="import.ordering" value="Import {0} appears after other imports that it should precede"/>
         </module>
 
         <module name="NoWhitespaceBefore">
