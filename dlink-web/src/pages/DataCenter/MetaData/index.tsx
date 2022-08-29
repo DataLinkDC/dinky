@@ -1,6 +1,6 @@
 import { PageContainer } from '@ant-design/pro-layout'; //
 import styles from './index.less';
-import {Row, Col, Tabs, Select, Tag, Empty, Tree} from "antd";
+import {Row, Col, Tabs, Select, Tag, Empty, Tree, Spin} from "antd";
 import React, {Key, useEffect, useState} from "react";
 import {
   showMetaDataTable
@@ -32,22 +32,51 @@ const Container: React.FC<{}> = (props: any) => {
   const [databaseId, setDatabaseId] = useState<number>();
   const [treeData, setTreeData] = useState<[]>([]);
   const [row, setRow] = useState<TreeDataNode>();
+  const [loadingDatabase, setloadingDatabase] = useState(false);
+
+  const fetchDatabaseList = async () => {
+    const res = getData('api/database/listEnabledAll');
+    await res.then(result => {
+      database = result.datas;
+    })
+    setDatabase(database);
+  };
+
+ const fetchDatabase = async (databaseId:number) => {
+   setloadingDatabase(true)
+   setDatabaseId(databaseId);
+   const res = showMetaDataTable(databaseId);
+   await res.then((result) => {
+     let tables = result.datas;
+     if (tables) {
+       for (let i = 0; i < tables.length; i++) {
+         tables[i].title = tables[i].name;
+         tables[i].key = tables[i].name;
+         tables[i].icon = <DatabaseOutlined/>;
+         tables[i].children = tables[i].tables;
+         for (let j = 0; j < tables[i].children.length; j++) {
+           tables[i].children[j].title = tables[i].children[j].name;
+           tables[i].children[j].key = tables[i].name + '.' + tables[i].children[j].name;
+           tables[i].children[j].icon = <TableOutlined/>;
+           tables[i].children[j].isLeaf = true;
+           tables[i].children[j].schema = tables[i].name;
+           tables[i].children[j].table = tables[i].children[j].name;
+         }
+       }
+       setTreeData(tables);
+     } else {
+       setTreeData([]);
+     }
+   });
+   setloadingDatabase(false)
+
+ };
+
 
   useEffect(() => {
-
-    const fetchData = async () => {
-      const res = getData('api/database/listEnabledAll');
-      await res.then(result => {
-        database = result.datas;
-      })
-      setDatabase(database);
-    };
-
-    fetchData();
+    fetchDatabaseList();
   }, []);
 
-  function callback(key: String) {
-  }
 
   const getDataBaseOptions = () => {
     return <>{database.map(({id, name, alias, type, enabled}) => (
@@ -70,30 +99,7 @@ const Container: React.FC<{}> = (props: any) => {
 
   const onRefreshTreeData = (databaseId: number) => {
     if (!databaseId) return;
-    setDatabaseId(databaseId);
-    const res = showMetaDataTable(databaseId);
-    res.then((result) => {
-      let tables = result.datas;
-      if (tables) {
-        for (let i = 0; i < tables.length; i++) {
-          tables[i].title = tables[i].name;
-          tables[i].key = tables[i].name;
-          tables[i].icon = <DatabaseOutlined/>;
-          tables[i].children = tables[i].tables;
-          for (let j = 0; j < tables[i].children.length; j++) {
-            tables[i].children[j].title = tables[i].children[j].name;
-            tables[i].children[j].key = tables[i].name + '.' + tables[i].children[j].name;
-            tables[i].children[j].icon = <TableOutlined/>;
-            tables[i].children[j].isLeaf = true;
-            tables[i].children[j].schema = tables[i].name;
-            tables[i].children[j].table = tables[i].children[j].name;
-          }
-        }
-        setTreeData(tables);
-      } else {
-        setTreeData([]);
-      }
-    });
+    fetchDatabase(databaseId)
   };
 
 
@@ -111,6 +117,7 @@ const Container: React.FC<{}> = (props: any) => {
               >
                 {getDataBaseOptions()}
               </Select>
+              <Spin   spinning={loadingDatabase} delay={500}>
               <Scrollbars style={{height: '90vh'}}>
                 {treeData.length > 0 ? (
                   <DirectoryTree
@@ -123,14 +130,14 @@ const Container: React.FC<{}> = (props: any) => {
 
                   />) : (<Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>)}
               </Scrollbars>
-
+              </Spin>
             </Col>
 
 
             <Col  span={20}>
               <div>
                 <div>
-                  <Tabs defaultActiveKey="describe" onChange={callback}>
+                  <Tabs defaultActiveKey="describe">
 
                     <TabPane tab={<span><ReadOutlined />描述</span>} key="describe">
                       <Divider orientation="left" plain>表信息</Divider>

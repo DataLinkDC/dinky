@@ -22,17 +22,22 @@ import React, {useEffect, useState} from "react";
 import {SearchOutlined} from '@ant-design/icons';
 import ProTable from '@ant-design/pro-table';
 import {getData} from "@/components/Common/crud";
-import {Button, Input, Space} from "antd";
+import {Button, Input, Space, Spin} from "antd";
 
 const DTable = (props: any) => {
 
   const {dataSource,columns} = props;
 
   const [data,setData] = useState<[]>([]);
+  const [loading, setLoading] = useState(false);
+
 
   const refreshData = async () =>{
+    setLoading(true)
     const msg = await getData(dataSource.url, dataSource.params);
     setData(msg.datas);
+    setLoading(false)
+
   };
 
   const buildColumn = () =>{
@@ -86,6 +91,7 @@ const DTable = (props: any) => {
   }, [dataSource]);
 
   return (
+    <Spin   spinning={loading} delay={500}>
     <ProTable
       columns={buildColumn()}
       style={{width: '100%'}}
@@ -98,6 +104,7 @@ const DTable = (props: any) => {
       search={false}
       size="small"
     />
+    </Spin>
   );
 };
 
