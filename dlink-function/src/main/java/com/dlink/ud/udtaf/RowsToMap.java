@@ -46,7 +46,7 @@ public class RowsToMap extends TableAggregateFunction<String, MyAccum> {
     public void accumulate(
         MyAccum acc,
         String cls,
-        Object v) throws Exception {
+        Integer v) throws Exception {
         if (v == null) {
             return;
         }
@@ -67,7 +67,7 @@ public class RowsToMap extends TableAggregateFunction<String, MyAccum> {
      *
      * @param acc           the accumulator which contains the current aggregated results
      */
-    public void retract(MyAccum acc, String cls, Object v) throws Exception {
+    public void retract(MyAccum acc, String cls, Integer v) throws Exception {
         if (v == null) {
             return;
         }
@@ -88,7 +88,7 @@ public class RowsToMap extends TableAggregateFunction<String, MyAccum> {
     public void merge(MyAccum acc, Iterable<MyAccum> iterable)
         throws Exception {
         for (MyAccum otherAcc : iterable) {
-            for (Map.Entry<String, Object> entry : otherAcc.map.getMap().entrySet()) {
+            for (Map.Entry<String, Integer> entry : otherAcc.map.getMap().entrySet()) {
                 accumulate(acc, entry.getKey(), entry.getValue());
             }
         }
@@ -99,6 +99,17 @@ public class RowsToMap extends TableAggregateFunction<String, MyAccum> {
     }
 
     public static class MyAccum {
-        public final MapView<String, Object> map =  new MapView<>();
+
+        /**
+         * 不能 final
+         */
+        public  MapView<String, Integer> map;
+
+        /**
+         * 不能删除，否则不能生成查询计划
+         */
+        public MyAccum() {
+            this.map =  new MapView<>();
+        }
     }
 }
