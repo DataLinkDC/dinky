@@ -19,16 +19,13 @@
 
 package com.dlink.ud.udtaf;
 
-import org.apache.flink.table.api.DataTypes;
-import org.apache.flink.table.catalog.DataTypeFactory;
+import com.dlink.ud.udtaf.RowsToMap.MyAccum;
+
+import org.apache.flink.table.api.dataview.MapView;
 import org.apache.flink.table.functions.TableAggregateFunction;
-import org.apache.flink.table.types.DataType;
-import org.apache.flink.table.types.inference.TypeInference;
 import org.apache.flink.util.Collector;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  *
@@ -38,32 +35,18 @@ import java.util.Optional;
  * @since 2021/5/25 15:50
  **/
 
-public class RowsToMap extends TableAggregateFunction<String, Map<String, Integer>> {
+public class RowsToMap extends TableAggregateFunction<String, MyAccum> {
+    static final long serialVersionUID = 42L;
 
     @Override
-    public Map<String, Integer> createAccumulator() {
-        return new HashMap<>(16);
-    }
-
-    @Override
-    public TypeInference getTypeInference(DataTypeFactory typeFactory) {
-        return TypeInference.newBuilder()
-            .accumulatorTypeStrategy(callContext -> {
-                    DataType accDataType = DataTypes.MAP(
-                        DataTypes.STRING(), DataTypes.INT());
-                    return Optional.of(accDataType);
-
-                }
-            )
-            .outputTypeStrategy(callContext -> Optional.of(DataTypes.STRING()))
-            .build();
-
+    public MyAccum createAccumulator() {
+        return new MyAccum();
     }
 
     public void accumulate(
-        Map<String, Integer> acc,
+        MyAccum acc,
         String cls,
-        Integer v) {
+        Integer v) throws Exception {
         if (v == null) {
             return;
         }
@@ -71,7 +54,7 @@ public class RowsToMap extends TableAggregateFunction<String, Map<String, Intege
         String[] keys = cls.split(",");
         for (String s : keys) {
             if (s.equals(cls)) {
-                acc.put(cls, v);
+                acc.map.put(cls, v);
             }
         }
     }
@@ -84,11 +67,11 @@ public class RowsToMap extends TableAggregateFunction<String, Map<String, Intege
      *
      * @param acc           the accumulator which contains the current aggregated results
      */
-    public void retract(Map<String, Integer> acc, String cls, Integer v) {
+    public void retract(MyAccum acc, String cls, Integer v) throws Exception {
         if (v == null) {
             return;
         }
-        acc.remove(cls);
+        acc.map.remove(cls);
     }
 
     /**
@@ -102,15 +85,20 @@ public class RowsToMap extends TableAggregateFunction<String, Map<String, Intege
      * @param iterable          an {@link java.lang.Iterable} pointed to a group of accumulators that will be
      *                     merged.
      */
-    public void merge(Map<String, Integer> acc, Iterable<Map<String, Integer>> iterable) {
-        for (Map<String, Integer> otherAcc : iterable) {
-            for (Map.Entry<String, Integer> entry : otherAcc.entrySet()) {
+    public void merge(MyAccum acc, Iterable<MyAccum> iterable)
+        throws Exception {
+        for (MyAccum otherAcc : iterable) {
+            for (Map.Entry<String, Integer> entry : otherAcc.map.getMap().entrySet()) {
                 accumulate(acc, entry.getKey(), entry.getValue());
             }
         }
     }
 
-    public void emitValue(Map<String, Integer> acc, Collector<String> out) {
-        out.collect(acc.toString());
+    public void emitValue(MyAccum acc, Collector<String> out) {
+        out.collect(acc.map.getMap().toString());
+    }
+
+    public static class MyAccum {
+        public MapView<String, Integer> map =  new MapView<>();
     }
 }

@@ -41,4 +41,21 @@ public class GetKey extends ScalarFunction {
         }
         return defaultValue;
     }
+
+    public String eval(String map, String key, String defaultValue) {
+        if (map == null || !map.contains(key)) {
+            return defaultValue;
+        }
+
+        map = map.replace("{", "").replace("}", "");
+        String[] maps = map.split(", ");
+
+        for (String s : maps) {
+            String[] items = s.split("=");
+            if (items.length == 2 && Objects.equals(key, items[0])) {
+                return items[1];
+            }
+        }
+        return defaultValue;
+    }
 }
