@@ -46,7 +46,7 @@ public class RowsToMap extends TableAggregateFunction<String, MyAccum> {
     public void accumulate(
         MyAccum acc,
         String cls,
-        Integer v) throws Exception {
+        Object v) throws Exception {
         if (v == null) {
             return;
         }
@@ -67,7 +67,7 @@ public class RowsToMap extends TableAggregateFunction<String, MyAccum> {
      *
      * @param acc           the accumulator which contains the current aggregated results
      */
-    public void retract(MyAccum acc, String cls, Integer v) throws Exception {
+    public void retract(MyAccum acc, String cls, Object v) throws Exception {
         if (v == null) {
             return;
         }
@@ -88,7 +88,7 @@ public class RowsToMap extends TableAggregateFunction<String, MyAccum> {
     public void merge(MyAccum acc, Iterable<MyAccum> iterable)
         throws Exception {
         for (MyAccum otherAcc : iterable) {
-            for (Map.Entry<String, Integer> entry : otherAcc.map.getMap().entrySet()) {
+            for (Map.Entry<String, Object> entry : otherAcc.map.getMap().entrySet()) {
                 accumulate(acc, entry.getKey(), entry.getValue());
             }
         }
@@ -99,6 +99,6 @@ public class RowsToMap extends TableAggregateFunction<String, MyAccum> {
     }
 
     public static class MyAccum {
-        public MapView<String, Integer> map =  new MapView<>();
+        public final MapView<String, Object> map =  new MapView<>();
     }
 }
