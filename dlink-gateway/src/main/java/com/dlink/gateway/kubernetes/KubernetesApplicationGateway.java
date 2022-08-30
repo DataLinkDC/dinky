@@ -66,13 +66,16 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
         KubernetesResult result = KubernetesResult.build(getType());
         AppConfig appConfig = config.getAppConfig();
         configuration.set(PipelineOptions.JARS, Collections.singletonList(appConfig.getUserJarPath()));
-        ClusterSpecification clusterSpecification = new ClusterSpecification.ClusterSpecificationBuilder().createClusterSpecification();
         String[] userJarParas = appConfig.getUserJarParas();
         if (Asserts.isNull(userJarParas)) {
             userJarParas = new String[0];
         }
         ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration(userJarParas, appConfig.getUserJarMainAppClass());
         KubernetesClusterDescriptor kubernetesClusterDescriptor = new KubernetesClusterDescriptor(configuration, client);
+        ClusterSpecification clusterSpecification = new ClusterSpecification.ClusterSpecificationBuilder()
+            .setMasterMemoryMB(configuration.get(JobManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes())
+            .setTaskManagerMemoryMB(configuration.get(TaskManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes())
+            .setSlotsPerTaskManager(configuration.get(TaskManagerOptions.NUM_TASK_SLOTS)).createClusterSpecification();
         try {
             ClusterClientProvider<String> clusterClientProvider = kubernetesClusterDescriptor.deployApplicationCluster(clusterSpecification, applicationConfiguration);
             ClusterClient<String> clusterClient = clusterClientProvider.getClusterClient();

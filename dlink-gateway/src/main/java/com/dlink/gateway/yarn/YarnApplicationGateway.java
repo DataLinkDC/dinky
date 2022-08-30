@@ -77,7 +77,6 @@ public class YarnApplicationGateway extends YarnGateway {
         YarnResult result = YarnResult.build(getType());
         AppConfig appConfig = config.getAppConfig();
         configuration.set(PipelineOptions.JARS, Collections.singletonList(appConfig.getUserJarPath()));
-        ClusterSpecification clusterSpecification = new ClusterSpecification.ClusterSpecificationBuilder().createClusterSpecification();
         String[] userJarParas = appConfig.getUserJarParas();
         if (Asserts.isNull(userJarParas)) {
             userJarParas = new String[0];
@@ -85,6 +84,10 @@ public class YarnApplicationGateway extends YarnGateway {
         ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration(userJarParas, appConfig.getUserJarMainAppClass());
         YarnClusterDescriptor yarnClusterDescriptor = new YarnClusterDescriptor(
             configuration, yarnConfiguration, yarnClient, YarnClientYarnClusterInformationRetriever.create(yarnClient), true);
+        ClusterSpecification clusterSpecification = new ClusterSpecification.ClusterSpecificationBuilder()
+            .setMasterMemoryMB(configuration.get(JobManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes())
+            .setTaskManagerMemoryMB(configuration.get(TaskManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes())
+            .setSlotsPerTaskManager(configuration.get(TaskManagerOptions.NUM_TASK_SLOTS)).createClusterSpecification();
         try {
             ClusterClientProvider<ApplicationId> clusterClientProvider = yarnClusterDescriptor.deployApplicationCluster(
                 clusterSpecification,
