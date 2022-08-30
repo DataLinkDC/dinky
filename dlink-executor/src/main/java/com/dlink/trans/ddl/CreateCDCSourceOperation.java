@@ -47,7 +47,6 @@ import java.util.Map;
  * @since 2022/1/29 23:25
  */
 public class CreateCDCSourceOperation extends AbstractOperation implements Operation {
-
     private static final String KEY_WORD = "EXECUTE CDCSOURCE";
 
     public CreateCDCSourceOperation() {
@@ -72,8 +71,8 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
         logger.info("Start build CDCSOURCE Task...");
         CDCSource cdcSource = CDCSource.build(statement);
         FlinkCDCConfig config = new FlinkCDCConfig(cdcSource.getConnector(), cdcSource.getHostname(), cdcSource.getPort(), cdcSource.getUsername()
-            , cdcSource.getPassword(), cdcSource.getCheckpoint(), cdcSource.getParallelism(), cdcSource.getDatabase(), cdcSource.getSchema()
-            , cdcSource.getTable(), cdcSource.getStartupMode(), cdcSource.getDebezium(), cdcSource.getSource(), cdcSource.getSink(),cdcSource.getJdbc());
+                , cdcSource.getPassword(), cdcSource.getCheckpoint(), cdcSource.getParallelism(), cdcSource.getDatabase(), cdcSource.getSchema()
+                , cdcSource.getTable(), cdcSource.getStartupMode(), cdcSource.getDebezium(), cdcSource.getSource(), cdcSource.getSink(), cdcSource.getJdbc());
         try {
             CDCBuilder cdcBuilder = CDCBuilderFactory.buildCDCBuilder(config);
             Map<String, Map<String, String>> allConfigMap = cdcBuilder.parseMetaDataConfigs();
@@ -127,10 +126,17 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
             }
             DataStreamSource<String> streamSource = cdcBuilder.build(streamExecutionEnvironment);
             logger.info("Build " + config.getType() + " successful...");
-            SinkBuilderFactory.buildSinkBuilder(config).build(cdcBuilder, streamExecutionEnvironment, executor.getCustomTableEnvironment(), streamSource);
+            if (cdcSource.getSinks() == null || cdcSource.getSinks().size() == 0) {
+                SinkBuilderFactory.buildSinkBuilder(config).build(cdcBuilder, streamExecutionEnvironment, executor.getCustomTableEnvironment(), streamSource);
+            } else {
+                for (Map<String, String> sink : cdcSource.getSinks()) {
+                    config.setSink(sink);
+                    SinkBuilderFactory.buildSinkBuilder(config).build(cdcBuilder, streamExecutionEnvironment, executor.getCustomTableEnvironment(), streamSource);
+                }
+            }
             logger.info("Build CDCSOURCE Task successful!");
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         return null;
     }
