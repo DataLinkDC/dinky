@@ -25,6 +25,7 @@ import com.dlink.gateway.config.AppConfig;
 import com.dlink.gateway.exception.GatewayException;
 import com.dlink.gateway.result.GatewayResult;
 import com.dlink.gateway.result.KubernetesResult;
+import com.dlink.model.SystemConfiguration;
 import com.dlink.utils.LogUtil;
 
 import org.apache.flink.client.deployment.ClusterSpecification;
@@ -82,7 +83,7 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
             ClusterClientProvider<String> clusterClientProvider = kubernetesClusterDescriptor.deployApplicationCluster(clusterSpecification, applicationConfiguration);
             ClusterClient<String> clusterClient = clusterClientProvider.getClusterClient();
             Collection<JobStatusMessage> jobStatusMessages = clusterClient.listJobs().get();
-            int counts = 60;
+            int counts = SystemConfiguration.getInstances().getJobIdWait();
             while (jobStatusMessages.size() == 0 && counts > 0) {
                 Thread.sleep(1000);
                 counts--;

@@ -49,6 +49,7 @@ public class SystemConfiguration {
             add(systemConfiguration.useRestAPI);
             add(systemConfiguration.useLogicalPlan);
             add(systemConfiguration.sqlSeparator);
+            add(systemConfiguration.jobIdWait);
         }
     };
 
@@ -93,6 +94,13 @@ public class SystemConfiguration {
         ValueType.BOOLEAN,
         false,
         "在计算 Flink 任务的字段血缘分析时是否基于逻辑计划进行，只支持 1.14 版本"
+    );
+    private Configuration jobIdWait = new Configuration(
+        "jobIdWait",
+        "获取 Job ID 的最大等待时间（秒）",
+        ValueType.INT,
+        30,
+        "提交 Application 或 PerJob 任务时获取 Job ID 的最大等待时间（秒）"
     );
 
     public void setConfiguration(JsonNode jsonNode) {
@@ -170,6 +178,14 @@ public class SystemConfiguration {
 
     public void setUseLogicalPlan(boolean useLogicalPlan) {
         this.useLogicalPlan.setValue(useLogicalPlan);
+    }
+
+    public int getJobIdWait() {
+        return (int )jobIdWait.getValue();
+    }
+
+    public void setJobIdWait(Configuration jobIdWait) {
+        this.jobIdWait.setValue(jobIdWait);
     }
 
     enum ValueType {

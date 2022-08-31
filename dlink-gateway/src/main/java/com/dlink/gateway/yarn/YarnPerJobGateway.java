@@ -25,6 +25,7 @@ import com.dlink.gateway.config.GatewayConfig;
 import com.dlink.gateway.exception.GatewayException;
 import com.dlink.gateway.result.GatewayResult;
 import com.dlink.gateway.result.YarnResult;
+import com.dlink.model.SystemConfiguration;
 import com.dlink.utils.LogUtil;
 
 import org.apache.flink.client.deployment.ClusterSpecification;
@@ -81,7 +82,7 @@ public class YarnPerJobGateway extends YarnGateway {
             result.setAppId(applicationId.toString());
             result.setWebURL(clusterClient.getWebInterfaceURL());
             Collection<JobStatusMessage> jobStatusMessages = clusterClient.listJobs().get();
-            int counts = 10;
+            int counts = SystemConfiguration.getInstances().getJobIdWait();
             while (jobStatusMessages.size() == 0 && counts > 0) {
                 Thread.sleep(1000);
                 counts--;
