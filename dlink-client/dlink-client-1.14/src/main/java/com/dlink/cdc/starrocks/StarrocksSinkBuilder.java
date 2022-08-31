@@ -35,7 +35,7 @@ import com.starrocks.connector.flink.table.sink.StarRocksSinkOptions;
  * StarrocksSinkBuilder
  *
  **/
-public class StarrocksSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, Serializable {
+public class StarrocksSinkBuilder extends AbstractSinkBuilder implements Serializable {
 
     private static final String KEY_WORD = "datastream-starrocks";
     private static final long serialVersionUID = 8330362249137431824L;

@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.metadata.driver;
 
 import com.dlink.assertion.Asserts;
@@ -82,9 +81,10 @@ public interface Driver {
 
     static Driver build(String connector, String url, String username, String password) {
         String type = null;
-        if (Asserts.isEqualsIgnoreCase(connector, "doris") ||
-                Asserts.isEqualsIgnoreCase(connector, "starrocks")) {
+        if (Asserts.isEqualsIgnoreCase(connector, "doris")) {
             type = "Doris";
+        } else if (Asserts.isEqualsIgnoreCase(connector, "starrocks")) {
+            type = "StarRocks";
         } else if (Asserts.isEqualsIgnoreCase(connector, "clickhouse")) {
             type = "ClickHouse";
         } else if (Asserts.isEqualsIgnoreCase(connector, "jdbc")) {
@@ -96,6 +96,8 @@ public interface Driver {
                 type = "Oracle";
             } else if (url.startsWith("jdbc:sqlserver")) {
                 type = "SQLServer";
+            } else if (url.startsWith("jdbc:phoenix")) {
+                type = "Phoenix";
             } else if (url.startsWith("jdbc:pivotal")) {
                 type = "Greenplum";
             }
@@ -161,7 +163,7 @@ public interface Driver {
 
     String generateCreateTableSql(Table table);
 
-   /* boolean insert(Table table, JsonNode data);
+    /* boolean insert(Table table, JsonNode data);
 
     boolean update(Table table, JsonNode data);
 

@@ -19,6 +19,8 @@
 
 package com.dlink.trans.ddl;
 
+import static com.dlink.cdc.SinkBuilderFactory.buildSinkBuilder;
+
 import com.dlink.assertion.Asserts;
 import com.dlink.cdc.CDCBuilder;
 import com.dlink.cdc.CDCBuilderFactory;
@@ -32,15 +34,6 @@ import com.dlink.model.Table;
 import com.dlink.trans.AbstractOperation;
 import com.dlink.trans.Operation;
 import com.dlink.utils.SqlUtil;
-import org.apache.flink.streaming.api.datastream.DataStreamSource;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.table.api.TableResult;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import static com.dlink.cdc.SinkBuilderFactory.buildSinkBuilder;
 
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
