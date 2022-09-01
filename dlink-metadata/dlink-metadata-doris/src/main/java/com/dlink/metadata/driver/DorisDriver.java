@@ -23,8 +23,13 @@ import com.dlink.metadata.convert.DorisTypeConvert;
 import com.dlink.metadata.convert.ITypeConvert;
 import com.dlink.metadata.query.DorisQuery;
 import com.dlink.metadata.query.IDBQuery;
+import com.dlink.metadata.result.JdbcSelectResult;
+import com.dlink.utils.LogUtil;
+import com.dlink.utils.SqlUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DorisDriver extends AbstractJdbcDriver {
@@ -51,6 +56,42 @@ public class DorisDriver extends AbstractJdbcDriver {
     @Override
     public String getName() {
         return "Doris";
+    }
+
+    @Override
+    public JdbcSelectResult executeSql(String sql, Integer limit) {
+        String[] statements = SqlUtil.getStatements(SqlUtil.removeNote(sql));
+        List<Object> resList = new ArrayList<>();
+        JdbcSelectResult result = JdbcSelectResult.buildResult();
+        for (String item : statements) {
+            String type = item.toUpperCase();
+            if (type.startsWith("SELECT") || type.startsWith("SHOW") || type.startsWith("DESC")) {
+                result = query(item, limit);
+            } else if (type.startsWith("INSERT") || type.startsWith("UPDATE") || type.startsWith("DELETE")) {
+                try {
+                    resList.add(executeUpdate(item));
+                    result.setStatusList(resList);
+                } catch (Exception e) {
+                    resList.add(0);
+                    result.setStatusList(resList);
+                    result.error(LogUtil.getError(e));
+                    return result;
+                }
+            } else {
+                try {
+                    execute(item);
+                    resList.add(1);
+                    result.setStatusList(resList);
+                } catch (Exception e) {
+                    resList.add(0);
+                    result.setStatusList(resList);
+                    result.error(LogUtil.getError(e));
+                    return result;
+                }
+            }
+        }
+        result.success();
+        return result;
     }
 
     @Override
