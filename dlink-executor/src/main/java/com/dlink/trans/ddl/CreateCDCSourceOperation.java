@@ -21,6 +21,14 @@ package com.dlink.trans.ddl;
 
 import static com.dlink.cdc.SinkBuilderFactory.buildSinkBuilder;
 
+import org.apache.flink.streaming.api.datastream.DataStreamSource;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.table.api.TableResult;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import com.dlink.assertion.Asserts;
 import com.dlink.cdc.CDCBuilder;
 import com.dlink.cdc.CDCBuilderFactory;
@@ -34,14 +42,6 @@ import com.dlink.model.Table;
 import com.dlink.trans.AbstractOperation;
 import com.dlink.trans.Operation;
 import com.dlink.utils.SqlUtil;
-
-import org.apache.flink.streaming.api.datastream.DataStreamSource;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.table.api.TableResult;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * CreateCDCSourceOperation
@@ -75,8 +75,8 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
         logger.info("Start build CDCSOURCE Task...");
         CDCSource cdcSource = CDCSource.build(statement);
         FlinkCDCConfig config = new FlinkCDCConfig(cdcSource.getConnector(), cdcSource.getHostname(), cdcSource.getPort(), cdcSource.getUsername()
-                , cdcSource.getPassword(), cdcSource.getCheckpoint(), cdcSource.getParallelism(), cdcSource.getDatabase(), cdcSource.getSchema()
-                , cdcSource.getTable(), cdcSource.getStartupMode(), cdcSource.getDebezium(), cdcSource.getSource(), cdcSource.getSink(), cdcSource.getJdbc());
+            , cdcSource.getPassword(), cdcSource.getCheckpoint(), cdcSource.getParallelism(), cdcSource.getDatabase(), cdcSource.getSchema()
+            , cdcSource.getTable(), cdcSource.getStartupMode(), cdcSource.getDebezium(), cdcSource.getSource(), cdcSource.getSink(), cdcSource.getJdbc());
         try {
             CDCBuilder cdcBuilder = CDCBuilderFactory.buildCDCBuilder(config);
             Map<String, Map<String, String>> allConfigMap = cdcBuilder.parseMetaDataConfigs();
@@ -91,7 +91,9 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                 if (!allConfigMap.containsKey(schemaName)) {
                     continue;
                 }
+
                 Driver sinkDriver = checkAndCreateSinkSchema(config, schemaName);
+
                 DriverConfig driverConfig = DriverConfig.build(allConfigMap.get(schemaName));
                 Driver driver = Driver.build(driverConfig);
                 final List<Table> tables = driver.listTables(schemaName);

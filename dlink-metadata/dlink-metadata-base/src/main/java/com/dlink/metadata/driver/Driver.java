@@ -57,9 +57,6 @@ public interface Driver {
             return getHealthDriver(key);
         }
         synchronized (Driver.class) {
-            if (DriverPool.exist(key)) {
-                return getHealthDriver(key);
-            }
             Optional<Driver> optionalDriver = Driver.get(config);
             if (!optionalDriver.isPresent()) {
                 throw new MetaDataException("缺少数据源类型【" + config.getType() + "】的依赖，请在 lib 下添加对应的扩展依赖");
