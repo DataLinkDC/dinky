@@ -30,6 +30,7 @@ type FlinkConfigProps = {
   useRestAPI: SettingsStateType['useRestAPI'];
   useLogicalPlan: SettingsStateType['useLogicalPlan'];
   sqlSeparator: SettingsStateType['sqlSeparator'];
+  jobIdWait: SettingsStateType['jobIdWait'];
   dispatch: any;
 };
 
@@ -42,6 +43,7 @@ const FlinkConfigView: React.FC<FlinkConfigProps> = (props) => {
     useRestAPI,
     useLogicalPlan,
     sqlSeparator,
+    jobIdWait,
     dispatch
   } = props;
   const [editName, setEditName] = useState<string>('');
@@ -127,6 +129,20 @@ const FlinkConfigView: React.FC<FlinkConfigProps> = (props) => {
                   checked={useLogicalPlan}
           /></Form.Item>],
     },
+    {
+      title: '获取 Job ID 的最大等待时间（秒）',
+      description: (
+        editName != 'jobIdWait' ?
+          (jobIdWait ? jobIdWait : '30') : (
+            <Input
+              id='jobIdWait'
+              defaultValue={jobIdWait}
+              onChange={onChange}
+              placeholder="30"/>)),
+      actions: editName != 'jobIdWait' ? [<a onClick={({}) => handleEditClick('jobIdWait')}>修改</a>] :
+        [<a onClick={({}) => handleSaveClick('jobIdWait')}>保存</a>,
+          <a onClick={({}) => handleCancelClick()}>取消</a>],
+    },
   ];
 
   const onChange = e => {
@@ -189,4 +205,5 @@ export default connect(({Settings}: { Settings: SettingsStateType }) => ({
   useRestAPI: Settings.useRestAPI,
   useLogicalPlan: Settings.useLogicalPlan,
   sqlSeparator: Settings.sqlSeparator,
+  jobIdWait: Settings.jobIdWait,
 }))(FlinkConfigView);
