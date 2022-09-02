@@ -17,8 +17,6 @@
  *
  */
 
-
-
 package org.apache.flink.connector.phoenix.internal.options;
 
 import java.io.Serializable;

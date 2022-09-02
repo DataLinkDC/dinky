@@ -17,9 +17,6 @@
  *
  */
 
-
-
-
 package org.apache.flink.connector.phoenix.internal.converter;
 
 import org.apache.flink.connector.phoenix.statement.FieldNamedPreparedStatement;

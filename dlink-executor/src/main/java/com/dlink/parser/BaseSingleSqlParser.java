@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.parser;
 
 import com.dlink.assertion.Asserts;
@@ -41,7 +40,6 @@ public abstract class BaseSingleSqlParser {
     //Sql语句片段
     protected List<SqlSegment> segments;
 
-
     /**
      * 构造函数，传入原始Sql语句，进行劈分。
      **/
@@ -64,7 +62,6 @@ public abstract class BaseSingleSqlParser {
         for (SqlSegment sqlSegment : segments) {
             sqlSegment.parse(originalSql);
             if (Asserts.isNotNullString(sqlSegment.getStart())) {
-//                map.put(sqlSegment.getStart().toUpperCase(), sqlSegment.getBodyPieces());
                 map.put(sqlSegment.getType().toUpperCase(), sqlSegment.getBodyPieces());
             }
         }

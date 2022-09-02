@@ -17,15 +17,19 @@
  *
  */
 
-
 package com.dlink.explainer.trans;
 
 import com.dlink.utils.MapParseUtils;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.operations.OperationUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * SourceTrans
@@ -41,7 +45,7 @@ public class SourceTrans extends AbstractTrans implements Trans {
     private List<String> project;
     private List<String> fields;
 
-    public final static String TRANS_TYPE = "Data Source";
+    public static final String TRANS_TYPE = "Data Source";
 
     public SourceTrans() {
     }

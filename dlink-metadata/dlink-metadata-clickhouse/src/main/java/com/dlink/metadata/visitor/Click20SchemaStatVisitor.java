@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.metadata.visitor;
 
 import com.alibaba.druid.DbType;

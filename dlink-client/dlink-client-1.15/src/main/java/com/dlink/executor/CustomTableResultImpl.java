@@ -17,9 +17,6 @@
  *
  */
 
-
-
-
 package com.dlink.executor;
 
 import org.apache.flink.annotation.Internal;
@@ -41,8 +38,6 @@ import org.apache.flink.types.Row;
 import org.apache.flink.util.CloseableIterator;
 import org.apache.flink.util.Preconditions;
 
-import javax.annotation.Nullable;
-
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,6 +50,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import javax.annotation.Nullable;
 
 /** Implementation for {@link TableResult}. */
 @Internal

@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.gateway.config;
 
 import lombok.Getter;
@@ -60,11 +59,11 @@ public class ClusterConfig {
 
     @Override
     public String toString() {
-        return "ClusterConfig{" +
-            "flinkConfigPath='" + flinkConfigPath + '\'' +
-            ", flinkLibPath='" + flinkLibPath + '\'' +
-            ", yarnConfigPath='" + yarnConfigPath + '\'' +
-            ", appId='" + appId + '\'' +
-            '}';
+        return "ClusterConfig{"
+            + "flinkConfigPath='" + flinkConfigPath + '\''
+            + ", flinkLibPath='" + flinkLibPath + '\''
+            + ", yarnConfigPath='" + yarnConfigPath + '\''
+            + ", appId='" + appId + '\''
+            + '}';
     }
 }

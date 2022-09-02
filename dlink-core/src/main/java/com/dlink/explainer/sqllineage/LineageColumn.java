@@ -17,10 +17,10 @@
  *
  */
 
-
-package com.dlink.explainer.sqlLineage;
+package com.dlink.explainer.sqllineage;
 
 import com.dlink.assertion.Asserts;
+
 import lombok.Data;
 
 @Data
@@ -83,16 +83,15 @@ public class LineageColumn implements Comparable<LineageColumn> {
     private Boolean isEnd = false;
 
     public void setSourceTableName(String sourceTableName) {
-        sourceTableName = Asserts.isNotNullString(sourceTableName) ? sourceTableName.replace("`",
-                "") : sourceTableName;
-        if(sourceTableName.contains(" ")){
+        sourceTableName = Asserts.isNotNullString(sourceTableName) ? sourceTableName.replace("`", "") : sourceTableName;
+        if (sourceTableName.contains(" ")) {
             sourceTableName = sourceTableName.substring(0,sourceTableName.indexOf(" "));
         }
         if (sourceTableName.contains(".")) {
-            if(Asserts.isNullString(this.sourceDbName)){
+            if (Asserts.isNullString(this.sourceDbName)) {
                 this.sourceDbName = sourceTableName.substring(0, sourceTableName.indexOf("."));
             }
-//            this.sourceDbName = sourceTableName.substring(0, sourceTableName.indexOf("."));
+            //this.sourceDbName = sourceTableName.substring(0, sourceTableName.indexOf("."));
             this.sourceTableName = sourceTableName.substring(sourceTableName.indexOf(".") + 1);
         } else {
             this.sourceTableName = sourceTableName;
@@ -100,12 +99,16 @@ public class LineageColumn implements Comparable<LineageColumn> {
     }
 
     public int compareTo(LineageColumn o) {
-        if(Asserts.isNotNullString(this.getSourceDbName())&& Asserts.isNotNullString(this.getSourceTableName())){
-            if(this.getSourceDbName().equals(o.getSourceDbName())&&this.getSourceTableName().equals(o.getSourceTableName())&&this.getTargetColumnName().equals(o.getTargetColumnName())){
+        if (Asserts.isNotNullString(this.getSourceDbName())
+                && Asserts.isNotNullString(this.getSourceTableName())) {
+            if (this.getSourceDbName().equals(o.getSourceDbName())
+                    && this.getSourceTableName().equals(o.getSourceTableName())
+                    && this.getTargetColumnName().equals(o.getTargetColumnName())) {
                 return 0;
             }
-        } else if(Asserts.isNotNullString(this.getSourceTableName())){
-            if(this.getSourceTableName().equals(o.getSourceTableName())&&this.getTargetColumnName().equals(o.getTargetColumnName())){
+        } else if (Asserts.isNotNullString(this.getSourceTableName())) {
+            if (this.getSourceTableName().equals(o.getSourceTableName())
+                    && this.getTargetColumnName().equals(o.getTargetColumnName())) {
                 return 0;
             }
         } else {

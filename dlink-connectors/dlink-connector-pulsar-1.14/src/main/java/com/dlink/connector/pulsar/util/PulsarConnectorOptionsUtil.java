@@ -17,8 +17,6 @@
  *
  */
 
-
-
 package com.dlink.connector.pulsar.util;
 
 import org.apache.flink.annotation.PublicEvolving;
@@ -55,7 +53,6 @@ public class PulsarConnectorOptionsUtil {
         }
         return pulsarProperties;
     }
-
 
     /**
      * Decides if the table options contains Pulsar client properties that start with prefix

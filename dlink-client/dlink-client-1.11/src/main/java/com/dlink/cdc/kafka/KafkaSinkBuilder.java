@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.cdc.kafka;
 
 import com.dlink.assertion.Asserts;
@@ -28,6 +27,7 @@ import com.dlink.executor.CustomTableEnvironment;
 import com.dlink.model.FlinkCDCConfig;
 import com.dlink.model.Schema;
 import com.dlink.model.Table;
+
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.flink.streaming.api.datastream.DataStream;
@@ -41,6 +41,7 @@ import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -52,9 +53,9 @@ import java.util.Map;
  * @author wenmo
  * @since 2022/4/12 21:29
  **/
-public class KafkaSinkBuilder extends AbstractSinkBuilder implements SinkBuilder {
+public class KafkaSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, Serializable {
 
-    private final static String KEY_WORD = "datastream-kafka";
+    private static final String KEY_WORD = "datastream-kafka";
 
     public KafkaSinkBuilder() {
     }

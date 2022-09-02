@@ -17,7 +17,6 @@
  *
  */
 
-
 package org.apache.flink.connector.phoenix.table;
 
 import org.apache.flink.api.common.io.DefaultInputSplitAssigner;
@@ -36,13 +35,21 @@ import org.apache.flink.core.io.InputSplit;
 import org.apache.flink.core.io.InputSplitAssigner;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.util.Preconditions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.sql.*;
+import java.sql.Array;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.Arrays;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * PhoenixJdbcRowDataInputFormat
@@ -127,7 +134,7 @@ public class PhoenixJdbcRowDataInputFormat extends RichInputFormat<RowData, Inpu
     public void open(InputSplit inputSplit) throws IOException {
         try {
             if (inputSplit != null && this.parameterValues != null) {
-                for(int i = 0; i < this.parameterValues[inputSplit.getSplitNumber()].length; ++i) {
+                for (int i = 0; i < this.parameterValues[inputSplit.getSplitNumber()].length; ++i) {
                     Object param = this.parameterValues[inputSplit.getSplitNumber()][i];
                     if (param instanceof String) {
                         this.statement.setString(i + 1, (String)param);
@@ -219,7 +226,7 @@ public class PhoenixJdbcRowDataInputFormat extends RichInputFormat<RowData, Inpu
         } else {
             GenericInputSplit[] ret = new GenericInputSplit[this.parameterValues.length];
 
-            for(int i = 0; i < ret.length; ++i) {
+            for (int i = 0; i < ret.length; ++i) {
                 ret[i] = new GenericInputSplit(i, ret.length);
             }
 
@@ -247,7 +254,6 @@ public class PhoenixJdbcRowDataInputFormat extends RichInputFormat<RowData, Inpu
         private int resultSetConcurrency = 1007;
         private boolean namespaceMappingEnabled;
         private boolean mapSystemTablesEnabled;
-
 
         public Builder() {
         }
@@ -317,6 +323,7 @@ public class PhoenixJdbcRowDataInputFormat extends RichInputFormat<RowData, Inpu
             this.namespaceMappingEnabled = namespaceMappingEnabled;
             return this;
         }
+
         public Builder setMapSystemTablesToNamespace(Boolean mapSystemTablesEnabled) {
             this.mapSystemTablesEnabled = mapSystemTablesEnabled;
             return this;
@@ -332,7 +339,9 @@ public class PhoenixJdbcRowDataInputFormat extends RichInputFormat<RowData, Inpu
                     PhoenixJdbcRowDataInputFormat.LOG.debug("No input splitting configured (data will be read with parallelism 1).");
                 }
 
-                return new PhoenixJdbcRowDataInputFormat(new PhoneixJdbcConnectionProvider(this.connOptionsBuilder.build(),this.namespaceMappingEnabled,this.mapSystemTablesEnabled), this.fetchSize, this.autoCommit, this.parameterValues, this.queryTemplate, this.resultSetType, this.resultSetConcurrency, this.rowConverter, this.rowDataTypeInfo,this.namespaceMappingEnabled,this.mapSystemTablesEnabled);
+                return new PhoenixJdbcRowDataInputFormat(new PhoneixJdbcConnectionProvider(this.connOptionsBuilder.build(),this.namespaceMappingEnabled,this.mapSystemTablesEnabled),
+                        this.fetchSize, this.autoCommit, this.parameterValues, this.queryTemplate, this.resultSetType, this.resultSetConcurrency, this.rowConverter,
+                        this.rowDataTypeInfo,this.namespaceMappingEnabled,this.mapSystemTablesEnabled);
             }
         }
 

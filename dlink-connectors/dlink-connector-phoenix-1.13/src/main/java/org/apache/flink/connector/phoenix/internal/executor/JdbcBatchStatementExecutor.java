@@ -17,8 +17,6 @@
  *
  */
 
-
-
 package org.apache.flink.connector.phoenix.internal.executor;
 
 import org.apache.flink.annotation.Internal;

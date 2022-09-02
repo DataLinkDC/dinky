@@ -17,9 +17,7 @@
  *
  */
 
-
 package org.apache.flink.connector.phoenix.table;
-
 
 import org.apache.flink.connector.phoenix.dialect.JdbcDialect;
 import org.apache.flink.connector.phoenix.internal.options.JdbcLookupOptions;
@@ -28,7 +26,11 @@ import org.apache.flink.connector.phoenix.internal.options.PhoenixJdbcOptions;
 import org.apache.flink.connector.phoenix.split.JdbcNumericBetweenParametersProvider;
 import org.apache.flink.table.api.TableSchema;
 import org.apache.flink.table.connector.ChangelogMode;
-import org.apache.flink.table.connector.source.*;
+import org.apache.flink.table.connector.source.DynamicTableSource;
+import org.apache.flink.table.connector.source.InputFormatProvider;
+import org.apache.flink.table.connector.source.LookupTableSource;
+import org.apache.flink.table.connector.source.ScanTableSource;
+import org.apache.flink.table.connector.source.TableFunctionProvider;
 import org.apache.flink.table.connector.source.abilities.SupportsLimitPushDown;
 import org.apache.flink.table.connector.source.abilities.SupportsProjectionPushDown;
 import org.apache.flink.table.types.logical.RowType;
@@ -126,10 +128,12 @@ public class PhoenixDynamicTableSource implements ScanTableSource, LookupTableSo
     public ChangelogMode getChangelogMode() {
         return ChangelogMode.insertOnly();
     }
+
     @Override
     public boolean supportsNestedProjection() {
         return false;
     }
+
     @Override
     public void applyProjection(int[][] projectedFields) {
         this.physicalSchema = TableSchemaUtils.projectSchema(this.physicalSchema, projectedFields);
@@ -150,7 +154,10 @@ public class PhoenixDynamicTableSource implements ScanTableSource, LookupTableSo
             return false;
         } else {
             PhoenixDynamicTableSource that = (PhoenixDynamicTableSource)o;
-            return Objects.equals(this.options, that.options)  && Objects.equals(this.physicalSchema, that.physicalSchema) && Objects.equals(this.dialectName, that.dialectName) && Objects.equals(this.limit, that.limit);
+            return Objects.equals(this.options, that.options)
+                    && Objects.equals(this.physicalSchema, that.physicalSchema)
+                    && Objects.equals(this.dialectName, that.dialectName)
+                    && Objects.equals(this.limit, that.limit);
         }
     }
 

@@ -17,15 +17,14 @@
  *
  */
 
-
 package com.dlink.explainer.trans;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * AbstractTrans
@@ -44,7 +43,6 @@ public abstract class AbstractTrans {
     protected String pact;
     protected Integer parallelism;
     protected List<Predecessor> predecessors;
-
 
     public void build(JsonNode node) {
         id = node.get("id").asInt();

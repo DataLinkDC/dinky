@@ -53,7 +53,7 @@ jobs:
             ${{ runner.os }}-maven-
       - name: Check Style
         run: |
-          ./mvnw -T 2C -B checkstyle:check --no-snapshot-updates
+          ./mvnw -T 2C -B --no-snapshot-updates clean checkstyle:check
       - name: Build and Package
         run: |
           ./mvnw -B clean install \

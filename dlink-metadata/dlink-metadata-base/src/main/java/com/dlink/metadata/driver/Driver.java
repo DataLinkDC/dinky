@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.metadata.driver;
 
 import com.dlink.assertion.Asserts;
@@ -55,18 +54,29 @@ public interface Driver {
     static Driver build(DriverConfig config) {
         String key = config.getName();
         if (DriverPool.exist(key)) {
-            Driver driver = DriverPool.get(key);
-            if (driver.isHealth()) {
-                return driver;
+            return getHealthDriver(key);
+        }
+        synchronized (Driver.class) {
+            if (DriverPool.exist(key)) {
+                return getHealthDriver(key);
             }
+            Optional<Driver> optionalDriver = Driver.get(config);
+            if (!optionalDriver.isPresent()) {
+                throw new MetaDataException("缺少数据源类型【" + config.getType() + "】的依赖，请在 lib 下添加对应的扩展依赖");
+            }
+            Driver driver = optionalDriver.get().connect();
+            DriverPool.push(key, driver);
+            return driver;
         }
-        Optional<Driver> optionalDriver = Driver.get(config);
-        if (!optionalDriver.isPresent()) {
-            throw new MetaDataException("缺少数据源类型【" + config.getType() + "】的依赖，请在 lib 下添加对应的扩展依赖");
+    }
+
+    static Driver getHealthDriver(String key) {
+        Driver driver = DriverPool.get(key);
+        if (driver.isHealth()) {
+            return driver;
+        } else {
+            return driver.connect();
         }
-        Driver driver = optionalDriver.get().connect();
-        DriverPool.push(key, driver);
-        return driver;
     }
 
     Driver setDriverConfig(DriverConfig config);
@@ -113,7 +123,7 @@ public interface Driver {
 
     String getTruncateTableSql(Table table);
 
-   /* boolean insert(Table table, JsonNode data);
+    /* boolean insert(Table table, JsonNode data);
 
     boolean update(Table table, JsonNode data);
 

@@ -17,9 +17,9 @@
  *
  */
 
-
-
 package org.apache.flink.connector.phoenix.internal.executor;
+
+import static org.apache.flink.util.Preconditions.checkNotNull;
 
 import org.apache.flink.connector.phoenix.internal.converter.JdbcRowConverter;
 import org.apache.flink.connector.phoenix.statement.FieldNamedPreparedStatement;
@@ -28,8 +28,6 @@ import org.apache.flink.table.data.RowData;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-
-import static org.apache.flink.util.Preconditions.checkNotNull;
 
 /**
  * A {@link JdbcBatchStatementExecutor} that simply adds the records into batches of {@link

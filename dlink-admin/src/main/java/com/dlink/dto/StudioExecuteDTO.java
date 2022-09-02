@@ -84,6 +84,6 @@ public class StudioExecuteDTO extends AbstractStatementDTO {
         return new JobConfig(
             type, useResult, useChangeLog, useAutoCancel, useSession, session, clusterId,
             clusterConfigurationId, jarId, taskId, jobName, isFragment(), statementSet, batchModel,
-            maxRowNum, checkPoint, parallelism, savePointStrategy, savePointPath, config);
+            maxRowNum, checkPoint, parallelism, savePointStrategy, savePointPath, getVariables(), config);
     }
 }

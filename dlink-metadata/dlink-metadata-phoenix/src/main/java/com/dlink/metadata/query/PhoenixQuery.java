@@ -17,18 +17,10 @@
  *
  */
 
-
 package com.dlink.metadata.query;
 
 import com.dlink.metadata.constant.PhoenixConstant;
 
-
-/**
- * @author lcg
- * @operate
- * @date 2022/2/16 14:39
- * @return
- */
 public class PhoenixQuery extends AbstractDBQuery {
 
     @Override
@@ -72,30 +64,25 @@ public class PhoenixQuery extends AbstractDBQuery {
         return "TABLE_NAME";
     }
 
-
     @Override
     public String columnName() {
         return "COLUMN_NAME";
     }
-
 
     @Override
     public String columnType() {
         return "DATA_TYPE";
     }
 
-
     @Override
     public String columnComment() {
         return "COLUMN_NAME";
     }
 
-
     @Override
     public String columnKey() {
         return "KEY_SEQ";
     }
-
 
     public String isNullable() {
         return "NULLABLE";
@@ -105,4 +92,5 @@ public class PhoenixQuery extends AbstractDBQuery {
     public String rows() {
         return "ROWSNUM";
     }
+
 }

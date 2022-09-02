@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.config;
 
 import com.dlink.assertion.Asserts;
@@ -59,7 +58,13 @@ public enum Dialect {
         return Dialect.FLINKSQL;
     }
 
-    public static boolean isSql(String value) {
+    /**
+     * Judge sql dialect.
+     *
+     * @param value {@link Dialect}
+     * @return If is flink sql, return false, otherwise return true.
+     */
+    public static boolean notFlinkSql(String value) {
         Dialect dialect = Dialect.get(value);
         switch (dialect) {
             case SQL:
