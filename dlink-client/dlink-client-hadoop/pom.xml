@@ -30,7 +30,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!--<scope.type>provided</scope.type>-->
-        <hadoop.version>3.1.0</hadoop.version>
+        <hadoop.version>3.3.2</hadoop.version>
         <scope.type>compile</scope.type>
     </properties>
 
