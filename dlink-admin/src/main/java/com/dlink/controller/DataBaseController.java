@@ -24,7 +24,9 @@ import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
 import com.dlink.constant.CommonConstant;
 import com.dlink.metadata.driver.DriverPool;
+import com.dlink.metadata.result.JdbcSelectResult;
 import com.dlink.model.DataBase;
+import com.dlink.model.QueryData;
 import com.dlink.service.DataBaseService;
 
 import java.util.ArrayList;
@@ -181,9 +183,14 @@ public class DataBaseController {
     /**
      * 获取元数据的指定表的列
      */
-    @GetMapping("/queryData")
-    public Result queryData(@RequestParam Integer id, @RequestParam String schemaName, @RequestParam String tableName, @RequestParam int limit) {
-        return Result.succeed(databaseService.queryData(id, schemaName, tableName,limit), "获取成功");
+    @PostMapping("/queryData")
+    public Result queryData(@RequestBody QueryData queryData) {
+        JdbcSelectResult jdbcSelectResult = databaseService.queryData(queryData);
+        if (jdbcSelectResult.isSuccess()) {
+            return Result.succeed(jdbcSelectResult, "获取成功");
+        } else {
+            return Result.failed(jdbcSelectResult,"查询失败");
+        }
     }
 
     /**
