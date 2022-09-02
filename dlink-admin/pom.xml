@@ -197,22 +197,9 @@
         </dependency>
         <!-- hadoop -->
         <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-hdfs</artifactId>
-            <version>3.3.2</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-hdfs-client</artifactId>
-            <version>3.3.2</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-common</artifactId>
-            <version>3.3.2</version>
-            <scope>provided</scope>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-client-hadoop</artifactId>
+            <scope>${scope.runtime}</scope>
         </dependency>
     </dependencies>
 

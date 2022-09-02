@@ -45,7 +45,7 @@ public class UploadFileConstant {
     // Upload file's dir constant----------------------------------------------------------------------------------------
     static {
         // Get admin jar's parent absolute path
-        DLINK_HOME_DIR = new ApplicationHome(UploadFileConstant.class).getSource().getParent();
+        DLINK_HOME_DIR = new ApplicationHome(UploadFileConstant.class).getSource().getParent() + "/../";
     }
 
     public static final String DLINK_HOME_DIR;
