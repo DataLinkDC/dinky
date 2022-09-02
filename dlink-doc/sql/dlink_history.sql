@@ -709,7 +709,7 @@ CREATE TABLE `dlink_fragment` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='全局变量';
 
 
--- 0.7.7-SNAPSHOT 2022-08-22
+-- 0.6.7-SNAPSHOT 2022-09-02
 -- -----------------------
 -- DROP TABLE IF EXISTS `dlink_upload_file_record`;
 CREATE TABLE `dlink_upload_file_record` (

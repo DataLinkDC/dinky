@@ -27,7 +27,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Resource;
 
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -55,7 +55,7 @@ public class FileUploadController {
      * @param fileType Please refer {@link UploadFileConstant}, default is -1. If not provide, please provide the 'dir' value
      * @return {@link Result}
      */
-    @PutMapping
+    @PostMapping
     public Result upload(@RequestPart("files") MultipartFile[] files,
                          @RequestParam(value = "dir", defaultValue = "", required = false) String dir,
                          @RequestParam(value = "fileType", defaultValue = "-1", required = false) Byte fileType) {
