@@ -525,8 +525,8 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       toOpen(e.node);
     }
     let taskIds = [];
-    for (let i = 0; i < e.selectedNodes.length; i++) {
-      if(e.selectedNodes[i].isLeaf){
+    for (let i = 0; i < e.selectedNodes?.length; i++) {
+      if (e.selectedNodes[i].isLeaf) {
         taskIds.push(e.selectedNodes[i].taskId);
       }
     }
