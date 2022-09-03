@@ -30,18 +30,6 @@ import java.util.Optional;
 
 public class GetKeyV2<T> extends ScalarFunction {
 
-    @Override
-    public TypeInference getTypeInference(DataTypeFactory typeFactory) {
-        return TypeInference.newBuilder()
-            .inputTypeStrategy(InputTypeStrategies.sequence(
-                InputTypeStrategies.explicit(DataTypes.STRING()),
-                InputTypeStrategies.explicit(DataTypes.STRING().notNull()),
-                InputTypeStrategies.ANY
-            ))
-            .outputTypeStrategy(callContext -> Optional.of(DataTypes.STRING()))
-            .build();
-    }
-
     public String eval(String map, String key, T defaultValue) {
         if (map == null || !map.contains(key)) {
             return defaultValue.toString();
