@@ -30,8 +30,7 @@ public class GetKey extends ScalarFunction {
             return defaultValue;
         }
 
-        map = map.replace("{", "").replace("}", "");
-        String[] maps = map.split(", ");
+        String[] maps = extractProperties(map);
 
         for (String s : maps) {
             String[] items = s.split("=");
@@ -47,8 +46,7 @@ public class GetKey extends ScalarFunction {
             return defaultValue;
         }
 
-        map = map.replace("{", "").replace("}", "");
-        String[] maps = map.split(", ");
+        String[] maps = extractProperties(map);
 
         for (String s : maps) {
             String[] items = s.split("=");
@@ -57,5 +55,10 @@ public class GetKey extends ScalarFunction {
             }
         }
         return defaultValue;
+    }
+
+    private String[] extractProperties(String map) {
+        map = map.replace("{", "").replace("}", "");
+        return map.split(", ");
     }
 }

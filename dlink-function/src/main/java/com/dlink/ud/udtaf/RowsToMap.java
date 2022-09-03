@@ -21,42 +21,71 @@ package com.dlink.ud.udtaf;
 
 import com.dlink.ud.udtaf.RowsToMap.MyAccum;
 
-import org.apache.flink.table.api.dataview.MapView;
+import org.apache.flink.table.api.DataTypes;
+import org.apache.flink.table.catalog.DataTypeFactory;
 import org.apache.flink.table.functions.TableAggregateFunction;
+import org.apache.flink.table.types.DataType;
+import org.apache.flink.table.types.inference.InputTypeStrategies;
+import org.apache.flink.table.types.inference.TypeInference;
 import org.apache.flink.util.Collector;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  *
  * RowsToMap
  *
- * @author wenmo
+ * @param <K> Map key type
+ * @param <V> Map value type
+ *
+ * @author wenmo, lixiaoPing
  * @since 2021/5/25 15:50
  **/
 
-public class RowsToMap extends TableAggregateFunction<String, MyAccum> {
+public class RowsToMap<K, V> extends TableAggregateFunction<Map<K, V>, MyAccum<K, V>> {
     static final long serialVersionUID = 42L;
 
     @Override
-    public MyAccum createAccumulator() {
-        return new MyAccum();
+    public TypeInference getTypeInference(DataTypeFactory typeFactory) {
+        return TypeInference.newBuilder()
+            .inputTypeStrategy(InputTypeStrategies.sequence(
+                InputTypeStrategies.ANY,
+                InputTypeStrategies.ANY
+            ))
+            .accumulatorTypeStrategy(callContext -> {
+                List<DataType> argumentDataTypes = callContext.getArgumentDataTypes();
+                final DataType arg0DataType = argumentDataTypes.get(0);
+                final DataType arg1DataType = argumentDataTypes.get(1);
+                final DataType accDataType = DataTypes.STRUCTURED(
+                    MyAccum.class,
+                    DataTypes.FIELD("mapView",
+                        DataTypes.MAP(arg0DataType, arg1DataType)));
+                return Optional.of(accDataType);
+            })
+            .outputTypeStrategy(callContext -> {
+                List<DataType> argumentDataTypes = callContext.getArgumentDataTypes();
+                final DataType arg0DataType = argumentDataTypes.get(0);
+                final DataType arg1DataType = argumentDataTypes.get(1);
+                return Optional.of(DataTypes.MAP(arg0DataType, arg1DataType));
+            })
+            .build();
+    }
+
+    @Override
+    public MyAccum<K, V> createAccumulator() {
+        return new MyAccum<>();
     }
 
     public void accumulate(
-        MyAccum acc,
-        String cls,
-        Integer v) throws Exception {
+        MyAccum<K, V> acc, K cls, V v) {
         if (v == null) {
             return;
         }
 
-        String[] keys = cls.split(",");
-        for (String s : keys) {
-            if (s.equals(cls)) {
-                acc.map.put(cls, v);
-            }
-        }
+        acc.mapView.put(cls, v);
     }
 
     /**
@@ -67,11 +96,11 @@ public class RowsToMap extends TableAggregateFunction<String, MyAccum> {
      *
      * @param acc           the accumulator which contains the current aggregated results
      */
-    public void retract(MyAccum acc, String cls, Integer v) throws Exception {
+    public void retract(MyAccum<K, V> acc, K cls, V v) {
         if (v == null) {
             return;
         }
-        acc.map.remove(cls);
+        acc.mapView.remove(cls);
     }
 
     /**
@@ -82,34 +111,33 @@ public class RowsToMap extends TableAggregateFunction<String, MyAccum> {
      *                     be noted that the accumulator may contain the previous aggregated
      *                     results. Therefore user should not replace or clean this instance in the
      *                     custom merge method.
-     * @param iterable          an {@link java.lang.Iterable} pointed to a group of accumulators that will be
+     * @param iterable          an {@link Iterable} pointed to a group of accumulators that will be
      *                     merged.
      */
-    public void merge(MyAccum acc, Iterable<MyAccum> iterable)
-        throws Exception {
-        for (MyAccum otherAcc : iterable) {
-            for (Map.Entry<String, Integer> entry : otherAcc.map.getMap().entrySet()) {
+    public void merge(MyAccum<K, V> acc, Iterable<MyAccum<K, V>> iterable) {
+        for (MyAccum<K, V> otherAcc : iterable) {
+            for (Map.Entry<K, V> entry : otherAcc.mapView.entrySet()) {
                 accumulate(acc, entry.getKey(), entry.getValue());
             }
         }
     }
 
-    public void emitValue(MyAccum acc, Collector<String> out) {
-        out.collect(acc.map.getMap().toString());
+    public void emitValue(MyAccum<K, V> acc, Collector<Map<K, V>> out) {
+        out.collect(acc.mapView);
     }
 
-    public static class MyAccum {
+    public static class MyAccum<K, V> {
 
         /**
          * 不能 final
          */
-        public  MapView<String, Integer> map;
+        public  Map<K, V> mapView;
 
         /**
          * 不能删除，否则不能生成查询计划
          */
         public MyAccum() {
-            this.map =  new MapView<>();
+            this.mapView =  new HashMap<>();
         }
     }
 }
