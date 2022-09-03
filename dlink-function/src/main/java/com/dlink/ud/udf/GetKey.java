@@ -23,16 +23,9 @@ import org.apache.flink.table.functions.ScalarFunction;
 
 import java.util.Objects;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class GetKey extends ScalarFunction {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GetKey.class);
-
     public int eval(String map, String key, int defaultValue) {
-        LOGGER.info("map = {}, key = {}, defaultValue = {}", map, key, defaultValue);
-
         if (map == null || !map.contains(key)) {
             return defaultValue;
         }
@@ -49,7 +42,6 @@ public class GetKey extends ScalarFunction {
     }
 
     public String eval(String map, String key, String defaultValue) {
-        LOGGER.info("map = {}, key = {}, defaultValue = {}", map, key, defaultValue);
         if (map == null || !map.contains(key)) {
             return defaultValue;
         }
