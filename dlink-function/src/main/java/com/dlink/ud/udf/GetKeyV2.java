@@ -19,39 +19,32 @@
 
 package com.dlink.ud.udf;
 
+import org.apache.flink.table.api.DataTypes;
+import org.apache.flink.table.catalog.DataTypeFactory;
 import org.apache.flink.table.functions.ScalarFunction;
+import org.apache.flink.table.types.inference.InputTypeStrategies;
+import org.apache.flink.table.types.inference.TypeInference;
 
 import java.util.Objects;
+import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public class GetKeyV2<T> extends ScalarFunction {
 
-public class GetKey extends ScalarFunction {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(GetKey.class);
-
-    public int eval(String map, String key, int defaultValue) {
-        LOGGER.info("map = {}, key = {}, defaultValue = {}", map, key, defaultValue);
-
-        if (map == null || !map.contains(key)) {
-            return defaultValue;
-        }
-
-        String[] maps = extractProperties(map);
-
-        for (String s : maps) {
-            String[] items = s.split("=");
-            if (items.length == 2 && Objects.equals(key, items[0])) {
-                return Integer.parseInt(items[1]);
-            }
-        }
-        return defaultValue;
+    @Override
+    public TypeInference getTypeInference(DataTypeFactory typeFactory) {
+        return TypeInference.newBuilder()
+            .inputTypeStrategy(InputTypeStrategies.sequence(
+                InputTypeStrategies.explicit(DataTypes.STRING()),
+                InputTypeStrategies.explicit(DataTypes.STRING().notNull()),
+                InputTypeStrategies.ANY
+            ))
+            .outputTypeStrategy(callContext -> Optional.of(DataTypes.STRING()))
+            .build();
     }
 
-    public String eval(String map, String key, String defaultValue) {
-        LOGGER.info("map = {}, key = {}, defaultValue = {}", map, key, defaultValue);
+    public String eval(String map, String key, T defaultValue) {
         if (map == null || !map.contains(key)) {
-            return defaultValue;
+            return defaultValue.toString();
         }
 
         String[] maps = extractProperties(map);
@@ -62,7 +55,8 @@ public class GetKey extends ScalarFunction {
                 return items[1];
             }
         }
-        return defaultValue;
+
+        return defaultValue.toString();
     }
 
     private String[] extractProperties(String map) {
