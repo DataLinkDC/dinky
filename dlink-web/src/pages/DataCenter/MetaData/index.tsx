@@ -202,7 +202,7 @@ const Container: React.FC<{}> = (props: any) => {
                       key="exampleData"
                     >
                       {row ? (
-                        <TableData dbId={databaseId} schema={row.schema} table={row.table} />
+                        <TableData dbId={databaseId} schema={row.schema} table={row.table} rows={row.rows}/>
                       ) : (
                         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
                       )}

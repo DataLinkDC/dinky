@@ -8,7 +8,7 @@ import Divider from "antd/es/divider";
 const TableData = (props: any) => {
 
   // 数据库id，数据库名称，表名称
-  const {dbId, table, schema} = props;
+  const {dbId, table, schema,rows} = props;
   // 表数据
   const [tableData, setableData] = useState<{ columns: {}[],rowData: {}[] }>({columns: [], rowData: []});
   // 加载状态
@@ -25,7 +25,7 @@ const TableData = (props: any) => {
   const [options, setOptions] = useState<{whereOption: {}[],orderOption:{}[] }>({whereOption:[],orderOption:[]});
 // where输入框内容
 const [optionInput, setOptionInput] = useState<{whereInput:string,orderInput:string}>({whereInput:"",orderInput:""});
-const [page, setPage] = useState<{ page:number,pageSize:number }>({page:0 ,pageSize:20});
+const [page, setPage] = useState<{ page:number,pageSize:number }>({page:0 ,pageSize:10});
 
 // 获取数据库数据
 const fetchData = async () => {
@@ -33,7 +33,10 @@ const fetchData = async () => {
   setLoading(true);
   let temp= {rowData: [], columns: []}
   let limitStart = page.page * page.pageSize;
+  console.log(page.page+"------"+page.pageSize)
   let limitEnd = limitStart + page.pageSize;
+  console.log(limitStart+"------"+limitEnd)
+
   let option = {where:optionInput.whereInput,
     order:optionInput.orderInput,
     limitStart:limitStart,
@@ -68,7 +71,7 @@ const fetchData = async () => {
 
 useEffect(() => {
   fetchData();
-}, [dbId, table, schema]);
+}, [dbId, table, schema,page]);
 
 //使用多选框进行自由列选择，屏蔽不需要看见的列，目前实现有些问题，暂时屏蔽
 // // 单项选择监听
@@ -220,9 +223,10 @@ return (
         <Table style={{height: '95vh'}}
                columns={tableData.columns}
                dataSource={tableData.rowData}
-               pagination={{pageSize:page.pageSize,
+               pagination={{pageSize:page.pageSize,total:rows,
                  onChange: (pageNum, pageSize) => {
-                   setPage({page:pageNum,pageSize:pageSize});
+                   console.log(pageNum+"================"+pageSize)
+                   setPage({page:pageNum-1,pageSize:pageSize});
                  }}}
                scroll={{y: "80vh", x: true}}
         />
