@@ -35,18 +35,17 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- *
  * RowsToMap
  *
  * @param <K> Map key type
  * @param <V> Map value type
- *
  * @author wenmo, lixiaoPing
  * @since 2021/5/25 15:50
  **/
 
 public class RowsToMap<K, V> extends TableAggregateFunction<Map<K, V>, MyAccum<K, V>> {
-    static final long serialVersionUID = 42L;
+
+    private static final long serialVersionUID = 42L;
 
     @Override
     public TypeInference getTypeInference(DataTypeFactory typeFactory) {
@@ -94,7 +93,7 @@ public class RowsToMap<K, V> extends TableAggregateFunction<Map<K, V>, MyAccum<K
      * overloaded with different custom types and arguments. This function must be implemented for
      * datastream bounded over aggregate.
      *
-     * @param acc           the accumulator which contains the current aggregated results
+     * @param acc the accumulator which contains the current aggregated results
      */
     public void retract(MyAccum<K, V> acc, K cls, V v) {
         if (v == null) {
@@ -107,12 +106,11 @@ public class RowsToMap<K, V> extends TableAggregateFunction<Map<K, V>, MyAccum<K
      * Merges a group of accumulator instances into one accumulator instance. This function must be
      * implemented for datastream session window grouping aggregate and bounded grouping aggregate.
      *
-     * @param acc  the accumulator which will keep the merged aggregate results. It should
-     *                     be noted that the accumulator may contain the previous aggregated
-     *                     results. Therefore user should not replace or clean this instance in the
-     *                     custom merge method.
-     * @param iterable          an {@link Iterable} pointed to a group of accumulators that will be
-     *                     merged.
+     * @param acc      the accumulator which will keep the merged aggregate results. It should be
+     *                 noted that the accumulator may contain the previous aggregated results.
+     *                 Therefore user should not replace or clean this instance in the custom merge
+     *                 method.
+     * @param iterable an {@link Iterable} pointed to a group of accumulators that will be merged.
      */
     public void merge(MyAccum<K, V> acc, Iterable<MyAccum<K, V>> iterable) {
         for (MyAccum<K, V> otherAcc : iterable) {
@@ -131,13 +129,13 @@ public class RowsToMap<K, V> extends TableAggregateFunction<Map<K, V>, MyAccum<K
         /**
          * 不能 final
          */
-        public  Map<K, V> mapView;
+        public Map<K, V> mapView;
 
         /**
          * 不能删除，否则不能生成查询计划
          */
         public MyAccum() {
-            this.mapView =  new HashMap<>();
+            this.mapView = new HashMap<>();
         }
     }
 }

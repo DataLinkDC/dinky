@@ -45,7 +45,7 @@ public class FlinkUtil {
         if (tableOpt.isPresent()) {
             return tableOpt.get().getResolvedSchema().getColumnNames();
         } else {
-            return new ArrayList<>();
+            return new ArrayList<String>();
         }
     }
 
