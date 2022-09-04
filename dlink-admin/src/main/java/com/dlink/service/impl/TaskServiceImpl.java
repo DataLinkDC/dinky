@@ -809,7 +809,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if (JobStatus.isDone(jobInfoDetail.getInstance().getStatus()) && !status.equals(jobInfoDetail.getInstance().getStatus())) {
             jobStatusChanged = true;
             jobInfoDetail.getInstance().setFinishTime(LocalDateTime.now());
-            handleJobDone(jobInfoDetail.getInstance());
+            // handleJobDone(jobInfoDetail.getInstance());
         }
         if (isCoercive) {
             DaemonFactory.addTask(DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInfoDetail.getInstance().getId()));
@@ -1061,7 +1061,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         return duration;
     }
 
-    private void handleJobDone(JobInstance jobInstance) {
+    @Override
+    public void handleJobDone(JobInstance jobInstance) {
         if (Asserts.isNull(jobInstance.getTaskId())) {
             return;
         }

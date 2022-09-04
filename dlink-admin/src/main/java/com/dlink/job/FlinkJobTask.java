@@ -77,6 +77,7 @@ public class FlinkJobTask implements DaemonTask {
             && Duration.between(jobInstance.getFinishTime(), LocalDateTime.now()).toMinutes() < 1)) {
             DefaultThreadPool.getInstance().execute(this);
         } else {
+            taskService.handleJobDone(jobInstance);
             FlinkJobTaskPool.getInstance().remove(config.getId().toString());
         }
     }

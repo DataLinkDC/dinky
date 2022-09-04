@@ -97,10 +97,12 @@ public interface TaskService extends ISuperService<Task> {
 
     Result uploadTaskJson(MultipartFile file) throws Exception;
 
+    void handleJobDone(JobInstance jobInstance);
+
     Result queryAllCatalogue();
 
     Result<List<Task>> queryOnLineTaskByDoneStatus(List<JobLifeCycle> jobLifeCycle
-            , List<JobStatus> jobStatuses, boolean includeNull, Integer catalogueId);
+        , List<JobStatus> jobStatuses, boolean includeNull, Integer catalogueId);
 
     void selectSavepointOnLineTask(TaskOperatingResult taskOperatingResult);
 
