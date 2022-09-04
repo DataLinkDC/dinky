@@ -118,21 +118,10 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
   const getTreeData = async () => {
     const result = await getCatalogueTreeData();
     let data = result.datas;
-    let list = data;
-    let expendList: any[] = [];
-    list?.map((v: any) => {
-      expendList.push(v.id);
-      if (v.children) {
-        v?.children?.map((item: any) => {
-          expendList.push(item.id);
-        })
-      }
-    });
-    data = convertToTreeData(list, 0);
-    setTreeData(data);
+    setTreeData(convertToTreeData(data, 0));
     //默认展开所有
-    setExpandedKeys(expendList || []);
-    setDefaultExpandedKeys(expendList || []);
+    setExpandedKeys([]);
+    setDefaultExpandedKeys([]);
     setExportTaskIds([]);
   };
 
@@ -203,7 +192,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       toPaste(rightClickNode);
     } else if (key == 'Copy') {
       toCopy(rightClickNode);
-    }else if (key == 'ExportJson') {
+    } else if (key == 'ExportJson') {
       toExportJson(rightClickNode);
     }
   };
@@ -355,10 +344,10 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
 
   const toExportJson = async (node: TreeDataNode | undefined) => {
     let taskId = node?.taskId;
-    const datas = await handleData('/api/task/exportJsonByTaskId',{id:taskId});
+    const datas = await handleData('/api/task/exportJsonByTaskId', {id: taskId});
     if (datas) {
       let data = JSON.parse(datas);
-      saveJSON(data,data.alias);
+      saveJSON(data, data.alias);
       message.success('导出json成功');
     }
   };
@@ -368,7 +357,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       message.warn("请先选择要导出的作业");
     } else {
       try {
-        const {code, datas, msg} = await postAll('/api/task/exportJsonByTaskIds', {taskIds:exportTaskIds});
+        const {code, datas, msg} = await postAll('/api/task/exportJsonByTaskIds', {taskIds: exportTaskIds});
         if (code == CODE.SUCCESS) {
           saveJSON(datas);
           message.success('导出json成功');
@@ -381,7 +370,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     }
   }
 
-  const saveJSON = (data:any, filename?:any) => {
+  const saveJSON = (data: any, filename?: any) => {
     if (!data) {
       message.error("保存的json数据为空");
       return;
@@ -596,9 +585,9 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     showUploadList: false,
     onChange(info) {
       if (info.file.status === 'done') {
-        if(info.file.response.code == CODE.SUCCESS){
+        if (info.file.response.code == CODE.SUCCESS) {
           message.success(info.file.response.msg);
-        }else{
+        } else {
           message.warn(info.file.response.msg);
         }
         getTreeData();
@@ -629,7 +618,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
           <Tooltip title="导出json">
             <Button
               type="text"
-              icon={<DownloadOutlined />}
+              icon={<DownloadOutlined/>}
               onClick={toExportSelectedTaskJson}
             />
           </Tooltip>
@@ -653,7 +642,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
           treeData={loop(treeData)}
           onExpand={onExpand}
           autoExpandParent={autoExpandParent}
-          defaultExpandAll
+          // defaultExpandAll
           expandedKeys={expandedKeys}
         />
         {getNodeTreeRightClickMenu()}
