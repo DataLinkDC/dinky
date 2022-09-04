@@ -338,6 +338,11 @@
             </dependency>
             <dependency>
                 <groupId>com.dlink</groupId>
+                <artifactId>dlink-metadata-starrocks</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
                 <artifactId>dlink-gateway</artifactId>
                 <version>${project.version}</version>
             </dependency>

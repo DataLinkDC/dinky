@@ -217,6 +217,14 @@
             </includes>
         </fileSet>
         <fileSet>
+            <directory>${project.parent.basedir}/dlink-metadata/dlink-metadata-starrocks/target
+            </directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>dlink-metadata-starrocks-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
             <directory>${project.parent.basedir}/dlink-alert/dlink-alert-dingtalk/target
             </directory>
             <outputDirectory>lib</outputDirectory>

@@ -19,10 +19,10 @@
 
 package com.dlink.metadata.driver;
 
-import com.dlink.metadata.convert.DorisTypeConvert;
 import com.dlink.metadata.convert.ITypeConvert;
-import com.dlink.metadata.query.DorisQuery;
+import com.dlink.metadata.convert.StarRocksTypeConvert;
 import com.dlink.metadata.query.IDBQuery;
+import com.dlink.metadata.query.StarRocksQuery;
 import com.dlink.metadata.result.JdbcSelectResult;
 import com.dlink.utils.LogUtil;
 import com.dlink.utils.SqlUtil;
@@ -32,15 +32,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DorisDriver extends AbstractJdbcDriver {
+public class StarRocksDriver extends AbstractJdbcDriver {
     @Override
     public IDBQuery getDBQuery() {
-        return new DorisQuery();
+        return new StarRocksQuery();
     }
 
     @Override
     public ITypeConvert getTypeConvert() {
-        return new DorisTypeConvert();
+        return new StarRocksTypeConvert();
     }
 
     @Override
@@ -50,12 +50,12 @@ public class DorisDriver extends AbstractJdbcDriver {
 
     @Override
     public String getType() {
-        return "Doris";
+        return "StarRocks";
     }
 
     @Override
     public String getName() {
-        return "Doris";
+        return "StarRocks";
     }
 
     @Override
