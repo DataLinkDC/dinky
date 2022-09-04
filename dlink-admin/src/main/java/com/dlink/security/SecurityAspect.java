@@ -19,6 +19,13 @@
 
 package com.dlink.security;
 
+import com.dlink.common.result.ProTableResult;
+import com.dlink.common.result.Result;
+import com.dlink.model.History;
+import com.dlink.model.JobInfoDetail;
+import com.dlink.result.ExplainResult;
+import com.dlink.result.SqlExplainResult;
+
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,13 +35,6 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-
-import com.dlink.common.result.ProTableResult;
-import com.dlink.common.result.Result;
-import com.dlink.model.History;
-import com.dlink.model.JobInfoDetail;
-import com.dlink.result.ExplainResult;
-import com.dlink.result.SqlExplainResult;
 
 @Aspect
 @Component
