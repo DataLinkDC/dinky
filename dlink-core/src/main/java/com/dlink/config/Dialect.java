@@ -30,8 +30,8 @@ import com.dlink.assertion.Asserts;
 public enum Dialect {
 
     FLINKSQL("FlinkSql"), FLINKJAR("FlinkJar"), FLINKSQLENV("FlinkSqlEnv"), SQL("Sql"), JAVA("Java"),
-    MYSQL("Mysql"), ORACLE("Oracle"), SQLSERVER("SqlServer"), POSTGRESQL("PostGreSql"), CLICKHOUSE("ClickHouse"),
-    DORIS("Doris"), PHOENIX("Phoenix"), HIVE("Hive");
+    MYSQL("Mysql"), ORACLE("Oracle"), SQLSERVER("SqlServer"), POSTGRESQL("PostgreSql"), CLICKHOUSE("ClickHouse"),
+    DORIS("Doris"), PHOENIX("Phoenix"), HIVE("Hive"), STARROCKS("StarRocks");
 
     private String value;
 
@@ -76,6 +76,7 @@ public enum Dialect {
             case DORIS:
             case PHOENIX:
             case HIVE:
+            case STARROCKS:
                 return true;
             default:
                 return false;
