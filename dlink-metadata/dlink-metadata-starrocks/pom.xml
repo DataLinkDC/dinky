@@ -20,26 +20,31 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>dlink</artifactId>
+        <artifactId>dlink-metadata</artifactId>
         <groupId>com.dlink</groupId>
         <version>0.6.7-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>dlink-metadata</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>dlink-metadata-base</module>
-        <module>dlink-metadata-mysql</module>
-        <module>dlink-metadata-oracle</module>
-        <module>dlink-metadata-clickhouse</module>
-        <module>dlink-metadata-postgresql</module>
-        <module>dlink-metadata-sqlserver</module>
-        <module>dlink-metadata-doris</module>
-        <module>dlink-metadata-phoenix</module>
-        <module>dlink-metadata-hive</module>
-        <module>dlink-metadata-starrocks</module>
-    </modules>
-
-
+    <artifactId>dlink-metadata-starrocks</artifactId>
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-metadata-base</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <!--            <scope>test</scope>-->
+        </dependency>
+    </dependencies>
 </project>
