@@ -32,11 +32,16 @@ import com.dlink.model.Table;
 import com.dlink.trans.AbstractOperation;
 import com.dlink.trans.Operation;
 import com.dlink.utils.SplitUtil;
+
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.TableResult;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -70,8 +75,8 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
         logger.info("Start build CDCSOURCE Task...");
         CDCSource cdcSource = CDCSource.build(statement);
         FlinkCDCConfig config = new FlinkCDCConfig(cdcSource.getConnector(), cdcSource.getHostname(), cdcSource.getPort(), cdcSource.getUsername()
-                , cdcSource.getPassword(), cdcSource.getCheckpoint(), cdcSource.getParallelism(), cdcSource.getDatabase(), cdcSource.getSchema()
-                , cdcSource.getTable(), cdcSource.getStartupMode(),cdcSource.getSplit(), cdcSource.getDebezium(), cdcSource.getSource(), cdcSource.getSink(), cdcSource.getJdbc());
+            , cdcSource.getPassword(), cdcSource.getCheckpoint(), cdcSource.getParallelism(), cdcSource.getDatabase(), cdcSource.getSchema()
+            , cdcSource.getTable(), cdcSource.getStartupMode(), cdcSource.getSplit(), cdcSource.getDebezium(), cdcSource.getSource(), cdcSource.getSink(), cdcSource.getJdbc());
         try {
             CDCBuilder cdcBuilder = CDCBuilderFactory.buildCDCBuilder(config);
             Map<String, Map<String, String>> allConfigMap = cdcBuilder.parseMetaDataConfigs();
@@ -94,11 +99,10 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                     Schema schema = Schema.build(schemaName);
                     schema.setTables(Collections.singletonList(table));
                     table.setColumns(driver.listColumnsSortByPK(schemaName, table.getName()));
-//                    schemaTableNameList.addAll(table.getSchemaTableNameList());
                     schemaList.add(schema);
                 }
 
-            }else {
+            } else {
                 for (String schemaName : schemaNameList) {
                     Schema schema = Schema.build(schemaName);
                     if (!allConfigMap.containsKey(schemaName)) {

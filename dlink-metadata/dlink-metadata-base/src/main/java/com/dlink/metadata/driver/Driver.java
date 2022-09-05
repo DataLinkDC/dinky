@@ -28,7 +28,11 @@ import com.dlink.model.Schema;
 import com.dlink.model.Table;
 import com.dlink.result.SqlExplainResult;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.ServiceLoader;
+import java.util.Set;
 
 /**
  * Driver
@@ -141,7 +145,6 @@ public interface Driver {
 
     Map<String, String> getFlinkColumnTypeConversion();
 
-
     /**
      * 得到分割表
      *
@@ -149,8 +152,11 @@ public interface Driver {
      * @param splitConfig  分库配置
      * @return {@link Set}<{@link Table}>
      */
-   default Set<Table> getSplitTables(List<String> tableRegList, Map<String, String> splitConfig){
-       throw new SplitTableException("目前此数据源不支持分库分表");
-   };
+    default Set<Table> getSplitTables(List<String> tableRegList, Map<String, String> splitConfig) {
+        throw new SplitTableException("目前此数据源不支持分库分表");
+    }
+
+    ;
+
     List<Map<String, String>> getSplitSchemaList();
 }

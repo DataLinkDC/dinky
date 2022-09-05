@@ -4,19 +4,21 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 分库分表的工具类
  *
  * @author ZackYoung
  * @version 1.0
- * @date 2022/9/2
+ * @since 2022/9/2
  */
+@Slf4j
 public class SplitUtil {
 
     public static boolean contains(String regex, String sourceData) {
         return Pattern.matches(regex, sourceData);
     }
-
 
     public static boolean isSplit(String value, Map<String, String> splitConfig) {
         String matchNumberRegex = splitConfig.get("match_number_regex");
@@ -63,7 +65,7 @@ public class SplitUtil {
                 }
 
             } catch (Exception ignored) {
-
+                log.warn("Unable to determine sub-database sub-table");
             }
         }
         return value;

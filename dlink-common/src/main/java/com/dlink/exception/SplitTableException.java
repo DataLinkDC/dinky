@@ -3,9 +3,9 @@ package com.dlink.exception;
 /**
  * @author ZackYoung
  * @version 1.0
- * @date 2022/9/2
+ * @since 2022/9/2
  */
-public class SplitTableException extends RuntimeException{
+public class SplitTableException extends RuntimeException {
     public SplitTableException(String message, Throwable cause) {
         super(message, cause);
     }
