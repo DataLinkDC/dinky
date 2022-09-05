@@ -25,22 +25,15 @@ import com.dlink.cdc.CDCBuilder;
 import com.dlink.constant.ClientConstant;
 import com.dlink.constant.FlinkParamConstant;
 import com.dlink.model.FlinkCDCConfig;
-
+import com.ververica.cdc.connectors.mysql.source.MySqlSource;
+import com.ververica.cdc.connectors.mysql.source.MySqlSourceBuilder;
+import com.ververica.cdc.connectors.mysql.table.StartupOptions;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import com.ververica.cdc.connectors.mysql.source.MySqlSource;
-import com.ververica.cdc.connectors.mysql.source.MySqlSourceBuilder;
-import com.ververica.cdc.connectors.mysql.table.StartupOptions;
+import java.util.*;
 
 /**
  * MysqlCDCBuilder
@@ -169,6 +162,7 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         return env.fromSource(sourceBuilder.build(), WatermarkStrategy.noWatermarks(), "MySQL CDC Source");
     }
 
+    @Override
     public List<String> getSchemaList() {
         List<String> schemaList = new ArrayList<>();
         String schema = config.getDatabase();
@@ -188,7 +182,7 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         }
         return schemaList;
     }
-
+    @Override
     public Map<String, Map<String, String>> parseMetaDataConfigs() {
         Map<String, Map<String, String>> allConfigMap = new HashMap<>();
         List<String> schemaList = getSchemaList();
@@ -208,6 +202,23 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
             allConfigMap.put(schema, configMap);
         }
         return allConfigMap;
+    }
+    @Override
+    public Map<String, String> parseMetaDataConfig() {
+        Map<String, String> configMap = new HashMap<>();
+
+        configMap.put(ClientConstant.METADATA_TYPE, METADATA_TYPE);
+        StringBuilder sb = new StringBuilder("jdbc:mysql://");
+        sb.append(config.getHostname());
+        sb.append(":");
+        sb.append(config.getPort());
+        sb.append("/");
+        configMap.put(ClientConstant.METADATA_NAME, sb.toString());
+        configMap.put(ClientConstant.METADATA_URL, sb.toString());
+        configMap.put(ClientConstant.METADATA_USERNAME, config.getUsername());
+        configMap.put(ClientConstant.METADATA_PASSWORD, config.getPassword());
+
+        return configMap;
     }
 
     @Override

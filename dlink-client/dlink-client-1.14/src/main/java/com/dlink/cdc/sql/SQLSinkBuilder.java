@@ -30,7 +30,7 @@ import com.dlink.model.Table;
 import com.dlink.utils.FlinkBaseUtil;
 import com.dlink.utils.JSONUtil;
 import com.dlink.utils.LogUtil;
-
+import com.dlink.utils.SplitUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
@@ -46,30 +46,20 @@ import org.apache.flink.table.api.ValidationException;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
-import org.apache.flink.table.types.logical.BigIntType;
-import org.apache.flink.table.types.logical.DateType;
-import org.apache.flink.table.types.logical.DecimalType;
-import org.apache.flink.table.types.logical.LogicalType;
-import org.apache.flink.table.types.logical.TimestampType;
-import org.apache.flink.table.types.logical.VarBinaryType;
+import org.apache.flink.table.types.logical.*;
 import org.apache.flink.table.types.utils.TypeConversions;
 import org.apache.flink.types.Row;
 import org.apache.flink.types.RowKind;
 import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.xml.bind.DatatypeConverter;
 
 /**
  * SQLSinkBuilder
@@ -216,6 +206,8 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
             logger.info("Build deserialize successful...");
             Map<Table, OutputTag<Map>> tagMap = new HashMap<>();
             Map<String, Table> tableMap = new HashMap<>();
+            Map<String, String> splitConfMap = config.getSplit();
+
             for (Schema schema : schemaList) {
                 for (Table table : schema.getTables()) {
                     String sinkTableName = getSinkTableName(table);
@@ -233,8 +225,10 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                 public void processElement(Map map, ProcessFunction<Map, Map>.Context ctx, Collector<Map> out) throws Exception {
                     LinkedHashMap source = (LinkedHashMap) map.get("source");
                     try {
-                        Table table = tableMap.get(source.get(schemaFieldName).toString() + "." + source.get("table").toString());
+                        String tableName = SplitUtil.getReValue(source.get(schemaFieldName).toString(), splitConfMap) + "." + SplitUtil.getReValue(source.get("table").toString(), splitConfMap);
+                        Table table = tableMap.get(tableName);
                         OutputTag<Map> outputTag = tagMap.get(table);
+                        Optional.ofNullable(outputTag).orElseThrow(()->  new RuntimeException("data outPutTag is not exists!table name is  "+tableName));
                         ctx.output(outputTag, map);
                     } catch (Exception e) {
                         logger.error(e.getMessage(), e);
