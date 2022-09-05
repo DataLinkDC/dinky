@@ -19,7 +19,7 @@
 
 
 import React, {useCallback, useRef} from 'react';
-import {GroupOutlined, LogoutOutlined, UsergroupAddOutlined} from '@ant-design/icons';
+import {LogoutOutlined, SecurityScanOutlined, UserSwitchOutlined} from '@ant-design/icons';
 import {Avatar, Menu, Modal, Spin} from 'antd';
 import {history, useModel} from 'umi';
 import {stringify} from 'querystring';
@@ -116,10 +116,13 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
       chooseTenantList.push(
         <>
           <Menu.Item
-            key={item.tenant?.id}
+            key={item.tenant?.id}  // key 需要唯一 目前唯一不了
             title={item.tenant?.tenantCode}
-            icon={<UsergroupAddOutlined/>}
+            icon={<SecurityScanOutlined/>}
             defaultValue={item.tenant?.id}
+            onClick={(e) => {
+              console.log(e, '-----')
+            }}
           >
             {item.tenant?.tenantCode}
           </Menu.Item>
@@ -130,7 +133,8 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
       <Menu.SubMenu
         key="chooseTenantList"
         title={"切换租户"}
-        icon={<GroupOutlined/>}
+        icon={<UserSwitchOutlined/>}
+
       >
         {chooseTenantList}
       </Menu.SubMenu>

@@ -145,18 +145,10 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             List<UserRole> userRoles = userRoleService.getUserRoleByUserId(user.getId());
 
             Tenant currentTenant = tenantService.getBaseMapper().selectById(loginUTO.getTenantId());
-
-            //List<Tenant> tenantList = tenantService.list();
-            //Map<Integer, List<Tenant>> listMap = tenantList.stream().filter(item -> item.getIsDelete()).collect(Collectors.groupingBy(Tenant::getId));
-            //Set<Integer> tenantIds = listMap.keySet();
             for (UserRole userRole : userRoles) {
                 Role role = roleService.getBaseMapper().selectById(userRole.getRoleId());
                 Tenant tenant = tenantService.getBaseMapper().selectOne(new QueryWrapper<Tenant>().eq("id", role.getTenantId()));
                 roleDTOList.add(new RoleDTO(role, tenant));
-                /*for (Integer tenantId : tenantIds) {
-                    if (Asserts.isNotNull(role)) {
-                    }
-                }*/
             }
             userDTO.setUser(user);
             userDTO.setRoleDTOList(roleDTOList);
