@@ -129,9 +129,6 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
     return <>
       <Menu.SubMenu
         key="chooseTenantList"
-        onTitleClick={(e) => {
-          console.log(e, '---------------')
-        }}
         title={"切换租户"}
         icon={<GroupOutlined/>}
       >
