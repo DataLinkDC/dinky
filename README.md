@@ -7,51 +7,65 @@
 
 [![Stargazers over time](https://starchart.cc/DataLinkDC/dlink.svg)](https://starchart.cc/DataLinkDC/dlink)
 
-## 简介
+## Introduction
 
-实时即未来，Dlink 为 Apache Flink 而生，让 Flink SQL 纵享丝滑，并致力于实时计算平台建设。
+Real-time is the future. Dlink is born for Apache Flink, allowing Flink SQL to enjoy silky smoothness, and is committed to the construction of a real-time computing platform.
 
-Dinky 基于 Apache Flink 实现 Dlink ，增强 Flink 的应用与体验，探索流式数仓。即站在巨人肩膀上创新与实践，Dinky 在未来批流一体的发展趋势下潜力无限。
+Dinky implements Dlink based on Apache Flink, enhances the application and experience of Flink, and explores streaming data warehouses. That is to stand on the shoulders of giants to innovate and practice, Dinky has unlimited potential under the development trend of batch and flow integration in the future.
 
-最后，Dinky 的发展皆归功于 Apache Flink 等其他优秀的开源项目的指导与成果。
+In the end, Dinky's development is due to the guidance and results of other excellent open source projects such as Apache Flink.
 
-## 特点
+## Features
 
-一个 `开箱即用` 、`易扩展` ，以 `Apache Flink` 为基础，连接 `OLAP` 和 `数据湖` 等众多框架的 `一站式` 实时计算平台，致力于 `流批一体` 和 `湖仓一体` 的建设与实践。
+A `out-of-the-box`, `easy to extend`, based on `Apache Flink`, a `one-stop` real-time computing platform connecting with many frameworks such as `OLAP` and `data lake`, dedicated to `stream-batch integration` The construction and practice of `Lake and Warehouse Integration`.
 
-其主要目标如下：
+Its main objectives are as follows:
 
-- 可视化交互式 FlinkSQL 和 SQL 的数据开发平台：自动提示补全、语法高亮、调试执行、语法校验、语句美化、全局变量等
-- 支持全面的多版本的 FlinkSQL 作业提交方式：Local、Standalone、Yarn Session、Yarn Per-Job、Yarn Application、Kubernetes Session、Kubernetes Application
-- 支持 Apache Flink 所有的 Connector、UDF、CDC等
-- 支持 FlinkSQL 语法增强：兼容 Apache Flink SQL、表值聚合函数、全局变量、CDC多源合并、执行环境、语句合并、共享会话等
-- 支持易扩展的 SQL 作业提交方式：ClickHouse、Doris、Hive、Mysql、Oracle、Phoenix、PostgreSql、SqlServer 等
-- 支持 FlinkCDC （Source 合并）整库实时入仓入湖
-- 支持实时调试预览 Table 和 ChangeLog 数据及图形展示
-- 支持语法逻辑检查、作业执行计划、字段级血缘分析等
-- 支持 Flink 元数据、数据源元数据查询及管理
-- 支持实时任务运维：作业上线下线、作业信息、集群信息、作业快照、异常信息、作业日志、数据地图、即席查询、历史版本、报警记录等
-- 支持作为多版本 FlinkSQL Server 的能力以及 OpenApi
-- 支持易扩展的实时作业报警及报警组：钉钉、微信企业号等
-- 支持完全托管的 SavePoint 启动机制：最近一次、最早一次、指定一次等
-- 支持多种资源管理：集群实例、集群配置、Jar、数据源、报警组、报警实例、文档、用户、系统配置等
-- 更多隐藏功能等待小伙伴们探索
+- Visual interactive FlinkSQL and SQL data development platform: automatic prompt completion, syntax highlighting, debugging execution, syntax verification, statement beautification, global variables, etc.
 
-## 原理
+- Supports comprehensive multi-version FlinkSQL job submission methods: Local, Standalone, Yarn Session, Yarn Per-Job, Yarn Application, Kubernetes Session, Kubernetes Application
+
+- Support all Connectors, UDFs, CDCs, etc. of Apache Flink
+
+- Support FlinkSQL syntax enhancement: compatible with Apache Flink SQL, table-valued aggregate functions, global variables, CDC multi-source merge, execution environment, statement merge, shared session, etc.
+
+- Supports easily extensible SQL job submission methods: ClickHouse, Doris, Hive, Mysql, Oracle, Phoenix, PostgreSql, SqlServer, etc.
+
+- Support FlinkCDC (Source merge) real-time warehousing into the lake
+
+- Support real-time debugging preview Table and ChangeLog data and graphics display
+
+- Support syntax logic check, job execution plan, field-level blood relationship analysis, etc.
+
+- Support Flink metadata, data source metadata query and management
+
+- Support real-time task operation and maintenance: job online and offline, job information, cluster information, job snapshot, exception information, job log, data map, ad hoc query, historical version, alarm record, etc.
+
+- Support as multi-version FlinkSQL Server capability as well as OpenApi
+
+- Support easy-to-expand real-time job alarms and alarm groups: DingTalk, WeChat Enterprise Account, etc.
+
+- Support for fully managed SavePoint launch mechanisms: most recent, earliest, once specified, etc.
+
+- Support multiple resource management: cluster instance, cluster configuration, Jar, data source, alarm group, alarm instance, document, user, system configuration, etc.
+
+- More hidden functions are waiting for friends to explore
+
+## Principle
 
 ![dinky_principle](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/main/dinky_principle.png)
 
-## 精彩瞬间
+## Wonderful Moment
 
 > FlinkSQL Studio
 
 ![flinksqlstudio](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/060/flinksqlstudio.png)
 
-> 实时调试预览
+> Live debug preview
 
 ![selectpreview](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/060/selectpreview.png)
 
-> 语法和逻辑检查
+> Grammar and logic checking
 
 ![checksql](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/060/checksql.png)
 
@@ -59,68 +73,69 @@ Dinky 基于 Apache Flink 实现 Dlink ，增强 Flink 的应用与体验，探�
 
 ![jobplan](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/060/jobplan.png)
 
-> 字段级血缘分析
+> Field-level bloodline analysis
 
 ![lineage](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/060/lineage.png)
 
-> BI 展示
+> BI showcase
 
 ![charts](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/060/charts.png)
 
-> 元数据查询
+> Metadata query
 
 ![metadata](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/060/metadata.png)
 
-> 实时任务监控
+> Real-time task monitoring
 
 ![monitor](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/060/monitor.png)
 
-> 实时作业信息
+> Real-time job information
 
 ![jobinfo](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/060/jobinfo.png)
 
-> 数据地图
+> Data Map
 
 ![datamap](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/060/datamap.png)
 
-> 数据源注册
+> Data source registration
 
 ![datasource](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/060/datasource.png)
 
-## 功能
+## Function
 
-详见 [功能](https://github.com/DataLinkDC/dlink/blob/dev/docs/zh-CN/feature.md)
+See [Function](https://github.com/DataLinkDC/dlink/blob/dev/docs/zh-CN/feature.md)
 
-## 近期计划
+## Near-Term Plans
 
-- 多租户及命名空间
+- Multi-tenancy and namespaces
 
-- 全局血缘与影响分析
+- Global bloodline and influence analysis
 
-- 统一元数据管理
+- Unified metadata management
 
-- Flink 元数据持久化
+- Flink metadata persistence
 
-- 多版本 Flink-Client Server
+- Multi-version Flink-Client Server
 
-- 整库千表同步
+- Synchronization of thousands of watches in the whole library
 
-## 参与贡献
+## How to Contribute
 
-欢迎您为社区贡献自己的力量，共建共赢，贡献流程请参考： [[参与贡献](https://github.com/DataLinkDC/dlink/blob/dev/docs/zh-CN/developer_guide/how_contribute.md)]
+You are welcome to contribute your strength to the community and build a win-win situation. Please refer to the contribution process: [[How to Contribute](https://github.com/DataLinkDC/dlink/blob/dev/docs/zh-CN/developer_guide/how_contribute.md)]
 
-## 如何部署
+## How to Deploy
 
-详见 [编译](https://github.com/DataLinkDC/dlink/blob/dev/docs/zh-CN/quick_start/build.md) 和 [安装](https://github.com/DataLinkDC/dlink/blob/dev/docs/zh-CN/quick_start/deploy.md) 。
+See [Compile](https://github.com/DataLinkDC/dlink/blob/dev/docs/zh-CN/quick_start/build.md) And [Install](https://github.com/DataLinkDC/dlink/blob/dev/docs/zh-CN/quick_start/deploy.md) 。
 
-## 如何升级到最新
+## How to Upgrade to the latest
 
-由于功能较多，所以 bug 及优化点较多，强烈建议你使用或升级到最新版本。
-替换最新 Dinky 所有依赖包 ，执行 sql 目录下的 dlink_history.sql 中的部分升级语句，依据是通过版本号与日期来判断从何处开始执行，请不要直接执行全部 sql。
+Due to more functions, there are more bugs and optimization points. It is strongly recommended that you use or upgrade to the latest version.
 
-## 感谢
+Replace all dependent packages of the latest Dinky, and execute some upgrade statements in dlink_history.sql in the sql directory. It is based on the version number and date to determine where to start the execution. Please do not directly execute all sql.
 
-站在巨人的肩膀上，Dinky 才得以诞生。对此我们对使用的所有开源软件及其社区表示衷心的感谢！我们也希望自己不仅是开源的受益者，也能成为开源的贡献者，也希望对开源有同样热情和信念的伙伴加入进来，一起为开源献出一份力！致谢列表如下：
+## Thanks
+
+Standing on the shoulders of giants, Dinky was born. For this we express our heartfelt thanks to all the open source software used and its communities! We also hope that we are not only beneficiaries of open source, but also contributors to open source. We also hope that partners who have the same enthusiasm and belief in open source will join in and contribute to open source together! Acknowledgments are listed below:
 
 [Apache Flink](https://github.com/apache/flink)
 
@@ -134,22 +149,22 @@ Dinky 基于 Apache Flink 实现 Dlink ，增强 Flink 的应用与体验，探�
 
 [SpringBoot]()
 
-感谢 [JetBrains](https://www.jetbrains.com/?from=dlink) 提供的免费开源 License 赞助。
+Thanks to [JetBrains](https://www.jetbrains.com/?from=dlink) for sponsoring a free open source license.
 
 [![JetBrains](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/main/jetbrains.svg)](https://www.jetbrains.com/?from=dlink)
 
-## 获得帮助
+## Get Help
 
-1.提交 issue
+1. Submit an issue
 
-2.进入微信用户社区群（推荐，添加微信号 wenmo_ai 邀请进群）和QQ用户社区群（**543709668**）交流，申请备注 “ Dinky + 企业名 + 职位”，不写不批
+2. Enter the WeChat user community group (recommended, add WeChat `wenmo_ai` to invite into the group) and QQ user community group (**543709668**) to communicate, apply for the remark "Dinky + company name + position", do not write or approve
 
-3.关注微信公众号获取相关内容的文章（最新消息获取建议关注）：[DataLink数据中台](https://mmbiz.qpic.cn/mmbiz_jpg/dyicwnSlTFTp6w4PuJruFaLV6uShCJDkzqwtnbQJrQ90yKDuuIC8tyMU5DK69XZibibx7EPPBRQ3ic81se5UQYs21g/0?wx_fmt=jpeg)
+3. Follow the WeChat public account to get relevant articles (recommended to follow the latest news): [DataLink Data Center](https://mmbiz.qpic.cn/mmbiz_jpg/dyicwnSlTFTp6w4PuJruFaLV6uShCJDkzqwtnbQJrQ90yKDuuIC8tyMU5DK69XZibibx7EPPBRQ3ic81se5UQYs21g/0?wx_fmt=jpeg)
 
-4.关注 bilibili UP 主（是文末呀）获取最新视频教学
+4. Follow the bilibili UP master (at the end of the article) to get the latest video teaching
 
-5.访问 [GithubPages](https://datalinkdc.github.io/dlink/#/) 或 [官网](http://www.dlink.top/#/) 网址，阅读最新文档手册
+5. Visit [GithubPages](https://datalinkdc.github.io/dlink/#/) or [Official Website](http://www.dlink.top/#/) to read the latest documentation manual
 
-## 版权
+## LICENSE
 
-请参考 [LICENSE](https://github.com/DataLinkDC/dlink/blob/main/LICENSE) 文件。
+Please refer to the [LICENSE](https://github.com/DataLinkDC/dlink/blob/main/LICENSE) document.

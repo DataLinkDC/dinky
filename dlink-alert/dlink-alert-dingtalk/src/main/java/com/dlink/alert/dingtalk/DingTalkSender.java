@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.alert.dingtalk;
 
 import com.dlink.alert.AlertResult;
@@ -25,6 +24,7 @@ import com.dlink.alert.AlertSendResponse;
 import com.dlink.alert.ShowType;
 import com.dlink.assertion.Asserts;
 import com.dlink.utils.JSONUtil;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;
 import org.apache.http.HttpEntity;
@@ -40,15 +40,24 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * DingTalkSender
@@ -248,10 +257,10 @@ public class DingTalkSender {
         String[] atUserArray = Asserts.isNotNullString(atUserIds) ? atUserIds.split(",") : new String[0];
         boolean isAtAll = Objects.isNull(atAll) ? false : atAll;
         at.put("isAtAll", isAtAll);
-        if (atMobileArray.length > 0){
+        if (atMobileArray.length > 0) {
             at.put("atMobiles", atMobileArray);
         }
-        if (atMobileArray.length > 0){
+        if (atMobileArray.length > 0) {
             at.put("atUserIds", atUserArray);
         }
         items.put("at", at);

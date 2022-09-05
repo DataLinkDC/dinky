@@ -17,12 +17,12 @@
  *
  */
 
-
 package com.dlink.db.properties;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * MybatisPlusFillProperties

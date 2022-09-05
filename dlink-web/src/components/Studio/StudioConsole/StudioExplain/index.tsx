@@ -20,13 +20,14 @@
 
 import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
-import {Button, Tag, Space, Typography, Modal,} from 'antd';
+import {Modal, Space, Tag, Typography,} from 'antd';
 import {ConsoleSqlOutlined} from "@ant-design/icons";
 import ProList from '@ant-design/pro-list';
 import {explainSql} from "@/pages/DataStudio/service";
-import {useRef, useState, useEffect} from "react";
+import {useEffect, useState} from "react";
+import CodeShow from "@/components/Common/CodeShow";
 
-const {Paragraph,Text} = Typography;
+const {Paragraph, Text} = Typography;
 
 type ExplainItem = {
   index: number;
@@ -79,28 +80,23 @@ const StudioExplain = (props: any) => {
     setExplainData([]);
     const result = explainSql(param);
     result.then(res => {
-      setExplainData(res.datas);
+      const errorExplainData: [] = [];
       let errorCount: number = 0;
       for (let i in res.datas) {
         if (!res.datas[i].explainTrue || !res.datas[i].parseTrue) {
+          errorExplainData.push(res.datas[i]);
           errorCount++;
         }
       }
       if (errorCount == 0) {
+        setExplainData(res.datas);
         setResult(<Text type="success">全部正确</Text>);
       } else {
+        setExplainData(errorExplainData);
         setResult(<Text type="danger">存在错误，共计{errorCount}个</Text>);
       }
     })
   }, [modalVisible]);
-
-  const renderFooter = () => {
-    return (
-      <>
-        <Button onClick={onClose}>关闭</Button>
-      </>
-    );
-  };
 
   const renderContent = () => {
     return (
@@ -144,18 +140,10 @@ const StudioExplain = (props: any) => {
                         {row.sql}
                       </Paragraph>) : null
                     }
-                    {row.explain ?
-                      (<Paragraph>
-                    <pre style={{height: '80px'}}>
-                      {row.explain}
-                    </pre>
-                      </Paragraph>) : null
-                    }
                     {row.error ?
                       (<Paragraph>
-                      <pre style={{height: '80px'}}>
-                        {row.error}
-                      </pre>
+                        <CodeShow code={row.error} language='java'
+                                  height='500px' theme="vs-dark"/>
                       </Paragraph>) : null
                     }
                   </>
@@ -189,11 +177,12 @@ const StudioExplain = (props: any) => {
 
   return (
     <Modal
-      width={800}
+      width={'100%'}
       destroyOnClose
+      centered
       title="FlinkSql 语法和逻辑检查"
       visible={modalVisible}
-      footer={renderFooter()}
+      footer={false}
       onCancel={onClose}
     >
       <Paragraph>
@@ -204,7 +193,7 @@ const StudioExplain = (props: any) => {
   );
 };
 
-export default connect(({Studio}: {Studio: StateType}) => ({
+export default connect(({Studio}: { Studio: StateType }) => ({
   current: Studio.current,
   currentSession: Studio.currentSession,
 }))(StudioExplain);

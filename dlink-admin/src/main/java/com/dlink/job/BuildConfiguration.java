@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.job;
 
 import com.dlink.api.FlinkAPI;
@@ -26,9 +25,14 @@ import com.dlink.model.JobManagerConfiguration;
 import com.dlink.model.TaskContainerConfigInfo;
 import com.dlink.model.TaskManagerConfiguration;
 import com.dlink.utils.JSONUtil;
-import com.fasterxml.jackson.databind.JsonNode;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * @program: dlink
@@ -95,14 +99,14 @@ public class BuildConfiguration {
                 String containerId = taskManagers.get("id").asText();// 获取container id
                 String containerPath =  taskManagers.get("path").asText(); // 获取container path
                 Integer dataPort = taskManagers.get("dataPort").asInt(); // 获取container dataPort
-                Integer jmxPort =taskManagers.get("jmxPort").asInt(); // 获取container jmxPort
-                Long timeSinceLastHeartbeat =taskManagers.get("timeSinceLastHeartbeat").asLong(); // 获取container timeSinceLastHeartbeat
-                Integer slotsNumber =taskManagers.get("slotsNumber").asInt(); // 获取container slotsNumber
+                Integer jmxPort = taskManagers.get("jmxPort").asInt(); // 获取container jmxPort
+                Long timeSinceLastHeartbeat = taskManagers.get("timeSinceLastHeartbeat").asLong(); // 获取container timeSinceLastHeartbeat
+                Integer slotsNumber = taskManagers.get("slotsNumber").asInt(); // 获取container slotsNumber
                 Integer freeSlots = taskManagers.get("freeSlots").asInt(); // 获取container freeSlots
                 String totalResource =  JSONUtil.toJsonString(taskManagers.get("totalResource")); // 获取container totalResource
-                String freeResource =  JSONUtil.toJsonString(taskManagers.get("freeResource") ); // 获取container freeResource
-                String hardware = JSONUtil.toJsonString(taskManagers.get("hardware") ); // 获取container hardware
-                String memoryConfiguration = JSONUtil.toJsonString(taskManagers.get("memoryConfiguration") ); // 获取container memoryConfiguration
+                String freeResource =  JSONUtil.toJsonString(taskManagers.get("freeResource")); // 获取container freeResource
+                String hardware = JSONUtil.toJsonString(taskManagers.get("hardware")); // 获取container hardware
+                String memoryConfiguration = JSONUtil.toJsonString(taskManagers.get("memoryConfiguration")); // 获取container memoryConfiguration
                 Asserts.checkNull(containerId, "获取不到 containerId , containerId不能为空");
                 JsonNode taskManagerMetrics = flinkAPI.getTaskManagerMetrics(containerId);//获取taskManager metrics
                 String taskManagerLog = flinkAPI.getTaskManagerLog(containerId);//获取taskManager日志
@@ -142,7 +146,6 @@ public class BuildConfiguration {
                 taskContainerConfigInfo.setTaskManagerLog(taskManagerLog);
                 taskContainerConfigInfo.setTaskManagerThreadDump(taskManagerThreadDumps);
                 taskContainerConfigInfo.setTaskManagerStdout(taskManagerStdOut);
-
 
                 taskManagerConfiguration.setTaskContainerConfigInfo(taskContainerConfigInfo);
 

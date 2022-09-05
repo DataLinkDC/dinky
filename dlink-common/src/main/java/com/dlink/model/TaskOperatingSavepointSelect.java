@@ -22,7 +22,6 @@ package com.dlink.model;
 /**
  * @author csz
  * @version 1.0
- * @date 2022/7/19 15:21
  **/
 public enum TaskOperatingSavepointSelect {
 
@@ -56,7 +55,6 @@ public enum TaskOperatingSavepointSelect {
         return message;
     }
 
-
     public static TaskOperatingSavepointSelect valueByCode(Integer code) {
         for (TaskOperatingSavepointSelect savepointSelect : TaskOperatingSavepointSelect.values()) {
             if (savepointSelect.getCode().equals(code)) {
@@ -65,6 +63,5 @@ public enum TaskOperatingSavepointSelect {
         }
         return null;
     }
-
 
 }

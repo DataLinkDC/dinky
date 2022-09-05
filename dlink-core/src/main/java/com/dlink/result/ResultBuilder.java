@@ -17,12 +17,11 @@
  *
  */
 
-
 package com.dlink.result;
 
-import org.apache.flink.table.api.TableResult;
-
 import com.dlink.parser.SqlType;
+
+import org.apache.flink.table.api.TableResult;
 
 /**
  * ResultBuilder

@@ -17,12 +17,8 @@
  *
  */
 
-
 package com.dlink.service.impl;
 
-import cn.dev33.satoken.secure.SaSecureUtil;
-import cn.dev33.satoken.stp.StpUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.assertion.Asserts;
 import com.dlink.common.result.Result;
 import com.dlink.context.RequestContext;
@@ -39,6 +35,7 @@ import com.dlink.service.RoleService;
 import com.dlink.service.TenantService;
 import com.dlink.service.UserRoleService;
 import com.dlink.service.UserService;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,6 +43,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
+import cn.dev33.satoken.secure.SaSecureUtil;
+import cn.dev33.satoken.stp.StpUtil;
 
 /**
  * UserServiceImpl
@@ -199,28 +201,6 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         }
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public Result removeGrantRole(JsonNode para) {
-        List<UserRole> userRoleList = new ArrayList<>();
-        Integer userId = para.get("userId").asInt();
-        JsonNode userRoleJsonNode = para.get("roles");
-
-        for (JsonNode ids : userRoleJsonNode) {
-            UserRole userRole = new UserRole();
-            userRole.setUserId(userId);
-            userRole.setRoleId(ids.asInt());
-            userRoleList.add(userRole);
-        }
-        int result = userRoleService.deleteBathRelation(userRoleList);
-        if (result > 0) {
-            return Result.succeed("用户撤销授权角色成功");
-        } else {
-            return Result.failed("用户撤销授权角色失败");
-        }
-    }
-
-
     @Override
     public Result getTenants(String username) {
         User user = getUserByUsername(username);
@@ -242,16 +222,4 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         return Result.succeed(tenants, "获取成功");
     }
 
-    @Override
-    public Result getRoles(JsonNode para) {
-        int userId = para.get("userId").asInt();
-        String tenantId = para.get("tenantId").asText();
-
-        List<UserRole> userRoles = userRoleService.getUserRoleByUserId(userId);
-        Set<Integer> roleIds = new HashSet<>();
-        userRoles.forEach(userRole -> roleIds.add(userRole.getRoleId()));
-
-        List<Role> roles = roleService.getRoleByTenantIdAndIds(tenantId, roleIds);
-        return Result.succeed(roles, "获取成功");
-    }
 }

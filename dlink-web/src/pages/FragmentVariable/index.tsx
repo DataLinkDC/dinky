@@ -17,7 +17,6 @@
  *
  */
 
-
 import {DownOutlined, PlusOutlined} from '@ant-design/icons';
 import {Button, Drawer, Modal} from 'antd';
 import React, {useRef, useState} from 'react';
@@ -200,7 +199,11 @@ const FragmentTableList: React.FC<{}> = (props: any) => {
         request={(params, sorter, filter) => queryData(url, {...params, ...sorter, ...filter})}
         columns={columns}
         rowSelection={{
-          onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+          onChange: (_, selectedRows) => {
+            setSelectedRows(selectedRows)
+            console.log(selectedRows)
+
+          },
         }}
       />
       {selectedRowsState?.length > 0 && (

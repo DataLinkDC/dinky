@@ -17,8 +17,10 @@
  *
  */
 
-
 package org.apache.flink.connector.phoenix.table;
+
+import static org.apache.flink.util.Preconditions.checkArgument;
+import static org.apache.flink.util.Preconditions.checkNotNull;
 
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.annotation.VisibleForTesting;
@@ -39,8 +41,6 @@ import org.apache.flink.table.functions.TableFunction;
 import org.apache.flink.table.types.DataType;
 import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.table.types.logical.RowType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -51,8 +51,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static org.apache.flink.util.Preconditions.checkArgument;
-import static org.apache.flink.util.Preconditions.checkNotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** A lookup function for {@link PhoenixDynamicTableSource}. */
 @Internal
@@ -210,7 +210,7 @@ public class PhoenixRowDataLookupFunction extends TableFunction<RowData> {
     private void establishConnectionAndStatement() throws SQLException, ClassNotFoundException {
         Connection dbConn = connectionProvider.getOrEstablishConnection();
         statement = FieldNamedPreparedStatement.prepareStatement(dbConn, query, keyNames);
-        LOG.info("executor query SQL : "+query);
+        LOG.info("executor query SQL : " + query);
     }
 
     @Override

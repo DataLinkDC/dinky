@@ -17,17 +17,8 @@
  *
  */
 
-
 package com.dlink.service.impl;
 
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dlink.assertion.Asserts;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.db.service.impl.SuperServiceImpl;
@@ -42,12 +33,22 @@ import com.dlink.model.JobInstance;
 import com.dlink.model.JobInstanceCount;
 import com.dlink.model.JobInstanceStatus;
 import com.dlink.model.JobStatus;
+import com.dlink.model.SystemConfiguration;
 import com.dlink.service.ClusterConfigurationService;
 import com.dlink.service.ClusterService;
 import com.dlink.service.HistoryService;
 import com.dlink.service.JobHistoryService;
 import com.dlink.service.JobInstanceService;
 import com.dlink.utils.JSONUtil;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -118,6 +119,8 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
                     break;
                 case UNKNOWN:
                     jobInstanceStatus.setUnknown(counts);
+                    break;
+                default:
             }
         }
         jobInstanceStatus.setAll(total);
@@ -181,11 +184,14 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         return jobInfoDetail;
     }
 
-
     @Override
     public LineageResult getLineage(Integer id) {
         History history = getJobInfoDetail(id).getHistory();
-        return LineageBuilder.getLineage(history.getStatement(), history.getConfig().get("useStatementSet").asBoolean());
+        if (SystemConfiguration.getInstances().isUseLogicalPlan()) {
+            return LineageBuilder.getColumnLineageByLogicalPlan(history.getStatement());
+        } else {
+            return LineageBuilder.getLineage(history.getStatement());
+        }
     }
 
     @Override

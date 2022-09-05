@@ -17,8 +17,10 @@
  *
  */
 
-
 package com.dlink.metadata.parser;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.parser.Keywords;
@@ -26,11 +28,8 @@ import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class Clickhouse20Lexer extends Lexer {
-    public final static Keywords DEFAULT_KEYWORDS;
+    public static final Keywords DEFAULT_KEYWORDS;
 
     static {
         Map<String, Token> map = new HashMap<String, Token>();

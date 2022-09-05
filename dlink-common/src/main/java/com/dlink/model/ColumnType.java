@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.model;
 
 /**
@@ -60,18 +59,10 @@ public enum ColumnType {
 
     private String javaType;
     private String flinkType;
-    private Integer precision;
-    private Integer scale;
 
     ColumnType(String javaType, String flinkType) {
         this.javaType = javaType;
         this.flinkType = flinkType;
-    }
-
-    public ColumnType setPrecisionAndScale(Integer precision, Integer scale) {
-        this.precision = precision;
-        this.scale = scale;
-        return this;
     }
 
     public String getJavaType() {
@@ -79,30 +70,6 @@ public enum ColumnType {
     }
 
     public String getFlinkType() {
-        if (flinkType.equals("DECIMAL")) {
-            if (precision == null || precision == 0) {
-                return flinkType + "(" + 38 + "," + scale + ")";
-            } else {
-                return flinkType + "(" + precision + "," + scale + ")";
-            }
-        } else {
-            return flinkType;
-        }
-    }
-
-    public Integer getPrecision() {
-        return precision;
-    }
-
-    public void setPrecision(Integer precision) {
-        this.precision = precision;
-    }
-
-    public Integer getScale() {
-        return scale;
-    }
-
-    public void setScala(Integer scale) {
-        this.scale = scale;
+        return flinkType;
     }
 }

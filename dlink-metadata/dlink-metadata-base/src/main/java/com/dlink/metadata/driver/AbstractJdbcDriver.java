@@ -17,11 +17,8 @@
  *
  */
 
-
 package com.dlink.metadata.driver;
 
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLStatement;
 import com.dlink.assertion.Asserts;
 import com.dlink.constant.CommonConstant;
 import com.dlink.metadata.query.IDBQuery;
@@ -31,11 +28,27 @@ import com.dlink.model.Schema;
 import com.dlink.model.Table;
 import com.dlink.result.SqlExplainResult;
 import com.dlink.utils.LogUtil;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.*;
-import java.util.*;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledConnection;
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLStatement;
 
 /**
  * AbstractJdbcDriver
@@ -47,7 +60,9 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
 
     private static Logger logger = LoggerFactory.getLogger(AbstractJdbcDriver.class);
 
-    protected Connection conn;
+    protected static ThreadLocal<Connection> conn = new ThreadLocal<>();
+
+    private DruidDataSource dataSource;
 
     abstract String getDriverClass();
 
@@ -64,13 +79,56 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         return CommonConstant.HEALTHY;
     }
 
+    public DruidDataSource createDataSource() throws SQLException {
+        if (null == dataSource) {
+            synchronized (this.getClass()) {
+                if (null == dataSource) {
+                    DruidDataSource ds = new DruidDataSource();
+                    createDataSource(ds, config);
+                    ds.init();
+                    this.dataSource = ds;
+                }
+            }
+        }
+        return dataSource;
+    }
+
+    public Driver setDriverConfig(DriverConfig config) {
+        this.config = config;
+        try {
+            this.dataSource = createDataSource();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        createDataSource(dataSource, config);
+        return this;
+    }
+
+    private void createDataSource(DruidDataSource ds, DriverConfig config) {
+        ds.setName(config.getName().replaceAll(":", ""));
+        ds.setUrl(config.getUrl());
+        ds.setDriverClassName(getDriverClass());
+        ds.setUsername(config.getUsername());
+        ds.setPassword(config.getPassword());
+        ds.setValidationQuery("select 1");
+        ds.setTestWhileIdle(true);
+        ds.setBreakAfterAcquireFailure(true);
+        ds.setFailFast(true);
+        ds.setInitialSize(1);
+        ds.setMaxActive(8);
+        ds.setMinIdle(5);
+    }
+
     @Override
     public Driver connect() {
-        try {
-            Class.forName(getDriverClass());
-            conn = DriverManager.getConnection(config.getUrl(), config.getUsername(), config.getPassword());
-        } catch (ClassNotFoundException | SQLException e) {
-            throw new RuntimeException(e);
+        if (null == conn.get()) {
+            try {
+                Class.forName(getDriverClass());
+                DruidPooledConnection connection = createDataSource().getConnection();
+                conn.set(connection);
+            } catch (ClassNotFoundException | SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
         return this;
     }
@@ -78,8 +136,8 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     @Override
     public boolean isHealth() {
         try {
-            if (Asserts.isNotNull(conn)) {
-                return !conn.isClosed();
+            if (Asserts.isNotNull(conn.get())) {
+                return !conn.get().isClosed();
             }
             return false;
         } catch (Exception e) {
@@ -91,8 +149,9 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     @Override
     public void close() {
         try {
-            if (Asserts.isNotNull(conn)) {
-                conn.close();
+            if (Asserts.isNotNull(conn.get())) {
+                conn.get().close();
+                conn.remove();
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -119,7 +178,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         ResultSet results = null;
         String schemasSql = getDBQuery().schemaAllSql();
         try {
-            preparedStatement = conn.prepareStatement(schemasSql);
+            preparedStatement = conn.get().prepareStatement(schemasSql);
             results = preparedStatement.executeQuery();
             while (results.next()) {
                 String schemaName = results.getString(getDBQuery().schemaName());
@@ -144,7 +203,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         IDBQuery dbQuery = getDBQuery();
         String sql = dbQuery.tablesSql(schemaName);
         try {
-            preparedStatement = conn.prepareStatement(sql);
+            preparedStatement = conn.get().prepareStatement(sql);
             results = preparedStatement.executeQuery();
             ResultSetMetaData metaData = results.getMetaData();
             List<String> columnList = new ArrayList<>();
@@ -201,7 +260,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         String tableFieldsSql = dbQuery.columnsSql(schemaName, tableName);
         tableFieldsSql = String.format(tableFieldsSql, tableName);
         try {
-            preparedStatement = conn.prepareStatement(tableFieldsSql);
+            preparedStatement = conn.get().prepareStatement(tableFieldsSql);
             results = preparedStatement.executeQuery();
             ResultSetMetaData metaData = results.getMetaData();
             List<String> columnList = new ArrayList<>();
@@ -309,7 +368,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         ResultSet results = null;
         String createTableSql = getDBQuery().createTableSql(table.getSchema(), table.getName());
         try {
-            preparedStatement = conn.prepareStatement(createTableSql);
+            preparedStatement = conn.get().prepareStatement(createTableSql);
             results = preparedStatement.executeQuery();
             if (results.next()) {
                 createTable = results.getString(getDBQuery().createTableName());
@@ -347,7 +406,8 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     @Override
     public boolean execute(String sql) throws Exception {
         Asserts.checkNullString(sql, "Sql 语句为空");
-        try (Statement statement = conn.createStatement()) {
+        try (Statement statement = conn.get().createStatement()) {
+            //logger.info("执行sql的连接id：" + ((DruidPooledConnection) conn).getTransactionInfo().getId());
             statement.execute(sql);
         }
         return true;
@@ -357,7 +417,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     public int executeUpdate(String sql) throws Exception {
         Asserts.checkNullString(sql, "Sql 语句为空");
         int res = 0;
-        try (Statement statement = conn.createStatement()) {
+        try (Statement statement = conn.get().createStatement()) {
             res = statement.executeUpdate(sql);
         }
         return res;
@@ -376,7 +436,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         ResultSet results = null;
         int count = 0;
         try {
-            preparedStatement = conn.prepareStatement(sql);
+            preparedStatement = conn.get().prepareStatement(sql);
             results = preparedStatement.executeQuery();
             if (Asserts.isNull(results)) {
                 result.setSuccess(true);

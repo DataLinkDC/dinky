@@ -17,7 +17,6 @@
  *
  */
 
-
 import React, {useState} from "react";
 import {ProColumns, ProTable} from "@ant-design/pro-table";
 import {Drawer} from "antd";
@@ -152,17 +151,17 @@ const StudioFragment = (props: any) => {
         }}
         closable={false}
       >
-      <ProDescriptions
-        column={1}
-        title={row?.name}
-        request={async () => ({
-          data: row || {},
-        })}
-        params={{
-          name: row?.name,
-        }}
-        columns={getColumns}
-      />
+        <ProDescriptions
+          column={1}
+          title={row?.name}
+          request={async () => ({
+            data: row || {},
+          })}
+          params={{
+            name: row?.name,
+          }}
+          columns={getColumns}
+        />
       </Drawer>
     </>
   );

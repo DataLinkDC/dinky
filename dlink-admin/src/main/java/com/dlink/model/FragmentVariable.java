@@ -19,10 +19,12 @@
 
 package com.dlink.model;
 
+import com.dlink.db.model.SuperEntity;
+
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.dlink.db.model.SuperEntity;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -32,7 +34,7 @@ import lombok.NoArgsConstructor;
  * FragmentVariable
  *
  * @author zhumingye
- * @since 2022/7/29
+ * @since 2022/8/18
  */
 @Data
 @AllArgsConstructor
@@ -43,9 +45,7 @@ public class FragmentVariable extends SuperEntity {
 
     @TableField(fill = FieldFill.INSERT)
     private String alias;
-    private Integer tenantId;
     private String fragmentValue;
-    private String fillValue;
     private String note;
 
 }

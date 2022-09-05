@@ -17,9 +17,9 @@
  *
  */
 
-
-
 package org.apache.flink.connector.phoenix.internal.executor;
+
+import static org.apache.flink.util.Preconditions.checkNotNull;
 
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.connector.phoenix.internal.converter.JdbcRowConverter;
@@ -32,8 +32,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.function.Function;
-
-import static org.apache.flink.util.Preconditions.checkNotNull;
 
 /**
  * {@link JdbcBatchStatementExecutor} that provides upsert semantics by updating row if it exists

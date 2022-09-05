@@ -17,19 +17,19 @@
  *
  */
 
-
 package com.dlink.init;
 
-import com.dlink.context.RequestContext;
 import com.dlink.daemon.task.DaemonFactory;
 import com.dlink.daemon.task.DaemonTaskConfig;
 import com.dlink.job.FlinkJobTask;
 import com.dlink.model.JobInstance;
-import com.dlink.model.Tenant;
 import com.dlink.service.JobInstanceService;
 import com.dlink.service.SysConfigService;
 import com.dlink.service.TaskService;
-import com.dlink.service.TenantService;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +37,6 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * SystemInit

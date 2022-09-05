@@ -17,18 +17,18 @@
  *
  */
 
-
 package com.dlink.job;
 
 import com.dlink.executor.Executor;
 import com.dlink.executor.ExecutorSetting;
 import com.dlink.gateway.GatewayType;
 import com.dlink.result.IResult;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Job

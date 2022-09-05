@@ -17,8 +17,6 @@
  *
  */
 
-
-
 package org.apache.flink.connector.phoenix.dialect;
 
 import org.apache.flink.table.api.TableSchema;

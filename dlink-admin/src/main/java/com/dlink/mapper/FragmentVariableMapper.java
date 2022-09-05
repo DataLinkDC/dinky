@@ -17,18 +17,18 @@
  *
  */
 
-
 package com.dlink.mapper;
 
 import com.dlink.db.mapper.SuperMapper;
 import com.dlink.model.FragmentVariable;
+
 import org.apache.ibatis.annotations.Mapper;
 
 /**
  * FragmentVariableMapper
  *
  * @author zhumingye
- * @since 2022/07/29
+ * @since 2022/08/18
  **/
 @Mapper
 public interface FragmentVariableMapper extends SuperMapper<FragmentVariable> {

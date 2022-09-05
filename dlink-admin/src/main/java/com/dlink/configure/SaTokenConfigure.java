@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.configure;
 
 import cn.dev33.satoken.interceptor.SaRouteInterceptor;
@@ -25,6 +24,8 @@ import com.dlink.interceptor.TenantInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import cn.dev33.satoken.interceptor.SaRouteInterceptor;
 
 /**
  * SaTokenConfigure
@@ -59,7 +60,7 @@ public class SaTokenConfigure implements WebMvcConfigurer {
                 .addPathPatterns("/api/statement/**")
                 .addPathPatterns("/api/task/**")
                 .addPathPatterns("/api/role/**")
-                .addPathPatterns("/api/fragment/**")
+                //.addPathPatterns("/api/fragment/**")
                 .addPathPatterns("/api/jar/*");
     }
 }

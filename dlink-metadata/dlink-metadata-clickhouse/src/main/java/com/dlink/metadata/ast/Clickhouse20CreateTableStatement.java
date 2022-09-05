@@ -17,8 +17,10 @@
  *
  */
 
-
 package com.dlink.metadata.ast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -27,9 +29,6 @@ import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.clickhouse.visitor.ClickhouseVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Clickhouse20CreateTableStatement extends SQLCreateTableStatement {
     protected final List<SQLAssignItem> settings = new ArrayList<SQLAssignItem>();

@@ -33,7 +33,6 @@ import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import StudioTree from "../StudioTree";
 import StudioConnector from "./StudioConnector";
-import React from "react";
 import StudioDataBase from "./StudioDataBase";
 import StudioCluster from "./StudioCluster";
 import StudioMetaData from "./StudioMetaData";

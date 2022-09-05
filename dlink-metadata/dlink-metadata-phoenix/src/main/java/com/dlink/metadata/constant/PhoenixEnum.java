@@ -17,14 +17,10 @@
  *
  */
 
-
 package com.dlink.metadata.constant;
 
 /**
- * @author lcg
- * @operate Phoenix常用数据类型及对应code
- * @date 2022/2/16 16:49
- * @return
+ * Phoenix common data types and corresponding codes
  */
 public enum PhoenixEnum {
     INTEGER(4),

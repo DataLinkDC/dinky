@@ -17,19 +17,21 @@
  *
  */
 
-
 package com.dlink.plus;
 
 import com.dlink.executor.Executor;
 import com.dlink.explainer.Explainer;
 import com.dlink.explainer.ca.ColumnCAResult;
 import com.dlink.explainer.ca.TableCAResult;
+import com.dlink.model.LineageRel;
 import com.dlink.result.SqlExplainResult;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * FlinkSqlPlus
@@ -114,4 +116,7 @@ public class FlinkSqlPlus {
         return explainer.getJobPlanInfo(statement);
     }
 
+    public List<LineageRel> getLineage(String statement) {
+        return explainer.getLineage(statement);
+    }
 }

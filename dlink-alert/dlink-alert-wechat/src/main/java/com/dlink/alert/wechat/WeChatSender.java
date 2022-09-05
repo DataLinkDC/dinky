@@ -17,14 +17,16 @@
  *
  */
 
-
 package com.dlink.alert.wechat;
+
+import static java.util.Objects.requireNonNull;
 
 import com.dlink.alert.AlertResult;
 import com.dlink.alert.AlertSendResponse;
 import com.dlink.alert.ShowType;
 import com.dlink.assertion.Asserts;
 import com.dlink.utils.JSONUtil;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -33,13 +35,19 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import static java.util.Objects.requireNonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * WeChatSender
@@ -65,29 +73,30 @@ public class WeChatSender {
     private final String sendType;
     private static String showType;
     private final String webhookUrl;
-    private final String KeyWord ;
+    private final String keyWord;
     private final Boolean atAll;
 
     WeChatSender(Map<String, String> config) {
         sendType = config.get(WeChatConstants.SEND_TYPE);
-        weChatAgentId =sendType.equals(WeChatType.CHAT.getValue())? "" : config.get(WeChatConstants.AGENT_ID);
+        weChatAgentId = sendType.equals(WeChatType.CHAT.getValue()) ? "" : config.get(WeChatConstants.AGENT_ID);
         atAll = Boolean.valueOf(config.get(WeChatConstants.AT_ALL));
-        weChatUsers =sendType.equals(WeChatType.CHAT.getValue())?( atAll && config.get(WeChatConstants.USERS) == null ? "": config.get(WeChatConstants.USERS)): config.get(WeChatConstants.USERS);
-        String weChatCorpId = sendType.equals(WeChatType.CHAT.getValue())? "" :config.get(WeChatConstants.CORP_ID);
-        String weChatSecret = sendType.equals(WeChatType.CHAT.getValue())? "" :config.get(WeChatConstants.SECRET);
-        String weChatTokenUrl =sendType.equals(WeChatType.CHAT.getValue())? "" : WeChatConstants.TOKEN_URL;
+        weChatUsers = sendType.equals(WeChatType.CHAT.getValue()) ? (atAll && config.get(WeChatConstants.USERS) == null ? "" : config.get(WeChatConstants.USERS)) : config.get(WeChatConstants.USERS);
+        String weChatCorpId = sendType.equals(WeChatType.CHAT.getValue()) ? "" : config.get(WeChatConstants.CORP_ID);
+        String weChatSecret = sendType.equals(WeChatType.CHAT.getValue()) ? "" : config.get(WeChatConstants.SECRET);
+        String weChatTokenUrl = sendType.equals(WeChatType.CHAT.getValue()) ? "" : WeChatConstants.TOKEN_URL;
         weChatUserSendMsg = WeChatConstants.USER_SEND_MSG;
         showType = config.get(WeChatConstants.SHOW_TYPE);
         requireNonNull(showType, WeChatConstants.SHOW_TYPE + " must not null");
-        webhookUrl= config.get(WeChatConstants.WEBHOOK);
-        KeyWord = config.get(WeChatConstants.KEYWORD);
-        if (sendType.equals(WeChatType.CHAT.getValue())) requireNonNull(webhookUrl, WeChatConstants.WEBHOOK + " must not null");
+        webhookUrl = config.get(WeChatConstants.WEBHOOK);
+        keyWord = config.get(WeChatConstants.KEYWORD);
+        if (sendType.equals(WeChatType.CHAT.getValue())) {
+            requireNonNull(webhookUrl, WeChatConstants.WEBHOOK + " must not null");
+        }
         weChatTokenUrlReplace = weChatTokenUrl
                 .replace(CORP_ID_REGEX, weChatCorpId)
                 .replace(SECRET_REGEX, weChatSecret);
         weChatToken = getToken();
     }
-
 
     public AlertResult send(String title, String content) {
         AlertResult alertResult = new AlertResult();
@@ -95,23 +104,23 @@ public class WeChatSender {
         if (Asserts.isNotNullString(weChatUsers)) {
             userList = Arrays.asList(weChatUsers.split(","));
         }
-        if(atAll){
+        if (atAll) {
             userList.add("所有人");
         }
 
-        String data ="";
+        String data = "";
         if (sendType.equals(WeChatType.CHAT.getValue())) {
-            data = markdownByAlert(title, content ,userList);;
-        }else{
+            data = markdownByAlert(title, content, userList);
+        } else {
             data = markdownByAlert(title, content, userList);
         }
-        String msg ="";
+        String msg = "";
         if (sendType.equals(WeChatType.APP.getValue())) {
-            msg= weChatUserSendMsg.replace(USER_REG_EXP, mkUserString(userList))
+            msg = weChatUserSendMsg.replace(USER_REG_EXP, mkUserString(userList))
                     .replace(AGENT_ID_REG_EXP, weChatAgentId).replace(MSG_REG_EXP, data)
                     .replace(SHOW_TYPE_REGEX, showType);
-        }else{
-            msg= WeChatConstants.WEBHOOK_TEMPLATE.replace(SHOW_TYPE_REGEX, showType)
+        } else {
+            msg = WeChatConstants.WEBHOOK_TEMPLATE.replace(SHOW_TYPE_REGEX, showType)
                     .replace(MSG_REG_EXP, data);
         }
 
@@ -149,11 +158,10 @@ public class WeChatSender {
             } finally {
                 response.close();
             }
-//            logger.info("Enterprise WeChat send [{}], param:{}, resp:{}", url, data, resp);
+            // logger.info("Enterprise WeChat send [{}], param:{}, resp:{}", url, data, resp);
             return resp;
         }
     }
-
 
     private static String mkUserList(Iterable<String> list) {
         StringBuilder sb = new StringBuilder("[");
@@ -185,18 +193,18 @@ public class WeChatSender {
     /**
      *@Author: zhumingye
      *@date: 2022/3/26
-     *@Description: 将用户列表转换为<@用户名> </@用户名>的格式
+     *@Description: 将用户列表转换为 <@用户名> 的格式
      * @param userList
      * @return java.lang.String
      */
-    private static String mkMarkDownAtUsers(List<String> userList){
+    private static String mkMarkDownAtUsers(List<String> userList) {
 
         StringBuilder builder = new StringBuilder("\n");
         if (Asserts.isNotNull(userList)) {
             userList.forEach(value -> {
                 if (value.equals("所有人") && showType.equals(ShowType.TEXT.getValue())) {
                     builder.append("@所有人 ");
-                }else{
+                } else {
                     builder.append("<@").append(value).append("> ");
                 }
             });
@@ -218,11 +226,9 @@ public class WeChatSender {
         return getMsgResult(title, content,userList,sendType);
     }
 
-
     private static String markdownText(String title, String content, List<String> userList, String sendType) {
         return getMsgResult(title, content,userList,sendType);
     }
-
 
     /**
      *@Author: zhumingye
@@ -262,8 +268,6 @@ public class WeChatSender {
         }
         return contents.toString();
     }
-
-
 
     private String getToken() {
         try {

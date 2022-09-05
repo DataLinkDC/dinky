@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.metadata.query;
 
 import com.dlink.metadata.constant.HiveConstant;
@@ -27,7 +26,6 @@ public class HiveQuery extends AbstractDBQuery {
     public String schemaAllSql() {
         return HiveConstant.QUERY_ALL_DATABASE;
     }
-
 
     @Override
     public String tablesSql(String schemaName) {
@@ -59,18 +57,15 @@ public class HiveQuery extends AbstractDBQuery {
         return "comment";
     }
 
-
     @Override
     public String columnName() {
         return "col_name";
     }
 
-
     @Override
     public String columnType() {
         return "data_type";
     }
-
 
     @Override
     public String columnComment() {

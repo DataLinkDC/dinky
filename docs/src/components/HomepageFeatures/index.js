@@ -27,8 +27,8 @@ const FeatureList = [
         Svg: require('@site/static/img/immersive.svg').default,
         description: (
             <>
-                自动提示与补全、语法高亮、语句美化、语法校验、调试预览结果、元数据查询、全局变量、
-                字段级血缘分析等功能
+                自动提示与补全、高亮美化、语法校验、调试预览结果、元数据管理、全局变量、
+                字段级血缘分析等
             </>
         ),
     },
@@ -46,7 +46,7 @@ const FeatureList = [
         Svg: require('@site/static/img/easy_of_deploy.svg').default,
         description: (
             <>
-                增强 FlinkSQL 语法及机制，如表值聚合函数、全局变量、CDC多源合并和整库同步、执行环境、语句合并、共享会话等
+                增强 FlinkSQL 语法及机制，如表值聚合函数、全局变量、CDC整库同步、执行环境、语句合并、共享会话等
             </>
         ),
     },
@@ -55,7 +55,7 @@ const FeatureList = [
         Svg: require('@site/static/img/one_stop.svg').default,
         description: (
             <>
-                提供从 FlinkSQL 开发调试到作业上线下线的运维监控及 OLAP 的即席查询，使数仓建设及数据治理一体化。
+                提供从 FlinkSQL 开发调试到作业上线下线的运维监控及 OLAP 能力，使数仓建设及数据治理一体化。
             </>
         ),
     },
@@ -73,7 +73,7 @@ const FeatureList = [
         Svg: require('@site/static/img/no_invasion.svg').default,
         description: (
             <>
-                Spring Boot 轻应用快速部署，不需要在任何 Flink 集群修改源码或添加插件，无感知连接和监控 Flink 集群
+                Spring Boot 轻应用快速部署，不依赖 Hadoop 等外部环境，无感知连接和监控 Flink 集群
             </>
         ),
     },

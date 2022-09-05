@@ -17,12 +17,12 @@
  *
  */
 
-
 package com.dlink.trans.ddl;
 
 import com.dlink.executor.Executor;
 import com.dlink.trans.AbstractOperation;
 import com.dlink.trans.Operation;
+
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableResult;
 
@@ -36,7 +36,7 @@ import java.util.List;
  */
 public class CreateAggTableOperation extends AbstractOperation implements Operation {
 
-    private String KEY_WORD = "CREATE AGGTABLE";
+    private static final String KEY_WORD = "CREATE AGGTABLE";
 
     public CreateAggTableOperation() {
     }

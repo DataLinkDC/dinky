@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.sql;
 
 /**
@@ -29,7 +28,7 @@ package com.dlink.sql;
 public class FlinkQuery {
 
     public static String separator() {
-        return ";\r\n";
+        return ";\n";
     }
 
     public static String defaultCatalog() {

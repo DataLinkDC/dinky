@@ -17,10 +17,10 @@
  *
  */
 
-
 package com.dlink.dto;
 
 import com.dlink.gateway.config.SavePointType;
+
 import lombok.Getter;
 import lombok.Setter;
 

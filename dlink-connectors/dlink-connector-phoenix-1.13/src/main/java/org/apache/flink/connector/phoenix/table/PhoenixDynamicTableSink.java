@@ -17,7 +17,6 @@
  *
  */
 
-
 package org.apache.flink.connector.phoenix.table;
 
 import org.apache.flink.api.common.typeinfo.TypeInformation;
@@ -62,9 +61,9 @@ public class PhoenixDynamicTableSink implements DynamicTableSink  {
         return ChangelogMode.newBuilder().addContainedKind(RowKind.INSERT).addContainedKind(RowKind.DELETE).addContainedKind(RowKind.UPDATE_AFTER).build();
     }
 
-
     private void validatePrimaryKey(ChangelogMode requestedMode) {
-        Preconditions.checkState(ChangelogMode.insertOnly().equals(requestedMode) || this.dmlOptions.getKeyFields().isPresent(), "please declare primary key for sink table when query contains update/delete record.");
+        Preconditions.checkState(ChangelogMode.insertOnly().equals(requestedMode)
+                || this.dmlOptions.getKeyFields().isPresent(), "please declare primary key for sink table when query contains update/delete record.");
     }
 
     @Override
@@ -86,7 +85,7 @@ public class PhoenixDynamicTableSink implements DynamicTableSink  {
 
     @Override
     public String asSummaryString() {
-        return "Phoenix Table Sink " ;
+        return "Phoenix Table Sink ";
     }
 
     public boolean equals(Object o) {
@@ -96,7 +95,11 @@ public class PhoenixDynamicTableSink implements DynamicTableSink  {
             return false;
         } else {
             PhoenixDynamicTableSink that = (PhoenixDynamicTableSink)o;
-            return Objects.equals(this.jdbcOptions, that.jdbcOptions) && Objects.equals(this.executionOptions, that.executionOptions) && Objects.equals(this.dmlOptions, that.dmlOptions) && Objects.equals(this.tableSchema, that.tableSchema) && Objects.equals(this.dialectName, that.dialectName);
+            return Objects.equals(this.jdbcOptions, that.jdbcOptions)
+                    && Objects.equals(this.executionOptions, that.executionOptions)
+                    && Objects.equals(this.dmlOptions, that.dmlOptions)
+                    && Objects.equals(this.tableSchema, that.tableSchema)
+                    && Objects.equals(this.dialectName, that.dialectName);
         }
     }
 

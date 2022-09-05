@@ -17,10 +17,10 @@
  *
  */
 
-
 package com.dlink.explainer.trans;
 
 import com.dlink.utils.MapParseUtils;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -44,8 +44,8 @@ public class OperatorTrans extends AbstractTrans implements Trans {
     private List<String> leftInputSpec;
     private List<String> rightInputSpec;
 
-    public final static String TRANS_TYPE = "Operator";
-    private final static String FIELD_AS = " AS ";
+    public static final String TRANS_TYPE = "Operator";
+    private static final String FIELD_AS = " AS ";
 
     public List<Field> getSelect() {
         return select;
@@ -88,7 +88,6 @@ public class OperatorTrans extends AbstractTrans implements Trans {
     public boolean canHandle(String pact) {
         return TRANS_TYPE.equals(pact);
     }
-
 
     @Override
     public void translate() {

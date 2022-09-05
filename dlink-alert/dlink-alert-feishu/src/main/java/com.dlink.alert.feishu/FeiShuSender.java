@@ -17,14 +17,12 @@
  *
  */
 
-
-
 package com.dlink.alert.feishu;
 
 import com.dlink.alert.AlertResult;
 import com.dlink.alert.ShowType;
 import com.dlink.utils.JSONUtil;
-import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.apache.commons.codec.binary.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
@@ -32,12 +30,19 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
+
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.Map.Entry;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @Author: zhumingye
@@ -71,7 +76,7 @@ public final class FeiShuSender {
     FeiShuSender(Map<String, String> config) {
         url = config.get(FeiShuConstants.WEB_HOOK);
         msgType = config.get(FeiShuConstants.MSG_TYPE);
-        keyword= config.get(FeiShuConstants.KEY_WORD).replace("\r\n", "");
+        keyword = config.get(FeiShuConstants.KEY_WORD).replace("\r\n", "");
         enableProxy = Boolean.valueOf(config.get(FeiShuConstants.FEI_SHU_PROXY_ENABLE));
         secret = config.get(FeiShuConstants.SECRET);
         if (Boolean.TRUE.equals(enableProxy)) {
@@ -87,14 +92,14 @@ public final class FeiShuSender {
     }
 
     private  String toJsonSendMsg(String title, String content) {
-        String jsonResult ="";
+        String jsonResult = "";
         byte[] byt = StringUtils.getBytesUtf8(formatContent(title,content));
         String contentResult = StringUtils.newStringUtf8(byt);
-        String userIdsToText = mkUserIds(org.apache.commons.lang3.StringUtils.isBlank(atUserIds)? "all": atUserIds);
+        String userIdsToText = mkUserIds(org.apache.commons.lang3.StringUtils.isBlank(atUserIds) ? "all" : atUserIds);
         if (StringUtils.equals(ShowType.TEXT.getValue(), msgType)) {
             jsonResult = FeiShuConstants.FEI_SHU_TEXT_TEMPLATE.replace(MSG_TYPE_REGX, msgType)
                     .replace(MSG_RESULT_REGX, contentResult).replace(FEI_SHU_USER_REGX, userIdsToText).replaceAll("/n", "\\\\n");
-        }else {
+        } else {
             jsonResult = FeiShuConstants.FEI_SHU_POST_TEMPLATE.replace(MSG_TYPE_REGX, msgType)
                     .replace(FEI_SHU_MSG_TYPE_REGX, keyword).replace(MSG_RESULT_REGX, contentResult)
                     .replace(FEI_SHU_USER_REGX, userIdsToText).replaceAll("/n", "\\\\n");
@@ -102,8 +107,8 @@ public final class FeiShuSender {
         return jsonResult;
     }
 
-    private  String mkUserIds(String users){
-        String userIdsToText="";
+    private  String mkUserIds(String users) {
+        String userIdsToText = "";
         String[] userList = users.split(",");
         if (msgType.equals(ShowType.TEXT.getValue())) {
             StringBuilder sb = new StringBuilder();
@@ -111,12 +116,12 @@ public final class FeiShuSender {
                 sb.append("<at user_id=\\\"").append(user).append("\\\"></at>");
             }
             userIdsToText = sb.toString();
-        }else{
+        } else {
             StringBuilder sb = new StringBuilder();
             for (String user : userList) {
                 sb.append("{\"tag\":\"at\",\"user_id\":\"").append(user).append("\"},");
             }
-            sb.deleteCharAt(sb.length()-1);
+            sb.deleteCharAt(sb.length() - 1);
             userIdsToText = sb.toString();
         }
         return userIdsToText;
@@ -154,18 +159,17 @@ public final class FeiShuSender {
             logger.error("itemsList is null");
             throw new RuntimeException("itemsList is null");
         }
-            StringBuilder contents = new StringBuilder(100);
-            contents.append(String.format("`%s` %s",title,FeiShuConstants.MARKDOWN_ENTER));
-            for (LinkedHashMap mapItems : mapSendResultItemsList) {
-                Set<Entry<String, Object>> entries = mapItems.entrySet();
-                Iterator<Entry<String, Object>> iterator = entries.iterator();
-                while (iterator.hasNext()) { {
-                    Map.Entry<String, Object> entry = iterator.next();
-                    String key = entry.getKey();
-                    String value = entry.getValue().toString();
-                    contents.append(FeiShuConstants.MARKDOWN_QUOTE);
-                    contents.append(key + "：" + value).append(FeiShuConstants.MARKDOWN_ENTER);
-                }
+        StringBuilder contents = new StringBuilder(100);
+        contents.append(String.format("`%s` %s",title,FeiShuConstants.MARKDOWN_ENTER));
+        for (LinkedHashMap mapItems : mapSendResultItemsList) {
+            Set<Entry<String, Object>> entries = mapItems.entrySet();
+            Iterator<Entry<String, Object>> iterator = entries.iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<String, Object> entry = iterator.next();
+                String key = entry.getKey();
+                String value = entry.getValue().toString();
+                contents.append(FeiShuConstants.MARKDOWN_QUOTE);
+                contents.append(key + "：" + value).append(FeiShuConstants.MARKDOWN_ENTER);
             }
             return contents.toString();
         }

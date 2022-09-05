@@ -17,9 +17,9 @@
  *
  */
 
-
-
 package org.apache.flink.connector.phoenix.table;
+
+import static org.apache.flink.util.Preconditions.checkNotNull;
 
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.common.typeinfo.Types;
@@ -45,8 +45,6 @@ import org.apache.flink.types.Row;
 
 import java.util.Arrays;
 import java.util.Objects;
-
-import static org.apache.flink.util.Preconditions.checkNotNull;
 
 /** An upsert {@link UpsertStreamTableSink} for JDBC. */
 public class PhoenixUpsertTableSink implements UpsertStreamTableSink<Row> {
@@ -102,12 +100,12 @@ public class PhoenixUpsertTableSink implements UpsertStreamTableSink<Row> {
         return dataStream
                 .addSink(new GenericJdbcSinkFunction<>(newFormat()))
                 //.addSink(new PhoenixSinkFunction(
-                  //      options,
-                  //      new PhoneixJdbcConnectionProvider(options,options.isNamespaceMappingEnabled(), options.isMapSystemTablesEnabled()),
-                  //      getFieldNames(),
-                  //      keyFields,
-                  //      jdbcSqlTypes
-                  //      ))
+                //      options,
+                //      new PhoneixJdbcConnectionProvider(options,options.isNamespaceMappingEnabled(), options.isMapSystemTablesEnabled()),
+                //      getFieldNames(),
+                //      keyFields,
+                //      jdbcSqlTypes
+                //      ))
                 .setParallelism(dataStream.getParallelism())
                 .name(
                         TableConnectorUtils.generateRuntimeName(

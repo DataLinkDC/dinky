@@ -17,9 +17,9 @@
  *
  */
 
-
-
 package com.dlink.connector.pulsar.util;
+
+import static org.apache.flink.configuration.description.TextElement.text;
 
 import org.apache.flink.annotation.PublicEvolving;
 import org.apache.flink.configuration.ConfigOption;
@@ -27,8 +27,6 @@ import org.apache.flink.configuration.ConfigOptions;
 import org.apache.flink.configuration.DescribedEnum;
 import org.apache.flink.configuration.description.InlineElement;
 import org.apache.pulsar.client.api.SubscriptionType;
-
-import static org.apache.flink.configuration.description.TextElement.text;
 
 /**
  * @author DarrenDa
@@ -124,13 +122,6 @@ public class PulsarConnectorOptions {
                     .noDefaultValue()
                     .withDescription(
                             "Defines pulsar derive schema. ");
-
-//    public static final ConfigOption<Boolean> PULSAR_ENABLE_AUTO_ACKNOWLEDGE_MESSAGE  =
-//            ConfigOptions.key("pulsar.source.enableAutoAcknowledgeMessage")
-//                    .booleanType()
-//                    .noDefaultValue()
-//                    .withDescription(
-//                            "Defines pulsar enable auto acknowledge message. ");
 
     // --------------------------------------------------------------------------------------------
     // Enums

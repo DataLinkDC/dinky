@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.alert.feishu;
 
 /**
@@ -41,7 +40,8 @@ public final class FeiShuConstants {
     static final String AT_ALL = "isAtAll";
     static final String AT_USERS = "users";
     static final String FEI_SHU_TEXT_TEMPLATE = "{\"msg_type\":\"{msg_type}\",\"content\":{\"{msg_type}\":\"{msg} {users} \" }}";
-    static final String FEI_SHU_POST_TEMPLATE ="{\"msg_type\":\"{msg_type}\",\"content\":{\"{msg_type}\":{\"zh_cn\":{\"title\":\"{keyword}\",\"content\":[[{\"tag\":\"text\",\"un_escape\": true,\"text\":\"{msg}\"},{users}]]}}}}";
+    static final String FEI_SHU_POST_TEMPLATE = "{\"msg_type\":\"{msg_type}\",\"content\":{\"{msg_type}\":{\"zh_cn\":{\"title\":\"{keyword}\","
+            + "\"content\":[[{\"tag\":\"text\",\"un_escape\": true,\"text\":\"{msg}\"},{users}]]}}}}";
 
     private FeiShuConstants() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");

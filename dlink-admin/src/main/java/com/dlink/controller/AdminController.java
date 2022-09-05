@@ -17,17 +17,23 @@
  *
  */
 
-
 package com.dlink.controller;
 
-import cn.dev33.satoken.stp.StpUtil;
 import com.dlink.assertion.Asserts;
 import com.dlink.common.result.Result;
 import com.dlink.dto.LoginUTO;
 import com.dlink.service.UserService;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import cn.dev33.satoken.stp.StpUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * AdminController
