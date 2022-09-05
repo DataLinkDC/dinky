@@ -23,9 +23,11 @@ import com.dlink.daemon.task.DaemonFactory;
 import com.dlink.daemon.task.DaemonTaskConfig;
 import com.dlink.job.FlinkJobTask;
 import com.dlink.model.JobInstance;
+import com.dlink.model.Tenant;
 import com.dlink.service.JobInstanceService;
 import com.dlink.service.SysConfigService;
 import com.dlink.service.TaskService;
+import com.dlink.service.TenantService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,19 +61,20 @@ public class SystemInit implements ApplicationRunner {
     @Autowired
     private TenantService tenantService;
 
+    @SuppressWarnings("checkstyle:CommentsIndentation")
     @Override
     public void run(ApplicationArguments args) throws Exception {
-//        taskService.initDefaultFlinkSQLEnv(1);
-//        List<JobInstance> jobInstances = jobInstanceService.listJobInstanceActive();
-//        List<DaemonTaskConfig> configList = new ArrayList<>();
-//        for (JobInstance jobInstance : jobInstances) {
-//            configList.add(new DaemonTaskConfig(FlinkJobTask.TYPE, jobInstance.getId()));
-//        }
-        List<Tenant> tenants = tenantService.list();
+        /*taskService.initDefaultFlinkSQLEnv(1);
+        List<JobInstance> jobInstances = jobInstanceService.listJobInstanceActive();
+        List<DaemonTaskConfig> configList = new ArrayList<>();
+        for (JobInstance jobInstance : jobInstances) {
+            configList.add(new DaemonTaskConfig(FlinkJobTask.TYPE, jobInstance.getId()));
+        }*/
+        List<com.dlink.model.Tenant> tenants = tenantService.list();
         List<DaemonTaskConfig> configList = new ArrayList<>();
         sysConfigService.initSysConfig();
         for (Tenant tenant : tenants) {
-            RequestContext.set(tenant.getId());
+            com.dlink.context.RequestContext.set(tenant.getId());
             taskService.initDefaultFlinkSQLEnv(tenant.getId());
             List<JobInstance> jobInstances = jobInstanceService.listJobInstanceActive();
             for (JobInstance jobInstance : jobInstances) {

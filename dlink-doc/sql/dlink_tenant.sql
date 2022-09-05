@@ -405,9 +405,10 @@ INSERT INTO `dlink_flink_document` VALUES (213, 'Function', '内置函数', '聚
 INSERT INTO `dlink_flink_document` VALUES (214, 'Function', '内置函数', '列函数', 'withColumns(…)', '选择的列', 'withColumns(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO `dlink_flink_document` VALUES (215, 'Function', '内置函数', '列函数', 'withoutColumns(…)', '不选择的列', 'withoutColumns(${1:})', '1.12', 0, 1, '2021-02-22 15:46:48', '2021-02-22 15:47:21');
 INSERT INTO `dlink_flink_document` VALUES (216, 'Function', '内置函数', '比较函数', 'value1 = value2', '如果value1等于value2 返回true; 如果value1或value2为NULL，则返回UNKNOWN 。', '${1:} =${2:}', '1.12', 9, 1, '2021-02-22 10:06:49', '2021-02-24 09:40:30');
-INSERT INTO `dlink_flink_document` VALUES (217, 'Function', 'UDF', '表值聚合函数', 'TO_MAP(string1,object2[, string3])', '将非规则一维表转化为规则二维表，string1是key。string2是value。string3为非必填项，表示key的值域（维度），用英文逗号分割。', 'TO_MAP(${1:})', '1.12', 8, 1, '2021-05-20 19:59:22', '2021-05-20 20:00:54');
-
-
+INSERT INTO `dlink_flink_document`
+VALUES (217, 'Function', 'UDF', '表值聚合函数', 'TO_MAP(string1,object2[, string3])',
+        '将非规则一维表转化为规则二维表，string1是key。string2是value。string3为非必填项，表示key的值域（维度），用英文逗号分割。', 'TO_MAP(${1:})', '1.12', 8, 1,
+        '2021-05-20 19:59:22', '2021-05-20 20:00:54');
 
 
 
@@ -415,31 +416,33 @@ INSERT INTO `dlink_flink_document` VALUES (217, 'Function', 'UDF', '表值聚合
 -- Table structure for dlink_fragment
 -- ----------------------------
 DROP TABLE IF EXISTS `dlink_fragment`;
-CREATE TABLE `dlink_fragment`  (
-  `id` int NOT NULL AUTO_INCREMENT COMMENT '实例主键',
-  `tenant_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '租户ID',
-  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '唯一名称',
-  `alias` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '别名',
-  `fragment_value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '变量值',
-  `fill_value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '名称拼接变量值',
-  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '说明/描述',
-  `enabled` tinyint NULL DEFAULT 1 COMMENT '是否启用',
-  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
-  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `un_idx1`(`name`) USING BTREE,
-  UNIQUE INDEX `un_idx2`(`tenant_id`, `name`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '全局变量' ROW_FORMAT = DYNAMIC;
+CREATE TABLE `dlink_fragment`
+(
+    `id`             int                                                          NOT NULL AUTO_INCREMENT COMMENT '实例主键',
+    `name`           varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '唯一名称',
+    `alias`          varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '别名',
+    `fragment_value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci        NOT NULL COMMENT '变量值',
+    `note`           text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci        DEFAULT NULL COMMENT '说明/描述',
+    `enabled`        tinyint                                                      DEFAULT '1' COMMENT '是否启用',
+    `create_time`    datetime                                                     DEFAULT NULL COMMENT '创建时间',
+    `update_time`    datetime                                                     DEFAULT NULL COMMENT '更新时间',
+    PRIMARY KEY (`id`) USING BTREE,
+    UNIQUE KEY `un_idx1` (`name`) USING BTREE
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_general_ci
+  ROW_FORMAT = DYNAMIC COMMENT ='全局变量';
 
 -- ----------------------------
 -- Table structure for dlink_history
 -- ----------------------------
 DROP TABLE IF EXISTS `dlink_history`;
-CREATE TABLE `dlink_history`  (
-  `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `tenant_id` int NOT NULL COMMENT '租户ID',
-  `cluster_id` int NOT NULL DEFAULT 0 COMMENT '集群ID',
-  `cluster_configuration_id` int NULL DEFAULT NULL,
+CREATE TABLE `dlink_history`
+(
+    `id`                       int                                                    NOT NULL AUTO_INCREMENT COMMENT 'ID',
+    `tenant_id`                int                                                    NOT NULL COMMENT '租户ID',
+    `cluster_id`               int                                                    NOT NULL DEFAULT 0 COMMENT '集群ID',
+    `cluster_configuration_id` int                                                    NULL     DEFAULT NULL,
   `session` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '会话',
   `job_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'JobID',
   `job_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '作业名',
