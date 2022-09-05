@@ -18,14 +18,15 @@
  */
 
 
-import React, {useCallback} from 'react';
-import {LogoutOutlined, SettingOutlined, UserOutlined} from '@ant-design/icons';
-import {Avatar, Menu, Spin} from 'antd';
+import React, {useCallback, useRef} from 'react';
+import {GroupOutlined, LogoutOutlined, UsergroupAddOutlined} from '@ant-design/icons';
+import {Avatar, Menu, Modal, Spin} from 'antd';
 import {history, useModel} from 'umi';
 import {stringify} from 'querystring';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 import {outLogin} from '@/services/ant-design-pro/api';
+import {ActionType} from "@ant-design/pro-table";
 
 export type GlobalHeaderRightProps = {
   menu?: boolean;
@@ -36,8 +37,8 @@ export type GlobalHeaderRightProps = {
  */
 const loginOut = async () => {
   await outLogin();
-  const { query = {}, pathname } = history.location;
-  const { redirect } = query;
+  const {query = {}, pathname} = history.location;
+  const {redirect} = query;
   // Note: There may be security issues, please note
   if (window.location.pathname !== '/user/login' && !redirect) {
     history.replace({
@@ -49,8 +50,9 @@ const loginOut = async () => {
   }
 };
 
-const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
-  const { initialState, setInitialState } = useModel('@@initialState');
+const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
+  const {initialState, setInitialState} = useModel('@@initialState');
+  const actionRef = useRef<ActionType>();
 
   const onMenuClick = useCallback(
     (event: {
@@ -59,13 +61,28 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
       item: React.ReactInstance;
       domEvent: React.MouseEvent<HTMLElement>;
     }) => {
-      const { key } = event;
+      const {key} = event;
       if (key === 'logout' && initialState) {
-        setInitialState({ ...initialState, currentUser: undefined });
+        setInitialState({...initialState, currentUser: undefined});
         loginOut();
         return;
+      } else if (key === 'chooseTenant') {
+        //TODO:
+        // 1.先刷新当前用户所有的租户  因为如果在角色管理中重新赋予角色 会触发增删角色(角色关联租户)
+        // 2.选择租户回调 选择租户 直接使用 modal
+        Modal.confirm({
+          title: '切换租户',
+          content: '确定切换【' + 11 + '】租户吗?',
+          okText: '确认',
+          cancelText: '取消',
+          onOk: async () => {
+            // TODO: handle
+            // await handleRemove(url,[currentItem]);
+            actionRef.current?.reloadAndRest?.();
+          }
+        });
       }
-      history.push(`/account/${key}`);
+      // history.push(`/account/${key}`);
     },
     [initialState, setInitialState],
   );
@@ -86,30 +103,58 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
     return loading;
   }
 
-  const { currentUser } = initialState;
+  const {currentUser} = initialState;
 
-  if (!currentUser || !currentUser.name) {
+  if (!currentUser || !currentUser.username) {
     return loading;
   }
+
+  const getChooseTenantListForm = () => {
+    let chooseTenantList: JSX.Element[] = [];
+    console.log(currentUser.roleDTOList)
+    currentUser.roleDTOList?.map((item) => {
+      chooseTenantList.push(
+        <>
+          <Menu.Item
+            key={item.tenant?.id}
+            title={item.tenant?.tenantCode}
+            icon={<UsergroupAddOutlined/>}
+            defaultValue={item.tenant?.id}
+          >
+            {item.tenant?.tenantCode}
+          </Menu.Item>
+        </>
+      )
+    })
+    return <>
+      <Menu.SubMenu
+        key="chooseTenantList"
+        onTitleClick={(e) => {
+          console.log(e, '---------------')
+        }}
+        title={"切换租户"}
+        icon={<GroupOutlined/>}
+      >
+        {chooseTenantList}
+      </Menu.SubMenu>
+    </>;
+  }
+
 
   const menuHeaderDropdown = (
     <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
       {menu && (
-        <Menu.Item key="center">
-          <UserOutlined />
-          个人中心
-        </Menu.Item>
+        getChooseTenantListForm()
       )}
-      {menu && (
-        <Menu.Item key="settings">
-          <SettingOutlined />
-          个人设置
-        </Menu.Item>
-      )}
-      {menu && <Menu.Divider />}
-
+      {/*{menu && (*/}
+      {/*  <Menu.Item key="settings">*/}
+      {/*    <SettingOutlined/>*/}
+      {/*    个人设置*/}
+      {/*  </Menu.Item>*/}
+      {/*)}*/}
+      {menu && <Menu.Divider/>}
       <Menu.Item key="logout">
-        <LogoutOutlined />
+        <LogoutOutlined/>
         退出登录
       </Menu.Item>
     </Menu>
@@ -117,8 +162,8 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
   return (
     <HeaderDropdown overlay={menuHeaderDropdown}>
       <span className={`${styles.action} ${styles.account}`}>
-        <Avatar size="small" className={styles.avatar} src={currentUser.avatar} alt="avatar" />
-        <span className={`${styles.name} anticon`}>{currentUser.name}</span>
+        <Avatar size="small" className={styles.avatar} src={currentUser.avatar} alt="avatar"/>
+        <span className={`${styles.name} anticon`}>{currentUser.username}</span>
       </span>
     </HeaderDropdown>
   );

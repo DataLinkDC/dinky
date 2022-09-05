@@ -19,6 +19,9 @@
 
 package com.dlink.service.impl;
 
+import cn.dev33.satoken.secure.SaSecureUtil;
+import cn.dev33.satoken.stp.StpUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.assertion.Asserts;
 import com.dlink.common.result.Result;
 import com.dlink.context.RequestContext;
@@ -35,19 +38,15 @@ import com.dlink.service.RoleService;
 import com.dlink.service.TenantService;
 import com.dlink.service.UserRoleService;
 import com.dlink.service.UserService;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-
-import cn.dev33.satoken.secure.SaSecureUtil;
-import cn.dev33.satoken.stp.StpUtil;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * UserServiceImpl
@@ -138,26 +137,30 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             if (!user.getEnabled()) {
                 return Result.failed("账号已被禁用");
             }
-            UserDTO userDTO = new UserDTO();
-            List<RoleDTO> roleDTOList = new ArrayList<>();
-            List<UserRole> userRoles = userRoleService.getUserRoleByUserId(user.getId());
-            List<Tenant> tenantList = tenantService.list();
-            Map<Integer, List<Tenant>> listMap = tenantList.stream().filter(item -> item.getIsDelete()).collect(Collectors.groupingBy(Tenant::getId));
-            Set<Integer> tenantIds = listMap.keySet();
-            for (UserRole userRole : userRoles) {
-                for (Integer tenantId : tenantIds) {
-                    RequestContext.set(tenantId);
-                    Role role = roleService.getBaseMapper().selectById(userRole.getRoleId());
-                    if (Asserts.isNotNull(role)) {
-                        roleDTOList.add(new RoleDTO(role, listMap.get((Integer) RequestContext.get()).get(0)));
-                    }
-                    RequestContext.remove();
-                }
-            }
             // 将前端入参 租户id 放入上下文
             RequestContext.set(loginUTO.getTenantId());
+
+            UserDTO userDTO = new UserDTO();
+            Set<RoleDTO> roleDTOList = new HashSet<>();
+            List<UserRole> userRoles = userRoleService.getUserRoleByUserId(user.getId());
+
+            Tenant currentTenant = tenantService.getBaseMapper().selectById(loginUTO.getTenantId());
+
+            //List<Tenant> tenantList = tenantService.list();
+            //Map<Integer, List<Tenant>> listMap = tenantList.stream().filter(item -> item.getIsDelete()).collect(Collectors.groupingBy(Tenant::getId));
+            //Set<Integer> tenantIds = listMap.keySet();
+            for (UserRole userRole : userRoles) {
+                Role role = roleService.getBaseMapper().selectById(userRole.getRoleId());
+                Tenant tenant = tenantService.getBaseMapper().selectOne(new QueryWrapper<Tenant>().eq("id", role.getTenantId()));
+                roleDTOList.add(new RoleDTO(role, tenant));
+                /*for (Integer tenantId : tenantIds) {
+                    if (Asserts.isNotNull(role)) {
+                    }
+                }*/
+            }
             userDTO.setUser(user);
             userDTO.setRoleDTOList(roleDTOList);
+            userDTO.setCurrentTenant(currentTenant);
             StpUtil.login(user.getId(), loginUTO.isAutoLogin());
             StpUtil.getSession().set("user", userDTO);
             return Result.succeed(userDTO, "登录成功");
