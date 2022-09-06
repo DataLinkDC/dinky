@@ -49,6 +49,7 @@ import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.types.logical.BigIntType;
 import org.apache.flink.table.types.logical.DateType;
 import org.apache.flink.table.types.logical.DecimalType;
+import org.apache.flink.table.types.logical.FloatType;
 import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.table.types.logical.TimestampType;
 import org.apache.flink.table.types.logical.VarBinaryType;
@@ -61,6 +62,7 @@ import org.apache.flink.util.OutputTag;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -95,67 +97,67 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
     }
 
     private DataStream<Row> buildRow(
-            DataStream<Map> filterOperator,
-            List<String> columnNameList,
-            List<LogicalType> columnTypeList,
-            String schemaTableName) {
+        DataStream<Map> filterOperator,
+        List<String> columnNameList,
+        List<LogicalType> columnTypeList,
+        String schemaTableName) {
         final String[] columnNames = columnNameList.toArray(new String[columnNameList.size()]);
         final LogicalType[] columnTypes = columnTypeList.toArray(new LogicalType[columnTypeList.size()]);
         TypeInformation<?>[] typeInformations = TypeConversions.fromDataTypeToLegacyInfo(TypeConversions.fromLogicalToDataType(columnTypes));
         RowTypeInfo rowTypeInfo = new RowTypeInfo(typeInformations, columnNames);
         return filterOperator
-                .flatMap(new FlatMapFunction<Map, Row>() {
-                    @Override
-                    public void flatMap(Map value, Collector<Row> out) throws Exception {
-                        try {
-                            switch (value.get("op").toString()) {
-                                case "r":
-                                case "c":
-                                    Row irow = Row.withPositions(RowKind.INSERT, columnNameList.size());
-                                    Map idata = (Map) value.get("after");
-                                    for (int i = 0; i < columnNameList.size(); i++) {
-                                        irow.setField(i, convertValue(idata.get(columnNameList.get(i)), columnTypeList.get(i)));
-                                    }
-                                    out.collect(irow);
-                                    break;
-                                case "d":
-                                    Row drow = Row.withPositions(RowKind.DELETE, columnNameList.size());
-                                    Map ddata = (Map) value.get("before");
-                                    for (int i = 0; i < columnNameList.size(); i++) {
-                                        drow.setField(i, convertValue(ddata.get(columnNameList.get(i)), columnTypeList.get(i)));
-                                    }
-                                    out.collect(drow);
-                                    break;
-                                case "u":
-                                    Row ubrow = Row.withPositions(RowKind.UPDATE_BEFORE, columnNameList.size());
-                                    Map ubdata = (Map) value.get("before");
-                                    for (int i = 0; i < columnNameList.size(); i++) {
-                                        ubrow.setField(i, convertValue(ubdata.get(columnNameList.get(i)), columnTypeList.get(i)));
-                                    }
-                                    out.collect(ubrow);
-                                    Row uarow = Row.withPositions(RowKind.UPDATE_AFTER, columnNameList.size());
-                                    Map uadata = (Map) value.get("after");
-                                    for (int i = 0; i < columnNameList.size(); i++) {
-                                        uarow.setField(i, convertValue(uadata.get(columnNameList.get(i)), columnTypeList.get(i)));
-                                    }
-                                    out.collect(uarow);
-                                    break;
-                                default:
-                            }
-                        } catch (Exception e) {
-                            logger.error("SchameTable: {} - Row: {} - Exception: {}", schemaTableName, JSONUtil.toJsonString(value), e.getCause().getMessage());
-                            throw e;
+            .flatMap(new FlatMapFunction<Map, Row>() {
+                @Override
+                public void flatMap(Map value, Collector<Row> out) throws Exception {
+                    try {
+                        switch (value.get("op").toString()) {
+                            case "r":
+                            case "c":
+                                Row irow = Row.withPositions(RowKind.INSERT, columnNameList.size());
+                                Map idata = (Map) value.get("after");
+                                for (int i = 0; i < columnNameList.size(); i++) {
+                                    irow.setField(i, convertValue(idata.get(columnNameList.get(i)), columnTypeList.get(i)));
+                                }
+                                out.collect(irow);
+                                break;
+                            case "d":
+                                Row drow = Row.withPositions(RowKind.DELETE, columnNameList.size());
+                                Map ddata = (Map) value.get("before");
+                                for (int i = 0; i < columnNameList.size(); i++) {
+                                    drow.setField(i, convertValue(ddata.get(columnNameList.get(i)), columnTypeList.get(i)));
+                                }
+                                out.collect(drow);
+                                break;
+                            case "u":
+                                Row ubrow = Row.withPositions(RowKind.UPDATE_BEFORE, columnNameList.size());
+                                Map ubdata = (Map) value.get("before");
+                                for (int i = 0; i < columnNameList.size(); i++) {
+                                    ubrow.setField(i, convertValue(ubdata.get(columnNameList.get(i)), columnTypeList.get(i)));
+                                }
+                                out.collect(ubrow);
+                                Row uarow = Row.withPositions(RowKind.UPDATE_AFTER, columnNameList.size());
+                                Map uadata = (Map) value.get("after");
+                                for (int i = 0; i < columnNameList.size(); i++) {
+                                    uarow.setField(i, convertValue(uadata.get(columnNameList.get(i)), columnTypeList.get(i)));
+                                }
+                                out.collect(uarow);
+                                break;
+                            default:
                         }
+                    } catch (Exception e) {
+                        logger.error("SchameTable: {} - Row: {} - Exception: {}", schemaTableName, JSONUtil.toJsonString(value), e.getCause().getMessage());
+                        throw e;
                     }
-                }, rowTypeInfo);
+                }
+            }, rowTypeInfo);
     }
 
     private void addTableSink(
-            int indexSink,
-            CustomTableEnvironment customTableEnvironment,
-            DataStream<Row> rowDataDataStream,
-            Table table,
-            List<String> columnNameList) {
+        int indexSink,
+        CustomTableEnvironment customTableEnvironment,
+        DataStream<Row> rowDataDataStream,
+        Table table,
+        List<String> columnNameList) {
         String sinkSchemaName = getSinkSchemaName(table);
         String tableName = getSinkTableName(table);
         String sinkTableName = tableName + "_" + indexSink;
@@ -202,10 +204,10 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
 
     @Override
     public DataStreamSource build(
-            CDCBuilder cdcBuilder,
-            StreamExecutionEnvironment env,
-            CustomTableEnvironment customTableEnvironment,
-            DataStreamSource<String> dataStreamSource) {
+        CDCBuilder cdcBuilder,
+        StreamExecutionEnvironment env,
+        CustomTableEnvironment customTableEnvironment,
+        DataStreamSource<String> dataStreamSource) {
         final String timeZone = config.getSink().get("timezone");
         config.getSink().remove("timezone");
         if (Asserts.isNotNullString(timeZone)) {
@@ -269,26 +271,37 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
         return dataStreamSource;
     }
 
+    @Override
     protected Object convertValue(Object value, LogicalType logicalType) {
         if (value == null) {
             return null;
         }
         if (logicalType instanceof DateType) {
             if (value instanceof Integer) {
-                return Instant.ofEpochMilli(((Integer) value).longValue()).atZone(sinkTimeZone).toLocalDate();
-            } else {
+                return LocalDate.ofEpochDay((Integer) value);
+            } else if (value instanceof Long) {
                 return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDate();
+            } else {
+                return Instant.parse(value.toString()).atZone(sinkTimeZone).toLocalDate();
             }
         } else if (logicalType instanceof TimestampType) {
             if (value instanceof Integer) {
                 return Instant.ofEpochMilli(((Integer) value).longValue()).atZone(sinkTimeZone).toLocalDateTime();
-            } else if (value instanceof String) {
-                return Instant.parse((String) value).atZone(sinkTimeZone).toLocalDateTime();
-            } else {
+            } else if (value instanceof Long) {
                 return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDateTime();
+            } else {
+                return Instant.parse(value.toString()).atZone(sinkTimeZone).toLocalDateTime();
             }
         } else if (logicalType instanceof DecimalType) {
-            return new BigDecimal((String) value);
+            return new BigDecimal(value.toString());
+        } else if (logicalType instanceof FloatType) {
+            if (value instanceof Float) {
+                return value;
+            } else if (value instanceof Double) {
+                return ((Double) value).floatValue();
+            } else {
+                return Float.parseFloat(value.toString());
+            }
         } else if (logicalType instanceof BigIntType) {
             if (value instanceof Integer) {
                 return ((Integer) value).longValue();
@@ -298,7 +311,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
         } else if (logicalType instanceof VarBinaryType) {
             // VARBINARY AND BINARY is converted to String with encoding base64 in FlinkCDC.
             if (value instanceof String) {
-                return DatatypeConverter.parseBase64Binary((String) value);
+                return DatatypeConverter.parseBase64Binary(value.toString());
             } else {
                 return value;
             }

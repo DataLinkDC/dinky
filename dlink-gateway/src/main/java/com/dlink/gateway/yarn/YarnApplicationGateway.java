@@ -87,13 +87,21 @@ public class YarnApplicationGateway extends YarnGateway {
         ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration(userJarParas, appConfig.getUserJarMainAppClass());
         YarnClusterDescriptor yarnClusterDescriptor = new YarnClusterDescriptor(
             configuration, yarnConfiguration, yarnClient, YarnClientYarnClusterInformationRetriever.create(yarnClient), true);
-        ClusterSpecification clusterSpecification = new ClusterSpecification.ClusterSpecificationBuilder()
-            .setMasterMemoryMB(configuration.get(JobManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes())
-            .setTaskManagerMemoryMB(configuration.get(TaskManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes())
-            .setSlotsPerTaskManager(configuration.get(TaskManagerOptions.NUM_TASK_SLOTS)).createClusterSpecification();
+
+        ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder = new ClusterSpecification.ClusterSpecificationBuilder();
+        if (configuration.contains(JobManagerOptions.TOTAL_PROCESS_MEMORY)) {
+            clusterSpecificationBuilder.setMasterMemoryMB(configuration.get(JobManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes());
+        }
+        if (configuration.contains(TaskManagerOptions.TOTAL_PROCESS_MEMORY)) {
+            clusterSpecificationBuilder.setTaskManagerMemoryMB(configuration.get(TaskManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes());
+        }
+        if (configuration.contains(TaskManagerOptions.NUM_TASK_SLOTS)) {
+            clusterSpecificationBuilder.setSlotsPerTaskManager(configuration.get(TaskManagerOptions.NUM_TASK_SLOTS)).createClusterSpecification();
+        }
+
         try {
             ClusterClientProvider<ApplicationId> clusterClientProvider = yarnClusterDescriptor.deployApplicationCluster(
-                clusterSpecification,
+                clusterSpecificationBuilder.createClusterSpecification(),
                 applicationConfiguration);
             ClusterClient<ApplicationId> clusterClient = clusterClientProvider.getClusterClient();
             Collection<JobStatusMessage> jobStatusMessages = clusterClient.listJobs().get();
