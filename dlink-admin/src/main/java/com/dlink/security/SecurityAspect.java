@@ -42,7 +42,7 @@ public class SecurityAspect {
 
     // 敏感信息的pattern :
     //  'password' = 'wwz@test'
-    public static final String SENSITIVE = "'password'\\s+=\\s+'.+?'";
+    public static final String SENSITIVE = "'password'\\s*=\\s*'.+?'";
 
     // 敏感信息屏蔽码
     public static final String MASK = "'password'='******'";
@@ -67,7 +67,7 @@ public class SecurityAspect {
         // /api/studio/explainSql
         if (returnValue instanceof Result<?> && ((Result<?>) returnValue).getDatas() instanceof List<?>) {
             List<?> list = (List<?>) ((Result<?>) returnValue).getDatas();
-            if (list.isEmpty() || !(list.get(0)  instanceof SqlExplainResult)) {
+            if (list.isEmpty() || !(list.get(0) instanceof SqlExplainResult)) {
                 return;
             }
             List<SqlExplainResult> exp = ((List<SqlExplainResult>) ((Result<?>) returnValue).getDatas());
@@ -117,9 +117,9 @@ public class SecurityAspect {
     /**
      * 将info中的敏感信息中打码
      *
-     * @param info              包含敏感信息的字符串
-     * @param passwordPattern   敏感信息的regex
-     * @param mask              屏蔽码
+     * @param info            包含敏感信息的字符串
+     * @param passwordPattern 敏感信息的regex
+     * @param mask            屏蔽码
      * @return
      */
     public static String mask(String info, String passwordPattern, String mask) {

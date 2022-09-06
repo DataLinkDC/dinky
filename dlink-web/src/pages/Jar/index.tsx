@@ -19,14 +19,13 @@
 
 
 import React, {useRef, useState} from "react";
-import {DownOutlined, HeartOutlined, PlusOutlined, UserOutlined} from '@ant-design/icons';
-import {ActionType, ProColumns} from "@ant-design/pro-table";
-import {Button, message, Input, Drawer, Modal, Dropdown, Menu} from 'antd';
-import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
-import ProTable from '@ant-design/pro-table';
+import {DownOutlined, PlusOutlined} from '@ant-design/icons';
+import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
+import {Button, Drawer, Dropdown, Menu, message, Modal, Upload} from 'antd';
+import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import {JarTableListItem} from "@/pages/Jar/data";
-import {handleAddOrUpdate, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
+import {CODE, handleAddOrUpdate, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
 import JarForm from "@/pages/Jar/components/JarForm";
 
 const url = '/api/jar';
@@ -54,6 +53,32 @@ const JarTableList: React.FC<{}> = (props: any) => {
           actionRef.current?.reloadAndRest?.();
         }
       });
+    }
+  };
+
+  const getUploadProps = (dir: string) => {
+    return {
+      name: 'files',
+      action: '/api/fileUpload',
+      accept: 'jar',
+      headers: {
+        authorization: 'authorization-text',
+      },
+      data: {
+        dir
+      },
+      showUploadList: true,
+      onChange(info) {
+        if (info.file.status === 'done') {
+          if (info.file.response.code == CODE.SUCCESS) {
+            message.success(info.file.response.msg);
+          } else {
+            message.warn(info.file.response.msg);
+          }
+        } else if (info.file.status === 'error') {
+          message.error(`${info.file.name} 上传失败`);
+        }
+      },
     }
   };
 
@@ -132,7 +157,7 @@ const JarTableList: React.FC<{}> = (props: any) => {
       title: '启动类',
       sorter: true,
       dataIndex: 'mainClass',
-    },{
+    }, {
       title: '执行参数',
       sorter: true,
       dataIndex: 'paras',
@@ -194,6 +219,9 @@ const JarTableList: React.FC<{}> = (props: any) => {
         >
           配置
         </a>,
+        <Upload {...getUploadProps(record.path)}>
+          <a>上传</a>
+        </Upload>,
         <MoreBtn key="more" item={record}/>,
       ],
     },
@@ -206,84 +234,102 @@ const JarTableList: React.FC<{}> = (props: any) => {
         actionRef={actionRef}
         rowKey="id"
         search={{
-        labelWidth: 120,
-      }}
+          labelWidth: 120,
+        }}
         toolBarRender={() => [
-        <Button type="primary" onClick={() => handleModalVisible(true)}>
-          <PlusOutlined/> 新建
-        </Button>,
-      ]}
+          <Button type="primary" onClick={() => handleModalVisible(true)}>
+            <PlusOutlined/> 新建
+          </Button>,
+        ]}
         request={(params, sorter, filter) => queryData(url, {...params, sorter, filter})}
         columns={columns}
         rowSelection={{
-        onChange: (_, selectedRows) => setSelectedRows(selectedRows),
-      }}
-        />
-        {selectedRowsState?.length > 0 && (
-          <FooterToolbar
-            extra={
-              <div>
-                已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
-                <span>
+          onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+        }}
+      />
+      {selectedRowsState?.length > 0 && (
+        <FooterToolbar
+          extra={
+            <div>
+              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
+              <span>
                 被禁用的集群配置共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} 人
               </span>
-              </div>
-            }
+            </div>
+          }
+        >
+          <Button type="primary" danger
+                  onClick={() => {
+                    Modal.confirm({
+                      title: '删除Jar配置',
+                      content: '确定删除选中的Jar配置吗？',
+                      okText: '确认',
+                      cancelText: '取消',
+                      onOk: async () => {
+                        await handleRemove(url, selectedRowsState);
+                        setSelectedRows([]);
+                        actionRef.current?.reloadAndRest?.();
+                      }
+                    });
+                  }}
           >
-            <Button type="primary" danger
-                    onClick={() => {
-                      Modal.confirm({
-                        title: '删除Jar配置',
-                        content: '确定删除选中的Jar配置吗？',
-                        okText: '确认',
-                        cancelText: '取消',
-                        onOk: async () => {
-                          await handleRemove(url, selectedRowsState);
-                          setSelectedRows([]);
-                          actionRef.current?.reloadAndRest?.();
-                        }
-                      });
-                    }}
-            >
-              批量删除
-            </Button>
-            <Button type="primary"
-                    onClick={() => {
-                      Modal.confirm({
-                        title: '启用Jar配置',
-                        content: '确定启用选中的Jar配置吗？',
-                        okText: '确认',
-                        cancelText: '取消',
-                        onOk: async () => {
-                          await updateEnabled(url, selectedRowsState, true);
-                          setSelectedRows([]);
-                          actionRef.current?.reloadAndRest?.();
-                        }
-                      });
-                    }}
-            >批量启用</Button>
-            <Button danger
-                    onClick={() => {
-                      Modal.confirm({
-                        title: '禁用Jar配置',
-                        content: '确定禁用选中的Jar配置吗？',
-                        okText: '确认',
-                        cancelText: '取消',
-                        onOk: async () => {
-                          await updateEnabled(url, selectedRowsState, false);
-                          setSelectedRows([]);
-                          actionRef.current?.reloadAndRest?.();
-                        }
-                      });
-                    }}
-            >批量禁用</Button>
-          </FooterToolbar>
-        )}
+            批量删除
+          </Button>
+          <Button type="primary"
+                  onClick={() => {
+                    Modal.confirm({
+                      title: '启用Jar配置',
+                      content: '确定启用选中的Jar配置吗？',
+                      okText: '确认',
+                      cancelText: '取消',
+                      onOk: async () => {
+                        await updateEnabled(url, selectedRowsState, true);
+                        setSelectedRows([]);
+                        actionRef.current?.reloadAndRest?.();
+                      }
+                    });
+                  }}
+          >批量启用</Button>
+          <Button danger
+                  onClick={() => {
+                    Modal.confirm({
+                      title: '禁用Jar配置',
+                      content: '确定禁用选中的Jar配置吗？',
+                      okText: '确认',
+                      cancelText: '取消',
+                      onOk: async () => {
+                        await updateEnabled(url, selectedRowsState, false);
+                        setSelectedRows([]);
+                        actionRef.current?.reloadAndRest?.();
+                      }
+                    });
+                  }}
+          >批量禁用</Button>
+        </FooterToolbar>
+      )}
+      <JarForm
+        onSubmit={async (value) => {
+          const success = await handleAddOrUpdate(url, value);
+          if (success) {
+            handleModalVisible(false);
+            setFormValues({});
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        onCancel={() => {
+          handleModalVisible(false);
+        }}
+        modalVisible={modalVisible}
+        values={{}}
+      />
+      {formValues && Object.keys(formValues).length ? (
         <JarForm
           onSubmit={async (value) => {
             const success = await handleAddOrUpdate(url, value);
             if (success) {
-              handleModalVisible(false);
+              handleUpdateModalVisible(false);
               setFormValues({});
               if (actionRef.current) {
                 actionRef.current.reload();
@@ -291,55 +337,37 @@ const JarTableList: React.FC<{}> = (props: any) => {
             }
           }}
           onCancel={() => {
-            handleModalVisible(false);
+            handleUpdateModalVisible(false);
+            setFormValues({});
           }}
-          modalVisible={modalVisible}
-          values={{}}
+          modalVisible={updateModalVisible}
+          values={formValues}
         />
-        {formValues && Object.keys(formValues).length ? (
-          <JarForm
-            onSubmit={async (value) => {
-              const success = await handleAddOrUpdate(url, value);
-              if (success) {
-                handleUpdateModalVisible(false);
-                setFormValues({});
-                if (actionRef.current) {
-                  actionRef.current.reload();
-                }
-              }
-            }}
-            onCancel={() => {
-              handleUpdateModalVisible(false);
-              setFormValues({});
-            }}
-            modalVisible={updateModalVisible}
-            values={formValues}
-          />
-        ): null}
-        <Drawer
-          width={600}
-          visible={!!row}
-          onClose={() => {
-            setRow(undefined);
-          }}
-          closable={false}
-        >
-          {row?.name && (
-            <ProDescriptions<JarTableListItem>
-              column={2}
-              title={row?.name}
-              request={async () => ({
+      ) : null}
+      <Drawer
+        width={600}
+        visible={!!row}
+        onClose={() => {
+          setRow(undefined);
+        }}
+        closable={false}
+      >
+        {row?.name && (
+          <ProDescriptions<JarTableListItem>
+            column={2}
+            title={row?.name}
+            request={async () => ({
               data: row || {},
             })}
-              params={{
+            params={{
               id: row?.name,
             }}
-              columns={columns}
-              />
-              )}
-        </Drawer>
+            columns={columns}
+          />
+        )}
+      </Drawer>
     </PageContainer>
-);
+  );
 };
 
 export default JarTableList;

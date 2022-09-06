@@ -106,10 +106,6 @@
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.nepxion</groupId>
-            <artifactId>banner</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
         </dependency>
@@ -198,6 +194,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+        <!-- hadoop -->
+        <dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-client-hadoop</artifactId>
+            <scope>${scope.runtime}</scope>
         </dependency>
     </dependencies>
 

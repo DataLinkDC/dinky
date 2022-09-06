@@ -42,6 +42,7 @@ import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.ProcessFunction;
+import org.apache.flink.table.api.ValidationException;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
@@ -66,6 +67,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -76,9 +78,9 @@ import javax.xml.bind.DatatypeConverter;
  * @since 2022/4/25 23:02
  */
 public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, Serializable {
-
     private static final String KEY_WORD = "sql";
     private static final long serialVersionUID = -3699685106324048226L;
+    private static AtomicInteger atomicInteger = new AtomicInteger(0);
     private ZoneId sinkTimeZone = ZoneId.of("UTC");
 
     public SQLSinkBuilder() {
@@ -90,7 +92,6 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
 
     @Override
     public void addSink(StreamExecutionEnvironment env, DataStream<RowData> rowDataDataStream, Table table, List<String> columnNameList, List<LogicalType> columnTypeList) {
-
     }
 
     private DataStream<Row> buildRow(
@@ -100,10 +101,8 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
             String schemaTableName) {
         final String[] columnNames = columnNameList.toArray(new String[columnNameList.size()]);
         final LogicalType[] columnTypes = columnTypeList.toArray(new LogicalType[columnTypeList.size()]);
-
         TypeInformation<?>[] typeInformations = TypeConversions.fromDataTypeToLegacyInfo(TypeConversions.fromLogicalToDataType(columnTypes));
         RowTypeInfo rowTypeInfo = new RowTypeInfo(typeInformations, columnNames);
-
         return filterOperator
                 .flatMap(new FlatMapFunction<Map, Row>() {
                     @Override
@@ -152,18 +151,25 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
     }
 
     private void addTableSink(
-        CustomTableEnvironment customTableEnvironment,
-        DataStream<Row> rowDataDataStream,
-        Table table,
-        List<String> columnNameList) {
-
+            int indexSink,
+            CustomTableEnvironment customTableEnvironment,
+            DataStream<Row> rowDataDataStream,
+            Table table,
+            List<String> columnNameList) {
         String sinkSchemaName = getSinkSchemaName(table);
-        String sinkTableName = getSinkTableName(table);
+        String tableName = getSinkTableName(table);
+        String sinkTableName = tableName + "_" + indexSink;
         String pkList = StringUtils.join(getPKList(table), ".");
         String viewName = "VIEW_" + table.getSchemaTableNameWithUnderline();
-        customTableEnvironment.createTemporaryView(viewName, rowDataDataStream, StringUtils.join(columnNameList, ","));
-        logger.info("Create " + viewName + " temporaryView successful...");
-        String flinkDDL = FlinkBaseUtil.getFlinkDDL(table, sinkTableName, config, sinkSchemaName, sinkTableName, pkList);
+        try {
+            customTableEnvironment.createTemporaryView(viewName, rowDataDataStream, StringUtils.join(columnNameList, ","));
+            logger.info("Create " + viewName + " temporaryView successful...");
+        } catch (ValidationException exception) {
+            if (!exception.getMessage().contains("already exists")) {
+                logger.error(exception.getMessage(), exception);
+            }
+        }
+        String flinkDDL = FlinkBaseUtil.getFlinkDDL(table, "" + sinkTableName, config, sinkSchemaName, tableName, pkList);
         logger.info(flinkDDL);
         customTableEnvironment.executeSql(flinkDDL);
         logger.info("Create " + sinkTableName + " FlinkSQL DDL successful...");
@@ -196,10 +202,10 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
 
     @Override
     public DataStreamSource build(
-        CDCBuilder cdcBuilder,
-        StreamExecutionEnvironment env,
-        CustomTableEnvironment customTableEnvironment,
-        DataStreamSource<String> dataStreamSource) {
+            CDCBuilder cdcBuilder,
+            StreamExecutionEnvironment env,
+            CustomTableEnvironment customTableEnvironment,
+            DataStreamSource<String> dataStreamSource) {
         final String timeZone = config.getSink().get("timezone");
         config.getSink().remove("timezone");
         if (Asserts.isNotNullString(timeZone)) {
@@ -207,7 +213,6 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
         }
         final List<Schema> schemaList = config.getSchemaList();
         if (Asserts.isNotNullCollection(schemaList)) {
-
             logger.info("Build deserialize successful...");
             Map<Table, OutputTag<Map>> tagMap = new HashMap<>();
             Map<String, Table> tableMap = new HashMap<>();
@@ -218,13 +223,11 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                     };
                     tagMap.put(table, outputTag);
                     tableMap.put(table.getSchemaTableName(), table);
-
                 }
             }
             final String schemaFieldName = config.getSchemaFieldName();
             ObjectMapper objectMapper = new ObjectMapper();
-            SingleOutputStreamOperator<Map> mapOperator = dataStreamSource.map(x -> objectMapper.readValue(x,Map.class)).returns(Map.class);
-
+            SingleOutputStreamOperator<Map> mapOperator = dataStreamSource.map(x -> objectMapper.readValue(x, Map.class)).returns(Map.class);
             SingleOutputStreamOperator<Map> processOperator = mapOperator.process(new ProcessFunction<Map, Map>() {
                 @Override
                 public void processElement(Map map, ProcessFunction<Map, Map>.Context ctx, Collector<Map> out) throws Exception {
@@ -239,7 +242,8 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                     }
                 }
             });
-            tagMap.forEach((table,tag) -> {
+            final int indexSink = atomicInteger.getAndAdd(1);
+            tagMap.forEach((table, tag) -> {
                 final String schemaTableName = table.getSchemaTableName();
                 try {
                     DataStream<Map> filterOperator = shunt(processOperator, table, tag);
@@ -250,13 +254,12 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                     DataStream<Row> rowDataDataStream = buildRow(filterOperator, columnNameList, columnTypeList, schemaTableName).rebalance();
                     logger.info("Build " + schemaTableName + " flatMap successful...");
                     logger.info("Start build " + schemaTableName + " sink...");
-                    addTableSink(customTableEnvironment, rowDataDataStream, table, columnNameList);
+                    addTableSink(indexSink, customTableEnvironment, rowDataDataStream, table, columnNameList);
                 } catch (Exception e) {
                     logger.error("Build " + schemaTableName + " cdc sync failed...");
                     logger.error(LogUtil.getError(e));
                 }
             });
-
             List<Transformation<?>> trans = customTableEnvironment.getPlanner().translate(modifyOperations);
             for (Transformation<?> item : trans) {
                 env.addOperator(item);

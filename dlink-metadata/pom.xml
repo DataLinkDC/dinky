@@ -38,6 +38,7 @@
         <module>dlink-metadata-doris</module>
         <module>dlink-metadata-phoenix</module>
         <module>dlink-metadata-hive</module>
+        <module>dlink-metadata-starrocks</module>
     </modules>
 
 

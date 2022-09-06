@@ -28,7 +28,7 @@ package com.dlink.metadata.query;
 public class PostgreSqlQuery extends AbstractDBQuery {
     @Override
     public String schemaAllSql() {
-        return null;
+        return "SELECT \"schema_name\" FROM information_schema.schemata where \"schema_name\" not in ('pg_toast','pg_temp_1','pg_toast_temp_1','pg_catalog','information_schema')";
     }
 
     @Override
@@ -46,7 +46,7 @@ public class PostgreSqlQuery extends AbstractDBQuery {
 
     @Override
     public String schemaName() {
-        return null;
+        return "schema_name";
     }
 
     @Override

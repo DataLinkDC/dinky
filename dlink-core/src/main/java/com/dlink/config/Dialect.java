@@ -30,8 +30,8 @@ import com.dlink.assertion.Asserts;
 public enum Dialect {
 
     FLINKSQL("FlinkSql"), FLINKJAR("FlinkJar"), FLINKSQLENV("FlinkSqlEnv"), SQL("Sql"), JAVA("Java"),
-    MYSQL("Mysql"), ORACLE("Oracle"), SQLSERVER("SqlServer"), POSTGRESQL("PostGreSql"), CLICKHOUSE("ClickHouse"),
-    DORIS("Doris"), PHOENIX("Phoenix"), HIVE("Hive");
+    MYSQL("Mysql"), ORACLE("Oracle"), SQLSERVER("SqlServer"), POSTGRESQL("PostgreSql"), CLICKHOUSE("ClickHouse"),
+    DORIS("Doris"), PHOENIX("Phoenix"), HIVE("Hive"), STARROCKS("StarRocks");
 
     private String value;
 
@@ -58,7 +58,13 @@ public enum Dialect {
         return Dialect.FLINKSQL;
     }
 
-    public static boolean isSql(String value) {
+    /**
+     * Judge sql dialect.
+     *
+     * @param value {@link Dialect}
+     * @return If is flink sql, return false, otherwise return true.
+     */
+    public static boolean notFlinkSql(String value) {
         Dialect dialect = Dialect.get(value);
         switch (dialect) {
             case SQL:
@@ -70,6 +76,7 @@ public enum Dialect {
             case DORIS:
             case PHOENIX:
             case HIVE:
+            case STARROCKS:
                 return true;
             default:
                 return false;
