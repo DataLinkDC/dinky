@@ -24,7 +24,7 @@
     <groupId>com.dlink</groupId>
     <artifactId>dlink</artifactId>
     <packaging>pom</packaging>
-    <version>0.6.7-SNAPSHOT</version>
+    <version>0.6.7</version>
 
     <modules>
         <module>dlink-flink</module>
