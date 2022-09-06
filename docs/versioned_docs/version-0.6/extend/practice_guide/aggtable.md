@@ -341,14 +341,17 @@ FROM score
 GROUP BY sid
 AGG BY TO_MAP(cls,score) as (data);
 
-insert into studentscore
-select 
-a.sid,a.name,
-cast(GET_KEY(b.data,'chinese','0') as int),
-cast(GET_KEY(b.data,'math','0') as int),
-cast(GET_KEY(b.data,'english','0') as int)
-from student a
-left join aggscore2 b on a.sid=b.sid 
+insert into
+    studentscore
+select
+    a.sid,
+    a.name,
+    b.data['chinese'] ,
+    b.data['math'],
+    b.data['english']
+from
+    student a
+    left join aggscore2 b on a.sid = b.sid;
 ```
 
 ​	本实例通过表值聚合将分组后的多行转单列然后通过 GET_KEY 取值的思路来实现。同时，也使用了 Fragment 机制。
