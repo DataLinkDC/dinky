@@ -17,12 +17,12 @@
  *
  */
 
-
 import {Typography,Divider} from 'antd';
 import React from 'react';
 import {connect} from 'umi';
 import {StateType} from '@/pages/DataStudio/model';
 import {Scrollbars} from 'react-custom-scrollbars';
+import {VERSION} from "@/components/Common/Version";
 
 const {Title, Paragraph, Text} = Typography;
 
@@ -32,7 +32,7 @@ const StudioHome = (props: any) => {
   return (
     <Scrollbars style={{height: toolHeight}}>
       <Typography style={{padding:'15px'}}>
-        <Title level={4}>欢迎使用 Dinky v0.6.7-SNAPSHOT</Title>
+        <Title level={4}>欢迎使用 Dinky v{VERSION}</Title>
         <Paragraph>
           <blockquote>实时即未来，Dinky 为 Apache Flink 而生，让 Flink SQL 纵享丝滑，并致力于实时计算平台建设。</blockquote>
         </Paragraph>
@@ -81,8 +81,5 @@ const StudioHome = (props: any) => {
 };
 
 export default connect(({Studio}: { Studio: StateType }) => ({
-  current: Studio.current,
-  sql: Studio.sql,
-  tabs: Studio.tabs,
   toolHeight: Studio.toolHeight,
 }))(StudioHome);

@@ -1,5 +1,24 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 export default {
-  'pages.layouts.userLayout.title': 'Dinky 一站式实时计算平台',
+  'pages.layouts.userLayout.title': 'Dinky 实时计算平台',
   'pages.login.accountLogin.tab': '账户密码登录',
   'pages.login.accountLogin.errorMessage': '错误的用户名和密码（admin/admin)',
   'pages.login.failure': '登录失败，请重试！',
@@ -29,7 +48,7 @@ export default {
   'pages.welcome.link': '欢迎加入',
   'pages.welcome.star': '欢迎 Star ',
   'pages.welcome.advancedLayout': 'Github',
-  'pages.welcome.alertMessage': '实时计算平台 Dinky 即将发布，目前为体验版，版本号为 0.6.7-SNAPSHOT。',
+  'pages.welcome.alertMessage': '实时计算平台 Dinky 即将发布，目前为体验版，版本号为 ',
   'pages.admin.subPage.title': ' 这个页面只有 admin 权限才能查看',
   'pages.admin.subPage.alertMessage': 'umi ui 现已发布，欢迎使用 npm run ui 启动体验。',
   'pages.searchTable.createForm.newRule': '新建规则',

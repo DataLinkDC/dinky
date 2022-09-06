@@ -692,7 +692,7 @@ CREATE TABLE `dlink_task_version` (
 
 
 
--- 0.7-SNAPSHOT 2022-08-02
+-- 0.6.7-SNAPSHOT 2022-08-02
 -- -----------------------
 -- DROP TABLE IF EXISTS `dlink_fragment`;
 CREATE TABLE `dlink_fragment` (
