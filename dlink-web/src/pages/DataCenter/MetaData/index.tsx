@@ -224,9 +224,6 @@ const Container: React.FC<{}> = (props: any) => {
                       )}
                     </TabPane>
 
-                    {/*<TabPane tab={<span><ForkOutlined />血缘关系</span>} key="--">*/}
-                    {/*  开发ing*/}
-                    {/*</TabPane>*/}
                   </Tabs>
                 </div>
               </div>

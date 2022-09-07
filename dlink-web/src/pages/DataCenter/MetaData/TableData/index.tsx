@@ -26,21 +26,15 @@ const TableData = (props: any) => {
 // where输入框内容
 const [optionInput, setOptionInput] = useState<{whereInput:string,orderInput:string}>({whereInput:"",orderInput:""});
 const [page, setPage] = useState<{ page:number,pageSize:number }>({page:0 ,pageSize:10});
-
+// const [defaultInput,setDefaultInput]
 // 获取数据库数据
-const fetchData = async () => {
+const fetchData = async (whereInput:string,orderInput:string) => {
 
   setLoading(true);
   let temp= {rowData: [], columns: []}
-  let limitStart = page.page * page.pageSize;
-  console.log(page.page+"------"+page.pageSize)
-  let limitEnd = limitStart + page.pageSize;
-  console.log(limitStart+"------"+limitEnd)
 
-  let option = {where:optionInput.whereInput,
-    order:optionInput.orderInput,
-    limitStart:limitStart,
-    limitEnd:limitEnd}
+  let option = {where:whereInput,
+    order:orderInput,limitStart:"0",limitEnd:"500"}
 
   await showTableData(dbId, schema, table, option).then(result => {
     if (result.code == 1){
@@ -70,8 +64,18 @@ const fetchData = async () => {
 };
 
 useEffect(() => {
-  fetchData();
-}, [dbId, table, schema,page]);
+  setColumns([])
+  setableData({columns: [], rowData: []})
+  setErrMsg({isErr:false,msg:""})
+  setOptions({whereOption:[],orderOption:[]})
+  setOptionInput({whereInput:"",orderInput:""})
+  setPage({page:0 ,pageSize:10})
+  setLoading(false)
+
+  fetchData("","");
+
+
+}, [dbId, table, schema]);
 
 //使用多选框进行自由列选择，屏蔽不需要看见的列，目前实现有些问题，暂时屏蔽
 // // 单项选择监听
@@ -147,6 +151,7 @@ return (
         <Row>
           <Col span={12}>
             <AutoComplete
+              value={optionInput.whereInput}
               options={options.whereOption}
               style={{width: "100%"}}
               onSearch={handleWhere}
@@ -155,15 +160,18 @@ return (
                   orderInput:optionInput.orderInput})
               }}
             >
-              <Input addonBefore="WHERE" placeholder="查询条件" onChange={(value)=>{
+              <Input addonBefore="WHERE" placeholder="查询条件"
+                     onChange={(value)=>{
                 setOptionInput({whereInput:value.target.value,
                   orderInput:optionInput.orderInput})
-              }}/>
+              }}
+              />
             </AutoComplete>
 
           </Col>
           <Col span={12}>
             <AutoComplete
+              value={optionInput.orderInput}
               options={options.orderOption}
               style={{width: "100%"}}
               onSearch={handleOrder}
@@ -172,7 +180,7 @@ return (
                   orderInput:value})
               }}
             >
-              <Input addonBefore="ORDER BY" placeholder="排序" onChange={(value)=>{
+              <Input addonBefore="ORDER BY"  placeholder="排序" onChange={(value)=>{
                 setOptionInput({whereInput:optionInput.whereInput,
                   orderInput:value.target.value})
               }}/>
@@ -209,7 +217,7 @@ return (
           <Col span={1}>
             <Tooltip title="查询">
               <Button type="primary" shape="circle" icon={<SearchOutlined/>} size="middle" onClick={(event)=>{
-                fetchData()
+                fetchData(optionInput.whereInput,optionInput.orderInput)
               }}/>
             </Tooltip>
           </Col>
@@ -223,10 +231,9 @@ return (
         <Table style={{height: '95vh'}}
                columns={tableData.columns}
                dataSource={tableData.rowData}
-               pagination={{pageSize:page.pageSize,total:rows,
+               pagination={{pageSize:page.pageSize,
                  onChange: (pageNum, pageSize) => {
-                   console.log(pageNum+"================"+pageSize)
-                   setPage({page:pageNum-1,pageSize:pageSize});
+                   setPage({page:pageNum,pageSize:pageSize});
                  }}}
                scroll={{y: "80vh", x: true}}
         />

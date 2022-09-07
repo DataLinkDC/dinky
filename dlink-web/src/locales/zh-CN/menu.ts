@@ -71,8 +71,8 @@ export default {
   'menu.dev.ant-design.docs': '官方文档',
   'menu.dev.ant-design.preview': '官方预览',
 
-  'menu.datacenter': '数据中心',
-  'menu.datacenter.metadata': '元数据管理',
+  'menu.datacenter': '元数据中心',
+  'menu.datacenter.metadata': '元数据',
 
 
 };
