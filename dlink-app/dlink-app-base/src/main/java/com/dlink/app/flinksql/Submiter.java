@@ -28,6 +28,7 @@ import com.dlink.executor.ExecutorSetting;
 import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.parser.SqlType;
 import com.dlink.trans.Operations;
+import com.dlink.utils.SqlUtil;
 
 import org.apache.flink.configuration.CheckpointingOptions;
 
@@ -65,8 +66,8 @@ public class Submiter {
             throw new SQLException("请指定任务ID");
         }
         return "select id, name, alias as jobName, type,check_point as checkpoint,"
-                + "save_point_path as savePointPath, parallelism,fragment as useSqlFragment,statement_set as useStatementSet,config_json as config,"
-                + " env_id as envId,batch_model AS useBatchModel from dlink_task where id = " + id;
+            + "save_point_path as savePointPath, parallelism,fragment as useSqlFragment,statement_set as useStatementSet,config_json as config,"
+            + " env_id as envId,batch_model AS useBatchModel from dlink_task where id = " + id;
     }
 
     private static String getFlinkSQLStatement(Integer id, DBConfig config) {
@@ -90,7 +91,7 @@ public class Submiter {
     }
 
     public static List<String> getStatements(String sql) {
-        return Arrays.asList(sql.split(FlinkSQLConstant.SEPARATOR));
+        return Arrays.asList(SqlUtil.getStatements(sql));
     }
 
     public static void submit(Integer id, DBConfig dbConfig) {
@@ -110,11 +111,11 @@ public class Submiter {
         String uuid = UUID.randomUUID().toString().replace("-", "");
         if (executorSetting.getConfig().containsKey(CheckpointingOptions.CHECKPOINTS_DIRECTORY.key())) {
             executorSetting.getConfig().put(CheckpointingOptions.CHECKPOINTS_DIRECTORY.key(),
-                    executorSetting.getConfig().get(CheckpointingOptions.CHECKPOINTS_DIRECTORY.key()) + "/" + uuid);
+                executorSetting.getConfig().get(CheckpointingOptions.CHECKPOINTS_DIRECTORY.key()) + "/" + uuid);
         }
         if (executorSetting.getConfig().containsKey(CheckpointingOptions.SAVEPOINT_DIRECTORY.key())) {
             executorSetting.getConfig().put(CheckpointingOptions.SAVEPOINT_DIRECTORY.key(),
-                    executorSetting.getConfig().get(CheckpointingOptions.SAVEPOINT_DIRECTORY.key()) + "/" + uuid);
+                executorSetting.getConfig().get(CheckpointingOptions.SAVEPOINT_DIRECTORY.key()) + "/" + uuid);
         }
         logger.info("作业配置如下： {}", executorSetting);
         Executor executor = Executor.buildAppStreamExecutor(executorSetting);
