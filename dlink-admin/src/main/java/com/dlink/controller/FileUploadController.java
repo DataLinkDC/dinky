@@ -72,4 +72,19 @@ public class FileUploadController {
         }
     }
 
+    /**
+     * Upload hdfs file<br>
+     *
+     * @param files            Multi files
+     * @param dir              Dir, default is empty. If not provide, please provide the 'fileType' value
+     * @param hadoopConfigPath Please refer {@link UploadFileConstant}, default is -1. If not provide, please provide the 'dir' value
+     * @return {@link Result}
+     */
+    @PostMapping(value = "hdfs")
+    public Result uploadHdfs(@RequestPart("files") MultipartFile[] files,
+                             @RequestParam(value = "dir", defaultValue = "", required = false) String dir,
+                             @RequestParam(value = "hadoopConfigPath", required = false) String hadoopConfigPath) {
+        return fileUploadService.uploadHdfs(files, dir, hadoopConfigPath);
+    }
+
 }
