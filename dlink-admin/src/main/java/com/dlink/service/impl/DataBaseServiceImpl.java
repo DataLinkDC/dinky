@@ -151,14 +151,8 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
         DataBase dataBase = getById(queryData.getId());
         Asserts.checkNotNull(dataBase, "该数据源不存在！");
         Driver driver = Driver.build(dataBase.getDriverConfig());
-        StringBuilder sqlBuilder = new StringBuilder();
-        sqlBuilder.append("select * from ");
-        sqlBuilder.append(queryData.getSchemaName());
-        sqlBuilder.append(".");
-        sqlBuilder.append(queryData.getTableName());
-        sqlBuilder.append(queryData.getOption());
-        JdbcSelectResult result = driver.query(sqlBuilder.toString(), 500);
-        return result;
+        StringBuilder queryOption = driver.genQueryOption(queryData);
+        return driver.query(queryOption.toString(), null);
     }
 
     @Override

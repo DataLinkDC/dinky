@@ -23,6 +23,7 @@ import com.dlink.assertion.Asserts;
 import com.dlink.exception.MetaDataException;
 import com.dlink.metadata.result.JdbcSelectResult;
 import com.dlink.model.Column;
+import com.dlink.model.QueryData;
 import com.dlink.model.Schema;
 import com.dlink.model.Table;
 import com.dlink.result.SqlExplainResult;
@@ -136,6 +137,8 @@ public interface Driver {
     int executeUpdate(String sql) throws Exception;
 
     JdbcSelectResult query(String sql, Integer limit);
+
+    StringBuilder genQueryOption(QueryData queryData);
 
     JdbcSelectResult executeSql(String sql, Integer limit);
 
