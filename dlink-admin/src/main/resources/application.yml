@@ -74,3 +74,8 @@ sa-token:
 
 knife4j:
   enable: true
+
+dinky:
+  dolphinscheduler:
+    url: http://192.168.3.15:12345/dolphinscheduler
+    token: 466cb6f6455b1b8689fff770746e2e79
