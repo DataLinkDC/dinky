@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.metadata.convert;
 
 import com.dlink.assertion.Asserts;
@@ -33,9 +32,9 @@ public class PhoenixTypeConvert implements ITypeConvert {
         }
         String t = column.getType().toLowerCase();
         boolean isNullable = !column.isKeyFlag() && column.isNullable();
-        if (t.contains("char") || t.contains("varchar") || t.contains("text") ||
-            t.contains("nchar") || t.contains("nvarchar") || t.contains("ntext")
-            || t.contains("uniqueidentifier") || t.contains("sql_variant")) {
+        if (t.contains("char") || t.contains("varchar") || t.contains("text")
+                || t.contains("nchar") || t.contains("nvarchar") || t.contains("ntext")
+                || t.contains("uniqueidentifier") || t.contains("sql_variant")) {
             columnType = ColumnType.STRING;
         } else if (t.contains("bigint")) {
             if (isNullable) {
@@ -79,7 +78,6 @@ public class PhoenixTypeConvert implements ITypeConvert {
         } else if (t.contains("date")) {
             columnType = ColumnType.DATE;
         }
-        columnType.setPrecisionAndScale(column.getPrecision(), column.getScale());
         return columnType;
     }
 

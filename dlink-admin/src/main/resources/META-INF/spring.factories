@@ -1,5 +1,2 @@
-org.springframework.context.ApplicationContextInitializer=\
-com.dlink.common.banner.BannerInitializer
-
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 com.dlink.db.config.MybatisPlusConfigure

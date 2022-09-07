@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.controller;
 
 import com.dlink.assertion.Asserts;
@@ -26,17 +25,21 @@ import com.dlink.common.result.Result;
 import com.dlink.dto.ModifyPasswordDTO;
 import com.dlink.model.User;
 import com.dlink.service.UserService;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * UserController
@@ -130,25 +133,5 @@ public class UserController {
     @PutMapping(value = "/grantRole")
     public Result grantRole(@RequestBody JsonNode para) {
         return userService.grantRole(para);
-    }
-
-    /**
-     * remove user grant role
-     *
-     * @return
-     */
-    @PutMapping(value = "/removeGrantRole")
-    public Result removeGrantRole(@RequestBody JsonNode para) {
-        return userService.removeGrantRole(para);
-    }
-
-    /**
-     * get roles
-     *
-     * @return
-     */
-    @PostMapping(value = "/getRoles")
-    public Result getRoles(@RequestBody JsonNode para) {
-        return userService.getRoles(para);
     }
 }

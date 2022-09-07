@@ -17,13 +17,13 @@
  *
  */
 
-
 package com.dlink.service;
 
 import com.dlink.common.result.Result;
 import com.dlink.db.service.ISuperService;
 import com.dlink.dto.LoginUTO;
 import com.dlink.model.User;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
@@ -48,9 +48,5 @@ public interface UserService extends ISuperService<User> {
 
     Result grantRole(JsonNode para);
 
-    Result removeGrantRole(JsonNode para);
-
     Result getTenants(String username);
-
-    Result getRoles(JsonNode para);
 }

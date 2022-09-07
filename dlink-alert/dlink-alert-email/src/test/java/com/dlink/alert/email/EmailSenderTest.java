@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.alert.email;
 
 import com.dlink.alert.AlertMsg;
@@ -26,13 +25,20 @@ import com.dlink.alert.ShowType;
 import com.dlink.alert.email.template.AlertTemplate;
 import com.dlink.alert.email.template.DefaultHTMLTemplate;
 import com.dlink.utils.JSONUtil;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.*;
 
 public class EmailSenderTest {
     private static final Logger logger = LoggerFactory.getLogger(EmailSenderTest.class);
@@ -42,7 +48,6 @@ public class EmailSenderTest {
 
     String title = "Dinky Email Alert";
     private AlertMsg alertMsg = new AlertMsg();
-
 
     @Before
     public void initEmailConfig() {
@@ -58,9 +63,9 @@ public class EmailSenderTest {
         alertMsg.setJobStartTime("2018-08-06 10:31:34.0");
         alertMsg.setJobEndTime("2018-08-06 10:31:49.0");
         alertMsg.setJobDuration("23 Seconds");
-        String linkUrl = "[跳转至该任务的FlinkWeb](http://cdh1:8081/#/job/"+uuid+"/overview)";
+        String linkUrl = "[跳转至该任务的FlinkWeb](http://cdh1:8081/#/job/" + uuid + "/overview)";
         alertMsg.setLinkUrl(linkUrl);
-        String exceptionUrl = "[点击查看该任务的异常日志](http://cdh1:8081/#/job/"+uuid+"/exceptions)";
+        String exceptionUrl = "[点击查看该任务的异常日志](http://cdh1:8081/#/job/" + uuid + "/exceptions)";
         alertMsg.setExceptionUrl(exceptionUrl);
 
         emailConfig.put(EmailConstants.NAME_MAIL_PROTOCOL, "smtp");
@@ -85,7 +90,6 @@ public class EmailSenderTest {
         AlertResult alertResult = mailSender.send(title, alertMsg.toString());
         Assert.assertEquals(true, alertResult.getSuccess()); // 格式需要调整
     }
-
 
     @Test
     public void testSendTableMail() {
@@ -130,8 +134,6 @@ public class EmailSenderTest {
                 stringBuilder.append(EmailConstants.TD).append(entry.getValue()).append(EmailConstants.TD_END);
                 stringBuilder.append(EmailConstants.TR_END);
             }
-
-            System.out.println(stringBuilder.toString());
 
         }
     }

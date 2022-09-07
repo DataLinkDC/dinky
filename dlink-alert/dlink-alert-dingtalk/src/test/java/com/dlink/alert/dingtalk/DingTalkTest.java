@@ -17,17 +17,21 @@
  *
  */
 
-
 package com.dlink.alert.dingtalk;
 
-import com.dlink.alert.*;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import com.dlink.alert.Alert;
+import com.dlink.alert.AlertConfig;
+import com.dlink.alert.AlertMsg;
+import com.dlink.alert.AlertResult;
+import com.dlink.alert.ShowType;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * DingTalkTest
@@ -52,11 +56,10 @@ public class DingTalkTest {
         alertMsg.setJobStartTime("2018-08-06 10:31:34.0");
         alertMsg.setJobEndTime("2018-08-06 10:31:49.0");
         alertMsg.setJobDuration("23 Seconds");
-        String linkUrl = "[跳转至该任务的FlinkWeb](http://cdh1:8081/#/job/"+uuid+"/overview)";
+        String linkUrl = "[跳转至该任务的FlinkWeb](http://cdh1:8081/#/job/" + uuid + "/overview)";
         alertMsg.setLinkUrl(linkUrl);
-        String exceptionUrl = "[点击查看该任务的异常日志](http://cdh1:8081/#/job/"+uuid+"/exceptions)";
+        String exceptionUrl = "[点击查看该任务的异常日志](http://cdh1:8081/#/job/" + uuid + "/exceptions)";
         alertMsg.setExceptionUrl(exceptionUrl);
-
 
         config.put(DingTalkConstants.KEYWORD, "Dinky-Fink 钉钉告警测试");
         config.put(DingTalkConstants.WEB_HOOK, "url");

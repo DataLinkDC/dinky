@@ -17,17 +17,17 @@
  *
  */
 
-
 package com.dlink.trans.ddl;
 
+import com.dlink.assertion.Asserts;
+import com.dlink.parser.SingleSqlParserFactory;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.dlink.assertion.Asserts;
-import com.dlink.parser.SingleSqlParserFactory;
 
 /**
  * CDCSource
@@ -36,7 +36,6 @@ import com.dlink.parser.SingleSqlParserFactory;
  * @since 2022/1/29 23:30
  */
 public class CDCSource {
-
     private String connector;
     private String statement;
     private String name;
@@ -54,9 +53,15 @@ public class CDCSource {
     private Map<String, String> jdbc;
     private Map<String, String> source;
     private Map<String, String> sink;
+    private List<Map<String, String>> sinks;
 
     public CDCSource(String connector, String statement, String name, String hostname, Integer port, String username, String password, Integer checkpoint, Integer parallelism, String startupMode,
                      Map<String, String> debezium, Map<String, String> source, Map<String, String> sink, Map<String, String> jdbc) {
+        this(connector, statement, name, hostname, port, username, password, checkpoint, parallelism, startupMode, debezium, source, sink, null, jdbc);
+    }
+
+    public CDCSource(String connector, String statement, String name, String hostname, Integer port, String username, String password, Integer checkpoint, Integer parallelism, String startupMode,
+                     Map<String, String> debezium, Map<String, String> source, Map<String, String> sink, List<Map<String, String>> sinks, Map<String, String> jdbc) {
         this.connector = connector;
         this.statement = statement;
         this.name = name;
@@ -71,6 +76,7 @@ public class CDCSource {
         this.jdbc = jdbc;
         this.source = source;
         this.sink = sink;
+        this.sinks = sinks;
     }
 
     public static CDCSource build(String statement) {
@@ -107,7 +113,6 @@ public class CDCSource {
                 }
             }
         }
-
         Map<String, String> sink = new HashMap<>();
         for (Map.Entry<String, String> entry : config.entrySet()) {
             if (entry.getKey().startsWith("sink.")) {
@@ -117,6 +122,33 @@ public class CDCSource {
                     sink.put(key, entry.getValue());
                 }
             }
+        }
+        /**
+         * 支持多目标写入功能, 从0开始顺序写入配置.
+         */
+        Map<String, Map<String, String>> sinks = new HashMap<>();
+        final Pattern p = Pattern.compile("sink\\[(?<index>.*)\\]");
+        for (Map.Entry<String, String> entry : config.entrySet()) {
+            if (entry.getKey().startsWith("sink[")) {
+                String key = entry.getKey();
+                Matcher matcher = p.matcher(key);
+                if (matcher.find()) {
+                    final String index = matcher.group("index");
+                    Map<String, String> sinkMap = sinks.get(index);
+                    if (sinkMap == null) {
+                        sinkMap = new HashMap<>();
+                        sinks.put(index, sinkMap);
+                    }
+                    key = key.replaceFirst("sink\\[" + index + "\\].", "");
+                    if (!sinkMap.containsKey(key)) {
+                        sinkMap.put(key, entry.getValue());
+                    }
+                }
+            }
+        }
+        final ArrayList<Map<String, String>> sinkList = new ArrayList<>(sinks.values());
+        if (sink.isEmpty() && sinkList.size() > 0) {
+            sink = sinkList.get(0);
         }
         CDCSource cdcSource = new CDCSource(
                 config.get("connector"),
@@ -132,6 +164,7 @@ public class CDCSource {
                 debezium,
                 source,
                 sink,
+                sinkList,
                 jdbc
         );
         if (Asserts.isNotNullString(config.get("database-name"))) {
@@ -292,5 +325,9 @@ public class CDCSource {
 
     public void setJdbc(Map<String, String> jdbc) {
         this.jdbc = jdbc;
+    }
+
+    public List<Map<String, String>> getSinks() {
+        return sinks;
     }
 }

@@ -17,15 +17,15 @@
  *
  */
 
-
 package com.dlink.common.result;
 
 import com.dlink.model.CodeEnum;
+
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
 
 /**
  * 返回对象

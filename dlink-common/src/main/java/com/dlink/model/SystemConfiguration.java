@@ -17,14 +17,14 @@
  *
  */
 
-
 package com.dlink.model;
+
+import com.dlink.assertion.Asserts;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.dlink.assertion.Asserts;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
@@ -41,13 +41,17 @@ public class SystemConfiguration {
         return systemConfiguration;
     }
 
-    private static final List<Configuration> CONFIGURATION_LIST = new ArrayList<Configuration>() {{
-        add(systemConfiguration.sqlSubmitJarPath);
-        add(systemConfiguration.sqlSubmitJarParas);
-        add(systemConfiguration.sqlSubmitJarMainAppClass);
-        add(systemConfiguration.useRestAPI);
-        add(systemConfiguration.sqlSeparator);
-    }};
+    private static final List<Configuration> CONFIGURATION_LIST = new ArrayList<Configuration>() {
+        {
+            add(systemConfiguration.sqlSubmitJarPath);
+            add(systemConfiguration.sqlSubmitJarParas);
+            add(systemConfiguration.sqlSubmitJarMainAppClass);
+            add(systemConfiguration.useRestAPI);
+            add(systemConfiguration.useLogicalPlan);
+            add(systemConfiguration.sqlSeparator);
+            add(systemConfiguration.jobIdWait);
+        }
+    };
 
     private Configuration sqlSubmitJarPath = new Configuration(
         "sqlSubmitJarPath",
@@ -81,8 +85,22 @@ public class SystemConfiguration {
         "sqlSeparator",
         "FlinkSQL语句分割符",
         ValueType.STRING,
-        ";\r\n|;\n",
+        ";\n",
         "Flink SQL 的语句分割符"
+    );
+    private Configuration useLogicalPlan = new Configuration(
+        "useLogicalPlan",
+        "使用逻辑计划计算血缘",
+        ValueType.BOOLEAN,
+        false,
+        "在计算 Flink 任务的字段血缘分析时是否基于逻辑计划进行，只支持 1.14 版本"
+    );
+    private Configuration jobIdWait = new Configuration(
+        "jobIdWait",
+        "获取 Job ID 的最大等待时间（秒）",
+        ValueType.INT,
+        30,
+        "提交 Application 或 PerJob 任务时获取 Job ID 的最大等待时间（秒）"
     );
 
     public void setConfiguration(JsonNode jsonNode) {
@@ -152,6 +170,22 @@ public class SystemConfiguration {
 
     public void setSqlSeparator(String sqlSeparator) {
         this.sqlSeparator.setValue(sqlSeparator);
+    }
+
+    public boolean isUseLogicalPlan() {
+        return (boolean) useLogicalPlan.getValue();
+    }
+
+    public void setUseLogicalPlan(boolean useLogicalPlan) {
+        this.useLogicalPlan.setValue(useLogicalPlan);
+    }
+
+    public int getJobIdWait() {
+        return (int )jobIdWait.getValue();
+    }
+
+    public void setJobIdWait(Configuration jobIdWait) {
+        this.jobIdWait.setValue(jobIdWait);
     }
 
     enum ValueType {

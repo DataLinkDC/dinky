@@ -22,6 +22,8 @@ package com.dlink.flink.catalog;
 import static org.apache.flink.util.Preconditions.checkArgument;
 import static org.apache.flink.util.Preconditions.checkNotNull;
 
+import com.dlink.flink.catalog.factory.DlinkMysqlCatalogFactoryOptions;
+
 import org.apache.flink.table.api.Schema;
 import org.apache.flink.table.catalog.AbstractCatalog;
 import org.apache.flink.table.catalog.CatalogBaseTable;
@@ -71,8 +73,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dlink.flink.catalog.factory.DlinkMysqlCatalogFactoryOptions;
-
 /**
  * 自定义 catalog
  * 检查connection done.
@@ -99,7 +99,7 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
     /**
      * 判断是否发生过SQL异常，如果发生过，那么conn可能失效。要注意判断
      */
-    private boolean SQLExceptionHappened = false;
+    private boolean sqlExceptionHappened = false;
 
     /**
      * 对象类型，例如 库、表、视图等
@@ -201,7 +201,6 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
         this.pwd = pwd;
     }
 
-
     public DlinkMysqlCatalog(String name) {
         super(name, defaultDatabase);
         this.url = DlinkMysqlCatalogFactoryOptions.URL.defaultValue();
@@ -231,7 +230,7 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
                 connection.close();
                 connection = null;
             } catch (SQLException e) {
-                SQLExceptionHappened = true;
+                sqlExceptionHappened = true;
                 throw new CatalogException("Fail to close connection.", e);
             }
         }
@@ -246,8 +245,8 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
             if (connection == null) {
                 connection = DriverManager.getConnection(url, user, pwd);
             }
-            if (SQLExceptionHappened) {
-                SQLExceptionHappened = false;
+            if (sqlExceptionHappened) {
+                sqlExceptionHappened = false;
                 if (!connection.isValid(10)) {
                     connection.close();
                 }
@@ -288,8 +287,8 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
     @Override
     public CatalogDatabase getDatabase(String databaseName)
         throws DatabaseNotExistException, CatalogException {
-        String querySql = "SELECT id, database_name,description " +
-            " FROM metadata_database where database_name=?";
+        String querySql = "SELECT id, database_name,description "
+            + " FROM metadata_database where database_name=?";
         Connection conn = getConnection();
         try (PreparedStatement ps = conn.prepareStatement(querySql)) {
             ps.setString(1, databaseName);
@@ -301,9 +300,9 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
 
                 Map<String, String> map = new HashMap<>();
 
-                String sql = "select `key`,`value` " +
-                    "from metadata_database_property " +
-                    "where database_id=? ";
+                String sql = "select `key`,`value` "
+                    + "from metadata_database_property "
+                    + "where database_id=? ";
                 try (PreparedStatement pStat = conn.prepareStatement(sql)) {
                     pStat.setInt(1, id);
                     ResultSet prs = pStat.executeQuery();
@@ -311,7 +310,7 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
                         map.put(rs.getString("key"), rs.getString("value"));
                     }
                 } catch (SQLException e) {
-                    SQLExceptionHappened = true;
+                    sqlExceptionHappened = true;
                     throw new CatalogException(
                         String.format("Failed get database properties in catalog %s", getName()), e);
                 }
@@ -321,7 +320,7 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
                 throw new DatabaseNotExistException(getName(), databaseName);
             }
         } catch (SQLException e) {
-            SQLExceptionHappened = true;
+            sqlExceptionHappened = true;
             throw new CatalogException(
                 String.format("Failed get database in catalog %s", getName()), e);
         }
@@ -350,7 +349,7 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
             }
             return id;
         } catch (SQLException e) {
-            SQLExceptionHappened = true;
+            sqlExceptionHappened = true;
             throw new CatalogException(String.format("获取 database 信息失败：%s.%s", getName(), databaseName), e);
         }
     }
@@ -379,8 +378,8 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
                 ResultSet idRs = stat.getGeneratedKeys();
                 if (idRs.next() && db.getProperties() != null && db.getProperties().size() > 0) {
                     int id = idRs.getInt(1);
-                    String propInsertSql = "insert into metadata_database_property(database_id, " +
-                        "`key`,`value`) values (?,?,?)";
+                    String propInsertSql = "insert into metadata_database_property(database_id, "
+                        + "`key`,`value`) values (?,?,?)";
                     PreparedStatement pstat = conn.prepareStatement(propInsertSql);
                     for (Map.Entry<String, String> entry : db.getProperties().entrySet()) {
                         pstat.setInt(1, id);
@@ -393,7 +392,7 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
                 }
                 conn.commit();
             } catch (SQLException e) {
-                SQLExceptionHappened = true;
+                sqlExceptionHappened = true;
                 logger.error("创建 database 信息失败：", e);
             }
         }
@@ -445,7 +444,7 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
             dStat.close();
             conn.commit();
         } catch (SQLException e) {
-            SQLExceptionHappened = true;
+            sqlExceptionHappened = true;
             throw new CatalogException("删除 database 信息失败：", e);
         }
     }
@@ -475,9 +474,9 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
             uState.executeUpdate();
             uState.close();
             if (newDb.getProperties() != null && newDb.getProperties().size() > 0) {
-                String upsertSql = "insert  into metadata_database_property (database_id, `key`,`value`) \n" +
-                    "values (?,?,?)\n" +
-                    "on duplicate key update `value` =?, update_time = sysdate()\n";
+                String upsertSql = "insert  into metadata_database_property (database_id, `key`,`value`) \n"
+                    + "values (?,?,?)\n"
+                    + "on duplicate key update `value` =?, update_time = sysdate()\n";
                 PreparedStatement pstat = conn.prepareStatement(upsertSql);
                 for (Map.Entry<String, String> entry : newDb.getProperties().entrySet()) {
                     pstat.setInt(1, id);
@@ -491,7 +490,7 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
             }
             conn.commit();
         } catch (SQLException e) {
-            SQLExceptionHappened = true;
+            sqlExceptionHappened = true;
             throw new CatalogException("修改 database 信息失败：", e);
         }
     }
@@ -551,10 +550,10 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
 
         Connection conn = getConnection();
         try {
-            String queryTable = "SELECT table_name " +
-                " ,description, table_type " +
-                " FROM metadata_table " +
-                " where  id=?";
+            String queryTable = "SELECT table_name "
+                + " ,description, table_type "
+                + " FROM metadata_table "
+                + " where  id=?";
             PreparedStatement ps = conn.prepareStatement(queryTable);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
@@ -570,8 +569,8 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
             }
             if (tableType.equals(ObjectType.TABLE)) {
                 // 这个是 table
-                String propSql = "SELECT `key`, `value` from metadata_table_property " +
-                    "WHERE table_id=?";
+                String propSql = "SELECT `key`, `value` from metadata_table_property "
+                    + "WHERE table_id=?";
                 PreparedStatement pState = conn.prepareStatement(propSql);
                 pState.setInt(1, id);
                 ResultSet prs = pState.executeQuery();
@@ -587,9 +586,9 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
             } else if (tableType.equals(ObjectType.VIEW)) {
                 // 1、从库中取出table信息。（前面已做）
                 // 2、取出字段。
-                String colSql = "SELECT column_name, column_type, data_type, description " +
-                    " FROM metadata_column WHERE " +
-                    " table_id=?";
+                String colSql = "SELECT column_name, column_type, data_type, description "
+                    + " FROM metadata_column WHERE "
+                    + " table_id=?";
                 PreparedStatement cStat = conn.prepareStatement(colSql);
                 cStat.setInt(1, id);
                 ResultSet crs = cStat.executeQuery();
@@ -607,8 +606,8 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
                 }
                 cStat.close();
                 // 3、取出query
-                String qSql = "SELECT `key`, value FROM metadata_table_property" +
-                    " WHERE table_id=? ";
+                String qSql = "SELECT `key`, value FROM metadata_table_property"
+                    + " WHERE table_id=? ";
                 PreparedStatement qStat = conn.prepareStatement(qSql);
                 qStat.setInt(1, id);
                 ResultSet qrs = qStat.executeQuery();
@@ -633,7 +632,7 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
                 throw new CatalogException("不支持的数据类型。" + tableType);
             }
         } catch (SQLException e) {
-            SQLExceptionHappened = true;
+            sqlExceptionHappened = true;
             throw new CatalogException("获取 表信息失败。", e);
         }
 
@@ -651,8 +650,8 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
             return null;
         }
         // 获取id
-        String getIdSql = "select id from metadata_table " +
-            " where table_name=? and database_id=?";
+        String getIdSql = "select id from metadata_table "
+            + " where table_name=? and database_id=?";
         Connection conn = getConnection();
         try (PreparedStatement gStat = conn.prepareStatement(getIdSql)) {
             gStat.setString(1, tablePath.getObjectName());
@@ -662,7 +661,7 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
                 return rs.getInt(1);
             }
         } catch (SQLException e) {
-            SQLExceptionHappened = true;
+            sqlExceptionHappened = true;
             logger.error("get table fail", e);
             throw new CatalogException("get table fail.", e);
         }
@@ -681,27 +680,27 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
         try {
             // todo: 现在是真实删除，后续设计是否做记录保留。
             conn.setAutoCommit(false);
-            String deletePropSql = "delete from metadata_table_property " +
-                " where table_id=?";
+            String deletePropSql = "delete from metadata_table_property "
+                + " where table_id=?";
             PreparedStatement dStat = conn.prepareStatement(deletePropSql);
             dStat.setInt(1, id);
             dStat.executeUpdate();
             dStat.close();
-            String deleteColSql = "delete from metadata_column " +
-                " where table_id=?";
+            String deleteColSql = "delete from metadata_column "
+                + " where table_id=?";
             dStat = conn.prepareStatement(deleteColSql);
             dStat.setInt(1, id);
             dStat.executeUpdate();
             dStat.close();
-            String deleteDbSql = "delete from metadata_table " +
-                " where id=?";
+            String deleteDbSql = "delete from metadata_table "
+                + " where id=?";
             dStat = conn.prepareStatement(deleteDbSql);
             dStat.setInt(1, id);
             dStat.executeUpdate();
             dStat.close();
             conn.commit();
         } catch (SQLException e) {
-            SQLExceptionHappened = true;
+            sqlExceptionHappened = true;
             logger.error("drop table fail", e);
             throw new CatalogException("drop table fail.", e);
         }
@@ -726,7 +725,7 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
             ps.setInt(2, id);
             ps.executeUpdate();
         } catch (SQLException ex) {
-            SQLExceptionHappened = true;
+            sqlExceptionHappened = true;
             throw new CatalogException("修改表名失败", ex);
         }
     }
@@ -734,8 +733,8 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
     @Override
     public void createTable(ObjectPath tablePath, CatalogBaseTable table, boolean ignoreIfExists)
         throws TableAlreadyExistException, DatabaseNotExistException, CatalogException {
-        Integer db_id = getDatabaseId(tablePath.getDatabaseName());
-        if (null == db_id) {
+        Integer dbId = getDatabaseId(tablePath.getDatabaseName());
+        if (null == dbId) {
             throw new DatabaseNotExistException(getName(), tablePath.getDatabaseName());
         }
         if (tableExists(tablePath)) {
@@ -757,16 +756,16 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
             // 首先插入表信息
             CatalogBaseTable.TableKind kind = table.getTableKind();
 
-            String insertSql = "insert into metadata_table(\n" +
-                " table_name," +
-                " table_type," +
-                " database_id," +
-                " description)" +
-                " values(?,?,?,?)";
+            String insertSql = "insert into metadata_table(\n"
+                + " table_name,"
+                + " table_type,"
+                + " database_id,"
+                + " description)"
+                + " values(?,?,?,?)";
             PreparedStatement iStat = conn.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS);
             iStat.setString(1, tablePath.getObjectName());
             iStat.setString(2, kind.toString());
-            iStat.setInt(3, db_id);
+            iStat.setInt(3, dbId);
             iStat.setString(4, table.getComment());
             iStat.executeUpdate();
             ResultSet idRs = iStat.getGeneratedKeys();
@@ -780,8 +779,8 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
             if (table instanceof ResolvedCatalogTable) {
                 // table 就可以直接拿properties了。
                 Map<String, String> props = ((ResolvedCatalogTable) table).toProperties();
-                String propInsertSql = "insert into metadata_table_property(table_id," +
-                    "`key`,`value`) values (?,?,?)";
+                String propInsertSql = "insert into metadata_table_property(table_id,"
+                    + "`key`,`value`) values (?,?,?)";
                 PreparedStatement pStat = conn.prepareStatement(propInsertSql);
                 for (Map.Entry<String, String> entry : props.entrySet()) {
                     pStat.setInt(1, id);
@@ -798,13 +797,13 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
                 ResolvedCatalogView view = (ResolvedCatalogView) table;
                 List<Schema.UnresolvedColumn> cols = view.getUnresolvedSchema().getColumns();
                 if (cols.size() > 0) {
-                    String colInsertSql = "insert into metadata_column(" +
-                        " column_name, column_type, data_type" +
-                        " , `expr`" +
-                        " , description" +
-                        " , table_id" +
-                        " , `primary`) " +
-                        " values(?,?,?,?,?,?,?)";
+                    String colInsertSql = "insert into metadata_column("
+                        + " column_name, column_type, data_type"
+                        + " , `expr`"
+                        + " , description"
+                        + " , table_id"
+                        + " , `primary`) "
+                        + " values(?,?,?,?,?,?,?)";
                     PreparedStatement colIStat = conn.prepareStatement(colInsertSql);
                     for (Schema.UnresolvedColumn col : cols) {
                         if (col instanceof Schema.UnresolvedPhysicalColumn) {
@@ -843,8 +842,8 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
                     }
                     option.put("OriginalQuery", view.getOriginalQuery());
                     option.put("ExpandedQuery", view.getExpandedQuery());
-                    String propInsertSql = "insert into metadata_table_property(table_id," +
-                        "`key`,`value`) values (?,?,?)";
+                    String propInsertSql = "insert into metadata_table_property(table_id,"
+                        + "`key`,`value`) values (?,?,?)";
                     PreparedStatement pStat = conn.prepareStatement(propInsertSql);
                     for (Map.Entry<String, String> entry : option.entrySet()) {
                         pStat.setInt(1, id);
@@ -858,7 +857,7 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
             }
             conn.commit();
         } catch (SQLException ex) {
-            SQLExceptionHappened = true;
+            sqlExceptionHappened = true;
             logger.error("插入数据库失败", ex);
             throw new CatalogException("插入数据库失败", ex);
         }
@@ -875,9 +874,9 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
 
         Map<String, String> opts = newTable.getOptions();
         if (opts != null && opts.size() > 0) {
-            String updateSql = "INSERT INTO metadata_table_property(table_id," +
-                "`key`,`value`) values (?,?,?) " +
-                "on duplicate key update `value` =?, update_time = sysdate()";
+            String updateSql = "INSERT INTO metadata_table_property(table_id,"
+                + "`key`,`value`) values (?,?,?) "
+                + "on duplicate key update `value` =?, update_time = sysdate()";
             Connection conn = getConnection();
             try (PreparedStatement ps = conn.prepareStatement(updateSql)) {
                 for (Map.Entry<String, String> entry : opts.entrySet()) {
@@ -889,7 +888,7 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
                 }
                 ps.executeBatch();
             } catch (SQLException ex) {
-                SQLExceptionHappened = true;
+                sqlExceptionHappened = true;
                 throw new CatalogException("修改表名失败", ex);
             }
         }
@@ -934,19 +933,19 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
     @Override
     public void createPartition(ObjectPath tablePath, CatalogPartitionSpec partitionSpec, CatalogPartition partition, boolean ignoreIfExists)
         throws TableNotExistException, TableNotPartitionedException, PartitionSpecInvalidException, PartitionAlreadyExistsException, CatalogException {
-// todo: 补充完成该方法。
+        // todo: 补充完成该方法。
         throw new UnsupportedOperationException("该方法尚未完成");
     }
 
     @Override
     public void dropPartition(ObjectPath tablePath, CatalogPartitionSpec partitionSpec, boolean ignoreIfNotExists) throws PartitionNotExistException, CatalogException {
-// todo: 补充完成该方法。
+        // todo: 补充完成该方法。
         throw new UnsupportedOperationException("该方法尚未完成");
     }
 
     @Override
     public void alterPartition(ObjectPath tablePath, CatalogPartitionSpec partitionSpec, CatalogPartition newPartition, boolean ignoreIfNotExists) throws PartitionNotExistException, CatalogException {
-// todo: 补充完成该方法。
+        // todo: 补充完成该方法。
         throw new UnsupportedOperationException("该方法尚未完成");
     }
 
@@ -958,8 +957,8 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
         if (null == dbId) {
             throw new DatabaseNotExistException(getName(), dbName);
         }
-        String querySql = "SELECT function_name from metadata_function " +
-            " WHERE database_id=?";
+        String querySql = "SELECT function_name from metadata_function "
+            + " WHERE database_id=?";
 
         Connection conn = getConnection();
         try (PreparedStatement gStat = conn.prepareStatement(querySql)) {
@@ -972,7 +971,7 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
             }
             return functions;
         } catch (SQLException e) {
-            SQLExceptionHappened = true;
+            sqlExceptionHappened = true;
             throw new CatalogException("获取 UDF 列表失败");
         }
     }
@@ -985,8 +984,8 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
             throw new FunctionNotExistException(getName(), functionPath);
         }
 
-        String querySql = "SELECT class_name,function_language from metadata_function " +
-            " WHERE id=?";
+        String querySql = "SELECT class_name,function_language from metadata_function "
+            + " WHERE id=?";
         Connection conn = getConnection();
         try (PreparedStatement gStat = conn.prepareStatement(querySql)) {
             gStat.setInt(1, id);
@@ -1000,7 +999,7 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
                 throw new FunctionNotExistException(getName(), functionPath);
             }
         } catch (SQLException e) {
-            SQLExceptionHappened = true;
+            sqlExceptionHappened = true;
             throw new CatalogException("获取 UDF 失败："
                 + functionPath.getDatabaseName() + "."
                 + functionPath.getObjectName());
@@ -1019,8 +1018,8 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
             return null;
         }
         // 获取id
-        String getIdSql = "select id from metadata_function " +
-            " where function_name=? and database_id=?";
+        String getIdSql = "select id from metadata_function "
+            + " where function_name=? and database_id=?";
         Connection conn = getConnection();
         try (PreparedStatement gStat = conn.prepareStatement(getIdSql)) {
             gStat.setString(1, functionPath.getObjectName());
@@ -1031,7 +1030,7 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
                 return id;
             }
         } catch (SQLException e) {
-            SQLExceptionHappened = true;
+            sqlExceptionHappened = true;
             logger.error("get function fail", e);
             throw new CatalogException("get function fail.", e);
         }
@@ -1052,9 +1051,9 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
         }
 
         Connection conn = getConnection();
-        String insertSql = "Insert into metadata_function " +
-            "(function_name,class_name,database_id,function_language) " +
-            " values (?,?,?,?)";
+        String insertSql = "Insert into metadata_function "
+            + "(function_name,class_name,database_id,function_language) "
+            + " values (?,?,?,?)";
         try (PreparedStatement ps = conn.prepareStatement(insertSql)) {
             ps.setString(1, functionPath.getObjectName());
             ps.setString(2, function.getClassName());
@@ -1062,7 +1061,7 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
             ps.setString(4, function.getFunctionLanguage().toString());
             ps.executeUpdate();
         } catch (SQLException e) {
-            SQLExceptionHappened = true;
+            sqlExceptionHappened = true;
             throw new CatalogException("创建 函数 失败", e);
         }
     }
@@ -1079,16 +1078,16 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
         }
 
         Connection conn = getConnection();
-        String insertSql = "update metadata_function " +
-            "set (class_name =?, function_language=?) " +
-            " where id=?";
+        String insertSql = "update metadata_function "
+            + "set (class_name =?, function_language=?) "
+            + " where id=?";
         try (PreparedStatement ps = conn.prepareStatement(insertSql)) {
             ps.setString(1, newFunction.getClassName());
             ps.setString(2, newFunction.getFunctionLanguage().toString());
             ps.setInt(3, id);
             ps.executeUpdate();
         } catch (SQLException e) {
-            SQLExceptionHappened = true;
+            sqlExceptionHappened = true;
             throw new CatalogException("修改 函数 失败", e);
         }
     }
@@ -1105,13 +1104,13 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
         }
 
         Connection conn = getConnection();
-        String insertSql = "delete from metadata_function " +
-            " where id=?";
+        String insertSql = "delete from metadata_function "
+            + " where id=?";
         try (PreparedStatement ps = conn.prepareStatement(insertSql)) {
             ps.setInt(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
-            SQLExceptionHappened = true;
+            sqlExceptionHappened = true;
             throw new CatalogException("删除 函数 失败", e);
         }
     }
@@ -1168,21 +1167,21 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
     @Override
     public void alterTableColumnStatistics(ObjectPath tablePath, CatalogColumnStatistics columnStatistics, boolean ignoreIfNotExists)
         throws TableNotExistException, CatalogException, TablePartitionedException {
-// todo: 补充完成该方法。
+        // todo: 补充完成该方法。
         throw new UnsupportedOperationException("该方法尚未完成");
     }
 
     @Override
     public void alterPartitionStatistics(ObjectPath tablePath, CatalogPartitionSpec partitionSpec, CatalogTableStatistics partitionStatistics, boolean ignoreIfNotExists)
         throws PartitionNotExistException, CatalogException {
-// todo: 补充完成该方法。
+        // todo: 补充完成该方法。
         throw new UnsupportedOperationException("该方法尚未完成");
     }
 
     @Override
     public void alterPartitionColumnStatistics(ObjectPath tablePath, CatalogPartitionSpec partitionSpec, CatalogColumnStatistics columnStatistics, boolean ignoreIfNotExists)
         throws PartitionNotExistException, CatalogException {
-// todo: 补充完成该方法。
+        // todo: 补充完成该方法。
         throw new UnsupportedOperationException("该方法尚未完成");
     }
 }

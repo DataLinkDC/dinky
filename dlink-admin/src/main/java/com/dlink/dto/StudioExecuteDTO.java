@@ -17,20 +17,20 @@
  *
  */
 
-
 package com.dlink.dto;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.job.JobConfig;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * StudioExecuteDTO
@@ -84,6 +84,6 @@ public class StudioExecuteDTO extends AbstractStatementDTO {
         return new JobConfig(
             type, useResult, useChangeLog, useAutoCancel, useSession, session, clusterId,
             clusterConfigurationId, jarId, taskId, jobName, isFragment(), statementSet, batchModel,
-            maxRowNum, checkPoint, parallelism, savePointStrategy, savePointPath, config);
+            maxRowNum, checkPoint, parallelism, savePointStrategy, savePointPath, getVariables(), config);
     }
 }

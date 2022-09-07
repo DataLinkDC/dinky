@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.metadata.constant;
 
 public interface HiveConstant {

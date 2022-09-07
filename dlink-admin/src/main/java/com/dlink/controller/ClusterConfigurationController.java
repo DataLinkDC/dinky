@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.controller;
 
 import com.dlink.assertion.Asserts;
@@ -26,9 +25,9 @@ import com.dlink.common.result.Result;
 import com.dlink.gateway.result.TestResult;
 import com.dlink.model.ClusterConfiguration;
 import com.dlink.service.ClusterConfigurationService;
-import com.fasterxml.jackson.databind.JsonNode;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,8 +38,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * ClusterConfigController

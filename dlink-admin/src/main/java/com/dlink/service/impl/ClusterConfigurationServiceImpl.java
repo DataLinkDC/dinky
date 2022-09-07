@@ -17,10 +17,8 @@
  *
  */
 
-
 package com.dlink.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.assertion.Asserts;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.gateway.GatewayType;
@@ -32,11 +30,14 @@ import com.dlink.job.JobManager;
 import com.dlink.mapper.ClusterConfigurationMapper;
 import com.dlink.model.ClusterConfiguration;
 import com.dlink.service.ClusterConfigurationService;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 /**
  * ClusterConfigServiceImpl
@@ -89,7 +90,7 @@ public class ClusterConfigurationServiceImpl extends SuperServiceImpl<ClusterCon
             }
             if (kubernetesConfig.containsKey("kubernetes.cluster-id")) {
                 gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.cluster-id", kubernetesConfig.get("kubernetes.cluster-id").toString());
-            }else{
+            } else {
                 //初始化FlinkKubeClient需要CLUSTER_ID,先用UUID代替，后面使用job名称来作为CLUSTER_ID
                 gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.cluster-id", UUID.randomUUID().toString());
             }

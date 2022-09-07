@@ -17,11 +17,12 @@
  *
  */
 
-
 package com.dlink.model;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.dlink.db.model.SuperEntity;
+
+import com.baomidou.mybatisplus.annotation.TableName;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

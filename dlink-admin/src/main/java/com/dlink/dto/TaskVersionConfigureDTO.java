@@ -17,17 +17,15 @@
  *
  */
 
-
 package com.dlink.dto;
 
-import lombok.Data;
-
 import java.io.Serializable;
+
+import lombok.Data;
 
 /**
  * @author huang
  * @description: 版本信息配置
- * @date 2022/6/23 10:25
  */
 @Data
 public class TaskVersionConfigureDTO implements Serializable {

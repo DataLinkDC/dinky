@@ -17,15 +17,14 @@
  *
  */
 
-
-
 package org.apache.flink.connector.phoenix.internal.connection;
 
 import org.apache.flink.annotation.Internal;
 
-import javax.annotation.Nullable;
 import java.sql.Connection;
 import java.sql.SQLException;
+
+import javax.annotation.Nullable;
 
 /** JDBC connection provider. */
 @Internal

@@ -17,8 +17,14 @@
  *
  */
 
-
 package com.dlink.cdc.mysql;
+
+import com.dlink.assertion.Asserts;
+import com.dlink.cdc.AbstractCDCBuilder;
+import com.dlink.cdc.CDCBuilder;
+import com.dlink.constant.ClientConstant;
+import com.dlink.constant.FlinkParamConstant;
+import com.dlink.model.FlinkCDCConfig;
 
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -33,12 +39,6 @@ import java.util.Properties;
 import com.alibaba.ververica.cdc.connectors.mysql.MySQLSource;
 import com.alibaba.ververica.cdc.connectors.mysql.table.StartupOptions;
 import com.alibaba.ververica.cdc.debezium.StringDebeziumDeserializationSchema;
-import com.dlink.assertion.Asserts;
-import com.dlink.cdc.AbstractCDCBuilder;
-import com.dlink.cdc.CDCBuilder;
-import com.dlink.constant.ClientConstant;
-import com.dlink.constant.FlinkParamConstant;
-import com.dlink.model.FlinkCDCConfig;
 
 /**
  * MysqlCDCBuilder
@@ -48,8 +48,8 @@ import com.dlink.model.FlinkCDCConfig;
  **/
 public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
 
-    private String KEY_WORD = "mysql-cdc";
-    private final static String METADATA_TYPE = "MySql";
+    private static final String KEY_WORD = "mysql-cdc";
+    private static final String METADATA_TYPE = "MySql";
 
     public MysqlCDCBuilder() {
     }
@@ -104,6 +104,7 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
                 case "latest-offset":
                     sourceBuilder.startupOptions(StartupOptions.latest());
                     break;
+                default:
             }
         } else {
             sourceBuilder.startupOptions(StartupOptions.latest());

@@ -17,16 +17,24 @@
  *
  */
 
-
 package com.dlink.metadata.visitor;
 
-import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.dlink.metadata.ast.Clickhouse20CreateTableStatement;
 
 import java.util.List;
+
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.SQLDataType;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.ast.SQLStructDataType;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
+import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 public class Clickhouse20OutputVisitor extends SQLASTOutputVisitor implements Clickhouse20Visitor {
     public Clickhouse20OutputVisitor(Appendable appender) {

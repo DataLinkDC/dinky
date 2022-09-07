@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.service.impl;
 
 import cn.dev33.satoken.secure.SaSecureUtil;
@@ -44,8 +43,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * UserServiceImpl
@@ -136,26 +137,22 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             if (!user.getEnabled()) {
                 return Result.failed("账号已被禁用");
             }
-            UserDTO userDTO = new UserDTO();
-            List<RoleDTO> roleDTOList = new ArrayList<>();
-            List<UserRole> userRoles = userRoleService.getUserRoleByUserId(user.getId());
-            List<Tenant> tenantList = tenantService.list();
-            Map<Integer, List<Tenant>> listMap = tenantList.stream().filter(item -> item.getIsDelete()).collect(Collectors.groupingBy(Tenant::getId));
-            Set<Integer> tenantIds = listMap.keySet();
-            for (UserRole userRole : userRoles) {
-                for (Integer tenantId : tenantIds) {
-                    RequestContext.set(tenantId);
-                    Role role = roleService.getBaseMapper().selectById(userRole.getRoleId());
-                    if (Asserts.isNotNull(role)) {
-                        roleDTOList.add(new RoleDTO(role, listMap.get((Integer) RequestContext.get()).get(0)));
-                    }
-                    RequestContext.remove();
-                }
-            }
             // 将前端入参 租户id 放入上下文
             RequestContext.set(loginUTO.getTenantId());
+
+            UserDTO userDTO = new UserDTO();
+            Set<RoleDTO> roleDTOList = new HashSet<>();
+            List<UserRole> userRoles = userRoleService.getUserRoleByUserId(user.getId());
+
+            Tenant currentTenant = tenantService.getBaseMapper().selectById(loginUTO.getTenantId());
+            for (UserRole userRole : userRoles) {
+                Role role = roleService.getBaseMapper().selectById(userRole.getRoleId());
+                Tenant tenant = tenantService.getBaseMapper().selectOne(new QueryWrapper<Tenant>().eq("id", role.getTenantId()));
+                roleDTOList.add(new RoleDTO(role, tenant));
+            }
             userDTO.setUser(user);
             userDTO.setRoleDTOList(roleDTOList);
+            userDTO.setCurrentTenant(currentTenant);
             StpUtil.login(user.getId(), loginUTO.isAutoLogin());
             StpUtil.getSession().set("user", userDTO);
             return Result.succeed(userDTO, "登录成功");
@@ -199,28 +196,6 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         }
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public Result removeGrantRole(JsonNode para) {
-        List<UserRole> userRoleList = new ArrayList<>();
-        Integer userId = para.get("userId").asInt();
-        JsonNode userRoleJsonNode = para.get("roles");
-
-        for (JsonNode ids : userRoleJsonNode) {
-            UserRole userRole = new UserRole();
-            userRole.setUserId(userId);
-            userRole.setRoleId(ids.asInt());
-            userRoleList.add(userRole);
-        }
-        int result = userRoleService.deleteBathRelation(userRoleList);
-        if (result > 0) {
-            return Result.succeed("用户撤销授权角色成功");
-        } else {
-            return Result.failed("用户撤销授权角色失败");
-        }
-    }
-
-
     @Override
     public Result getTenants(String username) {
         User user = getUserByUsername(username);
@@ -242,16 +217,4 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         return Result.succeed(tenants, "获取成功");
     }
 
-    @Override
-    public Result getRoles(JsonNode para) {
-        int userId = para.get("userId").asInt();
-        String tenantId = para.get("tenantId").asText();
-
-        List<UserRole> userRoles = userRoleService.getUserRoleByUserId(userId);
-        Set<Integer> roleIds = new HashSet<>();
-        userRoles.forEach(userRole -> roleIds.add(userRole.getRoleId()));
-
-        List<Role> roles = roleService.getRoleByTenantIdAndIds(tenantId, roleIds);
-        return Result.succeed(roles, "获取成功");
-    }
 }

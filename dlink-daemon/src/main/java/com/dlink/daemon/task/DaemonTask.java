@@ -17,14 +17,13 @@
  *
  */
 
-
 package com.dlink.daemon.task;
-
-import java.util.Optional;
-import java.util.ServiceLoader;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.daemon.exception.DaemonTaskException;
+
+import java.util.Optional;
+import java.util.ServiceLoader;
 
 public interface DaemonTask {
 

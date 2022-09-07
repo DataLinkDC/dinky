@@ -22,11 +22,18 @@ package com.dlink.service;
 import com.dlink.db.service.ISuperService;
 import com.dlink.model.FragmentVariable;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * FragmentVariableService
  *
  * @author zhumingye
- * @since 2022/7/29
+ * @since 2022/8/18
  */
 public interface FragmentVariableService extends ISuperService<FragmentVariable> {
+
+    List<FragmentVariable> listEnabledAll();
+
+    Map<String, String> listEnabledVariables();
 }

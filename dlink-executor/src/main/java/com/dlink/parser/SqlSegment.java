@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.parser;
 
 import com.dlink.assertion.Asserts;

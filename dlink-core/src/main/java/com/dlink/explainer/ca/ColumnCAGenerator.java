@@ -17,16 +17,25 @@
  *
  */
 
-
 package com.dlink.explainer.ca;
 
-
 import com.dlink.assertion.Asserts;
-import com.dlink.explainer.trans.*;
+import com.dlink.explainer.trans.Field;
+import com.dlink.explainer.trans.OperatorTrans;
+import com.dlink.explainer.trans.SinkTrans;
+import com.dlink.explainer.trans.SourceTrans;
+import com.dlink.explainer.trans.Trans;
 import com.dlink.utils.MapParseUtils;
+
 import org.apache.commons.collections.CollectionUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * ColumnCAGenerator
@@ -176,7 +185,7 @@ public class ColumnCAGenerator implements CAGenerator {
             }
             if (!isHad) {
                 cid = index++;
-//                String columnOperation = MapParseUtils.replaceField(operation,columnCA.getAlias(),columnCA.getOperation());
+                //String columnOperation = MapParseUtils.replaceField(operation,columnCA.getAlias(),columnCA.getOperation());
                 ColumnCA columnCA2 = new ColumnCA(cid, alias, alias, alias, alias, operation, tableCA);
                 this.columnCASMaps.put(cid, columnCA2);
                 this.columnCAS.add(columnCA2);

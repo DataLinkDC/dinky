@@ -17,12 +17,10 @@
  *
  */
 
-
 import React, {useState} from 'react';
 import {Button, Form, Input, Modal, Switch} from 'antd';
 import TextArea from "antd/es/input/TextArea";
 import {FragmentVariableTableListItem} from "@/pages/FragmentVariable/data";
-import {getFragmentVariableTableListItem} from "@/pages/FragmentVariable/function";
 
 export type FragmentFormProps  = {
   onCancel: (flag?: boolean) => void;
@@ -45,7 +43,6 @@ const FragmentForm : React.FC<FragmentFormProps> = (props:any) => {
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<FragmentVariableTableListItem>>({
     id: props.values.id,
-    tenantId: props.values.tenantId ? props.values.tenantId : "1",
     name: props.values.name,
     alias: props.values.alias,
     fragmentValue: props.values.fragmentValue,
@@ -64,6 +61,7 @@ const FragmentForm : React.FC<FragmentFormProps> = (props:any) => {
 
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
+    fieldsValue.id = formVals.id;
     setFormVals({...formVals,...fieldsValue});
     handleSubmit({...formVals,...fieldsValue});
   };
@@ -133,9 +131,9 @@ const FragmentForm : React.FC<FragmentFormProps> = (props:any) => {
       <Form
         {...formLayout}
         form={form}
-        initialValues={getFragmentVariableTableListItem(formVals as FragmentVariableTableListItem)}
+        initialValues={formVals as FragmentVariableTableListItem}
       >
-        {renderContent(getFragmentVariableTableListItem(formVals as FragmentVariableTableListItem))}
+        {renderContent(formVals as FragmentVariableTableListItem)}
       </Form>
     </Modal>
   );

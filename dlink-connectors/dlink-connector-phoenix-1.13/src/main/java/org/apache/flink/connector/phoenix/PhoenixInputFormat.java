@@ -17,7 +17,6 @@
  *
  */
 
-
 package org.apache.flink.connector.phoenix;
 
 import org.apache.commons.lang.StringUtils;
@@ -38,13 +37,22 @@ import org.apache.flink.core.io.InputSplit;
 import org.apache.flink.core.io.InputSplitAssigner;
 import org.apache.flink.types.Row;
 import org.apache.flink.util.Preconditions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.sql.*;
+import java.sql.Array;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.Arrays;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * InputFormat to read data from a database and generate Rows. The InputFormat has to be configured
@@ -53,21 +61,21 @@ import java.util.Arrays;
  *
  * <pre><code>
  * TypeInformation<?>[] fieldTypes = new TypeInformation<?>[] {
- * 	BasicTypeInfo.INT_TYPE_INFO,
- * 	BasicTypeInfo.STRING_TYPE_INFO,
- * 	BasicTypeInfo.STRING_TYPE_INFO,
- * 	BasicTypeInfo.DOUBLE_TYPE_INFO,
- * 	BasicTypeInfo.INT_TYPE_INFO
+ *  BasicTypeInfo.INT_TYPE_INFO,
+ *  BasicTypeInfo.STRING_TYPE_INFO,
+ *  BasicTypeInfo.STRING_TYPE_INFO,
+ *  BasicTypeInfo.DOUBLE_TYPE_INFO,
+ *  BasicTypeInfo.INT_TYPE_INFO
  * };
  *
  * RowTypeInfo rowTypeInfo = new RowTypeInfo(fieldTypes);
  *
  * JdbcInputFormat jdbcInputFormat = JdbcInputFormat.buildJdbcInputFormat()
- * 			.setDrivername("org.apache.derby.jdbc.EmbeddedDriver")
- * 			.setDBUrl("jdbc:derby:memory:ebookshop")
- * 			.setQuery("select * from books")
- * 			.setRowTypeInfo(rowTypeInfo)
- * 			.finish();
+ *          .setDrivername("org.apache.derby.jdbc.EmbeddedDriver")
+ *          .setDBUrl("jdbc:derby:memory:ebookshop")
+ *          .setQuery("select * from books")
+ *          .setRowTypeInfo(rowTypeInfo)
+ *          .finish();
  * </code></pre>
  *
  * <p>In order to query the JDBC source in parallel, you need to provide a parameterized query
@@ -81,12 +89,12 @@ import java.util.Arrays;
  * queryParameters[1] = new String[]{"Tan Ah Teck"};
  *
  * JdbcInputFormat jdbcInputFormat = JdbcInputFormat.buildJdbcInputFormat()
- * 			.setDrivername("org.apache.derby.jdbc.EmbeddedDriver")
- * 			.setDBUrl("jdbc:derby:memory:ebookshop")
- * 			.setQuery("select * from books WHERE author = ?")
- * 			.setRowTypeInfo(rowTypeInfo)
- * 			.setParametersProvider(new JdbcGenericParameterValuesProvider(queryParameters))
- * 			.finish();
+ *          .setDrivername("org.apache.derby.jdbc.EmbeddedDriver")
+ *          .setDBUrl("jdbc:derby:memory:ebookshop")
+ *          .setQuery("select * from books WHERE author = ?")
+ *          .setRowTypeInfo(rowTypeInfo)
+ *          .setParametersProvider(new JdbcGenericParameterValuesProvider(queryParameters))
+ *          .finish();
  * </code></pre>
  *
  * @see Row
@@ -145,13 +153,13 @@ public class PhoenixInputFormat extends RichInputFormat<Row, InputSplit>
                 dbConn.setAutoCommit(autoCommit);
             }
 
-            LOG.debug("openInputFormat query :" +queryTemplate);
+            LOG.debug("openInputFormat query :" + queryTemplate);
             //删除 ` 号 phoenix中不支持
             String initQuery = StringUtils.remove(queryTemplate, "\\`");
-            LOG.debug("openInputFormat initQuery :" +initQuery);
+            LOG.debug("openInputFormat initQuery :" + initQuery);
             //将 " 双引号替换成 '  单引号
             String replaceQuery = StringUtils.replace(initQuery, "\"", "'");
-            LOG.info("openInputFormat replaceQuery :" +replaceQuery);
+            LOG.info("openInputFormat replaceQuery :" + replaceQuery);
 
             statement = dbConn.prepareStatement(replaceQuery, resultSetType, resultSetConcurrency);
             if (fetchSize == Integer.MIN_VALUE || fetchSize > 0) {
@@ -431,7 +439,6 @@ public class PhoenixInputFormat extends RichInputFormat<Row, InputSplit>
             format.mapSystemTablesEnabled = mapSystemTablesEnabled;
             return this;
         }
-
 
         public PhoenixInputFormat finish() {
             format.connectionProvider =

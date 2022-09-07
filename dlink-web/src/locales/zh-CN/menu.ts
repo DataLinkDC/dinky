@@ -64,6 +64,7 @@ export default {
   'menu.registration.jar': 'Jar 管理',
   'menu.registration.document': '文档管理',
   'menu.registration.fragment': '全局变量管理',
+  'menu.registration.fragment': '全局变量管理',
   'menu.resourcecenter': '资源中心',
   'menu.resourcecenter.usermanager': '用户管理',
   'menu.resourcecenter.namespacemanager': '命名空间管理',

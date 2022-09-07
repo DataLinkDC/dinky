@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.utils;
 
 import org.apache.flink.api.common.JobID;
@@ -51,7 +50,6 @@ public class FlinkUtil {
             return new ArrayList<String>();
         }
     }
-
 
     public static List<String> catchColumn(TableResult tableResult) {
         return tableResult.getResolvedSchema().getColumnNames();

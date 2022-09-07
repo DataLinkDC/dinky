@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.gateway.config;
 
 import com.dlink.assertion.Asserts;

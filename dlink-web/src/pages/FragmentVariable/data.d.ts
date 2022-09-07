@@ -17,14 +17,11 @@
  *
  */
 
-
 export type FragmentVariableTableListItem = {
   id: number,
-  tenantId: string,
   name: string,
   alias: string,
   fragmentValue: string,
-  fillValue: string,
   note: string,
   enabled: boolean,
   createTime: Date,

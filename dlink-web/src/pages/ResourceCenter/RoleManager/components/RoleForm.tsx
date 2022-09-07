@@ -68,7 +68,13 @@ const RoleForm: React.FC<TenantFormProps> = (props) => {
   const getNameSpaceOptions = () => {
     const itemList: JSX.Element[] = [];
     for (const item of nameSpaces) {
-      const tag = (<><Tag color="processing">{item.namespaceCode}</Tag>{item.namespaceCode}</>);
+      const tag = (
+        <>
+          <Tag color="processing">
+            {item.namespaceCode}
+          </Tag>
+          {/*{item.namespaceCode}*/}
+        </>);
       itemList.push(<Option key={item.namespaceCode} value={item.id?.toString()} label={tag}>
         {tag}
       </Option>)
@@ -80,8 +86,8 @@ const RoleForm: React.FC<TenantFormProps> = (props) => {
     const fieldsValue = await form.validateFields();
     // fieldsValue.id = formVals.id;
     fieldsValue.tenantId = getStorageTenantId();
-    setFormVals(buildFormData(formVals,fieldsValue));
-    handleSubmit(buildFormData(formVals,fieldsValue));
+    setFormVals(buildFormData(formVals, fieldsValue));
+    handleSubmit(buildFormData(formVals, fieldsValue));
   };
 
   const renderContent = (formVals) => {
@@ -157,4 +163,4 @@ const RoleForm: React.FC<TenantFormProps> = (props) => {
 };
 export default connect(({NameSpace}: { NameSpace: NameSpaceStateType }) => ({
   nameSpaces: NameSpace.nameSpaces,
-})) (RoleForm);
+}))(RoleForm);

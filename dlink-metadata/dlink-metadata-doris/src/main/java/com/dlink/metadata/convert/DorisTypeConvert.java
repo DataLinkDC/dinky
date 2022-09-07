@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.metadata.convert;
 
 import com.dlink.assertion.Asserts;
@@ -92,7 +91,6 @@ public class DorisTypeConvert implements ITypeConvert {
                 columnType = ColumnType.DOUBLE;
             }
         }
-        columnType.setPrecisionAndScale(column.getPrecision(), column.getScale());
         return columnType;
     }
 

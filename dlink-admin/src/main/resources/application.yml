@@ -1,19 +1,21 @@
 spring:
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/dlink?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-    username: dlink
-    password: dlink
+    username: root
+    password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
   application:
     name: dlink
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   main:
     allow-circular-references: true
-#  flyway:
-#    enabled: false
-#    clean-disabled: true
-##    baseline-on-migrate: true
-#    table: dlink_schema_history
-
+  #  flyway:
+  #    enabled: false
+  #    clean-disabled: true
+  ##    baseline-on-migrate: true
+  #    table: dlink_schema_history
   # Redis配置
   #sa-token如需依赖redis，请打开redis配置和pom.xml、dlink-admin/pom.xml中依赖
   # redis:
@@ -33,6 +35,11 @@ spring:
   #       min-idle: 5
   #   # 连接超时时间（毫秒）
   #   timeout: 5000
+  servlet:
+    multipart:
+      max-file-size: 524288000
+      max-request-size: 524288000
+      enabled: true
 server:
   port: 8888
 
@@ -45,7 +52,7 @@ mybatis-plus:
       id-type: auto
   configuration:
     ##### mybatis-plus打印完整sql(只适用于开发环境)
-#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
 
 # Sa-Token 配置
@@ -64,3 +71,6 @@ sa-token:
   token-style: uuid
   # 是否输出操作日志
   is-log: false
+
+knife4j:
+  enable: true

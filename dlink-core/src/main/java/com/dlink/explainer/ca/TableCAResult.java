@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.explainer.ca;
 
 import java.util.List;

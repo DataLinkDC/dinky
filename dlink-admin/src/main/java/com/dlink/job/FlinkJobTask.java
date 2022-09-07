@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.job;
 
 import com.dlink.assertion.Asserts;
@@ -29,12 +28,13 @@ import com.dlink.daemon.task.DaemonTaskConfig;
 import com.dlink.model.JobInstance;
 import com.dlink.model.JobStatus;
 import com.dlink.service.TaskService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.DependsOn;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.DependsOn;
 
 @DependsOn("springContextUtils")
 public class FlinkJobTask implements DaemonTask {
@@ -42,7 +42,7 @@ public class FlinkJobTask implements DaemonTask {
     private static final Logger log = LoggerFactory.getLogger(FlinkJobTask.class);
 
     private DaemonTaskConfig config;
-    public final static String TYPE = "jobInstance";
+    public static final String TYPE = "jobInstance";
     private static TaskService taskService;
     private long preDealTime;
 
@@ -77,6 +77,7 @@ public class FlinkJobTask implements DaemonTask {
             && Duration.between(jobInstance.getFinishTime(), LocalDateTime.now()).toMinutes() < 1)) {
             DefaultThreadPool.getInstance().execute(this);
         } else {
+            taskService.handleJobDone(jobInstance);
             FlinkJobTaskPool.getInstance().remove(config.getId().toString());
         }
     }

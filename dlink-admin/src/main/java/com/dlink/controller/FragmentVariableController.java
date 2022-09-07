@@ -19,24 +19,31 @@
 
 package com.dlink.controller;
 
-import com.dlink.assertion.Asserts;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
 import com.dlink.model.FragmentVariable;
 import com.dlink.service.FragmentVariableService;
-import com.fasterxml.jackson.databind.JsonNode;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * FragmentVariableController
  *
  * @author zhumingye
- * @since 2022/7/29
+ * @since 2022/8/18
  */
 @Slf4j
 @RestController
@@ -51,12 +58,10 @@ public class FragmentVariableController {
      */
     @PutMapping
     public Result saveOrUpdate(@RequestBody FragmentVariable fragmentVariable) throws Exception {
-        String fillValue = fragmentVariable.getName() + "=:" + fragmentVariable.getFragmentValue();
-        fragmentVariable.setFillValue(fillValue);
         if (fragmentVariableService.saveOrUpdate(fragmentVariable)) {
-            return Result.succeed(Asserts.isNotNull(fragmentVariable.getId()) ? "修改成功" : "新增成功");
+            return Result.succeed("保存成功");
         } else {
-            return Result.failed(Asserts.isNotNull(fragmentVariable.getId()) ? "修改失败" : "新增失败");
+            return Result.failed("保存失败");
         }
     }
 
