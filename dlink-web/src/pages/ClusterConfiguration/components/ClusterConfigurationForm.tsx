@@ -102,12 +102,37 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
     return {
       name: 'files',
       action: '/api/fileUpload',
-      // accept: 'application/json',
       headers: {
         authorization: 'authorization-text',
       },
       data: {
         dir
+      },
+      showUploadList: true,
+      onChange(info) {
+        if (info.file.status === 'done') {
+          if (info.file.response.code == CODE.SUCCESS) {
+            message.success(info.file.response.msg);
+          } else {
+            message.warn(info.file.response.msg);
+          }
+        } else if (info.file.status === 'error') {
+          message.error(`${info.file.name} 上传失败`);
+        }
+      },
+    }
+  };
+
+  const getUploadHdfsProps = (dir: string) => {
+    return {
+      name: 'files',
+      action: '/api/fileUpload/hdfs',
+      headers: {
+        authorization: 'authorization-text',
+      },
+      data: {
+        dir,
+        hadoopConfigPath
       },
       showUploadList: true,
       onChange(info) {
@@ -146,7 +171,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
           >
             <Input placeholder="值如 /etc/hadoop/conf" addonAfter={
               <Form.Item name="suffix" noStyle>
-                <Upload {...getUploadProps(hadoopConfigPath)}>
+                <Upload {...getUploadProps(hadoopConfigPath)} multiple>
                   <UploadOutlined/>
                 </Upload>
               </Form.Item>}/>
@@ -235,7 +260,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
           >
             <Input placeholder="值如 hdfs:///flink/lib" addonAfter={
               <Form.Item name="suffix" noStyle>
-                <Upload {...getUploadProps(flinkLibPath)}>
+                <Upload {...getUploadHdfsProps(flinkLibPath)} multiple>
                   <UploadOutlined/>
                 </Upload>
               </Form.Item>}/>

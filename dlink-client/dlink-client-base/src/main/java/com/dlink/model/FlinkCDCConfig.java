@@ -180,6 +180,7 @@ public class FlinkCDCConfig {
             case "table.upper":
             case "table.lower":
             case "column.replace.line-break":
+            case "timezone":
                 return true;
             default:
                 return false;
