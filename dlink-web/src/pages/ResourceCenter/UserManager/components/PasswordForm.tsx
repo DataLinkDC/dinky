@@ -50,8 +50,8 @@ const PasswordForm: React.FC<PasswordFormProps> = (props) => {
 
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
-    setFormVals({ ...formVals, ...fieldsValue });
-    handleSubmit({ ...formVals, ...fieldsValue });
+    setFormVals({...formVals, ...fieldsValue});
+    handleSubmit({...formVals, ...fieldsValue});
   };
 
   const renderContent = () => {
@@ -62,36 +62,36 @@ const PasswordForm: React.FC<PasswordFormProps> = (props) => {
           label="旧密码"
           hasFeedback
           rules={[{required: true, message: '请输入旧密码！'}]}>
-          <Input.Password  placeholder="请输入旧密码"/>
+          <Input.Password placeholder="请输入旧密码"/>
         </Form.Item>
         <Form.Item
           name="newPassword"
           label="新密码"
           hasFeedback
           rules={[{required: true, message: '请输入新密码！'}]}>
-          <Input.Password  placeholder="请输入新密码"/>
+          <Input.Password placeholder="请输入新密码"/>
         </Form.Item>
         <Form.Item
-        name="newPasswordCheck"
-        label="重复新密码"
-        hasFeedback
-        dependencies={['newPassword']}
-        rules={[
-          {
-            required: true,
-            message: '请重复输入一致的新密码',
-          },
-          ({ getFieldValue }) => ({
-            validator(_, value) {
-              if (!value || getFieldValue('newPassword') === value) {
-                return Promise.resolve();
-              }
-              return Promise.reject(new Error('重复新密码不一致!'));
+          name="newPasswordCheck"
+          label="重复新密码"
+          hasFeedback
+          dependencies={['newPassword']}
+          rules={[
+            {
+              required: true,
+              message: '请重复输入一致的新密码',
             },
-          }),
-        ]}>
-        <Input.Password placeholder="请重复输入新密码"/>
-      </Form.Item>
+            ({getFieldValue}) => ({
+              validator(_, value) {
+                if (!value || getFieldValue('newPassword') === value) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(new Error('重复新密码不一致!'));
+              },
+            }),
+          ]}>
+          <Input.Password placeholder="请重复输入新密码"/>
+        </Form.Item>
       </>
     );
   };

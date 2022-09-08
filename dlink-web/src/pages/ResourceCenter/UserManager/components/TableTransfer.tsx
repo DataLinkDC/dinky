@@ -20,18 +20,11 @@ import {Table, Transfer} from 'antd';
 import type {ColumnsType, TableRowSelection} from 'antd/es/table/interface';
 import type {TransferProps} from 'antd/es/transfer';
 import difference from 'lodash/difference';
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {getData} from "@/components/Common/crud";
 import {Scrollbars} from 'react-custom-scrollbars';
 import {RoleTableListItem, UserTableListItem} from "@/pages/ResourceCenter/data.d";
 
-// TODO:
-//  1.表单渲染数据
-//  2.给用户分配角色
-//  3.给该用户删除角色
-// 给用户分配角色接口 /api/user/grantRole 数据结构: [1,2,3]
-// 删除角色接口 /api/user/removeGrantRole 数据结构: [1,2,3]
-// 获取用户角色接口 /api/user/getRole 数据结构: userId: 1,tenantId: 1
 
 interface TableTransferProps extends TransferProps<RoleTableListItem> {
   dataSource: RoleTableListItem[];
