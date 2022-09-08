@@ -17,7 +17,6 @@
  *
  */
 
-
 export default [
   {
     path: '/user',
@@ -104,12 +103,12 @@ export default [
             component: './AlertGroup',
           },
         ],
-      },{
+      }, {
         path: '/registration/document',
         name: 'document',
         icon: 'container',
         component: './Document',
-      },{
+      }, {
         path: '/registration/fragment',
         name: 'fragment',
         icon: "cloud",
@@ -138,7 +137,7 @@ export default [
         path: '/resourcecenter/namespacemanager',
         name: 'namespacemanager',
         icon: 'BulbOutlined',
-        component: './ResourceCenter/NameSpaceManager',
+        component: './ResourceCenter/NamespaceManager',
       },
       {
         path: '/resourcecenter/tenantmanager',

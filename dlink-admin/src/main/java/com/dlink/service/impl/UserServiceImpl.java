@@ -137,8 +137,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             if (!user.getEnabled()) {
                 return Result.failed("账号已被禁用");
             }
-            // 将前端入参 租户id 放入上下文
-            RequestContext.set(loginUTO.getTenantId());
+
 
             UserDTO userDTO = new UserDTO();
             Set<RoleDTO> roleDTOList = new HashSet<>();
@@ -153,6 +152,10 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             userDTO.setUser(user);
             userDTO.setRoleDTOList(roleDTOList);
             userDTO.setCurrentTenant(currentTenant);
+
+            // 将前端入参 租户id 放入上下文
+            RequestContext.set(loginUTO.getTenantId());
+
             StpUtil.login(user.getId(), loginUTO.isAutoLogin());
             StpUtil.getSession().set("user", userDTO);
             return Result.succeed(userDTO, "登录成功");
