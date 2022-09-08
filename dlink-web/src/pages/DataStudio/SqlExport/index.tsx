@@ -21,13 +21,14 @@
 import {Typography} from 'antd';
 import {useEffect, useState} from "react";
 import {getData} from "@/components/Common/crud";
+import CodeShow from "@/components/Common/CodeShow";
 
-const {Text, Paragraph} = Typography;
+const {Paragraph} = Typography;
 
 const SqlExport = (props: any) => {
 
   const {id} = props;
-  const [statement, setStatement] = useState<string>();
+  const [statement, setStatement] = useState<string>('');
 
   const refreshStatement = async () => {
     const msg = await getData('api/task/exportSql', {id: id});
@@ -42,7 +43,8 @@ const SqlExport = (props: any) => {
     <Paragraph copyable={{text: statement}}>
     </Paragraph>
     <Paragraph>
-      <pre style={{height: '300px'}}>{statement}</pre>
+      <CodeShow code={statement} language='sql'
+                height='500px' theme="vs-dark"/>
     </Paragraph></>)
 };
 

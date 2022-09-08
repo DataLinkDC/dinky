@@ -26,6 +26,7 @@ export type SettingsStateType = {
   useRestAPI: boolean,
   useLogicalPlan: boolean,
   sqlSeparator: string,
+  jobIdWait: number,
 };
 
 export type ModelType = {

@@ -36,11 +36,12 @@ export const DIALECT = {
   MYSQL: 'Mysql',
   ORACLE: 'Oracle',
   SQLSERVER: 'SqlServer',
-  POSTGRESQL: 'PostGreSql',
+  POSTGRESQL: 'PostgreSql',
   CLICKHOUSE: 'ClickHouse',
   DORIS: 'Doris',
   HIVE: 'Hive',
   PHOENIX: 'Phoenix',
+  STARROCKS: 'StarRocks',
   JAVA: 'Java',
 };
 
@@ -61,6 +62,7 @@ export const isSql = (dialect: string) => {
     case DIALECT.PHOENIX:
     case DIALECT.DORIS:
     case DIALECT.HIVE:
+    case DIALECT.STARROCKS:
       return true;
     default:
       return false;
@@ -82,6 +84,7 @@ export const isExecuteSql = (dialect: string) => {
     case DIALECT.PHOENIX:
     case DIALECT.FLINKSQL:
     case DIALECT.HIVE:
+    case DIALECT.STARROCKS:
       return true;
     default:
       return false;
@@ -104,6 +107,7 @@ export const isTask = (dialect: string) => {
     case DIALECT.FLINKSQL:
     case DIALECT.FLINKJAR:
     case DIALECT.HIVE:
+    case DIALECT.STARROCKS:
       return true;
     default:
       return false;

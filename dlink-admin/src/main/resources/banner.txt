@@ -1,0 +1,14 @@
+:: Spring Boot ::  ${spring-boot.formatted-version}
+
+ ______     _            __
+|_   _ `.  (_)          [  |  _
+  | | `. \ __   _ .--.   | | / ]   _   __
+  | |  | |[  | [ `.-. |  | '' <   [ \ [  ]
+ _| |_.' / | |  | | | |  | |`\ \   \ '/ /
+|______.' [___][___||__][__|  \_][\_:  /
+                                  \__.'
+
+
+Version: 0.6.7
+Github:  https://github.com/DataLinkDC/dlink
+公众号:   Dinky 开源
