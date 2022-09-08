@@ -1,0 +1,11 @@
+[
+    {
+        "name": "",
+        "preTaskCode": 0,
+        "preTaskVersion": 0,
+        "postTaskCode": {code},
+        "postTaskVersion": 0,
+        "conditionType": "NONE",
+        "conditionParams": {}
+    }
+]

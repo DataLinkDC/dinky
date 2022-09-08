@@ -44,6 +44,7 @@
         <module>dlink-web</module>
         <module>dlink-admin</module>
         <module>dlink-assembly</module>
+        <module>dlink-scheduler</module>
     </modules>
 
     <properties>
@@ -446,6 +447,11 @@
                 <groupId>com.sun.mail</groupId>
                 <artifactId>javax.mail</artifactId>
                 <version>${javax.mail}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-scheduler</artifactId>
+                <version>${project.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
