@@ -3,11 +3,12 @@ package com.dlink.scheduler.model;
 import com.dlink.scheduler.enums.Flag;
 import com.dlink.scheduler.enums.ProcessExecutionTypeEnum;
 import com.dlink.scheduler.enums.ReleaseState;
-import lombok.Data;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import lombok.Data;
 
 /**
  * process definition

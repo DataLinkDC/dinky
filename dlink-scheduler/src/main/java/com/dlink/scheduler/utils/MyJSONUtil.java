@@ -1,16 +1,16 @@
 package com.dlink.scheduler.utils;
 
-import cn.hutool.core.lang.TypeReference;
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
 import com.dlink.scheduler.exception.SchedulerException;
 import com.dlink.scheduler.result.PageInfo;
 import com.dlink.scheduler.result.Result;
+
+import cn.hutool.core.lang.TypeReference;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author 郑文豪
- * @date 2022/3/20 0:40
  */
 @Slf4j
 public class MyJSONUtil {
@@ -52,8 +52,8 @@ public class MyJSONUtil {
      */
     public static PageInfo<JSONObject> toPageBean(String content) {
         Result<PageInfo<JSONObject>> result = MyJSONUtil.toBean(content,
-                new TypeReference<Result<PageInfo<JSONObject>>>() {
-                });
+            new TypeReference<Result<PageInfo<JSONObject>>>() {
+            });
         return result.getData();
     }
 

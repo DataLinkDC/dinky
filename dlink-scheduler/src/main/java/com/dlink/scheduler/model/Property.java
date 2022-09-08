@@ -2,9 +2,10 @@ package com.dlink.scheduler.model;
 
 import com.dlink.scheduler.enums.DataType;
 import com.dlink.scheduler.enums.Direct;
-import lombok.Data;
 
 import java.io.Serializable;
+
+import lombok.Data;
 
 @Data
 public class Property implements Serializable {

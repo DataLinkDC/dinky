@@ -1,6 +1,5 @@
 package com.dlink.scheduler.enums;
 
-
 /**
  * process define release state
  */

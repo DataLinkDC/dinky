@@ -1,22 +1,23 @@
 package com.dlink.scheduler.client;
 
-import cn.hutool.http.HttpRequest;
 import com.dlink.scheduler.constant.Constants;
 import com.dlink.scheduler.model.Project;
 import com.dlink.scheduler.utils.MyJSONUtil;
 import com.dlink.scheduler.utils.ParamUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import cn.hutool.http.HttpRequest;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 项目
  *
  * @author 郑文豪
- * @date 2022/9/8 9:06
  */
 @Component
 @Slf4j
@@ -28,7 +29,6 @@ public class ProjectClient {
     private static String tokenKey;
     @Value("${dinky.dolphinscheduler.project-name}")
     private static String dinkyProjectName;
-
 
     /**
      * 创建项目
@@ -43,9 +43,9 @@ public class ProjectClient {
         map.put("description", "自动创建");
 
         String content = HttpRequest.post(url + "/projects")
-                .header(Constants.TOKEN, tokenKey)
-                .form(map)
-                .execute().body();
+            .header(Constants.TOKEN, tokenKey)
+            .form(map)
+            .execute().body();
         return MyJSONUtil.toBean(content, Project.class);
     }
 
@@ -59,9 +59,9 @@ public class ProjectClient {
     public Project getDinkyProject() {
 
         String content = HttpRequest.get(url + "/projects")
-                .header(Constants.TOKEN, tokenKey)
-                .form(ParamUtil.getPageParams(dinkyProjectName))
-                .execute().body();
+            .header(Constants.TOKEN, tokenKey)
+            .form(ParamUtil.getPageParams(dinkyProjectName))
+            .execute().body();
 
         return MyJSONUtil.toPageBeanAndFindByName(content, dinkyProjectName, Project.class);
     }

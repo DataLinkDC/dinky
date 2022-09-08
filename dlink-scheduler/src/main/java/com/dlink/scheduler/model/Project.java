@@ -1,8 +1,8 @@
 package com.dlink.scheduler.model;
 
-import lombok.Data;
-
 import java.util.Date;
+
+import lombok.Data;
 
 /**
  * project

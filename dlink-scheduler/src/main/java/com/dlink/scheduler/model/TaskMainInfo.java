@@ -18,10 +18,11 @@
 package com.dlink.scheduler.model;
 
 import com.dlink.scheduler.enums.ReleaseState;
-import lombok.Data;
 
 import java.util.Date;
 import java.util.Map;
+
+import lombok.Data;
 
 /**
  * task main info

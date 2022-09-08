@@ -1,28 +1,29 @@
 package com.dlink.scheduler.client;
 
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.http.HttpRequest;
-import cn.hutool.json.JSONObject;
 import com.dlink.scheduler.constant.Constants;
 import com.dlink.scheduler.model.TaskMainInfo;
 import com.dlink.scheduler.result.PageInfo;
 import com.dlink.scheduler.utils.MyJSONUtil;
 import com.dlink.scheduler.utils.ParamUtil;
 import com.dlink.scheduler.utils.ReadFileUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.json.JSONObject;
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 任务定义
  *
  * @author 郑文豪
- * @date 2022/9/8 9:07
  */
 @Component
 @Slf4j
@@ -76,9 +77,9 @@ public class TaskClient {
         pageParams.put("taskType", "DINKY");
 
         String content = HttpRequest.post(format)
-                .header(Constants.TOKEN, tokenKey)
-                .form(pageParams)
-                .execute().body();
+            .header(Constants.TOKEN, tokenKey)
+            .form(pageParams)
+            .execute().body();
 
         PageInfo<JSONObject> data = MyJSONUtil.toPageBean(content);
         List<TaskMainInfo> lists = new ArrayList<>();
@@ -114,7 +115,7 @@ public class TaskClient {
         Map<String, Object> pageParams = ParamUtil.getPageParams();
         pageParams.put("processDefinitionCode", processCode);
 
-//        pageParams.put("upstreamCodes", definitionName);
+        // pageParams.put("upstreamCodes", definitionName);
         Map<String, Object> taskMap = new HashMap<>();
         taskMap.put("code", "0");
         taskMap.put("name", taskName);
@@ -125,9 +126,9 @@ public class TaskClient {
         pageParams.put("taskDefinitionJsonObj", taskDefinitionJson);
 
         String content = HttpRequest.post(format)
-                .header(Constants.TOKEN, tokenKey)
-                .form(pageParams)
-                .execute().body();
+            .header(Constants.TOKEN, tokenKey)
+            .form(pageParams)
+            .execute().body();
 
         return MyJSONUtil.toBean(content, TaskMainInfo.class);
     }

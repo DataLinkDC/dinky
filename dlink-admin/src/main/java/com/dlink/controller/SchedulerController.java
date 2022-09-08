@@ -7,7 +7,10 @@ import com.dlink.scheduler.client.TaskClient;
 import com.dlink.scheduler.model.ProcessDefinition;
 import com.dlink.scheduler.model.Project;
 import com.dlink.scheduler.model.TaskMainInfo;
-import lombok.extern.slf4j.Slf4j;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,12 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author 郑文豪
- * @date 2022/9/8 9:48
  */
 @Slf4j
 @RestController
@@ -62,7 +63,7 @@ public class SchedulerController {
         }
         long projectCode = dinkyProject.getCode();
         ProcessDefinition processDefinition = processClient.createProcessDefinition(projectCode, processName,
-                taskName, dinkyTaskId);
+            taskName, dinkyTaskId);
         return Result.succeed(processDefinition);
     }
 

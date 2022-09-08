@@ -1,18 +1,16 @@
 package com.dlink.scheduler.utils;
 
-
-import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.util.StrUtil;
-import lombok.extern.slf4j.Slf4j;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
+import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.StrUtil;
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author 郑文豪
- * @date 2022/7/29 17:12
  */
 @Slf4j
 public class ReadFileUtil {
@@ -43,7 +41,6 @@ public class ReadFileUtil {
         }
         return StrUtil.format(readFile, maps);
     }
-
 
     /**
      * 读取文件

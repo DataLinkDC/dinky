@@ -1,29 +1,30 @@
 package com.dlink.scheduler.client;
 
-import cn.hutool.core.util.IdUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.http.HttpRequest;
-import cn.hutool.json.JSONObject;
 import com.dlink.scheduler.constant.Constants;
 import com.dlink.scheduler.model.ProcessDefinition;
 import com.dlink.scheduler.result.PageInfo;
 import com.dlink.scheduler.utils.MyJSONUtil;
 import com.dlink.scheduler.utils.ParamUtil;
 import com.dlink.scheduler.utils.ReadFileUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.json.JSONObject;
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 工作流定义
  *
  * @author 郑文豪
- * @date 2022/9/8 9:06
  */
 @Component
 @Slf4j
@@ -51,9 +52,9 @@ public class ProcessClient {
         String format = StrUtil.format(url + "/projects/{projectCode}/process-definition", map);
 
         String content = HttpRequest.get(format)
-                .header(Constants.TOKEN, tokenKey)
-                .form(ParamUtil.getPageParams(name))
-                .execute().body();
+            .header(Constants.TOKEN, tokenKey)
+            .form(ParamUtil.getPageParams(name))
+            .execute().body();
         PageInfo<JSONObject> data = MyJSONUtil.toPageBean(content);
         List<ProcessDefinition> lists = new ArrayList<>();
         if (data == null || data.getTotalList() == null) {
@@ -122,9 +123,9 @@ public class ProcessClient {
         params.put("executionType", "PARALLEL");
 
         String content = HttpRequest.post(format)
-                .header(Constants.TOKEN, tokenKey)
-                .form(params)
-                .execute().body();
+            .header(Constants.TOKEN, tokenKey)
+            .form(params)
+            .execute().body();
 
         return MyJSONUtil.toBean(content, ProcessDefinition.class);
     }
