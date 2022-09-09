@@ -34,7 +34,7 @@ public interface FileUploadService {
      *
      * @param file     {@link MultipartFile} instance
      * @param fileType Upload file's type, refer ${@link UploadFileConstant}
-     * @return {@link com.dlink.common.result.Result}
+     * @return {@link Result}
      */
     Result upload(MultipartFile file, Byte fileType);
 
@@ -43,7 +43,7 @@ public interface FileUploadService {
      *
      * @param files    {@link MultipartFile} instance
      * @param fileType Upload file's type, refer ${@link UploadFileConstant}
-     * @return {@link com.dlink.common.result.Result}
+     * @return {@link Result}
      */
     Result upload(MultipartFile[] files, Byte fileType);
 
@@ -53,7 +53,7 @@ public interface FileUploadService {
      * @param file     {@link MultipartFile} instance
      * @param dir      Local absolute dir
      * @param fileType Upload file's type, refer ${@link UploadFileConstant}
-     * @return {@link com.dlink.common.result.Result}
+     * @return {@link Result}
      */
     Result upload(MultipartFile file, String dir, Byte fileType);
 
@@ -63,8 +63,25 @@ public interface FileUploadService {
      * @param files    {@link MultipartFile} instance
      * @param dir      Local absolute dir
      * @param fileType Upload file's type, refer ${@link UploadFileConstant}
-     * @return {@link com.dlink.common.result.Result}
+     * @return {@link Result}
      */
     Result upload(MultipartFile[] files, String dir, Byte fileType);
 
+    /**
+     * Upload one hdfs file, if target file exists, will delete it first
+     *
+     * @param file             {@link MultipartFile} instance
+     * @param hadoopConfigPath core-site.xml,hdfs-site.xml,yarn-site.xml
+     * @return {@link Result}
+     */
+    Result uploadHdfs(MultipartFile file, String dir, String hadoopConfigPath);
+
+    /**
+     * Upload multy hdfs file, if target file exists, will delete it first
+     *
+     * @param files            {@link MultipartFile} instance
+     * @param hadoopConfigPath core-site.xml,hdfs-site.xml,yarn-site.xml
+     * @return {@link Result}
+     */
+    Result uploadHdfs(MultipartFile[] files, String dir, String hadoopConfigPath);
 }
