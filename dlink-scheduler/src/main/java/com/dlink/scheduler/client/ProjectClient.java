@@ -24,11 +24,11 @@ import lombok.extern.slf4j.Slf4j;
 public class ProjectClient {
 
     @Value("${dinky.dolphinscheduler.url}")
-    private static String url;
+    private String url;
     @Value("${dinky.dolphinscheduler.token}")
-    private static String tokenKey;
+    private String tokenKey;
     @Value("${dinky.dolphinscheduler.project-name}")
-    private static String dinkyProjectName;
+    private String dinkyProjectName;
 
     /**
      * 创建项目

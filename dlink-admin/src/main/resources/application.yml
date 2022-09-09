@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mysql://121.41.108.19:33306/dlink?useSSL=false&useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
-    username: huansi
-    password: huansi.net
+    url: jdbc:mysql://127.0.0.1:3306/dlink?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: dlink
+    password: dlink
     driver-class-name: com.mysql.cj.jdbc.Driver
   application:
     name: dlink
@@ -76,8 +76,12 @@ knife4j:
   enable: true
 
 dinky:
-  url: http://192.168.3.15:8888
+  # dinky 地址
+  url: http://127.0.0.1:8888
   dolphinscheduler:
-    url: http://192.168.3.15:12345/dolphinscheduler
+    # dolphinscheduler 地址
+    url: http://127.0.0.1:12345/dolphinscheduler
+    # dolphinscheduler 生成的token
     token: 466cb6f6455b1b8689fff770746e2e79
+    # dolphinscheduler 中指定的项目名不区分大小写
     project-name: dinky

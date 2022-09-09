@@ -42,6 +42,13 @@ public class MyJSONUtil {
         }
     }
 
+    public static <T> T verifyResult(Result<T> result) {
+        if (result.getFailed()) {
+            throw new SchedulerException(result.getMsg());
+        }
+        return result.getData();
+    }
+
     /**
      * json字符串转分页对象
      *
@@ -51,10 +58,9 @@ public class MyJSONUtil {
      * @date 2022/9/8 9:29
      */
     public static PageInfo<JSONObject> toPageBean(String content) {
-        Result<PageInfo<JSONObject>> result = MyJSONUtil.toBean(content,
+        return verifyResult(MyJSONUtil.toBean(content,
             new TypeReference<Result<PageInfo<JSONObject>>>() {
-            });
-        return result.getData();
+            }));
     }
 
     /**

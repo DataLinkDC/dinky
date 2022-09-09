@@ -6,6 +6,7 @@ import com.dlink.scheduler.client.ProjectClient;
 import com.dlink.scheduler.client.TaskClient;
 import com.dlink.scheduler.model.ProcessDefinition;
 import com.dlink.scheduler.model.Project;
+import com.dlink.scheduler.model.TaskDefinitionLog;
 import com.dlink.scheduler.model.TaskMainInfo;
 
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ public class SchedulerController {
     }
 
     /**
-     * 创建流程定义
+     * 创建工作流定义
      */
     @PostMapping("/process")
     public Result<ProcessDefinition> createProcessDefinition(@RequestParam String processName,
@@ -62,7 +63,8 @@ public class SchedulerController {
             dinkyProject = projectClient.createDinkyProject();
         }
         long projectCode = dinkyProject.getCode();
-        ProcessDefinition processDefinition = processClient.createProcessDefinition(projectCode, processName,
+        Long taskCode = taskClient.genTaskCode(projectCode);
+        ProcessDefinition processDefinition = processClient.createProcessDefinition(projectCode, processName, taskCode,
             taskName, dinkyTaskId);
         return Result.succeed(processDefinition);
     }
@@ -81,11 +83,19 @@ public class SchedulerController {
      * 创建任务定义
      */
     @PostMapping("/task")
-    public Result<TaskMainInfo> createTaskDefinition(@RequestParam Long projectCode,
-                                                     @RequestParam Long processCode,
-                                                     @RequestParam String taskName,
-                                                     @RequestParam String dinkyTaskId) {
-        TaskMainInfo taskMainInfo = taskClient.createTaskDefinition(projectCode, processCode, taskName, dinkyTaskId);
+    public Result<TaskDefinitionLog> createTaskDefinition(@RequestParam Long projectCode,
+                                                          @RequestParam Long processCode,
+                                                          @RequestParam String processName,
+                                                          @RequestParam(required = false) Long upstreamCodes,
+                                                          @RequestParam String taskName,
+                                                          @RequestParam String dinkyTaskId) {
+
+        TaskMainInfo taskDefinitionInfo = taskClient.getTaskDefinitionInfo(projectCode, processName, taskName);
+        if (taskDefinitionInfo != null) {
+            return Result.failed("添加失败,工作流定义[" + processName + "]已存在任务定义[" + taskName + "]");
+        }
+        TaskDefinitionLog taskMainInfo = taskClient.createTaskDefinition(projectCode, processCode, upstreamCodes, taskName, dinkyTaskId);
         return Result.succeed(taskMainInfo);
     }
+
 }

@@ -3,6 +3,7 @@ package com.dlink.scheduler.client;
 import com.dlink.scheduler.constant.Constants;
 import com.dlink.scheduler.model.ProcessDefinition;
 import com.dlink.scheduler.result.PageInfo;
+import com.dlink.scheduler.result.Result;
 import com.dlink.scheduler.utils.MyJSONUtil;
 import com.dlink.scheduler.utils.ParamUtil;
 import com.dlink.scheduler.utils.ReadFileUtil;
@@ -15,7 +16,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.lang.TypeReference;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONObject;
@@ -31,11 +32,11 @@ import lombok.extern.slf4j.Slf4j;
 public class ProcessClient {
 
     @Value("${dinky.dolphinscheduler.url}")
-    private static String url;
+    private String url;
     @Value("${dinky.dolphinscheduler.token}")
-    private static String tokenKey;
+    private String tokenKey;
     @Value("${dinky.url}")
-    private static String dinkyUrl;
+    private String dinkyUrl;
 
     /**
      * 查询工作流定义
@@ -98,14 +99,14 @@ public class ProcessClient {
      * @author 郑文豪
      * @date 2022/9/7 17:00
      */
-    public ProcessDefinition createProcessDefinition(Long projectCode, String processName,
+    public ProcessDefinition createProcessDefinition(Long projectCode, String processName, Long taskCode,
                                                      String taskName, String dinkyTaskId) {
         Map<String, Object> map = new HashMap<>();
         map.put("projectCode", projectCode);
         String format = StrUtil.format(url + "/projects/{projectCode}/process-definition", map);
 
         Map<String, Object> taskMap = new HashMap<>();
-        taskMap.put("code", IdUtil.getSnowflakeNextId());
+        taskMap.put("code", taskCode);
         taskMap.put("name", taskName);
         taskMap.put("address", dinkyUrl);
         taskMap.put("taskId", dinkyTaskId);
@@ -119,7 +120,7 @@ public class ProcessClient {
         params.put("description", "系统添加");
         params.put("tenantCode", "default");
         params.put("taskRelationJson", taskRelationJson);
-        params.put("taskDefinitionJson", taskDefinitionJson);
+        params.put("taskDefinitionJson", "[" + taskDefinitionJson + "]");
         params.put("executionType", "PARALLEL");
 
         String content = HttpRequest.post(format)
@@ -127,7 +128,8 @@ public class ProcessClient {
             .form(params)
             .execute().body();
 
-        return MyJSONUtil.toBean(content, ProcessDefinition.class);
+        return MyJSONUtil.verifyResult(MyJSONUtil.toBean(content, new TypeReference<Result<ProcessDefinition>>() {
+        }));
     }
 
 }

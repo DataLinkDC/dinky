@@ -1,8 +1,11 @@
 package com.dlink.scheduler.client;
 
 import com.dlink.scheduler.constant.Constants;
+import com.dlink.scheduler.exception.SchedulerException;
+import com.dlink.scheduler.model.TaskDefinitionLog;
 import com.dlink.scheduler.model.TaskMainInfo;
 import com.dlink.scheduler.result.PageInfo;
+import com.dlink.scheduler.result.Result;
 import com.dlink.scheduler.utils.MyJSONUtil;
 import com.dlink.scheduler.utils.ParamUtil;
 import com.dlink.scheduler.utils.ReadFileUtil;
@@ -15,6 +18,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import cn.hutool.core.lang.TypeReference;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONObject;
@@ -30,11 +34,11 @@ import lombok.extern.slf4j.Slf4j;
 public class TaskClient {
 
     @Value("${dinky.dolphinscheduler.url}")
-    private static String url;
+    private String url;
     @Value("${dinky.dolphinscheduler.token}")
-    private static String tokenKey;
+    private String tokenKey;
     @Value("${dinky.url}")
-    private static String dinkyUrl;
+    private String dinkyUrl;
 
     /**
      * 查询任务定义
@@ -76,7 +80,7 @@ public class TaskClient {
         pageParams.put("searchWorkflowName", processName);
         pageParams.put("taskType", "DINKY");
 
-        String content = HttpRequest.post(format)
+        String content = HttpRequest.get(format)
             .header(Constants.TOKEN, tokenKey)
             .form(pageParams)
             .execute().body();
@@ -102,20 +106,21 @@ public class TaskClient {
      * @param processCode 工作流定义编号
      * @param taskName    任务定义名称
      * @param dinkyTaskId dinky作业id
-     * @return {@link TaskMainInfo}
+     * @return {@link TaskDefinitionLog}
      * @author 郑文豪
      * @date 2022/9/7 17:05
      */
-    public TaskMainInfo createTaskDefinition(Long projectCode, Long processCode, String taskName,
-                                             String dinkyTaskId) {
+    public TaskDefinitionLog createTaskDefinition(Long projectCode, Long processCode, Long upstreamCodes, String taskName,
+                                                  String dinkyTaskId) {
         Map<String, Object> map = new HashMap<>();
         map.put("projectCode", projectCode);
-        String format = StrUtil.format(url + "/projects/{projectCode}/task-definition", map);
+        String format = StrUtil.format(url + "/projects/{projectCode}/task-definition/save-single", map);
 
         Map<String, Object> pageParams = ParamUtil.getPageParams();
         pageParams.put("processDefinitionCode", processCode);
-
-        // pageParams.put("upstreamCodes", definitionName);
+        if (upstreamCodes != null) {
+            pageParams.put("upstreamCodes", upstreamCodes);
+        }
         Map<String, Object> taskMap = new HashMap<>();
         taskMap.put("code", "0");
         taskMap.put("name", taskName);
@@ -130,7 +135,48 @@ public class TaskClient {
             .form(pageParams)
             .execute().body();
 
-        return MyJSONUtil.toBean(content, TaskMainInfo.class);
+        return MyJSONUtil.verifyResult(MyJSONUtil.toBean(content, new TypeReference<Result<TaskDefinitionLog>>() {
+        }));
+    }
+
+    /**
+     * 生成任务定义编号
+     *
+     * @param projectCode 项目编号
+     * @param genNum      生成个数
+     * @return {@link List}
+     * @author 郑文豪
+     * @date 2022/9/8 18:00
+     */
+    public List<Long> genTaskCodes(Long projectCode, int genNum) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("projectCode", projectCode);
+        String format = StrUtil.format(url + "/projects/{projectCode}/task-definition/gen-task-codes", map);
+        Map<String, Object> params = new HashMap<>();
+        params.put("genNum", genNum);
+        String content = HttpRequest.get(format)
+            .header(Constants.TOKEN, tokenKey)
+            .form(params)
+            .execute().body();
+
+        return MyJSONUtil.verifyResult(MyJSONUtil.toBean(content, new TypeReference<Result<List<Long>>>() {
+        }));
+    }
+
+    /**
+     * 生成一个任务定义编号
+     *
+     * @param projectCode 项目编号
+     * @return {@link Long}
+     * @author 郑文豪
+     * @date 2022/9/8 18:02
+     */
+    public Long genTaskCode(Long projectCode) {
+        List<Long> codes = genTaskCodes(projectCode, 1);
+        if (codes == null || codes.isEmpty()) {
+            throw new SchedulerException("生成任务定义编号失败");
+        }
+        return codes.get(0);
     }
 
 }
