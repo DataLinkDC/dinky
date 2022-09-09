@@ -19,6 +19,7 @@
 
 package com.dlink.service.impl;
 
+import com.dlink.assertion.Asserts;
 import com.dlink.common.result.Result;
 import com.dlink.constant.UploadFileConstant;
 import com.dlink.model.CodeEnum;
@@ -49,8 +50,6 @@ import lombok.extern.slf4j.Slf4j;
 public class FileUploadServiceImpl implements FileUploadService {
 
     @Resource
-    private HdfsUtil hdfsUtil;
-    @Resource
     private UploadFileRecordService uploadFileRecordService;
 
     @Override
@@ -76,7 +75,7 @@ public class FileUploadServiceImpl implements FileUploadService {
                 }
             }
             case UploadFileConstant.TARGET_HDFS: {
-                Result result = hdfsUtil.uploadFile(filePath, file);
+                Result result = HdfsUtil.uploadFile(filePath, file);
                 if (Objects.equals(result.getCode(), CodeEnum.SUCCESS.getCode())) {
                     if (uploadFileRecordService.saveOrUpdateFile(file.getOriginalFilename(), dir, filePath, fileType, UploadFileConstant.TARGET_HDFS)) {
                         return Result.succeed("上传成功");
@@ -111,6 +110,42 @@ public class FileUploadServiceImpl implements FileUploadService {
                 }
             }
             if (!uploadFileRecordService.saveOrUpdateDir(dir, fileType, getTarget(dir, fileType))) {
+                return Result.failed("数据库异常");
+            }
+            return Result.succeed("全部上传成功");
+        } else {
+            return Result.succeed("没有检测到要上传的文件");
+        }
+    }
+
+    @Override
+    public Result uploadHdfs(MultipartFile file, String dir, String hadoopConfigPath) {
+        String filePath = FilePathUtil.addFileSeparator(dir) + file.getOriginalFilename();
+        Result result = HdfsUtil.uploadFile(filePath, file, hadoopConfigPath);
+        if (Objects.equals(result.getCode(), CodeEnum.SUCCESS.getCode())) {
+            if (uploadFileRecordService.saveOrUpdateFile(file.getOriginalFilename(), dir, filePath, UploadFileConstant.FLINK_LIB_ID, UploadFileConstant.TARGET_HDFS)) {
+                return Result.succeed("上传成功");
+            } else {
+                return Result.failed("数据库异常");
+            }
+        } else {
+            return result;
+        }
+    }
+
+    @Override
+    public Result uploadHdfs(MultipartFile[] files, String dir, String hadoopConfigPath) {
+        if (Asserts.isNullString(dir)) {
+            dir = UploadFileConstant.getDirPath(UploadFileConstant.FLINK_LIB_ID);
+        }
+        if (files.length > 0) {
+            for (MultipartFile file : files) {
+                Result uploadResult = uploadHdfs(file, dir, hadoopConfigPath);
+                if (Objects.equals(uploadResult.getCode(), CodeEnum.ERROR.getCode())) {
+                    return uploadResult;
+                }
+            }
+            if (!uploadFileRecordService.saveOrUpdateDir(dir, UploadFileConstant.FLINK_LIB_ID, UploadFileConstant.TARGET_HDFS)) {
                 return Result.failed("数据库异常");
             }
             return Result.succeed("全部上传成功");
