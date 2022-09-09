@@ -40,6 +40,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * DorisSinkBuilder
@@ -137,6 +138,8 @@ public class DorisSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
         }
         if (sink.containsKey(DorisSinkOptions.SINK_ENABLE_DELETE.key())) {
             executionBuilder.setDeletable(Boolean.valueOf(sink.get(DorisSinkOptions.SINK_ENABLE_DELETE.key())));
+        } else {
+            executionBuilder.setDeletable(true);
         }
         if (sink.containsKey(DorisSinkOptions.SINK_LABEL_PREFIX.key())) {
             executionBuilder.setLabelPrefix(getSinkSchemaName(table) + "_" + getSinkTableName(table) + sink.get(DorisSinkOptions.SINK_LABEL_PREFIX.key()));
@@ -144,7 +147,12 @@ public class DorisSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
         if (sink.containsKey(DorisSinkOptions.SINK_MAX_RETRIES.key())) {
             executionBuilder.setMaxRetries(Integer.valueOf(sink.get(DorisSinkOptions.SINK_MAX_RETRIES.key())));
         }
-        executionBuilder.setStreamLoadProp(getProperties());
+
+        Properties properties = getProperties();
+        // Doris 1.1 need to this para to support delete
+        properties.setProperty("columns", String.join(",", columnNameList) + ",__DORIS_DELETE_SIGN__");
+
+        executionBuilder.setStreamLoadProp(properties);
 
         // Create DorisSink.
         DorisSink.Builder<RowData> builder = DorisSink.builder();
@@ -153,6 +161,7 @@ public class DorisSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
             .setSerializer(RowDataSerializer.builder()
                 .setFieldNames(columnNames)
                 .setType("json")
+                .enableDelete(true)
                 .setFieldType(columnTypes).build())
             .setDorisOptions(dorisBuilder.build());
 
