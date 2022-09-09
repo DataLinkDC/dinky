@@ -2,6 +2,7 @@ package com.dlink.scheduler.client;
 
 import com.dlink.scheduler.constant.Constants;
 import com.dlink.scheduler.model.Project;
+import com.dlink.scheduler.result.Result;
 import com.dlink.scheduler.utils.MyJSONUtil;
 import com.dlink.scheduler.utils.ParamUtil;
 
@@ -11,6 +12,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import cn.hutool.core.lang.TypeReference;
 import cn.hutool.http.HttpRequest;
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,8 +47,10 @@ public class ProjectClient {
         String content = HttpRequest.post(url + "/projects")
             .header(Constants.TOKEN, tokenKey)
             .form(map)
+            .timeout(5000)
             .execute().body();
-        return MyJSONUtil.toBean(content, Project.class);
+        return MyJSONUtil.verifyResult(MyJSONUtil.toBean(content, new TypeReference<Result<Project>>() {
+        }));
     }
 
     /**
@@ -61,6 +65,7 @@ public class ProjectClient {
         String content = HttpRequest.get(url + "/projects")
             .header(Constants.TOKEN, tokenKey)
             .form(ParamUtil.getPageParams(dinkyProjectName))
+            .timeout(5000)
             .execute().body();
 
         return MyJSONUtil.toPageBeanAndFindByName(content, dinkyProjectName, Project.class);

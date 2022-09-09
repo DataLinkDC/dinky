@@ -2,6 +2,7 @@ package com.dlink.scheduler.client;
 
 import com.dlink.scheduler.constant.Constants;
 import com.dlink.scheduler.exception.SchedulerException;
+import com.dlink.scheduler.model.TaskDefinition;
 import com.dlink.scheduler.model.TaskDefinitionLog;
 import com.dlink.scheduler.model.TaskMainInfo;
 import com.dlink.scheduler.result.PageInfo;
@@ -50,8 +51,8 @@ public class TaskClient {
      * @author 郑文豪
      * @date 2022/9/7 17:16
      */
-    public TaskMainInfo getTaskDefinitionInfo(Long projectCode, String processName, String taskName) {
-        List<TaskMainInfo> lists = getTaskDefinition(projectCode, processName, taskName);
+    public TaskMainInfo getTaskMainInfo(Long projectCode, String processName, String taskName) {
+        List<TaskMainInfo> lists = getTaskMainInfos(projectCode, processName, taskName);
         for (TaskMainInfo list : lists) {
             if (list.getTaskName().equalsIgnoreCase(taskName)) {
                 return list;
@@ -70,7 +71,7 @@ public class TaskClient {
      * @author 郑文豪
      * @date 2022/9/7 17:16
      */
-    public List<TaskMainInfo> getTaskDefinition(Long projectCode, String processName, String taskName) {
+    public List<TaskMainInfo> getTaskMainInfos(Long projectCode, String processName, String taskName) {
         Map<String, Object> map = new HashMap<>();
         map.put("projectCode", projectCode);
         String format = StrUtil.format(url + "/projects/{projectCode}/task-definition", map);
@@ -83,6 +84,7 @@ public class TaskClient {
         String content = HttpRequest.get(format)
             .header(Constants.TOKEN, tokenKey)
             .form(pageParams)
+            .timeout(5000)
             .execute().body();
 
         PageInfo<JSONObject> data = MyJSONUtil.toPageBean(content);
@@ -99,6 +101,21 @@ public class TaskClient {
         return lists;
     }
 
+    public TaskDefinition getTaskDefinition(Long projectCode, Long taskCode) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("projectCode", projectCode);
+        map.put("code", taskCode);
+        String format = StrUtil.format(url + "/projects/{projectCode}/task-definition/{code}", map);
+
+        String content = HttpRequest.get(format)
+            .header(Constants.TOKEN, tokenKey)
+            .timeout(5000)
+            .execute().body();
+
+        return MyJSONUtil.verifyResult(MyJSONUtil.toBean(content, new TypeReference<Result<TaskDefinition>>() {
+        }));
+    }
+
     /**
      * 创建任务定义
      *
@@ -111,12 +128,12 @@ public class TaskClient {
      * @date 2022/9/7 17:05
      */
     public TaskDefinitionLog createTaskDefinition(Long projectCode, Long processCode, Long upstreamCodes, String taskName,
-                                                  String dinkyTaskId) {
+                                                  Long dinkyTaskId) {
         Map<String, Object> map = new HashMap<>();
         map.put("projectCode", projectCode);
         String format = StrUtil.format(url + "/projects/{projectCode}/task-definition/save-single", map);
 
-        Map<String, Object> pageParams = ParamUtil.getPageParams();
+        Map<String, Object> pageParams = new HashMap();
         pageParams.put("processDefinitionCode", processCode);
         if (upstreamCodes != null) {
             pageParams.put("upstreamCodes", upstreamCodes);
@@ -133,9 +150,28 @@ public class TaskClient {
         String content = HttpRequest.post(format)
             .header(Constants.TOKEN, tokenKey)
             .form(pageParams)
+            .timeout(5000)
             .execute().body();
 
         return MyJSONUtil.verifyResult(MyJSONUtil.toBean(content, new TypeReference<Result<TaskDefinitionLog>>() {
+        }));
+    }
+
+    public Long updateTaskDefinition(long projectCode, long taskCode, String taskDefinitionJsonObj) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("projectCode", projectCode);
+        map.put("code", taskCode);
+        String format = StrUtil.format(url + "/projects/{projectCode}/task-definition/{code}/with-upstream", map);
+
+        Map<String, Object> pageParams = ParamUtil.getPageParams();
+        pageParams.put("taskDefinitionJsonObj", taskDefinitionJsonObj);
+
+        String content = HttpRequest.put(format)
+            .header(Constants.TOKEN, tokenKey)
+            .form(pageParams)
+            .timeout(5000)
+            .execute().body();
+        return MyJSONUtil.verifyResult(MyJSONUtil.toBean(content, new TypeReference<Result<Long>>() {
         }));
     }
 
@@ -157,6 +193,7 @@ public class TaskClient {
         String content = HttpRequest.get(format)
             .header(Constants.TOKEN, tokenKey)
             .form(params)
+            .timeout(5000)
             .execute().body();
 
         return MyJSONUtil.verifyResult(MyJSONUtil.toBean(content, new TypeReference<Result<List<Long>>>() {

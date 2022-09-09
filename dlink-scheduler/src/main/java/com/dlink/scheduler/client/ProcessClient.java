@@ -55,6 +55,7 @@ public class ProcessClient {
         String content = HttpRequest.get(format)
             .header(Constants.TOKEN, tokenKey)
             .form(ParamUtil.getPageParams(name))
+            .timeout(5000)
             .execute().body();
         PageInfo<JSONObject> data = MyJSONUtil.toPageBean(content);
         List<ProcessDefinition> lists = new ArrayList<>();
@@ -72,16 +73,16 @@ public class ProcessClient {
      * 查询工作流定义
      *
      * @param projectCode 项目编号
-     * @param name        工作流定义名
+     * @param processName 工作流定义名
      * @return {@link ProcessDefinition}
      * @author 郑文豪
      * @date 2022/9/7 16:59
      */
-    public ProcessDefinition getProcessDefinitionInfo(Long projectCode, String name) {
+    public ProcessDefinition getProcessDefinitionInfo(Long projectCode, String processName) {
 
-        List<ProcessDefinition> lists = getProcessDefinition(projectCode, name);
+        List<ProcessDefinition> lists = getProcessDefinition(projectCode, processName);
         for (ProcessDefinition list : lists) {
-            if (list.getName().equalsIgnoreCase(name)) {
+            if (list.getName().equalsIgnoreCase(processName)) {
                 return list;
             }
         }
@@ -100,7 +101,7 @@ public class ProcessClient {
      * @date 2022/9/7 17:00
      */
     public ProcessDefinition createProcessDefinition(Long projectCode, String processName, Long taskCode,
-                                                     String taskName, String dinkyTaskId) {
+                                                     String taskName, Long dinkyTaskId) {
         Map<String, Object> map = new HashMap<>();
         map.put("projectCode", projectCode);
         String format = StrUtil.format(url + "/projects/{projectCode}/process-definition", map);
@@ -126,6 +127,7 @@ public class ProcessClient {
         String content = HttpRequest.post(format)
             .header(Constants.TOKEN, tokenKey)
             .form(params)
+            .timeout(5000)
             .execute().body();
 
         return MyJSONUtil.verifyResult(MyJSONUtil.toBean(content, new TypeReference<Result<ProcessDefinition>>() {
