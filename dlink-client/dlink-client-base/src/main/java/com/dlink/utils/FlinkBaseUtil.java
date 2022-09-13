@@ -39,7 +39,6 @@ import java.util.Map;
  * @since 2022/3/9 19:15
  */
 public class FlinkBaseUtil {
-
     public static Map<String, String> getParamsFromArgs(String[] args) {
         Map<String, String> params = new HashMap<>();
         ParameterTool parameters = ParameterTool.fromArgs(args);
@@ -55,12 +54,18 @@ public class FlinkBaseUtil {
         StringBuilder sb = new StringBuilder("INSERT INTO `");
         sb.append(targetName);
         sb.append("` SELECT\n");
-        for (int i = 0; i < table.getColumns().size(); i++) {
+        int j = 0;
+        for (Column column : table.getColumns()) {
+            //XXX 在这里判断如果是doris+bytes则跳过当前循环.
+            if (config.getSink().get("connector").contains("doris") && column.getFlinkType().equals(ColumnType.BYTES.getFlinkType())) {
+                continue;
+            }
             sb.append("    ");
-            if (i > 0) {
+            if (j > 0) {
                 sb.append(",");
             }
-            sb.append(getColumnProcessing(table.getColumns().get(i), config)).append(" \n");
+            sb.append(getColumnProcessing(column, config)).append(" \n");
+            j++;
         }
         sb.append(" FROM `");
         sb.append(sourceName);
@@ -74,20 +79,26 @@ public class FlinkBaseUtil {
         sb.append(tableName);
         sb.append("` (\n");
         List<String> pks = new ArrayList<>();
-        for (int i = 0; i < table.getColumns().size(); i++) {
-            String type = table.getColumns().get(i).getFlinkType();
+        int j = 0;
+        for (Column column : table.getColumns()) {
+            //XXX 在这里判断如果是doris+bytes则跳过当前循环.
+            if (config.getSink().get("connector").contains("doris") && column.getFlinkType().equals(ColumnType.BYTES.getFlinkType())) {
+                continue;
+            }
+            String type = column.getFlinkType();
             sb.append("    ");
-            if (i > 0) {
+            if (j > 0) {
                 sb.append(",");
             }
             sb.append("`");
-            sb.append(table.getColumns().get(i).getName());
+            sb.append(column.getName());
             sb.append("` ");
             sb.append(convertSinkColumnType(type, config));
             sb.append("\n");
-            if (table.getColumns().get(i).isKeyFlag()) {
-                pks.add(table.getColumns().get(i).getName());
+            if (column.isKeyFlag()) {
+                pks.add(column.getName());
             }
+            j++;
         }
         StringBuilder pksb = new StringBuilder("PRIMARY KEY ( ");
         for (int i = 0; i < pks.size(); i++) {
