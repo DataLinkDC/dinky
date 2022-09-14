@@ -86,7 +86,6 @@ public class SqlServerTypeConvert implements ITypeConvert {
         return columnType;
     }
 
-
     @Override
     public String convertToDB(ColumnType columnType) {
         switch (columnType) {
