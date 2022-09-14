@@ -57,8 +57,8 @@ public class FlinkBaseUtil {
         int j = 0;
         for (Column column : table.getColumns()) {
             //XXX 在这里判断如果是doris+bytes则跳过当前循环.
-            if (config.getSink().get("connector").contains("doris") && (column.getFlinkType().equals(ColumnType.BYTES.getFlinkType()) || column.getFlinkType().equals(ColumnType.TIME.getFlinkType()))) {
-//            if (config.getSink().get("connector").contains("doris") && (column.getFlinkType().equals(ColumnType.BYTES.getFlinkType()))) {
+            if (config.getSink().get("connector").contains("doris")
+                && (column.getFlinkType().equals(ColumnType.BYTES.getFlinkType()) || column.getFlinkType().equals(ColumnType.TIME.getFlinkType()))) {
                 continue;
             }
             sb.append("    ");
@@ -83,8 +83,8 @@ public class FlinkBaseUtil {
         int j = 0;
         for (Column column : table.getColumns()) {
             //XXX 在这里判断如果是doris+bytes则跳过当前循环.
-            if (config.getSink().get("connector").contains("doris") && (column.getFlinkType().equals(ColumnType.BYTES.getFlinkType()) || column.getFlinkType().equals(ColumnType.TIME.getFlinkType()))) {
-//            if (config.getSink().get("connector").contains("doris") && (column.getFlinkType().equals(ColumnType.BYTES.getFlinkType()))) {
+            if (config.getSink().get("connector").contains("doris")
+                && (column.getFlinkType().equals(ColumnType.BYTES.getFlinkType()) || column.getFlinkType().equals(ColumnType.TIME.getFlinkType()))) {
                 continue;
             }
             String type = column.getFlinkType();
