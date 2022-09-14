@@ -61,10 +61,12 @@ import org.apache.flink.util.OutputTag;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -293,7 +295,12 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                 return Instant.parse(value.toString()).atZone(sinkTimeZone).toLocalDateTime();
             }
         } else if (logicalType instanceof DecimalType) {
-            return new BigDecimal(value.toString());
+            try {
+                return new BigDecimal(value.toString());
+            } catch (Exception e) {
+                //CDC数据过来以后, 这里有数据转换错误,需要通过转码进行修正.
+                return new BigDecimal(new BigInteger(Base64.getDecoder().decode(value.toString().getBytes())), ((DecimalType) logicalType).getScale());
+            }
         } else if (logicalType instanceof FloatType) {
             if (value instanceof Float) {
                 return value;
