@@ -51,6 +51,7 @@ import org.apache.flink.table.types.logical.DateType;
 import org.apache.flink.table.types.logical.DecimalType;
 import org.apache.flink.table.types.logical.FloatType;
 import org.apache.flink.table.types.logical.LogicalType;
+import org.apache.flink.table.types.logical.TimeType;
 import org.apache.flink.table.types.logical.TimestampType;
 import org.apache.flink.table.types.logical.VarBinaryType;
 import org.apache.flink.table.types.utils.TypeConversions;
@@ -111,6 +112,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
             .flatMap(new FlatMapFunction<Map, Row>() {
                 @Override
                 public void flatMap(Map value, Collector<Row> out) throws Exception {
+                    logger.debug("转换数据: {}", value);
                     try {
                         switch (value.get("op").toString()) {
                             case "r":
@@ -278,6 +280,26 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
         if (value == null) {
             return null;
         }
+        if (logicalType instanceof TimeType) {
+            //XXX 这里要处理时间类型.
+            if (value instanceof Integer) {
+                return Instant.ofEpochMilli(((Integer) value).longValue()).atZone(sinkTimeZone).toLocalTime();
+            } else if (value instanceof Long) {
+                //在这里需要判断是不是纳秒.
+                if (((TimeType) logicalType).getPrecision() == 7) {
+                    return Instant.ofEpochMilli((long) value / 1000000).atZone(sinkTimeZone).toLocalTime();
+                } else {
+                    return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalTime();
+                }
+            }
+//            if (value instanceof Integer) {
+//                return LocalDate.ofEpochDay((Integer) value);
+//            } else if (value instanceof Long) {
+//                return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDate();
+//            } else {
+//                return Instant.parse(value.toString()).atZone(sinkTimeZone).toLocalDate();
+//            }
+        }
         if (logicalType instanceof DateType) {
             if (value instanceof Integer) {
                 return LocalDate.ofEpochDay((Integer) value);
@@ -290,9 +312,19 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
             if (value instanceof Integer) {
                 return Instant.ofEpochMilli(((Integer) value).longValue()).atZone(sinkTimeZone).toLocalDateTime();
             } else if (value instanceof Long) {
-                return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDateTime();
+                //在这里需要判断是不是纳秒.
+                if (((TimestampType) logicalType).getPrecision() == 7) {
+                    return Instant.ofEpochMilli((long) value / 1000000).atZone(sinkTimeZone).toLocalDateTime();
+                } else {
+                    return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDateTime();
+                }
             } else {
-                return Instant.parse(value.toString()).atZone(sinkTimeZone).toLocalDateTime();
+                try {
+                    return Instant.parse(value.toString()).atZone(sinkTimeZone).toLocalDateTime();
+                } catch (Exception e) {
+                    //XXX 在这里需要处理数据转换
+                    return null;
+                }
             }
         } else if (logicalType instanceof DecimalType) {
             //XXX CDC数据过来以后, 这里有数据转换错误,需要通过转码进行修正.

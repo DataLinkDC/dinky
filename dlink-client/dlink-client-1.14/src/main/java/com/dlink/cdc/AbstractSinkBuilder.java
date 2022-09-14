@@ -50,6 +50,7 @@ import org.apache.flink.table.types.logical.FloatType;
 import org.apache.flink.table.types.logical.IntType;
 import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.table.types.logical.SmallIntType;
+import org.apache.flink.table.types.logical.TimeType;
 import org.apache.flink.table.types.logical.TimestampType;
 import org.apache.flink.table.types.logical.TinyIntType;
 import org.apache.flink.table.types.logical.VarBinaryType;
@@ -79,9 +80,7 @@ import org.slf4j.LoggerFactory;
  * @since 2022/4/12 21:28
  **/
 public abstract class AbstractSinkBuilder {
-
     protected static final Logger logger = LoggerFactory.getLogger(AbstractSinkBuilder.class);
-
     protected FlinkCDCConfig config;
     protected List<ModifyOperation> modifyOperations = new ArrayList();
     private ZoneId sinkTimeZone = ZoneId.of("UTC");
@@ -142,7 +141,6 @@ public abstract class AbstractSinkBuilder {
         SingleOutputStreamOperator<Map> processOperator,
         Table table,
         OutputTag<Map> tag) {
-
         return processOperator.getSideOutput(tag);
     }
 
@@ -214,29 +212,22 @@ public abstract class AbstractSinkBuilder {
         StreamExecutionEnvironment env,
         CustomTableEnvironment customTableEnvironment,
         DataStreamSource<String> dataStreamSource) {
-
         final String timeZone = config.getSink().get("timezone");
         config.getSink().remove("timezone");
         if (Asserts.isNotNullString(timeZone)) {
             sinkTimeZone = ZoneId.of(timeZone);
         }
-
         final List<Schema> schemaList = config.getSchemaList();
         final String schemaFieldName = config.getSchemaFieldName();
-
         if (Asserts.isNotNullCollection(schemaList)) {
             SingleOutputStreamOperator<Map> mapOperator = deserialize(dataStreamSource);
             for (Schema schema : schemaList) {
                 for (Table table : schema.getTables()) {
                     SingleOutputStreamOperator<Map> filterOperator = shunt(mapOperator, table, schemaFieldName);
-
                     List<String> columnNameList = new ArrayList<>();
                     List<LogicalType> columnTypeList = new ArrayList<>();
-
                     buildColumn(columnNameList, columnTypeList, table.getColumns());
-
                     DataStream<RowData> rowDataDataStream = buildRowData(filterOperator, columnNameList, columnTypeList, table.getSchemaTableName());
-
                     addSink(env, rowDataDataStream, table, columnNameList, columnTypeList);
                 }
             }
@@ -285,9 +276,20 @@ public abstract class AbstractSinkBuilder {
             case DATE:
             case LOCALDATE:
                 return new DateType();
+            case TIME:
+            case LOCALTIME:
+                if (column.getScale() <= 9) {
+                    return new TimeType(column.getScale());
+                } else {
+                    return new TimeType();
+                }
             case LOCALDATETIME:
             case TIMESTAMP:
-                return new TimestampType();
+                if (column.getScale() <= 9) {
+                    return new TimestampType(column.getScale());
+                } else {
+                    return new TimestampType();
+                }
             case BYTES:
                 return new VarBinaryType(Integer.MAX_VALUE);
             default:
