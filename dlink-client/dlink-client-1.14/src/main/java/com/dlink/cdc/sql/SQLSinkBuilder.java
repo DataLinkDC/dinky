@@ -281,7 +281,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
             return null;
         }
         if (logicalType instanceof TimeType) {
-            //XXX 这里要处理时间类型.
+            //处理时间类型.
             if (value instanceof Integer) {
                 return Instant.ofEpochMilli(((Integer) value).longValue()).atZone(sinkTimeZone).toLocalTime();
             } else if (value instanceof Long) {
@@ -292,13 +292,6 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                     return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalTime();
                 }
             }
-//            if (value instanceof Integer) {
-//                return LocalDate.ofEpochDay((Integer) value);
-//            } else if (value instanceof Long) {
-//                return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDate();
-//            } else {
-//                return Instant.parse(value.toString()).atZone(sinkTimeZone).toLocalDate();
-//            }
         }
         if (logicalType instanceof DateType) {
             if (value instanceof Integer) {
@@ -327,10 +320,10 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                 }
             }
         } else if (logicalType instanceof DecimalType) {
-            //XXX CDC数据过来以后, 这里有数据转换错误,需要通过转码进行修正.
             try {
                 return new BigDecimal(value.toString());
             } catch (Exception e) {
+                // CDC数据过来以后, 这里有数据转换错误,需要通过转码进行修正.
                 //在这里需要处理精度问题
                 return new BigDecimal(new BigInteger(Base64.getDecoder().decode(value.toString().getBytes())), ((DecimalType) logicalType).getScale());
             }
