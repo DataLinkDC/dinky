@@ -299,7 +299,12 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
             } else if (value instanceof Long) {
                 return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDate();
             } else {
-                return Instant.parse(value.toString()).atZone(sinkTimeZone).toLocalDate();
+                try {
+                    return Instant.parse(value.toString()).atZone(sinkTimeZone).toLocalDate();
+                } catch (Exception e) {
+                    //XXX 在这里需要处理数据转换
+                    return null;
+                }
             }
         } else if (logicalType instanceof TimestampType) {
             if (value instanceof Integer) {
