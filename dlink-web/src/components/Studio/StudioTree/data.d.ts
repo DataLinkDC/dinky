@@ -20,6 +20,7 @@
 
 export type CatalogueTableListItem = {
   id: number,
+  taskId: number,
   name: string,
   isLeaf: string,
   parentId: number,
