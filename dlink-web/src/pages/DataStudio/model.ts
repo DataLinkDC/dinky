@@ -19,9 +19,7 @@
 
 
 import type {Effect, Reducer} from "umi";
-import {
-  handleAddOrUpdate
-} from "@/components/Common/crud";
+import {handleAddOrUpdate} from "@/components/Common/crud";
 import type {SqlMetaData} from "@/components/Studio/StudioEvent/data";
 
 export type ClusterType = {
@@ -124,6 +122,7 @@ export type TabsItemType = {
   title: string;
   key: number,
   value: string;
+  icon: any;
   closable: boolean;
   path: string[];
   task?: TaskType;
@@ -629,19 +628,23 @@ const Model: ModelType = {
       let newCurrent = state.current;
       for (let i = 0; i < newTabs.panes.length; i++) {
         if (newTabs.panes[i].key == payload.key) {
-          newTabs.panes[i].title = payload.name;
-          newTabs.panes[i].task.alias = payload.name;
+          newTabs.panes[i].title = payload.title;
+          newTabs.panes[i].icon = payload.icon;
+          newTabs.panes[i].task.alias = payload.title;
+          newTabs.panes[i].path[newTabs.panes[i].path.length - 1] = payload.title;
         }
         if (newTabs.panes[i].key == newCurrent.key) {
-          newCurrent.title = payload.name;
-          newCurrent.task.alias = payload.name;
+          newCurrent.title = payload.title;
+          newCurrent.icon = payload.icon;
+          newCurrent.task.alias = payload.title;
+          newCurrent.path[newCurrent.path.length - 1] = payload.title;
         }
       }
       if (newTabs.panes.length == 0) {
         return {
           ...state,
           current: undefined,
-          tabs: newTabs,
+          tabs: {...newTabs},
           currentPath: ['引导页'],
         };
       }
