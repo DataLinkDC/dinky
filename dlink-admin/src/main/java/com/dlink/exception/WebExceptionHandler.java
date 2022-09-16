@@ -96,5 +96,4 @@ public class WebExceptionHandler {
         return Result.failed(e.getMessage());
     }
 
-
 }
