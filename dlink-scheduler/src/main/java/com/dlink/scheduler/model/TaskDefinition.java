@@ -46,7 +46,7 @@ public class TaskDefinition {
     private String taskType;
 
     @ApiModelProperty(value = "任务参数")
-    private DlinkTaskParams taskParams;
+    private String taskParams;
 
     @ApiModelProperty(value = "任务参数列表")
     private List<Property> taskParamList;
