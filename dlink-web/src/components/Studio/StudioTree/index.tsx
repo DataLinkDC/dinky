@@ -230,9 +230,10 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       result.then(result => {
         let newTabs = tabs;
         let newPane: any = {
-          title: <>{node!.icon} {node!.name}</>,
+          title: node!.name,
           key: node!.taskId,
           value: (result.datas.statement ? result.datas.statement : ''),
+          icon: node!.icon,
           closable: true,
           path: node!.path,
           task: {
@@ -310,6 +311,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     setActiveNode(node);
     setCatalogueFormValues({
       id: node?.id,
+      taskId: node?.taskId,
       name: node?.name,
     });
   };
@@ -656,13 +658,16 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
                 handleUpdateCatalogueModalVisible(false);
                 setCatalogueFormValues({});
                 getTreeData();
-                dispatch({
-                  type: "Studio/renameTab",
-                  payload: {
-                    key: value.id,
-                    name: <>{activeNode.icon} {value.name}</>
-                  },
-                });
+                if (value.taskId) {
+                  dispatch({
+                    type: "Studio/renameTab",
+                    payload: {
+                      key: value.taskId,
+                      title: value.name,
+                      icon: activeNode.icon
+                    },
+                  });
+                }
               }
             }}
             onCancel={() => {
