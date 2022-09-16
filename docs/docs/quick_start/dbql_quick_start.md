@@ -10,7 +10,7 @@ title: DB SQL 作业快速入门
 
 ### 创建数据源
 
-选择**注册中心>>数据源管理>>新建**，假设您连接Starrocks。
+选择**注册中心>>数据源管理>>新建**，假设您连接Doris。
 
 ![createSource](http://www.aiwenmo.com/dinky/docs/zh-CN/quick_start/dbql_quick_start/createSource.png)
 

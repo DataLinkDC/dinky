@@ -145,7 +145,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                             default:
                         }
                     } catch (Exception e) {
-                        logger.error("SchameTable: {} - Row: {} - Exception: {}", schemaTableName, JSONUtil.toJsonString(value), e.getCause().getMessage());
+                        logger.error("SchameTable: {} - Row: {} - Exception:", schemaTableName, JSONUtil.toJsonString(value),e);
                         throw e;
                     }
                 }
