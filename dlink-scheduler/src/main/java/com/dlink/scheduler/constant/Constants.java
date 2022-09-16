@@ -5,4 +5,8 @@ package com.dlink.scheduler.constant;
  */
 public class Constants {
     public static String TOKEN = "token";
+    /**
+     * comma ,
+     */
+    public static final String COMMA = ",";
 }

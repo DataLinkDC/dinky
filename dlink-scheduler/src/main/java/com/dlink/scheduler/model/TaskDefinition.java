@@ -10,6 +10,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -18,162 +21,110 @@ import lombok.Data;
 @Data
 public class TaskDefinition {
 
-    /**
-     * id
-     */
-    private int id;
+    @ApiModelProperty(value = "id")
+    private Integer id;
 
-    /**
-     * code
-     */
-    private long code;
+    @ApiModelProperty(value = "编号")
+    private Long code;
 
-    /**
-     * name
-     */
+    @ApiModelProperty(value = "名称")
     private String name;
 
-    /**
-     * version
-     */
-    private int version;
+    @ApiModelProperty(value = "版本号")
+    private Integer version;
 
-    /**
-     * description
-     */
+    @ApiModelProperty(value = "描述")
     private String description;
 
-    /**
-     * project code
-     */
-    private long projectCode;
+    @ApiModelProperty(value = "项目编号")
+    private Long projectCode;
 
-    /**
-     * task user id
-     */
-    private int userId;
+    @ApiModelProperty(value = "创建人")
+    private Integer userId;
 
-    /**
-     * task type
-     */
+    @ApiModelProperty(value = "任务类型")
     private String taskType;
 
-    /**
-     * user defined parameters
-     */
-    private String taskParams;
+    @ApiModelProperty(value = "任务参数")
+    private DlinkTaskParams taskParams;
 
-    /**
-     * user defined parameter list
-     */
+    @ApiModelProperty(value = "任务参数列表")
     private List<Property> taskParamList;
 
-    /**
-     * user defined parameter map
-     */
+    @ApiModelProperty(value = "任务参数映射")
     private Map<String, String> taskParamMap;
 
-    /**
-     * task is valid: yes/no
-     */
+    @ApiModelProperty(value = "运行标志 yes 正常/no 禁止执行")
     private Flag flag;
 
-    /**
-     * task priority
-     */
+    @ApiModelProperty(value = "优先级")
     private Priority taskPriority;
 
-    /**
-     * user name
-     */
+    @ApiModelProperty(value = "创建用户名")
     private String userName;
 
-    /**
-     * project name
-     */
+    @ApiModelProperty(value = "项目名称")
     private String projectName;
 
-    /**
-     * worker group
-     */
+    @ApiModelProperty(value = "worker分组")
     private String workerGroup;
 
-    /**
-     * environment code
-     */
-    private long environmentCode;
+    @ApiModelProperty(value = "环境编号")
+    private Long environmentCode;
 
-    /**
-     * fail retry times
-     */
-    private int failRetryTimes;
+    @ApiModelProperty(value = "重试次数")
+    private Integer failRetryTimes;
 
-    /**
-     * fail retry interval
-     */
-    private int failRetryInterval;
+    @ApiModelProperty(value = "重试间隔")
+    private Integer failRetryInterval;
 
-    /**
-     * timeout flag
-     */
+    @ApiModelProperty(value = "超时标识")
     private TimeoutFlag timeoutFlag;
 
-    /**
-     * timeout notify strategy
-     */
+    @ApiModelProperty(value = "超时通知策略")
     private TaskTimeoutStrategy timeoutNotifyStrategy;
 
-    /**
-     * task warning time out. unit: minute
-     */
-    private int timeout;
+    @ApiModelProperty(value = "超时时间(分钟)")
+    private Integer timeout;
 
-    /**
-     * delay execution time.
-     */
-    private int delayTime;
+    @ApiModelProperty(value = "延迟执行时间")
+    private Integer delayTime;
 
-    /**
-     * resource ids
-     */
+    @ApiModelProperty(value = "资源ids")
     private String resourceIds;
 
-    /**
-     * create time
-     */
+    @ApiModelProperty(value = "创建时间")
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
-    /**
-     * update time
-     */
+    @ApiModelProperty(value = "更新时间")
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
-    /**
-     * modify user name
-     */
+    @ApiModelProperty(value = "更新人")
     private String modifyBy;
 
-    /**
-     * task group id
-     */
-    private int taskGroupId;
-    /**
-     * task group id
-     */
-    private int taskGroupPriority;
+    @ApiModelProperty(value = "任务组id")
+    private Integer taskGroupId;
 
-    /**
-     * cpu quota
-     */
+    @ApiModelProperty(value = "任务组id")
+    private Integer taskGroupPriority;
+
+    @ApiModelProperty(value = "cpu 配额")
     private Integer cpuQuota;
 
-    /**
-     * max memory
-     */
+    @ApiModelProperty(value = "最大内存")
     private Integer memoryMax;
 
-    /**
-     * task execute type
-     */
+    @ApiModelProperty(value = "执行类型")
     private TaskExecuteType taskExecuteType;
+
+    @ApiModelProperty(value = "工作流编号")
+    private Long processDefinitionCode;
+
+    @ApiModelProperty(value = "工作流编号")
+    private Integer processDefinitionVersion;
+
+    @ApiModelProperty(value = "工作流名")
+    private String processDefinitionName;
 }

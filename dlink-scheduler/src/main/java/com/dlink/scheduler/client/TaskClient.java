@@ -9,7 +9,8 @@ import com.dlink.scheduler.result.PageInfo;
 import com.dlink.scheduler.result.Result;
 import com.dlink.scheduler.utils.MyJSONUtil;
 import com.dlink.scheduler.utils.ParamUtil;
-import com.dlink.scheduler.utils.ReadFileUtil;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -101,6 +102,15 @@ public class TaskClient {
         return lists;
     }
 
+    /**
+     * 根据编号查询
+     *
+     * @param projectCode 项目编号
+     * @param taskCode    任务编号
+     * @return {@link TaskDefinition}
+     * @author 郑文豪
+     * @date 2022/9/13 10:52
+     */
     public TaskDefinition getTaskDefinition(Long projectCode, Long taskCode) {
         Map<String, Object> map = new HashMap<>();
         map.put("projectCode", projectCode);
@@ -121,31 +131,22 @@ public class TaskClient {
      *
      * @param projectCode 项目编号
      * @param processCode 工作流定义编号
-     * @param taskName    任务定义名称
-     * @param dinkyTaskId dinky作业id
      * @return {@link TaskDefinitionLog}
      * @author 郑文豪
      * @date 2022/9/7 17:05
      */
-    public TaskDefinitionLog createTaskDefinition(Long projectCode, Long processCode, Long upstreamCodes, String taskName,
-                                                  Long dinkyTaskId) {
+    public TaskDefinitionLog createTaskDefinition(Long projectCode, Long processCode, String upstreamCodes, String taskDefinitionJsonObj) {
         Map<String, Object> map = new HashMap<>();
         map.put("projectCode", projectCode);
         String format = StrUtil.format(url + "/projects/{projectCode}/task-definition/save-single", map);
 
-        Map<String, Object> pageParams = new HashMap();
+        Map<String, Object> pageParams = new HashMap<>();
         pageParams.put("processDefinitionCode", processCode);
-        if (upstreamCodes != null) {
+        if (StringUtils.isNotBlank(upstreamCodes)) {
             pageParams.put("upstreamCodes", upstreamCodes);
         }
-        Map<String, Object> taskMap = new HashMap<>();
-        taskMap.put("code", "0");
-        taskMap.put("name", taskName);
-        taskMap.put("address", dinkyUrl);
-        taskMap.put("taskId", dinkyTaskId);
 
-        String taskDefinitionJson = ReadFileUtil.taskDefinition(taskMap);
-        pageParams.put("taskDefinitionJsonObj", taskDefinitionJson);
+        pageParams.put("taskDefinitionJsonObj", taskDefinitionJsonObj);
 
         String content = HttpRequest.post(format)
             .header(Constants.TOKEN, tokenKey)
@@ -157,18 +158,29 @@ public class TaskClient {
         }));
     }
 
-    public Long updateTaskDefinition(long projectCode, long taskCode, String taskDefinitionJsonObj) {
+    /**
+     * 修改任务定义
+     *
+     * @param projectCode           项目编号
+     * @param taskCode              任务定义编号
+     * @param taskDefinitionJsonObj 修改参数
+     * @return {@link Long}
+     * @author 郑文豪
+     * @date 2022/9/13 8:59
+     */
+    public Long updateTaskDefinition(long projectCode, long taskCode, String upstreamCodes, String taskDefinitionJsonObj) {
         Map<String, Object> map = new HashMap<>();
         map.put("projectCode", projectCode);
         map.put("code", taskCode);
         String format = StrUtil.format(url + "/projects/{projectCode}/task-definition/{code}/with-upstream", map);
 
-        Map<String, Object> pageParams = ParamUtil.getPageParams();
-        pageParams.put("taskDefinitionJsonObj", taskDefinitionJsonObj);
+        Map<String, Object> params = new HashMap<>();
+        params.put("upstreamCodes", upstreamCodes);
+        params.put("taskDefinitionJsonObj", taskDefinitionJsonObj);
 
         String content = HttpRequest.put(format)
             .header(Constants.TOKEN, tokenKey)
-            .form(pageParams)
+            .form(params)
             .timeout(5000)
             .execute().body();
         return MyJSONUtil.verifyResult(MyJSONUtil.toBean(content, new TypeReference<Result<Long>>() {

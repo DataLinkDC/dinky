@@ -22,6 +22,9 @@ import com.dlink.scheduler.enums.ReleaseState;
 import java.util.Date;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -30,70 +33,47 @@ import lombok.Data;
 @Data
 public class TaskMainInfo {
 
-    private long id;
+    @ApiModelProperty(value = "id")
+    private Long id;
 
-    /**
-     * task name
-     */
+    @ApiModelProperty(value = "任务名")
     private String taskName;
 
-    /**
-     * task code
-     */
-    private long taskCode;
+    @ApiModelProperty(value = "任务编号")
+    private Long taskCode;
 
-    /**
-     * task version
-     */
-    private int taskVersion;
+    @ApiModelProperty(value = "任务版本")
+    private Integer taskVersion;
 
-    /**
-     * task type
-     */
+    @ApiModelProperty(value = "任务类型")
     private String taskType;
 
-    /**
-     * create time
-     */
+    @ApiModelProperty(value = "创建时间")
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date taskCreateTime;
 
-    /**
-     * update time
-     */
+    @ApiModelProperty(value = "更新时间")
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date taskUpdateTime;
 
-    /**
-     * processDefinitionCode
-     */
-    private long processDefinitionCode;
+    @ApiModelProperty(value = "工作流编号")
+    private Long processDefinitionCode;
 
-    /**
-     * processDefinitionVersion
-     */
-    private int processDefinitionVersion;
+    @ApiModelProperty(value = "工作流编号")
+    private Integer processDefinitionVersion;
 
-    /**
-     * processDefinitionName
-     */
+    @ApiModelProperty(value = "工作流名")
     private String processDefinitionName;
 
-    /**
-     * processReleaseState
-     */
+    @ApiModelProperty(value = "状态")
     private ReleaseState processReleaseState;
 
-    /**
-     * upstreamTaskMap(k:code,v:name)
-     */
+    @ApiModelProperty(value = "前置任务集合")
     private Map<Long, String> upstreamTaskMap;
 
-    /**
-     * upstreamTaskCode
-     */
-    private long upstreamTaskCode;
+    @ApiModelProperty(value = "前置任务编号")
+    private Long upstreamTaskCode;
 
-    /**
-     * upstreamTaskName
-     */
+    @ApiModelProperty(value = "前置名")
     private String upstreamTaskName;
 }

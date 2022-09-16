@@ -5,15 +5,14 @@ import com.dlink.scheduler.enums.Direct;
 
 import java.io.Serializable;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
 public class Property implements Serializable {
 
     private static final long serialVersionUID = -4045513703397452451L;
-    /**
-     * key
-     */
+    @ApiModelProperty(value = "key")
     private String prop;
 
     /**
@@ -26,9 +25,7 @@ public class Property implements Serializable {
      */
     private DataType type;
 
-    /**
-     * value
-     */
+    @ApiModelProperty(value = "value")
     private String value;
 
 }

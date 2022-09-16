@@ -8,6 +8,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -16,124 +19,78 @@ import lombok.Data;
 @Data
 public class ProcessDefinition {
 
-    /**
-     * id
-     */
-    private int id;
+    @ApiModelProperty(value = "id")
+    private Integer id;
 
-    /**
-     * code
-     */
-    private long code;
+    @ApiModelProperty(value = "编号")
+    private Long code;
 
-    /**
-     * name
-     */
+    @ApiModelProperty(value = "名称")
     private String name;
 
-    /**
-     * version
-     */
-    private int version;
+    @ApiModelProperty(value = "版本号")
+    private Integer version;
 
-    /**
-     * release state : online/offline
-     */
+    @ApiModelProperty(value = "发布状态 online/offline")
     private ReleaseState releaseState;
 
-    /**
-     * project code
-     */
-    private long projectCode;
+    @ApiModelProperty(value = "项目编号")
+    private Long projectCode;
 
-    /**
-     * description
-     */
+    @ApiModelProperty(value = "描述")
     private String description;
 
-    /**
-     * user defined parameters
-     */
+    @ApiModelProperty(value = "用户自定义参数")
     private String globalParams;
 
-    /**
-     * user defined parameter list
-     */
+    @ApiModelProperty(value = "用户自定义参数列表")
     private List<Property> globalParamList;
 
-    /**
-     * user define parameter map
-     */
+    @ApiModelProperty(value = "用户自定义参数映射")
     private Map<String, String> globalParamMap;
 
-    /**
-     * create time
-     */
+    @ApiModelProperty(value = "创建时间")
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
-    /**
-     * update time
-     */
+    @ApiModelProperty(value = "更新时间")
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
-    /**
-     * process is valid: yes/no
-     */
+    @ApiModelProperty(value = "是否生效 yes/no")
     private Flag flag;
 
-    /**
-     * process user id
-     */
-    private int userId;
+    @ApiModelProperty(value = "创建人id")
+    private Integer userId;
 
-    /**
-     * user name
-     */
+    @ApiModelProperty(value = "创建人名称")
     private String userName;
 
-    /**
-     * project name
-     */
+    @ApiModelProperty(value = "项目名称")
     private String projectName;
 
-    /**
-     * locations array for web
-     */
+    @ApiModelProperty(value = "位置")
     private String locations;
 
-    /**
-     * schedule release state : online/offline
-     */
+    @ApiModelProperty(value = "计划发布状态 online/offline")
     private ReleaseState scheduleReleaseState;
 
-    /**
-     * process warning time out. unit: minute
-     */
-    private int timeout;
+    @ApiModelProperty(value = "超时告警(分钟)")
+    private Integer timeout;
 
-    /**
-     * tenant id
-     */
-    private int tenantId;
+    @ApiModelProperty(value = "租户id")
+    private Integer tenantId;
 
-    /**
-     * tenant code
-     */
+    @ApiModelProperty(value = "租户编号")
     private String tenantCode;
 
-    /**
-     * modify user name
-     */
+    @ApiModelProperty(value = "修改用户名")
     private String modifyBy;
 
-    /**
-     * warningGroupId
-     */
-    private int warningGroupId;
+    @ApiModelProperty(value = "告警分组id")
+    private Integer warningGroupId;
 
-    /**
-     * execution type
-     */
+    @ApiModelProperty(value = "执行类型")
     private ProcessExecutionTypeEnum executionType;
 
 }
