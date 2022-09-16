@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +23,6 @@ import cn.hutool.core.lang.TypeReference;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONObject;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 工作流定义
@@ -29,8 +30,9 @@ import lombok.extern.slf4j.Slf4j;
  * @author 郑文豪
  */
 @Component
-@Slf4j
 public class ProcessClient {
+
+    private static final Logger logger = LoggerFactory.getLogger(TaskClient.class);
 
     @Value("${dinky.dolphinscheduler.url}")
     private String url;
@@ -41,7 +43,7 @@ public class ProcessClient {
      * 查询工作流定义
      *
      * @param projectCode 项目编号
-     * @param processName        工作流定义名
+     * @param processName 工作流定义名
      * @return {@link   List<ProcessDefinition>}
      * @author 郑文豪
      * @date 2022/9/7 16:59

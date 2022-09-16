@@ -4,22 +4,25 @@ import com.dlink.scheduler.exception.SchedulerException;
 import com.dlink.scheduler.result.PageInfo;
 import com.dlink.scheduler.result.Result;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cn.hutool.core.lang.TypeReference;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author 郑文豪
  */
-@Slf4j
 public class MyJSONUtil {
+
+    private static final Logger logger = LoggerFactory.getLogger(MyJSONUtil.class);
 
     public static <T> T toBean(String content, TypeReference<T> typeReference) {
         try {
             return JSONUtil.toBean(content, typeReference, true);
         } catch (Exception e) {
-            log.error("json转换异常 json:{},异常信息:{}", content, e.getMessage(), e);
+            logger.error("json转换异常 json:{},异常信息:{}", content, e.getMessage(), e);
             throw new SchedulerException("数据转换异常");
         }
     }
@@ -28,7 +31,7 @@ public class MyJSONUtil {
         try {
             return JSONUtil.toBean(content, beanClass);
         } catch (Exception e) {
-            log.error("json转换异常 json:{},异常信息:{}", content, e.getMessage(), e);
+            logger.error("json转换异常 json:{},异常信息:{}", content, e.getMessage(), e);
             throw new SchedulerException("数据转换异常");
         }
     }
@@ -37,7 +40,7 @@ public class MyJSONUtil {
         try {
             return JSONUtil.toBean(content, beanClass);
         } catch (Exception e) {
-            log.error("json转换异常 json:{},异常信息:{}", content, e.getMessage(), e);
+            logger.error("json转换异常 json:{},异常信息:{}", content, e.getMessage(), e);
             throw new SchedulerException("数据转换异常");
         }
     }

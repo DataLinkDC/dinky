@@ -25,6 +25,8 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,16 +47,17 @@ import cn.hutool.json.JSONUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author 郑文豪
  */
-@Slf4j
 @RestController
 @RequestMapping("/api/scheduler")
 @Api(value = "海豚调度", tags = "海豚调度")
 public class SchedulerController {
+
+    private static final Logger logger = LoggerFactory.getLogger(SchedulerController.class);
+
     @Value("${dinky.url}")
     private String dinkyUrl;
     @Autowired

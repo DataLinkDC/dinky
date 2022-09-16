@@ -9,12 +9,13 @@ import com.dlink.scheduler.utils.ParamUtil;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import cn.hutool.core.lang.TypeReference;
 import cn.hutool.http.HttpRequest;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 项目
@@ -22,8 +23,9 @@ import lombok.extern.slf4j.Slf4j;
  * @author 郑文豪
  */
 @Component
-@Slf4j
 public class ProjectClient {
+
+    private static final Logger logger = LoggerFactory.getLogger(TaskClient.class);
 
     @Value("${dinky.dolphinscheduler.url}")
     private String url;

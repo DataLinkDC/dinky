@@ -5,15 +5,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author 郑文豪
  */
-@Slf4j
 public class ReadFileUtil {
+
+    private static final Logger logger = LoggerFactory.getLogger(ReadFileUtil.class);
 
     public static String taskDefinition(Map<String, Object> maps) {
         InputStream in = ReadFileUtil.class.getResourceAsStream("/json/taskDefinition.json");
@@ -56,7 +59,7 @@ public class ReadFileUtil {
             IoUtil.close(reader);
             return sb.toString();
         } catch (IOException e) {
-            log.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
             return null;
         }
     }

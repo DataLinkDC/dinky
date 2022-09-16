@@ -43,7 +43,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import cn.dev33.satoken.exception.NotLoginException;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * WebExceptionHandler
@@ -53,7 +52,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 @ControllerAdvice
 @ResponseBody
-@Slf4j
 public class WebExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(WebExceptionHandler.class);
