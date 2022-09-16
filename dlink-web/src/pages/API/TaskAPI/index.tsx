@@ -31,6 +31,7 @@ const TaskAPI = (props: any) => {
 
   const {task} = props;
   const [address, setAddress] = useState<string>('127.0.0.1:8888');
+  // const [address, setAddress] = useState<string>('192.168.3.122:8888');
 
   useEffect(() => {
     getAddress();
@@ -38,8 +39,8 @@ const TaskAPI = (props: any) => {
 
   const getAddress = () => {
     const res = getTaskAPIAddress();
-    res.then((result)=>{
-      if(result.datas){
+    res.then((result) => {
+      if (result.datas) {
         setAddress(result.datas);
       }
     })
@@ -92,7 +93,8 @@ const TaskAPI = (props: any) => {
         }
         key="taskInstance"
       >
-        <CodeShow code={`curl http://${address}/openapi/getJobInstanceByTaskId?id=${(task ? task.id : '1')}`} language='shell'
+        <CodeShow code={`curl http://${address}/openapi/getJobInstanceByTaskId?id=${(task ? task.id : '1')}`}
+                  language='shell'
                   height='500px' theme="vs-dark"/>
       </TabPane>
       <TabPane
