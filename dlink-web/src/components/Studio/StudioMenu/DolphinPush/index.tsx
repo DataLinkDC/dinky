@@ -18,7 +18,7 @@
  */
 
 import type {FormInstance} from 'antd/es/form';
-import {Button, Form, InputNumber, message, Select, Switch} from "antd";
+import {Button, Form, InputNumber, message, Select, Switch, Checkbox, Row, Col} from "antd";
 import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import React, {useState, useEffect} from "react";
@@ -37,6 +37,8 @@ const DolphinPush = (props: any) => {
   const formRef = React.createRef<FormInstance>();
 
   const [processCode, setProcessCode] = useState("");
+
+  const CheckboxGroup = Checkbox.Group;
 
   const layout = {
     labelCol: {span: 8},
@@ -72,6 +74,16 @@ const DolphinPush = (props: any) => {
     if (data) {
       // debugger
       setProcessCode(data.processDefinitionCode)
+
+      setTimeoutFlagHidden(data.timeoutFlag === 'OPEN');
+
+      let tns = []
+      if (data.timeoutNotifyStrategy === "WARNFAILED") {
+        tns = ['WARN', 'FAILED']
+      } else {
+        tns = data.timeoutNotifyStrategy.split(',')
+      }
+
       formRef.current.setFieldsValue({
         upstreamCodes: data.upstreamCodes,
         taskPriority: data.taskPriority,
@@ -80,11 +92,15 @@ const DolphinPush = (props: any) => {
         delayTime: data.delayTime,
         timeout: data.timeout,
         flag: data.flag === 'YES',
+        timeoutFlag: data.timeoutFlag === 'OPEN',
+        timeoutNotifyStrategy: tns
       });
+
     } else {
       formRef.current.setFieldsValue({
         flag: true,
         taskPriority: 'MEDIUM',
+        timeoutFlag: false,
       });
     }
   };
@@ -96,6 +112,22 @@ const DolphinPush = (props: any) => {
     values.flag === true ? values.flag = 'YES' : values.flag = 'NO';
     values.upstreamCodes ? values.upstreamCodes = values.upstreamCodes.toString() : "";
     values.processCode = processCode;
+
+    if (values.timeoutFlag === false) {
+      values.timeoutFlag = 'CLOSE'
+      values.timeoutNotifyStrategy = null;
+      values.timeout = 0;
+    } else {
+      values.timeoutFlag = 'OPEN'
+      if (values.timeoutNotifyStrategy.length > 1) {
+        values.timeoutNotifyStrategy = "WARNFAILED";
+      } else if (values.timeoutNotifyStrategy.length === 1) {
+        values.timeoutNotifyStrategy = values.timeoutNotifyStrategy[0]
+      } else {
+        message.error(`超时策略必须选一个`);
+        return
+      }
+    }
 
     if (!data) {
       const res = createTaskDefinition(taskCur.task.id, values.upstreamCodes, values);
@@ -116,8 +148,13 @@ const DolphinPush = (props: any) => {
         }
       })
     }
-
   };
+
+  const [timeoutFlagHidden, setTimeoutFlagHidden] = useState<boolean>(false);
+
+  function onSwitchChange(checked: boolean) {
+    setTimeoutFlagHidden(checked);
+  }
 
   return (
     <Form {...layout} ref={formRef} name="control-hooks" onFinish={onFinish}>
@@ -140,12 +177,27 @@ const DolphinPush = (props: any) => {
         <InputNumber min={0} max={99} style={{width: 180}}/>
       </Form.Item>
       <Form.Item name={['failRetryInterval']} label="失败重试间隔(分钟)">
-        <InputNumber min={1} style={{width: 180}}/>
+        <InputNumber min={0} style={{width: 180}}/>
       </Form.Item>
       <Form.Item name={['delayTime']} label="延时执行时间(分钟)">
-        <InputNumber min={1} style={{width: 180}}/>
+        <InputNumber min={0} style={{width: 180}}/>
       </Form.Item>
-      <Form.Item name={['timeout']} label="超时告警时长(分钟)">
+      <Form.Item name={['timeoutFlag']} label="超时告警" valuePropName="checked">
+        <Switch checkedChildren="OPEN" unCheckedChildren="CLOSE" onChange={onSwitchChange}/>
+      </Form.Item>
+      <Form.Item name={['timeoutNotifyStrategy']} hidden={!timeoutFlagHidden} label="超时策略">
+        <CheckboxGroup>
+          <Row>
+            <Col span={12}>
+              <Checkbox value="WARN">超时警告</Checkbox>
+            </Col>
+            <Col span={12}>
+              <Checkbox value="FAILED">超时失败</Checkbox>
+            </Col>
+          </Row>
+        </CheckboxGroup>
+      </Form.Item>
+      <Form.Item name={['timeout']} hidden={!timeoutFlagHidden} label="超时告警时长(分钟)">
         <InputNumber min={1} value={30} style={{width: 180}}/>
       </Form.Item>
       <Form.Item name={['flag']} label="运行标志" valuePropName="checked">
