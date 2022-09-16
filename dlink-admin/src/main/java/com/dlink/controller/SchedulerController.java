@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.starrocks.shade.com.google.common.collect.Lists;
+import com.google.common.collect.Lists;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONArray;
