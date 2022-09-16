@@ -30,7 +30,7 @@ const {TabPane} = Tabs;
 const TaskAPI = (props: any) => {
 
   const {task} = props;
-  const [address, setAddress] = useState<string>('127.0.0.1:8888');
+  const [address, setAddress] = useState<string>('192.168.3.122:8888');
 
   useEffect(() => {
     getAddress();
