@@ -25,7 +25,7 @@
             </includes>
         </fileSet>
         <fileSet>
-            <directory>${project.parent.basedir}/dlink-admin/target/dlink-admin/lib</directory>
+            <directory>${project.parent.basedir}/dlink-admin/target/dlink-admin-${project.version}/lib</directory>
             <outputDirectory>lib</outputDirectory>
             <includes>
                 <include>*.jar</include>
