@@ -692,7 +692,7 @@ CREATE TABLE `dlink_task_version` (
 
 
 
--- 0.7-SNAPSHOT 2022-08-02
+-- 0.6.7-SNAPSHOT 2022-08-02
 -- -----------------------
 -- DROP TABLE IF EXISTS `dlink_fragment`;
 CREATE TABLE `dlink_fragment` (
@@ -707,3 +707,22 @@ CREATE TABLE `dlink_fragment` (
                                   PRIMARY KEY (`id`) USING BTREE,
                                   UNIQUE KEY `un_idx1` (`name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='全局变量';
+
+
+-- 0.6.7-SNAPSHOT 2022-09-02
+-- -----------------------
+-- DROP TABLE IF EXISTS `dlink_upload_file_record`;
+CREATE TABLE `dlink_upload_file_record` (
+  `id` tinyint NOT NULL AUTO_INCREMENT COMMENT '自增主键',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '上传文件的类型名称，目前有：hadoop-conf(1)、flink-conf(2)、flink-lib(3)、user-jar(4)、dlink-jar(5)',
+  `enabled` tinyint(1) DEFAULT NULL COMMENT '是否可用',
+  `file_type` tinyint DEFAULT '-1' COMMENT '上传文件的类型ID，目前有：hadoop-conf(1)、flink-conf(2)、flink-lib(3)、user-jar(4)、dlink-jar(5)，默认值-1表示无类型',
+  `target` tinyint NOT NULL COMMENT '上传文件的目的地，目前有：local(1)、hdfs(2)',
+  `file_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '文件名称',
+  `file_parent_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '文件父路径',
+  `file_absolute_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '文件完全绝对父路径',
+  `is_file` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否为文件',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='上传文件记录';

@@ -30,25 +30,25 @@ import Tables from "@/pages/DataBase/Tables";
 import {TreeDataNode} from "@/components/Studio/StudioTree/Function";
 import Generation from "@/pages/DataBase/Generation";
 
-const { DirectoryTree } = Tree;
+const {DirectoryTree} = Tree;
 const {Option} = Select;
-const { TabPane } = Tabs;
+const {TabPane} = Tabs;
 
 const StudioMetaData = (props: any) => {
 
-  const {database,toolHeight, dispatch} = props;
+  const {database, toolHeight, dispatch} = props;
   const [databaseId, setDatabaseId] = useState<number>();
   const [treeData, setTreeData] = useState<[]>([]);
   const [modalVisit, setModalVisit] = useState(false);
   const [row, setRow] = useState<TreeDataNode>();
 
-  const onRefreshTreeData = (databaseId: number)=>{
-    if(!databaseId)return;
+  const onRefreshTreeData = (databaseId: number) => {
+    if (!databaseId) return;
     setDatabaseId(databaseId);
     const res = showMetaDataTable(databaseId);
     res.then((result) => {
       let tables = result.datas;
-      if(tables) {
+      if (tables) {
         for (let i = 0; i < tables.length; i++) {
           tables[i].title = tables[i].name;
           tables[i].key = tables[i].name;
@@ -64,26 +64,27 @@ const StudioMetaData = (props: any) => {
           }
         }
         setTreeData(tables);
-      }else{
+      } else {
         setTreeData([]);
       }
     });
   };
 
-  const onChangeDataBase = (value: number)=>{
+  const onChangeDataBase = (value: number) => {
     onRefreshTreeData(value);
   };
 
-  const getDataBaseOptions = ()=>{
-    return <>{database.map(({ id, name, alias, type, enabled }) => (
-      <Option  value={id} label={<><Tag color={enabled ? "processing" : "error"}>{type}</Tag>{ alias === "" ? name:alias}</>}>
-       <Tag color={enabled ? "processing" : "error"}>{type}</Tag>{ alias === "" ? name:alias}
+  const getDataBaseOptions = () => {
+    return <>{database.map(({id, name, alias, type, enabled}) => (
+      <Option value={id}
+              label={<><Tag color={enabled ? "processing" : "error"}>{type}</Tag>{alias === "" ? name : alias}</>}>
+        <Tag color={enabled ? "processing" : "error"}>{type}</Tag>{alias === "" ? name : alias}
       </Option>
     ))}</>
   };
 
   const openColumnInfo = (e: React.MouseEvent, node: TreeDataNode) => {
-    if(node.isLeaf){
+    if (node.isLeaf) {
       setRow(node);
       setModalVisit(true);
     }
@@ -105,21 +106,21 @@ const StudioMetaData = (props: any) => {
         {getDataBaseOptions()}
       </Select>
       <Scrollbars style={{height: (toolHeight - 32)}}>
-        {treeData.length>0?(
+        {treeData.length > 0 ? (
           <DirectoryTree
-          showIcon
-          switcherIcon={<DownOutlined/>}
-          treeData={treeData}
-          onRightClick={({event, node}: any) => {
-            openColumnInfo(event, node)
-          }}
-        />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
+            showIcon
+            switcherIcon={<DownOutlined/>}
+            treeData={treeData}
+            onRightClick={({event, node}: any) => {
+              openColumnInfo(event, node)
+            }}
+          />) : (<Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>)}
       </Scrollbars>
       <Modal
         title={row?.key}
         visible={modalVisit}
         width={1000}
-        onCancel={()=>{
+        onCancel={() => {
           cancelHandle();
         }}
         footer={[
@@ -134,38 +135,40 @@ const StudioMetaData = (props: any) => {
           <TabPane
             tab={
               <span>
-          <TableOutlined />
+          <TableOutlined/>
           表信息
         </span>
             }
             key="tableInfo"
           >
-            {row?<Tables table={row}/>:<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+            {row ? <Tables table={row}/> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
           </TabPane>
           <TabPane
             tab={
               <span>
-          <CodepenOutlined />
+          <CodepenOutlined/>
           字段信息
         </span>
             }
             key="columnInfo"
           >
-            {row? <Columns dbId={databaseId} schema={row.schema} table={row.table}/> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+            {row ? <Columns dbId={databaseId} schema={row.schema} table={row.table} scroll={{x: 1000}}/> :
+              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
           </TabPane>
           <TabPane
             tab={
               <span>
-          <OrderedListOutlined />
+          <OrderedListOutlined/>
           SQL 生成
         </span>
             }
             key="sqlGeneration"
           >
-            {row? <Generation dbId={databaseId} schema={row.schema} table={row.table}/> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+            {row ? <Generation dbId={databaseId} schema={row.schema} table={row.table}/> :
+              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
           </TabPane>
         </Tabs>
-        </Modal>
+      </Modal>
     </>
   );
 };

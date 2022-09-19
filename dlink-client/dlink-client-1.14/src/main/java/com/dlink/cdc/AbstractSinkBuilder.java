@@ -59,7 +59,6 @@ import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -67,6 +66,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
+import javax.xml.bind.DatatypeConverter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,6 +84,7 @@ public abstract class AbstractSinkBuilder {
 
     protected FlinkCDCConfig config;
     protected List<ModifyOperation> modifyOperations = new ArrayList();
+    private ZoneId sinkTimeZone = ZoneId.of("UTC");
 
     public AbstractSinkBuilder() {
     }
@@ -103,8 +105,8 @@ public abstract class AbstractSinkBuilder {
         Properties properties = new Properties();
         Map<String, String> sink = config.getSink();
         for (Map.Entry<String, String> entry : sink.entrySet()) {
-            if (Asserts.isNotNullString(entry.getKey()) && Asserts.isNotNullString(entry.getValue())) {
-                properties.setProperty(entry.getKey(), entry.getValue());
+            if (Asserts.isNotNullString(entry.getKey()) && entry.getKey().startsWith("sink.properties") && Asserts.isNotNullString(entry.getValue())) {
+                properties.setProperty(entry.getKey().replace("sink.properties.", ""), entry.getValue());
             }
         }
         return properties;
@@ -137,9 +139,9 @@ public abstract class AbstractSinkBuilder {
     }
 
     protected DataStream<Map> shunt(
-            SingleOutputStreamOperator<Map> processOperator,
-            Table table,
-            OutputTag<Map> tag) {
+        SingleOutputStreamOperator<Map> processOperator,
+        Table table,
+        OutputTag<Map> tag) {
 
         return processOperator.getSideOutput(tag);
     }
@@ -193,7 +195,7 @@ public abstract class AbstractSinkBuilder {
                             default:
                         }
                     } catch (Exception e) {
-                        logger.error("SchameTable: {} - Row: {} - Exception: {}", schemaTableName, JSONUtil.toJsonString(value), e.getCause().getMessage());
+                        logger.error("SchameTable: {} - Row: {} - Exception: {}", schemaTableName, JSONUtil.toJsonString(value), e);
                         throw e;
                     }
                 }
@@ -212,6 +214,12 @@ public abstract class AbstractSinkBuilder {
         StreamExecutionEnvironment env,
         CustomTableEnvironment customTableEnvironment,
         DataStreamSource<String> dataStreamSource) {
+
+        final String timeZone = config.getSink().get("timezone");
+        config.getSink().remove("timezone");
+        if (Asserts.isNotNullString(timeZone)) {
+            sinkTimeZone = ZoneId.of(timeZone);
+        }
 
         final List<Schema> schemaList = config.getSchemaList();
         final String schemaFieldName = config.getSchemaFieldName();
@@ -294,14 +302,41 @@ public abstract class AbstractSinkBuilder {
         if (logicalType instanceof VarCharType) {
             return StringData.fromString((String) value);
         } else if (logicalType instanceof DateType) {
-            return StringData.fromString(Instant.ofEpochMilli((long) value).atZone(ZoneId.systemDefault()).toLocalDate().toString());
+            return value;
         } else if (logicalType instanceof TimestampType) {
-            return TimestampData.fromTimestamp(Timestamp.from(Instant.ofEpochMilli((long) value)));
+            if (value instanceof Integer) {
+                return TimestampData.fromLocalDateTime(Instant.ofEpochMilli(((Integer) value).longValue()).atZone(sinkTimeZone).toLocalDateTime());
+            } else if (value instanceof Long) {
+                return TimestampData.fromLocalDateTime(Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDateTime());
+            } else {
+                return TimestampData.fromLocalDateTime(Instant.parse(value.toString()).atZone(sinkTimeZone).toLocalDateTime());
+            }
         } else if (logicalType instanceof DecimalType) {
             final DecimalType decimalType = ((DecimalType) logicalType);
             final int precision = decimalType.getPrecision();
             final int scale = decimalType.getScale();
             return DecimalData.fromBigDecimal(new BigDecimal((String) value), precision, scale);
+        } else if (logicalType instanceof FloatType) {
+            if (value instanceof Float) {
+                return value;
+            } else if (value instanceof Double) {
+                return ((Double) value).floatValue();
+            } else {
+                return Float.parseFloat(value.toString());
+            }
+        } else if (logicalType instanceof BigIntType) {
+            if (value instanceof Integer) {
+                return ((Integer) value).longValue();
+            } else {
+                return value;
+            }
+        } else if (logicalType instanceof VarBinaryType) {
+            // VARBINARY AND BINARY is converted to String with encoding base64 in FlinkCDC.
+            if (value instanceof String) {
+                return DatatypeConverter.parseBase64Binary(value.toString());
+            } else {
+                return value;
+            }
         } else {
             return value;
         }

@@ -25,7 +25,7 @@
             </includes>
         </fileSet>
         <fileSet>
-            <directory>${project.parent.basedir}/dlink-admin/target/dlink-admin/lib</directory>
+            <directory>${project.parent.basedir}/dlink-admin/target/dlink-admin-${project.version}/lib</directory>
             <outputDirectory>lib</outputDirectory>
             <includes>
                 <include>*.jar</include>
@@ -214,6 +214,14 @@
             <outputDirectory>lib</outputDirectory>
             <includes>
                 <include>dlink-metadata-sqlserver-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-metadata/dlink-metadata-starrocks/target
+            </directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>dlink-metadata-starrocks-${project.version}.jar</include>
             </includes>
         </fileSet>
         <fileSet>

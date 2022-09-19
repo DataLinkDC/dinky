@@ -268,7 +268,7 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
       ],
       filterMultiple: false,
       valueEnum: {
-        '优化参数': {text: '内置函数'},
+        '优化参数': {text: '优化参数'},
         '建表语句': {text: '建表语句'},
         'CataLog': {text: 'CataLog'},
         '设置参数': {text: '设置参数'},
