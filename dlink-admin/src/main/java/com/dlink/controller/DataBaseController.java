@@ -181,7 +181,7 @@ public class DataBaseController {
     }
 
     /**
-     * 获取元数据的指定表的列
+     * 获取元数据的指定表的数据
      */
     @PostMapping("/queryData")
     public Result queryData(@RequestBody QueryData queryData) {
