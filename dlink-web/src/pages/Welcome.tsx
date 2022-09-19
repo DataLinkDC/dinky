@@ -1630,6 +1630,24 @@ export default (): React.ReactNode => {
                 <li>
                   <Link>优化部署文档</Link>
                 </li>
+                <li>
+                  <Link>修复 yarn-application 任务分隔符错误</Link>
+                </li>
+                <li>
+                  <Link>升级 Flink 1.15 版本为 1.15.2</Link>
+                </li>
+                <li>
+                  <Link>优化 SqlServer 字段类型查询</Link>
+                </li>
+                <li>
+                  <Link>修复重命名作业后保存作业失败</Link>
+                </li>
+                <li>
+                  <Link>修复提交历史的第二次弹框时无内容</Link>
+                </li>
+                <li>
+                  <Link>新增数据开发任务信息日志详情按钮</Link>
+                </li>
               </ul>
             </Paragraph>
           </Timeline.Item>
