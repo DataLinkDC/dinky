@@ -56,8 +56,8 @@ public class SqlServerCDCBuilder extends AbstractCDCBuilder implements CDCBuilde
         String database = config.getDatabase();
         Properties debeziumProperties = new Properties();
         // 为部分转换添加默认值
-        //debeziumProperties.setProperty("bigint.unsigned.handling.mode", "long");
-        //debeziumProperties.setProperty("decimal.handling.mode", "string");
+        debeziumProperties.setProperty("bigint.unsigned.handling.mode", "long");
+        debeziumProperties.setProperty("decimal.handling.mode", "string");
         for (Map.Entry<String, String> entry : config.getDebezium().entrySet()) {
             if (Asserts.isNotNullString(entry.getKey()) && Asserts.isNotNullString(entry.getValue())) {
                 debeziumProperties.setProperty(entry.getKey(), entry.getValue());

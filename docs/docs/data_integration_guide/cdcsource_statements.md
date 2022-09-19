@@ -81,6 +81,7 @@ WITH 参数通常用于指定 CDCSOURCE 所需参数，语法为`'key1'='value1'
 | sink.table.upper  | 否       | 无            | 目标表的表名全大写                                           |
 | sink.table.lower  | 否       | 无            | 目标表的表名全小写                                           |
 | sink.*            | 否       | 无            | 目标数据源的配置信息，同 FlinkSQL，使用 ${schemaName} 和 ${tableName} 可注入经过处理的源表名 |
+| sink[N].*         | 否       | 无            | N代表为多目的地写入, 默认从0开始到N, 其他配置参数信息参考sink.*的配置. |
 
 ## 示例
 
@@ -226,7 +227,36 @@ EXECUTE CDCSOURCE demo WITH (
 )
 ```
 
+同时将CDCSOURCE数据写入到Doirs和Kafka
 
+```sql
+EXECUTE CDCSOURCE jobname WITH (
+  'connector' = 'mysql-cdc',
+  'hostname' = '127.0.0.1',
+  'port' = '3306',
+  'username' = 'dlink',
+  'password' = 'dlink',
+  'checkpoint' = '3000',
+  'scan.startup.mode' = 'initial',
+  'parallelism' = '1',
+  'table-name' = 'test\.student,test\.score',
+  'sink[0].connector' = 'doris',
+  'sink[0].fenodes' = '127.0.0.1:8030',
+  'sink[0].username' = 'root',
+  'sink[0].password' = 'dw123456',
+  'sink[0].sink.batch.size' = '1',
+  'sink[0].sink.max-retries' = '1',
+  'sink[0].sink.batch.interval' = '60000',
+  'sink[0].sink.db' = 'test',
+  'sink[0].table.prefix' = 'ODS_',
+  'sink[0].table.upper' = 'true',
+  'sink[0].table.identifier' = '${schemaName}.${tableName}',
+  'sink[0].sink.enable-delete' = 'true',
+  'sink[1].connector'='datastream-kafka',
+  'sink[1].topic'='dlinkcdc',
+  'sink[1].brokers'='127.0.0.1:9092'
+)
+```
 
 :::tip 说明
 

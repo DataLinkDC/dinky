@@ -19,12 +19,12 @@
 
 
 import React from "react";
-import {KeyOutlined, CheckSquareOutlined} from '@ant-design/icons';
+import {CheckSquareOutlined, KeyOutlined} from '@ant-design/icons';
 import DTable from "@/components/Common/DTable";
 
 const Columns = (props: any) => {
 
-  const {dbId,table,schema} = props;
+  const {dbId, table, schema, scroll} = props;
 
   const cols = [{
     title: '序号',
@@ -50,7 +50,7 @@ const Columns = (props: any) => {
       dataIndex: 'keyFlag',
       render: (_, record) => (
         <>
-          {record.keyFlag?<KeyOutlined style={{ color:'#FAA100'}} />:undefined}
+          {record.keyFlag ? <KeyOutlined style={{color: '#FAA100'}}/> : undefined}
         </>
       ),
       filters: [
@@ -64,12 +64,12 @@ const Columns = (props: any) => {
         },
       ],
       openSearch: 'dict',
-    },{
+    }, {
       title: '自增',
       dataIndex: 'autoIncrement',
       render: (_, record) => (
         <>
-          {record.autoIncrement?<CheckSquareOutlined style={{ color:'#1296db'}} />:undefined}
+          {record.autoIncrement ? <CheckSquareOutlined style={{color: '#1296db'}}/> : undefined}
         </>
       ),
       filters: [
@@ -83,12 +83,12 @@ const Columns = (props: any) => {
         },
       ],
       openSearch: 'dict',
-    },{
+    }, {
       title: '非空',
       dataIndex: 'nullable',
       render: (_, record) => (
         <>
-          {!record.nullable?<CheckSquareOutlined style={{ color:'#1296db'}} />:undefined}
+          {!record.nullable ? <CheckSquareOutlined style={{color: '#1296db'}}/> : undefined}
         </>
       ),
       filters: [
@@ -102,30 +102,31 @@ const Columns = (props: any) => {
         },
       ],
       openSearch: 'dict',
-    },{
+    }, {
       title: '默认值',
       dataIndex: 'defaultValue',
-    },{
+    }, {
       title: '精度',
       dataIndex: 'precision',
       isString: false,
-    },{
+    }, {
       title: '小数范围',
       dataIndex: 'scale',
       isString: false,
-    },{
+    }, {
       title: '字符集',
       dataIndex: 'characterSet',
-    },{
+    }, {
       title: '排序规则',
       dataIndex: 'collation',
-    },{
+    }, {
       title: 'Java 类型',
       dataIndex: 'javaType',
     },]
   return (
     <DTable columns={cols}
-            dataSource={{url:'api/database/listColumns',params:{id:dbId,schemaName:schema,tableName:table}}}/>
+            scroll={scroll}
+            dataSource={{url: 'api/database/listColumns', params: {id: dbId, schemaName: schema, tableName: table}}}/>
   )
 };
 
