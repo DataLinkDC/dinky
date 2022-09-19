@@ -22,59 +22,55 @@ import React, {useEffect, useState} from "react";
 import {SearchOutlined} from '@ant-design/icons';
 import ProTable from '@ant-design/pro-table';
 import {getData} from "@/components/Common/crud";
-import {Button, Input, Space, Spin} from "antd";
+import {Button, Input, Space} from "antd";
 
 const DTable = (props: any) => {
 
-  const {dataSource,columns} = props;
+  const {dataSource, columns, scroll} = props;
 
-  const [data,setData] = useState<[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState<[]>([]);
 
-
-  const refreshData = async () =>{
-    setLoading(true)
+  const refreshData = async () => {
     const msg = await getData(dataSource.url, dataSource.params);
     setData(msg.datas);
-    setLoading(false)
-
   };
 
-  const buildColumn = () =>{
-    const columnList: any=[];
+  const buildColumn = () => {
+    const columnList: any = [];
     columns.map((item) => {
-      const openSorter = item.openSorter==null?true:item.openSorter;
-      const isString = item.isString==null?true:item.isString;
-      const openSearch = item.openSearch==null?'like':item.openSearch;
+      const openSorter = item.openSorter == null ? true : item.openSorter;
+      const isString = item.isString == null ? true : item.isString;
+      const openSearch = item.openSearch == null ? 'like' : item.openSearch;
 
       let column = {
-        title: item.title?item.title:item.field,
-        dataIndex: item.dataIndex?item.dataIndex:item.field,
-        key: item.dataIndex?item.dataIndex:item.field,
+        title: item.title ? item.title : item.field,
+        dataIndex: item.dataIndex ? item.dataIndex : item.field,
+        key: item.dataIndex ? item.dataIndex : item.field,
       };
-      if(openSorter){
-        if(isString){
+      if (openSorter) {
+        if (isString) {
           column = {
             sorter: (a, b) => {
-              const value1 = a[column.dataIndex]!=null?a[column.dataIndex].toString():'';
-              const value2 = b[column.dataIndex]!=null?b[column.dataIndex].toString():'';
+              const value1 = a[column.dataIndex] != null ? a[column.dataIndex].toString() : '';
+              const value2 = b[column.dataIndex] != null ? b[column.dataIndex].toString() : '';
               return value1.localeCompare(value2);
             },
             ...column,
           }
-        }else{
+        } else {
           column = {
             sorter: (a, b) => a[column.dataIndex] - b[column.dataIndex],
             ...column,
           }
         }
       }
-      if(openSearch==='like'){
-        column = {...column,...getColumnSearchProps(column.dataIndex),}
-      }else if(openSearch==='dict'){
+      if (openSearch === 'like') {
+        column = {...column, ...getColumnSearchProps(column.dataIndex),}
+      } else if (openSearch === 'dict') {
         column = {
           onFilter: (value, record) => record[column.dataIndex] === value,
-          ...column,}
+          ...column,
+        }
       }
       columnList.push({
         ...column,
@@ -85,17 +81,17 @@ const DTable = (props: any) => {
   }
 
   useEffect(() => {
-    if(dataSource&&dataSource.url){
+    if (dataSource && dataSource.url) {
       refreshData();
     }
   }, [dataSource]);
 
   return (
-    <Spin   spinning={loading} delay={500}>
     <ProTable
       columns={buildColumn()}
       style={{width: '100%'}}
-      dataSource={dataSource?(dataSource.url?data:dataSource):[]}
+      scroll={scroll}
+      dataSource={dataSource ? (dataSource.url ? data : dataSource) : []}
       rowKey="name"
       pagination={{
         pageSize: 10,
@@ -104,7 +100,6 @@ const DTable = (props: any) => {
       search={false}
       size="small"
     />
-    </Spin>
   );
 };
 
