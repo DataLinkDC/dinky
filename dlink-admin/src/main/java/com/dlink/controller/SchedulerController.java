@@ -89,16 +89,16 @@ public class SchedulerController {
         String taskName = catalogue.getName() + ":" + catalogue.getId();
 
         long projectCode = dinkyProject.getCode();
-        TaskMainInfo taskDefinitionInfo = taskClient.getTaskMainInfo(projectCode, processName, taskName);
+        TaskMainInfo taskMainInfo = taskClient.getTaskMainInfo(projectCode, processName, taskName);
 
-        if (taskDefinitionInfo != null) {
-            taskDefinition = taskClient.getTaskDefinition(projectCode, taskDefinitionInfo.getTaskCode());
+        if (taskMainInfo != null) {
+            taskDefinition = taskClient.getTaskDefinition(projectCode, taskMainInfo.getTaskCode());
 
-            TaskMainInfo taskMainInfo = taskClient.getTaskMainInfo(projectCode, processName, taskDefinition.getName());
-            if (taskMainInfo != null) {
+            if (taskDefinition != null) {
                 taskDefinition.setProcessDefinitionCode(taskMainInfo.getProcessDefinitionCode());
                 taskDefinition.setProcessDefinitionName(taskMainInfo.getProcessDefinitionName());
                 taskDefinition.setProcessDefinitionVersion(taskMainInfo.getProcessDefinitionVersion());
+                taskDefinition.setUpstreamTaskMap(taskMainInfo.getUpstreamTaskMap());
             } else {
                 return Result.failed("请先工作流保存");
             }

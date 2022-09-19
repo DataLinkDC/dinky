@@ -127,4 +127,7 @@ public class TaskDefinition {
 
     @ApiModelProperty(value = "工作流名")
     private String processDefinitionName;
+
+    @ApiModelProperty(value = "前置任务集合")
+    private Map<Long, String> upstreamTaskMap;
 }
