@@ -28,7 +28,6 @@ import {
   updateTaskDefinition
 } from "@/pages/DataStudio/service";
 import {CODE} from "@/components/Common/crud";
-import TextArea from "antd/es/input/TextArea";
 
 const DolphinPush = (props: any) => {
   const {data, taskCur, handleDolphinModalVisible} = props;
@@ -45,9 +44,9 @@ const DolphinPush = (props: any) => {
     wrapperCol: {span: 16},
   };
   useEffect(() => {
-    options.length = 0
-    taskMainInfos()
-    setFormValue()
+    options.length = 0;
+    taskMainInfos();
+    setFormValue();
   }, [taskCur])
 
   //前置任务数据集合
@@ -56,7 +55,7 @@ const DolphinPush = (props: any) => {
       const res = getTaskMainInfos(taskCur.task.id);
       res.then((result) => {
         if (result.code == CODE.SUCCESS) {
-          setOptions(result.datas.map((item: { processDefinitionName: any; taskCode: any; }) => ({
+          setOptions(result.datas.map((item: { taskName: any; taskCode: any; }) => ({
               label: item.taskName,
               value: item.taskCode
             })
@@ -83,9 +82,15 @@ const DolphinPush = (props: any) => {
       } else {
         tns = data.timeoutNotifyStrategy.split(',')
       }
+      // debugger
+      //前置任务勾选
+      let upstreamCodesTem = [];
+      for (let key in data.upstreamTaskMap) {
+        upstreamCodesTem.push(parseInt(key))
+      }
 
       formRef.current.setFieldsValue({
-        upstreamCodes: data.upstreamCodes,
+        upstreamCodes: upstreamCodesTem,
         taskPriority: data.taskPriority,
         failRetryTimes: data.failRetryTimes,
         failRetryInterval: data.failRetryInterval,
@@ -107,7 +112,6 @@ const DolphinPush = (props: any) => {
 
   //表单提交，添加/更新海豚任务
   const onFinish = (values: any) => {
-    // debugger
     // console.log(values);
     values.flag === true ? values.flag = 'YES' : values.flag = 'NO';
     values.upstreamCodes ? values.upstreamCodes = values.upstreamCodes.toString() : "";
