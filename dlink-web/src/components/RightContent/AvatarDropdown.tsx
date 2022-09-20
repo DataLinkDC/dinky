@@ -27,6 +27,7 @@ import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 import {outLogin} from '@/services/ant-design-pro/api';
 import {ActionType} from "@ant-design/pro-table";
+import {postAll} from "@/components/Common/crud";
 
 export type GlobalHeaderRightProps = {
   menu?: boolean;
@@ -50,6 +51,10 @@ const loginOut = async () => {
   }
 };
 
+
+const requestUrl = '/api/checkTenant'; //todo 后端接口未完成
+
+
 const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
   const {initialState, setInitialState} = useModel('@@initialState');
   const actionRef = useRef<ActionType>();
@@ -66,21 +71,6 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
         setInitialState({...initialState, currentUser: undefined});
         loginOut();
         return;
-      } else if (key === 'chooseTenant') {
-        //TODO:
-        // 1.先刷新当前用户所有的租户  因为如果在角色管理中重新赋予角色 会触发增删角色(角色关联租户)
-        // 2.选择租户回调 选择租户 直接使用 modal
-        Modal.confirm({
-          title: '切换租户',
-          content: '确定切换【' + 11 + '】租户吗?',
-          okText: '确认',
-          cancelText: '取消',
-          onOk: async () => {
-            // TODO: handle
-            // await handleRemove(url,[currentItem]);
-            actionRef.current?.reloadAndRest?.();
-          }
-        });
       }
       // history.push(`/account/${key}`);
     },
@@ -116,12 +106,29 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
       chooseTenantList.push(
         <>
           <Menu.Item
+             // If the current key (tenant id) is equal to the tenant the current user chooses to log in, this item is not optional
+            disabled={item.tenant?.id === currentUser.currentTenant?.id}
             key={item.tenant?.id}  // key 需要唯一 目前唯一不了
             title={item.tenant?.tenantCode}
             icon={<SecurityScanOutlined/>}
-            defaultValue={item.tenant?.id}
             onClick={(e) => {
-              console.log(e, '-----')
+              console.log(e)
+              // get choose tenant title
+              let title = e.domEvent.target.textContent;
+              // get choose tenantId
+              let tenantId = e.key;
+              Modal.confirm({
+                title: '切换租户',
+                content: '确定切换【' + title + '】租户吗?',
+                okText: '确认',
+                cancelText: '取消',
+                onOk: async () => {
+                  // TODO: handle
+                  // await postAll(requestUrl, tenantId);
+                  // todo 切换租户后 需要重新调用 /api/current 接口  同步刷新所有页面 获取该租户id下的数据
+                  actionRef.current?.reloadAndRest?.();
+                }
+              });
             }}
           >
             {item.tenant?.tenantCode}
@@ -134,7 +141,6 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
         key="chooseTenantList"
         title={"切换租户"}
         icon={<UserSwitchOutlined/>}
-
       >
         {chooseTenantList}
       </Menu.SubMenu>
