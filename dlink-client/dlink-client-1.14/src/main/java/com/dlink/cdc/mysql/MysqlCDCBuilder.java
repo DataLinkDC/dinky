@@ -83,8 +83,8 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
 
         Properties debeziumProperties = new Properties();
         // 为部分转换添加默认值
-        debeziumProperties.setProperty("bigint.unsigned.handling.mode","long");
-        debeziumProperties.setProperty("decimal.handling.mode","string");
+        debeziumProperties.setProperty("bigint.unsigned.handling.mode", "long");
+        debeziumProperties.setProperty("decimal.handling.mode", "string");
 
         for (Map.Entry<String, String> entry : config.getDebezium().entrySet()) {
             if (Asserts.isNotNullString(entry.getKey()) && Asserts.isNotNullString(entry.getValue())) {
@@ -101,10 +101,10 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         }
 
         MySqlSourceBuilder<String> sourceBuilder = MySqlSource.<String>builder()
-            .hostname(config.getHostname())
-            .port(config.getPort())
-            .username(config.getUsername())
-            .password(config.getPassword());
+                .hostname(config.getHostname())
+                .port(config.getPort())
+                .username(config.getUsername())
+                .password(config.getPassword());
 
         if (Asserts.isNotNullString(database)) {
             String[] databases = database.split(FlinkParamConstant.SPLIT);
@@ -169,6 +169,7 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         return env.fromSource(sourceBuilder.build(), WatermarkStrategy.noWatermarks(), "MySQL CDC Source");
     }
 
+    @Override
     public List<String> getSchemaList() {
         List<String> schemaList = new ArrayList<>();
         String schema = config.getDatabase();
@@ -189,6 +190,7 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         return schemaList;
     }
 
+    @Override
     public Map<String, Map<String, String>> parseMetaDataConfigs() {
         Map<String, Map<String, String>> allConfigMap = new HashMap<>();
         List<String> schemaList = getSchemaList();
@@ -208,6 +210,24 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
             allConfigMap.put(schema, configMap);
         }
         return allConfigMap;
+    }
+
+    @Override
+    public Map<String, String> parseMetaDataConfig() {
+        Map<String, String> configMap = new HashMap<>();
+
+        configMap.put(ClientConstant.METADATA_TYPE, METADATA_TYPE);
+        StringBuilder sb = new StringBuilder("jdbc:mysql://");
+        sb.append(config.getHostname());
+        sb.append(":");
+        sb.append(config.getPort());
+        sb.append("/");
+        configMap.put(ClientConstant.METADATA_NAME, sb.toString());
+        configMap.put(ClientConstant.METADATA_URL, sb.toString());
+        configMap.put(ClientConstant.METADATA_USERNAME, config.getUsername());
+        configMap.put(ClientConstant.METADATA_PASSWORD, config.getPassword());
+
+        return configMap;
     }
 
     @Override
