@@ -19,13 +19,10 @@
 
 package com.dlink.service;
 
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
-
 import com.dlink.db.service.ISuperService;
 import com.dlink.model.UserRole;
 
+import java.util.List;
 
 public interface UserRoleService extends ISuperService<UserRole> {
     /**
@@ -52,12 +49,13 @@ public interface UserRoleService extends ISuperService<UserRole> {
      */
     int deleteBathRelation(List<UserRole> userRoleList);
 
-
     /**
      * delete user role relation by role id
+     *
      * @param roleIds role id
      * @return
      */
     boolean deleteByRoleIds(List<Integer> roleIds);
+
 }
 

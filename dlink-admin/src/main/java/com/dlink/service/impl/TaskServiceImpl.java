@@ -24,13 +24,6 @@ import com.dlink.alert.AlertConfig;
 import com.dlink.alert.AlertMsg;
 import com.dlink.alert.AlertResult;
 import com.dlink.alert.ShowType;
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.lang.tree.Tree;
-import cn.hutool.core.lang.tree.TreeNode;
-import cn.hutool.core.lang.tree.TreeUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.dlink.alert.*;
 import com.dlink.assertion.Assert;
 import com.dlink.assertion.Asserts;
 import com.dlink.assertion.Tips;
@@ -200,8 +193,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Task task = this.getTaskInfoById(id);
         Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
         if (Dialect.notFlinkSql(task.getDialect())) {
-            return executeCommonSql(SqlDTO.build(task.getStatement(),
-                task.getDatabaseId(), null));
+            return executeCommonSql(SqlDTO.build(task.getStatement(), task.getDatabaseId(), null));
         }
         JobConfig config = buildJobConfig(task);
         JobManager jobManager = JobManager.build(config);
@@ -218,8 +210,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
         task.setStep(JobLifeCycle.ONLINE.getValue());
         if (Dialect.notFlinkSql(task.getDialect())) {
-            return executeCommonSql(SqlDTO.build(task.getStatement(),
-                task.getDatabaseId(), null));
+            return executeCommonSql(SqlDTO.build(task.getStatement(), task.getDatabaseId(), null));
         }
         JobConfig config = buildJobConfig(task);
         JobManager jobManager = JobManager.build(config);
@@ -238,8 +229,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             savepointJobInstance(task.getJobInstanceId(), SavePointType.CANCEL.getValue());
         }
         if (Dialect.notFlinkSql(task.getDialect())) {
-            return executeCommonSql(SqlDTO.build(task.getStatement(),
-                task.getDatabaseId(), null));
+            return executeCommonSql(SqlDTO.build(task.getStatement(), task.getDatabaseId(), null));
         }
         if (StringUtils.isBlank(savePointPath)) {
             task.setSavePointStrategy(SavePointStrategy.LATEST.getValue());
@@ -357,8 +347,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public boolean saveOrUpdateTask(Task task) {
         // to compiler java udf
-        if (Asserts.isNotNullString(task.getDialect()) && Dialect.JAVA.equalsVal(task.getDialect())
-            && Asserts.isNotNullString(task.getStatement())) {
+        if (Asserts.isNotNullString(task.getDialect()) && Dialect.JAVA.equalsVal(task.getDialect()) && Asserts.isNotNullString(task.getStatement())) {
             CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(task.getStatement());
             task.setSavePointPath(compiler.getFullClassName());
         }
@@ -366,9 +355,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if (task.getId() != null) {
             Task taskInfo = getById(task.getId());
             Assert.check(taskInfo);
-            if (JobLifeCycle.RELEASE.equalsValue(taskInfo.getStep())
-                || JobLifeCycle.ONLINE.equalsValue(taskInfo.getStep())
-                || JobLifeCycle.CANCEL.equalsValue(taskInfo.getStep())) {
+            if (JobLifeCycle.RELEASE.equalsValue(taskInfo.getStep()) || JobLifeCycle.ONLINE.equalsValue(taskInfo.getStep()) || JobLifeCycle.CANCEL.equalsValue(taskInfo.getStep())) {
                 throw new BusException("该作业已" + JobLifeCycle.get(taskInfo.getStep()).getLabel() + "，禁止修改！");
             }
             task.setStep(JobLifeCycle.DEVELOP.getValue());
@@ -409,8 +396,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public Task initDefaultFlinkSQLEnv(Integer tenantId) {
-
-
         String separator = SystemConfiguration.getInstances().getSqlSeparator();
         separator = separator.replace("\\r", "\r").replace("\\n", "\n");
         String name = "dlink_default_catalog";
@@ -418,7 +403,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if (null == defaultFlinkSQLEnvTask) {
             defaultFlinkSQLEnvTask = new Task();
         }
-//        defaultFlinkSQLEnvTask.setId(1);
+        //defaultFlinkSQLEnvTask.setId(1);
         defaultFlinkSQLEnvTask.setName(name);
         defaultFlinkSQLEnvTask.setAlias("DefaultCatalog");
         defaultFlinkSQLEnvTask.setDialect(Dialect.FLINKSQLENV.getValue());
@@ -537,16 +522,12 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         }
         Task taskInfo = getTaskInfoById(dto.getId());
 
-        if (JobLifeCycle.RELEASE.equalsValue(taskInfo.getStep())
-            || JobLifeCycle.ONLINE.equalsValue(taskInfo.getStep())
-            || JobLifeCycle.CANCEL.equalsValue(taskInfo.getStep())) {
+        if (JobLifeCycle.RELEASE.equalsValue(taskInfo.getStep()) || JobLifeCycle.ONLINE.equalsValue(taskInfo.getStep()) || JobLifeCycle.CANCEL.equalsValue(taskInfo.getStep())) {
             // throw new BusException("该作业已" + JobLifeCycle.get(taskInfo.getStep()).getLabel() + "，禁止回滚！");
             return Result.failed("该作业已" + JobLifeCycle.get(taskInfo.getStep()).getLabel() + "，禁止回滚！");
         }
 
-        LambdaQueryWrapper<TaskVersion> queryWrapper = new LambdaQueryWrapper<TaskVersion>().
-            eq(TaskVersion::getTaskId, dto.getId()).
-            eq(TaskVersion::getVersionId, dto.getVersionId());
+        LambdaQueryWrapper<TaskVersion> queryWrapper = new LambdaQueryWrapper<TaskVersion>().eq(TaskVersion::getTaskId, dto.getId()).eq(TaskVersion::getVersionId, dto.getVersionId());
 
         TaskVersion taskVersion = taskVersionService.getOne(queryWrapper);
 
@@ -836,8 +817,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     private boolean inRefreshPlan(JobInstance jobInstance) {
-        if ((!JobStatus.isDone(jobInstance.getStatus())) || (Asserts.isNotNull(jobInstance.getFinishTime())
-            && Duration.between(jobInstance.getFinishTime(), LocalDateTime.now()).toMinutes() < 1)) {
+        if ((!JobStatus.isDone(jobInstance.getStatus())) || (Asserts.isNotNull(jobInstance.getFinishTime()) && Duration.between(jobInstance.getFinishTime(), LocalDateTime.now()).toMinutes() < 1)) {
             return true;
         } else {
             return false;
@@ -961,8 +941,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 }
             }
             if (Asserts.isNotNull(task.getClusterConfigurationName())) {
-                ClusterConfiguration clusterConfiguration = clusterConfigurationService
-                    .getOne(new QueryWrapper<ClusterConfiguration>().eq("name", task.getClusterConfigurationName()));
+                ClusterConfiguration clusterConfiguration = clusterConfigurationService.getOne(new QueryWrapper<ClusterConfiguration>().eq("name", task.getClusterConfigurationName()));
                 if (Asserts.isNotNull(clusterConfiguration)) {
                     task.setClusterConfigurationId(clusterConfiguration.getId());
                 }
@@ -1167,11 +1146,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public Result queryAllCatalogue() {
-        final LambdaQueryWrapper<Catalogue> queryWrapper = new LambdaQueryWrapper<Catalogue>()
-            .select(Catalogue::getId, Catalogue::getName, Catalogue::getParentId)
-            .eq(Catalogue::getIsLeaf, 0)
-            .eq(Catalogue::getEnabled, 1)
-            .isNull(Catalogue::getTaskId);
+        final LambdaQueryWrapper<Catalogue> queryWrapper =
+            new LambdaQueryWrapper<Catalogue>().select(Catalogue::getId, Catalogue::getName, Catalogue::getParentId).eq(Catalogue::getIsLeaf, 0).eq(Catalogue::getEnabled, 1)
+                .isNull(Catalogue::getTaskId);
         final List<Catalogue> catalogueList = catalogueService.list(queryWrapper);
         return Result.succeed(TreeUtil.build(dealWithCatalogue(catalogueList), -1).get(0));
     }
@@ -1194,10 +1171,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public Result<List<Task>> queryOnLineTaskByDoneStatus(List<JobLifeCycle> jobLifeCycle, List<JobStatus> jobStatuses
-        , boolean includeNull, Integer catalogueId) {
-        final Tree<Integer> node = ((Tree<Integer>) queryAllCatalogue().getDatas())
-            .getNode(Objects.isNull(catalogueId) ? 0 : catalogueId);
+    public Result<List<Task>> queryOnLineTaskByDoneStatus(List<JobLifeCycle> jobLifeCycle, List<JobStatus> jobStatuses, boolean includeNull, Integer catalogueId) {
+        final Tree<Integer> node = ((Tree<Integer>) queryAllCatalogue().getDatas()).getNode(Objects.isNull(catalogueId) ? 0 : catalogueId);
         final List<Integer> parentIds = new ArrayList<>(0);
         parentIds.add(node.getId());
         childrenNodeParse(node, parentIds);
@@ -1205,12 +1180,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         return Result.succeed(taskList);
     }
 
-    private List<Task> getTasks(List<JobLifeCycle> jobLifeCycle, List<JobStatus> jobStatuses
-        , boolean includeNull, List<Integer> parentIds) {
-        return this.baseMapper.queryOnLineTaskByDoneStatus(parentIds
-            , jobLifeCycle.stream().filter(Objects::nonNull).map(JobLifeCycle::getValue).collect(Collectors.toList())
-            , includeNull
-            , jobStatuses.stream().map(JobStatus::name).collect(Collectors.toList()));
+    private List<Task> getTasks(List<JobLifeCycle> jobLifeCycle, List<JobStatus> jobStatuses, boolean includeNull, List<Integer> parentIds) {
+        return this.baseMapper.queryOnLineTaskByDoneStatus(parentIds, jobLifeCycle.stream().filter(Objects::nonNull).map(JobLifeCycle::getValue).collect(Collectors.toList()), includeNull,
+            jobStatuses.stream().map(JobStatus::name).collect(Collectors.toList()));
     }
 
     private void childrenNodeParse(Tree<Integer> node, List<Integer> parentIds) {
@@ -1246,9 +1218,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     private void findTheConditionSavePointToOnline(TaskOperatingResult taskOperatingResult, JobInstance jobInstanceByTaskId) {
-        final LambdaQueryWrapper<JobHistory> queryWrapper = new LambdaQueryWrapper<JobHistory>()
-            .select(JobHistory::getId, JobHistory::getCheckpointsJson)
-            .eq(JobHistory::getId, jobInstanceByTaskId.getId());
+        final LambdaQueryWrapper<JobHistory> queryWrapper =
+            new LambdaQueryWrapper<JobHistory>().select(JobHistory::getId, JobHistory::getCheckpointsJson).eq(JobHistory::getId, jobInstanceByTaskId.getId());
         final JobHistory jobHistory = jobHistoryService.getOne(queryWrapper);
         if (jobHistory != null && StringUtils.isNotBlank(jobHistory.getCheckpointsJson())) {
             final ObjectNode jsonNodes = JSONUtil.parseObject(jobHistory.getCheckpointsJson());

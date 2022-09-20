@@ -19,15 +19,13 @@
 
 package com.dlink.service;
 
-
-import org.apache.ibatis.annotations.Param;
+import com.dlink.common.result.Result;
+import com.dlink.db.service.ISuperService;
+import com.dlink.model.Tenant;
 
 import java.util.List;
 import java.util.Set;
 
-import com.dlink.common.result.Result;
-import com.dlink.db.service.ISuperService;
-import com.dlink.model.Tenant;
 import com.fasterxml.jackson.databind.JsonNode;
 
 public interface TenantService extends ISuperService<Tenant> {

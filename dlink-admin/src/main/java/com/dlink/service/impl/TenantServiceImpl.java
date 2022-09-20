@@ -19,7 +19,6 @@
 
 package com.dlink.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.assertion.Asserts;
 import com.dlink.common.result.Result;
 import com.dlink.context.RequestContext;
@@ -32,13 +31,16 @@ import com.dlink.service.NamespaceService;
 import com.dlink.service.RoleService;
 import com.dlink.service.TaskService;
 import com.dlink.service.TenantService;
-import com.fasterxml.jackson.databind.JsonNode;
+
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Set;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.fasterxml.jackson.databind.JsonNode;
 
 @Service
 public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> implements TenantService {
@@ -51,7 +53,6 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> im
 
     @Autowired
     private TaskService taskService;
-
 
     @Override
     public Result saveOrUpdateTenant(Tenant tenant) {
@@ -87,7 +88,6 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> im
         }
         return updateById(tenant);
     }
-
 
     @Transactional(rollbackFor = Exception.class)
     @Override

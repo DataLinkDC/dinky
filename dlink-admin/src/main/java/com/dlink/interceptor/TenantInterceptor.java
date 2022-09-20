@@ -19,16 +19,16 @@
 
 package com.dlink.interceptor;
 
-
 import com.dlink.context.RequestContext;
-import com.mysql.cj.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.web.servlet.HandlerInterceptor;
+
+import com.mysql.cj.util.StringUtils;
+
+import lombok.extern.slf4j.Slf4j;
 
 
 /**

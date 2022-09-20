@@ -23,9 +23,10 @@ import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.RoleNamespaceMapper;
 import com.dlink.model.RoleNamespace;
 import com.dlink.service.RoleNamespaceService;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import org.springframework.stereotype.Service;
 
 @Service
 public class RoleNamespaceServiceImpl extends SuperServiceImpl<RoleNamespaceMapper, RoleNamespace> implements RoleNamespaceService {
