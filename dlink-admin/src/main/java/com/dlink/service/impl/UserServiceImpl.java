@@ -19,9 +19,6 @@
 
 package com.dlink.service.impl;
 
-import cn.dev33.satoken.secure.SaSecureUtil;
-import cn.dev33.satoken.stp.StpUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.assertion.Asserts;
 import com.dlink.common.result.Result;
 import com.dlink.context.RequestContext;
@@ -38,15 +35,21 @@ import com.dlink.service.RoleService;
 import com.dlink.service.TenantService;
 import com.dlink.service.UserRoleService;
 import com.dlink.service.UserService;
-import com.fasterxml.jackson.databind.JsonNode;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import cn.dev33.satoken.secure.SaSecureUtil;
+import cn.dev33.satoken.stp.StpUtil;
 
 /**
  * UserServiceImpl
@@ -67,7 +70,6 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
     @Autowired
     private TenantService tenantService;
-
 
     @Override
     public Result registerUser(User user) {
@@ -137,7 +139,6 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             if (!user.getEnabled()) {
                 return Result.failed("账号已被禁用");
             }
-
 
             UserDTO userDTO = new UserDTO();
             Set<RoleDTO> roleDTOList = new HashSet<>();

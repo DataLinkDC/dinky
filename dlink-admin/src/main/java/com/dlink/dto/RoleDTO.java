@@ -21,6 +21,7 @@ package com.dlink.dto;
 
 import com.dlink.model.Role;
 import com.dlink.model.Tenant;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,7 +29,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoleDTO  {
+public class RoleDTO {
     private Role role;
     private Tenant tenant;
 }

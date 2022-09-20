@@ -30,9 +30,6 @@ import com.dlink.model.JobStatus;
 import com.dlink.model.Task;
 import com.dlink.result.SqlExplainResult;
 import com.dlink.result.TaskOperatingResult;
-import com.dlink.result.TaskOperatingResult;
-import com.fasterxml.jackson.databind.JsonNode;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -104,8 +101,7 @@ public interface TaskService extends ISuperService<Task> {
 
     Result queryAllCatalogue();
 
-    Result<List<Task>> queryOnLineTaskByDoneStatus(List<JobLifeCycle> jobLifeCycle
-        , List<JobStatus> jobStatuses, boolean includeNull, Integer catalogueId);
+    Result<List<Task>> queryOnLineTaskByDoneStatus(List<JobLifeCycle> jobLifeCycle, List<JobStatus> jobStatuses, boolean includeNull, Integer catalogueId);
 
     void selectSavepointOnLineTask(TaskOperatingResult taskOperatingResult);
 

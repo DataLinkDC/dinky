@@ -19,7 +19,6 @@
 
 package com.dlink.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.assertion.Asserts;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
@@ -31,10 +30,13 @@ import com.dlink.model.Tenant;
 import com.dlink.service.NamespaceService;
 import com.dlink.service.RoleNamespaceService;
 import com.dlink.service.TenantService;
-import com.fasterxml.jackson.databind.JsonNode;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.fasterxml.jackson.databind.JsonNode;
 
 @Service
 public class NamespaceServiceImpl extends SuperServiceImpl<NamespaceMapper, Namespace> implements NamespaceService {

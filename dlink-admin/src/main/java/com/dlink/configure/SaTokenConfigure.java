@@ -19,8 +19,8 @@
 
 package com.dlink.configure;
 
-import cn.dev33.satoken.interceptor.SaRouteInterceptor;
 import com.dlink.interceptor.TenantInterceptor;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -40,27 +40,27 @@ public class SaTokenConfigure implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         // 注册Sa-Token的路由拦截器
         registry.addInterceptor(new SaRouteInterceptor())
-                .addPathPatterns("/api/**")
-                .excludePathPatterns("/api/login")
-                .excludePathPatterns("/api/geTenants")
-                .excludePathPatterns("/openapi/**");
+            .addPathPatterns("/api/**")
+            .excludePathPatterns("/api/login")
+            .excludePathPatterns("/api/geTenants")
+            .excludePathPatterns("/openapi/**");
 
         registry.addInterceptor(new TenantInterceptor())
-                .addPathPatterns("/api/alertGroup/**")
-                .addPathPatterns("/api/alertHistory/**")
-                .addPathPatterns("/api/alertInstance/**")
-                .addPathPatterns("/api/catalogue/**")
-                .addPathPatterns("/api/clusterConfiguration/**")
-                .addPathPatterns("/api/cluster/**")
-                .addPathPatterns("/api/database/**")
-                .addPathPatterns("/api/history/**")
-                .addPathPatterns("/api/jobInstance/**")
-                .addPathPatterns("/api/namespace/**")
-                .addPathPatterns("/api/savepoints/**")
-                .addPathPatterns("/api/statement/**")
-                .addPathPatterns("/api/task/**")
-                .addPathPatterns("/api/role/**")
-                //.addPathPatterns("/api/fragment/**")
-                .addPathPatterns("/api/jar/*");
+            .addPathPatterns("/api/alertGroup/**")
+            .addPathPatterns("/api/alertHistory/**")
+            .addPathPatterns("/api/alertInstance/**")
+            .addPathPatterns("/api/catalogue/**")
+            .addPathPatterns("/api/clusterConfiguration/**")
+            .addPathPatterns("/api/cluster/**")
+            .addPathPatterns("/api/database/**")
+            .addPathPatterns("/api/history/**")
+            .addPathPatterns("/api/jobInstance/**")
+            .addPathPatterns("/api/namespace/**")
+            .addPathPatterns("/api/savepoints/**")
+            .addPathPatterns("/api/statement/**")
+            .addPathPatterns("/api/task/**")
+            .addPathPatterns("/api/role/**")
+            //.addPathPatterns("/api/fragment/**")
+            .addPathPatterns("/api/jar/*");
     }
 }

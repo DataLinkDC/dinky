@@ -21,11 +21,12 @@ package com.dlink.dto;
 
 import com.dlink.model.Tenant;
 import com.dlink.model.User;
+
+import java.util.Set;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Set;
 
 @Data
 @NoArgsConstructor

@@ -19,6 +19,13 @@
 
 package com.dlink.controller;
 
+import com.dlink.common.result.ProTableResult;
+import com.dlink.common.result.Result;
+import com.dlink.model.Role;
+import com.dlink.model.UserRole;
+import com.dlink.service.RoleService;
+import com.dlink.service.UserRoleService;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,12 +41,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dlink.common.result.ProTableResult;
-import com.dlink.common.result.Result;
-import com.dlink.model.Role;
-import com.dlink.model.UserRole;
-import com.dlink.service.RoleService;
-import com.dlink.service.UserRoleService;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.extern.slf4j.Slf4j;

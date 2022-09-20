@@ -19,10 +19,10 @@
 
 package com.dlink.mapper;
 
-import org.apache.ibatis.annotations.Mapper;
-
 import com.dlink.db.mapper.SuperMapper;
 import com.dlink.model.Namespace;
+
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * namespace mapper interface

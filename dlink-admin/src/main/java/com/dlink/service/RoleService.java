@@ -23,10 +23,11 @@ import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
 import com.dlink.db.service.ISuperService;
 import com.dlink.model.Role;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.List;
 import java.util.Set;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 public interface RoleService extends ISuperService<Role> {
     /**

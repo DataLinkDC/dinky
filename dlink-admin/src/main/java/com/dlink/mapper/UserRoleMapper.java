@@ -1,16 +1,12 @@
 package com.dlink.mapper;
 
+import com.dlink.db.mapper.SuperMapper;
+import com.dlink.model.UserRole;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Map;
-
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.toolkit.Constants;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.dlink.db.mapper.SuperMapper;
-import com.dlink.model.UserRole;
 
 /**
  * user role mapper interface
@@ -33,6 +29,7 @@ public interface UserRoleMapper extends SuperMapper<UserRole> {
 
     /**
      * delete user role relation by role id
+     *
      * @param roleId role id
      * @return
      */
