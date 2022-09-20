@@ -89,16 +89,16 @@ public class SchedulerController {
         String taskName = catalogue.getName() + ":" + catalogue.getId();
 
         long projectCode = dinkyProject.getCode();
-        TaskMainInfo taskDefinitionInfo = taskClient.getTaskMainInfo(projectCode, processName, taskName);
+        TaskMainInfo taskMainInfo = taskClient.getTaskMainInfo(projectCode, processName, taskName);
 
-        if (taskDefinitionInfo != null) {
-            taskDefinition = taskClient.getTaskDefinition(projectCode, taskDefinitionInfo.getTaskCode());
+        if (taskMainInfo != null) {
+            taskDefinition = taskClient.getTaskDefinition(projectCode, taskMainInfo.getTaskCode());
 
-            TaskMainInfo taskMainInfo = taskClient.getTaskMainInfo(projectCode, processName, taskDefinition.getName());
-            if (taskMainInfo != null) {
+            if (taskDefinition != null) {
                 taskDefinition.setProcessDefinitionCode(taskMainInfo.getProcessDefinitionCode());
                 taskDefinition.setProcessDefinitionName(taskMainInfo.getProcessDefinitionName());
                 taskDefinition.setProcessDefinitionVersion(taskMainInfo.getProcessDefinitionVersion());
+                taskDefinition.setUpstreamTaskMap(taskMainInfo.getUpstreamTaskMap());
             } else {
                 return Result.failed("请先工作流保存");
             }
@@ -141,11 +141,12 @@ public class SchedulerController {
     @ApiOperation(value = "创建任务定义", notes = "创建任务定义")
     public Result<String> createTaskDefinition(@ApiParam(value = "前置任务编号 逗号隔开") @RequestParam(required = false) String upstreamCodes,
                                                @ApiParam(value = "dinky任务id") @RequestParam Long dinkyTaskId,
-                                               @Valid @RequestBody TaskRequest taskDefinitionLog) {
+                                               @Valid @RequestBody TaskRequest taskRequest) {
         DlinkTaskParams dlinkTaskParams = new DlinkTaskParams();
         dlinkTaskParams.setTaskId(dinkyTaskId.toString());
         dlinkTaskParams.setAddress(dinkyUrl);
-        taskDefinitionLog.setTaskParams(JSONUtil.parseObj(dlinkTaskParams).toString());
+        taskRequest.setTaskParams(JSONUtil.parseObj(dlinkTaskParams).toString());
+        taskRequest.setTaskType("DINKY");
 
         Project dinkyProject = SystemInit.getProject();
 
@@ -162,11 +163,11 @@ public class SchedulerController {
 
         long projectCode = dinkyProject.getCode();
         ProcessDefinition process = processClient.getProcessDefinitionInfo(projectCode, processName);
-        taskDefinitionLog.setName(taskName);
+        taskRequest.setName(taskName);
         if (process == null) {
             Long taskCode = taskClient.genTaskCode(projectCode);
-            taskDefinitionLog.setCode(taskCode);
-            JSONObject jsonObject = JSONUtil.parseObj(taskDefinitionLog);
+            taskRequest.setCode(taskCode);
+            JSONObject jsonObject = JSONUtil.parseObj(taskRequest);
             JSONArray array = new JSONArray();
             array.set(jsonObject);
             processClient.createProcessDefinition(projectCode, processName, taskCode, array.toString());
@@ -177,7 +178,7 @@ public class SchedulerController {
                 return Result.failed("非第一个任务定义必须添加前置任务");
             }
             if (process.getReleaseState() == ReleaseState.ONLINE) {
-                return Result.failed("工作流定义 [" + processName + "] 已经上线");
+                return Result.failed("工作流定义 [" + processName + "] 已经上线已经上线");
             }
             long processCode = process.getCode();
             TaskMainInfo taskDefinitionInfo = taskClient.getTaskMainInfo(projectCode, processName, taskName);
@@ -185,9 +186,9 @@ public class SchedulerController {
                 return Result.failed("添加失败,工作流定义[" + processName + "]已存在任务定义[" + taskName + "] 请刷新");
             }
 
-            taskDefinitionLog.setDescription(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss.SSS"));
+            taskRequest.setDescription(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss.SSS"));
 
-            String taskDefinitionJsonObj = JSONUtil.toJsonStr(taskDefinitionLog);
+            String taskDefinitionJsonObj = JSONUtil.toJsonStr(taskRequest);
             taskClient.createTaskDefinition(projectCode, processCode, upstreamCodes, taskDefinitionJsonObj);
 
             return Result.succeed("添加任务定义成功");
@@ -204,13 +205,15 @@ public class SchedulerController {
                                                @ApiParam(value = "工作流定义编号") @RequestParam long processCode,
                                                @ApiParam(value = "任务定义编号") @RequestParam long taskCode,
                                                @ApiParam(value = "前置任务编号 逗号隔开") @RequestParam(required = false) String upstreamCodes,
-                                               @Valid @RequestBody TaskRequest taskDefinitionLog) {
+                                               @Valid @RequestBody TaskRequest taskRequest) {
 
         TaskDefinition taskDefinition = taskClient.getTaskDefinition(projectCode, taskCode);
         if (taskDefinition == null) {
             return Result.failed("任务不存在");
         }
-
+        if (!"DINKY".equals(taskDefinition.getTaskType())) {
+            return Result.failed("海豚调度类型为[" + taskDefinition.getTaskType() + "] 不支持,非DINKY类型");
+        }
         DagData dagData = processClient.getProcessDefinitionInfo(projectCode, processCode);
         if (dagData == null) {
             return Result.failed("工作流定义不存在");
@@ -237,11 +240,12 @@ public class SchedulerController {
             }
         }
 
-        taskDefinitionLog.setName(taskDefinition.getName());
-        taskDefinitionLog.setDescription(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss.SSS"));
-        taskDefinitionLog.setTaskParams(JSONUtil.parseObj(taskDefinition.getTaskParams()).toString());
+        taskRequest.setName(taskDefinition.getName());
+        taskRequest.setDescription(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss.SSS"));
+        taskRequest.setTaskParams(taskDefinition.getTaskParams());
+        taskRequest.setTaskType("DINKY");
 
-        String taskDefinitionJsonObj = JSONUtil.toJsonStr(taskDefinitionLog);
+        String taskDefinitionJsonObj = JSONUtil.toJsonStr(taskRequest);
         taskClient.updateTaskDefinition(projectCode, taskCode, upstreamCodes, taskDefinitionJsonObj);
         return Result.succeed("修改成功");
     }

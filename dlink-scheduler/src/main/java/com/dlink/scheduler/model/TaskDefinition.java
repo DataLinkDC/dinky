@@ -46,7 +46,7 @@ public class TaskDefinition {
     private String taskType;
 
     @ApiModelProperty(value = "任务参数")
-    private DlinkTaskParams taskParams;
+    private String taskParams;
 
     @ApiModelProperty(value = "任务参数列表")
     private List<Property> taskParamList;
@@ -127,4 +127,7 @@ public class TaskDefinition {
 
     @ApiModelProperty(value = "工作流名")
     private String processDefinitionName;
+
+    @ApiModelProperty(value = "前置任务集合")
+    private Map<Long, String> upstreamTaskMap;
 }
