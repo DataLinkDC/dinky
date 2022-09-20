@@ -25,6 +25,7 @@ import com.dlink.metadata.convert.OracleTypeConvert;
 import com.dlink.metadata.query.IDBQuery;
 import com.dlink.metadata.query.OracleQuery;
 import com.dlink.model.Column;
+import com.dlink.model.QueryData;
 import com.dlink.model.Table;
 
 import java.util.HashMap;
@@ -63,6 +64,31 @@ public class OracleDriver extends AbstractJdbcDriver {
     @Override
     public String getName() {
         return "Oracle数据库";
+    }
+
+    /**
+     * oracel sql拼接，目前还未实现limit方法
+     * */
+    @Override
+    public StringBuilder genQueryOption(QueryData queryData) {
+
+        String where = queryData.getOption().getWhere();
+        String order = queryData.getOption().getOrder();
+
+        StringBuilder optionBuilder = new StringBuilder()
+                .append("select * from ")
+                .append(queryData.getSchemaName())
+                .append(".")
+                .append(queryData.getTableName());
+
+        if (where != null && !where.equals("")) {
+            optionBuilder.append(" where ").append(where);
+        }
+        if (order != null && !order.equals("")) {
+            optionBuilder.append(" order by ").append(order);
+        }
+
+        return optionBuilder;
     }
 
     @Override

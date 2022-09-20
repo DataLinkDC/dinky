@@ -24,10 +24,12 @@ import com.dlink.constant.CommonConstant;
 import com.dlink.metadata.query.IDBQuery;
 import com.dlink.metadata.result.JdbcSelectResult;
 import com.dlink.model.Column;
+import com.dlink.model.QueryData;
 import com.dlink.model.Schema;
 import com.dlink.model.Table;
 import com.dlink.result.SqlExplainResult;
 import com.dlink.utils.LogUtil;
+import com.dlink.utils.TextUtil;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -421,6 +423,46 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
             res = statement.executeUpdate(sql);
         }
         return res;
+    }
+
+    /**
+     * 标准sql where与order语法都是相同的
+     * 不同数据库limit语句不一样，需要单独交由driver去处理，例如oracle
+     * 通过{@query(String sql, Integer limit)}去截断返回数据，但是在大量数据情况下会导致数据库负载过高。
+     */
+    @Override
+    public StringBuilder genQueryOption(QueryData queryData) {
+
+        String where = queryData.getOption().getWhere();
+        String order = queryData.getOption().getOrder();
+        String limitStart = queryData.getOption().getLimitStart();
+        String limitEnd = queryData.getOption().getLimitEnd();
+
+        StringBuilder optionBuilder = new StringBuilder()
+                .append("select * from ")
+                .append(queryData.getSchemaName())
+                .append(".")
+                .append(queryData.getTableName());
+
+        if (where != null && !where.equals("")) {
+            optionBuilder.append(" where ").append(where);
+        }
+        if (order != null && !order.equals("")) {
+            optionBuilder.append(" order by ").append(order);
+        }
+
+        if (TextUtil.isEmpty(limitStart)) {
+            limitStart = "0";
+        }
+        if (TextUtil.isEmpty(limitEnd)) {
+            limitEnd = "100";
+        }
+        optionBuilder.append(" limit ")
+                .append(limitStart)
+                .append(",")
+                .append(limitEnd);
+
+        return optionBuilder;
     }
 
     @Override
