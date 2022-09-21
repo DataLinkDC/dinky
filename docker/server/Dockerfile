@@ -30,4 +30,4 @@ COPY --from=build-stage /tmp/dist /app
 COPY --from=plugin-stage /app/lib /app/plugins
 
 
-CMD [ "/bin/sh", "/app/auto.sh start" ]
+CMD [ "/bin/sh", "-c", "/app/auto.sh run" ]
