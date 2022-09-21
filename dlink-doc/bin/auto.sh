@@ -3,7 +3,7 @@
 # 要运行的jar包路径，加不加引号都行。 注意：等号两边不能有空格，否则会提示command找不到
 JAR_NAME="dlink-admin"
 # 如果需要将 FLINK 依赖直接加入启动脚本，在 CLASS_PATH 中末尾追加 :$FLINK_HOME/lib/*
-CLASS_PATH="./lib/*:config:html:./plugins/*"
+CLASS_PATH="./lib/*:config:html:./plugins/*:./plugins/lib/*"
 #if [ ! -d ${HADOOP_HOME} ]; then
 #  echo 'WARNING!!!...not find HADOOP_HOME for CLASSPATH.'
 #else
@@ -31,20 +31,20 @@ fi
 if [ ! -d "./plugins" ]; then
   echo 'mkdir plugins now'
   mkdir plugins
-#  cd plugins
-#  if [ ! -d ${FLINK_HOME} ]; then
-#    echo 'WARNING!!!...没有找到FLINK_HOME环境变量，无法引用Flink/lib到plugins，请手动引用或复制Flink jar到plugins文件夹'
-#    echo 'WARNING!!!...not find FLINK_HOME environment variable to reference Flink/lib to plugins, please reference or copy Flink jar to the plugins folder manually!!'
-#  else
-#    ln -s ${FLINK_HOME}/lib
-#    cd ..
-#  fi
+  cd plugins
+  if [ ! -d ${FLINK_HOME} ]; then
+    echo 'WARNING!!!...没有找到FLINK_HOME环境变量，无法引用Flink/lib到plugins，请手动引用或复制Flink jar到plugins文件夹'
+    echo 'WARNING!!!...not find FLINK_HOME environment variable to reference Flink/lib to plugins, please reference or copy Flink jar to the plugins folder manually!!'
+  else
+    ln -s ${FLINK_HOME}/lib
+    cd ..
+  fi
 fi
 
 # 如果输入格式不对，给出提示！
 tips() {
   echo ""
-  echo "WARNING!!!......Tips, please use command: sh auto.sh [start|stop|restart|status].   For example: sh auto.sh start  "
+  echo "WARNING!!!......Tips, please use command: sh auto.sh [start|stop|run|restart|status].   For example: sh auto.sh start  "
   echo ""
   exit 1
 }
@@ -59,6 +59,16 @@ start() {
     echo $! >${PIDPATH}/${PIDFILE}
     echo "........................................Start Dlink Successfully........................................"
 
+  else
+    echo "Dlink pid $pid is in ${PIDPATH}/${PIDFILE}, Please stop first !!!"
+  fi
+}
+
+# 前台运行
+run() {
+  pid=$(cat ${PIDPATH}/${PIDFILE})
+  if [ -z $pid ]; then
+    java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none -cp ${CLASS_PATH} com.dlink.Dlink
   else
     echo "Dlink pid $pid is in ${PIDPATH}/${PIDFILE}, Please stop first !!!"
   fi
@@ -104,6 +114,9 @@ restart() {
 case "$1" in
 "start")
   start
+  ;;
+"run")
+  run
   ;;
 "stop")
   stop
