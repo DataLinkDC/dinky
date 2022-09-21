@@ -30,6 +30,8 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
+
+
 /**
  * Table
  *
@@ -52,6 +54,16 @@ public class Table implements Serializable, Comparable<Table> {
     private Long rows;
     private Date createTime;
     private Date updateTime;
+    /**
+     * 表类型
+     */
+    private TableType tableType = TableType.SINGLE_DATABASE_AND_TABLE;
+    /**
+     * 分库或分表对应的表名
+     */
+    private List<String> schemaTableNameList;
+
+
     private List<Column> columns;
 
     public Table() {
@@ -98,7 +110,7 @@ public class Table implements Serializable, Comparable<Table> {
     }
 
     public String getFlinkTableSql(String flinkConfig) {
-        return getFlinkDDL(flinkConfig,name);
+        return getFlinkDDL(flinkConfig, name);
     }
 
     public String getFlinkDDL(String flinkConfig, String tableName) {
