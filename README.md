@@ -38,35 +38,35 @@ Its main feature are as follows:
 
 > FlinkSQL Studio
 
-![image-20220922101143441](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/070/datastudio.png)
+![datastudio](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/070/datastudio.png)
 
 > Grammar Check
 
-![image-20220922105912608](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/070/checksql.png)
+![checksql](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/070/checksql.png)
 
 > Version Management
 
-![image-20220922110933360](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/070/versiondiff.png)
+![versiondiff](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/070/versiondiff.png)
 
 > lineage
 
-![image-20220922102603221](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/070/lineage.png)
+![lineage](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/070/lineage.png)
 
 > BI Charts
 
-![image-20220922110356261](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/070/charts.png)
+![charts](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/070/charts.png)
 
 > Metadata Query
 
-![image-20220922104423674](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/070/metadata.png)
+![metadata](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/070/metadata.png)
 
 > Task Monitoring
 
-![image-20220922101828034](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/070/monitor.png)
+![monitor](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/070/monitor.png)
 
 > Job Information
 
-![image-20220922102034061](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/070/jobinfo.png)
+![jobinfo](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/070/jobinfo.png)
 
 ## Near-term Plans
 
@@ -134,7 +134,7 @@ Thanks to [JetBrains](https://www.jetbrains.com/?from=dlink) for sponsoring a fr
 
 3.It is recommended to scan the code to enter the DingTalk group.
 
-<img src="https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/main/dinkydingding.jpg" alt="dinkydingding" style="zoom:30%;" />
+<img src="https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/main/dinkydingding.jpg" alt="dinkydingding" style="zoom:30%;" />
 
 4.Enter the WeChat user community group (recommended, add WeChat `wenmo_ai` to invite into the group) and QQ user community group (**543709668**) to communicate, and apply for the remarks "Dinky + company name + position".
 

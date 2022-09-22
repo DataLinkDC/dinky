@@ -38,35 +38,35 @@ Dinky 是一个 `开箱即用` 、`易扩展` ，以 `Apache Flink` 为基础，
 
 > FlinkSQL Studio
 
-![image-20220922101143441](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/070/datastudio.png)
+![datastudio](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/070/datastudio.png)
 
 > 语法检查
 
-![image-20220922105912608](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/070/checksql.png)
+![checksql](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/070/checksql.png)
 
 > 版本管理
 
-![image-20220922110933360](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/070/versiondiff.png)
+![versiondiff](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/070/versiondiff.png)
 
 > 血缘分析
 
-![image-20220922102603221](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/070/lineage.png)
+![lineage](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/070/lineage.png)
 
 > BI 图表
 
-![image-20220922110356261](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/070/charts.png)
+![charts](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/070/charts.png)
 
 > 元数据查询
 
-![image-20220922104423674](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/070/metadata.png)
+![metadata](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/070/metadata.png)
 
 > 任务监控
 
-![image-20220922101828034](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/070/monitor.png)
+![monitor](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/070/monitor.png)
 
 > 作业信息
 
-![image-20220922102034061](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/070/jobinfo.png)
+![jobinfo](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/070/jobinfo.png)
 
 ## 近期计划
 
@@ -134,7 +134,7 @@ Dinky 是一个 `开箱即用` 、`易扩展` ，以 `Apache Flink` 为基础，
 
 3.推荐扫码进入钉钉群
 
-<img src="https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/main/dinkydingding.jpg" alt="dinkydingding" style="zoom:30%;" />
+<img src="https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/main/dinkydingding.jpg" alt="dinkydingding" style="zoom:30%;" />
 
 4.进入微信用户社区群（推荐，添加微信号 `wenmo_ai` 邀请进群）和QQ用户社区群（**543709668**）交流，申请备注 “ Dinky + 企业名 + 职位”
 
