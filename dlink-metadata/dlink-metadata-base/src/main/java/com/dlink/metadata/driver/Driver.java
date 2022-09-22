@@ -21,8 +21,10 @@ package com.dlink.metadata.driver;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.exception.MetaDataException;
+import com.dlink.exception.SplitTableException;
 import com.dlink.metadata.result.JdbcSelectResult;
 import com.dlink.model.Column;
+import com.dlink.model.QueryData;
 import com.dlink.model.Schema;
 import com.dlink.model.Table;
 import com.dlink.result.SqlExplainResult;
@@ -31,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
+import java.util.Set;
 
 /**
  * Driver
@@ -137,9 +140,26 @@ public interface Driver {
 
     JdbcSelectResult query(String sql, Integer limit);
 
+    StringBuilder genQueryOption(QueryData queryData);
+
     JdbcSelectResult executeSql(String sql, Integer limit);
 
     List<SqlExplainResult> explain(String sql);
 
     Map<String, String> getFlinkColumnTypeConversion();
+
+    /**
+     * 得到分割表
+     *
+     * @param tableRegList 表正则列表
+     * @param splitConfig  分库配置
+     * @return {@link Set}<{@link Table}>
+     */
+    default Set<Table> getSplitTables(List<String> tableRegList, Map<String, String> splitConfig) {
+        throw new SplitTableException("目前此数据源不支持分库分表");
+    }
+
+    ;
+
+    List<Map<String, String>> getSplitSchemaList();
 }
