@@ -22,7 +22,7 @@ import {executeDDL, getMSCatalogs} from "@/pages/DataStudio/service";
 import FlinkSQL from "./FlinkSQL";
 import {MetaStoreCatalogType, SessionType, TaskType} from "@/pages/DataStudio/model";
 import {message, Modal} from "antd";
-import {addOrUpdateData, getData, handleRemove} from "@/components/Common/crud";
+import {addOrUpdateData, getData, handleRemove, postAll} from "@/components/Common/crud";
 
 /*--- 保存sql ---*/
 export function saveTask(current: any, dispatch: any) {
@@ -221,6 +221,10 @@ export function showAlertGroup(dispatch: any) {
 /*--- 刷新 元数据表 ---*/
 export function showMetaDataTable(id: number) {
   return getData('api/database/getSchemasAndTables', {id: id});
+}
+/*--- 刷新 数据表样例数据 ---*/
+export function showTableData(id: number,schemaName:String,tableName:String,option:{}) {
+  return postAll('api/database/queryData', {id: id,schemaName:schemaName,tableName:tableName,option:option});
 }
 
 /*--- 刷新 Flink Jobs ---*/
