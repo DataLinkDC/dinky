@@ -376,7 +376,7 @@ public class JobManager {
                         streamGraph.setJobName(config.getJobName());
                         JobGraph jobGraph = streamGraph.getJobGraph();
                         if (Asserts.isNotNullString(config.getSavePointPath())) {
-                            jobGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(config.getSavePointPath()));
+                            jobGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(config.getSavePointPath(),true));
                         }
                         gatewayResult = Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);
                     }
@@ -434,7 +434,7 @@ public class JobManager {
             JobGraph jobGraph = executor.getJobGraphFromInserts(inserts);
             // Perjob mode need to set savepoint restore path, when recovery from savepoint.
             if (Asserts.isNotNullString(config.getSavePointPath())) {
-                jobGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(config.getSavePointPath()));
+                jobGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(config.getSavePointPath(),true));
             }
             // Perjob mode need to submit job graph.
             gatewayResult = Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);

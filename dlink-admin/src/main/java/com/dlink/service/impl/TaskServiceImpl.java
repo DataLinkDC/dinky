@@ -767,6 +767,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 }
                 break;
             case CUSTOM:
+                config.setSavePointPath(config.getSavePointPath());
                 config.getConfig().put("execution.savepoint.path", config.getSavePointPath());
                 break;
             default:
