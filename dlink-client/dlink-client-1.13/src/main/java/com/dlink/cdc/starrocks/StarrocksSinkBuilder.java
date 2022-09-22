@@ -88,7 +88,7 @@ public class StarrocksSinkBuilder extends AbstractSinkBuilder implements SinkBui
                 List<String> columnNameList = new ArrayList<>();
                 List<LogicalType> columnTypeList = new ArrayList<>();
                 buildColumn(columnNameList, columnTypeList, table.getColumns());
-                DataStream<RowData> rowDataDataStream = buildRowData1(mapOperator, columnNameList, columnTypeList, table.getSchemaTableName());
+                DataStream<RowData> rowDataDataStream = buildRowData(mapOperator, columnNameList, columnTypeList, table.getSchemaTableName());
                 addSink(env, rowDataDataStream, table, columnNameList, columnTypeList);
             } else {
                 final String schemaFieldName = config.getSchemaFieldName();
@@ -101,7 +101,7 @@ public class StarrocksSinkBuilder extends AbstractSinkBuilder implements SinkBui
 
                         buildColumn(columnNameList, columnTypeList, table.getColumns());
 
-                        DataStream<RowData> rowDataDataStream = buildRowData1(filterOperator, columnNameList, columnTypeList, table.getSchemaTableName());
+                        DataStream<RowData> rowDataDataStream = buildRowData(filterOperator, columnNameList, columnTypeList, table.getSchemaTableName());
 
                         addSink(env, rowDataDataStream, table, columnNameList, columnTypeList);
                     }
@@ -208,7 +208,7 @@ public class StarrocksSinkBuilder extends AbstractSinkBuilder implements SinkBui
         }
     }
 
-    protected DataStream<RowData> buildRowData1(
+    protected DataStream<RowData> buildRowData(
             SingleOutputStreamOperator<Map> filterOperator,
             List<String> columnNameList,
             List<LogicalType> columnTypeList,

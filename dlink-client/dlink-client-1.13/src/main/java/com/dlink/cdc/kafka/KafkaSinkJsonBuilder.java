@@ -74,7 +74,7 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements SinkBui
 
     @Override
     public SinkBuilder create(FlinkCDCConfig config) {
-        return new KafkaSinkBuilder(config);
+        return new KafkaSinkJsonBuilder(config);
     }
 
     @Override
