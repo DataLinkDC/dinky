@@ -31,7 +31,7 @@ const Tables = (props: any) => {
     <Descriptions.Item label="Rows">{table.rows}</Descriptions.Item>
     <Descriptions.Item label="Type">{table.type}</Descriptions.Item>
     <Descriptions.Item label="Engine">{table.engine}</Descriptions.Item>
-    <Descriptions.Item label="Options" span={3}>
+    <Descriptions.Item label="Options" >
       {table.options}
     </Descriptions.Item>
     <Descriptions.Item label="Status"><Badge status="processing" text="Running" /></Descriptions.Item>

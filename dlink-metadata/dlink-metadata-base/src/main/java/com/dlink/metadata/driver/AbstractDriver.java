@@ -26,6 +26,7 @@ import com.dlink.model.Schema;
 import com.dlink.model.Table;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -83,4 +84,8 @@ public abstract class AbstractDriver implements Driver {
         return listTables(table.getSchema()).stream().anyMatch(tableItem -> Asserts.isEquals(tableItem.getName(), table.getName()));
     }
 
+    @Override
+    public List<Map<String, String>> getSplitSchemaList() {
+        throw new RuntimeException("该数据源暂不支持分库分表");
+    }
 }
