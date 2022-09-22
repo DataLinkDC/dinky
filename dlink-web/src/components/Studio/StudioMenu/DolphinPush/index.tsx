@@ -28,6 +28,7 @@ import {
   updateTaskDefinition
 } from "@/pages/DataStudio/service";
 import {CODE} from "@/components/Common/crud";
+import TextArea from "antd/es/input/TextArea";
 
 const DolphinPush = (props: any) => {
   const {data, taskCur, handleDolphinModalVisible} = props;
@@ -40,8 +41,8 @@ const DolphinPush = (props: any) => {
   const CheckboxGroup = Checkbox.Group;
 
   const layout = {
-    labelCol: {span: 8},
-    wrapperCol: {span: 16},
+    labelCol: {span: 6},
+    wrapperCol: {span: 18},
   };
   useEffect(() => {
     options.length = 0;
@@ -93,6 +94,7 @@ const DolphinPush = (props: any) => {
         upstreamCodes: upstreamCodesTem,
         taskPriority: data.taskPriority,
         failRetryTimes: data.failRetryTimes,
+        description: data.description,
         failRetryInterval: data.failRetryInterval,
         delayTime: data.delayTime,
         timeout: data.timeout,
@@ -162,12 +164,12 @@ const DolphinPush = (props: any) => {
 
   return (
     <Form {...layout} ref={formRef} name="control-hooks" onFinish={onFinish}>
-      <Form.Item name={['upstreamCodes']} label="前置任务">
+      <Form.Item name={['upstreamCodes']} style={{marginBottom: 10}} label="前置任务">
         <Select mode='multiple' style={{width: '100%'}} options={options} placeholder='选择前置任务'
                 maxTagCount='responsive'/>
       </Form.Item>
 
-      <Form.Item name={['taskPriority']} label="优先级">
+      <Form.Item name={['taskPriority']} style={{marginBottom: 10}} label="优先级">
         <Select style={{width: 180}}>
           <Option value="HIGH">HIGH</Option>
           <Option value="HIGHEST">HIGHEST</Option>
@@ -177,19 +179,19 @@ const DolphinPush = (props: any) => {
         </Select>
       </Form.Item>
 
-      <Form.Item name={['failRetryTimes']} label="失败重试次数">
+      <Form.Item name={['failRetryTimes']} style={{marginBottom: 10}} label="失败重试次数">
         <InputNumber min={0} max={99} style={{width: 180}}/>
       </Form.Item>
-      <Form.Item name={['failRetryInterval']} label="失败重试间隔(分钟)">
+      <Form.Item name={['failRetryInterval']} style={{marginBottom: 10}} label="失败重试间隔(分钟)">
         <InputNumber min={0} style={{width: 180}}/>
       </Form.Item>
-      <Form.Item name={['delayTime']} label="延时执行时间(分钟)">
+      <Form.Item name={['delayTime']} style={{marginBottom: 10}} label="延时执行时间(分钟)">
         <InputNumber min={0} style={{width: 180}}/>
       </Form.Item>
-      <Form.Item name={['timeoutFlag']} label="超时告警" valuePropName="checked">
+      <Form.Item name={['timeoutFlag']} style={{marginBottom: 10}} label="超时告警" valuePropName="checked">
         <Switch checkedChildren="OPEN" unCheckedChildren="CLOSE" onChange={onSwitchChange}/>
       </Form.Item>
-      <Form.Item name={['timeoutNotifyStrategy']} hidden={!timeoutFlagHidden} label="超时策略">
+      <Form.Item name={['timeoutNotifyStrategy']} style={{marginBottom: 10}} hidden={!timeoutFlagHidden} label="超时策略">
         <CheckboxGroup>
           <Row>
             <Col span={12}>
@@ -201,11 +203,14 @@ const DolphinPush = (props: any) => {
           </Row>
         </CheckboxGroup>
       </Form.Item>
-      <Form.Item name={['timeout']} hidden={!timeoutFlagHidden} label="超时告警时长(分钟)">
+      <Form.Item name={['timeout']} style={{marginBottom: 10}} hidden={!timeoutFlagHidden} label="超时告警时长(分钟)">
         <InputNumber min={1} value={30} style={{width: 180}}/>
       </Form.Item>
-      <Form.Item name={['flag']} label="运行标志" valuePropName="checked">
+      <Form.Item name={['flag']} style={{marginBottom: 10}} label="运行标志" valuePropName="checked">
         <Switch checkedChildren="YES" unCheckedChildren="NO"/>
+      </Form.Item>
+      <Form.Item name={['description']} style={{marginBottom: 10}} label="备注">
+        <TextArea rows={3} placeholder="备注信息" maxLength={250}/>
       </Form.Item>
       <Form.Item wrapperCol={{offset: 8, span: 16}}>
         <Button type="primary" htmlType="submit">
