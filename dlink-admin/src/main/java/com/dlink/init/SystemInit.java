@@ -41,15 +41,12 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import groovy.util.logging.Slf4j;
-
 /**
  * SystemInit
  *
  * @author wenmo
  * @since 2021/11/18
  **/
-@Slf4j
 @Component
 @Order(value = 1)
 public class SystemInit implements ApplicationRunner {

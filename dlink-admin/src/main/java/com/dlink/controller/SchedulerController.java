@@ -1,3 +1,22 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 package com.dlink.controller;
 
 import com.dlink.common.result.Result;
@@ -10,7 +29,6 @@ import com.dlink.scheduler.exception.SchedulerException;
 import com.dlink.scheduler.model.DagData;
 import com.dlink.scheduler.model.DlinkTaskParams;
 import com.dlink.scheduler.model.ProcessDefinition;
-import com.dlink.scheduler.model.ProcessTaskRelation;
 import com.dlink.scheduler.model.Project;
 import com.dlink.scheduler.model.TaskDefinition;
 import com.dlink.scheduler.model.TaskMainInfo;
@@ -20,7 +38,6 @@ import com.dlink.service.CatalogueService;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -40,7 +57,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -174,9 +190,6 @@ public class SchedulerController {
 
             return Result.succeed("添加工作流定义成功");
         } else {
-            if (StringUtils.isBlank(upstreamCodes)) {
-                return Result.failed("非第一个任务定义必须添加前置任务");
-            }
             if (process.getReleaseState() == ReleaseState.ONLINE) {
                 return Result.failed("工作流定义 [" + processName + "] 已经上线已经上线");
             }
@@ -185,8 +198,6 @@ public class SchedulerController {
             if (taskDefinitionInfo != null) {
                 return Result.failed("添加失败,工作流定义[" + processName + "]已存在任务定义[" + taskName + "] 请刷新");
             }
-
-            taskRequest.setDescription(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss.SSS"));
 
             String taskDefinitionJsonObj = JSONUtil.toJsonStr(taskRequest);
             taskClient.createTaskDefinition(projectCode, processCode, upstreamCodes, taskDefinitionJsonObj);
@@ -225,23 +236,8 @@ public class SchedulerController {
         if (process.getReleaseState() == ReleaseState.ONLINE) {
             return Result.failed("工作流定义 [" + process.getName() + "] 已经上线");
         }
-        List<ProcessTaskRelation> relations = dagData.getProcessTaskRelationList();
-        if (relations != null) {
-            for (ProcessTaskRelation relation : relations) {
-                if (relation.getPostTaskCode() == taskCode) {
-                    if (relation.getPreTaskCode() != 0) {
-                        if (StringUtils.isBlank(upstreamCodes)) {
-                            return Result.failed("非第一个任务定义必须添加前置任务");
-                        }
-                    } else {
-                        upstreamCodes = "";
-                    }
-                }
-            }
-        }
 
         taskRequest.setName(taskDefinition.getName());
-        taskRequest.setDescription(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss.SSS"));
         taskRequest.setTaskParams(taskDefinition.getTaskParams());
         taskRequest.setTaskType("DINKY");
 
