@@ -81,7 +81,8 @@ const DolphinPush = (props: any) => {
       if (data.timeoutNotifyStrategy === "WARNFAILED") {
         tns = ['WARN', 'FAILED']
       } else {
-        tns = data.timeoutNotifyStrategy.split(',')
+        // debugger
+        tns = data.timeoutNotifyStrategy ? data.timeoutNotifyStrategy.split(',') : []
       }
       // debugger
       //前置任务勾选
@@ -125,9 +126,10 @@ const DolphinPush = (props: any) => {
       values.timeout = 0;
     } else {
       values.timeoutFlag = 'OPEN'
-      if (values.timeoutNotifyStrategy.length > 1) {
+      values.timeout = 1;
+      if (values.timeoutNotifyStrategy && values.timeoutNotifyStrategy.length > 1) {
         values.timeoutNotifyStrategy = "WARNFAILED";
-      } else if (values.timeoutNotifyStrategy.length === 1) {
+      } else if (values.timeoutNotifyStrategy && values.timeoutNotifyStrategy.length === 1) {
         values.timeoutNotifyStrategy = values.timeoutNotifyStrategy[0]
       } else {
         message.error(`超时策略必须选一个`);
@@ -160,6 +162,9 @@ const DolphinPush = (props: any) => {
 
   function onSwitchChange(checked: boolean) {
     setTimeoutFlagHidden(checked);
+    formRef.current.setFieldsValue({
+      timeout: 1
+    });
   }
 
   return (
