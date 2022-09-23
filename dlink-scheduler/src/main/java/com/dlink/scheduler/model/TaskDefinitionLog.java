@@ -17,30 +17,26 @@
  *
  */
 
-package com.dlink.configure;
+package com.dlink.scheduler.model;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import java.util.Date;
 
-import cn.dev33.satoken.interceptor.SaRouteInterceptor;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 /**
- * SaTokenConfigure
- *
- * @author wenmo
- * @since 2021/11/28 19:35
+ * task definition log
  */
-@Configuration
-public class SaTokenConfigure implements WebMvcConfigurer {
-    // 注册拦截器
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        // 注册Sa-Token的路由拦截器
-        registry.addInterceptor(new SaRouteInterceptor())
-            .addPathPatterns("/api/**")
-            .excludePathPatterns("/api/login")
-            .excludePathPatterns("/openapi/**");
-    }
-}
+@Data
+public class TaskDefinitionLog extends TaskDefinition {
 
+    @ApiModelProperty(value = "操作人")
+    private Integer operator;
+
+    @ApiModelProperty(value = "操作时间")
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date operateTime;
+
+}

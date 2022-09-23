@@ -17,30 +17,26 @@
  *
  */
 
-package com.dlink.configure;
+package com.dlink.scheduler.model;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import java.util.List;
 
-import cn.dev33.satoken.interceptor.SaRouteInterceptor;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 /**
- * SaTokenConfigure
- *
- * @author wenmo
- * @since 2021/11/28 19:35
+ * DagData
  */
-@Configuration
-public class SaTokenConfigure implements WebMvcConfigurer {
-    // 注册拦截器
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        // 注册Sa-Token的路由拦截器
-        registry.addInterceptor(new SaRouteInterceptor())
-            .addPathPatterns("/api/**")
-            .excludePathPatterns("/api/login")
-            .excludePathPatterns("/openapi/**");
-    }
-}
+@Data
+public class DagData {
 
+    @ApiModelProperty(value = "工作流程定义")
+    private ProcessDefinition processDefinition;
+
+    @ApiModelProperty(value = "工作流程定义,任务定义关联 关联关系集合")
+    private List<ProcessTaskRelation> processTaskRelationList;
+
+    @ApiModelProperty(value = "任务定义关联集合")
+    private List<TaskDefinition> taskDefinitionList;
+
+}
