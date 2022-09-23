@@ -17,30 +17,44 @@
  *
  */
 
-package com.dlink.configure;
-
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import cn.dev33.satoken.interceptor.SaRouteInterceptor;
+package com.dlink.scheduler.enums;
 
 /**
- * SaTokenConfigure
- *
- * @author wenmo
- * @since 2021/11/28 19:35
+ * task timeout strategy
  */
-@Configuration
-public class SaTokenConfigure implements WebMvcConfigurer {
-    // 注册拦截器
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        // 注册Sa-Token的路由拦截器
-        registry.addInterceptor(new SaRouteInterceptor())
-            .addPathPatterns("/api/**")
-            .excludePathPatterns("/api/login")
-            .excludePathPatterns("/openapi/**");
-    }
-}
+public enum TaskTimeoutStrategy {
+    /**
+     * 0 warn
+     * 1 failed
+     * 2 warn+failed
+     */
+    WARN(0, "warn"),
+    FAILED(1, "failed"),
+    WARNFAILED(2, "warnfailed");
 
+    TaskTimeoutStrategy(int code, String descp) {
+        this.code = code;
+        this.descp = descp;
+    }
+
+    private final int code;
+    private final String descp;
+
+    public int getCode() {
+        return code;
+    }
+
+    public String getDescp() {
+        return descp;
+    }
+
+    public static TaskTimeoutStrategy of(int status) {
+        for (TaskTimeoutStrategy es : values()) {
+            if (es.getCode() == status) {
+                return es;
+            }
+        }
+        throw new IllegalArgumentException("invalid status : " + status);
+    }
+
+}

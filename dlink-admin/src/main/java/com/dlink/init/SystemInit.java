@@ -23,6 +23,9 @@ import com.dlink.daemon.task.DaemonFactory;
 import com.dlink.daemon.task.DaemonTaskConfig;
 import com.dlink.job.FlinkJobTask;
 import com.dlink.model.JobInstance;
+import com.dlink.scheduler.client.ProjectClient;
+import com.dlink.scheduler.exception.SchedulerException;
+import com.dlink.scheduler.model.Project;
 import com.dlink.service.JobInstanceService;
 import com.dlink.service.SysConfigService;
 import com.dlink.service.TaskService;
@@ -49,13 +52,16 @@ import org.springframework.stereotype.Component;
 public class SystemInit implements ApplicationRunner {
 
     private static final Logger log = LoggerFactory.getLogger(SystemInit.class);
-
+    @Autowired
+    private ProjectClient projectClient;
     @Autowired
     private SysConfigService sysConfigService;
     @Autowired
     private JobInstanceService jobInstanceService;
     @Autowired
     private TaskService taskService;
+
+    private static Project project;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -68,5 +74,20 @@ public class SystemInit implements ApplicationRunner {
         }
         log.info("启动的任务数量:" + configList.size());
         DaemonFactory.start(configList);
+        try {
+            project = projectClient.getDinkyProject();
+            if (project == null) {
+                project = projectClient.createDinkyProject();
+            }
+        } catch (Exception e) {
+            log.error("海豚调度异常: {}", e);
+        }
+    }
+
+    public static Project getProject() {
+        if (project == null) {
+            throw new SchedulerException("请完善海豚调度配置,重启dlink");
+        }
+        return project;
     }
 }

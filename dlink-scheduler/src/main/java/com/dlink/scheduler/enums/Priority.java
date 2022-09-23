@@ -17,30 +17,38 @@
  *
  */
 
-package com.dlink.configure;
-
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import cn.dev33.satoken.interceptor.SaRouteInterceptor;
+package com.dlink.scheduler.enums;
 
 /**
- * SaTokenConfigure
- *
- * @author wenmo
- * @since 2021/11/28 19:35
+ * define process and task priority
  */
-@Configuration
-public class SaTokenConfigure implements WebMvcConfigurer {
-    // 注册拦截器
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        // 注册Sa-Token的路由拦截器
-        registry.addInterceptor(new SaRouteInterceptor())
-            .addPathPatterns("/api/**")
-            .excludePathPatterns("/api/login")
-            .excludePathPatterns("/openapi/**");
+public enum Priority {
+    /**
+     * 0 highest priority
+     * 1 higher priority
+     * 2 medium priority
+     * 3 lower priority
+     * 4 lowest priority
+     */
+    HIGHEST(0, "highest"),
+    HIGH(1, "high"),
+    MEDIUM(2, "medium"),
+    LOW(3, "low"),
+    LOWEST(4, "lowest");
+
+    Priority(int code, String descp) {
+        this.code = code;
+        this.descp = descp;
+    }
+
+    private final int code;
+    private final String descp;
+
+    public int getCode() {
+        return code;
+    }
+
+    public String getDescp() {
+        return descp;
     }
 }
-

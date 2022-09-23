@@ -17,30 +17,37 @@
  *
  */
 
-package com.dlink.configure;
-
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import cn.dev33.satoken.interceptor.SaRouteInterceptor;
+package com.dlink.scheduler.enums;
 
 /**
- * SaTokenConfigure
- *
- * @author wenmo
- * @since 2021/11/28 19:35
+ * have_script
+ * have_file
+ * can_retry
+ * have_arr_variables
+ * have_map_variables
+ * have_alert
  */
-@Configuration
-public class SaTokenConfigure implements WebMvcConfigurer {
-    // 注册拦截器
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        // 注册Sa-Token的路由拦截器
-        registry.addInterceptor(new SaRouteInterceptor())
-            .addPathPatterns("/api/**")
-            .excludePathPatterns("/api/login")
-            .excludePathPatterns("/openapi/**");
+public enum Flag {
+    /**
+     * 0 no
+     * 1 yes
+     */
+    NO(0, "no"),
+    YES(1, "yes");
+
+    Flag(int code, String descp) {
+        this.code = code;
+        this.descp = descp;
+    }
+
+    private final int code;
+    private final String descp;
+
+    public int getCode() {
+        return code;
+    }
+
+    public String getDescp() {
+        return descp;
     }
 }
-
