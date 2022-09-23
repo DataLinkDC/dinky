@@ -17,30 +17,34 @@
  *
  */
 
-package com.dlink.configure;
+package com.dlink.scheduler.model;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import com.dlink.scheduler.enums.DataType;
+import com.dlink.scheduler.enums.Direct;
 
-import cn.dev33.satoken.interceptor.SaRouteInterceptor;
+import java.io.Serializable;
 
-/**
- * SaTokenConfigure
- *
- * @author wenmo
- * @since 2021/11/28 19:35
- */
-@Configuration
-public class SaTokenConfigure implements WebMvcConfigurer {
-    // 注册拦截器
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        // 注册Sa-Token的路由拦截器
-        registry.addInterceptor(new SaRouteInterceptor())
-            .addPathPatterns("/api/**")
-            .excludePathPatterns("/api/login")
-            .excludePathPatterns("/openapi/**");
-    }
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
+@Data
+public class Property implements Serializable {
+
+    private static final long serialVersionUID = -4045513703397452451L;
+    @ApiModelProperty(value = "key")
+    private String prop;
+
+    /**
+     * input/output
+     */
+    private Direct direct;
+
+    /**
+     * data type
+     */
+    private DataType type;
+
+    @ApiModelProperty(value = "value")
+    private String value;
+
 }
-
