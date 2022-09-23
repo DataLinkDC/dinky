@@ -128,7 +128,7 @@ public class JarController {
         List<Task> allUDF = taskService.getAllUDF();
         List<String> udfCodes = allUDF.stream().map(Task::getStatement).collect(Collectors.toList());
         Map<String, List<String>> resultMap = UDFUtil.buildJar(udfCodes);
-        String msg = StrUtil.format("udf jar生成生成成功，jar文件在dinky安装目录下tmp/udf/udf.jar；\n本次成功 class:{}。\n失败 class:{}"
+        String msg = StrUtil.format("udf jar生成成功，jar文件在dinky安装目录下tmp/udf/udf.jar；\n本次成功 class:{}。\n失败 class:{}"
             , resultMap.get("success"), resultMap.get("failed"));
         return Result.succeed(resultMap, msg);
     }
