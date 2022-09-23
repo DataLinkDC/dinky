@@ -17,30 +17,32 @@
  *
  */
 
-package com.dlink.configure;
-
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import cn.dev33.satoken.interceptor.SaRouteInterceptor;
+package com.dlink.scheduler.enums;
 
 /**
- * SaTokenConfigure
- *
- * @author wenmo
- * @since 2021/11/28 19:35
+ * task execute type
  */
-@Configuration
-public class SaTokenConfigure implements WebMvcConfigurer {
-    // 注册拦截器
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        // 注册Sa-Token的路由拦截器
-        registry.addInterceptor(new SaRouteInterceptor())
-            .addPathPatterns("/api/**")
-            .excludePathPatterns("/api/login")
-            .excludePathPatterns("/openapi/**");
+public enum TaskExecuteType {
+    /**
+     * 0 batch
+     * 1 stream
+     */
+    BATCH(0, "batch"),
+    STREAM(1, "stream");
+
+    TaskExecuteType(int code, String desc) {
+        this.code = code;
+        this.desc = desc;
+    }
+
+    private final int code;
+    private final String desc;
+
+    public int getCode() {
+        return code;
+    }
+
+    public String getDesc() {
+        return desc;
     }
 }
-

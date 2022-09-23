@@ -17,30 +17,30 @@
  *
  */
 
-package com.dlink.configure;
+package com.dlink.scheduler.result;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
-import cn.dev33.satoken.interceptor.SaRouteInterceptor;
+@Data
+@Slf4j
+public class Result<T> {
+    /**
+     * status
+     */
+    private Integer code;
 
-/**
- * SaTokenConfigure
- *
- * @author wenmo
- * @since 2021/11/28 19:35
- */
-@Configuration
-public class SaTokenConfigure implements WebMvcConfigurer {
-    // 注册拦截器
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        // 注册Sa-Token的路由拦截器
-        registry.addInterceptor(new SaRouteInterceptor())
-            .addPathPatterns("/api/**")
-            .excludePathPatterns("/api/login")
-            .excludePathPatterns("/openapi/**");
-    }
+    /**
+     * message
+     */
+    private String msg;
+
+    /**
+     * data
+     */
+    private T data;
+
+    private Boolean success;
+
+    private Boolean failed;
 }
-

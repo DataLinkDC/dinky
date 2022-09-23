@@ -17,30 +17,23 @@
  *
  */
 
-package com.dlink.configure;
-
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import cn.dev33.satoken.interceptor.SaRouteInterceptor;
+package com.dlink.scheduler.enums;
 
 /**
- * SaTokenConfigure
- *
- * @author wenmo
- * @since 2021/11/28 19:35
+ * data types in user define parameter
  */
-@Configuration
-public class SaTokenConfigure implements WebMvcConfigurer {
-    // 注册拦截器
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        // 注册Sa-Token的路由拦截器
-        registry.addInterceptor(new SaRouteInterceptor())
-            .addPathPatterns("/api/**")
-            .excludePathPatterns("/api/login")
-            .excludePathPatterns("/openapi/**");
-    }
+public enum DataType {
+    /**
+     * 0 string
+     * 1 integer
+     * 2 long
+     * 3 float
+     * 4 double
+     * 5 date, "YYYY-MM-DD"
+     * 6 time, "HH:MM:SS"
+     * 7 time stamp
+     * 8 Boolean
+     * 9 list <String>
+     */
+    VARCHAR, INTEGER, LONG, FLOAT, DOUBLE, DATE, TIME, TIMESTAMP, BOOLEAN, LIST
 }
-

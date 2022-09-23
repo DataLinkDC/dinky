@@ -74,3 +74,14 @@ sa-token:
 
 knife4j:
   enable: true
+
+dinky:
+  # dinky 地址
+  url: http://127.0.0.1:8888
+  dolphinscheduler:
+    # dolphinscheduler 地址
+    url: http://127.0.0.1:12345/dolphinscheduler
+    # dolphinscheduler 生成的token
+    token: 466cb6f6455b1b8689fff770746e2e79
+    # dolphinscheduler 中指定的项目名不区分大小写
+    project-name: dinky
