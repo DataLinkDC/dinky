@@ -23,19 +23,13 @@ import com.dlink.common.result.Result;
 import com.dlink.db.service.ISuperService;
 import com.dlink.dto.TaskRollbackVersionDTO;
 import com.dlink.job.JobResult;
-import com.dlink.model.JobInfoDetail;
-import com.dlink.model.JobInstance;
-import com.dlink.model.JobLifeCycle;
-import com.dlink.model.JobStatus;
-import com.dlink.model.Task;
+import com.dlink.model.*;
 import com.dlink.result.SqlExplainResult;
 import com.dlink.result.TaskOperatingResult;
-
-import java.util.List;
-
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import java.util.List;
 
 /**
  * 作业 服务类
@@ -64,6 +58,8 @@ public interface TaskService extends ISuperService<Task> {
     String exportSql(Integer id);
 
     Task getUDFByClassName(String className);
+
+    List<Task> getAllUDF();
 
     Result releaseTask(Integer id);
 

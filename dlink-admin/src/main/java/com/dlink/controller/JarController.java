@@ -19,26 +19,24 @@
 
 package com.dlink.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
 import com.dlink.model.Jar;
+import com.dlink.model.Task;
 import com.dlink.service.JarService;
+import com.dlink.service.TaskService;
+import com.dlink.utils.UDFUtil;
+import com.fasterxml.jackson.databind.JsonNode;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
-import lombok.extern.slf4j.Slf4j;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * JarController
@@ -52,6 +50,8 @@ import lombok.extern.slf4j.Slf4j;
 public class JarController {
     @Autowired
     private JarService jarService;
+    @Resource
+    private TaskService taskService;
 
     /**
      * 新增或者更新
@@ -112,5 +112,15 @@ public class JarController {
     public Result listEnabledAll() {
         List<Jar> jars = jarService.listEnabledAll();
         return Result.succeed(jars, "获取成功");
+    }
+
+    @PostMapping("/udf/generateJar")
+    public Result<Map<String,List<String>>> generateJar() {
+        List<Task> allUDF = taskService.getAllUDF();
+        List<String> udfCodes = allUDF.stream().map(Task::getStatement).collect(Collectors.toList());
+        Map<String, List<String>> resultMap = UDFUtil.buildJar(udfCodes);
+        String msg = StrUtil.format("udf jar生成生成成功，jar文件在dinky安装目录下tmp/udf/udf.jar；\n本次成功 class:{}。\n失败 class:{}"
+                , resultMap.get("success"), resultMap.get("failed"));
+        return Result.succeed(resultMap,msg);
     }
 }
