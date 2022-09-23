@@ -64,6 +64,14 @@
             <artifactId>dlink-metadata-base</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-metadata-mysql</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
