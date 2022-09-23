@@ -23,13 +23,19 @@ import com.dlink.common.result.Result;
 import com.dlink.db.service.ISuperService;
 import com.dlink.dto.TaskRollbackVersionDTO;
 import com.dlink.job.JobResult;
-import com.dlink.model.*;
+import com.dlink.model.JobInfoDetail;
+import com.dlink.model.JobInstance;
+import com.dlink.model.JobLifeCycle;
+import com.dlink.model.JobStatus;
+import com.dlink.model.Task;
 import com.dlink.result.SqlExplainResult;
 import com.dlink.result.TaskOperatingResult;
-import com.fasterxml.jackson.databind.JsonNode;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * 作业 服务类

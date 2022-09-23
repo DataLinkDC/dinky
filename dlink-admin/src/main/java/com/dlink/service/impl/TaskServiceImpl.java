@@ -19,13 +19,11 @@
 
 package com.dlink.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.lang.tree.Tree;
-import cn.hutool.core.lang.tree.TreeNode;
-import cn.hutool.core.lang.tree.TreeUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.dlink.alert.*;
+import com.dlink.alert.Alert;
+import com.dlink.alert.AlertConfig;
+import com.dlink.alert.AlertMsg;
+import com.dlink.alert.AlertResult;
+import com.dlink.alert.ShowType;
 import com.dlink.assertion.Assert;
 import com.dlink.assertion.Asserts;
 import com.dlink.assertion.Tips;
@@ -45,29 +43,59 @@ import com.dlink.gateway.config.SavePointStrategy;
 import com.dlink.gateway.config.SavePointType;
 import com.dlink.gateway.model.JobInfo;
 import com.dlink.gateway.result.SavePointResult;
-import com.dlink.job.*;
+import com.dlink.job.FlinkJobTask;
+import com.dlink.job.FlinkJobTaskPool;
+import com.dlink.job.Job;
+import com.dlink.job.JobConfig;
+import com.dlink.job.JobManager;
+import com.dlink.job.JobResult;
 import com.dlink.mapper.TaskMapper;
 import com.dlink.metadata.driver.Driver;
 import com.dlink.metadata.result.JdbcSelectResult;
-import com.dlink.model.*;
+import com.dlink.model.AlertGroup;
+import com.dlink.model.AlertHistory;
+import com.dlink.model.AlertInstance;
+import com.dlink.model.Catalogue;
+import com.dlink.model.Cluster;
+import com.dlink.model.ClusterConfiguration;
+import com.dlink.model.DataBase;
+import com.dlink.model.History;
+import com.dlink.model.Jar;
+import com.dlink.model.JobHistory;
+import com.dlink.model.JobInfoDetail;
+import com.dlink.model.JobInstance;
+import com.dlink.model.JobLifeCycle;
+import com.dlink.model.JobStatus;
+import com.dlink.model.Savepoints;
+import com.dlink.model.Statement;
+import com.dlink.model.SystemConfiguration;
+import com.dlink.model.Task;
+import com.dlink.model.TaskOperatingSavepointSelect;
+import com.dlink.model.TaskOperatingStatus;
+import com.dlink.model.TaskVersion;
 import com.dlink.result.SqlExplainResult;
 import com.dlink.result.TaskOperatingResult;
-import com.dlink.service.*;
+import com.dlink.service.AlertGroupService;
+import com.dlink.service.AlertHistoryService;
+import com.dlink.service.CatalogueService;
+import com.dlink.service.ClusterConfigurationService;
+import com.dlink.service.ClusterService;
+import com.dlink.service.DataBaseService;
+import com.dlink.service.FragmentVariableService;
+import com.dlink.service.HistoryService;
+import com.dlink.service.JarService;
+import com.dlink.service.JobHistoryService;
+import com.dlink.service.JobInstanceService;
+import com.dlink.service.SavepointsService;
+import com.dlink.service.StatementService;
+import com.dlink.service.TaskService;
+import com.dlink.service.TaskVersionService;
 import com.dlink.utils.CustomStringJavaCompiler;
 import com.dlink.utils.JSONUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -79,8 +107,34 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.lang.tree.TreeNode;
+import cn.hutool.core.lang.tree.TreeUtil;
+
 
 /**
  * 任务 服务实现类
@@ -400,8 +454,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public Task
-    getUDFByClassName(String className) {
+    public Task getUDFByClassName(String className) {
         Task task = getOne(new QueryWrapper<Task>().eq("dialect", "Java").eq("enabled", 1).eq("save_point_path", className));
         Assert.check(task);
         task.setStatement(statementService.getById(task.getId()).getStatement());
@@ -409,8 +462,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public List<Task>
-    getAllUDF() {
+    public List<Task> getAllUDF() {
         List<Task> tasks = list(new QueryWrapper<Task>().eq("dialect", "Java").eq("enabled", 1).isNotNull("save_point_path"));
         return tasks.stream().peek(task -> {
             Assert.check(task);
