@@ -118,13 +118,15 @@ const Container: React.FC<{}> = (props: any) => {
     fetchDatabaseList();
   }, []);
 
-  const onChangeDataBase = (value: string | number) => {
+  const onChangeDataBase = (value: string|number) => {
     onRefreshTreeData(Number(value));
+    setRow(null);
   };
-  const redeshDataBase = (value: string | number) => {
+
+  const refeshDataBase = (value: string | number) => {
     setloadingDatabase(true);
     clearMetaDataTable(Number(databaseId)).then(result=>{
-      onRefreshTreeData(Number(value));
+      onChangeDataBase(Number(value));
     })
   };
 
@@ -187,7 +189,7 @@ const Container: React.FC<{}> = (props: any) => {
             <div style={{position: "absolute", right: "10px"}}>
               <Button type="link" size="small"
                       loading={loadingDatabase}
-                      onClick={()=>redeshDataBase(databaseId)}
+                      onClick={()=>refeshDataBase(databaseId)}
               >刷新</Button>
             </div>
             <div>{item.alias}</div>
