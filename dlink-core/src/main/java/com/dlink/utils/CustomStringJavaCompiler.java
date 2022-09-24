@@ -20,10 +20,12 @@
 package com.dlink.utils;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,7 +41,11 @@ import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
 import javax.tools.SimpleJavaFileObject;
 import javax.tools.StandardJavaFileManager;
+import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
+
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.StrUtil;
 
 /**
  * CustomStringJavaCompiler
@@ -87,6 +93,29 @@ public class CustomStringJavaCompiler {
         JavaFileObject javaFileObject = new StringJavaFileObject(fullClassName, sourceCode);
         //获取一个编译任务
         JavaCompiler.CompilationTask task = compiler.getTask(null, javaFileManager, diagnosticsCollector, null, null, Arrays.asList(javaFileObject));
+        //设置编译耗时
+        compilerTakeTime = System.currentTimeMillis() - startTime;
+        return task.call();
+    }
+
+    /**
+     * 编译字符串源代码,并放在缓存目录下,编译失败在 diagnosticsCollector 中获取提示信息
+     *
+     * @return true:编译成功 false:编译失败
+     */
+    public boolean compilerToTmpPath(String tmpPath) {
+        long startTime = System.currentTimeMillis();
+        File codeFile = FileUtil.writeUtf8String(sourceCode, tmpPath + StrUtil.replace(fullClassName, ".", "/") + ".java");
+        //标准的内容管理器,更换成自己的实现，覆盖部分方法
+        StandardJavaFileManager standardFileManager = compiler.getStandardFileManager(diagnosticsCollector, null, null);
+        try {
+            standardFileManager.setLocation(StandardLocation.CLASS_OUTPUT, Collections.singletonList(new File(tmpPath)));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        Iterable<? extends JavaFileObject> javaFileObject = standardFileManager.getJavaFileObjectsFromFiles(Collections.singletonList(codeFile));
+        //获取一个编译任务
+        JavaCompiler.CompilationTask task = compiler.getTask(null, standardFileManager, diagnosticsCollector, null, null, javaFileObject);
         //设置编译耗时
         compilerTakeTime = System.currentTimeMillis() - startTime;
         return task.call();

@@ -65,6 +65,8 @@ public interface TaskService extends ISuperService<Task> {
 
     Task getUDFByClassName(String className);
 
+    List<Task> getAllUDF();
+
     Result releaseTask(Integer id);
 
     boolean developTask(Integer id);
