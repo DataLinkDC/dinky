@@ -22,6 +22,7 @@ package com.dlink.model;
 import com.dlink.assertion.Asserts;
 import com.dlink.utils.SqlUtil;
 
+import java.beans.Transient;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -75,10 +76,12 @@ public class Table implements Serializable, Comparable<Table> {
         this.columns = columns;
     }
 
+    @Transient
     public String getSchemaTableName() {
         return Asserts.isNullString(schema) ? name : schema + "." + name;
     }
 
+    @Transient
     public String getSchemaTableNameWithUnderline() {
         return Asserts.isNullString(schema) ? name : schema + "_" + name;
     }
@@ -100,6 +103,7 @@ public class Table implements Serializable, Comparable<Table> {
         return new Table(name, schema, columns);
     }
 
+    @Transient
     public String getFlinkTableWith(String flinkConfig) {
         String tableWithSql = "";
         if (Asserts.isNotNullString(flinkConfig)) {
@@ -109,10 +113,12 @@ public class Table implements Serializable, Comparable<Table> {
         return tableWithSql;
     }
 
+    @Transient
     public String getFlinkTableSql(String flinkConfig) {
         return getFlinkDDL(flinkConfig, name);
     }
 
+    @Transient
     public String getFlinkDDL(String flinkConfig, String tableName) {
         StringBuilder sb = new StringBuilder();
         sb.append("CREATE TABLE IF NOT EXISTS " + tableName + " (\n");
@@ -162,6 +168,7 @@ public class Table implements Serializable, Comparable<Table> {
         return sb.toString();
     }
 
+    @Transient
     public String getFlinkTableSql(String catalogName, String flinkConfig) {
         StringBuilder sb = new StringBuilder("DROP TABLE IF EXISTS ");
         String fullSchemaName = catalogName + "." + schema + "." + name;
@@ -213,6 +220,7 @@ public class Table implements Serializable, Comparable<Table> {
         return sb.toString();
     }
 
+    @Transient
     public String getSqlSelect(String catalogName) {
         StringBuilder sb = new StringBuilder("SELECT\n");
         for (int i = 0; i < columns.size(); i++) {
@@ -239,6 +247,7 @@ public class Table implements Serializable, Comparable<Table> {
         return sb.toString();
     }
 
+    @Transient
     public String getCDCSqlInsert(String targetName, String sourceName) {
         StringBuilder sb = new StringBuilder("INSERT INTO ");
         sb.append(targetName);
