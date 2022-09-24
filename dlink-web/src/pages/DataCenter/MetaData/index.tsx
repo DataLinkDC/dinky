@@ -107,6 +107,7 @@ const Container: React.FC<{}> = (props: any) => {
 
   const onChangeDataBase = (value: number) => {
     onRefreshTreeData(value);
+    setRow(null);
   };
 
   const showTableInfo = (selected: boolean, node: TreeDataNode) => {
