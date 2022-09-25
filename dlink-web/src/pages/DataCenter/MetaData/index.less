@@ -1,10 +1,68 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
 
+
+//主体样式
 .container {
+  margin-top: 5px;
   background: #ffffff;
   height: 95vh;
   padding: 8px
 }
+//顶部数据库列表父组件样式，覆盖原有seagement样式
+.headerBarContent {
+  overflow-x: scroll;
+  width: 100%;
+  background-color:#fafafa;
+  :global{
+    .ant-segmented:not(.ant-segmented-disabled):hover, .ant-segmented:not(.ant-segmented-disabled):focus{
+      background-color:#fafafa;
+    }
+  }
+}
+//顶部数据库列表样式
+.headerBar {
+  background: #fafafa;
+  padding: 8px;
+}
+//数据库列表单条car样式
+.headerCard {
+  width:200px;
+  :global{
+    .ant-card-body{
+      padding: 8px;
+    }
+  }
+}
 
-.content-height{
-  height: 100%;
+//table标题样式
+.tableListHead{
+  background-color: #f9f9f9;
+  padding: 8px;
+  :global{
+    .ant-card-meta-title{
+      font-size: 14px;
+    }
+    .ant-card-meta-description{
+      color: rgba(0, 0, 0, 0.45);
+      font-size: 10px;
+
+    }
+  }
 }
