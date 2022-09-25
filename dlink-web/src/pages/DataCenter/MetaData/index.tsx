@@ -212,8 +212,6 @@ const Container: React.FC<{}> = (props: any) => {
                    onChange={onChangeDataBase}
         />
       </div>
-
-      <br/>
       <div className={styles.container}>
         <Row gutter={24}>
           <Col span={4}>
@@ -243,9 +241,6 @@ const Container: React.FC<{}> = (props: any) => {
                 ) : (
                   <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
                 )}
-                {/*<Scrollbars style={{height: '90vh',}}>*/}
-                {/*  */}
-                {/*</Scrollbars>*/}
               </Card>
             </Spin>
           </Col>

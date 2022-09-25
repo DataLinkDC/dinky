@@ -20,12 +20,14 @@
 
 //主体样式
 .container {
+  margin-top: 5px;
   background: #ffffff;
   height: 95vh;
   padding: 8px
 }
 //顶部数据库列表父组件样式，覆盖原有seagement样式
 .headerBarContent {
+  overflow-x: scroll;
   width: 100%;
   background-color:#fafafa;
   :global{
@@ -41,6 +43,7 @@
 }
 //数据库列表单条car样式
 .headerCard {
+  width:200px;
   :global{
     .ant-card-body{
       padding: 8px;
