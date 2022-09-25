@@ -222,6 +222,11 @@ export function showAlertGroup(dispatch: any) {
 export function showMetaDataTable(id: number) {
   return getData('api/database/getSchemasAndTables', {id: id});
 }
+/*--- 清理 元数据表缓存 ---*/
+export function clearMetaDataTable(id: number) {
+  return getData('api/database/unCacheSchemasAndTables', {id: id});
+}
+
 /*--- 刷新 数据表样例数据 ---*/
 export function showTableData(id: number,schemaName:String,tableName:String,option:{}) {
   return postAll('api/database/queryData', {id: id,schemaName:schemaName,tableName:tableName,option:option});
