@@ -387,7 +387,18 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
             preparedStatement = conn.get().prepareStatement(createTableSql);
             results = preparedStatement.executeQuery();
             if (results.next()) {
-                createTable = results.getString(getDBQuery().createTableName());
+                ResultSetMetaData rsmd = results.getMetaData();
+                int columns = rsmd.getColumnCount();
+                for (int x = 1; x <= columns; x++) {
+                    if (getDBQuery().createTableName().equals(rsmd.getColumnName(x))) {
+                        createTable = results.getString(getDBQuery().createTableName());
+                        break;
+                    }
+                    if (getDBQuery().createViewName().equals(rsmd.getColumnName(x))) {
+                        createTable = results.getString(getDBQuery().createViewName());
+                        break;
+                    }
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
