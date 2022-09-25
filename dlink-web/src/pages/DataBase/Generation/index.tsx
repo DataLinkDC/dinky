@@ -18,9 +18,10 @@
  */
 
 
-import {Typography,Tabs} from 'antd';
+import {Tabs, Typography} from 'antd';
 import {useEffect, useState} from "react";
 import {getData} from "@/components/Common/crud";
+import CodeShow from "@/components/Common/CodeShow";
 
 const {Paragraph} = Typography;
 const { TabPane } = Tabs;
@@ -56,7 +57,7 @@ const Generation = (props: any) => {
           key="FlinkDDL"
         >
           <Paragraph copyable={{text: sqlGeneration.flinkSqlCreate}}></Paragraph>
-          <pre style={{height: '300px'}}>{sqlGeneration.flinkSqlCreate}</pre>
+          <CodeShow height={"400px"} code={sqlGeneration.flinkSqlCreate || ''} language={"sql"} theme={"vs-dark"} />
         </TabPane>
         <TabPane
           tab={
@@ -67,7 +68,7 @@ const Generation = (props: any) => {
           key="SQLSelect"
         >
           <Paragraph copyable={{text: sqlGeneration.sqlSelect}}></Paragraph>
-          <pre style={{height: '300px'}}>{sqlGeneration.sqlSelect}</pre>
+          <CodeShow height={"400px"} code={sqlGeneration.sqlSelect || ''} language={"sql"} theme={"vs-dark"} />
         </TabPane>
         <TabPane
           tab={
@@ -78,7 +79,7 @@ const Generation = (props: any) => {
           key="SQLDDL"
         >
           <Paragraph copyable={{text: sqlGeneration.sqlCreate}}></Paragraph>
-          <pre style={{height: '300px'}}>{sqlGeneration.sqlCreate}</pre>
+          <CodeShow height={"400px"} code={sqlGeneration.sqlCreate || '' } language={"sql"} theme={"vs-dark"} />
         </TabPane>
       </Tabs>
 
