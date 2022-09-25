@@ -19,6 +19,7 @@
 
 package com.dlink.scheduler.client;
 
+import com.dlink.scheduler.config.DolphinSchedulerProperties;
 import com.dlink.scheduler.constant.Constants;
 import com.dlink.scheduler.model.Project;
 import com.dlink.scheduler.result.Result;
@@ -30,7 +31,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import cn.hutool.core.lang.TypeReference;
@@ -46,12 +47,8 @@ public class ProjectClient {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskClient.class);
 
-    @Value("${dinky.dolphinscheduler.url}")
-    private String url;
-    @Value("${dinky.dolphinscheduler.token}")
-    private String tokenKey;
-    @Value("${dinky.dolphinscheduler.project-name}")
-    private String dinkyProjectName;
+    @Autowired
+    private DolphinSchedulerProperties dolphinSchedulerProperties;
 
     /**
      * 创建项目
@@ -62,11 +59,11 @@ public class ProjectClient {
      */
     public Project createDinkyProject() {
         Map<String, Object> map = new HashMap<>();
-        map.put("projectName", dinkyProjectName);
+        map.put("projectName", dolphinSchedulerProperties.getProjectName());
         map.put("description", "自动创建");
 
-        String content = HttpRequest.post(url + "/projects")
-            .header(Constants.TOKEN, tokenKey)
+        String content = HttpRequest.post(dolphinSchedulerProperties.getUrl() + "/projects")
+            .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
             .form(map)
             .timeout(5000)
             .execute().body();
@@ -83,12 +80,12 @@ public class ProjectClient {
      */
     public Project getDinkyProject() {
 
-        String content = HttpRequest.get(url + "/projects")
-            .header(Constants.TOKEN, tokenKey)
-            .form(ParamUtil.getPageParams(dinkyProjectName))
+        String content = HttpRequest.get(dolphinSchedulerProperties.getUrl() + "/projects")
+            .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
+            .form(ParamUtil.getPageParams(dolphinSchedulerProperties.getProjectName()))
             .timeout(5000)
             .execute().body();
 
-        return MyJSONUtil.toPageBeanAndFindByName(content, dinkyProjectName, Project.class);
+        return MyJSONUtil.toPageBeanAndFindByName(content, dolphinSchedulerProperties.getProjectName(), Project.class);
     }
 }
