@@ -35,6 +35,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -167,9 +169,19 @@ public class DataBaseController {
     /**
      * 获取元数据的表
      */
+    @Cacheable(cacheNames = "metadata_schema",key = "#id")
     @GetMapping("/getSchemasAndTables")
     public Result getSchemasAndTables(@RequestParam Integer id) {
         return Result.succeed(databaseService.getSchemasAndTables(id), "获取成功");
+    }
+
+    /**
+     * 清除元数据表的缓存
+     */
+    @CacheEvict(cacheNames = "metadata_schema",key = "#id")
+    @GetMapping("/unCacheSchemasAndTables")
+    public Result unCacheSchemasAndTables(@RequestParam Integer id) {
+        return Result.succeed("clear cache", "success");
     }
 
     /**

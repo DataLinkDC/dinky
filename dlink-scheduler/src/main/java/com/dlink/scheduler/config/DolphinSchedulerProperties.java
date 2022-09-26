@@ -17,25 +17,26 @@
  *
  */
 
-package com.dlink;
+package com.dlink.scheduler.config;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+import lombok.Data;
 
 /**
- * Dlink 启动器
+ * DolphinSchedulerProperties
  *
  * @author wenmo
- * @since 2021/5/28
+ * @since 2022/9/25 12:57
  */
-@EnableTransactionManagement
-@SpringBootApplication
-@EnableCaching
-public class Dlink {
-
-    public static void main(String[] args) {
-        SpringApplication.run(Dlink.class, args);
-    }
+@Data
+@Component
+@ConfigurationProperties(prefix = "dinky.dolphinscheduler")
+public class DolphinSchedulerProperties {
+    private boolean enabled;
+    private String url;
+    private String token;
+    private String projectName;
+    private String address;
 }

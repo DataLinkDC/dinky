@@ -11,6 +11,20 @@ spring:
       matching-strategy: ant_path_matcher
   main:
     allow-circular-references: true
+
+#  默认使用内存缓存元数据信息，
+#  dlink支持redis缓存，如有需要请把simple改为redis，并打开下面的redis连接配置
+#  子配置项可以按需要打开或自定义配置
+  cache:
+    type: simple
+##    如果type配置为redis，则该项可按需配置
+#    redis:
+##      是否缓存空值，保存默认即可
+#      cache-null-values: false
+##      缓存过期时间，24小时
+#      time-to-live: 86400
+
+
   #  flyway:
   #    enabled: false
   #    clean-disabled: true
@@ -76,12 +90,13 @@ knife4j:
   enable: true
 
 dinky:
-  # dinky 地址
-  url: http://127.0.0.1:8888
   dolphinscheduler:
+    enabled: false
     # dolphinscheduler 地址
     url: http://127.0.0.1:12345/dolphinscheduler
     # dolphinscheduler 生成的token
     token: 466cb6f6455b1b8689fff770746e2e79
     # dolphinscheduler 中指定的项目名不区分大小写
     project-name: dinky
+    # Dolphinscheduler DinkyTask Address
+    address: http://127.0.0.1:8888

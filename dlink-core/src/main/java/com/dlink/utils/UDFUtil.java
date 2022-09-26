@@ -22,8 +22,18 @@ package com.dlink.utils;
 import com.dlink.pool.ClassEntity;
 import com.dlink.pool.ClassPool;
 
+import java.io.File;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.codehaus.groovy.control.CompilerConfiguration;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.ZipUtil;
 import groovy.lang.GroovyClassLoader;
 
 /**
@@ -60,5 +70,34 @@ public class UDFUtil {
         groovyClassLoader.defineClass(classEntity.getName(), classEntity.getClassByte());
         Thread.currentThread().setContextClassLoader(groovyClassLoader);
         //Class<?> clazz = groovyClassLoader.parseClass(codeSource,"com.dlink.ud.udf.SubstringFunction");
+    }
+
+    public static Map<String, List<String>> buildJar(List<String> codeList) {
+        List<String> successList = new ArrayList<>();
+        List<String> failedList = new ArrayList<>();
+        String tmpPath = System.getProperty("user.dir") + File.separator + "tmp/udf/";
+        String udfJarPath = tmpPath + "udf.jar";
+        //删除jar缓存
+        FileUtil.del(udfJarPath);
+        codeList.forEach(code -> {
+            CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(code);
+            boolean res = compiler.compilerToTmpPath(tmpPath);
+            String className = compiler.getFullClassName();
+            if (res) {
+                System.out.println("编译成功");
+                System.out.println("compilerTakeTime：" + compiler.getCompilerTakeTime());
+                successList.add(className);
+            } else {
+                System.out.println("编译失败");
+                System.out.println(compiler.getCompilerMessage());
+                failedList.add(className);
+            }
+        });
+        String[] clazzs = successList.stream().map(className -> StrUtil.replace(className, ".", "/") + ".class").toArray(String[]::new);
+        InputStream[] fileInputStreams = successList.stream().map(className -> tmpPath + StrUtil.replace(className, ".", "/") + ".class")
+            .map(FileUtil::getInputStream).toArray(InputStream[]::new);
+        // 编译好的文件打包jar
+        ZipUtil.zip(FileUtil.file(udfJarPath), clazzs, fileInputStreams);
+        return MapUtil.builder("success", successList).put("failed", failedList).build();
     }
 }

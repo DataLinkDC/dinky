@@ -52,6 +52,11 @@ public interface IDBQuery {
     String createTableName();
 
     /**
+     * 建视图语句列名
+     */
+    String createViewName();
+
+    /**
      * 数据库、模式、组织名称
      */
     String schemaName();

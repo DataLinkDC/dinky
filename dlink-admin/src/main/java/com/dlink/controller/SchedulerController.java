@@ -24,6 +24,7 @@ import com.dlink.init.SystemInit;
 import com.dlink.model.Catalogue;
 import com.dlink.scheduler.client.ProcessClient;
 import com.dlink.scheduler.client.TaskClient;
+import com.dlink.scheduler.config.DolphinSchedulerProperties;
 import com.dlink.scheduler.enums.ReleaseState;
 import com.dlink.scheduler.exception.SchedulerException;
 import com.dlink.scheduler.model.DagData;
@@ -45,7 +46,6 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -74,11 +74,10 @@ public class SchedulerController {
 
     private static final Logger logger = LoggerFactory.getLogger(SchedulerController.class);
 
-    @Value("${dinky.url}")
-    private String dinkyUrl;
+    @Autowired
+    private DolphinSchedulerProperties dolphinSchedulerProperties;
     @Autowired
     private ProcessClient processClient;
-
     @Autowired
     private TaskClient taskClient;
     @Autowired
@@ -160,7 +159,7 @@ public class SchedulerController {
                                                @Valid @RequestBody TaskRequest taskRequest) {
         DlinkTaskParams dlinkTaskParams = new DlinkTaskParams();
         dlinkTaskParams.setTaskId(dinkyTaskId.toString());
-        dlinkTaskParams.setAddress(dinkyUrl);
+        dlinkTaskParams.setAddress(dolphinSchedulerProperties.getAddress());
         taskRequest.setTaskParams(JSONUtil.parseObj(dlinkTaskParams).toString());
         taskRequest.setTaskType("DINKY");
 
