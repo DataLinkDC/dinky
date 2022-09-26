@@ -19,11 +19,12 @@
 
 
 import {useEffect, useState} from "react";
-import {Alert, AutoComplete, Button, Col, Input, Row, Spin, Table, Tooltip} from "antd";
+import {Alert, AutoComplete, Button, Col, Input, Row, Spin, Tooltip} from "antd";
 import {showTableData} from "@/components/Studio/StudioEvent/DDL";
 import styles from './index.less';
 import {SearchOutlined} from "@ant-design/icons";
 import Divider from "antd/es/divider";
+import {ProTable} from "@ant-design/pro-table";
 
 const TableData = (props: any) => {
 
@@ -36,11 +37,7 @@ const TableData = (props: any) => {
   // 列名和列信息数据
   const [columns, setColumns] = useState<string[]>([]);
   const [errMsg, setErrMsg] = useState<{ isErr: boolean, msg: string }>({isErr: false, msg: ""});
-  //使用多选框进行自由列选择，屏蔽不需要看见的列，目前实现有些问题，暂时屏蔽
-  // 是否展开字段选择
-  // const [showFilter, setShowFilter] = useState(false);
-  // 是否全选，全选状态相关
-  // const [state, setState] = useState<{ checkedList: [], indeterminate: boolean, checkAll: boolean }>({checkedList: [], indeterminate: true, checkAll: false});
+
   // 条件查询时联想输入使用
   const [options, setOptions] = useState<{ whereOption: {}[], orderOption: {}[] }>({whereOption: [], orderOption: []});
 // where输入框内容
@@ -102,26 +99,6 @@ const TableData = (props: any) => {
 
   }, [dbId, table, schema]);
 
-//使用多选框进行自由列选择，屏蔽不需要看见的列，目前实现有些问题，暂时屏蔽
-// // 单项选择监听
-// const onChange = checkedList => {
-//   setState({
-//     checkedList,
-//     indeterminate:
-//       !!checkedList.length && checkedList.length < columns.length,
-//     checkAll: checkedList.length === columns.length
-//   });
-// };
-//
-// //全选按钮监听
-// const onCheckAllChange = e => {
-//   setState({
-//     checkedList: e.target.checked ? columns : [],
-//     indeterminate: false,
-//     checkAll: e.target.checked
-//   });
-// };
-
 
 // 条件查询时反馈联想信息
   const handleRecommend = (value: string) => {
@@ -173,7 +150,7 @@ const TableData = (props: any) => {
             />
           ) : <></>}
           <Row>
-            <Col span={12}>
+            <Col span={6}>
               <AutoComplete
                 value={optionInput.whereInput}
                 options={options.whereOption}
@@ -195,9 +172,9 @@ const TableData = (props: any) => {
                        }}
                 />
               </AutoComplete>
-
             </Col>
-            <Col span={12}>
+
+            <Col span={6}>
               <AutoComplete
                 value={optionInput.orderInput}
                 options={options.orderOption}
@@ -218,35 +195,7 @@ const TableData = (props: any) => {
                 }}/>
               </AutoComplete>
             </Col>
-          </Row>
-          {/*//使用多选框进行自由列选择，屏蔽不需要看见的列，目前实现有些问题，暂时屏蔽*/}
-          {/*{showFilter ? (*/}
-          {/*  <div>*/}
-          {/*    <Checkbox*/}
-          {/*      indeterminate={state.indeterminate}*/}
-          {/*      onChange={onCheckAllChange}*/}
-          {/*      checked={state.checkAll}*/}
-          {/*    >*/}
-          {/*      全选*/}
-          {/*    </Checkbox>*/}
-          {/*    <br/>*/}
-          {/*    <CheckboxGroup*/}
-          {/*      options={columns}*/}
-          {/*      value={state.checkedList}*/}
-          {/*      onChange={onChange}*/}
-          {/*    />*/}
-          {/*  </div>*/}
-          {/*) : (<></>)}*/}
-          <Row className={styles.margin_10}>
-            <Col span={23}/>
-            {/*<Col span={1}>*/}
-            {/*  <Tooltip title="字段过滤">*/}
-            {/*    <Button type="primary" shape="circle" icon={<FilterOutlined/>} size="middle" onClick={(event) => {*/}
-            {/*      setShowFilter(!showFilter)*/}
-            {/*    }}/>*/}
-            {/*  </Tooltip>*/}
-            {/*</Col>*/}
-            <Col span={1}>
+            <Col span={2}>
               <Tooltip title="查询">
                 <Button type="primary" shape="circle" icon={<SearchOutlined/>} size="middle" onClick={(event) => {
                   fetchData(optionInput.whereInput, optionInput.orderInput)
@@ -254,22 +203,23 @@ const TableData = (props: any) => {
               </Tooltip>
             </Col>
           </Row>
+
         </div>
 
 
         <Divider orientation="left" plain>数据</Divider>
 
         <div>
-          <Table style={{height: '95vh'}}
-                 columns={tableData.columns}
-                 dataSource={tableData.rowData}
-                 pagination={{
-                   pageSize: page.pageSize,
-                   onChange: (pageNum, pageSize) => {
-                     setPage({page: pageNum, pageSize: pageSize});
-                   }
-                 }}
-                 scroll={{y: "80vh", x: true}}
+          <ProTable
+            style={{height: '95vh'}}
+            columns={tableData.columns}
+            dataSource={tableData.rowData}
+            pagination={{
+              pageSize: 10,
+            }}
+            scroll={{y: "80vh", x: true}}
+            dateFormatter="string"
+            search={false}
           />
         </div>
       </Spin>

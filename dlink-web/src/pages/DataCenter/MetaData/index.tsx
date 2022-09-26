@@ -18,22 +18,23 @@
  */
 
 
-
 import {PageContainer} from '@ant-design/pro-layout'; //
-
 import styles from './index.less';
-import {Row, Col, Tabs, Tag, Empty, Tree, Segmented, Card, Image, Spin, Button} from 'antd';
+import {Button, Card, Col, Empty, Image, Row, Segmented, Spin, Tabs, Tag, Tree} from 'antd';
 import React, {Key, useEffect, useState} from 'react';
 import {clearMetaDataTable, showMetaDataTable} from '@/components/Studio/StudioEvent/DDL';
 import {getData} from '@/components/Common/crud';
 import {
-  BarsOutlined, CheckCircleOutlined,
+  BarsOutlined,
+  CheckCircleOutlined,
   ConsoleSqlOutlined,
   DatabaseOutlined,
-  DownOutlined, ExclamationCircleOutlined,
+  DownOutlined,
+  ExclamationCircleOutlined,
   ReadOutlined,
   TableOutlined,
 } from '@ant-design/icons';
+import {Scrollbars} from 'react-custom-scrollbars';
 import {TreeDataNode} from '@/components/Studio/StudioTree/Function';
 import Tables from '@/pages/DataBase/Tables';
 import Columns from '@/pages/DataBase/Columns';
@@ -46,7 +47,7 @@ import Meta from "antd/lib/card/Meta";
 const {DirectoryTree} = Tree;
 const {TabPane} = Tabs;
 
-const Container: React.FC<{}> = (props: any) => {
+const MetaDataContainer: React.FC<{}> = (props: any) => {
 
 
   let [database, setDatabase] = useState<[{
@@ -66,13 +67,14 @@ const Container: React.FC<{}> = (props: any) => {
     enabled: '',
     groupName: '',
     status: '',
-    time:''
+    time: ''
   }]);
-
   const [databaseId, setDatabaseId] = useState<number>();
-  const [treeData, setTreeData] = useState<{tables:[],updateTime:string}>({tables:[],updateTime:"none"});
+  const [treeData, setTreeData] = useState<{ tables: [], updateTime: string }>({tables: [], updateTime: "none"});
   const [row, setRow] = useState<TreeDataNode>();
   const [loadingDatabase, setloadingDatabase] = useState(false);
+  const [tableChecked, setTableChecked] = useState(true);
+  const [dataBaseChecked, setDatabaseChecked] = useState(false);
 
   const fetchDatabaseList = async () => {
     const res = getData('api/database/listEnabledAll');
@@ -106,9 +108,9 @@ const Container: React.FC<{}> = (props: any) => {
           }
         }
 
-        setTreeData({tables:tables,updateTime:result.time});
+        setTreeData({tables: tables, updateTime: result.time});
       } else {
-        setTreeData({tables:[],updateTime:"none"});
+        setTreeData({tables: [], updateTime: "none"});
       }
     });
     setloadingDatabase(false);
@@ -118,14 +120,14 @@ const Container: React.FC<{}> = (props: any) => {
     fetchDatabaseList();
   }, []);
 
-  const onChangeDataBase = (value: string|number) => {
+  const onChangeDataBase = (value: string | number) => {
     onRefreshTreeData(Number(value));
     setRow(null);
   };
 
   const refeshDataBase = (value: string | number) => {
     setloadingDatabase(true);
-    clearMetaDataTable(Number(databaseId)).then(result=>{
+    clearMetaDataTable(Number(databaseId)).then(result => {
       onChangeDataBase(Number(value));
     })
   };
@@ -189,7 +191,10 @@ const Container: React.FC<{}> = (props: any) => {
             <div style={{position: "absolute", right: "10px"}}>
               <Button type="link" size="small"
                       loading={loadingDatabase}
-                      onClick={()=>refeshDataBase(databaseId)}
+                      onClick={() => {
+                        refeshDataBase(databaseId)
+                        setTableChecked(true)
+                      }}
               >刷新</Button>
             </div>
             <div>{item.alias}</div>
@@ -201,11 +206,8 @@ const Container: React.FC<{}> = (props: any) => {
   }
 
 
-
-
-
   return (
-    <div>
+    <PageContainer title={false}>
       <div className={styles.headerBarContent}>
         <Segmented className={styles.headerBar}
                    options={buildDatabaseBar()}
@@ -222,22 +224,23 @@ const Container: React.FC<{}> = (props: any) => {
               >
                 <Meta title={buildListTitle()}
                       className={styles.tableListHead}
-                      description={"上次更新："+treeData.updateTime}
+                      description={"上次更新：" + treeData.updateTime}
                 />
-
                 {treeData.tables.length > 0 ? (
-                  <DirectoryTree
-                    height={850}
-                    showIcon
-                    switcherIcon={<DownOutlined/>}
-                    treeData={treeData.tables}
-                    onSelect={(
-                      selectedKeys: Key[],
-                      {event, selected, node, selectedNodes, nativeEvent}
-                    ) => {
-                      showTableInfo(selected, node);
-                    }}
-                  />
+                  <Scrollbars style={{height: 800}}>
+                    <DirectoryTree
+                      showIcon
+                      switcherIcon={<DownOutlined/>}
+                      treeData={treeData.tables}
+                      onSelect={(
+                        selectedKeys: Key[],
+                        {event, selected, node, selectedNodes, nativeEvent}
+                      ) => {
+                        showTableInfo(selected, node);
+                        setTableChecked(false)
+                      }}
+                    />
+                  </Scrollbars>
                 ) : (
                   <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
                 )}
@@ -249,14 +252,14 @@ const Container: React.FC<{}> = (props: any) => {
             <div>
               <div>
                 <Tabs defaultActiveKey="describe">
-                  <TabPane
-                    tab={
-                      <span>
+                  <TabPane disabled={tableChecked}
+                           tab={
+                             <span>
                           <ReadOutlined/>
                           描述
                         </span>
-                    }
-                    key="describe"
+                           }
+                           key="describe"
                   >
                     <Divider orientation="left" plain>
                       表信息
@@ -276,30 +279,30 @@ const Container: React.FC<{}> = (props: any) => {
                     )}
                   </TabPane>
 
-                  <TabPane
-                    tab={
-                      <span>
+                  <TabPane disabled={tableChecked}
+                           tab={
+                             <span>
                           <BarsOutlined/>
                           数据查询
                         </span>
-                    }
-                    key="exampleData"
+                           }
+                           key="exampleData"
                   >
                     {row ? (
-                      <TableData dbId={databaseId} schema={row.schema} table={row.table} />
+                      <TableData dbId={databaseId} schema={row.schema} table={row.table}/>
                     ) : (
                       <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
                     )}
                   </TabPane>
 
-                  <TabPane
-                    tab={
-                      <span>
+                  <TabPane disabled={tableChecked}
+                           tab={
+                             <span>
                           <ConsoleSqlOutlined/>
                           SQL 生成
                         </span>
-                    }
-                    key="sqlGeneration"
+                           }
+                           key="sqlGeneration"
                   >
                     {row ? (
                       <Generation dbId={databaseId} schema={row.schema} table={row.table}/>
@@ -314,14 +317,8 @@ const Container: React.FC<{}> = (props: any) => {
           </Col>
         </Row>
       </div>
-    </div>
-  );
-};
-
-export default () => {
-  return (
-    <PageContainer>
-      <Container/>
     </PageContainer>
   );
 };
+
+export default MetaDataContainer;
