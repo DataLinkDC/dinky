@@ -98,6 +98,11 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                     String schemaName = table.getSchema();
                     Schema schema = Schema.build(schemaName);
                     schema.setTables(Collections.singletonList(table));
+                    //分库分表所有表结构都是一样的，取出列表中第一个表名即可
+                    String schemaTableName = table.getSchemaTableNameList().get(0);
+                    //真实的表名
+                    String tableName = schemaTableName.split("\\.")[1];
+                    table.setColumns(driver.listColumnsSortByPK(schemaName, tableName));
                     table.setColumns(driver.listColumnsSortByPK(schemaName, table.getName()));
                     schemaList.add(schema);
                 }
