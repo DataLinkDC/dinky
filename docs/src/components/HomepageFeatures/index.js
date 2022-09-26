@@ -27,8 +27,8 @@ const FeatureList = [
         Svg: require('@site/static/img/immersive.svg').default,
         description: (
             <>
-                自动提示与补全、高亮美化、语法校验、调试预览结果、元数据管理、全局变量、
-                字段级血缘分析等
+                提供专业的 DataStudio 功能，支持全屏开发、自动提示与补全、语法高亮、语句美化、语法校验、
+                调试预览结果、全局变量、MetaStore、字段级血缘分析、元数据查询、FlinkSQL 生成等功能
             </>
         ),
     },
@@ -37,7 +37,8 @@ const FeatureList = [
         Svg: require('@site/static/img/ease_of_use.svg').default,
         description: (
             <>
-                Apache Flink 多种执行模无感知切换，支持 Flink 多版本，自动化托管实时任务及恢复点，自定义各种配置
+                Flink 多种执行模式无感知切换，支持 Flink 多版本切换，自动化托管实时任务、恢复点、报警等，
+                自定义各种配置，持久化管理的 Flink Catalog
             </>
         ),
     },
@@ -46,7 +47,8 @@ const FeatureList = [
         Svg: require('@site/static/img/easy_of_deploy.svg').default,
         description: (
             <>
-                增强 FlinkSQL 语法及机制，如表值聚合函数、全局变量、CDC整库同步、执行环境、语句合并、共享会话等
+                兼容且增强官方 FlinkSQL 语法，如 SQL 表值聚合函数、全局变量、CDC 整库同步、执行环境、
+                语句合并、共享会话等
             </>
         ),
     },
@@ -55,7 +57,8 @@ const FeatureList = [
         Svg: require('@site/static/img/one_stop.svg').default,
         description: (
             <>
-                提供从 FlinkSQL 开发调试到作业上线下线的运维监控及 OLAP 能力，使数仓建设及数据治理一体化。
+                提供从 FlinkSQL 开发调试到上线下线的运维监控及 SQL 的查询执行能力，使数仓建设及数据治理
+                一体化
             </>
         ),
     },
@@ -64,7 +67,8 @@ const FeatureList = [
         Svg: require('@site/static/img/easy_of_extend.svg').default,
         description: (
             <>
-                SPI 插件化机制及各种设计模式支持用户快速扩展新功能，如数据源、报警方式、自定义语法等
+                源码采用 SPI 插件化及各种设计模式支持用户快速扩展新功能，如连接器、数据源、报警方式、
+                Flink Catalog、CDC 整库同步、自定义 FlinkSQL 语法等
             </>
         ),
     },
@@ -73,7 +77,8 @@ const FeatureList = [
         Svg: require('@site/static/img/no_invasion.svg').default,
         description: (
             <>
-                Spring Boot 轻应用快速部署，不依赖 Hadoop 等外部环境，无感知连接和监控 Flink 集群
+                Spring Boot 轻应用快速部署，不需要在任何 Flink 集群修改源码或添加额外插件，无感知连接和
+                监控 Flink 集群
             </>
         ),
     },
