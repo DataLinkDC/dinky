@@ -107,11 +107,14 @@ public class StudioServiceImpl implements StudioService {
     private FragmentVariableService fragmentVariableService;
 
     private void addFlinkSQLEnv(AbstractStatementDTO statementDTO) {
+        // initialize global variables
         statementDTO.setVariables(fragmentVariableService.listEnabledVariables());
+        // initialize database variables
         String flinkWithSql = dataBaseService.getEnabledFlinkWithSql();
         if (statementDTO.isFragment() && Asserts.isNotNullString(flinkWithSql)) {
             statementDTO.setStatement(flinkWithSql + "\r\n" + statementDTO.getStatement());
         }
+        // initialize flinksql environment, such as flink catalog
         if (Asserts.isNotNull(statementDTO.getEnvId()) && !statementDTO.getEnvId().equals(0)) {
             Task task = taskService.getTaskInfoById(statementDTO.getEnvId());
             if (Asserts.isNotNull(task) && Asserts.isNotNullString(task.getStatement())) {
@@ -141,7 +144,7 @@ public class StudioServiceImpl implements StudioService {
         addFlinkSQLEnv(studioExecuteDTO);
         JobConfig config = studioExecuteDTO.getJobConfig();
         buildSession(config);
-        // To initialize java udf, but it has a bug in the product environment now.
+        // To initialize java udf, but it only support local mode.
         initUDF(config, studioExecuteDTO.getStatement());
         JobManager jobManager = JobManager.build(config);
         JobResult jobResult = jobManager.executeSql(studioExecuteDTO.getStatement());
