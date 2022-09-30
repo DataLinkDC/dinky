@@ -42,6 +42,7 @@ public class FlinkCDCConfig {
     private String table;
     private List<String> schemaTableNameList;
     private String startupMode;
+    private Map<String, String> split;
     private Map<String, String> debezium;
     private Map<String, String> source;
     private Map<String, String> jdbc;
@@ -54,7 +55,7 @@ public class FlinkCDCConfig {
 
     public FlinkCDCConfig(String type, String hostname, Integer port, String username, String password, Integer checkpoint, Integer parallelism, String database, String schema, String table,
                           String startupMode,
-                          Map<String, String> debezium, Map<String, String> source, Map<String, String> sink,Map<String, String> jdbc) {
+                          Map<String, String> split, Map<String, String> debezium, Map<String, String> source, Map<String, String> sink, Map<String, String> jdbc) {
         this.type = type;
         this.hostname = hostname;
         this.port = port;
@@ -66,6 +67,7 @@ public class FlinkCDCConfig {
         this.schema = schema;
         this.table = table;
         this.startupMode = startupMode;
+        this.split = split;
         this.debezium = debezium;
         this.source = source;
         this.sink = sink;
@@ -181,6 +183,7 @@ public class FlinkCDCConfig {
             case "table.upper":
             case "table.lower":
             case "column.replace.line-break":
+            case "timezone":
                 return true;
             default:
                 return false;
@@ -249,5 +252,13 @@ public class FlinkCDCConfig {
 
     public void setDebezium(Map<String, String> debezium) {
         this.debezium = debezium;
+    }
+
+    public Map<String, String> getSplit() {
+        return split;
+    }
+
+    public void setSplit(Map<String, String> split) {
+        this.split = split;
     }
 }

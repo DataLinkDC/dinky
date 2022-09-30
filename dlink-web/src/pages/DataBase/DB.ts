@@ -45,6 +45,9 @@ export function getDBImage(type: string) {
     case 'hive':
       imageUrl += 'hive.png';
       break;
+    case 'starrocks':
+      imageUrl += 'starrocks.jpg';
+      break;
     default:
       imageUrl += 'db.jpg';
   }

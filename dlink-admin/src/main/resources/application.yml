@@ -11,11 +11,25 @@ spring:
       matching-strategy: ant_path_matcher
   main:
     allow-circular-references: true
-#  flyway:
-#    enabled: false
-#    clean-disabled: true
-##    baseline-on-migrate: true
-#    table: dlink_schema_history
+
+#  默认使用内存缓存元数据信息，
+#  dlink支持redis缓存，如有需要请把simple改为redis，并打开下面的redis连接配置
+#  子配置项可以按需要打开或自定义配置
+  cache:
+    type: simple
+##    如果type配置为redis，则该项可按需配置
+#    redis:
+##      是否缓存空值，保存默认即可
+#      cache-null-values: false
+##      缓存过期时间，24小时
+#      time-to-live: 86400
+
+
+  #  flyway:
+  #    enabled: false
+  #    clean-disabled: true
+  ##    baseline-on-migrate: true
+  #    table: dlink_schema_history
   # Redis配置
   #sa-token如需依赖redis，请打开redis配置和pom.xml、dlink-admin/pom.xml中依赖
   # redis:
@@ -35,6 +49,11 @@ spring:
   #       min-idle: 5
   #   # 连接超时时间（毫秒）
   #   timeout: 5000
+  servlet:
+    multipart:
+      max-file-size: 524288000
+      max-request-size: 524288000
+      enabled: true
 server:
   port: 8888
 
@@ -46,26 +65,38 @@ mybatis-plus:
     db-config:
       id-type: auto
   configuration:
-  ##### mybatis-plus打印完整sql(只适用于开发环境)
-#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    ##### mybatis-plus打印完整sql(只适用于开发环境)
+    #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
 
 # Sa-Token 配置
 sa-token:
-    # token名称 (同时也是cookie名称)
-    token-name: satoken
-    # token有效期，单位s 默认10小时, -1代表永不过期
-    timeout: 36000
-    # token临时有效期 (指定时间内无操作就视为token过期) 单位: 秒
-    activity-timeout: -1
-    # 是否允许同一账号并发登录 (为true时允许一起登录, 为false时新登录挤掉旧登录)
-    is-concurrent: false
-    # 在多人登录同一账号时，是否共用一个token (为true时所有登录共用一个token, 为false时每次登录新建一个token)
-    is-share: true
-    # token风格
-    token-style: uuid
-    # 是否输出操作日志
-    is-log: false
+  # token名称 (同时也是cookie名称)
+  token-name: satoken
+  # token有效期，单位s 默认10小时, -1代表永不过期
+  timeout: 36000
+  # token临时有效期 (指定时间内无操作就视为token过期) 单位: 秒
+  activity-timeout: -1
+  # 是否允许同一账号并发登录 (为true时允许一起登录, 为false时新登录挤掉旧登录)
+  is-concurrent: false
+  # 在多人登录同一账号时，是否共用一个token (为true时所有登录共用一个token, 为false时每次登录新建一个token)
+  is-share: true
+  # token风格
+  token-style: uuid
+  # 是否输出操作日志
+  is-log: false
 
 knife4j:
   enable: true
+
+dinky:
+  dolphinscheduler:
+    enabled: false
+    # dolphinscheduler 地址
+    url: http://127.0.0.1:12345/dolphinscheduler
+    # dolphinscheduler 生成的token
+    token: 466cb6f6455b1b8689fff770746e2e79
+    # dolphinscheduler 中指定的项目名不区分大小写
+    project-name: dinky
+    # Dolphinscheduler DinkyTask Address
+    address: http://127.0.0.1:8888

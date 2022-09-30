@@ -24,7 +24,7 @@
     <groupId>com.dlink</groupId>
     <artifactId>dlink</artifactId>
     <packaging>pom</packaging>
-    <version>0.6.7-SNAPSHOT</version>
+    <version>0.6.7</version>
 
     <modules>
         <module>dlink-flink</module>
@@ -39,6 +39,7 @@
         <module>dlink-extends</module>
         <module>dlink-alert</module>
         <module>dlink-daemon</module>
+        <module>dlink-scheduler</module>
         <module>dlink-core</module>
         <module>dlink-app</module>
         <module>dlink-web</module>
@@ -67,7 +68,6 @@
         <ojdbc8.version>12.2.0.1</ojdbc8.version>
         <clickhouse.version>0.2.6</clickhouse.version>
         <postgresql.version>42.2.14</postgresql.version>
-        <banner.version>1.0.2</banner.version>
         <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
         <!--<flyway.version>6.4.4</flyway.version>-->
         <sa-token.version>1.28.0</sa-token.version>
@@ -172,11 +172,6 @@
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>${postgresql.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.nepxion</groupId>
-                <artifactId>banner</artifactId>
-                <version>${banner.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
@@ -344,6 +339,11 @@
             </dependency>
             <dependency>
                 <groupId>com.dlink</groupId>
+                <artifactId>dlink-metadata-starrocks</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
                 <artifactId>dlink-gateway</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -447,6 +447,11 @@
                 <groupId>com.sun.mail</groupId>
                 <artifactId>javax.mail</artifactId>
                 <version>${javax.mail}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-scheduler</artifactId>
+                <version>${project.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

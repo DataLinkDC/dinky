@@ -21,16 +21,32 @@ cd dlink
 
 Dinky 采用 mysql 作为后端的存储库，mysql 支持 5.7+。这里假设你已经安装了 mysql 。首先需要创建 Dinky 的后端数据库，这里以配置文件中默认库创建。
 
+**mysql-5.x**
+
 ```sql
 #登录mysql
 mysql -uroot -proot@123
-#授权并创建数据库
-mysql> grant all privileges on *.* to 'dlink'@'%' identified by 'dlink' with grant option;
-mysql> grant all privileges on *.* to 'dlink'@'fdw1' identified by 'dlink'  with grant option;
+#创建数据库
+mysql> create database dlink;
+#授权
+mysql> grant all privileges on dlink.* to 'dlink'@'%' identified by 'dlink' with grant option;
 mysql> flush privileges;
 #此处用 dlink 用户登录
-mysql -h fdw1  -udlink -pdlink
-mysql> create database dlink;
+mysql -h fdw1 -udlink -pdlink
+```
+
+**mysql-8.x**
+
+```sql
+#登录mysql
+mysql -uroot -proot@123
+#创建数据库
+mysql> CREATE DATABASE dlink;
+#创建用户并允许远程登录
+mysql> create user 'dlink'@'%' IDENTIFIED WITH mysql_native_password by 'dlink';
+#授权
+mysql> grant ALL PRIVILEGES ON dlink.* to 'dlink'@'%';
+mysql> flush privileges;
 ```
 
 在 Dinky 根目录 sql 文件夹下有 3 个 sql 文件，分别是 dlink.sql 、 dlink_history.sql 和 dlinkmysqlcatalog.sql。如果第一次部署，可以直接将 dlink.sql 文件在 dlink 数据库下执行。（如果之前已经建立了 dlink 的数据库，那 dlink_history.sql 存放了各版本的升级 sql ，根据版本号及日期按需执行即可）

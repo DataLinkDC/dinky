@@ -22,7 +22,7 @@
     <parent>
         <artifactId>dlink</artifactId>
         <groupId>com.dlink</groupId>
-        <version>0.6.7-SNAPSHOT</version>
+        <version>0.6.7</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -38,6 +38,7 @@
         <module>dlink-metadata-doris</module>
         <module>dlink-metadata-phoenix</module>
         <module>dlink-metadata-hive</module>
+        <module>dlink-metadata-starrocks</module>
     </modules>
 
 
