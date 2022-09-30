@@ -82,12 +82,12 @@ public class MySqlDriver extends AbstractJdbcDriver {
         for (int i = 0; i < table.getColumns().size(); i++) {
             Column column = table.getColumns().get(i);
             sb.append("  `")
-                    .append(column.getName()).append("`  ")
-                    .append(column.getType()).append("  ");
+                .append(column.getName()).append("`  ")
+                .append(column.getType()).append("  ");
             //todo tmp process for varchar
-//            if (column.getType().equals("varchar")) {
-//                sb.append("(255)");
-//            }
+            /*if (column.getType().equals("varchar")) {
+                sb.append("(255)");
+            }*/
             if (column.getPrecision() > 0) {
                 sb.append("(").append(column.getPrecision());
                 if (column.getScale() > 0) {

@@ -32,6 +32,7 @@ import com.dlink.model.Table;
 import com.dlink.trans.AbstractOperation;
 import com.dlink.trans.Operation;
 import com.dlink.utils.SplitUtil;
+import com.dlink.utils.SqlUtil;
 
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -169,7 +170,6 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
         }
         return null;
     }
-
 
     Driver checkAndCreateSinkSchema(FlinkCDCConfig config, String schemaName) throws Exception {
         Map<String, String> sink = config.getSink();

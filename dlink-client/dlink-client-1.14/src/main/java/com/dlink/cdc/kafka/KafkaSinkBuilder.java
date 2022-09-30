@@ -43,6 +43,7 @@ import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
