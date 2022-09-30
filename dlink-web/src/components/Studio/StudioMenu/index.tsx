@@ -24,7 +24,7 @@ import {
   PauseCircleTwoTone, CarryOutTwoTone, DeleteTwoTone, PlayCircleTwoTone, CameraTwoTone, SnippetsTwoTone,
   FileAddTwoTone, FolderOpenTwoTone, SafetyCertificateTwoTone, SaveTwoTone, FlagTwoTone, CodeTwoTone,
   EnvironmentOutlined, SmileOutlined, RocketTwoTone, QuestionCircleTwoTone, MessageOutlined, ClusterOutlined
-  , EditTwoTone, RestTwoTone, ShrinkOutlined, ApiTwoTone
+  , EditTwoTone, RestTwoTone, ShrinkOutlined, ApiTwoTone, SendOutlined
 } from "@ant-design/icons";
 import Space from "antd/es/space";
 import Divider from "antd/es/divider";
@@ -33,7 +33,7 @@ import Breadcrumb from "antd/es/breadcrumb/Breadcrumb";
 import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import {CODE, postDataArray} from "@/components/Common/crud";
-import {executeSql, getJobPlan} from "@/pages/DataStudio/service";
+import {executeSql, getJobPlan, getTaskDefinition} from "@/pages/DataStudio/service";
 import TaskAPI from "@/pages/API/TaskAPI";
 import StudioHelp from "./StudioHelp";
 import StudioGraph from "./StudioGraph";
@@ -45,7 +45,7 @@ import {
   showCluster,
   showTables
 } from "@/components/Studio/StudioEvent/DDL";
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState, useRef} from "react";
 import StudioExplain from "../StudioConsole/StudioExplain";
 import {
   DIALECT,
@@ -62,6 +62,7 @@ import SqlExport from "@/pages/DataStudio/SqlExport";
 import {Dispatch} from "@@/plugin-dva/connect";
 import StudioTabs from "@/components/Studio/StudioTabs";
 import {isDeletedTask, JOB_LIFE_CYCLE} from "@/components/Common/JobLifeCycle";
+import DolphinPush from "@/components/Studio/StudioMenu/DolphinPush";
 
 const menu = (
   <Menu>
@@ -76,8 +77,10 @@ const StudioMenu = (props: any) => {
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
   const [exportModalVisible, handleExportModalVisible] = useState<boolean>(false);
   const [graphModalVisible, handleGraphModalVisible] = useState<boolean>(false);
+  const [dolphinModalVisible, handleDolphinModalVisible] = useState<boolean>(false);
   // const [editModalVisible, handleEditModalVisible] = useState<boolean>(false);
   const [graphData, setGraphData] = useState();
+  const [dolphinData, setDolphinData] = useState();
 
   const onKeyDown = useCallback((e) => {
     if (e.keyCode === 83 && (e.ctrlKey === true || e.metaKey)) {
@@ -225,6 +228,20 @@ const StudioMenu = (props: any) => {
         message.error(`获取作业执行计划失败，原因：\n${result.msg}`);
         setGraphData(undefined);
       }
+    })
+  };
+
+  //获取当前task关联的海豚数据
+  const viewDolphinCon = () => {
+    const res = getTaskDefinition(current.task.id);
+    res.then((result) => {
+      if (result.code == CODE.SUCCESS) {
+        setDolphinData(result.datas);
+      } else {
+        message.error(`获取海豚数据失败，原因：\n${result.msg}`);
+        setDolphinData(undefined);
+      }
+      handleDolphinModalVisible(true);
     })
   };
 
@@ -618,6 +635,15 @@ const StudioMenu = (props: any) => {
                   />
                 </Tooltip>
               </>)}
+              {isShowSubmitBtn() && (<>
+                <Tooltip title="推送到海豚调度">
+                  <Button
+                    type="text" style={{color: '#248FFF'}}
+                    icon={<SendOutlined/>}
+                    onClick={viewDolphinCon}
+                  />
+                </Tooltip>
+              </>)}
               {isShowCancelTaskBtn() &&
                 <Tooltip title="停止">
                   <Button
@@ -714,6 +740,17 @@ const StudioMenu = (props: any) => {
         onCancel={() => handleGraphModalVisible(false)}
       >
         <StudioGraph data={graphData}/>
+      </Modal>
+      <Modal
+        width={700}
+        bodyStyle={{padding: '32px 40px 48px'}}
+        destroyOnClose
+        title="推送到海豚调度"
+        visible={dolphinModalVisible}
+        onCancel={() => handleDolphinModalVisible(false)}
+        footer={[]}
+      >
+        <DolphinPush data={dolphinData} taskCur={current} handleDolphinModalVisible={handleDolphinModalVisible}/>
       </Modal>
       {current?.task ?
         <ModalForm

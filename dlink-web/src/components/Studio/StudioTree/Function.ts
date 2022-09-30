@@ -32,6 +32,8 @@ export interface TreeDataNode extends DataNode {
   taskId:number;
   parentId:number;
   path:string[];
+  schema:string;
+  table:string;
 }
 
 export function convertToTreeData(data:TreeDataNode[], pid:number,path?:string[]) {

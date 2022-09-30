@@ -30,6 +30,7 @@ import com.dlink.model.Table;
 import com.dlink.utils.FlinkBaseUtil;
 import com.dlink.utils.JSONUtil;
 import com.dlink.utils.LogUtil;
+import com.dlink.utils.SplitUtil;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.api.common.functions.FlatMapFunction;
@@ -69,6 +70,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.xml.bind.DatatypeConverter;
@@ -145,7 +147,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                             default:
                         }
                     } catch (Exception e) {
-                        logger.error("SchameTable: {} - Row: {} - Exception: {}", schemaTableName, JSONUtil.toJsonString(value), e.getCause().getMessage());
+                        logger.error("SchameTable: {} - Row: {} - Exception:", schemaTableName, JSONUtil.toJsonString(value),e);
                         throw e;
                     }
                 }
@@ -218,6 +220,8 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
             logger.info("Build deserialize successful...");
             Map<Table, OutputTag<Map>> tagMap = new HashMap<>();
             Map<String, Table> tableMap = new HashMap<>();
+            Map<String, String> splitConfMap = config.getSplit();
+
             for (Schema schema : schemaList) {
                 for (Table table : schema.getTables()) {
                     String sinkTableName = getSinkTableName(table);
@@ -235,8 +239,10 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
                 public void processElement(Map map, ProcessFunction<Map, Map>.Context ctx, Collector<Map> out) throws Exception {
                     LinkedHashMap source = (LinkedHashMap) map.get("source");
                     try {
-                        Table table = tableMap.get(source.get(schemaFieldName).toString() + "." + source.get("table").toString());
+                        String tableName = SplitUtil.getReValue(source.get(schemaFieldName).toString(), splitConfMap) + "." + SplitUtil.getReValue(source.get("table").toString(), splitConfMap);
+                        Table table = tableMap.get(tableName);
                         OutputTag<Map> outputTag = tagMap.get(table);
+                        Optional.ofNullable(outputTag).orElseThrow(() -> new RuntimeException("data outPutTag is not exists!table name is  " + tableName));
                         ctx.output(outputTag, map);
                     } catch (Exception e) {
                         logger.error(e.getMessage(), e);

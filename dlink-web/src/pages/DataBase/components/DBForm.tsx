@@ -60,6 +60,9 @@ const data:any = [
   {
     type: 'Hive',
   },
+  {
+    type: 'StarRocks',
+  }
 ];
 
 const DBForm: React.FC<UpdateFormProps> = (props) => {

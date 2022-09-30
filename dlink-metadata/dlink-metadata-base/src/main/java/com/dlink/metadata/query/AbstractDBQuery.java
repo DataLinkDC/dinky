@@ -38,6 +38,11 @@ public abstract class AbstractDBQuery implements IDBQuery {
     }
 
     @Override
+    public String createViewName() {
+        return "Create View";
+    }
+
+    @Override
     public String[] columnCustom() {
         return null;
     }

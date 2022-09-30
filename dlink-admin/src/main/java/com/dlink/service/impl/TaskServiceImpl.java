@@ -461,6 +461,15 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
+    public List<Task> getAllUDF() {
+        List<Task> tasks = list(new QueryWrapper<Task>().eq("dialect", "Java").eq("enabled", 1).isNotNull("save_point_path"));
+        return tasks.stream().peek(task -> {
+            Assert.check(task);
+            task.setStatement(statementService.getById(task.getId()).getStatement());
+        }).collect(Collectors.toList());
+    }
+
+    @Override
     public Result releaseTask(Integer id) {
         Task task = getTaskInfoById(id);
         Assert.check(task);
@@ -757,6 +766,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 }
                 break;
             case CUSTOM:
+                config.setSavePointPath(config.getSavePointPath());
                 config.getConfig().put("execution.savepoint.path", config.getSavePointPath());
                 break;
             default:

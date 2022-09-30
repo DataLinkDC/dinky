@@ -22,10 +22,15 @@ package com.dlink.controller;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
 import com.dlink.model.Jar;
+import com.dlink.model.Task;
 import com.dlink.service.JarService;
+import com.dlink.service.TaskService;
+import com.dlink.utils.UDFUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,6 +43,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -52,6 +58,9 @@ import lombok.extern.slf4j.Slf4j;
 public class JarController {
     @Autowired
     private JarService jarService;
+
+    @Autowired
+    private TaskService taskService;
 
     /**
      * 新增或者更新
@@ -112,5 +121,15 @@ public class JarController {
     public Result listEnabledAll() {
         List<Jar> jars = jarService.listEnabledAll();
         return Result.succeed(jars, "获取成功");
+    }
+
+    @PostMapping("/udf/generateJar")
+    public Result<Map<String, List<String>>> generateJar() {
+        List<Task> allUDF = taskService.getAllUDF();
+        List<String> udfCodes = allUDF.stream().map(Task::getStatement).collect(Collectors.toList());
+        Map<String, List<String>> resultMap = UDFUtil.buildJar(udfCodes);
+        String msg = StrUtil.format("udf jar生成成功，jar文件在dinky安装目录下tmp/udf/udf.jar；\n本次成功 class:{}。\n失败 class:{}"
+            , resultMap.get("success"), resultMap.get("failed"));
+        return Result.succeed(resultMap, msg);
     }
 }

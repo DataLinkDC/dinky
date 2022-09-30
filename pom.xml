@@ -39,6 +39,7 @@
         <module>dlink-extends</module>
         <module>dlink-alert</module>
         <module>dlink-daemon</module>
+        <module>dlink-scheduler</module>
         <module>dlink-core</module>
         <module>dlink-app</module>
         <module>dlink-web</module>
@@ -446,6 +447,11 @@
                 <groupId>com.sun.mail</groupId>
                 <artifactId>javax.mail</artifactId>
                 <version>${javax.mail}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-scheduler</artifactId>
+                <version>${project.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

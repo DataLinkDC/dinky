@@ -33,36 +33,36 @@ function HomepageHeader() {
             <div className="container">
                 <div className="desc">
                     <div className="desc_left">
-                    <h1 className="hero__title">{siteConfig.title}</h1>
-                    <p className="hero__subtitle">{siteConfig.tagline}</p>
-                    <p className="hero_desc"> &nbsp;&nbsp;&nbsp;&nbsp;
-                        一站式 FlinkSQL & SQL DataOps <br/>
-          基于 Apache Flink 二次开发，无侵入，开箱即用<br/>&nbsp;&nbsp;&nbsp;&nbsp;
-                        实时即未来，批流为一体<br/><br/>
+                        <h1 className="hero__title">{siteConfig.title}</h1>
+                        <p className="hero__subtitle">{siteConfig.tagline}</p>
+                        <p className="hero_desc"> &nbsp;&nbsp;&nbsp;&nbsp;
+                            一站式 FlinkSQL & SQL DataOps <br/>
+                            基于 Apache Flink 二次开发，无侵入，开箱即用<br/>&nbsp;&nbsp;&nbsp;&nbsp;
+                            实时即未来，批流为一体<br/><br/>
                         </p>
-                    <div className={styles.buttons}>
-                        <Link
-                            className="button button--secondary button--lg"
-                            style={{borderRadius: '2rem', border: '1px solid #42b983'}}
-                            to="https://github.com/DataLinkDC/dlink">
-                            GitHub
-                        </Link>
-                        &nbsp;&nbsp;
-                        <Link
-                            className="button button--secondary button--lg"
-                            style={{borderRadius: '2rem', border: '1px solid #42b983'}}
-                            to="https://gitee.com/mirrors/Dlink">
-                            Gitee
-                        </Link>
-                        &nbsp;&nbsp;
-                        <Link
-                            className="button button--secondary button--lg"
-                            style={{backgroundColor: '#42b983', borderRadius: '2rem', border: '1px solid #42b983'}}
-                            to="/docs/intro">
-                            Quick Start
-                        </Link>
-                        &nbsp;&nbsp;
-                        <span className={styles.indexCtasGitHubButtonWrapper}>
+                        <div className={styles.buttons}>
+                            <Link
+                                className="button button--secondary button--lg"
+                                style={{borderRadius: '2rem', border: '1px solid #42b983'}}
+                                to="https://github.com/DataLinkDC/dlink">
+                                GitHub
+                            </Link>
+                            &nbsp;&nbsp;
+                            <Link
+                                className="button button--secondary button--lg"
+                                style={{borderRadius: '2rem', border: '1px solid #42b983'}}
+                                to="https://gitee.com/mirrors/Dlink">
+                                Gitee
+                            </Link>
+                            &nbsp;&nbsp;
+                            <Link
+                                className="button button--secondary button--lg"
+                                style={{backgroundColor: '#42b983', borderRadius: '2rem', border: '1px solid #42b983'}}
+                                to="/docs/intro">
+                                Quick Start
+                            </Link>
+                            &nbsp;&nbsp;
+                            <span className={styles.indexCtasGitHubButtonWrapper}>
                            <iframe
                                className={styles.indexCtasGitHubButton}
                                src="https://ghbtns.com/github-btn.html?user=DataLinkDC&amp;repo=dlink&amp;type=star&amp;count=true&amp;size=large"
@@ -74,7 +74,7 @@ function HomepageHeader() {
                         </div>
                     </div>
                     <div className="desc_right">
-                        <img src="home_logo.svg" className="fly_svg"></img>
+                        <img src="home.png" className="fly_svg"></img>
                     </div>
                 </div>
             </div>

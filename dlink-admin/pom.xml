@@ -127,10 +127,10 @@
             <artifactId>sa-token-spring-boot-starter</artifactId>
         </dependency>
         <!-- sa-token 持久化 -->
-        <!--        <dependency>-->
-        <!--            <groupId>org.springframework.boot</groupId>-->
-        <!--            <artifactId>spring-boot-starter-data-redis</artifactId>-->
-        <!--        </dependency>-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
         <!--        <dependency>-->
         <!--            <groupId>cn.dev33</groupId>-->
         <!--            <artifactId>sa-token-dao-redis-jackson</artifactId>-->
@@ -201,10 +201,16 @@
             <artifactId>dlink-client-hadoop</artifactId>
             <scope>${scope.runtime}</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-scheduler</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
-        <finalName>${project.artifactId}</finalName>
+        <finalName>${project.artifactId}-${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
