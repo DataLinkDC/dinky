@@ -19,10 +19,6 @@
 
 package com.dlink.connector.pulsar;
 
-import com.dlink.connector.pulsar.util.PulsarConnectionHolder;
-import com.dlink.connector.pulsar.util.PulsarProducerHolder;
-import com.dlink.utils.JSONUtil;
-
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.api.common.functions.RuntimeContext;
 import org.apache.flink.api.common.serialization.SerializationSchema;
@@ -54,7 +50,10 @@ import java.util.function.BiConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.dlink.connector.pulsar.util.PulsarConnectionHolder;
+import com.dlink.connector.pulsar.util.PulsarProducerHolder;
+import com.dlink.utils.JSONUtil;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * The sink function for Pulsar.
@@ -238,7 +237,10 @@ public class PulsarSinkFunction<T> extends RichSinkFunction<T>
     }
 
     public String getKey(String strValue) {
-        ArrayNode jsonNodes = JSONUtil.parseArray(strValue);
+//        JSONObject jsonObject = JSONObject.parseObject(strValue);
+//        JSONObject jsonObject = JSONUtil.parseObject(strValue);
+//        String key = jsonObject.getString("key");
+        ObjectNode jsonNodes = JSONUtil.parseObject(strValue);
         String key = String.valueOf(jsonNodes.get("key"));
         return key == null ? "" : key;
     }
