@@ -75,7 +75,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
 
     protected static Logger logger = LoggerFactory.getLogger(AbstractJdbcDriver.class);
 
-    protected static ThreadLocal<Connection> conn = new ThreadLocal<>();
+    protected ThreadLocal<Connection> conn = new ThreadLocal<>();
 
     private DruidDataSource dataSource;
 

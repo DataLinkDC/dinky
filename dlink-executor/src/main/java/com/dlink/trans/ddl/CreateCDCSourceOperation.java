@@ -19,20 +19,7 @@
 
 package com.dlink.trans.ddl;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.cdc.CDCBuilder;
-import com.dlink.cdc.CDCBuilderFactory;
-import com.dlink.cdc.SinkBuilderFactory;
-import com.dlink.executor.Executor;
-import com.dlink.metadata.driver.Driver;
-import com.dlink.metadata.driver.DriverConfig;
-import com.dlink.model.FlinkCDCConfig;
-import com.dlink.model.Schema;
-import com.dlink.model.Table;
-import com.dlink.trans.AbstractOperation;
-import com.dlink.trans.Operation;
-import com.dlink.utils.SplitUtil;
-import com.dlink.utils.SqlUtil;
+import static com.dlink.cdc.SinkBuilderFactory.buildSinkBuilder;
 
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -44,6 +31,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import com.dlink.assertion.Asserts;
+import com.dlink.cdc.CDCBuilder;
+import com.dlink.cdc.CDCBuilderFactory;
+import com.dlink.cdc.SinkBuilder;
+import com.dlink.executor.Executor;
+import com.dlink.metadata.driver.Driver;
+import com.dlink.metadata.driver.DriverConfig;
+import com.dlink.model.FlinkCDCConfig;
+import com.dlink.model.Schema;
+import com.dlink.model.Table;
+import com.dlink.trans.AbstractOperation;
+import com.dlink.trans.Operation;
+import com.dlink.utils.SplitUtil;
+import com.dlink.utils.SqlUtil;
 
 /**
  * CreateCDCSourceOperation
@@ -82,6 +84,7 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
             CDCBuilder cdcBuilder = CDCBuilderFactory.buildCDCBuilder(config);
             Map<String, Map<String, String>> allConfigMap = cdcBuilder.parseMetaDataConfigs();
             config.setSchemaFieldName(cdcBuilder.getSchemaFieldName());
+            SinkBuilder sinkBuilder = buildSinkBuilder(config);
             List<Schema> schemaList = new ArrayList<>();
             final List<String> schemaNameList = cdcBuilder.getSchemaList();
             final List<String> tableRegList = cdcBuilder.getTableList();
@@ -92,6 +95,8 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
 
                 // 这直接传正则过去
                 schemaTableNameList.addAll(tableRegList.stream().map(x -> x.replaceFirst("\\\\.", ".")).collect(Collectors.toList()));
+
+                Driver sinkDriver = checkAndCreateSinkSchema(config, schemaTableNameList.get(0));
 
                 Set<Table> tables = driver.getSplitTables(tableRegList, cdcSource.getSplit());
 
@@ -106,14 +111,23 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                     table.setColumns(driver.listColumnsSortByPK(schemaName, tableName));
                     table.setColumns(driver.listColumnsSortByPK(schemaName, table.getName()));
                     schemaList.add(schema);
-                }
 
+                    if (null != sinkDriver) {
+                        Table sinkTable = (Table) table.clone();
+                        sinkTable.setSchema(sinkBuilder.getSinkSchemaName(table));
+                        sinkTable.setName(sinkBuilder.getSinkTableName(table));
+                        checkAndCreateSinkTable(sinkDriver, sinkTable);
+                    }
+                }
             } else {
                 for (String schemaName : schemaNameList) {
                     Schema schema = Schema.build(schemaName);
                     if (!allConfigMap.containsKey(schemaName)) {
                         continue;
                     }
+
+                    Driver sinkDriver = checkAndCreateSinkSchema(config, schemaName);
+
                     DriverConfig driverConfig = DriverConfig.build(allConfigMap.get(schemaName));
                     Driver driver = Driver.build(driverConfig);
                     final List<Table> tables = driver.listTables(schemaName);
@@ -133,6 +147,15 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                                 schemaTableNameList.add(table.getSchemaTableName());
                                 schema.getTables().add(table);
                             }
+                        }
+                    }
+
+                    if (null != sinkDriver) {
+                        for (Table table : schema.getTables()) {
+                            Table sinkTable = (Table) table.clone();
+                            sinkTable.setSchema(sinkBuilder.getSinkSchemaName(table));
+                            sinkTable.setName(sinkBuilder.getSinkTableName(table));
+                            checkAndCreateSinkTable(sinkDriver, sinkTable);
                         }
                     }
                     schemaList.add(schema);
@@ -157,11 +180,11 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
             DataStreamSource<String> streamSource = cdcBuilder.build(streamExecutionEnvironment);
             logger.info("Build " + config.getType() + " successful...");
             if (cdcSource.getSinks() == null || cdcSource.getSinks().size() == 0) {
-                SinkBuilderFactory.buildSinkBuilder(config).build(cdcBuilder, streamExecutionEnvironment, executor.getCustomTableEnvironment(), streamSource);
+                sinkBuilder.build(cdcBuilder, streamExecutionEnvironment, executor.getCustomTableEnvironment(), streamSource);
             } else {
                 for (Map<String, String> sink : cdcSource.getSinks()) {
                     config.setSink(sink);
-                    SinkBuilderFactory.buildSinkBuilder(config).build(cdcBuilder, streamExecutionEnvironment, executor.getCustomTableEnvironment(), streamSource);
+                    sinkBuilder.build(cdcBuilder, streamExecutionEnvironment, executor.getCustomTableEnvironment(), streamSource);
                 }
             }
             logger.info("Build CDCSOURCE Task successful!");
@@ -174,7 +197,7 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
     Driver checkAndCreateSinkSchema(FlinkCDCConfig config, String schemaName) throws Exception {
         Map<String, String> sink = config.getSink();
         String autoCreate = sink.get("auto.create");
-        if (!Asserts.isEqualsIgnoreCase(autoCreate, "true")) {
+        if (!Asserts.isEqualsIgnoreCase(autoCreate, "true") || Asserts.isNullString(schemaName)) {
             return null;
         }
         String url = sink.get("url");
