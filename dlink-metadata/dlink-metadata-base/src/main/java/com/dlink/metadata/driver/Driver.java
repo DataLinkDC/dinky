@@ -60,9 +60,6 @@ public interface Driver {
             return getHealthDriver(key);
         }
         synchronized (Driver.class) {
-            if (DriverPool.exist(key)) {
-                return getHealthDriver(key);
-            }
             Optional<Driver> optionalDriver = Driver.get(config);
             if (!optionalDriver.isPresent()) {
                 throw new MetaDataException("缺少数据源类型【" + config.getType() + "】的依赖，请在 lib 下添加对应的扩展依赖");
@@ -80,6 +77,36 @@ public interface Driver {
         } else {
             return driver.connect();
         }
+    }
+
+    static Driver build(String connector, String url, String username, String password) {
+        String type = null;
+        if (Asserts.isEqualsIgnoreCase(connector, "doris")) {
+            type = "Doris";
+        } else if (Asserts.isEqualsIgnoreCase(connector, "starrocks")) {
+            type = "StarRocks";
+        } else if (Asserts.isEqualsIgnoreCase(connector, "clickhouse")) {
+            type = "ClickHouse";
+        } else if (Asserts.isEqualsIgnoreCase(connector, "jdbc")) {
+            if (url.startsWith("jdbc:mysql")) {
+                type = "MySQL";
+            } else if (url.startsWith("jdbc:postgresql")) {
+                type = "PostgreSql";
+            } else if (url.startsWith("jdbc:oracle")) {
+                type = "Oracle";
+            } else if (url.startsWith("jdbc:sqlserver")) {
+                type = "SQLServer";
+            } else if (url.startsWith("jdbc:phoenix")) {
+                type = "Phoenix";
+            } else if (url.startsWith("jdbc:pivotal")) {
+                type = "Greenplum";
+            }
+        }
+        if (Asserts.isNull(type)) {
+            throw new MetaDataException("缺少数据源类型:【" + connector + "】");
+        }
+        DriverConfig driverConfig = new DriverConfig(url, type, url, username, password);
+        return build(driverConfig);
     }
 
     Driver setDriverConfig(DriverConfig config);
@@ -100,6 +127,12 @@ public interface Driver {
 
     List<Schema> listSchemas();
 
+    boolean existSchema(String schemaName);
+
+    boolean createSchema(String schemaName) throws Exception;
+
+    String generateCreateSchemaSql(String schemaName);
+
     List<Table> listTables(String schemaName);
 
     List<Column> listColumns(String schemaName, String tableName);
@@ -116,6 +149,8 @@ public interface Driver {
 
     boolean createTable(Table table) throws Exception;
 
+    boolean generateCreateTable(Table table) throws Exception;
+
     boolean dropTable(Table table) throws Exception;
 
     boolean truncateTable(Table table) throws Exception;
@@ -125,6 +160,8 @@ public interface Driver {
     String getDropTableSql(Table table);
 
     String getTruncateTableSql(Table table);
+
+    String generateCreateTableSql(Table table);
 
     /* boolean insert(Table table, JsonNode data);
 

@@ -49,7 +49,7 @@ import java.util.Map;
  * @author wenmo
  * @since 2022/4/22 23:50
  */
-public class HudiSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, Serializable {
+public class HudiSinkBuilder extends AbstractSinkBuilder implements Serializable {
 
     private static final String KEY_WORD = "datastream-hudi";
     private static final long serialVersionUID = 5324199407472847422L;

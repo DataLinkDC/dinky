@@ -74,6 +74,27 @@ public class FlinkCDCConfig {
         this.jdbc = jdbc;
     }
 
+    public void init(String type, String hostname, Integer port, String username, String password, Integer checkpoint, Integer parallelism, String database, String schema, String table,
+                          String startupMode,
+                          Map<String, String> split, Map<String, String> debezium, Map<String, String> source, Map<String, String> sink, Map<String, String> jdbc) {
+        this.type = type;
+        this.hostname = hostname;
+        this.port = port;
+        this.username = username;
+        this.password = password;
+        this.checkpoint = checkpoint;
+        this.parallelism = parallelism;
+        this.database = database;
+        this.schema = schema;
+        this.table = table;
+        this.startupMode = startupMode;
+        this.split = split;
+        this.debezium = debezium;
+        this.source = source;
+        this.sink = sink;
+        this.jdbc = jdbc;
+    }
+
     public String getType() {
         return type;
     }
@@ -177,6 +198,7 @@ public class FlinkCDCConfig {
     private boolean skip(String key) {
         switch (key) {
             case "sink.db":
+            case "auto.create":
             case "table.prefix":
             case "table.suffix":
             case "table.upper":
