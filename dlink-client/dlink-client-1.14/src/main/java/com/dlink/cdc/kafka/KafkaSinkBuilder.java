@@ -55,7 +55,7 @@ import java.util.Map;
  * @author wenmo
  * @since 2022/4/12 21:29
  **/
-public class KafkaSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, Serializable {
+public class KafkaSinkBuilder extends AbstractSinkBuilder implements Serializable {
 
     private static final String KEY_WORD = "datastream-kafka";
 

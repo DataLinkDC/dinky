@@ -63,4 +63,11 @@ public class PostgreSqlDriver extends AbstractJdbcDriver {
     public Map<String, String> getFlinkColumnTypeConversion() {
         return new HashMap<>();
     }
+
+    @Override
+    public String generateCreateSchemaSql(String schemaName) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("CREATE SCHEMA ").append(schemaName);
+        return sb.toString();
+    }
 }

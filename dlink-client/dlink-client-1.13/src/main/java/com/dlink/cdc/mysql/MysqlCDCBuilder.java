@@ -84,6 +84,7 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         String distributionFactorLower = config.getSource().get("chunk-key.even-distribution.factor.upper-bound");
         String distributionFactorUpper = config.getSource().get("chunk-key.even-distribution.factor.lower-bound");
         String scanNewlyAddedTableEnabled = config.getSource().get("scan.newly-added-table.enabled");
+        String schemaChanges = config.getSource().get("schema.changes");
 
         Properties debeziumProperties = new Properties();
         // 为部分转换添加默认值
@@ -109,6 +110,10 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
             .port(config.getPort())
             .username(config.getUsername())
             .password(config.getPassword());
+
+        if (Asserts.isEqualsIgnoreCase(schemaChanges, "true")) {
+            sourceBuilder.includeSchemaChanges(true);
+        }
 
         if (Asserts.isNotNullString(database)) {
             String[] databases = database.split(FlinkParamConstant.SPLIT);
