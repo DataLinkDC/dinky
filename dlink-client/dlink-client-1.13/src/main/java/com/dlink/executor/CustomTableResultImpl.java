@@ -49,6 +49,9 @@ import java.util.concurrent.TimeoutException;
 
 import javax.annotation.Nullable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 定制CustomTableResultImpl
  *
@@ -57,6 +60,7 @@ import javax.annotation.Nullable;
  **/
 @Internal
 public class CustomTableResultImpl implements TableResult {
+    protected static final Logger logger = LoggerFactory.getLogger(CustomTableResultImpl.class);
     public static final TableResult TABLE_RESULT_OK =
             CustomTableResultImpl.builder()
                     .resultKind(ResultKind.SUCCESS)
@@ -190,6 +194,11 @@ public class CustomTableResultImpl implements TableResult {
                     sessionTimeZone);
         } else if (printStyle instanceof RawContentStyle) {
             while (it.hasNext()) {
+                logger.info(
+                        String.join(
+                                ",",
+                                PrintUtils.rowToString(
+                                        it.next(), getResolvedSchema(), sessionTimeZone)));
                 System.out.println(
                         String.join(
                                 ",",

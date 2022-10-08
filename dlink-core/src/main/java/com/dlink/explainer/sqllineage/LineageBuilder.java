@@ -42,7 +42,11 @@ import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.stat.TableStat;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class LineageBuilder {
+    protected static final Logger logger = LoggerFactory.getLogger(LineageBuilder.class);
     public static LineageResult getSqlLineageByOne(String statement, String type) {
         List<LineageTable> tables = new ArrayList<>();
         List<LineageRelation> relations = new ArrayList<>();
@@ -115,6 +119,7 @@ public class LineageBuilder {
                 int tSize = tgtList.size();
                 int sSize = srcLists.size();
                 if (tSize != sSize && tSize * 2 != sSize) {
+                    logger.info("出现字段位数不相等错误");
                     System.out.println("出现字段位数不相等错误");
                     return null;
                 }
@@ -249,6 +254,7 @@ public class LineageBuilder {
                 int tSize = tgtList.size();
                 int sSize = srcLists.size();
                 if (tSize != sSize && tSize * 2 != sSize) {
+                    logger.info("出现字段位数不相等错误");
                     System.out.println("出现字段位数不相等错误");
                     return null;
                 }

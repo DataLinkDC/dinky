@@ -48,7 +48,11 @@ import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQueryTableSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class LineageUtils {
+    protected static final Logger logger = LoggerFactory.getLogger(LineageUtils.class);
 
     public static void columnLineageAnalyzer(String sql, String type, TreeNode<LineageColumn> node) {
         if (Asserts.isNullString(sql)) {
@@ -62,6 +66,7 @@ public class LineageUtils {
         try {
             statements = SQLUtils.parseStatements(sql, type);
         } catch (Exception e) {
+            logger.info("can't parser by druid " + type + e);
             System.out.println("can't parser by druid " + type + e);
         }
 
