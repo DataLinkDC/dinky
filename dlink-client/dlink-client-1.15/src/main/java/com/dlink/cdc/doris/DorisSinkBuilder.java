@@ -40,6 +40,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * DorisSinkBuilder
@@ -139,7 +140,7 @@ public class DorisSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
             executionBuilder.setDeletable(Boolean.valueOf(sink.get(DorisSinkOptions.SINK_ENABLE_DELETE.key())));
         }
         if (sink.containsKey(DorisSinkOptions.SINK_LABEL_PREFIX.key())) {
-            executionBuilder.setLabelPrefix(getSinkSchemaName(table) + "_" + getSinkTableName(table) + sink.get(DorisSinkOptions.SINK_LABEL_PREFIX.key()));
+            executionBuilder.setLabelPrefix(sink.get(DorisSinkOptions.SINK_LABEL_PREFIX.key()) + "-" + getSinkSchemaName(table) + "_" + getSinkTableName(table) + UUID.randomUUID());
         }
         if (sink.containsKey(DorisSinkOptions.SINK_MAX_RETRIES.key())) {
             executionBuilder.setMaxRetries(Integer.valueOf(sink.get(DorisSinkOptions.SINK_MAX_RETRIES.key())));
