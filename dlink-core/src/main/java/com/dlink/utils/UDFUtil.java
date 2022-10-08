@@ -19,10 +19,10 @@
 
 package com.dlink.utils;
 
+import com.dlink.constant.PathConstant;
 import com.dlink.pool.ClassEntity;
 import com.dlink.pool.ClassPool;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,8 +75,8 @@ public class UDFUtil {
     public static Map<String, List<String>> buildJar(List<String> codeList) {
         List<String> successList = new ArrayList<>();
         List<String> failedList = new ArrayList<>();
-        String tmpPath = System.getProperty("user.dir") + File.separator + "tmp/udf/";
-        String udfJarPath = tmpPath + "udf.jar";
+        String tmpPath = PathConstant.UDF_PATH;
+        String udfJarPath = PathConstant.UDF_JAR_PATH;
         //删除jar缓存
         FileUtil.del(udfJarPath);
         codeList.forEach(code -> {
