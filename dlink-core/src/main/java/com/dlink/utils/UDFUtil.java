@@ -29,15 +29,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.codehaus.groovy.control.CompilerConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ZipUtil;
 import groovy.lang.GroovyClassLoader;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * UDFUtil
@@ -56,7 +55,7 @@ public class UDFUtil {
             byte[] compiledBytes = compiler.getJavaFileObjectMap(className).getCompiledBytes();
             ClassPool.push(new ClassEntity(className, code, compiledBytes));
             logger.info("编译成功");
-            logger.info("compilerTakeTime：{}" , compiler.getCompilerTakeTime());
+            logger.info("compilerTakeTime：{}",compiler.getCompilerTakeTime());
             initClassLoader(className);
         } else {
             logger.info("编译失败");
@@ -89,7 +88,7 @@ public class UDFUtil {
             String className = compiler.getFullClassName();
             if (res) {
                 logger.info("编译成功");
-                logger.info("compilerTakeTime：{}" , compiler.getCompilerTakeTime());
+                logger.info("compilerTakeTime：{}",compiler.getCompilerTakeTime());
                 successList.add(className);
             } else {
                 logger.info("编译失败");

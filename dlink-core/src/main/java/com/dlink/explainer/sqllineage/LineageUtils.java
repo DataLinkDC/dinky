@@ -25,6 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -48,9 +51,6 @@ import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQueryTableSource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class LineageUtils {
     protected static final Logger logger = LoggerFactory.getLogger(LineageUtils.class);
 
@@ -66,7 +66,7 @@ public class LineageUtils {
         try {
             statements = SQLUtils.parseStatements(sql, type);
         } catch (Exception e) {
-            logger.info("can't parser by druid {}" , type , e);
+            logger.info("can't parser by druid {}",type,e);
         }
 
         // 只考虑一条语句
