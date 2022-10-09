@@ -1386,6 +1386,22 @@ INSERT INTO `dlink_user_role`(`id`, `user_id`, `role_id`, `create_time`, `update
 VALUES (1, 1, 1, current_time, current_time);
 
 
+-- ----------------------------
+-- Table structure for dlink_user_tenant
+-- ----------------------------
+DROP TABLE IF EXISTS `dlink_user_tenant`;
+CREATE TABLE `dlink_user_tenant`
+(
+    `id`          int NOT NULL AUTO_INCREMENT COMMENT 'ID',
+    `user_id`     int NOT NULL COMMENT '用户ID',
+    `tenant_id`     int NOT NULL COMMENT '租户ID',
+    `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+    `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+    PRIMARY KEY (`id`) USING BTREE,
+    UNIQUE INDEX `dlink_user_role_un`(`user_id`, `tenant_id`) USING BTREE
+) ENGINE = InnoDB  CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户与租户关系' ROW_FORMAT = DYNAMIC;
+
+
 
 -- -----------------------------------------------------------------------------元数据相关数据表 start-------------------------------------------------------------------------------------------
 -- ----------------------------

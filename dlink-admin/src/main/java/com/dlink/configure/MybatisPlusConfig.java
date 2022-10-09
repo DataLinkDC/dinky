@@ -59,7 +59,7 @@ public class MybatisPlusConfig {
             , "dlink_jar"
             , "dlink_job_history"
             , "dlink_job_instance"
-            //,"dlink_role"
+            ,"dlink_role"
             , "dlink_savepoints"
             , "dlink_task"
             , "dlink_task_statement"

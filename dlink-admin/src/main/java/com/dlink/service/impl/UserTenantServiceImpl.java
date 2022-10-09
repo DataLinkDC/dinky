@@ -17,40 +17,21 @@
  *
  */
 
-package com.dlink.mapper;
+package com.dlink.service.impl;
 
-import com.dlink.db.mapper.SuperMapper;
-import com.dlink.model.UserRole;
-
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
+import com.dlink.db.service.impl.SuperServiceImpl;
+import com.dlink.mapper.UserTenantMapper;
+import com.dlink.model.UserTenant;
+import com.dlink.service.UserTenantService;
 
 import java.util.List;
 
-/**
- * user role mapper interface
- */
-@Mapper
-public interface UserRoleMapper extends SuperMapper<UserRole> {
-    /**
-     * @param userId userId
-     * @return user role relation
-     */
-    List<UserRole> getUserRoleByUserId(@Param("userId") int userId);
+import org.springframework.stereotype.Service;
 
-    /**
-     * delete user role relation
-     *
-     * @param userRoleList list
-     * @return int
-     */
-    int deleteBathRelation(@Param("userRoleList") List<UserRole> userRoleList);
-
-    /**
-     * delete user role relation by role id
-     *
-     * @param roleIds role id
-     * @return delete status
-     */
-    int deleteByRoleIds(@Param("roleIds") List<Integer> roleIds);
+@Service
+public class UserTenantServiceImpl extends SuperServiceImpl<UserTenantMapper, UserTenant> implements UserTenantService {
+    @Override
+    public List<UserTenant> getUserTenantByUserId(int userId) {
+        return baseMapper.getUserTenantByUserId(userId);
+    }
 }

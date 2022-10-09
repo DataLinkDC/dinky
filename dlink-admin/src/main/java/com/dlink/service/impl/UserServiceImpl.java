@@ -31,10 +31,12 @@ import com.dlink.model.Role;
 import com.dlink.model.Tenant;
 import com.dlink.model.User;
 import com.dlink.model.UserRole;
+import com.dlink.model.UserTenant;
 import com.dlink.service.RoleService;
 import com.dlink.service.TenantService;
 import com.dlink.service.UserRoleService;
 import com.dlink.service.UserService;
+import com.dlink.service.UserTenantService;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -64,6 +66,9 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
     @Autowired
     private UserRoleService userRoleService;
+
+    @Autowired
+    private UserTenantService userTenantService;
 
     @Autowired
     private RoleService roleService;
@@ -140,6 +145,9 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
                 return Result.failed("账号已被禁用");
             }
 
+            // 将前端入参 租户id 放入上下文
+            RequestContext.set(loginUTO.getTenantId());
+
             UserDTO userDTO = new UserDTO();
             Set<RoleDTO> roleDTOList = new HashSet<>();
             List<UserRole> userRoles = userRoleService.getUserRoleByUserId(user.getId());
@@ -147,15 +155,14 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             Tenant currentTenant = tenantService.getBaseMapper().selectById(loginUTO.getTenantId());
             for (UserRole userRole : userRoles) {
                 Role role = roleService.getBaseMapper().selectById(userRole.getRoleId());
-                Tenant tenant = tenantService.getBaseMapper().selectOne(new QueryWrapper<Tenant>().eq("id", role.getTenantId()));
-                roleDTOList.add(new RoleDTO(role, tenant));
+                if (Asserts.isNotNull(role)) {
+                    Tenant tenant = tenantService.getBaseMapper().selectOne(new QueryWrapper<Tenant>().eq("id", role.getTenantId()));
+                    roleDTOList.add(new RoleDTO(role, tenant));
+                }
             }
             userDTO.setUser(user);
             userDTO.setRoleDTOList(roleDTOList);
             userDTO.setCurrentTenant(currentTenant);
-
-            // 将前端入参 租户id 放入上下文
-            RequestContext.set(loginUTO.getTenantId());
 
             StpUtil.login(user.getId(), loginUTO.isAutoLogin());
             StpUtil.getSession().set("user", userDTO);
@@ -207,16 +214,13 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             return Result.failed("该账号不存在,获取租户失败");
         }
 
-        List<UserRole> userRoles = userRoleService.getUserRoleByUserId(user.getId());
-        if (userRoles.size() == 0) {
-            return Result.failed("用户未绑定角色,获取租户失败");
+        List<UserTenant> userTenants = userTenantService.getUserTenantByUserId(user.getId());
+        if (userTenants.size() == 0) {
+            return Result.failed("用户未绑定租户,获取租户失败");
         }
-        Set<Integer> roleIds = new HashSet<>();
-        userRoles.forEach(userRole -> roleIds.add(userRole.getRoleId()));
 
-        List<Role> roles = roleService.getRoleByIds(roleIds);
         Set<Integer> tenantIds = new HashSet<>();
-        roles.forEach(role -> tenantIds.add(role.getTenantId()));
+        userTenants.forEach(userTenant -> tenantIds.add(userTenant.getTenantId()));
         List<Tenant> tenants = tenantService.getTenantByIds(tenantIds);
         return Result.succeed(tenants, "获取成功");
     }
