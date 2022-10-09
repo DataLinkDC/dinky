@@ -37,6 +37,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.http.Method;
 
@@ -87,6 +89,14 @@ public class FlinkAPI {
     private JsonNode post(String route, String body) {
         String res = HttpUtil.post(NetConstant.HTTP + address + NetConstant.SLASH + route, body, NetConstant.SERVER_TIME_OUT_ACTIVE);
         return parse(res);
+    }
+
+    private HttpRequest post(String route) {
+        return HttpUtil.createPost(NetConstant.HTTP + address + NetConstant.SLASH + route).timeout(NetConstant.SERVER_TIME_OUT_ACTIVE);
+    }
+
+    private HttpRequest delete(String route) {
+        return HttpUtil.createRequest(Method.DELETE, NetConstant.HTTP + address + NetConstant.SLASH + route).timeout(NetConstant.SERVER_TIME_OUT_ACTIVE);
     }
 
     private JsonNode patch(String route, String body) {
@@ -204,6 +214,29 @@ public class FlinkAPI {
 
     public JsonNode getJobsConfig(String jobId) {
         return get(FlinkRestAPIConstant.JOBS + jobId + FlinkRestAPIConstant.CONFIG);
+    }
+
+    /**
+     * 获取jars列表
+     *
+     * @return {@link JsonNode}
+     */
+    public JsonNode getJarsList() {
+        return get(FlinkRestAPIConstant.JARS);
+    }
+
+    /**
+     * 上传jar
+     *
+     * @param filePath 文件路径
+     * @return {@link JsonNode}
+     */
+    public JsonNode uploadJar(String filePath) {
+        return parse(post(FlinkRestAPIConstant.JARS + FlinkRestAPIConstant.UPLOAD).form("jarfile", FileUtil.file(filePath)).execute().body());
+    }
+
+    public JsonNode deleteJar(String jarId) {
+        return parse(delete(FlinkRestAPIConstant.JARS + "/" + jarId).execute().body());
     }
 
     /**

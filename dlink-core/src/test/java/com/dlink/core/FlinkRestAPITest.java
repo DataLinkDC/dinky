@@ -70,6 +70,24 @@ public class FlinkRestAPITest {
     }
 
     @Test
+    public void uploadJarTest() {
+        JsonNode configurationsDetailsInfo = FlinkAPI.build(address).uploadJar("/Users/zackyoung/projects/ideaProjects/dlink-my/tmp/udf/udf.jar");
+        System.out.println(configurationsDetailsInfo.toString());
+    }
+
+    @Test
+    public void deleteJarTest() {
+        JsonNode configurationsDetailsInfo = FlinkAPI.build(address).deleteJar("");
+        System.out.println(configurationsDetailsInfo.toString());
+    }
+
+    @Test
+    public void getJarListInfoTest() {
+        JsonNode configurationsDetailsInfo = FlinkAPI.build(address).getJarsList();
+        System.out.println(configurationsDetailsInfo.toString());
+    }
+
+    @Test
     public void getExectionsInfoTest() {
         JsonNode exectionsDetailInfo = FlinkAPI.build(address).getException("9b0910c865874430b98d3817a248eb24");
         System.out.println(exectionsDetailInfo.toString());
@@ -143,7 +161,7 @@ public class FlinkRestAPITest {
 
     @Test
     public void getTaskManagerLogListToDetail() {
-        String taskManagerLogDetail = FlinkAPI.build(address).getTaskManagerLogFileDeatil("container_e46_1655948912029_0061_01_000002","taskmanager.log");
+        String taskManagerLogDetail = FlinkAPI.build(address).getTaskManagerLogFileDeatil("container_e46_1655948912029_0061_01_000002", "taskmanager.log");
         System.out.println(taskManagerLogDetail);
     }
 

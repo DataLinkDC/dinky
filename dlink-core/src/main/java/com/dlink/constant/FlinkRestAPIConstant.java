@@ -62,6 +62,8 @@ public final class FlinkRestAPIConstant {
     public static final String STDOUT = "/stdout";
 
     public static final String THREAD_DUMP = "/thread-dump";
+    public static final String JARS = "jars";
+    public static final String UPLOAD = "/upload";
 
     public static final String GET = "?get=";
 
