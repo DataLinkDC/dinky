@@ -81,7 +81,8 @@ import javax.xml.bind.DatatypeConverter;
  * @author wenmo
  * @since 2022/4/25 23:02
  */
-public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, Serializable {
+public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable {
+
     private static final String KEY_WORD = "sql";
     private static final long serialVersionUID = -3699685106324048226L;
     private static AtomicInteger atomicInteger = new AtomicInteger(0);

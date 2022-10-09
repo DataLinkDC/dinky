@@ -64,7 +64,7 @@
         <lombok.version>1.18.16</lombok.version>
         <jackjson.version>2.12.1</jackjson.version>
         <guava.version>21.0</guava.version>
-        <mysql-connector-java.version>8.0.22</mysql-connector-java.version>
+        <mysql-connector-java.version>8.0.28</mysql-connector-java.version>
         <ojdbc8.version>12.2.0.1</ojdbc8.version>
         <clickhouse.version>0.2.6</clickhouse.version>
         <postgresql.version>42.2.14</postgresql.version>
