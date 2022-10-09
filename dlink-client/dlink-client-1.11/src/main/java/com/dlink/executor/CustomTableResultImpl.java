@@ -128,7 +128,6 @@ class CustomTableResultImpl implements TableResult {
         } else if (printStyle instanceof RawContentStyle) {
             while (it.hasNext()) {
                 logger.info(String.join(",", PrintUtils.rowToString(it.next())));
-                System.out.println(String.join(",", PrintUtils.rowToString(it.next())));
             }
         } else {
             throw new TableException("Unsupported print style: " + printStyle);

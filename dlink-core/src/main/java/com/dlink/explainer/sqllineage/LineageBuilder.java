@@ -120,7 +120,6 @@ public class LineageBuilder {
                 int sSize = srcLists.size();
                 if (tSize != sSize && tSize * 2 != sSize) {
                     logger.info("出现字段位数不相等错误");
-                    System.out.println("出现字段位数不相等错误");
                     return null;
                 }
                 for (int i = 0; i < tSize; i++) {
@@ -255,7 +254,6 @@ public class LineageBuilder {
                 int sSize = srcLists.size();
                 if (tSize != sSize && tSize * 2 != sSize) {
                     logger.info("出现字段位数不相等错误");
-                    System.out.println("出现字段位数不相等错误");
                     return null;
                 }
                 for (int i = 0; i < tSize; i++) {

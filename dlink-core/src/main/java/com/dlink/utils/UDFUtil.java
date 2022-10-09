@@ -56,15 +56,11 @@ public class UDFUtil {
             byte[] compiledBytes = compiler.getJavaFileObjectMap(className).getCompiledBytes();
             ClassPool.push(new ClassEntity(className, code, compiledBytes));
             logger.info("编译成功");
-            logger.info("compilerTakeTime：" + compiler.getCompilerTakeTime());
-            System.out.println("编译成功");
-            System.out.println("compilerTakeTime：" + compiler.getCompilerTakeTime());
+            logger.info("compilerTakeTime：{}" , compiler.getCompilerTakeTime());
             initClassLoader(className);
         } else {
             logger.info("编译失败");
             logger.info(compiler.getCompilerMessage());
-            System.out.println("编译失败");
-            System.out.println(compiler.getCompilerMessage());
         }
     }
 
@@ -93,15 +89,11 @@ public class UDFUtil {
             String className = compiler.getFullClassName();
             if (res) {
                 logger.info("编译成功");
-                logger.info("compilerTakeTime：" + compiler.getCompilerTakeTime());
-                System.out.println("编译成功");
-                System.out.println("compilerTakeTime：" + compiler.getCompilerTakeTime());
+                logger.info("compilerTakeTime：{}" , compiler.getCompilerTakeTime());
                 successList.add(className);
             } else {
                 logger.info("编译失败");
                 logger.info(compiler.getCompilerMessage());
-                System.out.println("编译失败");
-                System.out.println(compiler.getCompilerMessage());
                 failedList.add(className);
             }
         });

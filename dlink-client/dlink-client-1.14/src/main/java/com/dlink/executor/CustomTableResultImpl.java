@@ -199,11 +199,6 @@ public class CustomTableResultImpl implements TableResult {
                                 ",",
                                 PrintUtils.rowToString(
                                         it.next(), getResolvedSchema(), sessionTimeZone)));
-                System.out.println(
-                        String.join(
-                                ",",
-                                PrintUtils.rowToString(
-                                        it.next(), getResolvedSchema(), sessionTimeZone)));
             }
         } else {
             throw new TableException("Unsupported print style: " + printStyle);

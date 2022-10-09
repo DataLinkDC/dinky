@@ -66,8 +66,7 @@ public class LineageUtils {
         try {
             statements = SQLUtils.parseStatements(sql, type);
         } catch (Exception e) {
-            logger.info("can't parser by druid " + type + e);
-            System.out.println("can't parser by druid " + type + e);
+            logger.info("can't parser by druid {}" , type , e);
         }
 
         // 只考虑一条语句
