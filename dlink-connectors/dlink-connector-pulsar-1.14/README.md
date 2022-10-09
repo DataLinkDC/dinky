@@ -17,7 +17,7 @@ In order to use the Pulsar connector the following dependencies are required for
 ```
 <dependency>
   <groupId>org.apache.flink</groupId>
-  <artifactId>flink-connector-Pulsar_2.11</artifactId>
+  <artifactId>flink-connector-Pulsar_${scala.binary.version}</artifactId>
   <version>1.14.3</version>
 </dependency>
 ```

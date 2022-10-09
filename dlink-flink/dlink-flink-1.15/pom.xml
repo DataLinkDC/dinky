@@ -159,7 +159,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.doris</groupId>
-            <artifactId>flink-doris-connector-1.14_2.12</artifactId>
+            <artifactId>flink-doris-connector-1.14_${scala.binary.version}</artifactId>
             <version>1.1.0</version>
         </dependency>
     </dependencies>

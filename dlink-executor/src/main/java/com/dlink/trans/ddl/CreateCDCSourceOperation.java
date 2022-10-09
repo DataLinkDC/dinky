@@ -34,7 +34,6 @@ import com.dlink.model.Table;
 import com.dlink.trans.AbstractOperation;
 import com.dlink.trans.Operation;
 import com.dlink.utils.SplitUtil;
-import com.dlink.utils.SqlUtil;
 
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -96,7 +95,7 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                 // 这直接传正则过去
                 schemaTableNameList.addAll(tableRegList.stream().map(x -> x.replaceFirst("\\\\.", ".")).collect(Collectors.toList()));
 
-                Driver sinkDriver = checkAndCreateSinkSchema(config, schemaTableNameList.get(0));
+                Driver sinkDriver = checkSinkDirver(config, schemaTableNameList.get(0));
 
                 Set<Table> tables = driver.getSplitTables(tableRegList, cdcSource.getSplit());
 
@@ -126,7 +125,7 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                         continue;
                     }
 
-                    Driver sinkDriver = checkAndCreateSinkSchema(config, schemaName);
+                    Driver sinkDriver = checkSinkDirver(config, schemaName);
 
                     DriverConfig driverConfig = DriverConfig.build(allConfigMap.get(schemaName));
                     Driver driver = Driver.build(driverConfig);
@@ -194,20 +193,21 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
         return null;
     }
 
-    Driver checkAndCreateSinkSchema(FlinkCDCConfig config, String schemaName) throws Exception {
+    Driver checkSinkDirver(FlinkCDCConfig config, String schemaName) throws Exception {
         Map<String, String> sink = config.getSink();
         String autoCreate = sink.get("auto.create");
         if (!Asserts.isEqualsIgnoreCase(autoCreate, "true") || Asserts.isNullString(schemaName)) {
             return null;
         }
-        String url = sink.get("url");
-        String schema = SqlUtil.replaceAllParam(sink.get("sink.db"), "schemaName", schemaName);
-        Driver driver = Driver.build(sink.get("connector"), url, sink.get("username"), sink.get("password"));
-        if (null != driver && !driver.existSchema(schema)) {
-            driver.createSchema(schema);
-        }
-        sink.put("sink.db", schema);
-        sink.put("url", url + "/" + schema);
+        //String url = sink.get("url");
+        Driver driver = Driver.build(sink.get("connector"), sink.get("url"), sink.get("username"), sink.get("password"));
+        //disable direct create database
+        //String schema = SqlUtil.replaceAllParam(sink.get("sink.db"), "schemaName", schemaName);
+        //if (null != driver && !driver.existSchema(schema)) {
+        //    driver.createSchema(schema);
+        //}
+        //sink.put("sink.db", schema);
+        //sink.put("url", url + "/" + schema);
         return driver;
     }
 

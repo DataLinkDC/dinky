@@ -81,7 +81,7 @@
         <scope.runtime>provided</scope.runtime>
         <!--  modify flink version  -->
         <dlink.flink.version>1.14</dlink.flink.version>
-        <scala.binary.version>2.11</scala.binary.version>
+        <scala.binary.version>2.12</scala.binary.version>
         <protobuf-java.version>2.5.0</protobuf-java.version>
         <jedis.version>2.9.0</jedis.version>
         <javax.mail>1.6.2</javax.mail>
