@@ -101,15 +101,14 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
 
   const getChooseTenantListForm = () => {
     let chooseTenantList: JSX.Element[] = [];
-    console.log(currentUser.roleDTOList)
-    currentUser.roleDTOList?.map((item) => {
+    currentUser.tenantList?.map((item) => {
       chooseTenantList.push(
         <>
           <Menu.Item
              // If the current key (tenant id) is equal to the tenant the current user chooses to log in, this item is not optional
-            disabled={item.tenant?.id === currentUser.currentTenant?.id}
-            key={item.tenant?.id}  // key 需要唯一 目前唯一不了
-            title={item.tenant?.tenantCode}
+            disabled={item.id === currentUser.currentTenant?.id}
+            key={item.id}  // key 需要唯一 目前唯一不了
+            title={item.tenantCode}
             icon={<SecurityScanOutlined/>}
             onClick={(e) => {
               console.log(e)
@@ -131,7 +130,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
               });
             }}
           >
-            {item.tenant?.tenantCode}
+            {item.tenantCode}
           </Menu.Item>
         </>
       )

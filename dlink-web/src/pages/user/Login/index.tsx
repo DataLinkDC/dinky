@@ -134,7 +134,7 @@ const Login: React.FC = () => {
                }}>
                  关闭
                </Button>,
-               <Button type="primary" key="submit" loading={submitting}
+               <Button disabled={tenantId === 0} type="primary" key="submit" loading={submitting}
                        onClick={async () => {
                          userParamsState.tenantId = tenantId;
                          localStorage.setItem("dlink-tenantId", tenantId.toString());
@@ -151,9 +151,10 @@ const Login: React.FC = () => {
           }}
         >
           {tenant?.map((item: any) => {
-            // console.log(item)
             return <>
-              <CheckCard
+              <CheckCard onChange={(check)=>{
+
+              }}
                 size={"default"}
                 key={item?.id}
                 avatar="https://gw.alipayobjects.com/zos/bmw-prod/f601048d-61c2-44d0-bf57-ca1afe7fd92e.svg"
@@ -209,7 +210,6 @@ const Login: React.FC = () => {
             }}
             onFinish={async (values) => {
               values.grant_type = 'password';
-              // await handleSubmit(values as API.LoginParams);
               setUserLoginState(values);
               setUserParamsState(values);
               setChooseTenant(true)
@@ -282,7 +282,6 @@ const Login: React.FC = () => {
               </a>
             </div>
           </ProForm>
-          {/*<ChooseTenant visible={chooseTenant} handleShowTenant={handleShowTenant} />*/}
         </div>
       </div>
       <Footer/>

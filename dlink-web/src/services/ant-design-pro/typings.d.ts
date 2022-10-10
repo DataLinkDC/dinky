@@ -37,8 +37,8 @@ declare namespace API {
     isAdmin?: boolean;
     createTime?: Date;
     updateTime?: Date;
-    isAdmin?: boolean;
-    roleDTOList?: Role[];
+    roleList?: Role[];
+    tenantList?: Tenant[];
     currentTenant?: Tenant;
   };
   type Role = {

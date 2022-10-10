@@ -19,11 +19,12 @@
 
 package com.dlink.service;
 
+import com.dlink.db.service.ISuperService;
 import com.dlink.model.UserTenant;
 
 import java.util.List;
 
-public interface UserTenantService {
+public interface UserTenantService extends ISuperService<UserTenant> {
 
 
     /**

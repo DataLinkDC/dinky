@@ -61,7 +61,8 @@ export async function getInitialState(): Promise<{
         createTime: result.datas.user.createTime,
         updateTime: result.datas.user.updateTime,
         isAdmin: result.datas.user.isAdmin,
-        roleDTOList: result.datas.roleDTOList,
+        roleList: result.datas.roleList,
+        tenantList: result.datas.tenantList,
         currentTenant: result.datas.currentTenant,
       };
       return currentUser;

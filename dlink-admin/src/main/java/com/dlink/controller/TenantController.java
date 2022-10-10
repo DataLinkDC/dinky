@@ -71,4 +71,13 @@ public class TenantController {
     public ProTableResult<Tenant> listTenants(@RequestBody JsonNode para) {
         return tenantService.selectForProTable(para, true);
     }
+    /**
+     * give tenant grant user
+     *
+     * @return
+     */
+    @PutMapping(value = "/grantTenantToUser")
+    public Result distributeUser(@RequestBody JsonNode para) {
+        return tenantService.distributeUsers(para);
+    }
 }

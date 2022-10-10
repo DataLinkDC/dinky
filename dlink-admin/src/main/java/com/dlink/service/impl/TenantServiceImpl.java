@@ -27,11 +27,14 @@ import com.dlink.mapper.TenantMapper;
 import com.dlink.model.Namespace;
 import com.dlink.model.Role;
 import com.dlink.model.Tenant;
+import com.dlink.model.UserTenant;
 import com.dlink.service.NamespaceService;
 import com.dlink.service.RoleService;
 import com.dlink.service.TaskService;
 import com.dlink.service.TenantService;
+import com.dlink.service.UserTenantService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -53,6 +56,9 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> im
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private UserTenantService userTenantService;
 
     @Override
     public Result saveOrUpdateTenant(Tenant tenant) {
@@ -123,4 +129,36 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> im
     public List<Tenant> getTenantByIds(Set<Integer> tenantIds) {
         return baseMapper.getTenantByIds(tenantIds);
     }
+
+    /**
+     * Assign users to specified tenants
+     * @param para
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Result distributeUsers(JsonNode para) {
+        if (para.size() > 0) {
+            List<UserTenant> tenantUserList = new ArrayList<>();
+            Integer tenantId = para.get("tenantId").asInt();
+            userTenantService.remove(new QueryWrapper<UserTenant>().eq("tenant_id", tenantId));
+            JsonNode tenantUserJsonNode = para.get("users");
+            for (JsonNode ids : tenantUserJsonNode) {
+                UserTenant userTenant = new UserTenant();
+                userTenant.setTenantId(tenantId);
+                userTenant.setUserId(ids.asInt());
+                tenantUserList.add(userTenant);
+            }
+            // save or update user role
+            boolean result = userTenantService.saveOrUpdateBatch(tenantUserList, 1000);
+            if (result) {
+                return Result.succeed("分配用户成功");
+            } else {
+                return Result.failed("分配用户失败");
+            }
+        } else {
+            return Result.failed("请选择要分配的用户");
+        }
+    }
+
 }

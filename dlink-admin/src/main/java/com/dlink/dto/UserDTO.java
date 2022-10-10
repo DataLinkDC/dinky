@@ -19,10 +19,11 @@
 
 package com.dlink.dto;
 
+import com.dlink.model.Role;
 import com.dlink.model.Tenant;
 import com.dlink.model.User;
 
-import java.util.Set;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,7 +34,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserDTO {
     private User user;
-    private Set<RoleDTO> roleDTOList;
+    private List<Role> roleList;
+    private List<Tenant> tenantList;
     private Tenant currentTenant;
 
 }
