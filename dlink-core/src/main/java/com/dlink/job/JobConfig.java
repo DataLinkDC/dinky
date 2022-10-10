@@ -29,13 +29,14 @@ import com.dlink.gateway.config.GatewayConfig;
 import com.dlink.gateway.config.SavePointStrategy;
 import com.dlink.session.SessionConfig;
 
+import org.apache.http.util.TextUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.http.util.TextUtils;
 
 /**
  * JobConfig
@@ -208,7 +209,7 @@ public class JobConfig {
                 String[] temp = config.get("userJarParas").toString().split(" ");
                 List<String> paraSplit = new ArrayList<>();
                 for (String s : temp) {
-                    if (!TextUtils.isEmpty(s.trim())){
+                    if (!TextUtils.isEmpty(s.trim())) {
                         paraSplit.add(s);
                     }
                 }

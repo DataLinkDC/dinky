@@ -738,7 +738,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         }
         //support custom K8s app submit, rather than clusterConfiguration
         else if (Dialect.KubernetesApplaction.equalsVal(task.getDialect())
-                && GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType()) ) {
+                && GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType())) {
             Map<String, Object> gatewayConfig = JSONUtil.toMap(task.getStatement(),String.class,Object.class);
             config.buildGatewayConfig(gatewayConfig);
         } else {
