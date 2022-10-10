@@ -27,10 +27,13 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import {handleAddOrUpdate, handleRemove, queryData} from "@/components/Common/crud";
 import {TenantTableListItem} from "@/pages/ResourceCenter/data.d";
 import TenantForm from "@/pages/ResourceCenter/TenantManager/components/TenantForm";
+import GrantTenantTransfer from "@/pages/ResourceCenter/TenantManager/components/GrantTenantTransfer";
 
 const url = '/api/tenant';
 const TenantFormList: React.FC<{}> = (props: any) => {
   const [row, setRow] = useState<TenantTableListItem>();
+  const [handleGrantTenant, setHandleGrantTenant] = useState<boolean>(false);
+  const [tenantRelFormValues, setTenantRelFormValues] = useState({});
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
@@ -71,6 +74,44 @@ const TenantFormList: React.FC<{}> = (props: any) => {
       </a>
     </Dropdown>
   );
+
+
+  const handleGrantTenantForm = () => {
+    return (
+      <Modal title="分配用户" visible={handleGrantTenant} destroyOnClose={true} width={"1500px"}
+             onCancel={() => {
+               setHandleGrantTenant(false);
+             }}
+             footer={[
+               <Button key="back" onClick={() => {
+                 setHandleGrantTenant(false);
+               }}>
+                 关闭
+               </Button>,
+               <Button type="primary" onClick={async () => {
+                 // to save
+                 const success = await handleAddOrUpdate(url+ "/grantTenantToUser", {
+                   tenantId: formValues.id,
+                   users: tenantRelFormValues
+                 });
+                 if (success) {
+                   setHandleGrantTenant(false);
+                   setFormValues({});
+                   if (actionRef.current) {
+                     actionRef.current.reload();
+                   }
+                 }
+               }}
+               >
+                 确认
+               </Button>,
+             ]}>
+        <GrantTenantTransfer tenant={formValues} onChange={(value) => {
+          setTenantRelFormValues(value);
+        }}/>
+      </Modal>
+    )
+  }
 
   const columns: ProColumns<TenantTableListItem>[] = [
     {
@@ -131,14 +172,22 @@ const TenantFormList: React.FC<{}> = (props: any) => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record:TenantTableListItem) => [
-        <Button type={"link"}
+        <a
           onClick={() => {
             handleUpdateModalVisible(true);
             setFormValues(record);
           }}
         >
           配置
-        </Button>,
+        </a>,
+        <a
+          onClick={() => {
+            setHandleGrantTenant(true);
+            setFormValues(record);
+          }}
+        >
+          分配用户
+        </a>,
         <MoreBtn key="more" item={record}/>,
       ],
     },
@@ -255,6 +304,7 @@ const TenantFormList: React.FC<{}> = (props: any) => {
           />
         )}
       </Drawer>
+      {handleGrantTenantForm()}
     </PageContainer>
   );
 };

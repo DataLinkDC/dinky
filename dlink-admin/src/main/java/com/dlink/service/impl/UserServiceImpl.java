@@ -24,7 +24,6 @@ import com.dlink.common.result.Result;
 import com.dlink.context.RequestContext;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.dto.LoginUTO;
-import com.dlink.dto.RoleDTO;
 import com.dlink.dto.UserDTO;
 import com.dlink.mapper.UserMapper;
 import com.dlink.model.Role;
@@ -40,6 +39,7 @@ import com.dlink.service.UserTenantService;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -148,21 +148,8 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             // 将前端入参 租户id 放入上下文
             RequestContext.set(loginUTO.getTenantId());
 
-            UserDTO userDTO = new UserDTO();
-            Set<RoleDTO> roleDTOList = new HashSet<>();
-            List<UserRole> userRoles = userRoleService.getUserRoleByUserId(user.getId());
-
-            Tenant currentTenant = tenantService.getBaseMapper().selectById(loginUTO.getTenantId());
-            for (UserRole userRole : userRoles) {
-                Role role = roleService.getBaseMapper().selectById(userRole.getRoleId());
-                if (Asserts.isNotNull(role)) {
-                    Tenant tenant = tenantService.getBaseMapper().selectOne(new QueryWrapper<Tenant>().eq("id", role.getTenantId()));
-                    roleDTOList.add(new RoleDTO(role, tenant));
-                }
-            }
-            userDTO.setUser(user);
-            userDTO.setRoleDTOList(roleDTOList);
-            userDTO.setCurrentTenant(currentTenant);
+            // get user tenants and roles
+            UserDTO userDTO = getUserALLBaseInfo(loginUTO, user);
 
             StpUtil.login(user.getId(), loginUTO.isAutoLogin());
             StpUtil.getSession().set("user", userDTO);
@@ -170,6 +157,37 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         } else {
             return Result.failed("账号或密码错误");
         }
+    }
+
+    private UserDTO getUserALLBaseInfo(LoginUTO loginUTO, User user) {
+        UserDTO userDTO = new UserDTO();
+        List<Role> roleList = new LinkedList<>();
+        List<Tenant> tenantList = new LinkedList<>();
+
+        List<UserRole> userRoles = userRoleService.getUserRoleByUserId(user.getId());
+        List<UserTenant> userTenants = userTenantService.getUserTenantByUserId(user.getId());
+
+        Tenant currentTenant = tenantService.getBaseMapper().selectById(loginUTO.getTenantId());
+
+        userRoles.forEach(userRole -> {
+            Role role = roleService.getBaseMapper().selectById(userRole.getRoleId());
+            if (Asserts.isNotNull(role)) {
+                roleList.add(role);
+            }
+        });
+
+        userTenants.forEach(userTenant -> {
+            Tenant tenant = tenantService.getBaseMapper().selectOne(new QueryWrapper<Tenant>().eq("id", userTenant.getTenantId()));
+            if (Asserts.isNotNull(tenant)) {
+                tenantList.add(tenant);
+            }
+        });
+
+        userDTO.setUser(user);
+        userDTO.setRoleList(roleList);
+        userDTO.setTenantList(tenantList);
+        userDTO.setCurrentTenant(currentTenant);
+        return userDTO;
     }
 
     @Override
