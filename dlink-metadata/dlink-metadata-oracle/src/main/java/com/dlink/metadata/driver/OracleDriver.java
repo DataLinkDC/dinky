@@ -19,7 +19,6 @@
 
 package com.dlink.metadata.driver;
 
-import com.alibaba.druid.pool.DruidDataSource;
 import com.dlink.assertion.Asserts;
 import com.dlink.metadata.convert.ITypeConvert;
 import com.dlink.metadata.convert.OracleTypeConvert;
@@ -33,6 +32,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import com.alibaba.druid.pool.DruidDataSource;
 
 /**
  * OracleDriver
