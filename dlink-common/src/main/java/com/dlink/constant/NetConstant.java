@@ -35,7 +35,7 @@ public interface NetConstant {
     /**
      * 连接运行服务器超时时间  1000
      */
-    Integer SERVER_TIME_OUT_ACTIVE = 1000;
+    Integer SERVER_TIME_OUT_ACTIVE = 3000;
     /**
      * 读取服务器超时时间  3000
      */

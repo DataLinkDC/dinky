@@ -21,6 +21,7 @@ package com.dlink.model;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * FlinkCDCConfig
@@ -208,6 +209,14 @@ public class FlinkCDCConfig {
             index++;
         }
         return sb.toString();
+    }
+
+    public Properties getSinkProperties() {
+        Properties properties = new Properties();
+        for (String key : this.getSink().keySet()) {
+            properties.put(key, this.getSink().get(key));
+        }
+        return properties;
     }
 
     public void setSink(Map<String, String> sink) {

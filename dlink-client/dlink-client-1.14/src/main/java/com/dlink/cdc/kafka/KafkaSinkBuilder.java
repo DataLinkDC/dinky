@@ -19,15 +19,6 @@
 
 package com.dlink.cdc.kafka;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.cdc.AbstractSinkBuilder;
-import com.dlink.cdc.CDCBuilder;
-import com.dlink.cdc.SinkBuilder;
-import com.dlink.executor.CustomTableEnvironment;
-import com.dlink.model.FlinkCDCConfig;
-import com.dlink.model.Schema;
-import com.dlink.model.Table;
-
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.connector.base.DeliveryGuarantee;
 import org.apache.flink.connector.kafka.sink.KafkaRecordSerializationSchema;
@@ -48,6 +39,16 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+
+import com.dlink.assertion.Asserts;
+import com.dlink.cdc.AbstractSinkBuilder;
+import com.dlink.cdc.CDCBuilder;
+import com.dlink.cdc.SinkBuilder;
+import com.dlink.executor.CustomTableEnvironment;
+import com.dlink.model.FlinkCDCConfig;
+import com.dlink.model.Schema;
+import com.dlink.model.Table;
 
 /**
  * MysqlCDCBuilder
@@ -92,21 +93,23 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements Serializabl
         StreamExecutionEnvironment env,
         CustomTableEnvironment customTableEnvironment,
         DataStreamSource<String> dataStreamSource) {
+        Properties properties = config.getSinkProperties();
         if (Asserts.isNotNullString(config.getSink().get("topic"))) {
             KafkaSink<String> kafkaSink = KafkaSink.<String>builder().setBootstrapServers(config.getSink().get("brokers"))
-                    .setRecordSerializer(KafkaRecordSerializationSchema.builder()
-                            .setTopic(config.getSink().get("topic"))
-                            .setValueSerializationSchema(new SimpleStringSchema())
-                            .build()
-                    )
-                    .setDeliverGuarantee(DeliveryGuarantee.valueOf(env.getCheckpointingMode().name()))
-                    .build();
+                .setRecordSerializer(KafkaRecordSerializationSchema.builder()
+                    .setTopic(config.getSink().get("topic"))
+                    .setValueSerializationSchema(new SimpleStringSchema())
+                    .build()
+                )
+                .setDeliverGuarantee(DeliveryGuarantee.valueOf(env.getCheckpointingMode().name()))
+                .setKafkaProducerConfig(properties)
+                .build();
             dataStreamSource.sinkTo(kafkaSink);
         } else {
             Map<Table, OutputTag<String>> tagMap = new HashMap<>();
             Map<String, Table> tableMap = new HashMap<>();
             ObjectMapper objectMapper = new ObjectMapper();
-            SingleOutputStreamOperator<Map> mapOperator = dataStreamSource.map(x -> objectMapper.readValue(x,Map.class)).returns(Map.class);
+            SingleOutputStreamOperator<Map> mapOperator = dataStreamSource.map(x -> objectMapper.readValue(x, Map.class)).returns(Map.class);
             final List<Schema> schemaList = config.getSchemaList();
             final String schemaFieldName = config.getSchemaFieldName();
             if (Asserts.isNotNullCollection(schemaList)) {
@@ -138,13 +141,14 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements Serializabl
                 tagMap.forEach((k, v) -> {
                     String topic = getSinkTableName(k);
                     KafkaSink<String> kafkaSink = KafkaSink.<String>builder().setBootstrapServers(config.getSink().get("brokers"))
-                            .setRecordSerializer(KafkaRecordSerializationSchema.builder()
-                                    .setTopic(topic)
-                                    .setValueSerializationSchema(new SimpleStringSchema())
-                                    .build()
-                            )
-                            .setDeliverGuarantee(DeliveryGuarantee.valueOf(env.getCheckpointingMode().name()))
-                            .build();
+                        .setRecordSerializer(KafkaRecordSerializationSchema.builder()
+                            .setTopic(topic)
+                            .setValueSerializationSchema(new SimpleStringSchema())
+                            .build()
+                        )
+                        .setDeliverGuarantee(DeliveryGuarantee.valueOf(env.getCheckpointingMode().name()))
+                        .setKafkaProducerConfig(properties)
+                        .build();
                     process.getSideOutput(v).rebalance().sinkTo(kafkaSink).name(topic);
                 });
             }

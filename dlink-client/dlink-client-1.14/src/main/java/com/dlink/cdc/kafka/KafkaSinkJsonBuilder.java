@@ -1,15 +1,5 @@
 package com.dlink.cdc.kafka;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.cdc.AbstractSinkBuilder;
-import com.dlink.cdc.CDCBuilder;
-import com.dlink.cdc.SinkBuilder;
-import com.dlink.executor.CustomTableEnvironment;
-import com.dlink.model.FlinkCDCConfig;
-import com.dlink.model.Schema;
-import com.dlink.model.Table;
-import com.dlink.utils.ObjectConvertUtil;
-
 import org.apache.flink.api.common.functions.FilterFunction;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
@@ -30,7 +20,17 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
+import com.dlink.assertion.Asserts;
+import com.dlink.cdc.AbstractSinkBuilder;
+import com.dlink.cdc.CDCBuilder;
+import com.dlink.cdc.SinkBuilder;
+import com.dlink.executor.CustomTableEnvironment;
+import com.dlink.model.FlinkCDCConfig;
+import com.dlink.model.Schema;
+import com.dlink.model.Table;
+import com.dlink.utils.ObjectConvertUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -63,10 +63,10 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements Seriali
 
     @Override
     public DataStreamSource build(
-            CDCBuilder cdcBuilder,
-            StreamExecutionEnvironment env,
-            CustomTableEnvironment customTableEnvironment,
-            DataStreamSource<String> dataStreamSource) {
+        CDCBuilder cdcBuilder,
+        StreamExecutionEnvironment env,
+        CustomTableEnvironment customTableEnvironment,
+        DataStreamSource<String> dataStreamSource) {
         try {
             SingleOutputStreamOperator<Map> mapOperator = dataStreamSource.map(new MapFunction<String, Map>() {
                 @Override
@@ -87,7 +87,7 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements Seriali
                             public boolean filter(Map value) throws Exception {
                                 LinkedHashMap source = (LinkedHashMap) value.get("source");
                                 return tableName.equals(source.get("table").toString())
-                                        && schemaName.equals(source.get(schemaFieldName).toString());
+                                    && schemaName.equals(source.get(schemaFieldName).toString());
                             }
                         });
                         String topic = getSinkTableName(table);
@@ -108,23 +108,23 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements Seriali
                                         case "r":
                                         case "c":
                                             after = (Map) value.get("after");
-                                            convertAttr(columnNameList, columnTypeList, after,value.get("op").toString(), 0, schemaName, tableName, tsMs);
+                                            convertAttr(columnNameList, columnTypeList, after, value.get("op").toString(), 0, schemaName, tableName, tsMs);
                                             break;
                                         case "u":
                                             before = (Map) value.get("before");
-                                            convertAttr(columnNameList, columnTypeList, before,value.get("op").toString(), 1, schemaName, tableName, tsMs);
+                                            convertAttr(columnNameList, columnTypeList, before, value.get("op").toString(), 1, schemaName, tableName, tsMs);
 
                                             after = (Map) value.get("after");
-                                            convertAttr(columnNameList, columnTypeList, after,value.get("op").toString(), 0, schemaName, tableName, tsMs);
+                                            convertAttr(columnNameList, columnTypeList, after, value.get("op").toString(), 0, schemaName, tableName, tsMs);
                                             break;
                                         case "d":
                                             before = (Map) value.get("before");
-                                            convertAttr(columnNameList, columnTypeList, before,value.get("op").toString(), 1,schemaName, tableName, tsMs);
+                                            convertAttr(columnNameList, columnTypeList, before, value.get("op").toString(), 1, schemaName, tableName, tsMs);
                                             break;
                                         default:
                                     }
                                 } catch (Exception e) {
-                                    logger.error("SchameTable: {} - Exception:", e);
+                                    logger.error("SchameTable: - Exception:", e);
                                     throw e;
                                 }
                                 if (objectMapper == null) {
@@ -138,14 +138,16 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements Seriali
                                 }
                             }
                         });
-                        stringOperator.addSink(new FlinkKafkaProducer<String>(config.getSink().get("brokers"),
-                                topic,
-                                new SimpleStringSchema()));
+                        Properties properties = config.getSinkProperties();
+                        properties.put("bootstrap.servers", config.getSink().get("brokers"));
+                        stringOperator.addSink(
+                            new FlinkKafkaProducer<String>(topic, new SimpleStringSchema(), properties)
+                        );
                     }
                 }
             }
         } catch (Exception ex) {
-            logger.error("kafka sink error:",ex);
+            logger.error("kafka sink error:", ex);
         }
         return dataStreamSource;
     }
@@ -161,16 +163,16 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements Seriali
 
     @Override
     public void addSink(
-            StreamExecutionEnvironment env,
-            DataStream<RowData> rowDataDataStream,
-            Table table,
-            List<String> columnNameList,
-            List<LogicalType> columnTypeList) {
+        StreamExecutionEnvironment env,
+        DataStream<RowData> rowDataDataStream,
+        Table table,
+        List<String> columnNameList,
+        List<LogicalType> columnTypeList) {
     }
 
     @Override
     protected Object convertValue(Object value, LogicalType logicalType) {
-        return ObjectConvertUtil.convertValue(value,logicalType);
+        return ObjectConvertUtil.convertValue(value, logicalType);
     }
 
     private void convertAttr(List<String> columnNameList, List<LogicalType> columnTypeList, Map value, String op, int isDeleted,
