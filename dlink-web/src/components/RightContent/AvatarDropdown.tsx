@@ -19,8 +19,14 @@
 
 
 import React, {useCallback, useRef} from 'react';
-import {LogoutOutlined, SafetyOutlined, SecurityScanOutlined, SettingOutlined, UserSwitchOutlined} from '@ant-design/icons';
-import {Avatar, Menu, Modal, Spin} from 'antd';
+import {
+  LogoutOutlined,
+  SafetyOutlined,
+  SecurityScanOutlined,
+  SettingOutlined,
+  UserSwitchOutlined
+} from '@ant-design/icons';
+import {Avatar, Menu, message, Modal, Spin} from 'antd';
 import {history, useModel} from 'umi';
 import {stringify} from 'querystring';
 import HeaderDropdown from '../HeaderDropdown';
@@ -52,7 +58,7 @@ const loginOut = async () => {
 };
 
 
-const requestUrl = '/api/checkTenant'; //todo 后端接口未完成
+const requestUrl = '/api/tenant/switchTenant';
 
 
 const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
@@ -105,7 +111,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
       chooseTenantList.push(
         <>
           <Menu.Item
-             // If the current key (tenant id) is equal to the tenant the current user chooses to log in, this item is not optional
+            // If the current key (tenant id) is equal to the tenant the current user chooses to log in, this item is not optional
             disabled={item.id === currentUser.currentTenant?.id}
             key={item.id}  // key 需要唯一 目前唯一不了
             title={item.tenantCode}
@@ -115,17 +121,23 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
               // get choose tenant title
               let title = e.domEvent.target.textContent;
               // get choose tenantId
-              let tenantId = e.key;
+              let tenantInfoId = e.key;
               Modal.confirm({
                 title: '切换租户',
                 content: '确定切换【' + title + '】租户吗?',
                 okText: '确认',
                 cancelText: '取消',
                 onOk: async () => {
-                  // TODO: handle
-                  // await postAll(requestUrl, tenantId);
+                  // 目前先直接退出登录 重新选择租户登录
+                  loginOut();
+                  // todo 切换租户需要将租户id 传入后端 以及本地存储中
+                  // const {code, msg} = await postAll(requestUrl, {tenantId: tenantInfoId});
+                  // localStorage.clear() // clear local storage
+                  // localStorage.setItem('dlink-tenantId',tenantInfoId) // set tenant to localStorage
+                  // code == 0 ? message.success(msg) : message.error(msg);
                   // todo 切换租户后 需要重新调用 /api/current 接口  同步刷新所有页面 获取该租户id下的数据
-                  actionRef.current?.reloadAndRest?.();
+                  //actionRef.current?.reload()
+                  // actionRef.current?.reloadAndRest?.();
                 }
               });
             }}
@@ -160,7 +172,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
       )}
       {menu && (
         <Menu.Item key="changePassWord" disabled>
-          <SafetyOutlined />
+          <SafetyOutlined/>
           修改密码
         </Menu.Item>
       )}

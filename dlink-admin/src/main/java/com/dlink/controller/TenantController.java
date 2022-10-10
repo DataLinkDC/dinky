@@ -80,4 +80,8 @@ public class TenantController {
     public Result distributeUser(@RequestBody JsonNode para) {
         return tenantService.distributeUsers(para);
     }
+    @PostMapping(value = "/switchTenant")
+    public Result switchTenant(@RequestBody JsonNode para) {
+        return tenantService.switchTenant(para);
+    }
 }

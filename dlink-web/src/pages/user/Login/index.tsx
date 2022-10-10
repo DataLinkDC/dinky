@@ -49,8 +49,10 @@ const Login: React.FC = () => {
   const {initialState, setInitialState} = useModel('@@initialState');
   const [isLogin, setIsLogin] = useState<boolean>(true);
   const [chooseTenant, setChooseTenant] = useState<boolean>(false);
-  const [tenantId, setTenantId] = useState<number>(0);
+  const [tenantId, setTenantId] = useState<number>();
   const [tenant, setTenant] = useState<TenantTableListItem[]>([]);
+
+  const [checkDisabled, setCheckDisabled] = useState<boolean>(true);
   const intl = useIntl();
 
   const fetchUserInfo = async () => {
@@ -134,7 +136,7 @@ const Login: React.FC = () => {
                }}>
                  关闭
                </Button>,
-               <Button disabled={tenantId === 0} type="primary" key="submit" loading={submitting}
+               <Button disabled={checkDisabled} type="primary" key="submit" loading={submitting}
                        onClick={async () => {
                          userParamsState.tenantId = tenantId;
                          localStorage.setItem("dlink-tenantId", tenantId.toString());
@@ -146,15 +148,18 @@ const Login: React.FC = () => {
         <CheckCard.Group
           multiple={false}
           onChange={(value) => {
-            setTenantId(value as number)
-            userParamsState.tenantId = tenantId;
+            if (value) {
+              setCheckDisabled(false)
+              setTenantId(value as number)
+              userParamsState.tenantId = value as number;
+            } else {
+              setCheckDisabled(true)
+            }
           }}
         >
           {tenant?.map((item: any) => {
             return <>
-              <CheckCard onChange={(check)=>{
-
-              }}
+              <CheckCard
                 size={"default"}
                 key={item?.id}
                 avatar="https://gw.alipayobjects.com/zos/bmw-prod/f601048d-61c2-44d0-bf57-ca1afe7fd92e.svg"
