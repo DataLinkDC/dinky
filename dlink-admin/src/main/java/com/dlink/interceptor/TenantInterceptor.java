@@ -39,8 +39,8 @@ public class TenantInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        log.info("tenant interceptor preHandle execute ");
         String tenantId = request.getHeader("tenantId");
+        log.info("tenant interceptor preHandle execute ; current tenant id: 【" + tenantId + "】");
         if (!StringUtils.isNullOrEmpty(tenantId)) {
             RequestContext.set(Integer.valueOf(tenantId));
         }

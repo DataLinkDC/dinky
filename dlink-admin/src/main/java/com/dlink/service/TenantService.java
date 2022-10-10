@@ -60,4 +60,6 @@ public interface TenantService extends ISuperService<Tenant> {
     List<Tenant> getTenantByIds(Set<Integer> tenantIds);
 
     Result distributeUsers(JsonNode para);
+
+    Result switchTenant(JsonNode para);
 }

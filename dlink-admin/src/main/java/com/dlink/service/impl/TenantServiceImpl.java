@@ -30,7 +30,6 @@ import com.dlink.model.Tenant;
 import com.dlink.model.UserTenant;
 import com.dlink.service.NamespaceService;
 import com.dlink.service.RoleService;
-import com.dlink.service.TaskService;
 import com.dlink.service.TenantService;
 import com.dlink.service.UserTenantService;
 
@@ -53,9 +52,6 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> im
 
     @Autowired
     private NamespaceService namespaceService;
-
-    @Autowired
-    private TaskService taskService;
 
     @Autowired
     private UserTenantService userTenantService;
@@ -158,6 +154,18 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> im
             }
         } else {
             return Result.failed("请选择要分配的用户");
+        }
+    }
+
+    @Override
+    public Result switchTenant(JsonNode para) {
+        if (para.size() > 0) {
+            Integer tenantId = para.get("tenantId").asInt();
+            RequestContext.remove();
+            RequestContext.set(tenantId);
+            return Result.succeed("切换租户成功");
+        }else {
+            return Result.failed("无法切换租户,获取不到租户信息");
         }
     }
 
