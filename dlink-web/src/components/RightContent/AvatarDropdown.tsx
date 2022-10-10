@@ -153,13 +153,13 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
         getChooseTenantListForm()
       )}
       {menu && (
-        <Menu.Item key="personSettings">
+        <Menu.Item key="personSettings" disabled>
           <SettingOutlined/>
           个人设置
         </Menu.Item>
       )}
       {menu && (
-        <Menu.Item key="changePassWord">
+        <Menu.Item key="changePassWord" disabled>
           <SafetyOutlined />
           修改密码
         </Menu.Item>
