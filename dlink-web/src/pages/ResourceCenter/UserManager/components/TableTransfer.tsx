@@ -174,7 +174,7 @@ const TableTransferFrom = (props: TableTransferFromProps) => {
         dataSource={roleTableList}
         targetKeys={targetKeys}
         selectedKeys={selectedKeys}
-        rowKey={itme => itme.id}
+        rowKey={item => item.id}
         onChange={onChange}
         onSelectChange={onSelectChange}
         filterOption={(inputValue, item) =>

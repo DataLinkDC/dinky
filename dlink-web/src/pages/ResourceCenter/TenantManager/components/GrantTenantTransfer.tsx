@@ -57,10 +57,10 @@ const GrantTenantTransfer = ({leftColumns, rightColumns, ...restProps}: TableTra
       const columns = direction === 'left' ? leftColumns : rightColumns;
 
       const rowSelection: TableRowSelection<UserTableListItem> = {
-        getCheckboxProps: item => ({disabled: enabled || item.enabled || item.isDelete}),
+        getCheckboxProps: item => ({disabled: enabled || !item.enabled}),
         onSelectAll: function (selected, selectedRows) {
           const treeSelectedKeys = selectedRows
-            .filter(item => !item.isDelete)
+            .filter(item => item.enabled)
             .map(({id}) => id);
           const diffKeys = selected
             ? difference(treeSelectedKeys, listSelectedKeys)
@@ -88,10 +88,13 @@ const GrantTenantTransfer = ({leftColumns, rightColumns, ...restProps}: TableTra
                 height: '350px',
                 pointerEvents: enabled ? 'none' : undefined
               }}
-              onRow={({id, isDelete: itemDisabled}) => ({
-                onClick: () => {
-                  if (itemDisabled || enabled) return;
-                  onItemSelect(id, !listSelectedKeys.includes(id));
+              onRow={({id, enabled: itemDisabled}) => ({
+                onClick: (e) => {
+                  if (itemDisabled || !enabled){
+                    onItemSelect(id, listSelectedKeys.includes(id));
+                  } else {
+                    return;
+                  }
                 },
               })}
             />
@@ -124,7 +127,6 @@ const GrantTenantToUserTableTransferFrom = (props: TableTransferFromProps) => {
 
   useEffect(() => {
     getData('/api/user/getUserListByTenantId', {id: tenant.id}).then(result => {
-      console.log(result.datas,'============')
       setUserTableList(result.datas.users);
       setTargetKeys(result.datas.userIds);
       handleChange(result.datas.userIds);
@@ -173,11 +175,13 @@ const GrantTenantToUserTableTransferFrom = (props: TableTransferFromProps) => {
         dataSource={userTableList}
         targetKeys={targetKeys}
         selectedKeys={selectedKeys}
-        rowKey={itme => itme.id}
+        rowKey={item => item.id}
         onChange={onChange}
         onSelectChange={onSelectChange}
         filterOption={(inputValue, item) =>
-          item.username!.indexOf(inputValue) !== -1 || item.username!.indexOf(inputValue) !== -1
+          item.username!.indexOf(inputValue) !== -1
+          || item.nickname!.indexOf(inputValue) !== -1
+          || item.worknum!.indexOf(inputValue) !== -1
         }
         leftColumns={leftTableColumns}
         rightColumns={rightTableColumns}
