@@ -46,6 +46,9 @@ export function getConfig(values:any) {
       kubernetesConfig,
       flinkConfig,
     };
+  }else {
+    //all code paths must return a value.
+    return {}
   }
 }
 
@@ -56,7 +59,10 @@ type ConfigItem = {
 
 function addListToMap(list:[ConfigItem],config:{}){
   for(let i in list){
-    config[list[i].name]=list[i].value;
+    //the param maybe undefind
+    if (list[i] != undefined){
+      config[list[i].name]=list[i].value;
+    }
   }
 }
 

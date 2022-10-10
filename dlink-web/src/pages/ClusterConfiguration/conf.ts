@@ -23,6 +23,7 @@ export type Config = {
   lable: string,
   placeholder: string
   defaultValue?: string
+  help?: string
 }
 
 export const HADOOP_CONFIG_LIST: Config[] = [{
@@ -43,6 +44,11 @@ export const KUBERNETES_CONFIG_LIST: Config[] = [{
   lable: 'kubernetes.rest-service.exposed.type',
   placeholder: 'NodePort',
   defaultValue: 'NodePort',
+},{
+  name: 'kubernetes.pod-template-file',
+  lable: 'kubernetes.pod-template-file',
+  placeholder: 'pod-template-file path',
+  help: '可选，如果配置需要指定到具体文件'
 }];
 export const FLINK_CONFIG_LIST: Config[] = [{
   name: 'jobmanager.memory.process.size',
@@ -71,6 +77,21 @@ export const FLINK_CONFIG_LIST: Config[] = [{
 }
 ];
 
+export const APP_CONFIG_LIST: Config[] = [{
+  name: 'userJarPath',
+  lable: '镜像内Jar路径',
+  placeholder: 'local:///opt/example.jar',
+}, {
+  name: 'userJarMainAppClass',
+  lable: '启动类',
+  placeholder: 'com.example.app',
+}, {
+  name: 'userJarParas',
+  lable: '启动参数',
+  placeholder: '值如 -conf test.properties',
+}
+];
+
 export function HADOOP_CONFIG_NAME_LIST () {
   const list: string[] = [];
   HADOOP_CONFIG_LIST.forEach(item => {
@@ -82,6 +103,13 @@ export function HADOOP_CONFIG_NAME_LIST () {
 export function KUBERNETES_CONFIG_NAME_LIST () {
   const list: string[] = [];
   KUBERNETES_CONFIG_LIST.forEach(item => {
+    list.push(item.name);
+  });
+  return list;
+}
+export function APP_CONFIG_NAME_LIST () {
+  const list: string[] = [];
+  APP_CONFIG_LIST.forEach(item => {
     list.push(item.name);
   });
   return list;
