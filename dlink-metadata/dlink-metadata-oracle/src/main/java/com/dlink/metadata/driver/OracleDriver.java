@@ -19,6 +19,7 @@
 
 package com.dlink.metadata.driver;
 
+import com.alibaba.druid.pool.DruidDataSource;
 import com.dlink.assertion.Asserts;
 import com.dlink.metadata.convert.ITypeConvert;
 import com.dlink.metadata.convert.OracleTypeConvert;
@@ -128,5 +129,21 @@ public class OracleDriver extends AbstractJdbcDriver {
     @Override
     public Map<String, String> getFlinkColumnTypeConversion() {
         return new HashMap<>();
+    }
+
+    @Override
+    protected void createDataSource(DruidDataSource ds, DriverConfig config) {
+        ds.setName(config.getName().replaceAll(":", ""));
+        ds.setUrl(config.getUrl());
+        ds.setDriverClassName(getDriverClass());
+        ds.setUsername(config.getUsername());
+        ds.setPassword(config.getPassword());
+        ds.setValidationQuery("select 1 from dual");
+        ds.setTestWhileIdle(true);
+        ds.setBreakAfterAcquireFailure(true);
+        ds.setFailFast(true);
+        ds.setInitialSize(1);
+        ds.setMaxActive(8);
+        ds.setMinIdle(5);
     }
 }
