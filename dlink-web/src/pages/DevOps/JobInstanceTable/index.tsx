@@ -18,7 +18,8 @@
  */
 
 
-import {history} from 'umi';
+
+import { useIntl, Link, history, FormattedMessage, SelectLang, useModel } from 'umi';
 import {queryData} from "@/components/Common/crud";
 import {useState, useRef, useEffect} from "react";
 import type {ProColumns, ActionType} from '@ant-design/pro-table';
@@ -37,13 +38,18 @@ import {
   queryAllCatalogue
 } from "@/pages/DevOps/service";
 
+
 const OPS_STATUS_COLOR = {
   success: 'lime',
   padding: 'yellow',
 
 }
 const url = '/api/jobInstance';
+
+
 const JobInstanceTable = (props: any) => {
+
+  const intl = useIntl();
 
   const {status, activeKey, isHistory, taskStatus} = props;
   const [time, setTime] = useState(() => Date.now());
@@ -265,7 +271,8 @@ const JobInstanceTable = (props: any) => {
       search={{
         filterType: 'light',
       }}
-      headerTitle={`上次更新时间：${moment(time).format('HH:mm:ss')}`}
+
+      headerTitle={intl.formatMessage({id: 'pages.devops.JobInstanceTable.LastUpdateTime', defaultMessage: '上次更新时间',})+`：${moment(time).format('HH:mm:ss')}`}
       polling={status == activeKey ? 3000 : undefined}
       pagination={{
         pageSize: 10,

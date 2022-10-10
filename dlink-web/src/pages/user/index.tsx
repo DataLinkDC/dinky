@@ -29,9 +29,13 @@ import {UserTableListItem} from "@/pages/user/data";
 import {handleAddOrUpdate, handleOption, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
 import UserForm from "@/pages/user/components/UserForm";
 import PasswordForm from "@/pages/user/components/PasswordForm";
+import { useIntl, Link, history, FormattedMessage, SelectLang} from 'umi';
 
 const url = '/api/user';
 const UserTableList: React.FC<{}> = (props: any) => {
+
+  const intl = useIntl();
+
   const {dispatch} = props;
   const [row, setRow] = useState<UserTableListItem>();
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
@@ -50,10 +54,10 @@ const UserTableList: React.FC<{}> = (props: any) => {
       handlePasswordModalVisible(true);
     } else if (key === 'delete') {
       Modal.confirm({
-        title: '删除用户',
-        content: '确定删除该用户吗？',
-        okText: '确认',
-        cancelText: '取消',
+        title: intl.formatMessage({id: 'pages.user.UserDelete', defaultMessage: '删除用户',}),
+        content: intl.formatMessage({id: 'pages.user.UserDeleteUser', defaultMessage: '确定删除该用户吗？',}),
+        okText: intl.formatMessage({id: 'pages.user.UserConfirm', defaultMessage: '确认',}),
+        cancelText: intl.formatMessage({id: 'pages.user.UserCancel', defaultMessage: '取消',}),
         onOk: async () => {
           await handleRemove(url, [currentItem]);
           actionRef.current?.reloadAndRest?.();
@@ -68,21 +72,21 @@ const UserTableList: React.FC<{}> = (props: any) => {
     <Dropdown
       overlay={
         <Menu onClick={({key}) => editAndDelete(key, item)}>
-          <Menu.Item key="edit">编辑</Menu.Item>
-          <Menu.Item key="password">修改密码</Menu.Item>
-          {item.username=='admin'?'':(<Menu.Item key="delete">删除</Menu.Item>)}
+          <Menu.Item key="edit">{intl.formatMessage({id: 'pages.user.UserEdit', defaultMessage: '编辑',})}</Menu.Item>
+          <Menu.Item key="password">{intl.formatMessage({id: 'pages.user.UserChangePassword', defaultMessage: '修改密码',})}</Menu.Item>
+          {item.username=='admin'?'':(<Menu.Item key="delete">{intl.formatMessage({id: 'pages.user.UserDelete', defaultMessage: '删除',})}</Menu.Item>)}
         </Menu>
       }
     >
       <a>
-        更多 <DownOutlined/>
+        {intl.formatMessage({id: 'pages.user.UserMore', defaultMessage: '更多',})} <DownOutlined/>
       </a>
     </Dropdown>
   );
 
   const columns: ProColumns<UserTableListItem>[] = [
     {
-      title: '用户名',
+      title: intl.formatMessage({id: 'pages.user.UserName', defaultMessage: '用户名',}),
       dataIndex: 'username',
       sorter: true,
       render: (dom, entity) => {
@@ -97,60 +101,60 @@ const UserTableList: React.FC<{}> = (props: any) => {
       hideInSearch: true,
     },
     {
-      title: '昵称',
+      title: intl.formatMessage({id: 'pages.user.UserNickName', defaultMessage: '昵称',}),
       sorter: true,
       dataIndex: 'nickname',
       hideInTable: false,
     },
     {
-      title: '工号',
+      title: intl.formatMessage({id: 'pages.user.UserJobNumber', defaultMessage: '工号',}),
       sorter: true,
       dataIndex: 'worknum',
       hideInTable: false,
     },
     {
-      title: '手机号',
+      title: intl.formatMessage({id: 'pages.user.UserPhoneNumber', defaultMessage: '手机号',}),
       sorter: true,
       dataIndex: 'mobile',
       hideInTable: false,
     },
     {
-      title: '是否启用',
+      title: intl.formatMessage({id: 'pages.user.UserIsUse', defaultMessage: '是否启用',}),
       dataIndex: 'enabled',
       hideInForm: true,
       hideInSearch: true,
       hideInTable: false,
       filters: [
         {
-          text: '已启用',
+          text: intl.formatMessage({id: 'pages.user.UserInUse', defaultMessage: '已启用',}),
           value: 1,
         },
         {
-          text: '已禁用',
+          text: intl.formatMessage({id: 'pages.user.UserNotUse', defaultMessage: '已禁用',}),
           value: 0,
         },
       ],
       filterMultiple: false,
       valueEnum: {
-        true: {text: '已启用', status: 'Success'},
-        false: {text: '已禁用', status: 'Error'},
+        true: {text: intl.formatMessage({id: 'pages.user.UserInUse', defaultMessage: '已启用',}), status: 'Success'},
+        false: {text: intl.formatMessage({id: 'pages.user.UserNotUse', defaultMessage: '已禁用',}), status: 'Error'},
       },
     },
     {
-      title: '创建时间',
+      title: intl.formatMessage({id: 'pages.user.UserCreateTime', defaultMessage: '创建时间',}),
       dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',
       hideInTable: true,
     },
     {
-      title: '最近更新时间',
+      title: intl.formatMessage({id: 'pages.user.UserUpdateTime', defaultMessage: '最近更新时间',}),
       dataIndex: 'updateTime',
       sorter: true,
       valueType: 'dateTime',
     },
     {
-      title: '操作',
+      title: intl.formatMessage({id: 'pages.user.UserOperate', defaultMessage: '操作',}),
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
@@ -160,7 +164,7 @@ const UserTableList: React.FC<{}> = (props: any) => {
             setFormValues(record);
           }}
         >
-          配置
+          {intl.formatMessage({id: 'pages.user.UserConfig', defaultMessage: intl.formatMessage({id: 'pages.user.UserConfig', defaultMessage: '配置',}),})}
         </a>,
         <MoreBtn key="more" item={record}/>,
       ],
@@ -170,7 +174,7 @@ const UserTableList: React.FC<{}> = (props: any) => {
   return (
     <>
       <ProTable<UserTableListItem>
-        headerTitle="用户管理"
+        headerTitle={intl.formatMessage({id: 'pages.user.UserManger', defaultMessage: '用户管理',})}
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -178,7 +182,7 @@ const UserTableList: React.FC<{}> = (props: any) => {
       }}
         toolBarRender={() => [
         <Button type="primary" onClick={() => handleModalVisible(true)}>
-          <PlusOutlined/> 新建
+          <PlusOutlined/> {intl.formatMessage({id: 'pages.user.UserCreate', defaultMessage: '新建',})}
         </Button>,
       ]}
         request={(params, sorter, filter) => queryData(url, {...params, sorter, filter})}

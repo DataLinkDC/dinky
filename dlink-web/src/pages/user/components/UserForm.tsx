@@ -21,6 +21,7 @@
 import React, {useState} from 'react';
 import {Form, Button, Input, Modal, Switch} from 'antd';
 import {UserTableListItem} from "@/pages/user/data";
+import { useIntl, Link, history, FormattedMessage, SelectLang} from 'umi';
 
 export type UserFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -35,6 +36,8 @@ const formLayout = {
 };
 
 const UserForm: React.FC<UserFormProps> = (props) => {
+
+  const intl = useIntl();
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<UserTableListItem>>({
@@ -66,32 +69,32 @@ const UserForm: React.FC<UserFormProps> = (props) => {
       <>
         <Form.Item
           name="username"
-          label="用户名"
-          rules={[{required: true, message: '请输入用户名！'}]}>
-          <Input placeholder="请输入唯一用户名"/>
+          label={intl.formatMessage({id: 'pages.user.UserName', defaultMessage: '用户名',})}
+          rules={[{required: true, message: intl.formatMessage({id: 'pages.user.UserEnterUserName', defaultMessage: '请输入用户名',})}]}>
+          <Input placeholder={intl.formatMessage({id: 'pages.user.UserEnterUniqueUserName', defaultMessage: "请输入唯一用户名",})}/>
         </Form.Item>
         <Form.Item
           name="nickname"
-          label="昵称"
+          label={intl.formatMessage({id: 'pages.user.UserNickName', defaultMessage: '昵称',})}
         >
-          <Input placeholder="请输入昵称"/>
+          <Input placeholder={intl.formatMessage({id: 'pages.user.UserEnterNickName', defaultMessage: "请输入昵称",})}/>
         </Form.Item>
         <Form.Item
           name="worknum"
-          label="工号"
+          label={intl.formatMessage({id: 'pages.user.UserJobNumber', defaultMessage: '工号',})}
         >
-          <Input placeholder="请输入工号"/>
+          <Input placeholder={intl.formatMessage({id: 'pages.user.UserEnterJobNumber', defaultMessage: "请输入工号",})}/>
         </Form.Item>
         <Form.Item
           name="mobile"
-          label="手机号"
+          label={intl.formatMessage({id: 'pages.user.UserPhoneNumber', defaultMessage: '手机号',})}
         >
-          <Input placeholder="请输入手机号"/>
+          <Input placeholder={intl.formatMessage({id: 'pages.user.UserEnterPhoneNumber', defaultMessage: "请输入手机号",})}/>
         </Form.Item>
         <Form.Item
           name="enabled"
-          label="是否启用">
-          <Switch checkedChildren="启用" unCheckedChildren="禁用"
+          label={intl.formatMessage({id: 'pages.user.UserIsUse', defaultMessage: '是否启用',})}>
+          <Switch checkedChildren={intl.formatMessage({id: 'pages.user.UserInUse', defaultMessage: '启用',})} unCheckedChildren={intl.formatMessage({id: 'pages.user.UserNotUse', defaultMessage: '禁用',})}
                   defaultChecked={formVals.enabled}/>
         </Form.Item>
       </>
@@ -101,9 +104,9 @@ const UserForm: React.FC<UserFormProps> = (props) => {
   const renderFooter = () => {
     return (
       <>
-        <Button onClick={() => handleModalVisible(false)}>取消</Button>
+        <Button onClick={() => handleModalVisible(false)}>{intl.formatMessage({id: 'pages.user.UserCancel', defaultMessage: '取消',})}</Button>
         <Button type="primary" onClick={() => submitForm()}>
-          完成
+          {intl.formatMessage({id: 'pages.user.UserComplete', defaultMessage: '完成',})}
         </Button>
       </>
     );
@@ -114,7 +117,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
       width={1200}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title={formVals.id?"维护用户":"创建用户"}
+      title={formVals.id?intl.formatMessage({id: 'pages.user.UserUpdateUser', defaultMessage: '维护用户',}):intl.formatMessage({id: 'pages.user.UserCreateUser', defaultMessage: '创建用户',})}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}

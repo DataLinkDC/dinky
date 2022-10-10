@@ -21,6 +21,7 @@
 import React, {useState} from 'react';
 import {Form, Button, Input, Modal} from 'antd';
 import {PasswordItem} from "@/pages/user/data";
+import { useIntl, Link, history, FormattedMessage, SelectLang} from 'umi';
 
 export type PasswordFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -35,6 +36,8 @@ const formLayout = {
 };
 
 const PasswordForm: React.FC<PasswordFormProps> = (props) => {
+
+  const intl = useIntl();
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<PasswordItem>>({
@@ -59,38 +62,38 @@ const PasswordForm: React.FC<PasswordFormProps> = (props) => {
       <>
         <Form.Item
           name="password"
-          label="旧密码"
+          label= {intl.formatMessage({id: 'pages.user.UserOldPassword', defaultMessage: '旧密码',})}
           hasFeedback
-          rules={[{required: true, message: '请输入旧密码！'}]}>
-          <Input.Password  placeholder="请输入旧密码"/>
+          rules={[{required: true, message: intl.formatMessage({id: 'pages.user.UserEnterOldPassword', defaultMessage: '请输入旧密码！',})}]}>
+          <Input.Password  placeholder={intl.formatMessage({id: 'pages.user.UserEnterOldPassword', defaultMessage: '请输入旧密码！',})}/>
         </Form.Item>
         <Form.Item
           name="newPassword"
-          label="新密码"
+          label={intl.formatMessage({id: 'pages.user.UserNewPassword', defaultMessage: '新密码',})}
           hasFeedback
-          rules={[{required: true, message: '请输入新密码！'}]}>
-          <Input.Password  placeholder="请输入新密码"/>
+          rules={[{required: true, message: intl.formatMessage({id: 'pages.user.UserEnterNewPassword', defaultMessage: '请输入新密码',})}]}>
+          <Input.Password  placeholder={intl.formatMessage({id: 'pages.user.UserEnterNewPassword', defaultMessage: '请输入新密码',})}/>
         </Form.Item>
         <Form.Item
         name="newPasswordCheck"
-        label="重复新密码"
+        label={intl.formatMessage({id: 'pages.user.UserRepeatNewPassword', defaultMessage: '重复新密码',})}
         hasFeedback
         dependencies={['newPassword']}
         rules={[
           {
             required: true,
-            message: '请重复输入一致的新密码',
+            message: intl.formatMessage({id: 'pages.user.UserNewPasswordNotMatch', defaultMessage: '重复密码不一致',}),
           },
           ({ getFieldValue }) => ({
             validator(_, value) {
               if (!value || getFieldValue('newPassword') === value) {
                 return Promise.resolve();
               }
-              return Promise.reject(new Error('重复新密码不一致!'));
+              return Promise.reject(new Error(intl.formatMessage({id: 'pages.user.UserNewPasswordNotMatch', defaultMessage: '重复密码不一致',})));
             },
           }),
         ]}>
-        <Input.Password placeholder="请重复输入新密码"/>
+        <Input.Password placeholder={intl.formatMessage({id: 'pages.user.UserEnterRepeatNewPassword', defaultMessage: '请重复输入新密码',})}/>
       </Form.Item>
       </>
     );
@@ -99,9 +102,9 @@ const PasswordForm: React.FC<PasswordFormProps> = (props) => {
   const renderFooter = () => {
     return (
       <>
-        <Button onClick={() => handleModalVisible(false)}>取消</Button>
+        <Button onClick={() => handleModalVisible(false)}>{intl.formatMessage({id: 'pages.user.UserCancel', defaultMessage: '取消',})}</Button>
         <Button type="primary" onClick={() => submitForm()}>
-          完成
+          {intl.formatMessage({id: 'pages.user.UserComplete', defaultMessage: '完成',})}
         </Button>
       </>
     );
@@ -112,7 +115,7 @@ const PasswordForm: React.FC<PasswordFormProps> = (props) => {
       width={1200}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title="修改密码"
+      title={intl.formatMessage({id: 'pages.user.UserUpdatePassword', defaultMessage: '修改密码',})}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}

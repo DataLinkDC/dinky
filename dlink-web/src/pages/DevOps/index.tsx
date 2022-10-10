@@ -26,10 +26,13 @@ import {useEffect, useState} from "react";
 import {StatusCount} from "@/pages/DevOps/data";
 import {JOB_STATUS} from "@/components/Common/JobStatus";
 import {Switch} from "antd";
+import { useIntl, Link, history, FormattedMessage, SelectLang, useModel } from 'umi';
 
 const { Statistic } = StatisticCard;
 
 const DevOps = () => {
+
+  const intl = useIntl();
 
   const [isHistory, setIsHistory] = useState<boolean>(false);
 
@@ -40,6 +43,8 @@ const DevOps = () => {
   const renderSwitch = () => {
     return (<Switch checkedChildren="历史" unCheckedChildren="实例" onChange={handleHistorySwicthChange}/>);
   };
+
+
 
   const statusCountDefault = [
     { key: '', title: renderSwitch(), value: 0, total: true },
@@ -70,33 +75,33 @@ const DevOps = () => {
       const statusHistoryCountData: StatusCount = result.datas.history;
       const historyItems: any = [
         { key: '', title: renderSwitch(), value: statusHistoryCountData.all, total: true },
-        { key: JOB_STATUS.CREATED, status: 'default', title: '已创建', value: statusHistoryCountData.created },
-        { key: JOB_STATUS.INITIALIZING, status: 'default', title: '初始化', value: statusHistoryCountData.initializing },
-        { key: JOB_STATUS.RUNNING, status: 'success', title: '运行中', value: statusHistoryCountData.running },
-        { key: JOB_STATUS.FINISHED, status: 'processing', title: '已完成', value: statusHistoryCountData.finished },
-        { key: JOB_STATUS.FAILING, status: 'error', title: '异常中', value: statusHistoryCountData.failing },
-        { key: JOB_STATUS.FAILED, status: 'error', title: '已异常', value: statusHistoryCountData.failed },
-        { key: JOB_STATUS.SUSPENDED, status: 'warning', title: '已暂停', value: statusHistoryCountData.suspended },
-        { key: JOB_STATUS.CANCELLING, status: 'warning', title: '停止中', value: statusHistoryCountData.cancelling },
-        { key: JOB_STATUS.CANCELED, status: 'warning', title: '停止', value: statusHistoryCountData.canceled },
-        { key: JOB_STATUS.RESTARTING, status: 'default', title: '重启中', value: statusHistoryCountData.restarting },
-        { key: JOB_STATUS.UNKNOWN, status: 'default', title: '未知', value: statusHistoryCountData.unknown },
+        { key: JOB_STATUS.CREATED, status: 'default', title: intl.formatMessage({id: 'pages.devops.jobstatus.CREATED', defaultMessage: '已创建',}), value: statusHistoryCountData.created },
+        { key: JOB_STATUS.INITIALIZING, status: 'default', title: intl.formatMessage({id: 'pages.devops.jobstatus.INITIALIZING', defaultMessage: '初始化',}), value: statusHistoryCountData.initializing },
+        { key: JOB_STATUS.RUNNING, status: 'success', title: intl.formatMessage({id: 'pages.devops.jobstatus.RUNNING', defaultMessage: '运行中',}), value: statusHistoryCountData.running },
+        { key: JOB_STATUS.FINISHED, status: 'processing', title: intl.formatMessage({id: 'pages.devops.jobstatus.FINISHED', defaultMessage: '已完成',}), value: statusHistoryCountData.finished },
+        { key: JOB_STATUS.FAILING, status: 'error', title: intl.formatMessage({id: 'pages.devops.jobstatus.FAILING', defaultMessage: '异常中',}), value: statusHistoryCountData.failing },
+        { key: JOB_STATUS.FAILED, status: 'error', title:  intl.formatMessage({id: 'pages.devops.jobstatus.FAILED', defaultMessage: '已异常',}), value: statusHistoryCountData.failed },
+        { key: JOB_STATUS.SUSPENDED, status: 'warning', title: intl.formatMessage({id: 'pages.devops.jobstatus.SUSPENDED', defaultMessage: '已暂停',}), value: statusHistoryCountData.suspended },
+        { key: JOB_STATUS.CANCELLING, status: 'warning', title: intl.formatMessage({id: 'pages.devops.jobstatus.CANCELLING', defaultMessage: '停止中',}), value: statusHistoryCountData.cancelling },
+        { key: JOB_STATUS.CANCELED, status: 'warning', title: intl.formatMessage({id: 'pages.devops.jobstatus.CANCELED', defaultMessage: '停止',}), value: statusHistoryCountData.canceled },
+        { key: JOB_STATUS.RESTARTING, status: 'default', title:  intl.formatMessage({id: 'pages.devops.jobstatus.RESTARTING', defaultMessage: '重启中',}), value: statusHistoryCountData.restarting },
+        { key: JOB_STATUS.UNKNOWN, status: 'default', title:  intl.formatMessage({id: 'pages.devops.jobstatus.UNKNOWN', defaultMessage: '未知',}), value: statusHistoryCountData.unknown },
       ];
       setStatusHistoryCount(historyItems);
       const statusCountData: StatusCount = result.datas.instance;
       const items: any = [
         { key: '', title: renderSwitch(), value: statusCountData.all, total: true },
-        { key: JOB_STATUS.CREATED, status: 'default', title: '已创建', value: statusCountData.created },
-        { key: JOB_STATUS.INITIALIZING, status: 'default', title: '初始化', value: statusCountData.initializing },
-        { key: JOB_STATUS.RUNNING, status: 'success', title: '运行中', value: statusCountData.running },
-        { key: JOB_STATUS.FINISHED, status: 'processing', title: '已完成', value: statusCountData.finished },
-        { key: JOB_STATUS.FAILING, status: 'error', title: '异常中', value: statusCountData.failing },
-        { key: JOB_STATUS.FAILED, status: 'error', title: '已异常', value: statusCountData.failed },
-        { key: JOB_STATUS.SUSPENDED, status: 'warning', title: '已暂停', value: statusCountData.suspended },
-        { key: JOB_STATUS.CANCELLING, status: 'warning', title: '停止中', value: statusCountData.cancelling },
-        { key: JOB_STATUS.CANCELED, status: 'warning', title: '停止', value: statusCountData.canceled },
-        { key: JOB_STATUS.RESTARTING, status: 'default', title: '重启中', value: statusCountData.restarting },
-        { key: JOB_STATUS.UNKNOWN, status: 'default', title: '未知', value: statusCountData.unknown },
+        { key: JOB_STATUS.CREATED, status: 'default', title: intl.formatMessage({id: 'pages.devops.jobstatus.CREATED', defaultMessage: '已创建',}), value: statusCountData.created },
+        { key: JOB_STATUS.INITIALIZING, status: 'default', title:intl.formatMessage({id: 'pages.devops.jobstatus.INITIALIZING', defaultMessage: '初始化',}), value: statusCountData.initializing },
+        { key: JOB_STATUS.RUNNING, status: 'success', title: intl.formatMessage({id: 'pages.devops.jobstatus.RUNNING', defaultMessage: '运行中',}), value: statusCountData.running },
+        { key: JOB_STATUS.FINISHED, status: 'processing', title: intl.formatMessage({id: 'pages.devops.jobstatus.FINISHED', defaultMessage: '已完成',}), value: statusCountData.finished },
+        { key: JOB_STATUS.FAILING, status: 'error', title: intl.formatMessage({id: 'pages.devops.jobstatus.FAILING', defaultMessage: '异常中',}), value: statusCountData.failing },
+        { key: JOB_STATUS.FAILED, status: 'error', title: intl.formatMessage({id: 'pages.devops.jobstatus.FAILED', defaultMessage: '已异常',}), value: statusCountData.failed },
+        { key: JOB_STATUS.SUSPENDED, status: 'warning', title: intl.formatMessage({id: 'pages.devops.jobstatus.SUSPENDED', defaultMessage: '已暂停',}), value: statusCountData.suspended },
+        { key: JOB_STATUS.CANCELLING, status: 'warning', title: intl.formatMessage({id: 'pages.devops.jobstatus.CANCELLING', defaultMessage: '停止中',}), value: statusCountData.cancelling },
+        { key: JOB_STATUS.CANCELED, status: 'warning', title: intl.formatMessage({id: 'pages.devops.jobstatus.CANCELED', defaultMessage: '停止',}), value: statusCountData.canceled },
+        { key: JOB_STATUS.RESTARTING, status: 'default', title: intl.formatMessage({id: 'pages.devops.jobstatus.RESTARTING', defaultMessage: '重启中',}), value: statusCountData.restarting },
+        { key: JOB_STATUS.UNKNOWN, status: 'default', title: intl.formatMessage({id: 'pages.devops.jobstatus.UNKNOWN', defaultMessage: '未知',}), value: statusCountData.unknown },
       ];
       setStatusCount(items);
     });
