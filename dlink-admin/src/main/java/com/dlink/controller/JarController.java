@@ -130,7 +130,7 @@ public class JarController {
         List<String> udfCodes = allUDF.stream().map(Task::getStatement).collect(Collectors.toList());
         Map<String, List<String>> resultMap = UDFUtil.buildJar(udfCodes);
         String msg = StrUtil.format("udf jar生成成功，jar文件在{}；\n本次成功 class:{}。\n失败 class:{}"
-            , PathConstant.UDF_JAR_PATH, resultMap.get("success"), resultMap.get("failed"));
+            , PathConstant.UDF_JAR_TMP_PATH, resultMap.get("success"), resultMap.get("failed"));
         return Result.succeed(resultMap, msg);
     }
 }

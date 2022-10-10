@@ -64,9 +64,11 @@ import com.dlink.session.SessionInfo;
 import com.dlink.session.SessionPool;
 import com.dlink.sql.FlinkQuery;
 import com.dlink.utils.RunTimeUtil;
+import com.dlink.utils.UDFUtil;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -80,6 +82,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.map.MapUtil;
 
 /**
  * StudioServiceImpl
@@ -548,14 +553,21 @@ public class StudioServiceImpl implements StudioService {
         return infos;
     }
 
+    private final static Map<String,List<GatewayType>> gatewayTypeMap= MapUtil
+        .builder("session", Arrays.asList(GatewayType.YARN_SESSION,GatewayType.YARN_SESSION))
+        .build();
     private void initUDF(JobConfig config, String statement) {
-        if (!GatewayType.LOCAL.equalsValue(config.getType())) {
-            return;
+//        if (!GatewayType.LOCAL.equalsValue(config.getType())) {
+//            return;
+//        }
+        if (gatewayTypeMap.get("session").contains(GatewayType.get(config.getType())) || GatewayType.STANDALONE.equalsValue(config.getType()) ){
+            List<String> udfClassNameList = JobManager.getUDFClassName(statement);
+            List<String> codeList = CollUtil.map(udfClassNameList, x -> taskService.getUDFByClassName(x).getStatement(), true);
+            if (codeList.size() > 0){
+                String filename = UDFUtil.getUdfNameAndBuildJar(codeList);
+                UDFUtil.uploadFlinkJar(config.getAddress(),filename);
+            }
         }
-        List<String> udfClassNameList = JobManager.getUDFClassName(statement);
-        for (String item : udfClassNameList) {
-            Task task = taskService.getUDFByClassName(item);
-            JobManager.initUDF(item, task.getStatement());
-        }
+
     }
 }

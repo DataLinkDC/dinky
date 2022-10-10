@@ -9,9 +9,11 @@ import java.io.File;
  */
 public class PathConstant {
     public static final String WORK_DIR = System.getProperty("user.dir");
-    public static final String TMP_PATH = WORK_DIR + File.separator + "tmp";
-    public static final String UDF_PATH = TMP_PATH + File.separator + "udf";
-    public static final String UDF_JAR_NAME = "udf.jar";
-    public static final String UDF_JAR_PATH = UDF_PATH + File.separator + UDF_JAR_NAME;
+    public static final String TMP_PATH = WORK_DIR + File.separator + "tmp" + File.separator;
+    public static final String UDF_PATH = TMP_PATH + "udf" + File.separator;
+    public static final String UDF_JAR_RULE = "udf-\\d+.jar";
+    public static final String UDF_VERSION_RULE = "\\d+";
+    public static final String UDF_JAR_TMP_NAME = "udf-tmp.jar";
+    public static final String UDF_JAR_TMP_PATH = UDF_PATH + UDF_JAR_TMP_NAME;
 
 }
