@@ -140,9 +140,9 @@ public class DorisSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
             executionBuilder.setDeletable(Boolean.valueOf(sink.get(DorisSinkOptions.SINK_ENABLE_DELETE.key())));
         }
         if (sink.containsKey(DorisSinkOptions.SINK_LABEL_PREFIX.key())) {
-            executionBuilder.setLabelPrefix(sink.get(DorisSinkOptions.SINK_LABEL_PREFIX.key()) + "-" + getSinkSchemaName(table) + "_" + getSinkTableName(table) + UUID.randomUUID());
+            executionBuilder.setLabelPrefix(sink.get(DorisSinkOptions.SINK_LABEL_PREFIX.key()) + "-" + getSinkSchemaName(table) + "_" + getSinkTableName(table));
         } else {
-            executionBuilder.setLabelPrefix("dlink-" + getSinkSchemaName(table) + "_" + getSinkTableName(table));
+            executionBuilder.setLabelPrefix("dlink-" + getSinkSchemaName(table) + "_" + getSinkTableName(table) + UUID.randomUUID());
         }
         if (sink.containsKey(DorisSinkOptions.SINK_MAX_RETRIES.key())) {
             executionBuilder.setMaxRetries(Integer.valueOf(sink.get(DorisSinkOptions.SINK_MAX_RETRIES.key())));
