@@ -145,7 +145,7 @@ public class DorisSinkBuilder extends AbstractSinkBuilder implements Serializabl
         if (sink.containsKey(DorisSinkOptions.SINK_LABEL_PREFIX.key())) {
             executionBuilder.setLabelPrefix(sink.get(DorisSinkOptions.SINK_LABEL_PREFIX.key()) + "-" + getSinkSchemaName(table) + "_" + getSinkTableName(table) + UUID.randomUUID());
         } else {
-            executionBuilder.setLabelPrefix("dlink-" + getSinkSchemaName(table) + "_" + getSinkTableName(table) + UUID.randomUUID());
+            executionBuilder.setLabelPrefix("dlink-" + getSinkSchemaName(table) + "_" + getSinkTableName(table));
         }
         if (sink.containsKey(DorisSinkOptions.SINK_MAX_RETRIES.key())) {
             executionBuilder.setMaxRetries(Integer.valueOf(sink.get(DorisSinkOptions.SINK_MAX_RETRIES.key())));
