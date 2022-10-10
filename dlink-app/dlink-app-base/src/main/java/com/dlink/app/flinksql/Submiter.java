@@ -184,7 +184,6 @@ public class Submiter {
                 logger.error("执行失败, {}", e.getMessage(), e);
             }
         }
-        logger.info(LocalDateTime.now() + "任务提交成功");
-        System.out.println(LocalDateTime.now() + "任务提交成功");
+        logger.info("{}任务提交成功",LocalDateTime.now());
     }
 }
