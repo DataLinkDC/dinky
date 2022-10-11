@@ -117,8 +117,8 @@ public class UDFUtil {
         InputStream[] fileInputStreams = successList.stream().map(className -> tmpPath + StrUtil.replace(className, ".", "/") + ".class")
             .map(FileUtil::getInputStream).toArray(InputStream[]::new);
         // 编译好的文件打包jar
-        try (ZipUtils zipWriter = new ZipUtils(FileUtil.file(udfJarPath), Charset.defaultCharset())){
-            zipWriter.add( clazzs, fileInputStreams);
+        try (ZipUtils zipWriter = new ZipUtils(FileUtil.file(udfJarPath), Charset.defaultCharset())) {
+            zipWriter.add(clazzs, fileInputStreams);
         }
         String md5 = md5sum(udfJarPath);
         return MapUtil.builder("success", successList).put("failed", failedList).put("md5", Collections.singletonList(md5)).build();
@@ -160,25 +160,32 @@ public class UDFUtil {
         }
     }
 
-    public static void uploadFlinkJar(String address, String filename) {
+    /**
+     * 上传flink jar
+     *
+     * @param address  地址
+     * @param filename 文件名
+     * @return {@link String} 上传返回的 jar 地址
+     */
+    public static String uploadFlinkJar(String address, String filename) {
         FlinkAPI flinkAPI = FlinkAPI.build(address);
         JsonNode jarsList = flinkAPI.getJarsList();
-        boolean isUpload = true;
         JsonNode files = jarsList.findValue("files");
         if (!files.isEmpty()) {
             for (JsonNode jsonNode : files) {
                 if (jsonNode.findValue("name").asText().equals(filename)) {
                     log.info("{}已经存在", filename);
-                    isUpload = false;
-                    break;
+                    for (JsonNode node : flinkAPI.getJobManagerConfig()) {
+                        if ("web.tmpdir".equals(node.findValue("key").asText())) {
+                            return node.findValue("value").asText() + "/flink-web-upload/" + jsonNode.findValue("id").asText();
+                        }
+                    }
                 }
             }
         }
 
-        if (isUpload) {
-            String filepath = PathConstant.UDF_PATH + filename;
-            flinkAPI.uploadJar(filepath);
-        }
+        String filepath = PathConstant.UDF_PATH + filename;
+        return flinkAPI.uploadJar(filepath).findValue("filename").asText();
     }
 
     /**

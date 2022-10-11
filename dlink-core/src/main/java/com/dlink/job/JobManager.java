@@ -160,6 +160,7 @@ public class JobManager {
         initGatewayConfig(config);
         JobManager manager = new JobManager(config);
         manager.init();
+        manager.executor.initUDF(config.getJarFiles());
         return manager;
     }
 
@@ -218,7 +219,7 @@ public class JobManager {
 
     private void initEnvironmentSetting() {
         if (Asserts.isNotNullString(config.getAddress())) {
-            environmentSetting = EnvironmentSetting.build(config.getAddress());
+            environmentSetting = EnvironmentSetting.build(config.getAddress(),config.getJarFiles());
         }
     }
 
@@ -464,6 +465,7 @@ public class JobManager {
                     continue;
                 }
                 LocalDateTime startTime = LocalDateTime.now();
+
                 TableResult tableResult = executor.executeSql(newStatement);
                 result = ResultBuilder.build(operationType, config.getMaxRowNum(), false, false, executor.getTimeZone()).getResult(tableResult);
                 result.setStartTime(startTime);

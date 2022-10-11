@@ -36,6 +36,7 @@ import lombok.Setter;
 @Setter
 public class EnvironmentSetting {
     private String host;
+    private String[] jarFiles;
     private int port;
     private boolean useRemote;
 
@@ -45,19 +46,20 @@ public class EnvironmentSetting {
         this.useRemote = useRemote;
     }
 
-    public EnvironmentSetting(String host, int port) {
+    public EnvironmentSetting(String host, int port,String... jarFiles) {
         this.host = host;
         this.port = port;
         this.useRemote = true;
+        this.jarFiles=jarFiles;
     }
 
-    public static EnvironmentSetting build(String address) {
+    public static EnvironmentSetting build(String address,String... jarFiles) {
         Asserts.checkNull(address, "Flink 地址不能为空");
         String[] strs = address.split(NetConstant.COLON);
         if (strs.length >= 2) {
-            return new EnvironmentSetting(strs[0], Integer.parseInt(strs[1]));
+            return new EnvironmentSetting(strs[0], Integer.parseInt(strs[1]),jarFiles);
         } else {
-            return new EnvironmentSetting(strs[0], FlinkConstant.FLINK_REST_DEFAULT_PORT);
+            return new EnvironmentSetting(strs[0], FlinkConstant.FLINK_REST_DEFAULT_PORT,jarFiles);
         }
     }
 

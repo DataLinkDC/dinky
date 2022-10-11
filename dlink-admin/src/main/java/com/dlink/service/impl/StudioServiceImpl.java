@@ -22,6 +22,7 @@ package com.dlink.service.impl;
 import com.dlink.api.FlinkAPI;
 import com.dlink.assertion.Asserts;
 import com.dlink.config.Dialect;
+import com.dlink.constant.PathConstant;
 import com.dlink.dto.AbstractStatementDTO;
 import com.dlink.dto.SessionDTO;
 import com.dlink.dto.SqlDTO;
@@ -150,7 +151,8 @@ public class StudioServiceImpl implements StudioService {
         JobConfig config = studioExecuteDTO.getJobConfig();
         buildSession(config);
         // To initialize java udf, but it only support local mode.
-        initUDF(config, studioExecuteDTO.getStatement());
+        String jarPath = initUDF(config, studioExecuteDTO.getStatement());
+        config.setJarFiles(new String[]{PathConstant.UDF_PATH+jarPath});
         JobManager jobManager = JobManager.build(config);
         JobResult jobResult = jobManager.executeSql(studioExecuteDTO.getStatement());
         RunTimeUtil.recovery(jobManager);
@@ -553,21 +555,25 @@ public class StudioServiceImpl implements StudioService {
         return infos;
     }
 
-    private final static Map<String,List<GatewayType>> gatewayTypeMap= MapUtil
-        .builder("session", Arrays.asList(GatewayType.YARN_SESSION,GatewayType.YARN_SESSION))
+    private final static Map<String, List<GatewayType>> gatewayTypeMap = MapUtil
+        .builder("session", Arrays.asList(GatewayType.YARN_SESSION, GatewayType.YARN_SESSION,GatewayType.STANDALONE))
         .build();
-    private void initUDF(JobConfig config, String statement) {
+
+    private String initUDF(JobConfig config, String statement) {
 //        if (!GatewayType.LOCAL.equalsValue(config.getType())) {
 //            return;
 //        }
-        if (gatewayTypeMap.get("session").contains(GatewayType.get(config.getType())) || GatewayType.STANDALONE.equalsValue(config.getType()) ){
+        if (gatewayTypeMap.get("session").contains(GatewayType.get(config.getType())) || GatewayType.LOCAL.equalsValue(config.getType())) {
             List<String> udfClassNameList = JobManager.getUDFClassName(statement);
-            List<String> codeList = CollUtil.map(udfClassNameList, x -> taskService.getUDFByClassName(x).getStatement(), true);
-            if (codeList.size() > 0){
-                String filename = UDFUtil.getUdfNameAndBuildJar(codeList);
-                UDFUtil.uploadFlinkJar(config.getAddress(),filename);
+            List<String> codeList = CollUtil.map(udfClassNameList, x -> {
+                Task task = taskService.getUDFByClassName(x);
+                JobManager.initUDF(x, task.getStatement());
+                return task.getStatement();
+            }, true);
+            if (codeList.size() > 0) {
+                return UDFUtil.getUdfNameAndBuildJar(codeList);
             }
         }
-
+        return null;
     }
 }
