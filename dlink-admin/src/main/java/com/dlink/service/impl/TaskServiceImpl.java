@@ -28,6 +28,7 @@ import com.dlink.assertion.Assert;
 import com.dlink.assertion.Asserts;
 import com.dlink.assertion.Tips;
 import com.dlink.common.result.Result;
+import com.dlink.config.ClusterType;
 import com.dlink.config.Dialect;
 import com.dlink.constant.FlinkRestResultConstant;
 import com.dlink.constant.NetConstant;
@@ -681,6 +682,14 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         JobConfig jobConfig = new JobConfig();
         jobConfig.setAddress(cluster.getJobManagerHost());
         jobConfig.setType(cluster.getType());
+
+        if (ClusterType.KubernetesApplaction.equalsVal(cluster.getType())) {
+            Statement statement = statementService.getById(cluster.getTaskId());
+            Map<String, Object> gatewayConfig = JSONUtil.toMap(statement.getStatement(),String.class,Object.class);
+            jobConfig.buildGatewayConfig(gatewayConfig);
+            jobConfig.getGatewayConfig().getClusterConfig().setAppId(cluster.getName());
+            useGateway = true;
+        }
         if (Asserts.isNotNull(cluster.getClusterConfigurationId())) {
             Map<String, Object> gatewayConfig = clusterConfigurationService.getGatewayConfig(cluster.getClusterConfigurationId());
             jobConfig.buildGatewayConfig(gatewayConfig);
