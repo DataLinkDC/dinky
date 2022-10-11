@@ -25,9 +25,9 @@ import {Button, Drawer, Dropdown, Menu, Modal} from 'antd';
 import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import {handleAddOrUpdate, handleRemove, queryData} from "@/components/Common/crud";
-import {TenantTableListItem} from "@/pages/ResourceCenter/data.d";
-import TenantForm from "@/pages/ResourceCenter/TenantManager/components/TenantForm";
-import GrantTenantTransfer from "@/pages/ResourceCenter/TenantManager/components/GrantTenantTransfer";
+import {TenantTableListItem} from "@/pages/AuthenticationCenter/data.d";
+import TenantForm from "@/pages/AuthenticationCenter/TenantManager/components/TenantForm";
+import GrantTenantTransfer from "@/pages/AuthenticationCenter/TenantManager/components/GrantTenantTransfer";
 
 const url = '/api/tenant';
 const TenantFormList: React.FC<{}> = (props: any) => {

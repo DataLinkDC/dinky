@@ -23,7 +23,7 @@ import difference from 'lodash/difference';
 import {useEffect, useState} from 'react';
 import {getData} from "@/components/Common/crud";
 import {Scrollbars} from 'react-custom-scrollbars';
-import {RoleTableListItem, UserTableListItem} from "@/pages/ResourceCenter/data.d";
+import {RoleTableListItem, UserTableListItem} from "@/pages/AuthenticationCenter/data.d";
 
 
 interface TableTransferProps extends TransferProps<RoleTableListItem> {

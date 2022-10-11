@@ -28,7 +28,7 @@ import {CheckCard} from '@ant-design/pro-components';
 
 import styles from './index.less';
 import {getData} from "@/components/Common/crud";
-import {TenantTableListItem} from "@/pages/ResourceCenter/data.d";
+import {TenantTableListItem} from "@/pages/AuthenticationCenter/data.d";
 
 
 /** 此方法会跳转到 redirect 参数所在的位置 */

@@ -20,13 +20,14 @@
 
 import React, {useState} from 'react';
 import {Button, Form, Input, Modal, Switch} from 'antd';
-import {UserTableListItem} from "@/pages/ResourceCenter/data.d";
+import {NameSpaceTableListItem} from "@/pages/AuthenticationCenter/data.d";
+import {getStorageTenantId} from "@/components/Common/crud";
 
-export type UserFormProps = {
+export type TenantFormProps = {
   onCancel: (flag?: boolean) => void;
-  onSubmit: (values: Partial<UserTableListItem>) => void;
+  onSubmit: (values: Partial<NameSpaceTableListItem>) => void;
   modalVisible: boolean;
-  values: Partial<UserTableListItem>;
+  values: Partial<NameSpaceTableListItem>;
 };
 
 const formLayout = {
@@ -34,18 +35,17 @@ const formLayout = {
   wrapperCol: {span: 13},
 };
 
-const UserForm: React.FC<UserFormProps> = (props) => {
+const NameSpaceForm: React.FC<TenantFormProps> = (props) => {
 
   const [form] = Form.useForm();
-  const [formVals, setFormVals] = useState<Partial<UserTableListItem>>({
-    id: props.values.id,
-    username: props.values.username,
-    nickname: props.values.nickname,
-    password: props.values.password,
-    worknum: props.values.worknum,
-    mobile: props.values.mobile,
-    avatar: props.values.avatar,
-    enabled: props.values.enabled,
+  const [formVals, setFormVals] = useState<Partial<NameSpaceTableListItem>>({
+    id: props.values?.id,
+    tenantId: props.values?.tenantId,
+    namespaceCode: props.values?.namespaceCode,
+    enabled: props.values?.enabled,
+    note: props.values?.note,
+    createTime: props.values?.createTime,
+    updateTime: props.values?.updateTime,
   });
 
   const {
@@ -54,45 +54,41 @@ const UserForm: React.FC<UserFormProps> = (props) => {
     modalVisible,
   } = props;
 
-
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
-    setFormVals({ ...formVals, ...fieldsValue });
-    handleSubmit({ ...formVals, ...fieldsValue });
+    fieldsValue.id = formVals.id;
+    setFormVals({...formVals,...fieldsValue});
+    handleSubmit({...formVals,...fieldsValue});
   };
 
-  const renderContent = (formVals: Partial<UserTableListItem>) => {
+  const renderContent = (formValsPara: Partial<NameSpaceTableListItem>) => {
     return (
       <>
         <Form.Item
-          name="username"
-          label="用户名"
-          rules={[{required: true, message: '请输入用户名！'}]}>
-          <Input placeholder="请输入唯一用户名"/>
+          name="namespaceCode"
+          label="命名空间编号"
+          rules={[{required: true, message: '请输入命名空间唯一编码！'}]}>
+          <Input placeholder="请输入命名空间唯一编码"/>
         </Form.Item>
         <Form.Item
-          name="nickname"
-          label="昵称"
-        >
-          <Input placeholder="请输入昵称"/>
+          hidden={true}
+          name="tenantId"
+          label="所属租户"
+          >
+          <Input disabled defaultValue={getStorageTenantId()}/>
         </Form.Item>
         <Form.Item
-          name="worknum"
-          label="工号"
+          name="note"
+          label="注释"
         >
-          <Input placeholder="请输入工号"/>
-        </Form.Item>
-        <Form.Item
-          name="mobile"
-          label="手机号"
-        >
-          <Input placeholder="请输入手机号"/>
+          <Input.TextArea placeholder="请输入描述信息" allowClear
+                          autoSize={{minRows: 3, maxRows: 10}}/>
         </Form.Item>
         <Form.Item
           name="enabled"
           label="是否启用">
           <Switch checkedChildren="启用" unCheckedChildren="禁用"
-                  defaultChecked={formVals.enabled}/>
+                  defaultChecked={formValsPara.enabled}/>
         </Form.Item>
       </>
     );
@@ -111,10 +107,10 @@ const UserForm: React.FC<UserFormProps> = (props) => {
 
   return (
     <Modal
-      width={1200}
+      width={640}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title={formVals.id?"维护用户":"创建用户"}
+      title={formVals.id ? "修改命名空间" : "创建命名空间"}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}
@@ -130,4 +126,4 @@ const UserForm: React.FC<UserFormProps> = (props) => {
   );
 };
 
-export default UserForm;
+export default NameSpaceForm;

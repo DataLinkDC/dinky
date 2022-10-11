@@ -18,7 +18,7 @@
  */
 
 
-import {RoleTableListItem} from "@/pages/ResourceCenter/data.d";
+import {RoleTableListItem} from "@/pages/AuthenticationCenter/data.d";
 
 export const getFormData = (values: RoleTableListItem) => {
   let namespaceIds:string [] = [];

@@ -20,11 +20,11 @@
 
 import React, {useState} from 'react';
 import {Button, Form, Input, Modal, Select, Tag} from 'antd';
-import {NameSpaceTableListItem, RoleTableListItem} from "@/pages/ResourceCenter/data.d";
+import {NameSpaceTableListItem, RoleTableListItem} from "@/pages/AuthenticationCenter/data.d";
 import {getStorageTenantId} from "@/components/Common/crud";
 import {connect} from "umi";
-import {NameSpaceStateType} from "@/pages/ResourceCenter/RoleManager/model";
-import {buildFormData, getFormData} from "@/pages/ResourceCenter/function";
+import {NameSpaceStateType} from "@/pages/AuthenticationCenter/RoleManager/model";
+import {buildFormData, getFormData} from "@/pages/AuthenticationCenter/function";
 
 
 export type TenantFormProps = {
