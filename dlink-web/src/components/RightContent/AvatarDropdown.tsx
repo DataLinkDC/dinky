@@ -113,7 +113,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
           <Menu.Item
             // If the current key (tenant id) is equal to the tenant the current user chooses to log in, this item is not optional
             disabled={item.id === currentUser.currentTenant?.id}
-            key={item.id}  // key 需要唯一 目前唯一不了
+            key={item.id}
             title={item.tenantCode}
             icon={<SecurityScanOutlined/>}
             onClick={(e) => {
@@ -135,7 +135,9 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
                   // localStorage.clear() // clear local storage
                   // localStorage.setItem('dlink-tenantId',tenantInfoId) // set tenant to localStorage
                   // code == 0 ? message.success(msg) : message.error(msg);
-                  // todo 切换租户后 需要重新调用 /api/current 接口  同步刷新所有页面 获取该租户id下的数据
+                  // todo
+                  //  1.切换租户后 需要重新调用 /api/current接口获取用户的信息  (目前此接口从cookie直接取数 ,达不到预期效果)
+                  //  2.同步刷新所有页面 获取该租户id下的数据
                   //actionRef.current?.reload()
                   // actionRef.current?.reloadAndRest?.();
                 }

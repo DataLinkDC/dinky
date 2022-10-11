@@ -18,34 +18,41 @@
  */
 
 
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {DownOutlined, PlusOutlined} from '@ant-design/icons';
 import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
 import {Button, Drawer, Dropdown, Menu, Modal} from 'antd';
 import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import {handleAddOrUpdate, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
-import {NameSpaceTableListItem} from "@/pages/ResourceCenter/data.d";
-import NameSpaceForm from "@/pages/ResourceCenter/NamespaceManager/components/NameSpaceForm";
+import {getStorageTenantId, handleAddOrUpdate, handleRemove, queryData} from "@/components/Common/crud";
+import {RoleTableListItem} from "@/pages/AuthenticationCenter/data.d";
+import RoleForm from "@/pages/AuthenticationCenter/RoleManager/components/RoleForm";
+import {getNameSpaceList} from "@/pages/AuthenticationCenter/service";
+import {connect} from "umi";
 
-const url = '/api/namespace';
+const url = '/api/role';
 
-const NameSpaceFormList: React.FC<{}> = (props: any) => {
-  const [row, setRow] = useState<NameSpaceTableListItem>();
-  const [formValues, setFormValues] = useState<NameSpaceTableListItem>();
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+const RoleFormList: React.FC<{}> = (props: any) => {
+  const {dispatch} = props;
+  const [row, setRow] = useState<RoleTableListItem>();
+  const [formValues, setFormValues] = useState<RoleTableListItem>();
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
+  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [selectedRowsState, setSelectedRows] = useState<NameSpaceTableListItem[]>([]);
+  const [selectedRowsState, setSelectedRows] = useState<RoleTableListItem[]>([]);
 
-  const editAndDelete = (key: string | number, currentItem: NameSpaceTableListItem) => {
+  useEffect(() => {
+    getNameSpaceList(dispatch);
+  }, []);
+
+  const editAndDelete = (key: string | number, currentItem: RoleTableListItem) => {
     if (key === 'edit') {
-      handleUpdateModalVisible(true);
       setFormValues(currentItem);
+      handleUpdateModalVisible(true);
     } else if (key === 'delete') {
       Modal.confirm({
-        title: '删除命名空间',
-        content: '确定删除该命名空间吗？',
+        title: '删除角色',
+        content: '确定删除该角色吗？',
         okText: '确认',
         cancelText: '取消',
         onOk: async () => {
@@ -57,7 +64,7 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
   };
 
   const MoreBtn: React.FC<{
-    item: NameSpaceTableListItem;
+    item: RoleTableListItem;
   }> = ({item}) => (
     <Dropdown
       overlay={
@@ -73,52 +80,54 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
     </Dropdown>
   );
 
-  const columns: ProColumns<NameSpaceTableListItem>[] = [
+  const columns: ProColumns<RoleTableListItem>[] = [
     {
       title: 'ID',
       dataIndex: 'id',
       hideInTable: true,
       hideInSearch: true,
       sorter: true,
+    },
+    {
+      title: '角色编码',
+      dataIndex: 'roleCode',
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
     },
     {
-      title: '命名空间编码',
-      dataIndex: 'namespaceCode',
-      render: (dom, entity) => {
-        return <a onClick={() => setRow(entity)}>{dom}</a>;
-      },
+      title: '角色名称',
+      dataIndex: 'roleName',
     },
     {
       title: '所属租户',
       hideInSearch: true,
       render: (dom, entity) => {
-        return entity.tenant.tenantCode;
+        return entity?.tenant?.tenantCode || '';
       },
     },
-    {
-      title: '是否启用',
-      dataIndex: 'enabled',
-      hideInTable: false,
-      hideInSearch: true,
-      filters: [
-        {
-          text: '已启用',
-          value: 1,
-        },
-        {
-          text: '未启用',
-          value: 0,
-        },
-      ],
-      filterMultiple: false,
-      valueEnum: {
-        true: {text: '已启用', status: 'Success'},
-        false: {text: '未启用', status: 'Error'},
-      },
-    },
+    // {
+    //   title: '是否删除',
+    //   dataIndex: 'isDelete',
+    //   hideInForm: true,
+    //   hideInSearch: true,
+    //   hideInTable: false,
+    //   filters: [
+    //     {
+    //       text: '未删除',
+    //       value: 0,
+    //     },
+    //     {
+    //       text: '已删除',
+    //       value: 1,
+    //     },
+    //   ],
+    //   filterMultiple: false,
+    //   valueEnum: {
+    //     true: {text: '已删除', status: 'Error'},
+    //     false: {text: '未删除', status: 'Success'},
+    //   },
+    // },
     {
       title: '备注',
       dataIndex: 'note',
@@ -142,14 +151,14 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        <a
+        <Button type={"link"}
           onClick={() => {
             handleUpdateModalVisible(true);
             setFormValues(record);
           }}
         >
           配置
-        </a>,
+        </Button>,
         <MoreBtn key="more" item={record}/>,
       ],
     },
@@ -157,8 +166,8 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
 
   return (
     <PageContainer>
-      <ProTable<NameSpaceTableListItem>
-        headerTitle="命名空间管理"
+      <ProTable<RoleTableListItem>
+        headerTitle="角色管理"
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -169,7 +178,7 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
             <PlusOutlined/> 新建
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryData(url, {...params, sorter, filter})}
+        request={(params, sorter, filter) => queryData(url, {tenantId: getStorageTenantId(), sorter, filter})}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
@@ -181,7 +190,7 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
             <div>
               已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
               <span>
-  被禁用的命名空间共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} 个
+  被删除的角色共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.isDelete ? 0 : 1), 0)} 个
   </span>
             </div>
           }
@@ -189,8 +198,8 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
           <Button type="primary" danger
                   onClick={() => {
                     Modal.confirm({
-                      title: '删除命名空间',
-                      content: '确定删除选中的命名空间吗？',
+                      title: '删除角色',
+                      content: '确定删除选中的角色吗？',
                       okText: '确认',
                       cancelText: '取消',
                       onOk: async () => {
@@ -203,39 +212,9 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
           >
             批量删除
           </Button>
-          <Button type="primary"
-                  onClick={() => {
-                    Modal.confirm({
-                      title: '启用命名空间',
-                      content: '确定启用选中的命名空间吗？',
-                      okText: '确认',
-                      cancelText: '取消',
-                      onOk: async () => {
-                        await updateEnabled(url, selectedRowsState, true);
-                        setSelectedRows([]);
-                        actionRef.current?.reloadAndRest?.();
-                      }
-                    });
-                  }}
-          >批量启用</Button>
-          <Button danger
-                  onClick={() => {
-                    Modal.confirm({
-                      title: '禁用命名空间',
-                      content: '确定禁用选中的命名空间吗？',
-                      okText: '确认',
-                      cancelText: '取消',
-                      onOk: async () => {
-                        await updateEnabled(url, selectedRowsState, false);
-                        setSelectedRows([]);
-                        actionRef.current?.reloadAndRest?.();
-                      }
-                    });
-                  }}
-          >批量禁用</Button>
         </FooterToolbar>
       )}
-      <NameSpaceForm
+      <RoleForm
         onSubmit={async (value) => {
           const success = await handleAddOrUpdate(url, value);
           if (success) {
@@ -254,7 +233,7 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
       />
       {
         formValues && Object.keys(formValues).length ? (
-          <NameSpaceForm
+          <RoleForm
             onSubmit={async (value) => {
               const success = await handleAddOrUpdate(url, value);
               if (success) {
@@ -283,9 +262,9 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
         closable={false}
       >
         {row?.id && (
-          <ProDescriptions<NameSpaceTableListItem>
+          <ProDescriptions<RoleTableListItem>
             column={2}
-            title={row?.namespaceCode}
+            title={row?.roleName}
             request={async () => ({
               data: row || {},
             })}
@@ -300,4 +279,4 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
   );
 };
 
-export default NameSpaceFormList;
+export default connect()(RoleFormList);

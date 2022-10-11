@@ -25,10 +25,10 @@ import {Button, Drawer, Dropdown, Menu, Modal} from 'antd';
 import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import {handleAddOrUpdate, handleOption, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
-import {UserTableListItem} from "@/pages/ResourceCenter/data.d";
-import UserForm from "@/pages/ResourceCenter/UserManager/components/UserForm";
-import PasswordForm from "@/pages/ResourceCenter/UserManager/components/PasswordForm";
-import TableTransferFrom from "@/pages/ResourceCenter/UserManager/components/TableTransfer";
+import {UserTableListItem} from "@/pages/AuthenticationCenter/data.d";
+import UserForm from "@/pages/AuthenticationCenter/UserManager/components/UserForm";
+import PasswordForm from "@/pages/AuthenticationCenter/UserManager/components/PasswordForm";
+import TableTransferFrom from "@/pages/AuthenticationCenter/UserManager/components/TableTransfer";
 
 const url = '/api/user';
 const UserTableList: React.FC<{}> = (props: any) => {

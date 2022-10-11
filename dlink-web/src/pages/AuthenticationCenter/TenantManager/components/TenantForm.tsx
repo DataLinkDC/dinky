@@ -20,7 +20,7 @@
 
 import React, {useState} from 'react';
 import {Button, Form, Input, Modal} from 'antd';
-import {TenantTableListItem} from "@/pages/ResourceCenter/data.d";
+import {TenantTableListItem} from "@/pages/AuthenticationCenter/data.d";
 
 export type TenantFormProps = {
   onCancel: (flag?: boolean) => void;

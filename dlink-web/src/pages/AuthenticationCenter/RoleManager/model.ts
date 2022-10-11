@@ -18,7 +18,7 @@
  */
 
 
-import {NameSpaceTableListItem, RoleTableListItem} from "@/pages/ResourceCenter/data.d";
+import {NameSpaceTableListItem, RoleTableListItem} from "@/pages/AuthenticationCenter/data.d";
 import {Reducer} from "@@/plugin-dva/connect";
 
 export type NameSpaceStateType = {
