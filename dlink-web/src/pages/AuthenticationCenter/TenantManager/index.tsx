@@ -217,10 +217,7 @@ const TenantFormList: React.FC<{}> = (props: any) => {
         <FooterToolbar
           extra={
             <div>
-              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
-              <span>
-  被删除的租户共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.isDelete ? 0 : 1), 0)} 个
-  </span>
+              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项
             </div>
           }
         >
