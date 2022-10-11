@@ -39,6 +39,9 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 定制TableResultImpl
  *
@@ -47,6 +50,7 @@ import javax.annotation.Nullable;
  **/
 @Internal
 class CustomTableResultImpl implements TableResult {
+    protected static final Logger logger = LoggerFactory.getLogger(CustomTableResultImpl.class);
     public static final TableResult TABLE_RESULT_OK =
         CustomTableResultImpl.builder()
             .resultKind(ResultKind.SUCCESS)
@@ -123,7 +127,7 @@ class CustomTableResultImpl implements TableResult {
                 deriveColumnWidthByType);
         } else if (printStyle instanceof RawContentStyle) {
             while (it.hasNext()) {
-                System.out.println(String.join(",", PrintUtils.rowToString(it.next())));
+                logger.info(String.join(",", PrintUtils.rowToString(it.next())));
             }
         } else {
             throw new TableException("Unsupported print style: " + printStyle);

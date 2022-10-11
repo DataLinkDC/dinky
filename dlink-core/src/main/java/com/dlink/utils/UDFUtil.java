@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.codehaus.groovy.control.CompilerConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.map.MapUtil;
@@ -43,6 +45,7 @@ import groovy.lang.GroovyClassLoader;
  * @since 2021/12/27 23:25
  */
 public class UDFUtil {
+    protected static final Logger logger = LoggerFactory.getLogger(UDFUtil.class);
 
     public static void buildClass(String code) {
         CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(code);
@@ -51,12 +54,12 @@ public class UDFUtil {
             String className = compiler.getFullClassName();
             byte[] compiledBytes = compiler.getJavaFileObjectMap(className).getCompiledBytes();
             ClassPool.push(new ClassEntity(className, code, compiledBytes));
-            System.out.println("编译成功");
-            System.out.println("compilerTakeTime：" + compiler.getCompilerTakeTime());
+            logger.info("编译成功");
+            logger.info("compilerTakeTime：{}",compiler.getCompilerTakeTime());
             initClassLoader(className);
         } else {
-            System.out.println("编译失败");
-            System.out.println(compiler.getCompilerMessage());
+            logger.info("编译失败");
+            logger.info(compiler.getCompilerMessage());
         }
     }
 
@@ -84,12 +87,12 @@ public class UDFUtil {
             boolean res = compiler.compilerToTmpPath(tmpPath);
             String className = compiler.getFullClassName();
             if (res) {
-                System.out.println("编译成功");
-                System.out.println("compilerTakeTime：" + compiler.getCompilerTakeTime());
+                logger.info("编译成功");
+                logger.info("compilerTakeTime：{}",compiler.getCompilerTakeTime());
                 successList.add(className);
             } else {
-                System.out.println("编译失败");
-                System.out.println(compiler.getCompilerMessage());
+                logger.info("编译失败");
+                logger.info(compiler.getCompilerMessage());
                 failedList.add(className);
             }
         });

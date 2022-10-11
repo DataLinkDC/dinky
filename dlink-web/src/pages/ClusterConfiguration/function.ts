@@ -23,6 +23,7 @@ import {
   HADOOP_CONFIG_NAME_LIST,
   KUBERNETES_CONFIG_NAME_LIST
 } from "@/pages/ClusterConfiguration/conf";
+import {ClusterConfigurationTableListItem} from "@/pages/ClusterConfiguration/data";
 
 export function getConfig(values:any) {
   let flinkConfig = addValueToMap(values,FLINK_CONFIG_NAME_LIST());
@@ -119,4 +120,13 @@ function addMapToList(map:{},keys:string[]){
     }
   }
   return list;
+}
+
+export function getHadoopConfigPathFromClusterConfigurationsById(id: number, clusterConfigurations: ClusterConfigurationTableListItem[]){
+  for(let i in clusterConfigurations){
+    if(clusterConfigurations[i].id == id){
+      return getConfigFormValues(clusterConfigurations[i])['hadoopConfigPath']
+    }
+  }
+  return undefined;
 }
