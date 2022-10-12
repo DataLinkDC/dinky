@@ -28,7 +28,6 @@ import com.dlink.assertion.Assert;
 import com.dlink.assertion.Asserts;
 import com.dlink.assertion.Tips;
 import com.dlink.common.result.Result;
-import com.dlink.config.ClusterType;
 import com.dlink.config.Dialect;
 import com.dlink.constant.FlinkRestResultConstant;
 import com.dlink.constant.NetConstant;
@@ -476,7 +475,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Assert.check(task);
         if (JobLifeCycle.DEVELOP.equalsValue(task.getStep())) {
             //KubernetesApplaction is not sql, skip sqlExplain verify
-            if (!Dialect.KubernetesApplaction.equalsVal(task.getDialect())) {
+            if (!Dialect.KUBERNETES_APPLICATION.equalsVal(task.getDialect())) {
                 List<SqlExplainResult> sqlExplainResults = explainTask(id);
                 for (SqlExplainResult sqlExplainResult : sqlExplainResults) {
                     if (!sqlExplainResult.isParseTrue() || !sqlExplainResult.isExplainTrue()) {
@@ -683,7 +682,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         jobConfig.setAddress(cluster.getJobManagerHost());
         jobConfig.setType(cluster.getType());
 
-        if (ClusterType.KubernetesApplaction.equalsVal(cluster.getType())) {
+        if (GatewayType.KUBERNETES_APPLICATION.equalsValue(cluster.getType())) {
             Statement statement = statementService.getById(cluster.getTaskId());
             Map<String, Object> gatewayConfig = JSONUtil.toMap(statement.getStatement(),String.class,Object.class);
             jobConfig.buildGatewayConfig(gatewayConfig);
@@ -727,7 +726,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     private JobConfig buildJobConfig(Task task) {
         boolean isJarTask = Dialect.FLINKJAR.equalsVal(task.getDialect())
-                ||  Dialect.KubernetesApplaction.equalsVal(task.getDialect());
+                ||  Dialect.KUBERNETES_APPLICATION.equalsVal(task.getDialect());
         if (!isJarTask && Asserts.isNotNull(task.getFragment()) ? task.getFragment() : false) {
             String flinkWithSql = dataBaseService.getEnabledFlinkWithSql();
             if (Asserts.isNotNullString(flinkWithSql)) {
@@ -746,7 +745,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), task.getClusterId()));
         }
         //support custom K8s app submit, rather than clusterConfiguration
-        else if (Dialect.KubernetesApplaction.equalsVal(task.getDialect())
+        else if (Dialect.KUBERNETES_APPLICATION.equalsVal(task.getDialect())
                 && GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType())) {
             Map<String, Object> gatewayConfig = JSONUtil.toMap(task.getStatement(),String.class,Object.class);
             config.buildGatewayConfig(gatewayConfig);

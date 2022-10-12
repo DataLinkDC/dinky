@@ -54,7 +54,7 @@ const StudioRightTool = (props: any) => {
     if (DIALECT.JAVA === current.task.dialect) {
       return renderUDFContent();
     }
-    if (DIALECT.KubernetesApplaction === current.task.dialect) {
+    if (DIALECT.KUBERNETES_APPLICATION === current.task.dialect) {
       return renderKubernetesContent();
     }
     return renderFlinkSqlContent();

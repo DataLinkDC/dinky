@@ -70,7 +70,6 @@ public class Cluster extends SuperEntity {
         cluster.setType(type);
         cluster.setClusterConfigurationId(clusterConfigurationId);
         cluster.setTaskId(taskId);
-        cluster.setId(taskId);
         cluster.setAutoRegisters(true);
         cluster.setEnabled(true);
         return cluster;
