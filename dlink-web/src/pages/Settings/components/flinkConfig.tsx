@@ -22,6 +22,7 @@ import {Form, Input, List, Switch} from 'antd';
 import {connect} from "umi";
 import {SettingsStateType} from "@/pages/Settings/model";
 import {saveSettings} from "@/pages/Settings/function";
+import { useIntl, Link, history, FormattedMessage, SelectLang} from 'umi';
 
 type FlinkConfigProps = {
   sqlSubmitJarPath: SettingsStateType['sqlSubmitJarPath'];
@@ -34,7 +35,10 @@ type FlinkConfigProps = {
   dispatch: any;
 };
 
+
 const FlinkConfigView: React.FC<FlinkConfigProps> = (props) => {
+
+  const intl = useIntl();
 
   const {
     sqlSubmitJarPath,
@@ -56,81 +60,81 @@ const FlinkConfigView: React.FC<FlinkConfigProps> = (props) => {
 
   const getData = () => [
     {
-      title: '提交FlinkSQL的Jar文件路径',
+      title: intl.formatMessage({id: 'pages.settings.FlinkURL', defaultMessage: '提交FlinkSQL的Jar文件路径',}),
       description: (
         editName != 'sqlSubmitJarPath' ?
-          (sqlSubmitJarPath ? sqlSubmitJarPath : '未设置') : (
+          (sqlSubmitJarPath ? sqlSubmitJarPath : intl.formatMessage({id: 'pages.settings.FlinkNoSetting', defaultMessage: intl.formatMessage({id: 'pages.settings.FlinkNoSetting', defaultMessage: '未设置',}),})) : (
             <Input
               id='sqlSubmitJarPath'
               defaultValue={sqlSubmitJarPath}
               onChange={onChange}
               placeholder="hdfs:///dlink/jar/dlink-app.jar"/>)),
-      actions: editName != 'sqlSubmitJarPath' ? [<a onClick={({}) => handleEditClick('sqlSubmitJarPath')}>修改</a>] :
-        [<a onClick={({}) => handleSaveClick('sqlSubmitJarPath')}>保存</a>,
-          <a onClick={({}) => handleCancelClick()}>取消</a>],
+      actions: editName != 'sqlSubmitJarPath' ? [<a onClick={({}) => handleEditClick('sqlSubmitJarPath')}>{intl.formatMessage({id: 'pages.settings.FlinkUpdate', defaultMessage: '修改',})}</a>] :
+        [<a onClick={({}) => handleSaveClick('sqlSubmitJarPath')}>{intl.formatMessage({id: 'pages.settings.FlinkSave', defaultMessage: '保存',})}</a>,
+          <a onClick={({}) => handleCancelClick()}>{intl.formatMessage({id: 'pages.settings.FlinkCancel', defaultMessage: '取消',})}</a>],
     },
     {
-      title: '提交FlinkSQL的Jar的主类入参',
+      title: intl.formatMessage({id: 'pages.settings.FlinkSQLJarMainParameter', defaultMessage: '提交FlinkSQL的Jar的主类入参',}),
       description: (
         editName != 'sqlSubmitJarParas' ?
-          (sqlSubmitJarParas ? sqlSubmitJarParas : '未设置') : (<Input
+          (sqlSubmitJarParas ? sqlSubmitJarParas : intl.formatMessage({id: 'pages.settings.FlinkNoSetting', defaultMessage: '未设置',})) : (<Input
             id='sqlSubmitJarParas'
             defaultValue={sqlSubmitJarParas}
             onChange={onChange}
             placeholder=""/>)),
-      actions: editName != 'sqlSubmitJarParas' ? [<a onClick={({}) => handleEditClick('sqlSubmitJarParas')}>修改</a>] :
-        [<a onClick={({}) => handleSaveClick('sqlSubmitJarParas')}>保存</a>,
-          <a onClick={({}) => handleCancelClick()}>取消</a>],
+      actions: editName != 'sqlSubmitJarParas' ? [<a onClick={({}) => handleEditClick('sqlSubmitJarParas')}>{intl.formatMessage({id: 'pages.settings.FlinkUpdate', defaultMessage: '修改',})}</a>] :
+        [<a onClick={({}) => handleSaveClick('sqlSubmitJarParas')}>{intl.formatMessage({id: 'pages.settings.FlinkSave', defaultMessage: '保存',})}</a>,
+          <a onClick={({}) => handleCancelClick()}>{intl.formatMessage({id: 'pages.settings.FlinkCancel', defaultMessage: '取消',})}</a>],
     },
     {
-      title: '提交FlinkSQL的Jar的主类',
+      title: intl.formatMessage({id: 'pages.settings.FlinkSQLJarMainClass', defaultMessage: '提交FlinkSQL的Jar的主类',}),
       description: (
         editName != 'sqlSubmitJarMainAppClass' ?
-          (sqlSubmitJarMainAppClass ? sqlSubmitJarMainAppClass : '未设置') : (<Input
+          (sqlSubmitJarMainAppClass ? sqlSubmitJarMainAppClass : intl.formatMessage({id: 'pages.settings.FlinkNoSetting', defaultMessage: '未设置',})) : (<Input
             id='sqlSubmitJarMainAppClass'
             defaultValue={sqlSubmitJarMainAppClass}
             onChange={onChange}
             placeholder="com.dlink.app.MainApp"/>)),
       actions: editName != 'sqlSubmitJarMainAppClass' ? [<a
-          onClick={({}) => handleEditClick('sqlSubmitJarMainAppClass')}>修改</a>] :
-        [<a onClick={({}) => handleSaveClick('sqlSubmitJarMainAppClass')}>保存</a>,
-          <a onClick={({}) => handleCancelClick()}>取消</a>],
+          onClick={({}) => handleEditClick('sqlSubmitJarMainAppClass')}>{intl.formatMessage({id: 'pages.settings.FlinkUpdate', defaultMessage: '修改',})}</a>] :
+        [<a onClick={({}) => handleSaveClick('sqlSubmitJarMainAppClass')}>{intl.formatMessage({id: 'pages.settings.FlinkSave', defaultMessage: '保存',})}</a>,
+          <a onClick={({}) => handleCancelClick()}>{intl.formatMessage({id: 'pages.settings.FlinkCancel', defaultMessage: '取消',})}</a>],
     }, {
-      title: '使用 RestAPI',
-      description: '启用后，Flink 任务的 savepoint、停止等操作将通过 JobManager 的 RestAPI 进行',
+      title: intl.formatMessage({id: 'pages.settings.FlinkRestAPI', defaultMessage: '使用 RestAPI',}),
+      description: intl.formatMessage({id: 'pages.settings.FlinkNoUseSetting', defaultMessage: '启用后，Flink 任务的 savepoint、停止等操作将通过 JobManager 的 RestAPI 进行',}),
       actions: [
         <Form.Item
           name="useRestAPI" valuePropName="checked"
         >
-          <Switch checkedChildren="启用" unCheckedChildren="禁用"
+          <Switch checkedChildren={intl.formatMessage({id: 'pages.settings.FlinkUse', defaultMessage: '启用',})} unCheckedChildren={intl.formatMessage({id: 'pages.settings.FlinkNotUse', defaultMessage: '禁用',})}
                   checked={useRestAPI}
           /></Form.Item>],
     }, {
-      title: 'FlinkSQL语句分割符',
+      title: intl.formatMessage({id: 'pages.settings.FlinkURLSplit', defaultMessage: 'FlinkSQL语句分割符',}),
       description: (
         editName != 'sqlSeparator' ?
-          (sqlSeparator ? sqlSeparator : '未设置') : (<Input
+          (sqlSeparator ? sqlSeparator : intl.formatMessage({id: 'pages.settings.FlinkNoSetting', defaultMessage: '未设置',})) : (<Input
             id='sqlSeparator'
             defaultValue={sqlSeparator}
             onChange={onChange}
             placeholder=";"/>)),
-      actions: editName != 'sqlSeparator' ? [<a onClick={({}) => handleEditClick('sqlSeparator')}>修改</a>] :
-        [<a onClick={({}) => handleSaveClick('sqlSeparator')}>保存</a>,
-          <a onClick={({}) => handleCancelClick()}>取消</a>],
+      actions: editName != 'sqlSeparator' ? [<a onClick={({}) => handleEditClick('sqlSeparator')}>{intl.formatMessage({id: 'pages.settings.FlinkUpdate', defaultMessage: '修改',})}</a>] :
+        [<a onClick={({}) => handleSaveClick('sqlSeparator')}>{intl.formatMessage({id: 'pages.settings.FlinkSave', defaultMessage: '保存',})}</a>,
+          <a onClick={({}) => handleCancelClick()}>{intl.formatMessage({id: 'pages.settings.FlinkCancel', defaultMessage: '取消',})}</a>],
     },
     {
-      title: '使用逻辑计划计算血缘',
-      description: '在计算 Flink 任务的字段血缘分析时是否基于逻辑计划进行，只支持 1.14 版本',
+      title: intl.formatMessage({id: 'pages.settings.FlinkSQLLogic', defaultMessage: '使用逻辑计划计算血缘',}),
+      description: intl.formatMessage({id: 'pages.settings.FlinkNoUseSetting', defaultMessage: '在计算 Flink 任务的字段血缘分析时是否基于逻辑计划进行，只支持 1.14 版本',}),
       actions: [
         <Form.Item
           name="useLogicalPlan" valuePropName="checked"
         >
-          <Switch checkedChildren="启用" unCheckedChildren="禁用"
+          <Switch checkedChildren={intl.formatMessage({id: 'pages.settings.FlinkUse', defaultMessage: '启用',})} unCheckedChildren={intl.formatMessage({id: 'pages.settings.FlinkNotUse', defaultMessage: '禁用',})}
                   checked={useLogicalPlan}
           /></Form.Item>],
     },
     {
-      title: '获取 Job ID 的最大等待时间（秒）',
+      title: intl.formatMessage({id: 'pages.settings.FlinkJobID', defaultMessage: '获取 Job ID 的最大等待时间（秒）',}),
       description: (
         editName != 'jobIdWait' ?
           (jobIdWait ? jobIdWait : '30') : (
@@ -139,9 +143,9 @@ const FlinkConfigView: React.FC<FlinkConfigProps> = (props) => {
               defaultValue={jobIdWait}
               onChange={onChange}
               placeholder="30"/>)),
-      actions: editName != 'jobIdWait' ? [<a onClick={({}) => handleEditClick('jobIdWait')}>修改</a>] :
-        [<a onClick={({}) => handleSaveClick('jobIdWait')}>保存</a>,
-          <a onClick={({}) => handleCancelClick()}>取消</a>],
+      actions: editName != 'jobIdWait' ? [<a onClick={({}) => handleEditClick('jobIdWait')}>{intl.formatMessage({id: 'pages.settings.FlinkUpdate', defaultMessage: '修改',})}</a>] :
+        [<a onClick={({}) => handleSaveClick('jobIdWait')}>{intl.formatMessage({id: 'pages.settings.FlinkSave', defaultMessage: '保存',})}</a>,
+          <a onClick={({}) => handleCancelClick()}>{intl.formatMessage({id: 'pages.settings.FlinkCancel', defaultMessage: '取消',})}</a>],
     },
   ];
 

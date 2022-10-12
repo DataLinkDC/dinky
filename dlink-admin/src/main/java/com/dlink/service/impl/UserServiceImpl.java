@@ -75,16 +75,16 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     public Result modifyPassword(String username, String password, String newPassword) {
         User user = getUserByUsername(username);
         if (Asserts.isNull(user)) {
-            return Result.failed("该账号不存在");
+            return Result.failed("The account does not exist");
         }
         if (!Asserts.isEquals(SaSecureUtil.md5(password), user.getPassword())) {
-            return Result.failed("原密码错误");
+            return Result.failed("The old password is incorrect");
         }
         user.setPassword(SaSecureUtil.md5(newPassword));
         if (updateById(user)) {
-            return Result.succeed("密码修改成功");
+            return Result.succeed("Password changed successfully");
         }
-        return Result.failed("密码修改失败");
+        return Result.failed("Failed to change password");
     }
 
     @Override

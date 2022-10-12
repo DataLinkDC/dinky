@@ -27,6 +27,7 @@ import {loadSettings} from "@/pages/Settings/function";
 import {SettingsStateType} from "@/pages/Settings/model";
 import {connect,useModel} from "umi";
 import UserTableList from '../user';
+import { useIntl, Link, history, FormattedMessage, SelectLang} from 'umi';
 
 const { Item } = Menu;
 
@@ -41,14 +42,17 @@ type SettingsProps = {
 };
 
 
+
 const Settings: React.FC<SettingsProps> = (props) => {
+  const intl = useIntl();
+
   const { initialState, setInitialState } = useModel('@@initialState');
   const menuMapAdmin: Record<string, React.ReactNode> = {
-    userManager: '用户管理',
-    flinkConfig: 'Flink 设置',
+    userManager: intl.formatMessage({id: 'pages.settings.UserManagement', defaultMessage: '用户管理',}),
+    flinkConfig: intl.formatMessage({id: 'pages.settings.Flink', defaultMessage: 'Flink 设置',}),
   };
   const menuMapUser: Record<string, React.ReactNode> = {
-    flinkConfig: 'Flink 设置',
+    flinkConfig: intl.formatMessage({id: 'pages.settings.Flink', defaultMessage: 'Flink 设置',}),
   };
 
   const menuMap: Record<string, React.ReactNode> = (initialState?.currentUser?.isAdmin)?menuMapAdmin:menuMapUser;

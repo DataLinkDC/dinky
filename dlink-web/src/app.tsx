@@ -28,9 +28,10 @@ import Footer from '@/components/Footer';
 import type {ResponseError} from 'umi-request';
 import {currentUser as queryCurrentUser} from './services/ant-design-pro/api';
 import {BookOutlined, LinkOutlined} from '@ant-design/icons';
-
+import {useIntl} from "@@/plugin-locale/localeExports";
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
+
 
 /** 获取用户信息比较慢的时候会展示一个 loading */
 export const initialStateConfig = {
@@ -46,6 +47,8 @@ export async function getInitialState(): Promise<{
   fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
 }> {
   const fetchUserInfo = async () => {
+
+
     try {
       const result = await queryCurrentUser();
       const currentUser: API.CurrentUser = {
@@ -135,6 +138,8 @@ export const request: RequestConfig = {
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
+
+
   return {
     rightContentRender: () => <RightContent />,
     disableContentMargin: false,
@@ -153,11 +158,11 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
       ? [
           <Link to="/umi/plugin/openapi" target="_blank">
             <LinkOutlined />
-            <span>openAPI 文档</span>
+            <span>openAPI Document</span>
           </Link>,
           <Link to="/~docs">
             <BookOutlined />
-            <span>业务组件文档</span>
+            <span>Business Component Document</span>
           </Link>,
         ]
       : [],
