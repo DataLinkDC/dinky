@@ -168,10 +168,10 @@ const StudioKubernetes = (props: any) => {
   const renderContent = () => {
     return (
       <>
-        <Divider>Kubernetes 配置</Divider>
+        <Divider>Kubernetes 配置(必选)</Divider>
         {buildConfig(KUBERNETES_CONFIG_LIST)}
         {buildOtherConfig("其他配置", "kubernetesConfigList", "添加一个自定义项")}
-        <Divider>App 配置</Divider>
+        <Divider>App 配置(必选)</Divider>
         <Form.Item
           name="flinkConfigPath"
           label="配置文件路径"
@@ -183,7 +183,7 @@ const StudioKubernetes = (props: any) => {
 
         {buildConfig(APP_CONFIG_LIST)}
 
-        <Divider>其他配置</Divider>
+        <Divider>其他配置(可选)</Divider>
         {buildConfig(FLINK_CONFIG_LIST)}
         {buildOtherConfig("其他配置", "flinkConfigList", "添加一个自定义项")}
       </>
