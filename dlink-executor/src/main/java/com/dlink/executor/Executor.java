@@ -41,7 +41,11 @@ import org.apache.flink.table.api.StatementSet;
 import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.catalog.CatalogManager;
+import org.apache.flink.util.JarUtils;
 
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -252,6 +256,41 @@ public abstract class Executor {
             return stEnvironment.executeSql(statement);
         } else {
             return CustomTableResultImpl.TABLE_RESULT_OK;
+        }
+    }
+
+    /**
+     * init udf
+     *
+     * @param udfFilePath udf文件路径
+     */
+    public void initUDF(String... udfFilePath) {
+        JarUtils.getJarFiles(udfFilePath).forEach(Executor::loadJar);
+    }
+
+    private static void loadJar(final URL jarUrl) {
+        // 从URLClassLoader类加载器中获取类的addURL方法
+        Method method = null;
+        try {
+            method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
+        } catch (NoSuchMethodException | SecurityException e1) {
+            e1.printStackTrace();
+        }
+        // 获取方法的访问权限
+        boolean accessible = method.isAccessible();
+        try {
+            // 修改访问权限为可写
+            if (accessible == false) {
+                method.setAccessible(true);
+            }
+            // 获取系统类加载器
+            URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+            // jar路径加入到系统url路径里
+            method.invoke(classLoader, jarUrl);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            method.setAccessible(accessible);
         }
     }
 

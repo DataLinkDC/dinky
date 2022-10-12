@@ -160,6 +160,7 @@ public class JobManager {
         initGatewayConfig(config);
         JobManager manager = new JobManager(config);
         manager.init();
+        manager.executor.initUDF(config.getJarFiles());
         return manager;
     }
 
