@@ -61,6 +61,7 @@ public class JobConfig {
     private boolean isJarTask = false;
     private String address;
     private Integer taskId;
+    private String[] jarFiles;
     private String jobName;
     private boolean useSqlFragment;
     private boolean useStatementSet;

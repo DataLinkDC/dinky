@@ -22,6 +22,7 @@ package com.dlink.service.impl;
 import com.dlink.api.FlinkAPI;
 import com.dlink.assertion.Asserts;
 import com.dlink.config.Dialect;
+import com.dlink.constant.PathConstant;
 import com.dlink.dto.AbstractStatementDTO;
 import com.dlink.dto.SessionDTO;
 import com.dlink.dto.SqlDTO;
@@ -64,9 +65,11 @@ import com.dlink.session.SessionInfo;
 import com.dlink.session.SessionPool;
 import com.dlink.sql.FlinkQuery;
 import com.dlink.utils.RunTimeUtil;
+import com.dlink.utils.UDFUtil;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -81,6 +84,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.map.MapUtil;
+
 /**
  * StudioServiceImpl
  *
@@ -91,6 +97,14 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class StudioServiceImpl implements StudioService {
 
     private static final Logger logger = LoggerFactory.getLogger(StudioServiceImpl.class);
+
+    /**
+     * 网关类型 map
+     * 快速获取 session 与 application 等类型，为了减少判断
+     */
+    private static final Map<String, List<GatewayType>> GATEWAY_TYPE_MAP = MapUtil
+            .builder("session", Arrays.asList(GatewayType.YARN_SESSION, GatewayType.YARN_SESSION, GatewayType.STANDALONE))
+            .build();
 
     @Autowired
     private ClusterService clusterService;
@@ -134,7 +148,7 @@ public class StudioServiceImpl implements StudioService {
     public JobResult executeSql(StudioExecuteDTO studioExecuteDTO) {
         if (Dialect.notFlinkSql(studioExecuteDTO.getDialect())) {
             return executeCommonSql(SqlDTO.build(studioExecuteDTO.getStatement(),
-                studioExecuteDTO.getDatabaseId(), studioExecuteDTO.getMaxRowNum()));
+                    studioExecuteDTO.getDatabaseId(), studioExecuteDTO.getMaxRowNum()));
         } else {
             return executeFlinkSql(studioExecuteDTO);
         }
@@ -145,7 +159,8 @@ public class StudioServiceImpl implements StudioService {
         JobConfig config = studioExecuteDTO.getJobConfig();
         buildSession(config);
         // To initialize java udf, but it only support local mode.
-        initUDF(config, studioExecuteDTO.getStatement());
+        String jarPath = initUDF(config, studioExecuteDTO.getStatement());
+        config.setJarFiles(new String[]{PathConstant.UDF_PATH + jarPath});
         JobManager jobManager = JobManager.build(config);
         JobResult jobResult = jobManager.executeSql(studioExecuteDTO.getStatement());
         RunTimeUtil.recovery(jobManager);
@@ -161,6 +176,7 @@ public class StudioServiceImpl implements StudioService {
         return jobResult;
     }
 
+    @Override
     public JobResult executeCommonSql(SqlDTO sqlDTO) {
         JobResult result = new JobResult();
         result.setStatement(sqlDTO.getStatement());
@@ -288,15 +304,15 @@ public class StudioServiceImpl implements StudioService {
         if (sessionDTO.isUseRemote()) {
             Cluster cluster = clusterService.getById(sessionDTO.getClusterId());
             SessionConfig sessionConfig = SessionConfig.build(
-                sessionDTO.getType(), true,
-                cluster.getId(), cluster.getAlias(),
-                clusterService.buildEnvironmentAddress(true, sessionDTO.getClusterId()));
+                    sessionDTO.getType(), true,
+                    cluster.getId(), cluster.getAlias(),
+                    clusterService.buildEnvironmentAddress(true, sessionDTO.getClusterId()));
             return JobManager.createSession(sessionDTO.getSession(), sessionConfig, createUser);
         } else {
             SessionConfig sessionConfig = SessionConfig.build(
-                sessionDTO.getType(), false,
-                null, null,
-                clusterService.buildEnvironmentAddress(false, null));
+                    sessionDTO.getType(), false,
+                    null, null,
+                    clusterService.buildEnvironmentAddress(false, null));
             return JobManager.createSession(sessionDTO.getSession(), sessionConfig, createUser);
         }
     }
@@ -465,7 +481,7 @@ public class StudioServiceImpl implements StudioService {
             }
         } else {
             String baseStatement = FlinkQuery.useCatalog(studioMetaStoreDTO.getCatalog()) + FlinkQuery.separator()
-                + FlinkQuery.useDatabase(studioMetaStoreDTO.getDatabase()) + FlinkQuery.separator();
+                    + FlinkQuery.useDatabase(studioMetaStoreDTO.getDatabase()) + FlinkQuery.separator();
             // show tables
             String tableStatement = baseStatement + FlinkQuery.showTables();
             studioMetaStoreDTO.setStatement(tableStatement);
@@ -503,7 +519,7 @@ public class StudioServiceImpl implements StudioService {
             // nothing to do
         } else {
             String baseStatement = FlinkQuery.useCatalog(studioMetaStoreDTO.getCatalog()) + FlinkQuery.separator()
-                + FlinkQuery.useDatabase(studioMetaStoreDTO.getDatabase()) + FlinkQuery.separator();
+                    + FlinkQuery.useDatabase(studioMetaStoreDTO.getDatabase()) + FlinkQuery.separator();
             // desc tables
             String tableStatement = baseStatement + FlinkQuery.descTable(studioMetaStoreDTO.getTable());
             studioMetaStoreDTO.setStatement(tableStatement);
@@ -514,12 +530,12 @@ public class StudioServiceImpl implements StudioService {
                 int i = 1;
                 for (Map<String, Object> item : rowData) {
                     FlinkColumn column = FlinkColumn.build(i,
-                        item.get(FlinkQuery.columnName()).toString(),
-                        item.get(FlinkQuery.columnType()).toString(),
-                        item.get(FlinkQuery.columnKey()).toString(),
-                        item.get(FlinkQuery.columnNull()).toString(),
-                        item.get(FlinkQuery.columnExtras()).toString(),
-                        item.get(FlinkQuery.columnWatermark()).toString()
+                            item.get(FlinkQuery.columnName()).toString(),
+                            item.get(FlinkQuery.columnType()).toString(),
+                            item.get(FlinkQuery.columnKey()).toString(),
+                            item.get(FlinkQuery.columnNull()).toString(),
+                            item.get(FlinkQuery.columnExtras()).toString(),
+                            item.get(FlinkQuery.columnWatermark()).toString()
                     );
                     columns.add(column);
                     i++;
@@ -548,14 +564,18 @@ public class StudioServiceImpl implements StudioService {
         return infos;
     }
 
-    private void initUDF(JobConfig config, String statement) {
-        if (!GatewayType.LOCAL.equalsValue(config.getType())) {
-            return;
+    private String initUDF(JobConfig config, String statement) {
+        if (GATEWAY_TYPE_MAP.get("session").contains(GatewayType.get(config.getType())) || GatewayType.LOCAL.equalsValue(config.getType())) {
+            List<String> udfClassNameList = JobManager.getUDFClassName(statement);
+            List<String> codeList = CollUtil.map(udfClassNameList, x -> {
+                Task task = taskService.getUDFByClassName(x);
+                JobManager.initMustSuccessUDF(x, task.getStatement());
+                return task.getStatement();
+            }, true);
+            if (codeList.size() > 0) {
+                return UDFUtil.getUdfNameAndBuildJar(codeList);
+            }
         }
-        List<String> udfClassNameList = JobManager.getUDFClassName(statement);
-        for (String item : udfClassNameList) {
-            Task task = taskService.getUDFByClassName(item);
-            JobManager.initUDF(item, task.getStatement());
-        }
+        return null;
     }
 }
