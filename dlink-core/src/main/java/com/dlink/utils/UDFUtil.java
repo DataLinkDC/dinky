@@ -61,7 +61,7 @@ public class UDFUtil {
      */
     protected static final Map<String, Integer> UDF_MD5_MAP = new HashMap<>();
 
-    public static void buildClass(String code) {
+    public static Boolean buildClass(String code) {
         CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(code);
         boolean res = compiler.compiler();
         String className = compiler.getFullClassName();
@@ -75,6 +75,7 @@ public class UDFUtil {
             log.warn("class:{} 编译失败", className);
             log.warn(compiler.getCompilerMessage());
         }
+        return res;
     }
 
     public static void initClassLoader(String name) {

@@ -569,7 +569,7 @@ public class StudioServiceImpl implements StudioService {
             List<String> udfClassNameList = JobManager.getUDFClassName(statement);
             List<String> codeList = CollUtil.map(udfClassNameList, x -> {
                 Task task = taskService.getUDFByClassName(x);
-                JobManager.initUDF(x, task.getStatement());
+                JobManager.initMustSuccessUDF(x, task.getStatement());
                 return task.getStatement();
             }, true);
             if (codeList.size() > 0) {

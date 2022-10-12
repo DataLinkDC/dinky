@@ -60,6 +60,7 @@ import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.DeploymentOptions;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.core.execution.JobClient;
+import org.apache.flink.optimizer.CompilerException;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
 import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
@@ -102,6 +103,8 @@ public class JobManager {
     private boolean useRestAPI = false;
     private String sqlSeparator = FlinkSQLConstant.SEPARATOR;
     private GatewayType runMode = GatewayType.LOCAL;
+
+    private  static final String FUNCTION_REGEX =  "function (.*?)'(.*?)'";
 
     public JobManager() {
     }
@@ -184,7 +187,7 @@ public class JobManager {
 
     public static boolean useGateway(String type) {
         return (GatewayType.YARN_PER_JOB.equalsValue(type) || GatewayType.YARN_APPLICATION.equalsValue(type)
-            || GatewayType.KUBERNETES_APPLICATION.equalsValue(type));
+                || GatewayType.KUBERNETES_APPLICATION.equalsValue(type));
     }
 
     private Executor createExecutor() {
@@ -310,7 +313,7 @@ public class JobManager {
                         if (config.isUseResult()) {
                             // Build insert result.
                             IResult result =
-                                ResultBuilder.build(SqlType.INSERT, config.getMaxRowNum(), config.isUseChangeLog(), config.isUseAutoCancel(), executor.getTimeZone()).getResult(tableResult);
+                                    ResultBuilder.build(SqlType.INSERT, config.getMaxRowNum(), config.isUseChangeLog(), config.isUseAutoCancel(), executor.getTimeZone()).getResult(tableResult);
                             job.setResult(result);
                         }
                     }
@@ -334,7 +337,7 @@ public class JobManager {
                         if (Asserts.isNotNull(flinkInterceptorResult.getTableResult())) {
                             if (config.isUseResult()) {
                                 IResult result = ResultBuilder.build(item.getType(), config.getMaxRowNum(), config.isUseChangeLog(), config.isUseAutoCancel(), executor.getTimeZone())
-                                    .getResult(flinkInterceptorResult.getTableResult());
+                                        .getResult(flinkInterceptorResult.getTableResult());
                                 job.setResult(result);
                             }
                         } else {
@@ -350,7 +353,8 @@ public class JobManager {
                                 }
                                 if (config.isUseResult()) {
                                     IResult result =
-                                        ResultBuilder.build(item.getType(), config.getMaxRowNum(), config.isUseChangeLog(), config.isUseAutoCancel(), executor.getTimeZone()).getResult(tableResult);
+                                            ResultBuilder.build(item.getType(), config.getMaxRowNum(), config.isUseChangeLog()
+                                                    , config.isUseAutoCancel(), executor.getTimeZone()).getResult(tableResult);
                                     job.setResult(result);
                                 }
                             }
@@ -377,7 +381,7 @@ public class JobManager {
                         streamGraph.setJobName(config.getJobName());
                         JobGraph jobGraph = streamGraph.getJobGraph();
                         if (Asserts.isNotNullString(config.getSavePointPath())) {
-                            jobGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(config.getSavePointPath(),true));
+                            jobGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(config.getSavePointPath(), true));
                         }
                         gatewayResult = Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);
                     }
@@ -435,7 +439,7 @@ public class JobManager {
             JobGraph jobGraph = executor.getJobGraphFromInserts(inserts);
             // Perjob mode need to set savepoint restore path, when recovery from savepoint.
             if (Asserts.isNotNullString(config.getSavePointPath())) {
-                jobGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(config.getSavePointPath(),true));
+                jobGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(config.getSavePointPath(), true));
             }
             // Perjob mode need to submit job graph.
             gatewayResult = Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);
@@ -514,7 +518,7 @@ public class JobManager {
     public boolean cancel(String jobId) {
         if (useGateway && !useRestAPI) {
             config.getGatewayConfig().setFlinkConfig(FlinkConfig.build(jobId, ActionType.CANCEL.getValue(),
-                null, null));
+                    null, null));
             Gateway.build(config.getGatewayConfig()).savepointJob();
             return true;
         } else {
@@ -530,7 +534,7 @@ public class JobManager {
     public SavePointResult savepoint(String jobId, String savePointType, String savePoint) {
         if (useGateway && !useRestAPI) {
             config.getGatewayConfig().setFlinkConfig(FlinkConfig.build(jobId, ActionType.SAVEPOINT.getValue(),
-                savePointType, null));
+                    savePointType, null));
             return Gateway.build(config.getGatewayConfig()).savepointJob(savePoint);
         } else {
             return FlinkAPI.build(config.getAddress()).savepoints(jobId, savePointType);
@@ -605,7 +609,7 @@ public class JobManager {
     }
 
     public static List<String> getUDFClassName(String statement) {
-        Pattern pattern = Pattern.compile("function (.*?)'(.*?)'", Pattern.CASE_INSENSITIVE);
+        Pattern pattern = Pattern.compile(FUNCTION_REGEX, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(statement);
         List<String> classNameList = new ArrayList<>();
         while (matcher.find()) {
@@ -619,6 +623,17 @@ public class JobManager {
             UDFUtil.initClassLoader(className);
         } else {
             UDFUtil.buildClass(code);
+        }
+    }
+
+    public static void initMustSuccessUDF(String className, String code) {
+        if (ClassPool.exist(ClassEntity.build(className, code))) {
+            UDFUtil.initClassLoader(className);
+        } else {
+            // 如果编译失败，返回异常。因为必须用到的函数，也必须编译成功
+            if (!UDFUtil.buildClass(code)) {
+                throw new CompilerException(String.format("class:%s 编译异常,请检查代码", className));
+            }
         }
     }
 }
