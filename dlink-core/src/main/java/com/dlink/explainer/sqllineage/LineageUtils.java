@@ -25,6 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -49,6 +52,7 @@ import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQueryTableSource;
 
 public class LineageUtils {
+    protected static final Logger logger = LoggerFactory.getLogger(LineageUtils.class);
 
     public static void columnLineageAnalyzer(String sql, String type, TreeNode<LineageColumn> node) {
         if (Asserts.isNullString(sql)) {
@@ -62,7 +66,7 @@ public class LineageUtils {
         try {
             statements = SQLUtils.parseStatements(sql, type);
         } catch (Exception e) {
-            System.out.println("can't parser by druid " + type + e);
+            logger.info("can't parser by druid {}",type,e);
         }
 
         // 只考虑一条语句
