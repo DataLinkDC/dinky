@@ -52,7 +52,7 @@ public class UDFServiceImpl implements UDFService {
      * 快速获取 session 与 application 等类型，为了减少判断
      */
     private static final Map<String, List<GatewayType>> GATEWAY_TYPE_MAP = MapUtil
-            .builder("session", Arrays.asList(GatewayType.YARN_SESSION, GatewayType.YARN_SESSION, GatewayType.STANDALONE))
+            .builder("session", Arrays.asList(GatewayType.YARN_SESSION, GatewayType.KUBERNETES_SESSION, GatewayType.STANDALONE))
             .build();
 
     @Resource
