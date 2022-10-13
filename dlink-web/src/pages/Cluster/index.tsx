@@ -40,11 +40,15 @@ import {
 import {showCluster, showSessionCluster} from "@/components/Studio/StudioEvent/DDL";
 import {RUN_MODE} from "@/components/Studio/conf";
 import ClusterForm from "@/pages/Cluster/components/ClusterForm";
+import { useIntl } from 'umi';
 
 const TextArea = Input.TextArea;
 const url = '/api/cluster';
 
+
+
 const ClusterTableList: React.FC<{}> = (props: any) => {
+  const intl = useIntl();
   const {dispatch} = props;
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
@@ -97,20 +101,20 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
     <Dropdown
       overlay={
         <Menu onClick={({key}) => editAndDelete(key, item)}>
-          <Menu.Item key="edit">编辑</Menu.Item>
-          <Menu.Item key="delete">删除</Menu.Item>
+          <Menu.Item key="edit">{intl.formatMessage({id: 'global.table.edit', defaultMessage: '编辑',})}</Menu.Item>
+          <Menu.Item key="delete">{intl.formatMessage({id: 'global.table.delete', defaultMessage: '删除',})}</Menu.Item>
         </Menu>
       }
     >
       <a>
-        更多 <DownOutlined/>
+        {intl.formatMessage({id: 'global.table.more', defaultMessage: '更多',})} <DownOutlined/>
       </a>
     </Dropdown>
   );
 
   const columns: ProColumns<ClusterTableListItem>[] = [
     {
-      title: '名称',
+      title: intl.formatMessage({id: 'global.table.instanceName', defaultMessage: '名称',}),
       dataIndex: 'name',
       tip: '名称是唯一的',
       sorter: true,
@@ -127,20 +131,20 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: '集群ID',
+      title: intl.formatMessage({id: 'global.table.instanceId', defaultMessage: '集群ID',}),
       dataIndex: 'id',
       hideInTable: true,
       hideInForm: true,
       hideInSearch: true,
     },
     {
-      title: '别名',
+      title: intl.formatMessage({id: 'global.table.nickName', defaultMessage: '别名',}),
       sorter: true,
       dataIndex: 'alias',
       hideInTable: false,
     },
     {
-      title: '类型',
+      title: intl.formatMessage({id: 'global.table.type', defaultMessage: '类型',}),
       sorter: true,
       dataIndex: 'type',
       hideInForm: false,
@@ -183,7 +187,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: 'JobManager HA 地址',
+      title: intl.formatMessage({id: 'global.table.jobManagerHaAddress', defaultMessage: 'JobManager HA 地址',}),
       sorter: true,
       dataIndex: 'hosts',
       valueType: 'textarea',
@@ -195,14 +199,14 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: '当前 JobManager 地址',
+      title: intl.formatMessage({id: 'global.table.jobManagerAddress', defaultMessage: 'JobManager地址',}),
       sorter: true,
       dataIndex: 'jobManagerHost',
       hideInForm: true,
       hideInSearch: true,
       hideInTable: false,
     },{
-      title: '版本',
+      title: intl.formatMessage({id: 'global.table.version', defaultMessage: '版本',}),
       sorter: true,
       dataIndex: 'version',
       hideInForm: true,
@@ -210,25 +214,25 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       hideInTable: false,
     },
     {
-      title: '状态',
+      title: intl.formatMessage({id: 'global.table.status', defaultMessage: '状态',}),
       dataIndex: 'status',
       hideInForm: true,
       hideInSearch: true,
       hideInTable: false,
       filters: [
         {
-          text: '正常',
+          text: intl.formatMessage({id: 'global.table.status.normal', defaultMessage: '正常',}),
           value: 1,
         },
         {
-          text: '异常',
+          text: intl.formatMessage({id: 'global.table.status.abnormal', defaultMessage: '异常',}),
           value: 0,
         },
       ],
       filterMultiple: false,
       valueEnum: {
-        1: {text: '正常', status: 'Success'},
-        0: {text: '异常', status: 'Error'},
+        1: {text: intl.formatMessage({id: 'global.table.status.normal', defaultMessage: '正常',}), status: 'Success'},
+        0: {text: intl.formatMessage({id: 'global.table.status.abnormal', defaultMessage: '异常',}), status: 'Error'},
       },
     },
     {
@@ -241,51 +245,51 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       hideInTable: true,
     },
     {
-      title: '是否启用',
+      title: intl.formatMessage({id: 'global.table.isUse', defaultMessage: '是否启用',}),
       dataIndex: 'enabled',
       hideInForm: true,
       hideInSearch: true,
       hideInTable: false,
       filters: [
         {
-          text: '已启用',
+          text: intl.formatMessage({id: 'global.table.inUse', defaultMessage: '已启用',}),
           value: 1,
         },
         {
-          text: '已禁用',
+          text: intl.formatMessage({id: 'global.table.notUse', defaultMessage: '已禁用',}),
           value: 0,
         },
       ],
       filterMultiple: false,
       valueEnum: {
-        true: {text: '已启用', status: 'Success'},
-        false: {text: '已禁用', status: 'Error'},
+        true: {text: intl.formatMessage({id: 'global.table.inUse', defaultMessage: '已启用',}), status: 'Success'},
+        false:{text: intl.formatMessage({id: 'global.table.notUse', defaultMessage: '已禁用',}), status: 'Error'},
       },
     },
     {
-      title: '注册方式',
+      title: intl.formatMessage({id: 'global.table.registType', defaultMessage: '注册方式',}),
       dataIndex: 'autoRegisters',
       hideInForm: true,
       hideInSearch: true,
       hideInTable: false,
       filters: [
         {
-          text: '自动',
+          text: intl.formatMessage({id: 'global.table.registType.automatic', defaultMessage: '自动',}),
           value: 1,
         },
         {
-          text: '手动',
+          text: intl.formatMessage({id: 'global.table.registType.manual', defaultMessage: '手动',}),
           value: 0,
         },
       ],
       filterMultiple: false,
       valueEnum: {
-        true: {text: '自动', status: 'Success'},
-        false: {text: '手动', status: 'Error'},
+        true: {text: intl.formatMessage({id: 'global.table.registType.automatic', defaultMessage: '自动',}), status: 'Success'},
+        false: {text: intl.formatMessage({id: 'global.table.registType.manual', defaultMessage: '手动',}), status: 'Error'},
       },
     },
     {
-      title: '创建时间',
+      title: intl.formatMessage({id: 'global.table.createTime', defaultMessage: '创建时间',}),
       dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',
@@ -303,7 +307,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: '最近更新时间',
+      title: intl.formatMessage({id: 'global.table.updateTime', defaultMessage: '最近更新时间',}),
       dataIndex: 'updateTime',
       sorter: true,
       valueType: 'dateTime',
@@ -320,7 +324,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: '操作',
+      title: intl.formatMessage({id: 'global.table.operate', defaultMessage: '操作',}),
       dataIndex: 'option',
       tooltip: 'FLinkWebUI连接 当集群状态为`可用`时! 支持 KUBERNETES 之外的模式',
       valueType: 'option',
@@ -331,7 +335,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
             setFormValues(record);
           }}
         >
-          配置
+          {intl.formatMessage({id: 'global.table.config', defaultMessage: '配置',})}
         </a>,
         <MoreBtn key="more" item={record}/>,
         ((record.status && (record.type === RUN_MODE.YARN_SESSION
@@ -356,7 +360,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
   return (
     <PageContainer>
       <ProTable<ClusterTableListItem>
-        headerTitle="集群管理"
+        headerTitle={intl.formatMessage({id: 'global.table.clusterManagement', defaultMessage: '集群管理',})}
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -364,13 +368,13 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       }}
         toolBarRender={() => [
         <Button type="primary" onClick={() => handleModalVisible(true)}>
-          <PlusOutlined/> 新建
+          <PlusOutlined/> {intl.formatMessage({id: 'global.table.create', defaultMessage: '新建',})}
         </Button>,
         <Button type="primary" onClick={() => checkHeartBeats()}>
-          <HeartOutlined/> 心跳
+          <HeartOutlined/> {intl.formatMessage({id: 'global.table.heartbeat', defaultMessage: '心跳',})}
         </Button>,
         <Button type="primary" onClick={() => clearCluster()}>
-          <ClearOutlined /> 回收
+          <ClearOutlined /> {intl.formatMessage({id: 'global.table.recycle', defaultMessage: '回收',})}
         </Button>,
       ]}
         request={(params, sorter, filter) => queryData(url, {...params, sorter, filter})}

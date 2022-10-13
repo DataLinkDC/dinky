@@ -145,6 +145,19 @@ export default {
   'pages.regist.openAPI' : 'openAPI Document',
   'pages.regist.BusinessComponent' : 'Business Component Document',
 
+  'pages.matedata.NoDatabaseSelected' : 'No database selected',
+  'pages.matedata.Application' : 'Application',
+  'pages.matedata.TableInfo' : 'Table Info',
+  'pages.matedata.Description' : 'Description',
+  'pages.matedata.DataSerch' : 'Data Serch',
+  'pages.matedata.GenerateSQL' : 'Generate SQL',
+  'pages.matedata.FieldInformation' : 'Field information',
+
+  'pages.TableData.QueryConditions' : 'Query Conditions',
+  'pages.TableData.sorting' : 'Sorting',
+  'pages.TableData.data' : 'Data',
+  'pages.TableData.serch' : 'Serch',
+
 
 
 };

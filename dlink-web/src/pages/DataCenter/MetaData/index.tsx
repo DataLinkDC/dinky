@@ -43,12 +43,14 @@ import Generation from '@/pages/DataBase/Generation';
 import TableData from '@/pages/DataCenter/MetaData/TableData';
 import {FALLBACK, getDBImage} from "@/pages/DataBase/DB";
 import Meta from "antd/lib/card/Meta";
+import { useIntl } from 'umi';
 
 const {DirectoryTree} = Tree;
 const {TabPane} = Tabs;
 
 const MetaDataContainer: React.FC<{}> = (props: any) => {
 
+  const intl = useIntl();
 
   let [database, setDatabase] = useState<[{
     id: number,
@@ -167,10 +169,10 @@ const MetaDataContainer: React.FC<{}> = (props: any) => {
                     </Tag>
                     {(item.status) ?
                       (<Tag icon={<CheckCircleOutlined/>} color="success">
-                        正常
+                        {intl.formatMessage({id: 'global.table.status.normal', defaultMessage: '正常',})}
                       </Tag>) :
                       <Tag icon={<ExclamationCircleOutlined/>} color="warning">
-                        异常
+                        {intl.formatMessage({id: 'global.table.status.abnormal', defaultMessage: '异常',})}
                       </Tag>}
                   </div>
                 </Col>
@@ -195,14 +197,14 @@ const MetaDataContainer: React.FC<{}> = (props: any) => {
                         refeshDataBase(databaseId)
                         setTableChecked(true)
                       }}
-              >刷新</Button>
+              >{intl.formatMessage({id: 'global.table.refresh', defaultMessage: '刷新',})}</Button>
             </div>
             <div>{item.alias}</div>
           </div>
         )
       }
     }
-    return (<div>未选择数据库</div>)
+    return (<div>{intl.formatMessage({id: 'pages.matedata.NoDatabaseSelected', defaultMessage: '未选择数据库',})}</div>)
   }
 
 
@@ -224,7 +226,7 @@ const MetaDataContainer: React.FC<{}> = (props: any) => {
               >
                 <Meta title={buildListTitle()}
                       className={styles.tableListHead}
-                      description={"上次更新：" + treeData.updateTime}
+                      description={"Last Update：" + treeData.updateTime}
                 />
                 {treeData.tables.length > 0 ? (
                   <Scrollbars style={{height: 800}}>
@@ -256,13 +258,13 @@ const MetaDataContainer: React.FC<{}> = (props: any) => {
                            tab={
                              <span>
                           <ReadOutlined/>
-                          描述
+                               {intl.formatMessage({id: 'pages.matedata.Description', defaultMessage: '描述',})}
                         </span>
                            }
                            key="describe"
                   >
                     <Divider orientation="left" plain>
-                      表信息
+                      {intl.formatMessage({id: 'pages.matedata.TableInfo', defaultMessage: '表信息',})}
                     </Divider>
                     {row ? (
                       <Tables table={row}/>
@@ -270,7 +272,7 @@ const MetaDataContainer: React.FC<{}> = (props: any) => {
                       <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
                     )}
                     <Divider orientation="left" plain>
-                      字段信息
+                      {intl.formatMessage({id: 'pages.matedata.FieldInformation', defaultMessage: '字段信息',})}
                     </Divider>
                     {row ? (
                       <Columns dbId={databaseId} schema={row.schema} table={row.table}/>
@@ -283,7 +285,7 @@ const MetaDataContainer: React.FC<{}> = (props: any) => {
                            tab={
                              <span>
                           <BarsOutlined/>
-                          数据查询
+                               {intl.formatMessage({id: 'pages.matedata.DataSerch', defaultMessage: '数据查询',})}
                         </span>
                            }
                            key="exampleData"
@@ -299,7 +301,7 @@ const MetaDataContainer: React.FC<{}> = (props: any) => {
                            tab={
                              <span>
                           <ConsoleSqlOutlined/>
-                          SQL 生成
+                               {intl.formatMessage({id: 'pages.matedata.GenerateSQL', defaultMessage: 'SQL 生成',})}
                         </span>
                            }
                            key="sqlGeneration"
