@@ -1,4 +1,23 @@
 /*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+/*
  Navicat Premium Data Transfer
 
  Source Server Type    : MySQL
@@ -1400,6 +1419,10 @@ CREATE TABLE `dlink_user_tenant`
     PRIMARY KEY (`id`) USING BTREE,
     UNIQUE INDEX `dlink_user_role_un`(`user_id`, `tenant_id`) USING BTREE
 ) ENGINE = InnoDB  CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户与租户关系' ROW_FORMAT = DYNAMIC;
+-- ----------------------------
+-- Records of dlink_user_tenant
+-- ----------------------------
+INSERT INTO `dlink_user_tenant`(`id`, `user_id`, `tenant_id`, `create_time`, `update_time`) VALUES (1, 1, 1, current_time, current_time);
 
 
 
@@ -1431,6 +1454,25 @@ CREATE TABLE `metadata_database_property`
     `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP (0) COMMENT '创建时间',
     PRIMARY KEY (`key`, `database_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '元数据属性信息' ROW_FORMAT = Dynamic;
+
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
 
 -- ----------------------------
 -- Table structure for metadata_column

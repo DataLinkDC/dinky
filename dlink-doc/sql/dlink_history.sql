@@ -1,4 +1,42 @@
 /*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+/*
  Navicat Premium Data Transfer
 
  Source Server         : 10.1.51.25
@@ -812,6 +850,21 @@ CREATE TABLE IF NOT EXISTS  dlink_user_role
 -- Records of dlink_user_role
 -- ----------------------------
 INSERT INTO `dlink_user_role`(`id`, `user_id`, `role_id`, `create_time`, `update_time`) VALUES (1, 1, 1, current_time, current_time);
+
+
+CREATE TABLE `dlink_user_tenant` (
+                                     `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
+                                     `user_id` int NOT NULL COMMENT '用户ID',
+                                     `tenant_id` int NOT NULL COMMENT '租户ID',
+                                     `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+                                     `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+                                     PRIMARY KEY (`id`) USING BTREE,
+                                     UNIQUE KEY `dlink_user_role_un` (`user_id`,`tenant_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='用户与租户关系';
+-- ----------------------------
+-- Records of dlink_user_tenant
+-- ----------------------------
+INSERT INTO `dlink_user_tenant`(`id`, `user_id`, `tenant_id`, `create_time`, `update_time`) VALUES (1, 1, 1, current_time, current_time);
 
 
 alter table dlink_catalogue add column tenant_id int  not null comment '租户ID' after id;
