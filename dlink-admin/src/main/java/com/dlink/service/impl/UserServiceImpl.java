@@ -35,7 +35,6 @@ import com.dlink.service.RoleService;
 import com.dlink.service.TenantService;
 import com.dlink.service.UserRoleService;
 import com.dlink.service.UserService;
-
 import com.dlink.service.UserTenantService;
 
 import java.util.ArrayList;
@@ -50,11 +49,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
-
-import cn.dev33.satoken.secure.SaSecureUtil;
-import cn.dev33.satoken.stp.StpUtil;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.stp.StpUtil;

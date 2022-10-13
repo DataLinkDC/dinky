@@ -128,6 +128,7 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> im
 
     /**
      * Assign users to specified tenants
+     *
      * @param para
      * @return
      */
@@ -164,7 +165,7 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> im
             RequestContext.remove();
             RequestContext.set(tenantId);
             return Result.succeed("切换租户成功");
-        }else {
+        } else {
             return Result.failed("无法切换租户,获取不到租户信息");
         }
     }

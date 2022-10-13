@@ -71,6 +71,7 @@ public class TenantController {
     public ProTableResult<Tenant> listTenants(@RequestBody JsonNode para) {
         return tenantService.selectForProTable(para, true);
     }
+
     /**
      * give tenant grant user
      *
@@ -80,6 +81,7 @@ public class TenantController {
     public Result distributeUser(@RequestBody JsonNode para) {
         return tenantService.distributeUsers(para);
     }
+
     @PostMapping(value = "/switchTenant")
     public Result switchTenant(@RequestBody JsonNode para) {
         return tenantService.switchTenant(para);

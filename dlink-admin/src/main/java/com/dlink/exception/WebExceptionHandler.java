@@ -22,8 +22,6 @@ package com.dlink.exception;
 import com.dlink.common.result.Result;
 import com.dlink.model.CodeEnum;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -71,7 +69,7 @@ public class WebExceptionHandler {
         return Result.notLogin("该用户未登录!");
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST) //设置状态码为 400
+    @ResponseStatus(HttpStatus.BAD_REQUEST) // 设置状态码为 400
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public Result<String> paramExceptionHandler(MethodArgumentNotValidException e) {
         BindingResult exceptions = e.getBindingResult();

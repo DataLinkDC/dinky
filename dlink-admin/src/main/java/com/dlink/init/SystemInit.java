@@ -20,6 +20,7 @@
 package com.dlink.init;
 
 import com.dlink.assertion.Asserts;
+import com.dlink.context.RequestContext;
 import com.dlink.daemon.task.DaemonFactory;
 import com.dlink.daemon.task.DaemonTaskConfig;
 import com.dlink.job.FlinkJobTask;
@@ -32,7 +33,7 @@ import com.dlink.scheduler.model.Project;
 import com.dlink.service.JobInstanceService;
 import com.dlink.service.SysConfigService;
 import com.dlink.service.TaskService;
-import com.dlink.context.RequestContext;
+import com.dlink.service.TenantService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +67,9 @@ public class SystemInit implements ApplicationRunner {
     private TaskService taskService;
     @Autowired
     private TenantService tenantService;
+    @Autowired
+    private DolphinSchedulerProperties dolphinSchedulerProperties;
+    private static Project project;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -91,6 +95,7 @@ public class SystemInit implements ApplicationRunner {
         log.info("Number of tasks started: " + configList.size());
         DaemonFactory.start(configList);
     }
+
     /**
      * init DolphinScheduler
      */
