@@ -9,16 +9,14 @@
 
 ## 简介
 
-Dinky 是一个 `开箱即用` 、`易扩展` ，以 `Apache Flink` 为基础，连接 `OLAP` 和 `数据湖` 等众多框架的 `一站式`
-实时计算平台，致力于 `流批一体` 和 `湖仓一体` 的探索与实践。
+Dinky 是一个 `开箱即用` 、`易扩展` ，以 `Apache Flink` 为基础，连接 `OLAP` 和 `数据湖` 等众多框架的 `一站式` 实时计算平台，致力于 `流批一体` 和 `湖仓一体` 的探索与实践。
 
 ## 功能
 
 其主要功能如下：
 
 - 沉浸式 FlinkSQL 数据开发：自动提示补全、语法高亮、语句美化、在线调试、语法校验、执行计划、MetaStore、血缘分析、版本对比等
-- 支持 FlinkSQL 多版本开发及多种执行模式：Local、Standalone、Yarn/Kubernetes Session、Yarn Per-Job、Yarn/Kubernetes
-  Application
+- 支持 FlinkSQL 多版本开发及多种执行模式：Local、Standalone、Yarn/Kubernetes Session、Yarn Per-Job、Yarn/Kubernetes Application
 - 支持 Apache Flink 生态：Connector、FlinkCDC、Table Store 等
 - 支持 FlinkSQL 语法增强：表值聚合函数、全局变量、执行环境、语句合并、整库同步、共享会话等
 - 支持 FlinkCDC 整库实时入仓入湖、多库输出、自动建表
@@ -84,8 +82,7 @@ Dinky 是一个 `开箱即用` 、`易扩展` ，以 `Apache Flink` 为基础，
 
 ## 如何部署
 
-详见 [源码编译](https://github.com/DataLinkDC/dlink/blob/dev/docs/docs/build_deploy/build.md)
-和 [安装部署](https://github.com/DataLinkDC/dlink/blob/dev/docs/docs/build_deploy/deploy.md) 。
+详见 [源码编译](https://github.com/DataLinkDC/dlink/blob/dev/docs/docs/build_deploy/build.md) 和 [安装部署](https://github.com/DataLinkDC/dlink/blob/dev/docs/docs/build_deploy/deploy.md) 。
 
 ## 如何升级
 
@@ -95,8 +92,7 @@ Dinky 是一个 `开箱即用` 、`易扩展` ，以 `Apache Flink` 为基础，
 
 （1）升级应用：替换最新 Dinky 所有依赖包；
 
-（2）升级 DDL：执行 sql 目录下的 dlink_history.sql 中的部分升级语句，依据是通过版本号与日期来判断从何处开始执行，请不要直接执行全部
-sql。
+（2）升级 DDL：执行 sql 目录下的 dlink_history.sql 中的部分升级语句，依据是通过版本号与日期来判断从何处开始执行，请不要直接执行全部 sql。
 
 ## 感谢
 
@@ -140,8 +136,7 @@ sql。
 
 <img src="https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/main/dinkydingding.jpg" alt="dinkydingding" style="zoom:30%;" />
 
-4.进入微信用户社区群（推荐，添加微信号 `wenmo_ai` 邀请进群）和QQ用户社区群（**543709668**）交流，申请备注 “ Dinky + 企业名 +
-职位”
+4.进入微信用户社区群（推荐，添加微信号 `wenmo_ai` 邀请进群）和QQ用户社区群（**543709668**）交流，申请备注 “ Dinky + 企业名 + 职位”
 
 5.关注微信公众号获取官方最新文章：[Dinky 开源](https://mmbiz.qpic.cn/mmbiz_jpg/dyicwnSlTFTp6w4PuJruFaLV6uShCJDkzqwtnbQJrQ90yKDuuIC8tyMU5DK69XZibibx7EPPBRQ3ic81se5UQYs21g/0?wx_fmt=jpeg)
 
