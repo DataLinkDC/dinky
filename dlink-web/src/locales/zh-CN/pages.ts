@@ -23,6 +23,7 @@ export default {
   'pages.login.accountLogin.errorMessage': '错误的用户名和密码（admin/admin)',
   'pages.login.failure': '登录失败，请重试！',
   'pages.login.success': '登录成功！',
+  'pages.login.chooseTenant': '请选择租户',
   'pages.login.username.placeholder': '用户名: admin',
   'pages.login.username.required': '用户名是必填项！',
   'pages.login.password.placeholder': '密码: admin',

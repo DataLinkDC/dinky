@@ -126,7 +126,8 @@ const Login: React.FC = () => {
   const handleShowTenant = (item: API.LoginParams) => {
 
     return <>
-      <Modal title="请选择租户" visible={chooseTenant} destroyOnClose={true} width={"60%"}
+      <Modal title={intl.formatMessage({id: 'pages.login.chooseTenant'})} visible={chooseTenant} destroyOnClose={true}
+             width={"60%"}
              onCancel={() => {
                setChooseTenant(false);
              }}
@@ -134,7 +135,7 @@ const Login: React.FC = () => {
                <Button key="back" onClick={() => {
                  setChooseTenant(false);
                }}>
-                 关闭
+                 {intl.formatMessage({id: 'button.close'})}
                </Button>,
                <Button disabled={checkDisabled} type="primary" key="submit" loading={submitting}
                        onClick={async () => {
@@ -142,7 +143,7 @@ const Login: React.FC = () => {
                          localStorage.setItem("dlink-tenantId", tenantId.toString());
                          await handleSubmit(userParamsState);
                        }}>
-                 确定
+                 {intl.formatMessage({id: 'button.confirm'})}
                </Button>
              ]}>
         <CheckCard.Group
