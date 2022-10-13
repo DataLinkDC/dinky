@@ -23,7 +23,8 @@ import difference from 'lodash/difference';
 import React, {useEffect, useState} from 'react';
 import {getData} from "@/components/Common/crud";
 import {Scrollbars} from 'react-custom-scrollbars';
-import { TenantTableListItem, UserTableListItem} from "@/pages/AuthenticationCenter/data.d";
+import {TenantTableListItem, UserTableListItem} from "@/pages/AuthenticationCenter/data.d";
+import {useIntl} from "@@/plugin-locale/localeExports";
 
 
 interface TableTransferProps extends TransferProps<UserTableListItem> {
@@ -36,13 +37,6 @@ interface TableTransferProps extends TransferProps<UserTableListItem> {
 // Customize Table Transfer
 const GrantTenantTransfer = ({leftColumns, rightColumns, ...restProps}: TableTransferProps) => (
   <Transfer
-    titles={['未选', '已选']}
-    locale={{
-      itemUnit: "项",
-      itemsUnit: "项",
-      searchPlaceholder: "请输入用户名搜索",
-
-    }}
     showSelectAll={false}
     showSearch={true}
     {...restProps}>
@@ -90,7 +84,7 @@ const GrantTenantTransfer = ({leftColumns, rightColumns, ...restProps}: TableTra
               }}
               onRow={({id, enabled: itemDisabled}) => ({
                 onClick: (e) => {
-                  if (itemDisabled || !enabled){
+                  if (itemDisabled || !enabled) {
                     onItemSelect(id, listSelectedKeys.includes(id));
                   } else {
                     return;
@@ -111,7 +105,7 @@ export type TableTransferFromProps = {
 };
 
 const GrantTenantToUserTableTransferFrom = (props: TableTransferFromProps) => {
-
+  const intl = useIntl();
   const {tenant, onChange: handleChange} = props;
 
   const [targetKeys, setTargetKeys] = useState<string[]>([]);
@@ -135,30 +129,30 @@ const GrantTenantToUserTableTransferFrom = (props: TableTransferFromProps) => {
 
   const leftTableColumns: ColumnsType<UserTableListItem> = [
     {
-      title: '用户名',
+      title: intl.formatMessage({id: 'pages.user.UserName'}),
       dataIndex: 'username',
     },
     {
-      title: '昵称',
+      title: intl.formatMessage({id: 'pages.user.UserNickName'}),
       dataIndex: 'nickname',
     },
     {
-      title: '工号',
+      title: intl.formatMessage({id: 'pages.user.UserJobNumber'}),
       dataIndex: 'worknum',
     },
   ];
 
   const rightTableColumns: ColumnsType<UserTableListItem> = [
     {
-      title: '用户名',
+      title: intl.formatMessage({id: 'pages.user.UserName'}),
       dataIndex: 'username',
     },
     {
-      title: '昵称',
+      title: intl.formatMessage({id: 'pages.user.UserNickName'}),
       dataIndex: 'nickname',
     },
     {
-      title: '工号',
+      title: intl.formatMessage({id: 'pages.user.UserJobNumber'}),
       dataIndex: 'worknum',
     },
   ];

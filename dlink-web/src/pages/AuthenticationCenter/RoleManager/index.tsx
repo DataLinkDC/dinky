@@ -29,6 +29,7 @@ import {RoleTableListItem} from "@/pages/AuthenticationCenter/data.d";
 import RoleForm from "@/pages/AuthenticationCenter/RoleManager/components/RoleForm";
 import {getNameSpaceList} from "@/pages/AuthenticationCenter/service";
 import {connect} from "umi";
+import {useIntl} from "@@/plugin-locale/localeExports";
 
 const url = '/api/role';
 
@@ -41,6 +42,10 @@ const RoleFormList: React.FC<{}> = (props: any) => {
   const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<RoleTableListItem[]>([]);
 
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
+
   useEffect(() => {
     getNameSpaceList(dispatch);
   }, []);
@@ -51,10 +56,10 @@ const RoleFormList: React.FC<{}> = (props: any) => {
       handleUpdateModalVisible(true);
     } else if (key === 'delete') {
       Modal.confirm({
-        title: '删除角色',
-        content: '确定删除该角色吗？',
-        okText: '确认',
-        cancelText: '取消',
+        title: l('pages.role.delete'),
+        content: l('pages.role.deleteConfirm'),
+        okText: l('button.confirm'),
+        cancelText: l('button.cancel'),
         onOk: async () => {
           await handleRemove(url, [currentItem]);
           actionRef.current?.reloadAndRest?.();
@@ -69,13 +74,13 @@ const RoleFormList: React.FC<{}> = (props: any) => {
     <Dropdown
       overlay={
         <Menu onClick={({key}) => editAndDelete(key, item)}>
-          <Menu.Item key="edit">编辑</Menu.Item>
-          <Menu.Item key="delete">删除</Menu.Item>
+          <Menu.Item key="edit">{l('button.edit')}</Menu.Item>
+          <Menu.Item key="delete">{l('button.delete')}</Menu.Item>
         </Menu>
       }
     >
       <a>
-        更多 <DownOutlined/>
+        {l('button.more')} <DownOutlined/>
       </a>
     </Dropdown>
   );
@@ -89,18 +94,18 @@ const RoleFormList: React.FC<{}> = (props: any) => {
       sorter: true,
     },
     {
-      title: '角色编码',
+      title: l('pages.role.roleCode'),
       dataIndex: 'roleCode',
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
     },
     {
-      title: '角色名称',
+      title: l('pages.role.roleName'),
       dataIndex: 'roleName',
     },
     {
-      title: '所属租户',
+      title: l('pages.role.belongTenant'),
       hideInSearch: true,
       render: (dom, entity) => {
         return entity?.tenant?.tenantCode || '';
@@ -129,35 +134,35 @@ const RoleFormList: React.FC<{}> = (props: any) => {
     //   },
     // },
     {
-      title: '备注',
+      title: l('pages.role.note'),
       dataIndex: 'note',
       hideInSearch: true,
       ellipsis: true,
     },
     {
-      title: '创建时间',
+      title: l('pages.role.createTime'),
       dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',
     },
     {
-      title: '最近更新时间',
+      title: l('pages.role.updateTime'),
       dataIndex: 'updateTime',
       sorter: true,
       valueType: 'dateTime',
     },
     {
-      title: '操作',
+      title: l('pages.operate'),
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
         <Button type={"link"}
-          onClick={() => {
-            handleUpdateModalVisible(true);
-            setFormValues(record);
-          }}
+                onClick={() => {
+                  handleUpdateModalVisible(true);
+                  setFormValues(record);
+                }}
         >
-          配置
+          {l('button.config')}
         </Button>,
         <MoreBtn key="more" item={record}/>,
       ],
@@ -165,9 +170,9 @@ const RoleFormList: React.FC<{}> = (props: any) => {
   ];
 
   return (
-    <PageContainer>
+    <PageContainer title={false}>
       <ProTable<RoleTableListItem>
-        headerTitle="角色管理"
+        headerTitle={l('pages.nameSpace.NameSpaceManagement')}
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -175,7 +180,7 @@ const RoleFormList: React.FC<{}> = (props: any) => {
         }}
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined/> 新建
+            <PlusOutlined/> {l('button.create')}
           </Button>,
         ]}
         request={(params, sorter, filter) => queryData(url, {tenantId: getStorageTenantId(), sorter, filter})}
@@ -188,17 +193,17 @@ const RoleFormList: React.FC<{}> = (props: any) => {
         <FooterToolbar
           extra={
             <div>
-              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项
+              {l('tips.selected')} <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> {l('tips.item')}
             </div>
           }
         >
           <Button type="primary" danger
                   onClick={() => {
                     Modal.confirm({
-                      title: '删除角色',
-                      content: '确定删除选中的角色吗？',
-                      okText: '确认',
-                      cancelText: '取消',
+                      title: l('pages.role.delete'),
+                      content: l('pages.role.deleteConfirm'),
+                      okText: l('button.confirm'),
+                      cancelText: l('button.cancel'),
                       onOk: async () => {
                         await handleRemove(url, selectedRowsState);
                         setSelectedRows([]);
@@ -207,7 +212,7 @@ const RoleFormList: React.FC<{}> = (props: any) => {
                     });
                   }}
           >
-            批量删除
+            {l('button.batchDelete')}
           </Button>
         </FooterToolbar>
       )}

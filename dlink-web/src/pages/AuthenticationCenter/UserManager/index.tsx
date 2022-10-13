@@ -29,6 +29,7 @@ import {UserTableListItem} from "@/pages/AuthenticationCenter/data.d";
 import UserForm from "@/pages/AuthenticationCenter/UserManager/components/UserForm";
 import PasswordForm from "@/pages/AuthenticationCenter/UserManager/components/PasswordForm";
 import TableTransferFrom from "@/pages/AuthenticationCenter/UserManager/components/TableTransfer";
+import {useIntl} from "@@/plugin-locale/localeExports";
 
 const url = '/api/user';
 const UserTableList: React.FC<{}> = (props: any) => {
@@ -43,6 +44,9 @@ const UserTableList: React.FC<{}> = (props: any) => {
   const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<UserTableListItem[]>([]);
 
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
   const editAndDelete = (key: string | number, currentItem: UserTableListItem) => {
     if (key === 'edit') {
       setFormValues(currentItem);
@@ -52,10 +56,10 @@ const UserTableList: React.FC<{}> = (props: any) => {
       handlePasswordModalVisible(true);
     } else if (key === 'delete') {
       Modal.confirm({
-        title: '删除用户',
-        content: '确定删除该用户吗？',
-        okText: '确认',
-        cancelText: '取消',
+        title: l('pages.user.delete'),
+        content: l('pages.user.deleteConfirm'),
+        okText: l('button.confirm'),
+        cancelText: l('button.cancel'),
         onOk: async () => {
           await handleRemove(url, [currentItem]);
           actionRef.current?.reloadAndRest?.();
@@ -70,14 +74,14 @@ const UserTableList: React.FC<{}> = (props: any) => {
     <Dropdown
       overlay={
         <Menu onClick={({key}) => editAndDelete(key, item)}>
-          <Menu.Item key="edit">编辑</Menu.Item>
-          <Menu.Item key="password">修改密码</Menu.Item>
-          {item.username == 'admin' ? '' : (<Menu.Item key="delete">删除</Menu.Item>)}
+          <Menu.Item key="edit">{l('button.edit')}</Menu.Item>
+          <Menu.Item key="password">{l('button.changePassword')}</Menu.Item>
+          {item.username == 'admin' ? '' : (<Menu.Item key="delete">{l('button.delete')}</Menu.Item>)}
         </Menu>
       }
     >
       <a>
-        更多 <DownOutlined/>
+        {l('button.more')} <DownOutlined/>
       </a>
     </Dropdown>
   );
@@ -85,7 +89,7 @@ const UserTableList: React.FC<{}> = (props: any) => {
 
   const handleGrantRoleForm = () => {
     return (
-      <Modal title="添加角色" visible={handleGrantRole} destroyOnClose={true} width={"1500px"}
+      <Modal title={l('pages.user.AssignRole')} visible={handleGrantRole} destroyOnClose={true} width={"1500px"}
              onCancel={() => {
                setHandleGrantRole(false);
              }}
@@ -93,7 +97,7 @@ const UserTableList: React.FC<{}> = (props: any) => {
                <Button key="back" onClick={() => {
                  setHandleGrantRole(false);
                }}>
-                 关闭
+                 {l('button.close')}
                </Button>,
                <Button type="primary" onClick={async () => {
                  // to save
@@ -110,7 +114,7 @@ const UserTableList: React.FC<{}> = (props: any) => {
                  }
                }}
                >
-                 确认
+                 {l('button.confirm')}
                </Button>,
              ]}>
         <TableTransferFrom user={formValues} onChange={(value) => {
@@ -122,7 +126,7 @@ const UserTableList: React.FC<{}> = (props: any) => {
 
   const columns: ProColumns<UserTableListItem>[] = [
     {
-      title: '用户名',
+      title: l('pages.user.UserName'),
       dataIndex: 'username',
       sorter: true,
       render: (dom, entity) => {
@@ -137,60 +141,60 @@ const UserTableList: React.FC<{}> = (props: any) => {
       hideInSearch: true,
     },
     {
-      title: '昵称',
+      title: l('pages.user.UserNickName'),
       sorter: true,
       dataIndex: 'nickname',
       hideInTable: false,
     },
     {
-      title: '工号',
+      title: l('pages.user.UserJobNumber'),
       sorter: true,
       dataIndex: 'worknum',
       hideInTable: false,
     },
     {
-      title: '手机号',
+      title: l('pages.user.UserPhoneNumber'),
       sorter: true,
       dataIndex: 'mobile',
       hideInTable: false,
     },
     {
-      title: '是否启用',
+      title: l('pages.user.UserIsUse'),
       dataIndex: 'enabled',
       hideInForm: true,
       hideInSearch: true,
       hideInTable: false,
       filters: [
         {
-          text: '已启用',
+          text: l('status.enabled'),
           value: 1,
         },
         {
-          text: '已禁用',
+          text: l('status.disabled'),
           value: 0,
         },
       ],
       filterMultiple: false,
       valueEnum: {
-        true: {text: '已启用', status: 'Success'},
-        false: {text: '已禁用', status: 'Error'},
+        true: {text: l('status.enabled'), status: 'Success'},
+        false: {text: l('status.disabled'), status: 'Error'},
       },
     },
     {
-      title: '创建时间',
+      title: l('pages.user.UserCreateTime'),
       dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',
       hideInTable: true,
     },
     {
-      title: '最近更新时间',
+      title: l('pages.user.UserUpdateTime'),
       dataIndex: 'updateTime',
       sorter: true,
       valueType: 'dateTime',
     },
     {
-      title: '操作',
+      title: l('pages.operate'),
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
@@ -200,7 +204,7 @@ const UserTableList: React.FC<{}> = (props: any) => {
             setFormValues(record);
           }}
         >
-          配置
+          {l('button.config')}
         </a>,
         <a
           onClick={() => {
@@ -208,7 +212,7 @@ const UserTableList: React.FC<{}> = (props: any) => {
             setFormValues(record);
           }}
         >
-          关联角色
+          {l('pages.user.AssignRole')}
         </a>,
         <MoreBtn key="more" item={record}/>,
       ],
@@ -217,9 +221,9 @@ const UserTableList: React.FC<{}> = (props: any) => {
 
   return (
     <>
-      <PageContainer>
+      <PageContainer title={false}>
         <ProTable<UserTableListItem>
-          headerTitle="用户管理"
+          headerTitle={l('pages.user.UserManger')}
           actionRef={actionRef}
           rowKey="id"
           search={{
@@ -227,7 +231,7 @@ const UserTableList: React.FC<{}> = (props: any) => {
           }}
           toolBarRender={() => [
             <Button type="primary" onClick={() => handleModalVisible(true)}>
-              <PlusOutlined/> 新建
+              <PlusOutlined/> {l('button.create')}
             </Button>,
           ]}
           request={(params, sorter, filter) => queryData(url, {...params, sorter, filter})}
@@ -240,9 +244,10 @@ const UserTableList: React.FC<{}> = (props: any) => {
           <FooterToolbar
             extra={
               <div>
-                已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
+                {l('tips.selected')} <a
+                style={{fontWeight: 600}}>{selectedRowsState.length}</a> {l('tips.item')}&nbsp;&nbsp;
                 <span>
-                被禁用的用户共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} 人
+                {l('pages.user.disableTotalOf')} {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} {l('pages.user.selectDisable')}
               </span>
               </div>
             }
@@ -250,10 +255,10 @@ const UserTableList: React.FC<{}> = (props: any) => {
             <Button type="primary" danger
                     onClick={() => {
                       Modal.confirm({
-                        title: '删除用户',
-                        content: '确定删除选中的用户吗？',
-                        okText: '确认',
-                        cancelText: '取消',
+                        title: l('pages.user.delete'),
+                        content: l('pages.user.deleteConfirm'),
+                        okText: l('button.confirm'),
+                        cancelText: l('button.cancel'),
                         onOk: async () => {
                           await handleRemove(url, selectedRowsState);
                           setSelectedRows([]);
@@ -262,15 +267,15 @@ const UserTableList: React.FC<{}> = (props: any) => {
                       });
                     }}
             >
-              批量删除
+              {l('button.batchDelete')}
             </Button>
             <Button type="primary"
                     onClick={() => {
                       Modal.confirm({
-                        title: '启用用户',
-                        content: '确定启用选中的用户吗？',
-                        okText: '确认',
-                        cancelText: '取消',
+                        title: l('pages.user.enable'),
+                        content: l('pages.user.enableConfirm'),
+                        okText: l('button.confirm'),
+                        cancelText: l('button.cancel'),
                         onOk: async () => {
                           await updateEnabled(url, selectedRowsState, true);
                           setSelectedRows([]);
@@ -278,14 +283,14 @@ const UserTableList: React.FC<{}> = (props: any) => {
                         }
                       });
                     }}
-            >批量启用</Button>
+            >{l('button.batchEnable')}</Button>
             <Button danger
                     onClick={() => {
                       Modal.confirm({
-                        title: '禁用用户',
-                        content: '确定禁用选中的用户吗？',
-                        okText: '确认',
-                        cancelText: '取消',
+                        title: l('pages.user.disable'),
+                        content: l('pages.user.disableConfirm'),
+                        okText: l('button.confirm'),
+                        cancelText: l('button.cancel'),
                         onOk: async () => {
                           await updateEnabled(url, selectedRowsState, false);
                           setSelectedRows([]);
@@ -293,7 +298,7 @@ const UserTableList: React.FC<{}> = (props: any) => {
                         }
                       });
                     }}
-            >批量禁用</Button>
+            >{l('button.batchDisable')}</Button>
           </FooterToolbar>
         )}
         <UserForm
@@ -317,7 +322,7 @@ const UserTableList: React.FC<{}> = (props: any) => {
           <>
             <PasswordForm
               onSubmit={async (value) => {
-                const success = await handleOption(url + "/modifyPassword", '修改密码', value);
+                const success = await handleOption(url + "/modifyPassword", l('button.changePassword'), value);
                 if (success) {
                   handlePasswordModalVisible(false);
                   setFormValues({});

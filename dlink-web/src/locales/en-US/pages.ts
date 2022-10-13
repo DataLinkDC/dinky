@@ -88,6 +88,10 @@ export default {
   'pages.searchTable.batchDeletion': 'Bacth Deletion',
   'pages.searchTable.batchApproval': 'Batch Approval',
 
+
+  'pages.operate': 'Operation', // all table list of operation columns is use this item
+
+
   'pages.devops.jobstatus.CREATED': 'Created',
   'pages.devops.jobstatus.INITIALIZING': 'Initialize',
   'pages.devops.jobstatus.RUNNING': 'Running',
@@ -122,31 +126,26 @@ export default {
   'pages.settings.FlinkUse': 'In Use',
   'pages.settings.FlinkNotUse': 'Not Use',
 
-  'pages.user.UserEdit': 'Edit',
-  'pages.user.UserDelete': 'Delete',
-  'pages.user.UserChangePassword': 'Update Password',
-  'pages.user.UserConfig': 'Config',
-  'pages.user.UserMore': 'More',
 
-  'pages.user.UserCreate': 'Create',
   'pages.user.UserManger': 'User Management',
   'pages.user.UserName': 'User Name',//用户名
   'pages.user.UserJobNumber': 'Job Number',//工号
   'pages.user.UserPhoneNumber': 'Phone Number',//手机号
   'pages.user.UserNickName': 'Nick Name',//昵称
-  'pages.user.UserIsUse': 'Is Use',//是否启用
+  'pages.user.UserIsUse': 'Is Enable',//是否启用
   'pages.user.UserUpdateTime': 'Update Time',//最近更新时间
-  'pages.user.UserOperate': 'Operate',//操作
-  'pages.user.UserInUse': 'In Use',//已启用
-  'pages.user.UserNotUse': 'Not Use',//已禁用
   'pages.user.UserCreateTime': 'Create Time',//创建时间
 
-  'pages.user.UserComplete': 'Complete',
-  'pages.user.UserConfirm': 'Confirm',
-  'pages.user.UserCancel': 'Cancel',
   'pages.user.UserDeleteUser': 'Delete User',
   'pages.user.UserCreateUser': 'Create User',
   'pages.user.UserUpdateUser': 'Update User',
+  'pages.user.AssignRole': 'Assign Role',
+  'pages.user.delete': 'Delete User',
+  'pages.user.deleteConfirm': 'Are you sure you want to delete this User？',
+  'pages.user.enable': 'Enable User',
+  'pages.user.enableConfirm': 'Are you sure you want to enable this User？',
+  'pages.user.disable': 'Disable User',
+  'pages.user.disableConfirm': 'Are you sure you want to disable this User？',
   'pages.user.UserEnterUserName': 'Please enter user name',
   'pages.user.UserEnterUniqueUserName': 'Please enter unique user name',
   'pages.user.UserEnterJobNumber': 'Please enter job number',
@@ -159,7 +158,69 @@ export default {
   'pages.user.UserEnterNewPassword': 'Please enter new password',
   'pages.user.UserEnterRepeatNewPassword': 'Please enter repeat new password',
   'pages.user.UserNewPasswordNotMatch': 'The new passwords do not match',
-  'pages.user.UserUpdatePassword': 'Update Password',
+  'pages.user.disableTotalOf': 'Total Of ',
+  'pages.user.selectDisable': 'User Is Disabled ',
+
+
+  'pages.tenant.TenantManager': 'Tenant Management',
+  'pages.tenant.TenantCode': 'Tenant Code',
+  'pages.tenant.Note': 'Note',
+  'pages.tenant.CreateTime': 'Create Time',
+  'pages.tenant.UpdateTime': 'Update Time',
+  'pages.tenant.AssignUser': 'Assign Users',
+  'pages.tenant.assignUser.pleaseHolder': 'Please enter username/nickname Search',
+  'pages.tenant.create': 'Create Tenant',
+  'pages.tenant.update': 'Update Tenant',
+  'pages.tenant.EnterTenantCode': 'Please enter Tenant Code!',
+  'pages.tenant.EnterTenantNote': 'Please enter Tenant Note!',
+  'pages.tenant.delete': 'Delete Tenant',
+  'pages.tenant.deleteConfirm': 'Are you sure you want to delete this Tenant？',
+  'pages.tenant.enable': 'Enable Tenant',
+  'pages.tenant.enableConfirm': 'Are you sure you want to enable this Tenant？',
+  'pages.tenant.disable': 'Disable Tenant',
+  'pages.tenant.disableConfirm': 'Are you sure you want to disable this Tenant？',
+
+
+  'pages.nameSpace.NameSpaceManagement': 'NameSpace Management',
+  'pages.nameSpace.NameSpaceCode': 'NameSpace Code',
+  'pages.nameSpace.belongTenant': 'Belong Tenant',
+  'pages.nameSpace.enable': 'Is Enable',
+  'pages.nameSpace.note': 'Note',
+  'pages.nameSpace.createTime': 'Create Time',
+  'pages.nameSpace.updateTime': 'Update Time',
+  'pages.nameSpace.deleteNameSpace': 'Delete NameSpace',
+  'pages.nameSpace.deleteNameSpaceConfirm': 'Are you sure you want to delete this NameSpace？',
+  'pages.nameSpace.enableNameSpace': 'Enable NameSpace',
+  'pages.nameSpace.enableNameSpaceConfirm': 'Are you sure you want to enable this NameSpace？',
+  'pages.nameSpace.disableNameSpace': 'Disable NameSpace',
+  'pages.nameSpace.disableNameSpaceConfirm': 'Are you sure you want to disable this NameSpace？',
+  'pages.nameSpace.create': 'Create NameSpace',
+  'pages.nameSpace.update': 'Update NameSpace',
+  'pages.nameSpace.EnterNameSpaceCode': 'Please enter NameSpace Code!',
+  'pages.nameSpace.EnterNameSpaceNote': 'Please enter NameSpace Note!',
+  'pages.nameSpace.disableTotalOf': 'Total Of ',
+  'pages.nameSpace.selectDisable': 'Namespace Is Disabled ',
+
+  'pages.role.roleManagement': 'Role Management',
+  'pages.role.roleCode': 'Role Code',
+  'pages.role.roleName': 'Role Name',
+  'pages.role.namespaceIds': 'Namespace',
+  'pages.role.note': 'Note',
+  'pages.role.belongTenant': 'Belong Tenant',
+  'pages.role.createTime': 'Create Time',
+  'pages.role.updateTime': 'Update Time',
+  'pages.role.create': 'Create Role',
+  'pages.role.update': 'Update Role',
+  'pages.role.EnterRoleCode': 'Please enter Role Code!',
+  'pages.role.EnterRoleName': 'Please enter Role Name!',
+  'pages.role.selectNameSpace': 'Please select NameSpace!',
+  'pages.role.EnterNote': 'Please enter Role Note!',
+  'pages.role.delete': 'Delete Role',
+  'pages.role.deleteConfirm': 'Are you sure you want to delete this Role？',
+  'pages.role.enable': 'Delete Role',
+  'pages.role.enableConfirm': 'Are you sure you want to enable this Role？',
+  'pages.role.disable': 'Delete Role',
+  'pages.role.disableConfirm': 'Are you sure you want to disable this Role？',
 
 
   'pages.regist.openAPI': 'openAPI Document',

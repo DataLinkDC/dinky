@@ -28,6 +28,7 @@ import {handleAddOrUpdate, handleRemove, queryData} from "@/components/Common/cr
 import {TenantTableListItem} from "@/pages/AuthenticationCenter/data.d";
 import TenantForm from "@/pages/AuthenticationCenter/TenantManager/components/TenantForm";
 import GrantTenantTransfer from "@/pages/AuthenticationCenter/TenantManager/components/GrantTenantTransfer";
+import {useIntl} from "umi";
 
 const url = '/api/tenant';
 const TenantFormList: React.FC<{}> = (props: any) => {
@@ -40,16 +41,20 @@ const TenantFormList: React.FC<{}> = (props: any) => {
   const [selectedRowsState, setSelectedRows] = useState<TenantTableListItem[]>([]);
   const [formValues, setFormValues] = useState({});
 
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
+
   const editAndDelete = (key: string | number, currentItem: TenantTableListItem) => {
     if (key === 'edit') {
       handleUpdateModalVisible(true);
       setFormValues(currentItem);
     } else if (key === 'delete') {
       Modal.confirm({
-        title: '删除租户',
-        content: '确定删除该租户吗？',
-        okText: '确认',
-        cancelText: '取消',
+        title: l('pages.tenant.delete'),
+        content: l('pages.tenant.deleteConfirm'),
+        okText: l('button.confirm'),
+        cancelText: l('button.cancel'),
         onOk: async () => {
           await handleRemove(url, [currentItem]);
           actionRef.current?.reloadAndRest?.();
@@ -64,13 +69,13 @@ const TenantFormList: React.FC<{}> = (props: any) => {
     <Dropdown
       overlay={
         <Menu onClick={({key}) => editAndDelete(key, item)}>
-          <Menu.Item key="edit">编辑</Menu.Item>
-          <Menu.Item key="delete">删除</Menu.Item>
+          <Menu.Item key="edit">{l('button.edit')}</Menu.Item>
+          <Menu.Item key="delete">{l('button.delete')}</Menu.Item>
         </Menu>
       }
     >
       <a>
-        更多 <DownOutlined/>
+        {l('button.more')} <DownOutlined/>
       </a>
     </Dropdown>
   );
@@ -78,7 +83,8 @@ const TenantFormList: React.FC<{}> = (props: any) => {
 
   const handleGrantTenantForm = () => {
     return (
-      <Modal title="分配用户" visible={handleGrantTenant} destroyOnClose={true} width={"1500px"}
+      <Modal title={l('pages.tenant.AssignUser')} visible={handleGrantTenant}
+             destroyOnClose={true} width={"1500px"}
              onCancel={() => {
                setHandleGrantTenant(false);
              }}
@@ -86,11 +92,11 @@ const TenantFormList: React.FC<{}> = (props: any) => {
                <Button key="back" onClick={() => {
                  setHandleGrantTenant(false);
                }}>
-                 关闭
+                 {l('button.close')}
                </Button>,
                <Button type="primary" onClick={async () => {
                  // to save
-                 const success = await handleAddOrUpdate(url+ "/grantTenantToUser", {
+                 const success = await handleAddOrUpdate(url + "/grantTenantToUser", {
                    tenantId: formValues.id,
                    users: tenantRelFormValues
                  });
@@ -103,7 +109,7 @@ const TenantFormList: React.FC<{}> = (props: any) => {
                  }
                }}
                >
-                 确认
+                 {l('button.confirm')}
                </Button>,
              ]}>
         <GrantTenantTransfer tenant={formValues} onChange={(value) => {
@@ -122,8 +128,7 @@ const TenantFormList: React.FC<{}> = (props: any) => {
       sorter: true,
     },
     {
-      title: '租户编码',
-      tip: '编码是唯一的',
+      title: l('pages.tenant.TenantCode'),
       dataIndex: 'tenantCode',
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
@@ -152,33 +157,33 @@ const TenantFormList: React.FC<{}> = (props: any) => {
     //   },
     // },
     {
-      title: '备注',
+      title: l('pages.tenant.Note'),
       dataIndex: 'note',
       hideInSearch: true,
       ellipsis: true,
     },
     {
-      title: '创建时间',
+      title: l('pages.tenant.CreateTime'),
       dataIndex: 'createTime',
       valueType: 'dateTime',
     },
     {
-      title: '最近更新时间',
+      title: l('pages.tenant.UpdateTime'),
       dataIndex: 'updateTime',
       valueType: 'dateTime',
     },
     {
-      title: '操作',
+      title: l('pages.operate'),
       dataIndex: 'option',
       valueType: 'option',
-      render: (_, record:TenantTableListItem) => [
+      render: (_, record: TenantTableListItem) => [
         <a
           onClick={() => {
             handleUpdateModalVisible(true);
             setFormValues(record);
           }}
         >
-          配置
+          {l('button.config')}
         </a>,
         <a
           onClick={() => {
@@ -186,7 +191,7 @@ const TenantFormList: React.FC<{}> = (props: any) => {
             setFormValues(record);
           }}
         >
-          分配用户
+          {l('pages.tenant.AssignUser')}
         </a>,
         <MoreBtn key="more" item={record}/>,
       ],
@@ -194,9 +199,9 @@ const TenantFormList: React.FC<{}> = (props: any) => {
   ];
 
   return (
-    <PageContainer>
+    <PageContainer title={false}>
       <ProTable<TenantTableListItem>
-        headerTitle="租户管理"
+        headerTitle={l('pages.tenant.TenantManager')}
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -204,7 +209,7 @@ const TenantFormList: React.FC<{}> = (props: any) => {
         }}
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined/> 新建
+            <PlusOutlined/> {l('button.create')}
           </Button>,
         ]}
         request={(params, sorter, filter) => queryData(url, {...params, sorter, filter})}
@@ -217,17 +222,18 @@ const TenantFormList: React.FC<{}> = (props: any) => {
         <FooterToolbar
           extra={
             <div>
-              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项
+              {l('tips.selected')} <a
+              style={{fontWeight: 600}}>{selectedRowsState.length}</a> {l('tips.item')}
             </div>
           }
         >
           <Button type="primary" danger
                   onClick={() => {
                     Modal.confirm({
-                      title: '删除租户',
-                      content: '确定删除选中的租户吗？',
-                      okText: '确认',
-                      cancelText: '取消',
+                      title: l('pages.tenant.delete'),
+                      content: l('pages.tenant.deleteConfirm'),
+                      okText: l('button.confirm'),
+                      cancelText: l('button.cancel'),
                       onOk: async () => {
                         await handleRemove(url, selectedRowsState);
                         setSelectedRows([]);
@@ -236,7 +242,7 @@ const TenantFormList: React.FC<{}> = (props: any) => {
                     });
                   }}
           >
-            批量删除
+            {l('button.batchDelete')}
           </Button>
         </FooterToolbar>
       )}
