@@ -1,3 +1,22 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 export default {
   'pages.layouts.userLayout.title': 'Dinky Real-time Computing Platform',
 
@@ -5,6 +24,7 @@ export default {
   'pages.login.accountLogin.errorMessage': 'Incorrect UserName/Password（admin/ant.design)',
   'pages.login.failure': 'Login Failed, Please Try Again!',
   'pages.login.success': 'Login Success!',
+  'pages.login.chooseTenant': 'Please Choose Tenant',
   'pages.login.username.placeholder': 'Username: Admin Or User',
   'pages.login.username.required': 'Please Input Your UserName!',
   'pages.login.password.placeholder': 'Password: ant.design',
@@ -68,82 +88,78 @@ export default {
   'pages.searchTable.batchDeletion': 'Bacth Deletion',
   'pages.searchTable.batchApproval': 'Batch Approval',
 
-  'pages.devops.jobstatus.CREATED' : 'Created',
-  'pages.devops.jobstatus.INITIALIZING' : 'Initialize',
-  'pages.devops.jobstatus.RUNNING' : 'Running',
-  'pages.devops.jobstatus.FINISHED' : 'Finished',
-  'pages.devops.jobstatus.FAILING' : 'Abnormal',
-  'pages.devops.jobstatus.FAILED' : 'Failed',
-  'pages.devops.jobstatus.SUSPENDED' : 'Paused',
-  'pages.devops.jobstatus.CANCELLING' : 'Canceling',
-  'pages.devops.jobstatus.CANCELED' : 'Canceled',
-  'pages.devops.jobstatus.RESTARTING' : 'Restarting',
-  'pages.devops.jobstatus.UNKNOWN' : 'Unknown',
+  'pages.devops.jobstatus.CREATED': 'Created',
+  'pages.devops.jobstatus.INITIALIZING': 'Initialize',
+  'pages.devops.jobstatus.RUNNING': 'Running',
+  'pages.devops.jobstatus.FINISHED': 'Finished',
+  'pages.devops.jobstatus.FAILING': 'Abnormal',
+  'pages.devops.jobstatus.FAILED': 'Failed',
+  'pages.devops.jobstatus.SUSPENDED': 'Paused',
+  'pages.devops.jobstatus.CANCELLING': 'Canceling',
+  'pages.devops.jobstatus.CANCELED': 'Canceled',
+  'pages.devops.jobstatus.RESTARTING': 'Restarting',
+  'pages.devops.jobstatus.UNKNOWN': 'Unknown',
 
-  'pages.devops.LastUpdateTime' : 'LastUpdateTime',
+  'pages.devops.LastUpdateTime': 'LastUpdateTime',
 
-  'pages.settings.UserManagement' : 'User Management',
-  'pages.settings.Flink' : 'Flink Setting',
-  'pages.settings.FlinkURL' : 'Submit the Jar file path to FlinkSQL',
+  'pages.settings.UserManagement': 'User Management',
+  'pages.settings.Flink': 'Flink Setting',
+  'pages.settings.FlinkURL': 'Submit the Jar file path to FlinkSQL',
 
-  'pages.settings.FlinkSQLJarMainParameter' : 'Submit The Main Class entry To the Jar For FlinkSQL',
-  'pages.settings.FlinkSQLJarMainClass' : 'The Main Class Of The Jar That Submitted FlinkSQL',
-  'pages.settings.FlinkRestAPI' : 'Using Rest API',
-  'pages.settings.FlinkURLSplit' : 'FlinkSQL Statement Separator',
-  'pages.settings.FlinkSQLLogic' : 'Calculate Consanguinity Using A Logical Plan',
-  'pages.settings.FlinkJobID' : 'Maximum Waiting Time For Getting A Job ID (seconds)',
-  'pages.settings.FlinkNoSetting' : 'Not Setting',
-  'pages.settings.FlinkNoUseSetting' : 'After The Flink Task Is Enabled, Operations Such As Savepoint And Stop Are Performed Through The RestAPI Of JobManager',
-  'pages.settings.FlinkLogic' : 'Whether The Calculation Of Field Consanguinity Analysis For Flink Tasks Is Based On A Logical Plan Is Supported Only In Version 1.14',
+  'pages.settings.FlinkSQLJarMainParameter': 'Submit The Main Class entry To the Jar For FlinkSQL',
+  'pages.settings.FlinkSQLJarMainClass': 'The Main Class Of The Jar That Submitted FlinkSQL',
+  'pages.settings.FlinkRestAPI': 'Using Rest API',
+  'pages.settings.FlinkURLSplit': 'FlinkSQL Statement Separator',
+  'pages.settings.FlinkSQLLogic': 'Calculate Consanguinity Using A Logical Plan',
+  'pages.settings.FlinkJobID': 'Maximum Waiting Time For Getting A Job ID (seconds)',
+  'pages.settings.FlinkNoSetting': 'Not Setting',
+  'pages.settings.FlinkNoUseSetting': 'After The Flink Task Is Enabled, Operations Such As Savepoint And Stop Are Performed Through The RestAPI Of JobManager',
+  'pages.settings.FlinkLogic': 'Whether The Calculation Of Field Consanguinity Analysis For Flink Tasks Is Based On A Logical Plan Is Supported Only In Version 1.14',
 
-  'pages.settings.FlinkUpdate' : 'Update',
-  'pages.settings.FlinkSave' : 'Save',
-  'pages.settings.FlinkCancel' : 'Cancel',
-  'pages.settings.FlinkUse' : 'In Use',
-  'pages.settings.FlinkNotUse' : 'Not Use',
+  'pages.settings.FlinkUpdate': 'Update',
+  'pages.settings.FlinkSave': 'Save',
+  'pages.settings.FlinkCancel': 'Cancel',
+  'pages.settings.FlinkUse': 'In Use',
+  'pages.settings.FlinkNotUse': 'Not Use',
 
-  'pages.user.UserEdit' : 'Edit',
-  'pages.user.UserDelete' : 'Delete',
-  'pages.user.UserChangePassword' : 'Update Password',
-  'pages.user.UserConfig' : 'Config',
-  'pages.user.UserMore' : 'More',
+  'pages.user.UserEdit': 'Edit',
+  'pages.user.UserDelete': 'Delete',
+  'pages.user.UserChangePassword': 'Update Password',
+  'pages.user.UserConfig': 'Config',
+  'pages.user.UserMore': 'More',
 
-  'pages.user.UserCreate' : 'Create',
-  'pages.user.UserManger' : 'User Management',
-  'pages.user.UserName' : 'User Name',//用户名
-  'pages.user.UserJobNumber' : 'Job Number',//工号
-  'pages.user.UserPhoneNumber' : 'Phone Number',//手机号
-  'pages.user.UserNickName' : 'Nick Name',//昵称
-  'pages.user.UserIsUse' : 'Is Use',//是否启用
-  'pages.user.UserUpdateTime' : 'Update Time',//最近更新时间
-  'pages.user.UserOperate' : 'Operate',//操作
-  'pages.user.UserInUse' : 'In Use',//已启用
-  'pages.user.UserNotUse' : 'Not Use',//已禁用
-  'pages.user.UserCreateTime' : 'Create Time',//创建时间
+  'pages.user.UserCreate': 'Create',
+  'pages.user.UserManger': 'User Management',
+  'pages.user.UserName': 'User Name',//用户名
+  'pages.user.UserJobNumber': 'Job Number',//工号
+  'pages.user.UserPhoneNumber': 'Phone Number',//手机号
+  'pages.user.UserNickName': 'Nick Name',//昵称
+  'pages.user.UserIsUse': 'Is Use',//是否启用
+  'pages.user.UserUpdateTime': 'Update Time',//最近更新时间
+  'pages.user.UserOperate': 'Operate',//操作
+  'pages.user.UserInUse': 'In Use',//已启用
+  'pages.user.UserNotUse': 'Not Use',//已禁用
+  'pages.user.UserCreateTime': 'Create Time',//创建时间
 
-  'pages.user.UserComplete' : 'Complete',
-  'pages.user.UserConfirm' : 'Confirm',
-  'pages.user.UserCancel' : 'Cancel',
-  'pages.user.UserDeleteUser' : 'Delete User',
-  'pages.user.UserCreateUser' : 'Create User',
-  'pages.user.UserUpdateUser' : 'Update User',
-  'pages.user.UserEnterUserName' : 'Please enter user name',
-  'pages.user.UserEnterUniqueUserName' : 'Please enter unique user name',
-  'pages.user.UserEnterJobNumber' : 'Please enter job number',
-  'pages.user.UserEnterNickName' : 'Please enter nickname',
-  'pages.user.UserEnterPhoneNumber' : 'Please enter phone number',
-  'pages.user.UserOldPassword' : 'Old Password',
-  'pages.user.UserNewPassword' : 'New Password',
-  'pages.user.UserRepeatNewPassword' : 'Repeat New Password',
-  'pages.user.UserEnterOldPassword' : 'Please enter old password',
-  'pages.user.UserEnterNewPassword' : 'Please enter new password',
-  'pages.user.UserEnterRepeatNewPassword' : 'Please enter repeat new password',
-  'pages.user.UserNewPasswordNotMatch' : 'The new passwords do not match',
-  'pages.user.UserUpdatePassword' : 'Update Password',
-
-
-  'pages.regist.openAPI' : 'openAPI Document',
-  'pages.regist.BusinessComponent' : 'Business Component Document',
+  'pages.user.UserComplete': 'Complete',
+  'pages.user.UserConfirm': 'Confirm',
+  'pages.user.UserCancel': 'Cancel',
+  'pages.user.UserDeleteUser': 'Delete User',
+  'pages.user.UserCreateUser': 'Create User',
+  'pages.user.UserUpdateUser': 'Update User',
+  'pages.user.UserEnterUserName': 'Please enter user name',
+  'pages.user.UserEnterUniqueUserName': 'Please enter unique user name',
+  'pages.user.UserEnterJobNumber': 'Please enter job number',
+  'pages.user.UserEnterNickName': 'Please enter nickname',
+  'pages.user.UserEnterPhoneNumber': 'Please enter phone number',
+  'pages.user.UserOldPassword': 'Old Password',
+  'pages.user.UserNewPassword': 'New Password',
+  'pages.user.UserRepeatNewPassword': 'Repeat New Password',
+  'pages.user.UserEnterOldPassword': 'Please enter old password',
+  'pages.user.UserEnterNewPassword': 'Please enter new password',
+  'pages.user.UserEnterRepeatNewPassword': 'Please enter repeat new password',
+  'pages.user.UserNewPasswordNotMatch': 'The new passwords do not match',
+  'pages.user.UserUpdatePassword': 'Update Password',
 
   'pages.matedata.NoDatabaseSelected' : 'No database selected',
   'pages.matedata.Application' : 'Application',
@@ -187,7 +203,6 @@ export default {
   'pages.datastadio.lable.dinkydescribe' : 'Real Time is the Future,Dinky is the best partner of Flink, making Flink SQL easier to use, and is committed to the construction of stream batch integrated development platform',
   'pages.datastadio.lable.maxrows' : 'Max Rows',
 
-
   'pages.devops.result.success' : 'Successful',
   'pages.devops.lable.online' : 'Online',
   'pages.devops.lable.offline' : 'Offline',
@@ -195,8 +210,6 @@ export default {
   'pages.devops.lable.offlinelist' : 'Offline List',
   'pages.devops.lable.instance' : 'Instance',
 
-
-
-
-
+  'pages.regist.openAPI': 'openAPI Document',
+  'pages.regist.BusinessComponent': 'Business Component Document',
 };

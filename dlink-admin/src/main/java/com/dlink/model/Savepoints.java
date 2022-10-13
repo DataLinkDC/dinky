@@ -50,6 +50,8 @@ public class Savepoints implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
+    private Integer tenantId;
+
     @NotNull(message = "作业ID不能为空", groups = {Save.class})
     private Integer taskId;
 

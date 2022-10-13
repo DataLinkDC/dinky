@@ -69,7 +69,7 @@ public class WebExceptionHandler {
         return Result.notLogin("该用户未登录!");
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST) //设置状态码为 400
+    @ResponseStatus(HttpStatus.BAD_REQUEST) // 设置状态码为 400
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public Result<String> paramExceptionHandler(MethodArgumentNotValidException e) {
         BindingResult exceptions = e.getBindingResult();
@@ -93,5 +93,4 @@ public class WebExceptionHandler {
         logger.error("ERROR:", e);
         return Result.failed(e.getMessage());
     }
-
 }

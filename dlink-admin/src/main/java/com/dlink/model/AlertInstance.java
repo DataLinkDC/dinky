@@ -38,6 +38,8 @@ import lombok.EqualsAndHashCode;
 public class AlertInstance extends SuperEntity {
     private static final long serialVersionUID = -3435401513220527001L;
 
+    private Integer tenantId;
+
     private String type;
 
     private String params;

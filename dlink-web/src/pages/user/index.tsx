@@ -20,16 +20,15 @@
 
 import React, {useRef, useState} from "react";
 import {DownOutlined, PlusOutlined} from '@ant-design/icons';
-import {ActionType, ProColumns} from "@ant-design/pro-table";
-import {Button, Drawer, Modal, Dropdown, Menu} from 'antd';
+import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
+import {Button, Drawer, Dropdown, Menu, Modal} from 'antd';
 import {FooterToolbar} from '@ant-design/pro-layout';
-import ProTable from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import {UserTableListItem} from "@/pages/user/data";
 import {handleAddOrUpdate, handleOption, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
-import UserForm from "@/pages/user/components/UserForm";
-import PasswordForm from "@/pages/user/components/PasswordForm";
-import { useIntl, Link, history, FormattedMessage, SelectLang} from 'umi';
+import {useIntl} from 'umi';
+import UserForm from "@/pages/AuthenticationCenter/UserManager/components/UserForm";
+import PasswordForm from "@/pages/AuthenticationCenter/UserManager/components/PasswordForm";
+import {UserTableListItem} from "@/pages/AuthenticationCenter/data.d";
 
 const url = '/api/user';
 const UserTableList: React.FC<{}> = (props: any) => {
@@ -73,8 +72,14 @@ const UserTableList: React.FC<{}> = (props: any) => {
       overlay={
         <Menu onClick={({key}) => editAndDelete(key, item)}>
           <Menu.Item key="edit">{intl.formatMessage({id: 'pages.user.UserEdit', defaultMessage: '编辑',})}</Menu.Item>
-          <Menu.Item key="password">{intl.formatMessage({id: 'pages.user.UserChangePassword', defaultMessage: '修改密码',})}</Menu.Item>
-          {item.username=='admin'?'':(<Menu.Item key="delete">{intl.formatMessage({id: 'pages.user.UserDelete', defaultMessage: '删除',})}</Menu.Item>)}
+          <Menu.Item key="password">{intl.formatMessage({
+            id: 'pages.user.UserChangePassword',
+            defaultMessage: '修改密码',
+          })}</Menu.Item>
+          {item.username == 'admin' ? '' : (<Menu.Item key="delete">{intl.formatMessage({
+            id: 'pages.user.UserDelete',
+            defaultMessage: '删除',
+          })}</Menu.Item>)}
         </Menu>
       }
     >
@@ -164,7 +169,10 @@ const UserTableList: React.FC<{}> = (props: any) => {
             setFormValues(record);
           }}
         >
-          {intl.formatMessage({id: 'pages.user.UserConfig', defaultMessage: intl.formatMessage({id: 'pages.user.UserConfig', defaultMessage: '配置',}),})}
+          {intl.formatMessage({
+            id: 'pages.user.UserConfig',
+            defaultMessage: intl.formatMessage({id: 'pages.user.UserConfig', defaultMessage: '配置',}),
+          })}
         </a>,
         <MoreBtn key="more" item={record}/>,
       ],
@@ -178,155 +186,155 @@ const UserTableList: React.FC<{}> = (props: any) => {
         actionRef={actionRef}
         rowKey="id"
         search={{
-        labelWidth: 120,
-      }}
+          labelWidth: 120,
+        }}
         toolBarRender={() => [
-        <Button type="primary" onClick={() => handleModalVisible(true)}>
-          <PlusOutlined/> {intl.formatMessage({id: 'pages.user.UserCreate', defaultMessage: '新建',})}
-        </Button>,
-      ]}
+          <Button type="primary" onClick={() => handleModalVisible(true)}>
+            <PlusOutlined/> {intl.formatMessage({id: 'pages.user.UserCreate', defaultMessage: '新建',})}
+          </Button>,
+        ]}
         request={(params, sorter, filter) => queryData(url, {...params, sorter, filter})}
         columns={columns}
         rowSelection={{
-        onChange: (_, selectedRows) => setSelectedRows(selectedRows),
-      }}
-        />
-        {selectedRowsState?.length > 0 && (
-          <FooterToolbar
-            extra={
-              <div>
-                已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
-                <span>
+          onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+        }}
+      />
+      {selectedRowsState?.length > 0 && (
+        <FooterToolbar
+          extra={
+            <div>
+              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
+              <span>
                 被禁用的用户共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} 人
               </span>
-              </div>
-            }
+            </div>
+          }
+        >
+          <Button type="primary" danger
+                  onClick={() => {
+                    Modal.confirm({
+                      title: '删除用户',
+                      content: '确定删除选中的用户吗？',
+                      okText: '确认',
+                      cancelText: '取消',
+                      onOk: async () => {
+                        await handleRemove(url, selectedRowsState);
+                        setSelectedRows([]);
+                        actionRef.current?.reloadAndRest?.();
+                      }
+                    });
+                  }}
           >
-            <Button type="primary" danger
-                    onClick={() => {
-                      Modal.confirm({
-                        title: '删除用户',
-                        content: '确定删除选中的用户吗？',
-                        okText: '确认',
-                        cancelText: '取消',
-                        onOk: async () => {
-                          await handleRemove(url, selectedRowsState);
-                          setSelectedRows([]);
-                          actionRef.current?.reloadAndRest?.();
-                        }
-                      });
-                    }}
-            >
-              批量删除
-            </Button>
-            <Button type="primary"
-                    onClick={() => {
-                      Modal.confirm({
-                        title: '启用用户',
-                        content: '确定启用选中的用户吗？',
-                        okText: '确认',
-                        cancelText: '取消',
-                        onOk: async () => {
-                          await updateEnabled(url, selectedRowsState, true);
-                          setSelectedRows([]);
-                          actionRef.current?.reloadAndRest?.();
-                        }
-                      });
-                    }}
-            >批量启用</Button>
-            <Button danger
-                    onClick={() => {
-                      Modal.confirm({
-                        title: '禁用用户',
-                        content: '确定禁用选中的用户吗？',
-                        okText: '确认',
-                        cancelText: '取消',
-                        onOk: async () => {
-                          await updateEnabled(url, selectedRowsState, false);
-                          setSelectedRows([]);
-                          actionRef.current?.reloadAndRest?.();
-                        }
-                      });
-                    }}
-            >批量禁用</Button>
-          </FooterToolbar>
-        )}
-        <UserForm
-          onSubmit={async (value) => {
-            const success = await handleAddOrUpdate("api/user", value);
-            if (success) {
-              handleModalVisible(false);
-              setFormValues({});
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-            }
-          }}
-          onCancel={() => {
+            批量删除
+          </Button>
+          <Button type="primary"
+                  onClick={() => {
+                    Modal.confirm({
+                      title: '启用用户',
+                      content: '确定启用选中的用户吗？',
+                      okText: '确认',
+                      cancelText: '取消',
+                      onOk: async () => {
+                        await updateEnabled(url, selectedRowsState, true);
+                        setSelectedRows([]);
+                        actionRef.current?.reloadAndRest?.();
+                      }
+                    });
+                  }}
+          >批量启用</Button>
+          <Button danger
+                  onClick={() => {
+                    Modal.confirm({
+                      title: '禁用用户',
+                      content: '确定禁用选中的用户吗？',
+                      okText: '确认',
+                      cancelText: '取消',
+                      onOk: async () => {
+                        await updateEnabled(url, selectedRowsState, false);
+                        setSelectedRows([]);
+                        actionRef.current?.reloadAndRest?.();
+                      }
+                    });
+                  }}
+          >批量禁用</Button>
+        </FooterToolbar>
+      )}
+      <UserForm
+        onSubmit={async (value) => {
+          const success = await handleAddOrUpdate("api/user", value);
+          if (success) {
             handleModalVisible(false);
-          }}
-          modalVisible={modalVisible}
-          values={{}}
-        />
-        {formValues && Object.keys(formValues).length ? (
-          <>
-            <PasswordForm
-              onSubmit={async (value) => {
-                const success = await handleOption(url +"/modifyPassword",'修改密码', value);
-                if (success) {
-                  handlePasswordModalVisible(false);
-                  setFormValues({});
-                }
-              }}
-              onCancel={() => {
+            setFormValues({});
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        onCancel={() => {
+          handleModalVisible(false);
+        }}
+        modalVisible={modalVisible}
+        values={{}}
+      />
+      {formValues && Object.keys(formValues).length ? (
+        <>
+          <PasswordForm
+            onSubmit={async (value) => {
+              const success = await handleOption(url + "/modifyPassword", '修改密码', value);
+              if (success) {
                 handlePasswordModalVisible(false);
-              }}
-              modalVisible={passwordModalVisible}
-              values={formValues}
-            />
-        <UserForm
-          onSubmit={async (value) => {
-            const success = await handleAddOrUpdate("api/user", value);
-            if (success) {
+                setFormValues({});
+              }
+            }}
+            onCancel={() => {
+              handlePasswordModalVisible(false);
+            }}
+            modalVisible={passwordModalVisible}
+            values={formValues}
+          />
+          <UserForm
+            onSubmit={async (value) => {
+              const success = await handleAddOrUpdate("api/user", value);
+              if (success) {
+                handleUpdateModalVisible(false);
+                setFormValues({});
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
+              }
+            }}
+            onCancel={() => {
               handleUpdateModalVisible(false);
               setFormValues({});
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-            }
-          }}
-          onCancel={() => {
-            handleUpdateModalVisible(false);
-            setFormValues({});
-          }}
-          modalVisible={updateModalVisible}
-          values={formValues}
-        /></>
-          ): null}
-        <Drawer
-          width={600}
-          visible={!!row}
-          onClose={() => {
-            setRow(undefined);
-          }}
-          closable={false}
-        >
-          {row?.username && (
-            <ProDescriptions<UserTableListItem>
-              column={2}
-              title={row?.username}
-              request={async () => ({
+            }}
+            modalVisible={updateModalVisible}
+            values={formValues}
+          /></>
+      ) : null}
+      <Drawer
+        width={600}
+        visible={!!row}
+        onClose={() => {
+          setRow(undefined);
+        }}
+        closable={false}
+      >
+        {row?.username && (
+          <ProDescriptions<UserTableListItem>
+            column={2}
+            title={row?.username}
+            request={async () => ({
               data: row || {},
             })}
-              params={{
+            params={{
               id: row?.username,
             }}
-              columns={columns}
-              />
-              )}
-        </Drawer>
+            columns={columns}
+          />
+        )}
+      </Drawer>
     </>
-);
+  );
 };
 
 export default UserTableList;
