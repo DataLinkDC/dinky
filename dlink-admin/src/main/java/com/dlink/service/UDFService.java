@@ -23,8 +23,7 @@ import com.dlink.job.JobConfig;
 
 /**
  * @author ZackYoung
- * @version 1.0
- * @since 2022/10/12
+ * @since 0.6.8
  */
 public interface UDFService {
     void initUDF(JobConfig config, String statement);
