@@ -90,6 +90,7 @@ import com.dlink.service.SavepointsService;
 import com.dlink.service.StatementService;
 import com.dlink.service.TaskService;
 import com.dlink.service.TaskVersionService;
+import com.dlink.service.UDFService;
 import com.dlink.utils.CustomStringJavaCompiler;
 import com.dlink.utils.JSONUtil;
 
@@ -184,6 +185,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Value("${server.port}")
     private String serverPort;
 
+    @Autowired
+    private UDFService udfService;
+
     private String buildParas(Integer id) {
         return "--id " + id + " --driver " + driver + " --url " + url + " --username " + username + " --password " + password;
     }
@@ -197,6 +201,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 task.getDatabaseId(), null));
         }
         JobConfig config = buildJobConfig(task);
+        udfService.initUDF(config, task.getStatement());
         JobManager jobManager = JobManager.build(config);
         if (!config.isJarTask()) {
             return jobManager.executeSql(task.getStatement());
