@@ -33,6 +33,7 @@ import StudioJarSetting from "./StudioJarSetting";
 import StudioGuide from "./StudioGuide";
 import StudioTaskInfo from "./StudioTaskInfo";
 import {DIALECT, isSql} from "@/components/Studio/conf";
+import StudioKubernetesConfig from "@/components/Studio/StudioRightTool/StudioKubernetesConfig";
 
 const {TabPane} = Tabs;
 
@@ -53,6 +54,9 @@ const StudioRightTool = (props: any) => {
     if (DIALECT.JAVA === current.task.dialect) {
       return renderUDFContent();
     }
+    if (DIALECT.KUBERNETES_APPLICATION === current.task.dialect) {
+      return renderKubernetesContent();
+    }
     return renderFlinkSqlContent();
   };
 
@@ -68,6 +72,17 @@ const StudioRightTool = (props: any) => {
     return (<>
       <TabPane tab={<span><SettingOutlined/> 执行配置</span>} key="StudioSqlConfig">
         <StudioSqlConfig form={form}/>
+      </TabPane>
+    </>)
+  };
+
+  const renderKubernetesContent = () => {
+    return (<>
+      <TabPane tab={<span><SettingOutlined/> 执行配置</span>} key="StudioSqlConfig">
+        <StudioKubernetesConfig form={form}/>
+      </TabPane>
+      <TabPane tab={<span><ScheduleOutlined/> 保存点</span>} key="StudioSavePoint">
+        <StudioSavePoint/>
       </TabPane>
     </>)
   };
