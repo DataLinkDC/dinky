@@ -1,4 +1,22 @@
 /*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+/*
  Navicat Premium Data Transfer
 
  Source Server Type    : MySQL
@@ -655,6 +673,277 @@ CREATE TABLE `dlink_upload_file_record` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='上传文件记录';
 
 
+-- ----------------------------
+-- Table structure for metadata_database
+-- ----------------------------
+drop table if exists `metadata_database`;
+create  table if not exists `metadata_database` (
+  `id` int(11) not null AUTO_INCREMENT COMMENT '主键',
+  `database_name` varchar(255) NOT NULL COMMENT '名称',
+  `description` varchar(255) null comment'描述',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='元数据对象信息';
+
+-- ----------------------------
+-- Table structure for metadata_table
+-- ----------------------------
+drop table if exists `metadata_table`;
+create  table if not exists `metadata_table` (
+  `id` int(11) not null AUTO_INCREMENT COMMENT '主键',
+  `table_name` varchar(255) NOT NULL COMMENT '名称',
+  `table_type` varchar(255) NOT null comment '对象类型，分为：database 和 table view',
+  `database_id` int(11) not null COMMENT '数据库主键',
+  `description` varchar(255) null comment'描述',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='元数据对象信息';
+
+-- ----------------------------
+-- Table structure for metadata_database_property
+-- ----------------------------
+drop table if exists `metadata_database_property`;
+create  table if not exists `metadata_database_property` (
+  `key` varchar(255) NOT NULL COMMENT '属性key',
+  `value` varchar(255) NULL COMMENT '属性value',
+  `database_id` int(11) not null COMMENT '数据库主键',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`key`, `database_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='元数据属性信息';
+
+-- ----------------------------
+-- Table structure for metadata_table_property
+-- ----------------------------
+drop table if exists `metadata_table_property`;
+create  table if not exists `metadata_table_property` (
+  `key` varchar(255) NOT NULL COMMENT '属性key',
+  `value` varchar(255) NULL COMMENT '属性value',
+  `table_id` int(11) not null COMMENT '数据表名称',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`key`, `table_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='元数据属性信息';
+
+-- ----------------------------
+-- Table structure for metadata_column
+-- ----------------------------
+drop table if exists metadata_column;
+create  table if not exists `metadata_column` (
+  `column_name` varchar(255) NOT NULL COMMENT '列名',
+  `column_type` varchar(255) NOT NULL COMMENT '列类型, 有Physical Metadata Computed WATERMARK ',
+  `data_type` varchar(255) NOT NULL COMMENT '数据类型',
+  `expr` varchar(255) NULL COMMENT '表达式',
+  `description` varchar(255) NOT NULL COMMENT '字段描述',
+  `table_id` int(11) not null COMMENT '数据表名称',
+  `primary` bit null comment '主键',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`table_id`,`column_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='数据列信息';
+
+-- ----------------------------
+-- Table structure for metadata_function
+-- ----------------------------
+drop table if exists `metadata_function`;
+create  table if not exists `metadata_function` (
+  `id` int(11) not null AUTO_INCREMENT COMMENT '主键',
+  `function_name` varchar(255) NOT NULL COMMENT '名称',
+  `class_name` varchar(255) NOT null comment '类名',
+  `database_id` int(11) not null COMMENT '数据库主键',
+  `function_language` varchar(255) null comment'UDF语言',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='UDF信息';
+
+
+
+-- ----------------------------
+-- Table structure for dlink_tenant
+-- ----------------------------
+drop table if exists `dlink_tenant`;
+CREATE TABLE IF NOT EXISTS dlink_tenant
+(
+    id          int auto_increment comment 'ID',
+    tenant_code varchar(64)          not null comment '租户编码',
+    is_delete   tinyint(1) default 0 not null comment '是否被删除',
+    note        varchar(255)         null comment '注释',
+    create_time datetime             null comment '创建时间',
+    update_time datetime             null comment '最近修改时间',
+    PRIMARY KEY (id) USING BTREE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT '租户' ;
+-- ----------------------------
+-- Records of dlink_tenant
+-- ----------------------------
+INSERT INTO `dlink_tenant`(`id`, `tenant_code`, `is_delete`, `note`, `create_time`, `update_time`) VALUES (1, 'DefaultTenant', 0, 'DefaultTenant', current_time, current_time);
+
+-- ----------------------------
+-- Table structure for dlink_role
+-- ----------------------------
+drop table if exists `dlink_role`;
+CREATE TABLE IF NOT EXISTS dlink_role
+(
+    id          int auto_increment comment 'ID',
+    tenant_id   int          not null comment '租户ID',
+    role_code   varchar(64)  not null comment '角色编码',
+    role_name   varchar(64)  not null comment '角色名称',
+    is_delete   tinyint(1) default 0 not null comment '是否被删除',
+    note        varchar(255) null comment '注释',
+    create_time datetime     null comment '创建时间',
+    update_time datetime     null comment '更新时间',
+    PRIMARY KEY (id) USING BTREE,
+    UNIQUE KEY `dlink_role_un` (`role_code`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC comment '角色' ;
+-- ----------------------------
+-- Records of dlink_role
+-- ----------------------------
+INSERT INTO `dlink_role`(`id`, `tenant_id`, `role_code`, `role_name`, `is_delete`, `note`, `create_time`, `update_time`) VALUES (1, 1, 'SuperAdmin', '超级管理员', 0, '超级管理员角色', current_time, current_time);
+
+
+-- ----------------------------
+-- Table structure for dlink_namespace
+-- ----------------------------
+drop table if exists `dlink_namespace`;
+CREATE TABLE IF NOT EXISTS  dlink_namespace
+(
+    id             int auto_increment comment 'ID',
+    tenant_id      int                  not null comment '租户ID',
+    namespace_code varchar(64)          not null comment '命名空间编码',
+    enabled        tinyint(1) default 1 not null comment '是否启用',
+    note           varchar(255)         null comment '注释',
+    create_time    datetime             null comment '创建时间',
+    update_time    datetime             null comment '更新时间',
+    PRIMARY KEY (id) USING BTREE,
+    UNIQUE KEY `dlink_namespace_un` (`namespace_code`,`tenant_id`)
+    )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC comment '命名空间';
+-- ----------------------------
+-- Records of dlink_namespace
+-- ----------------------------
+INSERT INTO `dlink_namespace`(`id`, `tenant_id`, `namespace_code`, `enabled`, `note`, `create_time`, `update_time`) VALUES (1, 1, 'DefaultNameSpace', 1, '默认命名空间', current_time, current_time);
+
+
+-- ----------------------------
+-- Table structure for dlink_role_namespace
+-- ----------------------------
+drop table if exists `dlink_role_namespace`;
+CREATE TABLE IF NOT EXISTS  dlink_role_namespace
+(
+    id           int auto_increment comment 'ID',
+    role_id      int      not null comment '用户ID',
+    namespace_id int      not null comment '名称空间ID',
+    create_time  datetime null comment '创建时间',
+    update_time  datetime null comment '更新时间',
+    PRIMARY KEY (id) USING BTREE,
+    UNIQUE KEY `dlink_role_namespace_un` (role_id, namespace_id)
+    )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC comment '角色与名称空间关系';
+-- ----------------------------
+-- Records of dlink_role_namespace
+-- ----------------------------
+INSERT INTO `dlink_role_namespace`(`id`, `role_id`, `namespace_id`, `create_time`, `update_time`) VALUES (1, 1, 1, current_time, current_time);
+
+
+-- ----------------------------
+-- Table structure for dlink_user_role
+-- ----------------------------
+drop table if exists `dlink_user_role`;
+CREATE TABLE IF NOT EXISTS  dlink_user_role
+(
+    id          int auto_increment comment 'ID',
+    user_id     int                  not null comment '用户ID',
+    role_id     int                  not null comment '角色ID',
+    create_time datetime             null comment '创建时间',
+    update_time datetime             null comment '更新时间',
+    PRIMARY KEY (id) USING BTREE,
+    UNIQUE KEY `dlink_user_role_un` (user_id, role_id)
+    )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC comment '用户与角色关系';
+-- ----------------------------
+-- Records of dlink_user_role
+-- ----------------------------
+INSERT INTO `dlink_user_role`(`id`, `user_id`, `role_id`, `create_time`, `update_time`) VALUES (1, 1, 1, current_time, current_time);
+
+-- ----------------------------
+-- Table structure for dlink_user_tenant
+-- ----------------------------
+drop table if exists `dlink_user_tenant`;
+CREATE TABLE `dlink_user_tenant` (
+                                     `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
+                                     `user_id` int NOT NULL COMMENT '用户ID',
+                                     `tenant_id` int NOT NULL COMMENT '租户ID',
+                                     `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+                                     `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+                                     PRIMARY KEY (`id`) USING BTREE,
+                                     UNIQUE KEY `dlink_user_role_un` (`user_id`,`tenant_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='用户与租户关系';
+-- ----------------------------
+-- Records of dlink_user_tenant
+-- ----------------------------
+INSERT INTO `dlink_user_tenant`(`id`, `user_id`, `tenant_id`, `create_time`, `update_time`) VALUES (1, 1, 1, current_time, current_time);
+
+
+alter table dlink_catalogue add column tenant_id int  not null comment '租户ID' after id;
+alter table dlink_catalogue drop  index   `idx_name`;
+alter table dlink_catalogue add unique key `dlink_catalogue_un` (`name`, `parent_id`,`tenant_id`);
+
+alter table dlink_cluster add column tenant_id int  not null comment '租户ID' after id;
+alter table dlink_cluster drop  index   `idx_name`;
+alter table dlink_cluster add unique key `dlink_cluster_un` (`name`, `tenant_id`);
+
+alter table dlink_task add column tenant_id int  not null comment '租户ID' after name;
+alter table dlink_task drop  index   `idx_name`;
+alter table dlink_task add unique key `dlink_task_un` (`name`, `tenant_id`);
+
+alter table dlink_task_statement add column tenant_id int  not null comment '租户ID' after id;
+alter table dlink_task_statement add unique key `dlink_task_statement_un`  (`tenant_id`,`id`);
+
+alter table dlink_database add column tenant_id int  not null comment '租户ID' after id;
+alter table dlink_database drop  index   `db_index`;
+alter table dlink_database add unique key `dlink_database_un` (`name`,`tenant_id`);
+
+alter table dlink_cluster_configuration add column tenant_id int  not null comment '租户ID' after id;
+alter table dlink_cluster_configuration add unique key `dlink_cluster_configuration_un` (`name`,`tenant_id`);
+
+alter table dlink_jar add column tenant_id int  not null comment '租户ID' after id;
+alter table dlink_jar add unique key `dlink_jar_un` (`tenant_id`,`name`);
+
+alter table dlink_savepoints add column tenant_id int  not null comment '租户ID' after task_id;
+
+
+alter table dlink_job_instance add column tenant_id int  not null comment '租户ID' after name;
+alter table dlink_job_instance add unique key `dlink_job_instance_un` (`tenant_id`,`name`,`task_id`,`history_id`);
+
+alter table dlink_alert_instance add column tenant_id int  not null comment '租户ID' after name;
+alter table dlink_alert_instance add unique key `dlink_alert_instance_un` (`name`,`tenant_id`);
+
+alter table dlink_alert_group add column tenant_id int  not null comment '租户ID' after name;
+alter table dlink_alert_group add unique key `dlink_alert_instance_un` (`name`,`tenant_id`);
+
+alter table dlink_alert_history add column tenant_id int  not null comment '租户ID' after id;
+
+alter table dlink_task_version add column tenant_id int  not null comment '租户ID' after task_id;
+alter table dlink_task_version add unique key `dlink_task_version_un` (`task_id`,`tenant_id`,`version_id`);
+
+alter table dlink_history add column tenant_id int  not null comment '租户ID' after id;
+alter table dlink_job_history add column tenant_id int  not null comment '租户ID' after id;
+
+-- 修改历史表的租户编号为默认租户
+UPDATE `dlink_alert_group` SET `tenant_id` = 1 ;
+UPDATE `dlink_alert_history` SET `tenant_id` = 1;
+UPDATE `dlink_alert_instance` SET `tenant_id` = 1;
+UPDATE `dlink_catalogue` SET `tenant_id` = 1;
+UPDATE `dlink_cluster` SET `tenant_id` = 1;
+UPDATE `dlink_cluster_configuration` SET `tenant_id` = 1 ;
+UPDATE `dlink_database` SET `tenant_id` = 1 ;
+UPDATE `dlink_history` SET `tenant_id` = 1;
+UPDATE `dlink_jar` SET `tenant_id` = 1 ;
+UPDATE `dlink_job_instance` SET `tenant_id` = 1 ;
+UPDATE `dlink_savepoints` SET `tenant_id` = 1;
+UPDATE `dlink_task` SET `tenant_id` = 1 ;
+UPDATE `dlink_task_statement` SET `tenant_id` = 1;
+UPDATE `dlink_task_version` SET `tenant_id` = 1;
+UPDATE `dlink_job_history` SET `tenant_id` = 1;
 
 
 
