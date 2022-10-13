@@ -26,14 +26,13 @@ import {
   SettingOutlined,
   UserSwitchOutlined
 } from '@ant-design/icons';
-import {Avatar, Menu, message, Modal, Spin} from 'antd';
+import {Avatar, Menu, Modal, Spin} from 'antd';
 import {history, useModel} from 'umi';
 import {stringify} from 'querystring';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 import {outLogin} from '@/services/ant-design-pro/api';
 import {ActionType} from "@ant-design/pro-table";
-import {postAll} from "@/components/Common/crud";
 
 export type GlobalHeaderRightProps = {
   menu?: boolean;
@@ -78,7 +77,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
         loginOut();
         return;
       }
-      // history.push(`/account/${key}`);
+      history.push(`/account/${key}`);
     },
     [initialState, setInitialState],
   );
