@@ -5,6 +5,7 @@ export default {
   'pages.login.accountLogin.errorMessage': 'Incorrect UserName/Password（admin/ant.design)',
   'pages.login.failure': 'Login Failed, Please Try Again!',
   'pages.login.success': 'Login Success!',
+  'pages.login.chooseTenant': 'Please Choose Tenant',
   'pages.login.username.placeholder': 'Username: Admin Or User',
   'pages.login.username.required': 'Please Input Your UserName!',
   'pages.login.password.placeholder': 'Password: ant.design',
@@ -194,9 +195,5 @@ export default {
   'pages.devops.lable.onlinelist' : 'Online List',
   'pages.devops.lable.offlinelist' : 'Offline List',
   'pages.devops.lable.instance' : 'Instance',
-
-
-
-
-
 };
+
