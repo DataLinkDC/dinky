@@ -240,8 +240,8 @@ export type ModelType = {
     renameTab: Reducer<StateType>;
   };
 };
-
 const Model: ModelType = {
+
   namespace: 'Studio',
   state: {
     isFullScreen: false,
@@ -259,7 +259,7 @@ const Model: ModelType = {
     current: undefined,
     sql: '',
     // monaco: {},
-    currentPath: ['引导页'],
+    currentPath: ['Guide Page'],
     tabs: {
       activeKey: 0,
       panes: [],
@@ -411,7 +411,7 @@ const Model: ModelType = {
           ...state,
           current: undefined,
           tabs: payload,
-          currentPath: ['引导页'],
+          currentPath: ['Guide Page'],
         };
       }
       return {
@@ -645,7 +645,7 @@ const Model: ModelType = {
           ...state,
           current: undefined,
           tabs: {...newTabs},
-          currentPath: ['引导页'],
+          currentPath: ['Guide Page'],
         };
       }
       return {

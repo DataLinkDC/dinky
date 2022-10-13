@@ -18,7 +18,7 @@
  */
 
 
-import {connect} from "umi";
+import {connect,useIntl} from "umi";
 import {StateType} from "@/pages/DataStudio/model";
 import {
   Form, InputNumber, Select, Tag, Row, Col,  Tooltip, Button,
@@ -31,6 +31,8 @@ import { Scrollbars } from 'react-custom-scrollbars';
 const { Option } = Select;
 
 const StudioSqlConfig = (props: any) => {
+
+  const intl = useIntl();
 
   const {current,form,dispatch,tabs,database,toolHeight} = props;
 
@@ -91,7 +93,7 @@ const StudioSqlConfig = (props: any) => {
     >
       <Row>
         <Col span={24}>
-          <Form.Item label="数据源" tooltip={`选择 Sql 语句执行的数据源`}
+          <Form.Item label={intl.formatMessage({id: 'pages.datastadio.lable.datasource', defaultMessage: '数据源',})} tooltip={`选择 Sql 语句执行的数据源`}
                      name="databaseId"
                      className={styles.form_item}>
             <Select
@@ -105,7 +107,7 @@ const StudioSqlConfig = (props: any) => {
         </Col>
         <Col span={24}>
           <Form.Item
-            label="最大行数" className={styles.form_item} name="maxRowNum"
+            label={intl.formatMessage({id: 'pages.datastadio.lable.maxrows', defaultMessage: '最大行数',})}  className={styles.form_item} name="maxRowNum"
             tooltip='预览数据的最大行数'
           >
             <InputNumber min={1} max={9999} defaultValue={100} />

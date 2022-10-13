@@ -158,6 +158,45 @@ export default {
   'pages.TableData.data' : 'Data',
   'pages.TableData.serch' : 'Serch',
 
+  'pages.datastadio.lable.info' : 'Info',
+  'pages.datastadio.lable.result' : 'Result',
+  'pages.datastadio.lable.bloodsource' : 'Blood Source',
+  'pages.datastadio.lable.process' : 'Process',
+  'pages.datastadio.lable.history' : 'History',
+  'pages.datastadio.lable.function' : 'Function',
+
+  'pages.datastadio.lable.directory' : 'Directory',
+  'pages.datastadio.lable.structure' : 'Structure',
+  'pages.datastadio.lable.session' : 'Session',
+  'pages.datastadio.lable.cluster' : 'Cluster',
+  'pages.datastadio.lable.datasource' : 'Data Source',
+  'pages.datastadio.lable.mate' : 'Mate Data',
+  'pages.datastadio.lable.globalvariable' : 'Global Variable',
+  'pages.datastadio.lable.guidepage' : 'Guide Page',
+
+  'pages.datastadio.lable.registcluster' : 'Regist Cluster',
+  'pages.datastadio.lable.registclusterconfig' : 'Regist Cluster Config',
+  'pages.datastadio.lable.registjar' : 'Regist Jar',
+  'pages.datastadio.lable.registdatasource' : 'Regist Datasource',
+  'pages.datastadio.lable.registdocument' : 'Regist Document',
+  'pages.datastadio.lable.configsystemconfig' : 'Config System Config',
+  'pages.datastadio.lable.officialdocumentation' : 'Official Documentation',
+  'pages.datastadio.lable.quickguide' : 'Quick Guide',
+
+  'pages.datastadio.lable.welcomeuse' : 'Welcome to Use Dinky v',
+  'pages.datastadio.lable.dinkydescribe' : 'Real Time is the Future,Dinky is the best partner of Flink, making Flink SQL easier to use, and is committed to the construction of stream batch integrated development platform',
+  'pages.datastadio.lable.maxrows' : 'Max Rows',
+
+
+  'pages.devops.result.success' : 'Successful',
+  'pages.devops.lable.online' : 'Online',
+  'pages.devops.lable.offline' : 'Offline',
+  'pages.devops.lable.onlinelist' : 'Online List',
+  'pages.devops.lable.offlinelist' : 'Offline List',
+  'pages.devops.lable.instance' : 'Instance',
+
+
+
 
 
 };

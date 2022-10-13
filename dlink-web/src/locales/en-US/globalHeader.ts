@@ -23,6 +23,9 @@ export default {
   'global.table.updateTime': 'Update Time',
   'global.table.lastUpdateTime': 'Last Update Time',
   'global.table.createTime': 'Create Time',
+  'global.table.startTime': 'Start Time',
+  'global.table.endTime': 'End Time',
+  'global.table.useTime': 'Use Time',
 
   'global.table.registType': 'Regist Type',
   'global.table.registType.manual': 'Manual',
@@ -61,6 +64,17 @@ export default {
   'global.table.character': 'Character',
   'global.table.collationRule': 'Collation Rule',
   'global.table.javaType': 'java Type',
+
+  'global.table.jobname': 'Job Name',
+  'global.table.jobid': 'Job Id',
+  'global.table.lifecycle': 'Life Cycle',
+  'global.table.lifecycle.all': 'All',
+  'global.table.lifecycle.dev': 'Develop',
+  'global.table.lifecycle.publish': 'Publish',
+  'global.table.lifecycle.online': 'Online',
+  'global.table.lifecycle.unKnow': 'Unknow',
+  'global.table.runmode': 'Run Mode',
+
 
 
 
