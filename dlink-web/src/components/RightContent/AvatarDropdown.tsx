@@ -33,6 +33,7 @@ import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 import {outLogin} from '@/services/ant-design-pro/api';
 import {ActionType} from "@ant-design/pro-table";
+import {useIntl} from "@@/plugin-locale/localeExports";
 
 export type GlobalHeaderRightProps = {
   menu?: boolean;
@@ -63,6 +64,7 @@ const requestUrl = '/api/tenant/switchTenant';
 const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
   const {initialState, setInitialState} = useModel('@@initialState');
   const actionRef = useRef<ActionType>();
+  const intl = useIntl();
 
   const onMenuClick = useCallback(
     (event: {
@@ -122,10 +124,10 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
               // get choose tenantId
               let tenantInfoId = e.key;
               Modal.confirm({
-                title: '切换租户',
+                title: intl.formatMessage({id: 'menu.account.checkTenant'}),
                 content: '确定切换【' + title + '】租户吗?',
-                okText: '确认',
-                cancelText: '取消',
+                okText: intl.formatMessage({id: 'button.confirm'}),
+                cancelText: intl.formatMessage({id: 'button.cancel'}),
                 onOk: async () => {
                   // 目前先直接退出登录 重新选择租户登录
                   loginOut();
@@ -151,7 +153,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
     return <>
       <Menu.SubMenu
         key="chooseTenantList"
-        title={"切换租户"}
+        title={intl.formatMessage({id: 'menu.account.checkTenant'})}
         icon={<UserSwitchOutlined/>}
       >
         {chooseTenantList}
@@ -168,19 +170,19 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
       {menu && (
         <Menu.Item key="personSettings" disabled>
           <SettingOutlined/>
-          个人设置
+          {intl.formatMessage({id: 'menu.account.settings'})}
         </Menu.Item>
       )}
       {menu && (
         <Menu.Item key="changePassWord" disabled>
           <SafetyOutlined/>
-          修改密码
+          {intl.formatMessage({id: 'menu.account.changePassword'})}
         </Menu.Item>
       )}
       {menu && <Menu.Divider/>}
       <Menu.Item key="logout">
         <LogoutOutlined/>
-        退出登录
+        {intl.formatMessage({id: 'menu.account.logout'})}
       </Menu.Item>
     </Menu>
   );

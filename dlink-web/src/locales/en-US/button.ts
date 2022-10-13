@@ -21,4 +21,5 @@ export default {
   'button.create': 'Create',
   'button.close': 'Close',
   'button.confirm': 'Confirm',
+  'button.cancel': 'Cancel',
 };

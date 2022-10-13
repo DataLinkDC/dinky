@@ -21,4 +21,5 @@ export default {
   'button.create': '新建',
   'button.close': '关闭',
   'button.confirm': '确定',
+  'button.cancel': '取消',
 };
