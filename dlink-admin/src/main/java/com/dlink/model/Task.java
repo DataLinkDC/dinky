@@ -52,10 +52,13 @@ public class Task extends SuperEntity {
 
     private static final long serialVersionUID = 5988972129893667154L;
 
+
     @TableField(fill = FieldFill.INSERT)
     private String alias;
 
     private String dialect;
+
+    private Integer tenantId;
 
     private String type;
 
@@ -152,7 +155,7 @@ public class Task extends SuperEntity {
         boolean fg = Asserts.isNull(fragment) ? false : fragment;
         boolean sts = Asserts.isNull(statementSet) ? false : statementSet;
         return new JobConfig(type, step, false, false, useRemote, clusterId, clusterConfigurationId,jid, getId(),
-            alias, fg, sts, batchModel, checkPoint, parallelism, savePointStrategy, savePointPath, map);
+                alias, fg, sts, batchModel, checkPoint, parallelism, savePointStrategy, savePointPath, map);
     }
 
     public JsonNode parseJsonNode() {

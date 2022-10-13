@@ -22,7 +22,6 @@ package com.dlink.service.impl;
 import com.dlink.api.FlinkAPI;
 import com.dlink.assertion.Asserts;
 import com.dlink.config.Dialect;
-import com.dlink.constant.PathConstant;
 import com.dlink.dto.AbstractStatementDTO;
 import com.dlink.dto.SessionDTO;
 import com.dlink.dto.SqlDTO;
@@ -32,7 +31,6 @@ import com.dlink.dto.StudioExecuteDTO;
 import com.dlink.dto.StudioMetaStoreDTO;
 import com.dlink.explainer.lineage.LineageBuilder;
 import com.dlink.explainer.lineage.LineageResult;
-import com.dlink.gateway.GatewayType;
 import com.dlink.gateway.model.JobInfo;
 import com.dlink.gateway.result.SavePointResult;
 import com.dlink.job.JobConfig;
@@ -60,16 +58,15 @@ import com.dlink.service.FragmentVariableService;
 import com.dlink.service.SavepointsService;
 import com.dlink.service.StudioService;
 import com.dlink.service.TaskService;
+import com.dlink.service.UDFService;
 import com.dlink.session.SessionConfig;
 import com.dlink.session.SessionInfo;
 import com.dlink.session.SessionPool;
 import com.dlink.sql.FlinkQuery;
 import com.dlink.utils.RunTimeUtil;
-import com.dlink.utils.UDFUtil;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -84,8 +81,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.map.MapUtil;
 
 /**
  * StudioServiceImpl
@@ -97,14 +92,6 @@ import cn.hutool.core.map.MapUtil;
 public class StudioServiceImpl implements StudioService {
 
     private static final Logger logger = LoggerFactory.getLogger(StudioServiceImpl.class);
-
-    /**
-     * 网关类型 map
-     * 快速获取 session 与 application 等类型，为了减少判断
-     */
-    private static final Map<String, List<GatewayType>> GATEWAY_TYPE_MAP = MapUtil
-            .builder("session", Arrays.asList(GatewayType.YARN_SESSION, GatewayType.YARN_SESSION, GatewayType.STANDALONE))
-            .build();
 
     @Autowired
     private ClusterService clusterService;
@@ -119,6 +106,9 @@ public class StudioServiceImpl implements StudioService {
 
     @Autowired
     private FragmentVariableService fragmentVariableService;
+
+    @Autowired
+    private UDFService udfService;
 
     private void addFlinkSQLEnv(AbstractStatementDTO statementDTO) {
         // initialize global variables
@@ -159,8 +149,7 @@ public class StudioServiceImpl implements StudioService {
         JobConfig config = studioExecuteDTO.getJobConfig();
         buildSession(config);
         // To initialize java udf, but it only support local mode.
-        String jarPath = initUDF(config, studioExecuteDTO.getStatement());
-        config.setJarFiles(new String[]{PathConstant.UDF_PATH + jarPath});
+        udfService.initUDF(config, studioExecuteDTO.getStatement());
         JobManager jobManager = JobManager.build(config);
         JobResult jobResult = jobManager.executeSql(studioExecuteDTO.getStatement());
         RunTimeUtil.recovery(jobManager);
@@ -564,18 +553,4 @@ public class StudioServiceImpl implements StudioService {
         return infos;
     }
 
-    private String initUDF(JobConfig config, String statement) {
-        if (GATEWAY_TYPE_MAP.get("session").contains(GatewayType.get(config.getType())) || GatewayType.LOCAL.equalsValue(config.getType())) {
-            List<String> udfClassNameList = JobManager.getUDFClassName(statement);
-            List<String> codeList = CollUtil.map(udfClassNameList, x -> {
-                Task task = taskService.getUDFByClassName(x);
-                JobManager.initMustSuccessUDF(x, task.getStatement());
-                return task.getStatement();
-            }, true);
-            if (codeList.size() > 0) {
-                return UDFUtil.getUdfNameAndBuildJar(codeList);
-            }
-        }
-        return null;
-    }
 }

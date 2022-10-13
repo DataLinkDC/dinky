@@ -218,9 +218,9 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
       <Form
         {...formLayout}
         form={form}
-        initialValues={getDocumentFormData(formVals)}
+        initialValues={getDocumentFormData(formVals as DocumentTableListItem)}
       >
-        {renderContent(getDocumentFormData(formVals))}
+        {renderContent(getDocumentFormData(formVals as DocumentTableListItem))}
       </Form>
     </Modal>
   );

@@ -29,6 +29,9 @@ import com.dlink.gateway.config.GatewayConfig;
 import com.dlink.gateway.config.SavePointStrategy;
 import com.dlink.session.SessionConfig;
 
+import org.apache.http.util.TextUtils;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -202,7 +205,16 @@ public class JobConfig {
                 appConfig.setUserJarMainAppClass(config.get("userJarMainAppClass").toString());
             }
             if (config.containsKey("userJarParas") && Asserts.isNotNullString((String) config.get("userJarParas"))) {
-                appConfig.setUserJarParas(config.get("userJarParas").toString().split(" "));
+                //There may be multiple spaces between the parameter and value during user input,
+                // which will directly lead to a parameter passing error and needs to be eliminated
+                String[] temp = config.get("userJarParas").toString().split(" ");
+                List<String> paraSplit = new ArrayList<>();
+                for (String s : temp) {
+                    if (!TextUtils.isEmpty(s.trim())) {
+                        paraSplit.add(s);
+                    }
+                }
+                appConfig.setUserJarParas(paraSplit.toArray(new String[0]));
             }
             gatewayConfig.setAppConfig(appConfig);
         }

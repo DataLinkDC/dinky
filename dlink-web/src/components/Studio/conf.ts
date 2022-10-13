@@ -42,6 +42,7 @@ export const DIALECT = {
   HIVE: 'Hive',
   PHOENIX: 'Phoenix',
   STARROCKS: 'StarRocks',
+  KUBERNETES_APPLICATION: 'KubernetesApplaction',
   JAVA: 'Java',
 };
 
@@ -108,6 +109,7 @@ export const isTask = (dialect: string) => {
     case DIALECT.FLINKJAR:
     case DIALECT.HIVE:
     case DIALECT.STARROCKS:
+    case DIALECT.KUBERNETES_APPLICATION:
       return true;
     default:
       return false;
