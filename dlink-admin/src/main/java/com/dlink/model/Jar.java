@@ -44,6 +44,8 @@ public class Jar extends SuperEntity {
     @TableField(fill = FieldFill.INSERT)
     private String alias;
 
+    private Integer tenantId;
+
     private String type;
 
     private String path;

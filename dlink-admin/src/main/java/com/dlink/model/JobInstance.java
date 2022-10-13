@@ -48,6 +48,8 @@ public class JobInstance implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
+    private Integer tenantId;
+
     private String name;
 
     private Integer taskId;

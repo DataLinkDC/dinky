@@ -79,6 +79,8 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
 
     private DruidDataSource dataSource;
 
+    private DruidDataSource dataSource;
+
     abstract String getDriverClass();
 
     @Override

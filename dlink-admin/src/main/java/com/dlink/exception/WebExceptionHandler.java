@@ -22,6 +22,8 @@ package com.dlink.exception;
 import com.dlink.common.result.Result;
 import com.dlink.model.CodeEnum;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -93,5 +95,4 @@ public class WebExceptionHandler {
         logger.error("ERROR:", e);
         return Result.failed(e.getMessage());
     }
-
 }

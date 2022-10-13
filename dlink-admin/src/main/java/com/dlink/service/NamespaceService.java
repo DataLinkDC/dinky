@@ -17,24 +17,24 @@
  *
  */
 
+package com.dlink.service;
 
-export type UserTableListItem = {
-  id?: number;
-  enabled?: boolean;
-  isDelete?: string;
-  createTime?: Date;
-  updateTime?: Date;
-  username?: string;
-  nickname?: string;
-  password?: string;
-  avatar?: string;
-  worknum?: string;
-  mobile?: string;
-};
+import com.dlink.common.result.ProTableResult;
+import com.dlink.common.result.Result;
+import com.dlink.db.service.ISuperService;
+import com.dlink.model.Namespace;
 
-export type PasswordItem = {
-  username: string;
-  password?: string;
-  newPassword?: string;
-  newPasswordCheck?: string;
-};
+import com.fasterxml.jackson.databind.JsonNode;
+
+public interface NamespaceService extends ISuperService<Namespace> {
+    /**
+     * delete namespace by id
+     *
+     * @param para namespace id
+     * @return delete result code
+     */
+    Result deleteNamespaceById(JsonNode para);
+
+    @Override
+    ProTableResult<Namespace> selectForProTable(JsonNode para);
+}

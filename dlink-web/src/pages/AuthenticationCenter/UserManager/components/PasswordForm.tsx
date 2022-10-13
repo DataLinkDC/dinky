@@ -19,8 +19,8 @@
 
 
 import React, {useState} from 'react';
-import {Form, Button, Input, Modal} from 'antd';
-import {PasswordItem} from "@/pages/user/data";
+import {Button, Form, Input, Modal} from 'antd';
+import {PasswordItem} from "@/pages/AuthenticationCenter/data.d";
 import { useIntl, Link, history, FormattedMessage, SelectLang} from 'umi';
 
 export type PasswordFormProps = {

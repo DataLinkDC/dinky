@@ -59,7 +59,7 @@ public interface TaskService extends ISuperService<Task> {
 
     List<Task> listFlinkSQLEnv();
 
-    Task initDefaultFlinkSQLEnv();
+    Task initDefaultFlinkSQLEnv(Integer tenantId);
 
     String exportSql(Integer id);
 

@@ -21,12 +21,38 @@ package com.dlink.service.impl;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.common.result.Result;
+import com.dlink.context.RequestContext;
 import com.dlink.db.service.impl.SuperServiceImpl;
+import com.dlink.dto.LoginUTO;
+import com.dlink.dto.UserDTO;
 import com.dlink.mapper.UserMapper;
+import com.dlink.model.Role;
+import com.dlink.model.Tenant;
 import com.dlink.model.User;
+import com.dlink.model.UserRole;
+import com.dlink.model.UserTenant;
+import com.dlink.service.RoleService;
+import com.dlink.service.TenantService;
+import com.dlink.service.UserRoleService;
 import com.dlink.service.UserService;
 
+import com.dlink.service.UserTenantService;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import cn.dev33.satoken.secure.SaSecureUtil;
+import cn.dev33.satoken.stp.StpUtil;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
@@ -43,6 +69,18 @@ import cn.dev33.satoken.stp.StpUtil;
 public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implements UserService {
 
     private static final String DEFAULT_PASSWORD = "123456";
+
+    @Autowired
+    private UserRoleService userRoleService;
+
+    @Autowired
+    private UserTenantService userTenantService;
+
+    @Autowired
+    private RoleService roleService;
+
+    @Autowired
+    private TenantService tenantService;
 
     @Override
     public Result registerUser(User user) {
@@ -96,28 +134,66 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     }
 
     @Override
-    public Result loginUser(String username, String password, boolean isRemember) {
-        User user = getUserByUsername(username);
+    public Result loginUser(LoginUTO loginUTO) {
+        User user = getUserByUsername(loginUTO.getUsername());
         if (Asserts.isNull(user)) {
             return Result.failed("账号或密码错误");
         }
         String userPassword = user.getPassword();
-        if (Asserts.isNullString(password)) {
+        if (Asserts.isNullString(loginUTO.getPassword())) {
             return Result.failed("密码不能为空");
         }
-        if (Asserts.isEquals(SaSecureUtil.md5(password), userPassword)) {
+        if (Asserts.isEquals(SaSecureUtil.md5(loginUTO.getPassword()), userPassword)) {
             if (user.getIsDelete()) {
                 return Result.failed("账号不存在");
             }
             if (!user.getEnabled()) {
                 return Result.failed("账号已被禁用");
             }
-            StpUtil.login(user.getId(), isRemember);
-            StpUtil.getSession().set("user", user);
-            return Result.succeed(user, "登录成功");
+
+            // 将前端入参 租户id 放入上下文
+            RequestContext.set(loginUTO.getTenantId());
+
+            // get user tenants and roles
+            UserDTO userDTO = getUserALLBaseInfo(loginUTO, user);
+
+            StpUtil.login(user.getId(), loginUTO.isAutoLogin());
+            StpUtil.getSession().set("user", userDTO);
+            return Result.succeed(userDTO, "登录成功");
         } else {
             return Result.failed("账号或密码错误");
         }
+    }
+
+    private UserDTO getUserALLBaseInfo(LoginUTO loginUTO, User user) {
+        UserDTO userDTO = new UserDTO();
+        List<Role> roleList = new LinkedList<>();
+        List<Tenant> tenantList = new LinkedList<>();
+
+        List<UserRole> userRoles = userRoleService.getUserRoleByUserId(user.getId());
+        List<UserTenant> userTenants = userTenantService.getUserTenantByUserId(user.getId());
+
+        Tenant currentTenant = tenantService.getBaseMapper().selectById(loginUTO.getTenantId());
+
+        userRoles.forEach(userRole -> {
+            Role role = roleService.getBaseMapper().selectById(userRole.getRoleId());
+            if (Asserts.isNotNull(role)) {
+                roleList.add(role);
+            }
+        });
+
+        userTenants.forEach(userTenant -> {
+            Tenant tenant = tenantService.getBaseMapper().selectOne(new QueryWrapper<Tenant>().eq("id", userTenant.getTenantId()));
+            if (Asserts.isNotNull(tenant)) {
+                tenantList.add(tenant);
+            }
+        });
+
+        userDTO.setUser(user);
+        userDTO.setRoleList(roleList);
+        userDTO.setTenantList(tenantList);
+        userDTO.setCurrentTenant(currentTenant);
+        return userDTO;
     }
 
     @Override
@@ -128,4 +204,49 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         }
         return user;
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Result grantRole(JsonNode para) {
+        if (para.size() > 0) {
+            List<UserRole> userRoleList = new ArrayList<>();
+            Integer userId = para.get("userId").asInt();
+            userRoleService.remove(new QueryWrapper<UserRole>().eq("user_id", userId));
+            JsonNode userRoleJsonNode = para.get("roles");
+            for (JsonNode ids : userRoleJsonNode) {
+                UserRole userRole = new UserRole();
+                userRole.setUserId(userId);
+                userRole.setRoleId(ids.asInt());
+                userRoleList.add(userRole);
+            }
+            // save or update user role
+            boolean result = userRoleService.saveOrUpdateBatch(userRoleList, 1000);
+            if (result) {
+                return Result.succeed("用户授权角色成功");
+            } else {
+                return Result.failed("用户授权角色失败");
+            }
+        } else {
+            return Result.failed("请选择要授权的角色");
+        }
+    }
+
+    @Override
+    public Result getTenants(String username) {
+        User user = getUserByUsername(username);
+        if (Asserts.isNull(user)) {
+            return Result.failed("该账号不存在,获取租户失败");
+        }
+
+        List<UserTenant> userTenants = userTenantService.getUserTenantByUserId(user.getId());
+        if (userTenants.size() == 0) {
+            return Result.failed("用户未绑定租户,获取租户失败");
+        }
+
+        Set<Integer> tenantIds = new HashSet<>();
+        userTenants.forEach(userTenant -> tenantIds.add(userTenant.getTenantId()));
+        List<Tenant> tenants = tenantService.getTenantByIds(tenantIds);
+        return Result.succeed(tenants, "获取成功");
+    }
+
 }

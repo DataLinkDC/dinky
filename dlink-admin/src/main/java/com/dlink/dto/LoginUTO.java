@@ -33,5 +33,6 @@ import lombok.Setter;
 public class LoginUTO {
     private String username;
     private String password;
+    private Integer tenantId;
     private boolean autoLogin;
 }

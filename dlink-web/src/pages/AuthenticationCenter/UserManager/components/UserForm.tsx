@@ -19,8 +19,8 @@
 
 
 import React, {useState} from 'react';
-import {Form, Button, Input, Modal, Switch} from 'antd';
-import {UserTableListItem} from "@/pages/user/data";
+import {Button, Form, Input, Modal, Switch} from 'antd';
+import {UserTableListItem} from "@/pages/AuthenticationCenter/data.d";
 import { useIntl, Link, history, FormattedMessage, SelectLang} from 'umi';
 
 export type UserFormProps = {
@@ -64,7 +64,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
     handleSubmit({ ...formVals, ...fieldsValue });
   };
 
-  const renderContent = (formVals) => {
+  const renderContent = (formVals: Partial<UserTableListItem>) => {
     return (
       <>
         <Form.Item

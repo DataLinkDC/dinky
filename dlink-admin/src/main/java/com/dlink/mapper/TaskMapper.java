@@ -41,4 +41,6 @@ public interface TaskMapper extends SuperMapper<Task> {
     List<Task> queryOnLineTaskByDoneStatus(@Param("parentIds") List<Integer> parentIds
             , @Param("stepIds") List<Integer> stepIds, @Param("includeNull") boolean includeNull
             , @Param("jobStatuses") List<String> jobStatuses);
+
+    Task selectByName(@Param("name") String name);
 }
