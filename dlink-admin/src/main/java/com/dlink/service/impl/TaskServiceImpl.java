@@ -405,7 +405,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         String separator = SystemConfiguration.getInstances().getSqlSeparator();
         separator = separator.replace("\\r", "\r").replace("\\n", "\n");
         String name = "dlink_default_catalog";
-        Task defaultFlinkSQLEnvTask = baseMapper.selectByName(name);
+
+        Task defaultFlinkSQLEnvTask = getTaskByNameAndTenantId(name, tenantId);
         if (null == defaultFlinkSQLEnvTask) {
             defaultFlinkSQLEnvTask = new Task();
         }
@@ -434,11 +435,20 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         defaultFlinkSQLEnvTask.setTenantId(tenantId);
         defaultFlinkSQLEnvTask.setEnabled(true);
         saveOrUpdate(defaultFlinkSQLEnvTask);
+
         Statement statement = new Statement();
         statement.setId(defaultFlinkSQLEnvTask.getId());
+        statement.setTenantId(tenantId);
         statement.setStatement(sb.toString());
         statementService.saveOrUpdate(statement);
+
         return defaultFlinkSQLEnvTask;
+    }
+
+    @Override
+    public Task getTaskByNameAndTenantId(String name, Integer tenantId) {
+        Task task = baseMapper.getTaskByNameAndTenantId(name, tenantId);
+        return task;
     }
 
     @Override

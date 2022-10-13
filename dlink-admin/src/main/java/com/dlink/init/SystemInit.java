@@ -76,8 +76,8 @@ public class SystemInit implements ApplicationRunner {
         List<Tenant> tenants = tenantService.list();
         sysConfigService.initSysConfig();
         for (Tenant tenant : tenants) {
-            taskService.initDefaultFlinkSQLEnv(tenant.getId());
             RequestContext.set(tenant.getId());
+            taskService.initDefaultFlinkSQLEnv(tenant.getId());
         }
         initTaskMonitor();
         initDolphinScheduler();

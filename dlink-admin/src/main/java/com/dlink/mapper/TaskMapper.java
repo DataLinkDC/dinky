@@ -42,5 +42,5 @@ public interface TaskMapper extends SuperMapper<Task> {
             , @Param("stepIds") List<Integer> stepIds, @Param("includeNull") boolean includeNull
             , @Param("jobStatuses") List<String> jobStatuses);
 
-    Task selectByName(@Param("name") String name);
+    Task getTaskByNameAndTenantId(@Param("name") String name, @Param("tenantId") Integer tenantId);
 }

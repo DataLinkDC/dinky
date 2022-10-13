@@ -1,7 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~
+  ~  Licensed to the Apache Software Foundation (ASF) under one or more
+  ~  contributor license agreements.  See the NOTICE file distributed with
+  ~  this work for additional information regarding copyright ownership.
+  ~  The ASF licenses this file to You under the Apache License, Version 2.0
+  ~  (the "License"); you may not use this file except in compliance with
+  ~  the License.  You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  ~
+  -->
+
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dlink.mapper.TaskMapper">
-
     <select id="selectForProTable" resultType="com.dlink.model.Task">
         select
         a.*
@@ -37,11 +55,12 @@
         where `name` REGEXP '${name}_[0-9]$'
     </select>
 
-    <select id="selectByName" resultType="com.dlink.model.Task">
-        select
-            *
+    <select id="getTaskByNameAndTenantId" resultType="com.dlink.model.Task">
+        select *
         from dlink_task
-        where name = #{name}
+        where 1 = 1
+          and name = "${name}"
+          and tenant_id = ${tenantId}
     </select>
 
     <select id="queryOnLineTaskByDoneStatus" resultType="com.dlink.model.Task">
@@ -50,17 +69,28 @@
         left join dlink_catalogue c on c.task_id = t.id
         left join dlink_job_instance i on i.id = t.job_instance_id
         where
-            c.parent_id in <foreach collection="parentIds" item="parentId" open="(" close=")" separator=","> #{parentId} </foreach>
-            and c.task_id is not null
-            and c.is_leaf = 1
-            and t.step in <foreach collection="stepIds" item="stepId" open="(" close=")" separator=","> #{stepId} </foreach>
-            and t.enabled = 1
+        c.parent_id in
+        <foreach collection="parentIds" item="parentId" open="(" close=")" separator=",">
+            #{parentId}
+        </foreach>
+        and c.task_id is not null
+        and c.is_leaf = 1
+        and t.step in
+        <foreach collection="stepIds" item="stepId" open="(" close=")" separator=",">
+            #{stepId}
+        </foreach>
+        and t.enabled = 1
         <if test="includeNull == true">
-            and ((i.status is null) or (i.status in <foreach collection="jobStatuses" item="jobStatus" open="(" close=")" separator=","> #{jobStatus} </foreach>))
+            and ((i.status is null) or (i.status in <foreach collection="jobStatuses" item="jobStatus" open="("
+                                                             close=")" separator=",">
+            #{jobStatus}
+        </foreach>))
         </if>
         <if test="includeNull != true">
-            and i.status in <foreach collection="jobStatuses" item="jobStatus" open="(" close=")" separator=","> #{jobStatus} </foreach>
+            and i.status in
+            <foreach collection="jobStatuses" item="jobStatus" open="(" close=")" separator=",">
+                #{jobStatus}
+            </foreach>
         </if>
     </select>
-
 </mapper>

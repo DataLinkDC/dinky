@@ -110,4 +110,6 @@ public interface TaskService extends ISuperService<Task> {
 
     void selectSavepointOffLineTask(TaskOperatingResult taskOperatingResult);
 
+    Task getTaskByNameAndTenantId(String name, Integer tenantId);
+
 }
