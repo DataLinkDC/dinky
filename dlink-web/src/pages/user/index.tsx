@@ -25,9 +25,7 @@ import {Button, Drawer, Dropdown, Menu, Modal} from 'antd';
 import {FooterToolbar} from '@ant-design/pro-layout';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import {handleAddOrUpdate, handleOption, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
-import UserForm from "@/pages/user/components/UserForm";
-import PasswordForm from "@/pages/user/components/PasswordForm";
-import { useIntl, Link, history, FormattedMessage, SelectLang} from 'umi';
+import {useIntl} from 'umi';
 import UserForm from "@/pages/AuthenticationCenter/UserManager/components/UserForm";
 import PasswordForm from "@/pages/AuthenticationCenter/UserManager/components/PasswordForm";
 import {UserTableListItem} from "@/pages/AuthenticationCenter/data.d";
@@ -74,8 +72,14 @@ const UserTableList: React.FC<{}> = (props: any) => {
       overlay={
         <Menu onClick={({key}) => editAndDelete(key, item)}>
           <Menu.Item key="edit">{intl.formatMessage({id: 'pages.user.UserEdit', defaultMessage: '编辑',})}</Menu.Item>
-          <Menu.Item key="password">{intl.formatMessage({id: 'pages.user.UserChangePassword', defaultMessage: '修改密码',})}</Menu.Item>
-          {item.username=='admin'?'':(<Menu.Item key="delete">{intl.formatMessage({id: 'pages.user.UserDelete', defaultMessage: '删除',})}</Menu.Item>)}
+          <Menu.Item key="password">{intl.formatMessage({
+            id: 'pages.user.UserChangePassword',
+            defaultMessage: '修改密码',
+          })}</Menu.Item>
+          {item.username == 'admin' ? '' : (<Menu.Item key="delete">{intl.formatMessage({
+            id: 'pages.user.UserDelete',
+            defaultMessage: '删除',
+          })}</Menu.Item>)}
         </Menu>
       }
     >
@@ -165,7 +169,10 @@ const UserTableList: React.FC<{}> = (props: any) => {
             setFormValues(record);
           }}
         >
-          {intl.formatMessage({id: 'pages.user.UserConfig', defaultMessage: intl.formatMessage({id: 'pages.user.UserConfig', defaultMessage: '配置',}),})}
+          {intl.formatMessage({
+            id: 'pages.user.UserConfig',
+            defaultMessage: intl.formatMessage({id: 'pages.user.UserConfig', defaultMessage: '配置',}),
+          })}
         </a>,
         <MoreBtn key="more" item={record}/>,
       ],
@@ -182,10 +189,10 @@ const UserTableList: React.FC<{}> = (props: any) => {
           labelWidth: 120,
         }}
         toolBarRender={() => [
-        <Button type="primary" onClick={() => handleModalVisible(true)}>
-          <PlusOutlined/> {intl.formatMessage({id: 'pages.user.UserCreate', defaultMessage: '新建',})}
-        </Button>,
-      ]}
+          <Button type="primary" onClick={() => handleModalVisible(true)}>
+            <PlusOutlined/> {intl.formatMessage({id: 'pages.user.UserCreate', defaultMessage: '新建',})}
+          </Button>,
+        ]}
         request={(params, sorter, filter) => queryData(url, {...params, sorter, filter})}
         columns={columns}
         rowSelection={{

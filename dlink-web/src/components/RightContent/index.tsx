@@ -18,6 +18,7 @@
  */
 
 
+import {GlobalOutlined} from '@ant-design/icons';
 import {Space} from 'antd';
 import React from 'react';
 import {SelectLang, useModel} from 'umi';
@@ -53,7 +54,7 @@ const GlobalHeaderRight: React.FC = () => {
       {/*    <Tag color={ENVTagColor[REACT_APP_ENV]}>{REACT_APP_ENV}</Tag>*/}
       {/*  </span>*/}
       {/*)}*/}
-      <SelectLang className={styles.action}/>
+      <SelectLang icon={<GlobalOutlined/>} className={styles.action}/>
     </Space>
   );
 };
