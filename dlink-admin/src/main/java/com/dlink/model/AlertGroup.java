@@ -42,6 +42,8 @@ public class AlertGroup extends SuperEntity {
 
     private static final long serialVersionUID = 7027411164191682344L;
 
+    private Integer tenantId;
+
     private String alertInstanceIds;
 
     private String note;

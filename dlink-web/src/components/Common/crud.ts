@@ -18,9 +18,19 @@
  */
 
 
-import request from "umi-request";
+import {extend} from "umi-request";
 import {TableListParams} from "@/components/Common/data";
-import {message, Modal} from "antd";
+import {message} from "antd";
+
+
+export const request2 = extend(
+  { headers: { tenantId: localStorage.getItem('dlink-tenantId') || ''} }
+);
+
+export const getStorageTenantId = () => {
+  return localStorage.getItem('dlink-tenantId') || '';
+}
+
 
 export const CODE = {
   SUCCESS: 0,
@@ -28,7 +38,7 @@ export const CODE = {
 };
 
 export async function queryData(url:string,params?: TableListParams) {
-  return request(url, {
+  return request2(url, {
     method: 'POST',
     data: {
       ...params,
@@ -37,7 +47,7 @@ export async function queryData(url:string,params?: TableListParams) {
 }
 
 export async function getData(url:string,params?: any) {
-  return request(url, {
+  return request2(url, {
     method: 'GET',
     params: {
       ...params,
@@ -46,7 +56,7 @@ export async function getData(url:string,params?: any) {
 }
 
 export async function removeData(url:string,params: any[]) {
-  return request(url, {
+  return request2(url, {
     method: 'DELETE',
     data: {
       ...params,
@@ -55,7 +65,7 @@ export async function removeData(url:string,params: any[]) {
 }
 
 export async function addOrUpdateData(url:string,params: any) {
-  return request(url, {
+  return request2(url, {
     method: 'PUT',
     data: {
       ...params,
@@ -64,7 +74,7 @@ export async function addOrUpdateData(url:string,params: any) {
 }
 
 export async function postDataArray(url:string,params: number[]) {
-  return request(url, {
+  return request2(url, {
     method: 'POST',
     data: {
       ...params,
@@ -73,7 +83,7 @@ export async function postDataArray(url:string,params: number[]) {
 }
 
 export async function postAll(url:string,params?: any) {
-  return request(url, {
+  return request2(url, {
     method: 'POST',
     data: {
       ...params,
@@ -82,7 +92,7 @@ export async function postAll(url:string,params?: any) {
 }
 
 export async function getInfoById(url:string,id:number) {
-  return request(url, {
+  return request2(url, {
     method: 'GET',
     params: {
       id:id,
