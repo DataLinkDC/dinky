@@ -18,14 +18,22 @@
  */
 
 
-import React, {useCallback} from 'react';
-import {LogoutOutlined, SettingOutlined, UserOutlined} from '@ant-design/icons';
-import {Avatar, Menu, Spin} from 'antd';
+import React, {useCallback, useRef} from 'react';
+import {
+  LogoutOutlined,
+  SafetyOutlined,
+  SecurityScanOutlined,
+  SettingOutlined,
+  UserSwitchOutlined
+} from '@ant-design/icons';
+import {Avatar, Menu, Modal, Spin} from 'antd';
 import {history, useModel} from 'umi';
 import {stringify} from 'querystring';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 import {outLogin} from '@/services/ant-design-pro/api';
+import {ActionType} from "@ant-design/pro-table";
+import {useIntl} from "@@/plugin-locale/localeExports";
 
 export type GlobalHeaderRightProps = {
   menu?: boolean;
@@ -36,8 +44,8 @@ export type GlobalHeaderRightProps = {
  */
 const loginOut = async () => {
   await outLogin();
-  const { query = {}, pathname } = history.location;
-  const { redirect } = query;
+  const {query = {}, pathname} = history.location;
+  const {redirect} = query;
   // Note: There may be security issues, please note
   if (window.location.pathname !== '/user/login' && !redirect) {
     history.replace({
@@ -49,8 +57,14 @@ const loginOut = async () => {
   }
 };
 
-const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
-  const { initialState, setInitialState } = useModel('@@initialState');
+
+const requestUrl = '/api/tenant/switchTenant';
+
+
+const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
+  const {initialState, setInitialState} = useModel('@@initialState');
+  const actionRef = useRef<ActionType>();
+  const intl = useIntl();
 
   const onMenuClick = useCallback(
     (event: {
@@ -59,9 +73,9 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
       item: React.ReactInstance;
       domEvent: React.MouseEvent<HTMLElement>;
     }) => {
-      const { key } = event;
+      const {key} = event;
       if (key === 'logout' && initialState) {
-        setInitialState({ ...initialState, currentUser: undefined });
+        setInitialState({...initialState, currentUser: undefined});
         loginOut();
         return;
       }
@@ -86,39 +100,97 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
     return loading;
   }
 
-  const { currentUser } = initialState;
+  const {currentUser} = initialState;
 
-  if (!currentUser || !currentUser.name) {
+  if (!currentUser || !currentUser.username) {
     return loading;
   }
+
+  const getChooseTenantListForm = () => {
+    let chooseTenantList: JSX.Element[] = [];
+    currentUser.tenantList?.map((item) => {
+      chooseTenantList.push(
+        <>
+          <Menu.Item
+            // If the current key (tenant id) is equal to the tenant the current user chooses to log in, this item is not optional
+            disabled={item.id === currentUser.currentTenant?.id}
+            key={item.id}
+            title={item.tenantCode}
+            icon={<SecurityScanOutlined/>}
+            onClick={(e) => {
+              console.log(e)
+              // get choose tenant title
+              let title = e.domEvent.target.textContent;
+              // get choose tenantId
+              let tenantInfoId = e.key;
+              Modal.confirm({
+                title: intl.formatMessage({id: 'menu.account.checkTenant'}),
+                content: '确定切换【' + title + '】租户吗?',
+                okText: intl.formatMessage({id: 'button.confirm'}),
+                cancelText: intl.formatMessage({id: 'button.cancel'}),
+                onOk: async () => {
+                  // 目前先直接退出登录 重新选择租户登录
+                  loginOut();
+                  // todo 切换租户需要将租户id 传入后端 以及本地存储中
+                  // const {code, msg} = await postAll(requestUrl, {tenantId: tenantInfoId});
+                  // localStorage.clear() // clear local storage
+                  // localStorage.setItem('dlink-tenantId',tenantInfoId) // set tenant to localStorage
+                  // code == 0 ? message.success(msg) : message.error(msg);
+                  // todo
+                  //  1.切换租户后 需要重新调用 /api/current接口获取用户的信息  (目前此接口从cookie直接取数 ,达不到预期效果)
+                  //  2.同步刷新所有页面 获取该租户id下的数据
+                  //actionRef.current?.reload()
+                  // actionRef.current?.reloadAndRest?.();
+                }
+              });
+            }}
+          >
+            {item.tenantCode}
+          </Menu.Item>
+        </>
+      )
+    })
+    return <>
+      <Menu.SubMenu
+        key="chooseTenantList"
+        title={intl.formatMessage({id: 'menu.account.checkTenant'})}
+        icon={<UserSwitchOutlined/>}
+      >
+        {chooseTenantList}
+      </Menu.SubMenu>
+    </>;
+  }
+
 
   const menuHeaderDropdown = (
     <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
       {menu && (
-        <Menu.Item key="center">
-          <UserOutlined />
-          个人中心
+        getChooseTenantListForm()
+      )}
+      {menu && (
+        <Menu.Item key="personSettings" disabled>
+          <SettingOutlined/>
+          {intl.formatMessage({id: 'menu.account.settings'})}
         </Menu.Item>
       )}
       {menu && (
-        <Menu.Item key="settings">
-          <SettingOutlined />
-          个人设置
+        <Menu.Item key="changePassWord" disabled>
+          <SafetyOutlined/>
+          {intl.formatMessage({id: 'menu.account.changePassword'})}
         </Menu.Item>
       )}
-      {menu && <Menu.Divider />}
-
+      {menu && <Menu.Divider/>}
       <Menu.Item key="logout">
-        <LogoutOutlined />
-        退出登录
+        <LogoutOutlined/>
+        {intl.formatMessage({id: 'menu.account.logout'})}
       </Menu.Item>
     </Menu>
   );
   return (
     <HeaderDropdown overlay={menuHeaderDropdown}>
       <span className={`${styles.action} ${styles.account}`}>
-        <Avatar size="small" className={styles.avatar} src={currentUser.avatar} alt="avatar" />
-        <span className={`${styles.name} anticon`}>{currentUser.name}</span>
+        <Avatar size="small" className={styles.avatar} src={currentUser.avatar} alt="avatar"/>
+        <span className={`${styles.name} anticon`}>{currentUser.username}</span>
       </span>
     </HeaderDropdown>
   );

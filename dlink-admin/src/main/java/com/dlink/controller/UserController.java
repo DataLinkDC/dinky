@@ -24,19 +24,26 @@ import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
 import com.dlink.dto.ModifyPasswordDTO;
 import com.dlink.model.User;
+import com.dlink.model.UserTenant;
 import com.dlink.service.UserService;
+import com.dlink.service.UserTenantService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.extern.slf4j.Slf4j;
@@ -53,6 +60,9 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserTenantService userTenantService;
 
     /**
      * 新增或者更新
@@ -122,6 +132,30 @@ public class UserController {
     @PostMapping("/modifyPassword")
     public Result modifyPassword(@RequestBody ModifyPasswordDTO modifyPasswordDTO) {
         return userService.modifyPassword(modifyPasswordDTO.getUsername(), modifyPasswordDTO.getPassword(),
-                modifyPasswordDTO.getNewPassword());
+            modifyPasswordDTO.getNewPassword());
+    }
+
+    /**
+     * give user grant role
+     *
+     * @return
+     */
+    @PutMapping(value = "/grantRole")
+    public Result grantRole(@RequestBody JsonNode para) {
+        return userService.grantRole(para);
+    }
+
+    @GetMapping("/getUserListByTenantId")
+    public Result getUserListByTenantId(@RequestParam("id") Integer id) {
+        List<User> userList = userService.list();
+        Map result = new HashMap();
+        result.put("users", userList);
+        List<UserTenant> userTenants = userTenantService.getBaseMapper().selectList(new QueryWrapper<UserTenant>().eq("tenant_id", id));
+        List<Integer> userIds = new ArrayList<>();
+        for (UserTenant userTenant : userTenants) {
+            userIds.add(userTenant.getUserId());
+        }
+        result.put("userIds", userIds);
+        return Result.succeed(result, "获取成功");
     }
 }

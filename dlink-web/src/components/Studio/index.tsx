@@ -18,25 +18,31 @@
  */
 
 
-import React, {useEffect, useRef, useState, useCallback} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {connect} from "umi";
 import styles from './index.less';
-import {} from "@ant-design/icons";
 import StudioMenu from "./StudioMenu";
-import {Row, Col, Card, Form} from "antd";
+import {Card, Col, Form, Row} from "antd";
 import StudioTabs from "./StudioTabs";
-import StudioHome from "./StudioHome";
 import {StateType} from "@/pages/DataStudio/model";
 import StudioConsole from "./StudioConsole";
 import StudioLeftTool from "./StudioLeftTool";
 import StudioRightTool from "./StudioRightTool";
 import {
-  listSession, showCluster, showDataBase, getFillAllByVersion,
-  showClusterConfiguration, showSessionCluster, showJars, showEnv, showAlertInstance, showAlertGroup
+  getFillAllByVersion,
+  listSession,
+  showAlertGroup,
+  showAlertInstance,
+  showCluster,
+  showClusterConfiguration,
+  showDataBase,
+  showEnv,
+  showJars,
+  showSessionCluster
 } from "@/components/Studio/StudioEvent/DDL";
-import {loadSettings} from "@/pages/Settings/function";
 import DraggleLayout from "@/components/DraggleLayout";
 import DraggleVerticalLayout from "@/components/DraggleLayout/DraggleVerticalLayout";
+import {loadSettings} from "@/pages/SettingCenter/FlinkSettings/function";
 
 const Studio = (props: any) => {
 

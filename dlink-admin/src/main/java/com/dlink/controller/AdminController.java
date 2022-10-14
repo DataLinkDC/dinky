@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.dev33.satoken.stp.StpUtil;
@@ -57,7 +58,7 @@ public class AdminController {
         if (Asserts.isNull(loginUTO.isAutoLogin())) {
             loginUTO.setAutoLogin(false);
         }
-        return userService.loginUser(loginUTO.getUsername(), loginUTO.getPassword(), loginUTO.isAutoLogin());
+        return userService.loginUser(loginUTO);
     }
 
     /**
@@ -79,5 +80,13 @@ public class AdminController {
         } catch (Exception e) {
             return Result.failed("获取失败");
         }
+    }
+
+    /**
+     * get tenant
+     */
+    @RequestMapping("/geTenants")
+    public Result getTenants(@RequestParam("username") String username) {
+        return userService.getTenants(username);
     }
 }

@@ -47,6 +47,8 @@ public class ClusterConfiguration extends SuperEntity {
 
     private static final long serialVersionUID = 5830130188542066241L;
 
+    private Integer tenantId;
+
     @TableField(fill = FieldFill.INSERT)
     private String alias;
 

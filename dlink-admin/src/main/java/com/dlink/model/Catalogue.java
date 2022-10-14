@@ -39,6 +39,8 @@ public class Catalogue extends SuperEntity {
 
     private static final long serialVersionUID = 4659379420249868394L;
 
+    private Integer tenantId;
+
     private Integer taskId;
 
     private String type;

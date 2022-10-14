@@ -21,32 +21,34 @@
 import React from "react";
 import {CheckSquareOutlined, KeyOutlined} from '@ant-design/icons';
 import DTable from "@/components/Common/DTable";
+import { useIntl } from 'umi';
 
 const Columns = (props: any) => {
+  const intl = useIntl();
 
   const {dbId, table, schema, scroll} = props;
 
   const cols = [{
-    title: '序号',
+    title: intl.formatMessage({id: 'global.table.no', defaultMessage: '序号',}),
     dataIndex: 'position',
     isString: false,
   },
     {
-      title: '列名',
+      title: intl.formatMessage({id: 'global.table.columnName', defaultMessage: '字段名称',}),
       dataIndex: 'name',
       copyable: true,
     },
     {
-      title: '注释',
+      title: intl.formatMessage({id: 'global.table.annotation', defaultMessage: '注释',}),
       dataIndex: 'comment',
       // ellipsis: true,
     },
     {
-      title: '类型',
+      title: intl.formatMessage({id: 'global.table.type', defaultMessage: '类型',}),
       dataIndex: 'type',
     },
     {
-      title: '主键',
+      title: intl.formatMessage({id: 'global.table.primarykey', defaultMessage: '主键',}),
       dataIndex: 'keyFlag',
       render: (_, record) => (
         <>
@@ -65,7 +67,7 @@ const Columns = (props: any) => {
       ],
       openSearch: 'dict',
     }, {
-      title: '自增',
+      title: intl.formatMessage({id: 'global.table.automationAdd', defaultMessage: '自增',}),
       dataIndex: 'autoIncrement',
       render: (_, record) => (
         <>
@@ -84,7 +86,7 @@ const Columns = (props: any) => {
       ],
       openSearch: 'dict',
     }, {
-      title: '非空',
+      title: intl.formatMessage({id: 'global.table.isNull', defaultMessage: '非空',}),
       dataIndex: 'nullable',
       render: (_, record) => (
         <>
@@ -103,24 +105,24 @@ const Columns = (props: any) => {
       ],
       openSearch: 'dict',
     }, {
-      title: '默认值',
+      title: intl.formatMessage({id: 'global.table.default', defaultMessage: '默认值',}),
       dataIndex: 'defaultValue',
     }, {
-      title: '精度',
+      title: intl.formatMessage({id: 'global.table.precision', defaultMessage: '精度',}),
       dataIndex: 'precision',
       isString: false,
     }, {
-      title: '小数范围',
+      title: intl.formatMessage({id: 'global.table.decimalDigits', defaultMessage: '小数范围',}),
       dataIndex: 'scale',
       isString: false,
     }, {
-      title: '字符集',
+      title: intl.formatMessage({id: 'global.table.character', defaultMessage: '字符集',}),
       dataIndex: 'characterSet',
     }, {
-      title: '排序规则',
+      title: intl.formatMessage({id: 'global.table.collationRule', defaultMessage: '排序规则',}),
       dataIndex: 'collation',
     }, {
-      title: 'Java 类型',
+      title: intl.formatMessage({id: 'global.table.javaType', defaultMessage: 'Java 类型',}),
       dataIndex: 'javaType',
     },]
   return (

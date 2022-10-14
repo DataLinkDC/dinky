@@ -38,6 +38,7 @@ import org.apache.flink.configuration.TaskManagerOptions;
 import org.apache.flink.kubernetes.KubernetesClusterDescriptor;
 import org.apache.flink.runtime.client.JobStatusMessage;
 import org.apache.flink.runtime.jobgraph.JobGraph;
+import org.apache.http.util.TextUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -108,8 +109,17 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
                 }
                 result.setJids(jids);
             }
-            String clusterId = clusterClient.getClusterId();
-            result.setClusterId(clusterId);
+            String jobId = "";
+            //application mode only have one job, so we can get any one to be jobId
+            for (JobStatusMessage jobStatusMessage : jobStatusMessages) {
+                jobId = jobStatusMessage.getJobId().toHexString();
+            }
+            //if JobStatusMessage not have job id, use timestamp
+            //and... it`s maybe wrong with submit
+            if (TextUtils.isEmpty(jobId)) {
+                jobId = "unknown" + System.currentTimeMillis();
+            }
+            result.setClusterId(jobId);
             result.setWebURL(clusterClient.getWebInterfaceURL());
             result.success();
         } catch (Exception e) {

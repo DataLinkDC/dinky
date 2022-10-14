@@ -17,7 +17,6 @@
  *
  */
 
-
 export default [
   {
     path: '/user',
@@ -118,7 +117,7 @@ export default [
             component: './AlertGroup',
           },
         ],
-      },{
+      }, {
         path: '/registration/document',
         name: 'document',
         icon: 'container',
@@ -128,6 +127,37 @@ export default [
         name: 'fragment',
         icon: "cloud",
         component: './FragmentVariable',
+      }
+    ],
+  },
+  {
+    name: 'authenticationcenter',
+    icon: 'SafetyCertificateOutlined',
+    path: '/authenticationcenter',
+    routes: [
+      {
+        path: '/authenticationcenter/usermanager',
+        name: 'usermanager',
+        icon: 'UserOutlined',
+        component: './AuthenticationCenter/UserManager',
+      },
+      {
+        path: '/authenticationcenter/rolemanager',
+        name: 'rolemanager',
+        icon: 'TeamOutlined',
+        component: './AuthenticationCenter/RoleManager',
+      },
+      {
+        path: '/authenticationcenter/namespacemanager',
+        name: 'namespacemanager',
+        icon: 'BulbOutlined',
+        component: './AuthenticationCenter/NamespaceManager',
+      },
+      {
+        path: '/authenticationcenter/tenantmanager',
+        name: 'tenantmanager',
+        icon: 'SecurityScanOutlined',
+        component: './AuthenticationCenter/TenantManager',
       },
     ],
   },
@@ -138,8 +168,15 @@ export default [
   {
     name: 'settings',
     icon: 'setting',
-    path: '/settings',
-    component: './Settings',
+    path: '/settingcenter',
+    routes: [
+      {
+        path: '/settingcenter/flinksettings',
+        name: 'flinkConfig',
+        icon: 'setting',
+        component: './SettingCenter/FlinkSettings',
+      },
+    ],
   },
   {
     path: '/about',

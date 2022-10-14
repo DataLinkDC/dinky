@@ -17,10 +17,6 @@
  *
  */
 
-
-// @ts-ignore
-/* eslint-disable */
-
 declare namespace API {
   type Result = {
     code: number;
@@ -29,27 +25,43 @@ declare namespace API {
   };
 
   type CurrentUser = {
-    name?: string;
+    id?: number;
+    username?: string;
+    password?: string;
+    nickname?: string;
+    worknum?: string;
     avatar?: string;
-    userid?: string;
-    email?: string;
-    signature?: string;
-    title?: string;
-    group?: string;
-    tags?: { key?: string; label?: string }[];
-    notifyCount?: number;
-    unreadCount?: number;
-    country?: string;
-    access?: string;
-    geographic?: {
-      province?: { label?: string; key?: string };
-      city?: { label?: string; key?: string };
-    };
-    address?: string;
-    phone?: string;
-    isAdmin?:boolean;
-    worknum?:string;
+    mobile?: string;
+    enabled?: boolean;
+    isDelete?: boolean;
+    isAdmin?: boolean;
+    createTime?: Date;
+    updateTime?: Date;
+    roleList?: Role[];
+    tenantList?: Tenant[];
+    currentTenant?: Tenant;
   };
+  type Role = {
+    id?: number;
+    tenantId?: number;
+    roleCode?: string;
+    roleName?: string;
+    note?: string;
+    isDelete?: boolean;
+    createTime?: Date;
+    updateTime?: Date;
+    tenant?: Tenant;
+  };
+
+  type Tenant = {
+    id?: number;
+    tenantCode?: string;
+    note?: string;
+    isDelete?: boolean;
+    createTime?: Date;
+    updateTime?: Date;
+  };
+
 
   /*type LoginResult = {
     code?: number;
@@ -107,6 +119,7 @@ declare namespace API {
     username?: string;
     password?: string;
     autoLogin?: boolean;
+    tenantId?: number;
     type?: string;
     grant_type?: string;
   };

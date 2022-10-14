@@ -27,6 +27,7 @@ import StudioEdit from '../StudioEdit';
 import {DIALECT} from '../conf';
 import StudioHome from "@/components/Studio/StudioHome";
 import {Dispatch} from "@@/plugin-dva/connect";
+import StudioKubernetes from "@/components/Studio/StudioKubernetes";
 
 const {TabPane} = Tabs;
 
@@ -103,6 +104,35 @@ const EditorTabs = (props: any) => {
     </span>
   );
 
+  // as different dialet return different Panle
+  const getTabPane = (pane, i) => {
+    if (pane.task.dialect == DIALECT.KUBERNETES_APPLICATION) {
+      return (
+        <TabPane tab={Tab(pane)} key={pane.key} closable={pane.closable}>
+          <StudioKubernetes
+            tabsKey={pane.key}
+            conf={pane.value}
+            monaco={pane.monaco}
+            height={height ? height : (toolHeight - 32)}
+            width={width}
+          />
+        </TabPane>
+      )
+    } else {
+      return (<TabPane tab={Tab(pane)} key={pane.key} closable={pane.closable}>
+        <StudioEdit
+          tabsKey={pane.key}
+          sql={pane.value}
+          monaco={pane.monaco}
+          // sqlMetaData={pane.sqlMetaData}
+          height={height ? height : (toolHeight - 32)}
+          width={width}
+          language={current.task.dialect === DIALECT.JAVA ? 'java' : 'sql'}
+        />
+      </TabPane>)
+    }
+  }
+
   return (
     <>
       {tabs.panes.length === 0 ? <StudioHome width={width}/> :
@@ -116,19 +146,7 @@ const EditorTabs = (props: any) => {
           className={styles['edit-tabs']}
           style={{height: height ? height : toolHeight}}
         >
-          {tabs.panes.map((pane, i) => (
-            <TabPane tab={Tab(pane)} key={pane.key} closable={pane.closable}>
-              <StudioEdit
-                tabsKey={pane.key}
-                sql={pane.value}
-                monaco={pane.monaco}
-                // sqlMetaData={pane.sqlMetaData}
-                height={height ? height : (toolHeight - 32)}
-                width={width}
-                language={current.task.dialect === DIALECT.JAVA ? 'java' : 'sql'}
-              />
-            </TabPane>
-          ))}
+          {tabs.panes.map((pane, i) => getTabPane(pane, i))}
         </Tabs>}
     </>
   );

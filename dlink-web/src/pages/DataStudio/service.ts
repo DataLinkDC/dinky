@@ -18,8 +18,9 @@
  */
 
 
-import request from 'umi-request';
 import {CAParam, StudioMetaStoreParam, StudioParam} from "@/components/Studio/StudioEdit/data";
+import {request2} from "@/components/Common/crud";
+import {request} from "umi";
 
 export async function executeSql(params: StudioParam) {
   return request<API.Result>('/api/studio/executeSql', {
@@ -76,7 +77,7 @@ export async function getJobData(jobId: string) {
 }
 
 export async function getCatalogueTreeData(params?: StudioParam) {
-  return request<API.Result>('/api/catalogue/getCatalogueTreeData', {
+  return request2<API.Result>('/api/catalogue/getCatalogueTreeData', {
     method: 'POST',
     data: {
       ...params,
