@@ -183,7 +183,7 @@ const FragmentTableList: React.FC<{}> = (props: any) => {
   ];
 
   return (
-    <PageContainer>
+    <PageContainer title={false}>
       <ProTable<FragmentVariableTableListItem>
         headerTitle="全局变量列表"
         actionRef={actionRef}

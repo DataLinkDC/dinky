@@ -175,7 +175,7 @@ const AlertGroupTableList: React.FC<{}> = (props: any) => {
   ];
 
   return (
-    <PageContainer>
+    <PageContainer title={false}>
       <ProTable<AlertGroupTableListItem>
         headerTitle="报警组管理"
         actionRef={actionRef}
@@ -290,7 +290,7 @@ const AlertGroupTableList: React.FC<{}> = (props: any) => {
           modalVisible={updateModalVisible}
           values={formValues}
         />
-      ): null}
+      ) : null}
       <Drawer
         width={600}
         visible={!!row}
@@ -317,4 +317,4 @@ const AlertGroupTableList: React.FC<{}> = (props: any) => {
   );
 };
 
-export default  connect()(AlertGroupTableList);
+export default connect()(AlertGroupTableList);

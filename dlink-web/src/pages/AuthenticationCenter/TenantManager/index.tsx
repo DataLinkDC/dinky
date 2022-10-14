@@ -84,7 +84,7 @@ const TenantFormList: React.FC<{}> = (props: any) => {
   const handleGrantTenantForm = () => {
     return (
       <Modal title={l('pages.tenant.AssignUser')} visible={handleGrantTenant}
-             destroyOnClose={true} width={"1500px"}
+             destroyOnClose={true} width={"90%"}
              onCancel={() => {
                setHandleGrantTenant(false);
              }}

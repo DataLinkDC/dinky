@@ -97,7 +97,7 @@ const TenantForm: React.FC<TenantFormProps> = (props) => {
 
   return (
     <Modal
-      width={640}
+      width={"40%"}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
       title={formVals.id ? intl.formatMessage({id: 'pages.tenant.update'}) : intl.formatMessage({id: 'pages.tenant.create'})}
