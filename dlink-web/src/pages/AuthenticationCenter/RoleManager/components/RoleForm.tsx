@@ -25,6 +25,7 @@ import {getStorageTenantId} from "@/components/Common/crud";
 import {connect} from "umi";
 import {NameSpaceStateType} from "@/pages/AuthenticationCenter/RoleManager/model";
 import {buildFormData, getFormData} from "@/pages/AuthenticationCenter/function";
+import {useIntl} from "@@/plugin-locale/localeExports";
 
 
 export type TenantFormProps = {
@@ -44,6 +45,10 @@ const Option = Select.Option;
 
 
 const RoleForm: React.FC<TenantFormProps> = (props) => {
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<RoleTableListItem>>({
@@ -95,25 +100,25 @@ const RoleForm: React.FC<TenantFormProps> = (props) => {
       <>
         <Form.Item
           name="roleCode"
-          label="角色编号"
-          rules={[{required: true, message: '请输入角色唯一编码！'}]}>
-          <Input placeholder="请输入角色唯一编码"/>
+          label={l('pages.role.roleCode')}
+          rules={[{required: true, message: l('pages.role.roleCode')}]}>
+          <Input placeholder={l('pages.role.EnterRoleCode')}/>
         </Form.Item>
         <Form.Item
           name="roleName"
-          label="角色名称"
-          rules={[{required: true, message: '请输入角色名称！'}]}>
-          <Input placeholder="请输入角色名称"/>
+          label={l('pages.role.roleName')}
+          rules={[{required: true, message: l('pages.role.EnterRoleName')}]}>
+          <Input placeholder={l('pages.role.EnterRoleName')}/>
         </Form.Item>
         <Form.Item
           name="namespaceIds"
-          label="命名空间"
-          rules={[{required: true, message: '请选择命名空间！'}]}
+          label={l('pages.role.namespaceIds')}
+          rules={[{required: true, message: l('pages.role.selectNameSpace')}]}
         >
           <Select
             mode="multiple"
             style={{width: '100%'}}
-            placeholder="请选择命名空间"
+            placeholder={l('pages.role.selectNameSpace')}
             optionLabelProp="label"
           >
             {getNameSpaceOptions()}
@@ -121,9 +126,9 @@ const RoleForm: React.FC<TenantFormProps> = (props) => {
         </Form.Item>
         <Form.Item
           name="note"
-          label="注释"
+          label={l('pages.role.note')}
         >
-          <Input.TextArea placeholder="请输入文本注释" allowClear
+          <Input.TextArea placeholder={l('pages.role.EnterNote')} allowClear
                           autoSize={{minRows: 3, maxRows: 10}}/>
         </Form.Item>
       </>
@@ -133,9 +138,9 @@ const RoleForm: React.FC<TenantFormProps> = (props) => {
   const renderFooter = () => {
     return (
       <>
-        <Button onClick={() => handleModalVisible(false)}>取消</Button>
+        <Button onClick={() => handleModalVisible(false)}>{l('button.cancel')}</Button>
         <Button type="primary" onClick={() => submitForm()}>
-          完成
+          {l('button.finish')}
         </Button>
       </>
     );
@@ -146,7 +151,7 @@ const RoleForm: React.FC<TenantFormProps> = (props) => {
       width={1000}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title={formVals.id ? "修改角色" : "创建角色"}
+      title={formVals.id ? l('pages.role.update') : l('pages.role.create')}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}
