@@ -55,20 +55,20 @@ const EmailForm: React.FC<AlertInstanceFormProps> = (props) => {
     modalVisible,
   } = props;
 
-  const onValuesChange = (change: any,all: any)=>{
-    setFormVals({...formVals,...change});
+  const onValuesChange = (change: any, all: any) => {
+    setFormVals({...formVals, ...change});
   };
 
   const sendTestForm = async () => {
     const fieldsValue = await form.validateFields();
-    setFormVals(buildJSONData(formVals,fieldsValue));
-    handleTest(buildJSONData(formVals,fieldsValue));
+    setFormVals(buildJSONData(formVals, fieldsValue));
+    handleTest(buildJSONData(formVals, fieldsValue));
   };
 
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
-    setFormVals(buildJSONData(formVals,fieldsValue));
-    handleSubmit(buildJSONData(formVals,fieldsValue));
+    setFormVals(buildJSONData(formVals, fieldsValue));
+    handleSubmit(buildJSONData(formVals, fieldsValue));
   };
 
 
@@ -88,13 +88,15 @@ const EmailForm: React.FC<AlertInstanceFormProps> = (props) => {
           label="收件人"
           rules={[{required: true, message: '请输入收件人邮箱！多个英文逗号隔开'}]}
         >
-          <Input.TextArea placeholder="请输入收件人邮箱！多个英文逗号隔开!" allowClear autoSize={{minRows: 1, maxRows: 5}}/>
+          <Input.TextArea placeholder="请输入收件人邮箱！多个英文逗号隔开!" allowClear
+                          autoSize={{minRows: 1, maxRows: 5}}/>
         </Form.Item>
         <Form.Item
           name="receiverCcs"
           label="抄送人"
         >
-          <Input.TextArea placeholder="请输入抄送人邮箱！多个英文逗号隔开!" allowClear autoSize={{minRows: 1, maxRows: 5}}/>
+          <Input.TextArea placeholder="请输入抄送人邮箱！多个英文逗号隔开!" allowClear
+                          autoSize={{minRows: 1, maxRows: 5}}/>
         </Form.Item>
         <Form.Item
           name="serverHost"
@@ -126,21 +128,21 @@ const EmailForm: React.FC<AlertInstanceFormProps> = (props) => {
         </Form.Item>
         {vals.enableSmtpAuth &&
           <>
-          <Form.Item
-            name="User"
-            label="邮箱用户名"
-            rules={[{required: true, message: '请输入邮箱用户名！'}]}
-          >
-            <Input allowClear placeholder="请输入邮箱用户名"/>
-          </Form.Item>
-          <Form.Item
-            name="Password"
-            label="邮箱密码"
-            rules={[{required: true, message: '请输入邮箱密码/授权码！'}]}
-          >
-            <Input.Password allowClear placeholder="请输入邮箱密码! 注意:密码为授权码"/>
-          </Form.Item>
-        </>}
+            <Form.Item
+              name="User"
+              label="邮箱用户名"
+              rules={[{required: true, message: '请输入邮箱用户名！'}]}
+            >
+              <Input allowClear placeholder="请输入邮箱用户名"/>
+            </Form.Item>
+            <Form.Item
+              name="Password"
+              label="邮箱密码"
+              rules={[{required: true, message: '请输入邮箱密码/授权码！'}]}
+            >
+              <Input.Password allowClear placeholder="请输入邮箱密码! 注意:密码为授权码"/>
+            </Form.Item>
+          </>}
         <Form.Item
           name="starttlsEnable"
           label="是否开启tls证书验证"
@@ -155,7 +157,7 @@ const EmailForm: React.FC<AlertInstanceFormProps> = (props) => {
           <Switch checkedChildren="是" unCheckedChildren="否"
                   defaultChecked={vals.sslEnable}/>
         </Form.Item>
-        { ( vals.sslEnable ) &&
+        {(vals.sslEnable) &&
           <Form.Item
             name="smtpSslTrust"
             label="受信任域"
@@ -175,7 +177,7 @@ const EmailForm: React.FC<AlertInstanceFormProps> = (props) => {
           label="展示方式"
           rules={[{required: true, message: '请选择展示方式！'}]}
         >
-          <Radio.Group >
+          <Radio.Group>
             <Radio value='text'>文本</Radio>
             <Radio value='table'>表格</Radio>
             <Radio value='attachment'>附件</Radio>
@@ -191,7 +193,7 @@ const EmailForm: React.FC<AlertInstanceFormProps> = (props) => {
               <Input allowClear placeholder="请输入XLS存放目录! 默认为 /tmp/xls"/>
             </Form.Item>
 
-          </> }
+          </>}
 
       </>
     );
@@ -212,10 +214,10 @@ const EmailForm: React.FC<AlertInstanceFormProps> = (props) => {
 
   return (
     <Modal
-      width={1200}
+      width={"40%"}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title={formVals.id?"维护报警实例配置":"创建报警实例配置"}
+      title={formVals.id ? "维护报警实例配置" : "创建报警实例配置"}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}

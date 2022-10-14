@@ -18,8 +18,8 @@
  */
 
 
-import React, {useEffect, useState} from 'react';
-import {Form, Button, Input, Modal, Select,Divider,Switch} from 'antd';
+import React, {useState} from 'react';
+import {Button, Divider, Form, Input, Modal, Select, Switch} from 'antd';
 import {JarTableListItem} from "@/pages/Jar/data";
 
 export type JarFormProps = {
@@ -42,12 +42,12 @@ const JarForm: React.FC<JarFormProps> = (props) => {
     id: props.values.id,
     name: props.values.name,
     alias: props.values.alias,
-    type: props.values.type?props.values.type:'UserApp',
+    type: props.values.type ? props.values.type : 'UserApp',
     path: props.values.path,
     mainClass: props.values.mainClass,
     paras: props.values.paras,
     note: props.values.note,
-    enabled: props.values.enabled?props.values.enabled:true,
+    enabled: props.values.enabled ? props.values.enabled : true,
   });
 
   const {
@@ -139,10 +139,10 @@ const JarForm: React.FC<JarFormProps> = (props) => {
 
   return (
     <Modal
-      width={1200}
+      width={"40%"}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title={formVals.id?"维护Jar配置":"创建Jar配置"}
+      title={formVals.id ? "维护Jar配置" : "创建Jar配置"}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}

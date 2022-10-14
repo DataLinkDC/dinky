@@ -89,7 +89,7 @@ const UserTableList: React.FC<{}> = (props: any) => {
 
   const handleGrantRoleForm = () => {
     return (
-      <Modal title={l('pages.user.AssignRole')} visible={handleGrantRole} destroyOnClose={true} width={"1500px"}
+      <Modal title={l('pages.user.AssignRole')} visible={handleGrantRole} destroyOnClose={true} width={"90%"}
              onCancel={() => {
                setHandleGrantRole(false);
              }}

@@ -19,11 +19,10 @@
 
 
 import React, {useRef, useState} from "react";
-import {DownOutlined, HeartOutlined, PlusOutlined, UserOutlined} from '@ant-design/icons';
-import {ActionType, ProColumns} from "@ant-design/pro-table";
-import {Button, message, Input, Drawer, Modal, Dropdown, Menu} from 'antd';
-import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
-import ProTable from '@ant-design/pro-table';
+import {DownOutlined, PlusOutlined} from '@ant-design/icons';
+import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
+import {Button, Drawer, Dropdown, Menu, Modal} from 'antd';
+import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import {ClusterConfigurationTableListItem} from "@/pages/ClusterConfiguration/data";
 import {handleAddOrUpdate, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
@@ -219,104 +218,104 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
   ];
 
   return (
-    <PageContainer>
+    <PageContainer title={false}>
       <ProTable<ClusterConfigurationTableListItem>
         headerTitle="集群配置管理"
         actionRef={actionRef}
         rowKey="id"
         search={{
-        labelWidth: 120,
-      }}
+          labelWidth: 120,
+        }}
         toolBarRender={() => [
-        <Button type="primary" onClick={() => handleModalVisible(true)}>
-          <PlusOutlined/> 新建
-        </Button>,
-      ]}
+          <Button type="primary" onClick={() => handleModalVisible(true)}>
+            <PlusOutlined/> 新建
+          </Button>,
+        ]}
         request={(params, sorter, filter) => queryData(url, {...params, sorter, filter})}
         columns={columns}
         rowSelection={{
-        onChange: (_, selectedRows) => setSelectedRows(selectedRows),
-      }}
-        />
-        {selectedRowsState?.length > 0 && (
-          <FooterToolbar
-            extra={
-              <div>
-                已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
-                <span>
+          onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+        }}
+      />
+      {selectedRowsState?.length > 0 && (
+        <FooterToolbar
+          extra={
+            <div>
+              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
+              <span>
                 被禁用的集群配置共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} 人
               </span>
-              </div>
-            }
+            </div>
+          }
+        >
+          <Button type="primary" danger
+                  onClick={() => {
+                    Modal.confirm({
+                      title: '删除集群配置',
+                      content: '确定删除选中的集群配置吗？',
+                      okText: '确认',
+                      cancelText: '取消',
+                      onOk: async () => {
+                        await handleRemove(url, selectedRowsState);
+                        setSelectedRows([]);
+                        actionRef.current?.reloadAndRest?.();
+                      }
+                    });
+                  }}
           >
-            <Button type="primary" danger
-                    onClick={() => {
-                      Modal.confirm({
-                        title: '删除集群配置',
-                        content: '确定删除选中的集群配置吗？',
-                        okText: '确认',
-                        cancelText: '取消',
-                        onOk: async () => {
-                          await handleRemove(url, selectedRowsState);
-                          setSelectedRows([]);
-                          actionRef.current?.reloadAndRest?.();
-                        }
-                      });
-                    }}
-            >
-              批量删除
-            </Button>
-            <Button type="primary"
-                    onClick={() => {
-                      Modal.confirm({
-                        title: '启用集群配置',
-                        content: '确定启用选中的集群配置吗？',
-                        okText: '确认',
-                        cancelText: '取消',
-                        onOk: async () => {
-                          await updateEnabled(url, selectedRowsState, true);
-                          setSelectedRows([]);
-                          actionRef.current?.reloadAndRest?.();
-                        }
-                      });
-                    }}
-            >批量启用</Button>
-            <Button danger
-                    onClick={() => {
-                      Modal.confirm({
-                        title: '禁用集群配置',
-                        content: '确定禁用选中的集群配置吗？',
-                        okText: '确认',
-                        cancelText: '取消',
-                        onOk: async () => {
-                          await updateEnabled(url, selectedRowsState, false);
-                          setSelectedRows([]);
-                          actionRef.current?.reloadAndRest?.();
-                        }
-                      });
-                    }}
-            >批量禁用</Button>
-          </FooterToolbar>
-        )}
-        <ClusterConfigurationForm
-          onSubmit={async (value) => {
-            const success = await handleAddOrUpdate("api/clusterConfiguration", value);
-            if (success) {
-              handleModalVisible(false);
-              setFormValues({});
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-              showClusterConfiguration(dispatch);
-            }
-          }}
-          onCancel={() => {
+            批量删除
+          </Button>
+          <Button type="primary"
+                  onClick={() => {
+                    Modal.confirm({
+                      title: '启用集群配置',
+                      content: '确定启用选中的集群配置吗？',
+                      okText: '确认',
+                      cancelText: '取消',
+                      onOk: async () => {
+                        await updateEnabled(url, selectedRowsState, true);
+                        setSelectedRows([]);
+                        actionRef.current?.reloadAndRest?.();
+                      }
+                    });
+                  }}
+          >批量启用</Button>
+          <Button danger
+                  onClick={() => {
+                    Modal.confirm({
+                      title: '禁用集群配置',
+                      content: '确定禁用选中的集群配置吗？',
+                      okText: '确认',
+                      cancelText: '取消',
+                      onOk: async () => {
+                        await updateEnabled(url, selectedRowsState, false);
+                        setSelectedRows([]);
+                        actionRef.current?.reloadAndRest?.();
+                      }
+                    });
+                  }}
+          >批量禁用</Button>
+        </FooterToolbar>
+      )}
+      <ClusterConfigurationForm
+        onSubmit={async (value) => {
+          const success = await handleAddOrUpdate("api/clusterConfiguration", value);
+          if (success) {
             handleModalVisible(false);
-          }}
-          modalVisible={modalVisible}
-          values={{}}
-        />
-        {formValues && Object.keys(formValues).length ? (
+            setFormValues({});
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+            showClusterConfiguration(dispatch);
+          }
+        }}
+        onCancel={() => {
+          handleModalVisible(false);
+        }}
+        modalVisible={modalVisible}
+        values={{}}
+      />
+      {formValues && Object.keys(formValues).length ? (
         <ClusterConfigurationForm
           onSubmit={async (value) => {
             const success = await handleAddOrUpdate("api/clusterConfiguration", value);
@@ -336,31 +335,31 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
           modalVisible={updateModalVisible}
           values={formValues}
         />
-          ): null}
-        <Drawer
-          width={600}
-          visible={!!row}
-          onClose={() => {
-            setRow(undefined);
-          }}
-          closable={false}
-        >
-          {row?.name && (
-            <ProDescriptions<ClusterConfigurationTableListItem>
-              column={2}
-              title={row?.name}
-              request={async () => ({
+      ) : null}
+      <Drawer
+        width={600}
+        visible={!!row}
+        onClose={() => {
+          setRow(undefined);
+        }}
+        closable={false}
+      >
+        {row?.name && (
+          <ProDescriptions<ClusterConfigurationTableListItem>
+            column={2}
+            title={row?.name}
+            request={async () => ({
               data: row || {},
             })}
-              params={{
+            params={{
               id: row?.name,
             }}
-              columns={columns}
-              />
-              )}
-        </Drawer>
+            columns={columns}
+          />
+        )}
+      </Drawer>
     </PageContainer>
-);
+  );
 };
 
 export default ClusterConfigurationTableList;

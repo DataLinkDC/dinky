@@ -148,7 +148,7 @@ const RoleForm: React.FC<TenantFormProps> = (props) => {
 
   return (
     <Modal
-      width={1000}
+      width={"40%"}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
       title={formVals.id ? l('pages.role.update') : l('pages.role.create')}

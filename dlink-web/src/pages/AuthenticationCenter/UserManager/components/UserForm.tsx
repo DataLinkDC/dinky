@@ -122,7 +122,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
 
   return (
     <Modal
-      width={1200}
+      width={"40%"}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
       title={formVals.id ? l('pages.user.UserUpdateUser') : l('pages.user.UserCreateUser')}
