@@ -25,8 +25,11 @@ import styles from './index.less';
 import {SearchOutlined} from "@ant-design/icons";
 import Divider from "antd/es/divider";
 import {ProTable} from "@ant-design/pro-table";
+import { useIntl } from 'umi';
 
 const TableData = (props: any) => {
+
+  const intl = useIntl();
 
   // 数据库id，数据库名称，表名称
   const {dbId, table, schema} = props;
@@ -163,7 +166,7 @@ const TableData = (props: any) => {
                   })
                 }}
               >
-                <Input addonBefore="WHERE" placeholder="查询条件"
+                <Input addonBefore="WHERE" placeholder= {intl.formatMessage({id: 'pages.TableData.QueryConditions', defaultMessage: '查询条件',})}
                        onChange={(value) => {
                          setOptionInput({
                            whereInput: value.target.value,
@@ -187,7 +190,7 @@ const TableData = (props: any) => {
                   })
                 }}
               >
-                <Input addonBefore="ORDER BY" placeholder="排序" onChange={(value) => {
+                <Input addonBefore="ORDER BY" placeholder={intl.formatMessage({id: 'pages.TableData.sorting', defaultMessage: '排序',})} onChange={(value) => {
                   setOptionInput({
                     whereInput: optionInput.whereInput,
                     orderInput: value.target.value
@@ -196,7 +199,7 @@ const TableData = (props: any) => {
               </AutoComplete>
             </Col>
             <Col span={2}>
-              <Tooltip title="查询">
+              <Tooltip title={intl.formatMessage({id: 'pages.TableData.serch', defaultMessage: '查询',})}>
                 <Button type="primary" shape="circle" icon={<SearchOutlined/>} size="middle" onClick={(event) => {
                   fetchData(optionInput.whereInput, optionInput.orderInput)
                 }}/>
@@ -207,7 +210,7 @@ const TableData = (props: any) => {
         </div>
 
 
-        <Divider orientation="left" plain>数据</Divider>
+        <Divider orientation="left" plain>{intl.formatMessage({id: 'pages.TableData.data', defaultMessage: '数据',})}</Divider>
 
         <div>
           <ProTable

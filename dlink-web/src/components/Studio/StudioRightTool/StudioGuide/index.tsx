@@ -23,39 +23,40 @@ import React from 'react';
 import {connect} from 'umi';
 import {StateType} from '@/pages/DataStudio/model';
 import {Scrollbars} from 'react-custom-scrollbars';
-import { history } from 'umi';
+import { history,useIntl } from 'umi';
 
 const {Title, Paragraph,Link, Text} = Typography;
 
 const StudioGuide = (props: any) => {
+  const intl = useIntl();
   const {toolHeight} = props;
 
   return (
     <Scrollbars style={{height: toolHeight}}>
       <Typography style={{padding:'15px'}}>
-        <Title level={5}>快捷引导</Title>
+        <Title level={5}>{intl.formatMessage({id: 'pages.datastadio.lable.quickguide', defaultMessage: '快捷引导',})}</Title>
         <Paragraph>
           <ul>
             <li>
-              <Link onClick={()=>{history.push('/registration/cluster/clusterInstance')}}>注册集群实例</Link>
+              <Link onClick={()=>{history.push('/registration/cluster/clusterInstance')}}>{intl.formatMessage({id: 'pages.datastadio.lable.registcluster', defaultMessage: '注册集群实例',})}</Link>
             </li>
             <li>
-              <Link onClick={()=>{history.push('/registration/cluster/clusterConfiguration')}}>注册集群配置</Link>
+              <Link onClick={()=>{history.push('/registration/cluster/clusterConfiguration')}}>{intl.formatMessage({id: 'pages.datastadio.lable.registclusterconfig', defaultMessage: '注册集群配置',})}</Link>
             </li>
             <li>
-              <Link onClick={()=>{history.push('/registration/jar')}}>注册 Jar</Link>
+              <Link onClick={()=>{history.push('/registration/jar')}}>{intl.formatMessage({id: 'pages.datastadio.lable.registjar', defaultMessage: '注册 Jar',})}</Link>
             </li>
             <li>
-              <Link onClick={()=>{history.push('/registration/database')}}>注册数据源</Link>
+              <Link onClick={()=>{history.push('/registration/database')}}>{intl.formatMessage({id: 'pages.datastadio.lable.registdatasource', defaultMessage: '注册数据源',})}</Link>
             </li>
             <li>
-              <Link onClick={()=>{history.push('/registration/document')}}>注册文档</Link>
+              <Link onClick={()=>{history.push('/registration/document')}}>{intl.formatMessage({id: 'pages.datastadio.lable.registdocument', defaultMessage: '注册文档',})}</Link>
             </li>
             <li>
-              <Link onClick={()=>{history.push('/settings')}}>修改系统配置</Link>
+              <Link onClick={()=>{history.push('/settings')}}>{intl.formatMessage({id: 'pages.datastadio.lable.configsystemconfig', defaultMessage: '修改系统配置',})}</Link>
             </li>
             <li>
-              <Link href="http://www.dlink.top/" target="_blank" >官网文档</Link>
+              <Link href="http://www.dlink.top/" target="_blank" >{intl.formatMessage({id: 'pages.datastadio.lable.officialdocumentation', defaultMessage: '官网文档',})}</Link>
             </li>
             <li>
               <Link href="https://github.com/DataLinkDC/dlink" target="_blank" >Github</Link>

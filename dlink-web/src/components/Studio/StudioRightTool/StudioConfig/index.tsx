@@ -18,7 +18,7 @@
  */
 
 
-import {connect} from "umi";
+import {connect,useIntl} from "umi";
 import {StateType} from "@/pages/DataStudio/model";
 import {
   Form, InputNumber,Switch, Row, Col, Tooltip, Button,
@@ -28,6 +28,8 @@ import styles from "./index.less";
 import { Scrollbars } from 'react-custom-scrollbars';
 
 const StudioConfig = (props: any) => {
+
+  const intl = useIntl();
 
   const {current,form,dispatch,tabs,toolHeight} = props;
 

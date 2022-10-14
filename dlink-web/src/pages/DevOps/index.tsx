@@ -41,7 +41,7 @@ const DevOps = () => {
   };
 
   const renderSwitch = () => {
-    return (<Switch checkedChildren="历史" unCheckedChildren="实例" onChange={handleHistorySwicthChange}/>);
+    return (<Switch checkedChildren={intl.formatMessage({id: 'pages.datastadio.lable.history', defaultMessage: '历史',})} unCheckedChildren={intl.formatMessage({id: 'pages.devops.lable.instance', defaultMessage: '实例',})} onChange={handleHistorySwicthChange}/>);
   };
 
 
