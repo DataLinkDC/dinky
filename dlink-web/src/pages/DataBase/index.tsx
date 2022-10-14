@@ -86,7 +86,7 @@ const DataBaseTableList: React.FC<{}> = (props: any) => {
   };
 
   return (
-    <PageContainer>
+    <PageContainer title={false}>
       <ProList
         actionRef={actionRef}
         toolBarRender={() => {

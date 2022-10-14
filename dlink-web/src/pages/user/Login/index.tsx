@@ -123,7 +123,7 @@ const Login: React.FC = () => {
   //const {code } = userLoginState;
 
 
-  const handleShowTenant = (item: API.LoginParams) => {
+  const handleShowTenant = () => {
 
     return <>
       <Modal title={intl.formatMessage({id: 'pages.login.chooseTenant'})} visible={chooseTenant} destroyOnClose={true}
@@ -291,7 +291,7 @@ const Login: React.FC = () => {
         </div>
       </div>
       <Footer/>
-      {handleShowTenant(userParamsState)}
+      {handleShowTenant()}
     </div>
 
   );

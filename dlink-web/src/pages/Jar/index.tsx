@@ -228,7 +228,7 @@ const JarTableList: React.FC<{}> = (props: any) => {
   ];
 
   return (
-    <PageContainer>
+    <PageContainer title={false}>
       <ProTable<JarTableListItem>
         headerTitle="Jar 配置管理"
         actionRef={actionRef}

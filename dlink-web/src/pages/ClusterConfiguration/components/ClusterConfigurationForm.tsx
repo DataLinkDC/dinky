@@ -376,8 +376,8 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
 
   return (
     <Modal
-      width={1200}
-      bodyStyle={{padding: '32px 40px 48px'}}
+      width={"60%"}
+      bodyStyle={{padding: '32px 40px 48px', height: '600px', overflowY: 'auto'}}
       destroyOnClose
       title={formVals.id ? "维护集群配置" : "创建集群配置"}
       visible={modalVisible}
