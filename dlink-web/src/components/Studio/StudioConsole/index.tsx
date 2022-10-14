@@ -34,10 +34,13 @@ import StudioCA from "./StudioCA";
 import StudioProcess from "./StudioProcess";
 import {Scrollbars} from 'react-custom-scrollbars';
 import Chart from "@/components/Chart";
+import { useIntl } from 'umi';
 
 const {TabPane} = Tabs;
 
 const StudioConsole = (props: any) => {
+
+  const intl = useIntl();
 
   const {height,current} = props;
   let consoleHeight = (height - 37.6);
@@ -49,7 +52,7 @@ const StudioConsole = (props: any) => {
         tab={
           <span>
           <CodeOutlined/>
-          信息
+            {intl.formatMessage({id: 'pages.datastadio.lable.info', defaultMessage: '信息',})}
         </span>
         }
         key="StudioMsg"
@@ -62,7 +65,7 @@ const StudioConsole = (props: any) => {
         tab={
           <span>
           <TableOutlined/>
-          结果
+            {intl.formatMessage({id: 'pages.datastadio.lable.result', defaultMessage: '结果',})}
         </span>
         }
         key="StudioTable"
@@ -88,7 +91,7 @@ const StudioConsole = (props: any) => {
         tab={
           <span>
           <ApartmentOutlined/>
-          血缘
+            {intl.formatMessage({id: 'pages.datastadio.lable.bloodsource', defaultMessage: '血缘',})}
         </span>
         }
         key="StudioConsanguinity"
@@ -101,7 +104,7 @@ const StudioConsole = (props: any) => {
         tab={
           <span>
           <DesktopOutlined/>
-          进程
+            {intl.formatMessage({id: 'pages.datastadio.lable.process', defaultMessage: '进程',})}
         </span>
         }
         key="StudioProcess"
@@ -114,7 +117,7 @@ const StudioConsole = (props: any) => {
         tab={
           <span>
           <CalendarOutlined/>
-          历史
+            {intl.formatMessage({id: 'pages.datastadio.lable.history', defaultMessage: '历史',})}
         </span>
         }
         key="StudioHistory"
@@ -127,7 +130,7 @@ const StudioConsole = (props: any) => {
         tab={
           <span>
           <FunctionOutlined/>
-          函数
+            {intl.formatMessage({id: 'pages.datastadio.lable.function', defaultMessage: '函数',})}
         </span>
         }
         key="StudioFX"

@@ -1,22 +1,3 @@
-/*
- *
- *  Licensed to the Apache Software Foundation (ASF) under one or more
- *  contributor license agreements.  See the NOTICE file distributed with
- *  this work for additional information regarding copyright ownership.
- *  The ASF licenses this file to You under the Apache License, Version 2.0
- *  (the "License"); you may not use this file except in compliance with
- *  the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- */
-
 export default {
   'pages.layouts.userLayout.title': 'Dinky Real-time Computing Platform',
 
@@ -226,5 +207,54 @@ export default {
   'pages.regist.openAPI': 'openAPI Document',
   'pages.regist.BusinessComponent': 'Business Component Document',
 
+  'pages.matedata.NoDatabaseSelected' : 'No database selected',
+  'pages.matedata.Application' : 'Application',
+  'pages.matedata.TableInfo' : 'Table Info',
+  'pages.matedata.Description' : 'Description',
+  'pages.matedata.DataSerch' : 'Data Serch',
+  'pages.matedata.GenerateSQL' : 'Generate SQL',
+  'pages.matedata.FieldInformation' : 'Field information',
 
+  'pages.TableData.QueryConditions' : 'Query Conditions',
+  'pages.TableData.sorting' : 'Sorting',
+  'pages.TableData.data' : 'Data',
+  'pages.TableData.serch' : 'Serch',
+
+  'pages.datastadio.lable.info' : 'Info',
+  'pages.datastadio.lable.result' : 'Result',
+  'pages.datastadio.lable.bloodsource' : 'Blood Source',
+  'pages.datastadio.lable.process' : 'Process',
+  'pages.datastadio.lable.history' : 'History',
+  'pages.datastadio.lable.function' : 'Function',
+
+  'pages.datastadio.lable.directory' : 'Directory',
+  'pages.datastadio.lable.structure' : 'Structure',
+  'pages.datastadio.lable.session' : 'Session',
+  'pages.datastadio.lable.cluster' : 'Cluster',
+  'pages.datastadio.lable.datasource' : 'Data Source',
+  'pages.datastadio.lable.mate' : 'Mate Data',
+  'pages.datastadio.lable.globalvariable' : 'Global Variable',
+  'pages.datastadio.lable.guidepage' : 'Guide Page',
+
+  'pages.datastadio.lable.registcluster' : 'Regist Cluster',
+  'pages.datastadio.lable.registclusterconfig' : 'Regist Cluster Config',
+  'pages.datastadio.lable.registjar' : 'Regist Jar',
+  'pages.datastadio.lable.registdatasource' : 'Regist Datasource',
+  'pages.datastadio.lable.registdocument' : 'Regist Document',
+  'pages.datastadio.lable.configsystemconfig' : 'Config System Config',
+  'pages.datastadio.lable.officialdocumentation' : 'Official Documentation',
+  'pages.datastadio.lable.quickguide' : 'Quick Guide',
+
+  'pages.datastadio.lable.welcomeuse' : 'Welcome to Use Dinky v',
+  'pages.datastadio.lable.dinkydescribe' : 'Real Time is the Future,Dinky is the best partner of Flink, making Flink SQL easier to use, and is committed to the construction of stream batch integrated development platform',
+  'pages.datastadio.lable.maxrows' : 'Max Rows',
+
+
+  'pages.devops.result.success' : 'Successful',
+  'pages.devops.lable.online' : 'Online',
+  'pages.devops.lable.offline' : 'Offline',
+  'pages.devops.lable.onlinelist' : 'Online List',
+  'pages.devops.lable.offlinelist' : 'Offline List',
+  'pages.devops.lable.instance' : 'Instance',
 };
+
