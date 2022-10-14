@@ -60,12 +60,7 @@ export default {
   'menu.exception.server-error': '500',
   'menu.exception.trigger': '触发错误',
   'menu.account': '个人页',
-  'menu.account.center': '个人中心',
-  'menu.account.settings': '个人设置',
   'menu.account.trigger': '触发报错',
-  'menu.account.logout': '退出登录',
-  'menu.account.changePassword': '修改密码',
-  'menu.account.checkTenant': '切换租户',
   'menu.editor': '图形编辑器',
   'menu.editor.flow': '流程编辑器',
   'menu.editor.mind': '脑图编辑器',
@@ -76,6 +71,14 @@ export default {
   'menu.dev.ant-design': 'Ant Design UI框架',
   'menu.dev.ant-design.docs': '官方文档',
   'menu.dev.ant-design.preview': '官方预览',
+
+  // ------------------------------------------------------------------------------
+
+  'menu.account.center': '个人中心',
+  'menu.account.settings': '个人设置',
+  'menu.account.changePassword': '修改密码',
+  'menu.account.checkTenant': '切换租户',
+  'menu.account.logout': '退出登录',
 
 
   'menu.datastudio': '数据开发',

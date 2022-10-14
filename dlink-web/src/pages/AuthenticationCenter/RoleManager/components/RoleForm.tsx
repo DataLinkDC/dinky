@@ -102,7 +102,7 @@ const RoleForm: React.FC<TenantFormProps> = (props) => {
           name="roleCode"
           label={l('pages.role.roleCode')}
           rules={[{required: true, message: l('pages.role.roleCode')}]}>
-          <Input placeholder={l('pages.role.roleCode')}/>
+          <Input placeholder={l('pages.role.EnterRoleCode')}/>
         </Form.Item>
         <Form.Item
           name="roleName"

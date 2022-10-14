@@ -60,16 +60,20 @@ export default {
   'menu.exception.server-error': '500',
   'menu.exception.trigger': 'Trigger',
   'menu.account': 'Account',
-  'menu.account.center': 'Account Center',
-  'menu.account.settings': 'Account Settings',
   'menu.account.trigger': 'Trigger Error',
-  'menu.account.logout': 'Logout',
-  'menu.account.checkTenant': 'Check Tenant',
-  'menu.account.changePassword': 'Change Password',
   'menu.editor': 'Graphic Editor',
   'menu.editor.flow': 'Flow Editor',
   'menu.editor.mind': 'Mind Editor',
   'menu.editor.koni': 'Koni Editor',
+
+  // ------------------------------------------------------------------------------
+
+  'menu.account.center': 'Account Center',
+  'menu.account.settings': 'Account Settings',
+  'menu.account.changePassword': 'Change Password',
+  'menu.account.checkTenant': 'Check Tenant',
+  'menu.account.logout': 'Logout',
+
 
   'menu.datastudio': 'Data Studio',
 

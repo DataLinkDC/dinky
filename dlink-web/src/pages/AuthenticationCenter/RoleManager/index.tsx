@@ -172,7 +172,7 @@ const RoleFormList: React.FC<{}> = (props: any) => {
   return (
     <PageContainer title={false}>
       <ProTable<RoleTableListItem>
-        headerTitle={l('pages.nameSpace.NameSpaceManagement')}
+        headerTitle={l('pages.role.roleManagement')}
         actionRef={actionRef}
         rowKey="id"
         search={{

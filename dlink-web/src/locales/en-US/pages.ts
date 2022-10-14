@@ -217,9 +217,9 @@ export default {
   'pages.role.EnterNote': 'Please enter Role Note!',
   'pages.role.delete': 'Delete Role',
   'pages.role.deleteConfirm': 'Are you sure you want to delete this Role？',
-  'pages.role.enable': 'Delete Role',
+  'pages.role.enable': 'Enable Role',
   'pages.role.enableConfirm': 'Are you sure you want to enable this Role？',
-  'pages.role.disable': 'Delete Role',
+  'pages.role.disable': 'Disable Role',
   'pages.role.disableConfirm': 'Are you sure you want to disable this Role？',
 
 
