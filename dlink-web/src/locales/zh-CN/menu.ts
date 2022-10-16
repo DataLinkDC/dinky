@@ -107,6 +107,7 @@ export default {
   'menu.settings': '配置中心',
   'menu.settings.flinkConfig': 'Flink 配置',
   'menu.settings.systemInfo': '系统信息',
+  'menu.settings.processList': '进程列表',
 
   'menu.about': '关于',
 };

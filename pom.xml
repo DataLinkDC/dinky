@@ -43,6 +43,7 @@
         <module>dlink-web</module>
         <module>dlink-admin</module>
         <module>dlink-assembly</module>
+        <module>dlink-process</module>
     </modules>
 
     <properties>
@@ -450,6 +451,11 @@
             <dependency>
                 <groupId>com.dlink</groupId>
                 <artifactId>dlink-scheduler</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-process</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

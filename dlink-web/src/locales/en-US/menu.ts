@@ -102,6 +102,7 @@ export default {
   'menu.settings': 'Setting Center',
   'menu.settings.flinkConfig': 'Flink Settings',
   'menu.settings.systemInfo': 'System Info',
+  'menu.settings.processList': 'Process List',
 
   'menu.about': 'About',
 };

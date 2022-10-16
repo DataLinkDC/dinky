@@ -21,9 +21,10 @@ package com.dlink.service.impl;
 
 import com.dlink.constant.PathConstant;
 import com.dlink.gateway.GatewayType;
-import com.dlink.job.JobConfig;
 import com.dlink.job.JobManager;
 import com.dlink.model.Task;
+import com.dlink.process.context.ProcessContextHolder;
+import com.dlink.process.model.ProcessEntity;
 import com.dlink.service.TaskService;
 import com.dlink.service.UDFService;
 import com.dlink.utils.UDFUtil;
@@ -40,29 +41,31 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.map.MapUtil;
 
-
 /**
  * @author ZackYoung
  * @since 0.6.8
  */
 @Service
 public class UDFServiceImpl implements UDFService {
+
     /**
      * 网关类型 map
      * 快速获取 session 与 application 等类型，为了减少判断
      */
     private static final Map<String, List<GatewayType>> GATEWAY_TYPE_MAP = MapUtil
-            .builder("session", Arrays.asList(GatewayType.YARN_SESSION, GatewayType.KUBERNETES_SESSION, GatewayType.STANDALONE))
+            .builder("session",
+                    Arrays.asList(GatewayType.YARN_SESSION, GatewayType.KUBERNETES_SESSION, GatewayType.STANDALONE))
             .build();
 
     @Resource
     TaskService taskService;
 
     @Override
-    public void initUDF(JobConfig config, String statement) {
+    public String[] initUDF(String statement) {
+        ProcessEntity process = ProcessContextHolder.getProcess();
+        process.info("Initializing Flink UDF...Start");
         Opt<String> udfJarPath = Opt.empty();
-
-        List<String> udfClassNameList = JobManager.getUDFClassName(statement);
+        List<String> udfClassNameList = UDFUtil.getUDFClassName(statement);
         List<String> codeList = CollUtil.map(udfClassNameList, x -> {
             Task task = taskService.getUDFByClassName(x);
             JobManager.initMustSuccessUDF(x, task.getStatement());
@@ -71,7 +74,11 @@ public class UDFServiceImpl implements UDFService {
         if (codeList.size() > 0) {
             udfJarPath = Opt.ofBlankAble(UDFUtil.getUdfNameAndBuildJar(codeList));
         }
-
-        udfJarPath.ifPresent(jarPath -> config.setJarFiles(new String[]{PathConstant.UDF_PATH + jarPath}));
+        process.info("Initializing Flink UDF...Finish");
+        if (udfJarPath.isPresent()) {
+            return new String[]{PathConstant.UDF_PATH + udfJarPath.get()};
+        } else {
+            return new String[0];
+        }
     }
 }

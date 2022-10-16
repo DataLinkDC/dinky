@@ -19,13 +19,13 @@
 
 package com.dlink.utils;
 
-import static com.dlink.constant.PathConstant.UDF_JAR_RULE;
-import static com.dlink.constant.PathConstant.UDF_JAR_TMP_PATH;
-import static com.dlink.constant.PathConstant.UDF_VERSION_RULE;
-
 import com.dlink.constant.PathConstant;
 import com.dlink.pool.ClassEntity;
 import com.dlink.pool.ClassPool;
+import com.dlink.process.context.ProcessContextHolder;
+import com.dlink.process.model.ProcessEntity;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -34,6 +34,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.slf4j.Logger;
@@ -55,11 +57,27 @@ import groovy.lang.GroovyClassLoader;
  * @since 2021/12/27 23:25
  */
 public class UDFUtil {
+
     protected static final Logger log = LoggerFactory.getLogger(UDFUtil.class);
     /**
      * 存放 udf md5与版本对应的k,v值
      */
     protected static final Map<String, Integer> UDF_MD5_MAP = new HashMap<>();
+    private static final String FUNCTION_REGEX = "function (.*?)'(.*?)'";
+
+    public static List<String> getUDFClassName(String statement) {
+        ProcessEntity process = ProcessContextHolder.getProcess();
+        process.info("Parse UDF class name:");
+        Pattern pattern = Pattern.compile(FUNCTION_REGEX, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(statement);
+        List<String> classNameList = new ArrayList<>();
+        while (matcher.find()) {
+            classNameList.add(matcher.group(2));
+        }
+        process.info(StringUtils.join(",", classNameList));
+        process.info(StrUtil.format("A total of {} UDF have been Parsed.", classNameList.size()));
+        return classNameList;
+    }
 
     public static Boolean buildClass(String code) {
         CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(code);
@@ -93,8 +111,8 @@ public class UDFUtil {
         List<String> successList = new ArrayList<>();
         List<String> failedList = new ArrayList<>();
         String tmpPath = PathConstant.UDF_PATH;
-        String udfJarPath = UDF_JAR_TMP_PATH;
-        //删除jar缓存
+        String udfJarPath = PathConstant.UDF_JAR_TMP_PATH;
+        // 删除jar缓存
         FileUtil.del(udfJarPath);
         codeList.forEach(code -> {
             CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(code);
@@ -110,14 +128,18 @@ public class UDFUtil {
                 failedList.add(className);
             }
         });
-        String[] clazzs = successList.stream().map(className -> StrUtil.replace(className, ".", "/") + ".class").toArray(String[]::new);
-        InputStream[] fileInputStreams = successList.stream().map(className -> tmpPath + StrUtil.replace(className, ".", "/") + ".class").map(FileUtil::getInputStream).toArray(InputStream[]::new);
+        String[] clazzs = successList.stream().map(className -> StrUtil.replace(className, ".", "/") + ".class")
+                .toArray(String[]::new);
+        InputStream[] fileInputStreams =
+                successList.stream().map(className -> tmpPath + StrUtil.replace(className, ".", "/") + ".class")
+                        .map(FileUtil::getInputStream).toArray(InputStream[]::new);
         // 编译好的文件打包jar
         try (ZipUtils zipWriter = new ZipUtils(FileUtil.file(udfJarPath), Charset.defaultCharset())) {
             zipWriter.add(clazzs, fileInputStreams);
         }
         String md5 = md5sum(udfJarPath);
-        return MapUtil.builder("success", successList).put("failed", failedList).put("md5", Collections.singletonList(md5)).build();
+        return MapUtil.builder("success", successList).put("failed", failedList)
+                .put("md5", Collections.singletonList(md5)).build();
     }
 
     /**
@@ -138,16 +160,16 @@ public class UDFUtil {
             if (UDF_MD5_MAP.isEmpty()) {
                 scanUDFMD5();
             }
-            //2. 如果有匹配的，返回对应udf 版本，没有则构建jar，对应信息写入 jar
+            // 2. 如果有匹配的，返回对应udf 版本，没有则构建jar，对应信息写入 jar
             if (UDF_MD5_MAP.containsKey(md5)) {
-                FileUtil.del(UDF_JAR_TMP_PATH);
+                FileUtil.del(PathConstant.UDF_JAR_TMP_PATH);
                 return StrUtil.format("udf-{}.jar", UDF_MD5_MAP.get(md5));
             }
             // 3. 生成新版本jar
             Integer newVersion = UDF_MD5_MAP.values().size() > 0 ? CollUtil.max(UDF_MD5_MAP.values()) + 1 : 1;
             String jarName = StrUtil.format("udf-{}.jar", newVersion);
             String newName = PathConstant.UDF_PATH + jarName;
-            FileUtil.rename(FileUtil.file(UDF_JAR_TMP_PATH), newName, true);
+            FileUtil.rename(FileUtil.file(PathConstant.UDF_JAR_TMP_PATH), newName, true);
             UDF_MD5_MAP.put(md5, newVersion);
             return jarName;
         } catch (Exception e) {
@@ -161,10 +183,11 @@ public class UDFUtil {
      */
     private static void scanUDFMD5() {
         List<String> fileList = FileUtil.listFileNames(PathConstant.UDF_PATH);
-        fileList.stream().filter(fileName -> ReUtil.isMatch(UDF_JAR_RULE, fileName)).distinct().forEach(fileName -> {
-            Integer version = Convert.toInt(ReUtil.getGroup0(UDF_VERSION_RULE, fileName));
-            UDF_MD5_MAP.put(md5sum(PathConstant.UDF_PATH + fileName), version);
-        });
+        fileList.stream().filter(fileName -> ReUtil.isMatch(PathConstant.UDF_JAR_RULE, fileName)).distinct()
+                .forEach(fileName -> {
+                    Integer version = Convert.toInt(ReUtil.getGroup0(PathConstant.UDF_VERSION_RULE, fileName));
+                    UDF_MD5_MAP.put(md5sum(PathConstant.UDF_PATH + fileName), version);
+                });
     }
 
     private static String md5sum(String filePath) {

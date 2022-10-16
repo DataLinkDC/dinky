@@ -182,6 +182,12 @@ export default [
         icon: 'desktop',
         component: './SettingCenter/SystemInfo',
       },
+      {
+        path: '/settingcenter/processList',
+        name: 'processList',
+        icon: 'desktop',
+        component: './SettingCenter/ProcessList',
+      },
     ],
   },
   {
