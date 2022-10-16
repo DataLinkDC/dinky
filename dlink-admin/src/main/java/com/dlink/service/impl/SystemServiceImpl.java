@@ -17,33 +17,38 @@
  *
  */
 
-package com.dlink.interceptor;
+package com.dlink.service.impl;
 
-import com.dlink.context.RequestContext;
+import com.dlink.constant.DirConstant;
+import com.dlink.model.FileNode;
+import com.dlink.service.SystemService;
+import com.dlink.utils.DirUtil;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
-import org.springframework.web.servlet.HandlerInterceptor;
-
-import com.mysql.cj.util.StringUtils;
-
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 /**
- * tenant interceptor
+ * SystemServiceImpl
+ *
+ * @author wenmo
+ * @since 2022/10/15 19:17
  */
-@Slf4j
-public class TenantInterceptor implements HandlerInterceptor {
+@Service
+public class SystemServiceImpl implements SystemService {
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
-                             Object handler) throws Exception {
-        String tenantId = request.getHeader("tenantId");
-        if (!StringUtils.isNullOrEmpty(tenantId)) {
-            RequestContext.set(Integer.valueOf(tenantId));
-        }
-        return HandlerInterceptor.super.preHandle(request, response, handler);
+    public List<FileNode> listDirByPath(String path) {
+        return DirUtil.listDirByPath(path);
     }
 
+    @Override
+    public List<FileNode> listLogDir() {
+        return DirUtil.listDirByPath(DirConstant.LOG_DIR_PATH);
+    }
+
+    @Override
+    public String readFile(String path) {
+        return DirUtil.readFile(path);
+    }
 }

@@ -17,33 +17,39 @@
  *
  */
 
-package com.dlink.interceptor;
+package com.dlink.utils;
 
-import com.dlink.context.RequestContext;
+import com.dlink.constant.DirConstant;
+import com.dlink.model.FileNode;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
-import org.springframework.web.servlet.HandlerInterceptor;
-
-import com.mysql.cj.util.StringUtils;
-
-import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.Assertions;
+import org.junit.Test;
 
 /**
- * tenant interceptor
+ * DirUtilTest
+ *
+ * @author wenmo
+ * @since 2022/10/14 22:00
  */
-@Slf4j
-public class TenantInterceptor implements HandlerInterceptor {
+public class DirUtilTest {
 
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
-                             Object handler) throws Exception {
-        String tenantId = request.getHeader("tenantId");
-        if (!StringUtils.isNullOrEmpty(tenantId)) {
-            RequestContext.set(Integer.valueOf(tenantId));
-        }
-        return HandlerInterceptor.super.preHandle(request, response, handler);
+    @Test
+    public void testListDirByPath() {
+        List<FileNode> dirList = DirUtil.listDirByPath(DirConstant.LOG_DIR_PATH);
+        Assertions.assertThat(dirList).isNotNull();
     }
 
+    @Test
+    public void testReadFile() {
+        String result = DirUtil.readFile(DirConstant.LOG_DIR_PATH + "/dlink.log");
+        Assertions.assertThat(result).isNotNull();
+    }
+
+    @Test
+    public void testReadRootLog() {
+        String result = DirUtil.readFile(DirConstant.ROOT_LOG_PATH);
+        Assertions.assertThat(result).isNotNull();
+    }
 }

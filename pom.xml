@@ -21,8 +21,8 @@
 
     <groupId>com.dlink</groupId>
     <artifactId>dlink</artifactId>
-    <packaging>pom</packaging>
     <version>0.6.8-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
     <modules>
         <module>dlink-flink</module>
@@ -535,8 +535,11 @@
                         </eclipse>
                         <removeUnusedImports />
                         <importOrder>
-                            <file>style/eclipse.importorder</file>
+                            <order>com.dlink,org.apache,java,javax,org,com,,\#</order>
                         </importOrder>
+                        <licenseHeader>
+                            <file>style/license_header</file>
+                        </licenseHeader>
                         <replaceRegex>
                             <name>Remove wildcard imports</name>
                             <searchRegex>import\s+[^\*\s]+\*;(\r\n|\r|\n)</searchRegex>
