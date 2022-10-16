@@ -19,11 +19,17 @@
 
 package com.dlink.service;
 
-/**
- * @author ZackYoung
- * @since 0.6.8
- */
-public interface UDFService {
+import com.dlink.process.model.ProcessEntity;
 
-    String[] initUDF(String statement);
+import java.util.List;
+
+/**
+ * ProcessService
+ *
+ * @author wenmo
+ * @since 2022/10/16 22:05
+ */
+public interface ProcessService {
+
+    List<ProcessEntity> listAllProcess(boolean active);
 }

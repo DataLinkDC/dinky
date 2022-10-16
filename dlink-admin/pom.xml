@@ -199,10 +199,13 @@
             <artifactId>dlink-client-hadoop</artifactId>
             <scope>${scope.runtime}</scope>
         </dependency>
-
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-scheduler</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-process</artifactId>
         </dependency>
     </dependencies>
 

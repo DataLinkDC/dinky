@@ -17,37 +17,47 @@
  *
  */
 
-package com.dlink.job;
+package com.dlink.process.model;
 
-import com.dlink.model.JobInfoDetail;
-import com.dlink.pool.AbstractPool;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import com.dlink.assertion.Asserts;
 
 /**
- * FlinkJobTaskPool
+ * ProcessType
  *
  * @author wenmo
- * @since 2022/5/28 16:39
+ * @since 2022/10/16 16:33
  */
-public class FlinkJobTaskPool extends AbstractPool<JobInfoDetail> {
+public enum ProcessType {
 
-    private static volatile Map<String, JobInfoDetail> flinkJobTaskEntityMap = new ConcurrentHashMap<>();
+    FLINKEXPLAIN("FlinkExplain"),
+    FLINKSUBMIT("FlinkSubmit"),
+    SQLEXPLAIN("SQLExplain"),
+    SQKSUBMIT("SQLSubmit"),
+    UNKNOWN("Unknown");
 
-    private static FlinkJobTaskPool instance = new FlinkJobTaskPool();
+    private String value;
 
-    public static FlinkJobTaskPool getInstance() {
-        return instance;
+    ProcessType(String value) {
+        this.value = value;
     }
 
-    @Override
-    public Map<String, JobInfoDetail> getMap() {
-        return flinkJobTaskEntityMap;
+    public String getValue() {
+        return value;
     }
 
-    @Override
-    public void refresh(JobInfoDetail entity) {
-        entity.refresh();
+    public static ProcessType get(String value) {
+        for (ProcessType type : ProcessType.values()) {
+            if (Asserts.isEquals(type.getValue(), value)) {
+                return type;
+            }
+        }
+        return ProcessType.UNKNOWN;
+    }
+
+    public boolean equalsValue(String type) {
+        if (Asserts.isEquals(value, type)) {
+            return true;
+        }
+        return false;
     }
 }
