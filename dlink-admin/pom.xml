@@ -15,16 +15,14 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>dlink</artifactId>
         <groupId>com.dlink</groupId>
+        <artifactId>dlink</artifactId>
         <version>0.6.8-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
     <artifactId>dlink-admin</artifactId>
 
@@ -206,7 +204,6 @@
             <groupId>com.dlink</groupId>
             <artifactId>dlink-scheduler</artifactId>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -225,10 +222,10 @@
                 <executions>
                     <execution>
                         <id>make-assembly</id>
-                        <phase>package</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
+                        <phase>package</phase>
                     </execution>
                 </executions>
             </plugin>
@@ -239,10 +236,10 @@
                 <executions>
                     <execution>
                         <id>copy-static</id>
-                        <phase>validate</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
+                        <phase>validate</phase>
                         <configuration>
                             <outputDirectory>src/main/resources/static</outputDirectory>
                             <overwrite>true</overwrite>

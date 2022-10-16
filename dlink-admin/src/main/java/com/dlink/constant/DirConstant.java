@@ -17,33 +17,27 @@
  *
  */
 
-package com.dlink.interceptor;
+package com.dlink.constant;
 
-import com.dlink.context.RequestContext;
+import com.dlink.Dlink;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.web.servlet.HandlerInterceptor;
-
-import com.mysql.cj.util.StringUtils;
-
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.system.ApplicationHome;
 
 /**
- * tenant interceptor
+ * DirConstant
+ *
+ * @author wenmo
+ * @since 2022/10/15 18:37
  */
-@Slf4j
-public class TenantInterceptor implements HandlerInterceptor {
+public class DirConstant {
 
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
-                             Object handler) throws Exception {
-        String tenantId = request.getHeader("tenantId");
-        if (!StringUtils.isNullOrEmpty(tenantId)) {
-            RequestContext.set(Integer.valueOf(tenantId));
-        }
-        return HandlerInterceptor.super.preHandle(request, response, handler);
+    public static final String LOG_DIR_PATH;
+    public static final String ROOT_LOG_PATH;
+
+    static {
+        // String rootPath = new ApplicationHome(Dlink.class).getSource().getParent();
+        String rootPath = new ApplicationHome(Dlink.class).getDir().getPath();
+        LOG_DIR_PATH = rootPath + "/../logs";
+        ROOT_LOG_PATH = rootPath + "/../logs/dlink.log";
     }
-
 }

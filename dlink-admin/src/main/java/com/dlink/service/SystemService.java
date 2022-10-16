@@ -17,33 +17,40 @@
  *
  */
 
-package com.dlink.interceptor;
+package com.dlink.service;
 
-import com.dlink.context.RequestContext;
+import com.dlink.model.FileNode;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.web.servlet.HandlerInterceptor;
-
-import com.mysql.cj.util.StringUtils;
-
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
 
 /**
- * tenant interceptor
+ * SystemService
+ *
+ * @author wenmo
+ * @since 2022/10/15 19:16
  */
-@Slf4j
-public class TenantInterceptor implements HandlerInterceptor {
+public interface SystemService {
 
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
-                             Object handler) throws Exception {
-        String tenantId = request.getHeader("tenantId");
-        if (!StringUtils.isNullOrEmpty(tenantId)) {
-            RequestContext.set(Integer.valueOf(tenantId));
-        }
-        return HandlerInterceptor.super.preHandle(request, response, handler);
-    }
+    /**
+     * list all dir and file by dir path
+     *
+     * @param path
+     * @return {@link List<FileNode>}
+     */
+    List<FileNode> listDirByPath(String path);
 
+    /**
+     * List log root dir.
+     *
+     * @return {@link List<FileNode>}
+     */
+    List<FileNode> listLogDir();
+
+    /**
+     * readFile
+     *
+     * @param path
+     * @return {@link String}
+     */
+    String readFile(String path);
 }
