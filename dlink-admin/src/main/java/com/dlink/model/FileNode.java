@@ -17,37 +17,57 @@
  *
  */
 
-package com.dlink.job;
-
-import com.dlink.model.JobInfoDetail;
-import com.dlink.pool.AbstractPool;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+package com.dlink.model;
 
 /**
- * FlinkJobTaskPool
+ * FileNode
  *
  * @author wenmo
- * @since 2022/5/28 16:39
+ * @since 2022/10/15 18:41
  */
-public class FlinkJobTaskPool extends AbstractPool<JobInfoDetail> {
+public class FileNode {
 
-    private static volatile Map<String, JobInfoDetail> flinkJobTaskEntityMap = new ConcurrentHashMap<>();
+    private String name;
+    private boolean isDir;
+    private long size;
+    private String path;
 
-    private static FlinkJobTaskPool instance = new FlinkJobTaskPool();
-
-    public static FlinkJobTaskPool getInstance() {
-        return instance;
+    public FileNode(String name, boolean isDir, long size, String path) {
+        this.name = name;
+        this.isDir = isDir;
+        this.size = size;
+        this.path = path;
     }
 
-    @Override
-    public Map<String, JobInfoDetail> getMap() {
-        return flinkJobTaskEntityMap;
+    public String getName() {
+        return name;
     }
 
-    @Override
-    public void refresh(JobInfoDetail entity) {
-        entity.refresh();
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isDir() {
+        return isDir;
+    }
+
+    public void setDir(boolean dir) {
+        isDir = dir;
+    }
+
+    public long getSize() {
+        return size;
+    }
+
+    public void setSize(long size) {
+        this.size = size;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 }

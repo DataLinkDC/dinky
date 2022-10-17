@@ -17,13 +17,39 @@
  *
  */
 
-package com.dlink.service;
+package com.dlink.utils;
+
+import com.dlink.constant.DirConstant;
+import com.dlink.model.FileNode;
+
+import java.util.List;
+
+import org.assertj.core.api.Assertions;
+import org.junit.Test;
 
 /**
- * @author ZackYoung
- * @since 0.6.8
+ * DirUtilTest
+ *
+ * @author wenmo
+ * @since 2022/10/14 22:00
  */
-public interface UDFService {
+public class DirUtilTest {
 
-    String[] initUDF(String statement);
+    @Test
+    public void testListDirByPath() {
+        List<FileNode> dirList = DirUtil.listDirByPath(DirConstant.LOG_DIR_PATH);
+        Assertions.assertThat(dirList).isNotNull();
+    }
+
+    @Test
+    public void testReadFile() {
+        String result = DirUtil.readFile(DirConstant.LOG_DIR_PATH + "/dlink.log");
+        Assertions.assertThat(result).isNotNull();
+    }
+
+    @Test
+    public void testReadRootLog() {
+        String result = DirUtil.readFile(DirConstant.ROOT_LOG_PATH);
+        Assertions.assertThat(result).isNotNull();
+    }
 }

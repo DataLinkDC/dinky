@@ -17,13 +17,38 @@
  *
  */
 
-package com.dlink.service;
+package com.dlink.service.impl;
+
+import com.dlink.constant.DirConstant;
+import com.dlink.model.FileNode;
+import com.dlink.service.SystemService;
+import com.dlink.utils.DirUtil;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
 
 /**
- * @author ZackYoung
- * @since 0.6.8
+ * SystemServiceImpl
+ *
+ * @author wenmo
+ * @since 2022/10/15 19:17
  */
-public interface UDFService {
+@Service
+public class SystemServiceImpl implements SystemService {
 
-    String[] initUDF(String statement);
+    @Override
+    public List<FileNode> listDirByPath(String path) {
+        return DirUtil.listDirByPath(path);
+    }
+
+    @Override
+    public List<FileNode> listLogDir() {
+        return DirUtil.listDirByPath(DirConstant.LOG_DIR_PATH);
+    }
+
+    @Override
+    public String readFile(String path) {
+        return DirUtil.readFile(path);
+    }
 }

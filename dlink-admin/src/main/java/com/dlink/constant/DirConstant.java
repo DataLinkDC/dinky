@@ -17,13 +17,27 @@
  *
  */
 
-package com.dlink.service;
+package com.dlink.constant;
+
+import com.dlink.Dlink;
+
+import org.springframework.boot.system.ApplicationHome;
 
 /**
- * @author ZackYoung
- * @since 0.6.8
+ * DirConstant
+ *
+ * @author wenmo
+ * @since 2022/10/15 18:37
  */
-public interface UDFService {
+public class DirConstant {
 
-    String[] initUDF(String statement);
+    public static final String LOG_DIR_PATH;
+    public static final String ROOT_LOG_PATH;
+
+    static {
+        // String rootPath = new ApplicationHome(Dlink.class).getSource().getParent();
+        String rootPath = new ApplicationHome(Dlink.class).getDir().getPath();
+        LOG_DIR_PATH = rootPath + "/../logs";
+        ROOT_LOG_PATH = rootPath + "/../logs/dlink.log";
+    }
 }

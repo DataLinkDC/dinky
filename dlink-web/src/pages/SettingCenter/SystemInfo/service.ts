@@ -17,13 +17,8 @@
  *
  */
 
-package com.dlink.service;
+import {getData} from "@/components/Common/crud";
 
-/**
- * @author ZackYoung
- * @since 0.6.8
- */
-public interface UDFService {
-
-    String[] initUDF(String statement);
+export function getRootLog() {
+  return getData("api/system/getRootLog");
 }

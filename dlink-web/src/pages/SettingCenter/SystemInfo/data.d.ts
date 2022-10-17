@@ -16,14 +16,3 @@
  *  limitations under the License.
  *
  */
-
-package com.dlink.service;
-
-/**
- * @author ZackYoung
- * @since 0.6.8
- */
-public interface UDFService {
-
-    String[] initUDF(String statement);
-}

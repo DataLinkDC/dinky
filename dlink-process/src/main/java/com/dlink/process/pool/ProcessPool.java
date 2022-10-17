@@ -17,13 +17,37 @@
  *
  */
 
-package com.dlink.service;
+package com.dlink.process.pool;
+
+import com.dlink.pool.AbstractPool;
+import com.dlink.process.model.ProcessEntity;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @author ZackYoung
- * @since 0.6.8
+ * ProcessPool
+ *
+ * @author wenmo
+ * @since 2022/10/16 17:00
  */
-public interface UDFService {
+public class ProcessPool extends AbstractPool<ProcessEntity> {
 
-    String[] initUDF(String statement);
+    private static volatile Map<String, ProcessEntity> processEntityMap = new ConcurrentHashMap<>();
+
+    private static ProcessPool instance = new ProcessPool();
+
+    public static ProcessPool getInstance() {
+        return instance;
+    }
+
+    @Override
+    public Map<String, ProcessEntity> getMap() {
+        return processEntityMap;
+    }
+
+    @Override
+    public void refresh(ProcessEntity entity) {
+
+    }
 }

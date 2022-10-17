@@ -176,6 +176,18 @@ export default [
         icon: 'setting',
         component: './SettingCenter/FlinkSettings',
       },
+      {
+        path: '/settingcenter/systeminfo',
+        name: 'systemInfo',
+        icon: 'desktop',
+        component: './SettingCenter/SystemInfo',
+      },
+      {
+        path: '/settingcenter/processList',
+        name: 'processList',
+        icon: 'desktop',
+        component: './SettingCenter/ProcessList',
+      },
     ],
   },
   {

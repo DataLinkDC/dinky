@@ -17,13 +17,26 @@
  *
  */
 
-package com.dlink.service;
+export type ProcessItem = {
+  pid: string,
+  name: string,
+  taskId: number,
+  type: string,
+  status: string,
+  startTime: Date,
+  endTime: Date,
+  time: number,
+  steps: ProcessStep[],
+  userId: number,
+  userName: string,
+};
 
-/**
- * @author ZackYoung
- * @since 0.6.8
- */
-public interface UDFService {
-
-    String[] initUDF(String statement);
+export type ProcessStep = {
+  stepStatus: string,
+  startTime: Date,
+  endTime: Date,
+  time: number,
+  info: string,
+  error: string,
+  isError: boolean,
 }

@@ -72,14 +72,11 @@ export default {
   'menu.dev.ant-design.docs': '官方文档',
   'menu.dev.ant-design.preview': '官方预览',
 
-  // ------------------------------------------------------------------------------
-
   'menu.account.center': '个人中心',
   'menu.account.settings': '个人设置',
   'menu.account.changePassword': '修改密码',
   'menu.account.checkTenant': '切换租户',
   'menu.account.logout': '退出登录',
-
 
   'menu.datastudio': '数据开发',
 
@@ -101,16 +98,16 @@ export default {
   'menu.registration.document': '文档管理',
   'menu.registration.fragment': '全局变量管理',
 
-
   'menu.authenticationcenter': '认证中心',
   'menu.authenticationcenter.usermanager': '用户管理',
   'menu.authenticationcenter.namespacemanager': '命名空间管理',
   'menu.authenticationcenter.rolemanager': '角色管理',
   'menu.authenticationcenter.tenantmanager': '租户管理',
 
-
   'menu.settings': '配置中心',
   'menu.settings.flinkConfig': 'Flink 配置',
+  'menu.settings.systemInfo': '系统信息',
+  'menu.settings.processList': '进程列表',
 
   'menu.about': '关于',
 };

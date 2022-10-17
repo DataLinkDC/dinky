@@ -66,8 +66,6 @@ export default {
   'menu.editor.mind': 'Mind Editor',
   'menu.editor.koni': 'Koni Editor',
 
-  // ------------------------------------------------------------------------------
-
   'menu.account.center': 'Account Center',
   'menu.account.settings': 'Account Settings',
   'menu.account.changePassword': 'Change Password',
@@ -103,6 +101,8 @@ export default {
 
   'menu.settings': 'Setting Center',
   'menu.settings.flinkConfig': 'Flink Settings',
+  'menu.settings.systemInfo': 'System Info',
+  'menu.settings.processList': 'Process List',
 
   'menu.about': 'About',
 };

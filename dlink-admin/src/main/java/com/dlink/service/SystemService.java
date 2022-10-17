@@ -19,11 +19,38 @@
 
 package com.dlink.service;
 
-/**
- * @author ZackYoung
- * @since 0.6.8
- */
-public interface UDFService {
+import com.dlink.model.FileNode;
 
-    String[] initUDF(String statement);
+import java.util.List;
+
+/**
+ * SystemService
+ *
+ * @author wenmo
+ * @since 2022/10/15 19:16
+ */
+public interface SystemService {
+
+    /**
+     * list all dir and file by dir path
+     *
+     * @param path
+     * @return {@link List<FileNode>}
+     */
+    List<FileNode> listDirByPath(String path);
+
+    /**
+     * List log root dir.
+     *
+     * @return {@link List<FileNode>}
+     */
+    List<FileNode> listLogDir();
+
+    /**
+     * readFile
+     *
+     * @param path
+     * @return {@link String}
+     */
+    String readFile(String path);
 }
