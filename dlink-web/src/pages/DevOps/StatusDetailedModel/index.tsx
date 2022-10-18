@@ -37,7 +37,9 @@ export const OpsStatusTitle = {
 const StatusDetailedModal: React.FC<IStatusDetailedModal> = (props): React.ReactElement => {
   const {statusDetailedVisible, statusDetailedList, opsStatus, onCancelStatusDetailed} = props
 
-  const l = (key: string, defaultMsg?: string) => useIntl().formatMessage({id: key, defaultMessage: defaultMsg})
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
 
 
   const columns = [{

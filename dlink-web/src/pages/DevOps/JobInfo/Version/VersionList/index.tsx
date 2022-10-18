@@ -31,7 +31,9 @@ import {useIntl} from "umi";
 const url = '/api/task/version';
 const VersionList = (props: any) => {
   const {job} = props;
-  const l = (key: string, defaultMsg?: string) => useIntl().formatMessage({id: key, defaultMessage: defaultMsg})
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
 
 
   const actionRef = useRef<ActionType>();

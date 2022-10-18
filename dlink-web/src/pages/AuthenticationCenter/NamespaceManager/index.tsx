@@ -39,7 +39,8 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
   const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<NameSpaceTableListItem[]>([]);
 
-  const l = (key: string, defaultMsg?: string) => useIntl().formatMessage({id: key, defaultMessage: defaultMsg})
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
 
   const editAndDelete = (key: string | number, currentItem: NameSpaceTableListItem) => {
     if (key === 'edit') {

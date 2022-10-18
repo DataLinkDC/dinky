@@ -42,8 +42,8 @@ const formLayout = {
 
 const AlertGroupForm: React.FC<AlertGroupFormProps> = (props) => {
 
-  const l = (key: string, defaultMsg?: string) => useIntl().formatMessage({id: key, defaultMessage: defaultMsg})
-
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<AlertGroupTableListItem>>({
