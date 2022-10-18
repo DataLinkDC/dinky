@@ -41,8 +41,7 @@ const TenantFormList: React.FC<{}> = (props: any) => {
   const [selectedRowsState, setSelectedRows] = useState<TenantTableListItem[]>([]);
   const [formValues, setFormValues] = useState({});
 
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+  const l = (key: string, defaultMsg?: string) => useIntl().formatMessage({id: key, defaultMessage: defaultMsg})
 
 
   const editAndDelete = (key: string | number, currentItem: TenantTableListItem) => {

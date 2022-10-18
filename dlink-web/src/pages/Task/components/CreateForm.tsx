@@ -29,8 +29,7 @@ type CreateFormProps = {
 
 const CreateForm: React.FC<CreateFormProps> = (props) => {
   const {modalVisible, onCancel} = props;
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+  const l = (key: string, defaultMsg?: string) => useIntl().formatMessage({id: key, defaultMessage: defaultMsg})
 
   return (
     <Modal

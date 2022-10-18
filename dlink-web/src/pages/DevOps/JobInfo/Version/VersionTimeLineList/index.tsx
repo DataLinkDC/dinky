@@ -31,9 +31,7 @@ const url = '/api/task/version';
 
 const VersionTimeLineList = (props: any) => {
   const {job} = props;
-
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+  const l = (key: string, defaultMsg?: string) => useIntl().formatMessage({id: key, defaultMessage: defaultMsg})
 
 
   const [mode, setMode] = useState<'left' | 'alternate' | 'right'>('alternate');

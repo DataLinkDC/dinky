@@ -43,9 +43,7 @@ const {TabPane} = Tabs;
 const CheckPoints = (props: any) => {
 
   const {job} = props;
-
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+  const l = (key: string, defaultMsg?: string) => useIntl().formatMessage({id: key, defaultMessage: defaultMsg})
 
 
   const actionRef = useRef<ActionType>();

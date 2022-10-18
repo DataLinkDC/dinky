@@ -49,8 +49,7 @@ const url = '/api/cluster';
 const ClusterTableList: React.FC<{}> = (props: any) => {
   const intl = useIntl();
 
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+  const l = (key: string, defaultMsg?: string) => useIntl().formatMessage({id: key, defaultMessage: defaultMsg})
 
 
   const {dispatch} = props;

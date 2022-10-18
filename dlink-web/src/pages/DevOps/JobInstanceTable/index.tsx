@@ -45,9 +45,7 @@ const url = '/api/jobInstance';
 const JobInstanceTable = (props: any) => {
 
   const intl = useIntl();
-
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+  const l = (key: string, defaultMsg?: string) => useIntl().formatMessage({id: key, defaultMessage: defaultMsg})
 
 
   const {status, activeKey, isHistory, taskStatus} = props;

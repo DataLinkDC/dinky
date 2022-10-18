@@ -26,9 +26,7 @@ import {useIntl} from "umi";
 const {TabPane} = Tabs;
 const TaskVersionInfo = (props: any) => {
   const {job} = props;
-
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+  const l = (key: string, defaultMsg?: string) => useIntl().formatMessage({id: key, defaultMessage: defaultMsg})
 
   return (<>
     <Tabs defaultActiveKey="overview" size="small" tabPosition="top" style={{

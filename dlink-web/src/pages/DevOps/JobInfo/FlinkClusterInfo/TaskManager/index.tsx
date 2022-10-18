@@ -26,14 +26,13 @@ import {TaskContainerConfigInfo, TaskManagerConfiguration} from "@/pages/DevOps/
 import {useEffect, useRef, useState} from "react";
 import {HomeOutlined} from "@ant-design/icons";
 import {getTaskManagerInfo} from "@/pages/DevOps/service";
+import {useIntl} from "@@/plugin-locale/localeExports";
 
 const {TabPane} = Tabs;
 
 const TaskManagerInfo = (props: any) => {
   const {job} = props;
-
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+  const l = (key: string, defaultMsg?: string) => useIntl().formatMessage({id: key, defaultMessage: defaultMsg})
 
   const actionRef = useRef<ActionType>();
 

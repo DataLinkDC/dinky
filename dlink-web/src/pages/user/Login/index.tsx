@@ -53,9 +53,7 @@ const Login: React.FC = () => {
   const [tenant, setTenant] = useState<TenantTableListItem[]>([]);
 
   const [checkDisabled, setCheckDisabled] = useState<boolean>(true);
-
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+  const l = (key: string, defaultMsg?: string) => useIntl().formatMessage({id: key, defaultMessage: defaultMsg})
 
 
   const fetchUserInfo = async () => {
