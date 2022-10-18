@@ -19,13 +19,6 @@
 
 package com.dlink.cdc.mysql;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.cdc.AbstractCDCBuilder;
-import com.dlink.cdc.CDCBuilder;
-import com.dlink.constant.ClientConstant;
-import com.dlink.constant.FlinkParamConstant;
-import com.dlink.model.FlinkCDCConfig;
-
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -38,6 +31,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import com.dlink.assertion.Asserts;
+import com.dlink.cdc.AbstractCDCBuilder;
+import com.dlink.cdc.CDCBuilder;
+import com.dlink.constant.ClientConstant;
+import com.dlink.constant.FlinkParamConstant;
+import com.dlink.model.FlinkCDCConfig;
 import com.ververica.cdc.connectors.mysql.source.MySqlSource;
 import com.ververica.cdc.connectors.mysql.source.MySqlSourceBuilder;
 import com.ververica.cdc.connectors.mysql.table.StartupOptions;
@@ -101,10 +100,10 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         }
 
         MySqlSourceBuilder<String> sourceBuilder = MySqlSource.<String>builder()
-                .hostname(config.getHostname())
-                .port(config.getPort())
-                .username(config.getUsername())
-                .password(config.getPassword());
+            .hostname(config.getHostname())
+            .port(config.getPort())
+            .username(config.getUsername())
+            .password(config.getPassword());
 
         if (Asserts.isNotNullString(database)) {
             String[] databases = database.split(FlinkParamConstant.SPLIT);
@@ -203,6 +202,14 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
             sb.append(config.getPort());
             sb.append("/");
             sb.append(schema);
+            if (config.getJdbc().size() > 0) {
+                sb.append("?");
+                config.getJdbc().forEach(
+                    (key, value) -> {
+                        sb.append(key).append("=").append(value).append("&");
+                    });
+                sb.delete(sb.length() - 1, sb.length());
+            }
             configMap.put(ClientConstant.METADATA_NAME, sb.toString());
             configMap.put(ClientConstant.METADATA_URL, sb.toString());
             configMap.put(ClientConstant.METADATA_USERNAME, config.getUsername());

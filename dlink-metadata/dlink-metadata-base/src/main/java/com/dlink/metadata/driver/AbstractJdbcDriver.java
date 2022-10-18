@@ -121,7 +121,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     }
 
     private void createDataSource(DruidDataSource ds, DriverConfig config) {
-        ds.setName(config.getName().replaceAll(":", ""));
+        ds.setName(config.getName().replaceAll(":", "").replaceAll("=", "").replaceAll("\\?", ""));
         ds.setUrl(config.getUrl());
         ds.setDriverClassName(getDriverClass());
         ds.setUsername(config.getUsername());
@@ -503,10 +503,10 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         String limitEnd = queryData.getOption().getLimitEnd();
 
         StringBuilder optionBuilder = new StringBuilder()
-                .append("select * from ")
-                .append(queryData.getSchemaName())
-                .append(".")
-                .append(queryData.getTableName());
+            .append("select * from ")
+            .append(queryData.getSchemaName())
+            .append(".")
+            .append(queryData.getTableName());
 
         if (where != null && !where.equals("")) {
             optionBuilder.append(" where ").append(where);
@@ -522,9 +522,9 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
             limitEnd = "100";
         }
         optionBuilder.append(" limit ")
-                .append(limitStart)
-                .append(",")
-                .append(limitEnd);
+            .append(limitStart)
+            .append(",")
+            .append(limitEnd);
 
         return optionBuilder;
     }
