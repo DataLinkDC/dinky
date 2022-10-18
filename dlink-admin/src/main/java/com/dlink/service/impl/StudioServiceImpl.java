@@ -50,6 +50,7 @@ import com.dlink.model.Task;
 import com.dlink.process.context.ProcessContextHolder;
 import com.dlink.process.model.ProcessEntity;
 import com.dlink.process.model.ProcessType;
+import com.dlink.process.pool.ConsolePool;
 import com.dlink.process.pool.ProcessPool;
 import com.dlink.result.DDLResult;
 import com.dlink.result.IResult;
@@ -84,6 +85,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import cn.dev33.satoken.SaManager;
 
 /**
  * StudioServiceImpl
@@ -243,8 +246,9 @@ public class StudioServiceImpl implements StudioService {
 
     private List<SqlExplainResult> explainFlinkSql(StudioExecuteDTO studioExecuteDTO) {
         Map<String, ProcessEntity> map = ProcessPool.getInstance().getMap();
+        Map<String, StringBuilder> map2 = ConsolePool.getInstance().getMap();
         ProcessEntity process = ProcessContextHolder.registerProcess(
-                ProcessEntity.init(ProcessType.FLINKEXPLAIN, 1, "admin"));
+                ProcessEntity.init(ProcessType.FLINKEXPLAIN, SaManager.getStpLogic(null).getLoginIdAsInt(), "admin"));
 
         addFlinkSQLEnv(studioExecuteDTO);
 

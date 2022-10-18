@@ -17,21 +17,8 @@
  *
  */
 
-package com.dlink.service;
+import {getData} from "@/components/Common/crud";
 
-import com.dlink.process.model.ProcessEntity;
-
-import java.util.List;
-
-/**
- * ProcessService
- *
- * @author wenmo
- * @since 2022/10/16 22:05
- */
-public interface ProcessService {
-
-    List<ProcessEntity> listAllProcess(boolean active);
-
-    String getConsoleByUserId(Integer userId);
+export function getConsoleInfo() {
+  return getData("api/process/getConsoleByUserId");
 }

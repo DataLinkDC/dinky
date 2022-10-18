@@ -20,6 +20,7 @@
 package com.dlink.service.impl;
 
 import com.dlink.process.model.ProcessEntity;
+import com.dlink.process.pool.ConsolePool;
 import com.dlink.process.pool.ProcessPool;
 import com.dlink.service.ProcessService;
 
@@ -48,5 +49,15 @@ public class ProcessServiceImpl implements ProcessService {
         }
         return processEntityMap.values().stream().sorted(Comparator.comparing(ProcessEntity::getStartTime).reversed())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public String getConsoleByUserId(Integer userId) {
+        String user = userId.toString();
+        if (ConsolePool.getInstance().exist(user)) {
+            return ConsolePool.getInstance().get(user).toString();
+        } else {
+            return "";
+        }
     }
 }
