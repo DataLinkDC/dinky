@@ -94,14 +94,14 @@ export default {
   'pages.operate': '操作', // all table list of operation columns is use this item
 
   'pages.devops.jobstatus.CREATED': '已创建',
-  'pages.devops.jobstatus.INITIALIZING': '初始化中',
+  'pages.devops.jobstatus.INITIALIZING': '初始化',
   'pages.devops.jobstatus.RUNNING': '运行中',
   'pages.devops.jobstatus.FINISHED': '已完成',
   'pages.devops.jobstatus.FAILING': '异常中',
-  'pages.devops.jobstatus.FAILED': '已失败',
+  'pages.devops.jobstatus.FAILED': '已异常',
   'pages.devops.jobstatus.SUSPENDED': '已暂停',
-  'pages.devops.jobstatus.CANCELLING': '取消中',
-  'pages.devops.jobstatus.CANCELED': '已取消',
+  'pages.devops.jobstatus.CANCELLING': '停止中',
+  'pages.devops.jobstatus.CANCELED': '停止',
   'pages.devops.jobstatus.RESTARTING': '重启中',
   'pages.devops.jobstatus.UNKNOWN': '未知',
 

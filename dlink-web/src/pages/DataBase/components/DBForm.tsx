@@ -22,7 +22,7 @@ import React, {useState} from 'react';
 import {Card, Image, List, Modal} from 'antd';
 
 import {DataBaseItem} from '../data.d';
-import {connect} from "umi";
+import {connect, useIntl} from "umi";
 import {StateType} from "@/pages/DataStudio/model";
 import {FALLBACK, getDBImage} from "@/pages/DataBase/DB";
 import DataBaseForm from "@/pages/DataBase/components/DataBaseForm";
@@ -66,6 +66,10 @@ const data: any = [
 ];
 
 const DBForm: React.FC<UpdateFormProps> = (props) => {
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
 
   const {
     onSubmit: handleUpdate,

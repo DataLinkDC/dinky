@@ -39,6 +39,10 @@ const FlinkConfigView: React.FC<FlinkConfigProps> = (props) => {
 
   const intl = useIntl();
 
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
+
   const {
     sqlSubmitJarPath,
     sqlSubmitJarParas,

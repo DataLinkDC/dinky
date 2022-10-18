@@ -24,7 +24,7 @@ import {useEffect, useState} from 'react';
 import {getData} from "@/components/Common/crud";
 import {Scrollbars} from 'react-custom-scrollbars';
 import {RoleTableListItem, UserTableListItem} from "@/pages/AuthenticationCenter/data.d";
-import {useIntl} from "@@/plugin-locale/localeExports";
+import {useIntl} from "umi";
 
 
 interface TableTransferProps extends TransferProps<RoleTableListItem> {

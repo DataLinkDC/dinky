@@ -22,8 +22,11 @@ import React from "react";
 import {CheckSquareOutlined, KeyOutlined} from '@ant-design/icons';
 import DTable from "@/components/Common/DTable";
 import {DIALECT} from "@/components/Studio/conf";
+import {useIntl} from 'umi';
 
 const FlinkColumns = (props: any) => {
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
 
   const {envId, catalog, database, table} = props;
 

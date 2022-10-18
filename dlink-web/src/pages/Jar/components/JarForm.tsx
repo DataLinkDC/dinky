@@ -21,6 +21,7 @@
 import React, {useState} from 'react';
 import {Button, Divider, Form, Input, Modal, Select, Switch} from 'antd';
 import {JarTableListItem} from "@/pages/Jar/data";
+import {useIntl} from 'umi';
 
 export type JarFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -36,6 +37,8 @@ const formLayout = {
 };
 
 const JarForm: React.FC<JarFormProps> = (props) => {
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<JarTableListItem>>({

@@ -19,7 +19,8 @@
 
 
 import React from 'react';
-import { Modal } from 'antd';
+import {Modal} from 'antd';
+import {useIntl} from 'umi';
 
 type CreateFormProps = {
   modalVisible: boolean;
@@ -27,7 +28,9 @@ type CreateFormProps = {
 };
 
 const CreateForm: React.FC<CreateFormProps> = (props) => {
-  const { modalVisible, onCancel } = props;
+  const {modalVisible, onCancel} = props;
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
 
   return (
     <Modal

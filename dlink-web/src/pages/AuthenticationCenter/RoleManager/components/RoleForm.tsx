@@ -22,10 +22,9 @@ import React, {useState} from 'react';
 import {Button, Form, Input, Modal, Select, Tag} from 'antd';
 import {NameSpaceTableListItem, RoleTableListItem} from "@/pages/AuthenticationCenter/data.d";
 import {getStorageTenantId} from "@/components/Common/crud";
-import {connect} from "umi";
+import {connect, useIntl} from "umi";
 import {NameSpaceStateType} from "@/pages/AuthenticationCenter/RoleManager/model";
 import {buildFormData, getFormData} from "@/pages/AuthenticationCenter/function";
-import {useIntl} from "@@/plugin-locale/localeExports";
 
 
 export type TenantFormProps = {

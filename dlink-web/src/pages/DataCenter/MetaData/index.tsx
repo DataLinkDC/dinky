@@ -43,7 +43,7 @@ import Generation from '@/pages/DataBase/Generation';
 import TableData from '@/pages/DataCenter/MetaData/TableData';
 import {FALLBACK, getDBImage} from "@/pages/DataBase/DB";
 import Meta from "antd/lib/card/Meta";
-import { useIntl } from 'umi';
+import {useIntl} from 'umi';
 
 const {DirectoryTree} = Tree;
 const {TabPane} = Tabs;
@@ -51,6 +51,10 @@ const {TabPane} = Tabs;
 const MetaDataContainer: React.FC<{}> = (props: any) => {
 
   const intl = useIntl();
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
 
   let [database, setDatabase] = useState<[{
     id: number,

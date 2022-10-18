@@ -23,6 +23,7 @@ import {Button, Form, Input, Modal, Select, Switch} from 'antd';
 import {DocumentTableListItem} from "@/pages/Document/data";
 import TextArea from "antd/es/input/TextArea";
 import {getDocumentFormData,} from "@/pages/Document/function";
+import {useIntl} from 'umi';
 
 export type DocumentFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -42,6 +43,8 @@ const formLayout = {
 };
 
 const DocumentForm: React.FC<DocumentFormProps> = (props) => {
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<DocumentTableListItem>>({

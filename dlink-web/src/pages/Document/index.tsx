@@ -30,10 +30,13 @@ import Dropdown from "antd/es/dropdown/dropdown";
 import Menu from "antd/es/menu";
 import {handleAddOrUpdate, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
 import DocumentForm from "./components/DocumentForm";
+import {useIntl} from 'umi';
 
 const url = '/api/document';
 
 const DocumentTableList: React.FC<{}> = (props: any) => {
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
 
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
@@ -490,6 +493,10 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+        }}
+        pagination={{
+          defaultPageSize: 10,
+          showSizeChanger: true,
         }}
       />
       {selectedRowsState?.length > 0 && (

@@ -28,9 +28,15 @@ import {ClusterConfigurationTableListItem} from "@/pages/ClusterConfiguration/da
 import {handleAddOrUpdate, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
 import {showClusterConfiguration} from "@/components/Studio/StudioEvent/DDL";
 import ClusterConfigurationForm from "@/pages/ClusterConfiguration/components/ClusterConfigurationForm";
+import {useIntl} from "umi";
 
 const url = '/api/clusterConfiguration';
 const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
+
   const {dispatch} = props;
   const [row, setRow] = useState<ClusterConfigurationTableListItem>();
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
@@ -235,6 +241,10 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+        }}
+        pagination={{
+          defaultPageSize: 10,
+          showSizeChanger: true,
         }}
       />
       {selectedRowsState?.length > 0 && (

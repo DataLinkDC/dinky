@@ -217,6 +217,10 @@ const TenantFormList: React.FC<{}> = (props: any) => {
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
         }}
+        pagination={{
+          defaultPageSize: 10,
+          showSizeChanger: true,
+        }}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar

@@ -27,7 +27,7 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import {handleAddOrUpdate, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
 import {NameSpaceTableListItem} from "@/pages/AuthenticationCenter/data.d";
 import NameSpaceForm from "@/pages/AuthenticationCenter/NamespaceManager/components/NameSpaceForm";
-import {useIntl} from "@@/plugin-locale/localeExports";
+import {useIntl} from "umi";
 
 const url = '/api/namespace';
 
@@ -177,6 +177,10 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+        }}
+        pagination={{
+          defaultPageSize: 10,
+          showSizeChanger: true,
         }}
       />
       {selectedRowsState?.length > 0 && (

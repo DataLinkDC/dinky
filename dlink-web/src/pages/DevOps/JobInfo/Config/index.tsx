@@ -20,12 +20,19 @@
 
 import {Descriptions, Divider, Tag, Typography} from 'antd';
 import {RocketOutlined} from '@ant-design/icons';
+import {useIntl} from "umi";
 
 const {Text, Link} = Typography;
 
 const Config = (props: any) => {
 
   const {job} = props;
+
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
+
   return <>
     <>
       <Divider children={"Dinky Job Configuration"} orientation={"left"}/>

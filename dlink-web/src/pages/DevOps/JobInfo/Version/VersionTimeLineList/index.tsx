@@ -24,12 +24,18 @@ import {queryData} from "@/components/Common/crud";
 import moment from "moment";
 import {TaskVersion} from "@/pages/DevOps/data";
 import {CheckCircleOutlined, SyncOutlined} from "@ant-design/icons";
+import {useIntl} from "umi";
 // import {Scrollbars} from "react-custom-scrollbars";
 
 const url = '/api/task/version';
 
 const VersionTimeLineList = (props: any) => {
   const {job} = props;
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
+
   const [mode, setMode] = useState<'left' | 'alternate' | 'right'>('alternate');
   const [reverse, setReverse] = useState(false);
   const onChange = (e: RadioChangeEvent) => {
@@ -38,7 +44,7 @@ const VersionTimeLineList = (props: any) => {
 
   const [taskVersionData, setTaskVersionData] = useState<TaskVersion>();
 
-  let taskId =job.instance.taskId;
+  let taskId = job.instance.taskId;
   const getVersionData = () => {
     setTaskVersionData(undefined);
     const res = queryData(url, {taskId, sorter: {versionId: 'descend'}});
@@ -72,7 +78,8 @@ const VersionTimeLineList = (props: any) => {
     let tempData = taskVersionData
     for (let key in tempData) {
       formList.push(
-        <Timeline.Item dot={(<CheckCircleOutlined/>)} label={moment(tempData[key].createTime).format("YYYY-MM-DD HH:mm:ss")} color="green">
+        <Timeline.Item dot={(<CheckCircleOutlined/>)}
+                       label={moment(tempData[key].createTime).format("YYYY-MM-DD HH:mm:ss")} color="green">
           <p>{tempData[key].name}: Create Version 【{tempData[key].versionId}】
             {/*site 【{ moment(tempData[key].createTime).format("YYYY-MM-DD HH:mm:ss")}】*/}
           </p>
@@ -92,29 +99,30 @@ const VersionTimeLineList = (props: any) => {
     <div style={{
       marginTop: "20px",
     }}>
-        <Button type="primary" style={{  margin:"5px"  }} onClick={handleClick}>
-          {reverse? "倒序": "正序"}
-        </Button>
-        <Button type="primary" style={{  margin:"5px" }} onClick={refresh}>
-          刷新
-        </Button>
-        <Radio.Group
-          onChange={onChange}
-          value={mode}
-        >
-          <Radio value="left">Left</Radio>
-          <Radio value="right">Right</Radio>
-          <Radio value="alternate">Alternate</Radio>
-        </Radio.Group>
-      <Card size="small"  style={{ width: "auto" }}>
+      <Button type="primary" style={{margin: "5px"}} onClick={handleClick}>
+        {reverse ? "倒序" : "正序"}
+      </Button>
+      <Button type="primary" style={{margin: "5px"}} onClick={refresh}>
+        刷新
+      </Button>
+      <Radio.Group
+        onChange={onChange}
+        value={mode}
+      >
+        <Radio value="left">Left</Radio>
+        <Radio value="right">Right</Radio>
+        <Radio value="alternate">Alternate</Radio>
+      </Radio.Group>
+      <Card size="small" style={{width: "auto"}}>
         {/*<Scrollbars  style={{height: "450px"}} >*/}
-          <br/><br/>
-          <Timeline mode={mode}  pending={moment().format("YYYY-MM-DD HH:mm:ss")+" Developing..."} reverse={reverse} pendingDot={<SyncOutlined spin/>}>
-            {getTimelineForm()}
-          </Timeline>
-          <BackTop>
-            <div style={style}>Top</div>
-          </BackTop>
+        <br/><br/>
+        <Timeline mode={mode} pending={moment().format("YYYY-MM-DD HH:mm:ss") + " Developing..."} reverse={reverse}
+                  pendingDot={<SyncOutlined spin/>}>
+          {getTimelineForm()}
+        </Timeline>
+        <BackTop>
+          <div style={style}>Top</div>
+        </BackTop>
         {/*</Scrollbars>*/}
       </Card>
 

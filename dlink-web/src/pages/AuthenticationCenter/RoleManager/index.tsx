@@ -28,8 +28,7 @@ import {getStorageTenantId, handleAddOrUpdate, handleRemove, queryData} from "@/
 import {RoleTableListItem} from "@/pages/AuthenticationCenter/data.d";
 import RoleForm from "@/pages/AuthenticationCenter/RoleManager/components/RoleForm";
 import {getNameSpaceList} from "@/pages/AuthenticationCenter/service";
-import {connect} from "umi";
-import {useIntl} from "@@/plugin-locale/localeExports";
+import {connect, useIntl} from "umi";
 
 const url = '/api/role';
 
@@ -187,6 +186,10 @@ const RoleFormList: React.FC<{}> = (props: any) => {
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+        }}
+        pagination={{
+          defaultPageSize: 10,
+          showSizeChanger: true,
         }}
       />
       {selectedRowsState?.length > 0 && (

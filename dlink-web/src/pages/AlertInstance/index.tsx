@@ -27,10 +27,16 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import {AlertInstanceTableListItem} from "@/pages/AlertInstance/data";
 import {handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
 import AlertInstanceChooseForm from "@/pages/AlertInstance/components/AlertInstanceChooseForm";
+import {useIntl} from "umi";
 
 const url = '/api/alertInstance';
 const AlertInstanceTableList: React.FC<{}> = (props: any) => {
   const {dispatch} = props;
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
+
   const [row, setRow] = useState<AlertInstanceTableListItem>();
   const [values, setValues] = useState<AlertInstanceTableListItem>();
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
@@ -205,6 +211,10 @@ const AlertInstanceTableList: React.FC<{}> = (props: any) => {
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+        }}
+        pagination={{
+          defaultPageSize: 10,
+          showSizeChanger: true,
         }}
       />
       {selectedRowsState?.length > 0 && (

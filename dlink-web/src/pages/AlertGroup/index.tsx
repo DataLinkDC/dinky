@@ -28,11 +28,16 @@ import {AlertGroupTableListItem} from "@/pages/AlertGroup/data";
 import {handleAddOrUpdate, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
 import AlertGroupForm from "@/pages/AlertGroup/components/AlertGroupForm";
 import {showAlertInstance} from "@/components/Studio/StudioEvent/DDL";
-import {connect} from "umi";
+import {connect, useIntl} from "umi";
 
 const url = '/api/alertGroup';
 const AlertGroupTableList: React.FC<{}> = (props: any) => {
   const {dispatch} = props;
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
+
   const [row, setRow] = useState<AlertGroupTableListItem>();
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
@@ -192,6 +197,10 @@ const AlertGroupTableList: React.FC<{}> = (props: any) => {
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+        }}
+        pagination={{
+          defaultPageSize: 10,
+          showSizeChanger: true,
         }}
       />
       {selectedRowsState?.length > 0 && (

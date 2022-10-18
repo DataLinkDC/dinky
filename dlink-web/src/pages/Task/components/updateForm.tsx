@@ -18,11 +18,12 @@
  */
 
 
-import React, { useState} from 'react';
-import {Form, Button, Input, Modal} from 'antd';
+import React, {useState} from 'react';
+import {Button, Form, Input, Modal} from 'antd';
 
-import  {TaskTableListItem} from "@/pages/Task/data";
+import {TaskTableListItem} from "@/pages/Task/data";
 import Switch from "antd/es/switch";
+import {useIntl} from 'umi';
 
 export type UpdateFormProps = {
   onCancel: (flag?: boolean, formVals?: Partial<TaskTableListItem>) => void;
@@ -38,6 +39,9 @@ const formLayout = {
 };
 
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
   const [formVals, setFormVals] = useState<Partial<TaskTableListItem>>({
     id: props.values.id,
     name: props.values.name,
@@ -67,7 +71,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
     handleUpdate({...formVals, ...fieldsValue});
   };
 
-  const renderContent = (formVals:any) => {
+  const renderContent = (formVals: any) => {
     return (
       <>
         <FormItem

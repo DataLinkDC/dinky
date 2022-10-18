@@ -29,7 +29,7 @@ import {UserTableListItem} from "@/pages/AuthenticationCenter/data.d";
 import UserForm from "@/pages/AuthenticationCenter/UserManager/components/UserForm";
 import PasswordForm from "@/pages/AuthenticationCenter/UserManager/components/PasswordForm";
 import TableTransferFrom from "@/pages/AuthenticationCenter/UserManager/components/TableTransfer";
-import {useIntl} from "@@/plugin-locale/localeExports";
+import {useIntl} from "umi";
 
 const url = '/api/user';
 const UserTableList: React.FC<{}> = (props: any) => {
@@ -238,6 +238,10 @@ const UserTableList: React.FC<{}> = (props: any) => {
           columns={columns}
           rowSelection={{
             onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+          }}
+          pagination={{
+            defaultPageSize: 10,
+            showSizeChanger: true,
           }}
         />
         {selectedRowsState?.length > 0 && (

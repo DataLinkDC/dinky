@@ -19,7 +19,7 @@
 
 
 import {useEffect, useState} from 'react';
-import {history, useLocation} from 'umi';
+import {history, useIntl, useLocation} from 'umi';
 import {ClusterOutlined, EllipsisOutlined, FireOutlined, RedoOutlined, RocketOutlined} from '@ant-design/icons';
 import {Button, Dropdown, Empty, Menu, message, Modal, Space, Tag, Typography} from 'antd';
 import {PageContainer} from '@ant-design/pro-layout';
@@ -45,6 +45,8 @@ import TaskVersionInfo from "@/pages/DevOps/JobInfo/Version";
 const {Link} = Typography;
 
 const JobInfo = (props: any) => {
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
 
   const params = useLocation();
   const {} = props;

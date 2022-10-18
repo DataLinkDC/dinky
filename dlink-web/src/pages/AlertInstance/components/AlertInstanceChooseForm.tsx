@@ -22,7 +22,7 @@ import React, {useState} from 'react';
 import {Card, List, Modal} from 'antd';
 
 import {AlertInstanceTableListItem} from '../data.d';
-import {connect} from "umi";
+import {connect, useIntl} from "umi";
 import {ALERT_CONFIG_LIST, ALERT_TYPE, AlertConfig} from "@/pages/AlertInstance/conf";
 import {getAlertIcon} from "@/pages/AlertInstance/icon";
 import {AlertStateType} from "@/pages/AlertInstance/model";
@@ -40,6 +40,10 @@ export type UpdateFormProps = {
 };
 
 const AlertInstanceChooseForm: React.FC<UpdateFormProps> = (props) => {
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
 
   const {
     onSubmit: handleUpdate,

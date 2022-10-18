@@ -113,7 +113,8 @@ const StudioHistory = (props: any) => {
         headerTitle="执行历史"
         request={(params, sorter, filter) => queryData(url, {...params, sorter: {id: 'descend'}, filter})}
         pagination={{
-          pageSize: 5,
+          defaultPageSize: 5,
+          showSizeChanger: true,
         }}
         showActions="hover"
         metas={{

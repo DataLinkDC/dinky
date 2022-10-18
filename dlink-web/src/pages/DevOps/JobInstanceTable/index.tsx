@@ -18,11 +18,10 @@
  */
 
 
-
-import { useIntl, Link, history, FormattedMessage, SelectLang, useModel } from 'umi';
+import {history, useIntl} from 'umi';
 import {queryData} from "@/components/Common/crud";
-import {useState, useRef, useEffect} from "react";
-import type {ProColumns, ActionType} from '@ant-design/pro-table';
+import {useEffect, useRef, useState} from "react";
+import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from "@ant-design/pro-table";
 import {Badge, message} from 'antd'
 import {JobInstanceTableListItem} from "@/pages/DevOps/data";
@@ -32,11 +31,7 @@ import JobStatus from "@/components/Common/JobStatus";
 import JobLifeCycle, {JOB_LIFE_CYCLE} from "@/components/Common/JobLifeCycle";
 import OpsStatusModal from "@/pages/DevOps/OpsStatusModel/index";
 import StatusDetailedModal from "@/pages/DevOps/StatusDetailedModel/index";
-import {
-  queryOneClickOperatingTaskStatus,
-  onClickOperatingTask,
-  queryAllCatalogue
-} from "@/pages/DevOps/service";
+import {onClickOperatingTask, queryAllCatalogue, queryOneClickOperatingTaskStatus} from "@/pages/DevOps/service";
 
 
 const OPS_STATUS_COLOR = {
@@ -50,6 +45,10 @@ const url = '/api/jobInstance';
 const JobInstanceTable = (props: any) => {
 
   const intl = useIntl();
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
 
   const {status, activeKey, isHistory, taskStatus} = props;
   const [time, setTime] = useState(() => Date.now());
@@ -272,10 +271,14 @@ const JobInstanceTable = (props: any) => {
         filterType: 'light',
       }}
 
-      headerTitle={intl.formatMessage({id: 'pages.devops.JobInstanceTable.LastUpdateTime', defaultMessage: intl.formatMessage({id: 'global.table.lastUpdateTime', defaultMessage: '上次更新时间',}),})+`：${moment(time).format('HH:mm:ss')}`}
+      headerTitle={intl.formatMessage({
+        id: 'pages.devops.JobInstanceTable.LastUpdateTime',
+        defaultMessage: intl.formatMessage({id: 'global.table.lastUpdateTime', defaultMessage: '上次更新时间',}),
+      }) + `：${moment(time).format('HH:mm:ss')}`}
       polling={status == activeKey ? 3000 : undefined}
       pagination={{
-        pageSize: 10,
+        defaultPageSize: 10,
+        showSizeChanger: true,
       }}
       onRow={record => {
         return {
