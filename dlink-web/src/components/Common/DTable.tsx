@@ -94,7 +94,8 @@ const DTable = (props: any) => {
       dataSource={dataSource ? (dataSource.url ? data : dataSource) : []}
       rowKey="name"
       pagination={{
-        pageSize: 10,
+        defaultPageSize: 10,
+        showSizeChanger: true,
       }}
       toolBarRender={false}
       search={false}

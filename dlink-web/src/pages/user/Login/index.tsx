@@ -21,7 +21,7 @@ import {LockOutlined, UserOutlined,} from '@ant-design/icons';
 import {Button, message, Modal} from 'antd';
 import React, {useEffect, useState} from 'react';
 import ProForm, {ProFormCheckbox, ProFormText} from '@ant-design/pro-form';
-import {FormattedMessage, history, Link, SelectLang, useIntl, useModel} from 'umi';
+import {history, Link, SelectLang, useIntl, useModel} from 'umi';
 import Footer from '@/components/Footer';
 import {login} from '@/services/ant-design-pro/api';
 import {CheckCard} from '@ant-design/pro-components';
@@ -53,7 +53,10 @@ const Login: React.FC = () => {
   const [tenant, setTenant] = useState<TenantTableListItem[]>([]);
 
   const [checkDisabled, setCheckDisabled] = useState<boolean>(true);
-  const intl = useIntl();
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
 
   const fetchUserInfo = async () => {
     const userInfo = await initialState?.fetchUserInfo?.();
@@ -93,30 +96,17 @@ const Login: React.FC = () => {
       // 登录
       const msg = await login({...values, type});
       if (msg.code === 0 && msg.datas != undefined) {
-        const defaultloginSuccessMessage = intl.formatMessage({
-          id: 'pages.login.success',
-          defaultMessage: '登录成功！',
-        });
-        message.success(defaultloginSuccessMessage);
+        message.success(l('pages.login.success'));
         await fetchUserInfo();
         goto();
         return;
       } else {
-        const defaultloginFailureMessage = intl.formatMessage({
-          id: msg.msg,
-          defaultMessage: msg.msg,
-        });
-        message.error(defaultloginFailureMessage);
+        message.error(l(msg.msg, msg.msg));
       }
       // 如果失败去设置用户错误信息
       setUserLoginState(msg.datas);
     } catch (error) {
-      const defaultloginFailureMessage = intl.formatMessage({
-        id: 'pages.login.failure',
-        defaultMessage: '登录失败，请重试！',
-      });
-
-      message.error(defaultloginFailureMessage);
+      message.error(l('pages.login.failure'));
     }
     setSubmitting(false);
   };
@@ -126,7 +116,7 @@ const Login: React.FC = () => {
   const handleShowTenant = () => {
 
     return <>
-      <Modal title={intl.formatMessage({id: 'pages.login.chooseTenant'})} visible={chooseTenant} destroyOnClose={true}
+      <Modal title={l('pages.login.chooseTenant')} visible={chooseTenant} destroyOnClose={true}
              width={"60%"}
              onCancel={() => {
                setChooseTenant(false);
@@ -135,7 +125,7 @@ const Login: React.FC = () => {
                <Button key="back" onClick={() => {
                  setChooseTenant(false);
                }}>
-                 {intl.formatMessage({id: 'button.close'})}
+                 {l('button.close')}
                </Button>,
                <Button disabled={checkDisabled} type="primary" key="submit" loading={submitting}
                        onClick={async () => {
@@ -143,7 +133,7 @@ const Login: React.FC = () => {
                          localStorage.setItem("dlink-tenantId", tenantId.toString());
                          await handleSubmit(userParamsState);
                        }}>
-                 {intl.formatMessage({id: 'button.confirm'})}
+                 {l('button.confirm')}
                </Button>
              ]}>
         <CheckCard.Group
@@ -188,7 +178,7 @@ const Login: React.FC = () => {
             </Link>
           </div>
           <div className={styles.desc}>
-            {intl.formatMessage({id: 'pages.layouts.userLayout.title'})}
+            {l('pages.layouts.userLayout.title')}
           </div>
         </div>
 
@@ -199,10 +189,7 @@ const Login: React.FC = () => {
             }}
             submitter={{
               searchConfig: {
-                submitText: intl.formatMessage({
-                  id: 'pages.login.submit',
-                  defaultMessage: '登录',
-                }),
+                submitText: l('pages.login.submit'),
               },
               render: (_, dom) => dom.pop(),
               submitButtonProps: {
@@ -229,19 +216,11 @@ const Login: React.FC = () => {
                     size: 'large',
                     prefix: <UserOutlined className={styles.prefixIcon}/>,
                   }}
-                  placeholder={intl.formatMessage({
-                    id: 'pages.login.username.placeholder',
-                    defaultMessage: '用户名:',
-                  })}
+                  placeholder={l('pages.login.username.placeholder')}
                   rules={[
                     {
                       required: true,
-                      message: (
-                        <FormattedMessage
-                          id="pages.login.username.required"
-                          defaultMessage="请输入用户名!"
-                        />
-                      ),
+                      message: l('pages.login.username.required'),
                     },
                   ]}
                 />
@@ -251,19 +230,11 @@ const Login: React.FC = () => {
                     size: 'large',
                     prefix: <LockOutlined className={styles.prefixIcon}/>,
                   }}
-                  placeholder={intl.formatMessage({
-                    id: 'pages.login.password.placeholder',
-                    defaultMessage: '密码:',
-                  })}
+                  placeholder={l('pages.login.password.placeholder')}
                   rules={[
                     {
                       required: true,
-                      message: (
-                        <FormattedMessage
-                          id="pages.login.password.required"
-                          defaultMessage="请输入密码！"
-                        />
-                      ),
+                      message: l('pages.login.password.required'),
                     },
                   ]}
                 />
@@ -277,14 +248,14 @@ const Login: React.FC = () => {
               }}
             >
               <ProFormCheckbox noStyle name="autoLogin">
-                <FormattedMessage id="pages.login.rememberMe" defaultMessage="自动登录"/>
+                {l('pages.login.rememberMe')}
               </ProFormCheckbox>
               <a
                 style={{
                   float: 'right',
                 }}
               >
-                <FormattedMessage id="pages.login.forgotPassword" defaultMessage="忘记密码"/>
+                {l('pages.login.forgotPassword')}
               </a>
             </div>
           </ProForm>

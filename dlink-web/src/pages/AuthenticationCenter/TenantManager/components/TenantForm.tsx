@@ -21,7 +21,7 @@
 import React, {useState} from 'react';
 import {Button, Form, Input, Modal} from 'antd';
 import {TenantTableListItem} from "@/pages/AuthenticationCenter/data.d";
-import {useIntl} from "@@/plugin-locale/localeExports";
+import {useIntl} from "umi";
 
 export type TenantFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -38,7 +38,9 @@ const FormItem = Form.Item;
 
 const TenantForm: React.FC<TenantFormProps> = (props) => {
 
-  const intl = useIntl();
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<TenantTableListItem>>({
@@ -68,16 +70,16 @@ const TenantForm: React.FC<TenantFormProps> = (props) => {
       <>
         <FormItem
           name="tenantCode"
-          label={intl.formatMessage({id: 'pages.tenant.TenantCode'})}
-          rules={[{required: true, message: intl.formatMessage({id: 'pages.tenant.EnterTenantCode'})}]}>
-          <Input allowClear placeholder={intl.formatMessage({id: 'pages.tenant.EnterTenantCode'})}/>
+          label={l('pages.tenant.TenantCode')}
+          rules={[{required: true, message: l('pages.tenant.EnterTenantCode')}]}>
+          <Input allowClear placeholder={l('pages.tenant.EnterTenantCode')}/>
         </FormItem>
         <FormItem
           name="note"
-          label={intl.formatMessage({id: 'pages.tenant.Note'})}
-          rules={[{required: true, message: intl.formatMessage({id: 'pages.tenant.EnterTenantNote'})}]}
+          label={l('pages.tenant.Note')}
+          rules={[{required: true, message: l('pages.tenant.EnterTenantNote')}]}
         >
-          <Input.TextArea placeholder={intl.formatMessage({id: 'pages.tenant.EnterTenantNote'})} allowClear
+          <Input.TextArea placeholder={l('pages.tenant.EnterTenantNote')} allowClear
                           autoSize={{minRows: 3, maxRows: 10}}/>
         </FormItem>
       </>
@@ -87,9 +89,9 @@ const TenantForm: React.FC<TenantFormProps> = (props) => {
   const renderFooter = () => {
     return (
       <>
-        <Button onClick={() => handleModalVisible(false)}>{intl.formatMessage({id: 'button.cancel'})}</Button>
+        <Button onClick={() => handleModalVisible(false)}>{l('button.cancel')}</Button>
         <Button type="primary" onClick={() => submitForm()}>
-          {intl.formatMessage({id: 'button.finish'})}
+          {l('button.finish')}
         </Button>
       </>
     );
@@ -100,7 +102,7 @@ const TenantForm: React.FC<TenantFormProps> = (props) => {
       width={"40%"}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title={formVals.id ? intl.formatMessage({id: 'pages.tenant.update'}) : intl.formatMessage({id: 'pages.tenant.create'})}
+      title={formVals.id ? l('pages.tenant.update') : l('pages.tenant.create')}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}

@@ -34,7 +34,7 @@ import {CheckPointsDetailInfo} from "@/pages/DevOps/data";
 import {CODE, queryData} from "@/components/Common/crud";
 import {selectSavePointRestartTask} from "@/pages/DevOps/service";
 import {JOB_LIFE_CYCLE} from "@/components/Common/JobLifeCycle";
-import {history} from 'umi';
+import {history, useIntl} from 'umi';
 import {SavePointTableListItem} from "@/components/Studio/StudioRightTool/StudioSavePoint/data";
 import moment from "moment";
 
@@ -43,6 +43,11 @@ const {TabPane} = Tabs;
 const CheckPoints = (props: any) => {
 
   const {job} = props;
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
+
   const actionRef = useRef<ActionType>();
 
   const JsonParseObject = (item: any) => {
@@ -329,7 +334,8 @@ const CheckPoints = (props: any) => {
           actionRef={actionRef}
           rowKey="id"
           pagination={{
-            pageSize: 10,
+            defaultPageSize: 10,
+            showSizeChanger: true,
           }}
           toolBarRender={false}
           dateFormatter="string"
@@ -487,37 +493,37 @@ const CheckPoints = (props: any) => {
 
   return (<>
     {(job?.jobHistory?.checkpoints || job?.jobHistory?.checkpointsConfig) &&
-    <Tabs defaultActiveKey="overview" size="small" tabPosition="top" style={{
-      border: "1px solid #f0f0f0",
-    }}>
-      <TabPane tab={<span>&nbsp; Overview &nbsp;</span>} key="overview">
-        {!JSON.stringify(job?.jobHistory?.checkpoints).includes("errors") ?
-          getOverview(JsonParseObject(job?.jobHistory?.checkpoints)) :
-          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
-      </TabPane>
+      <Tabs defaultActiveKey="overview" size="small" tabPosition="top" style={{
+        border: "1px solid #f0f0f0",
+      }}>
+        <TabPane tab={<span>&nbsp; Overview &nbsp;</span>} key="overview">
+          {!JSON.stringify(job?.jobHistory?.checkpoints).includes("errors") ?
+            getOverview(JsonParseObject(job?.jobHistory?.checkpoints)) :
+            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
+        </TabPane>
 
-      <TabPane tab={<span>&nbsp; History &nbsp;</span>} key="history">
-        {getHistory(JsonParseObject(job?.jobHistory?.checkpoints))}
-      </TabPane>
+        <TabPane tab={<span>&nbsp; History &nbsp;</span>} key="history">
+          {getHistory(JsonParseObject(job?.jobHistory?.checkpoints))}
+        </TabPane>
 
-      <TabPane tab={<span>&nbsp; Summary &nbsp;</span>} key="summary">
-        {!JSON.stringify(job?.jobHistory?.checkpoints).includes("errors") ?
-          getSummary(JsonParseObject(job?.jobHistory?.checkpoints)) :
-          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
-        }
-      </TabPane>
+        <TabPane tab={<span>&nbsp; Summary &nbsp;</span>} key="summary">
+          {!JSON.stringify(job?.jobHistory?.checkpoints).includes("errors") ?
+            getSummary(JsonParseObject(job?.jobHistory?.checkpoints)) :
+            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
+          }
+        </TabPane>
 
-      <TabPane tab={<span>&nbsp; Configuration &nbsp;</span>} key="configuration">
-        {!JSON.stringify(job?.jobHistory?.checkpointsConfig).includes("errors") ?
-          getConfiguration(JsonParseObject(job?.jobHistory?.checkpointsConfig)) :
-          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
-        }
-      </TabPane>
+        <TabPane tab={<span>&nbsp; Configuration &nbsp;</span>} key="configuration">
+          {!JSON.stringify(job?.jobHistory?.checkpointsConfig).includes("errors") ?
+            getConfiguration(JsonParseObject(job?.jobHistory?.checkpointsConfig)) :
+            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
+          }
+        </TabPane>
 
-      <TabPane tab={<span>&nbsp; SavePoint &nbsp;</span>} key="savepoint">
-        {getSavePoint()}
-      </TabPane>
-    </Tabs>}
+        <TabPane tab={<span>&nbsp; SavePoint &nbsp;</span>} key="savepoint">
+          {getSavePoint()}
+        </TabPane>
+      </Tabs>}
   </>)
 };
 export default CheckPoints;

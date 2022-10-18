@@ -36,6 +36,9 @@ export default {
   'button.changePassword': 'Change Password',
   'button.enable': 'Enable',
   'button.disable': 'Disable',
+  'button.reset': 'Reset',
+  'button.search': 'Search',
+
 
   'tips.selected': 'Selected',
   'tips.notSelected': 'Not Select',

@@ -24,7 +24,7 @@ import React, {useEffect, useState} from 'react';
 import {getData} from "@/components/Common/crud";
 import {Scrollbars} from 'react-custom-scrollbars';
 import {TenantTableListItem, UserTableListItem} from "@/pages/AuthenticationCenter/data.d";
-import {useIntl} from "@@/plugin-locale/localeExports";
+import {useIntl} from "umi";
 
 
 interface TableTransferProps extends TransferProps<UserTableListItem> {
@@ -105,7 +105,11 @@ export type TableTransferFromProps = {
 };
 
 const GrantTenantToUserTableTransferFrom = (props: TableTransferFromProps) => {
-  const intl = useIntl();
+
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
   const {tenant, onChange: handleChange} = props;
 
   const [targetKeys, setTargetKeys] = useState<string[]>([]);
@@ -129,30 +133,30 @@ const GrantTenantToUserTableTransferFrom = (props: TableTransferFromProps) => {
 
   const leftTableColumns: ColumnsType<UserTableListItem> = [
     {
-      title: intl.formatMessage({id: 'pages.user.UserName'}),
+      title: l('pages.user.UserName'),
       dataIndex: 'username',
     },
     {
-      title: intl.formatMessage({id: 'pages.user.UserNickName'}),
+      title: l('pages.user.UserNickName'),
       dataIndex: 'nickname',
     },
     {
-      title: intl.formatMessage({id: 'pages.user.UserJobNumber'}),
+      title: l('pages.user.UserJobNumber'),
       dataIndex: 'worknum',
     },
   ];
 
   const rightTableColumns: ColumnsType<UserTableListItem> = [
     {
-      title: intl.formatMessage({id: 'pages.user.UserName'}),
+      title: l('pages.user.UserName'),
       dataIndex: 'username',
     },
     {
-      title: intl.formatMessage({id: 'pages.user.UserNickName'}),
+      title: l('pages.user.UserNickName'),
       dataIndex: 'nickname',
     },
     {
-      title: intl.formatMessage({id: 'pages.user.UserJobNumber'}),
+      title: l('pages.user.UserJobNumber'),
       dataIndex: 'worknum',
     },
   ];

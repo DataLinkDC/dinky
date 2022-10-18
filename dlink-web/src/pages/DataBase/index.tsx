@@ -40,6 +40,7 @@ import styles from './index.less';
 import {DataBaseItem} from "@/pages/DataBase/data";
 import {checkHeartBeat} from "@/pages/DataBase/service";
 import {showDataBase} from "@/components/Studio/StudioEvent/DDL";
+import {useIntl} from "umi";
 
 const {Text} = Typography;
 
@@ -51,6 +52,11 @@ const cardBodyStyle = {
 };
 
 const DataBaseTableList: React.FC<{}> = (props: any) => {
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
+
   const {dispatch} = props;
   const [chooseDBModalVisible, handleDBFormModalVisible] = useState<boolean>(false);
   const [values, setValues] = useState<any>({});

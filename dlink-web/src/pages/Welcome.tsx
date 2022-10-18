@@ -33,6 +33,11 @@ const CodePreview: React.FC = ({children}) => (
 );
 
 export default (): React.ReactNode => {
+
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
   const intl = useIntl();
   return (
     <>
@@ -137,11 +142,13 @@ export default (): React.ReactNode => {
                   <Link>支持以 SPI 的方式扩展任意 Connector，同 Flink 官网</Link>
                 </li>
                 <li>
-                  <Link>提供了 dlink-connector-jdbc，额外支持 Oracle 和 ClickHouse 读写，该扩展包可直接上传 Flink 集群的 lib
+                  <Link>提供了 dlink-connector-jdbc，额外支持 Oracle 和 ClickHouse 读写，该扩展包可直接上传 Flink 集群的
+                    lib
                     进行远程使用，无需重新编译</Link>
                 </li>
                 <li>
-                  <Link>提供了 dlink-client-1.12，支持 Flink 1.12.0+ 多集群的远程使用与本地隔离使用，1.10、1.11 和 1.13 集群可能存在问题</Link>
+                  <Link>提供了 dlink-client-1.12，支持 Flink 1.12.0+ 多集群的远程使用与本地隔离使用，1.10、1.11 和 1.13
+                    集群可能存在问题</Link>
                 </li>
                 <li>
                   <Link>优化了 FlinkSQL 执行与提交到远程集群的任务名，默认为作业的中文别名</Link>

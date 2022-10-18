@@ -25,11 +25,15 @@ import styles from './index.less';
 import {SearchOutlined} from "@ant-design/icons";
 import Divider from "antd/es/divider";
 import {ProTable} from "@ant-design/pro-table";
-import { useIntl } from 'umi';
+import {useIntl} from 'umi';
 
 const TableData = (props: any) => {
 
   const intl = useIntl();
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
 
   // 数据库id，数据库名称，表名称
   const {dbId, table, schema} = props;
@@ -166,7 +170,10 @@ const TableData = (props: any) => {
                   })
                 }}
               >
-                <Input addonBefore="WHERE" placeholder= {intl.formatMessage({id: 'pages.TableData.QueryConditions', defaultMessage: '查询条件',})}
+                <Input addonBefore="WHERE" placeholder={intl.formatMessage({
+                  id: 'pages.TableData.QueryConditions',
+                  defaultMessage: '查询条件',
+                })}
                        onChange={(value) => {
                          setOptionInput({
                            whereInput: value.target.value,
@@ -190,12 +197,14 @@ const TableData = (props: any) => {
                   })
                 }}
               >
-                <Input addonBefore="ORDER BY" placeholder={intl.formatMessage({id: 'pages.TableData.sorting', defaultMessage: '排序',})} onChange={(value) => {
-                  setOptionInput({
-                    whereInput: optionInput.whereInput,
-                    orderInput: value.target.value
-                  })
-                }}/>
+                <Input addonBefore="ORDER BY"
+                       placeholder={intl.formatMessage({id: 'pages.TableData.sorting', defaultMessage: '排序',})}
+                       onChange={(value) => {
+                         setOptionInput({
+                           whereInput: optionInput.whereInput,
+                           orderInput: value.target.value
+                         })
+                       }}/>
               </AutoComplete>
             </Col>
             <Col span={2}>
@@ -210,7 +219,10 @@ const TableData = (props: any) => {
         </div>
 
 
-        <Divider orientation="left" plain>{intl.formatMessage({id: 'pages.TableData.data', defaultMessage: '数据',})}</Divider>
+        <Divider orientation="left" plain>{intl.formatMessage({
+          id: 'pages.TableData.data',
+          defaultMessage: '数据',
+        })}</Divider>
 
         <div>
           <ProTable
@@ -218,7 +230,8 @@ const TableData = (props: any) => {
             columns={tableData.columns}
             dataSource={tableData.rowData}
             pagination={{
-              pageSize: 10,
+              defaultPageSize: 10,
+              showSizeChanger: true,
             }}
             scroll={{y: "80vh", x: true}}
             dateFormatter="string"

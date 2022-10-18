@@ -41,6 +41,7 @@ const TenantFormList: React.FC<{}> = (props: any) => {
   const [selectedRowsState, setSelectedRows] = useState<TenantTableListItem[]>([]);
   const [formValues, setFormValues] = useState({});
 
+
   const international = useIntl();
   const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
 
@@ -216,6 +217,10 @@ const TenantFormList: React.FC<{}> = (props: any) => {
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+        }}
+        pagination={{
+          defaultPageSize: 10,
+          showSizeChanger: true,
         }}
       />
       {selectedRowsState?.length > 0 && (

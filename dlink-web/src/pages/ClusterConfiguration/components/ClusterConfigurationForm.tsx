@@ -26,6 +26,7 @@ import {FLINK_CONFIG_LIST, HADOOP_CONFIG_LIST, KUBERNETES_CONFIG_LIST} from "@/p
 import {testClusterConfigurationConnect} from "@/pages/ClusterConfiguration/service";
 import type {ClusterConfigurationTableListItem} from "@/pages/ClusterConfiguration/data";
 import {CODE} from "@/components/Common/crud";
+import {useIntl} from 'umi';
 
 export type ClusterConfigurationFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -41,6 +42,11 @@ const formLayout = {
 };
 
 const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props) => {
+
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<ClusterConfigurationTableListItem>>({

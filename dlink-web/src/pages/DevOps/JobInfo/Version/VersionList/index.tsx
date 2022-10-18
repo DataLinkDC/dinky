@@ -26,14 +26,19 @@ import {getIcon} from "@/components/Studio/icon";
 import {Button, Modal, Tag} from "antd";
 import {FullscreenOutlined} from "@ant-design/icons";
 import CodeShow from "@/components/Common/CodeShow";
+import {useIntl} from "umi";
 
 const url = '/api/task/version';
 const VersionList = (props: any) => {
   const {job} = props;
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
+
   const actionRef = useRef<ActionType>();
   const [row, setRow] = useState<TaskVersion>();
   const [modalVisible, setModalVisible] = useState<boolean>(false);
-
 
 
   const cancelHandle = () => {
@@ -41,27 +46,26 @@ const VersionList = (props: any) => {
     setModalVisible(false);
   }
 
-  const handleShowStatement = (item: any) =>{
+  const handleShowStatement = (item: any) => {
     return (
       <div style={{width: "1100px"}}>
         <Modal title="作业执行 SQL" visible={modalVisible} destroyOnClose={true} width={"60%"}
-         onCancel={()=>{
-           cancelHandle();
-         }}
-         footer={[
-           <Button key="back" onClick={() => {
-             cancelHandle();
-           }}>
-             关闭
-           </Button>,
-         ]}>
-          <CodeShow language={"sql"} code={item?.statement} height={'600px'} />
+               onCancel={() => {
+                 cancelHandle();
+               }}
+               footer={[
+                 <Button key="back" onClick={() => {
+                   cancelHandle();
+                 }}>
+                   关闭
+                 </Button>,
+               ]}>
+          <CodeShow language={"sql"} code={item?.statement} height={'600px'}/>
         </Modal>
       </div>
     )
 
   }
-
 
 
   const columns: ProColumns<TaskVersion>[] = [
@@ -88,12 +92,12 @@ const VersionList = (props: any) => {
       align: 'center',
       render: (dom, entity) => {
         return <>
-            {getIcon(entity.dialect) }
-            {
+          {getIcon(entity.dialect)}
+          {
             <Tag color="blue">
               {entity.dialect}
             </Tag>
-            }
+          }
         </>;
       },
     },
@@ -124,19 +128,19 @@ const VersionList = (props: any) => {
       render: (dom, entity) => {
         return <>
           {<>
-            <a onClick={()=>{
+            <a onClick={() => {
               setRow(entity)
               setModalVisible(true);
             }}>
               <Tag color="green">
-                <FullscreenOutlined title={"查看作业详情"}  />
+                <FullscreenOutlined title={"查看作业详情"}/>
               </Tag> 查看作业详情
             </a>
 
           </>
           }
         </>
-        ;
+          ;
       },
     },
     {
@@ -175,7 +179,8 @@ const VersionList = (props: any) => {
         actionRef={actionRef}
         rowKey="id"
         pagination={{
-          pageSize: 10,
+          defaultPageSize: 10,
+          showSizeChanger: true,
         }}
         bordered
         search={false}

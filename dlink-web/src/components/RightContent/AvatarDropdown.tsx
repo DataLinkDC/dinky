@@ -27,13 +27,12 @@ import {
   UserSwitchOutlined
 } from '@ant-design/icons';
 import {Avatar, Menu, Modal, Spin} from 'antd';
-import {history, useModel} from 'umi';
+import {history, useIntl, useModel} from 'umi';
 import {stringify} from 'querystring';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 import {outLogin} from '@/services/ant-design-pro/api';
 import {ActionType} from "@ant-design/pro-table";
-import {useIntl} from "@@/plugin-locale/localeExports";
 
 export type GlobalHeaderRightProps = {
   menu?: boolean;
@@ -64,7 +63,9 @@ const requestUrl = '/api/tenant/switchTenant';
 const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
   const {initialState, setInitialState} = useModel('@@initialState');
   const actionRef = useRef<ActionType>();
-  const intl = useIntl();
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
 
   const onMenuClick = useCallback(
     (event: {
@@ -124,10 +125,10 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
               // get choose tenantId
               let tenantInfoId = e.key;
               Modal.confirm({
-                title: intl.formatMessage({id: 'menu.account.checkTenant'}),
-                content: '确定切换【' + title + '】租户吗?',
-                okText: intl.formatMessage({id: 'button.confirm'}),
-                cancelText: intl.formatMessage({id: 'button.cancel'}),
+                title: l('menu.account.checkTenant'),
+                content: l('menu.account.checkTenantConfirm'),
+                okText: l('button.confirm'),
+                cancelText: l('button.cancel'),
                 onOk: async () => {
                   // 目前先直接退出登录 重新选择租户登录
                   loginOut();
@@ -153,7 +154,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
     return <>
       <Menu.SubMenu
         key="chooseTenantList"
-        title={intl.formatMessage({id: 'menu.account.checkTenant'})}
+        title={l('menu.account.checkTenant')}
         icon={<UserSwitchOutlined/>}
       >
         {chooseTenantList}
@@ -170,19 +171,19 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
       {menu && (
         <Menu.Item key="personSettings" disabled>
           <SettingOutlined/>
-          {intl.formatMessage({id: 'menu.account.settings'})}
+          {l('menu.account.settings')}
         </Menu.Item>
       )}
       {menu && (
         <Menu.Item key="changePassWord" disabled>
           <SafetyOutlined/>
-          {intl.formatMessage({id: 'menu.account.changePassword'})}
+          {l('menu.account.changePassword')}
         </Menu.Item>
       )}
       {menu && <Menu.Divider/>}
       <Menu.Item key="logout">
         <LogoutOutlined/>
-        {intl.formatMessage({id: 'menu.account.logout'})}
+        {l('menu.account.logout')}
       </Menu.Item>
     </Menu>
   );
