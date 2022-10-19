@@ -18,7 +18,7 @@
  */
 
 export type UDFTemplateItem = {
-  id: number,
+  id: number | null,
   name: string,
   codeType: string,
   functionType: string,

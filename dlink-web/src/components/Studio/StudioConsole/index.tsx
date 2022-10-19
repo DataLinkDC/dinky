@@ -21,7 +21,7 @@
 import {Tabs, Empty} from "antd";
 import {
   CodeOutlined, TableOutlined, RadarChartOutlined, CalendarOutlined, FileSearchOutlined, DesktopOutlined
-  , FunctionOutlined, ApartmentOutlined,BarChartOutlined
+  , FunctionOutlined, ApartmentOutlined, BarChartOutlined
 } from "@ant-design/icons";
 import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
@@ -34,7 +34,8 @@ import StudioCA from "./StudioCA";
 import StudioProcess from "./StudioProcess";
 import {Scrollbars} from 'react-custom-scrollbars';
 import Chart from "@/components/Chart";
-import { useIntl } from 'umi';
+import {useIntl} from 'umi';
+import {useEffect, useState} from "react";
 
 const {TabPane} = Tabs;
 
@@ -42,12 +43,18 @@ const StudioConsole = (props: any) => {
 
   const intl = useIntl();
 
-  const {height,current} = props;
+  const {height, current} = props;
   let consoleHeight = (height - 37.6);
+  const [activeKey, setActiveKey] = useState<string>("StudioMsg");
+
+  const onTabsChange = (key: string) => {
+    setActiveKey(key);
+  }
+
   return (
     <Tabs defaultActiveKey="StudioMsg" size="small" tabPosition="top" style={{
       border: "1px solid #f0f0f0", height: height, margin: "0 32px"
-    }}>
+    }} onChange={onTabsChange}>
       <TabPane
         tab={
           <span>
@@ -58,7 +65,7 @@ const StudioConsole = (props: any) => {
         key="StudioMsg"
       >
         <Scrollbars style={{height: consoleHeight}}>
-          {current?<StudioMsg/>:<Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
+          <StudioMsg height={consoleHeight} isActive={activeKey === "StudioMsg"}/>
         </Scrollbars>
       </TabPane>
       <TabPane
@@ -71,20 +78,20 @@ const StudioConsole = (props: any) => {
         key="StudioTable"
       >
         <Scrollbars style={{height: consoleHeight}}>
-          {current?<StudioTable/>:<Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
+          {current ? <StudioTable/> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
         </Scrollbars>
       </TabPane>
       <TabPane
         tab={
           <span>
-          <BarChartOutlined />
+          <BarChartOutlined/>
           BI
         </span>
         }
         key="StudioChart"
       >
         <Scrollbars style={{height: consoleHeight}}>
-          {current? <Chart height={consoleHeight} />:<Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
+          {current ? <Chart height={consoleHeight}/> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
         </Scrollbars>
       </TabPane>
       <TabPane
@@ -97,7 +104,7 @@ const StudioConsole = (props: any) => {
         key="StudioConsanguinity"
       >
         <Scrollbars style={{height: consoleHeight}}>
-          {current?<StudioCA/>:<Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
+          {current ? <StudioCA/> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
         </Scrollbars>
       </TabPane>
       <TabPane

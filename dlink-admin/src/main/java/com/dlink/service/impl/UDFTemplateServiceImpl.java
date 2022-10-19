@@ -19,6 +19,7 @@
 
 package com.dlink.service.impl;
 
+import com.dlink.assertion.Asserts;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.exception.BusException;
 import com.dlink.mapper.UDFTemplateMapper;
@@ -32,27 +33,23 @@ import org.springframework.stereotype.Service;
  * @since 0.6.8
  */
 @Service
-public class UDFTemplateServiceImpl extends SuperServiceImpl<UDFTemplateMapper, UDFTemplate> implements UDFTemplateService {
+public class UDFTemplateServiceImpl extends SuperServiceImpl<UDFTemplateMapper, UDFTemplate>
+        implements
+            UDFTemplateService {
 
     @Override
-    public boolean save(UDFTemplate udfTemplate) {
+    public boolean saveOrUpdate(UDFTemplate udfTemplate) {
         UDFTemplate selectOne = query().eq("name", udfTemplate.getName()).one();
-        if (udfTemplate.getId() == 0) {
-            // 添加
-            udfTemplate.setId(null);
+        if (Asserts.isNull(udfTemplate.getId())) {
             if ((selectOne != null)) {
                 throw new BusException("模板名已经存在");
             }
+            return save(udfTemplate);
         } else {
-            // 修改
-            if (selectOne == null) {
-                return saveOrUpdate(udfTemplate);
-            }
-            if (!udfTemplate.getId().equals(selectOne.getId())) {
+            if (Asserts.isNotNull(selectOne) && !udfTemplate.getId().equals(selectOne.getId())) {
                 throw new BusException("模板名已经存在");
             }
+            return updateById(udfTemplate);
         }
-
-        return saveOrUpdate(udfTemplate);
     }
 }
