@@ -19,29 +19,29 @@
 
 
 import MonacoEditor from "react-monaco-editor";
+import {useState} from "react";
 
-export type CodeShowFormProps = {
+export type CodeEditFormProps = {
   height?: string;
   width?: string;
   language?: string;
-  theme?: string;
   options?: any;
+  onChange: (val: string) => void;
   code: string;
 };
 
-const CodeShow = (props: CodeShowFormProps) => {
+const CodeEdit = (props: CodeEditFormProps) => {
 
   const {
     height = '100%',
     width = '100%',
     language = 'sql',
-    theme = 'vs',
     options = {
       selectOnLineNumbers: true,
       renderSideBySide: false,
       autoIndent: 'None',
-      readOnly: true,
     },
+    onChange,
     code,
   } = props;
 
@@ -52,9 +52,10 @@ const CodeShow = (props: CodeShowFormProps) => {
       language={language}
       value={code}
       options={options}
+      onChange={onChange}
       theme='vs-dark'
     />
   </>)
 };
 
-export default CodeShow;
+export default CodeEdit;

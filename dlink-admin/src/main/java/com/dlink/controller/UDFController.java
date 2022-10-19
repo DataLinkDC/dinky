@@ -48,6 +48,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/udf")
 public class UDFController {
+
     @Resource
     UDFTemplateService udfTemplateService;
 
@@ -58,7 +59,7 @@ public class UDFController {
 
     @PutMapping("/template/")
     public Result<String> addTemplate(@RequestBody UDFTemplate udfTemplate) {
-        return udfTemplateService.save(udfTemplate) ? Result.succeed("操作成功") : Result.failed("操作失败");
+        return udfTemplateService.saveOrUpdate(udfTemplate) ? Result.succeed("操作成功") : Result.failed("操作失败");
     }
 
     @DeleteMapping("/template/list")

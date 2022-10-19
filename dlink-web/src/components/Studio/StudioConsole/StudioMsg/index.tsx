@@ -22,32 +22,32 @@ import {connect} from "umi";
 import React, {useEffect, useState} from "react";
 import CodeShow from "@/components/Common/CodeShow";
 import {getConsoleInfo} from "@/pages/SettingCenter/ProcessList/service";
-import {RedoOutlined} from "@ant-design/icons";
-import {Button} from "antd";
 
 const StudioMsg = (props: any) => {
 
-  const {current} = props;
+  const {current, height, isActive} = props;
   const [consoleInfo, setConsoleInfo] = useState<string>("");
 
   useEffect(() => {
     refreshConsoleInfo();
-  }, []);
+    let dataPolling = setInterval(refreshConsoleInfo, 3000);
+    return () => {
+      clearInterval(dataPolling);
+    };
+  }, [isActive]);
 
   const refreshConsoleInfo = () => {
-    const res = getConsoleInfo();
-    res.then((result) => {
-      result.datas && setConsoleInfo(result.datas);
-    });
+    if (isActive) {
+      const res = getConsoleInfo();
+      res.then((result) => {
+        result.datas && setConsoleInfo(result.datas);
+      });
+    }
   }
 
   return (
-    <><Button
-      icon={<RedoOutlined/>}
-      onClick={refreshConsoleInfo}
-    ></Button>
-      <CodeShow code={consoleInfo} language='java'
-                height='500px' theme="vs-dark"/>
+    <>
+      <CodeShow code={consoleInfo} language='java' height={height} theme="vs"/>
     </>
   );
 };
