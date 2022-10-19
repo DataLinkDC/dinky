@@ -20,6 +20,7 @@
 package com.dlink.process.model;
 
 import com.dlink.assertion.Asserts;
+import com.dlink.process.pool.ConsolePool;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -120,16 +121,18 @@ public class ProcessEntity {
         if (isNullProcess()) {
             return;
         }
-        steps.get(stepIndex - 1).appendInfo(
-                StrUtil.format("\n[{}] {} CONFIG: {}", type.getValue(), LocalDateTime.now(), str));
+        String message = StrUtil.format("\n[{}] {} CONFIG: {}", type.getValue(), LocalDateTime.now(), str);
+        steps.get(stepIndex - 1).appendInfo(message);
+        ConsolePool.write(message, userId);
     }
 
     public void info(String str) {
         if (isNullProcess()) {
             return;
         }
-        steps.get(stepIndex - 1).appendInfo(
-                StrUtil.format("\n[{}] {} INFO: {}", type.getValue(), LocalDateTime.now(), str));
+        String message = StrUtil.format("\n[{}] {} INFO: {}", type.getValue(), LocalDateTime.now(), str);
+        steps.get(stepIndex - 1).appendInfo(message);
+        ConsolePool.write(message, userId);
     }
 
     public void infoSuccess() {
@@ -137,6 +140,7 @@ public class ProcessEntity {
             return;
         }
         steps.get(stepIndex - 1).appendInfo("Success.");
+        ConsolePool.write("Success.", userId);
     }
 
     public void infoFail() {
@@ -144,16 +148,17 @@ public class ProcessEntity {
             return;
         }
         steps.get(stepIndex - 1).appendInfo("Fail.");
+        ConsolePool.write("Fail.", userId);
     }
 
     public void error(String str) {
         if (isNullProcess()) {
             return;
         }
-        steps.get(stepIndex - 1).appendInfo(
-                StrUtil.format("\n[{}] {} ERROR: {}", type.getValue(), LocalDateTime.now(), str));
-        steps.get(stepIndex - 1).appendError(
-                StrUtil.format("\n[{}] {} ERROR: {}", type.getValue(), LocalDateTime.now(), str));
+        String message = StrUtil.format("\n[{}] {} ERROR: {}", type.getValue(), LocalDateTime.now(), str);
+        steps.get(stepIndex - 1).appendInfo(message);
+        steps.get(stepIndex - 1).appendError(message);
+        ConsolePool.write(message, userId);
     }
 
     public void nextStep() {

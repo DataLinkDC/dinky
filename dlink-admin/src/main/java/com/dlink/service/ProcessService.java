@@ -32,4 +32,6 @@ import java.util.List;
 public interface ProcessService {
 
     List<ProcessEntity> listAllProcess(boolean active);
+
+    String getConsoleByUserId(Integer userId);
 }

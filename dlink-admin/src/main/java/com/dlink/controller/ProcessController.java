@@ -20,6 +20,7 @@
 package com.dlink.controller;
 
 import com.dlink.common.result.ProTableResult;
+import com.dlink.common.result.Result;
 import com.dlink.process.model.ProcessEntity;
 import com.dlink.service.ProcessService;
 
@@ -30,6 +31,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import cn.dev33.satoken.SaManager;
 
 /**
  * ProcessController
@@ -48,5 +51,10 @@ public class ProcessController {
     public ProTableResult<ProcessEntity> listAllProcess(@RequestParam boolean active) {
         List<ProcessEntity> processEntities = processService.listAllProcess(active);
         return ProTableResult.<ProcessEntity>builder().success(true).data(processEntities).build();
+    }
+
+    @GetMapping("/getConsoleByUserId")
+    public Result<String> getConsoleByUserId() {
+        return Result.data(processService.getConsoleByUserId(SaManager.getStpLogic(null).getLoginIdAsInt()));
     }
 }

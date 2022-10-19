@@ -48,6 +48,12 @@ const url = '/api/cluster';
 
 const ClusterTableList: React.FC<{}> = (props: any) => {
   const intl = useIntl();
+
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
+
   const {dispatch} = props;
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
@@ -388,6 +394,10 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+        }}
+        pagination={{
+          defaultPageSize: 10,
+          showSizeChanger: true,
         }}
       />
       {selectedRowsState?.length > 0 && (

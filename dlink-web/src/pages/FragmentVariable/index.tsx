@@ -29,10 +29,14 @@ import Menu from "antd/es/menu";
 import {handleAddOrUpdate, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
 import FragmentForm from "@/pages/FragmentVariable/components/FragmentForm";
 import {FragmentVariableTableListItem} from "./data.d";
+import {useIntl} from 'umi';
 
 const url = '/api/fragment';
 
 const FragmentTableList: React.FC<{}> = (props: any) => {
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
 
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
@@ -204,6 +208,10 @@ const FragmentTableList: React.FC<{}> = (props: any) => {
             console.log(selectedRows)
 
           },
+        }}
+        pagination={{
+          defaultPageSize: 10,
+          showSizeChanger: true,
         }}
       />
       {selectedRowsState?.length > 0 && (

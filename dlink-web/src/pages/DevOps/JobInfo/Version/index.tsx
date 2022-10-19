@@ -21,10 +21,14 @@
 import {Tabs} from "antd";
 import VersionList from "@/pages/DevOps/JobInfo/Version/VersionList";
 import VersionTimeLineList from "@/pages/DevOps/JobInfo/Version/VersionTimeLineList";
+import {useIntl} from "umi";
 
 const {TabPane} = Tabs;
 const TaskVersionInfo = (props: any) => {
   const {job} = props;
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
 
   return (<>
     <Tabs defaultActiveKey="overview" size="small" tabPosition="top" style={{

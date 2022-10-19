@@ -29,10 +29,10 @@ const StudioFragment = (props: any) => {
   const {toolHeight, dispatch} = props;
   const [row, setRow] = useState<{}>();
 
-  const url ="/api/fragment"
+  const url = "/api/fragment"
 
 
-  const getColumns : ProColumns<FragmentVariableTableListItem>[] =  [
+  const getColumns: ProColumns<FragmentVariableTableListItem>[] = [
     {
       title: '名称',
       dataIndex: 'name',
@@ -44,11 +44,11 @@ const StudioFragment = (props: any) => {
     },
     {
       title: '引用名称',
-      copyable : true,
+      copyable: true,
       render: (dom, entity) => {
         return <>
-          ${"{"+ entity?.name +"}"}
-        </> ;
+          ${"{" + entity?.name + "}"}
+        </>;
       },
     },
     {
@@ -137,11 +137,12 @@ const StudioFragment = (props: any) => {
         style={{width: '100%'}}
         request={(params, sorter, filter) => queryData(url, {params, sorter, filter})}
         pagination={{
-          showLessItems:false,
-          pageSize: 10,
+          defaultPageSize: 10,
+          showSizeChanger: true,
         }}
         search={false}
         size="small"
+
       />
       <Drawer
         width={600}

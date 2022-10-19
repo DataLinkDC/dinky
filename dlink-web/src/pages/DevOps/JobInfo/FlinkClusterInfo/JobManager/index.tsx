@@ -23,11 +23,16 @@ import CodeShow from "@/components/Common/CodeShow";
 import {getJobManagerInfo} from "@/pages/DevOps/service";
 import {useEffect, useState} from "react";
 import {JobManagerConfiguration} from "@/pages/DevOps/data";
+import {useIntl} from "umi";
 
 const {TabPane} = Tabs;
 
 const JobManagerInfo = (props: any) => {
   const {job} = props;
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
   const [jobManager, setJobManager] = useState<JobManagerConfiguration>();
 
   const refreshJobManagerInfo = () => {

@@ -70,6 +70,7 @@ export default {
   'menu.account.settings': 'Account Settings',
   'menu.account.changePassword': 'Change Password',
   'menu.account.checkTenant': 'Check Tenant',
+  'menu.account.checkTenantConfirm': 'Are you sure you want to switch the selected tenant？',
   'menu.account.logout': 'Logout',
 
 
@@ -101,6 +102,7 @@ export default {
 
   'menu.settings': 'Setting Center',
   'menu.settings.flinkConfig': 'Flink Settings',
+  'menu.settings.udfTemplate': 'UDF Template Settings',
   'menu.settings.systemInfo': 'System Info',
   'menu.settings.processList': 'Process List',
 

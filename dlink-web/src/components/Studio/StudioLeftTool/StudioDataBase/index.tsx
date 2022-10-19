@@ -18,28 +18,20 @@
  */
 
 
-import {
-  message, Button, Table, Empty, Divider,
-  Tooltip, Drawer, Modal
-} from "antd";
+import {Button, Drawer, Empty, Modal, Table, Tooltip} from "antd";
 import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
-import {useState} from "react";
-import styles from "./index.less";
-import {
-  ReloadOutlined,
-  PlusOutlined
-} from '@ant-design/icons';
-import React from "react";
+import React, {useState} from "react";
+import {PlusOutlined, ReloadOutlined} from '@ant-design/icons';
 import {showDataBase} from "../../StudioEvent/DDL";
 import DBForm from "@/pages/DataBase/components/DBForm";
-import { Scrollbars } from 'react-custom-scrollbars';
+import {Scrollbars} from 'react-custom-scrollbars';
 import ProDescriptions from "@ant-design/pro-descriptions";
 import {handleRemove} from "@/components/Common/crud";
 
 const StudioDataBase = (props: any) => {
 
-  const {database,toolHeight, dispatch} = props;
+  const {database, toolHeight, dispatch} = props;
   const [chooseDBModalVisible, handleDBFormModalVisible] = useState<boolean>(false);
   const [values, setValues] = useState<any>({});
   const [row, setRow] = useState<{}>();
@@ -61,7 +53,7 @@ const StudioDataBase = (props: any) => {
       title: "ID",
       dataIndex: "id",
       key: "id",
-    },{
+    }, {
       title: "数据源名",
       dataIndex: "alias",
     }, {
@@ -87,7 +79,7 @@ const StudioDataBase = (props: any) => {
           {
             text: '备份',
             value: '备份',
-          },{
+          }, {
             text: '其他',
             value: '其他',
           },
@@ -161,11 +153,11 @@ const StudioDataBase = (props: any) => {
         title: '最近的健康时间',
         dataIndex: 'healthTime',
         valueType: 'dateTime',
-      },{
+      }, {
         title: '最近的心跳检测时间',
         dataIndex: 'heartbeatTime',
         valueType: 'dateTime',
-      },{
+      }, {
         title: '创建时间',
         dataIndex: 'createTime',
         valueType: 'dateTime',
@@ -180,7 +172,7 @@ const StudioDataBase = (props: any) => {
         dataIndex: 'option',
         valueType: 'option',
         render: (_, record) => [
-          <Button  type="dashed" onClick={() => onModifyDataBase(record)}>
+          <Button type="dashed" onClick={() => onModifyDataBase(record)}>
             配置
           </Button>, <Button danger onClick={() => onDeleteDataBase(record)}>
             删除
@@ -234,21 +226,28 @@ const StudioDataBase = (props: any) => {
         />
       </Tooltip>
       <Scrollbars style={{height: (toolHeight - 32)}}>
-      {database.length > 0 ? (
-        <Table dataSource={database} columns={getColumns()} size="small"/>) : (
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>)}
-      <DBForm
-        onCancel={() => {
-          handleDBFormModalVisible(false);
-          setValues({});
-        }}
-        modalVisible={chooseDBModalVisible}
-        onSubmit={() => {
-          setRow({});
-          onRefreshDataBase();
-        }}
-        values={values}
-      />
+        {database.length > 0 ? (
+          <Table
+            dataSource={database}
+            columns={getColumns()}
+            pagination={{
+              defaultPageSize: 10,
+              showSizeChanger: true,
+            }}
+            size="small"/>) : (
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>)}
+        <DBForm
+          onCancel={() => {
+            handleDBFormModalVisible(false);
+            setValues({});
+          }}
+          modalVisible={chooseDBModalVisible}
+          onSubmit={() => {
+            setRow({});
+            onRefreshDataBase();
+          }}
+          values={values}
+        />
         <Drawer
           width={600}
           visible={!!row?.id}

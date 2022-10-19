@@ -36,6 +36,8 @@ export default {
   'button.changePassword': '修改密码',
   'button.enable': '启用',
   'button.disable': '禁用',
+  'button.reset': '重置',
+  'button.search': '搜索',
 
 
   'tips.selected': '已选择',
