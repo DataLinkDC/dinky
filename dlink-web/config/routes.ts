@@ -177,6 +177,12 @@ export default [
         component: './SettingCenter/FlinkSettings',
       },
       {
+        path: '/settingcenter/udfTemplate',
+        name: 'udfTemplate',
+        icon: 'setting',
+        component: './SettingCenter/UDFTemplate',
+      },
+      {
         path: '/settingcenter/systeminfo',
         name: 'systemInfo',
         icon: 'desktop',
