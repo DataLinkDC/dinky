@@ -22,4 +22,29 @@ export default {
   'button.close': 'Close',
   'button.confirm': 'Confirm',
   'button.cancel': 'Cancel',
+  'button.finish': 'Finish',
+  'button.save': 'Save',
+  'button.delete': 'Delete',
+  'button.batchDelete': 'Batch Delete',
+  'button.batchEnable': 'Batch Enable',
+  'button.batchDisable': 'Batch Disable',
+  'button.more': 'More',
+  'button.config': 'Config',
+  'button.edit': 'Edit',
+  'button.assignUser': 'Assign Users',
+  'button.assignRole': 'Assign Role',
+  'button.changePassword': 'Change Password',
+  'button.enable': 'Enable',
+  'button.disable': 'Disable',
+  'button.reset': 'Reset',
+  'button.search': 'Search',
+
+
+  'tips.selected': 'Selected',
+  'tips.notSelected': 'Not Select',
+  'tips.item': 'Item',
+
+  'status.enabled': 'Enabled',
+  'status.disabled': 'Disabled',
+
 };

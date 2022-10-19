@@ -27,10 +27,15 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import {AlertInstanceTableListItem} from "@/pages/AlertInstance/data";
 import {handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
 import AlertInstanceChooseForm from "@/pages/AlertInstance/components/AlertInstanceChooseForm";
+import {useIntl} from "umi";
 
 const url = '/api/alertInstance';
 const AlertInstanceTableList: React.FC<{}> = (props: any) => {
   const {dispatch} = props;
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
   const [row, setRow] = useState<AlertInstanceTableListItem>();
   const [values, setValues] = useState<AlertInstanceTableListItem>();
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
@@ -60,17 +65,17 @@ const AlertInstanceTableList: React.FC<{}> = (props: any) => {
   }> = ({item}) => (
     <Dropdown
       overlay={
-      <Menu onClick={({key}) => editAndDelete(key, item)}>
-  <Menu.Item key="edit">编辑</Menu.Item>
-    <Menu.Item key="delete">删除</Menu.Item>
-    </Menu>
-}
->
-  <a>
-    更多 <DownOutlined/>
-  </a>
-  </Dropdown>
-);
+        <Menu onClick={({key}) => editAndDelete(key, item)}>
+          <Menu.Item key="edit">编辑</Menu.Item>
+          <Menu.Item key="delete">删除</Menu.Item>
+        </Menu>
+      }
+    >
+      <a>
+        更多 <DownOutlined/>
+      </a>
+    </Dropdown>
+  );
 
   const columns: ProColumns<AlertInstanceTableListItem>[] = [
     {
@@ -108,13 +113,13 @@ const AlertInstanceTableList: React.FC<{}> = (props: any) => {
         {
           text: 'DingTalk',
           value: 'DingTalk',
-        },{
+        }, {
           text: 'WeChat',
           value: 'WeChat',
-        },{
+        }, {
           text: 'FeiShu',
           value: 'FeiShu',
-        },{
+        }, {
           text: 'Email',
           value: 'Email',
         }
@@ -176,131 +181,135 @@ const AlertInstanceTableList: React.FC<{}> = (props: any) => {
       render: (_, record) => [
         <a
           onClick={() => {
-    handleModalVisible(true);
+            handleModalVisible(true);
             setValues(record);
-  }}
->
-  配置
-  </a>,
-  <MoreBtn key="more" item={record}/>,
-],
-},
-];
+          }}
+        >
+          配置
+        </a>,
+        <MoreBtn key="more" item={record}/>,
+      ],
+    },
+  ];
 
   return (
-    <PageContainer>
+    <PageContainer title={false}>
       <ProTable<AlertInstanceTableListItem>
         headerTitle="报警实例管理"
-  actionRef={actionRef}
-  rowKey="id"
-  search={{
-    labelWidth: 120,
-  }}
-  toolBarRender={() => [
-    <Button type="primary" onClick={() => handleModalVisible(true)}>
-  <PlusOutlined/> 新建
-  </Button>,
-]}
-  request={(params, sorter, filter) => queryData(url, {...params, sorter, filter})}
-  columns={columns}
-  rowSelection={{
-    onChange: (_, selectedRows) => setSelectedRows(selectedRows),
-  }}
-  />
-  {selectedRowsState?.length > 0 && (
-    <FooterToolbar
-      extra={
-      <div>
-      已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
-  <span>
+        actionRef={actionRef}
+        rowKey="id"
+        search={{
+          labelWidth: 120,
+        }}
+        toolBarRender={() => [
+          <Button type="primary" onClick={() => handleModalVisible(true)}>
+            <PlusOutlined/> 新建
+          </Button>,
+        ]}
+        request={(params, sorter, filter) => queryData(url, {...params, sorter, filter})}
+        columns={columns}
+        rowSelection={{
+          onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+        }}
+        pagination={{
+          defaultPageSize: 10,
+          showSizeChanger: true,
+        }}
+      />
+      {selectedRowsState?.length > 0 && (
+        <FooterToolbar
+          extra={
+            <div>
+              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
+              <span>
   被禁用的报警实例共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} 人
   </span>
-  </div>
-  }
-  >
-    <Button type="primary" danger
-    onClick={() => {
-    Modal.confirm({
-      title: '删除报警实例',
-      content: '确定删除选中的报警实例吗？',
-      okText: '确认',
-      cancelText: '取消',
-      onOk: async () => {
-        await handleRemove(url, selectedRowsState);
-        setSelectedRows([]);
-        actionRef.current?.reloadAndRest?.();
-      }
-    });
-  }}
-  >
-    批量删除
-    </Button>
-    <Button type="primary"
-    onClick={() => {
-    Modal.confirm({
-      title: '启用报警实例',
-      content: '确定启用选中的报警实例吗？',
-      okText: '确认',
-      cancelText: '取消',
-      onOk: async () => {
-        await updateEnabled(url, selectedRowsState, true);
-        setSelectedRows([]);
-        actionRef.current?.reloadAndRest?.();
-      }
-    });
-  }}
-  >批量启用</Button>
-  <Button danger
-    onClick={() => {
-    Modal.confirm({
-      title: '禁用报警实例',
-      content: '确定禁用选中的报警实例吗？',
-      okText: '确认',
-      cancelText: '取消',
-      onOk: async () => {
-        await updateEnabled(url, selectedRowsState, false);
-        setSelectedRows([]);
-        actionRef.current?.reloadAndRest?.();
-      }
-    });
-  }}
-  >批量禁用</Button>
-  </FooterToolbar>
-  )}
-  <AlertInstanceChooseForm onCancel={() => {
-    handleModalVisible(false);
-    setValues(undefined);
-  }}
-  modalVisible={modalVisible}
-  onSubmit={() => {
-    actionRef.current?.reloadAndRest?.();
-  }}
-  values={values}
-  />
-  <Drawer
-  width={600}
-  visible={!!row}
-  onClose={() => {
-    setRow(undefined);
-  }}
-  closable={false}
-    >
-    {row?.name && (
-      <ProDescriptions<AlertInstanceTableListItem>
-        column={2}
-  title={row?.name}
-  request={async () => ({
-    data: row || {},
-  })}
-  params={{
-    id: row?.name,
-  }}
-  columns={columns}
-  />
-)}
-  </Drawer>
-  </PageContainer>
-);
+            </div>
+          }
+        >
+          <Button type="primary" danger
+                  onClick={() => {
+                    Modal.confirm({
+                      title: '删除报警实例',
+                      content: '确定删除选中的报警实例吗？',
+                      okText: '确认',
+                      cancelText: '取消',
+                      onOk: async () => {
+                        await handleRemove(url, selectedRowsState);
+                        setSelectedRows([]);
+                        actionRef.current?.reloadAndRest?.();
+                      }
+                    });
+                  }}
+          >
+            批量删除
+          </Button>
+          <Button type="primary"
+                  onClick={() => {
+                    Modal.confirm({
+                      title: '启用报警实例',
+                      content: '确定启用选中的报警实例吗？',
+                      okText: '确认',
+                      cancelText: '取消',
+                      onOk: async () => {
+                        await updateEnabled(url, selectedRowsState, true);
+                        setSelectedRows([]);
+                        actionRef.current?.reloadAndRest?.();
+                      }
+                    });
+                  }}
+          >批量启用</Button>
+          <Button danger
+                  onClick={() => {
+                    Modal.confirm({
+                      title: '禁用报警实例',
+                      content: '确定禁用选中的报警实例吗？',
+                      okText: '确认',
+                      cancelText: '取消',
+                      onOk: async () => {
+                        await updateEnabled(url, selectedRowsState, false);
+                        setSelectedRows([]);
+                        actionRef.current?.reloadAndRest?.();
+                      }
+                    });
+                  }}
+          >批量禁用</Button>
+        </FooterToolbar>
+      )}
+      <AlertInstanceChooseForm onCancel={() => {
+        handleModalVisible(false);
+        setValues(undefined);
+      }}
+                               modalVisible={modalVisible}
+                               onSubmit={() => {
+                                 actionRef.current?.reloadAndRest?.();
+                               }}
+                               values={values}
+      />
+      <Drawer
+        width={600}
+        visible={!!row}
+        onClose={() => {
+          setRow(undefined);
+        }}
+        closable={false}
+      >
+        {row?.name && (
+          <ProDescriptions<AlertInstanceTableListItem>
+            column={2}
+            title={row?.name}
+            request={async () => ({
+              data: row || {},
+            })}
+            params={{
+              id: row?.name,
+            }}
+            columns={columns}
+          />
+        )}
+      </Drawer>
+    </PageContainer>
+  );
 };
 
 export default AlertInstanceTableList;

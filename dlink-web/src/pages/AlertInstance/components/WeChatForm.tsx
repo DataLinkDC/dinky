@@ -23,6 +23,7 @@ import {Button, Divider, Form, Input, Modal, Radio, Switch} from 'antd';
 import {AlertInstanceTableListItem} from "@/pages/AlertInstance/data";
 import {buildJSONData, getJSONData} from "@/pages/AlertInstance/function";
 import {ALERT_TYPE} from "@/pages/AlertInstance/conf";
+import {useIntl} from "umi";
 
 export type AlertInstanceFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -38,6 +39,9 @@ const formLayout = {
 };
 
 const WeChatForm: React.FC<AlertInstanceFormProps> = (props) => {
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<AlertInstanceTableListItem>>({
@@ -55,19 +59,19 @@ const WeChatForm: React.FC<AlertInstanceFormProps> = (props) => {
     modalVisible,
   } = props;
 
-  const onValuesChange = (change: any,all: any)=>{
-    setFormVals({...formVals,...change});
+  const onValuesChange = (change: any, all: any) => {
+    setFormVals({...formVals, ...change});
   };
   const sendTestForm = async () => {
     const fieldsValue = await form.validateFields();
-    setFormVals(buildJSONData(formVals,fieldsValue));
-    handleTest(buildJSONData(formVals,fieldsValue));
+    setFormVals(buildJSONData(formVals, fieldsValue));
+    handleTest(buildJSONData(formVals, fieldsValue));
   };
 
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
-    setFormVals(buildJSONData(formVals,fieldsValue));
-    handleSubmit(buildJSONData(formVals,fieldsValue));
+    setFormVals(buildJSONData(formVals, fieldsValue));
+    handleSubmit(buildJSONData(formVals, fieldsValue));
   };
 
   const renderContent = (vals) => {
@@ -92,7 +96,7 @@ const WeChatForm: React.FC<AlertInstanceFormProps> = (props) => {
             <Radio value='群聊'>群聊</Radio>
           </Radio.Group>
         </Form.Item>
-        { (vals.sendType == "群聊")  ?
+        {(vals.sendType == "群聊") ?
           <>
             <Form.Item
               name="webhook"
@@ -114,7 +118,7 @@ const WeChatForm: React.FC<AlertInstanceFormProps> = (props) => {
               <Switch checkedChildren="启用" unCheckedChildren="禁用"
                       defaultChecked={vals.isAtAll}/>
             </Form.Item>
-            { ( !vals.isAtAll )&&
+            {(!vals.isAtAll) &&
               <Form.Item
                 name="users"
                 label="被@用户"
@@ -124,44 +128,44 @@ const WeChatForm: React.FC<AlertInstanceFormProps> = (props) => {
               </Form.Item>
             }
           </>
-        :
-        <>
-        <Form.Item
-          name="corpId"
-          label="企业Id"
-          rules={[{required: true, message: '请输入企业Id！'}]}
-        >
-          <Input placeholder="请输入CorpId"/>
-        </Form.Item>
-        <Form.Item
-          name="secret"
-          label="密令"
-          rules={[{required: true, message: '请输入密令！'}]}
-        >
-          <Input placeholder="请输入secret"/>
-        </Form.Item>
-        <Form.Item
-          name="users"
-          label="用户"
-          rules={[{required: true, message: '请输入用户！'}]}
-        >
-          <Input placeholder="请输入用户"/>
-        </Form.Item>
-        <Form.Item
-          name="agentId"
-          label="代理ID"
-          rules={[{required: true, message: '请输入代理ID！'}]}
-        >
-          <Input placeholder="请输入代理ID"/>
-        </Form.Item>
-        </>
+          :
+          <>
+            <Form.Item
+              name="corpId"
+              label="企业Id"
+              rules={[{required: true, message: '请输入企业Id！'}]}
+            >
+              <Input placeholder="请输入CorpId"/>
+            </Form.Item>
+            <Form.Item
+              name="secret"
+              label="密令"
+              rules={[{required: true, message: '请输入密令！'}]}
+            >
+              <Input placeholder="请输入secret"/>
+            </Form.Item>
+            <Form.Item
+              name="users"
+              label="用户"
+              rules={[{required: true, message: '请输入用户！'}]}
+            >
+              <Input placeholder="请输入用户"/>
+            </Form.Item>
+            <Form.Item
+              name="agentId"
+              label="代理ID"
+              rules={[{required: true, message: '请输入代理ID！'}]}
+            >
+              <Input placeholder="请输入代理ID"/>
+            </Form.Item>
+          </>
         }
         <Form.Item
           name="msgtype"
           label="展示方式"
           rules={[{required: true, message: '请选择展示方式！'}]}
         >
-          <Radio.Group >
+          <Radio.Group>
             <Radio value='markdown'>MarkDown</Radio>
             <Radio value='text'>文本</Radio>
           </Radio.Group>
@@ -192,10 +196,10 @@ const WeChatForm: React.FC<AlertInstanceFormProps> = (props) => {
 
   return (
     <Modal
-      width={1200}
+      width={"40%"}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title={formVals.id?"维护报警实例配置":"创建报警实例配置"}
+      title={formVals.id ? "维护报警实例配置" : "创建报警实例配置"}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}
@@ -203,10 +207,10 @@ const WeChatForm: React.FC<AlertInstanceFormProps> = (props) => {
       <Form
         {...formLayout}
         form={form}
-        initialValues={getJSONData(formVals)}
+        initialValues={getJSONData(formVals as AlertInstanceTableListItem)}
         onValuesChange={onValuesChange}
       >
-        {renderContent(getJSONData(formVals))}
+        {renderContent(getJSONData(formVals as AlertInstanceTableListItem))}
       </Form>
     </Modal>
   );

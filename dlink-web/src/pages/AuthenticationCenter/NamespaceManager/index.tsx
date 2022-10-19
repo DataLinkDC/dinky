@@ -27,6 +27,7 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import {handleAddOrUpdate, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
 import {NameSpaceTableListItem} from "@/pages/AuthenticationCenter/data.d";
 import NameSpaceForm from "@/pages/AuthenticationCenter/NamespaceManager/components/NameSpaceForm";
+import {useIntl} from "umi";
 
 const url = '/api/namespace';
 
@@ -38,16 +39,19 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
   const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<NameSpaceTableListItem[]>([]);
 
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
   const editAndDelete = (key: string | number, currentItem: NameSpaceTableListItem) => {
     if (key === 'edit') {
       handleUpdateModalVisible(true);
       setFormValues(currentItem);
     } else if (key === 'delete') {
       Modal.confirm({
-        title: '删除命名空间',
-        content: '确定删除该命名空间吗？',
-        okText: '确认',
-        cancelText: '取消',
+        title: l('pages.nameSpace.deleteNameSpace', '默认'),
+        content: l('pages.nameSpace.deleteNameSpaceConfirm'),
+        okText: l('button.confirm'),
+        cancelText: l('button.cancel'),
         onOk: async () => {
           await handleRemove(url, [currentItem]);
           actionRef.current?.reloadAndRest?.();
@@ -62,13 +66,13 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
     <Dropdown
       overlay={
         <Menu onClick={({key}) => editAndDelete(key, item)}>
-          <Menu.Item key="edit">编辑</Menu.Item>
-          <Menu.Item key="delete">删除</Menu.Item>
+          <Menu.Item key="edit">{l('button.edit')}</Menu.Item>
+          <Menu.Item key="delete">{l('button.delete')}</Menu.Item>
         </Menu>
       }
     >
       <a>
-        更多 <DownOutlined/>
+        {l('button.more')} <DownOutlined/>
       </a>
     </Dropdown>
   );
@@ -85,60 +89,60 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: '命名空间编码',
+      title: l('pages.nameSpace.NameSpaceCode'),
       dataIndex: 'namespaceCode',
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
     },
     {
-      title: '所属租户',
+      title: l('pages.nameSpace.belongTenant'),
       hideInSearch: true,
       render: (dom, entity) => {
         return entity.tenant.tenantCode;
       },
     },
     {
-      title: '是否启用',
+      title: l('pages.nameSpace.enable'),
       dataIndex: 'enabled',
       hideInTable: false,
       hideInSearch: true,
       filters: [
         {
-          text: '已启用',
+          text: l('status.enabled'),
           value: 1,
         },
         {
-          text: '未启用',
+          text: l('status.disabled'),
           value: 0,
         },
       ],
       filterMultiple: false,
       valueEnum: {
-        true: {text: '已启用', status: 'Success'},
-        false: {text: '未启用', status: 'Error'},
+        true: {text: l('status.enabled'), status: 'Success'},
+        false: {text: l('status.disabled'), status: 'Error'},
       },
     },
     {
-      title: '备注',
+      title: l('pages.nameSpace.note'),
       dataIndex: 'note',
       hideInSearch: true,
       ellipsis: true,
     },
     {
-      title: '创建时间',
+      title: l('pages.nameSpace.createTime'),
       dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',
     },
     {
-      title: '最近更新时间',
+      title: l('pages.nameSpace.updateTime'),
       dataIndex: 'updateTime',
       sorter: true,
       valueType: 'dateTime',
     },
     {
-      title: '操作',
+      title: l('pages.operate'),
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
@@ -148,7 +152,7 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
             setFormValues(record);
           }}
         >
-          配置
+          {l('button.config')}
         </a>,
         <MoreBtn key="more" item={record}/>,
       ],
@@ -156,9 +160,9 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
   ];
 
   return (
-    <PageContainer>
+    <PageContainer title={false}>
       <ProTable<NameSpaceTableListItem>
-        headerTitle="命名空间管理"
+        headerTitle={l('pages.nameSpace.NameSpaceManagement')}
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -166,7 +170,7 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
         }}
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined/> 新建
+            <PlusOutlined/> {l('button.create')}
           </Button>,
         ]}
         request={(params, sorter, filter) => queryData(url, {...params, sorter, filter})}
@@ -174,14 +178,19 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
         }}
+        pagination={{
+          defaultPageSize: 10,
+          showSizeChanger: true,
+        }}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
           extra={
             <div>
-              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
+              {l('tips.selected')} <a
+              style={{fontWeight: 600}}>{selectedRowsState.length}</a> {l('tips.item')}&nbsp;&nbsp;
               <span>
-  被禁用的命名空间共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} 个
+  {l('pages.nameSpace.disableTotalOf')} {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} {l('pages.nameSpace.selectDisable')}
   </span>
             </div>
           }
@@ -189,10 +198,10 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
           <Button type="primary" danger
                   onClick={() => {
                     Modal.confirm({
-                      title: '删除命名空间',
-                      content: '确定删除选中的命名空间吗？',
-                      okText: '确认',
-                      cancelText: '取消',
+                      title: l('pages.nameSpace.deleteNameSpace'),
+                      content: l('pages.nameSpace.deleteNameSpaceConfirm'),
+                      okText: l('button.confirm'),
+                      cancelText: l('button.cancel'),
                       onOk: async () => {
                         await handleRemove(url, selectedRowsState);
                         setSelectedRows([]);
@@ -201,15 +210,15 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
                     });
                   }}
           >
-            批量删除
+            {l('button.batchDelete')}
           </Button>
           <Button type="primary"
                   onClick={() => {
                     Modal.confirm({
-                      title: '启用命名空间',
-                      content: '确定启用选中的命名空间吗？',
-                      okText: '确认',
-                      cancelText: '取消',
+                      title: l('pages.nameSpace.enableNameSpace'),
+                      content: l('pages.nameSpace.enableNameSpaceConfirm'),
+                      okText: l('button.confirm'),
+                      cancelText: l('button.cancel'),
                       onOk: async () => {
                         await updateEnabled(url, selectedRowsState, true);
                         setSelectedRows([]);
@@ -217,14 +226,14 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
                       }
                     });
                   }}
-          >批量启用</Button>
+          >{l('button.batchEnable')}</Button>
           <Button danger
                   onClick={() => {
                     Modal.confirm({
-                      title: '禁用命名空间',
-                      content: '确定禁用选中的命名空间吗？',
-                      okText: '确认',
-                      cancelText: '取消',
+                      title: l('pages.nameSpace.disableNameSpace'),
+                      content: l('pages.nameSpace.disableNameSpaceConfirm'),
+                      okText: l('button.confirm'),
+                      cancelText: l('button.cancel'),
                       onOk: async () => {
                         await updateEnabled(url, selectedRowsState, false);
                         setSelectedRows([]);
@@ -232,7 +241,7 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
                       }
                     });
                   }}
-          >批量禁用</Button>
+          > {l('button.batchDisable')}</Button>
         </FooterToolbar>
       )}
       <NameSpaceForm

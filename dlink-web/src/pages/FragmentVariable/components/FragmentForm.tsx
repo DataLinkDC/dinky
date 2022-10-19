@@ -21,8 +21,9 @@ import React, {useState} from 'react';
 import {Button, Form, Input, Modal, Switch} from 'antd';
 import TextArea from "antd/es/input/TextArea";
 import {FragmentVariableTableListItem} from "@/pages/FragmentVariable/data";
+import {useIntl} from 'umi';
 
-export type FragmentFormProps  = {
+export type FragmentFormProps = {
   onCancel: (flag?: boolean) => void;
   onSubmit: (values: Partial<FragmentVariableTableListItem>) => void;
   modalVisible: boolean;
@@ -38,7 +39,10 @@ const formLayout = {
   wrapperCol: {span: 13},
 };
 
-const FragmentForm : React.FC<FragmentFormProps> = (props:any) => {
+const FragmentForm: React.FC<FragmentFormProps> = (props: any) => {
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<FragmentVariableTableListItem>>({
@@ -62,11 +66,11 @@ const FragmentForm : React.FC<FragmentFormProps> = (props:any) => {
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
     fieldsValue.id = formVals.id;
-    setFormVals({...formVals,...fieldsValue});
-    handleSubmit({...formVals,...fieldsValue});
+    setFormVals({...formVals, ...fieldsValue});
+    handleSubmit({...formVals, ...fieldsValue});
   };
 
-  const renderContent = (formVals : FragmentVariableTableListItem) => {
+  const renderContent = (formVals: FragmentVariableTableListItem) => {
     return (
       <>
         <FormItem
@@ -120,10 +124,10 @@ const FragmentForm : React.FC<FragmentFormProps> = (props:any) => {
 
   return (
     <Modal
-      width={1200}
+      width={"40%"}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title={formVals.id?"维护全局变量":"新建全局变量"}
+      title={formVals.id ? "维护全局变量" : "新建全局变量"}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}

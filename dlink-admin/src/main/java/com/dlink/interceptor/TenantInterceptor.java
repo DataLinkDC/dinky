@@ -30,7 +30,6 @@ import com.mysql.cj.util.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
-
 /**
  * tenant interceptor
  */
@@ -38,9 +37,9 @@ import lombok.extern.slf4j.Slf4j;
 public class TenantInterceptor implements HandlerInterceptor {
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
+                             Object handler) throws Exception {
         String tenantId = request.getHeader("tenantId");
-        log.info("tenant interceptor preHandle execute ; current tenant id: 【" + tenantId + "】");
         if (!StringUtils.isNullOrEmpty(tenantId)) {
             RequestContext.set(Integer.valueOf(tenantId));
         }

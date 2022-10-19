@@ -22,6 +22,7 @@ import React, {useState} from 'react';
 import {Button, Form, Input, Modal, Switch} from 'antd';
 import {NameSpaceTableListItem} from "@/pages/AuthenticationCenter/data.d";
 import {getStorageTenantId} from "@/components/Common/crud";
+import {useIntl} from "umi";
 
 export type TenantFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -37,6 +38,8 @@ const formLayout = {
 
 const NameSpaceForm: React.FC<TenantFormProps> = (props) => {
 
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<NameSpaceTableListItem>>({
     id: props.values?.id,
@@ -57,8 +60,8 @@ const NameSpaceForm: React.FC<TenantFormProps> = (props) => {
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
     fieldsValue.id = formVals.id;
-    setFormVals({...formVals,...fieldsValue});
-    handleSubmit({...formVals,...fieldsValue});
+    setFormVals({...formVals, ...fieldsValue});
+    handleSubmit({...formVals, ...fieldsValue});
   };
 
   const renderContent = (formValsPara: Partial<NameSpaceTableListItem>) => {
@@ -66,28 +69,28 @@ const NameSpaceForm: React.FC<TenantFormProps> = (props) => {
       <>
         <Form.Item
           name="namespaceCode"
-          label="命名空间编号"
-          rules={[{required: true, message: '请输入命名空间唯一编码！'}]}>
-          <Input placeholder="请输入命名空间唯一编码"/>
+          label={l('pages.nameSpace.NameSpaceCode')}
+          rules={[{required: true, message: l('pages.nameSpace.EnterNameSpaceCode')}]}>
+          <Input placeholder={l('pages.nameSpace.EnterNameSpaceCode')}/>
         </Form.Item>
         <Form.Item
           hidden={true}
           name="tenantId"
-          label="所属租户"
-          >
+          label={l('pages.nameSpace.belongTenant')}
+        >
           <Input disabled defaultValue={getStorageTenantId()}/>
         </Form.Item>
         <Form.Item
           name="note"
-          label="注释"
+          label={l('pages.nameSpace.note')}
         >
-          <Input.TextArea placeholder="请输入描述信息" allowClear
+          <Input.TextArea placeholder={l('pages.nameSpace.EnterNameSpaceNote')} allowClear
                           autoSize={{minRows: 3, maxRows: 10}}/>
         </Form.Item>
         <Form.Item
           name="enabled"
-          label="是否启用">
-          <Switch checkedChildren="启用" unCheckedChildren="禁用"
+          label={l('pages.nameSpace.enable')}>
+          <Switch checkedChildren={l('status.enabled')} unCheckedChildren={l('status.disabled')}
                   defaultChecked={formValsPara.enabled}/>
         </Form.Item>
       </>
@@ -97,9 +100,9 @@ const NameSpaceForm: React.FC<TenantFormProps> = (props) => {
   const renderFooter = () => {
     return (
       <>
-        <Button onClick={() => handleModalVisible(false)}>取消</Button>
+        <Button onClick={() => handleModalVisible(false)}> {l('button.cancel')}</Button>
         <Button type="primary" onClick={() => submitForm()}>
-          完成
+          {l('button.finish')}
         </Button>
       </>
     );
@@ -107,10 +110,10 @@ const NameSpaceForm: React.FC<TenantFormProps> = (props) => {
 
   return (
     <Modal
-      width={640}
+      width={"40%"}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title={formVals.id ? "修改命名空间" : "创建命名空间"}
+      title={formVals.id ? l('pages.nameSpace.update') : l('pages.nameSpace.create')}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}

@@ -21,7 +21,7 @@
 import React, {useState} from 'react';
 import {Button, Form, Input, Modal} from 'antd';
 import {PasswordItem} from "@/pages/AuthenticationCenter/data.d";
-import { useIntl, Link, history, FormattedMessage, SelectLang} from 'umi';
+import {useIntl} from 'umi';
 
 export type PasswordFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -37,7 +37,10 @@ const formLayout = {
 
 const PasswordForm: React.FC<PasswordFormProps> = (props) => {
 
-  const intl = useIntl();
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<PasswordItem>>({
@@ -53,8 +56,8 @@ const PasswordForm: React.FC<PasswordFormProps> = (props) => {
 
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
-    setFormVals({ ...formVals, ...fieldsValue });
-    handleSubmit({ ...formVals, ...fieldsValue });
+    setFormVals({...formVals, ...fieldsValue});
+    handleSubmit({...formVals, ...fieldsValue});
   };
 
   const renderContent = () => {
@@ -62,39 +65,39 @@ const PasswordForm: React.FC<PasswordFormProps> = (props) => {
       <>
         <Form.Item
           name="password"
-          label= {intl.formatMessage({id: 'pages.user.UserOldPassword', defaultMessage: '旧密码',})}
+          label={l('pages.user.UserOldPassword')}
           hasFeedback
-          rules={[{required: true, message: intl.formatMessage({id: 'pages.user.UserEnterOldPassword', defaultMessage: '请输入旧密码！',})}]}>
-          <Input.Password  placeholder={intl.formatMessage({id: 'pages.user.UserEnterOldPassword', defaultMessage: '请输入旧密码！',})}/>
+          rules={[{required: true, message: l('pages.user.UserEnterOldPassword')}]}>
+          <Input.Password placeholder={l('pages.user.UserEnterOldPassword')}/>
         </Form.Item>
         <Form.Item
           name="newPassword"
-          label={intl.formatMessage({id: 'pages.user.UserNewPassword', defaultMessage: '新密码',})}
+          label={l('pages.user.UserNewPassword')}
           hasFeedback
-          rules={[{required: true, message: intl.formatMessage({id: 'pages.user.UserEnterNewPassword', defaultMessage: '请输入新密码',})}]}>
-          <Input.Password  placeholder={intl.formatMessage({id: 'pages.user.UserEnterNewPassword', defaultMessage: '请输入新密码',})}/>
+          rules={[{required: true, message: l('pages.user.UserEnterNewPassword')}]}>
+          <Input.Password placeholder={l('pages.user.UserEnterNewPassword')}/>
         </Form.Item>
         <Form.Item
-        name="newPasswordCheck"
-        label={intl.formatMessage({id: 'pages.user.UserRepeatNewPassword', defaultMessage: '重复新密码',})}
-        hasFeedback
-        dependencies={['newPassword']}
-        rules={[
-          {
-            required: true,
-            message: intl.formatMessage({id: 'pages.user.UserNewPasswordNotMatch', defaultMessage: '重复密码不一致',}),
-          },
-          ({ getFieldValue }) => ({
-            validator(_, value) {
-              if (!value || getFieldValue('newPassword') === value) {
-                return Promise.resolve();
-              }
-              return Promise.reject(new Error(intl.formatMessage({id: 'pages.user.UserNewPasswordNotMatch', defaultMessage: '重复密码不一致',})));
+          name="newPasswordCheck"
+          label={l('pages.user.UserRepeatNewPassword')}
+          hasFeedback
+          dependencies={['newPassword']}
+          rules={[
+            {
+              required: true,
+              message: l('pages.user.UserNewPasswordNotMatch'),
             },
-          }),
-        ]}>
-        <Input.Password placeholder={intl.formatMessage({id: 'pages.user.UserEnterRepeatNewPassword', defaultMessage: '请重复输入新密码',})}/>
-      </Form.Item>
+            ({getFieldValue}) => ({
+              validator(_, value) {
+                if (!value || getFieldValue('newPassword') === value) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(new Error(l('pages.user.UserNewPasswordNotMatch')));
+              },
+            }),
+          ]}>
+          <Input.Password placeholder={l('pages.user.UserEnterRepeatNewPassword')}/>
+        </Form.Item>
       </>
     );
   };
@@ -102,9 +105,9 @@ const PasswordForm: React.FC<PasswordFormProps> = (props) => {
   const renderFooter = () => {
     return (
       <>
-        <Button onClick={() => handleModalVisible(false)}>{intl.formatMessage({id: 'pages.user.UserCancel', defaultMessage: '取消',})}</Button>
+        <Button onClick={() => handleModalVisible(false)}> {l('button.cancel')}</Button>
         <Button type="primary" onClick={() => submitForm()}>
-          {intl.formatMessage({id: 'pages.user.UserComplete', defaultMessage: '完成',})}
+          {l('button.finish')}
         </Button>
       </>
     );
@@ -112,10 +115,10 @@ const PasswordForm: React.FC<PasswordFormProps> = (props) => {
 
   return (
     <Modal
-      width={1200}
+      width={"40%"}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title={intl.formatMessage({id: 'pages.user.UserUpdatePassword', defaultMessage: '修改密码',})}
+      title={l('button.changePassword')}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}

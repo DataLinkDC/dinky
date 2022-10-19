@@ -19,12 +19,11 @@
 
 package com.dlink.service;
 
-import com.dlink.job.JobConfig;
-
 /**
  * @author ZackYoung
  * @since 0.6.8
  */
 public interface UDFService {
-    void initUDF(JobConfig config, String statement);
+
+    String[] initUDF(String statement);
 }

@@ -22,4 +22,29 @@ export default {
   'button.close': '关闭',
   'button.confirm': '确定',
   'button.cancel': '取消',
+  'button.finish': '完成',
+  'button.save': '保存',
+  'button.delete': '删除',
+  'button.batchDelete': '批量删除',
+  'button.batchEnable': '批量启用',
+  'button.batchDisable': '批量禁用',
+  'button.more': '更多',
+  'button.config': '配置',
+  'button.edit': '编辑',
+  'button.assignUser': '分配用户',
+  'button.assignRole': '分配角色',
+  'button.changePassword': '修改密码',
+  'button.enable': '启用',
+  'button.disable': '禁用',
+  'button.reset': '重置',
+  'button.search': '搜索',
+
+
+  'tips.selected': '已选择',
+  'tips.notSelected': '未选',
+  'tips.item': '项',
+
+  'status.enabled': '已启用',
+  'status.disabled': '已禁用',
+
 };

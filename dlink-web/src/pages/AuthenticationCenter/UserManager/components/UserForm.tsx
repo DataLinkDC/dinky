@@ -21,7 +21,7 @@
 import React, {useState} from 'react';
 import {Button, Form, Input, Modal, Switch} from 'antd';
 import {UserTableListItem} from "@/pages/AuthenticationCenter/data.d";
-import { useIntl, Link, history, FormattedMessage, SelectLang} from 'umi';
+import {useIntl} from 'umi';
 
 export type UserFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -37,7 +37,10 @@ const formLayout = {
 
 const UserForm: React.FC<UserFormProps> = (props) => {
 
-  const intl = useIntl();
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<UserTableListItem>>({
@@ -60,8 +63,8 @@ const UserForm: React.FC<UserFormProps> = (props) => {
 
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
-    setFormVals({ ...formVals, ...fieldsValue });
-    handleSubmit({ ...formVals, ...fieldsValue });
+    setFormVals({...formVals, ...fieldsValue});
+    handleSubmit({...formVals, ...fieldsValue});
   };
 
   const renderContent = (formVals: Partial<UserTableListItem>) => {
@@ -69,32 +72,38 @@ const UserForm: React.FC<UserFormProps> = (props) => {
       <>
         <Form.Item
           name="username"
-          label={intl.formatMessage({id: 'pages.user.UserName', defaultMessage: '用户名',})}
-          rules={[{required: true, message: intl.formatMessage({id: 'pages.user.UserEnterUserName', defaultMessage: '请输入用户名',})}]}>
-          <Input placeholder={intl.formatMessage({id: 'pages.user.UserEnterUniqueUserName', defaultMessage: "请输入唯一用户名",})}/>
+          label={l('pages.user.UserName')}
+          rules={[{
+            required: true,
+            message: l('pages.user.UserEnterUserName')
+          }]}>
+          <Input placeholder={l('pages.user.UserEnterUniqueUserName')}/>
         </Form.Item>
         <Form.Item
           name="nickname"
-          label={intl.formatMessage({id: 'pages.user.UserNickName', defaultMessage: '昵称',})}
+          label={l('pages.user.UserNickName')}
         >
-          <Input placeholder={intl.formatMessage({id: 'pages.user.UserEnterNickName', defaultMessage: "请输入昵称",})}/>
+          <Input placeholder={l('pages.user.UserEnterNickName')}/>
         </Form.Item>
         <Form.Item
           name="worknum"
-          label={intl.formatMessage({id: 'pages.user.UserJobNumber', defaultMessage: '工号',})}
+          label={l('pages.user.UserJobNumber')}
         >
-          <Input placeholder={intl.formatMessage({id: 'pages.user.UserEnterJobNumber', defaultMessage: "请输入工号",})}/>
+          <Input
+            placeholder={l('pages.user.UserEnterJobNumber')}/>
         </Form.Item>
         <Form.Item
           name="mobile"
-          label={intl.formatMessage({id: 'pages.user.UserPhoneNumber', defaultMessage: '手机号',})}
+          label={l('pages.user.UserPhoneNumber')}
         >
-          <Input placeholder={intl.formatMessage({id: 'pages.user.UserEnterPhoneNumber', defaultMessage: "请输入手机号",})}/>
+          <Input
+            placeholder={l('pages.user.UserEnterPhoneNumber')}/>
         </Form.Item>
         <Form.Item
           name="enabled"
-          label={intl.formatMessage({id: 'pages.user.UserIsUse', defaultMessage: '是否启用',})}>
-          <Switch checkedChildren={intl.formatMessage({id: 'pages.user.UserInUse', defaultMessage: '启用',})} unCheckedChildren={intl.formatMessage({id: 'pages.user.UserNotUse', defaultMessage: '禁用',})}
+          label={l('pages.user.UserIsUse')}>
+          <Switch checkedChildren={l('status.enabled')}
+                  unCheckedChildren={l('status.disabled')}
                   defaultChecked={formVals.enabled}/>
         </Form.Item>
       </>
@@ -104,9 +113,9 @@ const UserForm: React.FC<UserFormProps> = (props) => {
   const renderFooter = () => {
     return (
       <>
-        <Button onClick={() => handleModalVisible(false)}>{intl.formatMessage({id: 'pages.user.UserCancel', defaultMessage: '取消',})}</Button>
+        <Button onClick={() => handleModalVisible(false)}>{l('button.cancel')}</Button>
         <Button type="primary" onClick={() => submitForm()}>
-          {intl.formatMessage({id: 'pages.user.UserComplete', defaultMessage: '完成',})}
+          {l('button.finish')}
         </Button>
       </>
     );
@@ -114,10 +123,10 @@ const UserForm: React.FC<UserFormProps> = (props) => {
 
   return (
     <Modal
-      width={1200}
+      width={"40%"}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title={formVals.id?intl.formatMessage({id: 'pages.user.UserUpdateUser', defaultMessage: '维护用户',}):intl.formatMessage({id: 'pages.user.UserCreateUser', defaultMessage: '创建用户',})}
+      title={formVals.id ? l('pages.user.UserUpdateUser') : l('pages.user.UserCreateUser')}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}

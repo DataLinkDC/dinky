@@ -18,11 +18,12 @@
  */
 
 
-import React, {useEffect, useState} from 'react';
-import {Form, Button, Input, Modal, Select, Switch} from 'antd';
+import React, {useState} from 'react';
+import {Button, Form, Input, Modal, Select, Switch} from 'antd';
 
 import {ClusterTableListItem} from "@/pages/Cluster/data";
 import {RUN_MODE} from "@/components/Studio/conf";
+import {useIntl} from 'umi';
 
 export type ClusterFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -38,6 +39,11 @@ const formLayout = {
 };
 
 const ClusterForm: React.FC<ClusterFormProps> = (props) => {
+
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<ClusterTableListItem>>({
@@ -154,7 +160,7 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
 
   return (
     <Modal
-      width={640}
+      width={"40%"}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
       title={formVals.id ? "修改集群" : "创建集群"}

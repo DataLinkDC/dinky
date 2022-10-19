@@ -24,6 +24,7 @@ import {useEffect, useState} from 'react';
 import {getData} from "@/components/Common/crud";
 import {Scrollbars} from 'react-custom-scrollbars';
 import {RoleTableListItem, UserTableListItem} from "@/pages/AuthenticationCenter/data.d";
+import {useIntl} from "umi";
 
 
 interface TableTransferProps extends TransferProps<RoleTableListItem> {
@@ -36,13 +37,6 @@ interface TableTransferProps extends TransferProps<RoleTableListItem> {
 // Customize Table Transfer
 const TableTransfer = ({leftColumns, rightColumns, ...restProps}: TableTransferProps) => (
   <Transfer
-    titles={['未选', '已选']}
-    locale={{
-      itemUnit: "项",
-      itemsUnit: "项",
-      searchPlaceholder: "请输入角色名称搜索",
-
-    }}
     showSelectAll={false}
     showSearch={true}
     {...restProps}>
@@ -109,6 +103,10 @@ export type TableTransferFromProps = {
 
 const TableTransferFrom = (props: TableTransferFromProps) => {
 
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
   const {user, onChange: handleChange} = props;
 
   const [targetKeys, setTargetKeys] = useState<string[]>([]);
@@ -133,15 +131,15 @@ const TableTransferFrom = (props: TableTransferFromProps) => {
   const leftTableColumns: ColumnsType<RoleTableListItem> = [
     {
       dataIndex: 'roleCode',
-      title: '角色编码',
+      title: l('pages.role.roleCode'),
     },
     {
       dataIndex: 'roleName',
-      title: '角色名称',
+      title: l('pages.role.roleName'),
     },
     {
       dataIndex: 'note',
-      title: '描述',
+      title: l('pages.role.note'),
       ellipsis: true,
     },
   ];
@@ -149,15 +147,15 @@ const TableTransferFrom = (props: TableTransferFromProps) => {
   const rightTableColumns: ColumnsType<RoleTableListItem> = [
     {
       dataIndex: 'roleCode',
-      title: '角色编码',
+      title: l('pages.role.roleCode'),
     },
     {
       dataIndex: 'roleName',
-      title: '角色名称',
+      title: l('pages.role.roleName'),
     },
     {
       dataIndex: 'note',
-      title: '描述',
+      title: l('pages.role.note'),
       ellipsis: true,
     },
   ];

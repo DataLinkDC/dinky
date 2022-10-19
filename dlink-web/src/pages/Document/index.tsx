@@ -30,10 +30,14 @@ import Dropdown from "antd/es/dropdown/dropdown";
 import Menu from "antd/es/menu";
 import {handleAddOrUpdate, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
 import DocumentForm from "./components/DocumentForm";
+import {useIntl} from 'umi';
 
 const url = '/api/document';
 
 const DocumentTableList: React.FC<{}> = (props: any) => {
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
 
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
@@ -140,58 +144,58 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
         }, {
           text: 'Property',
           value: 'Property',
-        },{
+        }, {
           text: 'Event',
           value: 'Event',
-        },{
+        }, {
           text: 'Operator',
           value: 'Operator',
-        },{
+        }, {
           text: 'Unit',
           value: 'Unit',
-        },{
+        }, {
           text: 'Value',
           value: 'Value',
-        },{
+        }, {
           text: 'Constant',
           value: 'Constant',
-        },{
+        }, {
           text: 'Enum',
           value: 'Enum',
-        },{
+        }, {
           text: 'EnumMember',
           value: 'EnumMember',
-        },{
+        }, {
           text: 'Keyword',
           value: 'Keyword',
-        },{
+        }, {
           text: 'Text',
           value: 'Text',
-        },{
+        }, {
           text: 'Color',
           value: 'Color',
-        },{
+        }, {
           text: 'File',
           value: 'File',
-        },{
+        }, {
           text: 'Reference',
           value: 'Reference',
-        },{
+        }, {
           text: 'Customcolor',
           value: 'Customcolor',
-        },{
+        }, {
           text: 'Folder',
           value: 'Folder',
-        },{
+        }, {
           text: 'TypeParameter',
           value: 'TypeParameter',
-        },{
+        }, {
           text: 'User',
           value: 'User',
-        },{
+        }, {
           text: 'Issue',
           value: 'Issue',
-        },{
+        }, {
           text: 'Snippet',
           value: 'Snippet',
         },
@@ -288,87 +292,87 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
         {
           text: 'Batch/Streaming',
           value: 'Batch/Streaming',
-        },{
+        }, {
           text: 'Batch',
           value: 'Batch',
-        },{
+        }, {
           text: 'Streaming',
           value: 'Streaming',
-        },{
+        }, {
           text: 'Other',
           value: 'Other',
-        },{
+        }, {
           text: '比较函数',
           value: '比较函数',
-        },{
+        }, {
           text: '逻辑函数',
           value: '逻辑函数',
-        },{
+        }, {
           text: '算术函数',
           value: '算术函数',
-        },{
+        }, {
           text: '字符串函数',
           value: '字符串函数',
-        },{
+        }, {
           text: '时间函数',
           value: '时间函数',
-        },{
+        }, {
           text: '类型转换函数功能',
           value: '类型转换函数功能',
-        },{
+        }, {
           text: '条件函数',
           value: '条件函数',
-        },{
+        }, {
           text: 'Collection 函数',
           value: 'Collection 函数',
-        },{
+        }, {
           text: 'Value Construction函数',
           value: 'Value Construction函数',
-        },{
+        }, {
           text: 'Value Access函数',
           value: 'Value Access函数',
-        },{
+        }, {
           text: '分组函数',
           value: '分组函数',
-        },{
+        }, {
           text: 'hash函数',
           value: 'hash函数',
-        },{
+        }, {
           text: '聚合函数',
           value: '聚合函数',
-        },{
+        }, {
           text: '列函数',
           value: '列函数',
-        },{
+        }, {
           text: '表值聚合函数',
           value: '表值聚合函数',
-        },{
+        }, {
           text: '其他函数',
           value: '其他函数',
         },
       ],
       filterMultiple: false,
       valueEnum: {
-        'Batch/Streaming' : {text: 'Batch/Streaming'},
-        'Batch' : {text: 'Batch'},
-        'Streaming' : {text: 'Streaming'},
-        'Other' : {text: 'Other'},
-        '比较函数' : {text: '比较函数'},
-        '逻辑函数' : {text: '逻辑函数'},
-        '算术函数' : {text: '算术函数'},
-        '字符串函数' : {text: '字符串函数'},
-        '时间函数' : {text: '时间函数'},
-        '条件函数' : {text: '条件函数'},
-        '类型转换函数功能' : {text: '类型转换函数功能'},
-        'Collection 函数' : {text: 'Collection 函数'},
-        'Value Construction函数' : {text: 'Value Construction函数'},
-        'Value Access函数' : {text: 'Value Access函数'},
-        '分组函数' : {text: '分组函数'},
-        'hash函数' : {text: 'hash函数'},
-        '聚合函数' : {text: '聚合函数'},
-        '列函数' : {text: '列函数'},
-        '表值聚合函数' : {text: '表值聚合函数'},
-        '其他函数' : {text: '其他函数'},
+        'Batch/Streaming': {text: 'Batch/Streaming'},
+        'Batch': {text: 'Batch'},
+        'Streaming': {text: 'Streaming'},
+        'Other': {text: 'Other'},
+        '比较函数': {text: '比较函数'},
+        '逻辑函数': {text: '逻辑函数'},
+        '算术函数': {text: '算术函数'},
+        '字符串函数': {text: '字符串函数'},
+        '时间函数': {text: '时间函数'},
+        '条件函数': {text: '条件函数'},
+        '类型转换函数功能': {text: '类型转换函数功能'},
+        'Collection 函数': {text: 'Collection 函数'},
+        'Value Construction函数': {text: 'Value Construction函数'},
+        'Value Access函数': {text: 'Value Access函数'},
+        '分组函数': {text: '分组函数'},
+        'hash函数': {text: 'hash函数'},
+        '聚合函数': {text: '聚合函数'},
+        '列函数': {text: '列函数'},
+        '表值聚合函数': {text: '表值聚合函数'},
+        '其他函数': {text: '其他函数'},
       },
     },
     {
@@ -473,7 +477,7 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
   ];
 
   return (
-    <PageContainer>
+    <PageContainer title={false}>
       <ProTable<DocumentTableListItem>
         headerTitle="文档管理"
         actionRef={actionRef}
@@ -490,6 +494,10 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+        }}
+        pagination={{
+          defaultPageSize: 10,
+          showSizeChanger: true,
         }}
       />
       {selectedRowsState?.length > 0 && (

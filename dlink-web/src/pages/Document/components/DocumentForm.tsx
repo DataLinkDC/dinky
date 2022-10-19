@@ -23,8 +23,9 @@ import {Button, Form, Input, Modal, Select, Switch} from 'antd';
 import {DocumentTableListItem} from "@/pages/Document/data";
 import TextArea from "antd/es/input/TextArea";
 import {getDocumentFormData,} from "@/pages/Document/function";
+import {useIntl} from 'umi';
 
-export type DocumentFormProps  = {
+export type DocumentFormProps = {
   onCancel: (flag?: boolean) => void;
   onSubmit: (values: Partial<DocumentTableListItem>) => void;
   modalVisible: boolean;
@@ -43,6 +44,9 @@ const formLayout = {
 
 const DocumentForm: React.FC<DocumentFormProps> = (props) => {
 
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<DocumentTableListItem>>({
     id: props.values.id,
@@ -54,7 +58,7 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
     fillValue: props.values.fillValue,
     version: props.values.version,
     likeNum: props.values.likeNum,
-    enabled: props.values.enabled?props.values.enabled:true,
+    enabled: props.values.enabled ? props.values.enabled : true,
   });
 
   const {
@@ -66,8 +70,8 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
 
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
-    setFormVals({...formVals,...fieldsValue});
-    handleSubmit({...formVals,...fieldsValue});
+    setFormVals({...formVals, ...fieldsValue});
+    handleSubmit({...formVals, ...fieldsValue});
   };
 
   const renderContent = (formVals) => {
@@ -84,7 +88,7 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
           label="文档类型"
           rules={[{required: true, message: '请选择该文档所属类型！'}]}
         >
-          <Select  allowClear>
+          <Select allowClear>
             <Option value="Method">Method</Option>
             <Option value="Function">Function</Option>
             <Option value="Constructor">Constructor</Option>
@@ -120,7 +124,7 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
           label="类型"
           rules={[{required: true, message: '请选择该文档所属函数类型！'}]}
         >
-          <Select  allowClear>
+          <Select allowClear>
             <Option value="优化参数">优化参数</Option>
             <Option value="建表语句">建表语句</Option>
             <Option value="CataLog">CataLog</Option>
@@ -165,22 +169,23 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
           label="填充值"
           rules={[{required: true, message: '请输入填充值！'}]}
         >
-          <TextArea placeholder="请输入填充值,编辑器内使用名称触发提示 eg: 如果希望在函数LTRIM(parms)中输入参数 则语法为: LTRIM(${1:})  此时的1代表第一个光标 如需多个 数字+1即可 tab键切换光标 ; 如不需要参数则直接输入期望填充值"
-                    allowClear
-                    autoSize={{minRows: 3, maxRows: 10}}/>
+          <TextArea
+            placeholder="请输入填充值,编辑器内使用名称触发提示 eg: 如果希望在函数LTRIM(parms)中输入参数 则语法为: LTRIM(${1:})  此时的1代表第一个光标 如需多个 数字+1即可 tab键切换光标 ; 如不需要参数则直接输入期望填充值"
+            allowClear
+            autoSize={{minRows: 3, maxRows: 10}}/>
         </FormItem>
         <FormItem
           name="version"
           label="版本"
           rules={[{required: true, message: '请选择该文档所属版本！'}]}
         >
-          <Select allowClear >
+          <Select allowClear>
             <Option value="1.11">Flink-1.11</Option>
             <Option value="1.12">Flink-1.12</Option>
             <Option value="1.13">Flink-1.13</Option>
             <Option value="1.14">Flink-1.14</Option>
             <Option value="1.15">Flink-1.15</Option>
-            <Option  value="ALL Version">ALL Version</Option>
+            <Option value="ALL Version">ALL Version</Option>
           </Select>
         </FormItem>
         <FormItem
@@ -207,10 +212,10 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
 
   return (
     <Modal
-      width={1200}
+      width={"40%"}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title={formVals.id?"维护文档":"创建文档"}
+      title={formVals.id ? "维护文档" : "创建文档"}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}

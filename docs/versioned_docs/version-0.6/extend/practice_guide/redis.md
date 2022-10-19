@@ -1,6 +1,6 @@
 ---
-sidebar_position: 8
-id: doris
+sidebar_position: 9
+id: redis
 title: Redis
 ---
 

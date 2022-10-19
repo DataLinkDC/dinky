@@ -27,7 +27,7 @@ import {loadSettings} from "@/pages/SettingCenter/FlinkSettings/function";
 
 
 type SettingsProps = {
-  dispatch:any;
+  dispatch: any;
 };
 
 const Settings: React.FC<SettingsProps> = (props) => {
@@ -37,9 +37,9 @@ const Settings: React.FC<SettingsProps> = (props) => {
 
 
   return (
-      <PageContainer>
-          <FlinkConfigView />
-      </PageContainer>
+    <PageContainer title={false}>
+      <FlinkConfigView/>
+    </PageContainer>
   );
 };
 export default connect(({Settings}: { Settings: SettingsStateType }) => ({

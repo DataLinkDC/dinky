@@ -60,16 +60,19 @@ export default {
   'menu.exception.server-error': '500',
   'menu.exception.trigger': 'Trigger',
   'menu.account': 'Account',
-  'menu.account.center': 'Account Center',
-  'menu.account.settings': 'Account Settings',
   'menu.account.trigger': 'Trigger Error',
-  'menu.account.logout': 'Logout',
-  'menu.account.checkTenant': 'Check Tenant',
-  'menu.account.changePassword': 'Change Password',
   'menu.editor': 'Graphic Editor',
   'menu.editor.flow': 'Flow Editor',
   'menu.editor.mind': 'Mind Editor',
   'menu.editor.koni': 'Koni Editor',
+
+  'menu.account.center': 'Account Center',
+  'menu.account.settings': 'Account Settings',
+  'menu.account.changePassword': 'Change Password',
+  'menu.account.checkTenant': 'Check Tenant',
+  'menu.account.checkTenantConfirm': 'Are you sure you want to switch the selected tenant？',
+  'menu.account.logout': 'Logout',
+
 
   'menu.datastudio': 'Data Studio',
 
@@ -99,6 +102,9 @@ export default {
 
   'menu.settings': 'Setting Center',
   'menu.settings.flinkConfig': 'Flink Settings',
+  'menu.settings.udfTemplate': 'UDF Template Settings',
+  'menu.settings.systemInfo': 'System Info',
+  'menu.settings.processList': 'Process List',
 
   'menu.about': 'About',
 };

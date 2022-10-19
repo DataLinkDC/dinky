@@ -18,12 +18,12 @@
  */
 
 
-import { Typography} from 'antd';
-import ProTable from '@ant-design/pro-table';
-import {ProColumns} from "@ant-design/pro-table";
+import {Typography} from 'antd';
+import ProTable, {ProColumns} from '@ant-design/pro-table';
 import {queryData} from "@/components/Common/crud";
+import {useIntl} from "umi";
 
-const { Text } = Typography;
+const {Text} = Typography;
 type AlertHistoryTableListItem = {
   title: string,
   content: string,
@@ -35,6 +35,10 @@ type AlertHistoryTableListItem = {
 
 const Alert = (props: any) => {
 
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
+
   const url = '/api/alertGroup';
   const {job} = props;
 
@@ -43,14 +47,14 @@ const Alert = (props: any) => {
       title: '标题',
       dataIndex: 'title',
       render: (dom, entity) => {
-        return  <Text style={{ width: 200 }} ellipsis={{ tooltip:entity.title }}>{entity.title}</Text>;
+        return <Text style={{width: 200}} ellipsis={{tooltip: entity.title}}>{entity.title}</Text>;
       },
     },
     {
       title: '正文',
       dataIndex: 'content',
       render: (dom, entity) => {
-        return  <Text style={{ width: 500 }} ellipsis={{ tooltip:entity.content }}>{entity.content}</Text>;
+        return <Text style={{width: 500}} ellipsis={{tooltip: entity.content}}>{entity.content}</Text>;
       },
     },
     {
@@ -58,14 +62,14 @@ const Alert = (props: any) => {
       dataIndex: 'status',
       sorter: true,
       render: (dom, entity) => {
-        return  entity.status === 1?<Text type="success">成功</Text>:<Text type="danger">失败</Text>;
+        return entity.status === 1 ? <Text type="success">成功</Text> : <Text type="danger">失败</Text>;
       },
     },
     {
       title: '日志',
       dataIndex: 'log',
       render: (dom, entity) => {
-        return  <Text style={{ width: 500 }} ellipsis={{ tooltip:entity.log }}>{entity.log}</Text>;
+        return <Text style={{width: 500}} ellipsis={{tooltip: entity.log}}>{entity.log}</Text>;
       },
     },
     {
@@ -79,10 +83,16 @@ const Alert = (props: any) => {
     <ProTable
       columns={columns}
       style={{width: '100%'}}
-      request={(params, sorter, filter) => queryData(url+'/history', {...params, jobInstanceId:job.instance?.id,sorter, filter})}
+      request={(params, sorter, filter) => queryData(url + '/history', {
+        ...params,
+        jobInstanceId: job.instance?.id,
+        sorter,
+        filter
+      })}
       rowKey="name"
       pagination={{
-        pageSize: 10,
+        defaultPageSize: 10,
+        showSizeChanger: true,
       }}
       toolBarRender={false}
       search={false}

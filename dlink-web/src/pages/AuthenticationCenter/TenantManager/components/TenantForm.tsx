@@ -21,6 +21,7 @@
 import React, {useState} from 'react';
 import {Button, Form, Input, Modal} from 'antd';
 import {TenantTableListItem} from "@/pages/AuthenticationCenter/data.d";
+import {useIntl} from "umi";
 
 export type TenantFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -36,6 +37,10 @@ const formLayout = {
 const FormItem = Form.Item;
 
 const TenantForm: React.FC<TenantFormProps> = (props) => {
+
+
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<TenantTableListItem>>({
@@ -56,8 +61,8 @@ const TenantForm: React.FC<TenantFormProps> = (props) => {
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
     fieldsValue.id = formVals.id;
-    setFormVals({...formVals,...fieldsValue});
-    handleSubmit({...formVals,...fieldsValue});
+    setFormVals({...formVals, ...fieldsValue});
+    handleSubmit({...formVals, ...fieldsValue});
   };
 
   const renderContent = (formVals: Partial<TenantTableListItem>) => {
@@ -65,16 +70,16 @@ const TenantForm: React.FC<TenantFormProps> = (props) => {
       <>
         <FormItem
           name="tenantCode"
-          label="唯一编码"
-          rules={[{required: true, message: '请输入租户唯一编码！'}]}>
-          <Input allowClear placeholder="请输入租户唯一编码"/>
+          label={l('pages.tenant.TenantCode')}
+          rules={[{required: true, message: l('pages.tenant.EnterTenantCode')}]}>
+          <Input allowClear placeholder={l('pages.tenant.EnterTenantCode')}/>
         </FormItem>
         <FormItem
           name="note"
-          label="注释"
-          rules={[{required: true, message: '请输入租户注释/描述信息！'}]}
+          label={l('pages.tenant.Note')}
+          rules={[{required: true, message: l('pages.tenant.EnterTenantNote')}]}
         >
-          <Input.TextArea placeholder="请输入租户注释/描述信息" allowClear
+          <Input.TextArea placeholder={l('pages.tenant.EnterTenantNote')} allowClear
                           autoSize={{minRows: 3, maxRows: 10}}/>
         </FormItem>
       </>
@@ -84,9 +89,9 @@ const TenantForm: React.FC<TenantFormProps> = (props) => {
   const renderFooter = () => {
     return (
       <>
-        <Button onClick={() => handleModalVisible(false)}>取消</Button>
+        <Button onClick={() => handleModalVisible(false)}>{l('button.cancel')}</Button>
         <Button type="primary" onClick={() => submitForm()}>
-          完成
+          {l('button.finish')}
         </Button>
       </>
     );
@@ -94,10 +99,10 @@ const TenantForm: React.FC<TenantFormProps> = (props) => {
 
   return (
     <Modal
-      width={640}
+      width={"40%"}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title={formVals.id ? "修改租户" : "创建租户"}
+      title={formVals.id ? l('pages.tenant.update') : l('pages.tenant.create')}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}

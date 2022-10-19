@@ -46,6 +46,7 @@ public class FlinkJobTaskPool extends AbstractPool<JobInfoDetail> {
         return flinkJobTaskEntityMap;
     }
 
+    @Override
     public void refresh(JobInfoDetail entity) {
         entity.refresh();
     }
