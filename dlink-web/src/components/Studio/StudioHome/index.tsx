@@ -27,15 +27,16 @@ import {VERSION} from "@/components/Common/Version";
 const {Title, Paragraph, Text} = Typography;
 
 const StudioHome = (props: any) => {
-  const intl = useIntl();
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key,defaultMsg})
   const {toolHeight} = props;
 
   return (
     <Scrollbars style={{height: toolHeight}}>
       <Typography style={{padding:'15px'}}>
-        <Title level={4}>{intl.formatMessage({id: 'pages.datastadio.lable.welcomeuse', defaultMessage: '欢迎使用 Dinky v',})}{VERSION}</Title>
+        <Title level={4}>{l('pages.datastudio.label.welcomeuse','欢迎使用 Dinky v')}{VERSION}</Title>
         <Paragraph>
-          <blockquote>{intl.formatMessage({id: 'pages.datastadio.lable.dinkydescribe', defaultMessage: '实时即未来，Dinky 为 Apache Flink 而生，让 Flink SQL 纵享丝滑，并致力于实时计算平台建设。',})}</blockquote>
+          <blockquote>{l('pages.datastudio.label.dinkydescribe','实时即未来，Dinky 为 Apache Flink 而生，让 Flink SQL 纵享丝滑，并致力于实时计算平台建设。')}</blockquote>
         </Paragraph>
         <Title level={5}>快捷键</Title>
         <Paragraph>

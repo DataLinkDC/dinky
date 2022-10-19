@@ -44,11 +44,8 @@ const url = '/api/jobInstance';
 
 const JobInstanceTable = (props: any) => {
 
-  const intl = useIntl();
-
   const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
-
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key,defaultMsg})
 
   const {status, activeKey, isHistory, taskStatus} = props;
   const [time, setTime] = useState(() => Date.now());
@@ -84,7 +81,7 @@ const JobInstanceTable = (props: any) => {
     if (values) {
       try {
         await onClickOperatingTask(values)
-        message.success(intl.formatMessage({id: 'pages.devops.result.success', defaultMessage: '操作成功',}))
+        message.success(l('pages.devops.result.success','操作成功'))
         setOpsStatusVisible(false)
       } catch (e) {
         console.log(e)
@@ -126,30 +123,30 @@ const JobInstanceTable = (props: any) => {
 
   const getColumns = () => {
     const columns: ProColumns<JobInstanceTableListItem>[] = [{
-      title: intl.formatMessage({id: 'global.table.jobname', defaultMessage: '作业名',}),
+      title: l('global.table.jobname','作业名'),
       dataIndex: "name",
       sorter: true,
     }, {
-      title: intl.formatMessage({id: 'global.table.lifecycle', defaultMessage: '生命周期',}),
+      title: l('global.table.lifecycle','生命周期'),
       dataIndex: "step",
       sorter: true,
       valueType: 'radio',
       valueEnum: {
-        '': {text: intl.formatMessage({id: 'global.table.lifecycle.all', defaultMessage: '全部',}), status: 'ALL'},
+        '': {text: l('global.table.lifecycle.all','全部'), status: 'ALL'},
         2: {
-          text: intl.formatMessage({id: 'global.table.lifecycle.dev', defaultMessage: '开发中',}),
+          text: l('global.table.lifecycle.dev','开发中'),
           status: JOB_LIFE_CYCLE.DEVELOP,
         },
         4: {
-          text: intl.formatMessage({id: 'global.table.lifecycle.publish', defaultMessage: '已发布',}),
+          text: l('global.table.lifecycle.publish','已发布'),
           status: JOB_LIFE_CYCLE.RELEASE,
         },
         5: {
-          text: intl.formatMessage({id: 'global.table.lifecycle.online', defaultMessage: '已上线',}),
+          text: l('global.table.lifecycle.online','已上线'),
           status: JOB_LIFE_CYCLE.ONLINE,
         },
         0: {
-          text: intl.formatMessage({id: 'global.table.lifecycle.unKnow', defaultMessage: '未知',}),
+          text: l('global.table.lifecycle.unKnow','未知'),
           status: JOB_LIFE_CYCLE.UNKNOWN,
         },
       },
@@ -157,12 +154,12 @@ const JobInstanceTable = (props: any) => {
         return (<JobLifeCycle step={row.step}/>);
       }
     }, {
-      title: intl.formatMessage({id: 'global.table.runmode', defaultMessage: '运行模式',}),
+      title: l('global.table.runmode','运行模式'),
       dataIndex: "type",
       sorter: true,
       valueType: 'radio',
       valueEnum: {
-        '': {text: intl.formatMessage({id: 'global.table.lifecycle.all', defaultMessage: '全部',}), status: 'ALL'},
+        '': {text: l('global.table.lifecycle.all','全部'), status: 'ALL'},
         'local': {
           text: RUN_MODE.LOCAL,
           status: RUN_MODE.LOCAL,
@@ -193,15 +190,15 @@ const JobInstanceTable = (props: any) => {
         },
       },
     }, {
-      title: intl.formatMessage({id: 'global.table.instanceName', defaultMessage: '集群实例',}),
+      title: l('global.table.instanceName','集群实例'),
       dataIndex: "clusterAlias",
       sorter: true,
     }, {
-      title: intl.formatMessage({id: 'global.table.jobid', defaultMessage: '作业ID',}),
+      title: l('global.table.jobid','作业ID'),
       dataIndex: "jid",
       key: "jid",
     }, {
-      title: intl.formatMessage({id: 'global.table.status', defaultMessage: '状态',}),
+      title: l('global.table.status','状态'),
       dataIndex: "status",
       sorter: true,
       hideInSearch: true,
@@ -211,27 +208,27 @@ const JobInstanceTable = (props: any) => {
           ;
       }
     }, {
-      title: intl.formatMessage({id: 'global.table.startTime', defaultMessage: '开始时间',}),
+      title: l('global.table.startTime','开始时间'),
       dataIndex: "createTime",
       sorter: true,
       valueType: 'dateTime',
       hideInSearch: true,
     }, {
-      title: intl.formatMessage({id: 'global.table.updateTime', defaultMessage: '更新时间',}),
+      title: l('global.table.updateTime','更新时间'),
       dataIndex: "updateTime",
       sorter: true,
       valueType: 'dateTime',
       hideInTable: true,
       hideInSearch: true,
     }, {
-      title: intl.formatMessage({id: 'global.table.endTime', defaultMessage: '结束时间',}),
+      title: l('global.table.endTime','结束时间'),
       dataIndex: "finishTime",
       sorter: true,
       valueType: 'dateTime',
       hideInTable: true,
       hideInSearch: true,
     }, {
-      title: intl.formatMessage({id: 'global.table.useTime', defaultMessage: '耗时',}),
+      title: l('global.table.useTime','耗时'),
       dataIndex: "duration",
       sorter: true,
       valueType: 'second',
@@ -247,20 +244,20 @@ const JobInstanceTable = (props: any) => {
         color={taskStatus?.onlineStatus ? OPS_STATUS_COLOR.padding : OPS_STATUS_COLOR.success} text={<a
         onClick={() => {
           onStatusChange('1')
-        }}>{intl.formatMessage({id: 'pages.devops.lable.online', defaultMessage: '一键上线',})}</a>}/>,
+        }}>{l('pages.devops.lable.online','一键上线')}</a>}/>,
         <a
           style={{color: taskStatus?.onlineStatus ? '#FF0000' : '#1E90FF'}}
           onClick={() => {
             onStatusDetailed('1')
-          }}>{intl.formatMessage({id: 'pages.devops.lable.onlinelist', defaultMessage: '上线明细',})}</a>,
+          }}>{l('pages.devops.lable.onlinelist','上线明细')}</a>,
         <Badge color={taskStatus?.offlineStatus ? OPS_STATUS_COLOR.padding : OPS_STATUS_COLOR.success}
                text={<a onClick={() => {
                  onStatusChange('2')
-               }}>{intl.formatMessage({id: 'pages.devops.lable.offline', defaultMessage: '一键下线',})}</a>}/>, <a
+               }}>{l('pages.devops.lable.offline','一键下线')}</a>}/>, <a
           style={{color: taskStatus?.onlineStatus ? '#FF0000' : '#1E90FF'}}
           onClick={() => {
             onStatusDetailed('2')
-          }}>{intl.formatMessage({id: 'pages.devops.lable.offlinelist', defaultMessage: '下线明细',})}</a>,]}
+          }}>{l('pages.devops.lable.offlinelist','下线明细')}</a>,]}
       request={(params, sorter, filter) => {
         setTime(Date.now());
         return queryData(url, {...params, status, isHistory, sorter: {id: 'descend'}, filter});
@@ -271,10 +268,7 @@ const JobInstanceTable = (props: any) => {
         filterType: 'light',
       }}
 
-      headerTitle={intl.formatMessage({
-        id: 'pages.devops.JobInstanceTable.LastUpdateTime',
-        defaultMessage: intl.formatMessage({id: 'global.table.lastUpdateTime', defaultMessage: '上次更新时间',}),
-      }) + `：${moment(time).format('HH:mm:ss')}`}
+      headerTitle={ l('global.table.lastUpdateTime','上次更新时间') + `：${moment(time).format('HH:mm:ss')}`}
       polling={status == activeKey ? 3000 : undefined}
       pagination={{
         defaultPageSize: 10,

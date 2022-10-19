@@ -79,8 +79,8 @@ export default {
   'menu.devops': 'Devops',
   'menu.job': 'Job Instance',
 
-  'menu.datacenter': 'Mate Data Center',
-  'menu.datacenter.metadata': 'Mate Data',
+  'menu.datacenter': 'Meta Data Center',
+  'menu.datacenter.metadata': 'Meta Data',
 
   'menu.registration': 'Regist Center',
   'menu.registration.cluster': 'Cluster Management',

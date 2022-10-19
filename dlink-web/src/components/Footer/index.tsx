@@ -23,11 +23,9 @@ import {GithubOutlined} from '@ant-design/icons';
 import {DefaultFooter} from '@ant-design/pro-layout';
 
 export default () => {
-  const intl = useIntl();
-  const defaultMessage = intl.formatMessage({
-    id: 'app.copyright.produced',
-    defaultMessage: 'Dinky',
-  });
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+  const defaultMessage = l('app.copyright.produced', 'Dinky');
 
   return (
     <DefaultFooter

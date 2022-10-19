@@ -28,35 +28,37 @@ import { history,useIntl } from 'umi';
 const {Title, Paragraph,Link, Text} = Typography;
 
 const StudioGuide = (props: any) => {
-  const intl = useIntl();
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
   const {toolHeight} = props;
 
   return (
     <Scrollbars style={{height: toolHeight}}>
       <Typography style={{padding:'15px'}}>
-        <Title level={5}>{intl.formatMessage({id: 'pages.datastadio.lable.quickguide', defaultMessage: '快捷引导',})}</Title>
+        <Title level={5}>{l('pages.datastudio.label.quickguide','快捷引导')}</Title>
         <Paragraph>
           <ul>
             <li>
-              <Link onClick={()=>{history.push('/registration/cluster/clusterInstance')}}>{intl.formatMessage({id: 'pages.datastadio.lable.registcluster', defaultMessage: '注册集群实例',})}</Link>
+              <Link onClick={()=>{history.push('/registration/cluster/clusterInstance')}}>{l('pages.datastudio.label.registcluster','注册集群实例')}</Link>
             </li>
             <li>
-              <Link onClick={()=>{history.push('/registration/cluster/clusterConfiguration')}}>{intl.formatMessage({id: 'pages.datastadio.lable.registclusterconfig', defaultMessage: '注册集群配置',})}</Link>
+              <Link onClick={()=>{history.push('/registration/cluster/clusterConfiguration')}}>{l('pages.datastudio.label.registclusterconfig','注册集群配置')}</Link>
             </li>
             <li>
-              <Link onClick={()=>{history.push('/registration/jar')}}>{intl.formatMessage({id: 'pages.datastadio.lable.registjar', defaultMessage: '注册 Jar',})}</Link>
+              <Link onClick={()=>{history.push('/registration/jar')}}>{l('pages.datastudio.label.registjar','注册 Jar')}</Link>
             </li>
             <li>
-              <Link onClick={()=>{history.push('/registration/database')}}>{intl.formatMessage({id: 'pages.datastadio.lable.registdatasource', defaultMessage: '注册数据源',})}</Link>
+              <Link onClick={()=>{history.push('/registration/database')}}>{l('pages.datastudio.label.registdatasource','注册数据源')}</Link>
             </li>
             <li>
-              <Link onClick={()=>{history.push('/registration/document')}}>{intl.formatMessage({id: 'pages.datastadio.lable.registdocument', defaultMessage: '注册文档',})}</Link>
+              <Link onClick={()=>{history.push('/registration/document')}}>{l('pages.datastudio.label.registdocument','注册文档')}</Link>
             </li>
             <li>
-              <Link onClick={()=>{history.push('/settings')}}>{intl.formatMessage({id: 'pages.datastadio.lable.configsystemconfig', defaultMessage: '修改系统配置',})}</Link>
+              <Link onClick={()=>{history.push('/settings')}}>{l('pages.datastudio.label.configsystemconfig','修改系统配置')}</Link>
             </li>
             <li>
-              <Link href="http://www.dlink.top/" target="_blank" >{intl.formatMessage({id: 'pages.datastadio.lable.officialdocumentation', defaultMessage: '官网文档',})}</Link>
+              <Link href="http://www.dlink.top/" target="_blank" >{l('pages.datastudio.label.officialdocumentation','官网文档')}</Link>
             </li>
             <li>
               <Link href="https://github.com/DataLinkDC/dlink" target="_blank" >Github</Link>
