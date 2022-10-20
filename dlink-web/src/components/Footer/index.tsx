@@ -23,13 +23,13 @@ import {GithubOutlined} from '@ant-design/icons';
 import {DefaultFooter} from '@ant-design/pro-layout';
 
 export default () => {
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
-  const defaultMessage = l('app.copyright.produced', 'Dinky');
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string) => intl.formatMessage({id,defaultMessage});
 
   return (
     <DefaultFooter
-      copyright={`2022 ${defaultMessage}`}
+      copyright={l('app.copyright.produced', 'Produced by Dinky Community')}
       links={[
         {
           key: 'Dinky',

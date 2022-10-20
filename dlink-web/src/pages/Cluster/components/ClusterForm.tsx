@@ -40,10 +40,8 @@ const formLayout = {
 
 const ClusterForm: React.FC<ClusterFormProps> = (props) => {
 
-
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
-
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string) => intl.formatMessage({id,defaultMessage});
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<ClusterTableListItem>>({
@@ -88,8 +86,9 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
         <Form.Item
           name="type"
           label="类型"
+          rules={[{required: true, message: '请选择集群类型！'}]}
         >
-          <Select defaultValue={RUN_MODE.YARN_SESSION} allowClear>
+          <Select>
             <Option value={RUN_MODE.STANDALONE}>Standalone</Option>
             <Option value={RUN_MODE.YARN_SESSION}>Yarn Session</Option>
             <Option value={RUN_MODE.YARN_PER_JOB}>Yarn Per-Job</Option>

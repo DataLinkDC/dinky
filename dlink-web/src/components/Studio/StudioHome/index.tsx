@@ -27,8 +27,10 @@ import {VERSION} from "@/components/Common/Version";
 const {Title, Paragraph, Text} = Typography;
 
 const StudioHome = (props: any) => {
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key,defaultMsg})
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string) => intl.formatMessage({id,defaultMessage});
+
   const {toolHeight} = props;
 
   return (

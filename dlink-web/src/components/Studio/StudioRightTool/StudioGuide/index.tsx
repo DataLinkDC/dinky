@@ -28,8 +28,8 @@ import { history,useIntl } from 'umi';
 const {Title, Paragraph,Link, Text} = Typography;
 
 const StudioGuide = (props: any) => {
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
+  const l = (id: string, defaultMessage?: string) => useIntl().formatMessage({id,defaultMessage});
 
   const {toolHeight} = props;
 

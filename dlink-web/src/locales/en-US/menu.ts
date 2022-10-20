@@ -74,7 +74,7 @@ export default {
   'menu.account.logout': 'Logout',
 
 
-  'menu.datastudio': 'Data Studio',
+  'menu.dataStudio': 'Data Studio',
 
   'menu.devops': 'Devops',
   'menu.job': 'Job Instance',
@@ -82,7 +82,7 @@ export default {
   'menu.datacenter': 'Meta Data Center',
   'menu.datacenter.metadata': 'Meta Data',
 
-  'menu.registration': 'Regist Center',
+  'menu.registration': 'Registration Center',
   'menu.registration.cluster': 'Cluster Management',
   'menu.registration.cluster.clusterInstance': 'Cluster Instance',
   'menu.registration.cluster.clusterConfiguration': 'Cluster Config',
@@ -94,11 +94,11 @@ export default {
   'menu.registration.document': 'Document Management',
   'menu.registration.fragment': 'Global Variable Management',
 
-  'menu.authenticationcenter': 'Authentication Center',
-  'menu.authenticationcenter.usermanager': 'User Management',
-  'menu.authenticationcenter.namespacemanager': 'NameSpace Management',
-  'menu.authenticationcenter.rolemanager': 'Role Management',
-  'menu.authenticationcenter.tenantmanager': 'Tenant Management',
+  'menu.authenticationCenter': 'Authentication Center',
+  'menu.authenticationCenter.userManager': 'User Management',
+  'menu.authenticationCenter.namespaceManager': 'NameSpace Management',
+  'menu.authenticationCenter.roleManager': 'Role Management',
+  'menu.authenticationCenter.tenantManager': 'Tenant Management',
 
   'menu.settings': 'Setting Center',
   'menu.settings.flinkConfig': 'Flink Settings',

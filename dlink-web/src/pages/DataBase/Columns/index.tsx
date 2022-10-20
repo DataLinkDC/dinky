@@ -25,9 +25,8 @@ import {useIntl} from 'umi';
 
 const Columns = (props: any) => {
 
-
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key,defaultMsg})
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string) => intl.formatMessage({id,defaultMessage});
 
   const {dbId, table, schema, scroll} = props;
 

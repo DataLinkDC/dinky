@@ -26,8 +26,8 @@ import {useIntl} from 'umi';
 
 export default (): React.ReactNode => {
 
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string) => intl.formatMessage({id,defaultMessage});
 
   return (
     <PageHeaderWrapper
