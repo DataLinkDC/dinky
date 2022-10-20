@@ -70,7 +70,6 @@
     "antd": "^4.14.0",
     "classnames": "^2.2.6",
     "dva": "^2.4.0",
-    "install": "^0.13.0",
     "lodash": "^4.17.11",
     "lodash.isequal": "^4.5.0",
     "moment": "^2.25.3",
