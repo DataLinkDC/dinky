@@ -27,34 +27,31 @@ const Columns = (props: any) => {
 
 
   const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
-
-
-  const intl = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key,defaultMsg})
 
   const {dbId, table, schema, scroll} = props;
 
   const cols = [{
-    title: intl.formatMessage({id: 'global.table.no', defaultMessage: '序号',}),
+    title: l('global.table.no','序号'),
     dataIndex: 'position',
     isString: false,
   },
     {
-      title: intl.formatMessage({id: 'global.table.columnName', defaultMessage: '字段名称',}),
+      title: l('global.table.columnName','字段名称'),
       dataIndex: 'name',
       copyable: true,
     },
     {
-      title: intl.formatMessage({id: 'global.table.annotation', defaultMessage: '注释',}),
+      title: l('global.table.annotation','注释'),
       dataIndex: 'comment',
       // ellipsis: true,
     },
     {
-      title: intl.formatMessage({id: 'global.table.type', defaultMessage: '类型',}),
+      title: l('global.table.type','类型'),
       dataIndex: 'type',
     },
     {
-      title: intl.formatMessage({id: 'global.table.primarykey', defaultMessage: '主键',}),
+      title: l('global.table.primarykey','主键'),
       dataIndex: 'keyFlag',
       render: (_, record) => (
         <>
@@ -73,7 +70,7 @@ const Columns = (props: any) => {
       ],
       openSearch: 'dict',
     }, {
-      title: intl.formatMessage({id: 'global.table.automationAdd', defaultMessage: '自增',}),
+      title: l('global.table.automationAdd','自增'),
       dataIndex: 'autoIncrement',
       render: (_, record) => (
         <>
@@ -92,7 +89,7 @@ const Columns = (props: any) => {
       ],
       openSearch: 'dict',
     }, {
-      title: intl.formatMessage({id: 'global.table.isNull', defaultMessage: '非空',}),
+      title: l('global.table.isNull','非空'),
       dataIndex: 'nullable',
       render: (_, record) => (
         <>
@@ -111,24 +108,24 @@ const Columns = (props: any) => {
       ],
       openSearch: 'dict',
     }, {
-      title: intl.formatMessage({id: 'global.table.default', defaultMessage: '默认值',}),
+      title: l('global.table.default','默认值'),
       dataIndex: 'defaultValue',
     }, {
-      title: intl.formatMessage({id: 'global.table.precision', defaultMessage: '精度',}),
+      title: l('global.table.precision','精度'),
       dataIndex: 'precision',
       isString: false,
     }, {
-      title: intl.formatMessage({id: 'global.table.decimalDigits', defaultMessage: '小数范围',}),
+      title: l('global.table.decimalDigits','小数范围'),
       dataIndex: 'scale',
       isString: false,
     }, {
-      title: intl.formatMessage({id: 'global.table.character', defaultMessage: '字符集',}),
+      title: l('global.table.character','字符集'),
       dataIndex: 'characterSet',
     }, {
-      title: intl.formatMessage({id: 'global.table.collationRule', defaultMessage: '排序规则',}),
+      title: l('global.table.collationRule','排序规则'),
       dataIndex: 'collation',
     }, {
-      title: intl.formatMessage({id: 'global.table.javaType', defaultMessage: 'Java 类型',}),
+      title: l('global.table.javaType','Java 类型'),
       dataIndex: 'javaType',
     },]
   return (

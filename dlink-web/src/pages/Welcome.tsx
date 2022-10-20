@@ -38,15 +38,11 @@ export default (): React.ReactNode => {
   const international = useIntl();
   const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
 
-  const intl = useIntl();
   return (
     <>
       <Card>
         <Alert
-          message={intl.formatMessage({
-            id: 'pages.welcome.alertMessage',
-            defaultMessage: '实时计算平台 Dinky 即将发布，目前为体验版，版本号为 ',
-          }) + VERSION + '。'}
+          message={l('pages.welcome.alertMessage', '实时计算平台 Dinky 即将发布，目前为体验版，版本号为 ') + VERSION + '。'}
           type="success"
           showIcon
           banner

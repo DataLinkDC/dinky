@@ -32,7 +32,8 @@ const { Option } = Select;
 
 const StudioSqlConfig = (props: any) => {
 
-  const intl = useIntl();
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key,defaultMsg})
 
   const {current,form,dispatch,tabs,database,toolHeight} = props;
 
@@ -93,7 +94,7 @@ const StudioSqlConfig = (props: any) => {
     >
       <Row>
         <Col span={24}>
-          <Form.Item label={intl.formatMessage({id: 'pages.datastadio.lable.datasource', defaultMessage: '数据源',})} tooltip={`选择 Sql 语句执行的数据源`}
+          <Form.Item label={l('pages.datastudio.label.datasource','数据源')} tooltip={`选择 Sql 语句执行的数据源`}
                      name="databaseId"
                      className={styles.form_item}>
             <Select
@@ -107,7 +108,7 @@ const StudioSqlConfig = (props: any) => {
         </Col>
         <Col span={24}>
           <Form.Item
-            label={intl.formatMessage({id: 'pages.datastadio.lable.maxrows', defaultMessage: '最大行数',})}  className={styles.form_item} name="maxRowNum"
+            label={l('pages.datastudio.label.maxrows','最大行数')}  className={styles.form_item} name="maxRowNum"
             tooltip='预览数据的最大行数'
           >
             <InputNumber min={1} max={9999} defaultValue={100} />

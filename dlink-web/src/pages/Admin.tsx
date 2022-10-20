@@ -29,20 +29,13 @@ export default (): React.ReactNode => {
   const international = useIntl();
   const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
 
-  const intl = useIntl();
   return (
     <PageHeaderWrapper
-      content={intl.formatMessage({
-        id: 'pages.admin.subPage.title',
-        defaultMessage: ' 这个页面只有 admin 权限才能查看',
-      })}
+      content={l('pages.admin.subPage.title',' 这个页面只有 admin 权限才能查看')}
     >
       <Card>
         <Alert
-          message={intl.formatMessage({
-            id: 'pages.welcome.alertMessage',
-            defaultMessage: '实时计算平台 Dlink & Apache Flink 即将发布，目前为体验版，版本号为0.1.0。',
-          })}
+          message={l('pages.welcome.alertMessage','实时计算平台 Dlink & Apache Flink 即将发布，目前为体验版，版本号为0.1.0。')}
           type="success"
           showIcon
           banner

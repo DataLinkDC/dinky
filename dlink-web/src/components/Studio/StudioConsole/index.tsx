@@ -41,7 +41,8 @@ const {TabPane} = Tabs;
 
 const StudioConsole = (props: any) => {
 
-  const intl = useIntl();
+  const international = useIntl();
+  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key,defaultMsg})
 
   const {height, current} = props;
   let consoleHeight = (height - 37.6);
@@ -59,7 +60,7 @@ const StudioConsole = (props: any) => {
         tab={
           <span>
           <CodeOutlined/>
-            {intl.formatMessage({id: 'pages.datastadio.lable.info', defaultMessage: '信息',})}
+            {l('pages.datastudio.label.info','信息')}
         </span>
         }
         key="StudioMsg"
@@ -72,7 +73,7 @@ const StudioConsole = (props: any) => {
         tab={
           <span>
           <TableOutlined/>
-            {intl.formatMessage({id: 'pages.datastadio.lable.result', defaultMessage: '结果',})}
+            {l('pages.datastudio.label.result','结果')}
         </span>
         }
         key="StudioTable"
@@ -98,7 +99,7 @@ const StudioConsole = (props: any) => {
         tab={
           <span>
           <ApartmentOutlined/>
-            {intl.formatMessage({id: 'pages.datastadio.lable.bloodsource', defaultMessage: '血缘',})}
+            {l('pages.datastudio.label.lineage','血缘')}
         </span>
         }
         key="StudioConsanguinity"
@@ -111,7 +112,7 @@ const StudioConsole = (props: any) => {
         tab={
           <span>
           <DesktopOutlined/>
-            {intl.formatMessage({id: 'pages.datastadio.lable.process', defaultMessage: '进程',})}
+            {l('pages.datastudio.label.process','进程')}
         </span>
         }
         key="StudioProcess"
@@ -124,7 +125,7 @@ const StudioConsole = (props: any) => {
         tab={
           <span>
           <CalendarOutlined/>
-            {intl.formatMessage({id: 'pages.datastadio.lable.history', defaultMessage: '历史',})}
+            {l('pages.datastudio.label.history','历史')}
         </span>
         }
         key="StudioHistory"
@@ -137,7 +138,7 @@ const StudioConsole = (props: any) => {
         tab={
           <span>
           <FunctionOutlined/>
-            {intl.formatMessage({id: 'pages.datastadio.lable.function', defaultMessage: '函数',})}
+            {l('pages.datastudio.label.function','函数')}
         </span>
         }
         key="StudioFX"
