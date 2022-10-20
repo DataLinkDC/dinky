@@ -49,7 +49,7 @@ export default {
   'pages.welcome.link': '欢迎加入',
   'pages.welcome.star': '欢迎 Star ',
   'pages.welcome.advancedLayout': 'Github',
-  'pages.welcome.alertMessage': '实时计算平台 Dinky 即将发布，目前为体验版，版本号为 ',
+  'pages.welcome.alertMessage': '实时计算平台 Dinky 即将发布，目前为体验版，版本号为 {version}。',
   'pages.admin.subPage.title': ' 这个页面只有 admin 权限才能查看',
   'pages.admin.subPage.alertMessage': 'umi ui 现已发布，欢迎使用 npm run ui 启动体验。',
   'pages.searchTable.createForm.newRule': '新建规则',
@@ -111,7 +111,7 @@ export default {
   'pages.settings.Flink': 'Flink 设置',
   'pages.settings.FlinkURL': '提交 Jar 文件路径到 FlinkSQL',
 
-  'pages.settings.FlinkSQLJarMainParameter': '将主类条目提交到 FlinkSQL 的 Jar',
+  'pages.settings.FlinkSQLJarMainParameter': '提交FlinkSQL的Jar的主类入参',
   'pages.settings.FlinkSQLJarMainClass': '提交FlinkSQL的Jar主类',
   'pages.settings.FlinkRestAPI': '使用 Rest API',
   'pages.settings.FlinkURLSplit': 'FlinkSQL 语句分隔符',

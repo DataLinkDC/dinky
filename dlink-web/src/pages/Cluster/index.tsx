@@ -48,8 +48,8 @@ const url = '/api/cluster';
 
 const ClusterTableList: React.FC<{}> = (props: any) => {
 
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key,defaultMsg})
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string) => intl.formatMessage({id,defaultMessage});
 
   const {dispatch} = props;
   const [modalVisible, handleModalVisible] = useState<boolean>(false);

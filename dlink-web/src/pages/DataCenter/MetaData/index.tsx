@@ -50,8 +50,8 @@ const {TabPane} = Tabs;
 
 const MetaDataContainer: React.FC<{}> = (props: any) => {
 
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string) => intl.formatMessage({id,defaultMessage});
 
   let [database, setDatabase] = useState<[{
     id: number,

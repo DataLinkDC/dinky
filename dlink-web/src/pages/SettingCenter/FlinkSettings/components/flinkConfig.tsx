@@ -37,8 +37,8 @@ type FlinkConfigProps = {
 
 const FlinkConfigView: React.FC<FlinkConfigProps> = (props) => {
 
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key,defaultMsg})
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string) => intl.formatMessage({id,defaultMessage});
 
   const {
     sqlSubmitJarPath,
@@ -127,7 +127,7 @@ const FlinkConfigView: React.FC<FlinkConfigProps> = (props) => {
     },
     {
       title: l('pages.settings.FlinkSQLLogic','使用逻辑计划计算血缘'),
-      description: l('pages.settings.FlinkNoUseSetting','在计算 Flink 任务的字段血缘分析时是否基于逻辑计划进行，只支持 1.14 版本'),
+      description: l('pages.settings.FlinkLogic','在计算 Flink 任务的字段血缘分析时是否基于逻辑计划进行，只支持 1.14 版本'),
       actions: [
         <Form.Item
           name="useLogicalPlan" valuePropName="checked"

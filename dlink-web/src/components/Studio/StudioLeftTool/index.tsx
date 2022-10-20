@@ -42,8 +42,9 @@ import StudioFragment from "@/components/Studio/StudioLeftTool/StudioFragment";
 const {TabPane} = Tabs;
 
 const StudioLeftTool = (props: any) => {
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key,defaultMsg})
+
+  const l = (id: string, defaultMessage?: string) => useIntl().formatMessage({id,defaultMessage})
+
   const {toolHeight} = props;
 
   return (

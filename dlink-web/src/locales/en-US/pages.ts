@@ -46,7 +46,7 @@ export default {
   'pages.welcome.advancedComponent': 'Advanced Component',
   'pages.welcome.link': 'Welcome',
   'pages.welcome.advancedLayout': 'Advanced Layout',
-  'pages.welcome.alertMessage': 'Faster And Stronger Heavy-duty Components Have Been Released',
+  'pages.welcome.alertMessage': 'Faster And Stronger Heavy-duty Components Have Been Released {version}.',
   'pages.admin.subPage.title': 'This Page Can Only Be Viewed By Admin',
   'pages.admin.subPage.alertMessage':
     'Umi UI Is Now Released, Welcome To Use Npm Run UI To Start The Experience.',
@@ -85,7 +85,7 @@ export default {
   'pages.searchTable.item': 'Item',
   'pages.searchTable.totalServiceCalls': 'Total Number Of Service Calls',
   'pages.searchTable.tenThousand': '0000',
-  'pages.searchTable.batchDeletion': 'Bacth Deletion',
+  'pages.searchTable.batchDeletion': 'Batch Deletion',
   'pages.searchTable.batchApproval': 'Batch Approval',
 
 

@@ -41,8 +41,8 @@ const {TabPane} = Tabs;
 
 const StudioConsole = (props: any) => {
 
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key,defaultMsg})
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string) => intl.formatMessage({id,defaultMessage});
 
   const {height, current} = props;
   let consoleHeight = (height - 37.6);

@@ -32,13 +32,12 @@ const { Option } = Select;
 
 const StudioSqlConfig = (props: any) => {
 
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key,defaultMsg})
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string) => intl.formatMessage({id,defaultMessage});
 
   const {current,form,dispatch,tabs,database,toolHeight} = props;
 
   form.setFieldsValue(current.task);
-
 
   const onValuesChange = (change:any,all:any)=>{
     let newTabs = tabs;

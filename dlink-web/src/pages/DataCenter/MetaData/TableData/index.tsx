@@ -29,8 +29,8 @@ import {useIntl} from 'umi';
 
 const TableData = (props: any) => {
 
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key,defaultMsg})
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string) => intl.formatMessage({id,defaultMessage});
 
   // 数据库id，数据库名称，表名称
   const {dbId, table, schema} = props;
