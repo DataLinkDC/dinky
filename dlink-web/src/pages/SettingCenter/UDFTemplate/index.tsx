@@ -22,11 +22,11 @@ import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
 import {PageContainer} from '@ant-design/pro-layout';
 import {UDFTemplateItem} from "@/pages/SettingCenter/UDFTemplate/data";
 import {addTemplate, deleteTemplate, getTemplate} from "@/pages/SettingCenter/UDFTemplate/service";
-import {Button, Col, Drawer, Form, Input, Row, Select, Space} from "antd";
+import {Button, Col, Drawer, Form, Input, Modal, Row, Select, Space} from "antd";
 import {DeleteOutlined, FormOutlined, PlusOutlined} from "@ant-design/icons";
 import 'antd/dist/antd.css';
 import './index.css';
-import {ProCoreActionType} from "@ant-design/pro-utils/lib/typing";
+import CodeEdit from "@/components/Common/CodeEdit";
 
 const {Option} = Select;
 
@@ -35,7 +35,7 @@ const UDFTemplate: React.FC<{}> = (props) => {
   const [open, setOpen] = useState(false);
 
   const initData: UDFTemplateItem = {
-    id: 0,
+    id: null,
     name: "",
     codeType: "java",
     functionType: "UDF",
@@ -45,39 +45,36 @@ const UDFTemplate: React.FC<{}> = (props) => {
   const [tModel, setTModel] = useState<UDFTemplateItem>(initData);
   const actionRef = useRef<ActionType>();
 
-
   const addModel = () => {
-    setTModel({
-      id: 0,
-      name: "",
-      codeType: "java",
-      functionType: "UDF",
-      templateCode: ""
-    })
+    setTModel(initData);
   }
+
   const changeModel = (record: UDFTemplateItem) => {
-    setTModel(record)
-    setOpen(true)
+    setTModel(record);
+    setOpen(true);
   }
 
   const showDrawer = () => {
-    addModel()
+    addModel();
     setOpen(true);
   };
 
   const onClose = () => {
-    actionRef.current.reload()
+    actionRef.current?.reload();
     setOpen(false);
   };
+
   const Box = () => {
     const [form] = Form.useForm();
+    const [code, setCode] = useState<string>(tModel.templateCode);
 
     const add = async () => {
       try {
         const values = await form.validateFields();
-        values["id"] = tModel.id
-        await addTemplate(values)
-        onClose()
+        values["id"] = tModel.id;
+        values["templateCode"] = code;
+        await addTemplate(values);
+        onClose();
       } catch (errorInfo) {
         console.log('Failed:', errorInfo);
       }
@@ -85,11 +82,10 @@ const UDFTemplate: React.FC<{}> = (props) => {
 
     return <Drawer
       visible={open}
-      title="添加或修改UDF模板"
+      title={(tModel.id ? '修改' : '添加') + "UDF模板"}
       width={720}
       onClose={onClose}
       open={open}
-      bodyStyle={{paddingBottom: 80}}
       extra={
         <Space>
           <Button onClick={onClose}>取消</Button>
@@ -139,7 +135,7 @@ const UDFTemplate: React.FC<{}> = (props) => {
             </Form.Item>
           </Col>
         </Row>
-        <Row gutter={16}>
+        <Row>
           <Col span={24}>
             <Form.Item
               name="templateCode"
@@ -151,7 +147,12 @@ const UDFTemplate: React.FC<{}> = (props) => {
                 },
               ]}
             >
-              <Input.TextArea rows={20} placeholder="请编辑模板代码"/>
+              {/*<Input.TextArea rows={20} placeholder="请编辑模板代码"/>*/}
+              <CodeEdit code={code} language='java'
+                        height='400px' onChange={async (val) => {
+                // setTModel({...tModel,templateCode:val});
+                setCode(val);
+              }}/>
             </Form.Item>
           </Col>
         </Row>
@@ -159,6 +160,18 @@ const UDFTemplate: React.FC<{}> = (props) => {
     </Drawer>
   }
 
+  const deleteUDFTemplate = (id: number) => {
+    Modal.confirm({
+      title: '删除集群',
+      content: '确定删除该集群吗？',
+      okText: '确认',
+      cancelText: '取消',
+      onOk: async () => {
+        await deleteTemplate(id)
+        actionRef.current?.reloadAndRest?.();
+      }
+    });
+  }
 
   const columns: ProColumns<UDFTemplateItem>[] = [
     {
@@ -210,17 +223,20 @@ const UDFTemplate: React.FC<{}> = (props) => {
         'UDAF': {text: 'UDAF'},
       },
       onFilter: true
-    },  {
+    }, {
       title: '操作',
       key: 'action',
-      render: (text, record,_,action) => (
+      render: (text, record, _, action) => (
         <Space size="middle">
           <Button type="primary" icon={<FormOutlined/>} onClick={() => changeModel(record)}></Button>
-          <Button type="primary" icon={<DeleteOutlined/>} onClick={() => {deleteTemplate(record.id);action?.reload()}}></Button>
+          <Button type="primary" icon={<DeleteOutlined/>} onClick={() => {
+            deleteUDFTemplate(record.id)
+          }}></Button>
         </Space>
       ),
     }
   ];
+
   return (
     <PageContainer title={false}>
       {<Box/>}

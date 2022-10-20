@@ -27,11 +27,12 @@ import com.dlink.model.UDFTemplate;
  * @since 0.6.8
  */
 public interface UDFTemplateService extends ISuperService<UDFTemplate> {
+
     /**
      * 保存
      *
      * @param udfTemplate udf模板
      * @return boolean
      */
-    boolean save(UDFTemplate udfTemplate);
+    boolean saveOrUpdate(UDFTemplate udfTemplate);
 }
