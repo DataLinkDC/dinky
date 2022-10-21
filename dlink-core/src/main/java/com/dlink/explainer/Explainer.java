@@ -103,7 +103,7 @@ public class Explainer {
         return new Explainer(executor, useStatementSet, sqlSeparator);
     }
 
-    public JobParam preTreatStatements(String[] statements) {
+    public JobParam pretreatStatements(String[] statements) {
         List<StatementParam> ddl = new ArrayList<>();
         List<StatementParam> trans = new ArrayList<>();
         List<StatementParam> execute = new ArrayList<>();
@@ -178,7 +178,7 @@ public class Explainer {
     public ExplainResult explainSql(String statement) {
         ProcessEntity process = ProcessContextHolder.getProcess();
         process.info("Start explain FlinkSQL...");
-        JobParam jobParam = preTreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
+        JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
         List<SqlExplainResult> sqlExplainRecords = new ArrayList<>();
         int index = 1;
         boolean correct = true;
@@ -296,7 +296,7 @@ public class Explainer {
     }
 
     public ObjectNode getStreamGraph(String statement) {
-        JobParam jobParam = preTreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
+        JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
         if (jobParam.getDdl().size() > 0) {
             for(StatementParam statementParam: jobParam.getDdl()){
                 executor.executeSql(statementParam.getValue());
@@ -316,7 +316,7 @@ public class Explainer {
     }
 
     public JobPlanInfo getJobPlanInfo(String statement) {
-        JobParam jobParam = preTreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
+        JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
         if (jobParam.getDdl().size() > 0) {
             for(StatementParam statementParam: jobParam.getDdl()){
                 executor.executeSql(statementParam.getValue());

@@ -19,8 +19,6 @@
 
  package com.dlink.job;
 
- import cn.hutool.core.io.FileUtil;
- import cn.hutool.core.util.URLUtil;
  import com.dlink.api.FlinkAPI;
  import com.dlink.assertion.Asserts;
  import com.dlink.constant.FlinkSQLConstant;
@@ -76,7 +74,6 @@
 
  import java.time.LocalDateTime;
  import java.util.ArrayList;
- import java.util.Arrays;
  import java.util.Collections;
  import java.util.List;
  import java.util.Map;
@@ -126,6 +123,7 @@
          JobManager manager = new JobManager(config);
          manager.init();
          manager.executor.initUDF(config.getJarFiles());
+         config.getGatewayConfig().setJarPaths(config.getJarFiles());
          return manager;
      }
 
@@ -335,7 +333,7 @@
          ready();
 
          JobParam jobParam = Explainer.build(executor, useStatementSet, sqlSeparator)
-                 .preTreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
+                 .pretreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
          try {
              executeDdlSql(jobParam);
              executeTransSql(job, jobParam);
@@ -381,7 +379,6 @@
              if (Asserts.isNotNullString(config.getSavePointPath())) {
                  jobGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(config.getSavePointPath()));
              }
-             jobGraph.addJars(Arrays.stream(config.getJarFiles()).map(path -> URLUtil.getURL(FileUtil.file(path))).collect(Collectors.toList()));
              gatewayResult = Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);
          }
 
@@ -568,7 +565,6 @@
              jobGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(config.getSavePointPath(), true));
          }
          // Perjob mode need to submit job graph.
-         jobGraph.addJars(Arrays.stream(config.getJarFiles()).map(path -> URLUtil.getURL(FileUtil.file(path))).collect(Collectors.toList()));
          return gateway.submitJobGraph(jobGraph);
      }
 
