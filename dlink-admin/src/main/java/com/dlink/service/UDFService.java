@@ -19,11 +19,13 @@
 
 package com.dlink.service;
 
+import com.dlink.gateway.GatewayType;
+
 /**
  * @author ZackYoung
  * @since 0.6.8
  */
 public interface UDFService {
 
-    String[] initUDF(String statement);
+    String[] initUDF(String statement, GatewayType gatewayType);
 }
