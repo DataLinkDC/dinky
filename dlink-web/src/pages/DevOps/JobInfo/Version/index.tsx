@@ -27,8 +27,9 @@ const {TabPane} = Tabs;
 const TaskVersionInfo = (props: any) => {
   const {job} = props;
 
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
 
   return (<>
     <Tabs defaultActiveKey="overview" size="small" tabPosition="top" style={{

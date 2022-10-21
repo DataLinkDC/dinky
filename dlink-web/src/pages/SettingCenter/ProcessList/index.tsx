@@ -24,12 +24,16 @@ import {PageContainer} from '@ant-design/pro-layout';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import {getData} from "@/components/Common/crud";
 import {ProcessItem} from "@/pages/SettingCenter/ProcessList/data";
+import {useIntl} from "umi";
 
 const url = '/api/process/listAllProcess';
 const ProcessList: React.FC<{}> = (props: any) => {
   const {dispatch} = props;
   const [row, setRow] = useState<ProcessItem>();
   const actionRef = useRef<ActionType>();
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const columns: ProColumns<ProcessItem>[] = [
     {
@@ -58,16 +62,16 @@ const ProcessList: React.FC<{}> = (props: any) => {
         {
           text: 'FlinkExplain',
           value: 'FlinkExplain',
-        },{
+        }, {
           text: 'FlinkSubmit',
           value: 'FlinkSubmit',
-        },{
+        }, {
           text: 'SQLExplain',
           value: 'SQLExplain',
-        },{
+        }, {
           text: 'SQLSubmit',
           value: 'SQLSubmit',
-        },{
+        }, {
           text: 'Unknown',
           value: 'Unknown',
         },
@@ -80,7 +84,7 @@ const ProcessList: React.FC<{}> = (props: any) => {
         'SQLSubmit': {text: 'SQLSubmit'},
         'Unknown': {text: 'Unknown'},
       },
-    },{
+    }, {
       title: '状态',
       sorter: true,
       dataIndex: 'status',
@@ -88,19 +92,19 @@ const ProcessList: React.FC<{}> = (props: any) => {
         {
           text: 'INITIALIZING',
           value: 'INITIALIZING',
-        },{
+        }, {
           text: 'RUNNING',
           value: 'RUNNING',
-        },{
+        }, {
           text: 'FAILED',
           value: 'FAILED',
-        },{
+        }, {
           text: 'CANCELED',
           value: 'CANCELED',
-        },{
+        }, {
           text: 'FINISHED',
           value: 'FINISHED',
-        },{
+        }, {
           text: 'UNKNOWN',
           value: 'UNKNOWN',
         },
@@ -146,7 +150,7 @@ const ProcessList: React.FC<{}> = (props: any) => {
       <ProTable
         actionRef={actionRef}
         rowKey="pid"
-        request={(params, sorter, filter) => getData(url, {active:false})}
+        request={(params, sorter, filter) => getData(url, {active: false})}
         columns={columns}
         search={false}
       />

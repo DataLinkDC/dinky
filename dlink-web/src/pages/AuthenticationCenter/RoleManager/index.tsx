@@ -42,8 +42,8 @@ const RoleFormList: React.FC<{}> = (props: any) => {
   const [selectedRowsState, setSelectedRows] = useState<RoleTableListItem[]>([]);
 
 
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   useEffect(() => {

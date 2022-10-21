@@ -20,7 +20,7 @@
 
 import {Button, Divider, Dropdown, Empty, Input, Menu, message, Space, Table, Tooltip} from "antd";
 import {StateType} from "@/pages/DataStudio/model";
-import {connect} from "umi";
+import {connect, useIntl} from "umi";
 import React, {useState} from "react";
 import {
   CommentOutlined,
@@ -46,6 +46,9 @@ import SessionForm from "@/components/Studio/StudioLeftTool/StudioConnector/comp
 import {Scrollbars} from 'react-custom-scrollbars';
 
 const StudioConnector = (props: any) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {current, toolHeight, dispatch, currentSession, session} = props;
   const [tableData, setTableData] = useState<[]>([]);

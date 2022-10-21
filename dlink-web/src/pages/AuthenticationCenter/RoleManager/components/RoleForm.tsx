@@ -45,8 +45,10 @@ const Option = Select.Option;
 
 const RoleForm: React.FC<TenantFormProps> = (props) => {
 
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<RoleTableListItem>>({
@@ -99,7 +101,7 @@ const RoleForm: React.FC<TenantFormProps> = (props) => {
         <Form.Item
           name="roleCode"
           label={l('pages.role.roleCode')}
-          rules={[{required: true, message: l('pages.role.roleCode')}]}>
+          rules={[{required: true, message: l('pages.role.EnterRoleCode')}]}>
           <Input placeholder={l('pages.role.EnterRoleCode')}/>
         </Form.Item>
         <Form.Item

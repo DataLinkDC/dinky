@@ -51,7 +51,8 @@ const {TabPane} = Tabs;
 const MetaDataContainer: React.FC<{}> = (props: any) => {
 
   const intl = useIntl();
-  const l = (id: string, defaultMessage?: string) => intl.formatMessage({id,defaultMessage});
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
 
   let [database, setDatabase] = useState<[{
     id: number,
@@ -170,10 +171,10 @@ const MetaDataContainer: React.FC<{}> = (props: any) => {
                     </Tag>
                     {(item.status) ?
                       (<Tag icon={<CheckCircleOutlined/>} color="success">
-                        {l('global.table.status.normal','正常',)}
+                        {l('global.table.status.normal', '正常',)}
                       </Tag>) :
                       <Tag icon={<ExclamationCircleOutlined/>} color="warning">
-                        {l('global.table.status.abnormal','异常',)}
+                        {l('global.table.status.abnormal', '异常',)}
                       </Tag>}
                   </div>
                 </Col>
@@ -198,14 +199,14 @@ const MetaDataContainer: React.FC<{}> = (props: any) => {
                         refeshDataBase(databaseId)
                         setTableChecked(true)
                       }}
-              >{l('global.table.refresh','刷新')}</Button>
+              >{l('global.table.refresh', '刷新')}</Button>
             </div>
             <div>{item.alias}</div>
           </div>
         )
       }
     }
-    return (<div>{l('pages.metadata.NoDatabaseSelected','未选择数据库')}</div>)
+    return (<div>{l('pages.metadata.NoDatabaseSelected', '未选择数据库')}</div>)
   }
 
 
@@ -259,13 +260,13 @@ const MetaDataContainer: React.FC<{}> = (props: any) => {
                            tab={
                              <span>
                           <ReadOutlined/>
-                               {l('pages.metadata.Description','描述')}
+                               {l('pages.metadata.Description', '描述')}
                         </span>
                            }
                            key="describe"
                   >
                     <Divider orientation="left" plain>
-                      {l( 'pages.metadata.TableInfo', '表信息')}
+                      {l('pages.metadata.TableInfo', '表信息')}
                     </Divider>
                     {row ? (
                       <Tables table={row}/>
@@ -273,7 +274,7 @@ const MetaDataContainer: React.FC<{}> = (props: any) => {
                       <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
                     )}
                     <Divider orientation="left" plain>
-                      {l('pages.metadata.FieldInformation','字段信息')}
+                      {l('pages.metadata.FieldInformation', '字段信息')}
                     </Divider>
                     {row ? (
                       <Columns dbId={databaseId} schema={row.schema} table={row.table}/>

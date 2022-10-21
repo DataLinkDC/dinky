@@ -40,8 +40,9 @@ const formLayout = {
 
 const EmailForm: React.FC<AlertInstanceFormProps> = (props) => {
 
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<AlertInstanceTableListItem>>({

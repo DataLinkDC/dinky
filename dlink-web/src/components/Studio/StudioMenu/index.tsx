@@ -19,59 +19,67 @@
 
 
 import styles from "./index.less";
-import {Menu, Dropdown, Tooltip, Row, Col, notification, Modal, message} from "antd";
+import {Col, Menu, message, Modal, notification, Row, Tooltip} from "antd";
 import {
-  PauseCircleTwoTone, CarryOutTwoTone, DeleteTwoTone, PlayCircleTwoTone, CameraTwoTone, SnippetsTwoTone,
-  FileAddTwoTone, FolderOpenTwoTone, SafetyCertificateTwoTone, SaveTwoTone, FlagTwoTone, CodeTwoTone,
-  EnvironmentOutlined, SmileOutlined, RocketTwoTone, QuestionCircleTwoTone, MessageOutlined, ClusterOutlined
-  , EditTwoTone, RestTwoTone, ShrinkOutlined, ApiTwoTone, SendOutlined
+  ApiTwoTone,
+  CameraTwoTone,
+  CarryOutTwoTone,
+  ClusterOutlined,
+  CodeTwoTone,
+  DeleteTwoTone,
+  EditTwoTone,
+  EnvironmentOutlined,
+  FileAddTwoTone,
+  FlagTwoTone,
+  FolderOpenTwoTone,
+  MessageOutlined,
+  PauseCircleTwoTone,
+  PlayCircleTwoTone,
+  QuestionCircleTwoTone,
+  RestTwoTone,
+  RocketTwoTone,
+  SafetyCertificateTwoTone,
+  SaveTwoTone,
+  SendOutlined,
+  ShrinkOutlined,
+  SmileOutlined,
+  SnippetsTwoTone
 } from "@ant-design/icons";
-import Space from "antd/es/space";
 import Divider from "antd/es/divider";
 import Button from "antd/es/button/button";
 import Breadcrumb from "antd/es/breadcrumb/Breadcrumb";
 import {StateType} from "@/pages/DataStudio/model";
-import {connect} from "umi";
+import {connect, useIntl} from "umi";
 import {CODE, postDataArray} from "@/components/Common/crud";
 import {executeSql, getJobPlan, getTaskDefinition} from "@/pages/DataStudio/service";
 import TaskAPI from "@/pages/API/TaskAPI";
 import StudioHelp from "./StudioHelp";
 import StudioGraph from "./StudioGraph";
 import {
-  cancelTask, developTask,
+  cancelTask,
+  developTask,
   offLineTask,
-  onLineTask, recoveryTask,
+  onLineTask,
+  recoveryTask,
   releaseTask,
   showCluster,
   showTables
 } from "@/components/Studio/StudioEvent/DDL";
-import React, {useCallback, useEffect, useState, useRef} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import StudioExplain from "../StudioConsole/StudioExplain";
-import {
-  DIALECT,
-  isExecuteSql,
-  isOnline,
-  isRunningTask,
-  isSql,
-  isTask,
-} from "@/components/Studio/conf";
-import {
-  ModalForm,
-} from '@ant-design/pro-form';
+import {DIALECT, isExecuteSql, isOnline, isRunningTask, isSql, isTask,} from "@/components/Studio/conf";
+import {ModalForm,} from '@ant-design/pro-form';
 import SqlExport from "@/pages/DataStudio/SqlExport";
 import {Dispatch} from "@@/plugin-dva/connect";
 import StudioTabs from "@/components/Studio/StudioTabs";
 import {isDeletedTask, JOB_LIFE_CYCLE} from "@/components/Common/JobLifeCycle";
 import DolphinPush from "@/components/Studio/StudioMenu/DolphinPush";
 
-const menu = (
-  <Menu>
-    <Menu.Item>敬请期待</Menu.Item>
-  </Menu>
-);
-
 
 const StudioMenu = (props: any) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {isFullScreen, tabs, current, currentPath, form, width, height, refs, dispatch, currentSession} = props;
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
@@ -81,6 +89,12 @@ const StudioMenu = (props: any) => {
   // const [editModalVisible, handleEditModalVisible] = useState<boolean>(false);
   const [graphData, setGraphData] = useState();
   const [dolphinData, setDolphinData] = useState();
+
+  const menu = (
+    <Menu>
+      <Menu.Item>敬请期待</Menu.Item>
+    </Menu>
+  );
 
   const onKeyDown = useCallback((e) => {
     if (e.keyCode === 83 && (e.ctrlKey === true || e.metaKey)) {

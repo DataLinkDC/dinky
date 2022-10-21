@@ -19,7 +19,7 @@
 
 
 import {StateType} from "@/pages/DataStudio/model";
-import {connect} from "umi";
+import {connect, useIntl} from "umi";
 import {Badge, Divider, Modal, Space, Tag, Typography} from 'antd';
 import {ClusterOutlined, FireOutlined, MessageOutlined, RocketOutlined} from "@ant-design/icons";
 import ProList from '@ant-design/pro-list';
@@ -58,6 +58,9 @@ type HistoryConfig = {
 
 const url = '/api/history';
 const StudioHistory = (props: any) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {current, refs, dispatch} = props;
   const [modalVisit, setModalVisit] = useState(false);

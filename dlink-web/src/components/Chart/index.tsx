@@ -20,7 +20,7 @@
 
 import {Button, Col, Empty, Form, Row, Select} from "antd";
 import {StateType} from "@/pages/DataStudio/model";
-import {connect} from "umi";
+import {connect, useIntl} from "umi";
 import styles from "./index.less";
 import {RedoOutlined} from '@ant-design/icons';
 import {CHART, isSql} from "@/components/Studio/conf";
@@ -35,9 +35,12 @@ import {Dispatch} from "@@/plugin-dva/connect";
 
 const {Option} = Select;
 
-const Chart = (props:any) => {
+const Chart = (props: any) => {
 
-  const {current,result,height,dispatch} = props;
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
+  const {current, result, height, dispatch} = props;
   const [config, setConfig] = useState(undefined);
   const [type, setType] = useState<string>(CHART.LINE);
   const [form] = Form.useForm();
@@ -47,69 +50,69 @@ const Chart = (props:any) => {
   }, [current.console.chart]);
 
   const toRebuild = () => {
-    if(!isSql(current.task.dialect)){
-      showJobData(current.key,current.console.result.jobId,dispatch);
+    if (!isSql(current.task.dialect)) {
+      showJobData(current.key, current.console.result.jobId, dispatch);
     }
   };
 
   const onValuesChange = (change: any, all: any) => {
-    if(change.type){
+    if (change.type) {
       setConfig(undefined);
       setType(change.type);
-      props.saveChart({type:change.type});
+      props.saveChart({type: change.type});
     }
   };
 
   const renderChartSetting = () => {
-    if(!current.console.chart||!current.console.result.result){
+    if (!current.console.chart || !current.console.result.result) {
       return undefined;
     }
-    switch (type){
+    switch (type) {
       case CHART.LINE:
         return <LineChartSetting column={current.console.result.result.columns} onChange={(value) => {
           setConfig(value);
-          props.saveChart({...value,type: current.console.chart.type});
-        }} />;
-        case CHART.BAR:
+          props.saveChart({...value, type: current.console.chart.type});
+        }}/>;
+      case CHART.BAR:
         return <BarChartSetting column={current.console.result.result.columns} onChange={(value) => {
           setConfig(value);
-          props.saveChart({...value,type: current.console.chart.type});
-        }} />;
-        case CHART.PIE:
+          props.saveChart({...value, type: current.console.chart.type});
+        }}/>;
+      case CHART.PIE:
         return <PieChartSetting column={current.console.result.result.columns} onChange={(value) => {
           setConfig(value);
-          props.saveChart({...value,type: current.console.chart.type});
-        }} />;
+          props.saveChart({...value, type: current.console.chart.type});
+        }}/>;
       default:
         return <LineChartSetting column={current.console.result.result.columns} onChange={(value) => {
           setConfig(value);
-          props.saveChart({...value,type: current.console.chart.type});
-        }} />
+          props.saveChart({...value, type: current.console.chart.type});
+        }}/>
     }
   };
 
   const renderChartContent = () => {
-    if(!current.console.result.result||!current.console.result.result.columns){
-      return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
+    if (!current.console.result.result || !current.console.result.result.columns) {
+      return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>;
     }
-    switch (current.console.chart.type){
+    switch (current.console.chart.type) {
       case CHART.LINE:
-        if(config){
+        if (config) {
           return <Line data={current.console.result.result.rowData} {...config} />;
         } else {
-          return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
+          return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>;
         }
       case CHART.BAR:
-        if(config){
+        if (config) {
           return <Bar data={current.console.result.result.rowData} {...config} />;
         } else {
-          return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
+          return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>;
         }
       case CHART.PIE:
-        if(config && config.angleField){
+        if (config && config.angleField) {
           return <Pie data={current.console.result.result.rowData} {...config} />;
         } else {
-          return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
+          return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>;
         }
       default:
         return <Line data={current.console.result.result.rowData} {...config} />;
@@ -119,7 +122,7 @@ const Chart = (props:any) => {
   return (
     <div style={{width: '100%'}}>
       <Row>
-        <Col span={16} style={{padding:'20px'}}>
+        <Col span={16} style={{padding: '20px'}}>
           {renderChartContent()}
         </Col>
         <Col span={8}>
@@ -130,38 +133,38 @@ const Chart = (props:any) => {
           >
             <Row>
               <Col span={12}>
-            <Form.Item
-              label="图形类型" className={styles.form_item} name="type"
-            >
-              <Select defaultValue={CHART.LINE} value={CHART.LINE}>
-                <Option value={CHART.LINE}>{CHART.LINE}</Option>
-                <Option value={CHART.BAR}>{CHART.BAR}</Option>
-                <Option value={CHART.PIE}>{CHART.PIE}</Option>
-              </Select>
-            </Form.Item>
+                <Form.Item
+                  label="图形类型" className={styles.form_item} name="type"
+                >
+                  <Select defaultValue={CHART.LINE} value={CHART.LINE}>
+                    <Option value={CHART.LINE}>{CHART.LINE}</Option>
+                    <Option value={CHART.BAR}>{CHART.BAR}</Option>
+                    <Option value={CHART.PIE}>{CHART.PIE}</Option>
+                  </Select>
+                </Form.Item>
               </Col>
-              { !isSql(current.task.dialect) ? <Col span={12}>
-                <Button type="primary" onClick={toRebuild} icon={<RedoOutlined />}>
+              {!isSql(current.task.dialect) ? <Col span={12}>
+                <Button type="primary" onClick={toRebuild} icon={<RedoOutlined/>}>
                   刷新数据
                 </Button>
-              </Col>:undefined}
+              </Col> : undefined}
             </Row>
           </Form>
-            {renderChartSetting()}
+          {renderChartSetting()}
         </Col>
       </Row>
     </div>
   );
 };
 
-const mapDispatchToProps = (dispatch: Dispatch)=>({
-  saveChart:(chart: any)=>dispatch({
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  saveChart: (chart: any) => dispatch({
     type: "Studio/saveChart",
     payload: chart,
   }),
 })
 
-export default connect(({ Studio }: { Studio: StateType }) => ({
+export default connect(({Studio}: { Studio: StateType }) => ({
   current: Studio.current,
   result: Studio.result,
-}),mapDispatchToProps)(Chart);
+}), mapDispatchToProps)(Chart);

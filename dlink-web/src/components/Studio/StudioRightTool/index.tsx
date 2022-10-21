@@ -19,7 +19,7 @@
 
 
 import {Tabs} from "antd";
-import {SettingOutlined, ScheduleOutlined, ContainerOutlined} from "@ant-design/icons";
+import {ContainerOutlined, ScheduleOutlined, SettingOutlined} from "@ant-design/icons";
 import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import StudioConfig from "./StudioConfig";
@@ -34,10 +34,14 @@ import StudioGuide from "./StudioGuide";
 import StudioTaskInfo from "./StudioTaskInfo";
 import {DIALECT, isSql} from "@/components/Studio/conf";
 import StudioKubernetesConfig from "@/components/Studio/StudioRightTool/StudioKubernetesConfig";
+import {useIntl} from "@@/plugin-locale/localeExports";
 
 const {TabPane} = Tabs;
 
 const StudioRightTool = (props: any) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {current, form, toolHeight} = props;
 
@@ -121,8 +125,8 @@ const StudioRightTool = (props: any) => {
       <TabPane tab={<span><ScheduleOutlined/> 保存点</span>} key="StudioSavePoint">
         <StudioSavePoint/>
       </TabPane>
-      <TabPane tab={<span><ScheduleOutlined /> 版本历史</span>} key="StudioHistory" >
-        <StudioHistory />
+      <TabPane tab={<span><ScheduleOutlined/> 版本历史</span>} key="StudioHistory">
+        <StudioHistory/>
       </TabPane>
     </>)
   };

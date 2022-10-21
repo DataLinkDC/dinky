@@ -18,14 +18,18 @@
  */
 
 
-import {Tabs, Empty} from "antd";
+import {Empty, Tabs} from "antd";
 import {
-  CodeOutlined, TableOutlined, RadarChartOutlined, CalendarOutlined, FileSearchOutlined, DesktopOutlined
-  , FunctionOutlined, ApartmentOutlined, BarChartOutlined
+  ApartmentOutlined,
+  BarChartOutlined,
+  CalendarOutlined,
+  CodeOutlined,
+  DesktopOutlined,
+  FunctionOutlined,
+  TableOutlined
 } from "@ant-design/icons";
 import {StateType} from "@/pages/DataStudio/model";
-import {connect} from "umi";
-import styles from "./index.less";
+import {connect, useIntl} from "umi";
 import StudioMsg from "./StudioMsg";
 import StudioTable from "./StudioTable";
 import StudioHistory from "./StudioHistory";
@@ -34,15 +38,16 @@ import StudioCA from "./StudioCA";
 import StudioProcess from "./StudioProcess";
 import {Scrollbars} from 'react-custom-scrollbars';
 import Chart from "@/components/Chart";
-import {useIntl} from 'umi';
-import {useEffect, useState} from "react";
+import {useState} from "react";
 
 const {TabPane} = Tabs;
 
 const StudioConsole = (props: any) => {
 
+
   const intl = useIntl();
-  const l = (id: string, defaultMessage?: string) => intl.formatMessage({id,defaultMessage});
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
 
   const {height, current} = props;
   let consoleHeight = (height - 37.6);
@@ -60,7 +65,7 @@ const StudioConsole = (props: any) => {
         tab={
           <span>
           <CodeOutlined/>
-            {l('pages.datastudio.label.info','信息')}
+            {l('pages.datastudio.label.info', '信息')}
         </span>
         }
         key="StudioMsg"
@@ -73,7 +78,7 @@ const StudioConsole = (props: any) => {
         tab={
           <span>
           <TableOutlined/>
-            {l('pages.datastudio.label.result','结果')}
+            {l('pages.datastudio.label.result', '结果')}
         </span>
         }
         key="StudioTable"
@@ -99,7 +104,7 @@ const StudioConsole = (props: any) => {
         tab={
           <span>
           <ApartmentOutlined/>
-            {l('pages.datastudio.label.lineage','血缘')}
+            {l('pages.datastudio.label.lineage', '血缘')}
         </span>
         }
         key="StudioConsanguinity"
@@ -112,7 +117,7 @@ const StudioConsole = (props: any) => {
         tab={
           <span>
           <DesktopOutlined/>
-            {l('pages.datastudio.label.process','进程')}
+            {l('pages.datastudio.label.process', '进程')}
         </span>
         }
         key="StudioProcess"
@@ -125,7 +130,7 @@ const StudioConsole = (props: any) => {
         tab={
           <span>
           <CalendarOutlined/>
-            {l('pages.datastudio.label.history','历史')}
+            {l('pages.datastudio.label.history', '历史')}
         </span>
         }
         key="StudioHistory"
@@ -138,7 +143,7 @@ const StudioConsole = (props: any) => {
         tab={
           <span>
           <FunctionOutlined/>
-            {l('pages.datastudio.label.function','函数')}
+            {l('pages.datastudio.label.function', '函数')}
         </span>
         }
         key="StudioFX"

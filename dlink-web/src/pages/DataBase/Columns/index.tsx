@@ -26,31 +26,32 @@ import {useIntl} from 'umi';
 const Columns = (props: any) => {
 
   const intl = useIntl();
-  const l = (id: string, defaultMessage?: string) => intl.formatMessage({id,defaultMessage});
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
 
   const {dbId, table, schema, scroll} = props;
 
   const cols = [{
-    title: l('global.table.no','序号'),
+    title: l('global.table.no', '序号'),
     dataIndex: 'position',
     isString: false,
   },
     {
-      title: l('global.table.columnName','字段名称'),
+      title: l('global.table.columnName', '字段名称'),
       dataIndex: 'name',
       copyable: true,
     },
     {
-      title: l('global.table.annotation','注释'),
+      title: l('global.table.annotation', '注释'),
       dataIndex: 'comment',
       // ellipsis: true,
     },
     {
-      title: l('global.table.type','类型'),
+      title: l('global.table.type', '类型'),
       dataIndex: 'type',
     },
     {
-      title: l('global.table.primarykey','主键'),
+      title: l('global.table.primarykey', '主键'),
       dataIndex: 'keyFlag',
       render: (_, record) => (
         <>
@@ -69,7 +70,7 @@ const Columns = (props: any) => {
       ],
       openSearch: 'dict',
     }, {
-      title: l('global.table.automationAdd','自增'),
+      title: l('global.table.automationAdd', '自增'),
       dataIndex: 'autoIncrement',
       render: (_, record) => (
         <>
@@ -88,7 +89,7 @@ const Columns = (props: any) => {
       ],
       openSearch: 'dict',
     }, {
-      title: l('global.table.isNull','非空'),
+      title: l('global.table.isNull', '非空'),
       dataIndex: 'nullable',
       render: (_, record) => (
         <>
@@ -107,24 +108,24 @@ const Columns = (props: any) => {
       ],
       openSearch: 'dict',
     }, {
-      title: l('global.table.default','默认值'),
+      title: l('global.table.default', '默认值'),
       dataIndex: 'defaultValue',
     }, {
-      title: l('global.table.precision','精度'),
+      title: l('global.table.precision', '精度'),
       dataIndex: 'precision',
       isString: false,
     }, {
-      title: l('global.table.decimalDigits','小数范围'),
+      title: l('global.table.decimalDigits', '小数范围'),
       dataIndex: 'scale',
       isString: false,
     }, {
-      title: l('global.table.character','字符集'),
+      title: l('global.table.character', '字符集'),
       dataIndex: 'characterSet',
     }, {
-      title: l('global.table.collationRule','排序规则'),
+      title: l('global.table.collationRule', '排序规则'),
       dataIndex: 'collation',
     }, {
-      title: l('global.table.javaType','Java 类型'),
+      title: l('global.table.javaType', 'Java 类型'),
       dataIndex: 'javaType',
     },]
   return (

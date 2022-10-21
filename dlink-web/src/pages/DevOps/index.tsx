@@ -33,7 +33,8 @@ const {Statistic} = StatisticCard;
 const DevOps = () => {
 
   const intl = useIntl();
-  const l = (id: string, defaultMessage?: string) => intl.formatMessage({id,defaultMessage});
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
 
   const [isHistory, setIsHistory] = useState<boolean>(false);
 
@@ -81,67 +82,67 @@ const DevOps = () => {
         {
           key: JOB_STATUS.CREATED,
           status: 'default',
-          title: l('pages.devops.jobstatus.CREATED','已创建'),
+          title: l('pages.devops.jobstatus.CREATED', '已创建'),
           value: statusHistoryCountData.created
         },
         {
           key: JOB_STATUS.INITIALIZING,
           status: 'default',
-          title: l('pages.devops.jobstatus.INITIALIZING','初始化'),
+          title: l('pages.devops.jobstatus.INITIALIZING', '初始化'),
           value: statusHistoryCountData.initializing
         },
         {
           key: JOB_STATUS.RUNNING,
           status: 'success',
-          title: l('pages.devops.jobstatus.RUNNING','运行中'),
+          title: l('pages.devops.jobstatus.RUNNING', '运行中'),
           value: statusHistoryCountData.running
         },
         {
           key: JOB_STATUS.FINISHED,
           status: 'processing',
-          title: l('pages.devops.jobstatus.FINISHED','已完成'),
+          title: l('pages.devops.jobstatus.FINISHED', '已完成'),
           value: statusHistoryCountData.finished
         },
         {
           key: JOB_STATUS.FAILING,
           status: 'error',
-          title: l('pages.devops.jobstatus.FAILING','异常中'),
+          title: l('pages.devops.jobstatus.FAILING', '异常中'),
           value: statusHistoryCountData.failing
         },
         {
           key: JOB_STATUS.FAILED,
           status: 'error',
-          title: l('pages.devops.jobstatus.FAILED','已异常'),
+          title: l('pages.devops.jobstatus.FAILED', '已异常'),
           value: statusHistoryCountData.failed
         },
         {
           key: JOB_STATUS.SUSPENDED,
           status: 'warning',
-          title: l('pages.devops.jobstatus.SUSPENDED','已暂停'),
+          title: l('pages.devops.jobstatus.SUSPENDED', '已暂停'),
           value: statusHistoryCountData.suspended
         },
         {
           key: JOB_STATUS.CANCELLING,
           status: 'warning',
-          title: l( 'pages.devops.jobstatus.CANCELLING','停止中'),
+          title: l('pages.devops.jobstatus.CANCELLING', '停止中'),
           value: statusHistoryCountData.cancelling
         },
         {
           key: JOB_STATUS.CANCELED,
           status: 'warning',
-          title: l('pages.devops.jobstatus.CANCELED','停止'),
+          title: l('pages.devops.jobstatus.CANCELED', '停止'),
           value: statusHistoryCountData.canceled
         },
         {
           key: JOB_STATUS.RESTARTING,
           status: 'default',
-          title: l('pages.devops.jobstatus.RESTARTING','重启中'),
+          title: l('pages.devops.jobstatus.RESTARTING', '重启中'),
           value: statusHistoryCountData.restarting
         },
         {
           key: JOB_STATUS.UNKNOWN,
           status: 'default',
-          title: l( 'pages.devops.jobstatus.UNKNOWN','未知'),
+          title: l('pages.devops.jobstatus.UNKNOWN', '未知'),
           value: statusHistoryCountData.unknown
         },
       ];
@@ -152,67 +153,67 @@ const DevOps = () => {
         {
           key: JOB_STATUS.CREATED,
           status: 'default',
-          title: l( 'pages.devops.jobstatus.CREATED','已创建'),
+          title: l('pages.devops.jobstatus.CREATED', '已创建'),
           value: statusCountData.created
         },
         {
           key: JOB_STATUS.INITIALIZING,
           status: 'default',
-          title: l('pages.devops.jobstatus.INITIALIZING','初始化'),
+          title: l('pages.devops.jobstatus.INITIALIZING', '初始化'),
           value: statusCountData.initializing
         },
         {
           key: JOB_STATUS.RUNNING,
           status: 'success',
-          title: l( 'pages.devops.jobstatus.RUNNING','运行中'),
+          title: l('pages.devops.jobstatus.RUNNING', '运行中'),
           value: statusCountData.running
         },
         {
           key: JOB_STATUS.FINISHED,
           status: 'processing',
-          title: l( 'pages.devops.jobstatus.FINISHED','已完成'),
+          title: l('pages.devops.jobstatus.FINISHED', '已完成'),
           value: statusCountData.finished
         },
         {
           key: JOB_STATUS.FAILING,
           status: 'error',
-          title: l('pages.devops.jobstatus.FAILING','异常中'),
+          title: l('pages.devops.jobstatus.FAILING', '异常中'),
           value: statusCountData.failing
         },
         {
           key: JOB_STATUS.FAILED,
           status: 'error',
-          title: l( 'pages.devops.jobstatus.FAILED','已异常'),
+          title: l('pages.devops.jobstatus.FAILED', '已异常'),
           value: statusCountData.failed
         },
         {
           key: JOB_STATUS.SUSPENDED,
           status: 'warning',
-          title: l( 'pages.devops.jobstatus.SUSPENDED','已暂停'),
+          title: l('pages.devops.jobstatus.SUSPENDED', '已暂停'),
           value: statusCountData.suspended
         },
         {
           key: JOB_STATUS.CANCELLING,
           status: 'warning',
-          title: l( 'pages.devops.jobstatus.CANCELLING','停止中'),
+          title: l('pages.devops.jobstatus.CANCELLING', '停止中'),
           value: statusCountData.cancelling
         },
         {
           key: JOB_STATUS.CANCELED,
           status: 'warning',
-          title: l( 'pages.devops.jobstatus.CANCELED','停止'),
+          title: l('pages.devops.jobstatus.CANCELED', '停止'),
           value: statusCountData.canceled
         },
         {
           key: JOB_STATUS.RESTARTING,
           status: 'default',
-          title: l( 'pages.devops.jobstatus.RESTARTING','重启中'),
+          title: l('pages.devops.jobstatus.RESTARTING', '重启中'),
           value: statusCountData.restarting
         },
         {
           key: JOB_STATUS.UNKNOWN,
           status: 'default',
-          title: l( 'pages.devops.jobstatus.UNKNOWN','未知'),
+          title: l('pages.devops.jobstatus.UNKNOWN', '未知'),
           value: statusCountData.unknown
         },
       ];

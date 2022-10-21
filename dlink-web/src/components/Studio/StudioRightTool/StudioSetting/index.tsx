@@ -18,10 +18,16 @@
  */
 
 
-import {connect} from "umi";
+import {connect, useIntl} from "umi";
 import {StateType} from "@/pages/DataStudio/model";
-import {Form, InputNumber, Input, Switch, Select, Tag, Row, Col, Badge, Tooltip, Button, Typography, Space} from "antd";
-import {InfoCircleOutlined, PlusOutlined, MinusSquareOutlined, MinusCircleOutlined,PaperClipOutlined} from "@ant-design/icons";
+import {Badge, Button, Col, Form, Input, InputNumber, Row, Select, Space, Switch, Tag, Tooltip, Typography} from "antd";
+import {
+  InfoCircleOutlined,
+  MinusCircleOutlined,
+  MinusSquareOutlined,
+  PaperClipOutlined,
+  PlusOutlined
+} from "@ant-design/icons";
 import styles from "./index.less";
 import {useEffect} from "react";
 import {showTables} from "@/components/Studio/StudioEvent/DDL";
@@ -35,12 +41,27 @@ const {Text} = Typography;
 
 const StudioSetting = (props: any) => {
 
-  const {sessionCluster, clusterConfiguration, current, form, dispatch, tabs, currentSession, env,group, toolHeight} = props;
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
+  const {
+    sessionCluster,
+    clusterConfiguration,
+    current,
+    form,
+    dispatch,
+    tabs,
+    currentSession,
+    env,
+    group,
+    toolHeight
+  } = props;
 
   const getClusterOptions = () => {
     const itemList = [];
     for (const item of sessionCluster) {
-      const tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias === "" ? item.name : item.alias}</>);
+      const tag = (<><Tag
+        color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias === "" ? item.name : item.alias}</>);
       itemList.push(<Option key={item.id} value={item.id} label={tag}>
         {tag}
       </Option>)
@@ -51,7 +72,8 @@ const StudioSetting = (props: any) => {
   const getClusterConfigurationOptions = () => {
     const itemList = [];
     for (const item of clusterConfiguration) {
-      const tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias === "" ? item.name : item.alias}</>);
+      const tag = (<><Tag
+        color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias === "" ? item.name : item.alias}</>);
       itemList.push(<Option key={item.id} value={item.id} label={tag}>
         {tag}
       </Option>)
@@ -65,7 +87,7 @@ const StudioSetting = (props: any) => {
     </Option>];
     for (const item of env) {
       const tag = (<>{item.enabled ? <Badge status="success"/> : <Badge status="error"/>}
-        {item.fragment ? <PaperClipOutlined /> : undefined}{item.alias}</>);
+        {item.fragment ? <PaperClipOutlined/> : undefined}{item.alias}</>);
       itemList.push(<Option key={item.id} value={item.id} label={tag}>
         {tag}
       </Option>)
@@ -147,7 +169,8 @@ const StudioSetting = (props: any) => {
           {(current.task.type === RUN_MODE.YARN_SESSION || current.task.type === RUN_MODE.KUBERNETES_SESSION || current.task.type === RUN_MODE.STANDALONE) ? (
             <Row>
               <Col span={24}>
-                <Form.Item label="Flink集群" tooltip={`选择Flink集群进行 ${current.task.type} 模式的远程提交任务`} name="clusterId"
+                <Form.Item label="Flink集群" tooltip={`选择Flink集群进行 ${current.task.type} 模式的远程提交任务`}
+                           name="clusterId"
                            className={styles.form_item}>
                   {
                     currentSession.session ?
@@ -167,10 +190,11 @@ const StudioSetting = (props: any) => {
                 </Form.Item>
               </Col>
             </Row>) : undefined}
-          {(current.task.type === RUN_MODE.YARN_PER_JOB || current.task.type === RUN_MODE.YARN_APPLICATION|| current.task.type === RUN_MODE.KUBERNETES_APPLICATION) ? (
+          {(current.task.type === RUN_MODE.YARN_PER_JOB || current.task.type === RUN_MODE.YARN_APPLICATION || current.task.type === RUN_MODE.KUBERNETES_APPLICATION) ? (
             <Row>
               <Col span={24}>
-                <Form.Item label="Flink集群配置" tooltip={`选择Flink集群配置进行 ${current.task.type} 模式的远程提交任务`}
+                <Form.Item label="Flink集群配置"
+                           tooltip={`选择Flink集群配置进行 ${current.task.type} 模式的远程提交任务`}
                            name="clusterConfigurationId"
                            className={styles.form_item}>
                   <Select
@@ -223,7 +247,10 @@ const StudioSetting = (props: any) => {
             <Col span={12}>
               <Form.Item
                 label="全局变量" className={styles.form_item} name="fragment" valuePropName="checked"
-                tooltip={{title: '【增强特性】 开启FlinkSql全局变量，使用“:=”进行定义（以“;”结束），“${}”进行调用', icon: <InfoCircleOutlined/>}}
+                tooltip={{
+                  title: '【增强特性】 开启FlinkSql全局变量，使用“:=”进行定义（以“;”结束），“${}”进行调用',
+                  icon: <InfoCircleOutlined/>
+                }}
               >
                 <Switch checkedChildren="启用" unCheckedChildren="禁用"
                 />
@@ -316,7 +343,7 @@ const StudioSetting = (props: any) => {
   );
 };
 
-export default connect(({Studio, Jar, Alert}: { Studio: StateType, Jar: JarStateType , Alert: AlertStateType }) => ({
+export default connect(({Studio, Jar, Alert}: { Studio: StateType, Jar: JarStateType, Alert: AlertStateType }) => ({
   sessionCluster: Studio.sessionCluster,
   clusterConfiguration: Studio.clusterConfiguration,
   current: Studio.current,

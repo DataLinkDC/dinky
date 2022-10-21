@@ -22,6 +22,7 @@ import React, {useState} from 'react';
 import {Button, Form, Input, Modal} from 'antd';
 
 import type {CatalogueTableListItem} from '../data.d';
+import {useIntl} from "umi";
 
 export type UpdateFormProps = {
   onCancel: (flag?: boolean, formVals?: Partial<CatalogueTableListItem>) => void;
@@ -38,6 +39,11 @@ const formLayout = {
 };
 
 const UpdateCatalogueForm: React.FC<UpdateFormProps> = (props) => {
+
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
   const [formVals, setFormVals] = useState<Partial<CatalogueTableListItem>>({
     id: props.values.id,
     taskId: props.values.taskId,

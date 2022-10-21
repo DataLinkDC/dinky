@@ -41,8 +41,8 @@ const CheckboxGroup = Checkbox.Group;
 
 const OpsStatusModal: React.FC<IOpsStatusModalProps> = (props): React.ReactElement => {
 
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   const {opsStatusVisible, opsStatus, opsStatusListTree, onOpsStatusCallBack} = props

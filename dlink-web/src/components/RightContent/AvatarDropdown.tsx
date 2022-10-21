@@ -64,8 +64,8 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
   const {initialState, setInitialState} = useModel('@@initialState');
   const actionRef = useRef<ActionType>();
 
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const onMenuClick = useCallback(
     (event: {
@@ -80,7 +80,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
         loginOut();
         return;
       }
-      history.push(`/account/${key}`);
+      // history.push(`/account/${key}`);
     },
     [initialState, setInitialState],
   );
@@ -119,14 +119,13 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
             title={item.tenantCode}
             icon={<SecurityScanOutlined/>}
             onClick={(e) => {
-              console.log(e)
               // get choose tenant title
-              let title = e.domEvent.target.textContent;
+              let title: string = e.domEvent.target.textContent;
               // get choose tenantId
               let tenantInfoId = e.key;
               Modal.confirm({
                 title: l('menu.account.checkTenant'),
-                content: l('menu.account.checkTenantConfirm'),
+                content: l('menu.account.checkTenantConfirm', '', {tenantCode: title}),
                 okText: l('button.confirm'),
                 cancelText: l('button.cancel'),
                 onOk: async () => {

@@ -18,19 +18,19 @@
  */
 
 import type {FormInstance} from 'antd/es/form';
-import {Button, Form, InputNumber, message, Select, Switch, Checkbox, Row, Col} from "antd";
+import {Button, Checkbox, Col, Form, InputNumber, message, Row, Select, Switch} from "antd";
 import {StateType} from "@/pages/DataStudio/model";
-import {connect} from "umi";
-import React, {useState, useEffect} from "react";
-import {
-  createTaskDefinition,
-  getTaskMainInfos,
-  updateTaskDefinition
-} from "@/pages/DataStudio/service";
+import {connect, useIntl} from "umi";
+import React, {useEffect, useState} from "react";
+import {createTaskDefinition, getTaskMainInfos, updateTaskDefinition} from "@/pages/DataStudio/service";
 import {CODE} from "@/components/Common/crud";
 import TextArea from "antd/es/input/TextArea";
 
 const DolphinPush = (props: any) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
   const {data, taskCur, handleDolphinModalVisible} = props;
 
   const [options, setOptions] = useState([]);
@@ -196,7 +196,8 @@ const DolphinPush = (props: any) => {
       <Form.Item name={['timeoutFlag']} style={{marginBottom: 10}} label="超时告警" valuePropName="checked">
         <Switch checkedChildren="OPEN" unCheckedChildren="CLOSE" onChange={onSwitchChange}/>
       </Form.Item>
-      <Form.Item name={['timeoutNotifyStrategy']} style={{marginBottom: 10}} hidden={!timeoutFlagHidden} label="超时策略">
+      <Form.Item name={['timeoutNotifyStrategy']} style={{marginBottom: 10}} hidden={!timeoutFlagHidden}
+                 label="超时策略">
         <CheckboxGroup>
           <Row>
             <Col span={12}>

@@ -20,7 +20,7 @@
 
 import {Button, Empty, Modal, Select, Tabs, Tag, Tree} from "antd";
 import {StateType} from "@/pages/DataStudio/model";
-import {connect} from "umi";
+import {connect, useIntl} from "umi";
 import React, {useState} from "react";
 import {CodepenOutlined, DatabaseOutlined, DownOutlined, OrderedListOutlined, TableOutlined} from '@ant-design/icons';
 import {showMetaDataTable} from "@/components/Studio/StudioEvent/DDL";
@@ -35,6 +35,9 @@ const {Option} = Select;
 const {TabPane} = Tabs;
 
 const StudioMetaData = (props: any) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {database, toolHeight, dispatch} = props;
   const [databaseId, setDatabaseId] = useState<number>();

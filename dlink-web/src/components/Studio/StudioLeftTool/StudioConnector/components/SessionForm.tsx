@@ -19,10 +19,10 @@
 
 
 import React, {useState} from 'react';
-import {Form, Button, Input, Modal,Select,Tag,Switch} from 'antd';
+import {Button, Form, Input, Modal, Select, Switch, Tag} from 'antd';
 
 import {SessionItem} from '../data.d';
-import {connect} from "umi";
+import {connect, useIntl} from "umi";
 import {StateType} from "@/pages/DataStudio/model";
 
 export type UpdateFormProps = {
@@ -41,6 +41,10 @@ const formLayout = {
 };
 
 const SessionForm: React.FC<UpdateFormProps> = (props) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
   const [formVals, setFormVals] = useState<Partial<SessionItem>>({
     session: props.values.session,
     type: props.values.type,
@@ -65,13 +69,14 @@ const SessionForm: React.FC<UpdateFormProps> = (props) => {
     handleUpdate({...formVals, ...fieldsValue});
   };
 
-  const getClusterOptions = ()=>{
+  const getClusterOptions = () => {
     let itemList = [(<Option value={0} label={(<><Tag color="default">Local</Tag>本地环境</>)}>
       <Tag color="default">Local</Tag>
       本地环境
     </Option>)];
-    for(let item of cluster){
-      let tag =(<><Tag color={item.enabled?"processing":"error"}>{item.type}</Tag>{item.alias === "" ? item.name : item.alias}</>);
+    for (let item of cluster) {
+      let tag = (<><Tag
+        color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias === "" ? item.name : item.alias}</>);
       itemList.push(<Option value={item.id} label={tag}>
         {tag}
       </Option>)
@@ -91,7 +96,7 @@ const SessionForm: React.FC<UpdateFormProps> = (props) => {
         <Item
           name="type"
           label="访问权限"
-          >
+        >
           <Select defaultValue="PUBLIC">
             <Option value="PUBLIC">共享</Option>
             <Option value="PRIVATE">私密</Option>
@@ -100,16 +105,16 @@ const SessionForm: React.FC<UpdateFormProps> = (props) => {
         <Item
           name="useRemote"
           label="是否远程"
-          >
+        >
           <Switch checkedChildren="启用" unCheckedChildren="禁用"
                   defaultChecked={formVals.useRemote}/>
         </Item>
         <Item
           name="clusterId"
           label="集群"
-          >
+        >
           <Select
-            style={{ width: '100%' }}
+            style={{width: '100%'}}
             placeholder="选择Flink集群"
             optionLabelProp="label"
           >

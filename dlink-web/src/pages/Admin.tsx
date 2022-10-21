@@ -26,16 +26,18 @@ import {useIntl} from 'umi';
 
 export default (): React.ReactNode => {
 
+
   const intl = useIntl();
-  const l = (id: string, defaultMessage?: string) => intl.formatMessage({id,defaultMessage});
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
 
   return (
     <PageHeaderWrapper
-      content={l('pages.admin.subPage.title',' 这个页面只有 admin 权限才能查看')}
+      content={l('pages.admin.subPage.title', ' 这个页面只有 admin 权限才能查看')}
     >
       <Card>
         <Alert
-          message={l('pages.welcome.alertMessage','实时计算平台 Dlink & Apache Flink 即将发布，目前为体验版，版本号为0.1.0。')}
+          message={l('pages.welcome.alertMessage', '实时计算平台 Dlink & Apache Flink 即将发布，目前为体验版，版本号为0.1.0。')}
           type="success"
           showIcon
           banner

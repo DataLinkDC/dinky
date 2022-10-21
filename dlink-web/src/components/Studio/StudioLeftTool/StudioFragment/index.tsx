@@ -23,8 +23,12 @@ import {Drawer} from "antd";
 import ProDescriptions from '@ant-design/pro-descriptions';
 import {queryData} from "@/components/Common/crud";
 import {FragmentVariableTableListItem} from "@/pages/FragmentVariable/data";
+import {useIntl} from "umi";
 
 const StudioFragment = (props: any) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {toolHeight, dispatch} = props;
   const [row, setRow] = useState<{}>();

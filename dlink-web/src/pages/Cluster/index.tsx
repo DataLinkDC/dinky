@@ -49,7 +49,8 @@ const url = '/api/cluster';
 const ClusterTableList: React.FC<{}> = (props: any) => {
 
   const intl = useIntl();
-  const l = (id: string, defaultMessage?: string) => intl.formatMessage({id,defaultMessage});
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
 
   const {dispatch} = props;
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
@@ -103,20 +104,20 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
     <Dropdown
       overlay={
         <Menu onClick={({key}) => editAndDelete(key, item)}>
-          <Menu.Item key="edit">{l('global.table.edit','编辑')}</Menu.Item>
-          <Menu.Item key="delete">{l('global.table.delete','删除')}</Menu.Item>
+          <Menu.Item key="edit">{l('global.table.edit', '编辑')}</Menu.Item>
+          <Menu.Item key="delete">{l('global.table.delete', '删除')}</Menu.Item>
         </Menu>
       }
     >
       <a>
-        {l('global.table.more','更多')} <DownOutlined/>
+        {l('global.table.more', '更多')} <DownOutlined/>
       </a>
     </Dropdown>
   );
 
   const columns: ProColumns<ClusterTableListItem>[] = [
     {
-      title: l('global.table.instanceName','名称'),
+      title: l('global.table.instanceName', '名称'),
       dataIndex: 'name',
       tip: '名称是唯一的',
       sorter: true,
@@ -133,20 +134,20 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: l('global.table.instanceId','集群ID'),
+      title: l('global.table.instanceId', '集群ID'),
       dataIndex: 'id',
       hideInTable: true,
       hideInForm: true,
       hideInSearch: true,
     },
     {
-      title: l('global.table.nickName','别名'),
+      title: l('global.table.nickName', '别名'),
       sorter: true,
       dataIndex: 'alias',
       hideInTable: false,
     },
     {
-      title: l('global.table.type','类型'),
+      title: l('global.table.type', '类型'),
       sorter: true,
       dataIndex: 'type',
       hideInForm: false,
@@ -189,7 +190,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: l('global.table.jobManagerHaAddress','JobManager HA 地址'),
+      title: l('global.table.jobManagerHaAddress', 'JobManager HA 地址'),
       sorter: true,
       dataIndex: 'hosts',
       valueType: 'textarea',
@@ -203,14 +204,14 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: l('global.table.jobManagerAddress','JobManager地址'),
+      title: l('global.table.jobManagerAddress', 'JobManager地址'),
       sorter: true,
       dataIndex: 'jobManagerHost',
       hideInForm: true,
       hideInSearch: true,
       hideInTable: false,
     }, {
-      title: l('global.table.version','版本'),
+      title: l('global.table.version', '版本'),
       sorter: true,
       dataIndex: 'version',
       hideInForm: true,
@@ -218,25 +219,25 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       hideInTable: false,
     },
     {
-      title: l('global.table.status','状态'),
+      title: l('global.table.status', '状态'),
       dataIndex: 'status',
       hideInForm: true,
       hideInSearch: true,
       hideInTable: false,
       filters: [
         {
-          text: l('global.table.status.normal','正常'),
+          text: l('global.table.status.normal', '正常'),
           value: 1,
         },
         {
-          text: l('global.table.status.abnormal','异常'),
+          text: l('global.table.status.abnormal', '异常'),
           value: 0,
         },
       ],
       filterMultiple: false,
       valueEnum: {
-        1: {text: l('global.table.status.normal','正常'), status: 'Success'},
-        0: {text: l('global.table.status.abnormal','异常'), status: 'Error'},
+        1: {text: l('global.table.status.normal', '正常'), status: 'Success'},
+        0: {text: l('global.table.status.abnormal', '异常'), status: 'Error'},
       },
     },
     {
@@ -249,57 +250,57 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       hideInTable: true,
     },
     {
-      title: l('global.table.isUse','是否启用'),
+      title: l('global.table.isUse', '是否启用'),
       dataIndex: 'enabled',
       hideInForm: true,
       hideInSearch: true,
       hideInTable: false,
       filters: [
         {
-          text: l('global.table.inUse','已启用'),
+          text: l('global.table.inUse', '已启用'),
           value: 1,
         },
         {
-          text: l('global.table.notUse','已禁用'),
+          text: l('global.table.notUse', '已禁用'),
           value: 0,
         },
       ],
       filterMultiple: false,
       valueEnum: {
-        true: {text: l('global.table.inUse','已启用'), status: 'Success'},
-        false: {text: l('global.table.notUse','已禁用'), status: 'Error'},
+        true: {text: l('global.table.inUse', '已启用'), status: 'Success'},
+        false: {text: l('global.table.notUse', '已禁用'), status: 'Error'},
       },
     },
     {
-      title: l('global.table.registType','注册方式'),
+      title: l('global.table.registType', '注册方式'),
       dataIndex: 'autoRegisters',
       hideInForm: true,
       hideInSearch: true,
       hideInTable: false,
       filters: [
         {
-          text: l('global.table.registType.automatic','自动'),
+          text: l('global.table.registType.automatic', '自动'),
           value: 1,
         },
         {
-          text: l('global.table.registType.manual','手动'),
+          text: l('global.table.registType.manual', '手动'),
           value: 0,
         },
       ],
       filterMultiple: false,
       valueEnum: {
         true: {
-          text: l('global.table.registType.automatic','自动'),
+          text: l('global.table.registType.automatic', '自动'),
           status: 'Success'
         },
         false: {
-          text: l('global.table.registType.manual','手动'),
+          text: l('global.table.registType.manual', '手动'),
           status: 'Error'
         },
       },
     },
     {
-      title: l('global.table.createTime','创建时间'),
+      title: l('global.table.createTime', '创建时间'),
       dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',
@@ -317,7 +318,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: l('global.table.updateTime','最近更新时间'),
+      title: l('global.table.updateTime', '最近更新时间'),
       dataIndex: 'updateTime',
       sorter: true,
       valueType: 'dateTime',
@@ -334,7 +335,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: l('global.table.operate','操作'),
+      title: l('global.table.operate', '操作'),
       dataIndex: 'option',
       tooltip: 'FLinkWebUI连接 当集群状态为`可用`时! 支持 KUBERNETES 之外的模式',
       valueType: 'option',
@@ -345,7 +346,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
             setFormValues(record);
           }}
         >
-          {l('global.table.config','配置')}
+          {l('global.table.config', '配置')}
         </a>,
         <MoreBtn key="more" item={record}/>,
         ((record.status && (record.type === RUN_MODE.YARN_SESSION
@@ -370,7 +371,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
   return (
     <PageContainer title={false}>
       <ProTable<ClusterTableListItem>
-        headerTitle={l('global.table.clusterManagement','集群管理')}
+        headerTitle={l('global.table.clusterManagement', '集群管理')}
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -378,13 +379,13 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
         }}
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined/> {l('global.table.create','新建')}
+            <PlusOutlined/> {l('global.table.create', '新建')}
           </Button>,
           <Button type="primary" onClick={() => checkHeartBeats()}>
-            <HeartOutlined/> {l('global.table.heartbeat','心跳')}
+            <HeartOutlined/> {l('global.table.heartbeat', '心跳')}
           </Button>,
           <Button type="primary" onClick={() => clearCluster()}>
-            <ClearOutlined/> {l('global.table.recycle','回收')}
+            <ClearOutlined/> {l('global.table.recycle', '回收')}
           </Button>,
         ]}
         request={(params, sorter, filter) => queryData(url, {...params, sorter, filter})}

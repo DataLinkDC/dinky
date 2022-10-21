@@ -18,20 +18,12 @@
  */
 
 
-import {
-  message, Button, Table, Empty, Divider,
-  Tooltip, Drawer, Modal
-} from "antd";
+import {Button, Drawer, Empty, Modal, Table, Tooltip} from "antd";
 import ProDescriptions from '@ant-design/pro-descriptions';
 import {StateType} from "@/pages/DataStudio/model";
-import {connect} from "umi";
-import {useState} from "react";
-import styles from "./index.less";
-import {
-  ReloadOutlined,
-  PlusOutlined
-} from '@ant-design/icons';
-import React from "react";
+import {connect, useIntl} from "umi";
+import React, {useState} from "react";
+import {PlusOutlined, ReloadOutlined} from '@ant-design/icons';
 import {showCluster} from "../../StudioEvent/DDL";
 import {handleAddOrUpdate, handleRemove} from "@/components/Common/crud";
 import ClusterForm from "@/pages/Cluster/components/ClusterForm";
@@ -40,6 +32,9 @@ import {Scrollbars} from 'react-custom-scrollbars';
 const url = '/api/cluster';
 
 const StudioCluster = (props: any) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {cluster, toolHeight, dispatch} = props;
   const [createModalVisible, handleCreateModalVisible] = useState<boolean>(false);
@@ -186,7 +181,7 @@ const StudioCluster = (props: any) => {
       {
         title: '集群配置ID',
         dataIndex: 'clusterConfigurationId',
-      },{
+      }, {
         title: '作业ID',
         dataIndex: 'taskId',
       },
@@ -205,7 +200,7 @@ const StudioCluster = (props: any) => {
         dataIndex: 'option',
         valueType: 'option',
         render: (_, record) => [
-          <Button  type="dashed" onClick={() => onModifyCluster(record)}>
+          <Button type="dashed" onClick={() => onModifyCluster(record)}>
             配置
           </Button>, <Button danger onClick={() => onDeleteCluster(record)}>
             删除
@@ -289,7 +284,7 @@ const StudioCluster = (props: any) => {
           }}
           modalVisible={updateModalVisible}
           values={row}
-        />):undefined}
+        />) : undefined}
         <Drawer
           width={600}
           visible={!!row?.id}

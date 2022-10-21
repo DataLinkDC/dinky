@@ -23,6 +23,7 @@ import {Button, Form, Input, Modal, Select} from 'antd';
 
 import type {TaskTableListItem} from '../data.d';
 import {DIALECT} from "@/components/Studio/conf";
+import {useIntl} from "umi";
 
 const {Option} = Select;
 
@@ -40,6 +41,10 @@ const formLayout = {
 };
 
 const SimpleTaskForm: React.FC<UpdateFormProps> = (props) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
   const [formVals, setFormVals] = useState<Partial<TaskTableListItem>>({
     id: props.values.id,
     name: props.values.name,
@@ -66,7 +71,7 @@ const SimpleTaskForm: React.FC<UpdateFormProps> = (props) => {
   const renderContent = () => {
     return (
       <>
-        {isCreate?(<Form.Item
+        {isCreate ? (<Form.Item
           label="作业类型" name="dialect"
           tooltip='指定作业类型，默认为 FlinkSql'
         >
@@ -87,7 +92,7 @@ const SimpleTaskForm: React.FC<UpdateFormProps> = (props) => {
             <Option value={DIALECT.JAVA}>{DIALECT.JAVA}</Option>
             <Option value={DIALECT.SQL}>{DIALECT.SQL}</Option>
           </Select>
-        </Form.Item>):undefined}
+        </Form.Item>) : undefined}
         <Form.Item
           name="name"
           label="名称"

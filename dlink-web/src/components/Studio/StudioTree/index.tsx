@@ -19,7 +19,7 @@
 
 
 import React, {Key, useEffect, useState} from "react";
-import {connect} from "umi";
+import {connect, useIntl} from "umi";
 import {DownloadOutlined, DownOutlined, FolderAddOutlined, SwitcherOutlined, UploadOutlined} from "@ant-design/icons";
 import type {UploadProps} from 'antd';
 import {Button, Col, Empty, Input, Menu, message, Modal, Row, Tooltip, Tree, Upload} from 'antd';
@@ -94,6 +94,10 @@ const {DirectoryTree} = Tree;
 const {Search} = Input;
 
 const StudioTree: React.FC<StudioTreeProps> = (props) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
   const {rightClickMenu, dispatch, tabs, refs, toolHeight} = props;
   const [treeData, setTreeData] = useState<TreeDataNode[]>();
   const [expandedKeys, setExpandedKeys] = useState<Key[]>();
