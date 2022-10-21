@@ -35,7 +35,10 @@ import org.apache.flink.table.api.TableResult;
  */
 public class FlinkInterceptor {
 
-    public static String pretreatStatement(Executor executor, String statement) {
+    private FlinkInterceptor() {
+    }
+
+    public static String preTreatStatement(Executor executor, String statement) {
         statement = SqlUtil.removeNote(statement);
         if (executor.isUseSqlFragment()) {
             statement = executor.getSqlManager().parseVariable(statement);

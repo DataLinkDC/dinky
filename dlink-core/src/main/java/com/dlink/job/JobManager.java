@@ -1,661 +1,732 @@
-/*
- *
- *  Licensed to the Apache Software Foundation (ASF) under one or more
- *  contributor license agreements.  See the NOTICE file distributed with
- *  this work for additional information regarding copyright ownership.
- *  The ASF licenses this file to You under the Apache License, Version 2.0
- *  (the "License"); you may not use this file except in compliance with
- *  the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- */
+ /*
+  *  Licensed to the Apache Software Foundation (ASF) under one or more
+  *  contributor license agreements.  See the NOTICE file distributed with
+  *  this work for additional information regarding copyright ownership.
+  *  The ASF licenses this file to You under the Apache License, Version 2.0
+  *  (the "License"); you may not use this file except in compliance with
+  *  the License.  You may obtain a copy of the License at
+  *
+  *     http://www.apache.org/licenses/LICENSE-2.0
+  *
+  *  Unless required by applicable law or agreed to in writing, software
+  *  distributed under the License is distributed on an "AS IS" BASIS,
+  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  *  See the License for the specific language governing permissions and
+  *  limitations under the License.
+  *
+  */
 
-package com.dlink.job;
 
-import com.dlink.api.FlinkAPI;
-import com.dlink.assertion.Asserts;
-import com.dlink.constant.FlinkSQLConstant;
-import com.dlink.executor.EnvironmentSetting;
-import com.dlink.executor.Executor;
-import com.dlink.executor.ExecutorSetting;
-import com.dlink.explainer.Explainer;
-import com.dlink.gateway.Gateway;
-import com.dlink.gateway.GatewayType;
-import com.dlink.gateway.config.ActionType;
-import com.dlink.gateway.config.FlinkConfig;
-import com.dlink.gateway.config.GatewayConfig;
-import com.dlink.gateway.result.GatewayResult;
-import com.dlink.gateway.result.SavePointResult;
-import com.dlink.gateway.result.TestResult;
-import com.dlink.interceptor.FlinkInterceptor;
-import com.dlink.interceptor.FlinkInterceptorResult;
-import com.dlink.model.SystemConfiguration;
-import com.dlink.parser.SqlType;
-import com.dlink.pool.ClassEntity;
-import com.dlink.pool.ClassPool;
-import com.dlink.process.context.ProcessContextHolder;
-import com.dlink.result.ErrorResult;
-import com.dlink.result.ExplainResult;
-import com.dlink.result.IResult;
-import com.dlink.result.InsertResult;
-import com.dlink.result.ResultBuilder;
-import com.dlink.result.ResultPool;
-import com.dlink.result.SelectResult;
-import com.dlink.session.ExecutorEntity;
-import com.dlink.session.SessionConfig;
-import com.dlink.session.SessionInfo;
-import com.dlink.session.SessionPool;
-import com.dlink.trans.Operations;
-import com.dlink.utils.LogUtil;
-import com.dlink.utils.SqlUtil;
-import com.dlink.utils.UDFUtil;
+ package com.dlink.job;
 
-import org.apache.flink.configuration.CoreOptions;
-import org.apache.flink.configuration.DeploymentOptions;
-import org.apache.flink.configuration.PipelineOptions;
-import org.apache.flink.core.execution.JobClient;
-import org.apache.flink.optimizer.CompilerException;
-import org.apache.flink.runtime.jobgraph.JobGraph;
-import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
-import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
-import org.apache.flink.streaming.api.environment.ExecutionCheckpointingOptions;
-import org.apache.flink.streaming.api.graph.StreamGraph;
-import org.apache.flink.table.api.TableResult;
-import org.apache.flink.yarn.configuration.YarnConfigOptions;
+ import cn.hutool.core.io.FileUtil;
+ import cn.hutool.core.util.URLUtil;
+ import com.dlink.api.FlinkAPI;
+ import com.dlink.assertion.Asserts;
+ import com.dlink.constant.FlinkSQLConstant;
+ import com.dlink.executor.EnvironmentSetting;
+ import com.dlink.executor.Executor;
+ import com.dlink.executor.ExecutorSetting;
+ import com.dlink.explainer.Explainer;
+ import com.dlink.gateway.Gateway;
+ import com.dlink.gateway.GatewayType;
+ import com.dlink.gateway.config.ActionType;
+ import com.dlink.gateway.config.FlinkConfig;
+ import com.dlink.gateway.config.GatewayConfig;
+ import com.dlink.gateway.result.GatewayResult;
+ import com.dlink.gateway.result.SavePointResult;
+ import com.dlink.gateway.result.TestResult;
+ import com.dlink.interceptor.FlinkInterceptor;
+ import com.dlink.interceptor.FlinkInterceptorResult;
+ import com.dlink.model.SystemConfiguration;
+ import com.dlink.parser.SqlType;
+ import com.dlink.pool.ClassEntity;
+ import com.dlink.pool.ClassPool;
+ import com.dlink.process.context.ProcessContextHolder;
+ import com.dlink.result.ErrorResult;
+ import com.dlink.result.ExplainResult;
+ import com.dlink.result.IResult;
+ import com.dlink.result.InsertResult;
+ import com.dlink.result.ResultBuilder;
+ import com.dlink.result.ResultPool;
+ import com.dlink.result.SelectResult;
+ import com.dlink.session.ExecutorEntity;
+ import com.dlink.session.SessionConfig;
+ import com.dlink.session.SessionInfo;
+ import com.dlink.session.SessionPool;
+ import com.dlink.trans.Operations;
+ import com.dlink.utils.LogUtil;
+ import com.dlink.utils.SqlUtil;
+ import com.dlink.utils.UDFUtil;
+ import com.fasterxml.jackson.databind.node.ObjectNode;
+ import org.apache.flink.configuration.CoreOptions;
+ import org.apache.flink.configuration.DeploymentOptions;
+ import org.apache.flink.configuration.PipelineOptions;
+ import org.apache.flink.core.execution.JobClient;
+ import org.apache.flink.optimizer.CompilerException;
+ import org.apache.flink.runtime.jobgraph.JobGraph;
+ import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
+ import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
+ import org.apache.flink.streaming.api.environment.ExecutionCheckpointingOptions;
+ import org.apache.flink.streaming.api.graph.StreamGraph;
+ import org.apache.flink.table.api.TableResult;
+ import org.apache.flink.yarn.configuration.YarnConfigOptions;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+ import java.time.LocalDateTime;
+ import java.util.ArrayList;
+ import java.util.Arrays;
+ import java.util.Collections;
+ import java.util.List;
+ import java.util.Map;
+ import java.util.function.BinaryOperator;
+ import java.util.regex.Matcher;
+ import java.util.regex.Pattern;
+ import java.util.stream.Collectors;
+ import java.util.stream.Stream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+ /**
+  * JobManager
+  *
+  * @author wenmo
+  * @since 2021/5/25 15:27
+  **/
+ public class JobManager {
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+     private static final Logger logger = LoggerFactory.getLogger(JobManager.class);
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.URLUtil;
+     private JobHandler handler;
+     private EnvironmentSetting environmentSetting;
+     private ExecutorSetting executorSetting;
+     private JobConfig config;
+     private Executor executor;
+     private boolean useGateway = false;
+     private boolean isPlanMode = false;
+     private boolean useStatementSet = false;
+     private boolean useRestAPI = false;
+     private String sqlSeparator = FlinkSQLConstant.SEPARATOR;
+     private GatewayType runMode = GatewayType.LOCAL;
 
-/**
- * JobManager
- *
- * @author wenmo
- * @since 2021/5/25 15:27
- **/
-public class JobManager {
+     public JobManager() {
+     }
 
-    private static final Logger logger = LoggerFactory.getLogger(JobManager.class);
+     public JobManager(JobConfig config) {
+         this.config = config;
+     }
 
-    private JobHandler handler;
-    private EnvironmentSetting environmentSetting;
-    private ExecutorSetting executorSetting;
-    private JobConfig config;
-    private Executor executor;
-    private boolean useGateway = false;
-    private boolean isPlanMode = false;
-    private boolean useStatementSet = false;
-    private boolean useRestAPI = false;
-    private String sqlSeparator = FlinkSQLConstant.SEPARATOR;
-    private GatewayType runMode = GatewayType.LOCAL;
+     public static JobManager build() {
+         JobManager manager = new JobManager();
+         manager.init();
+         return manager;
+     }
 
-    public JobManager() {
-    }
+     public static JobManager build(JobConfig config) {
+         initGatewayConfig(config);
+         JobManager manager = new JobManager(config);
+         manager.init();
+         manager.executor.initUDF(config.getJarFiles());
+         return manager;
+     }
 
-    public void setUseGateway(boolean useGateway) {
-        this.useGateway = useGateway;
-    }
+     public static JobManager buildPlanMode(JobConfig config) {
+         JobManager manager = new JobManager(config);
+         manager.setPlanMode(true);
+         manager.init();
+         manager.executor.initUDF(config.getJarFiles());
+         ProcessContextHolder.getProcess().info("Build Flink plan mode success.");
+         return manager;
+     }
 
-    public boolean isUseGateway() {
-        return useGateway;
-    }
+     private static void initGatewayConfig(JobConfig config) {
+         if (useGateway(config.getType())) {
+             Asserts.checkNull(config.getGatewayConfig(), "GatewayConfig 不能为空");
+             config.getGatewayConfig().setType(GatewayType.get(config.getType()));
+             config.getGatewayConfig().setTaskId(config.getTaskId());
+             config.getGatewayConfig().getFlinkConfig().setJobName(config.getJobName());
+             config.getGatewayConfig().getFlinkConfig().setSavePoint(config.getSavePointPath());
+             config.setUseRemote(false);
+         }
+     }
 
-    public void setPlanMode(boolean planMode) {
-        isPlanMode = planMode;
-    }
+     public static boolean useGateway(String type) {
+         return (GatewayType.YARN_PER_JOB.equalsValue(type) || GatewayType.YARN_APPLICATION.equalsValue(type)
+                 || GatewayType.KUBERNETES_APPLICATION.equalsValue(type));
+     }
 
-    public boolean isPlanMode() {
-        return isPlanMode;
-    }
+     public static SelectResult getJobData(String jobId) {
+         return ResultPool.get(jobId);
+     }
 
-    public boolean isUseStatementSet() {
-        return useStatementSet;
-    }
+     public static SessionInfo createSession(String session, SessionConfig sessionConfig, String createUser) {
+         if (SessionPool.exist(session)) {
+             return SessionPool.getInfo(session);
+         }
+         Executor sessionExecutor = null;
+         if (sessionConfig.isUseRemote()) {
+             sessionExecutor = Executor.buildRemoteExecutor(EnvironmentSetting.build(sessionConfig.getAddress()),
+                     ExecutorSetting.DEFAULT);
+         } else {
+             sessionExecutor = Executor.buildLocalExecutor(sessionConfig.getExecutorSetting());
+         }
+         ExecutorEntity executorEntity =
+                 new ExecutorEntity(session, sessionConfig, createUser, LocalDateTime.now(), sessionExecutor);
+         SessionPool.push(executorEntity);
+         return SessionInfo.build(executorEntity);
+     }
 
-    public void setUseStatementSet(boolean useStatementSet) {
-        this.useStatementSet = useStatementSet;
-    }
+     public static List<SessionInfo> listSession(String createUser) {
+         return SessionPool.filter(createUser);
+     }
 
-    public boolean isUseRestAPI() {
-        return useRestAPI;
-    }
+     public static TestResult testGateway(GatewayConfig gatewayConfig) {
+         return Gateway.build(gatewayConfig).test();
+     }
 
-    public void setUseRestAPI(boolean useRestAPI) {
-        this.useRestAPI = useRestAPI;
-    }
+     public static List<String> getUDFClassName(String statement) {
+         Pattern pattern = Pattern.compile("function (.*?)'(.*?)'", Pattern.CASE_INSENSITIVE);
+         Matcher matcher = pattern.matcher(statement);
+         List<String> classNameList = new ArrayList<>();
+         while (matcher.find()) {
+             classNameList.add(matcher.group(2));
+         }
+         return classNameList;
+     }
 
-    public String getSqlSeparator() {
-        return sqlSeparator;
-    }
+     public static void initUDF(String className, String code) {
+         if (ClassPool.exist(ClassEntity.build(className, code))) {
+             UDFUtil.initClassLoader(className);
+         } else {
+             UDFUtil.buildClass(code);
+         }
+     }
 
-    public void setSqlSeparator(String sqlSeparator) {
-        this.sqlSeparator = sqlSeparator;
-    }
+     public static void initMustSuccessUDF(String className, String code) {
+         if (ClassPool.exist(ClassEntity.build(className, code))) {
+             UDFUtil.initClassLoader(className);
+         } else {
+             // 如果编译失败，返回异常。因为必须用到的函数，也必须编译成功
+             if (!UDFUtil.buildClass(code)) {
+                 throw new CompilerException(String.format("class:%s 编译异常,请检查代码", className));
+             }
+         }
+     }
 
-    public JobManager(JobConfig config) {
-        this.config = config;
-    }
+     private static String getExecuteSqlError(String statement, Exception e) {
+         return LogUtil.getError("Exception in executing FlinkSQL:\n" + statement, e);
+     }
 
-    public static JobManager build() {
-        JobManager manager = new JobManager();
-        manager.init();
-        return manager;
-    }
+     public boolean isUseGateway() {
+         return useGateway;
+     }
 
-    public static JobManager build(JobConfig config) {
-        initGatewayConfig(config);
-        JobManager manager = new JobManager(config);
-        manager.init();
-        manager.executor.initUDF(config.getJarFiles());
-        return manager;
-    }
+     public void setUseGateway(boolean useGateway) {
+         this.useGateway = useGateway;
+     }
 
-    public static JobManager buildPlanMode(JobConfig config) {
-        JobManager manager = new JobManager(config);
-        manager.setPlanMode(true);
-        manager.init();
-        manager.executor.initUDF(config.getJarFiles());
-        ProcessContextHolder.getProcess().info("Build Flink plan mode success.");
-        return manager;
-    }
+     public boolean isPlanMode() {
+         return isPlanMode;
+     }
 
-    private static void initGatewayConfig(JobConfig config) {
-        if (useGateway(config.getType())) {
-            Asserts.checkNull(config.getGatewayConfig(), "GatewayConfig 不能为空");
-            config.getGatewayConfig().setType(GatewayType.get(config.getType()));
-            config.getGatewayConfig().setTaskId(config.getTaskId());
-            config.getGatewayConfig().getFlinkConfig().setJobName(config.getJobName());
-            config.getGatewayConfig().getFlinkConfig().setSavePoint(config.getSavePointPath());
-            config.setUseRemote(false);
-        }
-    }
+     public void setPlanMode(boolean planMode) {
+         isPlanMode = planMode;
+     }
 
-    public static boolean useGateway(String type) {
-        return (GatewayType.YARN_PER_JOB.equalsValue(type) || GatewayType.YARN_APPLICATION.equalsValue(type)
-                || GatewayType.KUBERNETES_APPLICATION.equalsValue(type));
-    }
+     public boolean isUseStatementSet() {
+         return useStatementSet;
+     }
 
-    private Executor createExecutor() {
-        initEnvironmentSetting();
-        if (!runMode.equals(GatewayType.LOCAL) && !useGateway && config.isUseRemote()) {
-            executor = Executor.buildRemoteExecutor(environmentSetting, config.getExecutorSetting());
-            return executor;
-        } else {
-            executor = Executor.buildLocalExecutor(config.getExecutorSetting());
-            return executor;
-        }
-    }
+     public void setUseStatementSet(boolean useStatementSet) {
+         this.useStatementSet = useStatementSet;
+     }
 
-    private Executor createExecutorWithSession() {
-        if (config.isUseSession()) {
-            ExecutorEntity executorEntity = SessionPool.get(config.getSession());
-            if (Asserts.isNotNull(executorEntity)) {
-                executor = executorEntity.getExecutor();
-                config.setSessionConfig(executorEntity.getSessionConfig());
-                initEnvironmentSetting();
-                executor.update(executorSetting);
-            } else {
-                createExecutor();
-                SessionPool.push(new ExecutorEntity(config.getSession(), executor));
-            }
-        } else {
-            createExecutor();
-        }
-        executor.getSqlManager().registerSqlFragment(config.getVariables());
-        return executor;
-    }
+     public boolean isUseRestAPI() {
+         return useRestAPI;
+     }
 
-    private void initEnvironmentSetting() {
-        if (Asserts.isNotNullString(config.getAddress())) {
-            environmentSetting = EnvironmentSetting.build(config.getAddress());
-        }
-    }
+     public void setUseRestAPI(boolean useRestAPI) {
+         this.useRestAPI = useRestAPI;
+     }
 
-    private void initExecutorSetting() {
-        executorSetting = config.getExecutorSetting();
-    }
+     public String getSqlSeparator() {
+         return sqlSeparator;
+     }
 
-    public boolean init() {
-        if (!isPlanMode) {
-            runMode = GatewayType.get(config.getType());
-            useGateway = useGateway(config.getType());
-            handler = JobHandler.build();
-        }
-        useStatementSet = config.isUseStatementSet();
-        useRestAPI = SystemConfiguration.getInstances().isUseRestAPI();
-        sqlSeparator = SystemConfiguration.getInstances().getSqlSeparator();
-        initExecutorSetting();
-        createExecutorWithSession();
-        return false;
-    }
+     public void setSqlSeparator(String sqlSeparator) {
+         this.sqlSeparator = sqlSeparator;
+     }
 
-    private boolean ready() {
-        return handler.init();
-    }
+     private Executor createExecutor() {
+         initEnvironmentSetting();
+         if (!runMode.equals(GatewayType.LOCAL) && !useGateway && config.isUseRemote()) {
+             executor = Executor.buildRemoteExecutor(environmentSetting, config.getExecutorSetting());
+         } else {
+             executor = Executor.buildLocalExecutor(config.getExecutorSetting());
+         }
+         return executor;
+     }
 
-    private boolean success() {
-        return handler.success();
-    }
+     private Executor createExecutorWithSession() {
+         if (config.isUseSession()) {
+             ExecutorEntity executorEntity = SessionPool.get(config.getSession());
+             if (Asserts.isNotNull(executorEntity)) {
+                 executor = executorEntity.getExecutor();
+                 config.setSessionConfig(executorEntity.getSessionConfig());
+                 initEnvironmentSetting();
+                 executor.update(executorSetting);
+             } else {
+                 createExecutor();
+                 SessionPool.push(new ExecutorEntity(config.getSession(), executor));
+             }
+         } else {
+             createExecutor();
+         }
+         executor.getSqlManager().registerSqlFragment(config.getVariables());
+         return executor;
+     }
 
-    private boolean failed() {
-        return handler.failed();
-    }
+     private void initEnvironmentSetting() {
+         if (Asserts.isNotNullString(config.getAddress())) {
+             environmentSetting = EnvironmentSetting.build(config.getAddress());
+         }
+     }
 
-    public boolean close() {
-        JobContextHolder.clear();
-        return false;
-    }
+     private void initExecutorSetting() {
+         executorSetting = config.getExecutorSetting();
+     }
 
-    public JobResult executeSql(String statement) {
-        Job job = Job.init(runMode, config, executorSetting, executor, statement, useGateway);
-        if (!useGateway) {
-            job.setJobManagerAddress(environmentSetting.getAddress());
-        }
-        JobContextHolder.setJob(job);
-        ready();
-        String currentSql = "";
-        JobParam jobParam = Explainer.build(executor, useStatementSet, sqlSeparator)
-                .pretreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
-        try {
-            for (StatementParam item : jobParam.getDdl()) {
-                currentSql = item.getValue();
-                executor.executeSql(item.getValue());
-            }
-            if (jobParam.getTrans().size() > 0) {
-                // Use statement set or gateway only submit inserts.
-                if (useStatementSet && useGateway) {
-                    List<String> inserts = new ArrayList<>();
-                    for (StatementParam item : jobParam.getTrans()) {
-                        inserts.add(item.getValue());
-                    }
+     public boolean init() {
+         if (!isPlanMode) {
+             runMode = GatewayType.get(config.getType());
+             useGateway = useGateway(config.getType());
+             handler = JobHandler.build();
+         }
+         useStatementSet = config.isUseStatementSet();
+         useRestAPI = SystemConfiguration.getInstances().isUseRestAPI();
+         sqlSeparator = SystemConfiguration.getInstances().getSqlSeparator();
+         initExecutorSetting();
+         createExecutorWithSession();
+         return false;
+     }
 
-                    // Use statement set need to merge all insert sql into a sql.
-                    currentSql = String.join(sqlSeparator, inserts);
-                    GatewayResult gatewayResult = submitByGateway(inserts);
-                    // Use statement set only has one jid.
-                    job.setResult(InsertResult.success(gatewayResult.getAppId()));
-                    job.setJobId(gatewayResult.getAppId());
-                    job.setJids(gatewayResult.getJids());
-                    job.setJobManagerAddress(formatAddress(gatewayResult.getWebURL()));
-                } else if (useStatementSet && !useGateway) {
-                    List<String> inserts = new ArrayList<>();
-                    for (StatementParam item : jobParam.getTrans()) {
-                        if (item.getType().isInsert()) {
-                            inserts.add(item.getValue());
-                        }
-                    }
-                    if (inserts.size() > 0) {
-                        currentSql = String.join(sqlSeparator, inserts);
-                        // Remote mode can get the table result.
-                        TableResult tableResult = executor.executeStatementSet(inserts);
-                        if (tableResult.getJobClient().isPresent()) {
-                            job.setJobId(tableResult.getJobClient().get().getJobID().toHexString());
-                            job.setJids(new ArrayList<String>() {
+     private boolean ready() {
+         return handler.init();
+     }
 
-                                {
-                                    add(job.getJobId());
-                                }
-                            });
-                        }
-                        if (config.isUseResult()) {
-                            // Build insert result.
-                            IResult result =
-                                    ResultBuilder
-                                            .build(SqlType.INSERT, config.getMaxRowNum(), config.isUseChangeLog(),
-                                                    config.isUseAutoCancel(), executor.getTimeZone())
-                                            .getResult(tableResult);
-                            job.setResult(result);
-                        }
-                    }
-                } else if (!useStatementSet && useGateway) {
-                    List<String> inserts = new ArrayList<>();
-                    for (StatementParam item : jobParam.getTrans()) {
-                        inserts.add(item.getValue());
-                        // Only can submit the first of insert sql, when not use statement set.
-                        break;
-                    }
-                    currentSql = String.join(sqlSeparator, inserts);
-                    GatewayResult gatewayResult = submitByGateway(inserts);
-                    job.setResult(InsertResult.success(gatewayResult.getAppId()));
-                    job.setJobId(gatewayResult.getAppId());
-                    job.setJids(gatewayResult.getJids());
-                    job.setJobManagerAddress(formatAddress(gatewayResult.getWebURL()));
-                } else {
-                    for (StatementParam item : jobParam.getTrans()) {
-                        currentSql = item.getValue();
-                        FlinkInterceptorResult flinkInterceptorResult =
-                                FlinkInterceptor.build(executor, item.getValue());
-                        if (Asserts.isNotNull(flinkInterceptorResult.getTableResult())) {
-                            if (config.isUseResult()) {
-                                IResult result = ResultBuilder
-                                        .build(item.getType(), config.getMaxRowNum(), config.isUseChangeLog(),
-                                                config.isUseAutoCancel(), executor.getTimeZone())
-                                        .getResult(flinkInterceptorResult.getTableResult());
-                                job.setResult(result);
-                            }
-                        } else {
-                            if (!flinkInterceptorResult.isNoExecute()) {
-                                TableResult tableResult = executor.executeSql(item.getValue());
-                                if (tableResult.getJobClient().isPresent()) {
-                                    job.setJobId(tableResult.getJobClient().get().getJobID().toHexString());
-                                    job.setJids(new ArrayList<String>() {
+     private boolean success() {
+         return handler.success();
+     }
 
-                                        {
-                                            add(job.getJobId());
-                                        }
-                                    });
-                                }
-                                if (config.isUseResult()) {
-                                    IResult result =
-                                            ResultBuilder.build(item.getType(), config.getMaxRowNum(),
-                                                    config.isUseChangeLog(), config.isUseAutoCancel(),
-                                                    executor.getTimeZone()).getResult(tableResult);
-                                    job.setResult(result);
-                                }
-                            }
-                        }
-                        // Only can submit the first of insert sql, when not use statement set.
-                        break;
-                    }
-                }
-            }
-            if (jobParam.getExecute().size() > 0) {
-                if (useGateway) {
-                    for (StatementParam item : jobParam.getExecute()) {
-                        executor.executeSql(item.getValue());
-                        if (!useStatementSet) {
-                            break;
-                        }
-                    }
-                    GatewayResult gatewayResult = null;
-                    config.addGatewayConfig(executor.getSetConfig());
-                    if (runMode.isApplicationMode()) {
-                        gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
-                    } else {
-                        StreamGraph streamGraph = executor.getStreamGraph();
-                        streamGraph.setJobName(config.getJobName());
-                        JobGraph jobGraph = streamGraph.getJobGraph();
-                        if (Asserts.isNotNullString(config.getSavePointPath())) {
-                            jobGraph.setSavepointRestoreSettings(
-                                    SavepointRestoreSettings.forPath(config.getSavePointPath(), true));
-                        }
-                        jobGraph.addJars(Arrays.stream(config.getJarFiles()).map(path -> URLUtil.getURL(FileUtil.file(path))).collect(Collectors.toList()));
-                        gatewayResult = Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);
-                    }
-                    job.setResult(InsertResult.success(gatewayResult.getAppId()));
-                    job.setJobId(gatewayResult.getAppId());
-                    job.setJids(gatewayResult.getJids());
-                    job.setJobManagerAddress(formatAddress(gatewayResult.getWebURL()));
-                } else {
-                    for (StatementParam item : jobParam.getExecute()) {
-                        executor.executeSql(item.getValue());
-                        if (!useStatementSet) {
-                            break;
-                        }
-                    }
-                    JobClient jobClient = executor.executeAsync(config.getJobName());
-                    if (Asserts.isNotNull(jobClient)) {
-                        job.setJobId(jobClient.getJobID().toHexString());
-                        job.setJids(new ArrayList<String>() {
+     private boolean failed() {
+         return handler.failed();
+     }
 
-                            {
-                                add(job.getJobId());
-                            }
-                        });
-                    }
-                    if (config.isUseResult()) {
-                        IResult result =
-                                ResultBuilder.build(SqlType.EXECUTE, config.getMaxRowNum(), config.isUseChangeLog(),
-                                        config.isUseAutoCancel(), executor.getTimeZone()).getResult(null);
-                        job.setResult(result);
-                    }
-                }
-            }
-            job.setEndTime(LocalDateTime.now());
-            job.setStatus(Job.JobStatus.SUCCESS);
-            success();
-        } catch (Exception e) {
-            String error = LogUtil.getError("Exception in executing FlinkSQL:\n" + currentSql, e);
-            job.setEndTime(LocalDateTime.now());
-            job.setStatus(Job.JobStatus.FAILED);
-            job.setError(error);
-            failed();
-            close();
-        }
-        close();
-        return job.getJobResult();
-    }
+     public boolean close() {
+         JobContextHolder.clear();
+         return false;
+     }
 
-    private GatewayResult submitByGateway(List<String> inserts) {
-        GatewayResult gatewayResult = null;
+     public JobResult executeSql(String statement) {
+         Job job = Job.init(runMode, config, executorSetting, executor, statement, useGateway);
+         if (!useGateway) {
+             job.setJobManagerAddress(environmentSetting.getAddress());
+         }
+         JobContextHolder.setJob(job);
+         ready();
 
-        // Use gateway need to build gateway config, include flink configeration.
-        config.addGatewayConfig(executor.getSetConfig());
+         JobParam jobParam = Explainer.build(executor, useStatementSet, sqlSeparator)
+                 .preTreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
+         try {
+             executeDdlSql(jobParam);
+             executeTransSql(job, jobParam);
+             execute(job, jobParam);
+             job.setStatus(Job.JobStatus.SUCCESS);
+             success();
+         } catch (Exception e) {
+             job.setError(e.getMessage());
+             job.setStatus(Job.JobStatus.FAILED);
+             failed();
+         }
+         job.setEndTime(LocalDateTime.now());
+         close();
+         return job.getJobResult();
+     }
 
-        if (runMode.isApplicationMode()) {
-            // Application mode need to submit dlink-app.jar that in the hdfs or image.
-            gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
-        } else {
-            JobGraph jobGraph = executor.getJobGraphFromInserts(inserts);
-            // Perjob mode need to set savepoint restore path, when recovery from savepoint.
-            if (Asserts.isNotNullString(config.getSavePointPath())) {
-                jobGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(config.getSavePointPath(), true));
-            }
-            // Perjob mode need to submit job graph.
-            jobGraph.addJars(Arrays.stream(config.getJarFiles()).map(path -> URLUtil.getURL(FileUtil.file(path))).collect(Collectors.toList()));
-            gatewayResult = Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);
-        }
-        return gatewayResult;
-    }
+     private void execute(Job job, JobParam jobParam) throws Exception {
+         if (jobParam.getExecute().isEmpty()) {
+             return;
+         }
 
-    private String formatAddress(String webURL) {
-        if (Asserts.isNotNullString(webURL)) {
-            return webURL.replaceAll("http://", "");
-        } else {
-            return "";
-        }
-    }
+         if (!useGateway) {
+             executeWithoutGateway(job, jobParam);
+             return;
+         }
 
-    public IResult executeDDL(String statement) {
-        String[] statements = SqlUtil.getStatements(statement, sqlSeparator);
-        try {
-            IResult result = null;
-            for (String item : statements) {
-                String newStatement = executor.pretreatStatement(item);
-                if (newStatement.trim().isEmpty()) {
-                    continue;
-                }
-                SqlType operationType = Operations.getOperationType(newStatement);
-                if (SqlType.INSERT == operationType || SqlType.SELECT == operationType) {
-                    continue;
-                }
-                LocalDateTime startTime = LocalDateTime.now();
-                TableResult tableResult = executor.executeSql(newStatement);
-                result = ResultBuilder.build(operationType, config.getMaxRowNum(), false, false, executor.getTimeZone())
-                        .getResult(tableResult);
-                result.setStartTime(startTime);
-            }
-            return result;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return new ErrorResult();
-    }
+         for (StatementParam item : jobParam.getExecute()) {
+             executeFlinkSql(item);
+             if (!useStatementSet) {
+                 break;
+             }
+         }
 
-    public static SelectResult getJobData(String jobId) {
-        return ResultPool.get(jobId);
-    }
+         config.addGatewayConfig(executor.getSetConfig());
 
-    public static SessionInfo createSession(String session, SessionConfig sessionConfig, String createUser) {
-        if (SessionPool.exist(session)) {
-            return SessionPool.getInfo(session);
-        }
-        Executor sessionExecutor = null;
-        if (sessionConfig.isUseRemote()) {
-            sessionExecutor = Executor.buildRemoteExecutor(EnvironmentSetting.build(sessionConfig.getAddress()),
-                    ExecutorSetting.DEFAULT);
-        } else {
-            sessionExecutor = Executor.buildLocalExecutor(sessionConfig.getExecutorSetting());
-        }
-        ExecutorEntity executorEntity =
-                new ExecutorEntity(session, sessionConfig, createUser, LocalDateTime.now(), sessionExecutor);
-        SessionPool.push(executorEntity);
-        return SessionInfo.build(executorEntity);
-    }
+         GatewayResult gatewayResult;
+         if (runMode.isApplicationMode()) {
+             gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
+         } else {
+             StreamGraph streamGraph = executor.getStreamGraph();
+             streamGraph.setJobName(config.getJobName());
+             JobGraph jobGraph = streamGraph.getJobGraph();
+             if (Asserts.isNotNullString(config.getSavePointPath())) {
+                 jobGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(config.getSavePointPath()));
+             }
+             jobGraph.addJars(Arrays.stream(config.getJarFiles()).map(path -> URLUtil.getURL(FileUtil.file(path))).collect(Collectors.toList()));
+             gatewayResult = Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);
+         }
 
-    public static List<SessionInfo> listSession(String createUser) {
-        return SessionPool.filter(createUser);
-    }
+         job.setResult(InsertResult.success(gatewayResult.getAppId()));
+         job.setJobId(gatewayResult.getAppId());
+         job.setJids(gatewayResult.getJids());
+         job.setJobManagerAddress(formatAddress(gatewayResult.getWebURL()));
+     }
 
-    public ExplainResult explainSql(String statement) {
-        return Explainer.build(executor, useStatementSet, sqlSeparator).explainSql(statement);
-    }
+     private void executeWithoutGateway(Job job, JobParam jobParam) throws Exception {
+         for (StatementParam item : jobParam.getExecute()) {
+             executeFlinkSql(item);
+             if (!useStatementSet) {
+                 break;
+             }
+         }
 
-    public ObjectNode getStreamGraph(String statement) {
-        return Explainer.build(executor, useStatementSet, sqlSeparator).getStreamGraph(statement);
-    }
+         JobClient jobClient = executor.executeAsync(config.getJobName());
+         if (Asserts.isNotNull(jobClient)) {
+             job.setJobId(jobClient.getJobID().toHexString());
+             job.setJids(Stream.of(job.getJobId()).collect(Collectors.toList()));
+         }
 
-    public String getJobPlanJson(String statement) {
-        return Explainer.build(executor, useStatementSet, sqlSeparator).getJobPlanInfo(statement).getJsonPlan();
-    }
+         if (config.isUseResult()) {
+             IResult result = ResultBuilder.build(SqlType.EXECUTE, config.getMaxRowNum(),
+                     config.isUseChangeLog(), config.isUseAutoCancel(), executor.getTimeZone()).getResult(null);
+             job.setResult(result);
+         }
+     }
 
-    public boolean cancel(String jobId) {
-        if (useGateway && !useRestAPI) {
-            config.getGatewayConfig().setFlinkConfig(FlinkConfig.build(jobId, ActionType.CANCEL.getValue(),
-                    null, null));
-            Gateway.build(config.getGatewayConfig()).savepointJob();
-            return true;
-        } else {
-            try {
-                return FlinkAPI.build(config.getAddress()).stop(jobId);
-            } catch (Exception e) {
-                logger.error("停止作业时集群不存在: " + e);
-            }
-            return false;
-        }
-    }
+     private void executeTransSql(Job job, JobParam jobParam) {
+         if (jobParam.getTrans().isEmpty()) {
+             return;
+         }
 
-    public SavePointResult savepoint(String jobId, String savePointType, String savePoint) {
-        if (useGateway && !useRestAPI) {
-            config.getGatewayConfig().setFlinkConfig(FlinkConfig.build(jobId, ActionType.SAVEPOINT.getValue(),
-                    savePointType, null));
-            return Gateway.build(config.getGatewayConfig()).savepointJob(savePoint);
-        } else {
-            return FlinkAPI.build(config.getAddress()).savepoints(jobId, savePointType);
-        }
-    }
+         // Use statement set or gateway only submit inserts.
+         if (useStatementSet && useGateway) {
+             executeTransSqlWithStatementSetAndGateway(job, jobParam);
+         } else if (useStatementSet) {
+             executeTransSqlWithStatementSet(job, jobParam);
+         } else if (useGateway) {
+             executeTransSqlWithGateway(job, jobParam);
+         } else {
+             executeTransSqlWithoutStatementSetAndGateway(job, jobParam);
+         }
 
-    public JobResult executeJar() {
-        Job job = Job.init(runMode, config, executorSetting, executor, null, useGateway);
-        JobContextHolder.setJob(job);
-        ready();
-        try {
-            GatewayResult gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
-            job.setResult(InsertResult.success(gatewayResult.getAppId()));
-            job.setJobId(gatewayResult.getAppId());
-            job.setJids(gatewayResult.getJids());
-            job.setJobManagerAddress(formatAddress(gatewayResult.getWebURL()));
-            job.setEndTime(LocalDateTime.now());
-            job.setStatus(Job.JobStatus.SUCCESS);
-            success();
-        } catch (Exception e) {
-            String error = LogUtil.getError(
-                    "Exception in executing Jar：\n" + config.getGatewayConfig().getAppConfig().getUserJarPath(), e);
-            job.setEndTime(LocalDateTime.now());
-            job.setStatus(Job.JobStatus.FAILED);
-            job.setError(error);
-            failed();
-            close();
-        }
-        close();
-        return job.getJobResult();
-    }
+     }
 
-    public static TestResult testGateway(GatewayConfig gatewayConfig) {
-        return Gateway.build(gatewayConfig).test();
-    }
+     private void executeTransSqlWithoutStatementSetAndGateway(Job job, JobParam jobParam) {
+         // Only can submit the first of insert sql, when not use statement set.
+         jobParam.getTrans().stream().findFirst().ifPresent(statementParam -> {
+             final String currentSql = statementParam.getValue();
+             try {
+                 final ResultBuilder resultBuilder = ResultBuilder.build(statementParam.getType(),
+                         config.getMaxRowNum(),
+                         config.isUseChangeLog(), config.isUseAutoCancel(), executor.getTimeZone());
 
-    public String exportSql(String sql) {
-        String statement = executor.pretreatStatement(sql);
-        StringBuilder sb = new StringBuilder();
-        if (Asserts.isNotNullString(config.getJobName())) {
-            sb.append("set " + PipelineOptions.NAME.key() + " = " + config.getJobName() + ";\r\n");
-        }
-        if (Asserts.isNotNull(config.getParallelism())) {
-            sb.append("set " + CoreOptions.DEFAULT_PARALLELISM.key() + " = " + config.getParallelism() + ";\r\n");
-        }
-        if (Asserts.isNotNull(config.getCheckpoint())) {
-            sb.append("set " + ExecutionCheckpointingOptions.CHECKPOINTING_INTERVAL.key() + " = "
-                    + config.getCheckpoint() + ";\r\n");
-        }
-        if (Asserts.isNotNullString(config.getSavePointPath())) {
-            sb.append("set " + SavepointConfigOptions.SAVEPOINT_PATH + " = " + config.getSavePointPath() + ";\r\n");
-        }
-        if (Asserts.isNotNull(config.getGatewayConfig())
-                && Asserts.isNotNull(config.getGatewayConfig().getFlinkConfig().getConfiguration())) {
-            for (Map.Entry<String, String> entry : config.getGatewayConfig().getFlinkConfig().getConfiguration()
-                    .entrySet()) {
-                sb.append("set " + entry.getKey() + " = " + entry.getValue() + ";\r\n");
-            }
-        }
+                 FlinkInterceptorResult flinkInterceptorResult = FlinkInterceptor.build(executor,
+                         currentSql);
+                 TableResult tableResult;
+                 if (Asserts.isNotNull(flinkInterceptorResult.getTableResult())) {
+                     tableResult = flinkInterceptorResult.getTableResult();
+                 } else {
+                     if (flinkInterceptorResult.isNoExecute()) {
+                         return;
+                     }
 
-        switch (GatewayType.get(config.getType())) {
-            case YARN_PER_JOB:
-            case YARN_APPLICATION:
-                sb.append("set " + DeploymentOptions.TARGET.key() + " = "
-                        + GatewayType.get(config.getType()).getLongValue() + ";\r\n");
-                if (Asserts.isNotNull(config.getGatewayConfig())) {
-                    sb.append("set " + YarnConfigOptions.PROVIDED_LIB_DIRS.key() + " = "
-                            + Collections.singletonList(config.getGatewayConfig().getClusterConfig().getFlinkLibPath())
-                            + ";\r\n");
-                }
-                if (Asserts.isNotNull(config.getGatewayConfig())
-                        && Asserts.isNotNullString(config.getGatewayConfig().getFlinkConfig().getJobName())) {
-                    sb.append("set " + YarnConfigOptions.APPLICATION_NAME.key() + " = "
-                            + config.getGatewayConfig().getFlinkConfig().getJobName() + ";\r\n");
-                }
-                break;
-            default:
-        }
-        sb.append(statement);
-        return sb.toString();
-    }
+                     tableResult = executor.executeSql(currentSql);
+                     tableResult.getJobClient().ifPresent(t -> {
+                         job.setJobId(t.getJobID().toHexString());
+                         job.setJids(Stream.of(job.getJobId()).collect(Collectors.toList()));
+                     });
+                 }
 
-    public static void initUDF(String className, String code) {
-        if (ClassPool.exist(ClassEntity.build(className, code))) {
-            UDFUtil.initClassLoader(className);
-        } else {
-            UDFUtil.buildClass(code);
-        }
-    }
+                 if (config.isUseResult()) {
+                     IResult result = resultBuilder.getResult(tableResult);
+                     job.setResult(result);
+                 }
+             } catch (Exception e) {
+                 String error = getExecuteSqlError(currentSql, e);
+                 throw new ExecuteFlinkSqlException(error, e);
+             }
+         });
+     }
 
-    public static void initMustSuccessUDF(String className, String code) {
-        if (ClassPool.exist(ClassEntity.build(className, code))) {
-            UDFUtil.initClassLoader(className);
-        } else {
-            // 如果编译失败，返回异常。因为必须用到的函数，也必须编译成功
-            if (!UDFUtil.buildClass(code)) {
-                throw new CompilerException(String.format("class:%s 编译异常,请检查代码", className));
-            }
-        }
-    }
-}
+     private void executeTransSqlWithGateway(Job job, JobParam jobParam) {
+         List<String> inserts = new ArrayList<>();
+         try {
+             // Only can submit the first of insert sql, when not use statement set.
+             jobParam.getTrans().stream().findFirst().ifPresent(t -> inserts.add(t.getValue()));
+             GatewayResult gatewayResult = submitByGateway(inserts);
+             job.setResult(InsertResult.success(gatewayResult.getAppId()));
+             job.setJobId(gatewayResult.getAppId());
+             job.setJids(gatewayResult.getJids());
+             job.setJobManagerAddress(formatAddress(gatewayResult.getWebURL()));
+         } catch (Exception e) {
+             String currentSql = String.join(sqlSeparator, inserts);
+             String error = getExecuteSqlError(currentSql, e);
+             throw new ExecuteFlinkSqlException(error, e);
+         }
+     }
+
+     private void executeTransSqlWithStatementSet(Job job, JobParam jobParam) {
+         List<String> inserts = new ArrayList<>();
+         try {
+             inserts = jobParam.getTrans().stream()
+                     .filter(item -> item.getType().isInsert())
+                     .map(StatementParam::getValue)
+                     .collect(Collectors.toList());
+
+             if (inserts.isEmpty()) {
+                 return;
+             }
+
+             // Remote mode can get the table result.
+             TableResult tableResult = executor.executeStatementSet(inserts);
+             tableResult.getJobClient().ifPresent(jobClient -> {
+                 job.setJobId(jobClient.getJobID().toHexString());
+                 job.setJids(Stream.of(job.getJobId()).collect(Collectors.toList()));
+             });
+
+             if (config.isUseResult()) {
+                 // Build insert result.
+                 IResult result = ResultBuilder.build(SqlType.INSERT, config.getMaxRowNum(),
+                         config.isUseChangeLog(), config.isUseAutoCancel(), executor.getTimeZone()).getResult(tableResult);
+                 job.setResult(result);
+             }
+         } catch (Exception e) {
+             String currentSql = String.join(sqlSeparator, inserts);
+             String error = getExecuteSqlError(currentSql, e);
+             throw new ExecuteFlinkSqlException(error, e);
+         }
+     }
+
+     private void executeTransSqlWithStatementSetAndGateway(Job job, JobParam jobParam) {
+         List<String> inserts = new ArrayList<>();
+         try {
+             for (StatementParam item : jobParam.getTrans()) {
+                 inserts.add(item.getValue());
+             }
+
+             // Use statement set need to merge all insert sql into a sql.
+             GatewayResult gatewayResult = submitByGateway(inserts);
+             // Use statement set only has one jid.
+             job.setResult(InsertResult.success(gatewayResult.getAppId()));
+             job.setJobId(gatewayResult.getAppId());
+             job.setJids(gatewayResult.getJids());
+             job.setJobManagerAddress(formatAddress(gatewayResult.getWebURL()));
+         } catch (Exception e) {
+             String currentSql = String.join(sqlSeparator, inserts);
+             String error = getExecuteSqlError(currentSql, e);
+             throw new ExecuteFlinkSqlException(error, e);
+         }
+     }
+
+     private void executeDdlSql(JobParam jobParam) {
+         for (StatementParam item : jobParam.getDdl()) {
+             executeFlinkSql(item);
+         }
+     }
+
+     private void executeFlinkSql(StatementParam item) {
+         try {
+             executor.executeSql(item.getValue());
+         } catch (Exception e) {
+             String error = getExecuteSqlError(item.getValue(), e);
+             throw new ExecuteFlinkSqlException(error, e);
+         }
+     }
+
+     private GatewayResult submitByGateway(List<String> inserts) {
+         // Use gateway need to build gateway config, include flink configuration.
+         config.addGatewayConfig(executor.getSetConfig());
+
+         final Gateway gateway = Gateway.build(config.getGatewayConfig());
+         if (runMode.isApplicationMode()) {
+             // Application mode need to submit dlink-app.jar that in the hdfs or image.
+             return gateway.submitJar();
+         }
+
+         JobGraph jobGraph = executor.getJobGraphFromInserts(inserts);
+         if (Asserts.isNotNullString(config.getSavePointPath())) {
+             // Perjob mode need to set savepoint restore path, when recovery from savepoint.
+             jobGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(config.getSavePointPath(), true));
+         }
+         // Perjob mode need to submit job graph.
+         jobGraph.addJars(Arrays.stream(config.getJarFiles()).map(path -> URLUtil.getURL(FileUtil.file(path))).collect(Collectors.toList()));
+         return gateway.submitJobGraph(jobGraph);
+     }
+
+     private String formatAddress(String webURL) {
+         if (Asserts.isNotNullString(webURL)) {
+             return webURL.replace("http://", "");
+         } else {
+             return "";
+         }
+     }
+
+     public IResult executeDDL(String statement) {
+         String[] statements = SqlUtil.getStatements(statement, sqlSeparator);
+         try {
+             for (String item : statements) {
+                 String newStatement = executor.preTreatStatement(item);
+                 SqlType operationType = Operations.getOperationType(newStatement);
+                 if (SqlType.INSERT == operationType ||
+                         SqlType.SELECT == operationType ||
+                         SqlType.UNKNOWN == operationType) {
+                     continue;
+                 }
+
+                 TableResult tableResult = executor.executeSql(newStatement);
+                 IResult result = ResultBuilder
+                         .build(operationType, config.getMaxRowNum(), false, false, executor.getTimeZone())
+                         .getResult(tableResult);
+                 result.setStartTime(LocalDateTime.now());
+                 return result;
+             }
+         } catch (Exception e) {
+             logger.error(e.getMessage());
+         }
+         return new ErrorResult();
+     }
+
+     public ExplainResult explainSql(String statement) {
+         return Explainer.build(executor, useStatementSet, sqlSeparator).explainSql(statement);
+     }
+
+     public ObjectNode getStreamGraph(String statement) {
+         return Explainer.build(executor, useStatementSet, sqlSeparator).getStreamGraph(statement);
+     }
+
+     public String getJobPlanJson(String statement) {
+         return Explainer.build(executor, useStatementSet, sqlSeparator).getJobPlanInfo(statement).getJsonPlan();
+     }
+
+     public boolean cancel(String jobId) {
+         if (useGateway && !useRestAPI) {
+             config.getGatewayConfig().setFlinkConfig(FlinkConfig.build(jobId, ActionType.CANCEL.getValue(),
+                     null, null));
+             Gateway.build(config.getGatewayConfig()).savepointJob();
+             return true;
+         } else {
+             try {
+                 return FlinkAPI.build(config.getAddress()).stop(jobId);
+             } catch (Exception e) {
+                 logger.error(String.format("停止作业时集群不存在: %s", e));
+             }
+             return false;
+         }
+     }
+
+     public SavePointResult savepoint(String jobId, String savePointType, String savePoint) {
+         if (useGateway && !useRestAPI) {
+             config.getGatewayConfig().setFlinkConfig(FlinkConfig.build(jobId, ActionType.SAVEPOINT.getValue(),
+                     savePointType, null));
+             return Gateway.build(config.getGatewayConfig()).savepointJob(savePoint);
+         } else {
+             return FlinkAPI.build(config.getAddress()).savepoints(jobId, savePointType);
+         }
+     }
+
+     public JobResult executeJar() {
+         Job job = Job.init(runMode, config, executorSetting, executor, null, useGateway);
+         JobContextHolder.setJob(job);
+         ready();
+         try {
+             GatewayResult gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
+             job.setResult(InsertResult.success(gatewayResult.getAppId()));
+             job.setJobId(gatewayResult.getAppId());
+             job.setJids(gatewayResult.getJids());
+             job.setJobManagerAddress(formatAddress(gatewayResult.getWebURL()));
+             job.setEndTime(LocalDateTime.now());
+             job.setStatus(Job.JobStatus.SUCCESS);
+             success();
+         } catch (Exception e) {
+             String error = LogUtil.getError("Exception in executing Jar：\n" +
+                     config.getGatewayConfig().getAppConfig().getUserJarPath(), e);
+             job.setEndTime(LocalDateTime.now());
+             job.setStatus(Job.JobStatus.FAILED);
+             job.setError(error);
+             failed();
+             close();
+         }
+         close();
+         return job.getJobResult();
+     }
+
+     public String exportSql(String sql) {
+         StringBuilder sb = new StringBuilder();
+
+         final String format = "set %s = %s;\n";
+         BinaryOperator<String> generateStatement = (key, value) -> String.format(format, key, value);
+
+         if (Asserts.isNotNullString(config.getJobName())) {
+             sb.append(generateStatement.apply(PipelineOptions.NAME.key(), config.getJobName()));
+         }
+
+         if (Asserts.isNotNull(config.getParallelism())) {
+             sb.append(generateStatement.apply(CoreOptions.DEFAULT_PARALLELISM.key(),
+                     String.valueOf(config.getParallelism())));
+         }
+
+         if (Asserts.isNotNull(config.getCheckpoint())) {
+             sb.append(generateStatement.apply(ExecutionCheckpointingOptions.CHECKPOINTING_INTERVAL.key(),
+                     String.valueOf(config.getCheckpoint())));
+         }
+
+         if (Asserts.isNotNullString(config.getSavePointPath())) {
+             sb.append(generateStatement.apply(SavepointConfigOptions.SAVEPOINT_PATH.toString(),
+                     config.getSavePointPath()));
+         }
+
+         if (Asserts.isNotNull(config.getGatewayConfig()) &&
+                 Asserts.isNotNull(config.getGatewayConfig().getFlinkConfig().getConfiguration())) {
+             for (Map.Entry<String, String> entry :
+                     config.getGatewayConfig().getFlinkConfig().getConfiguration().entrySet()) {
+                 sb.append(generateStatement.apply(entry.getKey(), entry.getValue()));
+             }
+         }
+
+         GatewayType gatewayType = GatewayType.get(config.getType());
+         if (gatewayType == GatewayType.YARN_PER_JOB || gatewayType == GatewayType.YARN_APPLICATION) {
+             sb.append(generateStatement.apply(DeploymentOptions.TARGET.key(),
+                     GatewayType.get(config.getType()).getLongValue()));
+
+             if (Asserts.isNotNull(config.getGatewayConfig())) {
+                 sb.append(generateStatement.apply(YarnConfigOptions.PROVIDED_LIB_DIRS.key(),
+                         Collections.singletonList(
+                                 config.getGatewayConfig().getClusterConfig().getFlinkLibPath()).toString()));
+
+                 if (Asserts.isNotNullString(config.getGatewayConfig().getFlinkConfig().getJobName())) {
+                     sb.append(generateStatement.apply(YarnConfigOptions.APPLICATION_NAME.key(),
+                             config.getGatewayConfig().getFlinkConfig().getJobName()));
+                 }
+             }
+         }
+
+         String statement = executor.preTreatStatement(sql);
+         sb.append(statement);
+         return sb.toString();
+     }
+
+     static class ExecuteFlinkSqlException extends RuntimeException {
+         public ExecuteFlinkSqlException(String message, Throwable cause) {
+             super(message, cause);
+         }
+     }
+ }

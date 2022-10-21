@@ -230,11 +230,11 @@ public abstract class Executor {
         stEnvironment = newstEnvironment;
     }
 
-    public String pretreatStatement(String statement) {
-        return FlinkInterceptor.pretreatStatement(this, statement);
+    public String preTreatStatement(String statement) {
+        return FlinkInterceptor.preTreatStatement(this, statement);
     }
 
-    private FlinkInterceptorResult pretreatExecute(String statement) {
+    private FlinkInterceptorResult preTreatExecute(String statement) {
         return FlinkInterceptor.build(this, statement);
     }
 
@@ -247,8 +247,8 @@ public abstract class Executor {
     }
 
     public TableResult executeSql(String statement) {
-        statement = pretreatStatement(statement);
-        FlinkInterceptorResult flinkInterceptorResult = pretreatExecute(statement);
+        statement = preTreatStatement(statement);
+        FlinkInterceptorResult flinkInterceptorResult = preTreatExecute(statement);
         if (Asserts.isNotNull(flinkInterceptorResult.getTableResult())) {
             return flinkInterceptorResult.getTableResult();
         }
@@ -295,8 +295,8 @@ public abstract class Executor {
     }
 
     public String explainSql(String statement, ExplainDetail... extraDetails) {
-        statement = pretreatStatement(statement);
-        if (!pretreatExecute(statement).isNoExecute()) {
+        statement = preTreatStatement(statement);
+        if (!preTreatExecute(statement).isNoExecute()) {
             return stEnvironment.explainSql(statement, extraDetails);
         } else {
             return "";
@@ -304,8 +304,8 @@ public abstract class Executor {
     }
 
     public SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails) {
-        statement = pretreatStatement(statement);
-        if (Asserts.isNotNullString(statement) && !pretreatExecute(statement).isNoExecute()) {
+        statement = preTreatStatement(statement);
+        if (Asserts.isNotNullString(statement) && !preTreatExecute(statement).isNoExecute()) {
             return stEnvironment.explainSqlRecord(statement, extraDetails);
         } else {
             return null;
@@ -313,8 +313,8 @@ public abstract class Executor {
     }
 
     public ObjectNode getStreamGraph(String statement) {
-        statement = pretreatStatement(statement);
-        if (!pretreatExecute(statement).isNoExecute()) {
+        statement = preTreatStatement(statement);
+        if (!preTreatExecute(statement).isNoExecute()) {
             return stEnvironment.getStreamGraph(statement);
         } else {
             return null;

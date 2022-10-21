@@ -103,20 +103,19 @@ public class Explainer {
         return new Explainer(executor, useStatementSet, sqlSeparator);
     }
 
-    public JobParam pretreatStatements(String[] statements) {
+    public JobParam preTreatStatements(String[] statements) {
         List<StatementParam> ddl = new ArrayList<>();
         List<StatementParam> trans = new ArrayList<>();
         List<StatementParam> execute = new ArrayList<>();
         List<String> statementList = new ArrayList<>();
         for (String item : statements) {
-            String statement = executor.pretreatStatement(item);
+            String statement = executor.preTreatStatement(item);
             if (statement.isEmpty()) {
                 continue;
             }
             SqlType operationType = Operations.getOperationType(statement);
-            if (operationType.equals(SqlType.INSERT) || operationType.equals(SqlType.SELECT)
-                    || operationType.equals(SqlType.SHOW)
-                    || operationType.equals(SqlType.DESCRIBE) || operationType.equals(SqlType.DESC)) {
+            if (operationType.equals(SqlType.INSERT) || operationType.equals(SqlType.SELECT) || operationType.equals(SqlType.SHOW)
+                || operationType.equals(SqlType.DESCRIBE) || operationType.equals(SqlType.DESC)) {
                 trans.add(new StatementParam(statement, operationType));
                 statementList.add(statement);
                 if (!useStatementSet) {
@@ -140,7 +139,7 @@ public class Explainer {
             SqlExplainResult record = new SqlExplainResult();
             String sql = "";
             try {
-                sql = FlinkInterceptor.pretreatStatement(executor, item);
+                sql = FlinkInterceptor.preTreatStatement(executor, item);
                 if (Asserts.isNullString(sql)) {
                     continue;
                 }
@@ -179,7 +178,7 @@ public class Explainer {
     public ExplainResult explainSql(String statement) {
         ProcessEntity process = ProcessContextHolder.getProcess();
         process.info("Start explain FlinkSQL...");
-        JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
+        JobParam jobParam = preTreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
         List<SqlExplainResult> sqlExplainRecords = new ArrayList<>();
         int index = 1;
         boolean correct = true;
@@ -297,9 +296,9 @@ public class Explainer {
     }
 
     public ObjectNode getStreamGraph(String statement) {
-        JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
+        JobParam jobParam = preTreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
         if (jobParam.getDdl().size() > 0) {
-            for (StatementParam statementParam : jobParam.getDdl()) {
+            for(StatementParam statementParam: jobParam.getDdl()){
                 executor.executeSql(statementParam.getValue());
             }
         }
@@ -317,9 +316,9 @@ public class Explainer {
     }
 
     public JobPlanInfo getJobPlanInfo(String statement) {
-        JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
+        JobParam jobParam = preTreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
         if (jobParam.getDdl().size() > 0) {
-            for (StatementParam statementParam : jobParam.getDdl()) {
+            for(StatementParam statementParam: jobParam.getDdl()){
                 executor.executeSql(statementParam.getValue());
             }
         }
@@ -341,7 +340,7 @@ public class Explainer {
         List<String> strPlans = new ArrayList<>();
         for (int i = 0; i < sqlExplainRecords.size(); i++) {
             if (Asserts.isNotNull(sqlExplainRecords.get(i).getType())
-                    && sqlExplainRecords.get(i).getType().contains(FlinkSQLConstant.DML)) {
+                && sqlExplainRecords.get(i).getType().contains(FlinkSQLConstant.DML)) {
                 strPlans.add(sqlExplainRecords.get(i).getSql());
             }
         }
@@ -361,8 +360,7 @@ public class Explainer {
             for (int i = 0; i < results.size(); i++) {
                 TableCA sinkTableCA = (TableCA) results.get(i).getSinkTableCA();
                 if (Asserts.isNotNull(sinkTableCA)) {
-                    sinkTableCA.setFields(FlinkUtil.getFieldNamesFromCatalogManager(catalogManager,
-                            sinkTableCA.getCatalog(), sinkTableCA.getDatabase(), sinkTableCA.getTable()));
+                    sinkTableCA.setFields(FlinkUtil.getFieldNamesFromCatalogManager(catalogManager, sinkTableCA.getCatalog(), sinkTableCA.getDatabase(), sinkTableCA.getTable()));
                 }
             }
         }
@@ -381,8 +379,7 @@ public class Explainer {
         List<SqlExplainResult> sqlExplainRecords = explainSqlResult(statement);
         List<String> strPlans = new ArrayList<>();
         for (int i = 0; i < sqlExplainRecords.size(); i++) {
-            if (Asserts.isNotNull(sqlExplainRecords.get(i).getType())
-                    && sqlExplainRecords.get(i).getType().contains("DML")) {
+            if (Asserts.isNotNull(sqlExplainRecords.get(i).getType()) && sqlExplainRecords.get(i).getType().contains("DML")) {
                 strPlans.add(sqlExplainRecords.get(i).getSql());
             }
         }
@@ -418,8 +415,7 @@ public class Explainer {
     private void correctColumn(ColumnCAResult columnCAResult) {
         for (TableCA tableCA : columnCAResult.getTableCAS()) {
             CatalogManager catalogManager = executor.getCatalogManager();
-            List<String> columnList = FlinkUtil.getFieldNamesFromCatalogManager(catalogManager, tableCA.getCatalog(),
-                    tableCA.getDatabase(), tableCA.getTable());
+            List<String> columnList = FlinkUtil.getFieldNamesFromCatalogManager(catalogManager, tableCA.getCatalog(), tableCA.getDatabase(), tableCA.getTable());
             List<String> fields = tableCA.getFields();
             List<String> oldFields = new ArrayList<>();
             oldFields.addAll(fields);
@@ -429,8 +425,7 @@ public class Explainer {
                     if (!sinkColumnName.equals(oldFields.get(i))) {
                         for (Map.Entry<Integer, ColumnCA> item : columnCAResult.getColumnCASMaps().entrySet()) {
                             ColumnCA columnCA = item.getValue();
-                            if (columnCA.getTableId().equals(tableCA.getId())
-                                    && columnCA.getName().equals(oldFields.get(i))) {
+                            if (columnCA.getTableId().equals(tableCA.getId()) && columnCA.getName().equals(oldFields.get(i))) {
                                 columnCA.setName(sinkColumnName);
                                 fields.set(i, sinkColumnName);
                             }
@@ -441,16 +436,14 @@ public class Explainer {
         }
         for (TableCA tableCA : columnCAResult.getTableCAS()) {
             CatalogManager catalogManager = executor.getCatalogManager();
-            List<String> columnList = FlinkUtil.getFieldNamesFromCatalogManager(catalogManager, tableCA.getCatalog(),
-                    tableCA.getDatabase(), tableCA.getTable());
+            List<String> columnList = FlinkUtil.getFieldNamesFromCatalogManager(catalogManager, tableCA.getCatalog(), tableCA.getDatabase(), tableCA.getTable());
             List<String> fields = tableCA.getFields();
             int i = 0;
             List<Integer> idList = new ArrayList<>();
             while (i < fields.size()) {
                 if (!columnList.contains(fields.get(i))) {
                     for (Map.Entry<Integer, ColumnCA> item : columnCAResult.getColumnCASMaps().entrySet()) {
-                        if (item.getValue().getName().equals(fields.get(i))
-                                && item.getValue().getTableId().equals(tableCA.getId())) {
+                        if (item.getValue().getName().equals(fields.get(i)) && item.getValue().getTableId().equals(tableCA.getId())) {
                             idList.add(item.getValue().getId());
                             break;
                         }
@@ -529,7 +522,7 @@ public class Explainer {
         for (String item : sqls) {
             String sql = "";
             try {
-                sql = FlinkInterceptor.pretreatStatement(executor, item);
+                sql = FlinkInterceptor.preTreatStatement(executor, item);
                 if (Asserts.isNullString(sql)) {
                     continue;
                 }
