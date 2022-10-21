@@ -1295,7 +1295,6 @@ ADD COLUMN `duration` BIGINT NULL COMMENT '耗时' AFTER `finish_time`;
 -- ----------------------------
 -- 0.6.0 2022-03-01
 -- ----------------------------
--- DROP TABLE IF EXISTS `dlink_job_history`;
 CREATE TABLE if not exists `dlink_job_history`
 (
     `id` int NOT NULL COMMENT '实例主键',
@@ -1377,7 +1376,6 @@ CREATE TABLE `dlink_task_version`
 
 -- 0.6.6 2022-07-23
 -- ----------------------------
-drop table if exists `metadata_database`;
 create table if not exists `metadata_database`
 (
     `id` int(11) not null AUTO_INCREMENT COMMENT '主键',
@@ -1389,7 +1387,6 @@ create table if not exists `metadata_database`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='元数据对象信息';
 
-drop table if exists `metadata_table`;
 create table if not exists `metadata_table`
 (
     `id` int(11) not null AUTO_INCREMENT COMMENT '主键',
@@ -1403,7 +1400,6 @@ create table if not exists `metadata_table`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='元数据对象信息';
 
-drop table if exists `metadata_database_property`;
 create table if not exists `metadata_database_property`
 (
     `key` varchar(255) NOT NULL COMMENT '属性key',
@@ -1415,7 +1411,6 @@ create table if not exists `metadata_database_property`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='元数据属性信息';
 
-drop table if exists `metadata_table_property`;
 create table if not exists `metadata_table_property`
 (
     `key` varchar(255) NOT NULL COMMENT '属性key',
@@ -1427,7 +1422,6 @@ create table if not exists `metadata_table_property`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='元数据属性信息';
 
-drop table if exists metadata_column;
 create table if not exists `metadata_column`
 (
     `column_name` varchar(255) NOT NULL COMMENT '列名',
@@ -1443,7 +1437,6 @@ create table if not exists `metadata_column`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='数据列信息';
 
-drop table if exists `metadata_function`;
 create table if not exists `metadata_function`
 (
     `id` int(11) not null AUTO_INCREMENT COMMENT '主键',
@@ -1746,7 +1739,6 @@ SET `tenant_id` = 1;
 
 -- 0.6.8 2022-10-19
 -- -----------------------
-DROP TABLE IF EXISTS `dlink_udf`;
 CREATE TABLE `dlink_udf`
 (
     `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1773,7 +1765,6 @@ CREATE TABLE `dlink_udf`
 -- ----------------------------
 -- Table structure for dlink_udf_template
 -- ----------------------------
-DROP TABLE IF EXISTS `dlink_udf_template`;
 CREATE TABLE `dlink_udf_template`
 (
     `id` int(11) NOT NULL AUTO_INCREMENT,
