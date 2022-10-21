@@ -52,8 +52,8 @@ const JarTableList: React.FC<{}> = (props: any) => {
       Modal.confirm({
         title: '删除Jar配置',
         content: '确定删除该Jar配置吗？',
-        okText: '确认',
-        cancelText: '取消',
+        okText: l('button.confirm'),
+        cancelText: l('button.cancel'),
         onOk: async () => {
           await handleRemove(url, [currentItem]);
           actionRef.current?.reloadAndRest?.();
@@ -94,13 +94,13 @@ const JarTableList: React.FC<{}> = (props: any) => {
     <Dropdown
       overlay={
         <Menu onClick={({key}) => editAndDelete(key, item)}>
-          <Menu.Item key="edit">编辑</Menu.Item>
-          <Menu.Item key="delete">删除</Menu.Item>
+          <Menu.Item key="edit">{l('button.edit')}</Menu.Item>
+          <Menu.Item key="delete">{l('button.delete')}</Menu.Item>
         </Menu>
       }
     >
       <a>
-        更多 <DownOutlined/>
+        {l('button.more')} <DownOutlined/>
       </a>
     </Dropdown>
   );
@@ -200,20 +200,20 @@ const JarTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: '创建时间',
+      title: l('global.table.createTime'),
       dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',
       hideInTable: true
     },
     {
-      title: '最近更新时间',
+      title: l('global.table.lastUpdateTime'),
       dataIndex: 'updateTime',
       sorter: true,
       valueType: 'dateTime',
     },
     {
-      title: '操作',
+      title: l('global.table.operate'),
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
@@ -223,10 +223,10 @@ const JarTableList: React.FC<{}> = (props: any) => {
             setFormValues(record);
           }}
         >
-          配置
+          {l('button.config')}
         </a>,
         <Upload {...getUploadProps(record.path)}>
-          <a>上传</a>
+          <a>{l('button.upload')}</a>
         </Upload>,
         <MoreBtn key="more" item={record}/>,
       ],
@@ -244,7 +244,7 @@ const JarTableList: React.FC<{}> = (props: any) => {
         }}
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined/> 新建
+            <PlusOutlined/> {l('button.create')}
           </Button>,
         ]}
         request={(params, sorter, filter) => queryData(url, {...params, sorter, filter})}
@@ -261,7 +261,11 @@ const JarTableList: React.FC<{}> = (props: any) => {
         <FooterToolbar
           extra={
             <div>
-              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
+              {l('tips.selected', '',
+                {
+                  total: <a
+                    style={{fontWeight: 600}}>{selectedRowsState.length}</a>
+                })}  &nbsp;&nbsp;
               <span>
                 被禁用的集群配置共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} 人
               </span>
@@ -273,8 +277,8 @@ const JarTableList: React.FC<{}> = (props: any) => {
                     Modal.confirm({
                       title: '删除Jar配置',
                       content: '确定删除选中的Jar配置吗？',
-                      okText: '确认',
-                      cancelText: '取消',
+                      okText: l('button.confirm'),
+                      cancelText: l('button.cancel'),
                       onOk: async () => {
                         await handleRemove(url, selectedRowsState);
                         setSelectedRows([]);
@@ -283,15 +287,15 @@ const JarTableList: React.FC<{}> = (props: any) => {
                     });
                   }}
           >
-            批量删除
+            {l('button.batchDelete')}
           </Button>
           <Button type="primary"
                   onClick={() => {
                     Modal.confirm({
                       title: '启用Jar配置',
                       content: '确定启用选中的Jar配置吗？',
-                      okText: '确认',
-                      cancelText: '取消',
+                      okText: l('button.confirm'),
+                      cancelText: l('button.cancel'),
                       onOk: async () => {
                         await updateEnabled(url, selectedRowsState, true);
                         setSelectedRows([]);
@@ -299,14 +303,14 @@ const JarTableList: React.FC<{}> = (props: any) => {
                       }
                     });
                   }}
-          >批量启用</Button>
+          >{l('button.batchEnable')}</Button>
           <Button danger
                   onClick={() => {
                     Modal.confirm({
                       title: '禁用Jar配置',
                       content: '确定禁用选中的Jar配置吗？',
-                      okText: '确认',
-                      cancelText: '取消',
+                      okText: l('button.confirm'),
+                      cancelText: l('button.cancel'),
                       onOk: async () => {
                         await updateEnabled(url, selectedRowsState, false);
                         setSelectedRows([]);
@@ -314,7 +318,7 @@ const JarTableList: React.FC<{}> = (props: any) => {
                       }
                     });
                   }}
-          >批量禁用</Button>
+          >{l('button.batchDisable')}</Button>
         </FooterToolbar>
       )}
       <JarForm

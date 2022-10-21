@@ -65,7 +65,7 @@ const StudioConsole = (props: any) => {
         tab={
           <span>
           <CodeOutlined/>
-            {l('pages.datastudio.label.info', '信息')}
+            {l('pages.datastudio.label.info')}
         </span>
         }
         key="StudioMsg"
@@ -78,7 +78,7 @@ const StudioConsole = (props: any) => {
         tab={
           <span>
           <TableOutlined/>
-            {l('pages.datastudio.label.result', '结果')}
+            {l('pages.datastudio.label.result')}
         </span>
         }
         key="StudioTable"
@@ -104,7 +104,7 @@ const StudioConsole = (props: any) => {
         tab={
           <span>
           <ApartmentOutlined/>
-            {l('pages.datastudio.label.lineage', '血缘')}
+            {l('pages.datastudio.label.lineage')}
         </span>
         }
         key="StudioConsanguinity"
@@ -117,7 +117,7 @@ const StudioConsole = (props: any) => {
         tab={
           <span>
           <DesktopOutlined/>
-            {l('pages.datastudio.label.process', '进程')}
+            {l('pages.datastudio.label.process')}
         </span>
         }
         key="StudioProcess"
@@ -130,7 +130,7 @@ const StudioConsole = (props: any) => {
         tab={
           <span>
           <CalendarOutlined/>
-            {l('pages.datastudio.label.history', '历史')}
+            {l('pages.datastudio.label.history')}
         </span>
         }
         key="StudioHistory"
@@ -143,7 +143,7 @@ const StudioConsole = (props: any) => {
         tab={
           <span>
           <FunctionOutlined/>
-            {l('pages.datastudio.label.function', '函数')}
+            {l('pages.datastudio.label.function')}
         </span>
         }
         key="StudioFX"

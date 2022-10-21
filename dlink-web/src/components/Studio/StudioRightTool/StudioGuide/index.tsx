@@ -37,42 +37,42 @@ const StudioGuide = (props: any) => {
   return (
     <Scrollbars style={{height: toolHeight}}>
       <Typography style={{padding: '15px'}}>
-        <Title level={5}>{l('pages.datastudio.label.quickguide', '快捷引导')}</Title>
+        <Title level={5}>{l('pages.datastudio.label.quickguide')}</Title>
         <Paragraph>
           <ul>
             <li>
               <Link onClick={() => {
                 history.push('/registration/cluster/clusterInstance')
-              }}>{l('pages.datastudio.label.registcluster', '注册集群实例')}</Link>
+              }}>{l('pages.datastudio.label.registcluster')}</Link>
             </li>
             <li>
               <Link onClick={() => {
                 history.push('/registration/cluster/clusterConfiguration')
-              }}>{l('pages.datastudio.label.registclusterconfig', '注册集群配置')}</Link>
+              }}>{l('pages.datastudio.label.registclusterconfig')}</Link>
             </li>
             <li>
               <Link onClick={() => {
                 history.push('/registration/jar')
-              }}>{l('pages.datastudio.label.registjar', '注册 Jar')}</Link>
+              }}>{l('pages.datastudio.label.registjar')}</Link>
             </li>
             <li>
               <Link onClick={() => {
                 history.push('/registration/database')
-              }}>{l('pages.datastudio.label.registdatasource', '注册数据源')}</Link>
+              }}>{l('pages.datastudio.label.registdatasource')}</Link>
             </li>
             <li>
               <Link onClick={() => {
                 history.push('/registration/document')
-              }}>{l('pages.datastudio.label.registdocument', '注册文档')}</Link>
+              }}>{l('pages.datastudio.label.registdocument')}</Link>
             </li>
             <li>
               <Link onClick={() => {
                 history.push('/settings')
-              }}>{l('pages.datastudio.label.configsystemconfig', '修改系统配置')}</Link>
+              }}>{l('pages.datastudio.label.configsystemconfig')}</Link>
             </li>
             <li>
               <Link href="http://www.dlink.top/"
-                    target="_blank">{l('pages.datastudio.label.officialdocumentation', '官网文档')}</Link>
+                    target="_blank">{l('pages.datastudio.label.officialdocumentation')}</Link>
             </li>
             <li>
               <Link href="https://github.com/DataLinkDC/dlink" target="_blank">Github</Link>

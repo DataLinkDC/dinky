@@ -74,7 +74,7 @@ const StudioHistory = (props: any) => {
                  <Button key="back" onClick={() => {
                    cancelHandle();
                  }}>
-                   关闭
+                   {l('button.close')}
                  </Button>,
                ]}>
           <div style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
@@ -119,7 +119,7 @@ const StudioHistory = (props: any) => {
       },
     },
     {
-      title: '创建时间',
+      title: l('global.table.createTime'),
       dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',
@@ -127,7 +127,7 @@ const StudioHistory = (props: any) => {
       hideInSearch: true,
     },
     {
-      title: '操作',
+      title: l('global.table.operate'),
       valueType: 'option',
       align: "center",
       render: (text, record, index) => (
@@ -148,8 +148,8 @@ const StudioHistory = (props: any) => {
     Modal.confirm({
       title: '回滚Flink SQL版本',
       content: `确定回滚Flink SQL版本至【${row.versionId}】吗？`,
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         const TaskHistoryRollbackItem = {
           id: current.key, versionId: row.versionId

@@ -168,7 +168,7 @@ const TableData = (props: any) => {
                   })
                 }}
               >
-                <Input addonBefore="WHERE" placeholder={l('pages.TableData.QueryConditions', '查询条件')}
+                <Input addonBefore="WHERE" placeholder={l('pages.TableData.QueryConditions')}
                        onChange={(value) => {
                          setOptionInput({
                            whereInput: value.target.value,
@@ -193,7 +193,7 @@ const TableData = (props: any) => {
                 }}
               >
                 <Input addonBefore="ORDER BY"
-                       placeholder={l('pages.TableData.sorting', '排序')}
+                       placeholder={l('pages.TableData.sorting')}
                        onChange={(value) => {
                          setOptionInput({
                            whereInput: optionInput.whereInput,
@@ -203,7 +203,7 @@ const TableData = (props: any) => {
               </AutoComplete>
             </Col>
             <Col span={2}>
-              <Tooltip title={l('pages.TableData.search', '查询')}>
+              <Tooltip title={l('pages.TableData.search')}>
                 <Button type="primary" shape="circle" icon={<SearchOutlined/>} size="middle" onClick={(event) => {
                   fetchData(optionInput.whereInput, optionInput.orderInput)
                 }}/>
@@ -214,7 +214,7 @@ const TableData = (props: any) => {
         </div>
 
 
-        <Divider orientation="left" plain>{l('pages.TableData.data', '数据')}</Divider>
+        <Divider orientation="left" plain>{l('pages.TableData.data')}</Divider>
 
         <div>
           <ProTable

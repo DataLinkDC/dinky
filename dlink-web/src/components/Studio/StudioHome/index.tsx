@@ -37,9 +37,9 @@ const StudioHome = (props: any) => {
   return (
     <Scrollbars style={{height: toolHeight}}>
       <Typography style={{padding: '15px'}}>
-        <Title level={4}>{l('pages.datastudio.label.welcomeuse', '欢迎使用 Dinky v')}{VERSION}</Title>
+        <Title level={4}>{l('pages.datastudio.label.welcomeuse', '', {version: VERSION})}</Title>
         <Paragraph>
-          <blockquote>{l('pages.datastudio.label.dinkydescribe', '实时即未来，Dinky 为 Apache Flink 而生，让 Flink SQL 纵享丝滑，并致力于实时计算平台建设。')}</blockquote>
+          <blockquote>{l('pages.datastudio.label.dinkydescribe')}</blockquote>
         </Paragraph>
         <Title level={5}>快捷键</Title>
         <Paragraph>

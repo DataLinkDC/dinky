@@ -43,8 +43,8 @@ const StudioProcess = (props: any) => {
     Modal.confirm({
       title: key + '任务',
       content: `确定${key}该作业吗？`,
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         if (!clusterId) return;
         let res = savepointJob(clusterId, currentItem.jid, key, key, 0);
@@ -145,7 +145,7 @@ const StudioProcess = (props: any) => {
         )
       }
     }, {
-      title: '操作',
+      title: l('global.table.operate'),
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => {

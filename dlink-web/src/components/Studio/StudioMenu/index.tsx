@@ -183,8 +183,8 @@ const StudioMenu = (props: any) => {
     Modal.confirm({
       title: '异步提交作业',
       content: `确定异步提交作业【${current.task.alias}】到其配置的集群吗？请确认您的作业是否已经被保存！`,
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         let task = {
           id: current.task.id,
@@ -340,8 +340,8 @@ const StudioMenu = (props: any) => {
     Modal.confirm({
       title: '发布作业',
       content: `确定发布作业【${current.task.alias}】吗？请确认您的作业是否已经被保存！`,
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         const res = releaseTask(current.task.id);
         res.then((result) => {
@@ -360,8 +360,8 @@ const StudioMenu = (props: any) => {
     Modal.confirm({
       title: '维护作业',
       content: `确定维护作业【${current.task.alias}】吗？`,
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         const res = developTask(current.task.id);
         res.then((result) => {
@@ -378,8 +378,8 @@ const StudioMenu = (props: any) => {
     Modal.confirm({
       title: '上线作业',
       content: `确定上线作业【${current.task.alias}】吗？`,
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         const res = onLineTask(current.task.id);
         res.then((result) => {
@@ -399,8 +399,8 @@ const StudioMenu = (props: any) => {
     Modal.confirm({
       title: '停止作业',
       content: `确定停止作业【${current.task.alias}】吗？`,
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         const res = offLineTask(current.task.id, type);
         res.then((result) => {
@@ -422,8 +422,8 @@ const StudioMenu = (props: any) => {
     Modal.confirm({
       title: '下线作业',
       content: `确定下线作业【${current.task.alias}】吗？`,
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         const res = offLineTask(current.task.id, type);
         res.then((result) => {
@@ -443,8 +443,8 @@ const StudioMenu = (props: any) => {
     Modal.confirm({
       title: '注销作业',
       content: `确定注销作业【${current.task.alias}】吗？`,
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         const res = cancelTask(current.task.id);
         res.then((result) => {
@@ -463,8 +463,8 @@ const StudioMenu = (props: any) => {
     Modal.confirm({
       title: '恢复作业',
       content: `确定恢复作业【${current.task.alias}】吗？`,
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         const res = recoveryTask(current.task.id);
         res.then((result) => {

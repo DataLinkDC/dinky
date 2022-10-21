@@ -141,7 +141,7 @@ const StudioCluster = (props: any) => {
         dataIndex: 'note',
       },
       {
-        title: '是否启用',
+        title: l('global.table.isEnable'),
         dataIndex: 'enabled',
         filters: [
           {
@@ -186,24 +186,24 @@ const StudioCluster = (props: any) => {
         dataIndex: 'taskId',
       },
       {
-        title: '创建时间',
+        title: l('global.table.createTime'),
         dataIndex: 'createTime',
         valueType: 'dateTime',
       },
       {
-        title: '最近更新时间',
+        title: l('global.table.lastUpdateTime'),
         dataIndex: 'updateTime',
         valueType: 'dateTime',
       },
       {
-        title: '操作',
+        title: l('global.table.operate'),
         dataIndex: 'option',
         valueType: 'option',
         render: (_, record) => [
           <Button type="dashed" onClick={() => onModifyCluster(record)}>
-            配置
+            {l('button.edit')}
           </Button>, <Button danger onClick={() => onDeleteCluster(record)}>
-            删除
+            {l('button.delete')}
           </Button>
         ],
       },];
@@ -226,8 +226,8 @@ const StudioCluster = (props: any) => {
     Modal.confirm({
       title: '删除集群',
       content: `确定删除该集群【${record.alias}】吗？`,
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         await handleRemove(url, [record]);
         setRow({});

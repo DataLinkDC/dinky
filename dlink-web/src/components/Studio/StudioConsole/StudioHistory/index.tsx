@@ -87,8 +87,8 @@ const StudioHistory = (props: any) => {
     Modal.confirm({
       title: '删除执行记录',
       content: '确定删除该执行记录吗？',
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         await handleRemove(url, [row]);
         refs.history?.current?.reload();
@@ -215,7 +215,7 @@ const StudioHistory = (props: any) => {
               <a key="delete" onClick={() => {
                 removeHistory(row)
               }}>
-                删除
+                {l('button.delete')}
               </a>,
             ],
             search: false,

@@ -290,7 +290,7 @@ const StudioMetaStore = (props: any) => {
           <Button key="back" onClick={() => {
             cancelHandle();
           }}>
-            关闭
+            {l('button.close')}
           </Button>,
         ]}
       >

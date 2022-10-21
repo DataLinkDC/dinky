@@ -82,7 +82,7 @@ const JobInstanceTable = (props: any) => {
     if (values) {
       try {
         await onClickOperatingTask(values)
-        message.success(l('pages.devops.result.success', '操作成功'))
+        message.success(l('pages.devops.result.success'))
         setOpsStatusVisible(false)
       } catch (e) {
         console.log(e)
@@ -124,30 +124,30 @@ const JobInstanceTable = (props: any) => {
 
   const getColumns = () => {
     const columns: ProColumns<JobInstanceTableListItem>[] = [{
-      title: l('global.table.jobname', '作业名'),
+      title: l('global.table.jobname'),
       dataIndex: "name",
       sorter: true,
     }, {
-      title: l('global.table.lifecycle', '生命周期'),
+      title: l('global.table.lifecycle'),
       dataIndex: "step",
       sorter: true,
       valueType: 'radio',
       valueEnum: {
-        '': {text: l('global.table.lifecycle.all', '全部'), status: 'ALL'},
+        '': {text: l('global.table.lifecycle.all'), status: 'ALL'},
         2: {
-          text: l('global.table.lifecycle.dev', '开发中'),
+          text: l('global.table.lifecycle.dev'),
           status: JOB_LIFE_CYCLE.DEVELOP,
         },
         4: {
-          text: l('global.table.lifecycle.publish', '已发布'),
+          text: l('global.table.lifecycle.publish'),
           status: JOB_LIFE_CYCLE.RELEASE,
         },
         5: {
-          text: l('global.table.lifecycle.online', '已上线'),
+          text: l('global.table.lifecycle.online'),
           status: JOB_LIFE_CYCLE.ONLINE,
         },
         0: {
-          text: l('global.table.lifecycle.unKnow', '未知'),
+          text: l('global.table.lifecycle.unKnow'),
           status: JOB_LIFE_CYCLE.UNKNOWN,
         },
       },
@@ -155,12 +155,12 @@ const JobInstanceTable = (props: any) => {
         return (<JobLifeCycle step={row.step}/>);
       }
     }, {
-      title: l('global.table.runmode', '运行模式'),
+      title: l('global.table.runmode'),
       dataIndex: "type",
       sorter: true,
       valueType: 'radio',
       valueEnum: {
-        '': {text: l('global.table.lifecycle.all', '全部'), status: 'ALL'},
+        '': {text: l('global.table.lifecycle.all'), status: 'ALL'},
         'local': {
           text: RUN_MODE.LOCAL,
           status: RUN_MODE.LOCAL,
@@ -191,15 +191,15 @@ const JobInstanceTable = (props: any) => {
         },
       },
     }, {
-      title: l('global.table.instanceName', '集群实例'),
+      title: l('global.table.instanceName'),
       dataIndex: "clusterAlias",
       sorter: true,
     }, {
-      title: l('global.table.jobid', '作业ID'),
+      title: l('global.table.jobid'),
       dataIndex: "jid",
       key: "jid",
     }, {
-      title: l('global.table.status', '状态'),
+      title: l('global.table.status'),
       dataIndex: "status",
       sorter: true,
       hideInSearch: true,
@@ -209,27 +209,27 @@ const JobInstanceTable = (props: any) => {
           ;
       }
     }, {
-      title: l('global.table.startTime', '开始时间'),
+      title: l('global.table.createTime'),
       dataIndex: "createTime",
       sorter: true,
       valueType: 'dateTime',
       hideInSearch: true,
     }, {
-      title: l('global.table.updateTime', '更新时间'),
+      title: l('global.table.lastUpdateTime'),
       dataIndex: "updateTime",
       sorter: true,
       valueType: 'dateTime',
       hideInTable: true,
       hideInSearch: true,
     }, {
-      title: l('global.table.endTime', '结束时间'),
+      title: l('global.table.endTime'),
       dataIndex: "finishTime",
       sorter: true,
       valueType: 'dateTime',
       hideInTable: true,
       hideInSearch: true,
     }, {
-      title: l('global.table.useTime', '耗时'),
+      title: l('global.table.useTime'),
       dataIndex: "duration",
       sorter: true,
       valueType: 'second',
@@ -245,20 +245,20 @@ const JobInstanceTable = (props: any) => {
         color={taskStatus?.onlineStatus ? OPS_STATUS_COLOR.padding : OPS_STATUS_COLOR.success} text={<a
         onClick={() => {
           onStatusChange('1')
-        }}>{l('pages.devops.lable.online', '一键上线')}</a>}/>,
+        }}>{l('pages.devops.lable.online')}</a>}/>,
         <a
           style={{color: taskStatus?.onlineStatus ? '#FF0000' : '#1E90FF'}}
           onClick={() => {
             onStatusDetailed('1')
-          }}>{l('pages.devops.lable.onlinelist', '上线明细')}</a>,
+          }}>{l('pages.devops.lable.onlinelist')}</a>,
         <Badge color={taskStatus?.offlineStatus ? OPS_STATUS_COLOR.padding : OPS_STATUS_COLOR.success}
                text={<a onClick={() => {
                  onStatusChange('2')
-               }}>{l('pages.devops.lable.offline', '一键下线')}</a>}/>, <a
+               }}>{l('pages.devops.lable.offline')}</a>}/>, <a
           style={{color: taskStatus?.onlineStatus ? '#FF0000' : '#1E90FF'}}
           onClick={() => {
             onStatusDetailed('2')
-          }}>{l('pages.devops.lable.offlinelist', '下线明细')}</a>,]}
+          }}>{l('pages.devops.lable.offlinelist')}</a>,]}
       request={(params, sorter, filter) => {
         setTime(Date.now());
         return queryData(url, {...params, status, isHistory, sorter: {id: 'descend'}, filter});
@@ -269,7 +269,7 @@ const JobInstanceTable = (props: any) => {
         filterType: 'light',
       }}
 
-      headerTitle={l('global.table.lastUpdateTime', '上次更新时间') + `：${moment(time).format('HH:mm:ss')}`}
+      headerTitle={l('global.table.lastUpdateTime') + `：${moment(time).format('HH:mm:ss')}`}
       polling={status == activeKey ? 3000 : undefined}
       pagination={{
         defaultPageSize: 10,

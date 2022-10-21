@@ -57,7 +57,7 @@ const VersionList = (props: any) => {
                  <Button key="back" onClick={() => {
                    cancelHandle();
                  }}>
-                   关闭
+                   {l('button.close')}
                  </Button>,
                ]}>
           <CodeShow language={"sql"} code={item?.statement} height={'600px'}/>
@@ -144,14 +144,14 @@ const VersionList = (props: any) => {
       },
     },
     {
-      title: '创建时间',
+      title: l('global.table.createTime'),
       align: 'center',
       sorter: true,
       valueType: 'dateTime',
       dataIndex: 'createTime',
     },
     // {
-    //   title: '操作',
+    //   title: l('global.table.operate'),
     //   align: 'center',
     //   render: (dom, entity) => {
     //     return <>

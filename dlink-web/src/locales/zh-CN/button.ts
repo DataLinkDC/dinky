@@ -38,11 +38,28 @@ export default {
   'button.disable': '禁用',
   'button.reset': '重置',
   'button.search': '搜索',
+  'button.upload': '上传',
+  'button.import': '导入',
+  'button.export': '导出',
+  'button.submit': '提交',
 
 
-  'tips.selected': '已选择',
+  'right.menu.open': '打开',
+  'right.menu.submit': '异步提交',
+  'right.menu.exportJson': '导出 JSON',
+  'right.menu.rename': '重命名',
+  'right.menu.copy': '复制',
+  'right.menu.cut': '剪切',
+  'right.menu.paste': '粘贴',
+  'right.menu.delete': '删除',
+  'right.menu.createCatalogue': '创建目录',
+  'right.menu.createRootCatalogue': '创建根目录',
+  'right.menu.uploadZipToCreate': '上传zip包创建工程',
+  'right.menu.createTask': '创建作业',
+
+
+  'tips.selected': '已选择 {total} 项',
   'tips.notSelected': '未选',
-  'tips.item': '项',
 
   'status.enabled': '已启用',
   'status.disabled': '已禁用',

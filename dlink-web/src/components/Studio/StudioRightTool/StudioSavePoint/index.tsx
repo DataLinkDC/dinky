@@ -85,7 +85,7 @@ const StudioSavePoint = (props: any) => {
       hideInSearch: true,
     },
     {
-      title: '创建时间',
+      title: l('global.table.createTime'),
       dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',

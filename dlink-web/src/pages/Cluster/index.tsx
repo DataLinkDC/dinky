@@ -68,8 +68,8 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       Modal.confirm({
         title: '删除集群',
         content: '确定删除该集群吗？',
-        okText: '确认',
-        cancelText: '取消',
+        okText: l('button.confirm'),
+        cancelText: l('button.cancel'),
         onOk: async () => {
           await handleRemove(url, [currentItem]);
           actionRef.current?.reloadAndRest?.();
@@ -88,8 +88,8 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
     Modal.confirm({
       title: '回收集群',
       content: '确定回收所有自动创建且过期的集群吗？',
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         const {datas} = await getData(url + '/clear', '回收集群', null);
         message.success(`成功回收${datas}个集群`);
@@ -104,20 +104,20 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
     <Dropdown
       overlay={
         <Menu onClick={({key}) => editAndDelete(key, item)}>
-          <Menu.Item key="edit">{l('global.table.edit', '编辑')}</Menu.Item>
-          <Menu.Item key="delete">{l('global.table.delete', '删除')}</Menu.Item>
+          <Menu.Item key="edit">{l('button.edit')}</Menu.Item>
+          <Menu.Item key="delete">{l('button.delete')}</Menu.Item>
         </Menu>
       }
     >
       <a>
-        {l('global.table.more', '更多')} <DownOutlined/>
+        {l('button.more')} <DownOutlined/>
       </a>
     </Dropdown>
   );
 
   const columns: ProColumns<ClusterTableListItem>[] = [
     {
-      title: l('global.table.instanceName', '名称'),
+      title: l('global.table.instanceName'),
       dataIndex: 'name',
       tip: '名称是唯一的',
       sorter: true,
@@ -134,20 +134,20 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: l('global.table.instanceId', '集群ID'),
+      title: l('global.table.instanceId'),
       dataIndex: 'id',
       hideInTable: true,
       hideInForm: true,
       hideInSearch: true,
     },
     {
-      title: l('global.table.nickName', '别名'),
+      title: l('global.table.nickName'),
       sorter: true,
       dataIndex: 'alias',
       hideInTable: false,
     },
     {
-      title: l('global.table.type', '类型'),
+      title: l('global.table.type'),
       sorter: true,
       dataIndex: 'type',
       hideInForm: false,
@@ -190,7 +190,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: l('global.table.jobManagerHaAddress', 'JobManager HA 地址'),
+      title: l('global.table.jobManagerHaAddress'),
       sorter: true,
       dataIndex: 'hosts',
       valueType: 'textarea',
@@ -204,14 +204,14 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: l('global.table.jobManagerAddress', 'JobManager地址'),
+      title: l('global.table.jobManagerAddress'),
       sorter: true,
       dataIndex: 'jobManagerHost',
       hideInForm: true,
       hideInSearch: true,
       hideInTable: false,
     }, {
-      title: l('global.table.version', '版本'),
+      title: l('global.table.version'),
       sorter: true,
       dataIndex: 'version',
       hideInForm: true,
@@ -219,25 +219,25 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       hideInTable: false,
     },
     {
-      title: l('global.table.status', '状态'),
+      title: l('global.table.status'),
       dataIndex: 'status',
       hideInForm: true,
       hideInSearch: true,
       hideInTable: false,
       filters: [
         {
-          text: l('global.table.status.normal', '正常'),
+          text: l('global.table.status.normal'),
           value: 1,
         },
         {
-          text: l('global.table.status.abnormal', '异常'),
+          text: l('global.table.status.abnormal'),
           value: 0,
         },
       ],
       filterMultiple: false,
       valueEnum: {
-        1: {text: l('global.table.status.normal', '正常'), status: 'Success'},
-        0: {text: l('global.table.status.abnormal', '异常'), status: 'Error'},
+        1: {text: l('global.table.status.normal'), status: 'Success'},
+        0: {text: l('global.table.status.abnormal'), status: 'Error'},
       },
     },
     {
@@ -250,57 +250,57 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       hideInTable: true,
     },
     {
-      title: l('global.table.isUse', '是否启用'),
+      title: l('global.table.isEnable'),
       dataIndex: 'enabled',
       hideInForm: true,
       hideInSearch: true,
       hideInTable: false,
       filters: [
         {
-          text: l('global.table.inUse', '已启用'),
+          text: l('global.table.enabled'),
           value: 1,
         },
         {
-          text: l('global.table.notUse', '已禁用'),
+          text: l('global.table.disabled'),
           value: 0,
         },
       ],
       filterMultiple: false,
       valueEnum: {
-        true: {text: l('global.table.inUse', '已启用'), status: 'Success'},
-        false: {text: l('global.table.notUse', '已禁用'), status: 'Error'},
+        true: {text: l('global.table.enabled'), status: 'Success'},
+        false: {text: l('global.table.disabled'), status: 'Error'},
       },
     },
     {
-      title: l('global.table.registType', '注册方式'),
+      title: l('global.table.registType'),
       dataIndex: 'autoRegisters',
       hideInForm: true,
       hideInSearch: true,
       hideInTable: false,
       filters: [
         {
-          text: l('global.table.registType.automatic', '自动'),
+          text: l('global.table.registType.automatic'),
           value: 1,
         },
         {
-          text: l('global.table.registType.manual', '手动'),
+          text: l('global.table.registType.manual'),
           value: 0,
         },
       ],
       filterMultiple: false,
       valueEnum: {
         true: {
-          text: l('global.table.registType.automatic', '自动'),
+          text: l('global.table.registType.automatic'),
           status: 'Success'
         },
         false: {
-          text: l('global.table.registType.manual', '手动'),
+          text: l('global.table.registType.manual'),
           status: 'Error'
         },
       },
     },
     {
-      title: l('global.table.createTime', '创建时间'),
+      title: l('global.table.createTime'),
       dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',
@@ -318,7 +318,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: l('global.table.updateTime', '最近更新时间'),
+      title: l('global.table.lastUpdateTime'),
       dataIndex: 'updateTime',
       sorter: true,
       valueType: 'dateTime',
@@ -335,7 +335,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: l('global.table.operate', '操作'),
+      title: l('global.table.operate'),
       dataIndex: 'option',
       tooltip: 'FLinkWebUI连接 当集群状态为`可用`时! 支持 KUBERNETES 之外的模式',
       valueType: 'option',
@@ -346,7 +346,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
             setFormValues(record);
           }}
         >
-          {l('global.table.config', '配置')}
+          {l('button.config')}
         </a>,
         <MoreBtn key="more" item={record}/>,
         ((record.status && (record.type === RUN_MODE.YARN_SESSION
@@ -371,7 +371,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
   return (
     <PageContainer title={false}>
       <ProTable<ClusterTableListItem>
-        headerTitle={l('global.table.clusterManagement', '集群管理')}
+        headerTitle={l('global.table.clusterManagement')}
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -379,13 +379,13 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
         }}
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined/> {l('global.table.create', '新建')}
+            <PlusOutlined/> {l('button.create')}
           </Button>,
           <Button type="primary" onClick={() => checkHeartBeats()}>
-            <HeartOutlined/> {l('global.table.heartbeat', '心跳')}
+            <HeartOutlined/> {l('global.table.heartbeat')}
           </Button>,
           <Button type="primary" onClick={() => clearCluster()}>
-            <ClearOutlined/> {l('global.table.recycle', '回收')}
+            <ClearOutlined/> {l('global.table.recycle')}
           </Button>,
         ]}
         request={(params, sorter, filter) => queryData(url, {...params, sorter, filter})}
@@ -402,7 +402,11 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
         <FooterToolbar
           extra={
             <div>
-              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
+              {l('tips.selected', '',
+                {
+                  total: <a
+                    style={{fontWeight: 600}}>{selectedRowsState.length}</a>
+                })}  &nbsp;&nbsp;
               <span>
                 被禁用的集群共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} 个
               </span>
@@ -414,8 +418,8 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
                     Modal.confirm({
                       title: '删除集群',
                       content: '确定删除选中的集群吗？',
-                      okText: '确认',
-                      cancelText: '取消',
+                      okText: l('button.confirm'),
+                      cancelText: l('button.cancel'),
                       onOk: async () => {
                         await handleRemove(url, selectedRowsState);
                         setSelectedRows([]);
@@ -424,15 +428,15 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
                     });
                   }}
           >
-            批量删除
+            {l('button.batchDelete')}
           </Button>
           <Button type="primary"
                   onClick={() => {
                     Modal.confirm({
                       title: '启用集群',
                       content: '确定启用选中的集群吗？',
-                      okText: '确认',
-                      cancelText: '取消',
+                      okText: l('button.confirm'),
+                      cancelText: l('button.cancel'),
                       onOk: async () => {
                         await updateEnabled(url + '/enable', selectedRowsState, true);
                         setSelectedRows([]);
@@ -440,14 +444,14 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
                       }
                     });
                   }}
-          >批量启用</Button>
+          >{l('button.batchEnable')}</Button>
           <Button danger
                   onClick={() => {
                     Modal.confirm({
                       title: '禁用集群',
                       content: '确定禁用选中的集群吗？',
-                      okText: '确认',
-                      cancelText: '取消',
+                      okText: l('button.confirm'),
+                      cancelText: l('button.cancel'),
                       onOk: async () => {
                         await updateEnabled(url + '/enable', selectedRowsState, false);
                         setSelectedRows([]);
@@ -455,7 +459,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
                       }
                     });
                   }}
-          >批量禁用</Button>
+          >{l('button.batchDisable')}</Button>
         </FooterToolbar>
       )}
       <ClusterForm

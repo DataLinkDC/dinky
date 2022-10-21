@@ -152,7 +152,7 @@ const RoleFormList: React.FC<{}> = (props: any) => {
       valueType: 'dateTime',
     },
     {
-      title: l('pages.operate'),
+      title: l('global.table.operate'),
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
@@ -197,8 +197,11 @@ const RoleFormList: React.FC<{}> = (props: any) => {
         <FooterToolbar
           extra={
             <div>
-              {l('tips.selected')} <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> {l('tips.item')}
-            </div>
+              {l('tips.selected', '',
+                {
+                  total: <a
+                    style={{fontWeight: 600}}>{selectedRowsState.length}</a>
+                })}  &nbsp;&nbsp;            </div>
           }
         >
           <Button type="primary" danger

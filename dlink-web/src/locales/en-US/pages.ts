@@ -88,10 +88,6 @@ export default {
   'pages.searchTable.batchDeletion': 'Batch Deletion',
   'pages.searchTable.batchApproval': 'Batch Approval',
 
-
-  'pages.operate': 'Operation', // all table list of operation columns is use this item
-
-
   'pages.devops.jobstatus.CREATED': 'Created',
   'pages.devops.jobstatus.INITIALIZING': 'Initialize',
   'pages.devops.jobstatus.RUNNING': 'Running',
@@ -158,8 +154,7 @@ export default {
   'pages.user.UserEnterNewPassword': 'Please enter new password',
   'pages.user.UserEnterRepeatNewPassword': 'Please enter repeat new password',
   'pages.user.UserNewPasswordNotMatch': 'The new passwords do not match',
-  'pages.user.disableTotalOf': 'Total Of ',
-  'pages.user.selectDisable': 'User Is Disabled ',
+  'pages.user.disableTotalOf': 'Total Of {total} User Is Disabled',
 
 
   'pages.tenant.TenantManager': 'Tenant Management',
@@ -198,8 +193,7 @@ export default {
   'pages.nameSpace.update': 'Update NameSpace',
   'pages.nameSpace.EnterNameSpaceCode': 'Please enter NameSpace Code!',
   'pages.nameSpace.EnterNameSpaceNote': 'Please enter NameSpace Note!',
-  'pages.nameSpace.disableTotalOf': 'Total Of ',
-  'pages.nameSpace.selectDisable': 'Namespace Is Disabled ',
+  'pages.nameSpace.disableTotalOf': 'Total Of {total} Namespace Is Disabled',
 
   'pages.role.roleManagement': 'Role Management',
   'pages.role.roleCode': 'Role Code',

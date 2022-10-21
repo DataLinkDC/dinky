@@ -50,7 +50,7 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
       setFormValues(currentItem);
     } else if (key === 'delete') {
       Modal.confirm({
-        title: l('pages.nameSpace.deleteNameSpace', '默认'),
+        title: l('pages.nameSpace.deleteNameSpace'),
         content: l('pages.nameSpace.deleteNameSpaceConfirm'),
         okText: l('button.confirm'),
         cancelText: l('button.cancel'),
@@ -144,7 +144,7 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
       valueType: 'dateTime',
     },
     {
-      title: l('pages.operate'),
+      title: l('global.table.operate'),
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
@@ -189,10 +189,13 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
         <FooterToolbar
           extra={
             <div>
-              {l('tips.selected')} <a
-              style={{fontWeight: 600}}>{selectedRowsState.length}</a> {l('tips.item')}&nbsp;&nbsp;
+              {l('tips.selected', '',
+                {
+                  total: <a
+                    style={{fontWeight: 600}}>{selectedRowsState.length}</a>
+                })}  &nbsp;&nbsp;
               <span>
-  {l('pages.nameSpace.disableTotalOf')} {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} {l('pages.nameSpace.selectDisable')}
+  {l('pages.nameSpace.disableTotalOf', '', {total: selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)})}
   </span>
             </div>
           }

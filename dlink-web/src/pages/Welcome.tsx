@@ -41,7 +41,7 @@ export default (): React.ReactNode => {
     <>
       <Card>
         <Alert
-          message={l('pages.welcome.alertMessage', '实时计算平台 Dinky 即将发布，目前为体验版，版本号为 ', {version: VERSION})}
+          message={l('pages.welcome.alertMessage', '', {version: VERSION})}
           type="success"
           showIcon
           banner

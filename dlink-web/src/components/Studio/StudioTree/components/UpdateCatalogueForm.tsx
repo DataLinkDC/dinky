@@ -86,7 +86,7 @@ const UpdateCatalogueForm: React.FC<UpdateFormProps> = (props) => {
       <>
         <Button onClick={() => handleUpdateModalVisible(false, values)}>取消</Button>
         <Button type="primary" onClick={() => submitForm()}>
-          完成
+          {l('button.finish')}
         </Button>
       </>
     );

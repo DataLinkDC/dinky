@@ -89,9 +89,6 @@ export default {
   'pages.searchTable.batchDeletion': '批量删除',
   'pages.searchTable.batchApproval': '批量审批',
 
-  // ------------------------------------------------------------------------------
-
-  'pages.operate': '操作', // all table list of operation columns is use this item
 
   'pages.devops.jobstatus.CREATED': '已创建',
   'pages.devops.jobstatus.INITIALIZING': '初始化',
@@ -109,21 +106,21 @@ export default {
 
   'pages.settings.UserManagement': '用户管理',
   'pages.settings.Flink': 'Flink 设置',
-  'pages.settings.FlinkURL': '提交 Jar 文件路径到 FlinkSQL',
+  'pages.settings.FlinkURL': '提交 FlinkSQL 的 Jar 文件路径',
 
-  'pages.settings.FlinkSQLJarMainParameter': '提交FlinkSQL的Jar的主类入参',
-  'pages.settings.FlinkSQLJarMainClass': '提交FlinkSQL的Jar主类',
+  'pages.settings.FlinkSQLJarMainParameter': '提交 FlinkSQL 的 Jar 的主类入参',
+  'pages.settings.FlinkSQLJarMainClass': '提交 FlinkSQL 的 Jar 的主类',
   'pages.settings.FlinkRestAPI': '使用 Rest API',
   'pages.settings.FlinkURLSplit': 'FlinkSQL 语句分隔符',
-  'pages.settings.FlinkSQLLogic': '使用逻辑计划计算血缘关系',
-  'pages.settings.FlinkJobID': '获取作业 ID 的最长等待时间（秒）',
+  'pages.settings.FlinkSQLLogic': '使用逻辑计划计算血缘',
+  'pages.settings.FlinkJobID': '获取 Job ID 的最大等待时间（秒）',
   'pages.settings.FlinkNoSetting': '未设置',
-  'pages.settings.FlinkNoUseSetting': 'Flink任务开启后，通过 JobManager 的 RestAPI 进行 Savepoint、Stop等操作',
-  'pages.settings.FlinkLogic': 'Flink 任务的字段血缘分析计算是否基于逻辑计划 , 仅在 1.14 版本中支持',
+  'pages.settings.FlinkNoUseSetting': '启用后，Flink 任务的 savepoint、停止等操作将通过 JobManager 的 RestAPI 进行',
+  'pages.settings.FlinkLogic': '在计算 Flink 任务的字段血缘分析时是否基于逻辑计划进行，只支持 1.14 版本',
 
   'pages.settings.FlinkUpdate': '修改',
   'pages.settings.FlinkSave': '保存',
-  'pages.settings.FlinkCancel': '返回',
+  'pages.settings.FlinkCancel': '取消',
   'pages.settings.FlinkUse': '启用',
   'pages.settings.FlinkNotUse': '禁用',
 
@@ -159,8 +156,7 @@ export default {
   'pages.user.UserEnterNewPassword': '请输入新密码',
   'pages.user.UserEnterRepeatNewPassword': '请重复输入新密码',
   'pages.user.UserNewPasswordNotMatch': '两次输入的新密码不一致',
-  'pages.user.disableTotalOf': '被禁用的用户共 ',
-  'pages.user.selectDisable': ' 个',
+  'pages.user.disableTotalOf': '被禁用的用户共 {total} 个',
 
 
   'pages.tenant.TenantManager': '租户管理',
@@ -198,8 +194,7 @@ export default {
   'pages.nameSpace.update': '修改命名空间',
   'pages.nameSpace.EnterNameSpaceCode': '请输入命名空间编码!',
   'pages.nameSpace.EnterNameSpaceNote': '请输入命名空间的备注/描述信息!',
-  'pages.nameSpace.disableTotalOf': '被禁用的命名空间共 ',
-  'pages.nameSpace.selectDisable': '个',
+  'pages.nameSpace.disableTotalOf': '被禁用的命名空间共 {total} 个',
 
   'pages.role.roleManagement': '角色管理',
   'pages.role.roleCode': '角色编码',
@@ -225,5 +220,56 @@ export default {
 
   'pages.regist.openAPI': 'OpenAPI 文档',
   'pages.regist.BusinessComponent': '业务组件文档',
+
+
+  'pages.metadata.NoDatabaseSelected': '未选择数据源',
+  'pages.metadata.Application': 'Application',
+  'pages.metadata.TableInfo': '表信息',
+  'pages.metadata.Description': '描述',
+  'pages.metadata.DataSearch': '数据查询',
+  'pages.metadata.GenerateSQL': 'SQL 生成',
+  'pages.metadata.FieldInformation': '字段信息',
+
+  'pages.TableData.QueryConditions': '查询条件',
+  'pages.TableData.sorting': '排序',
+  'pages.TableData.data': '数据',
+  'pages.TableData.search': '搜索',
+
+  'pages.datastudio.label.info': '数据',
+  'pages.datastudio.label.result': '结果',
+  'pages.datastudio.label.lineage': '血缘',
+  'pages.datastudio.label.process': '进程',
+  'pages.datastudio.label.history': '历史',
+  'pages.datastudio.label.function': '函数',
+
+  'pages.datastudio.label.directory': '目录',
+  'pages.datastudio.label.structure': '结构',
+  'pages.datastudio.label.session': '会话',
+  'pages.datastudio.label.cluster': '集群',
+  'pages.datastudio.label.datasource': '数据源',
+  'pages.datastudio.label.meta': '元数据',
+  'pages.datastudio.label.globalvariable': '全局变量',
+  'pages.datastudio.label.guidepage': '引导页',
+
+  'pages.datastudio.label.registcluster': '注册集群实例',
+  'pages.datastudio.label.registclusterconfig': '注册集群配置',
+  'pages.datastudio.label.registjar': '注册 Jar',
+  'pages.datastudio.label.registdatasource': '注册数据源',
+  'pages.datastudio.label.registdocument': '注册文档',
+  'pages.datastudio.label.configsystemconfig': '修改系统配置',
+  'pages.datastudio.label.officialdocumentation': '官网文档',
+  'pages.datastudio.label.quickguide': '快捷引导',
+
+  'pages.datastudio.label.welcomeuse': '欢迎使用 Dinky v{version}',
+  'pages.datastudio.label.dinkydescribe': '实时即未来，Dinky 为 Apache Flink 而生，让 Flink SQL 纵享丝滑，并致力于实时计算平台建设。',
+  'pages.datastudio.label.maxrows': '最大行数',
+
+
+  'pages.devops.result.success': '操作成功',
+  'pages.devops.lable.online': '一键上线',
+  'pages.devops.lable.offline': '一键下线',
+  'pages.devops.lable.onlinelist': '上线明细',
+  'pages.devops.lable.offlinelist': '下线明细',
+  'pages.devops.lable.instance': '实例',
 
 };

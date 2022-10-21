@@ -92,9 +92,9 @@ const UDFTemplate: React.FC<{}> = (props) => {
       open={open}
       extra={
         <Space>
-          <Button onClick={onClose}>取消</Button>
+          <Button onClick={onClose}>{l('button.cancel')}</Button>
           <Button onClick={add} type="primary">
-            提交
+            {l('button.submit')}
           </Button>
         </Space>
       }
@@ -168,8 +168,8 @@ const UDFTemplate: React.FC<{}> = (props) => {
     Modal.confirm({
       title: '删除集群',
       content: '确定删除该集群吗？',
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         await deleteTemplate(id)
         actionRef.current?.reloadAndRest?.();
@@ -228,7 +228,7 @@ const UDFTemplate: React.FC<{}> = (props) => {
       },
       onFilter: true
     }, {
-      title: '操作',
+      title: l('global.table.operate'),
       key: 'action',
       render: (text, record, _, action) => (
         <Space size="middle">
@@ -250,7 +250,7 @@ const UDFTemplate: React.FC<{}> = (props) => {
         search={false}
         toolBarRender={() => [
           <Button type="primary" onClick={showDrawer} icon={<PlusOutlined/>}>
-            新建
+            {l('button.create')}
           </Button>
         ]}
         actionRef={actionRef}

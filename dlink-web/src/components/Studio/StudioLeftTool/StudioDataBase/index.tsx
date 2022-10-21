@@ -134,7 +134,7 @@ const StudioDataBase = (props: any) => {
         dataIndex: 'note',
       },
       {
-        title: '是否启用',
+        title: l('global.table.isEnable'),
         dataIndex: 'enabled',
         filters: [
           {
@@ -161,24 +161,24 @@ const StudioDataBase = (props: any) => {
         dataIndex: 'heartbeatTime',
         valueType: 'dateTime',
       }, {
-        title: '创建时间',
+        title: l('global.table.createTime'),
         dataIndex: 'createTime',
         valueType: 'dateTime',
       },
       {
-        title: '最近更新时间',
+        title: l('global.table.lastUpdateTime'),
         dataIndex: 'updateTime',
         valueType: 'dateTime',
       },
       {
-        title: '操作',
+        title: l('global.table.operate'),
         dataIndex: 'option',
         valueType: 'option',
         render: (_, record) => [
           <Button type="dashed" onClick={() => onModifyDataBase(record)}>
-            配置
+            {l('button.edit')}
           </Button>, <Button danger onClick={() => onDeleteDataBase(record)}>
-            删除
+            {l('button.delete')}
           </Button>
         ],
       },];
@@ -202,8 +202,8 @@ const StudioDataBase = (props: any) => {
     Modal.confirm({
       title: '删除数据源',
       content: `确定删除该数据源【${record.alias === "" ? record.name : record.alias}】吗？`,
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         await handleRemove('api/database', [record]);
         setRow({});

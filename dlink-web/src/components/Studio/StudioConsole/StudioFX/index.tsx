@@ -203,7 +203,7 @@ const StudioFX = () => {
       hideInTable: true,
     },
     {
-      title: '是否启用',
+      title: l('global.table.isEnable'),
       dataIndex: 'enabled',
       hideInForm: true,
       hideInSearch: true,
@@ -225,7 +225,7 @@ const StudioFX = () => {
       },
     },
     {
-      title: '创建时间',
+      title: l('global.table.createTime'),
       dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',
@@ -244,7 +244,7 @@ const StudioFX = () => {
       },
     },
     {
-      title: '最近更新时间',
+      title: l('global.table.lastUpdateTime'),
       dataIndex: 'updateTime',
       sorter: true,
       valueType: 'dateTime',
