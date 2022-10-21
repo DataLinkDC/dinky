@@ -2,7 +2,7 @@
 
 ## 前言
 
-​	在2021年10月24日的程序员节前夕，文末丶为大家带来了新内容 Dlink-0.3.2 。时隔两月才为大家带来新内容，在此向大家致歉。当然，开源之路一定会坚持下去，会为大家带来更多的新内容，也希望有志之士可以共建社区。
+​ 在2021年10月24日的程序员节前夕，文末丶为大家带来了新内容 Dlink-0.3.2 。时隔两月才为大家带来新内容，在此向大家致歉。当然，开源之路一定会坚持下去，会为大家带来更多的新内容，也希望有志之士可以共建社区。
 
 本次更新，Dlink 为大家在编写 FlinkSQL 的方向上带来了更加实用的功能——Flink SQL 自动补全。
 
@@ -60,53 +60,54 @@ Dlink-0.3.2 版本上线了一个非常实用的功能——自动补全。效�
 
 ## 新部署
 
-​	本次更新带来了新的非必要的部署变动。
+​ 本次更新带来了新的非必要的部署变动。
 
 ### 1.新增 plugins 类加载路径用于加载 Flink 相关依赖
 
-​	由于 Dlink 采用关键依赖外置来管理器功能的支撑，分为自身依赖与 Flink 相关依赖，易混淆，所以在部署包新增了 `plugins` 目录用于存放 Flink 相关依赖，而 libs 下仅存放 Dlink 的自身依赖。此外 `extends` 存放暂不使用的依赖。其包结构如下所示：
+​ 由于 Dlink 采用关键依赖外置来管理器功能的支撑，分为自身依赖与 Flink 相关依赖，易混淆，所以在部署包新增了 `plugins` 目录用于存放 Flink 相关依赖，而 libs 下仅存放 Dlink 的自身依赖。此外 `extends` 存放暂不使用的依赖。其包结构如下所示：
 
 ```java
-config/ -- 配置文件
-|- application.yml
-extends/ -- 扩展
-|- clickhouse-jdbc-0.2.6.jar
-|- dlink-client-1.11.jar
-|- dlink-client-1.13.jar
-|- dlink-client-1.14.jar
-|- dlink-flink-shaded-hadoop-3-uber.jar
-|- flink-sql-connector-hbase-1.4_2.11-1.12.5.jar
-|- flink-sql-connector-hbase-2.2_2.11-1.12.5.jar
-|- flink-sql-connector-kafka_2.11-1.12.5.jar
-|- ojdbc8-12.2.0.1.jar
-lib/ -- 外部依赖及Connector
-|- dlink-client-1.12.jar -- 必需
-|- dlink-connector-jdbc.jar
-|- dlink-function.jar
-|- dlink-metadata-clickhouse.jar
-|- dlink-metadata-mysql.jar
-|- dlink-metadata-oracle.jar
-|- dlink-metadata-postgresql.jar
-plugins/
-|- flink-connector-jdbc_2.11-1.12.5.jar
-|- flink-csv-1.12.5.jar
-|- flink-json-1.12.5.jar
-|- mysql-connector-java-8.0.21.jar
-sql/ 
-|- dlink.sql --Mysql初始化脚本
-auto.sh --启动停止脚本
-dlink-admin.jar --程序包
+config/--配置文件
+    |-application.yml
+    extends/--扩展
+    |-clickhouse-jdbc-0.2.6.jar
+    |-dlink-client-1.11.jar
+    |-dlink-client-1.13.jar
+    |-dlink-client-1.14.jar
+    |-dlink-flink-shaded-hadoop-3-uber.jar
+    |-flink-sql-connector-hbase-1.4_2.11-1.12.5.jar
+    |-flink-sql-connector-hbase-2.2_2.11-1.12.5.jar
+    |-flink-sql-connector-kafka_2.11-1.12.5.jar
+    |-ojdbc8-12.2.0.1.jar
+    lib/--外部依赖及Connector
+    |-dlink-client-1.12.jar--必需
+    |-dlink-connector-jdbc.jar
+    |-dlink-function.jar
+    |-dlink-metadata-clickhouse.jar
+    |-dlink-metadata-mysql.jar
+    |-dlink-metadata-oracle.jar
+    |-dlink-metadata-postgresql.jar
+    plugins/
+    |-flink-connector-jdbc_2.11-1.12.5.jar
+    |-flink-csv-1.12.5.jar
+    |-flink-json-1.12.5.jar
+    |-mysql-connector-java-8.0.21.jar
+    sql/
+    |-dinky.sql--Mysql初始化脚本
+    |-upgrade/--各个版本升级SQL脚本
+    auto.sh--启动停止脚本
+    dlink-admin.jar--程序包
 ```
 
 ### 2.新增 Nginx 的部署方式
 
-​	Dlink 是一个基于 SpringBoot 框架的 React 应用，所以有两种部署方式。
+​ Dlink 是一个基于 SpringBoot 框架的 React 应用，所以有两种部署方式。
 
-​	此前的方式为将 React 的打包资源放在了 dlink-admin 的 static 目录下，依据 SpringBoot Web 机制自动加载，所以访问 8888 端口号即可打开应用页面。
+​ 此前的方式为将 React 的打包资源放在了 dlink-admin 的 static 目录下，依据 SpringBoot Web 机制自动加载，所以访问 8888 端口号即可打开应用页面。
 
-​	本次更新提供了另一种更加可靠的部署方式—— Nginx 部署。
+​ 本次更新提供了另一种更加可靠的部署方式—— Nginx 部署。
 
-​	将 dist 并上传至 nginx 的 html 文件夹下，修改 nginx 配置文件并重启。添加内容如下：
+​ 将 dist 并上传至 nginx 的 html 文件夹下，修改 nginx 配置文件并重启。添加内容如下：
 
 ```shell
 	server {
@@ -148,53 +149,51 @@ dlink-admin.jar --程序包
     }
 ```
 
-​	1.server.listen 填写前端访问端口
+​ 1.server.listen 填写前端访问端口
 
-​	2.proxy_pass 填写后端地址如 http://127.0.0.1:8888
+​ 2.proxy_pass 填写后端地址如 http://127.0.0.1:8888
 
-​	3.重启 Nginx。
+​ 3.重启 Nginx。
 
-​	4.后续只更新前端资源时，不需要重启 Nginx。
-
-
+​ 4.后续只更新前端资源时，不需要重启 Nginx。
 
 ## 新改动
 
 ### 1.优化 Flink 多版本间的切换问题
 
-​	Dlink 主要原理是基于 flink-client 来提交 FlinkSQL 到远程集群，其在提交的过程时会进行 sql 到 执行图的转换工作，所以该功能会强依赖 Flink 的源码与版本，使其在切换 Flink 版本时会出现类不存在或方法不存在的问题。本次更新对从 `CatalogManager` 获取表字段的逻辑进行了下沉处理，新提供了 `List<String> getFieldNamesFromCatalogManager(CatalogManager catalogManager, String catalog, String database, String table)` 的静态方法用于解决不同版本在获取字段时逻辑不一致的问题。
+​ Dlink 主要原理是基于 flink-client 来提交 FlinkSQL 到远程集群，其在提交的过程时会进行 sql 到 执行图的转换工作，所以该功能会强依赖 Flink 的源码与版本，使其在切换 Flink 版本时会出现类不存在或方法不存在的问题。本次更新对从 `CatalogManager` 获取表字段的逻辑进行了下沉处理，新提供了 `List<String> getFieldNamesFromCatalogManager(CatalogManager catalogManager, String catalog, String database, String table)` 的静态方法用于解决不同版本在获取字段时逻辑不一致的问题。
 
-​	当然，之所以说是多版本间的切换而非多版本的兼容，是因为 Dlink 的一个进程实例只支持一种 Flink 版本，多版本需要启动多个 Dlink 实例或者切换 dlink-client 依赖后重启。后续将开源单实例兼容多版本 Flink 。
+​ 当然，之所以说是多版本间的切换而非多版本的兼容，是因为 Dlink 的一个进程实例只支持一种 Flink 版本，多版本需要启动多个 Dlink 实例或者切换 dlink-client 依赖后重启。后续将开源单实例兼容多版本 Flink 。
 
 ### 2.新增 dlink-extends 模块用于扩展依赖打包
 
-​	Dlink 支持 Flink 社区的绝大多数插件或依赖，例如各种 Connector。于是新增了 dlink-extends 模块用于打包自己需求的依赖，当然从各大网址下载也是完全可以的。
+​ Dlink 支持 Flink 社区的绝大多数插件或依赖，例如各种 Connector。于是新增了 dlink-extends 模块用于打包自己需求的依赖，当然从各大网址下载也是完全可以的。
 
-​	注意：在引入 Hadoop 的依赖时，会因为与 SpringBoot 产生冲突（如 Servlet-api 等）而导致无法正常打开网页，此时如果不想解决依赖冲突的难题，可以通过 Nginx 前后端分离的模式部署 Dlink 从而避免该问题。
+​ 注意：在引入 Hadoop 的依赖时，会因为与 SpringBoot 产生冲突（如 Servlet-api 等）而导致无法正常打开网页，此时如果不想解决依赖冲突的难题，可以通过 Nginx 前后端分离的模式部署 Dlink 从而避免该问题。
 
 ### 3.优化所有的新增功能其别名未填则默认为名称
 
-​	该功能的优化源于 Github 的用户 zhu-mingye 所贡献的测试与提议。主要描述为在新增一个 Flink 集群时如果未指定别名则会在提交表单时出现异常信息，同时 Flink 集群简略表格显示别名的值为空。对此进行了底层的改进，对于已拥有 alias 的对象可以在新增写入数据库且值为空时自动补填 name。 
+​ 该功能的优化源于 Github 的用户 zhu-mingye 所贡献的测试与提议。主要描述为在新增一个 Flink 集群时如果未指定别名则会在提交表单时出现异常信息，同时 Flink 集群简略表格显示别名的值为空。对此进行了底层的改进，对于已拥有 alias 的对象可以在新增写入数据库且值为空时自动补填 name。
 
 ### 4.优化注册 Flink 集群时的连接测试与异常日志打印
 
-​	有很多试用者反映 Dlink 在注册 Flink 集群时，尽管可以注册成功，但日志会打印 UnKnownHostException 等异常。所以对 UnKnownHostException 产生原因追究并处理，新版本已解决。
+​ 有很多试用者反映 Dlink 在注册 Flink 集群时，尽管可以注册成功，但日志会打印 UnKnownHostException 等异常。所以对 UnKnownHostException 产生原因追究并处理，新版本已解决。
 
 ### 5.升级 Flink 1.13.2 为1.13.3
 
-​	仅升级 dlink-client 的 pom 依赖 Flink的版本 1.13.2 为 1.13.3。此外无改动。
+​ 仅升级 dlink-client 的 pom 依赖 Flink的版本 1.13.2 为 1.13.3。此外无改动。
 
 ### 6.新增 Flink 1.14.0 的支持
 
-​	十月金秋，Flink 社区发布了 1.14.0 版本，并带来了诸多特性，其特性本文不再赘述，如有需求可关注“Flink 中文社区”查看。与此同时，Dlink 也扩展了 flink-client-1.14 来支持最新版本的 Flink。
+​ 十月金秋，Flink 社区发布了 1.14.0 版本，并带来了诸多特性，其特性本文不再赘述，如有需求可关注“Flink 中文社区”查看。与此同时，Dlink 也扩展了 flink-client-1.14 来支持最新版本的 Flink。
 
 ### 7.修复血缘分析缩进树图渲染导致页面崩溃的 bug
 
-​	由于最新的 ant-design/charts 依赖中 `IndentedTreeGraph` 出现了一些 bug 导致 `edgeStyle` 参数方法中的`graph.findById(item.target.id).getModel()` 无法正确返回对象，所以暂时将原有的根据血缘表中字段数占比而渲染粗细不同的关系连接线功能去除来避免该问题的发生。
+​ 由于最新的 ant-design/charts 依赖中 `IndentedTreeGraph` 出现了一些 bug 导致 `edgeStyle` 参数方法中的`graph.findById(item.target.id).getModel()` 无法正确返回对象，所以暂时将原有的根据血缘表中字段数占比而渲染粗细不同的关系连接线功能去除来避免该问题的发生。
 
 ## 安装包获取
 
-百度网盘链接: https://pan.baidu.com/s/1OJNK_7Un_IZzUybELluyog 
+百度网盘链接: https://pan.baidu.com/s/1OJNK_7Un_IZzUybELluyog
 
 提取码: iv6j
 
