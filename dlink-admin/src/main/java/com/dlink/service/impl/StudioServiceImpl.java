@@ -259,7 +259,7 @@ public class StudioServiceImpl implements StudioService {
         buildSession(config);
         process.infoSuccess();
         // To initialize java udf, but it has a bug in the product environment now.
-        // initUDF(config,studioExecuteDTO.getStatement());
+        config.setJarFiles(udfService.initUDF(studioExecuteDTO.getStatement()));
         process.start();
         JobManager jobManager = JobManager.buildPlanMode(config);
         List<SqlExplainResult> sqlExplainResults =
@@ -311,6 +311,7 @@ public class StudioServiceImpl implements StudioService {
         // If you are using explainSql | getStreamGraph | getJobPlan, make the dialect change to local.
         config.buildLocal();
         buildSession(config);
+        config.setJarFiles(udfService.initUDF(studioExecuteDTO.getStatement()));
         JobManager jobManager = JobManager.buildPlanMode(config);
         String planJson = jobManager.getJobPlanJson(studioExecuteDTO.getStatement());
         ObjectMapper mapper = new ObjectMapper();
