@@ -127,12 +127,12 @@ CREATE TABLE if not exists `dlink_flink_document`
   ROW_FORMAT = Dynamic;
 
 ALTER TABLE `dlink_flink_document`
-    auto_increment = 1;
+auto_increment = 1;
 
 ALTER TABLE `dlink_flink_document`
-    modify column description longtext;
+modify column description longtext;
 ALTER TABLE `dlink_flink_document`
-    ADD COLUMN `fill_value` longtext NULL COMMENT '填充值' AFTER `description`;
+ADD COLUMN `fill_value` longtext NULL COMMENT '填充值' AFTER `description`;
 
 -- ----------------------------
 -- Records of dlink_flink_document
@@ -982,7 +982,7 @@ CREATE TABLE if not exists `dlink_history`
   ROW_FORMAT = Dynamic;
 
 ALTER TABLE `dlink_task`
-    ADD COLUMN `config` text NULL COMMENT '配置' AFTER `cluster_id`;
+ADD COLUMN `config` text NULL COMMENT '配置' AFTER `cluster_id`;
 
 -- ----------------------------
 -- Table structure for dlink_database
@@ -1015,10 +1015,10 @@ CREATE TABLE if not exists `dlink_database`
   ROW_FORMAT = Dynamic;
 
 ALTER TABLE `dlink_cluster`
-    ADD COLUMN `version` varchar(20) NULL COMMENT '版本' AFTER `job_manager_host`;
+ADD COLUMN `version` varchar(20) NULL COMMENT '版本' AFTER `job_manager_host`;
 
 ALTER TABLE `dlink_flink_document`
-    ADD COLUMN `fill_value` varchar(255) NULL COMMENT '填充值' AFTER `description`;
+ADD COLUMN `fill_value` varchar(255) NULL COMMENT '填充值' AFTER `description`;
 
 
 CREATE TABLE if not exists `dlink_cluster_configuration`
@@ -1059,13 +1059,13 @@ CREATE TABLE if not exists `dlink_jar`
   ROW_FORMAT = Dynamic;
 
 ALTER TABLE `dlink_task`
-    ADD COLUMN `cluster_configuration_id` int(11) NULL COMMENT '集群配置ID' AFTER `cluster_id`;
+ADD COLUMN `cluster_configuration_id` int(11) NULL COMMENT '集群配置ID' AFTER `cluster_id`;
 
 ALTER TABLE `dlink_task`
-    ADD COLUMN `statement_set` tinyint(1) NULL COMMENT '启用语句集' AFTER `fragment`;
+ADD COLUMN `statement_set` tinyint(1) NULL COMMENT '启用语句集' AFTER `fragment`;
 
 alter table dlink_history
-    add cluster_configuration_id int(11) null COMMENT '集群配置ID' after cluster_id;
+add cluster_configuration_id int(11) null COMMENT '集群配置ID' after cluster_id;
 
 CREATE TABLE if not exists `dlink_sys_config`
 (
@@ -1081,7 +1081,7 @@ CREATE TABLE if not exists `dlink_sys_config`
   ROW_FORMAT = Dynamic;
 
 alter table dlink_cluster
-    add auto_registers tinyint(1) default 0 null comment '是否自动注册' after note;
+add auto_registers tinyint(1) default 0 null comment '是否自动注册' after note;
 
 update dlink_cluster
 set type ='yarn-session'
@@ -1091,10 +1091,10 @@ set type ='standalone'
 where type = 'Standalone';
 
 ALTER TABLE `dlink_cluster`
-    ADD COLUMN `cluster_configuration_id` int(11) NULL COMMENT '集群配置ID' AFTER `auto_registers`;
+ADD COLUMN `cluster_configuration_id` int(11) NULL COMMENT '集群配置ID' AFTER `auto_registers`;
 
 ALTER TABLE `dlink_cluster`
-    ADD COLUMN `task_id` int(11) NULL COMMENT '任务ID' AFTER `cluster_configuration_id`;
+ADD COLUMN `task_id` int(11) NULL COMMENT '任务ID' AFTER `cluster_configuration_id`;
 
 CREATE TABLE if not exists `dlink_savepoints`
 (
@@ -1111,13 +1111,13 @@ CREATE TABLE if not exists `dlink_savepoints`
   ROW_FORMAT = Dynamic;
 
 ALTER TABLE `dlink_task`
-    ADD COLUMN `save_point_strategy` int(1) NULL COMMENT 'SavePoint策略' AFTER `check_point`;
+ADD COLUMN `save_point_strategy` int(1) NULL COMMENT 'SavePoint策略' AFTER `check_point`;
 
 -- ----------------------------
 -- 0.4.0 2021-11-24
 -- ----------------------------
 ALTER TABLE `dlink_task`
-    ADD COLUMN `jar_id` int(11) NULL COMMENT 'JarID' AFTER `cluster_configuration_id`;
+ADD COLUMN `jar_id` int(11) NULL COMMENT 'JarID' AFTER `cluster_configuration_id`;
 
 -- ----------------------------
 -- 0.4.0 2021-11-28
@@ -1149,27 +1149,27 @@ VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Admin', NULL, NULL, NUL
 -- 0.4.0 2021-11-29
 -- ----------------------------
 ALTER TABLE `dlink_task`
-    CHANGE COLUMN `config` `config_json` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '配置JSON' AFTER `jar_id`;
+CHANGE COLUMN `config` `config_json` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '配置JSON' AFTER `jar_id`;
 
 -- ----------------------------
 -- 0.5.0 2021-12-13
 -- ----------------------------
 ALTER TABLE `dlink_task`
-    ADD COLUMN `dialect` varchar(50) NULL COMMENT '方言' AFTER `alias`;
+ADD COLUMN `dialect` varchar(50) NULL COMMENT '方言' AFTER `alias`;
 ALTER TABLE `dlink_task`
-    ADD COLUMN `database_id` int(11) NULL COMMENT '数据源ID' AFTER `cluster_configuration_id`;
+ADD COLUMN `database_id` int(11) NULL COMMENT '数据源ID' AFTER `cluster_configuration_id`;
 
 -- ----------------------------
 -- 0.5.0 2021-12-29
 -- ----------------------------
 ALTER TABLE `dlink_task`
-    ADD COLUMN `env_id` int(11) NULL COMMENT '环境ID' AFTER `jar_id`;
+ADD COLUMN `env_id` int(11) NULL COMMENT '环境ID' AFTER `jar_id`;
 
 -- ----------------------------
 -- 0.6.0 2022-01-28
 -- ----------------------------
 ALTER TABLE `dlink_database`
-    ADD COLUMN `flink_config` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT 'Flink配置' AFTER `note`;
+ADD COLUMN `flink_config` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT 'Flink配置' AFTER `note`;
 
 -- ----------------------------
 -- 0.6.0 2022-02-02
@@ -1199,7 +1199,7 @@ CREATE TABLE if not exists `dlink_job_instance`
 
 
 ALTER TABLE `dlink_task`
-    ADD COLUMN `step` int(11) NULL COMMENT '作业生命周期' AFTER `note`;
+ADD COLUMN `step` int(11) NULL COMMENT '作业生命周期' AFTER `note`;
 
 -- ----------------------------
 -- 0.6.0 2022-02-03
@@ -1215,18 +1215,18 @@ where task_id in (select id as task_id from dlink_task where jar_id is not null)
 -- 0.6.0 2022-02-07
 -- ----------------------------
 ALTER TABLE `dlink_task`
-    ADD COLUMN `batch_model` tinyint(1) NULL DEFAULT 0 COMMENT '使用批模式' AFTER `statement_set`;
+ADD COLUMN `batch_model` tinyint(1) NULL DEFAULT 0 COMMENT '使用批模式' AFTER `statement_set`;
 -- ----------------------------
 -- 0.6.0 2022-02-18
 -- ----------------------------
 ALTER TABLE `dlink_database`
-    ADD COLUMN `flink_template` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT 'Flink模板' AFTER `flink_config`;
+ADD COLUMN `flink_template` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT 'Flink模板' AFTER `flink_config`;
 
 -- ----------------------------
 -- 0.6.0 2022-02-22
 -- ----------------------------
 ALTER TABLE `dlink_job_instance`
-    MODIFY COLUMN status varchar(50) NULL COMMENT '实例状态';
+MODIFY COLUMN status varchar(50) NULL COMMENT '实例状态';
 
 -- ----------------------------
 -- 0.6.0 2022-02-24
@@ -1285,12 +1285,12 @@ CREATE TABLE if not exists `dlink_alert_history`
 -- 0.6.0 2022-02-25
 -- ----------------------------
 ALTER TABLE `dlink_job_instance`
-    MODIFY COLUMN name varchar(255) NULL COMMENT '作业实例名';
+MODIFY COLUMN name varchar(255) NULL COMMENT '作业实例名';
 -- ----------------------------
 -- 0.6.0 2022-02-28
 -- ----------------------------
 ALTER TABLE `dlink_job_instance`
-    ADD COLUMN `duration` BIGINT NULL COMMENT '耗时' AFTER `finish_time`;
+ADD COLUMN `duration` BIGINT NULL COMMENT '耗时' AFTER `finish_time`;
 
 -- ----------------------------
 -- 0.6.0 2022-03-01
@@ -1319,19 +1319,19 @@ CREATE TABLE if not exists `dlink_job_history`
 -- 0.6.0 2021-03-02
 -- ----------------------------
 ALTER TABLE `dlink_history`
-    CHANGE COLUMN `config` `config_json` json NULL COMMENT '配置JSON' AFTER `result`;
+CHANGE COLUMN `config` `config_json` json NULL COMMENT '配置JSON' AFTER `result`;
 -- ----------------------------
 -- 0.6.0-SNAPSHOT 2022-03-04
 -- ----------------------------
 ALTER TABLE `dlink_task`
-    ADD COLUMN `job_instance_id` BIGINT NULL COMMENT '任务实例ID' AFTER `step`;
+ADD COLUMN `job_instance_id` BIGINT NULL COMMENT '任务实例ID' AFTER `step`;
 ALTER TABLE `dlink_task`
-    ADD COLUMN `alert_group_id` BIGINT NULL COMMENT '报警组ID' AFTER `env_id`;
+ADD COLUMN `alert_group_id` BIGINT NULL COMMENT '报警组ID' AFTER `env_id`;
 -- ----------------------------
 -- 0.6.0 2022-03-13
 -- ----------------------------
 ALTER TABLE `dlink_job_instance`
-    ADD COLUMN `step` INT NULL COMMENT '生命周期' AFTER `task_id`;
+ADD COLUMN `step` INT NULL COMMENT '生命周期' AFTER `task_id`;
 -- ----------------------------
 -- 0.6.0 2022-03-15
 -- ----------------------------
@@ -1341,18 +1341,18 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- 0.6.2 2022-04-17
 -- ----------------------------
 alter table dlink_task
-    alter column fragment set default 0;
+alter column fragment set default 0;
 alter table dlink_task
-    alter column statement_set set default 0;
+alter column statement_set set default 0;
 alter table dlink_cluster_configuration
-    modify column is_available tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否可用';
+modify column is_available tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否可用';
 
 
 
 -- 0.6.5 2022-06-28
 -- ----------------------------
 alter table dlink_task
-    ADD COLUMN `version_id` INT NULL COMMENT '版本号ID';
+ADD COLUMN `version_id` INT NULL COMMENT '版本号ID';
 
 CREATE TABLE `dlink_task_version`
 (
@@ -1635,79 +1635,79 @@ VALUES (1, 1, 1, current_time, current_time);
 
 
 alter table dlink_catalogue
-    add column tenant_id int not null comment '租户ID' after id;
+add column tenant_id int not null comment '租户ID' after id;
 alter table dlink_catalogue
-    drop index `idx_name`;
+drop index `idx_name`;
 alter table dlink_catalogue
-    add unique key `dlink_catalogue_un` (`name`, `parent_id`, `tenant_id`);
+add unique key `dlink_catalogue_un` (`name`, `parent_id`, `tenant_id`);
 
 alter table dlink_cluster
-    add column tenant_id int not null comment '租户ID' after id;
+add column tenant_id int not null comment '租户ID' after id;
 alter table dlink_cluster
-    drop index `idx_name`;
+drop index `idx_name`;
 alter table dlink_cluster
-    add unique key `dlink_cluster_un` (`name`, `tenant_id`);
+add unique key `dlink_cluster_un` (`name`, `tenant_id`);
 
 alter table dlink_task
-    add column tenant_id int not null comment '租户ID' after name;
+add column tenant_id int not null comment '租户ID' after name;
 alter table dlink_task
-    drop index `idx_name`;
+drop index `idx_name`;
 alter table dlink_task
-    add unique key `dlink_task_un` (`name`, `tenant_id`);
+add unique key `dlink_task_un` (`name`, `tenant_id`);
 
 alter table dlink_task_statement
-    add column tenant_id int not null comment '租户ID' after id;
+add column tenant_id int not null comment '租户ID' after id;
 alter table dlink_task_statement
-    add unique key `dlink_task_statement_un` (`tenant_id`, `id`);
+add unique key `dlink_task_statement_un` (`tenant_id`, `id`);
 
 alter table dlink_database
-    add column tenant_id int not null comment '租户ID' after id;
+add column tenant_id int not null comment '租户ID' after id;
 alter table dlink_database
-    drop index `db_index`;
+drop index `db_index`;
 alter table dlink_database
-    add unique key `dlink_database_un` (`name`, `tenant_id`);
+add unique key `dlink_database_un` (`name`, `tenant_id`);
 
 alter table dlink_cluster_configuration
-    add column tenant_id int not null comment '租户ID' after id;
+add column tenant_id int not null comment '租户ID' after id;
 alter table dlink_cluster_configuration
-    add unique key `dlink_cluster_configuration_un` (`name`, `tenant_id`);
+add unique key `dlink_cluster_configuration_un` (`name`, `tenant_id`);
 
 alter table dlink_jar
-    add column tenant_id int not null comment '租户ID' after id;
+add column tenant_id int not null comment '租户ID' after id;
 alter table dlink_jar
-    add unique key `dlink_jar_un` (`tenant_id`, `name`);
+add unique key `dlink_jar_un` (`tenant_id`, `name`);
 
 alter table dlink_savepoints
-    add column tenant_id int not null comment '租户ID' after task_id;
+add column tenant_id int not null comment '租户ID' after task_id;
 
 
 alter table dlink_job_instance
-    add column tenant_id int not null comment '租户ID' after name;
+add column tenant_id int not null comment '租户ID' after name;
 alter table dlink_job_instance
-    add unique key `dlink_job_instance_un` (`tenant_id`, `name`, `task_id`, `history_id`);
+add unique key `dlink_job_instance_un` (`tenant_id`, `name`, `task_id`, `history_id`);
 
 alter table dlink_alert_instance
-    add column tenant_id int not null comment '租户ID' after name;
+add column tenant_id int not null comment '租户ID' after name;
 alter table dlink_alert_instance
-    add unique key `dlink_alert_instance_un` (`name`, `tenant_id`);
+add unique key `dlink_alert_instance_un` (`name`, `tenant_id`);
 
 alter table dlink_alert_group
-    add column tenant_id int not null comment '租户ID' after name;
+add column tenant_id int not null comment '租户ID' after name;
 alter table dlink_alert_group
-    add unique key `dlink_alert_instance_un` (`name`, `tenant_id`);
+add unique key `dlink_alert_instance_un` (`name`, `tenant_id`);
 
 alter table dlink_alert_history
-    add column tenant_id int not null comment '租户ID' after id;
+add column tenant_id int not null comment '租户ID' after id;
 
 alter table dlink_task_version
-    add column tenant_id int not null comment '租户ID' after task_id;
+add column tenant_id int not null comment '租户ID' after task_id;
 alter table dlink_task_version
-    add unique key `dlink_task_version_un` (`task_id`, `tenant_id`, `version_id`);
+add unique key `dlink_task_version_un` (`task_id`, `tenant_id`, `version_id`);
 
 alter table dlink_history
-    add column tenant_id int not null comment '租户ID' after id;
+add column tenant_id int not null comment '租户ID' after id;
 alter table dlink_job_history
-    add column tenant_id int not null comment '租户ID' after id;
+add column tenant_id int not null comment '租户ID' after id;
 
 -- 修改历史表的租户编号为默认租户
 UPDATE `dlink_alert_group`
@@ -1792,15 +1792,7 @@ CREATE TABLE `dlink_udf_template`
 -- ----------------------------
 -- Records of dlink_udf_template
 -- ----------------------------
-BEGIN;
-INSERT INTO `dlink_udf_template` (`id`, `name`, `code_type`, `function_type`, `template_code`, `enabled`, `create_time`,
-                                  `update_time`)
-VALUES (1, 'java_udf', 'java', 'UDF',
-        'package ${package};\n\nimport org.apache.flink.table.functions.ScalarFunction;\n\npublic class ${className} extends ScalarFunction {\n    public String eval(String s) {\n        return null;\n    }\n}',
-        NULL, '2022-10-19 09:17:37', '2022-10-19 09:17:37');
-INSERT INTO `dlink_udf_template` (`id`, `name`, `code_type`, `function_type`, `template_code`, `enabled`, `create_time`,
-                                  `update_time`)
-VALUES (2, 'java_udtf', 'java', 'UDTF',
-        'package ${package};\n\nimport org.apache.flink.table.functions.ScalarFunction;\n\n@FunctionHint(output = @DataTypeHint(\"ROW<word STRING, length INT>\"))\npublic static class ${className} extends TableFunction<Row> {\n\n  public void eval(String str) {\n    for (String s : str.split(\" \")) {\n      // use collect(...) to emit a row\n      collect(Row.of(s, s.length()));\n    }\n  }\n}',
-        NULL, '2022-10-19 09:22:58', '2022-10-19 10:01:57');
-COMMIT;
+INSERT INTO `dlink_udf_template` (`id`, `name`, `code_type`, `function_type`, `template_code`, `enabled`, `create_time`, `update_time`)
+VALUES (1, 'java_udf', 'java', 'UDF', 'package ${package};\n\nimport org.apache.flink.table.functions.ScalarFunction;\n\npublic class ${className} extends ScalarFunction {\n    public String eval(String s) {\n        return null;\n    }\n}', NULL, '2022-10-19 09:17:37', '2022-10-19 09:17:37');
+INSERT INTO `dlink_udf_template` (`id`, `name`, `code_type`, `function_type`, `template_code`, `enabled`, `create_time`, `update_time`)
+VALUES (2, 'java_udtf', 'java', 'UDTF', 'package ${package};\n\nimport org.apache.flink.table.functions.ScalarFunction;\n\n@FunctionHint(output = @DataTypeHint(\"ROW<word STRING, length INT>\"))\npublic static class ${className} extends TableFunction<Row> {\n\n  public void eval(String str) {\n    for (String s : str.split(\" \")) {\n      // use collect(...) to emit a row\n      collect(Row.of(s, s.length()));\n    }\n  }\n}', NULL, '2022-10-19 09:22:58', '2022-10-19 10:01:57');
