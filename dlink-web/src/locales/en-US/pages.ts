@@ -267,7 +267,7 @@ export default {
   'pages.datastudio.label.officialdocumentation': 'Official Documentation',
   'pages.datastudio.label.quickguide': 'Quick Guide',
 
-  'pages.datastudio.label.welcomeuse': 'Welcome to Use Dinky v',
+  'pages.datastudio.label.welcomeuse': 'Welcome to Use Dinky v{version}',
   'pages.datastudio.label.dinkydescribe': 'Real Time is the Future,Dinky is the best partner of Flink, making Flink SQL easier to use, and is committed to the construction of stream batch integrated development platform',
   'pages.datastudio.label.maxrows': 'Max Rows',
 
