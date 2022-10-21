@@ -32,8 +32,8 @@ const BaseInfo = (props: any) => {
 
   const {job} = props;
 
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   const columns: ProColumns<VerticesTableListItem>[] = [

@@ -20,7 +20,7 @@
 
 import {Col, Form, Row, Select, Switch} from "antd";
 import {StateType} from "@/pages/DataStudio/model";
-import {connect} from "umi";
+import {connect, useIntl} from "umi";
 import styles from "./index.less";
 import React, {useEffect} from "react";
 
@@ -46,7 +46,10 @@ export type LineChartProps = {
 
 const LineChartSetting: React.FC<LineChartProps> = (props) => {
 
-  const {current,column,onChange: handleChange,dispatch} = props;
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
+  const {current, column, onChange: handleChange, dispatch} = props;
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -57,16 +60,16 @@ const LineChartSetting: React.FC<LineChartProps> = (props) => {
   const onValuesChange = (change: any, all: any) => {
     let config: LineChartConfig = {
       padding: 'auto',
-      xField: all.xField?all.xField:column[0],
-      yField: all.yField?all.yField:column.length>1?column[1]:column[0],
+      xField: all.xField ? all.xField : column[0],
+      yField: all.yField ? all.yField : column.length > 1 ? column[1] : column[0],
     };
-    if(all.seriesField){
+    if (all.seriesField) {
       config.seriesField = all.seriesField;
     }
-    if(all.openStepType){
+    if (all.openStepType) {
       config.stepType = 'hv';
     }
-    if(all.openSlider){
+    if (all.openSlider) {
       config.slider = {
         start: 0,
         end: 0.5,
@@ -97,25 +100,25 @@ const LineChartSetting: React.FC<LineChartProps> = (props) => {
             <Form.Item
               label="x 轴" className={styles.form_item} name="xField"
             >
-              {column&&column.length > 0 ? (
-                  <Select allowClear showSearch
-                    defaultValue={column[0]} value={column[0]}>
-                    {getColumnOptions()}
-                  </Select>):(<Select allowClear showSearch>
-                {column&&getColumnOptions()}
-                  </Select>)}
+              {column && column.length > 0 ? (
+                <Select allowClear showSearch
+                        defaultValue={column[0]} value={column[0]}>
+                  {getColumnOptions()}
+                </Select>) : (<Select allowClear showSearch>
+                {column && getColumnOptions()}
+              </Select>)}
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item
               label="y 轴" className={styles.form_item} name="yField"
             >
-              {column&&column.length > 1 ? (
+              {column && column.length > 1 ? (
                 <Select allowClear showSearch
-                  defaultValue={column[1]} value={column[1]}>
+                        defaultValue={column[1]} value={column[1]}>
                   {getColumnOptions()}
-                </Select>):(<Select allowClear showSearch>
-                {column&&getColumnOptions()}
+                </Select>) : (<Select allowClear showSearch>
+                {column && getColumnOptions()}
               </Select>)}
             </Form.Item>
           </Col>
@@ -125,11 +128,11 @@ const LineChartSetting: React.FC<LineChartProps> = (props) => {
             <Form.Item
               label="分组字段" className={styles.form_item} name="seriesField"
             >
-              {column&&column.length > 0 ? (
+              {column && column.length > 0 ? (
                 <Select allowClear showSearch>
                   {getColumnOptions()}
-                </Select>):(<Select allowClear showSearch>
-                {column&&getColumnOptions()}
+                </Select>) : (<Select allowClear showSearch>
+                {column && getColumnOptions()}
               </Select>)}
             </Form.Item>
           </Col>
@@ -157,7 +160,7 @@ const LineChartSetting: React.FC<LineChartProps> = (props) => {
   );
 };
 
-export default connect(({ Studio }: { Studio: StateType }) => ({
+export default connect(({Studio}: { Studio: StateType }) => ({
   current: Studio.current,
   result: Studio.result,
 }))(LineChartSetting);

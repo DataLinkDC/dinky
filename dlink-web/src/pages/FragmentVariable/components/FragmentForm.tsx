@@ -41,8 +41,10 @@ const formLayout = {
 
 const FragmentForm: React.FC<FragmentFormProps> = (props: any) => {
 
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<FragmentVariableTableListItem>>({
@@ -114,9 +116,9 @@ const FragmentForm: React.FC<FragmentFormProps> = (props: any) => {
   const renderFooter = () => {
     return (
       <>
-        <Button onClick={() => handleModalVisible(false)}>取消</Button>
+        <Button onClick={() => handleModalVisible(false)}>{l('button.cancel')}</Button>
         <Button type="primary" onClick={() => submitForm()}>
-          完成
+          {l('button.finish')}
         </Button>
       </>
     );

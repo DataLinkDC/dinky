@@ -18,10 +18,10 @@
  */
 
 
-import {connect} from "umi";
+import {connect, useIntl} from "umi";
 import {StateType} from "@/pages/DataStudio/model";
-import {Form, Input, Select,  Row, Col,  Tooltip, Button} from "antd";
-import {  MinusSquareOutlined} from "@ant-design/icons";
+import {Button, Col, Form, Input, Row, Select, Tooltip} from "antd";
+import {MinusSquareOutlined} from "@ant-design/icons";
 import styles from "./index.less";
 import {useEffect} from "react";
 import {JarStateType} from "@/pages/Jar/model";
@@ -33,7 +33,10 @@ const {Option} = Select;
 
 const StudioKubernetesConfig = (props: any) => {
 
-  const { current, form, dispatch, tabs, group, toolHeight} = props;
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
+  const {current, form, dispatch, tabs, group, toolHeight} = props;
 
 
   const getGroupOptions = () => {
@@ -50,7 +53,7 @@ const StudioKubernetesConfig = (props: any) => {
 
   useEffect(() => {
     //Force set type k8s
-    current.task.type=RUN_MODE.KUBERNETES_APPLICATION
+    current.task.type = RUN_MODE.KUBERNETES_APPLICATION
     form.setFieldsValue(current.task);
   }, [current.task]);
 
@@ -132,7 +135,7 @@ const StudioKubernetesConfig = (props: any) => {
   );
 };
 
-export default connect(({Studio, Jar, Alert}: { Studio: StateType, Jar: JarStateType , Alert: AlertStateType }) => ({
+export default connect(({Studio, Jar, Alert}: { Studio: StateType, Jar: JarStateType, Alert: AlertStateType }) => ({
   sessionCluster: Studio.sessionCluster,
   clusterConfiguration: Studio.clusterConfiguration,
   current: Studio.current,

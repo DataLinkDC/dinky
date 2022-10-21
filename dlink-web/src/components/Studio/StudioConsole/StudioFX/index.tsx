@@ -27,10 +27,16 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import type {DocumentTableListItem} from '@/pages/Document/data.d';
 
 import {queryData,} from "@/components/Common/crud";
+import {useIntl} from "umi";
 
 const url = '/api/document';
 
 const StudioFX = () => {
+
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
   const actionRef = useRef<ActionType>();
   const [row, setRow] = useState<DocumentTableListItem>();
   const columns: ProColumns<DocumentTableListItem>[] = [
@@ -197,7 +203,7 @@ const StudioFX = () => {
       hideInTable: true,
     },
     {
-      title: '是否启用',
+      title: l('global.table.isEnable'),
       dataIndex: 'enabled',
       hideInForm: true,
       hideInSearch: true,
@@ -219,7 +225,7 @@ const StudioFX = () => {
       },
     },
     {
-      title: '创建时间',
+      title: l('global.table.createTime'),
       dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',
@@ -238,7 +244,7 @@ const StudioFX = () => {
       },
     },
     {
-      title: '最近更新时间',
+      title: l('global.table.lastUpdateTime'),
       dataIndex: 'updateTime',
       sorter: true,
       valueType: 'dateTime',

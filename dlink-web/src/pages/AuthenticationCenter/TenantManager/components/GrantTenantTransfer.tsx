@@ -73,7 +73,9 @@ const GrantTenantTransfer = ({leftColumns, rightColumns, ...restProps}: TableTra
               rowSelection={rowSelection}
               columns={columns}
               pagination={{
-                pageSize: 7,
+                defaultPageSize: 10,
+                showSizeChanger: true,
+                hideOnSinglePage: true,
               }}
               dataSource={filteredItems}
               size="large"
@@ -107,8 +109,9 @@ export type TableTransferFromProps = {
 const GrantTenantToUserTableTransferFrom = (props: TableTransferFromProps) => {
 
 
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
 
   const {tenant, onChange: handleChange} = props;
 
@@ -177,9 +180,7 @@ const GrantTenantToUserTableTransferFrom = (props: TableTransferFromProps) => {
         onChange={onChange}
         onSelectChange={onSelectChange}
         filterOption={(inputValue, item) =>
-          item.username!.indexOf(inputValue) !== -1
-          || item.nickname!.indexOf(inputValue) !== -1
-          || item.worknum!.indexOf(inputValue) !== -1
+          item.username!.indexOf(inputValue) !== -1 || item.nickname!.indexOf(inputValue) !== -1 || item.worknum!.indexOf(inputValue) !== -1
         }
         leftColumns={leftTableColumns}
         rightColumns={rightTableColumns}

@@ -23,8 +23,12 @@ import {SearchOutlined} from '@ant-design/icons';
 import ProTable from '@ant-design/pro-table';
 import {getData} from "@/components/Common/crud";
 import {Button, Input, Space} from "antd";
+import {useIntl} from "umi";
 
 const DTable = (props: any) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {dataSource, columns, scroll} = props;
 

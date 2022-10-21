@@ -44,8 +44,8 @@ const CheckPoints = (props: any) => {
 
   const {job} = props;
 
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   const actionRef = useRef<ActionType>();
@@ -213,8 +213,8 @@ const CheckPoints = (props: any) => {
     Modal.confirm({
       title: 'Recovery Of CheckPoint',
       content: `确定从 CheckPoint 【${row.external_path}】恢复吗？`,
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         const res = selectSavePointRestartTask(job?.instance?.taskId, job?.instance?.step == JOB_LIFE_CYCLE.ONLINE, row.external_path);
         res.then((result) => {
@@ -310,7 +310,7 @@ const CheckPoints = (props: any) => {
         dataIndex: 'trigger_timestamp',
       },
       {
-        title: '操作',
+        title: l('global.table.operate'),
         align: 'center',
         render: (dom, entity) => {
           return <>

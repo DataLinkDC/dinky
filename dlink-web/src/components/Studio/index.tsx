@@ -19,7 +19,7 @@
 
 
 import React, {useCallback, useEffect, useState} from "react";
-import {connect} from "umi";
+import {connect, useIntl} from "umi";
 import styles from './index.less';
 import StudioMenu from "./StudioMenu";
 import {Card, Col, Form, Row} from "antd";
@@ -46,7 +46,10 @@ import {loadSettings} from "@/pages/SettingCenter/FlinkSettings/function";
 
 const Studio = (props: any) => {
 
-  const {isFullScreen,rightClickMenu, toolHeight, toolLeftWidth,toolRightWidth,dispatch} = props;
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
+  const {isFullScreen, rightClickMenu, toolHeight, toolLeftWidth, toolRightWidth, dispatch} = props;
   const [form] = Form.useForm();
   const VIEW = {
     leftToolWidth: 300,
@@ -124,7 +127,7 @@ const Studio = (props: any) => {
             <DraggleLayout
               containerWidth={size.width}
               containerHeight={toolHeight}
-              min={VIEW.leftMargin+VIEW.midMargin}
+              min={VIEW.leftMargin + VIEW.midMargin}
               max={size.width - VIEW.rightMargin}
               initLeftWidth={size.width - toolRightWidth}
               isLeft={false}
@@ -163,7 +166,7 @@ const Studio = (props: any) => {
                   }}/>
                 </Col>
                 <Col>
-                  {!isFullScreen?<StudioTabs width={size.width - toolRightWidth - toolLeftWidth}/>:undefined}
+                  {!isFullScreen ? <StudioTabs width={size.width - toolRightWidth - toolLeftWidth}/> : undefined}
                 </Col>
               </DraggleLayout>
               <Col id='StudioRightTool' className={styles["vertical-tabs"]}>

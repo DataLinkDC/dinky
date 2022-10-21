@@ -73,7 +73,9 @@ const TableTransfer = ({leftColumns, rightColumns, ...restProps}: TableTransferP
               rowSelection={rowSelection}
               columns={columns}
               pagination={{
-                pageSize: 7,
+                defaultPageSize: 10,
+                showSizeChanger: true,
+                hideOnSinglePage: true,
               }}
               dataSource={filteredItems}
               size="large"
@@ -104,8 +106,9 @@ export type TableTransferFromProps = {
 const TableTransferFrom = (props: TableTransferFromProps) => {
 
 
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
 
   const {user, onChange: handleChange} = props;
 

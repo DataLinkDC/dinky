@@ -20,7 +20,7 @@
 
 import {Button, Divider, Dropdown, Empty, Input, Menu, message, Space, Table, Tooltip} from "antd";
 import {StateType} from "@/pages/DataStudio/model";
-import {connect} from "umi";
+import {connect, useIntl} from "umi";
 import React, {useState} from "react";
 import {
   CommentOutlined,
@@ -46,6 +46,9 @@ import SessionForm from "@/components/Studio/StudioLeftTool/StudioConnector/comp
 import {Scrollbars} from 'react-custom-scrollbars';
 
 const StudioConnector = (props: any) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {current, toolHeight, dispatch, currentSession, session} = props;
   const [tableData, setTableData] = useState<[]>([]);
@@ -130,12 +133,12 @@ const StudioConnector = (props: any) => {
       overlay={
         <Menu onClick={({key}) => keyEvent(key, item)}>
           <Menu.Item key="desc">描述</Menu.Item>
-          <Menu.Item key="delete">删除</Menu.Item>
+          <Menu.Item key="delete">{l('button.delete')}</Menu.Item>
         </Menu>
       }
     >
       <a>
-        更多 <DownOutlined/>
+        {l('button.more')} <DownOutlined/>
       </a>
     </Dropdown>
   );
@@ -176,7 +179,7 @@ const StudioConnector = (props: any) => {
       sorter: true,
       ...getColumnSearchProps("table name"),
     }, {
-      title: '操作',
+      title: l('global.table.operate'),
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
@@ -191,7 +194,7 @@ const StudioConnector = (props: any) => {
             keyEvent('delete', record);
           }}
         >
-          删除
+          {l('button.delete')}
         </a>
       ],
     },];
@@ -228,12 +231,12 @@ const StudioConnector = (props: any) => {
       sorter: true,
       ...getColumnSearchProps("createUser"),
     }, {
-      title: "创建时间",
+      title: l('global.table.createTime'),
       dataIndex: "createTime",
       key: "createTime",
       sorter: true,
     }, {
-      title: '操作',
+      title: l('global.table.operate'),
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
@@ -248,7 +251,7 @@ const StudioConnector = (props: any) => {
             keySessionsEvent('delete', record);
           }}
         >
-          删除
+          {l('button.delete')}
         </a>
       ],
     },];

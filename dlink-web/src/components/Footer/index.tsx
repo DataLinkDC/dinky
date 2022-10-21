@@ -25,7 +25,7 @@ import {DefaultFooter} from '@ant-design/pro-layout';
 export default () => {
 
   const intl = useIntl();
-  const l = (id: string, defaultMessage?: string) => intl.formatMessage({id,defaultMessage});
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   return (
     <DefaultFooter
@@ -39,7 +39,7 @@ export default () => {
         },
         {
           key: 'github',
-          title: <GithubOutlined />,
+          title: <GithubOutlined/>,
           href: 'https://github.com/DataLinkDC/dlink',
           blankTarget: true,
         },

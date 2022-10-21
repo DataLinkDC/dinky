@@ -26,6 +26,7 @@ import request from './en-US/request';
 import settingDrawer from './en-US/settingDrawer';
 import settings from './en-US/settings';
 import button from './en-US/button';
+import shortKey from './en-US/shortcutKey';
 
 export default {
   'navBar.lang': 'Languages',
@@ -45,4 +46,5 @@ export default {
   ...pages,
   ...request,
   ...button,
+  ...shortKey,
 };

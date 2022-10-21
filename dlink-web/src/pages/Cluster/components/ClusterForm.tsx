@@ -41,7 +41,8 @@ const formLayout = {
 const ClusterForm: React.FC<ClusterFormProps> = (props) => {
 
   const intl = useIntl();
-  const l = (id: string, defaultMessage?: string) => intl.formatMessage({id,defaultMessage});
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<ClusterTableListItem>>({
@@ -149,9 +150,9 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
   const renderFooter = () => {
     return (
       <>
-        <Button onClick={() => handleModalVisible(false)}>取消</Button>
+        <Button onClick={() => handleModalVisible(false)}>{l('button.cancel')}</Button>
         <Button type="primary" onClick={() => submitForm()}>
-          完成
+          {l('button.finish')}
         </Button>
       </>
     );

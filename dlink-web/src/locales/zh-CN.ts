@@ -26,6 +26,7 @@ import settingDrawer from './zh-CN/settingDrawer';
 import settings from './zh-CN/settings';
 import pages from './zh-CN/pages';
 import button from './zh-CN/button';
+import shortKey from './zh-CN/shortcutKey';
 
 export default {
   'navBar.lang': '语言',
@@ -45,4 +46,5 @@ export default {
   ...component,
   ...request,
   ...button,
+  ...shortKey,
 };

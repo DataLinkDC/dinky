@@ -23,19 +23,22 @@ import {HeartTwoTone, SmileTwoTone} from '@ant-design/icons';
 import {Alert, Card, Typography} from 'antd';
 import {PageHeaderWrapper} from '@ant-design/pro-layout';
 import {useIntl} from 'umi';
+import {VERSION} from "@/components/Common/Version";
 
 export default (): React.ReactNode => {
 
+
   const intl = useIntl();
-  const l = (id: string, defaultMessage?: string) => intl.formatMessage({id,defaultMessage});
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
 
   return (
     <PageHeaderWrapper
-      content={l('pages.admin.subPage.title',' 这个页面只有 admin 权限才能查看')}
+      content={l('pages.admin.subPage.title')}
     >
       <Card>
         <Alert
-          message={l('pages.welcome.alertMessage','实时计算平台 Dlink & Apache Flink 即将发布，目前为体验版，版本号为0.1.0。')}
+          message={l('pages.welcome.alertMessage', '', {version: VERSION})}
           type="success"
           showIcon
           banner

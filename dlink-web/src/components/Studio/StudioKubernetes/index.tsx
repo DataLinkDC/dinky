@@ -19,14 +19,16 @@
 
 import {Divider, Form, Input, Space,} from 'antd';
 import {Dispatch, DocumentStateType} from "@@/plugin-dva/connect";
-import {connect} from "umi";
+import {connect, useIntl} from "umi";
 import Button from "antd/es/button/button";
 import {useState} from "react";
 import {
   APP_CONFIG_LIST,
   Config,
-  FLINK_CONFIG_LIST, FLINK_CONFIG_NAME_LIST,
-  KUBERNETES_CONFIG_LIST, KUBERNETES_CONFIG_NAME_LIST
+  FLINK_CONFIG_LIST,
+  FLINK_CONFIG_NAME_LIST,
+  KUBERNETES_CONFIG_LIST,
+  KUBERNETES_CONFIG_NAME_LIST
 } from "@/pages/ClusterConfiguration/conf";
 import {MinusCircleOutlined, PlusOutlined} from "@ant-design/icons";
 import {getConfig} from "@/pages/ClusterConfiguration/function";
@@ -38,6 +40,9 @@ const formLayout = {
 };
 
 const StudioKubernetes = (props: any) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {
     height = '100%',
@@ -60,6 +65,7 @@ const StudioKubernetes = (props: any) => {
     }
     return list;
   }
+
   //Merge pre-defined config
   function mergeConfig(source: Record<string, unknown>, from: Record<string, unknown>) {
     for (const key in from) {
@@ -96,7 +102,6 @@ const StudioKubernetes = (props: any) => {
   const [formVals, setFormVals] = useState<Record<string, unknown>>(initValue(conf));
 
 
-
   const onValuesChange = (change: any, all: any) => {
     all.type = "Kubernetes"
     const values = getConfig(all)
@@ -118,7 +123,7 @@ const StudioKubernetes = (props: any) => {
         help={configItem.help}
       >
         <Input placeholder={configItem.placeholder}
-               // defaultValue={configItem.defaultValue}
+          // defaultValue={configItem.defaultValue}
         />
 
       </Form.Item>)

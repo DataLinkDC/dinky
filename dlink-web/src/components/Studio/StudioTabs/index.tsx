@@ -20,7 +20,7 @@
 
 import {Dropdown, Menu, message, Tabs} from 'antd';
 import React from 'react';
-import {connect} from 'umi';
+import {connect, useIntl} from 'umi';
 import {StateType} from '@/pages/DataStudio/model';
 import styles from './index.less';
 import StudioEdit from '../StudioEdit';
@@ -32,6 +32,10 @@ import StudioKubernetes from "@/components/Studio/StudioKubernetes";
 const {TabPane} = Tabs;
 
 const EditorTabs = (props: any) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
   const {tabs, current, toolHeight, width, height} = props;
 
   const onChange = (activeKey: any) => {

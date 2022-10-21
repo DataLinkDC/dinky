@@ -38,8 +38,8 @@ const StatusDetailedModal: React.FC<IStatusDetailedModal> = (props): React.React
   const {statusDetailedVisible, statusDetailedList, opsStatus, onCancelStatusDetailed} = props
 
 
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   const columns = [{

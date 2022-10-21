@@ -27,7 +27,7 @@ import {handleOption, queryData} from "@/components/Common/crud";
 import {Scrollbars} from "react-custom-scrollbars";
 import {TaskHistoryTableListItem} from "@/components/Studio/StudioRightTool/StudioHistory/data";
 import {StateType} from "@/pages/DataStudio/model";
-import {connect} from "umi";
+import {connect, useIntl} from "umi";
 import moment from "moment";
 import {MonacoDiffEditor} from "react-monaco-editor";
 
@@ -36,6 +36,10 @@ const url = '/api/task/version';
 
 
 const StudioHistory = (props: any) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
   const {current, toolHeight} = props;
   const [row, setRow] = useState<TaskHistoryTableListItem>();
   const actionRef = useRef<ActionType>();
@@ -56,8 +60,8 @@ const StudioHistory = (props: any) => {
     let leftTitle = "Version：【" + versionDiffRow?.versionId + "】   创建时间: 【" + (moment(versionDiffRow?.createTime).format('YYYY-MM-DD HH:mm:ss')) + "】";
     let rightTitle = "Version：【当前编辑版本】 创建时间: 【" + (moment(current?.task?.createTime).format('YYYY-MM-DD HH:mm:ss')) + "】 最后更新时间: 【" + (moment(current?.task?.updateTime).format('YYYY-MM-DD HH:mm:ss')) + "】"
 
-    let originalValue= versionDiffRow?.statement;
-    let currentValue= current?.task?.statement;
+    let originalValue = versionDiffRow?.statement;
+    let currentValue = current?.task?.statement;
 
     return (
       <>
@@ -70,20 +74,21 @@ const StudioHistory = (props: any) => {
                  <Button key="back" onClick={() => {
                    cancelHandle();
                  }}>
-                   关闭
+                   {l('button.close')}
                  </Button>,
                ]}>
-          <div style={{display:"flex",flexDirection:"row", justifyContent: "space-between"}}>
-            <Tag color="green" style={{height:"20px"}} >
+          <div style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
+            <Tag color="green" style={{height: "20px"}}>
               <RocketOutlined/> {leftTitle}
             </Tag>
-            <Tag color="blue" style={{height:"20px"}}>
+            <Tag color="blue" style={{height: "20px"}}>
               <SyncOutlined spin/> {rightTitle}
             </Tag>
-          </div><br/>
+          </div>
+          <br/>
           <Scrollbars style={{height: "98%"}}>
             <React.StrictMode>
-              <MonacoDiffEditor  options={{
+              <MonacoDiffEditor options={{
                 readOnly: true,
                 selectOnLineNumbers: true,
                 lineDecorationsWidth: 20,
@@ -114,7 +119,7 @@ const StudioHistory = (props: any) => {
       },
     },
     {
-      title: '创建时间',
+      title: l('global.table.createTime'),
       dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',
@@ -122,7 +127,7 @@ const StudioHistory = (props: any) => {
       hideInSearch: true,
     },
     {
-      title: '操作',
+      title: l('global.table.operate'),
       valueType: 'option',
       align: "center",
       render: (text, record, index) => (
@@ -143,8 +148,8 @@ const StudioHistory = (props: any) => {
     Modal.confirm({
       title: '回滚Flink SQL版本',
       content: `确定回滚Flink SQL版本至【${row.versionId}】吗？`,
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         const TaskHistoryRollbackItem = {
           id: current.key, versionId: row.versionId
