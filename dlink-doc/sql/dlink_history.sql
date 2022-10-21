@@ -1353,7 +1353,7 @@ modify column is_available tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否可用';
 alter table dlink_task
 ADD COLUMN `version_id` INT NULL COMMENT '版本号ID';
 
-CREATE TABLE `dlink_task_version`
+CREATE TABLE IF NOT EXISTS `dlink_task_version`
 (
     `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
     `task_id` int(11) NOT NULL COMMENT '作业ID ',
@@ -1456,7 +1456,7 @@ create table if not exists `metadata_function`
 
 -- 0.6.7 2022-08-02
 -- -----------------------
-CREATE TABLE `dlink_fragment`
+CREATE TABLE IF NOT EXISTS `dlink_fragment`
 (
     `id` int NOT NULL AUTO_INCREMENT COMMENT '实例主键',
     `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '唯一名称',
@@ -1476,7 +1476,7 @@ CREATE TABLE `dlink_fragment`
 
 -- 0.6.7 2022-09-02
 -- -----------------------
-CREATE TABLE `dlink_upload_file_record`
+CREATE TABLE IF NOT EXISTS `dlink_upload_file_record`
 (
     `id` tinyint NOT NULL AUTO_INCREMENT COMMENT '自增主键',
     `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '上传文件的类型名称，目前有：hadoop-conf(1)、flink-conf(2)、flink-lib(3)、user-jar(4)、dlink-jar(5)',
@@ -1606,7 +1606,7 @@ INSERT INTO `dlink_user_role`(`id`, `user_id`, `role_id`, `create_time`, `update
 VALUES (1, 1, 1, current_time, current_time);
 
 
-CREATE TABLE `dlink_user_tenant`
+CREATE TABLE IF NOT EXISTS `dlink_user_tenant`
 (
     `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
     `user_id` int NOT NULL COMMENT '用户ID',
@@ -1739,7 +1739,7 @@ SET `tenant_id` = 1;
 
 -- 0.6.8 2022-10-19
 -- -----------------------
-CREATE TABLE `dlink_udf`
+CREATE TABLE IF NOT EXISTS `dlink_udf`
 (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `name` varchar(50) DEFAULT NULL COMMENT 'udf名',
@@ -1765,7 +1765,7 @@ CREATE TABLE `dlink_udf`
 -- ----------------------------
 -- Table structure for dlink_udf_template
 -- ----------------------------
-CREATE TABLE `dlink_udf_template`
+CREATE TABLE IF NOT EXISTS `dlink_udf_template`
 (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `name` varchar(20) DEFAULT NULL COMMENT '模板名称',
