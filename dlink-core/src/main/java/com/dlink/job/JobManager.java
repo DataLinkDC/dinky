@@ -72,19 +72,14 @@ import org.apache.flink.yarn.configuration.YarnConfigOptions;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.URLUtil;
 
 /**
  * JobManager
@@ -166,6 +161,7 @@ public class JobManager {
         JobManager manager = new JobManager(config);
         manager.init();
         manager.executor.initUDF(config.getJarFiles());
+        config.getGatewayConfig().setJarPaths(config.getJarFiles());
         return manager;
     }
 
@@ -398,7 +394,6 @@ public class JobManager {
                             jobGraph.setSavepointRestoreSettings(
                                     SavepointRestoreSettings.forPath(config.getSavePointPath(), true));
                         }
-                        jobGraph.addJars(Arrays.stream(config.getJarFiles()).map(path -> URLUtil.getURL(FileUtil.file(path))).collect(Collectors.toList()));
                         gatewayResult = Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);
                     }
                     job.setResult(InsertResult.success(gatewayResult.getAppId()));
@@ -461,7 +456,6 @@ public class JobManager {
                 jobGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(config.getSavePointPath(), true));
             }
             // Perjob mode need to submit job graph.
-            jobGraph.addJars(Arrays.stream(config.getJarFiles()).map(path -> URLUtil.getURL(FileUtil.file(path))).collect(Collectors.toList()));
             gatewayResult = Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);
         }
         return gatewayResult;

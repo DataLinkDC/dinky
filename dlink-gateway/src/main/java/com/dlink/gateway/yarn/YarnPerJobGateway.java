@@ -40,8 +40,13 @@ import org.apache.flink.yarn.YarnClusterDescriptor;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.URLUtil;
 
 /**
  * YarnApplicationGateway
@@ -82,6 +87,8 @@ public class YarnPerJobGateway extends YarnGateway {
         if (configuration.contains(TaskManagerOptions.NUM_TASK_SLOTS)) {
             clusterSpecificationBuilder.setSlotsPerTaskManager(configuration.get(TaskManagerOptions.NUM_TASK_SLOTS)).createClusterSpecification();
         }
+
+        jobGraph.addJars(Arrays.stream(config.getJarPaths()).map(path -> URLUtil.getURL(FileUtil.file(path))).collect(Collectors.toList()));
 
         try {
             ClusterClientProvider<ApplicationId> clusterClientProvider = yarnClusterDescriptor.deployJobCluster(
