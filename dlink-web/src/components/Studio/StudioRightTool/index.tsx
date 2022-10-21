@@ -21,7 +21,7 @@
 import {Tabs} from "antd";
 import {ContainerOutlined, ScheduleOutlined, SettingOutlined} from "@ant-design/icons";
 import {StateType} from "@/pages/DataStudio/model";
-import {connect} from "umi";
+import {connect, useIntl} from "umi";
 import StudioConfig from "./StudioConfig";
 import StudioSetting from "./StudioSetting";
 import StudioSavePoint from "./StudioSavePoint";
@@ -34,7 +34,6 @@ import StudioGuide from "./StudioGuide";
 import StudioTaskInfo from "./StudioTaskInfo";
 import {DIALECT, isSql} from "@/components/Studio/conf";
 import StudioKubernetesConfig from "@/components/Studio/StudioRightTool/StudioKubernetesConfig";
-import {useIntl} from "@@/plugin-locale/localeExports";
 
 const {TabPane} = Tabs;
 

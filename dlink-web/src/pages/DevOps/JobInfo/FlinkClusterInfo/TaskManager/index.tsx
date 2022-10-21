@@ -26,7 +26,7 @@ import {TaskContainerConfigInfo, TaskManagerConfiguration} from "@/pages/DevOps/
 import {useEffect, useRef, useState} from "react";
 import {HomeOutlined} from "@ant-design/icons";
 import {getTaskManagerInfo} from "@/pages/DevOps/service";
-import {useIntl} from "@@/plugin-locale/localeExports";
+import {useIntl} from "umi";
 
 const {TabPane} = Tabs;
 
