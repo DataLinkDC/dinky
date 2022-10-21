@@ -19,9 +19,6 @@
 
 package com.dlink.job;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.URLUtil;
-
 import com.dlink.api.FlinkAPI;
 import com.dlink.assertion.Asserts;
 import com.dlink.constant.FlinkSQLConstant;
@@ -85,6 +82,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.URLUtil;
 
 /**
  * JobManager
