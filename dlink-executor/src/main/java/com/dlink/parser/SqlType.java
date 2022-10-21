@@ -63,10 +63,7 @@ public enum SqlType {
     }
 
     public boolean isInsert() {
-        if (type.equals("INSERT")) {
-            return true;
-        }
-        return false;
+        return type.equals("INSERT");
     }
 
 }

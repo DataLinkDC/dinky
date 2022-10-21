@@ -29,12 +29,16 @@ import com.dlink.assertion.Asserts;
  **/
 public enum GatewayType {
 
-    LOCAL("l", "local"), STANDALONE("s", "standalone"),
-    YARN_SESSION("ys", "yarn-session"), YARN_APPLICATION("ya", "yarn-application"),
-    YARN_PER_JOB("ypj", "yarn-per-job"), KUBERNETES_SESSION("ks", "kubernetes-session"), KUBERNETES_APPLICATION("ka", "kubernetes-application");
+    LOCAL("l", "local"),
+    STANDALONE("s", "standalone"),
+    YARN_SESSION("ys", "yarn-session"),
+    YARN_APPLICATION("ya", "yarn-application"),
+    YARN_PER_JOB("ypj", "yarn-per-job"),
+    KUBERNETES_SESSION("ks", "kubernetes-session"),
+    KUBERNETES_APPLICATION("ka", "kubernetes-application");
 
-    private String value;
-    private String longValue;
+    private final String value;
+    private final String longValue;
 
     GatewayType(String value, String longValue) {
         this.value = value;
@@ -59,10 +63,7 @@ public enum GatewayType {
     }
 
     public boolean equalsValue(String type) {
-        if (Asserts.isEquals(value, type) || Asserts.isEquals(longValue, type)) {
-            return true;
-        }
-        return false;
+        return Asserts.isEquals(value, type) || Asserts.isEquals(longValue, type);
     }
 
     public static boolean isDeployCluster(String type) {

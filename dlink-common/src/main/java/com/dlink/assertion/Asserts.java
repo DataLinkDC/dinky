@@ -32,6 +32,8 @@ import java.util.Map;
  */
 public class Asserts {
 
+    private Asserts(){}
+
     public static boolean isNotNull(Object object) {
         return object != null;
     }
@@ -88,25 +90,19 @@ public class Asserts {
         }
     }
 
-    public static boolean isNullCollection(Collection collection) {
-        if (isNull(collection) || collection.size() == 0) {
-            return true;
-        }
-        return false;
+    public static boolean isNullCollection(Collection<?> collection) {
+        return isNull(collection) || collection.isEmpty();
     }
 
-    public static boolean isNotNullCollection(Collection collection) {
+    public static boolean isNotNullCollection(Collection<?> collection) {
         return !isNullCollection(collection);
     }
 
-    public static boolean isNullMap(Map map) {
-        if (isNull(map) || map.size() == 0) {
-            return true;
-        }
-        return false;
+    public static boolean isNullMap(Map<?, ?> map) {
+        return isNull(map) || map.size() == 0;
     }
 
-    public static boolean isNotNullMap(Map map) {
+    public static boolean isNotNullMap(Map<?, ?> map) {
         return !isNullMap(map);
     }
 
@@ -128,13 +124,13 @@ public class Asserts {
         }
     }
 
-    public static void checkNullCollection(Collection collection, String msg) {
+    public static void checkNullCollection(Collection<?> collection, String msg) {
         if (isNullCollection(collection)) {
             throw new RunTimeException(msg);
         }
     }
 
-    public static void checkNullMap(Map map, String msg) {
+    public static void checkNullMap(Map<?, ?> map, String msg) {
         if (isNullMap(map)) {
             throw new RunTimeException(msg);
         }

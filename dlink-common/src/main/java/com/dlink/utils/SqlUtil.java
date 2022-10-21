@@ -32,19 +32,23 @@ public class SqlUtil {
 
     private static final String SEMICOLON = ";";
 
+    private SqlUtil() {
+    }
+
     public static String[] getStatements(String sql) {
         return getStatements(sql, SystemConfiguration.getInstances().getSqlSeparator());
     }
+
 
     public static String[] getStatements(String sql, String sqlSeparator) {
         if (Asserts.isNullString(sql)) {
             return new String[0];
         }
 
-        String[] splits = sql.replaceAll(";\r\n", ";\n").split(sqlSeparator);
+        String[] splits = sql.split(sqlSeparator);
         String lastStatement = splits[splits.length - 1].trim();
-        if (lastStatement.endsWith(SEMICOLON)) {
-            splits[splits.length - 1] = lastStatement.substring(0, lastStatement.length() - 1);
+        if (lastStatement.endsWith(SEMICOLON)){
+            splits[splits.length - 1] = lastStatement.substring(0,lastStatement.length()-1);
         }
 
         return splits;
@@ -54,7 +58,7 @@ public class SqlUtil {
         if (Asserts.isNotNullString(sql)) {
             sql = sql.replaceAll("\u00A0", " ")
                 .replaceAll("[\r\n]+", "\n")
-                .replaceAll("--([^'\n]{0,}('[^'\n]{0,}'){0,1}[^'\n]{0,}){0,}", "").trim();
+                .replaceAll("--([^'\n]*('[^'\n]*')?[^'\n]*)*", "").trim();
         }
         return sql;
     }
