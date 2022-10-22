@@ -18,9 +18,9 @@
  */
 
 
-alter table dlink_task
-alter column fragment set default 0;
-alter table dlink_task
-alter column statement_set set default 0;
-alter table dlink_cluster_configuration
-modify column is_available tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否可用';
+-- 0.6.2 2022-04-17
+-- ----------------------------
+alter table dlink_task alter column fragment set default 0;
+alter table dlink_task alter column statement_set set default 0;
+alter table dlink_cluster_configuration modify column is_available  tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否可用';
+
