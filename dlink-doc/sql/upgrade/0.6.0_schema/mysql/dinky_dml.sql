@@ -245,4 +245,4 @@ INSERT INTO `dlink_flink_document` VALUES (217, 'Function', 'UDF', '表值聚合
 -- Records of dlink_user
 -- ----------------------------
 INSERT INTO `dlink_user`(`id`, `username`, `password`, `nickname`, `worknum`, `avatar`, `mobile`, `enabled`, `is_delete`, `create_time`, `update_time`)
-VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Admin', NULL, NULL, NULL, 1, 0, current_date,current_date);
+VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Admin', NULL, NULL, NULL, 1, 0, current_time,current_time);
