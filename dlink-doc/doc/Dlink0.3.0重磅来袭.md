@@ -147,9 +147,9 @@ Dlink 提供了数据源的元数据查询功能。
 
 ### 下载地址
 
-链接：https://pan.baidu.com/s/1-2qIE01gj7v51GdqWw5rhw 
+链接：https://pan.baidu.com/s/1-2qIE01gj7v51GdqWw5rhw
 
-提取码：0300 
+提取码：0300
 
 ### 从源码编译
 
@@ -201,7 +201,8 @@ lib/ -- 外部依赖及Connector
 |- flink-json-1.12.4.jar
 |- mysql-connector-java-8.0.21.jar
 sql/
-|- dlink.sql -- Mysql初始化脚本
+|- dinky.sql --Mysql初始化脚本
+|- upgrade/ -- 各个版本升级SQL脚本
 auto.sh -- 启动停止脚本
 dlink-admin.jar -- 程序包
 ```
@@ -219,7 +220,7 @@ spring:
 
 ### 初始化数据库
 
-在 Mysql 数据库中执行 dlink.sql 脚本。
+在 Mysql 数据库中执行 dinky.sql 脚本。
 
 ### 执行与停止
 

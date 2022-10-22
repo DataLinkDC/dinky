@@ -4,7 +4,6 @@ id: remote_debug
 title: 远程调试
 ---
 
-
 # 开发者远程调试手册
 
 远程调试适用与服务器已部署如下三种集群的场景
@@ -44,7 +43,6 @@ git clone https://github.com/DataLinkDC/dlink.git
 git checkout dev
 ```
 
-
 ## 编译
 
 ### 命令行编译
@@ -60,14 +58,13 @@ mvn clean package -Dmaven.test.skip=true
 
 **说明:**
 
-​     1.如果不想单独编译前端，在 dlink-web 模块的 pom 下有``frontend-maven-plugins``，可直接前后端编译；
+​ 1.如果不想单独编译前端，在 dlink-web 模块的 pom 下有``frontend-maven-plugins``，可直接前后端编译；
 
-​     2.如果要分开编译，在后端编译完成后，需要在 dlink-web 下执行 ``npm i --force ``;
+​ 2.如果要分开编译，在后端编译完成后，需要在 dlink-web 下执行 ``npm i --force ``;
 
 :::warning 注意事项
- 如果不执行 install 生成的 jar安装不到本地 别的依赖就识别不到本地仓库这些包  所以可能导依赖的时候会报错 CustomTableEnvironmentImpl 这个类未定义 。
+如果不执行 install 生成的 jar安装不到本地 别的依赖就识别不到本地仓库这些包 所以可能导依赖的时候会报错 CustomTableEnvironmentImpl 这个类未定义 。
 :::
-
 
 ## 远程调试环境搭建
 
@@ -160,13 +157,13 @@ sa-token:
 
 ### 初始化数据库
 
-在 MySQL 数据库创建 dlink 用户并在 dlink 数据库中执行 **dlink-doc/sql/dlink.sql** 文件。此外 **dlink-doc/sql/dlink_history.sql** 标识了各版本的升级 sql。
+在MySQL数据库创建 dlink 用户并在 dlink 数据库中执行 dlink-doc/sql/dinky.sql 文件。此外 dlink-doc/sql/upgrade 目录下存放了了各版本的升级 sql 请依次按照版本号执行。
 
 以上文件修改完成后，就可以启动 Dinky。
 
 ### 集群配置文件
 
-- **hadoop配置文件:** core-site.xml   hdfs-site.xml   yarn-site.xml  hive-site.xml;
+- **hadoop配置文件:** core-site.xml hdfs-site.xml yarn-site.xml hive-site.xml;
 - **Flink配置文件：** flink-conf.yaml；
 
 :::warning 注意事项
@@ -178,22 +175,20 @@ hive-site.xml 需要使用到 Hive Catalog 时添加
 根据 job 的场景自行选择插件依赖 jar, 选择需要的 jars , 右键添加为库,如下所示：
 
 - 选中 jars 添加为库
-![jars_add_to_repo](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/remote_debug/jars_add_to_repo.jpg)
+  ![jars_add_to_repo](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/remote_debug/jars_add_to_repo.jpg)
 
 
 - 弹框中选择信息如图:
-  - 名称: 自定义
-  - 级别: 项目库
-  - 添加到模块: dlink-admin
+    - 名称: 自定义
+    - 级别: 项目库
+    - 添加到模块: dlink-admin
 
 ![choose_addrepo_global](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/remote_debug/choose_addrepo_global.png)   
 ![create_repo](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/remote_debug/create_repo.png)
 
 :::warning 注意事项
-如果是整库同步场景下请将级别设置为全局库 ,模块选中所有 
+如果是整库同步场景下请将级别设置为全局库 ,模块选中所有
 :::
-
-
 
 ### 启动 Yarn Session 集群
 
@@ -217,8 +212,6 @@ yarn-session.sh -n 2 -jm 1024 -tm 4096 -s 6 -d
 - **账户密码:** admin/admin
 
 在 Dinky-0.6 版本后，不需要额外启动前端，如需进行前后端联调,详见[方式二](./remote_debug#方式二)
-
-
 
 ## 远程调试作业示例
 
@@ -338,8 +331,6 @@ WITH (
 ---------- source_order_mysql_goods_order_pay=== TO ==>> sink_order_mysql_goods_order_pay ------------
 insert into sink_order_mysql_goods_order_pay select * from source_order_mysql_goods_order_pay;
 ```
-
-
 
 ### 作业提交检查
 
