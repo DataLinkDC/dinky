@@ -151,24 +151,6 @@ alter table dlink_task_version add unique key `dlink_task_version_un` (`task_id`
 alter table dlink_history add column tenant_id int not null comment '租户ID' after id;
 alter table dlink_job_history add column tenant_id int not null comment '租户ID' after id;
 
--- 修改历史表的租户编号为默认租户
-UPDATE `dlink_alert_group` SET `tenant_id` = 1;
-UPDATE `dlink_alert_history` SET `tenant_id` = 1;
-UPDATE `dlink_alert_instance` SET `tenant_id` = 1;
-UPDATE `dlink_catalogue` SET `tenant_id` = 1;
-UPDATE `dlink_cluster` SET `tenant_id` = 1;
-UPDATE `dlink_cluster_configuration` SET `tenant_id` = 1;
-UPDATE `dlink_database` SET `tenant_id` = 1;
-UPDATE `dlink_history` SET `tenant_id` = 1;
-UPDATE `dlink_jar` SET `tenant_id` = 1;
-UPDATE `dlink_job_instance` SET `tenant_id` = 1;
-UPDATE `dlink_savepoints` SET `tenant_id` = 1;
-UPDATE `dlink_task` SET `tenant_id` = 1;
-UPDATE `dlink_task_statement` SET `tenant_id` = 1;
-UPDATE `dlink_task_version` SET `tenant_id` = 1;
-UPDATE `dlink_job_history` SET `tenant_id` = 1;
-
-
 -- 0.6.8 2022-10-19
 -- -----------------------
 

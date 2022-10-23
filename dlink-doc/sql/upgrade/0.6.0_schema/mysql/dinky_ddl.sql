@@ -223,8 +223,6 @@ CREATE TABLE if not exists `dlink_sys_config`(
 
 alter table dlink_cluster add auto_registers tinyint(1) default 0 null comment '是否自动注册' after note;
 
-update dlink_cluster set type ='yarn-session' where type = 'Yarn';
-update dlink_cluster set type ='standalone' where type = 'Standalone';
 
 ALTER TABLE `dlink_cluster` ADD COLUMN `cluster_configuration_id` int(11) NULL COMMENT '集群配置ID' AFTER `auto_registers`;
 
@@ -318,11 +316,6 @@ CREATE TABLE if not exists `dlink_job_instance`(
 
 ALTER TABLE `dlink_task` ADD COLUMN `step` int(11) NULL COMMENT '作业生命周期' AFTER `note`;
 
--- ----------------------------
--- 0.6.0 2022-02-03
--- ----------------------------
-update dlink_task set dialect = 'FlinkJar' where jar_id is not null;
-update dlink_catalogue set type = 'FlinkJar' where task_id in (select id as task_id from dlink_task where jar_id is not null);
 
 -- ----------------------------
 -- 0.6.0 2022-02-07

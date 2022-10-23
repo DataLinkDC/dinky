@@ -62,3 +62,23 @@ VALUES (1, 'java_udf', 'java', 'UDF', 'package ${package};\n\nimport org.apache.
 
 INSERT INTO `dlink_udf_template` (`id`, `name`, `code_type`, `function_type`, `template_code`, `enabled`, `create_time`, `update_time`)
 VALUES (2, 'java_udtf', 'java', 'UDTF', 'package ${package};\n\nimport org.apache.flink.table.functions.ScalarFunction;\n\n@FunctionHint(output = @DataTypeHint(\"ROW<word STRING, length INT>\"))\npublic static class ${className} extends TableFunction<Row> {\n\n  public void eval(String str) {\n    for (String s : str.split(\" \")) {\n      // use collect(...) to emit a row\n      collect(Row.of(s, s.length()));\n    }\n  }\n}', NULL, '2022-10-19 09:22:58', '2022-10-19 10:01:57');
+
+
+
+-- 修改历史表的租户编号为默认租户
+UPDATE `dlink_alert_group` SET `tenant_id` = 1;
+UPDATE `dlink_alert_history` SET `tenant_id` = 1;
+UPDATE `dlink_alert_instance` SET `tenant_id` = 1;
+UPDATE `dlink_catalogue` SET `tenant_id` = 1;
+UPDATE `dlink_cluster` SET `tenant_id` = 1;
+UPDATE `dlink_cluster_configuration` SET `tenant_id` = 1;
+UPDATE `dlink_database` SET `tenant_id` = 1;
+UPDATE `dlink_history` SET `tenant_id` = 1;
+UPDATE `dlink_jar` SET `tenant_id` = 1;
+UPDATE `dlink_job_instance` SET `tenant_id` = 1;
+UPDATE `dlink_savepoints` SET `tenant_id` = 1;
+UPDATE `dlink_task` SET `tenant_id` = 1;
+UPDATE `dlink_task_statement` SET `tenant_id` = 1;
+UPDATE `dlink_task_version` SET `tenant_id` = 1;
+UPDATE `dlink_job_history` SET `tenant_id` = 1;
+

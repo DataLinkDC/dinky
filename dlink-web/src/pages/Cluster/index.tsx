@@ -382,10 +382,10 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
             <PlusOutlined/> {l('button.create')}
           </Button>,
           <Button type="primary" onClick={() => checkHeartBeats()}>
-            <HeartOutlined/> {l('global.table.heartbeat')}
+            <HeartOutlined/> {l('button.heartbeat')}
           </Button>,
           <Button type="primary" onClick={() => clearCluster()}>
-            <ClearOutlined/> {l('global.table.recycle')}
+            <ClearOutlined/> {l('button.recycle')}
           </Button>,
         ]}
         request={(params, sorter, filter) => queryData(url, {...params, sorter, filter})}
