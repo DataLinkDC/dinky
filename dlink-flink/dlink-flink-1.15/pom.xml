@@ -43,7 +43,7 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-python_${scala.binary.version}</artifactId>
+            <artifactId>flink-python_2.12</artifactId>
             <version>${flink.version}</version>
         </dependency>
         <dependency>
