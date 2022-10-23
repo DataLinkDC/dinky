@@ -32,7 +32,8 @@ import java.util.Map;
  */
 public class Asserts {
 
-    private Asserts(){}
+    private Asserts() {
+    }
 
     public static boolean isNotNull(Object object) {
         return object != null;
