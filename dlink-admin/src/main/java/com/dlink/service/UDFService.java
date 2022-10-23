@@ -21,11 +21,23 @@ package com.dlink.service;
 
 import com.dlink.gateway.GatewayType;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * @author ZackYoung
  * @since 0.6.8
  */
 public interface UDFService {
 
-    String[] initUDF(String statement, GatewayType gatewayType);
+    UDFPath initUDF(String statement, GatewayType gatewayType);
+
+    @Getter
+    @Setter
+    @Builder
+    public static class UDFPath {
+        String[] jarPaths;
+        String[] pyPaths;
+    }
 }

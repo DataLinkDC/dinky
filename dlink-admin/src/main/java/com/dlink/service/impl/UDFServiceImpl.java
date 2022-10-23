@@ -22,7 +22,6 @@ package com.dlink.service.impl;
 import com.dlink.constant.PathConstant;
 import com.dlink.exception.BusException;
 import com.dlink.gateway.GatewayType;
-import com.dlink.job.JobManager;
 import com.dlink.model.Task;
 import com.dlink.process.context.ProcessContextHolder;
 import com.dlink.process.model.ProcessEntity;
@@ -30,15 +29,18 @@ import com.dlink.service.TaskService;
 import com.dlink.service.UDFService;
 import com.dlink.utils.UDFUtil;
 
+import org.apache.flink.table.catalog.FunctionLanguage;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.map.MapUtil;
 
@@ -62,24 +64,44 @@ public class UDFServiceImpl implements UDFService {
     TaskService taskService;
 
     @Override
-    public String[] initUDF(String statement, GatewayType gatewayType) {
+    public UDFPath initUDF(String statement, GatewayType gatewayType) {
+        if (gatewayType == GatewayType.KUBERNETES_APPLICATION) {
+            throw new BusException("udf 暂不支持k8s application");
+        }
+
         ProcessEntity process = ProcessContextHolder.getProcess();
         process.info("Initializing Flink UDF...Start");
-        Opt<String> udfJarPath = Opt.empty();
-        List<String> udfClassNameList = UDFUtil.getUDFClassName(statement);
-        List<String> codeList = CollUtil.map(udfClassNameList, x -> {
-            Task task = taskService.getUDFByClassName(x);
-            JobManager.initMustSuccessUDF(x, task.getStatement());
-            return task.getStatement();
-        }, true);
-        if (codeList.size() > 0) {
-            udfJarPath = Opt.ofBlankAble(UDFUtil.getUdfNameAndBuildJar(codeList));
-        } else {
-            if (gatewayType == GatewayType.KUBERNETES_APPLICATION) {
-                throw new BusException("udf 暂不支持k8s application");
+
+        List<UDFUtil.UDF> udfList = UDFUtil.getUDF(statement);
+        List<UDFUtil.UDF> javaUdf = new ArrayList<>();
+        List<UDFUtil.UDF> pythonUdf = new ArrayList<>();
+        udfList.forEach(udf -> {
+            Task task = taskService.getUDFByClassName(udf.getClassName());
+            udf.setCode(task.getStatement());
+            if (udf.getFunctionLanguage() == FunctionLanguage.PYTHON) {
+                pythonUdf.add(udf);
+            } else {
+                javaUdf.add(udf);
             }
-        }
+        });
+        String[] javaUDFPath = initJavaUDF(javaUdf);
+        String[] pythonUDFPath = initPythonUDF(pythonUdf);
+
         process.info("Initializing Flink UDF...Finish");
+        return UDFPath.builder().jarPaths(javaUDFPath).pyPaths(pythonUDFPath).build();
+    }
+
+    private static String[] initPythonUDF(List<UDFUtil.UDF> udfList) {
+        return new String[] {UDFUtil.buildPy(udfList)};
+    }
+
+    private static String[] initJavaUDF(List<UDFUtil.UDF> udfList) {
+        Opt<String> udfJarPath = Opt.empty();
+        if (udfList.size() > 0) {
+            List<String> codeList = udfList.stream().map(UDFUtil.UDF::getCode).collect(Collectors.toList());
+            udfJarPath = Opt.ofBlankAble(UDFUtil.getUdfFileAndBuildJar(codeList));
+        }
+
         if (udfJarPath.isPresent()) {
             return new String[] {PathConstant.UDF_PATH + udfJarPath.get()};
         } else {

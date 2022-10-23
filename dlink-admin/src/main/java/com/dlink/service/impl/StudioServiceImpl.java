@@ -31,6 +31,7 @@ import com.dlink.dto.StudioExecuteDTO;
 import com.dlink.dto.StudioMetaStoreDTO;
 import com.dlink.explainer.lineage.LineageBuilder;
 import com.dlink.explainer.lineage.LineageResult;
+import com.dlink.gateway.GatewayType;
 import com.dlink.gateway.model.JobInfo;
 import com.dlink.gateway.result.SavePointResult;
 import com.dlink.job.JobConfig;
@@ -175,7 +176,9 @@ public class StudioServiceImpl implements StudioService {
         JobConfig config = studioExecuteDTO.getJobConfig();
         buildSession(config);
         // To initialize java udf, but it only support local mode.
-        config.setJarFiles(udfService.initUDF(studioExecuteDTO.getStatement(), config.getGatewayConfig().getType()));
+        UDFService.UDFPath udfPath = udfService.initUDF(studioExecuteDTO.getStatement(), config.getGatewayConfig() == null ? null : config.getGatewayConfig().getType());
+        config.setJarFiles(udfPath.getJarPaths());
+        config.setPyFiles(udfPath.getPyPaths());
         JobManager jobManager = JobManager.build(config);
         JobResult jobResult = jobManager.executeSql(studioExecuteDTO.getStatement());
         RunTimeUtil.recovery(jobManager);
@@ -259,7 +262,9 @@ public class StudioServiceImpl implements StudioService {
         buildSession(config);
         process.infoSuccess();
         // To initialize java udf, but it has a bug in the product environment now.
-        config.setJarFiles(udfService.initUDF(studioExecuteDTO.getStatement(), config.getGatewayConfig().getType()));
+        UDFService.UDFPath udfPath = udfService.initUDF(studioExecuteDTO.getStatement(), GatewayType.get(config.getType()));
+        config.setJarFiles(udfPath.getJarPaths());
+        config.setPyFiles(udfPath.getPyPaths());
         process.start();
         JobManager jobManager = JobManager.buildPlanMode(config);
         List<SqlExplainResult> sqlExplainResults =
@@ -311,7 +316,9 @@ public class StudioServiceImpl implements StudioService {
         // If you are using explainSql | getStreamGraph | getJobPlan, make the dialect change to local.
         config.buildLocal();
         buildSession(config);
-        config.setJarFiles(udfService.initUDF(studioExecuteDTO.getStatement(), config.getGatewayConfig().getType()));
+        UDFService.UDFPath udfPath = udfService.initUDF(studioExecuteDTO.getStatement(), GatewayType.get(config.getType()));
+        config.setJarFiles(udfPath.getJarPaths());
+        config.setPyFiles(udfPath.getPyPaths());
         JobManager jobManager = JobManager.buildPlanMode(config);
         String planJson = jobManager.getJobPlanJson(studioExecuteDTO.getStatement());
         ObjectMapper mapper = new ObjectMapper();

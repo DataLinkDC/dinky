@@ -23,6 +23,7 @@ import java.io.File;
 
 /**
  * 文件路径常量
+ *
  * @author ZackYoung
  * @since 0.6.8
  */
@@ -40,6 +41,7 @@ public class PathConstant {
      * udf路径
      */
     public static final String UDF_PATH = TMP_PATH + "udf" + File.separator;
+    public static final String UDF_PYTHON_PATH = TMP_PATH + "udf" + File.separator + "python" + File.separator;
     /**
      * udf jar规则
      */
