@@ -40,9 +40,8 @@ const formLayout = {
 
 const ClusterForm: React.FC<ClusterFormProps> = (props) => {
 
-
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   const [form] = Form.useForm();
@@ -88,8 +87,9 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
         <Form.Item
           name="type"
           label="类型"
+          rules={[{required: true, message: '请选择集群类型！'}]}
         >
-          <Select defaultValue={RUN_MODE.YARN_SESSION} allowClear>
+          <Select>
             <Option value={RUN_MODE.STANDALONE}>Standalone</Option>
             <Option value={RUN_MODE.YARN_SESSION}>Yarn Session</Option>
             <Option value={RUN_MODE.YARN_PER_JOB}>Yarn Per-Job</Option>
@@ -150,9 +150,9 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
   const renderFooter = () => {
     return (
       <>
-        <Button onClick={() => handleModalVisible(false)}>取消</Button>
+        <Button onClick={() => handleModalVisible(false)}>{l('button.cancel')}</Button>
         <Button type="primary" onClick={() => submitForm()}>
-          完成
+          {l('button.finish')}
         </Button>
       </>
     );

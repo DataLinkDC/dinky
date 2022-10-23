@@ -26,6 +26,7 @@ import settingDrawer from './zh-CN/settingDrawer';
 import settings from './zh-CN/settings';
 import pages from './zh-CN/pages';
 import button from './zh-CN/button';
+import shortKey from './zh-CN/shortcutKey';
 
 export default {
   'navBar.lang': '语言',
@@ -35,7 +36,7 @@ export default {
   'app.preview.down.block': '下载此页面到本地项目',
   'app.welcome.link.fetch-blocks': '获取全部区块',
   'app.welcome.link.block-list': '基于 block 开发，快速构建标准页面',
-  'app.copyright.produced': 'Produced by DataLink Community',
+  'app.copyright.produced': '2022 Produced by Dinky Community',
   ...pages,
   ...globalHeader,
   ...menu,
@@ -45,4 +46,5 @@ export default {
   ...component,
   ...request,
   ...button,
+  ...shortKey,
 };

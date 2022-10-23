@@ -161,6 +161,7 @@ public class JobManager {
         JobManager manager = new JobManager(config);
         manager.init();
         manager.executor.initUDF(config.getJarFiles());
+        config.getGatewayConfig().setJarPaths(config.getJarFiles());
         return manager;
     }
 
@@ -168,6 +169,7 @@ public class JobManager {
         JobManager manager = new JobManager(config);
         manager.setPlanMode(true);
         manager.init();
+        manager.executor.initUDF(config.getJarFiles());
         ProcessContextHolder.getProcess().info("Build Flink plan mode success.");
         return manager;
     }

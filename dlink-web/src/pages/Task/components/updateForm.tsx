@@ -40,8 +40,9 @@ const formLayout = {
 
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
 
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
 
   const [formVals, setFormVals] = useState<Partial<TaskTableListItem>>({
     id: props.values.id,
@@ -143,9 +144,9 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   const renderFooter = () => {
     return (
       <>
-        <Button onClick={() => handleUpdateModalVisible(false, values)}>取消</Button>
+        <Button onClick={() => handleUpdateModalVisible(false, values)}> {l('button.cancel')}</Button>
         <Button type="primary" onClick={() => submitForm()}>
-          完成
+          {l('button.finish')}
         </Button>
       </>
     );

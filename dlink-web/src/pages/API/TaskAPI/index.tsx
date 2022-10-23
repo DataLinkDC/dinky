@@ -30,8 +30,10 @@ const {TabPane} = Tabs;
 
 const TaskAPI = (props: any) => {
 
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
 
   const {task} = props;
   const [address, setAddress] = useState<string>('127.0.0.1:8888');

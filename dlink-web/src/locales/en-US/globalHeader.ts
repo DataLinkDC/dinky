@@ -34,7 +34,7 @@ export default {
   'component.noticeIcon.empty': 'No notifications',
   'component.noticeIcon.view-more': 'View more',
 
-  'global.table.operate': 'Operate',
+  'global.table.operate': 'Operation',
   'global.table.config': 'Config',
   'global.table.edit': 'Edit',
   'global.table.delete': 'Delete',
@@ -50,9 +50,9 @@ export default {
   'global.table.registType.manual': 'Manual',
   'global.table.registType.automatic': 'Automatic',
 
-  'global.table.isUse': 'Is Use',
-  'global.table.inUse': 'In Use',
-  'global.table.notUse': 'Not Use',
+  'global.table.isEnable': 'Is Enable',
+  'global.table.enabled': 'Enabled',
+  'global.table.disabled': 'Disabled',
 
   'global.table.status': 'Status',
   'global.table.status.normal': 'Normal',
@@ -93,10 +93,6 @@ export default {
   'global.table.lifecycle.online': 'Online',
   'global.table.lifecycle.unKnow': 'Unknow',
   'global.table.runmode': 'Run Mode',
-
-
-
-
 
 
 };

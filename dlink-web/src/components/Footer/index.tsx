@@ -23,15 +23,13 @@ import {GithubOutlined} from '@ant-design/icons';
 import {DefaultFooter} from '@ant-design/pro-layout';
 
 export default () => {
+
   const intl = useIntl();
-  const defaultMessage = intl.formatMessage({
-    id: 'app.copyright.produced',
-    defaultMessage: 'Dinky',
-  });
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   return (
     <DefaultFooter
-      copyright={`2022 ${defaultMessage}`}
+      copyright={l('app.copyright.produced', 'Produced by Dinky Community')}
       links={[
         {
           key: 'Dinky',
@@ -41,7 +39,7 @@ export default () => {
         },
         {
           key: 'github',
-          title: <GithubOutlined />,
+          title: <GithubOutlined/>,
           href: 'https://github.com/DataLinkDC/dlink',
           blankTarget: true,
         },

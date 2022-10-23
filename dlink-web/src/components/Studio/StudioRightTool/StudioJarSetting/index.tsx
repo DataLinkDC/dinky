@@ -18,15 +18,14 @@
  */
 
 
-import {connect} from "umi";
+import {connect, useIntl} from "umi";
 import {StateType} from "@/pages/DataStudio/model";
-import {Form, InputNumber, Input, Select, Tag, Row, Col, Badge, Tooltip, Button, Space, Upload, message} from "antd";
+import {Button, Col, Form, Input, InputNumber, message, Row, Select, Space, Tag, Tooltip, Upload} from "antd";
 import {
   InfoCircleOutlined,
-  PlusOutlined,
-  MinusSquareOutlined,
   MinusCircleOutlined,
-  PaperClipOutlined,
+  MinusSquareOutlined,
+  PlusOutlined,
   UploadOutlined
 } from "@ant-design/icons";
 import styles from "./index.less";
@@ -35,14 +34,14 @@ import {JarStateType} from "@/pages/Jar/model";
 import {Scrollbars} from "react-custom-scrollbars";
 import {RUN_MODE} from "@/components/Studio/conf";
 import {CODE} from "@/components/Common/crud";
-import {
-  getConfigFormValues,
-  getHadoopConfigPathFromClusterConfigurationsById
-} from "@/pages/ClusterConfiguration/function";
+import {getHadoopConfigPathFromClusterConfigurationsById} from "@/pages/ClusterConfiguration/function";
 
 const {Option} = Select;
 
 const StudioJarSetting = (props: any) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {clusterConfiguration, current, form, dispatch, tabs, jars, toolHeight} = props;
   const [hadoopConfigPath, setHadoopConfigPath] = useState<string | undefined>(undefined);

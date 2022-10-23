@@ -30,9 +30,7 @@ import {useIntl} from 'umi';
 const TableData = (props: any) => {
 
   const intl = useIntl();
-
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   // 数据库id，数据库名称，表名称
@@ -170,10 +168,7 @@ const TableData = (props: any) => {
                   })
                 }}
               >
-                <Input addonBefore="WHERE" placeholder={intl.formatMessage({
-                  id: 'pages.TableData.QueryConditions',
-                  defaultMessage: '查询条件',
-                })}
+                <Input addonBefore="WHERE" placeholder={l('pages.TableData.QueryConditions')}
                        onChange={(value) => {
                          setOptionInput({
                            whereInput: value.target.value,
@@ -198,7 +193,7 @@ const TableData = (props: any) => {
                 }}
               >
                 <Input addonBefore="ORDER BY"
-                       placeholder={intl.formatMessage({id: 'pages.TableData.sorting', defaultMessage: '排序',})}
+                       placeholder={l('pages.TableData.sorting')}
                        onChange={(value) => {
                          setOptionInput({
                            whereInput: optionInput.whereInput,
@@ -208,7 +203,7 @@ const TableData = (props: any) => {
               </AutoComplete>
             </Col>
             <Col span={2}>
-              <Tooltip title={intl.formatMessage({id: 'pages.TableData.serch', defaultMessage: '查询',})}>
+              <Tooltip title={l('pages.TableData.search')}>
                 <Button type="primary" shape="circle" icon={<SearchOutlined/>} size="middle" onClick={(event) => {
                   fetchData(optionInput.whereInput, optionInput.orderInput)
                 }}/>
@@ -219,10 +214,7 @@ const TableData = (props: any) => {
         </div>
 
 
-        <Divider orientation="left" plain>{intl.formatMessage({
-          id: 'pages.TableData.data',
-          defaultMessage: '数据',
-        })}</Divider>
+        <Divider orientation="left" plain>{l('pages.TableData.data')}</Divider>
 
         <div>
           <ProTable

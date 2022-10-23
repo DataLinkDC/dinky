@@ -53,8 +53,8 @@ const cardBodyStyle = {
 
 const DataBaseTableList: React.FC<{}> = (props: any) => {
 
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   const {dispatch} = props;
@@ -81,8 +81,8 @@ const DataBaseTableList: React.FC<{}> = (props: any) => {
     Modal.confirm({
       title: '删除数据源',
       content: `确定删除该数据源【${row.alias === "" ? row.name : row.alias}】吗？`,
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         await handleRemove('api/database', [row]);
         onRefreshDataBase();
@@ -101,7 +101,7 @@ const DataBaseTableList: React.FC<{}> = (props: any) => {
               setValues({});
               handleDBFormModalVisible(true);
             }}>
-              <PlusOutlined/> 新建
+              <PlusOutlined/> {l('button.create')}
             </Button>,
           ];
         }}

@@ -18,14 +18,18 @@
  */
 
 
-import {Tabs, Empty} from "antd";
+import {Empty, Tabs} from "antd";
 import {
-  CodeOutlined, TableOutlined, RadarChartOutlined, CalendarOutlined, FileSearchOutlined, DesktopOutlined
-  , FunctionOutlined, ApartmentOutlined, BarChartOutlined
+  ApartmentOutlined,
+  BarChartOutlined,
+  CalendarOutlined,
+  CodeOutlined,
+  DesktopOutlined,
+  FunctionOutlined,
+  TableOutlined
 } from "@ant-design/icons";
 import {StateType} from "@/pages/DataStudio/model";
-import {connect} from "umi";
-import styles from "./index.less";
+import {connect, useIntl} from "umi";
 import StudioMsg from "./StudioMsg";
 import StudioTable from "./StudioTable";
 import StudioHistory from "./StudioHistory";
@@ -34,14 +38,16 @@ import StudioCA from "./StudioCA";
 import StudioProcess from "./StudioProcess";
 import {Scrollbars} from 'react-custom-scrollbars';
 import Chart from "@/components/Chart";
-import {useIntl} from 'umi';
-import {useEffect, useState} from "react";
+import {useState} from "react";
 
 const {TabPane} = Tabs;
 
 const StudioConsole = (props: any) => {
 
+
   const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
 
   const {height, current} = props;
   let consoleHeight = (height - 37.6);
@@ -59,7 +65,7 @@ const StudioConsole = (props: any) => {
         tab={
           <span>
           <CodeOutlined/>
-            {intl.formatMessage({id: 'pages.datastadio.lable.info', defaultMessage: '信息',})}
+            {l('pages.datastudio.label.info')}
         </span>
         }
         key="StudioMsg"
@@ -72,7 +78,7 @@ const StudioConsole = (props: any) => {
         tab={
           <span>
           <TableOutlined/>
-            {intl.formatMessage({id: 'pages.datastadio.lable.result', defaultMessage: '结果',})}
+            {l('pages.datastudio.label.result')}
         </span>
         }
         key="StudioTable"
@@ -98,7 +104,7 @@ const StudioConsole = (props: any) => {
         tab={
           <span>
           <ApartmentOutlined/>
-            {intl.formatMessage({id: 'pages.datastadio.lable.bloodsource', defaultMessage: '血缘',})}
+            {l('pages.datastudio.label.lineage')}
         </span>
         }
         key="StudioConsanguinity"
@@ -111,7 +117,7 @@ const StudioConsole = (props: any) => {
         tab={
           <span>
           <DesktopOutlined/>
-            {intl.formatMessage({id: 'pages.datastadio.lable.process', defaultMessage: '进程',})}
+            {l('pages.datastudio.label.process')}
         </span>
         }
         key="StudioProcess"
@@ -124,7 +130,7 @@ const StudioConsole = (props: any) => {
         tab={
           <span>
           <CalendarOutlined/>
-            {intl.formatMessage({id: 'pages.datastadio.lable.history', defaultMessage: '历史',})}
+            {l('pages.datastudio.label.history')}
         </span>
         }
         key="StudioHistory"
@@ -137,7 +143,7 @@ const StudioConsole = (props: any) => {
         tab={
           <span>
           <FunctionOutlined/>
-            {intl.formatMessage({id: 'pages.datastadio.lable.function', defaultMessage: '函数',})}
+            {l('pages.datastudio.label.function')}
         </span>
         }
         key="StudioFX"

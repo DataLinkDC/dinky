@@ -23,8 +23,12 @@ import {Drawer} from "antd";
 import ProDescriptions from '@ant-design/pro-descriptions';
 import {queryData} from "@/components/Common/crud";
 import {FragmentVariableTableListItem} from "@/pages/FragmentVariable/data";
+import {useIntl} from "umi";
 
 const StudioFragment = (props: any) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {toolHeight, dispatch} = props;
   const [row, setRow] = useState<{}>();
@@ -113,7 +117,7 @@ const StudioFragment = (props: any) => {
       },
     },
     {
-      title: '创建时间',
+      title: l('global.table.createTime'),
       dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',
@@ -121,7 +125,7 @@ const StudioFragment = (props: any) => {
       hideInTable: true,
     },
     {
-      title: '最近更新时间',
+      title: l('global.table.lastUpdateTime'),
       dataIndex: 'updateTime',
       sorter: true,
       valueType: 'dateTime',

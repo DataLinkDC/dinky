@@ -18,10 +18,10 @@
  */
 
 
-import {connect} from "umi";
+import {connect, useIntl} from "umi";
 import {StateType} from "@/pages/DataStudio/model";
-import {Form, Switch, Row, Col, Tooltip, Button, Input} from "antd";
-import {InfoCircleOutlined,MinusSquareOutlined} from "@ant-design/icons";
+import {Button, Col, Form, Input, Row, Tooltip} from "antd";
+import {MinusSquareOutlined} from "@ant-design/icons";
 import styles from "./index.less";
 import {useEffect} from "react";
 import {JarStateType} from "@/pages/Jar/model";
@@ -29,7 +29,10 @@ import {Scrollbars} from "react-custom-scrollbars";
 
 const StudioUDFInfo = (props: any) => {
 
-  const { current, form, toolHeight} = props;
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
+  const {current, form, toolHeight} = props;
 
   useEffect(() => {
     form.setFieldsValue(current.task);

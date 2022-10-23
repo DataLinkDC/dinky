@@ -20,6 +20,7 @@
 package com.dlink.service.impl;
 
 import com.dlink.constant.PathConstant;
+import com.dlink.exception.BusException;
 import com.dlink.gateway.GatewayType;
 import com.dlink.job.JobManager;
 import com.dlink.model.Task;
@@ -53,15 +54,15 @@ public class UDFServiceImpl implements UDFService {
      * 快速获取 session 与 application 等类型，为了减少判断
      */
     private static final Map<String, List<GatewayType>> GATEWAY_TYPE_MAP = MapUtil
-            .builder("session",
-                    Arrays.asList(GatewayType.YARN_SESSION, GatewayType.KUBERNETES_SESSION, GatewayType.STANDALONE))
-            .build();
+        .builder("session",
+            Arrays.asList(GatewayType.YARN_SESSION, GatewayType.KUBERNETES_SESSION, GatewayType.STANDALONE))
+        .build();
 
     @Resource
     TaskService taskService;
 
     @Override
-    public String[] initUDF(String statement) {
+    public String[] initUDF(String statement, GatewayType gatewayType) {
         ProcessEntity process = ProcessContextHolder.getProcess();
         process.info("Initializing Flink UDF...Start");
         Opt<String> udfJarPath = Opt.empty();
@@ -73,10 +74,14 @@ public class UDFServiceImpl implements UDFService {
         }, true);
         if (codeList.size() > 0) {
             udfJarPath = Opt.ofBlankAble(UDFUtil.getUdfNameAndBuildJar(codeList));
+        } else {
+            if (gatewayType == GatewayType.KUBERNETES_APPLICATION) {
+                throw new BusException("udf 暂不支持k8s application");
+            }
         }
         process.info("Initializing Flink UDF...Finish");
         if (udfJarPath.isPresent()) {
-            return new String[]{PathConstant.UDF_PATH + udfJarPath.get()};
+            return new String[] {PathConstant.UDF_PATH + udfJarPath.get()};
         } else {
             return new String[0];
         }

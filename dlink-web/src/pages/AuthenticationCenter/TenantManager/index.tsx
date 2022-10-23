@@ -42,8 +42,8 @@ const TenantFormList: React.FC<{}> = (props: any) => {
   const [formValues, setFormValues] = useState({});
 
 
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   const editAndDelete = (key: string | number, currentItem: TenantTableListItem) => {
@@ -174,7 +174,7 @@ const TenantFormList: React.FC<{}> = (props: any) => {
       valueType: 'dateTime',
     },
     {
-      title: l('pages.operate'),
+      title: l('global.table.operate'),
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record: TenantTableListItem) => [
@@ -227,8 +227,11 @@ const TenantFormList: React.FC<{}> = (props: any) => {
         <FooterToolbar
           extra={
             <div>
-              {l('tips.selected')} <a
-              style={{fontWeight: 600}}>{selectedRowsState.length}</a> {l('tips.item')}
+              {l('tips.selected', '',
+                {
+                  total: <a
+                    style={{fontWeight: 600}}>{selectedRowsState.length}</a>
+                })}  &nbsp;&nbsp;
             </div>
           }
         >

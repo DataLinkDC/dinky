@@ -19,7 +19,7 @@
 
 
 import {StateType} from "@/pages/DataStudio/model";
-import {connect} from "umi";
+import {connect, useIntl} from "umi";
 import {Badge, Divider, Modal, Space, Tag, Typography} from 'antd';
 import {ClusterOutlined, FireOutlined, MessageOutlined, RocketOutlined} from "@ant-design/icons";
 import ProList from '@ant-design/pro-list';
@@ -59,6 +59,9 @@ type HistoryConfig = {
 const url = '/api/history';
 const StudioHistory = (props: any) => {
 
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
   const {current, refs, dispatch} = props;
   const [modalVisit, setModalVisit] = useState(false);
   const [row, setRow] = useState<HistoryItem>();
@@ -84,8 +87,8 @@ const StudioHistory = (props: any) => {
     Modal.confirm({
       title: '删除执行记录',
       content: '确定删除该执行记录吗？',
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         await handleRemove(url, [row]);
         refs.history?.current?.reload();
@@ -212,7 +215,7 @@ const StudioHistory = (props: any) => {
               <a key="delete" onClick={() => {
                 removeHistory(row)
               }}>
-                删除
+                {l('button.delete')}
               </a>,
             ],
             search: false,

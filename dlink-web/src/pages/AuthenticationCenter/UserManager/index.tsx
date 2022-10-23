@@ -44,8 +44,10 @@ const UserTableList: React.FC<{}> = (props: any) => {
   const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<UserTableListItem[]>([]);
 
-  const international = useIntl();
-  const l = (key: string, defaultMsg?: string) => international.formatMessage({id: key, defaultMessage: defaultMsg})
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
 
   const editAndDelete = (key: string | number, currentItem: UserTableListItem) => {
     if (key === 'edit') {
@@ -194,7 +196,7 @@ const UserTableList: React.FC<{}> = (props: any) => {
       valueType: 'dateTime',
     },
     {
-      title: l('pages.operate'),
+      title: l('global.table.operate'),
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
@@ -248,10 +250,13 @@ const UserTableList: React.FC<{}> = (props: any) => {
           <FooterToolbar
             extra={
               <div>
-                {l('tips.selected')} <a
-                style={{fontWeight: 600}}>{selectedRowsState.length}</a> {l('tips.item')}&nbsp;&nbsp;
+                {l('tips.selected', '',
+                  {
+                    total: <a
+                      style={{fontWeight: 600}}>{selectedRowsState.length}</a>
+                  })}  &nbsp;&nbsp;
                 <span>
-                {l('pages.user.disableTotalOf')} {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} {l('pages.user.selectDisable')}
+                    {l('pages.user.disableTotalOf', '', {total: selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)})}
               </span>
               </div>
             }
