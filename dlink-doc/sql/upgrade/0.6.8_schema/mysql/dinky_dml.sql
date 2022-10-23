@@ -65,7 +65,7 @@ VALUES (2, 'java_udtf', 'java', 'UDTF', 'package ${package};\n\nimport org.apach
 
 
 
--- 修改历史表的租户编号为默认租户
+-- Modify the tenant number of the history table as the default tenant
 UPDATE `dlink_alert_group` SET `tenant_id` = 1;
 UPDATE `dlink_alert_history` SET `tenant_id` = 1;
 UPDATE `dlink_alert_instance` SET `tenant_id` = 1;
