@@ -131,10 +131,21 @@ const EditorTabs = (props: any) => {
           // sqlMetaData={pane.sqlMetaData}
           height={height ? height : (toolHeight - 32)}
           width={width}
-          language={current.task.dialect === DIALECT.JAVA ? 'java' : 'sql'}
+          language={getLanguage(current.task.dialect)}
         />
       </TabPane>)
     }
+  }
+  const getLanguage = (dialect: string) => {
+    switch (dialect) {
+      case DIALECT.JAVA:
+        return DIALECT.JAVA.toLowerCase()
+      case DIALECT.PYTHON:
+        return DIALECT.PYTHON.toLowerCase()
+      default:
+        return DIALECT.SQL.toLowerCase()
+    }
+
   }
 
   return (
