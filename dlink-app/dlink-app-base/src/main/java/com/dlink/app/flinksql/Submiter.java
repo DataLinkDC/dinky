@@ -123,7 +123,7 @@ public class Submiter {
         List<StatementParam> trans = new ArrayList<>();
         List<StatementParam> execute = new ArrayList<>();
         for (String item : statements) {
-            String statement = FlinkInterceptor.preTreatStatement(executor, item);
+            String statement = FlinkInterceptor.pretreatStatement(executor, item);
             if (statement.isEmpty()) {
                 continue;
             }

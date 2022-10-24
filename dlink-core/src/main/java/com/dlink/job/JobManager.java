@@ -580,7 +580,7 @@
          String[] statements = SqlUtil.getStatements(statement, sqlSeparator);
          try {
              for (String item : statements) {
-                 String newStatement = executor.preTreatStatement(item);
+                 String newStatement = executor.pretreatStatement(item);
                  SqlType operationType = Operations.getOperationType(newStatement);
                  if (SqlType.INSERT == operationType ||
                          SqlType.SELECT == operationType ||
@@ -715,7 +715,7 @@
              }
          }
 
-         String statement = executor.preTreatStatement(sql);
+         String statement = executor.pretreatStatement(sql);
          sb.append(statement);
          return sb.toString();
      }

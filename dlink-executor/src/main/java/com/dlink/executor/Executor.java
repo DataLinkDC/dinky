@@ -230,8 +230,8 @@ public abstract class Executor {
         stEnvironment = newstEnvironment;
     }
 
-    public String preTreatStatement(String statement) {
-        return FlinkInterceptor.preTreatStatement(this, statement);
+    public String pretreatStatement(String statement) {
+        return FlinkInterceptor.pretreatStatement(this, statement);
     }
 
     private FlinkInterceptorResult preTreatExecute(String statement) {
@@ -247,7 +247,7 @@ public abstract class Executor {
     }
 
     public TableResult executeSql(String statement) {
-        statement = preTreatStatement(statement);
+        statement = pretreatStatement(statement);
         FlinkInterceptorResult flinkInterceptorResult = preTreatExecute(statement);
         if (Asserts.isNotNull(flinkInterceptorResult.getTableResult())) {
             return flinkInterceptorResult.getTableResult();
@@ -295,7 +295,7 @@ public abstract class Executor {
     }
 
     public String explainSql(String statement, ExplainDetail... extraDetails) {
-        statement = preTreatStatement(statement);
+        statement = pretreatStatement(statement);
         if (!preTreatExecute(statement).isNoExecute()) {
             return stEnvironment.explainSql(statement, extraDetails);
         } else {
@@ -304,7 +304,7 @@ public abstract class Executor {
     }
 
     public SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails) {
-        statement = preTreatStatement(statement);
+        statement = pretreatStatement(statement);
         if (Asserts.isNotNullString(statement) && !preTreatExecute(statement).isNoExecute()) {
             return stEnvironment.explainSqlRecord(statement, extraDetails);
         } else {
@@ -313,7 +313,7 @@ public abstract class Executor {
     }
 
     public ObjectNode getStreamGraph(String statement) {
-        statement = preTreatStatement(statement);
+        statement = pretreatStatement(statement);
         if (!preTreatExecute(statement).isNoExecute()) {
             return stEnvironment.getStreamGraph(statement);
         } else {

@@ -38,7 +38,7 @@ public class FlinkInterceptor {
     private FlinkInterceptor() {
     }
 
-    public static String preTreatStatement(Executor executor, String statement) {
+    public static String pretreatStatement(Executor executor, String statement) {
         statement = SqlUtil.removeNote(statement);
         if (executor.isUseSqlFragment()) {
             statement = executor.getSqlManager().parseVariable(statement);

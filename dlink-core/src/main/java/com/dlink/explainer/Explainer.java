@@ -109,7 +109,7 @@ public class Explainer {
         List<StatementParam> execute = new ArrayList<>();
         List<String> statementList = new ArrayList<>();
         for (String item : statements) {
-            String statement = executor.preTreatStatement(item);
+            String statement = executor.pretreatStatement(item);
             if (statement.isEmpty()) {
                 continue;
             }
@@ -139,7 +139,7 @@ public class Explainer {
             SqlExplainResult record = new SqlExplainResult();
             String sql = "";
             try {
-                sql = FlinkInterceptor.preTreatStatement(executor, item);
+                sql = FlinkInterceptor.pretreatStatement(executor, item);
                 if (Asserts.isNullString(sql)) {
                     continue;
                 }
@@ -522,7 +522,7 @@ public class Explainer {
         for (String item : sqls) {
             String sql = "";
             try {
-                sql = FlinkInterceptor.preTreatStatement(executor, item);
+                sql = FlinkInterceptor.pretreatStatement(executor, item);
                 if (Asserts.isNullString(sql)) {
                     continue;
                 }
