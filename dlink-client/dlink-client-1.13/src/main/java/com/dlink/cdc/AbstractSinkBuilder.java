@@ -103,8 +103,8 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
         Properties properties = new Properties();
         Map<String, String> sink = config.getSink();
         for (Map.Entry<String, String> entry : sink.entrySet()) {
-            if (Asserts.isNotNullString(entry.getKey()) && entry.getKey().startsWith("sink.properties") && Asserts.isNotNullString(entry.getValue())) {
-                properties.setProperty(entry.getKey().replace("sink.properties.",""), entry.getValue());
+            if (Asserts.isNotNullString(entry.getKey()) && entry.getKey().startsWith("properties") && Asserts.isNotNullString(entry.getValue())) {
+                properties.setProperty(entry.getKey().replace("properties.",""), entry.getValue());
             }
         }
         return properties;

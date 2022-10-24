@@ -19,6 +19,7 @@
 
 package com.dlink.cdc.doris;
 
+import com.dlink.assertion.Asserts;
 import com.dlink.cdc.AbstractSinkBuilder;
 import com.dlink.cdc.SinkBuilder;
 import com.dlink.model.FlinkCDCConfig;
@@ -169,5 +170,17 @@ public class DorisSinkBuilder extends AbstractSinkBuilder implements Serializabl
             .setDorisOptions(dorisBuilder.build());
 
         rowDataDataStream.sinkTo(builder.build()).name("Doris Sink(table=[" + getSinkSchemaName(table) + "." + getSinkTableName(table) + "])");
+    }
+
+    @Override
+    protected Properties getProperties() {
+        Properties properties = new Properties();
+        Map<String, String> sink = config.getSink();
+        for (Map.Entry<String, String> entry : sink.entrySet()) {
+            if (Asserts.isNotNullString(entry.getKey()) && entry.getKey().startsWith("sink.properties") && Asserts.isNotNullString(entry.getValue())) {
+                properties.setProperty(entry.getKey().replace("sink.properties.", ""), entry.getValue());
+            }
+        }
+        return properties;
     }
 }
