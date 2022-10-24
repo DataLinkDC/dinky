@@ -30,6 +30,7 @@ import org.apache.flink.api.common.JobExecutionResult;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.core.execution.JobClient;
+import org.apache.flink.python.PythonOptions;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.jsonplan.JsonPlanGenerator;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
@@ -266,6 +267,14 @@ public abstract class Executor {
      */
     public void initUDF(String... udfFilePath) {
         JarUtils.getJarFiles(udfFilePath).forEach(Executor::loadJar);
+    }
+
+    public void initPyUDF(String... udfPyFilePath) {
+        Map<String, String> config = executorSetting.getConfig();
+        if (Asserts.isAllNotNullString(udfPyFilePath) && Asserts.isNotNull(config)) {
+            config.put(PythonOptions.PYTHON_FILES.key(), String.join(",", udfPyFilePath));
+        }
+        update(executorSetting);
     }
 
     private static void loadJar(final URL jarUrl) {

@@ -17,16 +17,20 @@
  *
  */
 
-package com.dlink.service;
+package com.dlink.model;
 
-import com.dlink.gateway.GatewayType;
-import com.dlink.model.UDFPath;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author ZackYoung
  * @since 0.6.8
  */
-public interface UDFService {
-
-    UDFPath initUDF(String statement, GatewayType gatewayType);
+@Getter
+@Setter
+@Builder
+public class UDFPath {
+    String[] jarPaths;
+    String[] pyPaths;
 }
