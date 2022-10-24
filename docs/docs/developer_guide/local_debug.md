@@ -4,12 +4,9 @@ id: local_debug
 title: 本地调试
 ---
 
-
-
 # 前言
 
 最近小伙伴们一直追问，如何在 IDEA 里去调试 Dlink。本文将指导大家可以成功地搭建调试环境并可以修改相关功能的代码，当然欢迎大家将相关问题修复及新功能的实现贡献到 dev 分支哦。那一起来看看吧！
-
 
 # 开发者本地调试手册
 
@@ -20,7 +17,7 @@ title: 本地调试
 - Git:版本控制软件
 - JDK：后端开发
 - Maven：Java包管理
-- Node:前端开发;   
+- Node:前端开发;
 
 ### 环境要求
 
@@ -33,9 +30,7 @@ title: 本地调试
 | lombok  | IDEA插件安装 |
 |  mysql  |     5.7+     |
 
-
-
-###  代码克隆
+### 代码克隆
 
 请通过 git 管理工具从 GitHub 中拉取 Dinky 源码
 
@@ -47,7 +42,7 @@ git clone https://github.com/DataLinkDC/dlink.git
 git clone git://github.com/DataLinkDC/dlink.git
 ```
 
-##  IntelliJ IDEA
+## IntelliJ IDEA
 
 该指南介绍了关于如何设置 IntelliJ IDEA 来进行 Dlink 前后端开发。Eclipse 不建议使用。
 
@@ -72,7 +67,6 @@ IDEA 提供了插件设置来安装 Lombok 插件。如果尚未安装，请在�
 
 ## 前端环境
 
-
 ### 安装 node.js
 
 可用版本 14.17.0 +，安装步骤详情百度。
@@ -95,7 +89,7 @@ npm install --force
 
 ### 编译
 
-IDEA 里 Build → Build  Project 
+IDEA 里 Build → Build Project
 
 ### 打包
 
@@ -118,7 +112,7 @@ npm build
 Dinky开发环境配置有两种模式，分别是 provided 环境和 compile 环境
 
 - provided：此环境适合已经存在安装包，可进行远程调试，此模式需要外部环境安装Flink；
-- compile：此环境适合二次开发或者熟悉源码，此模式不需要额外安装Flink,通过Flink自带的local模式变可调试开发  
+- compile：此环境适合二次开发或者熟悉源码，此模式不需要额外安装Flink,通过Flink自带的local模式变可调试开发
 
 ## Dinky本地开发环境
 
@@ -161,11 +155,9 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
 ```
 
-
-
 ### 初始化数据库
 
-在MySQL数据库创建 dlink 用户并在 dlink 数据库中执行 dlink-doc/sql/dlink.sql 文件。此外 dlink-doc/sql/dlink_history.sql 标识了各版本的升级 sql。
+在MySQL数据库创建 dlink 用户并在 dlink 数据库中执行 dlink-doc/sql/dinky.sql 文件。此外 dlink-doc/sql/upgrade 目录下存放了了各版本的升级 sql 请依次按照版本号执行。
 
 以上文件修改完成后，就可以启动Dinky。
 
@@ -173,7 +165,7 @@ spring:
 
 启动 dlink-admin 下的 Dlink 启动类，可见 8888 端口。
 
-稍微等待一会，即可访问  127.0.0.1:8888  可见登录页。
+稍微等待一会，即可访问 127.0.0.1:8888 可见登录页。
 
 登录用户/密码: admin/admin
 
@@ -187,10 +179,9 @@ spring:
 npm start
 ```
 
-稍微等待一会，即可访问  127.0.0.1:8000  可见登录页。
+稍微等待一会，即可访问 127.0.0.1:8000 可见登录页。
 
 登录用户/密码: admin/admin
-
 
 ### 本地源码调试示例
 
@@ -209,41 +200,41 @@ npm start
 ## 源码结构
 
 ```java
-dlink -- 父项目
-|-dlink-admin -- 管理中心
-|-dlink-alert -- 告警中心
-|-dlink-app -- Application Jar
-|-dlink-assembly -- 打包配置
-|-dlink-client -- Client 中心
-| |-dlink-client-1.11 -- Client-1.11 实现
-| |-dlink-client-1.12 -- Client-1.12 实现
-| |-dlink-client-1.13 -- Client-1.13 实现
-| |-dlink-client-1.14 -- Client-1.14 实现
-|-dlink-common -- 通用中心
-|-dlink-connectors -- Connectors 中心
-| |-dlink-connector-jdbc -- Jdbc 扩展
-|-dlink-core -- 执行中心
-|-dlink-doc -- 文档
-| |-bin -- 启动脚本
-| |-bug -- bug 反馈
-| |-config -- 配置文件
-| |-doc -- 使用文档
-| |-sql -- sql脚本
-|-dlink-executor -- 执行中心
-|-dlink-extends -- 扩展中心
-|-dlink-function -- 函数中心
-|-dlink-gateway -- Flink 网关中心
-|-dlink-metadata -- 元数据中心
-| |-dlink-metadata-base -- 元数据基础组件
-| |-dlink-metadata-clickhouse -- 元数据- clickhouse 实现
-| |-dlink-metadata-mysql -- 元数据- mysql 实现
-| |-dlink-metadata-oracle -- 元数据- oracle 实现
-| |-dlink-metadata-postgresql -- 元数据- postgresql 实现
-| |-dlink-metadata-doris -- 元数据- doris 实现  
-| |-dlink-metadata-phoenix - 元数据- phoenix 实现 
-| |-dlink-metadata-sqlserver - 元数据- sqlserver 实现    
-|-dlink-web -- React 前端
-|-docs -- 官网文档
+dlink--父项目
+    |-dlink-admin--管理中心
+    |-dlink-alert--告警中心
+    |-dlink-app--Application Jar
+    |-dlink-assembly--打包配置
+    |-dlink-client--Client 中心
+    | |-dlink-client-1.11--Client-1.11实现
+    | |-dlink-client-1.12--Client-1.12实现
+    | |-dlink-client-1.13--Client-1.13实现
+    | |-dlink-client-1.14--Client-1.14实现
+    |-dlink-common--通用中心
+    |-dlink-connectors--Connectors 中心
+    | |-dlink-connector-jdbc--Jdbc 扩展
+    |-dlink-core--执行中心
+    |-dlink-doc--文档
+    | |-bin--启动脚本
+    | |-bug--bug 反馈
+    | |-config--配置文件
+    | |-doc--使用文档
+    | |-sql--sql脚本
+    |-dlink-executor--执行中心
+    |-dlink-extends--扩展中心
+    |-dlink-function--函数中心
+    |-dlink-gateway--Flink 网关中心
+    |-dlink-metadata--元数据中心
+    | |-dlink-metadata-base--元数据基础组件
+    | |-dlink-metadata-clickhouse--元数据-clickhouse 实现
+    | |-dlink-metadata-mysql--元数据-mysql 实现
+    | |-dlink-metadata-oracle--元数据-oracle 实现
+    | |-dlink-metadata-postgresql--元数据-postgresql 实现
+    | |-dlink-metadata-doris--元数据-doris 实现
+    | |-dlink-metadata-phoenix-元数据-phoenix 实现
+    | |-dlink-metadata-sqlserver-元数据-sqlserver 实现
+    |-dlink-web--React 前端
+    |-docs--官网文档
 ```
 
 ### dlink-admin
@@ -276,7 +267,7 @@ Dlink 的 Connectors，目前实现了 Oracle、Clickhouse、SQLServer ...。此
 
 ### dlink-core
 
-Dlink  的核心模块，内包含 Flink RestAPI 、集群、SQL解释器、Job统一调度器（JobManager）、会话管理等实现。
+Dlink 的核心模块，内包含 Flink RestAPI 、集群、SQL解释器、Job统一调度器（JobManager）、会话管理等实现。
 
 ### dlink-doc
 
@@ -307,7 +298,6 @@ Dlink 的元数据中心，用于实现各种外部数据源对接到 Dlink，�
 Dlink 的前端项目，基于 Ant Design Pro 5.0.0。Why Not Vue ? React Who Use Who Know。（中式英语 =。=）
 
 Dlink 的前端架构与开发后续文章会详解，本文略。
-
 
 ## 任务执行路线
 

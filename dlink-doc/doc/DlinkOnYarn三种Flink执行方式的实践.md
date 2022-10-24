@@ -24,7 +24,7 @@ Interceptor 是 Dlink 的 Flink 执行拦截器，负责对其进行片段解析
 
 ### Gateway
 
-Gateway 并非是开源项目 flink-sql-gateway，而是 Dlink 自己定制的 Gateway，负责进行基于 Yarn 环境的任务提交与管理，主要有Yarn-Per-Job 和 Yarn-Application  的 FlinkSQL 提交、停止、SavePoint 以及配置测试，而 User Jar 目前只开放了 Yarn-Application 的提交。
+Gateway 并非是开源项目 flink-sql-gateway，而是 Dlink 自己定制的 Gateway，负责进行基于 Yarn 环境的任务提交与管理，主要有Yarn-Per-Job 和 Yarn-Application 的 FlinkSQL 提交、停止、SavePoint 以及配置测试，而 User Jar 目前只开放了 Yarn-Application 的提交。
 
 ### Flink SDK
 
@@ -54,8 +54,8 @@ Dlink 通过已注册的集群配置来获取对应的 YarnClient 实例。对�
 
 ### 获取安装包
 
-百度网盘链接：https://pan.baidu.com/s/1HNAmpiZMu8IUrUKQgR55qQ 
-		提取码：0400 
+百度网盘链接：https://pan.baidu.com/s/1HNAmpiZMu8IUrUKQgR55qQ
+提取码：0400
 
 ### 安装
 
@@ -64,29 +64,30 @@ Dlink 通过已注册的集群配置来获取对应的 YarnClient 实例。对�
 得到以下项目结构：
 
 ```java
-config/ -- 配置文件
-|- application.yml
-extends/ -- 扩展文件
-html/ -- 前端文件
-jar/ -- 扩展 Flink Jar 文件
-lib/ -- 外部依赖及Connector
-|- dlink-client-1.13.jar
-|- dlink-connector-jdbc.jar
-|- dlink-function.jar
-|- dlink-metadata-clickhouse.jar
-|- dlink-metadata-mysql.jar
-|- dlink-metadata-oracle.jar
-|- dlink-metadata-postgresql.jar
-plugins/ -- Flink 相关扩展
-|- flink-shaded-hadoop-3-uber.jar
-|- flink-connector-jdbc_2.11-1.13.3.jar
-|- flink-csv-1.13.3.jar
-|- flink-json-1.13.3.jar
-|- mysql-connector-java-8.0.21.jar
-sql/
-|- dlink.sql -- Mysql初始化脚本
-auto.sh -- 启动停止脚本
-dlink-admin.jar -- 程序包
+config/--配置文件
+    |-application.yml
+    extends/--扩展文件
+    html/--前端文件
+    jar/--扩展 Flink Jar 文件
+    lib/--外部依赖及Connector
+    |-dlink-client-1.13.jar
+    |-dlink-connector-jdbc.jar
+    |-dlink-function.jar
+    |-dlink-metadata-clickhouse.jar
+    |-dlink-metadata-mysql.jar
+    |-dlink-metadata-oracle.jar
+    |-dlink-metadata-postgresql.jar
+    plugins/--Flink 相关扩展
+    |-flink-shaded-hadoop-3-uber.jar
+    |-flink-connector-jdbc_2.11-1.13.3.jar
+    |-flink-csv-1.13.3.jar
+    |-flink-json-1.13.3.jar
+    |-mysql-connector-java-8.0.21.jar
+    sql/
+    |-dinky.sql--Mysql初始化脚本
+    |-upgrade/--各个版本升级SQL脚本
+    auto.sh--启动停止脚本
+    dlink-admin.jar--程序包
 ```
 
 ### 修改配置文件
@@ -108,7 +109,7 @@ spring:
 
 ### 初始化数据库
 
-在对应数据库下执行 sql 目录下的 dlink.sql 脚本。
+在对应数据库下执行 sql 目录下的 dinky.sql 脚本。
 
 执行成功后，可见以下数据表：
 
@@ -198,13 +199,13 @@ sh auto.sh status
     }
 ```
 
-​	1.server.listen 填写前端访问端口
+​ 1.server.listen 填写前端访问端口
 
-​	2.proxy_pass 填写后端地址如 http://127.0.0.1:8888
+​ 2.proxy_pass 填写后端地址如 http://127.0.0.1:8888
 
-​	3.重启 Nginx。
+​ 3.重启 Nginx。
 
-​	4.后续只更新前端资源时，不需要重启 Nginx。
+​ 4.后续只更新前端资源时，不需要重启 Nginx。
 
 ### 打开主页
 
@@ -228,7 +229,7 @@ sh auto.sh status
 
 注意：只有具备 JobManager 实例的 Flink 集群才可以被成功注册到 dlink 中。（ Yarn-Per-Job 和 Yarn-Application 也具有 JobManager，当然也可以手动注册，但无法提交任务）
 
-如状态异常时，请检查被注册的 Flink 集群地址是否能正常访问，默认端口号为8081，可能更改配置后发生了变化，查看位置为 Flink Web 的  JobManager 的 Configuration 中的 rest 相关属性。
+如状态异常时，请检查被注册的 Flink 集群地址是否能正常访问，默认端口号为8081，可能更改配置后发生了变化，查看位置为 Flink Web 的 JobManager 的 Configuration 中的 rest 相关属性。
 
 ### 执行 Hello World
 

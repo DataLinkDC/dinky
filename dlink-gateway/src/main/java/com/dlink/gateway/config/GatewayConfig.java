@@ -42,6 +42,7 @@ import lombok.Setter;
 public class GatewayConfig {
 
     private Integer taskId;
+    private String[] jarPaths;
     private GatewayType type;
     private ClusterConfig clusterConfig;
     private FlinkConfig flinkConfig;
