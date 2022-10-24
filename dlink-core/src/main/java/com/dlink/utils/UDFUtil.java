@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -73,6 +74,8 @@ public class UDFUtil {
     private static final String LANGUAGE_REGEX = "language (.*);";
     public static final String PYTHON_UDF_ATTR = "(\\S)\\s+=\\s+ud(?:f|tf|af|taf)";
     public static final String PYTHON_UDF_DEF = "@ud(?:f|tf|af|taf).*\\n+def\\s+(.*)\\(.*\\):";
+    public static final String SCALA_UDF_CLASS = "class\\s+(\\w+)(\\s*\\(.*\\)){0,1}\\s+extends";
+    public static final String SCALA_UDF_PACKAGE = "package\\s+(.*);";
 
     public static List<UDF> getUDF(String statement) {
         ProcessEntity process = ProcessContextHolder.getProcess();
@@ -117,6 +120,12 @@ public class UDFUtil {
             .orElse(ReUtil.getGroup1(UDFUtil.PYTHON_UDF_DEF, code));
     }
 
+    public static String getScalaFullClassName(String code) {
+        String packageName = ReUtil.getGroup1(UDFUtil.SCALA_UDF_PACKAGE, code);
+        String clazz = ReUtil.getGroup1(UDFUtil.SCALA_UDF_CLASS, code);
+        return String.join(".", Arrays.asList(packageName, clazz));
+    }
+
     public static Boolean buildClass(String code) {
         CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(code);
         boolean res = compiler.compiler();
@@ -145,26 +154,38 @@ public class UDFUtil {
         Thread.currentThread().setContextClassLoader(groovyClassLoader);
     }
 
-    public static Map<String, List<String>> buildJar(List<String> codeList) {
+    public static Map<String, List<String>> buildJar(List<UDF> codeList) {
         List<String> successList = new ArrayList<>();
         List<String> failedList = new ArrayList<>();
         String tmpPath = PathConstant.UDF_PATH;
         String udfJarPath = PathConstant.UDF_JAR_TMP_PATH;
         // 删除jar缓存
         FileUtil.del(udfJarPath);
-        codeList.forEach(code -> {
-            CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(code);
-            boolean res = compiler.compilerToTmpPath(tmpPath);
-            String className = compiler.getFullClassName();
-            if (res) {
-                log.info("class编译成功:{}" + className);
-                log.info("compilerTakeTime：" + compiler.getCompilerTakeTime());
-                successList.add(className);
-            } else {
-                log.warn("class编译失败:{}" + className);
-                log.warn(compiler.getCompilerMessage());
-                failedList.add(className);
+        codeList.forEach(udf -> {
+            if (udf.getFunctionLanguage() == FunctionLanguage.JAVA) {
+                CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(udf.getCode());
+                boolean res = compiler.compilerToTmpPath(tmpPath);
+                String className = compiler.getFullClassName();
+                if (res) {
+                    log.info("class编译成功:{}" + className);
+                    log.info("compilerTakeTime：" + compiler.getCompilerTakeTime());
+                    successList.add(className);
+                } else {
+                    log.warn("class编译失败:{}" + className);
+                    log.warn(compiler.getCompilerMessage());
+                    failedList.add(className);
+                }
+            } else if (udf.getFunctionLanguage() == FunctionLanguage.SCALA) {
+                String className = udf.getClassName();
+                if (CustomStringScalaCompiler.getInterpreter().compileString(udf.getCode())) {
+                    log.info("scala class编译成功:{}" + className);
+                    successList.add(className);
+                } else {
+                    log.warn("scala class编译失败:{}" + className);
+                    failedList.add(className);
+                }
             }
+
         });
         String[] clazzs = successList.stream().map(className -> StrUtil.replace(className, ".", "/") + ".class")
             .toArray(String[]::new);
@@ -186,7 +207,7 @@ public class UDFUtil {
      * @param codeList 代码列表
      * @return {@link java.lang.String}
      */
-    public static String getUdfFileAndBuildJar(List<String> codeList) {
+    public static String getUdfFileAndBuildJar(List<UDF> codeList) {
         // 1. 检查所有jar的版本，通常名字为 udf-${version}.jar;如 udf-1.jar,没有这个目录则跳过
         String md5 = buildJar(codeList).get("md5").get(0);
         if (!FileUtil.exist(PathConstant.UDF_PATH)) {

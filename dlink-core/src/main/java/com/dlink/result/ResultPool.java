@@ -19,8 +19,8 @@
 
 package com.dlink.result;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * ResultPool
@@ -28,9 +28,12 @@ import java.util.Map;
  * @author wenmo
  * @since 2021/7/1 22:20
  */
-public class ResultPool {
+public final class ResultPool {
 
-    private static volatile Map<String, SelectResult> results = new HashMap<String, SelectResult>();
+    private ResultPool() {
+    }
+
+    private static final Map<String, SelectResult> results = new ConcurrentHashMap<>();
 
     public static boolean containsKey(String key) {
         return results.containsKey(key);
@@ -41,11 +44,7 @@ public class ResultPool {
     }
 
     public static SelectResult get(String key) {
-        if (results.containsKey(key)) {
-            return results.get(key);
-        } else {
-            return SelectResult.buildDestruction(key);
-        }
+        return results.getOrDefault(key, SelectResult.buildDestruction(key));
     }
 
     public static boolean remove(String key) {
