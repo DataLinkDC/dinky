@@ -36,8 +36,10 @@ import java.util.Arrays;
  **/
 public class Operations {
 
-    private static final Operation[] ALL_OPERATIONS = {
-            new CreateAggTableOperation()
+    private Operations() {
+    }
+
+    private static final Operation[] ALL_OPERATIONS = {new CreateAggTableOperation()
             , new SetOperation()
             , new CreateCDCSourceOperation()
             , new ShowFragmentsOperation()
