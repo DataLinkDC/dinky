@@ -93,11 +93,7 @@ public class UDFServiceImpl implements UDFService {
     }
 
     private static String[] initPythonUDF(List<UDF> udfList) {
-        if (udfList.isEmpty()) {
-            return new String[0];
-        }
-
-        return new String[] {UDFUtil.buildPy(udfList)};
+        return udfList == null || udfList.isEmpty() ? new String[0] : new String[] {UDFUtil.buildPy(udfList)};
     }
 
     private static String[] initJavaUDF(List<UDF> udfList) {
