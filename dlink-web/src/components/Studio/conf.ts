@@ -44,6 +44,7 @@ export const DIALECT = {
   STARROCKS: 'StarRocks',
   KUBERNETES_APPLICATION: 'KubernetesApplaction',
   JAVA: 'Java',
+  SCALA: 'Scala',
   PYTHON: 'Python',
 };
 
