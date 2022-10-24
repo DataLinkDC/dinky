@@ -368,6 +368,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             task.setSavePointPath(compiler.getFullClassName());
         } else if (Dialect.PYTHON.equalsVal(task.getDialect())) {
             task.setSavePointPath(task.getName() + "." + UDFUtil.getPyUDFAttr(task.getStatement()));
+        } else {
+            task.setSavePointPath(UDFUtil.getScalaFullClassName(task.getStatement()));
         }
         // if modify task else create task
         if (task.getId() != null) {
@@ -484,7 +486,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public Task getUDFByClassName(String className) {
         Task task = getOne(
-            new QueryWrapper<Task>().in("dialect", "Java", "Python").eq("enabled", 1).eq("save_point_path", className));
+            new QueryWrapper<Task>().in("dialect", "Java", "Python", "Scala").eq("enabled", 1).eq("save_point_path", className));
         Assert.check(task);
         task.setStatement(statementService.getById(task.getId()).getStatement());
         return task;
@@ -493,7 +495,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public List<Task> getAllUDF() {
         List<Task> tasks =
-            list(new QueryWrapper<Task>().in("dialect", "Java", "Python").eq("enabled", 1).isNotNull("save_point_path"));
+            list(new QueryWrapper<Task>().in("dialect", "Java", "Python", "Scala").eq("enabled", 1).isNotNull("save_point_path"));
         return tasks.stream().peek(task -> {
             Assert.check(task);
             task.setStatement(statementService.getById(task.getId()).getStatement());

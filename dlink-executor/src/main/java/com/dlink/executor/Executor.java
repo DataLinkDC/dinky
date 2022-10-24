@@ -270,8 +270,11 @@ public abstract class Executor {
     }
 
     public void initPyUDF(String... udfPyFilePath) {
+        if (udfPyFilePath == null || udfPyFilePath.length == 0) {
+            return;
+        }
         Map<String, String> config = executorSetting.getConfig();
-        if (Asserts.isAllNotNullString(udfPyFilePath) && Asserts.isNotNull(config)) {
+        if (Asserts.isNotNull(config)) {
             config.put(PythonOptions.PYTHON_FILES.key(), String.join(",", udfPyFilePath));
         }
         update(executorSetting);
