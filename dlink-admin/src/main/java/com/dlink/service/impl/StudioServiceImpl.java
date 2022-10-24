@@ -48,6 +48,7 @@ import com.dlink.model.Schema;
 import com.dlink.model.SystemConfiguration;
 import com.dlink.model.Table;
 import com.dlink.model.Task;
+import com.dlink.model.UDFPath;
 import com.dlink.process.context.ProcessContextHolder;
 import com.dlink.process.model.ProcessEntity;
 import com.dlink.process.model.ProcessType;
@@ -176,7 +177,7 @@ public class StudioServiceImpl implements StudioService {
         JobConfig config = studioExecuteDTO.getJobConfig();
         buildSession(config);
         // To initialize java udf, but it only support local mode.
-        UDFService.UDFPath udfPath = udfService.initUDF(studioExecuteDTO.getStatement(), config.getGatewayConfig() == null ? null : config.getGatewayConfig().getType());
+        UDFPath udfPath = udfService.initUDF(studioExecuteDTO.getStatement(), config.getGatewayConfig() == null ? null : config.getGatewayConfig().getType());
         config.setJarFiles(udfPath.getJarPaths());
         config.setPyFiles(udfPath.getPyPaths());
         JobManager jobManager = JobManager.build(config);
@@ -262,7 +263,7 @@ public class StudioServiceImpl implements StudioService {
         buildSession(config);
         process.infoSuccess();
         // To initialize java udf, but it has a bug in the product environment now.
-        UDFService.UDFPath udfPath = udfService.initUDF(studioExecuteDTO.getStatement(), GatewayType.get(config.getType()));
+        UDFPath udfPath = udfService.initUDF(studioExecuteDTO.getStatement(), GatewayType.get(config.getType()));
         config.setJarFiles(udfPath.getJarPaths());
         config.setPyFiles(udfPath.getPyPaths());
         process.start();
@@ -316,7 +317,7 @@ public class StudioServiceImpl implements StudioService {
         // If you are using explainSql | getStreamGraph | getJobPlan, make the dialect change to local.
         config.buildLocal();
         buildSession(config);
-        UDFService.UDFPath udfPath = udfService.initUDF(studioExecuteDTO.getStatement(), GatewayType.get(config.getType()));
+        UDFPath udfPath = udfService.initUDF(studioExecuteDTO.getStatement(), GatewayType.get(config.getType()));
         config.setJarFiles(udfPath.getJarPaths());
         config.setPyFiles(udfPath.getPyPaths());
         JobManager jobManager = JobManager.buildPlanMode(config);

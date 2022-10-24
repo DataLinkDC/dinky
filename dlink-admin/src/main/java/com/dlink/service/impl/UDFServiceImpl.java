@@ -23,10 +23,12 @@ import com.dlink.constant.PathConstant;
 import com.dlink.exception.BusException;
 import com.dlink.gateway.GatewayType;
 import com.dlink.model.Task;
+import com.dlink.model.UDFPath;
 import com.dlink.process.context.ProcessContextHolder;
 import com.dlink.process.model.ProcessEntity;
 import com.dlink.service.TaskService;
 import com.dlink.service.UDFService;
+import com.dlink.udf.UDF;
 import com.dlink.utils.UDFUtil;
 
 import org.apache.flink.table.catalog.FunctionLanguage;
@@ -72,9 +74,9 @@ public class UDFServiceImpl implements UDFService {
         ProcessEntity process = ProcessContextHolder.getProcess();
         process.info("Initializing Flink UDF...Start");
 
-        List<UDFUtil.UDF> udfList = UDFUtil.getUDF(statement);
-        List<UDFUtil.UDF> javaUdf = new ArrayList<>();
-        List<UDFUtil.UDF> pythonUdf = new ArrayList<>();
+        List<UDF> udfList = UDFUtil.getUDF(statement);
+        List<UDF> javaUdf = new ArrayList<>();
+        List<UDF> pythonUdf = new ArrayList<>();
         udfList.forEach(udf -> {
             Task task = taskService.getUDFByClassName(udf.getClassName());
             udf.setCode(task.getStatement());
@@ -91,14 +93,14 @@ public class UDFServiceImpl implements UDFService {
         return UDFPath.builder().jarPaths(javaUDFPath).pyPaths(pythonUDFPath).build();
     }
 
-    private static String[] initPythonUDF(List<UDFUtil.UDF> udfList) {
+    private static String[] initPythonUDF(List<UDF> udfList) {
         return new String[] {UDFUtil.buildPy(udfList)};
     }
 
-    private static String[] initJavaUDF(List<UDFUtil.UDF> udfList) {
+    private static String[] initJavaUDF(List<UDF> udfList) {
         Opt<String> udfJarPath = Opt.empty();
         if (udfList.size() > 0) {
-            List<String> codeList = udfList.stream().map(UDFUtil.UDF::getCode).collect(Collectors.toList());
+            List<String> codeList = udfList.stream().map(UDF::getCode).collect(Collectors.toList());
             udfJarPath = Opt.ofBlankAble(UDFUtil.getUdfFileAndBuildJar(codeList));
         }
 

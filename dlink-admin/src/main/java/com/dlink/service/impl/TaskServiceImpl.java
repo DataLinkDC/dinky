@@ -137,7 +137,6 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.lang.tree.TreeUtil;
-import cn.hutool.core.util.ReUtil;
 
 /**
  * 任务 服务实现类
@@ -368,7 +367,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(task.getStatement());
             task.setSavePointPath(compiler.getFullClassName());
         } else if (Dialect.PYTHON.equalsVal(task.getDialect())) {
-            task.setSavePointPath(task.getName() + "." + ReUtil.getGroup1(UDFUtil.PYTHON_UDF_ATTR, task.getStatement()));
+            task.setSavePointPath(task.getName() + "." + UDFUtil.getPyUDFAttr(task.getStatement()));
         }
         // if modify task else create task
         if (task.getId() != null) {
@@ -503,6 +502,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public Result releaseTask(Integer id) {
+
         Task task = getTaskInfoById(id);
         Assert.check(task);
         if (JobLifeCycle.DEVELOP.equalsValue(task.getStep())) {

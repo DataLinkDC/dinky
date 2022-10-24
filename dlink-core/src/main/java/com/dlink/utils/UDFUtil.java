@@ -72,6 +72,7 @@ public class UDFUtil {
     private static final String FUNCTION_REGEX = "function (.*?)'(.*?)'";
     private static final String LANGUAGE_REGEX = "language (.*);";
     public static final String PYTHON_UDF_ATTR = "(\\S)\\s+=\\s+ud(?:f|tf|af|taf)";
+    public static final String PYTHON_UDF_DEF = "@ud(?:f|tf|af|taf).*\\n+def\\s+(.*)\\(.*\\):";
 
     public static List<UDF> getUDF(String statement) {
         ProcessEntity process = ProcessContextHolder.getProcess();
@@ -109,6 +110,11 @@ public class UDFUtil {
     public static String buildPy(UDF udf) {
         File file = FileUtil.writeUtf8String(udf.getCode(), PathConstant.UDF_PYTHON_PATH + StrUtil.split(udf.getClassName(), ".").get(0) + ".py");
         return file.getAbsolutePath();
+    }
+
+    public static String getPyUDFAttr(String code) {
+        return Opt.ofBlankAble(ReUtil.getGroup1(UDFUtil.PYTHON_UDF_ATTR, code))
+            .orElse(ReUtil.getGroup1(UDFUtil.PYTHON_UDF_DEF, code));
     }
 
     public static Boolean buildClass(String code) {
