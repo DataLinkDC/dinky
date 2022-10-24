@@ -87,7 +87,7 @@
         <poi.version>4.1.2</poi.version>
         <commons-email>1.5</commons-email>
         <knife4j.version>3.0.3</knife4j.version>
-        <spotless.version>2.23.0</spotless.version>
+        <spotless.version>2.27.2</spotless.version>
     </properties>
 
     <dependencyManagement>
