@@ -19,21 +19,21 @@
 
 -- 0.6.5 2022-06-28
 -- ----------------------------
-alter table dlink_task ADD COLUMN `version_id` INT NULL COMMENT '版本号ID';
+alter table dlink_task ADD COLUMN `version_id` INT NULL COMMENT 'version id';
 
 -- ----------------------------
 -- Table structure for dlink_task_version
 -- ----------------------------
 CREATE TABLE IF NOT EXISTS `dlink_task_version`(
   `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `task_id` int NOT NULL COMMENT '作业ID ',
-  `version_id` int NOT NULL COMMENT '版本ID ',
-  `statement` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'flink sql 内容',
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称',
-  `alias` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '别名',
-  `dialect` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '方言',
-  `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '类型',
-  `task_configure` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '作业配置',
-  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `task_id` int NOT NULL COMMENT 'task ID ',
+  `version_id` int NOT NULL COMMENT 'version ID ',
+  `statement` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'flink sql statement',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'version name',
+  `alias` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'alisa',
+  `dialect` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'dialect',
+  `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'type',
+  `task_configure` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'task configuration',
+  `create_time` datetime DEFAULT NULL COMMENT 'create time',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='作业历史版本';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='job history version';
