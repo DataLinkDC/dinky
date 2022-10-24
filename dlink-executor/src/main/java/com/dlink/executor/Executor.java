@@ -234,7 +234,7 @@ public abstract class Executor {
         return FlinkInterceptor.pretreatStatement(this, statement);
     }
 
-    private FlinkInterceptorResult preTreatExecute(String statement) {
+    private FlinkInterceptorResult pretreatExecute(String statement) {
         return FlinkInterceptor.build(this, statement);
     }
 
@@ -248,7 +248,7 @@ public abstract class Executor {
 
     public TableResult executeSql(String statement) {
         statement = pretreatStatement(statement);
-        FlinkInterceptorResult flinkInterceptorResult = preTreatExecute(statement);
+        FlinkInterceptorResult flinkInterceptorResult = pretreatExecute(statement);
         if (Asserts.isNotNull(flinkInterceptorResult.getTableResult())) {
             return flinkInterceptorResult.getTableResult();
         }
@@ -296,7 +296,7 @@ public abstract class Executor {
 
     public String explainSql(String statement, ExplainDetail... extraDetails) {
         statement = pretreatStatement(statement);
-        if (!preTreatExecute(statement).isNoExecute()) {
+        if (!pretreatExecute(statement).isNoExecute()) {
             return stEnvironment.explainSql(statement, extraDetails);
         } else {
             return "";
@@ -305,7 +305,7 @@ public abstract class Executor {
 
     public SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails) {
         statement = pretreatStatement(statement);
-        if (Asserts.isNotNullString(statement) && !preTreatExecute(statement).isNoExecute()) {
+        if (Asserts.isNotNullString(statement) && !pretreatExecute(statement).isNoExecute()) {
             return stEnvironment.explainSqlRecord(statement, extraDetails);
         } else {
             return null;
@@ -314,7 +314,7 @@ public abstract class Executor {
 
     public ObjectNode getStreamGraph(String statement) {
         statement = pretreatStatement(statement);
-        if (!preTreatExecute(statement).isNoExecute()) {
+        if (!pretreatExecute(statement).isNoExecute()) {
             return stEnvironment.getStreamGraph(statement);
         } else {
             return null;
