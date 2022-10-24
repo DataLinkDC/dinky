@@ -17,115 +17,174 @@
  *
  */
 
-/*
- Navicat Premium Data Transfer
-
- Source Server         : 10.1.51.25
- Source Server Type    : MySQL
- Source Server Version : 80013
- Source Host           : 10.1.51.25:3306
- Source Schema         : dlink
-
- Target Server Type    : MySQL
- Target Server Version : 80013
- File Encoding         : 65001
-
- Date: 28/05/2021 18:56:01
-*/
-
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
+-- Table structure for dlink_alert_group
+-- ----------------------------
+DROP TABLE IF EXISTS `dlink_alert_group`;
+CREATE TABLE `dlink_alert_group` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '自增主键',
+  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称',
+  `tenant_id` int NOT NULL COMMENT '租户ID',
+  `alert_instance_ids` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Alert实例IDS',
+  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '说明',
+  `enabled` tinyint DEFAULT '1' COMMENT '是否启用',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `dlink_alert_instance_un` (`name`,`tenant_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='Alert组';
+
+-- ----------------------------
+-- Table structure for dlink_alert_history
+-- ----------------------------
+DROP TABLE IF EXISTS `dlink_alert_history`;
+CREATE TABLE `dlink_alert_history` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '自增主键',
+  `tenant_id` int NOT NULL COMMENT '租户ID',
+  `alert_group_id` int DEFAULT NULL COMMENT 'Alert组ID',
+  `job_instance_id` int DEFAULT NULL COMMENT '作业实例ID',
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '标题',
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '正文',
+  `status` int DEFAULT NULL COMMENT '状态',
+  `log` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '日志',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='Alert历史';
+
+-- ----------------------------
+-- Table structure for dlink_alert_instance
+-- ----------------------------
+DROP TABLE IF EXISTS `dlink_alert_instance`;
+CREATE TABLE `dlink_alert_instance` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '自增主键',
+  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称',
+  `tenant_id` int NOT NULL COMMENT '租户ID',
+  `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '类型',
+  `params` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '配置',
+  `enabled` tinyint DEFAULT '1' COMMENT '是否启用',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `dlink_alert_instance_un` (`name`,`tenant_id`) USING BTREE
+) ENGINE=InnoDB   DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='Alert实例';
+
+-- ----------------------------
 -- Table structure for dlink_catalogue
 -- ----------------------------
-CREATE TABLE if not exists `dlink_catalogue`  (
-                                    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                                    `task_id` int(11) NULL DEFAULT NULL COMMENT '任务ID',
-                                    `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '名称',
-                                    `type` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT '类型',
-                                    `parent_id` int(11) NOT NULL DEFAULT 0 COMMENT '父ID',
-                                    `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT '启用',
-                                    `is_leaf` tinyint(1) NOT NULL COMMENT '是否为叶子',
-                                    `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
-                                    `update_time` datetime(0) NULL DEFAULT NULL COMMENT '最近修改时间',
-                                    PRIMARY KEY (`id`) USING BTREE,
-                                    UNIQUE INDEX `idx_name`(`name`, `parent_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '目录' ROW_FORMAT = Dynamic;
+DROP TABLE IF EXISTS `dlink_catalogue`;
+CREATE TABLE `dlink_catalogue` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `tenant_id` int NOT NULL COMMENT '租户ID',
+  `task_id` int DEFAULT NULL COMMENT '任务ID',
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称',
+  `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '类型',
+  `parent_id` int NOT NULL DEFAULT '0' COMMENT '父ID',
+  `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT '启用',
+  `is_leaf` tinyint(1) NOT NULL COMMENT '是否为文件夹',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '最近修改时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `dlink_catalogue_un` (`name`,`parent_id`,`tenant_id`) USING BTREE
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='目录';
 
 -- ----------------------------
 -- Table structure for dlink_cluster
 -- ----------------------------
-CREATE TABLE  if not exists `dlink_cluster`  (
-                                  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                                  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '名称',
-                                  `alias` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '别名',
-                                  `type` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '类型',
-                                  `hosts` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT 'HOSTS',
-                                  `job_manager_host` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'JMhost',
-                                  `status` int(1) NULL DEFAULT NULL COMMENT '状态',
-                                  `note` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '注释',
-                                  `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT '是否启用',
-                                  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
-                                  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
-                                  PRIMARY KEY (`id`) USING BTREE,
-                                  UNIQUE INDEX `idx_name`(`name`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '集群' ROW_FORMAT = Dynamic;
+DROP TABLE IF EXISTS `dlink_cluster`;
+CREATE TABLE `dlink_cluster` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `tenant_id` int NOT NULL COMMENT '租户ID',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称',
+  `alias` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '别名',
+  `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '类型',
+  `hosts` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'HOSTS',
+  `job_manager_host` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'JMhost',
+  `version` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '版本',
+  `status` int DEFAULT NULL COMMENT '状态',
+  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '注释',
+  `auto_registers` tinyint(1) DEFAULT '0' COMMENT '是否自动注册',
+  `cluster_configuration_id` int DEFAULT NULL COMMENT '集群配置ID',
+  `task_id` int DEFAULT NULL COMMENT '任务ID',
+  `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否启用',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `dlink_cluster_un` (`name`,`tenant_id`) USING BTREE
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='集群';
 
 -- ----------------------------
--- Table structure for dlink_task
+-- Table structure for dlink_cluster_configuration
 -- ----------------------------
-CREATE TABLE  if not exists  `dlink_task`  (
-                               `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                               `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '名称',
-                               `alias` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '别名',
-                               `type` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '类型',
-                               `check_point` int(11) NULL DEFAULT NULL COMMENT 'CheckPoint ',
-                               `save_point_path` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'SavePointPath',
-                               `parallelism` int(4) NULL DEFAULT NULL COMMENT 'parallelism',
-                               `fragment` tinyint(1) NULL DEFAULT NULL COMMENT 'fragment',
-                               `cluster_id` int(11) NULL DEFAULT NULL COMMENT 'Flink集群ID',
-                               `note` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '注释',
-                               `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT '是否启用',
-                               `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
-                               `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
-                               PRIMARY KEY (`id`) USING BTREE,
-                               UNIQUE INDEX `idx_name`(`name`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '作业' ROW_FORMAT = Dynamic;
+DROP TABLE IF EXISTS `dlink_cluster_configuration`;
+CREATE TABLE `dlink_cluster_configuration` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `tenant_id` int NOT NULL COMMENT '租户ID',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称',
+  `alias` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '别名',
+  `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '类型',
+  `config_json` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '配置JSON',
+  `is_available` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '是否可用',
+  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '注释',
+  `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否启用',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `dlink_cluster_configuration_un` (`name`,`tenant_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
--- Table structure for dlink_task_statement
+-- Table structure for dlink_database
 -- ----------------------------
-CREATE TABLE  if not exists  `dlink_task_statement`  (
-                                         `id` int(11) NOT NULL COMMENT 'ID',
-                                         `statement` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '语句',
-                                         PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '语句' ROW_FORMAT = Dynamic;
+DROP TABLE IF EXISTS `dlink_database`;
+CREATE TABLE `dlink_database` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `tenant_id` int NOT NULL COMMENT '租户ID',
+  `name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '数据源名',
+  `alias` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '数据源标题',
+  `group_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'Default' COMMENT '数据源分组',
+  `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '类型',
+  `ip` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'IP',
+  `port` int DEFAULT NULL COMMENT '端口号',
+  `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'url',
+  `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '用户名',
+  `password` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '密码',
+  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '注释',
+  `flink_config` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Flink配置',
+  `flink_template` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Flink模板',
+  `db_version` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '版本，如oracle的11g，hbase的2.2.3',
+  `status` tinyint(1) DEFAULT '0' COMMENT '状态',
+  `health_time` datetime DEFAULT NULL COMMENT '最近健康时间',
+  `heartbeat_time` datetime DEFAULT NULL COMMENT '最近心跳监测时间',
+  `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT '启用',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '最近修改时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `dlink_database_un` (`name`,`tenant_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Table structure for dlink_flink_document
 -- ----------------------------
-CREATE TABLE if not exists  `dlink_flink_document`  (
-                                         `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-                                         `category` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '文档类型',
-                                         `type` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '类型',
-                                         `subtype` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '子类型',
-                                         `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '信息',
-                                         `description` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '描述',
-                                         `version` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '版本号',
-                                         `like_num` int(255) NULL DEFAULT 0 COMMENT '喜爱值',
-                                         `enabled` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否启用',
-                                         `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
-                                         `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
-                                         PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 263 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '文档管理' ROW_FORMAT = Dynamic;
-
-ALTER TABLE `dlink_flink_document` auto_increment=1;
-
-ALTER TABLE `dlink_flink_document`  modify column description longtext;
-ALTER TABLE `dlink_flink_document`
-    ADD COLUMN `fill_value` longtext NULL COMMENT '填充值' AFTER `description`;
-
+DROP TABLE IF EXISTS `dlink_flink_document`;
+CREATE TABLE `dlink_flink_document` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `category` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '文档类型',
+  `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '类型',
+  `subtype` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '子类型',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '信息',
+  `description` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `fill_value` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '填充值',
+  `version` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '版本号',
+  `like_num` int DEFAULT '0' COMMENT '喜爱值',
+  `enabled` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否启用',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB   DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='文档管理';
 -- ----------------------------
 -- Records of dlink_flink_document
 -- ----------------------------
@@ -263,7 +322,7 @@ INSERT INTO `dlink_flink_document` VALUES (131, 'Function', '内置函数', '字
 INSERT INTO `dlink_flink_document` VALUES (132, 'Function', '内置函数', '时间函数', 'DATE string', '返回以“ yyyy-MM-dd”形式从STRING解析的SQL日期。', 'DATE(${1:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO `dlink_flink_document` VALUES (133, 'Function', '内置函数', '时间函数', 'TIME string', '返回以“ HH：mm：ss”的形式从STRING解析的SQL时间。', 'TIME(${1:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO `dlink_flink_document` VALUES (134, 'Function', '内置函数', '时间函数', 'TIMESTAMP string', '返回从STRING解析的SQL时间戳，格式为“ yyyy-MM-dd HH：mm：ss [.SSS]”', 'TIMESTAMP(${1:})', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
-INSERT INTO `dlink_flink_document` VALUES (135, 'Function', '内置函数', '时间函数', 'INTERVAL string range', '解析“dd hh:mm:ss”形式的区间字符串。fff表示毫秒间隔，yyyy-mm表示月间隔。间隔范围可以是天、分钟、天到小时或天到秒，以毫秒为间隔;年或年到月的间隔。', 'INTERVAL ${1:} range ', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
+INSERT INTO `dlink_flink_document` VALUES (135, 'Function', '内置函数', '时间函数', 'INTERVAL string range', '解析“dd hh:mm:ss”形式的区间字符串。fff表示毫秒间隔，yyyy-mm表示月间隔。间隔范围可以是天、分钟、天到小时或天到秒，以毫秒为间隔;年或年到月的间隔。', 'INTERVAL ${1:} range', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO `dlink_flink_document` VALUES (136, 'Function', '内置函数', '时间函数', 'CURRENT_DATE', '返回UTC时区中的当前SQL日期。', 'CURRENT_DATE', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO `dlink_flink_document` VALUES (137, 'Function', '内置函数', '时间函数', 'CURRENT_TIME', '返回UTC时区的当前SQL时间。', 'CURRENT_TIME', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
 INSERT INTO `dlink_flink_document` VALUES (138, 'Function', '内置函数', '时间函数', 'CURRENT_TIMESTAMP', '返回UTC时区内的当前SQL时间戳。', 'CURRENT_TIMESTAMP', '1.12', 0, 1, '2021-02-22 15:29:35', '2021-02-22 15:28:47');
@@ -348,376 +407,217 @@ INSERT INTO `dlink_flink_document` VALUES (216, 'Function', '内置函数', '比
 INSERT INTO `dlink_flink_document` VALUES (217, 'Function', 'UDF', '表值聚合函数', 'TO_MAP(string1,object2[, string3])', '将非规则一维表转化为规则二维表，string1是key。string2是value。string3为非必填项，表示key的值域（维度），用英文逗号分割。', 'TO_MAP(${1:})', '1.12', 8, 1, '2021-05-20 19:59:22', '2021-05-20 20:00:54');
 
 
+
 -- ----------------------------
 -- Table structure for dlink_history
 -- ----------------------------
-CREATE TABLE if not exists  `dlink_history`  (
-                                  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                                  `cluster_id` int(11) NOT NULL DEFAULT 0 COMMENT '集群ID',
-                                  `session` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '会话',
-                                  `job_id` varchar(50) NULL DEFAULT NULL COMMENT 'JobID',
-                                  `job_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '作业名',
-                                  `job_manager_address` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'JM地址',
-                                  `status` int(1) NOT NULL DEFAULT 0 COMMENT '状态',
-                                  `type` varchar(50) NULL DEFAULT NULL COMMENT '类型',
-                                  `statement` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '语句集',
-                                  `error` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '异常信息',
-                                  `result` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '结果集',
-                                  `config` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '配置',
-                                  `start_time` datetime(0) NULL DEFAULT NULL COMMENT '开始时间',
-                                  `end_time` datetime(0) NULL DEFAULT NULL COMMENT '结束时间',
-                                  `task_id` int(11) NULL DEFAULT NULL COMMENT '作业ID',
-                                  PRIMARY KEY (`id`) USING BTREE,
-                                  INDEX `task_index`(`task_id`) USING BTREE,
-                                  INDEX `cluster_index`(`cluster_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '执行历史' ROW_FORMAT = Dynamic;
-
-ALTER TABLE `dlink_task`
-    ADD COLUMN `config` text NULL COMMENT '配置' AFTER `cluster_id`;
-
--- ----------------------------
--- Table structure for dlink_database
--- ----------------------------
-CREATE TABLE  if not exists `dlink_database`  (
-                                   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                                   `name` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '数据源名',
-                                   `alias` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '数据源标题',
-                                   `group_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'Default' COMMENT '数据源分组',
-                                   `type` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '类型',
-                                   `ip` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'IP',
-                                   `port` int(11) NULL DEFAULT NULL COMMENT '端口号',
-                                   `url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'url',
-                                   `username` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '用户名',
-                                   `password` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '密码',
-                                   `note` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '注释',
-                                   `db_version` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '版本，如oracle的11g，hbase的2.2.3',
-                                   `status` tinyint(1) NULL COMMENT '状态',
-                                   `health_time` datetime(0) NULL DEFAULT NULL COMMENT '最近健康时间',
-                                   `heartbeat_time` datetime(0) NULL DEFAULT NULL COMMENT '最近心跳检测时间',
-                                   `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT '启用',
-                                   `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
-                                   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '最近修改时间',
-                                   PRIMARY KEY (`id`) USING BTREE,
-                                   UNIQUE INDEX `db_index`(`name`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
-ALTER TABLE `dlink_cluster`
-    ADD COLUMN `version` varchar(20) NULL COMMENT '版本' AFTER `job_manager_host`;
-
-ALTER TABLE `dlink_flink_document`
-    ADD COLUMN `fill_value` varchar(255) NULL COMMENT '填充值' AFTER `description`;
-
-
-CREATE TABLE  if not exists  `dlink_cluster_configuration` (
-                                               `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                                               `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '名称',
-                                               `alias` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '别名',
-                                               `type` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '类型',
-                                               `config_json` text CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT '配置JSON',
-                                               `is_available` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '是否可用',
-                                               `note` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '注释',
-                                               `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否启用',
-                                               `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-                                               `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-                                               PRIMARY KEY (`id`)
-)  ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
-CREATE TABLE  if not exists  `dlink_jar` (
-                             `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                             `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '名称',
-                             `alias` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '别名',
-                             `type` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '类型',
-                             `path` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '文件路径',
-                             `main_class` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '启动类',
-                             `paras` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '启动类入参',
-                             `note` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '注释',
-                             `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否启用',
-                             `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-                             `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-                             PRIMARY KEY (`id`)
-)  ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
-ALTER TABLE `dlink_task`
-    ADD COLUMN `cluster_configuration_id` int(11) NULL COMMENT '集群配置ID' AFTER `cluster_id`;
-
-ALTER TABLE `dlink_task`
-    ADD COLUMN `statement_set` tinyint(1) NULL COMMENT '启用语句集' AFTER `fragment`;
-
-alter table dlink_history
-    add cluster_configuration_id int(11) null COMMENT '集群配置ID' after cluster_id;
-
-CREATE TABLE  if not exists  `dlink_sys_config` (
-                                    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                                    `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '配置名',
-                                    `value` text CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '值',
-                                    `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-                                    `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-                                    PRIMARY KEY (`id`)
-)  ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
-alter table dlink_cluster
-    add auto_registers tinyint(1) default 0 null comment '是否自动注册' after note;
-
-update dlink_cluster set type ='yarn-session' where type ='Yarn';
-update dlink_cluster set type ='standalone' where type ='Standalone';
-
-ALTER TABLE `dlink_cluster`
-    ADD COLUMN `cluster_configuration_id` int(11) NULL COMMENT '集群配置ID' AFTER `auto_registers`;
-
-ALTER TABLE `dlink_cluster`
-    ADD COLUMN `task_id` int(11) NULL COMMENT '任务ID' AFTER `cluster_configuration_id`;
-
-CREATE TABLE  if not exists `dlink_savepoints` (
-                                    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                                    `task_id` int(11) NOT NULL COMMENT '任务ID',
-                                    `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '名称',
-                                    `type` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '类型',
-                                    `path` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '路径',
-                                    `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-                                    PRIMARY KEY (`id`)
-)  ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
-ALTER TABLE `dlink_task`
-    ADD COLUMN `save_point_strategy` int(1) NULL COMMENT 'SavePoint策略' AFTER `check_point`;
+DROP TABLE IF EXISTS `dlink_history`;
+CREATE TABLE `dlink_history` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `tenant_id` int NOT NULL COMMENT '租户ID',
+  `cluster_id` int NOT NULL DEFAULT '0' COMMENT '集群ID',
+  `cluster_configuration_id` int DEFAULT NULL,
+  `session` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '会话',
+  `job_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'JobID',
+  `job_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '作业名',
+  `job_manager_address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'JM地址',
+  `status` int NOT NULL DEFAULT '0' COMMENT '状态',
+  `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '类型',
+  `statement` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '语句集',
+  `error` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '异常信息',
+  `result` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '结果集',
+  `config_json` json DEFAULT NULL COMMENT '配置JSON',
+  `start_time` datetime DEFAULT NULL COMMENT '开始时间',
+  `end_time` datetime DEFAULT NULL COMMENT '结束时间',
+  `task_id` int DEFAULT NULL COMMENT '作业ID',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `task_index` (`task_id`) USING BTREE,
+  KEY `cluster_index` (`cluster_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='执行历史';
 
 -- ----------------------------
--- 0.4.0 2021-11-24
+-- Table structure for dlink_jar
 -- ----------------------------
-ALTER TABLE `dlink_task`
-    ADD COLUMN `jar_id` int(11) NULL COMMENT 'JarID' AFTER `cluster_configuration_id`;
+DROP TABLE IF EXISTS `dlink_jar`;
+CREATE TABLE `dlink_jar` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `tenant_id` int NOT NULL COMMENT '租户ID',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称',
+  `alias` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '别名',
+  `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '类型',
+  `path` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '路径',
+  `main_class` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '启动类',
+  `paras` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '启动类入参',
+  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '注释',
+  `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否启用',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `dlink_jar_un` (`tenant_id`,`name`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
--- 0.4.0 2021-11-28
+-- Table structure for dlink_job_history
 -- ----------------------------
-CREATE TABLE if not exists  `dlink_user`  (
-                               `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                               `username` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '登录名',
-                               `password` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '密码',
-                               `nickname` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '昵称',
-                               `worknum` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '工号',
-                               `avatar` blob NULL COMMENT '头像',
-                               `mobile` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '手机号',
-                               `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT '是否启用',
-                               `is_delete` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否被删除',
-                               `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
-                               `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
-                               PRIMARY KEY (`id`)
-)  ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-INSERT INTO `dlink_user`(`id`, `username`, `password`, `nickname`, `worknum`, `avatar`, `mobile`, `enabled`, `is_delete`, `create_time`, `update_time`) VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Admin', NULL, NULL, NULL, 1, 0, '2021-11-28 17:19:27', '2021-11-28 17:19:31');
+DROP TABLE IF EXISTS `dlink_job_history`;
+CREATE TABLE `dlink_job_history` (
+  `id` int NOT NULL COMMENT '实例主键',
+  `tenant_id` int NOT NULL COMMENT '租户ID',
+  `job_json` json DEFAULT NULL COMMENT 'Job信息',
+  `exceptions_json` json DEFAULT NULL COMMENT '异常日志',
+  `checkpoints_json` json DEFAULT NULL COMMENT '保存点',
+  `checkpoints_config_json` json DEFAULT NULL COMMENT '保存点配置',
+  `config_json` json DEFAULT NULL COMMENT '配置',
+  `jar_json` json DEFAULT NULL COMMENT 'Jar配置',
+  `cluster_json` json DEFAULT NULL COMMENT '集群实例',
+  `cluster_configuration_json` json DEFAULT NULL COMMENT '集群配置',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='Job历史详情';
 
--- ----------------------------
--- 0.4.0 2021-11-29
--- ----------------------------
-ALTER TABLE `dlink_task`
-    CHANGE COLUMN `config` `config_json` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '配置JSON' AFTER `jar_id`;
-
--- ----------------------------
--- 0.5.0 2021-12-13
--- ----------------------------
-ALTER TABLE `dlink_task`
-    ADD COLUMN `dialect` varchar(50) NULL COMMENT '方言' AFTER `alias`;
-ALTER TABLE `dlink_task`
-    ADD COLUMN `database_id` int(11) NULL COMMENT '数据源ID' AFTER `cluster_configuration_id`;
-
--- ----------------------------
--- 0.5.0 2021-12-29
--- ----------------------------
-ALTER TABLE `dlink_task`
-    ADD COLUMN `env_id` int(11) NULL COMMENT '环境ID' AFTER `jar_id`;
-
--- ----------------------------
--- 0.6.0 2022-01-28
--- ----------------------------
-ALTER TABLE `dlink_database`
-    ADD COLUMN `flink_config` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT 'Flink配置' AFTER `note`;
-
--- ----------------------------
--- 0.6.0 2022-02-02
--- ----------------------------
 -- ----------------------------
 -- Table structure for dlink_job_instance
 -- ----------------------------
-CREATE TABLE if not exists  `dlink_job_instance` (
-                                      `id` int NOT NULL AUTO_INCREMENT COMMENT '自增主键',
-                                      `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '作业实例名',
-                                      `task_id` int DEFAULT NULL COMMENT 'taskID',
-                                      `cluster_id` int DEFAULT NULL COMMENT '集群ID',
-                                      `jid` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'FlinkJobId',
-                                      `status` int  DEFAULT NULL COMMENT '实例状态',
-                                      `history_id` int DEFAULT NULL COMMENT '提交历史ID',
-                                      `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-                                      `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-                                      `finish_time` datetime DEFAULT NULL COMMENT '完成时间',
-                                      `error` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '异常日志',
-                                      `failed_restart_count` int DEFAULT NULL COMMENT '重启次数',
-                                      PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='作业实例';
-
-
-ALTER TABLE `dlink_task`
-    ADD COLUMN `step` int(11) NULL COMMENT '作业生命周期' AFTER `note`;
-
--- ----------------------------
--- 0.6.0 2022-02-03
--- ----------------------------
-update dlink_task set dialect = 'FlinkJar' where jar_id is not null;
-update dlink_catalogue set type = 'FlinkJar' where task_id in (select id as task_id from dlink_task where jar_id is not null);
+DROP TABLE IF EXISTS `dlink_job_instance`;
+CREATE TABLE `dlink_job_instance` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '自增主键',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '作业实例名',
+  `tenant_id` int NOT NULL COMMENT '租户ID',
+  `task_id` int DEFAULT NULL COMMENT 'taskID',
+  `step` int DEFAULT NULL COMMENT '生命周期',
+  `cluster_id` int DEFAULT NULL COMMENT '集群ID',
+  `jid` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'FlinkJobId',
+  `status` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '实例状态',
+  `history_id` int DEFAULT NULL COMMENT '提交历史ID',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `finish_time` datetime DEFAULT NULL COMMENT '完成时间',
+  `duration` bigint DEFAULT NULL COMMENT '耗时',
+  `error` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '异常日志',
+  `failed_restart_count` int DEFAULT NULL COMMENT '重启次数',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `dlink_job_instance_task_id_IDX` (`task_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='作业实例';
 
 -- ----------------------------
--- 0.6.0 2022-02-07
+-- Table structure for dlink_savepoints
 -- ----------------------------
-ALTER TABLE `dlink_task`
-    ADD COLUMN `batch_model` tinyint(1) NULL DEFAULT 0 COMMENT '使用批模式' AFTER `statement_set`;
--- ----------------------------
--- 0.6.0 2022-02-18
--- ----------------------------
-ALTER TABLE `dlink_database`
-    ADD COLUMN `flink_template` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT 'Flink模板' AFTER `flink_config`;
+DROP TABLE IF EXISTS `dlink_savepoints`;
+CREATE TABLE `dlink_savepoints` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `task_id` int NOT NULL COMMENT '任务ID',
+  `tenant_id` int NOT NULL COMMENT '租户ID',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '名称',
+  `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '类型',
+  `path` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '路径',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
--- 0.6.0 2022-02-22
+-- Table structure for dlink_schema_history
 -- ----------------------------
-ALTER TABLE `dlink_job_instance` MODIFY COLUMN status varchar(50) NULL COMMENT '实例状态';
+DROP TABLE IF EXISTS `dlink_schema_history`;
+CREATE TABLE `dlink_schema_history` (
+  `installed_rank` int NOT NULL,
+  `version` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `description` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `script` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `checksum` int DEFAULT NULL,
+  `installed_by` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `installed_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `execution_time` int NOT NULL,
+  `success` tinyint(1) NOT NULL,
+  PRIMARY KEY (`installed_rank`) USING BTREE,
+  KEY `dlink_schema_history_s_idx` (`success`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
--- 0.6.0 2022-02-24
+-- Table structure for dlink_sys_config
 -- ----------------------------
-CREATE TABLE if not exists `dlink_alert_instance` (
-                                        `id` int NOT NULL AUTO_INCREMENT COMMENT '自增主键',
-                                        `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称',
-                                        `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '类型',
-                                        `params` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '配置',
-                                        `enabled` tinyint DEFAULT 1 COMMENT '是否启用',
-                                        `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-                                        `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-                                        PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='Alert实例';
-
-
-CREATE TABLE  if not exists  `dlink_alert_group` (
-                                     `id` int NOT NULL AUTO_INCREMENT COMMENT '自增主键',
-                                     `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称',
-                                     `alert_instance_ids` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'Alert实例IDS',
-                                     `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '说明',
-                                     `enabled` tinyint DEFAULT 1 COMMENT '是否启用',
-                                     `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-                                     `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-                                     PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='Alert组';
-
-
-CREATE TABLE  if not exists `dlink_alert_history` (
-                                       `id` int NOT NULL AUTO_INCREMENT COMMENT '自增主键',
-                                       `alert_group_id` int DEFAULT NULL COMMENT 'Alert组ID',
-                                       `job_instance_id` int DEFAULT NULL COMMENT '作业实例ID',
-                                       `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '标题',
-                                       `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '正文',
-                                       `status` int DEFAULT NULL COMMENT '状态',
-                                       `log` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '日志',
-                                       `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-                                       `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-                                       PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='Alert历史';
+DROP TABLE IF EXISTS `dlink_sys_config`;
+CREATE TABLE `dlink_sys_config` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '配置名',
+  `value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '值',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
--- 0.6.0 2022-02-25
+-- Table structure for dlink_task
 -- ----------------------------
-ALTER TABLE `dlink_job_instance` MODIFY COLUMN name varchar(255) NULL COMMENT '作业实例名';
--- ----------------------------
--- 0.6.0 2022-02-28
--- ----------------------------
-ALTER TABLE `dlink_job_instance`
-    ADD COLUMN `duration` BIGINT NULL COMMENT '耗时' AFTER `finish_time`;
+DROP TABLE IF EXISTS `dlink_task`;
+CREATE TABLE `dlink_task` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称',
+  `tenant_id` int NOT NULL COMMENT '租户ID',
+  `alias` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '别名',
+  `dialect` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '方言',
+  `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '类型',
+  `check_point` int DEFAULT NULL COMMENT 'CheckPoint ',
+  `save_point_strategy` int(1) unsigned zerofill DEFAULT NULL COMMENT 'SavePoint策略',
+  `save_point_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'SavePointPath',
+  `parallelism` int DEFAULT NULL COMMENT 'parallelism',
+  `fragment` tinyint(1) DEFAULT NULL COMMENT 'fragment',
+  `statement_set` tinyint(1) DEFAULT NULL COMMENT '启用语句集',
+  `batch_model` tinyint(1) DEFAULT '0' COMMENT '使用批模式',
+  `cluster_id` int DEFAULT NULL COMMENT 'Flink集群ID',
+  `cluster_configuration_id` int DEFAULT NULL COMMENT '集群配置ID',
+  `database_id` int DEFAULT NULL COMMENT '数据源ID',
+  `jar_id` int DEFAULT NULL COMMENT 'jarID',
+  `env_id` int DEFAULT NULL COMMENT '环境ID',
+  `alert_group_id` bigint DEFAULT NULL COMMENT '报警组ID',
+  `config_json` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '配置JSON',
+  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '注释',
+  `step` int DEFAULT NULL COMMENT '作业生命周期',
+  `job_instance_id` bigint DEFAULT NULL COMMENT '任务实例ID',
+  `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否启用',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `version_id` int DEFAULT NULL COMMENT '版本号ID',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `dlink_task_un` (`name`,`tenant_id`) USING BTREE
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='作业';
 
 -- ----------------------------
--- 0.6.0 2022-03-01
+-- Table structure for dlink_task_statement
 -- ----------------------------
--- DROP TABLE IF EXISTS `dlink_job_history`;
-CREATE TABLE  if not exists  `dlink_job_history` (
-                                     `id` int NOT NULL COMMENT '实例主键',
-                                     `job_json` json DEFAULT NULL COMMENT 'Job信息',
-                                     `exceptions_json` json DEFAULT NULL COMMENT '异常日志',
-                                     `checkpoints_json` json DEFAULT NULL COMMENT '保存点',
-                                     `checkpoints_config_json` json DEFAULT NULL COMMENT '保存点配置',
-                                     `config_json` json DEFAULT NULL COMMENT '配置',
-                                     `jar_json` json DEFAULT NULL COMMENT 'Jar配置',
-                                     `cluster_json` json DEFAULT NULL COMMENT '集群实例',
-                                     `cluster_configuration_json` json DEFAULT NULL COMMENT '集群配置',
-                                     `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-                                     PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='Job历史详情';
-
+DROP TABLE IF EXISTS `dlink_task_statement`;
+CREATE TABLE `dlink_task_statement` (
+  `id` int NOT NULL COMMENT 'ID',
+  `tenant_id` int NOT NULL COMMENT '租户ID',
+  `statement` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '语句',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `dlink_task_statement_un` (`tenant_id`,`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='语句';
 
 -- ----------------------------
--- 0.6.0 2021-03-02
+-- Table structure for dlink_task_version
 -- ----------------------------
-ALTER TABLE `dlink_history`
-    CHANGE COLUMN `config` `config_json` json NULL COMMENT '配置JSON' AFTER `result`;
--- ----------------------------
--- 0.6.0-SNAPSHOT 2022-03-04
--- ----------------------------
-ALTER TABLE `dlink_task`
-    ADD COLUMN `job_instance_id` BIGINT NULL COMMENT '任务实例ID' AFTER `step`;
-ALTER TABLE `dlink_task`
-    ADD COLUMN `alert_group_id` BIGINT NULL COMMENT '报警组ID' AFTER `env_id`;
--- ----------------------------
--- 0.6.0 2022-03-13
--- ----------------------------
-ALTER TABLE `dlink_job_instance`
-    ADD COLUMN `step` INT NULL COMMENT '生命周期' AFTER `task_id`;
--- ----------------------------
--- 0.6.0-SNAPSHOT 2022-03-15
--- ----------------------------
-CREATE INDEX dlink_job_instance_task_id_IDX USING BTREE ON dlink_job_instance (task_id);
-
-SET FOREIGN_KEY_CHECKS = 1;
--- 0.6.2 2022-04-17
--- ----------------------------
-alter table dlink_task alter column fragment set default 0;
-alter table dlink_task alter column statement_set set default 0;
-alter table dlink_cluster_configuration modify column is_available  tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否可用';
-
-
-
--- 0.6.5 2022-06-28
--- ----------------------------
-alter table dlink_task
-    ADD COLUMN `version_id` INT NULL COMMENT '版本号ID' ;
-
+DROP TABLE IF EXISTS `dlink_task_version`;
 CREATE TABLE `dlink_task_version` (
-                                      `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                                      `task_id` int(11) NOT NULL COMMENT '作业ID ',
-                                      `version_id` int(11) NOT NULL COMMENT '版本ID ',
-                                      `statement` text COMMENT 'flink sql 内容',
-                                      `name` varchar(255) NOT NULL COMMENT '名称',
-                                      `alias` varchar(255) DEFAULT NULL COMMENT '别名',
-                                      `dialect` varchar(50) DEFAULT NULL COMMENT '方言',
-                                      `type` varchar(50) DEFAULT NULL COMMENT '类型',
-                                      `task_configure` text NOT NULL COMMENT '作业配置',
-                                      `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-                                      PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='作业历史版本';
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `task_id` int NOT NULL COMMENT '作业ID ',
+  `tenant_id` int NOT NULL COMMENT '租户ID',
+  `version_id` int NOT NULL COMMENT '版本ID ',
+  `statement` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'flink sql 内容',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称',
+  `alias` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '别名',
+  `dialect` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '方言',
+  `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '类型',
+  `task_configure` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '作业配置',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='作业历史版本';
 
 
-
--- 0.6.7 2022-08-02
--- -----------------------
-CREATE TABLE `dlink_fragment` (
-                                  `id` int NOT NULL AUTO_INCREMENT COMMENT '实例主键',
-                                  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '唯一名称',
-                                  `alias` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '别名',
-                                  `fragment_value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '变量值',
-                                  `note` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '说明/描述',
-                                  `enabled` tinyint DEFAULT '1' COMMENT '是否启用',
-                                  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-                                  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-                                  PRIMARY KEY (`id`) USING BTREE,
-                                  UNIQUE KEY `un_idx1` (`name`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='全局变量';
-
-
--- 0.6.7 2022-09-02
--- -----------------------
+-- ----------------------------
+-- Table structure for dlink_upload_file_record
+-- ----------------------------
+DROP TABLE IF EXISTS `dlink_upload_file_record`;
 CREATE TABLE `dlink_upload_file_record` (
   `id` tinyint NOT NULL AUTO_INCREMENT COMMENT '自增主键',
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '上传文件的类型名称，目前有：hadoop-conf(1)、flink-conf(2)、flink-lib(3)、user-jar(4)、dlink-jar(5)',
@@ -734,216 +634,310 @@ CREATE TABLE `dlink_upload_file_record` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='上传文件记录';
 
 
--- 0.6.8 2022-10-13
 -- ----------------------------
-CREATE TABLE IF NOT EXISTS dlink_tenant
-(
-    id          int auto_increment comment 'ID',
-    tenant_code varchar(64)          not null comment '租户编码',
-    is_delete   tinyint(1) default 0 not null comment '是否被删除',
-    note        varchar(255)         null comment '注释',
-    create_time datetime             null comment '创建时间',
-    update_time datetime             null comment '最近修改时间',
-    PRIMARY KEY (id) USING BTREE
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT '租户' ;
+-- Table structure for dlink_user
+-- ----------------------------
+DROP TABLE IF EXISTS `dlink_user`;
+CREATE TABLE `dlink_user` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '登录名',
+  `password` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '密码',
+  `nickname` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '昵称',
+  `worknum` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '工号',
+  `avatar` blob COMMENT '头像',
+  `mobile` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '手机号',
+  `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否启用',
+  `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否被删除',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
+-- ----------------------------
+-- Records of dlink_user
+-- ----------------------------
+INSERT INTO `dlink_user`(`id`, `username`, `password`, `nickname`, `worknum`, `avatar`, `mobile`, `enabled`, `is_delete`, `create_time`, `update_time`)
+VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Admin', NULL, NULL, NULL, 1, 0, current_time, current_time);
+
+
+
+-- ----------------------------
+-- Table structure for dlink_fragment
+-- ----------------------------
+DROP TABLE IF EXISTS `dlink_fragment`;
+CREATE TABLE `dlink_fragment` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '实例主键',
+  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '唯一名称',
+  `alias` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '别名',
+  `fragment_value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '变量值',
+  `note` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '说明/描述',
+  `enabled` tinyint DEFAULT '1' COMMENT '是否启用',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `un_idx1` (`name`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='全局变量';
+
+
+
+-- ----------------------------------------------------------------------------- Metadata related data table the start -------------------------------------------------------------------------------------------
+
+-- ----------------------------
+-- Table structure for metadata_column
+-- ----------------------------
+DROP TABLE IF EXISTS `metadata_column`;
+CREATE TABLE `metadata_column` (
+  `column_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '列名',
+  `column_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '列类型, 有Physical Metadata Computed WATERMARK ',
+  `data_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '数据类型',
+  `expr` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '表达式',
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字段描述',
+  `table_id` int NOT NULL COMMENT '数据表名称',
+  `primary` bit(1) DEFAULT NULL COMMENT '主键',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`table_id`,`column_name`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='数据列信息';
+
+-- ----------------------------
+-- Table structure for metadata_database
+-- ----------------------------
+DROP TABLE IF EXISTS `metadata_database`;
+CREATE TABLE `metadata_database` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `database_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称',
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '描述',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='元数据对象信息';
+
+-- ----------------------------
+-- Table structure for metadata_database_property
+-- ----------------------------
+DROP TABLE IF EXISTS `metadata_database_property`;
+CREATE TABLE `metadata_database_property` (
+  `key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '属性key',
+  `value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '属性value',
+  `database_id` int NOT NULL COMMENT '数据库主键',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`key`,`database_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='元数据属性信息';
+
+-- ----------------------------
+-- Table structure for metadata_function
+-- ----------------------------
+DROP TABLE IF EXISTS `metadata_function`;
+CREATE TABLE `metadata_function` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `function_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称',
+  `class_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '类名',
+  `database_id` int NOT NULL COMMENT '数据库主键',
+  `function_language` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'UDF语言',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='UDF信息';
+
+-- ----------------------------
+-- Table structure for metadata_table
+-- ----------------------------
+DROP TABLE IF EXISTS `metadata_table`;
+CREATE TABLE `metadata_table` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `table_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称',
+  `table_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '对象类型，分为：database 和 table view',
+  `database_id` int NOT NULL COMMENT '数据库主键',
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '描述',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='元数据对象信息';
+
+-- ----------------------------
+-- Table structure for metadata_table_property
+-- ----------------------------
+DROP TABLE IF EXISTS `metadata_table_property`;
+CREATE TABLE `metadata_table_property` (
+  `key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '属性key',
+  `value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '属性value',
+  `table_id` int NOT NULL COMMENT '数据表名称',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`key`,`table_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='元数据属性信息';
+
+-- ----------------------------------------------------------------------------- Metadata related data table the end -------------------------------------------------------------------------------------------
+
+
+-- ----------------------------------------------------------------------------- multi-tenant of end -------------------------------------------------------------------------------------------
+
+-- ----------------------------
+-- Table structure for dlink_tenant
+-- ----------------------------
+DROP TABLE IF EXISTS `dlink_tenant`;
+CREATE TABLE `dlink_tenant` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `tenant_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '租户编码',
+  `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否被删除',
+  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '注释',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '最近修改时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB   DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='租户';
 -- ----------------------------
 -- Records of dlink_tenant
 -- ----------------------------
-INSERT INTO `dlink_tenant`(`id`, `tenant_code`, `is_delete`, `note`, `create_time`, `update_time`) VALUES (1, 'DefaultTenant', 0, 'DefaultTenant', current_time, current_time);
+INSERT INTO `dlink_tenant`(`id`, `tenant_code`, `is_delete`, `note`, `create_time`, `update_time`)
+VALUES (1, 'DefaultTenant', 0, 'DefaultTenant', current_time, current_time);
 
-CREATE TABLE IF NOT EXISTS dlink_role
-(
-    id          int auto_increment comment 'ID',
-    tenant_id   int          not null comment '租户ID',
-    role_code   varchar(64)  not null comment '角色编码',
-    role_name   varchar(64)  not null comment '角色名称',
-    is_delete   tinyint(1) default 0 not null comment '是否被删除',
-    note        varchar(255) null comment '注释',
-    create_time datetime     null comment '创建时间',
-    update_time datetime     null comment '更新时间',
-    PRIMARY KEY (id) USING BTREE,
-    UNIQUE KEY `dlink_role_un` (`role_code`)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC comment '角色' ;
+
 -- ----------------------------
--- Records of dlink_role
+-- Table structure for dlink_namespace
 -- ----------------------------
-INSERT INTO `dlink_role`(`id`, `tenant_id`, `role_code`, `role_name`, `is_delete`, `note`, `create_time`, `update_time`) VALUES (1, 1, 'SuperAdmin', '超级管理员', 0, '超级管理员角色', current_time, current_time);
-
-
-
-CREATE TABLE IF NOT EXISTS  dlink_namespace
-(
-    id             int auto_increment comment 'ID',
-    tenant_id      int                  not null comment '租户ID',
-    namespace_code varchar(64)          not null comment '命名空间编码',
-    enabled        tinyint(1) default 1 not null comment '是否启用',
-    note           varchar(255)         null comment '注释',
-    create_time    datetime             null comment '创建时间',
-    update_time    datetime             null comment '更新时间',
-    PRIMARY KEY (id) USING BTREE,
-    UNIQUE KEY `dlink_namespace_un` (`namespace_code`,`tenant_id`)
-    )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC comment '命名空间';
+DROP TABLE IF EXISTS `dlink_namespace`;
+CREATE TABLE `dlink_namespace` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `tenant_id` int NOT NULL COMMENT '租户ID',
+  `namespace_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '命名空间编码',
+  `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否启用',
+  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '注释',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `dlink_namespace_un` (`namespace_code`,`tenant_id`) USING BTREE
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='命名空间';
 -- ----------------------------
 -- Records of dlink_namespace
 -- ----------------------------
-INSERT INTO `dlink_namespace`(`id`, `tenant_id`, `namespace_code`, `enabled`, `note`, `create_time`, `update_time`) VALUES (1, 1, 'DefaultNameSpace', 1, '默认命名空间', current_time, current_time);
+INSERT INTO `dlink_namespace`(`id`, `tenant_id`, `namespace_code`, `enabled`, `note`, `create_time`, `update_time`)
+VALUES (1, 1, 'DefaultNameSpace', 1, '默认命名空间', current_time, current_time);
 
 
-CREATE TABLE IF NOT EXISTS  dlink_role_namespace
-(
-    id           int auto_increment comment 'ID',
-    role_id      int      not null comment '用户ID',
-    namespace_id int      not null comment '名称空间ID',
-    create_time  datetime null comment '创建时间',
-    update_time  datetime null comment '更新时间',
-    PRIMARY KEY (id) USING BTREE,
-    UNIQUE KEY `dlink_role_namespace_un` (role_id, namespace_id)
-    )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC comment '角色与名称空间关系';
+-- ----------------------------
+-- Table structure for dlink_role
+-- ----------------------------
+DROP TABLE IF EXISTS `dlink_role`;
+CREATE TABLE `dlink_role` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `tenant_id` int NOT NULL COMMENT '租户ID',
+  `role_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '角色编码',
+  `role_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '角色名称',
+  `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否被删除',
+  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '注释',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `dlink_role_un` (`role_code`) USING BTREE
+) ENGINE=InnoDB   DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='角色';
+-- ----------------------------
+-- Records of dlink_role
+-- ----------------------------
+INSERT INTO `dlink_role`(`id`, `tenant_id`, `role_code`, `role_name`, `is_delete`, `note`, `create_time`, `update_time`)
+VALUES (1, 1, 'SuperAdmin', '超级管理员', 0, '超级管理员角色', current_time, current_time);
+
+-- ----------------------------
+-- Table structure for dlink_role_namespace
+-- ----------------------------
+DROP TABLE IF EXISTS `dlink_role_namespace`;
+CREATE TABLE `dlink_role_namespace` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `role_id` int NOT NULL COMMENT '用户ID',
+  `namespace_id` int NOT NULL COMMENT '名称空间ID',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `dlink_role_namespace_un` (`role_id`,`namespace_id`) USING BTREE
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='角色与名称空间关系';
 -- ----------------------------
 -- Records of dlink_role_namespace
 -- ----------------------------
-INSERT INTO `dlink_role_namespace`(`id`, `role_id`, `namespace_id`, `create_time`, `update_time`) VALUES (1, 1, 1, current_time, current_time);
+INSERT INTO `dlink_role_namespace`(`id`, `role_id`, `namespace_id`, `create_time`, `update_time`)
+VALUES (1, 1, 1, current_time, current_time);
 
 
-
-CREATE TABLE IF NOT EXISTS  dlink_user_role
-(
-    id          int auto_increment comment 'ID',
-    user_id     int                  not null comment '用户ID',
-    role_id     int                  not null comment '角色ID',
-    create_time datetime             null comment '创建时间',
-    update_time datetime             null comment '更新时间',
-    PRIMARY KEY (id) USING BTREE,
-    UNIQUE KEY `dlink_user_role_un` (user_id, role_id)
-    )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC comment '用户与角色关系';
+-- ----------------------------
+-- Table structure for dlink_user_role
+-- ----------------------------
+DROP TABLE IF EXISTS `dlink_user_role`;
+CREATE TABLE `dlink_user_role` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `user_id` int NOT NULL COMMENT '用户ID',
+  `role_id` int NOT NULL COMMENT '角色ID',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `dlink_user_role_un` (`user_id`,`role_id`) USING BTREE
+) ENGINE=InnoDB   DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='用户与角色关系';
 -- ----------------------------
 -- Records of dlink_user_role
 -- ----------------------------
-INSERT INTO `dlink_user_role`(`id`, `user_id`, `role_id`, `create_time`, `update_time`) VALUES (1, 1, 1, current_time, current_time);
+INSERT INTO `dlink_user_role`(`id`, `user_id`, `role_id`, `create_time`, `update_time`)
+VALUES (1, 1, 1, current_time, current_time);
 
-
+-- ----------------------------
+-- Table structure for dlink_user_tenant
+-- ----------------------------
+DROP TABLE IF EXISTS `dlink_user_tenant`;
 CREATE TABLE `dlink_user_tenant` (
-                                     `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                                     `user_id` int NOT NULL COMMENT '用户ID',
-                                     `tenant_id` int NOT NULL COMMENT '租户ID',
-                                     `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-                                     `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-                                     PRIMARY KEY (`id`) USING BTREE,
-                                     UNIQUE KEY `dlink_user_role_un` (`user_id`,`tenant_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='用户与租户关系';
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `user_id` int NOT NULL COMMENT '用户ID',
+  `tenant_id` int NOT NULL COMMENT '租户ID',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `dlink_user_role_un` (`user_id`,`tenant_id`) USING BTREE
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='用户与租户关系';
 -- ----------------------------
 -- Records of dlink_user_tenant
 -- ----------------------------
-INSERT INTO `dlink_user_tenant`(`id`, `user_id`, `tenant_id`, `create_time`, `update_time`) VALUES (1, 1, 1, current_time, current_time);
+INSERT INTO `dlink_user_tenant`(`id`, `user_id`, `tenant_id`, `create_time`, `update_time`)
+VALUES (1, 1, 1, current_time, current_time);
+
+-- ----------------------------------------------------------------------------- multi-tenant of end -------------------------------------------------------------------------------------------
 
 
-alter table dlink_catalogue add column tenant_id int  not null comment '租户ID' after id;
-alter table dlink_catalogue drop  index   `idx_name`;
-alter table dlink_catalogue add unique key `dlink_catalogue_un` (`name`, `parent_id`,`tenant_id`);
-
-alter table dlink_cluster add column tenant_id int  not null comment '租户ID' after id;
-alter table dlink_cluster drop  index   `idx_name`;
-alter table dlink_cluster add unique key `dlink_cluster_un` (`name`, `tenant_id`);
-
-alter table dlink_task add column tenant_id int  not null comment '租户ID' after name;
-alter table dlink_task drop  index   `idx_name`;
-alter table dlink_task add unique key `dlink_task_un` (`name`, `tenant_id`);
-
-alter table dlink_task_statement add column tenant_id int  not null comment '租户ID' after id;
-alter table dlink_task_statement add unique key `dlink_task_statement_un`  (`tenant_id`,`id`);
-
-alter table dlink_database add column tenant_id int  not null comment '租户ID' after id;
-alter table dlink_database drop  index   `db_index`;
-alter table dlink_database add unique key `dlink_database_un` (`name`,`tenant_id`);
-
-alter table dlink_cluster_configuration add column tenant_id int  not null comment '租户ID' after id;
-alter table dlink_cluster_configuration add unique key `dlink_cluster_configuration_un` (`name`,`tenant_id`);
-
-alter table dlink_jar add column tenant_id int  not null comment '租户ID' after id;
-alter table dlink_jar add unique key `dlink_jar_un` (`tenant_id`,`name`);
-
-alter table dlink_savepoints add column tenant_id int  not null comment '租户ID' after task_id;
-
-
-alter table dlink_job_instance add column tenant_id int  not null comment '租户ID' after name;
-alter table dlink_job_instance add unique key `dlink_job_instance_un` (`tenant_id`,`name`,`task_id`,`history_id`);
-
-alter table dlink_alert_instance add column tenant_id int  not null comment '租户ID' after name;
-alter table dlink_alert_instance add unique key `dlink_alert_instance_un` (`name`,`tenant_id`);
-
-alter table dlink_alert_group add column tenant_id int  not null comment '租户ID' after name;
-alter table dlink_alert_group add unique key `dlink_alert_instance_un` (`name`,`tenant_id`);
-
-alter table dlink_alert_history add column tenant_id int  not null comment '租户ID' after id;
-
-alter table dlink_task_version add column tenant_id int  not null comment '租户ID' after task_id;
-alter table dlink_task_version add unique key `dlink_task_version_un` (`task_id`,`tenant_id`,`version_id`);
-
-alter table dlink_history add column tenant_id int  not null comment '租户ID' after id;
-alter table dlink_job_history add column tenant_id int  not null comment '租户ID' after id;
-
--- 修改历史表的租户编号为默认租户
-UPDATE `dlink_alert_group` SET `tenant_id` = 1 ;
-UPDATE `dlink_alert_history` SET `tenant_id` = 1;
-UPDATE `dlink_alert_instance` SET `tenant_id` = 1;
-UPDATE `dlink_catalogue` SET `tenant_id` = 1;
-UPDATE `dlink_cluster` SET `tenant_id` = 1;
-UPDATE `dlink_cluster_configuration` SET `tenant_id` = 1 ;
-UPDATE `dlink_database` SET `tenant_id` = 1 ;
-UPDATE `dlink_history` SET `tenant_id` = 1;
-UPDATE `dlink_jar` SET `tenant_id` = 1 ;
-UPDATE `dlink_job_instance` SET `tenant_id` = 1 ;
-UPDATE `dlink_savepoints` SET `tenant_id` = 1;
-UPDATE `dlink_task` SET `tenant_id` = 1 ;
-UPDATE `dlink_task_statement` SET `tenant_id` = 1;
-UPDATE `dlink_task_version` SET `tenant_id` = 1;
-UPDATE `dlink_job_history` SET `tenant_id` = 1;
-
-
--- 0.6.8 2022-10-19
--- -----------------------
+-- ----------------------------
+-- Table structure for dlink_udf
+-- ----------------------------
 DROP TABLE IF EXISTS `dlink_udf`;
 CREATE TABLE `dlink_udf` (
-                             `id` int(11) NOT NULL AUTO_INCREMENT,
-                             `name` varchar(50) DEFAULT NULL COMMENT 'udf名',
-                             `class_name` varchar(50) DEFAULT NULL COMMENT '完整的类名',
-                             `source_code` text COMMENT '源码',
-                             `compiler_code` binary(255) DEFAULT NULL COMMENT '编译产物',
-                             `version_id` int(11) DEFAULT NULL COMMENT '版本',
-                             `version_description` varchar(50) DEFAULT NULL COMMENT '版本描述',
-                             `is_default` tinyint(1) DEFAULT NULL COMMENT '是否默认',
-                             `document_id` int(11) DEFAULT NULL COMMENT '对应文档id',
-                             `from_version_id` int(11) DEFAULT NULL COMMENT '基于udf版本id',
-                             `code_md5` varchar(50) DEFAULT NULL COMMENT '源码',
-                             `dialect` varchar(50) DEFAULT NULL COMMENT '方言',
-                             `type` varchar(50) DEFAULT NULL COMMENT '类型',
-                             `step` int(255) DEFAULT NULL COMMENT '作业生命周期',
-                             `enable` tinyint(1) DEFAULT NULL COMMENT '是否启用',
-                             `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-                             `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-                             PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'udf名',
+  `class_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '完整的类名',
+  `source_code` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '源码',
+  `compiler_code` binary(255) DEFAULT NULL COMMENT '编译产物',
+  `version_id` int DEFAULT NULL COMMENT '版本',
+  `version_description` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '版本描述',
+  `is_default` tinyint(1) DEFAULT NULL COMMENT '是否默认',
+  `document_id` int DEFAULT NULL COMMENT '对应文档id',
+  `from_version_id` int DEFAULT NULL COMMENT '基于udf版本id',
+  `code_md5` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '源码',
+  `dialect` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '方言',
+  `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '类型',
+  `step` int DEFAULT NULL COMMENT '作业生命周期',
+  `enable` tinyint(1) DEFAULT NULL COMMENT '是否启用',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for dlink_udf_template
 -- ----------------------------
 DROP TABLE IF EXISTS `dlink_udf_template`;
 CREATE TABLE `dlink_udf_template` (
-                                      `id` int(11) NOT NULL AUTO_INCREMENT,
-                                      `name` varchar(20) DEFAULT NULL COMMENT '模板名称',
-                                      `code_type` varchar(10) DEFAULT NULL COMMENT '代码类型',
-                                      `function_type` varchar(10) DEFAULT NULL COMMENT '函数类型',
-                                      `template_code` text COMMENT '模板代码',
-                                      `enabled` tinyint(1) DEFAULT NULL,
-                                      `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-                                      `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-                                      PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '模板名称',
+  `code_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '代码类型',
+  `function_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '函数类型',
+  `template_code` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '模板代码',
+  `enabled` tinyint(1) DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- ----------------------------
--- Records of dlink_udf_template
--- ----------------------------
-BEGIN;
-INSERT INTO `dlink_udf_template` (`id`, `name`, `code_type`, `function_type`, `template_code`, `enabled`, `create_time`, `update_time`) VALUES (1, 'java_udf', 'java', 'UDF', 'package ${package};\n\nimport org.apache.flink.table.functions.ScalarFunction;\n\npublic class ${className} extends ScalarFunction {\n    public String eval(String s) {\n        return null;\n    }\n}', NULL, '2022-10-19 09:17:37', '2022-10-19 09:17:37');
-INSERT INTO `dlink_udf_template` (`id`, `name`, `code_type`, `function_type`, `template_code`, `enabled`, `create_time`, `update_time`) VALUES (2, 'java_udtf', 'java', 'UDTF', 'package ${package};\n\nimport org.apache.flink.table.functions.ScalarFunction;\n\n@FunctionHint(output = @DataTypeHint(\"ROW<word STRING, length INT>\"))\npublic static class ${className} extends TableFunction<Row> {\n\n  public void eval(String str) {\n    for (String s : str.split(\" \")) {\n      // use collect(...) to emit a row\n      collect(Row.of(s, s.length()));\n    }\n  }\n}', NULL, '2022-10-19 09:22:58', '2022-10-19 10:01:57');
-COMMIT;
+
+
+SET FOREIGN_KEY_CHECKS = 1;
