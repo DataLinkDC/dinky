@@ -27,13 +27,13 @@ VALUES (1, 'DefaultTenant', 0, 'DefaultTenant', current_time, current_time);
 -- Records of dlink_role
 -- ----------------------------
 INSERT INTO `dlink_role`(`id`, `tenant_id`, `role_code`, `role_name`, `is_delete`, `note`, `create_time`, `update_time`)
-VALUES (1, 1, 'SuperAdmin', '超级管理员', 0, '超级管理员角色', current_time, current_time);
+VALUES (1, 1, 'SuperAdmin', 'SuperAdmin', 0, 'SuperAdmin of Role', current_time, current_time);
 
 -- ----------------------------
 -- Records of dlink_namespace
 -- ----------------------------
 INSERT INTO `dlink_namespace`(`id`, `tenant_id`, `namespace_code`, `enabled`, `note`, `create_time`, `update_time`)
-VALUES (1, 1, 'DefaultNameSpace', 1, '默认命名空间', current_time, current_time);
+VALUES (1, 1, 'DefaultNameSpace', 1, 'DefaultNameSpace', current_time, current_time);
 
 -- ----------------------------
 -- Records of dlink_role_namespace
