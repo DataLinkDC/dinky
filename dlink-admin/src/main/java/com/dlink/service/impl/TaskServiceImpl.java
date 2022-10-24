@@ -73,6 +73,7 @@ import com.dlink.model.Task;
 import com.dlink.model.TaskOperatingSavepointSelect;
 import com.dlink.model.TaskOperatingStatus;
 import com.dlink.model.TaskVersion;
+import com.dlink.model.UDFPath;
 import com.dlink.result.SqlExplainResult;
 import com.dlink.result.TaskOperatingResult;
 import com.dlink.service.AlertGroupService;
@@ -204,7 +205,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 task.getDatabaseId(), null));
         }
         JobConfig config = buildJobConfig(task);
-        UDFService.UDFPath udfPath = udfService.initUDF(task.getStatement(), config.getGatewayConfig().getType());
+        UDFPath udfPath = udfService.initUDF(task.getStatement(), config.getGatewayConfig().getType());
         config.setJarFiles(udfPath.getJarPaths());
         config.setPyFiles(udfPath.getPyPaths());
         JobManager jobManager = JobManager.build(config);
@@ -367,7 +368,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(task.getStatement());
             task.setSavePointPath(compiler.getFullClassName());
         } else if (Dialect.PYTHON.equalsVal(task.getDialect())) {
-            task.setSavePointPath(task.getName() + "." + ReUtil.getGroup1(UDFUtil.PYTHON_UDF_ATTR,task.getStatement()));
+            task.setSavePointPath(task.getName() + "." + ReUtil.getGroup1(UDFUtil.PYTHON_UDF_ATTR, task.getStatement()));
         }
         // if modify task else create task
         if (task.getId() != null) {

@@ -17,16 +17,24 @@
  *
  */
 
-package com.dlink.service;
+package com.dlink.udf;
 
-import com.dlink.gateway.GatewayType;
-import com.dlink.model.UDFPath;
+import org.apache.flink.table.catalog.FunctionLanguage;
+
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
 
 /**
  * @author ZackYoung
  * @since 0.6.8
  */
-public interface UDFService {
-
-    UDFPath initUDF(String statement, GatewayType gatewayType);
+@Getter
+@Setter
+@Builder
+public class UDF {
+    String className;
+    FunctionLanguage functionLanguage;
+    String code;
 }

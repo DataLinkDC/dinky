@@ -24,6 +24,7 @@ import com.dlink.pool.ClassEntity;
 import com.dlink.pool.ClassPool;
 import com.dlink.process.context.ProcessContextHolder;
 import com.dlink.process.model.ProcessEntity;
+import com.dlink.udf.UDF;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.table.catalog.FunctionLanguage;
@@ -54,9 +55,6 @@ import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.MD5;
 import groovy.lang.GroovyClassLoader;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * UDFUtil
@@ -228,12 +226,4 @@ public class UDFUtil {
         return MD5.create().digestHex(FileUtil.file(filePath));
     }
 
-    @Getter
-    @Setter
-    @Builder
-    public static class UDF {
-        String className;
-        FunctionLanguage functionLanguage;
-        String code;
-    }
 }
