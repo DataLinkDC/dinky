@@ -26,6 +26,8 @@ import com.dlink.trans.ddl.SetOperation;
 import com.dlink.trans.ddl.ShowFragmentOperation;
 import com.dlink.trans.ddl.ShowFragmentsOperation;
 
+import java.util.Arrays;
+
 /**
  * Operations
  *
@@ -34,8 +36,10 @@ import com.dlink.trans.ddl.ShowFragmentsOperation;
  **/
 public class Operations {
 
-    private static Operation[] operations = {
-        new CreateAggTableOperation()
+    private Operations() {
+    }
+
+    private static final Operation[] ALL_OPERATIONS = {new CreateAggTableOperation()
             , new SetOperation()
             , new CreateCDCSourceOperation()
             , new ShowFragmentsOperation()
@@ -70,12 +74,15 @@ public class Operations {
     }
 
     public static Operation buildOperation(String statement) {
-        String sql = statement.replace("\n", " ").replaceAll("\\s{1,}", " ").trim().toUpperCase();
-        for (int i = 0; i < operations.length; i++) {
-            if (sql.startsWith(operations[i].getHandle())) {
-                return operations[i].create(statement);
-            }
-        }
-        return null;
+        String sql = statement.replace("\n", " ")
+                .replaceAll("\\s+", " ")
+                .trim()
+                .toUpperCase();
+
+        return Arrays.stream(ALL_OPERATIONS)
+                .filter(p -> sql.startsWith(p.getHandle()))
+                .findFirst()
+                .map(p -> p.create(statement))
+                .orElse(null);
     }
 }
