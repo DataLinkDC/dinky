@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -74,15 +73,16 @@ public class UDFServiceImpl implements UDFService {
         ProcessEntity process = ProcessContextHolder.getProcess();
         process.info("Initializing Flink UDF...Start");
 
-        List<UDF> udfList = UDFUtil.getUDF(statement);
+        List<UDF> udfClassList = UDFUtil.getUDF(statement);
         List<UDF> javaUdf = new ArrayList<>();
         List<UDF> pythonUdf = new ArrayList<>();
-        udfList.forEach(udf -> {
+        udfClassList.forEach(udf -> {
             Task task = taskService.getUDFByClassName(udf.getClassName());
             udf.setCode(task.getStatement());
             if (udf.getFunctionLanguage() == FunctionLanguage.PYTHON) {
                 pythonUdf.add(udf);
             } else {
+                udf.setFunctionLanguage(FunctionLanguage.valueOf(task.getDialect().toUpperCase()));
                 javaUdf.add(udf);
             }
         });
@@ -94,14 +94,13 @@ public class UDFServiceImpl implements UDFService {
     }
 
     private static String[] initPythonUDF(List<UDF> udfList) {
-        return new String[] {UDFUtil.buildPy(udfList)};
+        return (udfList.size() > 0) ? new String[] {UDFUtil.buildPy(udfList)} : new String[] {};
     }
 
     private static String[] initJavaUDF(List<UDF> udfList) {
         Opt<String> udfJarPath = Opt.empty();
         if (udfList.size() > 0) {
-            List<String> codeList = udfList.stream().map(UDF::getCode).collect(Collectors.toList());
-            udfJarPath = Opt.ofBlankAble(UDFUtil.getUdfFileAndBuildJar(codeList));
+            udfJarPath = Opt.ofBlankAble(UDFUtil.getUdfFileAndBuildJar(udfList));
         }
 
         if (udfJarPath.isPresent()) {

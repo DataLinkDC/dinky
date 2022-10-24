@@ -26,7 +26,10 @@ import com.dlink.model.Jar;
 import com.dlink.model.Task;
 import com.dlink.service.JarService;
 import com.dlink.service.TaskService;
+import com.dlink.udf.UDF;
 import com.dlink.utils.UDFUtil;
+
+import org.apache.flink.table.catalog.FunctionLanguage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -127,7 +130,10 @@ public class JarController {
     @PostMapping("/udf/generateJar")
     public Result<Map<String, List<String>>> generateJar() {
         List<Task> allUDF = taskService.getAllUDF();
-        List<String> udfCodes = allUDF.stream().map(Task::getStatement).collect(Collectors.toList());
+        List<UDF> udfCodes = allUDF.stream().map(task -> {
+            return UDF.builder().code(task.getStatement()).className(task.getSavePointPath())
+                .functionLanguage(FunctionLanguage.valueOf(task.getDialect().toUpperCase())).build();
+        }).collect(Collectors.toList());
         Map<String, List<String>> resultMap = UDFUtil.buildJar(udfCodes);
         String msg = StrUtil.format("udf jar生成成功，jar文件在{}；\n本次成功 class:{}。\n失败 class:{}"
             , PathConstant.UDF_JAR_TMP_PATH, resultMap.get("success"), resultMap.get("failed"));
