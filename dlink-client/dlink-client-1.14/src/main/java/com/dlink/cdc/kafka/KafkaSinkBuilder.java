@@ -48,6 +48,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * MysqlCDCBuilder
@@ -92,6 +93,8 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements Serializabl
         StreamExecutionEnvironment env,
         CustomTableEnvironment customTableEnvironment,
         DataStreamSource<String> dataStreamSource) {
+        // 解决kafka的 properties 配置未加载问题
+        Properties kafkaProducerConfig = getProperties();
         if (Asserts.isNotNullString(config.getSink().get("topic"))) {
             KafkaSink<String> kafkaSink = KafkaSink.<String>builder().setBootstrapServers(config.getSink().get("brokers"))
                     .setRecordSerializer(KafkaRecordSerializationSchema.builder()
@@ -100,6 +103,7 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements Serializabl
                             .build()
                     )
                     .setDeliverGuarantee(DeliveryGuarantee.valueOf(env.getCheckpointingMode().name()))
+                    .setKafkaProducerConfig(kafkaProducerConfig)
                     .build();
             dataStreamSource.sinkTo(kafkaSink);
         } else {
@@ -144,6 +148,7 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements Serializabl
                                     .build()
                             )
                             .setDeliverGuarantee(DeliveryGuarantee.valueOf(env.getCheckpointingMode().name()))
+                            .setKafkaProducerConfig(kafkaProducerConfig)
                             .build();
                     process.getSideOutput(v).rebalance().sinkTo(kafkaSink).name(topic);
                 });
