@@ -298,7 +298,7 @@ public class Explainer {
     public ObjectNode getStreamGraph(String statement) {
         JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
         if (jobParam.getDdl().size() > 0) {
-            for(StatementParam statementParam: jobParam.getDdl()){
+            for (StatementParam statementParam : jobParam.getDdl()) {
                 executor.executeSql(statementParam.getValue());
             }
         }
@@ -318,7 +318,7 @@ public class Explainer {
     public JobPlanInfo getJobPlanInfo(String statement) {
         JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
         if (jobParam.getDdl().size() > 0) {
-            for(StatementParam statementParam: jobParam.getDdl()){
+            for (StatementParam statementParam : jobParam.getDdl()) {
                 executor.executeSql(statementParam.getValue());
             }
         }
@@ -476,16 +476,16 @@ public class Explainer {
                             if (nodeRel.getPreId().equals(item.getValue().getId())) {
                                 for (NodeRel nodeRel2 : columnCAResult.getColumnCASRelChain()) {
                                     if (columnCAResult.getColumnCASMaps().containsKey(nodeRel2.getSufId())
-                                            && columnCAResult.getColumnCASMaps().containsKey(nodeRel2.getPreId())
-                                            && columnCAResult.getColumnCASMaps().containsKey(nodeRel.getSufId())
-                                            && columnCAResult.getColumnCASMaps().get(nodeRel2.getSufId()).getTableId()
-                                                    .equals(columnCAResult.getColumnCASMaps().get(nodeRel.getSufId())
-                                                            .getTableId())
-                                            && columnCAResult.getColumnCASMaps().get(nodeRel2.getSufId()).getName()
-                                                    .equals(columnCAResult.getColumnCASMaps().get(nodeRel.getSufId())
-                                                            .getName())
-                                            && !columnCAResult.getColumnCASMaps().get(nodeRel2.getPreId()).getType()
-                                                    .equals("Data Sink")) {
+                                        && columnCAResult.getColumnCASMaps().containsKey(nodeRel2.getPreId())
+                                        && columnCAResult.getColumnCASMaps().containsKey(nodeRel.getSufId())
+                                        && columnCAResult.getColumnCASMaps().get(nodeRel2.getSufId()).getTableId()
+                                        .equals(columnCAResult.getColumnCASMaps().get(nodeRel.getSufId())
+                                            .getTableId())
+                                        && columnCAResult.getColumnCASMaps().get(nodeRel2.getSufId()).getName()
+                                        .equals(columnCAResult.getColumnCASMaps().get(nodeRel.getSufId())
+                                            .getName())
+                                        && !columnCAResult.getColumnCASMaps().get(nodeRel2.getPreId()).getType()
+                                        .equals("Data Sink")) {
                                         addNodeRels.add(new NodeRel(nodeRel2.getPreId(), nodeRel.getPreId()));
                                     }
                                 }
