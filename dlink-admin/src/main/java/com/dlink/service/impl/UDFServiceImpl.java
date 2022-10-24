@@ -19,17 +19,6 @@
 
 package com.dlink.service.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-
-import org.apache.flink.table.catalog.FunctionLanguage;
-import org.springframework.stereotype.Service;
-
 import com.dlink.constant.PathConstant;
 import com.dlink.exception.BusException;
 import com.dlink.gateway.GatewayType;
@@ -41,6 +30,18 @@ import com.dlink.service.TaskService;
 import com.dlink.service.UDFService;
 import com.dlink.udf.UDF;
 import com.dlink.utils.UDFUtil;
+
+import org.apache.flink.table.catalog.FunctionLanguage;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
 
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.map.MapUtil;
