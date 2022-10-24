@@ -125,13 +125,13 @@ export default {
   'pages.settings.FlinkNotUse': '禁用',
 
   'pages.user.UserManger': '用户管理',
-  'pages.user.UserName': '用户名',//用户名
-  'pages.user.UserJobNumber': '工号',//工号
-  'pages.user.UserPhoneNumber': '手机号',//手机号
-  'pages.user.UserNickName': '昵称',//昵称
-  'pages.user.UserIsUse': '是否启用',//是否启用
-  'pages.user.UserUpdateTime': '最近更新时间',//最近更新时间
-  'pages.user.UserCreateTime': '创建时间',//创建时间
+  'pages.user.UserName': '用户名',
+  'pages.user.UserJobNumber': '工号',
+  'pages.user.UserPhoneNumber': '手机号',
+  'pages.user.UserNickName': '昵称',
+  'pages.user.UserIsUse': '是否启用',
+  'pages.user.UserUpdateTime': '最近更新时间',
+  'pages.user.UserCreateTime': '创建时间',
 
 
   'pages.user.UserDeleteUser': '删除用户',

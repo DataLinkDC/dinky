@@ -18,14 +18,12 @@
  */
 
 import component from './en-US/component';
-import globalHeader from './en-US/globalHeader';
+import globalHeader from './en-US/global';
 import menu from './en-US/menu';
 import pages from './en-US/pages';
 import pwa from './en-US/pwa';
 import request from './en-US/request';
-import settingDrawer from './en-US/settingDrawer';
 import settings from './en-US/settings';
-import button from './en-US/button';
 import shortKey from './en-US/shortcutKey';
 
 export default {
@@ -39,12 +37,10 @@ export default {
   'app.welcome.link.block-list': 'Quickly build standard, pages based on `block` development',
   ...globalHeader,
   ...menu,
-  ...settingDrawer,
   ...settings,
   ...pwa,
   ...component,
   ...pages,
   ...request,
-  ...button,
   ...shortKey,
 };

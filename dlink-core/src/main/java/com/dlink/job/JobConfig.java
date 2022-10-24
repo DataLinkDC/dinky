@@ -65,6 +65,7 @@ public class JobConfig {
     private String address;
     private Integer taskId;
     private String[] jarFiles;
+    private String[] pyFiles;
     private String jobName;
     private boolean useSqlFragment;
     private boolean useStatementSet;

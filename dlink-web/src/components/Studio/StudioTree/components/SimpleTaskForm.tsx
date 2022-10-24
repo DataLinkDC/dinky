@@ -90,6 +90,7 @@ const SimpleTaskForm: React.FC<UpdateFormProps> = (props) => {
             <Option value={DIALECT.PHOENIX}>{DIALECT.PHOENIX}</Option>
             <Option value={DIALECT.STARROCKS}>{DIALECT.STARROCKS}</Option>
             <Option value={DIALECT.JAVA}>{DIALECT.JAVA}</Option>
+            <Option value={DIALECT.PYTHON}>{DIALECT.PYTHON}</Option>
             <Option value={DIALECT.SQL}>{DIALECT.SQL}</Option>
           </Select>
         </Form.Item>) : undefined}

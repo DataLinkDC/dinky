@@ -240,6 +240,15 @@ INSERT INTO `dlink_flink_document` VALUES (216, 'Function', '内置函数', '比
 INSERT INTO `dlink_flink_document` VALUES (217, 'Function', 'UDF', '表值聚合函数', 'TO_MAP(string1,object2[, string3])', '将非规则一维表转化为规则二维表，string1是key。string2是value。string3为非必填项，表示key的值域（维度），用英文逗号分割。', 'TO_MAP(${1:})', '1.12', 8, 1, '2021-05-20 19:59:22', '2021-05-20 20:00:54');
 
 
+update dlink_cluster set type ='yarn-session' where type = 'Yarn';
+update dlink_cluster set type ='standalone' where type = 'Standalone';
+
+-- ----------------------------
+-- 0.6.0 2022-02-03
+-- ----------------------------
+update dlink_task set dialect = 'FlinkJar' where jar_id is not null;
+update dlink_catalogue set type = 'FlinkJar' where task_id in (select id as task_id from dlink_task where jar_id is not null);
+
 
 -- ----------------------------
 -- Records of dlink_user

@@ -216,16 +216,6 @@ export default {
   'pages.role.disable': 'Disable Role',
   'pages.role.disableConfirm': 'Are you sure you want to disable this Role？',
 
-  // registration center pages
-  'pages.register.alert.group': '',
-  'pages.register.alert.instance': '',
-
-  'pages.register.database': '',
-  'pages.register.jar': '',
-  'pages.register.1': '',
-  'pages.register.2': '',
-
-
   'pages.regist.openAPI': 'OpenAPI Document',
   'pages.regist.BusinessComponent': 'Business Component Document',
 
