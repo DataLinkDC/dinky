@@ -140,6 +140,8 @@ const EditorTabs = (props: any) => {
     switch (dialect) {
       case DIALECT.JAVA:
         return DIALECT.JAVA.toLowerCase()
+      case DIALECT.SCALA:
+        return DIALECT.SCALA.toLowerCase()
       case DIALECT.PYTHON:
         return DIALECT.PYTHON.toLowerCase()
       default:
