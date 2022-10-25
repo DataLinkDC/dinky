@@ -161,7 +161,7 @@ public class StudioServiceImpl implements StudioService {
     }
 
     private void buildSession(JobConfig config) {
-        // If you are using a shared session, configure the current jobmanager address
+        // If you are using a shared session, configure the current jobManager address
         if (!config.isUseSession()) {
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), config.getClusterId()));
         }
@@ -170,8 +170,10 @@ public class StudioServiceImpl implements StudioService {
     @Override
     public JobResult executeSql(StudioExecuteDTO studioExecuteDTO) {
         if (Dialect.notFlinkSql(studioExecuteDTO.getDialect())) {
-            return executeCommonSql(SqlDTO.build(studioExecuteDTO.getStatement(),
-                studioExecuteDTO.getDatabaseId(), studioExecuteDTO.getMaxRowNum()));
+            return executeCommonSql(SqlDTO.build(
+                studioExecuteDTO.getStatement(),
+                studioExecuteDTO.getDatabaseId(),
+                studioExecuteDTO.getMaxRowNum()));
         } else {
             return executeFlinkSql(studioExecuteDTO);
         }
@@ -181,8 +183,11 @@ public class StudioServiceImpl implements StudioService {
         addFlinkSQLEnv(studioExecuteDTO);
         JobConfig config = studioExecuteDTO.getJobConfig();
         buildSession(config);
+
         // To initialize java udf, but it only support local mode.
-        UDFPath udfPath = udfService.initUDF(studioExecuteDTO.getStatement(), config.getGatewayConfig() == null ? null : config.getGatewayConfig().getType());
+        UDFPath udfPath = udfService.initUDF(studioExecuteDTO.getStatement(),
+            config.getGatewayConfig() == null ? null : config.getGatewayConfig().getType());
+
         config.setJarFiles(udfPath.getJarPaths());
         config.setPyFiles(udfPath.getPyPaths());
         JobManager jobManager = JobManager.build(config);
