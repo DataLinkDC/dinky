@@ -19,7 +19,7 @@
 
 package com.dlink.interceptor;
 
-import com.dlink.context.RequestContext;
+import com.dlink.context.TenantContextHolder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,7 +41,7 @@ public class TenantInterceptor implements HandlerInterceptor {
                              Object handler) throws Exception {
         String tenantId = request.getHeader("tenantId");
         if (!StringUtils.isNullOrEmpty(tenantId)) {
-            RequestContext.set(Integer.valueOf(tenantId));
+            TenantContextHolder.set(Integer.valueOf(tenantId));
         }
         return HandlerInterceptor.super.preHandle(request, response, handler);
     }

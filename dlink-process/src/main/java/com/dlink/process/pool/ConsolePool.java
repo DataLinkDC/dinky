@@ -55,7 +55,8 @@ public class ConsolePool extends AbstractPool<StringBuilder> {
         if (consoleEntityMap.containsKey(user)) {
             consoleEntityMap.get(user).append(str);
         } else {
-            consoleEntityMap.put(user, new StringBuilder(str));
+            StringBuilder sb = new StringBuilder("Dinky User Console:");
+            consoleEntityMap.put(user, sb.append(str));
         }
     }
 
