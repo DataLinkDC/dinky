@@ -25,6 +25,7 @@ import pwa from './en-US/pwa';
 import request from './en-US/request';
 import settings from './en-US/settings';
 import shortKey from './en-US/shortcutKey';
+import chart from './en-US/chart';
 
 export default {
   'navBar.lang': 'Languages',
@@ -43,4 +44,5 @@ export default {
   ...pages,
   ...request,
   ...shortKey,
+  ...chart,
 };

@@ -235,7 +235,7 @@ export default {
   'pages.TableData.data': '数据',
   'pages.TableData.search': '搜索',
 
-  'pages.datastudio.label.info': '数据',
+  'pages.datastudio.label.info': '信息',
   'pages.datastudio.label.result': '结果',
   'pages.datastudio.label.lineage': '血缘',
   'pages.datastudio.label.process': '进程',

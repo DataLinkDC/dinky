@@ -46,10 +46,13 @@ export default {
   'button.heartbeat': '心跳',
   'button.recycle': '回收',
   'button.refresh': '刷新',
+  'button.refreshData': '刷新数据',
+  'button.collapseDir': '折叠目录',
 
   'right.menu.open': '打开',
   'right.menu.submit': '异步提交',
   'right.menu.exportJson': '导出 JSON',
+  'right.menu.importJson': '导入 JSON',
   'right.menu.rename': '重命名',
   'right.menu.copy': '复制',
   'right.menu.cut': '剪切',
@@ -59,10 +62,15 @@ export default {
   'right.menu.createRootCatalogue': '创建根目录',
   'right.menu.uploadZipToCreate': '上传zip包创建工程',
   'right.menu.createTask': '创建作业',
+  'right.menu.closeAll': '关闭所有',
+  'right.menu.closeOther': '关闭其他',
 
 
   'tips.selected': '已选择 {total} 项',
   'tips.notSelected': '未选',
+  'tips.confirm.logout.session': '确认注销会话【{sessionName}】 吗？',
+  'tips.confirm.delete.table': '确定删除表【{tableName}】吗？',
+  'tips.create.session.success': '创建会话【{session}】成功！',
 
   'status.enabled': '已启用',
   'status.disabled': '已禁用',
@@ -125,7 +133,7 @@ export default {
   'global.table.lifecycle.dev': '开发中',
   'global.table.lifecycle.publish': '已发布',
   'global.table.lifecycle.online': '已上线',
-  'global.table.lifecycle.unKnow': '未知',
+  'global.table.lifecycle.unknown': '未知',
   'global.table.runmode': '运行模式',
 
 };

@@ -23,6 +23,7 @@ import FlinkSQL from "./FlinkSQL";
 import {MetaStoreCatalogType, SessionType, TaskType} from "@/pages/DataStudio/model";
 import {message, Modal} from "antd";
 import {addOrUpdateData, getData, handleRemove, postAll} from "@/components/Common/crud";
+import {useIntl} from "umi";
 
 /*--- 保存sql ---*/
 export function saveTask(current: any, dispatch: any) {
@@ -80,9 +81,9 @@ export function quitSession(dispatch: any) {
 /*--- 注销会话 ---*/
 export function clearSession(session: string, dispatch: any) {
   Modal.confirm({
-    title: '确认注销会话【' + session + '】？',
-    okText: '确认',
-    cancelText: '取消',
+    title: useIntl().formatMessage({id: 'tips.confirm.logout.session'}, {sessionName: session}),
+    okText: useIntl().formatMessage({id: 'button.confirm'}),
+    cancelText: useIntl().formatMessage({id: 'button.cancel'}),
     onOk: async () => {
       let para = {
         id: session,
@@ -124,9 +125,9 @@ export function showTables(session: string, dispatch: any) {
 /*--- 移除 Catalog Table ---*/
 export function removeTable(tablename: string, session: string, dispatch: any) {
   Modal.confirm({
-    title: '确定删除表【' + tablename + '】吗？',
-    okText: '确认',
-    cancelText: '取消',
+    title: useIntl().formatMessage({id: 'tips.confirm.delete.table'}, {tableName: tablename}),
+    okText: useIntl().formatMessage({id: 'button.confirm'}),
+    cancelText: useIntl().formatMessage({id: 'button.cancel'}),
     onOk: async () => {
       const res = executeDDL({
         statement: "drop table " + tablename,
@@ -222,14 +223,15 @@ export function showAlertGroup(dispatch: any) {
 export function showMetaDataTable(id: number) {
   return getData('api/database/getSchemasAndTables', {id: id});
 }
+
 /*--- 清理 元数据表缓存 ---*/
 export function clearMetaDataTable(id: number) {
   return getData('api/database/unCacheSchemasAndTables', {id: id});
 }
 
 /*--- 刷新 数据表样例数据 ---*/
-export function showTableData(id: number,schemaName:String,tableName:String,option:{}) {
-  return postAll('api/database/queryData', {id: id,schemaName:schemaName,tableName:tableName,option:option});
+export function showTableData(id: number, schemaName: String, tableName: String, option: {}) {
+  return postAll('api/database/queryData', {id: id, schemaName: schemaName, tableName: tableName, option: option});
 }
 
 /*--- 刷新 Flink Jobs ---*/

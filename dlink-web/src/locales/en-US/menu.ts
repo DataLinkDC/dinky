@@ -18,6 +18,7 @@
  */
 
 export default {
+  'menu.login': 'Login',
   'menu.account.center': 'Account Center',
   'menu.account.settings': 'Account Settings',
   'menu.account.changePassword': 'Change Password',
