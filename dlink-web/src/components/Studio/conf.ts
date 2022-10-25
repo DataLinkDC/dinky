@@ -48,11 +48,6 @@ export const DIALECT = {
   PYTHON: 'Python',
 };
 
-export const CHART = {
-  LINE: '折线图',
-  BAR: '条形图',
-  PIE: '饼图',
-};
 
 export const isSql = (dialect: string) => {
   switch (dialect) {
