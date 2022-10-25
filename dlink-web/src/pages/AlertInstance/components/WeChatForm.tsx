@@ -175,7 +175,7 @@ const WeChatForm: React.FC<AlertInstanceFormProps> = (props) => {
 
         <Form.Item
           name="enabled"
-          label="是否启用">
+          label={l('global.table.isEnable')}>
           <Switch checkedChildren="启用" unCheckedChildren="禁用"
                   defaultChecked={vals.enabled}/>
         </Form.Item>

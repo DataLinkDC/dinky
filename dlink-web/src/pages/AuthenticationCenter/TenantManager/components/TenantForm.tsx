@@ -77,7 +77,7 @@ const TenantForm: React.FC<TenantFormProps> = (props) => {
         </FormItem>
         <FormItem
           name="note"
-          label={l('pages.tenant.Note')}
+          label={l('global.table.note')}
           rules={[{required: true, message: l('pages.tenant.EnterTenantNote')}]}
         >
           <Input.TextArea placeholder={l('pages.tenant.EnterTenantNote')} allowClear

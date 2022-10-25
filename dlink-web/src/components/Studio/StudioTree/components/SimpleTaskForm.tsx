@@ -19,12 +19,12 @@
 
 
 import React, {useEffect, useState} from 'react';
-import {Button, Form, Input, Modal, Select, Cascader} from 'antd';
+import {Button, Cascader, Form, Input, Modal, Select} from 'antd';
 
 import type {TaskTableListItem} from '../data.d';
 import {DIALECT} from "@/components/Studio/conf";
 import {useIntl} from "umi";
-import {postAll, postDataArray} from "@/components/Common/crud";
+import {postAll} from "@/components/Common/crud";
 
 const {Option} = Select;
 
@@ -169,7 +169,7 @@ const SimpleTaskForm: React.FC<UpdateFormProps> = (props) => {
   const renderFooter = () => {
     return (
       <>
-        <Button onClick={() => handleUpdateModalVisible(false, values)}>取消</Button>
+        <Button onClick={() => handleUpdateModalVisible(false, values)}>{l('button.cancel')}</Button>
         <Button type="primary" onClick={() => submitForm()}>
           {l('button.finish')}
         </Button>

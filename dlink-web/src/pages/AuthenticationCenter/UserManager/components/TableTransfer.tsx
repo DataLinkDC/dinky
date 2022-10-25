@@ -142,7 +142,7 @@ const TableTransferFrom = (props: TableTransferFromProps) => {
     },
     {
       dataIndex: 'note',
-      title: l('pages.role.note'),
+      title: l('global.table.note'),
       ellipsis: true,
     },
   ];
@@ -158,7 +158,7 @@ const TableTransferFrom = (props: TableTransferFromProps) => {
     },
     {
       dataIndex: 'note',
-      title: l('pages.role.note'),
+      title: l('global.table.note'),
       ellipsis: true,
     },
   ];

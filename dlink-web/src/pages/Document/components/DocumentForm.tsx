@@ -191,7 +191,7 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
         </FormItem>
         <FormItem
           name="enabled"
-          label="是否启用"
+          label={l('global.table.isEnable')}
           rules={[{required: true, message: '请输入是否启用！'}]}>
           <Switch checkedChildren="启用" unCheckedChildren="禁用"
                   defaultChecked={formVals.enabled}/>

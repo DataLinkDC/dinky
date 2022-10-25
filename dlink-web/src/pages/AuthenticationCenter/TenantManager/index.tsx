@@ -158,18 +158,18 @@ const TenantFormList: React.FC<{}> = (props: any) => {
     //   },
     // },
     {
-      title: l('pages.tenant.Note'),
+      title: l('global.table.note'),
       dataIndex: 'note',
       hideInSearch: true,
       ellipsis: true,
     },
     {
-      title: l('pages.tenant.CreateTime'),
+      title: l('global.table.createTime'),
       dataIndex: 'createTime',
       valueType: 'dateTime',
     },
     {
-      title: l('pages.tenant.UpdateTime'),
+      title: l('global.table.updateTime'),
       dataIndex: 'updateTime',
       valueType: 'dateTime',
     },
