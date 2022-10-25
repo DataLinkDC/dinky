@@ -134,19 +134,19 @@ const RoleFormList: React.FC<{}> = (props: any) => {
     //   },
     // },
     {
-      title: l('pages.role.note'),
+      title: l('global.table.note'),
       dataIndex: 'note',
       hideInSearch: true,
       ellipsis: true,
     },
     {
-      title: l('pages.role.createTime'),
+      title: l('global.table.createTime'),
       dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',
     },
     {
-      title: l('pages.role.updateTime'),
+      title: l('global.table.updateTime'),
       dataIndex: 'updateTime',
       sorter: true,
       valueType: 'dateTime',

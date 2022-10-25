@@ -75,6 +75,11 @@ export default {
   'status.enabled': 'Enabled',
   'status.disabled': 'Disabled',
 
+  'global.time.second': 'Second',
+  'global.time.minute': 'Minute',
+  'global.time.hour': 'Hour',
+  'global.time.day': 'Day',
+  'global.time.millisecond': 'millisecond',
 
   'global.table.operate': 'Operation',
   'global.table.config': 'Config',
@@ -86,15 +91,14 @@ export default {
   'global.table.createTime': 'Create Time',
   'global.table.startTime': 'Start Time',
   'global.table.endTime': 'End Time',
-  'global.table.useTime': 'Use Time',
+  'global.table.useTime': 'Duration',
 
   'global.table.registType': 'Regist Type',
   'global.table.registType.manual': 'Manual',
   'global.table.registType.automatic': 'Automatic',
 
   'global.table.isEnable': 'Is Enable',
-  'global.table.enabled': 'Enabled',
-  'global.table.disabled': 'Disabled',
+  'global.table.note': 'Note',
 
   'global.table.status': 'Status',
   'global.table.status.normal': 'Normal',

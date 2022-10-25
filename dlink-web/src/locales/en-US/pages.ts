@@ -159,9 +159,6 @@ export default {
 
   'pages.tenant.TenantManager': 'Tenant Management',
   'pages.tenant.TenantCode': 'Tenant Code',
-  'pages.tenant.Note': 'Note',
-  'pages.tenant.CreateTime': 'Create Time',
-  'pages.tenant.UpdateTime': 'Update Time',
   'pages.tenant.AssignUser': 'Assign Users',
   'pages.tenant.assignUser.pleaseHolder': 'Please enter username/nickname Search',
   'pages.tenant.create': 'Create Tenant',
@@ -179,10 +176,6 @@ export default {
   'pages.nameSpace.NameSpaceManagement': 'NameSpace Management',
   'pages.nameSpace.NameSpaceCode': 'NameSpace Code',
   'pages.nameSpace.belongTenant': 'Belong Tenant',
-  'pages.nameSpace.enable': 'Is Enable',
-  'pages.nameSpace.note': 'Note',
-  'pages.nameSpace.createTime': 'Create Time',
-  'pages.nameSpace.updateTime': 'Update Time',
   'pages.nameSpace.deleteNameSpace': 'Delete NameSpace',
   'pages.nameSpace.deleteNameSpaceConfirm': 'Are you sure you want to delete this NameSpace？',
   'pages.nameSpace.enableNameSpace': 'Enable NameSpace',
@@ -199,10 +192,7 @@ export default {
   'pages.role.roleCode': 'Role Code',
   'pages.role.roleName': 'Role Name',
   'pages.role.namespaceIds': 'Namespace',
-  'pages.role.note': 'Note',
   'pages.role.belongTenant': 'Belong Tenant',
-  'pages.role.createTime': 'Create Time',
-  'pages.role.updateTime': 'Update Time',
   'pages.role.create': 'Create Role',
   'pages.role.update': 'Update Role',
   'pages.role.EnterRoleCode': 'Please enter Role Code!',
@@ -234,7 +224,14 @@ export default {
 
   'pages.datastudio.label.info': 'Info',
   'pages.datastudio.label.result': 'Result',
+
   'pages.datastudio.label.lineage': 'Lineage',
+  'pages.datastudio.label.lineage.expand.field': 'Expand Field',
+  'pages.datastudio.label.lineage.collapse.field': 'Collapse Field',
+  'pages.datastudio.label.lineage.expand.lineage': 'Expand Lineage',
+  'pages.datastudio.label.lineage.collapse.lineage': 'Collapse Lineage',
+
+
   'pages.datastudio.label.process': 'Process',
   'pages.datastudio.label.history': 'History',
   'pages.datastudio.label.function': 'Function',
@@ -268,5 +265,29 @@ export default {
   'pages.devops.lable.onlinelist': 'Online List',
   'pages.devops.lable.offlinelist': 'Offline List',
   'pages.devops.lable.instance': 'Instance',
+
+  'pages.registerCenter.alert.instanceManagement': 'Alarm Instance Management',
+  'pages.registerCenter.alert.instance.name': 'Name',
+  'pages.registerCenter.alert.instance.type': 'Type',
+  'pages.registerCenter.alert.instance.delete': 'Delete the Alarm Instance ',
+  'pages.registerCenter.alert.instance.deleteConfirm': 'Are you sure to delete the selected Alarm Instance? ',
+  'pages.registerCenter.alert.instance.enable': 'Enable Alarm Instance ',
+  'pages.registerCenter.alert.instance.enableConfirm': 'Are you sure you want to enable this Alarm Instance? ',
+  'pages.registerCenter.alert.instance.disable': 'Disable the Alarm Instance ',
+  'pages.registerCenter.alert.instance.disableConfirm': 'Are you sure you want to disable this Alarm Instance? ',
+  'pages.registerCenter.alert.instance.disableTotalOf': 'Total Of {total} Alarm Instance Is Disabled',
+
+
+  'pages.registerCenter.alert.groupManagement': 'Alarm Group Management ',
+  'pages.registerCenter.alert.group.name': 'Alarm Group Name',
+  'pages.registerCenter.alert.group.groupid ': 'Alarm group ID ',
+  'pages.registerCenter.alert.group.alertInstanceIds': 'Alarm instance',
+  'pages.registerCenter.alert.group.delete': 'Delete the Alarm group ',
+  'pages.registerCenter.alert.group.deleteConfirm': 'Are you sure to delete the selected Alarm group? ',
+  'pages.registerCenter.alert.group.enable': 'Enable Alarm group ',
+  'pages.registerCenter.alert.group.enableConfirm': 'Are you sure you want to enable this Alarm group? ',
+  'pages.registerCenter.alert.group.disable': 'Disable the Alarm group ',
+  'pages.registerCenter.alert.group.disableConfirm': 'Are you sure you want to disable this Alarm group? ',
+  'pages.registerCenter.alert.group.disableTotalOf': 'Total Of {total} Alarm group Is Disabled',
 };
 

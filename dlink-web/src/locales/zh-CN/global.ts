@@ -75,6 +75,12 @@ export default {
   'status.enabled': '已启用',
   'status.disabled': '已禁用',
 
+  'global.time.second': '秒',
+  'global.time.minute': '分',
+  'global.time.hour': '小时',
+  'global.time.day': '天',
+  'global.time.millisecond': '毫秒',
+
 
   'global.table.operate': '操作',
   'global.table.config': '配置',
@@ -93,8 +99,7 @@ export default {
   'global.table.registType.automatic': '自动',
 
   'global.table.isEnable': '是否启用',
-  'global.table.enabled': '启用',
-  'global.table.disabled': '禁用',
+  'global.table.note': '备注',
 
   'global.table.status': '状态',
   'global.table.status.normal': '正常',

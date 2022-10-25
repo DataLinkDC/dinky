@@ -53,11 +53,11 @@ const JobLifeCycle = (props: JobLifeCycleFormProps) => {
   const renderJobLifeCycle = () => {
     switch (step) {
       case JOB_LIFE_CYCLE.DEVELOP:
-        return (<Tag icon={<EditOutlined/>} color="default">开发中</Tag>);
+        return (<Tag icon={<EditOutlined/>} color="default">{l('global.table.lifecycle.dev')}</Tag>);
       case JOB_LIFE_CYCLE.RELEASE:
-        return (<Tag icon={<CameraOutlined/>} color="green">已发布</Tag>);
+        return (<Tag icon={<CameraOutlined/>} color="green">{l('global.table.lifecycle.publish')}</Tag>);
       case JOB_LIFE_CYCLE.ONLINE:
-        return (<Tag icon={<CarryOutOutlined/>} color="blue">已上线</Tag>);
+        return (<Tag icon={<CarryOutOutlined/>} color="blue">{l('global.table.lifecycle.online')}</Tag>);
       default:
         return undefined;
     }

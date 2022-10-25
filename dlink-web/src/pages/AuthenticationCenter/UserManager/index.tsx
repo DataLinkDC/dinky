@@ -161,7 +161,7 @@ const UserTableList: React.FC<{}> = (props: any) => {
       hideInTable: false,
     },
     {
-      title: l('pages.user.UserIsUse'),
+      title: l('global.table.isEnable'),
       dataIndex: 'enabled',
       hideInForm: true,
       hideInSearch: true,

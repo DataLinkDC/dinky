@@ -101,9 +101,9 @@ const UserForm: React.FC<UserFormProps> = (props) => {
         </Form.Item>
         <Form.Item
           name="enabled"
-          label={l('pages.user.UserIsUse')}>
-          <Switch checkedChildren={l('status.enabled')}
-                  unCheckedChildren={l('status.disabled')}
+          label={l('global.table.isEnable')}>
+          <Switch checkedChildren={l('button.enable')}
+                  unCheckedChildren={l('button.disable')}
                   defaultChecked={formVals.enabled}/>
         </Form.Item>
       </>

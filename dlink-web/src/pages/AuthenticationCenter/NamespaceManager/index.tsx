@@ -105,7 +105,7 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: l('pages.nameSpace.enable'),
+      title: l('global.table.isEnable'),
       dataIndex: 'enabled',
       hideInTable: false,
       hideInSearch: true,
@@ -126,19 +126,19 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: l('pages.nameSpace.note'),
+      title: l('global.table.note'),
       dataIndex: 'note',
       hideInSearch: true,
       ellipsis: true,
     },
     {
-      title: l('pages.nameSpace.createTime'),
+      title: l('global.table.createTime'),
       dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',
     },
     {
-      title: l('pages.nameSpace.updateTime'),
+      title: l('global.table.updateTime'),
       dataIndex: 'updateTime',
       sorter: true,
       valueType: 'dateTime',
