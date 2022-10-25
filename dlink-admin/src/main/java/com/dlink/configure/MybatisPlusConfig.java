@@ -19,7 +19,7 @@
 
 package com.dlink.configure;
 
-import com.dlink.context.RequestContext;
+import com.dlink.context.TenantContextHolder;
 
 import java.util.List;
 
@@ -46,34 +46,21 @@ import net.sf.jsqlparser.expression.NullValue;
 public class MybatisPlusConfig {
 
     private static final List<String> IGNORE_TABLE_NAMES = Lists.newArrayList(
-            "dlink_namespace"
-            , "dlink_alert_group"
-            , "dlink_alert_history"
-            , "dlink_alert_instance"
-            , "dlink_catalogue"
-            , "dlink_cluster"
-            , "dlink_cluster_configuration"
-            , "dlink_database"
-            //,"dlink_fragment"
-            , "dlink_history"
-            , "dlink_jar"
-            , "dlink_job_history"
-            , "dlink_job_instance"
-            ,"dlink_role"
-            , "dlink_savepoints"
-            , "dlink_task"
-            , "dlink_task_statement"
-            , "dlink_task_version"
-    );
+            "dlink_namespace", "dlink_alert_group", "dlink_alert_history", "dlink_alert_instance", "dlink_catalogue",
+            "dlink_cluster", "dlink_cluster_configuration", "dlink_database"
+            // ,"dlink_fragment"
+            , "dlink_history", "dlink_jar", "dlink_job_history", "dlink_job_instance", "dlink_role", "dlink_savepoints",
+            "dlink_task", "dlink_task_statement", "dlink_task_version");
 
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         log.info("mybatis plus interceptor execute");
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         interceptor.addInnerInterceptor(new TenantLineInnerInterceptor(new TenantLineHandler() {
+
             @Override
             public Expression getTenantId() {
-                Integer tenantId = (Integer) RequestContext.get();
+                Integer tenantId = (Integer) TenantContextHolder.get();
                 if (tenantId == null) {
                     log.warn("request context tenant id is null");
                     return new NullValue();

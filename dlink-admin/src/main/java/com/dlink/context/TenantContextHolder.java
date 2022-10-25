@@ -20,20 +20,21 @@
 package com.dlink.context;
 
 /**
- * request context
+ * TenantContextHolder
  */
-public class RequestContext {
-    private static final ThreadLocal<Object> threadLocal = new ThreadLocal<>();
+public class TenantContextHolder {
+
+    private static final ThreadLocal<Object> TENANT_CONTEXT = new ThreadLocal<>();
 
     public static void set(Object value) {
-        threadLocal.set(value);
+        TENANT_CONTEXT.set(value);
     }
 
     public static Object get() {
-        return threadLocal.get();
+        return TENANT_CONTEXT.get();
     }
 
-    public static void remove() {
-        threadLocal.remove();
+    public static void clear() {
+        TENANT_CONTEXT.remove();
     }
 }

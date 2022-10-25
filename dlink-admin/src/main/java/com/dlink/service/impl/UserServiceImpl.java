@@ -21,7 +21,7 @@ package com.dlink.service.impl;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.common.result.Result;
-import com.dlink.context.RequestContext;
+import com.dlink.context.TenantContextHolder;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.dto.LoginUTO;
 import com.dlink.dto.UserDTO;
@@ -146,7 +146,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             }
 
             // 将前端入参 租户id 放入上下文
-            RequestContext.set(loginUTO.getTenantId());
+            TenantContextHolder.set(loginUTO.getTenantId());
 
             // get user tenants and roles
             UserDTO userDTO = getUserALLBaseInfo(loginUTO, user);
@@ -177,7 +177,8 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         });
 
         userTenants.forEach(userTenant -> {
-            Tenant tenant = tenantService.getBaseMapper().selectOne(new QueryWrapper<Tenant>().eq("id", userTenant.getTenantId()));
+            Tenant tenant = tenantService.getBaseMapper()
+                    .selectOne(new QueryWrapper<Tenant>().eq("id", userTenant.getTenantId()));
             if (Asserts.isNotNull(tenant)) {
                 tenantList.add(tenant);
             }

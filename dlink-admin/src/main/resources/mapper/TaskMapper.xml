@@ -59,8 +59,8 @@
         select *
         from dlink_task
         where 1 = 1
-          and name = "${name}"
-          and tenant_id = ${tenantId}
+          and name = #{name}
+          and tenant_id = #{tenantId}
     </select>
 
     <select id="queryOnLineTaskByDoneStatus" resultType="com.dlink.model.Task">

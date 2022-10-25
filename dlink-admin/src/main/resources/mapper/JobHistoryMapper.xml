@@ -2,6 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dlink.mapper.JobHistoryMapper">
 
+    <select id="getByIdWithoutTenant" resultType="com.dlink.model.JobHistory">
+        select *
+        from dlink_job_history
+        where id = #{id}
+        limit 1
+    </select>
 
     <insert id="insert">
         insert into dlink_job_history (id,job_json,exceptions_json,checkpoints_json,checkpoints_config_json,config_json,
