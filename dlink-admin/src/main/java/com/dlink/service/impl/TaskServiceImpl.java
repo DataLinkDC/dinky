@@ -74,6 +74,7 @@ import com.dlink.model.TaskOperatingSavepointSelect;
 import com.dlink.model.TaskOperatingStatus;
 import com.dlink.model.TaskVersion;
 import com.dlink.model.UDFPath;
+import com.dlink.model.UDFTemplate;
 import com.dlink.result.SqlExplainResult;
 import com.dlink.result.TaskOperatingResult;
 import com.dlink.service.AlertGroupService;
@@ -92,6 +93,7 @@ import com.dlink.service.StatementService;
 import com.dlink.service.TaskService;
 import com.dlink.service.TaskVersionService;
 import com.dlink.service.UDFService;
+import com.dlink.service.UDFTemplateService;
 import com.dlink.utils.CustomStringJavaCompiler;
 import com.dlink.utils.JSONUtil;
 import com.dlink.utils.UDFUtil;
@@ -134,6 +136,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.lang.tree.TreeUtil;
@@ -175,6 +178,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private CatalogueService catalogueService;
     @Autowired
     private FragmentVariableService fragmentVariableService;
+    @Autowired
+    private UDFTemplateService udfTemplateService;
 
     @Value("${spring.datasource.driver-class-name}")
     private String driver;
@@ -361,7 +366,17 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public boolean saveOrUpdateTask(Task task) {
-        // to compiler java udf
+        if (Dialect.isUDF(task.getDialect())) {
+            if (CollUtil.isNotEmpty(task.getConfig()) && Asserts.isNullString(task.getStatement())) {
+                Map<String, String> config = task.getConfig().get(0);
+                UDFTemplate template = udfTemplateService.getById(config.get("templateId"));
+                if (template != null) {
+                    String code = UDFUtil.templateParse(task.getDialect(), template.getTemplateCode(), config.get("className"));
+                    task.setStatement(code);
+                }
+            }
+        }
+        // to compiler udf
         if (Asserts.isNotNullString(task.getDialect()) && Dialect.JAVA.equalsVal(task.getDialect())
             && Asserts.isNotNullString(task.getStatement())) {
             CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(task.getStatement());
@@ -371,6 +386,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         } else {
             task.setSavePointPath(UDFUtil.getScalaFullClassName(task.getStatement()));
         }
+
         // if modify task else create task
         if (task.getId() != null) {
             Task taskInfo = getById(task.getId());
@@ -486,7 +502,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public Task getUDFByClassName(String className) {
         Task task = getOne(
-            new QueryWrapper<Task>().in("dialect", "Java", "Python", "Scala").eq("enabled", 1).eq("save_point_path", className));
+            new QueryWrapper<Task>().in("dialect", Dialect.JAVA, Dialect.SCALA, Dialect.PYTHON).eq("enabled", 1).eq("save_point_path", className));
         Assert.check(task);
         task.setStatement(statementService.getById(task.getId()).getStatement());
         return task;
@@ -495,7 +511,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public List<Task> getAllUDF() {
         List<Task> tasks =
-            list(new QueryWrapper<Task>().in("dialect", "Java", "Python", "Scala").eq("enabled", 1).isNotNull("save_point_path"));
+            list(new QueryWrapper<Task>().in("dialect", Dialect.JAVA, Dialect.SCALA, Dialect.PYTHON).eq("enabled", 1).isNotNull("save_point_path"));
         return tasks.stream().peek(task -> {
             Assert.check(task);
             task.setStatement(statementService.getById(task.getId()).getStatement());
