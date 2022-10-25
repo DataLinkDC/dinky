@@ -88,6 +88,7 @@ export default {
   'pages.searchTable.batchDeletion': 'Batch Deletion',
   'pages.searchTable.batchApproval': 'Batch Approval',
 
+
   'pages.devops.jobstatus.CREATED': 'Created',
   'pages.devops.jobstatus.INITIALIZING': 'Initialize',
   'pages.devops.jobstatus.RUNNING': 'Running',
@@ -124,13 +125,10 @@ export default {
 
 
   'pages.user.UserManger': 'User Management',
-  'pages.user.UserName': 'User Name',//用户名
-  'pages.user.UserJobNumber': 'Job Number',//工号
-  'pages.user.UserPhoneNumber': 'Phone Number',//手机号
-  'pages.user.UserNickName': 'Nick Name',//昵称
-  'pages.user.UserIsUse': 'Is Enable',//是否启用
-  'pages.user.UserUpdateTime': 'Update Time',//最近更新时间
-  'pages.user.UserCreateTime': 'Create Time',//创建时间
+  'pages.user.UserName': 'User Name',
+  'pages.user.UserJobNumber': 'Job Number',
+  'pages.user.UserPhoneNumber': 'Phone Number',
+  'pages.user.UserNickName': 'Nick Name',
 
   'pages.user.UserDeleteUser': 'Delete User',
   'pages.user.UserCreateUser': 'Create User',

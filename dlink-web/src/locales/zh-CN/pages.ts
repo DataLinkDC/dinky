@@ -129,9 +129,6 @@ export default {
   'pages.user.UserJobNumber': '工号',
   'pages.user.UserPhoneNumber': '手机号',
   'pages.user.UserNickName': '昵称',
-  'pages.user.UserIsUse': '是否启用',
-  'pages.user.UserUpdateTime': '最近更新时间',
-  'pages.user.UserCreateTime': '创建时间',
 
 
   'pages.user.UserDeleteUser': '删除用户',
@@ -269,7 +266,6 @@ export default {
   'pages.devops.lable.instance': '实例',
 
   'pages.registerCenter.alert.instanceManagement': '报警实例管理',
-
   'pages.registerCenter.alert.instance.name': '名称',
   'pages.registerCenter.alert.instance.type': '类型',
   'pages.registerCenter.alert.instance.delete': '删除报警实例',

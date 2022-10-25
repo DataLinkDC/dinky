@@ -183,14 +183,14 @@ const UserTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: l('pages.user.UserCreateTime'),
+      title: l('global.table.createTime'),
       dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',
       hideInTable: true,
     },
     {
-      title: l('pages.user.UserUpdateTime'),
+      title: l('global.table.updateTime'),
       dataIndex: 'updateTime',
       sorter: true,
       valueType: 'dateTime',
