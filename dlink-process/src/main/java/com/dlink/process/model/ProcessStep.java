@@ -41,11 +41,10 @@ public class ProcessStep {
     }
 
     public ProcessStep(ProcessStatus stepStatus, LocalDateTime startTime) {
-        this.stepStatus = stepStatus;
-        this.startTime = startTime;
+        this(stepStatus, startTime, null, 0, null, null);
     }
 
-    public ProcessStep(int index, ProcessStatus stepStatus, LocalDateTime startTime, LocalDateTime endTime, long time,
+    public ProcessStep(ProcessStatus stepStatus, LocalDateTime startTime, LocalDateTime endTime, long time,
                        StringBuilder info, StringBuilder error) {
         this.stepStatus = stepStatus;
         this.startTime = startTime;
