@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.StrUtil;
 
 /**
@@ -121,7 +122,7 @@ public class ProcessEntity {
         if (isNullProcess()) {
             return;
         }
-        String message = StrUtil.format("\n[{}] {} CONFIG: {}", type.getValue(), LocalDateTime.now(), str);
+        String message = CharSequenceUtil.format("\n[{}] {} CONFIG: {}", type.getValue(), LocalDateTime.now(), str);
         steps.get(stepIndex - 1).appendInfo(message);
         ConsolePool.write(message, userId);
     }
@@ -130,7 +131,7 @@ public class ProcessEntity {
         if (isNullProcess()) {
             return;
         }
-        String message = StrUtil.format("\n[{}] {} INFO: {}", type.getValue(), LocalDateTime.now(), str);
+        String message = CharSequenceUtil.format("\n[{}] {} INFO: {}", type.getValue(), LocalDateTime.now(), str);
         steps.get(stepIndex - 1).appendInfo(message);
         ConsolePool.write(message, userId);
     }
@@ -155,7 +156,7 @@ public class ProcessEntity {
         if (isNullProcess()) {
             return;
         }
-        String message = StrUtil.format("\n[{}] {} ERROR: {}", type.getValue(), LocalDateTime.now(), str);
+        String message = CharSequenceUtil.format("\n[{}] {} ERROR: {}", type.getValue(), LocalDateTime.now(), str);
         steps.get(stepIndex - 1).appendInfo(message);
         steps.get(stepIndex - 1).appendError(message);
         ConsolePool.write(message, userId);
