@@ -71,6 +71,7 @@ import com.dlink.sql.FlinkQuery;
 import com.dlink.utils.RunTimeUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -217,7 +218,7 @@ public class StudioServiceImpl implements StudioService {
         try (Driver driver = Driver.build(dataBase.getDriverConfig())) {
             selectResult = driver.executeSql(sqlDTO.getStatement(), sqlDTO.getMaxRowNum());
         }
-        
+
         result.setResult(selectResult);
         if (selectResult.isSuccess()) {
             result.setSuccess(true);
@@ -277,26 +278,16 @@ public class StudioServiceImpl implements StudioService {
 
     private List<SqlExplainResult> explainCommonSql(StudioExecuteDTO studioExecuteDTO) {
         if (Asserts.isNull(studioExecuteDTO.getDatabaseId())) {
-            return new ArrayList<SqlExplainResult>() {
+            return Collections.singletonList(SqlExplainResult.fail(studioExecuteDTO.getStatement(), "请指定数据源"));
+        }
 
-                {
-                    add(SqlExplainResult.fail(studioExecuteDTO.getStatement(), "请指定数据源"));
-                }
-            };
-        } else {
-            DataBase dataBase = dataBaseService.getById(studioExecuteDTO.getDatabaseId());
-            if (Asserts.isNull(dataBase)) {
-                return new ArrayList<SqlExplainResult>() {
+        DataBase dataBase = dataBaseService.getById(studioExecuteDTO.getDatabaseId());
+        if (Asserts.isNull(dataBase)) {
+            return Collections.singletonList(SqlExplainResult.fail(studioExecuteDTO.getStatement(), "数据源不存在"));
+        }
 
-                    {
-                        add(SqlExplainResult.fail(studioExecuteDTO.getStatement(), "数据源不存在"));
-                    }
-                };
-            }
-            Driver driver = Driver.build(dataBase.getDriverConfig());
-            List<SqlExplainResult> sqlExplainResults = driver.explain(studioExecuteDTO.getStatement());
-            driver.close();
-            return sqlExplainResults;
+        try (Driver driver = Driver.build(dataBase.getDriverConfig())) {
+            return driver.explain(studioExecuteDTO.getStatement());
         }
     }
 
