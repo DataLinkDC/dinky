@@ -192,6 +192,7 @@ public class StudioServiceImpl implements StudioService {
         return jobResult;
     }
 
+    @SuppressWarnings("checkstyle:WhitespaceAround")
     @Override
     public JobResult executeCommonSql(SqlDTO sqlDTO) {
         JobResult result = new JobResult();
@@ -212,11 +213,12 @@ public class StudioServiceImpl implements StudioService {
             return result;
         }
 
-        Driver driver = Driver.build(dataBase.getDriverConfig());
-        JdbcSelectResult selectResult = driver.executeSql(sqlDTO.getStatement(), sqlDTO.getMaxRowNum());
-        driver.close();
+        JdbcSelectResult selectResult;
+        try (Driver driver = Driver.build(dataBase.getDriverConfig())) {
+            selectResult = driver.executeSql(sqlDTO.getStatement(), sqlDTO.getMaxRowNum());
+        }
+        
         result.setResult(selectResult);
-
         if (selectResult.isSuccess()) {
             result.setSuccess(true);
         } else {
