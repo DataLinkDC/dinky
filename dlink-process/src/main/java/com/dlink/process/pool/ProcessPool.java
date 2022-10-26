@@ -33,9 +33,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ProcessPool extends AbstractPool<ProcessEntity> {
 
-    private static volatile Map<String, ProcessEntity> processEntityMap = new ConcurrentHashMap<>();
+    private static final Map<String, ProcessEntity> processEntityMap = new ConcurrentHashMap<>();
 
-    private static ProcessPool instance = new ProcessPool();
+    private static final ProcessPool instance = new ProcessPool();
 
     public static ProcessPool getInstance() {
         return instance;
