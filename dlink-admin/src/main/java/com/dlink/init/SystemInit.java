@@ -20,7 +20,6 @@
 package com.dlink.init;
 
 import com.dlink.assertion.Asserts;
-import com.dlink.context.RequestContext;
 import com.dlink.daemon.task.DaemonFactory;
 import com.dlink.daemon.task.DaemonTaskConfig;
 import com.dlink.job.FlinkJobTask;
@@ -76,7 +75,6 @@ public class SystemInit implements ApplicationRunner {
         List<Tenant> tenants = tenantService.list();
         sysConfigService.initSysConfig();
         for (Tenant tenant : tenants) {
-            RequestContext.set(tenant.getId());
             taskService.initDefaultFlinkSQLEnv(tenant.getId());
         }
         initTaskMonitor();

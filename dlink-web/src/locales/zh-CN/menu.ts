@@ -18,6 +18,7 @@
  */
 
 export default {
+  'menu.login': '登录',
   'menu.account.center': '个人中心',
   'menu.account.settings': '个人设置',
   'menu.account.changePassword': '修改密码',

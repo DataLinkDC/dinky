@@ -98,7 +98,7 @@ const BarChartSetting: React.FC<BarChartProps> = (props) => {
         <Row>
           <Col span={12}>
             <Form.Item
-              label="x 轴" className={styles.form_item} name="xField"
+              label={l('chart.xAxis')} className={styles.form_item} name="xField"
             >
               {column && column.length > 0 ? (
                 <Select allowClear showSearch
@@ -111,7 +111,7 @@ const BarChartSetting: React.FC<BarChartProps> = (props) => {
           </Col>
           <Col span={12}>
             <Form.Item
-              label="y 轴" className={styles.form_item} name="yField"
+              label={l('chart.yAxis')} className={styles.form_item} name="yField"
             >
               {column && column.length > 1 ? (
                 <Select allowClear showSearch
@@ -126,7 +126,7 @@ const BarChartSetting: React.FC<BarChartProps> = (props) => {
         <Row>
           <Col span={12}>
             <Form.Item
-              label="分组字段" className={styles.form_item} name="seriesField"
+              label={l('chart.groupColumns')} className={styles.form_item} name="seriesField"
             >
               {column && column.length > 0 ? (
                 <Select allowClear showSearch>
@@ -138,28 +138,25 @@ const BarChartSetting: React.FC<BarChartProps> = (props) => {
           </Col>
           <Col span={12}>
             <Form.Item
-              label="分组" className={styles.form_item} name="isGroup" valuePropName="checked"
+              label={l('chart.group')} className={styles.form_item} name="isGroup" valuePropName="checked"
             >
-              <Switch checkedChildren="启用" unCheckedChildren="禁用"
-              />
+              <Switch checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}/>
             </Form.Item>
           </Col>
         </Row>
         <Row>
           <Col span={12}>
             <Form.Item
-              label="堆叠" className={styles.form_item} name="isStack" valuePropName="checked"
+              label={l('chart.stack')} className={styles.form_item} name="isStack" valuePropName="checked"
             >
-              <Switch checkedChildren="启用" unCheckedChildren="禁用"
-              />
+              <Switch checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}/>
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item
-              label="百分比" className={styles.form_item} name="isPercent" valuePropName="checked"
+              label={l('chart.percentage')} className={styles.form_item} name="isPercent" valuePropName="checked"
             >
-              <Switch checkedChildren="启用" unCheckedChildren="禁用"
-              />
+              <Switch checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}/>
             </Form.Item>
           </Col>
         </Row>

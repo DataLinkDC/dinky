@@ -607,21 +607,21 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     <div className={style.tree_div}>
       <Row>
         <Col span={24}>
-          <Tooltip title="创建根目录">
+          <Tooltip title={l('right.menu.createRootCatalogue')}>
             <Button
               type="text"
               icon={<FolderAddOutlined/>}
               onClick={createRootCatalogue}
             />
           </Tooltip>
-          <Tooltip title="折叠目录">
+          <Tooltip title={l('button.collapseDir')}>
             <Button
               type="text"
               icon={<SwitcherOutlined/>}
               onClick={offExpandAll}
             />
           </Tooltip>
-          <Tooltip title="导出json">
+          <Tooltip title={l('right.menu.exportJson')}>
             <Button
               type="text"
               icon={<DownloadOutlined/>}
@@ -629,7 +629,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
             />
           </Tooltip>
           <Upload {...uProps}>
-            <Tooltip title="导入json">
+            <Tooltip title={l('right.menu.importJson')}>
               <Button
                 type="text"
                 icon={<UploadOutlined/>}
@@ -710,7 +710,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
         getTreeData();
       }} onCancel={() => {
         setIsUploadModalVisible(false)
-      }} buttonTitle="上传zip包并创建工程"/>
+      }} buttonTitle={l('right.menu.uploadZipToCreate')}/>
     </div>
   );
 };

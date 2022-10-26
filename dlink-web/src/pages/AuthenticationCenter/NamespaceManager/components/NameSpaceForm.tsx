@@ -84,15 +84,15 @@ const NameSpaceForm: React.FC<TenantFormProps> = (props) => {
         </Form.Item>
         <Form.Item
           name="note"
-          label={l('pages.nameSpace.note')}
+          label={l('global.table.note')}
         >
           <Input.TextArea placeholder={l('pages.nameSpace.EnterNameSpaceNote')} allowClear
                           autoSize={{minRows: 3, maxRows: 10}}/>
         </Form.Item>
         <Form.Item
           name="enabled"
-          label={l('pages.nameSpace.enable')}>
-          <Switch checkedChildren={l('status.enabled')} unCheckedChildren={l('status.disabled')}
+          label={l('global.table.isEnable')}>
+          <Switch checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                   defaultChecked={formValsPara.enabled}/>
         </Form.Item>
       </>

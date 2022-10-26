@@ -257,18 +257,18 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       hideInTable: false,
       filters: [
         {
-          text: l('global.table.enabled'),
+          text: l('status.enabled'),
           value: 1,
         },
         {
-          text: l('global.table.disabled'),
+          text: l('status.disabled'),
           value: 0,
         },
       ],
       filterMultiple: false,
       valueEnum: {
-        true: {text: l('global.table.enabled'), status: 'Success'},
-        false: {text: l('global.table.disabled'), status: 'Error'},
+        true: {text: l('status.enabled'), status: 'Success'},
+        false: {text: l('status.disabled'), status: 'Error'},
       },
     },
     {

@@ -17,28 +17,21 @@
  *
  */
 
-package com.dlink.core;
+export default {
+  'chart.lineChart': '折线图',
+  'chart.barChart': '条形图',
+  'chart.pieChart': '饼图',
+  'chart.type': '图形类型',
 
-import com.dlink.executor.Executor;
-import com.dlink.interceptor.FlinkInterceptor;
+  'chart.xAxis': 'X 轴',
+  'chart.yAxis': 'Y 轴',
+  'chart.groupColumns': '分组字段',
+  'chart.stack': '堆叠',
+  'chart.group': '分组',
+  'chart.percentage': '百分比',
+  'chart.openSlider': '缩略轴',
+  'chart.openStepType': '阶梯线',
+  'chart.angle': '弧轴',
+  'chart.color': '颜色',
 
-import org.junit.Assert;
-import org.junit.Test;
-
-/**
- * FlinkInterceptorTest
- *
- * @author wenmo
- * @since 2022/4/9 17:48
- **/
-public class FlinkInterceptorTest {
-
-    @Test
-    public void replaceFragmentTest() {
-        String statement = "nullif1:=NULLIF(1, 0) as val;"
-            + "nullif2:=NULLIF(0, 0) as val$null;"
-            + "select ${nullif1},${nullif2}";
-        String pretreatStatement = FlinkInterceptor.pretreatStatement(Executor.build(), statement);
-        Assert.assertEquals("select NULLIF(1, 0) as val,NULLIF(0, 0) as val$null",pretreatStatement);
-    }
 }

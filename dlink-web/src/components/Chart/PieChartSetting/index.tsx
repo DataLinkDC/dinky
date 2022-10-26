@@ -94,7 +94,7 @@ const PieChartSetting: React.FC<PieChartProps> = (props) => {
         <Row>
           <Col span={12}>
             <Form.Item
-              label="弧轴" className={styles.form_item} name="angleField"
+              label={l('chart.angle')} className={styles.form_item} name="angleField"
             >
               {column && column.length > 0 ? (
                 <Select allowClear showSearch
@@ -107,7 +107,7 @@ const PieChartSetting: React.FC<PieChartProps> = (props) => {
           </Col>
           <Col span={12}>
             <Form.Item
-              label="颜色" className={styles.form_item} name="colorField"
+              label={l('chart.color')} className={styles.form_item} name="colorField"
             >
               {column && column.length > 1 ? (
                 <Select allowClear showSearch

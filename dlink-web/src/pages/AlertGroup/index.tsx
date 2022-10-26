@@ -54,8 +54,8 @@ const AlertGroupTableList: React.FC<{}> = (props: any) => {
       handleUpdateModalVisible(true);
     } else if (key === 'delete') {
       Modal.confirm({
-        title: '删除报警组配置',
-        content: '确定删除该报警组配置吗？',
+        title: l('pages.registerCenter.alert.group.delete'),
+        content: l('pages.registerCenter.alert.group.deleteConfirm'),
         okText: l('button.confirm'),
         cancelText: l('button.cancel'),
         onOk: async () => {
@@ -85,31 +85,22 @@ const AlertGroupTableList: React.FC<{}> = (props: any) => {
 
   const columns: ProColumns<AlertGroupTableListItem>[] = [
     {
-      title: '名称',
+      title: l('pages.registerCenter.alert.group.name'),
       dataIndex: 'name',
-      tip: '名称是唯一的',
       sorter: true,
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '名称为必填项',
-          },
-        ],
-      },
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
     },
     {
-      title: '报警组ID',
+      title: l('pages.registerCenter.alert.group.groupid'),
       dataIndex: 'id',
       hideInTable: true,
       hideInForm: true,
       hideInSearch: true,
     },
     {
-      title: '报警实例',
+      title: l('pages.registerCenter.alert.group.alertInstanceIds'),
       sorter: true,
       dataIndex: 'alertInstanceIds',
       hideInTable: true,
@@ -117,7 +108,7 @@ const AlertGroupTableList: React.FC<{}> = (props: any) => {
       hideInSearch: true,
     },
     {
-      title: '注释',
+      title: l('global.table.note'),
       sorter: true,
       valueType: 'textarea',
       dataIndex: 'note',
@@ -126,25 +117,25 @@ const AlertGroupTableList: React.FC<{}> = (props: any) => {
       hideInTable: true,
     },
     {
-      title: '是否启用',
+      title: l('global.table.isEnable'),
       dataIndex: 'enabled',
       hideInForm: true,
       hideInSearch: true,
       hideInTable: false,
       filters: [
         {
-          text: '已启用',
+          text: l('status.enabled'),
           value: 1,
         },
         {
-          text: '已禁用',
+          text: l('status.disabled'),
           value: 0,
         },
       ],
       filterMultiple: false,
       valueEnum: {
-        true: {text: '已启用', status: 'Success'},
-        false: {text: '已禁用', status: 'Error'},
+        true: {text: l('status.enabled'), status: 'Success'},
+        false: {text: l('status.disabled'), status: 'Error'},
       },
     },
     {
@@ -181,7 +172,7 @@ const AlertGroupTableList: React.FC<{}> = (props: any) => {
   return (
     <PageContainer title={false}>
       <ProTable<AlertGroupTableListItem>
-        headerTitle="报警组管理"
+        headerTitle={l('pages.registerCenter.alert.groupManagement')}
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -211,7 +202,10 @@ const AlertGroupTableList: React.FC<{}> = (props: any) => {
                   total: <a
                     style={{fontWeight: 600}}>{selectedRowsState.length}</a>
                 })}  &nbsp;&nbsp;              <span>
-                被禁用的报警组共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} 人
+              {l('pages.registerCenter.alert.group.disableTotalOf', '', {
+                total:
+                  selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)
+              })}
               </span>
             </div>
           }
@@ -219,8 +213,8 @@ const AlertGroupTableList: React.FC<{}> = (props: any) => {
           <Button type="primary" danger
                   onClick={() => {
                     Modal.confirm({
-                      title: '删除报警组',
-                      content: '确定删除选中的报警组吗？',
+                      title: l('pages.registerCenter.alert.group.delete'),
+                      content: l('pages.registerCenter.alert.group.deleteConfirm'),
                       okText: l('button.confirm'),
                       cancelText: l('button.cancel'),
                       onOk: async () => {
@@ -236,8 +230,8 @@ const AlertGroupTableList: React.FC<{}> = (props: any) => {
           <Button type="primary"
                   onClick={() => {
                     Modal.confirm({
-                      title: '启用报警组',
-                      content: '确定启用选中的报警组吗？',
+                      title: l('pages.registerCenter.alert.group.enable'),
+                      content: l('pages.registerCenter.alert.group.enableConfirm'),
                       okText: l('button.confirm'),
                       cancelText: l('button.cancel'),
                       onOk: async () => {
@@ -251,8 +245,8 @@ const AlertGroupTableList: React.FC<{}> = (props: any) => {
           <Button danger
                   onClick={() => {
                     Modal.confirm({
-                      title: '禁用报警组',
-                      content: '确定禁用选中的报警组吗？',
+                      title: l('pages.registerCenter.alert.group.disable'),
+                      content: l('pages.registerCenter.alert.group.disableConfirm'),
                       okText: l('button.confirm'),
                       cancelText: l('button.cancel'),
                       onOk: async () => {

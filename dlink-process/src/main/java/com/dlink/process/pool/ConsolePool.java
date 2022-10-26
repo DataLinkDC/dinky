@@ -52,7 +52,7 @@ public class ConsolePool extends AbstractPool<StringBuilder> {
 
     public static void write(String str, Integer userId) {
         String user = String.valueOf(userId);
-        consoleEntityMap.getOrDefault(user, new StringBuilder()).append(str);
+        consoleEntityMap.getOrDefault(user, new StringBuilder("Dinky User Console:")).append(str);
     }
 
 }

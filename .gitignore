@@ -36,6 +36,7 @@ target/*
 dlink-web/node_modules/*
 dlink-web/node/*
 dlink-web/dist/*
+dlink-web/.mfsu-production
 dlink-admin/src/main/resources/static/*
 dependency-reduced-pom.xml
 
