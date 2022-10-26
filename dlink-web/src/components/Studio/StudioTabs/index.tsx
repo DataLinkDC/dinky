@@ -85,11 +85,11 @@ const EditorTabs = (props: any) => {
 
   const menu = (pane) => (
     <Menu onClick={(e) => handleClickMenu(e, pane)}>
-      <Menu.Item key="CLOSE_OTHER">
-        <span>关闭其他</span>
-      </Menu.Item>
       <Menu.Item key="CLOSE_ALL">
-        <span>关闭所有</span>
+        <span>{l('right.menu.closeAll')}</span>
+      </Menu.Item>
+      <Menu.Item key="CLOSE_OTHER">
+        <span>{l('right.menu.closeOther')}</span>
       </Menu.Item>
     </Menu>
   );
@@ -128,13 +128,26 @@ const EditorTabs = (props: any) => {
           tabsKey={pane.key}
           sql={pane.value}
           monaco={pane.monaco}
-          // sqlMetaData={pane.sqlMetaData}
+          sqlMetaData={pane.sqlMetaData}
           height={height ? height : (toolHeight - 32)}
           width={width}
-          language={current.task.dialect === DIALECT.JAVA ? 'java' : 'sql'}
+          language={getLanguage(current.task.dialect)}
         />
       </TabPane>)
     }
+  }
+  const getLanguage = (dialect: string) => {
+    switch (dialect) {
+      case DIALECT.JAVA:
+        return DIALECT.JAVA.toLowerCase()
+      case DIALECT.SCALA:
+        return DIALECT.SCALA.toLowerCase()
+      case DIALECT.PYTHON:
+        return DIALECT.PYTHON.toLowerCase()
+      default:
+        return DIALECT.SQL.toLowerCase()
+    }
+
   }
 
   return (

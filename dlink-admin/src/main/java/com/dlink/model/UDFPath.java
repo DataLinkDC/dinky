@@ -17,28 +17,20 @@
  *
  */
 
-package com.dlink.core;
+package com.dlink.model;
 
-import com.dlink.executor.Executor;
-import com.dlink.interceptor.FlinkInterceptor;
-
-import org.junit.Assert;
-import org.junit.Test;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- * FlinkInterceptorTest
- *
- * @author wenmo
- * @since 2022/4/9 17:48
- **/
-public class FlinkInterceptorTest {
-
-    @Test
-    public void replaceFragmentTest() {
-        String statement = "nullif1:=NULLIF(1, 0) as val;"
-            + "nullif2:=NULLIF(0, 0) as val$null;"
-            + "select ${nullif1},${nullif2}";
-        String pretreatStatement = FlinkInterceptor.pretreatStatement(Executor.build(), statement);
-        Assert.assertEquals("select NULLIF(1, 0) as val,NULLIF(0, 0) as val$null",pretreatStatement);
-    }
+ * @author ZackYoung
+ * @since 0.6.8
+ */
+@Getter
+@Setter
+@Builder
+public class UDFPath {
+    String[] jarPaths;
+    String[] pyPaths;
 }

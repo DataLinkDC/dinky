@@ -28,10 +28,11 @@ import 'antd/dist/antd.css';
 import './index.css';
 import CodeEdit from "@/components/Common/CodeEdit";
 import {useIntl} from "umi";
+import { DIALECT } from "@/components/Studio/conf";
 
 const {Option} = Select;
 
-const UDFTemplate: React.FC<{}> = (props) => {
+const UDFTemplate: React.FC<{}> = () => {
 
   const [open, setOpen] = useState(false);
 
@@ -89,7 +90,6 @@ const UDFTemplate: React.FC<{}> = (props) => {
       title={(tModel.id ? '修改' : '添加') + "UDF模板"}
       width={720}
       onClose={onClose}
-      open={open}
       extra={
         <Space>
           <Button onClick={onClose}>{l('button.cancel')}</Button>
@@ -119,9 +119,9 @@ const UDFTemplate: React.FC<{}> = (props) => {
               rules={[{required: true, message: '请选择代码类型'}]}
             >
               <Select placeholder="请选择代码类型">
-                <Option value="java">java</Option>
-                <Option value="python">python</Option>
-                <Option value="scala">scala</Option>
+                <Option value={DIALECT.JAVA}>{DIALECT.JAVA}</Option>
+                <Option value={DIALECT.SCALA}>{DIALECT.SCALA}</Option>
+                <Option value={DIALECT.PYTHON}>{DIALECT.PYTHON}</Option>
               </Select>
             </Form.Item>
           </Col>
@@ -166,8 +166,8 @@ const UDFTemplate: React.FC<{}> = (props) => {
 
   const deleteUDFTemplate = (id: number) => {
     Modal.confirm({
-      title: '删除集群',
-      content: '确定删除该集群吗？',
+      title: '删除模板',
+      content: '确定删除该模板吗？',
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -230,7 +230,7 @@ const UDFTemplate: React.FC<{}> = (props) => {
     }, {
       title: l('global.table.operate'),
       key: 'action',
-      render: (text, record, _, action) => (
+      render: (text, record) => (
         <Space size="middle">
           <Button type="primary" icon={<FormOutlined/>} onClick={() => changeModel(record)}></Button>
           <Button type="primary" icon={<DeleteOutlined/>} onClick={() => {
@@ -245,7 +245,7 @@ const UDFTemplate: React.FC<{}> = (props) => {
     <PageContainer title={false}>
       {<Box/>}
       <ProTable
-        request={(params, sorter, filter) => getTemplate()}
+        request={() => getTemplate()}
         columns={columns}
         search={false}
         toolBarRender={() => [

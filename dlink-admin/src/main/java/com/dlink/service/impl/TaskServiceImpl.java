@@ -31,6 +31,7 @@ import com.dlink.common.result.Result;
 import com.dlink.config.Dialect;
 import com.dlink.constant.FlinkRestResultConstant;
 import com.dlink.constant.NetConstant;
+import com.dlink.context.TenantContextHolder;
 import com.dlink.daemon.task.DaemonFactory;
 import com.dlink.daemon.task.DaemonTaskConfig;
 import com.dlink.db.service.impl.SuperServiceImpl;
@@ -73,6 +74,8 @@ import com.dlink.model.Task;
 import com.dlink.model.TaskOperatingSavepointSelect;
 import com.dlink.model.TaskOperatingStatus;
 import com.dlink.model.TaskVersion;
+import com.dlink.model.UDFPath;
+import com.dlink.model.UDFTemplate;
 import com.dlink.result.SqlExplainResult;
 import com.dlink.result.TaskOperatingResult;
 import com.dlink.service.AlertGroupService;
@@ -91,8 +94,10 @@ import com.dlink.service.StatementService;
 import com.dlink.service.TaskService;
 import com.dlink.service.TaskVersionService;
 import com.dlink.service.UDFService;
+import com.dlink.service.UDFTemplateService;
 import com.dlink.utils.CustomStringJavaCompiler;
 import com.dlink.utils.JSONUtil;
+import com.dlink.utils.UDFUtil;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -132,6 +137,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.lang.tree.TreeUtil;
@@ -173,6 +179,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private CatalogueService catalogueService;
     @Autowired
     private FragmentVariableService fragmentVariableService;
+    @Autowired
+    private UDFTemplateService udfTemplateService;
 
     @Value("${spring.datasource.driver-class-name}")
     private String driver;
@@ -202,7 +210,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                     task.getDatabaseId(), null));
         }
         JobConfig config = buildJobConfig(task);
-        config.setJarFiles(udfService.initUDF(task.getStatement(), config.getGatewayConfig().getType()));
+        UDFPath udfPath = udfService.initUDF(task.getStatement(), GatewayType.get(config.getType()));
+        config.setJarFiles(udfPath.getJarPaths());
+        config.setPyFiles(udfPath.getPyPaths());
         JobManager jobManager = JobManager.build(config);
         if (!config.isJarTask()) {
             return jobManager.executeSql(task.getStatement());
@@ -357,12 +367,28 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public boolean saveOrUpdateTask(Task task) {
-        // to compiler java udf
+        if (Dialect.isUDF(task.getDialect())) {
+            if (CollUtil.isNotEmpty(task.getConfig()) && Asserts.isNullString(task.getStatement())) {
+                Map<String, String> config = task.getConfig().get(0);
+                UDFTemplate template = udfTemplateService.getById(config.get("templateId"));
+                if (template != null) {
+                    String code = UDFUtil.templateParse(task.getDialect(), template.getTemplateCode(),
+                            config.get("className"));
+                    task.setStatement(code);
+                }
+            }
+        }
+        // to compiler udf
         if (Asserts.isNotNullString(task.getDialect()) && Dialect.JAVA.equalsVal(task.getDialect())
                 && Asserts.isNotNullString(task.getStatement())) {
             CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(task.getStatement());
             task.setSavePointPath(compiler.getFullClassName());
+        } else if (Dialect.PYTHON.equalsVal(task.getDialect())) {
+            task.setSavePointPath(task.getName() + "." + UDFUtil.getPyUDFAttr(task.getStatement()));
+        } else {
+            task.setSavePointPath(UDFUtil.getScalaFullClassName(task.getStatement()));
         }
+
         // if modify task else create task
         if (task.getId() != null) {
             Task taskInfo = getById(task.getId());
@@ -417,6 +443,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Task defaultFlinkSQLEnvTask = getTaskByNameAndTenantId(name, tenantId);
         if (null == defaultFlinkSQLEnvTask) {
             defaultFlinkSQLEnvTask = new Task();
+        } else {
+            return defaultFlinkSQLEnvTask;
         }
         // defaultFlinkSQLEnvTask.setId(1);
         defaultFlinkSQLEnvTask.setName(name);
@@ -478,7 +506,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public Task getUDFByClassName(String className) {
         Task task = getOne(
-                new QueryWrapper<Task>().eq("dialect", "Java").eq("enabled", 1).eq("save_point_path", className));
+                new QueryWrapper<Task>().in("dialect", Dialect.JAVA, Dialect.SCALA, Dialect.PYTHON).eq("enabled", 1)
+                        .eq("save_point_path", className));
         Assert.check(task);
         task.setStatement(statementService.getById(task.getId()).getStatement());
         return task;
@@ -487,7 +516,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public List<Task> getAllUDF() {
         List<Task> tasks =
-                list(new QueryWrapper<Task>().eq("dialect", "Java").eq("enabled", 1).isNotNull("save_point_path"));
+                list(new QueryWrapper<Task>().in("dialect", Dialect.JAVA, Dialect.SCALA, Dialect.PYTHON)
+                        .eq("enabled", 1).isNotNull("save_point_path"));
         return tasks.stream().peek(task -> {
             Assert.check(task);
             task.setStatement(statementService.getById(task.getId()).getStatement());
@@ -496,6 +526,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public Result releaseTask(Integer id) {
+
         Task task = getTaskInfoById(id);
         Assert.check(task);
         if (JobLifeCycle.DEVELOP.equalsValue(task.getStep())) {
@@ -833,8 +864,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             jobInfoDetail = pool.get(key);
         } else {
             jobInfoDetail = new JobInfoDetail(id);
-            JobInstance jobInstance = jobInstanceService.getById(id);
+            JobInstance jobInstance = jobInstanceService.getByIdWithoutTenant(id);
             Asserts.checkNull(jobInstance, "该任务实例不存在");
+            TenantContextHolder.set(jobInstance.getTenantId());
             jobInfoDetail.setInstance(jobInstance);
             Cluster cluster = clusterService.getById(jobInstance.getClusterId());
             jobInfoDetail.setCluster(cluster);

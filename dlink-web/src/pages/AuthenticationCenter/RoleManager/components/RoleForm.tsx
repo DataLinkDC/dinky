@@ -126,7 +126,7 @@ const RoleForm: React.FC<TenantFormProps> = (props) => {
         </Form.Item>
         <Form.Item
           name="note"
-          label={l('pages.role.note')}
+          label={l('global.table.note')}
         >
           <Input.TextArea placeholder={l('pages.role.EnterNote')} allowClear
                           autoSize={{minRows: 3, maxRows: 10}}/>

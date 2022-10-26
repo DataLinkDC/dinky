@@ -125,13 +125,10 @@ export default {
   'pages.settings.FlinkNotUse': '禁用',
 
   'pages.user.UserManger': '用户管理',
-  'pages.user.UserName': '用户名',//用户名
-  'pages.user.UserJobNumber': '工号',//工号
-  'pages.user.UserPhoneNumber': '手机号',//手机号
-  'pages.user.UserNickName': '昵称',//昵称
-  'pages.user.UserIsUse': '是否启用',//是否启用
-  'pages.user.UserUpdateTime': '最近更新时间',//最近更新时间
-  'pages.user.UserCreateTime': '创建时间',//创建时间
+  'pages.user.UserName': '用户名',
+  'pages.user.UserJobNumber': '工号',
+  'pages.user.UserPhoneNumber': '手机号',
+  'pages.user.UserNickName': '昵称',
 
 
   'pages.user.UserDeleteUser': '删除用户',
@@ -161,9 +158,6 @@ export default {
 
   'pages.tenant.TenantManager': '租户管理',
   'pages.tenant.TenantCode': '租户编码',
-  'pages.tenant.Note': '备注/描述',
-  'pages.tenant.CreateTime': '创建时间',
-  'pages.tenant.UpdateTime': '最后更新时间',
   'pages.tenant.AssignUser': '分配用户',
   'pages.tenant.create': '创建租户',
   'pages.tenant.update': '修改租户',
@@ -180,10 +174,6 @@ export default {
   'pages.nameSpace.NameSpaceManagement': '命名空间管理',
   'pages.nameSpace.NameSpaceCode': '命名空间编码',
   'pages.nameSpace.belongTenant': '所属租户',
-  'pages.nameSpace.enable': '是否启用',
-  'pages.nameSpace.note': '备注/描述',
-  'pages.nameSpace.createTime': '创建时间',
-  'pages.nameSpace.updateTime': '最后更新时间',
   'pages.nameSpace.deleteNameSpace': '删除命名空间',
   'pages.nameSpace.deleteNameSpaceConfirm': '您确定要删除此命名空间吗？',
   'pages.nameSpace.enableNameSpace': '启用命名空间',
@@ -200,10 +190,7 @@ export default {
   'pages.role.roleCode': '角色编码',
   'pages.role.roleName': '角色名称',
   'pages.role.namespaceIds': '命名空间',
-  'pages.role.note': '备注/描述',
   'pages.role.belongTenant': '所属租户',
-  'pages.role.createTime': '创建时间',
-  'pages.role.updateTime': '最后更新时间',
   'pages.role.create': '创建角色',
   'pages.role.update': '修改角色',
   'pages.role.EnterRoleCode': '请输入角色编码!',
@@ -235,9 +222,15 @@ export default {
   'pages.TableData.data': '数据',
   'pages.TableData.search': '搜索',
 
-  'pages.datastudio.label.info': '数据',
+  'pages.datastudio.label.info': '信息',
   'pages.datastudio.label.result': '结果',
+
   'pages.datastudio.label.lineage': '血缘',
+  'pages.datastudio.label.lineage.expand.field': '展开字段',
+  'pages.datastudio.label.lineage.collapse.field': '收起字段',
+  'pages.datastudio.label.lineage.expand.lineage': '收起血缘',
+  'pages.datastudio.label.lineage.collapse.lineage': '展开血缘',
+
   'pages.datastudio.label.process': '进程',
   'pages.datastudio.label.history': '历史',
   'pages.datastudio.label.function': '函数',
@@ -271,5 +264,30 @@ export default {
   'pages.devops.lable.onlinelist': '上线明细',
   'pages.devops.lable.offlinelist': '下线明细',
   'pages.devops.lable.instance': '实例',
+
+  'pages.registerCenter.alert.instanceManagement': '报警实例管理',
+  'pages.registerCenter.alert.instance.name': '名称',
+  'pages.registerCenter.alert.instance.type': '类型',
+  'pages.registerCenter.alert.instance.delete': '删除报警实例',
+  'pages.registerCenter.alert.instance.deleteConfirm': '确定删除选中的报警实例吗？',
+  'pages.registerCenter.alert.instance.enable': '启用报警实例',
+  'pages.registerCenter.alert.instance.enableConfirm': '您确定要启用此报警实例吗？',
+  'pages.registerCenter.alert.instance.disable': '禁用报警实例',
+  'pages.registerCenter.alert.instance.disableConfirm': '您确定要禁用此报警实例吗？',
+  'pages.registerCenter.alert.instance.disableTotalOf': '被禁用的报警实例共 {total} 个',
+
+
+  'pages.registerCenter.alert.groupManagement': '报警组管理',
+  'pages.registerCenter.alert.group.name': '报警组名称',
+  'pages.registerCenter.alert.group.groupid': '报警组ID',
+  'pages.registerCenter.alert.group.alertInstanceIds': '报警实例',
+  'pages.registerCenter.alert.group.delete': '删除报警组',
+  'pages.registerCenter.alert.group.deleteConfirm': '确定删除选中的报警组吗？',
+  'pages.registerCenter.alert.group.enable': '启用报警组',
+  'pages.registerCenter.alert.group.enableConfirm': '您确定要启用此报警组吗？',
+  'pages.registerCenter.alert.group.disable': '禁用报警组',
+  'pages.registerCenter.alert.group.disableConfirm': '您确定要禁用此报警组吗？',
+  'pages.registerCenter.alert.group.disableTotalOf': '被禁用的报警组共 {total} 个',
+
 
 };

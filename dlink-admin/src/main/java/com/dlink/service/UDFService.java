@@ -20,6 +20,7 @@
 package com.dlink.service;
 
 import com.dlink.gateway.GatewayType;
+import com.dlink.model.UDFPath;
 
 /**
  * @author ZackYoung
@@ -27,5 +28,5 @@ import com.dlink.gateway.GatewayType;
  */
 public interface UDFService {
 
-    String[] initUDF(String statement, GatewayType gatewayType);
+    UDFPath initUDF(String statement, GatewayType gatewayType);
 }

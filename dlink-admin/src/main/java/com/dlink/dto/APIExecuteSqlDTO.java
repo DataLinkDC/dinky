@@ -53,12 +53,10 @@ public class APIExecuteSqlDTO extends AbstractStatementDTO {
     private GatewayConfig gatewayConfig;
 
     public JobConfig getJobConfig() {
-        Integer savePointStrategy = 0;
-        if (Asserts.isNotNullString(savePointPath)) {
-            savePointStrategy = 3;
-        }
+        int savePointStrategy = Asserts.isNotNullString(savePointPath) ? 3 : 0;
+
         return new JobConfig(
-                type, useResult, useChangeLog, useChangeLog, false, null, true, address, jobName,
+                type, useResult, useChangeLog, useAutoCancel, false, null, true, address, jobName,
                 isFragment(), useStatementSet, maxRowNum, checkPoint, parallelism, savePointStrategy,
                 savePointPath, configuration, gatewayConfig);
     }

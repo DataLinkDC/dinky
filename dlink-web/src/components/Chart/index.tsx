@@ -23,7 +23,7 @@ import {StateType} from "@/pages/DataStudio/model";
 import {connect, useIntl} from "umi";
 import styles from "./index.less";
 import {RedoOutlined} from '@ant-design/icons';
-import {CHART, isSql} from "@/components/Studio/conf";
+import {isSql} from "@/components/Studio/conf";
 import {Bar, Line, Pie} from '@ant-design/plots';
 import React, {useEffect, useState} from "react";
 import LineChartSetting from "./LineChartSetting";
@@ -39,6 +39,14 @@ const Chart = (props: any) => {
 
   const intl = useIntl();
   const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
+
+  const CHART = {
+    LINE: l('chart.lineChart'),
+    BAR: l('chart.barChart'),
+    PIE: l('chart.pieChart'),
+  };
+
 
   const {current, result, height, dispatch} = props;
   const [config, setConfig] = useState(undefined);
@@ -134,7 +142,7 @@ const Chart = (props: any) => {
             <Row>
               <Col span={12}>
                 <Form.Item
-                  label="图形类型" className={styles.form_item} name="type"
+                  label={l('chart.type')} className={styles.form_item} name="type"
                 >
                   <Select defaultValue={CHART.LINE} value={CHART.LINE}>
                     <Option value={CHART.LINE}>{CHART.LINE}</Option>
@@ -145,7 +153,7 @@ const Chart = (props: any) => {
               </Col>
               {!isSql(current.task.dialect) ? <Col span={12}>
                 <Button type="primary" onClick={toRebuild} icon={<RedoOutlined/>}>
-                  刷新数据
+                  {l('button.refreshData')}
                 </Button>
               </Col> : undefined}
             </Row>

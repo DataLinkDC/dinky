@@ -36,6 +36,7 @@ import com.dlink.service.StatementService;
 import com.dlink.service.TaskService;
 import com.dlink.service.TaskVersionService;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,6 +84,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         task.setName(catalogueTaskDTO.getName());
         task.setAlias(catalogueTaskDTO.getAlias());
         task.setDialect(catalogueTaskDTO.getDialect());
+        task.setConfig(Collections.singletonList(catalogueTaskDTO.getConfig()));
         taskService.saveOrUpdateTask(task);
         Catalogue catalogue = new Catalogue();
         catalogue.setTenantId(catalogueTaskDTO.getTenantId());

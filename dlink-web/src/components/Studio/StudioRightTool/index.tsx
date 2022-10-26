@@ -57,6 +57,12 @@ const StudioRightTool = (props: any) => {
     if (DIALECT.JAVA === current.task.dialect) {
       return renderUDFContent();
     }
+    if (DIALECT.SCALA === current.task.dialect) {
+      return renderUDFContent();
+    }
+    if (DIALECT.PYTHON === current.task.dialect) {
+      return renderUDFContent();
+    }
     if (DIALECT.KUBERNETES_APPLICATION === current.task.dialect) {
       return renderKubernetesContent();
     }

@@ -21,7 +21,7 @@ package com.dlink.service.impl;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.common.result.Result;
-import com.dlink.context.RequestContext;
+import com.dlink.context.TenantContextHolder;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.TenantMapper;
 import com.dlink.model.Namespace;
@@ -66,7 +66,7 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> im
             }
             tenant.setIsDelete(false);
             if (save(tenant)) {
-                RequestContext.set(tenant.getId());
+                TenantContextHolder.set(tenant.getId());
                 return Result.succeed("新增成功");
             }
             return Result.failed("新增失败");
@@ -101,12 +101,14 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> im
                 return Result.failed("租户不存在");
             }
 
-            Long tenantRoleCount = roleService.getBaseMapper().selectCount(new QueryWrapper<Role>().eq("tenant_id", id));
+            Long tenantRoleCount =
+                    roleService.getBaseMapper().selectCount(new QueryWrapper<Role>().eq("tenant_id", id));
             if (tenantRoleCount > 0) {
                 return Result.failed("删除租户失败，该租户已绑定角色");
             }
 
-            Long tenantNamespaceCount = namespaceService.getBaseMapper().selectCount(new QueryWrapper<Namespace>().eq("tenant_id", id));
+            Long tenantNamespaceCount =
+                    namespaceService.getBaseMapper().selectCount(new QueryWrapper<Namespace>().eq("tenant_id", id));
             if (tenantNamespaceCount > 0) {
                 return Result.failed("删除租户失败，该租户已绑定名称空间");
             }
@@ -162,8 +164,8 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> im
     public Result switchTenant(JsonNode para) {
         if (para.size() > 0) {
             Integer tenantId = para.get("tenantId").asInt();
-            RequestContext.remove();
-            RequestContext.set(tenantId);
+            TenantContextHolder.clear();
+            TenantContextHolder.set(tenantId);
             return Result.succeed("切换租户成功");
         } else {
             return Result.failed("无法切换租户,获取不到租户信息");

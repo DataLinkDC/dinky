@@ -44,6 +44,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class JobHistoryServiceImpl extends SuperServiceImpl<JobHistoryMapper, JobHistory> implements JobHistoryService {
 
     @Override
+    public JobHistory getByIdWithoutTenant(Integer id) {
+        return baseMapper.getByIdWithoutTenant(id);
+    }
+
+    @Override
     public JobHistory getJobHistory(Integer id) {
         return getJobHistoryInfo(getById(id));
     }
@@ -111,11 +116,10 @@ public class JobHistoryServiceImpl extends SuperServiceImpl<JobHistoryMapper, Jo
             jobHistory.setCheckpointsConfigJson(JSONUtil.toJsonString(checkPointsConfig));
             jobHistory.setConfigJson(JSONUtil.toJsonString(jobsConfig));
             if (needSave) {
-                if (Asserts.isNotNull(getById(id))) {
-                    updateById(jobHistory);
-                } else {
-                    save(jobHistory);
-                }
+                updateById(jobHistory);
+                /*
+                 * if (Asserts.isNotNull(getById(id))) { updateById(jobHistory); } else { save(jobHistory); }
+                 */
             }
         } catch (Exception e) {
             e.printStackTrace();
