@@ -52,8 +52,6 @@ import com.dlink.model.UDFPath;
 import com.dlink.process.context.ProcessContextHolder;
 import com.dlink.process.model.ProcessEntity;
 import com.dlink.process.model.ProcessType;
-import com.dlink.process.pool.ConsolePool;
-import com.dlink.process.pool.ProcessPool;
 import com.dlink.result.DDLResult;
 import com.dlink.result.IResult;
 import com.dlink.result.SelectResult;
@@ -72,7 +70,6 @@ import com.dlink.session.SessionPool;
 import com.dlink.sql.FlinkQuery;
 import com.dlink.utils.RunTimeUtil;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -199,33 +196,35 @@ public class StudioServiceImpl implements StudioService {
     public JobResult executeCommonSql(SqlDTO sqlDTO) {
         JobResult result = new JobResult();
         result.setStatement(sqlDTO.getStatement());
-        result.setStartTime(LocalDateTime.now());
+        result.setStartTimeNow();
         if (Asserts.isNull(sqlDTO.getDatabaseId())) {
             result.setSuccess(false);
             result.setError("请指定数据源");
-            result.setEndTime(LocalDateTime.now());
-            return result;
-        } else {
-            DataBase dataBase = dataBaseService.getById(sqlDTO.getDatabaseId());
-            if (Asserts.isNull(dataBase)) {
-                result.setSuccess(false);
-                result.setError("数据源不存在");
-                result.setEndTime(LocalDateTime.now());
-                return result;
-            }
-            Driver driver = Driver.build(dataBase.getDriverConfig());
-            JdbcSelectResult selectResult = driver.executeSql(sqlDTO.getStatement(), sqlDTO.getMaxRowNum());
-            driver.close();
-            result.setResult(selectResult);
-            if (selectResult.isSuccess()) {
-                result.setSuccess(true);
-            } else {
-                result.setSuccess(false);
-                result.setError(selectResult.getError());
-            }
-            result.setEndTime(LocalDateTime.now());
+            result.setEndTimeNow();
             return result;
         }
+
+        DataBase dataBase = dataBaseService.getById(sqlDTO.getDatabaseId());
+        if (Asserts.isNull(dataBase)) {
+            result.setSuccess(false);
+            result.setError("数据源不存在");
+            result.setEndTimeNow();
+            return result;
+        }
+
+        Driver driver = Driver.build(dataBase.getDriverConfig());
+        JdbcSelectResult selectResult = driver.executeSql(sqlDTO.getStatement(), sqlDTO.getMaxRowNum());
+        driver.close();
+        result.setResult(selectResult);
+
+        if (selectResult.isSuccess()) {
+            result.setSuccess(true);
+        } else {
+            result.setSuccess(false);
+            result.setError(selectResult.getError());
+        }
+        result.setEndTimeNow();
+        return result;
     }
 
     @Override
@@ -249,8 +248,6 @@ public class StudioServiceImpl implements StudioService {
     }
 
     private List<SqlExplainResult> explainFlinkSql(StudioExecuteDTO studioExecuteDTO) {
-        Map<String, ProcessEntity> map = ProcessPool.getInstance().getMap();
-        Map<String, StringBuilder> map2 = ConsolePool.getInstance().getMap();
         ProcessEntity process = ProcessContextHolder.registerProcess(
             ProcessEntity.init(ProcessType.FLINKEXPLAIN, SaManager.getStpLogic(null).getLoginIdAsInt(), "admin"));
 
@@ -262,11 +259,13 @@ public class StudioServiceImpl implements StudioService {
         config.buildLocal();
         buildSession(config);
         process.infoSuccess();
+
         // To initialize java udf, but it has a bug in the product environment now.
         UDFPath udfPath = udfService.initUDF(studioExecuteDTO.getStatement(), GatewayType.get(config.getType()));
         config.setJarFiles(udfPath.getJarPaths());
         config.setPyFiles(udfPath.getPyPaths());
         process.start();
+
         JobManager jobManager = JobManager.buildPlanMode(config);
         List<SqlExplainResult> sqlExplainResults =
             jobManager.explainSql(studioExecuteDTO.getStatement()).getSqlExplainResults();
