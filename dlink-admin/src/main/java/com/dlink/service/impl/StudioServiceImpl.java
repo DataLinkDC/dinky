@@ -74,11 +74,13 @@ import com.dlink.utils.RunTimeUtil;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -99,29 +101,22 @@ public class StudioServiceImpl implements StudioService {
 
     private static final Logger logger = LoggerFactory.getLogger(StudioServiceImpl.class);
 
-    private final ClusterService clusterService;
-    private final ClusterConfigurationService clusterConfigurationService;
-    private final SavepointsService savepointsService;
-    private final DataBaseService dataBaseService;
-    private final TaskService taskService;
-    private final FragmentVariableService fragmentVariableService;
-    private final UDFService udfService;
+    @Autowired
+    private ClusterService clusterService;
+    @Autowired
+    private ClusterConfigurationService clusterConfigurationService;
+    @Autowired
+    private SavepointsService savepointsService;
+    @Autowired
+    private DataBaseService dataBaseService;
+    @Autowired
+    private TaskService taskService;
 
-    public StudioServiceImpl(ClusterService clusterService,
-                             ClusterConfigurationService clusterConfigurationService,
-                             SavepointsService savepointsService,
-                             DataBaseService dataBaseService,
-                             TaskService taskService,
-                             FragmentVariableService fragmentVariableService,
-                             UDFService udfService) {
-        this.clusterService = clusterService;
-        this.clusterConfigurationService = clusterConfigurationService;
-        this.savepointsService = savepointsService;
-        this.dataBaseService = dataBaseService;
-        this.taskService = taskService;
-        this.fragmentVariableService = fragmentVariableService;
-        this.udfService = udfService;
-    }
+    @Autowired
+    private FragmentVariableService fragmentVariableService;
+
+    @Autowired
+    private UDFService udfService;
 
     private void addFlinkSQLEnv(AbstractStatementDTO statementDTO) {
         ProcessEntity process = ProcessContextHolder.getProcess();
@@ -161,7 +156,7 @@ public class StudioServiceImpl implements StudioService {
     }
 
     private void buildSession(JobConfig config) {
-        // If you are using a shared session, configure the current jobManager address
+        // If you are using a shared session, configure the current jobmanager address
         if (!config.isUseSession()) {
             config.setAddress(clusterService.buildEnvironmentAddress(config.isUseRemote(), config.getClusterId()));
         }
@@ -170,10 +165,8 @@ public class StudioServiceImpl implements StudioService {
     @Override
     public JobResult executeSql(StudioExecuteDTO studioExecuteDTO) {
         if (Dialect.notFlinkSql(studioExecuteDTO.getDialect())) {
-            return executeCommonSql(SqlDTO.build(
-                studioExecuteDTO.getStatement(),
-                studioExecuteDTO.getDatabaseId(),
-                studioExecuteDTO.getMaxRowNum()));
+            return executeCommonSql(SqlDTO.build(studioExecuteDTO.getStatement(),
+                studioExecuteDTO.getDatabaseId(), studioExecuteDTO.getMaxRowNum()));
         } else {
             return executeFlinkSql(studioExecuteDTO);
         }
@@ -183,11 +176,8 @@ public class StudioServiceImpl implements StudioService {
         addFlinkSQLEnv(studioExecuteDTO);
         JobConfig config = studioExecuteDTO.getJobConfig();
         buildSession(config);
-
         // To initialize java udf, but it only support local mode.
-        UDFPath udfPath = udfService.initUDF(studioExecuteDTO.getStatement(),
-            config.getGatewayConfig() == null ? null : config.getGatewayConfig().getType());
-
+        UDFPath udfPath = udfService.initUDF(studioExecuteDTO.getStatement(), GatewayType.get(config.getType()));
         config.setJarFiles(udfPath.getJarPaths());
         config.setPyFiles(udfPath.getPyPaths());
         JobManager jobManager = JobManager.build(config);
@@ -440,15 +430,17 @@ public class StudioServiceImpl implements StudioService {
         JobConfig jobConfig = new JobConfig();
         jobConfig.setAddress(cluster.getJobManagerHost());
         jobConfig.setType(cluster.getType());
+        // 如果用户选择用dlink平台来托管集群信息 说明任务一定是从dlink发起提交的
         if (Asserts.isNotNull(cluster.getClusterConfigurationId())) {
-            // 如果用户选择用dlink平台来托管集群信息 说明任务一定是从dlink发起提交的
-            Map<String, Object> gatewayConfig = clusterConfigurationService.getGatewayConfig(cluster.getClusterConfigurationId());
+            Map<String, Object> gatewayConfig =
+                clusterConfigurationService.getGatewayConfig(cluster.getClusterConfigurationId());
             jobConfig.buildGatewayConfig(gatewayConfig);
             jobConfig.getGatewayConfig().getClusterConfig().setAppId(cluster.getName());
             jobConfig.setTaskId(cluster.getTaskId());
             useGateway = true;
-        } else {
-            // 用户选择外部的平台来托管集群信息，但是集群上的任务不一定是通过dlink提交的
+        }
+        // 用户选择外部的平台来托管集群信息，但是集群上的任务不一定是通过dlink提交的
+        else {
             jobConfig.setTaskId(taskId);
         }
         JobManager jobManager = JobManager.build(jobConfig);
@@ -459,7 +451,6 @@ public class StudioServiceImpl implements StudioService {
             if (jobConfig.getTaskId().equals(0)) {
                 return true;
             }
-
             for (JobInfo item : savePointResult.getJobInfos()) {
                 if (Asserts.isEqualsIgnoreCase(jobId, item.getJobId()) && Asserts.isNotNull(jobConfig.getTaskId())) {
                     Savepoints savepoints = new Savepoints();
@@ -489,29 +480,34 @@ public class StudioServiceImpl implements StudioService {
         } else {
             studioMetaStoreDTO.setStatement(FlinkQuery.showCatalogs());
             IResult result = executeMSFlinkSql(studioMetaStoreDTO);
-
             if (result instanceof DDLResult) {
                 DDLResult ddlResult = (DDLResult) result;
-                ddlResult.getColumns().stream().findFirst().ifPresent(key -> {
-                        for (Map<String, Object> item : ddlResult.getRowData()) {
-                            catalogs.add(Catalog.build(item.get(key).toString()));
-                        }
+                Iterator<String> iterator = ddlResult.getColumns().iterator();
+                if (iterator.hasNext()) {
+                    String key = iterator.next();
+                    List<Map<String, Object>> rowData = ddlResult.getRowData();
+                    for (Map<String, Object> item : rowData) {
+                        catalogs.add(Catalog.build(item.get(key).toString()));
                     }
-                );
-
+                }
                 for (Catalog catalog : catalogs) {
-                    String statement = FlinkQuery.useCatalog(catalog.getName()) + FlinkQuery.separator() + FlinkQuery.showDatabases();
+                    String statement = FlinkQuery.useCatalog(catalog.getName()) + FlinkQuery.separator()
+                        + FlinkQuery.showDatabases();
                     studioMetaStoreDTO.setStatement(statement);
                     IResult tableResult = executeMSFlinkSql(studioMetaStoreDTO);
-                    DDLResult tableDDLResult = (DDLResult) tableResult;
-                    tableDDLResult.getColumns().stream().findFirst().ifPresent(key -> {
-                        List<Map<String, Object>> rowData = tableDDLResult.getRowData();
-                        List<Schema> schemas = new ArrayList<>();
-                        for (Map<String, Object> item : rowData) {
-                            schemas.add(Schema.build(item.get(key).toString()));
+                    if (result instanceof DDLResult) {
+                        DDLResult tableDDLResult = (DDLResult) tableResult;
+                        Iterator<String> tableIterator = tableDDLResult.getColumns().iterator();
+                        if (tableIterator.hasNext()) {
+                            String key = tableIterator.next();
+                            List<Map<String, Object>> rowData = tableDDLResult.getRowData();
+                            List<Schema> schemas = new ArrayList<>();
+                            for (Map<String, Object> item : rowData) {
+                                schemas.add(Schema.build(item.get(key).toString()));
+                            }
+                            catalog.setSchemas(schemas);
                         }
-                        catalog.setSchemas(schemas);
-                    });
+                    }
                 }
             }
         }
@@ -529,25 +525,24 @@ public class StudioServiceImpl implements StudioService {
                 tables.addAll(driver.listTables(studioMetaStoreDTO.getDatabase()));
             }
         } else {
-            String baseStatement = FlinkQuery.useCatalog(studioMetaStoreDTO.getCatalog())
-                + FlinkQuery.separator()
-                + FlinkQuery.useDatabase(studioMetaStoreDTO.getDatabase())
-                + FlinkQuery.separator();
-
+            String baseStatement = FlinkQuery.useCatalog(studioMetaStoreDTO.getCatalog()) + FlinkQuery.separator()
+                + FlinkQuery.useDatabase(studioMetaStoreDTO.getDatabase()) + FlinkQuery.separator();
             // show tables
             String tableStatement = baseStatement + FlinkQuery.showTables();
             studioMetaStoreDTO.setStatement(tableStatement);
             IResult result = executeMSFlinkSql(studioMetaStoreDTO);
             if (result instanceof DDLResult) {
                 DDLResult ddlResult = (DDLResult) result;
-                ddlResult.getColumns().stream().findFirst().ifPresent(key -> {
+                Iterator<String> iterator = ddlResult.getColumns().iterator();
+                if (iterator.hasNext()) {
+                    String key = iterator.next();
                     List<Map<String, Object>> rowData = ddlResult.getRowData();
                     for (Map<String, Object> item : rowData) {
                         Table table = Table.build(item.get(key).toString(), studioMetaStoreDTO.getDatabase());
                         table.setCatalog(studioMetaStoreDTO.getCatalog());
                         tables.add(table);
                     }
-                });
+                }
             }
             // show views
             schema.setViews(showInfo(studioMetaStoreDTO, baseStatement, FlinkQuery.showViews()));
@@ -565,13 +560,11 @@ public class StudioServiceImpl implements StudioService {
     @Override
     public List<FlinkColumn> getMSFlinkColumns(StudioMetaStoreDTO studioMetaStoreDTO) {
         List<FlinkColumn> columns = new ArrayList<>();
-        if (!Dialect.notFlinkSql(studioMetaStoreDTO.getDialect())) {
-            String baseStatement = FlinkQuery.useCatalog(
-                studioMetaStoreDTO.getCatalog())
-                + FlinkQuery.separator()
-                + FlinkQuery.useDatabase(studioMetaStoreDTO.getDatabase())
-                + FlinkQuery.separator();
-
+        if (Dialect.notFlinkSql(studioMetaStoreDTO.getDialect())) {
+            // nothing to do
+        } else {
+            String baseStatement = FlinkQuery.useCatalog(studioMetaStoreDTO.getCatalog()) + FlinkQuery.separator()
+                + FlinkQuery.useDatabase(studioMetaStoreDTO.getDatabase()) + FlinkQuery.separator();
             // desc tables
             String tableStatement = baseStatement + FlinkQuery.descTable(studioMetaStoreDTO.getTable());
             studioMetaStoreDTO.setStatement(tableStatement);
@@ -598,15 +591,19 @@ public class StudioServiceImpl implements StudioService {
 
     private List<String> showInfo(StudioMetaStoreDTO studioMetaStoreDTO, String baseStatement, String statement) {
         List<String> infos = new ArrayList<>();
-        studioMetaStoreDTO.setStatement(baseStatement + statement);
+        String tableStatement = baseStatement + statement;
+        studioMetaStoreDTO.setStatement(tableStatement);
         IResult result = executeMSFlinkSql(studioMetaStoreDTO);
         if (result instanceof DDLResult) {
             DDLResult ddlResult = (DDLResult) result;
-            ddlResult.getColumns().stream().findFirst().ifPresent(key -> {
-                for (Map<String, Object> item : ddlResult.getRowData()) {
+            Iterator<String> iterator = ddlResult.getColumns().iterator();
+            if (iterator.hasNext()) {
+                String key = iterator.next();
+                List<Map<String, Object>> rowData = ddlResult.getRowData();
+                for (Map<String, Object> item : rowData) {
                     infos.add(item.get(key).toString());
                 }
-            });
+            }
         }
         return infos;
     }

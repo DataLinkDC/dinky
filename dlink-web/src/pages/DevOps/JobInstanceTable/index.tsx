@@ -147,7 +147,7 @@ const JobInstanceTable = (props: any) => {
           status: JOB_LIFE_CYCLE.ONLINE,
         },
         0: {
-          text: l('global.table.lifecycle.unKnow'),
+          text: l('global.table.lifecycle.unknown'),
           status: JOB_LIFE_CYCLE.UNKNOWN,
         },
       },

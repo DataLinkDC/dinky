@@ -21,6 +21,9 @@ package com.dlink.dto;
 
 import com.dlink.config.Dialect;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -40,4 +43,5 @@ public class CatalogueTaskDTO {
     private String name;
     private String alias;
     private String dialect = Dialect.DEFAULT.getValue();
+    private Map<String,String> config = new HashMap<>();
 }

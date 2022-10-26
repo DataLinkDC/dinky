@@ -46,27 +46,40 @@ export default {
   'button.heartbeat': 'Heartbeat',
   'button.recycle': 'Recycle',
   'button.refresh': 'Refresh',
+  'button.refreshData': 'Refresh Data',
+  'button.collapseDir': 'Collapse Directory',
+
 
   'right.menu.open': 'Open',
   'right.menu.submit': 'Sync Submit',
   'right.menu.exportJson': 'Export JSON',
+  'right.menu.importJson': 'Import JSON',
   'right.menu.rename': 'Rename',
   'right.menu.copy': 'Copy',
   'right.menu.cut': 'Cut',
   'right.menu.paste': 'Paste',
   'right.menu.delete': 'Delete',
-  'right.menu.createCatalogue': 'Create Dir',
-  'right.menu.createRootCatalogue': 'Create Root Dir',
+  'right.menu.createCatalogue': 'Create Directory',
+  'right.menu.createRootCatalogue': 'Create Root Directory',
   'right.menu.uploadZipToCreate': 'Upload Zip To Create',
   'right.menu.createTask': 'Create Task',
-
+  'right.menu.closeAll': 'Close All',
+  'right.menu.closeOther': 'Close Others',
 
   'tips.selected': 'Selected {total} Item',
   'tips.notSelected': 'Not Select',
+  'tips.confirm.logout.session': 'Confirm logout session [{sessionName}] ?',
+  'tips.confirm.delete.table': ' Are you sure you want to delete table [{tableName}]?',
+  'tips.create.session.success': 'Create Session [{session}] success!',
 
   'status.enabled': 'Enabled',
   'status.disabled': 'Disabled',
 
+  'global.time.second': 'Second',
+  'global.time.minute': 'Minute',
+  'global.time.hour': 'Hour',
+  'global.time.day': 'Day',
+  'global.time.millisecond': 'millisecond',
 
   'global.table.operate': 'Operation',
   'global.table.config': 'Config',
@@ -78,15 +91,14 @@ export default {
   'global.table.createTime': 'Create Time',
   'global.table.startTime': 'Start Time',
   'global.table.endTime': 'End Time',
-  'global.table.useTime': 'Use Time',
+  'global.table.useTime': 'Duration',
 
   'global.table.registType': 'Regist Type',
   'global.table.registType.manual': 'Manual',
   'global.table.registType.automatic': 'Automatic',
 
   'global.table.isEnable': 'Is Enable',
-  'global.table.enabled': 'Enabled',
-  'global.table.disabled': 'Disabled',
+  'global.table.note': 'Note',
 
   'global.table.status': 'Status',
   'global.table.status.normal': 'Normal',
@@ -125,7 +137,7 @@ export default {
   'global.table.lifecycle.dev': 'Develop',
   'global.table.lifecycle.publish': 'Publish',
   'global.table.lifecycle.online': 'Online',
-  'global.table.lifecycle.unKnow': 'Unknow',
+  'global.table.lifecycle.unknown': 'Unknown',
   'global.table.runmode': 'Run Mode',
 
 

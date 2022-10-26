@@ -19,6 +19,8 @@
 
 package com.dlink.utils;
 
+import com.dlink.assertion.Asserts;
+import com.dlink.config.Dialect;
 import com.dlink.constant.PathConstant;
 import com.dlink.pool.ClassEntity;
 import com.dlink.pool.ClassPool;
@@ -49,6 +51,7 @@ import org.slf4j.LoggerFactory;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Dict;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.lang.PatternPool;
 import cn.hutool.core.map.MapUtil;
@@ -56,6 +59,9 @@ import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.MD5;
+import cn.hutool.extra.template.TemplateConfig;
+import cn.hutool.extra.template.TemplateEngine;
+import cn.hutool.extra.template.TemplateUtil;
 import groovy.lang.GroovyClassLoader;
 
 /**
@@ -80,6 +86,37 @@ public class UDFUtil {
     public static final String PYTHON_UDF_DEF = "@ud(?:f|tf|af|taf).*\\n+def\\s+(.*)\\(.*\\):";
     public static final String SCALA_UDF_CLASS = "class\\s+(\\w+)(\\s*\\(.*\\)){0,1}\\s+extends";
     public static final String SCALA_UDF_PACKAGE = "package\\s+(.*);";
+    private static final TemplateEngine ENGINE = TemplateUtil.createEngine(new TemplateConfig());
+
+    /**
+     * 模板解析
+     *
+     * @param dialect   方言
+     * @param template  模板
+     * @param className 类名
+     * @return {@link String}
+     */
+    public static String templateParse(String dialect, String template, String className) {
+
+        List<String> split = StrUtil.split(className, ".");
+        switch (Dialect.get(dialect)) {
+            case JAVA:
+            case SCALA:
+                String clazz = CollUtil.getLast(split);
+                String packageName = StrUtil.strip(className, clazz);
+                Dict data = Dict.create()
+                    .set("className", clazz)
+                    .set("package", Asserts.isNullString(packageName) ? "" : StrUtil.strip(packageName, "."));
+                return ENGINE.getTemplate(template).render(data);
+            case PYTHON:
+            default:
+                String clazzName = split.get(0);
+                Dict data2 = Dict.create()
+                    .set("className", clazzName)
+                    .set("attr", split.size() > 1 ? split.get(1) : null);
+                return ENGINE.getTemplate(template).render(data2);
+        }
+    }
 
     public static List<UDF> getUDF(String statement) {
         ProcessEntity process = ProcessContextHolder.getProcess();

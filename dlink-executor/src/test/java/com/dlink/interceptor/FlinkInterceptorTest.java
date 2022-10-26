@@ -17,25 +17,27 @@
  *
  */
 
-package com.dlink.service;
+package com.dlink.interceptor;
 
-import com.dlink.db.service.ISuperService;
-import com.dlink.model.JobHistory;
+import com.dlink.executor.Executor;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
- * JobHistoryService
+ * FlinkInterceptorTest
  *
  * @author wenmo
- * @since 2022/3/2 19:55
+ * @since 2022/4/9 17:48
  **/
-public interface JobHistoryService extends ISuperService<JobHistory> {
+public class FlinkInterceptorTest {
 
-    JobHistory getByIdWithoutTenant(Integer id);
-
-    JobHistory getJobHistory(Integer id);
-
-    JobHistory getJobHistoryInfo(JobHistory jobHistory);
-
-    JobHistory refreshJobHistory(Integer id, String jobManagerHost, String jobId, boolean needSave);
-
+    @Test
+    public void replaceFragmentTest() {
+        String statement = "nullif1:=NULLIF(1, 0) as val;"
+            + "nullif2:=NULLIF(0, 0) as val$null;"
+            + "select ${nullif1},${nullif2}";
+        String pretreatStatement = FlinkInterceptor.pretreatStatement(Executor.build(), statement);
+        Assert.assertEquals("select NULLIF(1, 0) as val,NULLIF(0, 0) as val$null", pretreatStatement);
+    }
 }

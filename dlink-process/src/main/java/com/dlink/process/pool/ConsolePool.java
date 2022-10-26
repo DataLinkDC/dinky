@@ -32,9 +32,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ConsolePool extends AbstractPool<StringBuilder> {
 
-    private static final Map<String, StringBuilder> consoleEntityMap = new ConcurrentHashMap<>();
+    private static volatile Map<String, StringBuilder> consoleEntityMap = new ConcurrentHashMap<>();
 
-    private static final ConsolePool instance = new ConsolePool();
+    private static ConsolePool instance = new ConsolePool();
 
     public static ConsolePool getInstance() {
         return instance;
@@ -52,7 +52,7 @@ public class ConsolePool extends AbstractPool<StringBuilder> {
 
     public static void write(String str, Integer userId) {
         String user = String.valueOf(userId);
-        consoleEntityMap.getOrDefault(user, new StringBuilder()).append(str);
+        consoleEntityMap.getOrDefault(user, new StringBuilder("Dinky User Console:")).append(str);
     }
 
 }

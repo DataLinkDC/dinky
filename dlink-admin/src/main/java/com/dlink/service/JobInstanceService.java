@@ -38,6 +38,8 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public interface JobInstanceService extends ISuperService<JobInstance> {
 
+    JobInstance getByIdWithoutTenant(Integer id);
+
     JobInstanceStatus getStatusCount(boolean isHistory);
 
     List<JobInstance> listJobInstanceActive();

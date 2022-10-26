@@ -59,7 +59,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @since 2022/2/2 13:52
  */
 @Service
-public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, JobInstance> implements JobInstanceService {
+public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, JobInstance>
+        implements
+            JobInstanceService {
 
     @Autowired
     private HistoryService historyService;
@@ -69,6 +71,11 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     private ClusterConfigurationService clusterConfigurationService;
     @Autowired
     private JobHistoryService jobHistoryService;
+
+    @Override
+    public JobInstance getByIdWithoutTenant(Integer id) {
+        return baseMapper.getByIdWithoutTenant(id);
+    }
 
     @Override
     public JobInstanceStatus getStatusCount(boolean isHistory) {
@@ -153,7 +160,8 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
             history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
             jobInfoDetail.setHistory(history);
             if (Asserts.isNotNull(history.getClusterConfigurationId())) {
-                jobInfoDetail.setClusterConfiguration(clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId()));
+                jobInfoDetail.setClusterConfiguration(
+                        clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId()));
             }
             return jobInfoDetail;
         }
@@ -174,7 +182,8 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
         jobInfoDetail.setHistory(history);
         if (Asserts.isNotNull(history) && Asserts.isNotNull(history.getClusterConfigurationId())) {
-            jobInfoDetail.setClusterConfiguration(clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId()));
+            jobInfoDetail.setClusterConfiguration(
+                    clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId()));
         }
         if (pool.exist(key)) {
             pool.refresh(jobInfoDetail);
@@ -219,7 +228,8 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
                 list.get(i).setDuration(pool.get(list.get(i).getId().toString()).getInstance().getDuration());
             }
         }
-        return ProTableResult.<JobInstance>builder().success(true).data(list).total(page.getTotal()).current(current).pageSize(pageSize).build();
+        return ProTableResult.<JobInstance>builder().success(true).data(list).total(page.getTotal()).current(current)
+                .pageSize(pageSize).build();
     }
 
 }
