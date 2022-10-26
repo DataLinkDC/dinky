@@ -81,6 +81,8 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import cn.hutool.core.util.ArrayUtil;
+
 /**
  * JobManager
  *
@@ -164,7 +166,7 @@ public class JobManager {
         manager.executor.initPyUDF(config.getPyFiles());
 
         if (config.getGatewayConfig() != null) {
-            config.getGatewayConfig().setJarPaths(config.getJarFiles());
+            config.getGatewayConfig().setJarPaths(ArrayUtil.append(config.getJarFiles(),config.getPyFiles()));
         }
         return manager;
     }

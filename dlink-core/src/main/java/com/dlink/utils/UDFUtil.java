@@ -40,7 +40,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -53,7 +52,6 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.lang.Opt;
-import cn.hutool.core.lang.PatternPool;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
@@ -77,6 +75,7 @@ public class UDFUtil {
      */
     protected static final Map<String, Integer> UDF_MD5_MAP = new HashMap<>();
     private static final String FUNCTION_REGEX = "function (.*?)'(.*?)'";
+    private static final String FUNCTION_SQL_REGEX = "create\\s+.*function\\s+(.*)\\s+as\\s+'(.*)'(\\s+language (.*))?;";
     private static final String LANGUAGE_REGEX = "language (.*);";
     public static final String PYTHON_UDF_ATTR = "(\\S)\\s+=\\s+ud(?:f|tf|af|taf)";
     public static final String PYTHON_UDF_DEF = "@ud(?:f|tf|af|taf).*\\n+def\\s+(.*)\\(.*\\):";
@@ -117,15 +116,18 @@ public class UDFUtil {
     public static List<UDF> getUDF(String statement) {
         ProcessEntity process = ProcessContextHolder.getProcess();
         process.info("Parse UDF class name:");
-        Pattern pattern = Pattern.compile(FUNCTION_REGEX, Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(statement);
-        List<UDF> udfList = new ArrayList<>();
-        while (matcher.find()) {
-            UDF udf = UDF.builder().className(matcher.group(2))
-                .functionLanguage(FunctionLanguage.valueOf(Opt.ofNullable(ReUtil.getGroup1(PatternPool.get(LANGUAGE_REGEX, Pattern.CASE_INSENSITIVE), statement)).orElse("JAVA").toUpperCase()))
+        Pattern pattern = Pattern.compile(FUNCTION_SQL_REGEX, Pattern.CASE_INSENSITIVE);
+        List<String> udfSqlList = ReUtil.findAllGroup0(pattern, statement);
+        List<UDF> udfList = udfSqlList.stream().map(sql -> {
+            List<String> groups = ReUtil.getAllGroups(pattern, sql);
+            String udfName = groups.get(1);
+            String className = groups.get(2);
+            return UDF.builder()
+                .name(udfName)
+                .className(className)
+                .functionLanguage(FunctionLanguage.valueOf(Opt.ofNullable(groups.get(4)).orElse("JAVA").toUpperCase()))
                 .build();
-            udfList.add(udf);
-        }
+        }).collect(Collectors.toList());
         List<String> classNameList = udfList.stream().map(UDF::getClassName).collect(Collectors.toList());
         process.info(StringUtils.join(",", classNameList));
         process.info(StrUtil.format("A total of {} UDF have been Parsed.", classNameList.size()));
