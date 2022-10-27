@@ -496,9 +496,12 @@ public class Explainer {
                                     final Integer nodeRel2PreId = nodeRel2.getPreId();
                                     final Integer nodeRelSufId = nodeRel.getSufId();
 
-                                    if (columnCASMaps.containsKey(nodeRel2SufId) && columnCASMaps.containsKey(nodeRel2PreId) && columnCASMaps.containsKey(nodeRelSufId) &&
-                                        columnCASMaps.get(nodeRel2SufId).getTableId().equals(columnCASMaps.get(nodeRelSufId).getTableId()) &&
-                                        columnCASMaps.get(nodeRel2SufId).getName().equals(columnCASMaps.get(nodeRelSufId).getName()) && !columnCASMaps.get(nodeRel2PreId).getType().equals(DATA_SINK)) {
+                                    if (columnCASMaps.containsKey(nodeRel2SufId)
+                                        && columnCASMaps.containsKey(nodeRel2PreId)
+                                        && columnCASMaps.containsKey(nodeRelSufId)
+                                        && columnCASMaps.get(nodeRel2SufId).getTableId().equals(columnCASMaps.get(nodeRelSufId).getTableId())
+                                        && columnCASMaps.get(nodeRel2SufId).getName().equals(columnCASMaps.get(nodeRelSufId).getName())
+                                        && !columnCASMaps.get(nodeRel2PreId).getType().equals(DATA_SINK)) {
                                         addNodeRels.add(new NodeRel(nodeRel2PreId, nodeRel.getPreId()));
                                     }
                                 }
