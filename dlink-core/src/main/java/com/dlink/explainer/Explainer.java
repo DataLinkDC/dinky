@@ -50,15 +50,19 @@ import com.dlink.utils.SqlUtil;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import org.apache.flink.table.catalog.CatalogManager;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.text.CharSequenceUtil;
 
 /**
  * Explainer
@@ -67,32 +71,27 @@ import cn.hutool.core.util.StrUtil;
  * @since 2021/6/22
  **/
 public class Explainer {
+    private static final Logger log = LoggerFactory.getLogger(Explainer.class);
+    public static final String DATA_SINK = "Data Sink";
 
-    private Executor executor;
-    private boolean useStatementSet;
+    private final Executor executor;
+    private final boolean useStatementSet;
     private String sqlSeparator = FlinkSQLConstant.SEPARATOR;
-    private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
     public Explainer(Executor executor) {
-        this.executor = executor;
-        this.useStatementSet = true;
-        init();
+        this(executor, true, SystemConfiguration.getInstances().getSqlSeparator());
     }
 
     public Explainer(Executor executor, boolean useStatementSet) {
-        this.executor = executor;
-        this.useStatementSet = useStatementSet;
-        init();
+        this(executor, useStatementSet, SystemConfiguration.getInstances().getSqlSeparator());
+
     }
 
     public Explainer(Executor executor, boolean useStatementSet, String sqlSeparator) {
         this.executor = executor;
         this.useStatementSet = useStatementSet;
         this.sqlSeparator = sqlSeparator;
-    }
-
-    public void init() {
-        sqlSeparator = SystemConfiguration.getInstances().getSqlSeparator();
     }
 
     public static Explainer build(Executor executor) {
@@ -108,19 +107,23 @@ public class Explainer {
         List<StatementParam> trans = new ArrayList<>();
         List<StatementParam> execute = new ArrayList<>();
         List<String> statementList = new ArrayList<>();
+
         for (String item : statements) {
             String statement = executor.pretreatStatement(item);
             if (statement.isEmpty()) {
                 continue;
             }
+
             SqlType operationType = Operations.getOperationType(statement);
-            if (operationType.equals(SqlType.INSERT) || operationType.equals(SqlType.SELECT)
-                    || operationType.equals(SqlType.SHOW)
-                    || operationType.equals(SqlType.DESCRIBE) || operationType.equals(SqlType.DESC)) {
+            if (operationType.equals(SqlType.INSERT)
+                || operationType.equals(SqlType.SELECT)
+                || operationType.equals(SqlType.SHOW)
+                || operationType.equals(SqlType.DESCRIBE)
+                || operationType.equals(SqlType.DESC)) {
                 trans.add(new StatementParam(statement, operationType));
                 statementList.add(statement);
                 if (!useStatementSet) {
-                    break;
+                    return new JobParam(statementList, ddl, trans, execute);
                 }
             } else if (operationType.equals(SqlType.EXECUTE)) {
                 execute.add(new StatementParam(statement, operationType));
@@ -133,199 +136,202 @@ public class Explainer {
     }
 
     public List<SqlExplainResult> explainSqlResult(String statement) {
-        String[] sqls = SqlUtil.getStatements(statement, sqlSeparator);
         List<SqlExplainResult> sqlExplainRecords = new ArrayList<>();
-        int index = 1;
-        for (String item : sqls) {
-            SqlExplainResult record = new SqlExplainResult();
-            String sql = "";
+        String[] statements = SqlUtil.getStatements(statement, sqlSeparator);
+        for (String item : statements) {
+            SqlExplainResult explainResult = new SqlExplainResult();
             try {
-                sql = FlinkInterceptor.pretreatStatement(executor, item);
+                String sql = FlinkInterceptor.pretreatStatement(executor, item);
+                explainResult.setSql(sql);
+
                 if (Asserts.isNullString(sql)) {
                     continue;
                 }
+
+                explainResult = executor.explainSqlRecord(sql);
+                if (Asserts.isNull(explainResult)) {
+                    explainResult = new SqlExplainResult();
+                    continue;
+                }
+
                 SqlType operationType = Operations.getOperationType(sql);
-                if (operationType.equals(SqlType.INSERT) || operationType.equals(SqlType.SELECT)) {
-                    record = executor.explainSqlRecord(sql);
-                    if (Asserts.isNull(record)) {
-                        continue;
-                    }
-                } else {
-                    record = executor.explainSqlRecord(sql);
-                    if (Asserts.isNull(record)) {
-                        continue;
-                    }
+                if (!(operationType.equals(SqlType.INSERT) || operationType.equals(SqlType.SELECT))) {
                     executor.executeSql(sql);
                 }
+                explainResult.setExplainTrue(true);
             } catch (Exception e) {
-                e.printStackTrace();
-                record.setError(e.getMessage());
-                record.setExplainTrue(false);
-                record.setExplainTime(LocalDateTime.now());
-                record.setSql(sql);
-                record.setIndex(index);
-                sqlExplainRecords.add(record);
-                break;
+                log.error(e.getMessage());
+                explainResult.setError(e.getMessage());
+                explainResult.setExplainTrue(false);
+                return sqlExplainRecords;
+            } finally {
+                explainResult.setExplainTimeNow();
+                sqlExplainRecords.add(explainResult);
+                explainResult.setIndex(sqlExplainRecords.size());
             }
-            record.setExplainTrue(true);
-            record.setExplainTime(LocalDateTime.now());
-            record.setSql(sql);
-            record.setIndex(index++);
-            sqlExplainRecords.add(record);
         }
+
         return sqlExplainRecords;
     }
 
     public ExplainResult explainSql(String statement) {
         ProcessEntity process = ProcessContextHolder.getProcess();
         process.info("Start explain FlinkSQL...");
+
         JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
+
         List<SqlExplainResult> sqlExplainRecords = new ArrayList<>();
-        int index = 1;
         boolean correct = true;
-        for (StatementParam item : jobParam.getDdl()) {
-            SqlExplainResult record = new SqlExplainResult();
+        for (StatementParam statementParam : jobParam.getDdl()) {
+            String sql = statementParam.getValue();
+
+            SqlExplainResult explainResult = new SqlExplainResult();
+            explainResult.setSql(sql);
+
             try {
-                record = executor.explainSqlRecord(item.getValue());
-                if (Asserts.isNull(record)) {
+                explainResult = executor.explainSqlRecord(sql);
+                if (Asserts.isNull(explainResult)) {
                     continue;
                 }
-                executor.executeSql(item.getValue());
+
+                executor.executeSql(sql);
+                explainResult.setExplainTrue(true);
             } catch (Exception e) {
-                String error = LogUtil.getError(e);
-                record.setError(error);
-                record.setExplainTrue(false);
-                record.setExplainTime(LocalDateTime.now());
-                record.setSql(item.getValue());
-                record.setIndex(index);
-                sqlExplainRecords.add(record);
                 correct = false;
+                explainResult.setExplainTrue(false);
+                String error = LogUtil.getError(e);
+                explainResult.setError(error);
                 process.error(error);
                 break;
+            } finally {
+                explainResult.setExplainTimeNow();
+                sqlExplainRecords.add(explainResult);
+                explainResult.setIndex(sqlExplainRecords.size());
             }
-            record.setExplainTrue(true);
-            record.setExplainTime(LocalDateTime.now());
-            record.setSql(item.getValue());
-            record.setIndex(index++);
-            sqlExplainRecords.add(record);
         }
-        if (correct && jobParam.getTrans().size() > 0) {
+
+        if (correct && !jobParam.getTrans().isEmpty()) {
             if (useStatementSet) {
-                SqlExplainResult record = new SqlExplainResult();
-                List<String> inserts = new ArrayList<>();
-                for (StatementParam item : jobParam.getTrans()) {
-                    if (item.getType().equals(SqlType.INSERT)) {
-                        inserts.add(item.getValue());
-                    }
-                }
-                if (inserts.size() > 0) {
-                    String sqlSet = String.join(";\r\n ", inserts);
+                List<String> inserts = jobParam.getTrans().stream()
+                    .filter(item -> item.getType().equals(SqlType.INSERT))
+                    .map(StatementParam::getValue)
+                    .collect(Collectors.toList());
+
+                SqlExplainResult explainResult = new SqlExplainResult();
+                if (!inserts.isEmpty()) {
                     try {
-                        record.setExplain(executor.explainStatementSet(inserts));
-                        record.setParseTrue(true);
-                        record.setExplainTrue(true);
+                        explainResult.setExplain(executor.explainStatementSet(inserts));
+                        explainResult.setParseTrue(true);
+                        explainResult.setExplainTrue(true);
                     } catch (Exception e) {
                         String error = LogUtil.getError(e);
-                        record.setError(error);
-                        record.setParseTrue(false);
-                        record.setExplainTrue(false);
+                        explainResult.setError(error);
+                        explainResult.setParseTrue(false);
+                        explainResult.setExplainTrue(false);
                         correct = false;
                         process.error(error);
-                    } finally {
-                        record.setType("Modify DML");
-                        record.setExplainTime(LocalDateTime.now());
-                        record.setSql(sqlSet);
-                        record.setIndex(index);
-                        sqlExplainRecords.add(record);
                     }
+
+                    explainResult.setType("Modify DML");
+                    explainResult.setExplainTimeNow();
+                    explainResult.setSql(String.join(";\r\n ", inserts));
+                    sqlExplainRecords.add(explainResult);
+                    explainResult.setIndex(sqlExplainRecords.size());
                 }
             } else {
                 for (StatementParam item : jobParam.getTrans()) {
-                    SqlExplainResult record = new SqlExplainResult();
+                    String sql = item.getValue();
+                    SqlExplainResult explainResult = new SqlExplainResult();
                     try {
-                        record = executor.explainSqlRecord(item.getValue());
-                        record.setParseTrue(true);
-                        record.setExplainTrue(true);
+                        explainResult = executor.explainSqlRecord(sql);
+                        explainResult.setParseTrue(true);
+                        explainResult.setExplainTrue(true);
                     } catch (Exception e) {
                         String error = LogUtil.getError(e);
-                        record.setError(error);
-                        record.setParseTrue(false);
-                        record.setExplainTrue(false);
+                        explainResult.setError(error);
+                        explainResult.setParseTrue(false);
+                        explainResult.setExplainTrue(false);
                         correct = false;
                         process.error(error);
-                    } finally {
-                        record.setType("Modify DML");
-                        record.setExplainTime(LocalDateTime.now());
-                        record.setSql(item.getValue());
-                        record.setIndex(index++);
-                        sqlExplainRecords.add(record);
                     }
+
+                    explainResult.setType("Modify DML");
+                    explainResult.setExplainTimeNow();
+                    explainResult.setSql(sql);
+                    sqlExplainRecords.add(explainResult);
+                    explainResult.setIndex(sqlExplainRecords.size());
                 }
             }
         }
+
         for (StatementParam item : jobParam.getExecute()) {
-            SqlExplainResult record = new SqlExplainResult();
+            SqlExplainResult explainResult = new SqlExplainResult();
             try {
-                record = executor.explainSqlRecord(item.getValue());
-                if (Asserts.isNull(record)) {
-                    record = new SqlExplainResult();
-                } else {
-                    executor.executeSql(item.getValue());
+                explainResult = executor.explainSqlRecord(item.getValue());
+                if (Asserts.isNull(explainResult)) {
+                    explainResult = new SqlExplainResult();
+                    continue;
                 }
-                record.setType("DATASTREAM");
-                record.setParseTrue(true);
+
+                executor.executeSql(item.getValue());
+
+                explainResult.setParseTrue(true);
+                explainResult.setExplainTrue(true);
             } catch (Exception e) {
                 String error = LogUtil.getError(e);
-                record.setError(error);
-                record.setExplainTrue(false);
-                record.setExplainTime(LocalDateTime.now());
-                record.setSql(item.getValue());
-                record.setIndex(index);
-                sqlExplainRecords.add(record);
+                explainResult.setError(error);
+                explainResult.setExplainTrue(false);
                 correct = false;
                 process.error(error);
                 break;
+            } finally {
+                explainResult.setType("DATASTREAM");
+                explainResult.setExplainTimeNow();
+                explainResult.setSql(item.getValue());
+                sqlExplainRecords.add(explainResult);
+                explainResult.setIndex(sqlExplainRecords.size());
             }
-            record.setExplainTrue(true);
-            record.setExplainTime(LocalDateTime.now());
-            record.setSql(item.getValue());
-            record.setIndex(index++);
-            sqlExplainRecords.add(record);
         }
-        process.info(StrUtil.format("A total of {} FlinkSQL have been Explained.", sqlExplainRecords.size()));
+
+        process.info(CharSequenceUtil.format("A total of {} FlinkSQL have been Explained.", sqlExplainRecords.size()));
         return new ExplainResult(correct, sqlExplainRecords.size(), sqlExplainRecords);
     }
 
     public ObjectNode getStreamGraph(String statement) {
         JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
-        if (jobParam.getDdl().size() > 0) {
+        if (!jobParam.getDdl().isEmpty()) {
             for (StatementParam statementParam : jobParam.getDdl()) {
                 executor.executeSql(statementParam.getValue());
             }
         }
-        if (jobParam.getTrans().size() > 0) {
+
+        if (!jobParam.getTrans().isEmpty()) {
             return executor.getStreamGraph(jobParam.getTransStatement());
-        } else if (jobParam.getExecute().size() > 0) {
-            List<String> datastreamPlans = new ArrayList<>();
-            for (StatementParam item : jobParam.getExecute()) {
-                datastreamPlans.add(item.getValue());
-            }
-            return executor.getStreamGraphFromDataStream(datastreamPlans);
-        } else {
+        }
+
+        if (jobParam.getExecute().isEmpty()) {
             return mapper.createObjectNode();
         }
+
+        List<String> datastreamPlans = new ArrayList<>();
+        for (StatementParam item : jobParam.getExecute()) {
+            datastreamPlans.add(item.getValue());
+        }
+
+        return executor.getStreamGraphFromDataStream(datastreamPlans);
     }
 
     public JobPlanInfo getJobPlanInfo(String statement) {
         JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
-        if (jobParam.getDdl().size() > 0) {
+        if (!jobParam.getDdl().isEmpty()) {
             for (StatementParam statementParam : jobParam.getDdl()) {
                 executor.executeSql(statementParam.getValue());
             }
         }
-        if (jobParam.getTrans().size() > 0) {
+
+        if (!jobParam.getTrans().isEmpty()) {
             return executor.getJobPlanInfo(jobParam.getTransStatement());
-        } else if (jobParam.getExecute().size() > 0) {
+        } else if (!jobParam.getExecute().isEmpty()) {
             List<String> datastreamPlans = new ArrayList<>();
             for (StatementParam item : jobParam.getExecute()) {
                 datastreamPlans.add(item.getValue());
@@ -339,15 +345,16 @@ public class Explainer {
     private List<TableCAResult> generateTableCA(String statement, boolean onlyTable) {
         List<SqlExplainResult> sqlExplainRecords = explainSqlResult(statement);
         List<String> strPlans = new ArrayList<>();
-        for (int i = 0; i < sqlExplainRecords.size(); i++) {
-            if (Asserts.isNotNull(sqlExplainRecords.get(i).getType())
-                    && sqlExplainRecords.get(i).getType().contains(FlinkSQLConstant.DML)) {
-                strPlans.add(sqlExplainRecords.get(i).getSql());
+        for (SqlExplainResult sqlExplainRecord : sqlExplainRecords) {
+            if (Asserts.isNotNull(sqlExplainRecord.getType())
+                && sqlExplainRecord.getType().contains(FlinkSQLConstant.DML)) {
+                strPlans.add(sqlExplainRecord.getSql());
             }
         }
+
         List<TableCAResult> results = new ArrayList<>();
-        for (int i = 0; i < strPlans.size(); i++) {
-            List<Trans> trans = translateTrans(translateObjectNode(strPlans.get(i)));
+        for (String strPlan : strPlans) {
+            List<Trans> trans = translateTrans(translateObjectNode(strPlan));
             TableCAGenerator generator = TableCAGenerator.build(trans);
             if (onlyTable) {
                 generator.translateOnlyTable();
@@ -356,13 +363,14 @@ public class Explainer {
             }
             results.add(generator.getResult());
         }
-        if (results.size() > 0) {
+
+        if (!results.isEmpty()) {
             CatalogManager catalogManager = executor.getCatalogManager();
-            for (int i = 0; i < results.size(); i++) {
-                TableCA sinkTableCA = (TableCA) results.get(i).getSinkTableCA();
+            for (TableCAResult result : results) {
+                TableCA sinkTableCA = (TableCA) result.getSinkTableCA();
                 if (Asserts.isNotNull(sinkTableCA)) {
                     sinkTableCA.setFields(FlinkUtil.getFieldNamesFromCatalogManager(catalogManager,
-                            sinkTableCA.getCatalog(), sinkTableCA.getDatabase(), sinkTableCA.getTable()));
+                        sinkTableCA.getCatalog(), sinkTableCA.getDatabase(), sinkTableCA.getTable()));
                 }
             }
         }
@@ -380,57 +388,55 @@ public class Explainer {
     public List<ColumnCAResult> explainSqlColumnCA(String statement) {
         List<SqlExplainResult> sqlExplainRecords = explainSqlResult(statement);
         List<String> strPlans = new ArrayList<>();
-        for (int i = 0; i < sqlExplainRecords.size(); i++) {
-            if (Asserts.isNotNull(sqlExplainRecords.get(i).getType())
-                    && sqlExplainRecords.get(i).getType().contains("DML")) {
-                strPlans.add(sqlExplainRecords.get(i).getSql());
+        for (SqlExplainResult sqlExplainRecord : sqlExplainRecords) {
+            if (Asserts.isNotNull(sqlExplainRecord.getType())
+                && sqlExplainRecord.getType().contains("DML")) {
+                strPlans.add(sqlExplainRecord.getSql());
             }
         }
+
         List<ColumnCAResult> results = new ArrayList<>();
         // statementsets
         if (useStatementSet) {
-            List<Trans> trans = translateTrans(translateObjectNode(strPlans));
-            LineageColumnGenerator generator = LineageColumnGenerator.build(trans);
-            LineageTableGenerator tableGenerator = LineageTableGenerator.build(trans);
-            tableGenerator.translate();
-            generator.setTableCAS(tableGenerator.getTables());
-            generator.translate();
-            ColumnCAResult columnCAResult = new ColumnCAResult(generator);
-            correctColumn(columnCAResult);
+            ColumnCAResult columnCAResult = getColumnCAResult(translateObjectNode(strPlans));
             correctSinkSets(columnCAResult);
             results.add(columnCAResult);
         } else {
-            for (int i = 0; i < strPlans.size(); i++) {
-                List<Trans> trans = translateTrans(translateObjectNode(strPlans.get(i)));
-                LineageColumnGenerator generator = LineageColumnGenerator.build(trans);
-                LineageTableGenerator tableGenerator = LineageTableGenerator.build(trans);
-                tableGenerator.translate();
-                generator.setTableCAS(tableGenerator.getTables());
-                generator.translate();
-                ColumnCAResult columnCAResult = new ColumnCAResult(generator);
-                correctColumn(columnCAResult);
+            for (String strPlan : strPlans) {
+                ColumnCAResult columnCAResult = getColumnCAResult(translateObjectNode(strPlan));
                 results.add(columnCAResult);
             }
         }
         return results;
     }
 
+    private ColumnCAResult getColumnCAResult(ObjectNode strPlans) {
+        List<Trans> trans = translateTrans(strPlans);
+        LineageColumnGenerator generator = LineageColumnGenerator.build(trans);
+        LineageTableGenerator tableGenerator = LineageTableGenerator.build(trans);
+        tableGenerator.translate();
+        generator.setTableCAS(tableGenerator.getTables());
+        generator.translate();
+        ColumnCAResult columnCAResult = new ColumnCAResult(generator);
+        correctColumn(columnCAResult);
+        return columnCAResult;
+    }
+
     private void correctColumn(ColumnCAResult columnCAResult) {
         for (TableCA tableCA : columnCAResult.getTableCAS()) {
-            CatalogManager catalogManager = executor.getCatalogManager();
-            List<String> columnList = FlinkUtil.getFieldNamesFromCatalogManager(catalogManager, tableCA.getCatalog(),
-                    tableCA.getDatabase(), tableCA.getTable());
-            List<String> fields = tableCA.getFields();
-            List<String> oldFields = new ArrayList<>();
-            oldFields.addAll(fields);
-            if (tableCA.getType().equals("Data Sink")) {
+            if (tableCA.getType().equals(DATA_SINK)) {
+                List<String> fields = tableCA.getFields();
+                List<String> oldFields = new ArrayList<>(fields);
+                CatalogManager catalogManager = executor.getCatalogManager();
+                List<String> columnList = FlinkUtil.getFieldNamesFromCatalogManager(catalogManager, tableCA.getCatalog(), tableCA.getDatabase(), tableCA.getTable());
+
                 for (int i = 0; i < columnList.size(); i++) {
                     String sinkColumnName = columnList.get(i);
                     if (!sinkColumnName.equals(oldFields.get(i))) {
                         for (Map.Entry<Integer, ColumnCA> item : columnCAResult.getColumnCASMaps().entrySet()) {
                             ColumnCA columnCA = item.getValue();
                             if (columnCA.getTableId().equals(tableCA.getId())
-                                    && columnCA.getName().equals(oldFields.get(i))) {
+                                && columnCA.getName().equals(oldFields.get(i))) {
                                 columnCA.setName(sinkColumnName);
                                 fields.set(i, sinkColumnName);
                             }
@@ -439,10 +445,11 @@ public class Explainer {
                 }
             }
         }
+
         for (TableCA tableCA : columnCAResult.getTableCAS()) {
             CatalogManager catalogManager = executor.getCatalogManager();
-            List<String> columnList = FlinkUtil.getFieldNamesFromCatalogManager(catalogManager, tableCA.getCatalog(),
-                    tableCA.getDatabase(), tableCA.getTable());
+            List<String> columnList = FlinkUtil.getFieldNamesFromCatalogManager(catalogManager,
+                tableCA.getCatalog(), tableCA.getDatabase(), tableCA.getTable());
             List<String> fields = tableCA.getFields();
             int i = 0;
             List<Integer> idList = new ArrayList<>();
@@ -450,7 +457,7 @@ public class Explainer {
                 if (!columnList.contains(fields.get(i))) {
                     for (Map.Entry<Integer, ColumnCA> item : columnCAResult.getColumnCASMaps().entrySet()) {
                         if (item.getValue().getName().equals(fields.get(i))
-                                && item.getValue().getTableId().equals(tableCA.getId())) {
+                            && item.getValue().getTableId().equals(tableCA.getId())) {
                             idList.add(item.getValue().getId());
                             break;
                         }
@@ -460,6 +467,7 @@ public class Explainer {
                     i++;
                 }
             }
+
             for (Integer id : idList) {
                 for (NodeRel nodeRel : columnCAResult.getColumnCASRelChain()) {
                     if (nodeRel.getPreId().equals(id)) {
@@ -474,37 +482,33 @@ public class Explainer {
 
     private void correctSinkSets(ColumnCAResult columnCAResult) {
         for (TableCA tableCA : columnCAResult.getTableCAS()) {
-            if (tableCA.getType().equals("Data Sink")) {
-                for (Map.Entry<Integer, ColumnCA> item : columnCAResult.getColumnCASMaps().entrySet()) {
+            if (tableCA.getType().equals(DATA_SINK)) {
+                final Map<Integer, ColumnCA> columnCASMaps = columnCAResult.getColumnCASMaps();
+                for (Map.Entry<Integer, ColumnCA> item : columnCASMaps.entrySet()) {
                     if (item.getValue().getTableId().equals(tableCA.getId())) {
                         List<NodeRel> addNodeRels = new ArrayList<>();
                         List<NodeRel> delNodeRels = new ArrayList<>();
-                        for (NodeRel nodeRel : columnCAResult.getColumnCASRelChain()) {
+                        final Set<NodeRel> columnCASRelChain = columnCAResult.getColumnCASRelChain();
+                        for (NodeRel nodeRel : columnCASRelChain) {
                             if (nodeRel.getPreId().equals(item.getValue().getId())) {
-                                for (NodeRel nodeRel2 : columnCAResult.getColumnCASRelChain()) {
-                                    if (columnCAResult.getColumnCASMaps().containsKey(nodeRel2.getSufId())
-                                            && columnCAResult.getColumnCASMaps().containsKey(nodeRel2.getPreId())
-                                            && columnCAResult.getColumnCASMaps().containsKey(nodeRel.getSufId())
-                                            && columnCAResult.getColumnCASMaps().get(nodeRel2.getSufId()).getTableId()
-                                                    .equals(columnCAResult.getColumnCASMaps().get(nodeRel.getSufId())
-                                                            .getTableId())
-                                            && columnCAResult.getColumnCASMaps().get(nodeRel2.getSufId()).getName()
-                                                    .equals(columnCAResult.getColumnCASMaps().get(nodeRel.getSufId())
-                                                            .getName())
-                                            && !columnCAResult.getColumnCASMaps().get(nodeRel2.getPreId()).getType()
-                                                    .equals("Data Sink")) {
-                                        addNodeRels.add(new NodeRel(nodeRel2.getPreId(), nodeRel.getPreId()));
+                                for (NodeRel nodeRel2 : columnCASRelChain) {
+                                    final Integer nodeRel2SufId = nodeRel2.getSufId();
+                                    final Integer nodeRel2PreId = nodeRel2.getPreId();
+                                    final Integer nodeRelSufId = nodeRel.getSufId();
+
+                                    if (columnCASMaps.containsKey(nodeRel2SufId) && columnCASMaps.containsKey(nodeRel2PreId) && columnCASMaps.containsKey(nodeRelSufId) &&
+                                        columnCASMaps.get(nodeRel2SufId).getTableId().equals(columnCASMaps.get(nodeRelSufId).getTableId()) &&
+                                        columnCASMaps.get(nodeRel2SufId).getName().equals(columnCASMaps.get(nodeRelSufId).getName()) && !columnCASMaps.get(nodeRel2PreId).getType().equals(DATA_SINK)) {
+                                        addNodeRels.add(new NodeRel(nodeRel2PreId, nodeRel.getPreId()));
                                     }
                                 }
+
                                 delNodeRels.add(nodeRel);
                             }
                         }
-                        for (NodeRel nodeRel : addNodeRels) {
-                            columnCAResult.getColumnCASRelChain().add(nodeRel);
-                        }
-                        for (NodeRel nodeRel : delNodeRels) {
-                            columnCAResult.getColumnCASRelChain().remove(nodeRel);
-                        }
+
+                        columnCASRelChain.addAll(addNodeRels);
+                        columnCASRelChain.removeAll(delNodeRels);
                     }
                 }
             }
@@ -524,15 +528,14 @@ public class Explainer {
     }
 
     public List<LineageRel> getLineage(String statement) {
-        String[] sqls = SqlUtil.getStatements(statement, sqlSeparator);
         List<LineageRel> lineageRelList = new ArrayList<>();
-        for (String item : sqls) {
-            String sql = "";
+        for (String item : SqlUtil.getStatements(statement, sqlSeparator)) {
             try {
-                sql = FlinkInterceptor.pretreatStatement(executor, item);
+                String sql = FlinkInterceptor.pretreatStatement(executor, item);
                 if (Asserts.isNullString(sql)) {
                     continue;
                 }
+
                 SqlType operationType = Operations.getOperationType(sql);
                 if (operationType.equals(SqlType.INSERT)) {
                     lineageRelList.addAll(executor.getLineage(sql));
@@ -540,8 +543,7 @@ public class Explainer {
                     executor.executeSql(sql);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
-                break;
+                log.error(e.getMessage(), e);
             }
         }
         return lineageRelList;
