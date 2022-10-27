@@ -541,9 +541,9 @@
                         <eclipse>
                             <file>style/spotless_dlink_formatter.xml</file>
                         </eclipse>
-                        <removeUnusedImports/>
+                        <removeUnusedImports />
                         <importOrder>
-                            <order>com.dlink,org.apache,java,javax,org,com,,\#</order>
+                            <order>\#,com.dlink,org.apache,java,javax,org,com</order>
                         </importOrder>
                         <licenseHeader>
                             <file>style/license_header</file>
@@ -578,7 +578,7 @@
                         <includes>
                             <include>**/*.md</include>
                         </includes>
-                        <flexmark/>
+                        <flexmark />
                     </markdown>
                 </configuration>
                 <executions>
