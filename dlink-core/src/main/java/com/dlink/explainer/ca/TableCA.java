@@ -100,7 +100,7 @@ public class TableCA implements ICA {
         this.useFields = fieldList;
         this.parallelism = trans.getParallelism();
         this.type = trans.getPact();
-        if (tableList.size() > 0) {
+        if (!tableList.isEmpty()) {
             String tableStr = tableList.get(0);
             String[] strings = tableStr.split("\\.");
             if (strings.length > 2) {

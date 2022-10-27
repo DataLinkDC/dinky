@@ -133,6 +133,10 @@ public class SqlExplainResult {
         this.explainTime = explainTime;
     }
 
+    public void setExplainTimeNow() {
+        setExplainTime(LocalDateTime.now());
+    }
+
     @Override
     public String toString() {
         return "SqlExplainRecord{"

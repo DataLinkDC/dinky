@@ -29,7 +29,10 @@ import com.dlink.process.pool.ProcessPool;
  * @author wenmo
  * @since 2022/10/16 16:57
  */
-public class ProcessContextHolder {
+public final class ProcessContextHolder {
+
+    private ProcessContextHolder() {
+    }
 
     private static final ThreadLocal<ProcessEntity> PROCESS_CONTEXT = new ThreadLocal<>();
 
@@ -38,10 +41,7 @@ public class ProcessContextHolder {
     }
 
     public static ProcessEntity getProcess() {
-        if (Asserts.isNull(PROCESS_CONTEXT.get())) {
-            return ProcessEntity.NULL_PROCESS;
-        }
-        return PROCESS_CONTEXT.get();
+        return Asserts.isNull(PROCESS_CONTEXT.get()) ? ProcessEntity.NULL_PROCESS : PROCESS_CONTEXT.get();
     }
 
     public static void clear() {
