@@ -23,16 +23,20 @@ import {Drawer} from "antd";
 import ProDescriptions from '@ant-design/pro-descriptions';
 import {queryData} from "@/components/Common/crud";
 import {FragmentVariableTableListItem} from "@/pages/FragmentVariable/data";
+import {useIntl} from "umi";
 
 const StudioFragment = (props: any) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {toolHeight, dispatch} = props;
   const [row, setRow] = useState<{}>();
 
-  const url ="/api/fragment"
+  const url = "/api/fragment"
 
 
-  const getColumns : ProColumns<FragmentVariableTableListItem>[] =  [
+  const getColumns: ProColumns<FragmentVariableTableListItem>[] = [
     {
       title: '名称',
       dataIndex: 'name',
@@ -44,11 +48,11 @@ const StudioFragment = (props: any) => {
     },
     {
       title: '引用名称',
-      copyable : true,
+      copyable: true,
       render: (dom, entity) => {
         return <>
-          ${"{"+ entity?.name +"}"}
-        </> ;
+          ${"{" + entity?.name + "}"}
+        </>;
       },
     },
     {
@@ -91,29 +95,29 @@ const StudioFragment = (props: any) => {
       hideInTable: true,
     },
     {
-      title: '是否启用',
+      title: l('global.table.isEnable'),
       dataIndex: 'enabled',
       hideInForm: false,
       hideInSearch: true,
       hideInTable: true,
       filters: [
         {
-          text: '已启用',
+          text: l('status.enabled'),
           value: 1,
         },
         {
-          text: '已禁用',
+          text: l('status.disabled'),
           value: 0,
         },
       ],
       filterMultiple: false,
       valueEnum: {
-        true: {text: '已启用', status: 'Success'},
-        false: {text: '已禁用', status: 'Error'},
+        true: {text: l('status.enabled'), status: 'Success'},
+        false: {text: l('status.disabled'), status: 'Error'},
       },
     },
     {
-      title: '创建时间',
+      title: l('global.table.createTime'),
       dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',
@@ -121,7 +125,7 @@ const StudioFragment = (props: any) => {
       hideInTable: true,
     },
     {
-      title: '最近更新时间',
+      title: l('global.table.lastUpdateTime'),
       dataIndex: 'updateTime',
       sorter: true,
       valueType: 'dateTime',
@@ -137,11 +141,12 @@ const StudioFragment = (props: any) => {
         style={{width: '100%'}}
         request={(params, sorter, filter) => queryData(url, {params, sorter, filter})}
         pagination={{
-          showLessItems:false,
-          pageSize: 10,
+          defaultPageSize: 10,
+          showSizeChanger: true,
         }}
         search={false}
         size="small"
+
       />
       <Drawer
         width={600}

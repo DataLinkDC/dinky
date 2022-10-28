@@ -45,7 +45,6 @@ const CodeShow = (props: CodeShowFormProps) => {
     code,
   } = props;
 
-
   return (<>
     <MonacoEditor
       width={width}
@@ -53,7 +52,7 @@ const CodeShow = (props: CodeShowFormProps) => {
       language={language}
       value={code}
       options={options}
-      theme={theme}
+      theme='vs-dark'
     />
   </>)
 };

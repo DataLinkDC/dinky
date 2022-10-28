@@ -28,10 +28,23 @@ import com.dlink.assertion.Asserts;
  * @since 2021/12/13
  **/
 public enum Dialect {
-
-    FLINKSQL("FlinkSql"), FLINKJAR("FlinkJar"), FLINKSQLENV("FlinkSqlEnv"), SQL("Sql"), JAVA("Java"),
-    MYSQL("Mysql"), ORACLE("Oracle"), SQLSERVER("SqlServer"), POSTGRESQL("PostgreSql"), CLICKHOUSE("ClickHouse"),
-    DORIS("Doris"), PHOENIX("Phoenix"), HIVE("Hive"), STARROCKS("StarRocks");
+    FLINKSQL("FlinkSql"),
+    FLINKJAR("FlinkJar"),
+    FLINKSQLENV("FlinkSqlEnv"),
+    SQL("Sql"),
+    JAVA("Java"),
+    PYTHON("Python"),
+    SCALA("Scala"),
+    MYSQL("Mysql"),
+    ORACLE("Oracle"),
+    SQLSERVER("SqlServer"),
+    POSTGRESQL("PostgreSql"),
+    CLICKHOUSE("ClickHouse"),
+    DORIS("Doris"),
+    PHOENIX("Phoenix"),
+    HIVE("Hive"),
+    STARROCKS("StarRocks"),
+    KUBERNETES_APPLICATION("KubernetesApplaction");
 
     private String value;
 
@@ -77,6 +90,18 @@ public enum Dialect {
             case PHOENIX:
             case HIVE:
             case STARROCKS:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public static boolean isUDF(String value) {
+        Dialect dialect = Dialect.get(value);
+        switch (dialect) {
+            case JAVA:
+            case SCALA:
+            case PYTHON:
                 return true;
             default:
                 return false;

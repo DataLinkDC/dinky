@@ -19,21 +19,47 @@
 
 package com.dlink.utils;
 
+import com.dlink.assertion.Asserts;
+import com.dlink.config.Dialect;
+import com.dlink.constant.PathConstant;
 import com.dlink.pool.ClassEntity;
 import com.dlink.pool.ClassPool;
+import com.dlink.process.context.ProcessContextHolder;
+import com.dlink.process.model.ProcessEntity;
+import com.dlink.udf.UDF;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.flink.table.catalog.FunctionLanguage;
 
 import java.io.File;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.codehaus.groovy.control.CompilerConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Dict;
+import cn.hutool.core.lang.Opt;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.text.CharSequenceUtil;
+import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.core.util.ZipUtil;
+import cn.hutool.crypto.digest.MD5;
+import cn.hutool.extra.template.TemplateConfig;
+import cn.hutool.extra.template.TemplateEngine;
+import cn.hutool.extra.template.TemplateUtil;
 import groovy.lang.GroovyClassLoader;
 
 /**
@@ -44,20 +70,120 @@ import groovy.lang.GroovyClassLoader;
  */
 public class UDFUtil {
 
-    public static void buildClass(String code) {
+    private UDFUtil() {
+    }
+
+    protected static final Logger log = LoggerFactory.getLogger(UDFUtil.class);
+    /**
+     * 存放 udf md5与版本对应的k,v值
+     */
+    protected static final Map<String, Integer> UDF_MD5_MAP = new HashMap<>();
+    private static final String FUNCTION_REGEX = "function (.*?)'(.*?)'";
+    private static final String FUNCTION_SQL_REGEX = "create\\s+.*function\\s+(.*)\\s+as\\s+'(.*)'(\\s+language (.*))?;";
+    private static final String LANGUAGE_REGEX = "language (.*);";
+    public static final String PYTHON_UDF_ATTR = "(\\S)\\s+=\\s+ud(?:f|tf|af|taf)";
+    public static final String PYTHON_UDF_DEF = "@ud(?:f|tf|af|taf).*\\n+def\\s+(.*)\\(.*\\):";
+    public static final String SCALA_UDF_CLASS = "class\\s+(\\w+)(\\s*\\(.*\\)){0,1}\\s+extends";
+    public static final String SCALA_UDF_PACKAGE = "package\\s+(.*);";
+    private static final TemplateEngine ENGINE = TemplateUtil.createEngine(new TemplateConfig());
+
+    /**
+     * 模板解析
+     *
+     * @param dialect   方言
+     * @param template  模板
+     * @param className 类名
+     * @return {@link String}
+     */
+    public static String templateParse(String dialect, String template, String className) {
+
+        List<String> split = StrUtil.split(className, ".");
+        switch (Dialect.get(dialect)) {
+            case JAVA:
+            case SCALA:
+                String clazz = CollUtil.getLast(split);
+                String packageName = StrUtil.strip(className, clazz);
+                Dict data = Dict.create()
+                    .set("className", clazz)
+                    .set("package", Asserts.isNullString(packageName) ? "" : StrUtil.strip(packageName, "."));
+                return ENGINE.getTemplate(template).render(data);
+            case PYTHON:
+            default:
+                String clazzName = split.get(0);
+                Dict data2 = Dict.create()
+                    .set("className", clazzName)
+                    .set("attr", split.size() > 1 ? split.get(1) : null);
+                return ENGINE.getTemplate(template).render(data2);
+        }
+    }
+
+    public static List<UDF> getUDF(String statement) {
+        ProcessEntity process = ProcessContextHolder.getProcess();
+        process.info("Parse UDF class name:");
+        Pattern pattern = Pattern.compile(FUNCTION_SQL_REGEX, Pattern.CASE_INSENSITIVE);
+        List<String> udfSqlList = ReUtil.findAllGroup0(pattern, statement);
+        List<UDF> udfList = udfSqlList.stream().map(sql -> {
+            List<String> groups = ReUtil.getAllGroups(pattern, sql);
+            String udfName = groups.get(1);
+            String className = groups.get(2);
+            return UDF.builder()
+                .name(udfName)
+                .className(className)
+                .functionLanguage(FunctionLanguage.valueOf(Opt.ofNullable(groups.get(4)).orElse("JAVA").toUpperCase()))
+                .build();
+        }).collect(Collectors.toList());
+        List<String> classNameList = udfList.stream().map(UDF::getClassName).collect(Collectors.toList());
+        process.info(StringUtils.join(",", classNameList));
+        process.info(CharSequenceUtil.format("A total of {} UDF have been Parsed.", classNameList.size()));
+        return udfList;
+    }
+
+    public static String buildPy(List<UDF> udfList) {
+        InputStream[] inputStreams = udfList.stream().map(x -> {
+            String s = buildPy(x);
+            return FileUtil.getInputStream(s);
+        }).toArray(InputStream[]::new);
+
+        String[] paths = udfList.stream().map(x -> StrUtil.split(x.getClassName(), ".").get(0) + ".py").toArray(String[]::new);
+        File file = FileUtil.file(PathConstant.UDF_PYTHON_PATH + "python_udf.zip");
+        FileUtil.del(file);
+        try (ZipUtils zipWriter = new ZipUtils(file, Charset.defaultCharset())) {
+            zipWriter.add(paths, inputStreams);
+        }
+        return file.getAbsolutePath();
+    }
+
+    public static String buildPy(UDF udf) {
+        File file = FileUtil.writeUtf8String(udf.getCode(), PathConstant.UDF_PYTHON_PATH + StrUtil.split(udf.getClassName(), ".").get(0) + ".py");
+        return file.getAbsolutePath();
+    }
+
+    public static String getPyUDFAttr(String code) {
+        return Opt.ofBlankAble(ReUtil.getGroup1(UDFUtil.PYTHON_UDF_ATTR, code))
+            .orElse(ReUtil.getGroup1(UDFUtil.PYTHON_UDF_DEF, code));
+    }
+
+    public static String getScalaFullClassName(String code) {
+        String packageName = ReUtil.getGroup1(UDFUtil.SCALA_UDF_PACKAGE, code);
+        String clazz = ReUtil.getGroup1(UDFUtil.SCALA_UDF_CLASS, code);
+        return String.join(".", Arrays.asList(packageName, clazz));
+    }
+
+    public static Boolean buildClass(String code) {
         CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(code);
         boolean res = compiler.compiler();
+        String className = compiler.getFullClassName();
         if (res) {
-            String className = compiler.getFullClassName();
             byte[] compiledBytes = compiler.getJavaFileObjectMap(className).getCompiledBytes();
             ClassPool.push(new ClassEntity(className, code, compiledBytes));
-            System.out.println("编译成功");
-            System.out.println("compilerTakeTime：" + compiler.getCompilerTakeTime());
+            log.info("class:{} 编译成功", className);
+            log.info("compilerTakeTime：{}", compiler.getCompilerTakeTime());
             initClassLoader(className);
         } else {
-            System.out.println("编译失败");
-            System.out.println(compiler.getCompilerMessage());
+            log.warn("class:{} 编译失败", className);
+            log.warn(compiler.getCompilerMessage());
         }
+        return res;
     }
 
     public static void initClassLoader(String name) {
@@ -69,35 +195,105 @@ public class UDFUtil {
         groovyClassLoader.setShouldRecompile(true);
         groovyClassLoader.defineClass(classEntity.getName(), classEntity.getClassByte());
         Thread.currentThread().setContextClassLoader(groovyClassLoader);
-        //Class<?> clazz = groovyClassLoader.parseClass(codeSource,"com.dlink.ud.udf.SubstringFunction");
     }
 
-    public static Map<String, List<String>> buildJar(List<String> codeList) {
+    public static Map<String, List<String>> buildJar(List<UDF> codeList) {
         List<String> successList = new ArrayList<>();
         List<String> failedList = new ArrayList<>();
-        String tmpPath = System.getProperty("user.dir") + File.separator + "tmp/udf/";
-        String udfJarPath = tmpPath + "udf.jar";
-        //删除jar缓存
+        String tmpPath = PathConstant.UDF_PATH;
+        String udfJarPath = PathConstant.UDF_JAR_TMP_PATH;
+        // 删除jar缓存
         FileUtil.del(udfJarPath);
-        codeList.forEach(code -> {
-            CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(code);
-            boolean res = compiler.compilerToTmpPath(tmpPath);
-            String className = compiler.getFullClassName();
-            if (res) {
-                System.out.println("编译成功");
-                System.out.println("compilerTakeTime：" + compiler.getCompilerTakeTime());
-                successList.add(className);
-            } else {
-                System.out.println("编译失败");
-                System.out.println(compiler.getCompilerMessage());
-                failedList.add(className);
+        codeList.forEach(udf -> {
+            if (udf.getFunctionLanguage() == FunctionLanguage.JAVA) {
+                CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(udf.getCode());
+                boolean res = compiler.compilerToTmpPath(tmpPath);
+                String className = compiler.getFullClassName();
+                if (res) {
+                    log.info("class编译成功:{}" + className);
+                    log.info("compilerTakeTime：" + compiler.getCompilerTakeTime());
+                    successList.add(className);
+                } else {
+                    log.warn("class编译失败:{}" + className);
+                    log.warn(compiler.getCompilerMessage());
+                    failedList.add(className);
+                }
+            } else if (udf.getFunctionLanguage() == FunctionLanguage.SCALA) {
+                String className = udf.getClassName();
+                if (CustomStringScalaCompiler.getInterpreter().compileString(udf.getCode())) {
+                    log.info("scala class编译成功:{}" + className);
+                    successList.add(className);
+                } else {
+                    log.warn("scala class编译失败:{}" + className);
+                    failedList.add(className);
+                }
             }
+
         });
-        String[] clazzs = successList.stream().map(className -> StrUtil.replace(className, ".", "/") + ".class").toArray(String[]::new);
-        InputStream[] fileInputStreams = successList.stream().map(className -> tmpPath + StrUtil.replace(className, ".", "/") + ".class")
-            .map(FileUtil::getInputStream).toArray(InputStream[]::new);
+        String[] clazzs = successList.stream().map(className -> StrUtil.replace(className, ".", "/") + ".class")
+            .toArray(String[]::new);
+        InputStream[] fileInputStreams =
+            successList.stream().map(className -> tmpPath + StrUtil.replace(className, ".", "/") + ".class")
+                .map(FileUtil::getInputStream).toArray(InputStream[]::new);
         // 编译好的文件打包jar
-        ZipUtil.zip(FileUtil.file(udfJarPath), clazzs, fileInputStreams);
-        return MapUtil.builder("success", successList).put("failed", failedList).build();
+        try (ZipUtils zipWriter = new ZipUtils(FileUtil.file(udfJarPath), Charset.defaultCharset())) {
+            zipWriter.add(clazzs, fileInputStreams);
+        }
+        String md5 = md5sum(udfJarPath);
+        return MapUtil.builder("success", successList).put("failed", failedList)
+            .put("md5", Collections.singletonList(md5)).build();
     }
+
+    /**
+     * 得到udf版本和构建jar
+     *
+     * @param codeList 代码列表
+     * @return {@link java.lang.String}
+     */
+    public static String getUdfFileAndBuildJar(List<UDF> codeList) {
+        // 1. 检查所有jar的版本，通常名字为 udf-${version}.jar;如 udf-1.jar,没有这个目录则跳过
+        String md5 = buildJar(codeList).get("md5").get(0);
+        if (!FileUtil.exist(PathConstant.UDF_PATH)) {
+            FileUtil.mkdir(PathConstant.UDF_PATH);
+        }
+
+        try {
+            // 获取所有的udf jar的 md5 值，放入 map 里面
+            if (UDF_MD5_MAP.isEmpty()) {
+                scanUDFMD5();
+            }
+            // 2. 如果有匹配的，返回对应udf 版本，没有则构建jar，对应信息写入 jar
+            if (UDF_MD5_MAP.containsKey(md5)) {
+                FileUtil.del(PathConstant.UDF_JAR_TMP_PATH);
+                return StrUtil.format("udf-{}.jar", UDF_MD5_MAP.get(md5));
+            }
+            // 3. 生成新版本jar
+            Integer newVersion = UDF_MD5_MAP.values().size() > 0 ? CollUtil.max(UDF_MD5_MAP.values()) + 1 : 1;
+            String jarName = StrUtil.format("udf-{}.jar", newVersion);
+            String newName = PathConstant.UDF_PATH + jarName;
+            FileUtil.rename(FileUtil.file(PathConstant.UDF_JAR_TMP_PATH), newName, true);
+            UDF_MD5_MAP.put(md5, newVersion);
+            return jarName;
+        } catch (Exception e) {
+            log.warn("builder jar failed! please check env. msg:{}", e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 扫描udf包文件，写入md5到 UDF_MD5_MAP
+     */
+    private static void scanUDFMD5() {
+        List<String> fileList = FileUtil.listFileNames(PathConstant.UDF_PATH);
+        fileList.stream().filter(fileName -> ReUtil.isMatch(PathConstant.UDF_JAR_RULE, fileName)).distinct()
+            .forEach(fileName -> {
+                Integer version = Convert.toInt(ReUtil.getGroup0(PathConstant.UDF_VERSION_RULE, fileName));
+                UDF_MD5_MAP.put(md5sum(PathConstant.UDF_PATH + fileName), version);
+            });
+    }
+
+    private static String md5sum(String filePath) {
+        return MD5.create().digestHex(FileUtil.file(filePath));
+    }
+
 }

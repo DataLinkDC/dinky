@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlink.mapper.UserTenantMapper">
+    <sql id="baseSql">
+        id
+        ,user_id,tenant_id
+    </sql>
+
+    <select id="getUserTenantByUserId" resultType="com.dlink.model.UserTenant">
+        select
+        <include refid="baseSql"/>
+        from
+        dlink_user_tenant
+        where user_id = (#{userId})
+    </select>
+</mapper>

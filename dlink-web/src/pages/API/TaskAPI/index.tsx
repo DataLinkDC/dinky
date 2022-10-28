@@ -18,16 +18,22 @@
  */
 
 
-import {Typography, Tabs, Badge, Empty} from "antd";
+import {Tabs, Typography} from "antd";
 import CodeShow from "@/components/Common/CodeShow";
 import {useEffect, useState} from "react";
 import {getTaskAPIAddress} from "@/pages/API/service";
+import {useIntl} from "umi";
 
 
 const {Title, Paragraph, Text, Link} = Typography;
 const {TabPane} = Tabs;
 
 const TaskAPI = (props: any) => {
+
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
 
   const {task} = props;
   const [address, setAddress] = useState<string>('127.0.0.1:8888');
@@ -38,8 +44,8 @@ const TaskAPI = (props: any) => {
 
   const getAddress = () => {
     const res = getTaskAPIAddress();
-    res.then((result)=>{
-      if(result.datas){
+    res.then((result) => {
+      if (result.datas) {
         setAddress(result.datas);
       }
     })
@@ -92,7 +98,8 @@ const TaskAPI = (props: any) => {
         }
         key="taskInstance"
       >
-        <CodeShow code={`curl http://${address}/openapi/getJobInstanceByTaskId?id=${(task ? task.id : '1')}`} language='shell'
+        <CodeShow code={`curl http://${address}/openapi/getJobInstanceByTaskId?id=${(task ? task.id : '1')}`}
+                  language='shell'
                   height='500px' theme="vs-dark"/>
       </TabPane>
       <TabPane

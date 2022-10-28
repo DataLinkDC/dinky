@@ -18,9 +18,10 @@
  */
 
 
-import React, {useEffect, useState} from 'react';
-import {Form, Button, Input, Modal, Select,Divider,Switch} from 'antd';
+import React, {useState} from 'react';
+import {Button, Divider, Form, Input, Modal, Select, Switch} from 'antd';
 import {JarTableListItem} from "@/pages/Jar/data";
+import {useIntl} from 'umi';
 
 export type JarFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -37,17 +38,22 @@ const formLayout = {
 
 const JarForm: React.FC<JarFormProps> = (props) => {
 
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
+
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<JarTableListItem>>({
     id: props.values.id,
     name: props.values.name,
     alias: props.values.alias,
-    type: props.values.type?props.values.type:'UserApp',
+    type: props.values.type ? props.values.type : 'UserApp',
     path: props.values.path,
     mainClass: props.values.mainClass,
     paras: props.values.paras,
     note: props.values.note,
-    enabled: props.values.enabled?props.values.enabled:true,
+    enabled: props.values.enabled ? props.values.enabled : true,
   });
 
   const {
@@ -118,7 +124,7 @@ const JarForm: React.FC<JarFormProps> = (props) => {
         </Form.Item>
         <Form.Item
           name="enabled"
-          label="是否启用">
+          label={l('global.table.isEnable')}>
           <Switch checkedChildren="启用" unCheckedChildren="禁用"
                   defaultChecked={formVals.enabled}/>
         </Form.Item>
@@ -129,9 +135,9 @@ const JarForm: React.FC<JarFormProps> = (props) => {
   const renderFooter = () => {
     return (
       <>
-        <Button onClick={() => handleModalVisible(false)}>取消</Button>
+        <Button onClick={() => handleModalVisible(false)}>{l('button.cancel')}</Button>
         <Button type="primary" onClick={() => submitForm()}>
-          完成
+          {l('button.finish')}
         </Button>
       </>
     );
@@ -139,10 +145,10 @@ const JarForm: React.FC<JarFormProps> = (props) => {
 
   return (
     <Modal
-      width={1200}
+      width={"40%"}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title={formVals.id?"维护Jar配置":"创建Jar配置"}
+      title={formVals.id ? "维护Jar配置" : "创建Jar配置"}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}

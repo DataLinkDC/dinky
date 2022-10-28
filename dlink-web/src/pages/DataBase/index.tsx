@@ -40,6 +40,7 @@ import styles from './index.less';
 import {DataBaseItem} from "@/pages/DataBase/data";
 import {checkHeartBeat} from "@/pages/DataBase/service";
 import {showDataBase} from "@/components/Studio/StudioEvent/DDL";
+import {useIntl} from "umi";
 
 const {Text} = Typography;
 
@@ -51,6 +52,11 @@ const cardBodyStyle = {
 };
 
 const DataBaseTableList: React.FC<{}> = (props: any) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
+
   const {dispatch} = props;
   const [chooseDBModalVisible, handleDBFormModalVisible] = useState<boolean>(false);
   const [values, setValues] = useState<any>({});
@@ -75,8 +81,8 @@ const DataBaseTableList: React.FC<{}> = (props: any) => {
     Modal.confirm({
       title: '删除数据源',
       content: `确定删除该数据源【${row.alias === "" ? row.name : row.alias}】吗？`,
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         await handleRemove('api/database', [row]);
         onRefreshDataBase();
@@ -86,7 +92,7 @@ const DataBaseTableList: React.FC<{}> = (props: any) => {
   };
 
   return (
-    <PageContainer>
+    <PageContainer title={false}>
       <ProList
         actionRef={actionRef}
         toolBarRender={() => {
@@ -95,7 +101,7 @@ const DataBaseTableList: React.FC<{}> = (props: any) => {
               setValues({});
               handleDBFormModalVisible(true);
             }}>
-              <PlusOutlined/> 新建
+              <PlusOutlined/> {l('button.create')}
             </Button>,
           ];
         }}

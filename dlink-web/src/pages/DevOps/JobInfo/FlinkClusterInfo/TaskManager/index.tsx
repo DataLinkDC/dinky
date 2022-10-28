@@ -26,11 +26,17 @@ import {TaskContainerConfigInfo, TaskManagerConfiguration} from "@/pages/DevOps/
 import {useEffect, useRef, useState} from "react";
 import {HomeOutlined} from "@ant-design/icons";
 import {getTaskManagerInfo} from "@/pages/DevOps/service";
+import {useIntl} from "umi";
 
 const {TabPane} = Tabs;
 
 const TaskManagerInfo = (props: any) => {
   const {job} = props;
+
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
   const actionRef = useRef<ActionType>();
 
   const [activeContainer, setActiveContainer] = useState<TaskContainerConfigInfo>();

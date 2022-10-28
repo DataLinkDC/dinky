@@ -20,23 +20,27 @@
 
 import React, {useRef, useState} from "react";
 import {MinusSquareOutlined} from '@ant-design/icons';
-import {ActionType, ProColumns} from "@ant-design/pro-table";
-import {Drawer,Row,Col,Tooltip,Button} from 'antd';
-import ProTable from '@ant-design/pro-table';
+import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
+import {Button, Col, Drawer, Row, Tooltip} from 'antd';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import {queryData} from "@/components/Common/crud";
 import {SavePointTableListItem} from "@/components/Studio/StudioRightTool/StudioSavePoint/data";
 import {StateType} from "@/pages/DataStudio/model";
-import {connect} from "umi";
-import { Scrollbars } from 'react-custom-scrollbars';
+import {connect, useIntl} from "umi";
+import {Scrollbars} from 'react-custom-scrollbars';
 
 const url = '/api/savepoints';
 const StudioSavePoint = (props: any) => {
-  const {current,toolHeight,dispatch} = props;
+
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
+  const {current, toolHeight, dispatch} = props;
   const [row, setRow] = useState<SavePointTableListItem>();
   const actionRef = useRef<ActionType>();
 
-  if(current.key){
+  if (current.key) {
     actionRef.current?.reloadAndRest?.();
   }
 
@@ -81,7 +85,7 @@ const StudioSavePoint = (props: any) => {
       hideInSearch: true,
     },
     {
-      title: '创建时间',
+      title: l('global.table.createTime'),
       dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',
@@ -101,19 +105,19 @@ const StudioSavePoint = (props: any) => {
             <Tooltip title="最小化">
               <Button
                 type="text"
-                icon={<MinusSquareOutlined />}
+                icon={<MinusSquareOutlined/>}
               />
             </Tooltip>
           </div>
         </Col>
       </Row>
-      <Scrollbars  style={{height:(toolHeight-32)}}>
-      <ProTable<SavePointTableListItem>
-        actionRef={actionRef}
-        rowKey="id"
-        request={(params, sorter, filter) => queryData(url, {taskId:current.key,...params, sorter, filter})}
-        columns={columns}
-        search={false}
+      <Scrollbars style={{height: (toolHeight - 32)}}>
+        <ProTable<SavePointTableListItem>
+          actionRef={actionRef}
+          rowKey="id"
+          request={(params, sorter, filter) => queryData(url, {taskId: current.key, ...params, sorter, filter})}
+          columns={columns}
+          search={false}
         />
         <Drawer
           width={600}
@@ -128,21 +132,21 @@ const StudioSavePoint = (props: any) => {
               column={2}
               title={row?.name}
               request={async () => ({
-              data: row || {},
-            })}
+                data: row || {},
+              })}
               params={{
-              id: row?.name,
-            }}
+                id: row?.name,
+              }}
               columns={columns}
-              />
-              )}
+            />
+          )}
         </Drawer>
       </Scrollbars>
     </>
-);
+  );
 };
 
-export default connect(({ Studio }: { Studio: StateType }) => ({
+export default connect(({Studio}: { Studio: StateType }) => ({
   current: Studio.current,
   toolHeight: Studio.toolHeight,
 }))(StudioSavePoint);

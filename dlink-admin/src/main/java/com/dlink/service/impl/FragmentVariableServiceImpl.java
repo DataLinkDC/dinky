@@ -48,9 +48,8 @@ public class FragmentVariableServiceImpl extends SuperServiceImpl<FragmentVariab
 
     @Override
     public Map<String, String> listEnabledVariables() {
-        List<FragmentVariable> fragmentVariables = listEnabledAll();
         Map<String, String> variables = new LinkedHashMap<>();
-        for (FragmentVariable fragmentVariable : fragmentVariables) {
+        for (FragmentVariable fragmentVariable : listEnabledAll()) {
             variables.put(fragmentVariable.getName(), fragmentVariable.getFragmentValue());
         }
         return variables;

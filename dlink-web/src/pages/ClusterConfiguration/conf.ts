@@ -23,6 +23,7 @@ export type Config = {
   lable: string,
   placeholder: string
   defaultValue?: string
+  help?: string
 }
 
 export const HADOOP_CONFIG_LIST: Config[] = [{
@@ -44,14 +45,20 @@ export const KUBERNETES_CONFIG_LIST: Config[] = [{
   placeholder: 'NodePort',
   defaultValue: 'NodePort',
 }];
-export const FLINK_CONFIG_LIST: Config[] = [{
+export const FLINK_CONFIG_LIST: Config[] = [
+  {
+    name: 'kubernetes.pod-template-file',
+    lable: 'kubernetes.pod-template-file',
+    placeholder: 'pod-template-file path',
+    help: '可选，如果配置需要指定到具体文件'
+  },{
   name: 'jobmanager.memory.process.size',
   lable: 'jobmanager.memory.process.size',
-  placeholder: '1600m',
+  placeholder: '1600m jobmanager內存設置',
 }, {
   name: 'taskmanager.memory.process.size',
   lable: 'taskmanager.memory.process.size',
-  placeholder: '2048m',
+  placeholder: '2048m taskmanager內存設置',
 }, {
   name: 'taskmanager.memory.framework.heap.size',
   lable: 'taskmanager.memory.framework.heap.size',
@@ -59,7 +66,15 @@ export const FLINK_CONFIG_LIST: Config[] = [{
 }, {
   name: 'taskmanager.numberOfTaskSlots',
   lable: 'taskmanager.numberOfTaskSlots',
-  placeholder: '4',
+  placeholder: '1',
+}, {
+  name: 'kubernetes.jobmanager.cpu',
+  lable: 'kubernetes.jobmanager.cpu',
+  placeholder: '1',
+}, {
+  name: 'kubernetes.taskmanager.cpu',
+  lable: 'kubernetes.taskmanager.cpu',
+  placeholder: '1',
 }, {
   name: 'parallelism.default',
   lable: 'parallelism.default',
@@ -68,6 +83,25 @@ export const FLINK_CONFIG_LIST: Config[] = [{
   name: 'state.savepoints.dir',
   lable: 'state.savepoints.dir',
   placeholder: 'hdfs:///flink/savepoints/',
+}
+];
+
+export const APP_CONFIG_LIST: Config[] = [{
+  name: 'userJarPath',
+  lable: '镜像内Jar路径',
+  placeholder: 'local:///opt/example.jar',
+}, {
+  name: 'userJarMainAppClass',
+  lable: '启动类',
+  placeholder: 'com.example.app',
+}, {
+  name: 'userJarParas',
+  lable: '启动参数',
+  placeholder: '值如 -conf test.properties',
+},{
+  name: 'state.savepoints.dir',
+    lable: 'state.savepoints.dir',
+    placeholder: 'hdfs:///flink/savepoints/',
 }
 ];
 
@@ -82,6 +116,13 @@ export function HADOOP_CONFIG_NAME_LIST () {
 export function KUBERNETES_CONFIG_NAME_LIST () {
   const list: string[] = [];
   KUBERNETES_CONFIG_LIST.forEach(item => {
+    list.push(item.name);
+  });
+  return list;
+}
+export function APP_CONFIG_NAME_LIST () {
+  const list: string[] = [];
+  APP_CONFIG_LIST.forEach(item => {
     list.push(item.name);
   });
   return list;

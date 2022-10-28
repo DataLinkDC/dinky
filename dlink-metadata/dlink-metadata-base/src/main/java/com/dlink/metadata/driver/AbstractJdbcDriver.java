@@ -120,7 +120,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         return this;
     }
 
-    private void createDataSource(DruidDataSource ds, DriverConfig config) {
+    protected void createDataSource(DruidDataSource ds, DriverConfig config) {
         ds.setName(config.getName().replaceAll(":", ""));
         ds.setUrl(config.getUrl());
         ds.setDriverClassName(getDriverClass());
@@ -462,7 +462,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         return sb.toString();
     }
 
-    //todu impl by subclass
+    // todu impl by subclass
     @Override
     public String generateCreateTableSql(Table table) {
         StringBuilder sb = new StringBuilder();
@@ -473,7 +473,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     public boolean execute(String sql) throws Exception {
         Asserts.checkNullString(sql, "Sql 语句为空");
         try (Statement statement = conn.get().createStatement()) {
-            //logger.info("执行sql的连接id：" + ((DruidPooledConnection) conn).getTransactionInfo().getId());
+            // logger.info("执行sql的连接id：" + ((DruidPooledConnection) conn).getTransactionInfo().getId());
             statement.execute(sql);
         }
         return true;
@@ -503,10 +503,10 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         String limitEnd = queryData.getOption().getLimitEnd();
 
         StringBuilder optionBuilder = new StringBuilder()
-                .append("select * from ")
-                .append(queryData.getSchemaName())
-                .append(".")
-                .append(queryData.getTableName());
+            .append("select * from ")
+            .append(queryData.getSchemaName())
+            .append(".")
+            .append(queryData.getTableName());
 
         if (where != null && !where.equals("")) {
             optionBuilder.append(" where ").append(where);
@@ -522,9 +522,9 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
             limitEnd = "100";
         }
         optionBuilder.append(" limit ")
-                .append(limitStart)
-                .append(",")
-                .append(limitEnd);
+            .append(limitStart)
+            .append(",")
+            .append(limitEnd);
 
         return optionBuilder;
     }

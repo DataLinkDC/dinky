@@ -23,8 +23,12 @@ import {SearchOutlined} from '@ant-design/icons';
 import ProTable from '@ant-design/pro-table';
 import {getData} from "@/components/Common/crud";
 import {Button, Input, Space} from "antd";
+import {useIntl} from "umi";
 
 const DTable = (props: any) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {dataSource, columns, scroll} = props;
 
@@ -94,7 +98,8 @@ const DTable = (props: any) => {
       dataSource={dataSource ? (dataSource.url ? data : dataSource) : []}
       rowKey="name"
       pagination={{
-        pageSize: 10,
+        defaultPageSize: 10,
+        showSizeChanger: true,
       }}
       toolBarRender={false}
       search={false}

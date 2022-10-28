@@ -55,7 +55,7 @@ start() {
 
   pid=$(cat ${PIDPATH}/${PIDFILE})
   if [ -z $pid ]; then
-    nohup java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none -cp ${CLASS_PATH} com.dlink.Dlink >dlink.log 2>&1 &
+    nohup java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none -cp ${CLASS_PATH} com.dlink.Dlink >/dev/null 2>&1 &
     echo $! >${PIDPATH}/${PIDFILE}
     echo "........................................Start Dlink Successfully........................................"
 

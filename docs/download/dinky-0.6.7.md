@@ -3,12 +3,9 @@ sidebar_position: 90
 title: 0.6.7 release
 ---
 
-
-
 | 版本    | 二进制程序                                                                                                                 | Source                                                                                |
 |-------|-----------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
 | 0.6.7 | [dlink-release-0.6.7.tar.gz](https://github.com/DataLinkDC/dlink/releases/download/v0.6.7/dlink-release-0.6.7.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dlink/archive/refs/tags/v0.6.7.zip) |
-
 
 ## Dinky发行说明
 
@@ -17,9 +14,8 @@ Dinky 0.6.7 是一个修复的版本。
 :::warning 注意
 该版本多租户功能暂未开放
 此版本有表结构变更 <br/>
-需要按需执行 **sql/dlink_history.sql** 文件的增量 DDL
+需要按需执行 **sql/upgrade/0.6.7_schema/mysql/dinky_ddl.sql** 文件的增量 DDL
 :::
-
 
 ### 新功能
 

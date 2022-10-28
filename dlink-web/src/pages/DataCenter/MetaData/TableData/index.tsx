@@ -25,8 +25,13 @@ import styles from './index.less';
 import {SearchOutlined} from "@ant-design/icons";
 import Divider from "antd/es/divider";
 import {ProTable} from "@ant-design/pro-table";
+import {useIntl} from 'umi';
 
 const TableData = (props: any) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
 
   // 数据库id，数据库名称，表名称
   const {dbId, table, schema} = props;
@@ -163,7 +168,7 @@ const TableData = (props: any) => {
                   })
                 }}
               >
-                <Input addonBefore="WHERE" placeholder="查询条件"
+                <Input addonBefore="WHERE" placeholder={l('pages.TableData.QueryConditions')}
                        onChange={(value) => {
                          setOptionInput({
                            whereInput: value.target.value,
@@ -187,16 +192,18 @@ const TableData = (props: any) => {
                   })
                 }}
               >
-                <Input addonBefore="ORDER BY" placeholder="排序" onChange={(value) => {
-                  setOptionInput({
-                    whereInput: optionInput.whereInput,
-                    orderInput: value.target.value
-                  })
-                }}/>
+                <Input addonBefore="ORDER BY"
+                       placeholder={l('pages.TableData.sorting')}
+                       onChange={(value) => {
+                         setOptionInput({
+                           whereInput: optionInput.whereInput,
+                           orderInput: value.target.value
+                         })
+                       }}/>
               </AutoComplete>
             </Col>
             <Col span={2}>
-              <Tooltip title="查询">
+              <Tooltip title={l('pages.TableData.search')}>
                 <Button type="primary" shape="circle" icon={<SearchOutlined/>} size="middle" onClick={(event) => {
                   fetchData(optionInput.whereInput, optionInput.orderInput)
                 }}/>
@@ -207,7 +214,7 @@ const TableData = (props: any) => {
         </div>
 
 
-        <Divider orientation="left" plain>数据</Divider>
+        <Divider orientation="left" plain>{l('pages.TableData.data')}</Divider>
 
         <div>
           <ProTable
@@ -215,7 +222,8 @@ const TableData = (props: any) => {
             columns={tableData.columns}
             dataSource={tableData.rowData}
             pagination={{
-              pageSize: 10,
+              defaultPageSize: 10,
+              showSizeChanger: true,
             }}
             scroll={{y: "80vh", x: true}}
             dateFormatter="string"

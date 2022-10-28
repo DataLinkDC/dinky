@@ -39,13 +39,16 @@ import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.util.Collector;
+import org.apache.flink.util.NetUtils;
 import org.apache.flink.util.OutputTag;
+import org.apache.kafka.clients.producer.ProducerConfig;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * MysqlCDCBuilder
@@ -90,10 +93,13 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
         StreamExecutionEnvironment env,
         CustomTableEnvironment customTableEnvironment,
         DataStreamSource<String> dataStreamSource) {
+        Properties kafkaProducerConfig = getProperties();
+        getPropertiesFromBrokerList(kafkaProducerConfig, config.getSink().get("brokers"));
         if (Asserts.isNotNullString(config.getSink().get("topic"))) {
-            dataStreamSource.addSink(new FlinkKafkaProducer<>(config.getSink().get("brokers"),
+            dataStreamSource.addSink(new FlinkKafkaProducer<>(
                     config.getSink().get("topic"),
-                    new SimpleStringSchema()));
+                    new SimpleStringSchema(),
+                    kafkaProducerConfig));
         } else {
 
             Map<Table, OutputTag<String>> tagMap = new HashMap<>();
@@ -130,11 +136,20 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
                 });
                 tagMap.forEach((k, v) -> {
                     String topic = getSinkTableName(k);
-                    process.getSideOutput(v).rebalance().addSink(new FlinkKafkaProducer<>(config.getSink().get("brokers"),
-                            topic, new SimpleStringSchema())).name(topic);
+                    process.getSideOutput(v).rebalance().addSink(new FlinkKafkaProducer<>(
+                            topic, new SimpleStringSchema(), kafkaProducerConfig)).name(topic);
                 });
             }
         }
         return dataStreamSource;
+    }
+
+    private  void getPropertiesFromBrokerList(Properties props, String brokerList) {
+        String[] elements = brokerList.split(",");
+        // validate the broker addresses
+        for (String broker : elements) {
+            NetUtils.getCorrectHostnamePort(broker);
+        }
+        props.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, brokerList);
     }
 }

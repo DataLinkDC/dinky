@@ -18,11 +18,12 @@
  */
 
 
-import React, {useEffect, useState} from 'react';
-import {Form, Button, Input, Modal, Select, Switch} from 'antd';
+import React, {useState} from 'react';
+import {Button, Form, Input, Modal, Select, Switch} from 'antd';
 
 import {ClusterTableListItem} from "@/pages/Cluster/data";
 import {RUN_MODE} from "@/components/Studio/conf";
+import {useIntl} from 'umi';
 
 export type ClusterFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -38,6 +39,10 @@ const formLayout = {
 };
 
 const ClusterForm: React.FC<ClusterFormProps> = (props) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<ClusterTableListItem>>({
@@ -82,8 +87,9 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
         <Form.Item
           name="type"
           label="类型"
+          rules={[{required: true, message: '请选择集群类型！'}]}
         >
-          <Select defaultValue={RUN_MODE.YARN_SESSION} allowClear>
+          <Select>
             <Option value={RUN_MODE.STANDALONE}>Standalone</Option>
             <Option value={RUN_MODE.YARN_SESSION}>Yarn Session</Option>
             <Option value={RUN_MODE.YARN_PER_JOB}>Yarn Per-Job</Option>
@@ -133,7 +139,7 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
         </Form.Item>
         <Form.Item
           name="enabled"
-          label="是否启用">
+          label={l('global.table.isEnable')}>
           <Switch checkedChildren="启用" unCheckedChildren="禁用"
                   defaultChecked={formValsPara.enabled}/>
         </Form.Item>
@@ -144,9 +150,9 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
   const renderFooter = () => {
     return (
       <>
-        <Button onClick={() => handleModalVisible(false)}>取消</Button>
+        <Button onClick={() => handleModalVisible(false)}>{l('button.cancel')}</Button>
         <Button type="primary" onClick={() => submitForm()}>
-          完成
+          {l('button.finish')}
         </Button>
       </>
     );
@@ -154,7 +160,7 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
 
   return (
     <Modal
-      width={640}
+      width={"40%"}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
       title={formVals.id ? "修改集群" : "创建集群"}

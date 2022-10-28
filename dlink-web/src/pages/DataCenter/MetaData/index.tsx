@@ -43,11 +43,15 @@ import Generation from '@/pages/DataBase/Generation';
 import TableData from '@/pages/DataCenter/MetaData/TableData';
 import {FALLBACK, getDBImage} from "@/pages/DataBase/DB";
 import Meta from "antd/lib/card/Meta";
+import {useIntl} from 'umi';
 
 const {DirectoryTree} = Tree;
 const {TabPane} = Tabs;
 
 const MetaDataContainer: React.FC<{}> = (props: any) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   let [database, setDatabase] = useState<[{
@@ -167,10 +171,10 @@ const MetaDataContainer: React.FC<{}> = (props: any) => {
                     </Tag>
                     {(item.status) ?
                       (<Tag icon={<CheckCircleOutlined/>} color="success">
-                        正常
+                        {l('global.table.status.normal')}
                       </Tag>) :
                       <Tag icon={<ExclamationCircleOutlined/>} color="warning">
-                        异常
+                        {l('global.table.status.abnormal')}
                       </Tag>}
                   </div>
                 </Col>
@@ -195,14 +199,14 @@ const MetaDataContainer: React.FC<{}> = (props: any) => {
                         refeshDataBase(databaseId)
                         setTableChecked(true)
                       }}
-              >刷新</Button>
+              >{l('global.table.refresh')}</Button>
             </div>
             <div>{item.alias}</div>
           </div>
         )
       }
     }
-    return (<div>未选择数据库</div>)
+    return (<div>{l('pages.metadata.NoDatabaseSelected')}</div>)
   }
 
 
@@ -224,7 +228,7 @@ const MetaDataContainer: React.FC<{}> = (props: any) => {
               >
                 <Meta title={buildListTitle()}
                       className={styles.tableListHead}
-                      description={"上次更新：" + treeData.updateTime}
+                      description={"Last Update：" + treeData.updateTime}
                 />
                 {treeData.tables.length > 0 ? (
                   <Scrollbars style={{height: 800}}>
@@ -256,13 +260,13 @@ const MetaDataContainer: React.FC<{}> = (props: any) => {
                            tab={
                              <span>
                           <ReadOutlined/>
-                          描述
+                               {l('pages.metadata.Description')}
                         </span>
                            }
                            key="describe"
                   >
                     <Divider orientation="left" plain>
-                      表信息
+                      {l('pages.metadata.TableInfo')}
                     </Divider>
                     {row ? (
                       <Tables table={row}/>
@@ -270,7 +274,7 @@ const MetaDataContainer: React.FC<{}> = (props: any) => {
                       <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
                     )}
                     <Divider orientation="left" plain>
-                      字段信息
+                      {l('pages.metadata.FieldInformation')}
                     </Divider>
                     {row ? (
                       <Columns dbId={databaseId} schema={row.schema} table={row.table}/>
@@ -283,7 +287,7 @@ const MetaDataContainer: React.FC<{}> = (props: any) => {
                            tab={
                              <span>
                           <BarsOutlined/>
-                          数据查询
+                               {l('pages.metadata.DataSearch')}
                         </span>
                            }
                            key="exampleData"
@@ -299,7 +303,7 @@ const MetaDataContainer: React.FC<{}> = (props: any) => {
                            tab={
                              <span>
                           <ConsoleSqlOutlined/>
-                          SQL 生成
+                               {l('pages.metadata.GenerateSQL')}
                         </span>
                            }
                            key="sqlGeneration"

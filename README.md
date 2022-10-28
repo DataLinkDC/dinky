@@ -16,7 +16,7 @@ Dinky is an out of the box one-stop real-time computing platform dedicated to th
 Its main feature are as follows:
 
 - Immersive Flink SQL Data Development: Automatic prompt completion, syntax highlighting, statement beautification, online debugging, syntax verification, execution plan, MetaStore, lineage, version comparison, etc.
-- Support FlinkSQL multi-version development and execution modes: Local,Standalone,Yarn/Kubernetes  Session,Yarn Per-Job,Yarn/Kubernetes  Application.
+- Support FlinkSQL multi-version development and execution modes: Local,Standalone,Yarn/Kubernetes Session,Yarn Per-Job,Yarn/Kubernetes Application.
 - Support Apache Flink ecology: Connector,FlinkCDC,Table Store,etc.
 - Support FlinkSQL syntax enhancement: Table-valued aggregate functions, global variables, execution environments, statement merging, database synchronization, shared sessions, etc.
 - Supports real-time warehousing and lake entry of the entire FlinkCDC database, multi-database output, and automatic table creation.
@@ -92,7 +92,7 @@ Upgrade steps:
 
 (1) Upgrade the app: Replace all dependencies of latest Dinky.
 
-(2) Upgrade the DDL: Execute some of the upgrade statements in dlink_history.sql in the sql directory. It is based on the version number and date to determine where to start the execution. Please do not execute all sql directly.
+(2) Upgrade the DDL: Execute the relevant version upgrade statements in the sql/upgrade directory, and execute them in the order of the version numbers.
 
 ## Thanks
 

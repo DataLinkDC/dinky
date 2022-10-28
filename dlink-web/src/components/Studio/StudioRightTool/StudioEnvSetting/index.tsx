@@ -18,10 +18,10 @@
  */
 
 
-import {connect} from "umi";
+import {connect, useIntl} from "umi";
 import {StateType} from "@/pages/DataStudio/model";
-import {Form, Switch, Row, Col,Tooltip, Button} from "antd";
-import {InfoCircleOutlined,MinusSquareOutlined} from "@ant-design/icons";
+import {Button, Col, Form, Row, Switch, Tooltip} from "antd";
+import {InfoCircleOutlined, MinusSquareOutlined} from "@ant-design/icons";
 import styles from "./index.less";
 import {useEffect} from "react";
 import {JarStateType} from "@/pages/Jar/model";
@@ -29,7 +29,10 @@ import {Scrollbars} from "react-custom-scrollbars";
 
 const StudioEnvSetting = (props: any) => {
 
-  const { current, form, dispatch, tabs, toolHeight} = props;
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
+  const {current, form, dispatch, tabs, toolHeight} = props;
 
   useEffect(() => {
     form.setFieldsValue(current.task);
@@ -77,7 +80,10 @@ const StudioEnvSetting = (props: any) => {
             <Col span={12}>
               <Form.Item
                 label="Fragment" className={styles.form_item} name="fragment" valuePropName="checked"
-                tooltip={{title: '【增强特性】 开启FlinkSql片段机制，使用“:=”进行定义（以“;”结束），“${}”进行调用', icon: <InfoCircleOutlined/>}}
+                tooltip={{
+                  title: '【增强特性】 开启FlinkSql片段机制，使用“:=”进行定义（以“;”结束），“${}”进行调用',
+                  icon: <InfoCircleOutlined/>
+                }}
               >
                 <Switch checkedChildren="启用" unCheckedChildren="禁用"
                 />

@@ -19,7 +19,7 @@
 
 
 import {useEffect, useState} from 'react';
-import {history, useLocation} from 'umi';
+import {history, useIntl, useLocation} from 'umi';
 import {ClusterOutlined, EllipsisOutlined, FireOutlined, RedoOutlined, RocketOutlined} from '@ant-design/icons';
 import {Button, Dropdown, Empty, Menu, message, Modal, Space, Tag, Typography} from 'antd';
 import {PageContainer} from '@ant-design/pro-layout';
@@ -45,6 +45,10 @@ import TaskVersionInfo from "@/pages/DevOps/JobInfo/Version";
 const {Link} = Typography;
 
 const JobInfo = (props: any) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
 
   const params = useLocation();
   const {} = props;
@@ -86,8 +90,8 @@ const JobInfo = (props: any) => {
       Modal.confirm({
         title: '停止任务',
         content: `确定只停止该作业，不进行 SavePoint 操作吗？`,
-        okText: '确认',
-        cancelText: '取消',
+        okText: l('button.confirm'),
+        cancelText: l('button.cancel'),
         onOk: async () => {
           if (!job?.cluster?.id) return;
           const res = cancelJob(job?.cluster?.id, job?.instance?.jid);
@@ -106,8 +110,8 @@ const JobInfo = (props: any) => {
     Modal.confirm({
       title: key + '任务',
       content: `确定${key}该作业吗？`,
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         if (!job?.cluster?.id) return;
         const res = offLineTask(job?.instance?.taskId, key);
@@ -127,8 +131,8 @@ const JobInfo = (props: any) => {
     Modal.confirm({
       title: '重新上线任务',
       content: `确定重新上线该作业吗？`,
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         if (!job?.cluster?.id) return;
         const res = restartJob(job?.instance?.taskId, job?.instance?.step == JOB_LIFE_CYCLE.ONLINE);

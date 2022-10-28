@@ -20,17 +20,22 @@
 
 import {Dropdown, Menu, message, Tabs} from 'antd';
 import React from 'react';
-import {connect} from 'umi';
+import {connect, useIntl} from 'umi';
 import {StateType} from '@/pages/DataStudio/model';
 import styles from './index.less';
 import StudioEdit from '../StudioEdit';
 import {DIALECT} from '../conf';
 import StudioHome from "@/components/Studio/StudioHome";
 import {Dispatch} from "@@/plugin-dva/connect";
+import StudioKubernetes from "@/components/Studio/StudioKubernetes";
 
 const {TabPane} = Tabs;
 
 const EditorTabs = (props: any) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
   const {tabs, current, toolHeight, width, height} = props;
 
   const onChange = (activeKey: any) => {
@@ -80,11 +85,11 @@ const EditorTabs = (props: any) => {
 
   const menu = (pane) => (
     <Menu onClick={(e) => handleClickMenu(e, pane)}>
-      <Menu.Item key="CLOSE_OTHER">
-        <span>关闭其他</span>
-      </Menu.Item>
       <Menu.Item key="CLOSE_ALL">
-        <span>关闭所有</span>
+        <span>{l('right.menu.closeAll')}</span>
+      </Menu.Item>
+      <Menu.Item key="CLOSE_OTHER">
+        <span>{l('right.menu.closeOther')}</span>
       </Menu.Item>
     </Menu>
   );
@@ -103,6 +108,48 @@ const EditorTabs = (props: any) => {
     </span>
   );
 
+  // as different dialet return different Panle
+  const getTabPane = (pane, i) => {
+    if (pane.task.dialect == DIALECT.KUBERNETES_APPLICATION) {
+      return (
+        <TabPane tab={Tab(pane)} key={pane.key} closable={pane.closable}>
+          <StudioKubernetes
+            tabsKey={pane.key}
+            conf={pane.value}
+            monaco={pane.monaco}
+            height={height ? height : (toolHeight - 32)}
+            width={width}
+          />
+        </TabPane>
+      )
+    } else {
+      return (<TabPane tab={Tab(pane)} key={pane.key} closable={pane.closable}>
+        <StudioEdit
+          tabsKey={pane.key}
+          sql={pane.value}
+          monaco={pane.monaco}
+          sqlMetaData={pane.sqlMetaData}
+          height={height ? height : (toolHeight - 32)}
+          width={width}
+          language={getLanguage(current.task.dialect)}
+        />
+      </TabPane>)
+    }
+  }
+  const getLanguage = (dialect: string) => {
+    switch (dialect) {
+      case DIALECT.JAVA:
+        return DIALECT.JAVA.toLowerCase()
+      case DIALECT.SCALA:
+        return DIALECT.SCALA.toLowerCase()
+      case DIALECT.PYTHON:
+        return DIALECT.PYTHON.toLowerCase()
+      default:
+        return DIALECT.SQL.toLowerCase()
+    }
+
+  }
+
   return (
     <>
       {tabs.panes.length === 0 ? <StudioHome width={width}/> :
@@ -116,19 +163,7 @@ const EditorTabs = (props: any) => {
           className={styles['edit-tabs']}
           style={{height: height ? height : toolHeight}}
         >
-          {tabs.panes.map((pane, i) => (
-            <TabPane tab={Tab(pane)} key={pane.key} closable={pane.closable}>
-              <StudioEdit
-                tabsKey={pane.key}
-                sql={pane.value}
-                monaco={pane.monaco}
-                // sqlMetaData={pane.sqlMetaData}
-                height={height ? height : (toolHeight - 32)}
-                width={width}
-                language={current.task.dialect === DIALECT.JAVA ? 'java' : 'sql'}
-              />
-            </TabPane>
-          ))}
+          {tabs.panes.map((pane, i) => getTabPane(pane, i))}
         </Tabs>}
     </>
   );

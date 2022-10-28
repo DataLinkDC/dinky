@@ -18,20 +18,12 @@
  */
 
 
-import {
-  message, Button, Table, Empty, Divider,
-  Tooltip, Drawer, Modal
-} from "antd";
+import {Button, Drawer, Empty, Modal, Table, Tooltip} from "antd";
 import ProDescriptions from '@ant-design/pro-descriptions';
 import {StateType} from "@/pages/DataStudio/model";
-import {connect} from "umi";
-import {useState} from "react";
-import styles from "./index.less";
-import {
-  ReloadOutlined,
-  PlusOutlined
-} from '@ant-design/icons';
-import React from "react";
+import {connect, useIntl} from "umi";
+import React, {useState} from "react";
+import {PlusOutlined, ReloadOutlined} from '@ant-design/icons';
 import {showCluster} from "../../StudioEvent/DDL";
 import {handleAddOrUpdate, handleRemove} from "@/components/Common/crud";
 import ClusterForm from "@/pages/Cluster/components/ClusterForm";
@@ -40,6 +32,9 @@ import {Scrollbars} from 'react-custom-scrollbars';
 const url = '/api/cluster';
 
 const StudioCluster = (props: any) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {cluster, toolHeight, dispatch} = props;
   const [createModalVisible, handleCreateModalVisible] = useState<boolean>(false);
@@ -146,22 +141,22 @@ const StudioCluster = (props: any) => {
         dataIndex: 'note',
       },
       {
-        title: '是否启用',
+        title: l('global.table.isEnable'),
         dataIndex: 'enabled',
         filters: [
           {
-            text: '已启用',
+            text: l('status.enabled'),
             value: 1,
           },
           {
-            text: '已禁用',
+            text: l('status.disabled'),
             value: 0,
           },
         ],
         filterMultiple: false,
         valueEnum: {
-          true: {text: '已启用', status: 'Success'},
-          false: {text: '已禁用', status: 'Error'},
+          true: {text: l('status.enabled'), status: 'Success'},
+          false: {text: l('status.disabled'), status: 'Error'},
         },
       },
       {
@@ -186,29 +181,29 @@ const StudioCluster = (props: any) => {
       {
         title: '集群配置ID',
         dataIndex: 'clusterConfigurationId',
-      },{
+      }, {
         title: '作业ID',
         dataIndex: 'taskId',
       },
       {
-        title: '创建时间',
+        title: l('global.table.createTime'),
         dataIndex: 'createTime',
         valueType: 'dateTime',
       },
       {
-        title: '最近更新时间',
+        title: l('global.table.lastUpdateTime'),
         dataIndex: 'updateTime',
         valueType: 'dateTime',
       },
       {
-        title: '操作',
+        title: l('global.table.operate'),
         dataIndex: 'option',
         valueType: 'option',
         render: (_, record) => [
-          <Button  type="dashed" onClick={() => onModifyCluster(record)}>
-            配置
+          <Button type="dashed" onClick={() => onModifyCluster(record)}>
+            {l('button.edit')}
           </Button>, <Button danger onClick={() => onDeleteCluster(record)}>
-            删除
+            {l('button.delete')}
           </Button>
         ],
       },];
@@ -231,8 +226,8 @@ const StudioCluster = (props: any) => {
     Modal.confirm({
       title: '删除集群',
       content: `确定删除该集群【${record.alias}】吗？`,
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         await handleRemove(url, [record]);
         setRow({});
@@ -289,7 +284,7 @@ const StudioCluster = (props: any) => {
           }}
           modalVisible={updateModalVisible}
           values={row}
-        />):undefined}
+        />) : undefined}
         <Drawer
           width={600}
           visible={!!row?.id}

@@ -18,11 +18,9 @@
  */
 
 
-import {connect} from "umi";
+import {connect, useIntl} from "umi";
 import {StateType} from "@/pages/DataStudio/model";
-import {
-  Form, Row, Col, Tooltip, Button, Input, Descriptions, Typography
-} from "antd";
+import {Button, Col, Descriptions, Form, Input, Row, Tooltip, Typography} from "antd";
 import {MinusSquareOutlined} from "@ant-design/icons";
 import styles from "./index.less";
 import {Scrollbars} from 'react-custom-scrollbars';
@@ -31,6 +29,9 @@ const {TextArea} = Input;
 const {Paragraph} = Typography;
 
 const StudioTaskInfo = (props: any) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {current, form, dispatch, tabs, toolHeight} = props;
 

@@ -19,7 +19,7 @@
 
 
 import React, {Key, useEffect, useState} from "react";
-import {connect} from "umi";
+import {connect, useIntl} from "umi";
 import {DownloadOutlined, DownOutlined, FolderAddOutlined, SwitcherOutlined, UploadOutlined} from "@ant-design/icons";
 import type {UploadProps} from 'antd';
 import {Button, Col, Empty, Input, Menu, message, Modal, Row, Tooltip, Tree, Upload} from 'antd';
@@ -94,6 +94,10 @@ const {DirectoryTree} = Tree;
 const {Search} = Input;
 
 const StudioTree: React.FC<StudioTreeProps> = (props) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
   const {rightClickMenu, dispatch, tabs, refs, toolHeight} = props;
   const [treeData, setTreeData] = useState<TreeDataNode[]>();
   const [expandedKeys, setExpandedKeys] = useState<Key[]>();
@@ -291,8 +295,8 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     Modal.confirm({
       title: '提交作业',
       content: '确定提交该作业到其配置的集群吗？',
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         let task = {
           id: node?.taskId,
@@ -409,8 +413,8 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     Modal.confirm({
       title: `删除${label}`,
       content: `确定删除该${label}【${node?.name}】吗？`,
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         await handleRemoveById('/api/catalogue', node!.id);
         if (node?.taskId) {
@@ -434,36 +438,36 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     let menuItems;
     if (rightClickNode && rightClickNode.isLeaf) {
       menuItems = (<>
-        <Menu.Item key='Open'>{'打开'}</Menu.Item>
-        <Menu.Item key='Submit'>{'异步提交'}</Menu.Item>
-        <Menu.Item key='ExportJson'>{'导出Json'}</Menu.Item>
-        <Menu.Item key='Rename'>{'重命名'}</Menu.Item>
-        <Menu.Item key='Copy'>{'复制'}</Menu.Item>
-        <Menu.Item key='Cut'>{'剪切'}</Menu.Item>
-        {cutId && <Menu.Item key='Paste'>{'粘贴'}</Menu.Item>}
-        <Menu.Item key='Delete'>{'删除'}</Menu.Item>
+        <Menu.Item key='Open'>{l('right.menu.open')}</Menu.Item>
+        <Menu.Item key='Submit'>{l('right.menu.submit')}</Menu.Item>
+        <Menu.Item key='ExportJson'>{l('right.menu.exportJson')}</Menu.Item>
+        <Menu.Item key='Rename'>{l('right.menu.rename')}</Menu.Item>
+        <Menu.Item key='Copy'>{l('right.menu.copy')}</Menu.Item>
+        <Menu.Item key='Cut'>{l('right.menu.cut')}</Menu.Item>
+        {cutId && <Menu.Item key='Paste'>{l('right.menu.paste')}</Menu.Item>}
+        <Menu.Item key='Delete'>{l('right.menu.delete')}</Menu.Item>
       </>)
     } else if (rightClickNode && rightClickNode.children && rightClickNode.children.length > 0) {
       menuItems = (<>
-        <Menu.Item key='CreateCatalogue'>{'创建目录'}</Menu.Item>
-        <Menu.Item key='CreateRootCatalogue'>{'创建根目录'}</Menu.Item>
-        <Menu.Item key='ShowUploadModal'>{'上传zip包创建工程'}</Menu.Item>
-        <Menu.Item key='CreateTask'>{'创建作业'}</Menu.Item>
-        <Menu.Item key='Rename'>{'重命名'}</Menu.Item>
-        <Menu.Item key='Copy'>{'复制'}</Menu.Item>
-        <Menu.Item key='Cut'>{'剪切'}</Menu.Item>
-        {cutId && <Menu.Item key='Paste'>{'粘贴'}</Menu.Item>}
-        <Menu.Item disabled>{'删除'}</Menu.Item>
+        <Menu.Item key='CreateCatalogue'>{l('right.menu.createCatalogue')}</Menu.Item>
+        <Menu.Item key='CreateRootCatalogue'>{l('right.menu.createRootCatalogue')}</Menu.Item>
+        <Menu.Item key='ShowUploadModal'>{l('right.menu.uploadZipToCreate')}</Menu.Item>
+        <Menu.Item key='CreateTask'>{l('right.menu.createTask')}</Menu.Item>
+        <Menu.Item key='Rename'>{l('right.menu.rename')}</Menu.Item>
+        <Menu.Item key='Copy'>{l('right.menu.copy')}</Menu.Item>
+        <Menu.Item key='Cut'>{l('right.menu.cut')}</Menu.Item>
+        {cutId && <Menu.Item key='Paste'>{l('right.menu.paste')}</Menu.Item>}
+        <Menu.Item disabled>{l('right.menu.delete')}</Menu.Item>
       </>)
     } else {
       menuItems = (<>
-        <Menu.Item key='CreateCatalogue'>{'创建目录'}</Menu.Item>
-        <Menu.Item key='CreateTask'>{'创建作业'}</Menu.Item>
-        <Menu.Item key='Rename'>{'重命名'}</Menu.Item>
-        <Menu.Item key='Copy'>{'复制'}</Menu.Item>
-        <Menu.Item key='Cut'>{'剪切'}</Menu.Item>
-        {cutId && <Menu.Item key='Paste'>{'粘贴'}</Menu.Item>}
-        <Menu.Item key='Delete'>{'删除'}</Menu.Item>
+        <Menu.Item key='CreateCatalogue'>{l('right.menu.createCatalogue')}</Menu.Item>
+        <Menu.Item key='CreateTask'>{l('right.menu.createTask')}</Menu.Item>
+        <Menu.Item key='Rename'>{l('right.menu.rename')}</Menu.Item>
+        <Menu.Item key='Copy'>{l('right.menu.copy')}</Menu.Item>
+        <Menu.Item key='Cut'>{l('right.menu.cut')}</Menu.Item>
+        {cutId && <Menu.Item key='Paste'>{l('right.menu.paste')}</Menu.Item>}
+        <Menu.Item key='Delete'>{l('right.menu.delete')}</Menu.Item>
       </>)
     }
     const menu = (
@@ -486,7 +490,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
         isLeaf: false,
         parentId: 0,
       });
-    }}>创建目录</Button></Empty>);
+    }}>{l('button.createDir')}</Button></Empty>);
     return (treeData && treeData.length == 0) ? empty : '';
   };
 
@@ -603,21 +607,21 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     <div className={style.tree_div}>
       <Row>
         <Col span={24}>
-          <Tooltip title="创建根目录">
+          <Tooltip title={l('right.menu.createRootCatalogue')}>
             <Button
               type="text"
               icon={<FolderAddOutlined/>}
               onClick={createRootCatalogue}
             />
           </Tooltip>
-          <Tooltip title="折叠目录">
+          <Tooltip title={l('button.collapseDir')}>
             <Button
               type="text"
               icon={<SwitcherOutlined/>}
               onClick={offExpandAll}
             />
           </Tooltip>
-          <Tooltip title="导出json">
+          <Tooltip title={l('right.menu.exportJson')}>
             <Button
               type="text"
               icon={<DownloadOutlined/>}
@@ -625,7 +629,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
             />
           </Tooltip>
           <Upload {...uProps}>
-            <Tooltip title="导入json">
+            <Tooltip title={l('right.menu.importJson')}>
               <Button
                 type="text"
                 icon={<UploadOutlined/>}
@@ -706,7 +710,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
         getTreeData();
       }} onCancel={() => {
         setIsUploadModalVisible(false)
-      }} buttonTitle="上传zip包并创建工程"/>
+      }} buttonTitle={l('right.menu.uploadZipToCreate')}/>
     </div>
   );
 };

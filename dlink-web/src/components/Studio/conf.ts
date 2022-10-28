@@ -42,14 +42,12 @@ export const DIALECT = {
   HIVE: 'Hive',
   PHOENIX: 'Phoenix',
   STARROCKS: 'StarRocks',
+  KUBERNETES_APPLICATION: 'KubernetesApplaction',
   JAVA: 'Java',
+  SCALA: 'Scala',
+  PYTHON: 'Python',
 };
 
-export const CHART = {
-  LINE: '折线图',
-  BAR: '条形图',
-  PIE: '饼图',
-};
 
 export const isSql = (dialect: string) => {
   switch (dialect) {
@@ -108,6 +106,7 @@ export const isTask = (dialect: string) => {
     case DIALECT.FLINKJAR:
     case DIALECT.HIVE:
     case DIALECT.STARROCKS:
+    case DIALECT.KUBERNETES_APPLICATION:
       return true;
     default:
       return false;

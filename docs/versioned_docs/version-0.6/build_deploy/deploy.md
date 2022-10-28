@@ -4,7 +4,6 @@ id: deploy
 title: 部署
 ---
 
-
 ## Linux 单机部署
 
 ### 解压到指定目录
@@ -27,10 +26,13 @@ Dinky 采用 mysql 作为后端的存储库，mysql 支持 5.7+。这里假设�
 #登录mysql
 mysql -uroot -proot@123
 #创建数据库
-mysql> create database dlink;
+mysql>
+create database dlink;
 #授权
-mysql> grant all privileges on dlink.* to 'dlink'@'%' identified by 'dlink' with grant option;
-mysql> flush privileges;
+mysql>
+grant all privileges on dlink.* to 'dlink'@'%' identified by 'dlink' with grant option;
+mysql>
+flush privileges;
 #此处用 dlink 用户登录
 mysql -h fdw1 -udlink -pdlink
 ```
@@ -41,28 +43,36 @@ mysql -h fdw1 -udlink -pdlink
 #登录mysql
 mysql -uroot -proot@123
 #创建数据库
-mysql> CREATE DATABASE dlink;
+mysql>
+CREATE DATABASE dlink;
 #创建用户并允许远程登录
-mysql> create user 'dlink'@'%' IDENTIFIED WITH mysql_native_password by 'dlink';
+mysql>
+create user 'dlink'@'%' IDENTIFIED WITH mysql_native_password by 'dlink';
 #授权
-mysql> grant ALL PRIVILEGES ON dlink.* to 'dlink'@'%';
-mysql> flush privileges;
+mysql>
+grant ALL PRIVILEGES ON dlink.* to 'dlink'@'%';
+mysql>
+flush privileges;
 ```
 
-在 Dinky 根目录 sql 文件夹下有 3 个 sql 文件，分别是 dlink.sql 、 dlink_history.sql 和 dlinkmysqlcatalog.sql。如果第一次部署，可以直接将 dlink.sql 文件在 dlink 数据库下执行。（如果之前已经建立了 dlink 的数据库，那 dlink_history.sql 存放了各版本的升级 sql ，根据版本号及日期按需执行即可） 
+在 Dinky 根目录 sql 文件夹下分别放置了 dinky.sql 、 upgrade/${version}_schema/mysql/ddl 和 dml。如果第一次部署，可以直接将 sql/dinky.sql 文件在 dlink 数据库下执行。（如果之前已经部署，那 upgrade 目录下 存放了各版本的升级 sql ，根据版本号按需执行即可）
+
+#### 第一次部署
 
 ```sql
 #首先登录 mysql
 mysql -h fdw1  -udlink -pdlink
-mysql> use dlink;
-mysql> source /opt/dlink/sql/dlink.sql
+mysql>
+use dlink;
+mysql> source /opt/dlink/sql/dinky.sql
 ```
 
-平台默认有两种 catalog 实现，一种是基于内存的，一种是基于平台 mysql 的，如果想要使用平台内置的 mysql catalog，
-需要手动执行一下 dlinkmysqlcatalog.sql 脚本，以初始化平台内置 catalog 数据库表。
+#### 升级
 
 ```sql
-mysql> source /opt/dlink/sql/dlinkmysqlcatalog.sql
+-- 注意: 按照版本号依次升级 切不可跨版本升级 ${version} 代表的是你目前的 dinky版本+1 依次往下执行
+mysql> source /opt/dlink/sql/upgrade/${version}_schema/mysql/dinky_ddl.sql -- 表的ddl
+mysql> source /opt/dlink/sql/upgrade/${version}_schema/mysql/dinky_dml.sql  -- 表初始化数据 (部分版本无)
 ```
 
 ### 配置文件
@@ -147,9 +157,9 @@ vim /etc/nginx/nginx.conf 打开配置文件，修改 server 中的内容，其�
 
 修改内容:
 
--  listen 监听端口；
--  存放html路径；
--  location / 这里可以指定为绝对路径
+- listen 监听端口；
+- 存放html路径；
+- location / 这里可以指定为绝对路径
 
 配置完成后，保存退出。并重启 nginx 并重新加载生效
 
@@ -163,9 +173,9 @@ $nginx -s reload
 
 ### 加载依赖
 
-Dinky 需要具备自身的 Flink 环境，该 Flink 环境的实现需要用户自己在 Dinky 根目录下创建 plugins 文件夹并上传相关的 Flink 依赖，如 flink-dist, flink-table 等，具体见下文。当然也可在启动文件中指定 FLINK_HOME，但不建议这样做。  
+Dinky 需要具备自身的 Flink 环境，该 Flink 环境的实现需要用户自己在 Dinky 根目录下创建 plugins 文件夹并上传相关的 Flink 依赖，如 flink-dist, flink-table 等，具体见下文。当然也可在启动文件中指定 FLINK_HOME，但不建议这样做。
 
-:::warning  注意事项
+:::warning 注意事项
 Dinky 当前版本的 yarn 的 perjob 与 application 执行模式依赖 flink-shade-hadoop ，如果你的 Hadoop 版本为 2+ 或 3+，需要额外添加 flink-shade-hadoop-uber-3 包，请手动删除该包内部的 javax.servlet 等冲突内容。
 当然如果你的 Hadoop 为 3+ 也可以自行编译对于版本的 dlink-client-hadoop.jar 以替代 uber 包，
 :::
@@ -176,7 +186,7 @@ cd /opt/dlink/
 mkdir plugins
 ```
 
-将 flink-shade-hadoop 上传到到 plugins 文件目录下，使用  flink-shade-hadoop-3 地址如下：
+将 flink-shade-hadoop 上传到到 plugins 文件目录下，使用 flink-shade-hadoop-3 地址如下：
 
 ```
 https://mvnrepository.com/artifact/org.apache.flink/flink-shaded-hadoop-3-uber?repo=cloudera-repos
@@ -231,16 +241,25 @@ plugins/
 |- flink-table_2.11-1.13.6.jar
 |- mysql-connector-java-8.0.21.jar
 sql/ 
-|- dlink.sql -- Mysql初始化脚本
-|- dlink_history.sql -- Mysql各版本及时间点升级脚本
-|- dlinkmysqlcatalog.sql -- dlink 的 catalog 表 SQL 脚本
+|- dinky.sql -- Mysql初始化脚本
+|- upgrade/ -- 各个版本的升级 SQL
 auto.sh --启动停止脚本
 dlink-admin.jar --主程序包
 ```
 
 #### flink 版本适配
 
-lib 目录下默认的 flink-client 版本为 **1.13** ,如果你配置的 flink 版本不是 **1.13**，则需要删除 lib 目录下的 flink-client 包，然后从 extends 目录下找到合适的包，拷贝到 lib 目录下。
+**dlink-catalog-mysql**、**dlink-client**、**dlink-app**。
+
+**lib** 目录下默认的上面三个依赖对应的 flink 版本可能和你想要使用的 flink 版本不一致，需要进入到平台的 **lib** 目录下查看具体的上面三个依赖对应的 flink 版本，
+如果不一致，则需要删除 **lib** 目录下的对应的上面三个依赖包，然后从 **extends** 和 **jar** 目录下找到合适的包，拷贝到 **lib** 目录下。
+
+比如 **lib** 目录下的 **dlink-client-1.14-0.6.7.jar** ，表示使用的 flink 版本为 1.14.x ，
+如果你在 **plugins** 目录下上传的 flink 用到的 jar 包的版本不是 1.14.x ，就需要更换 **dlink-client** 包。
+
+### flink 任务监控（可选）
+
+参考[flink 任务运行监控](../extend/function_expansion/flinktaskmonitor)
 
 ### 启动 Dinky
 
@@ -258,9 +277,9 @@ $sh auto.sh status
 默认用户名/密码: admin/admin
 
 :::tip 说明
-   Dinky 部署需要 MySQL5.7 以上版本
-   
-   Dinky 不依赖于 Nginx， Nginx 可选
+Dinky 部署需要 MySQL5.7 以上版本
+
+Dinky 不依赖于 Nginx， Nginx 可选
 :::
 
 

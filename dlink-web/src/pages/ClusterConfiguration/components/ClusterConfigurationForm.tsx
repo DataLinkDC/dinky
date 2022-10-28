@@ -26,6 +26,7 @@ import {FLINK_CONFIG_LIST, HADOOP_CONFIG_LIST, KUBERNETES_CONFIG_LIST} from "@/p
 import {testClusterConfigurationConnect} from "@/pages/ClusterConfiguration/service";
 import type {ClusterConfigurationTableListItem} from "@/pages/ClusterConfiguration/data";
 import {CODE} from "@/components/Common/crud";
+import {useIntl} from 'umi';
 
 export type ClusterConfigurationFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -41,6 +42,11 @@ const formLayout = {
 };
 
 const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props) => {
+
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<ClusterConfigurationTableListItem>>({
@@ -337,7 +343,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
         </Form.Item>
         <Form.Item
           name="enabled"
-          label="是否启用">
+          label={l('global.table.isEnable')}>
           <Switch checkedChildren="启用" unCheckedChildren="禁用"
                   defaultChecked={formValsPara.enabled}/>
         </Form.Item>
@@ -363,12 +369,12 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
   const renderFooter = () => {
     return (
       <>
-        <Button onClick={() => handleModalVisible(false)}>取消</Button>
+        <Button onClick={() => handleModalVisible(false)}>{l('button.cancel')}</Button>
         <Button type="primary" htmlType="button" onClick={testForm}>
           测试
         </Button>
         <Button type="primary" onClick={() => submitForm()}>
-          完成
+          {l('button.finish')}
         </Button>
       </>
     );
@@ -376,8 +382,8 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
 
   return (
     <Modal
-      width={1200}
-      bodyStyle={{padding: '32px 40px 48px'}}
+      width={"60%"}
+      bodyStyle={{padding: '32px 40px 48px', height: '600px', overflowY: 'auto'}}
       destroyOnClose
       title={formVals.id ? "维护集群配置" : "创建集群配置"}
       visible={modalVisible}

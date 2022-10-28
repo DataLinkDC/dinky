@@ -24,6 +24,7 @@ import {Button, Divider, Form, Input, Select, Space} from 'antd';
 import Switch from "antd/es/switch";
 import TextArea from "antd/es/input/TextArea";
 import {DataBaseItem} from "@/pages/DataBase/data";
+import {useIntl} from 'umi';
 
 
 export type ClickHouseFormProps = {
@@ -42,6 +43,12 @@ const formLayout = {
 };
 
 const DataBaseForm: React.FC<ClickHouseFormProps> = (props) => {
+
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
+
   const [formVals, setFormVals] = useState<Partial<DataBaseItem>>({
     id: props.values.id,
     name: props.values.name,
@@ -69,14 +76,14 @@ const DataBaseForm: React.FC<ClickHouseFormProps> = (props) => {
 
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
-    setFormVals({type,...formVals, ...fieldsValue});
-    handleUpdate({type,...formVals, ...fieldsValue});
+    setFormVals({type, ...formVals, ...fieldsValue});
+    handleUpdate({type, ...formVals, ...fieldsValue});
   };
 
   const testForm = async () => {
     const fieldsValue = await form.validateFields();
-    setFormVals({type,...formVals, ...fieldsValue});
-    handleTest({type,...formVals, ...fieldsValue});
+    setFormVals({type, ...formVals, ...fieldsValue});
+    handleTest({type, ...formVals, ...fieldsValue});
   };
 
   const onReset = () => {
@@ -103,7 +110,7 @@ const DataBaseForm: React.FC<ClickHouseFormProps> = (props) => {
           name="groupName"
           label="分组类型"
         >
-          <Select >
+          <Select>
             <Option value="来源">来源</Option>
             <Option value="数仓">数仓</Option>
             <Option value="应用">应用</Option>
@@ -132,20 +139,20 @@ const DataBaseForm: React.FC<ClickHouseFormProps> = (props) => {
         </Form.Item>
         {type !== "Hive" &&
           <>
-         <Form.Item
-          name="flinkConfig"
-          label="Flink 连接配置"
-        >
-          <TextArea placeholder="请指定 Flink With 的默认配置" allowClear
-                    autoSize={{minRows: 3, maxRows: 10}}/>
-        </Form.Item>
-        <Form.Item
-          name="flinkTemplate"
-          label="Flink 连接模板"
-        >
-          <TextArea placeholder="请指定 Flink With 的生成模板" allowClear
-                    autoSize={{minRows: 3, maxRows: 10}}/>
-        </Form.Item>
+            <Form.Item
+              name="flinkConfig"
+              label="Flink 连接配置"
+            >
+              <TextArea placeholder="请指定 Flink With 的默认配置" allowClear
+                        autoSize={{minRows: 3, maxRows: 10}}/>
+            </Form.Item>
+            <Form.Item
+              name="flinkTemplate"
+              label="Flink 连接模板"
+            >
+              <TextArea placeholder="请指定 Flink With 的生成模板" allowClear
+                        autoSize={{minRows: 3, maxRows: 10}}/>
+            </Form.Item>
           </>}
         <Form.Item
           name="note"
@@ -155,8 +162,8 @@ const DataBaseForm: React.FC<ClickHouseFormProps> = (props) => {
         </Form.Item>
         <Form.Item
           name="enabled"
-          label="是否启用"
-          >
+          label={l('global.table.isEnable')}
+        >
           <Switch checkedChildren="启用" unCheckedChildren="禁用"
                   defaultChecked={formVals.enabled}/>
         </Form.Item>
@@ -166,51 +173,51 @@ const DataBaseForm: React.FC<ClickHouseFormProps> = (props) => {
 
   return (
     <>{
-        modalVisible && (
-          <>
-            <Form
-              {...formLayout}
-              form={form}
-              initialValues={{
-                id: formVals.id,
-                name: formVals.name,
-                alias: formVals.alias,
-                type: formVals.type,
-                groupName: formVals.groupName,
-                url: formVals.url,
-                username: formVals.username,
-                password: formVals.password,
-                note: formVals.note,
-                flinkConfig: formVals.flinkConfig,
-                flinkTemplate: formVals.flinkTemplate,
-                enabled: formVals.enabled,
-              }}
-            >
-              {renderContent(formVals)}
-              <Form.Item wrapperCol={{offset: 8, span: 16}}>
-                <Space>
-                  {!formVals.id ?
-                    <Button htmlType="button" onClick={() => {
-                      handleModalVisible(false)
-                    }}>
-                      返回
-                    </Button>:undefined
-                  }
-                  <Button htmlType="button" onClick={onReset}>
-                    重置
-                  </Button>
-                  <Button type="primary" htmlType="button" onClick={testForm}>
-                    测试
-                  </Button>
-                  <Button type="primary" htmlType="button" onClick={submitForm}>
-                    保存
-                  </Button>
-                </Space>
-              </Form.Item>
-            </Form>
-          </>
-        )
-      }</>
+      modalVisible && (
+        <>
+          <Form
+            {...formLayout}
+            form={form}
+            initialValues={{
+              id: formVals.id,
+              name: formVals.name,
+              alias: formVals.alias,
+              type: formVals.type,
+              groupName: formVals.groupName,
+              url: formVals.url,
+              username: formVals.username,
+              password: formVals.password,
+              note: formVals.note,
+              flinkConfig: formVals.flinkConfig,
+              flinkTemplate: formVals.flinkTemplate,
+              enabled: formVals.enabled,
+            }}
+          >
+            {renderContent(formVals)}
+            <Form.Item wrapperCol={{offset: 8, span: 16}}>
+              <Space>
+                {!formVals.id ?
+                  <Button htmlType="button" onClick={() => {
+                    handleModalVisible(false)
+                  }}>
+                    返回
+                  </Button> : undefined
+                }
+                <Button htmlType="button" onClick={onReset}>
+                  重置
+                </Button>
+                <Button type="primary" htmlType="button" onClick={testForm}>
+                  测试
+                </Button>
+                <Button type="primary" htmlType="button" onClick={submitForm}>
+                  保存
+                </Button>
+              </Space>
+            </Form.Item>
+          </Form>
+        </>
+      )
+    }</>
   );
 };
 

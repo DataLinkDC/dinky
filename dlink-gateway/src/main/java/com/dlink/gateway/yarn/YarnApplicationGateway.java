@@ -43,9 +43,13 @@ import org.apache.flink.yarn.YarnClusterDescriptor;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import cn.hutool.core.io.FileUtil;
 
 /**
  * YarnApplicationGateway
@@ -98,6 +102,7 @@ public class YarnApplicationGateway extends YarnGateway {
         if (configuration.contains(TaskManagerOptions.NUM_TASK_SLOTS)) {
             clusterSpecificationBuilder.setSlotsPerTaskManager(configuration.get(TaskManagerOptions.NUM_TASK_SLOTS)).createClusterSpecification();
         }
+        yarnClusterDescriptor.addShipFiles(Arrays.stream(config.getJarPaths()).map(FileUtil::file).collect(Collectors.toList()));
 
         try {
             ClusterClientProvider<ApplicationId> clusterClientProvider = yarnClusterDescriptor.deployApplicationCluster(

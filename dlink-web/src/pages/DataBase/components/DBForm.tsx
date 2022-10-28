@@ -22,7 +22,7 @@ import React, {useState} from 'react';
 import {Card, Image, List, Modal} from 'antd';
 
 import {DataBaseItem} from '../data.d';
-import {connect} from "umi";
+import {connect, useIntl} from "umi";
 import {StateType} from "@/pages/DataStudio/model";
 import {FALLBACK, getDBImage} from "@/pages/DataBase/DB";
 import DataBaseForm from "@/pages/DataBase/components/DataBaseForm";
@@ -35,7 +35,7 @@ export type UpdateFormProps = {
   values: Partial<DataBaseItem>;
 };
 
-const data:any = [
+const data: any = [
   {
     type: 'MySql',
   },
@@ -67,6 +67,11 @@ const data:any = [
 
 const DBForm: React.FC<UpdateFormProps> = (props) => {
 
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
+
   const {
     onSubmit: handleUpdate,
     onCancel: handleChooseDBModalVisible,
@@ -76,11 +81,11 @@ const DBForm: React.FC<UpdateFormProps> = (props) => {
 
   const [dbType, setDbType] = useState<string>();
 
-  const chooseOne = (item:DataBaseItem)=>{
+  const chooseOne = (item: DataBaseItem) => {
     setDbType(item.type);
   };
 
-  const onSubmit = async (value:any)=>{
+  const onSubmit = async (value: any) => {
     const success = await createOrModifyDatabase(value);
     if (success) {
       handleChooseDBModalVisible();
@@ -89,25 +94,25 @@ const DBForm: React.FC<UpdateFormProps> = (props) => {
     }
   };
 
-  const onTest = async (value:any)=>{
+  const onTest = async (value: any) => {
     await testDatabaseConnect(value);
   };
 
   return (
     <Modal
-      width={800}
+      width={"40%"}
       bodyStyle={{padding: '32px 40px 48px'}}
-      title={values.id?'编辑数据源':'创建数据源'}
+      title={values.id ? '编辑数据源' : '创建数据源'}
       visible={modalVisible}
       onCancel={() => {
         setDbType(undefined);
         handleChooseDBModalVisible();
       }}
-      maskClosable = {false}
-      destroyOnClose = {true}
+      maskClosable={false}
+      destroyOnClose={true}
       footer={null}
     >{
-      (!dbType&&!values.id)&&(<List
+      (!dbType && !values.id) && (<List
         grid={{
           gutter: 16,
           xs: 1,
@@ -118,8 +123,10 @@ const DBForm: React.FC<UpdateFormProps> = (props) => {
           xxl: 4,
         }}
         dataSource={data}
-        renderItem={(item:DataBaseItem) => (
-          <List.Item onClick={()=>{chooseOne(item)}}>
+        renderItem={(item: DataBaseItem) => (
+          <List.Item onClick={() => {
+            chooseOne(item)
+          }}>
             <Card>
               <Image
                 height={80}
@@ -134,8 +141,8 @@ const DBForm: React.FC<UpdateFormProps> = (props) => {
     }
       <DataBaseForm
         onCancel={() => setDbType(undefined)}
-        modalVisible={!!values.type||!!dbType}
-        type={(!values.type)?dbType:values.type}
+        modalVisible={!!values.type || !!dbType}
+        type={(!values.type) ? dbType : values.type}
         values={values}
         onSubmit={(value) => {
           onSubmit(value);

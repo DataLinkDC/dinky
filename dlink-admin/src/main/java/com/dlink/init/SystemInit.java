@@ -24,6 +24,7 @@ import com.dlink.daemon.task.DaemonFactory;
 import com.dlink.daemon.task.DaemonTaskConfig;
 import com.dlink.job.FlinkJobTask;
 import com.dlink.model.JobInstance;
+import com.dlink.model.Tenant;
 import com.dlink.scheduler.client.ProjectClient;
 import com.dlink.scheduler.config.DolphinSchedulerProperties;
 import com.dlink.scheduler.exception.SchedulerException;
@@ -31,6 +32,7 @@ import com.dlink.scheduler.model.Project;
 import com.dlink.service.JobInstanceService;
 import com.dlink.service.SysConfigService;
 import com.dlink.service.TaskService;
+import com.dlink.service.TenantService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,13 +65,18 @@ public class SystemInit implements ApplicationRunner {
     @Autowired
     private TaskService taskService;
     @Autowired
+    private TenantService tenantService;
+    @Autowired
     private DolphinSchedulerProperties dolphinSchedulerProperties;
     private static Project project;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        List<Tenant> tenants = tenantService.list();
         sysConfigService.initSysConfig();
-        taskService.initDefaultFlinkSQLEnv();
+        for (Tenant tenant : tenants) {
+            taskService.initDefaultFlinkSQLEnv(tenant.getId());
+        }
         initTaskMonitor();
         initDolphinScheduler();
     }

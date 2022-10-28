@@ -24,6 +24,8 @@ import com.dlink.model.JobHistory;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
+
 /**
  * JobHistoryMapper
  *
@@ -32,6 +34,9 @@ import org.apache.ibatis.annotations.Mapper;
  **/
 @Mapper
 public interface JobHistoryMapper extends SuperMapper<JobHistory> {
+
+    @InterceptorIgnore(tenantLine = "true")
+    JobHistory getByIdWithoutTenant(Integer id);
 
     int insert(JobHistory jobHistory);
 

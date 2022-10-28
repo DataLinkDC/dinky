@@ -1,7 +1,5 @@
 # Dlink 实时计算平台——部署篇
 
-
-
 ## 环境准备
 
 以下环境版本实测可用，缺一不可，如有其他版本的测试请告知小编。
@@ -41,8 +39,8 @@ mvn clean install -Dmaven.test.skip=true
 
 ## 直接下载安装包
 
-百度网盘链接：https://pan.baidu.com/s/13Ffhe7QaSsGXfAwqSCFdNg 
-		提取码：0301 
+百度网盘链接：https://pan.baidu.com/s/13Ffhe7QaSsGXfAwqSCFdNg
+提取码：0301
 
 ## 应用部署
 
@@ -66,7 +64,8 @@ lib/ -- 外部依赖及Connector
 |- dlink-metadata-oracle-0.3.1.jar
 |- dlink-metadata-postgresql-0.3.1.jar
 sql/
-|- dlink.sql -- Mysql初始化脚本
+|- dinky.sql --Mysql初始化脚本
+|- upgrade/ -- 各个版本升级SQL脚本
 auto.sh -- 启动停止脚本
 dlink-admin-0.3.1.jar -- 程序包
 ```
@@ -90,7 +89,7 @@ spring:
 
 ### 初始化数据库表
 
-在对应数据库下执行 sql 目录下的 dlink.sql 脚本。
+在对应数据库下执行 sql 目录下的 dinky.sql 脚本。
 
 执行成功后，可见以下数据表：
 
@@ -165,7 +164,7 @@ sh auto.sh status
 
 注意：只有具备 JobManager 实例的 Flink 集群才可以被成功注册到 dlink 中。
 
-如状态异常时，请检查被注册的 Flink 集群地址是否能正常访问，默认端口号为8081，可能更改配置后发生了变化，查看位置为 Flink Web 的  JobManager 的 Configuration 中的 rest 相关属性。
+如状态异常时，请检查被注册的 Flink 集群地址是否能正常访问，默认端口号为8081，可能更改配置后发生了变化，查看位置为 Flink Web 的 JobManager 的 Configuration 中的 rest 相关属性。
 
 ### 执行 Hello World
 

@@ -66,4 +66,12 @@ public class JobResult {
         this.startTime = startTime;
         this.endTime = endTime;
     }
+
+    public void setStartTimeNow() {
+        this.setStartTime(LocalDateTime.now());
+    }
+
+    public void setEndTimeNow() {
+        this.setEndTime(LocalDateTime.now());
+    }
 }

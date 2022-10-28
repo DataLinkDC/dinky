@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * StudioExecuteDTO
@@ -40,6 +41,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@Slf4j
 public class StudioExecuteDTO extends AbstractStatementDTO {
     // RUN_MODE
     private String type;
@@ -67,10 +69,9 @@ public class StudioExecuteDTO extends AbstractStatementDTO {
 
     public JobConfig getJobConfig() {
         Map<String, String> config = new HashMap<>();
-        JsonNode paras = null;
         if (Asserts.isNotNullString(configJson)) {
             try {
-                paras = mapper.readTree(configJson);
+                JsonNode paras = mapper.readTree(configJson);
                 paras.forEach((JsonNode node) -> {
                         if (!node.isNull()) {
                             config.put(node.get("key").asText(), node.get("value").asText());
@@ -78,7 +79,7 @@ public class StudioExecuteDTO extends AbstractStatementDTO {
                     }
                 );
             } catch (JsonProcessingException e) {
-                e.printStackTrace();
+                log.error(e.getMessage());
             }
         }
         return new JobConfig(

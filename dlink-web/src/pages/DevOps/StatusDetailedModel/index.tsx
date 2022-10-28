@@ -18,7 +18,8 @@
  */
 
 import React from 'react';
-import {Modal, Table, Button, Tooltip} from 'antd'
+import {Button, Modal, Table, Tooltip} from 'antd'
+import {useIntl} from 'umi';
 
 interface IStatusDetailedModal {
   statusDetailedVisible: boolean;
@@ -35,6 +36,11 @@ export const OpsStatusTitle = {
 
 const StatusDetailedModal: React.FC<IStatusDetailedModal> = (props): React.ReactElement => {
   const {statusDetailedVisible, statusDetailedList, opsStatus, onCancelStatusDetailed} = props
+
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
 
   const columns = [{
     title: '名称',

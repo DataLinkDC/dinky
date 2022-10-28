@@ -26,6 +26,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -42,7 +45,20 @@ import lombok.Setter;
 @Getter
 public class ExecutorSetting {
 
-    private boolean useBatchModel = false;
+    private static final Logger log = LoggerFactory.getLogger(ExecutorSetting.class);
+    public static final ExecutorSetting DEFAULT = new ExecutorSetting(0, 1, true);
+
+    public static final String CHECKPOINT_CONST = "checkpoint";
+    public static final String PARALLELISM_CONST = "parallelism";
+    public static final String USE_SQL_FRAGMENT = "useSqlFragment";
+    public static final String USE_STATEMENT_SET = "useStatementSet";
+    public static final String USE_BATCH_MODEL = "useBatchModel";
+    public static final String SAVE_POINT_PATH = "savePointPath";
+    public static final String JOB_NAME = "jobName";
+    public static final String CONFIG_CONST = "config";
+
+    private static final ObjectMapper mapper = new ObjectMapper();
+    private boolean useBatchModel;
     private Integer checkpoint;
     private Integer parallelism;
     private boolean useSqlFragment;
@@ -50,54 +66,37 @@ public class ExecutorSetting {
     private String savePointPath;
     private String jobName;
     private Map<String, String> config;
-    public static final ExecutorSetting DEFAULT = new ExecutorSetting(0, 1, true);
-    private static final ObjectMapper mapper = new ObjectMapper();
 
     public ExecutorSetting(boolean useSqlFragment) {
-        this.useSqlFragment = useSqlFragment;
+        this(null, useSqlFragment);
     }
 
     public ExecutorSetting(Integer checkpoint) {
-        this.checkpoint = checkpoint;
+        this(checkpoint, false);
     }
 
     public ExecutorSetting(Integer checkpoint, boolean useSqlFragment) {
-        this.checkpoint = checkpoint;
-        this.useSqlFragment = useSqlFragment;
+        this(checkpoint, null, useSqlFragment, null, null);
     }
 
     public ExecutorSetting(Integer checkpoint, Integer parallelism, boolean useSqlFragment) {
-        this.checkpoint = checkpoint;
-        this.parallelism = parallelism;
-        this.useSqlFragment = useSqlFragment;
+        this(checkpoint, parallelism, useSqlFragment, null, null);
     }
 
     public ExecutorSetting(Integer checkpoint, Integer parallelism, boolean useSqlFragment, String savePointPath, String jobName) {
-        this.checkpoint = checkpoint;
-        this.parallelism = parallelism;
-        this.useSqlFragment = useSqlFragment;
-        this.savePointPath = savePointPath;
-        this.jobName = jobName;
+        this(checkpoint, parallelism, useSqlFragment, savePointPath, jobName, null);
     }
 
     public ExecutorSetting(Integer checkpoint, Integer parallelism, boolean useSqlFragment, String savePointPath) {
-        this.checkpoint = checkpoint;
-        this.parallelism = parallelism;
-        this.useSqlFragment = useSqlFragment;
-        this.savePointPath = savePointPath;
+        this(checkpoint, parallelism, useSqlFragment, savePointPath, null, null);
     }
 
     public ExecutorSetting(Integer checkpoint, Integer parallelism, boolean useSqlFragment, String savePointPath, String jobName, Map<String, String> config) {
-        this.checkpoint = checkpoint;
-        this.parallelism = parallelism;
-        this.useSqlFragment = useSqlFragment;
-        this.savePointPath = savePointPath;
-        this.jobName = jobName;
-        this.config = config;
+        this(checkpoint, parallelism, useSqlFragment, false, false, savePointPath, jobName, config);
     }
 
-    public ExecutorSetting(Integer checkpoint, Integer parallelism, boolean useSqlFragment, boolean useStatementSet,
-                           boolean useBatchModel, String savePointPath, String jobName, Map<String, String> config) {
+    public ExecutorSetting(Integer checkpoint, Integer parallelism, boolean useSqlFragment, boolean useStatementSet, boolean useBatchModel, String savePointPath, String jobName,
+                           Map<String, String> config) {
         this.checkpoint = checkpoint;
         this.parallelism = parallelism;
         this.useSqlFragment = useSqlFragment;
@@ -108,52 +107,44 @@ public class ExecutorSetting {
         this.config = config;
     }
 
-    public static ExecutorSetting build(Integer checkpoint, Integer parallelism, boolean useSqlFragment, boolean useStatementSet,
-                                        boolean useBatchModel, String savePointPath, String jobName, String configJson) {
+    public static ExecutorSetting build(Integer checkpoint, Integer parallelism, boolean useSqlFragment, boolean useStatementSet, boolean useBatchModel, String savePointPath, String jobName,
+                                        String configJson) {
         List<Map<String, String>> configList = new ArrayList<>();
         if (Asserts.isNotNullString(configJson)) {
             try {
                 configList = mapper.readValue(configJson, ArrayList.class);
             } catch (JsonProcessingException e) {
-                e.printStackTrace();
+                log.error(e.getMessage());
             }
         }
+
         Map<String, String> config = new HashMap<>();
         for (Map<String, String> item : configList) {
             config.put(item.get("key"), item.get("value"));
         }
-        return new ExecutorSetting(checkpoint, parallelism, useSqlFragment, useStatementSet, useBatchModel, savePointPath, jobName, config);
+        return new ExecutorSetting(checkpoint, parallelism, useSqlFragment, useStatementSet, useBatchModel,
+                savePointPath, jobName, config);
     }
 
     public static ExecutorSetting build(Map<String, String> settingMap) {
-        Integer checkpoint = null;
-        Integer parallelism = null;
-        if (settingMap.containsKey("checkpoint") && !"".equals(settingMap.get("checkpoint"))) {
-            checkpoint = Integer.valueOf(settingMap.get("checkpoint"));
-        }
-        if (settingMap.containsKey("parallelism") && !"".equals(settingMap.get("parallelism"))) {
-            parallelism = Integer.valueOf(settingMap.get("parallelism"));
-        }
-        return build(checkpoint,
-                parallelism,
-                "1".equals(settingMap.get("useSqlFragment")),
-                "1".equals(settingMap.get("useStatementSet")),
-                "1".equals(settingMap.get("useBatchModel")),
-                settingMap.get("savePointPath"),
-                settingMap.get("jobName"),
-                settingMap.get("config"));
+        Integer checkpoint = Integer.valueOf(settingMap.get(CHECKPOINT_CONST));
+        Integer parallelism = Integer.valueOf(settingMap.get(PARALLELISM_CONST));
+
+        return build(checkpoint, parallelism, "1".equals(settingMap.get(USE_SQL_FRAGMENT)), "1".equals(settingMap.get(USE_STATEMENT_SET)), "1".equals(settingMap.get(USE_BATCH_MODEL)),
+            settingMap.get(SAVE_POINT_PATH), settingMap.get(JOB_NAME), settingMap.get(CONFIG_CONST));
+    }
+
+    public boolean isValidParallelism() {
+        return this.getParallelism() != null && this.getParallelism() > 0;
+    }
+
+    public boolean isValidJobName() {
+        return this.getJobName() != null && !"".equals(this.getJobName());
     }
 
     @Override
     public String toString() {
-        return "ExecutorSetting{"
-                + "checkpoint=" + checkpoint
-                + ", parallelism=" + parallelism
-                + ", useSqlFragment=" + useSqlFragment
-                + ", useStatementSet=" + useStatementSet
-                + ", savePointPath='" + savePointPath + '\''
-                + ", jobName='" + jobName + '\''
-                + ", config=" + config
-                + '}';
+        return String.format("ExecutorSetting{checkpoint=%d, parallelism=%d, useSqlFragment=%s, useStatementSet=%s, savePointPath='%s', jobName='%s', config=%s}", checkpoint, parallelism,
+            useSqlFragment, useStatementSet, savePointPath, jobName, config);
     }
 }

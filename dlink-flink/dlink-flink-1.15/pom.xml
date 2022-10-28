@@ -22,7 +22,7 @@
     <parent>
         <artifactId>dlink-flink</artifactId>
         <groupId>com.dlink</groupId>
-        <version>0.6.7</version>
+        <version>0.6.8-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -41,6 +41,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-python_2.12</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-table-planner-loader</artifactId>

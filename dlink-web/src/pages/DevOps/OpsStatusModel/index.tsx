@@ -17,11 +17,12 @@
  *
  */
 
-import React, {useState, useRef, useEffect} from 'react'
-import {Modal, Card, Select, Checkbox, Form, Divider, Row, Col, TreeSelect, Button} from 'antd'
+import React, {useEffect, useRef, useState} from 'react'
+import {Button, Card, Checkbox, Col, Divider, Form, Modal, Row, Select, TreeSelect} from 'antd'
 import {queryOnClickOperatingTask} from '../service'
 import type {CheckboxChangeEvent} from 'antd/es/checkbox';
 import type {CheckboxValueType} from 'antd/es/checkbox/Group';
+import {useIntl} from 'umi';
 
 interface IOpsStatusModalProps {
   opsStatusVisible: boolean;
@@ -39,6 +40,11 @@ const {Option} = Select
 const CheckboxGroup = Checkbox.Group;
 
 const OpsStatusModal: React.FC<IOpsStatusModalProps> = (props): React.ReactElement => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
+
   const {opsStatusVisible, opsStatus, opsStatusListTree, onOpsStatusCallBack} = props
   const formRef = useRef<any>(null)
   const [opsStatusList, setOpsStatusList] = useState<any[]>([])
@@ -47,7 +53,7 @@ const OpsStatusModal: React.FC<IOpsStatusModalProps> = (props): React.ReactEleme
   useEffect(() => {
     setTreeValue(null)
     setOpsStatusList([])
-    formRef.current?.resetFields(['tasks','checkoutAll'])
+    formRef.current?.resetFields(['tasks', 'checkoutAll'])
     console.log(opsStatus)
     if (opsStatus === '1') {
       formRef.current?.setFieldsValue({

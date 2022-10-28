@@ -30,9 +30,12 @@ import com.dlink.model.JobHistory;
  **/
 public interface JobHistoryService extends ISuperService<JobHistory> {
 
+    JobHistory getByIdWithoutTenant(Integer id);
+
     JobHistory getJobHistory(Integer id);
 
     JobHistory getJobHistoryInfo(JobHistory jobHistory);
 
     JobHistory refreshJobHistory(Integer id, String jobManagerHost, String jobId, boolean needSave);
+
 }

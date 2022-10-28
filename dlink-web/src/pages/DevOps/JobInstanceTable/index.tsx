@@ -18,10 +18,10 @@
  */
 
 
-import {history} from 'umi';
+import {history, useIntl} from 'umi';
 import {queryData} from "@/components/Common/crud";
-import {useState, useRef, useEffect} from "react";
-import type {ProColumns, ActionType} from '@ant-design/pro-table';
+import {useEffect, useRef, useState} from "react";
+import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from "@ant-design/pro-table";
 import {Badge, message} from 'antd'
 import {JobInstanceTableListItem} from "@/pages/DevOps/data";
@@ -31,11 +31,8 @@ import JobStatus from "@/components/Common/JobStatus";
 import JobLifeCycle, {JOB_LIFE_CYCLE} from "@/components/Common/JobLifeCycle";
 import OpsStatusModal from "@/pages/DevOps/OpsStatusModel/index";
 import StatusDetailedModal from "@/pages/DevOps/StatusDetailedModel/index";
-import {
-  queryOneClickOperatingTaskStatus,
-  onClickOperatingTask,
-  queryAllCatalogue
-} from "@/pages/DevOps/service";
+import {onClickOperatingTask, queryAllCatalogue, queryOneClickOperatingTaskStatus} from "@/pages/DevOps/service";
+
 
 const OPS_STATUS_COLOR = {
   success: 'lime',
@@ -43,7 +40,13 @@ const OPS_STATUS_COLOR = {
 
 }
 const url = '/api/jobInstance';
+
+
 const JobInstanceTable = (props: any) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
 
   const {status, activeKey, isHistory, taskStatus} = props;
   const [time, setTime] = useState(() => Date.now());
@@ -79,7 +82,7 @@ const JobInstanceTable = (props: any) => {
     if (values) {
       try {
         await onClickOperatingTask(values)
-        message.success('操作成功')
+        message.success(l('pages.devops.result.success'))
         setOpsStatusVisible(false)
       } catch (e) {
         console.log(e)
@@ -121,30 +124,30 @@ const JobInstanceTable = (props: any) => {
 
   const getColumns = () => {
     const columns: ProColumns<JobInstanceTableListItem>[] = [{
-      title: "作业名",
+      title: l('global.table.jobname'),
       dataIndex: "name",
       sorter: true,
     }, {
-      title: "生命周期",
+      title: l('global.table.lifecycle'),
       dataIndex: "step",
       sorter: true,
       valueType: 'radio',
       valueEnum: {
-        '': {text: '全部', status: 'ALL'},
+        '': {text: l('global.table.lifecycle.all'), status: 'ALL'},
         2: {
-          text: '开发中',
+          text: l('global.table.lifecycle.dev'),
           status: JOB_LIFE_CYCLE.DEVELOP,
         },
         4: {
-          text: '已发布',
+          text: l('global.table.lifecycle.publish'),
           status: JOB_LIFE_CYCLE.RELEASE,
         },
         5: {
-          text: '已上线',
+          text: l('global.table.lifecycle.online'),
           status: JOB_LIFE_CYCLE.ONLINE,
         },
         0: {
-          text: '未知',
+          text: l('global.table.lifecycle.unknown'),
           status: JOB_LIFE_CYCLE.UNKNOWN,
         },
       },
@@ -152,12 +155,12 @@ const JobInstanceTable = (props: any) => {
         return (<JobLifeCycle step={row.step}/>);
       }
     }, {
-      title: "运行模式",
+      title: l('global.table.runmode'),
       dataIndex: "type",
       sorter: true,
       valueType: 'radio',
       valueEnum: {
-        '': {text: '全部', status: 'ALL'},
+        '': {text: l('global.table.lifecycle.all'), status: 'ALL'},
         'local': {
           text: RUN_MODE.LOCAL,
           status: RUN_MODE.LOCAL,
@@ -188,15 +191,15 @@ const JobInstanceTable = (props: any) => {
         },
       },
     }, {
-      title: "集群实例",
+      title: l('global.table.instanceName'),
       dataIndex: "clusterAlias",
       sorter: true,
     }, {
-      title: "作业ID",
+      title: l('global.table.jobid'),
       dataIndex: "jid",
       key: "jid",
     }, {
-      title: "状态",
+      title: l('global.table.status'),
       dataIndex: "status",
       sorter: true,
       hideInSearch: true,
@@ -206,27 +209,27 @@ const JobInstanceTable = (props: any) => {
           ;
       }
     }, {
-      title: "开始时间",
+      title: l('global.table.createTime'),
       dataIndex: "createTime",
       sorter: true,
       valueType: 'dateTime',
       hideInSearch: true,
     }, {
-      title: "更新时间",
+      title: l('global.table.lastUpdateTime'),
       dataIndex: "updateTime",
       sorter: true,
       valueType: 'dateTime',
       hideInTable: true,
       hideInSearch: true,
     }, {
-      title: "结束时间",
+      title: l('global.table.endTime'),
       dataIndex: "finishTime",
       sorter: true,
       valueType: 'dateTime',
       hideInTable: true,
       hideInSearch: true,
     }, {
-      title: "耗时",
+      title: l('global.table.useTime'),
       dataIndex: "duration",
       sorter: true,
       valueType: 'second',
@@ -242,20 +245,20 @@ const JobInstanceTable = (props: any) => {
         color={taskStatus?.onlineStatus ? OPS_STATUS_COLOR.padding : OPS_STATUS_COLOR.success} text={<a
         onClick={() => {
           onStatusChange('1')
-        }}>一键上线</a>}/>,
+        }}>{l('pages.devops.lable.online')}</a>}/>,
         <a
           style={{color: taskStatus?.onlineStatus ? '#FF0000' : '#1E90FF'}}
           onClick={() => {
             onStatusDetailed('1')
-          }}>上线明细</a>,
+          }}>{l('pages.devops.lable.onlinelist')}</a>,
         <Badge color={taskStatus?.offlineStatus ? OPS_STATUS_COLOR.padding : OPS_STATUS_COLOR.success}
                text={<a onClick={() => {
                  onStatusChange('2')
-               }}>一键下线</a>}/>, <a
+               }}>{l('pages.devops.lable.offline')}</a>}/>, <a
           style={{color: taskStatus?.onlineStatus ? '#FF0000' : '#1E90FF'}}
           onClick={() => {
             onStatusDetailed('2')
-          }}>下线明细</a>,]}
+          }}>{l('pages.devops.lable.offlinelist')}</a>,]}
       request={(params, sorter, filter) => {
         setTime(Date.now());
         return queryData(url, {...params, status, isHistory, sorter: {id: 'descend'}, filter});
@@ -265,10 +268,12 @@ const JobInstanceTable = (props: any) => {
       search={{
         filterType: 'light',
       }}
-      headerTitle={`上次更新时间：${moment(time).format('HH:mm:ss')}`}
+
+      headerTitle={l('global.table.lastUpdateTime') + `：${moment(time).format('HH:mm:ss')}`}
       polling={status == activeKey ? 3000 : undefined}
       pagination={{
-        pageSize: 10,
+        defaultPageSize: 10,
+        showSizeChanger: true,
       }}
       onRow={record => {
         return {

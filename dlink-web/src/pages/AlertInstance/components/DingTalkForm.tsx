@@ -23,6 +23,7 @@ import {Button, Divider, Form, Input, Modal, Radio, Switch} from 'antd';
 import {AlertInstanceTableListItem} from "@/pages/AlertInstance/data";
 import {buildJSONData, getJSONData} from "@/pages/AlertInstance/function";
 import {ALERT_TYPE} from "@/pages/AlertInstance/conf";
+import {useIntl} from "umi";
 
 export type AlertInstanceFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -38,6 +39,11 @@ const formLayout = {
 };
 
 const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
+
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<AlertInstanceTableListItem>>({
@@ -55,20 +61,20 @@ const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
     modalVisible,
   } = props;
 
-  const onValuesChange = (change: any,all: any)=>{
-    setFormVals({...formVals,...change});
+  const onValuesChange = (change: any, all: any) => {
+    setFormVals({...formVals, ...change});
   };
 
   const sendTestForm = async () => {
     const fieldsValue = await form.validateFields();
-    setFormVals(buildJSONData(formVals,fieldsValue));
-    handleTest(buildJSONData(formVals,fieldsValue));
+    setFormVals(buildJSONData(formVals, fieldsValue));
+    handleTest(buildJSONData(formVals, fieldsValue));
   };
 
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
-    setFormVals(buildJSONData(formVals,fieldsValue));
-    handleSubmit(buildJSONData(formVals,fieldsValue));
+    setFormVals(buildJSONData(formVals, fieldsValue));
+    handleSubmit(buildJSONData(formVals, fieldsValue));
   };
 
   const renderContent = (vals) => {
@@ -107,7 +113,7 @@ const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
           <Switch checkedChildren="是" unCheckedChildren="否"
                   defaultChecked={vals.isEnableProxy}/>
         </Form.Item>
-        {vals.isEnableProxy?<>
+        {vals.isEnableProxy ? <>
           <Form.Item
             name="proxy"
             label="代理"
@@ -131,7 +137,7 @@ const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
             label="密码"
           >
             <Input.Password placeholder="请输入password"/>
-          </Form.Item></>:undefined
+          </Form.Item></> : undefined
         }
         <Form.Item
           name="isAtAll"
@@ -153,7 +159,7 @@ const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
 
         <Form.Item
           name="enabled"
-          label="是否启用">
+          label={l('global.table.isEnable')}>
           <Switch checkedChildren="启用" unCheckedChildren="禁用"
                   defaultChecked={vals.enabled}/>
         </Form.Item>
@@ -162,7 +168,7 @@ const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
           label="展示方式"
           rules={[{required: true, message: '请选择展示方式！'}]}
         >
-          <Radio.Group >
+          <Radio.Group>
             <Radio value='markdown'>MarkDown</Radio>
             <Radio value='text'>文本</Radio>
           </Radio.Group>
@@ -174,10 +180,10 @@ const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
   const renderFooter = () => {
     return (
       <>
-        <Button onClick={() => handleModalVisible(false)}>取消</Button>
+        <Button onClick={() => handleModalVisible(false)}>{l('button.cancel')}</Button>
         <Button type="primary" onClick={() => sendTestForm()}>测试</Button>
         <Button type="primary" onClick={() => submitForm()}>
-          完成
+          {l('button.finish')}
         </Button>
       </>
     );
@@ -186,10 +192,10 @@ const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
 
   return (
     <Modal
-      width={1200}
+      width={"40%"}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title={formVals.id?"维护报警实例配置":"创建报警实例配置"}
+      title={formVals.id ? "维护报警实例配置" : "创建报警实例配置"}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}
@@ -197,10 +203,10 @@ const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
       <Form
         {...formLayout}
         form={form}
-        initialValues={getJSONData(formVals)}
+        initialValues={getJSONData(formVals as AlertInstanceTableListItem)}
         onValuesChange={onValuesChange}
       >
-        {renderContent(getJSONData(formVals))}
+        {renderContent(getJSONData(formVals as AlertInstanceTableListItem))}
       </Form>
     </Modal>
   );

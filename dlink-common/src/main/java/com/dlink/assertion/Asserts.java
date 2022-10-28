@@ -21,8 +21,10 @@ package com.dlink.assertion;
 
 import com.dlink.exception.RunTimeException;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Asserts
@@ -31,6 +33,9 @@ import java.util.Map;
  * @since 2021/7/5 21:57
  */
 public class Asserts {
+
+    private Asserts() {
+    }
 
     public static boolean isNotNull(Object object) {
         return object != null;
@@ -41,17 +46,11 @@ public class Asserts {
     }
 
     public static boolean isNullString(String str) {
-        return isNull(str) || "".equals(str);
+        return isNull(str) || str.isEmpty();
     }
 
     public static boolean isAllNullString(String... str) {
-        boolean isNull = true;
-        for (String item : str) {
-            if (isNotNullString(item)) {
-                isNull = false;
-            }
-        }
-        return isNull;
+        return Arrays.stream(str).allMatch(Asserts::isNullString);
     }
 
     public static boolean isNotNullString(String str) {
@@ -59,54 +58,30 @@ public class Asserts {
     }
 
     public static boolean isAllNotNullString(String... str) {
-        boolean isNotNull = true;
-        for (String item : str) {
-            if (isNullString(item)) {
-                isNotNull = false;
-            }
-        }
-        return isNotNull;
+        return Arrays.stream(str).noneMatch(Asserts::isNullString);
     }
 
     public static boolean isEquals(String str1, String str2) {
-        if (isNull(str1) && isNull(str2)) {
-            return true;
-        } else if (isNull(str1) || isNull(str2)) {
-            return false;
-        } else {
-            return str1.equals(str2);
-        }
+        return Objects.equals(str1, str2);
     }
 
     public static boolean isEqualsIgnoreCase(String str1, String str2) {
-        if (isNull(str1) && isNull(str2)) {
-            return true;
-        } else if (isNull(str1) || isNull(str2)) {
-            return false;
-        } else {
-            return str1.equalsIgnoreCase(str2);
-        }
+        return (str1 == null && str2 == null) || (str1 != null && str1.equalsIgnoreCase(str2));
     }
 
-    public static boolean isNullCollection(Collection collection) {
-        if (isNull(collection) || collection.size() == 0) {
-            return true;
-        }
-        return false;
+    public static boolean isNullCollection(Collection<?> collection) {
+        return isNull(collection) || collection.isEmpty();
     }
 
-    public static boolean isNotNullCollection(Collection collection) {
+    public static boolean isNotNullCollection(Collection<?> collection) {
         return !isNullCollection(collection);
     }
 
-    public static boolean isNullMap(Map map) {
-        if (isNull(map) || map.size() == 0) {
-            return true;
-        }
-        return false;
+    public static boolean isNullMap(Map<?, ?> map) {
+        return isNull(map) || map.isEmpty();
     }
 
-    public static boolean isNotNullMap(Map map) {
+    public static boolean isNotNullMap(Map<?, ?> map) {
         return !isNullMap(map);
     }
 
@@ -128,13 +103,13 @@ public class Asserts {
         }
     }
 
-    public static void checkNullCollection(Collection collection, String msg) {
+    public static void checkNullCollection(Collection<?> collection, String msg) {
         if (isNullCollection(collection)) {
             throw new RunTimeException(msg);
         }
     }
 
-    public static void checkNullMap(Map map, String msg) {
+    public static void checkNullMap(Map<?, ?> map, String msg) {
         if (isNullMap(map)) {
             throw new RunTimeException(msg);
         }

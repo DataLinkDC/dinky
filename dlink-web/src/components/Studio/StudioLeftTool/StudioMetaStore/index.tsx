@@ -19,8 +19,8 @@
 
 
 import {Button, Col, Empty, message, Modal, Row, Select, Tabs, Tooltip, Tree} from "antd";
-import {MetaStoreDataBaseType, MetaStoreTableType, StateType} from "@/pages/DataStudio/model";
-import {connect} from "umi";
+import {MetaStoreTableType, StateType} from "@/pages/DataStudio/model";
+import {connect, useIntl} from "umi";
 import React, {useState} from "react";
 import {
   AppstoreOutlined,
@@ -47,6 +47,9 @@ const {Option, OptGroup} = Select;
 const {TabPane} = Tabs;
 
 const StudioMetaStore = (props: any) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {current, toolHeight} = props;
   const [catalog, setCatalog] = useState<string>();
@@ -287,7 +290,7 @@ const StudioMetaStore = (props: any) => {
           <Button key="back" onClick={() => {
             cancelHandle();
           }}>
-            关闭
+            {l('button.close')}
           </Button>,
         ]}
       >

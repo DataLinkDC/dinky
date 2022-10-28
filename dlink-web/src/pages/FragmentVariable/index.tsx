@@ -29,10 +29,15 @@ import Menu from "antd/es/menu";
 import {handleAddOrUpdate, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
 import FragmentForm from "@/pages/FragmentVariable/components/FragmentForm";
 import {FragmentVariableTableListItem} from "./data.d";
+import {useIntl} from 'umi';
 
 const url = '/api/fragment';
 
 const FragmentTableList: React.FC<{}> = (props: any) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
 
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
@@ -49,8 +54,8 @@ const FragmentTableList: React.FC<{}> = (props: any) => {
       Modal.confirm({
         title: '删除变量',
         content: '确定删除该变量吗？',
-        okText: '确认',
-        cancelText: '取消',
+        okText: l('button.confirm'),
+        cancelText: l('button.cancel'),
         onOk: async () => {
           await handleRemove(url, [currentItem]);
           actionRef.current?.reloadAndRest?.();
@@ -65,13 +70,13 @@ const FragmentTableList: React.FC<{}> = (props: any) => {
     <Dropdown
       overlay={
         <Menu onClick={({key}) => editAndDelete(key, item)}>
-          <Menu.Item key="edit">编辑</Menu.Item>
-          <Menu.Item key="delete">删除</Menu.Item>
+          <Menu.Item key="edit">{l('button.edit')}</Menu.Item>
+          <Menu.Item key="delete">{l('button.delete')}</Menu.Item>
         </Menu>
       }
     >
       <a>
-        更多 <DownOutlined/>
+        {l('button.more')} <DownOutlined/>
       </a>
     </Dropdown>
   );
@@ -128,29 +133,29 @@ const FragmentTableList: React.FC<{}> = (props: any) => {
       hideInTable: false,
     },
     {
-      title: '是否启用',
+      title: l('global.table.isEnable'),
       dataIndex: 'enabled',
       hideInForm: false,
       hideInSearch: true,
       hideInTable: false,
       filters: [
         {
-          text: '已启用',
+          text: l('status.enabled'),
           value: 1,
         },
         {
-          text: '已禁用',
+          text: l('status.disabled'),
           value: 0,
         },
       ],
       filterMultiple: false,
       valueEnum: {
-        true: {text: '已启用', status: 'Success'},
-        false: {text: '已禁用', status: 'Error'},
+        true: {text: l('status.enabled'), status: 'Success'},
+        false: {text: l('status.disabled'), status: 'Error'},
       },
     },
     {
-      title: '创建时间',
+      title: l('global.table.createTime'),
       dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',
@@ -158,14 +163,14 @@ const FragmentTableList: React.FC<{}> = (props: any) => {
       hideInTable: true,
     },
     {
-      title: '最近更新时间',
+      title: l('global.table.lastUpdateTime'),
       dataIndex: 'updateTime',
       sorter: true,
       valueType: 'dateTime',
       hideInForm: true,
     },
     {
-      title: '操作',
+      title: l('global.table.operate'),
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
@@ -175,7 +180,7 @@ const FragmentTableList: React.FC<{}> = (props: any) => {
             setFormValues(record);
           }}
         >
-          配置
+          {l('button.config')}
         </a>,
         <MoreBtn key="more" item={record}/>,
       ],
@@ -183,7 +188,7 @@ const FragmentTableList: React.FC<{}> = (props: any) => {
   ];
 
   return (
-    <PageContainer>
+    <PageContainer title={false}>
       <ProTable<FragmentVariableTableListItem>
         headerTitle="全局变量列表"
         actionRef={actionRef}
@@ -193,7 +198,7 @@ const FragmentTableList: React.FC<{}> = (props: any) => {
         }}
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined/> 新建
+            <PlusOutlined/> {l('button.create')}
           </Button>,
         ]}
         request={(params, sorter, filter) => queryData(url, {...params, ...sorter, ...filter})}
@@ -205,12 +210,20 @@ const FragmentTableList: React.FC<{}> = (props: any) => {
 
           },
         }}
+        pagination={{
+          defaultPageSize: 10,
+          showSizeChanger: true,
+        }}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
           extra={
             <div>
-              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
+              {l('tips.selected', '',
+                {
+                  total: <a
+                    style={{fontWeight: 600}}>{selectedRowsState.length}</a>
+                })}  &nbsp;&nbsp;
               <span>
                 被禁用的全局变量共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} 个
               </span>
@@ -222,8 +235,8 @@ const FragmentTableList: React.FC<{}> = (props: any) => {
                     Modal.confirm({
                       title: '删除全局变量',
                       content: '确定删除选中的全局变量吗？',
-                      okText: '确认',
-                      cancelText: '取消',
+                      okText: l('button.confirm'),
+                      cancelText: l('button.cancel'),
                       onOk: async () => {
                         await handleRemove(url, selectedRowsState);
                         setSelectedRows([]);
@@ -232,15 +245,15 @@ const FragmentTableList: React.FC<{}> = (props: any) => {
                     });
                   }}
           >
-            批量删除
+            {l('button.batchDelete')}
           </Button>
           <Button type="primary"
                   onClick={() => {
                     Modal.confirm({
                       title: '启用全局变量',
                       content: '确定启用选中的全局变量吗？',
-                      okText: '确认',
-                      cancelText: '取消',
+                      okText: l('button.confirm'),
+                      cancelText: l('button.cancel'),
                       onOk: async () => {
                         await updateEnabled(url, selectedRowsState, true);
                         setSelectedRows([]);
@@ -248,14 +261,14 @@ const FragmentTableList: React.FC<{}> = (props: any) => {
                       }
                     });
                   }}
-          >批量启用</Button>
+          >{l('button.batchEnable')}</Button>
           <Button danger
                   onClick={() => {
                     Modal.confirm({
                       title: '禁用全局变量',
                       content: '确定禁用选中的全局变量吗？',
-                      okText: '确认',
-                      cancelText: '取消',
+                      okText: l('button.confirm'),
+                      cancelText: l('button.cancel'),
                       onOk: async () => {
                         await updateEnabled(url, selectedRowsState, false);
                         setSelectedRows([]);
@@ -263,7 +276,7 @@ const FragmentTableList: React.FC<{}> = (props: any) => {
                       }
                     });
                   }}
-          >批量禁用</Button>
+          >{l('button.batchDisable')}</Button>
         </FooterToolbar>
       )}
       <FragmentForm

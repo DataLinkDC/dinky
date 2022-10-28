@@ -40,11 +40,18 @@ import {
 import {showCluster, showSessionCluster} from "@/components/Studio/StudioEvent/DDL";
 import {RUN_MODE} from "@/components/Studio/conf";
 import ClusterForm from "@/pages/Cluster/components/ClusterForm";
+import {useIntl} from 'umi';
 
 const TextArea = Input.TextArea;
 const url = '/api/cluster';
 
+
 const ClusterTableList: React.FC<{}> = (props: any) => {
+
+  const intl = useIntl();
+  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
+
+
   const {dispatch} = props;
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
@@ -61,8 +68,8 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       Modal.confirm({
         title: '删除集群',
         content: '确定删除该集群吗？',
-        okText: '确认',
-        cancelText: '取消',
+        okText: l('button.confirm'),
+        cancelText: l('button.cancel'),
         onOk: async () => {
           await handleRemove(url, [currentItem]);
           actionRef.current?.reloadAndRest?.();
@@ -81,8 +88,8 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
     Modal.confirm({
       title: '回收集群',
       content: '确定回收所有自动创建且过期的集群吗？',
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         const {datas} = await getData(url + '/clear', '回收集群', null);
         message.success(`成功回收${datas}个集群`);
@@ -97,20 +104,20 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
     <Dropdown
       overlay={
         <Menu onClick={({key}) => editAndDelete(key, item)}>
-          <Menu.Item key="edit">编辑</Menu.Item>
-          <Menu.Item key="delete">删除</Menu.Item>
+          <Menu.Item key="edit">{l('button.edit')}</Menu.Item>
+          <Menu.Item key="delete">{l('button.delete')}</Menu.Item>
         </Menu>
       }
     >
       <a>
-        更多 <DownOutlined/>
+        {l('button.more')} <DownOutlined/>
       </a>
     </Dropdown>
   );
 
   const columns: ProColumns<ClusterTableListItem>[] = [
     {
-      title: '名称',
+      title: l('global.table.instanceName'),
       dataIndex: 'name',
       tip: '名称是唯一的',
       sorter: true,
@@ -127,20 +134,20 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: '集群ID',
+      title: l('global.table.instanceId'),
       dataIndex: 'id',
       hideInTable: true,
       hideInForm: true,
       hideInSearch: true,
     },
     {
-      title: '别名',
+      title: l('global.table.nickName'),
       sorter: true,
       dataIndex: 'alias',
       hideInTable: false,
     },
     {
-      title: '类型',
+      title: l('global.table.type'),
       sorter: true,
       dataIndex: 'type',
       hideInForm: false,
@@ -183,7 +190,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: 'JobManager HA 地址',
+      title: l('global.table.jobManagerHaAddress'),
       sorter: true,
       dataIndex: 'hosts',
       valueType: 'textarea',
@@ -191,18 +198,20 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       hideInSearch: true,
       hideInTable: true,
       renderFormItem: (item, {defaultRender, ...rest}, form) => {
-        return <TextArea placeholder="添加 Flink 集群的 JobManager 的 RestApi 地址。当 HA 模式时，地址间用英文逗号分隔，例如：192.168.123.101:8081,192.168.123.102:8081,192.168.123.103:8081" allowClear autoSize={{ minRows: 3, maxRows: 10 }}/>;
+        return <TextArea
+          placeholder="添加 Flink 集群的 JobManager 的 RestApi 地址。当 HA 模式时，地址间用英文逗号分隔，例如：192.168.123.101:8081,192.168.123.102:8081,192.168.123.103:8081"
+          allowClear autoSize={{minRows: 3, maxRows: 10}}/>;
       },
     },
     {
-      title: '当前 JobManager 地址',
+      title: l('global.table.jobManagerAddress'),
       sorter: true,
       dataIndex: 'jobManagerHost',
       hideInForm: true,
       hideInSearch: true,
       hideInTable: false,
-    },{
-      title: '版本',
+    }, {
+      title: l('global.table.version'),
       sorter: true,
       dataIndex: 'version',
       hideInForm: true,
@@ -210,25 +219,25 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       hideInTable: false,
     },
     {
-      title: '状态',
+      title: l('global.table.status'),
       dataIndex: 'status',
       hideInForm: true,
       hideInSearch: true,
       hideInTable: false,
       filters: [
         {
-          text: '正常',
+          text: l('global.table.status.normal'),
           value: 1,
         },
         {
-          text: '异常',
+          text: l('global.table.status.abnormal'),
           value: 0,
         },
       ],
       filterMultiple: false,
       valueEnum: {
-        1: {text: '正常', status: 'Success'},
-        0: {text: '异常', status: 'Error'},
+        1: {text: l('global.table.status.normal'), status: 'Success'},
+        0: {text: l('global.table.status.abnormal'), status: 'Error'},
       },
     },
     {
@@ -241,51 +250,57 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       hideInTable: true,
     },
     {
-      title: '是否启用',
+      title: l('global.table.isEnable'),
       dataIndex: 'enabled',
       hideInForm: true,
       hideInSearch: true,
       hideInTable: false,
       filters: [
         {
-          text: '已启用',
+          text: l('status.enabled'),
           value: 1,
         },
         {
-          text: '已禁用',
+          text: l('status.disabled'),
           value: 0,
         },
       ],
       filterMultiple: false,
       valueEnum: {
-        true: {text: '已启用', status: 'Success'},
-        false: {text: '已禁用', status: 'Error'},
+        true: {text: l('status.enabled'), status: 'Success'},
+        false: {text: l('status.disabled'), status: 'Error'},
       },
     },
     {
-      title: '注册方式',
+      title: l('global.table.registType'),
       dataIndex: 'autoRegisters',
       hideInForm: true,
       hideInSearch: true,
       hideInTable: false,
       filters: [
         {
-          text: '自动',
+          text: l('global.table.registType.automatic'),
           value: 1,
         },
         {
-          text: '手动',
+          text: l('global.table.registType.manual'),
           value: 0,
         },
       ],
       filterMultiple: false,
       valueEnum: {
-        true: {text: '自动', status: 'Success'},
-        false: {text: '手动', status: 'Error'},
+        true: {
+          text: l('global.table.registType.automatic'),
+          status: 'Success'
+        },
+        false: {
+          text: l('global.table.registType.manual'),
+          status: 'Error'
+        },
       },
     },
     {
-      title: '创建时间',
+      title: l('global.table.createTime'),
       dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',
@@ -303,7 +318,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: '最近更新时间',
+      title: l('global.table.lastUpdateTime'),
       dataIndex: 'updateTime',
       sorter: true,
       valueType: 'dateTime',
@@ -320,7 +335,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: '操作',
+      title: l('global.table.operate'),
       dataIndex: 'option',
       tooltip: 'FLinkWebUI连接 当集群状态为`可用`时! 支持 KUBERNETES 之外的模式',
       valueType: 'option',
@@ -331,119 +346,146 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
             setFormValues(record);
           }}
         >
-          配置
+          {l('button.config')}
         </a>,
         <MoreBtn key="more" item={record}/>,
         ((record.status && (record.type === RUN_MODE.YARN_SESSION
-                              || record.type === RUN_MODE.STANDALONE
-                              || record.type === RUN_MODE.YARN_APPLICATION
-                              || record.type === RUN_MODE.YARN_PER_JOB
-                          )) ?
-          <>
-            <Button type="link" title={`http://${record.jobManagerHost}/#/overview`}
-                    href={`http://${record.jobManagerHost}/#/overview`}
-                    target="_blank"
-            >
-              FlinkWebUI
-            </Button>
-          </>
-          : undefined
+            || record.type === RUN_MODE.STANDALONE
+            || record.type === RUN_MODE.YARN_APPLICATION
+            || record.type === RUN_MODE.YARN_PER_JOB
+          )) ?
+            <>
+              <Button type="link" title={`http://${record.jobManagerHost}/#/overview`}
+                      href={`http://${record.jobManagerHost}/#/overview`}
+                      target="_blank"
+              >
+                FlinkWebUI
+              </Button>
+            </>
+            : undefined
         ),
       ],
     },
   ];
 
   return (
-    <PageContainer>
+    <PageContainer title={false}>
       <ProTable<ClusterTableListItem>
-        headerTitle="集群管理"
+        headerTitle={l('global.table.clusterManagement')}
         actionRef={actionRef}
         rowKey="id"
         search={{
-        labelWidth: 120,
-      }}
+          labelWidth: 120,
+        }}
         toolBarRender={() => [
-        <Button type="primary" onClick={() => handleModalVisible(true)}>
-          <PlusOutlined/> 新建
-        </Button>,
-        <Button type="primary" onClick={() => checkHeartBeats()}>
-          <HeartOutlined/> 心跳
-        </Button>,
-        <Button type="primary" onClick={() => clearCluster()}>
-          <ClearOutlined /> 回收
-        </Button>,
-      ]}
+          <Button type="primary" onClick={() => handleModalVisible(true)}>
+            <PlusOutlined/> {l('button.create')}
+          </Button>,
+          <Button type="primary" onClick={() => checkHeartBeats()}>
+            <HeartOutlined/> {l('button.heartbeat')}
+          </Button>,
+          <Button type="primary" onClick={() => clearCluster()}>
+            <ClearOutlined/> {l('button.recycle')}
+          </Button>,
+        ]}
         request={(params, sorter, filter) => queryData(url, {...params, sorter, filter})}
         columns={columns}
         rowSelection={{
-        onChange: (_, selectedRows) => setSelectedRows(selectedRows),
-      }}
-        />
-        {selectedRowsState?.length > 0 && (
-          <FooterToolbar
-            extra={
-              <div>
-                已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
-                <span>
+          onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+        }}
+        pagination={{
+          defaultPageSize: 10,
+          showSizeChanger: true,
+        }}
+      />
+      {selectedRowsState?.length > 0 && (
+        <FooterToolbar
+          extra={
+            <div>
+              {l('tips.selected', '',
+                {
+                  total: <a
+                    style={{fontWeight: 600}}>{selectedRowsState.length}</a>
+                })}  &nbsp;&nbsp;
+              <span>
                 被禁用的集群共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} 个
               </span>
-              </div>
-            }
+            </div>
+          }
+        >
+          <Button type="primary" danger
+                  onClick={() => {
+                    Modal.confirm({
+                      title: '删除集群',
+                      content: '确定删除选中的集群吗？',
+                      okText: l('button.confirm'),
+                      cancelText: l('button.cancel'),
+                      onOk: async () => {
+                        await handleRemove(url, selectedRowsState);
+                        setSelectedRows([]);
+                        actionRef.current?.reloadAndRest?.();
+                      }
+                    });
+                  }}
           >
-            <Button type="primary" danger
-                    onClick={() => {
-                      Modal.confirm({
-                        title: '删除集群',
-                        content: '确定删除选中的集群吗？',
-                        okText: '确认',
-                        cancelText: '取消',
-                        onOk: async () => {
-                          await handleRemove(url, selectedRowsState);
-                          setSelectedRows([]);
-                          actionRef.current?.reloadAndRest?.();
-                        }
-                      });
-                    }}
-            >
-              批量删除
-            </Button>
-            <Button type="primary"
-                    onClick={() => {
-                      Modal.confirm({
-                        title: '启用集群',
-                        content: '确定启用选中的集群吗？',
-                        okText: '确认',
-                        cancelText: '取消',
-                        onOk: async () => {
-                          await updateEnabled(url+'/enable', selectedRowsState, true);
-                          setSelectedRows([]);
-                          actionRef.current?.reloadAndRest?.();
-                        }
-                      });
-                    }}
-            >批量启用</Button>
-            <Button danger
-                    onClick={() => {
-                      Modal.confirm({
-                        title: '禁用集群',
-                        content: '确定禁用选中的集群吗？',
-                        okText: '确认',
-                        cancelText: '取消',
-                        onOk: async () => {
-                          await updateEnabled(url+'/enable', selectedRowsState, false);
-                          setSelectedRows([]);
-                          actionRef.current?.reloadAndRest?.();
-                        }
-                      });
-                    }}
-            >批量禁用</Button>
-          </FooterToolbar>
-        )}
+            {l('button.batchDelete')}
+          </Button>
+          <Button type="primary"
+                  onClick={() => {
+                    Modal.confirm({
+                      title: '启用集群',
+                      content: '确定启用选中的集群吗？',
+                      okText: l('button.confirm'),
+                      cancelText: l('button.cancel'),
+                      onOk: async () => {
+                        await updateEnabled(url + '/enable', selectedRowsState, true);
+                        setSelectedRows([]);
+                        actionRef.current?.reloadAndRest?.();
+                      }
+                    });
+                  }}
+          >{l('button.batchEnable')}</Button>
+          <Button danger
+                  onClick={() => {
+                    Modal.confirm({
+                      title: '禁用集群',
+                      content: '确定禁用选中的集群吗？',
+                      okText: l('button.confirm'),
+                      cancelText: l('button.cancel'),
+                      onOk: async () => {
+                        await updateEnabled(url + '/enable', selectedRowsState, false);
+                        setSelectedRows([]);
+                        actionRef.current?.reloadAndRest?.();
+                      }
+                    });
+                  }}
+          >{l('button.batchDisable')}</Button>
+        </FooterToolbar>
+      )}
+      <ClusterForm
+        onSubmit={async (value) => {
+          const success = await handleAddOrUpdate(url, value);
+          if (success) {
+            handleModalVisible(false);
+            setFormValues({});
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+            showCluster(dispatch);
+            showSessionCluster(dispatch);
+          }
+        }}
+        onCancel={() => handleModalVisible(false)}
+        modalVisible={modalVisible}
+        values={{}}
+      >
+      </ClusterForm>
+      {formValues && Object.keys(formValues).length ? (
         <ClusterForm
           onSubmit={async (value) => {
             const success = await handleAddOrUpdate(url, value);
             if (success) {
-              handleModalVisible(false);
+              handleUpdateModalVisible(false);
               setFormValues({});
               if (actionRef.current) {
                 actionRef.current.reload();
@@ -452,58 +494,39 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
               showSessionCluster(dispatch);
             }
           }}
-          onCancel={() => handleModalVisible(false)}
-          modalVisible={modalVisible}
-          values={{}}
-        >
-        </ClusterForm>
-        {formValues && Object.keys(formValues).length ? (
-          <ClusterForm
-            onSubmit={async (value) => {
-              const success = await handleAddOrUpdate(url, value);
-              if (success) {
-                handleUpdateModalVisible(false);
-                setFormValues({});
-                if (actionRef.current) {
-                  actionRef.current.reload();
-                }
-                showCluster(dispatch);
-                showSessionCluster(dispatch);
-              }
-            }}
-            onCancel={() => {
-              handleUpdateModalVisible(false);
-              setFormValues({});
-            }}
-            modalVisible={updateModalVisible}
-            values={formValues}
-          />
-        ) : undefined}
-
-        <Drawer
-          width={600}
-          visible={!!row}
-          onClose={() => {
-            setRow(undefined);
+          onCancel={() => {
+            handleUpdateModalVisible(false);
+            setFormValues({});
           }}
-          closable={false}
-        >
-          {row?.name && (
-            <ProDescriptions<ClusterTableListItem>
-              column={2}
-              title={row?.name}
-              request={async () => ({
+          modalVisible={updateModalVisible}
+          values={formValues}
+        />
+      ) : undefined}
+
+      <Drawer
+        width={600}
+        visible={!!row}
+        onClose={() => {
+          setRow(undefined);
+        }}
+        closable={false}
+      >
+        {row?.name && (
+          <ProDescriptions<ClusterTableListItem>
+            column={2}
+            title={row?.name}
+            request={async () => ({
               data: row || {},
             })}
-              params={{
+            params={{
               id: row?.name,
             }}
-              columns={columns}
-              />
-              )}
-        </Drawer>
+            columns={columns}
+          />
+        )}
+      </Drawer>
     </PageContainer>
-);
+  );
 };
 
 export default ClusterTableList;

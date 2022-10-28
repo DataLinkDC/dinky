@@ -3,12 +3,9 @@ sidebar_position: 91
 title: 0.6.6 release
 ---
 
-
-
 | 版本    | 二进制程序                                                                                                                 | Source                                                                                |
 |-------|-----------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
 | 0.6.6 | [dlink-release-0.6.6.tar.gz](https://github.com/DataLinkDC/dlink/releases/download/v0.6.6/dlink-release-0.6.6.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dlink/archive/refs/tags/v0.6.6.zip) |
-
 
 ## Dinky发行说明
 
@@ -16,9 +13,8 @@ Dinky 0.6.6 是一个优化修复的版本。
 
 :::warning 注意
 此版本有表结构变更 <br/>
-需要执行 **sql/dlinkmysqlcatalog.sql** 文件
+需要执行 **sql/upgrade/0.6.6_schema/mysql/dinky_ddl.sql** 文件
 :::
-
 
 ### 新功能
 
@@ -42,7 +38,7 @@ Dinky 0.6.6 是一个优化修复的版本。
 - 修复 catalog SPI bug 和 sql bug
 - 修复运维中心检查点等信息获取错误
 - 修复在 SQLSinkBuilder 中捕获 tranateToPlan 异常
-- 修复 application 模式提交失败 
+- 修复 application 模式提交失败
 - 修复删除告警实例后,告警组下实例仍存在 导致告警错误的问题
 - 修复循环依赖问题
 - 修复删除未引用的类

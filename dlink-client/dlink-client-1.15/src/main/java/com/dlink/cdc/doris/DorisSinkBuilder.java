@@ -19,6 +19,7 @@
 
 package com.dlink.cdc.doris;
 
+import com.dlink.assertion.Asserts;
 import com.dlink.cdc.AbstractSinkBuilder;
 import com.dlink.cdc.SinkBuilder;
 import com.dlink.model.FlinkCDCConfig;
@@ -40,6 +41,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+import java.util.UUID;
 
 /**
  * DorisSinkBuilder
@@ -139,7 +142,9 @@ public class DorisSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
             executionBuilder.setDeletable(Boolean.valueOf(sink.get(DorisSinkOptions.SINK_ENABLE_DELETE.key())));
         }
         if (sink.containsKey(DorisSinkOptions.SINK_LABEL_PREFIX.key())) {
-            executionBuilder.setLabelPrefix(getSinkSchemaName(table) + "_" + getSinkTableName(table) + sink.get(DorisSinkOptions.SINK_LABEL_PREFIX.key()));
+            executionBuilder.setLabelPrefix(sink.get(DorisSinkOptions.SINK_LABEL_PREFIX.key()) + "-" + getSinkSchemaName(table) + "_" + getSinkTableName(table));
+        } else {
+            executionBuilder.setLabelPrefix("dlink-" + getSinkSchemaName(table) + "_" + getSinkTableName(table) + UUID.randomUUID());
         }
         if (sink.containsKey(DorisSinkOptions.SINK_MAX_RETRIES.key())) {
             executionBuilder.setMaxRetries(Integer.valueOf(sink.get(DorisSinkOptions.SINK_MAX_RETRIES.key())));
@@ -157,5 +162,17 @@ public class DorisSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
             .setDorisOptions(dorisBuilder.build());
 
         rowDataDataStream.sinkTo(builder.build()).name("Doris Sink(table=[" + getSinkSchemaName(table) + "." + getSinkTableName(table) + "])");
+    }
+
+    @Override
+    protected Properties getProperties() {
+        Properties properties = new Properties();
+        Map<String, String> sink = config.getSink();
+        for (Map.Entry<String, String> entry : sink.entrySet()) {
+            if (Asserts.isNotNullString(entry.getKey()) && entry.getKey().startsWith("sink.properties") && Asserts.isNotNullString(entry.getValue())) {
+                properties.setProperty(entry.getKey().replace("sink.properties.", ""), entry.getValue());
+            }
+        }
+        return properties;
     }
 }
