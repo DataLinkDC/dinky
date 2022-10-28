@@ -37,6 +37,7 @@ export type UpdateFormProps = {
   values: Partial<TaskTableListItem>;
 };
 
+
 const formLayout = {
   labelCol: {span: 7},
   wrapperCol: {span: 13},
@@ -49,9 +50,7 @@ const SimpleTaskForm: React.FC<UpdateFormProps> = (props) => {
 
   const intl = useIntl();
   const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-  useEffect(() => {
-    getTemplateTreeData()
-  }, [])
+
 
   const [formVals, setFormVals] = useState<Partial<TaskTableListItem>>({
     id: props.values.id,
@@ -62,15 +61,18 @@ const SimpleTaskForm: React.FC<UpdateFormProps> = (props) => {
   });
 
   const [dialect, setDialect] = useState<string>('')
-  const [templateTree, setTemplateTree] = useState<Array<Object>>([])
-  const [templateData, setTemplateData] = useState<Array<Object>>([])
-  const [defaultTemplateData, setDefaultTemplateData] = useState<Array<Object>>([])
+  const [templateTree, setTemplateTree] = useState<Object[]>([])
+  const [templateData, setTemplateData] = useState<Object[]>([])
   const [form] = Form.useForm();
+
 
   const getTemplateTreeData = async () => {
     const resp = await postAll("/api/udf/template/tree")
-    setTemplateTree(resp.datas)
+    return resp.datas
   }
+  useEffect(() => {
+    getTemplateTreeData().then(r => setTemplateTree(r))
+  }, [])
 
   const {
     onSubmit: handleUpdate,
@@ -86,10 +88,10 @@ const SimpleTaskForm: React.FC<UpdateFormProps> = (props) => {
     const data = {...formVals, ...fieldsValue};
     try {
       data.config = {
-        templateId: String(data['config.templateId'][1]),
+        templateId: String(data['config.templateId'].lastItem),
         className: data['config.className'],
       }
-    }catch (e) {
+    } catch (e) {
     }
     setFormVals(data);
     handleUpdate(data);
@@ -100,7 +102,7 @@ const SimpleTaskForm: React.FC<UpdateFormProps> = (props) => {
       templateTree.map(x => {
         if (x.label == value) {
           setTemplateData(x.children)
-          setDefaultTemplateData([x.children[0].label, x.children[0].children[0].label])
+          form.setFieldsValue({"config.templateId": [x.children[0].label, x.children[0].children[0].label, x.children[0].children[0].value]})
         }
       })
     }
@@ -151,7 +153,7 @@ const SimpleTaskForm: React.FC<UpdateFormProps> = (props) => {
             label="udf 模板"
             rules={[{required: true, message: '请选择udf模板!'}]}>
             {<Cascader
-              value={defaultTemplateData}
+              displayRender={(label: string[]) => label.slice(0, 2).join(" / ")}
               options={templateData}
             />}
           </Form.Item>
