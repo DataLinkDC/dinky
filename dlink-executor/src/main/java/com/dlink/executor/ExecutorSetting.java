@@ -26,12 +26,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * ExecutorSetting
@@ -41,9 +43,9 @@ import lombok.extern.slf4j.Slf4j;
  **/
 @Setter
 @Getter
-@Slf4j
 public class ExecutorSetting {
 
+    private static final Logger log = LoggerFactory.getLogger(ExecutorSetting.class);
     public static final ExecutorSetting DEFAULT = new ExecutorSetting(0, 1, true);
 
     public static final String CHECKPOINT_CONST = "checkpoint";
