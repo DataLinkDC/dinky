@@ -29,10 +29,10 @@ import org.apache.flink.table.api.TableResult;
  **/
 public class SelectResultBuilder implements ResultBuilder {
 
-    private Integer maxRowNum;
-    private boolean isChangeLog;
-    private boolean isAutoCancel;
-    private String timeZone;
+    private final Integer maxRowNum;
+    private final boolean isChangeLog;
+    private final boolean isAutoCancel;
+    private final String timeZone;
 
     public SelectResultBuilder(Integer maxRowNum, boolean isChangeLog, boolean isAutoCancel, String timeZone) {
         this.maxRowNum = maxRowNum;

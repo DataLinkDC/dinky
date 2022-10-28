@@ -51,6 +51,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -63,6 +66,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  **/
 public abstract class Executor {
 
+    private static final Logger logger = LoggerFactory.getLogger(Executor.class);
+
     protected StreamExecutionEnvironment environment;
     protected CustomTableEnvironment stEnvironment;
     protected EnvironmentSetting environmentSetting;
@@ -71,14 +76,6 @@ public abstract class Executor {
 
     protected SqlManager sqlManager = new SqlManager();
     protected boolean useSqlFragment = true;
-
-    public SqlManager getSqlManager() {
-        return sqlManager;
-    }
-
-    public boolean isUseSqlFragment() {
-        return useSqlFragment;
-    }
 
     public static Executor build() {
         return new LocalStreamExecutor(ExecutorSetting.DEFAULT);
@@ -115,6 +112,14 @@ public abstract class Executor {
         } else {
             return new RemoteStreamExecutor(environmentSetting, executorSetting);
         }
+    }
+
+    public SqlManager getSqlManager() {
+        return sqlManager;
+    }
+
+    public boolean isUseSqlFragment() {
+        return useSqlFragment;
     }
 
     public ExecutionConfig getExecutionConfig() {
@@ -164,25 +169,14 @@ public abstract class Executor {
     }
 
     public void initEnvironment() {
-        /*if (executorSetting.getCheckpoint() != null && executorSetting.getCheckpoint() > 0) {
-            environment.enableCheckpointing(executorSetting.getCheckpoint());
-        }*/
-        if (executorSetting.getParallelism() != null && executorSetting.getParallelism() > 0) {
-            environment.setParallelism(executorSetting.getParallelism());
-        }
-        if (executorSetting.getConfig() != null) {
-            Configuration configuration = Configuration.fromMap(executorSetting.getConfig());
-            environment.getConfig().configure(configuration, null);
-        }
+        updateEnvironment(executorSetting);
     }
 
     public void updateEnvironment(ExecutorSetting executorSetting) {
-        /*if (executorSetting.getCheckpoint() != null && executorSetting.getCheckpoint() > 0) {
-            environment.enableCheckpointing(executorSetting.getCheckpoint());
-        }*/
-        if (executorSetting.getParallelism() != null && executorSetting.getParallelism() > 0) {
+        if (executorSetting.isValidParallelism()) {
             environment.setParallelism(executorSetting.getParallelism());
         }
+
         if (executorSetting.getConfig() != null) {
             Configuration configuration = Configuration.fromMap(executorSetting.getConfig());
             environment.getConfig().configure(configuration, null);
@@ -192,43 +186,34 @@ public abstract class Executor {
     abstract CustomTableEnvironment createCustomTableEnvironment();
 
     private void initStreamExecutionEnvironment() {
-        useSqlFragment = executorSetting.isUseSqlFragment();
-        stEnvironment = createCustomTableEnvironment();
-        if (executorSetting.getJobName() != null && !"".equals(executorSetting.getJobName())) {
-            stEnvironment.getConfig().getConfiguration().setString(PipelineOptions.NAME.key(), executorSetting.getJobName());
-        }
-        setConfig.put(PipelineOptions.NAME.key(), executorSetting.getJobName());
-        if (executorSetting.getConfig() != null) {
-            for (Map.Entry<String, String> entry : executorSetting.getConfig().entrySet()) {
-                stEnvironment.getConfig().getConfiguration().setString(entry.getKey(), entry.getValue());
-            }
-        }
+        updateStreamExecutionEnvironment(executorSetting);
     }
 
     private void updateStreamExecutionEnvironment(ExecutorSetting executorSetting) {
         useSqlFragment = executorSetting.isUseSqlFragment();
-        copyCatalog();
-        if (executorSetting.getJobName() != null && !"".equals(executorSetting.getJobName())) {
-            stEnvironment.getConfig().getConfiguration().setString(PipelineOptions.NAME.key(), executorSetting.getJobName());
+
+        CustomTableEnvironment newestEnvironment = createCustomTableEnvironment();
+        if (stEnvironment != null) {
+            for (String catalog : stEnvironment.listCatalogs()) {
+                stEnvironment.getCatalog(catalog).ifPresent(t -> {
+                    newestEnvironment.getCatalogManager().unregisterCatalog(catalog, true);
+                    newestEnvironment.registerCatalog(catalog, t);
+                });
+            }
         }
+        stEnvironment = newestEnvironment;
+
+        final Configuration configuration = stEnvironment.getConfig().getConfiguration();
+        if (executorSetting.isValidJobName()) {
+            configuration.setString(PipelineOptions.NAME.key(), executorSetting.getJobName());
+        }
+
         setConfig.put(PipelineOptions.NAME.key(), executorSetting.getJobName());
         if (executorSetting.getConfig() != null) {
             for (Map.Entry<String, String> entry : executorSetting.getConfig().entrySet()) {
-                stEnvironment.getConfig().getConfiguration().setString(entry.getKey(), entry.getValue());
+                configuration.setString(entry.getKey(), entry.getValue());
             }
         }
-    }
-
-    private void copyCatalog() {
-        String[] catalogs = stEnvironment.listCatalogs();
-        CustomTableEnvironment newstEnvironment = createCustomTableEnvironment();
-        for (int i = 0; i < catalogs.length; i++) {
-            if (stEnvironment.getCatalog(catalogs[i]).isPresent()) {
-                newstEnvironment.getCatalogManager().unregisterCatalog(catalogs[i], true);
-                newstEnvironment.registerCatalog(catalogs[i], stEnvironment.getCatalog(catalogs[i]).get());
-            }
-        }
-        stEnvironment = newstEnvironment;
     }
 
     public String pretreatStatement(String statement) {
@@ -285,14 +270,15 @@ public abstract class Executor {
         Method method = null;
         try {
             method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
-        } catch (NoSuchMethodException | SecurityException e1) {
-            e1.printStackTrace();
+        } catch (NoSuchMethodException | SecurityException e) {
+            logger.error(e.getMessage());
         }
+
         // 获取方法的访问权限
         boolean accessible = method.isAccessible();
         try {
             // 修改访问权限为可写
-            if (accessible == false) {
+            if (!accessible) {
                 method.setAccessible(true);
             }
             // 获取系统类加载器
@@ -300,7 +286,7 @@ public abstract class Executor {
             // jar路径加入到系统url路径里
             method.invoke(classLoader, jarUrl);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         } finally {
             method.setAccessible(accessible);
         }
@@ -308,33 +294,37 @@ public abstract class Executor {
 
     public String explainSql(String statement, ExplainDetail... extraDetails) {
         statement = pretreatStatement(statement);
-        if (!pretreatExecute(statement).isNoExecute()) {
-            return stEnvironment.explainSql(statement, extraDetails);
-        } else {
+        if (pretreatExecute(statement).isNoExecute()) {
             return "";
         }
+
+        return stEnvironment.explainSql(statement, extraDetails);
     }
 
     public SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails) {
         statement = pretreatStatement(statement);
         if (Asserts.isNotNullString(statement) && !pretreatExecute(statement).isNoExecute()) {
             return stEnvironment.explainSqlRecord(statement, extraDetails);
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     public ObjectNode getStreamGraph(String statement) {
         statement = pretreatStatement(statement);
-        if (!pretreatExecute(statement).isNoExecute()) {
-            return stEnvironment.getStreamGraph(statement);
-        } else {
+        if (pretreatExecute(statement).isNoExecute()) {
             return null;
         }
+
+        return stEnvironment.getStreamGraph(statement);
     }
 
     public ObjectNode getStreamGraph(List<String> statements) {
         StreamGraph streamGraph = stEnvironment.getStreamGraphFromInserts(statements);
+        return getStreamGraphJsonNode(streamGraph);
+    }
+
+    private ObjectNode getStreamGraphJsonNode(StreamGraph streamGraph) {
         JSONGenerator jsonGenerator = new JSONGenerator(streamGraph);
         String json = jsonGenerator.getJSON();
         ObjectMapper mapper = new ObjectMapper();
@@ -343,9 +333,9 @@ public abstract class Executor {
             objectNode = (ObjectNode) mapper.readTree(json);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-        } finally {
-            return objectNode;
         }
+
+        return objectNode;
     }
 
     public StreamGraph getStreamGraph() {
@@ -356,18 +346,9 @@ public abstract class Executor {
         for (String statement : statements) {
             executeSql(statement);
         }
+
         StreamGraph streamGraph = getStreamGraph();
-        JSONGenerator jsonGenerator = new JSONGenerator(streamGraph);
-        String json = jsonGenerator.getJSON();
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectNode objectNode = mapper.createObjectNode();
-        try {
-            objectNode = (ObjectNode) mapper.readTree(json);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        } finally {
-            return objectNode;
-        }
+        return getStreamGraphJsonNode(streamGraph);
     }
 
     public JobPlanInfo getJobPlanInfo(List<String> statements) {
@@ -381,14 +362,6 @@ public abstract class Executor {
         StreamGraph streamGraph = getStreamGraph();
         return new JobPlanInfo(JsonPlanGenerator.generatePlan(streamGraph.getJobGraph()));
     }
-
-    /*public void registerFunction(String name, ScalarFunction function){
-        stEnvironment.registerFunction(name,function);
-    }
-
-    public void createTemporarySystemFunction(String name, Class<? extends UserDefinedFunction> var2){
-        stEnvironment.createTemporarySystemFunction(name,var2);
-    }*/
 
     public CatalogManager getCatalogManager() {
         return stEnvironment.getCatalogManager();
