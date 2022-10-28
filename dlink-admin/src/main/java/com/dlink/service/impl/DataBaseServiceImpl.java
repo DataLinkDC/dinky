@@ -171,9 +171,8 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
 
     @Override
     public List<String> listEnabledFlinkWith() {
-        List<DataBase> dataBases = listEnabledAll();
         List<String> list = new ArrayList<>();
-        for (DataBase dataBase : dataBases) {
+        for (DataBase dataBase : listEnabledAll()) {
             if (Asserts.isNotNullString(dataBase.getFlinkConfig())) {
                 list.add(dataBase.getName() + ":=" + dataBase.getFlinkConfig() + "\n;\n");
             }

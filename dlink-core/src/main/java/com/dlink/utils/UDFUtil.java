@@ -53,6 +53,7 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.MD5;
@@ -68,6 +69,9 @@ import groovy.lang.GroovyClassLoader;
  * @since 2021/12/27 23:25
  */
 public class UDFUtil {
+
+    private UDFUtil() {
+    }
 
     protected static final Logger log = LoggerFactory.getLogger(UDFUtil.class);
     /**
@@ -130,7 +134,7 @@ public class UDFUtil {
         }).collect(Collectors.toList());
         List<String> classNameList = udfList.stream().map(UDF::getClassName).collect(Collectors.toList());
         process.info(StringUtils.join(",", classNameList));
-        process.info(StrUtil.format("A total of {} UDF have been Parsed.", classNameList.size()));
+        process.info(CharSequenceUtil.format("A total of {} UDF have been Parsed.", classNameList.size()));
         return udfList;
     }
 
