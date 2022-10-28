@@ -64,6 +64,13 @@ public class UDFServiceImpl implements UDFService {
     @Resource
     TaskService taskService;
 
+    /**
+     * init udf
+     *
+     * @param statement   sql 语句
+     * @param gatewayType flink gateway类型
+     * @return {@link UDFPath}
+     */
     @Override
     public UDFPath initUDF(String statement, GatewayType gatewayType) {
         if (gatewayType == GatewayType.KUBERNETES_APPLICATION) {
