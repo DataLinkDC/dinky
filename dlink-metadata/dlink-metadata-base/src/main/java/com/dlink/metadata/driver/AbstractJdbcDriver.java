@@ -314,7 +314,17 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                 }
                 field.setName(columnName);
                 if (columnList.contains(dbQuery.columnType())) {
-                    field.setType(results.getString(dbQuery.columnType()));
+                    String columnType = results.getString(dbQuery.columnType());
+                    if (columnType.contains("(")) {
+                        String type = columnType.replaceAll("\\(.*\\)", "");
+                        if(!columnType.contains(",")){
+                            Integer length = Integer.valueOf(columnType.replaceAll("\\D", ""));
+                            field.setLength(length);
+                        }
+                        field.setType(type);
+                    }else {
+                        field.setType(columnType);
+                    }
                 }
                 if (columnList.contains(dbQuery.columnComment()) && Asserts.isNotNull(results.getString(dbQuery.columnComment()))) {
                     String columnComment = results.getString(dbQuery.columnComment()).replaceAll("\"|'", "");

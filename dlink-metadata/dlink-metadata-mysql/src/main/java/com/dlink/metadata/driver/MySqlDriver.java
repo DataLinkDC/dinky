@@ -82,18 +82,18 @@ public class MySqlDriver extends AbstractJdbcDriver {
         for (int i = 0; i < table.getColumns().size(); i++) {
             Column column = table.getColumns().get(i);
             sb.append("  `")
-                .append(column.getName()).append("`  ")
-                .append(column.getType()).append("  ");
-            //todo tmp process for varchar
-            if (column.getType().equals("varchar")) {
-                sb.append("(255)");
-            }
-            if (column.getPrecision() > 0) {
-                sb.append("(").append(column.getPrecision());
-                if (column.getScale() > 0) {
-                    sb.append(",").append(column.getScale());
+                    .append(column.getName()).append("`  ")
+                    .append(column.getType());
+            if(null != column.getLength()){
+                sb.append("(").append(column.getLength()).append(")");
+            } else {
+                if(column.getPrecision() > 0){
+                    sb.append("(").append(column.getPrecision());
+                    if (column.getScale() > 0) {
+                        sb.append(",").append(column.getScale());
+                    }
+                    sb.append(")");
                 }
-                sb.append(")");
             }
             if (Asserts.isNotNull(column.getCharacterSet())) {
                 sb.append(" CHARACTER SET ").append(column.getCharacterSet());
@@ -139,6 +139,7 @@ public class MySqlDriver extends AbstractJdbcDriver {
             sb.append(" COMMENT='").append(table.getComment()).append("'");
         }
         sb.append(";");
+        sb.toString();
         logger.info("Auto generateCreateTableSql {}", sb);
         return sb.toString();
     }
