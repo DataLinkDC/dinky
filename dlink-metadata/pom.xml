@@ -37,6 +37,7 @@
         <module>dlink-metadata-phoenix</module>
         <module>dlink-metadata-hive</module>
         <module>dlink-metadata-starrocks</module>
+        <module>dlink-metadata-presto</module>
     </modules>
 
 </project>
