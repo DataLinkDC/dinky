@@ -20,22 +20,50 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.dlink</groupId>
-        <artifactId>dlink</artifactId>
+        <artifactId>dlink-metadata</artifactId>
         <version>0.6.8-SNAPSHOT</version>
     </parent>
 
-    <artifactId>dlink-alert</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>dlink-alert-base</module>
-        <module>dlink-alert-dingtalk</module>
-        <module>dlink-alert-wechat</module>
-        <module>dlink-alert-feishu</module>
-        <module>dlink-alert-email</module>
-    </modules>
+    <artifactId>dlink-metadata-presto</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-metadata-base</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-starter</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.facebook.presto</groupId>
+            <artifactId>presto-jdbc</artifactId>
+            <version>0.235</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
 </project>

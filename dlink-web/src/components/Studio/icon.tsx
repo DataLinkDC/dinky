@@ -47,6 +47,8 @@ export const getIcon = (type: string) => {
       return (<Icon component={PhoenixSvg}/>);
     case DIALECT.STARROCKS:
       return (<Icon component={StarRocksSvg}/>);
+    case DIALECT.PRESTO:
+      return (<Icon component={PrestoSvg}/>);
     case DIALECT.JAVA:
       return (<Icon component={JavaSvg}/>);
     case DIALECT.SCALA:
@@ -329,7 +331,35 @@ export const StarRocksSvg = () => (
           d="M32,24.57,41.52,10a2.37,2.37,0,0,1,3.17-.75L51,12.9a5.94,5.94,0,0,1,3,5.15V42.37a5.94,5.94,0,0,1-2.39,4.76c1.7-1.31,1-2.78-.1-3.72L32.43,27.69A2.37,2.37,0,0,1,32,24.57Z"/>
   </svg>
 );
-
+export const PrestoSvg = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 348.418 300.463" width={svgSize} height={svgSize}>
+    <g data-name="Group 406" transform="translate(-107.354)">
+      <circle data-name="Ellipse 154" cx="15.683" cy="15.683" r="15.683" transform="rotate(-45 164.143 -320.553)" fill="#5d88d6"/>
+      <circle data-name="Ellipse 155" cx="17.423" cy="17.423" r="17.423" transform="rotate(-45 236.512 -348.067)" fill="#5d88d6"/>
+      <circle data-name="Ellipse 156" cx="19.163" cy="19.163" r="19.163" transform="rotate(-45 308.884 -375.574)" fill="#5d88d6"/>
+      <circle data-name="Ellipse 157" cx="20.902" cy="20.902" r="20.902" transform="rotate(-45 381.172 -403.063)" fill="#5d88d6"/>
+      <circle data-name="Ellipse 158" cx="13.943" cy="13.943" r="13.943" transform="rotate(-45 122.284 -219.497)" fill="#32dbfc"/>
+      <circle data-name="Ellipse 159" cx="15.683" cy="15.683" r="15.683" transform="rotate(-45 194.653 -247.009)" fill="#32dbfc"/>
+      <circle data-name="Ellipse 160" cx="17.423" cy="17.423" r="17.423" transform="rotate(-45 266.949 -274.494)" fill="#32dbfc"/>
+      <circle data-name="Ellipse 161" cx="19.163" cy="19.163" r="19.163" transform="rotate(-45 339.278 -301.998)" fill="#32dbfc"/>
+      <circle data-name="Ellipse 162" cx="20.902" cy="20.902" r="20.902" transform="rotate(-45 411.681 -329.508)" fill="#32dbfc"/>
+      <circle data-name="Ellipse 163" cx="12.203" cy="12.203" r="12.203" transform="rotate(-45 80.509 -118.474)"/>
+      <circle data-name="Ellipse 164" cx="13.943" cy="13.943" r="13.943" transform="rotate(-45 152.754 -145.942)"/>
+      <circle data-name="Ellipse 165" cx="15.683" cy="15.683" r="15.683" transform="rotate(-45 225.165 -173.465)"/>
+      <circle data-name="Ellipse 166" cx="17.423" cy="17.423" r="17.423" transform="rotate(-45 297.49 -200.963)"/>
+      <circle data-name="Ellipse 167" cx="19.163" cy="19.163" r="19.163" transform="rotate(-45 369.83 -228.455)"/>
+      <circle data-name="Ellipse 168" cx="20.902" cy="20.902" r="20.902" transform="rotate(-45 442.075 -255.942)"/>
+      <g data-name="Group 120" transform="translate(110.646 174.812)" fill="#5d88d6">
+        <circle data-name="Ellipse 169" cx="13.943" cy="13.943" r="13.943" transform="rotate(-45 63.994 -87.174)"/>
+        <circle data-name="Ellipse 170" cx="13.943" cy="13.943" transform="translate(43.075 48.862)" r="13.943"/>
+        <circle data-name="Ellipse 171" cx="13.943" cy="13.943" transform="translate(0 91.982)" r="13.943"/>
+        <circle data-name="Ellipse 172" cx="13.943" cy="13.943" transform="translate(86.164 91.957)" r="13.943"/>
+        <circle data-name="Ellipse 173" cx="13.943" cy="13.943" r="13.943" transform="rotate(-45 211.16 -148.109)"/>
+        <circle data-name="Ellipse 174" cx="13.943" cy="13.943" r="13.943" transform="rotate(-45 137.546 -117.642)"/>
+      </g>
+    </g>
+  </svg>
+);
 export const HiveSvg = () => (
   <svg t="1647425762735" className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
        p-id="3247" width={svgSize} height={svgSize}>

@@ -129,6 +129,7 @@ const SimpleTaskForm: React.FC<UpdateFormProps> = (props) => {
             <Option value={DIALECT.HIVE}>{DIALECT.HIVE}</Option>
             <Option value={DIALECT.PHOENIX}>{DIALECT.PHOENIX}</Option>
             <Option value={DIALECT.STARROCKS}>{DIALECT.STARROCKS}</Option>
+            <Option value={DIALECT.PRESTO}>{DIALECT.PRESTO}</Option>
             <Option key={DIALECT.JAVA} value={DIALECT.JAVA}>{DIALECT.JAVA}</Option>
             <Option key={DIALECT.SCALA} value={DIALECT.SCALA}>{DIALECT.SCALA}</Option>
             <Option key={DIALECT.PYTHON} value={DIALECT.PYTHON}>{DIALECT.PYTHON}</Option>

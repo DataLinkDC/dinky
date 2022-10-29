@@ -137,7 +137,7 @@ const DataBaseForm: React.FC<ClickHouseFormProps> = (props) => {
         >
           <Input.Password/>
         </Form.Item>
-        {type !== "Hive" &&
+        {type !== "Hive" && type !== "Presto" &&
           <>
             <Form.Item
               name="flinkConfig"

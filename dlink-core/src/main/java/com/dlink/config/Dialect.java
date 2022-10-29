@@ -44,6 +44,7 @@ public enum Dialect {
     PHOENIX("Phoenix"),
     HIVE("Hive"),
     STARROCKS("StarRocks"),
+    PRESTO("Presto"),
     KUBERNETES_APPLICATION("KubernetesApplaction");
 
     private String value;
@@ -90,6 +91,7 @@ public enum Dialect {
             case PHOENIX:
             case HIVE:
             case STARROCKS:
+            case PRESTO:
                 return true;
             default:
                 return false;
