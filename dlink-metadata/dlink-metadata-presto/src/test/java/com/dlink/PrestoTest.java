@@ -26,13 +26,13 @@ import com.dlink.model.Column;
 import com.dlink.model.Schema;
 import com.dlink.model.Table;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
+
+import org.junit.Before;
+import org.junit.Test;
 
 public class PrestoTest {
 
@@ -55,7 +55,7 @@ public class PrestoTest {
 
     @Test
     public void test() throws SQLException {
-        //test
+        // test
         String test = driver.test();
         System.out.println(test);
         System.out.println("schema && table...");
@@ -68,7 +68,7 @@ public class PrestoTest {
 
     @Test
     public void testSchema() {
-        //schema && table
+        // schema && table
         List<Schema> schemasAndTables = driver.getSchemasAndTables();
         for (Schema schemasAndTable : schemasAndTables) {
             List<Table> tables = schemasAndTable.getTables();
