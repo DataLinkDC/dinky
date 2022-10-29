@@ -84,16 +84,14 @@ public class MySqlDriver extends AbstractJdbcDriver {
             sb.append("  `")
                     .append(column.getName()).append("`  ")
                     .append(column.getType());
-            if(null != column.getLength()){
+            // 处理浮点类型
+            if(column.getPrecision() > 0 && column.getScale() > 0){
+                sb.append("(")
+                        .append(column.getLength())
+                        .append(",").append(column.getScale())
+                        .append(")");
+            } else if(null != column.getLength()) { // 处理字符串类型和数值型
                 sb.append("(").append(column.getLength()).append(")");
-            } else {
-                if(column.getPrecision() > 0){
-                    sb.append("(").append(column.getPrecision());
-                    if (column.getScale() > 0) {
-                        sb.append(",").append(column.getScale());
-                    }
-                    sb.append(")");
-                }
             }
             if (Asserts.isNotNull(column.getCharacterSet())) {
                 sb.append(" CHARACTER SET ").append(column.getCharacterSet());
