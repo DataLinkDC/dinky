@@ -85,12 +85,12 @@ public class MySqlDriver extends AbstractJdbcDriver {
                     .append(column.getName()).append("`  ")
                     .append(column.getType());
             // 处理浮点类型
-            if(column.getPrecision() > 0 && column.getScale() > 0){
+            if (column.getPrecision() > 0 && column.getScale() > 0) {
                 sb.append("(")
                         .append(column.getLength())
                         .append(",").append(column.getScale())
                         .append(")");
-            } else if(null != column.getLength()) { // 处理字符串类型和数值型
+            } else if (null != column.getLength()) { // 处理字符串类型和数值型
                 sb.append("(").append(column.getLength()).append(")");
             }
             if (Asserts.isNotNull(column.getCharacterSet())) {
@@ -137,7 +137,6 @@ public class MySqlDriver extends AbstractJdbcDriver {
             sb.append(" COMMENT='").append(table.getComment()).append("'");
         }
         sb.append(";");
-        sb.toString();
         logger.info("Auto generateCreateTableSql {}", sb);
         return sb.toString();
     }

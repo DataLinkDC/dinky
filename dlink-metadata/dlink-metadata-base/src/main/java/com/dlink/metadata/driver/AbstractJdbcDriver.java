@@ -19,6 +19,10 @@
 
 package com.dlink.metadata.driver;
 
+import static com.dlink.utils.SplitUtil.contains;
+import static com.dlink.utils.SplitUtil.getReValue;
+import static com.dlink.utils.SplitUtil.isSplit;
+
 import com.dlink.assertion.Asserts;
 import com.dlink.constant.CommonConstant;
 import com.dlink.metadata.query.IDBQuery;
@@ -60,10 +64,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-
-import static com.dlink.utils.SplitUtil.contains;
-import static com.dlink.utils.SplitUtil.getReValue;
-import static com.dlink.utils.SplitUtil.isSplit;
 
 /**
  * AbstractJdbcDriver
