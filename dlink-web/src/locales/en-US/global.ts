@@ -111,7 +111,7 @@ export default {
   'global.table.nickName': 'Nick Name',
   'global.table.instanceName': 'Instance Name',
   'global.table.instanceId': 'Instance Id',
-  'global.table.clusterManagement': 'Cluster Management',
+  'global.table.clusterManagement': 'Flink Instance Management',
   'global.table.create': 'Create',
   'global.table.heartbeat': 'Heartbeat',
   'global.table.recycle': 'Recycle',

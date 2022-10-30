@@ -66,8 +66,8 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       setFormValues(currentItem);
     } else if (key === 'delete') {
       Modal.confirm({
-        title: '删除集群',
-        content: '确定删除该集群吗？',
+        title: '删除 Flink 实例',
+        content: '确定删除该 Flink 实例吗？',
         okText: l('button.confirm'),
         cancelText: l('button.cancel'),
         onOk: async () => {
@@ -86,13 +86,13 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
   const clearCluster = async () => {
 
     Modal.confirm({
-      title: '回收集群',
-      content: '确定回收所有自动创建且过期的集群吗？',
+      title: '回收 Flink 实例',
+      content: '确定回收所有自动创建且过期的 Flink 实例吗？',
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
-        const {datas} = await getData(url + '/clear', '回收集群', null);
-        message.success(`成功回收${datas}个集群`);
+        const {datas} = await getData(url + '/clear', '回收 Flink 实例', null);
+        message.success(`成功回收${datas}个 Flink 实例`);
         actionRef.current?.reloadAndRest?.();
       }
     });
@@ -199,7 +199,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       hideInTable: true,
       renderFormItem: (item, {defaultRender, ...rest}, form) => {
         return <TextArea
-          placeholder="添加 Flink 集群的 JobManager 的 RestApi 地址。当 HA 模式时，地址间用英文逗号分隔，例如：192.168.123.101:8081,192.168.123.102:8081,192.168.123.103:8081"
+          placeholder="添加 Flink 实例的 JobManager 的 RestApi 地址。当 HA 模式时，地址间用英文逗号分隔，例如：192.168.123.101:8081,192.168.123.102:8081,192.168.123.103:8081"
           allowClear autoSize={{minRows: 3, maxRows: 10}}/>;
       },
     },
@@ -337,7 +337,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
     {
       title: l('global.table.operate'),
       dataIndex: 'option',
-      tooltip: 'FLinkWebUI连接 当集群状态为`可用`时! 支持 KUBERNETES 之外的模式',
+      tooltip: 'FLinkWebUI 链接地址',
       valueType: 'option',
       render: (_, record) => [
         <a
@@ -408,7 +408,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
                     style={{fontWeight: 600}}>{selectedRowsState.length}</a>
                 })}  &nbsp;&nbsp;
               <span>
-                被禁用的集群共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} 个
+                被禁用的 Flink 实例共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} 个
               </span>
             </div>
           }
@@ -416,8 +416,8 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
           <Button type="primary" danger
                   onClick={() => {
                     Modal.confirm({
-                      title: '删除集群',
-                      content: '确定删除选中的集群吗？',
+                      title: '删除 Flink 实例',
+                      content: '确定删除选中的 Flink 实例吗？',
                       okText: l('button.confirm'),
                       cancelText: l('button.cancel'),
                       onOk: async () => {
@@ -433,8 +433,8 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
           <Button type="primary"
                   onClick={() => {
                     Modal.confirm({
-                      title: '启用集群',
-                      content: '确定启用选中的集群吗？',
+                      title: '启用 Flink 实例',
+                      content: '确定启用选中的 Flink 实例吗？',
                       okText: l('button.confirm'),
                       cancelText: l('button.cancel'),
                       onOk: async () => {
@@ -448,8 +448,8 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
           <Button danger
                   onClick={() => {
                     Modal.confirm({
-                      title: '禁用集群',
-                      content: '确定禁用选中的集群吗？',
+                      title: '禁用 Flink 实例',
+                      content: '确定禁用选中的 Flink 实例吗？',
                       okText: l('button.confirm'),
                       cancelText: l('button.cancel'),
                       onOk: async () => {
