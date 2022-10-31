@@ -434,10 +434,12 @@ const Model: ModelType = {
       }
       let newCurrent = undefined;
       if (newTabs.panes.length > 0) {
-        newCurrent = newTabs.panes[newTabs.panes.length - 1];
-      }
-      if (newCurrent && (newTabs.activeKey == payload)) {
-        newTabs.activeKey = newCurrent.key;
+        if (newTabs.activeKey == payload) {
+          newCurrent = newTabs.panes[newTabs.panes.length - 1];
+          newTabs.activeKey = newCurrent.key;
+        } else {
+          newCurrent = state.current;
+        }
       } else {
         newTabs.activeKey = undefined;
       }
