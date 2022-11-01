@@ -96,10 +96,6 @@ public class UDFServiceImpl implements UDFService {
             config.getGatewayConfig().setJarPaths(ArrayUtil.append(udfPath.getJarPaths(), udfPath.getPyPaths()));
         }
 
-        if (GATEWAY_TYPE_MAP.get(APPLICATION).contains(gatewayType)) {
-            config.getGatewayConfig().setJarPaths(ArrayUtil.append(udfPath.getJarPaths(), udfPath.getPyPaths()));
-        }
-
         process.info("Initializing Flink UDF...Finish");
     }
 }
