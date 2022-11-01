@@ -26,6 +26,8 @@ import com.dlink.ud.data.model.UDF;
 import org.apache.flink.configuration.ReadableConfig;
 
 /**
+ * scala编译
+ *
  * @author ZackYoung
  * @since 0.6.8
  */
@@ -35,11 +37,12 @@ public class ScalaCompiler implements FunctionCompiler {
         ProcessEntity process = ProcessContextHolder.getProcess();
 
         String className = udf.getClassName();
+        process.info("正在编译 scala 代码 , class: " + className);
         if (CustomStringScalaCompiler.getInterpreter(missionId).compileString(udf.getCode())) {
-            process.info("scala class编译成功:{}" + className);
+            process.info("scala class编译成功:" + className);
             return true;
         } else {
-            process.error("scala class编译失败:{}" + className);
+            process.error("scala class编译失败:" + className);
             return false;
         }
     }

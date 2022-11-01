@@ -20,6 +20,8 @@
 package com.dlink.ud.compiler;
 
 import com.dlink.assertion.Asserts;
+import com.dlink.process.context.ProcessContextHolder;
+import com.dlink.process.model.ProcessEntity;
 import com.dlink.ud.constant.PathConstant;
 import com.dlink.ud.data.model.Env;
 import com.dlink.ud.data.model.UDF;
@@ -39,22 +41,35 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ZipUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
+ * python 编译
+ *
  * @author ZackYoung
  * @since 0.6.8
  */
 @Slf4j
 public class PythonFunction implements FunctionCompiler, FunctionPackage {
 
+    /**
+     * 函数代码在线动态编译
+     *
+     * @param udf       udf
+     * @param conf      flink-conf
+     * @param missionId 任务id
+     * @return 是否成功
+     */
     @Override
     public boolean compiler(UDF udf, ReadableConfig conf, Integer missionId) {
         Asserts.checkNull(udf, "flink-config 不能为空");
+        ProcessEntity process = ProcessContextHolder.getProcess();
 
+        process.info("正在编译 python 代码 , class: " + udf.getClassName());
         File pyFile = FileUtil.writeUtf8String(udf.getCode(), PathConstant.getUdfCompilerPythonPath(missionId, UDFUtil.getPyFileName(udf.getClassName()) + ".py"));
         File zipFile = ZipUtil.zip(pyFile);
         FileUtil.del(pyFile);
@@ -64,8 +79,9 @@ public class PythonFunction implements FunctionCompiler, FunctionPackage {
             configuration.set(PythonOptions.PYTHON_CLIENT_EXECUTABLE, Env.getPath());
             configuration.set(PythonOptions.PYTHON_EXECUTABLE, Env.getPath());
             PythonFunctionFactory.getPythonFunction(udf.getClassName(), configuration, null);
+            process.info("Python udf编译成功 ; className:" + udf.getClassName());
         } catch (Exception e) {
-            log.warn("Python udf编译失败.className:{}", udf.getClassName(), e);
+            process.error("Python udf编译失败 ; className:" + udf.getClassName() + " 。 原因： " + ExceptionUtil.getRootCauseMessage(e));
             return false;
         }
         FileUtil.del(zipFile);

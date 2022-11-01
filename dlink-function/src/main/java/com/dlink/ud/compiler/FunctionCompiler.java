@@ -36,7 +36,7 @@ import cn.hutool.core.util.StrUtil;
  */
 public interface FunctionCompiler {
     /**
-     * 编译
+     * 函数代码在线动态编译
      *
      * @param udf  udf
      * @param conf flink-conf

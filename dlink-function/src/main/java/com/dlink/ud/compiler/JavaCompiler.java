@@ -29,14 +29,26 @@ import org.apache.flink.configuration.ReadableConfig;
 import lombok.extern.slf4j.Slf4j;
 
 /**
+ * java 编译
+ *
  * @author ZackYoung
  * @since 0.6.8
  */
 @Slf4j
 public class JavaCompiler implements FunctionCompiler {
+    /**
+     * 函数代码在线动态编译
+     *
+     * @param udf       udf
+     * @param conf      flink-conf
+     * @param missionId 任务id
+     * @return 是否成功
+     */
     @Override
     public boolean compiler(UDF udf, ReadableConfig conf, Integer missionId) {
         ProcessEntity process = ProcessContextHolder.getProcess();
+        process.info("正在编译 java 代码 , class: " + udf.getClassName());
+
         CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(udf.getCode());
         boolean res = compiler.compilerToTmpPath(PathConstant.getUdfCompilerJavaPath(missionId));
         String className = compiler.getFullClassName();
