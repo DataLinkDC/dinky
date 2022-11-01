@@ -17,25 +17,30 @@
  *
  */
 
-package com.dlink.service;
+package com.dlink.ud.compiler;
 
-import com.dlink.executor.Executor;
-import com.dlink.gateway.GatewayType;
-import com.dlink.job.JobConfig;
+import com.dlink.process.context.ProcessContextHolder;
+import com.dlink.process.model.ProcessEntity;
+import com.dlink.ud.data.model.UDF;
+
+import org.apache.flink.configuration.ReadableConfig;
 
 /**
  * @author ZackYoung
  * @since 0.6.8
  */
-public interface UDFService {
+public class ScalaCompiler implements FunctionCompiler {
+    @Override
+    public boolean compiler(UDF udf, ReadableConfig conf, Integer missionId) {
+        ProcessEntity process = ProcessContextHolder.getProcess();
 
-    /**
-     *
-     * @param statement sql语句
-     * @param gatewayType flink 网关提交类型
-     * @param missionId 任务id
-     * @param executor flink执行器
-     * @param config job配置
-     */
-    void initUDF(String statement, GatewayType gatewayType, Integer missionId,Executor executor, JobConfig config);
+        String className = udf.getClassName();
+        if (CustomStringScalaCompiler.getInterpreter(missionId).compileString(udf.getCode())) {
+            process.info("scala class编译成功:{}" + className);
+            return true;
+        } else {
+            process.error("scala class编译失败:{}" + className);
+            return false;
+        }
+    }
 }

@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.catalog.function;
+package com.dlink.ud.catalog;
 
 import com.dlink.constant.FlinkFunctionConstant;
 import com.dlink.ud.udf.GetKey;

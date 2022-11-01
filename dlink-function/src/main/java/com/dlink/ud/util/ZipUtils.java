@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.utils;
+package com.dlink.ud.util;
 
 import java.io.File;
 import java.io.IOException;

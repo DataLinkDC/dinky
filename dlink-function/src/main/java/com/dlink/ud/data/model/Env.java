@@ -17,25 +17,30 @@
  *
  */
 
-package com.dlink.service;
+package com.dlink.ud.data.model;
 
-import com.dlink.executor.Executor;
-import com.dlink.gateway.GatewayType;
-import com.dlink.job.JobConfig;
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 /**
  * @author ZackYoung
  * @since 0.6.8
  */
-public interface UDFService {
+@Component
+public class Env {
 
-    /**
-     *
-     * @param statement sql语句
-     * @param gatewayType flink 网关提交类型
-     * @param missionId 任务id
-     * @param executor flink执行器
-     * @param config job配置
-     */
-    void initUDF(String statement, GatewayType gatewayType, Integer missionId,Executor executor, JobConfig config);
+    @Value("${dinky.python.path}")
+    private String path;
+    private static String PATH;
+
+    public static String getPath() {
+        return PATH;
+    }
+
+    @PostConstruct
+    public void init() {
+        PATH = path == null ? "python" : path;
+    }
 }

@@ -17,37 +17,36 @@
  *
  */
 
-package com.dlink.udf;
+package com.dlink.ud;
 
-import org.apache.flink.table.catalog.FunctionLanguage;
+import com.dlink.ud.compiler.FunctionCompiler;
+import com.dlink.ud.compiler.FunctionPackage;
+import com.dlink.ud.data.model.UDF;
+import com.dlink.ud.data.model.UDFPath;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import org.apache.flink.configuration.ReadableConfig;
 
+import java.util.List;
 
 /**
  * @author ZackYoung
  * @since 0.6.8
  */
-@Getter
-@Setter
-@Builder
-public class UDF {
+public class FunctionFactory {
+
     /**
-     * 函数名
+     * udf编译 & 打包 初始化
+     * @param udfClassList udf列表
+     * @param missionId 当前任务id
+     * @param conf flink-conf
+     * @return 打包过后的路径
      */
-    String name;
-    /**
-     * 类名
-     */
-    String className;
-    /**
-     * udf 代码语言
-     */
-    FunctionLanguage functionLanguage;
-    /**
-     * udf源代码
-     */
-    String code;
+    public static UDFPath initUDF(List<UDF> udfClassList, Integer missionId, ReadableConfig conf) {
+
+        // 编译
+        FunctionCompiler.getCompiler(udfClassList, conf, missionId);
+
+        // 打包
+        return FunctionPackage.bale(udfClassList, missionId);
+    }
 }

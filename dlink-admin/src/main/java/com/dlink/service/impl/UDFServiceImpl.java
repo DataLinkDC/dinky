@@ -19,21 +19,20 @@
 
 package com.dlink.service.impl;
 
-import com.dlink.constant.PathConstant;
 import com.dlink.exception.BusException;
+import com.dlink.executor.Executor;
 import com.dlink.gateway.GatewayType;
-import com.dlink.model.Task;
-import com.dlink.model.UDFPath;
+import com.dlink.job.JobConfig;
 import com.dlink.process.context.ProcessContextHolder;
 import com.dlink.process.model.ProcessEntity;
 import com.dlink.service.TaskService;
 import com.dlink.service.UDFService;
-import com.dlink.udf.UDF;
-import com.dlink.utils.UDFUtil;
+import com.dlink.ud.FunctionFactory;
+import com.dlink.ud.data.model.Env;
+import com.dlink.ud.data.model.UDF;
+import com.dlink.ud.data.model.UDFPath;
+import com.dlink.utils.UDFUtils;
 
-import org.apache.flink.table.catalog.FunctionLanguage;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -42,8 +41,8 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import cn.hutool.core.lang.Opt;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.ArrayUtil;
 
 /**
  * @author ZackYoung
@@ -51,6 +50,8 @@ import cn.hutool.core.map.MapUtil;
  */
 @Service
 public class UDFServiceImpl implements UDFService {
+    private static final String YARN = "YARN";
+    private static final String APPLICATION = "APPLICATION";
 
     /**
      * 网关类型 map
@@ -59,20 +60,24 @@ public class UDFServiceImpl implements UDFService {
     private static final Map<String, List<GatewayType>> GATEWAY_TYPE_MAP = MapUtil
         .builder("session",
             Arrays.asList(GatewayType.YARN_SESSION, GatewayType.KUBERNETES_SESSION, GatewayType.STANDALONE))
+        .put(YARN,
+            Arrays.asList(GatewayType.YARN_APPLICATION, GatewayType.YARN_PER_JOB))
+        .put(APPLICATION,
+            Arrays.asList(GatewayType.YARN_APPLICATION, GatewayType.KUBERNETES_APPLICATION))
         .build();
 
     @Resource
     TaskService taskService;
 
     /**
-     * init udf
-     *
-     * @param statement   sql 语句
-     * @param gatewayType flink gateway类型
-     * @return {@link UDFPath}
+     * @param statement   sql语句
+     * @param gatewayType flink 网关提交类型
+     * @param missionId   任务id
+     * @param executor    flink执行器
+     * @param config      job配置
      */
     @Override
-    public UDFPath initUDF(String statement, GatewayType gatewayType) {
+    public void initUDF(String statement, GatewayType gatewayType, Integer missionId, Executor executor, JobConfig config) {
         if (gatewayType == GatewayType.KUBERNETES_APPLICATION) {
             throw new BusException("udf 暂不支持k8s application");
         }
@@ -80,40 +85,21 @@ public class UDFServiceImpl implements UDFService {
         ProcessEntity process = ProcessContextHolder.getProcess();
         process.info("Initializing Flink UDF...Start");
 
-        List<UDF> udfClassList = UDFUtil.getUDF(statement);
-        List<UDF> javaUdf = new ArrayList<>();
-        List<UDF> pythonUdf = new ArrayList<>();
-        udfClassList.forEach(udf -> {
-            Task task = taskService.getUDFByClassName(udf.getClassName());
-            udf.setCode(task.getStatement());
-            if (udf.getFunctionLanguage() == FunctionLanguage.PYTHON) {
-                pythonUdf.add(udf);
-            } else {
-                udf.setFunctionLanguage(FunctionLanguage.valueOf(task.getDialect().toUpperCase()));
-                javaUdf.add(udf);
-            }
-        });
-        String[] javaUDFPath = initJavaUDF(javaUdf);
-        String[] pythonUDFPath = initPythonUDF(pythonUdf);
+        List<UDF> udf = UDFUtils.getUDF(statement);
+        UDFPath udfPath = FunctionFactory.initUDF(udf, missionId, executor.getTableConfig().getConfiguration());
+
+        executor.initUDF(udfPath.getJarPaths());
+        executor.initPyUDF(Env.getPath(),udfPath.getPyPaths());
+
+        //
+        if (GATEWAY_TYPE_MAP.get(YARN).contains(gatewayType)) {
+            config.getGatewayConfig().setJarPaths(ArrayUtil.append(udfPath.getJarPaths(), udfPath.getPyPaths()));
+        }
+
+        if (GATEWAY_TYPE_MAP.get(APPLICATION).contains(gatewayType)) {
+            config.getGatewayConfig().setJarPaths(ArrayUtil.append(udfPath.getJarPaths(), udfPath.getPyPaths()));
+        }
 
         process.info("Initializing Flink UDF...Finish");
-        return UDFPath.builder().jarPaths(javaUDFPath).pyPaths(pythonUDFPath).build();
-    }
-
-    private static String[] initPythonUDF(List<UDF> udfList) {
-        return udfList == null || udfList.isEmpty() ? new String[0] : new String[] {UDFUtil.buildPy(udfList)};
-    }
-
-    private static String[] initJavaUDF(List<UDF> udfList) {
-        Opt<String> udfJarPath = Opt.empty();
-        if (!udfList.isEmpty()) {
-            udfJarPath = Opt.ofBlankAble(UDFUtil.getUdfFileAndBuildJar(udfList));
-        }
-
-        if (udfJarPath.isPresent()) {
-            return new String[] {PathConstant.UDF_PATH + udfJarPath.get()};
-        } else {
-            return new String[0];
-        }
     }
 }

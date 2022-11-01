@@ -17,25 +17,25 @@
  *
  */
 
-package com.dlink.service;
+package com.dlink.ud.compiler;
 
-import com.dlink.executor.Executor;
-import com.dlink.gateway.GatewayType;
-import com.dlink.job.JobConfig;
+import com.dlink.ud.constant.PathConstant;
+
+import scala.tools.nsc.GenericRunnerSettings;
+import scala.tools.nsc.interpreter.IMain;
 
 /**
  * @author ZackYoung
  * @since 0.6.8
  */
-public interface UDFService {
+public class CustomStringScalaCompiler {
 
-    /**
-     *
-     * @param statement sql语句
-     * @param gatewayType flink 网关提交类型
-     * @param missionId 任务id
-     * @param executor flink执行器
-     * @param config job配置
-     */
-    void initUDF(String statement, GatewayType gatewayType, Integer missionId,Executor executor, JobConfig config);
+    public static IMain getInterpreter(Integer missionId) {
+
+        GenericRunnerSettings settings = new GenericRunnerSettings((err) -> null);
+
+        settings.usejavacp().tryToSetFromPropertyValue("true");
+        settings.Yreploutdir().tryToSetFromPropertyValue(PathConstant.getUdfCompilerJavaPath(missionId));
+        return new IMain(settings);
+    }
 }

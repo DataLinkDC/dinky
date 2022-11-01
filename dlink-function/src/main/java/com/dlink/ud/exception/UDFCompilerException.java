@@ -17,20 +17,23 @@
  *
  */
 
-package com.dlink.model;
+package com.dlink.ud.exception;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import cn.hutool.core.util.StrUtil;
 
 /**
  * @author ZackYoung
  * @since 0.6.8
  */
-@Getter
-@Setter
-@Builder
-public class UDFPath {
-    String[] jarPaths;
-    String[] pyPaths;
+public class UDFCompilerException extends RuntimeException {
+    public UDFCompilerException() {
+    }
+
+    public UDFCompilerException(String message) {
+        super(message);
+    }
+
+    public static UDFCompilerException notSupportedException(String codeType) {
+        return new UDFCompilerException(StrUtil.format("未知的代码类型：{}", codeType));
+    }
 }

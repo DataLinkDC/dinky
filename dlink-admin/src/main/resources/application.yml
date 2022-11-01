@@ -100,3 +100,7 @@ dinky:
     project-name: Dinky
     # Dolphinscheduler DinkyTask Address
     address: http://127.0.0.1:8888
+
+  # python udf 需要用到的 python 执行环境
+  python:
+    path: python

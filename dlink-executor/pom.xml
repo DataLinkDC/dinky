@@ -56,11 +56,6 @@
         </dependency>
         <dependency>
             <groupId>com.dlink</groupId>
-            <artifactId>dlink-function</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.dlink</groupId>
             <artifactId>dlink-metadata-base</artifactId>
             <scope>provided</scope>
         </dependency>

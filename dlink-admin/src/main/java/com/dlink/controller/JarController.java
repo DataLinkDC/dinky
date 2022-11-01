@@ -21,13 +21,13 @@ package com.dlink.controller;
 
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
-import com.dlink.constant.PathConstant;
 import com.dlink.model.Jar;
 import com.dlink.model.Task;
 import com.dlink.service.JarService;
 import com.dlink.service.TaskService;
-import com.dlink.udf.UDF;
-import com.dlink.utils.UDFUtil;
+import com.dlink.ud.constant.PathConstant;
+import com.dlink.ud.data.model.UDF;
+import com.dlink.ud.util.UDFUtil;
 
 import org.apache.flink.table.catalog.FunctionLanguage;
 

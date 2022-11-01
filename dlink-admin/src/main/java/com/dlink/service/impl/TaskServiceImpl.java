@@ -74,7 +74,6 @@ import com.dlink.model.Task;
 import com.dlink.model.TaskOperatingSavepointSelect;
 import com.dlink.model.TaskOperatingStatus;
 import com.dlink.model.TaskVersion;
-import com.dlink.model.UDFPath;
 import com.dlink.model.UDFTemplate;
 import com.dlink.result.SqlExplainResult;
 import com.dlink.result.TaskOperatingResult;
@@ -95,9 +94,9 @@ import com.dlink.service.TaskService;
 import com.dlink.service.TaskVersionService;
 import com.dlink.service.UDFService;
 import com.dlink.service.UDFTemplateService;
-import com.dlink.utils.CustomStringJavaCompiler;
+import com.dlink.ud.compiler.CustomStringJavaCompiler;
+import com.dlink.ud.util.UDFUtil;
 import com.dlink.utils.JSONUtil;
-import com.dlink.utils.UDFUtil;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -210,10 +209,11 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 task.getDatabaseId(), null));
         }
         JobConfig config = buildJobConfig(task);
-        UDFPath udfPath = udfService.initUDF(task.getStatement(), GatewayType.get(config.getType()));
-        config.setJarFiles(udfPath.getJarPaths());
-        config.setPyFiles(udfPath.getPyPaths());
         JobManager jobManager = JobManager.build(config);
+
+        // initUDF
+        udfService.initUDF(task.getStatement(), GatewayType.get(config.getType()), id, jobManager.getExecutor(), config);
+
         if (!config.isJarTask()) {
             return jobManager.executeSql(task.getStatement());
         } else {

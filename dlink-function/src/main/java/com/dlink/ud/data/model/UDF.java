@@ -17,29 +17,37 @@
  *
  */
 
-package com.dlink.utils;
+package com.dlink.ud.data.model;
 
-import com.dlink.constant.PathConstant;
+import org.apache.flink.table.catalog.FunctionLanguage;
 
-import scala.tools.nsc.GenericRunnerSettings;
-import scala.tools.nsc.interpreter.IMain;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
 
 /**
  * @author ZackYoung
  * @since 0.6.8
  */
-public class CustomStringScalaCompiler {
-    private static IMain interpreter;
-
-    public static IMain getInterpreter() {
-        if (interpreter != null) {
-            return interpreter;
-        }
-        GenericRunnerSettings settings = new GenericRunnerSettings((err) -> null);
-
-        settings.usejavacp().tryToSetFromPropertyValue("true");
-        settings.Yreploutdir().tryToSetFromPropertyValue(PathConstant.UDF_PATH);
-        interpreter = new IMain(settings);
-        return interpreter;
-    }
+@Getter
+@Setter
+@Builder
+public class UDF {
+    /**
+     * 函数名
+     */
+    String name;
+    /**
+     * 类名
+     */
+    String className;
+    /**
+     * udf 代码语言
+     */
+    FunctionLanguage functionLanguage;
+    /**
+     * udf源代码
+     */
+    String code;
 }
