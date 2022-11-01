@@ -42,10 +42,16 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-executor</artifactId>
             <scope>provided</scope>
         </dependency>
     </dependencies>
