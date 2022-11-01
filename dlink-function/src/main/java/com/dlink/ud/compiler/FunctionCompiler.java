@@ -45,6 +45,13 @@ public interface FunctionCompiler {
      */
     boolean compiler(UDF udf, ReadableConfig conf, Integer missionId);
 
+    /**
+     * 编译
+     * @param udf udf实例
+     * @param conf flink-conf
+     * @param missionId 任务id
+     * @return 编译状态
+     */
     static boolean getCompiler(UDF udf, ReadableConfig conf, Integer missionId) {
         Asserts.checkNull(udf, "udf为空");
         Asserts.checkNull(udf.getCode(), "udf 代码为空");
@@ -65,6 +72,12 @@ public interface FunctionCompiler {
         return success;
     }
 
+    /**
+     * 编译
+     * @param udfList udf、实例列表
+     * @param conf flink-conf
+     * @param missionId 任务id
+     */
     static void getCompiler(List<UDF> udfList, ReadableConfig conf, Integer missionId) {
         for (UDF udf : udfList) {
             if (!getCompiler(udf, conf, missionId)) {
