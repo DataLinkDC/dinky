@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.constant;
+package com.dlink.ud.constant;
 
 public interface FlinkFunctionConstant {
     /**

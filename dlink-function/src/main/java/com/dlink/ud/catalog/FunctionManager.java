@@ -19,7 +19,7 @@
 
 package com.dlink.ud.catalog;
 
-import com.dlink.constant.FlinkFunctionConstant;
+import com.dlink.ud.constant.FlinkFunctionConstant;
 import com.dlink.ud.udf.GetKey;
 import com.dlink.ud.udtaf.RowsToMap;
 import com.dlink.ud.udtaf.Top2;
