@@ -86,7 +86,7 @@ public class UDFServiceImpl implements UDFService {
         process.info("Initializing Flink UDF...Start");
 
         List<UDF> udf = UDFUtils.getUDF(statement);
-        UDFPath udfPath = FunctionFactory.initUDF(udf, missionId, executor.getTableConfig().getConfiguration());
+        UDFPath udfPath = FunctionFactory.initUDF(udf, missionId, executor);
 
         executor.initUDF(udfPath.getJarPaths());
         executor.initPyUDF(Env.getPath(),udfPath.getPyPaths());

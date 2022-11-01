@@ -19,12 +19,11 @@
 
 package com.dlink.ud;
 
+import com.dlink.executor.Executor;
 import com.dlink.ud.compiler.FunctionCompiler;
 import com.dlink.ud.compiler.FunctionPackage;
 import com.dlink.ud.data.model.UDF;
 import com.dlink.ud.data.model.UDFPath;
-
-import org.apache.flink.configuration.ReadableConfig;
 
 import java.util.List;
 
@@ -38,13 +37,13 @@ public class FunctionFactory {
      * udf编译 & 打包 初始化
      * @param udfClassList udf列表
      * @param missionId 当前任务id
-     * @param conf flink-conf
+     * @param executor flink执行器
      * @return 打包过后的路径
      */
-    public static UDFPath initUDF(List<UDF> udfClassList, Integer missionId, ReadableConfig conf) {
+    public static UDFPath initUDF(List<UDF> udfClassList, Integer missionId, Executor executor) {
 
         // 编译
-        FunctionCompiler.getCompiler(udfClassList, conf, missionId);
+        FunctionCompiler.getCompiler(udfClassList, executor.getTableConfig().getConfiguration(), missionId);
 
         // 打包
         return FunctionPackage.bale(udfClassList, missionId);

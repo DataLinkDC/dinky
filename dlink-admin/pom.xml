@@ -211,11 +211,6 @@
             <groupId>com.dlink</groupId>
             <artifactId>dlink-process</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-flink-${dlink.flink.version}</artifactId>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 
     <build>
