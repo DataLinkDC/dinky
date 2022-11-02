@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.utils;
+package com.dlink.function.util;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,6 +42,7 @@ import cn.hutool.core.util.StrUtil;
  * @since 0.6.8
  */
 public class ZipUtils extends ZipWriter {
+
     public ZipUtils(File zipFile, Charset charset) {
         super(zipFile, charset);
     }

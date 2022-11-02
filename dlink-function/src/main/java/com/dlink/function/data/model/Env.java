@@ -17,37 +17,30 @@
  *
  */
 
-package com.dlink.udf;
+package com.dlink.function.data.model;
 
-import org.apache.flink.table.catalog.FunctionLanguage;
+import javax.annotation.PostConstruct;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 /**
  * @author ZackYoung
  * @since 0.6.8
  */
-@Getter
-@Setter
-@Builder
-public class UDF {
-    /**
-     * 函数名
-     */
-    String name;
-    /**
-     * 类名
-     */
-    String className;
-    /**
-     * udf 代码语言
-     */
-    FunctionLanguage functionLanguage;
-    /**
-     * udf源代码
-     */
-    String code;
+@Component
+public class Env {
+
+    @Value("${dinky.python.path}")
+    private String path;
+    private static String PATH;
+
+    public static String getPath() {
+        return PATH;
+    }
+
+    @PostConstruct
+    public void init() {
+        PATH = path == null ? "python" : path;
+    }
 }

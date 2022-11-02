@@ -17,29 +17,35 @@
  *
  */
 
-package com.dlink.utils;
+package com.dlink.function;
 
-import com.dlink.constant.PathConstant;
+import com.dlink.executor.Executor;
+import com.dlink.function.compiler.FunctionCompiler;
+import com.dlink.function.compiler.FunctionPackage;
+import com.dlink.function.data.model.UDF;
+import com.dlink.function.data.model.UDFPath;
 
-import scala.tools.nsc.GenericRunnerSettings;
-import scala.tools.nsc.interpreter.IMain;
+import java.util.List;
 
 /**
  * @author ZackYoung
  * @since 0.6.8
  */
-public class CustomStringScalaCompiler {
-    private static IMain interpreter;
+public class FunctionFactory {
 
-    public static IMain getInterpreter() {
-        if (interpreter != null) {
-            return interpreter;
-        }
-        GenericRunnerSettings settings = new GenericRunnerSettings((err) -> null);
+    /**
+     * udf编译 & 打包 初始化
+     * @param udfClassList udf列表
+     * @param missionId 当前任务id
+     * @param executor flink执行器
+     * @return 打包过后的路径
+     */
+    public static UDFPath initUDF(List<UDF> udfClassList, Integer missionId, Executor executor) {
 
-        settings.usejavacp().tryToSetFromPropertyValue("true");
-        settings.Yreploutdir().tryToSetFromPropertyValue(PathConstant.UDF_PATH);
-        interpreter = new IMain(settings);
-        return interpreter;
+        // 编译
+        FunctionCompiler.getCompiler(udfClassList, executor.getTableConfig().getConfiguration(), missionId);
+
+        // 打包
+        return FunctionPackage.bale(udfClassList, missionId);
     }
 }

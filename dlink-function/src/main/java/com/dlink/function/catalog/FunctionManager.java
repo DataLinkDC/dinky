@@ -17,12 +17,12 @@
  *
  */
 
-package com.dlink.catalog.function;
+package com.dlink.function.catalog;
 
-import com.dlink.constant.FlinkFunctionConstant;
-import com.dlink.ud.udf.GetKey;
-import com.dlink.ud.udtaf.RowsToMap;
-import com.dlink.ud.udtaf.Top2;
+import com.dlink.function.constant.FlinkFunctionConstant;
+import com.dlink.function.udf.GetKey;
+import com.dlink.function.udtaf.RowsToMap;
+import com.dlink.function.udtaf.Top2;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,6 +37,7 @@ import java.util.Map;
 public class FunctionManager {
 
     private static Map<String, UDFunction> functions = new HashMap<String, UDFunction>() {
+
         {
             put(FlinkFunctionConstant.GET_KEY,
                     new UDFunction(FlinkFunctionConstant.GET_KEY,

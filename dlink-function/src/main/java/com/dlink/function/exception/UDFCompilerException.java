@@ -17,25 +17,24 @@
  *
  */
 
-package com.dlink.service;
+package com.dlink.function.exception;
 
-import com.dlink.executor.Executor;
-import com.dlink.gateway.GatewayType;
-import com.dlink.job.JobConfig;
+import cn.hutool.core.util.StrUtil;
 
 /**
  * @author ZackYoung
  * @since 0.6.8
  */
-public interface UDFService {
+public class UDFCompilerException extends RuntimeException {
 
-    /**
-     *
-     * @param statement sql语句
-     * @param gatewayType flink 网关提交类型
-     * @param missionId 任务id
-     * @param executor flink执行器
-     * @param config job配置
-     */
-    void initUDF(String statement, GatewayType gatewayType, Integer missionId,Executor executor, JobConfig config);
+    public UDFCompilerException() {
+    }
+
+    public UDFCompilerException(String message) {
+        super(message);
+    }
+
+    public static UDFCompilerException notSupportedException(String codeType) {
+        return new UDFCompilerException(StrUtil.format("未知的代码类型：{}", codeType));
+    }
 }

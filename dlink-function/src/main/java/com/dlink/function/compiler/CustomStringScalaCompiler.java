@@ -17,19 +17,25 @@
  *
  */
 
-package com.dlink.constant;
+package com.dlink.function.compiler;
 
-public interface FlinkFunctionConstant {
-    /**
-     * TO_MAP 函数
-     */
-    String TO_MAP = "to_map";
-    /**
-     * GET_KEY 函数
-     */
-    String GET_KEY = "get_key";
-    /**
-     * TOP2 函数
-     */
-    String TOP2 = "top2";
+import com.dlink.function.constant.PathConstant;
+
+import scala.tools.nsc.GenericRunnerSettings;
+import scala.tools.nsc.interpreter.IMain;
+
+/**
+ * @author ZackYoung
+ * @since 0.6.8
+ */
+public class CustomStringScalaCompiler {
+
+    public static IMain getInterpreter(Integer missionId) {
+
+        GenericRunnerSettings settings = new GenericRunnerSettings((err) -> null);
+
+        settings.usejavacp().tryToSetFromPropertyValue("true");
+        settings.Yreploutdir().tryToSetFromPropertyValue(PathConstant.getUdfCompilerJavaPath(missionId));
+        return new IMain(settings);
+    }
 }

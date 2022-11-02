@@ -60,6 +60,10 @@ jobs:
                  -Dmaven.test.skip=true \
                  -Dcheckstyle.skip=true \
                  --no-snapshot-updates
+      # 查看打包的大小
+      - name: View package size
+        run: |
+          cd build && ls -lh
 #      - name: Run Unit tests
 #        run: |
 #          ./mvnw -T 2C -B clean verify -Dmaven.test.skip=false -Dgpg.skip=true --no-snapshot-updates

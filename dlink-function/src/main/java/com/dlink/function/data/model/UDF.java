@@ -17,25 +17,37 @@
  *
  */
 
-package com.dlink.service;
+package com.dlink.function.data.model;
 
-import com.dlink.executor.Executor;
-import com.dlink.gateway.GatewayType;
-import com.dlink.job.JobConfig;
+import org.apache.flink.table.catalog.FunctionLanguage;
+
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author ZackYoung
  * @since 0.6.8
  */
-public interface UDFService {
+@Getter
+@Setter
+@Builder
+public class UDF {
 
     /**
-     *
-     * @param statement sql语句
-     * @param gatewayType flink 网关提交类型
-     * @param missionId 任务id
-     * @param executor flink执行器
-     * @param config job配置
+     * 函数名
      */
-    void initUDF(String statement, GatewayType gatewayType, Integer missionId,Executor executor, JobConfig config);
+    String name;
+    /**
+     * 类名
+     */
+    String className;
+    /**
+     * udf 代码语言
+     */
+    FunctionLanguage functionLanguage;
+    /**
+     * udf源代码
+     */
+    String code;
 }

@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.ud.udtaf;
+package com.dlink.function.udtaf;
 
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.table.functions.TableAggregateFunction;
@@ -33,6 +33,7 @@ import org.apache.flink.util.Collector;
 public class Top2 extends TableAggregateFunction<Tuple2<Integer, Integer>, Top2.Top2Accumulator> {
 
     public static class Top2Accumulator {
+
         public Integer first;
         public Integer second;
     }

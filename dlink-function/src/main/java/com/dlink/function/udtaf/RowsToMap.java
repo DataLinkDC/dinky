@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.ud.udtaf;
+package com.dlink.function.udtaf;
 
-import com.dlink.ud.udtaf.RowsToMap.MyAccum;
+import com.dlink.function.udtaf.RowsToMap.MyAccum;
 
 import org.apache.flink.table.api.DataTypes;
 import org.apache.flink.table.catalog.DataTypeFactory;
@@ -50,27 +50,26 @@ public class RowsToMap<K, V> extends TableAggregateFunction<Map<K, V>, MyAccum<K
     @Override
     public TypeInference getTypeInference(DataTypeFactory typeFactory) {
         return TypeInference.newBuilder()
-            .inputTypeStrategy(InputTypeStrategies.sequence(
-                InputTypeStrategies.ANY,
-                InputTypeStrategies.ANY
-            ))
-            .accumulatorTypeStrategy(callContext -> {
-                List<DataType> argumentDataTypes = callContext.getArgumentDataTypes();
-                final DataType arg0DataType = argumentDataTypes.get(0);
-                final DataType arg1DataType = argumentDataTypes.get(1);
-                final DataType accDataType = DataTypes.STRUCTURED(
-                    MyAccum.class,
-                    DataTypes.FIELD("mapView",
-                        DataTypes.MAP(arg0DataType, arg1DataType)));
-                return Optional.of(accDataType);
-            })
-            .outputTypeStrategy(callContext -> {
-                List<DataType> argumentDataTypes = callContext.getArgumentDataTypes();
-                final DataType arg0DataType = argumentDataTypes.get(0);
-                final DataType arg1DataType = argumentDataTypes.get(1);
-                return Optional.of(DataTypes.MAP(arg0DataType, arg1DataType));
-            })
-            .build();
+                .inputTypeStrategy(InputTypeStrategies.sequence(
+                        InputTypeStrategies.ANY,
+                        InputTypeStrategies.ANY))
+                .accumulatorTypeStrategy(callContext -> {
+                    List<DataType> argumentDataTypes = callContext.getArgumentDataTypes();
+                    final DataType arg0DataType = argumentDataTypes.get(0);
+                    final DataType arg1DataType = argumentDataTypes.get(1);
+                    final DataType accDataType = DataTypes.STRUCTURED(
+                            MyAccum.class,
+                            DataTypes.FIELD("mapView",
+                                    DataTypes.MAP(arg0DataType, arg1DataType)));
+                    return Optional.of(accDataType);
+                })
+                .outputTypeStrategy(callContext -> {
+                    List<DataType> argumentDataTypes = callContext.getArgumentDataTypes();
+                    final DataType arg0DataType = argumentDataTypes.get(0);
+                    final DataType arg1DataType = argumentDataTypes.get(1);
+                    return Optional.of(DataTypes.MAP(arg0DataType, arg1DataType));
+                })
+                .build();
     }
 
     @Override
@@ -79,7 +78,7 @@ public class RowsToMap<K, V> extends TableAggregateFunction<Map<K, V>, MyAccum<K
     }
 
     public void accumulate(
-        MyAccum<K, V> acc, K cls, V v) {
+                           MyAccum<K, V> acc, K cls, V v) {
         if (v == null) {
             return;
         }

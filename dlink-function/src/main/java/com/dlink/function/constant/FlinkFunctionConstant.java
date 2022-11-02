@@ -17,20 +17,20 @@
  *
  */
 
-package com.dlink.model;
+package com.dlink.function.constant;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+public interface FlinkFunctionConstant {
 
-/**
- * @author ZackYoung
- * @since 0.6.8
- */
-@Getter
-@Setter
-@Builder
-public class UDFPath {
-    String[] jarPaths;
-    String[] pyPaths;
+    /**
+     * TO_MAP 函数
+     */
+    String TO_MAP = "to_map";
+    /**
+     * GET_KEY 函数
+     */
+    String GET_KEY = "get_key";
+    /**
+     * TOP2 函数
+     */
+    String TOP2 = "top2";
 }

@@ -38,8 +38,6 @@ import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.interceptor.FlinkInterceptorResult;
 import com.dlink.model.SystemConfiguration;
 import com.dlink.parser.SqlType;
-import com.dlink.pool.ClassEntity;
-import com.dlink.pool.ClassPool;
 import com.dlink.process.context.ProcessContextHolder;
 import com.dlink.result.ErrorResult;
 import com.dlink.result.ExplainResult;
@@ -55,13 +53,12 @@ import com.dlink.session.SessionPool;
 import com.dlink.trans.Operations;
 import com.dlink.utils.LogUtil;
 import com.dlink.utils.SqlUtil;
-import com.dlink.utils.UDFUtil;
 
+import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.DeploymentOptions;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.core.execution.JobClient;
-import org.apache.flink.optimizer.CompilerException;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
 import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
@@ -81,8 +78,6 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import cn.hutool.core.util.ArrayUtil;
-
 /**
  * JobManager
  *
@@ -98,6 +93,7 @@ public class JobManager {
     private ExecutorSetting executorSetting;
     private JobConfig config;
     private Executor executor;
+    private Configuration configuration;
     private boolean useGateway = false;
     private boolean isPlanMode = false;
     private boolean useStatementSet = false;
@@ -162,12 +158,6 @@ public class JobManager {
         initGatewayConfig(config);
         JobManager manager = new JobManager(config);
         manager.init();
-        manager.executor.initUDF(config.getJarFiles());
-        manager.executor.initPyUDF(config.getPyFiles());
-
-        if (config.getGatewayConfig() != null) {
-            config.getGatewayConfig().setJarPaths(ArrayUtil.append(config.getJarFiles(),config.getPyFiles()));
-        }
         return manager;
     }
 
@@ -175,7 +165,6 @@ public class JobManager {
         JobManager manager = new JobManager(config);
         manager.setPlanMode(true);
         manager.init();
-        manager.executor.initUDF(config.getJarFiles());
         ProcessContextHolder.getProcess().info("Build Flink plan mode success.");
         return manager;
     }
@@ -640,22 +629,7 @@ public class JobManager {
         return sb.toString();
     }
 
-    public static void initUDF(String className, String code) {
-        if (ClassPool.exist(ClassEntity.build(className, code))) {
-            UDFUtil.initClassLoader(className);
-        } else {
-            UDFUtil.buildClass(code);
-        }
-    }
-
-    public static void initMustSuccessUDF(String className, String code) {
-        if (ClassPool.exist(ClassEntity.build(className, code))) {
-            UDFUtil.initClassLoader(className);
-        } else {
-            // 如果编译失败，返回异常。因为必须用到的函数，也必须编译成功
-            if (!UDFUtil.buildClass(code)) {
-                throw new CompilerException(String.format("class:%s 编译异常,请检查代码", className));
-            }
-        }
+    public Executor getExecutor() {
+        return executor;
     }
 }
