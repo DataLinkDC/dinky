@@ -21,13 +21,13 @@ package com.dlink.controller;
 
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
+import com.dlink.function.constant.PathConstant;
+import com.dlink.function.data.model.UDF;
+import com.dlink.function.util.UDFUtil;
 import com.dlink.model.Jar;
 import com.dlink.model.Task;
 import com.dlink.service.JarService;
 import com.dlink.service.TaskService;
-import com.dlink.ud.constant.PathConstant;
-import com.dlink.ud.data.model.UDF;
-import com.dlink.ud.util.UDFUtil;
 
 import org.apache.flink.table.catalog.FunctionLanguage;
 
@@ -60,6 +60,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/jar")
 public class JarController {
+
     @Autowired
     private JarService jarService;
 
@@ -132,11 +133,11 @@ public class JarController {
         List<Task> allUDF = taskService.getAllUDF();
         List<UDF> udfCodes = allUDF.stream().map(task -> {
             return UDF.builder().code(task.getStatement()).className(task.getSavePointPath())
-                .functionLanguage(FunctionLanguage.valueOf(task.getDialect().toUpperCase())).build();
+                    .functionLanguage(FunctionLanguage.valueOf(task.getDialect().toUpperCase())).build();
         }).collect(Collectors.toList());
         Map<String, List<String>> resultMap = UDFUtil.buildJar(udfCodes);
-        String msg = StrUtil.format("udf jar生成成功，jar文件在{}；\n本次成功 class:{}。\n失败 class:{}"
-            , PathConstant.UDF_JAR_TMP_PATH, resultMap.get("success"), resultMap.get("failed"));
+        String msg = StrUtil.format("udf jar生成成功，jar文件在{}；\n本次成功 class:{}。\n失败 class:{}", PathConstant.UDF_JAR_TMP_PATH,
+                resultMap.get("success"), resultMap.get("failed"));
         return Result.succeed(resultMap, msg);
     }
 }
