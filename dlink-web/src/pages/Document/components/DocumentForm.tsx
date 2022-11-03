@@ -80,14 +80,14 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
       <>
         <FormItem
           name="name"
-          label="名称"
-          rules={[{required: true, message: '请输入名称！'}]}>
-          <Input placeholder="请输入"/>
+          label={l('pages.registerCenter.doc.name')}
+          rules={[{required: true, message: l('pages.registerCenter.doc.namePlaceholder')}]}>
+          <Input placeholder={l('pages.registerCenter.doc.namePlaceholder')}/>
         </FormItem>
         <FormItem
           name="category"
-          label="文档类型"
-          rules={[{required: true, message: '请选择该文档所属类型！'}]}
+          label={l('pages.registerCenter.doc.category')}
+          rules={[{required: true, message: l('pages.registerCenter.doc.categoryPlaceholder')}]}
         >
           <Select allowClear>
             <Option value="Method">Method</Option>
@@ -122,8 +122,8 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
         </FormItem>
         <FormItem
           name="type"
-          label="类型"
-          rules={[{required: true, message: '请选择该文档所属函数类型！'}]}
+          label={l('pages.registerCenter.doc.functionType')}
+          rules={[{required: true, message: l('pages.registerCenter.doc.typePlaceholder')}]}
         >
           <Select allowClear>
             <Option value="优化参数">优化参数</Option>
@@ -137,8 +137,8 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
         </FormItem>
         <FormItem
           name="subtype"
-          label="子类型"
-          rules={[{required: true, message: '请选择该文档所属函数子类型！'}]}
+          label={l('pages.registerCenter.doc.subFunctionType')}
+          rules={[{required: true, message: l('pages.registerCenter.doc.subTypePlaceholder')}]}
         >
           <Select allowClear>
             <Option value="比较函数">比较函数</Option>
@@ -161,24 +161,24 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
         </FormItem>
         <FormItem
           name="description"
-          label="描述"
+          label={l('pages.registerCenter.doc.description')}
         >
-          <TextArea placeholder="请输入文档描述信息!" allowClear autoSize={{minRows: 3, maxRows: 10}}/>
+          <TextArea placeholder={l('pages.registerCenter.doc.descriptionPlaceholder')} allowClear autoSize={{minRows: 3, maxRows: 10}}/>
         </FormItem>
         <FormItem
           name="fillValue"
-          label="填充值"
-          rules={[{required: true, message: '请输入填充值！'}]}
+          label={l('pages.registerCenter.doc.fillValue')}
+          rules={[{required: true, message: l('pages.registerCenter.doc.fillValueHelp')}]}
         >
           <TextArea
-            placeholder="请输入填充值,编辑器内使用名称触发提示 eg: 如果希望在函数LTRIM(parms)中输入参数 则语法为: LTRIM(${1:})  此时的1代表第一个光标 如需多个 数字+1即可 tab键切换光标 ; 如不需要参数则直接输入期望填充值"
+            placeholder={ l('pages.registerCenter.doc.fillValuePlaceholder')}
             allowClear
             autoSize={{minRows: 3, maxRows: 10}}/>
         </FormItem>
         <FormItem
           name="version"
-          label="版本"
-          rules={[{required: true, message: '请选择该文档所属版本！'}]}
+          label={l('pages.registerCenter.doc.version')}
+          rules={[{required: true, message: l('pages.registerCenter.doc.versionPlaceholder')}]}
         >
           <Select allowClear>
             <Option value="1.11">Flink-1.11</Option>
@@ -192,7 +192,8 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
         <FormItem
           name="enabled"
           label={l('global.table.isEnable')}
-          rules={[{required: true, message: '请输入是否启用！'}]}>
+          rules={[{required: true, message: l('pages.registerCenter.doc.enabledPlaceholder')}]}
+        >
           <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                   defaultChecked={formVals.enabled}/>
         </FormItem>
@@ -204,9 +205,7 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
     return (
       <>
         <Button onClick={() => handleModalVisible(false)}>{l('button.cancel')}</Button>
-        <Button type="primary" onClick={() => submitForm()}>
-          {l('button.finish')}
-        </Button>
+        <Button type="primary" onClick={() => submitForm()}>{l('button.finish')}</Button>
       </>
     );
   };
@@ -216,7 +215,7 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
       width={"40%"}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title={formVals.id ? "维护文档" : "创建文档"}
+      title={formVals.id ? l('pages.registerCenter.doc.modify') : l('pages.registerCenter.doc.create')}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}
