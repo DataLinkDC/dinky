@@ -39,6 +39,8 @@ import com.dlink.dto.SqlDTO;
 import com.dlink.dto.TaskRollbackVersionDTO;
 import com.dlink.dto.TaskVersionConfigureDTO;
 import com.dlink.exception.BusException;
+import com.dlink.function.compiler.CustomStringJavaCompiler;
+import com.dlink.function.util.UDFUtil;
 import com.dlink.gateway.GatewayType;
 import com.dlink.gateway.config.SavePointStrategy;
 import com.dlink.gateway.config.SavePointType;
@@ -74,7 +76,6 @@ import com.dlink.model.Task;
 import com.dlink.model.TaskOperatingSavepointSelect;
 import com.dlink.model.TaskOperatingStatus;
 import com.dlink.model.TaskVersion;
-import com.dlink.model.UDFPath;
 import com.dlink.model.UDFTemplate;
 import com.dlink.result.SqlExplainResult;
 import com.dlink.result.TaskOperatingResult;
@@ -95,9 +96,7 @@ import com.dlink.service.TaskService;
 import com.dlink.service.TaskVersionService;
 import com.dlink.service.UDFService;
 import com.dlink.service.UDFTemplateService;
-import com.dlink.utils.CustomStringJavaCompiler;
 import com.dlink.utils.JSONUtil;
-import com.dlink.utils.UDFUtil;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -210,10 +209,12 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                     task.getDatabaseId(), null));
         }
         JobConfig config = buildJobConfig(task);
-        UDFPath udfPath = udfService.initUDF(task.getStatement(), GatewayType.get(config.getType()));
-        config.setJarFiles(udfPath.getJarPaths());
-        config.setPyFiles(udfPath.getPyPaths());
         JobManager jobManager = JobManager.build(config);
+
+        // initUDF
+        udfService.initUDF(task.getStatement(), GatewayType.get(config.getType()), id, jobManager.getExecutor(),
+                config);
+
         if (!config.isJarTask()) {
             return jobManager.executeSql(task.getStatement());
         } else {
@@ -377,16 +378,16 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                     task.setStatement(code);
                 }
             }
-        }
-        // to compiler udf
-        if (Asserts.isNotNullString(task.getDialect()) && Dialect.JAVA.equalsVal(task.getDialect())
-                && Asserts.isNotNullString(task.getStatement())) {
-            CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(task.getStatement());
-            task.setSavePointPath(compiler.getFullClassName());
-        } else if (Dialect.PYTHON.equalsVal(task.getDialect())) {
-            task.setSavePointPath(task.getName() + "." + UDFUtil.getPyUDFAttr(task.getStatement()));
-        } else {
-            task.setSavePointPath(UDFUtil.getScalaFullClassName(task.getStatement()));
+            // to compiler udf
+            if (Asserts.isNotNullString(task.getDialect()) && Dialect.JAVA.equalsVal(task.getDialect())
+                    && Asserts.isNotNullString(task.getStatement())) {
+                CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(task.getStatement());
+                task.setSavePointPath(compiler.getFullClassName());
+            } else if (Dialect.PYTHON.equalsVal(task.getDialect())) {
+                task.setSavePointPath(task.getName() + "." + UDFUtil.getPyUDFAttr(task.getStatement()));
+            } else if (Dialect.SCALA.equalsVal(task.getDialect())) {
+                task.setSavePointPath(UDFUtil.getScalaFullClassName(task.getStatement()));
+            }
         }
 
         // if modify task else create task

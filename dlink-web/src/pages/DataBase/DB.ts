@@ -48,6 +48,9 @@ export function getDBImage(type: string) {
     case 'starrocks':
       imageUrl += 'starrocks.jpg';
       break;
+    case 'presto':
+      imageUrl += 'presto.png';
+      break;
     default:
       imageUrl += 'db.jpg';
   }

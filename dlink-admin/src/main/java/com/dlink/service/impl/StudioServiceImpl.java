@@ -48,7 +48,6 @@ import com.dlink.model.Schema;
 import com.dlink.model.SystemConfiguration;
 import com.dlink.model.Table;
 import com.dlink.model.Task;
-import com.dlink.model.UDFPath;
 import com.dlink.process.context.ProcessContextHolder;
 import com.dlink.process.model.ProcessEntity;
 import com.dlink.process.model.ProcessType;
@@ -181,12 +180,11 @@ public class StudioServiceImpl implements StudioService {
         addFlinkSQLEnv(studioExecuteDTO);
         JobConfig config = studioExecuteDTO.getJobConfig();
         buildSession(config);
-
-        // To initialize java udf, but it only support local mode.
-        UDFPath udfPath = udfService.initUDF(studioExecuteDTO.getStatement(), GatewayType.get(config.getType()));
-        config.setJarFiles(udfPath.getJarPaths());
-        config.setPyFiles(udfPath.getPyPaths());
         JobManager jobManager = JobManager.build(config);
+
+        // initUDF
+        udfService.initUDF(studioExecuteDTO.getStatement(), GatewayType.get(config.getType()), studioExecuteDTO.getTaskId(), jobManager.getExecutor(), config);
+
         JobResult jobResult = jobManager.executeSql(studioExecuteDTO.getStatement());
         RunTimeUtil.recovery(jobManager);
         return jobResult;
@@ -269,14 +267,13 @@ public class StudioServiceImpl implements StudioService {
         config.buildLocal();
         buildSession(config);
         process.infoSuccess();
-
-        // To initialize java udf, but it has a bug in the product environment now.
-        UDFPath udfPath = udfService.initUDF(studioExecuteDTO.getStatement(), GatewayType.get(config.getType()));
-        config.setJarFiles(udfPath.getJarPaths());
-        config.setPyFiles(udfPath.getPyPaths());
         process.start();
 
         JobManager jobManager = JobManager.buildPlanMode(config);
+
+        // initUDF
+        udfService.initUDF(studioExecuteDTO.getStatement(), GatewayType.get(config.getType()), studioExecuteDTO.getTaskId(), jobManager.getExecutor(), config);
+
         List<SqlExplainResult> sqlExplainResults =
             jobManager.explainSql(studioExecuteDTO.getStatement()).getSqlExplainResults();
         process.finish();
@@ -316,10 +313,11 @@ public class StudioServiceImpl implements StudioService {
         // If you are using explainSql | getStreamGraph | getJobPlan, make the dialect change to local.
         config.buildLocal();
         buildSession(config);
-        UDFPath udfPath = udfService.initUDF(studioExecuteDTO.getStatement(), GatewayType.get(config.getType()));
-        config.setJarFiles(udfPath.getJarPaths());
-        config.setPyFiles(udfPath.getPyPaths());
         JobManager jobManager = JobManager.buildPlanMode(config);
+
+        // initUDF
+        udfService.initUDF(studioExecuteDTO.getStatement(), GatewayType.get(config.getType()), studioExecuteDTO.getTaskId(), jobManager.getExecutor(), config);
+
         String planJson = jobManager.getJobPlanJson(studioExecuteDTO.getStatement());
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode objectNode = mapper.createObjectNode();
@@ -571,12 +569,12 @@ public class StudioServiceImpl implements StudioService {
                 int i = 1;
                 for (Map<String, Object> item : rowData) {
                     FlinkColumn column = FlinkColumn.build(i,
-                            item.get(FlinkQuery.columnName()).toString(),
-                            item.get(FlinkQuery.columnType()).toString(),
-                            item.get(FlinkQuery.columnKey()).toString(),
-                            item.get(FlinkQuery.columnNull()).toString(),
-                            item.get(FlinkQuery.columnExtras()).toString(),
-                            item.get(FlinkQuery.columnWatermark()).toString());
+                        item.get(FlinkQuery.columnName()).toString(),
+                        item.get(FlinkQuery.columnType()).toString(),
+                        item.get(FlinkQuery.columnKey()).toString(),
+                        item.get(FlinkQuery.columnNull()).toString(),
+                        item.get(FlinkQuery.columnExtras()).toString(),
+                        item.get(FlinkQuery.columnWatermark()).toString());
                     columns.add(column);
                     i++;
                 }

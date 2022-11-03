@@ -62,6 +62,9 @@ const data: any = [
   },
   {
     type: 'StarRocks',
+  },
+  {
+    type: 'Presto',
   }
 ];
 

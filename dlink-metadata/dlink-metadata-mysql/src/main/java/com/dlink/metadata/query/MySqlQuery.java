@@ -42,7 +42,7 @@ public class MySqlQuery extends AbstractDBQuery {
 
     @Override
     public String columnsSql(String schemaName, String tableName) {
-        return "select COLUMN_NAME,DATA_TYPE,COLUMN_COMMENT,COLUMN_KEY,EXTRA AS AUTO_INCREMENT"
+        return "select COLUMN_NAME,COLUMN_TYPE,COLUMN_COMMENT,COLUMN_KEY,EXTRA AS AUTO_INCREMENT"
                 + ",COLUMN_DEFAULT,IS_NULLABLE,NUMERIC_PRECISION,NUMERIC_SCALE,CHARACTER_SET_NAME"
                 + ",COLLATION_NAME,ORDINAL_POSITION from INFORMATION_SCHEMA.COLUMNS "
                 + "where TABLE_SCHEMA = '" + schemaName + "' and TABLE_NAME = '" + tableName + "' "
@@ -54,4 +54,8 @@ public class MySqlQuery extends AbstractDBQuery {
         return "Database";
     }
 
+    @Override
+    public String columnType() {
+        return "COLUMN_TYPE";
+    }
 }

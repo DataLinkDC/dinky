@@ -46,6 +46,7 @@ public class Column implements Serializable {
     private ColumnType javaType;
     private String columnFamily;
     private Integer position;
+    private Integer length;
     private Integer precision;
     private Integer scale;
     private String characterSet;

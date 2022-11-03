@@ -102,7 +102,9 @@ public class YarnApplicationGateway extends YarnGateway {
         if (configuration.contains(TaskManagerOptions.NUM_TASK_SLOTS)) {
             clusterSpecificationBuilder.setSlotsPerTaskManager(configuration.get(TaskManagerOptions.NUM_TASK_SLOTS)).createClusterSpecification();
         }
-        yarnClusterDescriptor.addShipFiles(Arrays.stream(config.getJarPaths()).map(FileUtil::file).collect(Collectors.toList()));
+        if (config.getJarPaths() != null) {
+            yarnClusterDescriptor.addShipFiles(Arrays.stream(config.getJarPaths()).map(FileUtil::file).collect(Collectors.toList()));
+        }
 
         try {
             ClusterClientProvider<ApplicationId> clusterClientProvider = yarnClusterDescriptor.deployApplicationCluster(

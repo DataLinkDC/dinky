@@ -34,7 +34,7 @@ export default defineConfig({
   dva: {
     hmr: true,
   },
-  mfsu: {production: {output: '.mfsu-production'}},
+  // mfsu: {production: {output: '.mfsu-production'}},
   layout: {
     // https://umijs.org/zh-CN/plugins/plugin-layout
     locale: true,

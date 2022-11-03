@@ -82,18 +82,16 @@ public class MySqlDriver extends AbstractJdbcDriver {
         for (int i = 0; i < table.getColumns().size(); i++) {
             Column column = table.getColumns().get(i);
             sb.append("  `")
-                .append(column.getName()).append("`  ")
-                .append(column.getType()).append("  ");
-            //todo tmp process for varchar
-            if (column.getType().equals("varchar")) {
-                sb.append("(255)");
-            }
-            if (column.getPrecision() > 0) {
-                sb.append("(").append(column.getPrecision());
-                if (column.getScale() > 0) {
-                    sb.append(",").append(column.getScale());
-                }
-                sb.append(")");
+                    .append(column.getName()).append("`  ")
+                    .append(column.getType());
+            // 处理浮点类型
+            if (column.getPrecision() > 0 && column.getScale() > 0) {
+                sb.append("(")
+                        .append(column.getLength())
+                        .append(",").append(column.getScale())
+                        .append(")");
+            } else if (null != column.getLength()) { // 处理字符串类型和数值型
+                sb.append("(").append(column.getLength()).append(")");
             }
             if (Asserts.isNotNull(column.getCharacterSet())) {
                 sb.append(" CHARACTER SET ").append(column.getCharacterSet());
