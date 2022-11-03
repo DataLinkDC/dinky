@@ -73,47 +73,47 @@ const JarForm: React.FC<JarFormProps> = (props) => {
       <>
         <Form.Item
           name="type"
-          label="类型"
+          label={l('pages.registerCenter.jar.type')}
         >
           <Select defaultValue="UserApp" value="UserApp">
             <Option value="UserApp">User App</Option>
           </Select>
         </Form.Item>
-        <Divider>Jar 配置</Divider>
+        <Divider>{l('pages.registerCenter.jar.config')}</Divider>
         <Form.Item
           name="path"
-          label="文件路径"
-          help="指定 hdfs 上的文件路径"
-          rules={[{required: true, message: '请输入文件路径！'}]}
+          label={l('pages.registerCenter.jar.filePath')}
+          help={l('pages.registerCenter.jar.filePathHelp')}
+          rules={[{required: true, message: l('pages.registerCenter.jar.filePathHelp')}]}
         >
-          <Input placeholder="hdfs:///flink/app/demo.jar"/>
+          <Input placeholder={l('pages.registerCenter.jar.filePathPleaseHolder')}/>
         </Form.Item>
         <Form.Item
           name="mainClass"
-          label="启动类"
-          help="指定可执行 Jar 的启动类，（可选）"
+          label={l('pages.registerCenter.jar.mainClass')}
+          help={l('pages.registerCenter.jar.mainClassHelp')}
         >
-          <Input placeholder="com.dlink.app.MainApp"/>
+          <Input placeholder={l('pages.registerCenter.jar.mainClassPleaseHolder')}/>
         </Form.Item>
         <Form.Item
           name="paras"
-          label="执行参数"
-          help="指定可执行 Jar 的启动类入参，（可选）"
+          label={l('pages.registerCenter.jar.execParams')}
+          help={l('pages.registerCenter.jar.execParamsHelp')}
         >
-          <Input placeholder="--id 1,2"/>
+          <Input placeholder={l('pages.registerCenter.jar.execParamsPleaseHolder')}/>
         </Form.Item>
-        <Divider>基本配置</Divider>
+        <Divider>{l('pages.registerCenter.jar.baseConfig')}</Divider>
         <Form.Item
           name="name"
-          label="名称"
-          rules={[{required: true, message: '请输入名称！'}]}>
-          <Input placeholder="请输入唯一英文标识"/>
+          label={l('pages.registerCenter.jar.name')}
+          rules={[{required: true, message: l('pages.registerCenter.jar.namePlaceholder')}]}>
+          <Input placeholder={l('pages.registerCenter.jar.namePlaceholder')}/>
         </Form.Item>
         <Form.Item
           name="alias"
-          label="别名"
+          label={l('pages.registerCenter.jar.alias')}
         >
-          <Input placeholder="请输入名称"/>
+          <Input placeholder={l('pages.registerCenter.jar.aliasPlaceholder')}/>
         </Form.Item>
         <Form.Item
           name="note"
@@ -136,9 +136,7 @@ const JarForm: React.FC<JarFormProps> = (props) => {
     return (
       <>
         <Button onClick={() => handleModalVisible(false)}>{l('button.cancel')}</Button>
-        <Button type="primary" onClick={() => submitForm()}>
-          {l('button.finish')}
-        </Button>
+        <Button type="primary" onClick={() => submitForm()}>{l('button.finish')}</Button>
       </>
     );
   };
@@ -148,7 +146,7 @@ const JarForm: React.FC<JarFormProps> = (props) => {
       width={"40%"}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title={formVals.id ? "维护Jar配置" : "创建Jar配置"}
+      title={formVals.id ? l('pages.registerCenter.jar.modify') : l('pages.registerCenter.jar.create')}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}

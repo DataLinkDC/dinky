@@ -293,8 +293,6 @@ export default {
   'pages.registerCenter.cluster.aliasPlaceholder': '请输入别名!',
   'pages.registerCenter.cluster.namePlaceholder': '请输入名称!',
 
-
-
   'pages.registerCenter.clusterConfigManagement': '集群配置管理',
   'pages.registerCenter.clusterConfig.name': '集群配置名称',
   'pages.registerCenter.clusterConfig.alias': '别名',
@@ -332,8 +330,6 @@ export default {
   'pages.registerCenter.clusterConfig.flinkConfigPathPlaceholder': '请输入 flink-conf.yaml 路径！值如 /opt/module/flink/conf ',
   'pages.registerCenter.clusterConfig.flinkConfigPathHelp': '请输入 flink-conf.yaml 路径！值如 /opt/module/flink/conf ',
 
-
-
   'pages.registerCenter.alert.instanceManagement': '报警实例管理',
   'pages.registerCenter.alert.instance.name': '名称',
   'pages.registerCenter.alert.instance.namePleaseHolder': '请输入告警实例名称',
@@ -347,12 +343,10 @@ export default {
   'pages.registerCenter.alert.instance.disable': '禁用报警实例',
   'pages.registerCenter.alert.instance.disableConfirm': '您确定要禁用此报警实例吗？',
   'pages.registerCenter.alert.instance.disableTotalOf': '被禁用的报警实例共 {total} 个',
-
   'pages.registerCenter.alert.instance.dingTalk': '钉钉告警配置',
   'pages.registerCenter.alert.instance.email': '邮箱告警配置',
   'pages.registerCenter.alert.instance.feishu': '飞书告警配置',
   'pages.registerCenter.alert.instance.wechat': '企业微信告警配置',
-
   'pages.registerCenter.alert.instance.webhookPleaseHolder': '请输入 webhook 地址',
   'pages.registerCenter.alert.instance.keywordPleaseHolder': '请输入关键词',
   'pages.registerCenter.alert.instance.secretPleaseHolder': '请输入 密令',
@@ -376,8 +370,6 @@ export default {
   'pages.registerCenter.alert.instance.emailPasswordPleaseHolder': '请输入邮箱密码! 注意:密码为授权码',
   'pages.registerCenter.alert.instance.smtpSslTrustPleaseHolder': '请输入受信任域',
   'pages.registerCenter.alert.instance.xls.file.pathPleaseHolder': '请输入XLS存放目录! 默认为 /tmp/xls',
-
-
   'pages.registerCenter.alert.instance.webhook': 'WebHook 地址',
   'pages.registerCenter.alert.instance.keyword': '关键词',
   'pages.registerCenter.alert.instance.secret': '密令',
@@ -405,8 +397,6 @@ export default {
   'pages.registerCenter.alert.instance.smtpSslTrust': '受信任域',
   'pages.registerCenter.alert.instance.xls.file.path': 'XLS存放目录',
   'pages.registerCenter.alert.instance.msgtype': '展示方式',
-
-
   'pages.registerCenter.alert.instance.sendType.app': '应用',
   'pages.registerCenter.alert.instance.sendType.wechat': '群聊',
   'pages.registerCenter.alert.instance.markdown': 'MarkDown',
@@ -415,8 +405,6 @@ export default {
   'pages.registerCenter.alert.instance.table': '表格',
   'pages.registerCenter.alert.instance.attachment': '附件',
   'pages.registerCenter.alert.instance.tableAttachment': '表格和附件',
-
-
 
   'pages.registerCenter.alert.groupManagement': '报警组管理',
   'pages.registerCenter.alert.group.name': '报警组名称',
@@ -433,6 +421,34 @@ export default {
   'pages.registerCenter.alert.group.disable': '禁用报警组',
   'pages.registerCenter.alert.group.disableConfirm': '您确定要禁用此报警组吗？',
   'pages.registerCenter.alert.group.disableTotalOf': '被禁用的报警组共 {total} 个',
+
+  'pages.registerCenter.jar.Management': 'Jar Configuration Management',
+  'pages.registerCenter.jar.name': '名称',
+  'pages.registerCenter.jar.id': 'Jar ID',
+  'pages.registerCenter.jar.alias': '别名',
+  'pages.registerCenter.jar.type': '类型',
+  'pages.registerCenter.jar.filePath': '文件路径',
+  'pages.registerCenter.jar.mainClass': '启动类',
+  'pages.registerCenter.jar.execParams': '执行参数',
+  'pages.registerCenter.jar.create': '创建 Jar 配置',
+  'pages.registerCenter.jar.modify': '修改 Jar 配置',
+  'pages.registerCenter.jar.delete': '删除Jar配置',
+  'pages.registerCenter.jar.deleteConfirm': '确定删除选中的Jar配置吗？',
+  'pages.registerCenter.jar.enable': '启用Jar配置',
+  'pages.registerCenter.jar.enableConfirm': '确定启用选中的Jar配置吗？',
+  'pages.registerCenter.jar.disable': '禁用Jar配置',
+  'pages.registerCenter.jar.disableConfirm': '确定禁用选中的Jar配置吗？',
+  'pages.registerCenter.jar.disableTotalOf': '被禁用的集群配置共 {total} 个',
+  'pages.registerCenter.jar.config': 'Jar 配置',
+  'pages.registerCenter.jar.filePathPleaseHolder': '值如: hdfs:///flink/app/demo.jar',
+  'pages.registerCenter.jar.filePathHelp': '请输入文件路径! 需要指定 hdfs 上的文件路径,',
+  'pages.registerCenter.jar.mainClassPleaseHolder': 'com.dlink.app.MainApp',
+  'pages.registerCenter.jar.mainClassHelp': '指定可执行 Jar 的启动类，（可选）',
+  'pages.registerCenter.jar.execParamsHelp': '指定可执行 Jar 的启动类入参，（可选）',
+  'pages.registerCenter.jar.execParamsPleaseHolder': '--id 1,2',
+  'pages.registerCenter.jar.baseConfig': '基本配置',
+  'pages.registerCenter.jar.aliasPlaceholder': '请输入别名!',
+  'pages.registerCenter.jar.namePlaceholder': '请输入名称!',
 
 
 };
