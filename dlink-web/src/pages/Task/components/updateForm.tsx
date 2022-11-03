@@ -134,7 +134,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           name="enabled"
           label={l('global.table.isEnable')}
           rules={[{required: true, message: '请输入是否启用！'}]}>
-          <Switch checkedChildren="启用" unCheckedChildren="禁用"
+          <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                   defaultChecked={formVals.enabled}/>
         </FormItem>
       </>

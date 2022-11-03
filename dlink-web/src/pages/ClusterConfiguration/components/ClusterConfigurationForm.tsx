@@ -344,7 +344,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
         <Form.Item
           name="enabled"
           label={l('global.table.isEnable')}>
-          <Switch checkedChildren="启用" unCheckedChildren="禁用"
+          <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                   defaultChecked={formValsPara.enabled}/>
         </Form.Item>
       </>

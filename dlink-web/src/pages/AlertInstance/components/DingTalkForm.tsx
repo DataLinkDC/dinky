@@ -80,79 +80,79 @@ const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
   const renderContent = (vals) => {
     return (
       <>
-        <Divider>钉钉配置</Divider>
+        <Divider>{l('pages.registerCenter.alert.instance.dingTalk')}</Divider>
         <Form.Item
           name="name"
-          label="名称"
-          rules={[{required: true, message: '请输入名称！'}]}
+          label={l('pages.registerCenter.alert.instance.name')}
+          rules={[{required: true, message: l('pages.registerCenter.alert.instance.namePleaseHolder')}]}
         >
-          <Input placeholder="请输入名称"/>
+          <Input placeholder={l('pages.registerCenter.alert.instance.namePleaseHolder')}/>
         </Form.Item>
         <Form.Item
           name="webhook"
-          label="地址"
-          rules={[{required: true, message: '请输入WebHook！'}]}
+          label={l('pages.registerCenter.alert.instance.webhook')}
+          rules={[{required: true, message: l('pages.registerCenter.alert.instance.webhookPleaseHolder')}]}
         >
-          <Input placeholder="请输入WebHook"/>
+          <Input placeholder={l('pages.registerCenter.alert.instance.webhookPleaseHolder')}/>
         </Form.Item>
         <Form.Item
           name="keyword"
-          label="关键字"
+          label={l('pages.registerCenter.alert.instance.keyword')}
         >
-          <Input placeholder="请输入keyword"/>
+          <Input placeholder={l('pages.registerCenter.alert.instance.keywordPleaseHolder')}/>
         </Form.Item>
         <Form.Item
           name="secret"
-          label="密令"
+          label={l('pages.registerCenter.alert.instance.secret')}
         >
-          <Input placeholder="请输入secret"/>
+          <Input placeholder={l('pages.registerCenter.alert.instance.secretPleaseHolder')}/>
         </Form.Item>
         <Form.Item
           name="isEnableProxy"
-          label="开启代理">
-          <Switch checkedChildren="是" unCheckedChildren="否"
+          label={l('pages.registerCenter.alert.instance.isEnableProxy')}>
+          <Switch checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                   defaultChecked={vals.isEnableProxy}/>
         </Form.Item>
         {vals.isEnableProxy ? <>
           <Form.Item
             name="proxy"
-            label="代理"
+            label={l('pages.registerCenter.alert.instance.proxy')}
           >
-            <Input placeholder="请输入proxy"/>
+            <Input placeholder={l('pages.registerCenter.alert.instance.proxyPleaseHolder')}/>
           </Form.Item>
           <Form.Item
             name="port"
-            label="端口号"
+            label={l('pages.registerCenter.alert.instance.port')}
           >
-            <Input placeholder="请输入port"/>
+            <Input placeholder={l('pages.registerCenter.alert.instance.portPleaseHolder')}/>
           </Form.Item>
           <Form.Item
             name="user"
-            label="用户"
+            label={l('pages.registerCenter.alert.instance.user')}
           >
-            <Input placeholder="请输入user"/>
+            <Input placeholder={l('pages.registerCenter.alert.instance.userPleaseHolder')}/>
           </Form.Item>
           <Form.Item
             name="password"
-            label="密码"
+            label={l('pages.registerCenter.alert.instance.password')}
           >
-            <Input.Password placeholder="请输入password"/>
+            <Input.Password placeholder={l('pages.registerCenter.alert.instance.passwordPleaseHolder')}/>
           </Form.Item></> : undefined
         }
         <Form.Item
           name="isAtAll"
-          label="@所有人">
-          <Switch checkedChildren="启用" unCheckedChildren="禁用"
+          label={l('pages.registerCenter.alert.instance.isAtAll')}>
+          <Switch checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                   defaultChecked={vals.isAtAll}/>
         </Form.Item>
         {vals.isAtAll ? undefined :
           <>
             <Form.Item
               name="atMobiles"
-              label="@手机号"
-              rules={[{required: true, message: '请输入@手机号！'}]}
+              label={l('pages.registerCenter.alert.instance.atMobiles')}
+              rules={[{required: true, message: l('pages.registerCenter.alert.instance.atMobilesPleaseHolder') }]}
             >
-              <Input placeholder="请输入@手机号 多个使用英文逗号分开 "/>
+              <Input placeholder={l('pages.registerCenter.alert.instance.atMobilesPleaseHolder')}/>
             </Form.Item>
           </>
         }
@@ -160,17 +160,17 @@ const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
         <Form.Item
           name="enabled"
           label={l('global.table.isEnable')}>
-          <Switch checkedChildren="启用" unCheckedChildren="禁用"
+          <Switch checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                   defaultChecked={vals.enabled}/>
         </Form.Item>
         <Form.Item
           name="msgtype"
-          label="展示方式"
-          rules={[{required: true, message: '请选择展示方式！'}]}
+          label={l('pages.registerCenter.alert.instance.msgtype')}
+          rules={[{required: true, message: l('pages.registerCenter.alert.instance.msgtypePleaseHolder')}]}
         >
           <Radio.Group>
-            <Radio value='markdown'>MarkDown</Radio>
-            <Radio value='text'>文本</Radio>
+            <Radio value='markdown'>{l('pages.registerCenter.alert.instance.markdown')}</Radio>
+            <Radio value='text'>{l('pages.registerCenter.alert.instance.text')}</Radio>
           </Radio.Group>
         </Form.Item>
       </>
@@ -181,10 +181,8 @@ const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
     return (
       <>
         <Button onClick={() => handleModalVisible(false)}>{l('button.cancel')}</Button>
-        <Button type="primary" onClick={() => sendTestForm()}>测试</Button>
-        <Button type="primary" onClick={() => submitForm()}>
-          {l('button.finish')}
-        </Button>
+        <Button type="primary" onClick={() => sendTestForm()}>{l('button.test')}</Button>
+        <Button type="primary" onClick={() => submitForm()}>{l('button.finish')}</Button>
       </>
     );
   };
@@ -195,7 +193,7 @@ const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
       width={"40%"}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title={formVals.id ? "维护报警实例配置" : "创建报警实例配置"}
+      title={formVals.id ? l('pages.registerCenter.alert.instance.modify') : l('pages.registerCenter.alert.instance.create')}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}

@@ -83,10 +83,10 @@ const EmailForm: React.FC<AlertInstanceFormProps> = (props) => {
         <Divider>邮箱配置</Divider>
         <Form.Item
           name="name"
-          label="名称"
-          rules={[{required: true, message: '请输入邮箱配置名称！'}]}
+          label={l('pages.registerCenter.alert.instance.name')}
+          rules={[{required: true, message: l('pages.registerCenter.alert.instance.namePleaseHolder')}]}
         >
-          <Input placeholder="请输入邮件配置名称"/>
+          <Input placeholder={l('pages.registerCenter.alert.instance.namePleaseHolder')}/>
         </Form.Item>
         <Form.Item
           name="receivers"
@@ -174,7 +174,7 @@ const EmailForm: React.FC<AlertInstanceFormProps> = (props) => {
         <Form.Item
           name="enabled"
           label={l('global.table.isEnable')}>
-          <Switch checkedChildren="启用" unCheckedChildren="禁用"
+          <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                   defaultChecked={vals.enabled}/>
         </Form.Item>
         <Form.Item
@@ -183,10 +183,10 @@ const EmailForm: React.FC<AlertInstanceFormProps> = (props) => {
           rules={[{required: true, message: '请选择展示方式！'}]}
         >
           <Radio.Group>
-            <Radio value='text'>文本</Radio>
-            <Radio value='table'>表格</Radio>
-            <Radio value='attachment'>附件</Radio>
-            <Radio value='table attachment'>表格附件</Radio>
+            <Radio value='text'>{l('pages.registerCenter.alert.instance.text')}</Radio>
+            <Radio value='table'>{l('pages.registerCenter.alert.instance.table')}</Radio>
+            <Radio value='attachment'>{l('pages.registerCenter.alert.instance.attachment')}</Radio>
+            <Radio value='table attachment'>{l('pages.registerCenter.alert.instance.tableAttachment')}</Radio>
           </Radio.Group>
         </Form.Item>
         {(vals.msgtype === "attachment" || vals.msgtype === "table attachment") &&
@@ -208,10 +208,9 @@ const EmailForm: React.FC<AlertInstanceFormProps> = (props) => {
     return (
       <>
         <Button onClick={() => handleModalVisible(false)}>{l('button.cancel')}</Button>
-        <Button type="primary" onClick={() => sendTestForm()}>测试</Button>
-        <Button type="primary" onClick={() => submitForm()}>
-          {l('button.finish')}
-        </Button>
+        <Button type="primary" onClick={() => sendTestForm()}>{l('button.test')}</Button>
+        <Button type="primary" onClick={() => submitForm()}>{l('button.finish')}</Button>
+
       </>
     );
   };
@@ -222,7 +221,7 @@ const EmailForm: React.FC<AlertInstanceFormProps> = (props) => {
       width={"40%"}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title={formVals.id ? "维护报警实例配置" : "创建报警实例配置"}
+      title={formVals.id ? l('pages.registerCenter.alert.instance.modify') : l('pages.registerCenter.alert.instance.create')}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}

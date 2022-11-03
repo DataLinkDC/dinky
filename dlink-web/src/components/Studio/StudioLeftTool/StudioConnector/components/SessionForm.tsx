@@ -106,7 +106,7 @@ const SessionForm: React.FC<UpdateFormProps> = (props) => {
           name="useRemote"
           label="是否远程"
         >
-          <Switch checkedChildren="启用" unCheckedChildren="禁用"
+          <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                   defaultChecked={formVals.useRemote}/>
         </Item>
         <Item

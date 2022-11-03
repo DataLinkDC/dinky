@@ -46,6 +46,7 @@ export default {
   'button.heartbeat': 'Heartbeat',
   'button.recycle': 'Recycle',
   'button.refresh': 'Refresh',
+  'button.test': 'Test',
   'button.refreshData': 'Refresh Data',
   'button.collapseDir': 'Collapse Directory',
 
@@ -99,8 +100,9 @@ export default {
 
   'global.table.isEnable': 'Is Enable',
   'global.table.note': 'Note',
-
   'global.table.status': 'Status',
+
+  'global.table.notePlaceholder': 'please input Note',
   'global.table.status.normal': 'Normal',
   'global.table.status.abnormal': 'Abnormal',
 

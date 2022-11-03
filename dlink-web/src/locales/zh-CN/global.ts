@@ -46,6 +46,7 @@ export default {
   'button.heartbeat': '心跳',
   'button.recycle': '回收',
   'button.refresh': '刷新',
+  'button.test': '测试',
   'button.refreshData': '刷新数据',
   'button.collapseDir': '折叠目录',
 
@@ -101,6 +102,7 @@ export default {
   'global.table.isEnable': '是否启用',
   'global.table.note': '备注',
 
+  'global.table.notePlaceholder': '请输入备注!',
   'global.table.status': '状态',
   'global.table.status.normal': '正常',
   'global.table.status.abnormal': '异常',

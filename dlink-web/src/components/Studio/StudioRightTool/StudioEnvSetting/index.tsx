@@ -85,7 +85,7 @@ const StudioEnvSetting = (props: any) => {
                   icon: <InfoCircleOutlined/>
                 }}
               >
-                <Switch checkedChildren="启用" unCheckedChildren="禁用"
+                <Switch
                 />
               </Form.Item>
             </Col>
