@@ -357,6 +357,9 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                     field.setAutoIncrement(
                             Asserts.isEqualsIgnoreCase(results.getString(dbQuery.autoIncrement()), "auto_increment"));
                 }
+                if (columnList.contains(dbQuery.defaultValue())) {
+                    field.setDefaultValue(results.getString(dbQuery.defaultValue()));
+                }
                 field.setJavaType(getTypeConvert().convert(field));
                 columns.add(field);
             }

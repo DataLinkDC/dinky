@@ -30,6 +30,7 @@ import com.dlink.model.ColumnType;
  * @since 2021/7/22 9:33
  **/
 public class PostgreSqlTypeConvert implements ITypeConvert {
+
     @Override
     public ColumnType convert(Column column) {
         ColumnType columnType = ColumnType.STRING;
@@ -44,7 +45,7 @@ public class PostgreSqlTypeConvert implements ITypeConvert {
             } else {
                 columnType = ColumnType.SHORT;
             }
-        } else if (t.contains("integer") || t.contains("serial")) {
+        } else if (t.contains("integer") || t.contains("int4") || t.contains("serial")) {
             if (isNullable) {
                 columnType = ColumnType.INTEGER;
             } else {
