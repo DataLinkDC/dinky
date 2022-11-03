@@ -256,14 +256,12 @@ export default {
   'pages.datastudio.label.dinkydescribe': 'Real Time is the Future,Dinky is the best partner of Flink, making Flink SQL easier to use, and is committed to the construction of stream batch integrated development platform',
   'pages.datastudio.label.maxrows': 'Max Rows',
 
-
   'pages.devops.result.success': 'Successful',
   'pages.devops.lable.online': 'Online',
   'pages.devops.lable.offline': 'Offline',
   'pages.devops.lable.onlinelist': 'Online List',
   'pages.devops.lable.offlinelist': 'Offline List',
   'pages.devops.lable.instance': 'Instance',
-
 
   'pages.registerCenter.clusterManagement': 'Cluster Instance Management',
   'pages.registerCenter.cluster.instanceName': 'Instance name',
@@ -292,8 +290,6 @@ export default {
   'pages.registerCenter.cluster.typePlaceholder': 'Please select cluster type!',
   'pages.registerCenter.cluster.aliasPlaceholder': 'Please enter alias!',
   'pages.registerCenter.cluster.namePlaceholder': 'Please enter name!',
-
-
 
   'pages.registerCenter.clusterConfigManagement': 'Cluster Configuration Management',
   'pages.registerCenter.clusterConfig.name': 'Cluster Configuration Name',
@@ -331,12 +327,6 @@ export default {
   'pages.registerCenter.clusterConfig.libPathHelp': 'Specify the hdfs path of lib (without / at the end), which needs to include Flink runtime dependencies',
   'pages.registerCenter.clusterConfig.flinkConfigPathPlaceholder': 'Please enter the flink-conf.yaml path! Values like /opt/module/flink/conf ',
   'pages.registerCenter.clusterConfig.flinkConfigPathHelp': 'Please enter the flink-conf.yaml path! Values like /opt/module/flink/conf ',
-
-
-
-
-
-
 
 
   'pages.registerCenter.alert.instanceManagement': 'Alarm Instance Management',
@@ -452,7 +442,7 @@ export default {
   'pages.registerCenter.jar.enableConfirm': 'Are you sure to enable the selected Jar configuration? ',
   'pages.registerCenter.jar.disable': 'Disable Jar Configuration',
   'pages.registerCenter.jar.disableConfirm': 'Are you sure to disable the selected Jar configuration? ',
-  'pages.registerCenter.jar.disableTotalOf': 'There are {total} disabled cluster configurations',
+  'pages.registerCenter.jar.disableTotalOf': 'Total Of {total} cluster configurations Is Disabled',
   'pages.registerCenter.jar.config': 'Jar Configuration',
   'pages.registerCenter.jar.filePathPleaseHolder': 'value such as: hdfs:///flink/app/demo.jar',
   'pages.registerCenter.jar.filePathHelp': 'Please enter the file path! You need to specify the file path on hdfs,',
@@ -481,7 +471,7 @@ export default {
   'pages.registerCenter.doc.enableConfirm': 'Are you sure you want to enable the selected Document? ',
   'pages.registerCenter.doc.disable': 'Disable Document',
   'pages.registerCenter.doc.disableConfirm': 'Are you sure you want to disable the selected Document? ',
-  'pages.registerCenter.doc.disableTotalOf': 'There are {total} disabled Documents',
+  'pages.registerCenter.doc.disableTotalOf': 'Total Of {total} Documents Is Disabled',
   'pages.registerCenter.doc.namePlaceholder': 'Please enter a name!',
   'pages.registerCenter.doc.versionPlaceholder': 'Please select the version this Document belongs to!',
   'pages.registerCenter.doc.enabledPlaceholder': 'Please choose whether to enable!',
@@ -491,6 +481,26 @@ export default {
   'pages.registerCenter.doc.typePlaceholder': 'Please select the function type this Document belongs to!',
   'pages.registerCenter.doc.subTypePlaceholder': 'Please select the function type this Document belongs to!',
   'pages.registerCenter.doc.categoryPlaceholder': 'Please select the type of this Document!',
+
+  'pages.registerCenter.fv.Management': 'Global Variable Management',
+  'pages.registerCenter.fv.id': 'Global Variable ID',
+  'pages.registerCenter.fv.name': 'Name',
+  'pages.registerCenter.fv.alias': 'Alias',
+  'pages.registerCenter.fv.fragmentValue': 'Global Variable value',
+  'pages.registerCenter.fv.create': 'Create Global Variable',
+  'pages.registerCenter.fv.modify': 'Modify Global Variables',
+  'pages.registerCenter.fv.delete': 'Delete Global Variable',
+  'pages.registerCenter.fv.deleteConfirm': 'Are you sure you want to delete the selected Global Variable? ',
+  'pages.registerCenter.fv.enable': 'Enable Global Variables',
+  'pages.registerCenter.fv.enableConfirm': 'Are you sure to enable the selected Global Variable? ',
+  'pages.registerCenter.fv.disable': 'Disable Global Variables',
+  'pages.registerCenter.fv.disableConfirm': 'Are you sure you want to disable the selected Global Variable? ',
+  'pages.registerCenter.fv.disableTotalOf': 'Total Of {total} Global Variables Is Disabled',
+  'pages.registerCenter.fv.namePlaceholder': 'Please enter a name!',
+  'pages.registerCenter.fv.aliasPlaceholder': 'Please enter an alias!',
+  'pages.registerCenter.fv.fragmentValuePlaceholder': 'Please enter the Global Variable value',
+  'pages.registerCenter.fv.enabledPlaceholder': 'Please choose whether to enable!',
+
 
 
 };

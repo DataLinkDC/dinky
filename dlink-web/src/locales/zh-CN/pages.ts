@@ -478,4 +478,24 @@ export default {
   'pages.registerCenter.doc.subTypePlaceholder': '请选择该文档所属函数类型!',
   'pages.registerCenter.doc.categoryPlaceholder': '请选择该文档所属类型!',
 
+
+  'pages.registerCenter.fv.Management': '全局变量管理',
+  'pages.registerCenter.fv.id': '全局变量 ID',
+  'pages.registerCenter.fv.name': '名称',
+  'pages.registerCenter.fv.alias': '别名',
+  'pages.registerCenter.fv.fragmentValue': '全局变量值',
+  'pages.registerCenter.fv.create': '创建全局变量',
+  'pages.registerCenter.fv.modify': '修改全局变量',
+  'pages.registerCenter.fv.delete': '删除全局变量',
+  'pages.registerCenter.fv.deleteConfirm': '确定删除选中的全局变量吗？',
+  'pages.registerCenter.fv.enable': '启用全局变量',
+  'pages.registerCenter.fv.enableConfirm': '确定启用选中的全局变量吗？',
+  'pages.registerCenter.fv.disable': '禁用全局变量',
+  'pages.registerCenter.fv.disableConfirm': '确定禁用选中的全局变量吗？',
+  'pages.registerCenter.fv.disableTotalOf': '被禁用的全局变量共 {total} 个',
+  'pages.registerCenter.fv.namePlaceholder': '请输入名称!',
+  'pages.registerCenter.fv.aliasPlaceholder': '请输入别名!',
+  'pages.registerCenter.fv.fragmentValuePlaceholder': '请输入全局变量值',
+  'pages.registerCenter.fv.enabledPlaceholder': '请选择是否启用!',
+
 };

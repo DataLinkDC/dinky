@@ -98,7 +98,7 @@ export default {
   'global.table.isEnable': '是否启用',
   'global.table.note': '备注',
 
-  'global.table.notePlaceholder': '请输入备注!',
+  'global.table.notePlaceholder': '请输入描述/备注!',
   'global.table.status': '状态',
   'global.table.status.normal': '正常',
   'global.table.status.abnormal': '异常',
