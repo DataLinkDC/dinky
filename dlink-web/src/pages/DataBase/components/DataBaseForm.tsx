@@ -156,7 +156,7 @@ const DataBaseForm: React.FC<ClickHouseFormProps> = (props) => {
           </>}
         <Form.Item
           name="note"
-          label="注释"
+          label={l('global.table.note')}
         >
           <Input placeholder="请输入"/>
         </Form.Item>

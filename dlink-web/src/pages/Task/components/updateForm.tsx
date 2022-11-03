@@ -96,7 +96,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         </FormItem>
         <FormItem
           name="note"
-          label="注释"
+          label={l('global.table.note')}
         >
           <Input placeholder="请输入"/>
         </FormItem>
@@ -126,7 +126,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         </FormItem>
         <FormItem
           name="note"
-          label="注释"
+          label={l('global.table.note')}
         >
           <Input placeholder="请输入"/>
         </FormItem>

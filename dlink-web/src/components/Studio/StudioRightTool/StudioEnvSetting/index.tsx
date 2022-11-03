@@ -85,7 +85,7 @@ const StudioEnvSetting = (props: any) => {
                   icon: <InfoCircleOutlined/>
                 }}
               >
-                <Switch
+                <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                 />
               </Form.Item>
             </Col>

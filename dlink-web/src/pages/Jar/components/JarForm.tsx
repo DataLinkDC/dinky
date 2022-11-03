@@ -117,9 +117,9 @@ const JarForm: React.FC<JarFormProps> = (props) => {
         </Form.Item>
         <Form.Item
           name="note"
-          label="注释"
+          label={l('global.table.note')}
         >
-          <Input.TextArea placeholder="请输入文本注释" allowClear
+          <Input.TextArea placeholder={l('global.table.notePlaceholder')} allowClear
                           autoSize={{minRows: 3, maxRows: 10}}/>
         </Form.Item>
         <Form.Item

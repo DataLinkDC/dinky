@@ -289,9 +289,55 @@ export default {
   'pages.registerCenter.cluster.jobManagerHaAddress.validate.port': 'Does not meet the rules! Port number range [0-65535]',
   'pages.registerCenter.cluster.jobManagerHaAddressPlaceholderText': 'Add the RestApi address of the JobManager of the Flink cluster. In HA mode, the addresses are separated by commas, for example: 192.168.123.101:8081,192.168.123.102:8081,192.168.123.103:8081',
   'pages.registerCenter.cluster.jobManagerHaAddressPlaceholder': 'Please enter the JobManager HA address!',
-  'pages.registerCenter.cluster.typePlaceholder': 'Please select a cluster type!',
-  'pages.registerCenter.cluster.aliasPlaceholder': 'Please enter an alias!',
-  'pages.registerCenter.cluster.namePlaceholder': 'Please enter a name!',
+  'pages.registerCenter.cluster.typePlaceholder': 'Please select cluster type!',
+  'pages.registerCenter.cluster.aliasPlaceholder': 'Please enter alias!',
+  'pages.registerCenter.cluster.namePlaceholder': 'Please enter name!',
+
+
+
+  'pages.registerCenter.clusterConfigManagement': 'Cluster Configuration Management',
+  'pages.registerCenter.clusterConfig.name': 'Cluster Configuration Name',
+  'pages.registerCenter.clusterConfig.alias': 'Alias',
+  'pages.registerCenter.clusterConfig.id': 'Cluster Configuration ID',
+  'pages.registerCenter.clusterConfig.type': 'Type',
+  'pages.registerCenter.clusterConfig.hadoopConfigPath': 'Hadoop configuration file path',
+  'pages.registerCenter.clusterConfig.flinkConfigPath': 'Flink configuration file path',
+  'pages.registerCenter.clusterConfig.libPath': 'lib path',
+  'pages.registerCenter.clusterConfig.isAvailable': 'Is Available',
+  'pages.registerCenter.clusterConfig.available': 'Available',
+  'pages.registerCenter.clusterConfig.notAvailable': 'Not Available',
+  'pages.registerCenter.clusterConfig.create': 'Create Cluster Configuration',
+  'pages.registerCenter.clusterConfig.modify': 'Modify Cluster Configuration',
+  'pages.registerCenter.clusterConfig.delete': 'Delete Cluster Configuration',
+  'pages.registerCenter.clusterConfig.deleteConfirm': 'Are you sure you want to delete this  Cluster Configuration? ',
+  'pages.registerCenter.clusterConfig.enable': 'Enable Cluster Configuration',
+  'pages.registerCenter.clusterConfig.enableConfirm': 'Are you sure you want to enable this  Cluster Configuration? ',
+  'pages.registerCenter.clusterConfig.disable': 'Disable Cluster Configuration',
+  'pages.registerCenter.clusterConfig.disableConfirm': 'Are you sure you want to disable this  Cluster Configuration? ',
+  'pages.registerCenter.clusterConfig.disableTotalOf': 'There are {total} of disabled  Cluster Configuration',
+  'pages.registerCenter.clusterConfig.baseConfig': 'Basic Configuration',
+  'pages.registerCenter.clusterConfig.otherConfig': 'Other Configuration',
+  'pages.registerCenter.clusterConfig.addDefineConfig': 'Add a Custom Item',
+  'pages.registerCenter.clusterConfig.typePlaceholder': 'Please select cluster type!',
+  'pages.registerCenter.clusterConfig.aliasPlaceholder': 'Please enter Alias!',
+  'pages.registerCenter.clusterConfig.namePlaceholder': 'Please enter Name!',
+  'pages.registerCenter.clusterConfig.hadoopConfigPathPlaceholder': 'Please enter the hadoop configuration file path, the value is /etc/hadoop/conf! ',
+  'pages.registerCenter.clusterConfig.hadoopConfigPathHelp': 'Specify the configuration file path (without / at the end), the following files need to be included: core-site.xml, hdfs-site.xml, yarn-site.xml! ',
+  'pages.registerCenter.clusterConfig.defineConfig.highPriority': 'Custom configuration (high priority)',
+  'pages.registerCenter.clusterConfig.flinkConfig': 'Flink Configuration',
+  'pages.registerCenter.clusterConfig.hadoopConfig': 'Hadoop Configuration',
+  'pages.registerCenter.clusterConfig.k8sConfig': 'Kubernetes Configuration',
+  'pages.registerCenter.clusterConfig.libPathPlaceholder': 'Please enter the hdfs path of lib! Values such as hdfs:///flink/lib',
+  'pages.registerCenter.clusterConfig.libPathHelp': 'Specify the hdfs path of lib (without / at the end), which needs to include Flink runtime dependencies',
+  'pages.registerCenter.clusterConfig.flinkConfigPathPlaceholder': 'Please enter the flink-conf.yaml path! Values like /opt/module/flink/conf ',
+  'pages.registerCenter.clusterConfig.flinkConfigPathHelp': 'Please enter the flink-conf.yaml path! Values like /opt/module/flink/conf ',
+
+
+
+
+
+
+
 
   'pages.registerCenter.alert.instanceManagement': 'Alarm Instance Management',
   'pages.registerCenter.alert.instance.name': 'Name',

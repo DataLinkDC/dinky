@@ -185,7 +185,7 @@ const TaskTableList: React.FC<{}> = () => {
       hideInTable: true,
     },
     {
-      title: '注释',
+      title: l('global.table.note'),
       sorter: true,
       valueType: 'textarea',
       dataIndex: 'note',

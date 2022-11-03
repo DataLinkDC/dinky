@@ -160,7 +160,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
       <>
         <Form.Item
           name="type"
-          label="类型"
+          label={l('pages.registerCenter.clusterConfig.type')}
         >
           <Select defaultValue="Yarn" value="Yarn">
             <Option value="Yarn">Flink On Yarn</Option>
@@ -168,24 +168,24 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
           </Select>
         </Form.Item>
         {formValsPara.type == 'Yarn' ? <>
-          <Divider>Hadoop 配置</Divider>
+          <Divider>{l('pages.registerCenter.clusterConfig.hadoopConfig')}</Divider>
           <Form.Item
             name="hadoopConfigPath"
-            label="配置文件路径"
-            rules={[{required: true, message: '请输入 hadoop 配置文件路径！'}]}
-            help="指定配置文件路径（末尾无/），需要包含以下文件：core-site.xml,hdfs-site.xml,yarn-site.xml"
+            label={l('pages.registerCenter.clusterConfig.hadoopConfigPath')}
+            rules={[{required: true, message: l('pages.registerCenter.clusterConfig.hadoopConfigPathPlaceholder')}]}
+            help={l('pages.registerCenter.clusterConfig.hadoopConfigPathHelp')}
           >
-            <Input placeholder="值如 /etc/hadoop/conf" addonAfter={
+            <Input placeholder={l('pages.registerCenter.clusterConfig.hadoopConfigPath')} addonAfter={
               <Form.Item name="suffix" noStyle>
                 <Upload {...getUploadProps(hadoopConfigPath)} multiple>
                   <UploadOutlined/>
                 </Upload>
               </Form.Item>}/>
           </Form.Item>
-          <Divider orientation="left" plain>自定义配置（高优先级）</Divider>
+          <Divider orientation="left" plain>{l('pages.registerCenter.clusterConfig.defineConfig.highPriority')}</Divider>
           {buildConfig(HADOOP_CONFIG_LIST)}
           <Form.Item
-            label="其他配置"
+            label={l('pages.registerCenter.clusterConfig.otherConfig')}
           >
             <Form.List name="hadoopConfigList">
               {(fields, {add, remove}) => (
@@ -211,7 +211,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
                   ))}
                   <Form.Item>
                     <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined/>}>
-                      添加一个自定义项
+                      {l('pages.registerCenter.clusterConfig.addDefineConfig')}
                     </Button>
                   </Form.Item>
                 </>
@@ -219,10 +219,10 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
             </Form.List>
           </Form.Item></> : undefined}
         {formValsPara.type == 'Kubernetes' ? <>
-          <Divider>Kubernetes 配置</Divider>
+          <Divider>{l('pages.registerCenter.clusterConfig.k8sConfig')}</Divider>
           {buildConfig(KUBERNETES_CONFIG_LIST)}
           <Form.Item
-            label="其他配置"
+            label={l('pages.registerCenter.clusterConfig.otherConfig')}
           >
             <Form.List name="kubernetesConfigList">
               {(fields, {add, remove}) => (
@@ -248,7 +248,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
                   ))}
                   <Form.Item>
                     <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined/>}>
-                      添加一个自定义项
+                      {l('pages.registerCenter.clusterConfig.addDefineConfig')}
                     </Button>
                   </Form.Item>
                 </>
@@ -256,15 +256,15 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
             </Form.List>
           </Form.Item>
         </> : undefined}
-        <Divider>Flink 配置</Divider>
+        <Divider>{l('pages.registerCenter.clusterConfig.flinkConfig')}</Divider>
         {formValsPara.type == 'Yarn' ? <>
           <Form.Item
             name="flinkLibPath"
-            label="lib 路径"
-            rules={[{required: true, message: '请输入 lib 的 hdfs 路径！'}]}
-            help="指定 lib 的 hdfs 路径（末尾无/），需要包含 Flink 运行时的依赖"
+            label={l('pages.registerCenter.clusterConfig.libPath')}
+            rules={[{required: true, message: l('pages.registerCenter.clusterConfig.libPathPlaceholder')}]}
+            help={l('pages.registerCenter.clusterConfig.libPathHelp')}
           >
-            <Input placeholder="值如 hdfs:///flink/lib" addonAfter={
+            <Input placeholder={l('pages.registerCenter.clusterConfig.libPathPlaceholder')} addonAfter={
               <Form.Item name="suffix" noStyle>
                 <Upload {...getUploadHdfsProps(flinkLibPath)} multiple>
                   <UploadOutlined/>
@@ -274,21 +274,21 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
         </> : undefined}
         <Form.Item
           name="flinkConfigPath"
-          label="配置文件路径"
-          rules={[{required: true, message: '请输入 flink-conf.yaml 路径！'}]}
-          help="指定 flink-conf.yaml 的路径（末尾无/）"
+          label={l('pages.registerCenter.clusterConfig.flinkConfigPath')}
+          rules={[{required: true, message: l('pages.registerCenter.clusterConfig.flinkConfigPathPlaceholder')}]}
+          help={l('pages.registerCenter.clusterConfig.flinkConfigPathHelp')}
         >
-          <Input placeholder="值如 /opt/module/flink/conf" addonAfter={
+          <Input placeholder={l('pages.registerCenter.clusterConfig.flinkConfigPathPlaceholder')} addonAfter={
             <Form.Item name="suffix" noStyle>
               <Upload {...getUploadProps(flinkConfigPath)}>
                 <UploadOutlined/>
               </Upload>
             </Form.Item>}/>
         </Form.Item>
-        <Divider orientation="left" plain>自定义配置（高优先级）</Divider>
+        <Divider orientation="left" plain>{l('pages.registerCenter.clusterConfig.defineConfig.highPriority')}</Divider>
         {buildConfig(FLINK_CONFIG_LIST)}
         <Form.Item
-          label="其他配置"
+          label={l('pages.registerCenter.clusterConfig.otherConfig')}
         >
           <Form.List name="flinkConfigList">
             {(fields, {add, remove}) => (
@@ -314,31 +314,31 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
                 ))}
                 <Form.Item>
                   <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined/>}>
-                    添加一个自定义项
+                    {l('pages.registerCenter.clusterConfig.addDefineConfig')}
                   </Button>
                 </Form.Item>
               </>
             )}
           </Form.List>
         </Form.Item>
-        <Divider>基本配置</Divider>
+        <Divider>{l('pages.registerCenter.clusterConfig.baseConfig')}</Divider>
         <Form.Item
           name="name"
-          label="名称"
-          rules={[{required: true, message: '请输入名称！'}]}>
-          <Input placeholder="请输入唯一英文标识"/>
+          label={l('pages.registerCenter.clusterConfig.name')}
+          rules={[{required: true, message: l('pages.registerCenter.clusterConfig.namePlaceholder')}]}>
+          <Input placeholder={l('pages.registerCenter.clusterConfig.namePlaceholder')}/>
         </Form.Item>
         <Form.Item
           name="alias"
-          label="别名"
+          label={l('pages.registerCenter.clusterConfig.alias')}
         >
-          <Input placeholder="请输入名称"/>
+          <Input placeholder={l('pages.registerCenter.clusterConfig.aliasPlaceholder')}/>
         </Form.Item>
         <Form.Item
           name="note"
-          label="注释"
+          label={l('global.table.note')}
         >
-          <Input.TextArea placeholder="请输入文本注释" allowClear
+          <Input.TextArea placeholder={l('global.table.notePlaceholder')} allowClear
                           autoSize={{minRows: 3, maxRows: 10}}/>
         </Form.Item>
         <Form.Item
@@ -370,12 +370,8 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
     return (
       <>
         <Button onClick={() => handleModalVisible(false)}>{l('button.cancel')}</Button>
-        <Button type="primary" htmlType="button" onClick={testForm}>
-          测试
-        </Button>
-        <Button type="primary" onClick={() => submitForm()}>
-          {l('button.finish')}
-        </Button>
+        <Button type="primary" htmlType="button" onClick={testForm}>{l('button.test')}</Button>
+        <Button type="primary" onClick={() => submitForm()}>{l('button.finish')}</Button>
       </>
     );
   };
@@ -385,7 +381,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
       width={"60%"}
       bodyStyle={{padding: '32px 40px 48px', height: '600px', overflowY: 'auto'}}
       destroyOnClose
-      title={formVals.id ? "维护集群配置" : "创建集群配置"}
+      title={formVals.id ? l('pages.registerCenter.clusterConfig.modify') : l('pages.registerCenter.clusterConfig.create')}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}
