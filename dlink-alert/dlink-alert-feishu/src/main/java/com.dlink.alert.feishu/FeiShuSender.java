@@ -51,7 +51,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public final class FeiShuSender {
     private static final Logger logger = LoggerFactory.getLogger(FeiShuSender.class);
-
     static final String FEI_SHU_PROXY_ENABLE_REGX = "{isEnableProxy}";
     static final String FEI_SHU_PROXY_REGX = "{proxy}";
     static final String FEI_SHU_PORT_REGX = "{port}";
@@ -60,7 +59,6 @@ public final class FeiShuSender {
     static final String MSG_RESULT_REGX = "{msg}";
     static final String MSG_TYPE_REGX = "{msg_type}";
     static final String FEI_SHU_MSG_TYPE_REGX = "{keyword}";
-
     private final String url;
     private final String msgType;
     private final Boolean enableProxy;
@@ -71,12 +69,12 @@ public final class FeiShuSender {
     private String user;
     private String password;
     private final Boolean atAll;
-    private  String atUserIds;
+    private String atUserIds;
 
     FeiShuSender(Map<String, String> config) {
         url = config.get(FeiShuConstants.WEB_HOOK);
         msgType = config.get(FeiShuConstants.MSG_TYPE);
-        keyword = config.get(FeiShuConstants.KEY_WORD).replace("\r\n", "");
+        keyword = config.get(FeiShuConstants.KEY_WORD) != null ? config.get(FeiShuConstants.KEY_WORD).replace("\r\n", "") : "";
         enableProxy = Boolean.valueOf(config.get(FeiShuConstants.FEI_SHU_PROXY_ENABLE));
         secret = config.get(FeiShuConstants.SECRET);
         if (Boolean.TRUE.equals(enableProxy)) {
@@ -91,23 +89,23 @@ public final class FeiShuSender {
         }
     }
 
-    private  String toJsonSendMsg(String title, String content) {
+    private String toJsonSendMsg(String title, String content) {
         String jsonResult = "";
-        byte[] byt = StringUtils.getBytesUtf8(formatContent(title,content));
+        byte[] byt = StringUtils.getBytesUtf8(formatContent(title, content));
         String contentResult = StringUtils.newStringUtf8(byt);
         String userIdsToText = mkUserIds(org.apache.commons.lang3.StringUtils.isBlank(atUserIds) ? "all" : atUserIds);
         if (StringUtils.equals(ShowType.TEXT.getValue(), msgType)) {
             jsonResult = FeiShuConstants.FEI_SHU_TEXT_TEMPLATE.replace(MSG_TYPE_REGX, msgType)
-                    .replace(MSG_RESULT_REGX, contentResult).replace(FEI_SHU_USER_REGX, userIdsToText).replaceAll("/n", "\\\\n");
+                .replace(MSG_RESULT_REGX, contentResult).replace(FEI_SHU_USER_REGX, userIdsToText).replaceAll("/n", "\\\\n");
         } else {
             jsonResult = FeiShuConstants.FEI_SHU_POST_TEMPLATE.replace(MSG_TYPE_REGX, msgType)
-                    .replace(FEI_SHU_MSG_TYPE_REGX, keyword).replace(MSG_RESULT_REGX, contentResult)
-                    .replace(FEI_SHU_USER_REGX, userIdsToText).replaceAll("/n", "\\\\n");
+                .replace(FEI_SHU_MSG_TYPE_REGX, keyword).replace(MSG_RESULT_REGX, contentResult)
+                .replace(FEI_SHU_USER_REGX, userIdsToText).replaceAll("/n", "\\\\n");
         }
         return jsonResult;
     }
 
-    private  String mkUserIds(String users) {
+    private String mkUserIds(String users) {
         String userIdsToText = "";
         String[] userList = users.split(",");
         if (msgType.equals(ShowType.TEXT.getValue())) {
@@ -130,14 +128,12 @@ public final class FeiShuSender {
     public static AlertResult checkSendFeiShuSendMsgResult(String result) {
         AlertResult alertResult = new AlertResult();
         alertResult.setSuccess(false);
-
         if (org.apache.commons.lang3.StringUtils.isBlank(result)) {
             alertResult.setMessage("send fei shu msg error");
             logger.info("send fei shu msg error,fei shu server resp is null");
             return alertResult;
         }
         FeiShuSendMsgResponse sendMsgResponse = JSONUtil.parseObject(result, FeiShuSendMsgResponse.class);
-
         if (null == sendMsgResponse) {
             alertResult.setMessage("send fei shu msg fail");
             logger.info("send fei shu msg error,resp error");
@@ -160,7 +156,7 @@ public final class FeiShuSender {
             throw new RuntimeException("itemsList is null");
         }
         StringBuilder contents = new StringBuilder(100);
-        contents.append(String.format("`%s` %s",title,FeiShuConstants.MARKDOWN_ENTER));
+        contents.append(String.format("`%s` %s", title, FeiShuConstants.MARKDOWN_ENTER));
         for (LinkedHashMap mapItems : mapSendResultItemsList) {
             Set<Entry<String, Object>> entries = mapItems.entrySet();
             Iterator<Entry<String, Object>> iterator = entries.iterator();
@@ -176,7 +172,7 @@ public final class FeiShuSender {
         return null;
     }
 
-    public AlertResult send(String title,String content) {
+    public AlertResult send(String title, String content) {
         AlertResult alertResult;
         try {
             String resp = sendMsg(title, content);
@@ -190,15 +186,13 @@ public final class FeiShuSender {
         return alertResult;
     }
 
-    private String sendMsg(String title,String content) throws IOException {
-
-        String msgToJson = toJsonSendMsg(title,content);
+    private String sendMsg(String title, String content) throws IOException {
+        String msgToJson = toJsonSendMsg(title, content);
         HttpPost httpPost = HttpRequestUtil.constructHttpPost(url, msgToJson);
         CloseableHttpClient httpClient;
         httpClient = HttpRequestUtil.getHttpClient(enableProxy, proxy, port, user, password);
         try {
             CloseableHttpResponse response = httpClient.execute(httpPost);
-
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode != HttpStatus.SC_OK) {
                 logger.error("send feishu message error, return http status code: {} ", statusCode);
