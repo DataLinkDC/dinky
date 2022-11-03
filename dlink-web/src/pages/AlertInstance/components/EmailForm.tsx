@@ -98,7 +98,7 @@ const EmailForm: React.FC<AlertInstanceFormProps> = (props) => {
         </Form.Item>
         <Form.Item
           name="receiverCcs"
-          label={l('pages.registerCenter.alert.instance.receiverCcsPleaseHolder')}
+          label={l('pages.registerCenter.alert.instance.receiverCcs')}
         >
           <Input.TextArea placeholder={l('pages.registerCenter.alert.instance.receiverCcsPleaseHolder')} allowClear
                           autoSize={{minRows: 1, maxRows: 5}}/>
@@ -195,7 +195,8 @@ const EmailForm: React.FC<AlertInstanceFormProps> = (props) => {
               name="xls.file.path"
               label={l('pages.registerCenter.alert.instance.xls.file.path')}
             >
-              <Input allowClear placeholder={l('pages.registerCenter.alert.instance.pathPleaseHolder')}/>
+              <Input.TextArea placeholder={l('pages.registerCenter.alert.instance.xls.file.pathPleaseHolder')} allowClear
+                              autoSize={{minRows: 1, maxRows: 5}}/>
             </Form.Item>
 
           </>}

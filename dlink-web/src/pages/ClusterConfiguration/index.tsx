@@ -71,7 +71,7 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
       overlay={
         <Menu onClick={({key}) => editAndDelete(key, item)}>
           <Menu.Item key="edit">{l('button.edit')}</Menu.Item>
-          <Menu.Item key="delete">删除</Menu.Item>
+          <Menu.Item key="delete">{l('button.delete')}</Menu.Item>
         </Menu>
       }
     >

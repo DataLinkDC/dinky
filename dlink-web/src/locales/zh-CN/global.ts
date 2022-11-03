@@ -84,10 +84,6 @@ export default {
 
 
   'global.table.operate': '操作',
-  'global.table.config': '配置',
-  'global.table.edit': '编辑',
-  'global.table.delete': '删除',
-  'global.table.more': '更多',
   'global.table.updateTime': '更新时间',
   'global.table.lastUpdateTime': '最近更新时间',
   'global.table.createTime': '创建时间',
@@ -106,19 +102,6 @@ export default {
   'global.table.status': '状态',
   'global.table.status.normal': '正常',
   'global.table.status.abnormal': '异常',
-
-  'global.table.version': '版本',
-  'global.table.jobManagerAddress': 'JobManger 地址',
-  'global.table.jobManagerHaAddress': 'JobManger 高可用地址',
-  'global.table.type': '类型',
-  'global.table.nickName': '昵称',
-  'global.table.instanceName': '实例名',
-  'global.table.instanceId': '实例 Id',
-  'global.table.clusterManagement': 'Flink 实例管理',
-  'global.table.create': '创建',
-  'global.table.heartbeat': '心跳',
-  'global.table.recycle': '回收',
-  'global.table.refresh': '刷新',
 
   'global.table.no': '序号',
   'global.table.columnName': '字段名称',

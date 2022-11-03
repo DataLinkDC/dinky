@@ -264,6 +264,35 @@ export default {
   'pages.devops.lable.offlinelist': 'Offline List',
   'pages.devops.lable.instance': 'Instance',
 
+
+  'pages.registerCenter.clusterManagement': 'Cluster Instance Management',
+  'pages.registerCenter.cluster.instanceName': 'Instance name',
+  'pages.registerCenter.cluster.alias': 'Alias',
+  'pages.registerCenter.cluster.type': 'Type',
+  'pages.registerCenter.cluster.jobManagerAddress': 'JobManger Address',
+  'pages.registerCenter.cluster.version': 'Version',
+  'pages.registerCenter.cluster.jobManagerHaAddress': 'JobManger HA address',
+  'pages.registerCenter.cluster.instanceId': 'Instance Id',
+  'pages.registerCenter.cluster.create': 'Create cluster',
+  'pages.registerCenter.cluster.modify': 'Modify Cluster Instance',
+  'pages.registerCenter.cluster.delete': 'Delete Flink Instance',
+  'pages.registerCenter.cluster.deleteConfirm': 'Are you sure you want to delete this Flink instance? ',
+  'pages.registerCenter.cluster.recycle': 'Recycle Flink instance',
+  'pages.registerCenter.cluster.recycleConfirm': 'Are you sure to recycle all automatically created and expired Flink instances? ',
+  'pages.registerCenter.cluster.recycle.success' : 'Total Of {total} Flink instances were successfully recycled',
+  'pages.registerCenter.cluster.enable': 'Enable Flink instance',
+  'pages.registerCenter.cluster.enableConfirm': 'Are you sure you want to enable this Flink instance? ',
+  'pages.registerCenter.cluster.disable': 'Disable Flink instance',
+  'pages.registerCenter.cluster.disableConfirm': 'Are you sure you want to disable this Flink instance? ',
+  'pages.registerCenter.cluster.disableTotalOf': 'Total Of {total} Flink instances Is Disabled',
+  'pages.registerCenter.cluster.jobManagerHaAddress.validate.slash': 'No rules! Cannot contain /',
+  'pages.registerCenter.cluster.jobManagerHaAddress.validate.port': 'Does not meet the rules! Port number range [0-65535]',
+  'pages.registerCenter.cluster.jobManagerHaAddressPlaceholderText': 'Add the RestApi address of the JobManager of the Flink cluster. In HA mode, the addresses are separated by commas, for example: 192.168.123.101:8081,192.168.123.102:8081,192.168.123.103:8081',
+  'pages.registerCenter.cluster.jobManagerHaAddressPlaceholder': 'Please enter the JobManager HA address!',
+  'pages.registerCenter.cluster.typePlaceholder': 'Please select a cluster type!',
+  'pages.registerCenter.cluster.aliasPlaceholder': 'Please enter an alias!',
+  'pages.registerCenter.cluster.namePlaceholder': 'Please enter a name!',
+
   'pages.registerCenter.alert.instanceManagement': 'Alarm Instance Management',
   'pages.registerCenter.alert.instance.name': 'Name',
   'pages.registerCenter.alert.instance.namePleaseHolder': 'please enter alarm instance name',
@@ -298,7 +327,7 @@ export default {
   'pages.registerCenter.alert.instance.sendTypePleaseHolder' : 'Please choose Send Type',
   'pages.registerCenter.alert.instance.agentIdPleaseHolder': 'Please enter AgentId',
   'pages.registerCenter.alert.instance.receiversPleaseHolder': 'Please enter recipient email address! Separate multiple commas',
-  'pages.registerCenter.alert.instance.receiverCcsPleaseHolder': 'Please enter the CC email address! Separate multiple commas!',
+  'pages.registerCenter.alert.instance.receiverCcsPleaseHolder': 'Please enter the receiverCcs email address! Separate multiple commas!',
   'pages.registerCenter.alert.instance.serverHostPleaseHolder': 'Mail server host',
   'pages.registerCenter.alert.instance.serverPortPleaseHolder': 'Please enter the mail server port',
   'pages.registerCenter.alert.instance.senderPleaseHolder': 'Please enter the mail server sender sender',
@@ -322,20 +351,19 @@ export default {
   'pages.registerCenter.alert.instance.sendType': 'Send Type',
   'pages.registerCenter.alert.instance.agentId': 'AgentId',
   'pages.registerCenter.alert.instance.atUsers': 'At Users',
-  'pages.registerCenter.alert.instance.receivers': 'receivers',
-  'pages.registerCenter.alert.instance.receiverCcs': 'Cc',
+  'pages.registerCenter.alert.instance.receivers': 'Receivers',
+  'pages.registerCenter.alert.instance.receiverCcs': 'ReceiverCcs',
   'pages.registerCenter.alert.instance.serverHost': 'Mail server Host',
   'pages.registerCenter.alert.instance.serverPort': 'Mail server Port',
   'pages.registerCenter.alert.instance.sender': 'Sender nickname',
-  'pages.registerCenter.alert.instance.enableSmtpAuth': 'Whether to enable email verification',
-  'pages.registerCenter.alert.instance.emailUser': 'Email username',
+  'pages.registerCenter.alert.instance.enableSmtpAuth': 'Enable SmtpAuth',
+  'pages.registerCenter.alert.instance.emailUser': 'Email user',
   'pages.registerCenter.alert.instance.emailPassword': 'Email password',
-  'pages.registerCenter.alert.instance.starttlsEnable': 'Whether to enable tls certificate verification',
-  'pages.registerCenter.alert.instance.sslEnable': 'Whether to enable SSL verification',
-  'pages.registerCenter.alert.instance.smtpSslTrust': 'Trusted Domain',
+  'pages.registerCenter.alert.instance.starttlsEnable': 'Start Tls Enable',
+  'pages.registerCenter.alert.instance.sslEnable': 'Ssl Enable',
+  'pages.registerCenter.alert.instance.smtpSslTrust': 'Smtp Ssl Trust',
   'pages.registerCenter.alert.instance.xls.file.path': 'XLS storage directory',
   'pages.registerCenter.alert.instance.msgtype': 'Send Message Type',
-
 
   'pages.registerCenter.alert.instance.sendType.app': 'Application',
   'pages.registerCenter.alert.instance.sendType.wechat': 'WeChat',
@@ -345,8 +373,6 @@ export default {
   'pages.registerCenter.alert.instance.table': 'Table',
   'pages.registerCenter.alert.instance.attachment': 'Attachment',
   'pages.registerCenter.alert.instance.tableAttachment': 'Table And Attachment',
-
-
 
   'pages.registerCenter.alert.groupManagement': 'Alarm Group Management ',
   'pages.registerCenter.alert.group.name': 'Alarm Group Name',
@@ -363,5 +389,10 @@ export default {
   'pages.registerCenter.alert.group.disable': 'Disable the Alarm group ',
   'pages.registerCenter.alert.group.disableConfirm': 'Are you sure you want to disable this Alarm group? ',
   'pages.registerCenter.alert.group.disableTotalOf': 'Total Of {total} Alarm group Is Disabled',
+
+
+
+
+
 };
 
