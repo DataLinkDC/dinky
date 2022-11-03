@@ -297,7 +297,15 @@ export default {
   'pages.registerCenter.alert.instance.wechatAtUsersPleaseHolder': 'Please enter the @user ID (enterprise and micro user name spelled out), separated by multiple commas!',
   'pages.registerCenter.alert.instance.sendTypePleaseHolder' : 'Please choose Send Type',
   'pages.registerCenter.alert.instance.agentIdPleaseHolder': 'Please enter AgentId',
-
+  'pages.registerCenter.alert.instance.receiversPleaseHolder': 'Please enter recipient email address! Separate multiple commas',
+  'pages.registerCenter.alert.instance.receiverCcsPleaseHolder': 'Please enter the CC email address! Separate multiple commas!',
+  'pages.registerCenter.alert.instance.serverHostPleaseHolder': 'Mail server host',
+  'pages.registerCenter.alert.instance.serverPortPleaseHolder': 'Please enter the mail server port',
+  'pages.registerCenter.alert.instance.senderPleaseHolder': 'Please enter the mail server sender sender',
+  'pages.registerCenter.alert.instance.emailUserPleaseHolder': 'Please enter your email username',
+  'pages.registerCenter.alert.instance.emailPasswordPleaseHolder': 'Please enter the email password! Note: the password is the authorization code',
+  'pages.registerCenter.alert.instance.smtpSslTrustPleaseHolder': 'Please enter a trusted domain',
+  'pages.registerCenter.alert.instance.xls.file.pathPleaseHolder': 'Please enter the XLS storage directory! The default is /tmp/xls',
 
 
   'pages.registerCenter.alert.instance.webhook': 'WebHook Url',
@@ -314,6 +322,18 @@ export default {
   'pages.registerCenter.alert.instance.sendType': 'Send Type',
   'pages.registerCenter.alert.instance.agentId': 'AgentId',
   'pages.registerCenter.alert.instance.atUsers': 'At Users',
+  'pages.registerCenter.alert.instance.receivers': 'receivers',
+  'pages.registerCenter.alert.instance.receiverCcs': 'Cc',
+  'pages.registerCenter.alert.instance.serverHost': 'Mail server Host',
+  'pages.registerCenter.alert.instance.serverPort': 'Mail server Port',
+  'pages.registerCenter.alert.instance.sender': 'Sender nickname',
+  'pages.registerCenter.alert.instance.enableSmtpAuth': 'Whether to enable email verification',
+  'pages.registerCenter.alert.instance.emailUser': 'Email username',
+  'pages.registerCenter.alert.instance.emailPassword': 'Email password',
+  'pages.registerCenter.alert.instance.starttlsEnable': 'Whether to enable tls certificate verification',
+  'pages.registerCenter.alert.instance.sslEnable': 'Whether to enable SSL verification',
+  'pages.registerCenter.alert.instance.smtpSslTrust': 'Trusted Domain',
+  'pages.registerCenter.alert.instance.xls.file.path': 'XLS storage directory',
   'pages.registerCenter.alert.instance.msgtype': 'Send Message Type',
 
 

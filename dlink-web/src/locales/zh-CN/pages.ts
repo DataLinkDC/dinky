@@ -298,7 +298,15 @@ export default {
   'pages.registerCenter.alert.instance.wechatAtUsersPleaseHolder': '请输入被@用户ID(企微用户名全拼),多个逗号隔开!',
   'pages.registerCenter.alert.instance.sendTypePleaseHolder' : '请选择发送方式！',
   'pages.registerCenter.alert.instance.agentIdPleaseHolder': '请输入 AgentId',
-
+  'pages.registerCenter.alert.instance.receiversPleaseHolder': '请输入收件人邮箱！多个英文逗号隔开',
+  'pages.registerCenter.alert.instance.receiverCcsPleaseHolder': '请输入抄送人邮箱！多个英文逗号隔开!',
+  'pages.registerCenter.alert.instance.serverHostPleaseHolder': '邮件服务器主机',
+  'pages.registerCenter.alert.instance.serverPortPleaseHolder': '请输入邮件服务器端口',
+  'pages.registerCenter.alert.instance.senderPleaseHolder': '请输入邮件服务器发送者sender',
+  'pages.registerCenter.alert.instance.emailUserPleaseHolder': '请输入邮箱用户名',
+  'pages.registerCenter.alert.instance.emailPasswordPleaseHolder': '请输入邮箱密码! 注意:密码为授权码',
+  'pages.registerCenter.alert.instance.smtpSslTrustPleaseHolder': '请输入受信任域',
+  'pages.registerCenter.alert.instance.xls.file.pathPleaseHolder': '请输入XLS存放目录! 默认为 /tmp/xls',
 
 
   'pages.registerCenter.alert.instance.webhook': 'WebHook 地址',
@@ -315,6 +323,18 @@ export default {
   'pages.registerCenter.alert.instance.sendType': '发送方式',
   'pages.registerCenter.alert.instance.agentId': '代理ID',
   'pages.registerCenter.alert.instance.atUsers': '被@用户',
+  'pages.registerCenter.alert.instance.receivers': '收件人',
+  'pages.registerCenter.alert.instance.receiverCcs': '抄送人',
+  'pages.registerCenter.alert.instance.serverHost': '邮件服务器Host',
+  'pages.registerCenter.alert.instance.serverPort': '邮件服务器Port',
+  'pages.registerCenter.alert.instance.sender': '发送者sender昵称',
+  'pages.registerCenter.alert.instance.enableSmtpAuth': '是否开启邮箱验证',
+  'pages.registerCenter.alert.instance.emailUser': '邮箱用户名',
+  'pages.registerCenter.alert.instance.emailPassword': '邮箱密码',
+  'pages.registerCenter.alert.instance.starttlsEnable': '是否开启tls证书验证',
+  'pages.registerCenter.alert.instance.sslEnable': '是否开启SSL验证',
+  'pages.registerCenter.alert.instance.smtpSslTrust': '受信任域',
+  'pages.registerCenter.alert.instance.xls.file.path': 'XLS存放目录',
   'pages.registerCenter.alert.instance.msgtype': '展示方式',
 
 

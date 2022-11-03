@@ -93,7 +93,8 @@ const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
           label={l('pages.registerCenter.alert.instance.webhook')}
           rules={[{required: true, message: l('pages.registerCenter.alert.instance.webhookPleaseHolder')}]}
         >
-          <Input placeholder={l('pages.registerCenter.alert.instance.webhookPleaseHolder')}/>
+          <Input.TextArea placeholder={l('pages.registerCenter.alert.instance.webhookPleaseHolder')} allowClear
+                          autoSize={{minRows: 1, maxRows: 5}}/>
         </Form.Item>
         <Form.Item
           name="keyword"
@@ -152,7 +153,8 @@ const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
               label={l('pages.registerCenter.alert.instance.atMobiles')}
               rules={[{required: true, message: l('pages.registerCenter.alert.instance.atMobilesPleaseHolder') }]}
             >
-              <Input placeholder={l('pages.registerCenter.alert.instance.atMobilesPleaseHolder')}/>
+              <Input.TextArea placeholder={l('pages.registerCenter.alert.instance.atMobilesPleaseHolder')} allowClear
+                              autoSize={{minRows: 1, maxRows: 5}}/>
             </Form.Item>
           </>
         }

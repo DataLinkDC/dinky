@@ -105,7 +105,8 @@ const WeChatForm: React.FC<AlertInstanceFormProps> = (props) => {
               label={l('pages.registerCenter.alert.instance.webhook')}
               rules={[{required: true, message: l('pages.registerCenter.alert.instance.webhookPleaseHolder')}]}
             >
-              <Input placeholder={l('pages.registerCenter.alert.instance.webhookPleaseHolder')}/>
+              <Input.TextArea placeholder={l('pages.registerCenter.alert.instance.webhookPleaseHolder')} allowClear
+                              autoSize={{minRows: 1, maxRows: 5}}/>
             </Form.Item>
             <Form.Item
               name="keyword"
