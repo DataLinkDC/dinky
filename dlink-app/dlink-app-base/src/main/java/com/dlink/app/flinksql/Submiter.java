@@ -98,6 +98,18 @@ public class Submiter {
         return Arrays.asList(SqlUtil.getStatements(sql));
     }
 
+    public static String getDbSourceSqlStatements(DBConfig dbConfig) {
+        String sql = "select name,flink_config from dlink_database where enabled = 1";
+        try {
+            return DBUtil.getDbSourceSQLStatement(sql, dbConfig);
+        } catch (IOException | SQLException e) {
+            logger.error("{} --> 获取 数据源信息异常，请检查数据库连接，连接信息为：{} ,异常信息为：{}", LocalDateTime.now(),
+                    dbConfig.toString(), e.getMessage(), e);
+        }
+
+        return "";
+    }
+
     public static void submit(Integer id, DBConfig dbConfig) {
         logger.info(LocalDateTime.now() + "开始提交作业 -- " + id);
         StringBuilder sb = new StringBuilder();
@@ -109,6 +121,9 @@ public class Submiter {
             }
             sb.append("\n");
         }
+        // 添加数据源全局变量
+        sb.append(getDbSourceSqlStatements(dbConfig));
+        // 添加自定义全局变量信息
         sb.append(getFlinkSQLStatement(id, dbConfig));
         List<String> statements = Submiter.getStatements(sb.toString());
         ExecutorSetting executorSetting = ExecutorSetting.build(taskConfig);
