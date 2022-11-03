@@ -153,7 +153,7 @@ const Login: React.FC = () => {
               <CheckCard
                 size={"default"}
                 key={item?.id}
-                avatar="https://gw.alipayobjects.com/zos/bmw-prod/f601048d-61c2-44d0-bf57-ca1afe7fd92e.svg"
+                avatar="/icons/tenant_default.svg"
                 title={item?.tenantCode}
                 value={item?.id}
                 description={item?.note}
