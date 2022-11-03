@@ -41,6 +41,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ArrayUtil;
 
@@ -59,13 +60,13 @@ public class UDFServiceImpl implements UDFService {
      * 快速获取 session 与 application 等类型，为了减少判断
      */
     private static final Map<String, List<GatewayType>> GATEWAY_TYPE_MAP = MapUtil
-            .builder("session",
-                    Arrays.asList(GatewayType.YARN_SESSION, GatewayType.KUBERNETES_SESSION, GatewayType.STANDALONE))
-            .put(YARN,
-                    Arrays.asList(GatewayType.YARN_APPLICATION, GatewayType.YARN_PER_JOB))
-            .put(APPLICATION,
-                    Arrays.asList(GatewayType.YARN_APPLICATION, GatewayType.KUBERNETES_APPLICATION))
-            .build();
+        .builder("session",
+            Arrays.asList(GatewayType.YARN_SESSION, GatewayType.KUBERNETES_SESSION, GatewayType.STANDALONE))
+        .put(YARN,
+            Arrays.asList(GatewayType.YARN_APPLICATION, GatewayType.YARN_PER_JOB))
+        .put(APPLICATION,
+            Arrays.asList(GatewayType.YARN_APPLICATION, GatewayType.KUBERNETES_APPLICATION))
+        .build();
 
     @Resource
     TaskService taskService;
@@ -80,14 +81,17 @@ public class UDFServiceImpl implements UDFService {
     @Override
     public void initUDF(String statement, GatewayType gatewayType, Integer missionId, Executor executor,
                         JobConfig config) {
-        if (gatewayType == GatewayType.KUBERNETES_APPLICATION) {
-            throw new BusException("udf 暂不支持k8s application");
-        }
-
         ProcessEntity process = ProcessContextHolder.getProcess();
         process.info("Initializing Flink UDF...Start");
 
         List<UDF> udf = UDFUtils.getUDF(statement);
+        if (CollUtil.isNotEmpty(udf)) {
+            if (gatewayType == GatewayType.KUBERNETES_APPLICATION) {
+                throw new BusException("udf 暂不支持k8s application");
+            }
+        } else {
+            return;
+        }
         UDFPath udfPath = FunctionFactory.initUDF(udf, missionId, executor);
 
         executor.initUDF(udfPath.getJarPaths());
