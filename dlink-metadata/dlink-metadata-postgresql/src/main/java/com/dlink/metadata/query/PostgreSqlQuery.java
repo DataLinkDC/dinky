@@ -101,6 +101,11 @@ public class PostgreSqlQuery extends AbstractDBQuery {
     }
 
     @Override
+    public String columnLength() {
+        return "length";
+    }
+
+    @Override
     public String columnComment() {
         return "comment";
     }
