@@ -97,24 +97,10 @@ export default {
 
   'global.table.isEnable': '是否启用',
   'global.table.note': '备注',
-
   'global.table.notePlaceholder': '请输入描述/备注!',
   'global.table.status': '状态',
   'global.table.status.normal': '正常',
   'global.table.status.abnormal': '异常',
-
-  'global.table.no': '序号',
-  'global.table.columnName': '字段名称',
-  'global.table.annotation': '注释',
-  'global.table.primarykey': '主键',
-  'global.table.automationAdd': '自增',
-  'global.table.isNull': '非空',
-  'global.table.default': '默认值',
-  'global.table.precision': '精度',
-  'global.table.decimalDigits': '小数范围',
-  'global.table.character': '字符集',
-  'global.table.collationRule': '排序规则',
-  'global.table.javaType': 'Java 类型',
 
   'global.table.jobname': '任务名称',
   'global.table.jobid': '作业ID',
