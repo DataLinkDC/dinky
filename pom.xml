@@ -547,7 +547,7 @@
                         </eclipse>
                         <removeUnusedImports />
                         <importOrder>
-                            <order>\#,com.dlink,org.apache,java,javax,org,com</order>
+                            <order>\#,com.dlink,org.apache,java,javax,org,com,</order>
                         </importOrder>
                         <licenseHeader>
                             <file>style/license_header</file>
