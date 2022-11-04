@@ -15,28 +15,44 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>dlink-catalog</artifactId>
         <groupId>com.dlink</groupId>
+        <artifactId>dlink-catalog</artifactId>
         <version>0.6.8-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
     <artifactId>dlink-catalog-mysql</artifactId>
     <packaging>pom</packaging>
-    <modules>
-        <module>dlink-catalog-mysql-1.14</module>
-        <module>dlink-catalog-mysql-1.13</module>
-        <module>dlink-catalog-mysql-1.15</module>
-    </modules>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
+
+    <profiles>
+        <profile>
+            <id>flink-1.13</id>
+            <modules>
+                <module>dlink-catalog-mysql-1.13</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>flink-1.14</id>
+            <modules>
+                <module>dlink-catalog-mysql-1.14</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>flink-1.15</id>
+            <modules>
+                <module>dlink-catalog-mysql-1.15</module>
+            </modules>
+        </profile>
+    </profiles>
 
 </project>

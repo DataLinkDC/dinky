@@ -58,7 +58,7 @@
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
         <maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
 
-        <spring-boot-dependencies.version>2.6.3</spring-boot-dependencies.version>
+        <spring-boot-dependencies.version>2.6.12</spring-boot-dependencies.version>
         <hutool.version>5.8.4</hutool.version>
         <druid-starter>1.2.8</druid-starter>
         <mybatis-plus-boot-starter.version>3.5.1</mybatis-plus-boot-starter.version>
@@ -78,11 +78,6 @@
         <maven-assembly-plugin.version>3.2.0</maven-assembly-plugin.version>
         <maven.resource.version>3.2.0</maven.resource.version>
         <junit.version>4.12</junit.version>
-        <!--  `provided` for product environment ,`compile` for dev environment  -->
-        <scope.runtime>provided</scope.runtime>
-        <!--  modify flink version  -->
-        <dlink.flink.version>1.14</dlink.flink.version>
-        <scala.binary.version>2.11</scala.binary.version>
         <protobuf-java.version>2.5.0</protobuf-java.version>
         <jedis.version>2.9.0</jedis.version>
         <javax.mail>1.6.2</javax.mail>
