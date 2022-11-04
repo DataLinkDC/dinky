@@ -26,13 +26,46 @@
 
     <artifactId>dlink-flink</artifactId>
     <packaging>pom</packaging>
-    <modules>
-        <module>dlink-flink-${dlink.flink.version}</module>
-    </modules>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
 
+    <profiles>
+        <profile>
+            <id>flink-1.11</id>
+            <modules>
+                <module>dlink-flink-1.11</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>flink-1.12</id>
+            <modules>
+                <module>dlink-flink-1.12</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>flink-1.13</id>
+            <modules>
+                <module>dlink-flink-1.13</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>flink-1.14</id>
+            <modules>
+                <module>dlink-flink-1.14</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>flink-1.15</id>
+            <modules>
+                <module>dlink-flink-1.15</module>
+            </modules>
+        </profile>
+    </profiles>
 </project>
