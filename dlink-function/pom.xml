@@ -32,6 +32,10 @@
             <artifactId>dlink-client-${dlink.flink.version}</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-flink-${dlink.flink.version}</artifactId>
+        </dependency>
+        <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
             <scope>provided</scope>
