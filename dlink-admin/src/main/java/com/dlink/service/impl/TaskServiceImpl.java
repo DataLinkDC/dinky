@@ -209,11 +209,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                     task.getDatabaseId(), null));
         }
         JobConfig config = buildJobConfig(task);
+        // init UDF
+        udfService.init(task.getStatement(), config);
         JobManager jobManager = JobManager.build(config);
-
-        // initUDF
-        udfService.initUDF(task.getStatement(), GatewayType.get(config.getType()), id, jobManager.getExecutor(),
-                config);
 
         if (!config.isJarTask()) {
             return jobManager.executeSql(task.getStatement());

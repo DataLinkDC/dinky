@@ -66,7 +66,7 @@ public class JVMPackage implements FunctionPackage {
             fileInputStreams[i] = FileUtil.getInputStream(absoluteFilePath);
         }
 
-        String jarPath = PathConstant.getUdfPackagePath(missionId, PathConstant.UDF_JAR_NAME);
+        String jarPath = PathConstant.getUdfPackagePath(missionId) + PathConstant.UDF_JAR_NAME;
         // 编译好的文件打包jar
         File file = FileUtil.file(jarPath);
         FileUtil.del(file);

@@ -21,13 +21,16 @@ package com.dlink.function.util;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.config.Dialect;
+import com.dlink.function.FunctionFactory;
 import com.dlink.function.compiler.CustomStringJavaCompiler;
 import com.dlink.function.compiler.CustomStringScalaCompiler;
 import com.dlink.function.constant.PathConstant;
 import com.dlink.function.data.model.UDF;
+import com.dlink.gateway.GatewayType;
 import com.dlink.pool.ClassEntity;
 import com.dlink.pool.ClassPool;
 
+import org.apache.flink.configuration.Configuration;
 import org.apache.flink.table.catalog.FunctionLanguage;
 
 import java.io.InputStream;
@@ -64,6 +67,23 @@ import groovy.lang.GroovyClassLoader;
  * @since 2021/12/27 23:25
  */
 public class UDFUtil {
+
+    public static final String SESSION = "SESSION";
+    public static final String YARN = "YARN";
+    public static final String APPLICATION = "APPLICATION";
+
+    /**
+     * 网关类型 map
+     * 快速获取 session 与 application 等类型，为了减少判断
+     */
+    public static final Map<String, List<GatewayType>> GATEWAY_TYPE_MAP = MapUtil
+            .builder(SESSION,
+                    Arrays.asList(GatewayType.YARN_SESSION, GatewayType.KUBERNETES_SESSION, GatewayType.STANDALONE))
+            .put(YARN,
+                    Arrays.asList(GatewayType.YARN_APPLICATION, GatewayType.YARN_PER_JOB))
+            .put(APPLICATION,
+                    Arrays.asList(GatewayType.YARN_APPLICATION, GatewayType.KUBERNETES_APPLICATION))
+            .build();
 
     protected static final Logger log = LoggerFactory.getLogger(UDFUtil.class);
     /**
@@ -106,6 +126,19 @@ public class UDFUtil {
                         .set("attr", split.size() > 1 ? split.get(1) : null);
                 return ENGINE.getTemplate(template).render(data2);
         }
+    }
+
+    public static String[] initJavaUDF(List<UDF> udf, GatewayType gatewayType, Integer missionId) {
+        return FunctionFactory.initUDF(
+                CollUtil.newArrayList(CollUtil.filterNew(udf, x -> x.getFunctionLanguage() != FunctionLanguage.PYTHON)),
+                missionId, null).getJarPaths();
+    }
+
+    public static String[] initPythonUDF(List<UDF> udf, GatewayType gatewayType, Integer missionId,
+                                         Configuration configuration) {
+        return FunctionFactory.initUDF(
+                CollUtil.newArrayList(CollUtil.filterNew(udf, x -> x.getFunctionLanguage() == FunctionLanguage.PYTHON)),
+                missionId, configuration).getPyPaths();
     }
 
     public static String getPyFileName(String className) {

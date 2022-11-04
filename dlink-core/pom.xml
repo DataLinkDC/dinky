@@ -182,5 +182,9 @@
             <groupId>com.dlink</groupId>
             <artifactId>dlink-process</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-function</artifactId>
+        </dependency>
     </dependencies>
 </project>
