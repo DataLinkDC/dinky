@@ -163,9 +163,9 @@ const StudioMenu = (props: any) => {
         message.error('执行失败');
       }
       let newTabs = tabs;
-      for (let i = 0; i < newTabs.panes.length; i++) {
-        if (newTabs.panes[i].key == key) {
-          newTabs.panes[i].console.result = res.datas;
+      for (const element of newTabs.panes) {
+        if (element.key == key) {
+          element.console.result = res.datas;
           break;
         }
       }

@@ -54,7 +54,7 @@ export async function getInitialState(): Promise<{
         password: result.datas.user.password,
         nickname: result.datas.user.nickname,
         worknum: result.datas.user.worknum,
-        avatar: result.datas.user.avatar ? result.datas.user.avatar : 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
+        avatar: result.datas.user.avatar ? result.datas.user.avatar : '/icons/user_avatar.png',
         mobile: result.datas.user.mobile,
         enabled: result.datas.user.enabled,
         isDelete: result.datas.user.isDelete,

@@ -334,6 +334,12 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                     String columnComment = results.getString(dbQuery.columnComment()).replaceAll("\"|'", "");
                     field.setComment(columnComment);
                 }
+                if (columnList.contains(dbQuery.columnLength())) {
+                    int length = results.getInt(dbQuery.columnLength());
+                    if (!results.wasNull()) {
+                        field.setLength(length);
+                    }
+                }
                 if (columnList.contains(dbQuery.isNullable())) {
                     field.setNullable(Asserts.isEqualsIgnoreCase(results.getString(dbQuery.isNullable()),
                             dbQuery.nullableValue()));
