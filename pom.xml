@@ -42,7 +42,7 @@
         <module>dlink-scheduler</module>
         <module>dlink-core</module>
         <module>dlink-app</module>
-        <module>dlink-web</module>
+        <!--<module>dlink-web</module>-->
         <module>dlink-admin</module>
         <module>dlink-assembly</module>
         <module>dlink-process</module>
@@ -597,4 +597,144 @@
             </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>aliyun</id>
+            <url>https://maven.aliyun.com/repository/central</url>
+        </repository>
+        <repository>
+            <id>maven-central</id>
+            <url>https://repo1.maven.org/maven2/</url>
+        </repository>
+    </repositories>
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>dev</name>
+                </property>
+            </activation>
+            <properties>
+                <!--  `provided` for product environment ,`compile` for dev environment  -->
+                <scope.runtime>compile</scope.runtime>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>prod</id>
+            <activation>
+                <property>
+                    <name>prod</name>
+                </property>
+            </activation>
+            <properties>
+                <!--  `provided` for product environment ,`compile` for dev environment  -->
+                <scope.runtime>provided</scope.runtime>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>scala-2.11</id>
+            <activation>
+                <property>
+                    <name>scala-2.11</name>
+                </property>
+            </activation>
+            <properties>
+                <scala.binary.version>2.11</scala.binary.version>
+                <scala.version>2.11.7</scala.version>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>scala-2.12</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>scala-2.12</name>
+                </property>
+            </activation>
+            <properties>
+                <scala.binary.version>2.12</scala.binary.version>
+                <scala.version>2.12.10</scala.version>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>flink-1.11</id>
+            <activation>
+                <property>
+                    <name>flink-1.11</name>
+                </property>
+            </activation>
+            <properties>
+                <!--  modify flink version  -->
+                <dlink.flink.version>1.11</dlink.flink.version>
+                <flink.version>1.11.6</flink.version>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>flink-1.12</id>
+            <activation>
+                <property>
+                    <name>flink-1.12</name>
+                </property>
+            </activation>
+            <properties>
+                <!--  modify flink version  -->
+                <dlink.flink.version>1.12</dlink.flink.version>
+                <flink.version>1.12.7</flink.version>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>flink-1.13</id>
+            <activation>
+                <property>
+                    <name>flink-1.13</name>
+                </property>
+            </activation>
+            <properties>
+                <!--  modify flink version  -->
+                <dlink.flink.version>1.13</dlink.flink.version>
+                <flink.version>1.13.6</flink.version>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>flink-1.14</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>flink-1.14</name>
+                </property>
+            </activation>
+            <properties>
+                <!--  modify flink version  -->
+                <dlink.flink.version>1.14</dlink.flink.version>
+                <flink.version>1.14.6</flink.version>
+                <flinkcdc.version>2.2.1</flinkcdc.version>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>flink-1.15</id>
+            <activation>
+                <property>
+                    <name>flink-1.15</name>
+                </property>
+            </activation>
+            <properties>
+                <!--  modify flink version  -->
+                <dlink.flink.version>1.15</dlink.flink.version>
+                <flink.version>1.15.2</flink.version>
+            </properties>
+        </profile>
+
+    </profiles>
 </project>
