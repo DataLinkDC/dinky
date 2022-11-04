@@ -59,6 +59,7 @@ jobs:
           ./mvnw -B clean install \
                  -Dmaven.test.skip=true \
                  -Dcheckstyle.skip=true \
+                 -P prod,scala-2.12,flink-1.14,!dev,!flink-1.11,!flink-1.12,!flink-1.13,!scala-2.11,!flink-1.15 \
                  --no-snapshot-updates
       # 查看打包的大小
       - name: View package size

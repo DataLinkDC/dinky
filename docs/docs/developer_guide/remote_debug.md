@@ -76,8 +76,8 @@ mvn clean package -Dmaven.test.skip=true
 <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>${target.java.version}</maven.compiler.source>
+        <maven.compiler.target>${target.java.version}</maven.compiler.target>
         <!--  `provided` for product environment ,`compile` for dev environment  -->
         <scope.runtime>compile</scope.runtime>
     </properties>
