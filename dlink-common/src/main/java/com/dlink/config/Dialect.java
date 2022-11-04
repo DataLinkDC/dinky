@@ -28,6 +28,7 @@ import com.dlink.assertion.Asserts;
  * @since 2021/12/13
  **/
 public enum Dialect {
+
     FLINKSQL("FlinkSql"),
     FLINKJAR("FlinkJar"),
     FLINKSQLENV("FlinkSqlEnv"),
@@ -110,4 +111,3 @@ public enum Dialect {
         }
     }
 }
-

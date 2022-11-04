@@ -19,8 +19,6 @@
 
 package com.dlink.service;
 
-import com.dlink.executor.Executor;
-import com.dlink.gateway.GatewayType;
 import com.dlink.job.JobConfig;
 
 /**
@@ -30,12 +28,8 @@ import com.dlink.job.JobConfig;
 public interface UDFService {
 
     /**
-     *
-     * @param statement sql语句
-     * @param gatewayType flink 网关提交类型
-     * @param missionId 任务id
-     * @param executor flink执行器
-     * @param config job配置
+     * @param statement   sql语句
+     * @param config      job配置
      */
-    void initUDF(String statement, GatewayType gatewayType, Integer missionId,Executor executor, JobConfig config);
+    void init(String statement, JobConfig config);
 }
