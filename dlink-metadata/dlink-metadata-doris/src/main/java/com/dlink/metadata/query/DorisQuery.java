@@ -75,6 +75,11 @@ public class DorisQuery extends AbstractDBQuery {
         return "Key";
     }
 
+    @Override
+    public String defaultValue() {
+        return "Default";
+    }
+
     public boolean isKeyIdentity(ResultSet results) throws SQLException {
         return "auto_increment".equals(results.getString("Extra"));
     }
@@ -86,32 +91,42 @@ public class DorisQuery extends AbstractDBQuery {
 
     @Override
     public String characterSet() {
-        return "Default";
+        return "Collation";
     }
 
+    // Doris does not have sort filed ,
+    // return null skip it
     @Override
     public String collation() {
-        return "Default";
+        return null;
     }
 
+    // Doris does not have columnPosition field，
+    // return null skip it
     @Override
     public String columnPosition() {
-        return "Default";
+        return null;
     }
 
+    // Doris does not have precision field，
+    // return null skip it
     @Override
     public String precision() {
-        return "Default";
+        return null;
     }
 
+    // Doris does not have scale field，
+    // return null skip it
     @Override
     public String scale() {
-        return "Default";
+        return null;
     }
 
+    // Doris does not have autoIncrement field，
+    // return null skip it
     @Override
     public String autoIncrement() {
-        return "Default";
+        return null;
     }
 
     @Override
