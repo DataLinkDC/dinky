@@ -220,7 +220,7 @@ const EmailForm: React.FC<AlertInstanceFormProps> = (props) => {
   return (
     <Modal
       width={"40%"}
-      bodyStyle={{padding: '32px 40px 48px'}}
+      bodyStyle={{padding: '32px 40px 48px' ,height: '600px', overflowY: 'auto'}}
       destroyOnClose
       title={formVals.id ? l('pages.registerCenter.alert.instance.modify') : l('pages.registerCenter.alert.instance.create')}
       visible={modalVisible}

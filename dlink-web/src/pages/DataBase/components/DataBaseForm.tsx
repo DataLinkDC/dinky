@@ -108,7 +108,7 @@ const DataBaseForm: React.FC<ClickHouseFormProps> = (props) => {
         </Form.Item>
         <Form.Item
           name="groupName"
-          label={l('pages.registerCenter.db.alias')}
+          label={l('pages.registerCenter.db.groupName')}
         >
           <Select>
             <Option value="source">{l('pages.registerCenter.db.source')}</Option>
