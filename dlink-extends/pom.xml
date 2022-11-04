@@ -37,8 +37,8 @@
         <mariadb-java-client.version>2.5.4</mariadb-java-client.version>
         <derby.version>10.14.2.0</derby.version>
         <clickhouse-jdbc.version>0.2.6</clickhouse-jdbc.version>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>${target.java.version}</maven.compiler.source>
+        <maven.compiler.target>${target.java.version}</maven.compiler.target>
     </properties>
 
     <dependencies>
