@@ -295,7 +295,7 @@ const StudioHistory = (props: any) => {
               </Tag>
             </ProDescriptions.Item>
             <ProDescriptions.Item label="共享会话">
-              {config.useSession ? '启用' : '禁用'}
+              {config.useSession ? l('button.enable') : l('button.disable')}
             </ProDescriptions.Item>
             <ProDescriptions.Item label="会话 Key">
               {config.session}
@@ -313,16 +313,16 @@ const StudioHistory = (props: any) => {
               {config.clusterConfigurationId}
             </ProDescriptions.Item>
             <ProDescriptions.Item label="预览结果">
-              {config.useResult ? '启用' : '禁用'}
+              {config.useResult ? l('button.enable') : l('button.disable')}
             </ProDescriptions.Item>
             <ProDescriptions.Item label="打印流">
-              {config.useChangeLog ? '启用' : '禁用'}
+              {config.useChangeLog ? l('button.enable') : l('button.disable')}
             </ProDescriptions.Item>
             <ProDescriptions.Item label="最大行数">
               {config.maxRowNum}
             </ProDescriptions.Item>
             <ProDescriptions.Item label="自动停止">
-              {config.useAutoCancel ? '启用' : '禁用'}
+              {config.useAutoCancel ? l('button.enable') : l('button.disable')}
             </ProDescriptions.Item>
             <ProDescriptions.Item span={2} label="JobManagerAddress">
               {row.jobManagerAddress}
@@ -334,10 +334,10 @@ const StudioHistory = (props: any) => {
               {config.jobName}
             </ProDescriptions.Item>
             <ProDescriptions.Item label="片段机制">
-              {config.useSqlFragment ? '启用' : '禁用'}
+              {config.useSqlFragment ? l('button.enable') : l('button.disable')}
             </ProDescriptions.Item>
             <ProDescriptions.Item label="语句集">
-              {config.useStatementSet ? '启用' : '禁用'}
+              {config.useStatementSet ? l('button.enable') : l('button.disable')}
             </ProDescriptions.Item>
             <ProDescriptions.Item label="并行度">
               {config.parallelism}

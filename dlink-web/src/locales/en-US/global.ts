@@ -23,6 +23,7 @@ export default {
   'button.confirm': 'Confirm',
   'button.cancel': 'Cancel',
   'button.finish': 'Finish',
+  'button.back': 'Back',
   'button.save': 'Save',
   'button.delete': 'Delete',
   'button.batchDelete': 'Batch Delete',

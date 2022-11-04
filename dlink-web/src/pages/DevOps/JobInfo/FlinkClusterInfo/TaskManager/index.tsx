@@ -73,7 +73,7 @@ const TaskManagerInfo = (props: any) => {
     return (
       <>
         <div style={{marginBottom: 4}}>
-          <Button title={'返回'} onClick={handleBack}> ← Back<HomeOutlined/> </Button>
+          <Button title={l('button.back')} onClick={handleBack}> ← {l('button.back')}<HomeOutlined/> </Button>
         </div>
         <Tabs defaultActiveKey="metrics" size="small"
 

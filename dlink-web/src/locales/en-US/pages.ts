@@ -117,13 +117,6 @@ export default {
   'pages.settings.FlinkNoUseSetting': 'After The Flink Task Is Enabled, Operations Such As Savepoint And Stop Are Performed Through The RestAPI Of JobManager',
   'pages.settings.FlinkLogic': 'Whether The Calculation Of Field Consanguinity Analysis For Flink Tasks Is Based On A Logical Plan Is Supported Only In Version 1.14',
 
-  'pages.settings.FlinkUpdate': 'Update',
-  'pages.settings.FlinkSave': 'Save',
-  'pages.settings.FlinkCancel': 'Cancel',
-  'pages.settings.FlinkUse': 'In Use',
-  'pages.settings.FlinkNotUse': 'Not Use',
-
-
   'pages.user.UserManger': 'User Management',
   'pages.user.UserName': 'User Name',
   'pages.user.UserJobNumber': 'Job Number',

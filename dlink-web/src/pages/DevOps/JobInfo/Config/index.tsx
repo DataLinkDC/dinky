@@ -52,10 +52,10 @@ const Config = (props: any) => {
         <Descriptions.Item label="共享会话">
           {job?.history?.session ? <Link>{job?.history?.session}</Link> : '禁用'}
         </Descriptions.Item>
-        <Descriptions.Item label="片段机制">{job?.history?.config.useSqlFragment ? '启用' : '禁用'}</Descriptions.Item>
-        <Descriptions.Item label="语句集">{job?.history?.config.useStatementSet ? '启用' : '禁用'}</Descriptions.Item>
+        <Descriptions.Item label="片段机制">{job?.history?.config.useSqlFragment ? l('button.enable') : l('button.disable')}</Descriptions.Item>
+        <Descriptions.Item label="语句集">{job?.history?.config.useStatementSet ? l('button.enable') : l('button.disable')}</Descriptions.Item>
         <Descriptions.Item label="任务类型">{job?.history?.config.isJarTask ? 'Jar' : 'FlinkSQL'}</Descriptions.Item>
-        <Descriptions.Item label="批模式">{job?.history?.config.useBatchModel ? '启用' : '禁用'}</Descriptions.Item>
+        <Descriptions.Item label="批模式">{job?.history?.config.useBatchModel ? l('button.enable') : l('button.disable')}</Descriptions.Item>
         <Descriptions.Item label="CheckPoint">{job?.history?.config.checkpoint}</Descriptions.Item>
         <Descriptions.Item label="SavePoint机制">
           {job?.history?.config.savePointStrategy == 'NONE' ? '禁用' :

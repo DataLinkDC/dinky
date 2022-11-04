@@ -118,12 +118,6 @@ export default {
   'pages.settings.FlinkNoUseSetting': '启用后，Flink 任务的 savepoint、停止等操作将通过 JobManager 的 RestAPI 进行',
   'pages.settings.FlinkLogic': '在计算 Flink 任务的字段血缘分析时是否基于逻辑计划进行，只支持 1.14 版本',
 
-  'pages.settings.FlinkUpdate': '修改',
-  'pages.settings.FlinkSave': '保存',
-  'pages.settings.FlinkCancel': '取消',
-  'pages.settings.FlinkUse': '启用',
-  'pages.settings.FlinkNotUse': '禁用',
-
   'pages.user.UserManger': '用户管理',
   'pages.user.UserName': '用户名',
   'pages.user.UserJobNumber': '工号',

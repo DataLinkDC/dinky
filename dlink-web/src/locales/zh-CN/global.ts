@@ -23,6 +23,7 @@ export default {
   'button.confirm': '确定',
   'button.cancel': '取消',
   'button.finish': '完成',
+  'button.back': '返回',
   'button.save': '保存',
   'button.delete': '删除',
   'button.batchDelete': '批量删除',
