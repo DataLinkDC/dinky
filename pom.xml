@@ -60,7 +60,7 @@
         <scala.binary.version>2.12</scala.binary.version>
         <scala.version>2.12.10</scala.version>
         <!--  `provided` for product environment ,`compile` for dev environment  -->
-        <scope.runtime>compile</scope.runtime>
+        <scope.runtime>provided</scope.runtime>
         <dlink.flink.version>1.14</dlink.flink.version>
         <spring-boot-dependencies.version>2.6.12</spring-boot-dependencies.version>
         <hutool.version>5.8.4</hutool.version>
@@ -545,7 +545,7 @@
                         <eclipse>
                             <file>style/spotless_dlink_formatter.xml</file>
                         </eclipse>
-                        <removeUnusedImports/>
+                        <removeUnusedImports />
                         <importOrder>
                             <order>\#,com.dlink,org.apache,java,javax,org,com</order>
                         </importOrder>
@@ -582,7 +582,7 @@
                         <includes>
                             <include>**/*.md</include>
                         </includes>
-                        <flexmark/>
+                        <flexmark />
                     </markdown>
                 </configuration>
                 <executions>
@@ -626,10 +626,10 @@
         <profile>
             <id>prod</id>
             <activation>
+                <activeByDefault>true</activeByDefault>
                 <property>
                     <name>prod</name>
                 </property>
-                <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
                 <!--  `provided` for product environment ,`compile` for dev environment  -->
