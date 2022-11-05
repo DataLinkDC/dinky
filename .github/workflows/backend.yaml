@@ -55,10 +55,10 @@ jobs:
             ${{ runner.os }}-
 
       - name: Install Dependencies
-        run: npm install
+        run: cd dlink-web && npm install
 
       - name: Npm Web Build
-        run: npm build
+        run: npm build && cd ../
 
       # maven编译
       - name: Set up JDK 1.8
