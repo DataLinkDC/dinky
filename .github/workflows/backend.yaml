@@ -43,8 +43,6 @@ jobs:
       # 编译web
       - name: Cache node modules
         uses: actions/cache@v2
-        env:
-          cache-name: cache-node-modules
         with:
           # npm cache files are stored in `~/.npm` on Linux/macOS
           path: ~/.npm
@@ -56,7 +54,7 @@ jobs:
         run: cd dlink-web && npm install --force
 
       - name: Npm Web Build
-        run: npm build && cd ../
+        run: cd dlink-web && npm build
 
       # maven编译
       - name: Set up JDK 1.8
