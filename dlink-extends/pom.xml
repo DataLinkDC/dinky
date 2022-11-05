@@ -153,6 +153,7 @@
                 </executions>
             </plugin>
         </plugins>
+        <outputDirectory>./lib</outputDirectory>
         <finalName>${project.artifactId}</finalName>
     </build>
 
