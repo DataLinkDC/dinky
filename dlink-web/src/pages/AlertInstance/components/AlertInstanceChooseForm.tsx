@@ -76,7 +76,7 @@ const AlertInstanceChooseForm: React.FC<UpdateFormProps> = (props) => {
     <Modal
       width={"40%"}
       bodyStyle={{padding: '32px 40px 48px'}}
-      title={values?.id ? '编辑报警实例' : '创建报警实例'}
+      title={values?.id ? l('pages.registerCenter.alert.instance.modify') : l('pages.registerCenter.alert.instance.create')}
       visible={modalVisible}
       onCancel={() => {
         setAlertType(undefined);

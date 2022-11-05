@@ -128,7 +128,7 @@ const StudioDataBase = (props: any) => {
         },
       },
       {
-        title: '注释',
+        title: l('global.table.note'),
         sorter: true,
         valueType: 'textarea',
         dataIndex: 'note',

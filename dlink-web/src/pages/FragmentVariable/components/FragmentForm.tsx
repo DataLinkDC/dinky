@@ -77,36 +77,36 @@ const FragmentForm: React.FC<FragmentFormProps> = (props: any) => {
       <>
         <FormItem
           name="name"
-          label="名称"
-          rules={[{required: true, message: '请输入名称！'}]}>
-          <Input placeholder="请输入唯一名称"/>
+          label={l('pages.registerCenter.fv.name')}
+          rules={[{required: true, message: l('pages.registerCenter.fv.namePlaceholder')}]}>
+          <Input placeholder={l('pages.registerCenter.fv.namePlaceholder')}/>
         </FormItem>
         <FormItem
           name="alias"
-          label="别名"
-          rules={[{required: true, message: '请输入别名！'}]}>
-          <Input placeholder="请输入别名"/>
+          label={l('pages.registerCenter.fv.alias')}
+          rules={[{required: true, message: l('pages.registerCenter.fv.aliasPlaceholder')}]}>
+          <Input placeholder={l('pages.registerCenter.fv.aliasPlaceholder')}/>
         </FormItem>
         <FormItem
           name="note"
-          label="描述"
+          label={l('global.table.note')}
         >
-          <TextArea placeholder="请输入该全局变量的描述信息!" allowClear autoSize={{minRows: 3, maxRows: 10}}/>
+          <TextArea placeholder={l('global.table.notePlaceholder')} allowClear autoSize={{minRows: 3, maxRows: 10}}/>
         </FormItem>
         <FormItem
           name="fragmentValue"
-          label="全局变量值"
-          rules={[{required: true, message: '请输入全局变量值！'}]}
+          label={l('pages.registerCenter.fv.fragmentValue')}
+          rules={[{required: true, message: l('pages.registerCenter.fv.fragmentValuePlaceholder')}]}
         >
-          <TextArea placeholder="请输入全局变量值!!!"
+          <TextArea placeholder={l('pages.registerCenter.fv.fragmentValuePlaceholder')}
                     allowClear
                     autoSize={{minRows: 3, maxRows: 10}}/>
         </FormItem>
         <FormItem
           name="enabled"
           label={l('global.table.isEnable')}
-          rules={[{required: true, message: '请输入是否启用！'}]}>
-          <Switch checkedChildren="启用" unCheckedChildren="禁用"
+          rules={[{required: true, message: l('pages.registerCenter.fv.enabledPlaceholder')}]}>
+          <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                   defaultChecked={formVals.enabled}/>
         </FormItem>
       </>
@@ -117,9 +117,7 @@ const FragmentForm: React.FC<FragmentFormProps> = (props: any) => {
     return (
       <>
         <Button onClick={() => handleModalVisible(false)}>{l('button.cancel')}</Button>
-        <Button type="primary" onClick={() => submitForm()}>
-          {l('button.finish')}
-        </Button>
+        <Button type="primary" onClick={() => submitForm()}>{l('button.finish')}</Button>
       </>
     );
   };
@@ -129,7 +127,7 @@ const FragmentForm: React.FC<FragmentFormProps> = (props: any) => {
       width={"40%"}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title={formVals.id ? "维护全局变量" : "新建全局变量"}
+      title={formVals.id ? l('pages.registerCenter.fv.modify') : l('pages.registerCenter.fv.create')}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}

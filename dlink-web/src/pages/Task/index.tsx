@@ -85,7 +85,7 @@ const TaskTableList: React.FC<{}> = () => {
     <Dropdown
       overlay={
         <Menu onClick={({key}) => editAndDelete(key, item)}>
-          <Menu.Item key="submit">执行</Menu.Item>
+          <Menu.Item key="submit">{l('button.submit')}</Menu.Item>
           <Menu.Item key="edit">{l('button.edit')}</Menu.Item>
           <Menu.Item key="delete">{l('button.delete')}</Menu.Item>
         </Menu>
@@ -185,7 +185,7 @@ const TaskTableList: React.FC<{}> = () => {
       hideInTable: true,
     },
     {
-      title: '注释',
+      title: l('global.table.note'),
       sorter: true,
       valueType: 'textarea',
       dataIndex: 'note',

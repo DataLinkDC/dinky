@@ -238,7 +238,7 @@ const StudioSetting = (props: any) => {
                   icon: <InfoCircleOutlined/>
                 }}
               >
-                <Switch checkedChildren="启用" unCheckedChildren="禁用"
+                <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                 />
               </Form.Item>
             </Col>
@@ -252,7 +252,7 @@ const StudioSetting = (props: any) => {
                   icon: <InfoCircleOutlined/>
                 }}
               >
-                <Switch checkedChildren="启用" unCheckedChildren="禁用"
+                <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                 />
               </Form.Item>
             </Col>
@@ -261,7 +261,7 @@ const StudioSetting = (props: any) => {
                 label="批模式" className={styles.form_item} name="batchModel" valuePropName="checked"
                 tooltip={{title: '使用批模式', icon: <InfoCircleOutlined/>}}
               >
-                <Switch checkedChildren="启用" unCheckedChildren="禁用"
+                <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                 />
               </Form.Item>
             </Col>

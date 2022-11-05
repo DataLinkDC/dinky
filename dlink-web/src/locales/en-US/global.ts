@@ -23,6 +23,7 @@ export default {
   'button.confirm': 'Confirm',
   'button.cancel': 'Cancel',
   'button.finish': 'Finish',
+  'button.back': 'Back',
   'button.save': 'Save',
   'button.delete': 'Delete',
   'button.batchDelete': 'Batch Delete',
@@ -46,9 +47,9 @@ export default {
   'button.heartbeat': 'Heartbeat',
   'button.recycle': 'Recycle',
   'button.refresh': 'Refresh',
+  'button.test': 'Test',
   'button.refreshData': 'Refresh Data',
   'button.collapseDir': 'Collapse Directory',
-
 
   'right.menu.open': 'Open',
   'right.menu.submit': 'Sync Submit',
@@ -99,36 +100,11 @@ export default {
 
   'global.table.isEnable': 'Is Enable',
   'global.table.note': 'Note',
-
   'global.table.status': 'Status',
+
+  'global.table.notePlaceholder': 'please input Note',
   'global.table.status.normal': 'Normal',
   'global.table.status.abnormal': 'Abnormal',
-
-  'global.table.version': 'Version',
-  'global.table.jobManagerAddress': 'JobManger Address',
-  'global.table.jobManagerHaAddress': 'JobManger HA Address',
-  'global.table.type': 'Type',
-  'global.table.nickName': 'Nick Name',
-  'global.table.instanceName': 'Instance Name',
-  'global.table.instanceId': 'Instance Id',
-  'global.table.clusterManagement': 'Flink Instance Management',
-  'global.table.create': 'Create',
-  'global.table.heartbeat': 'Heartbeat',
-  'global.table.recycle': 'Recycle',
-  'global.table.refresh': 'Refresh',
-
-  'global.table.no': 'No',
-  'global.table.columnName': 'Column Name',
-  'global.table.annotation': 'Annotation',
-  'global.table.primarykey': 'Primary key',
-  'global.table.automationAdd': 'Automation Add',
-  'global.table.isNull': 'Is Null',
-  'global.table.default': 'Default',
-  'global.table.precision': 'Precision',
-  'global.table.decimalDigits': 'Decimal Digits',
-  'global.table.character': 'Character',
-  'global.table.collationRule': 'Collation Rule',
-  'global.table.javaType': 'java Type',
 
   'global.table.jobname': 'Job Name',
   'global.table.jobid': 'Job Id',

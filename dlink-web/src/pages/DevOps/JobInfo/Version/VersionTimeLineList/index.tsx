@@ -103,7 +103,7 @@ const VersionTimeLineList = (props: any) => {
         {reverse ? "倒序" : "正序"}
       </Button>
       <Button type="primary" style={{margin: "5px"}} onClick={refresh}>
-        刷新
+        {l('button.refresh')}
       </Button>
       <Radio.Group
         onChange={onChange}

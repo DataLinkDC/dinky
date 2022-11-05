@@ -149,7 +149,7 @@ const JobInfo = (props: any) => {
 
   const getButtons = () => {
     let buttons = [
-      <Button key="back" type="dashed" onClick={handleBack}>返回</Button>,
+      <Button key="back" type="dashed" onClick={handleBack}>{l('button.back')}</Button>,
     ];
     buttons.push(<Button key="refresh" icon={<RedoOutlined/>} onClick={handleRefreshJobInfoDetail}/>);
     buttons.push(<Button key="flinkwebui">

@@ -104,8 +104,8 @@ const DBForm: React.FC<UpdateFormProps> = (props) => {
   return (
     <Modal
       width={"40%"}
-      bodyStyle={{padding: '32px 40px 48px'}}
-      title={values.id ? '编辑数据源' : '创建数据源'}
+      bodyStyle={{padding: '32px 40px 48px' , height: '600px', overflowY: 'auto'}}
+      title={values.id ? l('pages.registerCenter.db.modify') : l('pages.registerCenter.db.create')}
       visible={modalVisible}
       onCancel={() => {
         setDbType(undefined);

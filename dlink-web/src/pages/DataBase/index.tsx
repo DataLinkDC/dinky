@@ -79,8 +79,8 @@ const DataBaseTableList: React.FC<{}> = (props: any) => {
 
   const onDeleteDataBase = (row: DataBaseItem) => {
     Modal.confirm({
-      title: '删除数据源',
-      content: `确定删除该数据源【${row.alias === "" ? row.name : row.alias}】吗？`,
+      title: l('pages.registerCenter.db.delete'),
+      content: l('pages.registerCenter.db.delete','',{dbName: (row.alias === "" ? row.name : row.alias)}),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -154,17 +154,17 @@ const DataBaseTableList: React.FC<{}> = (props: any) => {
                     </Tag>
                     {(row.status) ?
                       (<Tag icon={<CheckCircleOutlined/>} color="success">
-                        正常
+                        {l('global.table.status.normal')}
                       </Tag>) :
                       <Tag icon={<ExclamationCircleOutlined/>} color="warning">
-                        异常
+                        {l('global.table.status.abnormal')}
                       </Tag>}
                   </Space>
                 )}
               />
             </Card>)
         }}
-        headerTitle="数据源"
+        headerTitle={l('pages.registerCenter.db.Management')}
       />
       <DBForm onCancel={() => {
         handleDBFormModalVisible(false);

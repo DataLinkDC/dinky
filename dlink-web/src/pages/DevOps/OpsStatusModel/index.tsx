@@ -126,7 +126,7 @@ const OpsStatusModal: React.FC<IOpsStatusModalProps> = (props): React.ReactEleme
   // value = {checkedList}
   // onChange = {onChange}
   return (
-    <Modal width={800} okText={'提交'} onCancel={() => {
+    <Modal width={800} okText={l('button.submit')} onCancel={() => {
       onOpsStatusCallBack()
     }} onOk={() => {
       onSubmit()

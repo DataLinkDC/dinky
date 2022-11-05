@@ -66,8 +66,8 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       setFormValues(currentItem);
     } else if (key === 'delete') {
       Modal.confirm({
-        title: '删除 Flink 实例',
-        content: '确定删除该 Flink 实例吗？',
+        title: l('pages.registerCenter.cluster.delete'),
+        content: l('pages.registerCenter.cluster.deleteConfirm'),
         okText: l('button.confirm'),
         cancelText: l('button.cancel'),
         onOk: async () => {
@@ -86,13 +86,13 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
   const clearCluster = async () => {
 
     Modal.confirm({
-      title: '回收 Flink 实例',
-      content: '确定回收所有自动创建且过期的 Flink 实例吗？',
+      title: l('pages.registerCenter.cluster.recycle'),
+      content: l('pages.registerCenter.cluster.recycleConfirm'),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
-        const {datas} = await getData(url + '/clear', '回收 Flink 实例', null);
-        message.success(`成功回收${datas}个 Flink 实例`);
+        const {datas} = await getData(url + '/clear', l('pages.registerCenter.cluster.recycle'), null);
+        message.success(l('pages.registerCenter.cluster.recycle.success', '', {total: datas}));
         actionRef.current?.reloadAndRest?.();
       }
     });
@@ -117,37 +117,28 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
 
   const columns: ProColumns<ClusterTableListItem>[] = [
     {
-      title: l('global.table.instanceName'),
+      title: l('pages.registerCenter.cluster.instanceName'),
       dataIndex: 'name',
-      tip: '名称是唯一的',
       sorter: true,
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '名称为必填项',
-          },
-        ],
-      },
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
     },
     {
-      title: l('global.table.instanceId'),
+      title: l('pages.registerCenter.cluster.instanceId'),
       dataIndex: 'id',
       hideInTable: true,
       hideInForm: true,
       hideInSearch: true,
     },
     {
-      title: l('global.table.nickName'),
+      title: l('pages.registerCenter.cluster.alias'),
       sorter: true,
       dataIndex: 'alias',
       hideInTable: false,
     },
     {
-      title: l('global.table.type'),
+      title: l('pages.registerCenter.cluster.type'),
       sorter: true,
       dataIndex: 'type',
       hideInForm: false,
@@ -190,28 +181,23 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: l('global.table.jobManagerHaAddress'),
+      title: l('pages.registerCenter.cluster.jobManagerHaAddress'),
       sorter: true,
       dataIndex: 'hosts',
       valueType: 'textarea',
       hideInForm: false,
       hideInSearch: true,
       hideInTable: true,
-      renderFormItem: (item, {defaultRender, ...rest}, form) => {
-        return <TextArea
-          placeholder="添加 Flink 实例的 JobManager 的 RestApi 地址。当 HA 模式时，地址间用英文逗号分隔，例如：192.168.123.101:8081,192.168.123.102:8081,192.168.123.103:8081"
-          allowClear autoSize={{minRows: 3, maxRows: 10}}/>;
-      },
     },
     {
-      title: l('global.table.jobManagerAddress'),
+      title: l('pages.registerCenter.cluster.jobManagerAddress'),
       sorter: true,
       dataIndex: 'jobManagerHost',
       hideInForm: true,
       hideInSearch: true,
       hideInTable: false,
     }, {
-      title: l('global.table.version'),
+      title: l('pages.registerCenter.cluster.version'),
       sorter: true,
       dataIndex: 'version',
       hideInForm: true,
@@ -241,7 +227,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: '注释',
+      title: l('global.table.note'),
       sorter: true,
       valueType: 'textarea',
       dataIndex: 'note',
@@ -337,7 +323,6 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
     {
       title: l('global.table.operate'),
       dataIndex: 'option',
-      tooltip: 'FLinkWebUI 链接地址',
       valueType: 'option',
       render: (_, record) => [
         <a
@@ -371,7 +356,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
   return (
     <PageContainer title={false}>
       <ProTable<ClusterTableListItem>
-        headerTitle={l('global.table.clusterManagement')}
+        headerTitle={l('pages.registerCenter.clusterManagement')}
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -408,7 +393,10 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
                     style={{fontWeight: 600}}>{selectedRowsState.length}</a>
                 })}  &nbsp;&nbsp;
               <span>
-                被禁用的 Flink 实例共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} 个
+                {l('pages.registerCenter.cluster.disableTotalOf', '',
+                  {
+                    total: (selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0))
+                  })}
               </span>
             </div>
           }
@@ -416,8 +404,8 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
           <Button type="primary" danger
                   onClick={() => {
                     Modal.confirm({
-                      title: '删除 Flink 实例',
-                      content: '确定删除选中的 Flink 实例吗？',
+                      title: l('pages.registerCenter.cluster.delete'),
+                      content: l('pages.registerCenter.cluster.deleteConfirm'),
                       okText: l('button.confirm'),
                       cancelText: l('button.cancel'),
                       onOk: async () => {
@@ -433,8 +421,8 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
           <Button type="primary"
                   onClick={() => {
                     Modal.confirm({
-                      title: '启用 Flink 实例',
-                      content: '确定启用选中的 Flink 实例吗？',
+                      title: l('pages.registerCenter.cluster.enable'),
+                      content: l('pages.registerCenter.cluster.enableConfirm'),
                       okText: l('button.confirm'),
                       cancelText: l('button.cancel'),
                       onOk: async () => {
@@ -448,8 +436,8 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
           <Button danger
                   onClick={() => {
                     Modal.confirm({
-                      title: '禁用 Flink 实例',
-                      content: '确定禁用选中的 Flink 实例吗？',
+                      title: l('pages.registerCenter.cluster.disable'),
+                      content: l('pages.registerCenter.cluster.disableConfirm'),
                       okText: l('button.confirm'),
                       cancelText: l('button.cancel'),
                       onOk: async () => {
