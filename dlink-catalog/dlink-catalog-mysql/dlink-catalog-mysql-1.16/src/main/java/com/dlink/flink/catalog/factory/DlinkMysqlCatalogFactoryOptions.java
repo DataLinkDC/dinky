@@ -17,30 +17,28 @@
  *
  */
 
-package com.dlink.cdc;
+package com.dlink.flink.catalog.factory;
 
-import com.dlink.executor.CustomTableEnvironment;
-import com.dlink.model.FlinkCDCConfig;
+import org.apache.flink.annotation.Internal;
+import org.apache.flink.configuration.ConfigOption;
+import org.apache.flink.configuration.ConfigOptions;
 
-import com.dlink.model.Table;
-import org.apache.flink.streaming.api.datastream.DataStreamSource;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import com.dlink.flink.catalog.DlinkMysqlCatalog;
 
 /**
- * SinkBuilder
- *
- * @author wenmo
- * @since 2022/4/12 21:09
- **/
-public interface SinkBuilder {
+ * {@link ConfigOption}s for {@link DlinkMysqlCatalog}.
+ */
+@Internal
+public class DlinkMysqlCatalogFactoryOptions {
 
-    String getHandle();
+    public static final String IDENTIFIER = "dlink_mysql";
 
-    SinkBuilder create(FlinkCDCConfig config);
+    public static final ConfigOption<String> USERNAME = ConfigOptions.key("username").stringType().noDefaultValue();
 
-    DataStreamSource build(CDCBuilder cdcBuilder, StreamExecutionEnvironment env, CustomTableEnvironment customTableEnvironment, DataStreamSource<String> dataStreamSource);
+    public static final ConfigOption<String> PASSWORD = ConfigOptions.key("password").stringType().noDefaultValue();
 
-    String getSinkSchemaName(Table table);
+    public static final ConfigOption<String> URL = ConfigOptions.key("url").stringType().noDefaultValue();
 
-    String getSinkTableName(Table table);
+    private DlinkMysqlCatalogFactoryOptions() {
+    }
 }

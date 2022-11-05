@@ -17,30 +17,38 @@
  *
  */
 
-package com.dlink.cdc;
+package com.dlink.executor;
 
-import com.dlink.executor.CustomTableEnvironment;
-import com.dlink.model.FlinkCDCConfig;
-
-import com.dlink.model.Table;
-import org.apache.flink.streaming.api.datastream.DataStreamSource;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.table.types.DataType;
 
 /**
- * SinkBuilder
- *
  * @author wenmo
- * @since 2022/4/12 21:09
+ * @since 2022/11/04
  **/
-public interface SinkBuilder {
 
-    String getHandle();
+public class TableSchemaField {
+    private String name;
+    private DataType type;
 
-    SinkBuilder create(FlinkCDCConfig config);
+    public TableSchemaField(String name, DataType type) {
+        this.name = name;
+        this.type = type;
+    }
 
-    DataStreamSource build(CDCBuilder cdcBuilder, StreamExecutionEnvironment env, CustomTableEnvironment customTableEnvironment, DataStreamSource<String> dataStreamSource);
+    public String getName() {
+        return name;
+    }
 
-    String getSinkSchemaName(Table table);
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    String getSinkTableName(Table table);
+    public DataType getType() {
+        return type;
+    }
+
+    public void setType(DataType type) {
+        this.type = type;
+    }
 }
+

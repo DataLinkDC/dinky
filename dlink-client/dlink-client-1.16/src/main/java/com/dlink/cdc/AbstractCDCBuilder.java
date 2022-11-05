@@ -31,7 +31,7 @@ import java.util.List;
  * AbstractCDCBuilder
  *
  * @author wenmo
- * @since 2022/4/12 21:28
+ * @since 2022/11/04
  **/
 public abstract class AbstractCDCBuilder implements CDCBuilder {
 

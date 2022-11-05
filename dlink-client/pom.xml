@@ -67,5 +67,12 @@
                 <module>dlink-client-1.15</module>
             </modules>
         </profile>
+
+        <profile>
+            <id>flink-1.16</id>
+            <modules>
+                <module>dlink-client-1.16</module>
+            </modules>
+        </profile>
     </profiles>
 </project>

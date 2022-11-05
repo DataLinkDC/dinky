@@ -17,30 +17,30 @@
  *
  */
 
-package com.dlink.cdc;
+package com.dlink.app;
 
-import com.dlink.executor.CustomTableEnvironment;
-import com.dlink.model.FlinkCDCConfig;
+import java.io.IOException;
+import java.util.Map;
 
-import com.dlink.model.Table;
-import org.apache.flink.streaming.api.datastream.DataStreamSource;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import com.dlink.app.db.DBConfig;
+import com.dlink.app.flinksql.Submiter;
+import com.dlink.assertion.Asserts;
+import com.dlink.constant.FlinkParamConstant;
+import com.dlink.utils.FlinkBaseUtil;
 
 /**
- * SinkBuilder
+ * MainApp
  *
  * @author wenmo
- * @since 2022/4/12 21:09
+ * @since 2022/11/05
  **/
-public interface SinkBuilder {
+public class MainApp {
 
-    String getHandle();
-
-    SinkBuilder create(FlinkCDCConfig config);
-
-    DataStreamSource build(CDCBuilder cdcBuilder, StreamExecutionEnvironment env, CustomTableEnvironment customTableEnvironment, DataStreamSource<String> dataStreamSource);
-
-    String getSinkSchemaName(Table table);
-
-    String getSinkTableName(Table table);
+    public static void main(String[] args) throws IOException {
+        Map<String, String> params = FlinkBaseUtil.getParamsFromArgs(args);
+        String id = params.get(FlinkParamConstant.ID);
+        Asserts.checkNullString(id, "请配置入参 id ");
+        DBConfig dbConfig = DBConfig.build(params);
+        Submiter.submit(Integer.valueOf(id), dbConfig);
+    }
 }

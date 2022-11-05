@@ -19,28 +19,37 @@
 
 package com.dlink.cdc;
 
-import com.dlink.executor.CustomTableEnvironment;
+import com.dlink.exception.SplitTableException;
 import com.dlink.model.FlinkCDCConfig;
-
-import com.dlink.model.Table;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
+import java.util.List;
+import java.util.Map;
+
 /**
- * SinkBuilder
+ * CDCBuilder
  *
  * @author wenmo
- * @since 2022/4/12 21:09
+ * @since 2022/11/04
  **/
-public interface SinkBuilder {
+public interface CDCBuilder {
 
     String getHandle();
 
-    SinkBuilder create(FlinkCDCConfig config);
+    CDCBuilder create(FlinkCDCConfig config);
 
-    DataStreamSource build(CDCBuilder cdcBuilder, StreamExecutionEnvironment env, CustomTableEnvironment customTableEnvironment, DataStreamSource<String> dataStreamSource);
+    DataStreamSource<String> build(StreamExecutionEnvironment env);
 
-    String getSinkSchemaName(Table table);
+    List<String> getSchemaList();
 
-    String getSinkTableName(Table table);
+    List<String> getTableList();
+
+    Map<String, Map<String, String>> parseMetaDataConfigs();
+
+    String getSchemaFieldName();
+
+    default Map<String, String> parseMetaDataConfig() {
+        throw new SplitTableException("此数据源并未实现分库分表");
+    }
 }
