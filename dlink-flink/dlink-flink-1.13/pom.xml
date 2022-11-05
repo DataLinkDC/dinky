@@ -29,6 +29,8 @@
     <artifactId>dlink-flink-1.13</artifactId>
 
     <properties>
+        <flink.version>1.13.6</flink.version>
+        <flinkcdc.version>2.2.1</flinkcdc.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>${target.java.version}</maven.compiler.source>
         <maven.compiler.target>${target.java.version}</maven.compiler.target>
