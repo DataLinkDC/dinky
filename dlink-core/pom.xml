@@ -74,11 +74,11 @@
             <artifactId>dlink-executor</artifactId>
             <scope>${scope.runtime}</scope>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-connector-jdbc-${dlink.flink.version}</artifactId>
             <scope>${scope.runtime}</scope>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-flink-${dlink.flink.version}</artifactId>
@@ -182,6 +182,5 @@
             <artifactId>dlink-function</artifactId>
         </dependency>
     </dependencies>
-
 
 </project>

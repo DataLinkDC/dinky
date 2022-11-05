@@ -19,28 +19,30 @@
 
 package com.dlink.cdc;
 
-import com.dlink.executor.CustomTableEnvironment;
+import com.dlink.assertion.Asserts;
+import com.dlink.exception.FlinkClientException;
 import com.dlink.model.FlinkCDCConfig;
 
-import com.dlink.model.Table;
-import org.apache.flink.streaming.api.datastream.DataStreamSource;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-
 /**
- * SinkBuilder
+ * CDCBuilderFactory
  *
  * @author wenmo
- * @since 2022/4/12 21:09
+ * @since 2022/11/04
  **/
-public interface SinkBuilder {
+public class CDCBuilderFactory {
 
-    String getHandle();
+    private static CDCBuilder[] cdcBuilders = {
+    };
 
-    SinkBuilder create(FlinkCDCConfig config);
-
-    DataStreamSource build(CDCBuilder cdcBuilder, StreamExecutionEnvironment env, CustomTableEnvironment customTableEnvironment, DataStreamSource<String> dataStreamSource);
-
-    String getSinkSchemaName(Table table);
-
-    String getSinkTableName(Table table);
+    public static CDCBuilder buildCDCBuilder(FlinkCDCConfig config) {
+        if (Asserts.isNull(config) || Asserts.isNullString(config.getType())) {
+            throw new FlinkClientException("请指定 CDC Source 类型。");
+        }
+        for (int i = 0; i < cdcBuilders.length; i++) {
+            if (config.getType().equals(cdcBuilders[i].getHandle())) {
+                return cdcBuilders[i].create(config);
+            }
+        }
+        throw new FlinkClientException("未匹配到对应 CDC Source 类型的【" + config.getType() + "】。");
+    }
 }

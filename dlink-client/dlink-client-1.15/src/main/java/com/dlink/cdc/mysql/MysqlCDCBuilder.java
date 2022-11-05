@@ -48,7 +48,7 @@ import com.ververica.cdc.connectors.mysql.table.StartupOptions;
  * @author wenmo
  * @since 2022/4/12 21:29
  **/
-public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
+public class MysqlCDCBuilder extends AbstractCDCBuilder {
 
     private static final String KEY_WORD = "mysql-cdc";
     private static final String METADATA_TYPE = "MySql";

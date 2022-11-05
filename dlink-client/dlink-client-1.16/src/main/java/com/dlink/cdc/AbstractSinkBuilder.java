@@ -26,7 +26,6 @@ import com.dlink.model.FlinkCDCConfig;
 import com.dlink.model.Schema;
 import com.dlink.model.Table;
 import com.dlink.utils.JSONUtil;
-
 import org.apache.flink.api.common.functions.FilterFunction;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.functions.MapFunction;
@@ -57,6 +56,8 @@ import org.apache.flink.table.types.logical.VarCharType;
 import org.apache.flink.types.RowKind;
 import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -68,14 +69,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * AbstractCDCBuilder
  *
  * @author wenmo
- * @since 2022/4/12 21:28
+ * @since 2022/11/04
  **/
 public abstract class AbstractSinkBuilder implements SinkBuilder {
 
@@ -137,9 +135,9 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     }
 
     protected DataStream<Map> shunt(
-            SingleOutputStreamOperator<Map> processOperator,
-            Table table,
-            OutputTag<Map> tag) {
+        SingleOutputStreamOperator<Map> processOperator,
+        Table table,
+        OutputTag<Map> tag) {
 
         return processOperator.getSideOutput(tag);
     }

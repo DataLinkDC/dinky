@@ -19,28 +19,31 @@
 
 package com.dlink.cdc;
 
-import com.dlink.executor.CustomTableEnvironment;
+import com.dlink.assertion.Asserts;
+import com.dlink.exception.FlinkClientException;
 import com.dlink.model.FlinkCDCConfig;
 
-import com.dlink.model.Table;
-import org.apache.flink.streaming.api.datastream.DataStreamSource;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-
 /**
- * SinkBuilder
+ * SinkBuilderFactory
  *
  * @author wenmo
- * @since 2022/4/12 21:09
+ * @since 2022/11/04
  **/
-public interface SinkBuilder {
+public class SinkBuilderFactory {
 
-    String getHandle();
+    private static SinkBuilder[] sinkBuilders = {
 
-    SinkBuilder create(FlinkCDCConfig config);
+    };
 
-    DataStreamSource build(CDCBuilder cdcBuilder, StreamExecutionEnvironment env, CustomTableEnvironment customTableEnvironment, DataStreamSource<String> dataStreamSource);
-
-    String getSinkSchemaName(Table table);
-
-    String getSinkTableName(Table table);
+    public static SinkBuilder buildSinkBuilder(FlinkCDCConfig config) {
+        if (Asserts.isNull(config) || Asserts.isNullString(config.getSink().get("connector"))) {
+            throw new FlinkClientException("请指定 Sink connector。");
+        }
+        for (int i = 0; i < sinkBuilders.length; i++) {
+            if (config.getSink().get("connector").equals(sinkBuilders[i].getHandle())) {
+                return sinkBuilders[i].create(config);
+            }
+        }
+        throw new FlinkClientException("未匹配到对应 Sink 类型的【" + config.getType() + "】。");
+    }
 }

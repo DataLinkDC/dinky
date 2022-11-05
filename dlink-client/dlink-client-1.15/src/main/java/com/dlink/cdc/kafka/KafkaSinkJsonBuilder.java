@@ -39,7 +39,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 /**
  * @className: com.dlink.cdc.kafka.KafkaSinkSimpleBuilder
  */
-public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements SinkBuilder, Serializable {
+public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements Serializable {
 
     private static final String KEY_WORD = "datastream-kafka-json";
     private transient ObjectMapper objectMapper;
