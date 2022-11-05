@@ -54,7 +54,7 @@ jobs:
         run: cd dlink-web && npm install --force
 
       - name: Npm Web Build
-        run: cd dlink-web && npm build
+        run: cd dlink-web && npm run build
 
       # maven编译
       - name: Set up JDK 1.8
