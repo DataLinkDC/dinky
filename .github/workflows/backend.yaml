@@ -53,7 +53,7 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Install Dependencies
-        run: cd dlink-web && npm install
+        run: cd dlink-web && npm install --force
 
       - name: Npm Web Build
         run: npm build && cd ../
