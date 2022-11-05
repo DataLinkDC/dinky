@@ -45,8 +45,10 @@ jobs:
         uses: actions/cache@v2
         with:
           # npm cache files are stored in `~/.npm` on Linux/macOS
-          path: dlink-web/node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('dlink-web/**/package.json') }}
+          path: |
+            dlink-web/node_modules
+            dlink-web/dist
+          key: ${{ runner.os }}-node-${{ hashFiles('dlink-web/**/package-local.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
 
