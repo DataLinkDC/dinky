@@ -131,7 +131,7 @@ Dinky开发环境配置有两种模式，分别是 provided 环境和 compile �
 
 ```
 <properties>
-        <java.version>1.8</java.version>
+        
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>${target.java.version}</maven.compiler.source>
         <maven.compiler.target>${target.java.version}</maven.compiler.target>
