@@ -59,8 +59,5 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
-    <build>
-        <outputDirectory>${project.basedir}/extends</outputDirectory>
-    </build>
 
 </project>
