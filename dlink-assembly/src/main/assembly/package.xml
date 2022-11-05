@@ -109,10 +109,10 @@
         <!--    </includes>-->
         <!--</fileSet>-->
         <fileSet>
-            <directory>${project.parent.basedir}/extends</directory>
+            <directory>${project.parent.basedir}/dlink-client/extends</directory>
             <outputDirectory>extends</outputDirectory>
             <includes>
-                <include>dlink-client-*.jar</include>
+                <include>%regex[dlink-client-1.\d+-${project.version}.jar]</include>
             </includes>
         </fileSet>
         <fileSet>
