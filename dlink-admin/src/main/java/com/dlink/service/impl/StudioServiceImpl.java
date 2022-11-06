@@ -82,7 +82,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import cn.dev33.satoken.SaManager;
+import cn.dev33.satoken.stp.StpUtil;
 
 /**
  * StudioServiceImpl
@@ -176,15 +176,19 @@ public class StudioServiceImpl implements StudioService {
     }
 
     private JobResult executeFlinkSql(StudioExecuteDTO studioExecuteDTO) {
+        ProcessEntity process = ProcessContextHolder.registerProcess(
+                ProcessEntity.init(ProcessType.FLINKEXECUTE, StpUtil.getLoginIdAsInt()));
         addFlinkSQLEnv(studioExecuteDTO);
+        process.info("Initializing Flink Job Config...");
         JobConfig config = studioExecuteDTO.getJobConfig();
         buildSession(config);
         // init UDF
         udfService.init(studioExecuteDTO.getStatement(), config);
-
         JobManager jobManager = JobManager.build(config);
-
+        process.infoSuccess();
+        process.start();
         JobResult jobResult = jobManager.executeSql(studioExecuteDTO.getStatement());
+        process.finish();
         RunTimeUtil.recovery(jobManager);
         return jobResult;
     }
@@ -200,29 +204,33 @@ public class StudioServiceImpl implements StudioService {
 
     @Override
     public JobResult executeCommonSql(SqlDTO sqlDTO) {
+        ProcessEntity process = ProcessContextHolder.registerProcess(
+                ProcessEntity.init(ProcessType.SQLEXECUTE, StpUtil.getLoginIdAsInt()));
         JobResult result = new JobResult();
         result.setStatement(sqlDTO.getStatement());
         result.setStartTimeNow();
+        process.info("Initializing Database Connection...");
         if (Asserts.isNull(sqlDTO.getDatabaseId())) {
             result.setSuccess(false);
             result.setError("请指定数据源");
             result.setEndTimeNow();
             return result;
         }
-
         DataBase dataBase = dataBaseService.getById(sqlDTO.getDatabaseId());
         if (Asserts.isNull(dataBase)) {
+            process.error("The database does not exist.");
             result.setSuccess(false);
-            result.setError("数据源不存在");
+            result.setError("The database does not exist.");
             result.setEndTimeNow();
             return result;
         }
-
         JdbcSelectResult selectResult;
         try (Driver driver = Driver.build(dataBase.getDriverConfig())) {
+            process.infoSuccess();
+            process.start();
             selectResult = driver.executeSql(sqlDTO.getStatement(), sqlDTO.getMaxRowNum());
         }
-
+        process.finish();
         result.setResult(selectResult);
         if (selectResult.isSuccess()) {
             result.setSuccess(true);
@@ -256,23 +264,18 @@ public class StudioServiceImpl implements StudioService {
 
     private List<SqlExplainResult> explainFlinkSql(StudioExecuteDTO studioExecuteDTO) {
         ProcessEntity process = ProcessContextHolder.registerProcess(
-                ProcessEntity.init(ProcessType.FLINKEXPLAIN, SaManager.getStpLogic(null).getLoginIdAsInt(), "admin"));
-
+                ProcessEntity.init(ProcessType.FLINKEXPLAIN, StpUtil.getLoginIdAsInt()));
         addFlinkSQLEnv(studioExecuteDTO);
-
         process.info("Initializing Flink Job Config...");
         JobConfig config = studioExecuteDTO.getJobConfig();
         // If you are using explainSql | getStreamGraph | getJobPlan, make the dialect change to local.
         config.buildLocal();
         buildSession(config);
-        process.infoSuccess();
-        process.start();
-
         // init UDF
         udfService.init(studioExecuteDTO.getStatement(), config);
-
         JobManager jobManager = JobManager.build(config);
-
+        process.infoSuccess();
+        process.start();
         List<SqlExplainResult> sqlExplainResults =
                 jobManager.explainSql(studioExecuteDTO.getStatement()).getSqlExplainResults();
         process.finish();
@@ -280,17 +283,27 @@ public class StudioServiceImpl implements StudioService {
     }
 
     private List<SqlExplainResult> explainCommonSql(StudioExecuteDTO studioExecuteDTO) {
+        ProcessEntity process = ProcessContextHolder.registerProcess(
+                ProcessEntity.init(ProcessType.SQLEXPLAIN, StpUtil.getLoginIdAsInt()));
+        process.info("Initializing Flink Job Config...");
         if (Asserts.isNull(studioExecuteDTO.getDatabaseId())) {
-            return Collections.singletonList(SqlExplainResult.fail(studioExecuteDTO.getStatement(), "请指定数据源"));
+            process.error("The database does not exist.");
+            return Collections.singletonList(
+                    SqlExplainResult.fail(studioExecuteDTO.getStatement(), "Please specify the database."));
         }
 
         DataBase dataBase = dataBaseService.getById(studioExecuteDTO.getDatabaseId());
         if (Asserts.isNull(dataBase)) {
-            return Collections.singletonList(SqlExplainResult.fail(studioExecuteDTO.getStatement(), "数据源不存在"));
+            process.error("The database does not exist.");
+            return Collections.singletonList(
+                    SqlExplainResult.fail(studioExecuteDTO.getStatement(), "The database does not exist."));
         }
-
         try (Driver driver = Driver.build(dataBase.getDriverConfig())) {
-            return driver.explain(studioExecuteDTO.getStatement());
+            process.infoSuccess();
+            process.start();
+            List<SqlExplainResult> explain = driver.explain(studioExecuteDTO.getStatement());
+            process.finish();
+            return explain;
         }
     }
 

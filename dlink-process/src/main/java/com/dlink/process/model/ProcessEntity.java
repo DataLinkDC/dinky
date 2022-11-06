@@ -48,25 +48,23 @@ public class ProcessEntity {
     private int stepIndex = 0;
     private List<ProcessStep> steps;
     private Integer userId;
-    private String userName;
 
     public static final ProcessEntity NULL_PROCESS = new ProcessEntity();
 
     public ProcessEntity() {
     }
 
-    public ProcessEntity(String pid, String name, Integer taskId, ProcessType type, Integer userId, String userName) {
+    public ProcessEntity(String pid, String name, Integer taskId, ProcessType type, Integer userId) {
         this.pid = pid;
         this.name = name;
         this.taskId = taskId;
         this.type = type;
         this.userId = userId;
-        this.userName = userName;
     }
 
     public ProcessEntity(String name, Integer taskId, ProcessType type, ProcessStatus status, LocalDateTime startTime,
                          LocalDateTime endTime, long time,
-                         List<ProcessStep> steps, Integer userId, String userName) {
+                         List<ProcessStep> steps, Integer userId) {
         this.name = name;
         this.taskId = taskId;
         this.type = type;
@@ -76,19 +74,18 @@ public class ProcessEntity {
         this.time = time;
         this.steps = steps;
         this.userId = userId;
-        this.userName = userName;
     }
 
-    public static ProcessEntity init(ProcessType type, Integer userId, String userName) {
-        return init(type.getValue() + "_TEMP", null, type, userId, userName);
+    public static ProcessEntity init(ProcessType type, Integer userId) {
+        return init(type.getValue() + "_TEMP", null, type, userId);
     }
 
-    public static ProcessEntity init(Integer taskId, ProcessType type, Integer userId, String userName) {
-        return init(type.getValue() + taskId, taskId, type, userId, userName);
+    public static ProcessEntity init(Integer taskId, ProcessType type, Integer userId) {
+        return init(type.getValue() + taskId, taskId, type, userId);
     }
 
-    public static ProcessEntity init(String name, Integer taskId, ProcessType type, Integer userId, String userName) {
-        ProcessEntity process = new ProcessEntity(UUID.randomUUID().toString(), name, taskId, type, userId, userName);
+    public static ProcessEntity init(String name, Integer taskId, ProcessType type, Integer userId) {
+        ProcessEntity process = new ProcessEntity(UUID.randomUUID().toString(), name, taskId, type, userId);
         process.setStatus(ProcessStatus.INITIALIZING);
         process.setStartTime(LocalDateTime.now());
         process.setSteps(new ArrayList<>());
@@ -246,14 +243,6 @@ public class ProcessEntity {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     public List<ProcessStep> getSteps() {
