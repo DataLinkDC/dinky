@@ -28,7 +28,6 @@ export type ProcessItem = {
   time: number,
   steps: ProcessStep[],
   userId: number,
-  userName: string,
 };
 
 export type ProcessStep = {
