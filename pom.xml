@@ -528,7 +528,7 @@
                 <executions>
                     <execution>
                         <goals>
-                            <goal>run</goal>
+                            <goal>clean</goal>
                         </goals>
                         <phase>clean</phase>
                     </execution>
