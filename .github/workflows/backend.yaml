@@ -48,7 +48,7 @@ jobs:
           path: |
             dlink-web/node_modules
             dlink-web/dist
-          key: ${{ runner.os }}-node-${{ hashFiles('dlink-web/**/package-local.json') }}
+          key: ${{ runner.os }}-node-${{ hashFiles('dlink-web/**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
 
