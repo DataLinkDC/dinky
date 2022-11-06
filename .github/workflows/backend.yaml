@@ -39,6 +39,26 @@ jobs:
       MAVEN_OPTS: -Xmx2G -Xms2G
     steps:
       - uses: actions/checkout@v2
+
+      # 编译web
+      - name: Cache node modules
+        uses: actions/cache@v2
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: |
+            dlink-web/node_modules
+            dlink-web/dist
+          key: ${{ runner.os }}-node-${{ hashFiles('dlink-web/**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install Dependencies
+        run: cd dlink-web && npm install --force
+
+      - name: Npm Web Build
+        run: cd dlink-web && npm run build
+
+      # maven编译
       - name: Set up JDK 1.8
         uses: actions/setup-java@v2
         with:
@@ -61,6 +81,7 @@ jobs:
                  -Dcheckstyle.skip=true \
                  -P prod,scala-2.12,flink-1.14,!dev,!flink-1.11,!flink-1.12,!flink-1.13,!scala-2.11,!flink-1.15 \
                  --no-snapshot-updates
+
       # 查看打包的大小
       - name: View package size
         run: |

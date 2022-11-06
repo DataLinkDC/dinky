@@ -29,7 +29,7 @@
     <artifactId>dlink-connector-doris-1.13</artifactId>
 
     <properties>
-        <java.version>1.8</java.version>
+
         <flink.version>1.13.6</flink.version>
         <maven.compiler.source>${target.java.version}</maven.compiler.source>
         <maven.compiler.target>${target.java.version}</maven.compiler.target>
@@ -64,6 +64,14 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <!-- 指定打包的jar包输出路径 -->
+                    <outputDirectory>${project.parent.parent.basedir}/extends</outputDirectory>
+                </configuration>
             </plugin>
         </plugins>
     </build>

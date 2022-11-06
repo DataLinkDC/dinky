@@ -43,7 +43,6 @@
         <module>dlink-scheduler</module>
         <module>dlink-core</module>
         <module>dlink-app</module>
-        <module>dlink-web</module>
         <module>dlink-admin</module>
         <module>dlink-assembly</module>
     </modules>
@@ -539,6 +538,26 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                        <phase>initialize</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>${project.basedir}/extends</directory>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
             <plugin>
@@ -560,7 +579,7 @@
                         <eclipse>
                             <file>style/spotless_dlink_formatter.xml</file>
                         </eclipse>
-                        <removeUnusedImports />
+                        <removeUnusedImports/>
                         <importOrder>
                             <order>\#,com.dlink,org.apache,java,javax,org,com,</order>
                         </importOrder>
@@ -597,7 +616,7 @@
                         <includes>
                             <include>**/*.md</include>
                         </includes>
-                        <flexmark />
+                        <flexmark/>
                     </markdown>
                 </configuration>
                 <executions>
@@ -624,6 +643,13 @@
     </repositories>
 
     <profiles>
+        <profile>
+            <id>web</id>
+            <modules>
+                <module>dlink-web</module>
+            </modules>
+        </profile>
+
         <profile>
             <id>dev</id>
             <activation>
@@ -690,7 +716,6 @@
             <properties>
                 <!--  modify flink version  -->
                 <dlink.flink.version>1.11</dlink.flink.version>
-                <flink.version>1.11.6</flink.version>
             </properties>
         </profile>
 
@@ -704,7 +729,6 @@
             <properties>
                 <!--  modify flink version  -->
                 <dlink.flink.version>1.12</dlink.flink.version>
-                <flink.version>1.12.7</flink.version>
             </properties>
         </profile>
 
@@ -718,7 +742,6 @@
             <properties>
                 <!--  modify flink version  -->
                 <dlink.flink.version>1.13</dlink.flink.version>
-                <flink.version>1.13.6</flink.version>
             </properties>
         </profile>
 
@@ -733,8 +756,6 @@
             <properties>
                 <!--  modify flink version  -->
                 <dlink.flink.version>1.14</dlink.flink.version>
-                <flink.version>1.14.6</flink.version>
-                <flinkcdc.version>2.2.1</flinkcdc.version>
             </properties>
         </profile>
 
@@ -748,7 +769,6 @@
             <properties>
                 <!--  modify flink version  -->
                 <dlink.flink.version>1.15</dlink.flink.version>
-                <flink.version>1.15.2</flink.version>
             </properties>
         </profile>
 
@@ -821,7 +841,8 @@
                             <artifactId>maven-javadoc-plugin</artifactId>
                             <configuration>
                                 <additionalJOptions>
-                                    <additionalJOption>--add-exports=java.base/sun.net.util=ALL-UNNAMED</additionalJOption>
+                                    <additionalJOption>--add-exports=java.base/sun.net.util=ALL-UNNAMED
+                                    </additionalJOption>
                                 </additionalJOptions>
                             </configuration>
                         </plugin>

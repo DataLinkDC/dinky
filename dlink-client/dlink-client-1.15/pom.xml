@@ -29,7 +29,7 @@
     <artifactId>dlink-client-1.15</artifactId>
 
     <properties>
-        <java.version>1.8</java.version>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>${target.java.version}</maven.compiler.source>
         <maven.compiler.target>${target.java.version}</maven.compiler.target>
@@ -57,4 +57,16 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <!-- 指定打包的jar包输出路径 -->
+                    <outputDirectory>${project.parent.parent.basedir}/extends</outputDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
