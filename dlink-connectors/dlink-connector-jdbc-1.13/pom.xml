@@ -164,7 +164,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
                     <!-- 指定打包的jar包输出路径 -->
-                    <outputDirectory>${project.parent.parent.basedir}/extends</outputDirectory>
+                    <outputDirectory>${project.parent.parent.basedir}/build/extends</outputDirectory>
                 </configuration>
             </plugin>
         </plugins>
