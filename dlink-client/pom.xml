@@ -68,28 +68,11 @@
             </modules>
         </profile>
     </profiles>
-
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
-                <version>3.2.0</version>
-                <configuration>
-                    <filesets>
-                        <fileset>
-                            <directory>${project.parent.basedir}/extends</directory>
-                        </fileset>
-                    </filesets>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <!-- 指定打包的jar包输出路径 -->
-                    <outputDirectory>${project.parent.basedir}/extends</outputDirectory>
-                </configuration>
             </plugin>
         </plugins>
     </build>
