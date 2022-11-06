@@ -80,6 +80,7 @@
                         <goals>
                             <goal>clean</goal>
                         </goals>
+                        <phase>install</phase>
                     </execution>
                 </executions>
                 <configuration>
