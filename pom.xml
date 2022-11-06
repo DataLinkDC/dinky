@@ -530,13 +530,13 @@
                         <goals>
                             <goal>clean</goal>
                         </goals>
-                        <phase>clean</phase>
+                        <phase>compile</phase>
                     </execution>
                 </executions>
                 <configuration>
                     <filesets>
                         <fileset>
-                            <directory>${project.basedir}/dlink-client/extends</directory>
+                            <directory>${project.basedir}/extends</directory>
                         </fileset>
                     </filesets>
                 </configuration>
