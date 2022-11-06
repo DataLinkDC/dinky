@@ -530,7 +530,7 @@
                         <goals>
                             <goal>clean</goal>
                         </goals>
-                        <phase>compile</phase>
+                        <phase>initialize</phase>
                     </execution>
                 </executions>
                 <configuration>
