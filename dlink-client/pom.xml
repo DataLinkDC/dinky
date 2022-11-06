@@ -78,7 +78,7 @@
                 <configuration>
                     <filesets>
                         <fileset>
-                            <directory>${project.basedir}/extends</directory>
+                            <directory>${project.parent.basedir}/extends</directory>
                         </fileset>
                     </filesets>
                 </configuration>
@@ -88,7 +88,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
                     <!-- 指定打包的jar包输出路径 -->
-                    <outputDirectory>${project.basedir}/extends</outputDirectory>
+                    <outputDirectory>${project.parent.basedir}/extends</outputDirectory>
                 </configuration>
             </plugin>
         </plugins>
