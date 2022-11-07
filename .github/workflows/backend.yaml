@@ -39,19 +39,24 @@ jobs:
       MAVEN_OPTS: -Xmx2G -Xms2G
     steps:
       - uses: actions/checkout@v3
-            # 编译web
-      - name: Cache node modules
-        uses: actions/cache@v2
+      - uses: actions/setup-node@v3
         with:
-          # npm cache files are stored in `~/.npm` on Linux/macOS
-          path: |
-            dlink-web/node_modules
-            dlink-web/dist
-          key: ${{ runner.os }}-node-${{ hashFiles('dlink-web/**/package.json') }}
+          node-version: 16
+      - run: npm ci
+      - run: npm test
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
+      - uses: actions/cache@v3
+        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
+        with:
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
       - name: Install Dependencies
-        run: cd dlink-web && npm install --force
+        run: cd dlink-web && npm install --legacy-peer-deps
       - name: Npm Web Build
         run: cd dlink-web && npm run build
   build_jdk:
@@ -72,7 +77,7 @@ jobs:
           java-version:  ${{ matrix.jdk }}
           distribution: 'adopt'
       - name: Cache local Maven repository
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
