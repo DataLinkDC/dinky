@@ -34,6 +34,9 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        jdk: [8, 11]
     timeout-minutes: 30
     env:
       MAVEN_OPTS: -Xmx2G -Xms2G
@@ -59,10 +62,10 @@ jobs:
         run: cd dlink-web && npm run build
 
       # maven编译
-      - name: Set up JDK 1.8
+      - name: Set up JDK ${{ matrix.jdk }}
         uses: actions/setup-java@v2
         with:
-          java-version:  8
+          java-version:  ${{ matrix.jdk }}
           distribution: 'adopt'
       - name: Cache local Maven repository
         uses: actions/cache@v2
