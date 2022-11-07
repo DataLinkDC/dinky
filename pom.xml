@@ -31,6 +31,7 @@
         <module>dlink-common</module>
         <module>dlink-client</module>
         <module>dlink-catalog</module>
+        <module>dlink-process</module>
         <module>dlink-gateway</module>
         <module>dlink-function</module>
         <module>dlink-metadata</module>
@@ -42,28 +43,30 @@
         <module>dlink-scheduler</module>
         <module>dlink-core</module>
         <module>dlink-app</module>
-        <module>dlink-web</module>
         <module>dlink-admin</module>
         <module>dlink-assembly</module>
-        <module>dlink-process</module>
     </modules>
 
     <properties>
-        <java.version>1.8</java.version>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <target.java.version>1.8</target.java.version>
+        <maven.compiler.source>${target.java.version}</maven.compiler.source>
+        <maven.compiler.target>${target.java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
         <maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
-
-        <spring-boot-dependencies.version>2.6.3</spring-boot-dependencies.version>
+        <scala.binary.version>2.12</scala.binary.version>
+        <scala.version>2.12.10</scala.version>
+        <!--  `provided` for product environment ,`compile` for dev environment  -->
+        <scope.runtime>provided</scope.runtime>
+        <dlink.flink.version>1.14</dlink.flink.version>
+        <spring-boot-dependencies.version>2.6.12</spring-boot-dependencies.version>
         <hutool.version>5.8.4</hutool.version>
         <druid-starter>1.2.8</druid-starter>
         <mybatis-plus-boot-starter.version>3.5.1</mybatis-plus-boot-starter.version>
         <lombok.version>1.18.24</lombok.version>
-        <jackjson.version>2.12.1</jackjson.version>
+        <jackjson.version>2.13.4</jackjson.version>
         <guava.version>31.1-jre</guava.version>
         <mysql-connector-java.version>8.0.28</mysql-connector-java.version>
         <ojdbc8.version>12.2.0.1</ojdbc8.version>
@@ -71,18 +74,13 @@
         <postgresql.version>42.2.14</postgresql.version>
         <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
         <!--<flyway.version>6.4.4</flyway.version>-->
-        <sa-token.version>1.28.0</sa-token.version>
+        <sa-token.version>1.31.0</sa-token.version>
         <commons-lang3.version>3.3.2</commons-lang3.version>
         <httpclient.version>4.4.1</httpclient.version>
         <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
         <maven-assembly-plugin.version>3.2.0</maven-assembly-plugin.version>
         <maven.resource.version>3.2.0</maven.resource.version>
         <junit.version>4.12</junit.version>
-        <!--  `provided` for product environment ,`compile` for dev environment  -->
-        <scope.runtime>provided</scope.runtime>
-        <!--  modify flink version  -->
-        <dlink.flink.version>1.14</dlink.flink.version>
-        <scala.binary.version>2.11</scala.binary.version>
         <protobuf-java.version>2.5.0</protobuf-java.version>
         <jedis.version>2.9.0</jedis.version>
         <javax.mail>1.6.2</javax.mail>
@@ -246,6 +244,11 @@
             </dependency>
             <dependency>
                 <groupId>com.dlink</groupId>
+                <artifactId>dlink-client-1.16</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
                 <artifactId>dlink-catalog-mysql-1.13</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -257,6 +260,11 @@
             <dependency>
                 <groupId>com.dlink</groupId>
                 <artifactId>dlink-catalog-mysql-1.15</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-catalog-mysql-1.16</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -425,6 +433,11 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-flink-1.16</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
                 <version>${httpclient.version}</version>
@@ -476,10 +489,10 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${maven-compiler-plugin.version}</version>
                     <configuration>
-                        <source>${java.version}</source>
-                        <target>${java.version}</target>
-                        <testSource>${java.version}</testSource>
-                        <testTarget>${java.version}</testTarget>
+                        <source>${target.java.version}</source>
+                        <target>${target.java.version}</target>
+                        <testSource>${target.java.version}</testSource>
+                        <testTarget>${target.java.version}</testTarget>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -525,6 +538,26 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                        <phase>initialize</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>${project.basedir}/extends</directory>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
             <plugin>
@@ -546,9 +579,9 @@
                         <eclipse>
                             <file>style/spotless_dlink_formatter.xml</file>
                         </eclipse>
-                        <removeUnusedImports />
+                        <removeUnusedImports/>
                         <importOrder>
-                            <order>\#,com.dlink,org.apache,java,javax,org,com</order>
+                            <order>\#,com.dlink,org.apache,java,javax,org,com,</order>
                         </importOrder>
                         <licenseHeader>
                             <file>style/license_header</file>
@@ -583,7 +616,7 @@
                         <includes>
                             <include>**/*.md</include>
                         </includes>
-                        <flexmark />
+                        <flexmark/>
                     </markdown>
                 </configuration>
                 <executions>
@@ -597,4 +630,243 @@
             </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>aliyun</id>
+            <url>https://maven.aliyun.com/repository/central</url>
+        </repository>
+        <repository>
+            <id>maven-central</id>
+            <url>https://repo1.maven.org/maven2/</url>
+        </repository>
+    </repositories>
+
+    <profiles>
+        <profile>
+            <id>web</id>
+            <modules>
+                <module>dlink-web</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>dev</name>
+                </property>
+            </activation>
+            <properties>
+                <!--  `provided` for product environment ,`compile` for dev environment  -->
+                <scope.runtime>compile</scope.runtime>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>prod</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>prod</name>
+                </property>
+            </activation>
+            <properties>
+                <!--  `provided` for product environment ,`compile` for dev environment  -->
+                <scope.runtime>provided</scope.runtime>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>scala-2.11</id>
+            <activation>
+                <property>
+                    <name>scala-2.11</name>
+                </property>
+            </activation>
+            <properties>
+                <scala.binary.version>2.11</scala.binary.version>
+                <scala.version>2.11.7</scala.version>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>scala-2.12</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>scala-2.12</name>
+                    <value>flink-1.15</value>
+                </property>
+            </activation>
+            <properties>
+                <scala.binary.version>2.12</scala.binary.version>
+                <scala.version>2.12.10</scala.version>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>flink-1.11</id>
+            <activation>
+                <property>
+                    <name>flink-1.11</name>
+                </property>
+            </activation>
+            <properties>
+                <!--  modify flink version  -->
+                <dlink.flink.version>1.11</dlink.flink.version>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>flink-1.12</id>
+            <activation>
+                <property>
+                    <name>flink-1.12</name>
+                </property>
+            </activation>
+            <properties>
+                <!--  modify flink version  -->
+                <dlink.flink.version>1.12</dlink.flink.version>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>flink-1.13</id>
+            <activation>
+                <property>
+                    <name>flink-1.13</name>
+                </property>
+            </activation>
+            <properties>
+                <!--  modify flink version  -->
+                <dlink.flink.version>1.13</dlink.flink.version>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>flink-1.14</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>flink-1.14</name>
+                </property>
+            </activation>
+            <properties>
+                <!--  modify flink version  -->
+                <dlink.flink.version>1.14</dlink.flink.version>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>flink-1.15</id>
+            <activation>
+                <property>
+                    <name>flink-1.15</name>
+                </property>
+            </activation>
+            <properties>
+                <!--  modify flink version  -->
+                <dlink.flink.version>1.15</dlink.flink.version>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>flink-1.16</id>
+            <activation>
+                <property>
+                    <name>flink-1.16</name>
+                </property>
+            </activation>
+            <properties>
+                <!--  modify flink version  -->
+                <dlink.flink.version>1.16</dlink.flink.version>
+                <flink.version>1.16.0</flink.version>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>jdk11</id>
+            <activation>
+                <jdk>[11,)</jdk>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.codehaus.mojo</groupId>
+                            <artifactId>build-helper-maven-plugin</artifactId>
+                            <version>1.7</version>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-shade-plugin</artifactId>
+                        </plugin>
+                        <plugin>
+                            <groupId>com.github.siom79.japicmp</groupId>
+                            <artifactId>japicmp-maven-plugin</artifactId>
+                            <dependencies>
+                                <dependency>
+                                    <groupId>javax.xml.bind</groupId>
+                                    <artifactId>jaxb-api</artifactId>
+                                    <version>2.3.0</version>
+                                </dependency>
+                                <dependency>
+                                    <groupId>com.sun.xml.bind</groupId>
+                                    <artifactId>jaxb-impl</artifactId>
+                                    <version>2.3.0</version>
+                                </dependency>
+                                <dependency>
+                                    <groupId>com.sun.xml.bind</groupId>
+                                    <artifactId>jaxb-core</artifactId>
+                                    <version>2.3.0</version>
+                                </dependency>
+                                <dependency>
+                                    <groupId>javax.activation</groupId>
+                                    <artifactId>activation</artifactId>
+                                    <version>1.1.1</version>
+                                </dependency>
+                            </dependencies>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-surefire-plugin</artifactId>
+                            <configuration>
+                                <excludedGroups>org.apache.flink.testutils.junit.FailsOnJava11</excludedGroups>
+                            </configuration>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-javadoc-plugin</artifactId>
+                            <configuration>
+                                <additionalJOptions>
+                                    <additionalJOption>--add-exports=java.base/sun.net.util=ALL-UNNAMED
+                                    </additionalJOption>
+                                </additionalJOptions>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <source>11</source>
+                            <target>11</target>
+                            <compilerArgs combine.children="append">
+                                <arg>--add-exports=java.base/sun.net.util=ALL-UNNAMED</arg>
+                                <arg>--add-exports=java.management/sun.management=ALL-UNNAMED</arg>
+                                <arg>--add-exports=java.rmi/sun.rmi.registry=ALL-UNNAMED</arg>
+                                <arg>--add-exports=java.security.jgss/sun.security.krb5=ALL-UNNAMED</arg>
+                            </compilerArgs>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+    </profiles>
 </project>

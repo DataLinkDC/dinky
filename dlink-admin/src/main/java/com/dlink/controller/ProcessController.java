@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.dev33.satoken.SaManager;
+import cn.dev33.satoken.stp.StpUtil;
 
 /**
  * ProcessController
@@ -55,6 +55,6 @@ public class ProcessController {
 
     @GetMapping("/getConsoleByUserId")
     public Result<String> getConsoleByUserId() {
-        return Result.data(processService.getConsoleByUserId(SaManager.getStpLogic(null).getLoginIdAsInt()));
+        return Result.data(processService.getConsoleByUserId(StpUtil.getLoginIdAsInt()));
     }
 }

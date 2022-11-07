@@ -15,26 +15,23 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>dlink-connectors</artifactId>
         <groupId>com.dlink</groupId>
+        <artifactId>dlink-connectors</artifactId>
         <version>0.6.8-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
     <artifactId>dlink-connector-phoenix-1.14</artifactId>
 
-
     <properties>
-        <java.version>1.8</java.version>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <flink.version>1.14.5</flink.version>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <flink.version>1.14.6</flink.version>
+        <maven.compiler.source>${target.java.version}</maven.compiler.source>
+        <maven.compiler.target>${target.java.version}</maven.compiler.target>
         <junit.version>4.12</junit.version>
         <!--  compile/provided-->
         <phoenix.scope.runtime>provided</phoenix.scope.runtime>
@@ -57,7 +54,6 @@
             <!--<scope>provided</scope>-->
             <scope>${phoenix.scope.runtime}</scope>
         </dependency>
-
 
         <dependency>
             <groupId>org.apache.flink</groupId>
@@ -83,14 +79,12 @@
             <scope>test</scope>
         </dependency>
 
-
         <!--        <dependency>
                     <groupId>org.apache.phoenix</groupId>
                     <artifactId>phoenix-core</artifactId>
                     <version>4.14.2-HBase-1.4</version>
                     <scope>${scope.runtime}</scope>
                 </dependency>-->
-
 
         <dependency>
             <groupId>org.apache.phoenix</groupId>
@@ -105,4 +99,17 @@
             </exclusions>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <!-- 指定打包的jar包输出路径 -->
+                    <outputDirectory>${project.parent.parent.basedir}/build/extends</outputDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -254,13 +254,14 @@ public abstract class Executor {
         JarUtils.getJarFiles(udfFilePath).forEach(Executor::loadJar);
     }
 
-    public void initPyUDF(String... udfPyFilePath) {
+    public void initPyUDF(String executable,String... udfPyFilePath) {
         if (udfPyFilePath == null || udfPyFilePath.length == 0) {
             return;
         }
         Map<String, String> config = executorSetting.getConfig();
         if (Asserts.isNotNull(config)) {
             config.put(PythonOptions.PYTHON_FILES.key(), String.join(",", udfPyFilePath));
+            config.put(PythonOptions.PYTHON_CLIENT_EXECUTABLE.key(), executable);
         }
         update(executorSetting);
     }

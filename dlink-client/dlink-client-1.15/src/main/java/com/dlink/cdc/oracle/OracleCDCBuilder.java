@@ -44,7 +44,7 @@ import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
  * @author wenmo
  * @since 2022/4/12 21:29
  **/
-public class OracleCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
+public class OracleCDCBuilder extends AbstractCDCBuilder {
 
     private static final String KEY_WORD = "oracle-cdc";
     private static final String METADATA_TYPE = "Oracle";

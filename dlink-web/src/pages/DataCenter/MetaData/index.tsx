@@ -199,7 +199,7 @@ const MetaDataContainer: React.FC<{}> = (props: any) => {
                         refeshDataBase(databaseId)
                         setTableChecked(true)
                       }}
-              >{l('global.table.refresh')}</Button>
+              >{l('button.refresh')}</Button>
             </div>
             <div>{item.alias}</div>
           </div>

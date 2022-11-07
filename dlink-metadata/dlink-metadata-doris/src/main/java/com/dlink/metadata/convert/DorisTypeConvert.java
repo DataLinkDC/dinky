@@ -24,6 +24,7 @@ import com.dlink.model.Column;
 import com.dlink.model.ColumnType;
 
 public class DorisTypeConvert implements ITypeConvert {
+
     @Override
     public ColumnType convert(Column column) {
         ColumnType columnType = ColumnType.STRING;
@@ -78,10 +79,12 @@ public class DorisTypeConvert implements ITypeConvert {
             } else {
                 columnType = ColumnType.DOUBLE;
             }
-        } else if (t.contains("date")) {
-            columnType = ColumnType.STRING;
+            // datetime must above of date,
+            // if not, date will overrwrit datetime
         } else if (t.contains("datetime")) {
-            columnType = ColumnType.STRING;
+            columnType = ColumnType.TIMESTAMP;
+        } else if (t.contains("date")) {
+            columnType = ColumnType.DATE;
         } else if (t.contains("decimal")) {
             columnType = ColumnType.DECIMAL;
         } else if (t.contains("time")) {

@@ -47,7 +47,7 @@ import java.util.UUID;
 /**
  * DorisSinkBuilder
  **/
-public class DorisSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, Serializable {
+public class DorisSinkBuilder extends AbstractSinkBuilder implements Serializable {
 
     private static final String KEY_WORD = "datastream-doris";
     private static final long serialVersionUID = 8330362249137471854L;

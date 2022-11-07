@@ -138,7 +138,7 @@ const NoticeIcon: React.FC<NoticeIconProps> & {
 };
 
 NoticeIcon.defaultProps = {
-  emptyImage: 'https://gw.alipayobjects.com/zos/rmsportal/wAhyIChODzsoKIOBHcBk.svg',
+  emptyImage: '/icons/notice_empty.svg',
 };
 
 NoticeIcon.Tab = NoticeList;

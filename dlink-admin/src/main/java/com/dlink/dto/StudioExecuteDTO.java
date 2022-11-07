@@ -59,6 +59,7 @@ public class StudioExecuteDTO extends AbstractStatementDTO {
     private Integer jarId;
     private String jobName;
     private Integer taskId;
+    private Integer id;
     private Integer maxRowNum;
     private Integer checkPoint;
     private Integer parallelism;
@@ -86,5 +87,9 @@ public class StudioExecuteDTO extends AbstractStatementDTO {
             type, useResult, useChangeLog, useAutoCancel, useSession, session, clusterId,
             clusterConfigurationId, jarId, taskId, jobName, isFragment(), statementSet, batchModel,
             maxRowNum, checkPoint, parallelism, savePointStrategy, savePointPath, getVariables(), config);
+    }
+
+    public Integer getTaskId() {
+        return taskId == null ? getId() : taskId;
     }
 }

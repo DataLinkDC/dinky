@@ -19,8 +19,7 @@
 
 package com.dlink.service;
 
-import com.dlink.gateway.GatewayType;
-import com.dlink.model.UDFPath;
+import com.dlink.job.JobConfig;
 
 /**
  * @author ZackYoung
@@ -28,5 +27,9 @@ import com.dlink.model.UDFPath;
  */
 public interface UDFService {
 
-    UDFPath initUDF(String statement, GatewayType gatewayType);
+    /**
+     * @param statement   sql语句
+     * @param config      job配置
+     */
+    void init(String statement, JobConfig config);
 }

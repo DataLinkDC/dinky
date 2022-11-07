@@ -71,9 +71,9 @@ const FlinkConfigView: React.FC<FlinkConfigProps> = (props) => {
               onChange={onChange}
               placeholder="hdfs:///dlink/jar/dlink-app.jar"/>)),
       actions: editName != 'sqlSubmitJarPath' ? [<a
-          onClick={({}) => handleEditClick('sqlSubmitJarPath')}>{l('pages.settings.FlinkUpdate')}</a>] :
-        [<a onClick={({}) => handleSaveClick('sqlSubmitJarPath')}>{l('pages.settings.FlinkSave')}</a>,
-          <a onClick={({}) => handleCancelClick()}>{l('pages.settings.FlinkCancel')}</a>],
+          onClick={({}) => handleEditClick('sqlSubmitJarPath')}>{l('button.edit')}</a>] :
+        [<a onClick={({}) => handleSaveClick('sqlSubmitJarPath')}>{l('button.save')}</a>,
+          <a onClick={({}) => handleCancelClick()}>{l('button.cancel')}</a>],
     },
     {
       title: l('pages.settings.FlinkSQLJarMainParameter'),
@@ -85,9 +85,9 @@ const FlinkConfigView: React.FC<FlinkConfigProps> = (props) => {
             onChange={onChange}
             placeholder=""/>)),
       actions: editName != 'sqlSubmitJarParas' ? [<a
-          onClick={({}) => handleEditClick('sqlSubmitJarParas')}>{l('pages.settings.FlinkUpdate')}</a>] :
-        [<a onClick={({}) => handleSaveClick('sqlSubmitJarParas')}>{l('pages.settings.FlinkSave')}</a>,
-          <a onClick={({}) => handleCancelClick()}>{l('pages.settings.FlinkCancel')}</a>],
+          onClick={({}) => handleEditClick('sqlSubmitJarParas')}>{l('button.edit')}</a>] :
+        [<a onClick={({}) => handleSaveClick('sqlSubmitJarParas')}>{l('button.save')}</a>,
+          <a onClick={({}) => handleCancelClick()}>{l('button.cancel')}</a>],
     },
     {
       title: l('pages.settings.FlinkSQLJarMainClass'),
@@ -99,9 +99,9 @@ const FlinkConfigView: React.FC<FlinkConfigProps> = (props) => {
             onChange={onChange}
             placeholder="com.dlink.app.MainApp"/>)),
       actions: editName != 'sqlSubmitJarMainAppClass' ? [<a
-          onClick={({}) => handleEditClick('sqlSubmitJarMainAppClass')}>{l('pages.settings.FlinkUpdate')}</a>] :
-        [<a onClick={({}) => handleSaveClick('sqlSubmitJarMainAppClass')}>{l('pages.settings.FlinkSave')}</a>,
-          <a onClick={({}) => handleCancelClick()}>{l('pages.settings.FlinkCancel')}</a>],
+          onClick={({}) => handleEditClick('sqlSubmitJarMainAppClass')}>{l('button.edit')}</a>] :
+        [<a onClick={({}) => handleSaveClick('sqlSubmitJarMainAppClass')}>{l('button.save')}</a>,
+          <a onClick={({}) => handleCancelClick()}>{l('button.cancel')}</a>],
     }, {
       title: l('pages.settings.FlinkRestAPI'),
       description: l('pages.settings.FlinkNoUseSetting'),
@@ -109,8 +109,8 @@ const FlinkConfigView: React.FC<FlinkConfigProps> = (props) => {
         <Form.Item
           name="useRestAPI" valuePropName="checked"
         >
-          <Switch checkedChildren={l('pages.settings.FlinkUse')}
-                  unCheckedChildren={l('pages.settings.FlinkNotUse')}
+          <Switch checkedChildren={l('button.enable')}
+                  unCheckedChildren={l('button.disable')}
                   checked={useRestAPI}
           /></Form.Item>],
     }, {
@@ -123,9 +123,9 @@ const FlinkConfigView: React.FC<FlinkConfigProps> = (props) => {
             onChange={onChange}
             placeholder=";"/>)),
       actions: editName != 'sqlSeparator' ? [<a
-          onClick={({}) => handleEditClick('sqlSeparator')}>{l('pages.settings.FlinkUpdate')}</a>] :
-        [<a onClick={({}) => handleSaveClick('sqlSeparator')}>{l('pages.settings.FlinkSave')}</a>,
-          <a onClick={({}) => handleCancelClick()}>{l('pages.settings.FlinkCancel')}</a>],
+          onClick={({}) => handleEditClick('sqlSeparator')}>{l('button.edit')}</a>] :
+        [<a onClick={({}) => handleSaveClick('sqlSeparator')}>{l('button.save')}</a>,
+          <a onClick={({}) => handleCancelClick()}>{l('button.cancel')}</a>],
     },
     {
       title: l('pages.settings.FlinkSQLLogic'),
@@ -134,8 +134,7 @@ const FlinkConfigView: React.FC<FlinkConfigProps> = (props) => {
         <Form.Item
           name="useLogicalPlan" valuePropName="checked"
         >
-          <Switch checkedChildren={l('pages.settings.FlinkUse')}
-                  unCheckedChildren={l('pages.settings.FlinkNotUse')}
+          <Switch checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                   checked={useLogicalPlan}
           /></Form.Item>],
     },
@@ -150,9 +149,9 @@ const FlinkConfigView: React.FC<FlinkConfigProps> = (props) => {
               onChange={onChange}
               placeholder="30"/>)),
       actions: editName != 'jobIdWait' ? [<a
-          onClick={({}) => handleEditClick('jobIdWait')}>{l('pages.settings.FlinkUpdate')}</a>] :
-        [<a onClick={({}) => handleSaveClick('jobIdWait')}>{l('pages.settings.FlinkSave')}</a>,
-          <a onClick={({}) => handleCancelClick()}>{l('pages.settings.FlinkCancel')}</a>],
+          onClick={({}) => handleEditClick('jobIdWait')}>{l('button.edit')}</a>] :
+        [<a onClick={({}) => handleSaveClick('jobIdWait')}>{l('button.save')}</a>,
+          <a onClick={({}) => handleCancelClick()}>{l('button.cancel')}</a>],
     },
   ];
 

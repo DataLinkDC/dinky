@@ -53,8 +53,8 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
       setFormValues(currentItem);
     } else if (key === 'delete') {
       Modal.confirm({
-        title: '删除文档',
-        content: '确定删除该文档吗？',
+        title: l('pages.registerCenter.doc.delete'),
+        content: l('pages.registerCenter.doc.deleteConfirm'),
         okText: l('button.confirm'),
         cancelText: l('button.cancel'),
         onOk: async () => {
@@ -84,31 +84,22 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
 
   const columns: ProColumns<DocumentTableListItem>[] = [
     {
-      title: '名称',
+      title: l('pages.registerCenter.doc.name'),
       dataIndex: 'name',
-      tip: '名称是唯一的',
       sorter: true,
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '名称为必填项',
-          },
-        ],
-      },
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
     },
     {
-      title: '文档ID',
+      title: l('pages.registerCenter.doc.id'),
       dataIndex: 'id',
       hideInTable: true,
       hideInForm: true,
       hideInSearch: true,
     },
     {
-      title: '文档类型',
+      title: l('pages.registerCenter.doc.category'),
       sorter: true,
       dataIndex: 'category',
       hideInForm: false,
@@ -234,8 +225,7 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: '类型',
-      tip: '函数类型',
+      title: l('pages.registerCenter.doc.functionType'),
       sorter: true,
       dataIndex: 'type',
       hideInForm: false,
@@ -283,7 +273,7 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: '子类型',
+      title: l('pages.registerCenter.doc.subFunctionType'),
       sorter: true,
       dataIndex: 'subtype',
       hideInForm: false,
@@ -377,7 +367,7 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: '描述',
+      title: l('pages.registerCenter.doc.description'),
       sorter: true,
       dataIndex: 'description',
       valueType: 'textarea',
@@ -385,7 +375,7 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
       hideInSearch: false,
       hideInTable: true,
     }, {
-      title: '填充值',
+      title: l('pages.registerCenter.doc.fillValue'),
       sorter: true,
       dataIndex: 'fillValue',
       valueType: 'textarea',
@@ -395,7 +385,7 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
       hideInDescriptions: false,
     },
     {
-      title: '版本',
+      title: l('pages.registerCenter.doc.version'),
       sorter: true,
       dataIndex: 'version',
       hideInForm: false,
@@ -480,7 +470,7 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
   return (
     <PageContainer title={false}>
       <ProTable<DocumentTableListItem>
-        headerTitle="文档管理"
+        headerTitle={l('pages.registerCenter.doc.Management')}
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -511,7 +501,10 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
                     style={{fontWeight: 600}}>{selectedRowsState.length}</a>
                 })}  &nbsp;&nbsp;
               <span>
-                被禁用的文档共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} 人
+                {l('pages.registerCenter.doc.disableTotalOf', '',
+                  {
+                    total: (selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0))
+                  })}
               </span>
             </div>
           }
@@ -519,8 +512,8 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
           <Button type="primary" danger
                   onClick={() => {
                     Modal.confirm({
-                      title: '删除文档',
-                      content: '确定删除选中的文档吗？',
+                      title: l('pages.registerCenter.doc.delete'),
+                      content: l('pages.registerCenter.doc.deleteConfirm'),
                       okText: l('button.confirm'),
                       cancelText: l('button.cancel'),
                       onOk: async () => {
@@ -536,8 +529,8 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
           <Button type="primary"
                   onClick={() => {
                     Modal.confirm({
-                      title: '启用文档',
-                      content: '确定启用选中的文档吗？',
+                      title: l('pages.registerCenter.doc.enable'),
+                      content: l('pages.registerCenter.doc.enableConfirm'),
                       okText: l('button.confirm'),
                       cancelText: l('button.cancel'),
                       onOk: async () => {
@@ -551,8 +544,8 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
           <Button danger
                   onClick={() => {
                     Modal.confirm({
-                      title: '禁用文档',
-                      content: '确定禁用选中的文档吗？',
+                      title: l('pages.registerCenter.doc.disable'),
+                      content: l('pages.registerCenter.doc.disableConfirm'),
                       okText: l('button.confirm'),
                       cancelText: l('button.cancel'),
                       onOk: async () => {

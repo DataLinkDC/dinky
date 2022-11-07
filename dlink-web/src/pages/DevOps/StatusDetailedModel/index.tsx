@@ -74,7 +74,7 @@ const StatusDetailedModal: React.FC<IStatusDetailedModal> = (props): React.React
   })
 
   const onFooter = () => <Button onClick={() => onCancelStatusDetailed()}>
-    返回
+    {l('button.back')}
   </Button>
 
   return (

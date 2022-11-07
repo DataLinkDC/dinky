@@ -138,10 +138,6 @@ const ProcessList: React.FC<{}> = (props: any) => {
       title: '操作人ID',
       sorter: true,
       dataIndex: 'userId',
-    }, {
-      title: '操作人名',
-      sorter: true,
-      dataIndex: 'userName',
     }
   ];
 
