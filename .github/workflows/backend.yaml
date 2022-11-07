@@ -32,7 +32,7 @@ concurrency:
 
 jobs:
   build_npm:
-    name: Build_JDK
+    name: Build_NPM
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
