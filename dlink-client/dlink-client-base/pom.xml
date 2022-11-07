@@ -27,15 +27,14 @@
     <artifactId>dlink-client-base</artifactId>
 
     <properties>
-        <source.level>1.8</source.level>
-        <target.level>1.8</target.level>
+        <source.level>${target.java.version}</source.level>
+        <target.level>${target.java.version}</target.level>
         <dubbo.version>3.0.2.1</dubbo.version>
         <flink.version>1.14.6</flink.version>
         <junit.version>4.12</junit.version>
         <spring.version>4.3.16.RELEASE</spring.version>
-        <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>${target.java.version}</maven.compiler.source>
+        <maven.compiler.target>${target.java.version}</maven.compiler.target>
     </properties>
 
     <dependencies>

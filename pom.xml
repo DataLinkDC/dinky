@@ -48,7 +48,7 @@
     </modules>
 
     <properties>
-        <target.java.version>1.8</target.java.version>
+        <target.java.version>8</target.java.version>
         <maven.compiler.source>${target.java.version}</maven.compiler.source>
         <maven.compiler.target>${target.java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -88,6 +88,7 @@
         <commons-email>1.5</commons-email>
         <knife4j.version>3.0.3</knife4j.version>
         <spotless.version>2.27.1</spotless.version>
+        <jaxb.version>2.3.0</jaxb.version>
     </properties>
 
     <dependencyManagement>
@@ -478,6 +479,26 @@
                 <artifactId>dlink-process</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>${jaxb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-impl</artifactId>
+                <version>${jaxb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-core</artifactId>
+                <version>${jaxb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.activation</groupId>
+                <artifactId>activation</artifactId>
+                <version>1.1.1</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -797,6 +818,9 @@
             <activation>
                 <jdk>[11,)</jdk>
             </activation>
+            <properties>
+                <target.java.version>11</target.java.version>
+            </properties>
             <build>
                 <pluginManagement>
                     <plugins>
