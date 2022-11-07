@@ -45,6 +45,7 @@ jobs:
 
       # 编译web
       - name: Cache node modules
+        if: matrix.jdk == 8
         uses: actions/cache@v2
         with:
           # npm cache files are stored in `~/.npm` on Linux/macOS
@@ -55,10 +56,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
+
       - name: Install Dependencies
+        if: matrix.jdk == 8
         run: cd dlink-web && npm install --force
 
       - name: Npm Web Build
+        if: matrix.jdk == 8
         run: cd dlink-web && npm run build
 
       # maven编译
