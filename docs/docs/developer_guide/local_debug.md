@@ -95,6 +95,12 @@ IDEA 里 Build → Build Project
 
 ```bash
 mvn clean install -Dmaven.test.skip=true
+
+# 如若修改版本，按以下指定即可。flink可支持多版本(1.11-1.16)
+mvn clean install -Dmaven.test.skip=true -P pord,scala-2.11,flink-1.14,flink-1.15
+
+# 如若不需要web编译,-P 后面加: `!web`
+mvn clean install -Dmaven.test.skip=true -P !web,pord,scala-2.11,flink-1.14,flink-1.15
 ```
 
 打包最终位于根目录 build 下，`dlink-release-x.x.x.tar.gz` 其大小约为 40 M。
@@ -113,7 +119,10 @@ Dinky开发环境配置有两种模式，分别是 provided 环境和 compile �
 
 - provided：此环境适合已经存在安装包，可进行远程调试，此模式需要外部环境安装Flink；
 - compile：此环境适合二次开发或者熟悉源码，此模式不需要额外安装Flink,通过Flink自带的local模式变可调试开发
+> 开发时，在maven 配置文件 ,勾选即可。dev -> compiler 、 prod -> provided
 
+### Maven Profile须知
+![local_debug_maven_profile_intro.png](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/local_debug/local_debug_maven_profile_intro.png)
 ## Dinky本地开发环境
 
 ### 分支选择
@@ -131,7 +140,6 @@ Dinky开发环境配置有两种模式，分别是 provided 环境和 compile �
 
 ```
 <properties>
-        
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>${target.java.version}</maven.compiler.source>
         <maven.compiler.target>${target.java.version}</maven.compiler.target>
