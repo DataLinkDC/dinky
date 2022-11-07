@@ -648,6 +648,12 @@
             <modules>
                 <module>dlink-web</module>
             </modules>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>web</name>
+                </property>
+            </activation>
         </profile>
 
         <profile>
