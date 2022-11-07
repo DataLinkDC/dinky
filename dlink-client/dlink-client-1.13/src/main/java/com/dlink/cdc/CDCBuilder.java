@@ -19,6 +19,7 @@
 
 package com.dlink.cdc;
 
+import com.dlink.exception.SplitTableException;
 import com.dlink.model.FlinkCDCConfig;
 
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
@@ -48,4 +49,9 @@ public interface CDCBuilder {
     Map<String, Map<String, String>> parseMetaDataConfigs();
 
     String getSchemaFieldName();
+
+    default Map<String, String> parseMetaDataConfig() {
+        throw new SplitTableException("此数据源并未实现分库分表");
+    }
+
 }
