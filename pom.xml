@@ -48,7 +48,7 @@
     </modules>
 
     <properties>
-        <target.java.version>11</target.java.version>
+        <target.java.version>8</target.java.version>
         <maven.compiler.source>${target.java.version}</maven.compiler.source>
         <maven.compiler.target>${target.java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -818,6 +818,9 @@
             <activation>
                 <jdk>[11,)</jdk>
             </activation>
+            <properties>
+                <target.java.version>11</target.java.version>
+            </properties>
             <build>
                 <pluginManagement>
                     <plugins>
