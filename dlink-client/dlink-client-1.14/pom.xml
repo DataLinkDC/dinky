@@ -35,7 +35,6 @@
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-client-base</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.dlink</groupId>
@@ -54,7 +53,7 @@
         <dependency>
             <groupId>com.starrocks</groupId>
             <artifactId>flink-connector-starrocks</artifactId>
-            <version>1.2.3_flink-1.14_2.12</version>
+            <version>1.2.3_flink-1.14_${scala.binary.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
