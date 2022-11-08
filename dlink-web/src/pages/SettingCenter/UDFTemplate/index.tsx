@@ -87,7 +87,7 @@ const UDFTemplate: React.FC<{}> = () => {
 
     return <Drawer
       visible={open}
-      title={(tModel.id ? '修改' : '添加') + "UDF模板"}
+      title={(tModel.id ? l('page.sys.udf.template.modify') : l('page.sys.udf.template.create'))}
       width={720}
       onClose={onClose}
       extra={
@@ -104,10 +104,10 @@ const UDFTemplate: React.FC<{}> = () => {
           <Col span={12}>
             <Form.Item
               name="name"
-              label="模板名"
-              rules={[{required: true, message: '模板名称'}]}
+              label={l('page.sys.udf.template.name')}
+              rules={[{required: true, message: l('page.sys.udf.template.namePlaceholder')}]}
             >
-              <Input placeholder="请输入模板名"/>
+              <Input placeholder={l('page.sys.udf.template.namePlaceholder')}/>
             </Form.Item>
           </Col>
         </Row>
@@ -115,10 +115,10 @@ const UDFTemplate: React.FC<{}> = () => {
           <Col span={12}>
             <Form.Item
               name="codeType"
-              label="代码类型"
-              rules={[{required: true, message: '请选择代码类型'}]}
+              label={l('page.sys.udf.template.codeType')}
+              rules={[{required: true, message: l('page.sys.udf.template.codeTypePlaceholder')}]}
             >
-              <Select placeholder="请选择代码类型">
+              <Select placeholder={l('page.sys.udf.template.codeTypePlaceholder')}>
                 <Option value={DIALECT.JAVA}>{DIALECT.JAVA}</Option>
                 <Option value={DIALECT.SCALA}>{DIALECT.SCALA}</Option>
                 <Option value={DIALECT.PYTHON}>{DIALECT.PYTHON}</Option>
@@ -128,8 +128,8 @@ const UDFTemplate: React.FC<{}> = () => {
           <Col span={12}>
             <Form.Item
               name="functionType"
-              label="函数类型"
-              rules={[{required: true, message: '请选择函数类型'}]}
+              label={l('page.sys.udf.template.functionType')}
+              rules={[{required: true, message: l('page.sys.udf.template.functionTypePlaceholder')}]}
             >
               <Select placeholder="Please choose the type">
                 <Option value="UDF">UDF</Option>
@@ -143,15 +143,14 @@ const UDFTemplate: React.FC<{}> = () => {
           <Col span={24}>
             <Form.Item
               name="templateCode"
-              label="模板代码"
+              label={l('page.sys.udf.template.templateCode')}
               rules={[
                 {
                   required: true,
-                  message: '请编辑模板代码',
+                  message: l('page.sys.udf.template.templateCodePlaceholder'),
                 },
               ]}
             >
-              {/*<Input.TextArea rows={20} placeholder="请编辑模板代码"/>*/}
               <CodeEdit code={code} language='java'
                         height='400px' onChange={async (val) => {
                 // setTModel({...tModel,templateCode:val});
@@ -166,8 +165,8 @@ const UDFTemplate: React.FC<{}> = () => {
 
   const deleteUDFTemplate = (id: number) => {
     Modal.confirm({
-      title: '删除模板',
-      content: '确定删除该模板吗？',
+      title: l('page.sys.udf.template.delete'),
+      content: l('page.sys.udf.template.deleteConfirm'),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -179,12 +178,12 @@ const UDFTemplate: React.FC<{}> = () => {
 
   const columns: ProColumns<UDFTemplateItem>[] = [
     {
-      title: '模板名',
+      title: l('page.sys.udf.template.name'),
       sorter: true,
       dataIndex: 'name',
     },
     {
-      title: '代码类型',
+      title: l('page.sys.udf.template.codeType'),
       sorter: true,
       dataIndex: 'codeType',
       filters: [
@@ -206,7 +205,7 @@ const UDFTemplate: React.FC<{}> = () => {
       },
       onFilter: true
     }, {
-      title: '函数类型',
+      title: l('page.sys.udf.template.functionType'),
       sorter: true,
       dataIndex: 'functionType',
       filters: [

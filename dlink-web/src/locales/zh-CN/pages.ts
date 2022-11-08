@@ -541,5 +541,18 @@ export default {
   'page.task.api.job.offline' : '下线作业',
   'page.task.api.job.reonline' : '重新上线作业',
 
+  'page.sys.udf.template.name' :'模板名',
+  'page.sys.udf.template.namePlaceholder' :'请输入模板名！',
+  'page.sys.udf.template.codeType' :'代码类型',
+  'page.sys.udf.template.codeTypePlaceholder' :'请选择代码类型！',
+  'page.sys.udf.template.functionType' :'函数类型',
+  'page.sys.udf.template.functionTypePlaceholder' :'请选择函数类型！',
+  'page.sys.udf.template.templateCode' :'模板代码',
+  'page.sys.udf.template.templateCodePlaceholder' :'请编辑模板代码！',
+  'page.sys.udf.template.delete' :'删除模板！',
+  'page.sys.udf.template.deleteConfirm' :'确定删除该模板吗?',
+  'page.sys.udf.template.create': '创建 UDF 模板',
+  'page.sys.udf.template.modify': '修改 UDF 模板',
+
 
 };

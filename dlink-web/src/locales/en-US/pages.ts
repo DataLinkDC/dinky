@@ -542,5 +542,17 @@ export default {
   'page.task.api.job.offline' : 'Offline job',
   'page.task.api.job.reonline' : 'Re-online job',
 
+  'page.sys.udf.template.name' : 'Template Name',
+  'page.sys.udf.template.namePlaceholder' : 'Please enter the template name! ',
+  'page.sys.udf.template.codeType' : 'Code Type',
+  'page.sys.udf.template.codeTypePlaceholder' : 'Please select code type! ',
+  'page.sys.udf.template.functionType' : 'Function Type',
+  'page.sys.udf.template.functionTypePlaceholder' : 'Please select function type! ',
+  'page.sys.udf.template.templateCode' : 'Template Code',
+  'page.sys.udf.template.templateCodePlaceholder' : 'Please edit the template code! ',
+  'page.sys.udf.template.delete' : 'Delete Template! ',
+  'page.sys.udf.template.deleteConfirm' : 'Are you sure you want to delete this template?',
+  'page.sys.udf.template.create': 'Create UDF Template',
+  'page.sys.udf.template.modify': 'Modify UDF Template',
 };
 
