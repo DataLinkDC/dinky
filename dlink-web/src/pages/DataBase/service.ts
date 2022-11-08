@@ -21,35 +21,35 @@
 import {getInfoById, handleAddOrUpdate, postAll} from "@/components/Common/crud";
 import {DataBaseItem} from "@/pages/DataBase/data";
 import {message} from "antd";
-import {useIntl} from "umi";
+import {getIntl} from "umi";
 
 export async function createOrModifyDatabase(databse: DataBaseItem) {
   return handleAddOrUpdate('/api/database', databse);
 }
 
 export async function testDatabaseConnect(databse: DataBaseItem) {
-  const hide = message.loading(useIntl().formatMessage({id:'app.request.test.connection'}));
+  const hide = message.loading(getIntl().formatMessage({id:'app.request.test.connection'}));
   try {
     const {code,msg} = await postAll('/api/database/testConnect',databse);
     hide();
     code==0?message.success(msg):message.error(msg);
   } catch (error) {
     hide();
-    message.error(useIntl().formatMessage({id:'app.request.failed'}));
+    message.error(getIntl().formatMessage({id:'app.request.failed'}));
   }
 }
 
 export async function checkHeartBeat(id: number) {
-  const hide = message.loading(useIntl().formatMessage({id:'app.request.heartbeat.connection'}));
+  const hide = message.loading(getIntl().formatMessage({id:'app.request.heartbeat.connection'}));
   try {
     const {datas} = await getInfoById('/api/database/checkHeartBeatById',id);
     hide();
     datas.status==1?message.success(
-        useIntl().formatMessage({id:'app.request.heartbeat.connection.success'},{time :datas.heartbeatTime }))
+        getIntl().formatMessage({id:'app.request.heartbeat.connection.success'},{time :datas.heartbeatTime }))
       :
-      message.error(useIntl().formatMessage({id:'app.request.heartbeat.connection.failed'},{time :datas.heartbeatTime }));
+      message.error(getIntl().formatMessage({id:'app.request.heartbeat.connection.failed'},{time :datas.heartbeatTime }));
   } catch (error) {
     hide();
-    message.error(useIntl().formatMessage({id:'app.request.failed'}));
+    message.error(getIntl().formatMessage({id:'app.request.failed'}));
   }
 }

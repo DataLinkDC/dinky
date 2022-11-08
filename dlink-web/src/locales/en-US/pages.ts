@@ -405,7 +405,7 @@ export default {
 
   'pages.registerCenter.alert.groupManagement': 'Alarm Group Management ',
   'pages.registerCenter.alert.group.name': 'Alarm Group Name',
-  'pages.registerCenter.alert.group.groupid ': 'Alarm group ID ',
+  'pages.registerCenter.alert.group.groupid': 'Alarm group ID ',
   'pages.registerCenter.alert.group.alertInstanceIds': 'Alarm instance',
   'pages.registerCenter.alert.group.chooseAlertInstanceIds': 'please choose Alarm Instance',
   'pages.registerCenter.alert.group.inputName': 'please input Alarm group name',

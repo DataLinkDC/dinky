@@ -57,16 +57,16 @@ const SystemInfo = (props: any) => {
               onClick={refreshRootLog}
             ></Button>}>
         <TabPane tab={<span>&nbsp; Metrics &nbsp;</span>} key="metrics">
-          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='Coming soon'/>
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={l('global.stay.tuned')}/>
         </TabPane>
         <TabPane tab={<span>&nbsp; Configuration &nbsp;</span>} key="configuration">
-          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='Coming soon'/>
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={l('global.stay.tuned')}/>
         </TabPane>
         <TabPane tab={<span>&nbsp; Logs &nbsp;</span>} key="logs">
-          <CodeShow code={log} language='java' height='500px'/>
+          <CodeShow code={log} language='java' height='70vh'/>
         </TabPane>
         <TabPane tab={<span>&nbsp; Log List &nbsp;</span>} key="logList">
-          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='Coming soon'/>
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={l('global.stay.tuned')}/>
         </TabPane>
       </Tabs>
     </PageContainer>

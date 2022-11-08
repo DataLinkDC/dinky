@@ -21,16 +21,16 @@
 import {postAll} from "@/components/Common/crud";
 import {message} from "antd";
 import {ClusterConfigurationTableListItem} from "@/pages/ClusterConfiguration/data";
-import {useIntl} from "umi";
+import {getIntl} from "umi";
 
 export async function testClusterConfigurationConnect(clusterConfiguration: ClusterConfigurationTableListItem) {
-  const hide = message.loading(useIntl().formatMessage({id:'app.request.test.connection'}));
+  const hide = message.loading(getIntl().formatMessage({id:'app.request.test.connection'}));
   try {
     const {code,msg} = await postAll('/api/clusterConfiguration/testConnect',clusterConfiguration);
     hide();
     code==0?message.success(msg):message.error(msg);
-  } catch (error) {7
+  } catch (error) {
     hide();
-    message.error(useIntl().formatMessage({id:'app.request.failed'}));
+    message.error(getIntl().formatMessage({id:'app.request.failed'}));
   }
 }
