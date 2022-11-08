@@ -43,4 +43,5 @@ export default {
   'app.request.heartbeat.connection.failed': '数据源心跳异常，检测时间为: {time}',
   'app.request.upload.failed': '上传失败。',
   'app.request.update.setting.success': '修改配置成功！',
+  'app.request.test.alert.msg':'正在发送测试告警信息',
 };

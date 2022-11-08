@@ -80,7 +80,7 @@ const DataBaseTableList: React.FC<{}> = (props: any) => {
   const onDeleteDataBase = (row: DataBaseItem) => {
     Modal.confirm({
       title: l('pages.registerCenter.db.delete'),
-      content: l('pages.registerCenter.db.delete','',{dbName: (row.alias === "" ? row.name : row.alias)}),
+      content: l('pages.registerCenter.db.deleteConfirm','',{dbName: (row.alias === "" ? row.name : row.alias)}),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {

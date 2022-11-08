@@ -23,7 +23,7 @@ import FlinkSQL from "./FlinkSQL";
 import {MetaStoreCatalogType, SessionType, TaskType} from "@/pages/DataStudio/model";
 import {message, Modal} from "antd";
 import {addOrUpdateData, getData, handleRemove, postAll} from "@/components/Common/crud";
-import {useIntl} from "umi";
+import {getIntl} from "umi";
 
 /*--- 保存sql ---*/
 export function saveTask(current: any, dispatch: any) {
@@ -81,9 +81,9 @@ export function quitSession(dispatch: any) {
 /*--- 注销会话 ---*/
 export function clearSession(session: string, dispatch: any) {
   Modal.confirm({
-    title: useIntl().formatMessage({id: 'tips.confirm.logout.session'}, {sessionName: session}),
-    okText: useIntl().formatMessage({id: 'button.confirm'}),
-    cancelText: useIntl().formatMessage({id: 'button.cancel'}),
+    title: getIntl().formatMessage({id: 'tips.confirm.logout.session'}, {sessionName: session}),
+    okText: getIntl().formatMessage({id: 'button.confirm'}),
+    cancelText: getIntl().formatMessage({id: 'button.cancel'}),
     onOk: async () => {
       let para = {
         id: session,
@@ -125,9 +125,9 @@ export function showTables(session: string, dispatch: any) {
 /*--- 移除 Catalog Table ---*/
 export function removeTable(tablename: string, session: string, dispatch: any) {
   Modal.confirm({
-    title: useIntl().formatMessage({id: 'tips.confirm.delete.table'}, {tableName: tablename}),
-    okText: useIntl().formatMessage({id: 'button.confirm'}),
-    cancelText: useIntl().formatMessage({id: 'button.cancel'}),
+    title: getIntl().formatMessage({id: 'tips.confirm.delete.table'}, {tableName: tablename}),
+    okText: getIntl().formatMessage({id: 'button.confirm'}),
+    cancelText: getIntl().formatMessage({id: 'button.cancel'}),
     onOk: async () => {
       const res = executeDDL({
         statement: "drop table " + tablename,
