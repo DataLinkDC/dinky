@@ -572,5 +572,18 @@ export default {
   'pages.devops.jobinfo.alert.status.failed': 'Failed',
   'pages.devops.jobinfo.alert.log': 'Log',
   'pages.devops.jobinfo.alert.createTime':'Alarm Time',
+
+  'pages.devops.jobinfo.ck.id':'ID',
+  'pages.devops.jobinfo.ck.status': 'Status',
+  'pages.devops.jobinfo.ck.duration': 'Duration',
+  'pages.devops.jobinfo.ck.checkpoint_type': 'Type',
+  'pages.devops.jobinfo.ck.external_path':'Storage Location',
+  'pages.devops.jobinfo.ck.latest_ack_timestamp': 'Last Response Time',
+  'pages.devops.jobinfo.ck.state_size': 'State Size',
+  'pages.devops.jobinfo.ck.trigger_timestamp': 'Trigger Time',
+  'pages.devops.jobinfo.ck.recovery' : 'Recovering from Checkpoint! ',
+  'pages.devops.jobinfo.ck.recoveryConfirm' : 'Are you sure to Recover from Checkpoint [{path}]?',
+  'pages.devops.jobinfo.ck.recovery.success' : 'Recovery job succeeded',
+  'pages.devops.jobinfo.ck.recovery.failed' : 'Recovery job failed',
 };
 

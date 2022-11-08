@@ -572,4 +572,17 @@ export default {
   'pages.devops.jobinfo.alert.log':'日志',
   'pages.devops.jobinfo.alert.createTime':'报警时间',
 
+
+  'pages.devops.jobinfo.ck.id':'ID',
+  'pages.devops.jobinfo.ck.status':'状态',
+  'pages.devops.jobinfo.ck.duration':'耗时',
+  'pages.devops.jobinfo.ck.checkpoint_type':'类型',
+  'pages.devops.jobinfo.ck.external_path':'存储位置',
+  'pages.devops.jobinfo.ck.latest_ack_timestamp':'最后响应时间',
+  'pages.devops.jobinfo.ck.state_size':'状态大小',
+  'pages.devops.jobinfo.ck.trigger_timestamp':'触发时间',
+  'pages.devops.jobinfo.ck.recovery' :'从检查点恢复！',
+  'pages.devops.jobinfo.ck.recoveryConfirm' :'确定从检查点【{path}】恢复吗?',
+  'pages.devops.jobinfo.ck.recovery.success' :'恢复作业成功',
+  'pages.devops.jobinfo.ck.recovery.failed' :'恢复作业失败',
 };
