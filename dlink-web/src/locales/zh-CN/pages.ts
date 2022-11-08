@@ -590,5 +590,15 @@ export default {
 
   'pages.devops.jobinfo.lineage' :'血缘分析',
 
+  'pages.devops.jobinfo.version.id' :'作业ID',
+  'pages.devops.jobinfo.version.name' :'作业名称',
+  'pages.devops.jobinfo.version.alias' :'作业别名',
+  'pages.devops.jobinfo.version.dialect' :'作业方言',
+  'pages.devops.jobinfo.version.type' :'作业类型',
+  'pages.devops.jobinfo.version.versionId' :'版本号',
+  'pages.devops.jobinfo.version.sql' :'作业内容',
+  'pages.devops.jobinfo.version.sql.showdetail' :'查看作业详情',
+  'pages.devops.jobinfo.version.sql.title' :'作业执行 SQL',
+  'pages.devops.jobinfo.version.diff' :'版本对比',
 
 };

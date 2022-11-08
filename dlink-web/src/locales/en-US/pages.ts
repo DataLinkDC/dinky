@@ -590,6 +590,15 @@ export default {
 
   'pages.devops.jobinfo.lineage' :'Lineage Analysis',
 
-
+  'pages.devops.jobinfo.version.id' : 'Job ID',
+  'pages.devops.jobinfo.version.name' : 'Job Name',
+  'pages.devops.jobinfo.version.alias' : 'Job aAlias',
+  'pages.devops.jobinfo.version.dialect' : 'Job Dialect',
+  'pages.devops.jobinfo.version.type' : 'Job Type',
+  'pages.devops.jobinfo.version.versionId' : 'Version Number',
+  'pages.devops.jobinfo.version.sql' : 'Job Content',
+  'pages.devops.jobinfo.version.sql.showdetail' : 'View Job Details',
+  'pages.devops.jobinfo.version.sql.title' : 'Job Execute SQL',
+  'pages.devops.jobinfo.version.diff' : 'Version Comparison',
 };
 
