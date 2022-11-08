@@ -147,7 +147,7 @@ const StudioConnector = (props: any) => {
     if (key == 'delete') {
       removeTable(item.tablename, currentSession.session, dispatch);
     } else {
-      message.warn("敬请期待");
+      message.warn(l('global.stay.tuned'));
     }
   };
 
@@ -159,7 +159,7 @@ const StudioConnector = (props: any) => {
       message.success('连接共享会话【' + item.session + '】成功！');
       setModalVisit(false);
     } else {
-      message.warn("敬请期待");
+      message.warn(l('global.stay.tuned'));
     }
   };
 
@@ -185,7 +185,7 @@ const StudioConnector = (props: any) => {
       render: (_, record) => [
         <a
           onClick={() => {
-            message.warn('敬请期待');
+            message.warn(l('global.stay.tuned'));
           }}
         >
           描述

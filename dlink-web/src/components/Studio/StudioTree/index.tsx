@@ -614,7 +614,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
         }
         getTreeData();
       } else if (info.file.status === 'error') {
-        message.error(`${info.file.name} 上传失败`);
+        message.error(`${info.file.name}`+ l('app.request.upload.failed'));
       }
     },
   };

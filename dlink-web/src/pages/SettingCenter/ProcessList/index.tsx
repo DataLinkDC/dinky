@@ -37,7 +37,7 @@ const ProcessList: React.FC<{}> = (props: any) => {
 
   const columns: ProColumns<ProcessItem>[] = [
     {
-      title: '进程ID',
+      title: l('pages.sys.process.id'),
       dataIndex: 'pid',
       sorter: true,
       render: (dom, entity) => {
@@ -45,17 +45,17 @@ const ProcessList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: '进程名',
+      title: l('pages.sys.process.name'),
       sorter: true,
       dataIndex: 'name',
     },
     {
-      title: '任务ID',
+      title: l('pages.sys.process.jobid'),
       sorter: true,
       dataIndex: 'taskId',
     },
     {
-      title: '类型',
+      title: l('pages.sys.process.type'),
       sorter: true,
       dataIndex: 'type',
       filters: [
@@ -85,7 +85,7 @@ const ProcessList: React.FC<{}> = (props: any) => {
         'Unknown': {text: 'Unknown'},
       },
     }, {
-      title: '状态',
+      title: l('pages.sys.process.status'),
       sorter: true,
       dataIndex: 'status',
       filters: [
@@ -120,22 +120,22 @@ const ProcessList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: '开始时间',
+      title: l('pages.sys.process.starttime'),
       dataIndex: 'startTime',
       sorter: true,
       valueType: 'dateTime',
     },
     {
-      title: '结束时间',
+      title: l('pages.sys.process.endtime'),
       dataIndex: 'endTime',
       sorter: true,
       valueType: 'dateTime',
     }, {
-      title: '耗时',
+      title: l('pages.sys.process.duration'),
       sorter: true,
       dataIndex: 'time',
     }, {
-      title: '操作人ID',
+      title: l('pages.sys.process.operator'),
       sorter: true,
       dataIndex: 'userId',
     }

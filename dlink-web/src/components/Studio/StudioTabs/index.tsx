@@ -56,7 +56,7 @@ const EditorTabs = (props: any) => {
   };
 
   const add = () => {
-    message.warn('敬请期待');
+    message.warn(l('global.stay.tuned'));
   };
 
   const remove = (targetKey: any) => {

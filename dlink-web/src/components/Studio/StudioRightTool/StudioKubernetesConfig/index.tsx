@@ -40,8 +40,8 @@ const StudioKubernetesConfig = (props: any) => {
 
 
   const getGroupOptions = () => {
-    const itemList = [<Option key={0} value={0} label='禁用'>
-      禁用
+    const itemList = [<Option key={0} value={0} label={l('button.disable')}>
+      {l('button.disable')}
     </Option>];
     for (const item of group) {
       itemList.push(<Option key={item.id} value={item.id} label={item.name}>
@@ -100,10 +100,10 @@ const StudioKubernetesConfig = (props: any) => {
             tooltip='指定 SavePoint策略，默认为禁用'
           >
             <Select defaultValue={0}>
-              <Option value={0}>禁用</Option>
-              <Option value={1}>最近一次</Option>
-              <Option value={2}>最早一次</Option>
-              <Option value={3}>指定一次</Option>
+              <Option value={0}>{l('global.savepoint.strategy.disabled')}</Option>
+              <Option value={1}>{l('global.savepoint.strategy.latest')}</Option>
+              <Option value={2}>{l('global.savepoint.strategy.earliest')}</Option>
+              <Option value={3}>{l('global.savepoint.strategy.custom')}</Option>
             </Select>
           </Form.Item>
           {current.task.savePointStrategy === 3 ?

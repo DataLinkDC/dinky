@@ -82,6 +82,8 @@ export default {
   'global.time.day': 'Day',
   'global.time.millisecond': 'millisecond',
 
+  'global.stay.tuned': 'Stay tuned',
+
   'global.table.operate': 'Operation',
   'global.table.config': 'Config',
   'global.table.edit': 'Edit',
@@ -91,7 +93,9 @@ export default {
   'global.table.lastUpdateTime': 'Last Update Time',
   'global.table.createTime': 'Create Time',
   'global.table.startTime': 'Start Time',
+  'global.table.startUpTime': 'StartUp Time',
   'global.table.endTime': 'End Time',
+  'global.table.finishTime': 'Finished Time',
   'global.table.useTime': 'Duration',
 
   'global.table.registType': 'Regist Type',
@@ -115,6 +119,11 @@ export default {
   'global.table.lifecycle.online': 'Online',
   'global.table.lifecycle.unknown': 'Unknown',
   'global.table.runmode': 'Run Mode',
+
+  'global.savepoint.strategy.disabled':'Disabled',
+  'global.savepoint.strategy.latest':'Latest',
+  'global.savepoint.strategy.earliest':'Earliest',
+  'global.savepoint.strategy.custom':'Custom',
 
 
 };

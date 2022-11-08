@@ -56,7 +56,7 @@ const DataMap = (props: any) => {
     <Tabs defaultActiveKey="Lineage" size="small" tabPosition="top" style={{
       border: "1px solid #f0f0f0"
     }}>
-      <TabPane tab={<span>血缘分析</span>} key="Lineage">
+      <TabPane tab={<span>{l('pages.devops.jobinfo.lineage')}</span>} key="Lineage">
         {data ? <Lineage datas={data}/> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
       </TabPane>
     </Tabs>

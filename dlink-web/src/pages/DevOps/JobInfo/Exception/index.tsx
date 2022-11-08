@@ -41,7 +41,7 @@ const Exception = (props: any) => {
         <CodeShow code={job.jobHistory?.exceptions['root-exception'] as string} language='java' height='500px'/>
       </TabPane>
       <TabPane tab={<span>Exception History</span>} key="ExceptionHistory">
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={"敬请期待"}/>
+        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={l('global.stay.tuned')}/>
       </TabPane>
     </Tabs>}
   </>)
