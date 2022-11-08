@@ -87,7 +87,7 @@ const UDFTemplate: React.FC<{}> = () => {
 
     return <Drawer
       visible={open}
-      title={(tModel.id ? l('page.sys.udf.template.modify') : l('page.sys.udf.template.create'))}
+      title={(tModel.id ? l('pages.sys.udf.template.modify') : l('pages.sys.udf.template.create'))}
       width={720}
       onClose={onClose}
       extra={
@@ -104,10 +104,10 @@ const UDFTemplate: React.FC<{}> = () => {
           <Col span={12}>
             <Form.Item
               name="name"
-              label={l('page.sys.udf.template.name')}
-              rules={[{required: true, message: l('page.sys.udf.template.namePlaceholder')}]}
+              label={l('pages.sys.udf.template.name')}
+              rules={[{required: true, message: l('pages.sys.udf.template.namePlaceholder')}]}
             >
-              <Input placeholder={l('page.sys.udf.template.namePlaceholder')}/>
+              <Input placeholder={l('pages.sys.udf.template.namePlaceholder')}/>
             </Form.Item>
           </Col>
         </Row>
@@ -115,10 +115,10 @@ const UDFTemplate: React.FC<{}> = () => {
           <Col span={12}>
             <Form.Item
               name="codeType"
-              label={l('page.sys.udf.template.codeType')}
-              rules={[{required: true, message: l('page.sys.udf.template.codeTypePlaceholder')}]}
+              label={l('pages.sys.udf.template.codeType')}
+              rules={[{required: true, message: l('pages.sys.udf.template.codeTypePlaceholder')}]}
             >
-              <Select placeholder={l('page.sys.udf.template.codeTypePlaceholder')}>
+              <Select placeholder={l('pages.sys.udf.template.codeTypePlaceholder')}>
                 <Option value={DIALECT.JAVA}>{DIALECT.JAVA}</Option>
                 <Option value={DIALECT.SCALA}>{DIALECT.SCALA}</Option>
                 <Option value={DIALECT.PYTHON}>{DIALECT.PYTHON}</Option>
@@ -128,10 +128,10 @@ const UDFTemplate: React.FC<{}> = () => {
           <Col span={12}>
             <Form.Item
               name="functionType"
-              label={l('page.sys.udf.template.functionType')}
-              rules={[{required: true, message: l('page.sys.udf.template.functionTypePlaceholder')}]}
+              label={l('pages.sys.udf.template.functionType')}
+              rules={[{required: true, message: l('pages.sys.udf.template.functionTypePlaceholder')}]}
             >
-              <Select placeholder="Please choose the type">
+              <Select placeholder={l('pages.sys.udf.template.functionTypePlaceholder')}>
                 <Option value="UDF">UDF</Option>
                 <Option value="UDAF">UDAF</Option>
                 <Option value="UDTF">UDTF</Option>
@@ -143,11 +143,11 @@ const UDFTemplate: React.FC<{}> = () => {
           <Col span={24}>
             <Form.Item
               name="templateCode"
-              label={l('page.sys.udf.template.templateCode')}
+              label={l('pages.sys.udf.template.templateCode')}
               rules={[
                 {
                   required: true,
-                  message: l('page.sys.udf.template.templateCodePlaceholder'),
+                  message: l('pages.sys.udf.template.templateCodePlaceholder'),
                 },
               ]}
             >
@@ -165,8 +165,8 @@ const UDFTemplate: React.FC<{}> = () => {
 
   const deleteUDFTemplate = (id: number) => {
     Modal.confirm({
-      title: l('page.sys.udf.template.delete'),
-      content: l('page.sys.udf.template.deleteConfirm'),
+      title: l('pages.sys.udf.template.delete'),
+      content: l('pages.sys.udf.template.deleteConfirm'),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -178,12 +178,12 @@ const UDFTemplate: React.FC<{}> = () => {
 
   const columns: ProColumns<UDFTemplateItem>[] = [
     {
-      title: l('page.sys.udf.template.name'),
+      title: l('pages.sys.udf.template.name'),
       sorter: true,
       dataIndex: 'name',
     },
     {
-      title: l('page.sys.udf.template.codeType'),
+      title: l('pages.sys.udf.template.codeType'),
       sorter: true,
       dataIndex: 'codeType',
       filters: [
@@ -205,7 +205,7 @@ const UDFTemplate: React.FC<{}> = () => {
       },
       onFilter: true
     }, {
-      title: l('page.sys.udf.template.functionType'),
+      title: l('pages.sys.udf.template.functionType'),
       sorter: true,
       dataIndex: 'functionType',
       filters: [

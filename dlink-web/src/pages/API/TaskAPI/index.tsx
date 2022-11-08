@@ -56,7 +56,7 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-          {l('page.task.api.job.async')}
+          {l('pages.task.api.job.async')}
         </span>
         }
         key="submitTask"
@@ -67,7 +67,7 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-                    {l('page.task.api.job.stop')}
+                    {l('pages.task.api.job.stop')}
         </span>
         }
         key="cancelJob"
@@ -82,7 +82,7 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-            {l('page.task.api.job.restart')}
+            {l('pages.task.api.job.restart')}
         </span>
         }
         key="restartTask"
@@ -93,7 +93,7 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-            {l('page.task.api.job.instance')}
+            {l('pages.task.api.job.instance')}
         </span>
         }
         key="taskInstance"
@@ -105,7 +105,7 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-            {l('page.task.api.savepoint.trigger')}
+            {l('pages.task.api.savepoint.trigger')}
         </span>
         }
         key="triggerSavePoint"
@@ -120,7 +120,7 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-            {l('page.task.api.savepoint.stop')}
+            {l('pages.task.api.savepoint.stop')}
         </span>
         }
         key="cancelSavePoint"
@@ -135,7 +135,7 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-            {l('page.task.api.job.online')}
+            {l('pages.task.api.job.online')}
         </span>
         }
         key="onLineTask"
@@ -146,7 +146,7 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-            {l('page.task.api.job.offline')}
+            {l('pages.task.api.job.offline')}
         </span>
         }
         key="offLineTask"
@@ -157,7 +157,7 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-             {l('page.task.api.job.reonline')}
+             {l('pages.task.api.job.reonline')}
           </span>
         }
         key="reOnLineTask"
