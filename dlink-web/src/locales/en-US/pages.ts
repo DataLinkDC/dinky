@@ -600,5 +600,43 @@ export default {
   'pages.devops.jobinfo.version.sql.showdetail' : 'View Job Details',
   'pages.devops.jobinfo.version.sql.title' : 'Job Execute SQL',
   'pages.devops.jobinfo.version.diff' : 'Version Comparison',
+
+  'pages.devops.jobinfo.overview': 'Job Overview',
+  'pages.devops.jobinfo.cluster':'Cluster Information',
+  'pages.devops.jobinfo.snapshot': 'Job Snapshot',
+  'pages.devops.jobinfo.exception': 'Exception Information',
+  'pages.devops.jobinfo.log':'Job Log',
+  'pages.devops.jobinfo.optimize':'Automatic Tuning',
+  'pages.devops.jobinfo.config':'Configuration Information',
+  'pages.devops.jobinfo.flinksql':'FlinkSQL',
+  'pages.devops.jobinfo.datamap': 'Data Map',
+  'pages.devops.jobinfo.olap': 'Adhoc Query',
+  'pages.devops.jobinfo.version': 'History Version',
+  'pages.devops.jobinfo.alert':'Alarm Record',
+  'pages.devops.jobinfo.savepoint.trigger':'SavePoint Triggers',
+  'pages.devops.jobinfo.savepoint.stop':'SavePoint Pause',
+  'pages.devops.jobinfo.savepoint.cancel': 'SavePoint Stop',
+  'pages.devops.jobinfo.savepoint.canceljob': 'Normal Stop',
+  'pages.devops.jobinfo.localenv': 'Local Environment',
+  'pages.devops.jobinfo.offline': 'Offline',
+  'pages.devops.jobinfo.smart_stop': 'Smart Stop',
+  'pages.devops.jobinfo.reonline': 'Re-Online',
+  'pages.devops.jobinfo.reonlineJob': 'Re-online Job',
+  'pages.devops.jobinfo.reonlineJobConfirm': 'Are you sure you want to re-launch this job? ',
+  'pages.devops.jobinfo.reonline.success': 'Re-online successfully',
+  'pages.devops.jobinfo.reonline.failed': 'Failed to re-online',
+  'pages.devops.jobinfo.restart': 'Restart',
+  'pages.devops.jobinfo.stopJob': 'Stop job',
+  'pages.devops.jobinfo.stopJobConfirm': 'Are you sure to just stop this job without SavePoint operation? ',
+  'pages.devops.jobinfo.canceljob.success': 'Normal stop succeeded',
+  'pages.devops.jobinfo.canceljob.failed': 'Normal stop failed',
+  'pages.devops.jobinfo.job.key':'{key} Job',
+  'pages.devops.jobinfo.job.key.success':'{key} Success',
+  'pages.devops.jobinfo.job.key.failed':'{key} Failed',
+  'pages.devops.jobinfo.job.keyConfirm': 'Are you sure {key} this job?',
+
+
+
+
 };
 
