@@ -31,8 +31,34 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
-    name: Build
+  build_npm:
+    name: Build_NPM
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      MAVEN_OPTS: -Xmx2G -Xms2G
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
+      - uses: actions/cache@v3
+        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
+        with:
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install Dependencies
+        run: cd dlink-web && npm install --legacy-peer-deps
+      - name: Npm Web Build
+        run: cd dlink-web && npm run build
+  build_jdk:
+    name: Build_JDK
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -41,30 +67,7 @@ jobs:
     env:
       MAVEN_OPTS: -Xmx2G -Xms2G
     steps:
-      - uses: actions/checkout@v2
-
-      # 编译web
-      - name: Cache node modules
-        if: matrix.jdk == 8
-        uses: actions/cache@v2
-        with:
-          # npm cache files are stored in `~/.npm` on Linux/macOS
-          path: |
-            dlink-web/node_modules
-            dlink-web/dist
-          key: ${{ runner.os }}-node-${{ hashFiles('dlink-web/**/package.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-
-      - name: Install Dependencies
-        if: matrix.jdk == 8
-        run: cd dlink-web && npm install --force
-
-      - name: Npm Web Build
-        if: matrix.jdk == 8
-        run: cd dlink-web && npm run build
-
+      - uses: actions/checkout@v3
       # maven编译
       - name: Set up JDK ${{ matrix.jdk }}
         uses: actions/setup-java@v2
@@ -72,7 +75,7 @@ jobs:
           java-version:  ${{ matrix.jdk }}
           distribution: 'adopt'
       - name: Cache local Maven repository
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
