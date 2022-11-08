@@ -83,7 +83,7 @@ export default (): React.ReactNode => {
         </Paragraph>
         <p></p>
         <Timeline pending={<><Text code>0.7.0</Text>
-          <Text type="secondary">敬请期待</Text>
+          <Text type="secondary">{l('global.stay.tuned')}</Text>
           <p></p>
           <Paragraph>
             <ul>

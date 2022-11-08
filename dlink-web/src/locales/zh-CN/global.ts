@@ -83,6 +83,7 @@ export default {
   'global.time.day': '天',
   'global.time.millisecond': '毫秒',
 
+  'global.stay.tuned': '敬请期待',
 
   'global.table.operate': '操作',
   'global.table.updateTime': '更新时间',

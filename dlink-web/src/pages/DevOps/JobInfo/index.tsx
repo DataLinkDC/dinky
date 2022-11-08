@@ -285,11 +285,11 @@ const JobInfo = (props: any) => {
         {tabKey === 'cluster' ? <FlinkClusterInfo job={job}/> : undefined}
         {tabKey === 'snapshot' ? <CheckPoints job={job}/> : undefined}
         {tabKey === 'exception' ? <Exception job={job}/> : undefined}
-        {tabKey === 'log' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={"敬请期待"}/> : undefined}
-        {tabKey === 'optimize' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={"敬请期待"}/> : undefined}
+        {tabKey === 'log' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={l('global.stay.tuned')}/> : undefined}
+        {tabKey === 'optimize' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={l('global.stay.tuned')}/> : undefined}
         {tabKey === 'flinksql' ? <FlinkSQL job={job}/> : undefined}
         {tabKey === 'datamap' ? <DataMap job={job}/> : undefined}
-        {tabKey === 'olap' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={"敬请期待"}/> : undefined}
+        {tabKey === 'olap' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={l('global.stay.tuned')}/> : undefined}
         {tabKey === 'version' ? <TaskVersionInfo job={job}/> : undefined}
         {tabKey === 'alert' ? <Alert job={job}/> : undefined}
       </ProCard>

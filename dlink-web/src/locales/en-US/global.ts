@@ -82,6 +82,8 @@ export default {
   'global.time.day': 'Day',
   'global.time.millisecond': 'millisecond',
 
+  'global.stay.tuned': 'Stay tuned',
+
   'global.table.operate': 'Operation',
   'global.table.config': 'Config',
   'global.table.edit': 'Edit',

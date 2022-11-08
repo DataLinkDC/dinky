@@ -92,7 +92,7 @@ const StudioMenu = (props: any) => {
 
   const menu = (
     <Menu>
-      <Menu.Item>敬请期待</Menu.Item>
+      <Menu.Item>{l('global.stay.tuned')}</Menu.Item>
     </Menu>
   );
 

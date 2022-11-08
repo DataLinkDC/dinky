@@ -151,7 +151,7 @@ const StudioProcess = (props: any) => {
       render: (_, record) => {
         let option = [<a
           onClick={() => {
-            message.success('敬请期待');
+            message.success(l('global.stay.tuned'));
           }}
         >
           详情
