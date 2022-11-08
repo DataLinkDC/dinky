@@ -272,8 +272,8 @@
                     <classesDirectory>target/classes/</classesDirectory>
                     <excludes>
                         <!--注意这玩意默认从编译结果目录开始算目录结构-->
-                        <exclude>/application*.properties</exclude>
                         <exclude>/application*.yml</exclude>
+                        <exclude>/mybatis*.xml</exclude>
                     </excludes>
                 </configuration>
             </plugin>
