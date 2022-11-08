@@ -574,7 +574,9 @@ export default {
   'pages.devops.jobinfo.alert.createTime':'Alarm Time',
 
   'pages.devops.jobinfo.ck.id':'ID',
+  'pages.devops.jobinfo.ck.taskid':'Task ID',
   'pages.devops.jobinfo.ck.status': 'Status',
+  'pages.devops.jobinfo.ck.name':'Name',
   'pages.devops.jobinfo.ck.duration': 'Duration',
   'pages.devops.jobinfo.ck.checkpoint_type': 'Type',
   'pages.devops.jobinfo.ck.external_path':'Storage Location',

@@ -433,35 +433,35 @@ const CheckPoints = (props: any) => {
 
     const columns: ProColumns<SavePointTableListItem>[] = [
       {
-        title: 'ID',
+        title: l('pages.devops.jobinfo.ck.id'),
         align: 'center',
         dataIndex: 'id',
         hideInTable: true,
       },
       {
-        title: '任务ID',
+        title: l('pages.devops.jobinfo.ck.taskid'),
         align: 'center',
         dataIndex: 'taskId',
         hideInTable: true,
       },
       {
-        title: '名称',
+        title: l('pages.devops.jobinfo.ck.name'),
         align: 'center',
         dataIndex: 'name',
       },
       {
-        title: '类型',
+        title: l('pages.devops.jobinfo.ck.checkpoint_type'),
         align: 'center',
         dataIndex: 'type',
       },
       {
-        title: '存储位置',
+        title: l('pages.devops.jobinfo.ck.external_path'),
         align: 'center',
         copyable: true,
         dataIndex: 'path',
       },
       {
-        title: '触发时间',
+        title: l('pages.devops.jobinfo.ck.trigger_timestamp'),
         align: 'center',
         valueType: 'dateTime',
         dataIndex: 'createTime',

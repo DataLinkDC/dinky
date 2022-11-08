@@ -574,7 +574,9 @@ export default {
 
 
   'pages.devops.jobinfo.ck.id':'ID',
+  'pages.devops.jobinfo.ck.taskid':'任务ID',
   'pages.devops.jobinfo.ck.status':'状态',
+  'pages.devops.jobinfo.ck.name':'名称',
   'pages.devops.jobinfo.ck.duration':'耗时',
   'pages.devops.jobinfo.ck.checkpoint_type':'类型',
   'pages.devops.jobinfo.ck.external_path':'存储位置',
