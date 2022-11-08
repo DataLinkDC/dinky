@@ -104,6 +104,7 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements Serializabl
                     )
                     .setDeliverGuarantee(DeliveryGuarantee.valueOf(env.getCheckpointingMode().name()))
                     .setKafkaProducerConfig(kafkaProducerConfig)
+                    .setTransactionalIdPrefix(kafkaProducerConfig.getProperty("transactional.id"))
                     .build();
             dataStreamSource.sinkTo(kafkaSink);
         } else {
@@ -149,6 +150,7 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements Serializabl
                             )
                             .setDeliverGuarantee(DeliveryGuarantee.valueOf(env.getCheckpointingMode().name()))
                             .setKafkaProducerConfig(kafkaProducerConfig)
+                            .setTransactionalIdPrefix(kafkaProducerConfig.getProperty("transactional.id") + "-" + topic)
                             .build();
                     process.getSideOutput(v).rebalance().sinkTo(kafkaSink).name(topic);
                 });
