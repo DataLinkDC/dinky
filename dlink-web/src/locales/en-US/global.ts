@@ -93,7 +93,9 @@ export default {
   'global.table.lastUpdateTime': 'Last Update Time',
   'global.table.createTime': 'Create Time',
   'global.table.startTime': 'Start Time',
+  'global.table.startUpTime': 'StartUp Time',
   'global.table.endTime': 'End Time',
+  'global.table.finishTime': 'Finished Time',
   'global.table.useTime': 'Duration',
 
   'global.table.registType': 'Regist Type',

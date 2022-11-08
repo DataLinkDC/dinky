@@ -635,7 +635,15 @@ export default {
   'pages.devops.jobinfo.job.key.failed':'{key} 失败',
   'pages.devops.jobinfo.job.keyConfirm':'确定{key} 该作业吗？',
 
-
+  'pages.devops.baseinfo.name': '名称',
+  'pages.devops.baseinfo.status': '状态',
+  'pages.devops.baseinfo.readbytes': '接收字节',
+  'pages.devops.baseinfo.readrecords': '接收记录',
+  'pages.devops.baseinfo.writebytes': '发送字节',
+  'pages.devops.baseinfo.writerecords': '发送记录',
+  'pages.devops.baseinfo.parallelism': '并行度',
+  'pages.devops.baseinfo.tasks': '算子',
+  'pages.devops.baseinfo.restart_number': '重启次数',
 
 
 };

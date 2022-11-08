@@ -635,6 +635,15 @@ export default {
   'pages.devops.jobinfo.job.key.failed':'{key} Failed',
   'pages.devops.jobinfo.job.keyConfirm': 'Are you sure {key} this job?',
 
+  'pages.devops.baseinfo.name': 'Name',
+  'pages.devops.baseinfo.status': 'Status',
+  'pages.devops.baseinfo.readbytes': 'Receive Bytes',
+  'pages.devops.baseinfo.readrecords': 'Receive Records',
+  'pages.devops.baseinfo.writebytes': 'Send Bytes',
+  'pages.devops.baseinfo.writerecords': 'Send Records',
+  'pages.devops.baseinfo.parallelism': 'Parallelism',
+  'pages.devops.baseinfo.tasks': 'Operator',
+  'pages.devops.baseinfo.restart_number': 'Number of Restarts',
 
 
 

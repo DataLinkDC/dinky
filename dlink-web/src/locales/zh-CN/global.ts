@@ -90,7 +90,9 @@ export default {
   'global.table.lastUpdateTime': '最近更新时间',
   'global.table.createTime': '创建时间',
   'global.table.startTime': '开始时间',
+  'global.table.startUpTime': '启动时间',
   'global.table.endTime': '结束时间',
+  'global.table.finishTime': '完成时间',
   'global.table.useTime': '耗时',
 
   'global.table.registType': '注册方式',
