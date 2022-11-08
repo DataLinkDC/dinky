@@ -19,8 +19,6 @@
 
 package com.dlink.constant;
 
-import com.dlink.Dlink;
-
 import org.springframework.boot.system.ApplicationHome;
 
 /**
