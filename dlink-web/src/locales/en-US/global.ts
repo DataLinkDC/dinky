@@ -120,5 +120,7 @@ export default {
   'global.table.lifecycle.unknown': 'Unknown',
   'global.table.runmode': 'Run Mode',
 
+  'global.savepoint.strategy.disabled':'',
+
 
 };

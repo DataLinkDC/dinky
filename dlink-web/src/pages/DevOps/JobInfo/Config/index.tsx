@@ -58,10 +58,10 @@ const Config = (props: any) => {
         <Descriptions.Item label="批模式">{job?.history?.config.useBatchModel ? l('button.enable') : l('button.disable')}</Descriptions.Item>
         <Descriptions.Item label="CheckPoint">{job?.history?.config.checkpoint}</Descriptions.Item>
         <Descriptions.Item label="SavePoint机制">
-          {job?.history?.config.savePointStrategy == 'NONE' ? '禁用' :
-            job?.history?.config.savePointStrategy == 'LATEST' ? '最近一次' :
-              job?.history?.config.savePointStrategy == 'EARLIEST' ? '最早一次' :
-                job?.history?.config.savePointStrategy == 'CUSTOM' ? '指定一次' : '禁用'}
+          {job?.history?.config.savePointStrategy == 'NONE' ? l('global.savepoint.strategy.disabled') :
+            job?.history?.config.savePointStrategy == 'LATEST' ? l('global.savepoint.strategy.latest') :
+              job?.history?.config.savePointStrategy == 'EARLIEST' ? l('global.savepoint.strategy.earliest') :
+                job?.history?.config.savePointStrategy == 'CUSTOM' ? l('global.savepoint.strategy.custom') : l('global.savepoint.strategy.disabled')}
         </Descriptions.Item>
         <Descriptions.Item label="SavePoint" span={2}>{job?.history?.config.savePointPath}</Descriptions.Item>
         {job?.jar ? <>

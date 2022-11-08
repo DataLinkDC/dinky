@@ -116,4 +116,10 @@ export default {
   'global.table.lifecycle.unknown': '未知',
   'global.table.runmode': '运行模式',
 
+  'global.savepoint.strategy.disabled':'禁用',
+  'global.savepoint.strategy.latest':'LATEST',
+  'global.savepoint.strategy.earliest':'EARLIEST',
+  'global.savepoint.strategy.custom':'CUSTOM',
+
+
 };
