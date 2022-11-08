@@ -117,9 +117,9 @@ export default {
   'global.table.runmode': '运行模式',
 
   'global.savepoint.strategy.disabled':'禁用',
-  'global.savepoint.strategy.latest':'LATEST',
-  'global.savepoint.strategy.earliest':'EARLIEST',
-  'global.savepoint.strategy.custom':'CUSTOM',
+  'global.savepoint.strategy.latest':'最近一次',
+  'global.savepoint.strategy.earliest':'最早一次',
+  'global.savepoint.strategy.custom':'指定一次',
 
 
 };
