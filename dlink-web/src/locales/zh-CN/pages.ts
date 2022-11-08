@@ -564,4 +564,12 @@ export default {
   'pages.sys.process.duration':'耗时',
   'pages.sys.process.operator':'操作人',
 
+  'pages.devops.jobinfo.alert.title':'标题',
+  'pages.devops.jobinfo.alert.content':'正文',
+  'pages.devops.jobinfo.alert.status':'状态',
+  'pages.devops.jobinfo.alert.status.success':'成功',
+  'pages.devops.jobinfo.alert.status.failed':'失败',
+  'pages.devops.jobinfo.alert.log':'日志',
+  'pages.devops.jobinfo.alert.createTime':'报警时间',
+
 };

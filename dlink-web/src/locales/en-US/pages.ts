@@ -564,5 +564,13 @@ export default {
   'pages.sys.process.endtime': 'End Time',
   'pages.sys.process.duration': 'Duration',
   'pages.sys.process.operator': 'Operator',
+
+  'pages.devops.jobinfo.alert.title': 'Title',
+  'pages.devops.jobinfo.alert.content':'Body',
+  'pages.devops.jobinfo.alert.status': 'Status',
+  'pages.devops.jobinfo.alert.status.success': 'Success',
+  'pages.devops.jobinfo.alert.status.failed': 'Failed',
+  'pages.devops.jobinfo.alert.log': 'Log',
+  'pages.devops.jobinfo.alert.createTime':'Alarm Time',
 };
 
