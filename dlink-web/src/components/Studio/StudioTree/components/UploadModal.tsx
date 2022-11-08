@@ -52,10 +52,10 @@ const UploadModal: React.FC<UploadModalProps> = (props: any) => {
         if (info.file.response.code === 1) {
           message.error(`${info.file.response.msg} `);
         } else {
-          message.success(`${info.file.name} file uploaded successfully`);
+          message.success(`${info.file.name}` + l('app.request.upload.success'));
         }
       } else if (info.file.status === 'error') {
-        message.error(`${info.file.name} file upload failed.`);
+        message.error(`${info.file.name} `+ l('app.request.upload.failed'));
       }
     },
   };

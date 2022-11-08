@@ -35,4 +35,12 @@ export default {
   'app.request.502': '网关错误。',
   'app.request.503': '服务不可用，服务器暂时过载或维护。',
   'app.request.504': '网关超时。',
+
+  'app.request.failed': '请求失败，请重试',
+  'app.request.test.connection': '正在测试连接',
+  'app.request.heartbeat.connection': '正在检测心跳',
+  'app.request.heartbeat.connection.success': '数据源心跳正常，检测时间为: {time}',
+  'app.request.heartbeat.connection.failed': '数据源心跳异常，检测时间为: {time}',
+  'app.request.upload.failed': '上传失败。',
+  'app.request.update.setting.success': '修改配置成功！',
 };

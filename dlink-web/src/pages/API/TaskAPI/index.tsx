@@ -56,7 +56,7 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-          异步提交
+          {l('page.task.api.job.async')}
         </span>
         }
         key="submitTask"
@@ -67,7 +67,7 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-          停止作业
+                    {l('page.task.api.job.stop')}
         </span>
         }
         key="cancelJob"
@@ -82,7 +82,7 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-          重启作业
+            {l('page.task.api.job.restart')}
         </span>
         }
         key="restartTask"
@@ -93,7 +93,7 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-          作业实例
+            {l('page.task.api.job.instance')}
         </span>
         }
         key="taskInstance"
@@ -105,7 +105,7 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-          SavePoint 触发
+            {l('page.task.api.savepoint.trigger')}
         </span>
         }
         key="triggerSavePoint"
@@ -120,7 +120,7 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-          SavePoint 停止
+            {l('page.task.api.savepoint.stop')}
         </span>
         }
         key="cancelSavePoint"
@@ -135,7 +135,7 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-          上线作业
+            {l('page.task.api.job.online')}
         </span>
         }
         key="onLineTask"
@@ -146,7 +146,7 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-          下线作业
+            {l('page.task.api.job.offline')}
         </span>
         }
         key="offLineTask"
@@ -157,8 +157,8 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-          重新上线作业
-        </span>
+             {l('page.task.api.job.reonline')}
+          </span>
         }
         key="reOnLineTask"
       >

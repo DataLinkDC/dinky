@@ -20,6 +20,7 @@
 
 import {getData, postAll} from "@/components/Common/crud";
 import {message} from "antd";
+import {useIntl} from "umi";
 
 export function loadSettings(dispatch: any) {
   const res = getData('api/sysConfig/getAll');
@@ -34,7 +35,7 @@ export function loadSettings(dispatch: any) {
 export function saveSettings(values:{},dispatch: any) {
   const res = postAll("api/sysConfig/updateSysConfigByJson",values);
   res.then((result) => {
-    message.success(`修改配置成功！`);
+    message.success(useIntl().formatMessage({id:'app.request.update.setting.success'}));
     dispatch && dispatch({
       type: "Settings/saveSettings",
       payload: values,

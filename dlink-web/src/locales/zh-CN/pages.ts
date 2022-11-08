@@ -531,4 +531,15 @@ export default {
   'pages.registerCenter.fv.fragmentValuePlaceholder': '请输入全局变量值',
   'pages.registerCenter.fv.enabledPlaceholder': '请选择是否启用!',
 
+  'page.task.api.job.async' : '异步提交',
+  'page.task.api.job.stop' : '停止作业',
+  'page.task.api.job.restart' : '重启作业',
+  'page.task.api.job.instance' : '作业实例',
+  'page.task.api.savepoint.trigger' : 'SavePoint 触发',
+  'page.task.api.savepoint.stop' : 'SavePoint 停止',
+  'page.task.api.job.online' : '上线作业',
+  'page.task.api.job.offline' : '下线作业',
+  'page.task.api.job.reonline' : '重新上线作业',
+
+
 };

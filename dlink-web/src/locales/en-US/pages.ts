@@ -532,7 +532,15 @@ export default {
   'pages.registerCenter.fv.fragmentValuePlaceholder': 'Please enter the Global Variable value',
   'pages.registerCenter.fv.enabledPlaceholder': 'Please choose whether to enable!',
 
-
+  'page.task.api.job.async' : 'Asynchronous submit',
+  'page.task.api.job.stop' : 'Stop job',
+  'page.task.api.job.restart' : 'Restart job',
+  'page.task.api.job.instance' : 'Job instance',
+  'page.task.api.savepoint.trigger' : 'SavePoint trigger',
+  'page.task.api.savepoint.stop' : 'SavePoint stop',
+  'page.task.api.job.online' : 'Online job',
+  'page.task.api.job.offline' : 'Offline job',
+  'page.task.api.job.reonline' : 'Re-online job',
 
 };
 

@@ -52,17 +52,17 @@ const DevOps = () => {
 
   const statusCountDefault = [
     {key: '', title: renderSwitch(), value: 0, total: true},
-    {key: JOB_STATUS.CREATED, status: 'default', title: '已创建', value: 0},
-    {key: JOB_STATUS.INITIALIZING, status: 'default', title: '初始化', value: 0},
-    {key: JOB_STATUS.RUNNING, status: 'success', title: '运行中', value: 0},
-    {key: JOB_STATUS.FINISHED, status: 'processing', title: '已完成', value: 0},
-    {key: JOB_STATUS.FAILING, status: 'error', title: '异常中', value: 0},
-    {key: JOB_STATUS.FAILED, status: 'error', title: '已异常', value: 0},
-    {key: JOB_STATUS.SUSPENDED, status: 'warning', title: '已暂停', value: 0},
-    {key: JOB_STATUS.CANCELLING, status: 'warning', title: '停止中', value: 0},
-    {key: JOB_STATUS.CANCELED, status: 'warning', title: '已停止', value: 0},
-    {key: JOB_STATUS.RESTARTING, status: 'default', title: '重启中', value: 0},
-    {key: JOB_STATUS.UNKNOWN, status: 'default', title: '未知', value: 0},
+    {key: JOB_STATUS.CREATED, status: 'default', title: l('pages.devops.jobstatus.CREATED'), value: 0},
+    {key: JOB_STATUS.INITIALIZING, status: 'default', title: l('pages.devops.jobstatus.INITIALIZING'), value: 0},
+    {key: JOB_STATUS.RUNNING, status: 'success', title: l('pages.devops.jobstatus.RUNNING'), value: 0},
+    {key: JOB_STATUS.FINISHED, status: 'processing', title: l('pages.devops.jobstatus.FINISHED'), value: 0},
+    {key: JOB_STATUS.FAILING, status: 'error', title: l('pages.devops.jobstatus.FAILING'), value: 0},
+    {key: JOB_STATUS.FAILED, status: 'error', title: l('pages.devops.jobstatus.FAILED'), value: 0},
+    {key: JOB_STATUS.SUSPENDED, status: 'warning', title: l('pages.devops.jobstatus.SUSPENDED'), value: 0},
+    {key: JOB_STATUS.CANCELLING, status: 'warning', title: l('pages.devops.jobstatus.CANCELLING'), value: 0},
+    {key: JOB_STATUS.CANCELED, status: 'warning', title: l('pages.devops.jobstatus.CANCELED'), value: 0},
+    {key: JOB_STATUS.RESTARTING, status: 'default', title: l('pages.devops.jobstatus.RESTARTING'), value: 0},
+    {key: JOB_STATUS.UNKNOWN, status: 'default', title: l('pages.devops.jobstatus.UNKNOWN'), value: 0},
   ];
   const [statusCount, setStatusCount] = useState<any[]>(statusCountDefault);
   const [statusHistoryCount, setStatusHistoryCount] = useState<any[]>(statusCountDefault);
