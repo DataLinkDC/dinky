@@ -587,5 +587,9 @@ export default {
   'pages.devops.jobinfo.ck.recoveryConfirm' : 'Are you sure to Recover from Checkpoint [{path}]?',
   'pages.devops.jobinfo.ck.recovery.success' : 'Recovery job succeeded',
   'pages.devops.jobinfo.ck.recovery.failed' : 'Recovery job failed',
+
+  'pages.devops.jobinfo.lineage' :'Lineage Analysis',
+
+
 };
 

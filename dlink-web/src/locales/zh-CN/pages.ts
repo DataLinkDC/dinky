@@ -587,4 +587,8 @@ export default {
   'pages.devops.jobinfo.ck.recoveryConfirm' :'确定从检查点【{path}】恢复吗?',
   'pages.devops.jobinfo.ck.recovery.success' :'恢复作业成功',
   'pages.devops.jobinfo.ck.recovery.failed' :'恢复作业失败',
+
+  'pages.devops.jobinfo.lineage' :'血缘分析',
+
+
 };
