@@ -40,8 +40,8 @@ const StudioKubernetesConfig = (props: any) => {
 
 
   const getGroupOptions = () => {
-    const itemList = [<Option key={0} value={0} label='禁用'>
-      禁用
+    const itemList = [<Option key={0} value={0} label={l('button.disable')}>
+      {l('button.disable')}
     </Option>];
     for (const item of group) {
       itemList.push(<Option key={item.id} value={item.id} label={item.name}>

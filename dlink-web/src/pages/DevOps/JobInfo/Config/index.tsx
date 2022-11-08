@@ -50,7 +50,7 @@ const Config = (props: any) => {
           {job?.clusterConfiguration?.alias ? <Link>{job?.clusterConfiguration?.alias}</Link> : '-'}
         </Descriptions.Item>
         <Descriptions.Item label="共享会话">
-          {job?.history?.session ? <Link>{job?.history?.session}</Link> : '禁用'}
+          {job?.history?.session ? <Link>{job?.history?.session}</Link> : l('button.disable')}
         </Descriptions.Item>
         <Descriptions.Item label="片段机制">{job?.history?.config.useSqlFragment ? l('button.enable') : l('button.disable')}</Descriptions.Item>
         <Descriptions.Item label="语句集">{job?.history?.config.useStatementSet ? l('button.enable') : l('button.disable')}</Descriptions.Item>

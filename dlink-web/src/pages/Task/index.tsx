@@ -201,18 +201,18 @@ const TaskTableList: React.FC<{}> = () => {
       hideInTable: false,
       filters: [
         {
-          text: '正常',
+          text: l('status.enabled'),
           value: 1,
         },
         {
-          text: '禁用',
+          text: l('status.disabled'),
           value: 0,
         },
       ],
       filterMultiple: false,
       valueEnum: {
-        true: {text: '正常', status: 'Success'},
-        false: {text: '禁用', status: 'Error'},
+        true: {text: l('status.enabled'), status: 'Success'},
+        false: {text: l('status.disabled'), status: 'Error'},
       },
     },
     {
