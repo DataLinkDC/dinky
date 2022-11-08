@@ -31,13 +31,15 @@ import org.springframework.boot.system.ApplicationHome;
  */
 public class DirConstant {
 
+    public static final String FILE_SEPARATOR = "file.separator";
     public static final String LOG_DIR_PATH;
     public static final String ROOT_LOG_PATH;
 
     static {
+        String separator = System.getProperty(FILE_SEPARATOR);
         // String rootPath = new ApplicationHome(Dlink.class).getSource().getParent();
-        String rootPath = new ApplicationHome(Dlink.class).getDir().getPath();
-        LOG_DIR_PATH = rootPath + "/../logs";
-        ROOT_LOG_PATH = rootPath + "/../logs/dlink.log";
+        String rootPath = new ApplicationHome().getDir().getPath();
+        LOG_DIR_PATH = rootPath + separator + "logs";
+        ROOT_LOG_PATH = LOG_DIR_PATH + separator + "dlink.log";
     }
 }
