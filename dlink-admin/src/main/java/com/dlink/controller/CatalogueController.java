@@ -78,7 +78,7 @@ public class CatalogueController {
             return Result.failed("工程已存在");
         }
         try {
-            //文件写入上传的路径
+            // 文件写入上传的路径
             FileUtil.writeBytes(file.getBytes(), zipPath);
             Thread.sleep(1L);
             if (!unzipFile.exists()) {
@@ -181,14 +181,15 @@ public class CatalogueController {
             List<Integer> error = new ArrayList<>();
             for (final JsonNode item : para) {
                 Integer id = item.asInt();
-                if (!catalogueService.removeCatalogueAndTaskById(id)) {
-                    error.add(id);
+                List<Integer> ids = catalogueService.removeCatalogueAndTaskById(id);
+                if (!ids.isEmpty()) {
+                    error.addAll(ids);
                 }
             }
             if (error.size() == 0 && !isAdmin) {
                 return Result.succeed("删除成功");
             } else {
-                return Result.succeed("删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
+                return Result.succeed("删除失败，请检查作业" + error.toString() + "状态。");
             }
         } else {
             return Result.failed("请选择要删除的记录");
