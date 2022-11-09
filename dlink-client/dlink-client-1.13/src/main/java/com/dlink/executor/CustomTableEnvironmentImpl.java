@@ -196,6 +196,7 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
         }
     }
 
+    @Override
     public ObjectNode getStreamGraph(String statement) {
         List<Operation> operations = super.getParser().parse(statement);
         if (operations.size() != 1) {
@@ -227,10 +228,12 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
         }
     }
 
+    @Override
     public JobPlanInfo getJobPlanInfo(List<String> statements) {
         return new JobPlanInfo(JsonPlanGenerator.generatePlan(getJobGraphFromInserts(statements)));
     }
 
+    @Override
     public StreamGraph getStreamGraphFromInserts(List<String> statements) {
         List<ModifyOperation> modifyOperations = new ArrayList();
         for (String statement : statements) {
@@ -258,10 +261,12 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
         }
     }
 
+    @Override
     public JobGraph getJobGraphFromInserts(List<String> statements) {
         return getStreamGraphFromInserts(statements).getJobGraph();
     }
 
+    @Override
     public SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails) {
         SqlExplainResult record = new SqlExplainResult();
         List<Operation> operations = getParser().parse(statement);
@@ -290,6 +295,7 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
         return record;
     }
 
+    @Override
     public boolean parseAndLoadConfiguration(String statement, StreamExecutionEnvironment environment, Map<String, Object> setMap) {
         List<Operation> operations = getParser().parse(statement);
         for (Operation operation : operations) {
