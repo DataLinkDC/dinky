@@ -23,7 +23,6 @@ import com.dlink.assertion.Asserts;
 import com.dlink.function.constant.PathConstant;
 import com.dlink.function.data.model.Env;
 import com.dlink.function.data.model.UDF;
-import com.dlink.function.util.FlinkUtils;
 import com.dlink.function.util.UDFUtil;
 import com.dlink.function.util.ZipUtils;
 import com.dlink.process.context.ProcessContextHolder;
@@ -44,7 +43,6 @@ import java.util.stream.Collectors;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ZipUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -82,13 +80,7 @@ public class PythonFunction implements FunctionCompiler, FunctionPackage {
             configuration.set(PythonOptions.PYTHON_CLIENT_EXECUTABLE, Env.getPath());
             configuration.set(PythonOptions.PYTHON_EXECUTABLE, Env.getPath());
 
-            if (FlinkUtils.getCurFlinkBigVersion() < 13) {
-                // python udf; flink version 11-12
-                ReflectUtil.invokeStatic(ReflectUtil.getMethodByNameIgnoreCase(PythonFunctionFactory.class, "getPythonFunction"), udf.getClassName(), configuration);
-            } else {
-                // python udf; flink version 13-16
-                ReflectUtil.invokeStatic(ReflectUtil.getMethodByNameIgnoreCase(PythonFunctionFactory.class, "getPythonFunction"), udf.getClassName(), configuration, null);
-            }
+            PythonFunctionFactory.getPythonFunction(udf.getClassName(), configuration, null);
             process.info("Python udf编译成功 ; className:" + udf.getClassName());
         } catch (Exception e) {
             process.error("Python udf编译失败 ; className:" + udf.getClassName() + " 。 原因： "
