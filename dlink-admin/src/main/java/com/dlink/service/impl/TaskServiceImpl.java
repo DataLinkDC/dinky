@@ -1191,7 +1191,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 String linkUrl = "http://" + jobManagerHost + "/#/job/" + jobInstance.getJid() + "/overview";
                 String exceptionUrl = "http://" + jobManagerHost + "/#/job/" + jobInstance.getJid() + "/exceptions";
                 for (AlertInstance alertInstance : alertGroup.getInstances()) {
-                    if (alertInstance == null) {
+                    if (alertInstance == null || (!alertInstance.getEnabled() && Asserts.isNotNull(alertInstance.getEnabled()))) {
                         continue;
                     }
                     Map<String, String> map = JSONUtil.toMap(alertInstance.getParams());
@@ -1211,7 +1211,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     private void sendAlert(AlertInstance alertInstance, JobInstance jobInstance, Task task, AlertMsg alertMsg) {
-        if (alertInstance.getEnabled() != null && alertInstance.getEnabled().equals(true)) {
             AlertConfig alertConfig = AlertConfig.build(alertInstance.getName(), alertInstance.getType(),
                 JSONUtil.toMap(alertInstance.getParams()));
             Alert alert = Alert.build(alertConfig);
@@ -1226,7 +1225,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             alertHistory.setStatus(alertResult.getSuccessCode());
             alertHistory.setLog(alertResult.getMessage());
             alertHistoryService.save(alertHistory);
-        }
     }
 
     @Override
