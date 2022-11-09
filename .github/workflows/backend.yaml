@@ -60,7 +60,7 @@ jobs:
     name: Build_JDK
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         jdk: [8, 11]
         flink: [1.12, 1.13, 1.14, 1.15]
