@@ -27,14 +27,11 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import {JarTableListItem} from "@/pages/Jar/data";
 import {CODE, handleAddOrUpdate, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
 import JarForm from "@/pages/Jar/components/JarForm";
-import {useIntl} from 'umi';
+import {l} from "@/utils/intl";
 
 const url = '/api/jar';
 const JarTableList: React.FC<{}> = (props: any) => {
   const {dispatch} = props;
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   const [row, setRow] = useState<JarTableListItem>();
@@ -50,8 +47,8 @@ const JarTableList: React.FC<{}> = (props: any) => {
       handleUpdateModalVisible(true);
     } else if (key === 'delete') {
       Modal.confirm({
-        title: '删除Jar配置',
-        content: '确定删除该Jar配置吗？',
+        title: l('pages.registerCenter.jar.delete'),
+        content: l('pages.registerCenter.jar.deleteConfirm'),
         okText: l('button.confirm'),
         cancelText: l('button.cancel'),
         onOk: async () => {
@@ -82,7 +79,7 @@ const JarTableList: React.FC<{}> = (props: any) => {
             message.warn(info.file.response.msg);
           }
         } else if (info.file.status === 'error') {
-          message.error(`${info.file.name} 上传失败`);
+          message.error(`${info.file.name}` + l('app.request.upload.failed'));
         }
       },
     }
@@ -107,37 +104,28 @@ const JarTableList: React.FC<{}> = (props: any) => {
 
   const columns: ProColumns<JarTableListItem>[] = [
     {
-      title: '名称',
+      title: l('pages.registerCenter.jar.name'),
       dataIndex: 'name',
-      tip: '名称是唯一的',
       sorter: true,
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '名称为必填项',
-          },
-        ],
-      },
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
     },
     {
-      title: '集群配置ID',
+      title: l('pages.registerCenter.jar.id'),
       dataIndex: 'id',
       hideInTable: true,
       hideInForm: true,
       hideInSearch: true,
     },
     {
-      title: '别名',
+      title: l('pages.registerCenter.jar.alias'),
       sorter: true,
       dataIndex: 'alias',
       hideInTable: false,
     },
     {
-      title: '类型',
+      title: l('pages.registerCenter.jar.type'),
       sorter: true,
       dataIndex: 'type',
       hideInForm: false,
@@ -155,21 +143,21 @@ const JarTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: '文件路径',
+      title: l('pages.registerCenter.jar.filePath'),
       sorter: true,
       dataIndex: 'path',
     },
     {
-      title: '启动类',
+      title: l('pages.registerCenter.jar.mainClass'),
       sorter: true,
       dataIndex: 'mainClass',
     }, {
-      title: '执行参数',
+      title: l('pages.registerCenter.jar.execParams'),
       sorter: true,
       dataIndex: 'paras',
     },
     {
-      title: '注释',
+      title: l('global.table.note'),
       sorter: true,
       valueType: 'textarea',
       dataIndex: 'note',
@@ -236,7 +224,7 @@ const JarTableList: React.FC<{}> = (props: any) => {
   return (
     <PageContainer title={false}>
       <ProTable<JarTableListItem>
-        headerTitle="Jar 配置管理"
+        headerTitle={l('pages.registerCenter.jar.Management')}
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -267,7 +255,10 @@ const JarTableList: React.FC<{}> = (props: any) => {
                     style={{fontWeight: 600}}>{selectedRowsState.length}</a>
                 })}  &nbsp;&nbsp;
               <span>
-                被禁用的集群配置共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} 人
+                {l('pages.registerCenter.jar.disableTotalOf', '',
+                  {
+                    total: (selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0))
+                  })}
               </span>
             </div>
           }
@@ -275,8 +266,8 @@ const JarTableList: React.FC<{}> = (props: any) => {
           <Button type="primary" danger
                   onClick={() => {
                     Modal.confirm({
-                      title: '删除Jar配置',
-                      content: '确定删除选中的Jar配置吗？',
+                      title: l('pages.registerCenter.jar.delete'),
+                      content: l('pages.registerCenter.jar.deleteConfirm'),
                       okText: l('button.confirm'),
                       cancelText: l('button.cancel'),
                       onOk: async () => {
@@ -292,8 +283,8 @@ const JarTableList: React.FC<{}> = (props: any) => {
           <Button type="primary"
                   onClick={() => {
                     Modal.confirm({
-                      title: '启用Jar配置',
-                      content: '确定启用选中的Jar配置吗？',
+                      title: l('pages.registerCenter.jar.enable'),
+                      content: l('pages.registerCenter.jar.enableConfirm'),
                       okText: l('button.confirm'),
                       cancelText: l('button.cancel'),
                       onOk: async () => {
@@ -307,8 +298,8 @@ const JarTableList: React.FC<{}> = (props: any) => {
           <Button danger
                   onClick={() => {
                     Modal.confirm({
-                      title: '禁用Jar配置',
-                      content: '确定禁用选中的Jar配置吗？',
+                      title: l('pages.registerCenter.jar.disable'),
+                      content: l('pages.registerCenter.jar.disableConfirm'),
                       okText: l('button.confirm'),
                       cancelText: l('button.cancel'),
                       onOk: async () => {

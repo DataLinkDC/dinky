@@ -19,9 +19,10 @@
 
 import React from 'react';
 import {Alert, Card, Timeline, Typography} from 'antd';
-import {FormattedMessage, useIntl} from 'umi';
+import {FormattedMessage} from 'umi';
 import styles from './Welcome.less';
 import {VERSION} from "@/components/Common/Version";
+import {l} from "@/utils/intl";
 
 const {Text, Link, Paragraph} = Typography;
 const CodePreview: React.FC = ({children}) => (
@@ -33,9 +34,6 @@ const CodePreview: React.FC = ({children}) => (
 );
 
 export default (): React.ReactNode => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   return (
     <>
@@ -83,7 +81,7 @@ export default (): React.ReactNode => {
         </Paragraph>
         <p></p>
         <Timeline pending={<><Text code>0.7.0</Text>
-          <Text type="secondary">敬请期待</Text>
+          <Text type="secondary">{l('global.stay.tuned')}</Text>
           <p></p>
           <Paragraph>
             <ul>

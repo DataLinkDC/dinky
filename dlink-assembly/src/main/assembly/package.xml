@@ -58,120 +58,30 @@
                 <include>upgrade/*/*/*.sql</include>
             </includes>
         </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/build/extends/</directory>
+            <outputDirectory>plugins</outputDirectory>
+            <includes>
+                <include>%regex[dlink-catalog-mysql-1.\d+-${project.version}.jar]</include>
+                <include>%regex[dlink-client-base-${project.version}.jar]</include>
+                <include>%regex[dlink-client-1.\d+-${project.version}.jar]</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/build/extends/</directory>
+            <outputDirectory>jar</outputDirectory>
+            <includes>
+                <include>%regex[dlink-app-1.\d+-${project.version}.jar]</include>
+            </includes>
+        </fileSet>
         <!--<fileSet>
-            <directory>${project.parent.basedir}/dlink-admin/target
-            </directory>
-            <outputDirectory>./</outputDirectory>
-            <includes>
-                <include>dlink-admin-${project.version}.jar</include>
-            </includes>
-        </fileSet>-->
-        <fileSet>
-            <directory>${project.parent.basedir}/dlink-client/dlink-client-1.14/target</directory>
-            <outputDirectory>lib</outputDirectory>
-            <includes>
-                <include>dlink-client-1.14-${project.version}.jar</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.parent.basedir}/dlink-client/dlink-client-1.11/target</directory>
-            <outputDirectory>extends</outputDirectory>
-            <includes>
-                <include>dlink-client-1.11-${project.version}.jar</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.parent.basedir}/dlink-client/dlink-client-1.12/target</directory>
-            <outputDirectory>extends</outputDirectory>
-            <includes>
-                <include>dlink-client-1.12-${project.version}.jar</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.parent.basedir}/dlink-client/dlink-client-1.13/target</directory>
-            <outputDirectory>extends</outputDirectory>
-            <includes>
-                <include>dlink-client-1.13-${project.version}.jar</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.parent.basedir}/dlink-client/dlink-client-1.14/target</directory>
-            <outputDirectory>extends</outputDirectory>
-            <includes>
-                <include>dlink-client-1.14-${project.version}.jar</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.parent.basedir}/dlink-client/dlink-client-1.15/target</directory>
-            <outputDirectory>extends</outputDirectory>
-            <includes>
-                <include>dlink-client-1.15-${project.version}.jar</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.parent.basedir}/dlink-connectors/dlink-connector-jdbc-1.14/target</directory>
-            <outputDirectory>lib</outputDirectory>
-            <includes>
-                <include>dlink-connector-jdbc-1.14-${project.version}.jar</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.parent.basedir}/dlink-connectors/dlink-connector-doris-1.13/target</directory>
-            <outputDirectory>extends</outputDirectory>
-            <includes>
-                <include>dlink-connector-doris-1.13-${project.version}.jar</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.parent.basedir}/dlink-connectors/dlink-connector-jdbc-1.11/target</directory>
-            <outputDirectory>extends</outputDirectory>
-            <includes>
-                <include>dlink-connector-jdbc-1.11-${project.version}.jar</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.parent.basedir}/dlink-connectors/dlink-connector-jdbc-1.12/target</directory>
-            <outputDirectory>extends</outputDirectory>
-            <includes>
-                <include>dlink-connector-jdbc-1.12-${project.version}.jar</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.parent.basedir}/dlink-connectors/dlink-connector-jdbc-1.13/target</directory>
-            <outputDirectory>extends</outputDirectory>
-            <includes>
-                <include>dlink-connector-jdbc-1.13-${project.version}.jar</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.parent.basedir}/dlink-connectors/dlink-connector-jdbc-1.14/target</directory>
-            <outputDirectory>extends</outputDirectory>
-            <includes>
-                <include>dlink-connector-jdbc-1.14-${project.version}.jar</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.parent.basedir}/dlink-connectors/dlink-connector-phoenix-1.13/target</directory>
-            <outputDirectory>extends</outputDirectory>
-            <includes>
-                <include>dlink-connector-phoenix-1.13-${project.version}.jar</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.parent.basedir}/dlink-connectors/dlink-connector-phoenix-1.14/target</directory>
-            <outputDirectory>extends</outputDirectory>
-            <includes>
-                <include>dlink-connector-phoenix-1.14-${project.version}.jar</include>
-            </includes>
-        </fileSet>
-        <fileSet>
             <directory>${project.parent.basedir}/dlink-function/target
             </directory>
             <outputDirectory>lib</outputDirectory>
             <includes>
                 <include>dlink-function-${project.version}.jar</include>
             </includes>
-        </fileSet>
+        </fileSet>-->
         <fileSet>
             <directory>${project.parent.basedir}/dlink-metadata/dlink-metadata-clickhouse/target
             </directory>
@@ -320,49 +230,10 @@
             </includes>
         </fileSet>
         <fileSet>
-            <directory>${project.parent.basedir}/dlink-catalog/dlink-catalog-mysql/dlink-catalog-mysql-1.14/target
-            </directory>
-            <outputDirectory>lib</outputDirectory>
-            <includes>
-                <include>dlink-catalog-mysql-1.14-${project.version}.jar</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.parent.basedir}/dlink-catalog/dlink-catalog-mysql/dlink-catalog-mysql-1.13/target
-            </directory>
-            <outputDirectory>extends</outputDirectory>
-            <includes>
-                <include>dlink-catalog-mysql-1.13-${project.version}.jar</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.parent.basedir}/dlink-catalog/dlink-catalog-mysql/dlink-catalog-mysql-1.14/target
-            </directory>
-            <outputDirectory>extends</outputDirectory>
-            <includes>
-                <include>dlink-catalog-mysql-1.14-${project.version}.jar</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.parent.basedir}/dlink-catalog/dlink-catalog-mysql/dlink-catalog-mysql-1.15/target
-            </directory>
-            <outputDirectory>extends</outputDirectory>
-            <includes>
-                <include>dlink-catalog-mysql-1.15-${project.version}.jar</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.parent.basedir}/dlink-client/dlink-client-base/target</directory>
+            <directory>${project.parent.basedir}/dlink-app/dlink-app-1.16/target</directory>
             <outputDirectory>jar</outputDirectory>
             <includes>
-                <include>dlink-client-base-${project.version}.jar</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.parent.basedir}/dlink-common/target</directory>
-            <outputDirectory>jar</outputDirectory>
-            <includes>
-                <include>dlink-common-${project.version}.jar</include>
+                <include>dlink-app-1.16-${project.version}-jar-with-dependencies.jar</include>
             </includes>
         </fileSet>
         <fileSet>
@@ -372,13 +243,13 @@
                 <include>Dockerfile</include>
             </includes>
         </fileSet>
-        <fileSet>
+        <!--<fileSet>
             <directory>${project.parent.basedir}/dlink-web/dist</directory>
             <outputDirectory>html</outputDirectory>
             <includes>
                 <include>*</include>
                 <include>*/*</include>
             </includes>
-        </fileSet>
+        </fileSet>-->
     </fileSets>
 </assembly>

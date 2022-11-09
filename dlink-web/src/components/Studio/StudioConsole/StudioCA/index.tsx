@@ -21,21 +21,19 @@
 import {Button, Empty, message, Modal, Tabs, Tooltip} from "antd";
 import {SearchOutlined, SnippetsOutlined} from "@ant-design/icons";
 import {StateType} from "@/pages/DataStudio/model";
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import {getLineage, getStreamGraph} from "@/pages/DataStudio/service";
 import {useState} from "react";
 import Lineage from "@/components/Lineage";
 import CodeShow from "@/components/Common/CodeShow";
 import {DIALECT} from "@/components/Studio/conf";
+import {l} from "@/utils/intl";
 
 const {TabPane} = Tabs;
 
 const StudioCA = (props: any) => {
   const {current} = props;
   const [data, setData] = useState(undefined);
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const handleLineage = () => {
     setData(undefined);

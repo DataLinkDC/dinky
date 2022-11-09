@@ -29,7 +29,7 @@ import {
   TableOutlined
 } from "@ant-design/icons";
 import {StateType} from "@/pages/DataStudio/model";
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import StudioMsg from "./StudioMsg";
 import StudioTable from "./StudioTable";
 import StudioHistory from "./StudioHistory";
@@ -39,14 +39,12 @@ import StudioProcess from "./StudioProcess";
 import {Scrollbars} from 'react-custom-scrollbars';
 import Chart from "@/components/Chart";
 import {useState} from "react";
+import {l} from "@/utils/intl";
 
 const {TabPane} = Tabs;
 
 const StudioConsole = (props: any) => {
 
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   const {height, current} = props;

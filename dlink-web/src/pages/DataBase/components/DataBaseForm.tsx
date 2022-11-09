@@ -24,7 +24,7 @@ import {Button, Divider, Form, Input, Select, Space} from 'antd';
 import Switch from "antd/es/switch";
 import TextArea from "antd/es/input/TextArea";
 import {DataBaseItem} from "@/pages/DataBase/data";
-import {useIntl} from 'umi';
+import {l} from "@/utils/intl";
 
 
 export type ClickHouseFormProps = {
@@ -43,11 +43,6 @@ const formLayout = {
 };
 
 const DataBaseForm: React.FC<ClickHouseFormProps> = (props) => {
-
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   const [formVals, setFormVals] = useState<Partial<DataBaseItem>>({
     id: props.values.id,
@@ -96,44 +91,44 @@ const DataBaseForm: React.FC<ClickHouseFormProps> = (props) => {
         <Divider>{type}</Divider>
         <Form.Item
           name="name"
-          label="名称"
-          rules={[{required: true, message: '请输入名称！'}]}>
-          <Input placeholder="请输入唯一英文标识"/>
+          label={l('pages.registerCenter.db.name')}
+          rules={[{required: true, message: l('pages.registerCenter.db.namePlaceholder')}]}>
+          <Input placeholder={l('pages.registerCenter.db.namePlaceholder')}/>
         </Form.Item>
         <Form.Item
           name="alias"
-          label="别名"
+          label={l('pages.registerCenter.db.alias')}
         >
-          <Input placeholder="请输入别名"/>
+          <Input placeholder={l('pages.registerCenter.db.aliasPlaceholder')}/>
         </Form.Item>
         <Form.Item
           name="groupName"
-          label="分组类型"
+          label={l('pages.registerCenter.db.groupName')}
         >
           <Select>
-            <Option value="来源">来源</Option>
-            <Option value="数仓">数仓</Option>
-            <Option value="应用">应用</Option>
-            <Option value="备份">备份</Option>
-            <Option value="其他">其他</Option>
+            <Option value="source">{l('pages.registerCenter.db.source')}</Option>
+            <Option value="warehouse">{l('pages.registerCenter.db.warehouse')}</Option>
+            <Option value="application">{l('pages.registerCenter.db.application')}</Option>
+            <Option value="backup">{l('pages.registerCenter.db.backup')}</Option>
+            <Option value="other">{l('pages.registerCenter.db.other')}</Option>
           </Select>
         </Form.Item>
         <Form.Item
           name="url"
-          label="url"
+          label={l('pages.registerCenter.db.url')}
         >
-          <TextArea placeholder="请输入格式正确的 url 连接" allowClear
+          <TextArea placeholder={l('pages.registerCenter.db.urlPlaceholder')} allowClear
                     autoSize={{minRows: 3, maxRows: 10}}/>
         </Form.Item>
         <Form.Item
           name="username"
-          label="用户名"
+          label={l('pages.registerCenter.db.username')}
         >
           <Input/>
         </Form.Item>
         <Form.Item
           name="password"
-          label="密码"
+          label={l('pages.registerCenter.db.password')}
         >
           <Input.Password/>
         </Form.Item>
@@ -141,30 +136,30 @@ const DataBaseForm: React.FC<ClickHouseFormProps> = (props) => {
           <>
             <Form.Item
               name="flinkConfig"
-              label="Flink 连接配置"
+              label={l('pages.registerCenter.db.flinkConfig')}
             >
-              <TextArea placeholder="请指定 Flink With 的默认配置" allowClear
+              <TextArea placeholder={l('pages.registerCenter.db.flinkConfigPlaceholder')} allowClear
                         autoSize={{minRows: 3, maxRows: 10}}/>
             </Form.Item>
             <Form.Item
               name="flinkTemplate"
-              label="Flink 连接模板"
+              label={l('pages.registerCenter.db.flinkTemplate')}
             >
-              <TextArea placeholder="请指定 Flink With 的生成模板" allowClear
+              <TextArea placeholder={l('pages.registerCenter.db.flinkTemplatePlaceholder')} allowClear
                         autoSize={{minRows: 3, maxRows: 10}}/>
             </Form.Item>
           </>}
         <Form.Item
           name="note"
-          label="注释"
+          label={l('global.table.note')}
         >
-          <Input placeholder="请输入"/>
+          <Input placeholder={l('global.table.notePlaceholder')}/>
         </Form.Item>
         <Form.Item
           name="enabled"
           label={l('global.table.isEnable')}
         >
-          <Switch checkedChildren="启用" unCheckedChildren="禁用"
+          <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                   defaultChecked={formVals.enabled}/>
         </Form.Item>
       </>
@@ -200,17 +195,17 @@ const DataBaseForm: React.FC<ClickHouseFormProps> = (props) => {
                   <Button htmlType="button" onClick={() => {
                     handleModalVisible(false)
                   }}>
-                    返回
+                    {l('button.cancel')}
                   </Button> : undefined
                 }
                 <Button htmlType="button" onClick={onReset}>
-                  重置
+                  {l('button.reset')}
                 </Button>
                 <Button type="primary" htmlType="button" onClick={testForm}>
-                  测试
+                  {l('button.test')}
                 </Button>
                 <Button type="primary" htmlType="button" onClick={submitForm}>
-                  保存
+                  {l('button.save')}
                 </Button>
               </Space>
             </Form.Item>

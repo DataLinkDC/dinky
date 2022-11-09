@@ -19,7 +19,7 @@
 
 
 import {StateType} from "@/pages/DataStudio/model";
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import {Badge, Divider, Modal, Space, Tag, Typography} from 'antd';
 import {ClusterOutlined, FireOutlined, MessageOutlined, RocketOutlined} from "@ant-design/icons";
 import ProList from '@ant-design/pro-list';
@@ -30,9 +30,9 @@ import StudioPreview from "../StudioPreview";
 import {getJobData} from "@/pages/DataStudio/service";
 import {HistoryItem} from "@/components/Studio/StudioConsole/StudioHistory/data";
 import CodeShow from "@/components/Common/CodeShow";
+import {l} from "@/utils/intl";
 
-
-const {Title, Paragraph, Text, Link} = Typography;
+const { Paragraph, Text, Link} = Typography;
 
 type HistoryConfig = {
   useSession: boolean;
@@ -58,9 +58,6 @@ type HistoryConfig = {
 
 const url = '/api/history';
 const StudioHistory = (props: any) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {current, refs, dispatch} = props;
   const [modalVisit, setModalVisit] = useState(false);
@@ -295,7 +292,7 @@ const StudioHistory = (props: any) => {
               </Tag>
             </ProDescriptions.Item>
             <ProDescriptions.Item label="共享会话">
-              {config.useSession ? '启用' : '禁用'}
+              {config.useSession ? l('button.enable') : l('button.disable')}
             </ProDescriptions.Item>
             <ProDescriptions.Item label="会话 Key">
               {config.session}
@@ -313,16 +310,16 @@ const StudioHistory = (props: any) => {
               {config.clusterConfigurationId}
             </ProDescriptions.Item>
             <ProDescriptions.Item label="预览结果">
-              {config.useResult ? '启用' : '禁用'}
+              {config.useResult ? l('button.enable') : l('button.disable')}
             </ProDescriptions.Item>
             <ProDescriptions.Item label="打印流">
-              {config.useChangeLog ? '启用' : '禁用'}
+              {config.useChangeLog ? l('button.enable') : l('button.disable')}
             </ProDescriptions.Item>
             <ProDescriptions.Item label="最大行数">
               {config.maxRowNum}
             </ProDescriptions.Item>
             <ProDescriptions.Item label="自动停止">
-              {config.useAutoCancel ? '启用' : '禁用'}
+              {config.useAutoCancel ? l('button.enable') : l('button.disable')}
             </ProDescriptions.Item>
             <ProDescriptions.Item span={2} label="JobManagerAddress">
               {row.jobManagerAddress}
@@ -334,10 +331,10 @@ const StudioHistory = (props: any) => {
               {config.jobName}
             </ProDescriptions.Item>
             <ProDescriptions.Item label="片段机制">
-              {config.useSqlFragment ? '启用' : '禁用'}
+              {config.useSqlFragment ? l('button.enable') : l('button.disable')}
             </ProDescriptions.Item>
             <ProDescriptions.Item label="语句集">
-              {config.useStatementSet ? '启用' : '禁用'}
+              {config.useStatementSet ? l('button.enable') : l('button.disable')}
             </ProDescriptions.Item>
             <ProDescriptions.Item label="并行度">
               {config.parallelism}

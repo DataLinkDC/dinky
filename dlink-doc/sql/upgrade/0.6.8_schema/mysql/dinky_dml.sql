@@ -71,3 +71,11 @@ VALUES (4, 'python_udf_1', 'Python', 'UDF', 'from pyflink.table import ScalarFun
 
 INSERT INTO `dlink_udf_template` (`id`, `name`, `code_type`, `function_type`, `template_code`, `enabled`, `create_time`, `update_time`)
 VALUES (5, 'python_udf_2', 'Python', 'UDF', 'from pyflink.table import DataTypes\nfrom pyflink.table.udf import udf\n\n@udf(result_type=DataTypes.STRING())\ndef ${className}(variable1:string):\n  return \'\'', NULL, '2022-10-25 09:25:13', '2022-10-25 09:34:47');
+
+
+UPDATE `dlink_database` set `group_name` = 'source' WHERE `group_name` = '来源';
+UPDATE `dlink_database` set `group_name` = 'warehouse' WHERE `group_name` = '数仓';
+UPDATE `dlink_database` set `group_name` = 'application' WHERE `group_name` = '应用';
+UPDATE `dlink_database` set `group_name` = 'backup' WHERE `group_name` = '备份';
+UPDATE `dlink_database` set `group_name` = 'other' WHERE `group_name` = '其他';
+

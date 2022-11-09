@@ -22,11 +22,12 @@ import React, {useState} from 'react';
 import {Card, Image, List, Modal} from 'antd';
 
 import {DataBaseItem} from '../data.d';
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import {StateType} from "@/pages/DataStudio/model";
 import {FALLBACK, getDBImage} from "@/pages/DataBase/DB";
 import DataBaseForm from "@/pages/DataBase/components/DataBaseForm";
 import {createOrModifyDatabase, testDatabaseConnect} from "@/pages/DataBase/service";
+import {l} from "@/utils/intl";
 
 export type UpdateFormProps = {
   onCancel: (flag?: boolean, formVals?: Partial<DataBaseItem>) => void;
@@ -70,11 +71,6 @@ const data: any = [
 
 const DBForm: React.FC<UpdateFormProps> = (props) => {
 
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
-
   const {
     onSubmit: handleUpdate,
     onCancel: handleChooseDBModalVisible,
@@ -104,8 +100,8 @@ const DBForm: React.FC<UpdateFormProps> = (props) => {
   return (
     <Modal
       width={"40%"}
-      bodyStyle={{padding: '32px 40px 48px'}}
-      title={values.id ? '编辑数据源' : '创建数据源'}
+      bodyStyle={{padding: '32px 40px 48px' , height: '600px', overflowY: 'auto'}}
+      title={values.id ? l('pages.registerCenter.db.modify') : l('pages.registerCenter.db.create')}
       visible={modalVisible}
       onCancel={() => {
         setDbType(undefined);

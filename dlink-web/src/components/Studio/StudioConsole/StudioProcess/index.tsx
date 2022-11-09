@@ -20,7 +20,7 @@
 
 import {Button, Divider, Dropdown, Empty, Menu, message, Modal, Select, Space, Tag, Tooltip} from "antd";
 import {StateType} from "@/pages/DataStudio/model";
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import React, {useState} from "react";
 import {DownOutlined, SearchOutlined} from '@ant-design/icons';
 import ProTable from '@ant-design/pro-table';
@@ -31,9 +31,6 @@ import {parseSecondStr} from "@/components/Common/function";
 const {Option} = Select;
 
 const StudioProcess = (props: any) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {cluster} = props;
   const [jobsData, setJobsData] = useState<any>({});
@@ -151,7 +148,7 @@ const StudioProcess = (props: any) => {
       render: (_, record) => {
         let option = [<a
           onClick={() => {
-            message.success('敬请期待');
+            message.success(l('global.stay.tuned'));
           }}
         >
           详情

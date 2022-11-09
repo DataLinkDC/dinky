@@ -18,7 +18,7 @@
  */
 
 
-import {history, useIntl} from 'umi';
+import {history} from 'umi';
 import {queryData} from "@/components/Common/crud";
 import {useEffect, useRef, useState} from "react";
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
@@ -32,6 +32,7 @@ import JobLifeCycle, {JOB_LIFE_CYCLE} from "@/components/Common/JobLifeCycle";
 import OpsStatusModal from "@/pages/DevOps/OpsStatusModel/index";
 import StatusDetailedModal from "@/pages/DevOps/StatusDetailedModel/index";
 import {onClickOperatingTask, queryAllCatalogue, queryOneClickOperatingTaskStatus} from "@/pages/DevOps/service";
+import {l} from "@/utils/intl";
 
 
 const OPS_STATUS_COLOR = {
@@ -43,9 +44,6 @@ const url = '/api/jobInstance';
 
 
 const JobInstanceTable = (props: any) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   const {status, activeKey, isHistory, taskStatus} = props;
@@ -191,7 +189,7 @@ const JobInstanceTable = (props: any) => {
         },
       },
     }, {
-      title: l('global.table.instanceName'),
+      title: l('pages.registerCenter.cluster.instanceName'),
       dataIndex: "clusterAlias",
       sorter: true,
     }, {

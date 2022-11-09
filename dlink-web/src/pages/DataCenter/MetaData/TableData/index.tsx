@@ -25,12 +25,9 @@ import styles from './index.less';
 import {SearchOutlined} from "@ant-design/icons";
 import Divider from "antd/es/divider";
 import {ProTable} from "@ant-design/pro-table";
-import {useIntl} from 'umi';
+import {l} from "@/utils/intl";
 
 const TableData = (props: any) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   // 数据库id，数据库名称，表名称

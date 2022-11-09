@@ -24,16 +24,13 @@ import {queryData} from "@/components/Common/crud";
 import moment from "moment";
 import {TaskVersion} from "@/pages/DevOps/data";
 import {CheckCircleOutlined, SyncOutlined} from "@ant-design/icons";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 // import {Scrollbars} from "react-custom-scrollbars";
 
 const url = '/api/task/version';
 
 const VersionTimeLineList = (props: any) => {
   const {job} = props;
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   const [mode, setMode] = useState<'left' | 'alternate' | 'right'>('alternate');
@@ -103,7 +100,7 @@ const VersionTimeLineList = (props: any) => {
         {reverse ? "倒序" : "正序"}
       </Button>
       <Button type="primary" style={{margin: "5px"}} onClick={refresh}>
-        刷新
+        {l('button.refresh')}
       </Button>
       <Radio.Group
         onChange={onChange}

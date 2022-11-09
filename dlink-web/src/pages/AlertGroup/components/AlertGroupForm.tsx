@@ -21,10 +21,11 @@
 import React, {useState} from 'react';
 import {Button, Form, Input, Modal, Select, Switch, Tag} from 'antd';
 import {AlertGroupTableListItem} from "@/pages/AlertGroup/data";
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import {AlertStateType} from "@/pages/AlertInstance/model";
 import {AlertInstanceTableListItem} from "@/pages/AlertInstance/data";
 import {buildFormData, getFormData} from "@/pages/AlertGroup/function";
+import {l} from "@/utils/intl";
 
 export type AlertGroupFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -41,11 +42,6 @@ const formLayout = {
 };
 
 const AlertGroupForm: React.FC<AlertGroupFormProps> = (props) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
-
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<AlertGroupTableListItem>>({
     id: props.values.id,
@@ -84,19 +80,19 @@ const AlertGroupForm: React.FC<AlertGroupFormProps> = (props) => {
       <>
         <Form.Item
           name="name"
-          label="名称"
-          rules={[{required: true, message: '请输入名称！'}]}>
-          <Input placeholder="请输入唯一英文标识"/>
+          label={l('pages.registerCenter.alert.group.name')}
+          rules={[{required: true, message: l('pages.registerCenter.alert.group.inputName')}]}>
+          <Input placeholder={l('pages.registerCenter.alert.group.inputName')}/>
         </Form.Item>
         <Form.Item
           name="alertInstanceIds"
-          label="报警实例"
-          rules={[{required: true, message: '请选择报警组实例！'}]}
+          label={l('pages.registerCenter.alert.group.alertInstanceIds')}
+          rules={[{required: true, message: l('pages.registerCenter.alert.group.chooseAlertInstanceIds')}]}
         >
           <Select
             mode="multiple"
             style={{width: '100%'}}
-            placeholder="请选择报警实例"
+            placeholder={l('pages.registerCenter.alert.group.chooseAlertInstanceIds')}
             optionLabelProp="label"
           >
             {getAlertInstanceOptions()}
@@ -104,15 +100,15 @@ const AlertGroupForm: React.FC<AlertGroupFormProps> = (props) => {
         </Form.Item>
         <Form.Item
           name="note"
-          label="注释"
+          label={l('global.table.note')}
         >
-          <Input.TextArea placeholder="请输入文本注释" allowClear
+          <Input.TextArea placeholder={l('global.table.notePlaceholder')} allowClear
                           autoSize={{minRows: 3, maxRows: 10}}/>
         </Form.Item>
         <Form.Item
           name="enabled"
           label={l('global.table.isEnable')}>
-          <Switch checkedChildren="启用" unCheckedChildren="禁用"
+          <Switch checkedChildren={l("button.enable")} unCheckedChildren={l('button.disable')}
                   defaultChecked={formVals.enabled}/>
         </Form.Item>
       </>
@@ -135,7 +131,7 @@ const AlertGroupForm: React.FC<AlertGroupFormProps> = (props) => {
       width={1200}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title={formVals.id ? "维护报警组" : "创建报警组"}
+      title={formVals.id ? l('pages.registerCenter.alert.group.modify') : l('pages.registerCenter.alert.group.create')}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}

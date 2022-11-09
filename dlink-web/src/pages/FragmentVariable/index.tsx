@@ -29,14 +29,11 @@ import Menu from "antd/es/menu";
 import {handleAddOrUpdate, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
 import FragmentForm from "@/pages/FragmentVariable/components/FragmentForm";
 import {FragmentVariableTableListItem} from "./data.d";
-import {useIntl} from 'umi';
+import {l} from "@/utils/intl";
 
 const url = '/api/fragment';
 
 const FragmentTableList: React.FC<{}> = (props: any) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
@@ -52,8 +49,8 @@ const FragmentTableList: React.FC<{}> = (props: any) => {
       setFormValues(currentItem);
     } else if (key === 'delete') {
       Modal.confirm({
-        title: '删除变量',
-        content: '确定删除该变量吗？',
+        title: l('pages.registerCenter.fv.delete'),
+        content: l('pages.registerCenter.fv.deleteConfirm'),
         okText: l('button.confirm'),
         cancelText: l('button.cancel'),
         onOk: async () => {
@@ -83,30 +80,29 @@ const FragmentTableList: React.FC<{}> = (props: any) => {
 
   const columns: ProColumns<FragmentVariableTableListItem>[] = [
     {
-      title: '变量ID',
+      title: l('pages.registerCenter.fv.id'),
       dataIndex: 'id',
       hideInTable: true,
       hideInForm: true,
       hideInSearch: true,
     },
     {
-      title: '名称',
+      title: l('pages.registerCenter.fv.name'),
       dataIndex: 'name',
-      tip: '名称是唯一的',
       sorter: true,
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
     },
     {
-      title: '别名',
+      title: l('pages.registerCenter.fv.alias'),
       dataIndex: 'alias',
       hideInForm: false,
       hideInSearch: false,
       hideInTable: false,
     },
     {
-      title: '变量值',
+      title: l('pages.registerCenter.fv.fragmentValue'),
       sorter: true,
       dataIndex: 'fragmentValue',
       hideInForm: false,
@@ -115,16 +111,7 @@ const FragmentTableList: React.FC<{}> = (props: any) => {
       // ellipsis: true,
     },
     {
-      title: '使用变量值',
-      sorter: true,
-      dataIndex: 'fillValue',
-      hideInForm: false,
-      hideInSearch: true,
-      hideInTable: true,
-      // ellipsis: true,
-    },
-    {
-      title: '描述',
+      title: l('global.table.note'),
       sorter: true,
       dataIndex: 'note',
       valueType: 'textarea',
@@ -190,7 +177,7 @@ const FragmentTableList: React.FC<{}> = (props: any) => {
   return (
     <PageContainer title={false}>
       <ProTable<FragmentVariableTableListItem>
-        headerTitle="全局变量列表"
+        headerTitle={l('pages.registerCenter.fv.Management')}
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -225,7 +212,10 @@ const FragmentTableList: React.FC<{}> = (props: any) => {
                     style={{fontWeight: 600}}>{selectedRowsState.length}</a>
                 })}  &nbsp;&nbsp;
               <span>
-                被禁用的全局变量共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} 个
+                 {l('pages.registerCenter.fv.disableTotalOf', '',
+                   {
+                     total: (selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0))
+                   })}
               </span>
             </div>
           }
@@ -233,8 +223,8 @@ const FragmentTableList: React.FC<{}> = (props: any) => {
           <Button type="primary" danger
                   onClick={() => {
                     Modal.confirm({
-                      title: '删除全局变量',
-                      content: '确定删除选中的全局变量吗？',
+                      title: l('pages.registerCenter.fv.delete'),
+                      content: l('pages.registerCenter.fv.deleteConfirm'),
                       okText: l('button.confirm'),
                       cancelText: l('button.cancel'),
                       onOk: async () => {
@@ -250,8 +240,8 @@ const FragmentTableList: React.FC<{}> = (props: any) => {
           <Button type="primary"
                   onClick={() => {
                     Modal.confirm({
-                      title: '启用全局变量',
-                      content: '确定启用选中的全局变量吗？',
+                      title: l('pages.registerCenter.fv.enable'),
+                      content: l('pages.registerCenter.fv.enableConfirm'),
                       okText: l('button.confirm'),
                       cancelText: l('button.cancel'),
                       onOk: async () => {
@@ -265,8 +255,8 @@ const FragmentTableList: React.FC<{}> = (props: any) => {
           <Button danger
                   onClick={() => {
                     Modal.confirm({
-                      title: '禁用全局变量',
-                      content: '确定禁用选中的全局变量吗？',
+                      title: l('pages.registerCenter.fv.disable'),
+                      content: l('pages.registerCenter.fv.disableConfirm'),
                       okText: l('button.confirm'),
                       cancelText: l('button.cancel'),
                       onOk: async () => {

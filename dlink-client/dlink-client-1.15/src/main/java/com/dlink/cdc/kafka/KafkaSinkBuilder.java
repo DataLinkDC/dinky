@@ -56,7 +56,7 @@ import java.util.Properties;
  * @author wenmo
  * @since 2022/4/12 21:29
  **/
-public class KafkaSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, Serializable {
+public class KafkaSinkBuilder extends AbstractSinkBuilder implements Serializable {
 
     private static final String KEY_WORD = "datastream-kafka";
 
@@ -104,6 +104,7 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
                     )
                     .setDeliverGuarantee(DeliveryGuarantee.valueOf(env.getCheckpointingMode().name()))
                     .setKafkaProducerConfig(kafkaProducerConfig)
+                    .setTransactionalIdPrefix(kafkaProducerConfig.getProperty("transactional.id"))
                     .build();
             dataStreamSource.sinkTo(kafkaSink);
         } else {
@@ -149,6 +150,7 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
                             )
                             .setDeliverGuarantee(DeliveryGuarantee.valueOf(env.getCheckpointingMode().name()))
                             .setKafkaProducerConfig(kafkaProducerConfig)
+                            .setTransactionalIdPrefix(kafkaProducerConfig.getProperty("transactional.id") + "-" + topic)
                             .build();
                     process.getSideOutput(v).rebalance().sinkTo(kafkaSink).name(topic);
                 });

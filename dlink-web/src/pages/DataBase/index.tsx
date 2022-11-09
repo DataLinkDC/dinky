@@ -29,7 +29,7 @@ import {
   HeartOutlined,
   PlusOutlined
 } from '@ant-design/icons';
-import {Button, Card, Image, Modal, Space, Tag, Typography} from 'antd';
+import {Button, Card, Image, Modal, Space, Tag} from 'antd';
 import ProList from '@ant-design/pro-list';
 import {handleRemove, queryData} from "@/components/Common/crud";
 import {getDBImage} from "@/pages/DataBase/DB";
@@ -40,9 +40,8 @@ import styles from './index.less';
 import {DataBaseItem} from "@/pages/DataBase/data";
 import {checkHeartBeat} from "@/pages/DataBase/service";
 import {showDataBase} from "@/components/Studio/StudioEvent/DDL";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
-const {Text} = Typography;
 
 const url = '/api/database';
 const cardBodyStyle = {
@@ -52,10 +51,6 @@ const cardBodyStyle = {
 };
 
 const DataBaseTableList: React.FC<{}> = (props: any) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   const {dispatch} = props;
   const [chooseDBModalVisible, handleDBFormModalVisible] = useState<boolean>(false);
@@ -79,8 +74,8 @@ const DataBaseTableList: React.FC<{}> = (props: any) => {
 
   const onDeleteDataBase = (row: DataBaseItem) => {
     Modal.confirm({
-      title: '删除数据源',
-      content: `确定删除该数据源【${row.alias === "" ? row.name : row.alias}】吗？`,
+      title: l('pages.registerCenter.db.delete'),
+      content: l('pages.registerCenter.db.deleteConfirm','',{dbName: (row.alias === "" ? row.name : row.alias)}),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -154,17 +149,17 @@ const DataBaseTableList: React.FC<{}> = (props: any) => {
                     </Tag>
                     {(row.status) ?
                       (<Tag icon={<CheckCircleOutlined/>} color="success">
-                        正常
+                        {l('global.table.status.normal')}
                       </Tag>) :
                       <Tag icon={<ExclamationCircleOutlined/>} color="warning">
-                        异常
+                        {l('global.table.status.abnormal')}
                       </Tag>}
                   </Space>
                 )}
               />
             </Card>)
         }}
-        headerTitle="数据源"
+        headerTitle={l('pages.registerCenter.db.Management')}
       />
       <DBForm onCancel={() => {
         handleDBFormModalVisible(false);

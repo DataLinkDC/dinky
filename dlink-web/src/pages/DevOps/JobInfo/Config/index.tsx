@@ -20,17 +20,13 @@
 
 import {Descriptions, Divider, Tag, Typography} from 'antd';
 import {RocketOutlined} from '@ant-design/icons';
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
 const {Text, Link} = Typography;
 
 const Config = (props: any) => {
 
   const {job} = props;
-
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   return <>
@@ -50,18 +46,18 @@ const Config = (props: any) => {
           {job?.clusterConfiguration?.alias ? <Link>{job?.clusterConfiguration?.alias}</Link> : '-'}
         </Descriptions.Item>
         <Descriptions.Item label="共享会话">
-          {job?.history?.session ? <Link>{job?.history?.session}</Link> : '禁用'}
+          {job?.history?.session ? <Link>{job?.history?.session}</Link> : l('button.disable')}
         </Descriptions.Item>
-        <Descriptions.Item label="片段机制">{job?.history?.config.useSqlFragment ? '启用' : '禁用'}</Descriptions.Item>
-        <Descriptions.Item label="语句集">{job?.history?.config.useStatementSet ? '启用' : '禁用'}</Descriptions.Item>
+        <Descriptions.Item label="片段机制">{job?.history?.config.useSqlFragment ? l('button.enable') : l('button.disable')}</Descriptions.Item>
+        <Descriptions.Item label="语句集">{job?.history?.config.useStatementSet ? l('button.enable') : l('button.disable')}</Descriptions.Item>
         <Descriptions.Item label="任务类型">{job?.history?.config.isJarTask ? 'Jar' : 'FlinkSQL'}</Descriptions.Item>
-        <Descriptions.Item label="批模式">{job?.history?.config.useBatchModel ? '启用' : '禁用'}</Descriptions.Item>
+        <Descriptions.Item label="批模式">{job?.history?.config.useBatchModel ? l('button.enable') : l('button.disable')}</Descriptions.Item>
         <Descriptions.Item label="CheckPoint">{job?.history?.config.checkpoint}</Descriptions.Item>
         <Descriptions.Item label="SavePoint机制">
-          {job?.history?.config.savePointStrategy == 'NONE' ? '禁用' :
-            job?.history?.config.savePointStrategy == 'LATEST' ? '最近一次' :
-              job?.history?.config.savePointStrategy == 'EARLIEST' ? '最早一次' :
-                job?.history?.config.savePointStrategy == 'CUSTOM' ? '指定一次' : '禁用'}
+          {job?.history?.config.savePointStrategy == 'NONE' ? l('global.savepoint.strategy.disabled') :
+            job?.history?.config.savePointStrategy == 'LATEST' ? l('global.savepoint.strategy.latest') :
+              job?.history?.config.savePointStrategy == 'EARLIEST' ? l('global.savepoint.strategy.earliest') :
+                job?.history?.config.savePointStrategy == 'CUSTOM' ? l('global.savepoint.strategy.custom') : l('global.savepoint.strategy.disabled')}
         </Descriptions.Item>
         <Descriptions.Item label="SavePoint" span={2}>{job?.history?.config.savePointPath}</Descriptions.Item>
         {job?.jar ? <>

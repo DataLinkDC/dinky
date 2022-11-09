@@ -41,7 +41,7 @@ public class ProcessStep {
     }
 
     public ProcessStep(ProcessStatus stepStatus, LocalDateTime startTime) {
-        this(stepStatus, startTime, null, 0, null, null);
+        this(stepStatus, startTime, null, 0, new StringBuilder(), new StringBuilder());
     }
 
     public ProcessStep(ProcessStatus stepStatus, LocalDateTime startTime, LocalDateTime endTime, long time,

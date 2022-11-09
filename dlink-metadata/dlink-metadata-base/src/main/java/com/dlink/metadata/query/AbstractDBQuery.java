@@ -132,6 +132,11 @@ public abstract class AbstractDBQuery implements IDBQuery {
     }
 
     @Override
+    public String columnLength() {
+        return "LENGTH";
+    }
+
+    @Override
     public String isNullable() {
         return "IS_NULLABLE";
     }

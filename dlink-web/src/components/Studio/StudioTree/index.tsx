@@ -19,7 +19,7 @@
 
 
 import React, {Key, useEffect, useState} from "react";
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import {DownloadOutlined, DownOutlined, FolderAddOutlined, SwitcherOutlined, UploadOutlined} from "@ant-design/icons";
 import type {UploadProps} from 'antd';
 import {Button, Col, Empty, Input, Menu, message, Modal, Row, Tooltip, Tree, Upload} from 'antd';
@@ -44,6 +44,7 @@ import {Scrollbars} from "react-custom-scrollbars";
 import {getIcon} from "@/components/Studio/icon";
 import {showEnv, showMetaStoreCatalogs} from "@/components/Studio/StudioEvent/DDL";
 import UploadModal from "@/components/Studio/StudioTree/components/UploadModal";
+import {l} from "@/utils/intl";
 
 type StudioTreeProps = {
   rightClickMenu: StateType['rightClickMenu'];
@@ -63,8 +64,8 @@ type RightClickMenu = {
 
 //将树形节点改为一维数组
 const generateList = (data: any, list: any[]) => {
-  for (let i = 0; i < data.length; i++) {
-    const node = data[i];
+  for (const element of data) {
+    const node = element;
     const {name, id, parentId, level} = node;
     list.push({name, id, key: id, title: name, parentId, level});
     if (node.children) {
@@ -77,8 +78,8 @@ const generateList = (data: any, list: any[]) => {
 // tree树 匹配方法
 const getParentKey = (key: number | string, tree: any): any => {
   let parentKey;
-  for (let i = 0; i < tree.length; i++) {
-    const node = tree[i];
+  for (const element of tree) {
+    const node = element;
     if (node.children) {
       if (node.children.some((item: any) => item.id === key)) {
         parentKey = node.id;
@@ -94,9 +95,6 @@ const {DirectoryTree} = Tree;
 const {Search} = Input;
 
 const StudioTree: React.FC<StudioTreeProps> = (props) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {rightClickMenu, dispatch, tabs, refs, toolHeight} = props;
   const [treeData, setTreeData] = useState<TreeDataNode[]>();
@@ -140,8 +138,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     const expandList: any[] = generateList(treeData, []);
     let expandedKeys: any = expandList.map((item: any) => {
       if (item && item.name.indexOf(value) > -1) {
-        let key = getParentKey(item.key, treeData);
-        return key;
+        return getParentKey(item.key, treeData);
       }
       return null;
     })
@@ -155,11 +152,11 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     const result = await getCatalogueTreeData();
     let data = result.datas;
     let list = data;
-    for (let i = 0; i < list.length; i++) {
-      list[i].title = list[i].name;
-      list[i].key = list[i].id;
-      if (list[i].isLeaf) {
-        list[i].icon = getIcon(list[i].type);
+    for (const element of list) {
+      element.title = element.name;
+      element.key = element.id;
+      if (element.isLeaf) {
+        element.icon = getIcon(element.type);
       }
     }
     data = convertToTreeData(list, 0);
@@ -207,43 +204,56 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     setIsUploadModalVisible(true);
   };
 
+  const activeTabCall = (node: TreeDataNode) => {
+    dispatch && dispatch({
+      type: "Studio/saveToolHeight",
+      payload: toolHeight - 0.0001,
+    });
+    dispatch && dispatch({
+      type: "Studio/changeActiveKey",
+      payload: node.taskId,
+    });
+  };
+
+  const checkInPans = (node: TreeDataNode) => {
+    for (let item of tabs?.panes!) {
+      if (item.key == node.taskId) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   const toOpen = (node: TreeDataNode | undefined) => {
     if (!available) {
       return
     }
+
     setAvailable(false);
     setTimeout(() => {
       setAvailable(true);
     }, 200);
 
     if (node?.isLeaf && node.taskId) {
-      for (let item of tabs.panes) {
-        if (item.key == node.taskId) {
-          dispatch && dispatch({
-            type: "Studio/saveToolHeight",
-            payload: toolHeight - 0.0001,
-          });
-          dispatch && dispatch({
-            type: "Studio/changeActiveKey",
-            payload: node.taskId,
-          });
-          return;
-        }
+      if(checkInPans(node)) {
+        activeTabCall(node);
+        return;
       }
+
       const result = getInfoById('/api/task', node.taskId);
       result.then(result => {
         let newTabs = tabs;
         let newPane: any = {
-          title: node!.name,
-          key: node!.taskId,
+          title: node.name,
+          key: node.taskId,
           value: (result.datas.statement ? result.datas.statement : ''),
-          icon: node!.icon,
+          icon: node.icon,
           closable: true,
-          path: node!.path,
+          path: node.path,
           task: {
             session: '',
             maxRowNum: 100,
-            jobName: node!.name,
+            jobName: node.name,
             useResult: true,
             useChangeLog: false,
             useAutoCancel: false,
@@ -258,7 +268,11 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
           monaco: React.createRef(),
           metaStore: []
         };
-        newTabs!.activeKey = node!.taskId;
+        newTabs!.activeKey = node.taskId;
+        if (checkInPans(node)) {
+          return;
+        }
+
         newTabs!.panes!.push(newPane);
         dispatch && dispatch({
           type: "Studio/saveTabs",
@@ -598,7 +612,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
         }
         getTreeData();
       } else if (info.file.status === 'error') {
-        message.error(`${info.file.name} 上传失败`);
+        message.error(`${info.file.name}`+ l('app.request.upload.failed'));
       }
     },
   };

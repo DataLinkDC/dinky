@@ -28,15 +28,10 @@ import {ClusterConfigurationTableListItem} from "@/pages/ClusterConfiguration/da
 import {handleAddOrUpdate, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
 import {showClusterConfiguration} from "@/components/Studio/StudioEvent/DDL";
 import ClusterConfigurationForm from "@/pages/ClusterConfiguration/components/ClusterConfigurationForm";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
 const url = '/api/clusterConfiguration';
 const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
-
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   const {dispatch} = props;
   const [row, setRow] = useState<ClusterConfigurationTableListItem>();
@@ -52,8 +47,8 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
       handleUpdateModalVisible(true);
     } else if (key === 'delete') {
       Modal.confirm({
-        title: '删除集群配置',
-        content: '确定删除该集群配置吗？',
+        title: l('pages.registerCenter.clusterConfig.delete'),
+        content: l('pages.registerCenter.clusterConfig.deleteConfirm'),
         okText: l('button.confirm'),
         cancelText: l('button.cancel'),
         onOk: async () => {
@@ -71,7 +66,7 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
       overlay={
         <Menu onClick={({key}) => editAndDelete(key, item)}>
           <Menu.Item key="edit">{l('button.edit')}</Menu.Item>
-          <Menu.Item key="delete">删除</Menu.Item>
+          <Menu.Item key="delete">{l('button.delete')}</Menu.Item>
         </Menu>
       }
     >
@@ -83,37 +78,28 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
 
   const columns: ProColumns<ClusterConfigurationTableListItem>[] = [
     {
-      title: '名称',
+      title: l('pages.registerCenter.clusterConfig.name'),
       dataIndex: 'name',
-      tip: '名称是唯一的',
       sorter: true,
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '名称为必填项',
-          },
-        ],
-      },
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
     },
     {
-      title: '集群配置ID',
+      title: l('pages.registerCenter.clusterConfig.id'),
       dataIndex: 'id',
       hideInTable: true,
       hideInForm: true,
       hideInSearch: true,
     },
     {
-      title: '别名',
+      title: l('pages.registerCenter.clusterConfig.alias'),
       sorter: true,
       dataIndex: 'alias',
       hideInTable: false,
     },
     {
-      title: '类型',
+      title: l('pages.registerCenter.clusterConfig.type'),
       sorter: true,
       dataIndex: 'type',
       hideInForm: false,
@@ -141,29 +127,29 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: '是否可用',
+      title: l('pages.registerCenter.clusterConfig.isAvailable'),
       dataIndex: 'isAvailable',
       hideInForm: true,
       hideInSearch: true,
       hideInTable: false,
       filters: [
         {
-          text: '可用',
+          text: l('pages.registerCenter.clusterConfig.available'),
           value: 1,
         },
         {
-          text: '不可用',
+          text:  l('pages.registerCenter.clusterConfig.notAvailable'),
           value: 0,
         },
       ],
       filterMultiple: false,
       valueEnum: {
-        true: {text: '可用', status: 'Success'},
-        false: {text: '不可用', status: 'Error'},
+        true: {text: l('pages.registerCenter.clusterConfig.available'), status: 'Success'},
+        false: {text: l('pages.registerCenter.clusterConfig.notAvailable'), status: 'Error'},
       },
     },
     {
-      title: '注释',
+      title: l('global.table.note'),
       sorter: true,
       valueType: 'textarea',
       dataIndex: 'note',
@@ -227,7 +213,7 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
   return (
     <PageContainer title={false}>
       <ProTable<ClusterConfigurationTableListItem>
-        headerTitle="集群配置管理"
+        headerTitle={l('pages.registerCenter.clusterConfigManagement')}
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -258,7 +244,10 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
                     style={{fontWeight: 600}}>{selectedRowsState.length}</a>
                 })}  &nbsp;&nbsp;
               <span>
-                被禁用的集群配置共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} 人
+                {l('pages.registerCenter.clusterConfig.disableTotalOf', '',
+                  {
+                    total: (selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0))
+                  })}
               </span>
             </div>
           }
@@ -266,8 +255,8 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
           <Button type="primary" danger
                   onClick={() => {
                     Modal.confirm({
-                      title: '删除集群配置',
-                      content: '确定删除选中的集群配置吗？',
+                      title: l('pages.registerCenter.clusterConfig.delete'),
+                      content: l('pages.registerCenter.clusterConfig.deleteConfirm'),
                       okText: l('button.confirm'),
                       cancelText: l('button.cancel'),
                       onOk: async () => {
@@ -283,8 +272,8 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
           <Button type="primary"
                   onClick={() => {
                     Modal.confirm({
-                      title: '启用集群配置',
-                      content: '确定启用选中的集群配置吗？',
+                      title: l('pages.registerCenter.clusterConfig.enable'),
+                      content: l('pages.registerCenter.clusterConfig.enableConfirm'),
                       okText: l('button.confirm'),
                       cancelText: l('button.cancel'),
                       onOk: async () => {
@@ -298,8 +287,8 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
           <Button danger
                   onClick={() => {
                     Modal.confirm({
-                      title: '禁用集群配置',
-                      content: '确定禁用选中的集群配置吗？',
+                      title: l('pages.registerCenter.clusterConfig.disable'),
+                      content: l('pages.registerCenter.clusterConfig.disableConfirm'),
                       okText: l('button.confirm'),
                       cancelText: l('button.cancel'),
                       onOk: async () => {

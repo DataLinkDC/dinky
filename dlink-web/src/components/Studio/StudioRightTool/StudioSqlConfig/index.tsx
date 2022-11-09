@@ -18,21 +18,17 @@
  */
 
 
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import {StateType} from "@/pages/DataStudio/model";
 import {Button, Col, Form, InputNumber, Row, Select, Tag, Tooltip,} from "antd";
 import {MinusSquareOutlined} from "@ant-design/icons";
 import styles from "./index.less";
 import {Scrollbars} from 'react-custom-scrollbars';
+import {l} from "@/utils/intl";
 
 const {Option} = Select;
 
 const StudioSqlConfig = (props: any) => {
-
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   const {current, form, dispatch, tabs, database, toolHeight} = props;
 

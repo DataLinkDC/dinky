@@ -28,7 +28,8 @@ import {getStorageTenantId, handleAddOrUpdate, handleRemove, queryData} from "@/
 import {RoleTableListItem} from "@/pages/AuthenticationCenter/data.d";
 import RoleForm from "@/pages/AuthenticationCenter/RoleManager/components/RoleForm";
 import {getNameSpaceList} from "@/pages/AuthenticationCenter/service";
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
+import {l} from "@/utils/intl";
 
 const url = '/api/role';
 
@@ -40,10 +41,6 @@ const RoleFormList: React.FC<{}> = (props: any) => {
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<RoleTableListItem[]>([]);
-
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   useEffect(() => {
