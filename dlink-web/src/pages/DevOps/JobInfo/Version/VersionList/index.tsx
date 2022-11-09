@@ -26,15 +26,11 @@ import {getIcon} from "@/components/Studio/icon";
 import {Button, Modal, Tag} from "antd";
 import {FullscreenOutlined} from "@ant-design/icons";
 import CodeShow from "@/components/Common/CodeShow";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
 const url = '/api/task/version';
 const VersionList = (props: any) => {
   const {job} = props;
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   const actionRef = useRef<ActionType>();
   const [row, setRow] = useState<TaskVersion>();

@@ -22,7 +22,7 @@ import {Button, Card, Checkbox, Col, Divider, Form, Modal, Row, Select, TreeSele
 import {queryOnClickOperatingTask} from '../service'
 import type {CheckboxChangeEvent} from 'antd/es/checkbox';
 import type {CheckboxValueType} from 'antd/es/checkbox/Group';
-import {useIntl} from 'umi';
+import {l} from "@/utils/intl";
 
 interface IOpsStatusModalProps {
   opsStatusVisible: boolean;
@@ -40,10 +40,6 @@ const {Option} = Select
 const CheckboxGroup = Checkbox.Group;
 
 const OpsStatusModal: React.FC<IOpsStatusModalProps> = (props): React.ReactElement => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   const {opsStatusVisible, opsStatus, opsStatusListTree, onOpsStatusCallBack} = props
   const formRef = useRef<any>(null)

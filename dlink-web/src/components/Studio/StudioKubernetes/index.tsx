@@ -19,7 +19,7 @@
 
 import {Divider, Form, Input, Space,} from 'antd';
 import {Dispatch, DocumentStateType} from "@@/plugin-dva/connect";
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import Button from "antd/es/button/button";
 import {useState} from "react";
 import {
@@ -32,6 +32,7 @@ import {
 } from "@/pages/ClusterConfiguration/conf";
 import {MinusCircleOutlined, PlusOutlined} from "@ant-design/icons";
 import {getConfig} from "@/pages/ClusterConfiguration/function";
+import {l} from "@/utils/intl";
 
 
 const formLayout = {
@@ -40,9 +41,6 @@ const formLayout = {
 };
 
 const StudioKubernetes = (props: any) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {
     height = '100%',

@@ -19,7 +19,7 @@
 
 
 import {useEffect, useState} from 'react';
-import {history, useIntl, useLocation} from 'umi';
+import {history, useLocation} from 'umi';
 import {ClusterOutlined, EllipsisOutlined, FireOutlined, RedoOutlined, RocketOutlined} from '@ant-design/icons';
 import {Button, Dropdown, Empty, Menu, message, Modal, Space, Tag, Typography} from 'antd';
 import {PageContainer} from '@ant-design/pro-layout';
@@ -40,14 +40,12 @@ import DataMap from "@/pages/DevOps/JobInfo/DataMap";
 import CheckPoints from "@/pages/DevOps/JobInfo/CheckPoints";
 import FlinkClusterInfo from "@/pages/DevOps/JobInfo/FlinkClusterInfo";
 import TaskVersionInfo from "@/pages/DevOps/JobInfo/Version";
+import {l} from "@/utils/intl";
 
 
 const {Link} = Typography;
 
 const JobInfo = (props: any) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   const params = useLocation();

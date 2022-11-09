@@ -21,7 +21,7 @@
 import React, {useState} from 'react';
 import {Button, Form, Input, Modal} from 'antd';
 import {TenantTableListItem} from "@/pages/AuthenticationCenter/data.d";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
 export type TenantFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -37,11 +37,6 @@ const formLayout = {
 const FormItem = Form.Item;
 
 const TenantForm: React.FC<TenantFormProps> = (props) => {
-
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<TenantTableListItem>>({

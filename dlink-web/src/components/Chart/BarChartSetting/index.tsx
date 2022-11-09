@@ -20,9 +20,10 @@
 
 import {Col, Form, Row, Select, Switch} from "antd";
 import {StateType} from "@/pages/DataStudio/model";
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import styles from "./index.less";
 import React, {useEffect} from "react";
+import {l} from "@/utils/intl";
 
 const {Option} = Select;
 
@@ -43,10 +44,6 @@ export type BarChartProps = {
 };
 
 const BarChartSetting: React.FC<BarChartProps> = (props) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
   const {current, column, onChange: handleChange, dispatch} = props;
   const [form] = Form.useForm();
 

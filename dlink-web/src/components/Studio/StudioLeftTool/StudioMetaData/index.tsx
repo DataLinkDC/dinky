@@ -20,7 +20,7 @@
 
 import {Button, Empty, Modal, Select, Tabs, Tag, Tree} from "antd";
 import {StateType} from "@/pages/DataStudio/model";
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import React, {useState} from "react";
 import {CodepenOutlined, DatabaseOutlined, DownOutlined, OrderedListOutlined, TableOutlined} from '@ant-design/icons';
 import {showMetaDataTable} from "@/components/Studio/StudioEvent/DDL";
@@ -29,15 +29,13 @@ import Columns from "@/pages/DataBase/Columns";
 import Tables from "@/pages/DataBase/Tables";
 import {TreeDataNode} from "@/components/Studio/StudioTree/Function";
 import Generation from "@/pages/DataBase/Generation";
+import {l} from "@/utils/intl";
 
 const {DirectoryTree} = Tree;
 const {Option} = Select;
 const {TabPane} = Tabs;
 
 const StudioMetaData = (props: any) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {database, toolHeight, dispatch} = props;
   const [databaseId, setDatabaseId] = useState<number>();

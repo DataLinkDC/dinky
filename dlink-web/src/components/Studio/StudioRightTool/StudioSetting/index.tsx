@@ -18,7 +18,7 @@
  */
 
 
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import {StateType} from "@/pages/DataStudio/model";
 import {Badge, Button, Col, Form, Input, InputNumber, Row, Select, Space, Switch, Tag, Tooltip, Typography} from "antd";
 import {
@@ -35,14 +35,13 @@ import {JarStateType} from "@/pages/Jar/model";
 import {Scrollbars} from "react-custom-scrollbars";
 import {RUN_MODE} from "@/components/Studio/conf";
 import {AlertStateType} from "@/pages/AlertInstance/model";
+import {l} from "@/utils/intl";
 
 const {Option} = Select;
 const {Text} = Typography;
 
 const StudioSetting = (props: any) => {
 
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {
     sessionCluster,

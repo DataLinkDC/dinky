@@ -24,7 +24,7 @@ import {Button, Divider, Form, Input, Select, Space} from 'antd';
 import Switch from "antd/es/switch";
 import TextArea from "antd/es/input/TextArea";
 import {DataBaseItem} from "@/pages/DataBase/data";
-import {useIntl} from 'umi';
+import {l} from "@/utils/intl";
 
 
 export type ClickHouseFormProps = {
@@ -43,11 +43,6 @@ const formLayout = {
 };
 
 const DataBaseForm: React.FC<ClickHouseFormProps> = (props) => {
-
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   const [formVals, setFormVals] = useState<Partial<DataBaseItem>>({
     id: props.values.id,

@@ -19,9 +19,10 @@
 
 import React, {useEffect, useState} from 'react';
 import {Form, Input, List, Switch} from 'antd';
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import {SettingsStateType} from "@/pages/SettingCenter/FlinkSettings/model";
 import {saveSettings} from "@/pages/SettingCenter/FlinkSettings/function";
+import {l} from "@/utils/intl";
 
 type FlinkConfigProps = {
   sqlSubmitJarPath: SettingsStateType['sqlSubmitJarPath'];
@@ -36,10 +37,6 @@ type FlinkConfigProps = {
 
 
 const FlinkConfigView: React.FC<FlinkConfigProps> = (props) => {
-
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {
     sqlSubmitJarPath,

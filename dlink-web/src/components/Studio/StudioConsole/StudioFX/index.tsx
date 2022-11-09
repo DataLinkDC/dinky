@@ -27,15 +27,11 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import type {DocumentTableListItem} from '@/pages/Document/data.d';
 
 import {queryData,} from "@/components/Common/crud";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
 const url = '/api/document';
 
 const StudioFX = () => {
-
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const actionRef = useRef<ActionType>();
   const [row, setRow] = useState<DocumentTableListItem>();

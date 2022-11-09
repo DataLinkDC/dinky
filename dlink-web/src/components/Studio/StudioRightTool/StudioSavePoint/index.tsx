@@ -26,15 +26,12 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import {queryData} from "@/components/Common/crud";
 import {SavePointTableListItem} from "@/components/Studio/StudioRightTool/StudioSavePoint/data";
 import {StateType} from "@/pages/DataStudio/model";
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import {Scrollbars} from 'react-custom-scrollbars';
+import {l} from "@/utils/intl";
 
 const url = '/api/savepoints';
 const StudioSavePoint = (props: any) => {
-
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {current, toolHeight, dispatch} = props;
   const [row, setRow] = useState<SavePointTableListItem>();

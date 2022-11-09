@@ -32,16 +32,11 @@ import type {TaskTableListItem} from './data.d';
 import Dropdown from "antd/es/dropdown/dropdown";
 import Menu from "antd/es/menu";
 import {handleAddOrUpdate, handleRemove, handleSubmit, queryData, updateEnabled} from "@/components/Common/crud";
-import {useIntl} from 'umi';
+import {l} from "@/utils/intl";
 
 const url = '/api/task';
 
 const TaskTableList: React.FC<{}> = () => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
-
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [formValues, setFormValues] = useState({});

@@ -24,7 +24,7 @@ import {useEffect, useState} from 'react';
 import {getData} from "@/components/Common/crud";
 import {Scrollbars} from 'react-custom-scrollbars';
 import {RoleTableListItem, UserTableListItem} from "@/pages/AuthenticationCenter/data.d";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
 
 interface TableTransferProps extends TransferProps<RoleTableListItem> {
@@ -104,11 +104,6 @@ export type TableTransferFromProps = {
 };
 
 const TableTransferFrom = (props: TableTransferFromProps) => {
-
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   const {user, onChange: handleChange} = props;
 

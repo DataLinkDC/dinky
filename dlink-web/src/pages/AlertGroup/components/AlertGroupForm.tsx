@@ -21,10 +21,11 @@
 import React, {useState} from 'react';
 import {Button, Form, Input, Modal, Select, Switch, Tag} from 'antd';
 import {AlertGroupTableListItem} from "@/pages/AlertGroup/data";
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import {AlertStateType} from "@/pages/AlertInstance/model";
 import {AlertInstanceTableListItem} from "@/pages/AlertInstance/data";
 import {buildFormData, getFormData} from "@/pages/AlertGroup/function";
+import {l} from "@/utils/intl";
 
 export type AlertGroupFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -41,11 +42,6 @@ const formLayout = {
 };
 
 const AlertGroupForm: React.FC<AlertGroupFormProps> = (props) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
-
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<AlertGroupTableListItem>>({
     id: props.values.id,

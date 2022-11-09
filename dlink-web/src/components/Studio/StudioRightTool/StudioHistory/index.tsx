@@ -27,18 +27,16 @@ import {handleOption, queryData} from "@/components/Common/crud";
 import {Scrollbars} from "react-custom-scrollbars";
 import {TaskHistoryTableListItem} from "@/components/Studio/StudioRightTool/StudioHistory/data";
 import {StateType} from "@/pages/DataStudio/model";
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import moment from "moment";
 import {MonacoDiffEditor} from "react-monaco-editor";
+import {l} from "@/utils/intl";
 
 
 const url = '/api/task/version';
 
 
 const StudioHistory = (props: any) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {current, toolHeight} = props;
   const [row, setRow] = useState<TaskHistoryTableListItem>();

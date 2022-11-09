@@ -21,7 +21,7 @@
 import React, {useState} from 'react';
 import {Button, Divider, Form, Input, Modal, Select, Switch} from 'antd';
 import {JarTableListItem} from "@/pages/Jar/data";
-import {useIntl} from 'umi';
+import {l} from "@/utils/intl";
 
 export type JarFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -37,10 +37,6 @@ const formLayout = {
 };
 
 const JarForm: React.FC<JarFormProps> = (props) => {
-
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   const [form] = Form.useForm();

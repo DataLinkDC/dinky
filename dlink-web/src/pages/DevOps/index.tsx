@@ -26,14 +26,11 @@ import {useEffect, useState} from "react";
 import {StatusCount} from "@/pages/DevOps/data";
 import {JOB_STATUS} from "@/components/Common/JobStatus";
 import {Switch} from "antd";
-import {useIntl} from 'umi';
+import {l} from "@/utils/intl";
 
 const {Statistic} = StatisticCard;
 
 const DevOps = () => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   const [isHistory, setIsHistory] = useState<boolean>(false);

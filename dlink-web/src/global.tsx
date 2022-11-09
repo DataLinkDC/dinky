@@ -19,7 +19,7 @@
 
 
 import {Button, message, notification} from 'antd';
-import {getIntl} from 'umi';
+import {l} from '@/utils/intl';
 import defaultSettings from '../config/defaultSettings';
 
 const { pwa } = defaultSettings;
@@ -29,7 +29,7 @@ const isHttps = document.location.protocol === 'https:';
 if (pwa) {
   // Notify user if offline now
   window.addEventListener('sw.offline', () => {
-    message.warning(getIntl().formatMessage({ id: 'app.pwa.offline' }));
+    message.warning(l('app.pwa.offline' ));
   });
 
   // Pop up a prompt on the page asking the user if they want to use the latest version
@@ -67,12 +67,12 @@ if (pwa) {
           reloadSW();
         }}
       >
-        {getIntl().formatMessage({ id: 'app.pwa.serviceworker.updated.ok' })}
+        {l('app.pwa.serviceworker.updated.ok')}
       </Button>
     );
     notification.open({
-      message: getIntl().formatMessage({ id: 'app.pwa.serviceworker.updated' }),
-      description: getIntl().formatMessage({ id: 'app.pwa.serviceworker.updated.hint' }),
+      message: l('app.pwa.serviceworker.updated'),
+      description: l('app.pwa.serviceworker.updated.hint'),
       btn,
       key,
       onClose: async () => null,

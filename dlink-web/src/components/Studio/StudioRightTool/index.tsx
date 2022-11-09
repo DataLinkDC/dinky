@@ -21,7 +21,7 @@
 import {Tabs} from "antd";
 import {ContainerOutlined, ScheduleOutlined, SettingOutlined} from "@ant-design/icons";
 import {StateType} from "@/pages/DataStudio/model";
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import StudioConfig from "./StudioConfig";
 import StudioSetting from "./StudioSetting";
 import StudioSavePoint from "./StudioSavePoint";
@@ -34,13 +34,11 @@ import StudioGuide from "./StudioGuide";
 import StudioTaskInfo from "./StudioTaskInfo";
 import {DIALECT, isSql} from "@/components/Studio/conf";
 import StudioKubernetesConfig from "@/components/Studio/StudioRightTool/StudioKubernetesConfig";
+import {l} from "@/utils/intl";
 
 const {TabPane} = Tabs;
 
 const StudioRightTool = (props: any) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {current, form, toolHeight} = props;
 

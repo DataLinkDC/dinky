@@ -22,17 +22,13 @@ import {Empty, Tabs} from 'antd';
 import {getLineage} from "@/pages/DevOps/service";
 import {useEffect, useState} from "react";
 import Lineage from "@/components/Lineage";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
 const {TabPane} = Tabs;
 
 const DataMap = (props: any) => {
 
   const {job} = props;
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   const [data, setData] = useState(undefined);
 

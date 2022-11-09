@@ -20,17 +20,13 @@
 
 import {Empty, Tabs} from 'antd';
 import CodeShow from "@/components/Common/CodeShow";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
 const {TabPane} = Tabs;
 
 const Exception = (props: any) => {
 
   const {job} = props;
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   return (<>
     {job.jobHistory?.exceptions && <Tabs defaultActiveKey="RootException" size="small" tabPosition="top" style={{

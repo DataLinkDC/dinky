@@ -49,7 +49,7 @@ import Divider from "antd/es/divider";
 import Button from "antd/es/button/button";
 import Breadcrumb from "antd/es/breadcrumb/Breadcrumb";
 import {StateType} from "@/pages/DataStudio/model";
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import {CODE, postDataArray} from "@/components/Common/crud";
 import {executeSql, getJobPlan, getTaskDefinition} from "@/pages/DataStudio/service";
 import TaskAPI from "@/pages/API/TaskAPI";
@@ -74,12 +74,10 @@ import {Dispatch} from "@@/plugin-dva/connect";
 import StudioTabs from "@/components/Studio/StudioTabs";
 import {isDeletedTask, JOB_LIFE_CYCLE} from "@/components/Common/JobLifeCycle";
 import DolphinPush from "@/components/Studio/StudioMenu/DolphinPush";
+import {l} from "@/utils/intl";
 
 
 const StudioMenu = (props: any) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {isFullScreen, tabs, current, currentPath, form, width, height, refs, dispatch, currentSession} = props;
   const [modalVisible, handleModalVisible] = useState<boolean>(false);

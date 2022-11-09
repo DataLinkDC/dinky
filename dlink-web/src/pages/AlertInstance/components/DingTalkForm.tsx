@@ -23,7 +23,7 @@ import {Button, Divider, Form, Input, Modal, Radio, Switch} from 'antd';
 import {AlertInstanceTableListItem} from "@/pages/AlertInstance/data";
 import {buildJSONData, getJSONData} from "@/pages/AlertInstance/function";
 import {ALERT_TYPE} from "@/pages/AlertInstance/conf";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
 export type AlertInstanceFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -39,12 +39,6 @@ const formLayout = {
 };
 
 const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
-
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
-
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<AlertInstanceTableListItem>>({
     id: props.values?.id,
