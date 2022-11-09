@@ -61,7 +61,7 @@
             <goals>
               <goal>clean</goal>
             </goals>
-            <phase>package</phase>
+            <phase>verify</phase>
           </execution>
         </executions>
         <configuration>
