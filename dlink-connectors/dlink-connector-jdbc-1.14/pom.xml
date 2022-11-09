@@ -41,7 +41,7 @@
 
         <dependency>
             <groupId>com.dlink</groupId>
-            <artifactId>dlink-flink-1.13</artifactId>
+            <artifactId>dlink-flink-1.14</artifactId>
             <scope>${scope.runtime}</scope>
         </dependency>
         <!-- Postgres dependencies -->
