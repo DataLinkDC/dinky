@@ -191,3 +191,6 @@ CREATE TABLE IF NOT EXISTS `dlink_udf_template` (
   `update_time` datetime DEFAULT NULL COMMENT 'update time',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT 'udf template';
+
+
+alter table `dlink_task_statement` modify column `statement` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'statement set';
