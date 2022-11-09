@@ -53,25 +53,6 @@
           <!--<nodeDownloadRoot>https://mirrors.huaweicloud.com/nodejs/</nodeDownloadRoot>-->
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-clean-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>clean</goal>
-            </goals>
-            <phase>verify</phase>
-          </execution>
-        </executions>
-        <configuration>
-          <filesets>
-            <fileset>
-              <directory>${project.basedir}/../dlink-admin/src/main/resources/static</directory>
-            </fileset>
-          </filesets>
-        </configuration>
-      </plugin>
     </plugins>
     <finalName>${project.artifactId}-${project.version}</finalName>
   </build>
