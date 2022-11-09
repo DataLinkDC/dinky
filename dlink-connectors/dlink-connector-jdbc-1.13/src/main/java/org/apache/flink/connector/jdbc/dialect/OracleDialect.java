@@ -24,11 +24,10 @@ import org.apache.flink.connector.jdbc.internal.converter.OracleRowConverter;
 import org.apache.flink.table.types.logical.LogicalTypeRoot;
 import org.apache.flink.table.types.logical.RowType;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -42,12 +41,13 @@ public class OracleDialect extends AbstractDialect {
     private static final long serialVersionUID = 1L;
 
     // Define MAX/MIN precision of TIMESTAMP type according to Oracle docs:
-    private static final int MAX_TIMESTAMP_PRECISION = 6;
+    // https://www.techonthenet.com/oracle/datatypes.php
+    private static final int MAX_TIMESTAMP_PRECISION = 9;
     private static final int MIN_TIMESTAMP_PRECISION = 1;
 
     // Define MAX/MIN precision of DECIMAL type according to Mysql docs:
     // https://dev.mysql.com/doc/refman/8.0/en/fixed-point-types.html
-    private static final int MAX_DECIMAL_PRECISION = 65;
+    private static final int MAX_DECIMAL_PRECISION = 38;
     private static final int MIN_DECIMAL_PRECISION = 1;
 
     // jdbc:oracle:thin:@127.0.0.1:1521:ORCL
@@ -63,12 +63,12 @@ public class OracleDialect extends AbstractDialect {
 
     @Override
     public String getLimitClause(long limit) {
-        return "ROWNUM < " + limit;
+        return "FETCH FIRST " + limit + " ROWS ONLY";
     }
 
     @Override
     public Optional<String> defaultDriverName() {
-        return Optional.of("oracle.jdbc.driver.OracleDriver");
+        return Optional.of("oracle.jdbc.OracleDriver");
     }
 
     @Override
@@ -78,44 +78,58 @@ public class OracleDialect extends AbstractDialect {
 
     @Override
     public Optional<String> getUpsertStatement(
-            String tableName, String[] fieldNames, String[] uniqueKeyFields) {
-        /*get update field*/
-        ArrayList<String> updateFieldNamesList = new ArrayList<String>(fieldNames.length);
-        Collections.addAll(updateFieldNamesList, fieldNames);
-        ArrayList<String> uniqueKeyFieldsList = new ArrayList<String>(uniqueKeyFields.length);
-        Collections.addAll(uniqueKeyFieldsList, uniqueKeyFields);
-        updateFieldNamesList.removeAll(uniqueKeyFieldsList);
+                                               String tableName, String[] fieldNames, String[] uniqueKeyFields) {
 
-        String updateClause =
-                Arrays.stream(updateFieldNamesList.toArray(new String[0]))
-                        .map(f -> "a." + quoteIdentifier(f) + " = :" + quoteIdentifier(f))
+        String sourceFields =
+                Arrays.stream(fieldNames)
+                        .map(f -> ":" + f + " " + quoteIdentifier(f))
                         .collect(Collectors.joining(", "));
+
         String onClause =
                 Arrays.stream(uniqueKeyFields)
-                        .map(f -> "a." + quoteIdentifier(f) + " = :" + quoteIdentifier(f))
-                        .collect(Collectors.joining(" AND "));
-        String sql =
-                "MERGE INTO "
-                        + tableName
-                        + " a USING ( SELECT 1 FROM dual ) b ON ( "
-                        + onClause
-                        + " )"
-                        + " WHEN MATCHED THEN"
-                        + " UPDATE SET "
-                        + updateClause
-                        + " WHEN NOT MATCHED THEN "
-                        + getInsertStatement(fieldNames);
-        return Optional.of(sql);
-    }
+                        .map(f -> "t." + quoteIdentifier(f) + "=s." + quoteIdentifier(f))
+                        .collect(Collectors.joining(" and "));
 
-    private String getInsertStatement(String[] fieldNames) {
-        String columns =
+        final Set<String> uniqueKeyFieldsSet =
+                Arrays.stream(uniqueKeyFields).collect(Collectors.toSet());
+        String updateClause =
+                Arrays.stream(fieldNames)
+                        .filter(f -> !uniqueKeyFieldsSet.contains(f))
+                        .map(f -> "t." + quoteIdentifier(f) + "=s." + quoteIdentifier(f))
+                        .collect(Collectors.joining(", "));
+
+        String insertFields =
                 Arrays.stream(fieldNames)
                         .map(this::quoteIdentifier)
                         .collect(Collectors.joining(", "));
-        String placeholders =
-                Arrays.stream(fieldNames).map(f -> ":" + f).collect(Collectors.joining(", "));
-        return "INSERT " + "(" + columns + ")" + " VALUES (" + placeholders + ")";
+
+        String valuesClause =
+                Arrays.stream(fieldNames)
+                        .map(f -> "s." + quoteIdentifier(f))
+                        .collect(Collectors.joining(", "));
+
+        // if we can't divide schema and table-name is risky to call quoteIdentifier(tableName)
+        // for example [tbo].[sometable] is ok but [tbo.sometable] is not
+        String mergeQuery =
+                " MERGE INTO "
+                        + tableName
+                        + " t "
+                        + " USING (SELECT "
+                        + sourceFields
+                        + " FROM DUAL) s "
+                        + " ON ("
+                        + onClause
+                        + ") "
+                        + " WHEN MATCHED THEN UPDATE SET "
+                        + updateClause
+                        + " WHEN NOT MATCHED THEN INSERT ("
+                        + insertFields
+                        + ")"
+                        + " VALUES ("
+                        + valuesClause
+                        + ")";
+
+        return Optional.of(mergeQuery);
     }
 
     @Override
@@ -147,23 +161,24 @@ public class OracleDialect extends AbstractDialect {
     public List<LogicalTypeRoot> unsupportedTypes() {
 
         // TODO: We can't convert BINARY data type to
-        //  PrimitiveArrayTypeInfo.BYTE_PRIMITIVE_ARRAY_TYPE_INFO in
+        // PrimitiveArrayTypeInfo.BYTE_PRIMITIVE_ARRAY_TYPE_INFO in
         // LegacyTypeInfoDataTypeConverter.
         return Arrays.asList(
-                LogicalTypeRoot.BINARY,
+                LogicalTypeRoot.CHAR,
+                LogicalTypeRoot.VARCHAR,
+                LogicalTypeRoot.BOOLEAN,
+                LogicalTypeRoot.VARBINARY,
+                LogicalTypeRoot.DECIMAL,
+                LogicalTypeRoot.TINYINT,
+                LogicalTypeRoot.SMALLINT,
+                LogicalTypeRoot.INTEGER,
+                LogicalTypeRoot.BIGINT,
+                LogicalTypeRoot.FLOAT,
+                LogicalTypeRoot.DOUBLE,
+                LogicalTypeRoot.DATE,
+                LogicalTypeRoot.TIME_WITHOUT_TIME_ZONE,
+                LogicalTypeRoot.TIMESTAMP_WITHOUT_TIME_ZONE,
                 LogicalTypeRoot.TIMESTAMP_WITH_LOCAL_TIME_ZONE,
-                LogicalTypeRoot.TIMESTAMP_WITH_TIME_ZONE,
-                LogicalTypeRoot.INTERVAL_YEAR_MONTH,
-                LogicalTypeRoot.INTERVAL_DAY_TIME,
-                LogicalTypeRoot.ARRAY,
-                LogicalTypeRoot.MULTISET,
-                LogicalTypeRoot.MAP,
-                LogicalTypeRoot.ROW,
-                LogicalTypeRoot.DISTINCT_TYPE,
-                LogicalTypeRoot.STRUCTURED_TYPE,
-                LogicalTypeRoot.NULL,
-                LogicalTypeRoot.RAW,
-                LogicalTypeRoot.SYMBOL,
-                LogicalTypeRoot.UNRESOLVED);
+                LogicalTypeRoot.ARRAY);
     }
 }

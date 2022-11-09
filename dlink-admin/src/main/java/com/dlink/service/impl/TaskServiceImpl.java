@@ -137,6 +137,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.lang.tree.TreeUtil;
@@ -149,6 +150,7 @@ import cn.hutool.core.lang.tree.TreeUtil;
  */
 @Service
 public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implements TaskService {
+
     @Autowired
     private StatementService statementService;
     @Autowired
@@ -179,6 +181,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private FragmentVariableService fragmentVariableService;
     @Autowired
     private UDFTemplateService udfTemplateService;
+
     @Value("${spring.datasource.driver-class-name}")
     private String driver;
     @Value("${spring.datasource.url}")
@@ -189,12 +192,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private String password;
     @Value("${server.port}")
     private String serverPort;
+
     @Autowired
     private UDFService udfService;
 
     private String buildParas(Integer id) {
         return "--id " + id + " --driver " + driver + " --url " + url + " --username " + username + " --password "
-            + password;
+                + password;
     }
 
     @Override
@@ -203,13 +207,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
         if (Dialect.notFlinkSql(task.getDialect())) {
             return executeCommonSql(SqlDTO.build(task.getStatement(),
-                task.getDatabaseId(), null));
+                    task.getDatabaseId(), null));
         }
         JobConfig config = buildJobConfig(task);
+        // init UDF
+        udfService.init(task.getStatement(), config);
         JobManager jobManager = JobManager.build(config);
-        // initUDF
-        udfService.initUDF(task.getStatement(), GatewayType.get(config.getType()), id, jobManager.getExecutor(),
-            config);
+
         if (!config.isJarTask()) {
             return jobManager.executeSql(task.getStatement());
         } else {
@@ -314,6 +318,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private List<SqlExplainResult> explainCommonSqlTask(Task task) {
         if (Asserts.isNull(task.getDatabaseId())) {
             return new ArrayList<SqlExplainResult>() {
+
                 {
                     add(SqlExplainResult.fail(task.getStatement(), "请指定数据源"));
                 }
@@ -322,6 +327,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             DataBase dataBase = dataBaseService.getById(task.getDatabaseId());
             if (Asserts.isNull(dataBase)) {
                 return new ArrayList<SqlExplainResult>() {
+
                     {
                         add(SqlExplainResult.fail(task.getStatement(), "数据源不存在"));
                     }
@@ -361,7 +367,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public boolean saveOrUpdateTask(Task task) {
-        if (Dialect.isUDF(task.getDialect())) {
+        if (Dialect.isUDF(task.getDialect()) && Convert.toInt(task.getConfig().get(0).get("templateId"), 0) != 0) {
             if (CollUtil.isNotEmpty(task.getConfig()) && Asserts.isNullString(task.getStatement())) {
                 Map<String, String> config = task.getConfig().get(0);
                 UDFTemplate template = udfTemplateService.getById(config.get("templateId"));
@@ -382,6 +388,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 task.setSavePointPath(UDFUtil.getScalaFullClassName(task.getStatement()));
             }
         }
+
         // if modify task else create task
         if (task.getId() != null) {
             Task taskInfo = getById(task.getId());
@@ -432,6 +439,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         String separator = SystemConfiguration.getInstances().getSqlSeparator();
         separator = separator.replace("\\r", "\r").replace("\\n", "\n");
         String name = "dlink_default_catalog";
+
         Task defaultFlinkSQLEnvTask = getTaskByNameAndTenantId(name, tenantId);
         if (null == defaultFlinkSQLEnvTask) {
             defaultFlinkSQLEnvTask = new Task();
@@ -463,11 +471,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         defaultFlinkSQLEnvTask.setTenantId(tenantId);
         defaultFlinkSQLEnvTask.setEnabled(true);
         saveOrUpdate(defaultFlinkSQLEnvTask);
+
         Statement statement = new Statement();
         statement.setId(defaultFlinkSQLEnvTask.getId());
         statement.setTenantId(tenantId);
         statement.setStatement(sb.toString());
         statementService.saveOrUpdate(statement);
+
         return defaultFlinkSQLEnvTask;
     }
 
@@ -506,8 +516,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public List<Task> getAllUDF() {
         List<Task> tasks =
-            list(new QueryWrapper<Task>().in("dialect", Dialect.JAVA, Dialect.SCALA, Dialect.PYTHON)
-                .eq("enabled", 1).isNotNull("save_point_path"));
+                list(new QueryWrapper<Task>().in("dialect", Dialect.JAVA, Dialect.SCALA, Dialect.PYTHON)
+                        .eq("enabled", 1).isNotNull("save_point_path"));
         return tasks.stream().peek(task -> {
             Assert.check(task);
             task.setStatement(statementService.getById(task.getId()).getStatement());
@@ -516,6 +526,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public Result releaseTask(Integer id) {
+
         Task task = getTaskInfoById(id);
         Assert.check(task);
         if (JobLifeCycle.DEVELOP.equalsValue(task.getStep())) {
@@ -544,6 +555,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         List<Integer> versionIds = taskVersions.stream().map(TaskVersion::getVersionId).collect(Collectors.toList());
         Map<Integer, TaskVersion> versionMap =
             taskVersions.stream().collect(Collectors.toMap(TaskVersion::getVersionId, t -> t));
+
         TaskVersion taskVersion = new TaskVersion();
         BeanUtil.copyProperties(task, taskVersion);
         TaskVersionConfigureDTO taskVersionConfigureDTO = new TaskVersionConfigureDTO();
@@ -562,6 +574,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             // 2、md5值与上一个版本一致
             TaskVersion version = versionMap.get(task.getVersionId());
             version.setId(null);
+
             if (versionIds.contains(task.getVersionId()) && !taskVersion.equals(version)) {
                 // || !versionIds.contains(task.getVersionId()) && !taskVersion.equals(version)
                 taskVersion.setVersionId(Collections.max(versionIds) + 1);
@@ -578,21 +591,26 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             return Result.failed("版本指定失败");
         }
         Task taskInfo = getTaskInfoById(dto.getId());
+
         if (JobLifeCycle.RELEASE.equalsValue(taskInfo.getStep())
-            || JobLifeCycle.ONLINE.equalsValue(taskInfo.getStep())
-            || JobLifeCycle.CANCEL.equalsValue(taskInfo.getStep())) {
+                || JobLifeCycle.ONLINE.equalsValue(taskInfo.getStep())
+                || JobLifeCycle.CANCEL.equalsValue(taskInfo.getStep())) {
             // throw new BusException("该作业已" + JobLifeCycle.get(taskInfo.getStep()).getLabel() + "，禁止回滚！");
             return Result.failed("该作业已" + JobLifeCycle.get(taskInfo.getStep()).getLabel() + "，禁止回滚！");
         }
+
         LambdaQueryWrapper<TaskVersion> queryWrapper = new LambdaQueryWrapper<TaskVersion>()
             .eq(TaskVersion::getTaskId, dto.getId()).eq(TaskVersion::getVersionId, dto.getVersionId());
+
         TaskVersion taskVersion = taskVersionService.getOne(queryWrapper);
+
         Task updateTask = new Task();
         BeanUtil.copyProperties(taskVersion, updateTask);
         BeanUtil.copyProperties(taskVersion.getTaskConfigure(), updateTask);
         updateTask.setId(taskVersion.getTaskId());
         updateTask.setStep(JobLifeCycle.DEVELOP.getValue());
         baseMapper.updateById(updateTask);
+
         Statement statement = new Statement();
         statement.setStatement(taskVersion.getStatement());
         statement.setId(taskVersion.getTaskId());
@@ -719,6 +737,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         JobConfig jobConfig = new JobConfig();
         jobConfig.setAddress(cluster.getJobManagerHost());
         jobConfig.setType(cluster.getType());
+
         if (GatewayType.KUBERNETES_APPLICATION.equalsValue(cluster.getType())) {
             Statement statement = statementService.getById(cluster.getTaskId());
             Map<String, Object> gatewayConfig = JSONUtil.toMap(statement.getStatement(), String.class, Object.class);
@@ -728,7 +747,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         }
         if (Asserts.isNotNull(cluster.getClusterConfigurationId())) {
             Map<String, Object> gatewayConfig =
-                clusterConfigurationService.getGatewayConfig(cluster.getClusterConfigurationId());
+                    clusterConfigurationService.getGatewayConfig(cluster.getClusterConfigurationId());
             jobConfig.buildGatewayConfig(gatewayConfig);
             jobConfig.getGatewayConfig().getClusterConfig().setAppId(cluster.getName());
             useGateway = true;
@@ -928,6 +947,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public Integer queryAllSizeByName(String name) {
+
         return baseMapper.queryAllSizeByName(name);
     }
 
@@ -1131,6 +1151,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private String getDuration(long jobStartTimeMills, long jobEndTimeMills) {
         Instant startTime = Instant.ofEpochMilli(jobStartTimeMills);
         Instant endTime = Instant.ofEpochMilli(jobEndTimeMills);
+
         long days = ChronoUnit.DAYS.between(startTime, endTime);
         long hours = ChronoUnit.HOURS.between(startTime, endTime);
         long minutes = ChronoUnit.MINUTES.between(startTime, endTime);
@@ -1163,6 +1184,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         long asLongStartTime = jsonNodes.get("start-time").asLong(); // 获取任务历史信息的start-time
         long asLongEndTime = jsonNodes.get("end-time").asLong(); // 获取任务历史信息的end-time
+
         if (asLongEndTime < asLongStartTime) {
             asLongEndTime = System.currentTimeMillis();
         }
@@ -1175,6 +1197,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         String clusterJson = jobHistory.getClusterJson(); // 获取任务历史信息的clusterJson 主要获取 jobManagerHost
         ObjectNode clusterJsonNodes = JSONUtil.parseObject(clusterJson);
         String jobManagerHost = clusterJsonNodes.get("jobManagerHost").asText();
+
         if (Asserts.isNotNull(task.getAlertGroupId())) {
             AlertGroup alertGroup = alertGroupService.getAlertGroupInfo(task.getAlertGroupId());
             if (Asserts.isNotNull(alertGroup)) {
@@ -1188,10 +1211,12 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 alertMsg.setJobStartTime(startTime);
                 alertMsg.setJobEndTime(endTime);
                 alertMsg.setJobDuration(duration);
+
                 String linkUrl = "http://" + jobManagerHost + "/#/job/" + jobInstance.getJid() + "/overview";
                 String exceptionUrl = "http://" + jobManagerHost + "/#/job/" + jobInstance.getJid() + "/exceptions";
+
                 for (AlertInstance alertInstance : alertGroup.getInstances()) {
-                    if (alertInstance == null || (!alertInstance.getEnabled() && Asserts.isNotNull(alertInstance.getEnabled()))) {
+                    if (alertInstance == null) {
                         continue;
                     }
                     Map<String, String> map = JSONUtil.toMap(alertInstance.getParams());
@@ -1211,20 +1236,21 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     private void sendAlert(AlertInstance alertInstance, JobInstance jobInstance, Task task, AlertMsg alertMsg) {
-            AlertConfig alertConfig = AlertConfig.build(alertInstance.getName(), alertInstance.getType(),
-                JSONUtil.toMap(alertInstance.getParams()));
-            Alert alert = Alert.build(alertConfig);
-            String title = "任务【" + task.getAlias() + "】：" + jobInstance.getStatus();
-            String content = alertMsg.toString();
-            AlertResult alertResult = alert.send(title, content);
-            AlertHistory alertHistory = new AlertHistory();
-            alertHistory.setAlertGroupId(task.getAlertGroupId());
-            alertHistory.setJobInstanceId(jobInstance.getId());
-            alertHistory.setTitle(title);
-            alertHistory.setContent(content);
-            alertHistory.setStatus(alertResult.getSuccessCode());
-            alertHistory.setLog(alertResult.getMessage());
-            alertHistoryService.save(alertHistory);
+        AlertConfig alertConfig = AlertConfig.build(alertInstance.getName(), alertInstance.getType(),
+            JSONUtil.toMap(alertInstance.getParams()));
+        Alert alert = Alert.build(alertConfig);
+        String title = "任务【" + task.getAlias() + "】：" + jobInstance.getStatus();
+        String content = alertMsg.toString();
+        AlertResult alertResult = alert.send(title, content);
+
+        AlertHistory alertHistory = new AlertHistory();
+        alertHistory.setAlertGroupId(task.getAlertGroupId());
+        alertHistory.setJobInstanceId(jobInstance.getId());
+        alertHistory.setTitle(title);
+        alertHistory.setContent(content);
+        alertHistory.setStatus(alertResult.getSuccessCode());
+        alertHistory.setLog(alertResult.getMessage());
+        alertHistoryService.save(alertHistory);
     }
 
     @Override

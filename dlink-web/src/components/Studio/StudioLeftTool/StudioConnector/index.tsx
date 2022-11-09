@@ -20,7 +20,7 @@
 
 import {Button, Divider, Dropdown, Empty, Input, Menu, message, Space, Table, Tooltip} from "antd";
 import {StateType} from "@/pages/DataStudio/model";
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import React, {useState} from "react";
 import {
   CommentOutlined,
@@ -44,11 +44,9 @@ import {ModalForm,} from '@ant-design/pro-form';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import SessionForm from "@/components/Studio/StudioLeftTool/StudioConnector/components/SessionForm";
 import {Scrollbars} from 'react-custom-scrollbars';
+import {l} from "@/utils/intl";
 
 const StudioConnector = (props: any) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {current, toolHeight, dispatch, currentSession, session} = props;
   const [tableData, setTableData] = useState<[]>([]);
@@ -147,7 +145,7 @@ const StudioConnector = (props: any) => {
     if (key == 'delete') {
       removeTable(item.tablename, currentSession.session, dispatch);
     } else {
-      message.warn("敬请期待");
+      message.warn(l('global.stay.tuned'));
     }
   };
 
@@ -159,7 +157,7 @@ const StudioConnector = (props: any) => {
       message.success('连接共享会话【' + item.session + '】成功！');
       setModalVisit(false);
     } else {
-      message.warn("敬请期待");
+      message.warn(l('global.stay.tuned'));
     }
   };
 
@@ -185,7 +183,7 @@ const StudioConnector = (props: any) => {
       render: (_, record) => [
         <a
           onClick={() => {
-            message.warn('敬请期待');
+            message.warn(l('global.stay.tuned'));
           }}
         >
           描述

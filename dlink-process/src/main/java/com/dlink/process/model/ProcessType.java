@@ -30,8 +30,10 @@ import com.dlink.assertion.Asserts;
 public enum ProcessType {
 
     FLINKEXPLAIN("FlinkExplain"),
+    FLINKEXECUTE("FlinkExecute"),
     FLINKSUBMIT("FlinkSubmit"),
     SQLEXPLAIN("SQLExplain"),
+    SQLEXECUTE("SQLExecute"),
     SQKSUBMIT("SQLSubmit"),
     UNKNOWN("Unknown");
 

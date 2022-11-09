@@ -21,37 +21,33 @@
 import React from "react";
 import {CheckSquareOutlined, KeyOutlined} from '@ant-design/icons';
 import DTable from "@/components/Common/DTable";
-import {useIntl} from 'umi';
+import {l} from "@/utils/intl";
 
 const Columns = (props: any) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   const {dbId, table, schema, scroll} = props;
 
   const cols = [{
-    title: l('global.table.no'),
+    title: l('pages.registerCenter.db.no'),
     dataIndex: 'position',
     isString: false,
   },
     {
-      title: l('global.table.columnName'),
+      title: l('pages.registerCenter.db.columnName'),
       dataIndex: 'name',
       copyable: true,
     },
     {
-      title: l('global.table.annotation'),
+      title: l('pages.registerCenter.db.comment'),
       dataIndex: 'comment',
       // ellipsis: true,
     },
     {
-      title: l('global.table.type'),
+      title: l('pages.registerCenter.db.type'),
       dataIndex: 'type',
     },
     {
-      title: l('global.table.primarykey'),
+      title: l('pages.registerCenter.db.primarykey'),
       dataIndex: 'keyFlag',
       render: (_, record) => (
         <>
@@ -60,17 +56,17 @@ const Columns = (props: any) => {
       ),
       filters: [
         {
-          text: '主键',
+          text: l('pages.registerCenter.db.primarykey'),
           value: true,
         },
         {
-          text: '其他',
+          text: l('pages.registerCenter.db.other'),
           value: false,
         },
       ],
       openSearch: 'dict',
     }, {
-      title: l('global.table.automationAdd'),
+      title: l('pages.registerCenter.db.autoIncrement'),
       dataIndex: 'autoIncrement',
       render: (_, record) => (
         <>
@@ -79,17 +75,17 @@ const Columns = (props: any) => {
       ),
       filters: [
         {
-          text: '自增',
+          text: l('pages.registerCenter.db.autoIncrement'),
           value: true,
         },
         {
-          text: '其他',
+          text: l('pages.registerCenter.db.other'),
           value: false,
         },
       ],
       openSearch: 'dict',
     }, {
-      title: l('global.table.isNull'),
+      title: l('pages.registerCenter.db.isNull'),
       dataIndex: 'nullable',
       render: (_, record) => (
         <>
@@ -98,34 +94,34 @@ const Columns = (props: any) => {
       ),
       filters: [
         {
-          text: '非空',
+          text: l('pages.registerCenter.db.isNull'),
           value: true,
         },
         {
-          text: '可为空',
+          text: l('pages.registerCenter.db.null'),
           value: false,
         },
       ],
       openSearch: 'dict',
     }, {
-      title: l('global.table.default'),
+      title: l('pages.registerCenter.db.default'),
       dataIndex: 'defaultValue',
     }, {
-      title: l('global.table.precision'),
+      title: l('pages.registerCenter.db.precision'),
       dataIndex: 'precision',
       isString: false,
     }, {
-      title: l('global.table.decimalDigits'),
+      title: l('pages.registerCenter.db.decimalDigits'),
       dataIndex: 'scale',
       isString: false,
     }, {
-      title: l('global.table.character'),
+      title: l('pages.registerCenter.db.character'),
       dataIndex: 'characterSet',
     }, {
-      title: l('global.table.collationRule'),
+      title: l('pages.registerCenter.db.collationRule'),
       dataIndex: 'collation',
     }, {
-      title: l('global.table.javaType'),
+      title: l('pages.registerCenter.db.javaType'),
       dataIndex: 'javaType',
     },]
   return (

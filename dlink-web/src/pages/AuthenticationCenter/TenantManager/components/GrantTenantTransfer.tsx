@@ -24,7 +24,7 @@ import React, {useEffect, useState} from 'react';
 import {getData} from "@/components/Common/crud";
 import {Scrollbars} from 'react-custom-scrollbars';
 import {TenantTableListItem, UserTableListItem} from "@/pages/AuthenticationCenter/data.d";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
 
 interface TableTransferProps extends TransferProps<UserTableListItem> {
@@ -107,10 +107,6 @@ export type TableTransferFromProps = {
 };
 
 const GrantTenantToUserTableTransferFrom = (props: TableTransferFromProps) => {
-
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   const {tenant, onChange: handleChange} = props;

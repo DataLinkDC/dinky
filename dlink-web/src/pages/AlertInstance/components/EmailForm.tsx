@@ -23,7 +23,7 @@ import {Button, Divider, Form, Input, Modal, Radio, Switch} from 'antd';
 import {AlertInstanceTableListItem} from "@/pages/AlertInstance/data";
 import {buildJSONData, getJSONData} from "@/pages/AlertInstance/function";
 import {ALERT_TYPE} from "@/pages/AlertInstance/conf";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
 export type AlertInstanceFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -39,11 +39,6 @@ const formLayout = {
 };
 
 const EmailForm: React.FC<AlertInstanceFormProps> = (props) => {
-
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<AlertInstanceTableListItem>>({
     id: props.values?.id,
@@ -80,122 +75,123 @@ const EmailForm: React.FC<AlertInstanceFormProps> = (props) => {
   const renderContent = (vals) => {
     return (
       <>
-        <Divider>邮箱配置</Divider>
+        <Divider>{l('pages.registerCenter.alert.instance.email')}</Divider>
         <Form.Item
           name="name"
-          label="名称"
-          rules={[{required: true, message: '请输入邮箱配置名称！'}]}
+          label={l('pages.registerCenter.alert.instance.name')}
+          rules={[{required: true, message: l('pages.registerCenter.alert.instance.namePleaseHolder')}]}
         >
-          <Input placeholder="请输入邮件配置名称"/>
+          <Input placeholder={l('pages.registerCenter.alert.instance.namePleaseHolder')}/>
         </Form.Item>
         <Form.Item
           name="receivers"
-          label="收件人"
-          rules={[{required: true, message: '请输入收件人邮箱！多个英文逗号隔开'}]}
+          label={l('pages.registerCenter.alert.instance.receivers')}
+          rules={[{required: true, message: l('pages.registerCenter.alert.instance.receiversPleaseHolder')}]}
         >
-          <Input.TextArea placeholder="请输入收件人邮箱！多个英文逗号隔开!" allowClear
+          <Input.TextArea placeholder={l('pages.registerCenter.alert.instance.receiversPleaseHolder')} allowClear
                           autoSize={{minRows: 1, maxRows: 5}}/>
         </Form.Item>
         <Form.Item
           name="receiverCcs"
-          label="抄送人"
+          label={l('pages.registerCenter.alert.instance.receiverCcs')}
         >
-          <Input.TextArea placeholder="请输入抄送人邮箱！多个英文逗号隔开!" allowClear
+          <Input.TextArea placeholder={l('pages.registerCenter.alert.instance.receiverCcsPleaseHolder')} allowClear
                           autoSize={{minRows: 1, maxRows: 5}}/>
         </Form.Item>
         <Form.Item
           name="serverHost"
-          label="邮件服务器Host"
-          rules={[{required: true, message: '请输入收件人邮箱！多个英文逗号隔开'}]}
+          label={l('pages.registerCenter.alert.instance.serverHost')}
+          rules={[{required: true, message: l('pages.registerCenter.alert.instance.serverHostPleaseHolder')}]}
         >
-          <Input placeholder="请输入邮件服务器Host"/>
+          <Input placeholder={l('pages.registerCenter.alert.instance.serverHostPleaseHolder')}/>
         </Form.Item>
         <Form.Item
           name="serverPort"
-          label="邮件服务器Port"
-          rules={[{required: true, message: '请输入邮件服务器Port！'}]}
+          label={l('pages.registerCenter.alert.instance.receivers')}
+          rules={[{required: true, message: l('pages.registerCenter.alert.instance.serverPortPleaseHolder')}]}
         >
-          <Input placeholder="请输入邮件服务器Port"/>
+          <Input placeholder={l('pages.registerCenter.alert.instance.serverPortPleaseHolder')}/>
         </Form.Item>
         <Form.Item
           name="sender"
-          label="发送者sender昵称"
-          rules={[{required: true, message: '请输入发送者sender昵称'}]}
+          label={l('pages.registerCenter.alert.instance.sender')}
+          rules={[{required: true, message: l('pages.registerCenter.alert.instance.senderPleaseHolder')}]}
         >
-          <Input placeholder="请输入邮件服务器发送者sender"/>
+          <Input placeholder={l('pages.registerCenter.alert.instance.senderPleaseHolder')}/>
         </Form.Item>
         <Form.Item
           name="enableSmtpAuth"
-          label="是否开启邮箱验证"
+          label={l('pages.registerCenter.alert.instance.enableSmtpAuth')}
         >
-          <Switch checkedChildren="是" unCheckedChildren="否"
+          <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                   defaultChecked={vals.enableSmtpAuth}/>
         </Form.Item>
         {vals.enableSmtpAuth &&
           <>
             <Form.Item
               name="User"
-              label="邮箱用户名"
-              rules={[{required: true, message: '请输入邮箱用户名！'}]}
+              label={l('pages.registerCenter.alert.instance.emailUser')}
+              rules={[{required: true, message: l('pages.registerCenter.alert.instance.emailUserPleaseHolder')}]}
             >
-              <Input allowClear placeholder="请输入邮箱用户名"/>
+              <Input allowClear placeholder={l('pages.registerCenter.alert.instance.emailUserPleaseHolder')}/>
             </Form.Item>
             <Form.Item
               name="Password"
-              label="邮箱密码"
-              rules={[{required: true, message: '请输入邮箱密码/授权码！'}]}
+              label={l('pages.registerCenter.alert.instance.emailPassword')}
+              rules={[{required: true, message: l('pages.registerCenter.alert.instance.emailPasswordPleaseHolder')}]}
             >
-              <Input.Password allowClear placeholder="请输入邮箱密码! 注意:密码为授权码"/>
+              <Input.Password allowClear placeholder= {l('pages.registerCenter.alert.instance.emailPasswordPleaseHolder')}/>
             </Form.Item>
           </>}
         <Form.Item
           name="starttlsEnable"
-          label="是否开启tls证书验证"
+          label={l('pages.registerCenter.alert.instance.starttlsEnable')}
         >
-          <Switch checkedChildren="是" unCheckedChildren="否"
+          <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                   defaultChecked={vals.starttlsEnable}/>
         </Form.Item>
         <Form.Item
           name="sslEnable"
-          label="是否开启SSL验证"
+          label={l('pages.registerCenter.alert.instance.sslEnable')}
         >
-          <Switch checkedChildren="是" unCheckedChildren="否"
+          <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                   defaultChecked={vals.sslEnable}/>
         </Form.Item>
         {(vals.sslEnable) &&
           <Form.Item
             name="smtpSslTrust"
-            label="受信任域"
-            rules={[{required: true, message: '你已经开启tls证书验证! 此项必填！'}]}
+            label={l('pages.registerCenter.alert.instance.smtpSslTrust')}
+            rules={[{required: true, message: l('pages.registerCenter.alert.instance.smtpSslTrustPleaseHolder')}]}
           >
-            <Input placeholder="请输入受信任域"/>
+            <Input placeholder={l('pages.registerCenter.alert.instance.smtpSslTrustPleaseHolder')}/>
           </Form.Item>
         }
         <Form.Item
           name="enabled"
           label={l('global.table.isEnable')}>
-          <Switch checkedChildren="启用" unCheckedChildren="禁用"
+          <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                   defaultChecked={vals.enabled}/>
         </Form.Item>
         <Form.Item
           name="msgtype"
-          label="展示方式"
-          rules={[{required: true, message: '请选择展示方式！'}]}
+          label={l('pages.registerCenter.alert.instance.msgtype')}
+          rules={[{required: true, message: l('pages.registerCenter.alert.instance.msgtypePleaseHolder')}]}
         >
           <Radio.Group>
-            <Radio value='text'>文本</Radio>
-            <Radio value='table'>表格</Radio>
-            <Radio value='attachment'>附件</Radio>
-            <Radio value='table attachment'>表格附件</Radio>
+            <Radio value='text'>{l('pages.registerCenter.alert.instance.text')}</Radio>
+            <Radio value='table'>{l('pages.registerCenter.alert.instance.table')}</Radio>
+            <Radio value='attachment'>{l('pages.registerCenter.alert.instance.attachment')}</Radio>
+            <Radio value='table attachment'>{l('pages.registerCenter.alert.instance.tableAttachment')}</Radio>
           </Radio.Group>
         </Form.Item>
         {(vals.msgtype === "attachment" || vals.msgtype === "table attachment") &&
           <>
             <Form.Item
               name="xls.file.path"
-              label="XLS存放目录"
+              label={l('pages.registerCenter.alert.instance.xls.file.path')}
             >
-              <Input allowClear placeholder="请输入XLS存放目录! 默认为 /tmp/xls"/>
+              <Input.TextArea placeholder={l('pages.registerCenter.alert.instance.xls.file.pathPleaseHolder')} allowClear
+                              autoSize={{minRows: 1, maxRows: 5}}/>
             </Form.Item>
 
           </>}
@@ -208,10 +204,9 @@ const EmailForm: React.FC<AlertInstanceFormProps> = (props) => {
     return (
       <>
         <Button onClick={() => handleModalVisible(false)}>{l('button.cancel')}</Button>
-        <Button type="primary" onClick={() => sendTestForm()}>测试</Button>
-        <Button type="primary" onClick={() => submitForm()}>
-          {l('button.finish')}
-        </Button>
+        <Button type="primary" onClick={() => sendTestForm()}>{l('button.test')}</Button>
+        <Button type="primary" onClick={() => submitForm()}>{l('button.finish')}</Button>
+
       </>
     );
   };
@@ -220,9 +215,9 @@ const EmailForm: React.FC<AlertInstanceFormProps> = (props) => {
   return (
     <Modal
       width={"40%"}
-      bodyStyle={{padding: '32px 40px 48px'}}
+      bodyStyle={{padding: '32px 40px 48px' ,height: '600px', overflowY: 'auto'}}
       destroyOnClose
-      title={formVals.id ? "维护报警实例配置" : "创建报警实例配置"}
+      title={formVals.id ? l('pages.registerCenter.alert.instance.modify') : l('pages.registerCenter.alert.instance.create')}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}

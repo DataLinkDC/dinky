@@ -26,7 +26,7 @@ import {
   VerticalAlignBottomOutlined,
   VerticalAlignTopOutlined
 } from '@ant-design/icons';
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
 const LineageOps = ({
                       isExpand,
@@ -36,25 +36,25 @@ const LineageOps = ({
                     }) => [
   isExpand ?
     {
-      tooltip: useIntl().formatMessage({id: 'pages.datastudio.label.lineage.expand.lineage'}),
+      tooltip: l('pages.datastudio.label.lineage.expand.lineage'),
       action: 'shrink',
       component: <FullscreenExitOutlined/>
     }
     :
     {
-      tooltip: useIntl().formatMessage({id: 'pages.datastudio.label.lineage.collapse.lineage'}),
+      tooltip: l('pages.datastudio.label.lineage.collapse.lineage'),
       action: 'expand',
       component: <FullscreenOutlined/>
     },
   isFold ?
     {
-      tooltip: useIntl().formatMessage({id: 'pages.datastudio.label.lineage.expand.field'}),
+      tooltip: l('pages.datastudio.label.lineage.expand.field'),
       action: 'fold',
       component: <VerticalAlignBottomOutlined/>
     }
     :
     {
-      tooltip: useIntl().formatMessage({id: 'pages.datastudio.label.lineage.collapse.field'}),
+      tooltip: l('pages.datastudio.label.lineage.collapse.field'),
       action: 'unfold',
       component: <VerticalAlignTopOutlined/>
     }

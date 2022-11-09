@@ -21,31 +21,35 @@
 import {getInfoById, handleAddOrUpdate, postAll} from "@/components/Common/crud";
 import {DataBaseItem} from "@/pages/DataBase/data";
 import {message} from "antd";
+import {l} from "@/utils/intl";
 
 export async function createOrModifyDatabase(databse: DataBaseItem) {
   return handleAddOrUpdate('/api/database', databse);
 }
 
 export async function testDatabaseConnect(databse: DataBaseItem) {
-  const hide = message.loading('正在测试连接');
+  const hide = message.loading(l('app.request.test.connection'));
   try {
     const {code,msg} = await postAll('/api/database/testConnect',databse);
     hide();
     code==0?message.success(msg):message.error(msg);
   } catch (error) {
     hide();
-    message.error('请求失败，请重试');
+    message.error(l('app.request.failed'));
   }
 }
 
 export async function checkHeartBeat(id: number) {
-  const hide = message.loading('正在检测心跳');
+  const hide = message.loading(l('app.request.heartbeat.connection'));
   try {
     const {datas} = await getInfoById('/api/database/checkHeartBeatById',id);
     hide();
-    datas.status==1?message.success("数据源心跳正常，检测时间为"+datas.heartbeatTime):message.error("数据源心跳异常，检测时间为"+datas.heartbeatTime);
+    datas.status==1?message.success(
+        l('app.request.heartbeat.connection.success','',{time :datas.heartbeatTime }))
+      :
+      message.error(l('app.request.heartbeat.connection.failed','',{time :datas.heartbeatTime }));
   } catch (error) {
     hide();
-    message.error('请求失败，请重试');
+    message.error(l('app.request.failed'));
   }
 }

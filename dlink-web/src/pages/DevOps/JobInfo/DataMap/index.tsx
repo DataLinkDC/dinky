@@ -22,17 +22,13 @@ import {Empty, Tabs} from 'antd';
 import {getLineage} from "@/pages/DevOps/service";
 import {useEffect, useState} from "react";
 import Lineage from "@/components/Lineage";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
 const {TabPane} = Tabs;
 
 const DataMap = (props: any) => {
 
   const {job} = props;
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   const [data, setData] = useState(undefined);
 
@@ -56,7 +52,7 @@ const DataMap = (props: any) => {
     <Tabs defaultActiveKey="Lineage" size="small" tabPosition="top" style={{
       border: "1px solid #f0f0f0"
     }}>
-      <TabPane tab={<span>血缘分析</span>} key="Lineage">
+      <TabPane tab={<span>{l('pages.devops.jobinfo.lineage')}</span>} key="Lineage">
         {data ? <Lineage datas={data}/> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
       </TabPane>
     </Tabs>

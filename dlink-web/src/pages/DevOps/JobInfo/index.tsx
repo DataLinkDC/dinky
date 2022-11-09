@@ -19,7 +19,7 @@
 
 
 import {useEffect, useState} from 'react';
-import {history, useIntl, useLocation} from 'umi';
+import {history, useLocation} from 'umi';
 import {ClusterOutlined, EllipsisOutlined, FireOutlined, RedoOutlined, RocketOutlined} from '@ant-design/icons';
 import {Button, Dropdown, Empty, Menu, message, Modal, Space, Tag, Typography} from 'antd';
 import {PageContainer} from '@ant-design/pro-layout';
@@ -40,14 +40,12 @@ import DataMap from "@/pages/DevOps/JobInfo/DataMap";
 import CheckPoints from "@/pages/DevOps/JobInfo/CheckPoints";
 import FlinkClusterInfo from "@/pages/DevOps/JobInfo/FlinkClusterInfo";
 import TaskVersionInfo from "@/pages/DevOps/JobInfo/Version";
+import {l} from "@/utils/intl";
 
 
 const {Link} = Typography;
 
 const JobInfo = (props: any) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   const params = useLocation();
@@ -88,8 +86,8 @@ const JobInfo = (props: any) => {
   const handleSavepoint = (key: string) => {
     if (key == 'canceljob') {
       Modal.confirm({
-        title: '停止任务',
-        content: `确定只停止该作业，不进行 SavePoint 操作吗？`,
+        title: l('pages.devops.jobinfo.stopJob'),
+        content: l('pages.devops.jobinfo.stopJobConfirm'),
         okText: l('button.confirm'),
         cancelText: l('button.cancel'),
         onOk: async () => {
@@ -97,10 +95,10 @@ const JobInfo = (props: any) => {
           const res = cancelJob(job?.cluster?.id, job?.instance?.jid);
           res.then((result) => {
             if (result.code == CODE.SUCCESS) {
-              message.success(key + "成功");
+              message.success(l('pages.devops.jobinfo.canceljob.success'));
               handleGetJobInfoDetail();
             } else {
-              message.error(key + "失败");
+              message.error(l('pages.devops.jobinfo.canceljob.failed'));
             }
           });
         }
@@ -108,8 +106,8 @@ const JobInfo = (props: any) => {
       return;
     }
     Modal.confirm({
-      title: key + '任务',
-      content: `确定${key}该作业吗？`,
+      title: l('pages.devops.jobinfo.job.key','',{key:key}),
+      content: l('pages.devops.jobinfo.job.keyConfirm','',{key:key}),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -117,10 +115,10 @@ const JobInfo = (props: any) => {
         const res = offLineTask(job?.instance?.taskId, key);
         res.then((result) => {
           if (result.code == CODE.SUCCESS) {
-            message.success(key + "成功");
+            message.success(l('pages.devops.jobinfo.job.key.success','',{key: key}));
             handleGetJobInfoDetail();
           } else {
-            message.error(key + "失败");
+            message.error(l('pages.devops.jobinfo.job.key.failed','',{key: key}));
           }
         });
       }
@@ -129,8 +127,8 @@ const JobInfo = (props: any) => {
 
   const handleRestart = () => {
     Modal.confirm({
-      title: '重新上线任务',
-      content: `确定重新上线该作业吗？`,
+      title: l('pages.devops.jobinfo.reonlineJob'),
+      content: l('pages.devops.jobinfo.reonlineJobConfirm'),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -138,9 +136,9 @@ const JobInfo = (props: any) => {
         const res = restartJob(job?.instance?.taskId, job?.instance?.step == JOB_LIFE_CYCLE.ONLINE);
         res.then((result) => {
           if (result.code == CODE.SUCCESS) {
-            message.success("重新上线成功");
+            message.success(l('pages.devops.jobinfo.reonline.success'));
           } else {
-            message.error("重新上线失败");
+            message.error(l('pages.devops.jobinfo.reonline.failed'));
           }
         });
       }
@@ -149,7 +147,7 @@ const JobInfo = (props: any) => {
 
   const getButtons = () => {
     let buttons = [
-      <Button key="back" type="dashed" onClick={handleBack}>返回</Button>,
+      <Button key="back" type="dashed" onClick={handleBack}>{l('button.back')}</Button>,
     ];
     buttons.push(<Button key="refresh" icon={<RedoOutlined/>} onClick={handleRefreshJobInfoDetail}/>);
     buttons.push(<Button key="flinkwebui">
@@ -157,20 +155,20 @@ const JobInfo = (props: any) => {
         FlinkWebUI
       </Link></Button>);
     buttons.push(<Button key="autorestart" type="primary"
-                         onClick={handleRestart}>重新{job?.instance?.step == 5 ? '上线' : '启动'}</Button>);
+                         onClick={handleRestart}>{job?.instance?.step == 5 ? l('pages.devops.jobinfo.reonline') : l('pages.devops.jobinfo.restart')}</Button>);
     if (!isStatusDone(job?.instance?.status as string)) {
       buttons.push(<Button key="autostop" type="primary" danger onClick={() => {
         handleSavepoint('cancel')
-      }}>{job?.instance?.step == 5 ? '下线' : '智能停止'}</Button>);
+      }}>{job?.instance?.step == 5 ? l('pages.devops.jobinfo.offline') : l('pages.devops.jobinfo.smart_stop')}</Button>);
       buttons.push(<Dropdown
         key="dropdown"
         trigger={['click']}
         overlay={
           <Menu onClick={({key}) => handleSavepoint(key)}>
-            <Menu.Item key="trigger">SavePoint触发</Menu.Item>
-            <Menu.Item key="stop">SavePoint暂停</Menu.Item>
-            <Menu.Item key="cancel">SavePoint停止</Menu.Item>
-            <Menu.Item key="canceljob">普通停止</Menu.Item>
+            <Menu.Item key="trigger">{l('pages.devops.jobinfo.savepoint.trigger')}</Menu.Item>
+            <Menu.Item key="stop">{l('pages.devops.jobinfo.savepoint.stop')}</Menu.Item>
+            <Menu.Item key="cancel">{l('pages.devops.jobinfo.savepoint.cancel')}</Menu.Item>
+            <Menu.Item key="canceljob">{l('pages.devops.jobinfo.savepoint.canceljob')}</Menu.Item>
           </Menu>
         }
       >
@@ -207,69 +205,69 @@ const JobInfo = (props: any) => {
               <ClusterOutlined/> {job?.cluster?.alias}
             </Tag>
           ) : (<Tag color="green" key='local'>
-            <ClusterOutlined/> 本地环境
+            <ClusterOutlined/> {l('pages.devops.jobinfo.localenv')}
           </Tag>)}
         </Space>
       </>}
-      tabBarExtraContent={`上次更新时间：${moment(time).format('HH:mm:ss')}`}
+      tabBarExtraContent={l('pages.devops.LastUpdateTime') +`：${moment(time).format('HH:mm:ss')}`}
       tabList={[
         {
-          tab: '作业总览',
+          tab: l('pages.devops.jobinfo.overview'),
           key: 'base',
           closable: false,
         },
         {
-          tab: '集群信息',
+          tab: l('pages.devops.jobinfo.cluster'),
           key: 'cluster',
           closable: false,
         },
         {
-          tab: '作业快照',
+          tab: l('pages.devops.jobinfo.snapshot'),
           key: 'snapshot',
           closable: false,
         },
         {
-          tab: '异常信息',
+          tab: l('pages.devops.jobinfo.exception'),
           key: 'exception',
           closable: false,
         },
         {
-          tab: '作业日志',
+          tab: l('pages.devops.jobinfo.log'),
           key: 'log',
           closable: false,
         },
         {
-          tab: '自动调优',
+          tab: l('pages.devops.jobinfo.optimize'),
           key: 'optimize',
           closable: false,
         },
         {
-          tab: '配置信息',
+          tab: l('pages.devops.jobinfo.config'),
           key: 'config',
           closable: false,
         },
         {
-          tab: 'FlinkSQL',
+          tab: l('pages.devops.jobinfo.flinksql'),
           key: 'flinksql',
           closable: false,
         },
         {
-          tab: '数据地图',
+          tab: l('pages.devops.jobinfo.datamap'),
           key: 'datamap',
           closable: false,
         },
         {
-          tab: '即席查询',
+          tab: l('pages.devops.jobinfo.olap'),
           key: 'olap',
           closable: false,
         },
         {
-          tab: '历史版本',
+          tab: l('pages.devops.jobinfo.version'),
           key: 'version',
           closable: false,
         },
         {
-          tab: '告警记录',
+          tab: l('pages.devops.jobinfo.alert'),
           key: 'alert',
           closable: false,
         },
@@ -285,11 +283,11 @@ const JobInfo = (props: any) => {
         {tabKey === 'cluster' ? <FlinkClusterInfo job={job}/> : undefined}
         {tabKey === 'snapshot' ? <CheckPoints job={job}/> : undefined}
         {tabKey === 'exception' ? <Exception job={job}/> : undefined}
-        {tabKey === 'log' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={"敬请期待"}/> : undefined}
-        {tabKey === 'optimize' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={"敬请期待"}/> : undefined}
+        {tabKey === 'log' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={l('global.stay.tuned')}/> : undefined}
+        {tabKey === 'optimize' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={l('global.stay.tuned')}/> : undefined}
         {tabKey === 'flinksql' ? <FlinkSQL job={job}/> : undefined}
         {tabKey === 'datamap' ? <DataMap job={job}/> : undefined}
-        {tabKey === 'olap' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={"敬请期待"}/> : undefined}
+        {tabKey === 'olap' ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={l('global.stay.tuned')}/> : undefined}
         {tabKey === 'version' ? <TaskVersionInfo job={job}/> : undefined}
         {tabKey === 'alert' ? <Alert job={job}/> : undefined}
       </ProCard>

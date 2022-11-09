@@ -21,7 +21,7 @@
 import React, {useState} from 'react';
 import {Button, Form, Input, Modal} from 'antd';
 import {PasswordItem} from "@/pages/AuthenticationCenter/data.d";
-import {useIntl} from 'umi';
+import {l} from "@/utils/intl";
 
 export type PasswordFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -36,11 +36,6 @@ const formLayout = {
 };
 
 const PasswordForm: React.FC<PasswordFormProps> = (props) => {
-
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<PasswordItem>>({

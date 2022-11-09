@@ -18,7 +18,7 @@
  */
 
 
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import {StateType} from "@/pages/DataStudio/model";
 import {Button, Col, Form, Row, Switch, Tooltip} from "antd";
 import {InfoCircleOutlined, MinusSquareOutlined} from "@ant-design/icons";
@@ -26,11 +26,9 @@ import styles from "./index.less";
 import {useEffect} from "react";
 import {JarStateType} from "@/pages/Jar/model";
 import {Scrollbars} from "react-custom-scrollbars";
+import {l} from "@/utils/intl";
 
 const StudioEnvSetting = (props: any) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {current, form, dispatch, tabs, toolHeight} = props;
 
@@ -85,7 +83,7 @@ const StudioEnvSetting = (props: any) => {
                   icon: <InfoCircleOutlined/>
                 }}
               >
-                <Switch checkedChildren="启用" unCheckedChildren="禁用"
+                <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                 />
               </Form.Item>
             </Col>

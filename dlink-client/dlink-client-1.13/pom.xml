@@ -29,10 +29,10 @@
     <artifactId>dlink-client-1.13</artifactId>
 
     <properties>
-        <java.version>1.8</java.version>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>${target.java.version}</maven.compiler.source>
+        <maven.compiler.target>${target.java.version}</maven.compiler.target>
     </properties>
 
     <dependencies>
@@ -57,8 +57,21 @@
         <dependency>
             <groupId>com.starrocks</groupId>
             <artifactId>flink-connector-starrocks</artifactId>
-            <version>1.2.3_flink-1.13_2.11</version>
+            <version>1.2.3_flink-1.13_${scala.binary.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <!-- 指定打包的jar包输出路径 -->
+                    <outputDirectory>${project.parent.parent.basedir}/build/extends</outputDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -15,16 +15,14 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>dlink</artifactId>
         <groupId>com.dlink</groupId>
+        <artifactId>dlink</artifactId>
         <version>0.6.8-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
     <artifactId>dlink-function</artifactId>
 
@@ -46,14 +44,31 @@
         </dependency>
         <dependency>
             <groupId>com.dlink</groupId>
-            <artifactId>dlink-core</artifactId>
+            <artifactId>dlink-gateway</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.dlink</groupId>
-            <artifactId>dlink-executor</artifactId>
+            <artifactId>dlink-process</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-compiler</artifactId>
+            <version>2.12.7</version>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 
 </project>

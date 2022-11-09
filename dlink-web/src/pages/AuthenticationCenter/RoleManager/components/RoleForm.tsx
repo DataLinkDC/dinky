@@ -22,9 +22,10 @@ import React, {useState} from 'react';
 import {Button, Form, Input, Modal, Select, Tag} from 'antd';
 import {NameSpaceTableListItem, RoleTableListItem} from "@/pages/AuthenticationCenter/data.d";
 import {getStorageTenantId} from "@/components/Common/crud";
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import {NameSpaceStateType} from "@/pages/AuthenticationCenter/RoleManager/model";
 import {buildFormData, getFormData} from "@/pages/AuthenticationCenter/function";
+import {l} from "@/utils/intl";
 
 
 export type TenantFormProps = {
@@ -44,10 +45,6 @@ const Option = Select.Option;
 
 
 const RoleForm: React.FC<TenantFormProps> = (props) => {
-
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   const [form] = Form.useForm();

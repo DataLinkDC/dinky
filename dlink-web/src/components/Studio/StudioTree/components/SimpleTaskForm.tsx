@@ -23,7 +23,7 @@ import {Button, Cascader, Form, Input, Modal, Select} from 'antd';
 
 import type {TaskTableListItem} from '../data.d';
 import {DIALECT} from "@/components/Studio/conf";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 import {postAll} from "@/components/Common/crud";
 
 const {Option} = Select;
@@ -48,9 +48,6 @@ const isUDF = (dialect: string) => {
 
 const SimpleTaskForm: React.FC<UpdateFormProps> = (props) => {
 
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   const [formVals, setFormVals] = useState<Partial<TaskTableListItem>>({
     id: props.values.id,
@@ -61,6 +58,7 @@ const SimpleTaskForm: React.FC<UpdateFormProps> = (props) => {
   });
 
   const [dialect, setDialect] = useState<string>('')
+  const [isShowUDFClassName, setShowUDFClassName] = useState<boolean>(true)
   const [templateTree, setTemplateTree] = useState<Object[]>([])
   const [templateData, setTemplateData] = useState<Object[]>([])
   const [form] = Form.useForm();
@@ -96,12 +94,23 @@ const SimpleTaskForm: React.FC<UpdateFormProps> = (props) => {
     setFormVals(data);
     handleUpdate(data);
   };
+  const handlerChangeUdf = (value: any[]) => {
+    if (value[1] == 0) {
+      setShowUDFClassName(false)
+    }else{
+      setShowUDFClassName(true)
+    }
+  }
+
   const handlerSetDialect = (value: string) => {
     setDialect(value)
     if (isUDF(value)) {
       templateTree.map(x => {
         if (x.label == value) {
-          setTemplateData(x.children)
+          const data = x.children
+          data.splice(data.length, 0, {label: "Empty", value: "Empty", children: [{label: "Empty", value: 0}]})
+          setTemplateData(data)
+          setShowUDFClassName(true)
           form.setFieldsValue({"config.templateId": [x.children[0].label, x.children[0].children[0].label, x.children[0].children[0].value]})
         }
       })
@@ -156,12 +165,13 @@ const SimpleTaskForm: React.FC<UpdateFormProps> = (props) => {
             {<Cascader
               displayRender={(label: string[]) => label.slice(0, 2).join(" / ")}
               options={templateData}
+              onChange={handlerChangeUdf}
             />}
           </Form.Item>
           <Form.Item
+            hidden={!isShowUDFClassName}
             name="config.className"
-            label="类名或方法名"
-            rules={[{required: true, message: '请输入类名或方法名！'}]}>
+            label="类名或方法名">
             <Input placeholder="请输入"/>
           </Form.Item>
         </>) : undefined}

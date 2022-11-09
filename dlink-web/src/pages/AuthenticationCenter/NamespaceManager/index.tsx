@@ -27,7 +27,7 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import {handleAddOrUpdate, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
 import {NameSpaceTableListItem} from "@/pages/AuthenticationCenter/data.d";
 import NameSpaceForm from "@/pages/AuthenticationCenter/NamespaceManager/components/NameSpaceForm";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
 const url = '/api/namespace';
 
@@ -38,11 +38,6 @@ const NameSpaceFormList: React.FC<{}> = (props: any) => {
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<NameSpaceTableListItem[]>([]);
-
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   const editAndDelete = (key: string | number, currentItem: NameSpaceTableListItem) => {
     if (key === 'edit') {

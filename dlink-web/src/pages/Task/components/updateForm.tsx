@@ -23,7 +23,7 @@ import {Button, Form, Input, Modal} from 'antd';
 
 import {TaskTableListItem} from "@/pages/Task/data";
 import Switch from "antd/es/switch";
-import {useIntl} from 'umi';
+import {l} from "@/utils/intl";
 
 export type UpdateFormProps = {
   onCancel: (flag?: boolean, formVals?: Partial<TaskTableListItem>) => void;
@@ -39,9 +39,6 @@ const formLayout = {
 };
 
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   const [formVals, setFormVals] = useState<Partial<TaskTableListItem>>({
@@ -96,7 +93,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         </FormItem>
         <FormItem
           name="note"
-          label="注释"
+          label={l('global.table.note')}
         >
           <Input placeholder="请输入"/>
         </FormItem>
@@ -126,7 +123,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         </FormItem>
         <FormItem
           name="note"
-          label="注释"
+          label={l('global.table.note')}
         >
           <Input placeholder="请输入"/>
         </FormItem>
@@ -134,7 +131,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           name="enabled"
           label={l('global.table.isEnable')}
           rules={[{required: true, message: '请输入是否启用！'}]}>
-          <Switch checkedChildren="启用" unCheckedChildren="禁用"
+          <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                   defaultChecked={formVals.enabled}/>
         </FormItem>
       </>

@@ -18,18 +18,15 @@
  */
 
 
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import {StateType} from "@/pages/DataStudio/model";
 import {Button, Col, Form, InputNumber, Row, Switch, Tooltip,} from "antd";
 import {InfoCircleOutlined, MinusSquareOutlined} from "@ant-design/icons";
 import styles from "./index.less";
 import {Scrollbars} from 'react-custom-scrollbars';
+import {l} from "@/utils/intl";
 
 const StudioConfig = (props: any) => {
-
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   const {current, form, dispatch, tabs, toolHeight} = props;
@@ -81,7 +78,7 @@ const StudioConfig = (props: any) => {
                 label="预览结果" className={styles.form_item} name="useResult" valuePropName="checked"
                 tooltip={{title: '开启预览结果，将同步运行并返回数据结果', icon: <InfoCircleOutlined/>}}
               >
-                <Switch checkedChildren="启用" unCheckedChildren="禁用"
+                <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                 />
               </Form.Item>
             </Col>
@@ -93,7 +90,7 @@ const StudioConfig = (props: any) => {
                   icon: <InfoCircleOutlined/>
                 }}
               >
-                <Switch checkedChildren="启用" unCheckedChildren="禁用"
+                <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                 />
               </Form.Item>
             </Col>
@@ -112,7 +109,7 @@ const StudioConfig = (props: any) => {
                 label="自动停止" className={styles.form_item} name="useAutoCancel" valuePropName="checked"
                 tooltip={{title: '开启自动停止，将在捕获最大行数记录后自动停止任务', icon: <InfoCircleOutlined/>}}
               >
-                <Switch checkedChildren="启用" unCheckedChildren="禁用"
+                <Switch checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                 />
               </Form.Item>
             </Col>

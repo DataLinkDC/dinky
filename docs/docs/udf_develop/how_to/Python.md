@@ -3,6 +3,14 @@ sidebar_position: 2
 id: python_udf
 title: Python UDF
 ---
+## 环境准备
+1. 需要把 `${FLINK_HOME}/opt/flink-python_${scala-version}-${flink-version}.jar` 放入到
+   `${FLINK_HOME}/lib/` 和 `${Dinky_HOME}/plugins/` 下面。如下：
+![flink_python_intro.png](http://www.aiwenmo.com/dinky/docs/zh-CN/udf_develop/how_to/flink_python_intro.png)
+
+2. 在 Dinky 安装目录 `conf/application.yml` 下，配置 python 执行环境。例如 ：/usr/bin/python3.6
+![python_udf_config.png](http://www.aiwenmo.com/dinky/docs/zh-CN/udf_develop/how_to/python_udf_config.png)
+----
 ## 作业创建
 1. 选择 Python 作业，并输入对应参数
 ```text

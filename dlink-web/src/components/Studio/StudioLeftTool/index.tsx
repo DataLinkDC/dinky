@@ -30,7 +30,7 @@ import {
   MessageOutlined
 } from "@ant-design/icons";
 import {StateType} from "@/pages/DataStudio/model";
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import StudioTree from "../StudioTree";
 import StudioConnector from "./StudioConnector";
 import StudioDataBase from "./StudioDataBase";
@@ -38,14 +38,11 @@ import StudioCluster from "./StudioCluster";
 import StudioMetaData from "./StudioMetaData";
 import StudioMetaStore from "./StudioMetaStore";
 import StudioFragment from "@/components/Studio/StudioLeftTool/StudioFragment";
+import {l} from "@/utils/intl";
 
 const {TabPane} = Tabs;
 
 const StudioLeftTool = (props: any) => {
-
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {toolHeight} = props;
 

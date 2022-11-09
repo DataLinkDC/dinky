@@ -20,7 +20,7 @@
 
 import {Button, Drawer, Empty, Modal, Table, Tooltip} from "antd";
 import {StateType} from "@/pages/DataStudio/model";
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import React, {useState} from "react";
 import {PlusOutlined, ReloadOutlined} from '@ant-design/icons';
 import {showDataBase} from "../../StudioEvent/DDL";
@@ -28,11 +28,9 @@ import DBForm from "@/pages/DataBase/components/DBForm";
 import {Scrollbars} from 'react-custom-scrollbars';
 import ProDescriptions from "@ant-design/pro-descriptions";
 import {handleRemove} from "@/components/Common/crud";
+import {l} from "@/utils/intl";
 
 const StudioDataBase = (props: any) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {database, toolHeight, dispatch} = props;
   const [chooseDBModalVisible, handleDBFormModalVisible] = useState<boolean>(false);
@@ -128,7 +126,7 @@ const StudioDataBase = (props: any) => {
         },
       },
       {
-        title: '注释',
+        title: l('global.table.note'),
         sorter: true,
         valueType: 'textarea',
         dataIndex: 'note',

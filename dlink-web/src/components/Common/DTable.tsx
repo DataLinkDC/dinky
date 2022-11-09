@@ -23,12 +23,9 @@ import {SearchOutlined} from '@ant-design/icons';
 import ProTable from '@ant-design/pro-table';
 import {getData} from "@/components/Common/crud";
 import {Button, Input, Space} from "antd";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
 const DTable = (props: any) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {dataSource, columns, scroll} = props;
 
@@ -128,10 +125,10 @@ export const getColumnSearchProps = (dIndex) => ({
           size="small"
           style={{width: 90}}
         >
-          搜索
+          {l('button.search')}
         </Button>
         <Button onClick={() => handleReset(clearFilters)} size="small" style={{width: 90}}>
-          重置
+          {l('button.reset')}
         </Button>
       </Space>
     </div>

@@ -17,9 +17,38 @@
  *
  */
 
+package com.dlink.executor;
 
-import {FragmentVariableTableListItem} from "@/pages/FragmentVariable/data";
+import org.apache.flink.table.types.DataType;
 
-export const getFragmentVariableTableListItem = (values: FragmentVariableTableListItem) => {
-  return values;
+/**
+ * @author wenmo
+ * @since 2022/11/04
+ **/
+
+public class TableSchemaField {
+    private String name;
+    private DataType type;
+
+    public TableSchemaField(String name, DataType type) {
+        this.name = name;
+        this.type = type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public DataType getType() {
+        return type;
+    }
+
+    public void setType(DataType type) {
+        this.type = type;
+    }
 }
+

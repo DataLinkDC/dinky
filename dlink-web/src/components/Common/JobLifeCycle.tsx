@@ -20,7 +20,7 @@
 
 import {Tag} from 'antd';
 import {CameraOutlined, CarryOutOutlined, EditOutlined,} from "@ant-design/icons";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
 export type JobLifeCycleFormProps = {
   step: number | undefined;
@@ -44,9 +44,6 @@ export const isDeletedTask = (taskStep: number) => {
 };
 
 const JobLifeCycle = (props: JobLifeCycleFormProps) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {step} = props;
 

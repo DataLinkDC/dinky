@@ -22,15 +22,10 @@ import React from 'react';
 import {HeartTwoTone, SmileTwoTone} from '@ant-design/icons';
 import {Alert, Card, Typography} from 'antd';
 import {PageHeaderWrapper} from '@ant-design/pro-layout';
-import {useIntl} from 'umi';
+import {l} from "@/utils/intl";
 import {VERSION} from "@/components/Common/Version";
 
 export default (): React.ReactNode => {
-
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   return (
     <PageHeaderWrapper

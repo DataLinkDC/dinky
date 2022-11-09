@@ -30,6 +30,8 @@ import com.dlink.utils.JSONUtil;
 
 import java.util.Objects;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -52,6 +54,8 @@ public class JobHistoryServiceImpl extends SuperServiceImpl<JobHistoryMapper, Jo
     public JobHistory getJobHistory(Integer id) {
         return getJobHistoryInfo(getById(id));
     }
+
+    private static final Logger log = LoggerFactory.getLogger(JobHistoryServiceImpl.class);
 
     @Override
     public JobHistory getJobHistoryInfo(JobHistory jobHistory) {
@@ -122,6 +126,8 @@ public class JobHistoryServiceImpl extends SuperServiceImpl<JobHistoryMapper, Jo
                  */
             }
         } catch (Exception e) {
+            log.error("Get flink job info failed !! historyId is {}, jobManagerHost is :{}, jobId is :{}",
+                    id, jobManagerHost, jobId);
             e.printStackTrace();
         }
         return jobHistory;

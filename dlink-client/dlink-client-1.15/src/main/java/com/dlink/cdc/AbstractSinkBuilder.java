@@ -77,7 +77,7 @@ import org.slf4j.LoggerFactory;
  * @author wenmo
  * @since 2022/4/12 21:28
  **/
-public abstract class AbstractSinkBuilder {
+public abstract class AbstractSinkBuilder implements SinkBuilder {
 
     protected static final Logger logger = LoggerFactory.getLogger(AbstractSinkBuilder.class);
 
@@ -307,7 +307,8 @@ public abstract class AbstractSinkBuilder {
         }
     }
 
-    protected String getSinkSchemaName(Table table) {
+    @Override
+    public String getSinkSchemaName(Table table) {
         String schemaName = table.getSchema();
         if (config.getSink().containsKey("sink.db")) {
             schemaName = config.getSink().get("sink.db");
@@ -315,7 +316,8 @@ public abstract class AbstractSinkBuilder {
         return schemaName;
     }
 
-    protected String getSinkTableName(Table table) {
+    @Override
+    public String getSinkTableName(Table table) {
         String tableName = table.getName();
         if (config.getSink().containsKey("table.prefix.schema")) {
             if (Boolean.valueOf(config.getSink().get("table.prefix.schema"))) {

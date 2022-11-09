@@ -54,7 +54,7 @@ export default {
 
   'menu.settings': '配置中心',
   'menu.settings.flinkConfig': 'Flink 配置',
-  'menu.settings.udfTemplate': 'udf模板配置',
+  'menu.settings.udfTemplate': 'UDF 模板配置',
   'menu.settings.systemInfo': '系统信息',
   'menu.settings.processList': '进程列表',
 

@@ -20,7 +20,7 @@
 
 import {Button, Col, Empty, message, Modal, Row, Select, Tabs, Tooltip, Tree} from "antd";
 import {MetaStoreTableType, StateType} from "@/pages/DataStudio/model";
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import React, {useState} from "react";
 import {
   AppstoreOutlined,
@@ -41,15 +41,13 @@ import {getMSSchemaInfo} from "@/pages/DataStudio/service";
 import {Dispatch} from "@@/plugin-dva/connect";
 import {DIALECT} from "@/components/Studio/conf";
 import FlinkColumns from "@/pages/Flink/FlinkColumns";
+import {l} from "@/utils/intl";
 
 const {DirectoryTree} = Tree;
 const {Option, OptGroup} = Select;
 const {TabPane} = Tabs;
 
 const StudioMetaStore = (props: any) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {current, toolHeight} = props;
   const [catalog, setCatalog] = useState<string>();

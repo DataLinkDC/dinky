@@ -19,13 +19,14 @@
 
 
 import {StateType} from "@/pages/DataStudio/model";
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import {Modal, Space, Tag, Typography,} from 'antd';
 import {ConsoleSqlOutlined} from "@ant-design/icons";
 import ProList from '@ant-design/pro-list';
 import {explainSql} from "@/pages/DataStudio/service";
 import {useEffect, useState} from "react";
 import CodeShow from "@/components/Common/CodeShow";
+import {l} from "@/utils/intl";
 
 const {Paragraph, Text} = Typography;
 
@@ -47,9 +48,6 @@ export type StudioExplainProps = {
   data: Partial<ExplainItem>;
 }
 const StudioExplain = (props: any) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const [explainData, setExplainData] = useState([]);
   const [result, setResult] = useState(<Text>正在校验中...</Text>);
