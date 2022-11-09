@@ -23,7 +23,6 @@ import CodeShow from "@/components/Common/CodeShow";
 import {getJobManagerInfo} from "@/pages/DevOps/service";
 import {useEffect, useState} from "react";
 import {JobManagerConfiguration} from "@/pages/DevOps/data";
-import {l} from "@/utils/intl";
 
 const {TabPane} = Tabs;
 
