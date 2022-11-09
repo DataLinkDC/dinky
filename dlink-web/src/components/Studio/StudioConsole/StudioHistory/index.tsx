@@ -19,7 +19,7 @@
 
 
 import {StateType} from "@/pages/DataStudio/model";
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import {Badge, Divider, Modal, Space, Tag, Typography} from 'antd';
 import {ClusterOutlined, FireOutlined, MessageOutlined, RocketOutlined} from "@ant-design/icons";
 import ProList from '@ant-design/pro-list';
@@ -30,9 +30,9 @@ import StudioPreview from "../StudioPreview";
 import {getJobData} from "@/pages/DataStudio/service";
 import {HistoryItem} from "@/components/Studio/StudioConsole/StudioHistory/data";
 import CodeShow from "@/components/Common/CodeShow";
+import {l} from "@/utils/intl";
 
-
-const {Title, Paragraph, Text, Link} = Typography;
+const { Paragraph, Text, Link} = Typography;
 
 type HistoryConfig = {
   useSession: boolean;
@@ -58,9 +58,6 @@ type HistoryConfig = {
 
 const url = '/api/history';
 const StudioHistory = (props: any) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {current, refs, dispatch} = props;
   const [modalVisit, setModalVisit] = useState(false);

@@ -28,15 +28,10 @@ import {ClusterConfigurationTableListItem} from "@/pages/ClusterConfiguration/da
 import {handleAddOrUpdate, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
 import {showClusterConfiguration} from "@/components/Studio/StudioEvent/DDL";
 import ClusterConfigurationForm from "@/pages/ClusterConfiguration/components/ClusterConfigurationForm";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
 const url = '/api/clusterConfiguration';
 const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
-
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   const {dispatch} = props;
   const [row, setRow] = useState<ClusterConfigurationTableListItem>();

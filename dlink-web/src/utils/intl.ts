@@ -17,30 +17,8 @@
  *
  */
 
+import {getIntl, getLocale} from "umi";
 
-import {l} from "@/utils/intl";
-import {GithubOutlined} from '@ant-design/icons';
-import {DefaultFooter} from '@ant-design/pro-layout';
+const intl = getIntl(getLocale());
+export const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
-export default () => {
-
-  return (
-    <DefaultFooter
-      copyright={l('app.copyright.produced', 'Produced by Dinky Community')}
-      links={[
-        {
-          key: 'Dinky',
-          title: 'Dinky',
-          href: '',
-          blankTarget: true,
-        },
-        {
-          key: 'github',
-          title: <GithubOutlined/>,
-          href: 'https://github.com/DataLinkDC/dlink',
-          blankTarget: true,
-        },
-      ]}
-    />
-  );
-};

@@ -21,7 +21,7 @@ import React, {useState} from 'react';
 import {Button, Form, Input, Modal, Switch} from 'antd';
 import TextArea from "antd/es/input/TextArea";
 import {FragmentVariableTableListItem} from "@/pages/FragmentVariable/data";
-import {useIntl} from 'umi';
+import {l} from "@/utils/intl";
 
 export type FragmentFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -40,10 +40,6 @@ const formLayout = {
 };
 
 const FragmentForm: React.FC<FragmentFormProps> = (props: any) => {
-
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   const [form] = Form.useForm();

@@ -24,17 +24,13 @@ import ProTable, {ProColumns} from '@ant-design/pro-table';
 import {VerticesTableListItem} from "@/pages/DevOps/data";
 import JobStatus from "@/components/Common/JobStatus";
 import {parseByteStr, parseMilliSecondStr, parseNumStr, parseSecondStr} from "@/components/Common/function";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
 const {Text} = Typography;
 
 const BaseInfo = (props: any) => {
 
   const {job} = props;
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   const columns: ProColumns<VerticesTableListItem>[] = [
     {

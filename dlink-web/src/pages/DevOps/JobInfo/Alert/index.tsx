@@ -21,7 +21,7 @@
 import {Typography} from 'antd';
 import ProTable, {ProColumns} from '@ant-design/pro-table';
 import {queryData} from "@/components/Common/crud";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
 const {Text} = Typography;
 type AlertHistoryTableListItem = {
@@ -34,10 +34,6 @@ type AlertHistoryTableListItem = {
 
 
 const Alert = (props: any) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   const url = '/api/alertGroup';
   const {job} = props;

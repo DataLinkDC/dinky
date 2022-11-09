@@ -21,20 +21,20 @@
 import {handleAddOrUpdate, postAll} from "@/components/Common/crud";
 import {AlertInstanceTableListItem} from "@/pages/AlertInstance/data";
 import {message} from "antd";
-import {getIntl} from "umi";
+import {l} from "@/utils/intl";
 
 export async function createOrModifyAlertInstance(alertInstance: AlertInstanceTableListItem) {
   return handleAddOrUpdate('/api/alertInstance', alertInstance);
 }
 
 export async function sendTest(alertInstance: AlertInstanceTableListItem) {
-  const hide = message.loading(getIntl().formatMessage({id:'app.request.test.alert.msg'}));
+  const hide = message.loading(l('app.request.test.alert.msg'));
   try {
     const {code,msg} = await postAll('/api/alertInstance/sendTest',alertInstance);
     hide();
     code==0?message.success(msg):message.error(msg);
   } catch (error) {
     hide();
-    message.error(getIntl().formatMessage({id:'app.request.failed'}));
+    message.error(l('app.request.failed'));
   }
 }

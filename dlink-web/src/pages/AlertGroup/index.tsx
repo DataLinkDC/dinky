@@ -28,14 +28,12 @@ import {AlertGroupTableListItem} from "@/pages/AlertGroup/data";
 import {handleAddOrUpdate, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
 import AlertGroupForm from "@/pages/AlertGroup/components/AlertGroupForm";
 import {showAlertInstance} from "@/components/Studio/StudioEvent/DDL";
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
+import {l} from "@/utils/intl";
 
 const url = '/api/alertGroup';
 const AlertGroupTableList: React.FC<{}> = (props: any) => {
   const {dispatch} = props;
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const [row, setRow] = useState<AlertGroupTableListItem>();
   const [modalVisible, handleModalVisible] = useState<boolean>(false);

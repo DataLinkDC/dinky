@@ -18,7 +18,7 @@
  */
 
 
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import {StateType} from "@/pages/DataStudio/model";
 import {Button, Col, Form, Input, InputNumber, message, Row, Select, Space, Tag, Tooltip, Upload} from "antd";
 import {
@@ -35,13 +35,11 @@ import {Scrollbars} from "react-custom-scrollbars";
 import {RUN_MODE} from "@/components/Studio/conf";
 import {CODE} from "@/components/Common/crud";
 import {getHadoopConfigPathFromClusterConfigurationsById} from "@/pages/ClusterConfiguration/function";
+import {l} from "@/utils/intl";
 
 const {Option} = Select;
 
 const StudioJarSetting = (props: any) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {clusterConfiguration, current, form, dispatch, tabs, jars, toolHeight} = props;
   const [hadoopConfigPath, setHadoopConfigPath] = useState<string | undefined>(undefined);

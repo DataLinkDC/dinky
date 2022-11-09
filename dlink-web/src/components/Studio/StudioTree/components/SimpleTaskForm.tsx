@@ -23,7 +23,7 @@ import {Button, Cascader, Form, Input, Modal, Select} from 'antd';
 
 import type {TaskTableListItem} from '../data.d';
 import {DIALECT} from "@/components/Studio/conf";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 import {postAll} from "@/components/Common/crud";
 
 const {Option} = Select;
@@ -47,9 +47,6 @@ const isUDF = (dialect: string) => {
 }
 
 const SimpleTaskForm: React.FC<UpdateFormProps> = (props) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   const [formVals, setFormVals] = useState<Partial<TaskTableListItem>>({

@@ -27,14 +27,11 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import {JarTableListItem} from "@/pages/Jar/data";
 import {CODE, handleAddOrUpdate, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
 import JarForm from "@/pages/Jar/components/JarForm";
-import {useIntl} from 'umi';
+import {l} from "@/utils/intl";
 
 const url = '/api/jar';
 const JarTableList: React.FC<{}> = (props: any) => {
   const {dispatch} = props;
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   const [row, setRow] = useState<JarTableListItem>();

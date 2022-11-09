@@ -19,15 +19,12 @@
 
 
 import {Typography} from "antd";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
 
 const {Title, Paragraph, Link} = Typography;
 
 const StudioMsg = () => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   return (
     <Typography>

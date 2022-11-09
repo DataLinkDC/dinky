@@ -29,14 +29,11 @@ import Menu from "antd/es/menu";
 import {handleAddOrUpdate, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
 import FragmentForm from "@/pages/FragmentVariable/components/FragmentForm";
 import {FragmentVariableTableListItem} from "./data.d";
-import {useIntl} from 'umi';
+import {l} from "@/utils/intl";
 
 const url = '/api/fragment';
 
 const FragmentTableList: React.FC<{}> = (props: any) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   const [modalVisible, handleModalVisible] = useState<boolean>(false);

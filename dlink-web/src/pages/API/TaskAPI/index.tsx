@@ -18,22 +18,16 @@
  */
 
 
-import {Tabs, Typography} from "antd";
+import {Tabs} from "antd";
 import CodeShow from "@/components/Common/CodeShow";
 import {useEffect, useState} from "react";
 import {getTaskAPIAddress} from "@/pages/API/service";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
 
-const {Title, Paragraph, Text, Link} = Typography;
 const {TabPane} = Tabs;
 
 const TaskAPI = (props: any) => {
-
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   const {task} = props;
   const [address, setAddress] = useState<string>('127.0.0.1:8888');

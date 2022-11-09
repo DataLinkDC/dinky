@@ -27,16 +27,11 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import {AlertInstanceTableListItem} from "@/pages/AlertInstance/data";
 import {handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
 import AlertInstanceChooseForm from "@/pages/AlertInstance/components/AlertInstanceChooseForm";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
 const url = '/api/alertInstance';
 const AlertInstanceTableList: React.FC<{}> = (props: any) => {
   const {dispatch} = props;
-
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   const [row, setRow] = useState<AlertInstanceTableListItem>();
   const [values, setValues] = useState<AlertInstanceTableListItem>();

@@ -22,8 +22,9 @@ import React, {useState} from 'react';
 import {Button, Form, Input, Modal, Select, Switch, Tag} from 'antd';
 
 import {SessionItem} from '../data.d';
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import {StateType} from "@/pages/DataStudio/model";
+import {l} from "@/utils/intl";
 
 export type UpdateFormProps = {
   onCancel: (flag?: boolean, formVals?: Partial<SessionItem>) => void;
@@ -41,9 +42,6 @@ const formLayout = {
 };
 
 const SessionForm: React.FC<UpdateFormProps> = (props) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const [formVals, setFormVals] = useState<Partial<SessionItem>>({
     session: props.values.session,

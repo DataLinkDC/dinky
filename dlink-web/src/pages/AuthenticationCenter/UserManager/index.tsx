@@ -29,7 +29,7 @@ import {UserTableListItem} from "@/pages/AuthenticationCenter/data.d";
 import UserForm from "@/pages/AuthenticationCenter/UserManager/components/UserForm";
 import PasswordForm from "@/pages/AuthenticationCenter/UserManager/components/PasswordForm";
 import TableTransferFrom from "@/pages/AuthenticationCenter/UserManager/components/TableTransfer";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
 const url = '/api/user';
 const UserTableList: React.FC<{}> = (props: any) => {
@@ -43,10 +43,6 @@ const UserTableList: React.FC<{}> = (props: any) => {
   const [roleRelFormValues, setRoleRelFormValues] = useState({});
   const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<UserTableListItem[]>([]);
-
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   const editAndDelete = (key: string | number, currentItem: UserTableListItem) => {

@@ -23,7 +23,7 @@ import {Button, Form, Input, Modal} from 'antd';
 
 import {TaskTableListItem} from "@/pages/Task/data";
 import Switch from "antd/es/switch";
-import {useIntl} from 'umi';
+import {l} from "@/utils/intl";
 
 export type UpdateFormProps = {
   onCancel: (flag?: boolean, formVals?: Partial<TaskTableListItem>) => void;
@@ -39,9 +39,6 @@ const formLayout = {
 };
 
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   const [formVals, setFormVals] = useState<Partial<TaskTableListItem>>({
