@@ -43,7 +43,7 @@ public interface CatalogueService extends ISuperService<Catalogue> {
 
     boolean toRename(Catalogue catalogue);
 
-    boolean removeCatalogueAndTaskById(Integer id);
+    List<String> removeCatalogueAndTaskById(Integer id);
 
     boolean moveCatalogue(Integer id, Integer parentId);
 
