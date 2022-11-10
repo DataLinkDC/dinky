@@ -227,7 +227,7 @@
                         <goals>
                             <goal>clean</goal>
                         </goals>
-                        <phase>initialize</phase>
+                        <phase>validate</phase>
                     </execution>
                 </executions>
             </plugin>
@@ -260,7 +260,7 @@
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
-                        <phase>validate</phase>
+                        <phase>initialize</phase>
                         <configuration>
                             <outputDirectory>src/main/resources/static</outputDirectory>
                             <overwrite>true</overwrite>

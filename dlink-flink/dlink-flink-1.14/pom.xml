@@ -182,5 +182,10 @@
             <artifactId>flink-connector-starrocks</artifactId>
             <version>1.2.3_flink-1.14_${scala.binary.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-json</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
     </dependencies>
 </project>
