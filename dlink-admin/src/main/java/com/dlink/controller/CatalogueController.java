@@ -59,14 +59,15 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/catalogue")
 public class CatalogueController {
+
     @Autowired
     private CatalogueService catalogueService;
 
     @PostMapping("/upload/{id}")
     public Result<String> upload(MultipartFile file, @PathVariable Integer id) {
-        //获取上传的路径
+        // 获取上传的路径
         String filePath = System.getProperty("user.dir");
-        //获取源文件的名称
+        // 获取源文件的名称
         String fileName = file.getOriginalFilename();
         String zipPath = filePath + File.separator + fileName;
         String unzipFileName = fileName.substring(0, fileName.lastIndexOf("."));
@@ -78,7 +79,7 @@ public class CatalogueController {
             return Result.failed("工程已存在");
         }
         try {
-            //文件写入上传的路径
+            // 文件写入上传的路径
             FileUtil.writeBytes(file.getBytes(), zipPath);
             Thread.sleep(1L);
             if (!unzipFile.exists()) {
@@ -102,11 +103,14 @@ public class CatalogueController {
         }
         for (File fl : fs) {
             if (fl.isFile()) {
-                CatalogueTaskDTO dto = getCatalogueTaskDTO(fl.getName(), catalogueService.findByParentIdAndName(catalog.getParentId(), catalog.getName()).getId());
+                CatalogueTaskDTO dto = getCatalogueTaskDTO(fl.getName(),
+                        catalogueService.findByParentIdAndName(catalog.getParentId(), catalog.getName()).getId());
                 String fileText = getFileText(fl);
                 catalogueService.createCatalogAndFileTask(dto, fileText);
             } else {
-                Catalogue newCata = getCatalogue(catalogueService.findByParentIdAndName(catalog.getParentId(), catalog.getName()).getId(), fl.getName());
+                Catalogue newCata = getCatalogue(
+                        catalogueService.findByParentIdAndName(catalog.getParentId(), catalog.getName()).getId(),
+                        fl.getName());
                 traverseFile(fl.getPath(), newCata);
             }
         }
@@ -114,8 +118,9 @@ public class CatalogueController {
 
     private String getFileText(File sourceFile) {
         StringBuilder sb = new StringBuilder();
-        try (InputStreamReader isr = new InputStreamReader(new FileInputStream(sourceFile));
-             BufferedReader br = new BufferedReader(isr);) {
+        try (
+                InputStreamReader isr = new InputStreamReader(new FileInputStream(sourceFile));
+                BufferedReader br = new BufferedReader(isr);) {
             if (sourceFile.isFile() && sourceFile.exists()) {
 
                 String lineText = null;
@@ -147,7 +152,7 @@ public class CatalogueController {
         catalogueTaskDTO.setId(null);
         catalogueTaskDTO.setParentId(parentId);
         catalogueTaskDTO.setLeaf(true);
-        //catalogueTaskDTO.setDialect("FlinkSql");
+        // catalogueTaskDTO.setDialect("FlinkSql");
         return catalogueTaskDTO;
     }
 
@@ -178,17 +183,18 @@ public class CatalogueController {
     public Result deleteMul(@RequestBody JsonNode para) {
         if (para.size() > 0) {
             boolean isAdmin = false;
-            List<Integer> error = new ArrayList<>();
+            List<String> error = new ArrayList<>();
             for (final JsonNode item : para) {
                 Integer id = item.asInt();
-                if (!catalogueService.removeCatalogueAndTaskById(id)) {
-                    error.add(id);
+                List<String> ids = catalogueService.removeCatalogueAndTaskById(id);
+                if (!ids.isEmpty()) {
+                    error.addAll(ids);
                 }
             }
             if (error.size() == 0 && !isAdmin) {
                 return Result.succeed("删除成功");
             } else {
-                return Result.succeed("删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
+                return Result.succeed("删除失败，请检查作业" + error.toString() + "状态。");
             }
         } else {
             return Result.failed("请选择要删除的记录");

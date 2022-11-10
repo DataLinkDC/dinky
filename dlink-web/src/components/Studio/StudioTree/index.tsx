@@ -471,7 +471,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
         <Menu.Item key='Copy'>{l('right.menu.copy')}</Menu.Item>
         <Menu.Item key='Cut'>{l('right.menu.cut')}</Menu.Item>
         {cutId && <Menu.Item key='Paste'>{l('right.menu.paste')}</Menu.Item>}
-        <Menu.Item disabled>{l('right.menu.delete')}</Menu.Item>
+        <Menu.Item key='Delete'>{l('right.menu.delete')}</Menu.Item>
       </>)
     } else {
       menuItems = (<>
