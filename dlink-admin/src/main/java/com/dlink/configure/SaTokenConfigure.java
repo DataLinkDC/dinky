@@ -19,13 +19,14 @@
 
 package com.dlink.configure;
 
+import cn.dev33.satoken.interceptor.SaRouteInterceptor;
 import com.dlink.interceptor.TenantInterceptor;
-
+import com.dlink.internationalization.LocaleResolverConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import cn.dev33.satoken.interceptor.SaRouteInterceptor;
 
 /**
  * SaTokenConfigure
@@ -62,5 +63,13 @@ public class SaTokenConfigure implements WebMvcConfigurer {
             .addPathPatterns("/api/role/**")
             //.addPathPatterns("/api/fragment/**")
             .addPathPatterns("/api/jar/*");
+    }
+    /***
+     * 自定义国际化组件生效！
+     * @return
+     */
+    @Bean
+    public LocaleResolver localeResolver(){
+        return new LocaleResolverConfiguration();
     }
 }

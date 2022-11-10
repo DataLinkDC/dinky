@@ -19,6 +19,9 @@
 
 package com.dlink.service.impl;
 
+import cn.dev33.satoken.secure.SaSecureUtil;
+import cn.dev33.satoken.stp.StpUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.assertion.Asserts;
 import com.dlink.common.result.Result;
 import com.dlink.context.TenantContextHolder;
@@ -36,22 +39,17 @@ import com.dlink.service.TenantService;
 import com.dlink.service.UserRoleService;
 import com.dlink.service.UserService;
 import com.dlink.service.UserTenantService;
+import com.dlink.utils.MessageResolver;
+import com.fasterxml.jackson.databind.JsonNode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.fasterxml.jackson.databind.JsonNode;
-
-import cn.dev33.satoken.secure.SaSecureUtil;
-import cn.dev33.satoken.stp.StpUtil;
 
 /**
  * UserServiceImpl
@@ -131,7 +129,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     public Result loginUser(LoginUTO loginUTO) {
         User user = getUserByUsername(loginUTO.getUsername());
         if (Asserts.isNull(user)) {
-            return Result.failed("账号或密码错误");
+            return Result.failed(MessageResolver.getMessage("login.fail"));
         }
         String userPassword = user.getPassword();
         if (Asserts.isNullString(loginUTO.getPassword())) {
@@ -155,7 +153,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             StpUtil.getSession().set("user", userDTO);
             return Result.succeed(userDTO, "登录成功");
         } else {
-            return Result.failed("账号或密码错误");
+            return Result.failed(MessageResolver.getMessages("login.fail"));
         }
     }
 

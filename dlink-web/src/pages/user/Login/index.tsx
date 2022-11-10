@@ -27,9 +27,10 @@ import {login} from '@/services/ant-design-pro/api';
 import {CheckCard} from '@ant-design/pro-components';
 
 import styles from './index.less';
-import {getData} from "@/components/Common/crud";
+import {getData, postAll} from "@/components/Common/crud";
 import {TenantTableListItem} from "@/pages/AuthenticationCenter/data.d";
 import {l} from "@/utils/intl";
+import {setLocale} from "@@/plugin-locale/localeExports";
 
 
 /** 此方法会跳转到 redirect 参数所在的位置 */
@@ -163,10 +164,12 @@ const Login: React.FC = () => {
     </>
   }
 
-
   return (
     <div className={styles.container}>
-      <div className={styles.lang}>{SelectLang && <SelectLang/>}</div>
+      <div className={styles.lang}>{SelectLang && <SelectLang onItemClick={(e)=>{
+        setLocale(e.key)
+        postAll("/",{header :{'Accept-Language': e.key}})
+      }}/>}</div>
       <div className={styles.content}>
         <div className={styles.top}>
           <div className={styles.header}>
