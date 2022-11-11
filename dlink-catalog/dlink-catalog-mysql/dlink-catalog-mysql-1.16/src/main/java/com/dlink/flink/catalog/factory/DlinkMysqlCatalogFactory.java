@@ -22,7 +22,10 @@ package com.dlink.flink.catalog.factory;
 import static com.dlink.flink.catalog.factory.DlinkMysqlCatalogFactoryOptions.PASSWORD;
 import static com.dlink.flink.catalog.factory.DlinkMysqlCatalogFactoryOptions.URL;
 import static com.dlink.flink.catalog.factory.DlinkMysqlCatalogFactoryOptions.USERNAME;
+
 import static org.apache.flink.table.factories.FactoryUtil.PROPERTY_VERSION;
+
+import com.dlink.flink.catalog.DlinkMysqlCatalog;
 
 import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.table.catalog.Catalog;
@@ -31,8 +34,6 @@ import org.apache.flink.table.factories.FactoryUtil;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import com.dlink.flink.catalog.DlinkMysqlCatalog;
 
 /**
  * Factory for {@link DlinkMysqlCatalog}.
@@ -63,13 +64,13 @@ public class DlinkMysqlCatalogFactory implements CatalogFactory {
     @Override
     public Catalog createCatalog(Context context) {
         final FactoryUtil.CatalogFactoryHelper helper =
-            FactoryUtil.createCatalogFactoryHelper(this, context);
+                FactoryUtil.createCatalogFactoryHelper(this, context);
         helper.validate();
 
         return new DlinkMysqlCatalog(
-            context.getName(),
-            helper.getOptions().get(URL),
-            helper.getOptions().get(USERNAME),
-            helper.getOptions().get(PASSWORD));
+                context.getName(),
+                helper.getOptions().get(URL),
+                helper.getOptions().get(USERNAME),
+                helper.getOptions().get(PASSWORD));
     }
 }

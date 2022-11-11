@@ -19,11 +19,11 @@
 
 package com.dlink.flink.catalog.factory;
 
+import com.dlink.flink.catalog.DlinkMysqlCatalog;
+
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.configuration.ConfigOptions;
-
-import com.dlink.flink.catalog.DlinkMysqlCatalog;
 
 /**
  * {@link ConfigOption}s for {@link DlinkMysqlCatalog}.
