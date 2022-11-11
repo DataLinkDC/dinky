@@ -93,7 +93,7 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         } else {
             sourceBuilder.tableList(new String[0]);
         }
-        sourceBuilder.deserializer(new StringDebeziumDeserializationSchema());
+        sourceBuilder.deserializer(new MysqlJsonDebeziumDeserializationSchema());
         sourceBuilder.debeziumProperties(properties);
         return env.addSource(sourceBuilder.build(), "MySQL CDC Source");
     }
