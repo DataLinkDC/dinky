@@ -21,6 +21,7 @@ package com.dlink.exception;
 
 import com.dlink.common.result.Result;
 import com.dlink.model.CodeEnum;
+import com.dlink.utils.MessageResolverUtils;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -63,10 +64,11 @@ public class WebExceptionHandler {
 
     @ExceptionHandler
     public Result notLoginException(NotLoginException e) {
-        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        ServletRequestAttributes servletRequestAttributes =
+            (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletResponse response = servletRequestAttributes.getResponse();
         response.setStatus(CodeEnum.NOTLOGIN.getCode());
-        return Result.notLogin("该用户未登录!");
+        return Result.notLogin(MessageResolverUtils.getMessage("login.not-login"));
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST) // 设置状态码为 400
@@ -80,12 +82,14 @@ public class WebExceptionHandler {
                 // 这里列出了全部错误参数，按正常逻辑，只需要第一条错误即可
                 FieldError fieldError = (FieldError) errors.get(0);
                 if (StringUtils.isNotBlank(fieldError.getDefaultMessage())) {
-                    return Result.failed(String.format("字段:%s, %s", fieldError.getField(), fieldError.getDefaultMessage()));
+                    return Result
+                        .failed(String.format("字段:%s, %s", fieldError.getField(), fieldError.getDefaultMessage()));
                 }
-                return Result.failed(String.format("字段:%s,不合法的值:%s", fieldError.getField(), fieldError.getRejectedValue()));
+                return Result
+                    .failed(String.format("字段:%s,不合法的值:%s", fieldError.getField(), fieldError.getRejectedValue()));
             }
         }
-        return Result.failed("请求参数错误");
+        return Result.failed(MessageResolverUtils.getMessage("request.params.error"));
     }
 
     @ExceptionHandler

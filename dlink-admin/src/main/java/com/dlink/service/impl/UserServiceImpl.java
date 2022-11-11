@@ -36,6 +36,7 @@ import com.dlink.service.TenantService;
 import com.dlink.service.UserRoleService;
 import com.dlink.service.UserService;
 import com.dlink.service.UserTenantService;
+import com.dlink.utils.MessageResolverUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -80,7 +81,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     public Result registerUser(User user) {
         User userByUsername = getUserByUsername(user.getUsername());
         if (Asserts.isNotNull(userByUsername)) {
-            return Result.failed("该账号已存在");
+            return Result.failed(MessageResolverUtils.getMessage("user.register.account.exists"));
         }
         if (Asserts.isNullString(user.getPassword())) {
             user.setPassword(DEFAULT_PASSWORD);
@@ -89,9 +90,9 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         user.setEnabled(true);
         user.setIsDelete(false);
         if (save(user)) {
-            return Result.succeed("注册成功");
+            return Result.succeed(MessageResolverUtils.getMessage("user.register.success"));
         } else {
-            return Result.failed("该账号已存在");
+            return Result.failed(MessageResolverUtils.getMessage("user.register.account.exists"));
         }
     }
 
@@ -107,16 +108,16 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     public Result modifyPassword(String username, String password, String newPassword) {
         User user = getUserByUsername(username);
         if (Asserts.isNull(user)) {
-            return Result.failed("The account does not exist");
+            return Result.failed(MessageResolverUtils.getMessage("login.user.not.exists"));
         }
         if (!Asserts.isEquals(SaSecureUtil.md5(password), user.getPassword())) {
-            return Result.failed("The old password is incorrect");
+            return Result.failed(MessageResolverUtils.getMessage("user.oldpassword.incorrect"));
         }
         user.setPassword(SaSecureUtil.md5(newPassword));
         if (updateById(user)) {
-            return Result.succeed("Password changed successfully");
+            return Result.succeed(MessageResolverUtils.getMessage("user.change.password.success"));
         }
-        return Result.failed("Failed to change password");
+        return Result.failed(MessageResolverUtils.getMessage("user.change.password.failed"));
     }
 
     @Override
@@ -131,18 +132,18 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     public Result loginUser(LoginUTO loginUTO) {
         User user = getUserByUsername(loginUTO.getUsername());
         if (Asserts.isNull(user)) {
-            return Result.failed("账号或密码错误");
+            return Result.failed(MessageResolverUtils.getMessage("login.fail"));
         }
         String userPassword = user.getPassword();
         if (Asserts.isNullString(loginUTO.getPassword())) {
-            return Result.failed("密码不能为空");
+            return Result.failed(MessageResolverUtils.getMessage("login.password.notnull"));
         }
         if (Asserts.isEquals(SaSecureUtil.md5(loginUTO.getPassword()), userPassword)) {
             if (user.getIsDelete()) {
-                return Result.failed("账号不存在");
+                return Result.failed(MessageResolverUtils.getMessage("login.user.not.exists"));
             }
             if (!user.getEnabled()) {
-                return Result.failed("账号已被禁用");
+                return Result.failed(MessageResolverUtils.getMessage("login.user.disabled"));
             }
 
             // 将前端入参 租户id 放入上下文
@@ -153,9 +154,9 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
             StpUtil.login(user.getId(), loginUTO.isAutoLogin());
             StpUtil.getSession().set("user", userDTO);
-            return Result.succeed(userDTO, "登录成功");
+            return Result.succeed(userDTO, MessageResolverUtils.getMessage("login.success"));
         } else {
-            return Result.failed("账号或密码错误");
+            return Result.failed(MessageResolverUtils.getMessage("login.fail"));
         }
     }
 
@@ -178,7 +179,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
         userTenants.forEach(userTenant -> {
             Tenant tenant = tenantService.getBaseMapper()
-                    .selectOne(new QueryWrapper<Tenant>().eq("id", userTenant.getTenantId()));
+                .selectOne(new QueryWrapper<Tenant>().eq("id", userTenant.getTenantId()));
             if (Asserts.isNotNull(tenant)) {
                 tenantList.add(tenant);
             }
@@ -241,7 +242,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         Set<Integer> tenantIds = new HashSet<>();
         userTenants.forEach(userTenant -> tenantIds.add(userTenant.getTenantId()));
         List<Tenant> tenants = tenantService.getTenantByIds(tenantIds);
-        return Result.succeed(tenants, "获取成功");
+        return Result.succeed(tenants, MessageResolverUtils.getMessage("response.get.successfully"));
     }
 
 }
