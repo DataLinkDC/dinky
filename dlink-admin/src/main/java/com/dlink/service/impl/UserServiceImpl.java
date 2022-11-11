@@ -39,7 +39,7 @@ import com.dlink.service.TenantService;
 import com.dlink.service.UserRoleService;
 import com.dlink.service.UserService;
 import com.dlink.service.UserTenantService;
-import com.dlink.utils.MessageResolver;
+import com.dlink.utils.MessageResolverUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -129,7 +129,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     public Result loginUser(LoginUTO loginUTO) {
         User user = getUserByUsername(loginUTO.getUsername());
         if (Asserts.isNull(user)) {
-            return Result.failed(MessageResolver.getMessage("login.fail"));
+            return Result.failed(MessageResolverUtils.getMessage("login.fail"));
         }
         String userPassword = user.getPassword();
         if (Asserts.isNullString(loginUTO.getPassword())) {
@@ -153,7 +153,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             StpUtil.getSession().set("user", userDTO);
             return Result.succeed(userDTO, "登录成功");
         } else {
-            return Result.failed(MessageResolver.getMessages("login.fail"));
+            return Result.failed(MessageResolverUtils.getMessages("login.fail"));
         }
     }
 
