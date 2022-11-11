@@ -17,32 +17,21 @@
  *
  */
 
-package com.dlink.cdc;
+package org.apache.flink.streaming.api.environment;
 
-import com.dlink.executor.CustomTableEnvironment;
-import com.dlink.model.FlinkCDCConfig;
-import com.dlink.model.Table;
+import org.apache.flink.annotation.PublicEvolving;
+import org.apache.flink.configuration.Configuration;
 
-import org.apache.flink.streaming.api.datastream.DataStreamSource;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+/** Factory class for stream execution environments. */
+@PublicEvolving
+public interface StreamExecutionEnvironmentFactory {
 
-/**
- * SinkBuilder
- *
- * @author wenmo
- * @since 2022/4/12 21:09
- **/
-public interface SinkBuilder {
+    /**
+     * Creates a StreamExecutionEnvironment from this factory.
+     *
+     * @return A StreamExecutionEnvironment.
+     */
+    StreamExecutionEnvironment createExecutionEnvironment();
 
-    String getHandle();
-
-    SinkBuilder create(FlinkCDCConfig config);
-
-    DataStreamSource build(CDCBuilder cdcBuilder, StreamExecutionEnvironment env,
-                           CustomTableEnvironment customTableEnvironment, DataStreamSource<String> dataStreamSource);
-
-    String getSinkSchemaName(Table table);
-
-    String getSinkTableName(Table table);
-
+    StreamExecutionEnvironment createExecutionEnvironment(Configuration configuration);
 }

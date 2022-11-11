@@ -55,7 +55,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
-        <maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
+        <maven-checkstyle-plugin.version>3.2.0</maven-checkstyle-plugin.version>
         <scala.binary.version>2.12</scala.binary.version>
         <scala.version>2.12.10</scala.version>
         <!--  `provided` for product environment ,`compile` for dev environment  -->
@@ -566,6 +566,13 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>${project.basedir}/extends</directory>
+                        </fileset>
+                    </filesets>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
@@ -574,13 +581,6 @@
                         <phase>initialize</phase>
                     </execution>
                 </executions>
-                <configuration>
-                    <filesets>
-                        <fileset>
-                            <directory>${project.basedir}/extends</directory>
-                        </fileset>
-                    </filesets>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -605,7 +605,7 @@
                         <eclipse>
                             <file>style/spotless_dlink_formatter.xml</file>
                         </eclipse>
-                        <removeUnusedImports/>
+                        <removeUnusedImports />
                         <importOrder>
                             <order>\#,com.dlink,org.apache,java,javax,org,com,</order>
                         </importOrder>
@@ -642,7 +642,7 @@
                         <includes>
                             <include>**/*.md</include>
                         </includes>
-                        <flexmark/>
+                        <flexmark />
                     </markdown>
                 </configuration>
                 <executions>
@@ -871,8 +871,7 @@
                             <artifactId>maven-javadoc-plugin</artifactId>
                             <configuration>
                                 <additionalJOptions>
-                                    <additionalJOption>--add-exports=java.base/sun.net.util=ALL-UNNAMED
-                                    </additionalJOption>
+                                    <additionalJOption>--add-exports=java.base/sun.net.util=ALL-UNNAMED</additionalJOption>
                                 </additionalJOptions>
                             </configuration>
                         </plugin>
