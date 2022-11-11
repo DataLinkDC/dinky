@@ -25,11 +25,11 @@ import {history, Link, SelectLang, useModel} from 'umi';
 import Footer from '@/components/Footer';
 import {login} from '@/services/ant-design-pro/api';
 import {CheckCard} from '@ant-design/pro-components';
-
 import styles from './index.less';
-import {getData, postAll} from "@/components/Common/crud";
+import {getData} from "@/components/Common/crud";
 import {TenantTableListItem} from "@/pages/AuthenticationCenter/data.d";
 import {l} from "@/utils/intl";
+import cookies from "js-cookie";
 import {setLocale} from "@@/plugin-locale/localeExports";
 
 
@@ -166,9 +166,10 @@ const Login: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.lang}>{SelectLang && <SelectLang onItemClick={(e)=>{
-        setLocale(e.key)
-        postAll("/",{header :{'Accept-Language': e.key}})
+      <div className={styles.lang}>{SelectLang && <SelectLang onItemClick={(e) => {
+        let language = e.key.toString()
+        cookies.set('language', language, {path: '/'})
+        setLocale(language)
       }}/>}</div>
       <div className={styles.content}>
         <div className={styles.top}>
