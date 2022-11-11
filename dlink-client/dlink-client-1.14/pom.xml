@@ -51,12 +51,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.starrocks</groupId>
-            <artifactId>flink-connector-starrocks</artifactId>
-            <version>1.2.3_flink-1.14_${scala.binary.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
         </dependency>
