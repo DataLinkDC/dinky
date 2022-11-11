@@ -19,15 +19,11 @@
 
 package com.dlink.exception;
 
+import cn.dev33.satoken.exception.NotLoginException;
 import com.dlink.common.result.Result;
 import com.dlink.model.CodeEnum;
-
+import com.dlink.utils.MessageResolverUtils;
 import org.apache.commons.lang3.StringUtils;
-
-import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -42,7 +38,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import cn.dev33.satoken.exception.NotLoginException;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * WebExceptionHandler
@@ -66,7 +63,7 @@ public class WebExceptionHandler {
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletResponse response = servletRequestAttributes.getResponse();
         response.setStatus(CodeEnum.NOTLOGIN.getCode());
-        return Result.notLogin("该用户未登录!");
+        return Result.notLogin(MessageResolverUtils.getMessage("login.not-login"));
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST) // 设置状态码为 400
@@ -85,7 +82,7 @@ public class WebExceptionHandler {
                 return Result.failed(String.format("字段:%s,不合法的值:%s", fieldError.getField(), fieldError.getRejectedValue()));
             }
         }
-        return Result.failed("请求参数错误");
+        return Result.failed(MessageResolverUtils.getMessage("request.params.error"));
     }
 
     @ExceptionHandler

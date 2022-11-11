@@ -19,14 +19,14 @@
 
 package com.dlink.common.result;
 
-import com.dlink.model.CodeEnum;
-
-import java.io.Serializable;
-
 import cn.hutool.core.date.DateTime;
+import com.dlink.model.CodeEnum;
+import com.dlink.utils.MessageResolverUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 /**
  * 返回对象
@@ -45,11 +45,11 @@ public class Result<T> implements Serializable {
     private String time;
 
     public static <T> Result<T> succeed(String msg) {
-        return of(null, CodeEnum.SUCCESS.getCode(), msg);
+        return of(null, CodeEnum.SUCCESS.getCode(), MessageResolverUtils.getMessages(msg));
     }
 
     public static <T> Result<T> succeed(T model, String msg) {
-        return of(model, CodeEnum.SUCCESS.getCode(), msg);
+        return of(model, CodeEnum.SUCCESS.getCode(), MessageResolverUtils.getMessages(msg));
     }
 
     public static <T> Result<T> succeed(T model) {
@@ -61,18 +61,18 @@ public class Result<T> implements Serializable {
     }
 
     public static <T> Result<T> of(T datas, Integer code, String msg) {
-        return new Result<>(datas, code, msg, new DateTime().toString());
+        return new Result<>(datas, code, MessageResolverUtils.getMessages(msg), new DateTime().toString());
     }
 
     public static <T> Result<T> failed(String msg) {
-        return of(null, CodeEnum.ERROR.getCode(), msg);
+        return of(null, CodeEnum.ERROR.getCode(), MessageResolverUtils.getMessages(msg));
     }
 
     public static <T> Result<T> notLogin(String msg) {
-        return of(null, CodeEnum.NOTLOGIN.getCode(), msg);
+        return of(null, CodeEnum.NOTLOGIN.getCode(), MessageResolverUtils.getMessages(msg));
     }
 
     public static <T> Result<T> failed(T model, String msg) {
-        return of(model, CodeEnum.ERROR.getCode(), msg);
+        return of(model, CodeEnum.ERROR.getCode(), MessageResolverUtils.getMessages(msg));
     }
 }
