@@ -22,7 +22,7 @@ import React, {useState} from 'react';
 import {Card, List, Modal} from 'antd';
 
 import {AlertInstanceTableListItem} from '../data.d';
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import {ALERT_CONFIG_LIST, ALERT_TYPE, AlertConfig} from "@/pages/AlertInstance/conf";
 import {getAlertIcon} from "@/pages/AlertInstance/icon";
 import {AlertStateType} from "@/pages/AlertInstance/model";
@@ -31,6 +31,7 @@ import {createOrModifyAlertInstance, sendTest} from "@/pages/AlertInstance/servi
 import WeChatForm from "@/pages/AlertInstance/components/WeChatForm";
 import FeiShuForm from "@/pages/AlertInstance/components/FeiShuForm";
 import EmailForm from "@/pages/AlertInstance/components/EmailForm";
+import {l} from "@/utils/intl";
 
 export type UpdateFormProps = {
   onCancel: (flag?: boolean, formVals?: Partial<AlertInstanceTableListItem>) => void;
@@ -40,10 +41,6 @@ export type UpdateFormProps = {
 };
 
 const AlertInstanceChooseForm: React.FC<UpdateFormProps> = (props) => {
-
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {
     onSubmit: handleUpdate,

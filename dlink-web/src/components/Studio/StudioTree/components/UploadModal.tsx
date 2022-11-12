@@ -21,7 +21,7 @@
 import React from 'react';
 import {Button, message, Modal, Upload} from "antd";
 import {UploadOutlined} from "@ant-design/icons";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
 interface UploadModalProps {
   visible: boolean;
@@ -33,9 +33,6 @@ interface UploadModalProps {
 
 const UploadModal: React.FC<UploadModalProps> = (props: any) => {
 
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {visible, handleOk, onCancel, action, buttonTitle} = props;
   const handlers = {
@@ -52,10 +49,10 @@ const UploadModal: React.FC<UploadModalProps> = (props: any) => {
         if (info.file.response.code === 1) {
           message.error(`${info.file.response.msg} `);
         } else {
-          message.success(`${info.file.name} file uploaded successfully`);
+          message.success(`${info.file.name}` + l('app.request.upload.success'));
         }
       } else if (info.file.status === 'error') {
-        message.error(`${info.file.name} file upload failed.`);
+        message.error(`${info.file.name} `+ l('app.request.upload.failed'));
       }
     },
   };

@@ -21,7 +21,7 @@ import {LockOutlined, UserOutlined,} from '@ant-design/icons';
 import {Button, message, Modal} from 'antd';
 import React, {useEffect, useState} from 'react';
 import ProForm, {ProFormCheckbox, ProFormText} from '@ant-design/pro-form';
-import {history, Link, SelectLang, useIntl, useModel} from 'umi';
+import {history, Link, SelectLang, useModel} from 'umi';
 import Footer from '@/components/Footer';
 import {login} from '@/services/ant-design-pro/api';
 import {CheckCard} from '@ant-design/pro-components';
@@ -29,6 +29,7 @@ import {CheckCard} from '@ant-design/pro-components';
 import styles from './index.less';
 import {getData} from "@/components/Common/crud";
 import {TenantTableListItem} from "@/pages/AuthenticationCenter/data.d";
+import {l} from "@/utils/intl";
 
 
 /** 此方法会跳转到 redirect 参数所在的位置 */
@@ -53,9 +54,6 @@ const Login: React.FC = () => {
   const [tenant, setTenant] = useState<TenantTableListItem[]>([]);
 
   const [checkDisabled, setCheckDisabled] = useState<boolean>(true);
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   const fetchUserInfo = async () => {

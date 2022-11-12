@@ -32,16 +32,11 @@ import type {TaskTableListItem} from './data.d';
 import Dropdown from "antd/es/dropdown/dropdown";
 import Menu from "antd/es/menu";
 import {handleAddOrUpdate, handleRemove, handleSubmit, queryData, updateEnabled} from "@/components/Common/crud";
-import {useIntl} from 'umi';
+import {l} from "@/utils/intl";
 
 const url = '/api/task';
 
 const TaskTableList: React.FC<{}> = () => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
-
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [formValues, setFormValues] = useState({});
@@ -201,18 +196,18 @@ const TaskTableList: React.FC<{}> = () => {
       hideInTable: false,
       filters: [
         {
-          text: '正常',
+          text: l('status.enabled'),
           value: 1,
         },
         {
-          text: '禁用',
+          text: l('status.disabled'),
           value: 0,
         },
       ],
       filterMultiple: false,
       valueEnum: {
-        true: {text: '正常', status: 'Success'},
-        false: {text: '禁用', status: 'Error'},
+        true: {text: l('status.enabled'), status: 'Success'},
+        false: {text: l('status.disabled'), status: 'Error'},
       },
     },
     {

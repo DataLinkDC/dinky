@@ -75,11 +75,11 @@ public class OracleCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
             }
         }
         OracleSource.Builder<String> sourceBuilder = OracleSource.<String>builder()
-            .hostname(config.getHostname())
-            .port(config.getPort())
-            .username(config.getUsername())
-            .password(config.getPassword())
-            .database(config.getDatabase());
+                .hostname(config.getHostname())
+                .port(config.getPort())
+                .username(config.getUsername())
+                .password(config.getPassword())
+                .database(config.getDatabase());
         String schema = config.getSchema();
         if (Asserts.isNotNullString(schema)) {
             String[] schemas = schema.split(FlinkParamConstant.SPLIT);

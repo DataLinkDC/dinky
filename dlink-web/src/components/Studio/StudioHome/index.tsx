@@ -19,18 +19,16 @@
 
 import {Divider, Typography} from 'antd';
 import React from 'react';
-import {connect, useIntl} from 'umi';
+import {connect} from 'umi';
 import {StateType} from '@/pages/DataStudio/model';
 import {Scrollbars} from 'react-custom-scrollbars';
 import {VERSION} from "@/components/Common/Version";
+import {l} from "@/utils/intl";
 
 const {Title, Paragraph, Text} = Typography;
 
 const StudioHome = (props: any) => {
 
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {toolHeight} = props;
 

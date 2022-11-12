@@ -18,22 +18,16 @@
  */
 
 
-import {Tabs, Typography} from "antd";
+import {Tabs} from "antd";
 import CodeShow from "@/components/Common/CodeShow";
 import {useEffect, useState} from "react";
 import {getTaskAPIAddress} from "@/pages/API/service";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
 
-const {Title, Paragraph, Text, Link} = Typography;
 const {TabPane} = Tabs;
 
 const TaskAPI = (props: any) => {
-
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   const {task} = props;
   const [address, setAddress] = useState<string>('127.0.0.1:8888');
@@ -56,7 +50,7 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-          异步提交
+          {l('pages.task.api.job.async')}
         </span>
         }
         key="submitTask"
@@ -67,7 +61,7 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-          停止作业
+                    {l('pages.task.api.job.stop')}
         </span>
         }
         key="cancelJob"
@@ -82,7 +76,7 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-          重启作业
+            {l('pages.task.api.job.restart')}
         </span>
         }
         key="restartTask"
@@ -93,7 +87,7 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-          作业实例
+            {l('pages.task.api.job.instance')}
         </span>
         }
         key="taskInstance"
@@ -105,7 +99,7 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-          SavePoint 触发
+            {l('pages.task.api.savepoint.trigger')}
         </span>
         }
         key="triggerSavePoint"
@@ -120,7 +114,7 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-          SavePoint 停止
+            {l('pages.task.api.savepoint.stop')}
         </span>
         }
         key="cancelSavePoint"
@@ -135,7 +129,7 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-          上线作业
+            {l('pages.task.api.job.online')}
         </span>
         }
         key="onLineTask"
@@ -146,7 +140,7 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-          下线作业
+            {l('pages.task.api.job.offline')}
         </span>
         }
         key="offLineTask"
@@ -157,8 +151,8 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-          重新上线作业
-        </span>
+             {l('pages.task.api.job.reonline')}
+          </span>
         }
         key="reOnLineTask"
       >

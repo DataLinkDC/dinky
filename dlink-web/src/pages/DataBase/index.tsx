@@ -29,7 +29,7 @@ import {
   HeartOutlined,
   PlusOutlined
 } from '@ant-design/icons';
-import {Button, Card, Image, Modal, Space, Tag, Typography} from 'antd';
+import {Button, Card, Image, Modal, Space, Tag} from 'antd';
 import ProList from '@ant-design/pro-list';
 import {handleRemove, queryData} from "@/components/Common/crud";
 import {getDBImage} from "@/pages/DataBase/DB";
@@ -40,9 +40,8 @@ import styles from './index.less';
 import {DataBaseItem} from "@/pages/DataBase/data";
 import {checkHeartBeat} from "@/pages/DataBase/service";
 import {showDataBase} from "@/components/Studio/StudioEvent/DDL";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
-const {Text} = Typography;
 
 const url = '/api/database';
 const cardBodyStyle = {
@@ -52,10 +51,6 @@ const cardBodyStyle = {
 };
 
 const DataBaseTableList: React.FC<{}> = (props: any) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   const {dispatch} = props;
   const [chooseDBModalVisible, handleDBFormModalVisible] = useState<boolean>(false);
@@ -80,7 +75,7 @@ const DataBaseTableList: React.FC<{}> = (props: any) => {
   const onDeleteDataBase = (row: DataBaseItem) => {
     Modal.confirm({
       title: l('pages.registerCenter.db.delete'),
-      content: l('pages.registerCenter.db.delete','',{dbName: (row.alias === "" ? row.name : row.alias)}),
+      content: l('pages.registerCenter.db.deleteConfirm','',{dbName: (row.alias === "" ? row.name : row.alias)}),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {

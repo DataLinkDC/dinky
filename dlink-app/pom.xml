@@ -17,8 +17,8 @@
     </modules>
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>${target.java.version}</maven.compiler.source>
+        <maven.compiler.target>${target.java.version}</maven.compiler.target>
     </properties>
 
     <profiles>
@@ -54,6 +54,20 @@
             <id>flink-1.15</id>
             <modules>
                 <module>dlink-app-1.15</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>flink-1.16</id>
+            <modules>
+                <module>dlink-app-1.16</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>web</id>
+            <modules>
+                <module>../dlink-web</module>
             </modules>
         </profile>
     </profiles>

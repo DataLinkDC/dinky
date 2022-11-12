@@ -26,7 +26,7 @@ import {FLINK_CONFIG_LIST, HADOOP_CONFIG_LIST, KUBERNETES_CONFIG_LIST} from "@/p
 import {testClusterConfigurationConnect} from "@/pages/ClusterConfiguration/service";
 import type {ClusterConfigurationTableListItem} from "@/pages/ClusterConfiguration/data";
 import {CODE} from "@/components/Common/crud";
-import {useIntl} from 'umi';
+import {l} from "@/utils/intl";
 
 export type ClusterConfigurationFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -42,11 +42,6 @@ const formLayout = {
 };
 
 const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props) => {
-
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<ClusterConfigurationTableListItem>>({
@@ -123,7 +118,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
             message.warn(info.file.response.msg);
           }
         } else if (info.file.status === 'error') {
-          message.error(`${info.file.name} 上传失败`);
+          message.error(`${info.file.name}`+ l('app.request.upload.failed'));
         }
       },
     }
@@ -149,7 +144,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
             message.warn(info.file.response.msg);
           }
         } else if (info.file.status === 'error') {
-          message.error(`${info.file.name} 上传失败`);
+          message.error(`${info.file.name}`+ l('app.request.upload.failed'));
         }
       },
     }

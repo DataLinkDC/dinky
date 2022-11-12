@@ -26,15 +26,11 @@ import {getIcon} from "@/components/Studio/icon";
 import {Button, Modal, Tag} from "antd";
 import {FullscreenOutlined} from "@ant-design/icons";
 import CodeShow from "@/components/Common/CodeShow";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
 const url = '/api/task/version';
 const VersionList = (props: any) => {
   const {job} = props;
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   const actionRef = useRef<ActionType>();
   const [row, setRow] = useState<TaskVersion>();
@@ -49,7 +45,7 @@ const VersionList = (props: any) => {
   const handleShowStatement = (item: any) => {
     return (
       <div style={{width: "1100px"}}>
-        <Modal title="作业执行 SQL" visible={modalVisible} destroyOnClose={true} width={"60%"}
+        <Modal title={l('pages.devops.jobinfo.version.sql.title')} visible={modalVisible} destroyOnClose={true} width={"60%"}
                onCancel={() => {
                  cancelHandle();
                }}
@@ -70,25 +66,25 @@ const VersionList = (props: any) => {
 
   const columns: ProColumns<TaskVersion>[] = [
     {
-      title: '作业ID',
+      title: l('pages.devops.jobinfo.version.id'),
       align: 'center',
       dataIndex: 'taskId',
       hideInSearch: true,
     },
     {
-      title: '作业名称',
+      title: l('pages.devops.jobinfo.version.name'),
       align: 'center',
       sorter: true,
       dataIndex: 'name',
     },
     {
-      title: '作业别名',
+      title: l('pages.devops.jobinfo.version.alias'),
       align: 'center',
       sorter: true,
       dataIndex: 'alias',
     },
     {
-      title: '作业方言',
+      title: l('pages.devops.jobinfo.version.dialect'),
       align: 'center',
       render: (dom, entity) => {
         return <>
@@ -102,7 +98,7 @@ const VersionList = (props: any) => {
       },
     },
     {
-      title: '作业类型',
+      title: l('pages.devops.jobinfo.version.type'),
       align: 'center',
       render: (dom, entity) => {
         return <>
@@ -115,13 +111,13 @@ const VersionList = (props: any) => {
       },
     },
     {
-      title: '版本号',
+      title: l('pages.devops.jobinfo.version.versionId'),
       align: 'center',
       sorter: true,
       dataIndex: 'versionId',
     },
     {
-      title: '作业内容',
+      title: l('pages.devops.jobinfo.version.sql'),
       align: 'center',
       ellipsis: true,
       hideInSearch: true,
@@ -133,8 +129,8 @@ const VersionList = (props: any) => {
               setModalVisible(true);
             }}>
               <Tag color="green">
-                <FullscreenOutlined title={"查看作业详情"}/>
-              </Tag> 查看作业详情
+                <FullscreenOutlined title={l('pages.devops.jobinfo.version.sql.showdetail')}/>
+              </Tag> {l('pages.devops.jobinfo.version.sql.showdetail')}
             </a>
 
           </>
@@ -160,7 +156,7 @@ const VersionList = (props: any) => {
     //           setRow(entity)
     //           setModalVisible(true);
     //         }}>
-    //           版本对比
+    //           {l('pages.devops.jobinfo.version.diff')}
     //         </Button>
     //       </>
     //       }

@@ -20,17 +20,13 @@
 
 import {Empty, Tabs} from 'antd';
 import CodeShow from "@/components/Common/CodeShow";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
 const {TabPane} = Tabs;
 
 const Exception = (props: any) => {
 
   const {job} = props;
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   return (<>
     {job.jobHistory?.exceptions && <Tabs defaultActiveKey="RootException" size="small" tabPosition="top" style={{
@@ -41,7 +37,7 @@ const Exception = (props: any) => {
         <CodeShow code={job.jobHistory?.exceptions['root-exception'] as string} language='java' height='500px'/>
       </TabPane>
       <TabPane tab={<span>Exception History</span>} key="ExceptionHistory">
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={"敬请期待"}/>
+        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={l('global.stay.tuned')}/>
       </TabPane>
     </Tabs>}
   </>)

@@ -37,10 +37,9 @@
             <directory>${project.parent.basedir}/dlink-admin/target/classes</directory>
             <outputDirectory>config</outputDirectory>
             <includes>
-                <include>*.properties</include>
-                <include>*.yml</include>
-                <include>*.yaml</include>
-                <include>*.xml</include>
+                <include>**/*.yml</include>
+                <include>**/*.yaml</include>
+                <include>**/log4j2.xml</include>
             </includes>
         </fileSet>
         <fileSet>

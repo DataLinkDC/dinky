@@ -48,7 +48,7 @@
     </modules>
 
     <properties>
-        <target.java.version>1.8</target.java.version>
+        <target.java.version>8</target.java.version>
         <maven.compiler.source>${target.java.version}</maven.compiler.source>
         <maven.compiler.target>${target.java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -66,7 +66,7 @@
         <druid-starter>1.2.8</druid-starter>
         <mybatis-plus-boot-starter.version>3.5.1</mybatis-plus-boot-starter.version>
         <lombok.version>1.18.24</lombok.version>
-        <jackjson.version>2.13.4</jackjson.version>
+        <jackjson.version>2.14.0-rc2</jackjson.version>
         <guava.version>31.1-jre</guava.version>
         <mysql-connector-java.version>8.0.28</mysql-connector-java.version>
         <ojdbc8.version>12.2.0.1</ojdbc8.version>
@@ -77,9 +77,10 @@
         <sa-token.version>1.31.0</sa-token.version>
         <commons-lang3.version>3.3.2</commons-lang3.version>
         <httpclient.version>4.4.1</httpclient.version>
-        <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
-        <maven-assembly-plugin.version>3.2.0</maven-assembly-plugin.version>
+        <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
+        <maven-assembly-plugin.version>3.4.2</maven-assembly-plugin.version>
         <maven.resource.version>3.2.0</maven.resource.version>
+        <maven.clean.version>3.2.0</maven.clean.version>
         <junit.version>4.12</junit.version>
         <protobuf-java.version>2.5.0</protobuf-java.version>
         <jedis.version>2.9.0</jedis.version>
@@ -88,6 +89,7 @@
         <commons-email>1.5</commons-email>
         <knife4j.version>3.0.3</knife4j.version>
         <spotless.version>2.27.1</spotless.version>
+        <jaxb.version>2.3.0</jaxb.version>
     </properties>
 
     <dependencyManagement>
@@ -478,12 +480,37 @@
                 <artifactId>dlink-process</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>${jaxb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-impl</artifactId>
+                <version>${jaxb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-core</artifactId>
+                <version>${jaxb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.activation</groupId>
+                <artifactId>activation</artifactId>
+                <version>1.1.1</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>${maven.clean.version}</version>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
@@ -539,7 +566,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
-                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <goals>
@@ -645,9 +671,6 @@
     <profiles>
         <profile>
             <id>web</id>
-            <modules>
-                <module>dlink-web</module>
-            </modules>
             <activation>
                 <activeByDefault>true</activeByDefault>
                 <property>
@@ -659,7 +682,6 @@
         <profile>
             <id>dev</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
                 <property>
                     <name>dev</name>
                 </property>
@@ -675,7 +697,7 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
                 <property>
-                    <name>prod</name>
+                    <name>!dev</name>
                 </property>
             </activation>
             <properties>
@@ -702,8 +724,7 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
                 <property>
-                    <name>scala-2.12</name>
-                    <value>flink-1.15</value>
+                    <name>!scala-2.11</name>
                 </property>
             </activation>
             <properties>
@@ -797,6 +818,9 @@
             <activation>
                 <jdk>[11,)</jdk>
             </activation>
+            <properties>
+                <target.java.version>11</target.java.version>
+            </properties>
             <build>
                 <pluginManagement>
                     <plugins>
@@ -871,6 +895,49 @@
                         </configuration>
                     </plugin>
                 </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>fast</id>
+            <activation>
+                <property>
+                    <name>fast</name>
+                </property>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-checkstyle-plugin</artifactId>
+                            <configuration>
+                                <skip>true</skip>
+                            </configuration>
+                        </plugin>
+                        <plugin>
+                            <groupId>com.diffplug.spotless</groupId>
+                            <artifactId>spotless-maven-plugin</artifactId>
+                            <configuration>
+                                <skip>true</skip>
+                            </configuration>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-enforcer-plugin</artifactId>
+                            <configuration>
+                                <skip>true</skip>
+                            </configuration>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-javadoc-plugin</artifactId>
+                            <configuration>
+                                <skip>true</skip>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
             </build>
         </profile>
 

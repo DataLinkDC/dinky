@@ -21,13 +21,9 @@
 import React from "react";
 import {CheckSquareOutlined, KeyOutlined} from '@ant-design/icons';
 import DTable from "@/components/Common/DTable";
-import {useIntl} from 'umi';
+import {l} from "@/utils/intl";
 
 const Columns = (props: any) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   const {dbId, table, schema, scroll} = props;
 

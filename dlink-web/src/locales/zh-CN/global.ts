@@ -83,13 +83,16 @@ export default {
   'global.time.day': '天',
   'global.time.millisecond': '毫秒',
 
+  'global.stay.tuned': '敬请期待',
 
   'global.table.operate': '操作',
   'global.table.updateTime': '更新时间',
   'global.table.lastUpdateTime': '最近更新时间',
   'global.table.createTime': '创建时间',
   'global.table.startTime': '开始时间',
+  'global.table.startUpTime': '启动时间',
   'global.table.endTime': '结束时间',
+  'global.table.finishTime': '完成时间',
   'global.table.useTime': '耗时',
 
   'global.table.registType': '注册方式',
@@ -112,5 +115,11 @@ export default {
   'global.table.lifecycle.online': '已上线',
   'global.table.lifecycle.unknown': '未知',
   'global.table.runmode': '运行模式',
+
+  'global.savepoint.strategy.disabled':'禁用',
+  'global.savepoint.strategy.latest':'最近一次',
+  'global.savepoint.strategy.earliest':'最早一次',
+  'global.savepoint.strategy.custom':'指定一次',
+
 
 };

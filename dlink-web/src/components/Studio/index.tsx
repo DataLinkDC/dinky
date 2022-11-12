@@ -19,7 +19,7 @@
 
 
 import React, {useCallback, useEffect, useState} from "react";
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import styles from './index.less';
 import StudioMenu from "./StudioMenu";
 import {Card, Col, Form, Row} from "antd";
@@ -43,11 +43,9 @@ import {
 import DraggleLayout from "@/components/DraggleLayout";
 import DraggleVerticalLayout from "@/components/DraggleLayout/DraggleVerticalLayout";
 import {loadSettings} from "@/pages/SettingCenter/FlinkSettings/function";
+import {l} from "@/utils/intl";
 
 const Studio = (props: any) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {isFullScreen, rightClickMenu, toolHeight, toolLeftWidth, toolRightWidth, dispatch} = props;
   const [form] = Form.useForm();

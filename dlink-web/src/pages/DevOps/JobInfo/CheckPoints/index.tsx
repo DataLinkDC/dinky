@@ -34,19 +34,16 @@ import {CheckPointsDetailInfo} from "@/pages/DevOps/data";
 import {CODE, queryData} from "@/components/Common/crud";
 import {selectSavePointRestartTask} from "@/pages/DevOps/service";
 import {JOB_LIFE_CYCLE} from "@/components/Common/JobLifeCycle";
-import {history, useIntl} from 'umi';
+import {history} from 'umi';
 import {SavePointTableListItem} from "@/components/Studio/StudioRightTool/StudioSavePoint/data";
 import moment from "moment";
+import {l} from "@/utils/intl";
 
 const {TabPane} = Tabs;
 
 const CheckPoints = (props: any) => {
 
   const {job} = props;
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   const actionRef = useRef<ActionType>();
 
@@ -211,18 +208,18 @@ const CheckPoints = (props: any) => {
 
   function recoveryCheckPoint(row: CheckPointsDetailInfo) {
     Modal.confirm({
-      title: 'Recovery Of CheckPoint',
-      content: `确定从 CheckPoint 【${row.external_path}】恢复吗？`,
+      title: l('pages.devops.jobinfo.ck.recovery'),
+      content:  l('pages.devops.jobinfo.ck.recoveryConfirm','',{path :row.external_path}),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
         const res = selectSavePointRestartTask(job?.instance?.taskId, job?.instance?.step == JOB_LIFE_CYCLE.ONLINE, row.external_path);
         res.then((result) => {
           if (result.code == CODE.SUCCESS) {
-            message.success("恢复作业成功");
+            message.success(l('pages.devops.jobinfo.ck.recovery.success'));
             history.goBack();
           } else {
-            message.error("恢复作业失败");
+            message.error(l('pages.devops.jobinfo.ck.recovery.failed'));
           }
         });
       }
@@ -250,12 +247,12 @@ const CheckPoints = (props: any) => {
 
     const columns: ProColumns<CheckPointsDetailInfo>[] = [
       {
-        title: 'ID',
+        title: l('pages.devops.jobinfo.ck.id'),
         align: 'center',
         dataIndex: 'id',
       },
       {
-        title: '状态',
+        title: l('pages.devops.jobinfo.ck.status'),
         align: 'center',
         copyable: true,
         render: (dom, entity) => {
@@ -272,7 +269,7 @@ const CheckPoints = (props: any) => {
         },
       },
       {
-        title: '耗时',
+        title: l('pages.devops.jobinfo.ck.duration'),
         align: 'center',
         copyable: true,
         render: (dom, entity) => {
@@ -280,31 +277,31 @@ const CheckPoints = (props: any) => {
         },
       },
       {
-        title: '类型',
+        title: l('pages.devops.jobinfo.ck.checkpoint_type'),
         align: 'center',
         dataIndex: 'checkpoint_type',
       },
       {
-        title: '存储位置',
+        title: l('pages.devops.jobinfo.ck.external_path'),
         align: 'center',
         copyable: true,
         dataIndex: 'external_path',
       },
       {
-        title: '最后响应时间',
+        title: l('pages.devops.jobinfo.ck.latest_ack_timestamp'),
         align: 'center',
         dataIndex: 'latest_ack_timestamp',
         valueType: 'dateTime',
       },
       {
-        title: '状态大小',
+        title: l('pages.devops.jobinfo.ck.state_size'),
         align: 'center',
         render: (dom, entity) => {
           return entity.state_size === null ? 'None' : parseByteStr(entity.state_size);
         },
       },
       {
-        title: '触发时间',
+        title: l('pages.devops.jobinfo.ck.trigger_timestamp'),
         align: 'center',
         valueType: 'dateTime',
         dataIndex: 'trigger_timestamp',
@@ -433,35 +430,35 @@ const CheckPoints = (props: any) => {
 
     const columns: ProColumns<SavePointTableListItem>[] = [
       {
-        title: 'ID',
+        title: l('pages.devops.jobinfo.ck.id'),
         align: 'center',
         dataIndex: 'id',
         hideInTable: true,
       },
       {
-        title: '任务ID',
+        title: l('pages.devops.jobinfo.ck.taskid'),
         align: 'center',
         dataIndex: 'taskId',
         hideInTable: true,
       },
       {
-        title: '名称',
+        title: l('pages.devops.jobinfo.ck.name'),
         align: 'center',
         dataIndex: 'name',
       },
       {
-        title: '类型',
+        title: l('pages.devops.jobinfo.ck.checkpoint_type'),
         align: 'center',
         dataIndex: 'type',
       },
       {
-        title: '存储位置',
+        title: l('pages.devops.jobinfo.ck.external_path'),
         align: 'center',
         copyable: true,
         dataIndex: 'path',
       },
       {
-        title: '触发时间',
+        title: l('pages.devops.jobinfo.ck.trigger_timestamp'),
         align: 'center',
         valueType: 'dateTime',
         dataIndex: 'createTime',

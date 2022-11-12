@@ -20,7 +20,7 @@
 
 import {Dropdown, Menu, message, Tabs} from 'antd';
 import React from 'react';
-import {connect, useIntl} from 'umi';
+import {connect} from 'umi';
 import {StateType} from '@/pages/DataStudio/model';
 import styles from './index.less';
 import StudioEdit from '../StudioEdit';
@@ -28,13 +28,11 @@ import {DIALECT} from '../conf';
 import StudioHome from "@/components/Studio/StudioHome";
 import {Dispatch} from "@@/plugin-dva/connect";
 import StudioKubernetes from "@/components/Studio/StudioKubernetes";
+import {l} from "@/utils/intl";
 
 const {TabPane} = Tabs;
 
 const EditorTabs = (props: any) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {tabs, current, toolHeight, width, height} = props;
 
@@ -56,7 +54,7 @@ const EditorTabs = (props: any) => {
   };
 
   const add = () => {
-    message.warn('敬请期待');
+    message.warn(l('global.stay.tuned'));
   };
 
   const remove = (targetKey: any) => {

@@ -17,9 +17,8 @@
  *
  */
 
+import {getIntl, getLocale} from "umi";
 
-import {FragmentVariableTableListItem} from "@/pages/FragmentVariable/data";
+const intl = getIntl(getLocale());
+export const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
-export const getFragmentVariableTableListItem = (values: FragmentVariableTableListItem) => {
-  return values;
-}

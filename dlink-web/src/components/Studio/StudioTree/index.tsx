@@ -19,7 +19,7 @@
 
 
 import React, {Key, useEffect, useState} from "react";
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import {DownloadOutlined, DownOutlined, FolderAddOutlined, SwitcherOutlined, UploadOutlined} from "@ant-design/icons";
 import type {UploadProps} from 'antd';
 import {Button, Col, Empty, Input, Menu, message, Modal, Row, Tooltip, Tree, Upload} from 'antd';
@@ -44,6 +44,7 @@ import {Scrollbars} from "react-custom-scrollbars";
 import {getIcon} from "@/components/Studio/icon";
 import {showEnv, showMetaStoreCatalogs} from "@/components/Studio/StudioEvent/DDL";
 import UploadModal from "@/components/Studio/StudioTree/components/UploadModal";
+import {l} from "@/utils/intl";
 
 type StudioTreeProps = {
   rightClickMenu: StateType['rightClickMenu'];
@@ -94,9 +95,6 @@ const {DirectoryTree} = Tree;
 const {Search} = Input;
 
 const StudioTree: React.FC<StudioTreeProps> = (props) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {rightClickMenu, dispatch, tabs, refs, toolHeight} = props;
   const [treeData, setTreeData] = useState<TreeDataNode[]>();
@@ -473,7 +471,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
         <Menu.Item key='Copy'>{l('right.menu.copy')}</Menu.Item>
         <Menu.Item key='Cut'>{l('right.menu.cut')}</Menu.Item>
         {cutId && <Menu.Item key='Paste'>{l('right.menu.paste')}</Menu.Item>}
-        <Menu.Item disabled>{l('right.menu.delete')}</Menu.Item>
+        <Menu.Item key='Delete'>{l('right.menu.delete')}</Menu.Item>
       </>)
     } else {
       menuItems = (<>
@@ -614,7 +612,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
         }
         getTreeData();
       } else if (info.file.status === 'error') {
-        message.error(`${info.file.name} 上传失败`);
+        message.error(`${info.file.name}`+ l('app.request.upload.failed'));
       }
     },
   };

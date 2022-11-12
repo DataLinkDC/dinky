@@ -28,7 +28,6 @@
 
     <artifactId>dlink-client-1.11</artifactId>
     <properties>
-
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>${target.java.version}</maven.compiler.source>
         <maven.compiler.target>${target.java.version}</maven.compiler.target>
@@ -38,7 +37,6 @@
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-client-base</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.dlink</groupId>

@@ -28,7 +28,7 @@ import {handleAddOrUpdate, handleRemove, queryData} from "@/components/Common/cr
 import {TenantTableListItem} from "@/pages/AuthenticationCenter/data.d";
 import TenantForm from "@/pages/AuthenticationCenter/TenantManager/components/TenantForm";
 import GrantTenantTransfer from "@/pages/AuthenticationCenter/TenantManager/components/GrantTenantTransfer";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
 const url = '/api/tenant';
 const TenantFormList: React.FC<{}> = (props: any) => {
@@ -40,10 +40,6 @@ const TenantFormList: React.FC<{}> = (props: any) => {
   const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<TenantTableListItem[]>([]);
   const [formValues, setFormValues] = useState({});
-
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
 
   const editAndDelete = (key: string | number, currentItem: TenantTableListItem) => {

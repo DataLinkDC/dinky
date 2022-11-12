@@ -17,8 +17,7 @@
  *
  */
 
-
-import {useIntl} from "umi";
+import {l} from "@/utils/intl"
 
 export function parseByteStr(limit: number) {
   let size = "";
@@ -48,26 +47,26 @@ export function parseNumStr(num: number) {
 
 export function parseMilliSecondStr(second_time: number) {
   if (((second_time / 1000) % 60) < 1) {
-    return second_time + useIntl().formatMessage({id: 'global.time.millisecond'});
+    return second_time + l('global.time.millisecond');
   }
   return parseSecondStr(second_time / 1000);
 }
 
 export function parseSecondStr(second_time: number) {
   second_time = Math.floor(second_time);
-  let time = second_time + useIntl().formatMessage({id: 'global.time.second'});
+  let time = second_time + l( 'global.time.second');
   if (second_time > 60) {
     let second = second_time % 60;
     let min = Math.floor(second_time / 60);
-    time = min + useIntl().formatMessage({id: 'global.time.minute'}) + second + useIntl().formatMessage({id: 'global.time.second'});
+    time = min + l( 'global.time.minute') + second + l( 'global.time.second');
     if (min > 60) {
       min = Math.floor(second_time / 60) % 60;
       let hour = Math.floor(Math.floor(second_time / 60) / 60);
-      time = hour + useIntl().formatMessage({id: 'global.time.hour'}) + min + useIntl().formatMessage({id: 'global.time.minute'}) + second + useIntl().formatMessage({id: 'global.time.second'});
+      time = hour + l( 'global.time.hour') + min + l( 'global.time.minute') + second + l( 'global.time.second');
       if (hour > 24) {
         hour = Math.floor(Math.floor(second_time / 60) / 60) % 24;
         let day = Math.floor(Math.floor(Math.floor(second_time / 60) / 60) / 24);
-        time = day + useIntl().formatMessage({id: 'global.time.day'}) + hour + useIntl().formatMessage({id: 'global.time.hour'}) + min + useIntl().formatMessage({id: 'global.time.minute'}) + second + useIntl().formatMessage({id: 'global.time.second'});
+        time = day + l( 'global.time.day') + hour + l( 'global.time.hour') + min + l( 'global.time.minute') + second + l( 'global.time.second');
       }
     }
   }
