@@ -45,6 +45,6 @@ public class SinkBuilderFactory {
                 return sinkBuilders[i].create(config);
             }
         }
-        return new SQLSinkBuilder().create(config)
+        return new SQLSinkBuilder().create(config);
     }
 }
