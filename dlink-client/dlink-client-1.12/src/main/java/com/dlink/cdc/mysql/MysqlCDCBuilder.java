@@ -38,7 +38,6 @@ import java.util.Properties;
 
 import com.alibaba.ververica.cdc.connectors.mysql.MySQLSource;
 import com.alibaba.ververica.cdc.connectors.mysql.table.StartupOptions;
-import com.alibaba.ververica.cdc.debezium.StringDebeziumDeserializationSchema;
 
 /**
  * MysqlCDCBuilder
@@ -94,7 +93,7 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         } else {
             sourceBuilder.tableList(new String[0]);
         }
-        sourceBuilder.deserializer(new StringDebeziumDeserializationSchema());
+        sourceBuilder.deserializer(new MysqlJsonDebeziumDeserializationSchema());
         sourceBuilder.debeziumProperties(properties);
         if (Asserts.isNotNullString(config.getStartupMode())) {
             switch (config.getStartupMode().toLowerCase()) {

@@ -37,7 +37,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import com.alibaba.ververica.cdc.connectors.mysql.MySQLSource;
-import com.alibaba.ververica.cdc.debezium.StringDebeziumDeserializationSchema;
 
 /**
  * MysqlCDCBuilder
@@ -76,10 +75,10 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
             }
         }
         MySQLSource.Builder<String> sourceBuilder = MySQLSource.<String>builder()
-            .hostname(config.getHostname())
-            .port(config.getPort())
-            .username(config.getUsername())
-            .password(config.getPassword());
+                .hostname(config.getHostname())
+                .port(config.getPort())
+                .username(config.getUsername())
+                .password(config.getPassword());
         String database = config.getDatabase();
         if (Asserts.isNotNullString(database)) {
             String[] databases = database.split(FlinkParamConstant.SPLIT);
