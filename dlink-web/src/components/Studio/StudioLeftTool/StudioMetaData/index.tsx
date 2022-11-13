@@ -18,12 +18,19 @@
  */
 
 
-import {Button, Empty, Modal, Select, Tabs, Tag, Tree} from "antd";
+import {Button, Col, Empty, Modal, Row, Select, Spin, Tabs, Tag, Tree} from "antd";
 import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import React, {useState} from "react";
-import {CodepenOutlined, DatabaseOutlined, DownOutlined, OrderedListOutlined, TableOutlined} from '@ant-design/icons';
-import {showMetaDataTable} from "@/components/Studio/StudioEvent/DDL";
+import {
+  CodepenOutlined,
+  DatabaseOutlined,
+  DownOutlined,
+  OrderedListOutlined,
+  PoweroffOutlined,
+  TableOutlined
+} from '@ant-design/icons';
+import {clearMetaDataTable, showMetaDataTable} from "@/components/Studio/StudioEvent/DDL";
 import {Scrollbars} from 'react-custom-scrollbars';
 import Columns from "@/pages/DataBase/Columns";
 import Tables from "@/pages/DataBase/Tables";
@@ -42,12 +49,19 @@ const StudioMetaData = (props: any) => {
   const [treeData, setTreeData] = useState<[]>([]);
   const [modalVisit, setModalVisit] = useState(false);
   const [row, setRow] = useState<TreeDataNode>();
+  const [loadingDatabase, setloadingDatabase] = useState(false);
 
   const onRefreshTreeData = (databaseId: number) => {
-    if (!databaseId) return;
+    if (!databaseId) {
+      setloadingDatabase(false);
+      return;
+    }
+    setloadingDatabase(true);
+
     setDatabaseId(databaseId);
     const res = showMetaDataTable(databaseId);
     res.then((result) => {
+      setloadingDatabase(false);
       let tables = result.datas;
       if (tables) {
         for (let i = 0; i < tables.length; i++) {
@@ -95,17 +109,34 @@ const StudioMetaData = (props: any) => {
     setRow(undefined);
     setModalVisit(false);
   }
+  const refeshDataBase = (value:number) => {
+    if (!databaseId) return;
+    setloadingDatabase(true);
+    clearMetaDataTable(databaseId).then(result => {
+      onChangeDataBase(databaseId);
+    })
+  };
 
   return (
-    <>
-      <Select
-        style={{width: '90%'}}
-        placeholder="选择数据源"
-        optionLabelProp="label"
-        onChange={onChangeDataBase}
-      >
-        {getDataBaseOptions()}
-      </Select>
+    <Spin spinning={loadingDatabase} delay={500}>
+      <Row>
+        <Col span={18}>
+          <Select
+            style={{width: '90%'}}
+            placeholder="选择数据源"
+            optionLabelProp="label"
+            onChange={onChangeDataBase}
+          >
+            {getDataBaseOptions()}
+          </Select>
+        </Col>
+        <Col span={1}>
+          <Button type="link"
+                  onClick={() => {refeshDataBase(databaseId)}}
+          >{l('button.refresh')}</Button>
+        </Col>
+      </Row>
+
       <Scrollbars style={{height: (toolHeight - 32)}}>
         {treeData.length > 0 ? (
           <DirectoryTree
@@ -170,7 +201,7 @@ const StudioMetaData = (props: any) => {
           </TabPane>
         </Tabs>
       </Modal>
-    </>
+    </Spin>
   );
 };
 
