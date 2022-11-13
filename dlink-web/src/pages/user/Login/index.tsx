@@ -25,11 +25,12 @@ import {history, Link, SelectLang, useModel} from 'umi';
 import Footer from '@/components/Footer';
 import {login} from '@/services/ant-design-pro/api';
 import {CheckCard} from '@ant-design/pro-components';
-
 import styles from './index.less';
 import {getData} from "@/components/Common/crud";
 import {TenantTableListItem} from "@/pages/AuthenticationCenter/data.d";
 import {l} from "@/utils/intl";
+import cookies from "js-cookie";
+import {setLocale} from "@@/plugin-locale/localeExports";
 
 
 /** 此方法会跳转到 redirect 参数所在的位置 */
@@ -163,10 +164,13 @@ const Login: React.FC = () => {
     </>
   }
 
-
   return (
     <div className={styles.container}>
-      <div className={styles.lang}>{SelectLang && <SelectLang/>}</div>
+      <div className={styles.lang}>{SelectLang && <SelectLang onItemClick={(e) => {
+        let language = e.key.toString()
+        cookies.set('language', language, {path: '/'})
+        setLocale(language)
+      }}/>}</div>
       <div className={styles.content}>
         <div className={styles.top}>
           <div className={styles.header}>
