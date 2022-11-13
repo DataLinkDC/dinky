@@ -34,8 +34,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import com.ververica.cdc.connectors.base.options.StartupOptions;
 import com.ververica.cdc.connectors.oracle.OracleSource;
-import com.ververica.cdc.connectors.oracle.table.StartupOptions;
 import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
 
 /**

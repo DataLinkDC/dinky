@@ -21,6 +21,7 @@ package com.dlink.cdc;
 
 import com.dlink.exception.SplitTableException;
 import com.dlink.model.FlinkCDCConfig;
+
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
