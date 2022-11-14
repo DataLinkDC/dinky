@@ -24,9 +24,7 @@ import org.apache.flink.connector.jdbc.internal.converter.OracleRowConverter;
 import org.apache.flink.table.types.logical.LogicalTypeRoot;
 import org.apache.flink.table.types.logical.RowType;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -75,56 +73,56 @@ public class OracleDialect extends AbstractDialect {
 
     @Override
     public Optional<String> getUpsertStatement(
-        String tableName, String[] fieldNames, String[] uniqueKeyFields) {
+                                               String tableName, String[] fieldNames, String[] uniqueKeyFields) {
 
         String sourceFields =
-            Arrays.stream(fieldNames)
-                .map(f -> ":" + f + " " + quoteIdentifier(f))
-                .collect(Collectors.joining(", "));
+                Arrays.stream(fieldNames)
+                        .map(f -> ":" + f + " " + quoteIdentifier(f))
+                        .collect(Collectors.joining(", "));
 
         String onClause =
-            Arrays.stream(uniqueKeyFields)
-                .map(f -> "t." + quoteIdentifier(f) + "=s." + quoteIdentifier(f))
-                .collect(Collectors.joining(" and "));
+                Arrays.stream(uniqueKeyFields)
+                        .map(f -> "t." + quoteIdentifier(f) + "=s." + quoteIdentifier(f))
+                        .collect(Collectors.joining(" and "));
 
         final Set<String> uniqueKeyFieldsSet =
-            Arrays.stream(uniqueKeyFields).collect(Collectors.toSet());
+                Arrays.stream(uniqueKeyFields).collect(Collectors.toSet());
         String updateClause =
-            Arrays.stream(fieldNames)
-                .filter(f -> !uniqueKeyFieldsSet.contains(f))
-                .map(f -> "t." + quoteIdentifier(f) + "=s." + quoteIdentifier(f))
-                .collect(Collectors.joining(", "));
+                Arrays.stream(fieldNames)
+                        .filter(f -> !uniqueKeyFieldsSet.contains(f))
+                        .map(f -> "t." + quoteIdentifier(f) + "=s." + quoteIdentifier(f))
+                        .collect(Collectors.joining(", "));
 
         String insertFields =
-            Arrays.stream(fieldNames)
-                .map(this::quoteIdentifier)
-                .collect(Collectors.joining(", "));
+                Arrays.stream(fieldNames)
+                        .map(this::quoteIdentifier)
+                        .collect(Collectors.joining(", "));
 
         String valuesClause =
-            Arrays.stream(fieldNames)
-                .map(f -> "s." + quoteIdentifier(f))
-                .collect(Collectors.joining(", "));
+                Arrays.stream(fieldNames)
+                        .map(f -> "s." + quoteIdentifier(f))
+                        .collect(Collectors.joining(", "));
 
         // if we can't divide schema and table-name is risky to call quoteIdentifier(tableName)
         // for example [tbo].[sometable] is ok but [tbo.sometable] is not
         String mergeQuery =
-            " MERGE INTO "
-                + tableName
-                + " t "
-                + " USING (SELECT "
-                + sourceFields
-                + " FROM DUAL) s "
-                + " ON ("
-                + onClause
-                + ") "
-                + " WHEN MATCHED THEN UPDATE SET "
-                + updateClause
-                + " WHEN NOT MATCHED THEN INSERT ("
-                + insertFields
-                + ")"
-                + " VALUES ("
-                + valuesClause
-                + ")";
+                " MERGE INTO "
+                        + tableName
+                        + " t "
+                        + " USING (SELECT "
+                        + sourceFields
+                        + " FROM DUAL) s "
+                        + " ON ("
+                        + onClause
+                        + ") "
+                        + " WHEN MATCHED THEN UPDATE SET "
+                        + updateClause
+                        + " WHEN NOT MATCHED THEN INSERT ("
+                        + insertFields
+                        + ")"
+                        + " VALUES ("
+                        + valuesClause
+                        + ")";
 
         return Optional.of(mergeQuery);
     }
@@ -158,24 +156,24 @@ public class OracleDialect extends AbstractDialect {
     public List<LogicalTypeRoot> unsupportedTypes() {
 
         // TODO: We can't convert BINARY data type to
-        //  PrimitiveArrayTypeInfo.BYTE_PRIMITIVE_ARRAY_TYPE_INFO in
+        // PrimitiveArrayTypeInfo.BYTE_PRIMITIVE_ARRAY_TYPE_INFO in
         // LegacyTypeInfoDataTypeConverter.
         return Arrays.asList(
-            LogicalTypeRoot.CHAR,
-            LogicalTypeRoot.VARCHAR,
-            LogicalTypeRoot.BOOLEAN,
-            LogicalTypeRoot.VARBINARY,
-            LogicalTypeRoot.DECIMAL,
-            LogicalTypeRoot.TINYINT,
-            LogicalTypeRoot.SMALLINT,
-            LogicalTypeRoot.INTEGER,
-            LogicalTypeRoot.BIGINT,
-            LogicalTypeRoot.FLOAT,
-            LogicalTypeRoot.DOUBLE,
-            LogicalTypeRoot.DATE,
-            LogicalTypeRoot.TIME_WITHOUT_TIME_ZONE,
-            LogicalTypeRoot.TIMESTAMP_WITHOUT_TIME_ZONE,
-            LogicalTypeRoot.TIMESTAMP_WITH_LOCAL_TIME_ZONE,
-            LogicalTypeRoot.ARRAY);
+                LogicalTypeRoot.CHAR,
+                LogicalTypeRoot.VARCHAR,
+                LogicalTypeRoot.BOOLEAN,
+                LogicalTypeRoot.VARBINARY,
+                LogicalTypeRoot.DECIMAL,
+                LogicalTypeRoot.TINYINT,
+                LogicalTypeRoot.SMALLINT,
+                LogicalTypeRoot.INTEGER,
+                LogicalTypeRoot.BIGINT,
+                LogicalTypeRoot.FLOAT,
+                LogicalTypeRoot.DOUBLE,
+                LogicalTypeRoot.DATE,
+                LogicalTypeRoot.TIME_WITHOUT_TIME_ZONE,
+                LogicalTypeRoot.TIMESTAMP_WITHOUT_TIME_ZONE,
+                LogicalTypeRoot.TIMESTAMP_WITH_LOCAL_TIME_ZONE,
+                LogicalTypeRoot.ARRAY);
     }
 }

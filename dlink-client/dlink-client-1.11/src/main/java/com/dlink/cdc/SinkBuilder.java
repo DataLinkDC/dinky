@@ -21,6 +21,7 @@ package com.dlink.cdc;
 
 import com.dlink.executor.CustomTableEnvironment;
 import com.dlink.model.FlinkCDCConfig;
+import com.dlink.model.Table;
 
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -37,5 +38,11 @@ public interface SinkBuilder {
 
     SinkBuilder create(FlinkCDCConfig config);
 
-    DataStreamSource build(CDCBuilder cdcBuilder, StreamExecutionEnvironment env, CustomTableEnvironment customTableEnvironment, DataStreamSource<String> dataStreamSource);
+    DataStreamSource build(CDCBuilder cdcBuilder, StreamExecutionEnvironment env,
+                           CustomTableEnvironment customTableEnvironment, DataStreamSource<String> dataStreamSource);
+
+    String getSinkSchemaName(Table table);
+
+    String getSinkTableName(Table table);
+
 }

@@ -15,16 +15,14 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>dlink</artifactId>
         <groupId>com.dlink</groupId>
+        <artifactId>dlink</artifactId>
         <version>0.6.8-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
     <artifactId>dlink-executor</artifactId>
     <properties>
@@ -49,11 +47,30 @@
             <artifactId>dlink-metadata-base</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-metadata-mysql</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <profiles>
         <profile>
             <id>flink-1.11</id>
+            <dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.kafka</groupId>
+                        <artifactId>kafka-clients</artifactId>
+                        <version>2.4.1</version>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
             <dependencies>
                 <dependency>
                     <groupId>com.dlink</groupId>
@@ -70,6 +87,15 @@
 
         <profile>
             <id>flink-1.12</id>
+            <dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.kafka</groupId>
+                        <artifactId>kafka-clients</artifactId>
+                        <version>2.4.1</version>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
             <dependencies>
                 <dependency>
                     <groupId>com.dlink</groupId>
@@ -97,6 +123,12 @@
                     <artifactId>dlink-flink-1.13</artifactId>
                     <scope>provided</scope>
                 </dependency>
+                <dependency>
+                    <groupId>org.apache.flink</groupId>
+                    <artifactId>flink-shaded-guava</artifactId>
+                    <version>18.0-13.0</version>
+                    <scope>test</scope>
+                </dependency>
             </dependencies>
         </profile>
 
@@ -112,6 +144,11 @@
                     <groupId>com.dlink</groupId>
                     <artifactId>dlink-flink-1.14</artifactId>
                     <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.fasterxml.jackson.datatype</groupId>
+                    <artifactId>jackson-datatype-jsr310</artifactId>
+                    <scope>test</scope>
                 </dependency>
             </dependencies>
         </profile>
@@ -129,6 +166,11 @@
                     <artifactId>dlink-flink-1.15</artifactId>
                     <scope>provided</scope>
                 </dependency>
+                <dependency>
+                    <groupId>com.fasterxml.jackson.datatype</groupId>
+                    <artifactId>jackson-datatype-jsr310</artifactId>
+                    <scope>test</scope>
+                </dependency>
             </dependencies>
         </profile>
 
@@ -144,6 +186,11 @@
                     <groupId>com.dlink</groupId>
                     <artifactId>dlink-flink-1.16</artifactId>
                     <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.fasterxml.jackson.datatype</groupId>
+                    <artifactId>jackson-datatype-jsr310</artifactId>
+                    <scope>test</scope>
                 </dependency>
             </dependencies>
         </profile>

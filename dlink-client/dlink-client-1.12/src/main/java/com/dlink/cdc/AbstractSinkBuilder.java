@@ -77,7 +77,7 @@ import org.slf4j.LoggerFactory;
  * @author wenmo
  * @since 2022/4/12 21:28
  **/
-public abstract class AbstractSinkBuilder {
+public abstract class AbstractSinkBuilder implements SinkBuilder {
 
     protected static final Logger logger = LoggerFactory.getLogger(AbstractSinkBuilder.class);
 
@@ -104,7 +104,7 @@ public abstract class AbstractSinkBuilder {
         Map<String, String> sink = config.getSink();
         for (Map.Entry<String, String> entry : sink.entrySet()) {
             if (Asserts.isNotNullString(entry.getKey()) && entry.getKey().startsWith("properties") && Asserts.isNotNullString(entry.getValue())) {
-                properties.setProperty(entry.getKey().replace("properties.",""), entry.getValue());
+                properties.setProperty(entry.getKey().replace("properties.", ""), entry.getValue());
             }
         }
         return properties;
@@ -137,9 +137,9 @@ public abstract class AbstractSinkBuilder {
     }
 
     protected DataStream<Map> shunt(
-            SingleOutputStreamOperator<Map> processOperator,
-            Table table,
-            OutputTag<Map> tag) {
+        SingleOutputStreamOperator<Map> processOperator,
+        Table table,
+        OutputTag<Map> tag) {
 
         return processOperator.getSideOutput(tag);
     }
@@ -207,6 +207,7 @@ public abstract class AbstractSinkBuilder {
         List<String> columnNameList,
         List<LogicalType> columnTypeList);
 
+    @Override
     public DataStreamSource build(
         CDCBuilder cdcBuilder,
         StreamExecutionEnvironment env,
@@ -307,7 +308,8 @@ public abstract class AbstractSinkBuilder {
         }
     }
 
-    protected String getSinkSchemaName(Table table) {
+    @Override
+    public String getSinkSchemaName(Table table) {
         String schemaName = table.getSchema();
         if (config.getSink().containsKey("sink.db")) {
             schemaName = config.getSink().get("sink.db");
@@ -315,7 +317,8 @@ public abstract class AbstractSinkBuilder {
         return schemaName;
     }
 
-    protected String getSinkTableName(Table table) {
+    @Override
+    public String getSinkTableName(Table table) {
         String tableName = table.getName();
         if (config.getSink().containsKey("table.prefix.schema")) {
             if (Boolean.valueOf(config.getSink().get("table.prefix.schema"))) {
