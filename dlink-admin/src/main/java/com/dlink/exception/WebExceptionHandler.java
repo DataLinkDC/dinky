@@ -68,7 +68,7 @@ public class WebExceptionHandler {
             (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletResponse response = servletRequestAttributes.getResponse();
         response.setStatus(CodeEnum.NOTLOGIN.getCode());
-        return Result.notLogin(MessageResolverUtils.getMessage("login.not-login"));
+        return Result.notLogin(MessageResolverUtils.getMessage("login.not.login"));
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST) // 设置状态码为 400
