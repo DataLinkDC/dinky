@@ -51,7 +51,6 @@ const Login: React.FC = () => {
   const {initialState, setInitialState} = useModel('@@initialState');
   const [isLogin, setIsLogin] = useState<boolean>(true);
   const [chooseTenant, setChooseTenant] = useState<boolean>(false);
-  const [tenantId, setTenantId] = useState<number>();
   const [tenant, setTenant] = useState<TenantTableListItem[]>([]);
 
   const [checkDisabled, setCheckDisabled] = useState<boolean>(true);
@@ -128,8 +127,6 @@ const Login: React.FC = () => {
                </Button>,
                <Button disabled={checkDisabled} type="primary" key="submit" loading={submitting}
                        onClick={async () => {
-                         userParamsState.tenantId = tenantId;
-                         localStorage.setItem("dlink-tenantId", tenantId.toString());
                          await handleSubmit(userParamsState);
                        }}>
                  {l('button.confirm')}
@@ -139,9 +136,10 @@ const Login: React.FC = () => {
           multiple={false}
           onChange={(value) => {
             if (value) {
-              setCheckDisabled(false)
-              setTenantId(value as number)
-              userParamsState.tenantId = value as number;
+              setCheckDisabled(false) // 如果没选择租户 ·确认按钮· 则禁用
+              userParamsState.tenantId = value as number; // 将租户id给后端入参
+              localStorage.setItem("dlink-tenantId", value.toString()); // 放入本地存储中 request2请求时会放入header
+              cookies.set('tenantId', value.toString(), {path: '/'}) // 放入cookie中
             } else {
               setCheckDisabled(true)
             }
