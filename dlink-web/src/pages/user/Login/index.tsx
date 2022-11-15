@@ -166,6 +166,9 @@ const Login: React.FC = () => {
     <div className={styles.container}>
       <div className={styles.lang}>{SelectLang && <SelectLang onItemClick={(e) => {
         let language = e.key.toString()
+        if (language === undefined || language === ""){
+          language="zh-CN"
+        }
         cookies.set('language', language, {path: '/'})
         setLocale(language)
       }}/>}</div>
