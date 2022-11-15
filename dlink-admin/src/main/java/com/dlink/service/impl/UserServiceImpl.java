@@ -242,7 +242,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         Set<Integer> tenantIds = new HashSet<>();
         userTenants.forEach(userTenant -> tenantIds.add(userTenant.getTenantId()));
         List<Tenant> tenants = tenantService.getTenantByIds(tenantIds);
-        return Result.succeed(tenants, MessageResolverUtils.getMessage("response.get.successfully"));
+        return Result.succeed(tenants, MessageResolverUtils.getMessage("response.get.success"));
     }
 
 }
