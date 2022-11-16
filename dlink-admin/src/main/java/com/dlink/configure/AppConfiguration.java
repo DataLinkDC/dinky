@@ -19,6 +19,8 @@
 
 package com.dlink.configure;
 
+import com.dlink.constant.BaseConstant;
+import com.dlink.interceptor.LocaleChangeInterceptor;
 import com.dlink.interceptor.TenantInterceptor;
 
 import java.util.Locale;
@@ -29,7 +31,6 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
-import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
 import cn.dev33.satoken.interceptor.SaRouteInterceptor;
 
@@ -42,8 +43,6 @@ import cn.dev33.satoken.interceptor.SaRouteInterceptor;
 @Configuration
 public class AppConfiguration implements WebMvcConfigurer {
 
-    public static final String LOCALE_LANGUAGE_COOKIE = "language";
-
     /**
      * Cookie
      *
@@ -52,7 +51,7 @@ public class AppConfiguration implements WebMvcConfigurer {
     @Bean(name = "localeResolver")
     public LocaleResolver localeResolver() {
         CookieLocaleResolver localeResolver = new CookieLocaleResolver();
-        localeResolver.setCookieName(LOCALE_LANGUAGE_COOKIE);
+        localeResolver.setCookieName(BaseConstant.LOCALE_LANGUAGE_COOKIE);
         // set default locale
         localeResolver.setDefaultLocale(Locale.SIMPLIFIED_CHINESE);
         // set language tag compliant
