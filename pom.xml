@@ -569,7 +569,7 @@
                 <configuration>
                     <filesets>
                         <fileset>
-                            <directory>${project.basedir}/extends</directory>
+                            <directory>${project.basedir}/build/extends</directory>
                         </fileset>
                     </filesets>
                 </configuration>
