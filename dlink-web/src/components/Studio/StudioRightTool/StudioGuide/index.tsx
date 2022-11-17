@@ -22,15 +22,12 @@ import {Typography} from 'antd';
 import React from 'react';
 import {StateType} from '@/pages/DataStudio/model';
 import {Scrollbars} from 'react-custom-scrollbars';
-import {connect, history, useIntl} from 'umi';
+import {connect, history} from 'umi';
+import {l} from "@/utils/intl";
 
 const {Title, Paragraph, Link, Text} = Typography;
 
 const StudioGuide = (props: any) => {
-
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {toolHeight} = props;
 

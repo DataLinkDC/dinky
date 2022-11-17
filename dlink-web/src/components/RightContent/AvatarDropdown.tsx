@@ -27,12 +27,13 @@ import {
   UserSwitchOutlined
 } from '@ant-design/icons';
 import {Avatar, Menu, Modal, Spin} from 'antd';
-import {history, useIntl, useModel} from 'umi';
+import {history, useModel} from 'umi';
 import {stringify} from 'querystring';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 import {outLogin} from '@/services/ant-design-pro/api';
 import {ActionType} from "@ant-design/pro-table";
+import {l} from "@/utils/intl";
 
 export type GlobalHeaderRightProps = {
   menu?: boolean;
@@ -63,9 +64,6 @@ const requestUrl = '/api/tenant/switchTenant';
 const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
   const {initialState, setInitialState} = useModel('@@initialState');
   const actionRef = useRef<ActionType>();
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const onMenuClick = useCallback(
     (event: {

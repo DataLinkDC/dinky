@@ -17,6 +17,7 @@
  *
  */
 
+import {l} from "@/utils/intl"
 
 export type Config = {
   name: string,

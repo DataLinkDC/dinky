@@ -40,17 +40,13 @@ import {
 import {showCluster, showSessionCluster} from "@/components/Studio/StudioEvent/DDL";
 import {RUN_MODE} from "@/components/Studio/conf";
 import ClusterForm from "@/pages/Cluster/components/ClusterForm";
-import {useIntl} from 'umi';
+import {l} from "@/utils/intl";
 
 const TextArea = Input.TextArea;
 const url = '/api/cluster';
 
 
 const ClusterTableList: React.FC<{}> = (props: any) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   const {dispatch} = props;
   const [modalVisible, handleModalVisible] = useState<boolean>(false);

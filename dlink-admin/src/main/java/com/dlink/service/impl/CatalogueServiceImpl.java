@@ -27,17 +27,22 @@ import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.dto.CatalogueTaskDTO;
 import com.dlink.mapper.CatalogueMapper;
 import com.dlink.model.Catalogue;
+import com.dlink.model.JobInstance;
 import com.dlink.model.JobLifeCycle;
+import com.dlink.model.JobStatus;
 import com.dlink.model.Statement;
 import com.dlink.model.Task;
-import com.dlink.model.TaskVersion;
 import com.dlink.service.CatalogueService;
+import com.dlink.service.JobInstanceService;
 import com.dlink.service.StatementService;
 import com.dlink.service.TaskService;
-import com.dlink.service.TaskVersionService;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,10 +67,9 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     @Autowired
     private TaskService taskService;
     @Autowired
-    private StatementService statementService;
-
+    private JobInstanceService jobInstanceService;
     @Autowired
-    private TaskVersionService taskVersionService;
+    private StatementService statementService;
 
     @Override
     public List<Catalogue> getAllData() {
@@ -134,22 +138,68 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     }
 
     @Override
-    public boolean removeCatalogueAndTaskById(Integer id) {
+    public List<String> removeCatalogueAndTaskById(Integer id) {
+        List<String> errors = new ArrayList<>();
         Catalogue catalogue = this.getById(id);
         if (isNull(catalogue)) {
-            return false;
+            errors.add(id + "不存在！");
         } else {
             if (isNotNull(catalogue.getTaskId())) {
-                taskService.removeById(catalogue.getTaskId());
-                statementService.removeById(catalogue.getTaskId());
-                List<TaskVersion> taskVersionList = taskVersionService.getTaskVersionByTaskId(catalogue.getTaskId());
-                if (taskVersionList.size() > 0) {
-                    taskVersionService.removeByIds(taskVersionList);
+                Integer taskId = catalogue.getTaskId();
+                JobInstance job = jobInstanceService.getJobInstanceByTaskId(taskId);
+                if (job == null
+                        || (JobStatus.FINISHED.equals(job.getStatus())
+                                || JobStatus.FAILED.equals(job.getStatus())
+                                || JobStatus.CANCELED.equals(job.getStatus())
+                                || JobStatus.UNKNOWN.equals(job.getStatus()))) {
+                    taskService.removeById(taskId);
+                    statementService.removeById(taskId);
+                    this.removeById(id);
+                } else {
+                    errors.add(job.getName());
+                }
+            } else {
+                List<Catalogue> all = this.getAllData();
+                Set<Catalogue> del = new HashSet<>();
+                this.findAllCatalogueInDir(id, all, del);
+                List<String> actives = this.analysisActiveCatalogues(del);
+                if (actives.isEmpty()) {
+                    for (Catalogue c : del) {
+                        taskService.removeById(c.getTaskId());
+                        statementService.removeById(c.getTaskId());
+                        this.removeById(c.getId());
+                    }
+                } else {
+                    errors.addAll(actives);
                 }
             }
-            this.removeById(id);
-            return true;
         }
+
+        return errors;
+    }
+
+    private void findAllCatalogueInDir(Integer id, List<Catalogue> all, Set<Catalogue> del) {
+        List<Catalogue> relatedList =
+                all.stream().filter(catalogue -> id.equals(catalogue.getId()) || id.equals(catalogue.getParentId()))
+                        .collect(Collectors.toList());
+        List<Catalogue> subDirCatalogue =
+                relatedList.stream().filter(catalogue -> catalogue.getType() == null).collect(Collectors.toList());
+        subDirCatalogue.forEach(catalogue -> {
+            if (id != catalogue.getId()) {
+                findAllCatalogueInDir(catalogue.getId(), all, del);
+            }
+        });
+        del.addAll(relatedList);
+    }
+
+    private List<String> analysisActiveCatalogues(Set<Catalogue> del) {
+        List<Integer> actives = jobInstanceService.listJobInstanceActive().stream().map(JobInstance::getTaskId)
+                .collect(Collectors.toList());
+        List<Catalogue> activeCatalogue = del.stream()
+                .filter(catalogue -> catalogue.getTaskId() != null && actives.contains(catalogue.getTaskId()))
+                .collect(Collectors.toList());
+        return activeCatalogue.stream().map(catalogue -> taskService.getById(catalogue.getTaskId()).getName())
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -176,13 +226,13 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         if (ObjectUtil.isNull(oldTask)) {
             return false;
         }
-        //查询作业名称
+        // 查询作业名称
         int size = taskService.queryAllSizeByName(oldTask.getName());
 
         Task newTask = new Task();
         BeanUtil.copyProperties(oldTask, newTask);
         newTask.setId(null);
-        //设置复制后的作业名称为：原名称+自增序列
+        // 设置复制后的作业名称为：原名称+自增序列
         size = size + 1;
         newTask.setName(oldTask.getName() + "_" + size);
         newTask.setAlias(oldTask.getAlias() + "_" + size);
@@ -190,13 +240,14 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         taskService.save(newTask);
 
         Statement statementServiceById = statementService.getById(catalogue.getTaskId());
-        //新建作业的sql语句
+        // 新建作业的sql语句
         Statement statement = new Statement();
-        statement.setId(newTask.getId());
         statement.setStatement(statementServiceById.getStatement());
+        statement.setId(newTask.getId());
         statementService.save(statement);
 
-        Catalogue one = this.getOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, catalogue.getTaskId()));
+        Catalogue one =
+                this.getOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, catalogue.getTaskId()));
 
         catalogue.setName(newTask.getAlias());
         catalogue.setIsLeaf(one.getIsLeaf());
@@ -213,7 +264,8 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         Integer parentId = 0;
         for (int i = 0; i < catalogueNames.length - 1; i++) {
             String catalogueName = catalogueNames[i];
-            Catalogue catalogue = getOne(new QueryWrapper<Catalogue>().eq("name", catalogueName).eq("parent_id", parentId).last(" limit 1"));
+            Catalogue catalogue = getOne(
+                    new QueryWrapper<Catalogue>().eq("name", catalogueName).eq("parent_id", parentId).last(" limit 1"));
             if (Asserts.isNotNull(catalogue)) {
                 parentId = catalogue.getId();
                 continue;

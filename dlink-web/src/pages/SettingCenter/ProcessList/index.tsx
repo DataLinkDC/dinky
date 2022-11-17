@@ -24,16 +24,13 @@ import {PageContainer} from '@ant-design/pro-layout';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import {getData} from "@/components/Common/crud";
 import {ProcessItem} from "@/pages/SettingCenter/ProcessList/data";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
 const url = '/api/process/listAllProcess';
 const ProcessList: React.FC<{}> = (props: any) => {
   const {dispatch} = props;
   const [row, setRow] = useState<ProcessItem>();
   const actionRef = useRef<ActionType>();
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const columns: ProColumns<ProcessItem>[] = [
     {

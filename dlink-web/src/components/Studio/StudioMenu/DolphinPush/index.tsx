@@ -20,16 +20,15 @@
 import type {FormInstance} from 'antd/es/form';
 import {Button, Checkbox, Col, Form, InputNumber, message, Row, Select, Switch} from "antd";
 import {StateType} from "@/pages/DataStudio/model";
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import React, {useEffect, useState} from "react";
 import {createTaskDefinition, getTaskMainInfos, updateTaskDefinition} from "@/pages/DataStudio/service";
 import {CODE} from "@/components/Common/crud";
 import TextArea from "antd/es/input/TextArea";
+import {l} from "@/utils/intl";
 
 const DolphinPush = (props: any) => {
 
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {data, taskCur, handleDolphinModalVisible} = props;
 

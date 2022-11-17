@@ -20,7 +20,7 @@
 
 import {Button, Col, Empty, Form, Row, Select} from "antd";
 import {StateType} from "@/pages/DataStudio/model";
-import {connect, useIntl} from "umi";
+import {connect} from "umi";
 import styles from "./index.less";
 import {RedoOutlined} from '@ant-design/icons';
 import {isSql} from "@/components/Studio/conf";
@@ -31,15 +31,12 @@ import BarChartSetting from "./BarChartSetting";
 import PieChartSetting from "./PieChartSetting";
 import {showJobData} from "@/components/Studio/StudioEvent/DQL";
 import {Dispatch} from "@@/plugin-dva/connect";
+import {l} from "@/utils/intl";
 
 
 const {Option} = Select;
 
 const Chart = (props: any) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   const CHART = {
     LINE: l('chart.lineChart'),

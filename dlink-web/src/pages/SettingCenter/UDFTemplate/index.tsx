@@ -27,7 +27,7 @@ import {DeleteOutlined, FormOutlined, PlusOutlined} from "@ant-design/icons";
 import 'antd/dist/antd.css';
 import './index.css';
 import CodeEdit from "@/components/Common/CodeEdit";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 import { DIALECT } from "@/components/Studio/conf";
 
 const {Option} = Select;
@@ -35,9 +35,6 @@ const {Option} = Select;
 const UDFTemplate: React.FC<{}> = () => {
 
   const [open, setOpen] = useState(false);
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const initData: UDFTemplateItem = {
     id: null,

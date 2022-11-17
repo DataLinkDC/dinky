@@ -41,6 +41,13 @@
     </module>
 
     <module name="TreeWalker">
+        <!-- Allow use of comment to suppress javadocstyle -->
+        <module name="SuppressionCommentFilter">
+            <property name="offCommentFormat" value="CHECKSTYLE.OFF\: ([\w\|]+)"/>
+            <property name="onCommentFormat" value="CHECKSTYLE.ON\: ([\w\|]+)"/>
+            <property name="checkFormat" value="$1"/>
+        </module>
+
         <module name="OuterTypeFilename">
             <property name="severity" value="error"/>
         </module>
@@ -190,7 +197,7 @@
             <property name="caseIndent" value="4"/>
             <property name="throwsIndent" value="2"/>
             <property name="lineWrappingIndentation" value="4"/>
-            <property name="arrayInitIndent" value="4"/>
+            <property name="arrayInitIndent" value="8"/>
         </module>
 
         <module name="IllegalImport">

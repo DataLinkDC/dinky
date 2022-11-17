@@ -23,7 +23,7 @@ import {Button, Form, Input, Modal, Select, Switch} from 'antd';
 
 import {ClusterTableListItem} from "@/pages/Cluster/data";
 import {RUN_MODE} from "@/components/Studio/conf";
-import {useIntl} from 'umi';
+import {l} from "@/utils/intl";
 
 export type ClusterFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -39,10 +39,6 @@ const formLayout = {
 };
 
 const ClusterForm: React.FC<ClusterFormProps> = (props) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<ClusterTableListItem>>({
@@ -63,7 +59,12 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
 
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
+
     fieldsValue.id = formVals.id;
+    if (!fieldsValue.alias || fieldsValue.alias.length == 0) {
+      fieldsValue.alias = fieldsValue.name;
+    }
+
     setFormVals(fieldsValue);
     handleSubmit(fieldsValue);
   };

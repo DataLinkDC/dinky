@@ -22,6 +22,7 @@ package com.dlink.cdc;
 import com.dlink.assertion.Asserts;
 import com.dlink.cdc.doris.DorisSinkBuilder;
 import com.dlink.cdc.kafka.KafkaSinkBuilder;
+import com.dlink.cdc.sql.SQLSinkBuilder;
 import com.dlink.exception.FlinkClientException;
 import com.dlink.model.FlinkCDCConfig;
 
@@ -47,6 +48,6 @@ public class SinkBuilderFactory {
                 return sinkBuilders[i].create(config);
             }
         }
-        throw new FlinkClientException("未匹配到对应 Sink 类型的【" + config.getSink().get("connector") + "】。");
+        return new SQLSinkBuilder().create(config);
     }
 }

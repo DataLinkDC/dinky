@@ -23,16 +23,13 @@ import {Button, Empty, Tabs} from "antd";
 import CodeShow from "@/components/Common/CodeShow";
 import {getRootLog} from "@/pages/SettingCenter/SystemInfo/service";
 import {RedoOutlined} from "@ant-design/icons";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
 const {TabPane} = Tabs;
 
 const SystemInfo = (props: any) => {
 
   const [log, setLog] = useState<string>("Nothing.");
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   useEffect(() => {
     refreshRootLog();

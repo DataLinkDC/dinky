@@ -45,6 +45,11 @@
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
+            <artifactId>flink-table-common</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
             <artifactId>flink-table-planner-blink_${scala.binary.version}</artifactId>
             <exclusions>
                 <exclusion>
@@ -67,7 +72,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-yarn_2.11</artifactId>
+            <artifactId>flink-yarn_${scala.binary.version}</artifactId>
             <version>${flink.version}</version>
             <exclusions>
                 <exclusion>
@@ -113,8 +118,13 @@
         </dependency>
         <dependency>
             <groupId>org.apache.doris</groupId>
-            <artifactId>flink-doris-connector-1.12_2.12</artifactId>
+            <artifactId>flink-doris-connector-1.12_${scala.binary.version}</artifactId>
             <version>1.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-connector-jdbc_${scala.binary.version}</artifactId>
+            <version>${flink.version}</version>
         </dependency>
     </dependencies>
 

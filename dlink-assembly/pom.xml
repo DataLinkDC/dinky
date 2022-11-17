@@ -54,12 +54,4 @@
         </plugins>
     </build>
 
-    <profiles>
-        <profile>
-            <id>web</id>
-            <modules>
-                <module>../dlink-web</module>
-            </modules>
-        </profile>
-    </profiles>
 </project>

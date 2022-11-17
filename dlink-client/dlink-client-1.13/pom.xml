@@ -29,7 +29,6 @@
     <artifactId>dlink-client-1.13</artifactId>
 
     <properties>
-
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>${target.java.version}</maven.compiler.source>
         <maven.compiler.target>${target.java.version}</maven.compiler.target>
@@ -47,17 +46,6 @@
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-flink-1.13</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-connector-jdbc-1.13</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.starrocks</groupId>
-            <artifactId>flink-connector-starrocks</artifactId>
-            <version>1.2.3_flink-1.13_${scala.binary.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

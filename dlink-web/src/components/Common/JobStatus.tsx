@@ -27,7 +27,7 @@ import {
   QuestionCircleOutlined,
   SyncOutlined
 } from "@ant-design/icons";
-import {useIntl} from "@@/plugin-locale/localeExports";
+import {l} from "@/utils/intl";
 
 export type JobStatusFormProps = {
   status: string | undefined;
@@ -63,9 +63,6 @@ export function isStatusDone(type: string) {
 };
 
 const JobStatus = (props: JobStatusFormProps) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   const {status} = props;
 

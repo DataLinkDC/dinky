@@ -20,13 +20,10 @@
 
 import {Button, Result} from 'antd';
 import React from 'react';
-import {history, useIntl} from 'umi';
+import {history} from 'umi';
+import {l} from "@/utils/intl";
 
 const BuildPage: React.FC = () => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
   return (
     <Result
       status="404"

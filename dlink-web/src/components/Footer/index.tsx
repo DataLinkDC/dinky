@@ -18,14 +18,11 @@
  */
 
 
-import {useIntl} from 'umi';
+import {l} from "@/utils/intl";
 import {GithubOutlined} from '@ant-design/icons';
 import {DefaultFooter} from '@ant-design/pro-layout';
 
 export default () => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
 
   return (
     <DefaultFooter

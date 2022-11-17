@@ -43,16 +43,12 @@ import Generation from '@/pages/DataBase/Generation';
 import TableData from '@/pages/DataCenter/MetaData/TableData';
 import {FALLBACK, getDBImage} from "@/pages/DataBase/DB";
 import Meta from "antd/lib/card/Meta";
-import {useIntl} from 'umi';
+import {l} from "@/utils/intl";
 
 const {DirectoryTree} = Tree;
 const {TabPane} = Tabs;
 
 const MetaDataContainer: React.FC<{}> = (props: any) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   let [database, setDatabase] = useState<[{
     id: number,
@@ -78,7 +74,6 @@ const MetaDataContainer: React.FC<{}> = (props: any) => {
   const [row, setRow] = useState<TreeDataNode>();
   const [loadingDatabase, setloadingDatabase] = useState(false);
   const [tableChecked, setTableChecked] = useState(true);
-  const [dataBaseChecked, setDatabaseChecked] = useState(false);
 
   const fetchDatabaseList = async () => {
     const res = getData('api/database/listEnabledAll');

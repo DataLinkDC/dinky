@@ -22,7 +22,7 @@ import React, {useState} from 'react';
 import {Button, Form, Input, Modal, Switch} from 'antd';
 import {NameSpaceTableListItem} from "@/pages/AuthenticationCenter/data.d";
 import {getStorageTenantId} from "@/components/Common/crud";
-import {useIntl} from "umi";
+import {l} from "@/utils/intl";
 
 export type TenantFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -37,11 +37,6 @@ const formLayout = {
 };
 
 const NameSpaceForm: React.FC<TenantFormProps> = (props) => {
-
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<NameSpaceTableListItem>>({
     id: props.values?.id,

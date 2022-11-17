@@ -34,19 +34,16 @@ import {CheckPointsDetailInfo} from "@/pages/DevOps/data";
 import {CODE, queryData} from "@/components/Common/crud";
 import {selectSavePointRestartTask} from "@/pages/DevOps/service";
 import {JOB_LIFE_CYCLE} from "@/components/Common/JobLifeCycle";
-import {history, useIntl} from 'umi';
+import {history} from 'umi';
 import {SavePointTableListItem} from "@/components/Studio/StudioRightTool/StudioSavePoint/data";
 import moment from "moment";
+import {l} from "@/utils/intl";
 
 const {TabPane} = Tabs;
 
 const CheckPoints = (props: any) => {
 
   const {job} = props;
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   const actionRef = useRef<ActionType>();
 

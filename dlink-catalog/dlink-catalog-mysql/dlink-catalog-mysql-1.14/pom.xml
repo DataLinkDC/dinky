@@ -39,7 +39,6 @@
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-flink-1.14</artifactId>
-            <!--            <scope>provided</scope>-->
         </dependency>
         <dependency>
             <groupId>junit</groupId>

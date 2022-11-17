@@ -30,15 +30,11 @@ import Dropdown from "antd/es/dropdown/dropdown";
 import Menu from "antd/es/menu";
 import {handleAddOrUpdate, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
 import DocumentForm from "./components/DocumentForm";
-import {useIntl} from 'umi';
+import {l} from "@/utils/intl";
 
 const url = '/api/document';
 
 const DocumentTableList: React.FC<{}> = (props: any) => {
-
-  const intl = useIntl();
-  const l = (id: string, defaultMessage?: string, value?: {}) => intl.formatMessage({id, defaultMessage}, value);
-
 
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
