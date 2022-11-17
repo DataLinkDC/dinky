@@ -687,10 +687,16 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if (Asserts.isNullString(type)) {
             type = SavePointType.CANCEL.getValue();
         }
-        savepointTask(id, type);
+
+        boolean result = savepointTask(id, type);
+        if (!result) {
+            return Result.failed("操作失败");
+        }
+
         if (!JobLifeCycle.ONLINE.equalsValue(task.getStep())) {
             return Result.succeed("停止成功");
         }
+
         task.setStep(JobLifeCycle.RELEASE.getValue());
         updateById(task);
         return Result.succeed("下线成功");
