@@ -51,6 +51,7 @@
           <npmVersion>7.19.0</npmVersion>
           <!-- 国内node下载加速 -->
           <!--<nodeDownloadRoot>https://mirrors.huaweicloud.com/nodejs/</nodeDownloadRoot>-->
+          <!--<npmDownloadRoot>https://repo.huaweicloud.com/npm-software/</npmDownloadRoot>-->
         </configuration>
       </plugin>
     </plugins>
