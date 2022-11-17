@@ -74,6 +74,10 @@ public abstract class KubernetesGateway extends AbstractGateway {
 
     private void initConfig() {
         configuration = GlobalConfiguration.loadConfiguration(config.getClusterConfig().getFlinkConfigPath());
+
+        if (config.getAppConfig().getParallelism() != null) {
+            configuration.setString("parallelism.default",config.getAppConfig().getParallelism() + "");
+        }
         if (Asserts.isNotNull(config.getFlinkConfig().getConfiguration())) {
             addConfigParas(config.getFlinkConfig().getConfiguration());
         }

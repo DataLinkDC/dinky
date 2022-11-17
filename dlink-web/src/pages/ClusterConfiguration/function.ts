@@ -45,7 +45,16 @@ export function getConfig(values:any) {
       flinkLibPath:values.flinkLibPath,
       flinkConfigPath:values.flinkConfigPath,
       kubernetesConfig,
+      flinkConfig
+    };
+  }else if(values.type=='FlinkKubernetesOperator') {
+    let kubernetesConfig = addValueToMap(values, KUBERNETES_CONFIG_NAME_LIST());
+    addListToMap(values.kubernetesConfigList, kubernetesConfig);
+    let flinkVersion = values.flinkVersion
+    return {
+      kubernetesConfig,
       flinkConfig,
+      flinkVersion
     };
   }else {
     //all code paths must return a value.
@@ -96,6 +105,7 @@ export function getConfigFormValues(values:any) {
     'hadoopConfigPath',
     'flinkLibPath',
     'flinkConfigPath',
+    'flinkVersion'
   ]);
   let hadoopConfig = addValueToMap(config.hadoopConfig,HADOOP_CONFIG_NAME_LIST());
   let kubernetesConfig = addValueToMap(config.kubernetesConfig,KUBERNETES_CONFIG_NAME_LIST());

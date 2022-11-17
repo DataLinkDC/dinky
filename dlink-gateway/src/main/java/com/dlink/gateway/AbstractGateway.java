@@ -55,4 +55,14 @@ public abstract class AbstractGateway implements Gateway {
     }
 
     protected abstract void init();
+
+    @Override
+    public boolean handleJobDone() {
+        return false;
+    }
+
+    @Override
+    public boolean deleteCluster() {
+        return false;
+    }
 }

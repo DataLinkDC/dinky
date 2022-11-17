@@ -41,6 +41,7 @@ import com.dlink.dto.TaskVersionConfigureDTO;
 import com.dlink.exception.BusException;
 import com.dlink.function.compiler.CustomStringJavaCompiler;
 import com.dlink.function.util.UDFUtil;
+import com.dlink.gateway.Gateway;
 import com.dlink.gateway.GatewayType;
 import com.dlink.gateway.config.SavePointStrategy;
 import com.dlink.gateway.config.SavePointType;
@@ -803,9 +804,14 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         }
         // support custom K8s app submit, rather than clusterConfiguration
         else if (Dialect.KUBERNETES_APPLICATION.equalsVal(task.getDialect())
-            && GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType())) {
-            Map<String, Object> gatewayConfig = JSONUtil.toMap(task.getStatement(), String.class, Object.class);
-            config.buildGatewayConfig(gatewayConfig);
+                && (GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType())
+                || GatewayType.KUBERNETES_APPLICATION_OPERATOR.equalsValue(config.getType()))) {
+            Map<String, Object> taskConfig = JSONUtil.toMap(task.getStatement(), String.class, Object.class);
+            Map<String, Object> clusterConfiguration =
+                    clusterConfigurationService.getGatewayConfig(task.getClusterConfigurationId());
+            clusterConfiguration.putAll((Map<String, Object>) taskConfig.get("appConfig"));
+            clusterConfiguration.put("taskCustomConfig", taskConfig);
+            config.buildGatewayConfig(clusterConfiguration);
         } else {
             Map<String, Object> gatewayConfig =
                 clusterConfigurationService.getGatewayConfig(task.getClusterConfigurationId());
@@ -852,6 +858,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 config.setSavePointPath(null);
         }
         config.setVariables(fragmentVariableService.listEnabledVariables());
+        config.getGatewayConfig().getAppConfig().setParallelism(task.getParallelism());
         return config;
     }
 
@@ -1166,14 +1173,35 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if (Asserts.isNull(jobInstance.getTaskId())) {
             return;
         }
-        Task task = getTaskInfoById(jobInstance.getTaskId());
         Task updateTask = new Task();
         updateTask.setId(jobInstance.getTaskId());
         updateTask.setJobInstanceId(0);
+
+        JobInfoDetail jobInfoDetail = FlinkJobTaskPool.getInstance().getMap().get(jobInstance.getId().toString());
+
+        // some job need do something on Done, example flink-kubernets-operator
+        if (jobInfoDetail.getClusterConfiguration() != null
+                && GatewayType.isDeployCluster(jobInfoDetail.getCluster().getType())) {
+            JobConfig jobConfig = new JobConfig();
+            jobConfig.setType(jobInfoDetail.getCluster().getType());
+            jobConfig.buildGatewayConfig(jobInfoDetail.getClusterConfiguration().parseConfig());
+            jobConfig.getGatewayConfig().setType(GatewayType.get(jobInfoDetail.getCluster().getType()));
+            jobConfig.getGatewayConfig().getFlinkConfig().setJobName(jobInstance.getName());
+            jobConfig.getGatewayConfig().getClusterConfig().getClusterConfig().put("state", jobInstance.getStatus());
+            Gateway.build(jobConfig.getGatewayConfig()).handleJobDone();
+        }
+
         if (!JobLifeCycle.ONLINE.equalsValue(jobInstance.getStep())) {
             updateById(updateTask);
             return;
         }
+        handleJobAlert(jobInstance);
+        updateTask.setStep(JobLifeCycle.RELEASE.getValue());
+        updateById(updateTask);
+    }
+
+    private void handleJobAlert(JobInstance jobInstance) {
+        Task task = getTaskInfoById(jobInstance.getTaskId());
         Integer jobInstanceId = jobInstance.getId();
         JobHistory jobHistory = jobHistoryService.getById(jobInstanceId); // 获取任务历史信息
         String jobJson = jobHistory.getJobJson(); // 获取任务历史信息的jobJson
@@ -1231,8 +1259,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 }
             }
         }
-        updateTask.setStep(JobLifeCycle.RELEASE.getValue());
-        updateById(updateTask);
     }
 
     private void sendAlert(AlertInstance alertInstance, JobInstance jobInstance, Task task, AlertMsg alertMsg) {

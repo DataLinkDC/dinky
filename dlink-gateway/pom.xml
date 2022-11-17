@@ -15,16 +15,14 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>dlink</artifactId>
         <groupId>com.dlink</groupId>
+        <artifactId>dlink</artifactId>
         <version>0.6.8-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
     <artifactId>dlink-gateway</artifactId>
     <properties>
@@ -32,9 +30,16 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>${target.java.version}</maven.compiler.source>
         <maven.compiler.target>${target.java.version}</maven.compiler.target>
+        <flink.operator.version>1.2.0</flink.operator.version>
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-kubernetes-operator</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-common</artifactId>
@@ -62,7 +67,7 @@
             <scope>${scope.runtime}</scope>
         </dependency>
 
-<!--        delete this dependency will result in a JcaPEMKey error
+        <!--        delete this dependency will result in a JcaPEMKey error
 for k8s commit tasks-->
         <dependency>
             <groupId>org.bouncycastle</groupId>

@@ -74,7 +74,7 @@ public class ClusterConfigurationServiceImpl extends SuperServiceImpl<ClusterCon
             gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath").toString(),
                 config.get("flinkLibPath").toString(),
                 config.get("hadoopConfigPath").toString()));
-        } else {
+        } else if (config.containsKey("flinkConfigPath")) {
             gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath").toString()));
         }
         if (config.containsKey("flinkConfig")) {
@@ -91,12 +91,14 @@ public class ClusterConfigurationServiceImpl extends SuperServiceImpl<ClusterCon
             if (kubernetesConfig.containsKey("kubernetes.cluster-id")) {
                 gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.cluster-id", kubernetesConfig.get("kubernetes.cluster-id").toString());
             } else {
-                //初始化FlinkKubeClient需要CLUSTER_ID,先用UUID代替，后面使用job名称来作为CLUSTER_ID
+                // 初始化FlinkKubeClient需要CLUSTER_ID,先用UUID代替，后面使用job名称来作为CLUSTER_ID
                 gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.cluster-id", UUID.randomUUID().toString());
             }
             if (kubernetesConfig.containsKey("kubernetes.container.image")) {
                 gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.container.image", kubernetesConfig.get("kubernetes.container.image").toString());
             }
+        } else if (Asserts.isEqualsIgnoreCase(clusterConfiguration.getType(), "FlinkKubernetesOperator")) {
+            gatewayConfig.setType(GatewayType.KUBERNETES_APPLICATION_OPERATOR);
         }
         return JobManager.testGateway(gatewayConfig);
     }

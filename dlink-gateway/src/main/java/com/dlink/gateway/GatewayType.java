@@ -35,7 +35,8 @@ public enum GatewayType {
     YARN_APPLICATION("ya", "yarn-application"),
     YARN_PER_JOB("ypj", "yarn-per-job"),
     KUBERNETES_SESSION("ks", "kubernetes-session"),
-    KUBERNETES_APPLICATION("ka", "kubernetes-application");
+    KUBERNETES_APPLICATION("ka", "kubernetes-application"),
+    KUBERNETES_APPLICATION_OPERATOR("kao", "kubernetes-application-operator");
 
     private final String value;
     private final String longValue;
@@ -71,6 +72,7 @@ public enum GatewayType {
             case YARN_APPLICATION:
             case YARN_PER_JOB:
             case KUBERNETES_APPLICATION:
+            case KUBERNETES_APPLICATION_OPERATOR:
                 return true;
             default:
                 return false;
@@ -82,6 +84,7 @@ public enum GatewayType {
             case "ya":
             case "ypj":
             case "ka":
+            case "kao":
                 return true;
             default:
                 return false;
@@ -92,6 +95,7 @@ public enum GatewayType {
         switch (value) {
             case "ya":
             case "ka":
+            case "kao":
                 return true;
             default:
                 return false;

@@ -71,11 +71,15 @@ const StudioSetting = (props: any) => {
   const getClusterConfigurationOptions = () => {
     const itemList = [];
     for (const item of clusterConfiguration) {
-      const tag = (<><Tag
-        color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias === "" ? item.name : item.alias}</>);
-      itemList.push(<Option key={item.id} value={item.id} label={tag}>
-        {tag}
-      </Option>)
+      const tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias === "" ? item.name : item.alias}</>);
+      //opeartor mode can not have normal application config
+      if (current.task.type == 'kubernetes-application-operator' && item.type == 'FlinkKubernetesOperator'){
+        itemList.push(<Option key={item.id} value={item.id} label={tag}>{tag}</Option>)
+      }else if (current.task.type != 'kubernetes-application-operator'  && item.type != 'FlinkKubernetesOperator'){
+        //if not operator mode , add it normal
+        itemList.push(<Option key={item.id} value={item.id} label={tag}>{tag}</Option>)
+      }
+
     }
     return itemList;
   };
@@ -163,6 +167,7 @@ const StudioSetting = (props: any) => {
               <Option value={RUN_MODE.YARN_APPLICATION}>Yarn Application</Option>
               <Option value={RUN_MODE.KUBERNETES_SESSION}>Kubernetes Session</Option>
               <Option value={RUN_MODE.KUBERNETES_APPLICATION}>Kubernetes Application</Option>
+              <Option value={RUN_MODE.KUBERNETES_APPLICATION_OPERATOR}>Kubernetes Application Operator</Option>
             </Select>
           </Form.Item>
           {(current.task.type === RUN_MODE.YARN_SESSION || current.task.type === RUN_MODE.KUBERNETES_SESSION || current.task.type === RUN_MODE.STANDALONE) ? (
@@ -189,7 +194,11 @@ const StudioSetting = (props: any) => {
                 </Form.Item>
               </Col>
             </Row>) : undefined}
-          {(current.task.type === RUN_MODE.YARN_PER_JOB || current.task.type === RUN_MODE.YARN_APPLICATION || current.task.type === RUN_MODE.KUBERNETES_APPLICATION) ? (
+          {(current.task.type === RUN_MODE.YARN_PER_JOB
+            || current.task.type === RUN_MODE.YARN_APPLICATION
+            || current.task.type === RUN_MODE.KUBERNETES_APPLICATION
+            || current.task.type === RUN_MODE.KUBERNETES_APPLICATION_OPERATOR
+          ) ? (
             <Row>
               <Col span={24}>
                 <Form.Item label="Flink集群配置"

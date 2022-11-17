@@ -210,7 +210,7 @@ public class JobConfig {
             gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath").toString(),
                     config.get("flinkLibPath").toString(),
                     config.get("hadoopConfigPath").toString()));
-        } else {
+        } else if (config.containsKey("flinkConfigPath")) {
             gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath").toString()));
         }
         AppConfig appConfig = new AppConfig();
@@ -239,10 +239,31 @@ public class JobConfig {
             gatewayConfig.setFlinkConfig(FlinkConfig.build((Map<String, String>) config.get("flinkConfig")));
         }
         if (config.containsKey("kubernetesConfig")) {
-            Map<String, Object> kubernetesConfig = (Map<String, Object>) config.get("kubernetesConfig");
-            // 构建GatewayConfig时，将k8s集群默认配置和自定义参数配置加载到FlinkConfig里
-            for (Map.Entry<String, Object> entry : kubernetesConfig.entrySet()) {
-                gatewayConfig.getFlinkConfig().getConfiguration().put(entry.getKey(), entry.getValue().toString());
+            // kubernetes have operator and native submit type
+            gatewayConfig.getClusterConfig().setFlinkVersion((String) config.getOrDefault("flinkVersion", null));
+            Map<String, String> kubernetesConfig = (Map<String, String>) config.get("kubernetesConfig");
+
+            if (getType() != null && getType().equals(GatewayType.KUBERNETES_APPLICATION_OPERATOR.getLongValue())) {
+                gatewayConfig.getClusterConfig().setClusterConfig(kubernetesConfig);
+            } else {
+                // if not FlinkKubernetesOperator submit type, merge k8s and flink config as one
+                // because FlinkKubernetesOperator submit type do this will cause error
+                gatewayConfig.getFlinkConfig().getConfiguration().putAll(kubernetesConfig);
+            }
+        }
+        // at present only k8s task have this
+        if (config.containsKey("taskCustomConfig")) {
+            Map<String, Map<String, String>> taskCustomConfig = (Map<String, Map<String, String>>) config.get("taskCustomConfig");
+            if (taskCustomConfig.containsKey("kubernetesConfig")) {
+                gatewayConfig.getClusterConfig().getClusterConfig().putAll(taskCustomConfig.get("kubernetesConfig"));
+                // if not FlinkKubernetesOperator submit type, merge k8s and flink config as one
+                // because FlinkKubernetesOperator submit type do this will cause error
+                if (getType() != null && getType().equals(GatewayType.KUBERNETES_APPLICATION.getLongValue())) {
+                    gatewayConfig.getFlinkConfig().getConfiguration().putAll(taskCustomConfig.get("kubernetesConfig"));
+                }
+            }
+            if (taskCustomConfig.containsKey("flinkConfig")) {
+                gatewayConfig.getFlinkConfig().getConfiguration().putAll(taskCustomConfig.get("flinkConfig"));
             }
         }
     }

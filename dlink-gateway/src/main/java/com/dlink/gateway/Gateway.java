@@ -83,4 +83,8 @@ public interface Gateway {
 
     TestResult test();
 
+    boolean handleJobDone();
+
+    boolean deleteCluster();
+
 }

@@ -19,6 +19,8 @@
 
 package com.dlink.gateway.config;
 
+import java.util.Map;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,6 +37,8 @@ public class ClusterConfig {
     private String flinkLibPath;
     private String yarnConfigPath;
     private String appId;
+    private String flinkVersion;
+    private Map<String, String> clusterConfig;
 
     public ClusterConfig() {
     }

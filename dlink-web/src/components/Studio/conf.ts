@@ -26,6 +26,7 @@ export const RUN_MODE = {
   YARN_APPLICATION: 'yarn-application',
   KUBERNETES_SESSION: 'kubernetes-session',
   KUBERNETES_APPLICATION: 'kubernetes-application',
+  KUBERNETES_APPLICATION_OPERATOR: 'kubernetes-application-operator'
 };
 
 export const DIALECT = {

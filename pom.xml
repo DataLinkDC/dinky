@@ -90,10 +90,16 @@
         <knife4j.version>3.0.3</knife4j.version>
         <spotless.version>2.27.1</spotless.version>
         <jaxb.version>2.3.0</jaxb.version>
+        <flink.operator.version>1.2.0</flink.operator.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.apache.flink</groupId>
+                <artifactId>flink-kubernetes-operator</artifactId>
+                <version>${flink.operator.version}</version>
+            </dependency>
             <!--解决mysql与phoenix依赖冲突-->
             <dependency>
                 <groupId>com.google.protobuf</groupId>
