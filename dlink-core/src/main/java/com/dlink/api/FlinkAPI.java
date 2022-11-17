@@ -36,6 +36,7 @@ import java.util.Map;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.NullNode;
 
 import cn.hutool.http.HttpUtil;
 import cn.hutool.http.Method;
@@ -62,6 +63,7 @@ public class FlinkAPI {
         JsonNode result = null;
         try {
             result = mapper.readTree(res);
+
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -107,8 +109,13 @@ public class FlinkAPI {
     }
 
     public boolean stop(String jobId) {
-        get(FlinkRestAPIConstant.JOBS + jobId + FlinkRestAPIConstant.CANCEL);
-        return true;
+        JsonNode result = get(FlinkRestAPIConstant.JOBS + jobId + FlinkRestAPIConstant.CANCEL);
+        return isErrorResult(result);
+    }
+
+    private static boolean isErrorResult(JsonNode result) {
+        JsonNode error = result.get("errors");
+        return error != null && !(error instanceof NullNode);
     }
 
     public SavePointResult savepoints(String jobId, String savePointType) {
