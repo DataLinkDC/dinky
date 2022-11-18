@@ -817,7 +817,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 clusterConfigurationService.getGatewayConfig(task.getClusterConfigurationId());
             // submit application type with clusterConfiguration
             if (GatewayType.YARN_APPLICATION.equalsValue(config.getType())
-                || GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType())) {
+                || GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType())
+                    || GatewayType.KUBERNETES_APPLICATION_OPERATOR.equalsValue(config.getType())) {
                 if (!isJarTask) {
                     SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
                     gatewayConfig.put("userJarPath", systemConfiguration.getSqlSubmitJarPath());
