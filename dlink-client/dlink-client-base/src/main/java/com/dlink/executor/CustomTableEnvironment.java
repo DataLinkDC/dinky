@@ -21,28 +21,24 @@ package com.dlink.executor;
 
 import com.dlink.model.LineageRel;
 import com.dlink.result.SqlExplainResult;
-
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.flink.api.dag.Transformation;
+import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
-import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.ExplainDetail;
-import org.apache.flink.table.api.StatementSet;
-import org.apache.flink.table.api.Table;
-import org.apache.flink.table.api.TableConfig;
-import org.apache.flink.table.api.TableResult;
-import org.apache.flink.table.catalog.Catalog;
-import org.apache.flink.table.catalog.CatalogManager;
-import org.apache.flink.table.delegation.Parser;
+import org.apache.flink.table.api.TableException;
 import org.apache.flink.table.delegation.Planner;
-import org.apache.flink.table.expressions.Expression;
+import org.apache.flink.table.operations.ExplainOperation;
+import org.apache.flink.table.operations.ModifyOperation;
+import org.apache.flink.table.operations.Operation;
+import org.apache.flink.table.operations.QueryOperation;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * CustomTableEnvironment
@@ -50,49 +46,76 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * @author wenmo
  * @since 2022/2/5 10:35
  */
-public interface CustomTableEnvironment {
-
-    TableConfig getConfig();
-
-    CatalogManager getCatalogManager();
-
-    void registerCatalog(String catalogName, Catalog catalog);
-
-    String[] listCatalogs();
-
-    Optional<Catalog> getCatalog(String catalogName);
-
-    TableResult executeSql(String statement);
-
-    Table sqlQuery(String statement);
-
-    void registerTable(String name, Table table);
-
-    String explainSql(String statement, ExplainDetail... extraDetails);
+public interface CustomTableEnvironment extends DefaultStreamTableEnvironment {
 
     ObjectNode getStreamGraph(String statement);
 
     JobPlanInfo getJobPlanInfo(List<String> statements);
 
-    StreamGraph getStreamGraphFromInserts(List<String> statements);
+    default StreamGraph getStreamGraphFromInserts(List<String> statements) {
+        List<ModifyOperation> modifyOperations = new ArrayList();
+        for (String statement : statements) {
+            List<Operation> operations = getParser().parse(statement);
+            if (operations.size() != 1) {
+                throw new TableException("Only single statement is supported.");
+            } else {
+                Operation operation = operations.get(0);
+                if (operation instanceof ModifyOperation) {
+                    modifyOperations.add((ModifyOperation) operation);
+                } else {
+                    throw new TableException("Only insert statement is supported now.");
+                }
+            }
+        }
+        List<Transformation<?>> trans = getPlanner().translate(modifyOperations);
+        for (Transformation<?> transformation : trans) {
+            getStreamExecutionEnvironment().addOperator(transformation);
+        }
+        StreamGraph streamGraph = getStreamExecutionEnvironment().getStreamGraph();
+        if (getConfig().getConfiguration().containsKey(PipelineOptions.NAME.key())) {
+            streamGraph.setJobName(getConfig().getConfiguration().getString(PipelineOptions.NAME));
+        }
+        return streamGraph;
+    }
+
+    ;
 
     JobGraph getJobGraphFromInserts(List<String> statements);
 
-    SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails);
+    default SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails) {
+        SqlExplainResult record = new SqlExplainResult();
+        List<Operation> operations = getParser().parse(statement);
+        record.setParseTrue(true);
+        if (operations.size() != 1) {
+            throw new TableException("Unsupported SQL query! explainSql() only accepts a single SQL query.");
+        }
+        Operation operation = operations.get(0);
+        if (operation instanceof ModifyOperation) {
+            record.setType("Modify DML");
+        } else if (operation instanceof ExplainOperation) {
+            record.setType("Explain DML");
+        } else if (operation instanceof QueryOperation) {
+            record.setType("Query DML");
+        } else {
+            record.setExplain(operation.asSummaryString());
+            record.setType("DDL");
+        }
+        record.setExplainTrue(true);
+        if ("DDL".equals(record.getType())) {
+            //record.setExplain("DDL语句不进行解释。");
+            return record;
+        }
+        record.setExplain(getPlanner().explain(operations, extraDetails));
+        return record;
+    }
 
     boolean parseAndLoadConfiguration(String statement, StreamExecutionEnvironment config, Map<String, Object> setMap);
 
-    StatementSet createStatementSet();
-
-    <T> void createTemporaryView(String path, DataStream<T> dataStream, Expression... fields);
-
-    <T> void createTemporaryView(String path, DataStream<T> dataStream, String fields);
-
-    // <T> void createTemporaryView(String path, DataStream<T> dataStream, Schema schema);
-
-    Parser getParser();
+    StreamExecutionEnvironment getStreamExecutionEnvironment();
 
     Planner getPlanner();
 
-    List<LineageRel> getLineage(String statement);
+    default List<LineageRel> getLineage(String statement) {
+        return null;
+    }
 }
