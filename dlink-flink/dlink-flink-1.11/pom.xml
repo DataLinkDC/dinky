@@ -30,7 +30,7 @@
 
     <properties>
         <flink.version>1.11.6</flink.version>
-        <flinkcdc.version>1.1.0</flinkcdc.version>
+        <flinkcdc.version>1.1.1</flinkcdc.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>${target.java.version}</maven.compiler.source>
         <maven.compiler.target>${target.java.version}</maven.compiler.target>
@@ -41,6 +41,11 @@
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-python_${scala.binary.version}</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-table-common</artifactId>
             <version>${flink.version}</version>
         </dependency>
         <dependency>
@@ -67,7 +72,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-yarn_2.11</artifactId>
+            <artifactId>flink-yarn_${scala.binary.version}</artifactId>
             <version>${flink.version}</version>
             <exclusions>
                 <exclusion>
@@ -104,7 +109,7 @@
         </dependency>
         <dependency>
             <groupId>com.alibaba.ververica</groupId>
-            <artifactId>flink-connector-mysql-cdc</artifactId>
+            <artifactId>flink-sql-connector-mysql-cdc</artifactId>
             <version>${flinkcdc.version}</version>
         </dependency>
         <dependency>
@@ -113,8 +118,22 @@
         </dependency>
         <dependency>
             <groupId>org.apache.doris</groupId>
-            <artifactId>flink-doris-connector-1.11_2.12</artifactId>
+            <artifactId>flink-doris-connector-1.11_${scala.binary.version}</artifactId>
             <version>1.0.3</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-connector-jdbc_${scala.binary.version}</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
     </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>kafka-clients</artifactId>
+                <version>2.4.1</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>

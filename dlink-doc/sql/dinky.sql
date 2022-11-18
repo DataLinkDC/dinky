@@ -590,7 +590,7 @@ DROP TABLE IF EXISTS `dlink_task_statement`;
 CREATE TABLE `dlink_task_statement` (
   `id` int NOT NULL COMMENT 'ID',
   `tenant_id` int NOT NULL DEFAULT '1' COMMENT 'tenant id',
-  `statement` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'statement set',
+  `statement` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'statement set',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `dlink_task_statement_un` (`tenant_id`,`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='statement';

@@ -19,16 +19,6 @@
 
 package org.apache.flink.connector.jdbc.internal.converter;
 
-import oracle.jdbc.internal.OracleBlob;
-import oracle.jdbc.internal.OracleClob;
-import oracle.sql.BINARY_DOUBLE;
-import oracle.sql.BINARY_FLOAT;
-import oracle.sql.CHAR;
-import oracle.sql.DATE;
-import oracle.sql.NUMBER;
-import oracle.sql.RAW;
-import oracle.sql.TIMESTAMP;
-import oracle.sql.TIMESTAMPTZ;
 import org.apache.flink.table.data.DecimalData;
 import org.apache.flink.table.data.StringData;
 import org.apache.flink.table.data.TimestampData;
@@ -42,6 +32,17 @@ import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
+
+import oracle.jdbc.internal.OracleBlob;
+import oracle.jdbc.internal.OracleClob;
+import oracle.sql.BINARY_DOUBLE;
+import oracle.sql.BINARY_FLOAT;
+import oracle.sql.CHAR;
+import oracle.sql.DATE;
+import oracle.sql.NUMBER;
+import oracle.sql.RAW;
+import oracle.sql.TIMESTAMP;
+import oracle.sql.TIMESTAMPTZ;
 
 /**
  * Runtime converter that responsible to convert between JDBC object and Flink internal object for
@@ -114,7 +115,7 @@ public class OracleRowConverter extends AbstractJdbcRowConverter {
                 return val ->
                     val instanceof BigInteger
                         ? DecimalData.fromBigDecimal(
-                        new BigDecimal((BigInteger) val, 0), precision, scale)
+                            new BigDecimal((BigInteger) val, 0), precision, scale)
                         : DecimalData.fromBigDecimal((BigDecimal) val, precision, scale);
             case CHAR:
             case VARCHAR:

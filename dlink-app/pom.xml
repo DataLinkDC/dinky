@@ -56,5 +56,19 @@
                 <module>dlink-app-1.15</module>
             </modules>
         </profile>
+
+        <profile>
+            <id>flink-1.16</id>
+            <modules>
+                <module>dlink-app-1.16</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>web</id>
+            <modules>
+                <module>../dlink-web</module>
+            </modules>
+        </profile>
     </profiles>
 </project>

@@ -59,7 +59,12 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
 
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
+
     fieldsValue.id = formVals.id;
+    if (!fieldsValue.alias || fieldsValue.alias.length == 0) {
+      fieldsValue.alias = fieldsValue.name;
+    }
+
     setFormVals(fieldsValue);
     handleSubmit(fieldsValue);
   };

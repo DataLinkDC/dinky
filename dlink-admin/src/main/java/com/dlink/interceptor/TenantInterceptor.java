@@ -21,12 +21,12 @@ package com.dlink.interceptor;
 
 import com.dlink.context.TenantContextHolder;
 
+import java.util.Arrays;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.HandlerInterceptor;
-
-import com.mysql.cj.util.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,12 +37,12 @@ import lombok.extern.slf4j.Slf4j;
 public class TenantInterceptor implements HandlerInterceptor {
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
-                             Object handler) throws Exception {
-        String tenantId = request.getHeader("tenantId");
-        if (!StringUtils.isNullOrEmpty(tenantId)) {
-            TenantContextHolder.set(Integer.valueOf(tenantId));
-        }
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        Arrays.stream(request.getCookies())
+            .filter(t -> "tenantId".equals(t.getName()))
+            .findFirst()
+            .ifPresent(t -> TenantContextHolder.set(Integer.valueOf(t.getValue())));
+
         return HandlerInterceptor.super.preHandle(request, response, handler);
     }
 

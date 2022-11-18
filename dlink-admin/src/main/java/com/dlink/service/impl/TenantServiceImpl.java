@@ -149,10 +149,14 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> im
                 tenantUserList.add(userTenant);
             }
             // save or update user role
+
             boolean result = userTenantService.saveOrUpdateBatch(tenantUserList, 1000);
             if (result) {
                 return Result.succeed("分配用户成功");
             } else {
+                if (tenantUserList.size() == 0) {
+                    return Result.succeed("该租户下的用户已被全部删除");
+                }
                 return Result.failed("分配用户失败");
             }
         } else {
