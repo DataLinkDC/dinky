@@ -19,7 +19,7 @@
 
 package org.apache.flink.shaded.guava30.com.google.common.util.concurrent;
 
-import org.apache.flink.shaded.guava30.com.google.common.base.Preconditions;
+import org.apache.flink.shaded.guava18.com.google.common.base.Preconditions;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;

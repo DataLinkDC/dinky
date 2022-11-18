@@ -123,12 +123,6 @@
                     <artifactId>dlink-flink-1.13</artifactId>
                     <scope>provided</scope>
                 </dependency>
-                <dependency>
-                    <groupId>org.apache.flink</groupId>
-                    <artifactId>flink-shaded-guava</artifactId>
-                    <version>18.0-13.0</version>
-                    <scope>test</scope>
-                </dependency>
             </dependencies>
         </profile>
 
