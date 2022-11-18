@@ -149,5 +149,10 @@
             <artifactId>flink-connector-starrocks</artifactId>
             <version>1.2.3_flink-1.13_${scala.binary.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-shaded-guava</artifactId>
+            <version>18.0-13.0</version>
+        </dependency>
     </dependencies>
 </project>
