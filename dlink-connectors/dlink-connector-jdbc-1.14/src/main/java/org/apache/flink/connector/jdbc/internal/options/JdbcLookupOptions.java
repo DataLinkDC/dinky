@@ -24,7 +24,9 @@ import org.apache.flink.connector.jdbc.JdbcExecutionOptions;
 import java.io.Serializable;
 import java.util.Objects;
 
-/** Options for the JDBC lookup. */
+/**
+ * Options for the JDBC lookup.
+ */
 public class JdbcLookupOptions implements Serializable {
 
     private final long cacheMaxSize;
@@ -43,7 +45,9 @@ public class JdbcLookupOptions implements Serializable {
         this.dataFilter = dataFilter;
         this.scanPartitionByDatetime = false;
     }
-    public JdbcLookupOptions(long cacheMaxSize, long cacheExpireMs, int maxRetryTimes, String dataFilter, boolean scanPartitionByDatetime) {
+
+    public JdbcLookupOptions(long cacheMaxSize, long cacheExpireMs, int maxRetryTimes, String dataFilter,
+                             boolean scanPartitionByDatetime) {
         this.cacheMaxSize = cacheMaxSize;
         this.cacheExpireMs = cacheExpireMs;
         this.maxRetryTimes = maxRetryTimes;
@@ -92,7 +96,9 @@ public class JdbcLookupOptions implements Serializable {
         }
     }
 
-    /** Builder of {@link JdbcLookupOptions}. */
+    /**
+     * Builder of {@link JdbcLookupOptions}.
+     */
     public static class Builder {
 
         private long cacheMaxSize = -1L;
@@ -101,32 +107,41 @@ public class JdbcLookupOptions implements Serializable {
         private String dataFilter = "";
         private boolean scanPartitionByDatetime = false;
 
-        /** optional, lookup cache max size, over this value, the old data will be eliminated. */
+        /**
+         * optional, lookup cache max size, over this value, the old data will be eliminated.
+         */
         public Builder setCacheMaxSize(long cacheMaxSize) {
             this.cacheMaxSize = cacheMaxSize;
             return this;
         }
 
-        /** optional, lookup cache expire mills, over this time, the old data will expire. */
+        /**
+         * optional, lookup cache expire mills, over this time, the old data will expire.
+         */
         public Builder setCacheExpireMs(long cacheExpireMs) {
             this.cacheExpireMs = cacheExpireMs;
             return this;
         }
 
-        /** optional, max retry times for jdbc connector. */
+        /**
+         * optional, max retry times for jdbc connector.
+         */
         public Builder setMaxRetryTimes(int maxRetryTimes) {
             this.maxRetryTimes = maxRetryTimes;
             return this;
         }
 
-        /** optional, max retry times for jdbc connector. */
+        /**
+         * optional, max retry times for jdbc connector.
+         */
         public Builder setScanPartitionByDatetime(boolean scanPartitionByDatetime) {
             this.scanPartitionByDatetime = scanPartitionByDatetime;
             return this;
         }
 
         public JdbcLookupOptions build() {
-            return new JdbcLookupOptions(cacheMaxSize, cacheExpireMs, maxRetryTimes, dataFilter, scanPartitionByDatetime);
+            return new JdbcLookupOptions(cacheMaxSize, cacheExpireMs, maxRetryTimes, dataFilter,
+                    scanPartitionByDatetime);
         }
     }
 }

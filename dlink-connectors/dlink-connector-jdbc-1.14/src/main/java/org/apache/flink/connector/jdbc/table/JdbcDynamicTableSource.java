@@ -50,12 +50,12 @@ public class JdbcDynamicTableSource
             SupportsProjectionPushDown,
             SupportsLimitPushDown {
 
-    private final JdbcConnectorOptions options;
-    private final JdbcReadOptions readOptions;
-    private final JdbcLookupOptions lookupOptions;
-    private TableSchema physicalSchema;
+    protected final JdbcConnectorOptions options;
+    protected final JdbcReadOptions readOptions;
+    protected final JdbcLookupOptions lookupOptions;
+    protected TableSchema physicalSchema;
     private final String dialectName;
-    private long limit = -1;
+    protected long limit = -1;
 
     public JdbcDynamicTableSource(
                                   JdbcConnectorOptions options,
@@ -112,7 +112,7 @@ public class JdbcDynamicTableSource
             long lowerBound = readOptions.getPartitionLowerBound().get();
             long upperBound = readOptions.getPartitionUpperBound().get();
             int numPartitions = readOptions.getNumPartitions().get();
-            if (lookupOptions.isScanPartitionByDatetime()) {
+            if (!lookupOptions.isScanPartitionByDatetime()) {
                 builder.setParametersProvider(
                     new JdbcNumericBetweenParametersProvider(lowerBound, upperBound)
                         .ofBatchNum(numPartitions));
