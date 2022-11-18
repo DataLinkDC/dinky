@@ -31,6 +31,7 @@ import java.util.List;
  * @since 2022/2/22 14:29
  **/
 public enum JobStatus {
+
     /**
      * The job has been received by the Dispatcher, and is waiting for the job manager to receive
      * leadership and to be created.
@@ -114,6 +115,18 @@ public enum JobStatus {
 
     public static boolean isDone(String value) {
         switch (get(value)) {
+            case FAILED:
+            case CANCELED:
+            case FINISHED:
+            case UNKNOWN:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public boolean isDone() {
+        switch (this) {
             case FAILED:
             case CANCELED:
             case FINISHED:

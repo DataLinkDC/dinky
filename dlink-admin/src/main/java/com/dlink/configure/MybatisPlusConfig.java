@@ -62,7 +62,7 @@ public class MybatisPlusConfig {
             public Expression getTenantId() {
                 Integer tenantId = (Integer) TenantContextHolder.get();
                 if (tenantId == null) {
-                    log.warn("request context tenant id is null");
+                    // log.warn("request context tenant id is null");
                     return new NullValue();
                 }
                 return new LongValue(tenantId);
