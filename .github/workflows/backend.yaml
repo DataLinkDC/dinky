@@ -62,8 +62,16 @@ jobs:
     name: Build_JDK
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: true
       matrix:
         jdk: [8, 11]
+        flink: [1.11, 1.12, 1.13, 1.14, 1.15]
+        exclude:
+          - jdk: 11
+            flink: 1.11
+          - jdk: 11
+            flink: 1.12
+
     timeout-minutes: 30
     env:
       MAVEN_OPTS: -Xmx2G -Xms2G
@@ -90,7 +98,7 @@ jobs:
           ./mvnw -B clean install \
                  -Dmaven.test.skip=true \
                  -Dcheckstyle.skip=true \
-                 -P prod,scala-2.12,flink-1.14,!dev,!flink-1.11,!flink-1.12,!flink-1.13,!scala-2.11,!flink-1.15 \
+                 -P prod,scala-2.12,flink-${{ matrix.flink }} \
                  --no-snapshot-updates
 
       # 查看打包的大小
