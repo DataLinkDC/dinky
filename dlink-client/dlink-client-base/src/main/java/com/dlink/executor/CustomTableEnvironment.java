@@ -21,7 +21,7 @@ package com.dlink.executor;
 
 import com.dlink.model.LineageRel;
 import com.dlink.result.SqlExplainResult;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.apache.flink.api.dag.Transformation;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.runtime.jobgraph.JobGraph;
@@ -39,6 +39,8 @@ import org.apache.flink.table.operations.QueryOperation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * CustomTableEnvironment
@@ -77,8 +79,6 @@ public interface CustomTableEnvironment extends DefaultStreamTableEnvironment {
         }
         return streamGraph;
     }
-
-    ;
 
     JobGraph getJobGraphFromInserts(List<String> statements);
 
