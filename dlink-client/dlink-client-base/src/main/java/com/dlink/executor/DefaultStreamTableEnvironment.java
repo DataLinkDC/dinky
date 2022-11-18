@@ -24,7 +24,6 @@ import org.apache.flink.table.delegation.Parser;
 import org.apache.flink.table.expressions.Expression;
 import org.apache.flink.table.functions.AggregateFunction;
 import org.apache.flink.table.functions.ScalarFunction;
-import org.apache.flink.table.functions.TableAggregateFunction;
 import org.apache.flink.table.functions.TableFunction;
 import org.apache.flink.table.functions.UserDefinedFunction;
 import org.apache.flink.table.module.Module;
@@ -54,12 +53,8 @@ public interface DefaultStreamTableEnvironment extends StreamTableEnvironment, T
         getStreamTableEnvironment().registerFunction(s, tableFunction);
     }
 
-    default <T, ACC> void registerFunction(String s, AggregateFunction<T, ACC> aggregateFunction) {
+    default <T, A> void registerFunction(String s, AggregateFunction<T, A> aggregateFunction) {
         getStreamTableEnvironment().registerFunction(s, aggregateFunction);
-    }
-
-    default <T, ACC> void registerFunction(String s, TableAggregateFunction<T, ACC> tableAggregateFunction) {
-        getStreamTableEnvironment().registerFunction(s, tableAggregateFunction);
     }
 
     default <T> Table fromDataStream(DataStream<T> dataStream) {
