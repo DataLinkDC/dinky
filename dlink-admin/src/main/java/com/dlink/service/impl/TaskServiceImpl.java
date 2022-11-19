@@ -41,7 +41,6 @@ import com.dlink.dto.TaskVersionConfigureDTO;
 import com.dlink.exception.BusException;
 import com.dlink.function.compiler.CustomStringJavaCompiler;
 import com.dlink.function.util.UDFUtil;
-import com.dlink.gateway.Gateway;
 import com.dlink.gateway.GatewayType;
 import com.dlink.gateway.config.SavePointStrategy;
 import com.dlink.gateway.config.SavePointType;
@@ -817,7 +816,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 clusterConfigurationService.getGatewayConfig(task.getClusterConfigurationId());
             // submit application type with clusterConfiguration
             if (GatewayType.YARN_APPLICATION.equalsValue(config.getType())
-                || GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType())
+                    || GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType())
                     || GatewayType.KUBERNETES_APPLICATION_OPERATOR.equalsValue(config.getType())) {
                 if (!isJarTask) {
                     SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
@@ -859,7 +858,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 config.setSavePointPath(null);
         }
         config.setVariables(fragmentVariableService.listEnabledVariables());
-        config.getGatewayConfig().getAppConfig().setParallelism(task.getParallelism());
         return config;
     }
 
@@ -882,7 +880,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
             if (Asserts.isNotNull(history) && Asserts.isNotNull(history.getClusterConfigurationId())) {
                 jobInfoDetail.setClusterConfiguration(
-                    clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId()));
+                        clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId()));
             }
             jobInfoDetail.setHistory(history);
             jobInfoDetail.setJobHistory(jobHistoryService.getJobHistory(id));
@@ -892,26 +890,37 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             return jobInfoDetail.getInstance();
         }
         JobHistory jobHistoryJson =
-            jobHistoryService.refreshJobHistory(id, jobInfoDetail.getCluster().getJobManagerHost(),
-                jobInfoDetail.getInstance().getJid(), jobInfoDetail.isNeedSave());
+                jobHistoryService.refreshJobHistory(id, jobInfoDetail.getCluster().getJobManagerHost(),
+                        jobInfoDetail.getInstance().getJid(), jobInfoDetail.isNeedSave());
         JobHistory jobHistory = jobHistoryService.getJobHistoryInfo(jobHistoryJson);
         jobInfoDetail.setJobHistory(jobHistory);
+        JobStatus checkStatus = null;
         if (JobStatus.isDone(jobInfoDetail.getInstance().getStatus())
-            && (Asserts.isNull(jobHistory.getJob()) || jobHistory.isError())) {
-            return jobInfoDetail.getInstance();
+                && (Asserts.isNull(jobHistory.getJob()) || jobHistory.isError())) {
+            checkStatus = checkJobStatus(jobInfoDetail);
+            log.debug("YarnState: " + checkStatus.getValue());
+            if (checkStatus.isDone()) {
+                jobInfoDetail.getInstance().setStatus(checkStatus.getValue());
+                jobInstanceService.updateById(jobInfoDetail.getInstance());
+                return jobInfoDetail.getInstance();
+            }
         }
         String status = jobInfoDetail.getInstance().getStatus();
         boolean jobStatusChanged = false;
         if (Asserts.isNull(jobInfoDetail.getJobHistory().getJob()) || jobInfoDetail.getJobHistory().isError()) {
-            jobInfoDetail.getInstance().setStatus(JobStatus.UNKNOWN.getValue());
+            if (Asserts.isNotNull(checkStatus)) {
+                jobInfoDetail.getInstance().setStatus(checkStatus.getValue());
+            } else {
+                jobInfoDetail.getInstance().setStatus(JobStatus.UNKNOWN.getValue());
+            }
         } else {
             jobInfoDetail.getInstance().setDuration(
-                jobInfoDetail.getJobHistory().getJob().get(FlinkRestResultConstant.JOB_DURATION).asLong() / 1000);
+                    jobInfoDetail.getJobHistory().getJob().get(FlinkRestResultConstant.JOB_DURATION).asLong() / 1000);
             jobInfoDetail.getInstance()
-                .setStatus(jobInfoDetail.getJobHistory().getJob().get(FlinkRestResultConstant.JOB_STATE).asText());
+                    .setStatus(jobInfoDetail.getJobHistory().getJob().get(FlinkRestResultConstant.JOB_STATE).asText());
         }
         if (JobStatus.isDone(jobInfoDetail.getInstance().getStatus())
-            && !status.equals(jobInfoDetail.getInstance().getStatus())) {
+                && !status.equals(jobInfoDetail.getInstance().getStatus())) {
             jobStatusChanged = true;
             jobInfoDetail.getInstance().setFinishTime(LocalDateTime.now());
             // handleJobDone(jobInfoDetail.getInstance());
@@ -1174,35 +1183,14 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if (Asserts.isNull(jobInstance.getTaskId())) {
             return;
         }
+        Task task = getTaskInfoById(jobInstance.getTaskId());
         Task updateTask = new Task();
         updateTask.setId(jobInstance.getTaskId());
         updateTask.setJobInstanceId(0);
-
-        JobInfoDetail jobInfoDetail = FlinkJobTaskPool.getInstance().getMap().get(jobInstance.getId().toString());
-
-        // some job need do something on Done, example flink-kubernets-operator
-        if (jobInfoDetail.getClusterConfiguration() != null
-                && GatewayType.isDeployCluster(jobInfoDetail.getCluster().getType())) {
-            JobConfig jobConfig = new JobConfig();
-            jobConfig.setType(jobInfoDetail.getCluster().getType());
-            jobConfig.buildGatewayConfig(jobInfoDetail.getClusterConfiguration().parseConfig());
-            jobConfig.getGatewayConfig().setType(GatewayType.get(jobInfoDetail.getCluster().getType()));
-            jobConfig.getGatewayConfig().getFlinkConfig().setJobName(jobInstance.getName());
-            jobConfig.getGatewayConfig().getClusterConfig().getClusterConfig().put("state", jobInstance.getStatus());
-            Gateway.build(jobConfig.getGatewayConfig()).handleJobDone();
-        }
-
         if (!JobLifeCycle.ONLINE.equalsValue(jobInstance.getStep())) {
             updateById(updateTask);
             return;
         }
-        handleJobAlert(jobInstance);
-        updateTask.setStep(JobLifeCycle.RELEASE.getValue());
-        updateById(updateTask);
-    }
-
-    private void handleJobAlert(JobInstance jobInstance) {
-        Task task = getTaskInfoById(jobInstance.getTaskId());
         Integer jobInstanceId = jobInstance.getId();
         JobHistory jobHistory = jobHistoryService.getById(jobInstanceId); // 获取任务历史信息
         String jobJson = jobHistory.getJobJson(); // 获取任务历史信息的jobJson
@@ -1260,6 +1248,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 }
             }
         }
+        updateTask.setStep(JobLifeCycle.RELEASE.getValue());
+        updateById(updateTask);
     }
 
     private void sendAlert(AlertInstance alertInstance, JobInstance jobInstance, Task task, AlertMsg alertMsg) {

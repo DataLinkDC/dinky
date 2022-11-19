@@ -12,10 +12,10 @@
         <where>
             1=1
             <if test='param.versionId!=null and param.versionId!=""'>
-                and a.version_id = "${param.versionId}"
+                and a.version_id = #{param.versionId}
             </if>
             <if test='param.taskId!=null and param.taskId!=""'>
-                and a.task_id = "${param.taskId}"
+                and a.task_id = #{param.taskId}
             </if>
             <if test='param.createTime!=null and param.createTime!=""'>
                 and a.create_time <![CDATA[>=]]> str_to_date( #{param.createTime},'%Y-%m-%d %H:%i:%s')

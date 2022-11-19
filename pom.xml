@@ -575,7 +575,10 @@
                 <configuration>
                     <filesets>
                         <fileset>
-                            <directory>${project.basedir}/extends</directory>
+                            <directory>${project.basedir}/build/extends</directory>
+                            <includes>
+                                <include>**/*</include>
+                            </includes>
                         </fileset>
                     </filesets>
                 </configuration>
@@ -673,6 +676,13 @@
             <url>https://repo1.maven.org/maven2/</url>
         </repository>
     </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>aliyun</id>
+            <url>https://maven.aliyun.com/repository/central</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <profiles>
         <profile>

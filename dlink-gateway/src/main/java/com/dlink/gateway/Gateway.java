@@ -26,6 +26,7 @@ import com.dlink.gateway.result.GatewayResult;
 import com.dlink.gateway.result.SavePointResult;
 import com.dlink.gateway.result.TestResult;
 
+import com.dlink.model.JobStatus;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 
 import java.util.Iterator;
@@ -86,5 +87,7 @@ public interface Gateway {
     boolean handleJobDone();
 
     boolean deleteCluster();
+
+    JobStatus getJobStatusById(String id);
 
 }

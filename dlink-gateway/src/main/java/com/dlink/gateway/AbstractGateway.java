@@ -21,6 +21,7 @@ package com.dlink.gateway;
 
 import com.dlink.gateway.config.GatewayConfig;
 
+import com.dlink.model.JobStatus;
 import org.apache.flink.configuration.Configuration;
 
 import org.slf4j.Logger;
@@ -55,7 +56,6 @@ public abstract class AbstractGateway implements Gateway {
     }
 
     protected abstract void init();
-
     @Override
     public boolean handleJobDone() {
         return false;
@@ -64,5 +64,10 @@ public abstract class AbstractGateway implements Gateway {
     @Override
     public boolean deleteCluster() {
         return false;
+    }
+
+    @Override
+    public JobStatus getJobStatusById(String id) {
+        return JobStatus.UNKNOWN;
     }
 }
