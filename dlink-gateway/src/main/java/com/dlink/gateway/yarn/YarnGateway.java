@@ -53,6 +53,7 @@ import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.service.Service;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.ApplicationReport;
+import org.apache.hadoop.yarn.api.records.FinalApplicationStatus;
 import org.apache.hadoop.yarn.api.records.YarnApplicationState;
 import org.apache.hadoop.yarn.client.api.YarnClient;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
@@ -334,9 +335,17 @@ public abstract class YarnGateway extends AbstractGateway {
         try {
             applicationReport = yarnClient.getApplicationReport(getApplicationId());
             YarnApplicationState yarnApplicationState = applicationReport.getYarnApplicationState();
+            FinalApplicationStatus finalApplicationStatus = applicationReport.getFinalApplicationStatus();
             switch (yarnApplicationState) {
                 case FINISHED:
-                    return JobStatus.FINISHED;
+                    switch (finalApplicationStatus) {
+                        case KILLED:
+                            return JobStatus.CANCELED;
+                        case FAILED:
+                            return JobStatus.FAILED;
+                        default:
+                            return JobStatus.FINISHED;
+                    }
                 case RUNNING:
                     return JobStatus.RUNNING;
                 case FAILED:
