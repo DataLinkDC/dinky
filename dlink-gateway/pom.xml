@@ -25,164 +25,30 @@
     </parent>
 
     <artifactId>dlink-gateway</artifactId>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>dlink-gateway-base</module>
+        <module>dlink-gateway-kubernets</module>
+        <module>dlink-gateway-yarn</module>
+    </modules>
     <properties>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>${target.java.version}</maven.compiler.source>
         <maven.compiler.target>${target.java.version}</maven.compiler.target>
-        <flink.operator.version>1.2.0</flink.operator.version>
     </properties>
 
-    <dependencies>
-
-        <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-kubernetes-operator</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-client-hadoop</artifactId>
-            <scope>${scope.runtime}</scope>
-        </dependency>
-
-        <!--        delete this dependency will result in a JcaPEMKey error
-for k8s commit tasks-->
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcpkix-jdk15on</artifactId>
-            <version>1.69</version>
-        </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.69</version>
-        </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-ext-jdk15on</artifactId>
-            <version>1.69</version>
-        </dependency>
-
-    </dependencies>
-
     <profiles>
+
+        <!--        flink-kubernets-operator  only support jdk11-->
         <profile>
-            <id>flink-1.11</id>
-            <dependencies>
-                <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-client-1.11</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
-                <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-flink-1.11</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
-            </dependencies>
+            <id>jdk11</id>
+            <modules>
+                <module>dlink-gateway-kubernetes-operator</module>
+            </modules>
         </profile>
 
-        <profile>
-            <id>flink-1.12</id>
-            <dependencies>
-                <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-client-1.12</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
-                <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-flink-1.12</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-
-        <profile>
-            <id>flink-1.13</id>
-            <dependencies>
-                <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-client-1.13</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
-                <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-flink-1.13</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-
-        <profile>
-            <id>flink-1.14</id>
-            <dependencies>
-                <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-client-1.14</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
-                <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-flink-1.14</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-
-        <profile>
-            <id>flink-1.15</id>
-            <dependencies>
-                <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-client-1.15</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
-                <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-flink-1.15</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-
-        <profile>
-            <id>flink-1.16</id>
-            <dependencies>
-                <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-client-1.16</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
-                <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-flink-1.16</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
-            </dependencies>
-        </profile>
     </profiles>
 
 </project>

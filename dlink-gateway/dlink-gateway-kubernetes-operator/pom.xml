@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.dlink</groupId>
+        <artifactId>dlink-gateway</artifactId>
+        <version>0.6.8-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>dlink-gateway-kubernetes-operator</artifactId>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>${target.java.version}</maven.compiler.source>
+        <maven.compiler.target>${target.java.version}</maven.compiler.target>
+        <flink.operator.version>1.2.0</flink.operator.version>
+
+    </properties>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-kubernetes-operator</artifactId>
+            <version>${flink.operator.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-gateway-base</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.flink</groupId>
+                    <artifactId>flink-kubernetes</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-gateway-kubernets</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-client-1.15</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-client-hadoop</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-flink</artifactId>
+                </exclusion>
+            </exclusions>
+
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <configuration>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <!-- 插件目标 -->
+                            <goal>shade</goal>
+                        </goals>
+                        <!-- Maven 的生命周期 -->
+                        <phase>package</phase>
+                        <configuration>
+                            <minimizeJar>true</minimizeJar>
+                            <!-- 配置多版本 jar 包中类路径的重命名-->
+                            <relocations>
+                                <relocation>
+                                    <pattern>io.fabric8.kubernetes</pattern>
+                                    <shadedPattern>io.dlink.fabric8.kubernetes</shadedPattern>
+                                </relocation>
+                            </relocations>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

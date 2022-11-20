@@ -28,11 +28,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-kubernetes-operator</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
         </dependency>
@@ -176,8 +171,17 @@
         </dependency>
         <dependency>
             <groupId>com.dlink</groupId>
-            <artifactId>dlink-gateway</artifactId>
+            <artifactId>dlink-gateway-base</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-gateway-yarn</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-gateway-kubernets</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
@@ -302,4 +306,19 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+
+        <profile>
+            <id>jdk11</id>
+            <dependencies>
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-gateway-kubernetes-operator</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+
+    </profiles>
 </project>

@@ -76,7 +76,7 @@
         </dependency>-->
         <dependency>
             <groupId>com.dlink</groupId>
-            <artifactId>dlink-gateway</artifactId>
+            <artifactId>dlink-gateway-base</artifactId>
             <scope>${scope.runtime}</scope>
         </dependency>
         <dependency>
