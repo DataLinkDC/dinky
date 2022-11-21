@@ -22,27 +22,20 @@ package com.dlink.executor;
 import com.dlink.model.LineageRel;
 import com.dlink.result.SqlExplainResult;
 
-import org.apache.flink.api.dag.Transformation;
-import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.ExplainDetail;
-import org.apache.flink.table.api.TableException;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.api.internal.TableEnvironmentInternal;
 import org.apache.flink.table.delegation.Planner;
-import org.apache.flink.table.operations.ExplainOperation;
-import org.apache.flink.table.operations.ModifyOperation;
-import org.apache.flink.table.operations.Operation;
-import org.apache.flink.table.operations.QueryOperation;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
 
 /**
  * CustomTableEnvironment
