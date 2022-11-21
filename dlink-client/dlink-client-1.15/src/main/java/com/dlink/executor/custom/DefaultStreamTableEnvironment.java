@@ -1,4 +1,23 @@
-package com.dlink.executor.customTableEnvironment;
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+package com.dlink.executor.custom;
 
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.java.tuple.Tuple2;
@@ -36,7 +55,7 @@ public interface DefaultStreamTableEnvironment extends StreamTableEnvironment {
 
     StreamTableEnvironment getStreamTableEnvironment();
 
-    //region StreamTableEnvironment interface
+    // region StreamTableEnvironment interface
     default <T> void registerFunction(String s, TableFunction<T> tableFunction) {
         getStreamTableEnvironment().registerFunction(s, tableFunction);
     }
@@ -344,6 +363,6 @@ public interface DefaultStreamTableEnvironment extends StreamTableEnvironment {
     default <T> DataStream<Tuple2<Boolean, T>> toRetractStream(Table table, TypeInformation<T> typeInformation) {
         return getStreamTableEnvironment().toRetractStream(table, typeInformation);
     }
-    //endregion
+    // endregion
 
 }

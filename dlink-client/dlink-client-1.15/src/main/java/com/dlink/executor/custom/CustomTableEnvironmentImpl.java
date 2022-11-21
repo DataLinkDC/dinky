@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.executor.customTableEnvironment;
+package com.dlink.executor.custom;
 
 import com.dlink.assertion.Asserts;
 
@@ -55,7 +55,6 @@ import java.util.Map;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 
 /**
  * CustomTableEnvironmentImpl
@@ -135,8 +134,8 @@ public class CustomTableEnvironmentImpl extends AbsCustomTableEnvironment {
         return getStreamGraphFromInserts(statements).getJobGraph();
     }
 
-    public boolean parseAndLoadConfiguration(String statement, StreamExecutionEnvironment environment, Map<String,
-            Object> setMap) {
+    public boolean parseAndLoadConfiguration(String statement, StreamExecutionEnvironment environment,
+                                             Map<String, Object> setMap) {
         List<Operation> operations = getParser().parse(statement);
         for (Operation operation : operations) {
             if (operation instanceof SetOperation) {
