@@ -5,7 +5,7 @@ import org.apache.flink.table.api.TableEnvironment;
 /**
  *
  */
-public interface StreamTableEnvironmentInstance {
+public interface TableEnvironmentInstance {
 
     TableEnvironment getTableEnvironment();
 }

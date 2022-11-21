@@ -19,7 +19,7 @@
 
 package com.dlink.executor.custom;
 
-import com.dlink.executor.StreamTableEnvironmentInstance;
+import com.dlink.executor.TableEnvironmentInstance;
 import org.apache.flink.table.api.CompiledPlan;
 import org.apache.flink.table.api.ExplainDetail;
 import org.apache.flink.table.api.Table;
@@ -39,7 +39,7 @@ import java.util.List;
 /**
  *
  */
-public interface DefaultTableEnvironmentInternal extends TableEnvironmentInternal, StreamTableEnvironmentInstance {
+public interface DefaultTableEnvironmentInternal extends TableEnvironmentInternal, TableEnvironmentInstance {
 
     default TableEnvironmentInternal getTableEnvironmentInternal() {
         return (TableEnvironmentInternal) getTableEnvironment();

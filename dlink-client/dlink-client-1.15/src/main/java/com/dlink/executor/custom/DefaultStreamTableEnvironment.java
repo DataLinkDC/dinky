@@ -19,7 +19,8 @@
 
 package com.dlink.executor.custom;
 
-import com.dlink.executor.StreamTableEnvironmentInstance;
+import com.dlink.executor.TableEnvironmentInstance;
+
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.streaming.api.datastream.DataStream;
@@ -52,7 +53,7 @@ import java.util.Optional;
 /**
  *
  */
-public interface DefaultStreamTableEnvironment extends StreamTableEnvironment, StreamTableEnvironmentInstance {
+public interface DefaultStreamTableEnvironment extends StreamTableEnvironment, TableEnvironmentInstance {
 
     default StreamTableEnvironment getStreamTableEnvironment() {
         return (StreamTableEnvironment) getTableEnvironment();
