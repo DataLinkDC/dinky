@@ -871,6 +871,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 config.setSavePointPath(null);
         }
         config.setVariables(fragmentVariableService.listEnabledVariables());
+        config.getGatewayConfig().getAppConfig().setParallelism(task.getParallelism());
         return config;
     }
 

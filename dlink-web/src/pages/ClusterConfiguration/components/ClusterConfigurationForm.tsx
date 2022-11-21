@@ -223,26 +223,6 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
         </Form.Item>
       </>)
   }
-  const renderFlinkKubernetesOperatorPage = (formValsPara: Partial<ClusterConfigurationTableListItem>) => {
-    return (
-      <>
-        <Divider>{l('pages.registerCenter.clusterConfig.k8sConfig')}</Divider>
-        <Form.Item
-          name='flinkVersion'
-          label={l('pages.registerCenter.clusterConfig.kubernets.version')}
-        >
-          <Select defaultValue={"v1_15"}>
-            <Option value="v1_13">v1_13 ({l('pages.registerCenter.clusterConfig.kubernets.unsupportBatch')})</Option>
-            <Option value="v1_14">v1_14 ({l('pages.registerCenter.clusterConfig.kubernets.unsupportBatch')})</Option>
-            <Option value="v1_15">v1_15</Option>
-            <Option value="v1_16">v1_16</Option>
-          </Select>
-        </Form.Item>
-        {buildConfig(KUBERNETES_CONFIG_LIST, formValsPara)}
-
-      </>
-    )
-  }
 
   const renderYarnPage = (formValsPara: Partial<ClusterConfigurationTableListItem>) => {
     return (
@@ -311,13 +291,11 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
           <Select defaultValue="Yarn" value="Yarn">
             <Option value="Yarn">Flink On Yarn</Option>
             <Option value="Kubernetes">Flink Kubernetes Native</Option>
-            <Option value="FlinkKubernetesOperator">Flink Kubernetes Operator</Option>
+            {/*<Option value="FlinkKubernetesOperator">Flink Kubernetes Operator</Option>*/}
           </Select>
         </Form.Item>
 
         {formValsPara.type == 'Yarn' ? renderYarnPage(formValsPara) : undefined}
-
-        {formValsPara.type == 'FlinkKubernetesOperator' ? renderFlinkKubernetesOperatorPage(formValsPara) : undefined}
 
         {formValsPara.type == 'Kubernetes' ? renderFlinkKubernetesNativePage(formValsPara) : undefined}
 

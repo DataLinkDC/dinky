@@ -62,30 +62,6 @@ export const KUBERNETES_CONFIG_LIST: Config[] = [{
   lable: 'kubernetes.taskmanager.cpu',
   showType: 'input',
   placeholder: l('pages.registerCenter.clusterConfig.help.kubernets.tmcpu'),
-},{
-  name: 'kubernetes.service.acctount',
-  lable: 'kubernetes.service.acctount',
-  placeholder: l('pages.registerCenter.clusterConfig.help.kubernets.account'),
-  showType: 'input',
-  showOnSubmitType: 'FlinkKubernetesOperator'
-},{
-  name: 'kubernetes.pod-template',
-  lable: 'kubernetes.pod-template',
-  placeholder: l('pages.registerCenter.clusterConfig.help.kubernets.defaultTemplate'),
-  showType: 'textarea',
-  showOnSubmitType: 'FlinkKubernetesOperator'
-},{
-  name: 'kubernetes.pod-template.jobmanager',
-  lable: 'kubernetes.pod-template.jobmanager',
-  placeholder: l('pages.registerCenter.clusterConfig.help.kubernets.jobManagerTemplate'),
-  showType: 'textarea',
-  showOnSubmitType: 'FlinkKubernetesOperator'
-},{
-  name: 'kubernetes.pod-template.taskmanager',
-  lable: 'kubernetes.pod-template.taskmanager',
-  placeholder: l('pages.registerCenter.clusterConfig.help.kubernets.taskManagerTemplate'),
-  showType: 'textarea',
-  showOnSubmitType: 'FlinkKubernetesOperator'
 }
 ];
 export const FLINK_CONFIG_LIST: Config[] = [

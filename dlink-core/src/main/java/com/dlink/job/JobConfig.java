@@ -239,7 +239,6 @@ public class JobConfig {
             gatewayConfig.setFlinkConfig(FlinkConfig.build((Map<String, String>) config.get("flinkConfig")));
         }
         if (config.containsKey("kubernetesConfig")) {
-            // kubernetes have operator and native submit type
             Map<String, String> kubernetesConfig = (Map<String, String>) config.get("kubernetesConfig");
             gatewayConfig.getFlinkConfig().getConfiguration().putAll(kubernetesConfig);
         }

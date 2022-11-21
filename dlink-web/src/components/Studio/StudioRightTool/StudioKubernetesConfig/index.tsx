@@ -122,7 +122,6 @@ const StudioKubernetesConfig = (props: any) => {
           >
             <Select defaultValue={RUN_MODE.KUBERNETES_APPLICATION} value={RUN_MODE.KUBERNETES_APPLICATION}>
               <Option value={RUN_MODE.KUBERNETES_APPLICATION}>Kubernetes Application Native</Option>
-              <Option value={RUN_MODE.KUBERNETES_APPLICATION}>Kubernetes Application Operator</Option>
             </Select>
           </Form.Item>
 

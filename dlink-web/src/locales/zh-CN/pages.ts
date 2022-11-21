@@ -324,6 +324,27 @@ export default {
   'pages.registerCenter.clusterConfig.flinkConfigPathPlaceholder': '请输入 flink-conf.yaml 路径！值如 /opt/module/flink/conf ',
   'pages.registerCenter.clusterConfig.flinkConfigPathHelp': '请输入 flink-conf.yaml 路径！值如 /opt/module/flink/conf ',
 
+  // K8s页面相关
+  'pages.registerCenter.clusterConfig.appConfig': 'App 配置',
+  'pages.registerCenter.clusterConfig.kubernets.version': 'Flink 版本',
+  'pages.registerCenter.clusterConfig.kubernets.unsupportBatch': '不支持批任务',
+  'pages.registerCenter.clusterConfig.submit.type': '部署方式',
+  'pages.registerCenter.clusterConfig.jar.path': '镜像内Jar路径',
+  'pages.registerCenter.clusterConfig.jar.class': '启动类',
+  'pages.registerCenter.clusterConfig.jar.args': '启动参数',
+
+  'pages.registerCenter.clusterConfig.help.kubernets.namespace': 'kubernets命名空间',
+  'pages.registerCenter.clusterConfig.help.kubernets.image': 'Flink镜像地址',
+  'pages.registerCenter.clusterConfig.help.kubernets.jmcpu': 'jobmanager cpu配置',
+  'pages.registerCenter.clusterConfig.help.kubernets.tmcpu': 'taskmanager cpu配置',
+  'pages.registerCenter.clusterConfig.help.kubernets.account': 'kubernets 提交使用的账号，默认default',
+  'pages.registerCenter.clusterConfig.help.kubernets.defaultTemplate': '可选，默认JobManager，TaskManager 的template配置!',
+  'pages.registerCenter.clusterConfig.help.kubernets.jobManagerTemplate': '可选，JobManager 的template配置! 会覆盖kubernetes.pod-template配置',
+  'pages.registerCenter.clusterConfig.help.kubernets.taskManagerTemplate': '可选，TaskManager 的template配置!会覆盖kubernetes.pod-template配置',
+  'pages.registerCenter.clusterConfig.help.kubernets.jobManagerMemory': '可选，JobManager 的内存配置',
+  'pages.registerCenter.clusterConfig.help.kubernets.taskManagerMemory': '可选，taskManagerMemory 的内存配置',
+
+
   'pages.registerCenter.alert.instanceManagement': '报警实例管理',
   'pages.registerCenter.alert.instance.name': '名称',
   'pages.registerCenter.alert.instance.namePleaseHolder': '请输入告警实例名称',
