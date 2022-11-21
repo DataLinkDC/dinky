@@ -169,7 +169,7 @@ public final class SqlManager {
         return sqlFragments.entrySet().iterator();
     }
 
-    public Table getSqlFragmentsTable(CustomTableEnvironmentImpl environment) {
+    public Table getSqlFragmentsTable(CustomTableEnvironment environment) {
         List<String> keys = new ArrayList<>(sqlFragments.keySet());
         return environment.fromValues(keys);
     }

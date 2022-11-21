@@ -17,10 +17,12 @@
  *
  */
 
-package com.dlink.executor;
+package com.dlink.executor.customTableEnvironment;
 
 import com.dlink.assertion.Asserts;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.flink.api.common.RuntimeExecutionMode;
 import org.apache.flink.api.dag.Transformation;
 import org.apache.flink.configuration.Configuration;
@@ -33,7 +35,6 @@ import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.graph.JSONGenerator;
 import org.apache.flink.streaming.api.graph.StreamGraph;
-import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableException;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
@@ -44,7 +45,6 @@ import org.apache.flink.table.catalog.FunctionCatalog;
 import org.apache.flink.table.delegation.Executor;
 import org.apache.flink.table.delegation.Planner;
 import org.apache.flink.table.expressions.Expression;
-import org.apache.flink.table.functions.TableAggregateFunction;
 import org.apache.flink.table.module.ModuleManager;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
@@ -56,22 +56,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 /**
  * CustomTableEnvironmentImpl
  *
  * @author wenmo
  * @since 2022/05/08
  **/
-public class CustomTableEnvironmentImpl implements CustomTableEnvironment {
-
-    private StreamTableEnvironment streamTableEnvironment;
+public class CustomTableEnvironmentImpl extends AbsCustomTableEnvironment {
 
     public CustomTableEnvironmentImpl(StreamTableEnvironment streamTableEnvironment) {
-        this.streamTableEnvironment = streamTableEnvironment;
+        super(streamTableEnvironment);
     }
 
     public CustomTableEnvironmentImpl(CatalogManager catalogManager,
@@ -83,22 +77,9 @@ public class CustomTableEnvironmentImpl implements CustomTableEnvironment {
                                       Executor executor,
                                       boolean isStreamingMode,
                                       ClassLoader userClassLoader) {
-        streamTableEnvironment = new StreamTableEnvironmentImpl(catalogManager, moduleManager, functionCatalog,
+        super(catalogManager, moduleManager,
+                functionCatalog,
                 tableConfig, executionEnvironment, planner, executor, isStreamingMode, userClassLoader);
-    }
-
-    public static CustomTableEnvironmentImpl create(StreamExecutionEnvironment executionEnvironment) {
-        return new CustomTableEnvironmentImpl(StreamTableEnvironmentImpl.create(executionEnvironment,
-                EnvironmentSettings.newInstance().build()));
-    }
-
-    public static CustomTableEnvironmentImpl createBatch(StreamExecutionEnvironment executionEnvironment) {
-        Configuration configuration = new Configuration();
-        configuration.set(ExecutionOptions.RUNTIME_MODE, RuntimeExecutionMode.BATCH);
-        TableConfig tableConfig = new TableConfig();
-        tableConfig.addConfiguration(configuration);
-        return new CustomTableEnvironmentImpl(StreamTableEnvironmentImpl.create(executionEnvironment,
-                EnvironmentSettings.newInstance().inBatchMode().build()));
     }
 
     public ObjectNode getStreamGraph(String statement) {
@@ -210,7 +191,7 @@ public class CustomTableEnvironmentImpl implements CustomTableEnvironment {
 
     @Override
     public TableEnvironmentInternal getTableEnvironmentInternal() {
-        return (TableEnvironmentInternal)streamTableEnvironment;
+        return (TableEnvironmentInternal) streamTableEnvironment;
     }
 
     @Override

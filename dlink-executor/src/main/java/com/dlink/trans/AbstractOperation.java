@@ -19,11 +19,10 @@
 
 package com.dlink.trans;
 
-import com.dlink.executor.CustomTableEnvironmentImpl;
-
 import java.util.Arrays;
 import java.util.List;
 
+import com.dlink.executor.CustomTableEnvironment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +53,7 @@ public class AbstractOperation {
         this.statement = statement;
     }
 
-    public boolean checkFunctionExist(CustomTableEnvironmentImpl stEnvironment, String key) {
+    public boolean checkFunctionExist(CustomTableEnvironment stEnvironment, String key) {
         String[] udfs = stEnvironment.listUserDefinedFunctions();
         List<String> udflist = Arrays.asList(udfs);
         if (udflist.contains(key.toLowerCase())) {

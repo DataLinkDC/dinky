@@ -21,6 +21,7 @@ package com.dlink.executor;
 
 import com.dlink.assertion.Asserts;
 
+import com.dlink.executor.customTableEnvironment.AbsCustomTableEnvironment;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
@@ -45,6 +46,6 @@ public class AppStreamExecutor extends Executor {
 
     @Override
     CustomTableEnvironment createCustomTableEnvironment() {
-        return CustomTableEnvironmentImpl.create(environment);
+        return AbsCustomTableEnvironment.create(environment);
     }
 }
