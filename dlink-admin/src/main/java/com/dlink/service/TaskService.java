@@ -103,8 +103,8 @@ public interface TaskService extends ISuperService<Task> {
 
     Result queryAllCatalogue();
 
-    Result<List<Task>> queryOnLineTaskByDoneStatus(List<JobLifeCycle> jobLifeCycle
-        , List<JobStatus> jobStatuses, boolean includeNull, Integer catalogueId);
+    Result<List<Task>> queryOnLineTaskByDoneStatus(List<JobLifeCycle> jobLifeCycle, List<JobStatus> jobStatuses,
+                                                   boolean includeNull, Integer catalogueId);
 
     void selectSavepointOnLineTask(TaskOperatingResult taskOperatingResult);
 
@@ -112,4 +112,5 @@ public interface TaskService extends ISuperService<Task> {
 
     Task getTaskByNameAndTenantId(String name, Integer tenantId);
 
+    JobStatus checkJobStatus(JobInfoDetail jobInfoDetail);
 }

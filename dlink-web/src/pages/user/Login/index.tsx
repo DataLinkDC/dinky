@@ -81,6 +81,11 @@ const Login: React.FC = () => {
   ])
 
 
+  const setTenantCookie =  (tenantId :number) => {
+    localStorage.setItem("dlink-tenantId", tenantId.toString()); // 放入本地存储中 request2请求时会放入header
+    cookies.set('tenantId', tenantId.toString(), {path: '/'}) // 放入cookie中
+  }
+
   const handleSubmit = async (values: API.LoginParams) => {
     if (!isLogin) {
       return;
@@ -138,8 +143,7 @@ const Login: React.FC = () => {
             if (value) {
               setCheckDisabled(false) // 如果没选择租户 ·确认按钮· 则禁用
               userParamsState.tenantId = value as number; // 将租户id给后端入参
-              localStorage.setItem("dlink-tenantId", value.toString()); // 放入本地存储中 request2请求时会放入header
-              cookies.set('tenantId', value.toString(), {path: '/'}) // 放入cookie中
+              setTenantCookie(value as number)
             } else {
               setCheckDisabled(true)
             }
@@ -166,8 +170,8 @@ const Login: React.FC = () => {
     <div className={styles.container}>
       <div className={styles.lang}>{SelectLang && <SelectLang onItemClick={(e) => {
         let language = e.key.toString()
-        if (language === undefined || language === ""){
-          language="zh-CN"
+        if (language === undefined || language === "") {
+          language = "zh-CN"
         }
         cookies.set('language', language, {path: '/'})
         setLocale(language)
@@ -204,11 +208,22 @@ const Login: React.FC = () => {
                 htmlType: 'submit',
               },
             }}
-            onFinish={async (values) => {
-              values.grant_type = 'password';
-              setUserLoginState(values);
-              setUserParamsState(values);
-              setChooseTenant(true)
+            onFinish={async (values: API.LoginParams) => {
+              setType("password")
+              let res: TenantTableListItem[] = await getData("/api/geTenants", {username: values.username}).then(result => {
+                setTenant(result?.datas);
+                return result?.datas
+              })
+              if (res.length === 1) {
+                let tenantValue = res.pop().id // 进入此处说明 只有一个租户 直接pop() 拿到单个对象获取租户id
+                values.tenantId = tenantValue; // 将租户id给后端入参
+                setTenantCookie(tenantValue as number)
+                setUserParamsState(values);
+                await handleSubmit(values);
+              } else {
+                setUserParamsState(values);
+                setChooseTenant(true)
+              }
             }}
           >
             {type === 'password' && (
