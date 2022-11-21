@@ -42,7 +42,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * @author wenmo
  * @since 2022/2/5 10:35
  */
-public interface CustomTableEnvironment extends StreamTableEnvironment, TableEnvironmentInternal {
+public interface CustomTableEnvironment extends StreamTableEnvironment, TableEnvironmentInternal, StreamTableEnvironmentInstance {
 
     ObjectNode getStreamGraph(String statement);
 

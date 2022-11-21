@@ -185,16 +185,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
     }
 
     @Override
-    public StreamTableEnvironment getStreamTableEnvironment() {
-        return streamTableEnvironment;
-    }
-
-    @Override
-    public TableEnvironmentInternal getTableEnvironmentInternal() {
-        return (TableEnvironmentInternal) streamTableEnvironment;
-    }
-
-    @Override
     public <T> void createTemporaryView(String path, DataStream<T> dataStream, String fields) {
         createTemporaryView(path, fromDataStream(dataStream, fields));
     }

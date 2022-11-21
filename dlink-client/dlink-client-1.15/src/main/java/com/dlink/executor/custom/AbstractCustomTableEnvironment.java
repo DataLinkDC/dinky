@@ -32,6 +32,7 @@ import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.ExplainDetail;
 import org.apache.flink.table.api.TableConfig;
+import org.apache.flink.table.api.TableEnvironment;
 import org.apache.flink.table.api.TableException;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.api.bridge.java.internal.StreamTableEnvironmentImpl;
@@ -78,6 +79,11 @@ public abstract class AbstractCustomTableEnvironment
         streamTableEnvironment = new StreamTableEnvironmentImpl(catalogManager, moduleManager,
                 functionCatalog,
                 tableConfig, executionEnvironment, planner, executor, isStreamingMode, userClassLoader);
+    }
+
+    @Override
+    public TableEnvironment getTableEnvironment() {
+        return streamTableEnvironment;
     }
 
     public StreamGraph getStreamGraphFromInserts(List<String> statements) {

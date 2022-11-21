@@ -19,6 +19,7 @@
 
 package com.dlink.executor.custom;
 
+import com.dlink.executor.StreamTableEnvironmentInstance;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.streaming.api.datastream.DataStream;
@@ -51,9 +52,11 @@ import java.util.Optional;
 /**
  *
  */
-public interface DefaultStreamTableEnvironment extends StreamTableEnvironment {
+public interface DefaultStreamTableEnvironment extends StreamTableEnvironment, StreamTableEnvironmentInstance {
 
-    StreamTableEnvironment getStreamTableEnvironment();
+    default StreamTableEnvironment getStreamTableEnvironment() {
+        return (StreamTableEnvironment) getTableEnvironment();
+    }
 
     // region StreamTableEnvironment interface
     default <T> void registerFunction(String s, TableFunction<T> tableFunction) {
