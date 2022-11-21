@@ -51,7 +51,7 @@ import java.util.List;
 /**
  *
  */
-public abstract class AbsCustomTableEnvironment
+public abstract class AbstractCustomTableEnvironment
         implements
             CustomTableEnvironment,
             DefaultTableEnvironmentInternal,
@@ -59,22 +59,22 @@ public abstract class AbsCustomTableEnvironment
 
     protected StreamTableEnvironment streamTableEnvironment;
 
-    protected AbsCustomTableEnvironment() {
+    protected AbstractCustomTableEnvironment() {
     }
 
-    protected AbsCustomTableEnvironment(StreamTableEnvironment streamTableEnvironment) {
+    protected AbstractCustomTableEnvironment(StreamTableEnvironment streamTableEnvironment) {
         this.streamTableEnvironment = streamTableEnvironment;
     }
 
-    protected AbsCustomTableEnvironment(CatalogManager catalogManager,
-                                        ModuleManager moduleManager,
-                                        FunctionCatalog functionCatalog,
-                                        TableConfig tableConfig,
-                                        StreamExecutionEnvironment executionEnvironment,
-                                        Planner planner,
-                                        Executor executor,
-                                        boolean isStreamingMode,
-                                        ClassLoader userClassLoader) {
+    protected AbstractCustomTableEnvironment(CatalogManager catalogManager,
+                                             ModuleManager moduleManager,
+                                             FunctionCatalog functionCatalog,
+                                             TableConfig tableConfig,
+                                             StreamExecutionEnvironment executionEnvironment,
+                                             Planner planner,
+                                             Executor executor,
+                                             boolean isStreamingMode,
+                                             ClassLoader userClassLoader) {
         streamTableEnvironment = new StreamTableEnvironmentImpl(catalogManager, moduleManager,
                 functionCatalog,
                 tableConfig, executionEnvironment, planner, executor, isStreamingMode, userClassLoader);
