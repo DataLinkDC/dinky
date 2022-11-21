@@ -116,7 +116,6 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        createDataSource(dataSource, config);
         return this;
     }
 
