@@ -27,6 +27,7 @@ import {testClusterConfigurationConnect} from "@/pages/ClusterConfiguration/serv
 import type {ClusterConfigurationTableListItem} from "@/pages/ClusterConfiguration/data";
 import {CODE} from "@/components/Common/crud";
 import {l} from "@/utils/intl";
+import TextArea from "antd/lib/input/TextArea";
 
 export type ClusterConfigurationFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -71,15 +72,21 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
     setFlinkConfigPath(all['flinkConfigPath']);
   };
 
-  const buildConfig = (config: Config[]) => {
+  const buildConfig = (config: Config[], formValsPara: any) => {
     const itemList: JSX.Element[] = [];
     config.forEach(configItem => {
-      itemList.push(<Form.Item
-        name={configItem.name}
-        label={configItem.lable}
-      >
-        <Input placeholder={configItem.placeholder} defaultValue={configItem.defaultValue}/>
-      </Form.Item>)
+      if (configItem.showOnSubmitType != undefined && configItem.showOnSubmitType != formValsPara.type) {
+      //    pass
+      } else {
+        if (configItem.showType == 'input' || configItem.showType == undefined) {
+          itemList.push(<Form.Item name={configItem.name} label={configItem.lable}>
+            <Input placeholder={configItem.placeholder} defaultValue={configItem.defaultValue}/></Form.Item>)
+        } else {
+          itemList.push(<Form.Item name={configItem.name} label={configItem.lable}>
+              <TextArea rows={5} placeholder={configItem.placeholder} defaultValue={configItem.defaultValue}/></Form.Item>)
+        }
+      }
+
     });
     return itemList;
   };
@@ -150,123 +157,57 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
     }
   };
 
-  const renderContent = (formValsPara: Partial<ClusterConfigurationTableListItem>) => {
+  const buildOtherConfig = (itemName: string, configName: string, addDescription: string) => {
+    return (
+      <Form.Item
+        label={itemName}
+      >
+        <Form.List name={configName}>
+          {(fields, {add, remove}) => (
+            <>
+              {fields.map(({key, name, fieldKey, ...restField}) => (
+                <Space key={key} style={{display: 'flex'}} align="baseline">
+                  <Form.Item
+                    {...restField}
+                    name={[name, 'name']}
+                    fieldKey={[fieldKey, 'name']}
+                  >
+                    <Input placeholder="name"/>
+                  </Form.Item>
+                  <Form.Item
+                    {...restField}
+                    name={[name, 'value']}
+                    fieldKey={[fieldKey, 'value']}
+                  >
+                    <Input placeholder="value"/>
+                  </Form.Item>
+                  <MinusCircleOutlined onClick={() => remove(name)}/>
+                </Space>
+              ))}
+              <Form.Item>
+                <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined/>}>
+                  {addDescription}
+                </Button>
+              </Form.Item>
+            </>
+          )}
+        </Form.List>
+      </Form.Item>
+    )
+  }
+
+  const renderFlinkKubernetesNativePage = (formValsPara: Partial<ClusterConfigurationTableListItem>) => {
     return (
       <>
-        <Form.Item
-          name="type"
-          label={l('pages.registerCenter.clusterConfig.type')}
-        >
-          <Select defaultValue="Yarn" value="Yarn">
-            <Option value="Yarn">Flink On Yarn</Option>
-            <Option value="Kubernetes">Flink On Kubernetes</Option>
-          </Select>
-        </Form.Item>
-        {formValsPara.type == 'Yarn' ? <>
-          <Divider>{l('pages.registerCenter.clusterConfig.hadoopConfig')}</Divider>
-          <Form.Item
-            name="hadoopConfigPath"
-            label={l('pages.registerCenter.clusterConfig.hadoopConfigPath')}
-            rules={[{required: true, message: l('pages.registerCenter.clusterConfig.hadoopConfigPathPlaceholder')}]}
-            help={l('pages.registerCenter.clusterConfig.hadoopConfigPathHelp')}
-          >
-            <Input placeholder={l('pages.registerCenter.clusterConfig.hadoopConfigPath')} addonAfter={
-              <Form.Item name="suffix" noStyle>
-                <Upload {...getUploadProps(hadoopConfigPath)} multiple>
-                  <UploadOutlined/>
-                </Upload>
-              </Form.Item>}/>
-          </Form.Item>
-          <Divider orientation="left" plain>{l('pages.registerCenter.clusterConfig.defineConfig.highPriority')}</Divider>
-          {buildConfig(HADOOP_CONFIG_LIST)}
-          <Form.Item
-            label={l('pages.registerCenter.clusterConfig.otherConfig')}
-          >
-            <Form.List name="hadoopConfigList">
-              {(fields, {add, remove}) => (
-                <>
-                  {fields.map(({key, name, fieldKey, ...restField}) => (
-                    <Space key={key} style={{display: 'flex'}} align="baseline">
-                      <Form.Item
-                        {...restField}
-                        name={[name, 'name']}
-                        fieldKey={[fieldKey, 'name']}
-                      >
-                        <Input placeholder="name"/>
-                      </Form.Item>
-                      <Form.Item
-                        {...restField}
-                        name={[name, 'value']}
-                        fieldKey={[fieldKey, 'value']}
-                      >
-                        <Input placeholder="value"/>
-                      </Form.Item>
-                      <MinusCircleOutlined onClick={() => remove(name)}/>
-                    </Space>
-                  ))}
-                  <Form.Item>
-                    <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined/>}>
-                      {l('pages.registerCenter.clusterConfig.addDefineConfig')}
-                    </Button>
-                  </Form.Item>
-                </>
-              )}
-            </Form.List>
-          </Form.Item></> : undefined}
-        {formValsPara.type == 'Kubernetes' ? <>
-          <Divider>{l('pages.registerCenter.clusterConfig.k8sConfig')}</Divider>
-          {buildConfig(KUBERNETES_CONFIG_LIST)}
-          <Form.Item
-            label={l('pages.registerCenter.clusterConfig.otherConfig')}
-          >
-            <Form.List name="kubernetesConfigList">
-              {(fields, {add, remove}) => (
-                <>
-                  {fields.map(({key, name, fieldKey, ...restField}) => (
-                    <Space key={key} style={{display: 'flex'}} align="baseline">
-                      <Form.Item
-                        {...restField}
-                        name={[name, 'name']}
-                        fieldKey={[fieldKey, 'name']}
-                      >
-                        <Input placeholder="name"/>
-                      </Form.Item>
-                      <Form.Item
-                        {...restField}
-                        name={[name, 'value']}
-                        fieldKey={[fieldKey, 'value']}
-                      >
-                        <Input placeholder="value"/>
-                      </Form.Item>
-                      <MinusCircleOutlined onClick={() => remove(name)}/>
-                    </Space>
-                  ))}
-                  <Form.Item>
-                    <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined/>}>
-                      {l('pages.registerCenter.clusterConfig.addDefineConfig')}
-                    </Button>
-                  </Form.Item>
-                </>
-              )}
-            </Form.List>
-          </Form.Item>
-        </> : undefined}
+        <Divider>{l('pages.registerCenter.clusterConfig.k8sConfig')}</Divider>
+        {buildConfig(KUBERNETES_CONFIG_LIST, formValsPara)}
+
+        {buildOtherConfig(l('pages.registerCenter.clusterConfig.otherConfig'),
+          "kubernetesConfigList",
+          l('pages.registerCenter.clusterConfig.addDefineConfig'))}
+
         <Divider>{l('pages.registerCenter.clusterConfig.flinkConfig')}</Divider>
-        {formValsPara.type == 'Yarn' ? <>
-          <Form.Item
-            name="flinkLibPath"
-            label={l('pages.registerCenter.clusterConfig.libPath')}
-            rules={[{required: true, message: l('pages.registerCenter.clusterConfig.libPathPlaceholder')}]}
-            help={l('pages.registerCenter.clusterConfig.libPathHelp')}
-          >
-            <Input placeholder={l('pages.registerCenter.clusterConfig.libPathPlaceholder')} addonAfter={
-              <Form.Item name="suffix" noStyle>
-                <Upload {...getUploadHdfsProps(flinkLibPath)} multiple>
-                  <UploadOutlined/>
-                </Upload>
-              </Form.Item>}/>
-          </Form.Item>
-        </> : undefined}
+
         <Form.Item
           name="flinkConfigPath"
           label={l('pages.registerCenter.clusterConfig.flinkConfigPath')}
@@ -280,42 +221,92 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
               </Upload>
             </Form.Item>}/>
         </Form.Item>
-        <Divider orientation="left" plain>{l('pages.registerCenter.clusterConfig.defineConfig.highPriority')}</Divider>
-        {buildConfig(FLINK_CONFIG_LIST)}
+      </>)
+  }
+
+  const renderYarnPage = (formValsPara: Partial<ClusterConfigurationTableListItem>) => {
+    return (
+      <>
+        <Divider>{l('pages.registerCenter.clusterConfig.hadoopConfig')}</Divider>
         <Form.Item
-          label={l('pages.registerCenter.clusterConfig.otherConfig')}
+          name="hadoopConfigPath"
+          label={l('pages.registerCenter.clusterConfig.hadoopConfigPath')}
+          rules={[{required: true, message: l('pages.registerCenter.clusterConfig.hadoopConfigPathPlaceholder')}]}
+          help={l('pages.registerCenter.clusterConfig.hadoopConfigPathHelp')}
         >
-          <Form.List name="flinkConfigList">
-            {(fields, {add, remove}) => (
-              <>
-                {fields.map(({key, name, fieldKey, ...restField}) => (
-                  <Space key={key} style={{display: 'flex', marginBottom: 8}} align="baseline">
-                    <Form.Item
-                      {...restField}
-                      name={[name, 'name']}
-                      fieldKey={[fieldKey, 'name']}
-                    >
-                      <Input placeholder="name"/>
-                    </Form.Item>
-                    <Form.Item
-                      {...restField}
-                      name={[name, 'value']}
-                      fieldKey={[fieldKey, 'value']}
-                    >
-                      <Input placeholder="value"/>
-                    </Form.Item>
-                    <MinusCircleOutlined onClick={() => remove(name)}/>
-                  </Space>
-                ))}
-                <Form.Item>
-                  <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined/>}>
-                    {l('pages.registerCenter.clusterConfig.addDefineConfig')}
-                  </Button>
-                </Form.Item>
-              </>
-            )}
-          </Form.List>
+          <Input placeholder={l('pages.registerCenter.clusterConfig.hadoopConfigPath')} addonAfter={
+            <Form.Item name="suffix" noStyle>
+              <Upload {...getUploadProps(hadoopConfigPath)} multiple>
+                <UploadOutlined/>
+              </Upload>
+            </Form.Item>}/>
         </Form.Item>
+        <Divider orientation="left" plain>{l('pages.registerCenter.clusterConfig.defineConfig.highPriority')}</Divider>
+        {buildConfig(HADOOP_CONFIG_LIST, formValsPara)}
+
+        {buildOtherConfig(l('pages.registerCenter.clusterConfig.otherConfig'),
+          "hadoopConfigList",
+          l('pages.registerCenter.clusterConfig.addDefineConfig'))}
+
+        <Divider>{l('pages.registerCenter.clusterConfig.flinkConfig')}</Divider>
+
+        <Form.Item
+          name="flinkLibPath"
+          label={l('pages.registerCenter.clusterConfig.libPath')}
+          rules={[{required: true, message: l('pages.registerCenter.clusterConfig.libPathPlaceholder')}]}
+          help={l('pages.registerCenter.clusterConfig.libPathHelp')}
+        >
+          <Input placeholder={l('pages.registerCenter.clusterConfig.libPathPlaceholder')} addonAfter={
+            <Form.Item name="suffix" noStyle>
+              <Upload {...getUploadHdfsProps(flinkLibPath)} multiple>
+                <UploadOutlined/>
+              </Upload>
+            </Form.Item>}/>
+        </Form.Item>
+
+        <Form.Item
+          name="flinkConfigPath"
+          label={l('pages.registerCenter.clusterConfig.flinkConfigPath')}
+          rules={[{required: true, message: l('pages.registerCenter.clusterConfig.flinkConfigPathPlaceholder')}]}
+          help={l('pages.registerCenter.clusterConfig.flinkConfigPathHelp')}
+        >
+          <Input placeholder={l('pages.registerCenter.clusterConfig.flinkConfigPathPlaceholder')} addonAfter={
+            <Form.Item name="suffix" noStyle>
+              <Upload {...getUploadProps(flinkConfigPath)}>
+                <UploadOutlined/>
+              </Upload>
+            </Form.Item>}/>
+        </Form.Item>
+      </>
+    )
+  }
+
+  const renderContent = (formValsPara: Partial<ClusterConfigurationTableListItem>) => {
+    return (
+      <>
+        <Form.Item
+          name="type"
+          label={l('pages.registerCenter.clusterConfig.type')}
+        >
+          <Select defaultValue="Yarn" value="Yarn">
+            <Option value="Yarn">Flink On Yarn</Option>
+            <Option value="Kubernetes">Flink Kubernetes Native</Option>
+            {/*<Option value="FlinkKubernetesOperator">Flink Kubernetes Operator</Option>*/}
+          </Select>
+        </Form.Item>
+
+        {formValsPara.type == 'Yarn' ? renderYarnPage(formValsPara) : undefined}
+
+        {formValsPara.type == 'Kubernetes' ? renderFlinkKubernetesNativePage(formValsPara) : undefined}
+
+
+        <Divider orientation="left" plain>{l('pages.registerCenter.clusterConfig.defineConfig.highPriority')}</Divider>
+        {buildConfig(FLINK_CONFIG_LIST, formValsPara)}
+
+        {buildOtherConfig(l('pages.registerCenter.clusterConfig.otherConfig'),
+          "flinkConfigList",
+          l('pages.registerCenter.clusterConfig.addDefineConfig'))}
+
         <Divider>{l('pages.registerCenter.clusterConfig.baseConfig')}</Divider>
         <Form.Item
           name="name"

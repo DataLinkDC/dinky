@@ -25,9 +25,7 @@ import {useState} from "react";
 import {
   APP_CONFIG_LIST,
   Config,
-  FLINK_CONFIG_LIST,
   FLINK_CONFIG_NAME_LIST,
-  KUBERNETES_CONFIG_LIST,
   KUBERNETES_CONFIG_NAME_LIST
 } from "@/pages/ClusterConfiguration/conf";
 import {MinusCircleOutlined, PlusOutlined} from "@ant-design/icons";
@@ -50,6 +48,34 @@ const StudioKubernetes = (props: any) => {
 
   const [form] = Form.useForm();
 
+  const CUSTOM_KUBERNETS_CONFIG_LIST: Config[] = [
+    {
+    name: 'kubernetes.jobmanager.cpu',
+    lable: 'kubernetes.jobmanager.cpu',
+    showType: 'input',
+      placeholder: l('pages.registerCenter.clusterConfig.help.kubernets.jmcpu'),
+  }, {
+    name: 'kubernetes.taskmanager.cpu',
+    lable: 'kubernetes.taskmanager.cpu',
+    showType: 'input',
+    placeholder: l('pages.registerCenter.clusterConfig.help.kubernets.tmcpu'),
+  },
+  ];
+  const CUSTOM_FLINK_CONFIG_LIST: Config[] = [
+    {
+      name: 'jobmanager.memory.process.size',
+      lable: 'jobmanager.memory.process.size',
+      placeholder: l('pages.registerCenter.clusterConfig.help.kubernets.jobManagerMemory'),
+    }, {
+      name: 'taskmanager.memory.process.size',
+      lable: 'taskmanager.memory.process.size',
+      placeholder: l('pages.registerCenter.clusterConfig.help.kubernets.taskManagerMemory'),
+    }, {
+      name: 'taskmanager.numberOfTaskSlots',
+      lable: 'taskmanager.numberOfTaskSlots',
+      placeholder: '',
+    }
+  ];
   //Separate normal configuration and user-defined configuration.
   function addMapToList(map: Record<string, unknown>, keys: string[]) {
     const list = [];
@@ -86,14 +112,12 @@ const StudioKubernetes = (props: any) => {
     if (config["flinkConfig"]) {
       initValues = mergeConfig(initValues, config["flinkConfig"])
     }
-    //App config is mix in flink config , need separated
-    APP_CONFIG_LIST.forEach((value, index) => {
-      initValues[APP_CONFIG_LIST[index].name] = config[APP_CONFIG_LIST[index].name]
-    })
+    if (config["appConfig"]) {
+      initValues = mergeConfig(initValues, config["appConfig"])
+    }
     //user custom config set
     initValues["flinkConfigList"] = addMapToList(config["flinkConfig"], FLINK_CONFIG_NAME_LIST())
     initValues["kubernetesConfigList"] = addMapToList(config["kubernetesConfig"], KUBERNETES_CONFIG_NAME_LIST())
-    initValues["flinkConfigPath"] = config["flinkConfigPath"]
     return initValues;
   }
 
@@ -103,11 +127,12 @@ const StudioKubernetes = (props: any) => {
   const onValuesChange = (change: any, all: any) => {
     all.type = "Kubernetes"
     const values = getConfig(all)
+    let appConfig = {}
     APP_CONFIG_LIST.forEach((value, index) => {
-      values[APP_CONFIG_LIST[index].name] = all[APP_CONFIG_LIST[index].name]
+      appConfig[APP_CONFIG_LIST[index].name] = all[APP_CONFIG_LIST[index].name]
     })
     setFormVals(all)
-    props.saveSql(JSON.stringify(values))
+    props.saveSql(JSON.stringify({...values,"appConfig":appConfig}))
   }
 
   // build pre-defined config item
@@ -120,9 +145,7 @@ const StudioKubernetes = (props: any) => {
         label={configItem.lable}
         help={configItem.help}
       >
-        <Input placeholder={configItem.placeholder}
-          // defaultValue={configItem.defaultValue}
-        />
+        <Input placeholder={configItem.placeholder}/>
 
       </Form.Item>)
     });
@@ -171,24 +194,16 @@ const StudioKubernetes = (props: any) => {
   const renderContent = () => {
     return (
       <>
-        <Divider>Kubernetes 配置(必选)</Divider>
-        {buildConfig(KUBERNETES_CONFIG_LIST)}
-        {buildOtherConfig("其他配置", "kubernetesConfigList", "添加一个自定义项")}
-        <Divider>App 配置(必选)</Divider>
-        <Form.Item
-          name="flinkConfigPath"
-          label="配置文件路径"
-          rules={[{required: true, message: '请输入 flink-conf.yaml 路径！'}]}
-          help="指定 flink-conf.yaml 的路径（末尾无/）"
-        >
-          <Input placeholder="值如 /opt/flink/conf"/>
-        </Form.Item>
-
+        <Divider>{l('pages.registerCenter.clusterConfig.appConfig')}</Divider>
         {buildConfig(APP_CONFIG_LIST)}
+        <Divider>{l('pages.registerCenter.clusterConfig.k8sConfig')}</Divider>
+        {buildConfig(CUSTOM_KUBERNETS_CONFIG_LIST)}
+        <Divider>{l('pages.registerCenter.clusterConfig.flinkConfig')}</Divider>
+        {buildConfig(CUSTOM_FLINK_CONFIG_LIST)}
+        {buildOtherConfig(l('pages.registerCenter.clusterConfig.otherConfig'),
+          "flinkConfigList",
+          l('pages.registerCenter.clusterConfig.addDefineConfig'))}
 
-        <Divider>其他配置(可选)</Divider>
-        {buildConfig(FLINK_CONFIG_LIST)}
-        {buildOtherConfig("其他配置", "flinkConfigList", "添加一个自定义项")}
       </>
     );
   };

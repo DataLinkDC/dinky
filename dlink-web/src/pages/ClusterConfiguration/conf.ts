@@ -25,6 +25,8 @@ export type Config = {
   placeholder: string
   defaultValue?: string
   help?: string
+  showOnSubmitType?: string
+  showType?: string
 }
 
 export const HADOOP_CONFIG_LIST: Config[] = [{
@@ -35,74 +37,73 @@ export const HADOOP_CONFIG_LIST: Config[] = [{
 export const KUBERNETES_CONFIG_LIST: Config[] = [{
   name: 'kubernetes.namespace',
   lable: 'kubernetes.namespace',
-  placeholder: 'dlink',
+  placeholder: l('pages.registerCenter.clusterConfig.help.kubernets.namespace'),
+  showType: 'input'
 },{
   name: 'kubernetes.container.image',
   lable: 'kubernetes.container.image',
-  placeholder: 'dlink',
+  placeholder: l('pages.registerCenter.clusterConfig.help.kubernets.image'),
+  showType: 'input'
+
 },{
   name: 'kubernetes.rest-service.exposed.type',
   lable: 'kubernetes.rest-service.exposed.type',
   placeholder: 'NodePort',
-  defaultValue: 'NodePort',
-}];
-export const FLINK_CONFIG_LIST: Config[] = [
-  {
-    name: 'kubernetes.pod-template-file',
-    lable: 'kubernetes.pod-template-file',
-    placeholder: 'pod-template-file path',
-    help: '可选，如果配置需要指定到具体文件'
-  },{
-  name: 'jobmanager.memory.process.size',
-  lable: 'jobmanager.memory.process.size',
-  placeholder: '1600m jobmanager內存設置',
-}, {
-  name: 'taskmanager.memory.process.size',
-  lable: 'taskmanager.memory.process.size',
-  placeholder: '2048m taskmanager內存設置',
-}, {
-  name: 'taskmanager.memory.framework.heap.size',
-  lable: 'taskmanager.memory.framework.heap.size',
-  placeholder: '1024m',
-}, {
-  name: 'taskmanager.numberOfTaskSlots',
-  lable: 'taskmanager.numberOfTaskSlots',
-  placeholder: '1',
-}, {
+  defaultValue: '',
+  showType: 'input',
+  showOnSubmitType: 'Kubernetes'
+},{
   name: 'kubernetes.jobmanager.cpu',
   lable: 'kubernetes.jobmanager.cpu',
-  placeholder: '1',
+  showType: 'input',
+  placeholder: l('pages.registerCenter.clusterConfig.help.kubernets.jmcpu'),
 }, {
   name: 'kubernetes.taskmanager.cpu',
   lable: 'kubernetes.taskmanager.cpu',
-  placeholder: '1',
+  showType: 'input',
+  placeholder: l('pages.registerCenter.clusterConfig.help.kubernets.tmcpu'),
+}
+];
+export const FLINK_CONFIG_LIST: Config[] = [
+ {
+  name: 'jobmanager.memory.process.size',
+  lable: 'jobmanager.memory.process.size',
+  placeholder: l('pages.registerCenter.clusterConfig.help.kubernets.jobManagerMemory'),
 }, {
-  name: 'parallelism.default',
-  lable: 'parallelism.default',
-  placeholder: '1',
+  name: 'taskmanager.memory.process.size',
+  lable: 'taskmanager.memory.process.size',
+  placeholder: l('pages.registerCenter.clusterConfig.help.kubernets.taskManagerMemory'),
+}, {
+  name: 'taskmanager.memory.framework.heap.size',
+  lable: 'taskmanager.memory.framework.heap.size',
+  placeholder: '',
+}, {
+  name: 'taskmanager.numberOfTaskSlots',
+  lable: 'taskmanager.numberOfTaskSlots',
+  placeholder: '',
 }, {
   name: 'state.savepoints.dir',
   lable: 'state.savepoints.dir',
+  placeholder: 'hdfs:///flink/savepoints/',
+}, {
+  name: 'state.checkpoints.dir',
+  lable: 'state.checkpoints.dir',
   placeholder: 'hdfs:///flink/savepoints/',
 }
 ];
 
 export const APP_CONFIG_LIST: Config[] = [{
   name: 'userJarPath',
-  lable: '镜像内Jar路径',
+  lable: l('pages.registerCenter.clusterConfig.jar.path'),
   placeholder: 'local:///opt/example.jar',
 }, {
   name: 'userJarMainAppClass',
-  lable: '启动类',
+  lable: l('pages.registerCenter.clusterConfig.jar.class'),
   placeholder: 'com.example.app',
 }, {
   name: 'userJarParas',
-  lable: '启动参数',
-  placeholder: '值如 -conf test.properties',
-},{
-  name: 'state.savepoints.dir',
-    lable: 'state.savepoints.dir',
-    placeholder: 'hdfs:///flink/savepoints/',
+  lable: l('pages.registerCenter.clusterConfig.jar.args'),
+  placeholder: 'example: -conf test.properties',
 }
 ];
 
