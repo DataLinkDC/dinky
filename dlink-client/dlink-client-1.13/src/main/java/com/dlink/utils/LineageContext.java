@@ -19,6 +19,8 @@
 
 package com.dlink.utils;
 
+import com.dlink.model.LineageRel;
+
 import org.apache.calcite.plan.RelOptTable;
 import org.apache.calcite.rel.RelNode;
 import org.apache.calcite.rel.core.Snapshot;
@@ -35,7 +37,6 @@ import org.apache.flink.table.catalog.CatalogManager;
 import org.apache.flink.table.catalog.FunctionCatalog;
 import org.apache.flink.table.operations.CatalogSinkModifyOperation;
 import org.apache.flink.table.operations.Operation;
-import org.apache.flink.table.planner.calcite.FlinkRelBuilder;
 import org.apache.flink.table.planner.calcite.SqlExprToRexConverterFactory;
 import org.apache.flink.table.planner.delegation.PlannerBase;
 import org.apache.flink.table.planner.operations.PlannerQueryOperation;
@@ -47,8 +48,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import com.dlink.model.LineageRel;
-
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -57,8 +56,8 @@ import javassist.Modifier;
 /**
  * LineageContext
  *
- * @author baisong
- * @since 2022/8/6 11:06
+ * @author wenmo
+ * @since 2022/11/21
  */
 public class LineageContext {
 
@@ -82,9 +81,8 @@ public class LineageContext {
             ClassPool classPool = ClassPool.getDefault();
             CtClass ctClass = classPool.getCtClass("org.apache.calcite.rel.metadata.RelMdColumnOrigins");
 
-            CtClass[] parameters = new CtClass[] {classPool.get(Snapshot.class.getName())
-                , classPool.get(RelMetadataQuery.class.getName())
-                , CtClass.intType
+            CtClass[] parameters = new CtClass[]{classPool.get(Snapshot.class.getName()),
+                    classPool.get(RelMetadataQuery.class.getName()), CtClass.intType
             };
             // add method
             CtMethod ctMethod = new CtMethod(classPool.get("java.util.Set"), "getColumnOrigins", parameters, ctClass);
@@ -116,7 +114,7 @@ public class LineageContext {
 
         if (operations.size() != 1) {
             throw new TableException(
-                "Unsupported SQL query! only accepts a single SQL statement.");
+                    "Unsupported SQL query! only accepts a single SQL statement.");
         }
         Operation operation = operations.get(0);
         if (operation instanceof CatalogSinkModifyOperation) {
@@ -125,8 +123,8 @@ public class LineageContext {
             PlannerQueryOperation queryOperation = (PlannerQueryOperation) sinkOperation.getChild();
             RelNode relNode = queryOperation.getCalciteTree();
             return new Tuple2<>(
-                sinkOperation.getTableIdentifier().asSummaryString(),
-                relNode);
+                    sinkOperation.getTableIdentifier().asSummaryString(),
+                    relNode);
         } else {
             throw new TableException("Only insert is supported now.");
         }
@@ -198,19 +196,19 @@ public class LineageContext {
         List<String> queryFieldList = relNode.getRowType().getFieldNames();
         if (queryFieldList.size() != sinkFieldList.size()) {
             throw new ValidationException(
-                String.format(
-                    "Column types of query result and sink for %s do not match.\n"
-                        + "Query schema: %s\n"
-                        + "Sink schema:  %s",
-                    sinkTable, queryFieldList, sinkFieldList));
+                    String.format(
+                            "Column types of query result and sink for %s do not match.\n"
+                                    + "Query schema: %s\n"
+                                    + "Sink schema:  %s",
+                            sinkTable, queryFieldList, sinkFieldList));
         }
     }
 
     private List<LineageRel> buildFiledLineageResult(String sinkTable, RelNode optRelNode) {
         // target columns
         List<String> targetColumnList = tableEnv.from(sinkTable)
-            .getResolvedSchema()
-            .getColumnNames();
+                .getResolvedSchema()
+                .getColumnNames();
 
         // check the size of query and sink fields match
         validateSchema(sinkTable, optRelNode, targetColumnList);

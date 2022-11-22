@@ -19,8 +19,6 @@
 
 package com.dlink.utils;
 
-import static org.apache.calcite.jdbc.CalciteSchemaBuilder.asRootSchema;
-
 import com.dlink.model.LineageRel;
 
 import org.apache.calcite.plan.RelOptTable;
@@ -28,8 +26,6 @@ import org.apache.calcite.rel.RelNode;
 import org.apache.calcite.rel.core.Snapshot;
 import org.apache.calcite.rel.metadata.RelColumnOrigin;
 import org.apache.calcite.rel.metadata.RelMetadataQuery;
-import org.apache.calcite.rel.type.RelDataType;
-import org.apache.calcite.rex.RexBuilder;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.table.api.TableConfig;
@@ -39,13 +35,11 @@ import org.apache.flink.table.api.internal.TableEnvironmentImpl;
 import org.apache.flink.table.catalog.CatalogManager;
 import org.apache.flink.table.catalog.FunctionCatalog;
 import org.apache.flink.table.module.ModuleManager;
-import org.apache.flink.table.operations.CatalogSinkModifyOperation;
 import org.apache.flink.table.operations.Operation;
-import org.apache.flink.table.planner.calcite.SqlExprToRexConverter;
-import org.apache.flink.table.planner.calcite.SqlExprToRexConverterFactory;
-import org.apache.flink.table.planner.catalog.CatalogManagerCalciteSchema;
+import org.apache.flink.table.operations.SinkModifyOperation;
+import org.apache.flink.table.planner.calcite.FlinkRelBuilder;
+import org.apache.flink.table.planner.calcite.RexFactory;
 import org.apache.flink.table.planner.delegation.PlannerBase;
-import org.apache.flink.table.planner.delegation.PlannerContext;
 import org.apache.flink.table.planner.operations.PlannerQueryOperation;
 import org.apache.flink.table.planner.plan.optimize.program.FlinkChainedProgram;
 import org.apache.flink.table.planner.plan.optimize.program.StreamOptimizeContext;
@@ -54,7 +48,6 @@ import org.apache.flink.table.planner.plan.trait.MiniBatchInterval;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -65,7 +58,7 @@ import javassist.Modifier;
  * LineageContext
  *
  * @author wenmo
- * @since 2022/11/21
+ * @since 2022/11/22
  */
 public class LineageContext {
 
@@ -125,13 +118,13 @@ public class LineageContext {
                     "Unsupported SQL query! only accepts a single SQL statement.");
         }
         Operation operation = operations.get(0);
-        if (operation instanceof CatalogSinkModifyOperation) {
-            CatalogSinkModifyOperation sinkOperation = (CatalogSinkModifyOperation) operation;
+        if (operation instanceof SinkModifyOperation) {
+            SinkModifyOperation sinkOperation = (SinkModifyOperation) operation;
 
             PlannerQueryOperation queryOperation = (PlannerQueryOperation) sinkOperation.getChild();
             RelNode relNode = queryOperation.getCalciteTree();
             return new Tuple2<>(
-                    sinkOperation.getTableIdentifier().asSummaryString(),
+                    sinkOperation.getContextResolvedTable().getIdentifier().asSummaryString(),
                     relNode);
         } else {
             throw new TableException("Only insert is supported now.");
@@ -145,13 +138,18 @@ public class LineageContext {
         return flinkChainedProgram.optimize(relNode, new StreamOptimizeContext() {
 
             @Override
+            public boolean isBatchMode() {
+                return false;
+            }
+
+            @Override
             public TableConfig getTableConfig() {
                 return tableEnv.getConfig();
             }
 
             @Override
             public FunctionCatalog getFunctionCatalog() {
-                return new FunctionCatalog(tableEnv.getConfig(), tableEnv.getCatalogManager(), new ModuleManager());
+                return getPlanner().getFlinkContext().getFunctionCatalog();
             }
 
             @Override
@@ -160,35 +158,18 @@ public class LineageContext {
             }
 
             @Override
-            public SqlExprToRexConverterFactory getSqlExprToRexConverterFactory() {
-                return new SqlExprToRexConverterFactory() {
-
-                    @Override
-                    public SqlExprToRexConverter create(RelDataType relDataType) {
-                        return new PlannerContext(
-                                tableEnv.getConfig(),
-                                new FunctionCatalog(tableEnv.getConfig(), tableEnv.getCatalogManager(),
-                                        new ModuleManager()),
-                                tableEnv.getCatalogManager(),
-                                asRootSchema(new CatalogManagerCalciteSchema(tableEnv.getCatalogManager(), true)),
-                                new ArrayList<>()).createSqlExprToRexConverter(relDataType);
-                    }
-                };
+            public ModuleManager getModuleManager() {
+                return getPlanner().getFlinkContext().getModuleManager();
             }
 
             @Override
-            public <C> C unwrap(Class<C> clazz) {
-                return StreamOptimizeContext.super.unwrap(clazz);
+            public RexFactory getRexFactory() {
+                return getPlanner().getFlinkContext().getRexFactory();
             }
 
             @Override
-            public RexBuilder getRexBuilder() {
-                return getPlanner().getRelBuilder().getRexBuilder();
-            }
-
-            @Override
-            public boolean needFinalTimeIndicatorConversion() {
-                return true;
+            public FlinkRelBuilder getFlinkRelBuilder() {
+                return getPlanner().createRelBuilder();
             }
 
             @Override
@@ -198,7 +179,17 @@ public class LineageContext {
 
             @Override
             public MiniBatchInterval getMiniBatchInterval() {
-                return MiniBatchInterval.NONE();
+                return MiniBatchInterval.NONE;
+            }
+
+            @Override
+            public boolean needFinalTimeIndicatorConversion() {
+                return true;
+            }
+
+            @Override
+            public ClassLoader getClassLoader() {
+                return getPlanner().getFlinkContext().getClassLoader();
             }
 
             private PlannerBase getPlanner() {
@@ -225,8 +216,9 @@ public class LineageContext {
 
     private List<LineageRel> buildFiledLineageResult(String sinkTable, RelNode optRelNode) {
         // target columns
-        List<String> targetColumnList = tableEnv.from(sinkTable).getSchema().getTableColumns()
-                .stream().map(tableColumn -> tableColumn.getName()).collect(Collectors.toList());
+        List<String> targetColumnList = tableEnv.from(sinkTable)
+                .getResolvedSchema()
+                .getColumnNames();
 
         // check the size of query and sink fields match
         validateSchema(sinkTable, optRelNode, targetColumnList);

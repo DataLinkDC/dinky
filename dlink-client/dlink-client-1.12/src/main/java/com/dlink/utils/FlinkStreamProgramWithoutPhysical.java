@@ -36,7 +36,7 @@ import org.apache.flink.table.planner.plan.rules.FlinkStreamRuleSets;
  * FlinkStreamProgramWithoutPhysical
  *
  * @author wenmo
- * @since 2022/8/20 23:33
+ * @since 2022/11/21
  */
 public class FlinkStreamProgramWithoutPhysical {
 
@@ -49,7 +49,6 @@ public class FlinkStreamProgramWithoutPhysical {
     private static final String PROJECT_REWRITE = "project_rewrite";
     private static final String LOGICAL = "logical";
     private static final String LOGICAL_REWRITE = "logical_rewrite";
-    private static final String TIME_INDICATOR = "time_indicator";
 
     public static FlinkChainedProgram buildProgram(Configuration config) {
         FlinkChainedProgram chainedProgram = new FlinkChainedProgram();
