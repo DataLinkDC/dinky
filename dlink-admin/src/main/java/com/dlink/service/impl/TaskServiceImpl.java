@@ -912,7 +912,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if (JobStatus.isDone(jobInfoDetail.getInstance().getStatus())
                 && (Asserts.isNull(jobHistory.getJob()) || jobHistory.isError())) {
             checkStatus = checkJobStatus(jobInfoDetail);
-            log.debug("YarnState: " + checkStatus.getValue());
             if (checkStatus.isDone()) {
                 jobInfoDetail.getInstance().setStatus(checkStatus.getValue());
                 jobInstanceService.updateById(jobInfoDetail.getInstance());
