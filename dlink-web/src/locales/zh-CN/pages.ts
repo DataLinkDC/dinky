@@ -112,11 +112,9 @@ export default {
   'pages.settings.FlinkSQLJarMainClass': '提交 FlinkSQL 的 Jar 的主类',
   'pages.settings.FlinkRestAPI': '使用 Rest API',
   'pages.settings.FlinkURLSplit': 'FlinkSQL 语句分隔符',
-  'pages.settings.FlinkSQLLogic': '使用逻辑计划计算血缘',
   'pages.settings.FlinkJobID': '获取 Job ID 的最大等待时间（秒）',
   'pages.settings.FlinkNoSetting': '未设置',
   'pages.settings.FlinkNoUseSetting': '启用后，Flink 任务的 savepoint、停止等操作将通过 JobManager 的 RestAPI 进行',
-  'pages.settings.FlinkLogic': '在计算 Flink 任务的字段血缘分析时是否基于逻辑计划进行，只支持 1.14 版本',
 
   'pages.user.UserManger': '用户管理',
   'pages.user.UserName': '用户名',

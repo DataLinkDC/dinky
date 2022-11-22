@@ -81,9 +81,8 @@ public class LineageContext {
             ClassPool classPool = ClassPool.getDefault();
             CtClass ctClass = classPool.getCtClass("org.apache.calcite.rel.metadata.RelMdColumnOrigins");
 
-            CtClass[] parameters = new CtClass[] {classPool.get(Snapshot.class.getName())
-                , classPool.get(RelMetadataQuery.class.getName())
-                , CtClass.intType
+            CtClass[] parameters = new CtClass[]{classPool.get(Snapshot.class.getName()),
+                    classPool.get(RelMetadataQuery.class.getName()), CtClass.intType
             };
             // add method
             CtMethod ctMethod = new CtMethod(classPool.get("java.util.Set"), "getColumnOrigins", parameters, ctClass);
@@ -115,7 +114,7 @@ public class LineageContext {
 
         if (operations.size() != 1) {
             throw new TableException(
-                "Unsupported SQL query! only accepts a single SQL statement.");
+                    "Unsupported SQL query! only accepts a single SQL statement.");
         }
         Operation operation = operations.get(0);
         if (operation instanceof CatalogSinkModifyOperation) {
@@ -124,8 +123,8 @@ public class LineageContext {
             PlannerQueryOperation queryOperation = (PlannerQueryOperation) sinkOperation.getChild();
             RelNode relNode = queryOperation.getCalciteTree();
             return new Tuple2<>(
-                sinkOperation.getTableIdentifier().asSummaryString(),
-                relNode);
+                    sinkOperation.getTableIdentifier().asSummaryString(),
+                    relNode);
         } else {
             throw new TableException("Only insert is supported now.");
         }
@@ -136,6 +135,7 @@ public class LineageContext {
      */
     private RelNode optimize(RelNode relNode) {
         return flinkChainedProgram.optimize(relNode, new StreamOptimizeContext() {
+
             @Override
             public boolean isBatchMode() {
                 return false;
@@ -164,7 +164,6 @@ public class LineageContext {
             @Override
             public <C> C unwrap(Class<C> clazz) {
                 return getPlanner().getFlinkContext().unwrap(clazz);
-
             }
 
             @Override
@@ -201,19 +200,19 @@ public class LineageContext {
         List<String> queryFieldList = relNode.getRowType().getFieldNames();
         if (queryFieldList.size() != sinkFieldList.size()) {
             throw new ValidationException(
-                String.format(
-                    "Column types of query result and sink for %s do not match.\n"
-                        + "Query schema: %s\n"
-                        + "Sink schema:  %s",
-                    sinkTable, queryFieldList, sinkFieldList));
+                    String.format(
+                            "Column types of query result and sink for %s do not match.\n"
+                                    + "Query schema: %s\n"
+                                    + "Sink schema:  %s",
+                            sinkTable, queryFieldList, sinkFieldList));
         }
     }
 
     private List<LineageRel> buildFiledLineageResult(String sinkTable, RelNode optRelNode) {
         // target columns
         List<String> targetColumnList = tableEnv.from(sinkTable)
-            .getResolvedSchema()
-            .getColumnNames();
+                .getResolvedSchema()
+                .getColumnNames();
 
         // check the size of query and sink fields match
         validateSchema(sinkTable, optRelNode, targetColumnList);

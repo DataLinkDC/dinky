@@ -111,11 +111,9 @@ export default {
   'pages.settings.FlinkSQLJarMainClass': 'The Main Class Of The Jar That Submitted FlinkSQL',
   'pages.settings.FlinkRestAPI': 'Using Rest API',
   'pages.settings.FlinkURLSplit': 'FlinkSQL Statement Separator',
-  'pages.settings.FlinkSQLLogic': 'Calculate Consanguinity Using A Logical Plan',
   'pages.settings.FlinkJobID': 'Maximum Waiting Time For Getting A Job ID (seconds)',
   'pages.settings.FlinkNoSetting': 'Not Setting',
   'pages.settings.FlinkNoUseSetting': 'After The Flink Task Is Enabled, Operations Such As Savepoint And Stop Are Performed Through The RestAPI Of JobManager',
-  'pages.settings.FlinkLogic': 'Whether The Calculation Of Field Consanguinity Analysis For Flink Tasks Is Based On A Logical Plan Is Supported Only In Version 1.14',
 
   'pages.user.UserManger': 'User Management',
   'pages.user.UserName': 'User Name',

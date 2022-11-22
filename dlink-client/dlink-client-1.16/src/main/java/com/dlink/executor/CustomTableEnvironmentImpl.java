@@ -22,6 +22,8 @@ package com.dlink.executor;
 import com.dlink.assertion.Asserts;
 import com.dlink.model.LineageRel;
 import com.dlink.result.SqlExplainResult;
+import com.dlink.utils.FlinkStreamProgramWithoutPhysical;
+import com.dlink.utils.LineageContext;
 
 import org.apache.flink.api.common.RuntimeExecutionMode;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
@@ -57,6 +59,7 @@ import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.operations.QueryOperation;
 import org.apache.flink.table.operations.command.ResetOperation;
 import org.apache.flink.table.operations.command.SetOperation;
+import org.apache.flink.table.planner.plan.optimize.program.FlinkChainedProgram;
 import org.apache.flink.table.resource.ResourceManager;
 import org.apache.flink.table.typeutils.FieldInfoUtils;
 import org.apache.flink.util.FlinkUserCodeClassLoaders;
@@ -83,6 +86,8 @@ public class CustomTableEnvironmentImpl extends AbstractStreamTableEnvironmentIm
         implements
             CustomTableEnvironment {
 
+    private final FlinkChainedProgram flinkChainedProgram;
+
     public CustomTableEnvironmentImpl(
                                       CatalogManager catalogManager,
                                       ModuleManager moduleManager,
@@ -103,6 +108,8 @@ public class CustomTableEnvironmentImpl extends AbstractStreamTableEnvironmentIm
                 planner,
                 isStreamingMode,
                 executionEnvironment);
+        this.flinkChainedProgram =
+                FlinkStreamProgramWithoutPhysical.buildProgram((Configuration) executionEnvironment.getConfiguration());
     }
 
     public static CustomTableEnvironmentImpl create(StreamExecutionEnvironment executionEnvironment) {
@@ -331,7 +338,8 @@ public class CustomTableEnvironmentImpl extends AbstractStreamTableEnvironmentIm
 
     @Override
     public List<LineageRel> getLineage(String statement) {
-        return null;
+        LineageContext lineageContext = new LineageContext(flinkChainedProgram, this);
+        return lineageContext.getLineage(statement);
     }
 
     @Override
