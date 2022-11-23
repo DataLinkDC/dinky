@@ -220,7 +220,8 @@ public final class SqlManager {
         while (m.find()) {
             String key = m.group(1);
             String value = this.getSqlFragment(key);
-            m.appendReplacement(sb, value == null ? "" : value);
+            m.appendReplacement(sb, "");
+            sb.append(value == null ? "" : value);
         }
         m.appendTail(sb);
         return sb.toString();
