@@ -825,6 +825,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             clusterConfiguration.putAll((Map<String, Object>) taskConfig.get("appConfig"));
             clusterConfiguration.put("taskCustomConfig", taskConfig);
             config.buildGatewayConfig(clusterConfiguration);
+            config.getGatewayConfig().getAppConfig().setParallelism(task.getParallelism());
         } else {
             Map<String, Object> gatewayConfig =
                     clusterConfigurationService.getGatewayConfig(task.getClusterConfigurationId());
@@ -847,6 +848,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             }
             config.buildGatewayConfig(gatewayConfig);
             config.addGatewayConfig(task.parseConfig());
+            config.getGatewayConfig().getAppConfig().setParallelism(task.getParallelism());
         }
         switch (config.getSavePointStrategy()) {
             case LATEST:
@@ -871,7 +873,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 config.setSavePointPath(null);
         }
         config.setVariables(fragmentVariableService.listEnabledVariables());
-        config.getGatewayConfig().getAppConfig().setParallelism(task.getParallelism());
         return config;
     }
 
