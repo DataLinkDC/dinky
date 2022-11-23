@@ -30,6 +30,7 @@ import com.dlink.gateway.config.GatewayConfig;
 import com.dlink.gateway.config.SavePointStrategy;
 import com.dlink.session.SessionConfig;
 
+import org.apache.flink.configuration.CoreOptions;
 import org.apache.http.util.TextUtils;
 
 import java.util.ArrayList;
@@ -237,6 +238,7 @@ public class JobConfig {
         if (config.containsKey("flinkConfig")
                 && Asserts.isNotNullMap((Map<String, String>) config.get("flinkConfig"))) {
             gatewayConfig.setFlinkConfig(FlinkConfig.build((Map<String, String>) config.get("flinkConfig")));
+            gatewayConfig.getFlinkConfig().getConfiguration().put(CoreOptions.DEFAULT_PARALLELISM.key(),String.valueOf(parallelism));
         }
         if (config.containsKey("kubernetesConfig")) {
             Map<String, String> kubernetesConfig = (Map<String, String>) config.get("kubernetesConfig");
