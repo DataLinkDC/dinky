@@ -36,7 +36,6 @@ public class AppConfig {
     private String userJarPath;
     private String[] userJarParas;
     private String userJarMainAppClass;
-    private Integer parallelism;
 
     public AppConfig() {
     }

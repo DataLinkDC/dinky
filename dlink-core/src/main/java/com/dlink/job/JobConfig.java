@@ -30,6 +30,7 @@ import com.dlink.gateway.config.GatewayConfig;
 import com.dlink.gateway.config.SavePointStrategy;
 import com.dlink.session.SessionConfig;
 
+import org.apache.flink.configuration.CoreOptions;
 import org.apache.http.util.TextUtils;
 
 import java.util.ArrayList;
@@ -252,6 +253,7 @@ public class JobConfig {
                 gatewayConfig.getFlinkConfig().getConfiguration().putAll(taskCustomConfig.get("flinkConfig"));
             }
         }
+        gatewayConfig.getFlinkConfig().getConfiguration().put(CoreOptions.DEFAULT_PARALLELISM.key(),String.valueOf(parallelism));
     }
 
     public void addGatewayConfig(List<Map<String, String>> configList) {
