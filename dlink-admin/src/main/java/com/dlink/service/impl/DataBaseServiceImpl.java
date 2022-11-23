@@ -38,6 +38,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -51,6 +52,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
  */
 @Service
 public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBase> implements DataBaseService {
+
     @Override
     public String testConnect(DataBase dataBase) {
         return Driver.build(dataBase.getDriverConfig()).test();
@@ -184,5 +186,14 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     public String getEnabledFlinkWithSql() {
         List<String> list = listEnabledFlinkWith();
         return StringUtils.join(list, "");
+    }
+
+    @Override
+    public boolean copyDatabase(DataBase database) {
+        String name = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10);
+        database.setId(null);
+        database.setName(database.getName().substring(0, 10) + "_" + name);
+        database.setCreateTime(null);
+        return this.save(database);
     }
 }
