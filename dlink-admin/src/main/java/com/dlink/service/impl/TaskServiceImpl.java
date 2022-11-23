@@ -755,7 +755,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
         if (GatewayType.KUBERNETES_APPLICATION.equalsValue(cluster.getType())) {
             Statement statement = statementService.getById(cluster.getTaskId());
+            Map<String, Object> clusterConfiguration =
+                    clusterConfigurationService.getGatewayConfig(cluster.getClusterConfigurationId());
             Map<String, Object> gatewayConfig = JSONUtil.toMap(statement.getStatement(), String.class, Object.class);
+            gatewayConfig.putAll(clusterConfiguration);
             jobConfig.buildGatewayConfig(gatewayConfig);
             jobConfig.getGatewayConfig().getClusterConfig().setAppId(cluster.getName());
             useGateway = true;
