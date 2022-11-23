@@ -62,4 +62,6 @@ public interface DataBaseService extends ISuperService<DataBase> {
     List<String> listEnabledFlinkWith();
 
     String getEnabledFlinkWithSql();
+
+    boolean copyDatabase(DataBase database);
 }
