@@ -112,6 +112,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
             executor,
             isStreamingMode,
             userClassLoader));
+        this.executor = executor;
         this.executionEnvironment = executionEnvironment;
         this.flinkChainedProgram = FlinkStreamProgramWithoutPhysical.buildProgram(tableConfig.getConfiguration());
     }
