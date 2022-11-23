@@ -161,7 +161,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable 
         String sinkTableName = getSinkTableName(table);
         String pkList = StringUtils.join(getPKList(table), ".");
         String viewName = "VIEW_" + table.getSchemaTableNameWithUnderline();
-        customTableEnvironment.createTemporaryView(viewName, rowDataDataStream, StringUtils.join(columnNameList, ","));
+        customTableEnvironment.createTemporaryView(viewName, rowDataDataStream);
         logger.info("Create " + viewName + " temporaryView successful...");
         String flinkDDL = FlinkBaseUtil.getFlinkDDL(table, sinkTableName, config, sinkSchemaName, sinkTableName, pkList);
         logger.info(flinkDDL);

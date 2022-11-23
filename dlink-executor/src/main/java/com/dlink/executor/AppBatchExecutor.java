@@ -20,7 +20,6 @@
 package com.dlink.executor;
 
 import com.dlink.assertion.Asserts;
-import com.dlink.executor.custom.AbstractCustomTableEnvironment;
 
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -46,6 +45,6 @@ public class AppBatchExecutor extends Executor {
 
     @Override
     CustomTableEnvironment createCustomTableEnvironment() {
-        return AbstractCustomTableEnvironment.createBatch(environment);
+        return CustomTableEnvironmentImpl.createBatch(environment);
     }
 }
