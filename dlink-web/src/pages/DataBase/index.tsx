@@ -69,7 +69,7 @@ const DataBaseTableList: React.FC<{}> = (props: any) => {
 
   const onCheckHeartBeat = (row: DataBaseItem) => {
     checkHeartBeat(row.id);
-    actionRef.current?.reloadAndRest?.();
+    actionRef.current?.reload?.()
   };
 
   const onDeleteDataBase = (row: DataBaseItem) => {
