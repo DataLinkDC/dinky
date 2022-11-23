@@ -34,8 +34,9 @@ import org.apache.flink.table.api.ValidationException;
 import org.apache.flink.table.api.internal.TableEnvironmentImpl;
 import org.apache.flink.table.catalog.CatalogManager;
 import org.apache.flink.table.catalog.FunctionCatalog;
-import org.apache.flink.table.operations.CatalogSinkModifyOperation;
+import org.apache.flink.table.module.ModuleManager;
 import org.apache.flink.table.operations.Operation;
+import org.apache.flink.table.operations.SinkModifyOperation;
 import org.apache.flink.table.planner.calcite.FlinkRelBuilder;
 import org.apache.flink.table.planner.calcite.SqlExprToRexConverterFactory;
 import org.apache.flink.table.planner.delegation.PlannerBase;
@@ -56,8 +57,8 @@ import javassist.Modifier;
 /**
  * LineageContext
  *
- * @author baisong
- * @since 2022/8/6 11:06
+ * @author wenmo
+ * @since 2022/11/22
  */
 public class LineageContext {
 
@@ -117,13 +118,13 @@ public class LineageContext {
                     "Unsupported SQL query! only accepts a single SQL statement.");
         }
         Operation operation = operations.get(0);
-        if (operation instanceof CatalogSinkModifyOperation) {
-            CatalogSinkModifyOperation sinkOperation = (CatalogSinkModifyOperation) operation;
+        if (operation instanceof SinkModifyOperation) {
+            SinkModifyOperation sinkOperation = (SinkModifyOperation) operation;
 
             PlannerQueryOperation queryOperation = (PlannerQueryOperation) sinkOperation.getChild();
             RelNode relNode = queryOperation.getCalciteTree();
             return new Tuple2<>(
-                    sinkOperation.getTableIdentifier().asSummaryString(),
+                    sinkOperation.getContextResolvedTable().getIdentifier().asSummaryString(),
                     relNode);
         } else {
             throw new TableException("Only insert is supported now.");
@@ -157,8 +158,13 @@ public class LineageContext {
             }
 
             @Override
+            public ModuleManager getModuleManager() {
+                return getPlanner().getFlinkContext().getModuleManager();
+            }
+
+            @Override
             public SqlExprToRexConverterFactory getSqlExprToRexConverterFactory() {
-                return getPlanner().getFlinkContext().getSqlExprToRexConverterFactory();
+                return null;
             }
 
             @Override
@@ -172,11 +178,6 @@ public class LineageContext {
             }
 
             @Override
-            public boolean needFinalTimeIndicatorConversion() {
-                return true;
-            }
-
-            @Override
             public boolean isUpdateBeforeRequired() {
                 return false;
             }
@@ -184,6 +185,16 @@ public class LineageContext {
             @Override
             public MiniBatchInterval getMiniBatchInterval() {
                 return MiniBatchInterval.NONE;
+            }
+
+            @Override
+            public boolean needFinalTimeIndicatorConversion() {
+                return true;
+            }
+
+            @Override
+            public ClassLoader getClassLoader() {
+                return getPlanner().getFlinkContext().getClassLoader();
             }
 
             private PlannerBase getPlanner() {

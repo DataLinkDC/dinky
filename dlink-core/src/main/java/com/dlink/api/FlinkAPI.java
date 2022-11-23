@@ -33,6 +33,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,6 +50,9 @@ import cn.hutool.http.Method;
  * @since 2021/6/24 13:56
  **/
 public class FlinkAPI {
+
+    private static final Logger logger = LoggerFactory.getLogger(FlinkAPI.class);
+
     private String address;
 
     public FlinkAPI(String address) {
@@ -69,8 +75,14 @@ public class FlinkAPI {
     }
 
     private JsonNode get(String route) {
-        String res = HttpUtil.get(NetConstant.HTTP + address + NetConstant.SLASH + route, NetConstant.SERVER_TIME_OUT_ACTIVE);
-        return parse(res);
+        try {
+            String res = HttpUtil.get(NetConstant.HTTP + address + NetConstant.SLASH + route,
+                    NetConstant.SERVER_TIME_OUT_ACTIVE);
+            return parse(res);
+        } catch (Exception e) {
+            logger.info("Unable to connect to Flink JobManager: {}", NetConstant.HTTP + address);
+        }
+        return null;
     }
 
     /**
@@ -80,17 +92,20 @@ public class FlinkAPI {
      * @return
      */
     private String getResult(String route) {
-        String res = HttpUtil.get(NetConstant.HTTP + address + NetConstant.SLASH + route, NetConstant.SERVER_TIME_OUT_ACTIVE);
+        String res = HttpUtil.get(NetConstant.HTTP + address + NetConstant.SLASH + route,
+                NetConstant.SERVER_TIME_OUT_ACTIVE);
         return res;
     }
 
     private JsonNode post(String route, String body) {
-        String res = HttpUtil.post(NetConstant.HTTP + address + NetConstant.SLASH + route, body, NetConstant.SERVER_TIME_OUT_ACTIVE);
+        String res = HttpUtil.post(NetConstant.HTTP + address + NetConstant.SLASH + route, body,
+                NetConstant.SERVER_TIME_OUT_ACTIVE);
         return parse(res);
     }
 
     private JsonNode patch(String route, String body) {
-        String res = HttpUtil.createRequest(Method.PATCH, NetConstant.HTTP + address + NetConstant.SLASH + route).timeout(NetConstant.SERVER_TIME_OUT_ACTIVE).body(body).execute().body();
+        String res = HttpUtil.createRequest(Method.PATCH, NetConstant.HTTP + address + NetConstant.SLASH + route)
+                .timeout(NetConstant.SERVER_TIME_OUT_ACTIVE).body(body).execute().body();
         return parse(res);
     }
 
@@ -130,7 +145,7 @@ public class FlinkAPI {
                 break;
             case TRIGGER:
                 paramMap.put("cancel-job", false);
-                //paramMap.put("target-directory","hdfs:///flink13/ss1");
+                // paramMap.put("target-directory","hdfs:///flink13/ss1");
                 paramType = FlinkRestAPIConstant.SAVEPOINTS;
                 jobInfo.setStatus(JobInfo.JobStatus.RUN);
                 break;
@@ -148,7 +163,8 @@ public class FlinkAPI {
         while (triggerid != null) {
             try {
                 Thread.sleep(1000);
-                JsonNode node = get(FlinkRestAPIConstant.JOBS + jobId + FlinkRestAPIConstant.SAVEPOINTS + NetConstant.SLASH + triggerid);
+                JsonNode node = get(FlinkRestAPIConstant.JOBS + jobId + FlinkRestAPIConstant.SAVEPOINTS
+                        + NetConstant.SLASH + triggerid);
                 String status = node.get("status").get("id").asText();
                 if (Asserts.isEquals(status, "IN_PROGRESS")) {
                     continue;
@@ -213,7 +229,8 @@ public class FlinkAPI {
      * @Description: getJobManagerMetrics 获取jobManager的监控信息
      */
     public JsonNode getJobManagerMetrics() {
-        return get(FlinkRestAPIConstant.JOB_MANAGER + FlinkRestAPIConstant.METRICS + FlinkRestAPIConstant.GET + buildMetricsParms(FlinkRestAPIConstant.JOB_MANAGER));
+        return get(FlinkRestAPIConstant.JOB_MANAGER + FlinkRestAPIConstant.METRICS + FlinkRestAPIConstant.GET
+                + buildMetricsParms(FlinkRestAPIConstant.JOB_MANAGER));
     }
 
     /**
@@ -307,7 +324,8 @@ public class FlinkAPI {
      * @Description: getJobManagerLog 获取jobManager的日志信息
      */
     public JsonNode getTaskManagerMetrics(String containerId) {
-        return get(FlinkRestAPIConstant.TASK_MANAGER + containerId + FlinkRestAPIConstant.METRICS + FlinkRestAPIConstant.GET + buildMetricsParms(FlinkRestAPIConstant.JOB_MANAGER));
+        return get(FlinkRestAPIConstant.TASK_MANAGER + containerId + FlinkRestAPIConstant.METRICS
+                + FlinkRestAPIConstant.GET + buildMetricsParms(FlinkRestAPIConstant.JOB_MANAGER));
     }
 
     /**

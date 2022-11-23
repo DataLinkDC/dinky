@@ -116,7 +116,6 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        createDataSource(dataSource, config);
         return this;
     }
 
@@ -137,7 +136,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
 
     @Override
     public Driver connect() {
-        if (null == conn.get()) {
+        if (Asserts.isNull(conn.get())) {
             try {
                 Class.forName(getDriverClass());
                 DruidPooledConnection connection = createDataSource().getConnection();
@@ -296,7 +295,6 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         ResultSet results = null;
         IDBQuery dbQuery = getDBQuery();
         String tableFieldsSql = dbQuery.columnsSql(schemaName, tableName);
-        tableFieldsSql = String.format(tableFieldsSql, tableName);
         try {
             preparedStatement = conn.get().prepareStatement(tableFieldsSql);
             results = preparedStatement.executeQuery();
@@ -386,18 +384,8 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     @Override
     public List<Column> listColumnsSortByPK(String schemaName, String tableName) {
         List<Column> columnList = listColumns(schemaName, tableName);
-        List<Column> columnListSortByPK = new ArrayList<>();
-        for (Column column : columnList) {
-            if (column.isKeyFlag()) {
-                columnListSortByPK.add(column);
-            }
-        }
-        for (Column column : columnList) {
-            if (!column.isKeyFlag()) {
-                columnListSortByPK.add(column);
-            }
-        }
-        return columnListSortByPK;
+        columnList.sort(Comparator.comparing(Column::isKeyFlag).reversed());
+        return columnList;
     }
 
     @Override

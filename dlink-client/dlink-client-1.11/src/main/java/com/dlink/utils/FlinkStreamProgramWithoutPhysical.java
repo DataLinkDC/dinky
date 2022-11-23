@@ -36,7 +36,7 @@ import org.apache.flink.table.planner.plan.rules.FlinkStreamRuleSets;
  * FlinkStreamProgramWithoutPhysical
  *
  * @author wenmo
- * @since 2022/8/20 23:33
+ * @since 2022/11/21
  */
 public class FlinkStreamProgramWithoutPhysical {
 
@@ -109,7 +109,7 @@ public class FlinkStreamProgramWithoutPhysical {
                                 FlinkHepRuleSetProgramBuilder.newBuilder()
                                         .setHepRulesExecutionType(HEP_RULES_EXECUTION_TYPE.RULE_SEQUENCE())
                                         .setHepMatchOrder(HepMatchOrder.BOTTOM_UP)
-                                        .add(FlinkStreamRuleSets.PRE_DECORRELATION_RULES())
+                                        .add(FlinkStreamRuleSets.JOIN_REORDER_RULES())
                                         .build(),
                                 "pre-rewrite before decorrelation")
                         .addProgram(new FlinkDecorrelateProgram(), "")

@@ -28,6 +28,7 @@ import static org.apache.flink.connector.jdbc.table.JdbcConnectorOptions.MAX_RET
 import static org.apache.flink.connector.jdbc.table.JdbcConnectorOptions.PASSWORD;
 import static org.apache.flink.connector.jdbc.table.JdbcConnectorOptions.SCAN_AUTO_COMMIT;
 import static org.apache.flink.connector.jdbc.table.JdbcConnectorOptions.SCAN_FETCH_SIZE;
+import static org.apache.flink.connector.jdbc.table.JdbcConnectorOptions.SCAN_PARTITION_BY_DATETIME;
 import static org.apache.flink.connector.jdbc.table.JdbcConnectorOptions.SCAN_PARTITION_COLUMN;
 import static org.apache.flink.connector.jdbc.table.JdbcConnectorOptions.SCAN_PARTITION_LOWER_BOUND;
 import static org.apache.flink.connector.jdbc.table.JdbcConnectorOptions.SCAN_PARTITION_NUM;
@@ -148,7 +149,8 @@ public class JdbcDynamicTableFactory implements DynamicTableSourceFactory, Dynam
                 readableConfig.get(LOOKUP_CACHE_MAX_ROWS),
                 readableConfig.get(LOOKUP_CACHE_TTL).toMillis(),
                 readableConfig.get(LOOKUP_MAX_RETRIES),
-                readableConfig.get(DATA_FILTER));
+                readableConfig.get(DATA_FILTER),
+                readableConfig.get(SCAN_PARTITION_BY_DATETIME));
     }
 
     private JdbcExecutionOptions getJdbcExecutionOptions(ReadableConfig config) {
@@ -207,6 +209,7 @@ public class JdbcDynamicTableFactory implements DynamicTableSourceFactory, Dynam
         optionalOptions.add(SINK_PARALLELISM);
         optionalOptions.add(MAX_RETRY_TIMEOUT);
         optionalOptions.add(DATA_FILTER);
+        optionalOptions.add(SCAN_PARTITION_BY_DATETIME);
         return optionalOptions;
     }
 

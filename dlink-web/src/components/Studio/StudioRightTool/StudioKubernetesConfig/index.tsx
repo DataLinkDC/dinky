@@ -20,7 +20,7 @@
 
 import {connect} from "umi";
 import {StateType} from "@/pages/DataStudio/model";
-import {Button, Col, Form, Input, Row, Select, Tooltip} from "antd";
+import {Button, Col, Form, Input, InputNumber, Row, Select, Tag, Tooltip} from "antd";
 import {MinusSquareOutlined} from "@ant-design/icons";
 import styles from "./index.less";
 import {useEffect} from "react";
@@ -33,7 +33,33 @@ import {l} from "@/utils/intl";
 const {Option} = Select;
 
 const StudioKubernetesConfig = (props: any) => {
-  const {current, form, dispatch, tabs, group, toolHeight} = props;
+  const {
+    sessionCluster,
+    clusterConfiguration,
+    current,
+    form,
+    dispatch,
+    tabs,
+    currentSession,
+    env,
+    group,
+    toolHeight
+  } = props;
+
+  const getClusterConfigurationOptions = () => {
+    const itemList = [];
+    for (const item of clusterConfiguration) {
+      const tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias === "" ? item.name : item.alias}</>);
+      //opeartor mode can not have normal application config
+      if (current.task.type == 'kubernetes-application-operator' && item.type == 'FlinkKubernetesOperator'){
+        itemList.push(<Option key={item.id} value={item.id} label={tag}>{tag}</Option>)
+      }else if (current.task.type != 'kubernetes-application-operator'  && item.type != 'FlinkKubernetesOperator'){
+        //if not operator mode , add it normal
+        itemList.push(<Option key={item.id} value={item.id} label={tag}>{tag}</Option>)
+      }
+    }
+    return itemList;
+  };
 
 
   const getGroupOptions = () => {
@@ -49,8 +75,6 @@ const StudioKubernetesConfig = (props: any) => {
   };
 
   useEffect(() => {
-    //Force set type k8s
-    current.task.type = RUN_MODE.KUBERNETES_APPLICATION
     form.setFieldsValue(current.task);
   }, [current.task]);
 
@@ -92,6 +116,42 @@ const StudioKubernetesConfig = (props: any) => {
           className={styles.form_setting}
           onValuesChange={onValuesChange}
         >
+          <Form.Item
+            label="执行模式" className={styles.form_item} name="type"
+            tooltip='指定 Flink 任务的执行模式，默认为 KUBERNETES_APPLICATION'
+          >
+            <Select defaultValue={RUN_MODE.KUBERNETES_APPLICATION} value={RUN_MODE.KUBERNETES_APPLICATION}>
+              <Option value={RUN_MODE.KUBERNETES_APPLICATION}>Kubernetes Application Native</Option>
+            </Select>
+          </Form.Item>
+
+          <Row>
+            <Col span={24}>
+              <Form.Item label="Flink集群配置"
+                         tooltip={`选择Flink集群配置进行 ${current.task.type} 模式的远程提交任务`}
+                         name="clusterConfigurationId"
+                         className={styles.form_item}>
+                <Select
+                  style={{width: '100%'}}
+                  placeholder="选择Flink集群配置"
+                  optionLabelProp="label"
+                >
+                  {getClusterConfigurationOptions()}
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row>
+            <Col span={12}>
+              <Form.Item
+                label="任务并行度" className={styles.form_item} name="parallelism"
+                tooltip="设置Flink任务的并行度，最小为 1"
+              >
+                <InputNumber min={1} max={9999} defaultValue={1}/>
+              </Form.Item>
+            </Col>
+          </Row>
           <Form.Item
             label="SavePoint策略" className={styles.form_item} name="savePointStrategy"
             tooltip='指定 SavePoint策略，默认为禁用'

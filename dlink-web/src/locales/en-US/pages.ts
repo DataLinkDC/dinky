@@ -111,11 +111,9 @@ export default {
   'pages.settings.FlinkSQLJarMainClass': 'The Main Class Of The Jar That Submitted FlinkSQL',
   'pages.settings.FlinkRestAPI': 'Using Rest API',
   'pages.settings.FlinkURLSplit': 'FlinkSQL Statement Separator',
-  'pages.settings.FlinkSQLLogic': 'Calculate Consanguinity Using A Logical Plan',
   'pages.settings.FlinkJobID': 'Maximum Waiting Time For Getting A Job ID (seconds)',
   'pages.settings.FlinkNoSetting': 'Not Setting',
   'pages.settings.FlinkNoUseSetting': 'After The Flink Task Is Enabled, Operations Such As Savepoint And Stop Are Performed Through The RestAPI Of JobManager',
-  'pages.settings.FlinkLogic': 'Whether The Calculation Of Field Consanguinity Analysis For Flink Tasks Is Based On A Logical Plan Is Supported Only In Version 1.14',
 
   'pages.user.UserManger': 'User Management',
   'pages.user.UserName': 'User Name',
@@ -320,6 +318,26 @@ export default {
   'pages.registerCenter.clusterConfig.libPathHelp': 'Specify the hdfs path of lib (without / at the end), which needs to include Flink runtime dependencies',
   'pages.registerCenter.clusterConfig.flinkConfigPathPlaceholder': 'Please enter the flink-conf.yaml path! Values like /opt/module/flink/conf ',
   'pages.registerCenter.clusterConfig.flinkConfigPathHelp': 'Please enter the flink-conf.yaml path! Values like /opt/module/flink/conf ',
+
+  // kubernets page
+  'pages.registerCenter.clusterConfig.appConfig': 'App Config',
+  'pages.registerCenter.clusterConfig.kubernets.version': 'Flink Version',
+  'pages.registerCenter.clusterConfig.kubernets.unsupportBatch': 'Not support batch',
+  'pages.registerCenter.clusterConfig.submit.type': 'Deploy mode',
+  'pages.registerCenter.clusterConfig.jar.path': 'jar path in image',
+  'pages.registerCenter.clusterConfig.jar.class': 'main class',
+  'pages.registerCenter.clusterConfig.jar.args': 'app args',
+
+  'pages.registerCenter.clusterConfig.help.kubernets.namespace': 'kubernets namespace',
+  'pages.registerCenter.clusterConfig.help.kubernets.image': 'Flink image',
+  'pages.registerCenter.clusterConfig.help.kubernets.jmcpu': 'jobmanager cpu config',
+  'pages.registerCenter.clusterConfig.help.kubernets.tmcpu': 'taskmanager cpu config',
+  'pages.registerCenter.clusterConfig.help.kubernets.account': 'kubernets account，default is default',
+  'pages.registerCenter.clusterConfig.help.kubernets.defaultTemplate': 'Optional，default JobManager，TaskManager template conf!',
+  'pages.registerCenter.clusterConfig.help.kubernets.jobManagerTemplate': 'Optional，JobManager template ',
+  'pages.registerCenter.clusterConfig.help.kubernets.taskManagerTemplate': 'Optional，TaskManager template',
+  'pages.registerCenter.clusterConfig.help.kubernets.jobManagerMemory': 'Optional，JobManager memory',
+  'pages.registerCenter.clusterConfig.help.kubernets.taskManagerMemory': 'Optional，taskManagerMemory memory',
 
 
   'pages.registerCenter.alert.instanceManagement': 'Alarm Instance Management',

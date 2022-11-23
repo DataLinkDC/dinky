@@ -24,19 +24,35 @@ import org.apache.flink.connector.jdbc.JdbcExecutionOptions;
 import java.io.Serializable;
 import java.util.Objects;
 
-/** Options for the JDBC lookup. */
+/**
+ * Options for the JDBC lookup.
+ */
 public class JdbcLookupOptions implements Serializable {
 
     private final long cacheMaxSize;
     private final long cacheExpireMs;
     private final int maxRetryTimes;
     private final String dataFilter;
+    /**
+     * 是否是时间类型字段.
+     */
+    private final boolean scanPartitionByDatetime;
 
     public JdbcLookupOptions(long cacheMaxSize, long cacheExpireMs, int maxRetryTimes, String dataFilter) {
         this.cacheMaxSize = cacheMaxSize;
         this.cacheExpireMs = cacheExpireMs;
         this.maxRetryTimes = maxRetryTimes;
         this.dataFilter = dataFilter;
+        this.scanPartitionByDatetime = false;
+    }
+
+    public JdbcLookupOptions(long cacheMaxSize, long cacheExpireMs, int maxRetryTimes, String dataFilter,
+                             boolean scanPartitionByDatetime) {
+        this.cacheMaxSize = cacheMaxSize;
+        this.cacheExpireMs = cacheExpireMs;
+        this.maxRetryTimes = maxRetryTimes;
+        this.dataFilter = dataFilter;
+        this.scanPartitionByDatetime = scanPartitionByDatetime;
     }
 
     public long getCacheMaxSize() {
@@ -49,6 +65,10 @@ public class JdbcLookupOptions implements Serializable {
 
     public int getMaxRetryTimes() {
         return maxRetryTimes;
+    }
+
+    public boolean isScanPartitionByDatetime() {
+        return scanPartitionByDatetime;
     }
 
     public static Builder builder() {
@@ -76,34 +96,52 @@ public class JdbcLookupOptions implements Serializable {
         }
     }
 
-    /** Builder of {@link JdbcLookupOptions}. */
+    /**
+     * Builder of {@link JdbcLookupOptions}.
+     */
     public static class Builder {
 
         private long cacheMaxSize = -1L;
         private long cacheExpireMs = -1L;
         private int maxRetryTimes = JdbcExecutionOptions.DEFAULT_MAX_RETRY_TIMES;
         private String dataFilter = "";
+        private boolean scanPartitionByDatetime = false;
 
-        /** optional, lookup cache max size, over this value, the old data will be eliminated. */
+        /**
+         * optional, lookup cache max size, over this value, the old data will be eliminated.
+         */
         public Builder setCacheMaxSize(long cacheMaxSize) {
             this.cacheMaxSize = cacheMaxSize;
             return this;
         }
 
-        /** optional, lookup cache expire mills, over this time, the old data will expire. */
+        /**
+         * optional, lookup cache expire mills, over this time, the old data will expire.
+         */
         public Builder setCacheExpireMs(long cacheExpireMs) {
             this.cacheExpireMs = cacheExpireMs;
             return this;
         }
 
-        /** optional, max retry times for jdbc connector. */
+        /**
+         * optional, max retry times for jdbc connector.
+         */
         public Builder setMaxRetryTimes(int maxRetryTimes) {
             this.maxRetryTimes = maxRetryTimes;
             return this;
         }
 
+        /**
+         * optional, max retry times for jdbc connector.
+         */
+        public Builder setScanPartitionByDatetime(boolean scanPartitionByDatetime) {
+            this.scanPartitionByDatetime = scanPartitionByDatetime;
+            return this;
+        }
+
         public JdbcLookupOptions build() {
-            return new JdbcLookupOptions(cacheMaxSize, cacheExpireMs, maxRetryTimes, dataFilter);
+            return new JdbcLookupOptions(cacheMaxSize, cacheExpireMs, maxRetryTimes, dataFilter,
+                    scanPartitionByDatetime);
         }
     }
 }
