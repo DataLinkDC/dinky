@@ -50,7 +50,7 @@ public abstract class AbstractCustomTableEnvironment
     }
 
     public StreamExecutionEnvironment getStreamExecutionEnvironment() {
-        return ((AbstractStreamTableEnvironmentImpl) streamTableEnvironment).execEnv();
+        return ((StreamTableEnvironmentImpl) streamTableEnvironment).execEnv();
     }
 
     public Planner getPlanner() {
