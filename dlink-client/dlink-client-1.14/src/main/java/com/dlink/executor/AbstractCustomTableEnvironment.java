@@ -35,6 +35,7 @@ public abstract class AbstractCustomTableEnvironment
     DefaultStreamTableEnvironment {
 
     protected StreamTableEnvironment streamTableEnvironment;
+    protected final Executor executor;
 
     protected AbstractCustomTableEnvironment() {
     }

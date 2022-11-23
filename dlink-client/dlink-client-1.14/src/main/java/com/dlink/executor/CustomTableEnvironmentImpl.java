@@ -89,7 +89,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
     private final FlinkChainedProgram flinkChainedProgram;
-    private final Executor executor;
     public CustomTableEnvironmentImpl(
         CatalogManager catalogManager,
         ModuleManager moduleManager,
