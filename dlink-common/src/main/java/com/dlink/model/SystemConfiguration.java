@@ -42,66 +42,53 @@ public class SystemConfiguration {
     }
 
     private static final List<Configuration> CONFIGURATION_LIST = new ArrayList<Configuration>() {
+
         {
             add(systemConfiguration.sqlSubmitJarPath);
             add(systemConfiguration.sqlSubmitJarParas);
             add(systemConfiguration.sqlSubmitJarMainAppClass);
             add(systemConfiguration.useRestAPI);
-            add(systemConfiguration.useLogicalPlan);
             add(systemConfiguration.sqlSeparator);
             add(systemConfiguration.jobIdWait);
         }
     };
 
     private Configuration sqlSubmitJarPath = new Configuration(
-        "sqlSubmitJarPath",
-        "FlinkSQL提交Jar路径",
-        ValueType.STRING,
-        "hdfs:///dlink/jar/dlink-app.jar",
-        "用于指定Applcation模式提交FlinkSQL的Jar的路径"
-    );
+            "sqlSubmitJarPath",
+            "FlinkSQL提交Jar路径",
+            ValueType.STRING,
+            "hdfs:///dlink/jar/dlink-app.jar",
+            "用于指定Applcation模式提交FlinkSQL的Jar的路径");
     private Configuration sqlSubmitJarParas = new Configuration(
-        "sqlSubmitJarParas",
-        "FlinkSQL提交Jar参数",
-        ValueType.STRING,
-        "",
-        "用于指定Applcation模式提交FlinkSQL的Jar的参数"
-    );
+            "sqlSubmitJarParas",
+            "FlinkSQL提交Jar参数",
+            ValueType.STRING,
+            "",
+            "用于指定Applcation模式提交FlinkSQL的Jar的参数");
     private Configuration sqlSubmitJarMainAppClass = new Configuration(
-        "sqlSubmitJarMainAppClass",
-        "FlinkSQL提交Jar主类",
-        ValueType.STRING,
-        "com.dlink.app.MainApp",
-        "用于指定Applcation模式提交FlinkSQL的Jar的主类"
-    );
+            "sqlSubmitJarMainAppClass",
+            "FlinkSQL提交Jar主类",
+            ValueType.STRING,
+            "com.dlink.app.MainApp",
+            "用于指定Applcation模式提交FlinkSQL的Jar的主类");
     private Configuration useRestAPI = new Configuration(
-        "useRestAPI",
-        "使用 RestAPI",
-        ValueType.BOOLEAN,
-        true,
-        "在运维 Flink 任务时是否使用 RestAPI"
-    );
+            "useRestAPI",
+            "使用 RestAPI",
+            ValueType.BOOLEAN,
+            true,
+            "在运维 Flink 任务时是否使用 RestAPI");
     private Configuration sqlSeparator = new Configuration(
-        "sqlSeparator",
-        "FlinkSQL语句分割符",
-        ValueType.STRING,
-        ";\n",
-        "Flink SQL 的语句分割符"
-    );
-    private Configuration useLogicalPlan = new Configuration(
-        "useLogicalPlan",
-        "使用逻辑计划计算血缘",
-        ValueType.BOOLEAN,
-        false,
-        "在计算 Flink 任务的字段血缘分析时是否基于逻辑计划进行，只支持 1.14 版本"
-    );
+            "sqlSeparator",
+            "FlinkSQL语句分割符",
+            ValueType.STRING,
+            ";\n",
+            "Flink SQL 的语句分割符");
     private Configuration jobIdWait = new Configuration(
-        "jobIdWait",
-        "获取 Job ID 的最大等待时间（秒）",
-        ValueType.INT,
-        30,
-        "提交 Application 或 PerJob 任务时获取 Job ID 的最大等待时间（秒）"
-    );
+            "jobIdWait",
+            "获取 Job ID 的最大等待时间（秒）",
+            ValueType.INT,
+            30,
+            "提交 Application 或 PerJob 任务时获取 Job ID 的最大等待时间（秒）");
 
     public void setConfiguration(JsonNode jsonNode) {
         for (Configuration item : CONFIGURATION_LIST) {
@@ -172,16 +159,8 @@ public class SystemConfiguration {
         this.sqlSeparator.setValue(sqlSeparator);
     }
 
-    public boolean isUseLogicalPlan() {
-        return (boolean) useLogicalPlan.getValue();
-    }
-
-    public void setUseLogicalPlan(boolean useLogicalPlan) {
-        this.useLogicalPlan.setValue(useLogicalPlan);
-    }
-
     public int getJobIdWait() {
-        return (int )jobIdWait.getValue();
+        return (int) jobIdWait.getValue();
     }
 
     public void setJobIdWait(Configuration jobIdWait) {
@@ -193,6 +172,7 @@ public class SystemConfiguration {
     }
 
     public class Configuration {
+
         private String name;
         private String label;
         private ValueType type;

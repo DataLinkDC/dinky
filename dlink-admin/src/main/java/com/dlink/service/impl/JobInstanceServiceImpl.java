@@ -33,7 +33,6 @@ import com.dlink.model.JobInstance;
 import com.dlink.model.JobInstanceCount;
 import com.dlink.model.JobInstanceStatus;
 import com.dlink.model.JobStatus;
-import com.dlink.model.SystemConfiguration;
 import com.dlink.service.ClusterConfigurationService;
 import com.dlink.service.ClusterService;
 import com.dlink.service.HistoryService;
@@ -196,11 +195,7 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     @Override
     public LineageResult getLineage(Integer id) {
         History history = getJobInfoDetail(id).getHistory();
-        if (SystemConfiguration.getInstances().isUseLogicalPlan()) {
-            return LineageBuilder.getColumnLineageByLogicalPlan(history.getStatement());
-        } else {
-            return LineageBuilder.getLineage(history.getStatement());
-        }
+        return LineageBuilder.getColumnLineageByLogicalPlan(history.getStatement());
     }
 
     @Override

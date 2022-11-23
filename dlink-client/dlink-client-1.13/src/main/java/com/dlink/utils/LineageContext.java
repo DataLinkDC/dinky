@@ -26,6 +26,7 @@ import org.apache.calcite.rel.RelNode;
 import org.apache.calcite.rel.core.Snapshot;
 import org.apache.calcite.rel.metadata.RelColumnOrigin;
 import org.apache.calcite.rel.metadata.RelMetadataQuery;
+import org.apache.calcite.rex.RexBuilder;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.table.api.TableConfig;
@@ -36,7 +37,6 @@ import org.apache.flink.table.catalog.CatalogManager;
 import org.apache.flink.table.catalog.FunctionCatalog;
 import org.apache.flink.table.operations.CatalogSinkModifyOperation;
 import org.apache.flink.table.operations.Operation;
-import org.apache.flink.table.planner.calcite.FlinkRelBuilder;
 import org.apache.flink.table.planner.calcite.SqlExprToRexConverterFactory;
 import org.apache.flink.table.planner.delegation.PlannerBase;
 import org.apache.flink.table.planner.operations.PlannerQueryOperation;
@@ -56,8 +56,8 @@ import javassist.Modifier;
 /**
  * LineageContext
  *
- * @author baisong
- * @since 2022/8/6 11:06
+ * @author wenmo
+ * @since 2022/11/21
  */
 public class LineageContext {
 
@@ -137,11 +137,6 @@ public class LineageContext {
         return flinkChainedProgram.optimize(relNode, new StreamOptimizeContext() {
 
             @Override
-            public boolean isBatchMode() {
-                return false;
-            }
-
-            @Override
             public TableConfig getTableConfig() {
                 return tableEnv.getConfig();
             }
@@ -164,11 +159,12 @@ public class LineageContext {
             @Override
             public <C> C unwrap(Class<C> clazz) {
                 return getPlanner().getFlinkContext().unwrap(clazz);
+
             }
 
             @Override
-            public FlinkRelBuilder getFlinkRelBuilder() {
-                return getPlanner().getRelBuilder();
+            public RexBuilder getRexBuilder() {
+                return getPlanner().getRelBuilder().getRexBuilder();
             }
 
             @Override

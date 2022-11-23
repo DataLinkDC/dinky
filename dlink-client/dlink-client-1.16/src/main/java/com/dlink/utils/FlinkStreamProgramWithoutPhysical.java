@@ -36,7 +36,7 @@ import org.apache.flink.table.planner.plan.rules.FlinkStreamRuleSets;
  * FlinkStreamProgramWithoutPhysical
  *
  * @author wenmo
- * @since 2022/8/20 23:33
+ * @since 2022/11/22
  */
 public class FlinkStreamProgramWithoutPhysical {
 
@@ -131,17 +131,40 @@ public class FlinkStreamProgramWithoutPhysical {
                 PREDICATE_PUSHDOWN,
                 FlinkGroupProgramBuilder.newBuilder()
                         .addProgram(
-                                FlinkHepRuleSetProgramBuilder.newBuilder()
-                                        .setHepRulesExecutionType(HEP_RULES_EXECUTION_TYPE.RULE_COLLECTION())
-                                        .setHepMatchOrder(HepMatchOrder.BOTTOM_UP)
-                                        .add(FlinkStreamRuleSets.FILTER_PREPARE_RULES())
+                                FlinkGroupProgramBuilder.newBuilder()
+                                        .addProgram(
+                                                FlinkHepRuleSetProgramBuilder.newBuilder()
+                                                        .setHepRulesExecutionType(
+                                                                HEP_RULES_EXECUTION_TYPE.RULE_SEQUENCE())
+                                                        .setHepMatchOrder(HepMatchOrder.BOTTOM_UP)
+                                                        .add(FlinkStreamRuleSets.JOIN_PREDICATE_REWRITE_RULES())
+                                                        .build(),
+                                                "join predicate rewrite")
+                                        .addProgram(
+                                                FlinkHepRuleSetProgramBuilder.newBuilder()
+                                                        .setHepRulesExecutionType(
+                                                                HEP_RULES_EXECUTION_TYPE.RULE_COLLECTION())
+                                                        .setHepMatchOrder(HepMatchOrder.BOTTOM_UP)
+                                                        .add(FlinkStreamRuleSets.FILTER_PREPARE_RULES())
+                                                        .build(),
+                                                "filter rules")
+                                        .setIterations(5)
                                         .build(),
-                                "filter rules")
+                                "predicate rewrite")
                         .addProgram(
-                                FlinkHepRuleSetProgramBuilder.newBuilder()
-                                        .setHepRulesExecutionType(HEP_RULES_EXECUTION_TYPE.RULE_SEQUENCE())
-                                        .setHepMatchOrder(HepMatchOrder.BOTTOM_UP)
-                                        .add(FlinkStreamRuleSets.FILTER_TABLESCAN_PUSHDOWN_RULES())
+                                // PUSH_PARTITION_DOWN_RULES should always be in front of PUSH_FILTER_DOWN_RULES
+                                // to prevent PUSH_FILTER_DOWN_RULES from consuming the predicates in partitions
+                                FlinkGroupProgramBuilder.newBuilder()
+                                        .addProgram(FlinkHepRuleSetProgramBuilder.newBuilder()
+                                                .setHepRulesExecutionType(HEP_RULES_EXECUTION_TYPE.RULE_SEQUENCE())
+                                                .setHepMatchOrder(HepMatchOrder.BOTTOM_UP)
+                                                .add(FlinkStreamRuleSets.PUSH_PARTITION_DOWN_RULES())
+                                                .build(), "push down partitions into table scan")
+                                        .addProgram(FlinkHepRuleSetProgramBuilder.newBuilder()
+                                                .setHepRulesExecutionType(HEP_RULES_EXECUTION_TYPE.RULE_SEQUENCE())
+                                                .setHepMatchOrder(HepMatchOrder.BOTTOM_UP)
+                                                .add(FlinkStreamRuleSets.PUSH_FILTER_DOWN_RULES())
+                                                .build(), "push down filters into table scan")
                                         .build(),
                                 "push predicate into table scan")
                         .addProgram(
@@ -201,5 +224,4 @@ public class FlinkStreamProgramWithoutPhysical {
 
         return chainedProgram;
     }
-
 }

@@ -49,7 +49,7 @@ public class LineageTest {
                 + " 'connector' = 'print'\n"
                 + ");\n"
                 + "insert into TT select a||c A ,b||c B from ST";
-        LineageResult result = LineageBuilder.getLineage(sql);
+        LineageResult result = LineageBuilder.getColumnLineageByLogicalPlan(sql);
         System.out.println("end");
     }
 }
