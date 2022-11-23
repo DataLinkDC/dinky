@@ -17,9 +17,7 @@
  *
  */
 
-package com.dlink.executor.custom;
-
-import com.dlink.executor.TableEnvironmentInstance;
+package com.dlink.executor;
 
 import org.apache.flink.table.api.CompiledPlan;
 import org.apache.flink.table.api.ExplainDetail;
@@ -47,50 +45,63 @@ public interface DefaultTableEnvironmentInternal extends TableEnvironmentInterna
     }
 
     // region TableEnvironmentInternal interface
+
+    @Override
     default Parser getParser() {
         return getTableEnvironmentInternal().getParser();
     }
 
+    @Override
     default CatalogManager getCatalogManager() {
         return getTableEnvironmentInternal().getCatalogManager();
     }
 
+    @Override
     default OperationTreeBuilder getOperationTreeBuilder() {
         return getTableEnvironmentInternal().getOperationTreeBuilder();
     }
 
+    @Override
     default Table fromTableSource(TableSource<?> tableSource) {
         return getTableEnvironmentInternal().fromTableSource(tableSource);
     }
 
+    @Override
     default TableResultInternal executeInternal(List<ModifyOperation> list) {
         return getTableEnvironmentInternal().executeInternal(list);
     }
 
+    @Override
     default TableResultInternal executeInternal(Operation operation) {
         return getTableEnvironmentInternal().executeInternal(operation);
     }
 
+    @Override
     default String explainInternal(List<Operation> list, ExplainDetail... explainDetails) {
         return getTableEnvironmentInternal().explainInternal(list, explainDetails);
     }
 
+    @Override
     default void registerTableSourceInternal(String s, TableSource<?> tableSource) {
         getTableEnvironmentInternal().registerTableSourceInternal(s, tableSource);
     }
 
+    @Override
     default void registerTableSinkInternal(String s, TableSink<?> tableSink) {
         getTableEnvironmentInternal().registerTableSinkInternal(s, tableSink);
     }
 
+    @Override
     default CompiledPlan compilePlan(List<ModifyOperation> list) {
         return getTableEnvironmentInternal().compilePlan(list);
     }
 
+    @Override
     default TableResultInternal executePlan(InternalPlan internalPlan) {
         return getTableEnvironmentInternal().executePlan(internalPlan);
     }
 
+    @Override
     default String explainPlan(InternalPlan internalPlan, ExplainDetail... explainDetails) {
         return getTableEnvironmentInternal().explainPlan(internalPlan, explainDetails);
     }
