@@ -178,7 +178,11 @@ public class LineageContext {
 
             @Override
             public <C> C unwrap(Class<C> clazz) {
-                return StreamOptimizeContext.super.unwrap(clazz);
+                if (clazz.isInterface()) {
+                    return clazz.cast(this);
+                } else {
+                    return null;
+                }
             }
 
             @Override
