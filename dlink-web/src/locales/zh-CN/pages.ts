@@ -488,6 +488,7 @@ export default {
   'pages.registerCenter.db.urlPlaceholder': '请输入格式正确的 url 连接!',
   'pages.registerCenter.db.flinkConfigPlaceholder': '请指定 Flink With 的默认配置!',
   'pages.registerCenter.db.flinkTemplatePlaceholder': '请指定 Flink With 的生成模板!',
+  'pages.registerCenter.db.copyDatabase': '正在复制!',
   'pages.registerCenter.db.source': '来源',
   'pages.registerCenter.db.warehouse': '数仓',
   'pages.registerCenter.db.application': '应用',

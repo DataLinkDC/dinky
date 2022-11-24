@@ -489,6 +489,7 @@ export default {
   'pages.registerCenter.db.urlPlaceholder': 'Please enter a properly formatted url connection!',
   'pages.registerCenter.db.flinkConfigPlaceholder': 'Please specify the default configuration of Flink With!',
   'pages.registerCenter.db.flinkTemplatePlaceholder': 'Please specify the generated template of Flink With!',
+  'pages.registerCenter.db.copyDatabase': 'Copying!',
   'pages.registerCenter.db.source': 'Source',
   'pages.registerCenter.db.warehouse': 'Data WareHouse',
   'pages.registerCenter.db.application': 'Application',
