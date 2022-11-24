@@ -18,21 +18,25 @@
  */
 
 
-import { Button, Result } from 'antd';
+import {Button, Result} from 'antd';
 import React from 'react';
-import { history } from 'umi';
+import {history} from 'umi';
+import {l} from "@/utils/intl";
 
-const BuildPage: React.FC = () => (
-  <Result
-    status="404"
-    title="Building"
-    subTitle="Sorry, the page you visited is building."
-    extra={
-      <Button type="primary" onClick={() => history.push('/')}>
-        Back Home
-      </Button>
-    }
-  />
-);
+const BuildPage: React.FC = () => {
+  return (
+    <Result
+      status="404"
+      title="Building"
+      subTitle="Sorry, the page you visited is building."
+      extra={
+        <Button type="primary" onClick={() => history.push('/')}>
+          Back Home
+        </Button>
+      }
+    />
+  );
+
+};
 
 export default BuildPage;

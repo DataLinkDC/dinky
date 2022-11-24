@@ -17,20 +17,28 @@
  *
  */
 
-
 package com.dlink.job;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.executor.ExecutorSetting;
+import com.dlink.function.data.model.UDF;
 import com.dlink.gateway.GatewayType;
-import com.dlink.gateway.config.*;
+import com.dlink.gateway.config.AppConfig;
+import com.dlink.gateway.config.ClusterConfig;
+import com.dlink.gateway.config.FlinkConfig;
+import com.dlink.gateway.config.GatewayConfig;
+import com.dlink.gateway.config.SavePointStrategy;
 import com.dlink.session.SessionConfig;
+
+import org.apache.flink.configuration.CoreOptions;
+import org.apache.http.util.TextUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * JobConfig
@@ -58,6 +66,9 @@ public class JobConfig {
     private boolean isJarTask = false;
     private String address;
     private Integer taskId;
+    private List<UDF> udfList;
+    private String[] jarFiles;
+    private String[] pyFiles;
     private String jobName;
     private boolean useSqlFragment;
     private boolean useStatementSet;
@@ -68,13 +79,14 @@ public class JobConfig {
     private SavePointStrategy savePointStrategy;
     private String savePointPath;
     private GatewayConfig gatewayConfig;
-
+    private Map<String, String> variables;
     private Map<String, String> config;
 
     public JobConfig() {
     }
 
-    public JobConfig(String type, boolean useSession, boolean useRemote, boolean useSqlFragment, boolean useStatementSet, Integer parallelism, Map<String, String> config) {
+    public JobConfig(String type, boolean useSession, boolean useRemote, boolean useSqlFragment,
+                     boolean useStatementSet, Integer parallelism, Map<String, String> config) {
         this.type = type;
         this.useSession = useSession;
         this.useRemote = useRemote;
@@ -84,10 +96,14 @@ public class JobConfig {
         this.config = config;
     }
 
-    public JobConfig(String type, boolean useResult, boolean useChangeLog, boolean useAutoCancel, boolean useSession, String session, Integer clusterId,
-                     Integer clusterConfigurationId, Integer jarId, Integer taskId, String jobName, boolean useSqlFragment,
-                     boolean useStatementSet, boolean useBatchModel, Integer maxRowNum, Integer checkpoint, Integer parallelism,
-                     Integer savePointStrategyValue, String savePointPath, Map<String, String> config) {
+    public JobConfig(String type, boolean useResult, boolean useChangeLog, boolean useAutoCancel, boolean useSession,
+                     String session, Integer clusterId,
+                     Integer clusterConfigurationId, Integer jarId, Integer taskId, String jobName,
+                     boolean useSqlFragment,
+                     boolean useStatementSet, boolean useBatchModel, Integer maxRowNum, Integer checkpoint,
+                     Integer parallelism,
+                     Integer savePointStrategyValue, String savePointPath, Map<String, String> variables,
+                     Map<String, String> config) {
         this.type = type;
         this.useResult = useResult;
         this.useChangeLog = useChangeLog;
@@ -108,13 +124,16 @@ public class JobConfig {
         this.parallelism = parallelism;
         this.savePointStrategy = SavePointStrategy.get(savePointStrategyValue);
         this.savePointPath = savePointPath;
+        this.variables = variables;
         this.config = config;
     }
 
-    public JobConfig(String type, boolean useResult, boolean useChangeLog, boolean useAutoCancel, boolean useSession, String session, boolean useRemote, String address,
+    public JobConfig(String type, boolean useResult, boolean useChangeLog, boolean useAutoCancel, boolean useSession,
+                     String session, boolean useRemote, String address,
                      String jobName, boolean useSqlFragment,
                      boolean useStatementSet, Integer maxRowNum, Integer checkpoint, Integer parallelism,
-                     Integer savePointStrategyValue, String savePointPath, Map<String, String> config, GatewayConfig gatewayConfig) {
+                     Integer savePointStrategyValue, String savePointPath, Map<String, String> config,
+                     GatewayConfig gatewayConfig) {
         this.type = type;
         this.useResult = useResult;
         this.useChangeLog = useChangeLog;
@@ -135,7 +154,8 @@ public class JobConfig {
         this.gatewayConfig = gatewayConfig;
     }
 
-    public JobConfig(String type, boolean useResult, boolean useSession, String session, boolean useRemote, Integer clusterId, Integer maxRowNum) {
+    public JobConfig(String type, boolean useResult, boolean useSession, String session, boolean useRemote,
+                     Integer clusterId, Integer maxRowNum) {
         this.type = type;
         this.useResult = useResult;
         this.useSession = useSession;
@@ -145,9 +165,12 @@ public class JobConfig {
         this.maxRowNum = maxRowNum;
     }
 
-    public JobConfig(String type, Integer step, boolean useResult, boolean useSession, boolean useRemote, Integer clusterId,
-                     Integer clusterConfigurationId, Integer jarId, Integer taskId, String jobName, boolean useSqlFragment,
-                     boolean useStatementSet, boolean useBatchModel, Integer checkpoint, Integer parallelism, Integer savePointStrategyValue,
+    public JobConfig(String type, Integer step, boolean useResult, boolean useSession, boolean useRemote,
+                     Integer clusterId,
+                     Integer clusterConfigurationId, Integer jarId, Integer taskId, String jobName,
+                     boolean useSqlFragment,
+                     boolean useStatementSet, boolean useBatchModel, Integer checkpoint, Integer parallelism,
+                     Integer savePointStrategyValue,
                      String savePointPath, Map<String, String> config) {
         this.type = type;
         this.step = step;
@@ -170,7 +193,8 @@ public class JobConfig {
     }
 
     public ExecutorSetting getExecutorSetting() {
-        return new ExecutorSetting(checkpoint, parallelism, useSqlFragment, useStatementSet, useBatchModel, savePointPath, jobName, config);
+        return new ExecutorSetting(checkpoint, parallelism, useSqlFragment, useStatementSet, useBatchModel,
+                savePointPath, jobName, config);
     }
 
     public void setSessionConfig(SessionConfig sessionConfig) {
@@ -185,30 +209,49 @@ public class JobConfig {
         gatewayConfig = new GatewayConfig();
         if (config.containsKey("hadoopConfigPath")) {
             gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath").toString(),
-                config.get("flinkLibPath").toString(),
-                config.get("hadoopConfigPath").toString()));
+                    config.get("flinkLibPath").toString(),
+                    config.get("hadoopConfigPath").toString()));
         } else {
             gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath").toString()));
         }
         AppConfig appConfig = new AppConfig();
         if (config.containsKey("userJarPath") && Asserts.isNotNullString((String) config.get("userJarPath"))) {
             appConfig.setUserJarPath(config.get("userJarPath").toString());
-            if (config.containsKey("userJarMainAppClass") && Asserts.isNotNullString((String) config.get("userJarMainAppClass"))) {
+            if (config.containsKey("userJarMainAppClass")
+                    && Asserts.isNotNullString((String) config.get("userJarMainAppClass"))) {
                 appConfig.setUserJarMainAppClass(config.get("userJarMainAppClass").toString());
             }
             if (config.containsKey("userJarParas") && Asserts.isNotNullString((String) config.get("userJarParas"))) {
-                appConfig.setUserJarParas(config.get("userJarParas").toString().split(" "));
+                // There may be multiple spaces between the parameter and value during user input,
+                // which will directly lead to a parameter passing error and needs to be eliminated
+                String[] temp = config.get("userJarParas").toString().split(" ");
+                List<String> paraSplit = new ArrayList<>();
+                for (String s : temp) {
+                    if (!TextUtils.isEmpty(s.trim())) {
+                        paraSplit.add(s);
+                    }
+                }
+                appConfig.setUserJarParas(paraSplit.toArray(new String[0]));
             }
             gatewayConfig.setAppConfig(appConfig);
         }
-        if (config.containsKey("flinkConfig") && Asserts.isNotNullMap((Map<String, String>) config.get("flinkConfig"))) {
+        if (config.containsKey("flinkConfig")
+                && Asserts.isNotNullMap((Map<String, String>) config.get("flinkConfig"))) {
             gatewayConfig.setFlinkConfig(FlinkConfig.build((Map<String, String>) config.get("flinkConfig")));
+            gatewayConfig.getFlinkConfig().getConfiguration().put(CoreOptions.DEFAULT_PARALLELISM.key(),String.valueOf(parallelism));
         }
         if (config.containsKey("kubernetesConfig")) {
-            Map<String,Object> kubernetesConfig = (Map<String,Object>) config.get("kubernetesConfig");
-            //构建GatewayConfig时，将k8s集群默认配置和自定义参数配置加载到FlinkConfig里
-            for(Map.Entry<String,Object> entry:kubernetesConfig.entrySet()){
-                gatewayConfig.getFlinkConfig().getConfiguration().put(entry.getKey(),entry.getValue().toString());
+            Map<String, String> kubernetesConfig = (Map<String, String>) config.get("kubernetesConfig");
+            gatewayConfig.getFlinkConfig().getConfiguration().putAll(kubernetesConfig);
+        }
+        // at present only k8s task have this
+        if (config.containsKey("taskCustomConfig")) {
+            Map<String, Map<String, String>> taskCustomConfig = (Map<String, Map<String, String>>) config.get("taskCustomConfig");
+            if (taskCustomConfig.containsKey("kubernetesConfig")) {
+                gatewayConfig.getFlinkConfig().getConfiguration().putAll(taskCustomConfig.get("kubernetesConfig"));
+            }
+            if (taskCustomConfig.containsKey("flinkConfig")) {
+                gatewayConfig.getFlinkConfig().getConfiguration().putAll(taskCustomConfig.get("flinkConfig"));
             }
         }
     }

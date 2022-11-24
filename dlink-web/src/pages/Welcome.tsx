@@ -17,13 +17,15 @@
  *
  */
 
-
 import React from 'react';
-import { Card, Alert, Typography,Timeline } from 'antd';
-import { useIntl, FormattedMessage } from 'umi';
+import {Alert, Card, Timeline, Typography} from 'antd';
+import {FormattedMessage} from 'umi';
 import styles from './Welcome.less';
-const { Text, Link,Paragraph } = Typography;
-const CodePreview: React.FC = ({ children }) => (
+import {VERSION} from "@/components/Common/Version";
+import {l} from "@/utils/intl";
+
+const {Text, Link, Paragraph} = Typography;
+const CodePreview: React.FC = ({children}) => (
   <pre className={styles.pre}>
     <code>
       <Typography.Text copyable>{children}</Typography.Text>
@@ -32,15 +34,12 @@ const CodePreview: React.FC = ({ children }) => (
 );
 
 export default (): React.ReactNode => {
-  const intl = useIntl();
+
   return (
     <>
       <Card>
         <Alert
-          message={intl.formatMessage({
-            id: 'pages.welcome.alertMessage',
-            defaultMessage: '实时计算平台 Dinky 即将发布，目前为体验版，版本号为 0.6.6。',
-          })}
+          message={l('pages.welcome.alertMessage', '', {version: VERSION})}
           type="success"
           showIcon
           banner
@@ -50,40 +49,40 @@ export default (): React.ReactNode => {
           }}
         />
         <Typography.Text strong>
-          <FormattedMessage id="pages.welcome.Community" defaultMessage="官方社区" />{' '}
-          <FormattedMessage id="pages.welcome.link" defaultMessage="欢迎加入" />
+          <FormattedMessage id="pages.welcome.Community" defaultMessage="官方社区"/>{' '}
+          <FormattedMessage id="pages.welcome.link" defaultMessage="欢迎加入"/>
         </Typography.Text>
         <Paragraph>
-        <Typography.Text strong>
-          <FormattedMessage id="pages.welcome.QQ" defaultMessage="QQ官方社区群" />{' '}
-          <FormattedMessage id="pages.welcome.QQcode" defaultMessage="543709668" />
-        </Typography.Text>
+          <Typography.Text strong>
+            <FormattedMessage id="pages.welcome.QQ" defaultMessage="QQ官方社区群"/>{' '}
+            <FormattedMessage id="pages.welcome.QQcode" defaultMessage="543709668"/>
+          </Typography.Text>
         </Paragraph>
-        <CodePreview>微信公众号：Datalink数据中台</CodePreview>
+        <CodePreview>微信公众号：Dinky 开源</CodePreview>
         <Typography.Text
           strong
           style={{
             marginBottom: 12,
           }}
         >
-          <FormattedMessage id="pages.welcome.advancedLayout" defaultMessage="Github" />{' '}
+          <FormattedMessage id="pages.welcome.advancedLayout" defaultMessage="Github"/>{' '}
           <a
             href="https://github.com/DataLinkDC/dlink"
             rel="noopener noreferrer"
             target="__blank"
           >
-            <FormattedMessage id="pages.welcome.star" defaultMessage="欢迎 Star " />
+            <FormattedMessage id="pages.welcome.star" defaultMessage="欢迎 Star "/>
           </a>
         </Typography.Text>
         <Paragraph>
-        <Typography.Text strong>
-          <FormattedMessage id="pages.welcome.upgrade" defaultMessage="更新日志" />
-        </Typography.Text>
+          <Typography.Text strong>
+            <FormattedMessage id="pages.welcome.upgrade" defaultMessage="更新日志"/>
+          </Typography.Text>
         </Paragraph>
-        <p> </p>
+        <p></p>
         <Timeline pending={<><Text code>0.7.0</Text>
-          <Text type="secondary">敬请期待</Text>
-          <p> </p>
+          <Text type="secondary">{l('global.stay.tuned')}</Text>
+          <p></p>
           <Paragraph>
             <ul>
               <li>
@@ -107,7 +106,7 @@ export default (): React.ReactNode => {
             </ul>
           </Paragraph></>} reverse={true}>
           <Timeline.Item><Text code>0.1.0</Text> <Text type="secondary">2021-06-06</Text>
-            <p> </p>
+            <p></p>
             <Paragraph>
               <ul>
                 <li>
@@ -126,7 +125,7 @@ export default (): React.ReactNode => {
             </Paragraph>
           </Timeline.Item>
           <Timeline.Item><Text code>0.2.0</Text> <Text type="secondary">2021-06-08</Text>
-            <p> </p>
+            <p></p>
             <Paragraph>
               <ul>
                 <li>
@@ -136,10 +135,13 @@ export default (): React.ReactNode => {
                   <Link>支持以 SPI 的方式扩展任意 Connector，同 Flink 官网</Link>
                 </li>
                 <li>
-                  <Link>提供了 dlink-connector-jdbc，额外支持 Oracle 和 ClickHouse 读写，该扩展包可直接上传 Flink 集群的 lib 进行远程使用，无需重新编译</Link>
+                  <Link>提供了 dlink-connector-jdbc，额外支持 Oracle 和 ClickHouse 读写，该扩展包可直接上传 Flink 集群的
+                    lib
+                    进行远程使用，无需重新编译</Link>
                 </li>
                 <li>
-                  <Link>提供了 dlink-client-1.12，支持 Flink 1.12.0+ 多集群的远程使用与本地隔离使用，1.10、1.11 和 1.13 集群可能存在问题</Link>
+                  <Link>提供了 dlink-client-1.12，支持 Flink 1.12.0+ 多集群的远程使用与本地隔离使用，1.10、1.11 和 1.13
+                    集群可能存在问题</Link>
                 </li>
                 <li>
                   <Link>优化了 FlinkSQL 执行与提交到远程集群的任务名，默认为作业的中文别名</Link>
@@ -157,7 +159,7 @@ export default (): React.ReactNode => {
             </Paragraph>
           </Timeline.Item>
           <Timeline.Item><Text code>0.2.1</Text> <Text type="secondary">2021-06-11</Text>
-            <p> </p>
+            <p></p>
             <Paragraph>
               <ul>
                 <li>
@@ -191,7 +193,7 @@ export default (): React.ReactNode => {
             </Paragraph>
           </Timeline.Item>
           <Timeline.Item><Text code>0.2.2</Text> <Text type="secondary">2021-06-17</Text>
-            <p> </p>
+            <p></p>
             <Paragraph>
               <ul>
                 <li>
@@ -243,7 +245,7 @@ export default (): React.ReactNode => {
             </Paragraph>
           </Timeline.Item>
           <Timeline.Item><Text code>0.2.3</Text> <Text type="secondary">2021-06-21</Text>
-            <p> </p>
+            <p></p>
             <Paragraph>
               <ul>
                 <li>
@@ -274,7 +276,7 @@ export default (): React.ReactNode => {
             </Paragraph>
           </Timeline.Item>
           <Timeline.Item><Text code>0.3.0</Text> <Text type="secondary">2021-07-27</Text>
-            <p> </p>
+            <p></p>
             <Paragraph>
               <ul>
                 <li>
@@ -308,7 +310,7 @@ export default (): React.ReactNode => {
             </Paragraph>
           </Timeline.Item>
           <Timeline.Item><Text code>0.3.1</Text> <Text type="secondary">2021-08-25</Text>
-            <p> </p>
+            <p></p>
             <Paragraph>
               <ul>
                 <li>
@@ -336,7 +338,7 @@ export default (): React.ReactNode => {
             </Paragraph>
           </Timeline.Item>
           <Timeline.Item><Text code>0.3.2</Text> <Text type="secondary">2021-10-22</Text>
-            <p> </p>
+            <p></p>
             <Paragraph>
               <ul>
                 <li>
@@ -376,7 +378,7 @@ export default (): React.ReactNode => {
             </Paragraph>
           </Timeline.Item>
           <Timeline.Item><Text code>0.4.0</Text> <Text type="secondary">2021-12-02</Text>
-            <p> </p>
+            <p></p>
             <Paragraph>
               <ul>
                 <li>
@@ -473,7 +475,7 @@ export default (): React.ReactNode => {
             </Paragraph>
           </Timeline.Item>
           <Timeline.Item><Text code>0.5.0</Text> <Text type="secondary">2022-01-16</Text>
-            <p> </p>
+            <p></p>
             <Paragraph>
               <ul>
                 <li>
@@ -588,7 +590,7 @@ export default (): React.ReactNode => {
             </Paragraph>
           </Timeline.Item>
           <Timeline.Item><Text code>0.5.1</Text> <Text type="secondary">2022-01-24</Text>
-            <p> </p>
+            <p></p>
             <Paragraph>
               <ul>
                 <li>
@@ -649,7 +651,7 @@ export default (): React.ReactNode => {
             </Paragraph>
           </Timeline.Item>
           <Timeline.Item><Text code>0.6.0</Text> <Text type="secondary">2022-03-20</Text>
-            <p> </p>
+            <p></p>
             <Paragraph>
               <ul>
                 <li>
@@ -809,7 +811,7 @@ export default (): React.ReactNode => {
             </Paragraph>
           </Timeline.Item>
           <Timeline.Item><Text code>0.6.1</Text> <Text type="secondary">2022-04-01</Text>
-            <p> </p>
+            <p></p>
             <Paragraph>
               <ul>
                 <li>
@@ -879,7 +881,7 @@ export default (): React.ReactNode => {
             </Paragraph>
           </Timeline.Item>
           <Timeline.Item><Text code>0.6.2</Text> <Text type="secondary">2022-04-17</Text>
-            <p> </p>
+            <p></p>
             <Paragraph>
               <ul>
                 <li>
@@ -970,7 +972,7 @@ export default (): React.ReactNode => {
             </Paragraph>
           </Timeline.Item>
           <Timeline.Item><Text code>0.6.3</Text> <Text type="secondary">2022-05-09</Text>
-            <p> </p>
+            <p></p>
             <Paragraph>
               <ul>
                 <li>
@@ -1052,7 +1054,7 @@ export default (): React.ReactNode => {
             </Paragraph>
           </Timeline.Item>
           <Timeline.Item><Text code>0.6.4</Text> <Text type="secondary">2022-06-05</Text>
-            <p> </p>
+            <p></p>
             <Paragraph>
               <ul>
                 <li>
@@ -1146,7 +1148,7 @@ export default (): React.ReactNode => {
             </Paragraph>
           </Timeline.Item>
           <Timeline.Item><Text code>0.6.5</Text> <Text type="secondary">2022-07-03</Text>
-            <p> </p>
+            <p></p>
             <Paragraph>
               <ul>
                 <li>
@@ -1267,7 +1269,7 @@ export default (): React.ReactNode => {
             </Paragraph>
           </Timeline.Item>
           <Timeline.Item><Text code>0.6.6</Text> <Text type="secondary">2022-07-23</Text>
-            <p> </p>
+            <p></p>
             <Paragraph>
               <ul>
                 <li>
@@ -1359,6 +1361,292 @@ export default (): React.ReactNode => {
                 </li>
                 <li>
                   <Link>优化运维中心的 Checkpoint 页面</Link>
+                </li>
+              </ul>
+            </Paragraph>
+          </Timeline.Item>
+          <Timeline.Item><Text code>0.6.7</Text> <Text type="secondary">2022-09-06</Text>
+            <p></p>
+            <Paragraph>
+              <ul>
+                <li>
+                  <Link>添加多租户的实现</Link>
+                </li>
+                <li>
+                  <Link>一键上线和下线作业</Link>
+                </li>
+                <li>
+                  <Link>添加全局变量管理</Link>
+                </li>
+                <li>
+                  <Link>添加命名空间与密码的表单</Link>
+                </li>
+                <li>
+                  <Link>登录时选择多租户</Link>
+                </li>
+                <li>
+                  <Link>多租户前端业务管理实现</Link>
+                </li>
+                <li>
+                  <Link>添加 github 工作流来检查代码风格、测试类和打包</Link>
+                </li>
+                <li>
+                  <Link>添加 druid 连接池来解决 jdbc 多连接问题</Link>
+                </li>
+                <li>
+                  <Link>修改 Flink 默认版本为 1.14</Link>
+                </li>
+                <li>
+                  <Link>新增全局变量管理实现</Link>
+                </li>
+                <li>
+                  <Link>新增 SqlServer 整库同步</Link>
+                </li>
+                <li>
+                  <Link>新增全局变量在 Flinksql 中生效</Link>
+                </li>
+                <li>
+                  <Link>新增字段血缘分析从 Flink 逻辑计划获取</Link>
+                </li>
+                <li>
+                  <Link>新增 postgresql 整库同步</Link>
+                </li>
+                <li>
+                  <Link>修改 checkstyle 为必须的工作</Link>
+                </li>
+                <li>
+                  <Link>新增 swagger api 文档</Link>
+                </li>
+                <li>
+                  <Link>cdcsource 增加多目标库同步功能</Link>
+                </li>
+                <li>
+                  <Link>新增文件上传</Link>
+                </li>
+                <li>
+                  <Link>Jar 和集群配置管理新增文件上传</Link>
+                </li>
+                <li>
+                  <Link>新增 StarRocks 数据源</Link>
+                </li>
+                <li>
+                  <Link>新增任务监控失败重复的容错时间</Link>
+                </li>
+                <li>
+                  <Link>修改任务监控代码重复判断的问题</Link>
+                </li>
+                <li>
+                  <Link>修复邮件报警参数问题</Link>
+                </li>
+                <li>
+                  <Link>修复获取作业实例信息可能获取到错误的结果问题</Link>
+                </li>
+                <li>
+                  <Link>修复 doris 连接器批量写入时发生异常导致写入失败</Link>
+                </li>
+                <li>
+                  <Link>修复 SQLSinkBuilder.buildRow 的错误</Link>
+                </li>
+                <li>
+                  <Link>修复 Flink1.14 执行缺失依赖的问题</Link>
+                </li>
+                <li>
+                  <Link>修复 savepoint 接口获取前端集群表单的 taskId 为空的问题</Link>
+                </li>
+                <li>
+                  <Link>修复 yarn per-job 无法自动释放资源的问题</Link>
+                </li>
+                <li>
+                  <Link>修复多租户新增角色和删除角色的问题</Link>
+                </li>
+                <li>
+                  <Link>修复 dlink-conector-pulsar-1.14 找不到 SubscriptionType 的报错</Link>
+                </li>
+                <li>
+                  <Link>修复 flink1.14 savepoint 时的 jackjson 问题</Link>
+                </li>
+                <li>
+                  <Link>修复元数据字段类型转换的问题</Link>
+                </li>
+                <li>
+                  <Link>修复整库同步 KafkaSinkBuilder 未序列化导致报错</Link>
+                </li>
+                <li>
+                  <Link>修复注册中心文档管理的查询条件错误</Link>
+                </li>
+                <li>
+                  <Link>修复 yarn perjob/application 和 k8s application 集群配置未生效</Link>
+                </li>
+                <li>
+                  <Link>修复 k8s application 模式提交失败，优化增加获取 JobId 等待时间</Link>
+                </li>
+                <li>
+                  <Link>修复日志 banner 的错误</Link>
+                </li>
+                <li>
+                  <Link>修复 UDF 和 UDTAF 在 Flink 1.14 的错误</Link>
+                </li>
+                <li>
+                  <Link>优化前端和文档</Link>
+                </li>
+                <li>
+                  <Link>优化作业被删除后作业版本未被删除</Link>
+                </li>
+                <li>
+                  <Link>优化作业树在导入作业后溢出的问题</Link>
+                </li>
+                <li>
+                  <Link>优化数据开发的进程列表</Link>
+                </li>
+                <li>
+                  <Link>优化整库同步分流逻辑</Link>
+                </li>
+                <li>
+                  <Link>优化git提交忽略的文件类型</Link>
+                </li>
+                <li>
+                  <Link>优化中文和英文 Readme</Link>
+                </li>
+                <li>
+                  <Link>移除一些接口的敏感信息</Link>
+                </li>
+                <li>
+                  <Link>优化多租户</Link>
+                </li>
+                <li>
+                  <Link>添加 Maven Wrapper</Link>
+                </li>
+                <li>
+                  <Link>优化整库同步的时区问题</Link>
+                </li>
+                <li>
+                  <Link>优化 sql 默认分隔符统一为 ;\n</Link>
+                </li>
+                <li>
+                  <Link>优化代码风格的错误</Link>
+                </li>
+                <li>
+                  <Link>添加.DS_Store到git的忽略文件类型</Link>
+                </li>
+                <li>
+                  <Link>优化多租户角色穿梭框和前端回显</Link>
+                </li>
+                <li>
+                  <Link>优化用户关联角色渲染</Link>
+                </li>
+                <li>
+                  <Link>优化 dlink-admin 的代码风格</Link>
+                </li>
+                <li>
+                  <Link>优化 dlink-alert 的代码风格</Link>
+                </li>
+                <li>
+                  <Link>优化 dlink-common 的代码风格</Link>
+                </li>
+                <li>
+                  <Link>优化 dlink-catalog 的代码风格</Link>
+                </li>
+                <li>
+                  <Link>优化 dlink-client 的代码风格</Link>
+                </li>
+                <li>
+                  <Link>优化 dlink-app 的代码风格</Link>
+                </li>
+                <li>
+                  <Link>优化数据源连接池和链接创建</Link>
+                </li>
+                <li>
+                  <Link>优化 dlink-connectors 的代码风格</Link>
+                </li>
+                <li>
+                  <Link>优化 dlink-core 的代码风格</Link>
+                </li>
+                <li>
+                  <Link>优化 dlink-daemon 的代码风格</Link>
+                </li>
+                <li>
+                  <Link>优化 dlink-executor 的代码风格</Link>
+                </li>
+                <li>
+                  <Link>优化 dlink-function 和 dlink-gateway 的代码风格</Link>
+                </li>
+                <li>
+                  <Link>优化 dlink-metadata 的代码风格</Link>
+                </li>
+                <li>
+                  <Link>添加协议头到pom文件</Link>
+                </li>
+                <li>
+                  <Link>优化项目打包和启动文件</Link>
+                </li>
+                <li>
+                  <Link>dlink-client-hadoop 打包增加 ServicesResourceTransformer</Link>
+                </li>
+                <li>
+                  <Link>优化配置文件和静态资源目录打包</Link>
+                </li>
+                <li>
+                  <Link>配置全局 checkstyle 验证</Link>
+                </li>
+                <li>
+                  <Link>添加 sqlserver 的 date 类型转换</Link>
+                </li>
+                <li>
+                  <Link>优化 PG 数据库 schema_name 查询 sql </Link>
+                </li>
+                <li>
+                  <Link>Doris 支持更多语法</Link>
+                </li>
+                <li>
+                  <Link>优化整库同步 DorisSink</Link>
+                </li>
+                <li>
+                  <Link>优化前端的展示与提示</Link>
+                </li>
+                <li>
+                  <Link>优化数据开发作业目录默认折叠</Link>
+                </li>
+                <li>
+                  <Link>合并官网文档仓库源码至主仓库的 docs 目录下</Link>
+                </li>
+                <li>
+                  <Link>添加 Flink 1.15 文档</Link>
+                </li>
+                <li>
+                  <Link>整库同步文档修复</Link>
+                </li>
+                <li>
+                  <Link>添加导入导出作业的文档</Link>
+                </li>
+                <li>
+                  <Link>优化多个文档</Link>
+                </li>
+                <li>
+                  <Link>更新主页和基础信息的文档</Link>
+                </li>
+                <li>
+                  <Link>新增flink扩展redis的实践分享</Link>
+                </li>
+                <li>
+                  <Link>优化部署文档</Link>
+                </li>
+                <li>
+                  <Link>修复 yarn-application 任务分隔符错误</Link>
+                </li>
+                <li>
+                  <Link>升级 Flink 1.15 版本为 1.15.2</Link>
+                </li>
+                <li>
+                  <Link>优化 SqlServer 字段类型查询</Link>
+                </li>
+                <li>
+                  <Link>修复重命名作业后保存作业失败</Link>
+                </li>
+                <li>
+                  <Link>修复提交历史的第二次弹框时无内容</Link>
+                </li>
+                <li>
+                  <Link>新增数据开发任务信息日志详情按钮</Link>
                 </li>
               </ul>
             </Paragraph>

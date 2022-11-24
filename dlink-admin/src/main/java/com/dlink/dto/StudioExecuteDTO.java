@@ -17,20 +17,21 @@
  *
  */
 
-
 package com.dlink.dto;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.job.JobConfig;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.HashMap;
-import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * StudioExecuteDTO
@@ -40,6 +41,7 @@ import java.util.Map;
  */
 @Getter
 @Setter
+@Slf4j
 public class StudioExecuteDTO extends AbstractStatementDTO {
     // RUN_MODE
     private String type;
@@ -57,6 +59,7 @@ public class StudioExecuteDTO extends AbstractStatementDTO {
     private Integer jarId;
     private String jobName;
     private Integer taskId;
+    private Integer id;
     private Integer maxRowNum;
     private Integer checkPoint;
     private Integer parallelism;
@@ -67,10 +70,9 @@ public class StudioExecuteDTO extends AbstractStatementDTO {
 
     public JobConfig getJobConfig() {
         Map<String, String> config = new HashMap<>();
-        JsonNode paras = null;
         if (Asserts.isNotNullString(configJson)) {
             try {
-                paras = mapper.readTree(configJson);
+                JsonNode paras = mapper.readTree(configJson);
                 paras.forEach((JsonNode node) -> {
                         if (!node.isNull()) {
                             config.put(node.get("key").asText(), node.get("value").asText());
@@ -78,12 +80,16 @@ public class StudioExecuteDTO extends AbstractStatementDTO {
                     }
                 );
             } catch (JsonProcessingException e) {
-                e.printStackTrace();
+                log.error(e.getMessage());
             }
         }
         return new JobConfig(
             type, useResult, useChangeLog, useAutoCancel, useSession, session, clusterId,
             clusterConfigurationId, jarId, taskId, jobName, isFragment(), statementSet, batchModel,
-            maxRowNum, checkPoint, parallelism, savePointStrategy, savePointPath, config);
+            maxRowNum, checkPoint, parallelism, savePointStrategy, savePointPath, getVariables(), config);
+    }
+
+    public Integer getTaskId() {
+        return taskId == null ? getId() : taskId;
     }
 }

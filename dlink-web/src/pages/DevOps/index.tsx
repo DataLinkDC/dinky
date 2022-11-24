@@ -18,18 +18,20 @@
  */
 
 
-import ProCard, { StatisticCard } from '@ant-design/pro-card';
-import type { StatisticProps } from '@ant-design/pro-card';
+import type {StatisticProps} from '@ant-design/pro-card';
+import ProCard, {StatisticCard} from '@ant-design/pro-card';
 import JobInstanceTable from "./JobInstanceTable/index";
-import {getStatusCount,queryOneClickOperatingTaskStatus} from "@/pages/DevOps/service";
+import {getStatusCount, queryOneClickOperatingTaskStatus} from "@/pages/DevOps/service";
 import {useEffect, useState} from "react";
 import {StatusCount} from "@/pages/DevOps/data";
 import {JOB_STATUS} from "@/components/Common/JobStatus";
 import {Switch} from "antd";
+import {l} from "@/utils/intl";
 
-const { Statistic } = StatisticCard;
+const {Statistic} = StatisticCard;
 
 const DevOps = () => {
+
 
   const [isHistory, setIsHistory] = useState<boolean>(false);
 
@@ -38,22 +40,26 @@ const DevOps = () => {
   };
 
   const renderSwitch = () => {
-    return (<Switch checkedChildren="历史" unCheckedChildren="实例" onChange={handleHistorySwicthChange}/>);
+    return (
+      <Switch checkedChildren={l('pages.datastudio.label.history')}
+              unCheckedChildren={l('pages.devops.lable.instance')}
+              onChange={handleHistorySwicthChange}/>);
   };
 
+
   const statusCountDefault = [
-    { key: '', title: renderSwitch(), value: 0, total: true },
-    { key: JOB_STATUS.CREATED, status: 'default', title: '已创建', value: 0 },
-    { key: JOB_STATUS.INITIALIZING, status: 'default', title: '初始化', value: 0 },
-    { key: JOB_STATUS.RUNNING, status: 'success', title: '运行中', value: 0 },
-    { key: JOB_STATUS.FINISHED, status: 'processing', title: '已完成', value: 0 },
-    { key: JOB_STATUS.FAILING, status: 'error', title: '异常中', value: 0 },
-    { key: JOB_STATUS.FAILED, status: 'error', title: '已异常', value: 0 },
-    { key: JOB_STATUS.SUSPENDED, status: 'warning', title: '已暂停', value: 0 },
-    { key: JOB_STATUS.CANCELLING, status: 'warning', title: '停止中', value: 0 },
-    { key: JOB_STATUS.CANCELED, status: 'warning', title: '已停止', value: 0 },
-    { key: JOB_STATUS.RESTARTING, status: 'default', title: '重启中', value: 0 },
-    { key: JOB_STATUS.UNKNOWN, status: 'default', title: '未知', value: 0 },
+    {key: '', title: renderSwitch(), value: 0, total: true},
+    {key: JOB_STATUS.CREATED, status: 'default', title: l('pages.devops.jobstatus.CREATED'), value: 0},
+    {key: JOB_STATUS.INITIALIZING, status: 'default', title: l('pages.devops.jobstatus.INITIALIZING'), value: 0},
+    {key: JOB_STATUS.RUNNING, status: 'success', title: l('pages.devops.jobstatus.RUNNING'), value: 0},
+    {key: JOB_STATUS.FINISHED, status: 'processing', title: l('pages.devops.jobstatus.FINISHED'), value: 0},
+    {key: JOB_STATUS.FAILING, status: 'error', title: l('pages.devops.jobstatus.FAILING'), value: 0},
+    {key: JOB_STATUS.FAILED, status: 'error', title: l('pages.devops.jobstatus.FAILED'), value: 0},
+    {key: JOB_STATUS.SUSPENDED, status: 'warning', title: l('pages.devops.jobstatus.SUSPENDED'), value: 0},
+    {key: JOB_STATUS.CANCELLING, status: 'warning', title: l('pages.devops.jobstatus.CANCELLING'), value: 0},
+    {key: JOB_STATUS.CANCELED, status: 'warning', title: l('pages.devops.jobstatus.CANCELED'), value: 0},
+    {key: JOB_STATUS.RESTARTING, status: 'default', title: l('pages.devops.jobstatus.RESTARTING'), value: 0},
+    {key: JOB_STATUS.UNKNOWN, status: 'default', title: l('pages.devops.jobstatus.UNKNOWN'), value: 0},
   ];
   const [statusCount, setStatusCount] = useState<any[]>(statusCountDefault);
   const [statusHistoryCount, setStatusHistoryCount] = useState<any[]>(statusCountDefault);
@@ -63,40 +69,150 @@ const DevOps = () => {
   const refreshStatusCount = () => {
     const res = getStatusCount();
     const taskStatusRes = queryOneClickOperatingTaskStatus();
-    taskStatusRes.then((result)=>{
+    taskStatusRes.then((result) => {
       setTaskStatus(result)
     })
-    res.then((result)=>{
+    res.then((result) => {
       const statusHistoryCountData: StatusCount = result.datas.history;
       const historyItems: any = [
-        { key: '', title: renderSwitch(), value: statusHistoryCountData.all, total: true },
-        { key: JOB_STATUS.CREATED, status: 'default', title: '已创建', value: statusHistoryCountData.created },
-        { key: JOB_STATUS.INITIALIZING, status: 'default', title: '初始化', value: statusHistoryCountData.initializing },
-        { key: JOB_STATUS.RUNNING, status: 'success', title: '运行中', value: statusHistoryCountData.running },
-        { key: JOB_STATUS.FINISHED, status: 'processing', title: '已完成', value: statusHistoryCountData.finished },
-        { key: JOB_STATUS.FAILING, status: 'error', title: '异常中', value: statusHistoryCountData.failing },
-        { key: JOB_STATUS.FAILED, status: 'error', title: '已异常', value: statusHistoryCountData.failed },
-        { key: JOB_STATUS.SUSPENDED, status: 'warning', title: '已暂停', value: statusHistoryCountData.suspended },
-        { key: JOB_STATUS.CANCELLING, status: 'warning', title: '停止中', value: statusHistoryCountData.cancelling },
-        { key: JOB_STATUS.CANCELED, status: 'warning', title: '停止', value: statusHistoryCountData.canceled },
-        { key: JOB_STATUS.RESTARTING, status: 'default', title: '重启中', value: statusHistoryCountData.restarting },
-        { key: JOB_STATUS.UNKNOWN, status: 'default', title: '未知', value: statusHistoryCountData.unknown },
+        {key: '', title: renderSwitch(), value: statusHistoryCountData.all, total: true},
+        {
+          key: JOB_STATUS.CREATED,
+          status: 'default',
+          title: l('pages.devops.jobstatus.CREATED'),
+          value: statusHistoryCountData.created
+        },
+        {
+          key: JOB_STATUS.INITIALIZING,
+          status: 'default',
+          title: l('pages.devops.jobstatus.INITIALIZING'),
+          value: statusHistoryCountData.initializing
+        },
+        {
+          key: JOB_STATUS.RUNNING,
+          status: 'success',
+          title: l('pages.devops.jobstatus.RUNNING'),
+          value: statusHistoryCountData.running
+        },
+        {
+          key: JOB_STATUS.FINISHED,
+          status: 'processing',
+          title: l('pages.devops.jobstatus.FINISHED'),
+          value: statusHistoryCountData.finished
+        },
+        {
+          key: JOB_STATUS.FAILING,
+          status: 'error',
+          title: l('pages.devops.jobstatus.FAILING'),
+          value: statusHistoryCountData.failing
+        },
+        {
+          key: JOB_STATUS.FAILED,
+          status: 'error',
+          title: l('pages.devops.jobstatus.FAILED'),
+          value: statusHistoryCountData.failed
+        },
+        {
+          key: JOB_STATUS.SUSPENDED,
+          status: 'warning',
+          title: l('pages.devops.jobstatus.SUSPENDED'),
+          value: statusHistoryCountData.suspended
+        },
+        {
+          key: JOB_STATUS.CANCELLING,
+          status: 'warning',
+          title: l('pages.devops.jobstatus.CANCELLING'),
+          value: statusHistoryCountData.cancelling
+        },
+        {
+          key: JOB_STATUS.CANCELED,
+          status: 'warning',
+          title: l('pages.devops.jobstatus.CANCELED'),
+          value: statusHistoryCountData.canceled
+        },
+        {
+          key: JOB_STATUS.RESTARTING,
+          status: 'default',
+          title: l('pages.devops.jobstatus.RESTARTING'),
+          value: statusHistoryCountData.restarting
+        },
+        {
+          key: JOB_STATUS.UNKNOWN,
+          status: 'default',
+          title: l('pages.devops.jobstatus.UNKNOWN'),
+          value: statusHistoryCountData.unknown
+        },
       ];
       setStatusHistoryCount(historyItems);
       const statusCountData: StatusCount = result.datas.instance;
       const items: any = [
-        { key: '', title: renderSwitch(), value: statusCountData.all, total: true },
-        { key: JOB_STATUS.CREATED, status: 'default', title: '已创建', value: statusCountData.created },
-        { key: JOB_STATUS.INITIALIZING, status: 'default', title: '初始化', value: statusCountData.initializing },
-        { key: JOB_STATUS.RUNNING, status: 'success', title: '运行中', value: statusCountData.running },
-        { key: JOB_STATUS.FINISHED, status: 'processing', title: '已完成', value: statusCountData.finished },
-        { key: JOB_STATUS.FAILING, status: 'error', title: '异常中', value: statusCountData.failing },
-        { key: JOB_STATUS.FAILED, status: 'error', title: '已异常', value: statusCountData.failed },
-        { key: JOB_STATUS.SUSPENDED, status: 'warning', title: '已暂停', value: statusCountData.suspended },
-        { key: JOB_STATUS.CANCELLING, status: 'warning', title: '停止中', value: statusCountData.cancelling },
-        { key: JOB_STATUS.CANCELED, status: 'warning', title: '停止', value: statusCountData.canceled },
-        { key: JOB_STATUS.RESTARTING, status: 'default', title: '重启中', value: statusCountData.restarting },
-        { key: JOB_STATUS.UNKNOWN, status: 'default', title: '未知', value: statusCountData.unknown },
+        {key: '', title: renderSwitch(), value: statusCountData.all, total: true},
+        {
+          key: JOB_STATUS.CREATED,
+          status: 'default',
+          title: l('pages.devops.jobstatus.CREATED'),
+          value: statusCountData.created
+        },
+        {
+          key: JOB_STATUS.INITIALIZING,
+          status: 'default',
+          title: l('pages.devops.jobstatus.INITIALIZING'),
+          value: statusCountData.initializing
+        },
+        {
+          key: JOB_STATUS.RUNNING,
+          status: 'success',
+          title: l('pages.devops.jobstatus.RUNNING'),
+          value: statusCountData.running
+        },
+        {
+          key: JOB_STATUS.FINISHED,
+          status: 'processing',
+          title: l('pages.devops.jobstatus.FINISHED'),
+          value: statusCountData.finished
+        },
+        {
+          key: JOB_STATUS.FAILING,
+          status: 'error',
+          title: l('pages.devops.jobstatus.FAILING'),
+          value: statusCountData.failing
+        },
+        {
+          key: JOB_STATUS.FAILED,
+          status: 'error',
+          title: l('pages.devops.jobstatus.FAILED'),
+          value: statusCountData.failed
+        },
+        {
+          key: JOB_STATUS.SUSPENDED,
+          status: 'warning',
+          title: l('pages.devops.jobstatus.SUSPENDED'),
+          value: statusCountData.suspended
+        },
+        {
+          key: JOB_STATUS.CANCELLING,
+          status: 'warning',
+          title: l('pages.devops.jobstatus.CANCELLING'),
+          value: statusCountData.cancelling
+        },
+        {
+          key: JOB_STATUS.CANCELED,
+          status: 'warning',
+          title: l('pages.devops.jobstatus.CANCELED'),
+          value: statusCountData.canceled
+        },
+        {
+          key: JOB_STATUS.RESTARTING,
+          status: 'default',
+          title: l('pages.devops.jobstatus.RESTARTING'),
+          value: statusCountData.restarting
+        },
+        {
+          key: JOB_STATUS.UNKNOWN,
+          status: 'default',
+          title: l('pages.devops.jobstatus.UNKNOWN'),
+          value: statusCountData.unknown
+        },
       ];
       setStatusCount(items);
     });
@@ -104,7 +220,7 @@ const DevOps = () => {
 
   useEffect(() => {
     refreshStatusCount();
-    let dataPolling = setInterval(refreshStatusCount,3000);
+    let dataPolling = setInterval(refreshStatusCount, 3000);
     return () => {
       clearInterval(dataPolling);
     };
@@ -118,9 +234,9 @@ const DevOps = () => {
         },
       }}
     >
-      {(isHistory?statusHistoryCount:statusCount).map((item) => (
+      {(isHistory ? statusHistoryCount : statusCount).map((item) => (
         <ProCard.TabPane
-          style={{ width: '100%' }}
+          style={{width: '100%'}}
           key={item.key}
           tab={
             <Statistic
@@ -128,7 +244,7 @@ const DevOps = () => {
               title={item.title}
               value={item.value}
               status={item.status as StatisticProps['status']}
-              style={{ width: 80, borderRight: item.total ? '1px solid #f0f0f0' : undefined }}
+              style={{width: 80, borderRight: item.total ? '1px solid #f0f0f0' : undefined}}
             />
           }
         >

@@ -17,18 +17,18 @@
  *
  */
 
-
 package com.dlink.alert.feishu;
 
 import com.dlink.alert.AlertMsg;
 import com.dlink.alert.AlertResult;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @Author: zhumingye
@@ -54,11 +54,10 @@ public class FeiShuSenderTest {
         alertMsg.setJobStartTime("2018-08-06 10:31:34.0");
         alertMsg.setJobEndTime("2018-08-06 10:31:49.0");
         alertMsg.setJobDuration("23 Seconds");
-        String linkUrl = "[跳转至该任务的FlinkWeb](http://cdh1:8081/#/job/"+uuid+"/overview)";
+        String linkUrl = "[跳转至该任务的FlinkWeb](http://cdh1:8081/#/job/" + uuid + "/overview)";
         alertMsg.setLinkUrl(linkUrl);
-        String exceptionUrl = "[点击查看该任务的异常日志](http://cdh1:8081/#/job/"+uuid+"/exceptions)";
+        String exceptionUrl = "[点击查看该任务的异常日志](http://cdh1:8081/#/job/" + uuid + "/exceptions)";
         alertMsg.setExceptionUrl(exceptionUrl);
-
 
         feiShuConfig.put(FeiShuConstants.WEB_HOOK, "https://open.feishu.cn/open-apis/bot/v2/hook/aea3cd7f-75b4-45cd-abea-2c0dc808f2a9");
         feiShuConfig.put(FeiShuConstants.KEY_WORD, "Dinky 飞书WebHook 告警测试");

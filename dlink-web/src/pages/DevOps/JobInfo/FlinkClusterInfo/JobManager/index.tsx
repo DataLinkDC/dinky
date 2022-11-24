@@ -28,6 +28,7 @@ const {TabPane} = Tabs;
 
 const JobManagerInfo = (props: any) => {
   const {job} = props;
+
   const [jobManager, setJobManager] = useState<JobManagerConfiguration>();
 
   const refreshJobManagerInfo = () => {

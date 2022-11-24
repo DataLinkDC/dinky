@@ -17,13 +17,16 @@
  *
  */
 
-
 package com.dlink.cdc;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.executor.CustomTableEnvironment;
-import com.dlink.model.*;
+import com.dlink.model.Column;
+import com.dlink.model.FlinkCDCConfig;
+import com.dlink.model.Schema;
+import com.dlink.model.Table;
 import com.dlink.utils.JSONUtil;
+
 import org.apache.flink.api.common.functions.FilterFunction;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.functions.MapFunction;
@@ -32,19 +35,41 @@ import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.table.data.*;
+import org.apache.flink.table.data.DecimalData;
+import org.apache.flink.table.data.GenericRowData;
+import org.apache.flink.table.data.RowData;
+import org.apache.flink.table.data.StringData;
+import org.apache.flink.table.data.TimestampData;
 import org.apache.flink.table.operations.ModifyOperation;
-import org.apache.flink.table.types.logical.*;
+import org.apache.flink.table.types.logical.BigIntType;
+import org.apache.flink.table.types.logical.BooleanType;
+import org.apache.flink.table.types.logical.DateType;
+import org.apache.flink.table.types.logical.DecimalType;
+import org.apache.flink.table.types.logical.DoubleType;
+import org.apache.flink.table.types.logical.FloatType;
+import org.apache.flink.table.types.logical.IntType;
+import org.apache.flink.table.types.logical.LogicalType;
+import org.apache.flink.table.types.logical.SmallIntType;
+import org.apache.flink.table.types.logical.TimestampType;
+import org.apache.flink.table.types.logical.TinyIntType;
+import org.apache.flink.table.types.logical.VarBinaryType;
+import org.apache.flink.table.types.logical.VarCharType;
 import org.apache.flink.types.RowKind;
 import org.apache.flink.util.Collector;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.flink.util.OutputTag;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * AbstractCDCBuilder
@@ -52,7 +77,7 @@ import java.util.*;
  * @author wenmo
  * @since 2022/4/12 21:28
  **/
-public abstract class AbstractSinkBuilder {
+public abstract class AbstractSinkBuilder implements SinkBuilder {
 
     protected static final Logger logger = LoggerFactory.getLogger(AbstractSinkBuilder.class);
 
@@ -78,8 +103,8 @@ public abstract class AbstractSinkBuilder {
         Properties properties = new Properties();
         Map<String, String> sink = config.getSink();
         for (Map.Entry<String, String> entry : sink.entrySet()) {
-            if (Asserts.isNotNullString(entry.getKey()) && Asserts.isNotNullString(entry.getValue())) {
-                properties.setProperty(entry.getKey(), entry.getValue());
+            if (Asserts.isNotNullString(entry.getKey()) && entry.getKey().startsWith("properties") && Asserts.isNotNullString(entry.getValue())) {
+                properties.setProperty(entry.getKey().replace("properties.",""), entry.getValue());
             }
         }
         return properties;
@@ -109,6 +134,14 @@ public abstract class AbstractSinkBuilder {
                     && schemaName.equals(source.get(schemaFieldName).toString());
             }
         });
+    }
+
+    protected DataStream<Map> shunt(
+            SingleOutputStreamOperator<Map> processOperator,
+            Table table,
+            OutputTag<Map> tag) {
+
+        return processOperator.getSideOutput(tag);
     }
 
     protected DataStream<RowData> buildRowData(
@@ -157,9 +190,10 @@ public abstract class AbstractSinkBuilder {
                                 }
                                 out.collect(uagenericRowData);
                                 break;
+                            default:
                         }
                     } catch (Exception e) {
-                        logger.error("SchameTable: {} - Row: {} - Exception: {}", schemaTableName, JSONUtil.toJsonString(value), e.getCause().getMessage());
+                        logger.error("SchameTable: {} - Row: {} - Exception:", schemaTableName, JSONUtil.toJsonString(value), e);
                         throw e;
                     }
                 }
@@ -205,12 +239,12 @@ public abstract class AbstractSinkBuilder {
     protected void buildColumn(List<String> columnNameList, List<LogicalType> columnTypeList, List<Column> columns) {
         for (Column column : columns) {
             columnNameList.add(column.getName());
-            columnTypeList.add(getLogicalType(column.getJavaType()));
+            columnTypeList.add(getLogicalType(column));
         }
     }
 
-    public LogicalType getLogicalType(ColumnType columnType) {
-        switch (columnType) {
+    public LogicalType getLogicalType(Column column) {
+        switch (column.getJavaType()) {
             case STRING:
                 return new VarCharType();
             case BOOLEAN:
@@ -232,10 +266,10 @@ public abstract class AbstractSinkBuilder {
             case JAVA_LANG_DOUBLE:
                 return new DoubleType();
             case DECIMAL:
-                if (columnType.getPrecision() == null || columnType.getPrecision() == 0) {
-                    return new DecimalType(38, columnType.getScale());
+                if (column.getPrecision() == null || column.getPrecision() == 0) {
+                    return new DecimalType(38, column.getScale());
                 } else {
-                    return new DecimalType(columnType.getPrecision(), columnType.getScale());
+                    return new DecimalType(column.getPrecision(), column.getScale());
                 }
             case INT:
             case INTEGER:
@@ -273,7 +307,7 @@ public abstract class AbstractSinkBuilder {
         }
     }
 
-    protected String getSinkSchemaName(Table table) {
+    public String getSinkSchemaName(Table table) {
         String schemaName = table.getSchema();
         if (config.getSink().containsKey("sink.db")) {
             schemaName = config.getSink().get("sink.db");
@@ -281,7 +315,7 @@ public abstract class AbstractSinkBuilder {
         return schemaName;
     }
 
-    protected String getSinkTableName(Table table) {
+    public String getSinkTableName(Table table) {
         String tableName = table.getName();
         if (config.getSink().containsKey("table.prefix.schema")) {
             if (Boolean.valueOf(config.getSink().get("table.prefix.schema"))) {

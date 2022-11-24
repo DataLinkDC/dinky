@@ -1,3 +1,22 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 export default {
   'app.request.error': '请求错误',
   'app.request.200': '服务器成功返回请求的数据。',
@@ -16,4 +35,13 @@ export default {
   'app.request.502': '网关错误。',
   'app.request.503': '服务不可用，服务器暂时过载或维护。',
   'app.request.504': '网关超时。',
+
+  'app.request.failed': '请求失败，请重试',
+  'app.request.test.connection': '正在测试连接',
+  'app.request.heartbeat.connection': '正在检测心跳',
+  'app.request.heartbeat.connection.success': '数据源心跳正常，检测时间为: {time}',
+  'app.request.heartbeat.connection.failed': '数据源心跳异常，检测时间为: {time}',
+  'app.request.upload.failed': '上传失败。',
+  'app.request.update.setting.success': '修改配置成功！',
+  'app.request.test.alert.msg':'正在发送测试告警信息',
 };

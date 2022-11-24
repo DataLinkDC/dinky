@@ -17,13 +17,14 @@
  *
  */
 
-
 package com.dlink.cdc.doris;
 
+import com.dlink.assertion.Asserts;
 import com.dlink.cdc.AbstractSinkBuilder;
 import com.dlink.cdc.SinkBuilder;
 import com.dlink.model.FlinkCDCConfig;
 import com.dlink.model.Table;
+
 import org.apache.doris.flink.cfg.DorisExecutionOptions;
 import org.apache.doris.flink.cfg.DorisOptions;
 import org.apache.doris.flink.cfg.DorisReadOptions;
@@ -36,6 +37,7 @@ import org.apache.flink.table.types.logical.LogicalType;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * DorisSinkBuilder
@@ -43,9 +45,9 @@ import java.util.Map;
  * @author wenmo
  * @since 2022/4/20 19:20
  **/
-public class DorisSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, Serializable {
+public class DorisSinkBuilder extends AbstractSinkBuilder implements Serializable {
 
-    private final static String KEY_WORD = "datastream-doris";
+    private static final String KEY_WORD = "datastream-doris";
     private static final long serialVersionUID = 8330362249137471854L;
 
     public DorisSinkBuilder() {
@@ -67,11 +69,11 @@ public class DorisSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
 
     @Override
     public void addSink(
-        StreamExecutionEnvironment env,
-        DataStream<RowData> rowDataDataStream,
-        Table table,
-        List<String> columnNameList,
-        List<LogicalType> columnTypeList) {
+                        StreamExecutionEnvironment env,
+                        DataStream<RowData> rowDataDataStream,
+                        Table table,
+                        List<String> columnNameList,
+                        List<LogicalType> columnTypeList) {
 
         DorisExecutionOptions.Builder dorisExecutionOptionsBuilder = DorisExecutionOptions.builder();
         Map<String, String> sink = config.getSink();
@@ -93,16 +95,28 @@ public class DorisSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
         final LogicalType[] columnTypes = columnTypeList.toArray(new LogicalType[columnTypeList.size()]);
 
         rowDataDataStream.addSink(
-            DorisSink.sink(
-                columnNames,
-                columnTypes,
-                DorisReadOptions.builder().build(),
-                dorisExecutionOptionsBuilder.build(),
-                DorisOptions.builder()
-                    .setFenodes(config.getSink().get("fenodes"))
-                    .setTableIdentifier(getSinkSchemaName(table) + "." + getSinkTableName(table))
-                    .setUsername(config.getSink().get("username"))
-                    .setPassword(config.getSink().get("password")).build()
-            ));
+                DorisSink.sink(
+                        columnNames,
+                        columnTypes,
+                        DorisReadOptions.builder().build(),
+                        dorisExecutionOptionsBuilder.build(),
+                        DorisOptions.builder()
+                                .setFenodes(config.getSink().get("fenodes"))
+                                .setTableIdentifier(getSinkSchemaName(table) + "." + getSinkTableName(table))
+                                .setUsername(config.getSink().get("username"))
+                                .setPassword(config.getSink().get("password")).build()));
+    }
+
+    @Override
+    protected Properties getProperties() {
+        Properties properties = new Properties();
+        Map<String, String> sink = config.getSink();
+        for (Map.Entry<String, String> entry : sink.entrySet()) {
+            if (Asserts.isNotNullString(entry.getKey()) && entry.getKey().startsWith("sink.properties")
+                    && Asserts.isNotNullString(entry.getValue())) {
+                properties.setProperty(entry.getKey().replace("sink.properties.", ""), entry.getValue());
+            }
+        }
+        return properties;
     }
 }

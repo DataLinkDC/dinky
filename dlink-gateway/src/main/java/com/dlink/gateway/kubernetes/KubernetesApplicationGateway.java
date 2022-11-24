@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.gateway.kubernetes;
 
 import com.dlink.assertion.Asserts;
@@ -26,16 +25,20 @@ import com.dlink.gateway.config.AppConfig;
 import com.dlink.gateway.exception.GatewayException;
 import com.dlink.gateway.result.GatewayResult;
 import com.dlink.gateway.result.KubernetesResult;
+import com.dlink.model.SystemConfiguration;
 import com.dlink.utils.LogUtil;
 
 import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.deployment.application.ApplicationConfiguration;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.client.program.ClusterClientProvider;
+import org.apache.flink.configuration.JobManagerOptions;
 import org.apache.flink.configuration.PipelineOptions;
+import org.apache.flink.configuration.TaskManagerOptions;
 import org.apache.flink.kubernetes.KubernetesClusterDescriptor;
 import org.apache.flink.runtime.client.JobStatusMessage;
 import org.apache.flink.runtime.jobgraph.JobGraph;
+import org.apache.http.util.TextUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -67,18 +70,30 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
         KubernetesResult result = KubernetesResult.build(getType());
         AppConfig appConfig = config.getAppConfig();
         configuration.set(PipelineOptions.JARS, Collections.singletonList(appConfig.getUserJarPath()));
-        ClusterSpecification clusterSpecification = new ClusterSpecification.ClusterSpecificationBuilder().createClusterSpecification();
         String[] userJarParas = appConfig.getUserJarParas();
         if (Asserts.isNull(userJarParas)) {
             userJarParas = new String[0];
         }
         ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration(userJarParas, appConfig.getUserJarMainAppClass());
         KubernetesClusterDescriptor kubernetesClusterDescriptor = new KubernetesClusterDescriptor(configuration, client);
+
+        ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder = new ClusterSpecification.ClusterSpecificationBuilder();
+        if (configuration.contains(JobManagerOptions.TOTAL_PROCESS_MEMORY)) {
+            clusterSpecificationBuilder.setMasterMemoryMB(configuration.get(JobManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes());
+        }
+        if (configuration.contains(TaskManagerOptions.TOTAL_PROCESS_MEMORY)) {
+            clusterSpecificationBuilder.setTaskManagerMemoryMB(configuration.get(TaskManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes());
+        }
+        if (configuration.contains(TaskManagerOptions.NUM_TASK_SLOTS)) {
+            clusterSpecificationBuilder.setSlotsPerTaskManager(configuration.get(TaskManagerOptions.NUM_TASK_SLOTS)).createClusterSpecification();
+        }
+
         try {
-            ClusterClientProvider<String> clusterClientProvider = kubernetesClusterDescriptor.deployApplicationCluster(clusterSpecification, applicationConfiguration);
+            ClusterClientProvider<String> clusterClientProvider = kubernetesClusterDescriptor.deployApplicationCluster(
+                clusterSpecificationBuilder.createClusterSpecification(), applicationConfiguration);
             ClusterClient<String> clusterClient = clusterClientProvider.getClusterClient();
             Collection<JobStatusMessage> jobStatusMessages = clusterClient.listJobs().get();
-            int counts = 10;
+            int counts = SystemConfiguration.getInstances().getJobIdWait();
             while (jobStatusMessages.size() == 0 && counts > 0) {
                 Thread.sleep(1000);
                 counts--;
@@ -94,8 +109,17 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
                 }
                 result.setJids(jids);
             }
-            String clusterId = clusterClient.getClusterId();
-            result.setClusterId(clusterId);
+            String jobId = "";
+            //application mode only have one job, so we can get any one to be jobId
+            for (JobStatusMessage jobStatusMessage : jobStatusMessages) {
+                jobId = jobStatusMessage.getJobId().toHexString();
+            }
+            //if JobStatusMessage not have job id, use timestamp
+            //and... it`s maybe wrong with submit
+            if (TextUtils.isEmpty(jobId)) {
+                jobId = "unknown" + System.currentTimeMillis();
+            }
+            result.setClusterId(jobId);
             result.setWebURL(clusterClient.getWebInterfaceURL());
             result.success();
         } catch (Exception e) {

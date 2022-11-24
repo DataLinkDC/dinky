@@ -23,6 +23,7 @@ import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import styles from "./index.less";
 import React, {useEffect} from "react";
+import {l} from "@/utils/intl";
 
 const {Option} = Select;
 
@@ -41,7 +42,7 @@ export type PieChartProps = {
 
 const PieChartSetting: React.FC<PieChartProps> = (props) => {
 
-  const {current,column,onChange: handleChange,dispatch} = props;
+  const {current, column, onChange: handleChange, dispatch} = props;
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -51,12 +52,12 @@ const PieChartSetting: React.FC<PieChartProps> = (props) => {
 
   const onValuesChange = (change: any, all: any) => {
     let config: PieChartConfig = {
-      angleField: all.angleField?all.angleField:column[0],
-      colorField: all.colorField?all.colorField:column.length>1?column[1]:column[0],
+      angleField: all.angleField ? all.angleField : column[0],
+      colorField: all.colorField ? all.colorField : column.length > 1 ? column[1] : column[0],
       label: {
         type: 'inner',
         offset: '-30%',
-        content: ({ percent }) => `${(percent * 100).toFixed(0)}%`,
+        content: ({percent}) => `${(percent * 100).toFixed(0)}%`,
         style: {
           fontSize: 14,
           textAlign: 'center',
@@ -91,27 +92,27 @@ const PieChartSetting: React.FC<PieChartProps> = (props) => {
         <Row>
           <Col span={12}>
             <Form.Item
-              label="弧轴" className={styles.form_item} name="angleField"
+              label={l('chart.angle')} className={styles.form_item} name="angleField"
             >
-              {column&&column.length > 0 ? (
-                  <Select allowClear showSearch
-                    defaultValue={column[0]} value={column[0]}>
-                    {getColumnOptions()}
-                  </Select>):(<Select allowClear showSearch>
-                {column&&getColumnOptions()}
-                  </Select>)}
+              {column && column.length > 0 ? (
+                <Select allowClear showSearch
+                        defaultValue={column[0]} value={column[0]}>
+                  {getColumnOptions()}
+                </Select>) : (<Select allowClear showSearch>
+                {column && getColumnOptions()}
+              </Select>)}
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item
-              label="颜色" className={styles.form_item} name="colorField"
+              label={l('chart.color')} className={styles.form_item} name="colorField"
             >
-              {column&&column.length > 1 ? (
+              {column && column.length > 1 ? (
                 <Select allowClear showSearch
-                  defaultValue={column[1]} value={column[1]}>
+                        defaultValue={column[1]} value={column[1]}>
                   {getColumnOptions()}
-                </Select>):(<Select allowClear showSearch>
-                {column&&getColumnOptions()}
+                </Select>) : (<Select allowClear showSearch>
+                {column && getColumnOptions()}
               </Select>)}
             </Form.Item>
           </Col>
@@ -121,7 +122,7 @@ const PieChartSetting: React.FC<PieChartProps> = (props) => {
   );
 };
 
-export default connect(({ Studio }: { Studio: StateType }) => ({
+export default connect(({Studio}: { Studio: StateType }) => ({
   current: Studio.current,
   result: Studio.result,
 }))(PieChartSetting);

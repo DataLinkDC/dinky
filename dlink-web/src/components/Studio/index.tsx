@@ -18,29 +18,36 @@
  */
 
 
-import React, {useEffect, useRef, useState, useCallback} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {connect} from "umi";
 import styles from './index.less';
-import {} from "@ant-design/icons";
 import StudioMenu from "./StudioMenu";
-import {Row, Col, Card, Form} from "antd";
+import {Card, Col, Form, Row} from "antd";
 import StudioTabs from "./StudioTabs";
-import StudioHome from "./StudioHome";
 import {StateType} from "@/pages/DataStudio/model";
 import StudioConsole from "./StudioConsole";
 import StudioLeftTool from "./StudioLeftTool";
 import StudioRightTool from "./StudioRightTool";
 import {
-  listSession, showCluster, showDataBase, getFillAllByVersion,
-  showClusterConfiguration, showSessionCluster, showJars, showEnv, showAlertInstance, showAlertGroup
+  getFillAllByVersion,
+  listSession,
+  showAlertGroup,
+  showAlertInstance,
+  showCluster,
+  showClusterConfiguration,
+  showDataBase,
+  showEnv,
+  showJars,
+  showSessionCluster
 } from "@/components/Studio/StudioEvent/DDL";
-import {loadSettings} from "@/pages/Settings/function";
 import DraggleLayout from "@/components/DraggleLayout";
 import DraggleVerticalLayout from "@/components/DraggleLayout/DraggleVerticalLayout";
+import {loadSettings} from "@/pages/SettingCenter/FlinkSettings/function";
+import {l} from "@/utils/intl";
 
 const Studio = (props: any) => {
 
-  const {isFullScreen,rightClickMenu, toolHeight, toolLeftWidth,toolRightWidth,dispatch} = props;
+  const {isFullScreen, rightClickMenu, toolHeight, toolLeftWidth, toolRightWidth, dispatch} = props;
   const [form] = Form.useForm();
   const VIEW = {
     leftToolWidth: 300,
@@ -118,7 +125,7 @@ const Studio = (props: any) => {
             <DraggleLayout
               containerWidth={size.width}
               containerHeight={toolHeight}
-              min={VIEW.leftMargin+VIEW.midMargin}
+              min={VIEW.leftMargin + VIEW.midMargin}
               max={size.width - VIEW.rightMargin}
               initLeftWidth={size.width - toolRightWidth}
               isLeft={false}
@@ -157,7 +164,7 @@ const Studio = (props: any) => {
                   }}/>
                 </Col>
                 <Col>
-                  {!isFullScreen?<StudioTabs width={size.width - toolRightWidth - toolLeftWidth}/>:undefined}
+                  {!isFullScreen ? <StudioTabs width={size.width - toolRightWidth - toolLeftWidth}/> : undefined}
                 </Col>
               </DraggleLayout>
               <Col id='StudioRightTool' className={styles["vertical-tabs"]}>

@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.trans.ddl;
 
 import com.dlink.assertion.Asserts;
@@ -25,6 +24,7 @@ import com.dlink.executor.Executor;
 import com.dlink.parser.SingleSqlParserFactory;
 import com.dlink.trans.AbstractOperation;
 import com.dlink.trans.Operation;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.table.api.TableResult;
@@ -41,7 +41,7 @@ import java.util.Map;
  **/
 public class SetOperation extends AbstractOperation implements Operation {
 
-    private String KEY_WORD = "SET";
+    private static final String KEY_WORD = "SET";
 
     public SetOperation() {
     }
@@ -68,6 +68,7 @@ public class SetOperation extends AbstractOperation implements Operation {
                 return null;
             }
         } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
         Map<String, List<String>> map = SingleSqlParserFactory.generateParser(statement);
         if (Asserts.isNotNullMap(map) && map.size() == 2) {

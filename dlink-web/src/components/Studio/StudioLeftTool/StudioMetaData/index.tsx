@@ -18,37 +18,52 @@
  */
 
 
-import {Button, Empty, Modal, Select, Tabs, Tag, Tree} from "antd";
+import {Button, Col, Empty, Modal, Row, Select, Spin, Tabs, Tag, Tree} from "antd";
 import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import React, {useState} from "react";
-import {CodepenOutlined, DatabaseOutlined, DownOutlined, OrderedListOutlined, TableOutlined} from '@ant-design/icons';
-import {showMetaDataTable} from "@/components/Studio/StudioEvent/DDL";
+import {
+  CodepenOutlined,
+  DatabaseOutlined,
+  DownOutlined,
+  OrderedListOutlined,
+  PoweroffOutlined,
+  TableOutlined
+} from '@ant-design/icons';
+import {clearMetaDataTable, showMetaDataTable} from "@/components/Studio/StudioEvent/DDL";
 import {Scrollbars} from 'react-custom-scrollbars';
 import Columns from "@/pages/DataBase/Columns";
 import Tables from "@/pages/DataBase/Tables";
 import {TreeDataNode} from "@/components/Studio/StudioTree/Function";
 import Generation from "@/pages/DataBase/Generation";
+import {l} from "@/utils/intl";
 
-const { DirectoryTree } = Tree;
+const {DirectoryTree} = Tree;
 const {Option} = Select;
-const { TabPane } = Tabs;
+const {TabPane} = Tabs;
 
 const StudioMetaData = (props: any) => {
 
-  const {database,toolHeight, dispatch} = props;
+  const {database, toolHeight, dispatch} = props;
   const [databaseId, setDatabaseId] = useState<number>();
   const [treeData, setTreeData] = useState<[]>([]);
   const [modalVisit, setModalVisit] = useState(false);
   const [row, setRow] = useState<TreeDataNode>();
+  const [loadingDatabase, setloadingDatabase] = useState(false);
 
-  const onRefreshTreeData = (databaseId: number)=>{
-    if(!databaseId)return;
+  const onRefreshTreeData = (databaseId: number) => {
+    if (!databaseId) {
+      setloadingDatabase(false);
+      return;
+    }
+    setloadingDatabase(true);
+
     setDatabaseId(databaseId);
     const res = showMetaDataTable(databaseId);
     res.then((result) => {
+      setloadingDatabase(false);
       let tables = result.datas;
-      if(tables) {
+      if (tables) {
         for (let i = 0; i < tables.length; i++) {
           tables[i].title = tables[i].name;
           tables[i].key = tables[i].name;
@@ -64,26 +79,27 @@ const StudioMetaData = (props: any) => {
           }
         }
         setTreeData(tables);
-      }else{
+      } else {
         setTreeData([]);
       }
     });
   };
 
-  const onChangeDataBase = (value: number)=>{
+  const onChangeDataBase = (value: number) => {
     onRefreshTreeData(value);
   };
 
-  const getDataBaseOptions = ()=>{
-    return <>{database.map(({ id, name, alias, type, enabled }) => (
-      <Option  value={id} label={<><Tag color={enabled ? "processing" : "error"}>{type}</Tag>{ alias === "" ? name:alias}</>}>
-       <Tag color={enabled ? "processing" : "error"}>{type}</Tag>{ alias === "" ? name:alias}
+  const getDataBaseOptions = () => {
+    return <>{database.map(({id, name, alias, type, enabled}) => (
+      <Option value={id}
+              label={<><Tag color={enabled ? "processing" : "error"}>{type}</Tag>{alias === "" ? name : alias}</>}>
+        <Tag color={enabled ? "processing" : "error"}>{type}</Tag>{alias === "" ? name : alias}
       </Option>
     ))}</>
   };
 
   const openColumnInfo = (e: React.MouseEvent, node: TreeDataNode) => {
-    if(node.isLeaf){
+    if (node.isLeaf) {
       setRow(node);
       setModalVisit(true);
     }
@@ -93,40 +109,57 @@ const StudioMetaData = (props: any) => {
     setRow(undefined);
     setModalVisit(false);
   }
+  const refeshDataBase = (value:number) => {
+    if (!databaseId) return;
+    setloadingDatabase(true);
+    clearMetaDataTable(databaseId).then(result => {
+      onChangeDataBase(databaseId);
+    })
+  };
 
   return (
-    <>
-      <Select
-        style={{width: '90%'}}
-        placeholder="选择数据源"
-        optionLabelProp="label"
-        onChange={onChangeDataBase}
-      >
-        {getDataBaseOptions()}
-      </Select>
+    <Spin spinning={loadingDatabase} delay={500}>
+      <Row>
+        <Col span={18}>
+          <Select
+            style={{width: '90%'}}
+            placeholder="选择数据源"
+            optionLabelProp="label"
+            onChange={onChangeDataBase}
+          >
+            {getDataBaseOptions()}
+          </Select>
+        </Col>
+        <Col span={1}>
+          <Button type="link"
+                  onClick={() => {refeshDataBase(databaseId)}}
+          >{l('button.refresh')}</Button>
+        </Col>
+      </Row>
+
       <Scrollbars style={{height: (toolHeight - 32)}}>
-        {treeData.length>0?(
+        {treeData.length > 0 ? (
           <DirectoryTree
-          showIcon
-          switcherIcon={<DownOutlined/>}
-          treeData={treeData}
-          onRightClick={({event, node}: any) => {
-            openColumnInfo(event, node)
-          }}
-        />):(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
+            showIcon
+            switcherIcon={<DownOutlined/>}
+            treeData={treeData}
+            onRightClick={({event, node}: any) => {
+              openColumnInfo(event, node)
+            }}
+          />) : (<Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>)}
       </Scrollbars>
       <Modal
         title={row?.key}
         visible={modalVisit}
         width={1000}
-        onCancel={()=>{
+        onCancel={() => {
           cancelHandle();
         }}
         footer={[
           <Button key="back" onClick={() => {
             cancelHandle();
           }}>
-            关闭
+            {l('button.close')}
           </Button>,
         ]}
       >
@@ -134,39 +167,41 @@ const StudioMetaData = (props: any) => {
           <TabPane
             tab={
               <span>
-          <TableOutlined />
+          <TableOutlined/>
           表信息
         </span>
             }
             key="tableInfo"
           >
-            {row?<Tables table={row}/>:<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+            {row ? <Tables table={row}/> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
           </TabPane>
           <TabPane
             tab={
               <span>
-          <CodepenOutlined />
+          <CodepenOutlined/>
           字段信息
         </span>
             }
             key="columnInfo"
           >
-            {row? <Columns dbId={databaseId} schema={row.schema} table={row.table}/> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+            {row ? <Columns dbId={databaseId} schema={row.schema} table={row.table} scroll={{x: 1000}}/> :
+              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
           </TabPane>
           <TabPane
             tab={
               <span>
-          <OrderedListOutlined />
+          <OrderedListOutlined/>
           SQL 生成
         </span>
             }
             key="sqlGeneration"
           >
-            {row? <Generation dbId={databaseId} schema={row.schema} table={row.table}/> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+            {row ? <Generation dbId={databaseId} schema={row.schema} table={row.table}/> :
+              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
           </TabPane>
         </Tabs>
-        </Modal>
-    </>
+      </Modal>
+    </Spin>
   );
 };
 

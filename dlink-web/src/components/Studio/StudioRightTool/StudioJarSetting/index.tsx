@@ -20,24 +20,36 @@
 
 import {connect} from "umi";
 import {StateType} from "@/pages/DataStudio/model";
-import {Form, InputNumber, Input, Select, Tag, Row, Col, Badge, Tooltip, Button, Space} from "antd";
-import {InfoCircleOutlined, PlusOutlined, MinusSquareOutlined, MinusCircleOutlined,PaperClipOutlined} from "@ant-design/icons";
+import {Button, Col, Form, Input, InputNumber, message, Row, Select, Space, Tag, Tooltip, Upload} from "antd";
+import {
+  InfoCircleOutlined,
+  MinusCircleOutlined,
+  MinusSquareOutlined,
+  PlusOutlined,
+  UploadOutlined
+} from "@ant-design/icons";
 import styles from "./index.less";
-import {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {JarStateType} from "@/pages/Jar/model";
 import {Scrollbars} from "react-custom-scrollbars";
 import {RUN_MODE} from "@/components/Studio/conf";
+import {CODE} from "@/components/Common/crud";
+import {getHadoopConfigPathFromClusterConfigurationsById} from "@/pages/ClusterConfiguration/function";
+import {l} from "@/utils/intl";
 
 const {Option} = Select;
 
 const StudioJarSetting = (props: any) => {
 
-  const {clusterConfiguration, current, form, dispatch, tabs, jars,env, toolHeight} = props;
+  const {clusterConfiguration, current, form, dispatch, tabs, jars, toolHeight} = props;
+  const [hadoopConfigPath, setHadoopConfigPath] = useState<string | undefined>(undefined);
+  const [jarPath, setJarPath] = useState<string | undefined>(undefined);
 
   const getClusterConfigurationOptions = () => {
     const itemList = [];
     for (const item of clusterConfiguration) {
-      const tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias === "" ? item.name : item.alias}</>);
+      const tag = (<><Tag
+        color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias === "" ? item.name : item.alias}</>);
       itemList.push(<Option key={item.id} value={item.id} label={tag}>
         {tag}
       </Option>)
@@ -48,7 +60,8 @@ const StudioJarSetting = (props: any) => {
   const getJarOptions = () => {
     const itemList = [];
     for (const item of jars) {
-      const tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias === "" ? item.name : item.alias}</>);
+      const tag = (<><Tag
+        color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias === "" ? item.name : item.alias}</>);
       itemList.push(<Option key={item.id} value={item.id} label={tag}>
         {tag}
       </Option>)
@@ -58,8 +71,14 @@ const StudioJarSetting = (props: any) => {
 
   useEffect(() => {
     form.setFieldsValue(current.task);
+    setHadoopConfigPath(getHadoopConfigPathFromClusterConfigurationsById(current.task.clusterConfigurationId, clusterConfiguration));
+    for (let i in jars) {
+      if (jars[i].id == current.task.jarId) {
+        setJarPath(jars[i].path);
+        break;
+      }
+    }
   }, [current.task]);
-
 
   const onValuesChange = (change: any, all: any) => {
     const newTabs = tabs;
@@ -75,6 +94,49 @@ const StudioJarSetting = (props: any) => {
       type: "Studio/saveTabs",
       payload: newTabs,
     });
+    let clusterConfigurationId = all['clusterConfigurationId'];
+    let jarId = all['jarId'];
+    setHadoopConfigPath(getHadoopConfigPathFromClusterConfigurationsById(clusterConfigurationId, clusterConfiguration));
+    for (let i in jars) {
+      if (jars[i].id == jarId) {
+        setJarPath(jars[i].path);
+        break;
+      }
+    }
+  };
+
+  const getUploadHdfsProps = () => {
+    let dir = '';
+    if (jarPath) {
+      if (jarPath.indexOf('.jar') > -1) {
+        dir = jarPath.substring(0, jarPath.lastIndexOf('/'));
+      } else {
+        dir = jarPath;
+      }
+    }
+    return {
+      name: 'files',
+      action: '/api/fileUpload/hdfs',
+      headers: {
+        authorization: 'authorization-text',
+      },
+      data: {
+        dir,
+        hadoopConfigPath
+      },
+      showUploadList: true,
+      onChange(info) {
+        if (info.file.status === 'done') {
+          if (info.file.response.code == CODE.SUCCESS) {
+            message.success(info.file.response.msg);
+          } else {
+            message.warn(info.file.response.msg);
+          }
+        } else if (info.file.status === 'error') {
+          message.error(`${info.file.name}` + l('app.request.upload.failed'));
+        }
+      },
+    }
   };
 
   return (
@@ -121,18 +183,22 @@ const StudioJarSetting = (props: any) => {
               </Form.Item>
             </Col>
           </Row>
-          <Form.Item label="可执行 Jar"
+          <Form.Item label={<>可执行 Jar </>}
                      tooltip={`选择可执行 Jar 进行 ${current.task.type} 模式的远程提交 Jar 任务。当该参数项存在值时，将只提交可执行 Jar.`}
-                     name="jarId"
                      className={styles.form_item}>
-            <Select
-              style={{width: '100%'}}
-              placeholder="选择可执行Jar，非必填"
-              allowClear
-              optionLabelProp="label"
-            >
-              {getJarOptions()}
-            </Select>
+            <Form.Item name="jarId" noStyle>
+              <Select
+                style={{width: '80%'}}
+                placeholder="选择可执行Jar，非必填"
+                allowClear
+                optionLabelProp="label"
+              >
+                {getJarOptions()}
+              </Select>
+            </Form.Item>
+            <Upload {...getUploadHdfsProps()} multiple>
+              <UploadOutlined/>
+            </Upload>
           </Form.Item>
           <Row>
             <Col span={12}>
@@ -155,10 +221,10 @@ const StudioJarSetting = (props: any) => {
             tooltip='指定 SavePoint策略，默认为禁用'
           >
             <Select defaultValue={0}>
-              <Option value={0}>禁用</Option>
-              <Option value={1}>最近一次</Option>
-              <Option value={2}>最早一次</Option>
-              <Option value={3}>指定一次</Option>
+              <Option value={0}>{l('global.savepoint.strategy.disabled')}</Option>
+              <Option value={1}>{l('global.savepoint.strategy.latest')}</Option>
+              <Option value={2}>{l('global.savepoint.strategy.earliest')}</Option>
+              <Option value={3}>{l('global.savepoint.strategy.custom')}</Option>
             </Select>
           </Form.Item>
           {current.task.savePointStrategy === 3 ?

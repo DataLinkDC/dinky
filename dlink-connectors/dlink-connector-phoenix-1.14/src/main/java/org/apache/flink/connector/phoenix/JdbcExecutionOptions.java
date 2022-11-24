@@ -17,8 +17,6 @@
  *
  */
 
-
-
 package org.apache.flink.connector.phoenix;
 
 import org.apache.flink.annotation.PublicEvolving;

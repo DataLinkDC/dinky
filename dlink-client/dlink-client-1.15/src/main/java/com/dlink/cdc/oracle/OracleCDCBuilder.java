@@ -17,8 +17,14 @@
  *
  */
 
-
 package com.dlink.cdc.oracle;
+
+import com.dlink.assertion.Asserts;
+import com.dlink.cdc.AbstractCDCBuilder;
+import com.dlink.cdc.CDCBuilder;
+import com.dlink.constant.ClientConstant;
+import com.dlink.constant.FlinkParamConstant;
+import com.dlink.model.FlinkCDCConfig;
 
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -28,14 +34,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.cdc.AbstractCDCBuilder;
-import com.dlink.cdc.CDCBuilder;
-import com.dlink.constant.ClientConstant;
-import com.dlink.constant.FlinkParamConstant;
-import com.dlink.model.FlinkCDCConfig;
+import com.ververica.cdc.connectors.base.options.StartupOptions;
 import com.ververica.cdc.connectors.oracle.OracleSource;
-import com.ververica.cdc.connectors.oracle.table.StartupOptions;
 import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
 
 /**
@@ -44,10 +44,10 @@ import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
  * @author wenmo
  * @since 2022/4/12 21:29
  **/
-public class OracleCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
+public class OracleCDCBuilder extends AbstractCDCBuilder {
 
-    private final static String KEY_WORD = "oracle-cdc";
-    private final static String METADATA_TYPE = "Oracle";
+    private static final String KEY_WORD = "oracle-cdc";
+    private static final String METADATA_TYPE = "Oracle";
 
     public OracleCDCBuilder() {
     }
@@ -103,6 +103,7 @@ public class OracleCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
                 case "latest-offset":
                     sourceBuilder.startupOptions(StartupOptions.latest());
                     break;
+                default:
             }
         } else {
             sourceBuilder.startupOptions(StartupOptions.latest());

@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.app.flinksql;
 
 import com.dlink.app.db.DBConfig;
@@ -29,14 +28,23 @@ import com.dlink.executor.ExecutorSetting;
 import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.parser.SqlType;
 import com.dlink.trans.Operations;
+import com.dlink.utils.SqlUtil;
+
 import org.apache.flink.configuration.CheckpointingOptions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.flink.python.PythonOptions;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * FlinkSQLFactory
@@ -59,9 +67,9 @@ public class Submiter {
         if (id == null) {
             throw new SQLException("请指定任务ID");
         }
-        return "select id, name, alias as jobName, type,check_point as checkpoint," +
-                "save_point_path as savePointPath, parallelism,fragment as useSqlFragment,statement_set as useStatementSet,config_json as config," +
-                " env_id as envId,batch_model AS useBatchModel from dlink_task where id = " + id;
+        return "select id, name, alias as jobName, type,check_point as checkpoint,"
+                + "save_point_path as savePointPath, parallelism,fragment as useSqlFragment,statement_set as useStatementSet,config_json as config,"
+                + " env_id as envId,batch_model AS useBatchModel from dlink_task where id = " + id;
     }
 
     private static String getFlinkSQLStatement(Integer id, DBConfig config) {
@@ -69,10 +77,8 @@ public class Submiter {
         try {
             statement = DBUtil.getOneByID(getQuerySQL(id), config);
         } catch (IOException | SQLException e) {
-            e.printStackTrace();
-            logger.error(LocalDateTime.now().toString() + " --> 获取 FlinkSQL 异常，ID 为" + id);
-            logger.error(LocalDateTime.now().toString() + "连接信息为：" + config.toString());
-            logger.error(LocalDateTime.now().toString() + "异常信息为：" + e.getMessage());
+            logger.error("{} --> 获取 FlinkSQL 配置异常，ID 为 {}, 连接信息为：{} ,异常信息为：{} ", LocalDateTime.now(), id,
+                    config.toString(), e.getMessage(), e);
         }
         return statement;
     }
@@ -82,16 +88,26 @@ public class Submiter {
         try {
             task = DBUtil.getMapByID(getTaskInfo(id), config);
         } catch (IOException | SQLException e) {
-            e.printStackTrace();
-            logger.error(LocalDateTime.now().toString() + " --> 获取 FlinkSQL 配置异常，ID 为" + id);
-            logger.error(LocalDateTime.now().toString() + "连接信息为：" + config.toString());
-            logger.error(LocalDateTime.now().toString() + "异常信息为：" + e.getMessage());
+            logger.error("{} --> 获取 FlinkSQL 配置异常，ID 为 {}, 连接信息为：{} ,异常信息为：{} ", LocalDateTime.now(), id,
+                    config.toString(), e.getMessage(), e);
         }
         return task;
     }
 
     public static List<String> getStatements(String sql) {
-        return Arrays.asList(sql.split(FlinkSQLConstant.SEPARATOR));
+        return Arrays.asList(SqlUtil.getStatements(sql));
+    }
+
+    public static String getDbSourceSqlStatements(DBConfig dbConfig) {
+        String sql = "select name,flink_config from dlink_database where enabled = 1";
+        try {
+            return DBUtil.getDbSourceSQLStatement(sql, dbConfig);
+        } catch (IOException | SQLException e) {
+            logger.error("{} --> 获取 数据源信息异常，请检查数据库连接，连接信息为：{} ,异常信息为：{}", LocalDateTime.now(),
+                    dbConfig.toString(), e.getMessage(), e);
+        }
+
+        return "";
     }
 
     public static void submit(Integer id, DBConfig dbConfig) {
@@ -103,8 +119,11 @@ public class Submiter {
             if (Asserts.isNotNullString(envId)) {
                 sb.append(envId);
             }
-            sb.append("\r\n");
+            sb.append("\n");
         }
+        // 添加数据源全局变量
+        sb.append(getDbSourceSqlStatements(dbConfig));
+        // 添加自定义全局变量信息
         sb.append(getFlinkSQLStatement(id, dbConfig));
         List<String> statements = Submiter.getStatements(sb.toString());
         ExecutorSetting executorSetting = ExecutorSetting.build(taskConfig);
@@ -117,7 +136,8 @@ public class Submiter {
             executorSetting.getConfig().put(CheckpointingOptions.SAVEPOINT_DIRECTORY.key(),
                     executorSetting.getConfig().get(CheckpointingOptions.SAVEPOINT_DIRECTORY.key()) + "/" + uuid);
         }
-        logger.info("作业配置如下： " + executorSetting.toString());
+        executorSetting.getConfig().put(PythonOptions.PYTHON_FILES.key(), "./python_udf.zip");
+        logger.info("作业配置如下： {}", executorSetting);
         Executor executor = Executor.buildAppStreamExecutor(executorSetting);
         List<StatementParam> ddl = new ArrayList<>();
         List<StatementParam> trans = new ArrayList<>();
@@ -179,12 +199,11 @@ public class Submiter {
             logger.info("正在执行 FlinkSQL 语句集： " + String.join(FlinkSQLConstant.SEPARATOR, executes));
             try {
                 executor.execute(executorSetting.getJobName());
+                logger.info("执行成功");
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("执行失败, {}", e.getMessage(), e);
             }
-            logger.info("执行成功");
         }
-        logger.info(LocalDateTime.now() + "任务提交成功");
-        System.out.println(LocalDateTime.now() + "任务提交成功");
+        logger.info("{}任务提交成功", LocalDateTime.now());
     }
 }

@@ -17,72 +17,41 @@
  *
  */
 
-
-import {Typography, Divider, Badge, Empty,Tag} from "antd";
 import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
-import {FireOutlined, ScheduleOutlined} from '@ant-design/icons';
-import StudioSqlConfig from "@/components/Studio/StudioRightTool/StudioSqlConfig";
-import {DIALECT, isSql} from "@/components/Studio/conf";
+import React, {useEffect, useState} from "react";
+import CodeShow from "@/components/Common/CodeShow";
+import {getConsoleInfo} from "@/pages/SettingCenter/ProcessList/service";
 
-const { Title, Paragraph, Text, Link } = Typography;
+const StudioMsg = (props: any) => {
 
-const StudioMsg = (props:any) => {
+  const {current, height, isActive} = props;
+  const [consoleInfo, setConsoleInfo] = useState<string>("");
 
-  const {current} = props;
+  useEffect(() => {
+    refreshConsoleInfo();
+    let dataPolling = setInterval(refreshConsoleInfo, 3000);
+    return () => {
+      clearInterval(dataPolling);
+    };
+  }, [isActive]);
 
-  const renderCommonSqlContent = () => {
-    return (<>
-      <Paragraph>
-        <blockquote> <Divider type="vertical"/>{current.console.result.startTime}
-          <Divider type="vertical"/>{current.console.result.endTime}
-          <Divider type="vertical"/>
-          {!(current.console.result.success) ? <><Badge status="error"/><Text type="danger">Error</Text></> :
-            <><Badge status="success"/><Text type="success">Success</Text></>}
-          <Divider type="vertical"/>
-        </blockquote>
-        {current.console.result.statement && (<pre style={{height: '100px'}}>{current.console.result.statement}</pre>)}
-        {current.console.result.error && (<pre style={{height: '100px'}}>{current.console.result.error}</pre>)}
-      </Paragraph>
-    </>)
-  };
-
-  const renderFlinkSqlContent = () => {
-    return (<>
-      <Paragraph>
-        <blockquote><Link href={`http://${current.console.result.jobConfig?.address}`} target="_blank">
-          [{current.console.result.jobConfig?.session}:{current.console.result.jobConfig?.address}]
-        </Link> <Divider type="vertical"/>{current.console.result.startTime}
-          <Divider type="vertical"/>{current.console.result.endTime}
-          <Divider type="vertical"/>
-          {!(current.console.result.status==='SUCCESS') ? <><Badge status="error"/><Text type="danger">Error</Text></> :
-            <><Badge status="success"/><Text type="success">Success</Text></>}
-          <Divider type="vertical"/>
-          {current.console.result.jobConfig?.jobName&&<Text code>{current.console.result.jobConfig?.jobName}</Text>}
-          {current.console.result.jobId&&
-            (<>
-              <Divider type="vertical"/>
-              <Tag color="blue" key={current.console.result.jobId}>
-                <FireOutlined /> {current.console.result.jobId}
-              </Tag>
-            </>)}
-        </blockquote>
-        {current.console.result.statement && (<pre style={{height: '100px'}}>{current.console.result.statement}</pre>)}
-        {current.console.result.error && (<pre style={{height: '100px'}}>{current.console.result.error}</pre>)}
-      </Paragraph>
-    </>)
-  };
-
+  const refreshConsoleInfo = () => {
+    if (isActive) {
+      const res = getConsoleInfo();
+      res.then((result) => {
+        result.datas && setConsoleInfo(result.datas);
+      });
+    }
+  }
 
   return (
-    <Typography>
-      {current?.task&&current.console.result.startTime?(isSql(current.task.dialect) ? renderCommonSqlContent():
-        renderFlinkSqlContent() ):<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-      }
-    </Typography>
+    <>
+      <CodeShow code={consoleInfo} language='java' height={height} theme="vs"/>
+    </>
   );
 };
 
-export default connect(({ Studio }: { Studio: StateType }) => ({
+export default connect(({Studio}: { Studio: StateType }) => ({
   current: Studio.current,
 }))(StudioMsg);

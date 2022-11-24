@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.metadata.query;
 
 import com.dlink.metadata.constant.DorisConstant;
@@ -46,42 +45,40 @@ public class DorisQuery extends AbstractDBQuery {
         return "Database";
     }
 
-
     @Override
     public String tableName() {
         return "NAME";
     }
-
 
     @Override
     public String tableComment() {
         return "COMMENT";
     }
 
-
     @Override
     public String columnName() {
         return "Field";
     }
-
 
     @Override
     public String columnType() {
         return "Type";
     }
 
-
     @Override
     public String columnComment() {
         return "Comment";
     }
-
 
     @Override
     public String columnKey() {
         return "Key";
     }
 
+    @Override
+    public String defaultValue() {
+        return "Default";
+    }
 
     public boolean isKeyIdentity(ResultSet results) throws SQLException {
         return "auto_increment".equals(results.getString("Extra"));
@@ -94,32 +91,42 @@ public class DorisQuery extends AbstractDBQuery {
 
     @Override
     public String characterSet() {
-        return "Default";
+        return "Collation";
     }
 
+    // Doris does not have sort filed ,
+    // return null skip it
     @Override
     public String collation() {
-        return "Default";
+        return null;
     }
 
+    // Doris does not have columnPosition field，
+    // return null skip it
     @Override
     public String columnPosition() {
-        return "Default";
+        return null;
     }
 
+    // Doris does not have precision field，
+    // return null skip it
     @Override
     public String precision() {
-        return "Default";
+        return null;
     }
 
+    // Doris does not have scale field，
+    // return null skip it
     @Override
     public String scale() {
-        return "Default";
+        return null;
     }
 
+    // Doris does not have autoIncrement field，
+    // return null skip it
     @Override
     public String autoIncrement() {
-        return "Default";
+        return null;
     }
 
     @Override

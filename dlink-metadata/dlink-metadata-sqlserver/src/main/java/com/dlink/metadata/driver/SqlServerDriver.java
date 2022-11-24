@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.metadata.driver;
 
 import com.dlink.metadata.constant.SqlServerConstant;
@@ -26,6 +25,7 @@ import com.dlink.metadata.convert.SqlServerTypeConvert;
 import com.dlink.metadata.query.IDBQuery;
 import com.dlink.metadata.query.SqlServerQuery;
 import com.dlink.model.Column;
+import com.dlink.model.QueryData;
 import com.dlink.model.Table;
 
 import java.util.ArrayList;
@@ -33,12 +33,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author lcg
- * @operate
- * @date 2022/1/26 14:23
- * @return
- */
 public class SqlServerDriver extends AbstractJdbcDriver {
     @Override
     public IDBQuery getDBQuery() {
@@ -63,6 +57,31 @@ public class SqlServerDriver extends AbstractJdbcDriver {
     @Override
     public String getName() {
         return "SqlServer数据库";
+    }
+
+    /**
+     *  sql拼接，目前还未实现limit方法
+     * */
+    @Override
+    public StringBuilder genQueryOption(QueryData queryData) {
+
+        String where = queryData.getOption().getWhere();
+        String order = queryData.getOption().getOrder();
+
+        StringBuilder optionBuilder = new StringBuilder()
+                .append("select * from ")
+                .append(queryData.getSchemaName())
+                .append(".")
+                .append(queryData.getTableName());
+
+        if (where != null && !where.equals("")) {
+            optionBuilder.append(" where ").append(where);
+        }
+        if (order != null && !order.equals("")) {
+            optionBuilder.append(" order by ").append(order);
+        }
+
+        return optionBuilder;
     }
 
     @Override

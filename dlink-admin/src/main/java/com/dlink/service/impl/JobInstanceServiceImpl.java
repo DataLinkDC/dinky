@@ -17,17 +17,8 @@
  *
  */
 
-
 package com.dlink.service.impl;
 
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dlink.assertion.Asserts;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.db.service.impl.SuperServiceImpl;
@@ -48,6 +39,15 @@ import com.dlink.service.HistoryService;
 import com.dlink.service.JobHistoryService;
 import com.dlink.service.JobInstanceService;
 import com.dlink.utils.JSONUtil;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -58,7 +58,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @since 2022/2/2 13:52
  */
 @Service
-public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, JobInstance> implements JobInstanceService {
+public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, JobInstance>
+        implements
+            JobInstanceService {
 
     @Autowired
     private HistoryService historyService;
@@ -68,6 +70,11 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     private ClusterConfigurationService clusterConfigurationService;
     @Autowired
     private JobHistoryService jobHistoryService;
+
+    @Override
+    public JobInstance getByIdWithoutTenant(Integer id) {
+        return baseMapper.getByIdWithoutTenant(id);
+    }
 
     @Override
     public JobInstanceStatus getStatusCount(boolean isHistory) {
@@ -118,6 +125,8 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
                     break;
                 case UNKNOWN:
                     jobInstanceStatus.setUnknown(counts);
+                    break;
+                default:
             }
         }
         jobInstanceStatus.setAll(total);
@@ -150,7 +159,8 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
             history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
             jobInfoDetail.setHistory(history);
             if (Asserts.isNotNull(history.getClusterConfigurationId())) {
-                jobInfoDetail.setClusterConfiguration(clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId()));
+                jobInfoDetail.setClusterConfiguration(
+                        clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId()));
             }
             return jobInfoDetail;
         }
@@ -171,7 +181,8 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
         jobInfoDetail.setHistory(history);
         if (Asserts.isNotNull(history) && Asserts.isNotNull(history.getClusterConfigurationId())) {
-            jobInfoDetail.setClusterConfiguration(clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId()));
+            jobInfoDetail.setClusterConfiguration(
+                    clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId()));
         }
         if (pool.exist(key)) {
             pool.refresh(jobInfoDetail);
@@ -181,11 +192,10 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         return jobInfoDetail;
     }
 
-
     @Override
     public LineageResult getLineage(Integer id) {
         History history = getJobInfoDetail(id).getHistory();
-        return LineageBuilder.getLineage(history.getStatement(), history.getConfig().get("useStatementSet").asBoolean());
+        return LineageBuilder.getColumnLineageByLogicalPlan(history.getStatement());
     }
 
     @Override
@@ -213,7 +223,8 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
                 list.get(i).setDuration(pool.get(list.get(i).getId().toString()).getInstance().getDuration());
             }
         }
-        return ProTableResult.<JobInstance>builder().success(true).data(list).total(page.getTotal()).current(current).pageSize(pageSize).build();
+        return ProTableResult.<JobInstance>builder().success(true).data(list).total(page.getTotal()).current(current)
+                .pageSize(pageSize).build();
     }
 
 }

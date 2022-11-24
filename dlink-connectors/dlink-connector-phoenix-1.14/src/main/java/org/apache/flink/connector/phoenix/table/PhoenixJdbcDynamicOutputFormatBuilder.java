@@ -17,26 +17,28 @@
  *
  */
 
-
 package org.apache.flink.connector.phoenix.table;
+
+import static org.apache.flink.table.data.RowData.createFieldGetter;
+import static org.apache.flink.util.Preconditions.checkArgument;
+import static org.apache.flink.util.Preconditions.checkNotNull;
 
 import org.apache.flink.api.common.functions.RuntimeContext;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.common.typeutils.TypeSerializer;
-
+import org.apache.flink.connector.phoenix.JdbcExecutionOptions;
 import org.apache.flink.connector.phoenix.dialect.JdbcDialect;
 import org.apache.flink.connector.phoenix.internal.JdbcBatchingOutputFormat;
+import org.apache.flink.connector.phoenix.internal.connection.PhoneixJdbcConnectionProvider;
 import org.apache.flink.connector.phoenix.internal.converter.JdbcRowConverter;
+import org.apache.flink.connector.phoenix.internal.executor.JdbcBatchStatementExecutor;
 import org.apache.flink.connector.phoenix.internal.executor.TableBufferReducedStatementExecutor;
+import org.apache.flink.connector.phoenix.internal.executor.TableBufferedStatementExecutor;
 import org.apache.flink.connector.phoenix.internal.executor.TableInsertOrUpdateStatementExecutor;
 import org.apache.flink.connector.phoenix.internal.executor.TableSimpleStatementExecutor;
-import org.apache.flink.connector.phoenix.statement.FieldNamedPreparedStatement;
-import org.apache.flink.connector.phoenix.JdbcExecutionOptions;
-import org.apache.flink.connector.phoenix.internal.connection.PhoneixJdbcConnectionProvider;
-import org.apache.flink.connector.phoenix.internal.executor.JdbcBatchStatementExecutor;
-import org.apache.flink.connector.phoenix.internal.executor.TableBufferedStatementExecutor;
 import org.apache.flink.connector.phoenix.internal.options.JdbcDmlOptions;
 import org.apache.flink.connector.phoenix.internal.options.PhoenixJdbcOptions;
+import org.apache.flink.connector.phoenix.statement.FieldNamedPreparedStatement;
 import org.apache.flink.table.data.GenericRowData;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.types.DataType;
@@ -46,10 +48,6 @@ import org.apache.flink.table.types.logical.RowType;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.function.Function;
-
-import static org.apache.flink.table.data.RowData.createFieldGetter;
-import static org.apache.flink.util.Preconditions.checkArgument;
-import static org.apache.flink.util.Preconditions.checkNotNull;
 
 /**
  *  PhoenixJdbcDynamicOutputFormatBuilder

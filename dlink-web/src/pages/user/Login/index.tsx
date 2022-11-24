@@ -17,44 +17,28 @@
  *
  */
 
-
-import {
-  AlipayCircleOutlined,
-  LockOutlined,
-  MobileOutlined,
-  TaobaoCircleOutlined,
-  UserOutlined,
-  WeiboCircleOutlined,
-} from '@ant-design/icons';
-import { Alert, Space, message, Tabs } from 'antd';
-import React, { useState } from 'react';
-import ProForm, { ProFormCaptcha, ProFormCheckbox, ProFormText } from '@ant-design/pro-form';
-import { useIntl, Link, history, FormattedMessage, SelectLang, useModel } from 'umi';
+import {LockOutlined, UserOutlined,} from '@ant-design/icons';
+import {Button, message, Modal} from 'antd';
+import React, {useEffect, useState} from 'react';
+import ProForm, {ProFormCheckbox, ProFormText} from '@ant-design/pro-form';
+import {history, Link, SelectLang, useModel} from 'umi';
 import Footer from '@/components/Footer';
-import { login } from '@/services/ant-design-pro/api';
-import { getFakeCaptcha } from '@/services/ant-design-pro/login';
-
+import {login} from '@/services/ant-design-pro/api';
+import {CheckCard} from '@ant-design/pro-components';
 import styles from './index.less';
+import {getData} from "@/components/Common/crud";
+import {TenantTableListItem} from "@/pages/AuthenticationCenter/data.d";
+import {l} from "@/utils/intl";
+import cookies from "js-cookie";
+import {setLocale} from "@@/plugin-locale/localeExports";
 
-const LoginMessage: React.FC<{
-  content: string;
-}> = ({ content }) => (
-  <Alert
-    style={{
-      marginBottom: 24,
-    }}
-    message={content}
-    type="error"
-    showIcon
-  />
-);
 
 /** 此方法会跳转到 redirect 参数所在的位置 */
 const goto = () => {
   if (!history) return;
   setTimeout(() => {
-    const { query } = history.location;
-    const { redirect } = query as { redirect: string };
+    const {query} = history.location;
+    const {redirect} = query as { redirect: string };
     history.push(redirect || '/');
   }, 10);
 };
@@ -62,11 +46,15 @@ const goto = () => {
 const Login: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
+  const [userParamsState, setUserParamsState] = useState<API.LoginParams>({});
   const [type, setType] = useState<string>('password');
-  const { initialState, setInitialState } = useModel('@@initialState');
+  const {initialState, setInitialState} = useModel('@@initialState');
   const [isLogin, setIsLogin] = useState<boolean>(true);
+  const [chooseTenant, setChooseTenant] = useState<boolean>(false);
+  const [tenant, setTenant] = useState<TenantTableListItem[]>([]);
 
-  const intl = useIntl();
+  const [checkDisabled, setCheckDisabled] = useState<boolean>(true);
+
 
   const fetchUserInfo = async () => {
     const userInfo = await initialState?.fetchUserInfo?.();
@@ -78,57 +66,126 @@ const Login: React.FC = () => {
     }
   };
 
+
+  useEffect(() => {
+    // 调用接口
+    const {username} = userParamsState
+    if (!username) {
+      return
+    }
+    getData("/api/geTenants", {username}).then(result => {
+      setTenant(result?.datas);
+    })
+  }, [
+    userParamsState?.username
+  ])
+
+
+  const setTenantCookie =  (tenantId :number) => {
+    localStorage.setItem("dlink-tenantId", tenantId.toString()); // 放入本地存储中 request2请求时会放入header
+    cookies.set('tenantId', tenantId.toString(), {path: '/'}) // 放入cookie中
+  }
+
   const handleSubmit = async (values: API.LoginParams) => {
-    if(!isLogin) {return;}
+    if (!isLogin) {
+      return;
+    }
     setIsLogin(false);
-    setTimeout(()=>{setIsLogin(true)},200);
+    setTimeout(() => {
+      setIsLogin(true)
+    }, 200);
     setSubmitting(true);
     try {
       // 登录
-      const msg = await login({ ...values, type });
-      if (msg.code === 0 && msg.datas!=undefined ) {
-        const defaultloginSuccessMessage = intl.formatMessage({
-          id: 'pages.login.success',
-          defaultMessage: '登录成功！',
-        });
-        message.success(defaultloginSuccessMessage);
+      const msg = await login({...values, type});
+      if (msg.code === 0 && msg.datas != undefined) {
+        message.success(l('pages.login.success'));
         await fetchUserInfo();
         goto();
         return;
-      }else{
-        const defaultloginFailureMessage = intl.formatMessage({
-          id: msg.msg,
-          defaultMessage: msg.msg,
-        });
-        message.error(defaultloginFailureMessage);
+      } else {
+        message.error(l(msg.msg, msg.msg));
       }
       // 如果失败去设置用户错误信息
       setUserLoginState(msg.datas);
     } catch (error) {
-      const defaultloginFailureMessage = intl.formatMessage({
-        id: 'pages.login.failure',
-        defaultMessage: '登录失败，请重试！',
-      });
-
-      message.error(defaultloginFailureMessage);
+      message.error(l('pages.login.failure'));
     }
     setSubmitting(false);
   };
   //const {code } = userLoginState;
 
+
+  const handleShowTenant = () => {
+
+    return <>
+      <Modal title={l('pages.login.chooseTenant')} visible={chooseTenant} destroyOnClose={true}
+             width={"60%"}
+             onCancel={() => {
+               setChooseTenant(false);
+             }}
+             footer={[
+               <Button key="back" onClick={() => {
+                 setChooseTenant(false);
+               }}>
+                 {l('button.close')}
+               </Button>,
+               <Button disabled={checkDisabled} type="primary" key="submit" loading={submitting}
+                       onClick={async () => {
+                         await handleSubmit(userParamsState);
+                       }}>
+                 {l('button.confirm')}
+               </Button>
+             ]}>
+        <CheckCard.Group
+          multiple={false}
+          onChange={(value) => {
+            if (value) {
+              setCheckDisabled(false) // 如果没选择租户 ·确认按钮· 则禁用
+              userParamsState.tenantId = value as number; // 将租户id给后端入参
+              setTenantCookie(value as number)
+            } else {
+              setCheckDisabled(true)
+            }
+          }}
+        >
+          {tenant?.map((item: any) => {
+            return <>
+              <CheckCard
+                size={"default"}
+                key={item?.id}
+                avatar="/icons/tenant_default.svg"
+                title={item?.tenantCode}
+                value={item?.id}
+                description={item?.note}
+              />
+            </>
+          })}
+        </CheckCard.Group>
+      </Modal>
+    </>
+  }
+
   return (
     <div className={styles.container}>
-      <div className={styles.lang}>{SelectLang && <SelectLang />}</div>
+      <div className={styles.lang}>{SelectLang && <SelectLang onItemClick={(e) => {
+        let language = e.key.toString()
+        if (language === undefined || language === "") {
+          language = localStorage.getItem("umi_locale")
+        }
+        cookies.set('language', language, {path: '/'})
+        setLocale(language)
+      }}/>}</div>
       <div className={styles.content}>
         <div className={styles.top}>
           <div className={styles.header}>
             <Link to="/">
-              <img alt="logo" className={styles.logo} src="/dinky.svg" />
+              <img alt="logo" className={styles.logo} src="/dinky.svg"/>
               <span className={styles.title}>Dinky</span>
             </Link>
           </div>
           <div className={styles.desc}>
-            {intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
+            {l('pages.layouts.userLayout.title')}
           </div>
         </div>
 
@@ -139,10 +196,7 @@ const Login: React.FC = () => {
             }}
             submitter={{
               searchConfig: {
-                submitText: intl.formatMessage({
-                  id: 'pages.login.submit',
-                  defaultMessage: '登录',
-                }),
+                submitText: l('pages.login.submit'),
               },
               render: (_, dom) => dom.pop(),
               submitButtonProps: {
@@ -151,12 +205,25 @@ const Login: React.FC = () => {
                 style: {
                   width: '100%',
                 },
-                htmlType:'submit',
+                htmlType: 'submit',
               },
             }}
-            onFinish={async (values) => {
-              values.grant_type = 'password';
-              handleSubmit(values as API.LoginParams);
+            onFinish={async (values: API.LoginParams) => {
+              setType("password")
+              let res: TenantTableListItem[] = await getData("/api/geTenants", {username: values.username}).then(result => {
+                setTenant(result?.datas);
+                return result?.datas
+              })
+              if (res.length === 1) {
+                let tenantValue = res.pop().id // 进入此处说明 只有一个租户 直接pop() 拿到单个对象获取租户id
+                values.tenantId = tenantValue; // 将租户id给后端入参
+                setTenantCookie(tenantValue as number)
+                setUserParamsState(values);
+                await handleSubmit(values);
+              } else {
+                setUserParamsState(values);
+                setChooseTenant(true)
+              }
             }}
           >
             {type === 'password' && (
@@ -165,21 +232,13 @@ const Login: React.FC = () => {
                   name="username"
                   fieldProps={{
                     size: 'large',
-                    prefix: <UserOutlined className={styles.prefixIcon} />,
+                    prefix: <UserOutlined className={styles.prefixIcon}/>,
                   }}
-                  placeholder={intl.formatMessage({
-                    id: 'pages.login.username.placeholder',
-                    defaultMessage: '用户名:',
-                  })}
+                  placeholder={l('pages.login.username.placeholder')}
                   rules={[
                     {
                       required: true,
-                      message: (
-                        <FormattedMessage
-                          id="pages.login.username.required"
-                          defaultMessage="请输入用户名!"
-                        />
-                      ),
+                      message: l('pages.login.username.required'),
                     },
                   ]}
                 />
@@ -187,21 +246,13 @@ const Login: React.FC = () => {
                   name="password"
                   fieldProps={{
                     size: 'large',
-                    prefix: <LockOutlined className={styles.prefixIcon} />,
+                    prefix: <LockOutlined className={styles.prefixIcon}/>,
                   }}
-                  placeholder={intl.formatMessage({
-                    id: 'pages.login.password.placeholder',
-                    defaultMessage: '密码:',
-                  })}
+                  placeholder={l('pages.login.password.placeholder')}
                   rules={[
                     {
                       required: true,
-                      message: (
-                        <FormattedMessage
-                          id="pages.login.password.required"
-                          defaultMessage="请输入密码！"
-                        />
-                      ),
+                      message: l('pages.login.password.required'),
                     },
                   ]}
                 />
@@ -215,21 +266,23 @@ const Login: React.FC = () => {
               }}
             >
               <ProFormCheckbox noStyle name="autoLogin">
-                <FormattedMessage id="pages.login.rememberMe" defaultMessage="自动登录" />
+                {l('pages.login.rememberMe')}
               </ProFormCheckbox>
               <a
                 style={{
                   float: 'right',
                 }}
               >
-                <FormattedMessage id="pages.login.forgotPassword" defaultMessage="忘记密码" />
+                {l('pages.login.forgotPassword')}
               </a>
             </div>
           </ProForm>
         </div>
       </div>
-      <Footer />
+      <Footer/>
+      {handleShowTenant()}
     </div>
+
   );
 };
 

@@ -23,6 +23,7 @@ import {Button, Divider, Form, Input, Modal, Radio, Switch} from 'antd';
 import {AlertInstanceTableListItem} from "@/pages/AlertInstance/data";
 import {buildJSONData, getJSONData} from "@/pages/AlertInstance/function";
 import {ALERT_TYPE} from "@/pages/AlertInstance/conf";
+import {l} from "@/utils/intl";
 
 export type AlertInstanceFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -55,122 +56,123 @@ const WeChatForm: React.FC<AlertInstanceFormProps> = (props) => {
     modalVisible,
   } = props;
 
-  const onValuesChange = (change: any,all: any)=>{
-    setFormVals({...formVals,...change});
+  const onValuesChange = (change: any, all: any) => {
+    setFormVals({...formVals, ...change});
   };
   const sendTestForm = async () => {
     const fieldsValue = await form.validateFields();
-    setFormVals(buildJSONData(formVals,fieldsValue));
-    handleTest(buildJSONData(formVals,fieldsValue));
+    setFormVals(buildJSONData(formVals, fieldsValue));
+    handleTest(buildJSONData(formVals, fieldsValue));
   };
 
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
-    setFormVals(buildJSONData(formVals,fieldsValue));
-    handleSubmit(buildJSONData(formVals,fieldsValue));
+    setFormVals(buildJSONData(formVals, fieldsValue));
+    handleSubmit(buildJSONData(formVals, fieldsValue));
   };
 
   const renderContent = (vals) => {
     return (
       <>
-        <Divider>微信企业号配置</Divider>
+        <Divider>{l('pages.registerCenter.alert.instance.wechat')}</Divider>
         <Form.Item
           name="name"
-          label="名称"
-          rules={[{required: true, message: '请输入名称！'}]}
+          label={l('pages.registerCenter.alert.instance.name')}
+          rules={[{required: true, message: l('pages.registerCenter.alert.instance.namePleaseHolder')}]}
         >
-          <Input placeholder="请输入名称"/>
+          <Input placeholder={l('pages.registerCenter.alert.instance.namePleaseHolder')}/>
         </Form.Item>
         <Form.Item
           name="sendType"
-          label="发送方式"
+          label={l('pages.registerCenter.alert.instance.sendType')}
           validateTrigger={['onChange', 'onBlur']}
-          rules={[{required: true, message: '请输入发送方式！'}]}
+          rules={[{required: true, message: l('pages.registerCenter.alert.instance.sendTypePleaseHolder')}]}
         >
           <Radio.Group defaultValue="应用">
-            <Radio value='应用'>应用</Radio>
-            <Radio value='群聊'>群聊</Radio>
+            <Radio value='应用'>{l('pages.registerCenter.alert.instance.sendType.app')}</Radio>
+            <Radio value='群聊'>{l('pages.registerCenter.alert.instance.sendType.wechat')}</Radio>
           </Radio.Group>
         </Form.Item>
-        { (vals.sendType == "群聊")  ?
+        {(vals.sendType == "群聊") ?
           <>
             <Form.Item
               name="webhook"
-              label="WebHook地址"
-              rules={[{required: true, message: '请输入WebHook！',}]}
+              label={l('pages.registerCenter.alert.instance.webhook')}
+              rules={[{required: true, message: l('pages.registerCenter.alert.instance.webhookPleaseHolder')}]}
             >
-              <Input placeholder="请输入WebHook"/>
+              <Input.TextArea placeholder={l('pages.registerCenter.alert.instance.webhookPleaseHolder')} allowClear
+                              autoSize={{minRows: 1, maxRows: 5}}/>
             </Form.Item>
             <Form.Item
               name="keyword"
-              label="关键字"
+              label={l('pages.registerCenter.alert.instance.keyword')}
             >
-              <Input placeholder="请输入keyword"/>
+              <Input placeholder={l('pages.registerCenter.alert.instance.keywordPleaseHolder')}/>
             </Form.Item>
             <Form.Item
               name="isAtAll"
               validateTrigger={['onChange', 'onBlur']}
-              label="@所有人">
-              <Switch checkedChildren="启用" unCheckedChildren="禁用"
+              label={l('pages.registerCenter.alert.instance.isAtAll')}>
+              <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                       defaultChecked={vals.isAtAll}/>
             </Form.Item>
-            { ( !vals.isAtAll )&&
+            {(!vals.isAtAll) &&
               <Form.Item
                 name="users"
-                label="被@用户"
-                rules={[{required: true, message: '请输入被@用户！多个逗号隔开!',}]}
+                label={l('pages.registerCenter.alert.instance.atUsers')}
+                rules={[{required: true, message: l('pages.registerCenter.alert.instance.wechatAtUsersPleaseHolder'),}]}
               >
-                <Input placeholder="请输入被@用户ID(企微用户名全拼),多个逗号隔开!"/>
+                <Input placeholder={l('pages.registerCenter.alert.instance.wechatAtUsersPleaseHolder')}/>
               </Form.Item>
             }
           </>
-        :
-        <>
-        <Form.Item
-          name="corpId"
-          label="企业Id"
-          rules={[{required: true, message: '请输入企业Id！'}]}
-        >
-          <Input placeholder="请输入CorpId"/>
-        </Form.Item>
-        <Form.Item
-          name="secret"
-          label="密令"
-          rules={[{required: true, message: '请输入密令！'}]}
-        >
-          <Input placeholder="请输入secret"/>
-        </Form.Item>
-        <Form.Item
-          name="users"
-          label="用户"
-          rules={[{required: true, message: '请输入用户！'}]}
-        >
-          <Input placeholder="请输入用户"/>
-        </Form.Item>
-        <Form.Item
-          name="agentId"
-          label="代理ID"
-          rules={[{required: true, message: '请输入代理ID！'}]}
-        >
-          <Input placeholder="请输入代理ID"/>
-        </Form.Item>
-        </>
+          :
+          <>
+            <Form.Item
+              name="corpId"
+              label={l('pages.registerCenter.alert.instance.corpId')}
+              rules={[{required: true, message: l('pages.registerCenter.alert.instance.corpIdPleaseHolder')}]}
+            >
+              <Input placeholder={l('pages.registerCenter.alert.instance.corpIdPleaseHolder')}/>
+            </Form.Item>
+            <Form.Item
+              name="secret"
+              label={l('pages.registerCenter.alert.instance.secret')}
+              rules={[{required: true, message: l('pages.registerCenter.alert.instance.secretPleaseHolder')}]}
+            >
+              <Input placeholder={l('pages.registerCenter.alert.instance.secretPleaseHolder')}/>
+            </Form.Item>
+            <Form.Item
+              name="users"
+              label={l('pages.registerCenter.alert.instance.user')}
+              rules={[{required: true, message: l('pages.registerCenter.alert.instance.userPleaseHolder')}]}
+            >
+              <Input placeholder={l('pages.registerCenter.alert.instance.userPleaseHolder')}/>
+            </Form.Item>
+            <Form.Item
+              name="agentId"
+              label={l('pages.registerCenter.alert.instance.agentId')}
+              rules={[{required: true, message:l('pages.registerCenter.alert.instance.agentIdPleaseHolder')}]}
+            >
+              <Input placeholder={l('pages.registerCenter.alert.instance.agentIdPleaseHolder')}/>
+            </Form.Item>
+          </>
         }
         <Form.Item
           name="msgtype"
-          label="展示方式"
-          rules={[{required: true, message: '请选择展示方式！'}]}
+          label={l('pages.registerCenter.alert.instance.msgtype')}
+          rules={[{required: true, message: l('pages.registerCenter.alert.instance.msgtypePleaseHolder')}]}
         >
-          <Radio.Group >
-            <Radio value='markdown'>MarkDown</Radio>
-            <Radio value='text'>文本</Radio>
+          <Radio.Group>
+            <Radio value='markdown'>{l('pages.registerCenter.alert.instance.markdown')}</Radio>
+            <Radio value='text'>{l('pages.registerCenter.alert.instance.text')}</Radio>
           </Radio.Group>
         </Form.Item>
 
         <Form.Item
           name="enabled"
-          label="是否启用">
-          <Switch checkedChildren="启用" unCheckedChildren="禁用"
+          label={l('global.table.isEnable')}>
+          <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                   defaultChecked={vals.enabled}/>
         </Form.Item>
       </>
@@ -180,11 +182,9 @@ const WeChatForm: React.FC<AlertInstanceFormProps> = (props) => {
   const renderFooter = () => {
     return (
       <>
-        <Button onClick={() => handleModalVisible(false)}>取消</Button>
-        <Button type="primary" onClick={() => sendTestForm()}>测试</Button>
-        <Button type="primary" onClick={() => submitForm()}>
-          完成
-        </Button>
+        <Button onClick={() => handleModalVisible(false)}>{l('button.cancel')}</Button>
+        <Button type="primary" onClick={() => sendTestForm()}>{l('button.test')}</Button>
+        <Button type="primary" onClick={() => submitForm()}>{l('button.finish')}</Button>
       </>
     );
   };
@@ -192,10 +192,10 @@ const WeChatForm: React.FC<AlertInstanceFormProps> = (props) => {
 
   return (
     <Modal
-      width={1200}
-      bodyStyle={{padding: '32px 40px 48px'}}
+      width={"40%"}
+      bodyStyle={{padding: '32px 40px 48px' ,height: '600px', overflowY: 'auto'}}
       destroyOnClose
-      title={formVals.id?"维护报警实例配置":"创建报警实例配置"}
+      title={formVals.id ? l('pages.registerCenter.alert.instance.modify') : l('pages.registerCenter.alert.instance.create')}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}
@@ -203,10 +203,10 @@ const WeChatForm: React.FC<AlertInstanceFormProps> = (props) => {
       <Form
         {...formLayout}
         form={form}
-        initialValues={getJSONData(formVals)}
+        initialValues={getJSONData(formVals as AlertInstanceTableListItem)}
         onValuesChange={onValuesChange}
       >
-        {renderContent(getJSONData(formVals))}
+        {renderContent(getJSONData(formVals as AlertInstanceTableListItem))}
       </Form>
     </Modal>
   );

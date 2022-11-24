@@ -17,24 +17,33 @@
  *
  */
 
-
 package com.dlink.controller;
 
-import com.dlink.api.FlinkAPI;
 import com.dlink.assertion.Asserts;
-import com.dlink.cluster.FlinkClusterInfo;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
 import com.dlink.model.Cluster;
-import com.dlink.result.SubmitResult;
+import com.dlink.model.JobInstance;
 import com.dlink.service.ClusterService;
-import com.fasterxml.jackson.databind.JsonNode;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import com.dlink.service.JobInstanceService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * ClusterController
@@ -46,17 +55,20 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/cluster")
 public class ClusterController {
+
     @Autowired
     private ClusterService clusterService;
-
+    @Autowired
+    private JobInstanceService jobInstanceService;
     /**
      * 新增或者更新
      */
     @PutMapping
     public Result saveOrUpdate(@RequestBody Cluster cluster) throws Exception {
         cluster.setAutoRegisters(false);
+        Integer id = cluster.getId();
         clusterService.registersCluster(cluster);
-        return Result.succeed(Asserts.isNotNull(cluster.getId()) ? "修改成功" : "新增成功");
+        return Result.succeed(Asserts.isNotNull(id) ? "修改成功" : "新增成功");
     }
 
     /**
@@ -82,17 +94,24 @@ public class ClusterController {
     @DeleteMapping
     public Result deleteMul(@RequestBody JsonNode para) {
         if (para.size() > 0) {
-            List<Integer> error = new ArrayList<>();
+            List<JobInstance> instances = jobInstanceService.listJobInstanceActive();
+            Set<Integer> ids = instances.stream().map(JobInstance::getClusterId).collect(Collectors.toSet());
+            List<String> error = new ArrayList<>();
             for (final JsonNode item : para) {
                 Integer id = item.asInt();
-                if (!clusterService.removeById(id)) {
-                    error.add(id);
+                if (ids.contains(id) || !clusterService.removeById(id)) {
+                    error.add(clusterService.getById(id).getName());
                 }
             }
             if (error.size() == 0) {
                 return Result.succeed("删除成功");
             } else {
-                return Result.succeed("删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
+                if (para.size() > error.size()) {
+                    return Result.succeed(
+                            "删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。\n请检查集群实例是否已被集群使用！");
+                } else {
+                    return Result.succeed(error.toString() + "删除失败，共" + error.size() + "次失败。\n请检查集群实例是否已被集群使用！");
+                }
             }
         } else {
             return Result.failed("请选择要删除的记录");

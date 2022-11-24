@@ -17,12 +17,11 @@
  *
  */
 
-
 package com.dlink.explainer.trans;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import java.util.List;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Trans

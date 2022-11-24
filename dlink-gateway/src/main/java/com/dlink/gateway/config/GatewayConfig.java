@@ -17,18 +17,19 @@
  *
  */
 
-
 package com.dlink.gateway.config;
 
 import com.dlink.gateway.GatewayType;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * SubmitConfig
@@ -41,6 +42,7 @@ import java.util.Map;
 public class GatewayConfig {
 
     private Integer taskId;
+    private String[] jarPaths;
     private GatewayType type;
     private ClusterConfig clusterConfig;
     private FlinkConfig flinkConfig;
@@ -89,9 +91,8 @@ public class GatewayConfig {
                 Map<String, String> configMap = new HashMap<>();
                 JsonNode paras = mapper.readTree(para.get("configParas").asText());
                 paras.forEach((JsonNode node) -> {
-                            configMap.put(node.get("key").asText(), node.get("value").asText());
-                        }
-                );
+                    configMap.put(node.get("key").asText(), node.get("value").asText());
+                });
                 config.getFlinkConfig().setConfiguration(configMap);
             } catch (JsonProcessingException e) {
                 e.printStackTrace();

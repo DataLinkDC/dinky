@@ -17,13 +17,13 @@
  *
  */
 
-
 package com.dlink.service.impl;
 
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.AlertHistoryMapper;
 import com.dlink.model.AlertHistory;
 import com.dlink.service.AlertHistoryService;
+
 import org.springframework.stereotype.Service;
 
 /**

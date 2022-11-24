@@ -17,12 +17,16 @@
  *
  */
 
+import {l} from "@/utils/intl"
 
 export type Config = {
   name: string,
   lable: string,
   placeholder: string
   defaultValue?: string
+  help?: string
+  showOnSubmitType?: string
+  showType?: string
 }
 
 export const HADOOP_CONFIG_LIST: Config[] = [{
@@ -33,41 +37,73 @@ export const HADOOP_CONFIG_LIST: Config[] = [{
 export const KUBERNETES_CONFIG_LIST: Config[] = [{
   name: 'kubernetes.namespace',
   lable: 'kubernetes.namespace',
-  placeholder: 'dlink',
+  placeholder: l('pages.registerCenter.clusterConfig.help.kubernets.namespace'),
+  showType: 'input'
 },{
   name: 'kubernetes.container.image',
   lable: 'kubernetes.container.image',
-  placeholder: 'dlink',
+  placeholder: l('pages.registerCenter.clusterConfig.help.kubernets.image'),
+  showType: 'input'
+
 },{
   name: 'kubernetes.rest-service.exposed.type',
   lable: 'kubernetes.rest-service.exposed.type',
   placeholder: 'NodePort',
-  defaultValue: 'NodePort',
-}];
-export const FLINK_CONFIG_LIST: Config[] = [{
+  defaultValue: '',
+  showType: 'input',
+  showOnSubmitType: 'Kubernetes'
+},{
+  name: 'kubernetes.jobmanager.cpu',
+  lable: 'kubernetes.jobmanager.cpu',
+  showType: 'input',
+  placeholder: l('pages.registerCenter.clusterConfig.help.kubernets.jmcpu'),
+}, {
+  name: 'kubernetes.taskmanager.cpu',
+  lable: 'kubernetes.taskmanager.cpu',
+  showType: 'input',
+  placeholder: l('pages.registerCenter.clusterConfig.help.kubernets.tmcpu'),
+}
+];
+export const FLINK_CONFIG_LIST: Config[] = [
+ {
   name: 'jobmanager.memory.process.size',
   lable: 'jobmanager.memory.process.size',
-  placeholder: '1600m',
+  placeholder: l('pages.registerCenter.clusterConfig.help.kubernets.jobManagerMemory'),
 }, {
   name: 'taskmanager.memory.process.size',
   lable: 'taskmanager.memory.process.size',
-  placeholder: '2048m',
+  placeholder: l('pages.registerCenter.clusterConfig.help.kubernets.taskManagerMemory'),
 }, {
   name: 'taskmanager.memory.framework.heap.size',
   lable: 'taskmanager.memory.framework.heap.size',
-  placeholder: '1024m',
+  placeholder: '',
 }, {
   name: 'taskmanager.numberOfTaskSlots',
   lable: 'taskmanager.numberOfTaskSlots',
-  placeholder: '4',
-}, {
-  name: 'parallelism.default',
-  lable: 'parallelism.default',
-  placeholder: '1',
+  placeholder: '',
 }, {
   name: 'state.savepoints.dir',
   lable: 'state.savepoints.dir',
   placeholder: 'hdfs:///flink/savepoints/',
+}, {
+  name: 'state.checkpoints.dir',
+  lable: 'state.checkpoints.dir',
+  placeholder: 'hdfs:///flink/savepoints/',
+}
+];
+
+export const APP_CONFIG_LIST: Config[] = [{
+  name: 'userJarPath',
+  lable: l('pages.registerCenter.clusterConfig.jar.path'),
+  placeholder: 'local:///opt/example.jar',
+}, {
+  name: 'userJarMainAppClass',
+  lable: l('pages.registerCenter.clusterConfig.jar.class'),
+  placeholder: 'com.example.app',
+}, {
+  name: 'userJarParas',
+  lable: l('pages.registerCenter.clusterConfig.jar.args'),
+  placeholder: 'example: -conf test.properties',
 }
 ];
 
@@ -82,6 +118,13 @@ export function HADOOP_CONFIG_NAME_LIST () {
 export function KUBERNETES_CONFIG_NAME_LIST () {
   const list: string[] = [];
   KUBERNETES_CONFIG_LIST.forEach(item => {
+    list.push(item.name);
+  });
+  return list;
+}
+export function APP_CONFIG_NAME_LIST () {
+  const list: string[] = [];
+  APP_CONFIG_LIST.forEach(item => {
     list.push(item.name);
   });
   return list;

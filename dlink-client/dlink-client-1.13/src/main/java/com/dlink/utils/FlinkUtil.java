@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.utils;
 
 import org.apache.flink.api.common.JobID;

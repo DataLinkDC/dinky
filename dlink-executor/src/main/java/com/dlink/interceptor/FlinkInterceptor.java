@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.interceptor;
 
 import com.dlink.assertion.Asserts;
@@ -25,6 +24,7 @@ import com.dlink.executor.Executor;
 import com.dlink.trans.Operation;
 import com.dlink.trans.Operations;
 import com.dlink.utils.SqlUtil;
+
 import org.apache.flink.table.api.TableResult;
 
 /**
@@ -34,6 +34,8 @@ import org.apache.flink.table.api.TableResult;
  * @since 2021/6/11 22:17
  */
 public class FlinkInterceptor {
+    private FlinkInterceptor() {
+    }
 
     public static String pretreatStatement(Executor executor, String statement) {
         statement = SqlUtil.removeNote(statement);

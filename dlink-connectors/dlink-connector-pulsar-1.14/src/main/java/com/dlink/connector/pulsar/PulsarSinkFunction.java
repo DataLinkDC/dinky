@@ -17,14 +17,12 @@
  *
  */
 
-
-
 package com.dlink.connector.pulsar;
 
 import com.dlink.connector.pulsar.util.PulsarConnectionHolder;
 import com.dlink.connector.pulsar.util.PulsarProducerHolder;
 import com.dlink.utils.JSONUtil;
-import com.fasterxml.jackson.databind.node.ArrayNode;
+
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.api.common.functions.RuntimeContext;
 import org.apache.flink.api.common.serialization.SerializationSchema;
@@ -37,16 +35,26 @@ import org.apache.flink.streaming.api.operators.StreamingRuntimeContext;
 import org.apache.flink.util.ExceptionUtils;
 import org.apache.flink.util.SerializableObject;
 import org.apache.pulsar.PulsarVersion;
-import org.apache.pulsar.client.api.*;
+import org.apache.pulsar.client.api.ClientBuilder;
+import org.apache.pulsar.client.api.CompressionType;
+import org.apache.pulsar.client.api.HashingScheme;
+import org.apache.pulsar.client.api.MessageId;
+import org.apache.pulsar.client.api.Producer;
+import org.apache.pulsar.client.api.ProducerBuilder;
+import org.apache.pulsar.client.api.PulsarClient;
+import org.apache.pulsar.client.api.TypedMessageBuilder;
 import org.apache.pulsar.client.impl.PulsarClientImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * The sink function for Pulsar.
@@ -57,17 +65,16 @@ import java.util.function.BiConsumer;
  */
 @Internal
 public class PulsarSinkFunction<T> extends RichSinkFunction<T>
-        implements CheckpointedFunction {
+    implements CheckpointedFunction {
 
     private static final long serialVersionUID = 1L;
-    private static final Logger LOG = LoggerFactory.getLogger(PulsarSinkFunction.class);
+    private final Logger log = LoggerFactory.getLogger(PulsarSinkFunction.class);
 
     private final String topic;
     private final String serviceUrl;
     private final Properties pulsarProducerProperties;
     private final Properties pulsarClientProperties;
-    SerializationSchema<T> runtimeEncoder;
-    //    private transient PulsarClient pulsarClient;
+    private SerializationSchema<T> runtimeEncoder;
     private transient Producer producer;
     private transient volatile boolean closed = false;
 
@@ -101,13 +108,12 @@ public class PulsarSinkFunction<T> extends RichSinkFunction<T>
      */
     protected long pendingRecords;
 
-
     public PulsarSinkFunction(
-            String topic,
-            String serviceUrl,
-            Properties pulsarProducerProperties,
-            Properties pulsarClientProperties,
-            SerializationSchema<T> runtimeEncoder
+        String topic,
+        String serviceUrl,
+        Properties pulsarProducerProperties,
+        Properties pulsarClientProperties,
+        SerializationSchema<T> runtimeEncoder
     ) {
         this.topic = topic;
         this.serviceUrl = serviceUrl;
@@ -118,60 +124,55 @@ public class PulsarSinkFunction<T> extends RichSinkFunction<T>
 
     @Override
     public void open(Configuration parameters) throws Exception {
-        LOG.info("start open ...");
+        log.info("start open ...");
         try {
             RuntimeContext ctx = getRuntimeContext();
 
-            LOG.info("Starting FlinkPulsarProducer ({}/{}) to produce into (※) pulsar topic {}",
-                    ctx.getIndexOfThisSubtask() + 1, ctx.getNumberOfParallelSubtasks(), topic);
+            log.info("Starting FlinkPulsarProducer ({}/{}) to produce into (※) pulsar topic {}",
+                ctx.getIndexOfThisSubtask() + 1, ctx.getNumberOfParallelSubtasks(), topic);
 
-//            this.producer = createProducer();
             this.producer = createReusedProducer();
-            LOG.info("Pulsar producer has been created.");
+            log.info("Pulsar producer has been created.");
 
         } catch (IOException ioe) {
-            LOG.error("Exception while creating connection to Pulsar.", ioe);
+            log.error("Exception while creating connection to Pulsar.", ioe);
             throw new RuntimeException("Cannot create connection to Pulsar.", ioe);
         } catch (Exception ex) {
-            LOG.error("Exception while creating connection to Pulsar.", ex);
+            log.error("Exception while creating connection to Pulsar.", ex);
             throw new RuntimeException("Cannot create connection to Pulsar.", ex);
         }
 
         if (flushOnCheckpoint
-                && !((StreamingRuntimeContext) this.getRuntimeContext()).isCheckpointingEnabled()) {
-            LOG.warn(
-                    "Flushing on checkpoint is enabled, but checkpointing is not enabled. Disabling flushing.");
+            && !((StreamingRuntimeContext) this.getRuntimeContext()).isCheckpointingEnabled()) {
+            log.warn("Flushing on checkpoint is enabled, but checkpointing is not enabled. Disabling flushing.");
             flushOnCheckpoint = false;
         }
 
         if (logFailuresOnly) {
             this.sendCallback =
-                    (t, u) -> {
-                        if (u != null) {
-                            LOG.error(
-                                    "Error while sending message to Pulsar: {}",
-                                    ExceptionUtils.stringifyException(u));
-                        }
-                        acknowledgeMessage();
-                    };
+                (t, u) -> {
+                    if (u != null) {
+                        log.error("Error while sending message to Pulsar: {}", ExceptionUtils.stringifyException(u));
+                    }
+                    acknowledgeMessage();
+                };
         } else {
             this.sendCallback =
-                    (t, u) -> {
-                        if (asyncException == null && u != null) {
-                            asyncException = new Exception(u);
-                        }
-                        acknowledgeMessage();
-                    };
+                (t, u) -> {
+                    if (asyncException == null && u != null) {
+                        asyncException = new Exception(u);
+                    }
+                    acknowledgeMessage();
+                };
         }
-        LOG.info("end open.");
+        log.info("end open.");
     }
-
 
     @Override
     public void invoke(T value, Context context) throws Exception {
-        LOG.info("start to invoke, send pular message.");
+        log.info("start to invoke, send pular message.");
 
-        // propagate asynchronous errors
+        //propagate asynchronous errors
         checkErroneous();
 
         byte[] serializeValue = runtimeEncoder.serialize(value);
@@ -189,113 +190,79 @@ public class PulsarSinkFunction<T> extends RichSinkFunction<T>
         //异步发送
         CompletableFuture<MessageId> messageIdCompletableFuture = typedMessageBuilder.sendAsync();
         messageIdCompletableFuture.whenComplete(sendCallback);
-
     }
-
 
     @Override
     public void close() throws Exception {
-
         //采用pulsar producer复用的方式，close方法不要具体实现，否则producer会被关闭
-        LOG.error("PulsarProducerBase Class close function called");
-//        closed = true;
-//
-//        if (producer != null) {
-//            try {
-//                producer.close();
-//            } catch (IOException e) {
-//                LOG.warn("Exception occurs while closing Pulsar producer.", e);
-//            }
-//            this.producer = null;
-//        }
+        log.error("PulsarProducerBase Class close function called");
         checkErroneous();
     }
 
     @Override
     public void snapshotState(FunctionSnapshotContext context) throws Exception {
-
         if (flushOnCheckpoint) {
             synchronized (pendingRecordsLock) {
                 if (pendingRecords != 0) {
                     try {
-                        LOG.info("等待notify");
+                        log.info("等待notify");
                         pendingRecordsLock.wait();
                         checkErroneous();
                         flush();
-                        LOG.info("等待waite之后");
+                        log.info("等待waite之后");
                     } catch (InterruptedException e) {
-                        // this can be interrupted when the Task has been cancelled.
-                        // by throwing an exception, we ensure that this checkpoint doesn't get
-                        // confirmed
-                        throw new IllegalStateException(
-                                "Flushing got interrupted while checkpointing", e);
+                        //this can be interrupted when the Task has been cancelled.
+                        //by throwing an exception, we ensure that this checkpoint doesn't get
+                        //confirmed
+                        throw new IllegalStateException("Flushing got interrupted while checkpointing", e);
                     }
                 }
             }
-
         }
-
     }
 
     @Override
     public void initializeState(FunctionInitializationContext context) throws Exception {
-        // nothing to do.
+        //nothing to do.
     }
 
-
     public String getKey(String strValue) {
-//        JSONObject jsonObject = JSONObject.parseObject(strValue);
-//        JSONObject jsonObject = JSONUtil.parseObject(strValue);
-//        String key = jsonObject.getString("key");
-        ArrayNode jsonNodes = JSONUtil.parseArray(strValue);
+        //JSONObject jsonObject = JSONObject.parseObject(strValue);
+        //JSONObject jsonObject = JSONUtil.parseObject(strValue);
+        //String key = jsonObject.getString("key");
+        ObjectNode jsonNodes = JSONUtil.parseObject(strValue);
         String key = String.valueOf(jsonNodes.get("key"));
         return key == null ? "" : key;
     }
 
     //获取Pulsar Producer
     public Producer createProducer() throws Exception {
-        LOG.info("current pulsar version is " + PulsarVersion.getVersion());
+        log.info("current pulsar version is {}", PulsarVersion.getVersion());
 
         ClientBuilder builder = PulsarClient.builder();
         ProducerBuilder producerBuilder = builder.serviceUrl(serviceUrl)
-                .maxNumberOfRejectedRequestPerConnection(50)
-                .loadConf((Map) pulsarClientProperties)
-                .build()
-                .newProducer()
-                .topic(topic)
-                .blockIfQueueFull(Boolean.TRUE)
-                .compressionType(CompressionType.LZ4)
-                .hashingScheme(HashingScheme.JavaStringHash)
-//                .batchingMaxPublishDelay(100, TimeUnit.MILLISECONDS)
-                .loadConf((Map) pulsarProducerProperties);//实现配置透传功能
+            .maxNumberOfRejectedRequestPerConnection(50)
+            .loadConf((Map) pulsarClientProperties)
+            .build()
+            .newProducer()
+            .topic(topic)
+            .blockIfQueueFull(Boolean.TRUE)
+            .compressionType(CompressionType.LZ4)
+            .hashingScheme(HashingScheme.JavaStringHash)
+            //.batchingMaxPublishDelay(100, TimeUnit.MILLISECONDS)
+            .loadConf((Map) pulsarProducerProperties);//实现配置透传功能
         Producer producer = producerBuilder.create();
         return producer;
-
-//        return PulsarClient.builder()
-//                .serviceUrl(serviceUrl)
-//                .build()
-//                .newProducer()
-//                .loadConf((Map)properties)//实现配置透传功能
-//                .topic(topic)
-//                .blockIfQueueFull(Boolean.TRUE)
-//                .compressionType(CompressionType.LZ4)
-//                .hashingScheme(HashingScheme.JavaStringHash)
-//                .batchingMaxPublishDelay(100, TimeUnit.MILLISECONDS)
-//                .create();
     }
 
     //获取复用的Pulsar Producer
     public Producer createReusedProducer() throws Exception {
-        LOG.info("now create client, serviceUrl is :" + serviceUrl);
+        log.info("now create client, serviceUrl is : {}", serviceUrl);
         PulsarClientImpl client = PulsarConnectionHolder.getProducerClient(serviceUrl, pulsarClientProperties);
 
-        LOG.info("current pulsar version is " + PulsarVersion.getVersion());
+        log.info("current pulsar version is {} , topic is : {}", PulsarVersion.getVersion(), topic);
 
-        LOG.info("now create producer, topic is :" + topic);
-//        ProducerConfigurationData configuration = new ProducerConfigurationData();
-//        configuration.setHashingScheme(HashingScheme.JavaStringHash);
         return PulsarProducerHolder.getProducer(topic, pulsarProducerProperties, client);
-
     }
 
     /**
@@ -320,11 +287,10 @@ public class PulsarSinkFunction<T> extends RichSinkFunction<T>
         this.flushOnCheckpoint = flush;
     }
 
-
     protected void checkErroneous() throws Exception {
         Exception e = asyncException;
         if (e != null) {
-            // prevent double throwing
+            //prevent double throwing
             asyncException = null;
             throw new Exception("Failed to send data to Pulsar: " + e.getMessage(), e);
         }
@@ -333,16 +299,15 @@ public class PulsarSinkFunction<T> extends RichSinkFunction<T>
     private void acknowledgeMessage() {
         if (flushOnCheckpoint) {
             synchronized (pendingRecordsLock) {
-                LOG.info("pendingRecords：" + pendingRecords);
+                log.info("pendingRecords：{}", pendingRecords);
                 pendingRecords--;
                 if (pendingRecords == 0) {
                     pendingRecordsLock.notifyAll();
-                    LOG.info("notify完成");
+                    log.info("notify完成");
                 }
             }
         }
     }
-
 
     /**
      * Flush pending records.
@@ -350,8 +315,5 @@ public class PulsarSinkFunction<T> extends RichSinkFunction<T>
     protected void flush() throws Exception {
         producer.flush();
     }
-
-    ;
-
 
 }

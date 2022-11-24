@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.metadata.query;
 
 /**
@@ -28,7 +27,6 @@ package com.dlink.metadata.query;
  **/
 public abstract class AbstractDBQuery implements IDBQuery {
 
-
     @Override
     public String createTableSql(String schemaName, String tableName) {
         return "show create table " + schemaName + "." + tableName;
@@ -37,6 +35,11 @@ public abstract class AbstractDBQuery implements IDBQuery {
     @Override
     public String createTableName() {
         return "Create Table";
+    }
+
+    @Override
+    public String createViewName() {
+        return "Create View";
     }
 
     @Override
@@ -126,6 +129,11 @@ public abstract class AbstractDBQuery implements IDBQuery {
     @Override
     public String defaultValue() {
         return "COLUMN_DEFAULT";
+    }
+
+    @Override
+    public String columnLength() {
+        return "LENGTH";
     }
 
     @Override

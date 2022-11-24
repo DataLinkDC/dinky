@@ -17,15 +17,16 @@
  *
  */
 
-
 package com.dlink.common.result;
 
 import com.dlink.model.CodeEnum;
+
+import java.io.Serializable;
+
+import cn.hutool.core.date.DateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
 
 /**
  * 返回对象
@@ -41,6 +42,7 @@ public class Result<T> implements Serializable {
     private T datas;
     private Integer code;
     private String msg;
+    private String time;
 
     public static <T> Result<T> succeed(String msg) {
         return of(null, CodeEnum.SUCCESS.getCode(), msg);
@@ -54,8 +56,12 @@ public class Result<T> implements Serializable {
         return of(model, CodeEnum.SUCCESS.getCode(), "");
     }
 
+    public static <T> Result<T> data(T model) {
+        return of(model, CodeEnum.SUCCESS.getCode(), "");
+    }
+
     public static <T> Result<T> of(T datas, Integer code, String msg) {
-        return new Result<>(datas, code, msg);
+        return new Result<>(datas, code, msg, new DateTime().toString());
     }
 
     public static <T> Result<T> failed(String msg) {
@@ -70,4 +76,3 @@ public class Result<T> implements Serializable {
         return of(model, CodeEnum.ERROR.getCode(), msg);
     }
 }
-

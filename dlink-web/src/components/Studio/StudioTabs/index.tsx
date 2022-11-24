@@ -18,8 +18,8 @@
  */
 
 
-import {message, Tabs, Menu, Dropdown} from 'antd';
-import React, {useState} from 'react';
+import {Dropdown, Menu, message, Tabs} from 'antd';
+import React from 'react';
 import {connect} from 'umi';
 import {StateType} from '@/pages/DataStudio/model';
 import styles from './index.less';
@@ -27,11 +27,14 @@ import StudioEdit from '../StudioEdit';
 import {DIALECT} from '../conf';
 import StudioHome from "@/components/Studio/StudioHome";
 import {Dispatch} from "@@/plugin-dva/connect";
+import StudioKubernetes from "@/components/Studio/StudioKubernetes";
+import {l} from "@/utils/intl";
 
 const {TabPane} = Tabs;
 
 const EditorTabs = (props: any) => {
-  const {tabs, current, toolHeight, width,height} = props;
+
+  const {tabs, current, toolHeight, width, height} = props;
 
   const onChange = (activeKey: any) => {
     props.saveToolHeight(toolHeight);
@@ -42,7 +45,7 @@ const EditorTabs = (props: any) => {
     if (action === 'add') {
       add();
     } else if (action === 'remove') {
-      props.saveToolHeight(toolHeight-0.0001);
+      props.saveToolHeight(toolHeight - 0.0001);
       // if (current.isModified) {
       //   saveTask(current, dispatch);
       // }
@@ -51,7 +54,7 @@ const EditorTabs = (props: any) => {
   };
 
   const add = () => {
-    message.warn('敬请期待');
+    message.warn(l('global.stay.tuned'));
   };
 
   const remove = (targetKey: any) => {
@@ -71,20 +74,20 @@ const EditorTabs = (props: any) => {
         newActiveKey = newPanes[0].key;
       }
     }
-    props.saveTabs(newPanes,newActiveKey);
+    props.saveTabs(newPanes, newActiveKey);
   };
 
   const handleClickMenu = (e: any, current) => {
-    props.closeTabs(current,e.key);
+    props.closeTabs(current, e.key);
   };
 
   const menu = (pane) => (
     <Menu onClick={(e) => handleClickMenu(e, pane)}>
-      <Menu.Item key="CLOSE_OTHER">
-        <span>关闭其他</span>
-      </Menu.Item>
       <Menu.Item key="CLOSE_ALL">
-        <span>关闭所有</span>
+        <span>{l('right.menu.closeAll')}</span>
+      </Menu.Item>
+      <Menu.Item key="CLOSE_OTHER">
+        <span>{l('right.menu.closeOther')}</span>
       </Menu.Item>
     </Menu>
   );
@@ -92,65 +95,95 @@ const EditorTabs = (props: any) => {
   const Tab = (pane: any) => (
     <span>
       {pane.key === 0 ? (
-        pane.title
+        <>{pane.icon} {pane.title}</>
       ) : (
         <Dropdown overlay={menu(pane)} trigger={['contextMenu']}>
           <span className="ant-dropdown-link">
-            {pane.title}
+            <>{pane.icon} {pane.title}</>
           </span>
         </Dropdown>
       )}
     </span>
   );
 
-  return (
-    <>
-      {tabs.panes.length === 0?<StudioHome width={width} />:
-    <Tabs
-      hideAdd
-      type="editable-card"
-      size="small"
-      onChange={onChange}
-      activeKey={tabs.activeKey + ''}
-      onEdit={onEdit}
-      className={styles['edit-tabs']}
-      style={{height: height?height:toolHeight}}
-    >
-      {tabs.panes.map((pane,i) => (
+  // as different dialet return different Panle
+  const getTabPane = (pane, i) => {
+    if (pane.task.dialect == DIALECT.KUBERNETES_APPLICATION) {
+      return (
         <TabPane tab={Tab(pane)} key={pane.key} closable={pane.closable}>
-          <StudioEdit
+          <StudioKubernetes
             tabsKey={pane.key}
-            sql={pane.value}
+            conf={pane.value}
             monaco={pane.monaco}
-            // sqlMetaData={pane.sqlMetaData}
-            height={height?height:(toolHeight - 32)}
+            height={height ? height : (toolHeight - 32)}
             width={width}
-            language={current.task.dialect === DIALECT.JAVA ? 'java' : 'sql'}
           />
         </TabPane>
-      ))}
-    </Tabs>}
-      </>
+      )
+    } else {
+      return (<TabPane tab={Tab(pane)} key={pane.key} closable={pane.closable}>
+        <StudioEdit
+          tabsKey={pane.key}
+          sql={pane.value}
+          monaco={pane.monaco}
+          sqlMetaData={pane.sqlMetaData}
+          height={height ? height : (toolHeight - 32)}
+          width={width}
+          language={getLanguage(current.task.dialect)}
+        />
+      </TabPane>)
+    }
+  }
+  const getLanguage = (dialect: string) => {
+    switch (dialect) {
+      case DIALECT.JAVA:
+        return DIALECT.JAVA.toLowerCase()
+      case DIALECT.SCALA:
+        return DIALECT.SCALA.toLowerCase()
+      case DIALECT.PYTHON:
+        return DIALECT.PYTHON.toLowerCase()
+      default:
+        return DIALECT.SQL.toLowerCase()
+    }
+
+  }
+
+  return (
+    <>
+      {tabs.panes.length === 0 ? <StudioHome width={width}/> :
+        <Tabs
+          hideAdd
+          type="editable-card"
+          size="small"
+          onChange={onChange}
+          activeKey={tabs.activeKey + ''}
+          onEdit={onEdit}
+          className={styles['edit-tabs']}
+          style={{height: height ? height : toolHeight}}
+        >
+          {tabs.panes.map((pane, i) => getTabPane(pane, i))}
+        </Tabs>}
+    </>
   );
 };
 
-const mapDispatchToProps = (dispatch: Dispatch)=>({
-  closeTabs:(current: any,key: string)=>dispatch({
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  closeTabs: (current: any, key: string) => dispatch({
     type: 'Studio/closeTabs',
     payload: {
       deleteType: key,
       current
     },
-  }),saveTabs:(newPanes: any,newActiveKey: number)=>dispatch({
+  }), saveTabs: (newPanes: any, newActiveKey: number) => dispatch({
     type: 'Studio/saveTabs',
     payload: {
       activeKey: newActiveKey,
       panes: newPanes,
     },
-  }),saveToolHeight:(toolHeight: number)=>dispatch({
+  }), saveToolHeight: (toolHeight: number) => dispatch({
     type: 'Studio/saveToolHeight',
     payload: toolHeight - 0.0001,
-  }),changeActiveKey:(activeKey: number)=>dispatch({
+  }), changeActiveKey: (activeKey: number) => dispatch({
     type: 'Studio/changeActiveKey',
     payload: activeKey,
   }),
@@ -161,4 +194,4 @@ export default connect(({Studio}: { Studio: StateType }) => ({
   sql: Studio.sql,
   tabs: Studio.tabs,
   toolHeight: Studio.toolHeight,
-}),mapDispatchToProps)(EditorTabs);
+}), mapDispatchToProps)(EditorTabs);

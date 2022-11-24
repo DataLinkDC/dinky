@@ -17,8 +17,10 @@
  *
  */
 
-
 package org.apache.flink.connector.phoenix.table;
+
+import static org.apache.flink.table.types.utils.TypeConversions.fromDataTypeToLegacyInfo;
+import static org.apache.flink.util.Preconditions.checkNotNull;
 
 import org.apache.flink.api.java.typeutils.RowTypeInfo;
 import org.apache.flink.connector.phoenix.PhoenixInputFormat;
@@ -45,9 +47,6 @@ import org.apache.flink.types.Row;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Objects;
-
-import static org.apache.flink.table.types.utils.TypeConversions.fromDataTypeToLegacyInfo;
-import static org.apache.flink.util.Preconditions.checkNotNull;
 
 /** {@link TableSource} for JDBC. */
 public class PhoenixTableSource

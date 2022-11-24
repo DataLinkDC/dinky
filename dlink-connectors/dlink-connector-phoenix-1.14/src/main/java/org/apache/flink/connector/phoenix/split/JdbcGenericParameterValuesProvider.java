@@ -17,7 +17,6 @@
  *
  */
 
-
 package org.apache.flink.connector.phoenix.split;
 
 import org.apache.flink.annotation.Experimental;

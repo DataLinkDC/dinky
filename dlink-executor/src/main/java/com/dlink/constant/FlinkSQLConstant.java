@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.constant;
 
 /**
@@ -30,7 +29,7 @@ public interface FlinkSQLConstant {
     /**
      * 分隔符
      */
-    String SEPARATOR = ";";
+    String SEPARATOR = ";\n";
     /**
      * DDL 类型
      */

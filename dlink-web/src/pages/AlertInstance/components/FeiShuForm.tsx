@@ -23,6 +23,7 @@ import {Button, Divider, Form, Input, Modal, Radio, Switch} from 'antd';
 import {AlertInstanceTableListItem} from "@/pages/AlertInstance/data";
 import {buildJSONData, getJSONData} from "@/pages/AlertInstance/function";
 import {ALERT_TYPE} from "@/pages/AlertInstance/conf";
+import {l} from "@/utils/intl";
 
 export type AlertInstanceFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -55,113 +56,114 @@ const FeiShuForm: React.FC<AlertInstanceFormProps> = (props) => {
     modalVisible,
   } = props;
 
-  const onValuesChange = (change: any,all: any)=>{
-    setFormVals({...formVals,...change});
+  const onValuesChange = (change: any, all: any) => {
+    setFormVals({...formVals, ...change});
   };
 
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
-    setFormVals(buildJSONData(formVals,fieldsValue));
-    handleSubmit(buildJSONData(formVals,fieldsValue));
+    setFormVals(buildJSONData(formVals, fieldsValue));
+    handleSubmit(buildJSONData(formVals, fieldsValue));
   };
 
   const sendTestForm = async () => {
     const fieldsValue = await form.getFieldsValue();
-    setFormVals(buildJSONData(formVals,fieldsValue));
-    handleTest(buildJSONData(formVals,fieldsValue));
+    setFormVals(buildJSONData(formVals, fieldsValue));
+    handleTest(buildJSONData(formVals, fieldsValue));
   };
 
   const renderContent = (vals) => {
     return (
       <>
-        <Divider>飞书配置</Divider>
+        <Divider>{l('pages.registerCenter.alert.instance.feishu')}</Divider>
         <Form.Item
           name="name"
-          label="名称"
-          rules={[{required: true, message: '请输入名称！'}]}
+          label={l('pages.registerCenter.alert.instance.name')}
+          rules={[{required: true, message: l('pages.registerCenter.alert.instance.namePleaseHolder')}]}
         >
-          <Input placeholder="请输入名称"/>
+          <Input placeholder={l('pages.registerCenter.alert.instance.namePleaseHolder')}/>
         </Form.Item>
         <Form.Item
           name="webhook"
-          label="地址"
-          rules={[{required: true, message: '请输入WebHook！'}]}
+          label={l('pages.registerCenter.alert.instance.webhook')}
+          rules={[{required: true, message: l('pages.registerCenter.alert.instance.webhookPleaseHolder')}]}
         >
-          <Input placeholder="请输入WebHook"/>
+          <Input.TextArea placeholder={l('pages.registerCenter.alert.instance.webhookPleaseHolder')} allowClear
+                          autoSize={{minRows: 1, maxRows: 5}}/>
         </Form.Item>
         <Form.Item
           name="keyword"
-          label="关键字"
+          label={l('pages.registerCenter.alert.instance.keyword')}
         >
-          <Input placeholder="请输入keyword"/>
+          <Input placeholder={l('pages.registerCenter.alert.instance.keywordPleaseHolder')}/>
         </Form.Item>
         <Form.Item
           name="secret"
-          label="密令"
+          label={l('pages.registerCenter.alert.instance.secret')}
         >
-          <Input placeholder="请输入secret"/>
+          <Input placeholder={l('pages.registerCenter.alert.instance.secretPleaseHolder')}/>
         </Form.Item>
         <Form.Item
           name="isEnableProxy"
-          label="开启代理">
-          <Switch checkedChildren="是" unCheckedChildren="否"
+          label={l('pages.registerCenter.alert.instance.isEnableProxy')}>
+          <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                   defaultChecked={vals.isEnableProxy}/>
         </Form.Item>
-        {vals.isEnableProxy?<>
+        {vals.isEnableProxy ? <>
           <Form.Item
             name="proxy"
-            label="代理"
+            label={l('pages.registerCenter.alert.instance.proxy')}
           >
-            <Input placeholder="请输入proxy"/>
+            <Input placeholder={l('pages.registerCenter.alert.instance.proxyPleaseHolder')}/>
           </Form.Item>
           <Form.Item
             name="port"
-            label="端口号"
+            label={l('pages.registerCenter.alert.instance.port')}
           >
-            <Input placeholder="请输入port"/>
+            <Input placeholder={l('pages.registerCenter.alert.instance.portPleaseHolder')}/>
           </Form.Item>
           <Form.Item
             name="user"
-            label="用户"
+            label={l('pages.registerCenter.alert.instance.user')}
           >
-            <Input placeholder="请输入user"/>
+            <Input placeholder={l('pages.registerCenter.alert.instance.userPleaseHolder')}/>
           </Form.Item>
           <Form.Item
             name="password"
-            label="密码"
+            label={l('pages.registerCenter.alert.instance.password')}
           >
-            <Input.Password placeholder="请输入password"/>
-          </Form.Item></>:undefined
+            <Input.Password placeholder={l('pages.registerCenter.alert.instance.passwordPleaseHolder')}/>
+          </Form.Item></> : undefined
         }
         <Form.Item
           name="isAtAll"
-          label="@所有人">
-          <Switch checkedChildren="启用" unCheckedChildren="禁用"
+          label={l('pages.registerCenter.alert.instance.isAtAll')}>
+          <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                   defaultChecked={vals.isAtAll}/>
         </Form.Item>
-        { ( !vals.isAtAll )&&
+        {(!vals.isAtAll) &&
           <Form.Item
             name="users"
-            label="被@用户"
-            rules={[{required: true, message: '请输入被@用户！多个逗号隔开!',}]}
+            label={l('pages.registerCenter.alert.instance.atUsers')}
+            rules={[{required: true, message: l('pages.registerCenter.alert.instance.atUsersPleaseHolder')}]}
           >
-            <Input placeholder="请输入被@用户ID(需要飞书后台的用户ID),多个逗号隔开!"/>
+            <Input placeholder={l('pages.registerCenter.alert.instance.atUsersPleaseHolder')}/>
           </Form.Item>
         }
         <Form.Item
           name="enabled"
-          label="是否启用">
-          <Switch checkedChildren="启用" unCheckedChildren="禁用"
+          label={l('global.table.isEnable')}>
+          <Switch checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                   defaultChecked={vals.enabled}/>
         </Form.Item>
         <Form.Item
           name="msgtype"
-          label="展示方式"
-          rules={[{required: true, message: '请选择展示方式！'}]}
+          label={l('pages.registerCenter.alert.instance.msgtype')}
+          rules={[{required: true, message: l('pages.registerCenter.alert.instance.msgtypePleaseHolder')}]}
         >
-          <Radio.Group >
-            <Radio value='post'>富文本</Radio>
-            <Radio value='text'>文本</Radio>
+          <Radio.Group>
+            <Radio value='post'>{l('pages.registerCenter.alert.instance.post')}</Radio>
+            <Radio value='text'>{l('pages.registerCenter.alert.instance.text')}</Radio>
           </Radio.Group>
         </Form.Item>
       </>
@@ -171,11 +173,10 @@ const FeiShuForm: React.FC<AlertInstanceFormProps> = (props) => {
   const renderFooter = () => {
     return (
       <>
-        <Button onClick={() => handleModalVisible(false)}>取消</Button>
-        <Button type="primary" onClick={() => sendTestForm()}>测试</Button>
-        <Button type="primary" onClick={() => submitForm()}>
-          完成
-        </Button>
+        <Button onClick={() => handleModalVisible(false)}>{l('button.cancel')}</Button>
+        <Button type="primary" onClick={() => sendTestForm()}>{l('button.test')}</Button>
+        <Button type="primary" onClick={() => submitForm()}>{l('button.finish')}</Button>
+
       </>
     );
   };
@@ -183,10 +184,10 @@ const FeiShuForm: React.FC<AlertInstanceFormProps> = (props) => {
 
   return (
     <Modal
-      width={1200}
-      bodyStyle={{padding: '32px 40px 48px'}}
+      width={"40%"}
+      bodyStyle={{padding: '32px 40px 48px',height: '600px', overflowY: 'auto'}}
       destroyOnClose
-      title={formVals.id?"维护报警实例配置":"创建报警实例配置"}
+      title={formVals.id ? l('pages.registerCenter.alert.instance.modify') : l('pages.registerCenter.alert.instance.create')}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}
@@ -194,10 +195,10 @@ const FeiShuForm: React.FC<AlertInstanceFormProps> = (props) => {
       <Form
         {...formLayout}
         form={form}
-        initialValues={getJSONData(formVals)}
+        initialValues={getJSONData(formVals as AlertInstanceTableListItem)}
         onValuesChange={onValuesChange}
       >
-        {renderContent(getJSONData(formVals))}
+        {renderContent(getJSONData(formVals as AlertInstanceTableListItem))}
       </Form>
     </Modal>
   );

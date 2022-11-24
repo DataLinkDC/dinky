@@ -18,11 +18,12 @@
  */
 
 
-import React, { useState} from 'react';
-import {Form, Button, Input, Modal} from 'antd';
+import React, {useState} from 'react';
+import {Button, Form, Input, Modal} from 'antd';
 
-import  {TaskTableListItem} from "@/pages/Task/data";
+import {TaskTableListItem} from "@/pages/Task/data";
 import Switch from "antd/es/switch";
+import {l} from "@/utils/intl";
 
 export type UpdateFormProps = {
   onCancel: (flag?: boolean, formVals?: Partial<TaskTableListItem>) => void;
@@ -38,6 +39,8 @@ const formLayout = {
 };
 
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
+
+
   const [formVals, setFormVals] = useState<Partial<TaskTableListItem>>({
     id: props.values.id,
     name: props.values.name,
@@ -67,7 +70,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
     handleUpdate({...formVals, ...fieldsValue});
   };
 
-  const renderContent = (formVals:any) => {
+  const renderContent = (formVals: any) => {
     return (
       <>
         <FormItem
@@ -90,7 +93,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         </FormItem>
         <FormItem
           name="note"
-          label="注释"
+          label={l('global.table.note')}
         >
           <Input placeholder="请输入"/>
         </FormItem>
@@ -120,15 +123,15 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         </FormItem>
         <FormItem
           name="note"
-          label="注释"
+          label={l('global.table.note')}
         >
           <Input placeholder="请输入"/>
         </FormItem>
         <FormItem
           name="enabled"
-          label="是否启用"
+          label={l('global.table.isEnable')}
           rules={[{required: true, message: '请输入是否启用！'}]}>
-          <Switch checkedChildren="启用" unCheckedChildren="禁用"
+          <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                   defaultChecked={formVals.enabled}/>
         </FormItem>
       </>
@@ -138,9 +141,9 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   const renderFooter = () => {
     return (
       <>
-        <Button onClick={() => handleUpdateModalVisible(false, values)}>取消</Button>
+        <Button onClick={() => handleUpdateModalVisible(false, values)}> {l('button.cancel')}</Button>
         <Button type="primary" onClick={() => submitForm()}>
-          完成
+          {l('button.finish')}
         </Button>
       </>
     );

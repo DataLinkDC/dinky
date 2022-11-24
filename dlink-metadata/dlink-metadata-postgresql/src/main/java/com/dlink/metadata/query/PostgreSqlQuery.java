@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.metadata.query;
 
 /**
@@ -27,26 +26,53 @@ package com.dlink.metadata.query;
  * @since 2021/7/22 9:29
  **/
 public class PostgreSqlQuery extends AbstractDBQuery {
+
     @Override
     public String schemaAllSql() {
-        return null;
+        return "SELECT nspname AS \"schema_name\" FROM pg_namespace WHERE nspname NOT LIKE 'pg_%' AND nspname != 'information_schema' ORDER BY nspname";
     }
 
     @Override
     public String tablesSql(String schemaName) {
-        return "SELECT A.tablename, obj_description(relfilenode, 'pg_class') AS comments FROM pg_tables A, pg_class B WHERE A.schemaname='" + schemaName + "' AND A.tablename = B.relname";
+        return "SELECT n.nspname              AS schema_name\n"
+                + "     , c.relname              AS tablename\n"
+                + "     , obj_description(c.oid) AS comments\n"
+                + "     , c.reltuples            as rows\n"
+                + "FROM pg_class c\n"
+                + "         LEFT JOIN pg_namespace n ON n.oid = c.relnamespace\n"
+                + "WHERE ((c.relkind = 'r'::\"char\") OR (c.relkind = 'f'::\"char\") OR (c.relkind = 'p'::\"char\"))\n"
+                + "  AND n.nspname = '" + schemaName + "'\n"
+                + "ORDER BY n.nspname, tablename";
     }
 
     @Override
     public String columnsSql(String schemaName, String tableName) {
-        return "SELECT A.attname AS name,format_type (A.atttypid,A.atttypmod) AS type,col_description (A.attrelid,A.attnum) AS comment,\n" +
-                "(CASE WHEN (SELECT COUNT (*) FROM pg_constraint AS PC WHERE A.attnum = PC.conkey[1] AND PC.contype = 'p') > 0 THEN 'PRI' ELSE '' END) AS key \n" +
-                "FROM pg_class AS C,pg_attribute AS A WHERE A.attrelid='" + schemaName + "." + tableName + "'::regclass AND A.attrelid= C.oid AND A.attnum> 0 AND NOT A.attisdropped ORDER  BY A.attnum";
+
+        return "SELECT col.column_name                              as name\n"
+                + "     , col.character_maximum_length                 as length\n"
+                + "     , col.is_nullable                              as is_nullableis_nullable\n"
+                + "     , col.numeric_precision                        as numeric_precision\n"
+                + "     , col.numeric_scale                            as numeric_scale\n"
+                + "     , col.ordinal_position                         as ordinal_position\n"
+                + "     , col.udt_name                                 as type\n"
+                + "     , (CASE\n"
+                + "            WHEN (SELECT COUNT(*) FROM pg_constraint AS PC WHERE b.attnum = PC.conkey[1] AND PC.contype = 'p') > 0\n"
+                + "                THEN 'PRI'\n"
+                + "            ELSE '' END)                            AS key\n"
+                + "     , col_description(c.oid, col.ordinal_position) AS comment\n"
+                + "     , col.column_default                           AS column_default\n"
+                + "FROM information_schema.columns AS col\n"
+                + "         LEFT JOIN pg_namespace ns ON ns.nspname = col.table_schema\n"
+                + "         LEFT JOIN pg_class c ON col.table_name = c.relname AND c.relnamespace = ns.oid\n"
+                + "         LEFT JOIN pg_attribute b ON b.attrelid = c.oid AND b.attname = col.column_name\n"
+                + "WHERE col.table_schema = '" + schemaName + "'\n"
+                + "  AND col.table_name = '" + tableName + "'\n"
+                + "ORDER BY col.table_schema, col.table_name, col.ordinal_position";
     }
 
     @Override
     public String schemaName() {
-        return null;
+        return "schema_name";
     }
 
     @Override
@@ -60,6 +86,11 @@ public class PostgreSqlQuery extends AbstractDBQuery {
     }
 
     @Override
+    public String rows() {
+        return "rows";
+    }
+
+    @Override
     public String columnName() {
         return "name";
     }
@@ -67,6 +98,11 @@ public class PostgreSqlQuery extends AbstractDBQuery {
     @Override
     public String columnType() {
         return "type";
+    }
+
+    @Override
+    public String columnLength() {
+        return "length";
     }
 
     @Override
@@ -80,7 +116,27 @@ public class PostgreSqlQuery extends AbstractDBQuery {
     }
 
     @Override
+    public String precision() {
+        return "numeric_precision";
+    }
+
+    @Override
+    public String scale() {
+        return "numeric_scale";
+    }
+
+    @Override
+    public String columnPosition() {
+        return "ordinal_position";
+    }
+
+    @Override
+    public String defaultValue() {
+        return "column_default";
+    }
+
+    @Override
     public String isNullable() {
-        return null;
+        return "is_nullable";
     }
 }

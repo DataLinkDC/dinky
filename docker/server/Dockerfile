@@ -23,6 +23,7 @@ ADD ./dlink-metadata/dlink-metadata-hive/pom.xml ./dlink-metadata/dlink-metadata
 ADD ./dlink-metadata/dlink-metadata-base/pom.xml ./dlink-metadata/dlink-metadata-base/pom.xml
 ADD ./dlink-metadata/dlink-metadata-doris/pom.xml ./dlink-metadata/dlink-metadata-doris/pom.xml
 ADD ./dlink-metadata/dlink-metadata-oracle/pom.xml ./dlink-metadata/dlink-metadata-oracle/pom.xml
+ADD ./dlink-metadata/dlink-metadata-presto/pom.xml ./dlink-metadata/dlink-metadata-presto/pom.xml
 ADD ./dlink-admin/pom.xml ./dlink-admin/pom.xml
 ADD ./dlink-extends/pom.xml ./dlink-extends/pom.xml
 ADD ./dlink-app/pom.xml ./dlink-app/pom.xml

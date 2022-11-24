@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.controller;
 
 import com.dlink.assertion.Asserts;
@@ -25,17 +24,31 @@ import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
 import com.dlink.constant.CommonConstant;
 import com.dlink.metadata.driver.DriverPool;
+import com.dlink.metadata.result.JdbcSelectResult;
 import com.dlink.model.DataBase;
+import com.dlink.model.QueryData;
 import com.dlink.service.DataBaseService;
-import com.fasterxml.jackson.databind.JsonNode;
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * DataBaseController
@@ -47,6 +60,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/database")
 public class DataBaseController {
+
     @Autowired
     private DataBaseService databaseService;
     private static Logger logger = LoggerFactory.getLogger(DataBaseController.class);
@@ -156,24 +170,61 @@ public class DataBaseController {
     /**
      * 获取元数据的表
      */
+    @Cacheable(cacheNames = "metadata_schema", key = "#id")
     @GetMapping("/getSchemasAndTables")
     public Result getSchemasAndTables(@RequestParam Integer id) {
         return Result.succeed(databaseService.getSchemasAndTables(id), "获取成功");
     }
 
     /**
+     * 清除元数据表的缓存
+     */
+    @CacheEvict(cacheNames = "metadata_schema", key = "#id")
+    @GetMapping("/unCacheSchemasAndTables")
+    public Result unCacheSchemasAndTables(@RequestParam Integer id) {
+        return Result.succeed("clear cache", "success");
+    }
+
+    /**
      * 获取元数据的指定表的列
      */
     @GetMapping("/listColumns")
-    public Result listColumns(@RequestParam Integer id, @RequestParam String schemaName, @RequestParam String tableName) {
+    public Result listColumns(@RequestParam Integer id, @RequestParam String schemaName,
+                              @RequestParam String tableName) {
         return Result.succeed(databaseService.listColumns(id, schemaName, tableName), "获取成功");
+    }
+
+    /**
+     * 获取元数据的指定表的数据
+     */
+    @PostMapping("/queryData")
+    public Result queryData(@RequestBody QueryData queryData) {
+        JdbcSelectResult jdbcSelectResult = databaseService.queryData(queryData);
+        if (jdbcSelectResult.isSuccess()) {
+            return Result.succeed(jdbcSelectResult, "获取成功");
+        } else {
+            return Result.failed(jdbcSelectResult, "查询失败");
+        }
     }
 
     /**
      * 获取 SqlGeneration
      */
     @GetMapping("/getSqlGeneration")
-    public Result getSqlGeneration(@RequestParam Integer id, @RequestParam String schemaName, @RequestParam String tableName) {
+    public Result getSqlGeneration(@RequestParam Integer id, @RequestParam String schemaName,
+                                   @RequestParam String tableName) {
         return Result.succeed(databaseService.getSqlGeneration(id, schemaName, tableName), "获取成功");
+    }
+
+    /**
+     * copyDatabase
+     */
+    @PostMapping("/copyDatabase")
+    public Result copyDatabase(@RequestBody DataBase database) {
+        if (databaseService.copyDatabase(database)) {
+            return Result.succeed("复制成功!");
+        } else {
+            return Result.failed("复制失败！");
+        }
     }
 }

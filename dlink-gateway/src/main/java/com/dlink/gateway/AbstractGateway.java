@@ -17,11 +17,13 @@
  *
  */
 
-
 package com.dlink.gateway;
 
 import com.dlink.gateway.config.GatewayConfig;
+import com.dlink.model.JobStatus;
+
 import org.apache.flink.configuration.Configuration;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +34,7 @@ import org.slf4j.LoggerFactory;
  * @since 2021/10/29
  **/
 public abstract class AbstractGateway implements Gateway {
+
     protected static final Logger logger = LoggerFactory.getLogger(AbstractGateway.class);
     protected GatewayConfig config;
     protected Configuration configuration;
@@ -54,4 +57,9 @@ public abstract class AbstractGateway implements Gateway {
     }
 
     protected abstract void init();
+
+    @Override
+    public JobStatus getJobStatusById(String id) {
+        return JobStatus.UNKNOWN;
+    }
 }

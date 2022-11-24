@@ -17,11 +17,12 @@
  *
  */
 
-
 package com.dlink.model;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.dlink.db.model.SuperEntity;
+
+import com.baomidou.mybatisplus.annotation.TableName;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -37,6 +38,8 @@ import lombok.EqualsAndHashCode;
 public class Catalogue extends SuperEntity {
 
     private static final long serialVersionUID = 4659379420249868394L;
+
+    private Integer tenantId;
 
     private Integer taskId;
 

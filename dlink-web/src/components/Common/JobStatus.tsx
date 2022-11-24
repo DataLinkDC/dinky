@@ -27,27 +27,28 @@ import {
   QuestionCircleOutlined,
   SyncOutlined
 } from "@ant-design/icons";
+import {l} from "@/utils/intl";
 
 export type JobStatusFormProps = {
-  status: string|undefined;
+  status: string | undefined;
 };
 
 export const JOB_STATUS = {
-  FINISHED:'FINISHED',
-  RUNNING:'RUNNING',
-  FAILED:'FAILED',
-  CANCELED:'CANCELED',
-  INITIALIZING:'INITIALIZING',
-  RESTARTING:'RESTARTING',
-  CREATED:'CREATED',
-  FAILING:'FAILING',
-  SUSPENDED:'SUSPENDED',
-  CANCELLING:'CANCELLING',
-  UNKNOWN:'UNKNOWN',
+  FINISHED: 'FINISHED',
+  RUNNING: 'RUNNING',
+  FAILED: 'FAILED',
+  CANCELED: 'CANCELED',
+  INITIALIZING: 'INITIALIZING',
+  RESTARTING: 'RESTARTING',
+  CREATED: 'CREATED',
+  FAILING: 'FAILING',
+  SUSPENDED: 'SUSPENDED',
+  CANCELLING: 'CANCELLING',
+  UNKNOWN: 'UNKNOWN',
 };
 
-export function isStatusDone(type: string){
-  if(!type){
+export function isStatusDone(type: string) {
+  if (!type) {
     return true;
   }
   switch (type) {
@@ -66,31 +67,31 @@ const JobStatus = (props: JobStatusFormProps) => {
   const {status} = props;
 
   return (<>
-    { (status === 'FINISHED') ?
+    {(status === 'FINISHED') ?
       (<Tag icon={<CheckCircleOutlined/>} color="blue">
-        FINISHED
+        {l('pages.devops.jobstatus.FINISHED')}
       </Tag>) : (status === 'RUNNING') ?
         (<Tag icon={<SyncOutlined spin/>} color="green">
-          RUNNING
+          {l('pages.devops.jobstatus.RUNNING')}
         </Tag>) : (status === 'FAILED') ?
           (<Tag icon={<CloseCircleOutlined/>} color="error">
-            FAILED
+            {l('pages.devops.jobstatus.FAILED')}
           </Tag>) : (status === 'CANCELED') ?
             (<Tag icon={<MinusCircleOutlined/>} color="orange">
-              CANCELED
+              {l('pages.devops.jobstatus.CANCELED')}
             </Tag>) : (status === 'INITIALIZING') ?
               (<Tag icon={<ClockCircleOutlined/>} color="default">
-                INITIALIZING
+                {l('pages.devops.jobstatus.INITIALIZING')}
               </Tag>) : (status === 'RESTARTING') ?
                 (<Tag icon={<ClockCircleOutlined/>} color="default">
-                  RESTARTING
+                  {l('pages.devops.jobstatus.RESTARTING')}
                 </Tag>) : (status === 'CREATED') ?
-                (<Tag icon={<ClockCircleOutlined/>} color="default">
-                  CREATED
-                </Tag>) :
-                (<Tag icon={<QuestionCircleOutlined />} color="default">
-                  UNKNOWEN
-                </Tag>)
+                  (<Tag icon={<ClockCircleOutlined/>} color="default">
+                    {l('pages.devops.jobstatus.CREATED')}
+                  </Tag>) :
+                  (<Tag icon={<QuestionCircleOutlined/>} color="default">
+                    {l('pages.devops.jobstatus.UNKNOWN')}
+                  </Tag>)
     }
   </>)
 };

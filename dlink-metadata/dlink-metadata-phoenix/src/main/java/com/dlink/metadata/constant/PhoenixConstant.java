@@ -17,22 +17,18 @@
  *
  */
 
-
 package com.dlink.metadata.constant;
 
 /**
- * @author lcg
- * @operate Phoenix常量
- * @date 2022/2/16 14:19
- * @return
+ * phoenix constant
  */
 public interface PhoenixConstant {
 
     /**
      * 不指定schema列信息模板SQL
      */
-    String QUERY_COLUMNS_SQL_DEFAULT = " select COLUMN_NAME,COLUMN_FAMILY,DATA_TYPE,KEY_SEQ,NULLABLE, '' as CHARACTER_SET_NAME," +
-            " '' as COLLATION_NAME ,'' as ORDINAL_POSITION , 0 as NUMERIC_PRECISION, 0 as NUMERIC_SCALE, '' as AUTO_INCREMENT from SYSTEM.CATALOG where TABLE_NAME='%s' and COLUMN_NAME is not null ";
+    String QUERY_COLUMNS_SQL_DEFAULT = " select COLUMN_NAME,COLUMN_FAMILY,DATA_TYPE,KEY_SEQ,NULLABLE, '' as CHARACTER_SET_NAME,"
+            + " '' as COLLATION_NAME ,'' as ORDINAL_POSITION , 0 as NUMERIC_PRECISION, 0 as NUMERIC_SCALE, '' as AUTO_INCREMENT from SYSTEM.CATALOG where TABLE_NAME='%s' and COLUMN_NAME is not null ";
     /**
      * 查询默认指定列信息模板SQL
      */
@@ -46,7 +42,9 @@ public interface PhoenixConstant {
     /**
      * 不指定schema查询table信息模板SQL
      */
-    String QUERY_TABLE_BY_SCHEMA_SQL_DEFAULT = " select TABLE_NAME,TABLE_SCHEM,TABLE_TYPE,SCOPE_CATALOG as CATALOG,'' as ENGINE,'' as OPTIONS, 0 as ROWSNUM, null as CREATE_TIME, null as UPDATE_TIME from SYSTEM.CATALOG where TABLE_TYPE in ('u','v')  ";
+    String QUERY_TABLE_BY_SCHEMA_SQL_DEFAULT =
+            " select TABLE_NAME,TABLE_SCHEM,TABLE_TYPE,SCOPE_CATALOG as CATALOG,'' as ENGINE,'' as OPTIONS, 0 as ROWSNUM, null as CREATE_TIME, null as UPDATE_TIME "
+            + "from SYSTEM.CATALOG where TABLE_TYPE in ('u','v')  ";
     /**
      * 根据schema查询table信息模板SQL
      */

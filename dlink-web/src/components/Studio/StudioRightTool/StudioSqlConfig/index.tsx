@@ -20,35 +20,32 @@
 
 import {connect} from "umi";
 import {StateType} from "@/pages/DataStudio/model";
-import {
-  Form, InputNumber, Select, Tag, Row, Col,  Tooltip, Button,
-} from "antd";
+import {Button, Col, Form, InputNumber, Row, Select, Tag, Tooltip,} from "antd";
 import {MinusSquareOutlined} from "@ant-design/icons";
 import styles from "./index.less";
-import {useEffect, useState} from "react";
-import { Scrollbars } from 'react-custom-scrollbars';
+import {Scrollbars} from 'react-custom-scrollbars';
+import {l} from "@/utils/intl";
 
-const { Option } = Select;
+const {Option} = Select;
 
 const StudioSqlConfig = (props: any) => {
 
-  const {current,form,dispatch,tabs,database,toolHeight} = props;
+  const {current, form, dispatch, tabs, database, toolHeight} = props;
 
   form.setFieldsValue(current.task);
 
-
-  const onValuesChange = (change:any,all:any)=>{
+  const onValuesChange = (change: any, all: any) => {
     let newTabs = tabs;
-    for(let i=0;i<newTabs.panes.length;i++){
-      if(newTabs.panes[i].key==newTabs.activeKey){
-        for(let key in change){
-          newTabs.panes[i].task[key]=change[key];
+    for (let i = 0; i < newTabs.panes.length; i++) {
+      if (newTabs.panes[i].key == newTabs.activeKey) {
+        for (let key in change) {
+          newTabs.panes[i].task[key] = change[key];
         }
         break;
       }
     }
 
-    dispatch&&dispatch({
+    dispatch && dispatch({
       type: "Studio/saveTabs",
       payload: newTabs,
     });
@@ -58,8 +55,9 @@ const StudioSqlConfig = (props: any) => {
   const getDataBaseOptions = () => {
     const itemList = [];
     for (const item of database) {
-      if(item.type.toUpperCase() === current.task.dialect.toUpperCase()) {
-        const tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias === "" ? item.name : item.alias}</>);
+      if (item.type.toUpperCase() === current.task.dialect.toUpperCase()) {
+        const tag = (<><Tag
+          color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias === "" ? item.name : item.alias}</>);
         itemList.push(<Option key={item.id} value={item.id} label={tag}>
           {tag}
         </Option>)
@@ -76,45 +74,45 @@ const StudioSqlConfig = (props: any) => {
             <Tooltip title="最小化">
               <Button
                 type="text"
-                icon={<MinusSquareOutlined />}
+                icon={<MinusSquareOutlined/>}
               />
             </Tooltip>
           </div>
         </Col>
       </Row>
-      <Scrollbars style={{height:(toolHeight-32)}}>
-    <Form
-      form={form}
-      layout="vertical"
-      className={styles.form_setting}
-      onValuesChange={onValuesChange}
-    >
-      <Row>
-        <Col span={24}>
-          <Form.Item label="数据源" tooltip={`选择 Sql 语句执行的数据源`}
-                     name="databaseId"
-                     className={styles.form_item}>
-            <Select
-              style={{width: '100%'}}
-              placeholder="选择数据源"
-              optionLabelProp="label"
-            >
-              {getDataBaseOptions()}
-            </Select>
-          </Form.Item>
-        </Col>
-        <Col span={24}>
-          <Form.Item
-            label="最大行数" className={styles.form_item} name="maxRowNum"
-            tooltip='预览数据的最大行数'
-          >
-            <InputNumber min={1} max={9999} defaultValue={100} />
-          </Form.Item>
-        </Col>
-      </Row>
-    </Form>
+      <Scrollbars style={{height: (toolHeight - 32)}}>
+        <Form
+          form={form}
+          layout="vertical"
+          className={styles.form_setting}
+          onValuesChange={onValuesChange}
+        >
+          <Row>
+            <Col span={24}>
+              <Form.Item label={l('pages.datastudio.label.datasource')} tooltip={`选择 Sql 语句执行的数据源`}
+                         name="databaseId"
+                         className={styles.form_item}>
+                <Select
+                  style={{width: '100%'}}
+                  placeholder="选择数据源"
+                  optionLabelProp="label"
+                >
+                  {getDataBaseOptions()}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={24}>
+              <Form.Item
+                label={l('pages.datastudio.label.maxrows')} className={styles.form_item} name="maxRowNum"
+                tooltip='预览数据的最大行数'
+              >
+                <InputNumber min={1} max={9999} defaultValue={100}/>
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form>
       </Scrollbars>
-      </>
+    </>
   );
 };
 

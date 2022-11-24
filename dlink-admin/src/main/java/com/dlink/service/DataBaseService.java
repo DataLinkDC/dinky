@@ -17,12 +17,13 @@
  *
  */
 
-
 package com.dlink.service;
 
 import com.dlink.db.service.ISuperService;
+import com.dlink.metadata.result.JdbcSelectResult;
 import com.dlink.model.Column;
 import com.dlink.model.DataBase;
+import com.dlink.model.QueryData;
 import com.dlink.model.Schema;
 import com.dlink.model.SqlGeneration;
 
@@ -54,9 +55,13 @@ public interface DataBaseService extends ISuperService<DataBase> {
 
     String getSqlCreate(Integer id, String schemaName, String tableName);
 
+    JdbcSelectResult queryData(QueryData queryData);
+
     SqlGeneration getSqlGeneration(Integer id, String schemaName, String tableName);
 
     List<String> listEnabledFlinkWith();
 
     String getEnabledFlinkWithSql();
+
+    boolean copyDatabase(DataBase database);
 }

@@ -17,24 +17,36 @@
  *
  */
 
-
 package com.dlink.executor;
 
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.core.execution.JobClient;
-import org.apache.flink.table.api.*;
+import org.apache.flink.table.api.DataTypes;
+import org.apache.flink.table.api.ResultKind;
+import org.apache.flink.table.api.TableException;
+import org.apache.flink.table.api.TableResult;
+import org.apache.flink.table.api.TableSchema;
 import org.apache.flink.table.utils.PrintUtils;
 import org.apache.flink.types.Row;
 import org.apache.flink.util.CloseableIterator;
 import org.apache.flink.util.Preconditions;
 
-import javax.annotation.Nullable;
 import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import javax.annotation.Nullable;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 定制CustomTableResultImpl
@@ -44,6 +56,7 @@ import java.util.concurrent.*;
  **/
 @Internal
 class CustomTableResultImpl implements TableResult {
+    private static Logger logger = LoggerFactory.getLogger(CustomTableResultImpl.class);
     public static final TableResult TABLE_RESULT_OK =
             CustomTableResultImpl.builder()
                     .resultKind(ResultKind.SUCCESS)
@@ -170,7 +183,7 @@ class CustomTableResultImpl implements TableResult {
                     printRowKind);
         } else if (printStyle instanceof RawContentStyle) {
             while (it.hasNext()) {
-                System.out.println(String.join(",", PrintUtils.rowToString(it.next())));
+                logger.info(String.join(",", PrintUtils.rowToString(it.next())));
             }
         } else {
             throw new TableException("Unsupported print style: " + printStyle);

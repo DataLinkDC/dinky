@@ -23,8 +23,9 @@ import {Button, Form, Input, Modal, Select, Switch} from 'antd';
 import {DocumentTableListItem} from "@/pages/Document/data";
 import TextArea from "antd/es/input/TextArea";
 import {getDocumentFormData,} from "@/pages/Document/function";
+import {l} from "@/utils/intl";
 
-export type DocumentFormProps  = {
+export type DocumentFormProps = {
   onCancel: (flag?: boolean) => void;
   onSubmit: (values: Partial<DocumentTableListItem>) => void;
   modalVisible: boolean;
@@ -43,6 +44,7 @@ const formLayout = {
 
 const DocumentForm: React.FC<DocumentFormProps> = (props) => {
 
+
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<DocumentTableListItem>>({
     id: props.values.id,
@@ -54,7 +56,7 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
     fillValue: props.values.fillValue,
     version: props.values.version,
     likeNum: props.values.likeNum,
-    enabled: props.values.enabled?props.values.enabled:true,
+    enabled: props.values.enabled ? props.values.enabled : true,
   });
 
   const {
@@ -66,8 +68,8 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
 
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
-    setFormVals({...formVals,...fieldsValue});
-    handleSubmit({...formVals,...fieldsValue});
+    setFormVals({...formVals, ...fieldsValue});
+    handleSubmit({...formVals, ...fieldsValue});
   };
 
   const renderContent = (formVals) => {
@@ -75,16 +77,16 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
       <>
         <FormItem
           name="name"
-          label="名称"
-          rules={[{required: true, message: '请输入名称！'}]}>
-          <Input placeholder="请输入"/>
+          label={l('pages.registerCenter.doc.name')}
+          rules={[{required: true, message: l('pages.registerCenter.doc.namePlaceholder')}]}>
+          <Input placeholder={l('pages.registerCenter.doc.namePlaceholder')}/>
         </FormItem>
         <FormItem
           name="category"
-          label="文档类型"
-          rules={[{required: true, message: '请选择该文档所属类型！'}]}
+          label={l('pages.registerCenter.doc.category')}
+          rules={[{required: true, message: l('pages.registerCenter.doc.categoryPlaceholder')}]}
         >
-          <Select  allowClear>
+          <Select allowClear>
             <Option value="Method">Method</Option>
             <Option value="Function">Function</Option>
             <Option value="Constructor">Constructor</Option>
@@ -117,10 +119,10 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
         </FormItem>
         <FormItem
           name="type"
-          label="类型"
-          rules={[{required: true, message: '请选择该文档所属函数类型！'}]}
+          label={l('pages.registerCenter.doc.functionType')}
+          rules={[{required: true, message: l('pages.registerCenter.doc.typePlaceholder')}]}
         >
-          <Select  allowClear>
+          <Select allowClear>
             <Option value="优化参数">优化参数</Option>
             <Option value="建表语句">建表语句</Option>
             <Option value="CataLog">CataLog</Option>
@@ -132,8 +134,8 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
         </FormItem>
         <FormItem
           name="subtype"
-          label="子类型"
-          rules={[{required: true, message: '请选择该文档所属函数子类型！'}]}
+          label={l('pages.registerCenter.doc.subFunctionType')}
+          rules={[{required: true, message: l('pages.registerCenter.doc.subTypePlaceholder')}]}
         >
           <Select allowClear>
             <Option value="比较函数">比较函数</Option>
@@ -156,38 +158,40 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
         </FormItem>
         <FormItem
           name="description"
-          label="描述"
+          label={l('pages.registerCenter.doc.description')}
         >
-          <TextArea placeholder="请输入文档描述信息!" allowClear autoSize={{minRows: 3, maxRows: 10}}/>
+          <TextArea placeholder={l('pages.registerCenter.doc.descriptionPlaceholder')} allowClear autoSize={{minRows: 3, maxRows: 10}}/>
         </FormItem>
         <FormItem
           name="fillValue"
-          label="填充值"
-          rules={[{required: true, message: '请输入填充值！'}]}
+          label={l('pages.registerCenter.doc.fillValue')}
+          rules={[{required: true, message: l('pages.registerCenter.doc.fillValueHelp')}]}
         >
-          <TextArea placeholder="请输入填充值,编辑器内使用名称触发提示 eg: 如果希望在函数LTRIM(parms)中输入参数 则语法为: LTRIM(${1:})  此时的1代表第一个光标 如需多个 数字+1即可 tab键切换光标 ; 如不需要参数则直接输入期望填充值"
-                    allowClear
-                    autoSize={{minRows: 3, maxRows: 10}}/>
+          <TextArea
+            placeholder={ l('pages.registerCenter.doc.fillValuePlaceholder')}
+            allowClear
+            autoSize={{minRows: 3, maxRows: 10}}/>
         </FormItem>
         <FormItem
           name="version"
-          label="版本"
-          rules={[{required: true, message: '请选择该文档所属版本！'}]}
+          label={l('pages.registerCenter.doc.version')}
+          rules={[{required: true, message: l('pages.registerCenter.doc.versionPlaceholder')}]}
         >
-          <Select allowClear >
+          <Select allowClear>
             <Option value="1.11">Flink-1.11</Option>
             <Option value="1.12">Flink-1.12</Option>
             <Option value="1.13">Flink-1.13</Option>
             <Option value="1.14">Flink-1.14</Option>
             <Option value="1.15">Flink-1.15</Option>
-            <Option  value="ALL Version">ALL Version</Option>
+            <Option value="ALL Version">ALL Version</Option>
           </Select>
         </FormItem>
         <FormItem
           name="enabled"
-          label="是否启用"
-          rules={[{required: true, message: '请输入是否启用！'}]}>
-          <Switch checkedChildren="启用" unCheckedChildren="禁用"
+          label={l('global.table.isEnable')}
+          rules={[{required: true, message: l('pages.registerCenter.doc.enabledPlaceholder')}]}
+        >
+          <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                   defaultChecked={formVals.enabled}/>
         </FormItem>
       </>
@@ -197,20 +201,18 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
   const renderFooter = () => {
     return (
       <>
-        <Button onClick={() => handleModalVisible(false)}>取消</Button>
-        <Button type="primary" onClick={() => submitForm()}>
-          完成
-        </Button>
+        <Button onClick={() => handleModalVisible(false)}>{l('button.cancel')}</Button>
+        <Button type="primary" onClick={() => submitForm()}>{l('button.finish')}</Button>
       </>
     );
   };
 
   return (
     <Modal
-      width={1200}
+      width={"40%"}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title={formVals.id?"维护文档":"创建文档"}
+      title={formVals.id ? l('pages.registerCenter.doc.modify') : l('pages.registerCenter.doc.create')}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}
@@ -218,9 +220,9 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
       <Form
         {...formLayout}
         form={form}
-        initialValues={getDocumentFormData(formVals)}
+        initialValues={getDocumentFormData(formVals as DocumentTableListItem)}
       >
-        {renderContent(getDocumentFormData(formVals))}
+        {renderContent(getDocumentFormData(formVals as DocumentTableListItem))}
       </Form>
     </Modal>
   );

@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.gateway;
 
 import com.dlink.assertion.Asserts;
@@ -26,6 +25,8 @@ import com.dlink.gateway.exception.GatewayException;
 import com.dlink.gateway.result.GatewayResult;
 import com.dlink.gateway.result.SavePointResult;
 import com.dlink.gateway.result.TestResult;
+import com.dlink.model.JobStatus;
+
 import org.apache.flink.runtime.jobgraph.JobGraph;
 
 import java.util.Iterator;
@@ -83,4 +84,5 @@ public interface Gateway {
 
     TestResult test();
 
+    JobStatus getJobStatusById(String id);
 }

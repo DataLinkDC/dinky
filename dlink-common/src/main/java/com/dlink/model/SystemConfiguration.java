@@ -17,14 +17,14 @@
  *
  */
 
-
 package com.dlink.model;
+
+import com.dlink.assertion.Asserts;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.dlink.assertion.Asserts;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
@@ -41,49 +41,54 @@ public class SystemConfiguration {
         return systemConfiguration;
     }
 
-    private static final List<Configuration> CONFIGURATION_LIST = new ArrayList<Configuration>() {{
-        add(systemConfiguration.sqlSubmitJarPath);
-        add(systemConfiguration.sqlSubmitJarParas);
-        add(systemConfiguration.sqlSubmitJarMainAppClass);
-        add(systemConfiguration.useRestAPI);
-        add(systemConfiguration.sqlSeparator);
-    }};
+    private static final List<Configuration> CONFIGURATION_LIST = new ArrayList<Configuration>() {
+
+        {
+            add(systemConfiguration.sqlSubmitJarPath);
+            add(systemConfiguration.sqlSubmitJarParas);
+            add(systemConfiguration.sqlSubmitJarMainAppClass);
+            add(systemConfiguration.useRestAPI);
+            add(systemConfiguration.sqlSeparator);
+            add(systemConfiguration.jobIdWait);
+        }
+    };
 
     private Configuration sqlSubmitJarPath = new Configuration(
-        "sqlSubmitJarPath",
-        "FlinkSQL提交Jar路径",
-        ValueType.STRING,
-        "hdfs:///dlink/jar/dlink-app.jar",
-        "用于指定Applcation模式提交FlinkSQL的Jar的路径"
-    );
+            "sqlSubmitJarPath",
+            "FlinkSQL提交Jar路径",
+            ValueType.STRING,
+            "hdfs:///dlink/jar/dlink-app.jar",
+            "用于指定Applcation模式提交FlinkSQL的Jar的路径");
     private Configuration sqlSubmitJarParas = new Configuration(
-        "sqlSubmitJarParas",
-        "FlinkSQL提交Jar参数",
-        ValueType.STRING,
-        "",
-        "用于指定Applcation模式提交FlinkSQL的Jar的参数"
-    );
+            "sqlSubmitJarParas",
+            "FlinkSQL提交Jar参数",
+            ValueType.STRING,
+            "",
+            "用于指定Applcation模式提交FlinkSQL的Jar的参数");
     private Configuration sqlSubmitJarMainAppClass = new Configuration(
-        "sqlSubmitJarMainAppClass",
-        "FlinkSQL提交Jar主类",
-        ValueType.STRING,
-        "com.dlink.app.MainApp",
-        "用于指定Applcation模式提交FlinkSQL的Jar的主类"
-    );
+            "sqlSubmitJarMainAppClass",
+            "FlinkSQL提交Jar主类",
+            ValueType.STRING,
+            "com.dlink.app.MainApp",
+            "用于指定Applcation模式提交FlinkSQL的Jar的主类");
     private Configuration useRestAPI = new Configuration(
-        "useRestAPI",
-        "使用 RestAPI",
-        ValueType.BOOLEAN,
-        true,
-        "在运维 Flink 任务时是否使用 RestAPI"
-    );
+            "useRestAPI",
+            "使用 RestAPI",
+            ValueType.BOOLEAN,
+            true,
+            "在运维 Flink 任务时是否使用 RestAPI");
     private Configuration sqlSeparator = new Configuration(
-        "sqlSeparator",
-        "FlinkSQL语句分割符",
-        ValueType.STRING,
-        ";\r\n|;\n",
-        "Flink SQL 的语句分割符"
-    );
+            "sqlSeparator",
+            "FlinkSQL语句分割符",
+            ValueType.STRING,
+            ";\n",
+            "Flink SQL 的语句分割符");
+    private Configuration jobIdWait = new Configuration(
+            "jobIdWait",
+            "获取 Job ID 的最大等待时间（秒）",
+            ValueType.INT,
+            30,
+            "提交 Application 或 PerJob 任务时获取 Job ID 的最大等待时间（秒）");
 
     public void setConfiguration(JsonNode jsonNode) {
         for (Configuration item : CONFIGURATION_LIST) {
@@ -154,11 +159,20 @@ public class SystemConfiguration {
         this.sqlSeparator.setValue(sqlSeparator);
     }
 
+    public int getJobIdWait() {
+        return (int) jobIdWait.getValue();
+    }
+
+    public void setJobIdWait(Configuration jobIdWait) {
+        this.jobIdWait.setValue(jobIdWait);
+    }
+
     enum ValueType {
         STRING, INT, DOUBLE, FLOAT, BOOLEAN, DATE
     }
 
     public class Configuration {
+
         private String name;
         private String label;
         private ValueType type;

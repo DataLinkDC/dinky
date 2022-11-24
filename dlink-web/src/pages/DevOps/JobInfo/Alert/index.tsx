@@ -18,12 +18,12 @@
  */
 
 
-import { Typography} from 'antd';
-import ProTable from '@ant-design/pro-table';
-import {ProColumns} from "@ant-design/pro-table";
+import {Typography} from 'antd';
+import ProTable, {ProColumns} from '@ant-design/pro-table';
 import {queryData} from "@/components/Common/crud";
+import {l} from "@/utils/intl";
 
-const { Text } = Typography;
+const {Text} = Typography;
 type AlertHistoryTableListItem = {
   title: string,
   content: string,
@@ -40,36 +40,36 @@ const Alert = (props: any) => {
 
   const columns: ProColumns<AlertHistoryTableListItem>[] = [
     {
-      title: '标题',
+      title: l('pages.devops.jobinfo.alert.title'),
       dataIndex: 'title',
       render: (dom, entity) => {
-        return  <Text style={{ width: 200 }} ellipsis={{ tooltip:entity.title }}>{entity.title}</Text>;
+        return <Text style={{width: 200}} ellipsis={{tooltip: entity.title}}>{entity.title}</Text>;
       },
     },
     {
-      title: '正文',
+      title: l('pages.devops.jobinfo.alert.content'),
       dataIndex: 'content',
       render: (dom, entity) => {
-        return  <Text style={{ width: 500 }} ellipsis={{ tooltip:entity.content }}>{entity.content}</Text>;
+        return <Text style={{width: 500}} ellipsis={{tooltip: entity.content}}>{entity.content}</Text>;
       },
     },
     {
-      title: '状态',
+      title: l('pages.devops.jobinfo.alert.status'),
       dataIndex: 'status',
       sorter: true,
       render: (dom, entity) => {
-        return  entity.status === 1?<Text type="success">成功</Text>:<Text type="danger">失败</Text>;
+        return entity.status === 1 ? <Text type="success">{l('pages.devops.jobinfo.alert.status.success')}</Text> : <Text type="danger">{l('pages.devops.jobinfo.alert.status.failed')}</Text>;
       },
     },
     {
-      title: '日志',
+      title: l('pages.devops.jobinfo.alert.log'),
       dataIndex: 'log',
       render: (dom, entity) => {
-        return  <Text style={{ width: 500 }} ellipsis={{ tooltip:entity.log }}>{entity.log}</Text>;
+        return <Text style={{width: 500}} ellipsis={{tooltip: entity.log}}>{entity.log}</Text>;
       },
     },
     {
-      title: '报警时间',
+      title: l('pages.devops.jobinfo.alert.createTime'),
       dataIndex: 'createTime',
       valueType: 'dateTime',
     },
@@ -79,10 +79,16 @@ const Alert = (props: any) => {
     <ProTable
       columns={columns}
       style={{width: '100%'}}
-      request={(params, sorter, filter) => queryData(url+'/history', {...params, jobInstanceId:job.instance?.id,sorter, filter})}
+      request={(params, sorter, filter) => queryData(url + '/history', {
+        ...params,
+        jobInstanceId: job.instance?.id,
+        sorter,
+        filter
+      })}
       rowKey="name"
       pagination={{
-        pageSize: 10,
+        defaultPageSize: 10,
+        showSizeChanger: true,
       }}
       toolBarRender={false}
       search={false}

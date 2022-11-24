@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.executor;
 
 import org.apache.flink.table.types.DataType;

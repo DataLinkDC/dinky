@@ -30,6 +30,7 @@ import Dropdown from "antd/es/dropdown/dropdown";
 import Menu from "antd/es/menu";
 import {handleAddOrUpdate, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
 import DocumentForm from "./components/DocumentForm";
+import {l} from "@/utils/intl";
 
 const url = '/api/document';
 
@@ -48,10 +49,10 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
       setFormValues(currentItem);
     } else if (key === 'delete') {
       Modal.confirm({
-        title: '删除文档',
-        content: '确定删除该文档吗？',
-        okText: '确认',
-        cancelText: '取消',
+        title: l('pages.registerCenter.doc.delete'),
+        content: l('pages.registerCenter.doc.deleteConfirm'),
+        okText: l('button.confirm'),
+        cancelText: l('button.cancel'),
         onOk: async () => {
           await handleRemove(url, [currentItem]);
           actionRef.current?.reloadAndRest?.();
@@ -66,44 +67,35 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
     <Dropdown
       overlay={
         <Menu onClick={({key}) => editAndDelete(key, item)}>
-          <Menu.Item key="edit">编辑</Menu.Item>
-          <Menu.Item key="delete">删除</Menu.Item>
+          <Menu.Item key="edit">{l('button.edit')}</Menu.Item>
+          <Menu.Item key="delete">{l('button.delete')}</Menu.Item>
         </Menu>
       }
     >
       <a>
-        更多 <DownOutlined/>
+        {l('button.more')} <DownOutlined/>
       </a>
     </Dropdown>
   );
 
   const columns: ProColumns<DocumentTableListItem>[] = [
     {
-      title: '名称',
+      title: l('pages.registerCenter.doc.name'),
       dataIndex: 'name',
-      tip: '名称是唯一的',
       sorter: true,
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '名称为必填项',
-          },
-        ],
-      },
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
     },
     {
-      title: '文档ID',
+      title: l('pages.registerCenter.doc.id'),
       dataIndex: 'id',
       hideInTable: true,
       hideInForm: true,
       hideInSearch: true,
     },
     {
-      title: '文档类型',
+      title: l('pages.registerCenter.doc.category'),
       sorter: true,
       dataIndex: 'category',
       hideInForm: false,
@@ -140,58 +132,58 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
         }, {
           text: 'Property',
           value: 'Property',
-        },{
+        }, {
           text: 'Event',
           value: 'Event',
-        },{
+        }, {
           text: 'Operator',
           value: 'Operator',
-        },{
+        }, {
           text: 'Unit',
           value: 'Unit',
-        },{
+        }, {
           text: 'Value',
           value: 'Value',
-        },{
+        }, {
           text: 'Constant',
           value: 'Constant',
-        },{
+        }, {
           text: 'Enum',
           value: 'Enum',
-        },{
+        }, {
           text: 'EnumMember',
           value: 'EnumMember',
-        },{
+        }, {
           text: 'Keyword',
           value: 'Keyword',
-        },{
+        }, {
           text: 'Text',
           value: 'Text',
-        },{
+        }, {
           text: 'Color',
           value: 'Color',
-        },{
+        }, {
           text: 'File',
           value: 'File',
-        },{
+        }, {
           text: 'Reference',
           value: 'Reference',
-        },{
+        }, {
           text: 'Customcolor',
           value: 'Customcolor',
-        },{
+        }, {
           text: 'Folder',
           value: 'Folder',
-        },{
+        }, {
           text: 'TypeParameter',
           value: 'TypeParameter',
-        },{
+        }, {
           text: 'User',
           value: 'User',
-        },{
+        }, {
           text: 'Issue',
           value: 'Issue',
-        },{
+        }, {
           text: 'Snippet',
           value: 'Snippet',
         },
@@ -229,8 +221,7 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: '类型',
-      tip: '函数类型',
+      title: l('pages.registerCenter.doc.functionType'),
       sorter: true,
       dataIndex: 'type',
       hideInForm: false,
@@ -268,7 +259,7 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
       ],
       filterMultiple: false,
       valueEnum: {
-        '优化参数': {text: '内置函数'},
+        '优化参数': {text: '优化参数'},
         '建表语句': {text: '建表语句'},
         'CataLog': {text: 'CataLog'},
         '设置参数': {text: '设置参数'},
@@ -278,7 +269,7 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: '子类型',
+      title: l('pages.registerCenter.doc.subFunctionType'),
       sorter: true,
       dataIndex: 'subtype',
       hideInForm: false,
@@ -288,91 +279,91 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
         {
           text: 'Batch/Streaming',
           value: 'Batch/Streaming',
-        },{
+        }, {
           text: 'Batch',
           value: 'Batch',
-        },{
+        }, {
           text: 'Streaming',
           value: 'Streaming',
-        },{
+        }, {
           text: 'Other',
           value: 'Other',
-        },{
+        }, {
           text: '比较函数',
           value: '比较函数',
-        },{
+        }, {
           text: '逻辑函数',
           value: '逻辑函数',
-        },{
+        }, {
           text: '算术函数',
           value: '算术函数',
-        },{
+        }, {
           text: '字符串函数',
           value: '字符串函数',
-        },{
+        }, {
           text: '时间函数',
           value: '时间函数',
-        },{
+        }, {
           text: '类型转换函数功能',
           value: '类型转换函数功能',
-        },{
+        }, {
           text: '条件函数',
           value: '条件函数',
-        },{
+        }, {
           text: 'Collection 函数',
           value: 'Collection 函数',
-        },{
+        }, {
           text: 'Value Construction函数',
           value: 'Value Construction函数',
-        },{
+        }, {
           text: 'Value Access函数',
           value: 'Value Access函数',
-        },{
+        }, {
           text: '分组函数',
           value: '分组函数',
-        },{
+        }, {
           text: 'hash函数',
           value: 'hash函数',
-        },{
+        }, {
           text: '聚合函数',
           value: '聚合函数',
-        },{
+        }, {
           text: '列函数',
           value: '列函数',
-        },{
+        }, {
           text: '表值聚合函数',
           value: '表值聚合函数',
-        },{
+        }, {
           text: '其他函数',
           value: '其他函数',
         },
       ],
       filterMultiple: false,
       valueEnum: {
-        'Batch/Streaming' : {text: 'Batch/Streaming'},
-        'Batch' : {text: 'Batch'},
-        'Streaming' : {text: 'Streaming'},
-        'Other' : {text: 'Other'},
-        '比较函数' : {text: '比较函数'},
-        '逻辑函数' : {text: '逻辑函数'},
-        '算术函数' : {text: '算术函数'},
-        '字符串函数' : {text: '字符串函数'},
-        '时间函数' : {text: '时间函数'},
-        '条件函数' : {text: '条件函数'},
-        '类型转换函数功能' : {text: '类型转换函数功能'},
-        'Collection 函数' : {text: 'Collection 函数'},
-        'Value Construction函数' : {text: 'Value Construction函数'},
-        'Value Access函数' : {text: 'Value Access函数'},
-        '分组函数' : {text: '分组函数'},
-        'hash函数' : {text: 'hash函数'},
-        '聚合函数' : {text: '聚合函数'},
-        '列函数' : {text: '列函数'},
-        '表值聚合函数' : {text: '表值聚合函数'},
-        '其他函数' : {text: '其他函数'},
+        'Batch/Streaming': {text: 'Batch/Streaming'},
+        'Batch': {text: 'Batch'},
+        'Streaming': {text: 'Streaming'},
+        'Other': {text: 'Other'},
+        '比较函数': {text: '比较函数'},
+        '逻辑函数': {text: '逻辑函数'},
+        '算术函数': {text: '算术函数'},
+        '字符串函数': {text: '字符串函数'},
+        '时间函数': {text: '时间函数'},
+        '条件函数': {text: '条件函数'},
+        '类型转换函数功能': {text: '类型转换函数功能'},
+        'Collection 函数': {text: 'Collection 函数'},
+        'Value Construction函数': {text: 'Value Construction函数'},
+        'Value Access函数': {text: 'Value Access函数'},
+        '分组函数': {text: '分组函数'},
+        'hash函数': {text: 'hash函数'},
+        '聚合函数': {text: '聚合函数'},
+        '列函数': {text: '列函数'},
+        '表值聚合函数': {text: '表值聚合函数'},
+        '其他函数': {text: '其他函数'},
       },
     },
     {
-      title: '描述',
+      title: l('pages.registerCenter.doc.description'),
       sorter: true,
       dataIndex: 'description',
       valueType: 'textarea',
@@ -380,7 +371,7 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
       hideInSearch: false,
       hideInTable: true,
     }, {
-      title: '填充值',
+      title: l('pages.registerCenter.doc.fillValue'),
       sorter: true,
       dataIndex: 'fillValue',
       valueType: 'textarea',
@@ -390,7 +381,7 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
       hideInDescriptions: false,
     },
     {
-      title: '版本',
+      title: l('pages.registerCenter.doc.version'),
       sorter: true,
       dataIndex: 'version',
       hideInForm: false,
@@ -398,29 +389,29 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
       hideInTable: true,
     },
     {
-      title: '是否启用',
+      title: l('global.table.isEnable'),
       dataIndex: 'enabled',
       hideInForm: false,
       hideInSearch: true,
       hideInTable: false,
       filters: [
         {
-          text: '已启用',
+          text: l('status.enabled'),
           value: 1,
         },
         {
-          text: '已禁用',
+          text: l('status.disabled'),
           value: 0,
         },
       ],
       filterMultiple: false,
       valueEnum: {
-        true: {text: '已启用', status: 'Success'},
-        false: {text: '已禁用', status: 'Error'},
+        true: {text: l('status.enabled'), status: 'Success'},
+        false: {text: l('status.disabled'), status: 'Error'},
       },
     },
     {
-      title: '创建时间',
+      title: l('global.table.createTime'),
       dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',
@@ -438,7 +429,7 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: '最近更新时间',
+      title: l('global.table.lastUpdateTime'),
       dataIndex: 'updateTime',
       sorter: true,
       valueType: 'dateTime',
@@ -455,7 +446,7 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: '操作',
+      title: l('global.table.operate'),
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
@@ -465,7 +456,7 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
             setFormValues(record);
           }}
         >
-          配置
+          {l('button.config')}
         </a>,
         <MoreBtn key="more" item={record}/>,
       ],
@@ -473,9 +464,9 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
   ];
 
   return (
-    <PageContainer>
+    <PageContainer title={false}>
       <ProTable<DocumentTableListItem>
-        headerTitle="文档管理"
+        headerTitle={l('pages.registerCenter.doc.Management')}
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -483,7 +474,7 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
         }}
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined/> 新建
+            <PlusOutlined/> {l('button.create')}
           </Button>,
         ]}
         request={(params, sorter, filter) => queryData(url, {...params, sorter, filter})}
@@ -491,14 +482,25 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
         }}
+        pagination={{
+          defaultPageSize: 10,
+          showSizeChanger: true,
+        }}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
           extra={
             <div>
-              已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
+              {l('tips.selected', '',
+                {
+                  total: <a
+                    style={{fontWeight: 600}}>{selectedRowsState.length}</a>
+                })}  &nbsp;&nbsp;
               <span>
-                被禁用的文档共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} 人
+                {l('pages.registerCenter.doc.disableTotalOf', '',
+                  {
+                    total: (selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0))
+                  })}
               </span>
             </div>
           }
@@ -506,10 +508,10 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
           <Button type="primary" danger
                   onClick={() => {
                     Modal.confirm({
-                      title: '删除文档',
-                      content: '确定删除选中的文档吗？',
-                      okText: '确认',
-                      cancelText: '取消',
+                      title: l('pages.registerCenter.doc.delete'),
+                      content: l('pages.registerCenter.doc.deleteConfirm'),
+                      okText: l('button.confirm'),
+                      cancelText: l('button.cancel'),
                       onOk: async () => {
                         await handleRemove(url, selectedRowsState);
                         setSelectedRows([]);
@@ -518,15 +520,15 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
                     });
                   }}
           >
-            批量删除
+            {l('button.batchDelete')}
           </Button>
           <Button type="primary"
                   onClick={() => {
                     Modal.confirm({
-                      title: '启用文档',
-                      content: '确定启用选中的文档吗？',
-                      okText: '确认',
-                      cancelText: '取消',
+                      title: l('pages.registerCenter.doc.enable'),
+                      content: l('pages.registerCenter.doc.enableConfirm'),
+                      okText: l('button.confirm'),
+                      cancelText: l('button.cancel'),
                       onOk: async () => {
                         await updateEnabled(url, selectedRowsState, true);
                         setSelectedRows([]);
@@ -534,14 +536,14 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
                       }
                     });
                   }}
-          >批量启用</Button>
+          >{l('button.batchEnable')}</Button>
           <Button danger
                   onClick={() => {
                     Modal.confirm({
-                      title: '禁用文档',
-                      content: '确定禁用选中的文档吗？',
-                      okText: '确认',
-                      cancelText: '取消',
+                      title: l('pages.registerCenter.doc.disable'),
+                      content: l('pages.registerCenter.doc.disableConfirm'),
+                      okText: l('button.confirm'),
+                      cancelText: l('button.cancel'),
                       onOk: async () => {
                         await updateEnabled(url, selectedRowsState, false);
                         setSelectedRows([]);
@@ -549,7 +551,7 @@ const DocumentTableList: React.FC<{}> = (props: any) => {
                       }
                     });
                   }}
-          >批量禁用</Button>
+          >{l('button.batchDisable')}</Button>
         </FooterToolbar>
       )}
       <DocumentForm

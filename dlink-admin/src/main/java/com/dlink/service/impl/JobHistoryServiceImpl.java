@@ -17,22 +17,24 @@
  *
  */
 
-
 package com.dlink.service.impl;
-
-import com.dlink.constant.FlinkRestResultConstant;
-import org.springframework.stereotype.Service;
 
 import com.dlink.api.FlinkAPI;
 import com.dlink.assertion.Asserts;
+import com.dlink.constant.FlinkRestResultConstant;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.JobHistoryMapper;
 import com.dlink.model.JobHistory;
 import com.dlink.service.JobHistoryService;
 import com.dlink.utils.JSONUtil;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.Objects;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * JobHistoryServiceImpl
@@ -44,9 +46,16 @@ import java.util.Objects;
 public class JobHistoryServiceImpl extends SuperServiceImpl<JobHistoryMapper, JobHistory> implements JobHistoryService {
 
     @Override
+    public JobHistory getByIdWithoutTenant(Integer id) {
+        return baseMapper.getByIdWithoutTenant(id);
+    }
+
+    @Override
     public JobHistory getJobHistory(Integer id) {
         return getJobHistoryInfo(getById(id));
     }
+
+    private static final Logger log = LoggerFactory.getLogger(JobHistoryServiceImpl.class);
 
     @Override
     public JobHistory getJobHistoryInfo(JobHistory jobHistory) {
@@ -93,7 +102,7 @@ public class JobHistoryServiceImpl extends SuperServiceImpl<JobHistoryMapper, Jo
         jobHistory.setId(id);
         try {
             JsonNode jobInfo = FlinkAPI.build(jobManagerHost).getJobInfo(jobId);
-            if(jobInfo.has(FlinkRestResultConstant.ERRORS)){
+            if (jobInfo.has(FlinkRestResultConstant.ERRORS)) {
                 final JobHistory dbHistory = getById(id);
                 if (Objects.nonNull(dbHistory)) {
                     jobHistory = dbHistory;
@@ -111,13 +120,14 @@ public class JobHistoryServiceImpl extends SuperServiceImpl<JobHistoryMapper, Jo
             jobHistory.setCheckpointsConfigJson(JSONUtil.toJsonString(checkPointsConfig));
             jobHistory.setConfigJson(JSONUtil.toJsonString(jobsConfig));
             if (needSave) {
-                if (Asserts.isNotNull(getById(id))) {
-                    updateById(jobHistory);
-                } else {
-                    save(jobHistory);
-                }
+                updateById(jobHistory);
+                /*
+                 * if (Asserts.isNotNull(getById(id))) { updateById(jobHistory); } else { save(jobHistory); }
+                 */
             }
         } catch (Exception e) {
+            log.error("Get flink job info failed !! historyId is {}, jobManagerHost is :{}, jobId is :{}",
+                    id, jobManagerHost, jobId);
             e.printStackTrace();
         }
         return jobHistory;

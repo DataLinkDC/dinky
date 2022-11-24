@@ -19,7 +19,7 @@
 
 
 import {Button, Col, Empty, message, Modal, Row, Select, Tabs, Tooltip, Tree} from "antd";
-import {MetaStoreDataBaseType, MetaStoreTableType, StateType} from "@/pages/DataStudio/model";
+import {MetaStoreTableType, StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import React, {useState} from "react";
 import {
@@ -41,6 +41,7 @@ import {getMSSchemaInfo} from "@/pages/DataStudio/service";
 import {Dispatch} from "@@/plugin-dva/connect";
 import {DIALECT} from "@/components/Studio/conf";
 import FlinkColumns from "@/pages/Flink/FlinkColumns";
+import {l} from "@/utils/intl";
 
 const {DirectoryTree} = Tree;
 const {Option, OptGroup} = Select;
@@ -287,7 +288,7 @@ const StudioMetaStore = (props: any) => {
           <Button key="back" onClick={() => {
             cancelHandle();
           }}>
-            关闭
+            {l('button.close')}
           </Button>,
         ]}
       >

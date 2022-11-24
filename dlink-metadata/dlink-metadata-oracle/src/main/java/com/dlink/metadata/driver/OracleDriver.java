@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.metadata.driver;
 
 import com.dlink.assertion.Asserts;
@@ -26,12 +25,15 @@ import com.dlink.metadata.convert.OracleTypeConvert;
 import com.dlink.metadata.query.IDBQuery;
 import com.dlink.metadata.query.OracleQuery;
 import com.dlink.model.Column;
+import com.dlink.model.QueryData;
 import com.dlink.model.Table;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import com.alibaba.druid.pool.DruidDataSource;
 
 /**
  * OracleDriver
@@ -64,6 +66,31 @@ public class OracleDriver extends AbstractJdbcDriver {
     @Override
     public String getName() {
         return "Oracle数据库";
+    }
+
+    /**
+     * oracel sql拼接，目前还未实现limit方法
+     * */
+    @Override
+    public StringBuilder genQueryOption(QueryData queryData) {
+
+        String where = queryData.getOption().getWhere();
+        String order = queryData.getOption().getOrder();
+
+        StringBuilder optionBuilder = new StringBuilder()
+                .append("select * from ")
+                .append(queryData.getSchemaName())
+                .append(".")
+                .append(queryData.getTableName());
+
+        if (where != null && !where.equals("")) {
+            optionBuilder.append(" where ").append(where);
+        }
+        if (order != null && !order.equals("")) {
+            optionBuilder.append(" order by ").append(order);
+        }
+
+        return optionBuilder;
     }
 
     @Override
@@ -103,5 +130,21 @@ public class OracleDriver extends AbstractJdbcDriver {
     @Override
     public Map<String, String> getFlinkColumnTypeConversion() {
         return new HashMap<>();
+    }
+
+    @Override
+    protected void createDataSource(DruidDataSource ds, DriverConfig config) {
+        ds.setName(config.getName().replaceAll(":", ""));
+        ds.setUrl(config.getUrl());
+        ds.setDriverClassName(getDriverClass());
+        ds.setUsername(config.getUsername());
+        ds.setPassword(config.getPassword());
+        ds.setValidationQuery("select 1 from dual");
+        ds.setTestWhileIdle(true);
+        ds.setBreakAfterAcquireFailure(true);
+        ds.setFailFast(true);
+        ds.setInitialSize(1);
+        ds.setMaxActive(8);
+        ds.setMinIdle(5);
     }
 }

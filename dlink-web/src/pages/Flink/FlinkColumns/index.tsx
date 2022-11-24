@@ -22,9 +22,9 @@ import React from "react";
 import {CheckSquareOutlined, KeyOutlined} from '@ant-design/icons';
 import DTable from "@/components/Common/DTable";
 import {DIALECT} from "@/components/Studio/conf";
+import {l} from "@/utils/intl";
 
 const FlinkColumns = (props: any) => {
-
   const {envId, catalog, database, table} = props;
 
   const cols = [{

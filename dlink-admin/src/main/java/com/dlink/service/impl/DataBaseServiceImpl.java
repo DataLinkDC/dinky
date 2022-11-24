@@ -17,24 +17,32 @@
  *
  */
 
-
 package com.dlink.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.assertion.Asserts;
 import com.dlink.constant.CommonConstant;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.DataBaseMapper;
 import com.dlink.metadata.driver.Driver;
-import com.dlink.model.*;
+import com.dlink.metadata.result.JdbcSelectResult;
+import com.dlink.model.Column;
+import com.dlink.model.DataBase;
+import com.dlink.model.QueryData;
+import com.dlink.model.Schema;
+import com.dlink.model.SqlGeneration;
+import com.dlink.model.Table;
 import com.dlink.service.DataBaseService;
+
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 /**
  * DataBaseServiceImpl
@@ -44,6 +52,7 @@ import java.util.List;
  */
 @Service
 public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBase> implements DataBaseService {
+
     @Override
     public String testConnect(DataBase dataBase) {
         return Driver.build(dataBase.getDriverConfig()).test();
@@ -140,6 +149,15 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     }
 
     @Override
+    public JdbcSelectResult queryData(QueryData queryData) {
+        DataBase dataBase = getById(queryData.getId());
+        Asserts.checkNotNull(dataBase, "该数据源不存在！");
+        Driver driver = Driver.build(dataBase.getDriverConfig());
+        StringBuilder queryOption = driver.genQueryOption(queryData);
+        return driver.query(queryOption.toString(), null);
+    }
+
+    @Override
     public SqlGeneration getSqlGeneration(Integer id, String schemaName, String tableName) {
         DataBase dataBase = getById(id);
         Asserts.checkNotNull(dataBase, "该数据源不存在！");
@@ -155,9 +173,8 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
 
     @Override
     public List<String> listEnabledFlinkWith() {
-        List<DataBase> dataBases = listEnabledAll();
         List<String> list = new ArrayList<>();
-        for (DataBase dataBase : dataBases) {
+        for (DataBase dataBase : listEnabledAll()) {
             if (Asserts.isNotNullString(dataBase.getFlinkConfig())) {
                 list.add(dataBase.getName() + ":=" + dataBase.getFlinkConfig() + "\n;\n");
             }
@@ -169,5 +186,14 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     public String getEnabledFlinkWithSql() {
         List<String> list = listEnabledFlinkWith();
         return StringUtils.join(list, "");
+    }
+
+    @Override
+    public boolean copyDatabase(DataBase database) {
+        String name = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10);
+        database.setId(null);
+        database.setName(database.getName().substring(0, 10) + "_" + name);
+        database.setCreateTime(null);
+        return this.save(database);
     }
 }

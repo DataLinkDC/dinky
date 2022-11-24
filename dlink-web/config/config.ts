@@ -19,14 +19,14 @@
 
 
 // https://umijs.org/config/
-import { defineConfig } from 'umi';
-import { join } from 'path';
+import {defineConfig} from 'umi';
+import {join} from 'path';
 
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
 import routes from './routes';
 
-const { REACT_APP_ENV } = process.env;
+const {REACT_APP_ENV} = process.env;
 
 export default defineConfig({
   hash: true,
@@ -34,6 +34,7 @@ export default defineConfig({
   dva: {
     hmr: true,
   },
+  // mfsu: {production: {output: '.mfsu-production'}},
   layout: {
     // https://umijs.org/zh-CN/plugins/plugin-layout
     locale: true,
@@ -70,8 +71,8 @@ export default defineConfig({
   manifest: {
     basePath: '/',
   },
-  history:{
-    type:'hash'
+  history: {
+    type: 'hash'
   },
   // Fast Refresh 热更新
   fastRefresh: {},

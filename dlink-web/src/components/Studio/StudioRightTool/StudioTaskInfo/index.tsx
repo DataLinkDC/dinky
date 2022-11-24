@@ -20,18 +20,16 @@
 
 import {connect} from "umi";
 import {StateType} from "@/pages/DataStudio/model";
-import {
-  Form, Row, Col, Tooltip, Button, Input, Descriptions, Typography
-} from "antd";
+import {Button, Col, Descriptions, Form, Input, Row, Tooltip, Typography} from "antd";
 import {MinusSquareOutlined} from "@ant-design/icons";
 import styles from "./index.less";
 import {Scrollbars} from 'react-custom-scrollbars';
+import {l} from "@/utils/intl";
 
 const {TextArea} = Input;
 const {Paragraph} = Typography;
 
 const StudioTaskInfo = (props: any) => {
-
   const {current, form, dispatch, tabs, toolHeight} = props;
 
   form.setFieldsValue(current.task);

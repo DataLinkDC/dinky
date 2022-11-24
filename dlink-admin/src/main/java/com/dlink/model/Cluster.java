@@ -17,13 +17,14 @@
  *
  */
 
-
 package com.dlink.model;
+
+import com.dlink.db.model.SuperEntity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.dlink.db.model.SuperEntity;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -39,6 +40,8 @@ import lombok.EqualsAndHashCode;
 public class Cluster extends SuperEntity {
 
     private static final long serialVersionUID = 3104721227014487321L;
+
+    private Integer tenantId;
 
     @TableField(fill = FieldFill.INSERT)
     private String alias;

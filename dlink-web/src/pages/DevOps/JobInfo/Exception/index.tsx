@@ -18,8 +18,9 @@
  */
 
 
-import {Tabs, Empty} from 'antd';
+import {Empty, Tabs} from 'antd';
 import CodeShow from "@/components/Common/CodeShow";
+import {l} from "@/utils/intl";
 
 const {TabPane} = Tabs;
 
@@ -36,7 +37,7 @@ const Exception = (props: any) => {
         <CodeShow code={job.jobHistory?.exceptions['root-exception'] as string} language='java' height='500px'/>
       </TabPane>
       <TabPane tab={<span>Exception History</span>} key="ExceptionHistory">
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
+        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={l('global.stay.tuned')}/>
       </TabPane>
     </Tabs>}
   </>)

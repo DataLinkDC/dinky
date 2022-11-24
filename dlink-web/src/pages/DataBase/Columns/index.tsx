@@ -19,113 +19,115 @@
 
 
 import React from "react";
-import {KeyOutlined, CheckSquareOutlined} from '@ant-design/icons';
+import {CheckSquareOutlined, KeyOutlined} from '@ant-design/icons';
 import DTable from "@/components/Common/DTable";
+import {l} from "@/utils/intl";
 
 const Columns = (props: any) => {
 
-  const {dbId,table,schema} = props;
+  const {dbId, table, schema, scroll} = props;
 
   const cols = [{
-    title: '序号',
+    title: l('pages.registerCenter.db.no'),
     dataIndex: 'position',
     isString: false,
   },
     {
-      title: '列名',
+      title: l('pages.registerCenter.db.columnName'),
       dataIndex: 'name',
       copyable: true,
     },
     {
-      title: '注释',
+      title: l('pages.registerCenter.db.comment'),
       dataIndex: 'comment',
       // ellipsis: true,
     },
     {
-      title: '类型',
+      title: l('pages.registerCenter.db.type'),
       dataIndex: 'type',
     },
     {
-      title: '主键',
+      title: l('pages.registerCenter.db.primarykey'),
       dataIndex: 'keyFlag',
       render: (_, record) => (
         <>
-          {record.keyFlag?<KeyOutlined style={{ color:'#FAA100'}} />:undefined}
+          {record.keyFlag ? <KeyOutlined style={{color: '#FAA100'}}/> : undefined}
         </>
       ),
       filters: [
         {
-          text: '主键',
+          text: l('pages.registerCenter.db.primarykey'),
           value: true,
         },
         {
-          text: '其他',
+          text: l('pages.registerCenter.db.other'),
           value: false,
         },
       ],
       openSearch: 'dict',
-    },{
-      title: '自增',
+    }, {
+      title: l('pages.registerCenter.db.autoIncrement'),
       dataIndex: 'autoIncrement',
       render: (_, record) => (
         <>
-          {record.autoIncrement?<CheckSquareOutlined style={{ color:'#1296db'}} />:undefined}
+          {record.autoIncrement ? <CheckSquareOutlined style={{color: '#1296db'}}/> : undefined}
         </>
       ),
       filters: [
         {
-          text: '自增',
+          text: l('pages.registerCenter.db.autoIncrement'),
           value: true,
         },
         {
-          text: '其他',
+          text: l('pages.registerCenter.db.other'),
           value: false,
         },
       ],
       openSearch: 'dict',
-    },{
-      title: '非空',
+    }, {
+      title: l('pages.registerCenter.db.isNull'),
       dataIndex: 'nullable',
       render: (_, record) => (
         <>
-          {!record.nullable?<CheckSquareOutlined style={{ color:'#1296db'}} />:undefined}
+          {!record.nullable ? <CheckSquareOutlined style={{color: '#1296db'}}/> : undefined}
         </>
       ),
       filters: [
         {
-          text: '非空',
+          text: l('pages.registerCenter.db.isNull'),
           value: true,
         },
         {
-          text: '可为空',
+          text: l('pages.registerCenter.db.null'),
           value: false,
         },
       ],
       openSearch: 'dict',
-    },{
-      title: '默认值',
+    }, {
+      title: l('pages.registerCenter.db.default'),
       dataIndex: 'defaultValue',
-    },{
-      title: '精度',
+    }, {
+      title: l('pages.registerCenter.db.precision'),
       dataIndex: 'precision',
       isString: false,
-    },{
-      title: '小数范围',
+    }, {
+      title: l('pages.registerCenter.db.decimalDigits'),
       dataIndex: 'scale',
       isString: false,
-    },{
-      title: '字符集',
+    }, {
+      title: l('pages.registerCenter.db.character'),
       dataIndex: 'characterSet',
-    },{
-      title: '排序规则',
+    }, {
+      title: l('pages.registerCenter.db.collationRule'),
       dataIndex: 'collation',
-    },{
-      title: 'Java 类型',
+    }, {
+      title: l('pages.registerCenter.db.javaType'),
       dataIndex: 'javaType',
     },]
   return (
     <DTable columns={cols}
-            dataSource={{url:'api/database/listColumns',params:{id:dbId,schemaName:schema,tableName:table}}}/>
+            scroll={scroll}
+            dataSource={{url: 'api/database/listColumns', params: {id: dbId, schemaName: schema, tableName: table}}}/>
   )
 };
 

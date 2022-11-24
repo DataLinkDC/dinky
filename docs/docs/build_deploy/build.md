@@ -178,7 +178,11 @@ source /etc/profile
 如果在window直接编译，首先将源码包解压到相应目录下，其次切换到Dinky根目录,编译命令如下：
 
 ```
+# 默认版本：scala-2.12 , flink-1.14
 mvn clean install -Dmaven.test.skip=true
+
+# 如若修改版本，按以下指定即可。flink可支持多版本(1.11-1.16)
+mvn clean install -Dmaven.test.skip=true -P pord,scala-2.11,flink-1.14,flink-1.15
 ```
 
 切换到 Dinky 根目录下得 build 文件夹下，即可出现编译后的安装包
@@ -187,10 +191,12 @@ mvn clean install -Dmaven.test.skip=true
 
 ```
 创建 远程克隆项目 
-maven ->> dlink->> 生命周期->> 跳过测试 ->> 双击install
+maven ->> dlink->> 配置文件->> 生命周期->> 跳过测试 ->> 双击install
 打包完成后 安装包见项目根下  build 文件夹下
 ```
+![local_debug_maven_profile_intro.png](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/local_debug/local_debug_maven_profile_intro.png)
 
+配置
 说明：如果要对 Dinky 做二次开发，详见开发者指南中的[本地调试](../developer_guide/local_debug)
 
 ### Linux 编译
@@ -201,8 +207,29 @@ git clone https://github.com/DataLinkDC/dlink.git
 cd dlink 
 mvn clean install -Dmaven.test.skip=true
 ```
+>如若修改版本，按以下指定即可。flink可支持多版本(1.11-1.16)
+> 
+> `mvn clean install -Dmaven.test.skip=true -P pord,scala-2.11,flink-1.14,flink-1.15`
 
 切换到 Dinky 根目录下得 build 文件夹下，即可出现编译后的安装包。
+
+---
+### 前后端分离编译
+#### 前端编译
+在 dlink-web 目录下，执行 ：
+```shell
+npm install --force
+npm run build
+```
+编译后的产物在 `dlink-web/dist` 下面，如需部署，请查看相关部署教程。[nginx中配置-dinky](./deploy#nginx中配置-dinky可选)
+
+#### 后端编译
+编译maven的时候，移除web profile即可。在-P 后面加: `!web`,如：
+
+`mvn clean install -Dmaven.test.skip=true -P !web,pord,scala-2.11,flink-1.14,flink-1.15`
+
+
+---
 
 ### 构建 Docker 镜像
 基于Dinky每次发布的[ Release ](http://www.dlink.top/download/download)构建：

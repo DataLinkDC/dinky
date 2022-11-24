@@ -17,21 +17,22 @@
  *
  */
 
-
 package com.dlink.model;
+
+import com.dlink.assertion.Asserts;
+import com.dlink.db.model.SuperEntity;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.dlink.assertion.Asserts;
-import com.dlink.db.model.SuperEntity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * ClusterConfig
@@ -46,6 +47,8 @@ public class ClusterConfiguration extends SuperEntity {
 
     private static final long serialVersionUID = 5830130188542066241L;
 
+    private Integer tenantId;
+
     @TableField(fill = FieldFill.INSERT)
     private String alias;
 
@@ -59,7 +62,6 @@ public class ClusterConfiguration extends SuperEntity {
 
     @TableField(exist = false)
     private Map<String, Object> config = new HashMap<>();
-
 
     public Map<String, Object> parseConfig() {
         ObjectMapper objectMapper = new ObjectMapper();

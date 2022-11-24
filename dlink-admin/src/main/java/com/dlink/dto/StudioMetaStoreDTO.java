@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.dto;
 
 import com.dlink.gateway.GatewayType;
@@ -46,6 +45,6 @@ public class StudioMetaStoreDTO extends AbstractStatementDTO {
             GatewayType.LOCAL.getLongValue(), true, false, false, false,
             null, null, null, null, null,
             null, isFragment(), false, false, 0,
-            null, null, null, null, null);
+            null, null, null, null, null, null);
     }
 }

@@ -18,9 +18,10 @@
  */
 
 
-import React, {useEffect, useState} from 'react';
-import {Form, Button, Input, Modal, Select,Divider,Switch} from 'antd';
+import React, {useState} from 'react';
+import {Button, Divider, Form, Input, Modal, Select, Switch} from 'antd';
 import {JarTableListItem} from "@/pages/Jar/data";
+import {l} from "@/utils/intl";
 
 export type JarFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -37,17 +38,18 @@ const formLayout = {
 
 const JarForm: React.FC<JarFormProps> = (props) => {
 
+
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<JarTableListItem>>({
     id: props.values.id,
     name: props.values.name,
     alias: props.values.alias,
-    type: props.values.type?props.values.type:'UserApp',
+    type: props.values.type ? props.values.type : 'UserApp',
     path: props.values.path,
     mainClass: props.values.mainClass,
     paras: props.values.paras,
     note: props.values.note,
-    enabled: props.values.enabled?props.values.enabled:true,
+    enabled: props.values.enabled ? props.values.enabled : true,
   });
 
   const {
@@ -67,59 +69,59 @@ const JarForm: React.FC<JarFormProps> = (props) => {
       <>
         <Form.Item
           name="type"
-          label="类型"
+          label={l('pages.registerCenter.jar.type')}
         >
           <Select defaultValue="UserApp" value="UserApp">
             <Option value="UserApp">User App</Option>
           </Select>
         </Form.Item>
-        <Divider>Jar 配置</Divider>
+        <Divider>{l('pages.registerCenter.jar.config')}</Divider>
         <Form.Item
           name="path"
-          label="文件路径"
-          help="指定 hdfs 上的文件路径"
-          rules={[{required: true, message: '请输入文件路径！'}]}
+          label={l('pages.registerCenter.jar.filePath')}
+          help={l('pages.registerCenter.jar.filePathHelp')}
+          rules={[{required: true, message: l('pages.registerCenter.jar.filePathHelp')}]}
         >
-          <Input placeholder="hdfs:///flink/app/demo.jar"/>
+          <Input placeholder={l('pages.registerCenter.jar.filePathPleaseHolder')}/>
         </Form.Item>
         <Form.Item
           name="mainClass"
-          label="启动类"
-          help="指定可执行 Jar 的启动类，（可选）"
+          label={l('pages.registerCenter.jar.mainClass')}
+          help={l('pages.registerCenter.jar.mainClassHelp')}
         >
-          <Input placeholder="com.dlink.app.MainApp"/>
+          <Input placeholder={l('pages.registerCenter.jar.mainClassPleaseHolder')}/>
         </Form.Item>
         <Form.Item
           name="paras"
-          label="执行参数"
-          help="指定可执行 Jar 的启动类入参，（可选）"
+          label={l('pages.registerCenter.jar.execParams')}
+          help={l('pages.registerCenter.jar.execParamsHelp')}
         >
-          <Input placeholder="--id 1,2"/>
+          <Input placeholder={l('pages.registerCenter.jar.execParamsPleaseHolder')}/>
         </Form.Item>
-        <Divider>基本配置</Divider>
+        <Divider>{l('pages.registerCenter.jar.baseConfig')}</Divider>
         <Form.Item
           name="name"
-          label="名称"
-          rules={[{required: true, message: '请输入名称！'}]}>
-          <Input placeholder="请输入唯一英文标识"/>
+          label={l('pages.registerCenter.jar.name')}
+          rules={[{required: true, message: l('pages.registerCenter.jar.namePlaceholder')}]}>
+          <Input placeholder={l('pages.registerCenter.jar.namePlaceholder')}/>
         </Form.Item>
         <Form.Item
           name="alias"
-          label="别名"
+          label={l('pages.registerCenter.jar.alias')}
         >
-          <Input placeholder="请输入名称"/>
+          <Input placeholder={l('pages.registerCenter.jar.aliasPlaceholder')}/>
         </Form.Item>
         <Form.Item
           name="note"
-          label="注释"
+          label={l('global.table.note')}
         >
-          <Input.TextArea placeholder="请输入文本注释" allowClear
+          <Input.TextArea placeholder={l('global.table.notePlaceholder')} allowClear
                           autoSize={{minRows: 3, maxRows: 10}}/>
         </Form.Item>
         <Form.Item
           name="enabled"
-          label="是否启用">
-          <Switch checkedChildren="启用" unCheckedChildren="禁用"
+          label={l('global.table.isEnable')}>
+          <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                   defaultChecked={formVals.enabled}/>
         </Form.Item>
       </>
@@ -129,20 +131,18 @@ const JarForm: React.FC<JarFormProps> = (props) => {
   const renderFooter = () => {
     return (
       <>
-        <Button onClick={() => handleModalVisible(false)}>取消</Button>
-        <Button type="primary" onClick={() => submitForm()}>
-          完成
-        </Button>
+        <Button onClick={() => handleModalVisible(false)}>{l('button.cancel')}</Button>
+        <Button type="primary" onClick={() => submitForm()}>{l('button.finish')}</Button>
       </>
     );
   };
 
   return (
     <Modal
-      width={1200}
+      width={"40%"}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title={formVals.id?"维护Jar配置":"创建Jar配置"}
+      title={formVals.id ? l('pages.registerCenter.jar.modify') : l('pages.registerCenter.jar.create')}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}

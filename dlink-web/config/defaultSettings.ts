@@ -21,6 +21,8 @@
 import {Settings as LayoutSettings} from '@ant-design/pro-layout';
 
 const Settings: LayoutSettings & {
+
+
   pwa?: boolean;
   logo?: string;
 } = {
@@ -32,7 +34,7 @@ const Settings: LayoutSettings & {
   fixedHeader: false,
   fixSiderbar: true,
   colorWeak: false,
-  title: 'Dinky 实时计算平台',
+  title: 'Dinky Real-time Platform ',
   pwa: false,
   logo: 'dinky.svg',
   iconfontUrl: '',

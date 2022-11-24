@@ -17,9 +17,7 @@
  *
  */
 
-
 package com.dlink.daemon.task;
-
 
 public class DaemonTaskConfig {
 

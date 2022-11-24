@@ -17,7 +17,6 @@
  *
  */
 
-
 export default [
   {
     path: '/user',
@@ -36,8 +35,8 @@ export default [
     ],
   },
   {
-    path: '/datastudio',
-    name: 'datastudio',
+    path: '/dataStudio',
+    name: 'dataStudio',
     icon: 'consoleSql',
     footerRender: false,
     component: './DataStudio',
@@ -54,6 +53,20 @@ export default [
     component: './DevOps/JobInfo',
     hideInMenu: true,
   },
+  {
+    path: '/datacenter',
+    name: 'datacenter',
+    icon: 'database',
+    routes: [
+      {
+        component: './DataCenter/MetaData',
+        path: '/datacenter/metadata',
+        name: 'metadata',
+        icon: 'cluster',
+      },
+    ],
+  },
+
   {
     path: '/registration',
     name: 'registration',
@@ -104,23 +117,84 @@ export default [
             component: './AlertGroup',
           },
         ],
-      },{
+      }, {
         path: '/registration/document',
         name: 'document',
         icon: 'container',
         component: './Document',
+      },{
+        path: '/registration/fragment',
+        name: 'fragment',
+        icon: "cloud",
+        component: './FragmentVariable',
+      }
+    ],
+  },
+  {
+    name: 'authenticationCenter',
+    icon: 'SafetyCertificateOutlined',
+    path: '/authenticationCenter',
+    routes: [
+      {
+        path: '/authenticationCenter/userManager',
+        name: 'userManager',
+        icon: 'UserOutlined',
+        component: './AuthenticationCenter/UserManager',
+      },
+      {
+        path: '/authenticationCenter/roleManager',
+        name: 'roleManager',
+        icon: 'TeamOutlined',
+        component: './AuthenticationCenter/RoleManager',
+      },
+      {
+        path: '/authenticationCenter/namespaceManager',
+        name: 'namespaceManager',
+        icon: 'BulbOutlined',
+        component: './AuthenticationCenter/NamespaceManager',
+      },
+      {
+        path: '/authenticationCenter/tenantManager',
+        name: 'tenantManager',
+        icon: 'SecurityScanOutlined',
+        component: './AuthenticationCenter/TenantManager',
       },
     ],
   },
   {
     path: '/',
-    redirect: '/datastudio',
+    redirect: '/dataStudio',
   },
   {
     name: 'settings',
     icon: 'setting',
-    path: '/settings',
-    component: './Settings',
+    path: '/settingCenter',
+    routes: [
+      {
+        path: '/settingCenter/flinkSettings',
+        name: 'flinkConfig',
+        icon: 'setting',
+        component: './SettingCenter/FlinkSettings',
+      },
+      {
+        path: '/settingCenter/udfTemplate',
+        name: 'udfTemplate',
+        icon: 'setting',
+        component: './SettingCenter/UDFTemplate',
+      },
+      {
+        path: '/settingCenter/systemInfo',
+        name: 'systemInfo',
+        icon: 'desktop',
+        component: './SettingCenter/SystemInfo',
+      },
+      {
+        path: '/settingCenter/processList',
+        name: 'processList',
+        icon: 'desktop',
+        component: './SettingCenter/ProcessList',
+      },
+    ],
   },
   {
     path: '/about',

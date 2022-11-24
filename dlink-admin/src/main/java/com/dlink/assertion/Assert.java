@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.assertion;
 
 import com.dlink.exception.BusException;

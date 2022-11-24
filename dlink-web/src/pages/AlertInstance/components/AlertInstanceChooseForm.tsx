@@ -31,6 +31,7 @@ import {createOrModifyAlertInstance, sendTest} from "@/pages/AlertInstance/servi
 import WeChatForm from "@/pages/AlertInstance/components/WeChatForm";
 import FeiShuForm from "@/pages/AlertInstance/components/FeiShuForm";
 import EmailForm from "@/pages/AlertInstance/components/EmailForm";
+import {l} from "@/utils/intl";
 
 export type UpdateFormProps = {
   onCancel: (flag?: boolean, formVals?: Partial<AlertInstanceTableListItem>) => void;
@@ -50,11 +51,11 @@ const AlertInstanceChooseForm: React.FC<UpdateFormProps> = (props) => {
 
   const [alertType, setAlertType] = useState<string>();
 
-  const chooseOne = (item: AlertConfig)=>{
+  const chooseOne = (item: AlertConfig) => {
     setAlertType(item.type);
   };
 
-  const onSubmit = async (value: any)=>{
+  const onSubmit = async (value: any) => {
     const success = await createOrModifyAlertInstance(value);
     if (success) {
       handleChooseModalVisible();
@@ -63,26 +64,26 @@ const AlertInstanceChooseForm: React.FC<UpdateFormProps> = (props) => {
     }
   };
 
-  const onTest = async (value:any)=>{
+  const onTest = async (value: any) => {
     await sendTest(value);
   };
 
 
   return (
     <Modal
-      width={800}
+      width={"40%"}
       bodyStyle={{padding: '32px 40px 48px'}}
-      title={values?.id?'编辑报警实例':'创建报警实例'}
+      title={values?.id ? l('pages.registerCenter.alert.instance.modify') : l('pages.registerCenter.alert.instance.create')}
       visible={modalVisible}
       onCancel={() => {
         setAlertType(undefined);
         handleChooseModalVisible();
       }}
-      maskClosable = {false}
-      destroyOnClose = {true}
+      maskClosable={false}
+      destroyOnClose={true}
       footer={null}
     >{
-      (!alertType&&!values?.id)&&(<List
+      (!alertType && !values?.id) && (<List
         grid={{
           gutter: 16,
           xs: 1,
@@ -93,8 +94,10 @@ const AlertInstanceChooseForm: React.FC<UpdateFormProps> = (props) => {
           xxl: 4,
         }}
         dataSource={ALERT_CONFIG_LIST}
-        renderItem={(item:AlertConfig) => (
-          <List.Item onClick={()=>{chooseOne(item)}}>
+        renderItem={(item: AlertConfig) => (
+          <List.Item onClick={() => {
+            chooseOne(item)
+          }}>
             <Card>
               {getAlertIcon(item.type)}
             </Card>
@@ -102,7 +105,7 @@ const AlertInstanceChooseForm: React.FC<UpdateFormProps> = (props) => {
         )}
       />)
     }
-      {(values?.type == ALERT_TYPE.DINGTALK || alertType == ALERT_TYPE.DINGTALK)?
+      {(values?.type == ALERT_TYPE.DINGTALK || alertType == ALERT_TYPE.DINGTALK) ?
         <DingTalkForm
           onCancel={() => {
             setAlertType(undefined);
@@ -116,9 +119,9 @@ const AlertInstanceChooseForm: React.FC<UpdateFormProps> = (props) => {
           onTest={(value) => {
             onTest(value);
           }}
-        />:undefined
+        /> : undefined
       }
-      {(values?.type == ALERT_TYPE.WECHAT || alertType == ALERT_TYPE.WECHAT)?
+      {(values?.type == ALERT_TYPE.WECHAT || alertType == ALERT_TYPE.WECHAT) ?
         <WeChatForm
           onCancel={() => {
             setAlertType(undefined);
@@ -132,9 +135,9 @@ const AlertInstanceChooseForm: React.FC<UpdateFormProps> = (props) => {
           onTest={(value) => {
             onTest(value);
           }}
-        />:undefined
+        /> : undefined
       }
-      {(values?.type == ALERT_TYPE.FEISHU || alertType == ALERT_TYPE.FEISHU)?
+      {(values?.type == ALERT_TYPE.FEISHU || alertType == ALERT_TYPE.FEISHU) ?
         <FeiShuForm
           onCancel={() => {
             setAlertType(undefined);
@@ -148,9 +151,9 @@ const AlertInstanceChooseForm: React.FC<UpdateFormProps> = (props) => {
           onTest={(value) => {
             onTest(value);
           }}
-        />:undefined
+        /> : undefined
       }
-      {(values?.type == ALERT_TYPE.EMAIL || alertType == ALERT_TYPE.EMAIL)?
+      {(values?.type == ALERT_TYPE.EMAIL || alertType == ALERT_TYPE.EMAIL) ?
         <EmailForm
           onCancel={() => {
             setAlertType(undefined);
@@ -164,7 +167,7 @@ const AlertInstanceChooseForm: React.FC<UpdateFormProps> = (props) => {
           onTest={(value) => {
             onTest(value);
           }}
-        />:undefined
+        /> : undefined
       }
     </Modal>
   );

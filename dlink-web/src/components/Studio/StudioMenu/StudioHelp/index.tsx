@@ -19,9 +19,10 @@
 
 
 import {Typography} from "antd";
+import {l} from "@/utils/intl";
 
 
-const { Title, Paragraph, Link } = Typography;
+const {Title, Paragraph, Link} = Typography;
 
 const StudioMsg = () => {
 
@@ -31,10 +32,12 @@ const StudioMsg = () => {
       <Paragraph>
         <ul>
           <li>
-            <Link href="https://github.com/DataLinkDC/dlink" target="_blank">GitHub：https://github.com/DataLinkDC/dlink</Link>
+            <Link href="https://github.com/DataLinkDC/dlink"
+                  target="_blank">GitHub：https://github.com/DataLinkDC/dlink</Link>
           </li>
           <li>
-            <Link href="https://gitee.com/DataLinkDC/Dinky" target="_blank">Gitee: https://gitee.com/DataLinkDC/Dinky</Link>
+            <Link href="https://gitee.com/DataLinkDC/Dinky" target="_blank">Gitee:
+              https://gitee.com/DataLinkDC/Dinky</Link>
           </li>
           <li>
             公众号：DataLink数据中台

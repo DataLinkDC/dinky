@@ -17,6 +17,7 @@
  *
  */
 
+import {l} from "@/utils/intl"
 
 export function parseByteStr(limit: number) {
   let size = "";
@@ -45,27 +46,27 @@ export function parseNumStr(num: number) {
 }
 
 export function parseMilliSecondStr(second_time: number) {
-  if(((second_time/1000) %60) < 1){
-    return second_time + "毫秒";
+  if (((second_time / 1000) % 60) < 1) {
+    return second_time + l('global.time.millisecond');
   }
-  return parseSecondStr(second_time/1000);
+  return parseSecondStr(second_time / 1000);
 }
 
 export function parseSecondStr(second_time: number) {
   second_time = Math.floor(second_time);
-  let time = second_time + "秒";
+  let time = second_time + l( 'global.time.second');
   if (second_time > 60) {
     let second = second_time % 60;
     let min = Math.floor(second_time / 60);
-    time = min + "分" + second + "秒";
+    time = min + l( 'global.time.minute') + second + l( 'global.time.second');
     if (min > 60) {
       min = Math.floor(second_time / 60) % 60;
       let hour = Math.floor(Math.floor(second_time / 60) / 60);
-      time = hour + "小时" + min + "分" + second + "秒";
+      time = hour + l( 'global.time.hour') + min + l( 'global.time.minute') + second + l( 'global.time.second');
       if (hour > 24) {
         hour = Math.floor(Math.floor(second_time / 60) / 60) % 24;
         let day = Math.floor(Math.floor(Math.floor(second_time / 60) / 60) / 24);
-        time = day + "天" + hour + "小时" + min + "分" + second + "秒";
+        time = day + l( 'global.time.day') + hour + l( 'global.time.hour') + min + l( 'global.time.minute') + second + l( 'global.time.second');
       }
     }
   }

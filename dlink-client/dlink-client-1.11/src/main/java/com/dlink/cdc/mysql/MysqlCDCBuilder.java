@@ -17,8 +17,14 @@
  *
  */
 
-
 package com.dlink.cdc.mysql;
+
+import com.dlink.assertion.Asserts;
+import com.dlink.cdc.AbstractCDCBuilder;
+import com.dlink.cdc.CDCBuilder;
+import com.dlink.constant.ClientConstant;
+import com.dlink.constant.FlinkParamConstant;
+import com.dlink.model.FlinkCDCConfig;
 
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -31,13 +37,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import com.alibaba.ververica.cdc.connectors.mysql.MySQLSource;
-import com.alibaba.ververica.cdc.debezium.StringDebeziumDeserializationSchema;
-import com.dlink.assertion.Asserts;
-import com.dlink.cdc.AbstractCDCBuilder;
-import com.dlink.cdc.CDCBuilder;
-import com.dlink.constant.ClientConstant;
-import com.dlink.constant.FlinkParamConstant;
-import com.dlink.model.FlinkCDCConfig;
 
 /**
  * MysqlCDCBuilder
@@ -47,8 +46,8 @@ import com.dlink.model.FlinkCDCConfig;
  **/
 public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
 
-    private String KEY_WORD = "mysql-cdc";
-    private final static String METADATA_TYPE = "MySql";
+    private static final String KEY_WORD = "mysql-cdc";
+    private static final String METADATA_TYPE = "MySql";
 
     public MysqlCDCBuilder() {
     }
@@ -76,10 +75,10 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
             }
         }
         MySQLSource.Builder<String> sourceBuilder = MySQLSource.<String>builder()
-            .hostname(config.getHostname())
-            .port(config.getPort())
-            .username(config.getUsername())
-            .password(config.getPassword());
+                .hostname(config.getHostname())
+                .port(config.getPort())
+                .username(config.getUsername())
+                .password(config.getPassword());
         String database = config.getDatabase();
         if (Asserts.isNotNullString(database)) {
             String[] databases = database.split(FlinkParamConstant.SPLIT);
@@ -93,7 +92,7 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         } else {
             sourceBuilder.tableList(new String[0]);
         }
-        sourceBuilder.deserializer(new StringDebeziumDeserializationSchema());
+        sourceBuilder.deserializer(new MysqlJsonDebeziumDeserializationSchema());
         sourceBuilder.debeziumProperties(properties);
         return env.addSource(sourceBuilder.build(), "MySQL CDC Source");
     }

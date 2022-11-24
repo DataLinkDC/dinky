@@ -17,18 +17,19 @@
  *
  */
 
-
 package com.dlink.model;
+
+import com.dlink.db.model.SuperEntity;
+import com.dlink.metadata.driver.DriverConfig;
+
+import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.dlink.db.model.SuperEntity;
-import com.dlink.metadata.driver.DriverConfig;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.time.LocalDateTime;
 
 /**
  * DataBase
@@ -42,6 +43,8 @@ import java.time.LocalDateTime;
 public class DataBase extends SuperEntity {
 
     private static final long serialVersionUID = -5002272138861566408L;
+
+    private Integer tenantId;
 
     @TableField(fill = FieldFill.INSERT)
     private String alias;

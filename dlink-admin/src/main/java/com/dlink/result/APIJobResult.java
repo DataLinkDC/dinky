@@ -17,15 +17,15 @@
  *
  */
 
-
 package com.dlink.result;
 
 import com.dlink.job.Job;
 import com.dlink.job.JobResult;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * APIJobResult

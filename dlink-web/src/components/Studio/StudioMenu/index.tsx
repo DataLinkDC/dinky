@@ -19,55 +19,62 @@
 
 
 import styles from "./index.less";
-import {Menu, Dropdown, Tooltip, Row, Col, notification, Modal, message} from "antd";
+import {Col, Menu, message, Modal, notification, Row, Tooltip} from "antd";
 import {
-  PauseCircleTwoTone, CarryOutTwoTone, DeleteTwoTone, PlayCircleTwoTone, CameraTwoTone, SnippetsTwoTone,
-  FileAddTwoTone, FolderOpenTwoTone, SafetyCertificateTwoTone, SaveTwoTone, FlagTwoTone, CodeTwoTone,
-  EnvironmentOutlined, SmileOutlined, RocketTwoTone, QuestionCircleTwoTone, MessageOutlined, ClusterOutlined
-  , EditTwoTone, RestTwoTone, ShrinkOutlined, ApiTwoTone
+  ApiTwoTone,
+  CameraTwoTone,
+  CarryOutTwoTone,
+  ClusterOutlined,
+  CodeTwoTone,
+  DeleteTwoTone,
+  EditTwoTone,
+  EnvironmentOutlined,
+  FileAddTwoTone,
+  FlagTwoTone,
+  FolderOpenTwoTone,
+  MessageOutlined,
+  PauseCircleTwoTone,
+  PlayCircleTwoTone,
+  QuestionCircleTwoTone,
+  RestTwoTone,
+  RocketTwoTone,
+  SafetyCertificateTwoTone,
+  SaveTwoTone,
+  SendOutlined,
+  ShrinkOutlined,
+  SmileOutlined,
+  SnippetsTwoTone
 } from "@ant-design/icons";
-import Space from "antd/es/space";
 import Divider from "antd/es/divider";
 import Button from "antd/es/button/button";
 import Breadcrumb from "antd/es/breadcrumb/Breadcrumb";
 import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import {CODE, postDataArray} from "@/components/Common/crud";
-import {executeSql, getJobPlan} from "@/pages/DataStudio/service";
+import {executeSql, getJobPlan, getTaskDefinition} from "@/pages/DataStudio/service";
 import TaskAPI from "@/pages/API/TaskAPI";
 import StudioHelp from "./StudioHelp";
 import StudioGraph from "./StudioGraph";
 import {
-  cancelTask, developTask,
+  cancelTask,
+  developTask,
   offLineTask,
-  onLineTask, recoveryTask,
+  onLineTask,
+  recoveryTask,
   releaseTask,
   showCluster,
   showTables
 } from "@/components/Studio/StudioEvent/DDL";
 import React, {useCallback, useEffect, useState} from "react";
 import StudioExplain from "../StudioConsole/StudioExplain";
-import {
-  DIALECT,
-  isExecuteSql,
-  isOnline,
-  isRunningTask,
-  isSql,
-  isTask,
-} from "@/components/Studio/conf";
-import {
-  ModalForm,
-} from '@ant-design/pro-form';
+import {DIALECT, isExecuteSql, isOnline, isRunningTask, isSql, isTask,} from "@/components/Studio/conf";
+import {ModalForm,} from '@ant-design/pro-form';
 import SqlExport from "@/pages/DataStudio/SqlExport";
 import {Dispatch} from "@@/plugin-dva/connect";
 import StudioTabs from "@/components/Studio/StudioTabs";
 import {isDeletedTask, JOB_LIFE_CYCLE} from "@/components/Common/JobLifeCycle";
-
-const menu = (
-  <Menu>
-    <Menu.Item>敬请期待</Menu.Item>
-  </Menu>
-);
+import DolphinPush from "@/components/Studio/StudioMenu/DolphinPush";
+import {l} from "@/utils/intl";
 
 
 const StudioMenu = (props: any) => {
@@ -76,8 +83,16 @@ const StudioMenu = (props: any) => {
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
   const [exportModalVisible, handleExportModalVisible] = useState<boolean>(false);
   const [graphModalVisible, handleGraphModalVisible] = useState<boolean>(false);
+  const [dolphinModalVisible, handleDolphinModalVisible] = useState<boolean>(false);
   // const [editModalVisible, handleEditModalVisible] = useState<boolean>(false);
   const [graphData, setGraphData] = useState();
+  const [dolphinData, setDolphinData] = useState();
+
+  const menu = (
+    <Menu>
+      <Menu.Item>{l('global.stay.tuned')}</Menu.Item>
+    </Menu>
+  );
 
   const onKeyDown = useCallback((e) => {
     if (e.keyCode === 83 && (e.ctrlKey === true || e.metaKey)) {
@@ -146,9 +161,9 @@ const StudioMenu = (props: any) => {
         message.error('执行失败');
       }
       let newTabs = tabs;
-      for (let i = 0; i < newTabs.panes.length; i++) {
-        if (newTabs.panes[i].key == key) {
-          newTabs.panes[i].console.result = res.datas;
+      for (const element of newTabs.panes) {
+        if (element.key == key) {
+          element.console.result = res.datas;
           break;
         }
       }
@@ -166,8 +181,8 @@ const StudioMenu = (props: any) => {
     Modal.confirm({
       title: '异步提交作业',
       content: `确定异步提交作业【${current.task.alias}】到其配置的集群吗？请确认您的作业是否已经被保存！`,
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         let task = {
           id: current.task.id,
@@ -225,6 +240,20 @@ const StudioMenu = (props: any) => {
         message.error(`获取作业执行计划失败，原因：\n${result.msg}`);
         setGraphData(undefined);
       }
+    })
+  };
+
+  //获取当前task关联的海豚数据
+  const viewDolphinCon = () => {
+    const res = getTaskDefinition(current.task.id);
+    res.then((result) => {
+      if (result.code == CODE.SUCCESS) {
+        setDolphinData(result.datas);
+      } else {
+        message.error(`获取海豚数据失败，原因：\n${result.msg}`);
+        setDolphinData(undefined);
+      }
+      handleDolphinModalVisible(true);
     })
   };
 
@@ -309,8 +338,8 @@ const StudioMenu = (props: any) => {
     Modal.confirm({
       title: '发布作业',
       content: `确定发布作业【${current.task.alias}】吗？请确认您的作业是否已经被保存！`,
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         const res = releaseTask(current.task.id);
         res.then((result) => {
@@ -329,8 +358,8 @@ const StudioMenu = (props: any) => {
     Modal.confirm({
       title: '维护作业',
       content: `确定维护作业【${current.task.alias}】吗？`,
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         const res = developTask(current.task.id);
         res.then((result) => {
@@ -347,8 +376,8 @@ const StudioMenu = (props: any) => {
     Modal.confirm({
       title: '上线作业',
       content: `确定上线作业【${current.task.alias}】吗？`,
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         const res = onLineTask(current.task.id);
         res.then((result) => {
@@ -368,8 +397,8 @@ const StudioMenu = (props: any) => {
     Modal.confirm({
       title: '停止作业',
       content: `确定停止作业【${current.task.alias}】吗？`,
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         const res = offLineTask(current.task.id, type);
         res.then((result) => {
@@ -391,8 +420,8 @@ const StudioMenu = (props: any) => {
     Modal.confirm({
       title: '下线作业',
       content: `确定下线作业【${current.task.alias}】吗？`,
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         const res = offLineTask(current.task.id, type);
         res.then((result) => {
@@ -412,8 +441,8 @@ const StudioMenu = (props: any) => {
     Modal.confirm({
       title: '注销作业',
       content: `确定注销作业【${current.task.alias}】吗？`,
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         const res = cancelTask(current.task.id);
         res.then((result) => {
@@ -432,8 +461,8 @@ const StudioMenu = (props: any) => {
     Modal.confirm({
       title: '恢复作业',
       content: `确定恢复作业【${current.task.alias}】吗？`,
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         const res = recoveryTask(current.task.id);
         res.then((result) => {
@@ -618,6 +647,15 @@ const StudioMenu = (props: any) => {
                   />
                 </Tooltip>
               </>)}
+              {isShowSubmitBtn() && (<>
+                <Tooltip title="推送到海豚调度">
+                  <Button
+                    type="text" style={{color: '#248FFF'}}
+                    icon={<SendOutlined/>}
+                    onClick={viewDolphinCon}
+                  />
+                </Tooltip>
+              </>)}
               {isShowCancelTaskBtn() &&
                 <Tooltip title="停止">
                   <Button
@@ -714,6 +752,17 @@ const StudioMenu = (props: any) => {
         onCancel={() => handleGraphModalVisible(false)}
       >
         <StudioGraph data={graphData}/>
+      </Modal>
+      <Modal
+        width={700}
+        bodyStyle={{padding: '32px 40px 48px'}}
+        destroyOnClose
+        title="推送到海豚调度"
+        visible={dolphinModalVisible}
+        onCancel={() => handleDolphinModalVisible(false)}
+        footer={[]}
+      >
+        <DolphinPush data={dolphinData} taskCur={current} handleDolphinModalVisible={handleDolphinModalVisible}/>
       </Modal>
       {current?.task ?
         <ModalForm

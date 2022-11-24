@@ -17,15 +17,25 @@
  *
  */
 
-
 package com.dlink.controller;
 
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
+import com.dlink.function.constant.PathConstant;
+import com.dlink.function.data.model.UDF;
+import com.dlink.function.util.UDFUtil;
 import com.dlink.model.Jar;
+import com.dlink.model.Task;
 import com.dlink.service.JarService;
-import com.fasterxml.jackson.databind.JsonNode;
-import lombok.extern.slf4j.Slf4j;
+import com.dlink.service.TaskService;
+
+import org.apache.flink.table.catalog.FunctionLanguage;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,8 +45,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import cn.hutool.core.util.StrUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * JarController
@@ -48,8 +60,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/jar")
 public class JarController {
+
     @Autowired
     private JarService jarService;
+
+    @Autowired
+    private TaskService taskService;
 
     /**
      * 新增或者更新
@@ -110,5 +126,18 @@ public class JarController {
     public Result listEnabledAll() {
         List<Jar> jars = jarService.listEnabledAll();
         return Result.succeed(jars, "获取成功");
+    }
+
+    @PostMapping("/udf/generateJar")
+    public Result<Map<String, List<String>>> generateJar() {
+        List<Task> allUDF = taskService.getAllUDF();
+        List<UDF> udfCodes = allUDF.stream().map(task -> {
+            return UDF.builder().code(task.getStatement()).className(task.getSavePointPath())
+                    .functionLanguage(FunctionLanguage.valueOf(task.getDialect().toUpperCase())).build();
+        }).collect(Collectors.toList());
+        Map<String, List<String>> resultMap = UDFUtil.buildJar(udfCodes);
+        String msg = StrUtil.format("udf jar生成成功，jar文件在{}；\n本次成功 class:{}。\n失败 class:{}", PathConstant.UDF_JAR_TMP_PATH,
+                resultMap.get("success"), resultMap.get("failed"));
+        return Result.succeed(resultMap, msg);
     }
 }

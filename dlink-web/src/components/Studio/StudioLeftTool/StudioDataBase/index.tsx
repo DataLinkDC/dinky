@@ -18,28 +18,21 @@
  */
 
 
-import {
-  message, Button, Table, Empty, Divider,
-  Tooltip, Drawer, Modal
-} from "antd";
+import {Button, Drawer, Empty, Modal, Table, Tooltip} from "antd";
 import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
-import {useState} from "react";
-import styles from "./index.less";
-import {
-  ReloadOutlined,
-  PlusOutlined
-} from '@ant-design/icons';
-import React from "react";
+import React, {useState} from "react";
+import {PlusOutlined, ReloadOutlined} from '@ant-design/icons';
 import {showDataBase} from "../../StudioEvent/DDL";
 import DBForm from "@/pages/DataBase/components/DBForm";
-import { Scrollbars } from 'react-custom-scrollbars';
+import {Scrollbars} from 'react-custom-scrollbars';
 import ProDescriptions from "@ant-design/pro-descriptions";
 import {handleRemove} from "@/components/Common/crud";
+import {l} from "@/utils/intl";
 
 const StudioDataBase = (props: any) => {
 
-  const {database,toolHeight, dispatch} = props;
+  const {database, toolHeight, dispatch} = props;
   const [chooseDBModalVisible, handleDBFormModalVisible] = useState<boolean>(false);
   const [values, setValues] = useState<any>({});
   const [row, setRow] = useState<{}>();
@@ -61,7 +54,7 @@ const StudioDataBase = (props: any) => {
       title: "ID",
       dataIndex: "id",
       key: "id",
-    },{
+    }, {
       title: "数据源名",
       dataIndex: "alias",
     }, {
@@ -87,7 +80,7 @@ const StudioDataBase = (props: any) => {
           {
             text: '备份',
             value: '备份',
-          },{
+          }, {
             text: '其他',
             value: '其他',
           },
@@ -133,57 +126,57 @@ const StudioDataBase = (props: any) => {
         },
       },
       {
-        title: '注释',
+        title: l('global.table.note'),
         sorter: true,
         valueType: 'textarea',
         dataIndex: 'note',
       },
       {
-        title: '是否启用',
+        title: l('global.table.isEnable'),
         dataIndex: 'enabled',
         filters: [
           {
-            text: '已启用',
+            text: l('status.enabled'),
             value: 1,
           },
           {
-            text: '已禁用',
+            text: l('status.disabled'),
             value: 0,
           },
         ],
         filterMultiple: false,
         valueEnum: {
-          true: {text: '已启用', status: 'Success'},
-          false: {text: '已禁用', status: 'Error'},
+          true: {text: l('status.enabled'), status: 'Success'},
+          false: {text: l('status.disabled'), status: 'Error'},
         },
       },
       {
         title: '最近的健康时间',
         dataIndex: 'healthTime',
         valueType: 'dateTime',
-      },{
+      }, {
         title: '最近的心跳检测时间',
         dataIndex: 'heartbeatTime',
         valueType: 'dateTime',
-      },{
-        title: '创建时间',
+      }, {
+        title: l('global.table.createTime'),
         dataIndex: 'createTime',
         valueType: 'dateTime',
       },
       {
-        title: '最近更新时间',
+        title: l('global.table.lastUpdateTime'),
         dataIndex: 'updateTime',
         valueType: 'dateTime',
       },
       {
-        title: '操作',
+        title: l('global.table.operate'),
         dataIndex: 'option',
         valueType: 'option',
         render: (_, record) => [
-          <Button  type="dashed" onClick={() => onModifyDataBase(record)}>
-            配置
+          <Button type="dashed" onClick={() => onModifyDataBase(record)}>
+            {l('button.edit')}
           </Button>, <Button danger onClick={() => onDeleteDataBase(record)}>
-            删除
+            {l('button.delete')}
           </Button>
         ],
       },];
@@ -207,8 +200,8 @@ const StudioDataBase = (props: any) => {
     Modal.confirm({
       title: '删除数据源',
       content: `确定删除该数据源【${record.alias === "" ? record.name : record.alias}】吗？`,
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         await handleRemove('api/database', [record]);
         setRow({});
@@ -234,21 +227,28 @@ const StudioDataBase = (props: any) => {
         />
       </Tooltip>
       <Scrollbars style={{height: (toolHeight - 32)}}>
-      {database.length > 0 ? (
-        <Table dataSource={database} columns={getColumns()} size="small"/>) : (
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>)}
-      <DBForm
-        onCancel={() => {
-          handleDBFormModalVisible(false);
-          setValues({});
-        }}
-        modalVisible={chooseDBModalVisible}
-        onSubmit={() => {
-          setRow({});
-          onRefreshDataBase();
-        }}
-        values={values}
-      />
+        {database.length > 0 ? (
+          <Table
+            dataSource={database}
+            columns={getColumns()}
+            pagination={{
+              defaultPageSize: 10,
+              showSizeChanger: true,
+            }}
+            size="small"/>) : (
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>)}
+        <DBForm
+          onCancel={() => {
+            handleDBFormModalVisible(false);
+            setValues({});
+          }}
+          modalVisible={chooseDBModalVisible}
+          onSubmit={() => {
+            setRow({});
+            onRefreshDataBase();
+          }}
+          values={values}
+        />
         <Drawer
           width={600}
           visible={!!row?.id}

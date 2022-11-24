@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.explainer.trans;
 
 import lombok.Getter;
@@ -44,10 +43,10 @@ public class Predecessor {
 
     @Override
     public String toString() {
-        return "Predecessor{" +
-                "id=" + id +
-                ", shipStrategy='" + shipStrategy + '\'' +
-                ", side='" + side + '\'' +
-                '}';
+        return "Predecessor{"
+                + "id=" + id
+                + ", shipStrategy='" + shipStrategy + '\''
+                + ", side='" + side + '\''
+                + '}';
     }
 }

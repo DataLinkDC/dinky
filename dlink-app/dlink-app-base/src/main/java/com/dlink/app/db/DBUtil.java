@@ -17,11 +17,14 @@
  *
  */
 
-
 package com.dlink.app.db;
 
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -92,6 +95,25 @@ public class DBUtil {
         }
         close(conn);
         return map;
+    }
+    /**
+     * 获取数据源的连接信息，作为全局变量
+     * @param sql 查询SQL，必须只有两列的结果，第一个为数据库名称，第二个为配置信息
+     * @param config 核心数据库配置
+     * */
+
+    public static String getDbSourceSQLStatement(String sql, DBConfig config) throws SQLException, IOException {
+        Connection conn = getConnection(config);
+        String sqlStatements = "";
+        try (
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                sqlStatements = sqlStatements + rs.getString(1) + ":=" + rs.getString(2) + "\n;\n";
+            }
+        }
+        close(conn);
+        return sqlStatements;
     }
 
     public static List<Map<String, String>> getListByID(String sql, DBConfig config) throws SQLException, IOException {

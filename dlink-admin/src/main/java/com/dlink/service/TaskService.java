@@ -17,9 +17,7 @@
  *
  */
 
-
 package com.dlink.service;
-
 
 import com.dlink.common.result.Result;
 import com.dlink.db.service.ISuperService;
@@ -31,11 +29,13 @@ import com.dlink.model.JobLifeCycle;
 import com.dlink.model.JobStatus;
 import com.dlink.model.Task;
 import com.dlink.result.SqlExplainResult;
-import com.fasterxml.jackson.databind.JsonNode;
-import org.springframework.web.multipart.MultipartFile;
 import com.dlink.result.TaskOperatingResult;
 
 import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * 作业 服务类
@@ -59,11 +59,13 @@ public interface TaskService extends ISuperService<Task> {
 
     List<Task> listFlinkSQLEnv();
 
-    Task initDefaultFlinkSQLEnv();
+    Task initDefaultFlinkSQLEnv(Integer tenantId);
 
     String exportSql(Integer id);
 
     Task getUDFByClassName(String className);
+
+    List<Task> getAllUDF();
 
     Result releaseTask(Integer id);
 
@@ -97,13 +99,18 @@ public interface TaskService extends ISuperService<Task> {
 
     Result uploadTaskJson(MultipartFile file) throws Exception;
 
+    void handleJobDone(JobInstance jobInstance);
+
     Result queryAllCatalogue();
 
-    Result<List<Task>> queryOnLineTaskByDoneStatus(List<JobLifeCycle> jobLifeCycle
-            , List<JobStatus> jobStatuses, boolean includeNull, Integer catalogueId);
+    Result<List<Task>> queryOnLineTaskByDoneStatus(List<JobLifeCycle> jobLifeCycle, List<JobStatus> jobStatuses,
+                                                   boolean includeNull, Integer catalogueId);
 
     void selectSavepointOnLineTask(TaskOperatingResult taskOperatingResult);
 
     void selectSavepointOffLineTask(TaskOperatingResult taskOperatingResult);
 
+    Task getTaskByNameAndTenantId(String name, Integer tenantId);
+
+    JobStatus checkJobStatus(JobInfoDetail jobInfoDetail);
 }

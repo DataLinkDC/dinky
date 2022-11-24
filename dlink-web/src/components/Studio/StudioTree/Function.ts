@@ -32,13 +32,15 @@ export interface TreeDataNode extends DataNode {
   taskId:number;
   parentId:number;
   path:string[];
+  schema:string;
+  table:string;
 }
 
 export function convertToTreeData(data:TreeDataNode[], pid:number,path?:string[]) {
   !path&&(path=[]);
   const result:TreeDataNode[] = [];
   let temp:TreeDataNode[] = [];
-  for (let i = 0; i < data.length; i++) {
+  for (let i = 0; i < data?.length; i++) {
     if (data[i].parentId === pid) {
       let obj = data[i];
       obj.title = obj.name;

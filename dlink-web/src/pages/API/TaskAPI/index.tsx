@@ -18,13 +18,13 @@
  */
 
 
-import {Typography, Tabs, Badge, Empty} from "antd";
+import {Tabs} from "antd";
 import CodeShow from "@/components/Common/CodeShow";
 import {useEffect, useState} from "react";
 import {getTaskAPIAddress} from "@/pages/API/service";
+import {l} from "@/utils/intl";
 
 
-const {Title, Paragraph, Text, Link} = Typography;
 const {TabPane} = Tabs;
 
 const TaskAPI = (props: any) => {
@@ -38,8 +38,8 @@ const TaskAPI = (props: any) => {
 
   const getAddress = () => {
     const res = getTaskAPIAddress();
-    res.then((result)=>{
-      if(result.datas){
+    res.then((result) => {
+      if (result.datas) {
         setAddress(result.datas);
       }
     })
@@ -50,7 +50,7 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-          异步提交
+          {l('pages.task.api.job.async')}
         </span>
         }
         key="submitTask"
@@ -61,7 +61,7 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-          停止作业
+                    {l('pages.task.api.job.stop')}
         </span>
         }
         key="cancelJob"
@@ -76,7 +76,7 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-          重启作业
+            {l('pages.task.api.job.restart')}
         </span>
         }
         key="restartTask"
@@ -87,18 +87,19 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-          作业实例
+            {l('pages.task.api.job.instance')}
         </span>
         }
         key="taskInstance"
       >
-        <CodeShow code={`curl http://${address}/openapi/getJobInstanceByTaskId?id=${(task ? task.id : '1')}`} language='shell'
+        <CodeShow code={`curl http://${address}/openapi/getJobInstanceByTaskId?id=${(task ? task.id : '1')}`}
+                  language='shell'
                   height='500px' theme="vs-dark"/>
       </TabPane>
       <TabPane
         tab={
           <span>
-          SavePoint 触发
+            {l('pages.task.api.savepoint.trigger')}
         </span>
         }
         key="triggerSavePoint"
@@ -113,7 +114,7 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-          SavePoint 停止
+            {l('pages.task.api.savepoint.stop')}
         </span>
         }
         key="cancelSavePoint"
@@ -128,7 +129,7 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-          上线作业
+            {l('pages.task.api.job.online')}
         </span>
         }
         key="onLineTask"
@@ -139,7 +140,7 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-          下线作业
+            {l('pages.task.api.job.offline')}
         </span>
         }
         key="offLineTask"
@@ -150,8 +151,8 @@ const TaskAPI = (props: any) => {
       <TabPane
         tab={
           <span>
-          重新上线作业
-        </span>
+             {l('pages.task.api.job.reonline')}
+          </span>
         }
         key="reOnLineTask"
       >

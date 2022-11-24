@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.metadata.driver;
 
 import com.dlink.metadata.constant.PhoenixConstant;
@@ -27,20 +26,17 @@ import com.dlink.metadata.query.IDBQuery;
 import com.dlink.metadata.query.PhoenixQuery;
 import com.dlink.metadata.result.JdbcSelectResult;
 import com.dlink.model.Column;
+import com.dlink.model.QueryData;
 import com.dlink.model.Table;
+
 import org.apache.commons.lang3.StringUtils;
 
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
 
-/**
- * @author lcg
- * @operate
- * @date 2022/2/16 16:50
- * @return
- */
 public class PhoenixDriver extends AbstractJdbcDriver {
     @Override
     public IDBQuery getDBQuery() {
@@ -60,6 +56,32 @@ public class PhoenixDriver extends AbstractJdbcDriver {
     @Override
     public String getType() {
         return "Phoenix";
+    }
+
+    /**
+     *  sql拼接，目前还未实现limit方法
+     * */
+
+    @Override
+    public StringBuilder genQueryOption(QueryData queryData) {
+
+        String where = queryData.getOption().getWhere();
+        String order = queryData.getOption().getOrder();
+
+        StringBuilder optionBuilder = new StringBuilder()
+                .append("select * from ")
+                .append(queryData.getSchemaName())
+                .append(".")
+                .append(queryData.getTableName());
+
+        if (where != null && !where.equals("")) {
+            optionBuilder.append(" where ").append(where);
+        }
+        if (order != null && !order.equals("")) {
+            optionBuilder.append(" order by ").append(order);
+        }
+
+        return optionBuilder;
     }
 
     @Override
@@ -91,9 +113,10 @@ public class PhoenixDriver extends AbstractJdbcDriver {
             Properties properties = new Properties();
             properties.put("phoenix.schema.isNamespaceMappingEnabled", "true");
             properties.put("phoenix.schema.mapSystemTablesToNamespac", "true");
-            conn = DriverManager.getConnection(config.getUrl(), properties);
+            Connection connection = DriverManager.getConnection(config.getUrl(), properties);
+            conn.set(connection);
             //设置为自动提交，否则upsert语句不生效
-            conn.setAutoCommit(true);
+            connection.setAutoCommit(true);
         } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException(e);
         }

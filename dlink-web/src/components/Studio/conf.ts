@@ -36,19 +36,19 @@ export const DIALECT = {
   MYSQL: 'Mysql',
   ORACLE: 'Oracle',
   SQLSERVER: 'SqlServer',
-  POSTGRESQL: 'PostGreSql',
+  POSTGRESQL: 'PostgreSql',
   CLICKHOUSE: 'ClickHouse',
   DORIS: 'Doris',
   HIVE: 'Hive',
   PHOENIX: 'Phoenix',
+  STARROCKS: 'StarRocks',
+  PRESTO: 'Presto',
+  KUBERNETES_APPLICATION: 'KubernetesApplaction',
   JAVA: 'Java',
+  SCALA: 'Scala',
+  PYTHON: 'Python',
 };
 
-export const CHART = {
-  LINE: '折线图',
-  BAR: '条形图',
-  PIE: '饼图',
-};
 
 export const isSql = (dialect: string) => {
   switch (dialect) {
@@ -61,6 +61,8 @@ export const isSql = (dialect: string) => {
     case DIALECT.PHOENIX:
     case DIALECT.DORIS:
     case DIALECT.HIVE:
+    case DIALECT.STARROCKS:
+    case DIALECT.PRESTO:
       return true;
     default:
       return false;
@@ -82,6 +84,8 @@ export const isExecuteSql = (dialect: string) => {
     case DIALECT.PHOENIX:
     case DIALECT.FLINKSQL:
     case DIALECT.HIVE:
+    case DIALECT.STARROCKS:
+    case DIALECT.PRESTO:
       return true;
     default:
       return false;
@@ -104,6 +108,9 @@ export const isTask = (dialect: string) => {
     case DIALECT.FLINKSQL:
     case DIALECT.FLINKJAR:
     case DIALECT.HIVE:
+    case DIALECT.STARROCKS:
+    case DIALECT.PRESTO:
+    case DIALECT.KUBERNETES_APPLICATION:
       return true;
     default:
       return false;

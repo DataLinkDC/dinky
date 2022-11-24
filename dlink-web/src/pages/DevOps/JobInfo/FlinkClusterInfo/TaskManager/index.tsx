@@ -26,11 +26,13 @@ import {TaskContainerConfigInfo, TaskManagerConfiguration} from "@/pages/DevOps/
 import {useEffect, useRef, useState} from "react";
 import {HomeOutlined} from "@ant-design/icons";
 import {getTaskManagerInfo} from "@/pages/DevOps/service";
+import {l} from "@/utils/intl";
 
 const {TabPane} = Tabs;
 
 const TaskManagerInfo = (props: any) => {
   const {job} = props;
+
   const actionRef = useRef<ActionType>();
 
   const [activeContainer, setActiveContainer] = useState<TaskContainerConfigInfo>();
@@ -67,7 +69,7 @@ const TaskManagerInfo = (props: any) => {
     return (
       <>
         <div style={{marginBottom: 4}}>
-          <Button title={'返回'} onClick={handleBack}> ← Back<HomeOutlined/> </Button>
+          <Button title={l('button.back')} onClick={handleBack}> ← {l('button.back')}<HomeOutlined/> </Button>
         </div>
         <Tabs defaultActiveKey="metrics" size="small"
 

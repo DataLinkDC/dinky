@@ -1,0 +1,110 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+name: Backend
+
+on:
+  push:
+  pull_request:
+    branches:
+      - dev
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+
+concurrency:
+  group: backend-${{ github.event.pull_request.number || github.ref }}
+
+jobs:
+  build_npm:
+    name: Build_NPM
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      MAVEN_OPTS: -Xmx2G -Xms2G
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
+      - uses: actions/cache@v3
+        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
+        with:
+          path: |
+            ${{ steps.npm-cache-dir.outputs.dir }}
+            dlink-web/dist
+          key: ${{ runner.os }}-node-${{ hashFiles('dlink-web/**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install Dependencies
+        run: cd dlink-web && npm install --legacy-peer-deps
+      - name: Npm Web Build
+        run: cd dlink-web && npm run build
+  build_jdk:
+    name: Build_JDK
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        jdk: [8, 11]
+        flink: [1.11, 1.12, 1.13, 1.14, 1.15, 1.16]
+        exclude:
+          - jdk: 11
+            flink: 1.11
+          - jdk: 11
+            flink: 1.12
+
+    timeout-minutes: 30
+    env:
+      MAVEN_OPTS: -Xmx2G -Xms2G
+    steps:
+      - uses: actions/checkout@v3
+      # maven编译
+      - name: Set up JDK ${{ matrix.jdk }}
+        uses: actions/setup-java@v2
+        with:
+          java-version:  ${{ matrix.jdk }}
+          distribution: 'adopt'
+      - name: Cache local Maven repository
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Check Style
+        run: |
+          ./mvnw -T 2C -B --no-snapshot-updates clean checkstyle:check
+      - name: Build and Package
+        run: |
+          ./mvnw -B clean install \
+                 -Dmaven.test.skip=true \
+                 -Dcheckstyle.skip=true \
+                 -P prod,scala-2.12,flink-${{ matrix.flink }} \
+                 --no-snapshot-updates
+
+      # 查看打包的大小
+      - name: View package size
+        run: |
+          ./check_package_size.sh
+#      - name: Run Unit tests
+#        run: |
+#          ./mvnw -T 2C -B clean verify -Dmaven.test.skip=false -Dgpg.skip=true --no-snapshot-updates

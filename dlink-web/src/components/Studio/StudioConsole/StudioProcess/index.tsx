@@ -38,19 +38,19 @@ const StudioProcess = (props: any) => {
 
   const savepoint = (key: string | number, currentItem: {}) => {
     Modal.confirm({
-      title: key+'任务',
+      title: key + '任务',
       content: `确定${key}该作业吗？`,
-      okText: '确认',
-      cancelText: '取消',
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
         if (!clusterId) return;
-        let res = savepointJob(clusterId, currentItem.jid,key,key,0);
+        let res = savepointJob(clusterId, currentItem.jid, key, key, 0);
         res.then((result) => {
           if (result.datas == true) {
-            message.success(key+"成功");
+            message.success(key + "成功");
             onRefreshJobs();
           } else {
-            message.error(key+"失败");
+            message.error(key + "失败");
           }
         });
       }
@@ -119,32 +119,41 @@ const StudioProcess = (props: any) => {
       sorter: true,
       render: (_, row) => {
         return (<>
-            {row.tasks.total>0?(<Tooltip title="TOTAL"><Tag color="#666">{row.tasks.total}</Tag></Tooltip>):''}
-            {row.tasks.created>0?(<Tooltip title="CREATED"><Tag color="#666">{row.tasks.created}</Tag></Tooltip>):''}
-            {row.tasks.deploying>0?(<Tooltip title="DEPLOYING"><Tag color="#666">{row.tasks.deploying}</Tag></Tooltip>):''}
-            {row.tasks.running>0?(<Tooltip title="RUNNING"><Tag color="#44b549">{row.tasks.running}</Tag></Tooltip>):''}
-            {row.tasks.failed>0?(<Tooltip title="FAILED"><Tag color="#ff4d4f">{row.tasks.failed}</Tag></Tooltip>):''}
-            {row.tasks.finished>0?(<Tooltip title="FINISHED"><Tag color="#108ee9">{row.tasks.finished}</Tag></Tooltip>):''}
-            {row.tasks.reconciling>0?(<Tooltip title="RECONCILING"><Tag color="#666">{row.tasks.reconciling}</Tag></Tooltip>):''}
-            {row.tasks.scheduled>0?(<Tooltip title="SCHEDULED"><Tag color="#666">{row.tasks.scheduled}</Tag></Tooltip>):''}
-            {row.tasks.canceling>0?(<Tooltip title="CANCELING"><Tag color="#feb72b">{row.tasks.canceling}</Tag></Tooltip>):''}
-            {row.tasks.canceled>0?(<Tooltip title="CANCELED"><Tag color="#db970f">{row.tasks.canceled}</Tag></Tooltip>):''}
+            {row.tasks.total > 0 ? (<Tooltip title="TOTAL"><Tag color="#666">{row.tasks.total}</Tag></Tooltip>) : ''}
+            {row.tasks.created > 0 ? (
+              <Tooltip title="CREATED"><Tag color="#666">{row.tasks.created}</Tag></Tooltip>) : ''}
+            {row.tasks.deploying > 0 ? (
+              <Tooltip title="DEPLOYING"><Tag color="#666">{row.tasks.deploying}</Tag></Tooltip>) : ''}
+            {row.tasks.running > 0 ? (
+              <Tooltip title="RUNNING"><Tag color="#44b549">{row.tasks.running}</Tag></Tooltip>) : ''}
+            {row.tasks.failed > 0 ? (
+              <Tooltip title="FAILED"><Tag color="#ff4d4f">{row.tasks.failed}</Tag></Tooltip>) : ''}
+            {row.tasks.finished > 0 ? (
+              <Tooltip title="FINISHED"><Tag color="#108ee9">{row.tasks.finished}</Tag></Tooltip>) : ''}
+            {row.tasks.reconciling > 0 ? (
+              <Tooltip title="RECONCILING"><Tag color="#666">{row.tasks.reconciling}</Tag></Tooltip>) : ''}
+            {row.tasks.scheduled > 0 ? (
+              <Tooltip title="SCHEDULED"><Tag color="#666">{row.tasks.scheduled}</Tag></Tooltip>) : ''}
+            {row.tasks.canceling > 0 ? (
+              <Tooltip title="CANCELING"><Tag color="#feb72b">{row.tasks.canceling}</Tag></Tooltip>) : ''}
+            {row.tasks.canceled > 0 ? (
+              <Tooltip title="CANCELED"><Tag color="#db970f">{row.tasks.canceled}</Tag></Tooltip>) : ''}
           </>
         )
       }
     }, {
-      title: '操作',
+      title: l('global.table.operate'),
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => {
         let option = [<a
           onClick={() => {
-            message.success('敬请期待');
+            message.success(l('global.stay.tuned'));
           }}
         >
           详情
         </a>];
-        if(record.state=='RUNNING'||record.state=='RECONCILING'||record.state=='SCHEDULED'){
+        if (record.state == 'RUNNING' || record.state == 'RECONCILING' || record.state == 'SCHEDULED') {
           option.push(<Divider type="vertical"/>);
           option.push(<a
             onClick={() => {
@@ -161,7 +170,7 @@ const StudioProcess = (props: any) => {
     return columns;
   };
 
-  const onCancel = (jobId:string)=>{
+  const onCancel = (jobId: string) => {
     Modal.confirm({
       title: `确认停止作业【${jobId}】？`,
       okText: '停止',
@@ -184,7 +193,8 @@ const StudioProcess = (props: any) => {
   const getClusterOptions = () => {
     let itemList = [];
     for (let item of cluster) {
-      let tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias === "" ? item.name : item.alias}</>);
+      let tag = (<><Tag
+        color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias === "" ? item.name : item.alias}</>);
       itemList.push(<Option value={item.id} label={tag}>
         {tag}
       </Option>)
@@ -197,14 +207,14 @@ const StudioProcess = (props: any) => {
     onRefreshJobs();
   };
 
-  const onRefreshJobs = ()=>{
-    if(!clusterId) return;
+  const onRefreshJobs = () => {
+    if (!clusterId) return;
     let res = showFlinkJobs(clusterId);
     res.then((result) => {
-      for(let i in result.datas){
-        result.datas[i].duration = result.datas[i].duration*0.001;
-        if(result.datas[i]['end-time']==-1){
-          result.datas[i]['end-time']=null;
+      for (let i in result.datas) {
+        result.datas[i].duration = result.datas[i].duration * 0.001;
+        if (result.datas[i]['end-time'] == -1) {
+          result.datas[i]['end-time'] = null;
         }
       }
       setJobsData(result.datas);
@@ -222,12 +232,13 @@ const StudioProcess = (props: any) => {
         >
           {getClusterOptions()}
         </Select>
-        <Button type="primary" icon={<SearchOutlined />} onClick={onRefreshJobs} />
+        <Button type="primary" icon={<SearchOutlined/>} onClick={onRefreshJobs}/>
       </Space>
       {jobsData.length > 0 ?
         (<ProTable dataSource={jobsData} columns={getColumns()} size="small" search={false} toolBarRender={false}
                    pagination={{
-                     pageSize: 5,
+                     defaultPageSize: 5,
+                     showSizeChanger: true,
                    }}
         />) : (<Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>)}
     </div>

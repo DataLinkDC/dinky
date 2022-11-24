@@ -18,22 +18,21 @@
  */
 
 
-import {DownOutlined, PlusOutlined, UserOutlined} from '@ant-design/icons';
-import {Button, message, Input, Drawer, Modal} from 'antd';
-import React, {useState, useRef} from 'react';
-import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
-import type {ProColumns, ActionType} from '@ant-design/pro-table';
+import {DownOutlined, PlusOutlined} from '@ant-design/icons';
+import {Button, Drawer, Input, Modal} from 'antd';
+import React, {useRef, useState} from 'react';
+import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
+import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
 import type {TaskTableListItem} from './data.d';
 
-import styles from './index.less';
-
 import Dropdown from "antd/es/dropdown/dropdown";
 import Menu from "antd/es/menu";
 import {handleAddOrUpdate, handleRemove, handleSubmit, queryData, updateEnabled} from "@/components/Common/crud";
+import {l} from "@/utils/intl";
 
 const url = '/api/task';
 
@@ -53,10 +52,10 @@ const TaskTableList: React.FC<{}> = () => {
       Modal.confirm({
         title: '删除作业',
         content: '确定删除该作业吗？',
-        okText: '确认',
-        cancelText: '取消',
-        onOk:async () => {
-          await handleRemove(url,[currentItem]);
+        okText: l('button.confirm'),
+        cancelText: l('button.cancel'),
+        onOk: async () => {
+          await handleRemove(url, [currentItem]);
           actionRef.current?.reloadAndRest?.();
         }
       });
@@ -64,10 +63,10 @@ const TaskTableList: React.FC<{}> = () => {
       Modal.confirm({
         title: '执行作业',
         content: '确定执行该作业吗？',
-        okText: '确认',
-        cancelText: '取消',
-        onOk:async () => {
-          await handleSubmit(url+'/submit','作业',[currentItem]);
+        okText: l('button.confirm'),
+        cancelText: l('button.cancel'),
+        onOk: async () => {
+          await handleSubmit(url + '/submit', '作业', [currentItem]);
           actionRef.current?.reloadAndRest?.();
         }
       });
@@ -81,14 +80,14 @@ const TaskTableList: React.FC<{}> = () => {
     <Dropdown
       overlay={
         <Menu onClick={({key}) => editAndDelete(key, item)}>
-          <Menu.Item key="submit">执行</Menu.Item>
-          <Menu.Item key="edit">编辑</Menu.Item>
-          <Menu.Item key="delete">删除</Menu.Item>
+          <Menu.Item key="submit">{l('button.submit')}</Menu.Item>
+          <Menu.Item key="edit">{l('button.edit')}</Menu.Item>
+          <Menu.Item key="delete">{l('button.delete')}</Menu.Item>
         </Menu>
       }
     >
       <a>
-        更多 <DownOutlined/>
+        {l('button.more')} <DownOutlined/>
       </a>
     </Dropdown>
   );
@@ -181,7 +180,7 @@ const TaskTableList: React.FC<{}> = () => {
       hideInTable: true,
     },
     {
-      title: '注释',
+      title: l('global.table.note'),
       sorter: true,
       valueType: 'textarea',
       dataIndex: 'note',
@@ -190,64 +189,64 @@ const TaskTableList: React.FC<{}> = () => {
       hideInTable: true,
     },
     {
-      title: '是否启用',
+      title: l('global.table.isEnable'),
       dataIndex: 'enabled',
       hideInForm: true,
       hideInSearch: true,
       hideInTable: false,
       filters: [
         {
-          text: '正常',
+          text: l('status.enabled'),
           value: 1,
         },
         {
-          text: '禁用',
+          text: l('status.disabled'),
           value: 0,
         },
       ],
       filterMultiple: false,
       valueEnum: {
-        true: { text: '正常', status: 'Success' },
-        false: { text: '禁用', status: 'Error' },
+        true: {text: l('status.enabled'), status: 'Success'},
+        false: {text: l('status.disabled'), status: 'Error'},
       },
     },
     {
-      title: '创建时间',
+      title: l('global.table.createTime'),
       dataIndex: 'createTime',
       sorter: true,
       valueType: 'dateTime',
       hideInForm: true,
-      hideInTable:true,
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
+      hideInTable: true,
+      renderFormItem: (item, {defaultRender, ...rest}, form) => {
         const status = form.getFieldValue('status');
         if (`${status}` === '0') {
           return false;
         }
         if (`${status}` === '3') {
-          return <Input {...rest} placeholder="请输入异常原因！" />;
+          return <Input {...rest} placeholder="请输入异常原因！"/>;
         }
         return defaultRender(item);
       },
     },
     {
-      title: '最近更新时间',
+      title: l('global.table.lastUpdateTime'),
       dataIndex: 'updateTime',
       sorter: true,
       valueType: 'dateTime',
       hideInForm: true,
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
+      renderFormItem: (item, {defaultRender, ...rest}, form) => {
         const status = form.getFieldValue('status');
         if (`${status}` === '0') {
           return false;
         }
         if (`${status}` === '3') {
-          return <Input {...rest} placeholder="请输入异常原因！" />;
+          return <Input {...rest} placeholder="请输入异常原因！"/>;
         }
         return defaultRender(item);
       },
     },
     {
-      title: '操作',
+      title: l('global.table.operate'),
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
@@ -257,7 +256,7 @@ const TaskTableList: React.FC<{}> = () => {
             setFormValues(record);
           }}
         >
-          配置
+          {l('button.config')}
         </a>,
         <MoreBtn key="more" item={record}/>,
       ],
@@ -271,140 +270,148 @@ const TaskTableList: React.FC<{}> = () => {
         actionRef={actionRef}
         rowKey="id"
         search={{
-        labelWidth: 120,
-      }}
+          labelWidth: 120,
+        }}
         toolBarRender={() => [
-        <Button type="primary" onClick={() => handleModalVisible(true)}>
-          <PlusOutlined/> 新建
-        </Button>,
-      ]}
-        request={(params, sorter, filter) => queryData(url,{...params, sorter, filter})}
+          <Button type="primary" onClick={() => handleModalVisible(true)}>
+            <PlusOutlined/> {l('button.create')}
+          </Button>,
+        ]}
+        request={(params, sorter, filter) => queryData(url, {...params, sorter, filter})}
         columns={columns}
         rowSelection={{
-        onChange: (_, selectedRows) => setSelectedRows(selectedRows),
-      }}
-        />
-        {selectedRowsState?.length > 0 && (
-          <FooterToolbar
-            extra={
-              <div>
-                已选择 <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
-                <span>
+          onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+        }}
+        pagination={{
+          defaultPageSize: 10,
+          showSizeChanger: true,
+        }}
+      />
+      {selectedRowsState?.length > 0 && (
+        <FooterToolbar
+          extra={
+            <div>
+              {l('tips.selected', '',
+                {
+                  total: <a
+                    style={{fontWeight: 600}}>{selectedRowsState.length}</a>
+                })}  &nbsp;&nbsp;
+              <span>
                 被禁用的作业共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} 人
               </span>
-              </div>
-            }
-          >
-            <Button type="primary" danger
-                    onClick ={()=>{
-                      Modal.confirm({
-                        title: '删除作业',
-                        content: '确定删除选中的作业吗？',
-                        okText: '确认',
-                        cancelText: '取消',
-                        onOk:async () => {
-                          await handleRemove(url,selectedRowsState);
-                          setSelectedRows([]);
-                          actionRef.current?.reloadAndRest?.();
-                        }
-                      });
-                    }}
-            >
-              批量删除
-            </Button>
-            <Button type="primary"
-                    onClick ={()=>{
-                      Modal.confirm({
-                        title: '启用作业',
-                        content: '确定启用选中的作业吗？',
-                        okText: '确认',
-                        cancelText: '取消',
-                        onOk:async () => {
-                          await updateEnabled(url,selectedRowsState, true);
-                          setSelectedRows([]);
-                          actionRef.current?.reloadAndRest?.();
-                        }
-                      });
-                    }}
-            >批量启用</Button>
-            <Button danger
-                    onClick ={()=>{
-                      Modal.confirm({
-                        title: '禁用作业',
-                        content: '确定禁用选中的作业吗？',
-                        okText: '确认',
-                        cancelText: '取消',
-                        onOk:async () => {
-                          await updateEnabled(url,selectedRowsState, false);
-                          setSelectedRows([]);
-                          actionRef.current?.reloadAndRest?.();
-                        }
-                      });
-                    }}
-            >批量禁用</Button>
-          </FooterToolbar>
-        )}
-        <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>
-          <ProTable<TaskTableListItem, TaskTableListItem>
-          onSubmit={async (value) => {
-          const success = await handleAddOrUpdate(url,value);
-          if (success) {
-            handleModalVisible(false);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
+            </div>
           }
-        }}
+        >
+          <Button type="primary" danger
+                  onClick={() => {
+                    Modal.confirm({
+                      title: '删除作业',
+                      content: '确定删除选中的作业吗？',
+                      okText: l('button.confirm'),
+                      cancelText: l('button.cancel'),
+                      onOk: async () => {
+                        await handleRemove(url, selectedRowsState);
+                        setSelectedRows([]);
+                        actionRef.current?.reloadAndRest?.();
+                      }
+                    });
+                  }}
+          >
+            {l('button.batchDelete')}
+          </Button>
+          <Button type="primary"
+                  onClick={() => {
+                    Modal.confirm({
+                      title: '启用作业',
+                      content: '确定启用选中的作业吗？',
+                      okText: l('button.confirm'),
+                      cancelText: l('button.cancel'),
+                      onOk: async () => {
+                        await updateEnabled(url, selectedRowsState, true);
+                        setSelectedRows([]);
+                        actionRef.current?.reloadAndRest?.();
+                      }
+                    });
+                  }}
+          >{l('button.batchEnable')}</Button>
+          <Button danger
+                  onClick={() => {
+                    Modal.confirm({
+                      title: '禁用作业',
+                      content: '确定禁用选中的作业吗？',
+                      okText: l('button.confirm'),
+                      cancelText: l('button.cancel'),
+                      onOk: async () => {
+                        await updateEnabled(url, selectedRowsState, false);
+                        setSelectedRows([]);
+                        actionRef.current?.reloadAndRest?.();
+                      }
+                    });
+                  }}
+          >{l('button.batchDisable')}</Button>
+        </FooterToolbar>
+      )}
+      <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>
+        <ProTable<TaskTableListItem, TaskTableListItem>
+          onSubmit={async (value) => {
+            const success = await handleAddOrUpdate(url, value);
+            if (success) {
+              handleModalVisible(false);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
+          }}
           rowKey="id"
           type="form"
           columns={columns}
-          />
-        </CreateForm>
-        {formValues && Object.keys(formValues).length ? (
-          <UpdateForm
-            onSubmit={async (value) => {
-              const success = await handleAddOrUpdate(url,value);
-              if (success) {
-                handleUpdateModalVisible(false);
-                setFormValues({});
-                if (actionRef.current) {
-                  actionRef.current.reload();
-                }
-              }
-            }}
-            onCancel={() => {
+        />
+      </CreateForm>
+      {formValues && Object.keys(formValues).length ? (
+        <UpdateForm
+          onSubmit={async (value) => {
+            const success = await handleAddOrUpdate(url, value);
+            if (success) {
               handleUpdateModalVisible(false);
               setFormValues({});
-            }}
-            updateModalVisible={updateModalVisible}
-            values={formValues}
-          />
-        ) : null}
-
-        <Drawer
-          width={600}
-          visible={!!row}
-          onClose={() => {
-            setRow(undefined);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
           }}
-          closable={false}
-        >
-          {row?.name && (
-            <ProDescriptions<TaskTableListItem>
-              column={2}
-              title={row?.name}
-              request={async () => ({
+          onCancel={() => {
+            handleUpdateModalVisible(false);
+            setFormValues({});
+          }}
+          updateModalVisible={updateModalVisible}
+          values={formValues}
+        />
+      ) : null}
+
+      <Drawer
+        width={600}
+        visible={!!row}
+        onClose={() => {
+          setRow(undefined);
+        }}
+        closable={false}
+      >
+        {row?.name && (
+          <ProDescriptions<TaskTableListItem>
+            column={2}
+            title={row?.name}
+            request={async () => ({
               data: row || {},
             })}
-              params={{
+            params={{
               id: row?.name,
             }}
-              columns={columns}
-              />
-              )}
-        </Drawer>
+            columns={columns}
+          />
+        )}
+      </Drawer>
     </PageContainer>
-);
+  );
 };
 
 export default TaskTableList;

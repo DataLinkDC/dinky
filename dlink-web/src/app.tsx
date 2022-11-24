@@ -34,7 +34,7 @@ const loginPath = '/user/login';
 
 /** 获取用户信息比较慢的时候会展示一个 loading */
 export const initialStateConfig = {
-  loading: <PageLoading />,
+  loading: <PageLoading/>,
 };
 
 /**
@@ -49,15 +49,21 @@ export async function getInitialState(): Promise<{
     try {
       const result = await queryCurrentUser();
       const currentUser: API.CurrentUser = {
-        name: result.datas.nickname || result.datas.username,
-        avatar: result.datas.avatar?result.datas.avatar:'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
-        userid: result.datas.username,
-        notifyCount: 0,
-        unreadCount: 0,
-        access: result.datas.isAdmin?'admin':'',
-        phone: result.datas.mobile,
-        isAdmin:result.datas.isAdmin,
-        worknum:result.datas.worknum,
+        id: result.datas.user.id,
+        username: result.datas.user.username,
+        password: result.datas.user.password,
+        nickname: result.datas.user.nickname,
+        worknum: result.datas.user.worknum,
+        avatar: result.datas.user.avatar ? result.datas.user.avatar : '/icons/user_avatar.png',
+        mobile: result.datas.user.mobile,
+        enabled: result.datas.user.enabled,
+        isDelete: result.datas.user.isDelete,
+        createTime: result.datas.user.createTime,
+        updateTime: result.datas.user.updateTime,
+        isAdmin: result.datas.user.isAdmin,
+        roleList: result.datas.roleList,
+        tenantList: result.datas.tenantList,
+        currentTenant: result.datas.currentTenant,
       };
       return currentUser;
     } catch (error) {
@@ -104,46 +110,48 @@ export async function getInitialState(): Promise<{
  */
 export const request: RequestConfig = {
   errorHandler: (error: ResponseError) => {
-    const { messages } = getIntl(getLocale());
-    const { request,response } = error;
+    const {messages} = getIntl(getLocale());
+    const {request, response} = error;
     const writeUrl = ['/api/current'];
-  if(writeUrl.indexOf(request.originUrl)>-1){
-    return;
-  }else {
-    if (response && response.status) {
-      const {status, statusText, url} = response;
-      const requestErrorMessage = messages['app.request.error'];
-      const errorMessage = `${requestErrorMessage} ${status}: ${url}`;
-      const errorDescription = messages[`app.request.${status}`] || statusText;
-      notification.error({
-        message: errorMessage,
-        description: errorDescription,
-      });
-    }
+    if (writeUrl.indexOf(request.originUrl) > -1) {
+      return;
+    } else {
+      if (response && response.status) {
+        const {status, statusText, url} = response;
+        const requestErrorMessage = messages['app.request.error'];
+        const errorMessage = `${requestErrorMessage} ${status}: ${url}`;
+        const errorDescription = messages[`app.request.${status}`] || statusText;
+        notification.error({
+          message: errorMessage,
+          description: errorDescription,
+        });
+      }
 
-    if (!response) {
-      notification.error({
-        description: '您的网络发生异常，无法连接服务器',
-        message: '网络异常',
-      });
+      if (!response) {
+        notification.error({
+          description: '您的网络发生异常，无法连接服务器',
+          message: '网络异常',
+        });
+      }
+      throw error;
     }
-    throw error;
-  }
   },
 
 };
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
-export const layout: RunTimeLayoutConfig = ({ initialState }) => {
+export const layout: RunTimeLayoutConfig = ({initialState}) => {
+
+
   return {
-    rightContentRender: () => <RightContent />,
+    rightContentRender: () => <RightContent/>,
     disableContentMargin: false,
     /*waterMarkProps: {
       content: initialState?.currentUser?.name,
     },*/
-    footerRender: () => <Footer />,
+    footerRender: () => <Footer/>,
     onPageChange: () => {
-      const { location } = history;
+      const {location} = history;
       // 如果没有登录，重定向到 login
       if (!initialState?.currentUser && location.pathname !== loginPath) {
         history.push(loginPath);
@@ -151,15 +159,15 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     },
     links: isDev
       ? [
-          <Link to="/umi/plugin/openapi" target="_blank">
-            <LinkOutlined />
-            <span>openAPI 文档</span>
-          </Link>,
-          <Link to="/~docs">
-            <BookOutlined />
-            <span>业务组件文档</span>
-          </Link>,
-        ]
+        <Link to="/umi/plugin/openapi" target="_blank">
+          <LinkOutlined/>
+          <span>OpenAPI Document</span>
+        </Link>,
+        <Link to="/~docs">
+          <BookOutlined/>
+          <span>Business Component Document</span>
+        </Link>,
+      ]
       : [],
     menuHeaderRender: undefined,
     // 自定义 403 页面

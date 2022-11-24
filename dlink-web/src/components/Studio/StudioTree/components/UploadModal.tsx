@@ -19,37 +19,40 @@
 
 
 import React from 'react';
-import {Button, message,Modal,Upload} from "antd";
+import {Button, message, Modal, Upload} from "antd";
 import {UploadOutlined} from "@ant-design/icons";
+import {l} from "@/utils/intl";
 
 interface UploadModalProps {
   visible: boolean;
   action: string;
-  handleOk: ()=>void;
-  onCancel: ()=>void;
+  handleOk: () => void;
+  onCancel: () => void;
   buttonTitle: string;
 }
 
-const UploadModal:React.FC<UploadModalProps> = (props:any) => {
-  const {visible,handleOk,onCancel,action,buttonTitle} = props;
+const UploadModal: React.FC<UploadModalProps> = (props: any) => {
+
+
+  const {visible, handleOk, onCancel, action, buttonTitle} = props;
   const handlers = {
     name: 'file',
     action: action,
     maxCount: 1,
     multiple: true,
-    onChange(info:any) {
+    onChange(info: any) {
       if (info.file.status !== 'uploading') {
         console.log(info.file, info.fileList);
       }
       if (info.file.status === 'done') {
-        console.log('info:',info);
-        if(info.file.response.code === 1){
+        console.log('info:', info);
+        if (info.file.response.code === 1) {
           message.error(`${info.file.response.msg} `);
-        }else{
-          message.success(`${info.file.name} file uploaded successfully`);
+        } else {
+          message.success(`${info.file.name}` + l('app.request.upload.success'));
         }
       } else if (info.file.status === 'error') {
-        message.error(`${info.file.name} file upload failed.`);
+        message.error(`${info.file.name} `+ l('app.request.upload.failed'));
       }
     },
   };
@@ -62,7 +65,7 @@ const UploadModal:React.FC<UploadModalProps> = (props:any) => {
              maskClosable={false}
       >
         <Upload {...handlers}>
-          <Button size="small" icon={<UploadOutlined />}>{buttonTitle}</Button>
+          <Button size="small" icon={<UploadOutlined/>}>{buttonTitle}</Button>
         </Upload>
       </Modal>
     </div>

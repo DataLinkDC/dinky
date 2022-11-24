@@ -20,13 +20,13 @@
 
 import {Descriptions, Typography} from 'antd';
 import StatusCounts from "@/components/Common/StatusCounts";
-import ProTable from '@ant-design/pro-table';
-import {ProColumns} from "@ant-design/pro-table";
+import ProTable, {ProColumns} from '@ant-design/pro-table';
 import {VerticesTableListItem} from "@/pages/DevOps/data";
 import JobStatus from "@/components/Common/JobStatus";
 import {parseByteStr, parseMilliSecondStr, parseNumStr, parseSecondStr} from "@/components/Common/function";
+import {l} from "@/utils/intl";
 
-const { Text } = Typography;
+const {Text} = Typography;
 
 const BaseInfo = (props: any) => {
 
@@ -34,67 +34,67 @@ const BaseInfo = (props: any) => {
 
   const columns: ProColumns<VerticesTableListItem>[] = [
     {
-      title: '名称',
+      title: l('pages.devops.baseinfo.name'),
       dataIndex: 'name',
       render: (dom, entity) => {
-        return  <Text style={{ width: 500 }} ellipsis={{ tooltip:entity.name }}>{entity.name}</Text>;
+        return <Text style={{width: 500}} ellipsis={{tooltip: entity.name}}>{entity.name}</Text>;
       },
     },
     {
-      title: '状态',
+      title: l('pages.devops.baseinfo.status'),
       dataIndex: 'status',
       sorter: true,
       render: (dom, entity) => {
-        return  <JobStatus status={entity.status}/>;
+        return <JobStatus status={entity.status}/>;
       },
     },
     {
-      title: '接收字节',
+      title: l('pages.devops.baseinfo.readbytes'),
       render: (dom, entity) => {
-        return  parseByteStr(entity.metrics['read-bytes']);
+        return parseByteStr(entity.metrics['read-bytes']);
       },
     },
     {
-      title: '接收记录',
+      title: l('pages.devops.baseinfo.readrecords'),
       render: (dom, entity) => {
-        return  parseNumStr(entity.metrics['read-records']);
+        return parseNumStr(entity.metrics['read-records']);
       },
     },
     {
-      title: '发送字节',
+      title: l('pages.devops.baseinfo.writebytes'),
       render: (dom, entity) => {
-        return  parseByteStr(entity.metrics['write-bytes']);
+        return parseByteStr(entity.metrics['write-bytes']);
       },
     },
     {
-      title: '发送记录',
+      title: l('pages.devops.baseinfo.writerecords'),
       render: (dom, entity) => {
-        return  parseNumStr(entity.metrics['write-records']);
+        return parseNumStr(entity.metrics['write-records']);
       },
     },
     {
-      title: '并行度',
+      title: l('pages.devops.baseinfo.parallelism'),
       sorter: true,
       dataIndex: 'parallelism',
     },
     {
-      title: '开始时间',
+      title: l('global.table.startTime'),
       dataIndex: 'start-time',
       valueType: 'dateTime',
     },
     {
-      title: '耗时',
+      title: l('global.table.useTime'),
       render: (dom, entity) => {
         return parseMilliSecondStr(entity.duration);
       },
     },
     {
-      title: '结束时间',
+      title:  l('global.table.endTime'),
       dataIndex: 'end-time',
       valueType: 'dateTime',
     },
     {
-      title: '算子',
+      title: l('pages.devops.baseinfo.tasks'),
       render: (dom, entity) => {
         return <StatusCounts statusCounts={entity.tasks}/>;
       },
@@ -103,28 +103,30 @@ const BaseInfo = (props: any) => {
 
   return (<>
     <Descriptions bordered size="small">
-      <Descriptions.Item label="作业状态">
-        {job?.jobHistory?.job?<StatusCounts statusCounts={job?.jobHistory?.job['status-counts']}/>:undefined}
+      <Descriptions.Item label={l('pages.devops.jobinfo.overview')}>
+        {job?.jobHistory?.job ? <StatusCounts statusCounts={job?.jobHistory?.job['status-counts']}/> : undefined}
       </Descriptions.Item>
-      <Descriptions.Item label="重启次数">{job?.instance?.failedRestartCount?job?.instance?.failedRestartCount:0}</Descriptions.Item>
-      <Descriptions.Item label="耗时">{parseSecondStr(job?.instance?.duration)}</Descriptions.Item>
-      <Descriptions.Item label="启动时间">{job?.instance?.createTime}</Descriptions.Item>
-      <Descriptions.Item label="更新时间">{job?.instance?.updateTime}</Descriptions.Item>
-      <Descriptions.Item label="完成时间">{job?.instance?.finishTime}</Descriptions.Item>
+      <Descriptions.Item
+        label={l('pages.devops.baseinfo.restart_number')}>{job?.instance?.failedRestartCount ? job?.instance?.failedRestartCount : 0}</Descriptions.Item>
+      <Descriptions.Item label={l('global.table.useTime')}>{parseSecondStr(job?.instance?.duration)}</Descriptions.Item>
+      <Descriptions.Item label={l('global.table.startUpTime')}>{job?.instance?.createTime}</Descriptions.Item>
+      <Descriptions.Item label={l('global.table.updateTime')}>{job?.instance?.updateTime}</Descriptions.Item>
+      <Descriptions.Item label={l('global.table.finishTime')}>{job?.instance?.finishTime}</Descriptions.Item>
     </Descriptions>
-    {job?.jobHistory?.job?
-    <ProTable
-      columns={columns}
-      style={{width: '100%'}}
-      dataSource={job?.jobHistory?.job.vertices}
-      rowKey="name"
-      pagination={{
-        pageSize: 10,
-      }}
-      toolBarRender={false}
-      search={false}
-      size="small"
-    />:undefined}
+    {job?.jobHistory?.job ?
+      <ProTable
+        columns={columns}
+        style={{width: '100%'}}
+        dataSource={job?.jobHistory?.job.vertices}
+        rowKey="name"
+        pagination={{
+          defaultPageSize: 10,
+          showSizeChanger: true,
+        }}
+        toolBarRender={false}
+        search={false}
+        size="small"
+      /> : undefined}
   </>)
 };
 

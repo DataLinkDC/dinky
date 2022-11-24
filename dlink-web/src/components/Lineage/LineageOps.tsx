@@ -21,11 +21,12 @@
 import React from 'react';
 import {Tooltip} from 'antd';
 import {
-  FullscreenOutlined,
   FullscreenExitOutlined,
+  FullscreenOutlined,
   VerticalAlignBottomOutlined,
   VerticalAlignTopOutlined
 } from '@ant-design/icons';
+import {l} from "@/utils/intl";
 
 const LineageOps = ({
                       isExpand,
@@ -35,25 +36,25 @@ const LineageOps = ({
                     }) => [
   isExpand ?
     {
-      tooltip: '收起血缘',
+      tooltip: l('pages.datastudio.label.lineage.expand.lineage'),
       action: 'shrink',
       component: <FullscreenExitOutlined/>
     }
     :
     {
-      tooltip: '展开血缘',
+      tooltip: l('pages.datastudio.label.lineage.collapse.lineage'),
       action: 'expand',
       component: <FullscreenOutlined/>
     },
   isFold ?
     {
-      tooltip: '展开字段',
+      tooltip: l('pages.datastudio.label.lineage.expand.field'),
       action: 'fold',
       component: <VerticalAlignBottomOutlined/>
     }
     :
     {
-      tooltip: '收起字段',
+      tooltip: l('pages.datastudio.label.lineage.collapse.field'),
       action: 'unfold',
       component: <VerticalAlignTopOutlined/>
     }

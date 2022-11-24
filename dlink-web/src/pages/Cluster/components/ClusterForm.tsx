@@ -18,11 +18,12 @@
  */
 
 
-import React, {useEffect, useState} from 'react';
-import {Form, Button, Input, Modal, Select, Switch} from 'antd';
+import React, {useState} from 'react';
+import {Button, Form, Input, Modal, Select, Switch} from 'antd';
 
 import {ClusterTableListItem} from "@/pages/Cluster/data";
 import {RUN_MODE} from "@/components/Studio/conf";
+import {l} from "@/utils/intl";
 
 export type ClusterFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -58,7 +59,12 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
 
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
+
     fieldsValue.id = formVals.id;
+    if (!fieldsValue.alias || fieldsValue.alias.length == 0) {
+      fieldsValue.alias = fieldsValue.name;
+    }
+
     setFormVals(fieldsValue);
     handleSubmit(fieldsValue);
   };
@@ -68,22 +74,23 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
       <>
         <Form.Item
           name="name"
-          label="名称"
-          rules={[{required: true, message: '请输入名称！'}]}>
-          <Input placeholder="请输入唯一英文标识"/>
+          label={l('pages.registerCenter.cluster.instanceName')}
+          rules={[{required: true, message: l('pages.registerCenter.cluster.namePlaceholder') }]}>
+          <Input placeholder={l('pages.registerCenter.cluster.namePlaceholder') }/>
         </Form.Item>
 
         <Form.Item
           name="alias"
-          label="别名"
+          label={l('pages.registerCenter.cluster.alias')}
         >
-          <Input placeholder="请输入名称"/>
+          <Input placeholder={l('pages.registerCenter.cluster.aliasPlaceholder') }/>
         </Form.Item>
         <Form.Item
           name="type"
-          label="类型"
+          label={l('pages.registerCenter.cluster.type')}
+          rules={[{required: true, message: l('pages.registerCenter.cluster.typePlaceholder')}]}
         >
-          <Select defaultValue={RUN_MODE.YARN_SESSION} allowClear>
+          <Select>
             <Option value={RUN_MODE.STANDALONE}>Standalone</Option>
             <Option value={RUN_MODE.YARN_SESSION}>Yarn Session</Option>
             <Option value={RUN_MODE.YARN_PER_JOB}>Yarn Per-Job</Option>
@@ -94,7 +101,7 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
         </Form.Item>
         <Form.Item
           name="hosts"
-          label="JobManager HA 地址"
+          label={l('pages.registerCenter.cluster.jobManagerHaAddress')}
           validateTrigger={['onChange']}
           rules={[
             {
@@ -102,15 +109,15 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
               validator(_, hostsValue) {
                 let hostArray = [];
                 if (hostsValue.trim().length === 0) {
-                  return Promise.reject(new Error('请输入 JobManager HA 地址!'));
+                  return Promise.reject(new Error(l('pages.registerCenter.cluster.jobManagerHaAddressPlaceholder')));
                 } else {
                   hostArray = hostsValue.split(',')
                   for (let i = 0; i < hostArray.length; i++) {
                     if (hostArray[i].includes('/')) {
-                      return Promise.reject(new Error('不符合规则! 不能包含/'));
+                      return Promise.reject(new Error(l('pages.registerCenter.cluster.jobManagerHaAddress.validate.slash')));
                     }
                     if (parseInt(hostArray[i].split(':')[1]) >= 65535) {
-                      return Promise.reject(new Error('不符合规则! 端口号区间[0-65535]'));
+                      return Promise.reject(new Error(l('pages.registerCenter.cluster.jobManagerHaAddress.validate.port')));
                     }
                   }
                   return Promise.resolve();
@@ -120,21 +127,21 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
           ]}
         >
           <Input.TextArea
-            placeholder="添加 Flink 集群的 JobManager 的 RestApi 地址。当 HA 模式时，地址间用英文逗号分隔，例如：192.168.123.101:8081,192.168.123.102:8081,192.168.123.103:8081"
+            placeholder={l('pages.registerCenter.cluster.jobManagerHaAddressPlaceholderText')}
             allowClear
             autoSize={{minRows: 3, maxRows: 10}}/>
         </Form.Item>
         <Form.Item
           name="note"
-          label="注释"
+          label={l('global.table.note')}
         >
-          <Input.TextArea placeholder="请输入文本注释" allowClear
+          <Input.TextArea placeholder={l('global.table.notePlaceholder')} allowClear
                           autoSize={{minRows: 3, maxRows: 10}}/>
         </Form.Item>
         <Form.Item
           name="enabled"
-          label="是否启用">
-          <Switch checkedChildren="启用" unCheckedChildren="禁用"
+          label={l('global.table.isEnable')}>
+          <Switch checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                   defaultChecked={formValsPara.enabled}/>
         </Form.Item>
       </>
@@ -144,9 +151,9 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
   const renderFooter = () => {
     return (
       <>
-        <Button onClick={() => handleModalVisible(false)}>取消</Button>
+        <Button onClick={() => handleModalVisible(false)}>{l('button.cancel')}</Button>
         <Button type="primary" onClick={() => submitForm()}>
-          完成
+          {l('button.finish')}
         </Button>
       </>
     );
@@ -154,10 +161,10 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
 
   return (
     <Modal
-      width={640}
+      width={"40%"}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title={formVals.id ? "修改集群" : "创建集群"}
+      title={formVals.id ? l('pages.registerCenter.cluster.modify') : l('pages.registerCenter.cluster.create')}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}

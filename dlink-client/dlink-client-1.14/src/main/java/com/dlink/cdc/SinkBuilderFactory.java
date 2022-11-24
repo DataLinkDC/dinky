@@ -17,13 +17,15 @@
  *
  */
 
-
 package com.dlink.cdc;
 
 import com.dlink.assertion.Asserts;
+import com.dlink.cdc.doris.DorisExtendSinkBuilder;
 import com.dlink.cdc.doris.DorisSinkBuilder;
 import com.dlink.cdc.kafka.KafkaSinkBuilder;
+import com.dlink.cdc.kafka.KafkaSinkJsonBuilder;
 import com.dlink.cdc.sql.SQLSinkBuilder;
+import com.dlink.cdc.starrocks.StarrocksSinkBuilder;
 import com.dlink.exception.FlinkClientException;
 import com.dlink.model.FlinkCDCConfig;
 
@@ -36,9 +38,12 @@ import com.dlink.model.FlinkCDCConfig;
 public class SinkBuilderFactory {
 
     private static SinkBuilder[] sinkBuilders = {
-        new KafkaSinkBuilder(),
-        new DorisSinkBuilder(),
-        new SQLSinkBuilder()
+            new KafkaSinkBuilder(),
+            new KafkaSinkJsonBuilder(),
+            new DorisSinkBuilder(),
+            new StarrocksSinkBuilder(),
+            new SQLSinkBuilder(),
+            new DorisExtendSinkBuilder()
     };
 
     public static SinkBuilder buildSinkBuilder(FlinkCDCConfig config) {

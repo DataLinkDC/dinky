@@ -17,8 +17,14 @@
  *
  */
 
-
 package com.dlink.cdc.mysql;
+
+import com.dlink.assertion.Asserts;
+import com.dlink.cdc.AbstractCDCBuilder;
+import com.dlink.cdc.CDCBuilder;
+import com.dlink.constant.ClientConstant;
+import com.dlink.constant.FlinkParamConstant;
+import com.dlink.model.FlinkCDCConfig;
 
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
@@ -32,16 +38,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.cdc.AbstractCDCBuilder;
-import com.dlink.cdc.CDCBuilder;
-import com.dlink.constant.ClientConstant;
-import com.dlink.constant.FlinkParamConstant;
-import com.dlink.model.FlinkCDCConfig;
 import com.ververica.cdc.connectors.mysql.source.MySqlSource;
 import com.ververica.cdc.connectors.mysql.source.MySqlSourceBuilder;
 import com.ververica.cdc.connectors.mysql.table.StartupOptions;
-import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
 
 /**
  * MysqlCDCBuilder
@@ -51,8 +50,8 @@ import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
  **/
 public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
 
-    private final static String KEY_WORD = "mysql-cdc";
-    private final static String METADATA_TYPE = "MySql";
+    private static final String KEY_WORD = "mysql-cdc";
+    private static final String METADATA_TYPE = "MySql";
 
     public MysqlCDCBuilder() {
     }
@@ -81,11 +80,16 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         String connectMaxRetries = config.getSource().get("connect.max-retries");
         String connectionPoolSize = config.getSource().get("connection.pool.size");
         String heartbeatInterval = config.getSource().get("heartbeat.interval");
+        String chunkSize = config.getSource().get("scan.incremental.snapshot.chunk.size");
+        String distributionFactorLower = config.getSource().get("chunk-key.even-distribution.factor.upper-bound");
+        String distributionFactorUpper = config.getSource().get("chunk-key.even-distribution.factor.lower-bound");
+        String scanNewlyAddedTableEnabled = config.getSource().get("scan.newly-added-table.enabled");
+        String schemaChanges = config.getSource().get("schema.changes");
 
         Properties debeziumProperties = new Properties();
         // 为部分转换添加默认值
-        debeziumProperties.setProperty("bigint.unsigned.handling.mode","long");
-        debeziumProperties.setProperty("decimal.handling.mode","string");
+        debeziumProperties.setProperty("bigint.unsigned.handling.mode", "long");
+        debeziumProperties.setProperty("decimal.handling.mode", "string");
 
         for (Map.Entry<String, String> entry : config.getDebezium().entrySet()) {
             if (Asserts.isNotNullString(entry.getKey()) && Asserts.isNotNullString(entry.getValue())) {
@@ -102,10 +106,14 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         }
 
         MySqlSourceBuilder<String> sourceBuilder = MySqlSource.<String>builder()
-            .hostname(config.getHostname())
-            .port(config.getPort())
-            .username(config.getUsername())
-            .password(config.getPassword());
+                .hostname(config.getHostname())
+                .port(config.getPort())
+                .username(config.getUsername())
+                .password(config.getPassword());
+
+        if (Asserts.isEqualsIgnoreCase(schemaChanges, "true")) {
+            sourceBuilder.includeSchemaChanges(true);
+        }
 
         if (Asserts.isNotNullString(database)) {
             String[] databases = database.split(FlinkParamConstant.SPLIT);
@@ -121,10 +129,12 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
             sourceBuilder.tableList(new String[0]);
         }
 
-        sourceBuilder.deserializer(new JsonDebeziumDeserializationSchema());
+        sourceBuilder.deserializer(new MysqlJsonDebeziumDeserializationSchema());
         sourceBuilder.debeziumProperties(debeziumProperties);
         sourceBuilder.jdbcProperties(jdbcProperties);
-
+        if ("true".equalsIgnoreCase(scanNewlyAddedTableEnabled)) {
+            sourceBuilder.scanNewlyAddedTableEnabled(true);
+        }
         if (Asserts.isNotNullString(config.getStartupMode())) {
             switch (config.getStartupMode().toLowerCase()) {
                 case "initial":
@@ -133,6 +143,7 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
                 case "latest-offset":
                     sourceBuilder.startupOptions(StartupOptions.latest());
                     break;
+                default:
             }
         } else {
             sourceBuilder.startupOptions(StartupOptions.latest());
@@ -165,7 +176,15 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         if (Asserts.isNotNullString(heartbeatInterval)) {
             sourceBuilder.heartbeatInterval(Duration.ofMillis(Long.valueOf(heartbeatInterval)));
         }
-
+        if (Asserts.isAllNotNullString(chunkSize)) {
+            sourceBuilder.splitSize(Integer.parseInt(chunkSize));
+        }
+        if (Asserts.isNotNullString(distributionFactorLower)) {
+            sourceBuilder.distributionFactorLower(Double.valueOf(distributionFactorLower));
+        }
+        if (Asserts.isNotNullString(distributionFactorUpper)) {
+            sourceBuilder.distributionFactorUpper(Double.valueOf(distributionFactorUpper));
+        }
         return env.fromSource(sourceBuilder.build(), WatermarkStrategy.noWatermarks(), "MySQL CDC Source");
     }
 
@@ -208,6 +227,24 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
             allConfigMap.put(schema, configMap);
         }
         return allConfigMap;
+    }
+
+    @Override
+    public Map<String, String> parseMetaDataConfig() {
+        Map<String, String> configMap = new HashMap<>();
+
+        configMap.put(ClientConstant.METADATA_TYPE, METADATA_TYPE);
+        StringBuilder sb = new StringBuilder("jdbc:mysql://");
+        sb.append(config.getHostname());
+        sb.append(":");
+        sb.append(config.getPort());
+        sb.append("/");
+        configMap.put(ClientConstant.METADATA_NAME, sb.toString());
+        configMap.put(ClientConstant.METADATA_URL, sb.toString());
+        configMap.put(ClientConstant.METADATA_USERNAME, config.getUsername());
+        configMap.put(ClientConstant.METADATA_PASSWORD, config.getPassword());
+
+        return configMap;
     }
 
     @Override

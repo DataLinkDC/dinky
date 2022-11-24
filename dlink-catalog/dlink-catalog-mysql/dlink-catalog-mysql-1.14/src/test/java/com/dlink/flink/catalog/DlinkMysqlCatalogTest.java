@@ -17,15 +17,15 @@
  *
  */
 
-
 package com.dlink.flink.catalog;
+
+import static org.apache.flink.table.api.config.ExecutionConfigOptions.TABLE_EXEC_RESOURCE_DEFAULT_PARALLELISM;
 
 import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.TableEnvironment;
+
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.apache.flink.table.api.config.ExecutionConfigOptions.TABLE_EXEC_RESOURCE_DEFAULT_PARALLELISM;
 
 public class DlinkMysqlCatalogTest {
 
@@ -56,12 +56,12 @@ public class DlinkMysqlCatalogTest {
 
     @Test
     public void testSqlCatalog() {
-        String createSql = "create catalog myCatalog \n" +
-            " with('type'='dlink_mysql',\n" +
-            " 'username'='dlink',\n" +
-            " 'password'='dlink',\n" +
-            " 'url'='jdbc:mysql://127.0.0.1:3306/" +
-            "dlink?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC')";
+        String createSql = "create catalog myCatalog \n"
+            + " with('type'='dlink_mysql',\n"
+            + " 'username'='dlink',\n"
+            + " 'password'='dlink',\n"
+            + " 'url'='jdbc:mysql://127.0.0.1:3306/"
+            + "dlink?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC')";
         tableEnv.executeSql(createSql);
         tableEnv.executeSql("use catalog myCatalog");
     }

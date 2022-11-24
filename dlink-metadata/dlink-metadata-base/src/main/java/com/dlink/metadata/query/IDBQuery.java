@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.metadata.query;
 
 /**
@@ -27,6 +26,7 @@ package com.dlink.metadata.query;
  * @since 2021/7/20 13:44
  **/
 public interface IDBQuery {
+
     /**
      * 所有数据库信息查询 SQL
      */
@@ -51,6 +51,11 @@ public interface IDBQuery {
      * 建表语句列名
      */
     String createTableName();
+
+    /**
+     * 建视图语句列名
+     */
+    String createViewName();
 
     /**
      * 数据库、模式、组织名称
@@ -116,6 +121,11 @@ public interface IDBQuery {
      * 字段类型
      */
     String columnType();
+
+    /**
+     * 字段长度
+     */
+    String columnLength();
 
     /**
      * 字段注释

@@ -18,38 +18,37 @@
  */
 
 
-import {
-  message, Input, Button, Space, Table, Dropdown, Menu, Empty, Divider,
-  Tooltip
-} from "antd";
+import {Button, Divider, Dropdown, Empty, Input, Menu, message, Space, Table, Tooltip} from "antd";
 import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
-import {useState} from "react";
-import styles from "./index.less";
+import React, {useState} from "react";
 import {
-  SearchOutlined,
-  ReloadOutlined,
-  DownOutlined,
-  DeleteOutlined,
   CommentOutlined,
+  DeleteOutlined,
+  DownOutlined,
+  PlusOutlined,
   PoweroffOutlined,
-  PlusOutlined
+  ReloadOutlined,
+  SearchOutlined
 } from '@ant-design/icons';
-import React from "react";
 import {
-  removeTable, showTables, clearSession, changeSession, quitSession,
-  createSession, listSession
+  changeSession,
+  clearSession,
+  createSession,
+  listSession,
+  quitSession,
+  removeTable,
+  showTables
 } from "@/components/Studio/StudioEvent/DDL";
-import {
-  ModalForm,
-} from '@ant-design/pro-form';
+import {ModalForm,} from '@ant-design/pro-form';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import SessionForm from "@/components/Studio/StudioLeftTool/StudioConnector/components/SessionForm";
-import { Scrollbars } from 'react-custom-scrollbars';
+import {Scrollbars} from 'react-custom-scrollbars';
+import {l} from "@/utils/intl";
 
 const StudioConnector = (props: any) => {
 
-  const {current,toolHeight, dispatch, currentSession, session} = props;
+  const {current, toolHeight, dispatch, currentSession, session} = props;
   const [tableData, setTableData] = useState<[]>([]);
   const [loadings, setLoadings] = useState<boolean[]>([]);
   const [searchText, setSearchText] = useState<string>('');
@@ -132,12 +131,12 @@ const StudioConnector = (props: any) => {
       overlay={
         <Menu onClick={({key}) => keyEvent(key, item)}>
           <Menu.Item key="desc">描述</Menu.Item>
-          <Menu.Item key="delete">删除</Menu.Item>
+          <Menu.Item key="delete">{l('button.delete')}</Menu.Item>
         </Menu>
       }
     >
       <a>
-        更多 <DownOutlined/>
+        {l('button.more')} <DownOutlined/>
       </a>
     </Dropdown>
   );
@@ -146,7 +145,7 @@ const StudioConnector = (props: any) => {
     if (key == 'delete') {
       removeTable(item.tablename, currentSession.session, dispatch);
     } else {
-      message.warn("敬请期待");
+      message.warn(l('global.stay.tuned'));
     }
   };
 
@@ -158,7 +157,7 @@ const StudioConnector = (props: any) => {
       message.success('连接共享会话【' + item.session + '】成功！');
       setModalVisit(false);
     } else {
-      message.warn("敬请期待");
+      message.warn(l('global.stay.tuned'));
     }
   };
 
@@ -178,13 +177,13 @@ const StudioConnector = (props: any) => {
       sorter: true,
       ...getColumnSearchProps("table name"),
     }, {
-      title: '操作',
+      title: l('global.table.operate'),
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
         <a
           onClick={() => {
-            message.warn('敬请期待');
+            message.warn(l('global.stay.tuned'));
           }}
         >
           描述
@@ -193,7 +192,7 @@ const StudioConnector = (props: any) => {
             keyEvent('delete', record);
           }}
         >
-          删除
+          {l('button.delete')}
         </a>
       ],
     },];
@@ -230,12 +229,12 @@ const StudioConnector = (props: any) => {
       sorter: true,
       ...getColumnSearchProps("createUser"),
     }, {
-      title: "创建时间",
+      title: l('global.table.createTime'),
       dataIndex: "createTime",
       key: "createTime",
       sorter: true,
     }, {
-      title: '操作',
+      title: l('global.table.operate'),
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
@@ -250,7 +249,7 @@ const StudioConnector = (props: any) => {
             keySessionsEvent('delete', record);
           }}
         >
-          删除
+          {l('button.delete')}
         </a>
       ],
     },];
@@ -281,86 +280,92 @@ const StudioConnector = (props: any) => {
           onClick={createSessions}
         />
       </Tooltip>
-        {session.length > 0 ? (
-          <Tooltip title="切换会话">
+      {session.length > 0 ? (
+        <Tooltip title="切换会话">
+          <Button
+            type="text"
+            icon={<CommentOutlined/>}
+            onClick={showSessions}
+          />
+        </Tooltip>
+      ) : ''}
+      {currentSession.session && (
+        <>
+          <Tooltip title="退出会话">
             <Button
               type="text"
-              icon={<CommentOutlined/>}
-              onClick={showSessions}
+              icon={<PoweroffOutlined/>}
+              onClick={quitSessions}
             />
           </Tooltip>
-        ) : ''}
-        {currentSession.session && (
-          <>
-            <Tooltip title="退出会话">
-              <Button
-                type="text"
-                icon={<PoweroffOutlined/>}
-                onClick={quitSessions}
-              />
-            </Tooltip>
-            <Tooltip title="刷新连接器">
-              <Button
-                type="text"
-                icon={<ReloadOutlined/>}
-                onClick={getTables}
-              />
-            </Tooltip>
-            <Tooltip title="注销会话">
-              <Button
-                type="text"
-                icon={<DeleteOutlined/>}
-                onClick={onClearSession}
-              />
-            </Tooltip>
-          </>)}
+          <Tooltip title="刷新连接器">
+            <Button
+              type="text"
+              icon={<ReloadOutlined/>}
+              onClick={getTables}
+            />
+          </Tooltip>
+          <Tooltip title="注销会话">
+            <Button
+              type="text"
+              icon={<DeleteOutlined/>}
+              onClick={onClearSession}
+            />
+          </Tooltip>
+        </>)}
       <Scrollbars style={{height: (toolHeight - 32)}}>
-      {currentSession.connectors && currentSession.connectors.length > 0 ? (
-        <Table dataSource={currentSession.connectors} columns={getColumns()} size="small"/>) : (
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>)}
-      <ModalForm
-        visible={modalVisit}
-        onFinish={async () => {
-          setSessionData(undefined);
-        }}
-        onVisibleChange={setModalVisit}
-        submitter={{
-          submitButtonProps: {
-            style: {
-              display: 'none',
+        {currentSession.connectors && currentSession.connectors.length > 0 ? (
+          <Table
+            dataSource={currentSession.connectors}
+            pagination={{
+              defaultPageSize: 10,
+              showSizeChanger: true,
+            }}
+            columns={getColumns()} size="small"/>) : (
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>)}
+        <ModalForm
+          visible={modalVisit}
+          onFinish={async () => {
+            setSessionData(undefined);
+          }}
+          onVisibleChange={setModalVisit}
+          submitter={{
+            submitButtonProps: {
+              style: {
+                display: 'none',
+              },
             },
-          },
-        }}
-      >
-        {type == 1 &&
-        (<ProDescriptions
-            column={2}
-            title='全部共享会话'
-          >
-            <ProDescriptions.Item span={2}>
-              {session.length > 0 ?
-                (<Table dataSource={session} columns={getSessionsColumns()} size="small"
-                />) : (<Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>)}
-            </ProDescriptions.Item>
-          </ProDescriptions>
-        )
-        }
-      </ModalForm>
-      <SessionForm
-        onSubmit={async (value) => {
-          createSession(value, dispatch);
-          handleCreateSessionModalVisible(false);
-        }}
-        onCancel={() => {
-          handleCreateSessionModalVisible(false);
-        }}
-        updateModalVisible={createSessionModalVisible}
-        values={{
-          session: '',
-          type: 'PUBLIC',
-          useRemote: true,
-        }}
-      />
+          }}
+        >
+          {type == 1 &&
+            (<ProDescriptions
+                column={2}
+                title='全部共享会话'
+              >
+                <ProDescriptions.Item span={2}>
+                  {session.length > 0 ?
+                    (<Table dataSource={session} columns={getSessionsColumns()} size="small"
+                    />) : (<Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>)}
+                </ProDescriptions.Item>
+              </ProDescriptions>
+            )
+          }
+        </ModalForm>
+        <SessionForm
+          onSubmit={async (value) => {
+            createSession(value, dispatch);
+            handleCreateSessionModalVisible(false);
+          }}
+          onCancel={() => {
+            handleCreateSessionModalVisible(false);
+          }}
+          updateModalVisible={createSessionModalVisible}
+          values={{
+            session: '',
+            type: 'PUBLIC',
+            useRemote: true,
+          }}
+        />
       </Scrollbars>
     </>
   );

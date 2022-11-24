@@ -17,7 +17,6 @@
  *
  */
 
-
 package com.dlink.model;
 
 import java.io.Serializable;
@@ -45,6 +44,12 @@ public class Schema implements Serializable, Comparable<Schema> {
     private List<String> functions = new ArrayList<>();
     private List<String> userFunctions = new ArrayList<>();
     private List<String> modules = new ArrayList<>();
+
+    /**
+     * 需要保留一个空构造方法，否则序列化有问题
+     * */
+    public Schema() {
+    }
 
     public Schema(String name) {
         this.name = name;

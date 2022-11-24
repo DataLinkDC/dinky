@@ -17,15 +17,17 @@
  *
  */
 
-
 package com.dlink.mapper;
 
 import com.dlink.db.mapper.SuperMapper;
 import com.dlink.model.JobInstance;
 import com.dlink.model.JobInstanceCount;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 
 /**
  * JobInstanceMapper
@@ -35,6 +37,9 @@ import java.util.List;
  */
 @Mapper
 public interface JobInstanceMapper extends SuperMapper<JobInstance> {
+
+    @InterceptorIgnore(tenantLine = "true")
+    JobInstance getByIdWithoutTenant(Integer id);
 
     List<JobInstanceCount> countStatus();
 

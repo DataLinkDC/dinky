@@ -18,8 +18,9 @@
  */
 
 
-import request from 'umi-request';
 import {CAParam, StudioMetaStoreParam, StudioParam} from "@/components/Studio/StudioEdit/data";
+import {request2} from "@/components/Common/crud";
+import {request} from "umi";
 
 export async function executeSql(params: StudioParam) {
   return request<API.Result>('/api/studio/executeSql', {
@@ -76,7 +77,7 @@ export async function getJobData(jobId: string) {
 }
 
 export async function getCatalogueTreeData(params?: StudioParam) {
-  return request<API.Result>('/api/catalogue/getCatalogueTreeData', {
+  return request2<API.Result>('/api/catalogue/getCatalogueTreeData', {
     method: 'POST',
     data: {
       ...params,
@@ -105,6 +106,56 @@ export async function getMSCatalogs(params: StudioMetaStoreParam) {
 export async function getMSSchemaInfo(params: StudioMetaStoreParam) {
   return request<API.Result>('/api/studio/getMSSchemaInfo', {
     method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
+
+//海豚 获取任务定义
+export async function getTaskDefinition(dinkyTaskId: string) {
+  return request<API.Result>('/api/scheduler/task', {
+    method: 'GET',
+    params: {
+      dinkyTaskId,
+    },
+  });
+}
+
+//海豚 获取任务定义集合
+export async function getTaskMainInfos(dinkyTaskId: string) {
+  return request<API.Result>('/api/scheduler/upstream/tasks', {
+    method: 'GET',
+    params: {
+      dinkyTaskId,
+    },
+  });
+}
+
+//海豚 创建任务定义
+export async function createTaskDefinition(dinkyTaskId: string, upstreamCodes: string, params: object) {
+  return request<API.Result>('/api/scheduler/task', {
+    method: 'POST',
+    params: {
+      dinkyTaskId,
+      upstreamCodes
+    },
+    data: {
+      ...params,
+    },
+  });
+}
+
+//海豚 更新任务定义
+export async function updateTaskDefinition(processCode: string, projectCode: string, taskCode: string, upstreamCodes: string, params: object) {
+  return request<API.Result>('/api/scheduler/task', {
+    method: 'PUT',
+    params: {
+      processCode,
+      projectCode,
+      taskCode,
+      upstreamCodes
+    },
     data: {
       ...params,
     },

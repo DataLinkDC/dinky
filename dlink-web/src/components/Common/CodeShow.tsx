@@ -19,12 +19,11 @@
 
 
 import MonacoEditor from "react-monaco-editor";
-import * as _monaco from "monaco-editor";
 
 export type CodeShowFormProps = {
   height?: string;
   width?: string;
-  language: string;
+  language?: string;
   theme?: string;
   options?: any;
   code: string;
@@ -40,12 +39,11 @@ const CodeShow = (props: CodeShowFormProps) => {
     options = {
       selectOnLineNumbers: true,
       renderSideBySide: false,
-      autoIndent:'None',
-      readOnly:true ,
+      autoIndent: 'None',
+      readOnly: true,
     },
     code,
   } = props;
-
 
   return (<>
     <MonacoEditor
@@ -54,7 +52,7 @@ const CodeShow = (props: CodeShowFormProps) => {
       language={language}
       value={code}
       options={options}
-      theme={theme}
+      theme='vs-dark'
     />
   </>)
 };

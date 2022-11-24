@@ -17,14 +17,14 @@
  *
  */
 
-
 package com.dlink.model;
 
+import java.io.Serializable;
+
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.io.Serializable;
 
 /**
  * Statement
@@ -40,6 +40,8 @@ public class Statement implements Serializable {
     private static final long serialVersionUID = 1646348574144815792L;
 
     private Integer id;
+
+    private Integer tenantId;
 
     private String statement;
 }

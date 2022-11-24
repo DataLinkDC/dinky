@@ -17,17 +17,16 @@
  *
  */
 
-
 package com.dlink.app;
-
-import java.io.IOException;
-import java.util.Map;
 
 import com.dlink.app.db.DBConfig;
 import com.dlink.app.flinksql.Submiter;
 import com.dlink.assertion.Asserts;
 import com.dlink.constant.FlinkParamConstant;
 import com.dlink.utils.FlinkBaseUtil;
+
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * MainApp

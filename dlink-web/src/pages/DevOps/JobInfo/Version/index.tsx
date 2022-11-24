@@ -1,150 +1,47 @@
-import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
-import {TaskVersion} from "@/pages/DevOps/data";
-import React, {useRef, useState,} from "react";
-import {queryData} from "@/components/Common/crud";
-import {getIcon} from "@/components/Studio/icon";
-import {Button, Modal, Tag} from "antd";
-import {FullscreenOutlined} from "@ant-design/icons";
-import CodeShow from "@/components/Common/CodeShow";
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
 
-const url = '/api/task/version';
+
+import {Tabs} from "antd";
+import VersionList from "@/pages/DevOps/JobInfo/Version/VersionList";
+import VersionTimeLineList from "@/pages/DevOps/JobInfo/Version/VersionTimeLineList";
+import {l} from "@/utils/intl";
+
+const {TabPane} = Tabs;
 const TaskVersionInfo = (props: any) => {
   const {job} = props;
-  const actionRef = useRef<ActionType>();
-  const [row, setRow] = useState<TaskVersion>();
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
 
 
+  return (<>
+    <Tabs defaultActiveKey="overview" size="small" tabPosition="top" style={{
+      border: "1px solid #f0f0f0",
+    }}>
+      <TabPane tab={<span>&nbsp; 版本列表 &nbsp;</span>} key="versionlist">
+        <VersionList job={job}/>
+      </TabPane>
 
-  const cancelHandle = () => {
-    setRow(undefined);
-    setModalVisible(false);
-  }
+      <TabPane tab={<span>&nbsp; TimeLine &nbsp;</span>} key="timeline">
+        <VersionTimeLineList job={job}/>
+      </TabPane>
 
-  const handleShowStatement = (statement: string) =>{
-    return (
-      <div style={{width: "1100px"}}>
-        <Modal title="作业执行 SQL" visible={modalVisible} destroyOnClose={true} width={"60%"}
-         onCancel={()=>{
-           cancelHandle();
-         }}
-         footer={[
-           <Button key="back" onClick={() => {
-             cancelHandle();
-           }}>
-             关闭
-           </Button>,
-         ]}>
-          <CodeShow language={"sql"} code={statement} height={'600px'} />
-        </Modal>
-      </div>
-    )
-
-  }
-
-
-
-  const columns: ProColumns<TaskVersion>[] = [
-    {
-      title: '作业ID',
-      align: 'center',
-      dataIndex: 'taskId',
-      hideInSearch: true,
-    },
-    {
-      title: '作业名称',
-      align: 'center',
-      sorter: true,
-      dataIndex: 'name',
-    },
-    {
-      title: '作业别名',
-      align: 'center',
-      sorter: true,
-      dataIndex: 'alias',
-    },
-    {
-      title: '作业方言',
-      align: 'center',
-      render: (dom, entity) => {
-        return <>
-            {getIcon(entity.dialect) }
-            {
-            <Tag color="blue">
-              {entity.dialect}
-            </Tag>
-            }
-        </>;
-      },
-    },
-    {
-      title: '作业类型',
-      align: 'center',
-      render: (dom, entity) => {
-        return <>
-          {
-            <Tag color="blue">
-              {entity.type}
-            </Tag>
-          }
-        </>;
-      },
-    },
-    {
-      title: '版本号',
-      align: 'center',
-      sorter: true,
-      dataIndex: 'versionId',
-    },
-    {
-      title: '作业内容',
-      align: 'center',
-      ellipsis: true,
-      hideInSearch: true,
-      render: (dom, entity) => {
-        return <>
-          {<>
-            <a onClick={()=>{
-              setRow(entity)
-              setModalVisible(true);
-            }}>
-              <Tag color="green">
-                <FullscreenOutlined title={"查看作业详情"}  />
-              </Tag> 查看作业详情
-            </a>
-            {handleShowStatement(entity.statement)}
-          </>
-          }
-        </>
-        ;
-      },
-    },
-    {
-      title: '创建时间',
-      align: 'center',
-      sorter: true,
-      valueType: 'dateTime',
-      dataIndex: 'createTime',
-    },
-  ];
-
-  return (
-    <>
-      <ProTable<TaskVersion>
-        columns={columns}
-        style={{width: '100%'}}
-        request={(params, sorter, filter) => queryData(url, {taskId: job?.instance.taskId, ...params, sorter, filter})}
-        actionRef={actionRef}
-        rowKey="id"
-        pagination={{
-          pageSize: 15,
-        }}
-        bordered
-        search={false}
-        size="small"
-      />
-    </>
-  )
+    </Tabs>
+  </>)
 };
 
 export default TaskVersionInfo;

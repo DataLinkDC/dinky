@@ -23,32 +23,40 @@ import {DIALECT} from "@/components/Studio/conf";
 
 const svgSize = '20px';
 
-export const getIcon = (type: string)=>{
-  switch (type){
+export const getIcon = (type: string) => {
+  switch (type) {
     case DIALECT.SQL:
-      return (<Icon component={SqlSvg} />);
+      return (<Icon component={SqlSvg}/>);
     case DIALECT.FLINKJAR:
-      return (<Icon component={FlinkJarSvg} />);
+      return (<Icon component={FlinkJarSvg}/>);
     case DIALECT.MYSQL:
-      return (<Icon component={MysqlSvg} />);
+      return (<Icon component={MysqlSvg}/>);
     case DIALECT.ORACLE:
-      return (<Icon component={OracleSvg} />);
+      return (<Icon component={OracleSvg}/>);
     case DIALECT.SQLSERVER:
-      return (<Icon component={SqlServerSvg} />);
+      return (<Icon component={SqlServerSvg}/>);
     case DIALECT.POSTGRESQL:
-      return (<Icon component={PostGreSqlSvg} />);
+      return (<Icon component={PostGreSqlSvg}/>);
     case DIALECT.CLICKHOUSE:
-      return (<Icon component={ClickHouseSvg} />);
+      return (<Icon component={ClickHouseSvg}/>);
     case DIALECT.DORIS:
-      return (<Icon component={DorisSvg} />);
+      return (<Icon component={DorisSvg}/>);
     case DIALECT.HIVE:
-      return (<Icon component={HiveSvg} />);
+      return (<Icon component={HiveSvg}/>);
     case DIALECT.PHOENIX:
-      return (<Icon component={PhoenixSvg} />);
+      return (<Icon component={PhoenixSvg}/>);
+    case DIALECT.STARROCKS:
+      return (<Icon component={StarRocksSvg}/>);
+    case DIALECT.PRESTO:
+      return (<Icon component={PrestoSvg}/>);
     case DIALECT.JAVA:
-      return (<Icon component={JavaSvg} />);
+      return (<Icon component={JavaSvg}/>);
+    case DIALECT.SCALA:
+      return (<Icon component={ScalaSvg}/>);
+    case DIALECT.PYTHON:
+      return (<Icon component={PythonSvg}/>);
     default:
-      return (<Icon component={FlinkSQLSvg} />);
+      return (<Icon component={FlinkSQLSvg}/>);
   }
 };
 
@@ -287,8 +295,15 @@ export const ClickHouseSvg = () => (
   </svg>
 );
 export const PhoenixSvg = () => (
-  <svg t="987654321" className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="9314" width={svgSize} height={svgSize}><path d="M896 1024H128C57.6 1024 0 966.4 0 896V128C0 57.6 57.6 0 128 0h768c70.4 0 128 57.6 128 128v768c0 70.4-57.6 128-128 128z" fill="#FFFFFF" p-id="1695"></path><path d="M726.4 216.533c39.467-129.066 55.467-141.866 55.467-141.866s-107.734 38.4-141.867 147.2C605.867 331.733 663.467 464 675.2 508.8c10.667 44.8 76.8 304-145.067 318.933C369.067 838.4 323.2 670.933 339.2 596.267c4.267-19.2 21.333-90.667 52.267-141.867C422.4 403.2 435.2 324.267 435.2 324.267s25.6 5.333 37.333-14.934c0 0-23.466 0-8.533-11.733 13.867-11.733 8.533-25.6 8.533-25.6s-25.6 17.067-52.266 3.2c-25.6-13.867-84.267-52.267-124.8 8.533 0 0-43.734 7.467-64 35.2 0 0 43.733-17.066 64-5.333 21.333 11.733 54.4 37.333 20.266 118.4C281.6 513.067 190.933 577.067 240 724.267c49.067 147.2 160 205.866 304 205.866S792.533 784 792.533 641.067c0-142.934-105.6-295.467-66.133-424.534zM487.467 541.867c-51.2-43.734-52.267-150.4-52.267-150.4-17.067 120.533-8.533 194.133 72.533 240C588.8 678.4 612.267 736 612.267 736c3.2-32-72.534-150.4-124.8-194.133z m145.066 179.2s32-109.867 0-208c-28.8-87.467-53.333-117.334-52.266-179.2 1.066-61.867 29.866-182.4 45.866-197.334 0 0-100.266 89.6-101.333 185.6-1.067 96 39.467 141.867 64 182.4 24.533 40.534 57.6 110.934 43.733 216.534zM522.667 214.4s-80 118.4-60.8 228.267C464 461.867 476.8 498.133 528 552.533c51.2 54.4 92.8 148.267 96 167.467 0 0-2.133-104.533-40.533-173.867C545.067 476.8 478.933 388.267 502.4 294.4c4.267-23.467 20.267-80 20.267-80z" fill="#EC4C2E" p-id="1696"></path></svg>
-
+  <svg t="987654321" className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+       p-id="9314" width={svgSize} height={svgSize}>
+    <path
+      d="M896 1024H128C57.6 1024 0 966.4 0 896V128C0 57.6 57.6 0 128 0h768c70.4 0 128 57.6 128 128v768c0 70.4-57.6 128-128 128z"
+      fill="#FFFFFF" p-id="1695"></path>
+    <path
+      d="M726.4 216.533c39.467-129.066 55.467-141.866 55.467-141.866s-107.734 38.4-141.867 147.2C605.867 331.733 663.467 464 675.2 508.8c10.667 44.8 76.8 304-145.067 318.933C369.067 838.4 323.2 670.933 339.2 596.267c4.267-19.2 21.333-90.667 52.267-141.867C422.4 403.2 435.2 324.267 435.2 324.267s25.6 5.333 37.333-14.934c0 0-23.466 0-8.533-11.733 13.867-11.733 8.533-25.6 8.533-25.6s-25.6 17.067-52.266 3.2c-25.6-13.867-84.267-52.267-124.8 8.533 0 0-43.734 7.467-64 35.2 0 0 43.733-17.066 64-5.333 21.333 11.733 54.4 37.333 20.266 118.4C281.6 513.067 190.933 577.067 240 724.267c49.067 147.2 160 205.866 304 205.866S792.533 784 792.533 641.067c0-142.934-105.6-295.467-66.133-424.534zM487.467 541.867c-51.2-43.734-52.267-150.4-52.267-150.4-17.067 120.533-8.533 194.133 72.533 240C588.8 678.4 612.267 736 612.267 736c3.2-32-72.534-150.4-124.8-194.133z m145.066 179.2s32-109.867 0-208c-28.8-87.467-53.333-117.334-52.266-179.2 1.066-61.867 29.866-182.4 45.866-197.334 0 0-100.266 89.6-101.333 185.6-1.067 96 39.467 141.867 64 182.4 24.533 40.534 57.6 110.934 43.733 216.534zM522.667 214.4s-80 118.4-60.8 228.267C464 461.867 476.8 498.133 528 552.533c51.2 54.4 92.8 148.267 96 167.467 0 0-2.133-104.533-40.533-173.867C545.067 476.8 478.933 388.267 502.4 294.4c4.267-23.467 20.267-80 20.267-80z"
+      fill="#EC4C2E" p-id="1696"></path>
+  </svg>
 );
 export const DorisSvg = () => (
   <svg t="1640789853861" className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
@@ -304,7 +319,47 @@ export const DorisSvg = () => (
       fill="#5168AC" p-id="13681"></path>
   </svg>
 );
-
+export const StarRocksSvg = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 54 60.45" width={svgSize} height={svgSize}>
+    <path fill="#fabf00"
+          d="M16.17,26.33c-4-3.27-8.36-6.88-10.69-8.81L3.85,16.18c-1.13-.93-2-2.58-.1-3.71C4.58,12,18.78,3.83,24,.8A5.94,5.94,0,0,1,30,.8L40,6.59a1.18,1.18,0,0,1,0,2.05L16.52,22.11A2.57,2.57,0,0,0,16.17,26.33Z"/>
+    <path fill="#337e8d"
+          d="M22,35.88,12.48,50.45a2.37,2.37,0,0,1-3.17.75L3,47.55A6,6,0,0,1,0,42.4V18.08a5.94,5.94,0,0,1,2.39-4.76c-1.7,1.31-1,2.78.1,3.72L21.57,32.75A2.38,2.38,0,0,1,22,35.88Z"/>
+    <path fill="#337e8d"
+          d="M37.83,34.11l10.69,8.81,1.63,1.34c1.13.94,2,2.59.1,3.72-.83.49-15,8.64-20.27,11.67a6,6,0,0,1-5.95,0L14,53.86a1.19,1.19,0,0,1,0-2.06L37.48,38.34A2.58,2.58,0,0,0,37.83,34.11Z"/>
+    <path fill="#337e8d"
+          d="M32,24.57,41.52,10a2.37,2.37,0,0,1,3.17-.75L51,12.9a5.94,5.94,0,0,1,3,5.15V42.37a5.94,5.94,0,0,1-2.39,4.76c1.7-1.31,1-2.78-.1-3.72L32.43,27.69A2.37,2.37,0,0,1,32,24.57Z"/>
+  </svg>
+);
+export const PrestoSvg = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 348.418 300.463" width={svgSize} height={svgSize}>
+    <g data-name="Group 406" transform="translate(-107.354)">
+      <circle data-name="Ellipse 154" cx="15.683" cy="15.683" r="15.683" transform="rotate(-45 164.143 -320.553)" fill="#5d88d6"/>
+      <circle data-name="Ellipse 155" cx="17.423" cy="17.423" r="17.423" transform="rotate(-45 236.512 -348.067)" fill="#5d88d6"/>
+      <circle data-name="Ellipse 156" cx="19.163" cy="19.163" r="19.163" transform="rotate(-45 308.884 -375.574)" fill="#5d88d6"/>
+      <circle data-name="Ellipse 157" cx="20.902" cy="20.902" r="20.902" transform="rotate(-45 381.172 -403.063)" fill="#5d88d6"/>
+      <circle data-name="Ellipse 158" cx="13.943" cy="13.943" r="13.943" transform="rotate(-45 122.284 -219.497)" fill="#32dbfc"/>
+      <circle data-name="Ellipse 159" cx="15.683" cy="15.683" r="15.683" transform="rotate(-45 194.653 -247.009)" fill="#32dbfc"/>
+      <circle data-name="Ellipse 160" cx="17.423" cy="17.423" r="17.423" transform="rotate(-45 266.949 -274.494)" fill="#32dbfc"/>
+      <circle data-name="Ellipse 161" cx="19.163" cy="19.163" r="19.163" transform="rotate(-45 339.278 -301.998)" fill="#32dbfc"/>
+      <circle data-name="Ellipse 162" cx="20.902" cy="20.902" r="20.902" transform="rotate(-45 411.681 -329.508)" fill="#32dbfc"/>
+      <circle data-name="Ellipse 163" cx="12.203" cy="12.203" r="12.203" transform="rotate(-45 80.509 -118.474)"/>
+      <circle data-name="Ellipse 164" cx="13.943" cy="13.943" r="13.943" transform="rotate(-45 152.754 -145.942)"/>
+      <circle data-name="Ellipse 165" cx="15.683" cy="15.683" r="15.683" transform="rotate(-45 225.165 -173.465)"/>
+      <circle data-name="Ellipse 166" cx="17.423" cy="17.423" r="17.423" transform="rotate(-45 297.49 -200.963)"/>
+      <circle data-name="Ellipse 167" cx="19.163" cy="19.163" r="19.163" transform="rotate(-45 369.83 -228.455)"/>
+      <circle data-name="Ellipse 168" cx="20.902" cy="20.902" r="20.902" transform="rotate(-45 442.075 -255.942)"/>
+      <g data-name="Group 120" transform="translate(110.646 174.812)" fill="#5d88d6">
+        <circle data-name="Ellipse 169" cx="13.943" cy="13.943" r="13.943" transform="rotate(-45 63.994 -87.174)"/>
+        <circle data-name="Ellipse 170" cx="13.943" cy="13.943" transform="translate(43.075 48.862)" r="13.943"/>
+        <circle data-name="Ellipse 171" cx="13.943" cy="13.943" transform="translate(0 91.982)" r="13.943"/>
+        <circle data-name="Ellipse 172" cx="13.943" cy="13.943" transform="translate(86.164 91.957)" r="13.943"/>
+        <circle data-name="Ellipse 173" cx="13.943" cy="13.943" r="13.943" transform="rotate(-45 211.16 -148.109)"/>
+        <circle data-name="Ellipse 174" cx="13.943" cy="13.943" r="13.943" transform="rotate(-45 137.546 -117.642)"/>
+      </g>
+    </g>
+  </svg>
+);
 export const HiveSvg = () => (
   <svg t="1647425762735" className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
        p-id="3247" width={svgSize} height={svgSize}>
@@ -366,6 +421,28 @@ export const JavaSvg = () => (
       fill="#6699FF" p-id="19722"></path>
   </svg>
 );
+export const ScalaSvg = () => (
+  <svg t="1666600662911" className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+       p-id="816" width={svgSize} height={svgSize}>
+    <path
+      d="M213.844 203.564l596.4-87.928v197.952l-596.4 87.928zM213.788 457.312l596.4-87.928v197.952l-596.4 87.928zM213.768 710.4l596.392-87.932v197.952L213.768 908.348z"
+      fill="#F44336" p-id="817"></path>
+    <path
+      d="M225.12 366.636l382.416 123.684-11.328 35.028-382.416-123.684zM427.76 245.496l382.416 123.688-11.328 35.028-382.416-123.688zM225.112 620.148l382.416 123.684-11.328 35.032-382.416-123.688zM427.792 498.604l382.416 123.688-11.332 35.028-382.412-123.688z"
+      fill="#F44336" p-id="818"></path>
+  </svg>
+)
+export const PythonSvg = () => (
+  <svg t="1666454409766" className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+       p-id="2303" width={svgSize} height={svgSize}>
+    <path
+      d="M366.635375 495.627875c8.93024999-1.488375 17.8605-2.480625 26.79075-2.48062499h-7.44187499 241.61287499c10.418625 0 20.341125-1.488375 30.26362501-3.969 44.65124999-12.403125 77.3955-52.093125 77.3955-101.20950002V185.053625c0-57.5505-49.116375-101.2095-107.65912501-110.63587501-37.209375-5.9535-91.287-8.93024999-128.00025-8.93024999-36.71325001 0-71.938125 3.472875-103.194 8.93024999C305.115875 90.29374999 288.74374999 123.534125 288.74374999 185.053625v66.48075h223.25625001V288.74374999H216.3095C133.456625 288.74374999 65.983625 387.96874999 65.4875 510.0155v1.9845c0 22.325625 1.9845 43.659 6.449625 63.504C90.29374999 667.78325001 147.84424999 735.25625001 216.3095 735.25625001h35.224875v-106.66687501c0-62.51174999 46.63574999-120.558375 115.101-132.9615z m23.814-283.7835c-22.325625 0-40.68225001-18.356625-40.18612499-40.68225 0-22.325625 17.8605-40.68225001 40.18612499-40.68225s40.68225001 18.356625 40.68225 40.68225c-0.496125 22.82175001-18.356625 40.68225001-40.68225 40.68225z"
+      fill="#0075AA" p-id="2304"></path>
+    <path
+      d="M949.086125 434.108375C927.75275001 349.271 872.682875 288.74374999 807.6905 288.74374999h-35.224875v94.75987501c0 78.883875-51.597 135.93825001-115.101 145.86075-6.449625 0.99224999-12.89925001 1.488375-19.34887499 1.48837501H396.402875c-10.418625 0-20.341125 1.488375-30.26362499 3.969-44.65124999 11.907-77.3955 48.62025001-77.3955 96.74437499V834.48125001c0 57.5505 58.046625 91.783125 115.10099998 108.15524999 67.969125 19.845 142.387875 23.317875 224.24850002 0 54.077625-15.379875 107.163-46.63574999 107.16299998-108.15525001v-61.5195h-223.25624999V735.25625001h295.6905c58.54275001 0 109.643625-49.6125 134.449875-122.04675001 10.418625-30.263625 16.372125-64.49625001 16.372125-101.2095 0-27.286875-3.472875-53.5815-9.426375-77.891625z m-316.52775 372.58987501c22.325625 0 40.186125 18.356625 40.186125 40.68224999 0 22.325625-18.356625 40.68225001-40.186125 40.68225001-22.325625 0-40.68225001-18.356625-40.68225-40.68225001 0.496125-22.325625 18.356625-40.68225001 40.68225-40.68225001z"
+      fill="#FFD400" p-id="2305"></path>
+  </svg>
+)
 export const UDFSvg = () => (
   <svg t="1640792304032" className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
        p-id="28067" width={svgSize} height={svgSize}>

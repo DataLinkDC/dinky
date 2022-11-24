@@ -18,7 +18,8 @@
  */
 
 import React from 'react';
-import {Modal, Table, Button, Tooltip} from 'antd'
+import {Button, Modal, Table, Tooltip} from 'antd'
+import {l} from "@/utils/intl";
 
 interface IStatusDetailedModal {
   statusDetailedVisible: boolean;
@@ -68,7 +69,7 @@ const StatusDetailedModal: React.FC<IStatusDetailedModal> = (props): React.React
   })
 
   const onFooter = () => <Button onClick={() => onCancelStatusDetailed()}>
-    返回
+    {l('button.back')}
   </Button>
 
   return (
