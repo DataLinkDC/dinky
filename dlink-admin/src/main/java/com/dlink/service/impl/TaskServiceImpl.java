@@ -757,7 +757,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if (Asserts.isNotNull(cluster.getClusterConfigurationId())) {
             Map<String, Object> gatewayConfig =
                     clusterConfigurationService.getGatewayConfig(cluster.getClusterConfigurationId());
-            // 如果是k8s application 模式，则需要补齐statement 内的自定义配置
+            // 如果是k8s application 模式,且不是sql任务，则需要补齐statement 内的自定义配置
             if (Dialect.KUBERNETES_APPLICATION.equalsVal(task.getDialect())) {
                 Statement statement = statementService.getById(cluster.getTaskId());
                 Map<String, Object> statementConfig =
