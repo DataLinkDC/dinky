@@ -641,7 +641,7 @@
                         <eclipse>
                             <file>style/spotless_dlink_formatter.xml</file>
                         </eclipse>
-                        <removeUnusedImports />
+                        <removeUnusedImports/>
                         <importOrder>
                             <order>\#,com.dlink,org.apache,java,javassist,javax,org,com,</order>
                         </importOrder>
@@ -678,7 +678,7 @@
                         <includes>
                             <include>**/*.md</include>
                         </includes>
-                        <flexmark />
+                        <flexmark/>
                     </markdown>
                 </configuration>
                 <executions>
@@ -693,25 +693,44 @@
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>aliyun</id>
-            <url>https://maven.aliyun.com/repository/central</url>
-        </repository>
-        <repository>
-            <id>maven-central</id>
-            <url>https://repo1.maven.org/maven2/</url>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>aliyun</id>
-            <url>https://maven.aliyun.com/repository/central</url>
-        </pluginRepository>
-    </pluginRepositories>
-
     <profiles>
+        <profile>
+            <id>maven-central</id>
+            <activation>
+                <property>
+                    <name>maven-central</name>
+                </property>
+            </activation>
+            <repositories>
+                <repository>
+                    <id>maven-central</id>
+                    <url>https://repo1.maven.org/maven2/</url>
+                </repository>
+            </repositories>
+        </profile>
+
+        <profile>
+            <id>aliyun</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>aliyun</name>
+                </property>
+            </activation>
+            <repositories>
+                <repository>
+                    <id>aliyun</id>
+                    <url>https://maven.aliyun.com/repository/central</url>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>aliyun</id>
+                    <url>https://maven.aliyun.com/repository/central</url>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+
         <profile>
             <id>web</id>
             <activation>
@@ -914,7 +933,8 @@
                             <artifactId>maven-javadoc-plugin</artifactId>
                             <configuration>
                                 <additionalJOptions>
-                                    <additionalJOption>--add-exports=java.base/sun.net.util=ALL-UNNAMED</additionalJOption>
+                                    <additionalJOption>--add-exports=java.base/sun.net.util=ALL-UNNAMED
+                                    </additionalJOption>
                                 </additionalJOptions>
                             </configuration>
                         </plugin>
