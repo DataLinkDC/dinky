@@ -159,7 +159,6 @@ public class LineageContext {
             @Override
             public <C> C unwrap(Class<C> clazz) {
                 return getPlanner().getFlinkContext().unwrap(clazz);
-
             }
 
             @Override

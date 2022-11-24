@@ -23,7 +23,7 @@
 
     <groupId>com.dlink</groupId>
     <artifactId>dlink</artifactId>
-    <version>0.6.8-SNAPSHOT</version>
+    <version>0.7.0</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -641,7 +641,7 @@
                         <eclipse>
                             <file>style/spotless_dlink_formatter.xml</file>
                         </eclipse>
-                        <removeUnusedImports/>
+                        <removeUnusedImports />
                         <importOrder>
                             <order>\#,com.dlink,org.apache,java,javassist,javax,org,com,</order>
                         </importOrder>
@@ -678,7 +678,7 @@
                         <includes>
                             <include>**/*.md</include>
                         </includes>
-                        <flexmark/>
+                        <flexmark />
                     </markdown>
                 </configuration>
                 <executions>
@@ -933,8 +933,7 @@
                             <artifactId>maven-javadoc-plugin</artifactId>
                             <configuration>
                                 <additionalJOptions>
-                                    <additionalJOption>--add-exports=java.base/sun.net.util=ALL-UNNAMED
-                                    </additionalJOption>
+                                    <additionalJOption>--add-exports=java.base/sun.net.util=ALL-UNNAMED</additionalJOption>
                                 </additionalJOptions>
                             </configuration>
                         </plugin>
