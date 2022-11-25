@@ -17,4 +17,4 @@
  *
  */
 
-export const VERSION = '0.6.8-SNAPSHOT';
+export const VERSION = '0.7.0';

@@ -98,6 +98,12 @@ public class JdbcConnectorOptions {
                     .noDefaultValue()
                     .withDescription("The largest value of the last partition.");
 
+    public static final ConfigOption<Boolean> SCAN_PARTITION_BY_DATETIME =
+            ConfigOptions.key("scan.partition.by-datetime")
+                    .booleanType()
+                    .defaultValue(false)
+                    .withDescription("partition by datetime.");
+
     public static final ConfigOption<Integer> SCAN_FETCH_SIZE =
             ConfigOptions.key("scan.fetch-size")
                     .intType()

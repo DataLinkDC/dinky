@@ -29,12 +29,10 @@ type FlinkConfigProps = {
   sqlSubmitJarParas: SettingsStateType['sqlSubmitJarParas'];
   sqlSubmitJarMainAppClass: SettingsStateType['sqlSubmitJarMainAppClass'];
   useRestAPI: SettingsStateType['useRestAPI'];
-  useLogicalPlan: SettingsStateType['useLogicalPlan'];
   sqlSeparator: SettingsStateType['sqlSeparator'];
   jobIdWait: SettingsStateType['jobIdWait'];
   dispatch: any;
 };
-
 
 const FlinkConfigView: React.FC<FlinkConfigProps> = (props) => {
 
@@ -43,7 +41,6 @@ const FlinkConfigView: React.FC<FlinkConfigProps> = (props) => {
     sqlSubmitJarParas,
     sqlSubmitJarMainAppClass,
     useRestAPI,
-    useLogicalPlan,
     sqlSeparator,
     jobIdWait,
     dispatch
@@ -125,17 +122,6 @@ const FlinkConfigView: React.FC<FlinkConfigProps> = (props) => {
           <a onClick={({}) => handleCancelClick()}>{l('button.cancel')}</a>],
     },
     {
-      title: l('pages.settings.FlinkSQLLogic'),
-      description: l('pages.settings.FlinkLogic'),
-      actions: [
-        <Form.Item
-          name="useLogicalPlan" valuePropName="checked"
-        >
-          <Switch checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
-                  checked={useLogicalPlan}
-          /></Form.Item>],
-    },
-    {
       title: l('pages.settings.FlinkJobID'),
       description: (
         editName != 'jobIdWait' ?
@@ -210,7 +196,6 @@ export default connect(({Settings}: { Settings: SettingsStateType }) => ({
   sqlSubmitJarParas: Settings.sqlSubmitJarParas,
   sqlSubmitJarMainAppClass: Settings.sqlSubmitJarMainAppClass,
   useRestAPI: Settings.useRestAPI,
-  useLogicalPlan: Settings.useLogicalPlan,
   sqlSeparator: Settings.sqlSeparator,
   jobIdWait: Settings.jobIdWait,
 }))(FlinkConfigView);

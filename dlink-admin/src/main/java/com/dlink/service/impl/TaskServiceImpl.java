@@ -752,17 +752,18 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         JobConfig jobConfig = new JobConfig();
         jobConfig.setAddress(cluster.getJobManagerHost());
         jobConfig.setType(cluster.getType());
+        Task task = this.getTaskInfoById(cluster.getTaskId());
 
-        if (GatewayType.KUBERNETES_APPLICATION.equalsValue(cluster.getType())) {
-            Statement statement = statementService.getById(cluster.getTaskId());
-            Map<String, Object> gatewayConfig = JSONUtil.toMap(statement.getStatement(), String.class, Object.class);
-            jobConfig.buildGatewayConfig(gatewayConfig);
-            jobConfig.getGatewayConfig().getClusterConfig().setAppId(cluster.getName());
-            useGateway = true;
-        }
         if (Asserts.isNotNull(cluster.getClusterConfigurationId())) {
             Map<String, Object> gatewayConfig =
                     clusterConfigurationService.getGatewayConfig(cluster.getClusterConfigurationId());
+            // 如果是k8s application 模式,且不是sql任务，则需要补齐statement 内的自定义配置
+            if (Dialect.KUBERNETES_APPLICATION.equalsVal(task.getDialect())) {
+                Statement statement = statementService.getById(cluster.getTaskId());
+                Map<String, Object> statementConfig =
+                        JSONUtil.toMap(statement.getStatement(), String.class, Object.class);
+                gatewayConfig.putAll(statementConfig);
+            }
             jobConfig.buildGatewayConfig(gatewayConfig);
             jobConfig.getGatewayConfig().getClusterConfig().setAppId(cluster.getName());
             useGateway = true;
@@ -819,8 +820,12 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         // support custom K8s app submit, rather than clusterConfiguration
         else if (Dialect.KUBERNETES_APPLICATION.equalsVal(task.getDialect())
                 && GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType())) {
-            Map<String, Object> gatewayConfig = JSONUtil.toMap(task.getStatement(), String.class, Object.class);
-            config.buildGatewayConfig(gatewayConfig);
+            Map<String, Object> taskConfig = JSONUtil.toMap(task.getStatement(), String.class, Object.class);
+            Map<String, Object> clusterConfiguration =
+                    clusterConfigurationService.getGatewayConfig(task.getClusterConfigurationId());
+            clusterConfiguration.putAll((Map<String, Object>) taskConfig.get("appConfig"));
+            clusterConfiguration.put("taskCustomConfig", taskConfig);
+            config.buildGatewayConfig(clusterConfiguration);
         } else {
             Map<String, Object> gatewayConfig =
                     clusterConfigurationService.getGatewayConfig(task.getClusterConfigurationId());
@@ -907,7 +912,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if (JobStatus.isDone(jobInfoDetail.getInstance().getStatus())
                 && (Asserts.isNull(jobHistory.getJob()) || jobHistory.isError())) {
             checkStatus = checkJobStatus(jobInfoDetail);
-            log.debug("YarnState: " + checkStatus.getValue());
             if (checkStatus.isDone()) {
                 jobInfoDetail.getInstance().setStatus(checkStatus.getValue());
                 jobInstanceService.updateById(jobInfoDetail.getInstance());

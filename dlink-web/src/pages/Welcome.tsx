@@ -80,28 +80,19 @@ export default (): React.ReactNode => {
           </Typography.Text>
         </Paragraph>
         <p></p>
-        <Timeline pending={<><Text code>0.7.0</Text>
+        <Timeline pending={<><Text code>0.8.0</Text>
           <Text type="secondary">{l('global.stay.tuned')}</Text>
           <p></p>
           <Paragraph>
             <ul>
               <li>
-                <Link>多租户及命名空间</Link>
+                <Link>Flink 服务化</Link>
               </li>
               <li>
-                <Link>全局血缘与影响分析</Link>
+                <Link>数据链路分析</Link>
               </li>
               <li>
-                <Link>统一元数据管理</Link>
-              </li>
-              <li>
-                <Link>Flink 元数据持久化</Link>
-              </li>
-              <li>
-                <Link>多版本 Flink-Client Server</Link>
-              </li>
-              <li>
-                <Link>整库千表同步</Link>
+                <Link>CDAS & CTAS 语法支持</Link>
               </li>
             </ul>
           </Paragraph></>} reverse={true}>
@@ -1647,6 +1638,208 @@ export default (): React.ReactNode => {
                 </li>
                 <li>
                   <Link>新增数据开发任务信息日志详情按钮</Link>
+                </li>
+              </ul>
+            </Paragraph>
+          </Timeline.Item>
+          <Timeline.Item><Text code>0.7.0</Text> <Text type="secondary">2022-11-24</Text>
+            <p></p>
+            <Paragraph>
+              <ul>
+                <li>
+                  <Link>支持 Apache Flink 1.16.0</Link>
+                </li>
+                <li>
+                  <Link>新增 Java udf 打包</Link>
+                </li>
+                <li>
+                  <Link>支持 Flink Session 模式自动加载 udf</Link>
+                </li>
+                <li>
+                  <Link>支持 Flink Per-Job 模式自动加载 udf</Link>
+                </li>
+                <li>
+                  <Link>支持 Flink Application 模式自动加载 udf</Link>
+                </li>
+                <li>
+                  <Link>支持 Python udf 在线开发</Link>
+                </li>
+                <li>
+                  <Link>支持 Scala udf 在线开发</Link>
+                </li>
+                <li>
+                  <Link>支持自定义的 K8S Application 提交</Link>
+                </li>
+                <li>
+                  <Link>新增 FlinkJar 文件上传</Link>
+                </li>
+                <li>
+                  <Link>从逻辑计划分析字段血缘支持 Flink 所有版本</Link>
+                </li>
+                <li>
+                  <Link>Flink JDBC 支持数据过滤</Link>
+                </li>
+                <li>
+                  <Link>Flink JDBC 分区查询支持 datetime</Link>
+                </li>
+                <li>
+                  <Link>新增多租户管理</Link>
+                </li>
+                <li>
+                  <Link>新增在登录时选择租户</Link>
+                </li>
+                <li>
+                  <Link>新增海豚调度自动创建任务</Link>
+                </li>
+                <li>
+                  <Link>新增系统日志控制台</Link>
+                </li>
+                <li>
+                  <Link>新增执行进度控制台</Link>
+                </li>
+                <li>
+                  <Link>新增 Flink udf 模板</Link>
+                </li>
+                <li>
+                  <Link>新增 Presto 数据源</Link>
+                </li>
+                <li>
+                  <Link>新增作业树目录级删除功能</Link>
+                </li>
+                <li>
+                  <Link>新增 CDCSOURCE 的 datastream-doris-ext 支持元数据写入</Link>
+                </li>
+                <li>
+                  <Link>数据开发元数据添加刷新按钮</Link>
+                </li>
+                <li>
+                  <Link>新增数据源复制</Link>
+                </li>
+                <li>
+                  <Link>新增前端国际化</Link>
+                </li>
+                <li>
+                  <Link>新增后端国际化</Link>
+                </li>
+                <li>
+                  <Link>修复从指定的 savepoint 恢复任务时未设置 savepint 文件路径导致的问题</Link>
+                </li>
+                <li>
+                  <Link>修复 StarRocks 数据源不可见</Link>
+                </li>
+                <li>
+                  <Link>修复数据源查询数据后切换数据源导致报错</Link>
+                </li>
+                <li>
+                  <Link>修复数据源查询视图元数据报错</Link>
+                </li>
+                <li>
+                  <Link>修复 Oracle 验证查询的错误</Link>
+                </li>
+                <li>
+                  <Link>修复 PG 数据库元数据获取 schema 失败 </Link>
+                </li>
+                <li>
+                  <Link>修复 kafka properties 没有启用</Link>
+                </li>
+                <li>
+                  <Link>修复 jobConfig useAutoCancel 参数传递错误</Link>
+                </li>
+                <li>
+                  <Link>修复由于多租户导致的作业监控报错</Link>
+                </li>
+                <li>
+                  <Link>修复集群实例删除导致已存在的任务无法停止</Link>
+                </li>
+                <li>
+                  <Link>修复 Application 模式缺失数据源变量</Link>
+                </li>
+                <li>
+                  <Link>修复连续单击任务项将打开多个选项卡问题</Link>
+                </li>
+                <li>
+                  <Link>修复 cdcsource KafkaSink 不支持添加 transactionalIdPrefix 导致 kafka product 发送消息失败</Link>
+                </li>
+                <li>
+                  <Link>修复当集群别名为空时集群无法展示</Link>
+                </li>
+                <li>
+                  <Link>修复作用版本查询错误</Link>
+                </li>
+                <li>
+                  <Link>修复作业完成时 Per-Job 和 Application 的状态始终未知</Link>
+                </li>
+                <li>
+                  <Link>修复引导页的连接错误</Link>
+                </li>
+                <li>
+                  <Link>增加 MysqlCDC 的参数配置</Link>
+                </li>
+                <li>
+                  <Link>优化 datastream kafka-json 和 datastream starrocks</Link>
+                </li>
+                <li>
+                  <Link>支持元数据缓存到 Redis</Link>
+                </li>
+                <li>
+                  <Link>自动在 doris label prefix 后追加 uuid</Link>
+                </li>
+                <li>
+                  <Link>优化租户切换</Link>
+                </li>
+                <li>
+                  <Link>修改资源中心为认证中心</Link>
+                </li>
+                <li>
+                  <Link>添加 spotless 插件</Link>
+                </li>
+                <li>
+                  <Link>优化不同版本的 SQL 文件</Link>
+                </li>
+                <li>
+                  <Link>改进 MySQL 表的自动创建</Link>
+                </li>
+                <li>
+                  <Link>优化 postgres 元数据信息</Link>
+                </li>
+                <li>
+                  <Link>优化 postgre 建表语句</Link>
+                </li>
+                <li>
+                  <Link>优化 Flink Oracle Connector </Link>
+                </li>
+                <li>
+                  <Link>优化 maven assembly 和 profile</Link>
+                </li>
+                <li>
+                  <Link>兼容 Java 11</Link>
+                </li>
+                <li>
+                  <Link>删除数据源的重复初始化</Link>
+                </li>
+                <li>
+                  <Link>升级 mysql 驱动版本至 8.0.28</Link>
+                </li>
+                <li>
+                  <Link>升级 Flink 1.14.5 到 1.14.6</Link>
+                </li>
+                <li>
+                  <Link>升级 Guava 和 Lombok 版本</Link>
+                </li>
+                <li>
+                  <Link>升级jackson 和 sa-token 版本</Link>
+                </li>
+                <li>
+                  <Link>优化 ReadMe</Link>
+                </li>
+                <li>
+                  <Link>更新官网</Link>
+                </li>
+                <li>
+                  <Link>优化部署文档</Link>
+                </li>
+                <li>
+                  <Link>添加 Flink Metrics 监控和优化的文档</Link>
                 </li>
               </ul>
             </Paragraph>

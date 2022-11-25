@@ -22,9 +22,9 @@ import React, {useRef, useState} from "react";
 import {PageContainer} from '@ant-design/pro-layout';
 import {
   CheckCircleOutlined,
+  CopyOutlined,
   DeleteOutlined,
   EditOutlined,
-  EllipsisOutlined,
   ExclamationCircleOutlined,
   HeartOutlined,
   PlusOutlined
@@ -38,7 +38,7 @@ import {ActionType} from "@ant-design/pro-table";
 
 import styles from './index.less';
 import {DataBaseItem} from "@/pages/DataBase/data";
-import {checkHeartBeat} from "@/pages/DataBase/service";
+import {checkHeartBeat, copyDatabase} from "@/pages/DataBase/service";
 import {showDataBase} from "@/components/Studio/StudioEvent/DDL";
 import {l} from "@/utils/intl";
 
@@ -69,7 +69,7 @@ const DataBaseTableList: React.FC<{}> = (props: any) => {
 
   const onCheckHeartBeat = (row: DataBaseItem) => {
     checkHeartBeat(row.id);
-    actionRef.current?.reloadAndRest?.();
+    actionRef.current?.reload?.()
   };
 
   const onDeleteDataBase = (row: DataBaseItem) => {
@@ -85,7 +85,11 @@ const DataBaseTableList: React.FC<{}> = (props: any) => {
       }
     });
   };
-
+  const onCopyDataBase = (row: DataBaseItem) => {
+    copyDatabase(row);
+    onRefreshDataBase();
+    actionRef.current?.reloadAndRest?.();
+  };
   return (
     <PageContainer title={false}>
       <ProList
@@ -123,16 +127,18 @@ const DataBaseTableList: React.FC<{}> = (props: any) => {
                 </div>
               }
               actions={[
-                <HeartOutlined key="setting" onClick={() => {
-                  onCheckHeartBeat(row);
+                <HeartOutlined key="heartbeat" title={l('button.heartbeat')} onClick={() => {
+                  onCheckHeartBeat(row as DataBaseItem);
                 }}/>,
-                <EditOutlined key="edit" onClick={() => {
-                  onEdit(row);
+                <EditOutlined key="edit"  title={l('button.edit')} onClick={() => {
+                  onEdit(row as DataBaseItem);
                 }}/>,
-                <DeleteOutlined key="delete" onClick={() => {
-                  onDeleteDataBase(row);
+                <DeleteOutlined key="delete" title={l('button.delete')}  onClick={() => {
+                  onDeleteDataBase(row as DataBaseItem);
                 }}/>,
-                <EllipsisOutlined key="ellipsis"/>,
+                <CopyOutlined key="copy"  title={l('right.menu.copy')} onClick={() => {
+                  onCopyDataBase(row as DataBaseItem);
+                }}/>,
               ]}
             >
               <Card.Meta

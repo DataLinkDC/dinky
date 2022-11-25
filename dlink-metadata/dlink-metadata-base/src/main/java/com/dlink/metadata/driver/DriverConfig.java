@@ -38,7 +38,6 @@ public class DriverConfig {
 
     private String name;
     private String type;
-    private String driverClassName;
     private String ip;
     private Integer port;
     private String url;
@@ -58,7 +57,7 @@ public class DriverConfig {
 
     public static DriverConfig build(Map<String, String> confMap) {
         Asserts.checkNull(confMap, "数据源配置不能为空");
-        return new DriverConfig(confMap.get("name"), confMap.get("type"), confMap.get("url"), confMap.get("username")
-            , confMap.get("password"));
+        return new DriverConfig(confMap.get("name"), confMap.get("type"), confMap.get("url"), confMap.get("username"),
+                confMap.get("password"));
     }
 }

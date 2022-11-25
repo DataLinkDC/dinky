@@ -104,6 +104,7 @@ public class FlinkSqlPlus {
         return explainer.generateTableCA(statement);
     }
 
+    @Deprecated
     public List<ColumnCAResult> explainSqlColumnCA(String statement) {
         return explainer.explainSqlColumnCA(statement);
     }
