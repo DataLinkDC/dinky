@@ -53,3 +53,16 @@ export async function checkHeartBeat(id: number) {
     message.error(l('app.request.failed'));
   }
 }
+
+
+export async function copyDatabase(databse: DataBaseItem) {
+  const hide = message.loading(l('pages.registerCenter.db.copyDatabase'));
+  try {
+    const {code, msg} = await postAll('/api/database/copyDatabase', databse);
+    hide();
+    code == 0 ? message.success(msg) : message.error(msg);
+  } catch (error) {
+    hide();
+    message.error(l('app.request.failed'));
+  }
+}

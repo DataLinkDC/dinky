@@ -23,7 +23,7 @@
 
     <groupId>com.dlink</groupId>
     <artifactId>dlink</artifactId>
-    <version>0.6.8-SNAPSHOT</version>
+    <version>0.7.0</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -61,7 +61,7 @@
         <!--  `provided` for product environment ,`compile` for dev environment  -->
         <scope.runtime>provided</scope.runtime>
         <dlink.flink.version>1.14</dlink.flink.version>
-        <spring-boot-dependencies.version>2.6.12</spring-boot-dependencies.version>
+        <spring-boot-dependencies.version>2.6.13</spring-boot-dependencies.version>
         <hutool.version>5.8.4</hutool.version>
         <druid-starter>1.2.8</druid-starter>
         <mybatis-plus-boot-starter.version>3.5.1</mybatis-plus-boot-starter.version>
@@ -90,10 +90,43 @@
         <knife4j.version>3.0.3</knife4j.version>
         <spotless.version>2.27.1</spotless.version>
         <jaxb.version>2.3.0</jaxb.version>
+        <javax.annotation-api.version>1.3.2</javax.annotation-api.version>
+        <log4j.version>2.19.0</log4j.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-jul</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-slf4j-impl</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-to-slf4j</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.annotation</groupId>
+                <artifactId>javax.annotation-api</artifactId>
+                <version>${javax.annotation-api.version}</version>
+            </dependency>
+
             <!--解决mysql与phoenix依赖冲突-->
             <dependency>
                 <groupId>com.google.protobuf</groupId>
@@ -610,7 +643,7 @@
                         </eclipse>
                         <removeUnusedImports />
                         <importOrder>
-                            <order>\#,com.dlink,org.apache,java,javax,org,com,</order>
+                            <order>\#,com.dlink,org.apache,java,javassist,javax,org,com,</order>
                         </importOrder>
                         <licenseHeader>
                             <file>style/license_header</file>
@@ -660,25 +693,44 @@
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>aliyun</id>
-            <url>https://maven.aliyun.com/repository/central</url>
-        </repository>
-        <repository>
-            <id>maven-central</id>
-            <url>https://repo1.maven.org/maven2/</url>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>aliyun</id>
-            <url>https://maven.aliyun.com/repository/central</url>
-        </pluginRepository>
-    </pluginRepositories>
-
     <profiles>
+        <profile>
+            <id>maven-central</id>
+            <activation>
+                <property>
+                    <name>maven-central</name>
+                </property>
+            </activation>
+            <repositories>
+                <repository>
+                    <id>maven-central</id>
+                    <url>https://repo1.maven.org/maven2/</url>
+                </repository>
+            </repositories>
+        </profile>
+
+        <profile>
+            <id>aliyun</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>aliyun</name>
+                </property>
+            </activation>
+            <repositories>
+                <repository>
+                    <id>aliyun</id>
+                    <url>https://maven.aliyun.com/repository/central</url>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>aliyun</id>
+                    <url>https://maven.aliyun.com/repository/central</url>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+
         <profile>
             <id>web</id>
             <activation>

@@ -126,8 +126,8 @@ public abstract class YarnGateway extends AbstractGateway {
                 e.printStackTrace();
             }
         }
-
         if (getType().isApplicationMode()) {
+            configuration.set(YarnConfigOptions.APPLICATION_TYPE,"Dinky Flink");
             String uuid = UUID.randomUUID().toString().replace("-", "");
             if (configuration.contains(CheckpointingOptions.CHECKPOINTS_DIRECTORY)) {
                 configuration.set(CheckpointingOptions.CHECKPOINTS_DIRECTORY,

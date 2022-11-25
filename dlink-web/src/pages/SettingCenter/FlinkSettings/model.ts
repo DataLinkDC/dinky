@@ -24,7 +24,6 @@ export type SettingsStateType = {
   sqlSubmitJarParas: string,
   sqlSubmitJarMainAppClass: string,
   useRestAPI: boolean,
-  useLogicalPlan: boolean,
   sqlSeparator: string,
   jobIdWait: number,
 };
@@ -45,6 +44,8 @@ const SettingsModel: ModelType = {
     sqlSubmitJarParas: '',
     sqlSubmitJarMainAppClass: '',
     useRestAPI: true,
+    sqlSeparator: ',\n',
+    jobIdWait: 30,
   },
 
   effects: {},

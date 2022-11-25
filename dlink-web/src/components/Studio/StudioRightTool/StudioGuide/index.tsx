@@ -59,13 +59,43 @@ const StudioGuide = (props: any) => {
             </li>
             <li>
               <Link onClick={() => {
+                history.push('/datacenter/metadata')
+              }}>{l('pages.datastudio.label.metadata')}</Link>
+            </li>
+            <li>
+              <Link onClick={() => {
+                history.push('/registration/alert/alertInstance')
+              }}>{l('pages.datastudio.label.alarmInstance')}</Link>
+            </li>
+            <li>
+              <Link onClick={() => {
+                history.push('/registration/alert/alertGroup')
+              }}>{l('pages.datastudio.label.alarmGroup')}</Link>
+            </li>
+            <li>
+              <Link onClick={() => {
+                history.push('/registration/fragment')
+              }}>{l('pages.datastudio.label.val')}</Link>
+            </li>
+            <li>
+              <Link onClick={() => {
                 history.push('/registration/document')
               }}>{l('pages.datastudio.label.registdocument')}</Link>
             </li>
             <li>
               <Link onClick={() => {
-                history.push('/settings')
+                history.push('/settingCenter/flinkSettings')
               }}>{l('pages.datastudio.label.configsystemconfig')}</Link>
+            </li>
+            <li>
+              <Link onClick={() => {
+                history.push('/settingCenter/udfTemplate')
+              }}>{l('pages.datastudio.label.udfTemplate')}</Link>
+            </li>
+            <li>
+              <Link onClick={() => {
+                history.push('/settingCenter/systemInfo')
+              }}>{l('pages.datastudio.label.systemInfo')}</Link>
             </li>
             <li>
               <Link href="http://www.dlink.top/"

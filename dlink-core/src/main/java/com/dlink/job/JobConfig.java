@@ -30,6 +30,7 @@ import com.dlink.gateway.config.GatewayConfig;
 import com.dlink.gateway.config.SavePointStrategy;
 import com.dlink.session.SessionConfig;
 
+import org.apache.flink.configuration.CoreOptions;
 import org.apache.http.util.TextUtils;
 
 import java.util.ArrayList;
@@ -237,12 +238,20 @@ public class JobConfig {
         if (config.containsKey("flinkConfig")
                 && Asserts.isNotNullMap((Map<String, String>) config.get("flinkConfig"))) {
             gatewayConfig.setFlinkConfig(FlinkConfig.build((Map<String, String>) config.get("flinkConfig")));
+            gatewayConfig.getFlinkConfig().getConfiguration().put(CoreOptions.DEFAULT_PARALLELISM.key(),String.valueOf(parallelism));
         }
         if (config.containsKey("kubernetesConfig")) {
-            Map<String, Object> kubernetesConfig = (Map<String, Object>) config.get("kubernetesConfig");
-            // 构建GatewayConfig时，将k8s集群默认配置和自定义参数配置加载到FlinkConfig里
-            for (Map.Entry<String, Object> entry : kubernetesConfig.entrySet()) {
-                gatewayConfig.getFlinkConfig().getConfiguration().put(entry.getKey(), entry.getValue().toString());
+            Map<String, String> kubernetesConfig = (Map<String, String>) config.get("kubernetesConfig");
+            gatewayConfig.getFlinkConfig().getConfiguration().putAll(kubernetesConfig);
+        }
+        // at present only k8s task have this
+        if (config.containsKey("taskCustomConfig")) {
+            Map<String, Map<String, String>> taskCustomConfig = (Map<String, Map<String, String>>) config.get("taskCustomConfig");
+            if (taskCustomConfig.containsKey("kubernetesConfig")) {
+                gatewayConfig.getFlinkConfig().getConfiguration().putAll(taskCustomConfig.get("kubernetesConfig"));
+            }
+            if (taskCustomConfig.containsKey("flinkConfig")) {
+                gatewayConfig.getFlinkConfig().getConfiguration().putAll(taskCustomConfig.get("flinkConfig"));
             }
         }
     }

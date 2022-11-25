@@ -12,7 +12,8 @@
             <!--控制台只输出level及以上级别的信息，onMatch为true代表符合level标准的才输出，onMismatch为true代表不符合level标准的就不输出-->
             <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="ACCEPT"/>
             <!--这个是输出日志的格式，如果对里面的参数不理解，可以去看我的这篇文章，网址是：“https://blog.csdn.net/qq_42449963/article/details/104617356”-->
-            <PatternLayout pattern="[dlink] %d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"/>
+            <!--<PatternLayout pattern="[dlink] %d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"/>-->
+            <PatternLayout pattern="[dlink] %d{yyyy-MM-dd HH:mm:ss.SSS} %highlight{%6p} %style{%5pid}{bright,magenta} --- [%15.15t] %style{%-40.40logger{39}}{bright,cyan}: %m%n"/>
         </Console>
 
         <!--这种存储文件的方式更加合理，可以设置多长时间把文件归档一次，也可以设置多大文件归档一次，如果都把所有的日志存在一个文件里面，文件会受不了的，解释一下参数信息：fileName后面如果后面不跟/，例如dev/logs/app.log，那就会把日志文件放在project工程下面，不是所属的项目下面如果后面跟/，例如/dev/logs/app.log，那就会把日志文件直接放在项目所在盘符的根目录下，例如项目在E盘存放，那就会把日志文件直接放在E盘的根目录下，如果后面直接加盘符，那就会存在特定的位置，例如F:/dev/logs/app.log,那就会直接放在F盘中特定的位置，上面都是经过测验的，fileName后面的app.log文件相当于是一个缓存文件，我们会把日志信息先放在app.log中，当达到我们设置的要求之后会把app.log中的日志信息转移到filePattern指定的日志文件中，转移的内容就会从app.log日志文件中清除，没有转移的内容还存放在app.log中，等到下一次符合要求的时候在进行一次转移-->
