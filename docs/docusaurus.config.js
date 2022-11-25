@@ -196,21 +196,16 @@ const config = {
                             },
                         ],
                     },
-                    {
+                    /*{
                         to: '/blog',
                         position: 'right',
                         label: '博客',
-                        // activeBaseRegex: `/*/`,
-                    },
+                        // activeBaseRegex: `/!*!/`,
+                    },*/
                     {
                         type: 'localeDropdown',
                         position: 'right',
                     },
-                    // {
-                    //   to: 'blog',
-                    //   label: '博客',
-                    //   position: 'right'
-                    // },
                     {
                         href: 'https://github.com/DataLinkDC/dlink',
                         label: 'GitHub',
