@@ -100,8 +100,16 @@ public class Submiter {
 
     public static String getDbSourceSqlStatements(DBConfig dbConfig) {
         String sql = "select name,flink_config from dlink_database where enabled = 1";
+        String sqlCheck = "select fragment from dlink_task where enabled = 1";
         try {
-            return DBUtil.getDbSourceSQLStatement(sql, dbConfig);
+            // 首先判断是否开启了全局变量
+            String fragment = DBUtil.getOneByID(sqlCheck, dbConfig);
+            if (fragment.equals("1")) {
+                return DBUtil.getDbSourceSQLStatement(sql, dbConfig);
+            } else {
+                // 全局变量未开启，返回空字符串
+                return "";
+            }
         } catch (IOException | SQLException e) {
             logger.error("{} --> 获取 数据源信息异常，请检查数据库连接，连接信息为：{} ,异常信息为：{}", LocalDateTime.now(),
                     dbConfig.toString(), e.getMessage(), e);
