@@ -60,19 +60,20 @@ import org.slf4j.LoggerFactory;
  **/
 @Internal
 public class CustomTableResultImpl implements TableResult {
+
     protected static final Logger logger = LoggerFactory.getLogger(CustomTableResultImpl.class);
-    public static final TableResult TABLE_RESULT_OK =
-            CustomTableResultImpl.builder()
-                    .resultKind(ResultKind.SUCCESS)
-                    .schema(ResolvedSchema.of(Column.physical("result", DataTypes.STRING())))
-                    .data(Collections.singletonList(Row.of("OK")))
-                    .build();
+    public static final TableResult TABLE_RESULT_OK = CustomTableResultImpl.builder()
+            .resultKind(ResultKind.SUCCESS)
+            .schema(ResolvedSchema.of(Column.physical("result", DataTypes.STRING())))
+            .data(Collections.singletonList(Row.of("OK")))
+            .build();
 
     private final JobClient jobClient;
     private final ResolvedSchema resolvedSchema;
     private final ResultKind resultKind;
     private final CloseableRowIteratorWrapper data;
     private final PrintStyle printStyle;
+
     private final ZoneId sessionTimeZone;
 
     private CustomTableResultImpl(
@@ -83,14 +84,12 @@ public class CustomTableResultImpl implements TableResult {
             PrintStyle printStyle,
             ZoneId sessionTimeZone) {
         this.jobClient = jobClient;
-        this.resolvedSchema =
-                Preconditions.checkNotNull(resolvedSchema, "resolvedSchema should not be null");
+        this.resolvedSchema = Preconditions.checkNotNull(resolvedSchema, "resolvedSchema should not be null");
         this.resultKind = Preconditions.checkNotNull(resultKind, "resultKind should not be null");
         Preconditions.checkNotNull(data, "data should not be null");
         this.data = new CloseableRowIteratorWrapper(data);
         this.printStyle = Preconditions.checkNotNull(printStyle, "printStyle should not be null");
-        this.sessionTimeZone =
-                Preconditions.checkNotNull(sessionTimeZone, "sessionTimeZone should not be null");
+        this.sessionTimeZone = Preconditions.checkNotNull(sessionTimeZone, "sessionTimeZone should not be null");
     }
 
     public static TableResult buildTableResult(List<TableSchemaField> fields, List<Row> rows) {
@@ -122,32 +121,29 @@ public class CustomTableResultImpl implements TableResult {
     }
 
     @Override
-    public void await(long timeout, TimeUnit unit)
-            throws InterruptedException, ExecutionException, TimeoutException {
+    public void await(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
         awaitInternal(timeout, unit);
     }
 
-    private void awaitInternal(long timeout, TimeUnit unit)
-            throws InterruptedException, ExecutionException, TimeoutException {
+    private void awaitInternal(long timeout,
+            TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
         if (jobClient == null) {
             return;
         }
 
-        ExecutorService executor =
-                Executors.newFixedThreadPool(1, r -> new Thread(r, "TableResult-await-thread"));
+        ExecutorService executor = Executors.newFixedThreadPool(1, r -> new Thread(r, "TableResult-await-thread"));
         try {
-            CompletableFuture<Void> future =
-                    CompletableFuture.runAsync(
-                            () -> {
-                                while (!data.isFirstRowReady()) {
-                                    try {
-                                        Thread.sleep(100);
-                                    } catch (InterruptedException e) {
-                                        throw new TableException("Thread is interrupted");
-                                    }
-                                }
-                            },
-                            executor);
+            CompletableFuture<Void> future = CompletableFuture.runAsync(
+                    () -> {
+                        while (!data.isFirstRowReady()) {
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e) {
+                                throw new TableException("Thread is interrupted");
+                            }
+                        }
+                    },
+                    executor);
 
             if (timeout >= 0) {
                 future.get(timeout, unit);
@@ -180,8 +176,7 @@ public class CustomTableResultImpl implements TableResult {
         if (printStyle instanceof TableauStyle) {
             int maxColumnWidth = ((TableauStyle) printStyle).getMaxColumnWidth();
             String nullColumn = ((TableauStyle) printStyle).getNullColumn();
-            boolean deriveColumnWidthByType =
-                    ((TableauStyle) printStyle).isDeriveColumnWidthByType();
+            boolean deriveColumnWidthByType = ((TableauStyle) printStyle).isDeriveColumnWidthByType();
             boolean printRowKind = ((TableauStyle) printStyle).isPrintRowKind();
             PrintUtils.printAsTableauForm(
                     getResolvedSchema(),
@@ -213,12 +208,12 @@ public class CustomTableResultImpl implements TableResult {
      * Builder for creating a {@link CustomTableResultImpl}.
      */
     public static class Builder {
+
         private JobClient jobClient = null;
         private ResolvedSchema resolvedSchema = null;
         private ResultKind resultKind = null;
         private CloseableIterator<Row> data = null;
-        private PrintStyle printStyle =
-                PrintStyle.tableau(Integer.MAX_VALUE, PrintUtils.NULL_COLUMN, false, false);
+        private PrintStyle printStyle = PrintStyle.tableau(Integer.MAX_VALUE, PrintUtils.NULL_COLUMN, false, false);
         private ZoneId sessionTimeZone = ZoneId.of("UTC");
 
         private Builder() {
@@ -309,6 +304,7 @@ public class CustomTableResultImpl implements TableResult {
      * Root interface for all print styles.
      */
     public interface PrintStyle {
+
         /**
          * Create a tableau print style with given max column width, null column, change mode
          * indicator and a flag to indicate whether the column width is derived from type (true) or
@@ -339,6 +335,7 @@ public class CustomTableResultImpl implements TableResult {
      * print the result schema and content as tableau form.
      */
     private static final class TableauStyle implements PrintStyle {
+
         /**
          * A flag to indicate whether the column width is derived from type (true) or content
          * (false).
@@ -395,6 +392,7 @@ public class CustomTableResultImpl implements TableResult {
      * (or accessed).
      */
     private static final class CloseableRowIteratorWrapper implements CloseableIterator<Row> {
+
         private final CloseableIterator<Row> iterator;
         private boolean isFirstRowReady = false;
 
