@@ -47,7 +47,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.repository_owner }}
-          password: ${{ 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 }}
+          password: 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
       - name: Build && Push
         uses: docker/build-push-action@v2
         with:
