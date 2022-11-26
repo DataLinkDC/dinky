@@ -23,7 +23,6 @@ import com.dlink.model.LineageRel;
 
 import org.apache.calcite.plan.RelOptTable;
 import org.apache.calcite.rel.RelNode;
-import org.apache.calcite.rel.core.Snapshot;
 import org.apache.calcite.rel.metadata.RelColumnOrigin;
 import org.apache.calcite.rel.metadata.RelMetadataQuery;
 import org.apache.commons.collections.CollectionUtils;
@@ -49,11 +48,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
-import javassist.Modifier;
-
 /**
  * LineageContext
  *
@@ -68,33 +62,6 @@ public class LineageContext {
     public LineageContext(FlinkChainedProgram flinkChainedProgram, TableEnvironmentImpl tableEnv) {
         this.flinkChainedProgram = flinkChainedProgram;
         this.tableEnv = tableEnv;
-    }
-
-    /**
-     * Dynamic add getColumnOrigins method to class RelMdColumnOrigins by javassist:
-     *
-     * public Set<RelColumnOrigin> getColumnOrigins(Snapshot rel,RelMetadataQuery mq, int iOutputColumn) {
-     *      return mq.getColumnOrigins(rel.getInput(), iOutputColumn);
-     * }
-     */
-    static {
-        try {
-            ClassPool classPool = ClassPool.getDefault();
-            CtClass ctClass = classPool.getCtClass("org.apache.calcite.rel.metadata.RelMdColumnOrigins");
-
-            CtClass[] parameters = new CtClass[]{classPool.get(Snapshot.class.getName()),
-                    classPool.get(RelMetadataQuery.class.getName()), CtClass.intType
-            };
-            // add method
-            CtMethod ctMethod = new CtMethod(classPool.get("java.util.Set"), "getColumnOrigins", parameters, ctClass);
-            ctMethod.setModifiers(Modifier.PUBLIC);
-            ctMethod.setBody("{return $2.getColumnOrigins($1.getInput(), $3);}");
-            ctClass.addMethod(ctMethod);
-            // load the class
-            ctClass.toClass();
-        } catch (Exception e) {
-            throw new TableException("Dynamic add getColumnOrigins() method exception.", e);
-        }
     }
 
     public List<LineageRel> getLineage(String statement) {

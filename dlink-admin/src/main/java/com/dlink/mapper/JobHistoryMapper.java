@@ -37,7 +37,4 @@ public interface JobHistoryMapper extends SuperMapper<JobHistory> {
 
     @InterceptorIgnore(tenantLine = "true")
     JobHistory getByIdWithoutTenant(Integer id);
-
-    int insert(JobHistory jobHistory);
-
 }
