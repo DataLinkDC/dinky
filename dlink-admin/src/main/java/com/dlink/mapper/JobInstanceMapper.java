@@ -45,6 +45,7 @@ public interface JobInstanceMapper extends SuperMapper<JobInstance> {
 
     List<JobInstanceCount> countHistoryStatus();
 
+    @InterceptorIgnore(tenantLine = "true")
     List<JobInstance> listJobInstanceActive();
 
     JobInstance getJobInstanceByTaskId(Integer id);

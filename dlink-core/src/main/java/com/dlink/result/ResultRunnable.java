@@ -39,7 +39,6 @@ import com.google.common.collect.Streams;
 
 import lombok.extern.slf4j.Slf4j;
 
-
 /**
  * ResultRunnable
  *
@@ -56,7 +55,8 @@ public class ResultRunnable implements Runnable {
     private final boolean isAutoCancel;
     private final String timeZone;
 
-    public ResultRunnable(TableResult tableResult, Integer maxRowNum, boolean isChangeLog, boolean isAutoCancel, String timeZone) {
+    public ResultRunnable(TableResult tableResult, Integer maxRowNum, boolean isChangeLog, boolean isAutoCancel,
+            String timeZone) {
         this.tableResult = tableResult;
         this.maxRowNum = maxRowNum;
         this.isChangeLog = isChangeLog;
@@ -66,22 +66,26 @@ public class ResultRunnable implements Runnable {
 
     @Override
     public void run() {
-        tableResult.getJobClient().ifPresent(jobClient -> {
-            String jobId = jobClient.getJobID().toHexString();
-            if (!ResultPool.containsKey(jobId)) {
-                ResultPool.put(new SelectResult(jobId, new ArrayList<>(), new LinkedHashSet<>()));
-            }
-
-            try {
-                if (isChangeLog) {
-                    catchChangLog(ResultPool.get(jobId));
-                } else {
-                    catchData(ResultPool.get(jobId));
+        try {
+            tableResult.getJobClient().ifPresent(jobClient -> {
+                String jobId = jobClient.getJobID().toHexString();
+                if (!ResultPool.containsKey(jobId)) {
+                    ResultPool.put(new SelectResult(jobId, new ArrayList<>(), new LinkedHashSet<>()));
                 }
-            } catch (Exception e) {
-                log.error(String.format(e.toString()));
-            }
-        });
+
+                try {
+                    if (isChangeLog) {
+                        catchChangLog(ResultPool.get(jobId));
+                    } else {
+                        catchData(ResultPool.get(jobId));
+                    }
+                } catch (Exception e) {
+                    log.error(String.format(e.toString()));
+                }
+            });
+        } catch (Exception e) {
+            // Nothing to do
+        }
     }
 
     private void catchChangLog(SelectResult selectResult) {
