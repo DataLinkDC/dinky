@@ -72,6 +72,7 @@ const config = {
                 highlightSearchTermsOnTargetPage: false, // Highlight search terms on target page.
                 explicitSearchResultPath: true,
                 searchBarPosition: "right",
+                language:["zh","en"],
                 hideSearchBarWithNoSearchContext: true,
             }),
         ],
