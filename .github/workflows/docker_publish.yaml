@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 
-name:
+name: Publish Docker
 on: workflow_dispatch
 
 jobs:
