@@ -19,25 +19,42 @@ name: Publish Docker
 on:
   workflow_dispatch:
     inputs:
-      flink-version:
+      dinky-version:
         description: Git Ref (Optional)
-        required: false
+        required: true
 
 jobs:
   publish:
     name: public docker
     runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Shanghai
+      REGISTRY: ghcr.io
     strategy:
       fail-fast: true
       matrix:
-        flink: [1.11, 1.12, 1.13, 1.14, 1.15, 1.16]
+        flink: [ 1.11, 1.12, 1.13, 1.14, 1.15, 1.16 ]
     steps:
-#      - uses: actions/download-artifact@v3
-#        with:
-#          name: dlink-release-${{ flink-version }}.tar.gz
-#          path: /tmp
+      #      - uses: actions/download-artifact@v3
+      #        with:
+      #          name: dlink-release-${{ flink-version }}.tar.gz
+      #          path: /tmp
       - name: download dlink
-        run: | 
-          curl --output-dir /tmp/ https://github.com/DataLinkDC/dlink/releases/download/v${{ github.event.inputs.flink-version }}/dlink-release-${{ github.event.inputs.flink-version }}.tar.gz
-          
+        run: |
+          curl --output-dir /tmp/ https://github.com/DataLinkDC/dlink/releases/download/v${{ github.event.inputs.dinky-version }}/dlink-release-${{ github.event.inputs.dinky-version }}.tar.gz
+      - name: Login
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.PACKAGES_TOKEN }}
+      - name: Build && Push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}-${{ matrix.flink }}:${{ github.event.inputs.dinky-version }}
+            ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}-${{ matrix.flink }}:latest    
         
