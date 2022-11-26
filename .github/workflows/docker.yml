@@ -16,8 +16,12 @@
 #
 
 name: Publish Docker
-on: [workflow_dispatch]
-
+on:
+  workflow_dispatch:
+    inputs:
+      flink-version:
+        description: Git Ref (Optional)
+        required: false
 
 jobs:
   publish:
@@ -30,5 +34,5 @@ jobs:
     steps:
       - uses: actions/download-artifact@v3
         with:
-          name: dlink-release-0.7.0.tar.gz
-
+          name: dlink-release-${{ github.event.inputs.git-ref }}.tar.gz
+          path: /tmp
