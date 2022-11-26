@@ -38,6 +38,6 @@ jobs:
 #          path: /tmp
       - name: download dlink
         run: | 
-          curl -o /tmp/ https://github.com/DataLinkDC/dlink/releases/download/v${{ github.event.inputs.flink-version }}/dlink-release-${{ github.event.inputs.flink-version }}.tar.gz
+          curl --output-dir /tmp/ https://github.com/DataLinkDC/dlink/releases/download/v${{ github.event.inputs.flink-version }}/dlink-release-${{ github.event.inputs.flink-version }}.tar.gz
           
         
