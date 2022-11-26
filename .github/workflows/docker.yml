@@ -49,11 +49,15 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.PACKAGES_TOKEN }}
       - name: Build && Push
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: .
           file: ./Dockerfile
           push: true
+          build-args:
+            - FLINK_VERSION: ${{ matrix.flink }}
+            - JDK_VERSION: 11
+            - SCALA_VERSION: 2.12
           tags: |
             ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}-${{ matrix.flink }}:${{ github.event.inputs.dinky-version }}
             ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}-${{ matrix.flink }}:latest    
