@@ -39,5 +39,5 @@ jobs:
       - name: download dlink
         run: | 
           curl -o /tmp/ https://github.com/DataLinkDC/dlink/releases/download/v${{ flink-version }}/dlink-release-${{ flink-version }}.tar.gz
-          tar zxvf /tmp/dlink-release-*.tar.gz -C /tmp/dist --strip-components=1
+          
         

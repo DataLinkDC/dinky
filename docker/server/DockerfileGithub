@@ -11,6 +11,6 @@ COPY ./build/dlink-release-*.tar.gz .
 RUN mkdir /tmp/dist &  \
     tar zxvf /tmp/flink-${FLINK_VERSION}-bin-scala_${SCALA_VERSION}.tgz -C /app --strip-components=1 & \
     mv /app/lib /app/plugins & \
-    zxvf ./build/dlink-release-*.tar.gz -C /app --strip-components=1
+    zxvf ./tmp/dlink-release-*.tar.gz -C /app --strip-components=1
 
 CMD [ "/bin/sh", "-c", "java -Dloader.path=./lib,./plugins -Ddruid.mysql.usePingMethod=false -jar -Xms512M -Xmx2048M ./dlink-admin-*.jar" ]
