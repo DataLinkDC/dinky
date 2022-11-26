@@ -75,19 +75,6 @@
         </resources>
 
         <plugins>
-            <!-- 编译插件 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.6.0</version>
-                <configuration>
-                    <source>${target.java.version}</source>
-                    <target>${target.java.version}</target>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
-
-            <!-- 打jar包插件(会包含所有依赖) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -102,6 +89,7 @@
                             <mainClass>com.dlink.app.MainApp</mainClass>
                         </manifest>
                     </archive>
+                    <outputDirectory>${project.parent.parent.basedir}/build/extends</outputDirectory>
                 </configuration>
                 <executions>
                     <execution>
