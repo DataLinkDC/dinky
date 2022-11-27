@@ -229,29 +229,5 @@ npm run build
 `mvn clean install -Dmaven.test.skip=true -P !web,pord,scala-2.11,flink-1.14,flink-1.15`
 
 
----
-
-### 构建 Docker 镜像
-基于Dinky每次发布的[ Release ](http://www.dlink.top/download/download)构建：
-1. 将`Dockerfile`、`docker-entrypoint.sh`文件拷贝至release包解压目录
-2. 执行下述构建与推送命令，根据需要推送至公共或私有仓库
-```bash
-docker build --tag ylyue/dinky:0.6.4-flink1.15 .
-docker push ylyue/dinky:0.6.4-flink1.15
-docker login --username=xxxxxxxx registry.cn-beijing.aliyuncs.com
-docker tag ylyue/dinky:0.6.4-flink1.15 registry.cn-beijing.aliyuncs.com/yue-open/dinky:0.6.4-flink1.15
-docker push registry.cn-beijing.aliyuncs.com/yue-open/dinky:0.6.4-flink1.15
-```
-
-[👉已构建的 DockerHub 仓库](https://hub.docker.com/r/ylyue/dinky)
-
-
-
-
-
 以上就是 Dinky 源码编译的详细步骤，Dinky 如何安装部署，请查看下一章节[部署](./deploy)
-
-
-
-
 
