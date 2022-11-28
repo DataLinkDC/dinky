@@ -27,8 +27,8 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>dlink-common</module>
         <module>dlink-flink</module>
+        <module>dlink-common</module>
         <module>dlink-client</module>
         <module>dlink-catalog</module>
         <module>dlink-process</module>
