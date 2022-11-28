@@ -19,9 +19,10 @@
 
 package com.dlink.executor;
 
-import static java.lang.String.format;
 import static org.apache.flink.util.Preconditions.checkArgument;
 import static org.apache.flink.util.Preconditions.checkNotNull;
+
+import static java.lang.String.format;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.constant.FlinkSQLConstant;
@@ -36,10 +37,16 @@ import org.apache.flink.types.Row;
 import org.apache.flink.util.StringUtils;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 
 /**
  * Flink Sql Fragment Manager
@@ -135,7 +142,6 @@ public final class SqlManager {
         }
 
         if (isInnerDateVar(sqlFragmentName)) {
-            System.out.println(sqlFragmentName);
             return parseDateVar(sqlFragmentName);
         }
 
@@ -281,7 +287,7 @@ public final class SqlManager {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(endDate);
         calendar.add(Calendar.DAY_OF_YEAR,days);
-        Date startDate=calendar.getTime();
+        Date startDate = calendar.getTime();
 
         return dtf.format(startDate);
     }
