@@ -123,4 +123,36 @@ public class PostgreSqlDriver extends AbstractJdbcDriver {
         return sb.toString();
     }
 
+    @Override
+    public StringBuilder genQueryOption(QueryData queryData) {
+
+        String where = queryData.getOption().getWhere();
+        String order = queryData.getOption().getOrder();
+        String limitStart = queryData.getOption().getLimitStart();
+        String limitEnd = queryData.getOption().getLimitEnd();
+
+        StringBuilder optionBuilder = new StringBuilder()
+                .append("select * from ")
+                .append(queryData.getSchemaName())
+                .append(".")
+                .append(queryData.getTableName());
+
+        if (where != null && !where.equals("")) {
+            optionBuilder.append(" where ").append(where);
+        }
+        if (order != null && !order.equals("")) {
+            optionBuilder.append(" order by ").append(order);
+        }
+
+        if (TextUtil.isEmpty(limitStart)) {
+            limitStart = "0";
+        }
+        if (TextUtil.isEmpty(limitEnd)) {
+            limitEnd = "100";
+        }
+        optionBuilder.append(" limit ")
+                .append(limitEnd);
+
+        return optionBuilder;
+    }
 }
