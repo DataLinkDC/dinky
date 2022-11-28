@@ -762,7 +762,7 @@ CREATE TABLE `metadata_table` (
 DROP TABLE IF EXISTS `metadata_table_property`;
 CREATE TABLE `metadata_table_property` (
   `key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'key',
-  `value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'value',
+  `value` MEDIUMTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'value',
   `table_id` int NOT NULL COMMENT 'table id',
   `update_time` datetime DEFAULT NULL COMMENT 'update time',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create tiime',
