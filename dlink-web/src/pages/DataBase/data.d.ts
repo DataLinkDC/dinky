@@ -21,7 +21,6 @@
 export type DataBaseItem = {
   id: number,
   name: string,
-  alias: string,
   groupName: string,
   type: string,
   url: string,

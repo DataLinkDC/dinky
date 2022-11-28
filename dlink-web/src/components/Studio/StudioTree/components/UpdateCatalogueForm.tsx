@@ -43,6 +43,7 @@ const UpdateCatalogueForm: React.FC<UpdateFormProps> = (props) => {
   const [formVals, setFormVals] = useState<Partial<CatalogueTableListItem>>({
     id: props.values.id,
     taskId: props.values.taskId,
+    tenantId: props.values.tenantId,
     name: props.values.name,
     isLeaf: props.values.isLeaf,
     parentId: props.values.parentId,

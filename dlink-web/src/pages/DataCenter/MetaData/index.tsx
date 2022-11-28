@@ -53,7 +53,6 @@ const MetaDataContainer: React.FC<{}> = (props: any) => {
   let [database, setDatabase] = useState<[{
     id: number,
     name: string,
-    alias: string,
     type: string,
     enabled: string,
     groupName: string,
@@ -62,7 +61,6 @@ const MetaDataContainer: React.FC<{}> = (props: any) => {
   }]>([{
     id: -1,
     name: '',
-    alias: '',
     type: '',
     enabled: '',
     groupName: '',
@@ -160,7 +158,7 @@ const MetaDataContainer: React.FC<{}> = (props: any) => {
                 </Col>
                 <Col span={11}>
                   <div>
-                    <p>{item.alias}</p>
+                    <p>{item.name}</p>
                     <Tag color="blue" key={item.groupName}>
                       {item.groupName}
                     </Tag>
@@ -196,7 +194,7 @@ const MetaDataContainer: React.FC<{}> = (props: any) => {
                       }}
               >{l('button.refresh')}</Button>
             </div>
-            <div>{item.alias}</div>
+            <div>{item.name}</div>
           </div>
         )
       }

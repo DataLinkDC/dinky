@@ -13,7 +13,7 @@
         select
         a.*,
         dh.type as type,
-        (select dc.alias FROM dlink_cluster dc where dc.id=a.cluster_id) as clusterAlias
+        (select dc.name FROM dlink_cluster dc where dc.id=a.cluster_id) as clusterName
         from
         dlink_job_instance a
         <if test='!(param.isHistory!=null and param.isHistory==true)'>

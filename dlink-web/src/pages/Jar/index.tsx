@@ -119,12 +119,6 @@ const JarTableList: React.FC<{}> = (props: any) => {
       hideInSearch: true,
     },
     {
-      title: l('pages.registerCenter.jar.alias'),
-      sorter: true,
-      dataIndex: 'alias',
-      hideInTable: false,
-    },
-    {
       title: l('pages.registerCenter.jar.type'),
       sorter: true,
       dataIndex: 'type',

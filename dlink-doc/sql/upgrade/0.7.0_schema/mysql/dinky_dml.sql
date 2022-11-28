@@ -79,3 +79,5 @@ UPDATE `dlink_database` set `group_name` = 'application' WHERE `group_name` = '�
 UPDATE `dlink_database` set `group_name` = 'backup' WHERE `group_name` = '备份';
 UPDATE `dlink_database` set `group_name` = 'other' WHERE `group_name` = '其他';
 
+
+DELETE FROM `dlink_task` WHERE `name` = 'dlink_default_catalog';

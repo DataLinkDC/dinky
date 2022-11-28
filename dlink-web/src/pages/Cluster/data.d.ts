@@ -21,7 +21,6 @@
 export type ClusterTableListItem = {
   id: number,
   name: string,
-  alias: string,
   type: string,
   hosts: string,
   jobManagerHost: string,

@@ -145,10 +145,9 @@ public class CatalogueController {
         return subcata;
     }
 
-    private CatalogueTaskDTO getCatalogueTaskDTO(String alias, Integer parentId) {
+    private CatalogueTaskDTO getCatalogueTaskDTO(String name, Integer parentId) {
         CatalogueTaskDTO catalogueTaskDTO = new CatalogueTaskDTO();
-        catalogueTaskDTO.setName(UUID.randomUUID().toString().substring(0, 6) + alias);
-        catalogueTaskDTO.setAlias(alias);
+        catalogueTaskDTO.setName(UUID.randomUUID().toString().substring(0, 6) + name);
         catalogueTaskDTO.setId(null);
         catalogueTaskDTO.setParentId(parentId);
         catalogueTaskDTO.setLeaf(true);

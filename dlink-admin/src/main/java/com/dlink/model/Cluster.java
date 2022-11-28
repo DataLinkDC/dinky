@@ -21,8 +21,6 @@ package com.dlink.model;
 
 import com.dlink.db.model.SuperEntity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import lombok.Data;
@@ -43,9 +41,6 @@ public class Cluster extends SuperEntity {
 
     private Integer tenantId;
 
-    @TableField(fill = FieldFill.INSERT)
-    private String alias;
-
     private String type;
 
     private String hosts;
@@ -64,10 +59,9 @@ public class Cluster extends SuperEntity {
 
     private Integer taskId;
 
-    public static Cluster autoRegistersCluster(String hosts, String name, String alias, String type, Integer clusterConfigurationId, Integer taskId) {
+    public static Cluster autoRegistersCluster(String hosts, String name, String type, Integer clusterConfigurationId, Integer taskId) {
         Cluster cluster = new Cluster();
         cluster.setName(name);
-        cluster.setAlias(alias);
         cluster.setHosts(hosts);
         cluster.setType(type);
         cluster.setClusterConfigurationId(clusterConfigurationId);

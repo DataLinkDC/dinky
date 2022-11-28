@@ -5,8 +5,8 @@
     <select id="selectForProTable" resultType="com.dlink.model.History">
         select
         a.*,
-        (select b.alias FROM dlink_cluster b where b.id=a.cluster_id) as clusterAlias,
-        (select c.alias FROM dlink_task c where c.id=a.task_id) as taskAlias
+        (select b.name FROM dlink_cluster b where b.id=a.cluster_id) as clusterName,
+        (select c.name FROM dlink_task c where c.id=a.task_id) as taskName
         from
         dlink_history a
         <where>

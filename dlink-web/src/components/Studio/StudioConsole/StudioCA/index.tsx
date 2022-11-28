@@ -61,7 +61,7 @@ const StudioCA = (props: any) => {
     });
     res.then((result) => {
       Modal.info({
-        title: current.task.alias + '的 StreamGraphPlan',
+        title: current.task.name + '的 StreamGraphPlan',
         width: 1000,
         content: (
           <CodeShow code={JSON.stringify((result.datas ? result.datas : result.msg), null, "\t")} language='json'

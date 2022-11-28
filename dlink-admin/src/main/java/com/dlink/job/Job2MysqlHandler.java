@@ -133,12 +133,11 @@ public class Job2MysqlHandler implements JobHandler {
         final Integer clusterConfigurationId = job.getJobConfig().getClusterConfigurationId();
         if (job.isUseGateway()) {
             cluster = clusterService.registersCluster(Cluster.autoRegistersCluster(
-                    job.getJobManagerAddress(),
-                    job.getJobId(),
-                    job.getJobConfig().getJobName() + LocalDateTime.now(),
-                    job.getType().getLongValue(),
-                    clusterConfigurationId,
-                    taskId));
+                job.getJobManagerAddress(),
+                job.getJobId() + (job.getJobConfig().getJobName() + LocalDateTime.now()),
+                job.getType().getLongValue(),
+                clusterConfigurationId,
+                taskId));
             if (Asserts.isNotNull(cluster)) {
                 clusterId = cluster.getId();
             }

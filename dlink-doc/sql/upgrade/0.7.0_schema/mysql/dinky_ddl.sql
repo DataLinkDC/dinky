@@ -194,3 +194,12 @@ CREATE TABLE IF NOT EXISTS `dlink_udf_template` (
 
 
 alter table `dlink_task_statement` modify column `statement` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'statement set';
+
+
+alter table `dlink_cluster` drop column `alias`;
+alter table `dlink_cluster_configuration` drop column `alias`;
+alter table `dlink_database` drop column `alias`;
+alter table `dlink_fragment` drop column `alias`;
+alter table `dlink_jar` drop column `alias`;
+alter table `dlink_task` drop column `alias`;
+alter table `dlink_task_version` drop column `alias`;

@@ -27,6 +27,7 @@ import ProTable from '@ant-design/pro-table';
 import {cancelJob, savepointJob, showFlinkJobs} from "../../StudioEvent/DDL";
 import JobStatus from "@/components/Common/JobStatus";
 import {parseSecondStr} from "@/components/Common/function";
+import {l} from "@/utils/intl";
 
 const {Option} = Select;
 
@@ -194,7 +195,7 @@ const StudioProcess = (props: any) => {
     let itemList = [];
     for (let item of cluster) {
       let tag = (<><Tag
-        color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias === "" ? item.name : item.alias}</>);
+        color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.name}</>);
       itemList.push(<Option value={item.id} label={tag}>
         {tag}
       </Option>)

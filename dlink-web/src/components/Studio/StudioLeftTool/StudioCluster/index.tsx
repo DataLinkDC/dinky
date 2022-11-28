@@ -42,8 +42,8 @@ const StudioCluster = (props: any) => {
   const getColumns = () => {
     return [{
       title: "集群名",
-      dataIndex: "alias",
-      key: "alias",
+      dataIndex: "name",
+      key: "name",
       sorter: true,
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
@@ -59,9 +59,6 @@ const StudioCluster = (props: any) => {
     }, {
       title: '唯一标识',
       dataIndex: 'name',
-    }, {
-      title: "集群名",
-      dataIndex: "alias",
     },
       {
         title: '类型',
@@ -223,7 +220,7 @@ const StudioCluster = (props: any) => {
   const onDeleteCluster = (record) => {
     Modal.confirm({
       title: '删除集群',
-      content: `确定删除该集群【${record.alias}】吗？`,
+      content: `确定删除该集群【${record.name}】吗？`,
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {

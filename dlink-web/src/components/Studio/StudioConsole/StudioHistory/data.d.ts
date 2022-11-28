@@ -21,7 +21,7 @@
 export type HistoryItem = {
   id: number;
   clusterId: number;
-  clusterAlias: string;
+  clusterName: string;
   session: string;
   jobId: string;
   jobName: string;
@@ -37,5 +37,5 @@ export type HistoryItem = {
   startTime: string;
   endTime: string;
   taskId: number;
-  taskAlias: string;
+  taskName: string;
 };

@@ -20,7 +20,6 @@
 export type FragmentVariableTableListItem = {
   id: number,
   name: string,
-  alias: string,
   fragmentValue: string,
   note: string,
   enabled: boolean,

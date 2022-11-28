@@ -21,6 +21,7 @@
 export type CatalogueTableListItem = {
   id: number,
   taskId: number,
+  tenantId: number,
   name: string,
   isLeaf: string,
   parentId: number,
@@ -29,7 +30,7 @@ export type CatalogueTableListItem = {
 export type TaskTableListItem = {
   id: number,
   name: string,
-  alias: string,
+  tenantId: number,
   dialect: string,
   config: Object<string, object>,
   parentId: number,

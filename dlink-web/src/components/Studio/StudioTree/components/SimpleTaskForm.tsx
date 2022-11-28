@@ -52,7 +52,7 @@ const SimpleTaskForm: React.FC<UpdateFormProps> = (props) => {
   const [formVals, setFormVals] = useState<Partial<TaskTableListItem>>({
     id: props.values.id,
     name: props.values.name,
-    alias: props.values.alias,
+    tenantId: props.values.tenantId,
     parentId: props.values.parentId,
     config: props.values.config,
   });
@@ -151,12 +151,6 @@ const SimpleTaskForm: React.FC<UpdateFormProps> = (props) => {
           rules={[{required: true, message: '请输入唯一名称！'}]}>
           <Input placeholder="请输入"/>
         </Form.Item>
-        <Form.Item
-          name="alias"
-          label="别名"
-          rules={[{required: true, message: '请输入别名！'}]}>
-          <Input placeholder="请输入"/>
-        </Form.Item>
         {isUDF(dialect) ? (<>
           <Form.Item
             name="config.templateId"
@@ -206,7 +200,6 @@ const SimpleTaskForm: React.FC<UpdateFormProps> = (props) => {
         initialValues={{
           id: formVals.id,
           name: formVals.name,
-          alias: formVals.alias,
           dialect: formVals.dialect,
           parentId: formVals.parentId,
         }}

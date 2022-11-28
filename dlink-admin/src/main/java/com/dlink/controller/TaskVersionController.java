@@ -67,7 +67,6 @@ public class TaskVersionController {
             versionHistoryDTO.setId(t.getId());
             versionHistoryDTO.setTaskId(t.getTaskId());
             versionHistoryDTO.setName(t.getName());
-            versionHistoryDTO.setAlias(t.getAlias());
             versionHistoryDTO.setDialect(t.getDialect());
             versionHistoryDTO.setType(t.getType());
             versionHistoryDTO.setStatement(t.getStatement());

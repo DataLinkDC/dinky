@@ -85,7 +85,7 @@ public class JobInstance implements Serializable {
     private String type;
 
     @TableField(exist = false)
-    private String clusterAlias;
+    private String clusterName;
 
     @TableField(exist = false)
     private String jobManagerAddress;

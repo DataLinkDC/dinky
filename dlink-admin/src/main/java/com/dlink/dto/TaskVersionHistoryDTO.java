@@ -33,7 +33,6 @@ public class TaskVersionHistoryDTO implements Serializable {
     private Integer id;
     private Integer taskId;
     private String name;
-    private String alias;
     private String dialect;
     private String type;
     private String statement;

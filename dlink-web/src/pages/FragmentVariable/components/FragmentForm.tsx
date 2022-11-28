@@ -46,7 +46,6 @@ const FragmentForm: React.FC<FragmentFormProps> = (props: any) => {
   const [formVals, setFormVals] = useState<Partial<FragmentVariableTableListItem>>({
     id: props.values.id,
     name: props.values.name,
-    alias: props.values.alias,
     fragmentValue: props.values.fragmentValue,
     note: props.values.note,
     enabled: props.values.enabled,
@@ -76,12 +75,6 @@ const FragmentForm: React.FC<FragmentFormProps> = (props: any) => {
           label={l('pages.registerCenter.fv.name')}
           rules={[{required: true, message: l('pages.registerCenter.fv.namePlaceholder')}]}>
           <Input placeholder={l('pages.registerCenter.fv.namePlaceholder')}/>
-        </FormItem>
-        <FormItem
-          name="alias"
-          label={l('pages.registerCenter.fv.alias')}
-          rules={[{required: true, message: l('pages.registerCenter.fv.aliasPlaceholder')}]}>
-          <Input placeholder={l('pages.registerCenter.fv.aliasPlaceholder')}/>
         </FormItem>
         <FormItem
           name="note"

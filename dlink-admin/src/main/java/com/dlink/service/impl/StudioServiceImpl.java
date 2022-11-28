@@ -350,7 +350,7 @@ public class StudioServiceImpl implements StudioService {
             Cluster cluster = clusterService.getById(sessionDTO.getClusterId());
             SessionConfig sessionConfig = SessionConfig.build(
                     sessionDTO.getType(), true,
-                    cluster.getId(), cluster.getAlias(),
+                    cluster.getId(), cluster.getName(),
                     clusterService.buildEnvironmentAddress(true, sessionDTO.getClusterId()));
             return JobManager.createSession(sessionDTO.getSession(), sessionConfig, createUser);
         } else {

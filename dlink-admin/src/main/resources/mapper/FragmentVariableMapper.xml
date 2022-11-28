@@ -34,9 +34,6 @@
             <if test='param.name!=null and param.name!=""'>
                 and a.name like "%${param.name}%"
             </if>
-            <if test='param.alias!=null and param.alias!=""'>
-                and a.alias like "%${param.alias}%"
-            </if>
             <if test='param.note!=null and param.note!=""'>
                 and a.note like "%${param.note}%"
             </if>

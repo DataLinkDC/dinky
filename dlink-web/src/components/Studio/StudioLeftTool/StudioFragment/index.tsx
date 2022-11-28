@@ -61,13 +61,6 @@ const StudioFragment = (props: any) => {
       hideInSearch: true,
     },
     {
-      title: '别名',
-      dataIndex: 'alias',
-      hideInForm: false,
-      hideInSearch: false,
-      hideInTable: true,
-    },
-    {
       title: '变量值',
       sorter: true,
       dataIndex: 'fragmentValue',

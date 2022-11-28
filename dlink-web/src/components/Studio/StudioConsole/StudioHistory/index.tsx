@@ -159,11 +159,11 @@ const StudioHistory = (props: any) => {
                       <MessageOutlined/> {row.session}
                     </Tag>
                   ) : ''}
-                  {row.clusterAlias ? (
-                    <Tag color="green" key={row.clusterAlias}>
-                      <ClusterOutlined/> {row.clusterAlias}
+                  {row.clusterName ? (
+                    <Tag color="green" key={row.clusterName}>
+                      <ClusterOutlined/> {row.clusterName}
                     </Tag>
-                  ) : (<Tag color="green" key={row.clusterAlias}>
+                  ) : (<Tag color="green" key={row.clusterName}>
                     <ClusterOutlined/> 本地环境
                   </Tag>)}
                   {row.type ? (

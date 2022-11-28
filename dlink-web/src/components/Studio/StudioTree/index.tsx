@@ -367,7 +367,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     const datas = await handleData('/api/task/exportJsonByTaskId', {id: taskId});
     if (datas) {
       let data = JSON.parse(datas);
-      saveJSON(data, data.alias);
+      saveJSON(data, data.name);
       message.success('导出json成功');
     }
   };

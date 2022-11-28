@@ -40,10 +40,10 @@ const Config = (props: any) => {
         ) : undefined}
         </Descriptions.Item>
         <Descriptions.Item label="集群实例">
-          {job?.cluster?.alias ? <Link>{job?.cluster?.alias}</Link> : '-'}
+          {job?.cluster?.name ? <Link>{job?.cluster?.name}</Link> : '-'}
         </Descriptions.Item>
         <Descriptions.Item label="集群配置">
-          {job?.clusterConfiguration?.alias ? <Link>{job?.clusterConfiguration?.alias}</Link> : '-'}
+          {job?.clusterConfiguration?.name ? <Link>{job?.clusterConfiguration?.name}</Link> : '-'}
         </Descriptions.Item>
         <Descriptions.Item label="共享会话">
           {job?.history?.session ? <Link>{job?.history?.session}</Link> : l('button.disable')}

@@ -90,10 +90,10 @@ const StudioMetaData = (props: any) => {
   };
 
   const getDataBaseOptions = () => {
-    return <>{database.map(({id, name, alias, type, enabled}) => (
+    return <>{database.map(({id, name, type, enabled}) => (
       <Option value={id}
-              label={<><Tag color={enabled ? "processing" : "error"}>{type}</Tag>{alias === "" ? name : alias}</>}>
-        <Tag color={enabled ? "processing" : "error"}>{type}</Tag>{alias === "" ? name : alias}
+              label={<><Tag color={enabled ? "processing" : "error"}>{type}</Tag>{ name }</>}>
+        <Tag color={enabled ? "processing" : "error"}>{type}</Tag>{name}
       </Option>
     ))}</>
   };

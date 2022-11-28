@@ -128,12 +128,6 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       hideInSearch: true,
     },
     {
-      title: l('pages.registerCenter.cluster.alias'),
-      sorter: true,
-      dataIndex: 'alias',
-      hideInTable: false,
-    },
-    {
       title: l('pages.registerCenter.cluster.type'),
       sorter: true,
       dataIndex: 'type',

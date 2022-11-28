@@ -41,7 +41,6 @@ public class CatalogueTaskDTO {
     private Integer parentId;
     private boolean isLeaf;
     private String name;
-    private String alias;
     private String dialect = Dialect.DEFAULT.getValue();
     private Map<String,String> config = new HashMap<>();
 }

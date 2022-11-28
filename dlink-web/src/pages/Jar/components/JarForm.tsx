@@ -43,7 +43,6 @@ const JarForm: React.FC<JarFormProps> = (props) => {
   const [formVals, setFormVals] = useState<Partial<JarTableListItem>>({
     id: props.values.id,
     name: props.values.name,
-    alias: props.values.alias,
     type: props.values.type ? props.values.type : 'UserApp',
     path: props.values.path,
     mainClass: props.values.mainClass,
@@ -104,12 +103,6 @@ const JarForm: React.FC<JarFormProps> = (props) => {
           label={l('pages.registerCenter.jar.name')}
           rules={[{required: true, message: l('pages.registerCenter.jar.namePlaceholder')}]}>
           <Input placeholder={l('pages.registerCenter.jar.namePlaceholder')}/>
-        </Form.Item>
-        <Form.Item
-          name="alias"
-          label={l('pages.registerCenter.jar.alias')}
-        >
-          <Input placeholder={l('pages.registerCenter.jar.aliasPlaceholder')}/>
         </Form.Item>
         <Form.Item
           name="note"

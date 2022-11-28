@@ -362,7 +362,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             if (task.getClusterId() != null) {
                 Cluster cluster = clusterService.getById(task.getClusterId());
                 if (cluster != null) {
-                    task.setClusterName(cluster.getAlias());
+                    task.setClusterName(cluster.getName());
                 }
             }
             if (statement != null) {
@@ -451,7 +451,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     public Task initDefaultFlinkSQLEnv(Integer tenantId) {
         String separator = SystemConfiguration.getInstances().getSqlSeparator();
         separator = separator.replace("\\r", "\r").replace("\\n", "\n");
-        String name = "dlink_default_catalog";
+        String name = "DefaultCatalog";
 
         Task defaultFlinkSQLEnvTask = getTaskByNameAndTenantId(name, tenantId);
         if (null == defaultFlinkSQLEnvTask) {
@@ -461,7 +461,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         }
         // defaultFlinkSQLEnvTask.setId(1);
         defaultFlinkSQLEnvTask.setName(name);
-        defaultFlinkSQLEnvTask.setAlias("DefaultCatalog");
         defaultFlinkSQLEnvTask.setDialect(Dialect.FLINKSQLENV.getValue());
         StringBuilder sb = new StringBuilder();
         sb.append("create catalog my_catalog with(\n");
@@ -1131,7 +1130,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             if (Asserts.isNotNull(task.getEnvName())) {
                 tasks.add(task);
             }
-            Catalogue catalogue = new Catalogue(task.getAlias(), task.getId(), task.getDialect(), parentId, true);
+            Catalogue catalogue = new Catalogue(task.getName(), task.getId(), task.getDialect(), parentId, true);
             catalogueService.saveOrUpdate(catalogue);
         }
         for (Task task : tasks) {
@@ -1170,7 +1169,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     public String getTaskPathByTaskId(Integer taskId) {
         StringBuilder path = new StringBuilder();
-        path.append(getById(taskId).getAlias());
+        path.append(getById(taskId).getName());
         Catalogue catalogue = catalogueService.getOne(new QueryWrapper<Catalogue>().eq("task_id", taskId));
         if (Asserts.isNull(catalogue)) {
             return path.toString();
@@ -1278,7 +1277,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         AlertConfig alertConfig = AlertConfig.build(alertInstance.getName(), alertInstance.getType(),
                 JSONUtil.toMap(alertInstance.getParams()));
         Alert alert = Alert.build(alertConfig);
-        String title = "任务【" + task.getAlias() + "】：" + jobInstance.getStatus();
+        String title = "任务【" + task.getName() + "】：" + jobInstance.getStatus();
         String content = alertMsg.toString();
         AlertResult alertResult = alert.send(title, content);
 

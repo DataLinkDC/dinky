@@ -40,11 +40,11 @@ const StudioDataBase = (props: any) => {
   const getColumns = () => {
     return [{
       title: "数据源名",
-      dataIndex: "alias",
-      key: "alias",
+      dataIndex: "name",
+      key: "name",
       sorter: true,
       render: (dom, entity) => {
-        return <a onClick={() => setRow(entity)}>{entity.alias === "" ? entity.name : entity.alias}</a>;
+        return <a onClick={() => setRow(entity)}>{entity.name}</a>;
       },
     }];
   };
@@ -54,10 +54,7 @@ const StudioDataBase = (props: any) => {
       title: "ID",
       dataIndex: "id",
       key: "id",
-    }, {
-      title: "数据源名",
-      dataIndex: "alias",
-    }, {
+    },  {
       title: '唯一标识',
       dataIndex: 'name',
     },
@@ -198,8 +195,8 @@ const StudioDataBase = (props: any) => {
 
   const onDeleteDataBase = (record) => {
     Modal.confirm({
-      title: '删除数据源',
-      content: `确定删除该数据源【${record.alias === "" ? record.name : record.alias}】吗？`,
+      title: l('pages.registerCenter.db.delete'),
+      content: l('pages.registerCenter.db.deleteConfirm','',{dbName: record.name}),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {

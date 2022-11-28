@@ -44,7 +44,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   const [formVals, setFormVals] = useState<Partial<TaskTableListItem>>({
     id: props.values.id,
     name: props.values.name,
-    alias: props.values.alias,
     type: props.values.type,
     checkPoint: props.values.checkPoint,
     savePointPath: props.values.savePointPath,
@@ -77,12 +76,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           name="name"
           label="名称"
           rules={[{required: true, message: '请输入名称！'}]}>
-          <Input placeholder="请输入"/>
-        </FormItem>
-        <FormItem
-          name="alias"
-          label="别名"
-        >
           <Input placeholder="请输入"/>
         </FormItem>
         <FormItem
@@ -165,7 +158,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         initialValues={{
           id: formVals.id,
           name: formVals.name,
-          alias: formVals.alias,
           type: formVals.type,
           note: formVals.note,
           checkPoint: formVals.checkPoint,

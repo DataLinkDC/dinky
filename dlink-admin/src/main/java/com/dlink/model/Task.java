@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -51,11 +50,6 @@ import lombok.EqualsAndHashCode;
 public class Task extends SuperEntity {
 
     private static final long serialVersionUID = 5988972129893667154L;
-
-
-    @TableField(fill = FieldFill.INSERT)
-    private String alias;
-
     private String dialect;
 
     private Integer tenantId;
@@ -155,7 +149,7 @@ public class Task extends SuperEntity {
         boolean fg = Asserts.isNull(fragment) ? false : fragment;
         boolean sts = Asserts.isNull(statementSet) ? false : statementSet;
         return new JobConfig(type, step, false, false, useRemote, clusterId, clusterConfigurationId,jid, getId(),
-                alias, fg, sts, batchModel, checkPoint, parallelism, savePointStrategy, savePointPath, map);
+            getName(), fg, sts, batchModel, checkPoint, parallelism, savePointStrategy, savePointPath, map);
     }
 
     public JsonNode parseJsonNode() {
@@ -166,7 +160,6 @@ public class Task extends SuperEntity {
     public JsonNode parseJsonNode(ObjectMapper mapper) {
         JsonNode jsonNode = mapper.createObjectNode();
         ((ObjectNode)jsonNode).put("name",this.getName());
-        ((ObjectNode)jsonNode).put("alias",this.alias);
         ((ObjectNode)jsonNode).put("dialect",this.dialect);
         ((ObjectNode)jsonNode).put("type",this.type);
         ((ObjectNode)jsonNode).put("statement",this.statement);

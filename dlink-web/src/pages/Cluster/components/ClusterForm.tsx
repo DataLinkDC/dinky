@@ -44,7 +44,6 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
   const [formVals, setFormVals] = useState<Partial<ClusterTableListItem>>({
     id: props.values.id,
     name: props.values.name,
-    alias: props.values.alias,
     type: props.values.type,
     hosts: props.values.hosts,
     note: props.values.note,
@@ -61,9 +60,6 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
     const fieldsValue = await form.validateFields();
 
     fieldsValue.id = formVals.id;
-    if (!fieldsValue.alias || fieldsValue.alias.length == 0) {
-      fieldsValue.alias = fieldsValue.name;
-    }
 
     setFormVals(fieldsValue);
     handleSubmit(fieldsValue);
@@ -77,13 +73,6 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
           label={l('pages.registerCenter.cluster.instanceName')}
           rules={[{required: true, message: l('pages.registerCenter.cluster.namePlaceholder') }]}>
           <Input placeholder={l('pages.registerCenter.cluster.namePlaceholder') }/>
-        </Form.Item>
-
-        <Form.Item
-          name="alias"
-          label={l('pages.registerCenter.cluster.alias')}
-        >
-          <Input placeholder={l('pages.registerCenter.cluster.aliasPlaceholder') }/>
         </Form.Item>
         <Form.Item
           name="type"

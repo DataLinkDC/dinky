@@ -71,7 +71,7 @@ const StudioTaskInfo = (props: any) => {
             <Paragraph copyable>{current.task.id}</Paragraph>
           </Descriptions.Item>
           <Descriptions.Item label="标题">
-            {current.task.alias}
+            {current.task.name}
           </Descriptions.Item>
           <Descriptions.Item label="方言">
             {current.task.dialect}

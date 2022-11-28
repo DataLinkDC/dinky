@@ -118,12 +118,6 @@ const TaskTableList: React.FC<{}> = () => {
       hideInSearch: true,
     },
     {
-      title: '别名',
-      sorter: true,
-      dataIndex: 'alias',
-      hideInTable: false,
-    },
-    {
       title: '类型',
       sorter: true,
       dataIndex: 'type',

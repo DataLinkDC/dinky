@@ -83,10 +83,10 @@ public class History implements Serializable {
     private String statusText;
 
     @TableField(exist = false)
-    private String clusterAlias;
+    private String clusterName;
 
     @TableField(exist = false)
-    private String taskAlias;
+    private String taskName;
 
     public JobInstance buildJobInstance() {
         JobInstance jobInstance = new JobInstance();

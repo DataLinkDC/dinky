@@ -21,14 +21,15 @@
 import {extend} from "umi-request";
 import {TableListParams} from "@/components/Common/data";
 import {message} from "antd";
+import cookies from "js-cookie";
 
 
 export const request2 = extend(
-  { headers: { tenantId: localStorage.getItem('dlink-tenantId') || ''} }
+  { headers: { tenantId: cookies.get('tenantId') || ''} }
 );
 
 export const getStorageTenantId = () => {
-  return localStorage.getItem('dlink-tenantId') || '';
+  return cookies.get('tenantId') || '';
 }
 
 

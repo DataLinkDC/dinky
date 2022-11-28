@@ -21,8 +21,6 @@ package com.dlink.model;
 
 import com.dlink.db.model.SuperEntity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import lombok.Data;
@@ -40,9 +38,6 @@ import lombok.EqualsAndHashCode;
 public class Jar extends SuperEntity {
 
     private static final long serialVersionUID = 3769276772487490408L;
-
-    @TableField(fill = FieldFill.INSERT)
-    private String alias;
 
     private Integer tenantId;
 

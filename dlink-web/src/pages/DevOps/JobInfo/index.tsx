@@ -200,9 +200,9 @@ const JobInfo = (props: any) => {
               <RocketOutlined/> {job?.history?.type}
             </Tag>
           ) : undefined}
-          {job?.cluster?.alias ? (
-            <Tag color="green" key={job?.cluster?.alias}>
-              <ClusterOutlined/> {job?.cluster?.alias}
+          {job?.cluster?.name ? (
+            <Tag color="green" key={job?.cluster?.name}>
+              <ClusterOutlined/> {job?.cluster?.name}
             </Tag>
           ) : (<Tag color="green" key='local'>
             <ClusterOutlined/> {l('pages.devops.jobinfo.localenv')}

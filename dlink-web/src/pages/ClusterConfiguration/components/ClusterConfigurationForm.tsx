@@ -48,7 +48,6 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
   const [formVals, setFormVals] = useState<Partial<ClusterConfigurationTableListItem>>({
     id: props.values.id,
     name: props.values.name,
-    alias: props.values.alias,
     type: props.values.type ? props.values.type : "Yarn",
     configJson: props.values.configJson,
     note: props.values.note,
@@ -96,7 +95,6 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
     const formValues = {
       id: formVals.id,
       name: fieldsValue.name,
-      alias: fieldsValue.alias,
       type: fieldsValue.type,
       note: fieldsValue.note,
       enabled: fieldsValue.enabled,
@@ -315,12 +313,6 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
           <Input placeholder={l('pages.registerCenter.clusterConfig.namePlaceholder')}/>
         </Form.Item>
         <Form.Item
-          name="alias"
-          label={l('pages.registerCenter.clusterConfig.alias')}
-        >
-          <Input placeholder={l('pages.registerCenter.clusterConfig.aliasPlaceholder')}/>
-        </Form.Item>
-        <Form.Item
           name="note"
           label={l('global.table.note')}
         >
@@ -342,7 +334,6 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
     const formValues = {
       id: formVals.id,
       name: fieldsValue.name,
-      alias: fieldsValue.alias,
       type: fieldsValue.type,
       note: fieldsValue.note,
       enabled: fieldsValue.enabled,

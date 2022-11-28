@@ -86,13 +86,11 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     public Catalogue createCatalogueAndTask(CatalogueTaskDTO catalogueTaskDTO) {
         Task task = new Task();
         task.setName(catalogueTaskDTO.getName());
-        task.setAlias(catalogueTaskDTO.getAlias());
         task.setDialect(catalogueTaskDTO.getDialect());
         task.setConfig(Collections.singletonList(catalogueTaskDTO.getConfig()));
         taskService.saveOrUpdateTask(task);
         Catalogue catalogue = new Catalogue();
-        catalogue.setTenantId(catalogueTaskDTO.getTenantId());
-        catalogue.setName(catalogueTaskDTO.getAlias());
+        catalogue.setName(catalogueTaskDTO.getName());
         catalogue.setIsLeaf(true);
         catalogue.setTaskId(task.getId());
         catalogue.setType(catalogueTaskDTO.getDialect());
@@ -105,13 +103,12 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     public Catalogue createCatalogAndFileTask(CatalogueTaskDTO catalogueTaskDTO, String ment) {
         Task task = new Task();
         task.setName(catalogueTaskDTO.getName());
-        task.setAlias(catalogueTaskDTO.getAlias());
         task.setDialect(catalogueTaskDTO.getDialect());
         task.setStatement(ment);
         task.setEnabled(true);
         taskService.saveOrUpdateTask(task);
         Catalogue catalogue = new Catalogue();
-        catalogue.setName(catalogueTaskDTO.getAlias());
+        catalogue.setName(catalogue.getName());
         catalogue.setIsLeaf(true);
         catalogue.setTaskId(task.getId());
         catalogue.setType(catalogueTaskDTO.getDialect());
@@ -130,7 +127,6 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             Task task = new Task();
             task.setId(oldCatalogue.getTaskId());
             task.setName(catalogue.getName());
-            task.setAlias(catalogue.getName());
             taskService.updateById(task);
             this.updateById(catalogue);
             return true;
@@ -235,7 +231,6 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         // 设置复制后的作业名称为：原名称+自增序列
         size = size + 1;
         newTask.setName(oldTask.getName() + "_" + size);
-        newTask.setAlias(oldTask.getAlias() + "_" + size);
         newTask.setStep(JobLifeCycle.DEVELOP.getValue());
         taskService.save(newTask);
 
@@ -249,7 +244,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         Catalogue one =
                 this.getOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, catalogue.getTaskId()));
 
-        catalogue.setName(newTask.getAlias());
+        catalogue.setName(newTask.getName());
         catalogue.setIsLeaf(one.getIsLeaf());
         catalogue.setTaskId(newTask.getId());
         catalogue.setType(one.getType());

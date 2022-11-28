@@ -28,7 +28,6 @@ Dinky 导出作业，导出的内容信息包括 statement 语法、作业名称
 |           参数           |                            解释说明                             |
 | :----------------------: |:-----------------------------------------------------------:|
 |           name           |                            作业名称                             |
-|          alias           |                            作业别名                             |
 |         dialect          |                   数据库方言，如 FlinkSQL、Doris                    |
 |           type           | 如果dialect是FlinkSQL，则为执行模式，StandAlone等<br/>  如果是其他数据库，则为null |
 |        statement         |                           SQL 内容                            |

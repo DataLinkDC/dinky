@@ -78,12 +78,6 @@ const VersionList = (props: any) => {
       dataIndex: 'name',
     },
     {
-      title: l('pages.devops.jobinfo.version.alias'),
-      align: 'center',
-      sorter: true,
-      dataIndex: 'alias',
-    },
-    {
       title: l('pages.devops.jobinfo.version.dialect'),
       align: 'center',
       render: (dom, entity) => {

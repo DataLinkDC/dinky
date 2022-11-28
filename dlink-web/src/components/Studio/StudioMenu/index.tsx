@@ -180,7 +180,7 @@ const StudioMenu = (props: any) => {
     const taskKey = (Math.random() * 1000) + '';
     Modal.confirm({
       title: '异步提交作业',
-      content: `确定异步提交作业【${current.task.alias}】到其配置的集群吗？请确认您的作业是否已经被保存！`,
+      content: `确定异步提交作业【${current.task.name}】到其配置的集群吗？请确认您的作业是否已经被保存！`,
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -188,7 +188,7 @@ const StudioMenu = (props: any) => {
           id: current.task.id,
         };
         notification.success({
-          message: `任务【${current.task.alias} 】正在异步提交`,
+          message: `任务【${current.task.name} 】正在异步提交`,
           description: current.task.statement,
           duration: null,
           key: taskKey,
@@ -337,7 +337,7 @@ const StudioMenu = (props: any) => {
   const toReleaseTask = () => {
     Modal.confirm({
       title: '发布作业',
-      content: `确定发布作业【${current.task.alias}】吗？请确认您的作业是否已经被保存！`,
+      content: `确定发布作业【${current.task.name}】吗？请确认您的作业是否已经被保存！`,
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -345,9 +345,9 @@ const StudioMenu = (props: any) => {
         res.then((result) => {
           if (result.code == CODE.SUCCESS) {
             props.changeTaskStep(current.task.id, JOB_LIFE_CYCLE.RELEASE);
-            message.success(`发布作业【${current.task.alias}】成功`);
+            message.success(`发布作业【${current.task.name}】成功`);
           } else {
-            message.error(`发布作业【${current.task.alias}】失败，原因：\n${result.msg}`);
+            message.error(`发布作业【${current.task.name}】失败，原因：\n${result.msg}`);
           }
         });
       }
@@ -357,7 +357,7 @@ const StudioMenu = (props: any) => {
   const toDevelopTask = () => {
     Modal.confirm({
       title: '维护作业',
-      content: `确定维护作业【${current.task.alias}】吗？`,
+      content: `确定维护作业【${current.task.name}】吗？`,
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -365,7 +365,7 @@ const StudioMenu = (props: any) => {
         res.then((result) => {
           result.datas && props.changeTaskStep(current.task.id, JOB_LIFE_CYCLE.DEVELOP);
           if (result.code == CODE.SUCCESS) {
-            message.success(`维护作业【${current.task.alias}】成功`);
+            message.success(`维护作业【${current.task.name}】成功`);
           }
         });
       }
@@ -375,7 +375,7 @@ const StudioMenu = (props: any) => {
   const toOnLineTask = () => {
     Modal.confirm({
       title: '上线作业',
-      content: `确定上线作业【${current.task.alias}】吗？`,
+      content: `确定上线作业【${current.task.name}】吗？`,
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -384,9 +384,9 @@ const StudioMenu = (props: any) => {
           if (result.code === CODE.SUCCESS) {
             props.changeTaskStep(current.task.id, JOB_LIFE_CYCLE.ONLINE);
             result.datas?.jobInstanceId && props.changeTaskJobInstance(current.task.id, result.datas?.jobInstanceId);
-            message.success(`上线作业【${current.task.alias}】成功`);
+            message.success(`上线作业【${current.task.name}】成功`);
           } else {
-            message.error(`上线作业【${current.task.alias}】失败，原因：\n${result.msg}`);
+            message.error(`上线作业【${current.task.name}】失败，原因：\n${result.msg}`);
           }
         });
       }
@@ -396,7 +396,7 @@ const StudioMenu = (props: any) => {
   const handleCancelTask = (type: string) => {
     Modal.confirm({
       title: '停止作业',
-      content: `确定停止作业【${current.task.alias}】吗？`,
+      content: `确定停止作业【${current.task.name}】吗？`,
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -407,9 +407,9 @@ const StudioMenu = (props: any) => {
               props.changeTaskStep(current.task.id, JOB_LIFE_CYCLE.RELEASE);
             }
             props.changeTaskJobInstance(current.task.id, 0);
-            message.success(`停止作业【${current.task.alias}】成功`);
+            message.success(`停止作业【${current.task.name}】成功`);
           } else {
-            message.error(`停止作业【${current.task.alias}】失败，原因：\n${result.msg}`);
+            message.error(`停止作业【${current.task.name}】失败，原因：\n${result.msg}`);
           }
         });
       }
@@ -419,7 +419,7 @@ const StudioMenu = (props: any) => {
   const toOffLineTask = (type: string) => {
     Modal.confirm({
       title: '下线作业',
-      content: `确定下线作业【${current.task.alias}】吗？`,
+      content: `确定下线作业【${current.task.name}】吗？`,
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -428,9 +428,9 @@ const StudioMenu = (props: any) => {
           if (result.code === CODE.SUCCESS) {
             props.changeTaskStep(current.task.id, JOB_LIFE_CYCLE.RELEASE);
             props.changeTaskJobInstance(current.task.id, 0);
-            message.success(`下线作业【${current.task.alias}】成功`);
+            message.success(`下线作业【${current.task.name}】成功`);
           } else {
-            message.error(`下线作业【${current.task.alias}】失败，原因：\n${result.msg}`);
+            message.error(`下线作业【${current.task.name}】失败，原因：\n${result.msg}`);
           }
         });
       }
@@ -440,7 +440,7 @@ const StudioMenu = (props: any) => {
   const toCancelTask = () => {
     Modal.confirm({
       title: '注销作业',
-      content: `确定注销作业【${current.task.alias}】吗？`,
+      content: `确定注销作业【${current.task.name}】吗？`,
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -448,9 +448,9 @@ const StudioMenu = (props: any) => {
         res.then((result) => {
           if (result.code === CODE.SUCCESS) {
             props.changeTaskStep(current.task.id, JOB_LIFE_CYCLE.CANCEL);
-            message.success(`注销作业【${current.task.alias}】成功`);
+            message.success(`注销作业【${current.task.name}】成功`);
           } else {
-            message.error(`注销作业【${current.task.alias}】失败，原因：\n${result.msg}`);
+            message.error(`注销作业【${current.task.name}】失败，原因：\n${result.msg}`);
           }
         });
       }
@@ -460,7 +460,7 @@ const StudioMenu = (props: any) => {
   const toRecoveryTask = () => {
     Modal.confirm({
       title: '恢复作业',
-      content: `确定恢复作业【${current.task.alias}】吗？`,
+      content: `确定恢复作业【${current.task.name}】吗？`,
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -468,7 +468,7 @@ const StudioMenu = (props: any) => {
         res.then((result) => {
           result.datas && props.changeTaskStep(current.task.id, JOB_LIFE_CYCLE.DEVELOP);
           if (result.code == CODE.SUCCESS) {
-            message.success(`恢复作业【${current.task.alias}】成功`);
+            message.success(`恢复作业【${current.task.name}】成功`);
           }
         });
       }
@@ -508,7 +508,7 @@ const StudioMenu = (props: any) => {
 
   const showAPI = () => {
     Modal.info({
-      title: current.task.alias + ' API 手册',
+      title: current.task.name + ' API 手册',
       width: 1000,
       content: (
         <TaskAPI task={current.task}/>
@@ -766,7 +766,7 @@ const StudioMenu = (props: any) => {
       </Modal>
       {current?.task ?
         <ModalForm
-          title={`${current.task.alias} 的 ${current.task.dialect} 导出`}
+          title={`${current.task.name} 的 ${current.task.dialect} 导出`}
           visible={exportModalVisible}
           width={1000}
           modalProps={{
