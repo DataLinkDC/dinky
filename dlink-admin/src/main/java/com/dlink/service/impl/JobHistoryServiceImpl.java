@@ -45,6 +45,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 @Service
 public class JobHistoryServiceImpl extends SuperServiceImpl<JobHistoryMapper, JobHistory> implements JobHistoryService {
 
+    private static final Logger log = LoggerFactory.getLogger(JobHistoryServiceImpl.class);
+
     @Override
     public JobHistory getByIdWithoutTenant(Integer id) {
         return baseMapper.getByIdWithoutTenant(id);
@@ -52,10 +54,8 @@ public class JobHistoryServiceImpl extends SuperServiceImpl<JobHistoryMapper, Jo
 
     @Override
     public JobHistory getJobHistory(Integer id) {
-        return getJobHistoryInfo(getById(id));
+        return getJobHistoryInfo(baseMapper.getByIdWithoutTenant(id));
     }
-
-    private static final Logger log = LoggerFactory.getLogger(JobHistoryServiceImpl.class);
 
     @Override
     public JobHistory getJobHistoryInfo(JobHistory jobHistory) {

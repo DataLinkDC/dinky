@@ -300,6 +300,7 @@ public class JobManager {
     }
 
     public JobResult executeSql(String statement) {
+        ProcessEntity process = ProcessContextHolder.getProcess();
         Job job = Job.init(runMode, config, executorSetting, executor, statement, useGateway);
         if (!useGateway) {
             job.setJobManagerAddress(environmentSetting.getAddress());
@@ -352,11 +353,10 @@ public class JobManager {
                         }
                         if (config.isUseResult()) {
                             // Build insert result.
-                            IResult result =
-                                    ResultBuilder
-                                            .build(SqlType.INSERT, config.getMaxRowNum(), config.isUseChangeLog(),
-                                                    config.isUseAutoCancel(), executor.getTimeZone())
-                                            .getResult(tableResult);
+                            IResult result = ResultBuilder
+                                    .build(SqlType.INSERT, config.getMaxRowNum(), config.isUseChangeLog(),
+                                            config.isUseAutoCancel(), executor.getTimeZone())
+                                    .getResult(tableResult);
                             job.setResult(result);
                         }
                     }
@@ -376,8 +376,8 @@ public class JobManager {
                 } else {
                     for (StatementParam item : jobParam.getTrans()) {
                         currentSql = item.getValue();
-                        FlinkInterceptorResult flinkInterceptorResult =
-                                FlinkInterceptor.build(executor, item.getValue());
+                        FlinkInterceptorResult flinkInterceptorResult = FlinkInterceptor.build(executor,
+                                item.getValue());
                         if (Asserts.isNotNull(flinkInterceptorResult.getTableResult())) {
                             if (config.isUseResult()) {
                                 IResult result = ResultBuilder
@@ -399,10 +399,9 @@ public class JobManager {
                                     });
                                 }
                                 if (config.isUseResult()) {
-                                    IResult result =
-                                            ResultBuilder.build(item.getType(), config.getMaxRowNum(),
-                                                    config.isUseChangeLog(), config.isUseAutoCancel(),
-                                                    executor.getTimeZone()).getResult(tableResult);
+                                    IResult result = ResultBuilder.build(item.getType(), config.getMaxRowNum(),
+                                            config.isUseChangeLog(), config.isUseAutoCancel(),
+                                            executor.getTimeZone()).getResult(tableResult);
                                     job.setResult(result);
                                 }
                             }
@@ -456,9 +455,10 @@ public class JobManager {
                         });
                     }
                     if (config.isUseResult()) {
-                        IResult result =
-                                ResultBuilder.build(SqlType.EXECUTE, config.getMaxRowNum(), config.isUseChangeLog(),
-                                        config.isUseAutoCancel(), executor.getTimeZone()).getResult(null);
+                        IResult result = ResultBuilder
+                                .build(SqlType.EXECUTE, config.getMaxRowNum(), config.isUseChangeLog(),
+                                        config.isUseAutoCancel(), executor.getTimeZone())
+                                .getResult(null);
                         job.setResult(result);
                     }
                 }
@@ -471,10 +471,11 @@ public class JobManager {
             job.setEndTime(LocalDateTime.now());
             job.setStatus(Job.JobStatus.FAILED);
             job.setError(error);
+            process.error(error);
             failed();
+        } finally {
             close();
         }
-        close();
         return job.getJobResult();
     }
 
@@ -548,8 +549,8 @@ public class JobManager {
         } else {
             sessionExecutor = Executor.buildLocalExecutor(sessionConfig.getExecutorSetting());
         }
-        ExecutorEntity executorEntity =
-                new ExecutorEntity(session, sessionConfig, createUser, LocalDateTime.now(), sessionExecutor);
+        ExecutorEntity executorEntity = new ExecutorEntity(session, sessionConfig, createUser, LocalDateTime.now(),
+                sessionExecutor);
         SessionPool.push(executorEntity);
         return SessionInfo.build(executorEntity);
     }
@@ -597,6 +598,7 @@ public class JobManager {
     }
 
     public JobResult executeJar() {
+        ProcessEntity process = ProcessContextHolder.getProcess();
         Job job = Job.init(runMode, config, executorSetting, executor, null, useGateway);
         JobContextHolder.setJob(job);
         ready();
@@ -616,9 +618,10 @@ public class JobManager {
             job.setStatus(Job.JobStatus.FAILED);
             job.setError(error);
             failed();
+            process.error(error);
+        } finally {
             close();
         }
-        close();
         return job.getJobResult();
     }
 

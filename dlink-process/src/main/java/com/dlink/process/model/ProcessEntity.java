@@ -63,8 +63,8 @@ public class ProcessEntity {
     }
 
     public ProcessEntity(String name, Integer taskId, ProcessType type, ProcessStatus status, LocalDateTime startTime,
-                         LocalDateTime endTime, long time,
-                         List<ProcessStep> steps, Integer userId) {
+            LocalDateTime endTime, long time,
+            List<ProcessStep> steps, Integer userId) {
         this.name = name;
         this.taskId = taskId;
         this.type = type;
@@ -112,6 +112,19 @@ public class ProcessEntity {
         setStatus(ProcessStatus.FINISHED);
         setEndTime(LocalDateTime.now());
         setTime(getEndTime().compareTo(getStartTime()));
+    }
+
+    public void finish(String str) {
+        if (isNullProcess()) {
+            return;
+        }
+        steps.get(stepIndex - 1).setEndTime(LocalDateTime.now());
+        String message = CharSequenceUtil.format("\n[{}] {} INFO: {}", type.getValue(), LocalDateTime.now(), str);
+        steps.get(stepIndex - 1).appendInfo(message);
+        setStatus(ProcessStatus.FINISHED);
+        setEndTime(LocalDateTime.now());
+        setTime(getEndTime().compareTo(getStartTime()));
+        ConsolePool.write(message, userId);
     }
 
     public void config(String str) {
