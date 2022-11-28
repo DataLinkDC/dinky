@@ -131,4 +131,9 @@ public class OracleCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         }
         return allConfigList;
     }
+
+    @Override
+    public String getSchema() {
+        return config.getSchema();
+    }
 }
