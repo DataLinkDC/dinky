@@ -43,7 +43,10 @@ import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.catalog.CatalogManager;
 import org.apache.flink.util.JarUtils;
+import org.apache.hadoop.security.UserGroupInformation;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -58,12 +61,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Executor
  *
  * @author wenmo
  * @since 2021/11/17
  **/
+@Slf4j
 public abstract class Executor {
 
     private static final Logger logger = LoggerFactory.getLogger(Executor.class);
@@ -239,9 +245,65 @@ public abstract class Executor {
             return flinkInterceptorResult.getTableResult();
         }
         if (!flinkInterceptorResult.isNoExecute()) {
+            this.loginFromKeytabIfNeed();
             return stEnvironment.executeSql(statement);
         } else {
             return CustomTableResultImpl.TABLE_RESULT_OK;
+        }
+    }
+
+    private void reset() {
+        try {
+            if (UserGroupInformation.isLoginKeytabBased()) {
+                Method reset = UserGroupInformation.class.getDeclaredMethod("reset");
+                reset.invoke(UserGroupInformation.class);
+                log.info("Reset kerberos authentication...");
+            }
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void loginFromKeytabIfNeed() {
+        this.reset();
+        setConfig.forEach((k, v) -> log.debug("setConfig key: [{}], value: [{}]", k, v));
+        String krb5ConfPath = (String) setConfig.getOrDefault("java.security.krb5.conf", "");
+        String keytabPath = (String) setConfig.getOrDefault("security.kerberos.login.keytab", "");
+        String principal = (String) setConfig.getOrDefault("security.kerberos.login.principal", "");
+
+        if (krb5ConfPath.isEmpty() && keytabPath.isEmpty() && principal.isEmpty()) {
+            log.info("Simple authentication mode");
+            return;
+        }
+        log.info("Kerberos authentication mode");
+        if (krb5ConfPath.isEmpty()) {
+            log.error("Parameter [java.security.krb5.conf] is null or empty.");
+            return;
+        }
+
+        if (keytabPath.isEmpty()) {
+            log.error("Parameter [security.kerberos.login.keytab] is null or empty.");
+            return;
+        }
+
+        if (principal.isEmpty()) {
+            log.error("Parameter [security.kerberos.login.principal] is null or empty.");
+            return;
+        }
+
+        System.setProperty("java.security.krb5.conf", krb5ConfPath);
+        org.apache.hadoop.conf.Configuration config = new org.apache.hadoop.conf.Configuration();
+        config.set("hadoop.security.authentication", "Kerberos");
+        config.setBoolean("hadoop.security.authorization", true);
+        UserGroupInformation.setConfiguration(config);
+        try {
+            UserGroupInformation.loginUserFromKeytab(principal, keytabPath);
+            log.error("Kerberos [{}] authentication success.", UserGroupInformation.getLoginUser().getUserName());
+        } catch (IOException e) {
+            log.error("Kerberos authentication failed.");
+            e.printStackTrace();
         }
     }
 
@@ -254,7 +316,7 @@ public abstract class Executor {
         JarUtils.getJarFiles(udfFilePath).forEach(Executor::loadJar);
     }
 
-    public void initPyUDF(String executable,String... udfPyFilePath) {
+    public void initPyUDF(String executable, String... udfPyFilePath) {
         if (udfPyFilePath == null || udfPyFilePath.length == 0) {
             return;
         }
