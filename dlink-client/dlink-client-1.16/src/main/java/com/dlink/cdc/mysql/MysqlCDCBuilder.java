@@ -31,8 +31,6 @@ import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,8 +81,8 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
 
         Properties debeziumProperties = new Properties();
         // 为部分转换添加默认值
-        debeziumProperties.setProperty("bigint.unsigned.handling.mode","long");
-        debeziumProperties.setProperty("decimal.handling.mode","string");
+        debeziumProperties.setProperty("bigint.unsigned.handling.mode", "long");
+        debeziumProperties.setProperty("decimal.handling.mode", "string");
 
         for (Map.Entry<String, String> entry : config.getDebezium().entrySet()) {
             if (Asserts.isNotNullString(entry.getKey()) && Asserts.isNotNullString(entry.getValue())) {
@@ -101,10 +99,10 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
         }
 
         MySqlSourceBuilder<String> sourceBuilder = MySqlSource.<String>builder()
-            .hostname(config.getHostname())
-            .port(config.getPort())
-            .username(config.getUsername())
-            .password(config.getPassword());
+                .hostname(config.getHostname())
+                .port(config.getPort())
+                .username(config.getUsername())
+                .password(config.getPassword());
 
         if (Asserts.isNotNullString(database)) {
             String[] databases = database.split(FlinkParamConstant.SPLIT);
@@ -169,26 +167,6 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
         return env.fromSource(sourceBuilder.build(), WatermarkStrategy.noWatermarks(), "MySQL CDC Source");
     }
 
-    public List<String> getSchemaList() {
-        List<String> schemaList = new ArrayList<>();
-        String schema = config.getDatabase();
-        if (Asserts.isNotNullString(schema)) {
-            String[] schemas = schema.split(FlinkParamConstant.SPLIT);
-            Collections.addAll(schemaList, schemas);
-        }
-        List<String> tableList = getTableList();
-        for (String tableName : tableList) {
-            tableName = tableName.trim();
-            if (Asserts.isNotNullString(tableName) && tableName.contains(".")) {
-                String[] names = tableName.split("\\\\.");
-                if (!schemaList.contains(names[0])) {
-                    schemaList.add(names[0]);
-                }
-            }
-        }
-        return schemaList;
-    }
-
     public Map<String, Map<String, String>> parseMetaDataConfigs() {
         Map<String, Map<String, String>> allConfigMap = new HashMap<>();
         List<String> schemaList = getSchemaList();
@@ -213,5 +191,10 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
     @Override
     public String getSchemaFieldName() {
         return "db";
+    }
+
+    @Override
+    public String getSchema() {
+        return config.getDatabase();
     }
 }

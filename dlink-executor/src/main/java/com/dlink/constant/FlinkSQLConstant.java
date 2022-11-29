@@ -26,6 +26,7 @@ package com.dlink.constant;
  * @since 2021/5/25 15:51
  **/
 public interface FlinkSQLConstant {
+
     /**
      * 分隔符
      */
@@ -46,4 +47,16 @@ public interface FlinkSQLConstant {
      * 片段 Fragments 标识
      */
     String FRAGMENTS = ":=";
+
+    /**
+     * 内置日期变量前缀
+     */
+    String INNER_DATETIME_KEY = "_CURRENT_DATE_";
+
+    /**
+     * 内置日期变量格式
+     * 确定后不能修改
+     */
+    String INNER_DATETIME_FORMAT = "yyyyMMdd";
+
 }

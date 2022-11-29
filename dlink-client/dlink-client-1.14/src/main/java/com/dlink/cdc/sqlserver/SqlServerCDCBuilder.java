@@ -1,3 +1,22 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 package com.dlink.cdc.sqlserver;
 
 import com.dlink.assertion.Asserts;
@@ -10,8 +29,6 @@ import com.dlink.model.FlinkCDCConfig;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +46,7 @@ import com.ververica.cdc.connectors.sqlserver.table.StartupOptions;
  * @author 郑文豪
  */
 public class SqlServerCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
+
     protected static final Logger logger = LoggerFactory.getLogger(SqlServerCDCBuilder.class);
 
     private static final String KEY_WORD = "sqlserver-cdc";
@@ -87,7 +105,7 @@ public class SqlServerCDCBuilder extends AbstractCDCBuilder implements CDCBuilde
         } else {
             sourceBuilder.tableList(new String[0]);
         }
-        //sourceBuilder.deserializer(new JsonDebeziumDeserializationSchema());
+        // sourceBuilder.deserializer(new JsonDebeziumDeserializationSchema());
         sourceBuilder.deserializer(new SqlServerJsonDebeziumDeserializationSchema());
         if (Asserts.isNotNullString(config.getStartupMode())) {
             switch (config.getStartupMode().toLowerCase()) {
@@ -103,29 +121,9 @@ public class SqlServerCDCBuilder extends AbstractCDCBuilder implements CDCBuilde
             sourceBuilder.startupOptions(StartupOptions.latest());
         }
         sourceBuilder.debeziumProperties(debeziumProperties);
-        final DataStreamSource<String> sqlServer_cdc_source = env.addSource(sourceBuilder.build(), "SqlServer CDC Source");
+        final DataStreamSource<String> sqlServer_cdc_source = env.addSource(sourceBuilder.build(),
+                "SqlServer CDC Source");
         return sqlServer_cdc_source;
-    }
-
-    @Override
-    public List<String> getSchemaList() {
-        List<String> schemaList = new ArrayList<>();
-        String schema = config.getDatabase();
-        if (Asserts.isNotNullString(schema)) {
-            String[] schemas = schema.split(FlinkParamConstant.SPLIT);
-            Collections.addAll(schemaList, schemas);
-        }
-        List<String> tableList = getTableList();
-        for (String tableName : tableList) {
-            tableName = tableName.trim();
-            if (Asserts.isNotNullString(tableName) && tableName.contains(".")) {
-                String[] names = tableName.split("\\\\.");
-                if (!schemaList.contains(names[0])) {
-                    schemaList.add(names[0]);
-                }
-            }
-        }
-        return schemaList;
     }
 
     @Override
@@ -153,5 +151,10 @@ public class SqlServerCDCBuilder extends AbstractCDCBuilder implements CDCBuilde
     @Override
     public String getSchemaFieldName() {
         return "schema";
+    }
+
+    @Override
+    public String getSchema() {
+        return config.getDatabase();
     }
 }
