@@ -19,32 +19,38 @@
 
 package com.dlink.controller;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.Dict;
+import cn.hutool.core.util.ClassUtil;
+import cn.hutool.core.util.StrUtil;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
+import com.dlink.dto.UDFDTO;
+import com.dlink.dto.UDFTreeDTO;
+import com.dlink.exception.BusException;
+import com.dlink.model.UDF;
 import com.dlink.model.UDFTemplate;
+import com.dlink.service.UDFService;
 import com.dlink.service.UDFTemplateService;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Resource;
-
+import com.dlink.utils.UDFUtil;
+import com.fasterxml.jackson.databind.JsonNode;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.lang.Dict;
-import cn.hutool.core.util.StrUtil;
-import lombok.extern.slf4j.Slf4j;
+import javax.annotation.Resource;
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author ZackYoung
@@ -54,9 +60,15 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/udf")
 public class UDFController {
-
     @Resource
     UDFTemplateService udfTemplateService;
+    @Resource
+    UDFService udfService;
+
+    @PostMapping("/template/list")
+    public ProTableResult<UDFTemplate> listUdfTemplates(@RequestBody JsonNode para) {
+        return udfTemplateService.selectForProTable(para);
+    }
 
     @PostMapping("/template/tree")
     public Result<List<Object>> listUdfTemplates() {
@@ -89,14 +101,70 @@ public class UDFController {
         return Result.succeed(CollUtil.newArrayList(result.values()));
     }
 
-    @PostMapping("/template/list")
-    public ProTableResult<UDFTemplate> listUdfTemplates(@RequestBody JsonNode para) {
-        return udfTemplateService.selectForProTable(para);
-    }
-
     @PutMapping("/template/")
     public Result<String> addTemplate(@RequestBody UDFTemplate udfTemplate) {
-        return udfTemplateService.saveOrUpdate(udfTemplate) ? Result.succeed("操作成功") : Result.failed("操作失败");
+        return udfTemplateService.save(udfTemplate) ? Result.succeed("操作成功") : Result.failed("操作失败");
+    }
+
+    @GetMapping()
+    public Result<UDF> getUdfById(Integer id) {
+        return Result.succeed(udfService.getById(id));
+    }
+
+    @PostMapping("/tree")
+    public Result<List<UDFTreeDTO>> udfDirTree() {
+        List<UDF> list = udfService.getAllUDFList();
+        Map<String, ArrayList<UDFTreeDTO>> collect = list.stream().map(x -> {
+            UDFTreeDTO udfTreeDTO = new UDFTreeDTO();
+            udfTreeDTO.setId(x.getId());
+            udfTreeDTO.setTaskId(x.getId());
+            udfTreeDTO.setKey(x.getId());
+            udfTreeDTO.setIsLeaf(true);
+            udfTreeDTO.setName(x.getName());
+            udfTreeDTO.setTitle(x.getName());
+            udfTreeDTO.setType(x.getDialect());
+            udfTreeDTO.setTypeName(x.getType());
+            udfTreeDTO.setPath(CollUtil.newArrayList(x.getType(),x.getName()));
+            return udfTreeDTO;
+        }).collect(Collectors.toMap(UDFTreeDTO::getTypeName, CollUtil::newArrayList, (s, a) -> {
+            s.addAll(a);
+            return s;
+        }));
+
+        return Result.succeed(collect.keySet().stream().map(x -> {
+            // 第一层，只包含分类信息
+            UDFTreeDTO udfTreeDTO = new UDFTreeDTO();
+            udfTreeDTO.setId(null);
+            udfTreeDTO.setIsLeaf(false);
+            udfTreeDTO.setName(x);
+            udfTreeDTO.setTitle(x);
+            udfTreeDTO.setType(null);
+            udfTreeDTO.setTypeName(x);
+            udfTreeDTO.setChildren(collect.get(x));
+            udfTreeDTO.setPath(CollUtil.newArrayList(x));
+            return udfTreeDTO;
+        }).collect(Collectors.toList()));
+    }
+
+    @PutMapping("/")
+    public Result<UDF> addUDF(@RequestBody @Valid UDFDTO udfDTO) {
+        UDFTemplate udfTemplate = udfTemplateService.getById(udfDTO.getTemplateId());
+        if (udfTemplate == null) {
+            throw new BusException("模板不存在");
+        }
+        String codeType = udfTemplate.getCodeType();
+        UDF udf = new UDF();
+        udf.setClassName(udfDTO.getClassName());
+        udf.setName(udfDTO.getName());
+        udf.setDialect(codeType);
+        udf.setSourceCode(UDFUtil.templateParse(codeType, udfTemplate.getTemplateCode(), udfDTO.getClassName()));
+        udf.setVersionId(1);
+        udf.setIsDefault(true);
+        udf.setType(udfDTO.getType());
+        udf.setEnabled(true);
+        udf.setDraftCode(udf.getSourceCode());
+        udfService.save(udf);
+        return Result.succeed(udf);
     }
 
     @DeleteMapping("/template/list")

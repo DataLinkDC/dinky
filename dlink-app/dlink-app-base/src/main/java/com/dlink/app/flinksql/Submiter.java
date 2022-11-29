@@ -30,10 +30,18 @@ import com.dlink.parser.SqlType;
 import com.dlink.trans.Operations;
 import com.dlink.utils.SqlUtil;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.flink.configuration.CheckpointingOptions;
+import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.python.PythonOptions;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -43,6 +51,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.flink.util.FlinkUserCodeClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -119,10 +128,11 @@ public class Submiter {
         return "";
     }
 
-    public static void submit(Integer id, DBConfig dbConfig) {
+    public static void submit(Integer id, DBConfig dbConfig, String dinkyAddr) {
         logger.info(LocalDateTime.now() + "开始提交作业 -- " + id);
         StringBuilder sb = new StringBuilder();
         Map<String, String> taskConfig = Submiter.getTaskConfig(id, dbConfig);
+
         if (Asserts.isNotNull(taskConfig.get("envId"))) {
             String envId = getFlinkSQLStatement(Integer.valueOf(taskConfig.get("envId")), dbConfig);
             if (Asserts.isNotNullString(envId)) {
@@ -136,6 +146,10 @@ public class Submiter {
         sb.append(getFlinkSQLStatement(id, dbConfig));
         List<String> statements = Submiter.getStatements(sb.toString());
         ExecutorSetting executorSetting = ExecutorSetting.build(taskConfig);
+
+        // 加载第三方jar
+        loadDep(taskConfig.get("type"), id, dinkyAddr, executorSetting);
+
         String uuid = UUID.randomUUID().toString().replace("-", "");
         if (executorSetting.getConfig().containsKey(CheckpointingOptions.CHECKPOINTS_DIRECTORY.key())) {
             executorSetting.getConfig().put(CheckpointingOptions.CHECKPOINTS_DIRECTORY.key(),
@@ -145,7 +159,6 @@ public class Submiter {
             executorSetting.getConfig().put(CheckpointingOptions.SAVEPOINT_DIRECTORY.key(),
                     executorSetting.getConfig().get(CheckpointingOptions.SAVEPOINT_DIRECTORY.key()) + "/" + uuid);
         }
-        executorSetting.getConfig().put(PythonOptions.PYTHON_FILES.key(), "./python_udf.zip");
         logger.info("作业配置如下： {}", executorSetting);
         Executor executor = Executor.buildAppStreamExecutor(executorSetting);
         List<StatementParam> ddl = new ArrayList<>();
@@ -214,5 +227,48 @@ public class Submiter {
             }
         }
         logger.info("{}任务提交成功", LocalDateTime.now());
+    }
+
+    private static void loadDep(String type, Integer taskId, String dinkyAddr, ExecutorSetting executorSetting) {
+        if ("kubernetes-application".equals(type)) {
+            try {
+                String httpJar = "http://" + dinkyAddr + "/download/downloadDepJar/" + taskId;
+                URLClassLoader urlClassLoader =
+                        FlinkUserCodeClassLoader.newInstance(new URL[]{new URL(httpJar)}, Thread.currentThread().getContextClassLoader());
+                String flinkHome = System.getenv("FLINK_HOME");
+                String usrlib = flinkHome + "/usrlib";
+                FileUtils.forceMkdir(new File(usrlib));
+                String udfJarPath = usrlib + "/udf.jar";
+                downloadFile(httpJar, udfJarPath);
+                executorSetting.getConfig().put(PipelineOptions.JARS.key(), "file://" + udfJarPath);
+                Thread.currentThread().setContextClassLoader(urlClassLoader);
+
+                // download python_udf.zip
+                String httpPythonZip = "http://" + dinkyAddr + "/downloadPythonUDF/" + taskId;
+                downloadFile(httpPythonZip, flinkHome + "/python_udf.zip");
+            } catch (IOException e) {
+                logger.error("");
+                throw new RuntimeException(e);
+            }
+        }
+        executorSetting.getConfig().put("python.files", "./python_udf.zip");
+    }
+
+    public static void downloadFile(String url, String path) throws IOException {
+        HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+        // 设置超时间为3秒
+        conn.setConnectTimeout(3 * 1000);
+        //获取输入流
+        InputStream inputStream = conn.getInputStream();
+        //获取输出流
+        FileOutputStream outputStream = new FileOutputStream(path);
+        //每次下载1024位
+        byte[] b = new byte[1024];
+        int len = -1;
+        while ((len = inputStream.read(b)) != -1) {
+            outputStream.write(b, 0, len);
+        }
+        inputStream.close();
+        outputStream.close();
     }
 }
