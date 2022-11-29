@@ -118,7 +118,7 @@ public class PostgreSqlDriver extends AbstractJdbcDriver {
             comments.append("COMMENT ON TABLE \"").append(table.getSchema()).append("\".\"")
                     .append(table.getName()).append("\" IS '").append(table.getComment()).append("';");
         }
-        sb.append(")\r\n;\r\n").append(comments);
+        sb.append(");\r\n\r\n").append(comments);
 
         return sb.toString();
     }

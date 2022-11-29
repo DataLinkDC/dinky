@@ -135,7 +135,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
         Driver driver = Driver.build(dataBase.getDriverConfig());
         List<Column> columns = driver.listColumns(schemaName, tableName);
         Table table = Table.build(tableName, schemaName, columns);
-        return table.getSqlSelect(dataBase.getName());
+        return table.getSqlSelect(driver.getType(),dataBase.getName());
     }
 
     @Override
@@ -165,7 +165,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
         Table table = driver.getTable(schemaName, tableName);
         SqlGeneration sqlGeneration = new SqlGeneration();
         sqlGeneration.setFlinkSqlCreate(table.getFlinkTableSql(dataBase.getName(), dataBase.getFlinkTemplate()));
-        sqlGeneration.setSqlSelect(table.getSqlSelect(dataBase.getName()));
+        sqlGeneration.setSqlSelect(table.getSqlSelect(driver.getType(),dataBase.getName()));
         sqlGeneration.setSqlCreate(driver.getCreateTableSql(table));
         driver.close();
         return sqlGeneration;

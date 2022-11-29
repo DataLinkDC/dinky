@@ -74,10 +74,10 @@ public class SqlServerDriver extends AbstractJdbcDriver {
                 .append(".")
                 .append(queryData.getTableName());
 
-        if (where != null && !where.equals("")) {
+        if (where != null && !"".equals(where)) {
             optionBuilder.append(" where ").append(where);
         }
-        if (order != null && !order.equals("")) {
+        if (order != null && !"".equals(order)) {
             optionBuilder.append(" order by ").append(order);
         }
 
@@ -87,17 +87,18 @@ public class SqlServerDriver extends AbstractJdbcDriver {
     @Override
     public String getCreateTableSql(Table table) {
         StringBuilder sb = new StringBuilder();
-        sb.append("CREATE TABLE [" + table.getName() + "] (");
+        sb.append("CREATE TABLE [" + table.getName() + "] (\r\n");
         List<Column> columns = table.getColumns();
         for (int i = 0; i < columns.size(); i++) {
+            sb.append("    ");
             if (i > 0) {
-                sb.append(",");
+                sb.append(",\r\n");
             }
             sb.append("[" + columns.get(i).getName() + "]" + getTypeConvert().convertToDB(columns.get(i)));
             if (columns.get(i).isNullable()) {
-                sb.append(" NOT NULL");
-            } else {
                 sb.append(" NULL");
+            } else {
+                sb.append(" NOT NULL");
             }
         }
         List<String> pks = new ArrayList<>();
@@ -116,12 +117,12 @@ public class SqlServerDriver extends AbstractJdbcDriver {
             }
             sb.append(" ) ");
         }
-        sb.append(") GO ");
+        sb.append(")\r\n GO ");
         for (Column column : columns) {
             String comment = column.getComment();
             if (comment != null && !comment.isEmpty()) {
                 sb.append(String.format(SqlServerConstant.COMMENT_SQL, comment, table.getSchema() == null || table.getSchema().isEmpty() ? "dbo" : table.getSchema(),
-                        table.getName(), column.getName()) + " GO ");
+                        table.getName(), column.getName()) + " \r\nGO ");
             }
         }
         return sb.toString();
