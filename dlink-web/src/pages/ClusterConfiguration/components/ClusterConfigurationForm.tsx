@@ -21,7 +21,7 @@ import React, {useState} from 'react';
 import {Button, Divider, Form, Input, message, Modal, Select, Space, Switch, Upload} from 'antd';
 import {MinusCircleOutlined, PlusOutlined, UploadOutlined} from '@ant-design/icons';
 import {getConfig, getConfigFormValues} from "@/pages/ClusterConfiguration/function";
-import type {Config} from "@/pages/ClusterConfiguration/conf";
+import {Config, DOCKER_CONFIG_LIST} from "@/pages/ClusterConfiguration/conf";
 import {FLINK_CONFIG_LIST, HADOOP_CONFIG_LIST, KUBERNETES_CONFIG_LIST} from "@/pages/ClusterConfiguration/conf";
 import {testClusterConfigurationConnect} from "@/pages/ClusterConfiguration/service";
 import type {ClusterConfigurationTableListItem} from "@/pages/ClusterConfiguration/data";
@@ -76,14 +76,14 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
     const itemList: JSX.Element[] = [];
     config.forEach(configItem => {
       if (configItem.showOnSubmitType != undefined && configItem.showOnSubmitType != formValsPara.type) {
-      //    pass
+        //    pass
       } else {
         if (configItem.showType == 'input' || configItem.showType == undefined) {
           itemList.push(<Form.Item name={configItem.name} label={configItem.lable}>
             <Input placeholder={configItem.placeholder} defaultValue={configItem.defaultValue}/></Form.Item>)
         } else {
           itemList.push(<Form.Item name={configItem.name} label={configItem.lable}>
-              <TextArea rows={5} placeholder={configItem.placeholder} defaultValue={configItem.defaultValue}/></Form.Item>)
+            <TextArea rows={5} placeholder={configItem.placeholder} defaultValue={configItem.defaultValue}/></Form.Item>)
         }
       }
 
@@ -199,6 +199,9 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
   const renderFlinkKubernetesNativePage = (formValsPara: Partial<ClusterConfigurationTableListItem>) => {
     return (
       <>
+        <Divider>docker 配置</Divider>
+        {buildConfig(DOCKER_CONFIG_LIST, formValsPara)}
+
         <Divider>{l('pages.registerCenter.clusterConfig.k8sConfig')}</Divider>
         {buildConfig(KUBERNETES_CONFIG_LIST, formValsPara)}
 
@@ -331,7 +334,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
           name="enabled"
           label={l('global.table.isEnable')}>
           <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
-                  defaultChecked={formValsPara.enabled}/>
+                   defaultChecked={formValsPara.enabled}/>
         </Form.Item>
       </>
     );
