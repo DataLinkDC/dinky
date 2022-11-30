@@ -116,12 +116,12 @@ public class SqlServerDriver extends AbstractJdbcDriver {
     @Override
     public String getCreateTableSql(Table table) {
         StringBuilder sb = new StringBuilder();
-        sb.append("CREATE TABLE [" + table.getName() + "] (\r\n");
+        sb.append("CREATE TABLE [" + table.getName() + "] (\n");
         List<Column> columns = table.getColumns();
         for (int i = 0; i < columns.size(); i++) {
             sb.append("    ");
             if (i > 0) {
-                sb.append(",\r\n");
+                sb.append(",\n");
             }
             sb.append("[" + columns.get(i).getName() + "]" + getTypeConvert().convertToDB(columns.get(i)));
             if (columns.get(i).isNullable()) {
