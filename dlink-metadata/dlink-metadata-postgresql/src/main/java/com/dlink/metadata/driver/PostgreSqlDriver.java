@@ -79,7 +79,7 @@ public class PostgreSqlDriver extends AbstractJdbcDriver {
         return sb.toString();
     }
 
-    @Transient
+    @Override
     public String getSqlSelect(Table table) {
         List<Column> columns = table.getColumns();
         StringBuilder sb = new StringBuilder("SELECT\n");

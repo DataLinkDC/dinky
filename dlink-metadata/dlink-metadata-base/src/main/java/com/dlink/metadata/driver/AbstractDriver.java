@@ -86,7 +86,7 @@ public abstract class AbstractDriver implements Driver {
         return listTables(table.getSchema()).stream().anyMatch(tableItem -> Asserts.isEquals(tableItem.getName(), table.getName()));
     }
 
-    @Transient
+    @Override
     public String getSqlSelect(Table table) {
         List<Column> columns = table.getColumns();
         StringBuilder sb = new StringBuilder("SELECT\n");

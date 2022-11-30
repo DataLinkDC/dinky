@@ -98,7 +98,7 @@ public class OracleDriver extends AbstractJdbcDriver {
         return optionBuilder;
     }
 
-    @Transient
+    @Override
     public String getSqlSelect(Table table) {
         List<Column> columns = table.getColumns();
         StringBuilder sb = new StringBuilder("SELECT\n");
