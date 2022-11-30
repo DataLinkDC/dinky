@@ -2,7 +2,7 @@
 FROM flink:1.14.5
 USER flink
 COPY jar/dlink-app-@dlink.flink.version@-@project.version@-jar-with-dependencies.jar plugins/* $FLINK_HOME/lib/
-COPY flink-conf  /opt/flink/conf/
+#COPY flink-conf  /opt/flink/conf/
 WORKDIR /opt/flink/
 # 复制 udf jar
 #COPY ./udf.jar $FLINK_HOME/usrlib

@@ -33,7 +33,7 @@ import com.dlink.utils.SqlUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.flink.configuration.CheckpointingOptions;
 import org.apache.flink.configuration.PipelineOptions;
-import org.apache.flink.python.PythonOptions;
+import org.apache.flink.util.FlinkUserCodeClassLoader;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -51,7 +51,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.flink.util.FlinkUserCodeClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,8 +76,8 @@ public class Submiter {
             throw new SQLException("请指定任务ID");
         }
         return "select id, name, alias as jobName, type,check_point as checkpoint,"
-                + "save_point_path as savePointPath, parallelism,fragment as useSqlFragment,statement_set as useStatementSet,config_json as config,"
-                + " env_id as envId,batch_model AS useBatchModel from dlink_task where id = " + id;
+            + "save_point_path as savePointPath, parallelism,fragment as useSqlFragment,statement_set as useStatementSet,config_json as config,"
+            + " env_id as envId,batch_model AS useBatchModel from dlink_task where id = " + id;
     }
 
     private static String getFlinkSQLStatement(Integer id, DBConfig config) {
@@ -87,7 +86,7 @@ public class Submiter {
             statement = DBUtil.getOneByID(getQuerySQL(id), config);
         } catch (IOException | SQLException e) {
             logger.error("{} --> 获取 FlinkSQL 配置异常，ID 为 {}, 连接信息为：{} ,异常信息为：{} ", LocalDateTime.now(), id,
-                    config.toString(), e.getMessage(), e);
+                config.toString(), e.getMessage(), e);
         }
         return statement;
     }
@@ -98,7 +97,7 @@ public class Submiter {
             task = DBUtil.getMapByID(getTaskInfo(id), config);
         } catch (IOException | SQLException e) {
             logger.error("{} --> 获取 FlinkSQL 配置异常，ID 为 {}, 连接信息为：{} ,异常信息为：{} ", LocalDateTime.now(), id,
-                    config.toString(), e.getMessage(), e);
+                config.toString(), e.getMessage(), e);
         }
         return task;
     }
@@ -113,7 +112,7 @@ public class Submiter {
         try {
             // 首先判断是否开启了全局变量
             String fragment = DBUtil.getOneByID(sqlCheck, dbConfig);
-            if (fragment.equals("1")) {
+            if ("1".equals(fragment)) {
                 return DBUtil.getDbSourceSQLStatement(sql, dbConfig);
             } else {
                 // 全局变量未开启，返回空字符串
@@ -122,7 +121,7 @@ public class Submiter {
             }
         } catch (IOException | SQLException e) {
             logger.error("{} --> 获取 数据源信息异常，请检查数据库连接，连接信息为：{} ,异常信息为：{}", LocalDateTime.now(),
-                    dbConfig.toString(), e.getMessage(), e);
+                dbConfig.toString(), e.getMessage(), e);
         }
 
         return "";
@@ -153,11 +152,11 @@ public class Submiter {
         String uuid = UUID.randomUUID().toString().replace("-", "");
         if (executorSetting.getConfig().containsKey(CheckpointingOptions.CHECKPOINTS_DIRECTORY.key())) {
             executorSetting.getConfig().put(CheckpointingOptions.CHECKPOINTS_DIRECTORY.key(),
-                    executorSetting.getConfig().get(CheckpointingOptions.CHECKPOINTS_DIRECTORY.key()) + "/" + uuid);
+                executorSetting.getConfig().get(CheckpointingOptions.CHECKPOINTS_DIRECTORY.key()) + "/" + uuid);
         }
         if (executorSetting.getConfig().containsKey(CheckpointingOptions.SAVEPOINT_DIRECTORY.key())) {
             executorSetting.getConfig().put(CheckpointingOptions.SAVEPOINT_DIRECTORY.key(),
-                    executorSetting.getConfig().get(CheckpointingOptions.SAVEPOINT_DIRECTORY.key()) + "/" + uuid);
+                executorSetting.getConfig().get(CheckpointingOptions.SAVEPOINT_DIRECTORY.key()) + "/" + uuid);
         }
         logger.info("作业配置如下： {}", executorSetting);
         Executor executor = Executor.buildAppStreamExecutor(executorSetting);
@@ -233,8 +232,9 @@ public class Submiter {
         if ("kubernetes-application".equals(type)) {
             try {
                 String httpJar = "http://" + dinkyAddr + "/download/downloadDepJar/" + taskId;
+                logger.info("下载依赖 http-url为：{}", httpJar);
                 URLClassLoader urlClassLoader =
-                        FlinkUserCodeClassLoader.newInstance(new URL[]{new URL(httpJar)}, Thread.currentThread().getContextClassLoader());
+                    FlinkUserCodeClassLoader.newInstance(new URL[] {new URL(httpJar)}, Thread.currentThread().getContextClassLoader());
                 String flinkHome = System.getenv("FLINK_HOME");
                 String usrlib = flinkHome + "/usrlib";
                 FileUtils.forceMkdir(new File(usrlib));
@@ -244,7 +244,7 @@ public class Submiter {
                 Thread.currentThread().setContextClassLoader(urlClassLoader);
 
                 // download python_udf.zip
-                String httpPythonZip = "http://" + dinkyAddr + "/downloadPythonUDF/" + taskId;
+                String httpPythonZip = "http://" + dinkyAddr + "/download/downloadPythonUDF/" + taskId;
                 downloadFile(httpPythonZip, flinkHome + "/python_udf.zip");
             } catch (IOException e) {
                 logger.error("");
