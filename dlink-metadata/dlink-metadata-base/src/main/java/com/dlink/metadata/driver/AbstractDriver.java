@@ -113,7 +113,6 @@ public abstract class AbstractDriver implements Driver {
         return sb.toString();
     }
 
-
     @Override
     public List<Map<String, String>> getSplitSchemaList() {
         throw new RuntimeException("该数据源暂不支持分库分表");
