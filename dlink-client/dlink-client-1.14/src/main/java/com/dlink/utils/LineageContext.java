@@ -41,6 +41,7 @@ import org.apache.flink.table.planner.delegation.PlannerBase;
 import org.apache.flink.table.planner.operations.PlannerQueryOperation;
 import org.apache.flink.table.planner.plan.optimize.program.FlinkChainedProgram;
 import org.apache.flink.table.planner.plan.optimize.program.StreamOptimizeContext;
+import org.apache.flink.table.planner.plan.schema.TableSourceTable;
 import org.apache.flink.table.planner.plan.trait.MiniBatchInterval;
 
 import java.util.ArrayList;
@@ -200,7 +201,8 @@ public class LineageContext {
 
                     // filed
                     int ordinal = relColumnOrigin.getOriginColumnOrdinal();
-                    List<String> fieldNames = table.getRowType().getFieldNames();
+                    List<String> fieldNames = ((TableSourceTable) table).catalogTable().getResolvedSchema()
+                            .getColumnNames();
                     String sourceColumn = fieldNames.get(ordinal);
 
                     // add record
