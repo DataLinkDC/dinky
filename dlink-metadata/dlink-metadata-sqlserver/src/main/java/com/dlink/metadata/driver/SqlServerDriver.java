@@ -146,12 +146,12 @@ public class SqlServerDriver extends AbstractJdbcDriver {
             }
             sb.append(" ) ");
         }
-        sb.append(")\r\n GO ");
+        sb.append(")\n GO ");
         for (Column column : columns) {
             String comment = column.getComment();
             if (comment != null && !comment.isEmpty()) {
                 sb.append(String.format(SqlServerConstant.COMMENT_SQL, comment, table.getSchema() == null || table.getSchema().isEmpty() ? "dbo" : table.getSchema(),
-                        table.getName(), column.getName()) + " \r\nGO ");
+                        table.getName(), column.getName()) + " \nGO ");
             }
         }
         return sb.toString();
