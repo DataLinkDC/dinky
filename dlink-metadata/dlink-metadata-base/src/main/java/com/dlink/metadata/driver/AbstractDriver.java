@@ -26,7 +26,6 @@ import com.dlink.model.Column;
 import com.dlink.model.Schema;
 import com.dlink.model.Table;
 
-import java.beans.Transient;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;

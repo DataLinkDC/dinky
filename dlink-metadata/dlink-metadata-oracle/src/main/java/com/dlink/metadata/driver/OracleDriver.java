@@ -28,7 +28,6 @@ import com.dlink.model.Column;
 import com.dlink.model.QueryData;
 import com.dlink.model.Table;
 
-import java.beans.Transient;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
