@@ -20,7 +20,6 @@
 package com.dlink.model;
 
 import com.dlink.assertion.Asserts;
-import com.dlink.constant.DbTypeConstant;
 import com.dlink.utils.SqlUtil;
 
 import java.beans.Transient;
@@ -222,7 +221,7 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
     }
 
     @Transient
-    public String getSqlSelect(String dbType, String catalogName) {
+    public String getSqlSelect(String catalogName) {
         StringBuilder sb = new StringBuilder("SELECT\n");
         for (int i = 0; i < columns.size(); i++) {
             sb.append("    ");
@@ -234,16 +233,15 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
                 if (columnComment.contains("\'") | columnComment.contains("\"")) {
                     columnComment = columnComment.replaceAll("\"|'", "");
                 }
-                sb.append(doConvertKeywordsColumn(dbType, columns.get(i).getName()) + "  --  " + columnComment + " \n");
+                sb.append("`" + columns.get(i).getName() + "`  --  " + columnComment + " \n");
             } else {
-                sb.append(doConvertKeywordsColumn(dbType, columns.get(i).getName()) + " \n");
-
+                sb.append("`" + columns.get(i).getName() + "` \n");
             }
         }
         if (Asserts.isNotNullString(comment)) {
-            sb.append(" FROM " + doConvertKeywordsColumn(dbType, schema) + "." + doConvertKeywordsColumn(dbType, name) + ";" + " -- " + comment + "\n");
+            sb.append(" FROM " + schema + "." + name + ";" + " -- " + comment + "\n");
         } else {
-            sb.append(" FROM " + doConvertKeywordsColumn(dbType, schema) + "." + doConvertKeywordsColumn(dbType, name) + ";\n");
+            sb.append(" FROM " + schema + "." + name + ";\n");
         }
         return sb.toString();
     }
@@ -274,32 +272,5 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
             e.printStackTrace();
         }
         return table;
-    }
-
-    private String doConvertKeywordsColumn(String dbType, String column) {
-        if (column == null) {
-            return null;
-        }
-        if (column.contains("'")) {
-            return column;
-        }
-        column = column.trim();
-        column = column.replace("[", "");
-        column = column.replace("]", "");
-        column = column.replace("`", "");
-        column = column.replace("\"", "");
-        //column = column.replace("'", "");
-
-        switch (dbType) {
-            case DbTypeConstant.MYSQL:
-                return String.format("`%s`", column);
-            case DbTypeConstant.SQLSERVER:
-                return String.format("[%s]", column);
-            case DbTypeConstant.POSTGRESQL:
-            case DbTypeConstant.ORACLE:
-                return String.format("\"%s\"", column);
-            default:
-                return column;
-        }
     }
 }

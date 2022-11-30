@@ -29,7 +29,9 @@ import com.dlink.model.QueryData;
 import com.dlink.model.Table;
 import com.dlink.utils.TextUtil;
 
+import java.beans.Transient;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -74,6 +76,33 @@ public class PostgreSqlDriver extends AbstractJdbcDriver {
     public String generateCreateSchemaSql(String schemaName) {
         StringBuilder sb = new StringBuilder();
         sb.append("CREATE SCHEMA ").append(schemaName);
+        return sb.toString();
+    }
+
+    @Transient
+    public String getSqlSelect(Table table) {
+        List<Column> columns = table.getColumns();
+        StringBuilder sb = new StringBuilder("SELECT\n");
+        for (int i = 0; i < columns.size(); i++) {
+            sb.append("    ");
+            if (i > 0) {
+                sb.append(",");
+            }
+            String columnComment = columns.get(i).getComment();
+            if (Asserts.isNotNullString(columnComment)) {
+                if (columnComment.contains("\'") | columnComment.contains("\"")) {
+                    columnComment = columnComment.replaceAll("\"|'", "");
+                }
+                sb.append("\"" + columns.get(i).getName() + "\"  --  " + columnComment + " \n");
+            } else {
+                sb.append("\"" + columns.get(i).getName() + "\" \n");
+            }
+        }
+        if (Asserts.isNotNullString(table.getComment())) {
+            sb.append(" FROM \"" + table.getSchema() + "\".\"" + table.getName() + "\";" + " -- " + table.getComment() + "\n");
+        } else {
+            sb.append(" FROM \"" + table.getSchema() + "\".\"" + table.getName() + "\";\n");
+        }
         return sb.toString();
     }
 

@@ -22,9 +22,11 @@ package com.dlink.metadata.driver;
 import com.dlink.assertion.Asserts;
 import com.dlink.metadata.convert.ITypeConvert;
 import com.dlink.metadata.query.IDBQuery;
+import com.dlink.model.Column;
 import com.dlink.model.Schema;
 import com.dlink.model.Table;
 
+import java.beans.Transient;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -83,6 +85,34 @@ public abstract class AbstractDriver implements Driver {
     public boolean existTable(Table table) {
         return listTables(table.getSchema()).stream().anyMatch(tableItem -> Asserts.isEquals(tableItem.getName(), table.getName()));
     }
+
+    @Transient
+    public String getSqlSelect(Table table) {
+        List<Column> columns = table.getColumns();
+        StringBuilder sb = new StringBuilder("SELECT\n");
+        for (int i = 0; i < columns.size(); i++) {
+            sb.append("    ");
+            if (i > 0) {
+                sb.append(",");
+            }
+            String columnComment = columns.get(i).getComment();
+            if (Asserts.isNotNullString(columnComment)) {
+                if (columnComment.contains("\'") | columnComment.contains("\"")) {
+                    columnComment = columnComment.replaceAll("\"|'", "");
+                }
+                sb.append("`" + columns.get(i).getName() + "`  --  " + columnComment + " \n");
+            } else {
+                sb.append("`" + columns.get(i).getName() + "` \n");
+            }
+        }
+        if (Asserts.isNotNullString(table.getComment())) {
+            sb.append(" FROM " + table.getSchema() + "." + table.getName() + ";" + " -- " + table.getComment() + "\n");
+        } else {
+            sb.append(" FROM " + table.getSchema() + "." + table.getName() + ";\n");
+        }
+        return sb.toString();
+    }
+
 
     @Override
     public List<Map<String, String>> getSplitSchemaList() {
