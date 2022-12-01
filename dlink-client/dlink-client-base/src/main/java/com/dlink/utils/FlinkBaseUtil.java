@@ -49,6 +49,7 @@ public class FlinkBaseUtil {
         params.put(FlinkParamConstant.URL, parameters.get(FlinkParamConstant.URL, null));
         params.put(FlinkParamConstant.USERNAME, parameters.get(FlinkParamConstant.USERNAME, null));
         params.put(FlinkParamConstant.PASSWORD, parameters.get(FlinkParamConstant.PASSWORD, null));
+        params.put(FlinkParamConstant.DINKY_ADDR, parameters.get(FlinkParamConstant.DINKY_ADDR, null));
         return params;
     }
 
