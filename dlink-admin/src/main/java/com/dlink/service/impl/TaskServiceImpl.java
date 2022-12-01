@@ -408,25 +408,27 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public boolean saveOrUpdateTask(Task task) {
-        if (Dialect.isUDF(task.getDialect()) && Convert.toInt(task.getConfig().get(0).get("templateId"), 0) != 0) {
-            if (CollUtil.isNotEmpty(task.getConfig()) && Asserts.isNullString(task.getStatement())) {
-                Map<String, String> config = task.getConfig().get(0);
-                UDFTemplate template = udfTemplateService.getById(config.get("templateId"));
-                if (template != null) {
-                    String code = UDFUtil.templateParse(task.getDialect(), template.getTemplateCode(),
-                        config.get("className"));
-                    task.setStatement(code);
+        if (CollUtil.isNotEmpty(task.getConfig())) {
+            if (Dialect.isUDF(task.getDialect()) && Convert.toInt(task.getConfig().get(0).get("templateId"), 0) != 0) {
+                if (CollUtil.isNotEmpty(task.getConfig()) && Asserts.isNullString(task.getStatement())) {
+                    Map<String, String> config = task.getConfig().get(0);
+                    UDFTemplate template = udfTemplateService.getById(config.get("templateId"));
+                    if (template != null) {
+                        String code = UDFUtil.templateParse(task.getDialect(), template.getTemplateCode(),
+                            config.get("className"));
+                        task.setStatement(code);
+                    }
                 }
-            }
-            // to compiler udf
-            if (Asserts.isNotNullString(task.getDialect()) && Dialect.JAVA.equalsVal(task.getDialect())
-                && Asserts.isNotNullString(task.getStatement())) {
-                CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(task.getStatement());
-                task.setSavePointPath(compiler.getFullClassName());
-            } else if (Dialect.PYTHON.equalsVal(task.getDialect())) {
-                task.setSavePointPath(task.getName() + "." + UDFUtil.getPyUDFAttr(task.getStatement()));
-            } else if (Dialect.SCALA.equalsVal(task.getDialect())) {
-                task.setSavePointPath(UDFUtil.getScalaFullClassName(task.getStatement()));
+                // to compiler udf
+                if (Asserts.isNotNullString(task.getDialect()) && Dialect.JAVA.equalsVal(task.getDialect())
+                    && Asserts.isNotNullString(task.getStatement())) {
+                    CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(task.getStatement());
+                    task.setSavePointPath(compiler.getFullClassName());
+                } else if (Dialect.PYTHON.equalsVal(task.getDialect())) {
+                    task.setSavePointPath(task.getName() + "." + UDFUtil.getPyUDFAttr(task.getStatement()));
+                } else if (Dialect.SCALA.equalsVal(task.getDialect())) {
+                    task.setSavePointPath(UDFUtil.getScalaFullClassName(task.getStatement()));
+                }
             }
         }
 
