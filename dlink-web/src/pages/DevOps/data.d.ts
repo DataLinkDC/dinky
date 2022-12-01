@@ -18,10 +18,9 @@
  */
 
 
-import {ClusterTableListItem} from "@/pages/Cluster/data";
-import {ClusterConfigurationTableListItem} from "@/pages/ClusterConfiguration/data";
+import {ClusterTableListItem, JarTableListItem} from "@/pages/RegistrationCenter/data";
+import {ClusterConfigurationTableListItem} from "@/pages/RegistrationCenter/ClusterManage/ClusterConfiguration/data";
 import {HistoryItem} from "@/components/Studio/StudioConsole/StudioHistory/data";
-import {JarTableListItem} from "@/pages/Jar/data";
 import {List} from "antd";
 
 export type JobInstanceTableListItem = {

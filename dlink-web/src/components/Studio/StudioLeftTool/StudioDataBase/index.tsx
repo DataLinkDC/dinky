@@ -24,7 +24,7 @@ import {connect} from "umi";
 import React, {useState} from "react";
 import {PlusOutlined, ReloadOutlined} from '@ant-design/icons';
 import {showDataBase} from "../../StudioEvent/DDL";
-import DBForm from "@/pages/DataBase/components/DBForm";
+import DBForm from "@/pages/RegistrationCenter/DataBase/components/DBForm";
 import {Scrollbars} from 'react-custom-scrollbars';
 import ProDescriptions from "@ant-design/pro-descriptions";
 import {handleRemove} from "@/components/Common/crud";

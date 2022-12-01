@@ -33,10 +33,10 @@ import {
   TableOutlined,
 } from '@ant-design/icons';
 import {Scrollbars} from 'react-custom-scrollbars';
-import Columns from "@/pages/DataBase/Columns";
-import Tables from "@/pages/DataBase/Tables";
+import Columns from "@/pages/RegistrationCenter/DataBase/Columns";
+import Tables from "@/pages/RegistrationCenter/DataBase/Tables";
 import {TreeDataNode} from "@/components/Studio/StudioTree/Function";
-import Generation from "@/pages/DataBase/Generation";
+import Generation from "@/pages/RegistrationCenter/DataBase/Generation";
 import {getMSSchemaInfo} from "@/pages/DataStudio/service";
 import {Dispatch} from "@@/plugin-dva/connect";
 import {DIALECT} from "@/components/Studio/conf";

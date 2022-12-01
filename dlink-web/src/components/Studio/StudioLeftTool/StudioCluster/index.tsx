@@ -26,7 +26,7 @@ import React, {useState} from "react";
 import {PlusOutlined, ReloadOutlined} from '@ant-design/icons';
 import {showCluster} from "../../StudioEvent/DDL";
 import {handleAddOrUpdate, handleRemove} from "@/components/Common/crud";
-import ClusterForm from "@/pages/Cluster/components/ClusterForm";
+import ClusterForm from "@/pages/RegistrationCenter/ClusterManage/Cluster/components/ClusterForm";
 import {Scrollbars} from 'react-custom-scrollbars';
 import {l} from "@/utils/intl";
 

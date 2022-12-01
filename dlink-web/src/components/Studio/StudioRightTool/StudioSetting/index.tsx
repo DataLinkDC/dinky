@@ -31,10 +31,10 @@ import {
 import styles from "./index.less";
 import {useEffect} from "react";
 import {showTables} from "@/components/Studio/StudioEvent/DDL";
-import {JarStateType} from "@/pages/Jar/model";
+import {JarStateType} from "@/pages/RegistrationCenter/Jar/model";
 import {Scrollbars} from "react-custom-scrollbars";
 import {RUN_MODE} from "@/components/Studio/conf";
-import {AlertStateType} from "@/pages/AlertInstance/model";
+import {AlertStateType} from "@/pages/RegistrationCenter/AlertManage/AlertInstance/model";
 import {l} from "@/utils/intl";
 
 const {Option} = Select;
