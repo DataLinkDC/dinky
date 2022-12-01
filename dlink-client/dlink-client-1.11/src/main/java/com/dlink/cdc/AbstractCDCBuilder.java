@@ -54,7 +54,7 @@ public abstract class AbstractCDCBuilder {
 
     public List<String> getSchemaList() {
         List<String> schemaList = new ArrayList<>();
-        String schema = config.getSchema();
+        String schema = getSchema();
         if (Asserts.isNotNullString(schema)) {
             String[] schemas = schema.split(FlinkParamConstant.SPLIT);
             Collections.addAll(schemaList, schemas);
@@ -86,4 +86,6 @@ public abstract class AbstractCDCBuilder {
     public String getSchemaFieldName() {
         return "schema";
     }
+
+    public abstract String getSchema();
 }

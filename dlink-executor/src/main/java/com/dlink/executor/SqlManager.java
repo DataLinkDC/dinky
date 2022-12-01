@@ -36,8 +36,11 @@ import org.apache.flink.table.catalog.exceptions.CatalogException;
 import org.apache.flink.types.Row;
 import org.apache.flink.util.StringUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -79,7 +82,8 @@ public final class SqlManager {
      *                          But at the moment, with CatalogException, not SqlException
      */
     public void registerSqlFragment(String sqlFragmentName, String sqlFragment) {
-        checkArgument(!StringUtils.isNullOrWhitespaceOnly(sqlFragmentName), "sql fragment name cannot be null or empty.");
+        checkArgument(!StringUtils.isNullOrWhitespaceOnly(sqlFragmentName),
+                "sql fragment name cannot be null or empty.");
         checkNotNull(sqlFragment, "sql fragment cannot be null");
 
         if (sqlFragments.containsKey(sqlFragmentName)) {
@@ -112,7 +116,8 @@ public final class SqlManager {
      *                          failed. But at the moment, with CatalogException, not SqlException
      */
     public void unregisterSqlFragment(String sqlFragmentName, boolean ignoreIfNotExists) {
-        checkArgument(!StringUtils.isNullOrWhitespaceOnly(sqlFragmentName), "sql fragmentName name cannot be null or empty.");
+        checkArgument(!StringUtils.isNullOrWhitespaceOnly(sqlFragmentName),
+                "sql fragmentName name cannot be null or empty.");
 
         if (sqlFragments.containsKey(sqlFragmentName)) {
             sqlFragments.remove(sqlFragmentName);
@@ -129,10 +134,15 @@ public final class SqlManager {
      *                          failed. But at the moment, with CatalogException, not SqlException
      */
     public String getSqlFragment(String sqlFragmentName) {
-        checkArgument(!StringUtils.isNullOrWhitespaceOnly(sqlFragmentName), "sql fragmentName name cannot be null or empty.");
+        checkArgument(!StringUtils.isNullOrWhitespaceOnly(sqlFragmentName),
+                "sql fragmentName name cannot be null or empty.");
 
         if (sqlFragments.containsKey(sqlFragmentName)) {
             return sqlFragments.get(sqlFragmentName);
+        }
+
+        if (isInnerDateVar(sqlFragmentName)) {
+            return parseDateVar(sqlFragmentName);
         }
 
         throw new CatalogException(format("The fragment of sql %s does not exist.", sqlFragmentName));
@@ -140,11 +150,14 @@ public final class SqlManager {
 
     public TableResult getSqlFragmentResult(String sqlFragmentName) {
         if (Asserts.isNullString(sqlFragmentName)) {
-            return CustomTableResultImpl.buildTableResult(Collections.singletonList(new TableSchemaField(FRAGMENT, DataTypes.STRING())), new ArrayList<>());
+            return CustomTableResultImpl.buildTableResult(
+                    Collections.singletonList(new TableSchemaField(FRAGMENT, DataTypes.STRING())), new ArrayList<>());
         }
 
         String sqlFragment = getSqlFragment(sqlFragmentName);
-        return CustomTableResultImpl.buildTableResult(Collections.singletonList(new TableSchemaField(FRAGMENT, DataTypes.STRING())), Collections.singletonList(Row.of(sqlFragment)));
+        return CustomTableResultImpl.buildTableResult(
+                Collections.singletonList(new TableSchemaField(FRAGMENT, DataTypes.STRING())),
+                Collections.singletonList(Row.of(sqlFragment)));
     }
 
     /**
@@ -162,7 +175,8 @@ public final class SqlManager {
         for (String key : sqlFragments.keySet()) {
             rows.add(Row.of(key));
         }
-        return CustomTableResultImpl.buildTableResult(Collections.singletonList(new TableSchemaField("fragmentName", DataTypes.STRING())), rows);
+        return CustomTableResultImpl.buildTableResult(
+                Collections.singletonList(new TableSchemaField("fragmentName", DataTypes.STRING())), rows);
     }
 
     public Iterator getSqlFragmentsIterator() {
@@ -221,9 +235,60 @@ public final class SqlManager {
             String key = m.group(1);
             String value = this.getSqlFragment(key);
             m.appendReplacement(sb, "");
+
+            // 内置时间变量的情况
+            if (value == null && isInnerDateVar(key)) {
+                value = parseDateVar(key);
+            }
+
             sb.append(value == null ? "" : value);
         }
         m.appendTail(sb);
         return sb.toString();
+    }
+
+    /**
+     * verify if key is inner variable
+     * @param key
+     * @return
+     */
+    private boolean isInnerDateVar(String key) {
+        if (key.startsWith(FlinkSQLConstant.INNER_DATETIME_KEY)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * parse datetime var
+     * @param key
+     * @return
+     */
+    private String parseDateVar(String key) {
+        int days = 0;
+        try {
+            if (key.contains("+")) {
+                int s = key.indexOf("+");
+                String num = key.substring(s).trim();
+                days = Integer.parseInt(num);
+            } else if (key.contains("-")) {
+                int s = key.indexOf("-");
+                String num = key.substring(s).trim();
+                days = Integer.parseInt(num) * -1;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        SimpleDateFormat dtf = new SimpleDateFormat(FlinkSQLConstant.INNER_DATETIME_FORMAT);
+        Date endDate = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(endDate);
+        calendar.add(Calendar.DAY_OF_YEAR,days);
+        Date startDate = calendar.getTime();
+
+        return dtf.format(startDate);
     }
 }

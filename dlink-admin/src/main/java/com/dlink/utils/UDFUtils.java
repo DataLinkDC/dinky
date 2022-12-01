@@ -43,8 +43,7 @@ import cn.hutool.extra.spring.SpringUtil;
  */
 public class UDFUtils extends UDFUtil {
 
-    private static final String FUNCTION_SQL_REGEX =
-            "create\\s+.*function\\s+(.*)\\s+as\\s+'(.*)'(\\s+language (.*))?;";
+    private static final String FUNCTION_SQL_REGEX = "create\\s+.*function\\s+(.*)\\s+as\\s+'(.*)'(\\s+language (.*))?;";
 
     public static List<UDF> getUDF(String statement) {
         ProcessEntity process = ProcessContextHolder.getProcess();
@@ -65,7 +64,9 @@ public class UDFUtils extends UDFUtil {
                     .build();
         }).collect(Collectors.toList());
         List<String> classNameList = udfList.stream().map(UDF::getClassName).collect(Collectors.toList());
-        process.info(StringUtils.join(",", classNameList));
+        if (classNameList.size() > 0) {
+            process.info(StringUtils.join(classNameList, ","));
+        }
         process.info(CharSequenceUtil.format("A total of {} UDF have been Parsed.", classNameList.size()));
         return udfList;
     }

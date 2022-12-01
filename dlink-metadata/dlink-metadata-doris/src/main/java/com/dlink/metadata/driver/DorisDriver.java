@@ -24,6 +24,8 @@ import com.dlink.metadata.convert.ITypeConvert;
 import com.dlink.metadata.query.DorisQuery;
 import com.dlink.metadata.query.IDBQuery;
 import com.dlink.metadata.result.JdbcSelectResult;
+import com.dlink.process.context.ProcessContextHolder;
+import com.dlink.process.model.ProcessEntity;
 import com.dlink.utils.LogUtil;
 import com.dlink.utils.SqlUtil;
 
@@ -32,7 +34,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.hutool.core.text.CharSequenceUtil;
+
 public class DorisDriver extends AbstractJdbcDriver {
+
     @Override
     public IDBQuery getDBQuery() {
         return new DorisQuery();
@@ -60,37 +65,47 @@ public class DorisDriver extends AbstractJdbcDriver {
 
     @Override
     public JdbcSelectResult executeSql(String sql, Integer limit) {
+        ProcessEntity process = ProcessContextHolder.getProcess();
+        process.info("Start parse sql...");
         String[] statements = SqlUtil.getStatements(SqlUtil.removeNote(sql));
+        process.info(CharSequenceUtil.format("A total of {} statement have been Parsed.", statements.length));
         List<Object> resList = new ArrayList<>();
         JdbcSelectResult result = JdbcSelectResult.buildResult();
+        process.info("Start execute sql...");
         for (String item : statements) {
             String type = item.toUpperCase();
             if (type.startsWith("SELECT") || type.startsWith("SHOW") || type.startsWith("DESC")) {
+                process.info("Execute query.");
                 result = query(item, limit);
             } else if (type.startsWith("INSERT") || type.startsWith("UPDATE") || type.startsWith("DELETE")) {
                 try {
+                    process.info("Execute update.");
                     resList.add(executeUpdate(item));
                     result.setStatusList(resList);
+                    result.success();
                 } catch (Exception e) {
                     resList.add(0);
                     result.setStatusList(resList);
                     result.error(LogUtil.getError(e));
+                    process.error(e.getMessage());
                     return result;
                 }
             } else {
                 try {
+                    process.info("Execute DDL.");
                     execute(item);
                     resList.add(1);
                     result.setStatusList(resList);
+                    result.success();
                 } catch (Exception e) {
                     resList.add(0);
                     result.setStatusList(resList);
                     result.error(LogUtil.getError(e));
+                    process.error(e.getMessage());
                     return result;
                 }
             }
         }
-        result.success();
         return result;
     }
 

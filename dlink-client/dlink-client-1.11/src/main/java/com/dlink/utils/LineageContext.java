@@ -25,7 +25,6 @@ import com.dlink.model.LineageRel;
 
 import org.apache.calcite.plan.RelOptTable;
 import org.apache.calcite.rel.RelNode;
-import org.apache.calcite.rel.core.Snapshot;
 import org.apache.calcite.rel.metadata.RelColumnOrigin;
 import org.apache.calcite.rel.metadata.RelMetadataQuery;
 import org.apache.calcite.rel.type.RelDataType;
@@ -49,17 +48,13 @@ import org.apache.flink.table.planner.delegation.PlannerContext;
 import org.apache.flink.table.planner.operations.PlannerQueryOperation;
 import org.apache.flink.table.planner.plan.optimize.program.FlinkChainedProgram;
 import org.apache.flink.table.planner.plan.optimize.program.StreamOptimizeContext;
+import org.apache.flink.table.planner.plan.schema.TableSourceTable;
 import org.apache.flink.table.planner.plan.trait.MiniBatchInterval;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
-import javassist.Modifier;
 
 /**
  * LineageContext
@@ -75,33 +70,6 @@ public class LineageContext {
     public LineageContext(FlinkChainedProgram flinkChainedProgram, TableEnvironmentImpl tableEnv) {
         this.flinkChainedProgram = flinkChainedProgram;
         this.tableEnv = tableEnv;
-    }
-
-    /**
-     * Dynamic add getColumnOrigins method to class RelMdColumnOrigins by javassist:
-     *
-     * public Set<RelColumnOrigin> getColumnOrigins(Snapshot rel,RelMetadataQuery mq, int iOutputColumn) {
-     *      return mq.getColumnOrigins(rel.getInput(), iOutputColumn);
-     * }
-     */
-    static {
-        try {
-            ClassPool classPool = ClassPool.getDefault();
-            CtClass ctClass = classPool.getCtClass("org.apache.calcite.rel.metadata.RelMdColumnOrigins");
-
-            CtClass[] parameters = new CtClass[]{classPool.get(Snapshot.class.getName()),
-                    classPool.get(RelMetadataQuery.class.getName()), CtClass.intType
-            };
-            // add method
-            CtMethod ctMethod = new CtMethod(classPool.get("java.util.Set"), "getColumnOrigins", parameters, ctClass);
-            ctMethod.setModifiers(Modifier.PUBLIC);
-            ctMethod.setBody("{return $2.getColumnOrigins($1.getInput(), $3);}");
-            ctClass.addMethod(ctMethod);
-            // load the class
-            ctClass.toClass();
-        } catch (Exception e) {
-            throw new TableException("Dynamic add getColumnOrigins() method exception.", e);
-        }
     }
 
     public List<LineageRel> getLineage(String statement) {
@@ -178,9 +146,9 @@ public class LineageContext {
 
             @Override
             public <C> C unwrap(Class<C> clazz) {
-                if(clazz.isInterface()){
+                if (clazz.isInterface()) {
                     return clazz.cast(this);
-                }else{
+                } else {
                     return null;
                 }
             }
@@ -251,8 +219,8 @@ public class LineageContext {
 
                     // filed
                     int ordinal = relColumnOrigin.getOriginColumnOrdinal();
-                    List<String> fieldNames = table.getRowType().getFieldNames();
-                    String sourceColumn = fieldNames.get(ordinal);
+                    String[] fieldNames = ((TableSourceTable) table).catalogTable().getSchema().getFieldNames();
+                    String sourceColumn = fieldNames[ordinal];
 
                     // add record
                     resultList.add(LineageRel.build(sourceTable, sourceColumn, sinkTable, targetColumn));
