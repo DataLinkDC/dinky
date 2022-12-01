@@ -31,6 +31,7 @@ import com.dlink.trans.Operations;
 import com.dlink.utils.SqlUtil;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.configuration.CheckpointingOptions;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.util.FlinkUserCodeClassLoader;
@@ -63,6 +64,7 @@ import org.slf4j.LoggerFactory;
 public class Submiter {
 
     private static final Logger logger = LoggerFactory.getLogger(Submiter.class);
+    private static final String NULL = "null";
 
     private static String getQuerySQL(Integer id) throws SQLException {
         if (id == null) {
@@ -129,6 +131,9 @@ public class Submiter {
 
     public static void submit(Integer id, DBConfig dbConfig, String dinkyAddr) {
         logger.info(LocalDateTime.now() + "开始提交作业 -- " + id);
+        if (NULL.equals(dinkyAddr)) {
+            dinkyAddr = "";
+        }
         StringBuilder sb = new StringBuilder();
         Map<String, String> taskConfig = Submiter.getTaskConfig(id, dbConfig);
 
@@ -229,6 +234,9 @@ public class Submiter {
     }
 
     private static void loadDep(String type, Integer taskId, String dinkyAddr, ExecutorSetting executorSetting) {
+        if (StringUtils.isBlank(dinkyAddr)) {
+            return;
+        }
         if ("kubernetes-application".equals(type)) {
             try {
                 String httpJar = "http://" + dinkyAddr + "/download/downloadDepJar/" + taskId;

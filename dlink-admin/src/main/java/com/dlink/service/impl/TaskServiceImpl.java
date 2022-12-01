@@ -206,7 +206,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private UDFService udfService;
 
     private String buildParas(Integer id) {
-        return buildParas(id, "");
+        return buildParas(id, StrUtil.NULL);
     }
 
     private String buildParas(Integer id, String dinkyAddr) {
@@ -245,7 +245,12 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     private void loadDocker(Integer taskId, Integer clusterConfigurationId, GatewayConfig gatewayConfig) {
-        Docker docker = Docker.build((Map) clusterConfigurationService.getClusterConfigById(clusterConfigurationId).getConfig().get("dockerConfig"));
+        Map dockerConfig = (Map) clusterConfigurationService.getClusterConfigById(clusterConfigurationId).getConfig().get("dockerConfig");
+        String params = SystemConfiguration.getInstances().getSqlSubmitJarParas() + buildParas(taskId, dockerConfig.getOrDefault("dinky.remote.addr", "").toString());
+
+        gatewayConfig.getAppConfig().setUserJarParas(params.split(" "));
+
+        Docker docker = Docker.build(dockerConfig);
         if (docker == null || StringUtils.isBlank(docker.getInstance())) {
             return;
         }
@@ -254,8 +259,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if (StrUtil.isNotBlank(dockerClientUtils.getImage())) {
             gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.container.image", dockerClientUtils.getImage());
         }
-        String params = SystemConfiguration.getInstances().getSqlSubmitJarParas() + buildParas(taskId, docker.getDinkyRemoteAddr());
-        gatewayConfig.getAppConfig().setUserJarParas(params.split(" "));
+
     }
 
     @Override
