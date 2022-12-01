@@ -18,8 +18,6 @@ import com.github.dockerjava.transport.DockerHttpClient;
  * @since
  */
 public class DockerClientBuilder {
-
-
     private final DockerClientConfig dockerClientConfig;
 
     private DockerCmdExecFactory dockerCmdExecFactory = null;
