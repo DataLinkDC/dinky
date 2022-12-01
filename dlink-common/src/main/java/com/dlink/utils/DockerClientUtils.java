@@ -38,7 +38,6 @@ import com.github.dockerjava.core.DefaultDockerClientConfig;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-
 /**
  * @author ZackYoung
  * @since 0.7.0
@@ -46,10 +45,11 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Slf4j
 public class DockerClientUtils {
+
     private final DockerClient dockerClient;
     private final Docker docker;
     private final File dockerfile;
-    private String image;
+    private final String image;
 
     public DockerClientUtils(Docker docker) {
         this(docker, null);
@@ -58,30 +58,36 @@ public class DockerClientUtils {
     public DockerClientUtils(Docker docker, File dockerfile) {
         this.docker = docker;
         this.dockerfile = dockerfile;
-        this.image = String.join("/", Arrays.asList(docker.getRegistryUrl(), docker.getImageNamespace(), docker.getImageStorehouse())) + ":" + docker.getImageDinkyVersion();
+        this.image = String.join("/",
+                Arrays.asList(docker.getRegistryUrl(), docker.getImageNamespace(), docker.getImageStorehouse())) + ":"
+                + docker.getImageDinkyVersion();
         dockerClient = DockerClientBuilder.getInstance(DefaultDockerClientConfig.createDefaultConfigBuilder()
                 .withDockerHost(docker.getInstance())
-                .withRegistryUrl(docker.getRegistryUrl()).withRegistryUsername(docker.getRegistryUsername()).withRegistryPassword(docker.getRegistryPassword())
+                .withRegistryUrl(docker.getRegistryUrl()).withRegistryUsername(docker.getRegistryUsername())
+                .withRegistryPassword(docker.getRegistryPassword())
                 .build())
-            .build();
+                .build();
         try {
             log.info("===============================  Initializing docker  ===============================");
             Info info = dockerClient.infoCmd().exec();
-            log.info("===============================  The docker connection is successful, the relevant information is as follows  ===============================");
+            log.info(
+                    "===============================  The docker connection is successful, the relevant information is as follows  ===============================");
             log.info(info.toString());
         } catch (Exception e) {
             e.printStackTrace();
-            log.error("The docker initialization failed. If k8s application mode must be used, please check the configuration and try again! reason:{}", e.getMessage());
+            log.error(
+                    "The docker initialization failed. If k8s application mode must be used, please check the configuration and try again! reason:{}",
+                    e.getMessage());
         }
     }
 
     public void initImage() throws URISyntaxException, InterruptedException {
         BuildImageResultCallback resultCallback = new BuildImageResultCallback();
         dockerClient.buildImageCmd()
-            .withRemove(true)
-            .withDockerfile(dockerfile)
-            .withTag(image)
-            .exec(resultCallback);
+                .withRemove(true)
+                .withDockerfile(dockerfile)
+                .withTag(image)
+                .exec(resultCallback);
         resultCallback.awaitImageId();
         pushImage(image);
         cleanNoneImage();
@@ -103,14 +109,15 @@ public class DockerClientUtils {
      * 清除空容器
      */
     public void cleanNoneImage() {
-        dockerClient.listImagesCmd().exec().stream().filter(x -> x.getRepoTags() == null || "<none>:<none>".equals(x.getRepoTags()[0])).map(Image::getId)
-            .forEach(id -> {
-                try {
-                    dockerClient.removeImageCmd(id).exec();
-                } catch (Exception ignored) {
-                    log.warn("容器删除失败，id:{}", id);
-                }
-            });
+        dockerClient.listImagesCmd().exec().stream()
+                .filter(x -> x.getRepoTags() == null || "<none>:<none>".equals(x.getRepoTags()[0])).map(Image::getId)
+                .forEach(id -> {
+                    try {
+                        dockerClient.removeImageCmd(id).exec();
+                    } catch (Exception ignored) {
+                        log.warn("容器删除失败，id:{}", id);
+                    }
+                });
     }
 
     /**
@@ -121,8 +128,8 @@ public class DockerClientUtils {
      */
     public CreateContainerResponse createContainers(DockerClient client, String containerName, String imageName) {
         CreateContainerResponse container = client.createContainerCmd(imageName)
-            .withName(containerName)
-            .exec();
+                .withName(containerName)
+                .exec();
         return container;
     }
 
@@ -137,7 +144,7 @@ public class DockerClientUtils {
     }
 
     /**
-     * 启动容器
+     * 停止容器
      *
      * @param client
      * @param containerId
