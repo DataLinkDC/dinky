@@ -36,12 +36,12 @@ import {
 } from '@ant-design/icons';
 import {Scrollbars} from 'react-custom-scrollbars';
 import {TreeDataNode} from '@/components/Studio/StudioTree/Function';
-import Tables from '@/pages/DataBase/Tables';
-import Columns from '@/pages/DataBase/Columns';
+import Tables from '@/pages/RegistrationCenter/DataBase/Tables';
+import Columns from '@/pages/RegistrationCenter/DataBase/Columns';
 import Divider from 'antd/es/divider';
-import Generation from '@/pages/DataBase/Generation';
+import Generation from '@/pages/RegistrationCenter/DataBase/Generation';
 import TableData from '@/pages/DataCenter/MetaData/TableData';
-import {FALLBACK, getDBImage} from "@/pages/DataBase/DB";
+import {FALLBACK, getDBImage} from "@/pages/RegistrationCenter/DataBase/DB";
 import Meta from "antd/lib/card/Meta";
 import {l} from "@/utils/intl";
 
