@@ -42,7 +42,7 @@ public class UDFTemplateServiceImpl extends SuperServiceImpl<UDFTemplateMapper, 
     @Override
     public boolean saveOrUpdate(UDFTemplate udfTemplate) {
         UDFTemplate selectOne = query().eq("name", udfTemplate.getName()).one();
-        selectOne.setCodeType(StrUtil.upperFirst(selectOne.getCodeType().toLowerCase()));
+        udfTemplate.setCodeType(StrUtil.upperFirst(udfTemplate.getCodeType().toLowerCase()));
         if (Asserts.isNull(udfTemplate.getId())) {
             if ((selectOne != null)) {
                 throw new BusException("模板名已经存在");
