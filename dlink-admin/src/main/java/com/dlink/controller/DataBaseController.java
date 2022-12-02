@@ -119,7 +119,7 @@ public class DataBaseController {
     }
 
     /**
-     * 获取可用的集群列表
+     * 获取可用的数据库列表
      */
     @GetMapping("/listEnabledAll")
     public Result listEnabledAll() {

@@ -41,6 +41,6 @@ public class MainApp {
         String id = params.get(FlinkParamConstant.ID);
         Asserts.checkNullString(id, "请配置入参 id ");
         DBConfig dbConfig = DBConfig.build(params);
-        Submiter.submit(Integer.valueOf(id), dbConfig);
+        Submiter.submit(Integer.valueOf(id), dbConfig, params.get(FlinkParamConstant.DINKY_ADDR));
     }
 }
