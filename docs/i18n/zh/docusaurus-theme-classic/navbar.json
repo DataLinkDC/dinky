@@ -23,6 +23,10 @@
     "message": "GitHub",
     "description": "Navbar item with label GitHub"
   },
+  "item.label.RoadMap": {
+    "message": "RoadMap",
+    "description": "Navbar item with label GitHub"
+  },
   "item.label.Next": {
     "message": "Next",
     "description": "Navbar item with label Next"
