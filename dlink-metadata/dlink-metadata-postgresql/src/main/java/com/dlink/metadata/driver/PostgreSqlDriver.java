@@ -112,7 +112,7 @@ public class PostgreSqlDriver extends AbstractJdbcDriver {
         StringBuilder comments = new StringBuilder();
 
         sb.append("CREATE TABLE \"").append(table.getSchema()).append("\".\"").append(table.getName())
-                .append("\" (\r\n");
+                .append("\" (\n");
 
         for (Column column : table.getColumns()) {
             sb.append("  \"").append(column.getName()).append("\" ");
@@ -131,13 +131,13 @@ public class PostgreSqlDriver extends AbstractJdbcDriver {
             if (Asserts.isNotNullString(column.getDefaultValue()) && !column.getDefaultValue().contains("nextval")) {
                 sb.append(" DEFAULT ").append(column.getDefaultValue());
             }
-            sb.append(",\r\n");
+            sb.append(",\n");
 
             // 注释
             if (Asserts.isNotNullString(column.getComment())) {
                 comments.append("COMMENT ON COLUMN \"").append(table.getSchema()).append("\".\"")
                         .append(table.getName()).append("\".\"")
-                        .append(column.getName()).append("\" IS '").append(column.getComment()).append("';\r\n");
+                        .append(column.getName()).append("\" IS '").append(column.getComment()).append("';\n");
             }
         }
         sb.deleteCharAt(sb.length() - 3);
@@ -146,7 +146,7 @@ public class PostgreSqlDriver extends AbstractJdbcDriver {
             comments.append("COMMENT ON TABLE \"").append(table.getSchema()).append("\".\"")
                     .append(table.getName()).append("\" IS '").append(table.getComment()).append("';");
         }
-        sb.append(");\r\n\r\n").append(comments);
+        sb.append(");\n\n").append(comments);
 
         return sb.toString();
     }

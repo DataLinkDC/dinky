@@ -88,7 +88,7 @@ public class SqlServerDriver extends AbstractJdbcDriver {
     @Override
     public String getSqlSelect(Table table) {
         List<Column> columns = table.getColumns();
-        StringBuilder sb = new StringBuilder("SELECT\n");
+        StringBuilder sb = new StringBuilder("SELECT \n");
         for (int i = 0; i < columns.size(); i++) {
             sb.append("    ");
             if (i > 0) {

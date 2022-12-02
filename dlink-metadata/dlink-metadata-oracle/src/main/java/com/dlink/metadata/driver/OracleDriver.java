@@ -128,12 +128,12 @@ public class OracleDriver extends AbstractJdbcDriver {
     public String getCreateTableSql(Table table) {
         StringBuilder sb = new StringBuilder();
         sb.append("CREATE TABLE ");
-        sb.append(table.getName()).append(" (\r\n");
+        sb.append(table.getName()).append(" (\n");
         List<Column> columns = table.getColumns();
         for (int i = 0; i < columns.size(); i++) {
             sb.append("    ");
             if (i > 0) {
-                sb.append(",\r\n");
+                sb.append(",\n");
             }
             sb.append("\"" + columns.get(i).getName() + "\" " + getTypeConvert().convertToDB(columns.get(i)));
             if (columns.get(i).isNullable()) {
@@ -141,7 +141,7 @@ public class OracleDriver extends AbstractJdbcDriver {
             }
         }
         sb.append(");");
-        sb.append("\r\n");
+        sb.append("\n");
         List<Column> pks = columns.stream().filter(column -> column.isKeyFlag()).collect(Collectors.toList());
         if (Asserts.isNotNullCollection(pks)) {
             sb.append("ALTER TABLE \"" + table.getName() + "\" ADD CONSTRAINT " + table.getName() + "_PK PRIMARY KEY (");
@@ -151,10 +151,10 @@ public class OracleDriver extends AbstractJdbcDriver {
                 }
                 sb.append(pks.get(i).getName());
             }
-            sb.append(");\r\n");
+            sb.append(");\n");
         }
         for (int i = 0; i < columns.size(); i++) {
-            sb.append("COMMENT ON COLUMN \"" + table.getName() + "\".\"" + columns.get(i).getName() + "\" IS '" + columns.get(i).getComment() + "';\r\n");
+            sb.append("COMMENT ON COLUMN \"" + table.getName() + "\".\"" + columns.get(i).getName() + "\" IS '" + columns.get(i).getComment() + "';\n");
         }
         return sb.toString();
     }
