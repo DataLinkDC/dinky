@@ -28,18 +28,21 @@ import com.dlink.service.UDFTemplateService;
 
 import org.springframework.stereotype.Service;
 
+import cn.hutool.core.util.StrUtil;
+
 /**
  * @author ZackYoung
  * @since 0.6.8
  */
 @Service
 public class UDFTemplateServiceImpl extends SuperServiceImpl<UDFTemplateMapper, UDFTemplate>
-        implements
-            UDFTemplateService {
+    implements
+    UDFTemplateService {
 
     @Override
     public boolean saveOrUpdate(UDFTemplate udfTemplate) {
         UDFTemplate selectOne = query().eq("name", udfTemplate.getName()).one();
+        udfTemplate.setCodeType(StrUtil.upperFirst(udfTemplate.getCodeType().toLowerCase()));
         if (Asserts.isNull(udfTemplate.getId())) {
             if ((selectOne != null)) {
                 throw new BusException("模板名已经存在");
