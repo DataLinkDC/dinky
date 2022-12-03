@@ -45,6 +45,10 @@ public class Asserts {
         return object == null;
     }
 
+    public static boolean isAllNotNull(Object... object) {
+        return Arrays.stream(object).allMatch(Asserts::isNotNull);
+    }
+
     public static boolean isNullString(String str) {
         return isNull(str) || str.isEmpty();
     }

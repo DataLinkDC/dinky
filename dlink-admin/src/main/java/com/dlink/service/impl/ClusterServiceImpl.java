@@ -23,7 +23,6 @@ import com.dlink.assertion.Assert;
 import com.dlink.cluster.FlinkCluster;
 import com.dlink.cluster.FlinkClusterInfo;
 import com.dlink.constant.FlinkConstant;
-import com.dlink.constant.NetConstant;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.ClusterMapper;
 import com.dlink.model.Cluster;
@@ -86,7 +85,7 @@ public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
         try {
             InetAddress inetAddress = InetAddress.getLocalHost();
             if (inetAddress != null) {
-                return inetAddress.getHostAddress() + NetConstant.COLON + FlinkConstant.FLINK_REST_DEFAULT_PORT;
+                return inetAddress.getHostAddress();
             }
         } catch (UnknownHostException e) {
             e.printStackTrace();

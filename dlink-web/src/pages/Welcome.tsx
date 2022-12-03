@@ -86,7 +86,7 @@ export default (): React.ReactNode => {
           <Paragraph>
             <ul>
               <li>
-                <Link>Flink 服务化</Link>
+                <Link>代码重构</Link>
               </li>
               <li>
                 <Link>数据链路分析</Link>
@@ -1722,6 +1722,15 @@ export default (): React.ReactNode => {
                   <Link>新增后端国际化</Link>
                 </li>
                 <li>
+                  <Link>新增 kerberos 验证</Link>
+                </li>
+                <li>
+                  <Link>新增 K8S 自动部署应用</Link>
+                </li>
+                <li>
+                  <Link>新增 Local 模式的 FlinkWebUI</Link>
+                </li>
+                <li>
                   <Link>修复从指定的 savepoint 恢复任务时未设置 savepint 文件路径导致的问题</Link>
                 </li>
                 <li>
@@ -1771,6 +1780,9 @@ export default (): React.ReactNode => {
                 </li>
                 <li>
                   <Link>修复引导页的连接错误</Link>
+                </li>
+                <li>
+                  <Link>修复 Open API 没有租户</Link>
                 </li>
                 <li>
                   <Link>增加 MysqlCDC 的参数配置</Link>

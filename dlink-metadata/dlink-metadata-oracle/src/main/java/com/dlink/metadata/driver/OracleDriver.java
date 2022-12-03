@@ -70,7 +70,7 @@ public class OracleDriver extends AbstractJdbcDriver {
 
     /**
      * oracel sql拼接，目前还未实现limit方法
-     * */
+     */
     @Override
     public StringBuilder genQueryOption(QueryData queryData) {
 
@@ -79,14 +79,18 @@ public class OracleDriver extends AbstractJdbcDriver {
 
         StringBuilder optionBuilder = new StringBuilder()
                 .append("select * from ")
+                .append("\"")
                 .append(queryData.getSchemaName())
+                .append("\"")
                 .append(".")
-                .append(queryData.getTableName());
+                .append("\"")
+                .append(queryData.getTableName())
+                .append("\"");
 
-        if (where != null && !where.equals("")) {
+        if (where != null && !"".equals(where)) {
             optionBuilder.append(" where ").append(where);
         }
-        if (order != null && !order.equals("")) {
+        if (order != null && !"".equals(order)) {
             optionBuilder.append(" order by ").append(order);
         }
 
@@ -94,35 +98,63 @@ public class OracleDriver extends AbstractJdbcDriver {
     }
 
     @Override
-    public String getCreateTableSql(Table table) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("CREATE TABLE ");
-        sb.append(table.getName() + " (");
+    public String getSqlSelect(Table table) {
         List<Column> columns = table.getColumns();
+        StringBuilder sb = new StringBuilder("SELECT\n");
         for (int i = 0; i < columns.size(); i++) {
+            sb.append("    ");
             if (i > 0) {
                 sb.append(",");
             }
-            sb.append(columns.get(i).getName() + " " + getTypeConvert().convertToDB(columns.get(i)));
+            String columnComment = columns.get(i).getComment();
+            if (Asserts.isNotNullString(columnComment)) {
+                if (columnComment.contains("\'") | columnComment.contains("\"")) {
+                    columnComment = columnComment.replaceAll("\"|'", "");
+                }
+                sb.append("\"" + columns.get(i).getName() + "\"  --  " + columnComment + " \n");
+            } else {
+                sb.append("\"" + columns.get(i).getName() + "\" \n");
+            }
+        }
+        if (Asserts.isNotNullString(table.getComment())) {
+            sb.append(" FROM \"" + table.getSchema() + "\".\"" + table.getName() + "\";" + " -- " + table.getComment() + "\n");
+        } else {
+            sb.append(" FROM \"" + table.getSchema() + "\".\"" + table.getName() + "\";\n");
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public String getCreateTableSql(Table table) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("CREATE TABLE ");
+        sb.append(table.getName()).append(" (\n");
+        List<Column> columns = table.getColumns();
+        for (int i = 0; i < columns.size(); i++) {
+            sb.append("    ");
+            if (i > 0) {
+                sb.append(",\n");
+            }
+            sb.append("\"" + columns.get(i).getName() + "\" " + getTypeConvert().convertToDB(columns.get(i)));
             if (columns.get(i).isNullable()) {
                 sb.append(" NOT NULL");
             }
         }
         sb.append(");");
-        sb.append("\r\n");
+        sb.append("\n");
         List<Column> pks = columns.stream().filter(column -> column.isKeyFlag()).collect(Collectors.toList());
         if (Asserts.isNotNullCollection(pks)) {
-            sb.append("ALTER TABLE " + table.getName() + " ADD CONSTRAINT " + table.getName() + "_PK PRIMARY KEY (");
+            sb.append("ALTER TABLE \"" + table.getName() + "\" ADD CONSTRAINT " + table.getName() + "_PK PRIMARY KEY (");
             for (int i = 0; i < pks.size(); i++) {
                 if (i > 0) {
                     sb.append(",");
                 }
                 sb.append(pks.get(i).getName());
             }
-            sb.append(");\r\n");
+            sb.append(");\n");
         }
         for (int i = 0; i < columns.size(); i++) {
-            sb.append("COMMENT ON COLUMN " + table.getName() + "." + columns.get(i).getName() + " IS '" + columns.get(i).getComment() + "';");
+            sb.append("COMMENT ON COLUMN \"" + table.getName() + "\".\"" + columns.get(i).getName() + "\" IS '" + columns.get(i).getComment() + "';\n");
         }
         return sb.toString();
     }

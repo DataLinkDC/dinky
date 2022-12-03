@@ -144,6 +144,10 @@
             <artifactId>commons-cli</artifactId>
             <version>${commons.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-runtime-web</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
     </dependencies>
-
 </project>

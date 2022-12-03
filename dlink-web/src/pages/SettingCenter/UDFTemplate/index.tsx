@@ -185,20 +185,20 @@ const UDFTemplate: React.FC<{}> = () => {
       dataIndex: 'codeType',
       filters: [
         {
-          text: 'java',
-          value: 'java',
+          text: DIALECT.JAVA,
+          value: DIALECT.JAVA,
         }, {
-          text: 'scala',
-          value: 'scala',
+          text: DIALECT.SCALA,
+          value: DIALECT.SCALA,
         }, {
-          text: 'python',
-          value: 'python',
+          text: DIALECT.PYTHON,
+          value: DIALECT.PYTHON,
         },
       ],
       valueEnum: {
-        'java': {text: 'java'},
-        'scala': {text: 'scala'},
-        'python': {text: 'python'},
+        'Java': {text: DIALECT.JAVA},
+        'Scala': {text: DIALECT.SCALA},
+        'Python': {text: DIALECT.PYTHON},
       },
       onFilter: true
     }, {
