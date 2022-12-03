@@ -102,7 +102,7 @@ public class JobHistoryServiceImpl extends SuperServiceImpl<JobHistoryMapper, Jo
         jobHistory.setId(id);
         try {
             JsonNode jobInfo = FlinkAPI.build(jobManagerHost).getJobInfo(jobId);
-            if (jobInfo.has(FlinkRestResultConstant.ERRORS)) {
+            if (Asserts.isNull(jobInfo) || jobInfo.has(FlinkRestResultConstant.ERRORS)) {
                 final JobHistory dbHistory = getById(id);
                 if (Objects.nonNull(dbHistory)) {
                     jobHistory = dbHistory;

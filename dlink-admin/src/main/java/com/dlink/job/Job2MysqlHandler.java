@@ -142,6 +142,18 @@ public class Job2MysqlHandler implements JobHandler {
             if (Asserts.isNotNull(cluster)) {
                 clusterId = cluster.getId();
             }
+        } else if (GatewayType.LOCAL.equalsValue(job.getJobConfig().getType())
+                && Asserts.isNotNullString(job.getJobManagerAddress())) {
+            cluster = clusterService.registersCluster(Cluster.autoRegistersCluster(
+                    job.getJobManagerAddress(),
+                    job.getJobId(),
+                    job.getJobConfig().getJobName() + LocalDateTime.now(),
+                    job.getType().getLongValue(),
+                    null,
+                    taskId));
+            if (Asserts.isNotNull(cluster)) {
+                clusterId = cluster.getId();
+            }
         } else {
             cluster = clusterService.getById(clusterId);
         }
@@ -149,7 +161,8 @@ public class Job2MysqlHandler implements JobHandler {
         history.setClusterId(clusterId);
         historyService.updateById(history);
 
-        if (Asserts.isNullCollection(job.getJids()) || GatewayType.LOCAL.equalsValue(job.getJobConfig().getType())) {
+        if (Asserts.isNullCollection(job.getJids()) || (GatewayType.LOCAL.equalsValue(job.getJobConfig().getType())
+                && Asserts.isNullString(job.getJobManagerAddress()))) {
             return true;
         }
 
