@@ -71,7 +71,7 @@
             <directory>${project.parent.basedir}/build/extends/</directory>
             <outputDirectory>jar</outputDirectory>
             <includes>
-                <include>%regex[dlink-app-1.\d+-${project.version}.jar]</include>
+                <include>%regex[dlink-app-1.\d+-${project.version}-jar-with-dependencies.jar]</include>
             </includes>
         </fileSet>
         <!--<fileSet>
