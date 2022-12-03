@@ -219,7 +219,10 @@ export default {
   'pages.datastudio.label.lineage.collapse.field': 'Collapse Field',
   'pages.datastudio.label.lineage.expand.lineage': 'Expand Lineage',
   'pages.datastudio.label.lineage.collapse.lineage': 'Collapse Lineage',
-
+  'pages.metadata.Console': 'SQL Console',
+  'pages.metadata.help.noSqlSelect': "No Sql Select！",
+  'pages.metadata.help.selectSql': "please choose sql in editor",
+  'pages.metadata.help.exec': "exec sql",
 
   'pages.datastudio.label.process': 'Process',
   'pages.datastudio.label.history': 'History',
