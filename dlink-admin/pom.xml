@@ -283,6 +283,7 @@
                         <!--注意这玩意默认从编译结果目录开始算目录结构-->
                         <exclude>/application*.yml</exclude>
                         <exclude>/mybatis*.xml</exclude>
+                        <exclude>/DinkyFlinkDockerfile</exclude>
                     </excludes>
                 </configuration>
                 <executions>

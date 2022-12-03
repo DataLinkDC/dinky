@@ -1,5 +1,6 @@
 # 用来构建dinky环境
-FROM flink:1.14.5
+ARG FLINK_VERSION=1.14.5
+FROM flink:${FLINK_VERSION}
 
 ENV PYTHON_HOME /opt/miniconda3
 
@@ -10,7 +11,7 @@ RUN ./miniconda.sh -b -p $PYTHON_HOME && chown -R flink $PYTHON_HOME && ls $PYTH
 USER flink
 
 ENV PATH $PYTHON_HOME/bin:$PATH
-RUN pip install "apache-flink==1.14.5" -i http://pypi.douban.com/simple/ --trusted-host pypi.douban.com
+RUN pip install "apache-flink==${FLINK_VERSION}" -i http://pypi.douban.com/simple/ --trusted-host pypi.douban.com
 
 RUN cp /opt/flink/opt/flink-python_* /opt/flink/lib/
 

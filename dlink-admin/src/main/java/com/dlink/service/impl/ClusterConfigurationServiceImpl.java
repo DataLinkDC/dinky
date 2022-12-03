@@ -110,19 +110,18 @@ public class ClusterConfigurationServiceImpl extends SuperServiceImpl<ClusterCon
             if (kubernetesConfig.containsKey("kubernetes.container.image")) {
                 gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.container.image", kubernetesConfig.get("kubernetes.container.image").toString());
             }
-        }
-        String fileDir = FileUtil.isDirectory(PathConstant.WORK_DIR + "/dlink-doc") ? PathConstant.WORK_DIR + "/dlink-doc" : PathConstant.WORK_DIR;
-        File dockerFile = null;
-        try {
-            dockerFile = FileUtil.writeUtf8String(FileUtil.readUtf8String(dockerfileResource.getFile()), fileDir + "/DinkyFlinkDockerfile");
-            Docker docker = Docker.build((Map) getClusterConfigById(clusterConfiguration.getId()).getConfig().get("dockerConfig"));
-            if (docker != null && StringUtils.isNotBlank(docker.getInstance())) {
-                new DockerClientUtils(docker,dockerFile).initImage();
+            String fileDir = FileUtil.isDirectory(PathConstant.WORK_DIR + "/dlink-doc") ? PathConstant.WORK_DIR + "/dlink-doc" : PathConstant.WORK_DIR;
+            File dockerFile = null;
+            try {
+                dockerFile = FileUtil.writeUtf8String(FileUtil.readUtf8String(dockerfileResource.getFile()), fileDir + "/DinkyFlinkDockerfile");
+                Docker docker = Docker.build((Map) getClusterConfigById(clusterConfiguration.getId()).getConfig().get("dockerConfig"));
+                if (docker != null && StringUtils.isNotBlank(docker.getInstance())) {
+                    new DockerClientUtils(docker,dockerFile).initImage();
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
-
         return JobManager.testGateway(gatewayConfig);
     }
 }
