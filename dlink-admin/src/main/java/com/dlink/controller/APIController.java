@@ -63,6 +63,7 @@ public class APIController {
 
     @GetMapping("/submitTask")
     public Result submitTask(@RequestParam Integer id) {
+        taskService.initTenantByTaskId(id);
         return Result.succeed(taskService.submitTask(id), "执行成功");
     }
 
@@ -108,7 +109,8 @@ public class APIController {
 
     @PostMapping("/savepointTask")
     public Result savepointTask(@RequestBody APISavePointTaskDTO apiSavePointTaskDTO) {
-        return Result.succeed(taskService.savepointTask(apiSavePointTaskDTO.getTaskId(), apiSavePointTaskDTO.getType()), "执行成功");
+        return Result.succeed(taskService.savepointTask(apiSavePointTaskDTO.getTaskId(), apiSavePointTaskDTO.getType()),
+                "执行成功");
     }
 
     /**
@@ -116,6 +118,7 @@ public class APIController {
      */
     @GetMapping("/restartTask")
     public Result restartTask(@RequestParam Integer id) {
+        taskService.initTenantByTaskId(id);
         return Result.succeed(taskService.restartTask(id, null), "重启成功");
     }
 
@@ -124,6 +127,7 @@ public class APIController {
      */
     @GetMapping("/selectSavePointRestartTask")
     public Result restartTask(@RequestParam Integer id, @RequestParam String savePointPath) {
+        taskService.initTenantByTaskId(id);
         return Result.succeed(taskService.restartTask(id, savePointPath), "重启成功");
     }
 
@@ -132,6 +136,7 @@ public class APIController {
      */
     @GetMapping("/onLineTask")
     public Result onLineTask(@RequestParam Integer id) {
+        taskService.initTenantByTaskId(id);
         return taskService.onLineTask(id);
     }
 
@@ -140,6 +145,7 @@ public class APIController {
      */
     @GetMapping("/offLineTask")
     public Result offLineTask(@RequestParam Integer id) {
+        taskService.initTenantByTaskId(id);
         return taskService.offLineTask(id, null);
     }
 
@@ -148,15 +154,16 @@ public class APIController {
      */
     @GetMapping("/reOnLineTask")
     public Result reOnLineTask(@RequestParam Integer id) {
+        taskService.initTenantByTaskId(id);
         return taskService.reOnLineTask(id, null);
     }
-
 
     /**
      * 选择保存点重新上线任务
      */
     @GetMapping("/selectSavePointReOnLineTask")
     public Result selectSavePointReOnLineTask(@RequestParam Integer id, @RequestParam String savePointPath) {
+        taskService.initTenantByTaskId(id);
         return taskService.reOnLineTask(id, savePointPath);
     }
 
@@ -165,6 +172,7 @@ public class APIController {
      */
     @GetMapping("/getJobInstance")
     public Result getJobInstance(@RequestParam Integer id) {
+        jobInstanceService.initTenantByJobInstanceId(id);
         return Result.succeed(jobInstanceService.getById(id), "获取成功");
     }
 
@@ -173,6 +181,7 @@ public class APIController {
      */
     @GetMapping("/getJobInstanceByTaskId")
     public Result getJobInstanceByTaskId(@RequestParam Integer id) {
+        taskService.initTenantByTaskId(id);
         return Result.succeed(jobInstanceService.getJobInstanceByTaskId(id), "获取成功");
     }
 }
