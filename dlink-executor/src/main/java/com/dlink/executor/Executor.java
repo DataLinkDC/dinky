@@ -267,31 +267,32 @@ public abstract class Executor {
     }
 
     private void loginFromKeytabIfNeed() {
-        this.reset();
         setConfig.forEach((k, v) -> log.debug("setConfig key: [{}], value: [{}]", k, v));
         String krb5ConfPath = (String) setConfig.getOrDefault("java.security.krb5.conf", "");
         String keytabPath = (String) setConfig.getOrDefault("security.kerberos.login.keytab", "");
         String principal = (String) setConfig.getOrDefault("security.kerberos.login.principal", "");
 
-        if (krb5ConfPath.isEmpty() && keytabPath.isEmpty() && principal.isEmpty()) {
+        if (Asserts.isAllNullString(krb5ConfPath, keytabPath, principal)) {
             log.info("Simple authentication mode");
             return;
         }
         log.info("Kerberos authentication mode");
-        if (krb5ConfPath.isEmpty()) {
+        if (Asserts.isNullString(krb5ConfPath)) {
             log.error("Parameter [java.security.krb5.conf] is null or empty.");
             return;
         }
 
-        if (keytabPath.isEmpty()) {
+        if (Asserts.isNullString(keytabPath)) {
             log.error("Parameter [security.kerberos.login.keytab] is null or empty.");
             return;
         }
 
-        if (principal.isEmpty()) {
+        if (Asserts.isNullString(principal)) {
             log.error("Parameter [security.kerberos.login.principal] is null or empty.");
             return;
         }
+
+        this.reset();
 
         System.setProperty("java.security.krb5.conf", krb5ConfPath);
         org.apache.hadoop.conf.Configuration config = new org.apache.hadoop.conf.Configuration();
