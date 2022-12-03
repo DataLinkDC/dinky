@@ -233,6 +233,10 @@ export function clearMetaDataTable(id: number) {
 export function showTableData(id: number, schemaName: String, tableName: String, option: {}) {
   return postAll('api/database/queryData', {id: id, schemaName: schemaName, tableName: tableName, option: option});
 }
+/*--- 执行sql---*/
+export function execDatabaseSql(id: number, sql: String) {
+  return postAll('api/database/execSql', {id: id, sql: sql});
+}
 
 /*--- 刷新 Flink Jobs ---*/
 export function showFlinkJobs(clusterId: number) {

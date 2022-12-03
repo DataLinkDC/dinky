@@ -190,7 +190,7 @@ public class DataBaseController {
      */
     @GetMapping("/listColumns")
     public Result listColumns(@RequestParam Integer id, @RequestParam String schemaName,
-                              @RequestParam String tableName) {
+            @RequestParam String tableName) {
         return Result.succeed(databaseService.listColumns(id, schemaName, tableName), "获取成功");
     }
 
@@ -208,11 +208,24 @@ public class DataBaseController {
     }
 
     /**
+     * 执行sql
+     */
+    @PostMapping("/execSql")
+    public Result execSql(@RequestBody QueryData queryData) {
+        JdbcSelectResult jdbcSelectResult = databaseService.execSql(queryData);
+        if (jdbcSelectResult.isSuccess()) {
+            return Result.succeed(jdbcSelectResult, "获取成功");
+        } else {
+            return Result.failed(jdbcSelectResult, "查询失败");
+        }
+    }
+
+    /**
      * 获取 SqlGeneration
      */
     @GetMapping("/getSqlGeneration")
     public Result getSqlGeneration(@RequestParam Integer id, @RequestParam String schemaName,
-                                   @RequestParam String tableName) {
+            @RequestParam String tableName) {
         return Result.succeed(databaseService.getSqlGeneration(id, schemaName, tableName), "获取成功");
     }
 

@@ -208,6 +208,10 @@ export default {
   'pages.metadata.DataSearch': '数据查询',
   'pages.metadata.GenerateSQL': 'SQL 生成',
   'pages.metadata.FieldInformation': '字段信息',
+  'pages.metadata.Console': '控制台',
+  'pages.metadata.help.noSqlSelect': "未选择任何sql！",
+  'pages.metadata.help.selectSql': "请在编辑器内选择你要执行的sql",
+  'pages.metadata.help.exec': "执行选中sql",
 
   'pages.TableData.QueryConditions': '查询条件',
   'pages.TableData.sorting': '排序',
