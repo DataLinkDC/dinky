@@ -78,6 +78,11 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         String connectMaxRetries = config.getSource().get("connect.max-retries");
         String connectionPoolSize = config.getSource().get("connection.pool.size");
         String heartbeatInterval = config.getSource().get("heartbeat.interval");
+        String chunkSize = config.getSource().get("scan.incremental.snapshot.chunk.size");
+        String distributionFactorLower = config.getSource().get("chunk-key.even-distribution.factor.upper-bound");
+        String distributionFactorUpper = config.getSource().get("chunk-key.even-distribution.factor.lower-bound");
+        String scanNewlyAddedTableEnabled = config.getSource().get("scan.newly-added-table.enabled");
+        String schemaChanges = config.getSource().get("schema.changes");
 
         Properties debeziumProperties = new Properties();
         // 为部分转换添加默认值
@@ -162,6 +167,26 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
 
         if (Asserts.isNotNullString(heartbeatInterval)) {
             sourceBuilder.heartbeatInterval(Duration.ofMillis(Long.valueOf(heartbeatInterval)));
+        }
+
+        if (Asserts.isAllNotNullString(chunkSize)) {
+            sourceBuilder.splitSize(Integer.parseInt(chunkSize));
+        }
+
+        if (Asserts.isNotNullString(distributionFactorLower)) {
+            sourceBuilder.distributionFactorLower(Double.valueOf(distributionFactorLower));
+        }
+
+        if (Asserts.isNotNullString(distributionFactorUpper)) {
+            sourceBuilder.distributionFactorUpper(Double.valueOf(distributionFactorUpper));
+        }
+
+        if (Asserts.isEqualsIgnoreCase(scanNewlyAddedTableEnabled, "true")) {
+            sourceBuilder.scanNewlyAddedTableEnabled(true);
+        }
+
+        if (Asserts.isEqualsIgnoreCase(schemaChanges, "true")) {
+            sourceBuilder.includeSchemaChanges(true);
         }
 
         return env.fromSource(sourceBuilder.build(), WatermarkStrategy.noWatermarks(), "MySQL CDC Source");

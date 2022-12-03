@@ -182,7 +182,7 @@ source /etc/profile
 mvn clean install -Dmaven.test.skip=true
 
 # 如若修改版本，按以下指定即可。flink可支持多版本(1.11-1.16)
-mvn clean install -Dmaven.test.skip=true -P pord,scala-2.11,flink-1.14,flink-1.15
+mvn clean install -Dmaven.test.skip=true -P aliyun,nexus,prod,scala-2.11,web,flink-1.14
 ```
 
 切换到 Dinky 根目录下得 build 文件夹下，即可出现编译后的安装包
@@ -209,7 +209,7 @@ mvn clean install -Dmaven.test.skip=true
 ```
 >如若修改版本，按以下指定即可。flink可支持多版本(1.11-1.16)
 > 
-> `mvn clean install -Dmaven.test.skip=true -P pord,scala-2.11,flink-1.14,flink-1.15`
+> `mvn clean install -Dmaven.test.skip=true -P aliyun,nexus,prod,scala-2.11,web,flink-1.14`
 
 切换到 Dinky 根目录下得 build 文件夹下，即可出现编译后的安装包。
 
@@ -226,7 +226,7 @@ npm run build
 #### 后端编译
 编译maven的时候，移除web profile即可。在-P 后面加: `!web`,如：
 
-`mvn clean install -Dmaven.test.skip=true -P !web,pord,scala-2.11,flink-1.14,flink-1.15`
+`mvn clean install -Dmaven.test.skip=true -P !web,aliyun,nexus,prod,scala-2.11,flink-1.14`
 
 
 ---

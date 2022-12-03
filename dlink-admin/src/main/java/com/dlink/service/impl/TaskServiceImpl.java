@@ -222,14 +222,21 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             return executeCommonSql(SqlDTO.build(task.getStatement(),
                     task.getDatabaseId(), null));
         }
-        ProcessEntity process = ProcessContextHolder.registerProcess(
-                ProcessEntity.init(ProcessType.FLINKSUBMIT, StpUtil.getLoginIdAsInt()));
+        ProcessEntity process = null;
+        if (StpUtil.isLogin()) {
+            process = ProcessContextHolder.registerProcess(
+                    ProcessEntity.init(ProcessType.FLINKSUBMIT, StpUtil.getLoginIdAsInt()));
+        } else {
+            process = ProcessEntity.NULL_PROCESS;
+        }
         process.info("Initializing Flink job config...");
         JobConfig config = buildJobConfig(task);
         // init UDF
         udfService.init(task.getStatement(), config);
 
-        loadDocker(id, config.getClusterConfigurationId(), config.getGatewayConfig());
+        if (GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType())) {
+            loadDocker(id, config.getClusterConfigurationId(), config.getGatewayConfig());
+        }
 
         JobManager jobManager = JobManager.build(config);
         process.start();
@@ -247,6 +254,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private void loadDocker(Integer taskId, Integer clusterConfigurationId, GatewayConfig gatewayConfig) {
         Map dockerConfig = (Map) clusterConfigurationService.getClusterConfigById(clusterConfigurationId).getConfig()
                 .get("dockerConfig");
+        if (dockerConfig == null) {
+            return;
+        }
         String params = SystemConfiguration.getInstances().getSqlSubmitJarParas()
                 + buildParas(taskId, dockerConfig.getOrDefault("dinky.remote.addr", "").toString());
 
@@ -410,6 +420,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
+    public void initTenantByTaskId(Integer id) {
+        Integer tenantId = baseMapper.getTenantByTaskId(id);
+        Asserts.checkNull(tenantId, Tips.TASK_NOT_EXIST);
+        TenantContextHolder.set(tenantId);
+    }
+
+    @Override
     public boolean saveOrUpdateTask(Task task) {
         if (CollUtil.isNotEmpty(task.getConfig()) && Dialect.isUDF(task.getDialect())
                 && Convert.toInt(task.getConfig().get(0).get("templateId"), 0) != 0) {
@@ -535,6 +552,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public JobStatus checkJobStatus(JobInfoDetail jobInfoDetail) {
         JobConfig jobConfig = new JobConfig();
+        if (Asserts.isNull(jobInfoDetail.getClusterConfiguration())) {
+            return JobStatus.UNKNOWN;
+        }
         Map<String, Object> gatewayConfigMap = clusterConfigurationService
                 .getGatewayConfig(jobInfoDetail.getClusterConfiguration().getId());
         jobConfig.buildGatewayConfig(gatewayConfigMap);
@@ -792,7 +812,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         String jobId = jobInstance.getJid();
         boolean useGateway = false;
         JobConfig jobConfig = new JobConfig();
-        jobConfig.setAddress(cluster.getJobManagerHost());
         jobConfig.setType(cluster.getType());
         Task task = this.getTaskInfoById(cluster.getTaskId());
 
@@ -811,6 +830,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             useGateway = true;
         }
         jobConfig.setTaskId(jobInstance.getTaskId());
+        jobConfig.setAddress(cluster.getJobManagerHost());
         JobManager jobManager = JobManager.build(jobConfig);
         jobManager.setUseGateway(useGateway);
         if ("canceljob".equals(savePointType)) {
@@ -1287,7 +1307,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 String exceptionUrl = "http://" + jobManagerHost + "/#/job/" + jobInstance.getJid() + "/exceptions";
 
                 for (AlertInstance alertInstance : alertGroup.getInstances()) {
-                    if (alertInstance == null) {
+                    if (alertInstance == null
+                            || (Asserts.isNotNull(alertInstance.getEnabled()) && !alertInstance.getEnabled())) {
                         continue;
                     }
                     Map<String, String> map = JSONUtil.toMap(alertInstance.getParams());

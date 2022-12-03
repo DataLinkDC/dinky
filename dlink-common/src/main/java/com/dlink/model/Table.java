@@ -236,7 +236,6 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
                 sb.append("`" + columns.get(i).getName() + "`  --  " + columnComment + " \n");
             } else {
                 sb.append("`" + columns.get(i).getName() + "` \n");
-
             }
         }
         if (Asserts.isNotNullString(comment)) {

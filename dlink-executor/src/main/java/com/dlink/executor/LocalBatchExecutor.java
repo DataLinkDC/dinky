@@ -22,6 +22,7 @@ package com.dlink.executor;
 import com.dlink.assertion.Asserts;
 
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.configuration.RestOptions;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 /**
@@ -36,8 +37,11 @@ public class LocalBatchExecutor extends Executor {
         this.executorSetting = executorSetting;
         if (Asserts.isNotNull(executorSetting.getConfig())) {
             Configuration configuration = Configuration.fromMap(executorSetting.getConfig());
-            this.environment = StreamExecutionEnvironment.createLocalEnvironment(configuration);
-        } else {
+            if (configuration.contains(RestOptions.PORT)) {
+                this.environment = StreamExecutionEnvironment.createLocalEnvironmentWithWebUI(configuration);
+            } else {
+                this.environment = StreamExecutionEnvironment.createLocalEnvironment(configuration);
+            }        } else {
             this.environment = StreamExecutionEnvironment.createLocalEnvironment();
         }
         init();
