@@ -222,8 +222,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             return executeCommonSql(SqlDTO.build(task.getStatement(),
                     task.getDatabaseId(), null));
         }
-        ProcessEntity process = ProcessContextHolder.registerProcess(
-                ProcessEntity.init(ProcessType.FLINKSUBMIT, StpUtil.getLoginIdAsInt()));
+        ProcessEntity process = null;
+        if (StpUtil.isLogin()) {
+            process = ProcessContextHolder.registerProcess(
+                    ProcessEntity.init(ProcessType.FLINKSUBMIT, StpUtil.getLoginIdAsInt()));
+        } else {
+            process = ProcessEntity.NULL_PROCESS;
+        }
         process.info("Initializing Flink job config...");
         JobConfig config = buildJobConfig(task);
         // init UDF
@@ -412,6 +417,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             }
         }
         return task;
+    }
+
+    @Override
+    public void initTenantByTaskId(Integer id) {
+        Integer tenantId = baseMapper.getTenantByTaskId(id);
+        Asserts.checkNull(tenantId, Tips.TASK_NOT_EXIST);
+        TenantContextHolder.set(tenantId);
     }
 
     @Override
