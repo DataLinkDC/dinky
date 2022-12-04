@@ -206,6 +206,11 @@ const config = {
                         position: 'right',
                     },
                     {
+                        href: 'https://github.com/orgs/DataLinkDC/projects/1',
+                        label: 'Roadmap',
+                        position: 'right',
+                    },
+                    {
                         href: 'https://github.com/DataLinkDC/dlink',
                         label: 'GitHub',
                         className: 'header-github-link',
