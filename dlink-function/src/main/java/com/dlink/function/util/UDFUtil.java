@@ -57,7 +57,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.MD5;
 import cn.hutool.extra.template.TemplateConfig;
 import cn.hutool.extra.template.TemplateEngine;
-import cn.hutool.extra.template.TemplateUtil;
+import cn.hutool.extra.template.engine.freemarker.FreemarkerEngine;
 import groovy.lang.GroovyClassLoader;
 
 /**
@@ -96,7 +96,7 @@ public class UDFUtil {
     public static final String PYTHON_UDF_DEF = "@ud(?:f|tf|af|taf).*\\n+def\\s+(.*)\\(.*\\):";
     public static final String SCALA_UDF_CLASS = "class\\s+(\\w+)(\\s*\\(.*\\)){0,1}\\s+extends";
     public static final String SCALA_UDF_PACKAGE = "package\\s+(.*);";
-    private static final TemplateEngine ENGINE = TemplateUtil.createEngine(new TemplateConfig());
+    private static final TemplateEngine ENGINE = new FreemarkerEngine(new TemplateConfig());
 
     /**
      * 模板解析
