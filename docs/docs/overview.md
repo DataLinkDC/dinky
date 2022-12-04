@@ -1,20 +1,19 @@
 ---
+
 sidebar_position: 5
 id: overview
-title: Dinky 概览
----
-
+title: Overview
+---------------
 
 ## 概述
 
 Dinky 作为 [Apache Flink](https://github.com/apache/flink) 的 FlinkSQL 的实时计算平台，具有以下核心特点。
 
 - **支持 Flink 原生语法、连接器、UDF 等：** 几乎零成本将 Flink 作业迁移至 Dinky。
-- **增强 FlinkSQL 语法：** 表值聚合函数、全局变量、CDC多源合并、执行环境、语句合并、共享会话等。
+- **增强 FlinkSQL 语法：** 表值聚合函数、全局变量、CDC多源合并、执行环境、语句合并等。
 - **支持 Flink 多版本：** 支持作为多版本 FlinkSQL Server 的能力以及 OpenApi。
-- **支持外部数据源的 DB SQL 操作：** 如 ClickHouse、Doris、Hive、Mysql、Oracle、Phoenix、PostgreSql、SqlServer 等。
+- **支持外部数据源的 DB SQL 操作：** 如 ClickHouse、Doris、Hive、Mysql、Oracle、Phoenix、PostgreSql、Presto、SqlServer、StarRocks 等。
 - **支持实时任务运维：** 作业上线下线、作业信息、集群信息、作业快照、异常信息、作业日志、数据地图、即席查询、历史版本、报警记录等。
-
 
 ## 管理控制台介绍
 
