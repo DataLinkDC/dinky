@@ -46,18 +46,18 @@ const config = {
         learningMore: 'https://space.bilibili.com/366484959/video'
     },
     i18n: {
-        defaultLocale: 'zh-cn',
-        locales: ['zh-cn'],
-        // locales: ['zh-cn','en'],
+        defaultLocale: 'zh',
+        locales: ['zh'],
+        path: "i18n",
         localeConfigs: {
-            'zh-cn': {
-                label: "简体中文",
+            'zh': {
+                label: "中文",
                 direction: 'ltr',
             },
-            //  'en': {
-            //    label: "English",
-            //    direction: 'ltr',
-            //  },
+            'en': {
+                label: "English",
+                direction: 'ltr',
+            },
         },
     },
     themes: [
@@ -72,22 +72,37 @@ const config = {
                 highlightSearchTermsOnTargetPage: false, // Highlight search terms on target page.
                 explicitSearchResultPath: true,
                 searchBarPosition: "right",
-                language:["zh","en"],
+                language: ["zh", "en"],
                 hideSearchBarWithNoSearchContext: true,
             }),
         ],
     ],
     presets: [
         [
-            'classic',
+            '@docusaurus/preset-classic',
             /** @type {import('@docusaurus/preset-classic').Options} */
             ({
                 docs: {
+                    lastVersion: '0.7',
+                    versions: {
+                        current: {
+                            label: 'Next',
+                            path: '/next',
+                        },
+                        0.6: {
+                            label: '0.6',
+                            path: '/0.6',
+                        },
+                        0.7: {
+                            label: '0.7',
+                            path: '/0.7',
+                        },
+                    },
                     sidebarPath: require.resolve('./sidebars.js'),
                     sidebarCollapsible: true,
                     // Please change this to your repo.
                     editUrl: ({locale, versionDocsDirPath, docPath}) => {
-                        if (locale !== 'zh-cn') {
+                        if (locale !== 'zh') {
                             return `https://github.com/DataLinkDC/dlink/tree/master/docs/i18n/${locale}/${docPath}`;
                         }
                         return `https://github.com/DataLinkDC/dlink/tree/master/docs/${versionDocsDirPath}/${docPath}`;
@@ -106,13 +121,6 @@ const config = {
                     postsPerPage: 20, // 博客主页的前{count}篇文章数 | the blog homepage show limit count
                     readingTime: ({content, frontMatter, defaultReadingTime}) =>
                         defaultReadingTime({content, options: {wordsPerMinute: 300}}), // 阅读时间 md文件中如果不写 date: 此属性 默认是当前时间
-                    // Please change this to your repo.
-                    // editUrl: ({locale, versionDocsDirPath, docPath}) => { // 博客页面修改编辑按钮
-                    //   if (locale !== 'zh-cn') {
-                    //     return `https://github.com/DataLinkDC/dlink/tree/master/docs/i18n/${locale}/${docPath}`;
-                    //   }
-                    //   return `https://github.com/DataLinkDC/dlink/tree/master/docs/${versionDocsDirPath}/${docPath}`;
-                    // },
                 },
                 theme: {
                     customCss: require.resolve('./src/css/custom.css'), // 自定义css文件
@@ -131,11 +139,10 @@ const config = {
                 isCloseable: false,
             },
             hideOnScroll: false, // 滚动时是否隐藏 | Whether to hide the sidebar on scroll
-            // hideableSidebar: true, // 是否隐藏侧边栏 | Whether to hide the sidebar in mobile
             docs: {
                 sidebar: {
-                    hideable: true ,// 是否隐藏侧边栏 | Whether to hide the sidebar in mobile
-                    autoCollapseCategories: true , // 点击另一个分类时自动折叠当前分类 | Click another category will automatically collapse the current category
+                    hideable: true,// 是否隐藏侧边栏 | Whether to hide the sidebar in mobile
+                    autoCollapseCategories: true, // 点击另一个分类时自动折叠当前分类 | Click another category will automatically collapse the current category
 
                 }
             },
@@ -154,23 +161,9 @@ const config = {
                         activeBaseRegex: `^/$`,
                     },
                     {
+                        type: 'docsVersionDropdown',
                         position: 'right',
-                        label: '文档',
-                        to: "/docs/intro",
-                        items: [
-                            {
-                                label: "Next",
-                                to: "/docs/next/intro",
-                            },
-                            {
-                                label: "0.6",
-                                to: "/docs/intro",
-                            },
-                            {
-                                label: "All Versions",
-                                to: "/versions",
-                            },
-                        ],
+                        dropdownActiveClassDisabled: true,
                     },
                     {
                         to: '/download/download',
@@ -208,8 +201,14 @@ const config = {
                         position: 'right',
                     },
                     {
+                        href: 'https://github.com/DataLinkDC/dlink/issues/884',
+                        label: 'FAQ',
+                        position: 'right',
+                    },
+                    {
                         href: 'https://github.com/DataLinkDC/dlink',
                         label: 'GitHub',
+                        className: 'header-github-link',
                         position: 'right',
                     },
                 ],
@@ -222,11 +221,11 @@ const config = {
                         items: [
                             {
                                 label: '文档首页',
-                                to: '/docs/intro',
+                                to: '/docs/next/intro',
                             },
                             {
                                 label: 'Open Api',
-                                to: '/docs/administrator_guide/studio/openapi',
+                                to: '/docs/next/administrator_guide/studio/openapi',
                             },
                         ],
                     },
@@ -253,11 +252,7 @@ const config = {
                             {
                                 label: 'GitHub',
                                 href: 'https://github.com/DataLinkDC/dlink',
-                            },
-                            {
-                                label: '博客',
-                                to: '/blog',
-                            },
+                            }
                         ],
                     },
                 ],
@@ -283,12 +278,22 @@ const config = {
                 path: 'download',
                 routeBasePath: 'download',
                 editUrl: ({locale, versionDocsDirPath, docPath}) => {
-                    if (locale !== 'zh-cn') {
+                    if (locale !== 'zh') {
                         return `https://github.com/DataLinkDC/dlink/tree/master/docs/i18n/${locale}/${docPath}`;
                     }
                     return `https://github.com/DataLinkDC/dlink/tree/master/docs/${versionDocsDirPath}/${docPath}`;
                 },
                 sidebarPath: require.resolve('./sidebars.js'),
+            },
+        ],
+        [
+            '@docusaurus/plugin-ideal-image',
+            {
+                quality: 70,
+                max: 1030, // 最大缩放图片尺寸。
+                min: 640, // 最小缩放图片尺寸。 如果原始值比这还低，会使用原图尺寸。
+                steps: 2, // 在 min 和 max 之间最多生成的图片数量（包含两端点）
+                disableInDev: false,
             },
         ],
     ]

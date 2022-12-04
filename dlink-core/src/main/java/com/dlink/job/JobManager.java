@@ -260,8 +260,6 @@ public class JobManager {
         if (CollUtil.isEmpty(udfList)) {
             createExecutorWithSession();
             return;
-        } else if (runMode == GatewayType.KUBERNETES_APPLICATION) {
-            throw new RuntimeException("UDF 暂不支持k8s模式");
         }
         String[] jarPaths = UDFUtil.initJavaUDF(udfList, runMode, config.getTaskId());
 

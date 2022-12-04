@@ -22,20 +22,13 @@ import {Button, Col, Empty, Modal, Row, Select, Spin, Tabs, Tag, Tree} from "ant
 import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import React, {useState} from "react";
-import {
-  CodepenOutlined,
-  DatabaseOutlined,
-  DownOutlined,
-  OrderedListOutlined,
-  PoweroffOutlined,
-  TableOutlined
-} from '@ant-design/icons';
+import {CodepenOutlined, DatabaseOutlined, DownOutlined, OrderedListOutlined, TableOutlined} from '@ant-design/icons';
 import {clearMetaDataTable, showMetaDataTable} from "@/components/Studio/StudioEvent/DDL";
 import {Scrollbars} from 'react-custom-scrollbars';
-import Columns from "@/pages/DataBase/Columns";
-import Tables from "@/pages/DataBase/Tables";
+import Columns from "@/pages/RegistrationCenter/DataBase/Columns";
+import Tables from "@/pages/RegistrationCenter/DataBase/Tables";
 import {TreeDataNode} from "@/components/Studio/StudioTree/Function";
-import Generation from "@/pages/DataBase/Generation";
+import Generation from "@/pages/RegistrationCenter/DataBase/Generation";
 import {l} from "@/utils/intl";
 
 const {DirectoryTree} = Tree;

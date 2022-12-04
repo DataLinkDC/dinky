@@ -55,4 +55,6 @@ public interface JobInstanceService extends ISuperService<JobInstance> {
     JobInstance getJobInstanceByTaskId(Integer id);
 
     ProTableResult<JobInstance> listJobInstances(JsonNode para);
+
+    void initTenantByJobInstanceId(Integer id);
 }
