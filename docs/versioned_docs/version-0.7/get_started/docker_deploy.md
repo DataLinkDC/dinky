@@ -27,7 +27,6 @@ docker run --restart=always -p 8888:8888 -p 8081:8081  -e MYSQL_ADDR=dinky-mysql
 
 ```shell
 docker run --restart=always -p 8888:8888 -p 8081:8081  -e MYSQL_ADDR=10.255.7.3:33006 --name dinky registry.cn-hangzhou.aliyuncs.com/dinky/dinky-standalone-server:0.7.0-flink14
-\
 ```
 
 
