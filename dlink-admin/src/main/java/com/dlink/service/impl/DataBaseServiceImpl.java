@@ -158,6 +158,19 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     }
 
     @Override
+    public JdbcSelectResult execSql(QueryData queryData) {
+        DataBase dataBase = getById(queryData.getId());
+        Asserts.checkNotNull(dataBase, "该数据源不存在！");
+        Driver driver = Driver.build(dataBase.getDriverConfig());
+        long startTime = System.currentTimeMillis();
+        JdbcSelectResult jdbcSelectResult = driver.query(queryData.getSql(), 500);
+        long endTime = System.currentTimeMillis();
+        jdbcSelectResult.setTime(endTime - startTime);
+        jdbcSelectResult.setTotal(jdbcSelectResult.getRowData().size());
+        return jdbcSelectResult;
+    }
+
+    @Override
     public SqlGeneration getSqlGeneration(Integer id, String schemaName, String tableName) {
         DataBase dataBase = getById(id);
         Asserts.checkNotNull(dataBase, "该数据源不存在！");
