@@ -21,8 +21,8 @@ import React, {useState} from 'react';
 import {Button, Divider, Form, Input, message, Modal, Select, Space, Switch, Upload} from 'antd';
 import {MinusCircleOutlined, PlusOutlined, UploadOutlined} from '@ant-design/icons';
 import {getConfig, getConfigFormValues} from "@/pages/RegistrationCenter/ClusterManage/ClusterConfiguration/function";
-import type {Config, DOCKER_CONFIG_LIST} from "@/pages/RegistrationCenter/ClusterManage/ClusterConfiguration/conf";
 import {
+  DOCKER_CONFIG_LIST,
   FLINK_CONFIG_LIST,
   HADOOP_CONFIG_LIST,
   KUBERNETES_CONFIG_LIST

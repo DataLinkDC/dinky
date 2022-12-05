@@ -23,6 +23,10 @@
     "message": "GitHub",
     "description": "Navbar item with label GitHub"
   },
+  "item.label.RoadMap": {
+    "message": "RoadMap",
+    "description": "Navbar item with label GitHub"
+  },
   "item.label.如何参与": {
     "message": "如何参与",
     "description": "Navbar item with label 如何参与"
