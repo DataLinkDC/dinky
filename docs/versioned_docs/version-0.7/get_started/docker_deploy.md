@@ -14,7 +14,7 @@ title: Docker部署
 ##  启动服务
 
 ### 使用 standalone-server 镜像
-> 使用 standalone-server 镜像启动一个 Dinky standalone-server 容器应该是最快体验 DolphinScheduler 的方法。通过这个方式 你可以最快速的体验到 Dinky 的大部分功能，了解主要和概念和内容。
+> 使用 standalone-server 镜像启动一个 Dinky standalone-server 容器应该是最快体验 Dinky 的方法。通过这个方式 你可以最快速的体验到 Dinky 的大部分功能，了解主要和概念和内容。
 
 ```shell
 ## 启动 dinky mysql 镜像服务
