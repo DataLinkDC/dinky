@@ -25,9 +25,12 @@ import com.dlink.metadata.convert.MySqlTypeConvert;
 import com.dlink.metadata.query.IDBQuery;
 import com.dlink.metadata.query.MySqlQuery;
 import com.dlink.model.Column;
+import com.dlink.model.QueryData;
 import com.dlink.model.Table;
+import com.dlink.utils.TextUtil;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -75,10 +78,28 @@ public class MySqlDriver extends AbstractJdbcDriver {
 
     @Override
     public String generateCreateTableSql(Table table) {
+        String genTableSql = genTable(table);
+        logger.info("Auto generateCreateTableSql {}", genTableSql);
+        return genTableSql;
+    }
+
+    @Override
+    public String getCreateTableSql(Table table) {
+
+        return genTable(table);
+    }
+
+    public String genTable(Table table) {
         StringBuilder key = new StringBuilder();
         StringBuilder sb = new StringBuilder();
 
-        sb.append("CREATE TABLE IF NOT EXISTS ").append(table.getSchemaTableName()).append(" (\n");
+        sb.append("CREATE TABLE IF NOT EXISTS ")
+                .append("`")
+                .append(table.getSchema())
+                .append("`.`")
+                .append(table.getName())
+                .append("`")
+                .append(" (\n");
         for (int i = 0; i < table.getColumns().size(); i++) {
             Column column = table.getColumns().get(i);
             sb.append("  `")
@@ -135,7 +156,72 @@ public class MySqlDriver extends AbstractJdbcDriver {
             sb.append(" COMMENT='").append(table.getComment()).append("'");
         }
         sb.append(";");
-        logger.info("Auto generateCreateTableSql {}", sb);
+        return sb.toString();
+    }
+
+    @Override
+    public StringBuilder genQueryOption(QueryData queryData) {
+
+        String where = queryData.getOption().getWhere();
+        String order = queryData.getOption().getOrder();
+        String limitStart = queryData.getOption().getLimitStart();
+        String limitEnd = queryData.getOption().getLimitEnd();
+
+        StringBuilder optionBuilder = new StringBuilder()
+                .append("select * from ")
+                .append("`")
+                .append(queryData.getSchemaName())
+                .append("`")
+                .append(".")
+                .append("`")
+                .append(queryData.getTableName())
+                .append("`");
+
+        if (where != null && !where.equals("")) {
+            optionBuilder.append(" where ").append(where);
+        }
+        if (order != null && !order.equals("")) {
+            optionBuilder.append(" order by ").append(order);
+        }
+
+        if (TextUtil.isEmpty(limitStart)) {
+            limitStart = "0";
+        }
+        if (TextUtil.isEmpty(limitEnd)) {
+            limitEnd = "100";
+        }
+        optionBuilder.append(" limit ")
+                .append(limitStart)
+                .append(",")
+                .append(limitEnd);
+
+        return optionBuilder;
+    }
+
+    @Override
+    public String getSqlSelect(Table table) {
+        List<Column> columns = table.getColumns();
+        StringBuilder sb = new StringBuilder("SELECT\n");
+        for (int i = 0; i < columns.size(); i++) {
+            sb.append("    ");
+            if (i > 0) {
+                sb.append(",");
+            }
+            String columnComment = columns.get(i).getComment();
+            if (Asserts.isNotNullString(columnComment)) {
+                if (columnComment.contains("\'") | columnComment.contains("\"")) {
+                    columnComment = columnComment.replaceAll("\"|'", "");
+                }
+                sb.append("`").append(columns.get(i).getName()).append("`  --  ").append(columnComment).append(" \n");
+            } else {
+                sb.append("`").append(columns.get(i).getName()).append("` \n");
+            }
+        }
+        if (Asserts.isNotNullString(table.getComment())) {
+            sb.append(" FROM `").append(table.getSchema()).append("`.`").append(table.getName()).append("`;").append(" -- ").append(table.getComment()).append("\n");
+        } else {
+            sb.append(" FROM `").append(table.getSchema()).append("`.`").append(table.getName()).append("`;\n");
+        }
         return sb.toString();
     }
 }
