@@ -27,7 +27,7 @@
     <artifactId>dlink-connector-pulsar-1.14</artifactId>
 
     <properties>
-        <pulsar.version>2.9.1</pulsar.version>
+        <pulsar.version>2.10.2</pulsar.version>
         <hbase.version>1.4.3</hbase.version>
         <hadoop.version>2.4.1</hadoop.version>
         <fastjson.version>1.2.7</fastjson.version>
