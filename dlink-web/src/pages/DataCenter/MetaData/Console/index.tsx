@@ -230,6 +230,9 @@ const Console = (props: any) => {
               language={currentDatabase.type.toLowerCase()}
               theme="vs-dark"
               editorDidMount={editorDidMountHandle}
+              options={{
+                automaticLayout: true,
+              }}
             />
           </Col>
         </Row>
