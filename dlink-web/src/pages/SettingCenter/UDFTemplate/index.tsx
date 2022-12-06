@@ -28,7 +28,7 @@ import 'antd/dist/antd.css';
 import './index.css';
 import CodeEdit from "@/components/Common/CodeEdit";
 import {l} from "@/utils/intl";
-import { DIALECT } from "@/components/Studio/conf";
+import {DIALECT} from "@/components/Studio/conf";
 
 const {Option} = Select;
 
@@ -39,7 +39,7 @@ const UDFTemplate: React.FC<{}> = () => {
   const initData: UDFTemplateItem = {
     id: null,
     name: "",
-    codeType: "java",
+    codeType: "Java",
     functionType: "UDF",
     templateCode: ""
   }
