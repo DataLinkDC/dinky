@@ -30,7 +30,8 @@ import {
   ConsoleSqlOutlined,
   DatabaseOutlined,
   DownOutlined,
-  ExclamationCircleOutlined, LaptopOutlined,
+  ExclamationCircleOutlined,
+  LaptopOutlined,
   ReadOutlined,
   TableOutlined,
 } from '@ant-design/icons';
@@ -312,7 +313,7 @@ const MetaDataContainer: React.FC<{}> = (props: any) => {
                     )}
                   </TabPane>
 
-                  <TabPane disabled={databaseId==undefined}
+                  <TabPane disabled={tableChecked}
                            tab={
                              <span>
                           <LaptopOutlined />
