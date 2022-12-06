@@ -31,8 +31,6 @@ import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,6 +78,11 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         String connectMaxRetries = config.getSource().get("connect.max-retries");
         String connectionPoolSize = config.getSource().get("connection.pool.size");
         String heartbeatInterval = config.getSource().get("heartbeat.interval");
+        String chunkSize = config.getSource().get("scan.incremental.snapshot.chunk.size");
+        String distributionFactorLower = config.getSource().get("chunk-key.even-distribution.factor.upper-bound");
+        String distributionFactorUpper = config.getSource().get("chunk-key.even-distribution.factor.lower-bound");
+        String scanNewlyAddedTableEnabled = config.getSource().get("scan.newly-added-table.enabled");
+        String schemaChanges = config.getSource().get("schema.changes");
 
         Properties debeziumProperties = new Properties();
         // 为部分转换添加默认值
@@ -166,28 +169,27 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
             sourceBuilder.heartbeatInterval(Duration.ofMillis(Long.valueOf(heartbeatInterval)));
         }
 
-        return env.fromSource(sourceBuilder.build(), WatermarkStrategy.noWatermarks(), "MySQL CDC Source");
-    }
+        if (Asserts.isAllNotNullString(chunkSize)) {
+            sourceBuilder.splitSize(Integer.parseInt(chunkSize));
+        }
 
-    @Override
-    public List<String> getSchemaList() {
-        List<String> schemaList = new ArrayList<>();
-        String schema = config.getDatabase();
-        if (Asserts.isNotNullString(schema)) {
-            String[] schemas = schema.split(FlinkParamConstant.SPLIT);
-            Collections.addAll(schemaList, schemas);
+        if (Asserts.isNotNullString(distributionFactorLower)) {
+            sourceBuilder.distributionFactorLower(Double.valueOf(distributionFactorLower));
         }
-        List<String> tableList = getTableList();
-        for (String tableName : tableList) {
-            tableName = tableName.trim();
-            if (Asserts.isNotNullString(tableName) && tableName.contains(".")) {
-                String[] names = tableName.split("\\\\.");
-                if (!schemaList.contains(names[0])) {
-                    schemaList.add(names[0]);
-                }
-            }
+
+        if (Asserts.isNotNullString(distributionFactorUpper)) {
+            sourceBuilder.distributionFactorUpper(Double.valueOf(distributionFactorUpper));
         }
-        return schemaList;
+
+        if (Asserts.isEqualsIgnoreCase(scanNewlyAddedTableEnabled, "true")) {
+            sourceBuilder.scanNewlyAddedTableEnabled(true);
+        }
+
+        if (Asserts.isEqualsIgnoreCase(schemaChanges, "true")) {
+            sourceBuilder.includeSchemaChanges(true);
+        }
+
+        return env.fromSource(sourceBuilder.build(), WatermarkStrategy.noWatermarks(), "MySQL CDC Source");
     }
 
     @Override
@@ -233,5 +235,10 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
     @Override
     public String getSchemaFieldName() {
         return "db";
+    }
+
+    @Override
+    public String getSchema() {
+        return config.getDatabase();
     }
 }

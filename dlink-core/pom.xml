@@ -21,7 +21,7 @@
     <parent>
         <groupId>com.dlink</groupId>
         <artifactId>dlink</artifactId>
-        <version>0.6.8-SNAPSHOT</version>
+        <version>0.7.0</version>
     </parent>
     <artifactId>dlink-core</artifactId>
     <packaging>jar</packaging>
@@ -37,10 +37,6 @@
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.freemarker</groupId>
-            <artifactId>freemarker</artifactId>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

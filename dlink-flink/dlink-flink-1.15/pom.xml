@@ -21,7 +21,7 @@
     <parent>
         <groupId>com.dlink</groupId>
         <artifactId>dlink-flink</artifactId>
-        <version>0.6.8-SNAPSHOT</version>
+        <version>0.7.0</version>
     </parent>
 
     <artifactId>dlink-flink-1.15</artifactId>
@@ -162,6 +162,11 @@
             <groupId>org.apache.doris</groupId>
             <artifactId>flink-doris-connector-1.14_2.12</artifactId>
             <version>1.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-runtime-web</artifactId>
+            <version>${flink.version}</version>
         </dependency>
     </dependencies>
 

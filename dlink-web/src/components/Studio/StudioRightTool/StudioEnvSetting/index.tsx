@@ -24,7 +24,7 @@ import {Button, Col, Form, Row, Switch, Tooltip} from "antd";
 import {InfoCircleOutlined, MinusSquareOutlined} from "@ant-design/icons";
 import styles from "./index.less";
 import {useEffect} from "react";
-import {JarStateType} from "@/pages/Jar/model";
+import {JarStateType} from "@/pages/RegistrationCenter/Jar/model";
 import {Scrollbars} from "react-custom-scrollbars";
 import {l} from "@/utils/intl";
 

@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.dlink</groupId>
         <artifactId>dlink</artifactId>
-        <version>0.6.8-SNAPSHOT</version>
+        <version>0.7.0</version>
     </parent>
     <artifactId>dlink-client</artifactId>
     <packaging>pom</packaging>

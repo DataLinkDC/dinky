@@ -157,6 +157,8 @@ public interface Driver extends AutoCloseable {
 
     String getCreateTableSql(Table table);
 
+    String getSqlSelect(Table table);
+
     String getDropTableSql(Table table);
 
     String getTruncateTableSql(Table table);

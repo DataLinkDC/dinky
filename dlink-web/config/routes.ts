@@ -80,12 +80,12 @@ export default [
           {
             path: '/registration/cluster/clusterInstance',
             name: 'clusterInstance',
-            component: './Cluster',
+            component: './RegistrationCenter/ClusterManage/Cluster',
           },
           {
             path: '/registration/cluster/clusterConfiguration',
             name: 'clusterConfiguration',
-            component: './ClusterConfiguration',
+            component: './RegistrationCenter/ClusterManage/ClusterConfiguration',
           },
         ],
       },
@@ -93,13 +93,13 @@ export default [
         path: '/registration/jar',
         name: 'jar',
         icon: 'code-sandbox',
-        component: './Jar',
+        component: './RegistrationCenter/Jar',
       },
       {
         path: '/registration/database',
         name: 'database',
         icon: 'database',
-        component: './DataBase',
+        component: './RegistrationCenter/DataBase',
       },
       {
         path: '/registration/alert',
@@ -109,24 +109,24 @@ export default [
           {
             path: '/registration/alert/alertInstance',
             name: 'alertInstance',
-            component: './AlertInstance',
+            component: './RegistrationCenter/AlertManage/AlertInstance',
           },
           {
             path: '/registration/alert/alertGroup',
             name: 'alertGroup',
-            component: './AlertGroup',
+            component: './RegistrationCenter/AlertManage/AlertGroup',
           },
         ],
       }, {
         path: '/registration/document',
         name: 'document',
         icon: 'container',
-        component: './Document',
+        component: './RegistrationCenter/Document',
       },{
         path: '/registration/fragment',
         name: 'fragment',
         icon: "cloud",
-        component: './FragmentVariable',
+        component: './RegistrationCenter/FragmentVariable',
       }
     ],
   },

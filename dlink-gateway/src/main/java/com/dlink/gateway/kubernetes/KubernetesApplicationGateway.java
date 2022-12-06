@@ -32,6 +32,9 @@ import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.deployment.application.ApplicationConfiguration;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.client.program.ClusterClientProvider;
+import org.apache.flink.configuration.Configuration;
+import org.apache.flink.configuration.DeploymentOptionsInternal;
+import org.apache.flink.configuration.GlobalConfiguration;
 import org.apache.flink.configuration.JobManagerOptions;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.configuration.TaskManagerOptions;
@@ -69,6 +72,14 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
         }
         KubernetesResult result = KubernetesResult.build(getType());
         AppConfig appConfig = config.getAppConfig();
+        String flinkConfigPath = config.getClusterConfig().getFlinkConfigPath();
+        Configuration loadConfiguration = GlobalConfiguration.loadConfiguration(flinkConfigPath);
+        if (loadConfiguration != null) {
+            loadConfiguration.addAll(configuration);
+            configuration = loadConfiguration;
+        }
+        configuration.set(DeploymentOptionsInternal.CONF_DIR, flinkConfigPath);
+
         configuration.set(PipelineOptions.JARS, Collections.singletonList(appConfig.getUserJarPath()));
         String[] userJarParas = appConfig.getUserJarParas();
         if (Asserts.isNull(userJarParas)) {

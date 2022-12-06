@@ -189,7 +189,7 @@ const JobInstanceTable = (props: any) => {
         },
       },
     }, {
-      title: l('pages.registerCenter.cluster.instanceName'),
+      title: l('pages.rc.cluster.instanceName'),
       dataIndex: "clusterAlias",
       sorter: true,
     }, {

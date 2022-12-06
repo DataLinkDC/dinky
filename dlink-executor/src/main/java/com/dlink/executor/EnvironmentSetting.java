@@ -20,7 +20,6 @@
 package com.dlink.executor;
 
 import com.dlink.assertion.Asserts;
-import com.dlink.constant.FlinkConstant;
 import com.dlink.constant.NetConstant;
 
 import lombok.Getter;
@@ -35,8 +34,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class EnvironmentSetting {
+
     private String host;
-    private int port;
+    private Integer port;
     private String[] jarFiles;
 
     private boolean useRemote;
@@ -47,25 +47,34 @@ public class EnvironmentSetting {
         this.useRemote = useRemote;
     }
 
-    public EnvironmentSetting(String host, int port, String... jarFiles) {
+    public EnvironmentSetting(String... jarFiles) {
+        this.useRemote = false;
+        this.jarFiles = jarFiles;
+    }
+
+    public EnvironmentSetting(String host, Integer port, String... jarFiles) {
         this.host = host;
         this.port = port;
         this.useRemote = true;
         this.jarFiles = jarFiles;
     }
 
-    public static EnvironmentSetting build(String address,String... jarFiles) {
+    public static EnvironmentSetting build(String address, String... jarFiles) {
         Asserts.checkNull(address, "Flink 地址不能为空");
         String[] strs = address.split(NetConstant.COLON);
         if (strs.length >= 2) {
-            return new EnvironmentSetting(strs[0], Integer.parseInt(strs[1]),jarFiles);
+            return new EnvironmentSetting(strs[0], Integer.parseInt(strs[1]), jarFiles);
         } else {
-            return new EnvironmentSetting(strs[0], FlinkConstant.FLINK_REST_DEFAULT_PORT,jarFiles);
+            return new EnvironmentSetting(jarFiles);
         }
     }
 
     public String getAddress() {
-        return host + NetConstant.COLON + port;
+        if (Asserts.isAllNotNull(host, port)) {
+            return host + NetConstant.COLON + port;
+        } else {
+            return "";
+        }
     }
 
 }

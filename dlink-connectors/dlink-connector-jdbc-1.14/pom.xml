@@ -21,7 +21,7 @@
     <parent>
         <groupId>com.dlink</groupId>
         <artifactId>dlink-connectors</artifactId>
-        <version>0.6.8-SNAPSHOT</version>
+        <version>0.7.0</version>
     </parent>
 
     <artifactId>dlink-connector-jdbc-1.14</artifactId>
@@ -51,7 +51,6 @@
             <version>${postgres.version}</version>
             <scope>provided</scope>
         </dependency>
-
 
         <!-- Postgres test dependencies -->
 

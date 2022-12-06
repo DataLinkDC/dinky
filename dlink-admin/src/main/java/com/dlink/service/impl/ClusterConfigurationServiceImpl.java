@@ -20,7 +20,9 @@
 package com.dlink.service.impl;
 
 import com.dlink.assertion.Asserts;
+import com.dlink.config.Docker;
 import com.dlink.db.service.impl.SuperServiceImpl;
+import com.dlink.function.constant.PathConstant;
 import com.dlink.gateway.GatewayType;
 import com.dlink.gateway.config.ClusterConfig;
 import com.dlink.gateway.config.FlinkConfig;
@@ -30,14 +32,21 @@ import com.dlink.job.JobManager;
 import com.dlink.mapper.ClusterConfigurationMapper;
 import com.dlink.model.ClusterConfiguration;
 import com.dlink.service.ClusterConfigurationService;
+import com.dlink.utils.DockerClientUtils;
 
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
+import cn.hutool.core.io.FileUtil;
 
 /**
  * ClusterConfigServiceImpl
@@ -47,6 +56,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
  */
 @Service
 public class ClusterConfigurationServiceImpl extends SuperServiceImpl<ClusterConfigurationMapper, ClusterConfiguration> implements ClusterConfigurationService {
+
+    @Value("classpath:DinkyFlinkDockerfile")
+    org.springframework.core.io.Resource dockerfileResource;
+
     @Override
     public ClusterConfiguration getClusterConfigById(Integer id) {
         ClusterConfiguration clusterConfiguration = baseMapper.selectById(id);
@@ -96,6 +109,17 @@ public class ClusterConfigurationServiceImpl extends SuperServiceImpl<ClusterCon
             }
             if (kubernetesConfig.containsKey("kubernetes.container.image")) {
                 gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.container.image", kubernetesConfig.get("kubernetes.container.image").toString());
+            }
+            String fileDir = FileUtil.isDirectory(PathConstant.WORK_DIR + "/dlink-doc") ? PathConstant.WORK_DIR + "/dlink-doc" : PathConstant.WORK_DIR;
+            File dockerFile = null;
+            try {
+                dockerFile = FileUtil.writeUtf8String(FileUtil.readUtf8String(dockerfileResource.getFile()), fileDir + "/DinkyFlinkDockerfile");
+                Docker docker = Docker.build((Map) getClusterConfigById(clusterConfiguration.getId()).getConfig().get("dockerConfig"));
+                if (docker != null && StringUtils.isNotBlank(docker.getInstance())) {
+                    new DockerClientUtils(docker,dockerFile).initImage();
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }
         return JobManager.testGateway(gatewayConfig);
