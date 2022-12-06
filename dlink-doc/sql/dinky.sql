@@ -423,7 +423,7 @@ CREATE TABLE `dlink_history` (
   `job_manager_address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'JJobManager Address',
   `status` int NOT NULL DEFAULT '0' COMMENT 'status',
   `type` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'job type',
-  `statement` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'statement set',
+  `statement` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'statement set',
   `error` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'error message',
   `result` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'result set',
   `config_json` json DEFAULT NULL COMMENT 'config json',

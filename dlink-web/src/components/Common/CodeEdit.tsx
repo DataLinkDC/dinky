@@ -40,6 +40,7 @@ const CodeEdit = (props: CodeEditFormProps) => {
       selectOnLineNumbers: true,
       renderSideBySide: false,
       autoIndent: 'None',
+      automaticLayout: true,
     },
     onChange,
     code,
