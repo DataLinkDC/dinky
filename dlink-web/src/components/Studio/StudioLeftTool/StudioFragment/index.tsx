@@ -22,7 +22,7 @@ import {ProColumns, ProTable} from "@ant-design/pro-table";
 import {Drawer} from "antd";
 import ProDescriptions from '@ant-design/pro-descriptions';
 import {queryData} from "@/components/Common/crud";
-import {FragmentVariableTableListItem} from "@/pages/FragmentVariable/data";
+import {FragmentVariableTableListItem} from "@/pages/RegistrationCenter/data";
 import {l} from "@/utils/intl";
 
 const StudioFragment = (props: any) => {

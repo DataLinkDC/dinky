@@ -25,9 +25,12 @@ import com.dlink.metadata.convert.PostgreSqlTypeConvert;
 import com.dlink.metadata.query.IDBQuery;
 import com.dlink.metadata.query.PostgreSqlQuery;
 import com.dlink.model.Column;
+import com.dlink.model.QueryData;
 import com.dlink.model.Table;
+import com.dlink.utils.TextUtil;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -76,13 +79,40 @@ public class PostgreSqlDriver extends AbstractJdbcDriver {
     }
 
     @Override
+    public String getSqlSelect(Table table) {
+        List<Column> columns = table.getColumns();
+        StringBuilder sb = new StringBuilder("SELECT\n");
+        for (int i = 0; i < columns.size(); i++) {
+            sb.append("    ");
+            if (i > 0) {
+                sb.append(",");
+            }
+            String columnComment = columns.get(i).getComment();
+            if (Asserts.isNotNullString(columnComment)) {
+                if (columnComment.contains("\'") | columnComment.contains("\"")) {
+                    columnComment = columnComment.replaceAll("\"|'", "");
+                }
+                sb.append("\"" + columns.get(i).getName() + "\"  --  " + columnComment + " \n");
+            } else {
+                sb.append("\"" + columns.get(i).getName() + "\" \n");
+            }
+        }
+        if (Asserts.isNotNullString(table.getComment())) {
+            sb.append(" FROM \"" + table.getSchema() + "\".\"" + table.getName() + "\";" + " -- " + table.getComment() + "\n");
+        } else {
+            sb.append(" FROM \"" + table.getSchema() + "\".\"" + table.getName() + "\";\n");
+        }
+        return sb.toString();
+    }
+
+    @Override
     public String getCreateTableSql(Table table) {
         StringBuilder key = new StringBuilder();
         StringBuilder sb = new StringBuilder();
         StringBuilder comments = new StringBuilder();
 
         sb.append("CREATE TABLE \"").append(table.getSchema()).append("\".\"").append(table.getName())
-                .append("\" (\r\n");
+                .append("\" (\n");
 
         for (Column column : table.getColumns()) {
             sb.append("  \"").append(column.getName()).append("\" ");
@@ -101,13 +131,13 @@ public class PostgreSqlDriver extends AbstractJdbcDriver {
             if (Asserts.isNotNullString(column.getDefaultValue()) && !column.getDefaultValue().contains("nextval")) {
                 sb.append(" DEFAULT ").append(column.getDefaultValue());
             }
-            sb.append(",\r\n");
+            sb.append(",\n");
 
             // 注释
             if (Asserts.isNotNullString(column.getComment())) {
                 comments.append("COMMENT ON COLUMN \"").append(table.getSchema()).append("\".\"")
                         .append(table.getName()).append("\".\"")
-                        .append(column.getName()).append("\" IS '").append(column.getComment()).append("';\r\n");
+                        .append(column.getName()).append("\" IS '").append(column.getComment()).append("';\n");
             }
         }
         sb.deleteCharAt(sb.length() - 3);
@@ -116,8 +146,41 @@ public class PostgreSqlDriver extends AbstractJdbcDriver {
             comments.append("COMMENT ON TABLE \"").append(table.getSchema()).append("\".\"")
                     .append(table.getName()).append("\" IS '").append(table.getComment()).append("';");
         }
-        sb.append(")\r\n;\r\n").append(comments);
+        sb.append(");\n\n").append(comments);
 
         return sb.toString();
+    }
+
+    @Override
+    public StringBuilder genQueryOption(QueryData queryData) {
+
+        String where = queryData.getOption().getWhere();
+        String order = queryData.getOption().getOrder();
+        String limitStart = queryData.getOption().getLimitStart();
+        String limitEnd = queryData.getOption().getLimitEnd();
+
+        StringBuilder optionBuilder = new StringBuilder()
+                .append("select * from ")
+                .append(queryData.getSchemaName())
+                .append(".")
+                .append(queryData.getTableName());
+
+        if (where != null && !where.equals("")) {
+            optionBuilder.append(" where ").append(where);
+        }
+        if (order != null && !order.equals("")) {
+            optionBuilder.append(" order by ").append(order);
+        }
+
+        if (TextUtil.isEmpty(limitStart)) {
+            limitStart = "0";
+        }
+        if (TextUtil.isEmpty(limitEnd)) {
+            limitEnd = "100";
+        }
+        optionBuilder.append(" limit ")
+                .append(limitEnd);
+
+        return optionBuilder;
     }
 }

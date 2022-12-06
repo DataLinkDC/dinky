@@ -27,9 +27,9 @@ import {
   Config,
   FLINK_CONFIG_NAME_LIST,
   KUBERNETES_CONFIG_NAME_LIST
-} from "@/pages/ClusterConfiguration/conf";
+} from "@/pages/RegistrationCenter/ClusterManage/ClusterConfiguration/conf";
 import {MinusCircleOutlined, PlusOutlined} from "@ant-design/icons";
-import {getConfig} from "@/pages/ClusterConfiguration/function";
+import {getConfig} from "@/pages/RegistrationCenter/ClusterManage/ClusterConfiguration/function";
 import {l} from "@/utils/intl";
 
 
@@ -53,23 +53,23 @@ const StudioKubernetes = (props: any) => {
     name: 'kubernetes.jobmanager.cpu',
     lable: 'kubernetes.jobmanager.cpu',
     showType: 'input',
-      placeholder: l('pages.registerCenter.clusterConfig.help.kubernets.jmcpu'),
+      placeholder: l('pages.rc.clusterConfig.help.kubernets.jmcpu'),
   }, {
     name: 'kubernetes.taskmanager.cpu',
     lable: 'kubernetes.taskmanager.cpu',
     showType: 'input',
-    placeholder: l('pages.registerCenter.clusterConfig.help.kubernets.tmcpu'),
+    placeholder: l('pages.rc.clusterConfig.help.kubernets.tmcpu'),
   },
   ];
   const CUSTOM_FLINK_CONFIG_LIST: Config[] = [
     {
       name: 'jobmanager.memory.process.size',
       lable: 'jobmanager.memory.process.size',
-      placeholder: l('pages.registerCenter.clusterConfig.help.kubernets.jobManagerMemory'),
+      placeholder: l('pages.rc.clusterConfig.help.kubernets.jobManagerMemory'),
     }, {
       name: 'taskmanager.memory.process.size',
       lable: 'taskmanager.memory.process.size',
-      placeholder: l('pages.registerCenter.clusterConfig.help.kubernets.taskManagerMemory'),
+      placeholder: l('pages.rc.clusterConfig.help.kubernets.taskManagerMemory'),
     }, {
       name: 'taskmanager.numberOfTaskSlots',
       lable: 'taskmanager.numberOfTaskSlots',
@@ -194,15 +194,15 @@ const StudioKubernetes = (props: any) => {
   const renderContent = () => {
     return (
       <>
-        <Divider>{l('pages.registerCenter.clusterConfig.appConfig')}</Divider>
+        <Divider>{l('pages.rc.clusterConfig.appConfig')}</Divider>
         {buildConfig(APP_CONFIG_LIST)}
-        <Divider>{l('pages.registerCenter.clusterConfig.k8sConfig')}</Divider>
+        <Divider>{l('pages.rc.clusterConfig.k8sConfig')}</Divider>
         {buildConfig(CUSTOM_KUBERNETS_CONFIG_LIST)}
-        <Divider>{l('pages.registerCenter.clusterConfig.flinkConfig')}</Divider>
+        <Divider>{l('pages.rc.clusterConfig.flinkConfig')}</Divider>
         {buildConfig(CUSTOM_FLINK_CONFIG_LIST)}
-        {buildOtherConfig(l('pages.registerCenter.clusterConfig.otherConfig'),
+        {buildOtherConfig(l('pages.rc.clusterConfig.otherConfig'),
           "flinkConfigList",
-          l('pages.registerCenter.clusterConfig.addDefineConfig'))}
+          l('pages.rc.clusterConfig.addDefineConfig'))}
 
       </>
     );

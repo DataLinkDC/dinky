@@ -76,7 +76,7 @@ public final class FeiShuSender {
     FeiShuSender(Map<String, String> config) {
         url = config.get(FeiShuConstants.WEB_HOOK);
         msgType = config.get(FeiShuConstants.MSG_TYPE);
-        keyword = config.get(FeiShuConstants.KEY_WORD).replace("\r\n", "");
+        keyword = config.get(FeiShuConstants.KEY_WORD) != null ? config.get(FeiShuConstants.KEY_WORD).replace("\r\n", "") : "";
         enableProxy = Boolean.valueOf(config.get(FeiShuConstants.FEI_SHU_PROXY_ENABLE));
         secret = config.get(FeiShuConstants.SECRET);
         if (Boolean.TRUE.equals(enableProxy)) {

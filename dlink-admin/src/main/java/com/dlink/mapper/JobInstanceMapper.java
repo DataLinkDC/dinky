@@ -24,6 +24,7 @@ import com.dlink.model.JobInstance;
 import com.dlink.model.JobInstanceCount;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -45,8 +46,11 @@ public interface JobInstanceMapper extends SuperMapper<JobInstance> {
 
     List<JobInstanceCount> countHistoryStatus();
 
+    @InterceptorIgnore(tenantLine = "true")
     List<JobInstance> listJobInstanceActive();
 
     JobInstance getJobInstanceByTaskId(Integer id);
 
+    @InterceptorIgnore(tenantLine = "true")
+    Integer getTenantByJobInstanceId(@Param("id") Integer id);
 }

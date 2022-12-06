@@ -1,0 +1,94 @@
+{
+  "version.label": {
+    "message": "0.7",
+    "description": "The label for version 0.7"
+  },
+  "sidebar.tutorialSidebar.category.概念和架构": {
+    "message": "概念和架构",
+    "description": "The label for category 概念和架构 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.编译和部署": {
+    "message": "编译和部署",
+    "description": "The label for category 编译和部署 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.快速入门": {
+    "message": "快速入门",
+    "description": "The label for category 快速入门 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.操作指南": {
+    "message": "操作指南",
+    "description": "The label for category 操作指南 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.SQL 开发指南": {
+    "message": "SQL 开发指南",
+    "description": "The label for category SQL 开发指南 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.DDL 语句": {
+    "message": "DDL 语句",
+    "description": "The label for category DDL 语句 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.DML 语句": {
+    "message": "DML 语句",
+    "description": "The label for category DML 语句 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.数据集成指南": {
+    "message": "数据集成指南",
+    "description": "The label for category 数据集成指南 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.用户手册": {
+    "message": "用户手册",
+    "description": "The label for category 用户手册 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.数据开发": {
+    "message": "数据开发",
+    "description": "The label for category 数据开发 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.基本介绍": {
+    "message": "基本介绍",
+    "description": "The label for category 基本介绍 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.运维中心": {
+    "message": "运维中心",
+    "description": "The label for category 运维中心 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.注册中心": {
+    "message": "注册中心",
+    "description": "The label for category 注册中心 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.系统设置": {
+    "message": "系统设置",
+    "description": "The label for category 系统设置 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category. Connector": {
+    "message": " Connector",
+    "description": "The label for category  Connector in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.开发者指南": {
+    "message": "开发者指南",
+    "description": "The label for category 开发者指南 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.参与贡献": {
+    "message": "参与贡献",
+    "description": "The label for category 参与贡献 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.扩展": {
+    "message": "扩展",
+    "description": "The label for category 扩展 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.功能扩展": {
+    "message": "功能扩展",
+    "description": "The label for category 功能扩展 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.实践指南": {
+    "message": "实践指南",
+    "description": "The label for category 实践指南 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.UDF 开发": {
+    "message": "UDF 开发",
+    "description": "The label for category UDF 开发 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.快速使用": {
+    "message": "快速使用",
+    "description": "The label for category 快速使用 in sidebar tutorialSidebar"
+  }
+}

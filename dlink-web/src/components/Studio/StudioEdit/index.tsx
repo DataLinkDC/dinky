@@ -18,13 +18,12 @@
  */
 
 
-import React, {useEffect, useImperativeHandle, useRef,useState} from 'react';
+import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
 import * as _monaco from "monaco-editor";
 import MonacoEditor from "react-monaco-editor";
-import {StateType} from "@/pages/DataStudio/model";
-import {connect,Dispatch} from "umi";
-import {DocumentStateType} from "@/pages/Document/model";
-import {DocumentTableListItem} from "@/pages/Document/data";
+import {connect, Dispatch} from "umi";
+import {DocumentStateType} from "@/pages/RegistrationCenter/Document/model";
+import {DocumentTableListItem} from "@/pages/RegistrationCenter/data";
 import {parseSqlMetaData} from "@/components/Studio/StudioEvent/Utils";
 import {Column, MetaData, SqlMetaData} from "@/components/Studio/StudioEvent/data";
 import StudioExplain from "@/components/Studio/StudioConsole/StudioExplain";
@@ -52,6 +51,7 @@ const FlinkSqlEditor = (props:any) => {
         selectOnLineNumbers: true,
         renderSideBySide: false,
         autoIndent:'None',
+        automaticLayout: true,
       },
     sql,
     monaco,

@@ -19,6 +19,7 @@
 
 package com.dlink.metadata.driver;
 
+import com.dlink.assertion.Asserts;
 import com.dlink.metadata.constant.SqlServerConstant;
 import com.dlink.metadata.convert.ITypeConvert;
 import com.dlink.metadata.convert.SqlServerTypeConvert;
@@ -74,10 +75,10 @@ public class SqlServerDriver extends AbstractJdbcDriver {
                 .append(".")
                 .append(queryData.getTableName());
 
-        if (where != null && !where.equals("")) {
+        if (where != null && !"".equals(where)) {
             optionBuilder.append(" where ").append(where);
         }
-        if (order != null && !order.equals("")) {
+        if (order != null && !"".equals(order)) {
             optionBuilder.append(" order by ").append(order);
         }
 
@@ -85,19 +86,47 @@ public class SqlServerDriver extends AbstractJdbcDriver {
     }
 
     @Override
-    public String getCreateTableSql(Table table) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("CREATE TABLE [" + table.getName() + "] (");
+    public String getSqlSelect(Table table) {
         List<Column> columns = table.getColumns();
+        StringBuilder sb = new StringBuilder("SELECT \n");
         for (int i = 0; i < columns.size(); i++) {
+            sb.append("    ");
             if (i > 0) {
                 sb.append(",");
             }
+            String columnComment = columns.get(i).getComment();
+            if (Asserts.isNotNullString(columnComment)) {
+                if (columnComment.contains("\'") | columnComment.contains("\"")) {
+                    columnComment = columnComment.replaceAll("\"|'", "");
+                }
+                sb.append("[" + columns.get(i).getName() + "]  --  " + columnComment + " \n");
+            } else {
+                sb.append("[" + columns.get(i).getName() + "] \n");
+            }
+        }
+        if (Asserts.isNotNullString(table.getComment())) {
+            sb.append(" FROM [" + table.getSchema() + "].[" + table.getName() + "];" + " -- " + table.getComment() + "\n");
+        } else {
+            sb.append(" FROM [" + table.getSchema() + "].[" + table.getName() + "];\n");
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public String getCreateTableSql(Table table) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("CREATE TABLE [" + table.getName() + "] (\n");
+        List<Column> columns = table.getColumns();
+        for (int i = 0; i < columns.size(); i++) {
+            sb.append("    ");
+            if (i > 0) {
+                sb.append(",\n");
+            }
             sb.append("[" + columns.get(i).getName() + "]" + getTypeConvert().convertToDB(columns.get(i)));
             if (columns.get(i).isNullable()) {
-                sb.append(" NOT NULL");
-            } else {
                 sb.append(" NULL");
+            } else {
+                sb.append(" NOT NULL");
             }
         }
         List<String> pks = new ArrayList<>();
@@ -116,12 +145,12 @@ public class SqlServerDriver extends AbstractJdbcDriver {
             }
             sb.append(" ) ");
         }
-        sb.append(") GO ");
+        sb.append(")\n GO ");
         for (Column column : columns) {
             String comment = column.getComment();
             if (comment != null && !comment.isEmpty()) {
                 sb.append(String.format(SqlServerConstant.COMMENT_SQL, comment, table.getSchema() == null || table.getSchema().isEmpty() ? "dbo" : table.getSchema(),
-                        table.getName(), column.getName()) + " GO ");
+                        table.getName(), column.getName()) + " \nGO ");
             }
         }
         return sb.toString();

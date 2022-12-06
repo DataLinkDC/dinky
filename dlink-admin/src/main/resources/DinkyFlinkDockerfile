@@ -1,0 +1,18 @@
+# 用来构建dinky环境
+ARG FLINK_VERSION=1.14.5
+FROM flink:${FLINK_VERSION}
+
+ENV PYTHON_HOME /opt/miniconda3
+
+USER root
+RUN wget "https://s3.jcloud.sjtu.edu.cn/899a892efef34b1b944a19981040f55b-oss01/anaconda/miniconda/Miniconda3-py38_4.9.2-Linux-x86_64.sh" -O "miniconda.sh" && chmod +x miniconda.sh
+RUN ./miniconda.sh -b -p $PYTHON_HOME && chown -R flink $PYTHON_HOME && ls $PYTHON_HOME
+
+USER flink
+
+ENV PATH $PYTHON_HOME/bin:$PATH
+RUN pip install "apache-flink==${FLINK_VERSION}" -i http://pypi.douban.com/simple/ --trusted-host pypi.douban.com
+
+RUN cp /opt/flink/opt/flink-python_* /opt/flink/lib/
+
+COPY jar/dlink-app-@dlink.flink.version@-@project.version@-jar-with-dependencies.jar plugins/* $FLINK_HOME/lib/

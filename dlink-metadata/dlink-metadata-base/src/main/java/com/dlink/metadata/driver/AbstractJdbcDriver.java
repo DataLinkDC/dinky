@@ -32,6 +32,8 @@ import com.dlink.model.QueryData;
 import com.dlink.model.Schema;
 import com.dlink.model.Table;
 import com.dlink.model.TableType;
+import com.dlink.process.context.ProcessContextHolder;
+import com.dlink.process.model.ProcessEntity;
 import com.dlink.result.SqlExplainResult;
 import com.dlink.utils.LogUtil;
 import com.dlink.utils.TextUtil;
@@ -64,6 +66,8 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+
+import cn.hutool.core.text.CharSequenceUtil;
 
 /**
  * AbstractJdbcDriver
@@ -550,6 +554,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
 
     @Override
     public JdbcSelectResult query(String sql, Integer limit) {
+        ProcessEntity process = ProcessContextHolder.getProcess();
         if (Asserts.isNull(limit)) {
             limit = 100;
         }
@@ -596,6 +601,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         } catch (Exception e) {
             result.setError(LogUtil.getError(e));
             result.setSuccess(false);
+            process.error(e.getMessage());
         } finally {
             close(preparedStatement, results);
             result.setRowData(datas);
@@ -612,27 +618,35 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
      */
     @Override
     public JdbcSelectResult executeSql(String sql, Integer limit) {
+        ProcessEntity process = ProcessContextHolder.getProcess();
+        process.info("Start parse sql...");
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, config.getType().toLowerCase());
+        process.info(CharSequenceUtil.format("A total of {} statement have been Parsed.", stmtList.size()));
         List<Object> resList = new ArrayList<>();
         JdbcSelectResult result = JdbcSelectResult.buildResult();
+        process.info("Start execute sql...");
         for (SQLStatement item : stmtList) {
             String type = item.getClass().getSimpleName();
             if (type.toUpperCase().contains("SELECT") || type.toUpperCase().contains("SHOW")
                     || type.toUpperCase().contains("DESC") || type.toUpperCase().contains("SQLEXPLAINSTATEMENT")) {
+                process.info("Execute query.");
                 result = query(item.toString(), limit);
             } else if (type.toUpperCase().contains("INSERT") || type.toUpperCase().contains("UPDATE")
                     || type.toUpperCase().contains("DELETE")) {
                 try {
+                    process.info("Execute update.");
                     resList.add(executeUpdate(item.toString()));
                     result.setStatusList(resList);
                 } catch (Exception e) {
                     resList.add(0);
                     result.setStatusList(resList);
                     result.error(LogUtil.getError(e));
+                    process.error(e.getMessage());
                     return result;
                 }
             } else {
                 try {
+                    process.info("Execute DDL.");
                     execute(item.toString());
                     resList.add(1);
                     result.setStatusList(resList);
@@ -640,6 +654,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                     resList.add(0);
                     result.setStatusList(resList);
                     result.error(LogUtil.getError(e));
+                    process.error(e.getMessage());
                     return result;
                 }
             }
@@ -650,8 +665,10 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
 
     @Override
     public List<SqlExplainResult> explain(String sql) {
+        ProcessEntity process = ProcessContextHolder.getProcess();
         List<SqlExplainResult> sqlExplainResults = new ArrayList<>();
         String current = null;
+        process.info("Start check sql...");
         try {
             List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, config.getType().toLowerCase());
             for (SQLStatement item : stmtList) {
@@ -659,8 +676,10 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                 String type = item.getClass().getSimpleName();
                 sqlExplainResults.add(SqlExplainResult.success(type, current, null));
             }
+            process.info("Sql is correct.");
         } catch (Exception e) {
             sqlExplainResults.add(SqlExplainResult.fail(current, LogUtil.getError(e)));
+            process.error(e.getMessage());
         } finally {
             return sqlExplainResults;
         }
@@ -675,9 +694,8 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         PreparedStatement preparedStatement = null;
         ResultSet results = null;
         IDBQuery dbQuery = getDBQuery();
-        String sql =
-                "select DATA_LENGTH,TABLE_NAME AS `NAME`,TABLE_SCHEMA AS `Database`,TABLE_COMMENT AS COMMENT,TABLE_CATALOG AS `CATALOG`,TABLE_TYPE"
-                        + " AS `TYPE`,ENGINE AS `ENGINE`,CREATE_OPTIONS AS `OPTIONS`,TABLE_ROWS AS `ROWS`,CREATE_TIME,UPDATE_TIME from information_schema.tables WHERE TABLE_TYPE='BASE TABLE'";
+        String sql = "select DATA_LENGTH,TABLE_NAME AS `NAME`,TABLE_SCHEMA AS `Database`,TABLE_COMMENT AS COMMENT,TABLE_CATALOG AS `CATALOG`,TABLE_TYPE"
+                + " AS `TYPE`,ENGINE AS `ENGINE`,CREATE_OPTIONS AS `OPTIONS`,TABLE_ROWS AS `ROWS`,CREATE_TIME,UPDATE_TIME from information_schema.tables WHERE TABLE_TYPE='BASE TABLE'";
         List<Map<String, String>> schemas = null;
         try {
             preparedStatement = conn.get().prepareStatement(sql);
@@ -755,13 +773,12 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                         if (tableType != TableType.SINGLE_DATABASE_AND_TABLE) {
                             String currentSchemaName = getReValue(x.get(dbQuery.schemaName()), splitConfig) + "."
                                     + getReValue(x.get(dbQuery.tableName()), splitConfig);
-                            List<String> schemaTableNameList =
-                                    mapList.stream()
-                                            .filter(y -> (getReValue(y.get(dbQuery.schemaName()), splitConfig) + "."
-                                                    + getReValue(y.get(dbQuery.tableName()), splitConfig))
-                                                            .equals(currentSchemaName))
-                                            .map(y -> y.get(dbQuery.schemaName()) + "." + y.get(dbQuery.tableName()))
-                                            .collect(Collectors.toList());
+                            List<String> schemaTableNameList = mapList.stream()
+                                    .filter(y -> (getReValue(y.get(dbQuery.schemaName()), splitConfig) + "."
+                                            + getReValue(y.get(dbQuery.tableName()), splitConfig))
+                                                    .equals(currentSchemaName))
+                                    .map(y -> y.get(dbQuery.schemaName()) + "." + y.get(dbQuery.tableName()))
+                                    .collect(Collectors.toList());
                             tableInfo.setSchemaTableNameList(schemaTableNameList);
                         } else {
                             tableInfo.setSchemaTableNameList(Collections
