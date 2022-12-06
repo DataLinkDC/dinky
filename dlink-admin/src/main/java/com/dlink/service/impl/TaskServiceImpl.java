@@ -211,8 +211,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     private String buildParas(Integer id, String dinkyAddr) {
         return "--id " + id + " --driver " + driver + " --url " + url + " --username " + username + " --password "
-                + password
-                + " --dinkyAddr " + dinkyAddr;
+                + password + " --dinkyAddr " + dinkyAddr;
     }
 
     @Override
