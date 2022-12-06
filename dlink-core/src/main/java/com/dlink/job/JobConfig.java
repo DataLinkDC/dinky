@@ -115,11 +115,12 @@ public class JobConfig {
         this.config = config;
     }
 
-    public JobConfig(String type, boolean useResult, boolean useChangeLog, boolean useAutoCancel, boolean useSession, String session, boolean useRemote, String address,
+    public JobConfig(String type, Integer clusterId, boolean useResult, boolean useChangeLog, boolean useAutoCancel, boolean useSession, String session, boolean useRemote, String address,
                      String jobName, boolean useSqlFragment,
                      boolean useStatementSet, Integer maxRowNum, Integer checkpoint, Integer parallelism,
                      Integer savePointStrategyValue, String savePointPath, Map<String, String> config, GatewayConfig gatewayConfig) {
         this.type = type;
+        this.clusterId = clusterId;
         this.useResult = useResult;
         this.useChangeLog = useChangeLog;
         this.useAutoCancel = useAutoCancel;
