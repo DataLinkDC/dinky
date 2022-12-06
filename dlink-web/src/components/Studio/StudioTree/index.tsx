@@ -445,7 +445,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
   const getNodeTreeRightClickMenu = () => {
     const {pageX, pageY} = {...rightClickNodeTreeItem};
     const tmpStyle: any = {
-      position: 'absolute',
+      position: 'fixed',
       left: pageX,
       top: pageY,
     };
@@ -509,12 +509,10 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
   };
 
   const handleContextMenu = (e: any) => {
-    let position = e.event.currentTarget.getBoundingClientRect();
-    let scrollTop = document.documentElement.scrollTop;
     setRightClickNode(e.node);
     setRightClickNodeTreeItem({
-      pageX: e.event.pageX - 40,
-      pageY: position.y + sref.current.getScrollTop() + scrollTop - 145 - position.height,
+      pageX: e.event.pageX,
+      pageY: e.event.pageY,
       id: e.node.id,
       categoryName: e.node.name
     });
