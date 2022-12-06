@@ -269,11 +269,11 @@ public final class SqlManager {
         int days = 0;
         try {
             if (key.contains("+")) {
-                int s = key.indexOf("+");
+                int s = key.indexOf("+") + 1;
                 String num = key.substring(s).trim();
                 days = Integer.parseInt(num);
             } else if (key.contains("-")) {
-                int s = key.indexOf("-");
+                int s = key.indexOf("-") + 1;
                 String num = key.substring(s).trim();
                 days = Integer.parseInt(num) * -1;
             }
