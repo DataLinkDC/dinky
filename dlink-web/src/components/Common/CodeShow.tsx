@@ -41,6 +41,7 @@ const CodeShow = (props: CodeShowFormProps) => {
       renderSideBySide: false,
       autoIndent: 'None',
       readOnly: true,
+      automaticLayout: true,
     },
     code,
   } = props;

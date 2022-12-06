@@ -51,6 +51,7 @@ const FlinkSqlEditor = (props:any) => {
         selectOnLineNumbers: true,
         renderSideBySide: false,
         autoIndent:'None',
+        automaticLayout: true,
       },
     sql,
     monaco,
