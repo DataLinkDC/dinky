@@ -43,6 +43,7 @@ public class APIExecuteSqlDTO extends AbstractStatementDTO {
     private boolean useChangeLog = false;
     private boolean useAutoCancel = false;
     private boolean useStatementSet = false;
+    private Integer clusterId;
     private String address;
     private String jobName;
     private Integer maxRowNum = 100;
@@ -58,7 +59,7 @@ public class APIExecuteSqlDTO extends AbstractStatementDTO {
             savePointStrategy = 3;
         }
         return new JobConfig(
-                type, useResult, useChangeLog, useChangeLog, false, null, true, address, jobName,
+                type, clusterId, useResult, useChangeLog, useChangeLog, false, null, true, address, jobName,
                 isFragment(), useStatementSet, maxRowNum, checkPoint, parallelism, savePointStrategy,
                 savePointPath, configuration, gatewayConfig);
     }
