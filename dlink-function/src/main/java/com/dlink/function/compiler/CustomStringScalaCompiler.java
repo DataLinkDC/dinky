@@ -31,6 +31,7 @@ import scala.tools.nsc.interpreter.IMain;
  * @author ZackYoung
  * @since 0.6.8
  */
+@Slf4j
 public class CustomStringScalaCompiler {
     
     private static class ErrorHandler extends AbstractFunction1<String, BoxedUnit> {
