@@ -1,15 +1,11 @@
 package com.dlink.aop;
 
-import java.net.URLClassLoader;
-
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.boot.web.embedded.tomcat.TomcatEmbeddedWebappClassLoader;
 import org.springframework.stereotype.Component;
-
-import com.sun.appserv.ClassLoaderUtil;
 
 
 /**
@@ -49,8 +45,9 @@ public class UdfClassLoaderAspect {
             ClassLoader lastContextClassLoader = Thread.currentThread().getContextClassLoader();
             if (!(lastContextClassLoader instanceof TomcatEmbeddedWebappClassLoader)) {
                 if (lastContextClassLoader.getParent() instanceof TomcatEmbeddedWebappClassLoader) {
-                    ClassLoaderUtil.releaseLoader((URLClassLoader) lastContextClassLoader);
                     Thread.currentThread().setContextClassLoader(initContextClassLoader);
+                    lastContextClassLoader = null;
+                    System.gc();
                 }
             }
         }
