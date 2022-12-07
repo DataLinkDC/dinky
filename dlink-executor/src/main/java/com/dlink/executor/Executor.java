@@ -31,6 +31,7 @@ import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.core.execution.JobClient;
 import org.apache.flink.python.PythonOptions;
+import org.apache.flink.runtime.execution.librarycache.FlinkUserCodeClassLoaders;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.jsonplan.JsonPlanGenerator;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
@@ -42,7 +43,6 @@ import org.apache.flink.table.api.StatementSet;
 import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.catalog.CatalogManager;
-import org.apache.flink.util.FlinkUserCodeClassLoader;
 import org.apache.hadoop.security.UserGroupInformation;
 
 import java.io.File;
@@ -319,7 +319,8 @@ public abstract class Executor {
      */
     public void initUDF(String... udfFilePath) {
         File[] files = Stream.of(udfFilePath).map(FileUtil::file).toArray(File[]::new);
-        URLClassLoader classLoader = FlinkUserCodeClassLoader.newInstance(URLUtil.getURLs(files), Thread.currentThread().getContextClassLoader());
+        URLClassLoader classLoader = FlinkUserCodeClassLoaders.parentFirst(URLUtil.getURLs(files), Thread.currentThread().getContextClassLoader(), (e) -> {
+        }, true);
         Thread.currentThread().setContextClassLoader(classLoader);
     }
 
