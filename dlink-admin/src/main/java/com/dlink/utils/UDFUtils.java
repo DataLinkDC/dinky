@@ -57,9 +57,9 @@ public class UDFUtils extends UDFUtil {
         process.info("Parse UDF class name:");
         Pattern pattern = Pattern.compile(FUNCTION_SQL_REGEX, Pattern.CASE_INSENSITIVE);
         List<String> udfSqlList = ReUtil.findAllGroup0(pattern, statement).stream()
-            .filter(x -> !x.contains("--"))
-            .filter(x -> !ClassLoaderUtil.isPresent(x))
-            .collect(Collectors.toList());
+                .filter(x -> !x.contains("--"))
+                .filter(x -> !ClassLoaderUtil.isPresent(x))
+                .collect(Collectors.toList());
 
         List<UDF> udfList = udfSqlList.stream().map(sql -> {
             List<String> groups = CollUtil.removeEmpty(ReUtil.getAllGroups(pattern, sql));
@@ -67,7 +67,8 @@ public class UDFUtils extends UDFUtil {
             String className = groups.get(2);
             if (ClassLoaderUtil.isPresent(className)) {
                 // 获取已经加载在java的类，对应的包路径
-                UDFPathContextHolder.set(ReflectUtil.newInstance(className).getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
+                UDFPathContextHolder.set(ReflectUtil.newInstance(className).getClass().getProtectionDomain()
+                        .getCodeSource().getLocation().getPath());
                 return null;
             }
 
@@ -81,11 +82,11 @@ public class UDFUtils extends UDFUtil {
             }
             String code = task.getStatement();
             return UDF.builder()
-                .name(udfName)
-                .className(className)
-                .code(code)
-                .functionLanguage(FunctionLanguage.valueOf(task.getDialect().toUpperCase()))
-                .build();
+                    .name(udfName)
+                    .className(className)
+                    .code(code)
+                    .functionLanguage(FunctionLanguage.valueOf(task.getDialect().toUpperCase()))
+                    .build();
         }).filter(Objects::nonNull).collect(Collectors.toList());
         List<String> classNameList = udfList.stream().map(UDF::getClassName).collect(Collectors.toList());
         if (classNameList.size() > 0) {
@@ -94,4 +95,5 @@ public class UDFUtils extends UDFUtil {
         process.info(CharSequenceUtil.format("A total of {} UDF have been Parsed.", classNameList.size()));
         return udfList;
     }
+
 }

@@ -129,14 +129,13 @@ public class UDFUtil {
     }
 
     public static String[] initJavaUDF(List<UDF> udf, GatewayType gatewayType, Integer missionId) {
-        String[] jarPaths = FunctionFactory.initUDF(
-            CollUtil.newArrayList(CollUtil.filterNew(udf, x -> x.getFunctionLanguage() != FunctionLanguage.PYTHON)),
-            missionId, null).getJarPaths();
-        return jarPaths;
+        return FunctionFactory.initUDF(
+                CollUtil.newArrayList(CollUtil.filterNew(udf, x -> x.getFunctionLanguage() != FunctionLanguage.PYTHON)),
+                missionId, null).getJarPaths();
     }
 
     public static String[] initPythonUDF(List<UDF> udf, GatewayType gatewayType, Integer missionId,
-                                         Configuration configuration) {
+            Configuration configuration) {
         return FunctionFactory.initUDF(
                 CollUtil.newArrayList(CollUtil.filterNew(udf, x -> x.getFunctionLanguage() == FunctionLanguage.PYTHON)),
                 missionId, configuration).getPyPaths();
@@ -185,7 +184,7 @@ public class UDFUtil {
                 if (res) {
                     log.info("class编译成功:{}" + className);
                     log.info("compilerTakeTime：" + compiler.getCompilerTakeTime());
-                    ClassPool.push(ClassEntity.build(className,udf.getCode()));
+                    ClassPool.push(ClassEntity.build(className, udf.getCode()));
                     successList.add(className);
                 } else {
                     log.warn("class编译失败:{}" + className);
@@ -196,7 +195,7 @@ public class UDFUtil {
                 String className = udf.getClassName();
                 if (CustomStringScalaCompiler.getInterpreter(null).compileString(udf.getCode())) {
                     log.info("scala class编译成功:{}" + className);
-                    ClassPool.push(ClassEntity.build(className,udf.getCode()));
+                    ClassPool.push(ClassEntity.build(className, udf.getCode()));
                     successList.add(className);
                 } else {
                     log.warn("scala class编译失败:{}" + className);
@@ -207,9 +206,9 @@ public class UDFUtil {
         });
         String[] clazzs = successList.stream().map(className -> StrUtil.replace(className, ".", "/") + ".class")
                 .toArray(String[]::new);
-        InputStream[] fileInputStreams =
-                successList.stream().map(className -> tmpPath + StrUtil.replace(className, ".", "/") + ".class")
-                        .map(FileUtil::getInputStream).toArray(InputStream[]::new);
+        InputStream[] fileInputStreams = successList.stream()
+                .map(className -> tmpPath + StrUtil.replace(className, ".", "/") + ".class")
+                .map(FileUtil::getInputStream).toArray(InputStream[]::new);
         // 编译好的文件打包jar
         try (ZipUtils zipWriter = new ZipUtils(FileUtil.file(udfJarPath), Charset.defaultCharset())) {
             zipWriter.add(clazzs, fileInputStreams);
