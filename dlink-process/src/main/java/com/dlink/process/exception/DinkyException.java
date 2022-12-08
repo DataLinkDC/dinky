@@ -20,6 +20,7 @@
 package com.dlink.process.exception;
 
 import com.dlink.process.context.ProcessContextHolder;
+import com.dlink.utils.LogUtil;
 
 /**
  * @author ZackYoung
@@ -37,7 +38,7 @@ public class DinkyException extends RuntimeException {
 
     public DinkyException(String message, Throwable cause) {
         super(message, cause);
-        ProcessContextHolder.getProcess().error(message);
+        ProcessContextHolder.getProcess().error(LogUtil.getError(cause));
     }
 
     public DinkyException(Throwable cause) {
@@ -47,6 +48,6 @@ public class DinkyException extends RuntimeException {
 
     public DinkyException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
-        ProcessContextHolder.getProcess().error(cause.toString());
+        ProcessContextHolder.getProcess().error(LogUtil.getError(cause));
     }
 }

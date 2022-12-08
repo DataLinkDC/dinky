@@ -37,7 +37,7 @@ public class LogUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(LogUtil.class);
 
-    public static String getError(Exception e) {
+    public static String getError(Throwable e) {
         String error = null;
         try (StringWriter sw = new StringWriter();
              PrintWriter pw = new PrintWriter(sw)) {
@@ -51,7 +51,7 @@ public class LogUtil {
         }
     }
 
-    public static String getError(String msg, Exception e) {
+    public static String getError(String msg, Throwable e) {
         String error = null;
         try (StringWriter sw = new StringWriter();
              PrintWriter pw = new PrintWriter(sw)) {
