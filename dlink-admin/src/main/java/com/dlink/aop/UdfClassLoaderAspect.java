@@ -21,6 +21,8 @@ package com.dlink.aop;
 
 import com.dlink.classloader.DinkyClassLoader;
 import com.dlink.context.DinkyClassLoaderContextHolder;
+import com.dlink.job.JobResult;
+import com.dlink.process.exception.DinkyException;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -62,15 +64,17 @@ public class UdfClassLoaderAspect {
         try {
             proceed = proceedingJoinPoint.proceed();
         } catch (Throwable e) {
-            throw new RuntimeException(e);
-        } finally {
-            ClassLoader lastContextClassLoader = Thread.currentThread().getContextClassLoader();
-            if (lastContextClassLoader instanceof DinkyClassLoader) {
-                DinkyClassLoaderContextHolder.clear();
+            if (!(e instanceof DinkyException)) {
+                throw new DinkyException(e);
             }
-
+        } finally {
+            if (proceed instanceof JobResult) {
+                ClassLoader lastContextClassLoader = Thread.currentThread().getContextClassLoader();
+                if (lastContextClassLoader instanceof DinkyClassLoader) {
+                    DinkyClassLoaderContextHolder.clear();
+                }
+            }
         }
-
         return proceed;
 
     }
