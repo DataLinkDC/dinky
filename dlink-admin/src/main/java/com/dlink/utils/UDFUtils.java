@@ -67,7 +67,7 @@ public class UDFUtils extends UDFUtil {
             String className = groups.get(2);
             if (ClassLoaderUtil.isPresent(className)) {
                 // 获取已经加载在java的类，对应的包路径
-                UDFPathContextHolder.set(ReflectUtil.newInstance(className).getClass().getProtectionDomain()
+                UDFPathContextHolder.add(ReflectUtil.newInstance(className).getClass().getProtectionDomain()
                         .getCodeSource().getLocation().getPath());
                 return null;
             }

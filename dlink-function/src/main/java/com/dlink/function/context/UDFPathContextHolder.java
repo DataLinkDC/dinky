@@ -11,7 +11,7 @@ import cn.hutool.core.collection.ConcurrentHashSet;
 public class UDFPathContextHolder {
     private static final ThreadLocal<Set<String>> UDF_PATH_CONTEXT = new ThreadLocal<>();
 
-    public static void set(String path) {
+    public static void add(String path) {
         if (UDF_PATH_CONTEXT.get() == null) {
             UDF_PATH_CONTEXT.set(new ConcurrentHashSet<>());
         }
