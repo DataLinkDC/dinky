@@ -30,6 +30,8 @@ import com.dlink.executor.EnvironmentSetting;
 import com.dlink.executor.Executor;
 import com.dlink.executor.ExecutorSetting;
 import com.dlink.explainer.Explainer;
+import com.dlink.function.constant.PathConstant;
+import com.dlink.function.context.UDFPathContextHolder;
 import com.dlink.function.data.model.Env;
 import com.dlink.function.data.model.UDF;
 import com.dlink.function.util.UDFUtil;
@@ -74,12 +76,16 @@ import org.apache.flink.streaming.api.environment.ExecutionCheckpointingOptions;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.yarn.configuration.YarnConfigOptions;
+import org.apache.kerby.util.OSUtil;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,6 +93,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ArrayUtil;
 
 /**
@@ -202,6 +209,16 @@ public class JobManager {
             executor = Executor.buildRemoteExecutor(environmentSetting, config.getExecutorSetting());
             return executor;
         } else {
+            if (ArrayUtil.isNotEmpty(config.getJarFiles())) {
+                if (OSUtil.isWindows()) {
+                    config.getExecutorSetting().getConfig().put(PipelineOptions.JARS.key(),
+                            Stream.of(config.getJarFiles()).map(x -> "file:///" + x).collect(Collectors.joining(",")));
+                } else {
+                    config.getExecutorSetting().getConfig().put(PipelineOptions.JARS.key(),
+                            Stream.of(config.getJarFiles()).map(x -> "file://" + x).collect(Collectors.joining(",")));
+                }
+            }
+
             executor = Executor.buildLocalExecutor(config.getExecutorSetting());
             return executor;
         }
@@ -257,11 +274,22 @@ public class JobManager {
         // 这里要分开
         // 1. 得到jar包路径，注入remote环境
         List<UDF> udfList = config.getUdfList();
-        if (CollUtil.isEmpty(udfList)) {
+        Set<String> libUDFs = UDFPathContextHolder.get();
+        List<String> libHDFList = new ArrayList<>();
+        if (CollUtil.isNotEmpty(libUDFs)) {
+            libUDFs.forEach(path -> {
+                String destPath = PathConstant.getUdfPackagePath(config.getTaskId()) + "udf-lib-"
+                        + FileUtil.getName(path);
+                FileUtil.copy(path, destPath, true);
+                libHDFList.add(destPath);
+            });
+        } else if (CollUtil.isEmpty(udfList)) {
             createExecutorWithSession();
             return;
         }
-        String[] jarPaths = UDFUtil.initJavaUDF(udfList, runMode, config.getTaskId());
+
+        CollUtil.addAll(libHDFList, UDFUtil.initJavaUDF(udfList, runMode, config.getTaskId()));
+        String[] jarPaths = CollUtil.removeEmpty(libHDFList).toArray(new String[]{});
 
         if (GATEWAY_TYPE_MAP.get(SESSION).contains(runMode)) {
             config.setJarFiles(jarPaths);

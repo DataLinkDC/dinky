@@ -42,9 +42,10 @@ import org.apache.flink.table.api.StatementSet;
 import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.catalog.CatalogManager;
-import org.apache.flink.util.JarUtils;
+import org.apache.flink.util.FlinkUserCodeClassLoader;
 import org.apache.hadoop.security.UserGroupInformation;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -53,6 +54,7 @@ import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +63,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.URLUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -314,7 +318,9 @@ public abstract class Executor {
      * @param udfFilePath udf文件路径
      */
     public void initUDF(String... udfFilePath) {
-        JarUtils.getJarFiles(udfFilePath).forEach(Executor::loadJar);
+        File[] files = Stream.of(udfFilePath).map(FileUtil::file).toArray(File[]::new);
+        URLClassLoader classLoader = FlinkUserCodeClassLoader.newInstance(URLUtil.getURLs(files), Thread.currentThread().getContextClassLoader());
+        Thread.currentThread().setContextClassLoader(classLoader);
     }
 
     public void initPyUDF(String executable, String... udfPyFilePath) {
