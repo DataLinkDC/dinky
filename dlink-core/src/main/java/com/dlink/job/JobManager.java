@@ -76,6 +76,7 @@ import org.apache.flink.streaming.api.environment.ExecutionCheckpointingOptions;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.yarn.configuration.YarnConfigOptions;
+import org.apache.kerby.util.OSUtil;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -83,6 +84,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -206,6 +209,16 @@ public class JobManager {
             executor = Executor.buildRemoteExecutor(environmentSetting, config.getExecutorSetting());
             return executor;
         } else {
+            if (ArrayUtil.isNotEmpty(config.getJarFiles())) {
+                if (OSUtil.isWindows()) {
+                    config.getExecutorSetting().getConfig().put(PipelineOptions.JARS.key(),
+                            Stream.of(config.getJarFiles()).map(x -> "file:///" + x).collect(Collectors.joining(",")));
+                } else {
+                    config.getExecutorSetting().getConfig().put(PipelineOptions.JARS.key(),
+                            Stream.of(config.getJarFiles()).map(x -> "file://" + x).collect(Collectors.joining(",")));
+                }
+            }
+
             executor = Executor.buildLocalExecutor(config.getExecutorSetting());
             return executor;
         }
