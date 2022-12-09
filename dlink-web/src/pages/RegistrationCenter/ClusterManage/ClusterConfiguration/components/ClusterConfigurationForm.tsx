@@ -289,6 +289,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
   }
 
   const renderContent = (formValsPara: Partial<ClusterConfigurationTableListItem>) => {
+    form.resetFields();
     return (
       <>
         <Form.Item
