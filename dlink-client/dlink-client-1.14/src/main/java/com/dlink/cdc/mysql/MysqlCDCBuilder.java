@@ -113,14 +113,14 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
             String[] databases = database.split(FlinkParamConstant.SPLIT);
             sourceBuilder.databaseList(databases);
         } else {
-            sourceBuilder.databaseList(new String[0]);
+            sourceBuilder.databaseList(".*");
         }
 
         List<String> schemaTableNameList = config.getSchemaTableNameList();
         if (Asserts.isNotNullCollection(schemaTableNameList)) {
             sourceBuilder.tableList(schemaTableNameList.toArray(new String[schemaTableNameList.size()]));
         } else {
-            sourceBuilder.tableList(new String[0]);
+            sourceBuilder.tableList(".*");
         }
 
         sourceBuilder.deserializer(new MysqlJsonDebeziumDeserializationSchema());

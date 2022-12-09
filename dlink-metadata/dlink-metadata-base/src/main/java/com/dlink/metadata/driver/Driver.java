@@ -198,7 +198,5 @@ public interface Driver extends AutoCloseable {
         throw new SplitTableException("目前此数据源不支持分库分表");
     }
 
-    ;
-
     List<Map<String, String>> getSplitSchemaList();
 }

@@ -85,13 +85,13 @@ public class OracleCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
             String[] schemas = schema.split(FlinkParamConstant.SPLIT);
             sourceBuilder.schemaList(schemas);
         } else {
-            sourceBuilder.schemaList(new String[0]);
+            sourceBuilder.schemaList(".*");
         }
         List<String> schemaTableNameList = config.getSchemaTableNameList();
         if (Asserts.isNotNullCollection(schemaTableNameList)) {
             sourceBuilder.tableList(schemaTableNameList.toArray(new String[schemaTableNameList.size()]));
         } else {
-            sourceBuilder.tableList(new String[0]);
+            sourceBuilder.tableList(".*");
         }
         sourceBuilder.deserializer(new JsonDebeziumDeserializationSchema());
         sourceBuilder.debeziumProperties(properties);
