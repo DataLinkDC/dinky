@@ -203,22 +203,20 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
         </span>
       </HeaderDropdown>
       {formValues && Object.keys(formValues).length ? (
-        <>
-          <PasswordForm
-            onSubmit={async (value) => {
-              const success = await handleOption(url + "/modifyPassword", l('button.changePassword'), value);
-              if (success) {
-                handlePasswordModalVisible(false);
-                setFormValues({});
-              }
-            }}
-            onCancel={() => {
+        <PasswordForm
+          onSubmit={async (value) => {
+            const success = await handleOption(url + "/modifyPassword", l('button.changePassword'), value);
+            if (success) {
               handlePasswordModalVisible(false);
-            }}
-            modalVisible={passwordModalVisible}
-            values={formValues}
-          />
-        </>
+              setFormValues({});
+            }
+          }}
+          onCancel={() => {
+            handlePasswordModalVisible(false);
+          }}
+          modalVisible={passwordModalVisible}
+          values={formValues}
+        />
       ) : null}
     </div>
   );
