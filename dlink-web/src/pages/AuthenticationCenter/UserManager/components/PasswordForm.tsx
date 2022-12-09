@@ -18,10 +18,10 @@
  */
 
 
-import React, {useState} from 'react';
-import {Button, Form, Input, Modal} from 'antd';
-import {PasswordItem} from "@/pages/AuthenticationCenter/data.d";
-import {l} from "@/utils/intl";
+import React, { useState } from 'react';
+import { Button, Form, Input, Modal } from 'antd';
+import { PasswordItem } from "@/pages/AuthenticationCenter/data.d";
+import { l } from "@/utils/intl";
 
 export type PasswordFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -31,8 +31,8 @@ export type PasswordFormProps = {
 };
 
 const formLayout = {
-  labelCol: {span: 7},
-  wrapperCol: {span: 13},
+  labelCol: { span: 7 },
+  wrapperCol: { span: 13 },
 };
 
 const PasswordForm: React.FC<PasswordFormProps> = (props) => {
@@ -51,8 +51,8 @@ const PasswordForm: React.FC<PasswordFormProps> = (props) => {
 
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
-    setFormVals({...formVals, ...fieldsValue});
-    handleSubmit({...formVals, ...fieldsValue});
+    setFormVals({ ...formVals, ...fieldsValue });
+    handleSubmit({ ...formVals, ...fieldsValue });
   };
 
   const renderContent = () => {
@@ -62,15 +62,15 @@ const PasswordForm: React.FC<PasswordFormProps> = (props) => {
           name="password"
           label={l('pages.user.UserOldPassword')}
           hasFeedback
-          rules={[{required: true, message: l('pages.user.UserEnterOldPassword')}]}>
-          <Input.Password placeholder={l('pages.user.UserEnterOldPassword')}/>
+          rules={[{ required: true, message: l('pages.user.UserEnterOldPassword') }]}>
+          <Input.Password placeholder={l('pages.user.UserEnterOldPassword')} />
         </Form.Item>
         <Form.Item
           name="newPassword"
           label={l('pages.user.UserNewPassword')}
           hasFeedback
-          rules={[{required: true, message: l('pages.user.UserEnterNewPassword')}]}>
-          <Input.Password placeholder={l('pages.user.UserEnterNewPassword')}/>
+          rules={[{ required: true, message: l('pages.user.UserEnterNewPassword') }]}>
+          <Input.Password placeholder={l('pages.user.UserEnterNewPassword')} />
         </Form.Item>
         <Form.Item
           name="newPasswordCheck"
@@ -82,7 +82,7 @@ const PasswordForm: React.FC<PasswordFormProps> = (props) => {
               required: true,
               message: l('pages.user.UserNewPasswordNotMatch'),
             },
-            ({getFieldValue}) => ({
+            ({ getFieldValue }) => ({
               validator(_, value) {
                 if (!value || getFieldValue('newPassword') === value) {
                   return Promise.resolve();
@@ -91,7 +91,7 @@ const PasswordForm: React.FC<PasswordFormProps> = (props) => {
               },
             }),
           ]}>
-          <Input.Password placeholder={l('pages.user.UserEnterRepeatNewPassword')}/>
+          <Input.Password placeholder={l('pages.user.UserEnterRepeatNewPassword')} />
         </Form.Item>
       </>
     );
@@ -111,7 +111,7 @@ const PasswordForm: React.FC<PasswordFormProps> = (props) => {
   return (
     <Modal
       width={"40%"}
-      bodyStyle={{padding: '32px 40px 48px'}}
+      bodyStyle={{ padding: '32px 40px 48px' }}
       destroyOnClose
       title={l('button.changePassword')}
       visible={modalVisible}
