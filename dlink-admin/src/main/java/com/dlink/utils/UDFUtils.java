@@ -19,12 +19,14 @@
 
 package com.dlink.utils;
 
+import com.dlink.context.DinkyClassLoaderContextHolder;
 import com.dlink.exception.BusException;
 import com.dlink.function.context.UDFPathContextHolder;
 import com.dlink.function.data.model.UDF;
 import com.dlink.function.util.UDFUtil;
 import com.dlink.model.Task;
 import com.dlink.process.context.ProcessContextHolder;
+import com.dlink.process.exception.DinkyException;
 import com.dlink.process.model.ProcessEntity;
 import com.dlink.service.TaskService;
 
@@ -40,7 +42,6 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ClassLoaderUtil;
 import cn.hutool.core.util.ReUtil;
-import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 
@@ -67,8 +68,14 @@ public class UDFUtils extends UDFUtil {
             String className = groups.get(2);
             if (ClassLoaderUtil.isPresent(className)) {
                 // 获取已经加载在java的类，对应的包路径
-                UDFPathContextHolder.set(ReflectUtil.newInstance(className).getClass().getProtectionDomain()
-                        .getCodeSource().getLocation().getPath());
+                try {
+                    UDFPathContextHolder.add(
+                            DinkyClassLoaderContextHolder.get().loadClass(className).getProtectionDomain()
+                                    .getCodeSource().getLocation().getPath());
+                } catch (ClassNotFoundException e) {
+                    throw new DinkyException(e);
+                }
+
                 return null;
             }
 
