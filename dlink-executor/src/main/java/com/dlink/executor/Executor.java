@@ -20,6 +20,7 @@
 package com.dlink.executor;
 
 import com.dlink.assertion.Asserts;
+import com.dlink.context.DinkyClassLoaderContextHolder;
 import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.interceptor.FlinkInterceptorResult;
 import com.dlink.model.LineageRel;
@@ -42,7 +43,6 @@ import org.apache.flink.table.api.StatementSet;
 import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.catalog.CatalogManager;
-import org.apache.flink.util.JarUtils;
 import org.apache.hadoop.security.UserGroupInformation;
 
 import java.io.IOException;
@@ -314,7 +314,7 @@ public abstract class Executor {
      * @param udfFilePath udf文件路径
      */
     public void initUDF(String... udfFilePath) {
-        JarUtils.getJarFiles(udfFilePath).forEach(Executor::loadJar);
+        DinkyClassLoaderContextHolder.get().addURL(udfFilePath);
     }
 
     public void initPyUDF(String executable, String... udfPyFilePath) {

@@ -752,7 +752,7 @@ public final class ExtractionUtils {
             } else {
                 extractor = new ParameterExtractor((Method) executable);
             }
-            getClassReader(executable.getDeclaringClass()).accept(extractor, 0);
+//            getClassReader(executable.getDeclaringClass()).accept(extractor, 0);
 
             final List<String> extractedNames = extractor.getParameterNames();
             if (extractedNames.size() == 0) {

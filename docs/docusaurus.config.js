@@ -134,7 +134,7 @@ const config = {
         ({
             announcementBar: {
                 id: 'announcementBar-2', // Increment on change
-                content: `⭐️ &nbsp; If you like Dinky , give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/DataLinkDC/dlink">GitHub</a>`,
+                content: `⭐️ &nbsp; If you like Dinky , give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/DataLinkDC/dlink">GitHub</a> . Domain name will be migrated soon , The new domain name is  <a target="_blank" rel="noopener noreferrer" href="http://docs.dinky.org.cn">docs.dinky.org.cn</a>`,
                 backgroundColor: "#BBDFFF",
                 isCloseable: false,
             },

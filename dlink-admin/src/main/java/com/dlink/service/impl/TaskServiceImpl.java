@@ -428,9 +428,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public boolean saveOrUpdateTask(Task task) {
-        if (CollUtil.isNotEmpty(task.getConfig()) && Dialect.isUDF(task.getDialect())
-                && Convert.toInt(task.getConfig().get(0).get("templateId"), 0) != 0) {
-            if (Asserts.isNullString(task.getStatement())) {
+        if (Dialect.isUDF(task.getDialect())) {
+            if (CollUtil.isNotEmpty(task.getConfig()) && Asserts.isNullString(task.getStatement())
+                    && Convert.toInt(task.getConfig().get(0).get("templateId"), 0) != 0) {
                 Map<String, String> config = task.getConfig().get(0);
                 UDFTemplate template = udfTemplateService.getById(config.get("templateId"));
                 if (template != null) {
@@ -586,7 +586,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Task task = getOne(
                 new QueryWrapper<Task>().in("dialect", Dialect.JAVA, Dialect.SCALA, Dialect.PYTHON).eq("enabled", 1)
                         .eq("save_point_path", className));
-        Assert.check(task);
+        Asserts.checkNull(task,StrUtil.format("class: {} ,not exists!",className));
         task.setStatement(statementService.getById(task.getId()).getStatement());
         return task;
     }
