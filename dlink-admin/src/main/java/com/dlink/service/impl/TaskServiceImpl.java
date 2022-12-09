@@ -586,7 +586,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Task task = getOne(
                 new QueryWrapper<Task>().in("dialect", Dialect.JAVA, Dialect.SCALA, Dialect.PYTHON).eq("enabled", 1)
                         .eq("save_point_path", className));
-        Assert.check(task);
+        Asserts.checkNull(task,StrUtil.format("class: {} ,not exists!",className));
         task.setStatement(statementService.getById(task.getId()).getStatement());
         return task;
     }

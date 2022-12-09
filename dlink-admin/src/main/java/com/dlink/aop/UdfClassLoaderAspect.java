@@ -19,16 +19,15 @@
 
 package com.dlink.aop;
 
+import com.dlink.classloader.DinkyClassLoader;
+import com.dlink.context.DinkyClassLoaderContextHolder;
 import com.dlink.job.JobResult;
-
-import java.io.IOException;
-import java.net.URLClassLoader;
+import com.dlink.process.exception.DinkyException;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.boot.web.embedded.tomcat.TomcatEmbeddedWebappClassLoader;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
@@ -61,30 +60,21 @@ public class UdfClassLoaderAspect {
     @Around("allPointcut()")
     public Object round(ProceedingJoinPoint proceedingJoinPoint) {
         Object proceed = null;
-        ClassLoader initContextClassLoader = Thread.currentThread().getContextClassLoader();
 
         try {
             proceed = proceedingJoinPoint.proceed();
         } catch (Throwable e) {
-            throw new RuntimeException(e);
+            if (!(e instanceof DinkyException)) {
+                throw new DinkyException(e);
+            }
         } finally {
-            ClassLoader lastContextClassLoader = Thread.currentThread().getContextClassLoader();
-            if (!(lastContextClassLoader instanceof TomcatEmbeddedWebappClassLoader)) {
-                if (lastContextClassLoader.getParent() instanceof TomcatEmbeddedWebappClassLoader) {
-                    if (proceed instanceof JobResult) {
-                        Thread.currentThread().setContextClassLoader(initContextClassLoader);
-                        try {
-                            ((URLClassLoader) lastContextClassLoader).close();
-                        } catch (IOException e) {
-                            log.error("卸载类失败，reason: {}", e.getMessage());
-                            e.printStackTrace();
-                        }
-                    }
+            if (proceed instanceof JobResult) {
+                ClassLoader lastContextClassLoader = Thread.currentThread().getContextClassLoader();
+                if (lastContextClassLoader instanceof DinkyClassLoader) {
+                    DinkyClassLoaderContextHolder.clear();
                 }
             }
-
         }
-
         return proceed;
 
     }
