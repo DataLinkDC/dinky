@@ -59,6 +59,10 @@ export default [
     icon: 'database',
     routes: [
       {
+        path: '/datacenter',
+        redirect: '/datacenter/metadata',
+      },
+      {
         component: './DataCenter/MetaData',
         path: '/datacenter/metadata',
         name: 'metadata',
@@ -72,6 +76,10 @@ export default [
     name: 'registration',
     icon: 'appstore',
     routes: [
+      {
+        path: '/registration',
+        redirect: '/registration/cluster/clusterInstance',
+      },
       {
         path: '/registration/cluster',
         name: 'cluster',
@@ -136,6 +144,10 @@ export default [
     path: '/authenticationCenter',
     routes: [
       {
+        path: '/authenticationCenter',
+        redirect: '/authenticationCenter/userManager',
+      },
+      {
         path: '/authenticationCenter/userManager',
         name: 'userManager',
         icon: 'UserOutlined',
@@ -170,6 +182,10 @@ export default [
     icon: 'setting',
     path: '/settingCenter',
     routes: [
+      {
+        path: '/settingCenter',
+        redirect: '/settingCenter/flinkSettings',
+      },
       {
         path: '/settingCenter/flinkSettings',
         name: 'flinkConfig',
