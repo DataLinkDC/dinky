@@ -211,6 +211,10 @@ const Login: React.FC = () => {
             onFinish={async (values: API.LoginParams) => {
               setType("password")
               let res: TenantTableListItem[] = await getData("/api/geTenants", {username: values.username}).then(result => {
+                if(!result?.datas){
+                  message.error(result?.msg);
+                  return;
+                }
                 setTenant(result?.datas);
                 return result?.datas
               })
