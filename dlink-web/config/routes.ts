@@ -27,6 +27,8 @@
  * @param wrappers 配置路由组件的包装组件，通过包装组件可以为当前的路由组件组合进更多的功能。 比如，可以用于路由级别的权限校验
  * @param name 配置路由的标题，默认读取国际化文件 menu.ts 中 menu.xxxx 的值，如配置 name 为 login，则读取 menu.ts 中 menu.login 的取值作为标题
  * @param icon 配置路由的图标，取值参考 https://ant.design/components/icon-cn， 注意去除风格后缀和大小写，如想要配置图标为 <StepBackwardOutlined /> 则取值应为 stepBackward 或 StepBackward，如想要配置图标为 <UserOutlined /> 则取值应为 user 或者 User
+ * @param access 权限相关 需要在 src/access.ts内定义权限 使用名称 引用即可
+ *              组件内的权限则使用 Hooks  + <Access /> 组件实现 详情见: https://umijs.org/docs/max/access
  * @doc https://umijs.org/docs/guides/routes
  * demo : https://github.com/ant-design/ant-design-pro/blob/master/config/routes.ts
  */
@@ -155,6 +157,7 @@ export default [
     name: 'authenticationCenter',
     icon: 'SafetyCertificateOutlined',
     path: '/authenticationCenter',
+    access: "canAdmin",
     routes: [
       {
         path: '/authenticationCenter',
