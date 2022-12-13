@@ -225,6 +225,16 @@ export default {
   'pages.metadata.help.exec': "exec sql",
 
   'pages.datastudio.label.process': 'Process',
+  'pages.datastudio.label.process.detail': 'Detail',
+  'pages.datastudio.label.process.savepoint': 'SavePoint',
+  'pages.datastudio.label.process.trigger': 'Trigger',
+  'pages.datastudio.label.process.cancel': 'Cancel',
+  'pages.datastudio.label.process.stop': 'Stop',
+  'pages.datastudio.label.process.stopconfirm': 'Are you sure to stop [{jobid}]?',
+  'pages.datastudio.label.process.stopsuccess': 'Stop Succeeded',
+  'pages.datastudio.label.process.stopfailed': 'Stop Failed',
+  'pages.datastudio.label.process.switchcluster': 'Select Flink cluster',
+
   'pages.datastudio.label.history': 'History',
   'pages.datastudio.label.function': 'Function',
 
@@ -666,6 +676,7 @@ export default {
   'pages.devops.jobinfo.job.key.failed':'{key} Failed',
   'pages.devops.jobinfo.job.keyConfirm': 'Are you sure {key} this job?',
 
+  'pages.devops.baseinfo.taskid': 'Task Id',
   'pages.devops.baseinfo.name': 'Name',
   'pages.devops.baseinfo.status': 'Status',
   'pages.devops.baseinfo.readbytes': 'Receive Bytes',
