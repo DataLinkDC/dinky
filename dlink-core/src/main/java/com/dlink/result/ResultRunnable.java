@@ -56,7 +56,7 @@ public class ResultRunnable implements Runnable {
     private final String timeZone;
 
     public ResultRunnable(TableResult tableResult, Integer maxRowNum, boolean isChangeLog, boolean isAutoCancel,
-            String timeZone) {
+                          String timeZone) {
         this.tableResult = tableResult;
         this.maxRowNum = maxRowNum;
         this.isChangeLog = isChangeLog;
@@ -92,14 +92,13 @@ public class ResultRunnable implements Runnable {
         List<Map<String, Object>> rows = selectResult.getRowData();
         List<String> columns = FlinkUtil.catchColumn(tableResult);
 
+        columns.add(0, FlinkConstant.OP);
+        selectResult.setColumns(new LinkedHashSet<>(columns));
         Streams.stream(tableResult.collect()).limit(maxRowNum).forEach(row -> {
-            Map<String, Object> map = getFieldMap(columns, row);
+            Map<String, Object> map = getFieldMap(columns.subList(1, columns.size()), row);
             map.put(FlinkConstant.OP, row.getKind().shortString());
             rows.add(map);
         });
-
-        columns.add(0, FlinkConstant.OP);
-        selectResult.setColumns(new LinkedHashSet<>(columns));
 
         if (isAutoCancel) {
             tableResult.getJobClient().ifPresent(JobClient::cancel);
@@ -110,6 +109,7 @@ public class ResultRunnable implements Runnable {
         List<Map<String, Object>> rows = selectResult.getRowData();
         List<String> columns = FlinkUtil.catchColumn(tableResult);
 
+        selectResult.setColumns(new LinkedHashSet<>(columns));
         Streams.stream(tableResult.collect()).limit(maxRowNum).forEach(row -> {
             Map<String, Object> map = getFieldMap(columns, row);
             if (RowKind.UPDATE_BEFORE == row.getKind() || RowKind.DELETE == row.getKind()) {
@@ -118,8 +118,6 @@ public class ResultRunnable implements Runnable {
                 rows.add(map);
             }
         });
-
-        selectResult.setColumns(new LinkedHashSet<>(columns));
     }
 
     private Map<String, Object> getFieldMap(List<String> columns, Row row) {
