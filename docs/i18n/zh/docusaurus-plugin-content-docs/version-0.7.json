@@ -90,5 +90,21 @@
   "sidebar.tutorialSidebar.category.快速使用": {
     "message": "快速使用",
     "description": "The label for category 快速使用 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.平台介绍": {
+    "message": "平台介绍",
+    "description": "The label for category 平台介绍 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.快速开始": {
+    "message": "快速开始",
+    "description": "The label for category 快速开始 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Quick Start": {
+    "message": "Quick Start",
+    "description": "The label for category Quick Start in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.部署指南": {
+    "message": "部署指南",
+    "description": "The label for category 部署指南 in sidebar tutorialSidebar"
   }
 }
