@@ -267,7 +267,8 @@ const config = {
                     width: 100,
                     height: 30,
                 },
-                copyright: `Copyright © ${new Date().getFullYear()} Dinky, Inc. DataLinkDC.`,
+                copyright: `Copyright © ${new Date().getFullYear()} Dinky, Inc. DataLinkDC.<br/>
+                    <a href="" target="_blank">鲁ICP备20001630号-2</a>`,
             },
             prism: {
                 theme: lightCodeTheme,
