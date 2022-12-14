@@ -268,7 +268,7 @@ const config = {
                     height: 30,
                 },
                 copyright: `Copyright © ${new Date().getFullYear()} Dinky, Inc. DataLinkDC.<br/>
-                    <a href="" target="_blank">鲁ICP备20001630号-2</a>`,
+                    <a href="https://beian.miit.gov.cn" target="_blank">鲁ICP备20001630号-2</a>`,
             },
             prism: {
                 theme: lightCodeTheme,
