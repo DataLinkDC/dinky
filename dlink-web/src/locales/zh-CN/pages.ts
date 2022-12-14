@@ -228,6 +228,16 @@ export default {
   'pages.datastudio.label.lineage.collapse.lineage': '展开血缘',
 
   'pages.datastudio.label.process': '进程',
+  'pages.datastudio.label.process.detail': '详情',
+  'pages.datastudio.label.process.savepoint': '保存点',
+  'pages.datastudio.label.process.trigger': '触发',
+  'pages.datastudio.label.process.cancel': 'Cancel',
+  'pages.datastudio.label.process.stop': '停止',
+  'pages.datastudio.label.process.stopconfirm': '确定停止 【{jobid}】？',
+  'pages.datastudio.label.process.stopsuccess': '停止成功',
+  'pages.datastudio.label.process.stopfailed': '停止失败',
+  'pages.datastudio.label.process.switchcluster': '选择Flink集群',
+
   'pages.datastudio.label.history': '历史',
   'pages.datastudio.label.function': '函数',
 
@@ -667,6 +677,7 @@ export default {
   'pages.devops.jobinfo.job.key.failed':'{key} 失败',
   'pages.devops.jobinfo.job.keyConfirm':'确定{key} 该作业吗？',
 
+  'pages.devops.baseinfo.taskid': '任务ID',
   'pages.devops.baseinfo.name': '名称',
   'pages.devops.baseinfo.status': '状态',
   'pages.devops.baseinfo.readbytes': '接收字节',
