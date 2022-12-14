@@ -148,10 +148,10 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
                 Integer taskId = catalogue.getTaskId();
                 JobInstance job = jobInstanceService.getJobInstanceByTaskId(taskId);
                 if (job == null
-                        || (JobStatus.FINISHED.equals(job.getStatus())
-                                || JobStatus.FAILED.equals(job.getStatus())
-                                || JobStatus.CANCELED.equals(job.getStatus())
-                                || JobStatus.UNKNOWN.equals(job.getStatus()))) {
+                        || (JobStatus.FINISHED.getValue().equals(job.getStatus())
+                                || JobStatus.FAILED.getValue().equals(job.getStatus())
+                                || JobStatus.CANCELED.getValue().equals(job.getStatus())
+                                || JobStatus.UNKNOWN.getValue().equals(job.getStatus()))) {
                     taskService.removeById(taskId);
                     statementService.removeById(taskId);
                     this.removeById(id);
