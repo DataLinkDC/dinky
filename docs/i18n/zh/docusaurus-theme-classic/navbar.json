@@ -70,5 +70,9 @@
   "item.label.FAQ": {
     "message": "FAQ",
     "description": "Navbar item with label FAQ"
+  },
+  "item.label.Roadmap": {
+    "message": "Roadmap",
+    "description": "Navbar item with label Roadmap"
   }
 }
