@@ -1,3 +1,22 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 package com.dlink.cdc.starrocks;
 
 import com.dlink.assertion.Asserts;
@@ -52,7 +71,7 @@ import com.starrocks.connector.flink.table.sink.StarRocksSinkOptions;
  **/
 public class StarrocksSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, Serializable {
 
-    private static final String KEY_WORD = "datastream-starrocks";
+    public static final String KEY_WORD = "datastream-starrocks";
     private static final long serialVersionUID = 8330362249137431824L;
     private final ZoneId sinkZoneIdUTC = ZoneId.of("UTC");
 
@@ -83,12 +102,13 @@ public class StarrocksSinkBuilder extends AbstractSinkBuilder implements SinkBui
             SingleOutputStreamOperator<Map> mapOperator = deserialize(dataStreamSource);
             String mergeFlag = config.getSink().get("sink.merge.table");
             if ("true".equalsIgnoreCase(mergeFlag)) {
-                //取第一个table
+                // 取第一个table
                 Table table = schemaList.get(0).getTables().get(0);
                 List<String> columnNameList = new ArrayList<>();
                 List<LogicalType> columnTypeList = new ArrayList<>();
                 buildColumn(columnNameList, columnTypeList, table.getColumns());
-                DataStream<RowData> rowDataDataStream = buildRowData(mapOperator, columnNameList, columnTypeList, table.getSchemaTableName());
+                DataStream<RowData> rowDataDataStream = buildRowData(mapOperator, columnNameList, columnTypeList,
+                        table.getSchemaTableName());
                 addSink(env, rowDataDataStream, table, columnNameList, columnTypeList);
             } else {
                 final String schemaFieldName = config.getSchemaFieldName();
@@ -101,7 +121,8 @@ public class StarrocksSinkBuilder extends AbstractSinkBuilder implements SinkBui
 
                         buildColumn(columnNameList, columnTypeList, table.getColumns());
 
-                        DataStream<RowData> rowDataDataStream = buildRowData(filterOperator, columnNameList, columnTypeList, table.getSchemaTableName());
+                        DataStream<RowData> rowDataDataStream = buildRowData(filterOperator, columnNameList,
+                                columnTypeList, table.getSchemaTableName());
 
                         addSink(env, rowDataDataStream, table, columnNameList, columnTypeList);
                     }
@@ -113,14 +134,14 @@ public class StarrocksSinkBuilder extends AbstractSinkBuilder implements SinkBui
 
     @Override
     public void addSink(
-        StreamExecutionEnvironment env,
-        DataStream<RowData> rowDataDataStream,
-        Table table,
-        List<String> columnNameList,
-        List<LogicalType> columnTypeList) {
+            StreamExecutionEnvironment env,
+            DataStream<RowData> rowDataDataStream,
+            Table table,
+            List<String> columnNameList,
+            List<LogicalType> columnTypeList) {
         try {
             List<Column> columns = table.getColumns();
-            List<String>  primaryKeys = new LinkedList<>();
+            List<String> primaryKeys = new LinkedList<>();
             String[] columnNames = new String[columns.size()];
             for (int i = 0; i < columns.size(); i++) {
                 Column column = columns.get(i);
@@ -139,7 +160,8 @@ public class StarrocksSinkBuilder extends AbstractSinkBuilder implements SinkBui
                 }
                 dataTypes[i] = TypeConversions.fromLogicalToDataType(logicalType);
             }
-            TableSchema tableSchema = TableSchema.builder().primaryKey(primaryKeyArrays).fields(columnNames, dataTypes).build();
+            TableSchema tableSchema = TableSchema.builder().primaryKey(primaryKeyArrays).fields(columnNames, dataTypes)
+                    .build();
             Map<String, String> sink = config.getSink();
             StarRocksSinkOptions.Builder builder = StarRocksSinkOptions.builder()
                     .withProperty("jdbc-url", sink.get("jdbc-url"))
@@ -152,20 +174,19 @@ public class StarrocksSinkBuilder extends AbstractSinkBuilder implements SinkBui
                     .withProperty("sink.properties.strip_outer_array", "true")
                     // 设置并行度，多并行度情况下需要考虑如何保证数据有序性
                     .withProperty("sink.parallelism", "1");
-            sink.forEach((key,value) -> {
+            sink.forEach((key, value) -> {
                 if (key.startsWith("sink.")) {
-                    builder.withProperty(key,value);
+                    builder.withProperty(key, value);
                 }
             });
             StarRocksDynamicSinkFunction<RowData> starrocksSinkFunction = new StarRocksDynamicSinkFunction<RowData>(
                     builder.build(),
                     tableSchema,
-                    new StarRocksTableRowTransformer(TypeInformation.of(RowData.class))
-            );
+                    new StarRocksTableRowTransformer(TypeInformation.of(RowData.class)));
             rowDataDataStream.addSink(starrocksSinkFunction);
-            logger.info("handler connector name:{} sink successful.....",getHandle());
+            logger.info("handler connector name:{} sink successful.....", getHandle());
         } catch (Exception ex) {
-            logger.error("handler connector name:{} sink ex:",getHandle(),ex);
+            logger.error("handler connector name:{} sink ex:", getHandle(), ex);
         }
     }
 
@@ -215,6 +236,7 @@ public class StarrocksSinkBuilder extends AbstractSinkBuilder implements SinkBui
             String schemaTableName) {
         return filterOperator
                 .flatMap(new FlatMapFunction<Map, RowData>() {
+
                     @Override
                     public void flatMap(Map value, Collector<RowData> out) throws Exception {
                         try {
@@ -225,7 +247,8 @@ public class StarrocksSinkBuilder extends AbstractSinkBuilder implements SinkBui
                                     igenericRowData.setRowKind(RowKind.INSERT);
                                     Map idata = (Map) value.get("after");
                                     for (int i = 0; i < columnNameList.size(); i++) {
-                                        igenericRowData.setField(i, convertValue(idata.get(columnNameList.get(i)), columnTypeList.get(i)));
+                                        igenericRowData.setField(i,
+                                                convertValue(idata.get(columnNameList.get(i)), columnTypeList.get(i)));
                                     }
                                     out.collect(igenericRowData);
                                     break;
@@ -234,7 +257,8 @@ public class StarrocksSinkBuilder extends AbstractSinkBuilder implements SinkBui
                                     dgenericRowData.setRowKind(RowKind.DELETE);
                                     Map ddata = (Map) value.get("before");
                                     for (int i = 0; i < columnNameList.size(); i++) {
-                                        dgenericRowData.setField(i, convertValue(ddata.get(columnNameList.get(i)), columnTypeList.get(i)));
+                                        dgenericRowData.setField(i,
+                                                convertValue(ddata.get(columnNameList.get(i)), columnTypeList.get(i)));
                                     }
                                     out.collect(dgenericRowData);
                                     break;
@@ -243,21 +267,24 @@ public class StarrocksSinkBuilder extends AbstractSinkBuilder implements SinkBui
                                     ubgenericRowData.setRowKind(RowKind.UPDATE_BEFORE);
                                     Map ubdata = (Map) value.get("before");
                                     for (int i = 0; i < columnNameList.size(); i++) {
-                                        ubgenericRowData.setField(i, convertValue(ubdata.get(columnNameList.get(i)), columnTypeList.get(i)));
+                                        ubgenericRowData.setField(i,
+                                                convertValue(ubdata.get(columnNameList.get(i)), columnTypeList.get(i)));
                                     }
                                     out.collect(ubgenericRowData);
                                     GenericRowData uagenericRowData = new GenericRowData(columnNameList.size());
                                     uagenericRowData.setRowKind(RowKind.UPDATE_AFTER);
                                     Map uadata = (Map) value.get("after");
                                     for (int i = 0; i < columnNameList.size(); i++) {
-                                        uagenericRowData.setField(i, convertValue(uadata.get(columnNameList.get(i)), columnTypeList.get(i)));
+                                        uagenericRowData.setField(i,
+                                                convertValue(uadata.get(columnNameList.get(i)), columnTypeList.get(i)));
                                     }
                                     out.collect(uagenericRowData);
                                     break;
                                 default:
                             }
                         } catch (Exception e) {
-                            logger.error("SchameTable: {} - Row: {} - Exception: {}", schemaTableName, JSONUtil.toJsonString(value), e);
+                            logger.error("SchameTable: {} - Row: {} - Exception: {}", schemaTableName,
+                                    JSONUtil.toJsonString(value), e);
                             throw e;
                         }
                     }

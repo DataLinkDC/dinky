@@ -1,0 +1,7 @@
+com.dlink.cdc.kafka.KafkaSinkBuilder
+com.dlink.cdc.kafka.KafkaSinkJsonBuilder
+com.dlink.cdc.doris.DorisSinkBuilder
+com.dlink.cdc.starrocks.StarrocksSinkBuilder
+com.dlink.cdc.sql.SQLSinkBuilder
+com.dlink.cdc.doris.DorisExtendSinkBuilder
+com.dlink.cdc.doris.DorisSchemaEvolutionSinkBuilder

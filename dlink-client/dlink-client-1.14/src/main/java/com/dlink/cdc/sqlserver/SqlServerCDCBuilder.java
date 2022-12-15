@@ -49,7 +49,7 @@ public class SqlServerCDCBuilder extends AbstractCDCBuilder implements CDCBuilde
 
     protected static final Logger logger = LoggerFactory.getLogger(SqlServerCDCBuilder.class);
 
-    private static final String KEY_WORD = "sqlserver-cdc";
+    public static final String KEY_WORD = "sqlserver-cdc";
     private static final String METADATA_TYPE = "SqlServer";
 
     public SqlServerCDCBuilder() {

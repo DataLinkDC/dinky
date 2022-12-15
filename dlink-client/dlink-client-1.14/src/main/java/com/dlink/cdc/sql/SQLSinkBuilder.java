@@ -83,7 +83,7 @@ import javax.xml.bind.DatatypeConverter;
  */
 public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable {
 
-    private static final String KEY_WORD = "sql";
+    public static final String KEY_WORD = "sql";
     private static final long serialVersionUID = -3699685106324048226L;
     private static AtomicInteger atomicInteger = new AtomicInteger(0);
     private ZoneId sinkTimeZone = ZoneId.of("UTC");
@@ -96,85 +96,95 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable 
     }
 
     @Override
-    public void addSink(StreamExecutionEnvironment env, DataStream<RowData> rowDataDataStream, Table table, List<String> columnNameList, List<LogicalType> columnTypeList) {
+    public void addSink(StreamExecutionEnvironment env, DataStream<RowData> rowDataDataStream, Table table,
+            List<String> columnNameList, List<LogicalType> columnTypeList) {
     }
 
     private DataStream<Row> buildRow(
-        DataStream<Map> filterOperator,
-        List<String> columnNameList,
-        List<LogicalType> columnTypeList,
-        String schemaTableName) {
+            DataStream<Map> filterOperator,
+            List<String> columnNameList,
+            List<LogicalType> columnTypeList,
+            String schemaTableName) {
         final String[] columnNames = columnNameList.toArray(new String[columnNameList.size()]);
         final LogicalType[] columnTypes = columnTypeList.toArray(new LogicalType[columnTypeList.size()]);
-        TypeInformation<?>[] typeInformations = TypeConversions.fromDataTypeToLegacyInfo(TypeConversions.fromLogicalToDataType(columnTypes));
+        TypeInformation<?>[] typeInformations = TypeConversions
+                .fromDataTypeToLegacyInfo(TypeConversions.fromLogicalToDataType(columnTypes));
         RowTypeInfo rowTypeInfo = new RowTypeInfo(typeInformations, columnNames);
         return filterOperator
-            .flatMap(new FlatMapFunction<Map, Row>() {
-                @Override
-                public void flatMap(Map value, Collector<Row> out) throws Exception {
-                    try {
-                        switch (value.get("op").toString()) {
-                            case "r":
-                            case "c":
-                                Row irow = Row.withPositions(RowKind.INSERT, columnNameList.size());
-                                Map idata = (Map) value.get("after");
-                                for (int i = 0; i < columnNameList.size(); i++) {
-                                    irow.setField(i, convertValue(idata.get(columnNameList.get(i)), columnTypeList.get(i)));
-                                }
-                                out.collect(irow);
-                                break;
-                            case "d":
-                                Row drow = Row.withPositions(RowKind.DELETE, columnNameList.size());
-                                Map ddata = (Map) value.get("before");
-                                for (int i = 0; i < columnNameList.size(); i++) {
-                                    drow.setField(i, convertValue(ddata.get(columnNameList.get(i)), columnTypeList.get(i)));
-                                }
-                                out.collect(drow);
-                                break;
-                            case "u":
-                                Row ubrow = Row.withPositions(RowKind.UPDATE_BEFORE, columnNameList.size());
-                                Map ubdata = (Map) value.get("before");
-                                for (int i = 0; i < columnNameList.size(); i++) {
-                                    ubrow.setField(i, convertValue(ubdata.get(columnNameList.get(i)), columnTypeList.get(i)));
-                                }
-                                out.collect(ubrow);
-                                Row uarow = Row.withPositions(RowKind.UPDATE_AFTER, columnNameList.size());
-                                Map uadata = (Map) value.get("after");
-                                for (int i = 0; i < columnNameList.size(); i++) {
-                                    uarow.setField(i, convertValue(uadata.get(columnNameList.get(i)), columnTypeList.get(i)));
-                                }
-                                out.collect(uarow);
-                                break;
-                            default:
+                .flatMap(new FlatMapFunction<Map, Row>() {
+
+                    @Override
+                    public void flatMap(Map value, Collector<Row> out) throws Exception {
+                        try {
+                            switch (value.get("op").toString()) {
+                                case "r":
+                                case "c":
+                                    Row irow = Row.withPositions(RowKind.INSERT, columnNameList.size());
+                                    Map idata = (Map) value.get("after");
+                                    for (int i = 0; i < columnNameList.size(); i++) {
+                                        irow.setField(i,
+                                                convertValue(idata.get(columnNameList.get(i)), columnTypeList.get(i)));
+                                    }
+                                    out.collect(irow);
+                                    break;
+                                case "d":
+                                    Row drow = Row.withPositions(RowKind.DELETE, columnNameList.size());
+                                    Map ddata = (Map) value.get("before");
+                                    for (int i = 0; i < columnNameList.size(); i++) {
+                                        drow.setField(i,
+                                                convertValue(ddata.get(columnNameList.get(i)), columnTypeList.get(i)));
+                                    }
+                                    out.collect(drow);
+                                    break;
+                                case "u":
+                                    Row ubrow = Row.withPositions(RowKind.UPDATE_BEFORE, columnNameList.size());
+                                    Map ubdata = (Map) value.get("before");
+                                    for (int i = 0; i < columnNameList.size(); i++) {
+                                        ubrow.setField(i,
+                                                convertValue(ubdata.get(columnNameList.get(i)), columnTypeList.get(i)));
+                                    }
+                                    out.collect(ubrow);
+                                    Row uarow = Row.withPositions(RowKind.UPDATE_AFTER, columnNameList.size());
+                                    Map uadata = (Map) value.get("after");
+                                    for (int i = 0; i < columnNameList.size(); i++) {
+                                        uarow.setField(i,
+                                                convertValue(uadata.get(columnNameList.get(i)), columnTypeList.get(i)));
+                                    }
+                                    out.collect(uarow);
+                                    break;
+                                default:
+                            }
+                        } catch (Exception e) {
+                            logger.error("SchameTable: {} - Row: {} - Exception:", schemaTableName,
+                                    JSONUtil.toJsonString(value), e);
+                            throw e;
                         }
-                    } catch (Exception e) {
-                        logger.error("SchameTable: {} - Row: {} - Exception:", schemaTableName, JSONUtil.toJsonString(value),e);
-                        throw e;
                     }
-                }
-            }, rowTypeInfo);
+                }, rowTypeInfo);
     }
 
     private void addTableSink(
-        int indexSink,
-        CustomTableEnvironment customTableEnvironment,
-        DataStream<Row> rowDataDataStream,
-        Table table,
-        List<String> columnNameList) {
+            int indexSink,
+            CustomTableEnvironment customTableEnvironment,
+            DataStream<Row> rowDataDataStream,
+            Table table,
+            List<String> columnNameList) {
         String sinkSchemaName = getSinkSchemaName(table);
         String tableName = getSinkTableName(table);
         String sinkTableName = tableName + "_" + indexSink;
         String pkList = StringUtils.join(getPKList(table), ".");
         String viewName = "VIEW_" + table.getSchemaTableNameWithUnderline();
         try {
-            customTableEnvironment.createTemporaryView(viewName, rowDataDataStream, StringUtils.join(columnNameList, ","));
+            customTableEnvironment.createTemporaryView(viewName, rowDataDataStream,
+                    StringUtils.join(columnNameList, ","));
             logger.info("Create " + viewName + " temporaryView successful...");
         } catch (ValidationException exception) {
             if (!exception.getMessage().contains("already exists")) {
                 logger.error(exception.getMessage(), exception);
             }
         }
-        String flinkDDL = FlinkBaseUtil.getFlinkDDL(table, "" + sinkTableName, config, sinkSchemaName, tableName, pkList);
+        String flinkDDL = FlinkBaseUtil.getFlinkDDL(table, "" + sinkTableName, config, sinkSchemaName, tableName,
+                pkList);
         logger.info(flinkDDL);
         customTableEnvironment.executeSql(flinkDDL);
         logger.info("Create " + sinkTableName + " FlinkSQL DDL successful...");
@@ -207,10 +217,10 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable 
 
     @Override
     public DataStreamSource build(
-        CDCBuilder cdcBuilder,
-        StreamExecutionEnvironment env,
-        CustomTableEnvironment customTableEnvironment,
-        DataStreamSource<String> dataStreamSource) {
+            CDCBuilder cdcBuilder,
+            StreamExecutionEnvironment env,
+            CustomTableEnvironment customTableEnvironment,
+            DataStreamSource<String> dataStreamSource) {
         final String timeZone = config.getSink().get("timezone");
         config.getSink().remove("timezone");
         if (Asserts.isNotNullString(timeZone)) {
@@ -234,16 +244,21 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable 
             }
             final String schemaFieldName = config.getSchemaFieldName();
             ObjectMapper objectMapper = new ObjectMapper();
-            SingleOutputStreamOperator<Map> mapOperator = dataStreamSource.map(x -> objectMapper.readValue(x, Map.class)).returns(Map.class);
+            SingleOutputStreamOperator<Map> mapOperator = dataStreamSource
+                    .map(x -> objectMapper.readValue(x, Map.class)).returns(Map.class);
             SingleOutputStreamOperator<Map> processOperator = mapOperator.process(new ProcessFunction<Map, Map>() {
+
                 @Override
-                public void processElement(Map map, ProcessFunction<Map, Map>.Context ctx, Collector<Map> out) throws Exception {
+                public void processElement(Map map, ProcessFunction<Map, Map>.Context ctx, Collector<Map> out)
+                        throws Exception {
                     LinkedHashMap source = (LinkedHashMap) map.get("source");
                     try {
-                        String tableName = SplitUtil.getReValue(source.get(schemaFieldName).toString(), splitConfMap) + "." + SplitUtil.getReValue(source.get("table").toString(), splitConfMap);
+                        String tableName = SplitUtil.getReValue(source.get(schemaFieldName).toString(), splitConfMap)
+                                + "." + SplitUtil.getReValue(source.get("table").toString(), splitConfMap);
                         Table table = tableMap.get(tableName);
                         OutputTag<Map> outputTag = tagMap.get(table);
-                        Optional.ofNullable(outputTag).orElseThrow(() -> new RuntimeException("data outPutTag is not exists!table name is  " + tableName));
+                        Optional.ofNullable(outputTag).orElseThrow(
+                                () -> new RuntimeException("data outPutTag is not exists!table name is  " + tableName));
                         ctx.output(outputTag, map);
                     } catch (Exception e) {
                         logger.error(e.getMessage(), e);
@@ -260,7 +275,8 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable 
                     List<String> columnNameList = new ArrayList<>();
                     List<LogicalType> columnTypeList = new ArrayList<>();
                     buildColumn(columnNameList, columnTypeList, table.getColumns());
-                    DataStream<Row> rowDataDataStream = buildRow(filterOperator, columnNameList, columnTypeList, schemaTableName).rebalance();
+                    DataStream<Row> rowDataDataStream = buildRow(filterOperator, columnNameList, columnTypeList,
+                            schemaTableName).rebalance();
                     logger.info("Build " + schemaTableName + " flatMap successful...");
                     logger.info("Start build " + schemaTableName + " sink...");
                     addTableSink(indexSink, customTableEnvironment, rowDataDataStream, table, columnNameList);
