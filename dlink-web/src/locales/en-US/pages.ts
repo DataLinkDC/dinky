@@ -213,16 +213,33 @@ export default {
 
   'pages.datastudio.label.info': 'Info',
   'pages.datastudio.label.result': 'Result',
+  'pages.datastudio.label.result.query.latest.data': 'Get the latest data',
+
+
+  'pages.datastudio.explain.validate.msg': 'FlinkSql Syntax and logic check',
+  'pages.datastudio.explain.validate': 'Validating...',
+  'pages.datastudio.explain.validate.allright': 'All Right',
+  'pages.datastudio.explain.validate.error': 'There are errors, a total of {errorCount}',
+  'pages.datastudio.explain.validate.grammar.right': 'Grammar Right',
+  'pages.datastudio.explain.validate.grammar.error': 'Grammar Error',
+  'pages.datastudio.explain.validate.logic.right': 'Logical Right',
+  'pages.datastudio.explain.validate.logic.error': 'Logical Error',
+
+
 
   'pages.datastudio.label.lineage': 'Lineage',
   'pages.datastudio.label.lineage.expand.field': 'Expand Field',
   'pages.datastudio.label.lineage.collapse.field': 'Collapse Field',
   'pages.datastudio.label.lineage.expand.lineage': 'Expand Lineage',
   'pages.datastudio.label.lineage.collapse.lineage': 'Collapse Lineage',
+
   'pages.metadata.Console': 'SQL Console',
-  'pages.metadata.help.noSqlSelect': "No Sql Select！",
-  'pages.metadata.help.selectSql': "please choose sql in editor",
-  'pages.metadata.help.exec': "exec sql",
+  'pages.metadata.help.noSqlSelect': 'No Sql Select！',
+  'pages.metadata.help.selectSql': 'please choose sql in editor',
+  'pages.metadata.help.exec': 'exec sql',
+  'pages.metadata.exec.result.msg': 'Execution Time: {time} s, Row count: {rowCount}',
+  'pages.metadata.exec.result.msghelp': 'row count more than 500, only show top 500',
+
 
   'pages.datastudio.label.process': 'Process',
   'pages.datastudio.label.process.detail': 'Detail',
@@ -641,6 +658,8 @@ export default {
   'pages.devops.jobinfo.version.sql.showdetail' : 'View Job Details',
   'pages.devops.jobinfo.version.sql.title' : 'Job Execute SQL',
   'pages.devops.jobinfo.version.diff' : 'Version Comparison',
+  'pages.devops.jobinfo.version.list' :'Version List',
+  'pages.devops.jobinfo.version.timeline' :'Version TimeLine',
 
   'pages.devops.jobinfo.overview': 'Job Overview',
   'pages.devops.jobinfo.cluster':'Cluster Information',

@@ -32,7 +32,7 @@ import {HistoryItem} from "@/components/Studio/StudioConsole/StudioHistory/data"
 import CodeShow from "@/components/Common/CodeShow";
 import {l} from "@/utils/intl";
 
-const { Paragraph, Text, Link} = Typography;
+const {Paragraph, Text, Link} = Typography;
 
 type HistoryConfig = {
   useSession: boolean;

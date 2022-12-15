@@ -208,10 +208,13 @@ export default {
   'pages.metadata.DataSearch': '数据查询',
   'pages.metadata.GenerateSQL': 'SQL 生成',
   'pages.metadata.FieldInformation': '字段信息',
+
   'pages.metadata.Console': '控制台',
-  'pages.metadata.help.noSqlSelect': "未选择任何sql！",
-  'pages.metadata.help.selectSql': "请在编辑器内选择你要执行的sql",
-  'pages.metadata.help.exec': "执行选中sql",
+  'pages.metadata.help.noSqlSelect': '未选择任何sql！',
+  'pages.metadata.help.selectSql': '请在编辑器内选择你要执行的sql',
+  'pages.metadata.help.exec': '执行选中sql',
+  'pages.metadata.exec.result.msg': '执行时间: {time} 秒, 总行数: {rowCount}',
+  'pages.metadata.exec.result.msghelp': '行数超过500，仅显示前500',
 
   'pages.TableData.QueryConditions': '查询条件',
   'pages.TableData.sorting': '排序',
@@ -220,6 +223,18 @@ export default {
 
   'pages.datastudio.label.info': '信息',
   'pages.datastudio.label.result': '结果',
+  'pages.datastudio.label.result.query.latest.data': '获取最新数据',
+
+  'pages.datastudio.explain.validate.msg': 'FlinkSql 语法和逻辑检查',
+  'pages.datastudio.explain.validate': '正在校验中...',
+  'pages.datastudio.explain.validate.allright': '全部正确',
+  'pages.datastudio.explain.validate.error': '存在错误，共计{errorCount}个',
+  'pages.datastudio.explain.validate.grammar.right': '语法正确',
+  'pages.datastudio.explain.validate.grammar.error': '语法有误',
+  'pages.datastudio.explain.validate.logic.right': '逻辑正确',
+  'pages.datastudio.explain.validate.logic.error': '逻辑有误',
+
+
 
   'pages.datastudio.label.lineage': '血缘',
   'pages.datastudio.label.lineage.expand.field': '展开字段',
@@ -642,6 +657,8 @@ export default {
   'pages.devops.jobinfo.version.sql.showdetail' :'查看作业详情',
   'pages.devops.jobinfo.version.sql.title' :'作业执行 SQL',
   'pages.devops.jobinfo.version.diff' :'版本对比',
+  'pages.devops.jobinfo.version.list' :'版本列表',
+  'pages.devops.jobinfo.version.timeline' :'版本时间轴',
 
   'pages.devops.jobinfo.overview':'作业总览',
   'pages.devops.jobinfo.cluster':'集群信息',

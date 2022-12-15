@@ -50,6 +50,8 @@ export default {
   'button.test': '测试',
   'button.refreshData': '刷新数据',
   'button.collapseDir': '折叠目录',
+  'button.asc': '升序',
+  'button.desc': '倒序',
 
   'right.menu.open': '打开',
   'right.menu.submit': '异步提交',

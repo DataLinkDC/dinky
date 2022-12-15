@@ -97,7 +97,7 @@ const VersionTimeLineList = (props: any) => {
       marginTop: "20px",
     }}>
       <Button type="primary" style={{margin: "5px"}} onClick={handleClick}>
-        {reverse ? "倒序" : "正序"}
+        {reverse ? l('button.desc') : l('button.asc')}
       </Button>
       <Button type="primary" style={{margin: "5px"}} onClick={refresh}>
         {l('button.refresh')}

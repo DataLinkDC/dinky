@@ -50,6 +50,8 @@ export default {
   'button.test': 'Test',
   'button.refreshData': 'Refresh Data',
   'button.collapseDir': 'Collapse Directory',
+  'button.asc': 'ASC',
+  'button.desc': 'DESC',
 
   'right.menu.open': 'Open',
   'right.menu.submit': 'Sync Submit',

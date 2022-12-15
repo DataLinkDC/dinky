@@ -50,7 +50,7 @@ export type StudioExplainProps = {
 const StudioExplain = (props: any) => {
 
   const [explainData, setExplainData] = useState([]);
-  const [result, setResult] = useState(<Text>正在校验中...</Text>);
+  const [result, setResult] = useState(<Text>{l('pages.datastudio.explain.validate')}</Text>);
   const {
     onClose,
     modalVisible,
@@ -78,7 +78,7 @@ const StudioExplain = (props: any) => {
       configJson: JSON.stringify(current.task.config),
       statement: selectsql,
     };
-    setResult(<Text>正在校验中...</Text>);
+    setResult(<Text>{l('pages.datastudio.explain.validate')}</Text>);
     setExplainData([]);
     const result = explainSql(param);
     result.then(res => {
@@ -92,10 +92,10 @@ const StudioExplain = (props: any) => {
       }
       if (errorCount == 0) {
         setExplainData(res.datas);
-        setResult(<Text type="success">全部正确</Text>);
+        setResult(<Text type="success">{l('pages.datastudio.explain.validate.allright')}</Text>);
       } else {
         setExplainData(errorExplainData);
-        setResult(<Text type="danger">存在错误，共计{errorCount}个</Text>);
+        setResult(<Text type="danger">{l('pages.datastudio.explain.validate.error','',{errorCount: errorCount})}</Text>);
       }
     })
   }, [modalVisible]);
@@ -157,11 +157,11 @@ const StudioExplain = (props: any) => {
                 return (
                   <Space size={0}>
                     {row.parseTrue ?
-                      (<Tag color="#44b549">语法正确</Tag>) :
-                      (<Tag color="#ff4d4f">语法有误</Tag>)}
+                      (<Tag color="#44b549">{l('pages.datastudio.explain.validate.grammar.right')}</Tag>) :
+                      (<Tag color="#ff4d4f">{l('pages.datastudio.explain.validate.grammar.error')}</Tag>)}
                     {row.explainTrue ?
-                      (<Tag color="#108ee9">逻辑正确</Tag>) :
-                      (<Tag color="#ff4d4f">逻辑有误</Tag>)}
+                      (<Tag color="#108ee9">{l('pages.datastudio.explain.validate.logic.right')}</Tag>) :
+                      (<Tag color="#ff4d4f">{l('pages.datastudio.explain.validate.logic.error')}</Tag>)}
                     {row.explainTime}
                   </Space>
                 );
@@ -182,7 +182,7 @@ const StudioExplain = (props: any) => {
       width={'100%'}
       destroyOnClose
       centered
-      title="FlinkSql 语法和逻辑检查"
+      title={l('pages.datastudio.explain.validate.msg')}
       visible={modalVisible}
       footer={false}
       onCancel={onClose}
