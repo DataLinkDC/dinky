@@ -21,6 +21,7 @@ package com.dlink.cdc;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.cdc.doris.DorisSinkBuilder;
+import com.dlink.cdc.hudi.HudiSinkBuilder;
 import com.dlink.cdc.kafka.KafkaSinkBuilder;
 import com.dlink.cdc.kafka.KafkaSinkJsonBuilder;
 import com.dlink.cdc.sql.SQLSinkBuilder;
@@ -47,6 +48,7 @@ public class SinkBuilderFactory {
             put(KafkaSinkJsonBuilder.KEY_WORD, KafkaSinkJsonBuilder::new);
             put(DorisSinkBuilder.KEY_WORD, DorisSinkBuilder::new);
             put(StarrocksSinkBuilder.KEY_WORD, StarrocksSinkBuilder::new);
+            put(HudiSinkBuilder.KEY_WORD, StarrocksSinkBuilder::new);
             put(SQLSinkBuilder.KEY_WORD, SQLSinkBuilder::new);
         }
     };
