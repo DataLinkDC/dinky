@@ -36,6 +36,7 @@ import org.apache.flink.configuration.RestOptions;
 import org.apache.http.util.TextUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -85,6 +86,7 @@ public class JobConfig {
     private Map<String, String> config;
 
     public JobConfig() {
+        this.config = new HashMap<String, String>();
     }
 
     public void setAddress(String address) {

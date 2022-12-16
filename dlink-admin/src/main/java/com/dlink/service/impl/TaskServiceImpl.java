@@ -151,6 +151,8 @@ import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.lang.tree.TreeUtil;
 import cn.hutool.core.util.StrUtil;
 
+import static com.dlink.api.FlinkAPI.REST_TARGET_DIRECTORY;
+
 /**
  * 任务 服务实现类
  *
@@ -813,7 +815,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         boolean useGateway = false;
         JobConfig jobConfig = new JobConfig();
         jobConfig.setType(cluster.getType());
-        Task task = this.getTaskInfoById(cluster.getTaskId());
+        Task task = this.getTaskInfoById(jobInstance.getTaskId());
 
         if (Asserts.isNotNull(cluster.getClusterConfigurationId())) {
             Map<String, Object> gatewayConfig = clusterConfigurationService
@@ -836,6 +838,14 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if ("canceljob".equals(savePointType)) {
             return jobManager.cancel(jobId);
         }
+
+        if (!task.getConfig().isEmpty()) {
+            Map<String, String> first = task.getConfig().get(0);
+            if (first.size() == 2 && REST_TARGET_DIRECTORY.equals(first.get("key"))) {
+                jobConfig.getConfig().put(REST_TARGET_DIRECTORY, first.get("value"));
+            }
+        }
+
         SavePointResult savePointResult = jobManager.savepoint(jobId, savePointType, null);
         if (Asserts.isNotNull(savePointResult.getJobInfos())) {
             for (JobInfo item : savePointResult.getJobInfos()) {
