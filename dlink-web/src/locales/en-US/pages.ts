@@ -705,6 +705,7 @@ export default {
   'pages.devops.jobinfo.version.timeline.right' : 'Right',
   'pages.devops.jobinfo.version.timeline.alternate' : 'Alternate',
   'pages.devops.jobinfo.version.timeline.developing' : 'Developing...',
+  'pages.devops.jobinfo.version.timeline.top' :'Top',
 
   'pages.devops.jobinfo.overview': 'Job Overview',
   'pages.devops.jobinfo.cluster':'Cluster Information',

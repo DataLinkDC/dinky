@@ -118,7 +118,7 @@ const VersionTimeLineList = (props: any) => {
           {getTimelineForm()}
         </Timeline>
         <BackTop>
-          <div style={style}>Top</div>
+          <div style={style}>{l('pages.devops.jobinfo.version.timeline.top')}</div>
         </BackTop>
         {/*</Scrollbars>*/}
       </Card>
