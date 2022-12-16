@@ -226,7 +226,7 @@ export default {
   'pages.TableData.data': '数据',
   'pages.TableData.search': '搜索',
 
-  'pages.datastudio.label.info': '信息',
+  'pages.datastudio.label.info': '控制台',
   'pages.datastudio.label.result': '结果',
   'pages.datastudio.label.result.query.latest.data': '获取最新数据',
 

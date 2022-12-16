@@ -215,7 +215,7 @@ export default {
   'pages.TableData.data': 'Data',
   'pages.TableData.search': 'Search',
 
-  'pages.datastudio.label.info': 'Info',
+  'pages.datastudio.label.info': 'Console',
   'pages.datastudio.label.result': 'Result',
   'pages.datastudio.label.result.query.latest.data': 'Get the latest data',
 
