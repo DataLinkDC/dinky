@@ -68,6 +68,7 @@ export default {
   'pages.searchTable.updateForm.schedulingPeriod.timeLabel': '开始时间',
   'pages.searchTable.updateForm.schedulingPeriod.timeRules': '请选择开始时间！',
   'pages.searchTable.titleDesc': '描述',
+  'pages.searchTable.keyword': '请输入关键字',
   'pages.searchTable.ruleName': '规则名称为必填项',
   'pages.searchTable.titleCallNo': '服务调用次数',
   'pages.searchTable.titleStatus': '状态',
@@ -705,7 +706,7 @@ export default {
   'pages.devops.jobinfo.version.timeline.left' :'居左',
   'pages.devops.jobinfo.version.timeline.right' :'居右',
   'pages.devops.jobinfo.version.timeline.alternate' :'居中',
-  'pages.devops.jobinfo.version.timeline.developing' :'开发中...',
+  'pages.devops.jobinfo.version.timeline.developing' :' 开发中...',
   'pages.devops.jobinfo.version.timeline.top' :'返回顶部',
 
   'pages.devops.jobinfo.overview':'作业总览',

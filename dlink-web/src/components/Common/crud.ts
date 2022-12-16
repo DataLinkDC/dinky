@@ -21,10 +21,11 @@
 import {extend} from "umi-request";
 import {TableListParams} from "@/components/Common/data";
 import {message} from "antd";
+import {l} from "@/utils/intl";
 
 
 export const request2 = extend(
-  { headers: { tenantId: localStorage.getItem('dlink-tenantId') || ''} }
+  {headers: {tenantId: localStorage.getItem('dlink-tenantId') || ''}}
 );
 
 export const getStorageTenantId = () => {
@@ -37,7 +38,7 @@ export const CODE = {
   ERROR: 1,
 };
 
-export async function queryData(url:string,params?: TableListParams) {
+export async function queryData(url: string, params?: TableListParams) {
   return request2(url, {
     method: 'POST',
     data: {
@@ -46,7 +47,7 @@ export async function queryData(url:string,params?: TableListParams) {
   });
 }
 
-export async function getData(url:string,params?: any) {
+export async function getData(url: string, params?: any) {
   return request2(url, {
     method: 'GET',
     params: {
@@ -55,7 +56,7 @@ export async function getData(url:string,params?: any) {
   });
 }
 
-export async function removeData(url:string,params: any[]) {
+export async function removeData(url: string, params: any[]) {
   return request2(url, {
     method: 'DELETE',
     data: {
@@ -64,7 +65,7 @@ export async function removeData(url:string,params: any[]) {
   });
 }
 
-export async function addOrUpdateData(url:string,params: any) {
+export async function addOrUpdateData(url: string, params: any) {
   return request2(url, {
     method: 'PUT',
     data: {
@@ -73,7 +74,7 @@ export async function addOrUpdateData(url:string,params: any) {
   });
 }
 
-export async function postDataArray(url:string,params: number[]) {
+export async function postDataArray(url: string, params: number[]) {
   return request2(url, {
     method: 'POST',
     data: {
@@ -82,7 +83,7 @@ export async function postDataArray(url:string,params: number[]) {
   });
 }
 
-export async function postAll(url:string,params?: any) {
+export async function postAll(url: string, params?: any) {
   return request2(url, {
     method: 'POST',
     data: {
@@ -91,154 +92,154 @@ export async function postAll(url:string,params?: any) {
   });
 }
 
-export async function getInfoById(url:string,id:number) {
+export async function getInfoById(url: string, id: number) {
   return request2(url, {
     method: 'GET',
     params: {
-      id:id,
+      id: id,
     },
   });
 }
 
-export const handleAddOrUpdate = async (url:string,fields: any) => {
-  const tipsTitle = fields.id ? "修改" : "添加";
-  const hide = message.loading(`正在${tipsTitle}`);
+export const handleAddOrUpdate = async (url: string, fields: any) => {
+  const tipsTitle = fields.id ? l('app.request.update') : l('app.request.add');
+  const hide = message.loading(l('app.request.running') + tipsTitle);
   try {
-    const {code,msg} = await addOrUpdateData(url,{...fields});
+    const {code, msg} = await addOrUpdateData(url, {...fields});
     hide();
-    if(code == CODE.SUCCESS){
+    if (code == CODE.SUCCESS) {
       message.success(msg);
-    }else{
+    } else {
       message.warn(msg);
     }
     return true;
   } catch (error) {
     hide();
-    message.error('出错啦');
+    message.error(l('app.request.error'));
     return false;
   }
 };
 
-export const handleAddOrUpdateWithResult = async (url:string,fields: any) => {
-  const tipsTitle = fields.id ? "修改" : "添加";
-  const hide = message.loading(`正在${tipsTitle}`);
+export const handleAddOrUpdateWithResult = async (url: string, fields: any) => {
+  const tipsTitle = fields.id ? l('app.request.update') : l('app.request.add');
+  const hide = message.loading(l('app.request.running') + tipsTitle);
   try {
-    const {code, msg,datas} = await addOrUpdateData(url,{...fields});
+    const {code, msg, datas} = await addOrUpdateData(url, {...fields});
     hide();
-    if(code == CODE.SUCCESS){
+    if (code == CODE.SUCCESS) {
       message.success(msg);
-    }else{
+    } else {
       message.warn(msg);
     }
     return datas;
   } catch (error) {
     hide();
-    message.error('出错啦');
+    message.error(l('app.request.error'));
     return null;
   }
 };
 
-export const handleRemove = async (url:string,selectedRows: []) => {
-  const hide = message.loading('正在删除');
+export const handleRemove = async (url: string, selectedRows: []) => {
+  const hide = message.loading(l('app.request.delete'));
   if (!selectedRows) return true;
   try {
-    const {code, msg} = await removeData(url,selectedRows.map((row) => row.id));
+    const {code, msg} = await removeData(url, selectedRows.map((row) => row.id));
     hide();
-    if(code == CODE.SUCCESS){
+    if (code == CODE.SUCCESS) {
       message.success(msg);
-    }else{
+    } else {
       message.warn(msg);
     }
     return true;
   } catch (error) {
     hide();
-    message.error('删除失败，请重试');
+    message.error(l('app.request.delete.error'));
     return false;
   }
 };
 
-export const handleRemoveById = async (url:string,id: number) => {
-  const hide = message.loading('正在删除');
+export const handleRemoveById = async (url: string, id: number) => {
+  const hide = message.loading(l('app.request.delete'));
   try {
-    const {code, msg} = await removeData(url,[id]);
+    const {code, msg} = await removeData(url, [id]);
     hide();
-    if(code == CODE.SUCCESS){
+    if (code == CODE.SUCCESS) {
       message.success(msg);
-    }else{
+    } else {
       message.warn(msg);
     }
     return true;
   } catch (error) {
     hide();
-    message.error('删除失败，请重试');
+    message.error(l('app.request.delete.error'));
     return false;
   }
 };
 
-export const handleSubmit = async (url:string,title:string,selectedRows: any[]) => {
-  const hide = message.loading('正在'+title);
+export const handleSubmit = async (url: string, title: string, selectedRows: any[]) => {
+  const hide = message.loading(l('app.request.running') + title);
   if (!selectedRows) return true;
   try {
-    const {code, msg} = await postDataArray(url,selectedRows.map((row) => row.id));
+    const {code, msg} = await postDataArray(url, selectedRows.map((row) => row.id));
     hide();
-    if(code == CODE.SUCCESS){
+    if (code == CODE.SUCCESS) {
       message.success(msg);
-    }else{
+    } else {
       message.warn(msg);
     }
     return true;
   } catch (error) {
     hide();
-    message.error(title+'失败，请重试');
+    message.error(title + l('app.request.error.try'));
     return false;
   }
 };
 
-export const updateEnabled = (url:string,selectedRows: [], enabled: boolean) => {
+export const updateEnabled = (url: string, selectedRows: [], enabled: boolean) => {
   selectedRows.forEach((item) => {
-    handleAddOrUpdate(url,{id: item.id, enabled: enabled})
+    handleAddOrUpdate(url, {id: item.id, enabled: enabled})
   })
 };
 
-export const handleOption = async (url:string,title:string,param:any) => {
-  const hide = message.loading('正在'+title);
+export const handleOption = async (url: string, title: string, param: any) => {
+  const hide = message.loading(l('app.request.running') + title);
   try {
-    const {code, msg} = await postAll(url,param);
+    const {code, msg} = await postAll(url, param);
     hide();
-    if(code == CODE.SUCCESS){
+    if (code == CODE.SUCCESS) {
       message.success(msg);
-    }else{
+    } else {
       message.warn(msg);
     }
     return true;
   } catch (error) {
     hide();
-    message.error(title+'失败，请重试');
+    message.error(title + l('app.request.error.try'));
     return false;
   }
 };
 
-export const handleData = async (url:string,id:any) => {
+export const handleData = async (url: string, id: any) => {
   try {
-    const {code,datas,msg} = await getData(url,id);
-    if(code == CODE.SUCCESS){
+    const {code, datas, msg} = await getData(url, id);
+    if (code == CODE.SUCCESS) {
       return datas;
-    }else{
+    } else {
       message.warn(msg);
       return false;
     }
   } catch (error) {
-    message.error('获取失败，请重试');
+    message.error(l('app.request.geterror.error'));
     return false;
   }
 };
 
-export const handleInfo = async (url:string,id:number) => {
+export const handleInfo = async (url: string, id: number) => {
   try {
-    const {datas} = await getInfoById(url,id);
+    const {datas} = await getInfoById(url, id);
     return datas;
   } catch (error) {
-    message.error('获取失败，请重试');
+    message.error(l('app.request.geterror.error'));
     return false;
   }
 };

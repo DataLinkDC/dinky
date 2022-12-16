@@ -67,6 +67,7 @@ export default {
   'pages.searchTable.updateForm.schedulingPeriod.timeLabel': 'Starting Time',
   'pages.searchTable.updateForm.schedulingPeriod.timeRules': 'Please Choose a Start Time!',
   'pages.searchTable.titleDesc': 'Description',
+  'pages.searchTable.keyword': 'please input keyword',
   'pages.searchTable.ruleName': 'Rule Name Is Required',
   'pages.searchTable.titleCallNo': 'Number Of Service Calls',
   'pages.searchTable.titleStatus': 'Status',
@@ -704,7 +705,7 @@ export default {
   'pages.devops.jobinfo.version.timeline.left' : 'Left',
   'pages.devops.jobinfo.version.timeline.right' : 'Right',
   'pages.devops.jobinfo.version.timeline.alternate' : 'Alternate',
-  'pages.devops.jobinfo.version.timeline.developing' : 'Developing...',
+  'pages.devops.jobinfo.version.timeline.developing' : ' Developing...',
   'pages.devops.jobinfo.version.timeline.top' :'Top',
 
   'pages.devops.jobinfo.overview': 'Job Overview',

@@ -45,5 +45,12 @@ export default {
   'app.request.heartbeat.connection.failed':' The heartbeat of the data source is abnormal, and the detection time is: {time} ',
   'app.request.upload.failed':' Upload failed. ',
   'app.request.update.setting.success': 'Modify the configuration successfully！',
+  'app.request.error.try': 'Failed, please try again',
+  'app.request.geterror.try': 'Get failed, please try again',
+  'app.request.delete.error': 'Delete failed, please try again',
+  'app.request.delete': 'Deleting',
+  'app.request.add': 'Add',
+  'app.request.update': 'Modify',
+  'app.request.running': 'is',
   'app.request.test.alert.msg': 'Sending test alert message',
 };
