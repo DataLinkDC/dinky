@@ -833,17 +833,18 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         }
         jobConfig.setTaskId(jobInstance.getTaskId());
         jobConfig.setAddress(cluster.getJobManagerHost());
-        JobManager jobManager = JobManager.build(jobConfig);
-        jobManager.setUseGateway(useGateway);
-        if ("canceljob".equals(savePointType)) {
-            return jobManager.cancel(jobId);
-        }
 
         if (!task.getConfig().isEmpty()) {
             Map<String, String> first = task.getConfig().get(0);
             if (first.size() == 2) {
                 jobConfig.getConfig().put(first.get("key"), first.get("value"));
             }
+        }
+
+        JobManager jobManager = JobManager.build(jobConfig);
+        jobManager.setUseGateway(useGateway);
+        if ("canceljob".equals(savePointType)) {
+            return jobManager.cancel(jobId);
         }
 
         SavePointResult savePointResult = jobManager.savepoint(jobId, savePointType, null);

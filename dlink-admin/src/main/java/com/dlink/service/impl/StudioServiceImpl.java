@@ -375,9 +375,7 @@ public class StudioServiceImpl implements StudioService {
     @Override
     public LineageResult getLineage(StudioCADTO studioCADTO) {
         if (Asserts.isNotNullString(studioCADTO.getDialect())
-                && !studioCADTO.getDialect().equalsIgnoreCase("flinksql")
-                && !studioCADTO.getDialect().equalsIgnoreCase("graphsql")
-        ) {
+                && !studioCADTO.getDialect().equalsIgnoreCase("flinksql")) {
             if (Asserts.isNull(studioCADTO.getDatabaseId())) {
                 return null;
             }
