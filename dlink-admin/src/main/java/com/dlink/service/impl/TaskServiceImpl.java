@@ -841,8 +841,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
         if (!task.getConfig().isEmpty()) {
             Map<String, String> first = task.getConfig().get(0);
-            if (first.size() == 2 && REST_TARGET_DIRECTORY.equals(first.get("key"))) {
-                jobConfig.getConfig().put(REST_TARGET_DIRECTORY, first.get("value"));
+            if (first.size() == 2) {
+                jobConfig.getConfig().put(first.get("key"), first.get("value"));
             }
         }
 
