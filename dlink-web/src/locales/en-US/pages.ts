@@ -229,6 +229,11 @@ export default {
 
 
   'pages.datastudio.label.lineage': 'Lineage',
+  'pages.datastudio.label.lineage.export': 'Export StreamGraphPlan',
+  'pages.datastudio.label.lineage.streamplan': 'of StreamGraphPlan',
+  'pages.datastudio.label.lineage.query.error': 'Failed to get job lineage, reason:\n {msg}',
+  'pages.datastudio.label.lineage.recalculate': 'Recalculate Lineage',
+  'pages.datastudio.label.lineage.calculate': 'Calculate Lineage',
   'pages.datastudio.label.lineage.expand.field': 'Expand Field',
   'pages.datastudio.label.lineage.collapse.field': 'Collapse Field',
   'pages.datastudio.label.lineage.expand.lineage': 'Expand Lineage',

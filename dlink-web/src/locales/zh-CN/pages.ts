@@ -238,6 +238,11 @@ export default {
 
 
   'pages.datastudio.label.lineage': '血缘',
+  'pages.datastudio.label.lineage.export': '导出 StreamGraphPlan',
+  'pages.datastudio.label.lineage.streamplan': '的 StreamGraphPlan',
+  'pages.datastudio.label.lineage.query.error': '获取作业血缘失败，原因：\n {msg}',
+  'pages.datastudio.label.lineage.recalculate': '重新计算血缘',
+  'pages.datastudio.label.lineage.calculate': '计算血缘',
   'pages.datastudio.label.lineage.expand.field': '展开字段',
   'pages.datastudio.label.lineage.collapse.field': '收起字段',
   'pages.datastudio.label.lineage.expand.lineage': '收起血缘',
