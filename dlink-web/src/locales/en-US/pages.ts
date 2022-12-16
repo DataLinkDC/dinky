@@ -701,6 +701,10 @@ export default {
   'pages.devops.jobinfo.version.diff' : 'Version Comparison',
   'pages.devops.jobinfo.version.list' :'Version List',
   'pages.devops.jobinfo.version.timeline' :'Version TimeLine',
+  'pages.devops.jobinfo.version.timeline.left' : 'Left',
+  'pages.devops.jobinfo.version.timeline.right' : 'Right',
+  'pages.devops.jobinfo.version.timeline.alternate' : 'Alternate',
+  'pages.devops.jobinfo.version.timeline.developing' : 'Developing...',
 
   'pages.devops.jobinfo.overview': 'Job Overview',
   'pages.devops.jobinfo.cluster':'Cluster Information',

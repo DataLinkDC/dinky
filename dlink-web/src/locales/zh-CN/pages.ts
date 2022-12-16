@@ -702,6 +702,10 @@ export default {
   'pages.devops.jobinfo.version.diff' :'版本对比',
   'pages.devops.jobinfo.version.list' :'版本列表',
   'pages.devops.jobinfo.version.timeline' :'版本时间轴',
+  'pages.devops.jobinfo.version.timeline.left' :'居左',
+  'pages.devops.jobinfo.version.timeline.right' :'居右',
+  'pages.devops.jobinfo.version.timeline.alternate' :'居中',
+  'pages.devops.jobinfo.version.timeline.developing' :'开发中...',
 
   'pages.devops.jobinfo.overview':'作业总览',
   'pages.devops.jobinfo.cluster':'集群信息',

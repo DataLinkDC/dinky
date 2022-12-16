@@ -106,14 +106,14 @@ const VersionTimeLineList = (props: any) => {
         onChange={onChange}
         value={mode}
       >
-        <Radio value="left">Left</Radio>
-        <Radio value="right">Right</Radio>
-        <Radio value="alternate">Alternate</Radio>
+        <Radio value="left">{l('pages.devops.jobinfo.version.timeline.left')}</Radio>
+        <Radio value="right">{l('pages.devops.jobinfo.version.timeline.right')}</Radio>
+        <Radio value="alternate">{l('pages.devops.jobinfo.version.timeline.alternate')}</Radio>
       </Radio.Group>
       <Card size="small" style={{width: "auto"}}>
         {/*<Scrollbars  style={{height: "450px"}} >*/}
         <br/><br/>
-        <Timeline mode={mode} pending={moment().format("YYYY-MM-DD HH:mm:ss") + " Developing..."} reverse={reverse}
+        <Timeline mode={mode} pending={moment().format("YYYY-MM-DD HH:mm:ss") + l('pages.devops.jobinfo.version.timeline.developing')} reverse={reverse}
                   pendingDot={<SyncOutlined spin/>}>
           {getTimelineForm()}
         </Timeline>
