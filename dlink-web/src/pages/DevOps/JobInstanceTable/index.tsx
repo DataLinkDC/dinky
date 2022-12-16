@@ -243,7 +243,7 @@ const JobInstanceTable = (props: any) => {
         color={taskStatus?.onlineStatus ? OPS_STATUS_COLOR.padding : OPS_STATUS_COLOR.success} text={<a
         onClick={() => {
           onStatusChange('1')
-        }}>{l('pages.devops.lable.online')}</a>}/>,
+        }}>{l('pages.devops.lable.allonline')}</a>}/>,
         <a
           style={{color: taskStatus?.onlineStatus ? '#FF0000' : '#1E90FF'}}
           onClick={() => {
@@ -252,7 +252,7 @@ const JobInstanceTable = (props: any) => {
         <Badge color={taskStatus?.offlineStatus ? OPS_STATUS_COLOR.padding : OPS_STATUS_COLOR.success}
                text={<a onClick={() => {
                  onStatusChange('2')
-               }}>{l('pages.devops.lable.offline')}</a>}/>, <a
+               }}>{l('pages.devops.lable.alloffline')}</a>}/>, <a
           style={{color: taskStatus?.onlineStatus ? '#FF0000' : '#1E90FF'}}
           onClick={() => {
             onStatusDetailed('2')

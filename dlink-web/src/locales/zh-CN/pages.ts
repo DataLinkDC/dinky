@@ -286,11 +286,25 @@ export default {
 
 
   'pages.devops.result.success': '操作成功',
-  'pages.devops.lable.online': '一键上线',
-  'pages.devops.lable.offline': '一键下线',
+  'pages.devops.lable.allonline': '一键上线',
+  'pages.devops.lable.alloffline': '一键下线',
   'pages.devops.lable.onlinelist': '上线明细',
   'pages.devops.lable.offlinelist': '下线明细',
   'pages.devops.lable.instance': '实例',
+  'pages.devops.lable.online': '上线',
+  'pages.devops.lable.offline': '下线',
+  'pages.devops.lable.pleaseSelect': '请选择',
+
+  'pages.devops.lable.online.list': '上线明细列表',
+  'pages.devops.lable.offline.list': '下线明细列表',
+  'pages.devops.lable.line.name': '名称',
+  'pages.devops.lable.line.status': '状态',
+  'pages.devops.lable.line.code': '结果',
+  'pages.devops.lable.line.message': '信息',
+  'pages.devops.lable.line.piontConfig': '点位配置选择',
+  'pages.devops.lable.line.piontConfig.default': '默认保存点',
+  'pages.devops.lable.line.piontConfig.last': '最新保存点',
+
 
   'pages.rc.clusterManagement': '集群实例管理',
   'pages.rc.cluster.instanceName': '实例名称',
