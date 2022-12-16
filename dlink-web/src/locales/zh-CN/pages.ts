@@ -209,6 +209,10 @@ export default {
   'pages.metadata.DataSearch': '数据查询',
   'pages.metadata.GenerateSQL': 'SQL 生成',
   'pages.metadata.FieldInformation': '字段信息',
+  'pages.metadata.catalogSelect': '选择 Catalog & Database',
+  'pages.metadata.catalogRefresh': '刷新 Catalog',
+  'pages.metadata.selectDatabase': '选择数据源',
+
 
   'pages.metadata.Console': '控制台',
   'pages.metadata.help.noSqlSelect': '未选择任何sql！',

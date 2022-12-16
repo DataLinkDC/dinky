@@ -206,6 +206,9 @@ export default {
   'pages.metadata.DataSearch': 'Data Search',
   'pages.metadata.GenerateSQL': 'Generate SQL',
   'pages.metadata.FieldInformation': 'Field information',
+  'pages.metadata.catalogSelect': 'Select Catalog & Database',
+  'pages.metadata.catalogRefresh': 'Refresh Catalog',
+  'pages.metadata.selectDatabase': 'Select Database',
 
   'pages.TableData.QueryConditions': 'Query Conditions',
   'pages.TableData.sorting': 'Sorting',
