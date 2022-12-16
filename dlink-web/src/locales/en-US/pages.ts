@@ -708,12 +708,12 @@ export default {
   'pages.devops.jobinfo.version.timeline.top' :'Top',
 
   'pages.devops.jobinfo.overview': 'Job Overview',
-  'pages.devops.jobinfo.cluster':'Cluster Information',
+  'pages.devops.jobinfo.cluster':'Cluster Info',
   'pages.devops.jobinfo.snapshot': 'Job Snapshot',
-  'pages.devops.jobinfo.exception': 'Exception Information',
+  'pages.devops.jobinfo.exception': 'Exception Info',
   'pages.devops.jobinfo.log':'Job Log',
   'pages.devops.jobinfo.optimize':'Automatic Tuning',
-  'pages.devops.jobinfo.config':'Configuration Information',
+  'pages.devops.jobinfo.config':'Config Info',
   'pages.devops.jobinfo.flinksql':'FlinkSQL',
   'pages.devops.jobinfo.datamap': 'Data Map',
   'pages.devops.jobinfo.olap': 'Adhoc Query',
@@ -752,7 +752,19 @@ export default {
   'pages.devops.baseinfo.tasks': 'Operator',
   'pages.devops.baseinfo.restart_number': 'Number of Restarts',
 
-
+  'pages.devops.config.exec.mode': 'Execution Mode',
+  'pages.devops.config.alias': 'Cluster Instance',
+  'pages.devops.config.clusterConfiguration': 'Cluster Configuration',
+  'pages.devops.config.session': 'Shared Session',
+  'pages.devops.config.useSqlFragment': 'Statement Set',
+  'pages.devops.config.isJarTask': 'Task Type',
+  'pages.devops.config.useBatchModel': 'Batch Mode',
+  'pages.devops.config.checkpoint': 'CheckPoint Interval',
+  'pages.devops.config.savePointStrategy': 'SavePoint Strategy',
+  'pages.devops.config.savePointPath': 'SavePoint Path',
+  'pages.devops.config.jarpath': 'Jar Path',
+  'pages.devops.config.jarmainclass': 'Jar Main Class',
+  'pages.devops.config.jarparams': 'Jar Parameters',
 
 };
 

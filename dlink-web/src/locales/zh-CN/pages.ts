@@ -753,5 +753,17 @@ export default {
   'pages.devops.baseinfo.tasks': '算子',
   'pages.devops.baseinfo.restart_number': '重启次数',
 
-
+  'pages.devops.config.exec.mode': '执行模式',
+  'pages.devops.config.alias': '集群实例',
+  'pages.devops.config.clusterConfiguration': '集群配置',
+  'pages.devops.config.session': '共享会话',
+  'pages.devops.config.useSqlFragment': '语句集',
+  'pages.devops.config.isJarTask': '任务类型',
+  'pages.devops.config.useBatchModel': '批处理模式',
+  'pages.devops.config.checkpoint': '检查点间隔',
+  'pages.devops.config.savePointStrategy': '保存点策略',
+  'pages.devops.config.savePointPath': '保存点路径',
+  'pages.devops.config.jarpath': 'Jar 路径',
+  'pages.devops.config.jarmainclass': 'Jar 主类',
+  'pages.devops.config.jarparams': 'Jar 参数',
 };
