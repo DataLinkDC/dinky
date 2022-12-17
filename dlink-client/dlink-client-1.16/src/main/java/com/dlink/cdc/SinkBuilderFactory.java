@@ -37,7 +37,6 @@ import java.util.function.Supplier;
 public class SinkBuilderFactory {
 
     private static final Map<String, Supplier<SinkBuilder>> SINK_BUILDER_MAP = new HashMap<String, Supplier<SinkBuilder>>() {
-
         {
         }
     };

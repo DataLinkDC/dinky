@@ -40,7 +40,6 @@ import java.util.function.Supplier;
 public class CDCBuilderFactory {
 
     private static final Map<String, Supplier<CDCBuilder>> CDC_BUILDER_MAP = new HashMap<String, Supplier<CDCBuilder>>() {
-
         {
             put(MysqlCDCBuilder.KEY_WORD, () -> new MysqlCDCBuilder());
             put(OracleCDCBuilder.KEY_WORD, () -> new OracleCDCBuilder());
