@@ -53,6 +53,7 @@ export default {
   'button.asc': 'ASC',
   'button.desc': 'DESC',
   'button.query': 'Query',
+  'button.exit': 'Exit',
 
   'right.menu.open': 'Open',
   'right.menu.submit': 'Sync Submit',

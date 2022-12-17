@@ -53,6 +53,7 @@ export default {
   'button.asc': '升序',
   'button.desc': '倒序',
   'button.query': '查询',
+  'button.exit': '退出',
 
   'right.menu.open': '打开',
   'right.menu.submit': '异步提交',

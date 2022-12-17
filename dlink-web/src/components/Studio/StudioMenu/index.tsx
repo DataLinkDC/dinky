@@ -361,7 +361,7 @@ const StudioMenu = (props: any) => {
         res.then((result) => {
           result.datas && props.changeTaskStep(current.task.id, JOB_LIFE_CYCLE.DEVELOP);
           if (result.code == CODE.SUCCESS) {
-            message.success(l('pages.datastudio.edit.release.job.success','',{jobName: current.task.alias}))
+            message.success(l('pages.datastudio.editor.edit.job.success','',{jobName: current.task.alias}))
           }
         });
       }
@@ -796,7 +796,7 @@ const StudioMenu = (props: any) => {
               icon={<ShrinkOutlined/>}
               type="primary"
               style={{position: "fixed", right: "0"}}>
-              退出
+              {l('button.exit')}
             </Button>
           </Tooltip>}
         visible={isFullScreen}
