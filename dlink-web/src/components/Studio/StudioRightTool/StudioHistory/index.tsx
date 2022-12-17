@@ -151,15 +151,15 @@ const StudioHistory = (props: any) => {
 
   const onRollBackVersion = (row: TaskHistoryTableListItem) => {
     Modal.confirm({
-      title: '回滚Flink SQL版本',
-      content: `确定回滚Flink SQL版本至【${row.versionId}】吗？`,
+      title: l('pages.datastudio.label.version.rollback.flinksql'),
+      content: l('pages.datastudio.label.version.rollback.flinksqlConfirm','',{versionId: row.versionId }),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
         const TaskHistoryRollbackItem = {
           id: current.key, versionId: row.versionId
         }
-        await handleOption('api/task/rollbackTask', "回滚Flink SQL版本", TaskHistoryRollbackItem);
+        await handleOption('api/task/rollbackTask', l('pages.datastudio.label.version.rollback.flinksql'), TaskHistoryRollbackItem);
         actionRef.current?.reloadAndRest?.();
       }
     });
