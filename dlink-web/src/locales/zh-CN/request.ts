@@ -43,5 +43,12 @@ export default {
   'app.request.heartbeat.connection.failed': '数据源心跳异常，检测时间为: {time}',
   'app.request.upload.failed': '上传失败。',
   'app.request.update.setting.success': '修改配置成功！',
+  'app.request.error.try':'失败，请重试',
+  'app.request.geterror.try':'获取失败，请重试',
+  'app.request.delete.error':'删除失败，请重试',
+  'app.request.delete':'正在删除',
+  'app.request.add':'添加',
+  'app.request.update':'修改',
+  'app.request.running':'正在',
   'app.request.test.alert.msg':'正在发送测试告警信息',
 };

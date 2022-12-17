@@ -18,11 +18,18 @@
  */
 
 
-import {Button, Col, Empty, Modal, Row, Select, Spin, Tabs, Tag, Tree} from "antd";
+import {Button, Col, Empty, Modal, Row, Select, Spin, Tabs, Tag, Tooltip, Tree} from "antd";
 import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import React, {useState} from "react";
-import {CodepenOutlined, DatabaseOutlined, DownOutlined, OrderedListOutlined, TableOutlined} from '@ant-design/icons';
+import {
+  CodepenOutlined,
+  DatabaseOutlined,
+  DownOutlined,
+  OrderedListOutlined,
+  ReloadOutlined,
+  TableOutlined
+} from '@ant-design/icons';
 import {clearMetaDataTable, showMetaDataTable} from "@/components/Studio/StudioEvent/DDL";
 import {Scrollbars} from 'react-custom-scrollbars';
 import Columns from "@/pages/RegistrationCenter/DataBase/Columns";
@@ -102,7 +109,7 @@ const StudioMetaData = (props: any) => {
     setRow(undefined);
     setModalVisit(false);
   }
-  const refeshDataBase = (value:number) => {
+  const refeshDataBase = (value: number) => {
     if (!databaseId) return;
     setloadingDatabase(true);
     clearMetaDataTable(databaseId).then(result => {
@@ -111,22 +118,30 @@ const StudioMetaData = (props: any) => {
   };
 
   return (
+
     <Spin spinning={loadingDatabase} delay={500}>
+      <Row>
+        <Col span={24}>
+          <Tooltip title={l('button.refresh')}>
+            <Button type="text"
+                    icon={<ReloadOutlined/>}
+                    onClick={() => {
+                      refeshDataBase(databaseId)
+                    }}
+            />
+          </Tooltip>
+        </Col>
+      </Row>
       <Row>
         <Col span={18}>
           <Select
             style={{width: '90%'}}
-            placeholder="选择数据源"
+            placeholder={l('pages.metadata.selectDatabase')}
             optionLabelProp="label"
             onChange={onChangeDataBase}
           >
             {getDataBaseOptions()}
           </Select>
-        </Col>
-        <Col span={1}>
-          <Button type="link"
-                  onClick={() => {refeshDataBase(databaseId)}}
-          >{l('button.refresh')}</Button>
         </Col>
       </Row>
 
@@ -161,7 +176,7 @@ const StudioMetaData = (props: any) => {
             tab={
               <span>
           <TableOutlined/>
-          表信息
+                {l('pages.metadata.TableInfo')}
         </span>
             }
             key="tableInfo"
@@ -172,7 +187,7 @@ const StudioMetaData = (props: any) => {
             tab={
               <span>
           <CodepenOutlined/>
-          字段信息
+                {l('pages.metadata.FieldInformation')}
         </span>
             }
             key="columnInfo"
@@ -184,7 +199,7 @@ const StudioMetaData = (props: any) => {
             tab={
               <span>
           <OrderedListOutlined/>
-          SQL 生成
+                {l('pages.metadata.GenerateSQL')}
         </span>
             }
             key="sqlGeneration"

@@ -75,62 +75,55 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       <>
         <FormItem
           name="name"
-          label="名称"
-          rules={[{required: true, message: '请输入名称！'}]}>
-          <Input placeholder="请输入"/>
+          label={l('pages.task.name')}
+          rules={[{required: true, message: l('pages.task.namePlaceHolder')}]}>
+          <Input placeholder={l('pages.task.placeHolder')}/>
         </FormItem>
         <FormItem
           name="alias"
-          label="别名"
+          label={l('pages.task.alias')}
         >
-          <Input placeholder="请输入"/>
+          <Input placeholder={l('pages.task.placeHolder')}/>
         </FormItem>
         <FormItem
           name="type"
-          label="类型"
+          label={l('pages.task.type')}
         >
-          <Input placeholder="请输入"/>
-        </FormItem>
-        <FormItem
-          name="note"
-          label={l('global.table.note')}
-        >
-          <Input placeholder="请输入"/>
+          <Input placeholder={l('pages.task.placeHolder')}/>
         </FormItem>
         <FormItem
           name="checkPoint"
-          label="CheckPoint"
+          label={l('pages.task.checkPoint')}
         >
-          <Input placeholder="请输入"/>
+          <Input placeholder={l('pages.task.placeHolder')}/>
         </FormItem>
         <FormItem
           name="savePointPath"
-          label="SavePointPath"
+          label={l('pages.task.savePointPath')}
         >
-          <Input placeholder="请输入"/>
+          <Input placeholder={l('pages.task.placeHolder')}/>
         </FormItem>
         <FormItem
           name="parallelism"
-          label="Parallelism"
+          label={l('pages.task.parallelism')}
         >
-          <Input placeholder="请输入"/>
+          <Input placeholder={l('pages.task.placeHolder')}/>
         </FormItem>
         <FormItem
-          name="fragemnt"
-          label="Fragment"
+          name="fragment"
+          label={l('pages.task.fragment')}
         >
-          <Input placeholder="请输入"/>
+          <Input placeholder={l('pages.task.placeHolder')}/>
         </FormItem>
         <FormItem
           name="note"
           label={l('global.table.note')}
         >
-          <Input placeholder="请输入"/>
+          <Input.TextArea placeholder={l('pages.task.placeHolder')}/>
         </FormItem>
         <FormItem
           name="enabled"
-          label={l('global.table.isEnable')}
-          rules={[{required: true, message: '请输入是否启用！'}]}>
+          label={l('global.table.isEnable')} >
           <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                   defaultChecked={formVals.enabled}/>
         </FormItem>
@@ -154,7 +147,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       width={640}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title="编辑任务"
+      title={l('pages.task.edit')}
       visible={updateModalVisible}
       footer={renderFooter()}
       onCancel={() => handleUpdateModalVisible()}

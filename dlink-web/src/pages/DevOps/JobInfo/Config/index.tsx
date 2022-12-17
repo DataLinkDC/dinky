@@ -33,37 +33,37 @@ const Config = (props: any) => {
     <>
       <Divider children={"Dinky Job Configuration"} orientation={"left"}/>
       <Descriptions bordered size="small">
-        <Descriptions.Item label="执行模式">{job?.history?.type ? (
+        <Descriptions.Item label={l('pages.devops.config.exec.mode')}>{job?.history?.type ? (
           <Tag color="blue" key={job?.history?.type}>
             <RocketOutlined/> {job?.history?.type}
           </Tag>
         ) : undefined}
         </Descriptions.Item>
-        <Descriptions.Item label="集群实例">
+        <Descriptions.Item label={l('pages.devops.config.alias')}>
           {job?.cluster?.alias ? <Link>{job?.cluster?.alias}</Link> : '-'}
         </Descriptions.Item>
-        <Descriptions.Item label="集群配置">
+        <Descriptions.Item label={l('pages.devops.config.clusterConfiguration')}>
           {job?.clusterConfiguration?.alias ? <Link>{job?.clusterConfiguration?.alias}</Link> : '-'}
         </Descriptions.Item>
-        <Descriptions.Item label="共享会话">
+        <Descriptions.Item label={l('pages.devops.config.session')}>
           {job?.history?.session ? <Link>{job?.history?.session}</Link> : l('button.disable')}
         </Descriptions.Item>
-        <Descriptions.Item label="片段机制">{job?.history?.config.useSqlFragment ? l('button.enable') : l('button.disable')}</Descriptions.Item>
-        <Descriptions.Item label="语句集">{job?.history?.config.useStatementSet ? l('button.enable') : l('button.disable')}</Descriptions.Item>
-        <Descriptions.Item label="任务类型">{job?.history?.config.isJarTask ? 'Jar' : 'FlinkSQL'}</Descriptions.Item>
-        <Descriptions.Item label="批模式">{job?.history?.config.useBatchModel ? l('button.enable') : l('button.disable')}</Descriptions.Item>
-        <Descriptions.Item label="CheckPoint">{job?.history?.config.checkpoint}</Descriptions.Item>
-        <Descriptions.Item label="SavePoint机制">
+        <Descriptions.Item label={l('pages.devops.config.useSqlFragment')}>{job?.history?.config.useSqlFragment ? l('button.enable') : l('button.disable')}</Descriptions.Item>
+        <Descriptions.Item label={l('pages.devops.config.useStatementSet')}>{job?.history?.config.useStatementSet ? l('button.enable') : l('button.disable')}</Descriptions.Item>
+        <Descriptions.Item label={l('pages.devops.config.isJarTask')}>{job?.history?.config.isJarTask ? 'Jar' : 'FlinkSQL'}</Descriptions.Item>
+        <Descriptions.Item label={l('pages.devops.config.useBatchModel')}>{job?.history?.config.useBatchModel ? l('button.enable') : l('button.disable')}</Descriptions.Item>
+        <Descriptions.Item label={l('pages.devops.config.checkpoint')}>{job?.history?.config.checkpoint}</Descriptions.Item>
+        <Descriptions.Item label={l('pages.devops.config.savePointStrategy')}>
           {job?.history?.config.savePointStrategy == 'NONE' ? l('global.savepoint.strategy.disabled') :
             job?.history?.config.savePointStrategy == 'LATEST' ? l('global.savepoint.strategy.latest') :
               job?.history?.config.savePointStrategy == 'EARLIEST' ? l('global.savepoint.strategy.earliest') :
                 job?.history?.config.savePointStrategy == 'CUSTOM' ? l('global.savepoint.strategy.custom') : l('global.savepoint.strategy.disabled')}
         </Descriptions.Item>
-        <Descriptions.Item label="SavePoint" span={2}>{job?.history?.config.savePointPath}</Descriptions.Item>
+        <Descriptions.Item label={l('pages.devops.config.savePointPath')} span={2}>{job?.history?.config.savePointPath}</Descriptions.Item>
         {job?.jar ? <>
-          <Descriptions.Item label="Jar 路径">{job?.jar?.path}</Descriptions.Item>
-          <Descriptions.Item label="Jar 主类">{job?.jar?.mainClass}</Descriptions.Item>
-          <Descriptions.Item label="Jar 入参">{job?.jar?.paras}</Descriptions.Item>
+          <Descriptions.Item label={l('pages.devops.config.jarpath')}>{job?.jar?.path}</Descriptions.Item>
+          <Descriptions.Item label={l('pages.devops.config.jarmainclass')}>{job?.jar?.mainClass}</Descriptions.Item>
+          <Descriptions.Item label={l('pages.devops.config.jarparams')}>{job?.jar?.paras}</Descriptions.Item>
         </> : undefined}
       </Descriptions>
     </>

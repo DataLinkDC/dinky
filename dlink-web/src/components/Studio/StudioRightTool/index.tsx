@@ -69,7 +69,7 @@ const StudioRightTool = (props: any) => {
 
   const renderTaskInfoContent = () => {
     return (
-      <TabPane tab={<span><ContainerOutlined/> 作业信息</span>} key="StudioTaskInfo">
+      <TabPane tab={<span><ContainerOutlined/> {l('pages.datastudio.label.jobInfo')}</span>} key="StudioTaskInfo">
         <StudioTaskInfo form={form}/>
       </TabPane>
     )
@@ -77,7 +77,7 @@ const StudioRightTool = (props: any) => {
 
   const renderSqlContent = () => {
     return (<>
-      <TabPane tab={<span><SettingOutlined/> 执行配置</span>} key="StudioSqlConfig">
+      <TabPane tab={<span><SettingOutlined/> {l('pages.datastudio.label.execConfig')}</span>} key="StudioSqlConfig">
         <StudioSqlConfig form={form}/>
       </TabPane>
     </>)
@@ -85,10 +85,10 @@ const StudioRightTool = (props: any) => {
 
   const renderKubernetesContent = () => {
     return (<>
-      <TabPane tab={<span><SettingOutlined/> 执行配置</span>} key="StudioSqlConfig">
+      <TabPane tab={<span><SettingOutlined/> {l('pages.datastudio.label.execConfig')}</span>} key="StudioSqlConfig">
         <StudioKubernetesConfig form={form}/>
       </TabPane>
-      <TabPane tab={<span><ScheduleOutlined/> 保存点</span>} key="StudioSavePoint">
+      <TabPane tab={<span><ScheduleOutlined/> {l('pages.datastudio.label.savepoint')}</span>} key="StudioSavePoint">
         <StudioSavePoint/>
       </TabPane>
     </>)
@@ -96,7 +96,7 @@ const StudioRightTool = (props: any) => {
 
   const renderJarContent = () => {
     return (<>
-      <TabPane tab={<span><SettingOutlined/> 作业配置</span>} key="StudioJarSetting">
+      <TabPane tab={<span><SettingOutlined/> {l('pages.datastudio.label.jobConfig')}</span>} key="StudioJarSetting">
         <StudioJarSetting form={form}/>
       </TabPane>
     </>)
@@ -104,7 +104,7 @@ const StudioRightTool = (props: any) => {
 
   const renderEnvContent = () => {
     return (<>
-      <TabPane tab={<span><SettingOutlined/> 作业配置</span>} key="StudioEnvSetting">
+      <TabPane tab={<span><SettingOutlined/> {l('pages.datastudio.label.jobConfig')}</span>} key="StudioEnvSetting">
         <StudioEnvSetting form={form}/>
       </TabPane>
     </>)
@@ -112,23 +112,23 @@ const StudioRightTool = (props: any) => {
 
   const renderUDFContent = () => {
     return (<>
-      <TabPane tab={<span><SettingOutlined/> UDF信息</span>} key="StudioUDFInfo">
+      <TabPane tab={<span><SettingOutlined/> {l('pages.datastudio.label.udfInfo')}</span>} key="StudioUDFInfo">
         <StudioUDFInfo form={form}/>
       </TabPane>
     </>)
   };
 
   const renderFlinkSqlContent = () => {
-    return (<><TabPane tab={<span><SettingOutlined/> 作业配置</span>} key="StudioSetting">
+    return (<><TabPane tab={<span><SettingOutlined/> {l('pages.datastudio.label.jobConfig')}</span>} key="StudioSetting">
       <StudioSetting form={form}/>
     </TabPane>
-      <TabPane tab={<span><SettingOutlined/> 执行配置</span>} key="StudioConfig">
+      <TabPane tab={<span><SettingOutlined/> {l('pages.datastudio.label.execConfig')}</span>} key="StudioConfig">
         <StudioConfig form={form}/>
       </TabPane>
-      <TabPane tab={<span><ScheduleOutlined/> 保存点</span>} key="StudioSavePoint">
+      <TabPane tab={<span><ScheduleOutlined/> {l('pages.datastudio.label.savepoint')}</span>} key="StudioSavePoint">
         <StudioSavePoint/>
       </TabPane>
-      <TabPane tab={<span><ScheduleOutlined/> 版本历史</span>} key="StudioHistory">
+      <TabPane tab={<span><ScheduleOutlined/> {l('pages.datastudio.label.version')}</span>} key="StudioHistory">
         <StudioHistory/>
       </TabPane>
     </>)

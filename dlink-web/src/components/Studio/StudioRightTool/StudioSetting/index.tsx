@@ -29,7 +29,7 @@ import {
   PlusOutlined
 } from "@ant-design/icons";
 import styles from "./index.less";
-import {useEffect} from "react";
+import React, {useEffect} from "react";
 import {showTables} from "@/components/Studio/StudioEvent/DDL";
 import {JarStateType} from "@/pages/RegistrationCenter/Jar/model";
 import {Scrollbars} from "react-custom-scrollbars";
@@ -135,7 +135,7 @@ const StudioSetting = (props: any) => {
       <Row>
         <Col span={24}>
           <div style={{float: "right"}}>
-            <Tooltip title="最小化">
+            <Tooltip title={l('component.minimize')}>
               <Button
                 type="text"
                 icon={<MinusSquareOutlined/>}
@@ -152,8 +152,8 @@ const StudioSetting = (props: any) => {
           onValuesChange={onValuesChange}
         >
           <Form.Item
-            label="执行模式" className={styles.form_item} name="type"
-            tooltip='指定 Flink 任务的执行模式，默认为 Local'
+            label={l('global.table.execmode')} className={styles.form_item} name="type"
+            tooltip={l('pages.datastudio.label.jobConfig.execmode.tip')}
           >
             <Select defaultValue={RUN_MODE.LOCAL} value={RUN_MODE.LOCAL}>
               <Option value={RUN_MODE.LOCAL}>Local</Option>
@@ -168,7 +168,10 @@ const StudioSetting = (props: any) => {
           {(current.task.type === RUN_MODE.YARN_SESSION || current.task.type === RUN_MODE.KUBERNETES_SESSION || current.task.type === RUN_MODE.STANDALONE) ? (
             <Row>
               <Col span={24}>
-                <Form.Item label="Flink集群" tooltip={`选择Flink集群进行 ${current.task.type} 模式的远程提交任务`}
+                <Form.Item label={l('pages.datastudio.label.jobConfig.cluster')}
+                           tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
+                             type: current.task.type
+                           })}
                            name="clusterId"
                            className={styles.form_item}>
                   {
@@ -176,10 +179,10 @@ const StudioSetting = (props: any) => {
                       (currentSession.sessionConfig && currentSession.sessionConfig.clusterId ?
                           (<><Badge status="success"/><Text
                             type="success">{currentSession.sessionConfig.clusterName}</Text></>)
-                          : (<><Badge status="error"/><Text type="danger">本地模式</Text></>)
+                          : (<><Badge status="error"/><Text type="danger">{l('pages.devops.jobinfo.localenv')}</Text></>)
                       ) : (<Select
                         style={{width: '100%'}}
-                        placeholder="选择Flink集群"
+                        placeholder={l('pages.datastudio.label.jobConfig.cluster.tip')}
                         optionLabelProp="label"
                         onChange={onChangeClusterSession}
                       >
@@ -192,13 +195,15 @@ const StudioSetting = (props: any) => {
           {(current.task.type === RUN_MODE.YARN_PER_JOB || current.task.type === RUN_MODE.YARN_APPLICATION || current.task.type === RUN_MODE.KUBERNETES_APPLICATION) ? (
             <Row>
               <Col span={24}>
-                <Form.Item label="Flink集群配置"
-                           tooltip={`选择Flink集群配置进行 ${current.task.type} 模式的远程提交任务`}
+                <Form.Item label={l('pages.datastudio.label.jobConfig.clusterConfig')}
+                           tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
+                             type: current.task.type
+                           })}
                            name="clusterConfigurationId"
                            className={styles.form_item}>
                   <Select
                     style={{width: '100%'}}
-                    placeholder="选择Flink集群配置"
+                    placeholder={l('pages.datastudio.label.jobConfig.clusterConfig.tip2')}
                     optionLabelProp="label"
                   >
                     {getClusterConfigurationOptions()}
@@ -206,13 +211,13 @@ const StudioSetting = (props: any) => {
                 </Form.Item>
               </Col>
             </Row>) : undefined}
-          <Form.Item label="FlinkSQL 环境"
-                     tooltip={`选择当前任务的 FlinkSQL 执行环境，会提前执行环境语句，默认无。`}
+          <Form.Item label={l('pages.datastudio.label.jobConfig.flinksql.env')}
+                     tooltip={l('pages.datastudio.label.jobConfig.flinksql.env.tip1')}
                      name="envId"
                      className={styles.form_item}>
             <Select
               style={{width: '100%'}}
-              placeholder="选择 FlinkSQL 环境，非必填"
+              placeholder={l('pages.datastudio.label.jobConfig.flinksql.env.tip2')}
               allowClear
               optionLabelProp="label"
               defaultValue={0} value={0}
@@ -223,21 +228,23 @@ const StudioSetting = (props: any) => {
           <Row>
             <Col span={12}>
               <Form.Item
-                label="任务并行度" className={styles.form_item} name="parallelism"
-                tooltip="设置Flink任务的并行度，最小为 1"
+                label={l('pages.datastudio.label.jobConfig.parallelism')} className={styles.form_item}
+                name="parallelism"
+                tooltip={l('pages.datastudio.label.jobConfig.parallelism.tip')}
               >
                 <InputNumber min={1} max={9999} defaultValue={1}/>
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
-                label="Insert语句集" className={styles.form_item} name="statementSet" valuePropName="checked"
+                label={l('pages.datastudio.label.jobConfig.insert')} className={styles.form_item} name="statementSet"
+                valuePropName="checked"
                 tooltip={{
-                  title: '【增强特性】 开启语句集机制，将把多个 Insert 语句合成一个 JobGraph 再进行提交，Select 语句无效',
+                  title: l('pages.datastudio.label.jobConfig.insert.tip'),
                   icon: <InfoCircleOutlined/>
                 }}
               >
-                <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
+                <Switch checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                 />
               </Form.Item>
             </Col>
@@ -245,29 +252,32 @@ const StudioSetting = (props: any) => {
           <Row>
             <Col span={12}>
               <Form.Item
-                label="全局变量" className={styles.form_item} name="fragment" valuePropName="checked"
+                label={l('pages.datastudio.label.jobConfig.fragment')} className={styles.form_item} name="fragment"
+                valuePropName="checked"
                 tooltip={{
-                  title: '【增强特性】 开启FlinkSql全局变量，使用“:=”进行定义（以“;”结束），“${}”进行调用',
+                  title: l('pages.datastudio.label.jobConfig.fragment.tip'),
                   icon: <InfoCircleOutlined/>
                 }}
               >
-                <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
+                <Switch checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                 />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
-                label="批模式" className={styles.form_item} name="batchModel" valuePropName="checked"
-                tooltip={{title: '使用批模式', icon: <InfoCircleOutlined/>}}
+                label={l('pages.datastudio.label.jobConfig.batchmode')} className={styles.form_item} name="batchModel"
+                valuePropName="checked"
+                tooltip={{title: l('pages.datastudio.label.jobConfig.batchmode.tip'), icon: <InfoCircleOutlined/>}}
               >
-                <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
+                <Switch checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                 />
               </Form.Item>
             </Col>
           </Row>
           <Form.Item
-            label="SavePoint策略" className={styles.form_item} name="savePointStrategy"
-            tooltip='指定 SavePoint策略，默认为禁用'
+            label={l('pages.datastudio.label.jobConfig.savePointStrategy')} className={styles.form_item}
+            name="savePointStrategy"
+            tooltip={l('pages.datastudio.label.jobConfig.savePointStrategy.tip')}
           >
             <Select defaultValue={0}>
               <Option value={0}>{l('global.savepoint.strategy.disabled')}</Option>
@@ -278,19 +288,20 @@ const StudioSetting = (props: any) => {
           </Form.Item>
           {current.task.savePointStrategy === 3 ?
             (<Form.Item
-              label="SavePointPath" className={styles.form_item} name="savePointPath"
-              tooltip='从SavePointPath恢复Flink任务'
+              label={l('pages.datastudio.label.jobConfig.savePointpath')} className={styles.form_item}
+              name="savePointPath"
+              tooltip={l('pages.datastudio.label.jobConfig.savePointpath.tip1')}
             >
-              <Input placeholder="hdfs://..."/>
+              <Input placeholder={l('pages.datastudio.label.jobConfig.savePointpath.tip2')}/>
             </Form.Item>) : ''
           }
           <Row>
             <Col span={24}>
-              <Form.Item label="报警组" tooltip={`选择报警组`} name="alertGroupId"
+              <Form.Item label={l('pages.datastudio.label.jobConfig.alertGroup')} name="alertGroupId"
                          className={styles.form_item}>
                 <Select
                   style={{width: '100%'}}
-                  placeholder="选择报警组"
+                  placeholder={l('pages.datastudio.label.jobConfig.alertGroup.tip')}
                   optionLabelProp="label"
                   defaultValue={0}
                 >
@@ -300,8 +311,8 @@ const StudioSetting = (props: any) => {
             </Col>
           </Row>
           <Form.Item
-            label="其他配置" className={styles.form_item}
-            tooltip={{title: '其他配置项，将被应用于执行环境，如 pipeline.name', icon: <InfoCircleOutlined/>}}
+            label={l('pages.datastudio.label.jobConfig.other')} className={styles.form_item}
+            tooltip={{title: l('pages.datastudio.label.jobConfig.other.tip'), icon: <InfoCircleOutlined/>}}
           >
 
             <Form.List name="config"
@@ -315,21 +326,21 @@ const StudioSetting = (props: any) => {
                         name={[name, 'key']}
                         style={{marginBottom: '5px'}}
                       >
-                        <Input placeholder="参数"/>
+                        <Input placeholder={l('pages.datastudio.label.jobConfig.addConfig.params')}/>
                       </Form.Item>
                       <Form.Item
                         {...restField}
                         name={[name, 'value']}
                         style={{marginBottom: '5px'}}
                       >
-                        <Input placeholder="值"/>
+                        <Input placeholder={l('pages.datastudio.label.jobConfig.addConfig.value')}/>
                       </Form.Item>
                       <MinusCircleOutlined onClick={() => remove(name)}/>
                     </Space>
                   ))}
                   <Form.Item>
                     <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined/>}>
-                      添加配置项
+                      {l('pages.datastudio.label.jobConfig.addConfig')}
                     </Button>
                   </Form.Item>
                 </>

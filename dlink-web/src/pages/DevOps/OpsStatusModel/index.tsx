@@ -32,8 +32,8 @@ interface IOpsStatusModalProps {
 }
 
 export const OpsStatusLabel = {
-  '1': '上线',
-  '0': '下线'
+  '1': l('pages.devops.lable.online'),
+  '0': l('pages.devops.lable.offline')
 }
 
 const {Option} = Select
@@ -139,7 +139,7 @@ const OpsStatusModal: React.FC<IOpsStatusModalProps> = (props): React.ReactEleme
                 dropdownStyle={{maxHeight: 400, overflow: 'auto'}}
                 fieldNames={{label: 'name', value: 'id'}}
                 treeNodeFilterProp={'name'}
-                placeholder="请选择"
+                placeholder={l('pages.devops.lable.pleaseSelect')}
                 onChange={onTreeChange}
                 value={treeValue}
                 treeData={opsStatusListTree}
@@ -148,7 +148,7 @@ const OpsStatusModal: React.FC<IOpsStatusModalProps> = (props): React.ReactEleme
             <Col push={2}>
               <Button type={'primary'} onClick={() => {
                 onSubmitTree()
-              }}>查询</Button>
+              }}>{l('button.query')}</Button>
             </Col>
           </Row>
           <Divider/>
@@ -162,10 +162,10 @@ const OpsStatusModal: React.FC<IOpsStatusModalProps> = (props): React.ReactEleme
               {
                 opsStatus === '1' &&
                 <Form.Item name={'taskOperatingSavepointSelect'} label={' '} colon={false}
-                           rules={[{message: '请输入', required: true}]}>
+                           rules={[{message: l('tips.enter'), required: true}]}>
                   <Select style={{width: '150px'}}>
-                    <Option value={'0'}>默认保存点</Option>
-                    <Option value={'1'}>最新保存点</Option>
+                    <Option value={'0'}>{l('pages.devops.lable.line.piontConfig.default')}</Option>
+                    <Option value={'1'}>{l('pages.devops.lable.line.piontConfig.last')}</Option>
                   </Select>
                 </Form.Item>}
             </Col>

@@ -28,21 +28,21 @@ const FlinkColumns = (props: any) => {
   const {envId, catalog, database, table} = props;
 
   const cols = [{
-    title: '序号',
+    title:  l('pages.flinkColumns.position'),
     dataIndex: 'position',
     isString: false,
   },
     {
-      title: '列名',
+      title: l('pages.flinkColumns.name'),
       dataIndex: 'name',
       copyable: true,
     },
     {
-      title: '类型',
+      title: l('pages.flinkColumns.type'),
       dataIndex: 'type',
     },
     {
-      title: '主键',
+      title: l('pages.flinkColumns.key.true'),
       dataIndex: 'key',
       render: (_, record) => (
         <>
@@ -51,17 +51,17 @@ const FlinkColumns = (props: any) => {
       ),
       filters: [
         {
-          text: '主键',
+          text: l('pages.flinkColumns.key.true'),
           value: true,
         },
         {
-          text: '其他',
+          text: l('pages.flinkColumns.key.other'),
           value: '',
         },
       ],
       openSearch: 'dict',
     }, {
-      title: '可为空',
+      title: l('pages.flinkColumns.isnull'),
       dataIndex: 'nullable',
       render: (_, record) => (
         <>
@@ -70,20 +70,20 @@ const FlinkColumns = (props: any) => {
       ),
       filters: [
         {
-          text: '可为空',
+          text: l('pages.flinkColumns.isnull'),
           value: true,
         },
         {
-          text: '非空',
+          text: l('pages.flinkColumns.isnotnull'),
           value: '',
         },
       ],
       openSearch: 'dict',
     }, {
-      title: '扩展',
+      title: l('pages.flinkColumns.extras'),
       dataIndex: 'extras',
     }, {
-      title: '水印',
+      title: l('pages.flinkColumns.watermark'),
       dataIndex: 'watermark',
     },];
 

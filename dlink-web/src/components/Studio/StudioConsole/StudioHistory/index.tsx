@@ -32,7 +32,7 @@ import {HistoryItem} from "@/components/Studio/StudioConsole/StudioHistory/data"
 import CodeShow from "@/components/Common/CodeShow";
 import {l} from "@/utils/intl";
 
-const { Paragraph, Text, Link} = Typography;
+const {Paragraph, Text, Link} = Typography;
 
 type HistoryConfig = {
   useSession: boolean;
@@ -82,8 +82,8 @@ const StudioHistory = (props: any) => {
 
   const removeHistory = (row: HistoryItem) => {
     Modal.confirm({
-      title: '删除执行记录',
-      content: '确定删除该执行记录吗？',
+      title: l('pages.datastudio.label.history.delete'),
+      content: l('pages.datastudio.label.history.deleteConfirm'),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -110,7 +110,7 @@ const StudioHistory = (props: any) => {
           filterType: 'light',
         }}
         rowKey="id"
-        headerTitle="执行历史"
+        headerTitle={l('pages.datastudio.label.history.exec')}
         request={(params, sorter, filter) => queryData(url, {...params, sorter: {id: 'descend'}, filter})}
         pagination={{
           defaultPageSize: 5,
@@ -139,8 +139,8 @@ const StudioHistory = (props: any) => {
                   <Link href={`http://${row.jobManagerAddress}`} target="_blank">
                     [{row.jobManagerAddress}]
                   </Link>
-                  <Divider type="vertical"/>开始于：{row.startTime}
-                  <Divider type="vertical"/>完成于：{row.endTime}
+                  <Divider type="vertical"/>{l('global.table.startTime')}:{row.startTime}
+                  <Divider type="vertical"/>{l('global.table.finishTime')}:{row.endTime}
                 </blockquote>
               </Paragraph>)
             }
@@ -164,7 +164,7 @@ const StudioHistory = (props: any) => {
                       <ClusterOutlined/> {row.clusterAlias}
                     </Tag>
                   ) : (<Tag color="green" key={row.clusterAlias}>
-                    <ClusterOutlined/> 本地环境
+                    <ClusterOutlined/> {l('pages.devops.jobinfo.localenv')}
                   </Tag>)}
                   {row.type ? (
                     <Tag color="blue" key={row.type}>
@@ -172,16 +172,16 @@ const StudioHistory = (props: any) => {
                     </Tag>
                   ) : ''}
                   {(row.status == 2) ?
-                    (<><Badge status="success"/><Text type="success">SUCCESS</Text></>) :
+                    (<><Badge status="success"/><Text type="success">{l('pages.devops.jobstatus.SUCCESS')}</Text></>) :
                     (row.status == 1) ?
-                      <><Badge status="success"/><Text type="secondary">RUNNING</Text></> :
+                      <><Badge status="success"/><Text type="secondary">{l('pages.devops.jobstatus.RUNNING')}</Text></> :
                       (row.status == 3) ?
-                        <><Badge status="error"/><Text type="danger">FAILED</Text></> :
+                        <><Badge status="error"/><Text type="danger">{l('pages.devops.jobstatus.FAILED')}</Text></> :
                         (row.status == 4) ?
-                          <><Badge status="error"/><Text type="warning">CANCEL</Text></> :
+                          <><Badge status="error"/><Text type="warning">{l('pages.devops.jobstatus.CANCELED')}</Text></> :
                           (row.status == 0) ?
-                            <><Badge status="error"/><Text type="warning">INITIALIZE</Text></> :
-                            <><Badge status="success"/><Text type="danger">UNKNOWEN</Text></>}
+                            <><Badge status="error"/><Text type="warning">{l('pages.devops.jobstatus.INITIALIZING')}</Text></> :
+                            <><Badge status="success"/><Text type="danger">{l('pages.devops.jobstatus.UNKNOWN')}</Text></>}
                 </Space>
               );
             },
@@ -192,22 +192,22 @@ const StudioHistory = (props: any) => {
               <a key="config" onClick={() => {
                 showDetail(row, 1)
               }}>
-                执行配置
+                {l('pages.datastudio.label.history.execConfig')}
               </a>,
               <a key="statement" onClick={() => {
                 showDetail(row, 2)
               }}>
-                FlinkSql语句
+                {l('pages.datastudio.label.history.statement')}
               </a>,
               <a key="result" onClick={() => {
                 showDetail(row, 3)
               }}>
-                预览数据
+                {l('pages.datastudio.label.history.result')}
               </a>,
               <a key="error" onClick={() => {
                 showDetail(row, 4)
               }}>
-                异常信息
+                {l('pages.datastudio.label.history.error')}
               </a>,
               <a key="delete" onClick={() => {
                 removeHistory(row)
@@ -219,52 +219,52 @@ const StudioHistory = (props: any) => {
           },
           jobName: {
             dataIndex: 'jobName',
-            title: '作业名',
+            title: l('pages.datastudio.label.history.jobName'),
           },
           clusterId: {
             dataIndex: 'clusterId',
-            title: '运行集群',
+            title: l('pages.datastudio.label.history.runningCluster'),
           },
           session: {
             dataIndex: 'session',
-            title: '共享会话',
+            title: l('pages.datastudio.label.history.session'),
           },
           status: {
             // 自己扩展的字段，主要用于筛选，不在列表中显示
-            title: '状态',
+            title: l('global.table.status'),
             valueType: 'select',
             valueEnum: {
-              '': {text: '全部', status: 'ALL'},
+              '': {text: l('pages.devops.jobstatus.ALL'), status: 'ALL'},
               0: {
-                text: '初始化',
+                text: l('pages.devops.jobstatus.INITIALIZING'),
                 status: 'INITIALIZE',
               },
               1: {
-                text: '运行中',
+                text: l('pages.devops.jobstatus.RUNNING'),
                 status: 'RUNNING',
               },
               2: {
-                text: '成功',
+                text: l('pages.devops.jobstatus.SUCCESS'),
                 status: 'SUCCESS',
               },
               3: {
-                text: '失败',
+                text: l('pages.devops.jobstatus.FAILED'),
                 status: 'FAILED',
               },
               4: {
-                text: '停止',
+                text: l('pages.devops.jobstatus.CANCELED'),
                 status: 'CANCEL',
               },
             },
           },
           startTime: {
             dataIndex: 'startTime',
-            title: '开始时间',
+            title: l('global.table.startTime'),
             valueType: 'dateTimeRange',
           },
           endTime: {
             dataIndex: 'endTime',
-            title: '完成时间',
+            title: l('global.table.finishTime'),
             valueType: 'dateTimeRange',
           },
         }}
@@ -284,68 +284,68 @@ const StudioHistory = (props: any) => {
         {type == 1 && (
           <ProDescriptions
             column={2}
-            title='执行配置'
+            title={l('pages.datastudio.label.history.execConfig')}
           >
             <ProDescriptions.Item span={2} label="JobId">
               <Tag color="blue" key={row.jobId}>
                 <FireOutlined/> {row.jobId}
               </Tag>
             </ProDescriptions.Item>
-            <ProDescriptions.Item label="共享会话">
+            <ProDescriptions.Item label={l('pages.datastudio.label.history.session')}>
               {config.useSession ? l('button.enable') : l('button.disable')}
             </ProDescriptions.Item>
-            <ProDescriptions.Item label="会话 Key">
+            <ProDescriptions.Item label={l('pages.datastudio.label.history.session')}>
               {config.session}
             </ProDescriptions.Item>
-            <ProDescriptions.Item label="执行方式">
-              {config.useRemote ? '远程' : '本地'}
+            <ProDescriptions.Item label={l('global.table.runmode')}>
+              {config.useRemote ? l('global.table.runmode.remote') : l('global.table.runmode.local')}
             </ProDescriptions.Item>
-            <ProDescriptions.Item label="任务类型">
+            <ProDescriptions.Item label={l('pages.datastudio.label.history.taskType')}>
               {config.type}
             </ProDescriptions.Item>
-            <ProDescriptions.Item label="集群ID">
+            <ProDescriptions.Item label={l('pages.datastudio.label.history.clusterId')}>
               {config.clusterId}
             </ProDescriptions.Item>
-            <ProDescriptions.Item label="集群配置ID">
+            <ProDescriptions.Item label={l('pages.datastudio.label.history.clusterConfigId')}>
               {config.clusterConfigurationId}
             </ProDescriptions.Item>
-            <ProDescriptions.Item label="预览结果">
+            <ProDescriptions.Item label={l('pages.datastudio.label.history.result')}>
               {config.useResult ? l('button.enable') : l('button.disable')}
             </ProDescriptions.Item>
-            <ProDescriptions.Item label="打印流">
+            <ProDescriptions.Item label={l('pages.datastudio.label.history.changelog')}>
               {config.useChangeLog ? l('button.enable') : l('button.disable')}
             </ProDescriptions.Item>
-            <ProDescriptions.Item label="最大行数">
+            <ProDescriptions.Item label={l('pages.datastudio.label.history.maxRow')}>
               {config.maxRowNum}
             </ProDescriptions.Item>
-            <ProDescriptions.Item label="自动停止">
+            <ProDescriptions.Item label={l('pages.datastudio.label.history.autoStop')}>
               {config.useAutoCancel ? l('button.enable') : l('button.disable')}
             </ProDescriptions.Item>
             <ProDescriptions.Item span={2} label="JobManagerAddress">
               {row.jobManagerAddress}
             </ProDescriptions.Item>
-            <ProDescriptions.Item label="作业ID">
+            <ProDescriptions.Item label={l('pages.datastudio.label.history.jobId')}>
               {config.taskId}
             </ProDescriptions.Item>
-            <ProDescriptions.Item label="作业名">
+            <ProDescriptions.Item label={l('pages.datastudio.label.history.jobName')}>
               {config.jobName}
             </ProDescriptions.Item>
-            <ProDescriptions.Item label="片段机制">
+            <ProDescriptions.Item label={l('pages.datastudio.label.history.useStatementSet')}>
               {config.useSqlFragment ? l('button.enable') : l('button.disable')}
             </ProDescriptions.Item>
-            <ProDescriptions.Item label="语句集">
+            <ProDescriptions.Item label={l('pages.datastudio.label.history.useSqlFragment')}>
               {config.useStatementSet ? l('button.enable') : l('button.disable')}
             </ProDescriptions.Item>
-            <ProDescriptions.Item label="并行度">
+            <ProDescriptions.Item label={l('pages.datastudio.label.history.parallelism')}>
               {config.parallelism}
             </ProDescriptions.Item>
-            <ProDescriptions.Item label="CheckPoint">
+            <ProDescriptions.Item label={l('pages.datastudio.label.history.checkpoint')}>
               {config.checkpoint}
             </ProDescriptions.Item>
-            <ProDescriptions.Item label="savePoint 机制">
+            <ProDescriptions.Item label={l('pages.datastudio.label.history.savePointStrategy')}>
               {config.savePointStrategy}
             </ProDescriptions.Item>
-            <ProDescriptions.Item label="SavePointPath">
+            <ProDescriptions.Item label={l('pages.datastudio.label.history.savePointPath')}>
               {config.savePointPath}
             </ProDescriptions.Item>
           </ProDescriptions>
@@ -353,7 +353,7 @@ const StudioHistory = (props: any) => {
         {type == 2 && (
           <ProDescriptions
             column={1}
-            title='FlinkSql 语句'
+            title={l('pages.datastudio.label.history.statement')}
           >
             <ProDescriptions.Item label="JobId">
               <Tag color="blue" key={row.jobId}>
@@ -368,7 +368,7 @@ const StudioHistory = (props: any) => {
         {type == 3 && (
           <ProDescriptions
             column={2}
-            title='数据预览'
+            title={l('pages.datastudio.label.history.result')}
           >
             <ProDescriptions.Item span={2} label="JobId">
               <Tag color="blue" key={row.jobId}>
@@ -383,7 +383,7 @@ const StudioHistory = (props: any) => {
         {type == 4 && (
           <ProDescriptions
             column={1}
-            title='异常信息'
+            title={l('pages.datastudio.label.history.error')}
           >
             <ProDescriptions.Item label="JobId">
               <Tag color="blue" key={row.jobId}>

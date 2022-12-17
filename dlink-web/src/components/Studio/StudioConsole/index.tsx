@@ -25,7 +25,6 @@ import {
   CalendarOutlined,
   CodeOutlined,
   DesktopOutlined,
-  FunctionOutlined,
   TableOutlined
 } from "@ant-design/icons";
 import {StateType} from "@/pages/DataStudio/model";
@@ -33,7 +32,6 @@ import {connect} from "umi";
 import StudioMsg from "./StudioMsg";
 import StudioTable from "./StudioTable";
 import StudioHistory from "./StudioHistory";
-import StudioFX from "./StudioFX";
 import StudioCA from "./StudioCA";
 import StudioProcess from "./StudioProcess";
 import {Scrollbars} from 'react-custom-scrollbars';
@@ -137,19 +135,19 @@ const StudioConsole = (props: any) => {
           <StudioHistory/>
         </Scrollbars>
       </TabPane>
-      <TabPane
-        tab={
-          <span>
-          <FunctionOutlined/>
-            {l('pages.datastudio.label.function')}
-        </span>
-        }
-        key="StudioFX"
-      >
-        <Scrollbars style={{height: consoleHeight}}>
-          <StudioFX/>
-        </Scrollbars>
-      </TabPane>
+      {/*<TabPane*/}
+      {/*  tab={*/}
+      {/*    <span>*/}
+      {/*    <FunctionOutlined/>*/}
+      {/*      {l('pages.datastudio.label.function')}*/}
+      {/*  </span>*/}
+      {/*  }*/}
+      {/*  key="StudioFX"*/}
+      {/*>*/}
+      {/*  <Scrollbars style={{height: consoleHeight}}>*/}
+      {/*    <StudioFX/>*/}
+      {/*  </Scrollbars>*/}
+      {/*</TabPane>*/}
     </Tabs>
   );
 };
