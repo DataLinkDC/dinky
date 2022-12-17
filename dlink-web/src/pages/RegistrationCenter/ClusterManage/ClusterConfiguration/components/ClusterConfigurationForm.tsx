@@ -76,6 +76,11 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
     setFlinkConfigPath(all['flinkConfigPath']);
   };
 
+  const onModalCancel = () => {
+    handleModalVisible(false);
+    form.resetFields();
+  };
+
   const buildConfig = (config: Config[], formValsPara: any) => {
     const itemList: JSX.Element[] = [];
     config.forEach(configItem => {
@@ -289,7 +294,6 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
   }
 
   const renderContent = (formValsPara: Partial<ClusterConfigurationTableListItem>) => {
-    form.resetFields();
     return (
       <>
         <Form.Item
@@ -363,7 +367,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
   const renderFooter = () => {
     return (
       <>
-        <Button onClick={() => handleModalVisible(false)}>{l('button.cancel')}</Button>
+        <Button onClick={() => onModalCancel()}>{l('button.cancel')}</Button>
         <Button type="primary" htmlType="button" onClick={testForm}>{l('button.test')}</Button>
         <Button type="primary" onClick={() => submitForm()}>{l('button.finish')}</Button>
       </>
@@ -378,7 +382,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
       title={formVals.id ? l('pages.rc.clusterConfig.modify') : l('pages.rc.clusterConfig.create')}
       visible={modalVisible}
       footer={renderFooter()}
-      onCancel={() => handleModalVisible()}
+      onCancel={() => onModalCancel()}
     >
       <Form
         {...formLayout}
