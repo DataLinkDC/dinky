@@ -209,6 +209,7 @@ export default {
   'pages.metadata.FieldInformation': 'Field Info',
   'pages.metadata.catalogSelect': 'Select Catalog & Database',
   'pages.metadata.catalogRefresh': 'Refresh Catalog',
+  'pages.metadata.catalogRefreshSuccess': 'Refresh Catalog Success',
   'pages.metadata.selectDatabase': 'Select Database',
 
   'pages.TableData.QueryConditions': 'Query Conditions',

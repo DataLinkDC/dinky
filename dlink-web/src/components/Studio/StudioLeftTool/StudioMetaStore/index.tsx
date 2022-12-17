@@ -207,7 +207,7 @@ const StudioMetaStore = (props: any) => {
 
       setTreeData(treeDataTmp);
       props.saveMetaStoreTable(current.key, catalogTmp, databaseTmp, tables);
-      message.success(`刷新 Catalog 成功`);
+      message.success(l('pages.metadata.catalogRefreshSuccess'));
     })
   };
 

@@ -213,6 +213,7 @@ export default {
   'pages.metadata.FieldInformation': '字段信息',
   'pages.metadata.catalogSelect': '选择 Catalog & Database',
   'pages.metadata.catalogRefresh': '刷新 Catalog',
+  'pages.metadata.catalogRefreshSuccess': '刷新 Catalog 成功',
   'pages.metadata.selectDatabase': '选择数据源',
 
 
