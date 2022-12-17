@@ -179,7 +179,7 @@ const StudioSetting = (props: any) => {
                       (currentSession.sessionConfig && currentSession.sessionConfig.clusterId ?
                           (<><Badge status="success"/><Text
                             type="success">{currentSession.sessionConfig.clusterName}</Text></>)
-                          : (<><Badge status="error"/><Text type="danger">本地模式</Text></>)
+                          : (<><Badge status="error"/><Text type="danger">{l('pages.devops.jobinfo.localenv')}</Text></>)
                       ) : (<Select
                         style={{width: '100%'}}
                         placeholder={l('pages.datastudio.label.jobConfig.cluster.tip')}
