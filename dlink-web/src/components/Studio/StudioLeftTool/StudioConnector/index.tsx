@@ -207,12 +207,12 @@ const StudioConnector = (props: any) => {
       sorter: true,
       ...getColumnSearchProps("session"),
     }, {
-      title: "执行模式",
+      title: l('global.table.runmode'),
       key: "useRemote",
       sorter: true,
       ...getColumnSearchProps("useRemote"),
       render: function (text, record, index) {
-        return record.sessionConfig.useRemote ? '远程' : '本地';
+        return record.sessionConfig.useRemote ? l('global.table.runmode.remote') : l('global.table.runmode.local') ;
       }
     }, {
       title: "集群名",

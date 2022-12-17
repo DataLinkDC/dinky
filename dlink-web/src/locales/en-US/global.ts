@@ -122,6 +122,7 @@ export default {
   'global.table.lifecycle.publish': 'Publish',
   'global.table.lifecycle.online': 'Online',
   'global.table.lifecycle.unknown': 'Unknown',
+  'global.table.execmode': 'Execution mode',
   'global.table.runmode': 'Run Mode',
   'global.table.runmode.local': 'Local',
   'global.table.runmode.remote': 'Remote',

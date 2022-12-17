@@ -118,6 +118,7 @@ export default {
   'global.table.lifecycle.publish': '已发布',
   'global.table.lifecycle.online': '已上线',
   'global.table.lifecycle.unknown': '未知',
+  'global.table.execmode': '执行模式',
   'global.table.runmode': '运行模式',
   'global.table.runmode.local': '本地',
   'global.table.runmode.remote': '远程',
