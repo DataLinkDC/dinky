@@ -70,7 +70,6 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
   };
 
   const renderContent = (formValsPara: Partial<ClusterTableListItem>) => {
-    form.resetFields();
     return (
       <>
         <Form.Item
