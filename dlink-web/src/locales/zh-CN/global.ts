@@ -119,6 +119,8 @@ export default {
   'global.table.lifecycle.online': '已上线',
   'global.table.lifecycle.unknown': '未知',
   'global.table.runmode': '运行模式',
+  'global.table.runmode.local': '本地',
+  'global.table.runmode.remote': '远程',
 
   'global.savepoint.strategy.disabled':'禁用',
   'global.savepoint.strategy.latest':'最近一次',

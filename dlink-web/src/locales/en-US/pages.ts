@@ -89,7 +89,7 @@ export default {
   'pages.searchTable.batchDeletion': 'Batch Deletion',
   'pages.searchTable.batchApproval': 'Batch Approval',
 
-
+  'pages.devops.jobstatus.SUCCESS': 'Success',
   'pages.devops.jobstatus.CREATED': 'Created',
   'pages.devops.jobstatus.INITIALIZING': 'Initialize',
   'pages.devops.jobstatus.RUNNING': 'Running',
@@ -101,6 +101,7 @@ export default {
   'pages.devops.jobstatus.CANCELED': 'Canceled',
   'pages.devops.jobstatus.RESTARTING': 'Restarting',
   'pages.devops.jobstatus.UNKNOWN': 'Unknown',
+  'pages.devops.jobstatus.ALL': 'ALL',
 
   'pages.devops.LastUpdateTime': 'LastUpdateTime',
 
@@ -262,6 +263,31 @@ export default {
   'pages.datastudio.label.process.switchcluster': 'Select Flink cluster',
 
   'pages.datastudio.label.history': 'History',
+  'pages.datastudio.label.history.exec': 'Execution history',
+  'pages.datastudio.label.history.delete': 'Delete execution records',
+  'pages.datastudio.label.history.deleteConfirm': 'Are you sure to delete this execution record? ',
+  'pages.datastudio.label.history.execConfig': 'Execution Config',
+  'pages.datastudio.label.history.statement': 'FlinkSql Statement',
+  'pages.datastudio.label.history.result': 'Preview Data',
+  'pages.datastudio.label.history.error': 'Exception Info',
+  'pages.datastudio.label.history.jobId': 'Job ID',
+  'pages.datastudio.label.history.jobName': 'job name',
+  'pages.datastudio.label.history.runningCluster': 'Running Cluster',
+  'pages.datastudio.label.history.session': 'Shared Session',
+  'pages.datastudio.label.history.taskType': 'Task Type',
+  'pages.datastudio.label.history.clusterId': 'Cluster ID',
+  'pages.datastudio.label.history.clusterConfigId': 'Cluster Config ID',
+  'pages.datastudio.label.history.changelog': 'Print ChangeLog',
+  'pages.datastudio.label.history.maxRow': 'Max Rows',
+  'pages.datastudio.label.history.autoStop': 'Auto Stop',
+  'pages.datastudio.label.history.useSqlFragment': 'Global Variables',
+  'pages.datastudio.label.history.useStatementSet': 'StatementSet',
+  'pages.datastudio.label.history.parallelism': 'Parallelism',
+  'pages.datastudio.label.history.checkpoint': 'Checkpoint',
+  'pages.datastudio.label.history.savePointStrategy': 'SavePoint Strategy',
+  'pages.datastudio.label.history.savePointPath': 'SavePoint Path',
+
+
   'pages.datastudio.label.function': 'Function',
 
   'pages.datastudio.label.directory': 'Directory',

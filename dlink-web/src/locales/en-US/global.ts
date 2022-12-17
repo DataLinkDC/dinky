@@ -123,6 +123,8 @@ export default {
   'global.table.lifecycle.online': 'Online',
   'global.table.lifecycle.unknown': 'Unknown',
   'global.table.runmode': 'Run Mode',
+  'global.table.runmode.local': 'Local',
+  'global.table.runmode.remote': 'Remote',
 
   'global.savepoint.strategy.disabled':'Disabled',
   'global.savepoint.strategy.latest':'Latest',

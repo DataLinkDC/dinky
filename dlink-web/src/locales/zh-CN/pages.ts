@@ -91,6 +91,7 @@ export default {
   'pages.searchTable.batchApproval': '批量审批',
 
 
+  'pages.devops.jobstatus.SUCCESS': '成功',
   'pages.devops.jobstatus.CREATED': '已创建',
   'pages.devops.jobstatus.INITIALIZING': '初始化',
   'pages.devops.jobstatus.RUNNING': '运行中',
@@ -102,6 +103,7 @@ export default {
   'pages.devops.jobstatus.CANCELED': '停止',
   'pages.devops.jobstatus.RESTARTING': '重启中',
   'pages.devops.jobstatus.UNKNOWN': '未知',
+  'pages.devops.jobstatus.ALL': '所有',
 
   'pages.devops.LastUpdateTime': '最后更新时间',
 
@@ -264,6 +266,30 @@ export default {
   'pages.datastudio.label.process.switchcluster': '选择Flink集群',
 
   'pages.datastudio.label.history': '历史',
+  'pages.datastudio.label.history.exec': '执行历史',
+  'pages.datastudio.label.history.delete': '删除执行记录',
+  'pages.datastudio.label.history.deleteConfirm': '确定删除该执行记录吗？',
+  'pages.datastudio.label.history.execConfig': '执行配置',
+  'pages.datastudio.label.history.statement': 'FlinkSql语句',
+  'pages.datastudio.label.history.result': '预览数据',
+  'pages.datastudio.label.history.error': '异常信息',
+  'pages.datastudio.label.history.jobId': '作业ID',
+  'pages.datastudio.label.history.jobName': '作业名',
+  'pages.datastudio.label.history.runningCluster': '运行集群',
+  'pages.datastudio.label.history.session': '共享会话',
+  'pages.datastudio.label.history.taskType': '任务类型',
+  'pages.datastudio.label.history.clusterId': '集群ID',
+  'pages.datastudio.label.history.clusterConfigId': '集群配置ID',
+  'pages.datastudio.label.history.changelog': '打印流',
+  'pages.datastudio.label.history.maxRow': '最大行数',
+  'pages.datastudio.label.history.autoStop': '自动停止',
+  'pages.datastudio.label.history.useSqlFragment': '全局变量',
+  'pages.datastudio.label.history.useStatementSet': '语句集',
+  'pages.datastudio.label.history.parallelism': '并行度',
+  'pages.datastudio.label.history.checkpoint': '检查点',
+  'pages.datastudio.label.history.savePointStrategy': 'SavePoint 策略',
+  'pages.datastudio.label.history.savePointPath': 'SavePoint 路径',
+
   'pages.datastudio.label.function': '函数',
 
   'pages.datastudio.label.directory': '目录',
