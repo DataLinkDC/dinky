@@ -42,10 +42,10 @@ public class CDCBuilderFactory {
     private static final Map<String, Supplier<CDCBuilder>> CDC_BUILDER_MAP = new HashMap<String, Supplier<CDCBuilder>>() {
 
         {
-            put(MysqlCDCBuilder.KEY_WORD, MysqlCDCBuilder::new);
-            put(OracleCDCBuilder.KEY_WORD, OracleCDCBuilder::new);
-            put(SqlServerCDCBuilder.KEY_WORD, SqlServerCDCBuilder::new);
-            put(PostgresCDCBuilder.KEY_WORD, PostgresCDCBuilder::new);
+            put(MysqlCDCBuilder.KEY_WORD, () -> new MysqlCDCBuilder());
+            put(OracleCDCBuilder.KEY_WORD, () -> new OracleCDCBuilder());
+            put(SqlServerCDCBuilder.KEY_WORD, () -> new SqlServerCDCBuilder());
+            put(PostgresCDCBuilder.KEY_WORD, () -> new PostgresCDCBuilder());
         }
     };
 

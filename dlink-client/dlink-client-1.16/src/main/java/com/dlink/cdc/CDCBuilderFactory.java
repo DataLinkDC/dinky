@@ -39,7 +39,7 @@ public class CDCBuilderFactory {
     private static final Map<String, Supplier<CDCBuilder>> CDC_BUILDER_MAP = new HashMap<String, Supplier<CDCBuilder>>() {
 
         {
-            put(MysqlCDCBuilder.KEY_WORD, MysqlCDCBuilder::new);
+            put(MysqlCDCBuilder.KEY_WORD, () -> new MysqlCDCBuilder());
         }
     };
 

@@ -41,8 +41,8 @@ public class SinkBuilderFactory {
     private static final Map<String, Supplier<SinkBuilder>> SINK_BUILDER_MAP = new HashMap<String, Supplier<SinkBuilder>>() {
 
         {
-            put(KafkaSinkBuilder.KEY_WORD, KafkaSinkBuilder::new);
-            put(DorisSinkBuilder.KEY_WORD, DorisSinkBuilder::new);
+            put(KafkaSinkBuilder.KEY_WORD, () -> new KafkaSinkBuilder());
+            put(DorisSinkBuilder.KEY_WORD, () -> new DorisSinkBuilder());
         }
     };
 
@@ -50,7 +50,7 @@ public class SinkBuilderFactory {
         if (Asserts.isNull(config) || Asserts.isNullString(config.getSink().get("connector"))) {
             throw new FlinkClientException("请指定 Sink connector。");
         }
-        return SINK_BUILDER_MAP.getOrDefault(config.getSink().get("connector"), SQLSinkBuilder::new).get()
+        return SINK_BUILDER_MAP.getOrDefault(config.getSink().get("connector"), () -> new SQLSinkBuilder()).get()
                 .create(config);
     }
 }

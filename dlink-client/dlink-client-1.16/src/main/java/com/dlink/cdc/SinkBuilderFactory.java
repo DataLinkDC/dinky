@@ -46,7 +46,7 @@ public class SinkBuilderFactory {
         if (Asserts.isNull(config) || Asserts.isNullString(config.getSink().get("connector"))) {
             throw new FlinkClientException("请指定 Sink connector。");
         }
-        return SINK_BUILDER_MAP.getOrDefault(config.getSink().get("connector"), SQLSinkBuilder::new).get()
+        return SINK_BUILDER_MAP.getOrDefault(config.getSink().get("connector"), () -> new SQLSinkBuilder()).get()
                 .create(config);
     }
 }
