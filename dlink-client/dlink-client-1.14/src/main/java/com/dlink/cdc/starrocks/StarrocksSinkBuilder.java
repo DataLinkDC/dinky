@@ -1,3 +1,22 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 package com.dlink.cdc.starrocks;
 
 import com.dlink.cdc.AbstractSinkBuilder;
@@ -37,7 +56,7 @@ import com.starrocks.connector.flink.table.sink.StarRocksSinkOptions;
  **/
 public class StarrocksSinkBuilder extends AbstractSinkBuilder implements Serializable {
 
-    private static final String KEY_WORD = "datastream-starrocks";
+    public static final String KEY_WORD = "datastream-starrocks";
     private static final long serialVersionUID = 8330362249137431824L;
     private final ZoneId sinkZoneIdUTC = ZoneId.of("UTC");
 
@@ -60,14 +79,14 @@ public class StarrocksSinkBuilder extends AbstractSinkBuilder implements Seriali
 
     @Override
     public void addSink(
-        StreamExecutionEnvironment env,
-        DataStream<RowData> rowDataDataStream,
-        Table table,
-        List<String> columnNameList,
-        List<LogicalType> columnTypeList) {
+            StreamExecutionEnvironment env,
+            DataStream<RowData> rowDataDataStream,
+            Table table,
+            List<String> columnNameList,
+            List<LogicalType> columnTypeList) {
         try {
             List<Column> columns = table.getColumns();
-            List<String>  primaryKeys = new LinkedList<>();
+            List<String> primaryKeys = new LinkedList<>();
             String[] columnNames = new String[columns.size()];
             for (int i = 0; i < columns.size(); i++) {
                 Column column = columns.get(i);
@@ -86,7 +105,8 @@ public class StarrocksSinkBuilder extends AbstractSinkBuilder implements Seriali
                 }
                 dataTypes[i] = TypeConversions.fromLogicalToDataType(logicalType);
             }
-            TableSchema tableSchema = TableSchema.builder().primaryKey(primaryKeyArrays).fields(columnNames, dataTypes).build();
+            TableSchema tableSchema = TableSchema.builder().primaryKey(primaryKeyArrays).fields(columnNames, dataTypes)
+                    .build();
             Map<String, String> sink = config.getSink();
             StarRocksSinkOptions.Builder builder = StarRocksSinkOptions.builder()
                     .withProperty("jdbc-url", sink.get("jdbc-url"))
@@ -99,20 +119,19 @@ public class StarrocksSinkBuilder extends AbstractSinkBuilder implements Seriali
                     .withProperty("sink.properties.strip_outer_array", "true")
                     // 设置并行度，多并行度情况下需要考虑如何保证数据有序性
                     .withProperty("sink.parallelism", "1");
-            sink.forEach((key,value) -> {
+            sink.forEach((key, value) -> {
                 if (key.startsWith("sink.")) {
-                    builder.withProperty(key,value);
+                    builder.withProperty(key, value);
                 }
             });
             StarRocksDynamicSinkFunction<RowData> starrocksSinkFunction = new StarRocksDynamicSinkFunction<RowData>(
                     builder.build(),
                     tableSchema,
-                    new StarRocksTableRowTransformer(TypeInformation.of(RowData.class))
-            );
+                    new StarRocksTableRowTransformer(TypeInformation.of(RowData.class)));
             rowDataDataStream.addSink(starrocksSinkFunction);
-            logger.info("handler connector name:{} sink successful.....",getHandle());
+            logger.info("handler connector name:{} sink successful.....", getHandle());
         } catch (Exception ex) {
-            logger.error("handler connector name:{} sink ex:",getHandle(),ex);
+            logger.error("handler connector name:{} sink ex:", getHandle(), ex);
         }
     }
 

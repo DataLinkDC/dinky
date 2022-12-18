@@ -51,7 +51,7 @@ import java.util.Map;
  */
 public class HudiSinkBuilder extends AbstractSinkBuilder implements Serializable {
 
-    private static final String KEY_WORD = "datastream-hudi";
+    public static final String KEY_WORD = "datastream-hudi";
     private static final long serialVersionUID = 5324199407472847422L;
 
     public HudiSinkBuilder() {
@@ -119,8 +119,10 @@ public class HudiSinkBuilder extends AbstractSinkBuilder implements Serializable
                 Pipelines.append(configuration, rowType, rowDataDataStream);
             } else {
 
-                DataStream<HoodieRecord> hoodieRecordDataStream = Pipelines.bootstrap(configuration, rowType, parallelism, rowDataDataStream);
-                DataStream<Object> pipeline = Pipelines.hoodieStreamWrite(configuration, parallelism, hoodieRecordDataStream);
+                DataStream<HoodieRecord> hoodieRecordDataStream = Pipelines.bootstrap(configuration, rowType, parallelism,
+                    rowDataDataStream);
+                DataStream<Object> pipeline = Pipelines.hoodieStreamWrite(configuration, parallelism,
+                    hoodieRecordDataStream);
 
                 // compaction
                 if (StreamerUtil.needsAsyncCompaction(configuration)) {

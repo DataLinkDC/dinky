@@ -45,7 +45,7 @@ import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
  **/
 public class PostgresCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
 
-    private static final String KEY_WORD = "postgres-cdc";
+    public static final String KEY_WORD = "postgres-cdc";
     private static final String METADATA_TYPE = "PostgreSql";
 
     public PostgresCDCBuilder() {
