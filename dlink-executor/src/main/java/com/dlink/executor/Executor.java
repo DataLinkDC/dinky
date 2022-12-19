@@ -48,8 +48,6 @@ import org.apache.hadoop.security.UserGroupInformation;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -327,33 +325,6 @@ public abstract class Executor {
             config.put(PythonOptions.PYTHON_CLIENT_EXECUTABLE.key(), executable);
         }
         update(executorSetting);
-    }
-
-    private static void loadJar(final URL jarUrl) {
-        // 从URLClassLoader类加载器中获取类的addURL方法
-        Method method = null;
-        try {
-            method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
-        } catch (NoSuchMethodException | SecurityException e) {
-            logger.error(e.getMessage());
-        }
-
-        // 获取方法的访问权限
-        boolean accessible = method.isAccessible();
-        try {
-            // 修改访问权限为可写
-            if (!accessible) {
-                method.setAccessible(true);
-            }
-            // 获取系统类加载器
-            URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-            // jar路径加入到系统url路径里
-            method.invoke(classLoader, jarUrl);
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-        } finally {
-            method.setAccessible(accessible);
-        }
     }
 
     public String explainSql(String statement, ExplainDetail... extraDetails) {

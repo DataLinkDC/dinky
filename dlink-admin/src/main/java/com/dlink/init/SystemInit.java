@@ -20,8 +20,10 @@
 package com.dlink.init;
 
 import com.dlink.assertion.Asserts;
+import com.dlink.context.TenantContextHolder;
 import com.dlink.daemon.task.DaemonFactory;
 import com.dlink.daemon.task.DaemonTaskConfig;
+import com.dlink.function.pool.UdfCodePool;
 import com.dlink.job.FlinkJobTask;
 import com.dlink.model.JobInstance;
 import com.dlink.model.Tenant;
@@ -33,9 +35,11 @@ import com.dlink.service.JobInstanceService;
 import com.dlink.service.SysConfigService;
 import com.dlink.service.TaskService;
 import com.dlink.service.TenantService;
+import com.dlink.utils.UDFUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,6 +83,7 @@ public class SystemInit implements ApplicationRunner {
         }
         initTaskMonitor();
         initDolphinScheduler();
+        registerUDF();
     }
 
     /**
@@ -120,5 +125,13 @@ public class SystemInit implements ApplicationRunner {
             throw new SchedulerException("Please complete the dolphinscheduler configuration.");
         }
         return project;
+    }
+
+    public void registerUDF() {
+        // 设置admin用户 ，获取全部的udf代码，此地方没有租户隔离
+        TenantContextHolder.set(1);
+        UdfCodePool
+                .registerPool(taskService.getAllUDF().stream().map(UDFUtils::taskToUDF).collect(Collectors.toList()));
+        TenantContextHolder.set(null);
     }
 }
