@@ -181,8 +181,6 @@ public class StudioServiceImpl implements StudioService {
         process.info("Initializing Flink job config...");
         JobConfig config = studioExecuteDTO.getJobConfig();
         buildSession(config);
-        // init UDF
-        udfService.init(studioExecuteDTO.getStatement(), config);
         JobManager jobManager = JobManager.build(config);
         process.start();
         JobResult jobResult = jobManager.executeSql(studioExecuteDTO.getStatement());
@@ -269,8 +267,6 @@ public class StudioServiceImpl implements StudioService {
         // If you are using explainSql | getStreamGraph | getJobPlan, make the dialect change to local.
         config.buildLocal();
         buildSession(config);
-        // init UDF
-        udfService.init(studioExecuteDTO.getStatement(), config);
         JobManager jobManager = JobManager.build(config);
         process.start();
         List<SqlExplainResult> sqlExplainResults = jobManager.explainSql(studioExecuteDTO.getStatement())
@@ -322,8 +318,6 @@ public class StudioServiceImpl implements StudioService {
         // If you are using explainSql | getStreamGraph | getJobPlan, make the dialect change to local.
         config.buildLocal();
         buildSession(config);
-        // init UDF
-        udfService.init(studioExecuteDTO.getStatement(), config);
 
         JobManager jobManager = JobManager.build(config);
 

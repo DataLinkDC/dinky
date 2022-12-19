@@ -59,7 +59,8 @@ public class PathConstant {
      */
     public static final String UDF_JAR_TMP_NAME = "udf-tmp.jar";
     public static final String UDF_JAR_NAME = "udf.jar";
-    public static final String UDF_MANIFEST = "udf_manifest.json";
+    public static final String DEP_MANIFEST = "dep_manifest.json";
+    public static final String DEP_ZIP = "dep.zip";
     public static final String UDF_PYTHON_NAME = "python_udf.zip";
     /**
      * udf jar tmp路径

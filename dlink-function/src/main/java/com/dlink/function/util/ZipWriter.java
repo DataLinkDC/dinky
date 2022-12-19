@@ -28,7 +28,6 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import cn.hutool.core.compress.ZipWriter;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IORuntimeException;
 import cn.hutool.core.io.IoUtil;
@@ -41,22 +40,22 @@ import cn.hutool.core.util.StrUtil;
  * @author ZackYoung
  * @since 0.6.8
  */
-public class ZipUtils extends ZipWriter {
+public class ZipWriter extends cn.hutool.core.compress.ZipWriter {
 
-    public ZipUtils(File zipFile, Charset charset) {
+    public ZipWriter(File zipFile, Charset charset) {
         super(zipFile, charset);
     }
 
-    public ZipUtils(OutputStream out, Charset charset) {
+    public ZipWriter(OutputStream out, Charset charset) {
         super(out, charset);
     }
 
-    public ZipUtils(ZipOutputStream out) {
+    public ZipWriter(ZipOutputStream out) {
         super(out);
     }
 
     @Override
-    public ZipWriter add(String[] paths, InputStream[] ins) throws IORuntimeException {
+    public cn.hutool.core.compress.ZipWriter add(String[] paths, InputStream[] ins) throws IORuntimeException {
         if (ArrayUtil.isEmpty(paths) || ArrayUtil.isEmpty(ins)) {
             throw new IllegalArgumentException("Paths or ins is empty !");
         }
@@ -71,7 +70,7 @@ public class ZipUtils extends ZipWriter {
         return this;
     }
 
-    public ZipWriter add(String path, InputStream in, long fileTime) throws IORuntimeException {
+    public cn.hutool.core.compress.ZipWriter add(String path, InputStream in, long fileTime) throws IORuntimeException {
         path = StrUtil.nullToEmpty(path);
         if (null == in) {
             // 空目录需要检查路径规范性，目录以"/"结尾
@@ -84,7 +83,8 @@ public class ZipUtils extends ZipWriter {
         return putEntry(path, in, fileTime);
     }
 
-    private ZipWriter putEntry(String path, InputStream in, long fileTime) throws IORuntimeException {
+    private cn.hutool.core.compress.ZipWriter putEntry(String path, InputStream in, long fileTime)
+            throws IORuntimeException {
         try {
             ZipEntry zipEntry = new ZipEntry(path);
             zipEntry.setTime(fileTime);
