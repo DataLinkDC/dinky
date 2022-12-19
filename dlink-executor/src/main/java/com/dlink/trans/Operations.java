@@ -20,6 +20,7 @@
 package com.dlink.trans;
 
 import com.dlink.parser.SqlType;
+import com.dlink.trans.ddl.AddJarOperation;
 import com.dlink.trans.ddl.CreateAggTableOperation;
 import com.dlink.trans.ddl.CreateCDCSourceOperation;
 import com.dlink.trans.ddl.SetOperation;
@@ -39,11 +40,9 @@ public class Operations {
     private Operations() {
     }
 
-    private static final Operation[] ALL_OPERATIONS = {new CreateAggTableOperation()
-            , new SetOperation()
-            , new CreateCDCSourceOperation()
-            , new ShowFragmentsOperation()
-            , new ShowFragmentOperation()
+    private static final Operation[] ALL_OPERATIONS = {new CreateAggTableOperation(), new SetOperation(),
+            new CreateCDCSourceOperation(), new ShowFragmentsOperation(), new ShowFragmentOperation(),
+            new AddJarOperation()
     };
 
     public static SqlType getSqlTypeFromStatements(String statement) {
