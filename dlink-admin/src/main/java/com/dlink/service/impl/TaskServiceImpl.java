@@ -834,9 +834,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         jobConfig.setAddress(cluster.getJobManagerHost());
 
         if (!task.getConfig().isEmpty()) {
-            Map<String, String> first = task.getConfig().get(0);
-            if (first.size() == 2) {
-                jobConfig.getConfig().put(first.get("key"), first.get("value"));
+            for (Map<String, String> entry : task.getConfig()) {
+                jobConfig.getConfig().put(entry.get("key"), entry.get("value"));
             }
         }
 
