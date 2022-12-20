@@ -42,7 +42,8 @@ public class FlinkRestAPITest {
     @Test
     public void savepointTest() {
         //JsonNode savepointInfo = FlinkAPI.build(address).getSavepointInfo("602ad9d03b872dba44267432d1a2a3b2","04044589477a973a32e7dd53e1eb20fd");
-        SavePointResult savepoints = FlinkAPI.build(address).savepoints("243b97597448edbd2e635fc3d25b1064", "trigger");
+        SavePointResult savepoints = FlinkAPI.build(address).savepoints("243b97597448edbd2e635fc3d25b1064", "trigger"
+                , null);
         System.out.println(savepoints.toString());
     }
 
