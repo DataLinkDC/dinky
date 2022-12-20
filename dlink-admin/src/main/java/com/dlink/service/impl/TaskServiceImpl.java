@@ -812,9 +812,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Asserts.checkNotNull(cluster, "该集群不存在");
         String jobId = jobInstance.getJid();
         boolean useGateway = false;
-        JobConfig jobConfig = new JobConfig();
-        jobConfig.setType(cluster.getType());
+
         Task task = this.getTaskInfoById(jobInstance.getTaskId());
+        JobConfig jobConfig = task.buildSubmitConfig();
+        jobConfig.setType(cluster.getType());
 
         if (Asserts.isNotNull(cluster.getClusterConfigurationId())) {
             Map<String, Object> gatewayConfig = clusterConfigurationService
@@ -832,12 +833,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         }
         jobConfig.setTaskId(jobInstance.getTaskId());
         jobConfig.setAddress(cluster.getJobManagerHost());
-
-        if (!task.getConfig().isEmpty()) {
-            for (Map<String, String> entry : task.getConfig()) {
-                jobConfig.getConfig().put(entry.get("key"), entry.get("value"));
-            }
-        }
 
         JobManager jobManager = JobManager.build(jobConfig);
         jobManager.setUseGateway(useGateway);
