@@ -509,7 +509,7 @@ public class Explainer {
                 SqlType operationType = Operations.getOperationType(sql);
                 if (operationType.equals(SqlType.INSERT)) {
                     lineageRelList.addAll(executor.getLineage(sql));
-                } else {
+                } else if (!operationType.equals(SqlType.SELECT)) {
                     executor.executeSql(sql);
                 }
             } catch (Exception e) {
