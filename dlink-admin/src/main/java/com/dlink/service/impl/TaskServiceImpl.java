@@ -19,16 +19,6 @@
 
 package com.dlink.service.impl;
 
-import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.convert.Convert;
-import cn.hutool.core.lang.tree.Tree;
-import cn.hutool.core.lang.tree.TreeNode;
-import cn.hutool.core.lang.tree.TreeUtil;
-import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.alert.Alert;
 import com.dlink.alert.AlertConfig;
 import com.dlink.alert.AlertMsg;
@@ -51,6 +41,7 @@ import com.dlink.dto.TaskRollbackVersionDTO;
 import com.dlink.dto.TaskVersionConfigureDTO;
 import com.dlink.exception.BusException;
 import com.dlink.function.compiler.CustomStringJavaCompiler;
+import com.dlink.function.pool.UdfCodePool;
 import com.dlink.function.util.UDFUtil;
 import com.dlink.gateway.Gateway;
 import com.dlink.gateway.GatewayType;
@@ -114,19 +105,11 @@ import com.dlink.service.UDFService;
 import com.dlink.service.UDFTemplateService;
 import com.dlink.utils.DockerClientUtils;
 import com.dlink.utils.JSONUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.dlink.utils.UDFUtils;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -145,6 +128,30 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.convert.Convert;
+import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.lang.tree.TreeNode;
+import cn.hutool.core.lang.tree.TreeUtil;
+import cn.hutool.core.util.StrUtil;
 
 /**
  * 任务 服务实现类
@@ -226,8 +233,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         }
         process.info("Initializing Flink job config...");
         JobConfig config = buildJobConfig(task);
-        // init UDF
-        udfService.init(task.getStatement(), config);
 
         if (GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType())) {
             loadDocker(id, config.getClusterConfigurationId(), config.getGatewayConfig());
@@ -444,6 +449,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             } else if (Dialect.SCALA.equalsVal(task.getDialect())) {
                 task.setSavePointPath(UDFUtil.getScalaFullClassName(task.getStatement()));
             }
+            UdfCodePool.addOrUpdate(UDFUtils.taskToUDF(task));
         }
 
         // if modify task else create task
@@ -581,7 +587,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Task task = getOne(
                 new QueryWrapper<Task>().in("dialect", Dialect.JAVA, Dialect.SCALA, Dialect.PYTHON).eq("enabled", 1)
                         .eq("save_point_path", className));
-        Asserts.checkNull(task,StrUtil.format("class: {} ,not exists!",className));
+        Asserts.checkNull(task, StrUtil.format("class: {} ,not exists!", className));
         task.setStatement(statementService.getById(task.getId()).getStatement());
         return task;
     }

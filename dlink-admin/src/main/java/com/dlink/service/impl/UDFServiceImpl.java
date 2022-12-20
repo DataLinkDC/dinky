@@ -19,16 +19,9 @@
 
 package com.dlink.service.impl;
 
-import com.dlink.classloader.DinkyClassLoader;
-import com.dlink.context.DinkyClassLoaderContextHolder;
-import com.dlink.job.JobConfig;
 import com.dlink.service.UDFService;
-import com.dlink.utils.UDFUtils;
 
 import org.springframework.stereotype.Service;
-
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
 
 /**
  * @author ZackYoung
@@ -36,31 +29,5 @@ import cn.hutool.core.util.StrUtil;
  */
 @Service
 public class UDFServiceImpl implements UDFService {
-
-    /**
-     * 获取所有udf相关的代码
-     *
-     * @param statement sql语句
-     * @return jobManage
-     */
-    @Override
-    public void init(String statement, JobConfig config) {
-        initClassLoader(config);
-        config.setUdfList(UDFUtils.getUDF(statement));
-
-    }
-
-    private void initClassLoader(JobConfig config) {
-        DinkyClassLoader classLoader = new DinkyClassLoader(null, Thread.currentThread().getContextClassLoader());
-        DinkyClassLoaderContextHolder.set(classLoader);
-        if (CollUtil.isNotEmpty(config.getConfig())) {
-            String pipelineJars = config.getConfig().get("pipeline.jars");
-            // add custom jar path
-            if (StrUtil.isNotBlank(pipelineJars)) {
-                String[] paths = pipelineJars.split(",");
-                DinkyClassLoaderContextHolder.get().addURL(paths);
-            }
-        }
-    }
 
 }

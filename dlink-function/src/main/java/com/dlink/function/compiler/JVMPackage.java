@@ -21,7 +21,7 @@ package com.dlink.function.compiler;
 
 import com.dlink.function.constant.PathConstant;
 import com.dlink.function.data.model.UDF;
-import com.dlink.function.util.ZipUtils;
+import com.dlink.function.util.ZipWriter;
 
 import org.apache.flink.table.catalog.FunctionLanguage;
 
@@ -70,7 +70,7 @@ public class JVMPackage implements FunctionPackage {
         // 编译好的文件打包jar
         File file = FileUtil.file(jarPath);
         FileUtil.del(file);
-        try (ZipUtils zipWriter = new ZipUtils(file, Charset.defaultCharset())) {
+        try (ZipWriter zipWriter = new ZipWriter(file, Charset.defaultCharset())) {
             zipWriter.add(clazzs, fileInputStreams);
         }
         return new String[]{jarPath};

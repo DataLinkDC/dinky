@@ -22,7 +22,6 @@ package com.dlink.job;
 import com.dlink.assertion.Asserts;
 import com.dlink.constant.NetConstant;
 import com.dlink.executor.ExecutorSetting;
-import com.dlink.function.data.model.UDF;
 import com.dlink.gateway.GatewayType;
 import com.dlink.gateway.config.AppConfig;
 import com.dlink.gateway.config.ClusterConfig;
@@ -69,7 +68,6 @@ public class JobConfig {
     private boolean isJarTask = false;
     private String address;
     private Integer taskId;
-    private List<UDF> udfList;
     private String[] jarFiles;
     private String[] pyFiles;
     private String jobName;
