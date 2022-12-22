@@ -96,9 +96,6 @@ const FlinkSqlEditor = (props:any) => {
   const onChangeHandle = (val: string, event: any) => {
     setCode(val);
     onChange(val,event);
-    /*let newSqlMetaData = parseSqlMetaData(val);
-    setMetaData(newSqlMetaData);
-    props.saveSqlMetaData(newSqlMetaData,tabsKey);*/
     props.saveSql(val);
   };
 
@@ -112,8 +109,6 @@ const FlinkSqlEditor = (props:any) => {
           suggestions:buildSuggestions(),
         };
       },
-      // quickSuggestions: false,
-      // triggerCharacters: ['$', '.', '='],
     });
   };
 
