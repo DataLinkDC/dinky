@@ -112,8 +112,6 @@ const FlinkSqlEditor = (props:any) => {
           suggestions:buildSuggestions(),
         };
       },
-      // quickSuggestions: false,
-      // triggerCharacters: ['$', '.', '='],
     });
   };
 
