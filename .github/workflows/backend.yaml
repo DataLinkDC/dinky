@@ -109,6 +109,7 @@ jobs:
           ./mvnw -B clean install \
                  -Dmaven.test.skip=true \
                  -Dcheckstyle.skip=true \
+                 -Dspotless.check.skip=true \
                  -P prod,scala-2.12,flink-${{ matrix.flink }},maven-central \
                  --no-snapshot-updates
 
