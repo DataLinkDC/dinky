@@ -1002,7 +1002,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 && !status.equals(jobInfoDetail.getInstance().getStatus())) {
             jobStatusChanged = true;
             jobInfoDetail.getInstance().setFinishTime(LocalDateTime.now());
-            // handleJobDone(jobInfoDetail.getInstance());
         }
         if (isCoercive) {
             DaemonFactory.addTask(DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInfoDetail.getInstance().getId()));
