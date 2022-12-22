@@ -38,6 +38,15 @@ jobs:
       MAVEN_OPTS: -Xmx2G -Xms2G
     steps:
       - uses: actions/checkout@v3
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            frontend:
+              - 'dlink-web/**'
+      - name: not changed exit
+        if:  steps.filter.outputs.frontend != 'true'
+        run: exit_with_success
       - uses: actions/setup-node@v3
         with:
           node-version: 16
