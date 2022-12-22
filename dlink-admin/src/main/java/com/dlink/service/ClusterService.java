@@ -54,4 +54,6 @@ public interface ClusterService extends ISuperService<Cluster> {
     boolean enableCluster(Cluster cluster);
 
     int clearCluster();
+
+    void killCluster(Integer id);
 }

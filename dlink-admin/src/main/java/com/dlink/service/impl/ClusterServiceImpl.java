@@ -20,18 +20,26 @@
 package com.dlink.service.impl;
 
 import com.dlink.assertion.Assert;
+import com.dlink.assertion.Asserts;
 import com.dlink.cluster.FlinkCluster;
 import com.dlink.cluster.FlinkClusterInfo;
 import com.dlink.constant.FlinkConstant;
 import com.dlink.db.service.impl.SuperServiceImpl;
+import com.dlink.gateway.GatewayType;
+import com.dlink.gateway.config.GatewayConfig;
+import com.dlink.gateway.exception.GatewayException;
+import com.dlink.job.JobManager;
 import com.dlink.mapper.ClusterMapper;
 import com.dlink.model.Cluster;
+import com.dlink.model.ClusterConfiguration;
+import com.dlink.service.ClusterConfigurationService;
 import com.dlink.service.ClusterService;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -44,6 +52,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
  **/
 @Service
 public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster> implements ClusterService {
+
+    @Autowired
+    private ClusterConfigurationService clusterConfigurationService;
 
     @Override
     public FlinkClusterInfo checkHeartBeat(String hosts, String host) {
@@ -133,6 +144,25 @@ public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
             }
         }
         return count;
+    }
+
+    @Override
+    public void killCluster(Integer id) {
+        Cluster cluster = getById(id);
+        if (Asserts.isNull(cluster)) {
+            throw new GatewayException("The cluster does not exist.");
+        } else if (!checkHealth(cluster)) {
+            throw new GatewayException("The cluster has been killed.");
+        }
+        Integer clusterConfigurationId = cluster.getClusterConfigurationId();
+        ClusterConfiguration clusterConfiguration = clusterConfigurationService
+                .getClusterConfigById(clusterConfigurationId);
+        if (Asserts.isNull(clusterConfiguration)) {
+            throw new GatewayException("The cluster configuration does not exist.");
+        }
+        GatewayConfig gatewayConfig = GatewayConfig.build(clusterConfiguration.getConfig());
+        gatewayConfig.setType(GatewayType.get(cluster.getType()));
+        JobManager.killCluster(gatewayConfig, cluster.getName());
     }
 
     private boolean checkHealth(Cluster cluster) {

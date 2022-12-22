@@ -203,7 +203,10 @@ public class FlinkAPI {
 
     public String getVersion() {
         JsonNode result = get(FlinkRestAPIConstant.FLINK_CONFIG);
-        return result.get("flink-version").asText();
+        if (Asserts.isNotNull(result) && Asserts.isNotNull(result.get("flink-version"))) {
+            return result.get("flink-version").asText();
+        }
+        return null;
     }
 
     public JsonNode getOverview() {
