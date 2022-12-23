@@ -127,7 +127,7 @@ public abstract class YarnGateway extends AbstractGateway {
             }
         }
         if (getType().isApplicationMode()) {
-            configuration.set(YarnConfigOptions.APPLICATION_TYPE,"Dinky Flink");
+            configuration.set(YarnConfigOptions.APPLICATION_TYPE, "Dinky Flink");
             String uuid = UUID.randomUUID().toString().replace("-", "");
             if (configuration.contains(CheckpointingOptions.CHECKPOINTS_DIRECTORY)) {
                 configuration.set(CheckpointingOptions.CHECKPOINTS_DIRECTORY,
@@ -255,7 +255,7 @@ public abstract class YarnGateway extends AbstractGateway {
     }
 
     private void runSavePointJob(List<JobInfo> jobInfos, ClusterClient<ApplicationId> clusterClient,
-                                 String savePoint) throws Exception {
+            String savePoint) throws Exception {
         for (JobInfo jobInfo : jobInfos) {
             if (ActionType.CANCEL == config.getFlinkConfig().getAction()) {
                 clusterClient.cancel(JobID.fromHexString(jobInfo.getJobId()));
@@ -363,5 +363,19 @@ public abstract class YarnGateway extends AbstractGateway {
             e.printStackTrace();
         }
         return JobStatus.UNKNOWN;
+    }
+
+    @Override
+    public void killCluster() {
+        if (Asserts.isNull(yarnClient)) {
+            init();
+        }
+        try {
+            yarnClient.killApplication(getApplicationId());
+        } catch (YarnException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

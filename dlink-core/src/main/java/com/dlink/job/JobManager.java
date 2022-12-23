@@ -691,6 +691,11 @@ public class JobManager {
         }
     }
 
+    public static void killCluster(GatewayConfig gatewayConfig, String appId) {
+        gatewayConfig.getClusterConfig().setAppId(appId);
+        Gateway.build(gatewayConfig).killCluster();
+    }
+
     public JobResult executeJar() {
         ProcessEntity process = ProcessContextHolder.getProcess();
         Job job = Job.init(runMode, config, executorSetting, executor, null, useGateway);

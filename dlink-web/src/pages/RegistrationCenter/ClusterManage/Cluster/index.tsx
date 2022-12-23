@@ -71,6 +71,17 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
           actionRef.current?.reloadAndRest?.();
         }
       });
+    } else if (key === 'stop') {
+      Modal.confirm({
+        title: l('pages.rc.cluster.stop'),
+        content: l('pages.rc.cluster.stopConfirm'),
+        okText: l('button.confirm'),
+        cancelText: l('button.cancel'),
+        onOk: async () => {
+          await handleRemove(url + '/killMulCluster', [currentItem]);
+          actionRef.current?.reloadAndRest?.();
+        }
+      });
     }
   };
 
@@ -100,6 +111,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
     <Dropdown
       overlay={
         <Menu onClick={({key}) => editAndDelete(key, item)}>
+          {item.autoRegisters == 1 ? (<Menu.Item key="stop">{l('button.stop')}</Menu.Item>) : undefined}
           <Menu.Item key="edit">{l('button.edit')}</Menu.Item>
           <Menu.Item key="delete">{l('button.delete')}</Menu.Item>
         </Menu>
