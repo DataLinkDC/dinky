@@ -42,42 +42,10 @@ const StudioSavePoint = (props: any) => {
   }
 
   const columns: ProColumns<SavePointTableListItem>[] = [
+
     {
-      title: '名称',
-      dataIndex: 'name',
-      sorter: true,
-      hideInTable: true,
-      hideInForm: true,
-      hideInSearch: true,
-      /*render: (dom, entity) => {
-        return <a onClick={() => setRow(entity)}>{dom}</a>;
-      },*/
-    },
-    {
-      title: 'id',
-      dataIndex: 'id',
-      hideInTable: true,
-      hideInForm: true,
-      hideInSearch: true,
-    },
-    {
-      title: '作业ID',
-      dataIndex: 'taskId',
-      hideInTable: true,
-      hideInForm: true,
-      hideInSearch: true,
-    },
-    {
-      title: '类型',
-      dataIndex: 'type',
-      hideInTable: true,
-      hideInForm: true,
-      hideInSearch: true,
-    },
-    {
-      title: '路径',
+      title: l('pages.task.savePointPath'),
       dataIndex: 'path',
-      hideInTable: true,
       hideInForm: true,
       hideInSearch: true,
     },
@@ -99,7 +67,7 @@ const StudioSavePoint = (props: any) => {
       <Row>
         <Col span={24}>
           <div style={{float: "right"}}>
-            <Tooltip title="最小化">
+            <Tooltip title={l('component.minimize')}>
               <Button
                 type="text"
                 icon={<MinusSquareOutlined/>}

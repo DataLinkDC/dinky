@@ -56,7 +56,7 @@ const StudioConfig = (props: any) => {
       <Row>
         <Col span={24}>
           <div style={{float: "right"}}>
-            <Tooltip title="最小化">
+            <Tooltip title={l('component.minimize')}>
               <Button
                 type="text"
                 icon={<MinusSquareOutlined/>}
@@ -75,8 +75,8 @@ const StudioConfig = (props: any) => {
           <Row>
             <Col span={12}>
               <Form.Item
-                label="预览结果" className={styles.form_item} name="useResult" valuePropName="checked"
-                tooltip={{title: '开启预览结果，将同步运行并返回数据结果', icon: <InfoCircleOutlined/>}}
+                label={l('pages.datastudio.label.execConfig.preview.result')} className={styles.form_item} name="useResult" valuePropName="checked"
+                tooltip={{title: l('pages.datastudio.label.execConfig.preview.result.tip'), icon: <InfoCircleOutlined/>}}
               >
                 <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                 />
@@ -84,9 +84,9 @@ const StudioConfig = (props: any) => {
             </Col>
             <Col span={12}>
               <Form.Item
-                label="打印流" className={styles.form_item} name="useChangeLog" valuePropName="checked"
+                label={l('pages.datastudio.label.execConfig.changelog')} className={styles.form_item} name="useChangeLog" valuePropName="checked"
                 tooltip={{
-                  title: '开启打印流，将同步运行并返回含有 op 信息的 ChangeLog，默认不开启且返回最终结果 Table',
+                  title: l('pages.datastudio.label.execConfig.changelog.tip'),
                   icon: <InfoCircleOutlined/>
                 }}
               >
@@ -98,16 +98,16 @@ const StudioConfig = (props: any) => {
           <Row>
             <Col span={12}>
               <Form.Item
-                label="最大行数" className={styles.form_item} name="maxRowNum"
-                tooltip='预览数据的最大行数'
+                label={l('pages.datastudio.label.execConfig.maxrow')} className={styles.form_item} name="maxRowNum"
+                tooltip={l('pages.datastudio.label.execConfig.maxrow.tip')}
               >
                 <InputNumber min={1} max={9999} defaultValue={100}/>
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
-                label="自动停止" className={styles.form_item} name="useAutoCancel" valuePropName="checked"
-                tooltip={{title: '开启自动停止，将在捕获最大行数记录后自动停止任务', icon: <InfoCircleOutlined/>}}
+                label={l('pages.datastudio.label.execConfig.autostop')} className={styles.form_item} name="useAutoCancel" valuePropName="checked"
+                tooltip={{title: l('pages.datastudio.label.execConfig.autostop.tip'), icon: <InfoCircleOutlined/>}}
               >
                 <Switch checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
                 />

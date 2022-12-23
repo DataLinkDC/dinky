@@ -42,8 +42,6 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <!--            <scope>provided</scope>-->
-            <version>8.0.21</version>
         </dependency>
         <dependency>
             <groupId>com.dlink</groupId>

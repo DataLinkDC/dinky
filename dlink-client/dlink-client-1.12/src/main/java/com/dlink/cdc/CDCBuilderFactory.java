@@ -24,6 +24,10 @@ import com.dlink.cdc.mysql.MysqlCDCBuilder;
 import com.dlink.exception.FlinkClientException;
 import com.dlink.model.FlinkCDCConfig;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
+
 /**
  * CDCBuilderFactory
  *
@@ -32,19 +36,18 @@ import com.dlink.model.FlinkCDCConfig;
  **/
 public class CDCBuilderFactory {
 
-    private static CDCBuilder[] cdcBuilders = {
-        new MysqlCDCBuilder()
+    private static final Map<String, Supplier<CDCBuilder>> CDC_BUILDER_MAP = new HashMap<String, Supplier<CDCBuilder>>() {
+        {
+            put(MysqlCDCBuilder.KEY_WORD, () -> new MysqlCDCBuilder());
+        }
     };
 
     public static CDCBuilder buildCDCBuilder(FlinkCDCConfig config) {
         if (Asserts.isNull(config) || Asserts.isNullString(config.getType())) {
             throw new FlinkClientException("请指定 CDC Source 类型。");
         }
-        for (int i = 0; i < cdcBuilders.length; i++) {
-            if (config.getType().equals(cdcBuilders[i].getHandle())) {
-                return cdcBuilders[i].create(config);
-            }
-        }
-        throw new FlinkClientException("未匹配到对应 CDC Source 类型的【" + config.getType() + "】。");
+        return CDC_BUILDER_MAP.getOrDefault(config.getType(), () -> {
+            throw new FlinkClientException("未匹配到对应 CDC Source 类型的【" + config.getType() + "】。");
+        }).get().create(config);
     }
 }

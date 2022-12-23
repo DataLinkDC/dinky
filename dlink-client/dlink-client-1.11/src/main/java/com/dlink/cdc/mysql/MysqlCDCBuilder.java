@@ -44,7 +44,7 @@ import com.alibaba.ververica.cdc.connectors.mysql.MySQLSource;
  **/
 public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
 
-    private static final String KEY_WORD = "mysql-cdc";
+    public static final String KEY_WORD = "mysql-cdc";
     private static final String METADATA_TYPE = "MySql";
 
     public MysqlCDCBuilder() {

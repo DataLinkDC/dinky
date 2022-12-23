@@ -47,7 +47,7 @@ import java.util.Properties;
  **/
 public class DorisSinkBuilder extends AbstractSinkBuilder implements Serializable {
 
-    private static final String KEY_WORD = "datastream-doris";
+    public static final String KEY_WORD = "datastream-doris";
     private static final long serialVersionUID = 8330362249137471854L;
 
     public DorisSinkBuilder() {
@@ -69,11 +69,11 @@ public class DorisSinkBuilder extends AbstractSinkBuilder implements Serializabl
 
     @Override
     public void addSink(
-                        StreamExecutionEnvironment env,
-                        DataStream<RowData> rowDataDataStream,
-                        Table table,
-                        List<String> columnNameList,
-                        List<LogicalType> columnTypeList) {
+            StreamExecutionEnvironment env,
+            DataStream<RowData> rowDataDataStream,
+            Table table,
+            List<String> columnNameList,
+            List<LogicalType> columnTypeList) {
 
         DorisExecutionOptions.Builder dorisExecutionOptionsBuilder = DorisExecutionOptions.builder();
         Map<String, String> sink = config.getSink();

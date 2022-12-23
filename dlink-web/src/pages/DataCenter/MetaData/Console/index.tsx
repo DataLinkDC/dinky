@@ -188,7 +188,7 @@ const Console = (props: any) => {
           temp.rowData.push(row)
         }
 
-        temp.msg = `Execution Time: ${data.time / 1000} s , Row count: ${data.total}`
+        temp.msg = l('pages.metadata.exec.result.msg','',{time: data.time / 1000,rowCount: data.total})
         if (data.total >= 500) {
           temp.msg = `${temp.msg} , row count more than 500, only show top 500`
         }

@@ -58,7 +58,7 @@ const StudioEnvSetting = (props: any) => {
       <Row>
         <Col span={24}>
           <div style={{float: "right"}}>
-            <Tooltip title="最小化">
+            <Tooltip title={l('component.minimize')}>
               <Button
                 type="text"
                 icon={<MinusSquareOutlined/>}
@@ -77,9 +77,9 @@ const StudioEnvSetting = (props: any) => {
           <Row>
             <Col span={12}>
               <Form.Item
-                label="Fragment" className={styles.form_item} name="fragment" valuePropName="checked"
+                label={l('pages.datastudio.label.jobConfig.fragment')} className={styles.form_item} name="fragment" valuePropName="checked"
                 tooltip={{
-                  title: '【增强特性】 开启FlinkSql片段机制，使用“:=”进行定义（以“;”结束），“${}”进行调用',
+                  title: l('pages.datastudio.label.jobConfig.fragment.tip'),
                   icon: <InfoCircleOutlined/>
                 }}
               >

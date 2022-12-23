@@ -41,6 +41,7 @@ import com.dlink.dto.TaskRollbackVersionDTO;
 import com.dlink.dto.TaskVersionConfigureDTO;
 import com.dlink.exception.BusException;
 import com.dlink.function.compiler.CustomStringJavaCompiler;
+import com.dlink.function.pool.UdfCodePool;
 import com.dlink.function.util.UDFUtil;
 import com.dlink.gateway.Gateway;
 import com.dlink.gateway.GatewayType;
@@ -104,6 +105,7 @@ import com.dlink.service.UDFService;
 import com.dlink.service.UDFTemplateService;
 import com.dlink.utils.DockerClientUtils;
 import com.dlink.utils.JSONUtil;
+import com.dlink.utils.UDFUtils;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -231,8 +233,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         }
         process.info("Initializing Flink job config...");
         JobConfig config = buildJobConfig(task);
-        // init UDF
-        udfService.init(task.getStatement(), config);
 
         if (GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType())) {
             loadDocker(id, config.getClusterConfigurationId(), config.getGatewayConfig());
@@ -449,6 +449,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             } else if (Dialect.SCALA.equalsVal(task.getDialect())) {
                 task.setSavePointPath(UDFUtil.getScalaFullClassName(task.getStatement()));
             }
+            UdfCodePool.addOrUpdate(UDFUtils.taskToUDF(task));
         }
 
         // if modify task else create task
@@ -586,7 +587,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Task task = getOne(
                 new QueryWrapper<Task>().in("dialect", Dialect.JAVA, Dialect.SCALA, Dialect.PYTHON).eq("enabled", 1)
                         .eq("save_point_path", className));
-        Asserts.checkNull(task,StrUtil.format("class: {} ,not exists!",className));
+        Asserts.checkNull(task, StrUtil.format("class: {} ,not exists!", className));
         task.setStatement(statementService.getById(task.getId()).getStatement());
         return task;
     }
@@ -811,9 +812,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Asserts.checkNotNull(cluster, "该集群不存在");
         String jobId = jobInstance.getJid();
         boolean useGateway = false;
-        JobConfig jobConfig = new JobConfig();
+
+        Task task = this.getTaskInfoById(jobInstance.getTaskId());
+        JobConfig jobConfig = task.buildSubmitConfig();
         jobConfig.setType(cluster.getType());
-        Task task = this.getTaskInfoById(cluster.getTaskId());
 
         if (Asserts.isNotNull(cluster.getClusterConfigurationId())) {
             Map<String, Object> gatewayConfig = clusterConfigurationService
@@ -831,11 +833,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         }
         jobConfig.setTaskId(jobInstance.getTaskId());
         jobConfig.setAddress(cluster.getJobManagerHost());
+
         JobManager jobManager = JobManager.build(jobConfig);
         jobManager.setUseGateway(useGateway);
         if ("canceljob".equals(savePointType)) {
             return jobManager.cancel(jobId);
         }
+
         SavePointResult savePointResult = jobManager.savepoint(jobId, savePointType, null);
         if (Asserts.isNotNull(savePointResult.getJobInfos())) {
             for (JobInfo item : savePointResult.getJobInfos()) {
@@ -998,7 +1002,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 && !status.equals(jobInfoDetail.getInstance().getStatus())) {
             jobStatusChanged = true;
             jobInfoDetail.getInstance().setFinishTime(LocalDateTime.now());
-            // handleJobDone(jobInfoDetail.getInstance());
         }
         if (isCoercive) {
             DaemonFactory.addTask(DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInfoDetail.getInstance().getId()));

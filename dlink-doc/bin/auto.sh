@@ -85,6 +85,7 @@ status() {
     echo ""
     echo "Service ${JAR_NAME} is not running!"
     echo ""
+    exit 1
   else
     echo ""
     echo "Service ${JAR_NAME} is running. It's pid=${pid}"

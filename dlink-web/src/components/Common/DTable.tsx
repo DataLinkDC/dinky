@@ -111,7 +111,7 @@ export const getColumnSearchProps = (dIndex) => ({
   filterDropdown: ({setSelectedKeys, selectedKeys, confirm, clearFilters}) => (
     <div style={{padding: 8}}>
       <Input
-        placeholder={`请输入关键字`}
+        placeholder={l('pages.searchTable.keyword')}
         value={selectedKeys[0]}
         onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
         onPressEnter={() => handleSearch(selectedKeys, confirm, dIndex)}

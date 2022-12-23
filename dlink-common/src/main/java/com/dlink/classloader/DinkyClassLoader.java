@@ -19,11 +19,15 @@
 
 package com.dlink.classloader;
 
+import com.dlink.context.JarPathContextHolder;
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLStreamHandlerFactory;
+import java.util.Collection;
+import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,15 +39,27 @@ import lombok.extern.slf4j.Slf4j;
 public class DinkyClassLoader extends URLClassLoader {
 
     public DinkyClassLoader(URL[] urls, ClassLoader parent) {
-        super(new URL[] {}, parent);
+        super(new URL[]{}, parent);
+    }
+
+    public DinkyClassLoader(Collection<File> fileSet, ClassLoader parent) {
+        super(new URL[]{}, parent);
+        URL[] urls = fileSet.stream().map(x -> {
+            try {
+                return x.toURI().toURL();
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
+        }).toArray(URL[]::new);
+        addURL(urls);
     }
 
     public DinkyClassLoader(URL[] urls) {
-        super(new URL[] {});
+        super(new URL[]{});
     }
 
     public DinkyClassLoader(URL[] urls, ClassLoader parent, URLStreamHandlerFactory factory) {
-        super(new URL[] {}, parent, factory);
+        super(new URL[]{}, parent, factory);
     }
 
     public void addURL(URL... urls) {
@@ -52,14 +68,25 @@ public class DinkyClassLoader extends URLClassLoader {
         }
     }
 
-    public void addURL(String... paths) {
+    public void addURL(String[] paths, List<String> notExistsFiles) {
         for (String path : paths) {
             File file = new File(path);
             try {
+                if (!file.exists()) {
+                    if (notExistsFiles != null && !notExistsFiles.isEmpty()) {
+                        notExistsFiles.add(file.getAbsolutePath());
+                    }
+                    return;
+                }
                 super.addURL(file.toURI().toURL());
+                JarPathContextHolder.addOtherPlugins(file);
             } catch (MalformedURLException e) {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public void addURL(String... paths) {
+        this.addURL(paths, null);
     }
 }

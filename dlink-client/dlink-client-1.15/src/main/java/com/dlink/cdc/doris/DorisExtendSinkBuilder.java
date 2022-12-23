@@ -60,7 +60,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DorisExtendSinkBuilder extends DorisSinkBuilder implements Serializable {
 
-    private static final String KEY_WORD = "datastream-doris-ext";
+    public static final String KEY_WORD = "datastream-doris-ext";
     private static final long serialVersionUID = 8430362249137471854L;
 
     protected static final Logger logger = LoggerFactory.getLogger(DorisSinkBuilder.class);
@@ -86,8 +86,8 @@ public class DorisExtendSinkBuilder extends DorisSinkBuilder implements Serializ
     }
 
     protected Object buildRowDataValues(Map value, Map rowData, String columnName, LogicalType columnType,
-                                        Map<String, AdditionalColumnEntry<String, String>> aColumnConfigList,
-                                        ZoneId opTimeZone) {
+            Map<String, AdditionalColumnEntry<String, String>> aColumnConfigList,
+            ZoneId opTimeZone) {
         if (aColumnConfigList != null && aColumnConfigList.size() > 0
                 && aColumnConfigList.containsKey(columnName)) {
             AdditionalColumnEntry<String, String> col = aColumnConfigList.get(columnName);
@@ -127,10 +127,10 @@ public class DorisExtendSinkBuilder extends DorisSinkBuilder implements Serializ
 
     @Override
     protected DataStream<RowData> buildRowData(
-                                               SingleOutputStreamOperator<Map> filterOperator,
-                                               List<String> columnNameList,
-                                               List<LogicalType> columnTypeList,
-                                               String schemaTableName) {
+            SingleOutputStreamOperator<Map> filterOperator,
+            List<String> columnNameList,
+            List<LogicalType> columnTypeList,
+            String schemaTableName) {
         final Map<String, AdditionalColumnEntry<String, String>> aColumnConfigList = this.additionalColumnConfigList;
         final ZoneId opTimeZone = this.getSinkTimeZone();
         logger.info("sinkTimeZone:" + this.getSinkTimeZone().toString());
@@ -303,8 +303,8 @@ public class DorisExtendSinkBuilder extends DorisSinkBuilder implements Serializ
                 return null;
             }
 
-            AdditionalColumnEntry<String, String> item =
-                    AdditionalColumnEntry.of(strs[0].trim().toUpperCase(), strs[1]);
+            AdditionalColumnEntry<String, String> item = AdditionalColumnEntry.of(strs[0].trim().toUpperCase(),
+                    strs[1]);
             cfg.put(kv[0].trim(), item);
         }
         return cfg;

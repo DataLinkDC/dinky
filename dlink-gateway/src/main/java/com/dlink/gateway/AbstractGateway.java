@@ -62,4 +62,9 @@ public abstract class AbstractGateway implements Gateway {
     public JobStatus getJobStatusById(String id) {
         return JobStatus.UNKNOWN;
     }
+
+    @Override
+    public void killCluster() {
+        logger.error("Could not kill the Flink cluster");
+    }
 }

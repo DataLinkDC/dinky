@@ -22,6 +22,7 @@ package com.dlink.controller;
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
 import com.dlink.dto.TaskRollbackVersionDTO;
+import com.dlink.function.pool.UdfCodePool;
 import com.dlink.job.JobResult;
 import com.dlink.model.JobLifeCycle;
 import com.dlink.model.JobStatus;
@@ -29,11 +30,14 @@ import com.dlink.model.Task;
 import com.dlink.model.TaskOperatingSavepointSelect;
 import com.dlink.service.TaskService;
 import com.dlink.utils.TaskOneClickOperatingUtil;
+import com.dlink.utils.UDFUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -60,6 +64,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/task")
 public class TaskController {
+
     @Autowired
     private TaskService taskService;
 
@@ -97,6 +102,8 @@ public class TaskController {
                     error.add(id);
                 }
             }
+            CompletableFuture.runAsync(() -> UdfCodePool.registerPool(
+                    taskService.getAllUDF().stream().map(UDFUtils::taskToUDF).collect(Collectors.toList())));
             if (error.size() == 0 && !isAdmin) {
                 return Result.succeed("删除成功");
             } else {
@@ -228,7 +235,8 @@ public class TaskController {
      * 选择保存点重启任务
      */
     @GetMapping(value = "/selectSavePointRestartTask")
-    public Result selectSavePointRestartTask(@RequestParam Integer id, @RequestParam Boolean isOnLine, @RequestParam String savePointPath) {
+    public Result selectSavePointRestartTask(@RequestParam Integer id, @RequestParam Boolean isOnLine,
+            @RequestParam String savePointPath) {
         if (isOnLine) {
             return taskService.reOnLineTask(id, savePointPath);
         } else {
@@ -249,7 +257,7 @@ public class TaskController {
      */
     @GetMapping(value = "/exportJsonByTaskId")
     public Result exportJsonByTaskId(@RequestParam Integer id) {
-        return Result.succeed(taskService.exportJsonByTaskId(id),"获取成功");
+        return Result.succeed(taskService.exportJsonByTaskId(id), "获取成功");
     }
 
     /**
@@ -257,7 +265,7 @@ public class TaskController {
      */
     @PostMapping(value = "/exportJsonByTaskIds")
     public Result exportJsonByTaskIds(@RequestBody JsonNode para) {
-        return Result.succeed(taskService.exportJsonByTaskIds(para),"获取成功");
+        return Result.succeed(taskService.exportJsonByTaskIds(para), "获取成功");
     }
 
     /**
@@ -285,23 +293,22 @@ public class TaskController {
      * @return
      */
     @GetMapping("/queryOnClickOperatingTask")
-    public Result<List<Task>> queryOnClickOperatingTask(@RequestParam("operating") Integer operating
-            , @RequestParam("catalogueId") Integer catalogueId) {
+    public Result<List<Task>> queryOnClickOperatingTask(@RequestParam("operating") Integer operating,
+            @RequestParam("catalogueId") Integer catalogueId) {
         if (operating == null) {
             return Result.failed("操作不正确");
         }
         switch (operating) {
             case 1:
-                return taskService.queryOnLineTaskByDoneStatus(Arrays.asList(JobLifeCycle.RELEASE)
-                        , JobStatus.getAllDoneStatus(), true, catalogueId);
+                return taskService.queryOnLineTaskByDoneStatus(Arrays.asList(JobLifeCycle.RELEASE),
+                        JobStatus.getAllDoneStatus(), true, catalogueId);
             case 2:
-                return taskService.queryOnLineTaskByDoneStatus(Arrays.asList(JobLifeCycle.ONLINE)
-                        , Collections.singletonList(JobStatus.RUNNING), false, catalogueId);
+                return taskService.queryOnLineTaskByDoneStatus(Arrays.asList(JobLifeCycle.ONLINE),
+                        Collections.singletonList(JobStatus.RUNNING), false, catalogueId);
             default:
                 return Result.failed("操作不正确");
         }
     }
-
 
     /**
      * 一键操作任务
@@ -317,15 +324,15 @@ public class TaskController {
         switch (operating.get("operating").asInt()) {
             case 1:
                 final JsonNode savepointSelect = operating.get("taskOperatingSavepointSelect");
-                return TaskOneClickOperatingUtil.oneClickOnline(TaskOneClickOperatingUtil.parseJsonNode(operating)
-                        , TaskOperatingSavepointSelect.valueByCode(savepointSelect == null ? 0 : savepointSelect.asInt()));
+                return TaskOneClickOperatingUtil.oneClickOnline(TaskOneClickOperatingUtil.parseJsonNode(operating),
+                        TaskOperatingSavepointSelect
+                                .valueByCode(savepointSelect == null ? 0 : savepointSelect.asInt()));
             case 2:
                 return TaskOneClickOperatingUtil.onClickOffline(TaskOneClickOperatingUtil.parseJsonNode(operating));
             default:
                 return Result.failed("操作不正确");
         }
     }
-
 
     /**
      * 查询一键操作任务状态
@@ -338,4 +345,3 @@ public class TaskController {
     }
 
 }
-

@@ -60,7 +60,7 @@ import java.util.UUID;
  **/
 public class DorisSchemaEvolutionSinkBuilder extends AbstractSinkBuilder implements Serializable {
 
-    private static final String KEY_WORD = "datastream-doris-schema-evolution";
+    public static final String KEY_WORD = "datastream-doris-schema-evolution";
 
     public DorisSchemaEvolutionSinkBuilder() {
     }

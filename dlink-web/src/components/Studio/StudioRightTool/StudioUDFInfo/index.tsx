@@ -26,6 +26,7 @@ import styles from "./index.less";
 import {useEffect} from "react";
 import {JarStateType} from "@/pages/RegistrationCenter/Jar/model";
 import {Scrollbars} from "react-custom-scrollbars";
+import {l} from "@/utils/intl";
 
 const StudioUDFInfo = (props: any) => {
 
@@ -40,7 +41,7 @@ const StudioUDFInfo = (props: any) => {
       <Row>
         <Col span={24}>
           <div style={{float: "right"}}>
-            <Tooltip title="最小化">
+            <Tooltip title={l('component.minimize')}>
               <Button
                 type="text"
                 icon={<MinusSquareOutlined/>}
@@ -58,9 +59,9 @@ const StudioUDFInfo = (props: any) => {
           <Row>
             <Col span={24}>
               <Form.Item
-                label="类名" className={styles.form_item} name="savePointPath"
+                label={l('pages.datastudio.label.udfInfo.classname')} className={styles.form_item} name="savePointPath"
               >
-                <Input readOnly={true} placeholder="自动识别"/>
+                <Input readOnly={true} placeholder={l('pages.datastudio.label.udfInfo.auto')}/>
               </Form.Item>
             </Col>
           </Row>

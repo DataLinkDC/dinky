@@ -49,7 +49,7 @@ const StudioTable = (props: any) => {
     return (<>
       {(current.console.result.jobId && (current.console.result.jobId.indexOf('unknown') === -1)) ? (<>
         <Button type="primary" onClick={showDetail} icon={<SearchOutlined/>}>
-          获取最新数据
+          {l('pages.datastudio.label.result.query.latest.data')}
         </Button> &nbsp;
         <Tag color="blue" key={current.console.result.jobId}>
           <FireOutlined/> {current.console.result.jobId}

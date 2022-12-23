@@ -23,7 +23,6 @@ import {Drawer} from "antd";
 import ProDescriptions from '@ant-design/pro-descriptions';
 import {queryData} from "@/components/Common/crud";
 import {FragmentVariableTableListItem} from "@/pages/RegistrationCenter/data";
-import {l} from "@/utils/intl";
 
 const StudioFragment = (props: any) => {
 
@@ -52,83 +51,6 @@ const StudioFragment = (props: any) => {
           ${"{" + entity?.name + "}"}
         </>;
       },
-    },
-    {
-      title: '变量ID',
-      dataIndex: 'id',
-      hideInTable: true,
-      hideInForm: true,
-      hideInSearch: true,
-    },
-    {
-      title: '别名',
-      dataIndex: 'alias',
-      hideInForm: false,
-      hideInSearch: false,
-      hideInTable: true,
-    },
-    {
-      title: '变量值',
-      sorter: true,
-      dataIndex: 'fragmentValue',
-      hideInForm: false,
-      hideInSearch: true,
-      hideInTable: true,
-    },
-    {
-      title: '使用变量值',
-      sorter: true,
-      dataIndex: 'fillValue',
-      hideInForm: false,
-      hideInSearch: true,
-      hideInTable: true,
-    },
-    {
-      title: '描述',
-      sorter: true,
-      dataIndex: 'note',
-      valueType: 'textarea',
-      hideInForm: false,
-      hideInSearch: false,
-      hideInTable: true,
-    },
-    {
-      title: l('global.table.isEnable'),
-      dataIndex: 'enabled',
-      hideInForm: false,
-      hideInSearch: true,
-      hideInTable: true,
-      filters: [
-        {
-          text: l('status.enabled'),
-          value: 1,
-        },
-        {
-          text: l('status.disabled'),
-          value: 0,
-        },
-      ],
-      filterMultiple: false,
-      valueEnum: {
-        true: {text: l('status.enabled'), status: 'Success'},
-        false: {text: l('status.disabled'), status: 'Error'},
-      },
-    },
-    {
-      title: l('global.table.createTime'),
-      dataIndex: 'createTime',
-      sorter: true,
-      valueType: 'dateTime',
-      hideInForm: true,
-      hideInTable: true,
-    },
-    {
-      title: l('global.table.lastUpdateTime'),
-      dataIndex: 'updateTime',
-      sorter: true,
-      valueType: 'dateTime',
-      hideInForm: true,
-      hideInTable: true,
     },
   ];
 

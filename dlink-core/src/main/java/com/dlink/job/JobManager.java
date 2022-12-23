@@ -25,13 +25,15 @@ import static com.dlink.function.util.UDFUtil.YARN;
 
 import com.dlink.api.FlinkAPI;
 import com.dlink.assertion.Asserts;
+import com.dlink.classloader.DinkyClassLoader;
 import com.dlink.constant.FlinkSQLConstant;
+import com.dlink.context.DinkyClassLoaderContextHolder;
+import com.dlink.context.JarPathContextHolder;
 import com.dlink.executor.EnvironmentSetting;
 import com.dlink.executor.Executor;
 import com.dlink.executor.ExecutorSetting;
 import com.dlink.explainer.Explainer;
 import com.dlink.function.constant.PathConstant;
-import com.dlink.function.context.UDFPathContextHolder;
 import com.dlink.function.data.model.Env;
 import com.dlink.function.data.model.UDF;
 import com.dlink.function.util.UDFUtil;
@@ -48,6 +50,7 @@ import com.dlink.interceptor.FlinkInterceptorResult;
 import com.dlink.model.SystemConfiguration;
 import com.dlink.parser.SqlType;
 import com.dlink.process.context.ProcessContextHolder;
+import com.dlink.process.exception.DinkyException;
 import com.dlink.process.model.ProcessEntity;
 import com.dlink.result.ErrorResult;
 import com.dlink.result.ExplainResult;
@@ -63,6 +66,7 @@ import com.dlink.session.SessionPool;
 import com.dlink.trans.Operations;
 import com.dlink.utils.LogUtil;
 import com.dlink.utils.SqlUtil;
+import com.dlink.utils.URLUtils;
 
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.CoreOptions;
@@ -73,12 +77,17 @@ import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
 import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.apache.flink.streaming.api.environment.ExecutionCheckpointingOptions;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.yarn.configuration.YarnConfigOptions;
 
+import java.io.File;
+import java.lang.reflect.Field;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -94,6 +103,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
 
 /**
  * JobManager
@@ -259,49 +271,72 @@ public class JobManager {
         sqlSeparator = SystemConfiguration.getInstances().getSqlSeparator();
 
         initExecutorSetting();
-        initUDF();
+        createExecutorWithSession();
 
         return false;
     }
 
-    private void initUDF() {
+    private void addConfigurationClsAndJars(List<URL> jarList, List<URL> classpaths) throws Exception {
+        Field configuration = StreamExecutionEnvironment.class.getDeclaredField("configuration");
+        configuration.setAccessible(true);
+        Configuration o = (Configuration) configuration.get(executor.getStreamExecutionEnvironment());
+
+        Field confData = Configuration.class.getDeclaredField("confData");
+        confData.setAccessible(true);
+        Map<String, Object> temp = (Map<String, Object>) confData.get(o);
+        temp.put(PipelineOptions.CLASSPATHS.key(), classpaths.stream().map(URL::toString).collect(Collectors.toList()));
+        temp.put(PipelineOptions.JARS.key(), jarList.stream().map(URL::toString).collect(Collectors.toList()));
+    }
+
+    private void initUDF(List<UDF> udfList) {
         ProcessEntity process = ProcessContextHolder.getProcess();
+
         // 这里要分开
         // 1. 得到jar包路径，注入remote环境
-        List<UDF> udfList = config.getUdfList();
-        Set<String> libUDFs = UDFPathContextHolder.get();
-        List<String> libHDFList = new ArrayList<>();
-        if (CollUtil.isNotEmpty(libUDFs)) {
-            libUDFs.forEach(path -> {
-                String destPath = PathConstant.getUdfPackagePath(config.getTaskId()) + "udf-lib-"
-                        + FileUtil.getName(path);
-                FileUtil.copy(path, destPath, true);
-                libHDFList.add(destPath);
-            });
-        } else if (CollUtil.isEmpty(udfList)) {
-            createExecutorWithSession();
-            return;
-        }
+        Set<File> jarFiles = JarPathContextHolder.getUdfFile();
 
-        CollUtil.addAll(libHDFList, UDFUtil.initJavaUDF(udfList, runMode, config.getTaskId()));
+        Set<File> otherPluginsFiles = JarPathContextHolder.getOtherPluginsFiles();
+        jarFiles.addAll(otherPluginsFiles);
 
-        String[] jarPaths = CollUtil.removeEmpty(libHDFList).toArray(new String[]{});
+        List<File> udfJars = Arrays.stream(UDFUtil.initJavaUDF(udfList, runMode, config.getTaskId())).map(File::new)
+                .collect(Collectors.toList());
+        jarFiles.addAll(udfJars);
+
+        String[] jarPaths = CollUtil.removeNull(jarFiles).stream().map(File::getAbsolutePath).toArray(String[]::new);
 
         if (GATEWAY_TYPE_MAP.get(SESSION).contains(runMode)) {
             config.setJarFiles(jarPaths);
         }
-        // 2.实例化remote环境
-        createExecutorWithSession();
-        // 3.编译python
+        try {
+            List<URL> jarList = CollUtil.newArrayList(URLUtils.getURLs(jarFiles));
+            writeManifest(config.getTaskId(), jarList);
+
+            addConfigurationClsAndJars(jarList,
+                    CollUtil.newArrayList(URLUtils.getURLs(otherPluginsFiles)));
+        } catch (Exception e) {
+            logger.error("add configuration failed;reason:{}", LogUtil.getError(e));
+            throw new RuntimeException(e);
+        }
+
+        // 2.编译python
         String[] pyPaths = UDFUtil.initPythonUDF(udfList, runMode, config.getTaskId(),
                 executor.getTableConfig().getConfiguration());
 
         executor.initUDF(jarPaths);
+
         executor.initPyUDF(Env.getPath(), pyPaths);
         if (GATEWAY_TYPE_MAP.get(YARN).contains(runMode)) {
             config.getGatewayConfig().setJarPaths(ArrayUtil.append(jarPaths, pyPaths));
         }
         process.info("Initializing Flink UDF...Finish");
+    }
+
+    private void writeManifest(Integer taskId, List<URL> jarPaths) {
+        JSONArray array = new JSONArray(jarPaths.stream().map(URL::getFile).collect(Collectors.toList()));
+        JSONObject object = new JSONObject();
+        object.set("jars", array);
+        FileUtil.writeUtf8String(object.toStringPretty(),
+                PathConstant.getUdfPackagePath(taskId) + PathConstant.DEP_MANIFEST);
     }
 
     private boolean ready() {
@@ -321,7 +356,42 @@ public class JobManager {
         return false;
     }
 
+    private void initClassLoader(JobConfig config) {
+        if (CollUtil.isNotEmpty(config.getConfig())) {
+            String pipelineJars = config.getConfig().get(PipelineOptions.JARS.key());
+            String classpaths = config.getConfig().get(PipelineOptions.CLASSPATHS.key());
+            // add custom jar path
+            if (StrUtil.isNotBlank(pipelineJars)) {
+                String[] paths = pipelineJars.split(",");
+                for (String path : paths) {
+                    File file = FileUtil.file(path);
+                    if (!file.exists()) {
+                        throw new DinkyException("file: " + path + " .not exists! ");
+                    }
+                    JarPathContextHolder.addUdfPath(file);
+                }
+            }
+            // add custom classpath
+            if (StrUtil.isNotBlank(classpaths)) {
+                String[] paths = pipelineJars.split(",");
+                for (String path : paths) {
+                    File file = FileUtil.file(path);
+                    if (!file.exists()) {
+                        throw new DinkyException("file: " + path + " .not exists! ");
+                    }
+                    JarPathContextHolder.addOtherPlugins(file);
+                }
+            }
+        }
+
+        DinkyClassLoader classLoader = new DinkyClassLoader(
+                CollUtil.addAll(JarPathContextHolder.getUdfFile(), JarPathContextHolder.getOtherPluginsFiles()),
+                Thread.currentThread().getContextClassLoader());
+        DinkyClassLoaderContextHolder.set(classLoader);
+    }
+
     public JobResult executeSql(String statement) {
+        initClassLoader(config);
         ProcessEntity process = ProcessContextHolder.getProcess();
         Job job = Job.init(runMode, config, executorSetting, executor, statement, useGateway);
         if (!useGateway) {
@@ -333,6 +403,8 @@ public class JobManager {
         JobParam jobParam = Explainer.build(executor, useStatementSet, sqlSeparator)
                 .pretreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
         try {
+            initUDF(jobParam.getUdfList());
+
             for (StatementParam item : jobParam.getDdl()) {
                 currentSql = item.getValue();
                 executor.executeSql(item.getValue());
@@ -615,8 +687,13 @@ public class JobManager {
                     savePointType, null));
             return Gateway.build(config.getGatewayConfig()).savepointJob(savePoint);
         } else {
-            return FlinkAPI.build(config.getAddress()).savepoints(jobId, savePointType);
+            return FlinkAPI.build(config.getAddress()).savepoints(jobId, savePointType, config.getConfig());
         }
+    }
+
+    public static void killCluster(GatewayConfig gatewayConfig, String appId) {
+        gatewayConfig.getClusterConfig().setAppId(appId);
+        Gateway.build(gatewayConfig).killCluster();
     }
 
     public JobResult executeJar() {

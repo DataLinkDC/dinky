@@ -21,6 +21,8 @@ package com.dlink.explainer;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.constant.FlinkSQLConstant;
+import com.dlink.context.DinkyClassLoaderContextHolder;
+import com.dlink.context.JarPathContextHolder;
 import com.dlink.executor.Executor;
 import com.dlink.explainer.ca.ColumnCA;
 import com.dlink.explainer.ca.ColumnCAResult;
@@ -32,12 +34,15 @@ import com.dlink.explainer.lineage.LineageColumnGenerator;
 import com.dlink.explainer.lineage.LineageTableGenerator;
 import com.dlink.explainer.trans.Trans;
 import com.dlink.explainer.trans.TransGenerator;
+import com.dlink.function.data.model.UDF;
+import com.dlink.function.util.UDFUtil;
 import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.job.JobParam;
 import com.dlink.job.StatementParam;
 import com.dlink.model.LineageRel;
 import com.dlink.model.SystemConfiguration;
 import com.dlink.parser.SqlType;
+import com.dlink.parser.check.AddJarSqlParser;
 import com.dlink.process.context.ProcessContextHolder;
 import com.dlink.process.model.ProcessEntity;
 import com.dlink.result.ExplainResult;
@@ -46,6 +51,7 @@ import com.dlink.trans.Operations;
 import com.dlink.utils.FlinkUtil;
 import com.dlink.utils.LogUtil;
 import com.dlink.utils.SqlUtil;
+import com.dlink.utils.URLUtils;
 
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import org.apache.flink.table.catalog.CatalogManager;
@@ -58,6 +64,7 @@ import java.util.Map;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 
 /**
@@ -108,13 +115,18 @@ public class Explainer {
         List<StatementParam> trans = new ArrayList<>();
         List<StatementParam> execute = new ArrayList<>();
         List<String> statementList = new ArrayList<>();
+        List<UDF> udfList = new ArrayList<>();
         for (String item : statements) {
             String statement = executor.pretreatStatement(item);
             if (statement.isEmpty()) {
                 continue;
             }
             SqlType operationType = Operations.getOperationType(statement);
-            if (operationType.equals(SqlType.INSERT) || operationType.equals(SqlType.SELECT)
+            if (operationType.equals(SqlType.ADD)) {
+                AddJarSqlParser.getAllFilePath(statement).forEach(JarPathContextHolder::addOtherPlugins);
+                DinkyClassLoaderContextHolder.get()
+                        .addURL(URLUtils.getURLs(JarPathContextHolder.getOtherPluginsFiles()));
+            } else if (operationType.equals(SqlType.INSERT) || operationType.equals(SqlType.SELECT)
                     || operationType.equals(SqlType.SHOW)
                     || operationType.equals(SqlType.DESCRIBE) || operationType.equals(SqlType.DESC)) {
                 trans.add(new StatementParam(statement, operationType));
@@ -125,11 +137,12 @@ public class Explainer {
             } else if (operationType.equals(SqlType.EXECUTE)) {
                 execute.add(new StatementParam(statement, operationType));
             } else {
+                udfList.add(UDFUtil.toUDF(statement));
                 ddl.add(new StatementParam(statement, operationType));
                 statementList.add(statement);
             }
         }
-        return new JobParam(statementList, ddl, trans, execute);
+        return new JobParam(statementList, ddl, trans, execute, CollUtil.removeNull(udfList));
     }
 
     public List<SqlExplainResult> explainSqlResult(String statement) {
@@ -536,7 +549,7 @@ public class Explainer {
                 SqlType operationType = Operations.getOperationType(sql);
                 if (operationType.equals(SqlType.INSERT)) {
                     lineageRelList.addAll(executor.getLineage(sql));
-                } else {
+                } else if (!operationType.equals(SqlType.SELECT)) {
                     executor.executeSql(sql);
                 }
             } catch (Exception e) {

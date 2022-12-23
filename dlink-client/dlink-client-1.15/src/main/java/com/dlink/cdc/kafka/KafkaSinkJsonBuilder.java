@@ -1,3 +1,22 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 package com.dlink.cdc.kafka;
 
 import com.dlink.assertion.Asserts;
@@ -41,7 +60,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
  */
 public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements Serializable {
 
-    private static final String KEY_WORD = "datastream-kafka-json";
+    public static final String KEY_WORD = "datastream-kafka-json";
     private transient ObjectMapper objectMapper;
 
     public KafkaSinkJsonBuilder() {
@@ -69,6 +88,7 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements Seriali
             DataStreamSource<String> dataStreamSource) {
         try {
             SingleOutputStreamOperator<Map> mapOperator = dataStreamSource.map(new MapFunction<String, Map>() {
+
                 @Override
                 public Map map(String value) throws Exception {
                     ObjectMapper objectMapper = new ObjectMapper();
@@ -83,6 +103,7 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements Seriali
                         final String tableName = table.getName();
                         final String schemaName = table.getSchema();
                         SingleOutputStreamOperator<Map> filterOperator = mapOperator.filter(new FilterFunction<Map>() {
+
                             @Override
                             public boolean filter(Map value) throws Exception {
                                 LinkedHashMap source = (LinkedHashMap) value.get("source");
@@ -97,47 +118,54 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements Seriali
                         List<String> columnNameList = new LinkedList<>();
                         List<LogicalType> columnTypeList = new LinkedList<>();
                         buildColumn(columnNameList, columnTypeList, table.getColumns());
-                        SingleOutputStreamOperator<String> stringOperator = filterOperator.process(new ProcessFunction<Map, String>() {
-                            @Override
-                            public void processElement(Map value, Context context, Collector<String> collector) throws Exception {
-                                Map after = null;
-                                Map before = null;
-                                String tsMs = value.get("ts_ms").toString();
-                                try {
-                                    switch (value.get("op").toString()) {
-                                        case "r":
-                                        case "c":
-                                            after = (Map) value.get("after");
-                                            convertAttr(columnNameList, columnTypeList, after, value.get("op").toString(), 0, schemaName, tableName, tsMs);
-                                            break;
-                                        case "u":
-                                            before = (Map) value.get("before");
-                                            convertAttr(columnNameList, columnTypeList, before, value.get("op").toString(), 1, schemaName, tableName, tsMs);
+                        SingleOutputStreamOperator<String> stringOperator = filterOperator
+                                .process(new ProcessFunction<Map, String>() {
 
-                                            after = (Map) value.get("after");
-                                            convertAttr(columnNameList, columnTypeList, after,value.get("op").toString(), 0, schemaName, tableName, tsMs);
-                                            break;
-                                        case "d":
-                                            before = (Map) value.get("before");
-                                            convertAttr(columnNameList, columnTypeList, before, value.get("op").toString(), 1, schemaName, tableName, tsMs);
-                                            break;
-                                        default:
+                                    @Override
+                                    public void processElement(Map value, Context context, Collector<String> collector)
+                                            throws Exception {
+                                        Map after = null;
+                                        Map before = null;
+                                        String tsMs = value.get("ts_ms").toString();
+                                        try {
+                                            switch (value.get("op").toString()) {
+                                                case "r":
+                                                case "c":
+                                                    after = (Map) value.get("after");
+                                                    convertAttr(columnNameList, columnTypeList, after,
+                                                            value.get("op").toString(), 0, schemaName, tableName, tsMs);
+                                                    break;
+                                                case "u":
+                                                    before = (Map) value.get("before");
+                                                    convertAttr(columnNameList, columnTypeList, before,
+                                                            value.get("op").toString(), 1, schemaName, tableName, tsMs);
+
+                                                    after = (Map) value.get("after");
+                                                    convertAttr(columnNameList, columnTypeList, after,
+                                                            value.get("op").toString(), 0, schemaName, tableName, tsMs);
+                                                    break;
+                                                case "d":
+                                                    before = (Map) value.get("before");
+                                                    convertAttr(columnNameList, columnTypeList, before,
+                                                            value.get("op").toString(), 1, schemaName, tableName, tsMs);
+                                                    break;
+                                                default:
+                                            }
+                                        } catch (Exception e) {
+                                            logger.error("SchameTable: {} - Exception:", e);
+                                            throw e;
+                                        }
+                                        if (objectMapper == null) {
+                                            initializeObjectMapper();
+                                        }
+                                        if (before != null) {
+                                            collector.collect(objectMapper.writeValueAsString(before));
+                                        }
+                                        if (after != null) {
+                                            collector.collect(objectMapper.writeValueAsString(after));
+                                        }
                                     }
-                                } catch (Exception e) {
-                                    logger.error("SchameTable: {} - Exception:", e);
-                                    throw e;
-                                }
-                                if (objectMapper == null) {
-                                    initializeObjectMapper();
-                                }
-                                if (before != null) {
-                                    collector.collect(objectMapper.writeValueAsString(before));
-                                }
-                                if (after != null) {
-                                    collector.collect(objectMapper.writeValueAsString(after));
-                                }
-                            }
-                        });
+                                });
                         stringOperator.addSink(new FlinkKafkaProducer<String>(config.getSink().get("brokers"),
                                 topic,
                                 new SimpleStringSchema()));
@@ -145,7 +173,7 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements Seriali
                 }
             }
         } catch (Exception ex) {
-            logger.error("kafka sink error:",ex);
+            logger.error("kafka sink error:", ex);
         }
         return dataStreamSource;
     }
@@ -154,7 +182,8 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements Seriali
         this.objectMapper = new ObjectMapper();
         JavaTimeModule javaTimeModule = new JavaTimeModule();
         // Hack time module to allow 'Z' at the end of string (i.e. javascript json's)
-        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ISO_DATE_TIME));
+        javaTimeModule.addDeserializer(LocalDateTime.class,
+                new LocalDateTimeDeserializer(DateTimeFormatter.ISO_DATE_TIME));
         objectMapper.registerModule(javaTimeModule);
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     }
@@ -170,11 +199,12 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements Seriali
 
     @Override
     protected Object convertValue(Object value, LogicalType logicalType) {
-        return ObjectConvertUtil.convertValue(value,logicalType);
+        return ObjectConvertUtil.convertValue(value, logicalType);
     }
 
-    private void convertAttr(List<String> columnNameList, List<LogicalType> columnTypeList, Map value, String op, int isDeleted,
-                             String schemaName, String tableName, String tsMs) {
+    private void convertAttr(List<String> columnNameList, List<LogicalType> columnTypeList, Map value, String op,
+            int isDeleted,
+            String schemaName, String tableName, String tsMs) {
         for (int i = 0; i < columnNameList.size(); i++) {
             String columnName = columnNameList.get(i);
             Object columnNameValue = value.remove(columnName);

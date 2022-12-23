@@ -87,10 +87,12 @@ public abstract class KubernetesGateway extends AbstractGateway {
         if (getType().isApplicationMode()) {
             String uuid = UUID.randomUUID().toString().replace("-", "");
             if (configuration.contains(CheckpointingOptions.CHECKPOINTS_DIRECTORY)) {
-                configuration.set(CheckpointingOptions.CHECKPOINTS_DIRECTORY, configuration.getString(CheckpointingOptions.CHECKPOINTS_DIRECTORY) + "/" + uuid);
+                configuration.set(CheckpointingOptions.CHECKPOINTS_DIRECTORY,
+                        configuration.getString(CheckpointingOptions.CHECKPOINTS_DIRECTORY) + "/" + uuid);
             }
             if (configuration.contains(CheckpointingOptions.SAVEPOINT_DIRECTORY)) {
-                configuration.set(CheckpointingOptions.SAVEPOINT_DIRECTORY, configuration.getString(CheckpointingOptions.SAVEPOINT_DIRECTORY) + "/" + uuid);
+                configuration.set(CheckpointingOptions.SAVEPOINT_DIRECTORY,
+                        configuration.getString(CheckpointingOptions.SAVEPOINT_DIRECTORY) + "/" + uuid);
             }
         }
     }
@@ -122,11 +124,12 @@ public abstract class KubernetesGateway extends AbstractGateway {
         KubernetesClusterClientFactory clusterClientFactory = new KubernetesClusterClientFactory();
         String clusterId = clusterClientFactory.getClusterId(configuration);
         if (Asserts.isNull(clusterId)) {
-            throw new GatewayException("No cluster id was specified. Please specify a cluster to which you would like to connect.");
+            throw new GatewayException(
+                    "No cluster id was specified. Please specify a cluster to which you would like to connect.");
         }
         KubernetesClusterDescriptor clusterDescriptor = clusterClientFactory.createClusterDescriptor(configuration);
         try (ClusterClient<String> clusterClient = clusterDescriptor.retrieve(
-            clusterId).getClusterClient()) {
+                clusterId).getClusterClient()) {
             List<JobInfo> jobInfos = new ArrayList<>();
             CompletableFuture<Collection<JobStatusMessage>> listJobsFuture = clusterClient.listJobs();
             for (JobStatusMessage jobStatusMessage : listJobsFuture.get()) {
@@ -151,14 +154,16 @@ public abstract class KubernetesGateway extends AbstractGateway {
             init();
         }
         if (Asserts.isNull(config.getFlinkConfig().getJobId())) {
-            throw new GatewayException("No job id was specified. Please specify a job to which you would like to savepont.");
+            throw new GatewayException(
+                    "No job id was specified. Please specify a job to which you would like to savepont.");
         }
         SavePointResult result = SavePointResult.build(getType());
         configuration.set(KubernetesConfigOptions.CLUSTER_ID, config.getClusterConfig().getAppId());
         KubernetesClusterClientFactory clusterClientFactory = new KubernetesClusterClientFactory();
         String clusterId = clusterClientFactory.getClusterId(configuration);
         if (Asserts.isNull(clusterId)) {
-            throw new GatewayException("No cluster id was specified. Please specify a cluster to which you would like to connect.");
+            throw new GatewayException(
+                    "No cluster id was specified. Please specify a cluster to which you would like to connect.");
         }
         KubernetesClusterDescriptor clusterDescriptor = clusterClientFactory.createClusterDescriptor(configuration);
         try (ClusterClient<String> clusterClient = clusterDescriptor.retrieve(clusterId).getClusterClient()) {
@@ -172,7 +177,8 @@ public abstract class KubernetesGateway extends AbstractGateway {
         return result;
     }
 
-    private void runSavePointJob(List<JobInfo> jobInfos, ClusterClient<String> clusterClient, String savePoint) throws Exception {
+    private void runSavePointJob(List<JobInfo> jobInfos, ClusterClient<String> clusterClient, String savePoint)
+            throws Exception {
         for (JobInfo jobInfo : jobInfos) {
             if (ActionType.CANCEL == config.getFlinkConfig().getAction()) {
                 clusterClient.cancel(JobID.fromHexString(jobInfo.getJobId()));
@@ -181,14 +187,14 @@ public abstract class KubernetesGateway extends AbstractGateway {
             }
             switch (config.getFlinkConfig().getSavePointType()) {
                 case TRIGGER:
-                    jobInfo.setSavePoint(FlinkUtil.triggerSavepoint(clusterClient,jobInfo.getJobId(),savePoint));
+                    jobInfo.setSavePoint(FlinkUtil.triggerSavepoint(clusterClient, jobInfo.getJobId(), savePoint));
                     break;
                 case STOP:
-                    jobInfo.setSavePoint(FlinkUtil.stopWithSavepoint(clusterClient,jobInfo.getJobId(),savePoint));
+                    jobInfo.setSavePoint(FlinkUtil.stopWithSavepoint(clusterClient, jobInfo.getJobId(), savePoint));
                     jobInfo.setStatus(JobInfo.JobStatus.STOP);
                     break;
                 case CANCEL:
-                    jobInfo.setSavePoint(FlinkUtil.cancelWithSavepoint(clusterClient,jobInfo.getJobId(),savePoint));
+                    jobInfo.setSavePoint(FlinkUtil.cancelWithSavepoint(clusterClient, jobInfo.getJobId(), savePoint));
                     jobInfo.setStatus(JobInfo.JobStatus.CANCEL);
                     break;
                 default:
@@ -210,6 +216,26 @@ public abstract class KubernetesGateway extends AbstractGateway {
         } catch (Exception e) {
             logger.error("测试 Kubernetes 配置失败：" + e.getMessage());
             return TestResult.fail("测试 Kubernetes 配置失败：" + e.getMessage());
+        }
+    }
+
+    @Override
+    public void killCluster() {
+        if (Asserts.isNull(client)) {
+            init();
+        }
+        configuration.set(KubernetesConfigOptions.CLUSTER_ID, config.getClusterConfig().getAppId());
+        KubernetesClusterClientFactory clusterClientFactory = new KubernetesClusterClientFactory();
+        String clusterId = clusterClientFactory.getClusterId(configuration);
+        if (Asserts.isNull(clusterId)) {
+            throw new GatewayException(
+                    "No cluster id was specified. Please specify a cluster to which you would like to connect.");
+        }
+        KubernetesClusterDescriptor clusterDescriptor = clusterClientFactory.createClusterDescriptor(configuration);
+        try {
+            clusterDescriptor.killCluster(clusterId);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

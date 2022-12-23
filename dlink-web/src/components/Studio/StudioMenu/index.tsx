@@ -119,7 +119,7 @@ const StudioMenu = (props: any) => {
 
   const execute = () => {
     if (!isSql(current.task.dialect) && !isOnline(current.task.type)) {
-      message.warn(`该任务执行模式为【${current.task.type}】，不支持 SQL 查询，请手动保存后使用右侧按钮——作业提交`);
+      message.warn(l('pages.datastudio.editor.execute.warn','',{type: current.task.type}));
       return;
     }
     let selectsql = null;
@@ -142,7 +142,7 @@ const StudioMenu = (props: any) => {
     const key = current.key;
     const taskKey = (Math.random() * 1000) + '';
     notification.success({
-      message: `新任务【${param.jobName}】正在执行`,
+      message: l('pages.datastudio.editor.submiting','',{jobName: param.jobName}),
       description: param.statement.substring(0, 40) + '...',
       duration: null,
       key: taskKey,
@@ -156,9 +156,9 @@ const StudioMenu = (props: any) => {
       notification.close(taskKey);
       if (res.datas.success) {
         res.datas?.jobInstanceId && props.changeTaskJobInstance(current.task.id, res.datas?.jobInstanceId);
-        message.success('执行成功');
+        message.success(l('pages.datastudio.editor.exec.success'));
       } else {
-        message.error('执行失败');
+        message.error(l('pages.datastudio.editor.exec.error'));
       }
       let newTabs = tabs;
       for (const element of newTabs.panes) {
@@ -173,14 +173,10 @@ const StudioMenu = (props: any) => {
   };
 
   const submit = () => {
-    if (!current.task.id) {
-      message.error(`草稿【${current.title}】无法被提交，请创建或选择有效作业进行提交`);
-      return;
-    }
     const taskKey = (Math.random() * 1000) + '';
     Modal.confirm({
-      title: '异步提交作业',
-      content: `确定异步提交作业【${current.task.alias}】到其配置的集群吗？请确认您的作业是否已经被保存！`,
+      title: l('pages.datastudio.editor.async.submit'),
+      content: l('pages.datastudio.editor.async.submitConfirm','',{jobName: current.task.alias}),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -188,7 +184,7 @@ const StudioMenu = (props: any) => {
           id: current.task.id,
         };
         notification.success({
-          message: `任务【${current.task.alias} 】正在异步提交`,
+          message: l('pages.datastudio.editor.async.submiting','',{jobName: current.task.alias}),
           description: current.task.statement,
           duration: null,
           key: taskKey,
@@ -201,9 +197,9 @@ const StudioMenu = (props: any) => {
         notification.close(taskKey);
         if (res.datas[0].success) {
           res.datas[0].jobInstanceId && props.changeTaskJobInstance(current.task.id, res.datas[0].jobInstanceId);
-          message.success('异步提交成功');
+          message.success(l('pages.datastudio.editor.async.success'));
         } else {
-          message.success('异步提交失败');
+          message.success(l('pages.datastudio.editor.async.error'));
         }
         showCluster(dispatch);
       }
@@ -237,7 +233,7 @@ const StudioMenu = (props: any) => {
       if (result.code == CODE.SUCCESS) {
         setGraphData(buildGraphData(result.datas));
       } else {
-        message.error(`获取作业执行计划失败，原因：\n${result.msg}`);
+        message.error(l('pages.datastudio.editor.query.explan.error','',{msg :result.msg }));
         setGraphData(undefined);
       }
     })
@@ -250,7 +246,7 @@ const StudioMenu = (props: any) => {
       if (result.code == CODE.SUCCESS) {
         setDolphinData(result.datas);
       } else {
-        message.error(`获取海豚数据失败，原因：\n${result.msg}`);
+        message.error(l('pages.datastudio.editor.query.ds.error','',{msg :result.msg }));
         setDolphinData(undefined);
       }
       handleDolphinModalVisible(true);
@@ -336,8 +332,8 @@ const StudioMenu = (props: any) => {
 
   const toReleaseTask = () => {
     Modal.confirm({
-      title: '发布作业',
-      content: `确定发布作业【${current.task.alias}】吗？请确认您的作业是否已经被保存！`,
+      title: l('pages.datastudio.editor.release.job'),
+      content: l('pages.datastudio.editor.release.jobConfirm','',{jobName: current.task.alias}),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -345,9 +341,9 @@ const StudioMenu = (props: any) => {
         res.then((result) => {
           if (result.code == CODE.SUCCESS) {
             props.changeTaskStep(current.task.id, JOB_LIFE_CYCLE.RELEASE);
-            message.success(`发布作业【${current.task.alias}】成功`);
+            message.success(l('pages.datastudio.editor.release.job.success','',{jobName: current.task.alias}))
           } else {
-            message.error(`发布作业【${current.task.alias}】失败，原因：\n${result.msg}`);
+            message.error(l('pages.datastudio.editor.release.job.error','',{jobName: current.task.alias}));
           }
         });
       }
@@ -356,8 +352,8 @@ const StudioMenu = (props: any) => {
 
   const toDevelopTask = () => {
     Modal.confirm({
-      title: '维护作业',
-      content: `确定维护作业【${current.task.alias}】吗？`,
+      title: l('pages.datastudio.editor.edit.job'),
+      content: l('pages.datastudio.editor.edit.jobConfirm','',{jobName: current.task.alias}),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -365,7 +361,7 @@ const StudioMenu = (props: any) => {
         res.then((result) => {
           result.datas && props.changeTaskStep(current.task.id, JOB_LIFE_CYCLE.DEVELOP);
           if (result.code == CODE.SUCCESS) {
-            message.success(`维护作业【${current.task.alias}】成功`);
+            message.success(l('pages.datastudio.editor.edit.job.success','',{jobName: current.task.alias}))
           }
         });
       }
@@ -374,8 +370,8 @@ const StudioMenu = (props: any) => {
 
   const toOnLineTask = () => {
     Modal.confirm({
-      title: '上线作业',
-      content: `确定上线作业【${current.task.alias}】吗？`,
+      title: l('pages.datastudio.editor.online.job'),
+      content: l('pages.datastudio.editor.online.jobConfirm','',{jobName: current.task.alias}),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -384,9 +380,9 @@ const StudioMenu = (props: any) => {
           if (result.code === CODE.SUCCESS) {
             props.changeTaskStep(current.task.id, JOB_LIFE_CYCLE.ONLINE);
             result.datas?.jobInstanceId && props.changeTaskJobInstance(current.task.id, result.datas?.jobInstanceId);
-            message.success(`上线作业【${current.task.alias}】成功`);
+            message.success(l('pages.datastudio.editor.online.job.success','',{jobName: current.task.alias}))
           } else {
-            message.error(`上线作业【${current.task.alias}】失败，原因：\n${result.msg}`);
+            message.error(l('pages.datastudio.editor.online.job.error','',{jobName: current.task.alias,msg: result.msg}));
           }
         });
       }
@@ -395,8 +391,8 @@ const StudioMenu = (props: any) => {
 
   const handleCancelTask = (type: string) => {
     Modal.confirm({
-      title: '停止作业',
-      content: `确定停止作业【${current.task.alias}】吗？`,
+      title: l('pages.datastudio.editor.stop.job'),
+      content: l('pages.datastudio.editor.stop.jobConfirm','',{jobName: current.task.alias}),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -407,9 +403,9 @@ const StudioMenu = (props: any) => {
               props.changeTaskStep(current.task.id, JOB_LIFE_CYCLE.RELEASE);
             }
             props.changeTaskJobInstance(current.task.id, 0);
-            message.success(`停止作业【${current.task.alias}】成功`);
+            message.success(l('pages.datastudio.editor.stop.job.success','',{jobName: current.task.alias}))
           } else {
-            message.error(`停止作业【${current.task.alias}】失败，原因：\n${result.msg}`);
+            message.error(l('pages.datastudio.editor.stop.job.error','',{jobName: current.task.alias,msg: result.msg}));
           }
         });
       }
@@ -418,8 +414,8 @@ const StudioMenu = (props: any) => {
 
   const toOffLineTask = (type: string) => {
     Modal.confirm({
-      title: '下线作业',
-      content: `确定下线作业【${current.task.alias}】吗？`,
+      title: l('pages.datastudio.editor.offline.job'),
+      content: l('pages.datastudio.editor.offline.jobConfirm','',{jobName: current.task.alias}),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -428,9 +424,9 @@ const StudioMenu = (props: any) => {
           if (result.code === CODE.SUCCESS) {
             props.changeTaskStep(current.task.id, JOB_LIFE_CYCLE.RELEASE);
             props.changeTaskJobInstance(current.task.id, 0);
-            message.success(`下线作业【${current.task.alias}】成功`);
+            message.success(l('pages.datastudio.editor.offline.job.success','',{jobName: current.task.alias}))
           } else {
-            message.error(`下线作业【${current.task.alias}】失败，原因：\n${result.msg}`);
+            message.error(l('pages.datastudio.editor.offline.job.error','',{jobName: current.task.alias,msg: result.msg}));
           }
         });
       }
@@ -439,8 +435,8 @@ const StudioMenu = (props: any) => {
 
   const toCancelTask = () => {
     Modal.confirm({
-      title: '注销作业',
-      content: `确定注销作业【${current.task.alias}】吗？`,
+      title: l('pages.datastudio.editor.delete.job'),
+      content: l('pages.datastudio.editor.delete.jobConfirm','',{jobName: current.task.alias}),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -448,9 +444,9 @@ const StudioMenu = (props: any) => {
         res.then((result) => {
           if (result.code === CODE.SUCCESS) {
             props.changeTaskStep(current.task.id, JOB_LIFE_CYCLE.CANCEL);
-            message.success(`注销作业【${current.task.alias}】成功`);
+            message.success(l('pages.datastudio.editor.delete.job.success','',{jobName: current.task.alias}))
           } else {
-            message.error(`注销作业【${current.task.alias}】失败，原因：\n${result.msg}`);
+            message.error(l('pages.datastudio.editor.delete.job.error','',{jobName: current.task.alias,msg: result.msg}));
           }
         });
       }
@@ -459,8 +455,8 @@ const StudioMenu = (props: any) => {
 
   const toRecoveryTask = () => {
     Modal.confirm({
-      title: '恢复作业',
-      content: `确定恢复作业【${current.task.alias}】吗？`,
+      title: l('pages.datastudio.editor.recovery.job'),
+      content: l('pages.datastudio.editor.recovery.jobConfirm','',{jobName: current.task.alias}),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -468,7 +464,7 @@ const StudioMenu = (props: any) => {
         res.then((result) => {
           result.datas && props.changeTaskStep(current.task.id, JOB_LIFE_CYCLE.DEVELOP);
           if (result.code == CODE.SUCCESS) {
-            message.success(`恢复作业【${current.task.alias}】成功`);
+            message.success(l('pages.datastudio.editor.recovery.job.success','',{jobName: current.task.alias}))
           }
         });
       }
@@ -493,8 +489,8 @@ const StudioMenu = (props: any) => {
 
   const runMenu = (
     <Menu>
-      <Menu.Item onClick={execute}>SQL 查询</Menu.Item>
-      <Menu.Item onClick={submit}>提交作业</Menu.Item>
+      <Menu.Item onClick={execute}>{l('pages.datastudio.sql.query')}</Menu.Item>
+      <Menu.Item onClick={submit}>{l('pages.datastudio.submit.job')}</Menu.Item>
     </Menu>
   );
 
@@ -508,7 +504,7 @@ const StudioMenu = (props: any) => {
 
   const showAPI = () => {
     Modal.info({
-      title: current.task.alias + ' API 手册',
+      title: current.task.alias + l('pages.datastudio.editor.api.doc'),
       width: 1000,
       content: (
         <TaskAPI task={current.task}/>
@@ -520,7 +516,7 @@ const StudioMenu = (props: any) => {
 
   const showHelp = () => {
     Modal.info({
-      title: '使用帮助',
+      title: l('pages.datastudio.editor.usehelp'),
       width: 1000,
       content: (
         <StudioHelp/>
@@ -578,13 +574,13 @@ const StudioMenu = (props: any) => {
                   <ClusterOutlined/>
                   <Divider type="vertical"/>
                   {currentSession.sessionConfig.useRemote ?
-                    currentSession.sessionConfig.clusterName : '本地模式'}
+                    currentSession.sessionConfig.clusterName : l('pages.devops.jobinfo.localenv')}
                 </Breadcrumb>
               )}
           </Col>
           {current?.task ?
             <Col span={8}>
-              <Tooltip title="全屏开发">
+              <Tooltip title={l('pages.datastudio.editor.fullScreen')}>
                 <Button
                   type="text"
                   icon={<CodeTwoTone/>}
@@ -599,14 +595,14 @@ const StudioMenu = (props: any) => {
                 type="text"
                 icon={<FolderOpenTwoTone twoToneColor="#ddd"/>}
               />
-              <Tooltip title="保存当前的 FlinkSql 及配置">
+              <Tooltip title={l('pages.datastudio.editor.save')}>
                 <Button
                   type="text"
                   icon={<SaveTwoTone/>}
                   onClick={saveSqlAndSettingToTask}
                 />
               </Tooltip>
-              <Tooltip title="导出当前的 Sql 及配置">
+              <Tooltip title={l('pages.datastudio.editor.export')}>
                 <Button
                   type="text"
                   icon={<SnippetsTwoTone/>}
@@ -614,7 +610,7 @@ const StudioMenu = (props: any) => {
                 />
               </Tooltip>
               <Divider type="vertical"/>
-              <Tooltip title="检查当前的 FlinkSql">
+              <Tooltip title={l('pages.datastudio.editor.check')}>
                 <Button
                   type="text"
                   icon={<SafetyCertificateTwoTone/>}
@@ -622,7 +618,7 @@ const StudioMenu = (props: any) => {
                 />
               </Tooltip>
               {isShowGetStreamGraphBtn() && (
-                <Tooltip title="获取当前的 FlinkSql 的执行图">
+                <Tooltip title={l('pages.datastudio.editor.explan')}>
                   <Button
                     type="text"
                     icon={<FlagTwoTone/>}
@@ -630,7 +626,7 @@ const StudioMenu = (props: any) => {
                   />
                 </Tooltip>)}
               {isShowExecuteBtn() && (
-                <Tooltip title="执行当前的 SQL">
+                <Tooltip title={l('pages.datastudio.editor.exec')}>
                   <Button
                     type="text"
                     icon={<PlayCircleTwoTone/>}
@@ -639,7 +635,7 @@ const StudioMenu = (props: any) => {
                   />
                 </Tooltip>)}
               {isShowSubmitBtn() && (<>
-                <Tooltip title="提交当前的作业到集群，提交前请手动保存">
+                <Tooltip title={l('pages.datastudio.editor.exec.tip')}>
                   <Button
                     type="text"
                     icon={<RocketTwoTone/>}
@@ -648,7 +644,7 @@ const StudioMenu = (props: any) => {
                 </Tooltip>
               </>)}
               {isShowSubmitBtn() && (<>
-                <Tooltip title="推送到海豚调度">
+                <Tooltip title={l('pages.datastudio.editor.push.ds')}>
                   <Button
                     type="text" style={{color: '#248FFF'}}
                     icon={<SendOutlined/>}
@@ -657,7 +653,7 @@ const StudioMenu = (props: any) => {
                 </Tooltip>
               </>)}
               {isShowCancelTaskBtn() &&
-                <Tooltip title="停止">
+                <Tooltip title={l('pages.datastudio.editor.stop')}>
                   <Button
                     type="text"
                     icon={<PauseCircleTwoTone/>}
@@ -667,7 +663,7 @@ const StudioMenu = (props: any) => {
               }
               <Divider type="vertical"/>
               {current.task.step == JOB_LIFE_CYCLE.DEVELOP ?
-                <Tooltip title="发布，发布后将无法修改">
+                <Tooltip title={l('pages.datastudio.editor.release')}>
                   <Button
                     type="text"
                     icon={<CameraTwoTone/>}
@@ -675,14 +671,15 @@ const StudioMenu = (props: any) => {
                   />
                 </Tooltip> : undefined
               }{current.task.step == JOB_LIFE_CYCLE.RELEASE ?
-              <><Tooltip title="维护，点击进入编辑状态">
+              <>
+                <Tooltip title={l('pages.datastudio.editor.edit')}>
                 <Button
                   type="text"
                   icon={<EditTwoTone/>}
                   onClick={toDevelopTask}
                 />
               </Tooltip>
-                <Tooltip title="上线，上线后自动恢复、告警等将生效">
+                <Tooltip title={l('pages.datastudio.editor.online')}>
                   <Button
                     type="text"
                     icon={<CarryOutTwoTone/>}
@@ -690,7 +687,7 @@ const StudioMenu = (props: any) => {
                   />
                 </Tooltip></> : undefined
             }{current.task.step == JOB_LIFE_CYCLE.ONLINE ?
-              <Tooltip title="下线，将进入最新发布状态">
+              <Tooltip title={l('pages.datastudio.editor.offline')}>
                 <Button
                   type="text"
                   icon={<PauseCircleTwoTone/>}
@@ -698,7 +695,7 @@ const StudioMenu = (props: any) => {
                 />
               </Tooltip> : undefined
             }{(current.task.step != JOB_LIFE_CYCLE.ONLINE && current.task.step != JOB_LIFE_CYCLE.CANCEL) ?
-              <Tooltip title="注销，将进入回收站">
+              <Tooltip title={l('pages.datastudio.editor.delete')}>
                 <Button
                   type="text"
                   icon={<DeleteTwoTone/>}
@@ -706,7 +703,7 @@ const StudioMenu = (props: any) => {
                 />
               </Tooltip> : undefined
             }{current.task.step == JOB_LIFE_CYCLE.CANCEL ?
-              <Tooltip title="恢复，将进入维护模式">
+              <Tooltip title={l('pages.datastudio.editor.recovery')}>
                 <Button
                   type="text"
                   icon={<RestTwoTone/>}
@@ -714,21 +711,21 @@ const StudioMenu = (props: any) => {
                 />
               </Tooltip> : undefined
             }
-              <Tooltip title="查看 API">
+              <Tooltip title={l('pages.datastudio.editor.api')}>
                 <Button
                   type="text"
                   icon={<ApiTwoTone/>}
                   onClick={showAPI}
                 />
               </Tooltip>
-              <Tooltip title="查看使用帮助">
+              <Tooltip title={l('pages.datastudio.editor.help')}>
                 <Button
                   type="text"
                   icon={<QuestionCircleTwoTone/>}
                   onClick={showHelp}
                 />
               </Tooltip>
-            </Col> : <Col span={8}><Tooltip title="查看使用帮助">
+            </Col> : <Col span={8}><Tooltip title={l('pages.datastudio.editor.help')}>
               <Button
                 type="text"
                 icon={<QuestionCircleTwoTone/>}
@@ -747,7 +744,7 @@ const StudioMenu = (props: any) => {
         width={1000}
         bodyStyle={{padding: '32px 40px 48px'}}
         destroyOnClose
-        title="FlinkSQL 的 JobPlan"
+        title={l('pages.datastudio.editor.explan.tip')}
         visible={graphModalVisible}
         onCancel={() => handleGraphModalVisible(false)}
       >
@@ -757,7 +754,7 @@ const StudioMenu = (props: any) => {
         width={700}
         bodyStyle={{padding: '32px 40px 48px'}}
         destroyOnClose
-        title="推送到海豚调度"
+        title={l('pages.datastudio.editor.push.ds')}
         visible={dolphinModalVisible}
         onCancel={() => handleDolphinModalVisible(false)}
         footer={[]}
@@ -794,12 +791,12 @@ const StudioMenu = (props: any) => {
         maskClosable={false}
         closable={true}
         closeIcon={
-          <Tooltip title="退出全屏">
+          <Tooltip title={l('pages.datastudio.editor.fullScreen.exit')}>
             <Button
               icon={<ShrinkOutlined/>}
               type="primary"
               style={{position: "fixed", right: "0"}}>
-              退出
+              {l('button.exit')}
             </Button>
           </Tooltip>}
         visible={isFullScreen}

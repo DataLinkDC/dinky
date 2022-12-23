@@ -19,6 +19,8 @@
 
 package com.dlink.job;
 
+import com.dlink.function.data.model.UDF;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,21 +31,25 @@ import java.util.List;
  * @since 2021/11/16
  */
 public class JobParam {
+
     private List<String> statements;
     private List<StatementParam> ddl;
     private List<StatementParam> trans;
     private List<StatementParam> execute;
+    private List<UDF> udfList;
 
     public JobParam(List<StatementParam> ddl, List<StatementParam> trans) {
         this.ddl = ddl;
         this.trans = trans;
     }
 
-    public JobParam(List<String> statements, List<StatementParam> ddl, List<StatementParam> trans, List<StatementParam> execute) {
+    public JobParam(List<String> statements, List<StatementParam> ddl, List<StatementParam> trans,
+            List<StatementParam> execute, List<UDF> udfList) {
         this.statements = statements;
         this.ddl = ddl;
         this.trans = trans;
         this.execute = execute;
+        this.udfList = udfList;
     }
 
     public List<String> getStatements() {
@@ -68,7 +74,7 @@ public class JobParam {
 
     public List<String> getTransStatement() {
         List<String> statementList = new ArrayList<>();
-        for (StatementParam statementParam: trans) {
+        for (StatementParam statementParam : trans) {
             statementList.add(statementParam.getValue());
         }
         return statementList;
@@ -84,5 +90,9 @@ public class JobParam {
 
     public void setExecute(List<StatementParam> execute) {
         this.execute = execute;
+    }
+
+    public List<UDF> getUdfList() {
+        return udfList;
     }
 }
