@@ -29,13 +29,9 @@ import com.dlink.assertion.Asserts;
  **/
 public enum GatewayType {
 
-    LOCAL("l", "local"),
-    STANDALONE("s", "standalone"),
-    YARN_SESSION("ys", "yarn-session"),
-    YARN_APPLICATION("ya", "yarn-application"),
-    YARN_PER_JOB("ypj", "yarn-per-job"),
-    KUBERNETES_SESSION("ks", "kubernetes-session"),
-    KUBERNETES_APPLICATION("ka", "kubernetes-application");
+    LOCAL("l", "local"), STANDALONE("s", "standalone"), YARN_SESSION("ys", "yarn-session"), YARN_APPLICATION("ya",
+            "yarn-application"), YARN_PER_JOB("ypj", "yarn-per-job"), KUBERNETES_SESSION("ks",
+                    "kubernetes-session"), KUBERNETES_APPLICATION("ka", "kubernetes-application");
 
     private final String value;
     private final String longValue;
@@ -60,6 +56,15 @@ public enum GatewayType {
             }
         }
         return GatewayType.YARN_APPLICATION;
+    }
+
+    public static GatewayType getSessionType(String value) {
+        switch (value) {
+            case "Kubernetes":
+                return GatewayType.KUBERNETES_SESSION;
+            default:
+                return GatewayType.YARN_SESSION;
+        }
     }
 
     public boolean equalsValue(String type) {

@@ -21,68 +21,43 @@ package com.dlink.gateway.yarn;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.gateway.GatewayType;
-import com.dlink.gateway.config.AppConfig;
-import com.dlink.gateway.config.GatewayConfig;
 import com.dlink.gateway.result.GatewayResult;
 import com.dlink.gateway.result.YarnResult;
-import com.dlink.model.SystemConfiguration;
 import com.dlink.utils.LogUtil;
 
 import org.apache.flink.client.deployment.ClusterSpecification;
-import org.apache.flink.client.deployment.application.ApplicationConfiguration;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.client.program.ClusterClientProvider;
 import org.apache.flink.configuration.JobManagerOptions;
-import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.configuration.TaskManagerOptions;
-import org.apache.flink.runtime.client.JobStatusMessage;
 import org.apache.flink.yarn.YarnClientYarnClusterInformationRetriever;
 import org.apache.flink.yarn.YarnClusterDescriptor;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import cn.hutool.core.io.FileUtil;
 
 /**
- * YarnApplicationGateway
+ * YarnSessionGateway
  *
  * @author wenmo
- * @since 2021/10/29
- **/
-public class YarnApplicationGateway extends YarnGateway {
-
-    public YarnApplicationGateway(GatewayConfig config) {
-        super(config);
-    }
-
-    public YarnApplicationGateway() {
-    }
+ * @since 2022/12/25
+ */
+public class YarnSessionGateway extends YarnGateway {
 
     @Override
     public GatewayType getType() {
-        return GatewayType.YARN_APPLICATION;
+        return GatewayType.YARN_SESSION;
     }
 
     @Override
-    public GatewayResult submitJar() {
+    public GatewayResult deployCluster() {
         if (Asserts.isNull(yarnClient)) {
             init();
         }
         YarnResult result = YarnResult.build(getType());
-        AppConfig appConfig = config.getAppConfig();
-        configuration.set(PipelineOptions.JARS, Collections.singletonList(appConfig.getUserJarPath()));
-        String[] userJarParas = appConfig.getUserJarParas();
-        if (Asserts.isNull(userJarParas)) {
-            userJarParas = new String[0];
-        }
-        ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration(userJarParas,
-                appConfig.getUserJarMainAppClass());
         YarnClusterDescriptor yarnClusterDescriptor = new YarnClusterDescriptor(
                 configuration, yarnConfiguration, yarnClient,
                 YarnClientYarnClusterInformationRetriever.create(yarnClient), true);
@@ -100,33 +75,16 @@ public class YarnApplicationGateway extends YarnGateway {
             clusterSpecificationBuilder.setSlotsPerTaskManager(configuration.get(TaskManagerOptions.NUM_TASK_SLOTS))
                     .createClusterSpecification();
         }
+
         if (Asserts.isNotNull(config.getJarPaths())) {
             yarnClusterDescriptor
                     .addShipFiles(Arrays.stream(config.getJarPaths()).map(FileUtil::file).collect(Collectors.toList()));
         }
 
         try {
-            ClusterClientProvider<ApplicationId> clusterClientProvider = yarnClusterDescriptor.deployApplicationCluster(
-                    clusterSpecificationBuilder.createClusterSpecification(),
-                    applicationConfiguration);
+            ClusterClientProvider<ApplicationId> clusterClientProvider = yarnClusterDescriptor.deploySessionCluster(
+                    clusterSpecificationBuilder.createClusterSpecification());
             ClusterClient<ApplicationId> clusterClient = clusterClientProvider.getClusterClient();
-            Collection<JobStatusMessage> jobStatusMessages = clusterClient.listJobs().get();
-            int counts = SystemConfiguration.getInstances().getJobIdWait();
-            while (jobStatusMessages.size() == 0 && counts > 0) {
-                Thread.sleep(1000);
-                counts--;
-                jobStatusMessages = clusterClient.listJobs().get();
-                if (jobStatusMessages.size() > 0) {
-                    break;
-                }
-            }
-            if (jobStatusMessages.size() > 0) {
-                List<String> jids = new ArrayList<>();
-                for (JobStatusMessage jobStatusMessage : jobStatusMessages) {
-                    jids.add(jobStatusMessage.getJobId().toHexString());
-                }
-                result.setJids(jids);
-            }
             ApplicationId applicationId = clusterClient.getClusterId();
             result.setAppId(applicationId.toString());
             result.setWebURL(clusterClient.getWebInterfaceURL());
