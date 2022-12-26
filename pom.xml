@@ -25,6 +25,7 @@
     <artifactId>dlink</artifactId>
     <version>0.7.0</version>
     <packaging>pom</packaging>
+    <name>Dinky :</name>
 
     <modules>
         <module>dlink-flink</module>
@@ -889,6 +890,10 @@
                 <dlink.flink.version>1.16</dlink.flink.version>
                 <flink.version>1.16.0</flink.version>
             </properties>
+        </profile>
+
+        <profile>
+            <id>all</id>
         </profile>
 
         <profile>

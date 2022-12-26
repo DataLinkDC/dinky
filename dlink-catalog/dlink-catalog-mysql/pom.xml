@@ -61,6 +61,16 @@
                 <module>dlink-catalog-mysql-1.16</module>
             </modules>
         </profile>
+
+        <profile>
+            <id>all</id>
+            <modules>
+                <module>dlink-catalog-mysql-1.13</module>
+                <module>dlink-catalog-mysql-1.14</module>
+                <module>dlink-catalog-mysql-1.15</module>
+                <module>dlink-catalog-mysql-1.16</module>
+            </modules>
+        </profile>
     </profiles>
 
 </project>
