@@ -33,6 +33,7 @@ import OpsStatusModal from "@/pages/DevOps/OpsStatusModel/index";
 import StatusDetailedModal from "@/pages/DevOps/StatusDetailedModel/index";
 import {onClickOperatingTask, queryAllCatalogue, queryOneClickOperatingTaskStatus} from "@/pages/DevOps/service";
 import {l} from "@/utils/intl";
+import {parseSecondStr} from "@/components/Common/function";
 
 
 const OPS_STATUS_COLOR = {
@@ -228,10 +229,11 @@ const JobInstanceTable = (props: any) => {
       hideInSearch: true,
     }, {
       title: l('global.table.useTime'),
-      dataIndex: "duration",
       sorter: true,
-      valueType: 'second',
       hideInSearch: true,
+      render: (_, row) => {
+        return parseSecondStr(row.duration)
+      }
     },];
     return columns;
   };

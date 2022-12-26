@@ -74,5 +74,17 @@
                 <module>dlink-flink-1.16</module>
             </modules>
         </profile>
+
+        <profile>
+            <id>all</id>
+            <modules>
+                <module>dlink-flink-1.11</module>
+                <module>dlink-flink-1.12</module>
+                <module>dlink-flink-1.13</module>
+                <module>dlink-flink-1.14</module>
+                <module>dlink-flink-1.15</module>
+                <module>dlink-flink-1.16</module>
+            </modules>
+        </profile>
     </profiles>
 </project>

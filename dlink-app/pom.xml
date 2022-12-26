@@ -65,6 +65,18 @@
         </profile>
 
         <profile>
+            <id>all</id>
+            <modules>
+                <module>dlink-app-1.11</module>
+                <module>dlink-app-1.12</module>
+                <module>dlink-app-1.13</module>
+                <module>dlink-app-1.14</module>
+                <module>dlink-app-1.15</module>
+                <module>dlink-app-1.16</module>
+            </modules>
+        </profile>
+
+        <profile>
             <id>web</id>
             <modules>
                 <module>../dlink-web</module>
