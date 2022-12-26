@@ -84,11 +84,11 @@ export default {
   'status.enabled': '已启用',
   'status.disabled': '已禁用',
 
-  'global.time.second': ' 秒 ',
-  'global.time.minute': ' 分 ',
-  'global.time.hour': ' 小时 ',
-  'global.time.day': ' 天 ',
-  'global.time.millisecond': ' 毫秒 ',
+  'global.time.second': '秒 ',
+  'global.time.minute': '分 ',
+  'global.time.hour': '小时 ',
+  'global.time.day': '天 ',
+  'global.time.millisecond': '毫秒 ',
 
   'global.stay.tuned': '敬请期待',
 
