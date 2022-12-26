@@ -83,11 +83,11 @@ export default {
   'status.enabled': 'Enabled',
   'status.disabled': 'Disabled',
 
-  'global.time.second': ' Second ',
-  'global.time.minute': ' Minute ',
-  'global.time.hour': ' Hour ',
-  'global.time.day': ' Day ',
-  'global.time.millisecond': ' millisecond ',
+  'global.time.second': 'S ',
+  'global.time.minute': 'M ',
+  'global.time.hour': 'H ',
+  'global.time.day': 'D ',
+  'global.time.millisecond': 'ms ',
 
   'global.stay.tuned': 'Stay tuned',
 
