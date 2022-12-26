@@ -20,9 +20,12 @@
 package com.dlink.gateway;
 
 import com.dlink.gateway.config.GatewayConfig;
+import com.dlink.gateway.exception.GatewayException;
+import com.dlink.gateway.result.GatewayResult;
 import com.dlink.model.JobStatus;
 
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.runtime.jobgraph.JobGraph;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +67,23 @@ public abstract class AbstractGateway implements Gateway {
     }
 
     @Override
+    public GatewayResult submitJobGraph(JobGraph jobGraph) {
+        throw new GatewayException("Couldn't deploy Flink Cluster with job graph.");
+    }
+
+    @Override
+    public GatewayResult submitJar() {
+        throw new GatewayException("Couldn't deploy Flink Cluster with User Application Jar.");
+    }
+
+    @Override
     public void killCluster() {
         logger.error("Could not kill the Flink cluster");
+    }
+
+    @Override
+    public GatewayResult deployCluster() {
+        logger.error("Could not deploy the Flink cluster");
+        return null;
     }
 }

@@ -25,7 +25,7 @@ import {Button, Drawer, Dropdown, Menu, Modal} from 'antd';
 import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import {ClusterConfigurationTableListItem} from "@/pages/RegistrationCenter/data";
-import {handleAddOrUpdate, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
+import {handleAddOrUpdate, handleData, handleRemove, queryData, updateEnabled} from "@/components/Common/crud";
 import {showClusterConfiguration} from "@/components/Studio/StudioEvent/DDL";
 import ClusterConfigurationForm
   from "@/pages/RegistrationCenter/ClusterManage/ClusterConfiguration/components/ClusterConfigurationForm";
@@ -57,6 +57,16 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
           actionRef.current?.reloadAndRest?.();
         }
       });
+    } else if (key === 'start') {
+      Modal.confirm({
+        title: l('pages.rc.clusterConfig.start'),
+        content: l('pages.rc.clusterConfig.startConfirm'),
+        okText: l('button.confirm'),
+        cancelText: l('button.cancel'),
+        onOk: async () => {
+          await handleData('/api/cluster/deploySessionCluster', {id: currentItem.id});
+        }
+      });
     }
   };
 
@@ -66,6 +76,7 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
     <Dropdown
       overlay={
         <Menu onClick={({key}) => editAndDelete(key, item)}>
+          <Menu.Item key="start">{l('button.start')}</Menu.Item>
           <Menu.Item key="edit">{l('button.edit')}</Menu.Item>
           <Menu.Item key="delete">{l('button.delete')}</Menu.Item>
         </Menu>

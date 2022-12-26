@@ -28,6 +28,7 @@ import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.gateway.GatewayType;
 import com.dlink.gateway.config.GatewayConfig;
 import com.dlink.gateway.exception.GatewayException;
+import com.dlink.gateway.result.GatewayResult;
 import com.dlink.job.JobManager;
 import com.dlink.mapper.ClusterMapper;
 import com.dlink.model.Cluster;
@@ -37,6 +38,7 @@ import com.dlink.service.ClusterService;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -163,6 +165,24 @@ public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
         GatewayConfig gatewayConfig = GatewayConfig.build(clusterConfiguration.getConfig());
         gatewayConfig.setType(GatewayType.get(cluster.getType()));
         JobManager.killCluster(gatewayConfig, cluster.getName());
+    }
+
+    @Override
+    public Cluster deploySessionCluster(Integer id) {
+        ClusterConfiguration clusterConfiguration = clusterConfigurationService.getClusterConfigById(id);
+        if (Asserts.isNull(clusterConfiguration)) {
+            throw new GatewayException("The cluster configuration does not exist.");
+        }
+        GatewayConfig gatewayConfig = GatewayConfig.build(clusterConfiguration.getConfig());
+        gatewayConfig.setType(GatewayType.getSessionType(clusterConfiguration.getType()));
+        GatewayResult gatewayResult = JobManager.deploySessionCluster(gatewayConfig);
+        return registersCluster(Cluster.autoRegistersCluster(
+                gatewayResult.getWebURL().replace("http://", ""),
+                gatewayResult.getAppId(),
+                clusterConfiguration.getName() + LocalDateTime.now(),
+                gatewayConfig.getType().getLongValue(),
+                id,
+                null));
     }
 
     private boolean checkHealth(Cluster cluster) {
