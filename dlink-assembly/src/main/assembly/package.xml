@@ -58,13 +58,66 @@
                 <include>upgrade/*/*/*.sql</include>
             </includes>
         </fileSet>
+        <!--<fileSet>-->
+        <!--    <directory>${project.parent.basedir}/build/extends/</directory>-->
+        <!--    <outputDirectory>plugins</outputDirectory>-->
+        <!--    <includes>-->
+        <!--        <include>%regex[dlink-catalog-mysql-1.\d+-${project.version}.jar]</include>-->
+        <!--        <include>%regex[dlink-client-1.\d+-${project.version}.jar]</include>-->
+        <!--    </includes>-->
+        <!--</fileSet>-->
+        <fileSet>
+            <directory>${project.parent.basedir}/build/extends/</directory>
+            <outputDirectory>plugins/flink1.11</outputDirectory>
+            <includes>
+                <include>dlink-client-1.11-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/build/extends/</directory>
+            <outputDirectory>plugins/flink1.12</outputDirectory>
+            <includes>
+                <include>dlink-client-1.12-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/build/extends/</directory>
+            <outputDirectory>plugins/flink1.13</outputDirectory>
+            <includes>
+                <include>dlink-catalog-mysql-1.13-${project.version}.jar</include>
+                <include>dlink-client-1.13-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/build/extends/</directory>
+            <outputDirectory>plugins/flink1.14</outputDirectory>
+            <includes>
+                <include>dlink-catalog-mysql-1.14-${project.version}.jar</include>
+                <include>dlink-client-1.14-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/build/extends/</directory>
+            <outputDirectory>plugins/flink1.15</outputDirectory>
+            <includes>
+                <include>dlink-catalog-mysql-1.15-${project.version}.jar</include>
+                <include>dlink-client-1.15-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/build/extends/</directory>
+            <outputDirectory>plugins/flink1.16</outputDirectory>
+            <includes>
+                <include>dlink-catalog-mysql-1.16-${project.version}.jar</include>
+                <include>dlink-client-1.16-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+
         <fileSet>
             <directory>${project.parent.basedir}/build/extends/</directory>
             <outputDirectory>plugins</outputDirectory>
             <includes>
-                <include>%regex[dlink-catalog-mysql-1.\d+-${project.version}.jar]</include>
-                <include>%regex[dlink-client-base-${project.version}.jar]</include>
-                <include>%regex[dlink-client-1.\d+-${project.version}.jar]</include>
+                <include>dlink-client-base-${project.version}.jar</include>
             </includes>
         </fileSet>
         <fileSet>
@@ -194,48 +247,48 @@
                 <include>dlink-alert-wechat-${project.version}.jar</include>
             </includes>
         </fileSet>
-        <fileSet>
-            <directory>${project.parent.basedir}/dlink-app/dlink-app-1.11/target</directory>
-            <outputDirectory>jar</outputDirectory>
-            <includes>
-                <include>dlink-app-1.11-${project.version}-jar-with-dependencies.jar</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.parent.basedir}/dlink-app/dlink-app-1.12/target</directory>
-            <outputDirectory>jar</outputDirectory>
-            <includes>
-                <include>dlink-app-1.12-${project.version}-jar-with-dependencies.jar</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.parent.basedir}/dlink-app/dlink-app-1.13/target</directory>
-            <outputDirectory>jar</outputDirectory>
-            <includes>
-                <include>dlink-app-1.13-${project.version}-jar-with-dependencies.jar</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.parent.basedir}/dlink-app/dlink-app-1.14/target</directory>
-            <outputDirectory>jar</outputDirectory>
-            <includes>
-                <include>dlink-app-1.14-${project.version}-jar-with-dependencies.jar</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.parent.basedir}/dlink-app/dlink-app-1.15/target</directory>
-            <outputDirectory>jar</outputDirectory>
-            <includes>
-                <include>dlink-app-1.15-${project.version}-jar-with-dependencies.jar</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.parent.basedir}/dlink-app/dlink-app-1.16/target</directory>
-            <outputDirectory>jar</outputDirectory>
-            <includes>
-                <include>dlink-app-1.16-${project.version}-jar-with-dependencies.jar</include>
-            </includes>
-        </fileSet>
+        <!--<fileSet>-->
+        <!--    <directory>${project.parent.basedir}/dlink-app/dlink-app-1.11/target</directory>-->
+        <!--    <outputDirectory>jar</outputDirectory>-->
+        <!--    <includes>-->
+        <!--        <include>dlink-app-1.11-${project.version}-jar-with-dependencies.jar</include>-->
+        <!--    </includes>-->
+        <!--</fileSet>-->
+        <!--<fileSet>-->
+        <!--    <directory>${project.parent.basedir}/dlink-app/dlink-app-1.12/target</directory>-->
+        <!--    <outputDirectory>jar</outputDirectory>-->
+        <!--    <includes>-->
+        <!--        <include>dlink-app-1.12-${project.version}-jar-with-dependencies.jar</include>-->
+        <!--    </includes>-->
+        <!--</fileSet>-->
+        <!--<fileSet>-->
+        <!--    <directory>${project.parent.basedir}/dlink-app/dlink-app-1.13/target</directory>-->
+        <!--    <outputDirectory>jar</outputDirectory>-->
+        <!--    <includes>-->
+        <!--        <include>dlink-app-1.13-${project.version}-jar-with-dependencies.jar</include>-->
+        <!--    </includes>-->
+        <!--</fileSet>-->
+        <!--<fileSet>-->
+        <!--    <directory>${project.parent.basedir}/dlink-app/dlink-app-1.14/target</directory>-->
+        <!--    <outputDirectory>jar</outputDirectory>-->
+        <!--    <includes>-->
+        <!--        <include>dlink-app-1.14-${project.version}-jar-with-dependencies.jar</include>-->
+        <!--    </includes>-->
+        <!--</fileSet>-->
+        <!--<fileSet>-->
+        <!--    <directory>${project.parent.basedir}/dlink-app/dlink-app-1.15/target</directory>-->
+        <!--    <outputDirectory>jar</outputDirectory>-->
+        <!--    <includes>-->
+        <!--        <include>dlink-app-1.15-${project.version}-jar-with-dependencies.jar</include>-->
+        <!--    </includes>-->
+        <!--</fileSet>-->
+        <!--<fileSet>-->
+        <!--    <directory>${project.parent.basedir}/dlink-app/dlink-app-1.16/target</directory>-->
+        <!--    <outputDirectory>jar</outputDirectory>-->
+        <!--    <includes>-->
+        <!--        <include>dlink-app-1.16-${project.version}-jar-with-dependencies.jar</include>-->
+        <!--    </includes>-->
+        <!--</fileSet>-->
         <fileSet>
             <directory>${project.parent.basedir}/dlink-doc/extends</directory>
             <outputDirectory>jar</outputDirectory>
