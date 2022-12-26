@@ -11,8 +11,12 @@ CLASS_PATH="./lib/*:config:html:./plugins/*"
 #fi
 
 PIDFILE="dlink.pid"
+#JMX路径
+APP_HOME="$(cd `dirname $0`; pwd)"
+JMX="-javaagent:$APP_HOME/lib/jmx_prometheus_javaagent-0.16.1.jar=10087:$APP_HOME/config/jmx/jmx_exporter_config.yaml"
 #检查PID path 是否存在
 PIDPATH="$(cd "$(dirname "$0")";pwd)/run"
+
 if [ -d ${PIDPATH} ];then
     echo "${PIDPATH} is already exist" >> /dev/null
 else
@@ -44,7 +48,7 @@ fi
 # 如果输入格式不对，给出提示！
 tips() {
   echo ""
-  echo "WARNING!!!......Tips, please use command: sh auto.sh [start|stop|restart|status].   For example: sh auto.sh start  "
+  echo "WARNING!!!......Tips, please use command: sh auto.sh [start|startWithJmx|stop|restart|status].   For example: sh auto.sh start  "
   echo ""
   exit 1
 }
@@ -63,6 +67,20 @@ start() {
     echo "Dlink pid $pid is in ${PIDPATH}/${PIDFILE}, Please stop first !!!"
   fi
 }
+
+# 启动方法(含jmx启动)
+startWithJmx() {
+  pid=$(cat ${PIDPATH}/${PIDFILE})
+  if [ -z $pid ]; then
+    nohup java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none ${JMX} -cp ${CLASS_PATH} com.dlink.Dlink >/dev/null 2>&1 &
+    echo $! >${PIDPATH}/${PIDFILE}
+    echo "........................................Start Dlink Successfully........................................"
+
+  else
+    echo "Dlink pid $pid is in ${PIDPATH}/${PIDFILE}, Please stop first !!!"
+  fi
+}
+
 
 # 停止方法
 stop() {
@@ -105,6 +123,9 @@ restart() {
 case "$1" in
 "start")
   start
+  ;;
+"startWithJmx")
+  startWithJmx
   ;;
 "stop")
   stop
