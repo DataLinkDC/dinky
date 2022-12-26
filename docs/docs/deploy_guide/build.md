@@ -1,6 +1,6 @@
 ---
-sidebar_position: 1
-id: build
+sidebar_position: 2
+id: compiler
 title: 编译
 ---
 
@@ -221,12 +221,13 @@ mvn clean install -Dmaven.test.skip=true
 npm install --force
 npm run build
 ```
-编译后的产物在 `dlink-web/dist` 下面，如需部署，请查看相关部署教程。[nginx中配置-dinky](./deploy#nginx中配置-dinky可选)
+编译后的产物在 `dlink-web/dist` 下面，如需部署，请查看相关部署教程。[nginx中配置-dinky](versioned_docs/version-0.7/developer_guide/deploy.mdy.md#nginx中配置-dinky可选)
 
 #### 后端编译
 编译maven的时候，移除web profile即可。在-P 后面加: `!web`,如：
 
-`mvn clean install -Dmaven.test.skip=true -P !web,aliyun,nexus,prod,scala-2.11,flink-1.14`
+`mvn clean install -Dmaven.test.skip=true -P !web,aliyun,nexus,prod,scala-2.11,flink-1.14
+`
 
 
 ---
@@ -249,7 +250,7 @@ docker push registry.cn-beijing.aliyuncs.com/yue-open/dinky:0.6.4-flink1.15
 
 
 
-以上就是 Dinky 源码编译的详细步骤，Dinky 如何安装部署，请查看下一章节[部署](./deploy)
+以上就是 Dinky 源码编译的详细步骤，Dinky 如何安装部署，请查看下一章节[部署](versioned_docs/version-0.7/developer_guide/deploy.mdy.md)
 
 
 

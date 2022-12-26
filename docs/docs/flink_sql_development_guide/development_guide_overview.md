@@ -14,5 +14,5 @@ SQL 与其他的编程语言相比学习成本较低，使用 SQL 作业进行�
 - [DDL 语句](./ddl_statement/create_statements)
 - [DML 语句](./dml_statements/insert_statements)
 - [运算符和内置函数](./operators_functions)
-- [扩展语法](./extend_statement)
+- [扩展语法](docs/flink_sql_development_guide/expand_statements/extend_statement.md)
 
