@@ -32,6 +32,8 @@ export default {
   'button.more': 'More',
   'button.config': 'Config',
   'button.edit': 'Edit',
+  'button.start': 'Start',
+  'button.stop': 'Stop',
   'button.assignUser': 'Assign Users',
   'button.assignRole': 'Assign Role',
   'button.changePassword': 'Change Password',

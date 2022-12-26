@@ -32,6 +32,8 @@ export default {
   'button.more': '更多',
   'button.config': '配置',
   'button.edit': '编辑',
+  'button.start': '启动',
+  'button.stop': '停止',
   'button.assignUser': '分配用户',
   'button.assignRole': '分配角色',
   'button.changePassword': '修改密码',

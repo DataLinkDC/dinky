@@ -22,7 +22,6 @@ package com.dlink.gateway.yarn;
 import com.dlink.assertion.Asserts;
 import com.dlink.gateway.GatewayType;
 import com.dlink.gateway.config.GatewayConfig;
-import com.dlink.gateway.exception.GatewayException;
 import com.dlink.gateway.result.GatewayResult;
 import com.dlink.gateway.result.YarnResult;
 import com.dlink.model.SystemConfiguration;
@@ -78,8 +77,7 @@ public class YarnPerJobGateway extends YarnGateway {
                 configuration, yarnConfiguration, yarnClient,
                 YarnClientYarnClusterInformationRetriever.create(yarnClient), true);
 
-        ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder =
-                new ClusterSpecification.ClusterSpecificationBuilder();
+        ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder = new ClusterSpecification.ClusterSpecificationBuilder();
         if (configuration.contains(JobManagerOptions.TOTAL_PROCESS_MEMORY)) {
             clusterSpecificationBuilder
                     .setMasterMemoryMB(configuration.get(JobManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes());
@@ -129,10 +127,5 @@ public class YarnPerJobGateway extends YarnGateway {
             yarnClusterDescriptor.close();
         }
         return result;
-    }
-
-    @Override
-    public GatewayResult submitJar() {
-        throw new GatewayException("Couldn't deploy Yarn Per-Job Cluster with User Application Jar.");
     }
 }
