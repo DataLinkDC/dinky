@@ -536,6 +536,8 @@ export default {
   'pages.rc.clusterConfig.modify': '修改集群',
   'pages.rc.clusterConfig.delete': '删除集群配置',
   'pages.rc.clusterConfig.deleteConfirm': '确定删除该集群配置吗？',
+  'pages.rc.clusterConfig.start': '启动 Session 集群',
+  'pages.rc.clusterConfig.startConfirm': '确定通过该集群配置启动 Session 集群吗？',
   'pages.rc.clusterConfig.enable': '启用集群配置',
   'pages.rc.clusterConfig.enableConfirm': '您确定要启用此集群配置吗？',
   'pages.rc.clusterConfig.disable': '禁用集群配置',

@@ -530,6 +530,8 @@ export default {
   'pages.rc.clusterConfig.modify': 'Modify Cluster Config',
   'pages.rc.clusterConfig.delete': 'Delete Cluster Config',
   'pages.rc.clusterConfig.deleteConfirm': 'Are you sure you want to delete this  Cluster Config? ',
+  'pages.rc.clusterConfig.start': 'Start Session Cluster',
+  'pages.rc.clusterConfig.startConfirm': 'Are you sure you want to start session cluster by this cluster config? ',
   'pages.rc.clusterConfig.enable': 'Enable Cluster Config',
   'pages.rc.clusterConfig.enableConfirm': 'Are you sure you want to enable this  Cluster Config? ',
   'pages.rc.clusterConfig.disable': 'Disable Cluster Config',

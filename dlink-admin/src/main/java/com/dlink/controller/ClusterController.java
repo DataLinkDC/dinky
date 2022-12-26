@@ -186,6 +186,14 @@ public class ClusterController {
                 clusterService.killCluster(item.asInt());
             }
         }
-        return Result.succeed("Kill Cluster Succeed.");
+        return Result.succeed("Kill cluster succeed.");
+    }
+
+    /**
+     * 启动 Session 集群
+     */
+    @GetMapping("/deploySessionCluster")
+    public Result deploySessionCluster(@RequestParam("id") Integer id) {
+        return Result.succeed(clusterService.deploySessionCluster(id), "Deploy session cluster succeed.");
     }
 }
