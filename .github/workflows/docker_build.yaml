@@ -82,4 +82,4 @@ jobs:
           file: DockerfileMysql
           context: .
           push: true
-          tags: ${{ matrix.url }}/${{ matrix.namespace }}/dinky-mysql-server
+          tags: ${{ matrix.url }}/${{ matrix.namespace }}/dinky-mysql-server:${{ inputs.version }}
