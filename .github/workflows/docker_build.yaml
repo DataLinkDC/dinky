@@ -70,13 +70,16 @@ jobs:
             namespace: dinkydocker
     steps:
       - uses: actions/checkout@v3
-      - name: build docker dinky mysql image
-        run: docker build . --file DockerfileMysql --tag ${{ matrix.url }}/${{ matrix.namespace }}/dinky-mysql-server:${{ inputs.version }}
-      - name: push docker dinky mysql image
-        if: ${{ matrix.url }} == 'registry.cn-hangzhou.aliyuncs.com'
-        uses: docker/build-push-action@v1
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
         with:
+          registry: ${{ matrix.url }}
           username: ${{ secrets.DOCKER_ALIYUN_USER }}
           password: ${{ secrets.DOCKER_ALIYUN_PASS }}
-          repository: ${{ matrix.url }}/${{ matrix.namespace }}/dinky-mysql-server
-          tags: ${{ inputs.version }}
+      - name: push docker dinky mysql image
+        uses: docker/build-push-action@v2
+        with:
+          file: DockerfileMysql
+          context: .
+          push: true
+          tags: ${{ matrix.url }}/${{ matrix.namespace }}/dinky-mysql-server
