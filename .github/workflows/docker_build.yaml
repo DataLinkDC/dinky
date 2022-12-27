@@ -57,8 +57,8 @@ jobs:
                  -Dspotless.check.skip=true \
                  -P prod,scala-2.12,all,web,maven-central,fast \
                  --no-snapshot-updates
-  build_docker_dinky_image:
-    name: build docker dinky  image
+  docker_env_init:
+    name: docker env init
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
@@ -85,6 +85,12 @@ jobs:
           registry: ${{ matrix.url }}
           username: ${{ secrets.DOCKER_IO_USER }}
           password: ${{ secrets.DOCKER_IO_PASS }}
+
+  build_docker_dinky_mysql_image:
+    name: build docker dinky mysql image
+    runs-on: ubuntu-latest
+    needs: [docker_env_init]
+    steps:
       - name: push docker dinky mysql image
         uses: docker/build-push-action@v2
         with:
