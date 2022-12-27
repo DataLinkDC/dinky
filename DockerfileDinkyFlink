@@ -1,0 +1,18 @@
+#ARG DINKY_VERSION=${DINKY_VERSION}
+#ARG FLINK_VERSION=${FLINK_VERSION}
+
+FROM flink:${FLINK_VERSION} as reqired-stage
+
+FROM ${DINKY_IMAGE} as build-stage
+
+FROM ibmjava:8-sfj as production-stage
+
+USER root
+
+COPY --from=build-stage /opt/dinky/ /opt/dinky/
+COPY --from=reqired-stage  /opt/flink/lib/*.jar  /opt/dinky/plugins/flink${FLINK_BIG_VERSION}
+WORKDIR /opt/dinky/
+
+EXPOSE 8888
+
+CMD  ./auto.sh restart && tail -f /opt/dinky/logs/dlink.log

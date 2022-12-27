@@ -1,0 +1,84 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+name: Docker Build
+
+inputs:
+  version:
+    description: 'dinky version'
+    required: true
+
+on:
+  push:
+    branches:
+      - dev
+  workflow_dispatch:
+
+jobs:
+  build_releases:
+    name: build releases
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      # maven编译
+      - name: Set up JDK 8
+        uses: actions/setup-java@v2
+        with:
+          java-version: 8
+          distribution: 'adopt'
+      - name: Cache local Maven repository
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.m2/repository/*/*/*
+          key: ${{ runner.os }}-maven-${{ hashFiles('pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Check Style
+        run: |
+          ./mvnw -T 4C -B --no-snapshot-updates clean spotless:check
+      - name: Build and Package
+        run: |
+          ./mvnw -B clean install \
+                 -P prod,scala-2.12,all,web,maven-central \
+                 --no-snapshot-updates
+  build_docker_dinky_image:
+    name: build docker dinky  image
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        url: [ registry.cn-hangzhou.aliyuncs.com , docker.io]
+        include:
+          - url: registry.cn-hangzhou.aliyuncs.com
+            user: ${{ secrets.DOCKER_ALIYUN_USER }}
+            pass: ${{ secrets.DOCKER_ALIYUN_PASS }}
+            namespace: ${{ secrets.DOCKER_ALIYUN_NAMESPACE }}
+          - url: docker.io
+            user: ${{ secrets.DOCKER_IO_USER }}
+            pass: ${{ secrets.DOCKER_IO_PASS }}
+            namespace: ${{ secrets.DOCKER_IO_NAMESPACE }}
+    steps:
+      - name: build docker dinky mysql image
+        run: docker build . --file DockerfileMysql --tag ${{ matrix.url }}/${{ matrix.namespace }}/dinky-mysql-server:${{ inputs.version }}
+      - name: push docker dinky mysql image
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ matrix.user }}
+          password: ${{ matrix.pass }}
+          repository: ${{ matrix.url }}/${{ matrix.namespace }}/dinky-mysql-server
+          tags: ${{ inputs.version }}
