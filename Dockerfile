@@ -1,6 +1,6 @@
 FROM ibmjava:8-sfj as build-stage
 
-ADD dlink-release-${DINKY_VERSION}.tar.gz  /opt/
+ADD ./build/dlink-release-${DINKY_VERSION}.tar.gz  /opt/
 
 USER root
 RUN mv /opt/dlink-release-${DINKY_VERSION} /opt/dinky/

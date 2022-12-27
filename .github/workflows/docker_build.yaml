@@ -58,7 +58,7 @@ jobs:
                  -P prod,scala-2.12,all,web,maven-central,fast \
                  --no-snapshot-updates
   dinky_mysql_image:
-    name: build docker dinky mysql image
+    name: dinky mysql image
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
@@ -94,7 +94,7 @@ jobs:
           tags: ${{ matrix.url }}/${{ matrix.namespace }}/dinky-mysql-server:${{ inputs.version }}
 
   dinky_image:
-    name: build docker dinky  image
+    name: docker dinky image
     runs-on: ubuntu-latest
     needs: [build_releases]
     strategy:
@@ -125,9 +125,9 @@ jobs:
           password: ${{ secrets.DOCKER_IO_PASS }}
       - name: push docker dinky image
         uses: docker/build-push-action@v2
-        env:
-          DINKY_VERSION: ${{ inputs.version }}
         with:
+          build-args: |
+            DINKY_VERSION=${{ inputs.version }}
           file: Dockerfile
           context: .
           push: true
