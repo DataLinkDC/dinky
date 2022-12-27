@@ -20,9 +20,6 @@ name: Docker Build
 
 
 on:
-  push:
-    branches:
-      - dev
   workflow_dispatch:
     inputs:
       version:
@@ -66,20 +63,19 @@ jobs:
         url: [ registry.cn-hangzhou.aliyuncs.com , docker.io]
         include:
           - url: registry.cn-hangzhou.aliyuncs.com
-            user: ${{ secrets.DOCKER_ALIYUN_USER }}
-            pass: ${{ secrets.DOCKER_ALIYUN_PASS }}
-            namespace: ${{ secrets.DOCKER_ALIYUN_NAMESPACE }}
+            namespace: dinky
           - url: docker.io
-            user: ${{ secrets.DOCKER_IO_USER }}
-            pass: ${{ secrets.DOCKER_IO_PASS }}
-            namespace: ${{ secrets.DOCKER_IO_NAMESPACE }}
+#            user: ${{ secrets.DOCKER_IO_USER }}
+#            pass: ${{ secrets.DOCKER_IO_PASS }}
+            namespace: dinkydocker
     steps:
       - name: build docker dinky mysql image
         run: docker build . --file DockerfileMysql --tag ${{ matrix.url }}/${{ matrix.namespace }}/dinky-mysql-server:${{ inputs.version }}
       - name: push docker dinky mysql image
+        if: ${{ matrix.url }} == 'registry.cn-hangzhou.aliyuncs.com'
         uses: docker/build-push-action@v1
         with:
-          username: ${{ matrix.user }}
-          password: ${{ matrix.pass }}
+          username: ${{ secrets.DOCKER_ALIYUN_USER }}
+          password: ${{ secrets.DOCKER_ALIYUN_PASS }}
           repository: ${{ matrix.url }}/${{ matrix.namespace }}/dinky-mysql-server
           tags: ${{ inputs.version }}
