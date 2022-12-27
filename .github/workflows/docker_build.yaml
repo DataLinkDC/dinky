@@ -69,6 +69,7 @@ jobs:
 #            pass: ${{ secrets.DOCKER_IO_PASS }}
             namespace: dinkydocker
     steps:
+      - uses: actions/checkout@v3
       - name: build docker dinky mysql image
         run: docker build . --file DockerfileMysql --tag ${{ matrix.url }}/${{ matrix.namespace }}/dinky-mysql-server:${{ inputs.version }}
       - name: push docker dinky mysql image
