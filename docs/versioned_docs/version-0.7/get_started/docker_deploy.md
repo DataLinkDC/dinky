@@ -28,8 +28,10 @@ docker run --restart=always -p 8888:8888 -p 8081:8081  -e MYSQL_ADDR=dinky-mysql
 ```shell
 docker run --restart=always -p 8888:8888 -p 8081:8081  -e MYSQL_ADDR=10.255.7.3:33006 --name dinky dinkydocker/dinky-standalone-server:0.7.0-flink14
 ```
-> 如果 `docker image` 需要加速的，请把 `dinkydocker` 替换成 `registry.cn-hangzhou.aliyuncs.com/dinky`
+:::tip 说明
+如果 `docker image` 需要加速的，请把 `dinkydocker` 替换成 `registry.cn-hangzhou.aliyuncs.com/dinky`
+:::
 
 ---
-### 使用docker-compose 
+### 使用docker-compose
 待定
