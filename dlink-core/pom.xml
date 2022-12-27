@@ -304,5 +304,96 @@
                 </dependency>
             </dependencies>
         </profile>
+
+        <profile>
+            <id>all</id>
+            <dependencies>
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-client-1.11</artifactId>
+                    <scope>${scope.runtime}</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-flink-1.11</artifactId>
+                    <scope>${scope.runtime}</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-client-1.12</artifactId>
+                    <scope>${scope.runtime}</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-flink-1.12</artifactId>
+                    <scope>${scope.runtime}</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-client-1.13</artifactId>
+                    <scope>${scope.runtime}</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-catalog-mysql-1.13</artifactId>
+                    <scope>${scope.runtime}</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-flink-1.13</artifactId>
+                    <scope>${scope.runtime}</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-client-1.14</artifactId>
+                    <scope>${scope.runtime}</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-catalog-mysql-1.14</artifactId>
+                    <scope>${scope.runtime}</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-flink-1.14</artifactId>
+                    <scope>${scope.runtime}</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-client-1.15</artifactId>
+                    <scope>${scope.runtime}</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-catalog-mysql-1.15</artifactId>
+                    <scope>${scope.runtime}</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-flink-1.15</artifactId>
+                    <scope>${scope.runtime}</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-client-1.16</artifactId>
+                    <scope>${scope.runtime}</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-catalog-mysql-1.16</artifactId>
+                    <scope>${scope.runtime}</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-flink-1.16</artifactId>
+                    <scope>${scope.runtime}</scope>
+                </dependency>
+            </dependencies>
+        </profile>
     </profiles>
 </project>

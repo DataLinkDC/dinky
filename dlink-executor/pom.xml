@@ -205,5 +205,26 @@
                 </dependency>
             </dependencies>
         </profile>
+
+        <profile>
+            <id>all</id>
+            <dependencies>
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-client-${dlink.flink.version}</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-flink-${dlink.flink.version}</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.fasterxml.jackson.datatype</groupId>
+                    <artifactId>jackson-datatype-jsr310</artifactId>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
     </profiles>
 </project>
