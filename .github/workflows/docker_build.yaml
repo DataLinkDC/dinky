@@ -57,6 +57,11 @@ jobs:
                  -Dspotless.check.skip=true \
                  -P prod,scala-2.12,all,web,maven-central,fast \
                  --no-snapshot-updates
+      - name: Upload release file
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-file
+          path: ./build/dlink-release-*.tar.gz
   dinky_mysql_image:
     name: dinky mysql image
     runs-on: ubuntu-latest
@@ -108,6 +113,11 @@ jobs:
           - url: docker.io
             namespace: dinkydocker
     steps:
+      - name: Download math result for job 1
+        uses: actions/download-artifact@v3
+        with:
+          name: release-file
+          path: ./build/
       - uses: actions/checkout@v3
       - name: Log in to the Container registry,url -> ${{ matrix.url }}
         if: ${{ matrix.url == 'registry.cn-hangzhou.aliyuncs.com'}}
