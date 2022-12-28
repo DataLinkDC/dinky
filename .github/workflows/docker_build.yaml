@@ -161,7 +161,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: set the flink_big_version
-        id: set one
         run: |
           echo FLINK_BIG_VERSION=${FLINK_VERSION%.*} >> $GITHUB_ENV
       - name: Download math result for job 1
