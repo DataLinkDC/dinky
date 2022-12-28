@@ -193,4 +193,4 @@ jobs:
           file: DockerfileDinkyFlink
           context: .
           push: true
-          tags: ${{ matrix.url }}/${{ matrix.namespace }}/dinky-standalone-server:${{ inputs.version }}-flink${{ FLINK_BIG_VERSION }}
+          tags: ${{ matrix.url }}/${{ matrix.namespace }}/dinky-standalone-server:${{ inputs.version }}-flink${{ env.FLINK_BIG_VERSION }}
