@@ -27,8 +27,7 @@ jobs:
       - name: Build documentation
         run: |
           cd docs && npm install --prefer-offline --no-audit --progress=false --legacy-peer-deps \
-          &&  npm run build \
-          && npm run deploy
+          &&  npm run build
       - name: Upload documentation
         uses: burnett01/rsync-deployments@5.2
         with:
