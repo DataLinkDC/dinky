@@ -142,3 +142,55 @@ jobs:
           context: .
           push: true
           tags: ${{ matrix.url }}/${{ matrix.namespace }}/dinky-standalone-server:${{ inputs.version }}
+
+
+  dinky_flink_image:
+    name: docker dinky flink image
+    runs-on: ubuntu-latest
+    needs: [ dinky_image ]
+    strategy:
+      fail-fast: true
+      matrix:
+        url: [ registry.cn-hangzhou.aliyuncs.com ,docker.io ]
+        FLINK_VERSION: [1.11.6 , 1.12.7 , 1.13.6 , 1.14.6 , 1.15.2 , 1.16.0]
+        include:
+          - url: registry.cn-hangzhou.aliyuncs.com
+            namespace: dinky
+          - url: docker.io
+            namespace: dinkydocker
+    steps:
+      - uses: actions/checkout@v3
+      - name: set the flink_big_version
+        id: set one
+        run: |
+          echo FLINK_BIG_VERSION=${FLINK_VERSION%.*} >> $GITHUB_ENV
+      - name: Download math result for job 1
+        uses: actions/download-artifact@v3
+        with:
+          name: release-file
+          path: ./build/
+      - name: Log in to the Container registry,url -> ${{ matrix.url }}
+        if: ${{ matrix.url == 'registry.cn-hangzhou.aliyuncs.com'}}
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ matrix.url }}
+          username: ${{ secrets.DOCKER_ALIYUN_USER }}
+          password: ${{ secrets.DOCKER_ALIYUN_PASS }}
+      - name: Log in to the Container registry,url -> ${{ matrix.url }}
+        if: ${{ matrix.url == 'docker.io'}}
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ matrix.url }}
+          username: ${{ secrets.DOCKER_IO_USER }}
+          password: ${{ secrets.DOCKER_IO_PASS }}
+      - name: push docker dinky image
+        uses: docker/build-push-action@v2
+        with:
+          build-args: |
+            FLINK_VERSION=${{ matrix.FLINK_VERSION }}
+            DINKY_IMAGE=${{ matrix.url }}/${{ matrix.namespace }}/dinky-standalone-server:${{ inputs.version }}
+            FLINK_BIG_VERSION=${{ env.FLINK_BIG_VERSION }}
+          file: DockerfileDinkyFlink
+          context: .
+          push: true
+          tags: ${{ matrix.url }}/${{ matrix.namespace }}/dinky-standalone-server:${{ inputs.version }}-flink${{ FLINK_BIG_VERSION }}
