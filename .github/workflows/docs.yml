@@ -21,7 +21,6 @@ on:
 
 jobs:
   build-documentation:
-    if: github.repository == 'apache/flink'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
