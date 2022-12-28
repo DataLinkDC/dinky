@@ -1,6 +1,6 @@
 ---
-sidebar_position: 2
-id: deploy
+sidebar_position: 3
+id: build
 title: 部署
 ---
 
