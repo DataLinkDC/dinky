@@ -113,12 +113,12 @@ jobs:
           - url: docker.io
             namespace: dinkydocker
     steps:
+      - uses: actions/checkout@v3
       - name: Download math result for job 1
         uses: actions/download-artifact@v3
         with:
           name: release-file
           path: ./build/
-      - uses: actions/checkout@v3
       - name: Log in to the Container registry,url -> ${{ matrix.url }}
         if: ${{ matrix.url == 'registry.cn-hangzhou.aliyuncs.com'}}
         uses: docker/login-action@v2
