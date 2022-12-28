@@ -33,7 +33,7 @@ jobs:
         uses: burnett01/rsync-deployments@5.2
         with:
           switches: --archive --compress
-          path: docs/target/
+          path: docs/build/
           remote_path: /root/test
           remote_host: ${{ secrets.RSYNC_HOST }}
           remote_port: ${{ secrets.RSYNC_PORT }}
