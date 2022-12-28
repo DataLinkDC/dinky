@@ -1,6 +1,5 @@
 ARG DINKY_VERSION
 ARG FLINK_VERSION
-ARG FLINK_BIG_VERSION
 
 FROM flink:${FLINK_VERSION} as reqired-stage
 
@@ -9,6 +8,8 @@ FROM ${DINKY_IMAGE} as build-stage
 FROM ibmjava:8-sfj as production-stage
 
 USER root
+ARG FLINK_BIG_VERSION
+
 ENV FLINK_BIG_VERSION=${FLINK_BIG_VERSION}
 
 COPY --from=build-stage /opt/dinky/ /opt/dinky/

@@ -1,6 +1,6 @@
-ARG DINKY_VERSION
 FROM ibmjava:8-sfj as build-stage
 
+ARG DINKY_VERSION
 ENV DINKY_VERSION=${DINKY_VERSION}
 
 ADD ./build/dlink-release-${DINKY_VERSION}.tar.gz  /opt/

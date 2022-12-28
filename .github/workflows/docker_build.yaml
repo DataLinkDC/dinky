@@ -96,7 +96,7 @@ jobs:
   dinky_image:
     name: docker dinky image
     runs-on: ubuntu-latest
-    needs: [build_releases]
+#    needs: [build_releases]
     strategy:
       fail-fast: true
       matrix:
