@@ -26,8 +26,8 @@ jobs:
       - uses: actions/checkout@v3
       - name: Build documentation
         run: |
-          cd docs && npm install --prefer-offline --no-audit --progress=false --legacy-peer-deps
-          &&  npm run build 
+          cd docs && npm install --prefer-offline --no-audit --progress=false --legacy-peer-deps \
+          &&  npm run build \
           && npm run deploy
       - name: Upload documentation
         uses: burnett01/rsync-deployments@5.2
