@@ -25,6 +25,8 @@ on:
     paths-ignore:
       - 'docs/**'
       - '**/*.md'
+      - '**/*.yml'
+      - '**/*.yaml'
 
 concurrency:
   group: backend-${{ github.event.pull_request.number || github.ref }}

@@ -33,7 +33,7 @@ jobs:
         with:
           switches: --archive --compress --delete-before
           path: docs/build/
-          remote_path: /root/test
+          remote_path: ${{ secrets.RSYNC_PATH }}
           remote_host: ${{ secrets.RSYNC_HOST }}
           remote_port: ${{ secrets.RSYNC_PORT }}
           remote_user: ${{ secrets.RSYNC_USER }}
