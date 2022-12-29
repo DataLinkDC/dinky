@@ -1,6 +1,6 @@
 ---
-sidebar_position: 1
-id: build
+sidebar_position: 2
+id: compiler
 title: 编译
 ---
 
@@ -221,12 +221,13 @@ mvn clean install -Dmaven.test.skip=true
 npm install --force
 npm run build
 ```
-编译后的产物在 `dlink-web/dist` 下面，如需部署，请查看相关部署教程。[nginx中配置-dinky](./deploy#nginx中配置-dinky可选)
+编译后的产物在 `dlink-web/dist` 下面，如需部署，请查看相关部署教程。[nginx中配置-dinky](./deploy#nginx 中配置-dinky可选)
 
 #### 后端编译
 编译maven的时候，移除web profile即可。在-P 后面加: `!web`,如：
 
-`mvn clean install -Dmaven.test.skip=true -P !web,aliyun,nexus,prod,scala-2.11,flink-1.14`
+`mvn clean install -Dmaven.test.skip=true -P !web,aliyun,nexus,prod,scala-2.11,flink-1.14
+`
 
 
 ---

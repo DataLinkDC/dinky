@@ -263,6 +263,17 @@ EXECUTE CDCSOURCE jobname WITH (
 - 按照示例格式书写，且一个 FlinkSQL 任务只能写一个 CDCSOURCE。
 - 配置项中的英文逗号前不能加空格，需要紧随右单引号。
 - 禁用全局变量、语句集、批模式。
-- 目前不支持 Application 模式，后续支持。
 
 :::
+
+>  目前已经支持 `application` ，需提前准备好相关jar包，或者 和 `add jar`语法并用。以 `mysql cdc-2.3.0` - `flink-1.14 ` 为例，需要如下jar
+
+* flink-shaded-guava-18.0-13.0.jar
+* HikariCP-4.0.3.jar
+* druid-1.2.8.jar
+* dlink-metadata-mysql-0.7.0.jar
+* dlink-metadata-base-0.7.0.jar
+* jackson-datatype-jsr310-2.13.4.jar
+* flink-sql-connector-mysql-cdc-2.3.0.jar
+* dlink-client-1.14-0.7.0.jar
+![cdcsource_example.png](http://www.aiwenmo.com/dinky/dev/docs/cdcsource_example.png)
