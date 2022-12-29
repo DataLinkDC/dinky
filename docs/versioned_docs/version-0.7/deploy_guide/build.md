@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-id: build
+id: compiler
 title: 编译
 ---
 
