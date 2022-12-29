@@ -20,14 +20,15 @@
 package com.dlink.trans;
 
 import com.dlink.parser.SqlType;
-import lombok.extern.slf4j.Slf4j;
-import org.reflections.Reflections;
-import org.reflections.scanners.Scanners;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Set;
 
+import org.reflections.Reflections;
+import org.reflections.scanners.Scanners;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Operations
@@ -49,8 +50,8 @@ public class Operations {
         return operations.stream().filter(t -> !t.isInterface()).map(t -> {
             try {
                 return t.getConstructor().newInstance();
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                     NoSuchMethodException e) {
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException
+                    | NoSuchMethodException e) {
                 log.error(String.format("getAllOperations error, class %s, err: %s", t, e));
                 throw new RuntimeException(e);
             }
