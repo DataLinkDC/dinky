@@ -37,6 +37,8 @@ import com.dlink.explainer.trans.TransGenerator;
 import com.dlink.function.data.model.UDF;
 import com.dlink.function.util.UDFUtil;
 import com.dlink.interceptor.FlinkInterceptor;
+import com.dlink.job.JobConfig;
+import com.dlink.job.JobManager;
 import com.dlink.job.JobParam;
 import com.dlink.job.StatementParam;
 import com.dlink.model.LineageRel;
@@ -108,6 +110,12 @@ public class Explainer {
 
     public static Explainer build(Executor executor, boolean useStatementSet, String sqlSeparator) {
         return new Explainer(executor, useStatementSet, sqlSeparator);
+    }
+
+    public Explainer initialize(JobManager jobManager, JobConfig config, String statement) {
+        jobManager.initClassLoader(config);
+        jobManager.initUDF(pretreatStatements(SqlUtil.getStatements(statement, sqlSeparator)).getUdfList());
+        return this;
     }
 
     public JobParam pretreatStatements(String[] statements) {
@@ -537,6 +545,11 @@ public class Explainer {
     }
 
     public List<LineageRel> getLineage(String statement) {
+        JobConfig jobConfig = new JobConfig("local", false, false, true, useStatementSet, 1,
+                executor.getTableConfig().getConfiguration().toMap());
+        JobManager jm = JobManager.buildPlanMode(jobConfig);
+        this.initialize(jm, jobConfig, statement);
+
         String[] sqls = SqlUtil.getStatements(statement, sqlSeparator);
         List<LineageRel> lineageRelList = new ArrayList<>();
         for (String item : sqls) {
