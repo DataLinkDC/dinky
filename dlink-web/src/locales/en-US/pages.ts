@@ -128,6 +128,7 @@ export default {
   'pages.datastudio.editor.recovery.job.success': 'The recovery job [{jobName}] succeeded',
   'pages.datastudio.editor.api.doc': 'API Manual',
   'pages.datastudio.editor.usehelp': 'Use help',
+  'pages.datastudio.editor.clearConsole': 'Clear Console',
   'pages.datastudio.editor.fullScreen': 'FullScreen Development',
   'pages.datastudio.editor.fullScreen.exit': 'Exit FullScreen',
   'pages.datastudio.editor.save': 'Save the current FlinkSql and Config',

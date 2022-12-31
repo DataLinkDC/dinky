@@ -34,4 +34,6 @@ public interface ProcessService {
     List<ProcessEntity> listAllProcess(boolean active);
 
     String getConsoleByUserId(Integer userId);
+
+    void clearConsoleByUserId(Integer userId);
 }

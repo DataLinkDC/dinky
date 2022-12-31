@@ -57,4 +57,10 @@ public class ProcessController {
     public Result<String> getConsoleByUserId() {
         return Result.data(processService.getConsoleByUserId(StpUtil.getLoginIdAsInt()));
     }
+
+    @GetMapping("/clearConsole")
+    public Result<String> clearConsole() {
+        processService.clearConsoleByUserId(StpUtil.getLoginIdAsInt());
+        return Result.succeed("Clear succeed.");
+    }
 }

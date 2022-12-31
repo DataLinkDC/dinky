@@ -24,6 +24,7 @@ import {
   ApiTwoTone,
   CameraTwoTone,
   CarryOutTwoTone,
+  ClearOutlined,
   ClusterOutlined,
   CodeTwoTone,
   DeleteTwoTone,
@@ -56,7 +57,7 @@ import TaskAPI from "@/pages/API/TaskAPI";
 import StudioHelp from "./StudioHelp";
 import StudioGraph from "./StudioGraph";
 import {
-  cancelTask,
+  cancelTask, clearConsole,
   developTask,
   offLineTask,
   onLineTask,
@@ -322,6 +323,10 @@ const StudioMenu = (props: any) => {
     }
   };
 
+  const toClearConsole = () => {
+    clearConsole();
+  };
+
   const saveSqlAndSettingToTask = () => {
     props.saveTask(current);
   };
@@ -557,7 +562,7 @@ const StudioMenu = (props: any) => {
       <Divider className={styles["ant-divider-horizontal-0"]}/>
       <Col span={24}>
         <Row>
-          <Col span={16}>
+          <Col span={12}>
             <Breadcrumb className={styles["dw-path"]}>
               <EnvironmentOutlined style={{lineHeight: '32px'}}/>
               <Divider type="vertical" style={{height: 'unset'}}/>
@@ -579,7 +584,14 @@ const StudioMenu = (props: any) => {
               )}
           </Col>
           {current?.task ?
-            <Col span={8}>
+            <Col span={12}>
+              <Tooltip title={l('pages.datastudio.editor.clearConsole')}>
+                <Button
+                  type="text"
+                  icon={<ClearOutlined style={{color:'#1890ff'}}/>}
+                  onClick={toClearConsole}
+                />
+              </Tooltip>
               <Tooltip title={l('pages.datastudio.editor.fullScreen')}>
                 <Button
                   type="text"

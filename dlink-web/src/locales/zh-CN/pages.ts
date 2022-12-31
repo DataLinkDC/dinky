@@ -129,6 +129,7 @@ export default {
   'pages.datastudio.editor.recovery.job.success': '恢复作业【{jobName}】成功',
   'pages.datastudio.editor.api.doc': ' API 手册',
   'pages.datastudio.editor.usehelp': '使用帮助',
+  'pages.datastudio.editor.clearConsole': '清空控制台',
   'pages.datastudio.editor.fullScreen': '全屏开发',
   'pages.datastudio.editor.fullScreen.exit': '退出全屏',
   'pages.datastudio.editor.save': '保存当前的 FlinkSql 及配置',

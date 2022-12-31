@@ -60,4 +60,9 @@ public class ProcessServiceImpl implements ProcessService {
             return "";
         }
     }
+
+    @Override
+    public void clearConsoleByUserId(Integer userId) {
+        ConsolePool.clear(userId);
+    }
 }

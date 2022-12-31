@@ -54,4 +54,9 @@ public class ConsolePool extends AbstractPool<StringBuilder> {
         String user = String.valueOf(userId);
         consoleEntityMap.computeIfAbsent(user, k -> new StringBuilder("Dinky User Console:")).append(str);
     }
+
+    public static void clear(Integer userId) {
+        String user = String.valueOf(userId);
+        consoleEntityMap.put(user, new StringBuilder("Dinky User Console:"));
+    }
 }
