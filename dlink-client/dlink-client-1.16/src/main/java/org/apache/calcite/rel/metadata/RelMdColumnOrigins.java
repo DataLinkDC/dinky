@@ -232,7 +232,6 @@ public class RelMdColumnOrigins implements MetadataHandler<BuiltInMetadata.Colum
         return null;
     }
 
-
     /**
      * Support the field blood relationship of ROW_NUMBER()
      */
@@ -250,13 +249,10 @@ public class RelMdColumnOrigins implements MetadataHandler<BuiltInMetadata.Colum
             if (!rel.groups.isEmpty()) {
                 Window.Group group = rel.groups.get(groupIndex);
                 // process partition by keys
-                group.keys.asList().forEach(index ->
-                    set.addAll(mq.getColumnOrigins(input, index))
-                );
+                group.keys.asList().forEach(index -> set.addAll(mq.getColumnOrigins(input, index)));
                 // process order by keys
-                group.orderKeys.getFieldCollations().forEach(e ->
-                    set.addAll(mq.getColumnOrigins(input, e.getFieldIndex()))
-                );
+                group.orderKeys.getFieldCollations()
+                        .forEach(e -> set.addAll(mq.getColumnOrigins(input, e.getFieldIndex())));
             }
             return set;
         }

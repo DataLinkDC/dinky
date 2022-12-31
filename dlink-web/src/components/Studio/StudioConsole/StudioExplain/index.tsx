@@ -84,10 +84,15 @@ const StudioExplain = (props: any) => {
     result.then(res => {
       const errorExplainData: [] = [];
       let errorCount: number = 0;
-      for (let i in res.datas) {
-        if (!res.datas[i].explainTrue || !res.datas[i].parseTrue) {
-          errorExplainData.push(res.datas[i]);
-          errorCount++;
+      if(!res.datas){
+        setResult(<Text type="danger">{res.msg}</Text>);
+        return;
+      }else{
+        for (let i in res.datas) {
+          if (!res.datas[i].explainTrue || !res.datas[i].parseTrue) {
+            errorExplainData.push(res.datas[i]);
+            errorCount++;
+          }
         }
       }
       if (errorCount == 0) {
