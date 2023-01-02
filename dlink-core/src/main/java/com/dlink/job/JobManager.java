@@ -290,7 +290,9 @@ public class JobManager {
     }
 
     public void initUDF(List<UDF> udfList) {
-        initUDF(udfList, runMode, config.getTaskId());
+        if (Asserts.isNotNullCollection(udfList)) {
+            initUDF(udfList, runMode, config.getTaskId());
+        }
     }
 
     public void initUDF(List<UDF> udfList, GatewayType runMode, Integer taskId) {

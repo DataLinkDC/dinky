@@ -114,7 +114,7 @@ public class Explainer {
 
     public Explainer initialize(JobManager jobManager, JobConfig config, String statement) {
         jobManager.initClassLoader(config);
-        jobManager.initUDF(pretreatStatements(SqlUtil.getStatements(statement, sqlSeparator)).getUdfList());
+        jobManager.initUDF(parseUDFFromStatements(SqlUtil.getStatements(statement, sqlSeparator)));
         return this;
     }
 
@@ -145,12 +145,29 @@ public class Explainer {
             } else if (operationType.equals(SqlType.EXECUTE)) {
                 execute.add(new StatementParam(statement, operationType));
             } else {
-                udfList.add(UDFUtil.toUDF(statement));
+                UDF udf = UDFUtil.toUDF(statement);
+                if (Asserts.isNotNull(udf)) {
+                    udfList.add(UDFUtil.toUDF(statement));
+                }
                 ddl.add(new StatementParam(statement, operationType));
                 statementList.add(statement);
             }
         }
         return new JobParam(statementList, ddl, trans, execute, CollUtil.removeNull(udfList));
+    }
+
+    public List<UDF> parseUDFFromStatements(String[] statements) {
+        List<UDF> udfList = new ArrayList<>();
+        for (String statement : statements) {
+            if (statement.isEmpty()) {
+                continue;
+            }
+            UDF udf = UDFUtil.toUDF(statement);
+            if (Asserts.isNotNull(udf)) {
+                udfList.add(UDFUtil.toUDF(statement));
+            }
+        }
+        return udfList;
     }
 
     public List<SqlExplainResult> explainSqlResult(String statement) {
