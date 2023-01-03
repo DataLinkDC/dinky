@@ -30,6 +30,7 @@ import com.dlink.model.ColumnType;
  * @since 2021/7/20 15:21
  **/
 public class MySqlTypeConvert implements ITypeConvert {
+
     @Override
     public ColumnType convert(Column column) {
         ColumnType columnType = ColumnType.STRING;
@@ -58,7 +59,7 @@ public class MySqlTypeConvert implements ITypeConvert {
             } else {
                 columnType = ColumnType.DOUBLE;
             }
-        } else if (t.contains("boolean") || t.contains("tinyint(1)") || t.contains("bit")) {
+        } else if (t.contains("boolean") || (t.contains("tinyint") && column.getLength() == 1) || t.contains("bit")) {
             if (isNullable) {
                 columnType = ColumnType.JAVA_LANG_BOOLEAN;
             } else {
