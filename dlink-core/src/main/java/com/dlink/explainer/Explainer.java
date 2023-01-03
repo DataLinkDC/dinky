@@ -114,7 +114,8 @@ public class Explainer {
 
     public Explainer initialize(JobManager jobManager, JobConfig config, String statement) {
         jobManager.initClassLoader(config);
-        jobManager.initUDF(parseUDFFromStatements(SqlUtil.getStatements(statement, sqlSeparator)));
+        String[] statements = SqlUtil.getStatements(SqlUtil.removeNote(statement), sqlSeparator);
+        jobManager.initUDF(parseUDFFromStatements(statements));
         return this;
     }
 
