@@ -734,6 +734,7 @@ export default {
   'pages.rc.db.isNull': 'Not Null',
   'pages.rc.db.null': 'Nullable',
   'pages.rc.db.default': 'Default',
+  'pages.rc.db.length': 'Length',
   'pages.rc.db.precision': 'Precision',
   'pages.rc.db.decimalDigits': 'Decimal Digits',
   'pages.rc.db.character': 'Character Set',

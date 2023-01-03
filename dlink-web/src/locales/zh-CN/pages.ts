@@ -736,6 +736,7 @@ export default {
   'pages.rc.db.isNull': '非空',
   'pages.rc.db.null': '可为空',
   'pages.rc.db.default': '默认值',
+  'pages.rc.db.length': '长度',
   'pages.rc.db.precision': '精度',
   'pages.rc.db.decimalDigits': '小数范围',
   'pages.rc.db.character': '字符集',
