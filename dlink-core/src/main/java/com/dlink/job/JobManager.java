@@ -103,6 +103,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
@@ -288,7 +289,16 @@ public class JobManager {
         temp.put(PipelineOptions.JARS.key(), jarList.stream().map(URL::toString).collect(Collectors.toList()));
     }
 
-    private void initUDF(List<UDF> udfList) {
+    public void initUDF(List<UDF> udfList) {
+        if (Asserts.isNotNullCollection(udfList)) {
+            initUDF(udfList, runMode, config.getTaskId());
+        }
+    }
+
+    public void initUDF(List<UDF> udfList, GatewayType runMode, Integer taskId) {
+        if (taskId == null) {
+            taskId = -RandomUtil.randomInt(0, 1000);
+        }
         ProcessEntity process = ProcessContextHolder.getProcess();
 
         // 这里要分开
@@ -298,7 +308,7 @@ public class JobManager {
         Set<File> otherPluginsFiles = JarPathContextHolder.getOtherPluginsFiles();
         jarFiles.addAll(otherPluginsFiles);
 
-        List<File> udfJars = Arrays.stream(UDFUtil.initJavaUDF(udfList, runMode, config.getTaskId())).map(File::new)
+        List<File> udfJars = Arrays.stream(UDFUtil.initJavaUDF(udfList, runMode, taskId)).map(File::new)
                 .collect(Collectors.toList());
         jarFiles.addAll(udfJars);
 
@@ -309,7 +319,7 @@ public class JobManager {
         }
         try {
             List<URL> jarList = CollUtil.newArrayList(URLUtils.getURLs(jarFiles));
-            writeManifest(config.getTaskId(), jarList);
+            writeManifest(taskId, jarList);
 
             addConfigurationClsAndJars(jarList,
                     CollUtil.newArrayList(URLUtils.getURLs(otherPluginsFiles)));
@@ -328,6 +338,7 @@ public class JobManager {
         if (GATEWAY_TYPE_MAP.get(YARN).contains(runMode)) {
             config.getGatewayConfig().setJarPaths(ArrayUtil.append(jarPaths, pyPaths));
         }
+        process.info(StrUtil.format("A total of {} UDF have been Init.", udfList.size()));
         process.info("Initializing Flink UDF...Finish");
     }
 
@@ -356,7 +367,7 @@ public class JobManager {
         return false;
     }
 
-    private void initClassLoader(JobConfig config) {
+    public void initClassLoader(JobConfig config) {
         if (CollUtil.isNotEmpty(config.getConfig())) {
             String pipelineJars = config.getConfig().get(PipelineOptions.JARS.key());
             String classpaths = config.getConfig().get(PipelineOptions.CLASSPATHS.key());
@@ -403,7 +414,7 @@ public class JobManager {
         JobParam jobParam = Explainer.build(executor, useStatementSet, sqlSeparator)
                 .pretreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
         try {
-            initUDF(jobParam.getUdfList());
+            initUDF(jobParam.getUdfList(), runMode, config.getTaskId());
 
             for (StatementParam item : jobParam.getDdl()) {
                 currentSql = item.getValue();
@@ -654,15 +665,20 @@ public class JobManager {
     }
 
     public ExplainResult explainSql(String statement) {
-        return Explainer.build(executor, useStatementSet, sqlSeparator).explainSql(statement);
+        return Explainer.build(executor, useStatementSet, sqlSeparator).initialize(this, config, statement)
+                .explainSql(statement);
     }
 
     public ObjectNode getStreamGraph(String statement) {
-        return Explainer.build(executor, useStatementSet, sqlSeparator).getStreamGraph(statement);
+        return Explainer.build(executor, useStatementSet, sqlSeparator)
+                .initialize(this, config, statement)
+                .getStreamGraph(statement);
     }
 
     public String getJobPlanJson(String statement) {
-        return Explainer.build(executor, useStatementSet, sqlSeparator).getJobPlanInfo(statement).getJsonPlan();
+        return Explainer.build(executor, useStatementSet, sqlSeparator)
+                .initialize(this, config, statement)
+                .getJobPlanInfo(statement).getJsonPlan();
     }
 
     public boolean cancel(String jobId) {

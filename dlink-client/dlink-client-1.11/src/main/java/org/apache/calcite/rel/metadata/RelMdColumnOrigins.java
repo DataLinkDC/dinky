@@ -29,18 +29,21 @@ import org.apache.calcite.rel.core.Correlate;
 import org.apache.calcite.rel.core.Exchange;
 import org.apache.calcite.rel.core.Filter;
 import org.apache.calcite.rel.core.Join;
+import org.apache.calcite.rel.core.Match;
 import org.apache.calcite.rel.core.Project;
 import org.apache.calcite.rel.core.SetOp;
 import org.apache.calcite.rel.core.Snapshot;
 import org.apache.calcite.rel.core.Sort;
 import org.apache.calcite.rel.core.TableFunctionScan;
 import org.apache.calcite.rel.core.TableModify;
+import org.apache.calcite.rel.core.Window;
 import org.apache.calcite.rel.type.RelDataTypeField;
 import org.apache.calcite.rex.RexCall;
 import org.apache.calcite.rex.RexFieldAccess;
 import org.apache.calcite.rex.RexInputRef;
 import org.apache.calcite.rex.RexLocalRef;
 import org.apache.calcite.rex.RexNode;
+import org.apache.calcite.rex.RexPatternFieldRef;
 import org.apache.calcite.rex.RexShuttle;
 import org.apache.calcite.rex.RexVisitor;
 import org.apache.calcite.rex.RexVisitorImpl;
@@ -50,6 +53,7 @@ import org.apache.flink.table.planner.plan.schema.TableSourceTable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -57,10 +61,12 @@ import java.util.Set;
  * Modified based on calcite's source code org.apache.calcite.rel.metadata.RelMdColumnOrigins
  *
  * Modification point:
- * 1. Support lookup join, add method getColumnOrigins(Snapshot rel, RelMetadataQuery mq, int iOutputColumn)
+ * 1. Support lookup join, add method getColumnOrigins(Snapshot rel,RelMetadataQuery mq, int iOutputColumn)
  * 2. Support watermark, add method getColumnOrigins(SingleRel rel,RelMetadataQuery mq, int iOutputColumn)
  * 3. Support table function, add method getColumnOrigins(Correlate rel, RelMetadataQuery mq, int iOutputColumn)
- *
+ * 4. Support field AS LOCALTIMESTAMP, modify method getColumnOrigins(Calc rel, RelMetadataQuery mq, int iOutputColumn)
+ * 5. Support CEP, add method getColumnOrigins(Match rel, RelMetadataQuery mq, int iOutputColumn)
+ * 6. Support ROW_NUMBER(), add method getColumnOrigins(Window rel, RelMetadataQuery mq, int iOutputColumn)*
  *
  * @description: RelMdColumnOrigins supplies a default implementation of {@link
  * RelMetadataQuery#getColumnOrigins} for the standard logical algebra.
@@ -192,6 +198,64 @@ public class RelMdColumnOrigins implements MetadataHandler<BuiltInMetadata.Colum
      */
     public Set<RelColumnOrigin> getColumnOrigins(SingleRel rel,
             RelMetadataQuery mq, int iOutputColumn) {
+        return mq.getColumnOrigins(rel.getInput(), iOutputColumn);
+    }
+
+    /**
+     * Support field blood relationship of CEP.
+     * The first column is the field after PARTITION BY, and the other columns come from the measures in Match
+     */
+    public Set<RelColumnOrigin> getColumnOrigins(Match rel, RelMetadataQuery mq, int iOutputColumn) {
+        if (iOutputColumn == 0) {
+            return mq.getColumnOrigins(rel.getInput(), iOutputColumn);
+        }
+        final RelNode input = rel.getInput();
+        RexNode rexNode = rel.getMeasures().values().asList().get(iOutputColumn - 1);
+
+        RexPatternFieldRef rexPatternFieldRef = searchRexPatternFieldRef(rexNode);
+        if (rexPatternFieldRef != null) {
+            return mq.getColumnOrigins(input, rexPatternFieldRef.getIndex());
+        }
+        return null;
+    }
+
+    private RexPatternFieldRef searchRexPatternFieldRef(RexNode rexNode) {
+        if (rexNode instanceof RexCall) {
+            RexNode operand = ((RexCall) rexNode).getOperands().get(0);
+            if (operand instanceof RexPatternFieldRef) {
+                return (RexPatternFieldRef) operand;
+            } else {
+                // recursive search
+                return searchRexPatternFieldRef(operand);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Support the field blood relationship of ROW_NUMBER()
+     */
+    public Set<RelColumnOrigin> getColumnOrigins(Window rel, RelMetadataQuery mq, int iOutputColumn) {
+        final RelNode input = rel.getInput();
+        /**
+         * Haven't found a good way to judge whether the field comes from window,
+         * for the time being, first judge by parsing the string
+         */
+        String fieldName = rel.getRowType().getFieldNames().get(iOutputColumn);
+        // for example: "w1$o0"
+        if (fieldName.startsWith("w") && fieldName.contains("$")) {
+            int groupIndex = Integer.parseInt(fieldName.substring(1, fieldName.indexOf("$")));
+            final Set<RelColumnOrigin> set = new LinkedHashSet<>();
+            if (!rel.groups.isEmpty()) {
+                Window.Group group = rel.groups.get(groupIndex);
+                // process partition by keys
+                group.keys.asList().forEach(index -> set.addAll(mq.getColumnOrigins(input, index)));
+                // process order by keys
+                group.orderKeys.getFieldCollations()
+                        .forEach(e -> set.addAll(mq.getColumnOrigins(input, e.getFieldIndex())));
+            }
+            return set;
+        }
         return mq.getColumnOrigins(rel.getInput(), iOutputColumn);
     }
 

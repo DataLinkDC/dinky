@@ -1270,8 +1270,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         }
         Integer jobInstanceId = jobInstance.getId();
         JobHistory jobHistory = jobHistoryService.getJobHistory(jobInstanceId); // 获取任务历史信息
-        String jobJson = jobHistory.getJobJson(); // 获取任务历史信息的jobJson
-        ObjectNode jsonNodes = JSONUtil.parseObject(jobJson);
+        ObjectNode jsonNodes = jobHistory.getJob();
         if (jsonNodes.has("errors")) {
             return;
         }
@@ -1288,8 +1287,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         String duration = getDuration(asLongStartTime, asLongEndTime);
         // 获取任务的 duration 使用的是 start-time 和 end-time 计算
         // 不采用 duration 字段
-        String clusterJson = jobHistory.getClusterJson(); // 获取任务历史信息的clusterJson 主要获取 jobManagerHost
-        ObjectNode clusterJsonNodes = JSONUtil.parseObject(clusterJson);
+        // 获取任务历史信息的clusterJson 主要获取 jobManagerHost
+        ObjectNode clusterJsonNodes = jobHistory.getCluster();
         String jobManagerHost = clusterJsonNodes.get("jobManagerHost").asText();
 
         if (Asserts.isNotNull(task.getAlertGroupId())) {
@@ -1431,8 +1430,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private void findTheConditionSavePointToOnline(TaskOperatingResult taskOperatingResult,
             JobInstance jobInstanceByTaskId) {
         final JobHistory jobHistory = jobHistoryService.getJobHistory(jobInstanceByTaskId.getId());
-        if (jobHistory != null && StringUtils.isNotBlank(jobHistory.getCheckpointsJson())) {
-            final ObjectNode jsonNodes = JSONUtil.parseObject(jobHistory.getCheckpointsJson());
+        if (jobHistory != null) {
+            final ObjectNode jsonNodes = jobHistory.getCheckpoints();
             final ArrayNode history = jsonNodes.withArray("history");
             if (!history.isEmpty()) {
                 startGoingLiveTask(taskOperatingResult, findTheConditionSavePoint(history));

@@ -341,3 +341,8 @@ export async function showMetaStoreCatalogs(task: TaskType, dispatch: any) {
     });
   })
 }
+
+/*--- Clear Console ---*/
+export function clearConsole() {
+  return getData('api/process/clearConsole', {});
+}

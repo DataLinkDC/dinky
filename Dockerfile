@@ -1,4 +1,4 @@
-FROM ibmjava:8-sfj as build-stage
+FROM openjdk:8u342-oracle as build-stage
 
 ARG DINKY_VERSION
 ENV DINKY_VERSION=${DINKY_VERSION}
@@ -10,7 +10,7 @@ RUN mv /opt/dlink-release-${DINKY_VERSION} /opt/dinky/
 RUN mkdir -p /opt/dinky/run && mkdir -p /opt/dinky/logs &&  touch /opt/dinky/logs/dlink.log
 RUN chmod -R 777 /opt/dinky/
 
-FROM ibmjava:8-sfj as production-stage
+FROM openjdk:8u342-oracle as production-stage
 COPY --from=build-stage /opt/dinky/ /opt/dinky/
 WORKDIR /opt/dinky/
 

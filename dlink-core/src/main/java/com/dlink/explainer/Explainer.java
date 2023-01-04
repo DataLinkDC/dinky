@@ -37,6 +37,8 @@ import com.dlink.explainer.trans.TransGenerator;
 import com.dlink.function.data.model.UDF;
 import com.dlink.function.util.UDFUtil;
 import com.dlink.interceptor.FlinkInterceptor;
+import com.dlink.job.JobConfig;
+import com.dlink.job.JobManager;
 import com.dlink.job.JobParam;
 import com.dlink.job.StatementParam;
 import com.dlink.model.LineageRel;
@@ -110,6 +112,13 @@ public class Explainer {
         return new Explainer(executor, useStatementSet, sqlSeparator);
     }
 
+    public Explainer initialize(JobManager jobManager, JobConfig config, String statement) {
+        jobManager.initClassLoader(config);
+        String[] statements = SqlUtil.getStatements(SqlUtil.removeNote(statement), sqlSeparator);
+        jobManager.initUDF(parseUDFFromStatements(statements));
+        return this;
+    }
+
     public JobParam pretreatStatements(String[] statements) {
         List<StatementParam> ddl = new ArrayList<>();
         List<StatementParam> trans = new ArrayList<>();
@@ -137,12 +146,29 @@ public class Explainer {
             } else if (operationType.equals(SqlType.EXECUTE)) {
                 execute.add(new StatementParam(statement, operationType));
             } else {
-                udfList.add(UDFUtil.toUDF(statement));
+                UDF udf = UDFUtil.toUDF(statement);
+                if (Asserts.isNotNull(udf)) {
+                    udfList.add(UDFUtil.toUDF(statement));
+                }
                 ddl.add(new StatementParam(statement, operationType));
                 statementList.add(statement);
             }
         }
         return new JobParam(statementList, ddl, trans, execute, CollUtil.removeNull(udfList));
+    }
+
+    public List<UDF> parseUDFFromStatements(String[] statements) {
+        List<UDF> udfList = new ArrayList<>();
+        for (String statement : statements) {
+            if (statement.isEmpty()) {
+                continue;
+            }
+            UDF udf = UDFUtil.toUDF(statement);
+            if (Asserts.isNotNull(udf)) {
+                udfList.add(UDFUtil.toUDF(statement));
+            }
+        }
+        return udfList;
     }
 
     public List<SqlExplainResult> explainSqlResult(String statement) {
@@ -537,6 +563,11 @@ public class Explainer {
     }
 
     public List<LineageRel> getLineage(String statement) {
+        JobConfig jobConfig = new JobConfig("local", false, false, true, useStatementSet, 1,
+                executor.getTableConfig().getConfiguration().toMap());
+        JobManager jm = JobManager.buildPlanMode(jobConfig);
+        this.initialize(jm, jobConfig, statement);
+
         String[] sqls = SqlUtil.getStatements(statement, sqlSeparator);
         List<LineageRel> lineageRelList = new ArrayList<>();
         for (String item : sqls) {

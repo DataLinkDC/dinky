@@ -107,6 +107,10 @@ const Columns = (props: any) => {
       title: l('pages.rc.db.default'),
       dataIndex: 'defaultValue',
     }, {
+      title: l('pages.rc.db.length'),
+      dataIndex: 'length',
+      isString: false,
+    }, {
       title: l('pages.rc.db.precision'),
       dataIndex: 'precision',
       isString: false,

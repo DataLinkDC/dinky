@@ -9,6 +9,13 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+    format:
+      date: yyyy-MM-dd HH:mm:ss
+    #json格式化全局配置
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+
   main:
     allow-circular-references: true
 
