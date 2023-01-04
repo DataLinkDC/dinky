@@ -77,7 +77,7 @@
         <!--<flyway.version>6.4.4</flyway.version>-->
         <sa-token.version>1.31.0</sa-token.version>
         <commons-lang3.version>3.3.2</commons-lang3.version>
-        <httpclient.version>4.4.1</httpclient.version>
+        <httpclient.version>4.5.13</httpclient.version>
         <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
         <maven-assembly-plugin.version>3.4.2</maven-assembly-plugin.version>
         <maven.resource.version>3.2.0</maven.resource.version>
