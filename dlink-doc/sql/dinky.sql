@@ -667,18 +667,18 @@ VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Admin', NULL, NULL, NUL
 -- ----------------------------
 DROP TABLE IF EXISTS `dlink_fragment`;
 CREATE TABLE `dlink_fragment` (
-  `id` int NOT NULL AUTO_INCREMENT COMMENT 'id',
-  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'fragment name',
-  `alias` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'alias',
-  `fragment_value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'fragment value',
-  `note` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'note',
-  `enabled` tinyint DEFAULT '1' COMMENT 'is enable',
-  `create_time` datetime DEFAULT NULL COMMENT 'create time',
-  `update_time` datetime DEFAULT NULL COMMENT 'update time',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `un_idx1` (`name`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='fragment management';
-
+      `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
+      `name` varchar(50) NOT NULL COMMENT 'fragment name',
+      `alias` varchar(50) DEFAULT NULL COMMENT 'alias',
+      `tenant_id` int(11) NOT NULL DEFAULT '1' COMMENT 'tenant id',
+      `fragment_value` text NOT NULL COMMENT 'fragment value',
+      `note` text COMMENT 'note',
+      `enabled` tinyint(4) DEFAULT '1' COMMENT 'is enable',
+      `create_time` datetime DEFAULT NULL COMMENT 'create time',
+      `update_time` datetime DEFAULT NULL COMMENT 'update time',
+      PRIMARY KEY (`id`) USING BTREE,
+      UNIQUE KEY `un_idx1` (`name`,`tenant_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='fragment management';
 
 
 -- ----------------------------------------------------------------------------- Metadata related data table the start -------------------------------------------------------------------------------------------
