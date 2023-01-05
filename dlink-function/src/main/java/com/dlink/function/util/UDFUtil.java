@@ -280,13 +280,13 @@ public class UDFUtil {
         return MD5.create().digestHex(FileUtil.file(filePath));
     }
 
-    public static boolean isUdfStatement(String statement) {
-        return !StrUtil.isBlank(statement) && CollUtil.isNotEmpty(ReUtil.findAll(FUNCTION_SQL_REGEX, statement, 0));
+    public static boolean isUdfStatement(Pattern pattern, String statement) {
+        return !StrUtil.isBlank(statement) && CollUtil.isNotEmpty(ReUtil.findAll(pattern, statement, 0));
     }
 
     public static UDF toUDF(String statement) {
-        if (isUdfStatement(statement)) {
-            Pattern pattern = Pattern.compile(FUNCTION_SQL_REGEX, Pattern.CASE_INSENSITIVE);
+        Pattern pattern = Pattern.compile(FUNCTION_SQL_REGEX, Pattern.CASE_INSENSITIVE);
+        if (isUdfStatement(pattern, statement)) {
             List<String> groups = CollUtil.removeEmpty(ReUtil.getAllGroups(pattern, statement));
             String udfName = groups.get(1);
             String className = groups.get(2);
