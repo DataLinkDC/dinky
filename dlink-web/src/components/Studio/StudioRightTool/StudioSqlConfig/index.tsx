@@ -104,7 +104,7 @@ const StudioSqlConfig = (props: any) => {
             <Col span={24}>
               <Form.Item
                 label={l('pages.datastudio.label.maxrows')} className={styles.form_item} name="maxRowNum"
-                tooltip={l('pages.datastudio.label.execConfig.preview.data.tip')}
+                tooltip={l('pages.datastudio.label.execConfig.maxrow.tip')}
               >
                 <InputNumber min={1} max={9999} defaultValue={100}/>
               </Form.Item>
