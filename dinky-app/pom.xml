@@ -79,7 +79,7 @@
         <profile>
             <id>web</id>
             <modules>
-                <module>../dinky-web</module>
+                <module>../dlink-web</module>
             </modules>
         </profile>
     </profiles>

@@ -44,7 +44,7 @@ ADD ./dinky-client/dinky-client-1.12/pom.xml ./dinky-client/dinky-client-1.12/po
 ADD ./dinky-client/dinky-client-1.14/pom.xml ./dinky-client/dinky-client-1.14/pom.xml
 ADD ./dinky-client/dinky-client-1.13/pom.xml ./dinky-client/dinky-client-1.13/pom.xml
 ADD ./dinky-function/pom.xml ./dinky-function/pom.xml
-ADD ./dinky-web/pom.xml ./dinky-web/pom.xml
+ADD ./dlink-web/pom.xml ./dlink-web/pom.xml
 RUN mvn -T 1C -B dependency:go-offline --fail-never || true
 
 # stage 0, 引入plugins

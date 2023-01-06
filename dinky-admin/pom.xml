@@ -289,7 +289,7 @@
                             <overwrite>true</overwrite>
                             <resources>
                                 <resource>
-                                    <directory>../dinky-web/dist</directory>
+                                    <directory>../dlink-web/dist</directory>
                                 </resource>
                             </resources>
                         </configuration>

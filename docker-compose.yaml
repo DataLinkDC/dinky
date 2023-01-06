@@ -20,8 +20,8 @@ services:
     restart: unless-stopped
 
   # 配置 dinky web 界面
-  dinky-web:
-    image: sivacohan/dinky-web:lastest
+  dlink-web:
+    image: sivacohan/dlink-web:lastest
     build:
       context: .
       dockerfile: ./docker/web/Dockerfile
