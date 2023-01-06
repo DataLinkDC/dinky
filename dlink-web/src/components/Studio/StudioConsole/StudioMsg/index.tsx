@@ -22,6 +22,8 @@ import {connect} from "umi";
 import React, {useEffect, useState} from "react";
 import CodeShow from "@/components/Common/CodeShow";
 import {getConsoleInfo} from "@/pages/SettingCenter/ProcessList/service";
+import { clearConsole } from "../../StudioEvent/DDL";
+import {l} from "@/utils/intl";
 
 const StudioMsg = (props: any) => {
 
@@ -45,9 +47,25 @@ const StudioMsg = (props: any) => {
     }
   }
 
+  const editorDidMountHandle = (editor: any, monaco: any) => {
+    editor.addAction({
+      id: 'btn-studio-msg-clear', // menu id
+      label: l('pages.datastudio.editor.clearConsole'), // menu name
+      contextMenuGroupId: '9_cutcopypaste', // menu group
+      run: () => {
+        clearConsole().then((result) => {
+          setConsoleInfo("")
+          refreshConsoleInfo()
+        });
+      }, // 点击后执行的操作
+    })
+  };
+
+
+
   return (
     <>
-      <CodeShow code={consoleInfo} language='java' height={height} theme="vs"/>
+      <CodeShow code={consoleInfo} language='java' height={height} theme="vs" editorDidMountHandle={editorDidMountHandle}/>
     </>
   );
 };
