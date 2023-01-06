@@ -101,14 +101,14 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> im
                 return Result.failed("租户不存在");
             }
 
-            Long tenantRoleCount =
-                    roleService.getBaseMapper().selectCount(new QueryWrapper<Role>().eq("tenant_id", id));
+            Long tenantRoleCount = roleService.getBaseMapper()
+                    .selectCount(new QueryWrapper<Role>().eq("tenant_id", id));
             if (tenantRoleCount > 0) {
                 return Result.failed("删除租户失败，该租户已绑定角色");
             }
 
-            Long tenantNamespaceCount =
-                    namespaceService.getBaseMapper().selectCount(new QueryWrapper<Namespace>().eq("tenant_id", id));
+            Long tenantNamespaceCount = namespaceService.getBaseMapper()
+                    .selectCount(new QueryWrapper<Namespace>().eq("tenant_id", id));
             if (tenantNamespaceCount > 0) {
                 return Result.failed("删除租户失败，该租户已绑定名称空间");
             }

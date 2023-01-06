@@ -45,7 +45,7 @@ public class ProcessStep {
     }
 
     public ProcessStep(ProcessStatus stepStatus, LocalDateTime startTime, LocalDateTime endTime, long time,
-                       StringBuilder info, StringBuilder error) {
+            StringBuilder info, StringBuilder error) {
         this.stepStatus = stepStatus;
         this.startTime = startTime;
         this.endTime = endTime;

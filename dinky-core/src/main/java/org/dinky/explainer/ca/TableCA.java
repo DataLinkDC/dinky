@@ -43,6 +43,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TableCA implements ICA {
+
     private Integer id;
     private Integer parentId;
     private String name;

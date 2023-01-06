@@ -45,14 +45,14 @@ public class SelectResult extends AbstractResult implements IResult {
     private boolean isDestroyed;
 
     public SelectResult(List<Map<String, Object>> rowData, Integer total, Integer currentCount, Set<String> columns,
-                        String jobID, boolean success) {
+            String jobID, boolean success) {
         this.rowData = rowData;
         this.total = total;
         this.currentCount = currentCount;
         this.columns = columns;
         this.jobID = jobID;
         this.success = success;
-        //this.endTime = LocalDateTime.now();
+        // this.endTime = LocalDateTime.now();
         this.isDestroyed = false;
     }
 

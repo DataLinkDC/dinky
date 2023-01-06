@@ -221,7 +221,8 @@ public class MapParseUtils {
         Pattern p = Pattern.compile(sign + field + sign);
         Matcher m = p.matcher(operation);
         while (m.find()) {
-            newOperation = newOperation.substring(0, m.start(1) + 1) + fragement + newOperation.substring(m.end(1) + 1, newOperation.length());
+            newOperation = newOperation.substring(0, m.start(1) + 1) + fragement
+                    + newOperation.substring(m.end(1) + 1, newOperation.length());
         }
         return newOperation;
     }
@@ -356,7 +357,8 @@ public class MapParseUtils {
         if (splitStr == null || splitStr.indexOf("[") == -1 || splitStr.indexOf("]") == -1) {
             return new ArrayList();
         }
-        return Arrays.stream(splitStr.substring(splitStr.indexOf("[") + 1, splitStr.lastIndexOf("]")).split(", ")).collect(Collectors.toList());
+        return Arrays.stream(splitStr.substring(splitStr.indexOf("[") + 1, splitStr.lastIndexOf("]")).split(", "))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -371,24 +373,25 @@ public class MapParseUtils {
             return new ArrayList();
         }
         String substring = splitStr.substring(splitStr.indexOf("[") + 1, splitStr.lastIndexOf("]")).trim();
-        //样例 [default_catalog, default_database, score, project=[sid, cls, score]]
+        // 样例 [default_catalog, default_database, score, project=[sid, cls, score]]
         if (substring.startsWith("[")) {
-            //还是一个集合
+            // 还是一个集合
             list.add(getMapListNest(substring));
         } else {
-            //不是一个集合 而是元素时  default_catalog, default_database, score, project=[sid, cls, score], course=[en, ds, as]
-            //嵌套所以  还会有[]
+            // 不是一个集合 而是元素时 default_catalog, default_database, score, project=[sid, cls, score], course=[en, ds, as]
+            // 嵌套所以 还会有[]
             List<Integer> nestList = getNestList(substring);
             int num = nestList.size() / 2;
             String[] str = new String[num];
             for (int i = 0; i < num; i++) {
                 str[i] = substring.substring(nestList.get(2 * i), nestList.get(2 * i + 1) + 1);
             }
-            //倒叙替换 去除集合内容干扰
+            // 倒叙替换 去除集合内容干扰
             for (int i = num - 1; i >= 0; i--) {
-                substring = substring.substring(0, nestList.get(2 * i)) + "_str" + i + "_" + substring.substring(nestList.get(2 * i + 1) + 1);
+                substring = substring.substring(0, nestList.get(2 * i)) + "_str" + i + "_"
+                        + substring.substring(nestList.get(2 * i + 1) + 1);
             }
-            //去除干扰后   default_catalog, default_database, score, project=_str0_, course=_str1_
+            // 去除干扰后 default_catalog, default_database, score, project=_str0_, course=_str1_
             // _str0_ = [sid, cls, score]
             // _str1_ = [en, ds, as]
             String[] split = substring.split(", ");
@@ -397,7 +400,7 @@ public class MapParseUtils {
                 if (s.startsWith("[")) {
                     list.add(getMapListNest(splitStr));
                 } else if (s.indexOf("_str") != -1) {
-                    // project=_str0_  还原集合干扰 project=[sid, cls, score]
+                    // project=_str0_ 还原集合干扰 project=[sid, cls, score]
                     list.add(parseForNest(s.replace("_str" + index + "_", str[index])));
                     index++;
                 } else {

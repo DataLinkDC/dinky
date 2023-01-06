@@ -64,7 +64,9 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @since 2022/2/24 19:53
  **/
 @Service
-public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapper, AlertInstance> implements AlertInstanceService {
+public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapper, AlertInstance>
+        implements
+            AlertInstanceService {
 
     @Autowired
     private AlertGroupService alertGroupService;
@@ -76,7 +78,8 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
 
     @Override
     public AlertResult testAlert(AlertInstance alertInstance) {
-        AlertConfig alertConfig = AlertConfig.build(alertInstance.getName(), alertInstance.getType(), JSONUtil.toMap(alertInstance.getParams()));
+        AlertConfig alertConfig = AlertConfig.build(alertInstance.getName(), alertInstance.getType(),
+                JSONUtil.toMap(alertInstance.getParams()));
         Alert alert = Alert.buildTest(alertConfig);
         String currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
         String uuid = UUID.randomUUID().toString();
@@ -141,7 +144,8 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
             final Set<Integer> groupIdSet = entry.getValue();
             for (Integer groupId : groupIdSet) {
                 final String instanceIdString = result.get(groupId);
-                result.put(groupId, instanceIdString == null ? "" + entry.getKey()
+                result.put(groupId, instanceIdString == null
+                        ? "" + entry.getKey()
                         : instanceIdString + "," + entry.getKey());
             }
         }

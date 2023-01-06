@@ -34,6 +34,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class StudioMetaStoreDTO extends AbstractStatementDTO {
+
     private String catalog;
     private String database;
     private String table;
@@ -42,9 +43,9 @@ public class StudioMetaStoreDTO extends AbstractStatementDTO {
 
     public JobConfig getJobConfig() {
         return new JobConfig(
-            GatewayType.LOCAL.getLongValue(), true, false, false, false,
-            null, null, null, null, null,
-            null, isFragment(), false, false, 0,
-            null, null, null, null, null, null);
+                GatewayType.LOCAL.getLongValue(), true, false, false, false,
+                null, null, null, null, null,
+                null, isFragment(), false, false, 0,
+                null, null, null, null, null, null);
     }
 }

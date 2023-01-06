@@ -41,8 +41,8 @@ public class JobManagerTest {
     public void cancelJobSelect() {
 
         JobConfig config = new JobConfig("session-yarn", true, true, true, true, "s1", 2,
-            null, null, null, "测试", false, false, false, 100, 0,
-            1, 0, null, new HashMap<>(), new HashMap<>());
+                null, null, null, "测试", false, false, false, 100, 0,
+                1, 0, null, new HashMap<>(), new HashMap<>());
         if (config.isUseRemote()) {
             config.setAddress("192.168.123.157:8081");
         }

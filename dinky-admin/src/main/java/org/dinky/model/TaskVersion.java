@@ -44,6 +44,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @TableName(value = "dinky_task_version", autoResultMap = true)
 public class TaskVersion implements Serializable {
+
     private static final long serialVersionUID = 1L;
     /**
      * ID
@@ -98,7 +99,7 @@ public class TaskVersion implements Serializable {
     @TableField(value = "`type`")
     private String type;
 
-    @TableField(value = "task_configure",typeHandler = JacksonTypeHandler.class)
+    @TableField(value = "task_configure", typeHandler = JacksonTypeHandler.class)
     private TaskVersionConfigureDTO taskConfigure;
 
     /**

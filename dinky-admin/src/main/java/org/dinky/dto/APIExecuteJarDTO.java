@@ -35,6 +35,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class APIExecuteJarDTO {
+
     private String type;
     private String jobName;
     private String savePointPath;

@@ -31,6 +31,7 @@ import java.util.List;
  * @since 2021/12/26 15:06
  */
 public class KubernetesResult extends AbstractGatewayResult {
+
     private String clusterId;
     private String webURL;
     private List<String> jids;
@@ -39,7 +40,8 @@ public class KubernetesResult extends AbstractGatewayResult {
         super(type, startTime);
     }
 
-    public KubernetesResult(String clusterId, LocalDateTime startTime, LocalDateTime endTime, boolean isSuccess, String exceptionMsg) {
+    public KubernetesResult(String clusterId, LocalDateTime startTime, LocalDateTime endTime, boolean isSuccess,
+            String exceptionMsg) {
         super(startTime, endTime, isSuccess, exceptionMsg);
         this.clusterId = clusterId;
     }

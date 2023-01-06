@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SqlServerDriver extends AbstractJdbcDriver {
+
     @Override
     public IDBQuery getDBQuery() {
         return new SqlServerQuery();
@@ -105,7 +106,8 @@ public class SqlServerDriver extends AbstractJdbcDriver {
             }
         }
         if (Asserts.isNotNullString(table.getComment())) {
-            sb.append(" FROM [" + table.getSchema() + "].[" + table.getName() + "];" + " -- " + table.getComment() + "\n");
+            sb.append(" FROM [" + table.getSchema() + "].[" + table.getName() + "];" + " -- " + table.getComment()
+                    + "\n");
         } else {
             sb.append(" FROM [" + table.getSchema() + "].[" + table.getName() + "];\n");
         }
@@ -149,7 +151,8 @@ public class SqlServerDriver extends AbstractJdbcDriver {
         for (Column column : columns) {
             String comment = column.getComment();
             if (comment != null && !comment.isEmpty()) {
-                sb.append(String.format(SqlServerConstant.COMMENT_SQL, comment, table.getSchema() == null || table.getSchema().isEmpty() ? "dbo" : table.getSchema(),
+                sb.append(String.format(SqlServerConstant.COMMENT_SQL, comment,
+                        table.getSchema() == null || table.getSchema().isEmpty() ? "dbo" : table.getSchema(),
                         table.getName(), column.getName()) + " \nGO ");
             }
         }

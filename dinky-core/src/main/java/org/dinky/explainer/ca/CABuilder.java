@@ -97,13 +97,15 @@ public class CABuilder {
         return columnCANodes;
     }
 
-    private static void buildColumnCANodeChildren(List<ColumnCANode> children, ColumnCAResult result, Integer columnId, String operation) {
+    private static void buildColumnCANodeChildren(List<ColumnCANode> children, ColumnCAResult result, Integer columnId,
+            String operation) {
         Set<NodeRel> columnCASRel = result.getColumnCASRel();
         boolean hasChildren = false;
         for (NodeRel nodeRel : columnCASRel) {
             if (columnId.equals(nodeRel.getSufId())) {
                 ColumnCA childca = (ColumnCA) result.getColumnCASMaps().get(nodeRel.getPreId());
-                //operation = operation.replaceAll(childca.getAlias().replaceAll("\\$","\\\\$"),childca.getOperation());
+                // operation =
+                // operation.replaceAll(childca.getAlias().replaceAll("\\$","\\\\$"),childca.getOperation());
                 operation = operation.replaceAll(childca.getAlias()
                         .replaceAll("\\)", ""), childca.getOperation());
                 buildColumnCANodeChildren(children, result, nodeRel.getPreId(), operation);

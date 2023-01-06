@@ -27,6 +27,7 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 
 public class Clickhouse20StatementParser extends SQLStatementParser {
+
     public Clickhouse20StatementParser(String sql) {
         super(new Clickhouse20ExprParser(sql));
     }
@@ -48,7 +49,7 @@ public class Clickhouse20StatementParser extends SQLStatementParser {
 
         accept(Token.WITH);
 
-        for (; ; ) {
+        for (;;) {
             SQLWithSubqueryClause.Entry entry = new SQLWithSubqueryClause.Entry();
             entry.setParent(withQueryClause);
 

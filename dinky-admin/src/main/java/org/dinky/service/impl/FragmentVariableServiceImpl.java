@@ -32,7 +32,6 @@ import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
-
 /**
  * FragmentVariableServiceImpl
  *
@@ -40,7 +39,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
  * @since 2022/8/18
  */
 @Service
-public class FragmentVariableServiceImpl extends SuperServiceImpl<FragmentVariableMapper, FragmentVariable> implements FragmentVariableService {
+public class FragmentVariableServiceImpl extends SuperServiceImpl<FragmentVariableMapper, FragmentVariable>
+        implements
+            FragmentVariableService {
+
     @Override
     public List<FragmentVariable> listEnabledAll() {
         return list(new QueryWrapper<FragmentVariable>().eq("enabled", 1));

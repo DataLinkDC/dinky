@@ -81,8 +81,8 @@ public class MyJSONUtil {
      */
     public static PageInfo<JSONObject> toPageBean(String content) {
         return verifyResult(MyJSONUtil.toBean(content,
-            new TypeReference<Result<PageInfo<JSONObject>>>() {
-            }));
+                new TypeReference<Result<PageInfo<JSONObject>>>() {
+                }));
     }
 
     /**

@@ -34,6 +34,7 @@ import org.apache.flink.table.api.TableResult;
  * @since 2021/6/11 22:17
  */
 public class FlinkInterceptor {
+
     private FlinkInterceptor() {
     }
 

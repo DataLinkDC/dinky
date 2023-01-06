@@ -26,6 +26,7 @@ package org.dinky.gateway.config;
  * @since 2021/11/2
  **/
 public class ConfigPara {
+
     private String key;
     private String value;
 

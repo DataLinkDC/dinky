@@ -78,7 +78,7 @@ public class RowsToMap<K, V> extends TableAggregateFunction<Map<K, V>, MyAccum<K
     }
 
     public void accumulate(
-                           MyAccum<K, V> acc, K cls, V v) {
+            MyAccum<K, V> acc, K cls, V v) {
         if (v == null) {
             return;
         }

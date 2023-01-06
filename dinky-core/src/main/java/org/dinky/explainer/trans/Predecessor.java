@@ -31,6 +31,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Predecessor {
+
     private Integer id;
     private String shipStrategy;
     private String side;

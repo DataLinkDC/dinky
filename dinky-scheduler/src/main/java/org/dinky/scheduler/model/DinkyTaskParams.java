@@ -29,6 +29,7 @@ import lombok.Data;
  */
 @Data
 public class DinkyTaskParams {
+
     @ApiModelProperty(value = "自定义参数")
     private List<Property> localParams;
 

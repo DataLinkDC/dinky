@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Properties;
 
 public class PhoenixDriver extends AbstractJdbcDriver {
+
     @Override
     public IDBQuery getDBQuery() {
         return new PhoenixQuery();
@@ -98,7 +99,8 @@ public class PhoenixDriver extends AbstractJdbcDriver {
         PhoenixTypeConvert phoenixTypeConvert = new PhoenixTypeConvert();
         if (columns != null) {
             for (Column column : columns) {
-                sql.append(", \"" + column.getColumnFamily() + "\".\"" + column.getName() + "\"  " + phoenixTypeConvert.convertToDB(column));
+                sql.append(", \"" + column.getColumnFamily() + "\".\"" + column.getName() + "\"  "
+                        + phoenixTypeConvert.convertToDB(column));
             }
         }
         sql.append(" ) ");
@@ -109,13 +111,13 @@ public class PhoenixDriver extends AbstractJdbcDriver {
     public Driver connect() {
         try {
             Class.forName(getDriverClass());
-            //TODO：phoenix连接配置，后续可设置为参数传入，以适应不同配置的集群
+            // TODO：phoenix连接配置，后续可设置为参数传入，以适应不同配置的集群
             Properties properties = new Properties();
             properties.put("phoenix.schema.isNamespaceMappingEnabled", "true");
             properties.put("phoenix.schema.mapSystemTablesToNamespac", "true");
             Connection connection = DriverManager.getConnection(config.getUrl(), properties);
             conn.set(connection);
-            //设置为自动提交，否则upsert语句不生效
+            // 设置为自动提交，否则upsert语句不生效
             connection.setAutoCommit(true);
         } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException(e);

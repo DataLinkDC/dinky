@@ -35,8 +35,8 @@ public class FlinkInterceptorTest {
     @Test
     public void replaceFragmentTest() {
         String statement = "nullif1:=NULLIF(1, 0) as val;"
-            + "nullif2:=NULLIF(0, 0) as val$null;"
-            + "select ${nullif1},${nullif2}";
+                + "nullif2:=NULLIF(0, 0) as val$null;"
+                + "select ${nullif1},${nullif2}";
         String pretreatStatement = FlinkInterceptor.pretreatStatement(Executor.build(), statement);
         Assert.assertEquals("select NULLIF(1, 0) as val,NULLIF(0, 0) as val$null", pretreatStatement);
     }

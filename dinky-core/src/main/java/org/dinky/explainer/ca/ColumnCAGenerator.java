@@ -45,6 +45,7 @@ import java.util.Set;
  **/
 @Deprecated
 public class ColumnCAGenerator implements CAGenerator {
+
     private List<Trans> transList;
     private Map<Integer, Trans> transMaps;
     private Set<Integer> parentIdSet;
@@ -84,7 +85,8 @@ public class ColumnCAGenerator implements CAGenerator {
                 for (int j = 0; j < sourceFields.size(); j++) {
                     String fieldName = sourceFields.get(j);
                     Integer id = index++;
-                    ColumnCA columnCA = new ColumnCA(id, fieldName, fieldName, fieldName, fieldName, fieldName, tableCA);
+                    ColumnCA columnCA = new ColumnCA(id, fieldName, fieldName, fieldName, fieldName, fieldName,
+                            tableCA);
                     this.columnCASMaps.put(id, columnCA);
                     this.columnCAS.add(columnCA);
                 }
@@ -185,7 +187,8 @@ public class ColumnCAGenerator implements CAGenerator {
             }
             if (!isHad) {
                 cid = index++;
-                //String columnOperation = MapParseUtils.replaceField(operation,columnCA.getAlias(),columnCA.getOperation());
+                // String columnOperation =
+                // MapParseUtils.replaceField(operation,columnCA.getAlias(),columnCA.getOperation());
                 ColumnCA columnCA2 = new ColumnCA(cid, alias, alias, alias, alias, operation, tableCA);
                 this.columnCASMaps.put(cid, columnCA2);
                 this.columnCAS.add(columnCA2);

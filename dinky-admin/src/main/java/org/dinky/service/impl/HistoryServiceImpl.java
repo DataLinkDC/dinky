@@ -35,6 +35,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class HistoryServiceImpl extends SuperServiceImpl<HistoryMapper, History> implements HistoryService {
+
     @Override
     public boolean removeHistoryById(Integer id) {
         History history = getById(id);

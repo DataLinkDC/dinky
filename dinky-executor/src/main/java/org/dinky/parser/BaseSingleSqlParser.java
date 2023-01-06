@@ -34,10 +34,10 @@ import java.util.Map;
  */
 public abstract class BaseSingleSqlParser {
 
-    //原始Sql语句
+    // 原始Sql语句
     protected String originalSql;
 
-    //Sql语句片段
+    // Sql语句片段
     protected List<SqlSegment> segments;
 
     /**

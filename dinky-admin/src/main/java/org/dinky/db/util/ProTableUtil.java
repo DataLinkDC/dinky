@@ -74,7 +74,8 @@ public class ProTableUtil {
         }
     }
 
-    private static void buildSort(String sortField, String sortValue, QueryWrapper<?> wrapper, boolean camelToUnderscore) {
+    private static void buildSort(String sortField, String sortValue, QueryWrapper<?> wrapper,
+            boolean camelToUnderscore) {
         if (sortField != null && sortValue != null) {
             if (camelToUnderscore) {
                 sortField = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, sortField);
@@ -91,7 +92,8 @@ public class ProTableUtil {
         }
     }
 
-    private static void buildFilter(String searchField, JsonNode searchValue, QueryWrapper<?> wrapper, boolean camelToUnderscore) {
+    private static void buildFilter(String searchField, JsonNode searchValue, QueryWrapper<?> wrapper,
+            boolean camelToUnderscore) {
         if (searchField != null && !searchField.equals("") && searchValue != null) {
             if (camelToUnderscore) {
                 searchField = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, searchField);
@@ -140,7 +142,8 @@ public class ProTableUtil {
      * @Date 2021/5/18
      * @Param [wrapper, para, blackarr, writearr, camelToUnderscore]
      **/
-    public static void autoSetFromPara(QueryWrapper<?> wrapper, JsonNode para, String[] blackarr, String[] writearr, boolean camelToUnderscore) {
+    public static void autoSetFromPara(QueryWrapper<?> wrapper, JsonNode para, String[] blackarr, String[] writearr,
+            boolean camelToUnderscore) {
         List<String> blacklist = Arrays.asList(blackarr);
         List<String> writelist = Arrays.asList(writearr);
         if (para.isObject()) {

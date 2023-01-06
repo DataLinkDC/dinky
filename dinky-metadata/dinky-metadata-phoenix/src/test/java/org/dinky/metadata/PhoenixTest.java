@@ -51,7 +51,7 @@ public class PhoenixTest {
 
     @Test
     public void testSchema() {
-        //schema && table
+        // schema && table
         List<Schema> schemasAndTables = driver.getSchemasAndTables();
         for (Schema schemasAndTable : schemasAndTables) {
             List<Table> tables = schemasAndTable.getTables();

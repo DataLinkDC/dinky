@@ -35,6 +35,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class APIExplainSqlDTO extends AbstractStatementDTO {
+
     private boolean useStatementSet = false;
     private Integer parallelism;
     private Map<String, String> configuration;

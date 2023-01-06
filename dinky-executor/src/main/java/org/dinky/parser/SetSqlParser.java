@@ -33,7 +33,7 @@ public class SetSqlParser extends BaseSingleSqlParser {
 
     @Override
     protected void initializeSegments() {
-        //SET(\s+(\S+)\s*=(.*))?
+        // SET(\s+(\S+)\s*=(.*))?
         segments.add(new SqlSegment("(set)\\s+(.+)(\\s*=)", "[.]"));
         segments.add(new SqlSegment("(=)\\s*(.*)( ENDOFSQL)", ","));
     }

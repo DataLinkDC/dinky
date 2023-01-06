@@ -25,6 +25,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DorisQuery extends AbstractDBQuery {
+
     @Override
     public String schemaAllSql() {
         return DorisConstant.QUERY_ALL_DATABASE;

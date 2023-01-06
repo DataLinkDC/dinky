@@ -33,6 +33,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @since 2021/6/22
  **/
 public abstract class AbstractTrans {
+
     protected Integer id;
     protected Integer parentId;
     protected String name;
@@ -58,7 +59,8 @@ public abstract class AbstractTrans {
         if (node.has("predecessors")) {
             JsonNode predecessornodes = node.get("predecessors");
             for (JsonNode predecessor : predecessornodes) {
-                predecessors.add(new Predecessor(predecessor.get("id").asInt(), predecessor.get("ship_strategy").asText(), predecessor.get("side").asText()));
+                predecessors.add(new Predecessor(predecessor.get("id").asInt(),
+                        predecessor.get("ship_strategy").asText(), predecessor.get("side").asText()));
             }
         }
     }

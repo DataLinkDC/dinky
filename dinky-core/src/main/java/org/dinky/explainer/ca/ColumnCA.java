@@ -28,6 +28,7 @@ import java.util.List;
  * @since 2021/6/22
  **/
 public class ColumnCA implements ICA {
+
     private Integer id;
     private Integer tableId;
     private List<Integer> parentId;
@@ -41,7 +42,8 @@ public class ColumnCA implements ICA {
     private TableCA tableCA;
     private String tableName;
 
-    public ColumnCA(Integer id, String name, String alias, String columnName, String familyName, String operation, TableCA tableCA) {
+    public ColumnCA(Integer id, String name, String alias, String columnName, String familyName, String operation,
+            TableCA tableCA) {
         this.id = id;
         this.name = name;
         this.alias = alias;

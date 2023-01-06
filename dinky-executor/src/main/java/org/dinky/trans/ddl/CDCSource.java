@@ -36,6 +36,7 @@ import java.util.regex.Pattern;
  * @since 2022/1/29 23:30
  */
 public class CDCSource {
+
     private String connector;
     private String statement;
     private String name;
@@ -56,13 +57,18 @@ public class CDCSource {
     private Map<String, String> sink;
     private List<Map<String, String>> sinks;
 
-    public CDCSource(String connector, String statement, String name, String hostname, Integer port, String username, String password, Integer checkpoint, Integer parallelism, String startupMode,
-                     Map<String, String> split, Map<String, String> debezium, Map<String, String> source, Map<String, String> sink, Map<String, String> jdbc) {
-        this(connector, statement, name, hostname, port, username, password, checkpoint, parallelism, startupMode, split, debezium, source, sink, null, jdbc);
+    public CDCSource(String connector, String statement, String name, String hostname, Integer port, String username,
+            String password, Integer checkpoint, Integer parallelism, String startupMode,
+            Map<String, String> split, Map<String, String> debezium, Map<String, String> source,
+            Map<String, String> sink, Map<String, String> jdbc) {
+        this(connector, statement, name, hostname, port, username, password, checkpoint, parallelism, startupMode,
+                split, debezium, source, sink, null, jdbc);
     }
 
-    public CDCSource(String connector, String statement, String name, String hostname, Integer port, String username, String password, Integer checkpoint, Integer parallelism, String startupMode,
-                     Map<String, String> split, Map<String, String> debezium, Map<String, String> source, Map<String, String> sink, List<Map<String, String>> sinks, Map<String, String> jdbc) {
+    public CDCSource(String connector, String statement, String name, String hostname, Integer port, String username,
+            String password, Integer checkpoint, Integer parallelism, String startupMode,
+            Map<String, String> split, Map<String, String> debezium, Map<String, String> source,
+            Map<String, String> sink, List<Map<String, String>> sinks, Map<String, String> jdbc) {
         this.connector = connector;
         this.statement = statement;
         this.name = name;
@@ -179,8 +185,7 @@ public class CDCSource {
                 source,
                 sink,
                 sinkList,
-                jdbc
-        );
+                jdbc);
         if (Asserts.isNotNullString(config.get("database-name"))) {
             cdcSource.setDatabase(config.get("database-name"));
         }

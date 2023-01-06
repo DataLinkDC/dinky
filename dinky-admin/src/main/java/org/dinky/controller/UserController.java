@@ -58,6 +58,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
+
     @Autowired
     private UserService userService;
 
@@ -132,7 +133,7 @@ public class UserController {
     @PostMapping("/modifyPassword")
     public Result modifyPassword(@RequestBody ModifyPasswordDTO modifyPasswordDTO) {
         return userService.modifyPassword(modifyPasswordDTO.getUsername(), modifyPasswordDTO.getPassword(),
-            modifyPasswordDTO.getNewPassword());
+                modifyPasswordDTO.getNewPassword());
     }
 
     /**
@@ -150,7 +151,8 @@ public class UserController {
         List<User> userList = userService.list();
         Map result = new HashMap();
         result.put("users", userList);
-        List<UserTenant> userTenants = userTenantService.getBaseMapper().selectList(new QueryWrapper<UserTenant>().eq("tenant_id", id));
+        List<UserTenant> userTenants = userTenantService.getBaseMapper()
+                .selectList(new QueryWrapper<UserTenant>().eq("tenant_id", id));
         List<Integer> userIds = new ArrayList<>();
         for (UserTenant userTenant : userTenants) {
             userIds.add(userTenant.getUserId());

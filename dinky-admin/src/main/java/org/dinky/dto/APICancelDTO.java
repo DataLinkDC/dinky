@@ -34,6 +34,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class APICancelDTO {
+
     private String jobId;
     private String address;
     private GatewayConfig gatewayConfig;

@@ -218,7 +218,8 @@ public class MySqlDriver extends AbstractJdbcDriver {
             }
         }
         if (Asserts.isNotNullString(table.getComment())) {
-            sb.append(" FROM `").append(table.getSchema()).append("`.`").append(table.getName()).append("`;").append(" -- ").append(table.getComment()).append("\n");
+            sb.append(" FROM `").append(table.getSchema()).append("`.`").append(table.getName()).append("`;")
+                    .append(" -- ").append(table.getComment()).append("\n");
         } else {
             sb.append(" FROM `").append(table.getSchema()).append("`.`").append(table.getName()).append("`;\n");
         }

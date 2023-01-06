@@ -48,6 +48,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/history")
 public class HistoryController {
+
     @Autowired
     private HistoryService historyService;
 

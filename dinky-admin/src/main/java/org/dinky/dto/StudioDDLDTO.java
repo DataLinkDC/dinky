@@ -33,6 +33,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class StudioDDLDTO {
+
     private String type;
     private boolean useResult;
     private boolean useSession;

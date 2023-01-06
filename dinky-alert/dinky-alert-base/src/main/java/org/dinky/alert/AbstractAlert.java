@@ -26,6 +26,7 @@ package org.dinky.alert;
  * @since 2022/2/23 19:22
  **/
 public abstract class AbstractAlert implements Alert {
+
     private AlertConfig config;
 
     public AlertConfig getConfig() {

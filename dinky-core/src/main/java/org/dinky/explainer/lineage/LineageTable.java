@@ -31,6 +31,7 @@ import java.util.List;
  * @since 2022/3/15 22:55
  */
 public class LineageTable {
+
     private String id;
     private String name;
     private List<LineageColumn> columns;

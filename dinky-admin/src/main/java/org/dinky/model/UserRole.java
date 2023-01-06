@@ -53,7 +53,6 @@ public class UserRole implements Serializable {
      */
     private Integer roleId;
 
-
     /**
      * create time
      */

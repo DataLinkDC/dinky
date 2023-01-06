@@ -57,7 +57,7 @@ public class SqlServerTest {
 
     @Test
     public void test() throws SQLException {
-        //test
+        // test
         String test = driver.test();
         System.out.println(test);
         System.out.println("schema && table...");
@@ -70,7 +70,7 @@ public class SqlServerTest {
 
     @Test
     public void testSchema() {
-        //schema && table
+        // schema && table
         List<Schema> schemasAndTables = driver.getSchemasAndTables();
         for (Schema schemasAndTable : schemasAndTables) {
             List<Table> tables = schemasAndTable.getTables();

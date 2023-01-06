@@ -52,7 +52,6 @@ public class Task extends SuperEntity {
 
     private static final long serialVersionUID = 5988972129893667154L;
 
-
     @TableField(fill = FieldFill.INSERT)
     private String alias;
 
@@ -154,7 +153,7 @@ public class Task extends SuperEntity {
         int jid = Asserts.isNull(jarId) ? 0 : jarId;
         boolean fg = Asserts.isNull(fragment) ? false : fragment;
         boolean sts = Asserts.isNull(statementSet) ? false : statementSet;
-        return new JobConfig(type, step, false, false, useRemote, clusterId, clusterConfigurationId,jid, getId(),
+        return new JobConfig(type, step, false, false, useRemote, clusterId, clusterConfigurationId, jid, getId(),
                 alias, fg, sts, batchModel, checkPoint, parallelism, savePointStrategy, savePointPath, map);
     }
 
@@ -165,23 +164,23 @@ public class Task extends SuperEntity {
 
     public JsonNode parseJsonNode(ObjectMapper mapper) {
         JsonNode jsonNode = mapper.createObjectNode();
-        ((ObjectNode)jsonNode).put("name",this.getName());
-        ((ObjectNode)jsonNode).put("alias",this.alias);
-        ((ObjectNode)jsonNode).put("dialect",this.dialect);
-        ((ObjectNode)jsonNode).put("type",this.type);
-        ((ObjectNode)jsonNode).put("statement",this.statement);
-        ((ObjectNode)jsonNode).put("checkPoint",this.checkPoint);
-        ((ObjectNode)jsonNode).put("savePointStrategy",this.savePointStrategy);
-        ((ObjectNode)jsonNode).put("savePointPath",this.savePointPath);
-        ((ObjectNode)jsonNode).put("parallelism",this.parallelism);
-        ((ObjectNode)jsonNode).put("fragment",this.fragment);
-        ((ObjectNode)jsonNode).put("statementSet",this.statementSet);
-        ((ObjectNode)jsonNode).put("batchModel",this.batchModel);
-        ((ObjectNode)jsonNode).put("clusterName",this.clusterName);
-        ((ObjectNode)jsonNode).put("configJson",this.configJson);
-        ((ObjectNode)jsonNode).put("note",this.note);
-        ((ObjectNode)jsonNode).put("step",this.step);
-        ((ObjectNode)jsonNode).put("enabled",this.getEnabled());
+        ((ObjectNode) jsonNode).put("name", this.getName());
+        ((ObjectNode) jsonNode).put("alias", this.alias);
+        ((ObjectNode) jsonNode).put("dialect", this.dialect);
+        ((ObjectNode) jsonNode).put("type", this.type);
+        ((ObjectNode) jsonNode).put("statement", this.statement);
+        ((ObjectNode) jsonNode).put("checkPoint", this.checkPoint);
+        ((ObjectNode) jsonNode).put("savePointStrategy", this.savePointStrategy);
+        ((ObjectNode) jsonNode).put("savePointPath", this.savePointPath);
+        ((ObjectNode) jsonNode).put("parallelism", this.parallelism);
+        ((ObjectNode) jsonNode).put("fragment", this.fragment);
+        ((ObjectNode) jsonNode).put("statementSet", this.statementSet);
+        ((ObjectNode) jsonNode).put("batchModel", this.batchModel);
+        ((ObjectNode) jsonNode).put("clusterName", this.clusterName);
+        ((ObjectNode) jsonNode).put("configJson", this.configJson);
+        ((ObjectNode) jsonNode).put("note", this.note);
+        ((ObjectNode) jsonNode).put("step", this.step);
+        ((ObjectNode) jsonNode).put("enabled", this.getEnabled());
         return jsonNode;
     }
 

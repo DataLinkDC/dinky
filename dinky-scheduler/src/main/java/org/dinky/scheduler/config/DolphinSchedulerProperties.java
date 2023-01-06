@@ -34,6 +34,7 @@ import lombok.Data;
 @Component
 @ConfigurationProperties(prefix = "dinky.dolphinscheduler")
 public class DolphinSchedulerProperties {
+
     private boolean enabled;
     private String url;
     private String token;

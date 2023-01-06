@@ -37,6 +37,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SavePointResult extends AbstractGatewayResult {
+
     private String appId;
     private List<JobInfo> jobInfos;
 

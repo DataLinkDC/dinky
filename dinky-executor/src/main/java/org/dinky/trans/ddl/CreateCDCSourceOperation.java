@@ -54,6 +54,7 @@ import java.util.stream.Collectors;
  * @since 2022/1/29 23:25
  */
 public class CreateCDCSourceOperation extends AbstractOperation implements Operation {
+
     private static final String KEY_WORD = "EXECUTE CDCSOURCE";
 
     public CreateCDCSourceOperation() {
@@ -77,9 +78,11 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
     public TableResult build(Executor executor) {
         logger.info("Start build CDCSOURCE Task...");
         CDCSource cdcSource = CDCSource.build(statement);
-        FlinkCDCConfig config = new FlinkCDCConfig(cdcSource.getConnector(), cdcSource.getHostname(), cdcSource.getPort(), cdcSource.getUsername()
-            , cdcSource.getPassword(), cdcSource.getCheckpoint(), cdcSource.getParallelism(), cdcSource.getDatabase(), cdcSource.getSchema()
-            , cdcSource.getTable(), cdcSource.getStartupMode(), cdcSource.getSplit(), cdcSource.getDebezium(), cdcSource.getSource(), cdcSource.getSink(), cdcSource.getJdbc());
+        FlinkCDCConfig config = new FlinkCDCConfig(cdcSource.getConnector(), cdcSource.getHostname(),
+                cdcSource.getPort(), cdcSource.getUsername(), cdcSource.getPassword(), cdcSource.getCheckpoint(),
+                cdcSource.getParallelism(), cdcSource.getDatabase(), cdcSource.getSchema(), cdcSource.getTable(),
+                cdcSource.getStartupMode(), cdcSource.getSplit(), cdcSource.getDebezium(), cdcSource.getSource(),
+                cdcSource.getSink(), cdcSource.getJdbc());
         try {
             CDCBuilder cdcBuilder = CDCBuilderFactory.buildCDCBuilder(config);
             Map<String, Map<String, String>> allConfigMap = cdcBuilder.parseMetaDataConfigs();
@@ -94,7 +97,8 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                 Driver driver = Driver.build(driverConfig);
 
                 // 这直接传正则过去
-                schemaTableNameList.addAll(tableRegList.stream().map(x -> x.replaceFirst("\\\\.", ".")).collect(Collectors.toList()));
+                schemaTableNameList.addAll(
+                        tableRegList.stream().map(x -> x.replaceFirst("\\\\.", ".")).collect(Collectors.toList()));
 
                 Driver sinkDriver = checkAndCreateSinkSchema(config, schemaTableNameList.get(0));
 
@@ -104,9 +108,9 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                     String schemaName = table.getSchema();
                     Schema schema = Schema.build(schemaName);
                     schema.setTables(Collections.singletonList(table));
-                    //分库分表所有表结构都是一样的，取出列表中第一个表名即可
+                    // 分库分表所有表结构都是一样的，取出列表中第一个表名即可
                     String schemaTableName = table.getSchemaTableNameList().get(0);
-                    //真实的表名
+                    // 真实的表名
                     String tableName = schemaTableName.split("\\.")[1];
                     table.setColumns(driver.listColumnsSortByPK(schemaName, tableName));
                     table.setColumns(driver.listColumnsSortByPK(schemaName, table.getName()));
@@ -135,7 +139,8 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                         if (!Asserts.isEquals(table.getType(), "VIEW")) {
                             if (Asserts.isNotNullCollection(tableRegList)) {
                                 for (String tableReg : tableRegList) {
-                                    if (table.getSchemaTableName().matches(tableReg.trim()) && !schema.getTables().contains(Table.build(table.getName()))) {
+                                    if (table.getSchemaTableName().matches(tableReg.trim())
+                                            && !schema.getTables().contains(Table.build(table.getName()))) {
                                         table.setColumns(driver.listColumnsSortByPK(schemaName, table.getName()));
                                         schema.getTables().add(table);
                                         schemaTableNameList.add(table.getSchemaTableName());
@@ -180,11 +185,13 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
             DataStreamSource<String> streamSource = cdcBuilder.build(streamExecutionEnvironment);
             logger.info("Build " + config.getType() + " successful...");
             if (cdcSource.getSinks() == null || cdcSource.getSinks().size() == 0) {
-                sinkBuilder.build(cdcBuilder, streamExecutionEnvironment, executor.getCustomTableEnvironment(), streamSource);
+                sinkBuilder.build(cdcBuilder, streamExecutionEnvironment, executor.getCustomTableEnvironment(),
+                        streamSource);
             } else {
                 for (Map<String, String> sink : cdcSource.getSinks()) {
                     config.setSink(sink);
-                    sinkBuilder.build(cdcBuilder, streamExecutionEnvironment, executor.getCustomTableEnvironment(), streamSource);
+                    sinkBuilder.build(cdcBuilder, streamExecutionEnvironment, executor.getCustomTableEnvironment(),
+                            streamSource);
                 }
             }
             logger.info("Build CDCSOURCE Task successful!");

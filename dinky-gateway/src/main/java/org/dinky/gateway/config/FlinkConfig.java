@@ -40,12 +40,13 @@ import lombok.Setter;
 @Getter
 @Setter
 public class FlinkConfig {
+
     private String jobName;
     private String jobId;
     private ActionType action;
     private SavePointType savePointType;
     private String savePoint;
-    //    private List<ConfigPara> configParas;
+    // private List<ConfigPara> configParas;
     private Map<String, String> configuration = new HashMap<>();
 
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -59,7 +60,8 @@ public class FlinkConfig {
         this.configuration = configuration;
     }
 
-    public FlinkConfig(String jobName, String jobId, ActionType action, SavePointType savePointType, String savePoint, Map<String, String> configuration) {
+    public FlinkConfig(String jobName, String jobId, ActionType action, SavePointType savePointType, String savePoint,
+            Map<String, String> configuration) {
         this.jobName = jobName;
         this.jobId = jobId;
         this.action = action;
@@ -69,15 +71,16 @@ public class FlinkConfig {
     }
 
     public static FlinkConfig build(Map<String, String> paras) {
-        /*List<ConfigPara> configParasList = new ArrayList<>();
-        for (Map.Entry<String, String> entry : paras.entrySet()) {
-            configParasList.add(new ConfigPara(entry.getKey(),entry.getValue()));
-        }*/
+        /*
+         * List<ConfigPara> configParasList = new ArrayList<>(); for (Map.Entry<String, String> entry :
+         * paras.entrySet()) { configParasList.add(new ConfigPara(entry.getKey(),entry.getValue())); }
+         */
         return new FlinkConfig(paras);
     }
 
-    public static FlinkConfig build(String jobName, String jobId, String actionStr, String savePointTypeStr, String savePoint, String configParasStr) {
-        //List<ConfigPara> configParasList = new ArrayList<>();
+    public static FlinkConfig build(String jobName, String jobId, String actionStr, String savePointTypeStr,
+            String savePoint, String configParasStr) {
+        // List<ConfigPara> configParasList = new ArrayList<>();
         Map<String, String> configMap = new HashMap<>();
         JsonNode paras = null;
         if (Asserts.isNotNullString(configParasStr)) {
@@ -90,11 +93,12 @@ public class FlinkConfig {
                 configMap.put(node.get("key").asText(), node.get("value").asText());
             });
         }
-        return new FlinkConfig(jobName, jobId, ActionType.get(actionStr), SavePointType.get(savePointTypeStr), savePoint, configMap);
+        return new FlinkConfig(jobName, jobId, ActionType.get(actionStr), SavePointType.get(savePointTypeStr),
+                savePoint, configMap);
     }
 
     public static FlinkConfig build(String jobId, String actionStr, String savePointTypeStr, String savePoint) {
-        return new FlinkConfig(null, jobId, ActionType.get(actionStr), SavePointType.get(savePointTypeStr), savePoint, null);
+        return new FlinkConfig(null, jobId, ActionType.get(actionStr), SavePointType.get(savePointTypeStr), savePoint,
+                null);
     }
 }
-

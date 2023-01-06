@@ -25,6 +25,7 @@ import org.dinky.model.UserRole;
 import java.util.List;
 
 public interface UserRoleService extends ISuperService<UserRole> {
+
     /**
      * delete user role relation by user id
      *
@@ -58,4 +59,3 @@ public interface UserRoleService extends ISuperService<UserRole> {
     boolean deleteByRoleIds(List<Integer> roleIds);
 
 }
-

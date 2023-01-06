@@ -26,6 +26,7 @@ package org.dinky.metadata.query;
  * @since 2021/7/21 17:15
  **/
 public class ClickHouseQuery extends AbstractDBQuery {
+
     @Override
     public String schemaAllSql() {
         return "show databases";
@@ -51,7 +52,8 @@ public class ClickHouseQuery extends AbstractDBQuery {
      */
     @Override
     public String columnsSql(String schemaName, String tableName) {
-        return "select  * from system.columns where 1=1 and database='" + schemaName + "' and table='" + tableName + "'";
+        return "select  * from system.columns where 1=1 and database='" + schemaName + "' and table='" + tableName
+                + "'";
     }
 
     @Override

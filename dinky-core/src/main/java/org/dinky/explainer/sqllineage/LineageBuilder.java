@@ -46,6 +46,7 @@ import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.stat.TableStat;
 
 public class LineageBuilder {
+
     protected static final Logger logger = LoggerFactory.getLogger(LineageBuilder.class);
     public static LineageResult getSqlLineageByOne(String statement, String type) {
         List<LineageTable> tables = new ArrayList<>();
@@ -56,28 +57,35 @@ public class LineageBuilder {
             SQLStatement sqlStatement = sqlStatements.get(0);
             List<List<TableStat.Column>> srcLists = new ArrayList<>();
             List<TableStat.Column> tgtList = new ArrayList<>();
-            //只考虑insert语句
+            // 只考虑insert语句
             if (sqlStatement instanceof SQLInsertStatement) {
                 String targetTable = ((SQLInsertStatement) sqlStatement).getTableName().toString();
                 List<SQLExpr> columns = ((SQLInsertStatement) sqlStatement).getColumns();
-                //处理target表中字段
+                // 处理target表中字段
                 for (SQLExpr column : columns) {
                     if (column instanceof SQLPropertyExpr) {
-                        tgtList.add(new TableStat.Column(targetTable, ((SQLPropertyExpr) column).getName().replace("`", "").replace("\"", "")));
+                        tgtList.add(new TableStat.Column(targetTable,
+                                ((SQLPropertyExpr) column).getName().replace("`", "").replace("\"", "")));
                     } else if (column instanceof SQLIdentifierExpr) {
-                        tgtList.add(new TableStat.Column(targetTable, ((SQLIdentifierExpr) column).getName().replace("`", "").replace("\"", "")));
+                        tgtList.add(new TableStat.Column(targetTable,
+                                ((SQLIdentifierExpr) column).getName().replace("`", "").replace("\"", "")));
                     }
                 }
-                //处理select  生成srcLists
+                // 处理select 生成srcLists
                 LineageColumn root = new LineageColumn();
                 TreeNode<LineageColumn> rootNode = new TreeNode<>(root);
-                LineageUtils.columnLineageAnalyzer(((SQLInsertStatement) sqlStatement).getQuery().toString(), type, rootNode);
+                LineageUtils.columnLineageAnalyzer(((SQLInsertStatement) sqlStatement).getQuery().toString(), type,
+                        rootNode);
                 for (TreeNode<LineageColumn> e : rootNode.getChildren()) {
                     Set<LineageColumn> leafNodes = e.getAllLeafData();
                     List<TableStat.Column> srcList = new ArrayList<>();
                     for (LineageColumn column : leafNodes) {
-                        String tableName = Asserts.isNotNullString(column.getSourceTableName()) ? (Asserts.isNotNullString(column.getSourceDbName()) ? column.getSourceDbName()
-                                + "." + column.getSourceTableName() : column.getSourceTableName()) : "";
+                        String tableName = Asserts.isNotNullString(column.getSourceTableName())
+                                ? (Asserts.isNotNullString(column.getSourceDbName())
+                                        ? column.getSourceDbName()
+                                                + "." + column.getSourceTableName()
+                                        : column.getSourceTableName())
+                                : "";
                         srcList.add(new TableStat.Column(tableName, column.getTargetColumnName()));
                     }
                     srcLists.add(srcList);
@@ -108,7 +116,8 @@ public class LineageBuilder {
                     Set<String> tableSet = new HashSet<>();
                     for (TableStat.Column column : allColumnList) {
                         if (tableName.equals(column.getTable()) && !tableSet.contains(column.getName())) {
-                            tableColumns.add(new org.dinky.explainer.lineage.LineageColumn(column.getName(), column.getName()));
+                            tableColumns.add(
+                                    new org.dinky.explainer.lineage.LineageColumn(column.getName(), column.getName()));
                             tableSet.add(column.getName());
                         }
                     }
@@ -168,39 +177,48 @@ public class LineageBuilder {
                 SQLStatement sqlStatement = sqlStatements.get(n);
                 List<List<TableStat.Column>> srcLists = new ArrayList<>();
                 List<TableStat.Column> tgtList = new ArrayList<>();
-                //只考虑insert语句
+                // 只考虑insert语句
                 if (sqlStatement instanceof SQLInsertStatement) {
-                    String targetTable = ((SQLInsertStatement) sqlStatement).getTableName().toString().replace("`", "").replace("\"", "");
+                    String targetTable = ((SQLInsertStatement) sqlStatement).getTableName().toString().replace("`", "")
+                            .replace("\"", "");
                     List<SQLExpr> columns = ((SQLInsertStatement) sqlStatement).getColumns();
-                    //处理target表中字段
+                    // 处理target表中字段
                     if (columns.size() <= 0 || sqls[n].contains("*")) {
                         Driver driver = Driver.build(driverConfig);
                         if (!targetTable.contains(".")) {
                             return null;
                         }
-                        List<Column> columns1 = driver.listColumns(targetTable.split("\\.")[0], targetTable.split("\\.")[1]);
+                        List<Column> columns1 = driver.listColumns(targetTable.split("\\.")[0],
+                                targetTable.split("\\.")[1]);
                         for (Column column : columns1) {
                             tgtList.add(new TableStat.Column(targetTable, column.getName()));
                         }
                     } else {
                         for (SQLExpr column : columns) {
                             if (column instanceof SQLPropertyExpr) {
-                                tgtList.add(new TableStat.Column(targetTable, ((SQLPropertyExpr) column).getName().replace("`", "").replace("\"", "")));
+                                tgtList.add(new TableStat.Column(targetTable,
+                                        ((SQLPropertyExpr) column).getName().replace("`", "").replace("\"", "")));
                             } else if (column instanceof SQLIdentifierExpr) {
-                                tgtList.add(new TableStat.Column(targetTable, ((SQLIdentifierExpr) column).getName().replace("`", "").replace("\"", "")));
+                                tgtList.add(new TableStat.Column(targetTable,
+                                        ((SQLIdentifierExpr) column).getName().replace("`", "").replace("\"", "")));
                             }
                         }
                     }
-                    //处理select  生成srcLists
+                    // 处理select 生成srcLists
                     LineageColumn root = new LineageColumn();
                     TreeNode<LineageColumn> rootNode = new TreeNode<>(root);
-                    LineageUtils.columnLineageAnalyzer(((SQLInsertStatement) sqlStatement).getQuery().toString(), type, rootNode);
+                    LineageUtils.columnLineageAnalyzer(((SQLInsertStatement) sqlStatement).getQuery().toString(), type,
+                            rootNode);
                     for (TreeNode<LineageColumn> e : rootNode.getChildren()) {
                         Set<LineageColumn> leafNodes = e.getAllLeafData();
                         List<TableStat.Column> srcList = new ArrayList<>();
                         for (LineageColumn column : leafNodes) {
-                            String tableName = Asserts.isNotNullString(column.getSourceTableName()) ? (Asserts.isNotNullString(column.getSourceDbName()) ? column.getSourceDbName()
-                                    + "." + column.getSourceTableName() : column.getSourceTableName()) : "";
+                            String tableName = Asserts.isNotNullString(column.getSourceTableName())
+                                    ? (Asserts.isNotNullString(column.getSourceDbName())
+                                            ? column.getSourceDbName()
+                                                    + "." + column.getSourceTableName()
+                                            : column.getSourceTableName())
+                                    : "";
                             srcList.add(new TableStat.Column(tableName, column.getTargetColumnName()));
                         }
                         srcLists.add(srcList);
@@ -239,7 +257,8 @@ public class LineageBuilder {
                 Set<String> tableSet = new HashSet<>();
                 for (TableStat.Column column : allColumnList) {
                     if (tableName.equals(column.getTable()) && !tableSet.contains(column.getName())) {
-                        tableColumns.add(new org.dinky.explainer.lineage.LineageColumn(column.getName(), column.getName()));
+                        tableColumns
+                                .add(new org.dinky.explainer.lineage.LineageColumn(column.getName(), column.getName()));
                         tableSet.add(column.getName());
                     }
                 }

@@ -25,6 +25,7 @@ package org.dinky.alert.feishu;
  * @Description: 参数常量
  */
 public final class FeiShuConstants {
+
     static final String TYPE = "FeiShu";
     static final String MARKDOWN_QUOTE = "> ";
     static final String MARKDOWN_ENTER = "/n";

@@ -98,7 +98,8 @@ public class PostgreSqlDriver extends AbstractJdbcDriver {
             }
         }
         if (Asserts.isNotNullString(table.getComment())) {
-            sb.append(" FROM \"" + table.getSchema() + "\".\"" + table.getName() + "\";" + " -- " + table.getComment() + "\n");
+            sb.append(" FROM \"" + table.getSchema() + "\".\"" + table.getName() + "\";" + " -- " + table.getComment()
+                    + "\n");
         } else {
             sb.append(" FROM \"" + table.getSchema() + "\".\"" + table.getName() + "\";\n");
         }

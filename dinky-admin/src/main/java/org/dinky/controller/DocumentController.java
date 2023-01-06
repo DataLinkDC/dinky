@@ -51,6 +51,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/document")
 public class DocumentController {
+
     @Autowired
     private DocumentService documentService;
 

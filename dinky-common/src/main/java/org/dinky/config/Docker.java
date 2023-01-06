@@ -39,6 +39,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Docker {
+
     private String instance;
     private String registryUrl;
     private String registryUsername;
@@ -56,13 +57,13 @@ public class Docker {
             return null;
         }
         return Docker.builder()
-            .instance(instance1)
-            .registryUrl(configMap.getOrDefault("docker.registry.url", "").toString())
-            .registryUsername(configMap.getOrDefault("docker.registry.username", "").toString())
-            .registryPassword(configMap.getOrDefault("docker.registry.password", "").toString())
-            .imageNamespace(configMap.getOrDefault("docker.image.namespace", "").toString())
-            .imageStorehouse(configMap.getOrDefault("docker.image.storehouse", "").toString())
-            .imageDinkyVersion(configMap.getOrDefault("docker.image.dinkyVersion", "").toString())
-            .build();
+                .instance(instance1)
+                .registryUrl(configMap.getOrDefault("docker.registry.url", "").toString())
+                .registryUsername(configMap.getOrDefault("docker.registry.username", "").toString())
+                .registryPassword(configMap.getOrDefault("docker.registry.password", "").toString())
+                .imageNamespace(configMap.getOrDefault("docker.image.namespace", "").toString())
+                .imageStorehouse(configMap.getOrDefault("docker.image.storehouse", "").toString())
+                .imageDinkyVersion(configMap.getOrDefault("docker.image.dinkyVersion", "").toString())
+                .build();
     }
 }

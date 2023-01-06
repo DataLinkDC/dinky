@@ -92,7 +92,8 @@ public class SchedulerController {
         TaskDefinition taskDefinition = null;
         Project dinkyProject = SystemInit.getProject();
 
-        Catalogue catalogue = catalogueService.getOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, dinkyTaskId));
+        Catalogue catalogue = catalogueService
+                .getOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, dinkyTaskId));
         if (catalogue == null) {
             return Result.failed("节点获取失败");
         }
@@ -130,7 +131,8 @@ public class SchedulerController {
 
         Project dinkyProject = SystemInit.getProject();
 
-        Catalogue catalogue = catalogueService.getOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, dinkyTaskId));
+        Catalogue catalogue = catalogueService
+                .getOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, dinkyTaskId));
         if (catalogue == null) {
             return Result.failed("节点获取失败");
         }
@@ -143,8 +145,9 @@ public class SchedulerController {
         long projectCode = dinkyProject.getCode();
 
         List<TaskMainInfo> taskMainInfos = taskClient.getTaskMainInfos(projectCode, processName, "");
-        //去掉本身
-        taskMainInfos.removeIf(taskMainInfo -> (catalogue.getName() + ":" + catalogue.getId()).equalsIgnoreCase(taskMainInfo.getTaskName()));
+        // 去掉本身
+        taskMainInfos.removeIf(taskMainInfo -> (catalogue.getName() + ":" + catalogue.getId())
+                .equalsIgnoreCase(taskMainInfo.getTaskName()));
 
         return Result.succeed(taskMainInfos);
     }
@@ -154,9 +157,10 @@ public class SchedulerController {
      */
     @PostMapping("/task")
     @ApiOperation(value = "创建任务定义", notes = "创建任务定义")
-    public Result<String> createTaskDefinition(@ApiParam(value = "前置任务编号 逗号隔开") @RequestParam(required = false) String upstreamCodes,
-                                               @ApiParam(value = "dinky任务id") @RequestParam Long dinkyTaskId,
-                                               @Valid @RequestBody TaskRequest taskRequest) {
+    public Result<String> createTaskDefinition(
+            @ApiParam(value = "前置任务编号 逗号隔开") @RequestParam(required = false) String upstreamCodes,
+            @ApiParam(value = "dinky任务id") @RequestParam Long dinkyTaskId,
+            @Valid @RequestBody TaskRequest taskRequest) {
         DinkyTaskParams dinkyTaskParams = new DinkyTaskParams();
         dinkyTaskParams.setTaskId(dinkyTaskId.toString());
         dinkyTaskParams.setAddress(dolphinSchedulerProperties.getAddress());
@@ -165,7 +169,8 @@ public class SchedulerController {
 
         Project dinkyProject = SystemInit.getProject();
 
-        Catalogue catalogue = catalogueService.getOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, dinkyTaskId));
+        Catalogue catalogue = catalogueService
+                .getOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, dinkyTaskId));
         if (catalogue == null) {
             return Result.failed("节点获取失败");
         }
@@ -212,10 +217,10 @@ public class SchedulerController {
     @PutMapping("/task")
     @ApiOperation(value = "更新任务定义", notes = "更新任务定义")
     public Result<String> updateTaskDefinition(@ApiParam(value = "项目编号") @RequestParam long projectCode,
-                                               @ApiParam(value = "工作流定义编号") @RequestParam long processCode,
-                                               @ApiParam(value = "任务定义编号") @RequestParam long taskCode,
-                                               @ApiParam(value = "前置任务编号 逗号隔开") @RequestParam(required = false) String upstreamCodes,
-                                               @Valid @RequestBody TaskRequest taskRequest) {
+            @ApiParam(value = "工作流定义编号") @RequestParam long processCode,
+            @ApiParam(value = "任务定义编号") @RequestParam long taskCode,
+            @ApiParam(value = "前置任务编号 逗号隔开") @RequestParam(required = false) String upstreamCodes,
+            @Valid @RequestBody TaskRequest taskRequest) {
 
         TaskDefinition taskDefinition = taskClient.getTaskDefinition(projectCode, taskCode);
         if (taskDefinition == null) {

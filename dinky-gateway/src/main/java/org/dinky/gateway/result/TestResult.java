@@ -26,6 +26,7 @@ package org.dinky.gateway.result;
  * @since 2021/11/27 16:12
  **/
 public class TestResult {
+
     private boolean isAvailable;
     private String error;
 

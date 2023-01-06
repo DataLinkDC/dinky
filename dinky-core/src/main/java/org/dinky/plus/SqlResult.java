@@ -28,6 +28,7 @@ import org.apache.flink.table.api.TableResult;
  * @since 2021/6/22
  **/
 public class SqlResult {
+
     private TableResult tableResult;
     private boolean isSuccess = true;
     private String errorMsg;

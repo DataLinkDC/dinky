@@ -37,6 +37,7 @@ import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 public class Clickhouse20OutputVisitor extends SQLASTOutputVisitor implements Clickhouse20Visitor {
+
     public Clickhouse20OutputVisitor(Appendable appender) {
         super(appender, DbType.clickhouse);
     }

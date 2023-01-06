@@ -52,6 +52,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/alertGroup")
 public class AlertGroupController {
+
     @Autowired
     private AlertGroupService alertGroupService;
     @Autowired

@@ -33,6 +33,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class AppConfig {
+
     private String userJarPath;
     private String[] userJarParas;
     private String userJarMainAppClass;

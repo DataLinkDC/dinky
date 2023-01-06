@@ -26,6 +26,7 @@ package org.dinky.alert;
  * @since 2022/2/23 20:23
  **/
 public class AlertSendResponse {
+
     private Integer errcode;
     private String errmsg;
 

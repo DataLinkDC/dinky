@@ -30,6 +30,7 @@ import lombok.Data;
  */
 @Data
 public class TaskVersionHistoryDTO implements Serializable {
+
     private Integer id;
     private Integer taskId;
     private String name;

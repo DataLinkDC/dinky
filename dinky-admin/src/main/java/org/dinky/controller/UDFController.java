@@ -67,8 +67,10 @@ public class UDFController {
         Map<String, Object> result = new HashMap<>(3);
         list.forEach(t -> {
             one.putIfAbsent(t.getCodeType(), Dict.create().set("label", t.getCodeType()).set("value", t.getCodeType()));
-            two.putIfAbsent(t.getCodeType() + t.getFunctionType(), Dict.create().set("label", t.getFunctionType()).set("value", t.getFunctionType()));
-            three.putIfAbsent(t.getCodeType() + t.getFunctionType() + t.getId(), Dict.create().set("label", t.getName()).set("value", t.getId()));
+            two.putIfAbsent(t.getCodeType() + t.getFunctionType(),
+                    Dict.create().set("label", t.getFunctionType()).set("value", t.getFunctionType()));
+            three.putIfAbsent(t.getCodeType() + t.getFunctionType() + t.getId(),
+                    Dict.create().set("label", t.getName()).set("value", t.getId()));
         });
         Set<String> twoKeys = two.keySet();
         Set<String> threeKeys = three.keySet();
@@ -119,4 +121,3 @@ public class UDFController {
         }
     }
 }
-

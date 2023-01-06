@@ -34,6 +34,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @return
  */
 public class DefaultThreadPool implements ThreadPool {
+
     private static final int MAX_WORKER_NUM = 10;
     private static final int DEFAULT_WORKER_NUM = 5;
     private static final int MIN_WORKER_NUM = 1;
@@ -107,7 +108,7 @@ public class DefaultThreadPool implements ThreadPool {
                     count--;
                 }
             }
-            //减少线程
+            // 减少线程
             workerNum.getAndAdd(-num);
         }
 

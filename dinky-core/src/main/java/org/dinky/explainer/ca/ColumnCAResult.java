@@ -32,6 +32,7 @@ import java.util.Set;
  * @since 2021/6/22
  **/
 public class ColumnCAResult {
+
     private List<TableCA> tableCAS;
     private Map<Integer, ColumnCA> columnCASMaps;
     private Set<NodeRel> columnCASRel;

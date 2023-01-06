@@ -27,6 +27,7 @@ import org.dinky.model.Namespace;
 import com.fasterxml.jackson.databind.JsonNode;
 
 public interface NamespaceService extends ISuperService<Namespace> {
+
     /**
      * delete namespace by id
      *

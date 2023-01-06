@@ -28,6 +28,7 @@ import java.util.List;
  * @since 2021/12/12 13:11
  */
 public class ExplainResult {
+
     private boolean correct;
     private int total;
     private List<SqlExplainResult> sqlExplainResults;

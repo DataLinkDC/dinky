@@ -34,6 +34,7 @@ import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
  * @since 2021/5/25
  **/
 public class DateMetaObjectHandler implements MetaObjectHandler {
+
     private MybatisPlusFillProperties mybatisPlusFillProperties;
 
     public DateMetaObjectHandler(MybatisPlusFillProperties mybatisPlusFillProperties) {

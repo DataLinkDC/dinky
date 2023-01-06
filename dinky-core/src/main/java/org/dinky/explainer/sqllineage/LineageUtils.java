@@ -52,6 +52,7 @@ import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQueryTableSource;
 
 public class LineageUtils {
+
     protected static final Logger logger = LoggerFactory.getLogger(LineageUtils.class);
 
     public static void columnLineageAnalyzer(String sql, String type, TreeNode<LineageColumn> node) {
@@ -66,7 +67,7 @@ public class LineageUtils {
         try {
             statements = SQLUtils.parseStatements(sql, type);
         } catch (Exception e) {
-            logger.info("can't parser by druid {}",type,e);
+            logger.info("can't parser by druid {}", type, e);
         }
 
         // 只考虑一条语句
@@ -141,7 +142,8 @@ public class LineageUtils {
      * @param node
      * @param table
      */
-    private static void handlerSQLUnionQueryTableSource(TreeNode<LineageColumn> node, SQLUnionQueryTableSource table, String type) {
+    private static void handlerSQLUnionQueryTableSource(TreeNode<LineageColumn> node, SQLUnionQueryTableSource table,
+            String type) {
         node.getAllLeafs().stream().filter(e -> !e.getData().getIsEnd()).forEach(e -> {
             columnLineageAnalyzer(table.getUnion().toString(), type, e);
         });
@@ -172,7 +174,7 @@ public class LineageUtils {
      * @param table
      */
     private static void handlerSQLJoinTableSource(TreeNode<LineageColumn> node,
-                                                  SQLJoinTableSource table, String type) {
+            SQLJoinTableSource table, String type) {
         // 处理---------------------
         // 子查询作为表
         node.getAllLeafs().stream().filter(e -> !e.getData().getIsEnd()).forEach(e -> {
@@ -210,15 +212,19 @@ public class LineageUtils {
      * @param table
      */
     private static void handlerSQLExprTableSource(TreeNode<LineageColumn> node,
-                                                  SQLExprTableSource table) {
+            SQLExprTableSource table) {
         SQLExprTableSource tableSource = table;
-        String tableName = tableSource.getExpr() instanceof SQLPropertyExpr ? ((
-                SQLPropertyExpr) tableSource.getExpr()).getName().replace("`", "").replace("\"", "") : "";
-        String alias = Asserts.isNotNullString(tableSource.getAlias()) ? tableSource.getAlias().replace("`", "").replace("\"", "") : "";
+        String tableName = tableSource.getExpr() instanceof SQLPropertyExpr
+                ? ((SQLPropertyExpr) tableSource.getExpr()).getName().replace("`", "").replace("\"", "")
+                : "";
+        String alias = Asserts.isNotNullString(tableSource.getAlias())
+                ? tableSource.getAlias().replace("`", "").replace("\"", "")
+                : "";
         node.getChildren().forEach(e -> {
             e.getChildren().forEach(f -> {
-                if (!f.getData().getIsEnd() && (f.getData().getSourceTableName() == null || f.getData().getSourceTableName().equals(tableName) || f
-                        .getData().getSourceTableName().equals(alias))) {
+                if (!f.getData().getIsEnd() && (f.getData().getSourceTableName() == null
+                        || f.getData().getSourceTableName().equals(tableName) || f
+                                .getData().getSourceTableName().equals(alias))) {
                     f.getData().setSourceTableName(tableSource.toString());
                     f.getData().setIsEnd(true);
                     f.getData().setExpression(e.getData().getExpression());

@@ -70,7 +70,8 @@ public class FlinkBaseUtil {
         return sb.toString();
     }
 
-    public static String getFlinkDDL(Table table, String tableName, FlinkCDCConfig config, String sinkSchemaName, String sinkTableName, String pkList) {
+    public static String getFlinkDDL(Table table, String tableName, FlinkCDCConfig config, String sinkSchemaName,
+            String sinkTableName, String pkList) {
         StringBuilder sb = new StringBuilder();
         if (Integer.parseInt(EnvironmentInformation.getVersion().split("\\.")[1]) < 13) {
             sb.append("CREATE TABLE  `");
@@ -115,8 +116,10 @@ public class FlinkBaseUtil {
         return sb.toString();
     }
 
-    public static String getSinkConfigurationString(Table table, FlinkCDCConfig config, String sinkSchemaName, String sinkTableName, String pkList) {
-        String configurationString = SqlUtil.replaceAllParam(config.getSinkConfigurationString(), "schemaName", sinkSchemaName);
+    public static String getSinkConfigurationString(Table table, FlinkCDCConfig config, String sinkSchemaName,
+            String sinkTableName, String pkList) {
+        String configurationString = SqlUtil.replaceAllParam(config.getSinkConfigurationString(), "schemaName",
+                sinkSchemaName);
         configurationString = SqlUtil.replaceAllParam(configurationString, "tableName", sinkTableName);
         if (configurationString.contains("${pkList}")) {
             configurationString = SqlUtil.replaceAllParam(configurationString, "pkList", pkList);
@@ -134,7 +137,8 @@ public class FlinkBaseUtil {
     }
 
     public static String getColumnProcessing(Column column, FlinkCDCConfig config) {
-        if ("true".equals(config.getSink().get("column.replace.line-break")) && ColumnType.STRING.equals(column.getJavaType())) {
+        if ("true".equals(config.getSink().get("column.replace.line-break"))
+                && ColumnType.STRING.equals(column.getJavaType())) {
             return "REGEXP_REPLACE(`" + column.getName() + "`, '\\n', '') AS `" + column.getName() + "`";
         } else {
             return "`" + column.getName() + "`";

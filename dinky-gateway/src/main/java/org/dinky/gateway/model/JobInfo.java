@@ -31,6 +31,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class JobInfo {
+
     private String jobId;
     private String savePoint;
     private JobStatus status;
@@ -45,6 +46,7 @@ public class JobInfo {
     }
 
     public enum JobStatus {
+
         RUN("run"), STOP("stop"), CANCEL("cancel"), FAIL("fail");
 
         private String value;

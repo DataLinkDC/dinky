@@ -25,11 +25,9 @@ package org.dinky.model;
  **/
 public enum TaskOperatingSavepointSelect {
 
-
     DEFAULT_CONFIG(0, "defaultConfig", "默认保存点"),
 
     LATEST(1, "latest", "最新保存点");
-
 
     private Integer code;
 

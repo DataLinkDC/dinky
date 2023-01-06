@@ -84,11 +84,11 @@ public class SourceTrans extends AbstractTrans implements Trans {
     public String asSummaryString() {
 
         Map<String, Object> params = new LinkedHashMap<>();
-        /*params.put("originalQuery", catalogView.getOriginalQuery());
-        params.put("expandedQuery", catalogView.getExpandedQuery());
-        params.put("identifier", viewIdentifier);
-        params.put("ignoreIfExists", ignoreIfExists);
-        params.put("isTemporary", isTemporary);*/
+        /*
+         * params.put("originalQuery", catalogView.getOriginalQuery()); params.put("expandedQuery",
+         * catalogView.getExpandedQuery()); params.put("identifier", viewIdentifier); params.put("ignoreIfExists",
+         * ignoreIfExists); params.put("isTemporary", isTemporary);
+         */
         return OperationUtils.formatWithChildren(
                 "CREATE VIEW", params, Collections.emptyList(), Operation::asSummaryString);
     }

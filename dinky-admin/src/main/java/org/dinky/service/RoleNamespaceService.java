@@ -25,6 +25,7 @@ import org.dinky.model.RoleNamespace;
 import java.util.List;
 
 public interface RoleNamespaceService extends ISuperService<RoleNamespace> {
+
     /**
      * delete user role relation by role id
      *

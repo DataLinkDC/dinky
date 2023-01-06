@@ -37,6 +37,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
  **/
 public interface SuperMapper<T> extends BaseMapper<T> {
 
-    List<T> selectForProTable(Page<T> page, @Param(Constants.WRAPPER) Wrapper<T> queryWrapper, @Param("param") Map<String, Object> param);
+    List<T> selectForProTable(Page<T> page, @Param(Constants.WRAPPER) Wrapper<T> queryWrapper,
+            @Param("param") Map<String, Object> param);
 
 }

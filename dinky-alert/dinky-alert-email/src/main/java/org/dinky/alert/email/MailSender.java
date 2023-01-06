@@ -65,6 +65,7 @@ import com.sun.mail.smtp.SMTPProvider;
  * @date: 2022/4/3
  **/
 public final class MailSender {
+
     private static final Logger logger = LoggerFactory.getLogger(MailSender.class);
 
     private final List<String> receivers;
@@ -179,7 +180,7 @@ public final class MailSender {
                 }
 
                 if (CollectionUtils.isNotEmpty(receiverCcs)) {
-                    //cc
+                    // cc
                     for (String receiverCc : receiverCcs) {
                         email.addCc(receiverCc);
                     }
@@ -189,12 +190,13 @@ public final class MailSender {
             } catch (Exception e) {
                 handleException(alertResult, e);
             }
-        } else if (showType.equals(ShowType.ATTACHMENT.getValue()) || showType.equals(ShowType.TABLE_ATTACHMENT.getValue())) {
+        } else if (showType.equals(ShowType.ATTACHMENT.getValue())
+                || showType.equals(ShowType.TABLE_ATTACHMENT.getValue())) {
             try {
 
                 String partContent = (showType.equals(ShowType.ATTACHMENT.getValue())
-                    ? "Please see the attachment " + title + EmailConstants.EXCEL_SUFFIX_XLSX
-                    : htmlTable(title, content, false));
+                        ? "Please see the attachment " + title + EmailConstants.EXCEL_SUFFIX_XLSX
+                        : htmlTable(title, content, false));
 
                 attachment(title, content, partContent);
 
@@ -227,7 +229,7 @@ public final class MailSender {
      * @return the html table form
      */
     private String htmlTable(String title, String content) {
-        return htmlTable(title,content, true);
+        return htmlTable(title, content, true);
     }
 
     /**
@@ -309,6 +311,7 @@ public final class MailSender {
         }
 
         Authenticator auth = new Authenticator() {
+
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
                 // mail username and password
@@ -324,7 +327,8 @@ public final class MailSender {
     /**
      * attach content
      */
-    private void attachContent(String title, String content, String partContent, MimeMessage msg) throws MessagingException, IOException {
+    private void attachContent(String title, String content, String partContent, MimeMessage msg)
+            throws MessagingException, IOException {
         /*
          * set receiverCc
          */
@@ -365,7 +369,8 @@ public final class MailSender {
     /**
      * the string object map
      */
-    private AlertResult getStringObjectMap(String title, String content, AlertResult alertResult, HtmlEmail email) throws EmailException {
+    private AlertResult getStringObjectMap(String title, String content, AlertResult alertResult, HtmlEmail email)
+            throws EmailException {
 
         /*
          * the subject of the message to be sent

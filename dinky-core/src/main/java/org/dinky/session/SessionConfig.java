@@ -33,6 +33,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SessionConfig {
+
     private SessionType type;
     private boolean useRemote;
     private Integer clusterId;
@@ -40,8 +41,7 @@ public class SessionConfig {
     private String address;
 
     public enum SessionType {
-        PUBLIC,
-        PRIVATE
+        PUBLIC, PRIVATE
     }
 
     public SessionConfig(SessionType type, boolean useRemote, Integer clusterId, String clusterName, String address) {
@@ -52,7 +52,8 @@ public class SessionConfig {
         this.address = address;
     }
 
-    public static SessionConfig build(String type, boolean useRemote, Integer clusterId, String clusterName, String address) {
+    public static SessionConfig build(String type, boolean useRemote, Integer clusterId, String clusterName,
+            String address) {
         return new SessionConfig(SessionType.valueOf(type), useRemote, clusterId, clusterName, address);
     }
 

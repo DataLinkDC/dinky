@@ -33,6 +33,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class APISavePointTaskDTO {
+
     private Integer taskId;
     private String type = SavePointType.TRIGGER.getValue();
 

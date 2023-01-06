@@ -31,6 +31,7 @@ import com.alibaba.druid.sql.dialect.clickhouse.visitor.ClickhouseVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class Clickhouse20CreateTableStatement extends SQLCreateTableStatement {
+
     protected final List<SQLAssignItem> settings = new ArrayList<SQLAssignItem>();
     private SQLOrderBy orderBy;
     private SQLExpr partitionBy;

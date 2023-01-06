@@ -35,6 +35,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class DorisTest {
+
     private Driver driver;
 
     @Before
@@ -57,7 +58,7 @@ public class DorisTest {
 
     @Test
     public void test() throws SQLException {
-        //test
+        // test
         String test = driver.test();
         System.out.println(test);
         System.out.println("schema && table -----");
@@ -70,7 +71,7 @@ public class DorisTest {
 
     @Test
     public void testSchema() {
-        //schema && table
+        // schema && table
         List<Schema> schemasAndTables = driver.getSchemasAndTables();
         for (Schema schemasAndTable : schemasAndTables) {
             List<Table> tables = schemasAndTable.getTables();

@@ -63,7 +63,6 @@ public class Role implements Serializable {
      */
     private String roleName;
 
-
     /**
      * is delete
      */

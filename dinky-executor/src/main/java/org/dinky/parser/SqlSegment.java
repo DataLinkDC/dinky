@@ -33,6 +33,7 @@ import java.util.regex.Pattern;
  * @since 2021/6/14 16:12
  */
 public class SqlSegment {
+
     private static final String Crlf = "|";
     @SuppressWarnings("unused")
     private static final String FourSpace = "　　";
@@ -123,7 +124,7 @@ public class SqlSegment {
             result = m.find();
         }
         m.appendTail(sb);
-        //ls.add(start);
+        // ls.add(start);
         String[] arr = sb.toString().split("[|]");
         int arrLength = arr.length;
         for (int i = 0; i < arrLength; i++) {

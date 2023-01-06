@@ -29,6 +29,7 @@ import org.dinky.alert.AlertResult;
  * @since 2022/2/23 21:09
  **/
 public class WeChatAlert extends AbstractAlert {
+
     @Override
     public String getType() {
         return WeChatConstants.TYPE;

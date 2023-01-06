@@ -122,9 +122,9 @@ public class TableCAGenerator implements CAGenerator {
         if (Asserts.isNotNull(selects)) {
             for (int i = 0; i < selects.size(); i++) {
                 List<String> fields = matchFields(selects.get(i).getFragment(), field);
-                /*if(tableCA.getFields().contains(field)){
-                    tableCA.getFields().remove(field);
-                }*/
+                /*
+                 * if(tableCA.getFields().contains(field)){ tableCA.getFields().remove(field); }
+                 */
                 for (int j = 0; j < fields.size(); j++) {
                     if (!tableCA.getUseFields().contains(fields.get(j))) {
                         tableCA.getUseFields().add(fields.get(j));
@@ -137,9 +137,9 @@ public class TableCAGenerator implements CAGenerator {
     private void searchWhereFields(TableCA tableCA, String wheres, String field) {
         if (Asserts.isNotNull(wheres) && !"[]".equals(wheres)) {
             List<String> fields = matchFields(wheres, field);
-            /*if(tableCA.getFields().contains(field)){
-                tableCA.getFields().remove(field);
-            }*/
+            /*
+             * if(tableCA.getFields().contains(field)){ tableCA.getFields().remove(field); }
+             */
             for (int j = 0; j < fields.size(); j++) {
                 if (!tableCA.getUseFields().contains(fields.get(j))) {
                     tableCA.getUseFields().add(fields.get(j));

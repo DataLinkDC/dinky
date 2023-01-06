@@ -64,20 +64,23 @@ public class FileUploadServiceImpl implements FileUploadService {
             case UploadFileConstant.TARGET_LOCAL: {
                 try {
                     file.transferTo(new File(filePath));
-                    if (uploadFileRecordService.saveOrUpdateFile(file.getOriginalFilename(), dir, filePath, fileType, UploadFileConstant.TARGET_LOCAL)) {
+                    if (uploadFileRecordService.saveOrUpdateFile(file.getOriginalFilename(), dir, filePath, fileType,
+                            UploadFileConstant.TARGET_LOCAL)) {
                         return Result.succeed("上传成功");
                     } else {
                         return Result.failed("数据库异常");
                     }
                 } catch (IOException e) {
-                    log.error("File " + file.getOriginalFilename() + " upload to local dir fail, exception is:\n" + ExceptionUtil.stacktraceToString(e));
+                    log.error("File " + file.getOriginalFilename() + " upload to local dir fail, exception is:\n"
+                            + ExceptionUtil.stacktraceToString(e));
                     return Result.failed("上传失败");
                 }
             }
             case UploadFileConstant.TARGET_HDFS: {
                 Result result = HdfsUtil.uploadFile(filePath, file);
                 if (Objects.equals(result.getCode(), CodeEnum.SUCCESS.getCode())) {
-                    if (uploadFileRecordService.saveOrUpdateFile(file.getOriginalFilename(), dir, filePath, fileType, UploadFileConstant.TARGET_HDFS)) {
+                    if (uploadFileRecordService.saveOrUpdateFile(file.getOriginalFilename(), dir, filePath, fileType,
+                            UploadFileConstant.TARGET_HDFS)) {
                         return Result.succeed("上传成功");
                     } else {
                         return Result.failed("数据库异常");
@@ -123,7 +126,8 @@ public class FileUploadServiceImpl implements FileUploadService {
         String filePath = FilePathUtil.addFileSeparator(dir) + file.getOriginalFilename();
         Result result = HdfsUtil.uploadFile(filePath, file, hadoopConfigPath);
         if (Objects.equals(result.getCode(), CodeEnum.SUCCESS.getCode())) {
-            if (uploadFileRecordService.saveOrUpdateFile(file.getOriginalFilename(), dir, filePath, UploadFileConstant.FLINK_LIB_ID, UploadFileConstant.TARGET_HDFS)) {
+            if (uploadFileRecordService.saveOrUpdateFile(file.getOriginalFilename(), dir, filePath,
+                    UploadFileConstant.FLINK_LIB_ID, UploadFileConstant.TARGET_HDFS)) {
                 return Result.succeed("上传成功");
             } else {
                 return Result.failed("数据库异常");
@@ -145,7 +149,8 @@ public class FileUploadServiceImpl implements FileUploadService {
                     return uploadResult;
                 }
             }
-            if (!uploadFileRecordService.saveOrUpdateDir(dir, UploadFileConstant.FLINK_LIB_ID, UploadFileConstant.TARGET_HDFS)) {
+            if (!uploadFileRecordService.saveOrUpdateDir(dir, UploadFileConstant.FLINK_LIB_ID,
+                    UploadFileConstant.TARGET_HDFS)) {
                 return Result.failed("数据库异常");
             }
             return Result.succeed("全部上传成功");

@@ -28,6 +28,7 @@ import java.time.LocalDateTime;
  * @since 2021/6/7 22:06
  **/
 public class SqlExplainResult {
+
     private Integer index;
     private String type;
     private String sql;
@@ -41,7 +42,8 @@ public class SqlExplainResult {
     public SqlExplainResult() {
     }
 
-    public SqlExplainResult(Integer index, String type, String sql, String parse, String explain, String error, boolean parseTrue, boolean explainTrue, LocalDateTime explainTime) {
+    public SqlExplainResult(Integer index, String type, String sql, String parse, String explain, String error,
+            boolean parseTrue, boolean explainTrue, LocalDateTime explainTime) {
         this.index = index;
         this.type = type;
         this.sql = sql;

@@ -29,7 +29,6 @@ import java.util.List;
  */
 public interface TaskVersionService extends ISuperService<TaskVersion> {
 
-
     /**
      * @description 通过作业Id查询版本数据
      * @param taskId

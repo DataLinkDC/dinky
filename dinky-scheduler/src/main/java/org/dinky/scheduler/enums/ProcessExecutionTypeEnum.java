@@ -23,10 +23,8 @@ import java.util.HashMap;
 
 public enum ProcessExecutionTypeEnum {
 
-    PARALLEL(0, "parallel"),
-    SERIAL_WAIT(1, "serial wait"),
-    SERIAL_DISCARD(2, "serial discard"),
-    SERIAL_PRIORITY(3, "serial priority");
+    PARALLEL(0, "parallel"), SERIAL_WAIT(1, "serial wait"), SERIAL_DISCARD(2, "serial discard"), SERIAL_PRIORITY(3,
+            "serial priority");
 
     ProcessExecutionTypeEnum(int code, String descp) {
         this.code = code;

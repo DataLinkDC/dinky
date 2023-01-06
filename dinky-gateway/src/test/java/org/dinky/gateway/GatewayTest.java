@@ -27,5 +27,4 @@ package org.dinky.gateway;
  **/
 public class GatewayTest {
 
-
 }

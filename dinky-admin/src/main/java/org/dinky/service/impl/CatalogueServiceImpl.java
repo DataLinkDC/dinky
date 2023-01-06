@@ -179,11 +179,11 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     }
 
     private void findAllCatalogueInDir(Integer id, List<Catalogue> all, Set<Catalogue> del) {
-        List<Catalogue> relatedList =
-                all.stream().filter(catalogue -> id.equals(catalogue.getId()) || id.equals(catalogue.getParentId()))
-                        .collect(Collectors.toList());
-        List<Catalogue> subDirCatalogue =
-                relatedList.stream().filter(catalogue -> catalogue.getType() == null).collect(Collectors.toList());
+        List<Catalogue> relatedList = all.stream()
+                .filter(catalogue -> id.equals(catalogue.getId()) || id.equals(catalogue.getParentId()))
+                .collect(Collectors.toList());
+        List<Catalogue> subDirCatalogue = relatedList.stream().filter(catalogue -> catalogue.getType() == null)
+                .collect(Collectors.toList());
         subDirCatalogue.forEach(catalogue -> {
             if (id != catalogue.getId()) {
                 findAllCatalogueInDir(catalogue.getId(), all, del);
@@ -246,8 +246,8 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         statement.setId(newTask.getId());
         statementService.save(statement);
 
-        Catalogue one =
-                this.getOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, catalogue.getTaskId()));
+        Catalogue one = this
+                .getOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, catalogue.getTaskId()));
 
         catalogue.setName(newTask.getAlias());
         catalogue.setIsLeaf(one.getIsLeaf());

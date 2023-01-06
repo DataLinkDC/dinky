@@ -36,6 +36,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class APIJobResult {
+
     private String jobManagerAddress;
     private Job.JobStatus status;
     private boolean success;
@@ -44,7 +45,8 @@ public class APIJobResult {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
-    public APIJobResult(String jobManagerAddress, Job.JobStatus status, boolean success, String jobId, String error, LocalDateTime startTime, LocalDateTime endTime) {
+    public APIJobResult(String jobManagerAddress, Job.JobStatus status, boolean success, String jobId, String error,
+            LocalDateTime startTime, LocalDateTime endTime) {
         this.jobManagerAddress = jobManagerAddress;
         this.status = status;
         this.success = success;

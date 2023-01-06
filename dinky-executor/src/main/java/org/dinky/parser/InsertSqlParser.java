@@ -44,4 +44,3 @@ public class InsertSqlParser extends BaseSingleSqlParser {
         return retval;
     }
 }
-

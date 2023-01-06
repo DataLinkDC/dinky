@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 public class StarRocksDriver extends AbstractJdbcDriver {
+
     @Override
     public IDBQuery getDBQuery() {
         return new StarRocksQuery();

@@ -28,8 +28,7 @@ public enum ReleaseState {
      * 0 offline
      * 1 online
      */
-    OFFLINE(0, "offline"),
-    ONLINE(1, "online");
+    OFFLINE(0, "offline"), ONLINE(1, "online");
 
     ReleaseState(int code, String descp) {
         this.code = code;
@@ -45,7 +44,7 @@ public enum ReleaseState {
                 return e;
             }
         }
-        //For values out of enum scope
+        // For values out of enum scope
         return null;
     }
 

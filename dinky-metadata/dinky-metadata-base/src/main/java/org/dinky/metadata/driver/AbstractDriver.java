@@ -58,11 +58,13 @@ public abstract class AbstractDriver implements Driver {
     }
 
     public List<Schema> getSchemasAndTables() {
-        return listSchemas().stream().peek(schema -> schema.setTables(listTables(schema.getName()))).sorted().collect(Collectors.toList());
+        return listSchemas().stream().peek(schema -> schema.setTables(listTables(schema.getName()))).sorted()
+                .collect(Collectors.toList());
     }
 
     public List<Table> getTablesAndColumns(String schema) {
-        return listTables(schema).stream().peek(table -> table.setColumns(listColumns(schema, table.getName()))).sorted().collect(Collectors.toList());
+        return listTables(schema).stream().peek(table -> table.setColumns(listColumns(schema, table.getName())))
+                .sorted().collect(Collectors.toList());
     }
 
     @Override
@@ -82,7 +84,8 @@ public abstract class AbstractDriver implements Driver {
 
     @Override
     public boolean existTable(Table table) {
-        return listTables(table.getSchema()).stream().anyMatch(tableItem -> Asserts.isEquals(tableItem.getName(), table.getName()));
+        return listTables(table.getSchema()).stream()
+                .anyMatch(tableItem -> Asserts.isEquals(tableItem.getName(), table.getName()));
     }
 
     @Override

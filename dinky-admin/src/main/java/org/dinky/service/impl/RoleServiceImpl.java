@@ -82,8 +82,10 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
         boolean roleSaveOrUpdate = saveOrUpdate(role);
         boolean roleNamespaceSaveOrUpdate = false;
         if (roleSaveOrUpdate) {
-            List<RoleNamespace> roleNamespaceList = roleNamespaceService.getBaseMapper().selectList(new QueryWrapper<RoleNamespace>().eq("role_id", role.getId()));
-            roleNamespaceService.removeByIds(roleNamespaceList.stream().map(RoleNamespace::getId).collect(Collectors.toList()));
+            List<RoleNamespace> roleNamespaceList = roleNamespaceService.getBaseMapper()
+                    .selectList(new QueryWrapper<RoleNamespace>().eq("role_id", role.getId()));
+            roleNamespaceService
+                    .removeByIds(roleNamespaceList.stream().map(RoleNamespace::getId).collect(Collectors.toList()));
             List<RoleNamespace> arrayListRoleNamespace = new ArrayList<>();
             String[] idsList = role.getNamespaceIds().split(",");
             for (String namespaceId : idsList) {
@@ -108,7 +110,8 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
             List<Integer> error = new ArrayList<>();
             for (final JsonNode item : para) {
                 Integer id = item.asInt();
-                boolean roleNameSpaceRemove = roleNamespaceService.remove(new QueryWrapper<RoleNamespace>().eq("role_id", id));
+                boolean roleNameSpaceRemove = roleNamespaceService
+                        .remove(new QueryWrapper<RoleNamespace>().eq("role_id", id));
                 boolean userRoleRemove = userRoleService.remove(new QueryWrapper<UserRole>().eq("role_id", id));
                 Role role = getById(id);
                 role.setIsDelete(true);
@@ -149,11 +152,12 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
             List<Namespace> namespaceArrayList = new ArrayList<>();
             List<Integer> idsList = new ArrayList<>();
             Tenant tenant = tenantService.getBaseMapper().selectById(role.getTenantId());
-            roleNamespaceService.list(new QueryWrapper<RoleNamespace>().eq("role_id", role.getId())).forEach(roleNamespace -> {
-                Namespace namespaceServiceById = namespaceService.getById(roleNamespace.getNamespaceId());
-                namespaceArrayList.add(namespaceServiceById);
-                idsList.add(roleNamespace.getNamespaceId());
-            });
+            roleNamespaceService.list(new QueryWrapper<RoleNamespace>().eq("role_id", role.getId()))
+                    .forEach(roleNamespace -> {
+                        Namespace namespaceServiceById = namespaceService.getById(roleNamespace.getNamespaceId());
+                        namespaceArrayList.add(namespaceServiceById);
+                        idsList.add(roleNamespace.getNamespaceId());
+                    });
             role.setTenant(tenant);
             role.setNamespaces(namespaceArrayList);
             String result = idsList.stream().map(Object::toString).collect(Collectors.joining(","));

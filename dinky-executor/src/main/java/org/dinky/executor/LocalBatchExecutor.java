@@ -41,7 +41,8 @@ public class LocalBatchExecutor extends Executor {
                 this.environment = StreamExecutionEnvironment.createLocalEnvironmentWithWebUI(configuration);
             } else {
                 this.environment = StreamExecutionEnvironment.createLocalEnvironment(configuration);
-            }        } else {
+            }
+        } else {
             this.environment = StreamExecutionEnvironment.createLocalEnvironment();
         }
         init();

@@ -20,6 +20,7 @@
 package org.dinky.constant;
 
 public interface NetConstant {
+
     /**
      * http://
      */

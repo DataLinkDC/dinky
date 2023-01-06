@@ -52,7 +52,8 @@ public class SuperServiceImpl<M extends SuperMapper<T>, T> extends ServiceImpl<M
         Map<String, Object> param = mapper.convertValue(para, Map.class);
         Page<T> page = new Page<>(current, pageSize);
         List<T> list = baseMapper.selectForProTable(page, queryWrapper, param);
-        return ProTableResult.<T>builder().success(true).data(list).total(page.getTotal()).current(current).pageSize(pageSize).build();
+        return ProTableResult.<T>builder().success(true).data(list).total(page.getTotal()).current(current)
+                .pageSize(pageSize).build();
     }
 
     @Override
@@ -65,7 +66,8 @@ public class SuperServiceImpl<M extends SuperMapper<T>, T> extends ServiceImpl<M
         Map<String, Object> param = mapper.convertValue(para, Map.class);
         Page<T> page = new Page<>(current, pageSize);
         List<T> list = baseMapper.selectForProTable(page, queryWrapper, param);
-        return ProTableResult.<T>builder().success(true).data(list).total(page.getTotal()).current(current).pageSize(pageSize).build();
+        return ProTableResult.<T>builder().success(true).data(list).total(page.getTotal()).current(current)
+                .pageSize(pageSize).build();
     }
 
     @Override
@@ -83,7 +85,8 @@ public class SuperServiceImpl<M extends SuperMapper<T>, T> extends ServiceImpl<M
         }
         Page<T> page = new Page<>(current, pageSize);
         List<T> list = baseMapper.selectForProTable(page, queryWrapper, param);
-        return ProTableResult.<T>builder().success(true).data(list).total(page.getTotal()).current(current).pageSize(pageSize).build();
+        return ProTableResult.<T>builder().success(true).data(list).total(page.getTotal()).current(current)
+                .pageSize(pageSize).build();
     }
 
 }

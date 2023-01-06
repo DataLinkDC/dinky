@@ -29,7 +29,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
-public class RoleNamespaceServiceImpl extends SuperServiceImpl<RoleNamespaceMapper, RoleNamespace> implements RoleNamespaceService {
+public class RoleNamespaceServiceImpl extends SuperServiceImpl<RoleNamespaceMapper, RoleNamespace>
+        implements
+            RoleNamespaceService {
+
     @Override
     public boolean deleteByRoleIds(List<Integer> roleIds) {
         return baseMapper.deleteByRoleIds(roleIds) > 0;

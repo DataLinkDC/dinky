@@ -29,6 +29,7 @@ import java.util.List;
  * @since 2021/5/25 19:04
  **/
 public class SubmitResult {
+
     private String sessionId;
     private List<String> statements;
     private String flinkHost;

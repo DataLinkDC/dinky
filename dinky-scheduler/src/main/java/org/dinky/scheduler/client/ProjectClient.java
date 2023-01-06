@@ -63,10 +63,10 @@ public class ProjectClient {
         map.put("description", "自动创建");
 
         String content = HttpRequest.post(dolphinSchedulerProperties.getUrl() + "/projects")
-            .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
-            .form(map)
-            .timeout(5000)
-            .execute().body();
+                .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
+                .form(map)
+                .timeout(5000)
+                .execute().body();
         return MyJSONUtil.verifyResult(MyJSONUtil.toBean(content, new TypeReference<Result<Project>>() {
         }));
     }
@@ -81,10 +81,10 @@ public class ProjectClient {
     public Project getDinkyProject() {
 
         String content = HttpRequest.get(dolphinSchedulerProperties.getUrl() + "/projects")
-            .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
-            .form(ParamUtil.getPageParams(dolphinSchedulerProperties.getProjectName()))
-            .timeout(5000)
-            .execute().body();
+                .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
+                .form(ParamUtil.getPageParams(dolphinSchedulerProperties.getProjectName()))
+                .timeout(5000)
+                .execute().body();
 
         return MyJSONUtil.toPageBeanAndFindByName(content, dolphinSchedulerProperties.getProjectName(), Project.class);
     }

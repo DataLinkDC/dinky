@@ -50,11 +50,12 @@ public class DefaultHTMLTemplate implements AlertTemplate {
 
         switch (showType) {
             case TABLE:
-                return getTableTypeMessage(title,content, showAll);
+                return getTableTypeMessage(title, content, showAll);
             case TEXT:
-                return getTextTypeMessage(title,content);
+                return getTextTypeMessage(title, content);
             default:
-                throw new IllegalArgumentException(String.format("not support showType: %s in DefaultHTMLTemplate", showType));
+                throw new IllegalArgumentException(
+                        String.format("not support showType: %s in DefaultHTMLTemplate", showType));
         }
     }
 
@@ -65,10 +66,10 @@ public class DefaultHTMLTemplate implements AlertTemplate {
      * @param showAll weather to show all
      * @return alert message
      */
-    private String getTableTypeMessage(String title,String content, boolean showAll) {
+    private String getTableTypeMessage(String title, String content, boolean showAll) {
 
         if (StringUtils.isNotEmpty(content)) {
-            List<LinkedHashMap> mapItemsList = JSONUtil.toList(content,LinkedHashMap.class);
+            List<LinkedHashMap> mapItemsList = JSONUtil.toList(content, LinkedHashMap.class);
             if (!showAll && mapItemsList.size() > EmailConstants.NUMBER_1000) {
                 mapItemsList = mapItemsList.subList(0, EmailConstants.NUMBER_1000);
             }
@@ -120,7 +121,8 @@ public class DefaultHTMLTemplate implements AlertTemplate {
             if (linkedHashMaps.size() > EmailConstants.NUMBER_1000) {
                 linkedHashMaps = linkedHashMaps.subList(0, EmailConstants.NUMBER_1000);
             }
-            stringBuilder.append(EmailConstants.TR).append(EmailConstants.TH_COLSPAN).append(title).append(EmailConstants.TH_END).append(EmailConstants.TR_END);
+            stringBuilder.append(EmailConstants.TR).append(EmailConstants.TH_COLSPAN).append(title)
+                    .append(EmailConstants.TH_END).append(EmailConstants.TR_END);
             for (LinkedHashMap<String, Object> mapItems : linkedHashMaps) {
                 Set<Map.Entry<String, Object>> entries = mapItems.entrySet();
                 Iterator<Map.Entry<String, Object>> iterator = entries.iterator();

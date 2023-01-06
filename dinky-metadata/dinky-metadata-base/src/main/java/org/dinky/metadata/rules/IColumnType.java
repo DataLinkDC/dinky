@@ -26,6 +26,7 @@ package org.dinky.metadata.rules;
  * @since 2021/7/20 14:43
  **/
 public interface IColumnType {
+
     /**
      * 获取字段类型
      */

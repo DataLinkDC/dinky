@@ -57,8 +57,8 @@ public class FileUploadController {
      */
     @PostMapping
     public Result upload(@RequestPart("files") MultipartFile[] files,
-                         @RequestParam(value = "dir", defaultValue = "", required = false) String dir,
-                         @RequestParam(value = "fileType", defaultValue = "-1", required = false) Byte fileType) {
+            @RequestParam(value = "dir", defaultValue = "", required = false) String dir,
+            @RequestParam(value = "fileType", defaultValue = "-1", required = false) Byte fileType) {
         if (!StringUtils.isEmpty(dir) && fileType != -1) {
             return Result.failed("不要同时指定 dir 和 fileType 参数");
         } else if (StringUtils.isEmpty(dir) && fileType == -1) {
@@ -82,8 +82,8 @@ public class FileUploadController {
      */
     @PostMapping(value = "hdfs")
     public Result uploadHdfs(@RequestPart("files") MultipartFile[] files,
-                             @RequestParam(value = "dir", defaultValue = "", required = false) String dir,
-                             @RequestParam(value = "hadoopConfigPath", required = false) String hadoopConfigPath) {
+            @RequestParam(value = "dir", defaultValue = "", required = false) String dir,
+            @RequestParam(value = "hadoopConfigPath", required = false) String hadoopConfigPath) {
         return fileUploadService.uploadHdfs(files, dir, hadoopConfigPath);
     }
 

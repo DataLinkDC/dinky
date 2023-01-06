@@ -23,14 +23,13 @@ package org.dinky.scheduler.enums;
  * task timeout strategy
  */
 public enum TaskTimeoutStrategy {
+
     /**
      * 0 warn
      * 1 failed
      * 2 warn+failed
      */
-    WARN(0, "warn"),
-    FAILED(1, "failed"),
-    WARNFAILED(2, "warnfailed");
+    WARN(0, "warn"), FAILED(1, "failed"), WARNFAILED(2, "warnfailed");
 
     TaskTimeoutStrategy(int code, String descp) {
         this.code = code;

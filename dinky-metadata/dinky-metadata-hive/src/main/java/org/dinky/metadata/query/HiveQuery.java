@@ -22,6 +22,7 @@ package org.dinky.metadata.query;
 import org.dinky.metadata.constant.HiveConstant;
 
 public class HiveQuery extends AbstractDBQuery {
+
     @Override
     public String schemaAllSql() {
         return HiveConstant.QUERY_ALL_DATABASE;

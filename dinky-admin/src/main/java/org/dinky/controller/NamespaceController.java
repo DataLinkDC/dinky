@@ -41,6 +41,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/namespace")
 public class NamespaceController {
+
     @Autowired
     private NamespaceService namespaceService;
 

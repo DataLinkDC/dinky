@@ -26,6 +26,7 @@ package org.dinky.model;
  * @since 2022/1/29 16:13
  */
 public class SqlGeneration {
+
     private String flinkSqlCreate;
     private String sqlSelect;
     private String sqlCreate;

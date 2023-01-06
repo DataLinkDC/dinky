@@ -34,6 +34,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class APISavePointDTO {
+
     private String jobId;
     private String savePointType;
     private String savePoint;

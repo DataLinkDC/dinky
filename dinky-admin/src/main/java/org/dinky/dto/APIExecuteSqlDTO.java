@@ -37,6 +37,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class APIExecuteSqlDTO extends AbstractStatementDTO {
+
     // RUN_MODE
     private String type;
     private boolean useResult = false;

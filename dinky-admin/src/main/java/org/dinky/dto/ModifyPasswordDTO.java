@@ -31,6 +31,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ModifyPasswordDTO {
+
     private String username;
     private String password;
     private String newPassword;

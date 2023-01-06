@@ -33,7 +33,7 @@ public class ShowFragmentParser extends BaseSingleSqlParser {
 
     @Override
     protected void initializeSegments() {
-        //SHOW FRAGMENT (.+)
+        // SHOW FRAGMENT (.+)
         segments.add(new SqlSegment("FRAGMENT", "(show\\s+fragment)\\s+(.*)( ENDOFSQL)", ","));
     }
 }

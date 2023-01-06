@@ -165,13 +165,15 @@ public interface Driver extends AutoCloseable {
 
     String generateCreateTableSql(Table table);
 
-    /* boolean insert(Table table, JsonNode data);
-
-    boolean update(Table table, JsonNode data);
-
-    boolean delete(Table table, JsonNode data);
-
-    SelectResult select(String sql);*/
+    /*
+     * boolean insert(Table table, JsonNode data);
+     * 
+     * boolean update(Table table, JsonNode data);
+     * 
+     * boolean delete(Table table, JsonNode data);
+     * 
+     * SelectResult select(String sql);
+     */
 
     boolean execute(String sql) throws Exception;
 

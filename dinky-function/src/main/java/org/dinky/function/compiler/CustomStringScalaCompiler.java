@@ -33,9 +33,9 @@ import scala.tools.nsc.interpreter.IMain;
  */
 @Slf4j
 public class CustomStringScalaCompiler {
-    
+
     private static class ErrorHandler extends AbstractFunction1<String, BoxedUnit> {
-        
+
         @Override
         public BoxedUnit apply(String msg) {
             log.error("Interpreter error: {}", msg);

@@ -66,7 +66,8 @@ public class NamespaceServiceImpl extends SuperServiceImpl<NamespaceMapper, Name
             if (Asserts.isNull(namespace)) {
                 return Result.failed("名称空间不存在");
             }
-            Long roleNamespaceCount = roleNamespaceService.getBaseMapper().selectCount(new QueryWrapper<RoleNamespace>().eq("namespace_id", id));
+            Long roleNamespaceCount = roleNamespaceService.getBaseMapper()
+                    .selectCount(new QueryWrapper<RoleNamespace>().eq("namespace_id", id));
             if (roleNamespaceCount > 0) {
                 return Result.failed("删除名称空间失败，该名称空间被角色绑定");
             }

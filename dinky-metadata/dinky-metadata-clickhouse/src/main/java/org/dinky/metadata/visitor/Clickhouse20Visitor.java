@@ -24,6 +24,7 @@ import org.dinky.metadata.ast.Clickhouse20CreateTableStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface Clickhouse20Visitor extends SQLASTVisitor {
+
     default boolean visit(Clickhouse20CreateTableStatement x) {
         return true;
     }

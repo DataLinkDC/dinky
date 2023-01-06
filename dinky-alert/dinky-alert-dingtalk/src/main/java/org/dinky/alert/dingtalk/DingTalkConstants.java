@@ -57,5 +57,4 @@ public final class DingTalkConstants {
 
     static final String PASSWORD = "password";
 
-
 }

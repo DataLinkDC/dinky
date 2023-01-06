@@ -50,6 +50,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/sysConfig")
 public class SysConfigController {
+
     @Autowired
     private SysConfigService sysConfigService;
 

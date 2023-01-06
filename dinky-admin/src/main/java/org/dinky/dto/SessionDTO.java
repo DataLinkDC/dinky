@@ -31,6 +31,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SessionDTO {
+
     private String session;
     private String type;
     private boolean useRemote;

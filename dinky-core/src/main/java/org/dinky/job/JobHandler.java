@@ -30,6 +30,7 @@ import java.util.ServiceLoader;
  * @since 2021/6/26 23:22
  */
 public interface JobHandler {
+
     boolean init();
 
     boolean ready();

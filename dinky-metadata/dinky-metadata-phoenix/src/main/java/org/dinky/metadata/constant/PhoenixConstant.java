@@ -42,8 +42,7 @@ public interface PhoenixConstant {
     /**
      * 不指定schema查询table信息模板SQL
      */
-    String QUERY_TABLE_BY_SCHEMA_SQL_DEFAULT =
-            " select TABLE_NAME,TABLE_SCHEM,TABLE_TYPE,SCOPE_CATALOG as CATALOG,'' as ENGINE,'' as OPTIONS, 0 as ROWSNUM, null as CREATE_TIME, null as UPDATE_TIME "
+    String QUERY_TABLE_BY_SCHEMA_SQL_DEFAULT = " select TABLE_NAME,TABLE_SCHEM,TABLE_TYPE,SCOPE_CATALOG as CATALOG,'' as ENGINE,'' as OPTIONS, 0 as ROWSNUM, null as CREATE_TIME, null as UPDATE_TIME "
             + "from SYSTEM.CATALOG where TABLE_TYPE in ('u','v')  ";
     /**
      * 根据schema查询table信息模板SQL

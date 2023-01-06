@@ -44,5 +44,4 @@ public class UDFTemplate extends SuperEntity {
     private String functionType;
     private String templateCode;
 
-
 }

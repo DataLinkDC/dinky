@@ -24,6 +24,7 @@ import org.dinky.model.Column;
 import org.dinky.model.ColumnType;
 
 public class StarRocksTypeConvert implements ITypeConvert {
+
     @Override
     public ColumnType convert(Column column) {
         ColumnType columnType = ColumnType.STRING;

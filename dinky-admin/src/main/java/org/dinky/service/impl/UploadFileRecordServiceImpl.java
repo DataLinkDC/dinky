@@ -34,10 +34,13 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
  * UploadFileRecordServiceImpl
  **/
 @Service
-public class UploadFileRecordServiceImpl extends SuperServiceImpl<UploadFileRecordMapper, UploadFileRecord> implements UploadFileRecordService {
+public class UploadFileRecordServiceImpl extends SuperServiceImpl<UploadFileRecordMapper, UploadFileRecord>
+        implements
+            UploadFileRecordService {
 
     @Override
-    public boolean saveOrUpdateFile(String fileName, String parentPath, String absolutePath, Byte fileType, Byte target) {
+    public boolean saveOrUpdateFile(String fileName, String parentPath, String absolutePath, Byte fileType,
+            Byte target) {
         UploadFileRecord updateWrapper = new UploadFileRecord();
         updateWrapper.setFileType(fileType);
         updateWrapper.setTarget(target);

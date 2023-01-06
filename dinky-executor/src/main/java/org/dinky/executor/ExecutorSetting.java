@@ -83,7 +83,8 @@ public class ExecutorSetting {
         this(checkpoint, parallelism, useSqlFragment, null, null);
     }
 
-    public ExecutorSetting(Integer checkpoint, Integer parallelism, boolean useSqlFragment, String savePointPath, String jobName) {
+    public ExecutorSetting(Integer checkpoint, Integer parallelism, boolean useSqlFragment, String savePointPath,
+            String jobName) {
         this(checkpoint, parallelism, useSqlFragment, savePointPath, jobName, null);
     }
 
@@ -91,12 +92,14 @@ public class ExecutorSetting {
         this(checkpoint, parallelism, useSqlFragment, savePointPath, null, null);
     }
 
-    public ExecutorSetting(Integer checkpoint, Integer parallelism, boolean useSqlFragment, String savePointPath, String jobName, Map<String, String> config) {
+    public ExecutorSetting(Integer checkpoint, Integer parallelism, boolean useSqlFragment, String savePointPath,
+            String jobName, Map<String, String> config) {
         this(checkpoint, parallelism, useSqlFragment, false, false, savePointPath, jobName, config);
     }
 
-    public ExecutorSetting(Integer checkpoint, Integer parallelism, boolean useSqlFragment, boolean useStatementSet, boolean useBatchModel, String savePointPath, String jobName,
-                           Map<String, String> config) {
+    public ExecutorSetting(Integer checkpoint, Integer parallelism, boolean useSqlFragment, boolean useStatementSet,
+            boolean useBatchModel, String savePointPath, String jobName,
+            Map<String, String> config) {
         this.checkpoint = checkpoint;
         this.parallelism = parallelism;
         this.useSqlFragment = useSqlFragment;
@@ -107,8 +110,9 @@ public class ExecutorSetting {
         this.config = config;
     }
 
-    public static ExecutorSetting build(Integer checkpoint, Integer parallelism, boolean useSqlFragment, boolean useStatementSet, boolean useBatchModel, String savePointPath, String jobName,
-                                        String configJson) {
+    public static ExecutorSetting build(Integer checkpoint, Integer parallelism, boolean useSqlFragment,
+            boolean useStatementSet, boolean useBatchModel, String savePointPath, String jobName,
+            String configJson) {
         List<Map<String, String>> configList = new ArrayList<>();
         if (Asserts.isNotNullString(configJson)) {
             try {
@@ -130,8 +134,9 @@ public class ExecutorSetting {
         Integer checkpoint = Integer.valueOf(settingMap.get(CHECKPOINT_CONST));
         Integer parallelism = Integer.valueOf(settingMap.get(PARALLELISM_CONST));
 
-        return build(checkpoint, parallelism, "1".equals(settingMap.get(USE_SQL_FRAGMENT)), "1".equals(settingMap.get(USE_STATEMENT_SET)), "1".equals(settingMap.get(USE_BATCH_MODEL)),
-            settingMap.get(SAVE_POINT_PATH), settingMap.get(JOB_NAME), settingMap.get(CONFIG_CONST));
+        return build(checkpoint, parallelism, "1".equals(settingMap.get(USE_SQL_FRAGMENT)),
+                "1".equals(settingMap.get(USE_STATEMENT_SET)), "1".equals(settingMap.get(USE_BATCH_MODEL)),
+                settingMap.get(SAVE_POINT_PATH), settingMap.get(JOB_NAME), settingMap.get(CONFIG_CONST));
     }
 
     public boolean isValidParallelism() {
@@ -144,7 +149,9 @@ public class ExecutorSetting {
 
     @Override
     public String toString() {
-        return String.format("ExecutorSetting{checkpoint=%d, parallelism=%d, useSqlFragment=%s, useStatementSet=%s, savePointPath='%s', jobName='%s', config=%s}", checkpoint, parallelism,
-            useSqlFragment, useStatementSet, savePointPath, jobName, config);
+        return String.format(
+                "ExecutorSetting{checkpoint=%d, parallelism=%d, useSqlFragment=%s, useStatementSet=%s, savePointPath='%s', jobName='%s', config=%s}",
+                checkpoint, parallelism,
+                useSqlFragment, useStatementSet, savePointPath, jobName, config);
     }
 }

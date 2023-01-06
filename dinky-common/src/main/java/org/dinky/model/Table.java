@@ -31,8 +31,6 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
-
-
 /**
  * Table
  *
@@ -63,7 +61,6 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
      * 分库或分表对应的表名
      */
     private List<String> schemaTableNameList;
-
 
     private List<Column> columns;
 

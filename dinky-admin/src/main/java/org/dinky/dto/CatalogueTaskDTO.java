@@ -36,6 +36,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CatalogueTaskDTO {
+
     private Integer id;
     private Integer tenantId;
     private Integer parentId;
@@ -43,5 +44,5 @@ public class CatalogueTaskDTO {
     private String name;
     private String alias;
     private String dialect = Dialect.DEFAULT.getValue();
-    private Map<String,String> config = new HashMap<>();
+    private Map<String, String> config = new HashMap<>();
 }

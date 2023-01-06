@@ -33,5 +33,7 @@ import org.springframework.stereotype.Service;
  * @since 2022/2/24 20:42
  **/
 @Service
-public class AlertHistoryServiceImpl extends SuperServiceImpl<AlertHistoryMapper, AlertHistory> implements AlertHistoryService {
+public class AlertHistoryServiceImpl extends SuperServiceImpl<AlertHistoryMapper, AlertHistory>
+        implements
+            AlertHistoryService {
 }

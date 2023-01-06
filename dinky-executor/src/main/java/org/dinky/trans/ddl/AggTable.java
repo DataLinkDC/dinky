@@ -33,6 +33,7 @@ import java.util.Map;
  * @since 2021/6/13 20:32
  */
 public class AggTable {
+
     private String statement;
     private String name;
     private String columns;
@@ -41,7 +42,8 @@ public class AggTable {
     private String groupBy;
     private String aggBy;
 
-    public AggTable(String statement, String name, String columns, String table, List<String> wheres, String groupBy, String aggBy) {
+    public AggTable(String statement, String name, String columns, String table, List<String> wheres, String groupBy,
+            String aggBy) {
         this.statement = statement;
         this.name = name;
         this.columns = columns;

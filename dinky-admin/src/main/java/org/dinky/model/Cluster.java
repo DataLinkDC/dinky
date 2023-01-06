@@ -64,7 +64,8 @@ public class Cluster extends SuperEntity {
 
     private Integer taskId;
 
-    public static Cluster autoRegistersCluster(String hosts, String name, String alias, String type, Integer clusterConfigurationId, Integer taskId) {
+    public static Cluster autoRegistersCluster(String hosts, String name, String alias, String type,
+            Integer clusterConfigurationId, Integer taskId) {
         Cluster cluster = new Cluster();
         cluster.setName(name);
         cluster.setAlias(alias);

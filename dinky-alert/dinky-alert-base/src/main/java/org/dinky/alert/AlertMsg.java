@@ -54,16 +54,16 @@ public class AlertMsg {
     }
 
     public AlertMsg(String alertType,
-                    String alertTime,
-                    String jobID,
-                    String jobName,
-                    String jobType,
-                    String jobStatus,
-                    String jobStartTime,
-                    String jobEndTime,
-                    String jobDuration,
-                    String linkUrl,
-                    String exceptionUrl) {
+            String alertTime,
+            String jobID,
+            String jobName,
+            String jobType,
+            String jobStatus,
+            String jobStartTime,
+            String jobEndTime,
+            String jobDuration,
+            String linkUrl,
+            String exceptionUrl) {
 
         this.alertType = alertType;
         this.alertTime = alertTime;

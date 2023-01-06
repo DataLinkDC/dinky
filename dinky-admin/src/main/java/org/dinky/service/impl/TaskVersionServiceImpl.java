@@ -34,7 +34,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
  * @author huang
  */
 @Service
-public class TaskVersionServiceImpl extends SuperServiceImpl<TaskVersionMapper, TaskVersion> implements TaskVersionService {
+public class TaskVersionServiceImpl extends SuperServiceImpl<TaskVersionMapper, TaskVersion>
+        implements
+            TaskVersionService {
 
     @Override
     public List<TaskVersion> getTaskVersionByTaskId(Integer taskId) {

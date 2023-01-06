@@ -40,7 +40,7 @@ public class LogUtil {
     public static String getError(Throwable e) {
         String error = null;
         try (StringWriter sw = new StringWriter();
-             PrintWriter pw = new PrintWriter(sw)) {
+                PrintWriter pw = new PrintWriter(sw)) {
             e.printStackTrace(pw);
             error = sw.toString();
             logger.error(error);
@@ -54,7 +54,7 @@ public class LogUtil {
     public static String getError(String msg, Throwable e) {
         String error = null;
         try (StringWriter sw = new StringWriter();
-             PrintWriter pw = new PrintWriter(sw)) {
+                PrintWriter pw = new PrintWriter(sw)) {
             e.printStackTrace(pw);
             LocalDateTime now = LocalDateTime.now();
             error = now.toString() + ": " + msg + " \nError message:\n " + sw.toString();

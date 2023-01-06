@@ -28,12 +28,12 @@ package org.dinky.scheduler.enums;
  * have_alert
  */
 public enum Flag {
+
     /**
      * 0 no
      * 1 yes
      */
-    NO(0, "no"),
-    YES(1, "yes");
+    NO(0, "no"), YES(1, "yes");
 
     Flag(int code, String descp) {
         this.code = code;

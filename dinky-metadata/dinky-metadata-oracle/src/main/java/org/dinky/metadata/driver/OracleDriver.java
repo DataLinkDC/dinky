@@ -117,7 +117,8 @@ public class OracleDriver extends AbstractJdbcDriver {
             }
         }
         if (Asserts.isNotNullString(table.getComment())) {
-            sb.append(" FROM \"" + table.getSchema() + "\".\"" + table.getName() + "\";" + " -- " + table.getComment() + "\n");
+            sb.append(" FROM \"" + table.getSchema() + "\".\"" + table.getName() + "\";" + " -- " + table.getComment()
+                    + "\n");
         } else {
             sb.append(" FROM \"" + table.getSchema() + "\".\"" + table.getName() + "\";\n");
         }
@@ -144,7 +145,8 @@ public class OracleDriver extends AbstractJdbcDriver {
         sb.append("\n");
         List<Column> pks = columns.stream().filter(column -> column.isKeyFlag()).collect(Collectors.toList());
         if (Asserts.isNotNullCollection(pks)) {
-            sb.append("ALTER TABLE \"" + table.getName() + "\" ADD CONSTRAINT " + table.getName() + "_PK PRIMARY KEY (");
+            sb.append(
+                    "ALTER TABLE \"" + table.getName() + "\" ADD CONSTRAINT " + table.getName() + "_PK PRIMARY KEY (");
             for (int i = 0; i < pks.size(); i++) {
                 if (i > 0) {
                     sb.append(",");
@@ -154,7 +156,8 @@ public class OracleDriver extends AbstractJdbcDriver {
             sb.append(");\n");
         }
         for (int i = 0; i < columns.size(); i++) {
-            sb.append("COMMENT ON COLUMN \"" + table.getName() + "\".\"" + columns.get(i).getName() + "\" IS '" + columns.get(i).getComment() + "';\n");
+            sb.append("COMMENT ON COLUMN \"" + table.getName() + "\".\"" + columns.get(i).getName() + "\" IS '"
+                    + columns.get(i).getComment() + "';\n");
         }
         return sb.toString();
     }

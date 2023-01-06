@@ -26,6 +26,7 @@ package org.dinky.job;
  * @since 2021/6/26 23:29
  */
 public class JobContextHolder {
+
     private static final ThreadLocal<Job> CONTEXT = new ThreadLocal<>();
 
     public static void setJob(Job job) {

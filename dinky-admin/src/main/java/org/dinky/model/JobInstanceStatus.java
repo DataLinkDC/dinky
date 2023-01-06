@@ -26,6 +26,7 @@ package org.dinky.model;
  * @since 2022/2/28 22:25
  */
 public class JobInstanceStatus {
+
     private Integer all = 0;
     private Integer initializing = 0;
     private Integer running = 0;

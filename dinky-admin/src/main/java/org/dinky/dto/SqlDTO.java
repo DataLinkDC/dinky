@@ -31,6 +31,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SqlDTO {
+
     private String statement;
     private Integer databaseId;
     private Integer maxRowNum;

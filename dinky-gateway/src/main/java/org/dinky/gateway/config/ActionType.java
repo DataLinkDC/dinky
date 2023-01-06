@@ -28,6 +28,7 @@ import org.dinky.assertion.Asserts;
  * @since 2021/11/3 21:58
  */
 public enum ActionType {
+
     SAVEPOINT("savepoint"), CANCEL("cancel");
 
     private String value;

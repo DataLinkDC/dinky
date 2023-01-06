@@ -48,6 +48,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class SuperEntity<T extends Model<?>> extends Model<T> implements Serializable {
+
     /**
      * 主键ID
      */

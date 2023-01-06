@@ -32,6 +32,7 @@ import java.util.List;
  */
 @Mapper
 public interface RoleNamespaceMapper extends SuperMapper<RoleNamespace> {
+
     /**
      * delete user role relation by role id
      *

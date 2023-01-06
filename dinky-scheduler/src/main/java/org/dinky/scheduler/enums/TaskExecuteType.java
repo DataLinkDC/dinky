@@ -23,12 +23,12 @@ package org.dinky.scheduler.enums;
  * task execute type
  */
 public enum TaskExecuteType {
+
     /**
      * 0 batch
      * 1 stream
      */
-    BATCH(0, "batch"),
-    STREAM(1, "stream");
+    BATCH(0, "batch"), STREAM(1, "stream");
 
     TaskExecuteType(int code, String desc) {
         this.code = code;

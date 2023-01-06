@@ -34,6 +34,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TableCANode implements Serializable {
+
     private static final long serialVersionUID = 356665302973181483L;
     private String id;
     private Integer tableId;
@@ -42,7 +43,7 @@ public class TableCANode implements Serializable {
     private String value;
     private String type;
     private Integer columnSize;
-    //    private Tables tables;
+    // private Tables tables;
     private List<String> columns;
     private List<TableCANode> children;
 

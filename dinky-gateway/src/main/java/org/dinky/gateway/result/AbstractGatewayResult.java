@@ -47,7 +47,8 @@ public abstract class AbstractGatewayResult implements GatewayResult {
         this.startTime = startTime;
     }
 
-    public AbstractGatewayResult(LocalDateTime startTime, LocalDateTime endTime, boolean isSuccess, String exceptionMsg) {
+    public AbstractGatewayResult(LocalDateTime startTime, LocalDateTime endTime, boolean isSuccess,
+            String exceptionMsg) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.isSuccess = isSuccess;

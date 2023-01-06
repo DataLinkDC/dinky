@@ -37,6 +37,6 @@ public class FeiShuAlert extends AbstractAlert {
     @Override
     public AlertResult send(String title, String content) {
         FeiShuSender sender = new FeiShuSender(getConfig().getParam());
-        return sender.send(title,content);
+        return sender.send(title, content);
     }
 }

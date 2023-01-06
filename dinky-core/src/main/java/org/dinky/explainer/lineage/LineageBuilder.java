@@ -141,8 +141,8 @@ public class LineageBuilder {
             String targetTableId = null;
             if (tableMap.containsKey(sourceTablePath)) {
                 LineageTable lineageTable = tableMap.get(sourceTablePath);
-                LineageColumn lineageColumn =
-                        LineageColumn.build(lineageRel.getSourceColumn(), lineageRel.getSourceColumn());
+                LineageColumn lineageColumn = LineageColumn.build(lineageRel.getSourceColumn(),
+                        lineageRel.getSourceColumn());
                 if (!lineageTable.getColumns().contains(lineageColumn)) {
                     lineageTable.getColumns().add(lineageColumn);
                 }
@@ -158,8 +158,8 @@ public class LineageBuilder {
             String targetTablePath = lineageRel.getTargetTablePath();
             if (tableMap.containsKey(targetTablePath)) {
                 LineageTable lineageTable = tableMap.get(targetTablePath);
-                LineageColumn lineageColumn =
-                        LineageColumn.build(lineageRel.getTargetColumn(), lineageRel.getTargetColumn());
+                LineageColumn lineageColumn = LineageColumn.build(lineageRel.getTargetColumn(),
+                        lineageRel.getTargetColumn());
                 if (!lineageTable.getColumns().contains(lineageColumn)) {
                     lineageTable.getColumns().add(lineageColumn);
                 }

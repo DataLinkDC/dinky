@@ -28,6 +28,7 @@ import java.util.List;
  * @since 2021/6/22
  **/
 public class TableCAResult {
+
     private String sinkName;
     private List<ICA> sourceTableCAS;
     private ICA sinkTableCA;

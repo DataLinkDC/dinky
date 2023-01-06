@@ -31,6 +31,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ClusterConfig {
+
     private String flinkConfigPath;
     private String flinkLibPath;
     private String yarnConfigPath;
@@ -60,10 +61,10 @@ public class ClusterConfig {
     @Override
     public String toString() {
         return "ClusterConfig{"
-            + "flinkConfigPath='" + flinkConfigPath + '\''
-            + ", flinkLibPath='" + flinkLibPath + '\''
-            + ", yarnConfigPath='" + yarnConfigPath + '\''
-            + ", appId='" + appId + '\''
-            + '}';
+                + "flinkConfigPath='" + flinkConfigPath + '\''
+                + ", flinkLibPath='" + flinkLibPath + '\''
+                + ", yarnConfigPath='" + yarnConfigPath + '\''
+                + ", appId='" + appId + '\''
+                + '}';
     }
 }

@@ -31,7 +31,6 @@ import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
-
 /**
  * @author ZackYoung
  * @since 0.6.8
@@ -39,7 +38,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
  */
 @Mapper
 public interface UDFTemplateMapper extends SuperMapper<UDFTemplate> {
+
     @Override
     @Select("select * from dinky_udf_template")
-    List<UDFTemplate> selectForProTable(Page<UDFTemplate> page, Wrapper<UDFTemplate> queryWrapper, Map<String, Object> param);
+    List<UDFTemplate> selectForProTable(Page<UDFTemplate> page, Wrapper<UDFTemplate> queryWrapper,
+            Map<String, Object> param);
 }

@@ -43,6 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 @Setter
 @Slf4j
 public class StudioExecuteDTO extends AbstractStatementDTO {
+
     // RUN_MODE
     private String type;
     private String dialect;
@@ -74,19 +75,18 @@ public class StudioExecuteDTO extends AbstractStatementDTO {
             try {
                 JsonNode paras = mapper.readTree(configJson);
                 paras.forEach((JsonNode node) -> {
-                        if (!node.isNull()) {
-                            config.put(node.get("key").asText(), node.get("value").asText());
-                        }
+                    if (!node.isNull()) {
+                        config.put(node.get("key").asText(), node.get("value").asText());
                     }
-                );
+                });
             } catch (JsonProcessingException e) {
                 log.error(e.getMessage());
             }
         }
         return new JobConfig(
-            type, useResult, useChangeLog, useAutoCancel, useSession, session, clusterId,
-            clusterConfigurationId, jarId, taskId, jobName, isFragment(), statementSet, batchModel,
-            maxRowNum, checkPoint, parallelism, savePointStrategy, savePointPath, getVariables(), config);
+                type, useResult, useChangeLog, useAutoCancel, useSession, session, clusterId,
+                clusterConfigurationId, jarId, taskId, jobName, isFragment(), statementSet, batchModel,
+                maxRowNum, checkPoint, parallelism, savePointStrategy, savePointPath, getVariables(), config);
     }
 
     public Integer getTaskId() {

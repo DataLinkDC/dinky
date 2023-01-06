@@ -32,6 +32,7 @@ import lombok.Data;
 
 @Data
 public class TaskRequest {
+
     @ApiModelProperty(value = "编号")
     private Long code;
 

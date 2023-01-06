@@ -56,6 +56,7 @@ import org.slf4j.LoggerFactory;
  * @since 2022/2/23 21:11
  **/
 public class WeChatSender {
+
     private static final Logger logger = LoggerFactory.getLogger(WeChatSender.class);
     private static final String ALERT_STATUS = "false";
     private static final String AGENT_ID_REG_EXP = "{agentId}";
@@ -80,7 +81,9 @@ public class WeChatSender {
         sendType = config.get(WeChatConstants.SEND_TYPE);
         weChatAgentId = sendType.equals(WeChatType.CHAT.getValue()) ? "" : config.get(WeChatConstants.AGENT_ID);
         atAll = Boolean.valueOf(config.get(WeChatConstants.AT_ALL));
-        weChatUsers = sendType.equals(WeChatType.CHAT.getValue()) ? (atAll && config.get(WeChatConstants.USERS) == null ? "" : config.get(WeChatConstants.USERS)) : config.get(WeChatConstants.USERS);
+        weChatUsers = sendType.equals(WeChatType.CHAT.getValue())
+                ? (atAll && config.get(WeChatConstants.USERS) == null ? "" : config.get(WeChatConstants.USERS))
+                : config.get(WeChatConstants.USERS);
         String weChatCorpId = sendType.equals(WeChatType.CHAT.getValue()) ? "" : config.get(WeChatConstants.CORP_ID);
         String weChatSecret = sendType.equals(WeChatType.CHAT.getValue()) ? "" : config.get(WeChatConstants.SECRET);
         String weChatTokenUrl = sendType.equals(WeChatType.CHAT.getValue()) ? "" : WeChatConstants.TOKEN_URL;
@@ -133,7 +136,7 @@ public class WeChatSender {
         if (sendType.equals(WeChatType.APP.getValue())) {
             enterpriseWeChatPushUrlReplace = WeChatConstants.PUSH_URL.replace(TOKEN_REGEX, weChatToken);
         } else if (sendType.equals(WeChatType.CHAT.getValue())) {
-            enterpriseWeChatPushUrlReplace =  webhookUrl;
+            enterpriseWeChatPushUrlReplace = webhookUrl;
         }
         try {
             return checkWeChatSendMsgResult(post(enterpriseWeChatPushUrlReplace, msg));
@@ -212,22 +215,22 @@ public class WeChatSender {
         return builder.toString();
     }
 
-    private String markdownByAlert(String title, String content,List<String> userList) {
+    private String markdownByAlert(String title, String content, List<String> userList) {
         String result = "";
         if (showType.equals(ShowType.MARKDOWN.getValue())) {
-            result = markdownTable(title, content,userList,sendType);
+            result = markdownTable(title, content, userList, sendType);
         } else if (showType.equals(ShowType.TEXT.getValue())) {
-            result = markdownText(title, content,userList,sendType);
+            result = markdownText(title, content, userList, sendType);
         }
         return result;
     }
 
     private static String markdownTable(String title, String content, List<String> userList, String sendType) {
-        return getMsgResult(title, content,userList,sendType);
+        return getMsgResult(title, content, userList, sendType);
     }
 
     private static String markdownText(String title, String content, List<String> userList, String sendType) {
-        return getMsgResult(title, content,userList,sendType);
+        return getMsgResult(title, content, userList, sendType);
     }
 
     /**

@@ -29,6 +29,7 @@ import java.util.Set;
 import com.fasterxml.jackson.databind.JsonNode;
 
 public interface TenantService extends ISuperService<Tenant> {
+
     /**
      * delete tenant by id
      *

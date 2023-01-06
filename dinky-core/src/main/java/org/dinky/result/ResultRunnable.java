@@ -56,7 +56,7 @@ public class ResultRunnable implements Runnable {
     private final String timeZone;
 
     public ResultRunnable(TableResult tableResult, Integer maxRowNum, boolean isChangeLog, boolean isAutoCancel,
-                          String timeZone) {
+            String timeZone) {
         this.tableResult = tableResult;
         this.maxRowNum = maxRowNum;
         this.isChangeLog = isChangeLog;

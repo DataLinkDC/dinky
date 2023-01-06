@@ -38,6 +38,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PageResult<T> implements Serializable {
+
     private static final long serialVersionUID = -5143774412936881374L;
     /**
      * 总数

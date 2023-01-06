@@ -41,6 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class EmailSenderTest {
+
     private static final Logger logger = LoggerFactory.getLogger(EmailSenderTest.class);
     static MailSender mailSender;
     private static Map<String, String> emailConfig = new HashMap<>();
@@ -122,7 +123,8 @@ public class EmailSenderTest {
             linkedHashMaps = linkedHashMaps.subList(0, EmailConstants.NUMBER_1000);
         }
         StringBuilder stringBuilder = new StringBuilder(100);
-        stringBuilder.append(EmailConstants.TR).append(EmailConstants.TH_COLSPAN).append(title).append(EmailConstants.TH_END).append(EmailConstants.TR_END);
+        stringBuilder.append(EmailConstants.TR).append(EmailConstants.TH_COLSPAN).append(title)
+                .append(EmailConstants.TH_END).append(EmailConstants.TR_END);
         for (LinkedHashMap<String, Object> mapItems : linkedHashMaps) {
             Set<Map.Entry<String, Object>> entries = mapItems.entrySet();
             Iterator<Map.Entry<String, Object>> iterator = entries.iterator();

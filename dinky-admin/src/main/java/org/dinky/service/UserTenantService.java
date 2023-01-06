@@ -26,7 +26,6 @@ import java.util.List;
 
 public interface UserTenantService extends ISuperService<UserTenant> {
 
-
     /**
      * @param userId userId
      * @return user role tenant

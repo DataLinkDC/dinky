@@ -32,6 +32,7 @@ import org.junit.Test;
  * @since 2022/2/7 23:15
  */
 public class BatchTest {
+
     @Test
     public void batchTest() {
         String source = "CREATE TABLE Orders (\n"
@@ -44,10 +45,10 @@ public class BatchTest {
                 + "  'number-of-rows' = '100'\n"
                 + ")";
         String select = "select order_number,price,order_time from Orders";
-        //LocalEnvironment environment = ExecutionEnvironment.createLocalEnvironment();
+        // LocalEnvironment environment = ExecutionEnvironment.createLocalEnvironment();
         EnvironmentSettings settings = EnvironmentSettings
                 .newInstance()
-                //.inStreamingMode() // 声明为流任务
+                // .inStreamingMode() // 声明为流任务
                 .inBatchMode() // 声明为批任务
                 .build();
 

@@ -28,6 +28,7 @@ import java.util.Map;
  * @since 2022/2/23 19:09
  **/
 public class AlertConfig {
+
     private String name;
     private String type;
     private Map<String, String> param;

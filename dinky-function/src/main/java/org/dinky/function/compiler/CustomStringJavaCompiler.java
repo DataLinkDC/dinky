@@ -107,8 +107,8 @@ public class CustomStringJavaCompiler {
      */
     public boolean compilerToTmpPath(String tmpPath) {
         long startTime = System.currentTimeMillis();
-        File codeFile =
-                FileUtil.writeUtf8String(sourceCode, tmpPath + StrUtil.replace(fullClassName, ".", "/") + ".java");
+        File codeFile = FileUtil.writeUtf8String(sourceCode,
+                tmpPath + StrUtil.replace(fullClassName, ".", "/") + ".java");
         // 标准的内容管理器,更换成自己的实现，覆盖部分方法
         StandardJavaFileManager standardFileManager = compiler.getStandardFileManager(diagnosticsCollector, null, null);
         try {
@@ -117,11 +117,11 @@ public class CustomStringJavaCompiler {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        Iterable<? extends JavaFileObject> javaFileObject =
-                standardFileManager.getJavaFileObjectsFromFiles(Collections.singletonList(codeFile));
+        Iterable<? extends JavaFileObject> javaFileObject = standardFileManager
+                .getJavaFileObjectsFromFiles(Collections.singletonList(codeFile));
         // 获取一个编译任务
-        JavaCompiler.CompilationTask task =
-                compiler.getTask(null, standardFileManager, diagnosticsCollector, null, null, javaFileObject);
+        JavaCompiler.CompilationTask task = compiler.getTask(null, standardFileManager, diagnosticsCollector, null,
+                null, javaFileObject);
         // 设置编译耗时
         compilerTakeTime = System.currentTimeMillis() - startTime;
         return task.call();
@@ -224,7 +224,7 @@ public class CustomStringJavaCompiler {
         // 获取输出的文件对象，它表示给定位置处指定类型的指定类。
         @Override
         public JavaFileObject getJavaFileForOutput(Location location, String className, JavaFileObject.Kind kind,
-                                                   FileObject sibling) throws IOException {
+                FileObject sibling) throws IOException {
             ByteJavaFileObject javaFileObject = new ByteJavaFileObject(className, kind);
             javaFileObjectMap.put(className, javaFileObject);
             return javaFileObject;

@@ -31,6 +31,7 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
 
 public class Clickhouse20ExprParser extends SQLExprParser {
+
     private static final String[] AGGREGATE_FUNCTIONS;
     private static final long[] AGGREGATE_FUNCTIONS_CODES;
 

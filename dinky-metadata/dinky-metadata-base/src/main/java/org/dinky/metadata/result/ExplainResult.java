@@ -26,5 +26,6 @@ package org.dinky.metadata.result;
  * @since 2021/12/13 19:14
  **/
 public class ExplainResult {
+
     private String sql;
 }

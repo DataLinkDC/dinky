@@ -19,10 +19,9 @@
 
 package org.dinky.executor;
 
+import static java.lang.String.format;
 import static org.apache.flink.util.Preconditions.checkArgument;
 import static org.apache.flink.util.Preconditions.checkNotNull;
-
-import static java.lang.String.format;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.FlinkSQLConstant;
@@ -286,7 +285,7 @@ public final class SqlManager {
         Date endDate = new Date();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(endDate);
-        calendar.add(Calendar.DAY_OF_YEAR,days);
+        calendar.add(Calendar.DAY_OF_YEAR, days);
         Date startDate = calendar.getTime();
 
         return dtf.format(startDate);

@@ -28,6 +28,7 @@ import java.util.Objects;
  * @since 2022/3/15 22:55
  */
 public class LineageColumn {
+
     private String name;
     private String title;
 

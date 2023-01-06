@@ -35,6 +35,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class ExecutorEntity {
+
     private String sessionId;
     private SessionConfig sessionConfig;
     private String createUser;
@@ -46,7 +47,8 @@ public class ExecutorEntity {
         this.executor = executor;
     }
 
-    public ExecutorEntity(String sessionId, SessionConfig sessionConfig, String createUser, LocalDateTime createTime, Executor executor) {
+    public ExecutorEntity(String sessionId, SessionConfig sessionConfig, String createUser, LocalDateTime createTime,
+            Executor executor) {
         this.sessionId = sessionId;
         this.sessionConfig = sessionConfig;
         this.createUser = createUser;

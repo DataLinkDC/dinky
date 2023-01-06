@@ -64,8 +64,8 @@ public class WebExceptionHandler {
 
     @ExceptionHandler
     public Result notLoginException(NotLoginException e) {
-        ServletRequestAttributes servletRequestAttributes =
-            (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder
+                .getRequestAttributes();
         HttpServletResponse response = servletRequestAttributes.getResponse();
         response.setStatus(CodeEnum.NOTLOGIN.getCode());
         return Result.notLogin(MessageResolverUtils.getMessage("login.not.login"));
@@ -83,10 +83,10 @@ public class WebExceptionHandler {
                 FieldError fieldError = (FieldError) errors.get(0);
                 if (StringUtils.isNotBlank(fieldError.getDefaultMessage())) {
                     return Result
-                        .failed(String.format("字段:%s, %s", fieldError.getField(), fieldError.getDefaultMessage()));
+                            .failed(String.format("字段:%s, %s", fieldError.getField(), fieldError.getDefaultMessage()));
                 }
                 return Result
-                    .failed(String.format("字段:%s,不合法的值:%s", fieldError.getField(), fieldError.getRejectedValue()));
+                        .failed(String.format("字段:%s,不合法的值:%s", fieldError.getField(), fieldError.getRejectedValue()));
             }
         }
         return Result.failed(MessageResolverUtils.getMessage("request.params.error"));

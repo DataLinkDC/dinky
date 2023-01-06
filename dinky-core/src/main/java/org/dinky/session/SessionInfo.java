@@ -33,6 +33,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class SessionInfo {
+
     private String session;
     private SessionConfig sessionConfig;
     private String createUser;
@@ -46,7 +47,8 @@ public class SessionInfo {
     }
 
     public static SessionInfo build(ExecutorEntity executorEntity) {
-        return new SessionInfo(executorEntity.getSessionId(), executorEntity.getSessionConfig(), executorEntity.getCreateUser(), executorEntity.getCreateTime());
+        return new SessionInfo(executorEntity.getSessionId(), executorEntity.getSessionConfig(),
+                executorEntity.getCreateUser(), executorEntity.getCreateTime());
     }
 
 }

@@ -34,7 +34,7 @@ public class SingleSqlParserFactory {
 
     public static Map<String, List<String>> generateParser(String sql) {
         BaseSingleSqlParser tmp = null;
-        //sql = sql.replace("\n"," ").replaceAll("\\s{1,}", " ") +" ENDOFSQL";
+        // sql = sql.replace("\n"," ").replaceAll("\\s{1,}", " ") +" ENDOFSQL";
         sql = sql.replace("\r\n", " ").replace("\n", " ") + " ENDOFSQL";
         if (contains(sql, "(insert\\s+into)(.+)(select)(.+)(from)(.+)")) {
             tmp = new InsertSelectSqlParser(sql);
@@ -50,10 +50,10 @@ public class SingleSqlParserFactory {
             tmp = new UpdateSqlParser(sql);
         } else if (contains(sql, "(insert\\s+into)(.+)(values)(.+)")) {
             tmp = new InsertSqlParser(sql);
-        //} else if (contains(sql, "(create\\s+table)(.+)")) {
-        //} else if (contains(sql, "(create\\s+database)(.+)")) {
-        //} else if (contains(sql, "(show\\s+databases)")) {
-        //} else if (contains(sql, "(use)(.+)")) {
+            // } else if (contains(sql, "(create\\s+table)(.+)")) {
+            // } else if (contains(sql, "(create\\s+database)(.+)")) {
+            // } else if (contains(sql, "(show\\s+databases)")) {
+            // } else if (contains(sql, "(use)(.+)")) {
         } else if (contains(sql, "(set)(.+)")) {
             tmp = new SetSqlParser(sql);
         } else if (contains(sql, "(show\\s+fragment)\\s+(.+)")) {
@@ -75,4 +75,3 @@ public class SingleSqlParserFactory {
         return matcher.find();
     }
 }
-

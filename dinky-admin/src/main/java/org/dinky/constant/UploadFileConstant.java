@@ -26,7 +26,8 @@ import org.springframework.boot.system.ApplicationHome;
  **/
 public class UploadFileConstant {
 
-    // Upload file's type constant----------------------------------------------------------------------------------------
+    // Upload file's type
+    // constant----------------------------------------------------------------------------------------
     /**
      * Not internal upload file type, this value represent upload the file to the specific dir.
      */
@@ -42,7 +43,8 @@ public class UploadFileConstant {
     public static final byte DINKY_JAR_ID = 5;
     public static final String DINKY_JAR_NAME = "dinky-jar";
 
-    // Upload file's dir constant----------------------------------------------------------------------------------------
+    // Upload file's dir
+    // constant----------------------------------------------------------------------------------------
     static {
         // Get admin jar's parent absolute path
         DINKY_HOME_DIR = new ApplicationHome(UploadFileConstant.class).getSource().getParent() + "/../";
@@ -56,7 +58,8 @@ public class UploadFileConstant {
     public static final String DINKY_JAR_DIR = HDFS_HOME_DIR + "dinky/jar/dinky";
     public static final String USER_JAR_DIR = HDFS_HOME_DIR + "dinky/jar/user";
 
-    // Upload file's target constant----------------------------------------------------------------------------------------
+    // Upload file's target
+    // constant----------------------------------------------------------------------------------------
     /**
      * An unidentified upload file type
      */

@@ -28,7 +28,7 @@ import org.dinky.alert.ShowType;
  */
 public interface AlertTemplate {
 
-    String getMessageFromTemplate(String title,String content, ShowType showType, boolean showAll);
+    String getMessageFromTemplate(String title, String content, ShowType showType, boolean showAll);
 
     /**
      * default showAll is true
@@ -36,7 +36,7 @@ public interface AlertTemplate {
      * @param showType show type
      * @return a message from a specified alert template
      */
-    default String getMessageFromTemplate(String title,String content, ShowType showType) {
-        return getMessageFromTemplate(title,content, showType, true);
+    default String getMessageFromTemplate(String title, String content, ShowType showType) {
+        return getMessageFromTemplate(title, content, showType, true);
     }
 }

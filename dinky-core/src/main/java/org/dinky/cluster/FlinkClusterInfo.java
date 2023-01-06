@@ -31,6 +31,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class FlinkClusterInfo {
+
     private boolean isEffective;
     private String jobManagerAddress;
     private String version;

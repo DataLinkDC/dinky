@@ -32,6 +32,7 @@ import java.util.List;
  */
 @Mapper
 public interface UserRoleMapper extends SuperMapper<UserRole> {
+
     /**
      * @param userId userId
      * @return user role relation

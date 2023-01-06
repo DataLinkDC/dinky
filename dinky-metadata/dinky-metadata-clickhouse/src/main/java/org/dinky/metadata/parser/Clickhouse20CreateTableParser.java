@@ -31,6 +31,7 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
 
 public class Clickhouse20CreateTableParser extends SQLCreateTableParser {
+
     public Clickhouse20CreateTableParser(SQLExprParser exprParser) {
         super(exprParser);
     }
@@ -47,8 +48,7 @@ public class Clickhouse20CreateTableParser extends SQLCreateTableParser {
                 lexer.nextToken();
             }
             stmt.setEngine(
-                    this.exprParser.expr()
-            );
+                    this.exprParser.expr());
         }
 
         if (lexer.identifierEquals("PARTITION")) {
@@ -79,7 +79,7 @@ public class Clickhouse20CreateTableParser extends SQLCreateTableParser {
 
         if (lexer.identifierEquals("SETTINGS")) {
             lexer.nextToken();
-            for (; ; ) {
+            for (;;) {
                 SQLAssignItem item = this.exprParser.parseAssignItem();
                 item.setParent(ckStmt);
                 ckStmt.getSettings().add(item);

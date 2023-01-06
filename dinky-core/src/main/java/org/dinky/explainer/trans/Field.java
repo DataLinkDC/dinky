@@ -26,6 +26,7 @@ package org.dinky.explainer.trans;
  * @since 2021/6/22
  **/
 public class Field {
+
     private String fragment;
     private String alias;
 

@@ -47,9 +47,8 @@ public class MybatisPlusConfig {
 
     private static final List<String> IGNORE_TABLE_NAMES = Lists.newArrayList(
             "dinky_namespace", "dinky_alert_group", "dinky_alert_history", "dinky_alert_instance", "dinky_catalogue",
-            "dinky_cluster", "dinky_cluster_configuration", "dinky_database"
-             ,"dinky_fragment"
-            , "dinky_history", "dinky_jar", "dinky_job_history", "dinky_job_instance", "dinky_role", "dinky_savepoints",
+            "dinky_cluster", "dinky_cluster_configuration", "dinky_database", "dinky_fragment", "dinky_history",
+            "dinky_jar", "dinky_job_history", "dinky_job_instance", "dinky_role", "dinky_savepoints",
             "dinky_task", "dinky_task_statement", "dinky_task_version");
 
     @Bean

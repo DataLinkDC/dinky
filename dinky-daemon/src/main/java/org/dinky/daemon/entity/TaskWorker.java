@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TaskWorker implements Runnable {
+
     private static final Logger log = LoggerFactory.getLogger(TaskWorker.class);
 
     private volatile boolean running = true;
@@ -37,7 +38,7 @@ public class TaskWorker implements Runnable {
 
     @Override
     public void run() {
-        //log.info("TaskWorker run");
+        // log.info("TaskWorker run");
         while (running) {
             DaemonTask daemonTask = queue.dequeue();
             if (daemonTask != null) {
@@ -51,7 +52,7 @@ public class TaskWorker implements Runnable {
     }
 
     public void shutdown() {
-        //log.info(Thread.currentThread().getName() + "TaskWorker shutdown");
+        // log.info(Thread.currentThread().getName() + "TaskWorker shutdown");
         running = false;
     }
 }

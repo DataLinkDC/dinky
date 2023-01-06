@@ -146,7 +146,7 @@ public class HiveTest {
                 + "   *\n"
                 + "from\n"
                 + "    odsp.pub_pay_mysql_pay_order ;";
-        JdbcSelectResult selectResult = driver.executeSql(sql,100);
+        JdbcSelectResult selectResult = driver.executeSql(sql, 100);
         for (LinkedHashMap<String, Object> rowDatum : selectResult.getRowData()) {
             Set<Map.Entry<String, Object>> entrySet = rowDatum.entrySet();
             for (Map.Entry<String, Object> stringObjectEntry : entrySet) {

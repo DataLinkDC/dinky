@@ -24,6 +24,7 @@ import org.dinky.model.Column;
 import org.dinky.model.ColumnType;
 
 public class PhoenixTypeConvert implements ITypeConvert {
+
     @Override
     public ColumnType convert(Column column) {
         ColumnType columnType = ColumnType.STRING;
@@ -55,7 +56,7 @@ public class PhoenixTypeConvert implements ITypeConvert {
                 columnType = ColumnType.FLOAT;
             }
         } else if (t.contains("decimal") || t.contains("money") || t.contains("smallmoney")
-            || t.contains("numeric")) {
+                || t.contains("numeric")) {
             columnType = ColumnType.DECIMAL;
         } else if (t.contains("double")) {
             if (isNullable) {

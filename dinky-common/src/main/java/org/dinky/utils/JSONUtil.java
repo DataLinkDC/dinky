@@ -19,12 +19,11 @@
 
 package org.dinky.utils;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import static com.fasterxml.jackson.databind.DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT;
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 import static com.fasterxml.jackson.databind.DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL;
 import static com.fasterxml.jackson.databind.MapperFeature.REQUIRE_SETTERS_FOR_GETTERS;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 import org.dinky.assertion.Asserts;
 
@@ -58,6 +57,7 @@ import com.fasterxml.jackson.databind.type.CollectionType;
  * @since 2022/2/23 19:57
  **/
 public class JSONUtil {
+
     private static final Logger logger = LoggerFactory.getLogger(JSONUtil.class);
 
     private static final ObjectMapper objectMapper = new ObjectMapper()
@@ -190,6 +190,7 @@ public class JSONUtil {
     }
 
     public static class JsonDataDeserializer extends JsonDeserializer<String> {
+
         @Override
         public String deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
             JsonNode node = p.getCodec().readTree(p);

@@ -49,6 +49,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/alertInstance")
 public class AlertInstanceController {
+
     @Autowired
     private AlertInstanceService alertInstanceService;
 

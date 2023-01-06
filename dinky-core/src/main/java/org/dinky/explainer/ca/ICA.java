@@ -20,6 +20,7 @@
 package org.dinky.explainer.ca;
 
 public interface ICA {
+
     Integer getId();
 
     String getTableName();

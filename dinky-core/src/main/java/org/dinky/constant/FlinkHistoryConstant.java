@@ -20,6 +20,7 @@
 package org.dinky.constant;
 
 public interface FlinkHistoryConstant {
+
     /**
      * history端口
      */
@@ -93,6 +94,5 @@ public interface FlinkHistoryConstant {
      * 返回数据集 resList
      */
     String RES_LIST = "resList";
-
 
 }

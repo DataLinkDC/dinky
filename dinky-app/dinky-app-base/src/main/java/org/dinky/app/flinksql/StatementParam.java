@@ -28,6 +28,7 @@ import org.dinky.parser.SqlType;
  * @since 2021/11/16
  */
 public class StatementParam {
+
     private String value;
     private SqlType type;
 

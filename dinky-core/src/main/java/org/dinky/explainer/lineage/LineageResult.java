@@ -28,6 +28,7 @@ import java.util.List;
  * @since 2022/3/15 22:59
  */
 public class LineageResult {
+
     private List<LineageTable> tables;
     private List<LineageRelation> relations;
 

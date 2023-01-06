@@ -205,7 +205,8 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     public boolean copyDatabase(DataBase database) {
         String name = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10);
         database.setId(null);
-        database.setName((database.getName().length() > 10 ? database.getName().substring(0, 10) : database.getName()) + "_" + name);
+        database.setName((database.getName().length() > 10 ? database.getName().substring(0, 10) : database.getName())
+                + "_" + name);
         database.setCreateTime(null);
         return this.save(database);
     }

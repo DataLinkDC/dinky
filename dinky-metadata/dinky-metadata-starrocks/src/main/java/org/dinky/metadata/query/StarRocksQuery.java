@@ -28,6 +28,7 @@ import java.sql.SQLException;
  * StarRocksQuery
  **/
 public class StarRocksQuery extends AbstractDBQuery {
+
     @Override
     public String schemaAllSql() {
         return StarRocksConstant.QUERY_ALL_DATABASE;

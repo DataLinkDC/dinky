@@ -38,6 +38,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProTableResult<T> implements Serializable {
+
     private static final long serialVersionUID = -6377431009117000655L;
     /**
      * 总数

@@ -31,7 +31,8 @@ import org.apache.flink.table.api.TableResult;
  **/
 public interface ResultBuilder {
 
-    static ResultBuilder build(SqlType operationType, Integer maxRowNum, boolean isChangeLog, boolean isAutoCancel, String timeZone) {
+    static ResultBuilder build(SqlType operationType, Integer maxRowNum, boolean isChangeLog, boolean isAutoCancel,
+            String timeZone) {
         switch (operationType) {
             case SELECT:
                 return new SelectResultBuilder(maxRowNum, isChangeLog, isAutoCancel, timeZone);

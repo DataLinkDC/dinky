@@ -179,7 +179,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
         userTenants.forEach(userTenant -> {
             Tenant tenant = tenantService.getBaseMapper()
-                .selectOne(new QueryWrapper<Tenant>().eq("id", userTenant.getTenantId()));
+                    .selectOne(new QueryWrapper<Tenant>().eq("id", userTenant.getTenantId()));
             if (Asserts.isNotNull(tenant)) {
                 tenantList.add(tenant);
             }

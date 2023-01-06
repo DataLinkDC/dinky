@@ -34,6 +34,7 @@ import java.util.List;
  * @since 2021/7/19 23:31
  */
 public class JdbcSelectResult extends AbstractResult implements IResult {
+
     private List<String> columns;
     private List<LinkedHashMap<String, Object>> rowData;
     private Integer total;
@@ -42,6 +43,7 @@ public class JdbcSelectResult extends AbstractResult implements IResult {
 
     private static final String STATUS = "status";
     private static final List<String> STATUS_COLUMN = new ArrayList<String>() {
+
         {
             add("status");
         }

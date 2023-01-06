@@ -35,8 +35,7 @@ public enum TaskOperatingStatus {
 
     EXCEPTION(13, "exception", "异常"),
 
-    SUCCESS(16, "success", "成功"),
-    FAIL(20, "fail", "失败");
+    SUCCESS(16, "success", "成功"), FAIL(20, "fail", "失败");
 
     private Integer code;
 

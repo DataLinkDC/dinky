@@ -36,7 +36,8 @@ public class DaemonFactory {
             while (true) {
                 int taskSize = defaultThreadPool.getTaskSize();
                 try {
-                    Thread.sleep(Math.max(FlinkTaskConstant.MAX_POLLING_GAP / (taskSize + 1), FlinkTaskConstant.MIN_POLLING_GAP));
+                    Thread.sleep(Math.max(FlinkTaskConstant.MAX_POLLING_GAP / (taskSize + 1),
+                            FlinkTaskConstant.MIN_POLLING_GAP));
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

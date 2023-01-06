@@ -26,6 +26,7 @@ package org.dinky.alert;
  * @since 2022/2/23 20:20
  **/
 public class AlertResult {
+
     private boolean success;
     private String message;
 

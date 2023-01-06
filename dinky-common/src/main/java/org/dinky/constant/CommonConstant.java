@@ -26,6 +26,7 @@ package org.dinky.constant;
  * @since 2021/5/28 9:35
  **/
 public interface CommonConstant {
+
     /**
      * 实例健康
      */

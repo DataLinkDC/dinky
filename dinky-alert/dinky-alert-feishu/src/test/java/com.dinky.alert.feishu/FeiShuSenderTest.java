@@ -37,7 +37,6 @@ import org.junit.Test;
  */
 public class FeiShuSenderTest {
 
-
     private static Map<String, String> feiShuConfig = new HashMap<>();
     private AlertMsg alertMsg = new AlertMsg();
 
@@ -59,9 +58,10 @@ public class FeiShuSenderTest {
         String exceptionUrl = "[点击查看该任务的异常日志](http://cdh1:8081/#/job/" + uuid + "/exceptions)";
         alertMsg.setExceptionUrl(exceptionUrl);
 
-        feiShuConfig.put(FeiShuConstants.WEB_HOOK, "https://open.feishu.cn/open-apis/bot/v2/hook/aea3cd7f-75b4-45cd-abea-2c0dc808f2a9");
+        feiShuConfig.put(FeiShuConstants.WEB_HOOK,
+                "https://open.feishu.cn/open-apis/bot/v2/hook/aea3cd7f-75b4-45cd-abea-2c0dc808f2a9");
         feiShuConfig.put(FeiShuConstants.KEY_WORD, "Dinky 飞书WebHook 告警测试");
-        feiShuConfig.put(FeiShuConstants.MSG_TYPE,"text");
+        feiShuConfig.put(FeiShuConstants.MSG_TYPE, "text");
         feiShuConfig.put(FeiShuConstants.AT_ALL, "true");
         feiShuConfig.put(FeiShuConstants.AT_USERS, "zhumingye");
     }
@@ -75,7 +75,7 @@ public class FeiShuSenderTest {
 
     @Test
     public void testPostTypeSend() {
-        feiShuConfig.put(FeiShuConstants.MSG_TYPE,"post");
+        feiShuConfig.put(FeiShuConstants.MSG_TYPE, "post");
         FeiShuSender feiShuSender = new FeiShuSender(feiShuConfig);
         AlertResult alertResult = feiShuSender.send("FeiShu Alert", alertMsg.toString());
         Assert.assertEquals(true, alertResult.getSuccess());

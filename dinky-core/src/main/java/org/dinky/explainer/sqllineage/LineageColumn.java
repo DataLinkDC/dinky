@@ -85,13 +85,13 @@ public class LineageColumn implements Comparable<LineageColumn> {
     public void setSourceTableName(String sourceTableName) {
         sourceTableName = Asserts.isNotNullString(sourceTableName) ? sourceTableName.replace("`", "") : sourceTableName;
         if (sourceTableName.contains(" ")) {
-            sourceTableName = sourceTableName.substring(0,sourceTableName.indexOf(" "));
+            sourceTableName = sourceTableName.substring(0, sourceTableName.indexOf(" "));
         }
         if (sourceTableName.contains(".")) {
             if (Asserts.isNullString(this.sourceDbName)) {
                 this.sourceDbName = sourceTableName.substring(0, sourceTableName.indexOf("."));
             }
-            //this.sourceDbName = sourceTableName.substring(0, sourceTableName.indexOf("."));
+            // this.sourceDbName = sourceTableName.substring(0, sourceTableName.indexOf("."));
             this.sourceTableName = sourceTableName.substring(sourceTableName.indexOf(".") + 1);
         } else {
             this.sourceTableName = sourceTableName;

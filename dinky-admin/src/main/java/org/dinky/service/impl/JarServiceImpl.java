@@ -38,6 +38,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
  **/
 @Service
 public class JarServiceImpl extends SuperServiceImpl<JarMapper, Jar> implements JarService {
+
     @Override
     public List<Jar> listEnabledAll() {
         return list(new QueryWrapper<Jar>().eq("enabled", 1));

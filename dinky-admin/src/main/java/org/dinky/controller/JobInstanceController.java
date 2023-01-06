@@ -59,6 +59,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/jobInstance")
 public class JobInstanceController {
+
     @Autowired
     private JobInstanceService jobInstanceService;
     @Autowired
@@ -161,7 +162,8 @@ public class JobInstanceController {
         if (Asserts.isNotNullString(address)) {
             FlinkAPI flinkAPI = FlinkAPI.build(address);
             JsonNode taskManagerContainers = flinkAPI.getTaskManagers();
-            BuildConfiguration.buildTaskManagerConfiguration(taskManagerConfigurationList, flinkAPI, taskManagerContainers);
+            BuildConfiguration.buildTaskManagerConfiguration(taskManagerConfigurationList, flinkAPI,
+                    taskManagerContainers);
         }
         return Result.succeed(taskManagerConfigurationList, "获取成功");
     }

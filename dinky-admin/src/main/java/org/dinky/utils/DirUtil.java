@@ -68,8 +68,8 @@ public class DirUtil {
             throw new BusException(StrUtil.format("File path {} is not a file.", path));
         }
         try (
-                InputStreamReader inputStreamReader =
-                        new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
+                InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(file),
+                        StandardCharsets.UTF_8);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
             String content = "";
             while ((content = bufferedReader.readLine()) != null) {

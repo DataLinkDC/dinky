@@ -84,8 +84,8 @@ public class Top2WithRetract
     }
 
     public void emitUpdateWithRetract(
-                                      Top2WithRetractAccumulator acc,
-                                      RetractableCollector<Tuple2<Integer, Integer>> out) {
+            Top2WithRetractAccumulator acc,
+            RetractableCollector<Tuple2<Integer, Integer>> out) {
         if (!acc.first.equals(acc.oldFirst)) {
             // if there is an update, retract the old value then emit a new value
             if (acc.oldFirst != Integer.MIN_VALUE) {

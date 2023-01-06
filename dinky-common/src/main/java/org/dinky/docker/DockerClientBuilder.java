@@ -37,6 +37,7 @@ import com.github.dockerjava.transport.DockerHttpClient;
  * @since
  */
 public class DockerClientBuilder {
+
     private final DockerClientConfig dockerClientConfig;
 
     private DockerCmdExecFactory dockerCmdExecFactory = null;
@@ -49,8 +50,7 @@ public class DockerClientBuilder {
 
     public static DockerClientBuilder getInstance() {
         return new DockerClientBuilder(
-            DefaultDockerClientConfig.createDefaultConfigBuilder().build()
-        );
+                DefaultDockerClientConfig.createDefaultConfigBuilder().build());
     }
 
     /**
@@ -71,10 +71,9 @@ public class DockerClientBuilder {
     @Deprecated
     public static DockerClientBuilder getInstance(String serverUrl) {
         return new DockerClientBuilder(
-            DefaultDockerClientConfig.createDefaultConfigBuilder()
-                .withDockerHost(serverUrl)
-                .build()
-        );
+                DefaultDockerClientConfig.createDefaultConfigBuilder()
+                        .withDockerHost(serverUrl)
+                        .build());
     }
 
     /**
@@ -109,25 +108,22 @@ public class DockerClientBuilder {
     public DockerClient build() {
         if (dockerHttpClient != null) {
             return DockerClientImpl.getInstance(
-                dockerClientConfig,
-                dockerHttpClient
-            );
+                    dockerClientConfig,
+                    dockerHttpClient);
         } else if (dockerCmdExecFactory != null) {
             return DockerClientImpl.getInstance(dockerClientConfig)
-                .withDockerCmdExecFactory(dockerCmdExecFactory);
+                    .withDockerCmdExecFactory(dockerCmdExecFactory);
         } else {
             Logger log = LoggerFactory.getLogger(DockerClientBuilder.class);
             log.warn(
-                "'dockerHttpClient' should be set. Falling back to Jersey, will be an error in future releases."
-            );
+                    "'dockerHttpClient' should be set. Falling back to Jersey, will be an error in future releases.");
 
             return DockerClientImpl.getInstance(
-                dockerClientConfig,
-                new ApacheDockerHttpClient.Builder()
-                    .dockerHost(dockerClientConfig.getDockerHost())
-                    .sslConfig(dockerClientConfig.getSSLConfig())
-                    .build()
-            );
+                    dockerClientConfig,
+                    new ApacheDockerHttpClient.Builder()
+                            .dockerHost(dockerClientConfig.getDockerHost())
+                            .sslConfig(dockerClientConfig.getSSLConfig())
+                            .build());
         }
     }
 }

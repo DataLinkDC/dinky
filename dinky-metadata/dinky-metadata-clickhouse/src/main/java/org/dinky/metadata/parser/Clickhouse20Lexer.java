@@ -29,6 +29,7 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 
 public class Clickhouse20Lexer extends Lexer {
+
     public static final Keywords DEFAULT_KEYWORDS;
 
     static {

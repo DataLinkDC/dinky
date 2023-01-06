@@ -28,6 +28,7 @@ import java.util.Objects;
  * @since 2022/3/15 23:00
  */
 public class LineageRelation {
+
     private String id;
     private String srcTableId;
     private String tgtTableId;
@@ -44,7 +45,8 @@ public class LineageRelation {
         this.tgtTableColName = tgtTableColName;
     }
 
-    public LineageRelation(String id, String srcTableId, String tgtTableId, String srcTableColName, String tgtTableColName) {
+    public LineageRelation(String id, String srcTableId, String tgtTableId, String srcTableColName,
+            String tgtTableColName) {
         this.id = id;
         this.srcTableId = srcTableId;
         this.tgtTableId = tgtTableId;
@@ -52,11 +54,13 @@ public class LineageRelation {
         this.tgtTableColName = tgtTableColName;
     }
 
-    public static LineageRelation build(String srcTableId, String tgtTableId, String srcTableColName, String tgtTableColName) {
+    public static LineageRelation build(String srcTableId, String tgtTableId, String srcTableColName,
+            String tgtTableColName) {
         return new LineageRelation(srcTableId, tgtTableId, srcTableColName, tgtTableColName);
     }
 
-    public static LineageRelation build(String id, String srcTableId, String tgtTableId, String srcTableColName, String tgtTableColName) {
+    public static LineageRelation build(String id, String srcTableId, String tgtTableId, String srcTableColName,
+            String tgtTableColName) {
         return new LineageRelation(id, srcTableId, tgtTableId, srcTableColName, tgtTableColName);
     }
 

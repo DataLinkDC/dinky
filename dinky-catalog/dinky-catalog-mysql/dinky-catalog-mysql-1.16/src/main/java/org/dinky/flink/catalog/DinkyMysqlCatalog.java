@@ -194,9 +194,9 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
     }
 
     public DinkyMysqlCatalog(String name,
-                             String url,
-                             String user,
-                             String pwd) {
+            String url,
+            String user,
+            String pwd) {
         super(name, defaultDatabase);
         this.url = url;
         this.user = user;
@@ -356,7 +356,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
 
     @Override
     public void createDatabase(String databaseName, CatalogDatabase db,
-                               boolean ignoreIfExists) throws DatabaseAlreadyExistException, CatalogException {
+            boolean ignoreIfExists) throws DatabaseAlreadyExistException, CatalogException {
 
         checkArgument(!StringUtils.isNullOrWhitespaceOnly(databaseName));
         checkNotNull(db);
@@ -400,7 +400,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
 
     @Override
     public void dropDatabase(String name, boolean ignoreIfNotExists,
-                             boolean cascade) throws DatabaseNotExistException, DatabaseNotEmptyException, CatalogException {
+            boolean cascade) throws DatabaseNotExistException, DatabaseNotEmptyException, CatalogException {
         if (name.equals(defaultDatabase)) {
             throw new CatalogException("默认 database 不可以删除");
         }
@@ -451,7 +451,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
 
     @Override
     public void alterDatabase(String name, CatalogDatabase newDb,
-                              boolean ignoreIfNotExists) throws DatabaseNotExistException, CatalogException {
+            boolean ignoreIfNotExists) throws DatabaseNotExistException, CatalogException {
         if (name.equals(defaultDatabase)) {
             throw new CatalogException("默认 database 不可以修改");
         }
@@ -506,7 +506,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
     }
 
     protected List<String> listTablesViews(String databaseName,
-                                           String tableType) throws DatabaseNotExistException, CatalogException {
+            String tableType) throws DatabaseNotExistException, CatalogException {
         Integer databaseId = getDatabaseId(databaseName);
         if (null == databaseId) {
             throw new DatabaseNotExistException(getName(), databaseName);
@@ -667,7 +667,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
 
     @Override
     public void dropTable(ObjectPath tablePath,
-                          boolean ignoreIfNotExists) throws TableNotExistException, CatalogException {
+            boolean ignoreIfNotExists) throws TableNotExistException, CatalogException {
         Integer id = getTableId(tablePath);
 
         if (id == null) {
@@ -705,7 +705,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
 
     @Override
     public void renameTable(ObjectPath tablePath, String newTableName,
-                            boolean ignoreIfNotExists) throws TableNotExistException, TableAlreadyExistException, CatalogException {
+            boolean ignoreIfNotExists) throws TableNotExistException, TableAlreadyExistException, CatalogException {
         Integer id = getTableId(tablePath);
 
         if (id == null) {
@@ -729,7 +729,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
 
     @Override
     public void createTable(ObjectPath tablePath, CatalogBaseTable table,
-                            boolean ignoreIfExists) throws TableAlreadyExistException, DatabaseNotExistException, CatalogException {
+            boolean ignoreIfExists) throws TableAlreadyExistException, DatabaseNotExistException, CatalogException {
         Integer dbId = getDatabaseId(tablePath.getDatabaseName());
         if (null == dbId) {
             throw new DatabaseNotExistException(getName(), tablePath.getDatabaseName());
@@ -859,7 +859,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
 
     @Override
     public void alterTable(ObjectPath tablePath, CatalogBaseTable newTable,
-                           boolean ignoreIfNotExists) throws TableNotExistException, CatalogException {
+            boolean ignoreIfNotExists) throws TableNotExistException, CatalogException {
         Integer id = getTableId(tablePath);
 
         if (id == null) {
@@ -890,28 +890,30 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
 
     /************************ partition *************************/
     @Override
-    public List<CatalogPartitionSpec> listPartitions(ObjectPath tablePath) throws TableNotExistException, TableNotPartitionedException, CatalogException {
+    public List<CatalogPartitionSpec> listPartitions(ObjectPath tablePath)
+            throws TableNotExistException, TableNotPartitionedException, CatalogException {
         // todo: 补充完成该方法。
         throw new UnsupportedOperationException("该方法尚未完成");
     }
 
     @Override
     public List<CatalogPartitionSpec> listPartitions(ObjectPath tablePath,
-                                                     CatalogPartitionSpec partitionSpec) throws TableNotExistException, TableNotPartitionedException, PartitionSpecInvalidException, CatalogException {
+            CatalogPartitionSpec partitionSpec) throws TableNotExistException, TableNotPartitionedException,
+            PartitionSpecInvalidException, CatalogException {
         // todo: 补充完成该方法。
         throw new UnsupportedOperationException("该方法尚未完成");
     }
 
     @Override
     public List<CatalogPartitionSpec> listPartitionsByFilter(ObjectPath tablePath,
-                                                             List<Expression> filters) throws TableNotExistException, TableNotPartitionedException, CatalogException {
+            List<Expression> filters) throws TableNotExistException, TableNotPartitionedException, CatalogException {
         // todo: 补充完成该方法。
         throw new UnsupportedOperationException("该方法尚未完成");
     }
 
     @Override
     public CatalogPartition getPartition(ObjectPath tablePath,
-                                         CatalogPartitionSpec partitionSpec) throws PartitionNotExistException, CatalogException {
+            CatalogPartitionSpec partitionSpec) throws PartitionNotExistException, CatalogException {
         // todo: 补充完成该方法。
         throw new UnsupportedOperationException("该方法尚未完成");
     }
@@ -924,21 +926,22 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
 
     @Override
     public void createPartition(ObjectPath tablePath, CatalogPartitionSpec partitionSpec, CatalogPartition partition,
-                                boolean ignoreIfExists) throws TableNotExistException, TableNotPartitionedException, PartitionSpecInvalidException, PartitionAlreadyExistsException, CatalogException {
+            boolean ignoreIfExists) throws TableNotExistException, TableNotPartitionedException,
+            PartitionSpecInvalidException, PartitionAlreadyExistsException, CatalogException {
         // todo: 补充完成该方法。
         throw new UnsupportedOperationException("该方法尚未完成");
     }
 
     @Override
     public void dropPartition(ObjectPath tablePath, CatalogPartitionSpec partitionSpec,
-                              boolean ignoreIfNotExists) throws PartitionNotExistException, CatalogException {
+            boolean ignoreIfNotExists) throws PartitionNotExistException, CatalogException {
         // todo: 补充完成该方法。
         throw new UnsupportedOperationException("该方法尚未完成");
     }
 
     @Override
     public void alterPartition(ObjectPath tablePath, CatalogPartitionSpec partitionSpec, CatalogPartition newPartition,
-                               boolean ignoreIfNotExists) throws PartitionNotExistException, CatalogException {
+            boolean ignoreIfNotExists) throws PartitionNotExistException, CatalogException {
         // todo: 补充完成该方法。
         throw new UnsupportedOperationException("该方法尚未完成");
     }
@@ -1032,7 +1035,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
 
     @Override
     public void createFunction(ObjectPath functionPath, CatalogFunction function,
-                               boolean ignoreIfExists) throws FunctionAlreadyExistException, DatabaseNotExistException, CatalogException {
+            boolean ignoreIfExists) throws FunctionAlreadyExistException, DatabaseNotExistException, CatalogException {
         Integer dbId = getDatabaseId(functionPath.getDatabaseName());
         if (null == dbId) {
             throw new DatabaseNotExistException(getName(), functionPath.getDatabaseName());
@@ -1061,7 +1064,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
 
     @Override
     public void alterFunction(ObjectPath functionPath, CatalogFunction newFunction,
-                              boolean ignoreIfNotExists) throws FunctionNotExistException, CatalogException {
+            boolean ignoreIfNotExists) throws FunctionNotExistException, CatalogException {
         Integer id = getFunctionId(functionPath);
         if (null == id) {
             if (!ignoreIfNotExists) {
@@ -1087,7 +1090,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
 
     @Override
     public void dropFunction(ObjectPath functionPath,
-                             boolean ignoreIfNotExists) throws FunctionNotExistException, CatalogException {
+            boolean ignoreIfNotExists) throws FunctionNotExistException, CatalogException {
         Integer id = getFunctionId(functionPath);
         if (null == id) {
             if (!ignoreIfNotExists) {
@@ -1109,7 +1112,8 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
     }
 
     @Override
-    public CatalogTableStatistics getTableStatistics(ObjectPath tablePath) throws TableNotExistException, CatalogException {
+    public CatalogTableStatistics getTableStatistics(ObjectPath tablePath)
+            throws TableNotExistException, CatalogException {
         // todo: 补充完成该方法。
         checkNotNull(tablePath);
 
@@ -1125,7 +1129,8 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
     }
 
     @Override
-    public CatalogColumnStatistics getTableColumnStatistics(ObjectPath tablePath) throws TableNotExistException, CatalogException {
+    public CatalogColumnStatistics getTableColumnStatistics(ObjectPath tablePath)
+            throws TableNotExistException, CatalogException {
         // todo: 补充完成该方法。
         checkNotNull(tablePath);
 
@@ -1140,44 +1145,44 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
 
     @Override
     public CatalogTableStatistics getPartitionStatistics(ObjectPath tablePath,
-                                                         CatalogPartitionSpec partitionSpec) throws PartitionNotExistException, CatalogException {
+            CatalogPartitionSpec partitionSpec) throws PartitionNotExistException, CatalogException {
         // todo: 补充完成该方法。
         throw new UnsupportedOperationException("该方法尚未完成");
     }
 
     @Override
     public CatalogColumnStatistics getPartitionColumnStatistics(ObjectPath tablePath,
-                                                                CatalogPartitionSpec partitionSpec) throws PartitionNotExistException, CatalogException {
+            CatalogPartitionSpec partitionSpec) throws PartitionNotExistException, CatalogException {
         // todo: 补充完成该方法。
         throw new UnsupportedOperationException("该方法尚未完成");
     }
 
     @Override
     public void alterTableStatistics(ObjectPath tablePath, CatalogTableStatistics tableStatistics,
-                                     boolean ignoreIfNotExists) throws TableNotExistException, CatalogException {
+            boolean ignoreIfNotExists) throws TableNotExistException, CatalogException {
         // todo: 补充完成该方法。
         throw new UnsupportedOperationException("该方法尚未完成");
     }
 
     @Override
     public void alterTableColumnStatistics(ObjectPath tablePath, CatalogColumnStatistics columnStatistics,
-                                           boolean ignoreIfNotExists) throws TableNotExistException, CatalogException, TablePartitionedException {
+            boolean ignoreIfNotExists) throws TableNotExistException, CatalogException, TablePartitionedException {
         // todo: 补充完成该方法。
         throw new UnsupportedOperationException("该方法尚未完成");
     }
 
     @Override
     public void alterPartitionStatistics(ObjectPath tablePath, CatalogPartitionSpec partitionSpec,
-                                         CatalogTableStatistics partitionStatistics,
-                                         boolean ignoreIfNotExists) throws PartitionNotExistException, CatalogException {
+            CatalogTableStatistics partitionStatistics,
+            boolean ignoreIfNotExists) throws PartitionNotExistException, CatalogException {
         // todo: 补充完成该方法。
         throw new UnsupportedOperationException("该方法尚未完成");
     }
 
     @Override
     public void alterPartitionColumnStatistics(ObjectPath tablePath, CatalogPartitionSpec partitionSpec,
-                                               CatalogColumnStatistics columnStatistics,
-                                               boolean ignoreIfNotExists) throws PartitionNotExistException, CatalogException {
+            CatalogColumnStatistics columnStatistics,
+            boolean ignoreIfNotExists) throws PartitionNotExistException, CatalogException {
         // todo: 补充完成该方法。
         throw new UnsupportedOperationException("该方法尚未完成");
     }

@@ -41,7 +41,7 @@ import org.springframework.util.CollectionUtils;
 public class SecurityAspect {
 
     // 敏感信息的pattern :
-    //  'password' = 'wwz@test'
+    // 'password' = 'wwz@test'
     public static final String SENSITIVE = "'password'\\s*=\\s*'.+?'";
 
     // 敏感信息屏蔽码
@@ -82,7 +82,8 @@ public class SecurityAspect {
         }
 
         // mask statement for histories
-        if (returnValue instanceof ProTableResult<?> && ((ProTableResult<?>) returnValue).getData() instanceof List<?>) {
+        if (returnValue instanceof ProTableResult<?>
+                && ((ProTableResult<?>) returnValue).getData() instanceof List<?>) {
             List<?> list = ((ProTableResult<?>) returnValue).getData();
             if (CollectionUtils.isEmpty(list) || !(list.get(0) instanceof History)) {
                 return;

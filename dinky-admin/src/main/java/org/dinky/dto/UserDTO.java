@@ -33,6 +33,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDTO {
+
     private User user;
     private List<Role> roleList;
     private List<Tenant> tenantList;

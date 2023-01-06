@@ -49,6 +49,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/alertHistory")
 public class AlertHistoryController {
+
     @Autowired
     private AlertHistoryService alertHistoryService;
 

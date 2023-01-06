@@ -65,5 +65,4 @@ public final class FlinkRestAPIConstant {
 
     public static final String GET = "?get=";
 
-
 }

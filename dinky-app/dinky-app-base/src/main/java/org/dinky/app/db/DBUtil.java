@@ -64,17 +64,16 @@ public class DBUtil {
         Connection conn = getConnection(config);
         String result = null;
         try (Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+                ResultSet rs = stmt.executeQuery(sql)) {
             if (rs.next()) {
                 result = rs.getString(1);
             }
         }
         close(conn);
-        /*catch (SQLException e1) {
-            e1.printStackTrace();
-            String message = e1.getMessage();
-            System.err.println(LocalDateTime.now().toString() + " --> 获取 FlinkSQL 异常，ID 为");
-        }*/
+        /*
+         * catch (SQLException e1) { e1.printStackTrace(); String message = e1.getMessage();
+         * System.err.println(LocalDateTime.now().toString() + " --> 获取 FlinkSQL 异常，ID 为"); }
+         */
         return result;
     }
 
@@ -82,7 +81,7 @@ public class DBUtil {
         Connection conn = getConnection(config);
         HashMap<String, String> map = new HashMap();
         try (Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+                ResultSet rs = stmt.executeQuery(sql)) {
             List<String> columnList = new ArrayList<>();
             for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
                 columnList.add(rs.getMetaData().getColumnLabel(i + 1));
@@ -120,7 +119,7 @@ public class DBUtil {
         Connection conn = getConnection(config);
         List<Map<String, String>> list = new ArrayList<>();
         try (Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+                ResultSet rs = stmt.executeQuery(sql)) {
             List<String> columnList = new ArrayList<>();
             for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
                 columnList.add(rs.getMetaData().getColumnName(i));

@@ -33,6 +33,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ClassEntity {
+
     private String name;
     private String code;
     private byte[] classByte;

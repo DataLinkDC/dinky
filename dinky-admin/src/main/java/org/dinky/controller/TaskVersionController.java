@@ -48,9 +48,9 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/task/version")
 public class TaskVersionController {
+
     @Autowired
     private TaskVersionService versionService;
-
 
     /**
      * 动态查询列表
@@ -82,4 +82,3 @@ public class TaskVersionController {
     }
 
 }
-

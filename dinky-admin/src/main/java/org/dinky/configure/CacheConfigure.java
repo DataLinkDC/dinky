@@ -26,7 +26,6 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-
 /**
  * CacheCoonfigure
  *
@@ -42,26 +41,25 @@ public class CacheConfigure {
     @Bean
     public RedisCacheConfiguration cacheConfiguration() {
         return RedisCacheConfiguration.defaultCacheConfig()
-                //序列化为json
+                // 序列化为json
                 .serializeValuesWith(
-                        RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.json())
-                )
-                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()));
+                        RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.json()))
+                .serializeKeysWith(
+                        RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()));
     }
 
-
-    //    /**
-    //     * 配置RedisTemplate的序列化方式
-    //     */
-    //    @Bean
-    //    public RedisTemplate redisTemplate(RedisConnectionFactory factory) {
-    //        RedisTemplate redisTemplate = new RedisTemplate();
-    //        redisTemplate.setConnectionFactory(factory);
-    //        // 指定key的序列化方式：string
-    //        redisTemplate.setKeySerializer(RedisSerializer.string());
-    //        // 指定value的序列化方式：json
-    //        redisTemplate.setValueSerializer(RedisSerializer.json());
-    //        return redisTemplate;
-    //    }
+    // /**
+    // * 配置RedisTemplate的序列化方式
+    // */
+    // @Bean
+    // public RedisTemplate redisTemplate(RedisConnectionFactory factory) {
+    // RedisTemplate redisTemplate = new RedisTemplate();
+    // redisTemplate.setConnectionFactory(factory);
+    // // 指定key的序列化方式：string
+    // redisTemplate.setKeySerializer(RedisSerializer.string());
+    // // 指定value的序列化方式：json
+    // redisTemplate.setValueSerializer(RedisSerializer.json());
+    // return redisTemplate;
+    // }
 
 }

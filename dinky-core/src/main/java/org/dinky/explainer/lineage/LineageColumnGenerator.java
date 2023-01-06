@@ -74,11 +74,10 @@ public class LineageColumnGenerator {
                 columnCAS.add(columnCA);
                 buildColumnCAFields(tableCA, tableCA.getParentId(), tableCA.getId(), columnCA, new ArrayList<>());
             }
-            /*for (ColumnCA columnCA : columnCAS) {
-                if (columnCA.getTableCA().getId() == tableCA.getId()) {
-                    buildColumnCAFields(tableCA, tableCA.getParentId(), tableCA.getId() columnCA, new ArrayList<>());
-                }
-            }*/
+            /*
+             * for (ColumnCA columnCA : columnCAS) { if (columnCA.getTableCA().getId() == tableCA.getId()) {
+             * buildColumnCAFields(tableCA, tableCA.getParentId(), tableCA.getId() columnCA, new ArrayList<>()); } }
+             */
         }
         for (Map.Entry<Integer, Trans> entry : transMaps.entrySet()) {
             Trans trans = entry.getValue();
@@ -99,7 +98,8 @@ public class LineageColumnGenerator {
             for (String fieldName : tableCA.getFields()) {
                 if (columnCA.getName().equals(fieldName)) {
                     int cid = index++;
-                    ColumnCA sinkColumnCA = new ColumnCA(cid, fieldName, fieldName, fieldName, fieldName, fieldName, tableCA);
+                    ColumnCA sinkColumnCA = new ColumnCA(cid, fieldName, fieldName, fieldName, fieldName, fieldName,
+                            tableCA);
                     columnCASMaps.put(cid, sinkColumnCA);
                     columnCASRel.add(new NodeRel(columnCA.getId(), cid));
                 }
@@ -107,7 +107,8 @@ public class LineageColumnGenerator {
         }
     }
 
-    private void buildColumnCAFields(TableCA tableCA, Integer id, Integer preId, ColumnCA columnCA, List<Field> ignoreSelects) {
+    private void buildColumnCAFields(TableCA tableCA, Integer id, Integer preId, ColumnCA columnCA,
+            List<Field> ignoreSelects) {
         if (transMaps.get(id) instanceof OperatorTrans) {
             if (tableCA.getId().equals(id)) {
                 return;
@@ -129,8 +130,8 @@ public class LineageColumnGenerator {
                         if (tableCA.getUseFields().contains(selects.get(i).getAlias())) {
                             if (targetSelects.size() == 0) {
                                 targetSelects.add(selects.get(i));
-                            } else if (tableCA.getUseFields().indexOf(targetSelects.get(targetSelects.size() - 1).getAlias())
-                                < tableCA.getUseFields().indexOf(selects.get(i).getAlias())) {
+                            } else if (tableCA.getUseFields().indexOf(targetSelects.get(targetSelects.size() - 1)
+                                    .getAlias()) < tableCA.getUseFields().indexOf(selects.get(i).getAlias())) {
                                 targetSelects.add(selects.get(i));
                             } else {
                                 break;
@@ -144,8 +145,8 @@ public class LineageColumnGenerator {
                         if (tableCA.getUseFields().contains(selects.get(i).getAlias())) {
                             if (targetSelects.size() == 0) {
                                 targetSelects.add(selects.get(i));
-                            } else if (tableCA.getUseFields().indexOf(targetSelects.get(targetSelects.size() - 1).getAlias())
-                                > tableCA.getUseFields().indexOf(selects.get(i).getAlias())) {
+                            } else if (tableCA.getUseFields().indexOf(targetSelects.get(targetSelects.size() - 1)
+                                    .getAlias()) > tableCA.getUseFields().indexOf(selects.get(i).getAlias())) {
                                 targetSelects.add(selects.get(i));
                             } else {
                                 break;
@@ -161,8 +162,8 @@ public class LineageColumnGenerator {
                         if (tableCA.getUseFields().contains(selects.get(i).getAlias())) {
                             if (targetSelects.size() == 0) {
                                 targetSelects.add(selects.get(i));
-                            } else if (tableCA.getUseFields().indexOf(targetSelects.get(targetSelects.size() - 1).getAlias())
-                                < tableCA.getUseFields().indexOf(selects.get(i).getAlias())) {
+                            } else if (tableCA.getUseFields().indexOf(targetSelects.get(targetSelects.size() - 1)
+                                    .getAlias()) < tableCA.getUseFields().indexOf(selects.get(i).getAlias())) {
                                 targetSelects.add(selects.get(i));
                             } else {
                                 break;
@@ -202,7 +203,8 @@ public class LineageColumnGenerator {
         }
     }
 
-    private void searchSelect(TableCA tableCA, ColumnCA columnCA, OperatorTrans trans, String operation, String alias, List<Field> ignoreSelects) {
+    private void searchSelect(TableCA tableCA, ColumnCA columnCA, OperatorTrans trans, String operation, String alias,
+            List<Field> ignoreSelects) {
         if (MapParseUtils.hasField(operation, columnCA.getAlias())) {
             for (Field field : ignoreSelects) {
                 if (field.getAlias().equals(columnCA.getAlias())) {

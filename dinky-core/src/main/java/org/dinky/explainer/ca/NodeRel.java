@@ -28,6 +28,7 @@ import java.util.Objects;
  * @since 2021/6/22
  **/
 public class NodeRel {
+
     private Integer preId;
     private Integer sufId;
 
