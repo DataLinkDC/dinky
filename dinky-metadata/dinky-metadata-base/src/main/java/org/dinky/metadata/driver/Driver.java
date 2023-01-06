@@ -17,17 +17,17 @@
  *
  */
 
-package com.dlink.metadata.driver;
+package org.dinky.metadata.driver;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.exception.MetaDataException;
-import com.dlink.exception.SplitTableException;
-import com.dlink.metadata.result.JdbcSelectResult;
-import com.dlink.model.Column;
-import com.dlink.model.QueryData;
-import com.dlink.model.Schema;
-import com.dlink.model.Table;
-import com.dlink.result.SqlExplainResult;
+import org.dinky.assertion.Asserts;
+import org.dinky.exception.MetaDataException;
+import org.dinky.exception.SplitTableException;
+import org.dinky.metadata.result.JdbcSelectResult;
+import org.dinky.model.Column;
+import org.dinky.model.QueryData;
+import org.dinky.model.Schema;
+import org.dinky.model.Table;
+import org.dinky.result.SqlExplainResult;
 
 import java.util.List;
 import java.util.Map;

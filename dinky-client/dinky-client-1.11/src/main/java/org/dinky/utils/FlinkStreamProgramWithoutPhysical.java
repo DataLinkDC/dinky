@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.utils;
+package org.dinky.utils;
 
 import org.apache.calcite.plan.Convention;
 import org.apache.calcite.plan.hep.HepMatchOrder;

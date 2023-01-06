@@ -19,12 +19,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.dlink</groupId>
-        <artifactId>dlink</artifactId>
+        <groupId>org.dinky</groupId>
+        <artifactId>dinky</artifactId>
         <version>0.7.0</version>
     </parent>
 
-    <artifactId>dlink-gateway</artifactId>
+    <artifactId>dinky-gateway</artifactId>
     <properties>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -34,8 +34,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-common</artifactId>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-common</artifactId>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -55,8 +55,8 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-client-hadoop</artifactId>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-client-hadoop</artifactId>
             <scope>${scope.runtime}</scope>
         </dependency>
 
@@ -85,13 +85,13 @@ for k8s commit tasks-->
             <id>flink-1.11</id>
             <dependencies>
                 <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-client-1.11</artifactId>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-client-1.11</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
                 <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-flink-1.11</artifactId>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-flink-1.11</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
             </dependencies>
@@ -101,13 +101,13 @@ for k8s commit tasks-->
             <id>flink-1.12</id>
             <dependencies>
                 <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-client-1.12</artifactId>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-client-1.12</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
                 <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-flink-1.12</artifactId>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-flink-1.12</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
             </dependencies>
@@ -117,13 +117,13 @@ for k8s commit tasks-->
             <id>flink-1.13</id>
             <dependencies>
                 <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-client-1.13</artifactId>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-client-1.13</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
                 <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-flink-1.13</artifactId>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-flink-1.13</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
             </dependencies>
@@ -133,13 +133,13 @@ for k8s commit tasks-->
             <id>flink-1.14</id>
             <dependencies>
                 <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-client-1.14</artifactId>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-client-1.14</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
                 <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-flink-1.14</artifactId>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-flink-1.14</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
             </dependencies>
@@ -149,13 +149,13 @@ for k8s commit tasks-->
             <id>flink-1.15</id>
             <dependencies>
                 <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-client-1.15</artifactId>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-client-1.15</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
                 <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-flink-1.15</artifactId>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-flink-1.15</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
             </dependencies>
@@ -165,13 +165,13 @@ for k8s commit tasks-->
             <id>flink-1.16</id>
             <dependencies>
                 <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-client-1.16</artifactId>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-client-1.16</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
                 <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-flink-1.16</artifactId>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-flink-1.16</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
             </dependencies>
@@ -181,13 +181,13 @@ for k8s commit tasks-->
             <id>all</id>
             <dependencies>
                 <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-client-${dlink.flink.version}</artifactId>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-client-${dinky.flink.version}</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
                 <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-flink-${dlink.flink.version}</artifactId>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-flink-${dinky.flink.version}</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
             </dependencies>

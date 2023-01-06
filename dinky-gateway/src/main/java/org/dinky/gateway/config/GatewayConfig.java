@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.gateway.config;
+package org.dinky.gateway.config;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.gateway.GatewayType;
+import org.dinky.assertion.Asserts;
+import org.dinky.gateway.GatewayType;
 
 import org.apache.http.util.TextUtils;
 

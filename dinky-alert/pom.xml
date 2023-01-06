@@ -19,19 +19,19 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.dlink</groupId>
-        <artifactId>dlink</artifactId>
+        <groupId>org.dinky</groupId>
+        <artifactId>dinky</artifactId>
         <version>0.7.0</version>
     </parent>
 
-    <artifactId>dlink-alert</artifactId>
+    <artifactId>dinky-alert</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>dlink-alert-base</module>
-        <module>dlink-alert-dingtalk</module>
-        <module>dlink-alert-wechat</module>
-        <module>dlink-alert-feishu</module>
-        <module>dlink-alert-email</module>
+        <module>dinky-alert-base</module>
+        <module>dinky-alert-dingtalk</module>
+        <module>dinky-alert-wechat</module>
+        <module>dinky-alert-feishu</module>
+        <module>dinky-alert-email</module>
     </modules>
 
     <properties>

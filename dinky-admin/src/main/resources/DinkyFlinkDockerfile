@@ -16,4 +16,4 @@ RUN pip install "apache-flink==${FLINK_VERSION}" -i http://pypi.douban.com/simpl
 
 RUN cp /opt/flink/opt/flink-python_* /opt/flink/lib/
 
-COPY jar/dlink-app-@dlink.flink.version@-@project.version@-jar-with-dependencies.jar plugins/* $FLINK_HOME/lib/
+COPY jar/dinky-app-@dinky.flink.version@-@project.version@-jar-with-dependencies.jar plugins/* $FLINK_HOME/lib/

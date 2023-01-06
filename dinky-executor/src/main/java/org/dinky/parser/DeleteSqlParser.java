@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.parser;
+package org.dinky.parser;
 
 /**
  * DeleteSqlParser

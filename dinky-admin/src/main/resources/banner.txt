@@ -8,5 +8,5 @@
 
 
 Version: @project.version@
-Github:  https://github.com/DataLinkDC/dlink
+Github:  https://github.com/DataLinkDC/dinky
 公众号:   Dinky 开源

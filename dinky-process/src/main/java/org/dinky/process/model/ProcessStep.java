@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.process.model;
+package org.dinky.process.model;
 
 import java.time.LocalDateTime;
 

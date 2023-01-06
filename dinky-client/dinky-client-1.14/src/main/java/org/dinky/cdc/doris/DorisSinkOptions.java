@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.cdc.doris;
+package org.dinky.cdc.doris;
 
 import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.configuration.ConfigOptions;

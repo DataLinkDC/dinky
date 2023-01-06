@@ -17,12 +17,12 @@
  *
  */
 
-package com.dlink.job;
+package org.dinky.job;
 
-import com.dlink.executor.Executor;
-import com.dlink.executor.ExecutorSetting;
-import com.dlink.gateway.GatewayType;
-import com.dlink.result.IResult;
+import org.dinky.executor.Executor;
+import org.dinky.executor.ExecutorSetting;
+import org.dinky.gateway.GatewayType;
+import org.dinky.result.IResult;
 
 import java.time.LocalDateTime;
 import java.util.List;

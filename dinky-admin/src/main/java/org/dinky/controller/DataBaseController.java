@@ -17,17 +17,17 @@
  *
  */
 
-package com.dlink.controller;
+package org.dinky.controller;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.common.result.ProTableResult;
-import com.dlink.common.result.Result;
-import com.dlink.constant.CommonConstant;
-import com.dlink.metadata.driver.DriverPool;
-import com.dlink.metadata.result.JdbcSelectResult;
-import com.dlink.model.DataBase;
-import com.dlink.model.QueryData;
-import com.dlink.service.DataBaseService;
+import org.dinky.assertion.Asserts;
+import org.dinky.common.result.ProTableResult;
+import org.dinky.common.result.Result;
+import org.dinky.constant.CommonConstant;
+import org.dinky.metadata.driver.DriverPool;
+import org.dinky.metadata.result.JdbcSelectResult;
+import org.dinky.model.DataBase;
+import org.dinky.model.QueryData;
+import org.dinky.service.DataBaseService;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.metadata.query;
+package org.dinky.metadata.query;
 
-import com.dlink.metadata.constant.DorisConstant;
+import org.dinky.metadata.constant.DorisConstant;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

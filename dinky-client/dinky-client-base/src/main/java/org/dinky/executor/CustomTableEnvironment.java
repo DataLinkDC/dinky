@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.executor;
+package org.dinky.executor;
 
-import com.dlink.model.LineageRel;
-import com.dlink.result.SqlExplainResult;
+import org.dinky.model.LineageRel;
+import org.dinky.result.SqlExplainResult;
 
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;

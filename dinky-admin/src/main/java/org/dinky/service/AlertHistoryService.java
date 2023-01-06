@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.service;
+package org.dinky.service;
 
-import com.dlink.db.service.ISuperService;
-import com.dlink.model.AlertHistory;
+import org.dinky.db.service.ISuperService;
+import org.dinky.model.AlertHistory;
 
 /**
  * AlertHistoryService

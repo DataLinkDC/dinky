@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.model;
+package org.dinky.model;
 
-import com.dlink.db.model.SuperEntity;
+import org.dinky.db.model.SuperEntity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -31,13 +31,13 @@ import lombok.EqualsAndHashCode;
  **/
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("dlink_upload_file_record")
+@TableName("dinky_upload_file_record")
 public class UploadFileRecord extends SuperEntity {
 
     private static final long serialVersionUID = 3769285632787490408L;
 
     /**
-     * File type id: hadoop-conf(1)、flink-conf(2)、flink-lib(3)、user-jar(4)、dlink-jar(5), -1 represent no file type.
+     * File type id: hadoop-conf(1)、flink-conf(2)、flink-lib(3)、user-jar(4)、dinky-jar(5), -1 represent no file type.
      */
     private Byte fileType = -1;
     private String fileName;

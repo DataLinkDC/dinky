@@ -17,11 +17,11 @@
  *
  */
 
-package com.dlink.dto;
+package org.dinky.dto;
 
-import com.dlink.model.Role;
-import com.dlink.model.Tenant;
-import com.dlink.model.User;
+import org.dinky.model.Role;
+import org.dinky.model.Tenant;
+import org.dinky.model.User;
 
 import java.util.List;
 

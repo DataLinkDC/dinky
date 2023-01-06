@@ -17,17 +17,17 @@
  *
  */
 
-package com.dlink.metadata.driver;
+package org.dinky.metadata.driver;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.metadata.convert.ITypeConvert;
-import com.dlink.metadata.convert.MySqlTypeConvert;
-import com.dlink.metadata.query.IDBQuery;
-import com.dlink.metadata.query.MySqlQuery;
-import com.dlink.model.Column;
-import com.dlink.model.QueryData;
-import com.dlink.model.Table;
-import com.dlink.utils.TextUtil;
+import org.dinky.assertion.Asserts;
+import org.dinky.metadata.convert.ITypeConvert;
+import org.dinky.metadata.convert.MySqlTypeConvert;
+import org.dinky.metadata.query.IDBQuery;
+import org.dinky.metadata.query.MySqlQuery;
+import org.dinky.model.Column;
+import org.dinky.model.QueryData;
+import org.dinky.model.Table;
+import org.dinky.utils.TextUtil;
 
 import java.util.HashMap;
 import java.util.List;

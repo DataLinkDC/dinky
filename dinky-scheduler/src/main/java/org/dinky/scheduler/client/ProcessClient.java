@@ -17,17 +17,17 @@
  *
  */
 
-package com.dlink.scheduler.client;
+package org.dinky.scheduler.client;
 
-import com.dlink.scheduler.config.DolphinSchedulerProperties;
-import com.dlink.scheduler.constant.Constants;
-import com.dlink.scheduler.model.DagData;
-import com.dlink.scheduler.model.ProcessDefinition;
-import com.dlink.scheduler.result.PageInfo;
-import com.dlink.scheduler.result.Result;
-import com.dlink.scheduler.utils.MyJSONUtil;
-import com.dlink.scheduler.utils.ParamUtil;
-import com.dlink.scheduler.utils.ReadFileUtil;
+import org.dinky.scheduler.config.DolphinSchedulerProperties;
+import org.dinky.scheduler.constant.Constants;
+import org.dinky.scheduler.model.DagData;
+import org.dinky.scheduler.model.ProcessDefinition;
+import org.dinky.scheduler.result.PageInfo;
+import org.dinky.scheduler.result.Result;
+import org.dinky.scheduler.utils.MyJSONUtil;
+import org.dinky.scheduler.utils.ParamUtil;
+import org.dinky.scheduler.utils.ReadFileUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;

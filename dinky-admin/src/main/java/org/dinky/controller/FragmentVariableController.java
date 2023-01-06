@@ -17,12 +17,12 @@
  *
  */
 
-package com.dlink.controller;
+package org.dinky.controller;
 
-import com.dlink.common.result.ProTableResult;
-import com.dlink.common.result.Result;
-import com.dlink.model.FragmentVariable;
-import com.dlink.service.FragmentVariableService;
+import org.dinky.common.result.ProTableResult;
+import org.dinky.common.result.Result;
+import org.dinky.model.FragmentVariable;
+import org.dinky.service.FragmentVariableService;
 
 import java.util.ArrayList;
 import java.util.List;

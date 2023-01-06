@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.scheduler.model;
+package org.dinky.scheduler.model;
 
 import java.util.List;
 

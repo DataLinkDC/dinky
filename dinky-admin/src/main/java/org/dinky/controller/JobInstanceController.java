@@ -17,18 +17,18 @@
  *
  */
 
-package com.dlink.controller;
+package org.dinky.controller;
 
-import com.dlink.api.FlinkAPI;
-import com.dlink.assertion.Asserts;
-import com.dlink.common.result.ProTableResult;
-import com.dlink.common.result.Result;
-import com.dlink.job.BuildConfiguration;
-import com.dlink.model.JobInstance;
-import com.dlink.model.JobManagerConfiguration;
-import com.dlink.model.TaskManagerConfiguration;
-import com.dlink.service.JobInstanceService;
-import com.dlink.service.TaskService;
+import org.dinky.api.FlinkAPI;
+import org.dinky.assertion.Asserts;
+import org.dinky.common.result.ProTableResult;
+import org.dinky.common.result.Result;
+import org.dinky.job.BuildConfiguration;
+import org.dinky.model.JobInstance;
+import org.dinky.model.JobManagerConfiguration;
+import org.dinky.model.TaskManagerConfiguration;
+import org.dinky.service.JobInstanceService;
+import org.dinky.service.TaskService;
 
 import java.util.ArrayList;
 import java.util.HashMap;

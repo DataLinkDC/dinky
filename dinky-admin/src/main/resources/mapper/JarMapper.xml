@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.dlink.mapper.JarMapper">
+<mapper namespace="org.dinky.mapper.JarMapper">
 
-    <select id="selectForProTable" resultType="com.dlink.model.Jar">
+    <select id="selectForProTable" resultType="org.dinky.model.Jar">
         select
         a.*
         from
-        dlink_jar a
+        dinky_jar a
         <where>
             1=1
             <if test='param.name!=null and param.name!=""'>

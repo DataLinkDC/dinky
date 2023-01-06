@@ -3,7 +3,7 @@
 FLINK_VERSION=${2:-1.14}
 # 定义变量
 # 要运行的jar包路径，加不加引号都行。 注意：等号两边不能有空格，否则会提示command找不到
-JAR_NAME="dlink-admin"
+JAR_NAME="dinky-admin"
 # 如果需要将 FLINK 依赖直接加入启动脚本，在 CLASS_PATH 中末尾追加 :$FLINK_HOME/lib/*
 CLASS_PATH="./lib/*:config:html:./plugins/*:./plugins/flink${FLINK_VERSION}/*"
 #if [ ! -d ${HADOOP_HOME} ]; then
@@ -60,7 +60,7 @@ start() {
 
   pid=$(cat ${PIDPATH}/${PIDFILE})
   if [ -z $pid ]; then
-    nohup java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none -cp ${CLASS_PATH} com.dlink.Dlink >/dev/null 2>&1 &
+    nohup java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none -cp ${CLASS_PATH} org.dinky.Dinky >/dev/null 2>&1 &
     echo $! >${PIDPATH}/${PIDFILE}
     echo "FLINK VERSION : $FLINK_VERSION"
     echo "........................................Start Dinky Successfully........................................"
@@ -74,12 +74,12 @@ start() {
 startWithJmx() {
   pid=$(cat ${PIDPATH}/${PIDFILE})
   if [ -z $pid ]; then
-    nohup java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none ${JMX} -cp ${CLASS_PATH} com.dlink.Dlink >/dev/null 2>&1 &
+    nohup java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none ${JMX} -cp ${CLASS_PATH} org.dinky.Dinky >/dev/null 2>&1 &
     echo $! >${PIDPATH}/${PIDFILE}
-    echo "........................................Start Dlink Successfully........................................"
+    echo "........................................Start Dinky Successfully........................................"
 
   else
-    echo "Dlink pid $pid is in ${PIDPATH}/${PIDFILE}, Please stop first !!!"
+    echo "Dinky pid $pid is in ${PIDPATH}/${PIDFILE}, Please stop first !!!"
   fi
 }
 

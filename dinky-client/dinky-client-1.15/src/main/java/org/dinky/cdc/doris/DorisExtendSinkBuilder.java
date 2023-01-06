@@ -17,12 +17,12 @@
  *
  */
 
-package com.dlink.cdc.doris;
+package org.dinky.cdc.doris;
 
-import com.dlink.cdc.SinkBuilder;
-import com.dlink.model.Column;
-import com.dlink.model.FlinkCDCConfig;
-import com.dlink.utils.JSONUtil;
+import org.dinky.cdc.SinkBuilder;
+import org.dinky.model.Column;
+import org.dinky.model.FlinkCDCConfig;
+import org.dinky.utils.JSONUtil;
 
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.streaming.api.datastream.DataStream;

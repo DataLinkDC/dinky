@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.daemon.pool;
+package org.dinky.daemon.pool;
 
-import com.dlink.daemon.task.DaemonTask;
+import org.dinky.daemon.task.DaemonTask;
 
 /**
  * @author lcg

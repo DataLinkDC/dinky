@@ -45,7 +45,7 @@ jobs:
         with:
           filters: |
             frontend:
-              - 'dlink-web/**'
+              - 'dinky-web/**'
       - uses: actions/setup-node@v3
         if:  steps.filter.outputs.frontend == 'true'
         with:
@@ -61,16 +61,16 @@ jobs:
         with:
           path: |
             ${{ steps.npm-cache-dir.outputs.dir }}
-            dlink-web/dist
-          key: ${{ runner.os }}-node-${{ hashFiles('dlink-web/**/package.json') }}
+            dinky-web/dist
+          key: ${{ runner.os }}-node-${{ hashFiles('dinky-web/**/package.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
       - name: Install Dependencies
         if:  steps.filter.outputs.frontend == 'true'
-        run: cd dlink-web && npm install --prefer-offline --no-audit --progress=false --legacy-peer-deps
+        run: cd dinky-web && npm install --prefer-offline --no-audit --progress=false --legacy-peer-deps
       - name: Npm Web Build
         if:  steps.filter.outputs.frontend == 'true'
-        run: cd dlink-web && npm run build
+        run: cd dinky-web && npm run build
   build_jdk:
     name: Build_JDK
     runs-on: ubuntu-latest

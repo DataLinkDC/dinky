@@ -17,12 +17,12 @@
  *
  */
 
-package com.dlink.service.impl;
+package org.dinky.service.impl;
 
-import com.dlink.db.service.impl.SuperServiceImpl;
-import com.dlink.mapper.UserTenantMapper;
-import com.dlink.model.UserTenant;
-import com.dlink.service.UserTenantService;
+import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.mapper.UserTenantMapper;
+import org.dinky.model.UserTenant;
+import org.dinky.service.UserTenantService;
 
 import java.util.List;
 

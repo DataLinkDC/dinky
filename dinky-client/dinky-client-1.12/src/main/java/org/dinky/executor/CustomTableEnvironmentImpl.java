@@ -17,12 +17,12 @@
  *
  */
 
-package com.dlink.executor;
+package org.dinky.executor;
 
-import com.dlink.model.LineageRel;
-import com.dlink.result.SqlExplainResult;
-import com.dlink.utils.FlinkStreamProgramWithoutPhysical;
-import com.dlink.utils.LineageContext;
+import org.dinky.model.LineageRel;
+import org.dinky.result.SqlExplainResult;
+import org.dinky.utils.FlinkStreamProgramWithoutPhysical;
+import org.dinky.utils.LineageContext;
 
 import org.apache.flink.api.common.RuntimeExecutionMode;
 import org.apache.flink.api.common.typeinfo.TypeInformation;

@@ -17,26 +17,26 @@
  *
  */
 
-package com.dlink.service.impl;
+package org.dinky.service.impl;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.common.result.Result;
-import com.dlink.context.TenantContextHolder;
-import com.dlink.db.service.impl.SuperServiceImpl;
-import com.dlink.dto.LoginUTO;
-import com.dlink.dto.UserDTO;
-import com.dlink.mapper.UserMapper;
-import com.dlink.model.Role;
-import com.dlink.model.Tenant;
-import com.dlink.model.User;
-import com.dlink.model.UserRole;
-import com.dlink.model.UserTenant;
-import com.dlink.service.RoleService;
-import com.dlink.service.TenantService;
-import com.dlink.service.UserRoleService;
-import com.dlink.service.UserService;
-import com.dlink.service.UserTenantService;
-import com.dlink.utils.MessageResolverUtils;
+import org.dinky.assertion.Asserts;
+import org.dinky.common.result.Result;
+import org.dinky.context.TenantContextHolder;
+import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.dto.LoginUTO;
+import org.dinky.dto.UserDTO;
+import org.dinky.mapper.UserMapper;
+import org.dinky.model.Role;
+import org.dinky.model.Tenant;
+import org.dinky.model.User;
+import org.dinky.model.UserRole;
+import org.dinky.model.UserTenant;
+import org.dinky.service.RoleService;
+import org.dinky.service.TenantService;
+import org.dinky.service.UserRoleService;
+import org.dinky.service.UserService;
+import org.dinky.service.UserTenantService;
+import org.dinky.utils.MessageResolverUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;

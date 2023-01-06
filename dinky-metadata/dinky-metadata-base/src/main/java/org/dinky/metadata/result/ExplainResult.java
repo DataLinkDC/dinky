@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.metadata.result;
+package org.dinky.metadata.result;
 
 /**
  * ExplainResult

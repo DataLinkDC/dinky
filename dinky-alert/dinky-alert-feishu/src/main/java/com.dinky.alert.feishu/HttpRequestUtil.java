@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.alert.feishu;
+package org.dinky.alert.feishu;
 
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;

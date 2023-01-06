@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.daemon;
+package org.dinky.daemon;
 
 /**
  * DeamonTest

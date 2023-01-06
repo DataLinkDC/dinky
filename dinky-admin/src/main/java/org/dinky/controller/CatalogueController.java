@@ -17,13 +17,13 @@
  *
  */
 
-package com.dlink.controller;
+package org.dinky.controller;
 
-import com.dlink.common.result.ProTableResult;
-import com.dlink.common.result.Result;
-import com.dlink.dto.CatalogueTaskDTO;
-import com.dlink.model.Catalogue;
-import com.dlink.service.CatalogueService;
+import org.dinky.common.result.ProTableResult;
+import org.dinky.common.result.Result;
+import org.dinky.dto.CatalogueTaskDTO;
+import org.dinky.model.Catalogue;
+import org.dinky.service.CatalogueService;
 
 import java.io.BufferedReader;
 import java.io.File;

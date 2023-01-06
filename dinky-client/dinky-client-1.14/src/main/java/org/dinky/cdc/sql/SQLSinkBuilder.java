@@ -17,20 +17,20 @@
  *
  */
 
-package com.dlink.cdc.sql;
+package org.dinky.cdc.sql;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.cdc.AbstractSinkBuilder;
-import com.dlink.cdc.CDCBuilder;
-import com.dlink.cdc.SinkBuilder;
-import com.dlink.executor.CustomTableEnvironment;
-import com.dlink.model.FlinkCDCConfig;
-import com.dlink.model.Schema;
-import com.dlink.model.Table;
-import com.dlink.utils.FlinkBaseUtil;
-import com.dlink.utils.JSONUtil;
-import com.dlink.utils.LogUtil;
-import com.dlink.utils.SplitUtil;
+import org.dinky.assertion.Asserts;
+import org.dinky.cdc.AbstractSinkBuilder;
+import org.dinky.cdc.CDCBuilder;
+import org.dinky.cdc.SinkBuilder;
+import org.dinky.executor.CustomTableEnvironment;
+import org.dinky.model.FlinkCDCConfig;
+import org.dinky.model.Schema;
+import org.dinky.model.Table;
+import org.dinky.utils.FlinkBaseUtil;
+import org.dinky.utils.JSONUtil;
+import org.dinky.utils.LogUtil;
+import org.dinky.utils.SplitUtil;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.api.common.functions.FlatMapFunction;

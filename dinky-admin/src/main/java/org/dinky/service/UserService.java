@@ -17,12 +17,12 @@
  *
  */
 
-package com.dlink.service;
+package org.dinky.service;
 
-import com.dlink.common.result.Result;
-import com.dlink.db.service.ISuperService;
-import com.dlink.dto.LoginUTO;
-import com.dlink.model.User;
+import org.dinky.common.result.Result;
+import org.dinky.db.service.ISuperService;
+import org.dinky.dto.LoginUTO;
+import org.dinky.model.User;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

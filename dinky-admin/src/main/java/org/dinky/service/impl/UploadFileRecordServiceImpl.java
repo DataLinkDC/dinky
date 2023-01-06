@@ -17,14 +17,14 @@
  *
  */
 
-package com.dlink.service.impl;
+package org.dinky.service.impl;
 
-import com.dlink.constant.UploadFileConstant;
-import com.dlink.db.service.impl.SuperServiceImpl;
-import com.dlink.mapper.UploadFileRecordMapper;
-import com.dlink.model.UploadFileRecord;
-import com.dlink.service.UploadFileRecordService;
-import com.dlink.utils.FilePathUtil;
+import org.dinky.constant.UploadFileConstant;
+import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.mapper.UploadFileRecordMapper;
+import org.dinky.model.UploadFileRecord;
+import org.dinky.service.UploadFileRecordService;
+import org.dinky.utils.FilePathUtil;
 
 import org.springframework.stereotype.Service;
 

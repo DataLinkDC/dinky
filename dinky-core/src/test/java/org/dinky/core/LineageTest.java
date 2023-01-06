@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.core;
+package org.dinky.core;
 
-import com.dlink.explainer.lineage.LineageBuilder;
-import com.dlink.explainer.lineage.LineageResult;
+import org.dinky.explainer.lineage.LineageBuilder;
+import org.dinky.explainer.lineage.LineageResult;
 
 import org.junit.Test;
 

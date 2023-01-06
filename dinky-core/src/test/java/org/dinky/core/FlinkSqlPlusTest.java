@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.core;
+package org.dinky.core;
 
-import com.dlink.plus.FlinkSqlPlus;
+import org.dinky.plus.FlinkSqlPlus;
 
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 
@@ -38,9 +38,9 @@ public class FlinkSqlPlusTest {
         String sql = "jdbcconfig:='connector' = 'jdbc',\n"
                 + "    'url' = 'jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false"
                 + "&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true',\n"
-                + "    'username'='dlink',\n"
-                + "    'password'='dlink',;\n"
-                + "create temporary function TOP2 as 'com.dlink.ud.udtaf.Top2';\n"
+                + "    'username'='dinky',\n"
+                + "    'password'='dinky',;\n"
+                + "create temporary function TOP2 as 'org.dinky.ud.udtaf.Top2';\n"
                 + "CREATE TABLE student (\n"
                 + "    sid INT,\n"
                 + "    name STRING,\n"

@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.metadata.parser;
+package org.dinky.metadata.parser;
 
-import com.dlink.metadata.ast.Clickhouse20CreateTableStatement;
+import org.dinky.metadata.ast.Clickhouse20CreateTableStatement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLOrderBy;

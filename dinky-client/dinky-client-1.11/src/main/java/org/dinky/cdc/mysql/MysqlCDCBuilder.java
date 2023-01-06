@@ -17,14 +17,14 @@
  *
  */
 
-package com.dlink.cdc.mysql;
+package org.dinky.cdc.mysql;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.cdc.AbstractCDCBuilder;
-import com.dlink.cdc.CDCBuilder;
-import com.dlink.constant.ClientConstant;
-import com.dlink.constant.FlinkParamConstant;
-import com.dlink.model.FlinkCDCConfig;
+import org.dinky.assertion.Asserts;
+import org.dinky.cdc.AbstractCDCBuilder;
+import org.dinky.cdc.CDCBuilder;
+import org.dinky.constant.ClientConstant;
+import org.dinky.constant.FlinkParamConstant;
+import org.dinky.model.FlinkCDCConfig;
 
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;

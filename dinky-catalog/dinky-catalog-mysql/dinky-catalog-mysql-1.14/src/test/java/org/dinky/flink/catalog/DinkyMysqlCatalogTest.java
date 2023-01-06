@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.flink.catalog;
+package org.dinky.flink.catalog;
 
 import static org.apache.flink.table.api.config.ExecutionConfigOptions.TABLE_EXEC_RESOURCE_DEFAULT_PARALLELISM;
 
@@ -27,22 +27,22 @@ import org.apache.flink.table.api.TableEnvironment;
 import org.junit.Before;
 import org.junit.Test;
 
-public class DlinkMysqlCatalogTest {
+public class DinkyMysqlCatalogTest {
 
     protected static String url;
-    protected static DlinkMysqlCatalog catalog;
+    protected static DinkyMysqlCatalog catalog;
 
-    protected static final String TEST_CATALOG_NAME = "dlink";
-    protected static final String TEST_USERNAME = "dlink";
-    protected static final String TEST_PWD = "dlink";
+    protected static final String TEST_CATALOG_NAME = "dinky";
+    protected static final String TEST_USERNAME = "dinky";
+    protected static final String TEST_PWD = "dinky";
 
     private TableEnvironment tableEnv;
 
     @Before
     public void setup() {
-        url = "jdbc:mysql://127.0.0.1:3306/dlink?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC";
+        url = "jdbc:mysql://127.0.0.1:3306/dinky?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC";
         catalog =
-            new DlinkMysqlCatalog(
+            new DinkyMysqlCatalog(
                 TEST_CATALOG_NAME,
                 url,
                 TEST_USERNAME,
@@ -57,11 +57,11 @@ public class DlinkMysqlCatalogTest {
     @Test
     public void testSqlCatalog() {
         String createSql = "create catalog myCatalog \n"
-            + " with('type'='dlink_mysql',\n"
-            + " 'username'='dlink',\n"
-            + " 'password'='dlink',\n"
+            + " with('type'='dinky_mysql',\n"
+            + " 'username'='dinky',\n"
+            + " 'password'='dinky',\n"
             + " 'url'='jdbc:mysql://127.0.0.1:3306/"
-            + "dlink?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC')";
+            + "dinky?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC')";
         tableEnv.executeSql(createSql);
         tableEnv.executeSql("use catalog myCatalog");
     }

@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.gateway.config;
+package org.dinky.gateway.config;
 
 import lombok.Getter;
 import lombok.Setter;

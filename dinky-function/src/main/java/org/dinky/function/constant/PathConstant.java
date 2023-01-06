@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.function.constant;
+package org.dinky.function.constant;
 
 import java.io.File;
 

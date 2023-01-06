@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.interceptor;
+package org.dinky.interceptor;
 
-import com.dlink.executor.Executor;
+import org.dinky.executor.Executor;
 
 import org.junit.Assert;
 import org.junit.Test;

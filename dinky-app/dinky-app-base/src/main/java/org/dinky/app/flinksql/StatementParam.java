@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.app.flinksql;
+package org.dinky.app.flinksql;
 
-import com.dlink.parser.SqlType;
+import org.dinky.parser.SqlType;
 
 /**
  * StatementParam

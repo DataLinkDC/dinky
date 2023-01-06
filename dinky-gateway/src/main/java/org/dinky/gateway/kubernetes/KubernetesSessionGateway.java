@@ -17,14 +17,14 @@
  *
  */
 
-package com.dlink.gateway.kubernetes;
+package org.dinky.gateway.kubernetes;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.gateway.GatewayType;
-import com.dlink.gateway.config.AppConfig;
-import com.dlink.gateway.result.GatewayResult;
-import com.dlink.gateway.result.KubernetesResult;
-import com.dlink.utils.LogUtil;
+import org.dinky.assertion.Asserts;
+import org.dinky.gateway.GatewayType;
+import org.dinky.gateway.config.AppConfig;
+import org.dinky.gateway.result.GatewayResult;
+import org.dinky.gateway.result.KubernetesResult;
+import org.dinky.utils.LogUtil;
 
 import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.program.ClusterClient;

@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.interceptor;
+package org.dinky.interceptor;
 
-import com.dlink.context.TenantContextHolder;
+import org.dinky.context.TenantContextHolder;
 
 import java.util.Arrays;
 

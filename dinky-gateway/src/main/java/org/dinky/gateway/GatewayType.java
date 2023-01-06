@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.gateway;
+package org.dinky.gateway;
 
-import com.dlink.assertion.Asserts;
+import org.dinky.assertion.Asserts;
 
 /**
  * SubmitType

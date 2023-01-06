@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.model;
+package org.dinky.model;
 
 import java.io.Serializable;
 
@@ -34,7 +34,7 @@ import lombok.EqualsAndHashCode;
  **/
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("dlink_task_statement")
+@TableName("dinky_task_statement")
 public class Statement implements Serializable {
 
     private static final long serialVersionUID = 1646348574144815792L;

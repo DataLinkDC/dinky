@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.explainer.trans;
+package org.dinky.explainer.trans;
 
-import com.dlink.assertion.Asserts;
+import org.dinky.assertion.Asserts;
 
 import java.util.ArrayList;
 import java.util.HashMap;

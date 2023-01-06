@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.constant;
+package org.dinky.constant;
 
 /**
  * ClientConstant

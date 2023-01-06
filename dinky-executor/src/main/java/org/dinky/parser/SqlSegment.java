@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.parser;
+package org.dinky.parser;
 
-import com.dlink.assertion.Asserts;
+import org.dinky.assertion.Asserts;
 
 import java.util.ArrayList;
 import java.util.List;

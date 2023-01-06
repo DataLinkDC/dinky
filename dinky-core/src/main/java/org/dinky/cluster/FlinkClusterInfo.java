@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.cluster;
+package org.dinky.cluster;
 
 import lombok.Getter;
 import lombok.Setter;

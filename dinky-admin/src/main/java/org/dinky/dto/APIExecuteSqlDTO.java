@@ -17,11 +17,11 @@
  *
  */
 
-package com.dlink.dto;
+package org.dinky.dto;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.gateway.config.GatewayConfig;
-import com.dlink.job.JobConfig;
+import org.dinky.assertion.Asserts;
+import org.dinky.gateway.config.GatewayConfig;
+import org.dinky.job.JobConfig;
 
 import java.util.Map;
 

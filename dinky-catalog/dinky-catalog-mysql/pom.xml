@@ -20,12 +20,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.dlink</groupId>
-        <artifactId>dlink-catalog</artifactId>
+        <groupId>org.dinky</groupId>
+        <artifactId>dinky-catalog</artifactId>
         <version>0.7.0</version>
     </parent>
 
-    <artifactId>dlink-catalog-mysql</artifactId>
+    <artifactId>dinky-catalog-mysql</artifactId>
     <packaging>pom</packaging>
 
     <properties>
@@ -37,38 +37,38 @@
         <profile>
             <id>flink-1.13</id>
             <modules>
-                <module>dlink-catalog-mysql-1.13</module>
+                <module>dinky-catalog-mysql-1.13</module>
             </modules>
         </profile>
 
         <profile>
             <id>flink-1.14</id>
             <modules>
-                <module>dlink-catalog-mysql-1.14</module>
+                <module>dinky-catalog-mysql-1.14</module>
             </modules>
         </profile>
 
         <profile>
             <id>flink-1.15</id>
             <modules>
-                <module>dlink-catalog-mysql-1.15</module>
+                <module>dinky-catalog-mysql-1.15</module>
             </modules>
         </profile>
 
         <profile>
             <id>flink-1.16</id>
             <modules>
-                <module>dlink-catalog-mysql-1.16</module>
+                <module>dinky-catalog-mysql-1.16</module>
             </modules>
         </profile>
 
         <profile>
             <id>all</id>
             <modules>
-                <module>dlink-catalog-mysql-1.13</module>
-                <module>dlink-catalog-mysql-1.14</module>
-                <module>dlink-catalog-mysql-1.15</module>
-                <module>dlink-catalog-mysql-1.16</module>
+                <module>dinky-catalog-mysql-1.13</module>
+                <module>dinky-catalog-mysql-1.14</module>
+                <module>dinky-catalog-mysql-1.15</module>
+                <module>dinky-catalog-mysql-1.16</module>
             </modules>
         </profile>
     </profiles>

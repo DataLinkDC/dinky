@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.trans;
+package org.dinky.trans;
 
-import com.dlink.executor.Executor;
+import org.dinky.executor.Executor;
 
 import org.apache.flink.table.api.TableResult;
 

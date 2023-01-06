@@ -17,13 +17,13 @@
  *
  */
 
-package com.dlink.alert.dingtalk;
+package org.dinky.alert.dingtalk;
 
-import com.dlink.alert.Alert;
-import com.dlink.alert.AlertConfig;
-import com.dlink.alert.AlertMsg;
-import com.dlink.alert.AlertResult;
-import com.dlink.alert.ShowType;
+import org.dinky.alert.Alert;
+import org.dinky.alert.AlertConfig;
+import org.dinky.alert.AlertMsg;
+import org.dinky.alert.AlertResult;
+import org.dinky.alert.ShowType;
 
 import java.util.HashMap;
 import java.util.Map;

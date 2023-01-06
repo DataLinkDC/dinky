@@ -17,18 +17,18 @@
  *
  */
 
-package com.dlink.utils;
+package org.dinky.utils;
 
-import com.dlink.common.result.Result;
-import com.dlink.context.SpringContextUtils;
-import com.dlink.model.CodeEnum;
-import com.dlink.model.JobLifeCycle;
-import com.dlink.model.JobStatus;
-import com.dlink.model.Task;
-import com.dlink.model.TaskOperatingSavepointSelect;
-import com.dlink.model.TaskOperatingStatus;
-import com.dlink.result.TaskOperatingResult;
-import com.dlink.service.TaskService;
+import org.dinky.common.result.Result;
+import org.dinky.context.SpringContextUtils;
+import org.dinky.model.CodeEnum;
+import org.dinky.model.JobLifeCycle;
+import org.dinky.model.JobStatus;
+import org.dinky.model.Task;
+import org.dinky.model.TaskOperatingSavepointSelect;
+import org.dinky.model.TaskOperatingStatus;
+import org.dinky.result.TaskOperatingResult;
+import org.dinky.service.TaskService;
 
 import org.apache.commons.collections4.CollectionUtils;
 

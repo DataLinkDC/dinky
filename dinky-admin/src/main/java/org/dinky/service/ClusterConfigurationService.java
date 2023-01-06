@@ -17,11 +17,11 @@
  *
  */
 
-package com.dlink.service;
+package org.dinky.service;
 
-import com.dlink.db.service.ISuperService;
-import com.dlink.gateway.result.TestResult;
-import com.dlink.model.ClusterConfiguration;
+import org.dinky.db.service.ISuperService;
+import org.dinky.gateway.result.TestResult;
+import org.dinky.model.ClusterConfiguration;
 
 import java.util.List;
 import java.util.Map;

@@ -1,6 +1,6 @@
-package com.dlink.utils;
+package org.dinky.utils;
 
-import com.dlink.constant.UploadFileConstant;
+import org.dinky.constant.UploadFileConstant;
 
 import org.apache.commons.lang3.StringUtils;
 

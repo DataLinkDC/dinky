@@ -17,24 +17,24 @@
  *
  */
 
-package com.dlink.controller;
+package org.dinky.controller;
 
-import com.dlink.common.result.Result;
-import com.dlink.dto.SessionDTO;
-import com.dlink.dto.StudioCADTO;
-import com.dlink.dto.StudioDDLDTO;
-import com.dlink.dto.StudioExecuteDTO;
-import com.dlink.dto.StudioMetaStoreDTO;
-import com.dlink.explainer.lineage.LineageResult;
-import com.dlink.job.JobResult;
-import com.dlink.model.Catalog;
-import com.dlink.model.FlinkColumn;
-import com.dlink.model.Schema;
-import com.dlink.result.IResult;
-import com.dlink.result.SelectResult;
-import com.dlink.result.SqlExplainResult;
-import com.dlink.service.StudioService;
-import com.dlink.session.SessionInfo;
+import org.dinky.common.result.Result;
+import org.dinky.dto.SessionDTO;
+import org.dinky.dto.StudioCADTO;
+import org.dinky.dto.StudioDDLDTO;
+import org.dinky.dto.StudioExecuteDTO;
+import org.dinky.dto.StudioMetaStoreDTO;
+import org.dinky.explainer.lineage.LineageResult;
+import org.dinky.job.JobResult;
+import org.dinky.model.Catalog;
+import org.dinky.model.FlinkColumn;
+import org.dinky.model.Schema;
+import org.dinky.result.IResult;
+import org.dinky.result.SelectResult;
+import org.dinky.result.SqlExplainResult;
+import org.dinky.service.StudioService;
+import org.dinky.session.SessionInfo;
 
 import java.util.ArrayList;
 import java.util.List;

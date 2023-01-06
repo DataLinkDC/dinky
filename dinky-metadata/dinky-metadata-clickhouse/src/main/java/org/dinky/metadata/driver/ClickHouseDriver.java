@@ -17,17 +17,17 @@
  *
  */
 
-package com.dlink.metadata.driver;
+package org.dinky.metadata.driver;
 
-import com.dlink.metadata.ast.Clickhouse20CreateTableStatement;
-import com.dlink.metadata.convert.ClickHouseTypeConvert;
-import com.dlink.metadata.convert.ITypeConvert;
-import com.dlink.metadata.parser.Clickhouse20StatementParser;
-import com.dlink.metadata.query.ClickHouseQuery;
-import com.dlink.metadata.query.IDBQuery;
-import com.dlink.model.Table;
-import com.dlink.result.SqlExplainResult;
-import com.dlink.utils.LogUtil;
+import org.dinky.metadata.ast.Clickhouse20CreateTableStatement;
+import org.dinky.metadata.convert.ClickHouseTypeConvert;
+import org.dinky.metadata.convert.ITypeConvert;
+import org.dinky.metadata.parser.Clickhouse20StatementParser;
+import org.dinky.metadata.query.ClickHouseQuery;
+import org.dinky.metadata.query.IDBQuery;
+import org.dinky.model.Table;
+import org.dinky.result.SqlExplainResult;
+import org.dinky.utils.LogUtil;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

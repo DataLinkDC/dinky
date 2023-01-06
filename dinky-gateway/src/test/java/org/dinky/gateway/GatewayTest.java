@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.gateway;
+package org.dinky.gateway;
 
 /**
  * GatewayTest

@@ -17,17 +17,17 @@
  *
  */
 
-package com.dlink.controller;
+package org.dinky.controller;
 
-import com.dlink.common.result.ProTableResult;
-import com.dlink.common.result.Result;
-import com.dlink.function.constant.PathConstant;
-import com.dlink.function.data.model.UDF;
-import com.dlink.function.util.UDFUtil;
-import com.dlink.model.Jar;
-import com.dlink.model.Task;
-import com.dlink.service.JarService;
-import com.dlink.service.TaskService;
+import org.dinky.common.result.ProTableResult;
+import org.dinky.common.result.Result;
+import org.dinky.function.constant.PathConstant;
+import org.dinky.function.data.model.UDF;
+import org.dinky.function.util.UDFUtil;
+import org.dinky.model.Jar;
+import org.dinky.model.Task;
+import org.dinky.service.JarService;
+import org.dinky.service.TaskService;
 
 import org.apache.flink.table.catalog.FunctionLanguage;
 

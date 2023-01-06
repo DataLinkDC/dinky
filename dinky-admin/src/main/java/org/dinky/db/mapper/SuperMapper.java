@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.db.mapper;
+package org.dinky.db.mapper;
 
 import org.apache.ibatis.annotations.Param;
 

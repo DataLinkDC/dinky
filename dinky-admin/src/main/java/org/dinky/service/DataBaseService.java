@@ -17,15 +17,15 @@
  *
  */
 
-package com.dlink.service;
+package org.dinky.service;
 
-import com.dlink.db.service.ISuperService;
-import com.dlink.metadata.result.JdbcSelectResult;
-import com.dlink.model.Column;
-import com.dlink.model.DataBase;
-import com.dlink.model.QueryData;
-import com.dlink.model.Schema;
-import com.dlink.model.SqlGeneration;
+import org.dinky.db.service.ISuperService;
+import org.dinky.metadata.result.JdbcSelectResult;
+import org.dinky.model.Column;
+import org.dinky.model.DataBase;
+import org.dinky.model.QueryData;
+import org.dinky.model.Schema;
+import org.dinky.model.SqlGeneration;
 
 import java.util.List;
 

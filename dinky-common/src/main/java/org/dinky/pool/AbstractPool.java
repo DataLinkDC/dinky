@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.pool;
+package org.dinky.pool;
 
 import java.util.Map;
 

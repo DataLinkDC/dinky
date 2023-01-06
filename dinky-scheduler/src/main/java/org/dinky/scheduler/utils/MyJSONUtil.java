@@ -17,11 +17,11 @@
  *
  */
 
-package com.dlink.scheduler.utils;
+package org.dinky.scheduler.utils;
 
-import com.dlink.scheduler.exception.SchedulerException;
-import com.dlink.scheduler.result.PageInfo;
-import com.dlink.scheduler.result.Result;
+import org.dinky.scheduler.exception.SchedulerException;
+import org.dinky.scheduler.result.PageInfo;
+import org.dinky.scheduler.result.Result;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

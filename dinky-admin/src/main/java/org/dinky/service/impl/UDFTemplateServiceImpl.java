@@ -17,14 +17,14 @@
  *
  */
 
-package com.dlink.service.impl;
+package org.dinky.service.impl;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.db.service.impl.SuperServiceImpl;
-import com.dlink.exception.BusException;
-import com.dlink.mapper.UDFTemplateMapper;
-import com.dlink.model.UDFTemplate;
-import com.dlink.service.UDFTemplateService;
+import org.dinky.assertion.Asserts;
+import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.exception.BusException;
+import org.dinky.mapper.UDFTemplateMapper;
+import org.dinky.model.UDFTemplate;
+import org.dinky.service.UDFTemplateService;
 
 import org.springframework.stereotype.Service;
 

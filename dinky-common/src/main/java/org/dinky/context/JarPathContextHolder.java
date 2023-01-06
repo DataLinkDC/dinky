@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.context;
+package org.dinky.context;
 
 import java.io.File;
 import java.util.Set;

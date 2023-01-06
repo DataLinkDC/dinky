@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.dto;
+package org.dinky.dto;
 
 import lombok.Getter;
 import lombok.Setter;

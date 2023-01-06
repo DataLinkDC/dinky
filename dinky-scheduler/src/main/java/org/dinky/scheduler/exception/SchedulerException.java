@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.scheduler.exception;
+package org.dinky.scheduler.exception;
 
 /**
  * @author 郑文豪

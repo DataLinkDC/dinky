@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.scheduler.model;
+package org.dinky.scheduler.model;
 
-import com.dlink.scheduler.enums.ReleaseState;
+import org.dinky.scheduler.enums.ReleaseState;
 
 import java.util.Date;
 import java.util.Map;

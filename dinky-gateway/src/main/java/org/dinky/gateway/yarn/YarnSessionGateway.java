@@ -17,13 +17,13 @@
  *
  */
 
-package com.dlink.gateway.yarn;
+package org.dinky.gateway.yarn;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.gateway.GatewayType;
-import com.dlink.gateway.result.GatewayResult;
-import com.dlink.gateway.result.YarnResult;
-import com.dlink.utils.LogUtil;
+import org.dinky.assertion.Asserts;
+import org.dinky.gateway.GatewayType;
+import org.dinky.gateway.result.GatewayResult;
+import org.dinky.gateway.result.YarnResult;
+import org.dinky.utils.LogUtil;
 
 import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.program.ClusterClient;

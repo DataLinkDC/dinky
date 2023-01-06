@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.alert.email;
+package org.dinky.alert.email;
 
-import com.dlink.alert.AlertException;
-import com.dlink.utils.JSONUtil;
+import org.dinky.alert.AlertException;
+import org.dinky.utils.JSONUtil;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.ss.usermodel.Cell;

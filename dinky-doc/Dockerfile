@@ -12,9 +12,9 @@ WORKDIR /opt/dinky/
 RUN cp /opt/flink/lib/*.jar  /opt/dinky/plugins/
 RUN mkdir -p /opt/dinky/run
 RUN mkdir -p /opt/dinky/logs
-RUN touch /opt/dinky/logs/dlink.log
+RUN touch /opt/dinky/logs/dinky.log
 RUN chmod -R 777 /opt/dinky/
 
 EXPOSE 8888
 
-CMD  ./auto.sh restart && tail -f /opt/dinky/logs/dlink.log
+CMD  ./auto.sh restart && tail -f /opt/dinky/logs/dinky.log

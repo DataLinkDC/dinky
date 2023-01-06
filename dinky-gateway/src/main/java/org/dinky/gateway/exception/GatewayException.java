@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.gateway.exception;
+package org.dinky.gateway.exception;
 
 /**
  * GatewayException

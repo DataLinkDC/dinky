@@ -1,1 +1,1 @@
-com.dlink.metadata.driver.MySqlDriver
+org.dinky.metadata.driver.MySqlDriver

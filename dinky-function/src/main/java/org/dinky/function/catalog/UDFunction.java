@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.function.catalog;
+package org.dinky.function.catalog;
 
 import org.apache.flink.table.functions.FunctionDefinition;
 

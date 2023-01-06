@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.configure;
+package org.dinky.configure;
 
-import com.dlink.context.TenantContextHolder;
+import org.dinky.context.TenantContextHolder;
 
 import java.util.List;
 
@@ -41,16 +41,16 @@ import net.sf.jsqlparser.expression.NullValue;
  * mybatisPlus config class
  */
 @Configuration
-@MapperScan("com.dlink.mapper")
+@MapperScan("org.dinky.mapper")
 @Slf4j
 public class MybatisPlusConfig {
 
     private static final List<String> IGNORE_TABLE_NAMES = Lists.newArrayList(
-            "dlink_namespace", "dlink_alert_group", "dlink_alert_history", "dlink_alert_instance", "dlink_catalogue",
-            "dlink_cluster", "dlink_cluster_configuration", "dlink_database"
-             ,"dlink_fragment"
-            , "dlink_history", "dlink_jar", "dlink_job_history", "dlink_job_instance", "dlink_role", "dlink_savepoints",
-            "dlink_task", "dlink_task_statement", "dlink_task_version");
+            "dinky_namespace", "dinky_alert_group", "dinky_alert_history", "dinky_alert_instance", "dinky_catalogue",
+            "dinky_cluster", "dinky_cluster_configuration", "dinky_database"
+             ,"dinky_fragment"
+            , "dinky_history", "dinky_jar", "dinky_job_history", "dinky_job_instance", "dinky_role", "dinky_savepoints",
+            "dinky_task", "dinky_task_statement", "dinky_task_version");
 
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {

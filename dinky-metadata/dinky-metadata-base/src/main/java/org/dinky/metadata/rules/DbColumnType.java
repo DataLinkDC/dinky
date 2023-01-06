@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.metadata.rules;
+package org.dinky.metadata.rules;
 
 /**
  * DbColumnType

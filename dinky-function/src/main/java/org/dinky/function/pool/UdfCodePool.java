@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.function.pool;
+package org.dinky.function.pool;
 
-import com.dlink.function.data.model.UDF;
-import com.dlink.process.exception.DinkyException;
+import org.dinky.function.data.model.UDF;
+import org.dinky.process.exception.DinkyException;
 
 import java.util.List;
 import java.util.Map;

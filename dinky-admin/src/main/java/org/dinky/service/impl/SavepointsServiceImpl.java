@@ -17,12 +17,12 @@
  *
  */
 
-package com.dlink.service.impl;
+package org.dinky.service.impl;
 
-import com.dlink.db.service.impl.SuperServiceImpl;
-import com.dlink.mapper.SavepointsMapper;
-import com.dlink.model.Savepoints;
-import com.dlink.service.SavepointsService;
+import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.mapper.SavepointsMapper;
+import org.dinky.model.Savepoints;
+import org.dinky.service.SavepointsService;
 
 import java.util.List;
 

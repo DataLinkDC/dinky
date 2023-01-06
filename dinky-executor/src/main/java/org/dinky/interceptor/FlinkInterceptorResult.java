@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.interceptor;
+package org.dinky.interceptor;
 
 import org.apache.flink.table.api.TableResult;
 

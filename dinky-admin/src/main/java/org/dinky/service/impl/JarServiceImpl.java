@@ -17,12 +17,12 @@
  *
  */
 
-package com.dlink.service.impl;
+package org.dinky.service.impl;
 
-import com.dlink.db.service.impl.SuperServiceImpl;
-import com.dlink.mapper.JarMapper;
-import com.dlink.model.Jar;
-import com.dlink.service.JarService;
+import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.mapper.JarMapper;
+import org.dinky.model.Jar;
+import org.dinky.service.JarService;
 
 import java.util.List;
 

@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.metadata.result;
+package org.dinky.metadata.result;
 
-import com.dlink.result.AbstractResult;
-import com.dlink.result.IResult;
+import org.dinky.result.AbstractResult;
+import org.dinky.result.IResult;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

@@ -17,11 +17,11 @@
  *
  */
 
-package com.dlink.service;
+package org.dinky.service;
 
-import com.dlink.db.service.ISuperService;
-import com.dlink.dto.CatalogueTaskDTO;
-import com.dlink.model.Catalogue;
+import org.dinky.db.service.ISuperService;
+import org.dinky.dto.CatalogueTaskDTO;
+import org.dinky.model.Catalogue;
 
 import java.util.List;
 

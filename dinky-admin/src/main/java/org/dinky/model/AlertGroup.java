@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.model;
+package org.dinky.model;
 
-import com.dlink.db.model.SuperEntity;
+import org.dinky.db.model.SuperEntity;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ import lombok.EqualsAndHashCode;
  **/
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("dlink_alert_group")
+@TableName("dinky_alert_group")
 public class AlertGroup extends SuperEntity {
 
     private static final long serialVersionUID = 7027411164191682344L;

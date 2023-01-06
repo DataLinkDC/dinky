@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.utils;
+package org.dinky.utils;
 
-import com.dlink.constant.DirConstant;
-import com.dlink.model.FileNode;
+import org.dinky.constant.DirConstant;
+import org.dinky.model.FileNode;
 
 import java.util.List;
 
@@ -43,7 +43,7 @@ public class DirUtilTest {
 
     @Test
     public void testReadFile() {
-        String result = DirUtil.readFile(DirConstant.LOG_DIR_PATH + "/dlink.log");
+        String result = DirUtil.readFile(DirConstant.LOG_DIR_PATH + "/dinky.log");
         Assertions.assertThat(result).isNotNull();
     }
 

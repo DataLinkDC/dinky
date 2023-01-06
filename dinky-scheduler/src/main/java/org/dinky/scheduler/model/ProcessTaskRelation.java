@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.scheduler.model;
+package org.dinky.scheduler.model;
 
-import com.dlink.scheduler.enums.ConditionType;
+import org.dinky.scheduler.enums.ConditionType;
 
 import java.util.Date;
 

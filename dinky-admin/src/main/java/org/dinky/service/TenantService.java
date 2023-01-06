@@ -17,11 +17,11 @@
  *
  */
 
-package com.dlink.service;
+package org.dinky.service;
 
-import com.dlink.common.result.Result;
-import com.dlink.db.service.ISuperService;
-import com.dlink.model.Tenant;
+import org.dinky.common.result.Result;
+import org.dinky.db.service.ISuperService;
+import org.dinky.model.Tenant;
 
 import java.util.List;
 import java.util.Set;

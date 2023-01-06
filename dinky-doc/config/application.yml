@@ -1,11 +1,11 @@
 spring:
   datasource:
-    url: jdbc:mysql://192.168.24.1:3306/dlink?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-    username: dlink
-    password: dlink
+    url: jdbc:mysql://192.168.24.1:3306/dinky?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: dinky
+    password: dinky
     driver-class-name: com.mysql.cj.jdbc.Driver
   application:
-    name: dlink
+    name: dinky
 
 server:
   port: 8888
@@ -13,7 +13,7 @@ server:
 mybatis-plus:
   mapper-locations: classpath:/mapper/*Mapper.xml
   #实体扫描，多个package用逗号或者分号分隔
-  typeAliasesPackage: com.dlink.model
+  typeAliasesPackage: org.dinky.model
   global-config:
     db-config:
       id-type: auto
@@ -22,7 +22,7 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
 
 
-dlink:
+dinky:
 ##### 登录用户配置
   login:
     username: admin

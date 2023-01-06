@@ -17,14 +17,14 @@
  *
  */
 
-package com.dlink.model;
+package org.dinky.model;
 
 import java.util.Map;
 
 import lombok.Data;
 
 /**
- * @program: dlink
+ * @program: dinky
  * @description:
  * @author: zhumingye
  * @create: 2022-06-27 11:41

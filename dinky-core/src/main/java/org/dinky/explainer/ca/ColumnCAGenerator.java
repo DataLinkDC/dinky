@@ -17,15 +17,15 @@
  *
  */
 
-package com.dlink.explainer.ca;
+package org.dinky.explainer.ca;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.explainer.trans.Field;
-import com.dlink.explainer.trans.OperatorTrans;
-import com.dlink.explainer.trans.SinkTrans;
-import com.dlink.explainer.trans.SourceTrans;
-import com.dlink.explainer.trans.Trans;
-import com.dlink.utils.MapParseUtils;
+import org.dinky.assertion.Asserts;
+import org.dinky.explainer.trans.Field;
+import org.dinky.explainer.trans.OperatorTrans;
+import org.dinky.explainer.trans.SinkTrans;
+import org.dinky.explainer.trans.SourceTrans;
+import org.dinky.explainer.trans.Trans;
+import org.dinky.utils.MapParseUtils;
 
 import org.apache.commons.collections.CollectionUtils;
 

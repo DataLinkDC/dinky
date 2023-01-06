@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.gateway.model;
+package org.dinky.gateway.model;
 
 import lombok.Getter;
 import lombok.Setter;

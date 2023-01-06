@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.common.result;
+package org.dinky.common.result;
 
 import java.io.Serializable;
 import java.util.List;

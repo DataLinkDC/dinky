@@ -17,18 +17,18 @@
  *
  */
 
-package com.dlink.explainer.lineage;
+package org.dinky.explainer.lineage;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.explainer.ca.ColumnCA;
-import com.dlink.explainer.ca.NodeRel;
-import com.dlink.explainer.ca.TableCA;
-import com.dlink.explainer.trans.Field;
-import com.dlink.explainer.trans.OperatorTrans;
-import com.dlink.explainer.trans.Predecessor;
-import com.dlink.explainer.trans.SinkTrans;
-import com.dlink.explainer.trans.Trans;
-import com.dlink.utils.MapParseUtils;
+import org.dinky.assertion.Asserts;
+import org.dinky.explainer.ca.ColumnCA;
+import org.dinky.explainer.ca.NodeRel;
+import org.dinky.explainer.ca.TableCA;
+import org.dinky.explainer.trans.Field;
+import org.dinky.explainer.trans.OperatorTrans;
+import org.dinky.explainer.trans.Predecessor;
+import org.dinky.explainer.trans.SinkTrans;
+import org.dinky.explainer.trans.Trans;
+import org.dinky.utils.MapParseUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;

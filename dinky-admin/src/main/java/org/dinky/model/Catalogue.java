@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.model;
+package org.dinky.model;
 
-import com.dlink.db.model.SuperEntity;
+import org.dinky.db.model.SuperEntity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -34,7 +34,7 @@ import lombok.EqualsAndHashCode;
  **/
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("dlink_catalogue")
+@TableName("dinky_catalogue")
 public class Catalogue extends SuperEntity {
 
     private static final long serialVersionUID = 4659379420249868394L;

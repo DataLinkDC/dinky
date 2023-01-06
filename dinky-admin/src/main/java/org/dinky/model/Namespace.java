@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.model;
+package org.dinky.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -36,7 +36,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("dlink_namespace")
+@TableName("dinky_namespace")
 public class Namespace implements Serializable {
 
     private static final long serialVersionUID = -5960332046748903443L;

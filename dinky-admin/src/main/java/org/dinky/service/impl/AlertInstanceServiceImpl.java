@@ -17,21 +17,21 @@
  *
  */
 
-package com.dlink.service.impl;
+package org.dinky.service.impl;
 
-import com.dlink.alert.Alert;
-import com.dlink.alert.AlertConfig;
-import com.dlink.alert.AlertMsg;
-import com.dlink.alert.AlertResult;
-import com.dlink.alert.ShowType;
-import com.dlink.common.result.Result;
-import com.dlink.db.service.impl.SuperServiceImpl;
-import com.dlink.mapper.AlertInstanceMapper;
-import com.dlink.model.AlertGroup;
-import com.dlink.model.AlertInstance;
-import com.dlink.service.AlertGroupService;
-import com.dlink.service.AlertInstanceService;
-import com.dlink.utils.JSONUtil;
+import org.dinky.alert.Alert;
+import org.dinky.alert.AlertConfig;
+import org.dinky.alert.AlertMsg;
+import org.dinky.alert.AlertResult;
+import org.dinky.alert.ShowType;
+import org.dinky.common.result.Result;
+import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.mapper.AlertInstanceMapper;
+import org.dinky.model.AlertGroup;
+import org.dinky.model.AlertInstance;
+import org.dinky.service.AlertGroupService;
+import org.dinky.service.AlertInstanceService;
+import org.dinky.utils.JSONUtil;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;

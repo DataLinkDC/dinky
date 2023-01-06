@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.dlink.mapper.NamespaceMapper">
+<mapper namespace="org.dinky.mapper.NamespaceMapper">
     <sql id="baseSql">
         id,tenant_id,namespace_code,enabled,note,create_time,update_time
     </sql>
-    <select id="selectForProTable" resultType="com.dlink.model.Namespace">
+    <select id="selectForProTable" resultType="org.dinky.model.Namespace">
         select
         <include refid="baseSql"/>
         from
-        dlink_namespace a
+        dinky_namespace a
         <where>
             1=1
             <if test='param.tenantId!=null and param.tenantId!=""'>

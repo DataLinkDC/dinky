@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.model;
+package org.dinky.model;
 
-import com.dlink.dto.TaskVersionConfigureDTO;
+import org.dinky.dto.TaskVersionConfigureDTO;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -42,7 +42,7 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "dlink_task_version", autoResultMap = true)
+@TableName(value = "dinky_task_version", autoResultMap = true)
 public class TaskVersion implements Serializable {
     private static final long serialVersionUID = 1L;
     /**

@@ -17,13 +17,13 @@
  *
  */
 
-package com.dlink.result;
+package org.dinky.result;
 
-import com.dlink.common.result.Result;
-import com.dlink.model.CodeEnum;
-import com.dlink.model.Task;
-import com.dlink.model.TaskOperatingSavepointSelect;
-import com.dlink.model.TaskOperatingStatus;
+import org.dinky.common.result.Result;
+import org.dinky.model.CodeEnum;
+import org.dinky.model.Task;
+import org.dinky.model.TaskOperatingSavepointSelect;
+import org.dinky.model.TaskOperatingStatus;
 
 import lombok.Data;
 

@@ -17,13 +17,13 @@
  *
  */
 
-package com.dlink.service.impl;
+package org.dinky.service.impl;
 
-import com.dlink.db.service.impl.SuperServiceImpl;
-import com.dlink.mapper.HistoryMapper;
-import com.dlink.model.History;
-import com.dlink.result.ResultPool;
-import com.dlink.service.HistoryService;
+import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.mapper.HistoryMapper;
+import org.dinky.model.History;
+import org.dinky.result.ResultPool;
+import org.dinky.service.HistoryService;
 
 import org.springframework.stereotype.Service;
 

@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.dto;
+package org.dinky.dto;
 
 import java.util.Map;
 

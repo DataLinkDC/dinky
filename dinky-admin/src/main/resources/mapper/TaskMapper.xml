@@ -19,12 +19,12 @@
   -->
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.dlink.mapper.TaskMapper">
-    <select id="selectForProTable" resultType="com.dlink.model.Task">
+<mapper namespace="org.dinky.mapper.TaskMapper">
+    <select id="selectForProTable" resultType="org.dinky.model.Task">
         select
         a.*
         from
-        dlink_task a
+        dinky_task a
         <where>
             1=1
             <if test='param.name!=null and param.name!=""'>
@@ -51,13 +51,13 @@
 
     <select id="queryAllSizeByName" resultType="java.lang.Integer">
         SELECT count(*)
-        from dlink_task
+        from dinky_task
         where `name` REGEXP '${name}_[0-9]$'
     </select>
 
-    <select id="getTaskByNameAndTenantId" resultType="com.dlink.model.Task">
+    <select id="getTaskByNameAndTenantId" resultType="org.dinky.model.Task">
         select *
-        from dlink_task
+        from dinky_task
         where 1 = 1
           and name = #{name}
           and tenant_id = #{tenantId}
@@ -65,15 +65,15 @@
 
     <select id="getTenantByTaskId" resultType="java.lang.Integer">
         select tenant_id
-        from dlink_task
+        from dinky_task
         where id = #{id}
     </select>
 
-    <select id="queryOnLineTaskByDoneStatus" resultType="com.dlink.model.Task">
+    <select id="queryOnLineTaskByDoneStatus" resultType="org.dinky.model.Task">
         select t.id as id, t.name as name
-        from dlink_task t
-        left join dlink_catalogue c on c.task_id = t.id
-        left join dlink_job_instance i on i.id = t.job_instance_id
+        from dinky_task t
+        left join dinky_catalogue c on c.task_id = t.id
+        left join dinky_job_instance i on i.id = t.job_instance_id
         where
         c.parent_id in
         <foreach collection="parentIds" item="parentId" open="(" close=")" separator=",">

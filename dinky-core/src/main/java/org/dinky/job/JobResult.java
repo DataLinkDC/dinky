@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.job;
+package org.dinky.job;
 
-import com.dlink.result.IResult;
+import org.dinky.result.IResult;
 
 import java.time.LocalDateTime;
 

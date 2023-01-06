@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.dto;
+package org.dinky.dto;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.job.JobConfig;
+import org.dinky.assertion.Asserts;
+import org.dinky.job.JobConfig;
 
 import java.util.HashMap;
 import java.util.Map;

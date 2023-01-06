@@ -8,13 +8,13 @@ services:
     build:
       context: .
       dockerfile: ./docker/server/Dockerfile
-#    command: [ "/bin/sh", "-c", "java -Dloader.path=./lib,./plugins -Ddruid.mysql.usePingMethod=false -jar -Xms512M -Xmx2048M ./dlink-admin-*.jar" ]
+#    command: [ "/bin/sh", "-c", "java -Dloader.path=./lib,./plugins -Ddruid.mysql.usePingMethod=false -jar -Xms512M -Xmx2048M ./dinky-admin-*.jar" ]
 #    volumes:
 #      # 挂载dinky lib/plugins 目录
 #      - ./docker/dinky/lib:/app/lib
 #      - ./docker/dinky/plugins:/app/plugins
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/dlink?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/dinky?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     depends_on:
       - database
     restart: unless-stopped
@@ -49,9 +49,9 @@ services:
       - mysql-data:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: 123456
-      MYSQL_DATABASE: dlink
-      MYSQL_USER: dlink
-      MYSQL_PASSWORD: dlink
+      MYSQL_DATABASE: dinky
+      MYSQL_USER: dinky
+      MYSQL_PASSWORD: dinky
     healthcheck:
       test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
       timeout: 20s

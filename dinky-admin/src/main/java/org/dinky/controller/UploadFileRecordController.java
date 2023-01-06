@@ -17,11 +17,11 @@
  *
  */
 
-package com.dlink.controller;
+package org.dinky.controller;
 
-import com.dlink.common.result.Result;
-import com.dlink.model.UploadFileRecord;
-import com.dlink.service.UploadFileRecordService;
+import org.dinky.common.result.Result;
+import org.dinky.model.UploadFileRecord;
+import org.dinky.service.UploadFileRecordService;
 
 import java.util.List;
 

@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink;
+package org.dinky;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -26,7 +26,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
- * Dlink 启动器
+ * Dinky 启动器
  *
  * @author wenmo
  * @since 2021/5/28
@@ -34,9 +34,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @SpringBootApplication(exclude = FreeMarkerAutoConfiguration.class)
 @EnableCaching
-public class Dlink {
+public class Dinky {
 
     public static void main(String[] args) {
-        SpringApplication.run(Dlink.class, args);
+        SpringApplication.run(Dinky.class, args);
     }
 }

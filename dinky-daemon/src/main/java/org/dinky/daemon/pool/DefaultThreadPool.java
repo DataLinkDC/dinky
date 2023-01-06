@@ -17,11 +17,11 @@
  *
  */
 
-package com.dlink.daemon.pool;
+package org.dinky.daemon.pool;
 
-import com.dlink.daemon.entity.TaskQueue;
-import com.dlink.daemon.entity.TaskWorker;
-import com.dlink.daemon.task.DaemonTask;
+import org.dinky.daemon.entity.TaskQueue;
+import org.dinky.daemon.entity.TaskWorker;
+import org.dinky.daemon.task.DaemonTask;
 
 import java.util.ArrayList;
 import java.util.Collections;

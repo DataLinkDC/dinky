@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.context;
+package org.dinky.context;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

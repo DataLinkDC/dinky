@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.executor;
+package org.dinky.executor;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.constant.NetConstant;
+import org.dinky.assertion.Asserts;
+import org.dinky.constant.NetConstant;
 
 import lombok.Getter;
 import lombok.Setter;

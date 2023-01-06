@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.metadata.driver;
+package org.dinky.metadata.driver;
 
-import com.dlink.assertion.Asserts;
+import org.dinky.assertion.Asserts;
 
 import java.util.Map;
 

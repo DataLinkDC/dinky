@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.model;
+package org.dinky.model;
 
-import com.dlink.assertion.Asserts;
+import org.dinky.assertion.Asserts;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +57,7 @@ public class SystemConfiguration {
             "sqlSubmitJarPath",
             "FlinkSQL提交Jar路径",
             ValueType.STRING,
-            "hdfs:///dlink/jar/dlink-app.jar",
+            "hdfs:///dinky/jar/dinky-app.jar",
             "用于指定Applcation模式提交FlinkSQL的Jar的路径");
     private Configuration sqlSubmitJarParas = new Configuration(
             "sqlSubmitJarParas",
@@ -69,7 +69,7 @@ public class SystemConfiguration {
             "sqlSubmitJarMainAppClass",
             "FlinkSQL提交Jar主类",
             ValueType.STRING,
-            "com.dlink.app.MainApp",
+            "org.dinky.app.MainApp",
             "用于指定Applcation模式提交FlinkSQL的Jar的主类");
     private Configuration useRestAPI = new Configuration(
             "useRestAPI",

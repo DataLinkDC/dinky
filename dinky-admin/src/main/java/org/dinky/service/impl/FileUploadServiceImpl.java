@@ -17,16 +17,16 @@
  *
  */
 
-package com.dlink.service.impl;
+package org.dinky.service.impl;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.common.result.Result;
-import com.dlink.constant.UploadFileConstant;
-import com.dlink.model.CodeEnum;
-import com.dlink.service.FileUploadService;
-import com.dlink.service.UploadFileRecordService;
-import com.dlink.utils.FilePathUtil;
-import com.dlink.utils.HdfsUtil;
+import org.dinky.assertion.Asserts;
+import org.dinky.common.result.Result;
+import org.dinky.constant.UploadFileConstant;
+import org.dinky.model.CodeEnum;
+import org.dinky.service.FileUploadService;
+import org.dinky.service.UploadFileRecordService;
+import org.dinky.utils.FilePathUtil;
+import org.dinky.utils.HdfsUtil;
 
 import org.apache.commons.lang3.StringUtils;
 

@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.explainer.sqllineage;
+package org.dinky.explainer.sqllineage;
 
 import java.util.HashSet;
 import java.util.Iterator;

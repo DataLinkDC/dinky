@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.scheduler.enums;
+package org.dinky.scheduler.enums;
 
 /**
  * process define release state

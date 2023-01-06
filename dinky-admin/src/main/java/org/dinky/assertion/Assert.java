@@ -17,13 +17,13 @@
  *
  */
 
-package com.dlink.assertion;
+package org.dinky.assertion;
 
-import com.dlink.exception.BusException;
-import com.dlink.model.Cluster;
-import com.dlink.model.Jar;
-import com.dlink.model.Statement;
-import com.dlink.model.Task;
+import org.dinky.exception.BusException;
+import org.dinky.model.Cluster;
+import org.dinky.model.Jar;
+import org.dinky.model.Statement;
+import org.dinky.model.Task;
 
 /**
  * Assert

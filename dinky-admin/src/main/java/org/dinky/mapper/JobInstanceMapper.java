@@ -17,11 +17,11 @@
  *
  */
 
-package com.dlink.mapper;
+package org.dinky.mapper;
 
-import com.dlink.db.mapper.SuperMapper;
-import com.dlink.model.JobInstance;
-import com.dlink.model.JobInstanceCount;
+import org.dinky.db.mapper.SuperMapper;
+import org.dinky.model.JobInstance;
+import org.dinky.model.JobInstanceCount;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

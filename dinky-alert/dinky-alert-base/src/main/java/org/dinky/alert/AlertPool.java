@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.alert;
+package org.dinky.alert;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

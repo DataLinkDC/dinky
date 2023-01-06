@@ -17,12 +17,12 @@
  *
  */
 
-package com.dlink.cdc.hudi;
+package org.dinky.cdc.hudi;
 
-import com.dlink.cdc.AbstractSinkBuilder;
-import com.dlink.cdc.SinkBuilder;
-import com.dlink.model.FlinkCDCConfig;
-import com.dlink.model.Table;
+import org.dinky.cdc.AbstractSinkBuilder;
+import org.dinky.cdc.SinkBuilder;
+import org.dinky.model.FlinkCDCConfig;
+import org.dinky.model.Table;
 
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.datastream.DataStream;

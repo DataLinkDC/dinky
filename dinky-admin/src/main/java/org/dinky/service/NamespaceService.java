@@ -17,12 +17,12 @@
  *
  */
 
-package com.dlink.service;
+package org.dinky.service;
 
-import com.dlink.common.result.ProTableResult;
-import com.dlink.common.result.Result;
-import com.dlink.db.service.ISuperService;
-import com.dlink.model.Namespace;
+import org.dinky.common.result.ProTableResult;
+import org.dinky.common.result.Result;
+import org.dinky.db.service.ISuperService;
+import org.dinky.model.Namespace;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

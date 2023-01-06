@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.alert.email.template;
+package org.dinky.alert.email.template;
 
-import com.dlink.alert.ShowType;
+import org.dinky.alert.ShowType;
 
 /**
  * @Author: zhumingye

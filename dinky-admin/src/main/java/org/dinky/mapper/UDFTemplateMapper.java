@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.mapper;
+package org.dinky.mapper;
 
-import com.dlink.db.mapper.SuperMapper;
-import com.dlink.model.UDFTemplate;
+import org.dinky.db.mapper.SuperMapper;
+import org.dinky.model.UDFTemplate;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -40,6 +40,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 @Mapper
 public interface UDFTemplateMapper extends SuperMapper<UDFTemplate> {
     @Override
-    @Select("select * from dlink_udf_template")
+    @Select("select * from dinky_udf_template")
     List<UDFTemplate> selectForProTable(Page<UDFTemplate> page, Wrapper<UDFTemplate> queryWrapper, Map<String, Object> param);
 }

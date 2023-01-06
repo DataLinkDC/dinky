@@ -17,11 +17,11 @@
  *
  */
 
-package com.dlink.function.compiler;
+package org.dinky.function.compiler;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.function.data.model.UDF;
-import com.dlink.function.exception.UDFCompilerException;
+import org.dinky.assertion.Asserts;
+import org.dinky.function.data.model.UDF;
+import org.dinky.function.exception.UDFCompilerException;
 
 import org.apache.flink.configuration.ReadableConfig;
 

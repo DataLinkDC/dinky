@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.db.model;
+package org.dinky.db.model;
 
-import com.dlink.db.annotation.Save;
+import org.dinky.db.annotation.Save;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

@@ -17,27 +17,27 @@
  *
  */
 
-package com.dlink.job;
+package org.dinky.job;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.context.SpringContextUtils;
-import com.dlink.daemon.task.DaemonFactory;
-import com.dlink.daemon.task.DaemonTaskConfig;
-import com.dlink.gateway.GatewayType;
-import com.dlink.model.Cluster;
-import com.dlink.model.History;
-import com.dlink.model.JobHistory;
-import com.dlink.model.JobInstance;
-import com.dlink.model.JobStatus;
-import com.dlink.model.Task;
-import com.dlink.service.ClusterConfigurationService;
-import com.dlink.service.ClusterService;
-import com.dlink.service.HistoryService;
-import com.dlink.service.JarService;
-import com.dlink.service.JobHistoryService;
-import com.dlink.service.JobInstanceService;
-import com.dlink.service.TaskService;
-import com.dlink.utils.JSONUtil;
+import org.dinky.assertion.Asserts;
+import org.dinky.context.SpringContextUtils;
+import org.dinky.daemon.task.DaemonFactory;
+import org.dinky.daemon.task.DaemonTaskConfig;
+import org.dinky.gateway.GatewayType;
+import org.dinky.model.Cluster;
+import org.dinky.model.History;
+import org.dinky.model.JobHistory;
+import org.dinky.model.JobInstance;
+import org.dinky.model.JobStatus;
+import org.dinky.model.Task;
+import org.dinky.service.ClusterConfigurationService;
+import org.dinky.service.ClusterService;
+import org.dinky.service.HistoryService;
+import org.dinky.service.JarService;
+import org.dinky.service.JobHistoryService;
+import org.dinky.service.JobInstanceService;
+import org.dinky.service.TaskService;
+import org.dinky.utils.JSONUtil;
 
 import java.time.LocalDateTime;
 

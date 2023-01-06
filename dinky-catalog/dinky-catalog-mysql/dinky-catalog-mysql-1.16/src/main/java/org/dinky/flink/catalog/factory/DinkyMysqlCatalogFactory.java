@@ -17,15 +17,15 @@
  *
  */
 
-package com.dlink.flink.catalog.factory;
+package org.dinky.flink.catalog.factory;
 
-import static com.dlink.flink.catalog.factory.DlinkMysqlCatalogFactoryOptions.PASSWORD;
-import static com.dlink.flink.catalog.factory.DlinkMysqlCatalogFactoryOptions.URL;
-import static com.dlink.flink.catalog.factory.DlinkMysqlCatalogFactoryOptions.USERNAME;
+import static org.dinky.flink.catalog.factory.DinkyMysqlCatalogFactoryOptions.PASSWORD;
+import static org.dinky.flink.catalog.factory.DinkyMysqlCatalogFactoryOptions.URL;
+import static org.dinky.flink.catalog.factory.DinkyMysqlCatalogFactoryOptions.USERNAME;
 
 import static org.apache.flink.table.factories.FactoryUtil.PROPERTY_VERSION;
 
-import com.dlink.flink.catalog.DlinkMysqlCatalog;
+import org.dinky.flink.catalog.DinkyMysqlCatalog;
 
 import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.table.catalog.Catalog;
@@ -36,13 +36,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Factory for {@link DlinkMysqlCatalog}.
+ * Factory for {@link DinkyMysqlCatalog}.
  */
-public class DlinkMysqlCatalogFactory implements CatalogFactory {
+public class DinkyMysqlCatalogFactory implements CatalogFactory {
 
     @Override
     public String factoryIdentifier() {
-        return DlinkMysqlCatalogFactoryOptions.IDENTIFIER;
+        return DinkyMysqlCatalogFactoryOptions.IDENTIFIER;
     }
 
     @Override
@@ -67,7 +67,7 @@ public class DlinkMysqlCatalogFactory implements CatalogFactory {
                 FactoryUtil.createCatalogFactoryHelper(this, context);
         helper.validate();
 
-        return new DlinkMysqlCatalog(
+        return new DinkyMysqlCatalog(
                 context.getName(),
                 helper.getOptions().get(URL),
                 helper.getOptions().get(USERNAME),

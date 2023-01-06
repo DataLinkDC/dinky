@@ -17,11 +17,11 @@
  *
  */
 
-package com.dlink.exception;
+package org.dinky.exception;
 
-import com.dlink.common.result.Result;
-import com.dlink.model.CodeEnum;
-import com.dlink.utils.MessageResolverUtils;
+import org.dinky.common.result.Result;
+import org.dinky.model.CodeEnum;
+import org.dinky.utils.MessageResolverUtils;
 
 import org.apache.commons.lang3.StringUtils;
 

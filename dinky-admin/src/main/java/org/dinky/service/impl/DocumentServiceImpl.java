@@ -17,13 +17,13 @@
  *
  */
 
-package com.dlink.service.impl;
+package org.dinky.service.impl;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.db.service.impl.SuperServiceImpl;
-import com.dlink.mapper.DocumentMapper;
-import com.dlink.model.Document;
-import com.dlink.service.DocumentService;
+import org.dinky.assertion.Asserts;
+import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.mapper.DocumentMapper;
+import org.dinky.model.Document;
+import org.dinky.service.DocumentService;
 
 import java.util.List;
 

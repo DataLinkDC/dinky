@@ -17,11 +17,11 @@
  *
  */
 
-package com.dlink.dto;
+package org.dinky.dto;
 
-import com.dlink.gateway.config.GatewayConfig;
-import com.dlink.gateway.config.SavePointStrategy;
-import com.dlink.job.JobConfig;
+import org.dinky.gateway.config.GatewayConfig;
+import org.dinky.gateway.config.SavePointStrategy;
+import org.dinky.job.JobConfig;
 
 import lombok.Getter;
 import lombok.Setter;

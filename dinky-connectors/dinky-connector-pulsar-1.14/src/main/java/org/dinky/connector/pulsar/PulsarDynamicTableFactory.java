@@ -17,24 +17,24 @@
  *
  */
 
-package com.dlink.connector.pulsar;
+package org.dinky.connector.pulsar;
 
-import static com.dlink.connector.pulsar.util.PulsarConnectorOptions.ADMIN_URL;
-import static com.dlink.connector.pulsar.util.PulsarConnectorOptions.DERIVE_SCHEMA;
-import static com.dlink.connector.pulsar.util.PulsarConnectorOptions.SERVICE_URL;
-import static com.dlink.connector.pulsar.util.PulsarConnectorOptions.SINK_PARALLELISM;
-import static com.dlink.connector.pulsar.util.PulsarConnectorOptions.SOURCE_PARALLELISM;
-import static com.dlink.connector.pulsar.util.PulsarConnectorOptions.SUBSCRIPTION_INITIAL_POSITION;
-import static com.dlink.connector.pulsar.util.PulsarConnectorOptions.SUBSCRIPTION_INITIAL_POSITION_TIMESTAMP;
-import static com.dlink.connector.pulsar.util.PulsarConnectorOptions.SUBSCRIPTION_NAME;
-import static com.dlink.connector.pulsar.util.PulsarConnectorOptions.SUBSCRIPTION_TYPE;
-import static com.dlink.connector.pulsar.util.PulsarConnectorOptions.ScanStartupMode;
-import static com.dlink.connector.pulsar.util.PulsarConnectorOptions.TOPIC;
-import static com.dlink.connector.pulsar.util.PulsarConnectorOptions.UPDATE_MODE;
-import static com.dlink.connector.pulsar.util.PulsarConnectorOptions.VERSION;
-import static com.dlink.connector.pulsar.util.PulsarConnectorOptionsUtil.PROPERTIES_CLIENT_PREFIX;
-import static com.dlink.connector.pulsar.util.PulsarConnectorOptionsUtil.PROPERTIES_PREFIX;
-import static com.dlink.connector.pulsar.util.PulsarConnectorOptionsUtil.getPulsarProperties;
+import static org.dinky.connector.pulsar.util.PulsarConnectorOptions.ADMIN_URL;
+import static org.dinky.connector.pulsar.util.PulsarConnectorOptions.DERIVE_SCHEMA;
+import static org.dinky.connector.pulsar.util.PulsarConnectorOptions.SERVICE_URL;
+import static org.dinky.connector.pulsar.util.PulsarConnectorOptions.SINK_PARALLELISM;
+import static org.dinky.connector.pulsar.util.PulsarConnectorOptions.SOURCE_PARALLELISM;
+import static org.dinky.connector.pulsar.util.PulsarConnectorOptions.SUBSCRIPTION_INITIAL_POSITION;
+import static org.dinky.connector.pulsar.util.PulsarConnectorOptions.SUBSCRIPTION_INITIAL_POSITION_TIMESTAMP;
+import static org.dinky.connector.pulsar.util.PulsarConnectorOptions.SUBSCRIPTION_NAME;
+import static org.dinky.connector.pulsar.util.PulsarConnectorOptions.SUBSCRIPTION_TYPE;
+import static org.dinky.connector.pulsar.util.PulsarConnectorOptions.ScanStartupMode;
+import static org.dinky.connector.pulsar.util.PulsarConnectorOptions.TOPIC;
+import static org.dinky.connector.pulsar.util.PulsarConnectorOptions.UPDATE_MODE;
+import static org.dinky.connector.pulsar.util.PulsarConnectorOptions.VERSION;
+import static org.dinky.connector.pulsar.util.PulsarConnectorOptionsUtil.PROPERTIES_CLIENT_PREFIX;
+import static org.dinky.connector.pulsar.util.PulsarConnectorOptionsUtil.PROPERTIES_PREFIX;
+import static org.dinky.connector.pulsar.util.PulsarConnectorOptionsUtil.getPulsarProperties;
 
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.api.common.serialization.DeserializationSchema;

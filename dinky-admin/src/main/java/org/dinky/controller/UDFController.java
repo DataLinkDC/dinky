@@ -17,12 +17,12 @@
  *
  */
 
-package com.dlink.controller;
+package org.dinky.controller;
 
-import com.dlink.common.result.ProTableResult;
-import com.dlink.common.result.Result;
-import com.dlink.model.UDFTemplate;
-import com.dlink.service.UDFTemplateService;
+import org.dinky.common.result.ProTableResult;
+import org.dinky.common.result.Result;
+import org.dinky.model.UDFTemplate;
+import org.dinky.service.UDFTemplateService;
 
 import java.util.ArrayList;
 import java.util.HashMap;

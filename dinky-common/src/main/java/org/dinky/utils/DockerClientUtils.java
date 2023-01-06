@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.utils;
+package org.dinky.utils;
 
-import com.dlink.config.Docker;
-import com.dlink.docker.DockerClientBuilder;
+import org.dinky.config.Docker;
+import org.dinky.docker.DockerClientBuilder;
 
 import java.io.File;
 import java.net.URISyntaxException;

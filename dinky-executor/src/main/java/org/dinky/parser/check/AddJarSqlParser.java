@@ -17,11 +17,11 @@
  *
  */
 
-package com.dlink.parser.check;
+package org.dinky.parser.check;
 
-import com.dlink.process.context.ProcessContextHolder;
-import com.dlink.process.exception.DinkyException;
-import com.dlink.process.model.ProcessEntity;
+import org.dinky.process.context.ProcessContextHolder;
+import org.dinky.process.exception.DinkyException;
+import org.dinky.process.model.ProcessEntity;
 
 import java.io.File;
 import java.util.HashSet;

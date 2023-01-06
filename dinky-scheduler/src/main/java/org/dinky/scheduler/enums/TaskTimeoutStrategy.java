@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.scheduler.enums;
+package org.dinky.scheduler.enums;
 
 /**
  * task timeout strategy

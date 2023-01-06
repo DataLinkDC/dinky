@@ -17,13 +17,13 @@
  *
  */
 
-package com.dlink.utils;
+package org.dinky.utils;
 
-import com.dlink.constant.FlinkParamConstant;
-import com.dlink.model.Column;
-import com.dlink.model.ColumnType;
-import com.dlink.model.FlinkCDCConfig;
-import com.dlink.model.Table;
+import org.dinky.constant.FlinkParamConstant;
+import org.dinky.model.Column;
+import org.dinky.model.ColumnType;
+import org.dinky.model.FlinkCDCConfig;
+import org.dinky.model.Table;
 
 import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.runtime.util.EnvironmentInformation;

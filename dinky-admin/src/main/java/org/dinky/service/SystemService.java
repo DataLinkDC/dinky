@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.service;
+package org.dinky.service;
 
-import com.dlink.model.FileNode;
+import org.dinky.model.FileNode;
 
 import java.util.List;
 

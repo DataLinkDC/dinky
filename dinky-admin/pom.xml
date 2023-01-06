@@ -19,12 +19,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.dlink</groupId>
-        <artifactId>dlink</artifactId>
+        <groupId>org.dinky</groupId>
+        <artifactId>dinky</artifactId>
         <version>0.7.0</version>
     </parent>
 
-    <artifactId>dlink-admin</artifactId>
+    <artifactId>dinky-admin</artifactId>
 
     <dependencies>
         <dependency>
@@ -142,36 +142,36 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-core</artifactId>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-common</artifactId>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-common</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-client-base</artifactId>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-client-base</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-metadata-base</artifactId>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-metadata-base</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-alert-base</artifactId>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-alert-base</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-daemon</artifactId>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-daemon</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-executor</artifactId>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-executor</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-gateway</artifactId>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-gateway</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -195,17 +195,17 @@
         </dependency>
         <!-- hadoop -->
         <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-client-hadoop</artifactId>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-client-hadoop</artifactId>
             <scope>${scope.runtime}</scope>
         </dependency>
         <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-scheduler</artifactId>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-scheduler</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-process</artifactId>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-process</artifactId>
         </dependency>
         <dependency>
             <groupId>io.prometheus.jmx</groupId>
@@ -289,7 +289,7 @@
                             <overwrite>true</overwrite>
                             <resources>
                                 <resource>
-                                    <directory>../dlink-web/dist</directory>
+                                    <directory>../dinky-web/dist</directory>
                                 </resource>
                             </resources>
                         </configuration>

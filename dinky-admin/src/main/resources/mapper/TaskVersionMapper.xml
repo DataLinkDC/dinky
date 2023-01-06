@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.dlink.mapper.TaskVersionMapper">
+<mapper namespace="org.dinky.mapper.TaskVersionMapper">
 
 
 
-    <select id="selectForProTable" resultType="com.dlink.model.TaskVersion">
+    <select id="selectForProTable" resultType="org.dinky.model.TaskVersion">
         select
        a.*
         from
-        dlink_task_version a
+        dinky_task_version a
         <where>
             1=1
             <if test='param.versionId!=null and param.versionId!=""'>

@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.config;
+package org.dinky.config;
 
-import com.dlink.assertion.Asserts;
+import org.dinky.assertion.Asserts;
 
 /**
  * Dialect

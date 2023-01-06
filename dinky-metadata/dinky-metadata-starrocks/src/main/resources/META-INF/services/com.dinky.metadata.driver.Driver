@@ -1,1 +1,1 @@
-com.dlink.metadata.driver.StarRocksDriver
+org.dinky.metadata.driver.StarRocksDriver

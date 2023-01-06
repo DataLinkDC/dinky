@@ -1,1 +1,1 @@
-com.dlink.metadata.driver.SqlServerDriver
+org.dinky.metadata.driver.SqlServerDriver

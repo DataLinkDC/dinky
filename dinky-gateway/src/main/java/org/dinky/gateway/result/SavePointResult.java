@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.gateway.result;
+package org.dinky.gateway.result;
 
-import com.dlink.gateway.GatewayType;
-import com.dlink.gateway.model.JobInfo;
+import org.dinky.gateway.GatewayType;
+import org.dinky.gateway.model.JobInfo;
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.dlink.mapper.TenantMapper">
+<mapper namespace="org.dinky.mapper.TenantMapper">
     <sql id="baseSql">
         id,tenant_code,is_delete,note,create_time,update_time
     </sql>
-    <select id="selectForProTable" resultType="com.dlink.model.Tenant">
+    <select id="selectForProTable" resultType="org.dinky.model.Tenant">
         select
         <include refid="baseSql"/>
         from
-        dlink_tenant a
+        dinky_tenant a
         <where>
             1=1
             <if test='param.tenantCode!=null and param.tenantCode!=""'>
@@ -28,14 +28,14 @@
             </if>
         </where>
     </select>
-    <select id="getTenantByIds" resultType="com.dlink.model.Tenant">
+    <select id="getTenantByIds" resultType="org.dinky.model.Tenant">
         select id
               ,tenant_code
               ,is_delete
               ,note
               ,create_time
               ,update_time
-         from dlink_tenant a
+         from dinky_tenant a
         where  1=1
           and  id in
         <foreach collection="tenantIds"  item="id" separator="," open="(" close=")" index="">

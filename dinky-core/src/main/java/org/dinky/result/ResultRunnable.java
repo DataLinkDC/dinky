@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.result;
+package org.dinky.result;
 
-import com.dlink.constant.FlinkConstant;
-import com.dlink.utils.FlinkUtil;
+import org.dinky.constant.FlinkConstant;
+import org.dinky.utils.FlinkUtil;
 
 import org.apache.flink.core.execution.JobClient;
 import org.apache.flink.table.api.TableResult;

@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.connector.pulsar.util;
+package org.dinky.connector.pulsar.util;
 
 import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.impl.PulsarClientImpl;

@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.cdc.doris;
+package org.dinky.cdc.doris;
 
 import java.io.Serializable;
 import java.util.Map;

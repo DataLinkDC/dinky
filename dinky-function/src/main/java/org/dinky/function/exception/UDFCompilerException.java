@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.function.exception;
+package org.dinky.function.exception;
 
 import cn.hutool.core.util.StrUtil;
 

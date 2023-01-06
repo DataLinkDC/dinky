@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.alert.dingtalk;
+package org.dinky.alert.dingtalk;
 
-import com.dlink.alert.AbstractAlert;
-import com.dlink.alert.AlertResult;
+import org.dinky.alert.AbstractAlert;
+import org.dinky.alert.AlertResult;
 
 /**
  * DingTalkAlert

@@ -17,11 +17,11 @@
  *
  */
 
-package com.dlink.cdc;
+package org.dinky.cdc;
 
-import com.dlink.executor.CustomTableEnvironment;
-import com.dlink.model.FlinkCDCConfig;
-import com.dlink.model.Table;
+import org.dinky.executor.CustomTableEnvironment;
+import org.dinky.model.FlinkCDCConfig;
+import org.dinky.model.Table;
 
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;

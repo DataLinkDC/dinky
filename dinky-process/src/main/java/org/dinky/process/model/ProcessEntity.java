@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.process.model;
+package org.dinky.process.model;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.process.pool.ConsolePool;
+import org.dinky.assertion.Asserts;
+import org.dinky.process.pool.ConsolePool;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

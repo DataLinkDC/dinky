@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.alert.wechat;
+package org.dinky.alert.wechat;
 
-import com.dlink.alert.AlertResult;
-import com.dlink.alert.ShowType;
+import org.dinky.alert.AlertResult;
+import org.dinky.alert.ShowType;
 
 import java.io.IOException;
 import java.util.HashMap;

@@ -17,11 +17,11 @@
  *
  */
 
-package com.dlink.service;
+package org.dinky.service;
 
-import com.dlink.cluster.FlinkClusterInfo;
-import com.dlink.db.service.ISuperService;
-import com.dlink.model.Cluster;
+import org.dinky.cluster.FlinkClusterInfo;
+import org.dinky.db.service.ISuperService;
+import org.dinky.model.Cluster;
 
 import java.util.List;
 

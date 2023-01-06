@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.dto;
+package org.dinky.dto;
 
-import com.dlink.gateway.config.SavePointType;
+import org.dinky.gateway.config.SavePointType;
 
 import lombok.Getter;
 import lombok.Setter;

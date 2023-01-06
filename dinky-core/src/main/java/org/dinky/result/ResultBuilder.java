@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.result;
+package org.dinky.result;
 
-import com.dlink.parser.SqlType;
+import org.dinky.parser.SqlType;
 
 import org.apache.flink.table.api.TableResult;
 

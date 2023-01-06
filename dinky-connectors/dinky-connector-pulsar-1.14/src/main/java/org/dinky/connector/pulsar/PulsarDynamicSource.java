@@ -17,11 +17,11 @@
  *
  */
 
-package com.dlink.connector.pulsar;
+package org.dinky.connector.pulsar;
 
 import static org.apache.flink.util.Preconditions.checkNotNull;
 
-import com.dlink.connector.pulsar.util.PulsarConnectorOptions;
+import org.dinky.connector.pulsar.util.PulsarConnectorOptions;
 
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;

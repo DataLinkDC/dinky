@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.db.config;
+package org.dinky.db.config;
 
-import com.dlink.db.handler.DateMetaObjectHandler;
-import com.dlink.db.properties.MybatisPlusFillProperties;
+import org.dinky.db.handler.DateMetaObjectHandler;
+import org.dinky.db.properties.MybatisPlusFillProperties;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -51,7 +51,7 @@ public class MybatisPlusConfigure {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(prefix = "dlink.mybatis-plus.fill", name = "enabled", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "dinky.mybatis-plus.fill", name = "enabled", havingValue = "true", matchIfMissing = true)
     public MetaObjectHandler metaObjectHandler() {
         return new DateMetaObjectHandler(autoFillProperties);
     }

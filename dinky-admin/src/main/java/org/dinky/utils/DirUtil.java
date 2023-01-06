@@ -17,11 +17,11 @@
  *
  */
 
-package com.dlink.utils;
+package org.dinky.utils;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.exception.BusException;
-import com.dlink.model.FileNode;
+import org.dinky.assertion.Asserts;
+import org.dinky.exception.BusException;
+import org.dinky.model.FileNode;
 
 import java.io.BufferedReader;
 import java.io.File;

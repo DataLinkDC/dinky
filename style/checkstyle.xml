@@ -231,10 +231,10 @@
 
         <module name="ImportOrder">
 <!--            <property name="severity" value="error"/>-->
-            <property name="staticGroups" value="com.dlink,org.apache,java,javax,org,com"/>
+            <property name="staticGroups" value="org.dinky,org.apache,java,javax,org,com"/>
             <property name="separatedStaticGroups" value="true"/>
 
-            <property name="groups" value="com.dlink,org.apache,java,javax,org,com"/>
+            <property name="groups" value="org.dinky,org.apache,java,javax,org,com"/>
             <property name="ordered" value="true"/>
             <property name="separated" value="true"/>
             <property name="option" value="top"/>

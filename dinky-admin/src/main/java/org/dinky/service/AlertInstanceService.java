@@ -17,12 +17,12 @@
  *
  */
 
-package com.dlink.service;
+package org.dinky.service;
 
-import com.dlink.alert.AlertResult;
-import com.dlink.common.result.Result;
-import com.dlink.db.service.ISuperService;
-import com.dlink.model.AlertInstance;
+import org.dinky.alert.AlertResult;
+import org.dinky.common.result.Result;
+import org.dinky.db.service.ISuperService;
+import org.dinky.model.AlertInstance;
 
 import java.util.List;
 

@@ -17,15 +17,15 @@
  *
  */
 
-package com.dlink.alert.email;
+package org.dinky.alert.email;
 
 import static java.util.Objects.requireNonNull;
 
-import com.dlink.alert.AlertException;
-import com.dlink.alert.AlertResult;
-import com.dlink.alert.ShowType;
-import com.dlink.alert.email.template.AlertTemplate;
-import com.dlink.alert.email.template.DefaultHTMLTemplate;
+import org.dinky.alert.AlertException;
+import org.dinky.alert.AlertResult;
+import org.dinky.alert.ShowType;
+import org.dinky.alert.email.template.AlertTemplate;
+import org.dinky.alert.email.template.DefaultHTMLTemplate;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;

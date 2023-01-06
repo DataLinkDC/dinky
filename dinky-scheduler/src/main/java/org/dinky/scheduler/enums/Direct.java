@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.scheduler.enums;
+package org.dinky.scheduler.enums;
 
 /**
  * parameter of stored procedure

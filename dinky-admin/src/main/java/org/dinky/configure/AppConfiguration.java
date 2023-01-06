@@ -17,11 +17,11 @@
  *
  */
 
-package com.dlink.configure;
+package org.dinky.configure;
 
-import com.dlink.constant.BaseConstant;
-import com.dlink.interceptor.LocaleChangeInterceptor;
-import com.dlink.interceptor.TenantInterceptor;
+import org.dinky.constant.BaseConstant;
+import org.dinky.interceptor.LocaleChangeInterceptor;
+import org.dinky.interceptor.TenantInterceptor;
 
 import java.util.Locale;
 

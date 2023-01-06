@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.function.udtaf;
+package org.dinky.function.udtaf;
 
-import com.dlink.function.udtaf.RowsToMap.MyAccum;
+import org.dinky.function.udtaf.RowsToMap.MyAccum;
 
 import org.apache.flink.table.api.DataTypes;
 import org.apache.flink.table.catalog.DataTypeFactory;

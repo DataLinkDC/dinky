@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.metadata.driver;
+package org.dinky.metadata.driver;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.constant;
+package org.dinky.constant;
 
 public class BaseConstant {
     public static final String LOCALE_LANGUAGE_COOKIE = "language";

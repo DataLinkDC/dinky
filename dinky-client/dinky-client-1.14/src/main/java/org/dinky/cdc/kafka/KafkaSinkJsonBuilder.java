@@ -17,17 +17,17 @@
  *
  */
 
-package com.dlink.cdc.kafka;
+package org.dinky.cdc.kafka;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.cdc.AbstractSinkBuilder;
-import com.dlink.cdc.CDCBuilder;
-import com.dlink.cdc.SinkBuilder;
-import com.dlink.executor.CustomTableEnvironment;
-import com.dlink.model.FlinkCDCConfig;
-import com.dlink.model.Schema;
-import com.dlink.model.Table;
-import com.dlink.utils.ObjectConvertUtil;
+import org.dinky.assertion.Asserts;
+import org.dinky.cdc.AbstractSinkBuilder;
+import org.dinky.cdc.CDCBuilder;
+import org.dinky.cdc.SinkBuilder;
+import org.dinky.executor.CustomTableEnvironment;
+import org.dinky.model.FlinkCDCConfig;
+import org.dinky.model.Schema;
+import org.dinky.model.Table;
+import org.dinky.utils.ObjectConvertUtil;
 
 import org.apache.flink.api.common.functions.FilterFunction;
 import org.apache.flink.api.common.functions.MapFunction;
@@ -56,7 +56,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 
 /**
- * @className: com.dlink.cdc.kafka.KafkaSinkSimpleBuilder
+ * @className: org.dinky.cdc.kafka.KafkaSinkSimpleBuilder
  */
 public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements Serializable {
 

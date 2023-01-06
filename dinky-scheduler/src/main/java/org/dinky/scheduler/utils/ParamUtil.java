@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.scheduler.utils;
+package org.dinky.scheduler.utils;
 
 import java.util.HashMap;
 import java.util.Map;

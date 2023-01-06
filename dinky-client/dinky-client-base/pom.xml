@@ -19,12 +19,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.dlink</groupId>
-        <artifactId>dlink-client</artifactId>
+        <groupId>org.dinky</groupId>
+        <artifactId>dinky-client</artifactId>
         <version>0.7.0</version>
     </parent>
 
-    <artifactId>dlink-client-base</artifactId>
+    <artifactId>dinky-client-base</artifactId>
 
     <properties>
         <source.level>${target.java.version}</source.level>
@@ -38,8 +38,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-common</artifactId>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-common</artifactId>
         </dependency>
     </dependencies>
     <build>
@@ -78,8 +78,8 @@
             <id>flink-1.11</id>
             <dependencies>
                 <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-flink-1.11</artifactId>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-flink-1.11</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
             </dependencies>
@@ -89,8 +89,8 @@
             <id>flink-1.12</id>
             <dependencies>
                 <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-flink-1.12</artifactId>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-flink-1.12</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
             </dependencies>
@@ -100,8 +100,8 @@
             <id>flink-1.13</id>
             <dependencies>
                 <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-flink-1.13</artifactId>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-flink-1.13</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
             </dependencies>
@@ -111,8 +111,8 @@
             <id>flink-1.14</id>
             <dependencies>
                 <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-flink-1.14</artifactId>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-flink-1.14</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
             </dependencies>
@@ -122,8 +122,8 @@
             <id>flink-1.15</id>
             <dependencies>
                 <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-flink-1.15</artifactId>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-flink-1.15</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
             </dependencies>
@@ -133,8 +133,8 @@
             <id>flink-1.16</id>
             <dependencies>
                 <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-flink-1.16</artifactId>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-flink-1.16</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
             </dependencies>
@@ -144,33 +144,33 @@
             <id>all</id>
             <dependencies>
                 <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-flink-1.11</artifactId>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-flink-1.11</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
                 <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-flink-1.12</artifactId>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-flink-1.12</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
                 <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-flink-1.13</artifactId>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-flink-1.13</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
                 <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-flink-1.14</artifactId>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-flink-1.14</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
                 <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-flink-1.15</artifactId>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-flink-1.15</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
                 <dependency>
-                    <groupId>com.dlink</groupId>
-                    <artifactId>dlink-flink-1.16</artifactId>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-flink-1.16</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
             </dependencies>

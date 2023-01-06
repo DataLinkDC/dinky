@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.trans;
+package org.dinky.trans;
 
-import com.dlink.executor.CustomTableEnvironmentImpl;
+import org.dinky.executor.CustomTableEnvironmentImpl;
 
 import java.util.Arrays;
 import java.util.List;

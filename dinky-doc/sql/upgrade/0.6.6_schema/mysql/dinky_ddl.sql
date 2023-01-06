@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS `metadata_column` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='column informations';
 
 -- ----------------------------
--- Table structure for dlink_upload_file_record
+-- Table structure for dinky_upload_file_record
 -- ----------------------------
 CREATE TABLE IF NOT EXISTS `metadata_function` (
   `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',

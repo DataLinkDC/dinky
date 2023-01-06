@@ -17,14 +17,14 @@
  *
  */
 
-package com.dlink.alert.email;
+package org.dinky.alert.email;
 
-import com.dlink.alert.AlertMsg;
-import com.dlink.alert.AlertResult;
-import com.dlink.alert.ShowType;
-import com.dlink.alert.email.template.AlertTemplate;
-import com.dlink.alert.email.template.DefaultHTMLTemplate;
-import com.dlink.utils.JSONUtil;
+import org.dinky.alert.AlertMsg;
+import org.dinky.alert.AlertResult;
+import org.dinky.alert.ShowType;
+import org.dinky.alert.email.template.AlertTemplate;
+import org.dinky.alert.email.template.DefaultHTMLTemplate;
+import org.dinky.utils.JSONUtil;
 
 import java.util.HashMap;
 import java.util.Iterator;

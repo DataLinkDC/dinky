@@ -19,25 +19,25 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.dlink</groupId>
-        <artifactId>dlink</artifactId>
+        <groupId>org.dinky</groupId>
+        <artifactId>dinky</artifactId>
         <version>0.7.0</version>
     </parent>
 
-    <artifactId>dlink-metadata</artifactId>
+    <artifactId>dinky-metadata</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>dlink-metadata-base</module>
-        <module>dlink-metadata-mysql</module>
-        <module>dlink-metadata-oracle</module>
-        <module>dlink-metadata-clickhouse</module>
-        <module>dlink-metadata-postgresql</module>
-        <module>dlink-metadata-sqlserver</module>
-        <module>dlink-metadata-doris</module>
-        <module>dlink-metadata-phoenix</module>
-        <module>dlink-metadata-hive</module>
-        <module>dlink-metadata-starrocks</module>
-        <module>dlink-metadata-presto</module>
+        <module>dinky-metadata-base</module>
+        <module>dinky-metadata-mysql</module>
+        <module>dinky-metadata-oracle</module>
+        <module>dinky-metadata-clickhouse</module>
+        <module>dinky-metadata-postgresql</module>
+        <module>dinky-metadata-sqlserver</module>
+        <module>dinky-metadata-doris</module>
+        <module>dinky-metadata-phoenix</module>
+        <module>dinky-metadata-hive</module>
+        <module>dinky-metadata-starrocks</module>
+        <module>dinky-metadata-presto</module>
     </modules>
 
 </project>

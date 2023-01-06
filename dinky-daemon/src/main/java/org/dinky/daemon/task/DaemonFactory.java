@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.daemon.task;
+package org.dinky.daemon.task;
 
-import com.dlink.daemon.constant.FlinkTaskConstant;
-import com.dlink.daemon.pool.DefaultThreadPool;
+import org.dinky.daemon.constant.FlinkTaskConstant;
+import org.dinky.daemon.pool.DefaultThreadPool;
 
 import java.util.List;
 

@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.job;
+package org.dinky.job;
 
-import com.dlink.function.data.model.UDF;
+import org.dinky.function.data.model.UDF;
 
 import java.util.ArrayList;
 import java.util.List;

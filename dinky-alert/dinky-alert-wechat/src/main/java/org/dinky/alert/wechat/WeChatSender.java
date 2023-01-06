@@ -17,15 +17,15 @@
  *
  */
 
-package com.dlink.alert.wechat;
+package org.dinky.alert.wechat;
 
 import static java.util.Objects.requireNonNull;
 
-import com.dlink.alert.AlertResult;
-import com.dlink.alert.AlertSendResponse;
-import com.dlink.alert.ShowType;
-import com.dlink.assertion.Asserts;
-import com.dlink.utils.JSONUtil;
+import org.dinky.alert.AlertResult;
+import org.dinky.alert.AlertSendResponse;
+import org.dinky.alert.ShowType;
+import org.dinky.assertion.Asserts;
+import org.dinky.utils.JSONUtil;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;

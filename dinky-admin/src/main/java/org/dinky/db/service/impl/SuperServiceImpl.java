@@ -17,13 +17,13 @@
  *
  */
 
-package com.dlink.db.service.impl;
+package org.dinky.db.service.impl;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.common.result.ProTableResult;
-import com.dlink.db.mapper.SuperMapper;
-import com.dlink.db.service.ISuperService;
-import com.dlink.db.util.ProTableUtil;
+import org.dinky.assertion.Asserts;
+import org.dinky.common.result.ProTableResult;
+import org.dinky.db.mapper.SuperMapper;
+import org.dinky.db.service.ISuperService;
+import org.dinky.db.util.ProTableUtil;
 
 import java.util.List;
 import java.util.Map;

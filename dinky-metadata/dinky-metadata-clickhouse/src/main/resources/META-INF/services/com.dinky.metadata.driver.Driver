@@ -1,1 +1,1 @@
-com.dlink.metadata.driver.ClickHouseDriver
+org.dinky.metadata.driver.ClickHouseDriver

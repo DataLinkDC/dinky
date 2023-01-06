@@ -17,12 +17,12 @@
  *
  */
 
-package com.dlink.service;
+package org.dinky.service;
 
-import com.dlink.common.result.ProTableResult;
-import com.dlink.common.result.Result;
-import com.dlink.db.service.ISuperService;
-import com.dlink.model.Role;
+import org.dinky.common.result.ProTableResult;
+import org.dinky.common.result.Result;
+import org.dinky.db.service.ISuperService;
+import org.dinky.model.Role;
 
 import java.util.List;
 import java.util.Set;

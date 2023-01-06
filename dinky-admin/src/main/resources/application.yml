@@ -1,11 +1,11 @@
 spring:
   datasource:
-    url: jdbc:mysql://${MYSQL_ADDR:127.0.0.1:3306}/${MYSQL_DATABASE:dlink}?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-    username: ${MYSQL_USERNAME:dlink}
-    password: ${MYSQL_PASSWORD:dlink}
+    url: jdbc:mysql://${MYSQL_ADDR:127.0.0.1:3306}/${MYSQL_DATABASE:dinky}?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: ${MYSQL_USERNAME:dinky}
+    password: ${MYSQL_PASSWORD:dinky}
     driver-class-name: com.mysql.cj.jdbc.Driver
   application:
-    name: dlink
+    name: dinky
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -20,7 +20,7 @@ spring:
     allow-circular-references: true
 
   #  默认使用内存缓存元数据信息，
-  #  dlink支持redis缓存，如有需要请把simple改为redis，并打开下面的redis连接配置
+  #  dinky支持redis缓存，如有需要请把simple改为redis，并打开下面的redis连接配置
   #  子配置项可以按需要打开或自定义配置
   cache:
     type: simple
@@ -36,9 +36,9 @@ spring:
   #    enabled: false
   #    clean-disabled: true
   ##    baseline-on-migrate: true
-  #    table: dlink_schema_history
+  #    table: dinky_schema_history
   # Redis配置
-  #sa-token如需依赖redis，请打开redis配置和pom.xml、dlink-admin/pom.xml中依赖
+  #sa-token如需依赖redis，请打开redis配置和pom.xml、dinky-admin/pom.xml中依赖
   # redis:
   #   host: localhost
   #   port: 6379
@@ -67,7 +67,7 @@ server:
 mybatis-plus:
   mapper-locations: classpath:/mapper/*Mapper.xml
   #实体扫描，多个package用逗号或者分号分隔
-  typeAliasesPackage: com.dlink.model
+  typeAliasesPackage: org.dinky.model
   global-config:
     db-config:
       id-type: auto

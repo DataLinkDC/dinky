@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.scheduler.utils;
+package org.dinky.scheduler.utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;

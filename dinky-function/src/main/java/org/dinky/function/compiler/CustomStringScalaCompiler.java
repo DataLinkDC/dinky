@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.function.compiler;
+package org.dinky.function.compiler;
 
-import com.dlink.function.constant.PathConstant;
+import org.dinky.function.constant.PathConstant;
 
 import lombok.extern.slf4j.Slf4j;
 import scala.runtime.AbstractFunction1;

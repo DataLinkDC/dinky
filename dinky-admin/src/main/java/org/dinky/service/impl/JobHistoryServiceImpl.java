@@ -17,16 +17,16 @@
  *
  */
 
-package com.dlink.service.impl;
+package org.dinky.service.impl;
 
-import com.dlink.api.FlinkAPI;
-import com.dlink.assertion.Asserts;
-import com.dlink.constant.FlinkRestResultConstant;
-import com.dlink.db.service.impl.SuperServiceImpl;
-import com.dlink.mapper.JobHistoryMapper;
-import com.dlink.model.JobHistory;
-import com.dlink.service.JobHistoryService;
-import com.dlink.utils.JSONUtil;
+import org.dinky.api.FlinkAPI;
+import org.dinky.assertion.Asserts;
+import org.dinky.constant.FlinkRestResultConstant;
+import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.mapper.JobHistoryMapper;
+import org.dinky.model.JobHistory;
+import org.dinky.service.JobHistoryService;
+import org.dinky.utils.JSONUtil;
 
 import java.util.Objects;
 

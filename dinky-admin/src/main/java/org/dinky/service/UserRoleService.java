@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.service;
+package org.dinky.service;
 
-import com.dlink.db.service.ISuperService;
-import com.dlink.model.UserRole;
+import org.dinky.db.service.ISuperService;
+import org.dinky.model.UserRole;
 
 import java.util.List;
 

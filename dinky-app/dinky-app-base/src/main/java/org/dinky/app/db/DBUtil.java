@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.app.db;
+package org.dinky.app.db;
 
 import java.io.IOException;
 import java.sql.Connection;

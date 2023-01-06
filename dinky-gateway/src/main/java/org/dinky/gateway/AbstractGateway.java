@@ -17,12 +17,12 @@
  *
  */
 
-package com.dlink.gateway;
+package org.dinky.gateway;
 
-import com.dlink.gateway.config.GatewayConfig;
-import com.dlink.gateway.exception.GatewayException;
-import com.dlink.gateway.result.GatewayResult;
-import com.dlink.model.JobStatus;
+import org.dinky.gateway.config.GatewayConfig;
+import org.dinky.gateway.exception.GatewayException;
+import org.dinky.gateway.result.GatewayResult;
+import org.dinky.model.JobStatus;
 
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.runtime.jobgraph.JobGraph;

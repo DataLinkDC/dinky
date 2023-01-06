@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.assertion;
+package org.dinky.assertion;
 
-import com.dlink.exception.RunTimeException;
+import org.dinky.exception.RunTimeException;
 
 import java.util.Arrays;
 import java.util.Collection;

@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.db.properties;
+package org.dinky.db.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -32,7 +32,7 @@ import lombok.Setter;
  **/
 @Setter
 @Getter
-@ConfigurationProperties(prefix = "dlink.mybatis-plus.fill")
+@ConfigurationProperties(prefix = "dinky.mybatis-plus.fill")
 public class MybatisPlusFillProperties {
 
     private Boolean enabled = true;

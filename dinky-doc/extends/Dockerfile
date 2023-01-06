@@ -1,9 +1,9 @@
 
 FROM centos:7
-MAINTAINER dlink
+MAINTAINER dinky
 ADD flink-1.14.0-bin-scala_2.11.tgz  /root
 ADD jdk-8u261-linux-x64.tar.gz  /root
-ADD dlink-app.jar  /root
+ADD dinky-app.jar  /root
 ARG FLINK_VERSION=1.14.0
 ARG SCALA_VERSION=2.11
 ENV FLINK_HOME=/root/flink-1.14.0

@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.explainer.ca;
+package org.dinky.explainer.ca;
 
 import java.util.Objects;
 

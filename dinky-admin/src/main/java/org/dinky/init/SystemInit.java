@@ -17,25 +17,25 @@
  *
  */
 
-package com.dlink.init;
+package org.dinky.init;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.context.TenantContextHolder;
-import com.dlink.daemon.task.DaemonFactory;
-import com.dlink.daemon.task.DaemonTaskConfig;
-import com.dlink.function.pool.UdfCodePool;
-import com.dlink.job.FlinkJobTask;
-import com.dlink.model.JobInstance;
-import com.dlink.model.Tenant;
-import com.dlink.scheduler.client.ProjectClient;
-import com.dlink.scheduler.config.DolphinSchedulerProperties;
-import com.dlink.scheduler.exception.SchedulerException;
-import com.dlink.scheduler.model.Project;
-import com.dlink.service.JobInstanceService;
-import com.dlink.service.SysConfigService;
-import com.dlink.service.TaskService;
-import com.dlink.service.TenantService;
-import com.dlink.utils.UDFUtils;
+import org.dinky.assertion.Asserts;
+import org.dinky.context.TenantContextHolder;
+import org.dinky.daemon.task.DaemonFactory;
+import org.dinky.daemon.task.DaemonTaskConfig;
+import org.dinky.function.pool.UdfCodePool;
+import org.dinky.job.FlinkJobTask;
+import org.dinky.model.JobInstance;
+import org.dinky.model.Tenant;
+import org.dinky.scheduler.client.ProjectClient;
+import org.dinky.scheduler.config.DolphinSchedulerProperties;
+import org.dinky.scheduler.exception.SchedulerException;
+import org.dinky.scheduler.model.Project;
+import org.dinky.service.JobInstanceService;
+import org.dinky.service.SysConfigService;
+import org.dinky.service.TaskService;
+import org.dinky.service.TenantService;
+import org.dinky.utils.UDFUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -118,7 +118,7 @@ public class SystemInit implements ApplicationRunner {
     /**
      * get dolphinscheduler's project
      *
-     * @return: com.dlink.scheduler.model.Project
+     * @return: org.dinky.scheduler.model.Project
      */
     public static Project getProject() {
         if (Asserts.isNull(project)) {

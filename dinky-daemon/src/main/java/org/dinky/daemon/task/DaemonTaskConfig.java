@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.daemon.task;
+package org.dinky.daemon.task;
 
 public class DaemonTaskConfig {
 

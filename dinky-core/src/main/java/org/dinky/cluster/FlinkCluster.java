@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.cluster;
+package org.dinky.cluster;
 
-import com.dlink.api.FlinkAPI;
-import com.dlink.assertion.Asserts;
+import org.dinky.api.FlinkAPI;
+import org.dinky.assertion.Asserts;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

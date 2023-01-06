@@ -17,11 +17,11 @@
  *
  */
 
-package com.dlink.scheduler.model;
+package org.dinky.scheduler.model;
 
-import com.dlink.scheduler.enums.Flag;
-import com.dlink.scheduler.enums.ProcessExecutionTypeEnum;
-import com.dlink.scheduler.enums.ReleaseState;
+import org.dinky.scheduler.enums.Flag;
+import org.dinky.scheduler.enums.ProcessExecutionTypeEnum;
+import org.dinky.scheduler.enums.ReleaseState;
 
 import java.util.Date;
 import java.util.List;

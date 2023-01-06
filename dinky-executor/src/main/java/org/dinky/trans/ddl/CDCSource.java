@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.trans.ddl;
+package org.dinky.trans.ddl;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.parser.SingleSqlParserFactory;
+import org.dinky.assertion.Asserts;
+import org.dinky.parser.SingleSqlParserFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;

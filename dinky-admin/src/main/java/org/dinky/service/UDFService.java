@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.service;
+package org.dinky.service;
 
 /**
  * @author ZackYoung

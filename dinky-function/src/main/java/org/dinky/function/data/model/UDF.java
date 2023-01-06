@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.function.data.model;
+package org.dinky.function.data.model;
 
 import org.apache.flink.table.catalog.FunctionLanguage;
 

@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.explainer.lineage;
+package org.dinky.explainer.lineage;
 
-import com.dlink.explainer.ca.TableCA;
+import org.dinky.explainer.ca.TableCA;
 
 import java.util.ArrayList;
 import java.util.List;

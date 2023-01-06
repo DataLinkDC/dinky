@@ -1,4 +1,4 @@
-package com.dlink.configure;
+package org.dinky.configure;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +21,7 @@ public class Knife4jConfiguration {
             .apiInfo(apiInfo())
             .groupName("V1.0")
             .select()
-            .apis(RequestHandlerSelectors.basePackage("com.dlink.controller"))
+            .apis(RequestHandlerSelectors.basePackage("org.dinky.controller"))
             .paths(PathSelectors.any())
             .build();
 
@@ -30,8 +30,8 @@ public class Knife4jConfiguration {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("Dlink REST APIS")
-                .description("Dlink REST APIS")
+                .title("Dinky REST APIS")
+                .description("Dinky REST APIS")
                 .version("1.0")
                 .build();
     }

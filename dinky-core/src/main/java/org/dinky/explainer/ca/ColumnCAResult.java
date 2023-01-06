@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.explainer.ca;
+package org.dinky.explainer.ca;
 
-import com.dlink.explainer.lineage.LineageColumnGenerator;
+import org.dinky.explainer.lineage.LineageColumnGenerator;
 
 import java.util.List;
 import java.util.Map;

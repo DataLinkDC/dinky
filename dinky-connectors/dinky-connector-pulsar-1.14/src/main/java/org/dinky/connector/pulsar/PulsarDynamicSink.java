@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.connector.pulsar;
+package org.dinky.connector.pulsar;
 
 import static org.apache.flink.util.Preconditions.checkNotNull;
 

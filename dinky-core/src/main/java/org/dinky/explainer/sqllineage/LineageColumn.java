@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.explainer.sqllineage;
+package org.dinky.explainer.sqllineage;
 
-import com.dlink.assertion.Asserts;
+import org.dinky.assertion.Asserts;
 
 import lombok.Data;
 

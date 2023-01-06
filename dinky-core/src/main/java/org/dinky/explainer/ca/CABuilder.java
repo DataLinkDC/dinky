@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.explainer.ca;
+package org.dinky.explainer.ca;
 
-import com.dlink.plus.FlinkSqlPlus;
+import org.dinky.plus.FlinkSqlPlus;
 
 import java.util.ArrayList;
 import java.util.List;

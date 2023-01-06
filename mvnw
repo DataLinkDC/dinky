@@ -123,14 +123,14 @@ fi
 if [ -z "$JAVA_HOME" ]; then
   javaExecutable="`which javac`"
   if [ -n "$javaExecutable" ] && ! [ "`expr \"$javaExecutable\" : '\([^ ]*\)'`" = "no" ]; then
-    # readlink(1) is not available as standard on Solaris 10.
-    readLink=`which readlink`
+    # readinky(1) is not available as standard on Solaris 10.
+    readLink=`which readinky`
     if [ ! `expr "$readLink" : '\([^ ]*\)'` = "no" ]; then
       if $darwin ; then
         javaHome="`dirname \"$javaExecutable\"`"
         javaExecutable="`cd \"$javaHome\" && pwd -P`/javac"
       else
-        javaExecutable="`readlink -f \"$javaExecutable\"`"
+        javaExecutable="`readinky -f \"$javaExecutable\"`"
       fi
       javaHome="`dirname \"$javaExecutable\"`"
       javaHome=`expr "$javaHome" : '\(.*\)/bin'`

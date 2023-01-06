@@ -1,5 +1,5 @@
-com.dlink.gateway.yarn.YarnApplicationGateway
-com.dlink.gateway.yarn.YarnPerJobGateway
-com.dlink.gateway.yarn.YarnSessionGateway
-com.dlink.gateway.kubernetes.KubernetesApplicationGateway
-com.dlink.gateway.kubernetes.KubernetesSessionGateway
+org.dinky.gateway.yarn.YarnApplicationGateway
+org.dinky.gateway.yarn.YarnPerJobGateway
+org.dinky.gateway.yarn.YarnSessionGateway
+org.dinky.gateway.kubernetes.KubernetesApplicationGateway
+org.dinky.gateway.kubernetes.KubernetesSessionGateway

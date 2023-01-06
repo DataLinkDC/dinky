@@ -17,19 +17,19 @@
  *
  */
 
-package com.dlink.controller;
+package org.dinky.controller;
 
-import com.dlink.common.result.Result;
-import com.dlink.dto.APICancelDTO;
-import com.dlink.dto.APIExecuteJarDTO;
-import com.dlink.dto.APIExecuteSqlDTO;
-import com.dlink.dto.APIExplainSqlDTO;
-import com.dlink.dto.APISavePointDTO;
-import com.dlink.dto.APISavePointTaskDTO;
-import com.dlink.service.APIService;
-import com.dlink.service.JobInstanceService;
-import com.dlink.service.StudioService;
-import com.dlink.service.TaskService;
+import org.dinky.common.result.Result;
+import org.dinky.dto.APICancelDTO;
+import org.dinky.dto.APIExecuteJarDTO;
+import org.dinky.dto.APIExecuteSqlDTO;
+import org.dinky.dto.APIExplainSqlDTO;
+import org.dinky.dto.APISavePointDTO;
+import org.dinky.dto.APISavePointTaskDTO;
+import org.dinky.service.APIService;
+import org.dinky.service.JobInstanceService;
+import org.dinky.service.StudioService;
+import org.dinky.service.TaskService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

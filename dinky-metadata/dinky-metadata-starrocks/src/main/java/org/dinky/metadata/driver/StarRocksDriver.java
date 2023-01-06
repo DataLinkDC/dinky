@@ -17,15 +17,15 @@
  *
  */
 
-package com.dlink.metadata.driver;
+package org.dinky.metadata.driver;
 
-import com.dlink.metadata.convert.ITypeConvert;
-import com.dlink.metadata.convert.StarRocksTypeConvert;
-import com.dlink.metadata.query.IDBQuery;
-import com.dlink.metadata.query.StarRocksQuery;
-import com.dlink.metadata.result.JdbcSelectResult;
-import com.dlink.utils.LogUtil;
-import com.dlink.utils.SqlUtil;
+import org.dinky.metadata.convert.ITypeConvert;
+import org.dinky.metadata.convert.StarRocksTypeConvert;
+import org.dinky.metadata.query.IDBQuery;
+import org.dinky.metadata.query.StarRocksQuery;
+import org.dinky.metadata.result.JdbcSelectResult;
+import org.dinky.utils.LogUtil;
+import org.dinky.utils.SqlUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;

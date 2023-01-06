@@ -17,14 +17,14 @@
  *
  */
 
-package com.dlink.controller;
+package org.dinky.controller;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.common.result.ProTableResult;
-import com.dlink.common.result.Result;
-import com.dlink.gateway.result.TestResult;
-import com.dlink.model.ClusterConfiguration;
-import com.dlink.service.ClusterConfigurationService;
+import org.dinky.assertion.Asserts;
+import org.dinky.common.result.ProTableResult;
+import org.dinky.common.result.Result;
+import org.dinky.gateway.result.TestResult;
+import org.dinky.model.ClusterConfiguration;
+import org.dinky.service.ClusterConfigurationService;
 
 import java.util.ArrayList;
 import java.util.List;

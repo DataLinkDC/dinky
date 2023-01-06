@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.function.compiler;
+package org.dinky.function.compiler;
 
-import com.dlink.function.data.model.UDF;
-import com.dlink.function.data.model.UDFPath;
+import org.dinky.function.data.model.UDF;
+import org.dinky.function.data.model.UDFPath;
 
 import java.util.ArrayList;
 import java.util.List;

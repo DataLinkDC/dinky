@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.metadata.constant;
+package org.dinky.metadata.constant;
 
 /**
  * SqlServer constant
