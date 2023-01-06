@@ -542,6 +542,13 @@ public class JobManager {
                     job.setJobId(gatewayResult.getAppId());
                     job.setJids(gatewayResult.getJids());
                     job.setJobManagerAddress(formatAddress(gatewayResult.getWebURL()));
+
+                    if (gatewayResult.isSucess()){
+                        job.setStatus(Job.JobStatus.SUCCESS);
+                    }else {
+                        job.setStatus(Job.JobStatus.FAILED);
+                        job.setError(gatewayResult.getError());
+                    }
                 } else {
                     for (StatementParam item : jobParam.getExecute()) {
                         executor.executeSql(item.getValue());
@@ -566,11 +573,15 @@ public class JobManager {
                                 .getResult(null);
                         job.setResult(result);
                     }
+                    job.setStatus(Job.JobStatus.SUCCESS);
                 }
             }
             job.setEndTime(LocalDateTime.now());
-            job.setStatus(Job.JobStatus.SUCCESS);
-            success();
+            if (job.getStatus().name().equals(Job.JobStatus.FAILED.name())){
+                failed();
+            }else {
+                success();
+            }
         } catch (Exception e) {
             String error = LogUtil.getError("Exception in executing FlinkSQL:\n" + currentSql, e);
             job.setEndTime(LocalDateTime.now());
@@ -728,8 +739,16 @@ public class JobManager {
             job.setJids(gatewayResult.getJids());
             job.setJobManagerAddress(formatAddress(gatewayResult.getWebURL()));
             job.setEndTime(LocalDateTime.now());
-            job.setStatus(Job.JobStatus.SUCCESS);
-            success();
+
+            if (gatewayResult.isSucess()){
+                job.setStatus(Job.JobStatus.SUCCESS);
+                success();
+            }else {
+                job.setError(gatewayResult.getError());
+                job.setStatus(Job.JobStatus.FAILED);
+                failed();
+            }
+
         } catch (Exception e) {
             String error = LogUtil.getError(
                     "Exception in executing Jar：\n" + config.getGatewayConfig().getAppConfig().getUserJarPath(), e);
