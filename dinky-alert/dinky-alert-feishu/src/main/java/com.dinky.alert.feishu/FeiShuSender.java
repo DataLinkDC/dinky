@@ -17,11 +17,11 @@
  *
  */
 
-package com.dlink.alert.feishu;
+package org.dinky.alert.feishu;
 
-import com.dlink.alert.AlertResult;
-import com.dlink.alert.ShowType;
-import com.dlink.utils.JSONUtil;
+import org.dinky.alert.AlertResult;
+import org.dinky.alert.ShowType;
+import org.dinky.utils.JSONUtil;
 
 import org.apache.commons.codec.binary.StringUtils;
 import org.apache.http.HttpEntity;

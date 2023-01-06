@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.service;
+package org.dinky.service;
 
-import com.dlink.process.model.ProcessEntity;
+import org.dinky.process.model.ProcessEntity;
 
 import java.util.List;
 

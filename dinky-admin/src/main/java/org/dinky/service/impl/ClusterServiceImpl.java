@@ -17,24 +17,24 @@
  *
  */
 
-package com.dlink.service.impl;
+package org.dinky.service.impl;
 
-import com.dlink.assertion.Assert;
-import com.dlink.assertion.Asserts;
-import com.dlink.cluster.FlinkCluster;
-import com.dlink.cluster.FlinkClusterInfo;
-import com.dlink.constant.FlinkConstant;
-import com.dlink.db.service.impl.SuperServiceImpl;
-import com.dlink.gateway.GatewayType;
-import com.dlink.gateway.config.GatewayConfig;
-import com.dlink.gateway.exception.GatewayException;
-import com.dlink.gateway.result.GatewayResult;
-import com.dlink.job.JobManager;
-import com.dlink.mapper.ClusterMapper;
-import com.dlink.model.Cluster;
-import com.dlink.model.ClusterConfiguration;
-import com.dlink.service.ClusterConfigurationService;
-import com.dlink.service.ClusterService;
+import org.dinky.assertion.Assert;
+import org.dinky.assertion.Asserts;
+import org.dinky.cluster.FlinkCluster;
+import org.dinky.cluster.FlinkClusterInfo;
+import org.dinky.constant.FlinkConstant;
+import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.gateway.GatewayType;
+import org.dinky.gateway.config.GatewayConfig;
+import org.dinky.gateway.exception.GatewayException;
+import org.dinky.gateway.result.GatewayResult;
+import org.dinky.job.JobManager;
+import org.dinky.mapper.ClusterMapper;
+import org.dinky.model.Cluster;
+import org.dinky.model.ClusterConfiguration;
+import org.dinky.service.ClusterConfigurationService;
+import org.dinky.service.ClusterService;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

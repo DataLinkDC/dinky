@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.service;
+package org.dinky.service;
 
-import com.dlink.db.service.ISuperService;
-import com.dlink.model.TaskVersion;
+import org.dinky.db.service.ISuperService;
+import org.dinky.model.TaskVersion;
 
 import java.util.List;
 
@@ -33,7 +33,7 @@ public interface TaskVersionService extends ISuperService<TaskVersion> {
     /**
      * @description 通过作业Id查询版本数据
      * @param taskId
-     * @return java.util.List<com.dlink.model.TaskVersion>
+     * @return java.util.List<org.dinky.model.TaskVersion>
      * @author huang
      * @date 2022/6/22 17:17
      */

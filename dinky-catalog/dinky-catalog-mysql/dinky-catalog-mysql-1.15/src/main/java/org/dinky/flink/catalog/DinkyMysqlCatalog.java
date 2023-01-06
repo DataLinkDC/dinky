@@ -17,12 +17,12 @@
  *
  */
 
-package com.dlink.flink.catalog;
+package org.dinky.flink.catalog;
 
 import static org.apache.flink.util.Preconditions.checkArgument;
 import static org.apache.flink.util.Preconditions.checkNotNull;
 
-import com.dlink.flink.catalog.factory.DlinkMysqlCatalogFactoryOptions;
+import org.dinky.flink.catalog.factory.DinkyMysqlCatalogFactoryOptions;
 
 import org.apache.flink.table.api.Schema;
 import org.apache.flink.table.catalog.AbstractCatalog;
@@ -79,7 +79,7 @@ import org.slf4j.LoggerFactory;
  * 默认db，会被强制指定，不管输入的是什么，都会指定为 default_database
  * 可以读取配置文件信息来获取数据库连接，而不是在sql语句中强制指定。
  */
-public class DlinkMysqlCatalog extends AbstractCatalog {
+public class DinkyMysqlCatalog extends AbstractCatalog {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -191,7 +191,7 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
         return url;
     }
 
-    public DlinkMysqlCatalog(String name,
+    public DinkyMysqlCatalog(String name,
                              String url,
                              String user,
                              String pwd) {
@@ -201,11 +201,11 @@ public class DlinkMysqlCatalog extends AbstractCatalog {
         this.pwd = pwd;
     }
 
-    public DlinkMysqlCatalog(String name) {
+    public DinkyMysqlCatalog(String name) {
         super(name, defaultDatabase);
-        this.url = DlinkMysqlCatalogFactoryOptions.URL.defaultValue();
-        this.user = DlinkMysqlCatalogFactoryOptions.USERNAME.defaultValue();
-        this.pwd = DlinkMysqlCatalogFactoryOptions.PASSWORD.defaultValue();
+        this.url = DinkyMysqlCatalogFactoryOptions.URL.defaultValue();
+        this.user = DinkyMysqlCatalogFactoryOptions.USERNAME.defaultValue();
+        this.pwd = DinkyMysqlCatalogFactoryOptions.PASSWORD.defaultValue();
     }
 
     @Override

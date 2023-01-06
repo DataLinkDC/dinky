@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.configure;
+package org.dinky.configure;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

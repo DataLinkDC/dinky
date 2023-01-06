@@ -19,44 +19,44 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.dlink</groupId>
-        <artifactId>dlink</artifactId>
+        <groupId>org.dinky</groupId>
+        <artifactId>dinky</artifactId>
         <version>0.7.0</version>
     </parent>
 
-    <artifactId>dlink-connectors</artifactId>
+    <artifactId>dinky-connectors</artifactId>
     <packaging>pom</packaging>
 
     <profiles>
         <profile>
             <id>flink-1.11</id>
             <modules>
-                <module>dlink-connector-jdbc-1.11</module>
+                <module>dinky-connector-jdbc-1.11</module>
             </modules>
         </profile>
 
         <profile>
             <id>flink-1.12</id>
             <modules>
-                <module>dlink-connector-jdbc-1.12</module>
+                <module>dinky-connector-jdbc-1.12</module>
             </modules>
         </profile>
 
         <profile>
             <id>flink-1.13</id>
             <modules>
-                <module>dlink-connector-jdbc-1.13</module>
-                <module>dlink-connector-phoenix-1.13</module>
-                <module>dlink-connector-doris-1.13</module>
+                <module>dinky-connector-jdbc-1.13</module>
+                <module>dinky-connector-phoenix-1.13</module>
+                <module>dinky-connector-doris-1.13</module>
             </modules>
         </profile>
 
         <profile>
             <id>flink-1.14</id>
             <modules>
-                <module>dlink-connector-jdbc-1.14</module>
-                <module>dlink-connector-phoenix-1.14</module>
-                <module>dlink-connector-pulsar-1.14</module>
+                <module>dinky-connector-jdbc-1.14</module>
+                <module>dinky-connector-phoenix-1.14</module>
+                <module>dinky-connector-pulsar-1.14</module>
             </modules>
         </profile>
 

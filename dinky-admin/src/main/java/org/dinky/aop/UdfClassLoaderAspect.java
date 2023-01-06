@@ -17,12 +17,12 @@
  *
  */
 
-package com.dlink.aop;
+package org.dinky.aop;
 
-import com.dlink.classloader.DinkyClassLoader;
-import com.dlink.context.DinkyClassLoaderContextHolder;
-import com.dlink.job.JobResult;
-import com.dlink.process.exception.DinkyException;
+import org.dinky.classloader.DinkyClassLoader;
+import org.dinky.context.DinkyClassLoaderContextHolder;
+import org.dinky.job.JobResult;
+import org.dinky.process.exception.DinkyException;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -41,15 +41,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UdfClassLoaderAspect {
 
-    @Pointcut("execution(* com.dlink.service.TaskService.*(..))")
+    @Pointcut("execution(* org.dinky.service.TaskService.*(..))")
     public void taskServicePointcut() {
     }
 
-    @Pointcut("execution(* com.dlink.service.APIService.*(..))")
+    @Pointcut("execution(* org.dinky.service.APIService.*(..))")
     public void apiServicePointcut() {
     }
 
-    @Pointcut("execution(* com.dlink.service.StudioService.*(..))")
+    @Pointcut("execution(* org.dinky.service.StudioService.*(..))")
     public void studioServicePointcut() {
     }
 

@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.metadata.parser;
+package org.dinky.metadata.parser;
 
 import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
 import com.alibaba.druid.sql.parser.Lexer;

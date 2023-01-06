@@ -17,15 +17,15 @@
  *
  */
 
-package com.dlink.job;
+package org.dinky.job;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.constant.NetConstant;
-import com.dlink.executor.ExecutorSetting;
-import com.dlink.gateway.GatewayType;
-import com.dlink.gateway.config.GatewayConfig;
-import com.dlink.gateway.config.SavePointStrategy;
-import com.dlink.session.SessionConfig;
+import org.dinky.assertion.Asserts;
+import org.dinky.constant.NetConstant;
+import org.dinky.executor.ExecutorSetting;
+import org.dinky.gateway.GatewayType;
+import org.dinky.gateway.config.GatewayConfig;
+import org.dinky.gateway.config.SavePointStrategy;
+import org.dinky.session.SessionConfig;
 
 import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.RestOptions;

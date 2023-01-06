@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.gateway.result;
+package org.dinky.gateway.result;
 
 /**
  * TestResult

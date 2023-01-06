@@ -12,8 +12,8 @@ title: 如何贡献
 
 我们鼓励任何形式的参与社区，如：
 
-- 将遇到的问题通过 github 上 [issue](https://github.com/DataLinkDC/dlink/issues) 的形式反馈出来
-- 回答别人遇到的 [issue](https://github.com/DataLinkDC/dlink/issues) 问题
+- 将遇到的问题通过 github 上 [issue](https://github.com/DataLinkDC/dinky/issues) 的形式反馈出来
+- 回答别人遇到的 [issue](https://github.com/DataLinkDC/dinky/issues) 问题
 - 讨论新 Feature 的实现方案
 - 帮助完善文档及官网
 - 帮助项目增加测试用例

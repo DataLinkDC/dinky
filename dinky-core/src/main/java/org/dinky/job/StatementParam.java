@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.job;
+package org.dinky.job;
 
-import com.dlink.parser.SqlType;
+import org.dinky.parser.SqlType;
 
 /**
  * StatementParam

@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.service;
+package org.dinky.service;
 
-import com.dlink.common.result.Result;
-import com.dlink.constant.UploadFileConstant;
+import org.dinky.common.result.Result;
+import org.dinky.constant.UploadFileConstant;
 
 import org.springframework.web.multipart.MultipartFile;
 

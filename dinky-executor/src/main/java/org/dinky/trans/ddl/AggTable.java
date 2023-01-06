@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.trans.ddl;
+package org.dinky.trans.ddl;
 
-import com.dlink.parser.SingleSqlParserFactory;
+import org.dinky.parser.SingleSqlParserFactory;
 
 import org.apache.commons.lang3.StringUtils;
 

@@ -187,7 +187,7 @@ mvn clean install -Dmaven.test.skip=true
 
 ```
 创建 远程克隆项目 
-maven ->> dlink->> 生命周期->> 跳过测试 ->> 双击install
+maven ->> dinky->> 生命周期->> 跳过测试 ->> 双击install
 打包完成后 安装包见项目根下  build 文件夹下
 ```
 
@@ -197,15 +197,15 @@ maven ->> dlink->> 生命周期->> 跳过测试 ->> 双击install
 
 ```
 yum -y install git
-git clone https://github.com/DataLinkDC/dlink.git
-cd dlink 
+git clone https://github.com/DataLinkDC/dinky.git
+cd dinky 
 mvn clean install -Dmaven.test.skip=true
 ```
 
 切换到 Dinky 根目录下得 build 文件夹下，即可出现编译后的安装包。
 
 ### 构建 Docker 镜像
-基于Dinky每次发布的[ Release ](http://www.dlink.top/download/download)构建：
+基于Dinky每次发布的[ Release ](http://www.dinky.top/download/download)构建：
 1. 将`Dockerfile`、`docker-entrypoint.sh`文件拷贝至release包解压目录
 2. 执行下述构建与推送命令，根据需要推送至公共或私有仓库
 ```bash

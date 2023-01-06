@@ -7,7 +7,7 @@ title: 0.6.5 release
 
 | 版本    | 二进制程序                                                                                                                 | Source                                                                                |
 |-------|-----------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
-| 0.6.5 | [dlink-release-0.6.5.tar.gz](https://github.com/DataLinkDC/dlink/releases/download/v0.6.5/dlink-release-0.6.5.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dlink/archive/refs/tags/v0.6.5.zip) |
+| 0.6.5 | [dinky-release-0.6.5.tar.gz](https://github.com/DataLinkDC/dinky/releases/download/v0.6.5/dinky-release-0.6.5.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dinky/archive/refs/tags/v0.6.5.zip) |
 
 
 ## Dinky发行说明
@@ -47,7 +47,7 @@ Dinky 0.6.5 是一个优化修复的版本。
 - 修复字段血缘分析不能处理相同字段名
 - 修复集群配置页面的问题
 - 修复邮件报警消息不能自定义昵称
-- 修复 dlink-connector-phoenix-1.14 编译异常
+- 修复 dinky-connector-phoenix-1.14 编译异常
 - 修复 Oracle 字段可为空的识别错误
 - 修复 CDCSOURCE 中 MySQL varbinary 和 binary 类型的支持
 

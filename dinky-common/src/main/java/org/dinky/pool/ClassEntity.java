@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.pool;
+package org.dinky.pool;
 
-import com.dlink.assertion.Asserts;
+import org.dinky.assertion.Asserts;
 
 import lombok.Getter;
 import lombok.Setter;

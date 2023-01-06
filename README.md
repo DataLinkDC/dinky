@@ -1,11 +1,11 @@
 # Dinky
 
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
-[![Total Lines](https://tokei.rs/b1/github/DataLinkDC/dlink?category=lines)](https://github.com/DataLinkDC/dlink)
+[![Total Lines](https://tokei.rs/b1/github/DataLinkDC/dinky?category=lines)](https://github.com/DataLinkDC/dinky)
 [![CN doc](https://img.shields.io/badge/文档-中文版-blue.svg)](README_zh_CN.md)
 [![EN doc](https://img.shields.io/badge/document-English-blue.svg)](README.md)
 
-[![Stargazers over time](https://starchart.cc/DataLinkDC/dlink.svg)](https://starchart.cc/DataLinkDC/dlink)
+[![Stargazers over time](https://starchart.cc/DataLinkDC/dinky.svg)](https://starchart.cc/DataLinkDC/dinky)
 
 ## Introduction
 
@@ -32,41 +32,41 @@ Its main feature are as follows:
 
 ## Principle
 
-![dinky_principle](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/main/dinky_principle.png)
+![dinky_principle](https://raw.githubusercontent.com/DataLinkDC/dinky/main/dinky-doc/images/main/dinky_principle.png)
 
 ## Run the Screenshot
 
 > FlinkSQL Studio
 
-![datastudio](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/070/datastudio.png)
+![datastudio](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/dinky-doc/images/070/datastudio.png)
 
 > Grammar Check
 
-![checksql](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/070/checksql.png)
+![checksql](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/dinky-doc/images/070/checksql.png)
 
 > Version Management
 
-![versiondiff](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/070/versiondiff.png)
+![versiondiff](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/dinky-doc/images/070/versiondiff.png)
 
 > lineage
 
-![lineage](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/070/lineage.png)
+![lineage](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/dinky-doc/images/070/lineage.png)
 
 > BI Charts
 
-![charts](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/070/charts.png)
+![charts](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/dinky-doc/images/070/charts.png)
 
 > Metadata Query
 
-![metadata](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/070/metadata.png)
+![metadata](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/dinky-doc/images/070/metadata.png)
 
 > Task Monitoring
 
-![monitor](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/070/monitor.png)
+![monitor](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/dinky-doc/images/070/monitor.png)
 
 > Job Information
 
-![jobinfo](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/070/jobinfo.png)
+![jobinfo](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/dinky-doc/images/070/jobinfo.png)
 
 ## Near-term Plans
 
@@ -78,11 +78,11 @@ Its main feature are as follows:
 
 ## Participate in Contributions
 
-Welcome to join the community, build a win-win situation, please refer to the contribution process： [How to contribute](https://github.com/DataLinkDC/dlink/blob/dev/docs/docs/developer_guide/contribution/how_contribute.md).
+Welcome to join the community, build a win-win situation, please refer to the contribution process： [How to contribute](https://github.com/DataLinkDC/dinky/blob/dev/docs/docs/developer_guide/contribution/how_contribute.md).
 
 ## How to Deploy
 
-See [source code compilation](https://github.com/DataLinkDC/dlink/blob/dev/docs/docs/build_deploy/build.md) and [installation and deployment](https://github.com/DataLinkDC/dlink/blob/dev/docs/docs/build_deploy/deploy.md) for details.
+See [source code compilation](https://github.com/DataLinkDC/dinky/blob/dev/docs/docs/build_deploy/build.md) and [installation and deployment](https://github.com/DataLinkDC/dinky/blob/dev/docs/docs/build_deploy/deploy.md) for details.
 
 ## How to Upgrade
 
@@ -122,19 +122,19 @@ A partial list of acknowledgements follows:
 
 [SpringBoot]()
 
-Thanks to [JetBrains](https://www.jetbrains.com/?from=dlink) for sponsoring a free open source license.
+Thanks to [JetBrains](https://www.jetbrains.com/?from=dinky) for sponsoring a free open source license.
 
-[![JetBrains](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/main/jetbrains.svg)](https://www.jetbrains.com/?from=dlink)
+[![JetBrains](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/dinky-doc/images/main/jetbrains.svg)](https://www.jetbrains.com/?from=dinky)
 
 ## Get Help
 
 1.Submit an issue.
 
-2.Visit the [official website](http://www.dlink.top/#/) website to read the latest documentation manual.
+2.Visit the [official website](http://www.dinky.top/#/) website to read the latest documentation manual.
 
 3.It is recommended to scan the code to enter the DingTalk group.
 
-<img src="https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/main/dinkydingding.jpg" alt="dinkydingding" style="zoom:30%;" />
+<img src="https://raw.githubusercontent.com/DataLinkDC/dinky/dev/dinky-doc/images/main/dinkydingding.jpg" alt="dinkydingding" style="zoom:30%;" />
 
 4.Enter the WeChat user community group (recommended, add WeChat `wenmo_ai` to invite into the group) and QQ user community group (**543709668**) to communicate, and apply for the remarks "Dinky + company name + position".
 
@@ -144,5 +144,5 @@ Thanks to [JetBrains](https://www.jetbrains.com/?from=dlink) for sponsoring a fr
 
 ## Copyright
 
-Please refer to the [LICENSE](https://github.com/DataLinkDC/dlink/blob/dev/LICENSE) document.
+Please refer to the [LICENSE](https://github.com/DataLinkDC/dinky/blob/dev/LICENSE) document.
 

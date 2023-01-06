@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.function.util;
+package org.dinky.function.util;
 
 import java.io.File;
 import java.io.IOException;

@@ -28,7 +28,7 @@ Apache hudi (发音为“ hoodie”)是下一代流式数据湖平台。Apache H
 | Flink-SQL-CDC | 2.1.1                               |            |
 | Hudi          | 0.10.0-patch                        | 打过补丁的 |
 | Mysql         | 8.0.13                              | 阿里云     |
-| Dlink         | dlink-release-0.5.0-SNAPSHOT.tar.gz |            |
+| Dinky         | dinky-release-0.5.0-SNAPSHOT.tar.gz |            |
 | Scala         | 2.12                                |            |
 
 ### 1. 部署Flink1.13.5
@@ -87,17 +87,17 @@ scp -r ./* cdh7:`pwd`
 
 
 
-### 3. 安装 Dlink-0.5.0
+### 3. 安装 Dinky-0.5.0
 
-a. github 地址:  https://github.com/DataLinkDC/dlink
+a. github 地址:  https://github.com/DataLinkDC/dinky
 
-b. 部署步骤见 github-readme.md  传送门: https://github.com/DataLinkDC/dlink/blob/main/README.md
+b. 部署步骤见 github-readme.md  传送门: https://github.com/DataLinkDC/dinky/blob/main/README.md
 
-ps:  注意 还需要将 `hudi-flink-bundle_2.12-0.10.0.jar` 这个包放到 dlink的 `plugins` 下 。
+ps:  注意 还需要将 `hudi-flink-bundle_2.12-0.10.0.jar` 这个包放到 dinky的 `plugins` 下 。
 
 `plugins` 下的包 如下图所示:
 
-![dlinkll](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/hudi/dlinkll.png)
+![dinkyll](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/hudi/dinkyll.png)
 
 c. 访问:  [http://ip:port/#/user/login](http://cdh7.vision.com:8811/#/user/login)  默认用户: admin  密码: admin
 
@@ -227,7 +227,7 @@ insert into sink_order_mysql_goods_order select * from source_order_mysql_goods_
 
 ![hudi_executesql](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/hudi/hudi_executesql.png)
 
-### 4. dlink 查看执行的任务
+### 4. dinky 查看执行的任务
 
 ![hudi_process](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/hudi/hudi_process.png)
 
@@ -287,11 +287,11 @@ INSERT INTO `order`.`goods_order`(`goods_order_id`, `goods_order_uid`, `customer
 
 ![hudi_hiveinsert](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/hudi/hudi_hiveinsert.png)
 
-至此 Dlink在Flink-SQL-CDC 到Hudi Sync Hive 测试结束
+至此 Dinky在Flink-SQL-CDC 到Hudi Sync Hive 测试结束
 
 ##  结论
 
-通过 Dlink + Flink-Mysql-CDC + Hudi 的方式大大降低了我们流式入湖的成本，其中 Flink-Mysql-CDC 简化了CDC的架构与成本，而 Hudi 高性能的读写更有利于变动数据的存储，最后 Dlink 则将整个数据开发过程 sql 平台化，使我们的开发运维更加专业且舒适，期待 Dlink 后续的发展。
+通过 Dinky + Flink-Mysql-CDC + Hudi 的方式大大降低了我们流式入湖的成本，其中 Flink-Mysql-CDC 简化了CDC的架构与成本，而 Hudi 高性能的读写更有利于变动数据的存储，最后 Dinky 则将整个数据开发过程 sql 平台化，使我们的开发运维更加专业且舒适，期待 Dinky 后续的发展。
 
 
 ##  作者

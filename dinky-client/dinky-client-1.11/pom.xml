@@ -20,13 +20,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>dlink-client</artifactId>
-        <groupId>com.dlink</groupId>
+        <artifactId>dinky-client</artifactId>
+        <groupId>org.dinky</groupId>
         <version>0.7.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>dlink-client-1.11</artifactId>
+    <artifactId>dinky-client-1.11</artifactId>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>${target.java.version}</maven.compiler.source>
@@ -35,16 +35,16 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-client-base</artifactId>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-client-base</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-common</artifactId>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-common</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-flink-1.11</artifactId>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-flink-1.11</artifactId>
             <scope>provided</scope>
         </dependency>
     </dependencies>

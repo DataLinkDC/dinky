@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.db.annotation;
+package org.dinky.db.annotation;
 
 /**
  * 新增接口

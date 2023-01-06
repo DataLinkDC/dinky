@@ -17,12 +17,12 @@
  *
  */
 
-package com.dlink.service.impl;
+package org.dinky.service.impl;
 
-import com.dlink.db.service.impl.SuperServiceImpl;
-import com.dlink.mapper.TaskVersionMapper;
-import com.dlink.model.TaskVersion;
-import com.dlink.service.TaskVersionService;
+import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.mapper.TaskVersionMapper;
+import org.dinky.model.TaskVersion;
+import org.dinky.service.TaskVersionService;
 
 import java.util.List;
 

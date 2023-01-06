@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.gateway.config;
+package org.dinky.gateway.config;
 
-import com.dlink.assertion.Asserts;
+import org.dinky.assertion.Asserts;
 
 /**
  * SavePointType

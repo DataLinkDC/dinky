@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.connector.pulsar.util;
+package org.dinky.connector.pulsar.util;
 
 import static org.apache.flink.configuration.description.TextElement.text;
 
@@ -51,7 +51,7 @@ public class PulsarConnectorOptions {
     public static final ConfigOption<String> ADMIN_URL =
             ConfigOptions.key("connector.admin-url")
                     .stringType()
-                    .defaultValue("http://pulsar-dlink-qa.dlink.com:8080")
+                    .defaultValue("http://pulsar-dinky-qa.dinky.com:8080")
                     .withDescription(
                             "Defines pulsar admin url. ");
 

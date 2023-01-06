@@ -17,12 +17,12 @@
  *
  */
 
-package com.dlink.controller;
+package org.dinky.controller;
 
-import com.dlink.common.result.ProTableResult;
-import com.dlink.common.result.Result;
-import com.dlink.process.model.ProcessEntity;
-import com.dlink.service.ProcessService;
+import org.dinky.common.result.ProTableResult;
+import org.dinky.common.result.Result;
+import org.dinky.process.model.ProcessEntity;
+import org.dinky.service.ProcessService;
 
 import java.util.List;
 

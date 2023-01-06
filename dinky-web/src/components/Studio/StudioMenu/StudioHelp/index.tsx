@@ -32,8 +32,8 @@ const StudioMsg = () => {
       <Paragraph>
         <ul>
           <li>
-            <Link href="https://github.com/DataLinkDC/dlink"
-                  target="_blank">GitHub：https://github.com/DataLinkDC/dlink</Link>
+            <Link href="https://github.com/DataLinkDC/dinky"
+                  target="_blank">GitHub：https://github.com/DataLinkDC/dinky</Link>
           </li>
           <li>
             <Link href="https://gitee.com/DataLinkDC/Dinky" target="_blank">Gitee:
@@ -43,7 +43,7 @@ const StudioMsg = () => {
             公众号：DataLink数据中台
           </li>
           <li>
-            <Link href="http://www.dlink.top" target="_blank">官网文档：http://www.dlink.top</Link>
+            <Link href="http://www.dinky.top" target="_blank">官网文档：http://www.dinky.top</Link>
           </li>
           <li>
             <Link href="https://space.bilibili.com/366484959/video" target="_blank">B站视频：是文末呀</Link>
@@ -62,7 +62,7 @@ const StudioMsg = () => {
         <p>2.关于 Bug 反馈与功能改进或提议请通过 issue 进行，请阅读 issue 文档要求。</p>
         <p>3.部署和使用前请先仔细阅读 Readme、公众号文章、官网文档、B站视频。</p>
         <p>4.群提问题请礼貌并且说明【版本、执行模式、操作描述、截图】。</p>
-        <p>5.Issue 登记谁在使用 Dlink，可进入企业用户群提供技术支持。</p>
+        <p>5.Issue 登记谁在使用 Dinky，可进入企业用户群提供技术支持。</p>
       </Paragraph>
     </Typography>
   );

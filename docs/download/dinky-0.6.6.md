@@ -5,7 +5,7 @@ title: 0.6.6 release
 
 | 版本    | 二进制程序                                                                                                                 | Source                                                                                |
 |-------|-----------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
-| 0.6.6 | [dlink-release-0.6.6.tar.gz](https://github.com/DataLinkDC/dlink/releases/download/v0.6.6/dlink-release-0.6.6.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dlink/archive/refs/tags/v0.6.6.zip) |
+| 0.6.6 | [dinky-release-0.6.6.tar.gz](https://github.com/DataLinkDC/dinky/releases/download/v0.6.6/dinky-release-0.6.6.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dinky/archive/refs/tags/v0.6.6.zip) |
 
 ## Dinky发行说明
 
@@ -22,7 +22,7 @@ Dinky 0.6.6 是一个优化修复的版本。
 - 新增历史版本对比
 - 新增 Flink MySql CataLog,在 FlinkSQLEnv 中添加默认的 mysql CataLog
 - 新增 1.13版本 的 Doris 连接 隐藏列 **_DORIS_DELETE** 的处理
-- 新增 dlink-connect-pulsar
+- 新增 dinky-connect-pulsar
 - 新增 **运维中心** 作业从**指定 CheckPoint 恢复**
 - 新增元数据功能
 - 新增 Flink 元数据信息和列详细信息

@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.scheduler.model;
+package org.dinky.scheduler.model;
 
-import com.dlink.scheduler.enums.DataType;
-import com.dlink.scheduler.enums.Direct;
+import org.dinky.scheduler.enums.DataType;
+import org.dinky.scheduler.enums.Direct;
 
 import java.io.Serializable;
 

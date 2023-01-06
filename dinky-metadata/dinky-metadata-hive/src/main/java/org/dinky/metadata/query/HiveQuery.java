@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.metadata.query;
+package org.dinky.metadata.query;
 
-import com.dlink.metadata.constant.HiveConstant;
+import org.dinky.metadata.constant.HiveConstant;
 
 public class HiveQuery extends AbstractDBQuery {
     @Override

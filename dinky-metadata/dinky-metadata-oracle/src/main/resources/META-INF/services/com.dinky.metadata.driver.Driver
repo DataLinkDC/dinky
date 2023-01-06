@@ -1,1 +1,1 @@
-com.dlink.metadata.driver.OracleDriver
+org.dinky.metadata.driver.OracleDriver

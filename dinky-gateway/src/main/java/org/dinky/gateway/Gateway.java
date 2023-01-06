@@ -17,15 +17,15 @@
  *
  */
 
-package com.dlink.gateway;
+package org.dinky.gateway;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.gateway.config.GatewayConfig;
-import com.dlink.gateway.exception.GatewayException;
-import com.dlink.gateway.result.GatewayResult;
-import com.dlink.gateway.result.SavePointResult;
-import com.dlink.gateway.result.TestResult;
-import com.dlink.model.JobStatus;
+import org.dinky.assertion.Asserts;
+import org.dinky.gateway.config.GatewayConfig;
+import org.dinky.gateway.exception.GatewayException;
+import org.dinky.gateway.result.GatewayResult;
+import org.dinky.gateway.result.SavePointResult;
+import org.dinky.gateway.result.TestResult;
+import org.dinky.model.JobStatus;
 
 import org.apache.flink.runtime.jobgraph.JobGraph;
 

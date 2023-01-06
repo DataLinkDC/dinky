@@ -40,9 +40,9 @@ CDCSOURCE 语句用于将上游指定数据库的所有表的数据采用一个�
 ### 说明
 ```
 # 将下面 Dinky根目录下 整库同步依赖包放置 $FLINK_HOME/lib下
-jar/dlink-client-base-${version}.jar
-jar/dlink-common-${version}.jar
-lib/dlink-client-${version}.jar
+jar/dinky-client-base-${version}.jar
+jar/dinky-common-${version}.jar
+lib/dinky-client-${version}.jar
 ```
 
 
@@ -92,14 +92,14 @@ EXECUTE CDCSOURCE jobname WITH (
   'connector' = 'mysql-cdc',
   'hostname' = '127.0.0.1',
   'port' = '3306',
-  'username' = 'dlink',
-  'password' = 'dlink',
+  'username' = 'dinky',
+  'password' = 'dinky',
   'checkpoint' = '3000',
   'scan.startup.mode' = 'initial',
   'parallelism' = '1',
   'table-name' = 'test\.student,test\.score',
   'sink.connector'='datastream-kafka',
-  'sink.topic'='dlinkcdc',
+  'sink.topic'='dinkycdc',
   'sink.brokers'='127.0.0.1:9092'
 )
 ```
@@ -113,8 +113,8 @@ EXECUTE CDCSOURCE jobname WITH (
   'connector' = 'mysql-cdc',
   'hostname' = '127.0.0.1',
   'port' = '3306',
-  'username' = 'dlink',
-  'password' = 'dlink',
+  'username' = 'dinky',
+  'password' = 'dinky',
   'checkpoint' = '3000',
   'scan.startup.mode' = 'initial',
   'parallelism' = '1',
@@ -131,8 +131,8 @@ EXECUTE CDCSOURCE jobname WITH (
   'connector' = 'mysql-cdc',
   'hostname' = '127.0.0.1',
   'port' = '3306',
-  'username' = 'dlink',
-  'password' = 'dlink',
+  'username' = 'dinky',
+  'password' = 'dinky',
   'checkpoint' = '3000',
   'scan.startup.mode' = 'initial',
   'parallelism' = '1',
@@ -158,8 +158,8 @@ EXECUTE CDCSOURCE jobname WITH (
   'connector' = 'mysql-cdc',
   'hostname' = '127.0.0.1',
   'port' = '3306',
-  'username' = 'dlink',
-  'password' = 'dlink',
+  'username' = 'dinky',
+  'password' = 'dinky',
   'checkpoint' = '3000',
   'scan.startup.mode' = 'initial',
   'parallelism' = '1',
@@ -234,8 +234,8 @@ EXECUTE CDCSOURCE jobname WITH (
   'connector' = 'mysql-cdc',
   'hostname' = '127.0.0.1',
   'port' = '3306',
-  'username' = 'dlink',
-  'password' = 'dlink',
+  'username' = 'dinky',
+  'password' = 'dinky',
   'checkpoint' = '3000',
   'scan.startup.mode' = 'initial',
   'parallelism' = '1',
@@ -253,7 +253,7 @@ EXECUTE CDCSOURCE jobname WITH (
   'sink[0].table.identifier' = '${schemaName}.${tableName}',
   'sink[0].sink.enable-delete' = 'true',
   'sink[1].connector'='datastream-kafka',
-  'sink[1].topic'='dlinkcdc',
+  'sink[1].topic'='dinkycdc',
   'sink[1].brokers'='127.0.0.1:9092'
 )
 ```
@@ -271,9 +271,9 @@ EXECUTE CDCSOURCE jobname WITH (
 * flink-shaded-guava-18.0-13.0.jar
 * HikariCP-4.0.3.jar
 * druid-1.2.8.jar
-* dlink-metadata-mysql-0.7.0.jar
-* dlink-metadata-base-0.7.0.jar
+* dinky-metadata-mysql-0.7.0.jar
+* dinky-metadata-base-0.7.0.jar
 * jackson-datatype-jsr310-2.13.4.jar
 * flink-sql-connector-mysql-cdc-2.3.0.jar
-* dlink-client-1.14-0.7.0.jar
+* dinky-client-1.14-0.7.0.jar
 ![cdcsource_example.png](http://www.aiwenmo.com/dinky/dev/docs/cdcsource_example.png)

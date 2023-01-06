@@ -12,7 +12,7 @@ title: 远程调试
 - Flink on yarn
 - Flink on K8S
 
-需要说明的是远程调试不需要在服务器部署相应的 Dinky 安装包，在对应的 IDE 启动 `dlink-admin/src/main/java/com/dlink/Dlink.java` 类，即可完成对作业的远程执行和Debug。到目前为止，远程调试已经打通yarn session模式，也希望有感兴趣的小伙伴贡献其他几种模式的远程调试模式。
+需要说明的是远程调试不需要在服务器部署相应的 Dinky 安装包，在对应的 IDE 启动 `dinky-admin/src/main/java/com/dinky/Dinky.java` 类，即可完成对作业的远程执行和Debug。到目前为止，远程调试已经打通yarn session模式，也希望有感兴趣的小伙伴贡献其他几种模式的远程调试模式。
 
 **前提条件：** 在进行远程调试过程中，必须要进行一次 `install`，这样做的原因是为了生成 Dinky 各个模块或者各个包的jar包文件，为远程提交到集群做准备。此方式类似与在服务器部署 Dinky 后，Dinky 启动需要各个 Dinky 的包或者模块对应的 jar 包文件，方可正常启动。
 
@@ -36,10 +36,10 @@ title: 远程调试
 # 下载 Dinky
 
 ```bash
-git clone https://github.com/DataLinkDC/dlink.git
+git clone https://github.com/DataLinkDC/dinky.git
 
 # 如需本地调试开发 请使用 dev 分支
-# 进入到 dlink 源码目录
+# 进入到 dinky 源码目录
 git checkout dev
 ```
 
@@ -58,9 +58,9 @@ mvn clean package -Dmaven.test.skip=true
 
 **说明:**
 
-​ 1.如果不想单独编译前端，在 dlink-web 模块的 pom 下有``frontend-maven-plugins``，可直接前后端编译；
+​ 1.如果不想单独编译前端，在 dinky-web 模块的 pom 下有``frontend-maven-plugins``，可直接前后端编译；
 
-​ 2.如果要分开编译，在后端编译完成后，需要在 dlink-web 下执行 ``npm i --force ``;
+​ 2.如果要分开编译，在后端编译完成后，需要在 dinky-web 下执行 ``npm i --force ``;
 
 :::warning 注意事项
 如果不执行 install 生成的 jar安装不到本地 别的依赖就识别不到本地仓库这些包 所以可能导依赖的时候会报错 CustomTableEnvironmentImpl 这个类未定义 。
@@ -70,7 +70,7 @@ mvn clean package -Dmaven.test.skip=true
 
 ### 修改pom文件
 
-需要修改 dlink 根目录下的 pom.xml 文件，将 **provied**  改为 **complie**，修改如下：
+需要修改 dinky 根目录下的 pom.xml 文件，将 **provied**  改为 **complie**，修改如下：
 
 ```
 <properties>
@@ -85,26 +85,26 @@ mvn clean package -Dmaven.test.skip=true
 
 ### 修改配置文件
 
-修改 dlink 根目录下 **/dlink-admin/src/main/resources/application.yml** 文件
+修改 dinky 根目录下 **/dinky-admin/src/main/resources/application.yml** 文件
 
 配置数据库连接信息：
 
 ```
 spring:
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/dlink?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://127.0.0.1:3306/dinky?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
   application:
-    name: dlink
+    name: dinky
 #  flyway:
 #    enabled: false
 #    clean-disabled: true
 ##    baseline-on-migrate: true
-#    table: dlink_schema_history
+#    table: dinky_schema_history
   # Redis配置
-  #sa-token如需依赖redis，请打开redis配置和pom.xml、dlink-admin/pom.xml中依赖
+  #sa-token如需依赖redis，请打开redis配置和pom.xml、dinky-admin/pom.xml中依赖
   # redis:
   #   host: localhost
   #   port: 6379
@@ -128,7 +128,7 @@ server:
 mybatis-plus:
   mapper-locations: classpath:/mapper/*Mapper.xml
   #实体扫描，多个package用逗号或者分号分隔
-  typeAliasesPackage: com.dlink.model
+  typeAliasesPackage: org.dinky.model
   global-config:
     db-config:
       id-type: auto
@@ -157,7 +157,7 @@ sa-token:
 
 ### 初始化数据库
 
-在MySQL数据库创建 dlink 用户并在 dlink 数据库中执行 dlink-doc/sql/dinky.sql 文件。此外 dlink-doc/sql/upgrade 目录下存放了了各版本的升级 sql 请依次按照版本号执行。
+在MySQL数据库创建 dinky 用户并在 dinky 数据库中执行 dinky-doc/sql/dinky.sql 文件。此外 dinky-doc/sql/upgrade 目录下存放了了各版本的升级 sql 请依次按照版本号执行。
 
 以上文件修改完成后，就可以启动 Dinky。
 
@@ -181,7 +181,7 @@ hive-site.xml 需要使用到 Hive Catalog 时添加
 - 弹框中选择信息如图:
     - 名称: 自定义
     - 级别: 项目库
-    - 添加到模块: dlink-admin
+    - 添加到模块: dinky-admin
 
 ![choose_addrepo_global](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/remote_debug/choose_addrepo_global.png)   
 ![create_repo](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/remote_debug/create_repo.png)
@@ -200,14 +200,14 @@ yarn-session.sh -n 2 -jm 1024 -tm 4096 -s 6 -d
 
 #### 方式一
 
-- 直接启动 dlink-admin 下的 Dlink 启动类，可见 8888 端口。
+- 直接启动 dinky-admin 下的 Dinky 启动类，可见 8888 端口。
 - **访问:** 127.0.0.1:8888
 - **账户密码:** admin/admin
 
 #### 方式二
 
-- 启动 dlink-admin 下的 Dlink 启动类
-- 进入到 **dlink-web** 执行 **npm start**
+- 启动 dinky-admin 下的 Dinky 启动类
+- 进入到 **dinky-web** 执行 **npm start**
 - **访问:** 127.0.0.1:8000
 - **账户密码:** admin/admin
 

@@ -11,7 +11,7 @@ title: Doris
 
 Apache Doris是一个现代化的MPP分析型数据库产品。仅需亚秒级响应时间即可获得查询结果，有效地支持实时数据分析。例如固定历史报表，实时数据分析，交互式数据分析和探索式数据分析等。
 
-目前 Doris 的生态正在建设中，本文将分享如何基于 Dlink 实现 Mysql 变动数据通过 Flink 实时入库 Doris。
+目前 Doris 的生态正在建设中，本文将分享如何基于 Dinky 实现 Mysql 变动数据通过 Flink 实时入库 Doris。
 
 ## 准备
 
@@ -24,7 +24,7 @@ Apache Doris是一个现代化的MPP分析型数据库产品。仅需亚秒级�
 |      Doris      | 0.15.1-rc09  |
 |   doris-flink   | 1.0-SNAPSHOT |
 |      Mysql      |    8.0.13    |
-|      Dlink      |    0.4.0     |
+|      Dinky      |    0.4.0     |
 
 需要注意的是，本文的 Doris 是基于 OracleJDK1.8 和 Scala 2.11 通过源码进行编译打包的，所以所有组件的 scala 均为 2.11，此处和 Doris 社区略有不同。
 
@@ -34,9 +34,9 @@ Apache Doris是一个现代化的MPP分析型数据库产品。仅需亚秒级�
 
 [Doris]: https://doris.apache.org/master/zh-CN/extending-doris/flink-doris-connector.html#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95	"Doris"
 
-本文在 Dlink 部署成功的基础上进行，如需查看具体部署步骤，请阅读《flink sql 知其所以然（十六）：flink sql 开发企业级利器之 Dlink》。
+本文在 Dinky 部署成功的基础上进行，如需查看具体部署步骤，请阅读《flink sql 知其所以然（十六）：flink sql 开发企业级利器之 Dinky》。
 
-Dlink 的 plugins 下添加 `doris-flink-1.0-SNAPSHOT.jar` 和 `flink-sql-connector-mysql-cdc-2.1.0.jar` 。重启 Dlink。
+Dinky 的 plugins 下添加 `doris-flink-1.0-SNAPSHOT.jar` 和 `flink-sql-connector-mysql-cdc-2.1.0.jar` 。重启 Dinky。
 
 ```java
 plugins/ -- Flink 相关扩展

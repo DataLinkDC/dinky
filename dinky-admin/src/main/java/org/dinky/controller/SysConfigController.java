@@ -17,12 +17,12 @@
  *
  */
 
-package com.dlink.controller;
+package org.dinky.controller;
 
-import com.dlink.common.result.ProTableResult;
-import com.dlink.common.result.Result;
-import com.dlink.model.SysConfig;
-import com.dlink.service.SysConfigService;
+import org.dinky.common.result.ProTableResult;
+import org.dinky.common.result.Result;
+import org.dinky.model.SysConfig;
+import org.dinky.service.SysConfigService;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,1 +1,1 @@
-com.dlink.metadata.driver.PostgreSqlDriver
+org.dinky.metadata.driver.PostgreSqlDriver

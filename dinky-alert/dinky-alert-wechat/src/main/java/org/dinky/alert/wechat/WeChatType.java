@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.alert.wechat;
+package org.dinky.alert.wechat;
 
 /**
  * WeChatType

@@ -17,25 +17,25 @@
  *
  */
 
-package com.dlink.service.impl;
+package org.dinky.service.impl;
 
-import static com.dlink.assertion.Asserts.isNotNull;
-import static com.dlink.assertion.Asserts.isNull;
+import static org.dinky.assertion.Asserts.isNotNull;
+import static org.dinky.assertion.Asserts.isNull;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.db.service.impl.SuperServiceImpl;
-import com.dlink.dto.CatalogueTaskDTO;
-import com.dlink.mapper.CatalogueMapper;
-import com.dlink.model.Catalogue;
-import com.dlink.model.JobInstance;
-import com.dlink.model.JobLifeCycle;
-import com.dlink.model.JobStatus;
-import com.dlink.model.Statement;
-import com.dlink.model.Task;
-import com.dlink.service.CatalogueService;
-import com.dlink.service.JobInstanceService;
-import com.dlink.service.StatementService;
-import com.dlink.service.TaskService;
+import org.dinky.assertion.Asserts;
+import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.dto.CatalogueTaskDTO;
+import org.dinky.mapper.CatalogueMapper;
+import org.dinky.model.Catalogue;
+import org.dinky.model.JobInstance;
+import org.dinky.model.JobLifeCycle;
+import org.dinky.model.JobStatus;
+import org.dinky.model.Statement;
+import org.dinky.model.Task;
+import org.dinky.service.CatalogueService;
+import org.dinky.service.JobInstanceService;
+import org.dinky.service.StatementService;
+import org.dinky.service.TaskService;
 
 import java.util.ArrayList;
 import java.util.Collections;

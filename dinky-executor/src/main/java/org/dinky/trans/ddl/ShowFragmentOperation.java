@@ -17,13 +17,13 @@
  *
  */
 
-package com.dlink.trans.ddl;
+package org.dinky.trans.ddl;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.executor.Executor;
-import com.dlink.parser.SingleSqlParserFactory;
-import com.dlink.trans.AbstractOperation;
-import com.dlink.trans.Operation;
+import org.dinky.assertion.Asserts;
+import org.dinky.executor.Executor;
+import org.dinky.parser.SingleSqlParserFactory;
+import org.dinky.trans.AbstractOperation;
+import org.dinky.trans.Operation;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.table.api.TableResult;

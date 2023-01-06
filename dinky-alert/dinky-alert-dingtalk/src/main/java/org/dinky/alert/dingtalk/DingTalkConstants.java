@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.alert.dingtalk;
+package org.dinky.alert.dingtalk;
 
 /**
  * DingTalkConstants

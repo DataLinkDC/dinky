@@ -91,7 +91,7 @@ Dinky 将通过暴露的 NodePort 端口提交 FlinkSQL 作业至外部的 Flink
 
 ### Kubernetes Application
 
-Dinky 将通过 dlink-app 镜像创建的 Flink Kubernetes Application 集群。
+Dinky 将通过 dinky-app 镜像创建的 Flink Kubernetes Application 集群。
 
 **特点：** 作业资源隔离，启动慢，动态扩容，节约网络资源，所有 JobGraph 只创建一个集群。
 

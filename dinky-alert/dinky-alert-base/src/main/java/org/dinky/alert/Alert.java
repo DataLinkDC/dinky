@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.alert;
+package org.dinky.alert;
 
-import com.dlink.assertion.Asserts;
+import org.dinky.assertion.Asserts;
 
 import java.util.Optional;
 import java.util.ServiceLoader;

@@ -20,14 +20,14 @@
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.dlink</groupId>
-        <artifactId>dlink</artifactId>
+        <groupId>org.dinky</groupId>
+        <artifactId>dinky</artifactId>
         <version>0.7.0</version>
     </parent>
-    <artifactId>dlink-catalog</artifactId>
+    <artifactId>dinky-catalog</artifactId>
     <packaging>pom</packaging>
 
     <modules>
-        <module>dlink-catalog-mysql</module>
+        <module>dinky-catalog-mysql</module>
     </modules>
 </project>

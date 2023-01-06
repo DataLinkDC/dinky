@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.result;
+package org.dinky.result;
 
-import com.dlink.job.Job;
-import com.dlink.job.JobResult;
+import org.dinky.job.Job;
+import org.dinky.job.JobResult;
 
 import java.time.LocalDateTime;
 

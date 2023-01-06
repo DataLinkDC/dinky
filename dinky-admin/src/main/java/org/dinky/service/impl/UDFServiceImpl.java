@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.service.impl;
+package org.dinky.service.impl;
 
-import com.dlink.service.UDFService;
+import org.dinky.service.UDFService;
 
 import org.springframework.stereotype.Service;
 

@@ -17,11 +17,11 @@
  *
  */
 
-package com.dlink.controller;
+package org.dinky.controller;
 
-import com.dlink.common.result.Result;
-import com.dlink.constant.DirConstant;
-import com.dlink.service.SystemService;
+import org.dinky.common.result.Result;
+import org.dinky.constant.DirConstant;
+import org.dinky.service.SystemService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

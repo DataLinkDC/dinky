@@ -17,13 +17,13 @@
  *
  */
 
-package com.dlink.scheduler.model;
+package org.dinky.scheduler.model;
 
-import com.dlink.scheduler.enums.Flag;
-import com.dlink.scheduler.enums.Priority;
-import com.dlink.scheduler.enums.TaskExecuteType;
-import com.dlink.scheduler.enums.TaskTimeoutStrategy;
-import com.dlink.scheduler.enums.TimeoutFlag;
+import org.dinky.scheduler.enums.Flag;
+import org.dinky.scheduler.enums.Priority;
+import org.dinky.scheduler.enums.TaskExecuteType;
+import org.dinky.scheduler.enums.TaskTimeoutStrategy;
+import org.dinky.scheduler.enums.TimeoutFlag;
 
 import javax.validation.constraints.NotNull;
 

@@ -17,13 +17,13 @@
  *
  */
 
-package com.dlink.alert.dingtalk;
+package org.dinky.alert.dingtalk;
 
-import com.dlink.alert.AlertResult;
-import com.dlink.alert.AlertSendResponse;
-import com.dlink.alert.ShowType;
-import com.dlink.assertion.Asserts;
-import com.dlink.utils.JSONUtil;
+import org.dinky.alert.AlertResult;
+import org.dinky.alert.AlertSendResponse;
+import org.dinky.alert.ShowType;
+import org.dinky.assertion.Asserts;
+import org.dinky.utils.JSONUtil;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;

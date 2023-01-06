@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.alert.email;
+package org.dinky.alert.email;
 
-import com.dlink.alert.AbstractAlert;
-import com.dlink.alert.AlertResult;
+import org.dinky.alert.AbstractAlert;
+import org.dinky.alert.AlertResult;
 
 /**
  * EmailAlert

@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.admin;
+package org.dinky.admin;
 
 import org.junit.Test;
 

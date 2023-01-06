@@ -17,19 +17,19 @@
  *
  */
 
-package com.dlink.utils;
+package org.dinky.utils;
 
-import com.dlink.constant.FlinkSQLConstant;
-import com.dlink.context.DinkyClassLoaderContextHolder;
-import com.dlink.context.JarPathContextHolder;
-import com.dlink.exception.BusException;
-import com.dlink.function.data.model.UDF;
-import com.dlink.function.util.UDFUtil;
-import com.dlink.model.Task;
-import com.dlink.process.context.ProcessContextHolder;
-import com.dlink.process.exception.DinkyException;
-import com.dlink.process.model.ProcessEntity;
-import com.dlink.service.TaskService;
+import org.dinky.constant.FlinkSQLConstant;
+import org.dinky.context.DinkyClassLoaderContextHolder;
+import org.dinky.context.JarPathContextHolder;
+import org.dinky.exception.BusException;
+import org.dinky.function.data.model.UDF;
+import org.dinky.function.util.UDFUtil;
+import org.dinky.model.Task;
+import org.dinky.process.context.ProcessContextHolder;
+import org.dinky.process.exception.DinkyException;
+import org.dinky.process.model.ProcessEntity;
+import org.dinky.service.TaskService;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.table.catalog.FunctionLanguage;

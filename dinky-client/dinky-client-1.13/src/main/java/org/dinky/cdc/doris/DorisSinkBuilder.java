@@ -17,13 +17,13 @@
  *
  */
 
-package com.dlink.cdc.doris;
+package org.dinky.cdc.doris;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.cdc.AbstractSinkBuilder;
-import com.dlink.cdc.SinkBuilder;
-import com.dlink.model.FlinkCDCConfig;
-import com.dlink.model.Table;
+import org.dinky.assertion.Asserts;
+import org.dinky.cdc.AbstractSinkBuilder;
+import org.dinky.cdc.SinkBuilder;
+import org.dinky.model.FlinkCDCConfig;
+import org.dinky.model.Table;
 
 import org.apache.doris.flink.cfg.DorisExecutionOptions;
 import org.apache.doris.flink.cfg.DorisOptions;

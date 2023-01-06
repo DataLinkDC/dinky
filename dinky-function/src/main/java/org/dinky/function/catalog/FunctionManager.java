@@ -17,12 +17,12 @@
  *
  */
 
-package com.dlink.function.catalog;
+package org.dinky.function.catalog;
 
-import com.dlink.function.constant.FlinkFunctionConstant;
-import com.dlink.function.udf.GetKey;
-import com.dlink.function.udtaf.RowsToMap;
-import com.dlink.function.udtaf.Top2;
+import org.dinky.function.constant.FlinkFunctionConstant;
+import org.dinky.function.udf.GetKey;
+import org.dinky.function.udtaf.RowsToMap;
+import org.dinky.function.udtaf.Top2;
 
 import java.util.HashMap;
 import java.util.Map;

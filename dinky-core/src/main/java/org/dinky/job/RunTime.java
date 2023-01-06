@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.job;
+package org.dinky.job;
 
 /**
  * RunTime

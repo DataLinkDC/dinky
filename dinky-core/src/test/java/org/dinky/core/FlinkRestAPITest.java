@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.core;
+package org.dinky.core;
 
-import com.dlink.api.FlinkAPI;
-import com.dlink.gateway.result.SavePointResult;
+import org.dinky.api.FlinkAPI;
+import org.dinky.gateway.result.SavePointResult;
 
 import java.util.List;
 

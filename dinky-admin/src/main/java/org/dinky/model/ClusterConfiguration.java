@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.model;
+package org.dinky.model;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.db.model.SuperEntity;
+import org.dinky.assertion.Asserts;
+import org.dinky.db.model.SuperEntity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +42,7 @@ import lombok.EqualsAndHashCode;
  **/
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("dlink_cluster_configuration")
+@TableName("dinky_cluster_configuration")
 public class ClusterConfiguration extends SuperEntity {
 
     private static final long serialVersionUID = 5830130188542066241L;

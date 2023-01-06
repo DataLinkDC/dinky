@@ -694,7 +694,7 @@ export default {
   'pages.rc.jar.config': 'Jar 配置',
   'pages.rc.jar.filePathPleaseHolder': '值如: hdfs:///flink/app/demo.jar',
   'pages.rc.jar.filePathHelp': '请输入文件路径! 需要指定 hdfs 上的文件路径,',
-  'pages.rc.jar.mainClassPleaseHolder': 'com.dlink.app.MainApp',
+  'pages.rc.jar.mainClassPleaseHolder': 'org.dinky.app.MainApp',
   'pages.rc.jar.mainClassHelp': '指定可执行 Jar 的启动类，（可选）',
   'pages.rc.jar.execParamsHelp': '指定可执行 Jar 的启动类入参，（可选）',
   'pages.rc.jar.execParamsPleaseHolder': '--id 1,2',

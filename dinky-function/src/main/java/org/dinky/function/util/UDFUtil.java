@@ -17,22 +17,22 @@
  *
  */
 
-package com.dlink.function.util;
+package org.dinky.function.util;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.config.Dialect;
-import com.dlink.context.DinkyClassLoaderContextHolder;
-import com.dlink.context.JarPathContextHolder;
-import com.dlink.function.FunctionFactory;
-import com.dlink.function.compiler.CustomStringJavaCompiler;
-import com.dlink.function.compiler.CustomStringScalaCompiler;
-import com.dlink.function.constant.PathConstant;
-import com.dlink.function.data.model.UDF;
-import com.dlink.function.pool.UdfCodePool;
-import com.dlink.gateway.GatewayType;
-import com.dlink.pool.ClassEntity;
-import com.dlink.pool.ClassPool;
-import com.dlink.process.exception.DinkyException;
+import org.dinky.assertion.Asserts;
+import org.dinky.config.Dialect;
+import org.dinky.context.DinkyClassLoaderContextHolder;
+import org.dinky.context.JarPathContextHolder;
+import org.dinky.function.FunctionFactory;
+import org.dinky.function.compiler.CustomStringJavaCompiler;
+import org.dinky.function.compiler.CustomStringScalaCompiler;
+import org.dinky.function.constant.PathConstant;
+import org.dinky.function.data.model.UDF;
+import org.dinky.function.pool.UdfCodePool;
+import org.dinky.gateway.GatewayType;
+import org.dinky.pool.ClassEntity;
+import org.dinky.pool.ClassPool;
+import org.dinky.process.exception.DinkyException;
 
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.table.catalog.FunctionLanguage;

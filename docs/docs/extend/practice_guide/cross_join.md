@@ -73,8 +73,8 @@ set 'table.local-time-zone' = 'GMT+08:00';
 -- 创建catalog
 create catalog hive with (
     'type' = 'hive',
-    'hadoop-conf-dir' = '/data/soft/dlink-0.6.6/hadoop-conf',
-    'hive-conf-dir' = '/data/soft/dlink-0.6.6/hadoop-conf'
+    'hadoop-conf-dir' = '/data/soft/dinky-0.6.6/hadoop-conf',
+    'hive-conf-dir' = '/data/soft/dinky-0.6.6/hadoop-conf'
 )
 ;
 
@@ -97,8 +97,8 @@ set 'table.local-time-zone' = 'GMT+08:00';
 -- 创建catalog
 create catalog hive with (
     'type' = 'hive',
-    'hadoop-conf-dir' = '/data/soft/dlink-0.6.6/hadoop-conf',
-    'hive-conf-dir' = '/data/soft/dlink-0.6.6/hadoop-conf'
+    'hadoop-conf-dir' = '/data/soft/dinky-0.6.6/hadoop-conf',
+    'hive-conf-dir' = '/data/soft/dinky-0.6.6/hadoop-conf'
 )
 ;
 

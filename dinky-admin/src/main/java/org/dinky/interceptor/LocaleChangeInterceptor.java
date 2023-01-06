@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-package com.dlink.interceptor;
+package org.dinky.interceptor;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.constant.BaseConstant;
+import org.dinky.assertion.Asserts;
+import org.dinky.constant.BaseConstant;
 
 import java.util.Locale;
 

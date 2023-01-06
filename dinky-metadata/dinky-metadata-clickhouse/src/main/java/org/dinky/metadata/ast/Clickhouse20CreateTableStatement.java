@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.metadata.ast;
+package org.dinky.metadata.ast;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,9 +1,9 @@
-package com.dlink.utils;
+package org.dinky.utils;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.common.result.Result;
-import com.dlink.constant.UploadFileConstant;
-import com.dlink.model.CodeEnum;
+import org.dinky.assertion.Asserts;
+import org.dinky.common.result.Result;
+import org.dinky.constant.UploadFileConstant;
+import org.dinky.model.CodeEnum;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;

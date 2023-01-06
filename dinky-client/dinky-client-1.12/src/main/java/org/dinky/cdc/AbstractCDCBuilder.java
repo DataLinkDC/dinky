@@ -17,11 +17,11 @@
  *
  */
 
-package com.dlink.cdc;
+package org.dinky.cdc;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.constant.FlinkParamConstant;
-import com.dlink.model.FlinkCDCConfig;
+import org.dinky.assertion.Asserts;
+import org.dinky.constant.FlinkParamConstant;
+import org.dinky.model.FlinkCDCConfig;
 
 import java.util.ArrayList;
 import java.util.Collections;

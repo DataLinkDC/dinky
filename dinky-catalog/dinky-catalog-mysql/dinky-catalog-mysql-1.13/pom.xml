@@ -20,13 +20,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>dlink-catalog-mysql</artifactId>
-        <groupId>com.dlink</groupId>
+        <artifactId>dinky-catalog-mysql</artifactId>
+        <groupId>org.dinky</groupId>
         <version>0.7.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>dlink-catalog-mysql-1.13</artifactId>
+    <artifactId>dinky-catalog-mysql-1.13</artifactId>
 
     <properties>
         <maven.compiler.source>${target.java.version}</maven.compiler.source>
@@ -35,12 +35,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-common</artifactId>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-common</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-flink-1.13</artifactId>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-flink-1.13</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

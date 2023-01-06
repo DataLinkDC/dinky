@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.gateway.result;
+package org.dinky.gateway.result;
 
 import java.util.List;
 

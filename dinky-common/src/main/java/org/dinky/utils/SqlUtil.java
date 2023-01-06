@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.utils;
+package org.dinky.utils;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.model.SystemConfiguration;
+import org.dinky.assertion.Asserts;
+import org.dinky.model.SystemConfiguration;
 
 /**
  * SqlUtil

@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.context;
+package org.dinky.context;
 
-import com.dlink.classloader.DinkyClassLoader;
+import org.dinky.classloader.DinkyClassLoader;
 
 import java.io.IOException;
 

@@ -17,14 +17,14 @@
  *
  */
 
-package com.dlink.controller;
+package org.dinky.controller;
 
-import com.dlink.common.result.ProTableResult;
-import com.dlink.common.result.Result;
-import com.dlink.model.Role;
-import com.dlink.model.UserRole;
-import com.dlink.service.RoleService;
-import com.dlink.service.UserRoleService;
+import org.dinky.common.result.ProTableResult;
+import org.dinky.common.result.Result;
+import org.dinky.model.Role;
+import org.dinky.model.UserRole;
+import org.dinky.service.RoleService;
+import org.dinky.service.UserRoleService;
 
 import java.util.ArrayList;
 import java.util.HashMap;

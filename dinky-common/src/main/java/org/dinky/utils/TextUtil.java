@@ -1,4 +1,4 @@
-package com.dlink.utils;
+package org.dinky.utils;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

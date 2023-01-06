@@ -17,22 +17,22 @@
  *
  */
 
-package com.dlink.service.impl;
+package org.dinky.service.impl;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.config.Docker;
-import com.dlink.db.service.impl.SuperServiceImpl;
-import com.dlink.function.constant.PathConstant;
-import com.dlink.gateway.GatewayType;
-import com.dlink.gateway.config.ClusterConfig;
-import com.dlink.gateway.config.FlinkConfig;
-import com.dlink.gateway.config.GatewayConfig;
-import com.dlink.gateway.result.TestResult;
-import com.dlink.job.JobManager;
-import com.dlink.mapper.ClusterConfigurationMapper;
-import com.dlink.model.ClusterConfiguration;
-import com.dlink.service.ClusterConfigurationService;
-import com.dlink.utils.DockerClientUtils;
+import org.dinky.assertion.Asserts;
+import org.dinky.config.Docker;
+import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.function.constant.PathConstant;
+import org.dinky.gateway.GatewayType;
+import org.dinky.gateway.config.ClusterConfig;
+import org.dinky.gateway.config.FlinkConfig;
+import org.dinky.gateway.config.GatewayConfig;
+import org.dinky.gateway.result.TestResult;
+import org.dinky.job.JobManager;
+import org.dinky.mapper.ClusterConfigurationMapper;
+import org.dinky.model.ClusterConfiguration;
+import org.dinky.service.ClusterConfigurationService;
+import org.dinky.utils.DockerClientUtils;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -116,8 +116,8 @@ public class ClusterConfigurationServiceImpl extends SuperServiceImpl<ClusterCon
                 gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.container.image",
                     kubernetesConfig.get("kubernetes.container.image").toString());
             }
-            String fileDir = FileUtil.isDirectory(PathConstant.WORK_DIR + "/dlink-doc")
-                ? PathConstant.WORK_DIR + "/dlink-doc"
+            String fileDir = FileUtil.isDirectory(PathConstant.WORK_DIR + "/dinky-doc")
+                ? PathConstant.WORK_DIR + "/dinky-doc"
                 : PathConstant.WORK_DIR;
             File dockerFile = null;
             try {

@@ -41,8 +41,8 @@ set 'table.dynamic-table-options.enabled' = 'true';
 -- 创建catalog
 create catalog hive with (
     'type' = 'hive',
-    'hadoop-conf-dir' = '/data/soft/dlink-0.6.6/hadoop-conf',
-    'hive-conf-dir' = '/data/soft/dlink-0.6.6/hadoop-conf'
+    'hadoop-conf-dir' = '/data/soft/dinky-0.6.6/hadoop-conf',
+    'hive-conf-dir' = '/data/soft/dinky-0.6.6/hadoop-conf'
 )
 ;
 
@@ -83,9 +83,9 @@ from source_kafka
 ```
 
 flink sql 写入 hive ，依赖的是 fileSystem 连接器，该连接器写入到文件系统的文件可见性，依赖于 flink 任务的 checkpoint ，
-所以 dlink 界面提交任务时，一定要开启 checkpoint ，也就是设置 checkpoint 的时间间隔参数 `execution.checkpointing.interval` ，如下图所示，设置为 10000 毫秒。
+所以 dinky 界面提交任务时，一定要开启 checkpoint ，也就是设置 checkpoint 的时间间隔参数 `execution.checkpointing.interval` ，如下图所示，设置为 10000 毫秒。
 
-![img.png](http://www.aiwenmo.com/dinky/docs/zh-CN/sql_development_guide/example/kafka_to_hive_dlink_ui.jpg)
+![img.png](http://www.aiwenmo.com/dinky/docs/zh-CN/sql_development_guide/example/kafka_to_hive_dinky_ui.jpg)
 
 任务运行之后，就可以看到如下的 fink ui 界面了
 
@@ -137,8 +137,8 @@ set 'table.dynamic-table-options.enabled' = 'true';
 -- 创建catalog
 create catalog hive with (
     'type' = 'hive',
-    'hadoop-conf-dir' = '/data/soft/dlink-0.6.6/hadoop-conf',
-    'hive-conf-dir' = '/data/soft/dlink-0.6.6/hadoop-conf'
+    'hadoop-conf-dir' = '/data/soft/dinky-0.6.6/hadoop-conf',
+    'hive-conf-dir' = '/data/soft/dinky-0.6.6/hadoop-conf'
 )
 ;
 

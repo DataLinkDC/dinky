@@ -17,24 +17,24 @@
  *
  */
 
-package com.dlink.trans.ddl;
+package org.dinky.trans.ddl;
 
-import static com.dlink.cdc.SinkBuilderFactory.buildSinkBuilder;
+import static org.dinky.cdc.SinkBuilderFactory.buildSinkBuilder;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.cdc.CDCBuilder;
-import com.dlink.cdc.CDCBuilderFactory;
-import com.dlink.cdc.SinkBuilder;
-import com.dlink.executor.Executor;
-import com.dlink.metadata.driver.Driver;
-import com.dlink.metadata.driver.DriverConfig;
-import com.dlink.model.FlinkCDCConfig;
-import com.dlink.model.Schema;
-import com.dlink.model.Table;
-import com.dlink.trans.AbstractOperation;
-import com.dlink.trans.Operation;
-import com.dlink.utils.SplitUtil;
-import com.dlink.utils.SqlUtil;
+import org.dinky.assertion.Asserts;
+import org.dinky.cdc.CDCBuilder;
+import org.dinky.cdc.CDCBuilderFactory;
+import org.dinky.cdc.SinkBuilder;
+import org.dinky.executor.Executor;
+import org.dinky.metadata.driver.Driver;
+import org.dinky.metadata.driver.DriverConfig;
+import org.dinky.model.FlinkCDCConfig;
+import org.dinky.model.Schema;
+import org.dinky.model.Table;
+import org.dinky.trans.AbstractOperation;
+import org.dinky.trans.Operation;
+import org.dinky.utils.SplitUtil;
+import org.dinky.utils.SqlUtil;
 
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;

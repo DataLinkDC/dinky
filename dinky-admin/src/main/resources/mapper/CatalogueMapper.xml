@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.dlink.mapper.CatalogueMapper">
+<mapper namespace="org.dinky.mapper.CatalogueMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.dlink.model.Catalogue">
+    <resultMap id="BaseResultMap" type="org.dinky.model.Catalogue">
         <id column="id" property="id" />
         <result column="name" property="name" />
         <result column="task_id" property="taskId" />
@@ -20,11 +20,11 @@
         id, name, task_id, type,parent_id,is_leaf, enabled, create_time, update_time
     </sql>
 
-    <select id="selectForProTable" resultType="com.dlink.model.Catalogue">
+    <select id="selectForProTable" resultType="org.dinky.model.Catalogue">
         select
         a.*
         from
-        dlink_catalogue a
+        dinky_catalogue a
         <where>
             1=1
             <if test='param.name!=null and param.name!=""'>

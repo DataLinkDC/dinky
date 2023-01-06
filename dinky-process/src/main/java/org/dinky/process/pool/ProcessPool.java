@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.process.pool;
+package org.dinky.process.pool;
 
-import com.dlink.pool.AbstractPool;
-import com.dlink.process.model.ProcessEntity;
+import org.dinky.pool.AbstractPool;
+import org.dinky.process.model.ProcessEntity;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

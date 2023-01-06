@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.dlink.mapper.AlertInstanceMapper">
+<mapper namespace="org.dinky.mapper.AlertInstanceMapper">
 
-    <select id="selectForProTable" resultType="com.dlink.model.AlertInstance">
+    <select id="selectForProTable" resultType="org.dinky.model.AlertInstance">
         select
         a.*
         from
-        dlink_alert_instance a
+        dinky_alert_instance a
         <where>
             1=1
             <if test='param.name!=null and param.name!=""'>

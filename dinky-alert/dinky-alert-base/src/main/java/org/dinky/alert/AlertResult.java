@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.alert;
+package org.dinky.alert;
 
 /**
  * AlertResult

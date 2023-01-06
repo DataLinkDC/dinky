@@ -1,6 +1,6 @@
 ## Dinky  Website
 
-该项目保留了用于构建 Dinky 官方网站的所有资源，服务于 http://www.dlink.top/
+该项目保留了用于构建 Dinky 官方网站的所有资源，服务于 http://www.dinky.top/
 
 ## 条件
 

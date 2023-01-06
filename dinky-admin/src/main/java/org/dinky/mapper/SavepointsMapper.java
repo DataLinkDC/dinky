@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.mapper;
+package org.dinky.mapper;
 
-import com.dlink.db.mapper.SuperMapper;
-import com.dlink.model.Savepoints;
+import org.dinky.db.mapper.SuperMapper;
+import org.dinky.model.Savepoints;
 
 import org.apache.ibatis.annotations.Mapper;
 

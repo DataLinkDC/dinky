@@ -17,15 +17,15 @@
  *
  */
 
-package com.dlink.explainer.sqllineage;
+package org.dinky.explainer.sqllineage;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.explainer.lineage.LineageRelation;
-import com.dlink.explainer.lineage.LineageResult;
-import com.dlink.explainer.lineage.LineageTable;
-import com.dlink.metadata.driver.Driver;
-import com.dlink.metadata.driver.DriverConfig;
-import com.dlink.model.Column;
+import org.dinky.assertion.Asserts;
+import org.dinky.explainer.lineage.LineageRelation;
+import org.dinky.explainer.lineage.LineageResult;
+import org.dinky.explainer.lineage.LineageTable;
+import org.dinky.metadata.driver.Driver;
+import org.dinky.metadata.driver.DriverConfig;
+import org.dinky.model.Column;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -104,11 +104,11 @@ public class LineageBuilder {
                     LineageTable table = new LineageTable();
                     table.setId(tableMap.get(tableName));
                     table.setName(tableName);
-                    List<com.dlink.explainer.lineage.LineageColumn> tableColumns = new ArrayList<>();
+                    List<org.dinky.explainer.lineage.LineageColumn> tableColumns = new ArrayList<>();
                     Set<String> tableSet = new HashSet<>();
                     for (TableStat.Column column : allColumnList) {
                         if (tableName.equals(column.getTable()) && !tableSet.contains(column.getName())) {
-                            tableColumns.add(new com.dlink.explainer.lineage.LineageColumn(column.getName(), column.getName()));
+                            tableColumns.add(new org.dinky.explainer.lineage.LineageColumn(column.getName(), column.getName()));
                             tableSet.add(column.getName());
                         }
                     }
@@ -235,11 +235,11 @@ public class LineageBuilder {
                 LineageTable table = new LineageTable();
                 table.setId(tableMap.get(tableName));
                 table.setName(tableName);
-                List<com.dlink.explainer.lineage.LineageColumn> tableColumns = new ArrayList<>();
+                List<org.dinky.explainer.lineage.LineageColumn> tableColumns = new ArrayList<>();
                 Set<String> tableSet = new HashSet<>();
                 for (TableStat.Column column : allColumnList) {
                     if (tableName.equals(column.getTable()) && !tableSet.contains(column.getName())) {
-                        tableColumns.add(new com.dlink.explainer.lineage.LineageColumn(column.getName(), column.getName()));
+                        tableColumns.add(new org.dinky.explainer.lineage.LineageColumn(column.getName(), column.getName()));
                         tableSet.add(column.getName());
                     }
                 }

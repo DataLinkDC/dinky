@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.executor;
+package org.dinky.executor;
 
-import com.dlink.assertion.Asserts;
+import org.dinky.assertion.Asserts;
 
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.RestOptions;

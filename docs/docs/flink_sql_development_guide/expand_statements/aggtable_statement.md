@@ -23,8 +23,8 @@ AGG BY columns2,.....;
 ```sql
 jdbcconfig:='connector' = 'jdbc',
     'url' = 'jdbc:mysql://127.0.0.1:3306/data?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true',
-    'username'='dlink',
-    'password'='dlink',;
+    'username'='dinky',
+    'password'='dinky',;
 CREATE TABLE student (
     sid INT,
     name STRING,

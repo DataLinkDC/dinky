@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.parser;
+package org.dinky.parser;
 
 import java.util.List;
 import java.util.Map;

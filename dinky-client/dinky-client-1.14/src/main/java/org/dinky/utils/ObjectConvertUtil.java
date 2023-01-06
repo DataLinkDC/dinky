@@ -1,4 +1,4 @@
-package com.dlink.utils;
+package org.dinky.utils;
 
 import org.apache.flink.table.types.logical.BigIntType;
 import org.apache.flink.table.types.logical.DateType;
@@ -14,7 +14,7 @@ import java.time.ZoneId;
 import javax.xml.bind.DatatypeConverter;
 
 /**
- * @className: com.dlink.utils.ObjectConvertUtil
+ * @className: org.dinky.utils.ObjectConvertUtil
  * @Description:
  * @author: jack zhong
  */

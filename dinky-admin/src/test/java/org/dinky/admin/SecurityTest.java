@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.admin;
+package org.dinky.admin;
 
-import com.dlink.security.SecurityAspect;
+import org.dinky.security.SecurityAspect;
 
 import org.junit.Assert;
 import org.junit.Test;

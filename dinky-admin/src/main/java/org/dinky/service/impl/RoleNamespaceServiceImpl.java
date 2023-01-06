@@ -17,12 +17,12 @@
  *
  */
 
-package com.dlink.service.impl;
+package org.dinky.service.impl;
 
-import com.dlink.db.service.impl.SuperServiceImpl;
-import com.dlink.mapper.RoleNamespaceMapper;
-import com.dlink.model.RoleNamespace;
-import com.dlink.service.RoleNamespaceService;
+import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.mapper.RoleNamespaceMapper;
+import org.dinky.model.RoleNamespace;
+import org.dinky.service.RoleNamespaceService;
 
 import java.util.List;
 

@@ -17,14 +17,14 @@
  *
  */
 
-package com.dlink.service.impl;
+package org.dinky.service.impl;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.db.service.impl.SuperServiceImpl;
-import com.dlink.mapper.SysConfigMapper;
-import com.dlink.model.SysConfig;
-import com.dlink.model.SystemConfiguration;
-import com.dlink.service.SysConfigService;
+import org.dinky.assertion.Asserts;
+import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.mapper.SysConfigMapper;
+import org.dinky.model.SysConfig;
+import org.dinky.model.SystemConfiguration;
+import org.dinky.service.SysConfigService;
 
 import java.util.HashMap;
 import java.util.Iterator;

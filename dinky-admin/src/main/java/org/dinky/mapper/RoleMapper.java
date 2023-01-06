@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.mapper;
+package org.dinky.mapper;
 
-import com.dlink.db.mapper.SuperMapper;
-import com.dlink.model.Role;
+import org.dinky.db.mapper.SuperMapper;
+import org.dinky.model.Role;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

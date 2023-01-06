@@ -191,7 +191,7 @@ mvn clean install -Dmaven.test.skip=true -P aliyun,nexus,prod,scala-2.11,web,fli
 
 ```
 创建 远程克隆项目 
-maven ->> dlink->> 配置文件->> 生命周期->> 跳过测试 ->> 双击install
+maven ->> dinky->> 配置文件->> 生命周期->> 跳过测试 ->> 双击install
 打包完成后 安装包见项目根下  build 文件夹下
 ```
 ![local_debug_maven_profile_intro.png](http://www.aiwenmo.com/dinky/docs/zh-CN/developer_guide/local_debug/local_debug_maven_profile_intro.png)
@@ -203,8 +203,8 @@ maven ->> dlink->> 配置文件->> 生命周期->> 跳过测试 ->> 双击instal
 
 ```
 yum -y install git
-git clone https://github.com/DataLinkDC/dlink.git
-cd dlink 
+git clone https://github.com/DataLinkDC/dinky.git
+cd dinky 
 mvn clean install -Dmaven.test.skip=true
 ```
 >如若修改版本，按以下指定即可。flink可支持多版本(1.11-1.16)
@@ -216,12 +216,12 @@ mvn clean install -Dmaven.test.skip=true
 ---
 ### 前后端分离编译
 #### 前端编译
-在 dlink-web 目录下，执行 ：
+在 dinky-web 目录下，执行 ：
 ```shell
 npm install --force
 npm run build
 ```
-编译后的产物在 `dlink-web/dist` 下面，如需部署，请查看相关部署教程。[nginx中配置-dinky](versioned_docs/version-0.7/developer_guide/deploy.mdy.md#nginx中配置-dinky可选)
+编译后的产物在 `dinky-web/dist` 下面，如需部署，请查看相关部署教程。[nginx中配置-dinky](versioned_docs/version-0.7/developer_guide/deploy.mdy.md#nginx中配置-dinky可选)
 
 #### 后端编译
 编译maven的时候，移除web profile即可。在-P 后面加: `!web`,如：
@@ -233,7 +233,7 @@ npm run build
 ---
 
 ### 构建 Docker 镜像
-基于Dinky每次发布的[ Release ](http://www.dlink.top/download/download)构建：
+基于Dinky每次发布的[ Release ](http://www.dinky.top/download/download)构建：
 1. 将`Dockerfile`、`docker-entrypoint.sh`文件拷贝至release包解压目录
 2. 执行下述构建与推送命令，根据需要推送至公共或私有仓库
 ```bash

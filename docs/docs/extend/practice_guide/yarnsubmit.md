@@ -14,11 +14,11 @@ title: Yarn提交实践指南
 
  ### 创建 Session 集群
 
-进入集群中心进行远程集群的注册。点击新建按钮配置远程集群的参数。图中示例配置了一个 Flink on Yarn 的高可用集群，其中 JobManager HA 地址需要填写集群中所有可能被作为 JobManager 的 RestAPI 地址，多个地址间使用英文逗号分隔。表单提交时可能需要较长时间的等待，因为 dlink 正在努力的计算当前活跃的 JobManager 地址。
+进入集群中心进行远程集群的注册。点击新建按钮配置远程集群的参数。图中示例配置了一个 Flink on Yarn 的高可用集群，其中 JobManager HA 地址需要填写集群中所有可能被作为 JobManager 的 RestAPI 地址，多个地址间使用英文逗号分隔。表单提交时可能需要较长时间的等待，因为 dinky 正在努力的计算当前活跃的 JobManager 地址。
 
 保存成功后，页面将展示出当前的 JobManager 地址以及被注册集群的版本号，状态为正常时表示可用。
 
-注意：只有具备 JobManager 实例的 Flink 集群才可以被成功注册到 dlink 中。（ Yarn-Per-Job 和 Yarn-Application 也具有 JobManager，当然也可以手动注册，但无法提交任务）
+注意：只有具备 JobManager 实例的 Flink 集群才可以被成功注册到 dinky 中。（ Yarn-Per-Job 和 Yarn-Application 也具有 JobManager，当然也可以手动注册，但无法提交任务）
 
 如状态异常时，请检查被注册的 Flink 集群地址是否能正常访问，默认端口号为8081，可能更改配置后发生了变化，查看位置为 Flink Web 的  JobManager 的 Configuration 中的 rest 相关属性。
 
@@ -39,7 +39,7 @@ CREATE TABLE Orders (
 select order_number,price,order_time from Orders
 ```
 
-该例子使用到了 datagen，需要在 dlink 的 plugins 目录下添加 flink-table.jar。
+该例子使用到了 datagen，需要在 dinky 的 plugins 目录下添加 flink-table.jar。
 
 点击 **数据开发** 进入开发页面：
 
@@ -166,9 +166,9 @@ insert into pt select 1 as ordertotal ,sum(order_number)*2 as numtotal from Orde
 
 使用之前注册的集群配置即可。
 
-### 上传 dlink-app.jar
+### 上传 dinky-app.jar
 
-第一次使用时，需要将 dlink-app.jar 上传到 hdfs 指定目录，目录可修改如下：
+第一次使用时，需要将 dinky-app.jar 上传到 hdfs 指定目录，目录可修改如下：
 
 ![upload_app_jar](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/yarnsubmit/upload_app_jar.png)
 

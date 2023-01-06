@@ -35,7 +35,7 @@ title: 环境配置
 
 1.在 **注册中心 > 集群管理 > 集群配置管理** 中注册 Hadoop 与 Flink 相关配置；
 
-2.将 dlink-app.jar 上传到 **系统设置 > Flink 设置** 中的 **提交 FlinkSQL 的 Jar 文件路径** 的 hdfs 配置地址。
+2.将 dinky-app.jar 上传到 **系统设置 > Flink 设置** 中的 **提交 FlinkSQL 的 Jar 文件路径** 的 hdfs 配置地址。
 
 如何注册 Yarn Application 的集群配置，详见[集群管理](../register_center/cluster_manage) 的集群配置管理。
 
@@ -49,7 +49,7 @@ title: 环境配置
 
 1.在 **注册中心 > 集群管理 > 集群配置管理** 中注册 Kubernetes 与 Flink 相关配置；
 
-2.将 dlink-app.jar 打包成完整的 Flink 镜像，在 **系统设置 > Flink 设置** 中的 **提交 FlinkSQL 的 Jar 文件路径** 的配置 dlink-app.jar 的 local 地址。
+2.将 dinky-app.jar 打包成完整的 Flink 镜像，在 **系统设置 > Flink 设置** 中的 **提交 FlinkSQL 的 Jar 文件路径** 的配置 dinky-app.jar 的 local 地址。
 
 如何注册 Kubernetes Application 的集群配置，详见[集群管理](../register_center/cluster_manage) 的集群配置管理。
 

@@ -17,14 +17,14 @@
  *
  */
 
-package com.dlink.model;
+package org.dinky.model;
 
 import java.util.Map;
 
 import lombok.Data;
 
 /**
- * @program: dlink
+ * @program: dinky
  * @description: JobManager 配置信息
  * @author: zhumingye
  * @create: 2022-06-26 10:53

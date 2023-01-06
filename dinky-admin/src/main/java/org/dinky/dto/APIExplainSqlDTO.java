@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.dto;
+package org.dinky.dto;
 
-import com.dlink.job.JobConfig;
+import org.dinky.job.JobConfig;
 
 import java.util.Map;
 

@@ -1,4 +1,4 @@
-package com.dlink.function.util;
+package org.dinky.function.util;
 
 import org.apache.flink.runtime.util.EnvironmentInformation;
 

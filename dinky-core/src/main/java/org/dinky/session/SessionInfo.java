@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.session;
+package org.dinky.session;
 
 import java.time.LocalDateTime;
 

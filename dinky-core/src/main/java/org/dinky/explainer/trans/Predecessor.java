@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.explainer.trans;
+package org.dinky.explainer.trans;
 
 import lombok.Getter;
 import lombok.Setter;

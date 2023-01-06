@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.app.db;
+package org.dinky.app.db;
 
-import com.dlink.constant.FlinkParamConstant;
+import org.dinky.constant.FlinkParamConstant;
 
 import java.util.Map;
 

@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.daemon.entity;
+package org.dinky.daemon.entity;
 
 import java.util.LinkedList;
 

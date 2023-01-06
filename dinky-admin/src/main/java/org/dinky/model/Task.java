@@ -17,11 +17,11 @@
  *
  */
 
-package com.dlink.model;
+package org.dinky.model;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.db.model.SuperEntity;
-import com.dlink.job.JobConfig;
+import org.dinky.assertion.Asserts;
+import org.dinky.db.model.SuperEntity;
+import org.dinky.job.JobConfig;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,7 +47,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("dlink_task")
+@TableName("dinky_task")
 public class Task extends SuperEntity {
 
     private static final long serialVersionUID = 5988972129893667154L;

@@ -17,13 +17,13 @@
  *
  */
 
-package com.dlink.app;
+package org.dinky.app;
 
-import com.dlink.app.db.DBConfig;
-import com.dlink.app.flinksql.Submiter;
-import com.dlink.assertion.Asserts;
-import com.dlink.constant.FlinkParamConstant;
-import com.dlink.utils.FlinkBaseUtil;
+import org.dinky.app.db.DBConfig;
+import org.dinky.app.flinksql.Submiter;
+import org.dinky.assertion.Asserts;
+import org.dinky.constant.FlinkParamConstant;
+import org.dinky.utils.FlinkBaseUtil;
 
 import java.io.IOException;
 import java.util.Map;

@@ -5,7 +5,7 @@ title: 0.5.1 release
 
 | 版本   | 二进制程序                                                                                                                | Source                                                                               |
 |-------|----------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------|
-| 0.5.1 | [dlink-release-0.5.1.tar.gz](https://github.com/DataLinkDC/dlink/releases/download/0.5.1/dlink-release-0.5.1.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dlink/archive/refs/tags/0.5.1.zip) |
+| 0.5.1 | [dinky-release-0.5.1.tar.gz](https://github.com/DataLinkDC/dinky/releases/download/0.5.1/dinky-release-0.5.1.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dinky/archive/refs/tags/0.5.1.zip) |
 
 
 ## Dinky发行说明
@@ -28,7 +28,7 @@ Dinky 0.5.1 是一个修复版本，其中包括针对前端问题（如优化SQ
 - 新增K8S集群配置
 
 ### 后端
-- 增加dlink-client-hadoop 版本定制依赖
+- 增加dinky-client-hadoop 版本定制依赖
 - 优化pom及升级log4j至最新
 - 升级Flink 1.14.2 到 1.14.3
 - 修复Flink 1.14 提交任务报错缺类 bug

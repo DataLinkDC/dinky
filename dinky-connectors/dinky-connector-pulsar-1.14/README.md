@@ -1,4 +1,4 @@
-## dlink-connector-pulsar
+## dinky-connector-pulsar
 
 > 概要说明：
 > 实现依附：https://gitee.com/apache/flink/tree/release-1.14/flink-connectors
@@ -37,8 +37,8 @@ CREATE TABLE source_pulsar_n(
 ) WITH (
   'connector' = 'pulsar',
   'connector.version' = 'universal',
-  'connector.topic' = 'persistent://dlink/dev/context.pulsar',
-  'connector.service-url' = 'pulsar://pulsar-dlink-n.stream.com:6650',
+  'connector.topic' = 'persistent://dinky/dev/context.pulsar',
+  'connector.service-url' = 'pulsar://pulsar-dinky-n.stream.com:6650',
   'connector.subscription-name' = 'tmp_print_detail',
   'connector.subscription-type' = 'Shared',
   'connector.subscription-initial-position' = 'Latest',
@@ -71,8 +71,8 @@ Pulsar stores message keys and values as bytes, so Pulsar doesn’t have schema 
 
 ## 🚀 快速上手
 ```shell
-git clone https://github.com/DataLinkDC/dlink.git
-cd dlink-connector/dlink-connector-pulsar-1.14
+git clone https://github.com/DataLinkDC/dinky.git
+cd dinky-connector/dinky-connector-pulsar-1.14
 mvn clean install -DskipTests -Dflink.version=$version
 ```
 
@@ -108,8 +108,8 @@ CREATE TABLE source_pulsar_n(
 ) WITH (
   'connector' = 'pulsar',
   'connector.version' = 'universal',
-  'connector.topic' = 'persistent://dlink/dev/context.pulsar',
-  'connector.service-url' = 'pulsar://pulsar-dlink-n.stream.com:6650',
+  'connector.topic' = 'persistent://dinky/dev/context.pulsar',
+  'connector.service-url' = 'pulsar://pulsar-dinky-n.stream.com:6650',
   'connector.subscription-name' = 'tmp_print_detail',
   'connector.subscription-type' = 'Shared',
   'connector.subscription-initial-position' = 'Latest',
@@ -134,8 +134,8 @@ CREATE TABLE source_pulsar_b(
 ) WITH (
   'connector' = 'pulsar',
   'connector.version' = 'universal',
-  'connector.topic' = 'persistent://dlink/dev/context.pulsar',
-  'connector.service-url' = 'pulsar://pulsar-dlink-b.stream.com:6650',
+  'connector.topic' = 'persistent://dinky/dev/context.pulsar',
+  'connector.service-url' = 'pulsar://pulsar-dinky-b.stream.com:6650',
   'connector.subscription-name' = 'tmp_print_detail',
   'connector.subscription-type' = 'Shared',
   'connector.subscription-initial-position' = 'Latest',

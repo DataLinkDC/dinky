@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.dlink.mapper.StatementMapper">
+<mapper namespace="org.dinky.mapper.StatementMapper">
 
-    <resultMap id="BaseResultMap" type="com.dlink.model.Statement">
+    <resultMap id="BaseResultMap" type="org.dinky.model.Statement">
         <id column="id" property="id" />
         <result column="statement" property="statement" />
     </resultMap>
@@ -11,11 +11,11 @@
         id,statement
     </sql>
 
-    <select id="selectForProTable" resultType="com.dlink.model.Task">
+    <select id="selectForProTable" resultType="org.dinky.model.Task">
         select
         a.*
         from
-        dlink_task_statement a
+        dinky_task_statement a
         <where>
             1=1
             <if test='param.id!=null and param.id!=""'>

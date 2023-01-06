@@ -6,7 +6,7 @@ title: 0.7.0 release
 
 |  版本   |                                                         二进制程序                                                         |                                        Source                                         |
 |-------|-----------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
-| 0.7.0 | [dlink-release-0.7.0.tar.gz](https://github.com/DataLinkDC/dlink/releases/download/v0.7.0/dlink-release-0.7.0.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dlink/archive/refs/tags/v0.7.0.zip) |
+| 0.7.0 | [dinky-release-0.7.0.tar.gz](https://github.com/DataLinkDC/dinky/releases/download/v0.7.0/dinky-release-0.7.0.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dinky/archive/refs/tags/v0.7.0.zip) |
 
 ## Dinky发行说明
 

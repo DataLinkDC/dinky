@@ -17,12 +17,12 @@
  *
  */
 
-package com.dlink.controller;
+package org.dinky.controller;
 
-import com.dlink.common.result.ProTableResult;
-import com.dlink.common.result.Result;
-import com.dlink.model.Savepoints;
-import com.dlink.service.SavepointsService;
+import org.dinky.common.result.ProTableResult;
+import org.dinky.common.result.Result;
+import org.dinky.model.Savepoints;
+import org.dinky.service.SavepointsService;
 
 import java.util.ArrayList;
 import java.util.List;

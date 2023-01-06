@@ -25,11 +25,11 @@ import {l} from "@/utils/intl";
 
 
 export const request2 = extend(
-  {headers: {tenantId: localStorage.getItem('dlink-tenantId') || ''}}
+  {headers: {tenantId: localStorage.getItem('dinky-tenantId') || ''}}
 );
 
 export const getStorageTenantId = () => {
-  return localStorage.getItem('dlink-tenantId') || '';
+  return localStorage.getItem('dinky-tenantId') || '';
 }
 
 

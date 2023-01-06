@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.daemon.task;
+package org.dinky.daemon.task;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.daemon.exception.DaemonTaskException;
+import org.dinky.assertion.Asserts;
+import org.dinky.daemon.exception.DaemonTaskException;
 
 import java.util.Optional;
 import java.util.ServiceLoader;

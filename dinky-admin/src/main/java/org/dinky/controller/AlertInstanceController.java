@@ -17,14 +17,14 @@
  *
  */
 
-package com.dlink.controller;
+package org.dinky.controller;
 
-import com.dlink.alert.AlertPool;
-import com.dlink.alert.AlertResult;
-import com.dlink.common.result.ProTableResult;
-import com.dlink.common.result.Result;
-import com.dlink.model.AlertInstance;
-import com.dlink.service.AlertInstanceService;
+import org.dinky.alert.AlertPool;
+import org.dinky.alert.AlertResult;
+import org.dinky.common.result.ProTableResult;
+import org.dinky.common.result.Result;
+import org.dinky.model.AlertInstance;
+import org.dinky.service.AlertInstanceService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;

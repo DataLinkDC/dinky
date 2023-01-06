@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.scheduler.enums;
+package org.dinky.scheduler.enums;
 
 /**
  * data types in user define parameter

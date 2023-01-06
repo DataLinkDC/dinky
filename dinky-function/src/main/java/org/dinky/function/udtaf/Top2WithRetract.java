@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.function.udtaf;
+package org.dinky.function.udtaf;
 
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.table.functions.TableAggregateFunction;

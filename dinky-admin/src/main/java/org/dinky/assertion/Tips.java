@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.assertion;
+package org.dinky.assertion;
 
 /**
  * Tips

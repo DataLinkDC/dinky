@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.process.pool;
+package org.dinky.process.pool;
 
-import com.dlink.pool.AbstractPool;
+import org.dinky.pool.AbstractPool;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

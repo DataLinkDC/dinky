@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.db.handler;
+package org.dinky.db.handler;
 
-import com.dlink.db.properties.MybatisPlusFillProperties;
+import org.dinky.db.properties.MybatisPlusFillProperties;
 
 import org.apache.ibatis.reflection.MetaObject;
 

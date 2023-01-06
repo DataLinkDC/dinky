@@ -22,7 +22,7 @@
 ```roomsql 
 create catalog mycatalog 
     with(
-        'type'='dlink_mysql_catalog'
+        'type'='dinky_mysql_catalog'
         );
         
 use catalog mycatalog;
@@ -30,14 +30,14 @@ use catalog mycatalog;
 
 > java
 ```java 
-        DlinkMysqlCatalog catalog =
-                new DlinkMysqlCatalog(
+        DinkyMysqlCatalog catalog =
+                new DinkyMysqlCatalog(
                         "myCatalog");
-        tableEnv.registerCatalog(DlinkMysqlCatalogFactoryOptions.IDENTIFIER, catalog);
-        tableEnv.useCatalog(DlinkMysqlCatalogFactoryOptions.IDENTIFIER);
+        tableEnv.registerCatalog(DinkyMysqlCatalogFactoryOptions.IDENTIFIER, catalog);
+        tableEnv.useCatalog(DinkyMysqlCatalogFactoryOptions.IDENTIFIER);
 ```
 ## 注意
-> 在dlink mysql catalog的实现中，对默认数据库进行了限制，不允许用户自定义默认数据库名称。
+> 在dinky mysql catalog的实现中，对默认数据库进行了限制，不允许用户自定义默认数据库名称。
 todo: 在yaml文件中定义 catalog 的方法。
 
 

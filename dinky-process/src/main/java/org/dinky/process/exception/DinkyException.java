@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.process.exception;
+package org.dinky.process.exception;
 
-import com.dlink.process.context.ProcessContextHolder;
-import com.dlink.utils.LogUtil;
+import org.dinky.process.context.ProcessContextHolder;
+import org.dinky.utils.LogUtil;
 
 /**
  * @author ZackYoung

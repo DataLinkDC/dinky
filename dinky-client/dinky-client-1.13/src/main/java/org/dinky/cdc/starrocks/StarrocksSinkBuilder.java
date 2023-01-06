@@ -17,18 +17,18 @@
  *
  */
 
-package com.dlink.cdc.starrocks;
+package org.dinky.cdc.starrocks;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.cdc.AbstractSinkBuilder;
-import com.dlink.cdc.CDCBuilder;
-import com.dlink.cdc.SinkBuilder;
-import com.dlink.executor.CustomTableEnvironment;
-import com.dlink.model.Column;
-import com.dlink.model.FlinkCDCConfig;
-import com.dlink.model.Schema;
-import com.dlink.model.Table;
-import com.dlink.utils.JSONUtil;
+import org.dinky.assertion.Asserts;
+import org.dinky.cdc.AbstractSinkBuilder;
+import org.dinky.cdc.CDCBuilder;
+import org.dinky.cdc.SinkBuilder;
+import org.dinky.executor.CustomTableEnvironment;
+import org.dinky.model.Column;
+import org.dinky.model.FlinkCDCConfig;
+import org.dinky.model.Schema;
+import org.dinky.model.Table;
+import org.dinky.utils.JSONUtil;
 
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.typeinfo.TypeInformation;

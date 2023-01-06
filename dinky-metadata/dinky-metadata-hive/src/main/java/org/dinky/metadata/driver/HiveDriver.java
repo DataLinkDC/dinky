@@ -17,19 +17,19 @@
  *
  */
 
-package com.dlink.metadata.driver;
+package org.dinky.metadata.driver;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.metadata.constant.HiveConstant;
-import com.dlink.metadata.convert.HiveTypeConvert;
-import com.dlink.metadata.convert.ITypeConvert;
-import com.dlink.metadata.query.HiveQuery;
-import com.dlink.metadata.query.IDBQuery;
-import com.dlink.metadata.result.JdbcSelectResult;
-import com.dlink.model.Column;
-import com.dlink.model.Schema;
-import com.dlink.model.Table;
-import com.dlink.utils.LogUtil;
+import org.dinky.assertion.Asserts;
+import org.dinky.metadata.constant.HiveConstant;
+import org.dinky.metadata.convert.HiveTypeConvert;
+import org.dinky.metadata.convert.ITypeConvert;
+import org.dinky.metadata.query.HiveQuery;
+import org.dinky.metadata.query.IDBQuery;
+import org.dinky.metadata.result.JdbcSelectResult;
+import org.dinky.model.Column;
+import org.dinky.model.Schema;
+import org.dinky.model.Table;
+import org.dinky.utils.LogUtil;
 
 import org.apache.commons.lang3.StringUtils;
 

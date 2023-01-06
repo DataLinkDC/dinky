@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.dlink.mapper.HistoryMapper">
+<mapper namespace="org.dinky.mapper.HistoryMapper">
 
-    <select id="selectForProTable" resultType="com.dlink.model.History">
+    <select id="selectForProTable" resultType="org.dinky.model.History">
         select
         a.*,
-        (select b.alias FROM dlink_cluster b where b.id=a.cluster_id) as clusterAlias,
-        (select c.alias FROM dlink_task c where c.id=a.task_id) as taskAlias
+        (select b.alias FROM dinky_cluster b where b.id=a.cluster_id) as clusterAlias,
+        (select c.alias FROM dinky_task c where c.id=a.task_id) as taskAlias
         from
-        dlink_history a
+        dinky_history a
         <where>
             1=1
             <if test='param.jobId!=null and param.jobId!=""'>

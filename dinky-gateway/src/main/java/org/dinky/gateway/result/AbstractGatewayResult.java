@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.gateway.result;
+package org.dinky.gateway.result;
 
-import com.dlink.gateway.GatewayType;
+import org.dinky.gateway.GatewayType;
 
 import java.time.LocalDateTime;
 

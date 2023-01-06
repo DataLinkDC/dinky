@@ -13,7 +13,7 @@ title: FAQ
 - 方案一
 
 升级 Dinky 至 0.6.2 及后续版本。
-详见：[https://github.com/DataLinkDC/dlink/issues/310](https://github.com/DataLinkDC/dlink/issues/310)
+详见：[https://github.com/DataLinkDC/dinky/issues/310](https://github.com/DataLinkDC/dinky/issues/310)
 - 方案二
 
 添加HADOOP_HOME环境变量，修改 /etc/profile
@@ -113,5 +113,5 @@ Caused by: java.lang.ClassNotFoundException: org.apache.http.client.HttpClient
 </dependency>
    ```
 
-编译成功后，将对应的jar包拿出来即可，分别放到 flink/lib和dinky/plugins下。重启 Flink 和 Dlinky 即可。
+编译成功后，将对应的jar包拿出来即可，分别放到 flink/lib和dinky/plugins下。重启 Flink 和 Dinkyy 即可。
 

@@ -17,11 +17,11 @@
  *
  */
 
-package com.dlink.function.compiler;
+package org.dinky.function.compiler;
 
-import com.dlink.function.constant.PathConstant;
-import com.dlink.function.data.model.UDF;
-import com.dlink.function.util.ZipWriter;
+import org.dinky.function.constant.PathConstant;
+import org.dinky.function.data.model.UDF;
+import org.dinky.function.util.ZipWriter;
 
 import org.apache.flink.table.catalog.FunctionLanguage;
 

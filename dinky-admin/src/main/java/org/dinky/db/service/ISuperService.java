@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.db.service;
+package org.dinky.db.service;
 
-import com.dlink.common.result.ProTableResult;
+import org.dinky.common.result.ProTableResult;
 
 import java.util.Map;
 

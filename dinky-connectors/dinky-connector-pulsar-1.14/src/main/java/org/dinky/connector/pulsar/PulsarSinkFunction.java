@@ -17,11 +17,11 @@
  *
  */
 
-package com.dlink.connector.pulsar;
+package org.dinky.connector.pulsar;
 
-import com.dlink.connector.pulsar.util.PulsarConnectionHolder;
-import com.dlink.connector.pulsar.util.PulsarProducerHolder;
-import com.dlink.utils.JSONUtil;
+import org.dinky.connector.pulsar.util.PulsarConnectionHolder;
+import org.dinky.connector.pulsar.util.PulsarProducerHolder;
+import org.dinky.utils.JSONUtil;
 
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.api.common.functions.RuntimeContext;

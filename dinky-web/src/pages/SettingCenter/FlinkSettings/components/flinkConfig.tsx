@@ -63,7 +63,7 @@ const FlinkConfigView: React.FC<FlinkConfigProps> = (props) => {
               id='sqlSubmitJarPath'
               defaultValue={sqlSubmitJarPath}
               onChange={onChange}
-              placeholder="hdfs:///dlink/jar/dlink-app.jar"/>)),
+              placeholder="hdfs:///dinky/jar/dinky-app.jar"/>)),
       actions: editName != 'sqlSubmitJarPath' ? [<a
           onClick={({}) => handleEditClick('sqlSubmitJarPath')}>{l('button.edit')}</a>] :
         [<a onClick={({}) => handleSaveClick('sqlSubmitJarPath')}>{l('button.save')}</a>,
@@ -91,7 +91,7 @@ const FlinkConfigView: React.FC<FlinkConfigProps> = (props) => {
             id='sqlSubmitJarMainAppClass'
             defaultValue={sqlSubmitJarMainAppClass}
             onChange={onChange}
-            placeholder="com.dlink.app.MainApp"/>)),
+            placeholder="org.dinky.app.MainApp"/>)),
       actions: editName != 'sqlSubmitJarMainAppClass' ? [<a
           onClick={({}) => handleEditClick('sqlSubmitJarMainAppClass')}>{l('button.edit')}</a>] :
         [<a onClick={({}) => handleSaveClick('sqlSubmitJarMainAppClass')}>{l('button.save')}</a>,

@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.model;
+package org.dinky.model;
 
 import java.util.List;
 import java.util.Map;

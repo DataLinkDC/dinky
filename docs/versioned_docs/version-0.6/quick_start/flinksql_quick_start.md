@@ -12,7 +12,7 @@ Dinky 是基于 Flink 的流批一体化数据汇聚、数据同步的实时计�
 
 ### 创建集群配置或集群实例
 
-首先，登录 Dlinky，选择**注册中心>>集群管理>>集群实例管理或集群配置管理**，点击**新建** Flink 集群
+首先，登录 Dinkyy，选择**注册中心>>集群管理>>集群实例管理或集群配置管理**，点击**新建** Flink 集群
 
 ![](http://www.aiwenmo.com/dinky/docs/zh-CN/quick_start/flinksql_quick_start/%E5%88%9B%E5%BB%BA%E9%9B%86%E7%BE%A4.png)
 
@@ -86,7 +86,7 @@ Dinky 推荐您在使用 Yarn Per Job、Yarn Application、K8s Application 采�
 
 ```
 https://github.com/ververica/flink-sql-cookbook
-#下载 flink-faker 放入$FLINK_HOME/lib下及Dlinky的plugins下
+#下载 flink-faker 放入$FLINK_HOME/lib下及Dinkyy的plugins下
 https://github.com/knaufk/flink-faker/releases
 ```
 
@@ -132,7 +132,7 @@ FlinkSQL 作业编写，分为三部分内容，分别是** SET 参数设置、D
 
 ### 发布运行作业
 
-在数据写入 Sink 端时，Dlinky 提供了**异步提交** 和 **上线发布**功能，将其作业提交到远程集群
+在数据写入 Sink 端时，Dinkyy 提供了**异步提交** 和 **上线发布**功能，将其作业提交到远程集群
 
 ![SQLInsert](http://www.aiwenmo.com/dinky/docs/zh-CN/quick_start/flinksql_quick_start/SQLInsert.png)
 

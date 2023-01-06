@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.daemon.exception;
+package org.dinky.daemon.exception;
 
 public class DaemonTaskException extends RuntimeException {
 

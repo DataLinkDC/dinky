@@ -17,11 +17,11 @@
  *
  */
 
-package com.dlink.metadata.convert;
+package org.dinky.metadata.convert;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.model.Column;
-import com.dlink.model.ColumnType;
+import org.dinky.assertion.Asserts;
+import org.dinky.model.Column;
+import org.dinky.model.ColumnType;
 
 /**
  * OracleTypeConvert

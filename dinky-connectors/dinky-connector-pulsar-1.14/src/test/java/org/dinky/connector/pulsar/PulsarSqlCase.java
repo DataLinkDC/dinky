@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.connector.pulsar;
+package org.dinky.connector.pulsar;
 
 import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.TableEnvironment;
@@ -103,8 +103,8 @@ public class PulsarSqlCase {
                 + ") WITH (\n"
                 + "  'connector' = 'pulsar',\n"
                 + "  'connector.version' = 'universal',\n"
-                + "  'connector.topic' = 'persistent://dlink/dev/context.pulsar',\n"
-                + "  'connector.service-url' = 'pulsar://pulsar-dlink-n.stream.com:6650',\n"
+                + "  'connector.topic' = 'persistent://dinky/dev/context.pulsar',\n"
+                + "  'connector.service-url' = 'pulsar://pulsar-dinky-n.stream.com:6650',\n"
                 + "  'connector.subscription-name' = 'tmp_print_detail',\n"
                 + "  'connector.subscription-type' = 'Shared',\n"
                 + "  'connector.subscription-initial-position' = 'Latest',\n"

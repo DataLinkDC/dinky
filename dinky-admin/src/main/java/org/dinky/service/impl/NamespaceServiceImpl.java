@@ -17,19 +17,19 @@
  *
  */
 
-package com.dlink.service.impl;
+package org.dinky.service.impl;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.common.result.ProTableResult;
-import com.dlink.common.result.Result;
-import com.dlink.db.service.impl.SuperServiceImpl;
-import com.dlink.mapper.NamespaceMapper;
-import com.dlink.model.Namespace;
-import com.dlink.model.RoleNamespace;
-import com.dlink.model.Tenant;
-import com.dlink.service.NamespaceService;
-import com.dlink.service.RoleNamespaceService;
-import com.dlink.service.TenantService;
+import org.dinky.assertion.Asserts;
+import org.dinky.common.result.ProTableResult;
+import org.dinky.common.result.Result;
+import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.mapper.NamespaceMapper;
+import org.dinky.model.Namespace;
+import org.dinky.model.RoleNamespace;
+import org.dinky.model.Tenant;
+import org.dinky.service.NamespaceService;
+import org.dinky.service.RoleNamespaceService;
+import org.dinky.service.TenantService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

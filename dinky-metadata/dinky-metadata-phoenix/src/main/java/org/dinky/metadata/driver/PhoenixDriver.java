@@ -17,17 +17,17 @@
  *
  */
 
-package com.dlink.metadata.driver;
+package org.dinky.metadata.driver;
 
-import com.dlink.metadata.constant.PhoenixConstant;
-import com.dlink.metadata.convert.ITypeConvert;
-import com.dlink.metadata.convert.PhoenixTypeConvert;
-import com.dlink.metadata.query.IDBQuery;
-import com.dlink.metadata.query.PhoenixQuery;
-import com.dlink.metadata.result.JdbcSelectResult;
-import com.dlink.model.Column;
-import com.dlink.model.QueryData;
-import com.dlink.model.Table;
+import org.dinky.metadata.constant.PhoenixConstant;
+import org.dinky.metadata.convert.ITypeConvert;
+import org.dinky.metadata.convert.PhoenixTypeConvert;
+import org.dinky.metadata.query.IDBQuery;
+import org.dinky.metadata.query.PhoenixQuery;
+import org.dinky.metadata.result.JdbcSelectResult;
+import org.dinky.model.Column;
+import org.dinky.model.QueryData;
+import org.dinky.model.Table;
 
 import org.apache.commons.lang3.StringUtils;
 

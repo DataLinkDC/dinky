@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.metadata.query;
+package org.dinky.metadata.query;
 
 /**
  * MySqlQuery

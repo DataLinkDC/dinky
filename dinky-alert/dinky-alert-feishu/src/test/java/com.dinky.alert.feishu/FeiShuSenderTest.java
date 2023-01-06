@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.alert.feishu;
+package org.dinky.alert.feishu;
 
-import com.dlink.alert.AlertMsg;
-import com.dlink.alert.AlertResult;
+import org.dinky.alert.AlertMsg;
+import org.dinky.alert.AlertResult;
 
 import java.util.HashMap;
 import java.util.Map;

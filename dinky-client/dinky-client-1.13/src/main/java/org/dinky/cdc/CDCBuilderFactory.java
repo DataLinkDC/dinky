@@ -17,13 +17,13 @@
  *
  */
 
-package com.dlink.cdc;
+package org.dinky.cdc;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.cdc.mysql.MysqlCDCBuilder;
-import com.dlink.cdc.oracle.OracleCDCBuilder;
-import com.dlink.exception.FlinkClientException;
-import com.dlink.model.FlinkCDCConfig;
+import org.dinky.assertion.Asserts;
+import org.dinky.cdc.mysql.MysqlCDCBuilder;
+import org.dinky.cdc.oracle.OracleCDCBuilder;
+import org.dinky.exception.FlinkClientException;
+import org.dinky.model.FlinkCDCConfig;
 
 import java.util.HashMap;
 import java.util.Map;

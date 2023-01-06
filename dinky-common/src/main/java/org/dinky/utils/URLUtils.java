@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.utils;
+package org.dinky.utils;
 
 import java.io.File;
 import java.net.MalformedURLException;

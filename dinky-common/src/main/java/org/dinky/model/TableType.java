@@ -1,4 +1,4 @@
-package com.dlink.model;
+package org.dinky.model;
 
 /**
  * 分库分表的类型

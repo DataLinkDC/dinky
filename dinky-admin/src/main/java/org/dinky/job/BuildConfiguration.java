@@ -17,14 +17,14 @@
  *
  */
 
-package com.dlink.job;
+package org.dinky.job;
 
-import com.dlink.api.FlinkAPI;
-import com.dlink.assertion.Asserts;
-import com.dlink.model.JobManagerConfiguration;
-import com.dlink.model.TaskContainerConfigInfo;
-import com.dlink.model.TaskManagerConfiguration;
-import com.dlink.utils.JSONUtil;
+import org.dinky.api.FlinkAPI;
+import org.dinky.assertion.Asserts;
+import org.dinky.model.JobManagerConfiguration;
+import org.dinky.model.TaskContainerConfigInfo;
+import org.dinky.model.TaskManagerConfiguration;
+import org.dinky.utils.JSONUtil;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -35,7 +35,7 @@ import java.util.Set;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
- * @program: dlink
+ * @program: dinky
  * @description:
  * @author: zhumingye
  * @create: 2022-06-28 19:00

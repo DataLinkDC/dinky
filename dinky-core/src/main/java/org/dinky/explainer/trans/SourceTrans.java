@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.explainer.trans;
+package org.dinky.explainer.trans;
 
-import com.dlink.utils.MapParseUtils;
+import org.dinky.utils.MapParseUtils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.table.operations.Operation;

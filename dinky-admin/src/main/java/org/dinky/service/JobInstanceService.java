@@ -17,14 +17,14 @@
  *
  */
 
-package com.dlink.service;
+package org.dinky.service;
 
-import com.dlink.common.result.ProTableResult;
-import com.dlink.db.service.ISuperService;
-import com.dlink.explainer.lineage.LineageResult;
-import com.dlink.model.JobInfoDetail;
-import com.dlink.model.JobInstance;
-import com.dlink.model.JobInstanceStatus;
+import org.dinky.common.result.ProTableResult;
+import org.dinky.db.service.ISuperService;
+import org.dinky.explainer.lineage.LineageResult;
+import org.dinky.model.JobInfoDetail;
+import org.dinky.model.JobInstance;
+import org.dinky.model.JobInstanceStatus;
 
 import java.util.List;
 

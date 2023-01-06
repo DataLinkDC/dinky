@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.dto;
+package org.dinky.dto;
 
-import com.dlink.config.Dialect;
+import org.dinky.config.Dialect;
 
 import java.util.HashMap;
 import java.util.Map;

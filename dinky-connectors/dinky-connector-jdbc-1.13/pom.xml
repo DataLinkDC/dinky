@@ -20,13 +20,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>dlink-connectors</artifactId>
-        <groupId>com.dlink</groupId>
+        <artifactId>dinky-connectors</artifactId>
+        <groupId>org.dinky</groupId>
         <version>0.7.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>dlink-connector-jdbc-1.13</artifactId>
+    <artifactId>dinky-connector-jdbc-1.13</artifactId>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -40,8 +40,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-flink-1.13</artifactId>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-flink-1.13</artifactId>
             <scope>${scope.runtime}</scope>
         </dependency>
 

@@ -19,12 +19,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.dlink</groupId>
-        <artifactId>dlink-connectors</artifactId>
+        <groupId>org.dinky</groupId>
+        <artifactId>dinky-connectors</artifactId>
         <version>0.7.0</version>
     </parent>
 
-    <artifactId>dlink-connector-pulsar-1.14</artifactId>
+    <artifactId>dinky-connector-pulsar-1.14</artifactId>
 
     <properties>
         <pulsar.version>2.10.2</pulsar.version>
@@ -37,8 +37,8 @@
     <dependencies>
 
         <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-common</artifactId>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-common</artifactId>
             <version>0.7.0</version>
             <scope>compile</scope>
         </dependency>
@@ -102,8 +102,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-flink-1.14</artifactId>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-flink-1.14</artifactId>
             <scope>${scope.runtime}</scope>
         </dependency>
         <dependency>

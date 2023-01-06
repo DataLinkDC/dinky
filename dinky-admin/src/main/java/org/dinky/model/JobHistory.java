@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.model;
+package org.dinky.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -38,7 +38,7 @@ import lombok.EqualsAndHashCode;
  **/
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("dlink_job_history")
+@TableName("dinky_job_history")
 public class JobHistory implements Serializable {
 
     private static final long serialVersionUID = 4984787372340047250L;

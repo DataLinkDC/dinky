@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.result;
+package org.dinky.result;
 
 import org.apache.flink.table.api.TableResult;
 

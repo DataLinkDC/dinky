@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.utils;
+package org.dinky.utils;
 
 import org.apache.flink.api.common.JobID;
 import org.apache.flink.client.program.ClusterClient;

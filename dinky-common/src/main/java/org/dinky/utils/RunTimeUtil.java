@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.utils;
+package org.dinky.utils;
 
 /**
  * RunTimeUtil

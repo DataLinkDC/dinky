@@ -7,7 +7,7 @@ title: 扩展报警插件
 
 
 
-Dinky 告警机制遵循 SPI,可随意扩展所需要的告警机制。如需扩展可在 dlink-alert 模块中进行可插拔式扩展。现已经支持的告警机制包括如下：
+Dinky 告警机制遵循 SPI,可随意扩展所需要的告警机制。如需扩展可在 dinky-alert 模块中进行可插拔式扩展。现已经支持的告警机制包括如下：
 
 - DingDingTalk
 - 企业微信: 同时支持**APP** 和 **WeChat 群聊** 方式
@@ -21,39 +21,39 @@ Dinky 学习了 ``Apache Dolphinscheduler`` 的插件扩展机制，可以在 Di
     - 详见 [开发者本地调试手册](../../developer_guide/local_debug)
 
 ## 后端开发
-- 在 dlink-alert 新建子模块 , 命名规则为 `dlink-alert-{报警类型}` 在子模块中实现 `dlink-alert-{报警类型}` 的报警机制
+- 在 dinky-alert 新建子模块 , 命名规则为 `dinky-alert-{报警类型}` 在子模块中实现 `dinky-alert-{报警类型}` 的报警机制
 
 ## 后端开发
-- 在 **dlink-alert** 模块中， 右键**新建子模块**, 命名规则: **dlink-alert-{报警类型}**
+- 在 **dinky-alert** 模块中， 右键**新建子模块**, 命名规则: **dinky-alert-{报警类型}**
 - **代码层面** 根据告警场景自行实现报警逻辑 
     - 注意事项:
         - 不可在父类的基础上修改代码，可以在子类中进行扩展 ,或者重写父类方法
         - 扩展告警类型需要同时提交**测试用例**
         - 在每个告警类型的 Constants 常量类中 必须声明 ``static final String TYPE = "Email";`` 否则会报错
-- 需要在此模块的 **resource** 下 新建包 ``META-INF.services`` , 在此包中新建文件 ``com.dlink.alert.Alert`` 内容如下:
-    - ``com.dlink.alert.{报警类型}.{报警类型Alert}`` 参考其他告警类型的此文件
+- 需要在此模块的 **resource** 下 新建包 ``META-INF.services`` , 在此包中新建文件 ``org.dinky.alert.Alert`` 内容如下:
+    - ``org.dinky.alert.{报警类型}.{报警类型Alert}`` 参考其他告警类型的此文件
 - 打包相关配置 修改如下:
-    - 在 **dlink-core** 模块的 **pom.xml** 下 , 找到扩展告警相关的依赖 `放在一起方便管理` 并且新增如下内容:
+    - 在 **dinky-core** 模块的 **pom.xml** 下 , 找到扩展告警相关的依赖 `放在一起方便管理` 并且新增如下内容:
 ```xml
         <dependency>
-            <groupId>com.dlink</groupId>
+            <groupId>org.dinky</groupId>
             <artifactId>模块名称</artifactId>
             <scope>${scope.runtime}</scope>
         </dependency>
 ``` 
-- 在 **dlink** 根下 **pom.xml** 中 ,新增如下内容:
+- 在 **dinky** 根下 **pom.xml** 中 ,新增如下内容:
 ```xml
         <dependency>
-            <groupId>com.dlink</groupId>
+            <groupId>org.dinky</groupId>
             <artifactId>模块名称</artifactId>
             <version>${project.version}</version>
         </dependency>
 ```
 
-- 在 **dlink-assembly** 模块中 , 找到 ``package.xml`` 路径: **/dlink-assembly/src/main/assembly/package.xml** , 新增如下内容:
+- 在 **dinky-assembly** 模块中 , 找到 ``package.xml`` 路径: **/dinky-assembly/src/main/assembly/package.xml** , 新增如下内容:
 ```xml
         <fileSet>
-            <directory>${project.parent.basedir}/dlink-alert/模块名称/target
+            <directory>${project.parent.basedir}/dinky-alert/模块名称/target
             </directory>
             <outputDirectory>lib</outputDirectory>
             <includes>
@@ -66,9 +66,9 @@ Dinky 学习了 ``Apache Dolphinscheduler`` 的插件扩展机制，可以在 Di
 ----
 
 ## 前端开发
-- **dlink-web** 为 Dinky 的前端模块
-- 扩展告警插件相关表单所在路径: `dlink-web/src/pages/AlertInstance`
-  - 修改 `dlink-web/src/pages/AlertInstance/conf.ts` 
+- **dinky-web** 为 Dinky 的前端模块
+- 扩展告警插件相关表单所在路径: `dinky-web/src/pages/AlertInstance`
+  - 修改 `dinky-web/src/pages/AlertInstance/conf.ts` 
 
   **ALERT_TYPE** 添加如下 eg:
   ```
@@ -86,7 +86,7 @@ Dinky 学习了 ``Apache Dolphinscheduler`` 的插件扩展机制，可以在 Di
 ![extend_alert_conf](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/function_expansion/alert/extend_alert_conf.png)
 
 
-  修改 `dlink-web/src/pages/AlertInstance/icon.tsx` 的 **getAlertIcon** 中 
+  修改 `dinky-web/src/pages/AlertInstance/icon.tsx` 的 **getAlertIcon** 中 
   
   添加如下 eg:
 ```
@@ -108,7 +108,7 @@ export const EmailSvg = () => (
 
 
 
-  - 修改 `dlink-web/src/pages/AlertInstance/components/AlertInstanceChooseForm.tsx` 
+  - 修改 `dinky-web/src/pages/AlertInstance/components/AlertInstanceChooseForm.tsx` 
  
   追加如下  eg: 
 ```
@@ -130,8 +130,8 @@ export const EmailSvg = () => (
       }
 ```
 其中需要修改的地方为
--  `EMAIL` 替换为上述 **dlink-web/src/pages/AlertInstance/conf.ts** 中 **ALERT_TYPE** 的新增类型
--  `EmailForm` 为新建告警表单文件 **dlink-web/src/pages/AlertInstance/components/EmailForm.tsx** 中的 **EmailForm** .
+-  `EMAIL` 替换为上述 **dinky-web/src/pages/AlertInstance/conf.ts** 中 **ALERT_TYPE** 的新增类型
+-  `EmailForm` 为新建告警表单文件 **dinky-web/src/pages/AlertInstance/components/EmailForm.tsx** 中的 **EmailForm** .
 
 如下图:
 ![extened_alert_choose_form](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/function_expansion/alert/extened_alert_choose_form.png)

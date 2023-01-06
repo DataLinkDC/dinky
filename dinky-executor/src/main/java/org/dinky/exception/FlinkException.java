@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.exception;
+package org.dinky.exception;
 
 /**
  * FlinkException

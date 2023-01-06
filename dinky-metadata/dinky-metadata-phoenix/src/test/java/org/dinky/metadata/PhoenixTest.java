@@ -17,14 +17,14 @@
  *
  */
 
-package com.dlink.metadata;
+package org.dinky.metadata;
 
-import com.dlink.metadata.driver.Driver;
-import com.dlink.metadata.driver.DriverConfig;
-import com.dlink.metadata.result.JdbcSelectResult;
-import com.dlink.model.Column;
-import com.dlink.model.Schema;
-import com.dlink.model.Table;
+import org.dinky.metadata.driver.Driver;
+import org.dinky.metadata.driver.DriverConfig;
+import org.dinky.metadata.result.JdbcSelectResult;
+import org.dinky.model.Column;
+import org.dinky.model.Schema;
+import org.dinky.model.Table;
 
 import java.util.LinkedHashMap;
 import java.util.List;

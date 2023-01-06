@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.constant;
+package org.dinky.constant;
 
 import org.springframework.boot.system.ApplicationHome;
 
@@ -39,22 +39,22 @@ public class UploadFileConstant {
     public static final String FLINK_LIB_NAME = "flink-lib";
     public static final byte USER_JAR_ID = 4;
     public static final String USER_JAR_NAME = "user-jar";
-    public static final byte DLINK_JAR_ID = 5;
-    public static final String DLINK_JAR_NAME = "dlink-jar";
+    public static final byte DINKY_JAR_ID = 5;
+    public static final String DINKY_JAR_NAME = "dinky-jar";
 
     // Upload file's dir constant----------------------------------------------------------------------------------------
     static {
         // Get admin jar's parent absolute path
-        DLINK_HOME_DIR = new ApplicationHome(UploadFileConstant.class).getSource().getParent() + "/../";
+        DINKY_HOME_DIR = new ApplicationHome(UploadFileConstant.class).getSource().getParent() + "/../";
     }
 
-    public static final String DLINK_HOME_DIR;
+    public static final String DINKY_HOME_DIR;
     public static final String HDFS_HOME_DIR = "hdfs:///";
-    public static final String HADOOP_CONF_DIR = DLINK_HOME_DIR + "/config/hadoop-conf";
-    public static final String FLINK_CONF_DIR = DLINK_HOME_DIR + "/config/flink-conf";
-    public static final String FLINK_LIB_DIR = HDFS_HOME_DIR + "dlink/jar/flink/lib";
-    public static final String DLINK_JAR_DIR = HDFS_HOME_DIR + "dlink/jar/dlink";
-    public static final String USER_JAR_DIR = HDFS_HOME_DIR + "dlink/jar/user";
+    public static final String HADOOP_CONF_DIR = DINKY_HOME_DIR + "/config/hadoop-conf";
+    public static final String FLINK_CONF_DIR = DINKY_HOME_DIR + "/config/flink-conf";
+    public static final String FLINK_LIB_DIR = HDFS_HOME_DIR + "dinky/jar/flink/lib";
+    public static final String DINKY_JAR_DIR = HDFS_HOME_DIR + "dinky/jar/dinky";
+    public static final String USER_JAR_DIR = HDFS_HOME_DIR + "dinky/jar/user";
 
     // Upload file's target constant----------------------------------------------------------------------------------------
     /**
@@ -81,8 +81,8 @@ public class UploadFileConstant {
                 return FLINK_LIB_NAME;
             case USER_JAR_ID:
                 return USER_JAR_NAME;
-            case DLINK_JAR_ID:
-                return DLINK_JAR_NAME;
+            case DINKY_JAR_ID:
+                return DINKY_JAR_NAME;
             default:
                 return null;
         }
@@ -104,8 +104,8 @@ public class UploadFileConstant {
                 return FLINK_LIB_DIR;
             case USER_JAR_ID:
                 return USER_JAR_DIR;
-            case DLINK_JAR_ID:
-                return DLINK_JAR_DIR;
+            case DINKY_JAR_ID:
+                return DINKY_JAR_DIR;
             default:
                 return "";
         }
@@ -124,7 +124,7 @@ public class UploadFileConstant {
                 return TARGET_LOCAL;
             case FLINK_LIB_ID:
             case USER_JAR_ID:
-            case DLINK_JAR_ID:
+            case DINKY_JAR_ID:
                 return TARGET_HDFS;
             default:
                 return TARGET_OTHER;

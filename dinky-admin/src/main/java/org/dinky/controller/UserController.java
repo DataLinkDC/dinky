@@ -17,16 +17,16 @@
  *
  */
 
-package com.dlink.controller;
+package org.dinky.controller;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.common.result.ProTableResult;
-import com.dlink.common.result.Result;
-import com.dlink.dto.ModifyPasswordDTO;
-import com.dlink.model.User;
-import com.dlink.model.UserTenant;
-import com.dlink.service.UserService;
-import com.dlink.service.UserTenantService;
+import org.dinky.assertion.Asserts;
+import org.dinky.common.result.ProTableResult;
+import org.dinky.common.result.Result;
+import org.dinky.dto.ModifyPasswordDTO;
+import org.dinky.model.User;
+import org.dinky.model.UserTenant;
+import org.dinky.service.UserService;
+import org.dinky.service.UserTenantService;
 
 import java.util.ArrayList;
 import java.util.HashMap;

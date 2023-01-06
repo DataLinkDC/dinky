@@ -17,14 +17,14 @@
  *
  */
 
-package com.dlink.cdc;
+package org.dinky.cdc;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.cdc.doris.DorisSinkBuilder;
-import com.dlink.cdc.kafka.KafkaSinkBuilder;
-import com.dlink.cdc.sql.SQLSinkBuilder;
-import com.dlink.exception.FlinkClientException;
-import com.dlink.model.FlinkCDCConfig;
+import org.dinky.assertion.Asserts;
+import org.dinky.cdc.doris.DorisSinkBuilder;
+import org.dinky.cdc.kafka.KafkaSinkBuilder;
+import org.dinky.cdc.sql.SQLSinkBuilder;
+import org.dinky.exception.FlinkClientException;
+import org.dinky.model.FlinkCDCConfig;
 
 import java.util.HashMap;
 import java.util.Map;

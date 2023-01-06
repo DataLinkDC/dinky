@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.executor;
+package org.dinky.executor;
 
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.annotation.VisibleForTesting;

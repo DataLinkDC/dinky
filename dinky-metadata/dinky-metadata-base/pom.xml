@@ -19,21 +19,21 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.dlink</groupId>
-        <artifactId>dlink-metadata</artifactId>
+        <groupId>org.dinky</groupId>
+        <artifactId>dinky-metadata</artifactId>
         <version>0.7.0</version>
     </parent>
 
-    <artifactId>dlink-metadata-base</artifactId>
+    <artifactId>dinky-metadata-base</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-common</artifactId>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-common</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-process</artifactId>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-process</artifactId>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

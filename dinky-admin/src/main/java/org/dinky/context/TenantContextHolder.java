@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.context;
+package org.dinky.context;
 
 /**
  * TenantContextHolder

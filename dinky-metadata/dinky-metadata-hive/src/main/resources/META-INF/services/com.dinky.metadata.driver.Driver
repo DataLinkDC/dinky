@@ -1,1 +1,1 @@
-com.dlink.metadata.driver.HiveDriver
+org.dinky.metadata.driver.HiveDriver

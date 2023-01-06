@@ -8,7 +8,7 @@ title: AGGTABLE 表值聚合的实践
 
 ## 摘要
 
-本文讲述了 Dlink 对 Flink 的表值聚合功能的应用与增强。增强主要在于定义了 AGGTABLE 来通过 FlinkSql 进行表值聚合的实现，以下将通过两个示例 top2 与 to_map 进行讲解。
+本文讲述了 Dinky 对 Flink 的表值聚合功能的应用与增强。增强主要在于定义了 AGGTABLE 来通过 FlinkSql 进行表值聚合的实现，以下将通过两个示例 top2 与 to_map 进行讲解。
 
 ## 准备工作
 
@@ -87,7 +87,7 @@ CREATE TABLE `studentscore`  (
 
 要求将一维成绩表转化为二维成绩单，其中不存在的成绩得分为0，并输出至studentscore表中。
 
-## Dlink 的 AGGTABLE
+## Dinky 的 AGGTABLE
 
 ​	本文以 Flink 官方的 Table Aggregate Functions 示例 Top2 为例进行比较说明，传送门 https://ci.apache.org/projects/flink/flink-docs-release-1.13/docs/dev/table/functions/udfs/#table-aggregate-functions
 
@@ -174,7 +174,7 @@ env
   .select($("myField"), $("value"), $("rank"));
 ```
 
-### Dlink FlinkSql 实现
+### Dinky FlinkSql 实现
 
 #### 示例
 
@@ -194,23 +194,23 @@ AGG BY TOP2(value) as (value,rank);
 
 ​	语法固定，示例关键字必须存在并进行描述，where 可以加在 FROM 和 GROUP BY 之间。
 
-## Dlink 本地实现各科成绩前二
+## Dinky 本地实现各科成绩前二
 
-​	本示例通过 Dlink 的本地环境进行演示实现。
+​	本示例通过 Dinky 的本地环境进行演示实现。
 
-### 进入Dlink
+### 进入Dinky
 
 ![login_dinky](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/aggtable/login_dinky.png)
 
-​	只有版本号大于等于 0.2.2-rc1 的 Dlink 才支持本文 AGGTABLE 的使用。
+​	只有版本号大于等于 0.2.2-rc1 的 Dinky 才支持本文 AGGTABLE 的使用。
 
 ### 编写 FlinkSQL
 
 ```sql
 jdbcconfig:='connector' = 'jdbc',
     'url' = 'jdbc:mysql://127.0.0.1:3306/data?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true',
-    'username'='dlink',
-    'password'='dlink',;
+    'username'='dinky',
+    'password'='dinky',;
 CREATE TABLE student (
     sid INT,
     name STRING,
@@ -293,19 +293,19 @@ from aggscore b
 
 ​	sink 表中只有五条数据，结果是正确的。
 
-## Dlink 远程实现二维成绩单
+## Dinky 远程实现二维成绩单
 
-​	本示例通过 Dlink 控制远程集群来实现。
+​	本示例通过 Dinky 控制远程集群来实现。
 
-​	远程集群的 lib 中需要上传 dlink-function.jar 。
+​	远程集群的 lib 中需要上传 dinky-function.jar 。
 
 ### 编写FlinkSQL
 
 ```sql
 jdbcconfig:='connector' = 'jdbc',
     'url' = 'jdbc:mysql://127.0.0.1:3306/data?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true',
-    'username'='dlink',
-    'password'='dlink',;
+    'username'='dinky',
+    'password'='dinky',;
 CREATE TABLE student (
     sid INT,
     name STRING,
@@ -366,7 +366,7 @@ from
 
 ![flink_webui](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/aggtable/flink_webui.png)
 
-​	打开集群的 Flink UI 可以发现刚刚提交的批任务，此时可以发现集群版本号为 1.12.2 ，而 Dlink 默认版本为 1.12.4 ，所以一般大版本内可以互相兼容。
+​	打开集群的 Flink UI 可以发现刚刚提交的批任务，此时可以发现集群版本号为 1.12.2 ，而 Dinky 默认版本为 1.12.4 ，所以一般大版本内可以互相兼容。
 
 ### 查看Mysql表的数据
 

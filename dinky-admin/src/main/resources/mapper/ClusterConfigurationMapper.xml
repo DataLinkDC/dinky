@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.dlink.mapper.ClusterConfigurationMapper">
+<mapper namespace="org.dinky.mapper.ClusterConfigurationMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.dlink.model.ClusterConfiguration">
+    <resultMap id="BaseResultMap" type="org.dinky.model.ClusterConfiguration">
         <id column="id" property="id" />
         <result column="name" property="name" />
         <result column="alias" property="alias" />
@@ -22,11 +22,11 @@
     </sql>
 
 
-    <select id="selectForProTable" resultType="com.dlink.model.ClusterConfiguration">
+    <select id="selectForProTable" resultType="org.dinky.model.ClusterConfiguration">
         select
         a.*
         from
-        dlink_cluster_configuration a
+        dinky_cluster_configuration a
         <where>
             1=1
             <if test='param.name!=null and param.name!=""'>

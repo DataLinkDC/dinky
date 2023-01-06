@@ -17,20 +17,20 @@
  *
  */
 
-package com.dlink.gateway.yarn;
+package org.dinky.gateway.yarn;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.gateway.AbstractGateway;
-import com.dlink.gateway.config.ActionType;
-import com.dlink.gateway.config.GatewayConfig;
-import com.dlink.gateway.config.SavePointType;
-import com.dlink.gateway.exception.GatewayException;
-import com.dlink.gateway.model.JobInfo;
-import com.dlink.gateway.result.SavePointResult;
-import com.dlink.gateway.result.TestResult;
-import com.dlink.model.JobStatus;
-import com.dlink.utils.FlinkUtil;
-import com.dlink.utils.LogUtil;
+import org.dinky.assertion.Asserts;
+import org.dinky.gateway.AbstractGateway;
+import org.dinky.gateway.config.ActionType;
+import org.dinky.gateway.config.GatewayConfig;
+import org.dinky.gateway.config.SavePointType;
+import org.dinky.gateway.exception.GatewayException;
+import org.dinky.gateway.model.JobInfo;
+import org.dinky.gateway.result.SavePointResult;
+import org.dinky.gateway.result.TestResult;
+import org.dinky.model.JobStatus;
+import org.dinky.utils.FlinkUtil;
+import org.dinky.utils.LogUtil;
 
 import org.apache.flink.api.common.JobID;
 import org.apache.flink.client.deployment.ClusterRetrieveException;

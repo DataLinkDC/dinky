@@ -17,15 +17,15 @@
  *
  */
 
-package com.dlink.api;
+package org.dinky.api;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.constant.FlinkRestAPIConstant;
-import com.dlink.constant.NetConstant;
-import com.dlink.gateway.GatewayType;
-import com.dlink.gateway.config.SavePointType;
-import com.dlink.gateway.model.JobInfo;
-import com.dlink.gateway.result.SavePointResult;
+import org.dinky.assertion.Asserts;
+import org.dinky.constant.FlinkRestAPIConstant;
+import org.dinky.constant.NetConstant;
+import org.dinky.gateway.GatewayType;
+import org.dinky.gateway.config.SavePointType;
+import org.dinky.gateway.model.JobInfo;
+import org.dinky.gateway.result.SavePointResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.dlink.mapper.SysConfigMapper">
+<mapper namespace="org.dinky.mapper.SysConfigMapper">
 
-    <select id="selectForProTable" resultType="com.dlink.model.SysConfig">
+    <select id="selectForProTable" resultType="org.dinky.model.SysConfig">
         select
         a.*
         from
-        dlink_sys_config a
+        dinky_sys_config a
         <where>
             1=1
             <if test='param.name!=null and param.name!=""'>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.dlink.mapper.ClusterMapper">
+<mapper namespace="org.dinky.mapper.ClusterMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.dlink.model.Cluster">
+    <resultMap id="BaseResultMap" type="org.dinky.model.Cluster">
         <id column="id" property="id" />
         <result column="name" property="name" />
         <result column="alias" property="alias" />
@@ -27,11 +27,11 @@
     </sql>
 
 
-    <select id="selectForProTable" resultType="com.dlink.model.Cluster">
+    <select id="selectForProTable" resultType="org.dinky.model.Cluster">
         select
         a.*
         from
-        dlink_cluster a
+        dinky_cluster a
         <where>
             1=1
             <if test='param.name!=null and param.name!=""'>
@@ -55,11 +55,11 @@
         </where>
     </select>
 
-    <select id="listSessionEnable" resultType="com.dlink.model.Cluster">
+    <select id="listSessionEnable" resultType="org.dinky.model.Cluster">
         select
         a.*
         from
-        dlink_cluster a
+        dinky_cluster a
         where enabled = 1
         and (type = 'standalone' or type = 'yarn-session'or type = 'kubernetes-session')
     </select>

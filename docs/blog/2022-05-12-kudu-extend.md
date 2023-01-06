@@ -4,7 +4,7 @@ title: Dinky 扩展 Kudu 实践分享
 authors: 
   - name: roohom
     title: 深耕大数据领域多年 主要倾向于实时方向的研究
-    url: https://github.com/DataLinkDC/dlink
+    url: https://github.com/DataLinkDC/dinky
     image_url: http://www.aiwenmo.com/dinky/docs/dinky_logo.svg
 tags: [Flink, Dinky, KUDU]
 ---

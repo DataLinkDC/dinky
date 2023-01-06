@@ -5,7 +5,7 @@ title: 0.6.7 release
 
 | 版本    | 二进制程序                                                                                                                 | Source                                                                                |
 |-------|-----------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
-| 0.6.7 | [dlink-release-0.6.7.tar.gz](https://github.com/DataLinkDC/dlink/releases/download/v0.6.7/dlink-release-0.6.7.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dlink/archive/refs/tags/v0.6.7.zip) |
+| 0.6.7 | [dinky-release-0.6.7.tar.gz](https://github.com/DataLinkDC/dinky/releases/download/v0.6.7/dinky-release-0.6.7.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dinky/archive/refs/tags/v0.6.7.zip) |
 
 ## Dinky发行说明
 
@@ -54,7 +54,7 @@ Dinky 0.6.7 是一个修复的版本。
 - 修复 savepoint 接口获取前端集群表单的 taskId 为空的问题
 - 修复 yarn per-job 无法自动释放资源的问题
 - 修复多租户新增角色和删除角色的问题
-- 修复 dlink-conector-pulsar-1.14 找不到 SubscriptionType 的报错
+- 修复 dinky-conector-pulsar-1.14 找不到 SubscriptionType 的报错
 - 修复 flink1.14 savepoint 时的 jackjson 问题
 - 修复元数据字段类型转换的问题
 - 修复整库同步 KafkaSinkBuilder 未序列化导致报错
@@ -86,22 +86,22 @@ Dinky 0.6.7 是一个修复的版本。
 - 优化多租户和表单渲染
 - 优化多租户角色穿梭框和前端回显
 - 优化用户关联角色渲染
-- 优化 dlink-admin 的代码风格
-- 优化 dlink-alert 的代码风格
-- 优化 dlink-common 的代码风格
-- 优化 dlink-catalog 的代码风格
-- 优化 dlink-client 的代码风格
-- 优化 dlink-app 的代码风格
+- 优化 dinky-admin 的代码风格
+- 优化 dinky-alert 的代码风格
+- 优化 dinky-common 的代码风格
+- 优化 dinky-catalog 的代码风格
+- 优化 dinky-client 的代码风格
+- 优化 dinky-app 的代码风格
 - 优化数据源连接池和链接创建
-- 优化 dlink-connectors 的代码风格
-- 优化 dlink-core 的代码风格
-- 优化 dlink-daemon 的代码风格
-- 优化 dlink-executor 的代码风格
-- 优化 dlink-function 和 dlink-gateway 的代码风格
-- 优化 dlink-metadata 的代码风格
+- 优化 dinky-connectors 的代码风格
+- 优化 dinky-core 的代码风格
+- 优化 dinky-daemon 的代码风格
+- 优化 dinky-executor 的代码风格
+- 优化 dinky-function 和 dinky-gateway 的代码风格
+- 优化 dinky-metadata 的代码风格
 - 添加协议头到 pom 文件
 - 优化项目打包和启动文件
-- dlink-client-hadoop 打包增加 ServicesResourceTransformer
+- dinky-client-hadoop 打包增加 ServicesResourceTransformer
 - 优化配置文件和静态资源目录打包
 - 配置全局 checkstyle 验证
 - 添加 sqlserver 的 date 类型转换

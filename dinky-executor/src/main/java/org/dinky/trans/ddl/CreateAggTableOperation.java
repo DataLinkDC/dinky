@@ -17,13 +17,13 @@
  *
  */
 
-package com.dlink.trans.ddl;
+package org.dinky.trans.ddl;
 
 import static org.apache.flink.table.api.Expressions.$;
 
-import com.dlink.executor.Executor;
-import com.dlink.trans.AbstractOperation;
-import com.dlink.trans.Operation;
+import org.dinky.executor.Executor;
+import org.dinky.trans.AbstractOperation;
+import org.dinky.trans.Operation;
 
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableResult;

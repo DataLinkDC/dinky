@@ -19,15 +19,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.dlink</groupId>
-        <artifactId>dlink-app</artifactId>
+        <groupId>org.dinky</groupId>
+        <artifactId>dinky-app</artifactId>
         <version>0.7.0</version>
     </parent>
 
-    <artifactId>dlink-app-1.12</artifactId>
+    <artifactId>dinky-app-1.12</artifactId>
 
     <properties>
-        <mainClass>com.dlink.app.MainApp</mainClass>
+        <mainClass>org.dinky.app.MainApp</mainClass>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>${target.java.version}</maven.compiler.source>
         <maven.compiler.target>${target.java.version}</maven.compiler.target>
@@ -35,29 +35,29 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-app-base</artifactId>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-app-base</artifactId>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-client-1.12</artifactId>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-client-1.12</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-flink-1.12</artifactId>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-flink-1.12</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-client-base</artifactId>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-client-base</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>dlink-executor</artifactId>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-executor</artifactId>
         </dependency>
     </dependencies>
 
@@ -83,7 +83,7 @@
                     <archive>
                         <manifest>
                             <!-- 可以设置jar包的入口类(可选) -->
-                            <mainClass>com.dlink.app.MainApp</mainClass>
+                            <mainClass>org.dinky.app.MainApp</mainClass>
                         </manifest>
                     </archive>
                     <outputDirectory>${project.parent.parent.basedir}/build/extends</outputDirectory>

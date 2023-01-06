@@ -25,7 +25,7 @@ commons-pool2, jedis 包, 是flink-connector-redis 的jar引用到了, 故添加
 其中jedis的编译的版本比较旧了, 有更新的RC包, 安全起见, 如部署生产环境, 应自行编译flink-connector-redis, github地址: [https://github.com/jeff-zou/flink-connector-redis](https://github.com/jeff-zou/flink-connector-redis) 在此感谢jeff-zou大佬贡献的connector!
 
 ## 3. 部署
-Dlink 的 plugins 下添加 commons-pool2-2.11.0.jar, jedis-3.3.0.jar, flink-connector-redis-1.0.11.jar, flink-sql-connector-kafka_2.12-1.14.4.jar, 重启 Dlink. flink standalone模式 或者 yarn 模式, 请自行往需要的地方添加依赖.
+Dinky 的 plugins 下添加 commons-pool2-2.11.0.jar, jedis-3.3.0.jar, flink-connector-redis-1.0.11.jar, flink-sql-connector-kafka_2.12-1.14.4.jar, 重启 Dinky. flink standalone模式 或者 yarn 模式, 请自行往需要的地方添加依赖.
 
 ### 依赖图
 ![](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/redis/jar.png)

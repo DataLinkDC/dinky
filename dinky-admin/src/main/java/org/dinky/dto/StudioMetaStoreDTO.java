@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.dto;
+package org.dinky.dto;
 
-import com.dlink.gateway.GatewayType;
-import com.dlink.job.JobConfig;
+import org.dinky.gateway.GatewayType;
+import org.dinky.job.JobConfig;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -17,21 +17,21 @@
  *
  */
 
-package com.dlink.service.impl;
+package org.dinky.service.impl;
 
-import com.dlink.dto.APICancelDTO;
-import com.dlink.dto.APIExecuteJarDTO;
-import com.dlink.dto.APIExecuteSqlDTO;
-import com.dlink.dto.APIExplainSqlDTO;
-import com.dlink.dto.APISavePointDTO;
-import com.dlink.gateway.result.SavePointResult;
-import com.dlink.job.JobConfig;
-import com.dlink.job.JobManager;
-import com.dlink.job.JobResult;
-import com.dlink.result.APIJobResult;
-import com.dlink.result.ExplainResult;
-import com.dlink.service.APIService;
-import com.dlink.utils.RunTimeUtil;
+import org.dinky.dto.APICancelDTO;
+import org.dinky.dto.APIExecuteJarDTO;
+import org.dinky.dto.APIExecuteSqlDTO;
+import org.dinky.dto.APIExplainSqlDTO;
+import org.dinky.dto.APISavePointDTO;
+import org.dinky.gateway.result.SavePointResult;
+import org.dinky.job.JobConfig;
+import org.dinky.job.JobManager;
+import org.dinky.job.JobResult;
+import org.dinky.result.APIJobResult;
+import org.dinky.result.ExplainResult;
+import org.dinky.service.APIService;
+import org.dinky.utils.RunTimeUtil;
 
 import org.springframework.stereotype.Service;
 

@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.scheduler.constant;
+package org.dinky.scheduler.constant;
 
 /**
  * @author 郑文豪

@@ -17,24 +17,24 @@
  *
  */
 
-package com.dlink.controller;
+package org.dinky.controller;
 
-import com.dlink.common.result.Result;
-import com.dlink.init.SystemInit;
-import com.dlink.model.Catalogue;
-import com.dlink.scheduler.client.ProcessClient;
-import com.dlink.scheduler.client.TaskClient;
-import com.dlink.scheduler.config.DolphinSchedulerProperties;
-import com.dlink.scheduler.enums.ReleaseState;
-import com.dlink.scheduler.exception.SchedulerException;
-import com.dlink.scheduler.model.DagData;
-import com.dlink.scheduler.model.DlinkTaskParams;
-import com.dlink.scheduler.model.ProcessDefinition;
-import com.dlink.scheduler.model.Project;
-import com.dlink.scheduler.model.TaskDefinition;
-import com.dlink.scheduler.model.TaskMainInfo;
-import com.dlink.scheduler.model.TaskRequest;
-import com.dlink.service.CatalogueService;
+import org.dinky.common.result.Result;
+import org.dinky.init.SystemInit;
+import org.dinky.model.Catalogue;
+import org.dinky.scheduler.client.ProcessClient;
+import org.dinky.scheduler.client.TaskClient;
+import org.dinky.scheduler.config.DolphinSchedulerProperties;
+import org.dinky.scheduler.enums.ReleaseState;
+import org.dinky.scheduler.exception.SchedulerException;
+import org.dinky.scheduler.model.DagData;
+import org.dinky.scheduler.model.DinkyTaskParams;
+import org.dinky.scheduler.model.ProcessDefinition;
+import org.dinky.scheduler.model.Project;
+import org.dinky.scheduler.model.TaskDefinition;
+import org.dinky.scheduler.model.TaskMainInfo;
+import org.dinky.scheduler.model.TaskRequest;
+import org.dinky.service.CatalogueService;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -157,10 +157,10 @@ public class SchedulerController {
     public Result<String> createTaskDefinition(@ApiParam(value = "前置任务编号 逗号隔开") @RequestParam(required = false) String upstreamCodes,
                                                @ApiParam(value = "dinky任务id") @RequestParam Long dinkyTaskId,
                                                @Valid @RequestBody TaskRequest taskRequest) {
-        DlinkTaskParams dlinkTaskParams = new DlinkTaskParams();
-        dlinkTaskParams.setTaskId(dinkyTaskId.toString());
-        dlinkTaskParams.setAddress(dolphinSchedulerProperties.getAddress());
-        taskRequest.setTaskParams(JSONUtil.parseObj(dlinkTaskParams).toString());
+        DinkyTaskParams dinkyTaskParams = new DinkyTaskParams();
+        dinkyTaskParams.setTaskId(dinkyTaskId.toString());
+        dinkyTaskParams.setAddress(dolphinSchedulerProperties.getAddress());
+        taskRequest.setTaskParams(JSONUtil.parseObj(dinkyTaskParams).toString());
         taskRequest.setTaskType("DINKY");
 
         Project dinkyProject = SystemInit.getProject();

@@ -30,13 +30,13 @@ title: Hive
 
 |     所属组件      |            插件            |         版本          |
 |:-------------:| :------------------------: | :-------------------: |
-|     Dinky     |        dlink-client        |         1.12          |
+|     Dinky     |        dinky-client        |         1.12          |
 | Dinky & Flink |  flink-sql-connector-hive  |   2.3.6_2.11-1.12.3   |
 | Dinky & Flink | flink-shaded-hadoop-3-uber | 3.1.1.7.2.8.0-224-9.0 |
 
 ## 部署扩展
 
-部署扩展的工作非常简单（前提是 Dlink 部署完成并成功连接 Flink 集群，相关部署步骤请查看《Dlink实时计算平台——部署篇》），只需要把 `flink-sql-connector-hive-2.3.6_2.11-1.12.3.jar` 和 `flink-shaded-hadoop-3-uber-3.1.1.7.2.8.0-224-9.0.jar` 两个插件分别加入到 Dlink 的 plugins 目录与 Flink 的 lib 目录下即可，然后重启二者。当然，还需要放置 `hive-site.xml`，位置自定义，Dlink 可以访问到即可。
+部署扩展的工作非常简单（前提是 Dinky 部署完成并成功连接 Flink 集群，相关部署步骤请查看《Dinky实时计算平台——部署篇》），只需要把 `flink-sql-connector-hive-2.3.6_2.11-1.12.3.jar` 和 `flink-shaded-hadoop-3-uber-3.1.1.7.2.8.0-224-9.0.jar` 两个插件分别加入到 Dinky 的 plugins 目录与 Flink 的 lib 目录下即可，然后重启二者。当然，还需要放置 `hive-site.xml`，位置自定义，Dinky 可以访问到即可。
 
 ## 创建 Hive Catalog
 
@@ -46,7 +46,7 @@ title: Hive
 CREATE CATALOG myhive WITH (
     'type' = 'hive',
     'default-database' = 'hdb',
-    'hive-conf-dir' = '/usr/local/dlink/hive-conf'
+    'hive-conf-dir' = '/usr/local/dinky/hive-conf'
 );
 -- set the HiveCatalog as the current catalog of the session
 USE CATALOG myhive;
@@ -71,7 +71,7 @@ select * from htest
 CREATE CATALOG myhive WITH (
     'type' = 'hive',
     'default-database' = 'hdb',
-    'hive-conf-dir' = '/usr/local/dlink/hive-conf'
+    'hive-conf-dir' = '/usr/local/dinky/hive-conf'
 );
 -- set the HiveCatalog as the current catalog of the session
 USE CATALOG myhive;
@@ -92,6 +92,6 @@ select * from htest;
 
 ## 总结
 
-由上所知，Dlink 以更加友好的交互方式展现了 Flink 集成 Hive 的部分功能，当然其他更多的 Hive 功能需要您自己在使用的过程中去体验与挖掘。
+由上所知，Dinky 以更加友好的交互方式展现了 Flink 集成 Hive 的部分功能，当然其他更多的 Hive 功能需要您自己在使用的过程中去体验与挖掘。
 
-目前，Dlink 支持 Flink 绝大多数特性与功能，集成与拓展方式与 Flink 官方文档描述一致，只需要在 Dlink 的 plugins 目录下添加依赖即可。
+目前，Dinky 支持 Flink 绝大多数特性与功能，集成与拓展方式与 Flink 官方文档描述一致，只需要在 Dinky 的 plugins 目录下添加依赖即可。

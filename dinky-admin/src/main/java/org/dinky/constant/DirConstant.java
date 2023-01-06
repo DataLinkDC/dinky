@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.constant;
+package org.dinky.constant;
 
 import org.springframework.boot.system.ApplicationHome;
 
@@ -35,9 +35,9 @@ public class DirConstant {
 
     static {
         String separator = System.getProperty(FILE_SEPARATOR);
-        // String rootPath = new ApplicationHome(Dlink.class).getSource().getParent();
+        // String rootPath = new ApplicationHome(Dinky.class).getSource().getParent();
         String rootPath = new ApplicationHome().getDir().getPath();
         LOG_DIR_PATH = rootPath + separator + "logs";
-        ROOT_LOG_PATH = LOG_DIR_PATH + separator + "dlink.log";
+        ROOT_LOG_PATH = LOG_DIR_PATH + separator + "dinky.log";
     }
 }

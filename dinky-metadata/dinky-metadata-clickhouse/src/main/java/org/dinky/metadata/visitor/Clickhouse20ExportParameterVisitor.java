@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.metadata.visitor;
+package org.dinky.metadata.visitor;
 
 import java.util.ArrayList;
 import java.util.List;

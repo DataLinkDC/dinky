@@ -17,13 +17,13 @@
  *
  */
 
-package com.dlink.interceptor;
+package org.dinky.interceptor;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.executor.Executor;
-import com.dlink.trans.Operation;
-import com.dlink.trans.Operations;
-import com.dlink.utils.SqlUtil;
+import org.dinky.assertion.Asserts;
+import org.dinky.executor.Executor;
+import org.dinky.trans.Operation;
+import org.dinky.trans.Operations;
+import org.dinky.utils.SqlUtil;
 
 import org.apache.flink.table.api.TableResult;
 

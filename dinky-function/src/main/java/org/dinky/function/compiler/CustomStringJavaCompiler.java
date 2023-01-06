@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.function.compiler;
+package org.dinky.function.compiler;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

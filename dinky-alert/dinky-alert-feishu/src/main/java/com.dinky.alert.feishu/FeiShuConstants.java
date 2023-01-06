@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.alert.feishu;
+package org.dinky.alert.feishu;
 
 /**
  * @Author: zhumingye

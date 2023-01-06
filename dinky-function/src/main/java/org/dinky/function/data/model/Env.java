@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.function.data.model;
+package org.dinky.function.data.model;
 
 import javax.annotation.PostConstruct;
 

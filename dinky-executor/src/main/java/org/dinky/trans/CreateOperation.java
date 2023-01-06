@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.trans;
+package org.dinky.trans;
 
 /**
  * TODO

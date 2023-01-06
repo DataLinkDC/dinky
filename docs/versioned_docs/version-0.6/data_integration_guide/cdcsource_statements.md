@@ -40,9 +40,9 @@ CDCSOURCE 语句用于将上游指定数据库的所有表的数据采用一个�
 ### 说明
 ```
 # 将下面 Dinky根目录下 整库同步依赖包放置 $FLINK_HOME/lib下
-jar/dlink-client-base-${version}.jar
-jar/dlink-common-${version}.jar
-lib/dlink-client-${version}.jar
+jar/dinky-client-base-${version}.jar
+jar/dinky-common-${version}.jar
+lib/dinky-client-${version}.jar
 ```
 
 ### 语法结构
@@ -90,14 +90,14 @@ EXECUTE CDCSOURCE jobname WITH (
   'connector' = 'mysql-cdc',
   'hostname' = '127.0.0.1',
   'port' = '3306',
-  'username' = 'dlink',
-  'password' = 'dlink',
+  'username' = 'dinky',
+  'password' = 'dinky',
   'checkpoint' = '3000',
   'scan.startup.mode' = 'initial',
   'parallelism' = '1',
   'table-name' = 'test\.student,test\.score',
   'sink.connector'='datastream-kafka',
-  'sink.topic'='dlinkcdc',
+  'sink.topic'='dinkycdc',
   'sink.brokers'='127.0.0.1:9092'
 )
 ```
@@ -111,8 +111,8 @@ EXECUTE CDCSOURCE jobname WITH (
   'connector' = 'mysql-cdc',
   'hostname' = '127.0.0.1',
   'port' = '3306',
-  'username' = 'dlink',
-  'password' = 'dlink',
+  'username' = 'dinky',
+  'password' = 'dinky',
   'checkpoint' = '3000',
   'scan.startup.mode' = 'initial',
   'parallelism' = '1',
@@ -129,8 +129,8 @@ EXECUTE CDCSOURCE jobname WITH (
   'connector' = 'mysql-cdc',
   'hostname' = '127.0.0.1',
   'port' = '3306',
-  'username' = 'dlink',
-  'password' = 'dlink',
+  'username' = 'dinky',
+  'password' = 'dinky',
   'checkpoint' = '3000',
   'scan.startup.mode' = 'initial',
   'parallelism' = '1',
@@ -156,8 +156,8 @@ EXECUTE CDCSOURCE jobname WITH (
   'connector' = 'mysql-cdc',
   'hostname' = '127.0.0.1',
   'port' = '3306',
-  'username' = 'dlink',
-  'password' = 'dlink',
+  'username' = 'dinky',
+  'password' = 'dinky',
   'checkpoint' = '3000',
   'scan.startup.mode' = 'initial',
   'parallelism' = '1',

@@ -17,26 +17,26 @@
  *
  */
 
-package com.dlink.metadata.driver;
+package org.dinky.metadata.driver;
 
-import static com.dlink.utils.SplitUtil.contains;
-import static com.dlink.utils.SplitUtil.getReValue;
-import static com.dlink.utils.SplitUtil.isSplit;
+import static org.dinky.utils.SplitUtil.contains;
+import static org.dinky.utils.SplitUtil.getReValue;
+import static org.dinky.utils.SplitUtil.isSplit;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.constant.CommonConstant;
-import com.dlink.metadata.query.IDBQuery;
-import com.dlink.metadata.result.JdbcSelectResult;
-import com.dlink.model.Column;
-import com.dlink.model.QueryData;
-import com.dlink.model.Schema;
-import com.dlink.model.Table;
-import com.dlink.model.TableType;
-import com.dlink.process.context.ProcessContextHolder;
-import com.dlink.process.model.ProcessEntity;
-import com.dlink.result.SqlExplainResult;
-import com.dlink.utils.LogUtil;
-import com.dlink.utils.TextUtil;
+import org.dinky.assertion.Asserts;
+import org.dinky.constant.CommonConstant;
+import org.dinky.metadata.query.IDBQuery;
+import org.dinky.metadata.result.JdbcSelectResult;
+import org.dinky.model.Column;
+import org.dinky.model.QueryData;
+import org.dinky.model.Schema;
+import org.dinky.model.Table;
+import org.dinky.model.TableType;
+import org.dinky.process.context.ProcessContextHolder;
+import org.dinky.process.model.ProcessEntity;
+import org.dinky.result.SqlExplainResult;
+import org.dinky.utils.LogUtil;
+import org.dinky.utils.TextUtil;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

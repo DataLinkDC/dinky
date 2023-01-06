@@ -19,12 +19,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.dlink</groupId>
-        <artifactId>dlink-flink</artifactId>
+        <groupId>org.dinky</groupId>
+        <artifactId>dinky-flink</artifactId>
         <version>0.7.0</version>
     </parent>
 
-    <artifactId>dlink-flink-1.15</artifactId>
+    <artifactId>dinky-flink-1.15</artifactId>
 
     <properties>
         <flink.version>1.15.2</flink.version>
@@ -63,8 +63,8 @@
             <artifactId>flink-table-planner_2.12</artifactId>
             <version>${flink.version}</version>
         </dependency>
-        <!-- You need to add this dependency before completing the dlink-connector-jdbc-1.15 module to prevent running exceptions when using version flink-1.15,
-        and you need to put the flink-connector-jdbc-1.15.*.jar in the /dlink/lib/ directory to replace dlink-connector-jdbc-1.13-0.6.6-SNAPSHOT.jar during deployment-->
+        <!-- You need to add this dependency before completing the dinky-connector-jdbc-1.15 module to prevent running exceptions when using version flink-1.15,
+        and you need to put the flink-connector-jdbc-1.15.*.jar in the /dinky/lib/ directory to replace dinky-connector-jdbc-1.13-0.6.6-SNAPSHOT.jar during deployment-->
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-connector-jdbc</artifactId>

@@ -82,7 +82,7 @@ const Login: React.FC = () => {
 
 
   const setTenantCookie =  (tenantId :number) => {
-    localStorage.setItem("dlink-tenantId", tenantId.toString()); // 放入本地存储中 request2请求时会放入header
+    localStorage.setItem("dinky-tenantId", tenantId.toString()); // 放入本地存储中 request2请求时会放入header
     cookies.set('tenantId', tenantId.toString(), {path: '/'}) // 放入cookie中
   }
 

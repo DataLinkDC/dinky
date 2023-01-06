@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.sql;
+package org.dinky.sql;
 
 /**
  * FlinkQuery

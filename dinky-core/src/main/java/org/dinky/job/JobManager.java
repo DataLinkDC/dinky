@@ -17,56 +17,56 @@
  *
  */
 
-package com.dlink.job;
+package org.dinky.job;
 
-import static com.dlink.function.util.UDFUtil.GATEWAY_TYPE_MAP;
-import static com.dlink.function.util.UDFUtil.SESSION;
-import static com.dlink.function.util.UDFUtil.YARN;
+import static org.dinky.function.util.UDFUtil.GATEWAY_TYPE_MAP;
+import static org.dinky.function.util.UDFUtil.SESSION;
+import static org.dinky.function.util.UDFUtil.YARN;
 
-import com.dlink.api.FlinkAPI;
-import com.dlink.assertion.Asserts;
-import com.dlink.classloader.DinkyClassLoader;
-import com.dlink.constant.FlinkSQLConstant;
-import com.dlink.context.DinkyClassLoaderContextHolder;
-import com.dlink.context.JarPathContextHolder;
-import com.dlink.executor.EnvironmentSetting;
-import com.dlink.executor.Executor;
-import com.dlink.executor.ExecutorSetting;
-import com.dlink.explainer.Explainer;
-import com.dlink.function.constant.PathConstant;
-import com.dlink.function.data.model.Env;
-import com.dlink.function.data.model.UDF;
-import com.dlink.function.util.UDFUtil;
-import com.dlink.gateway.Gateway;
-import com.dlink.gateway.GatewayType;
-import com.dlink.gateway.config.ActionType;
-import com.dlink.gateway.config.FlinkConfig;
-import com.dlink.gateway.config.GatewayConfig;
-import com.dlink.gateway.result.GatewayResult;
-import com.dlink.gateway.result.SavePointResult;
-import com.dlink.gateway.result.TestResult;
-import com.dlink.interceptor.FlinkInterceptor;
-import com.dlink.interceptor.FlinkInterceptorResult;
-import com.dlink.model.SystemConfiguration;
-import com.dlink.parser.SqlType;
-import com.dlink.process.context.ProcessContextHolder;
-import com.dlink.process.exception.DinkyException;
-import com.dlink.process.model.ProcessEntity;
-import com.dlink.result.ErrorResult;
-import com.dlink.result.ExplainResult;
-import com.dlink.result.IResult;
-import com.dlink.result.InsertResult;
-import com.dlink.result.ResultBuilder;
-import com.dlink.result.ResultPool;
-import com.dlink.result.SelectResult;
-import com.dlink.session.ExecutorEntity;
-import com.dlink.session.SessionConfig;
-import com.dlink.session.SessionInfo;
-import com.dlink.session.SessionPool;
-import com.dlink.trans.Operations;
-import com.dlink.utils.LogUtil;
-import com.dlink.utils.SqlUtil;
-import com.dlink.utils.URLUtils;
+import org.dinky.api.FlinkAPI;
+import org.dinky.assertion.Asserts;
+import org.dinky.classloader.DinkyClassLoader;
+import org.dinky.constant.FlinkSQLConstant;
+import org.dinky.context.DinkyClassLoaderContextHolder;
+import org.dinky.context.JarPathContextHolder;
+import org.dinky.executor.EnvironmentSetting;
+import org.dinky.executor.Executor;
+import org.dinky.executor.ExecutorSetting;
+import org.dinky.explainer.Explainer;
+import org.dinky.function.constant.PathConstant;
+import org.dinky.function.data.model.Env;
+import org.dinky.function.data.model.UDF;
+import org.dinky.function.util.UDFUtil;
+import org.dinky.gateway.Gateway;
+import org.dinky.gateway.GatewayType;
+import org.dinky.gateway.config.ActionType;
+import org.dinky.gateway.config.FlinkConfig;
+import org.dinky.gateway.config.GatewayConfig;
+import org.dinky.gateway.result.GatewayResult;
+import org.dinky.gateway.result.SavePointResult;
+import org.dinky.gateway.result.TestResult;
+import org.dinky.interceptor.FlinkInterceptor;
+import org.dinky.interceptor.FlinkInterceptorResult;
+import org.dinky.model.SystemConfiguration;
+import org.dinky.parser.SqlType;
+import org.dinky.process.context.ProcessContextHolder;
+import org.dinky.process.exception.DinkyException;
+import org.dinky.process.model.ProcessEntity;
+import org.dinky.result.ErrorResult;
+import org.dinky.result.ExplainResult;
+import org.dinky.result.IResult;
+import org.dinky.result.InsertResult;
+import org.dinky.result.ResultBuilder;
+import org.dinky.result.ResultPool;
+import org.dinky.result.SelectResult;
+import org.dinky.session.ExecutorEntity;
+import org.dinky.session.SessionConfig;
+import org.dinky.session.SessionInfo;
+import org.dinky.session.SessionPool;
+import org.dinky.trans.Operations;
+import org.dinky.utils.LogUtil;
+import org.dinky.utils.SqlUtil;
+import org.dinky.utils.URLUtils;
 
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.CoreOptions;
@@ -591,7 +591,7 @@ public class JobManager {
         config.addGatewayConfig(executor.getSetConfig());
 
         if (runMode.isApplicationMode()) {
-            // Application mode need to submit dlink-app.jar that in the hdfs or image.
+            // Application mode need to submit dinky-app.jar that in the hdfs or image.
             gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
         } else {
             JobGraph jobGraph = executor.getJobGraphFromInserts(inserts);

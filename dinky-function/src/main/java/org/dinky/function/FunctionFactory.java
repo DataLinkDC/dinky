@@ -17,12 +17,12 @@
  *
  */
 
-package com.dlink.function;
+package org.dinky.function;
 
-import com.dlink.function.compiler.FunctionCompiler;
-import com.dlink.function.compiler.FunctionPackage;
-import com.dlink.function.data.model.UDF;
-import com.dlink.function.data.model.UDFPath;
+import org.dinky.function.compiler.FunctionCompiler;
+import org.dinky.function.compiler.FunctionPackage;
+import org.dinky.function.data.model.UDF;
+import org.dinky.function.data.model.UDFPath;
 
 import org.apache.flink.configuration.Configuration;
 

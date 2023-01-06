@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.metadata.query;
+package org.dinky.metadata.query;
 
-import com.dlink.metadata.constant.StarRocksConstant;
+import org.dinky.metadata.constant.StarRocksConstant;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

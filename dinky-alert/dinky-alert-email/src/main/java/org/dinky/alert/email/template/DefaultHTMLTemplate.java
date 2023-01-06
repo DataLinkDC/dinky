@@ -17,13 +17,13 @@
  *
  */
 
-package com.dlink.alert.email.template;
+package org.dinky.alert.email.template;
 
 import static java.util.Objects.requireNonNull;
 
-import com.dlink.alert.ShowType;
-import com.dlink.alert.email.EmailConstants;
-import com.dlink.utils.JSONUtil;
+import org.dinky.alert.ShowType;
+import org.dinky.alert.email.EmailConstants;
+import org.dinky.utils.JSONUtil;
 
 import org.apache.commons.lang3.StringUtils;
 

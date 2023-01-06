@@ -17,21 +17,21 @@
  *
  */
 
-package com.dlink.service.impl;
+package org.dinky.service.impl;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.constant.CommonConstant;
-import com.dlink.db.service.impl.SuperServiceImpl;
-import com.dlink.mapper.DataBaseMapper;
-import com.dlink.metadata.driver.Driver;
-import com.dlink.metadata.result.JdbcSelectResult;
-import com.dlink.model.Column;
-import com.dlink.model.DataBase;
-import com.dlink.model.QueryData;
-import com.dlink.model.Schema;
-import com.dlink.model.SqlGeneration;
-import com.dlink.model.Table;
-import com.dlink.service.DataBaseService;
+import org.dinky.assertion.Asserts;
+import org.dinky.constant.CommonConstant;
+import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.mapper.DataBaseMapper;
+import org.dinky.metadata.driver.Driver;
+import org.dinky.metadata.result.JdbcSelectResult;
+import org.dinky.model.Column;
+import org.dinky.model.DataBase;
+import org.dinky.model.QueryData;
+import org.dinky.model.Schema;
+import org.dinky.model.SqlGeneration;
+import org.dinky.model.Table;
+import org.dinky.service.DataBaseService;
 
 import org.apache.commons.lang3.StringUtils;
 

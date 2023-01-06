@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.utils;
+package org.dinky.utils;
 
-import com.dlink.model.LineageRel;
+import org.dinky.model.LineageRel;
 
 import org.apache.calcite.plan.RelOptTable;
 import org.apache.calcite.rel.RelNode;

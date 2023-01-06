@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.common.result;
+package org.dinky.common.result;
 
-import com.dlink.model.CodeEnum;
+import org.dinky.model.CodeEnum;
 
 import java.io.Serializable;
 

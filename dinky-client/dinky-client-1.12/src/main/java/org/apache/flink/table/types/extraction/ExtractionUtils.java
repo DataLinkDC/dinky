@@ -22,7 +22,7 @@ package org.apache.flink.table.types.extraction;
 import static org.apache.flink.shaded.asm7.org.objectweb.asm.Type.getConstructorDescriptor;
 import static org.apache.flink.shaded.asm7.org.objectweb.asm.Type.getMethodDescriptor;
 
-import com.dlink.pool.ClassPool;
+import org.dinky.pool.ClassPool;
 
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.api.common.typeutils.TypeSerializer;

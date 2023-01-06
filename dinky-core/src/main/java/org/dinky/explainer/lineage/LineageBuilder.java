@@ -17,13 +17,13 @@
  *
  */
 
-package com.dlink.explainer.lineage;
+package org.dinky.explainer.lineage;
 
-import com.dlink.explainer.ca.ColumnCAResult;
-import com.dlink.explainer.ca.NodeRel;
-import com.dlink.explainer.ca.TableCA;
-import com.dlink.model.LineageRel;
-import com.dlink.plus.FlinkSqlPlus;
+import org.dinky.explainer.ca.ColumnCAResult;
+import org.dinky.explainer.ca.NodeRel;
+import org.dinky.explainer.ca.TableCA;
+import org.dinky.model.LineageRel;
+import org.dinky.plus.FlinkSqlPlus;
 
 import java.util.ArrayList;
 import java.util.HashMap;

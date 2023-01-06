@@ -17,16 +17,16 @@
  *
  */
 
-package com.dlink.executor;
+package org.dinky.executor;
 
 import static org.apache.flink.util.Preconditions.checkArgument;
 import static org.apache.flink.util.Preconditions.checkNotNull;
 
 import static java.lang.String.format;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.constant.FlinkSQLConstant;
-import com.dlink.model.SystemConfiguration;
+import org.dinky.assertion.Asserts;
+import org.dinky.constant.FlinkSQLConstant;
+import org.dinky.model.SystemConfiguration;
 
 import org.apache.flink.table.api.DataTypes;
 import org.apache.flink.table.api.ExpressionParserException;

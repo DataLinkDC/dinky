@@ -17,14 +17,14 @@
  *
  */
 
-package com.dlink.security;
+package org.dinky.security;
 
-import com.dlink.common.result.ProTableResult;
-import com.dlink.common.result.Result;
-import com.dlink.model.History;
-import com.dlink.model.JobInfoDetail;
-import com.dlink.result.ExplainResult;
-import com.dlink.result.SqlExplainResult;
+import org.dinky.common.result.ProTableResult;
+import org.dinky.common.result.Result;
+import org.dinky.model.History;
+import org.dinky.model.JobInfoDetail;
+import org.dinky.result.ExplainResult;
+import org.dinky.result.SqlExplainResult;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -47,7 +47,7 @@ public class SecurityAspect {
     // 敏感信息屏蔽码
     public static final String MASK = "'password'='******'";
 
-    @AfterReturning(pointcut = "execution(* com.dlink.controller..*.*(..))", returning = "returnValue")
+    @AfterReturning(pointcut = "execution(* org.dinky.controller..*.*(..))", returning = "returnValue")
     public void afterReturning(JoinPoint joinPoint, Object returnValue) {
 
         // mask sql for explain

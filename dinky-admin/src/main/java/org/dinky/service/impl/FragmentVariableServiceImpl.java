@@ -17,12 +17,12 @@
  *
  */
 
-package com.dlink.service.impl;
+package org.dinky.service.impl;
 
-import com.dlink.db.service.impl.SuperServiceImpl;
-import com.dlink.mapper.FragmentVariableMapper;
-import com.dlink.model.FragmentVariable;
-import com.dlink.service.FragmentVariableService;
+import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.mapper.FragmentVariableMapper;
+import org.dinky.model.FragmentVariable;
+import org.dinky.service.FragmentVariableService;
 
 import java.util.LinkedHashMap;
 import java.util.List;

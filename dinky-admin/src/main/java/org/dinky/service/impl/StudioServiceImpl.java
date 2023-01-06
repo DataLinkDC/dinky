@@ -17,55 +17,55 @@
  *
  */
 
-package com.dlink.service.impl;
+package org.dinky.service.impl;
 
-import com.dlink.api.FlinkAPI;
-import com.dlink.assertion.Asserts;
-import com.dlink.config.Dialect;
-import com.dlink.dto.AbstractStatementDTO;
-import com.dlink.dto.SessionDTO;
-import com.dlink.dto.SqlDTO;
-import com.dlink.dto.StudioCADTO;
-import com.dlink.dto.StudioDDLDTO;
-import com.dlink.dto.StudioExecuteDTO;
-import com.dlink.dto.StudioMetaStoreDTO;
-import com.dlink.explainer.lineage.LineageBuilder;
-import com.dlink.explainer.lineage.LineageResult;
-import com.dlink.gateway.model.JobInfo;
-import com.dlink.gateway.result.SavePointResult;
-import com.dlink.job.JobConfig;
-import com.dlink.job.JobManager;
-import com.dlink.job.JobResult;
-import com.dlink.metadata.driver.Driver;
-import com.dlink.metadata.result.JdbcSelectResult;
-import com.dlink.model.Catalog;
-import com.dlink.model.Cluster;
-import com.dlink.model.DataBase;
-import com.dlink.model.FlinkColumn;
-import com.dlink.model.Savepoints;
-import com.dlink.model.Schema;
-import com.dlink.model.Table;
-import com.dlink.model.Task;
-import com.dlink.process.context.ProcessContextHolder;
-import com.dlink.process.model.ProcessEntity;
-import com.dlink.process.model.ProcessType;
-import com.dlink.result.DDLResult;
-import com.dlink.result.IResult;
-import com.dlink.result.SelectResult;
-import com.dlink.result.SqlExplainResult;
-import com.dlink.service.ClusterConfigurationService;
-import com.dlink.service.ClusterService;
-import com.dlink.service.DataBaseService;
-import com.dlink.service.FragmentVariableService;
-import com.dlink.service.SavepointsService;
-import com.dlink.service.StudioService;
-import com.dlink.service.TaskService;
-import com.dlink.service.UDFService;
-import com.dlink.session.SessionConfig;
-import com.dlink.session.SessionInfo;
-import com.dlink.session.SessionPool;
-import com.dlink.sql.FlinkQuery;
-import com.dlink.utils.RunTimeUtil;
+import org.dinky.api.FlinkAPI;
+import org.dinky.assertion.Asserts;
+import org.dinky.config.Dialect;
+import org.dinky.dto.AbstractStatementDTO;
+import org.dinky.dto.SessionDTO;
+import org.dinky.dto.SqlDTO;
+import org.dinky.dto.StudioCADTO;
+import org.dinky.dto.StudioDDLDTO;
+import org.dinky.dto.StudioExecuteDTO;
+import org.dinky.dto.StudioMetaStoreDTO;
+import org.dinky.explainer.lineage.LineageBuilder;
+import org.dinky.explainer.lineage.LineageResult;
+import org.dinky.gateway.model.JobInfo;
+import org.dinky.gateway.result.SavePointResult;
+import org.dinky.job.JobConfig;
+import org.dinky.job.JobManager;
+import org.dinky.job.JobResult;
+import org.dinky.metadata.driver.Driver;
+import org.dinky.metadata.result.JdbcSelectResult;
+import org.dinky.model.Catalog;
+import org.dinky.model.Cluster;
+import org.dinky.model.DataBase;
+import org.dinky.model.FlinkColumn;
+import org.dinky.model.Savepoints;
+import org.dinky.model.Schema;
+import org.dinky.model.Table;
+import org.dinky.model.Task;
+import org.dinky.process.context.ProcessContextHolder;
+import org.dinky.process.model.ProcessEntity;
+import org.dinky.process.model.ProcessType;
+import org.dinky.result.DDLResult;
+import org.dinky.result.IResult;
+import org.dinky.result.SelectResult;
+import org.dinky.result.SqlExplainResult;
+import org.dinky.service.ClusterConfigurationService;
+import org.dinky.service.ClusterService;
+import org.dinky.service.DataBaseService;
+import org.dinky.service.FragmentVariableService;
+import org.dinky.service.SavepointsService;
+import org.dinky.service.StudioService;
+import org.dinky.service.TaskService;
+import org.dinky.service.UDFService;
+import org.dinky.session.SessionConfig;
+import org.dinky.session.SessionInfo;
+import org.dinky.session.SessionPool;
+import org.dinky.sql.FlinkQuery;
+import org.dinky.utils.RunTimeUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -378,10 +378,10 @@ public class StudioServiceImpl implements StudioService {
                 return null;
             }
             if (studioCADTO.getDialect().equalsIgnoreCase("doris")) {
-                return com.dlink.explainer.sqllineage.LineageBuilder.getSqlLineage(studioCADTO.getStatement(), "mysql",
+                return org.dinky.explainer.sqllineage.LineageBuilder.getSqlLineage(studioCADTO.getStatement(), "mysql",
                         dataBase.getDriverConfig());
             } else {
-                return com.dlink.explainer.sqllineage.LineageBuilder.getSqlLineage(studioCADTO.getStatement(),
+                return org.dinky.explainer.sqllineage.LineageBuilder.getSqlLineage(studioCADTO.getStatement(),
                         studioCADTO.getDialect().toLowerCase(), dataBase.getDriverConfig());
             }
         } else {
@@ -427,7 +427,7 @@ public class StudioServiceImpl implements StudioService {
         jobConfig.setAddress(cluster.getJobManagerHost());
         jobConfig.setType(cluster.getType());
         if (Asserts.isNotNull(cluster.getClusterConfigurationId())) {
-            // 如果用户选择用dlink平台来托管集群信息 说明任务一定是从dlink发起提交的
+            // 如果用户选择用dinky平台来托管集群信息 说明任务一定是从dinky发起提交的
             Map<String, Object> gatewayConfig = clusterConfigurationService
                     .getGatewayConfig(cluster.getClusterConfigurationId());
             jobConfig.buildGatewayConfig(gatewayConfig);
@@ -435,7 +435,7 @@ public class StudioServiceImpl implements StudioService {
             jobConfig.setTaskId(cluster.getTaskId());
             useGateway = true;
         } else {
-            // 用户选择外部的平台来托管集群信息，但是集群上的任务不一定是通过dlink提交的
+            // 用户选择外部的平台来托管集群信息，但是集群上的任务不一定是通过dinky提交的
             jobConfig.setTaskId(taskId);
         }
         JobManager jobManager = JobManager.build(jobConfig);

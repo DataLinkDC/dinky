@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.explainer.lineage;
+package org.dinky.explainer.lineage;
 
 import java.util.Objects;
 

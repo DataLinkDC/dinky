@@ -17,13 +17,13 @@
  *
  */
 
-package com.dlink.flink.catalog.com.dlink.flink.catalog.factory;
+package org.dinky.flink.catalog.org.dinky.flink.catalog.factory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import com.dlink.flink.catalog.DlinkMysqlCatalog;
-import com.dlink.flink.catalog.factory.DlinkMysqlCatalogFactoryOptions;
+import org.dinky.flink.catalog.DinkyMysqlCatalog;
+import org.dinky.flink.catalog.factory.DinkyMysqlCatalogFactoryOptions;
 
 import org.apache.flink.table.catalog.Catalog;
 import org.apache.flink.table.catalog.CommonCatalogOptions;
@@ -36,21 +36,21 @@ import java.util.Map;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class DlinkMysqlCatalogFactoryTest {
+public class DinkyMysqlCatalogFactoryTest {
 
     protected static String url;
-    protected static DlinkMysqlCatalog catalog;
+    protected static DinkyMysqlCatalog catalog;
 
-    protected static final String TEST_CATALOG_NAME = "dlink";
-    protected static final String TEST_USERNAME = "dlink";
-    protected static final String TEST_PWD = "dlink";
+    protected static final String TEST_CATALOG_NAME = "dinky";
+    protected static final String TEST_USERNAME = "dinky";
+    protected static final String TEST_PWD = "dinky";
 
     @BeforeClass
     public static void setup() throws SQLException {
-        url = "jdbc:mysql://10.1.51.25:3306/dlink?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC";
+        url = "jdbc:mysql://10.1.51.25:3306/dinky?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC";
 
         catalog =
-            new DlinkMysqlCatalog(
+            new DinkyMysqlCatalog(
                 TEST_CATALOG_NAME,
                 url,
                 TEST_USERNAME,
@@ -60,10 +60,10 @@ public class DlinkMysqlCatalogFactoryTest {
     @Test
     public void test() {
         final Map<String, String> options = new HashMap<>();
-        options.put(CommonCatalogOptions.CATALOG_TYPE.key(), DlinkMysqlCatalogFactoryOptions.IDENTIFIER);
-        options.put(DlinkMysqlCatalogFactoryOptions.USERNAME.key(), TEST_USERNAME);
-        options.put(DlinkMysqlCatalogFactoryOptions.PASSWORD.key(), TEST_PWD);
-        options.put(DlinkMysqlCatalogFactoryOptions.URL.key(), url);
+        options.put(CommonCatalogOptions.CATALOG_TYPE.key(), DinkyMysqlCatalogFactoryOptions.IDENTIFIER);
+        options.put(DinkyMysqlCatalogFactoryOptions.USERNAME.key(), TEST_USERNAME);
+        options.put(DinkyMysqlCatalogFactoryOptions.PASSWORD.key(), TEST_PWD);
+        options.put(DinkyMysqlCatalogFactoryOptions.URL.key(), url);
 
         final Catalog actualCatalog =
             FactoryUtil.createCatalog(
@@ -72,12 +72,12 @@ public class DlinkMysqlCatalogFactoryTest {
                 null,
                 Thread.currentThread().getContextClassLoader());
 
-        checkEquals(catalog, (DlinkMysqlCatalog) actualCatalog);
+        checkEquals(catalog, (DinkyMysqlCatalog) actualCatalog);
 
-        assertTrue(actualCatalog instanceof DlinkMysqlCatalog);
+        assertTrue(actualCatalog instanceof DinkyMysqlCatalog);
     }
 
-    private static void checkEquals(DlinkMysqlCatalog c1, DlinkMysqlCatalog c2) {
+    private static void checkEquals(DinkyMysqlCatalog c1, DinkyMysqlCatalog c2) {
         assertEquals(c1.getName(), c2.getName());
         assertEquals(c1.getDefaultDatabase(), c2.getDefaultDatabase());
         assertEquals(c1.getUser(), c2.getUser());

@@ -44,14 +44,14 @@ function HomepageHeader() {
                             <Link
                                 className="button button--secondary button--lg"
                                 style={{borderRadius: '2rem', border: '1px solid #42b983'}}
-                                to="https://github.com/DataLinkDC/dlink">
+                                to="https://github.com/DataLinkDC/dinky">
                                 GitHub
                             </Link>
                             &nbsp;&nbsp;
                             <Link
                                 className="button button--secondary button--lg"
                                 style={{borderRadius: '2rem', border: '1px solid #42b983'}}
-                                to="https://gitee.com/mirrors/Dlink">
+                                to="https://gitee.com/mirrors/Dinky">
                                 Gitee
                             </Link>
                             &nbsp;&nbsp;
@@ -65,7 +65,7 @@ function HomepageHeader() {
                             <span className={styles.indexCtasGitHubButtonWrapper}>
                            <iframe
                                className={styles.indexCtasGitHubButton}
-                               src="https://ghbtns.com/github-btn.html?user=DataLinkDC&amp;repo=dlink&amp;type=star&amp;count=true&amp;size=large"
+                               src="https://ghbtns.com/github-btn.html?user=DataLinkDC&amp;repo=dinky&amp;type=star&amp;count=true&amp;size=large"
                                width={160}
                                height={30}
                                title="GitHub Stars"

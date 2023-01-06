@@ -17,14 +17,14 @@
  *
  */
 
-package com.dlink.cdc.starrocks;
+package org.dinky.cdc.starrocks;
 
-import com.dlink.cdc.AbstractSinkBuilder;
-import com.dlink.cdc.SinkBuilder;
-import com.dlink.model.Column;
-import com.dlink.model.FlinkCDCConfig;
-import com.dlink.model.Table;
-import com.dlink.utils.ObjectConvertUtil;
+import org.dinky.cdc.AbstractSinkBuilder;
+import org.dinky.cdc.SinkBuilder;
+import org.dinky.model.Column;
+import org.dinky.model.FlinkCDCConfig;
+import org.dinky.model.Table;
+import org.dinky.utils.ObjectConvertUtil;
 
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.streaming.api.datastream.DataStream;

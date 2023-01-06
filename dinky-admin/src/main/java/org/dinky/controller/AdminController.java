@@ -17,12 +17,12 @@
  *
  */
 
-package com.dlink.controller;
+package org.dinky.controller;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.common.result.Result;
-import com.dlink.dto.LoginUTO;
-import com.dlink.service.UserService;
+import org.dinky.assertion.Asserts;
+import org.dinky.common.result.Result;
+import org.dinky.dto.LoginUTO;
+import org.dinky.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;

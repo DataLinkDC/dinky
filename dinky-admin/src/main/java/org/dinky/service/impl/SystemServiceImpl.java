@@ -17,12 +17,12 @@
  *
  */
 
-package com.dlink.service.impl;
+package org.dinky.service.impl;
 
-import com.dlink.constant.DirConstant;
-import com.dlink.model.FileNode;
-import com.dlink.service.SystemService;
-import com.dlink.utils.DirUtil;
+import org.dinky.constant.DirConstant;
+import org.dinky.model.FileNode;
+import org.dinky.service.SystemService;
+import org.dinky.utils.DirUtil;
 
 import java.util.List;
 

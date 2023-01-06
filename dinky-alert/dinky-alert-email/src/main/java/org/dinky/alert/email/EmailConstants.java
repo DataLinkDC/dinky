@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.alert.email;
+package org.dinky.alert.email;
 
 /**
  * EmailConstants 邮件常量

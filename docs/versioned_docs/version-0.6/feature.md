@@ -134,4 +134,4 @@ title: 功能
 |          |            | 新增 selectSavePointReOnLineTask 重新上线接口            | 0.6.5 |
 |          |            | 新增 getJobInstance 获取实例接口                         | 0.6.5 |
 |          |            | 新增 getJobInstanceByTaskId 获取实例接口                         | 0.6.5 |
-|   关于   |  关于 Dlink  | 版本更新记录                                           | 0.4.0 |
+|   关于   |  关于 Dinky  | 版本更新记录                                           | 0.4.0 |

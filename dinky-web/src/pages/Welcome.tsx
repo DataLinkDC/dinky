@@ -67,7 +67,7 @@ export default (): React.ReactNode => {
         >
           <FormattedMessage id="pages.welcome.advancedLayout" defaultMessage="Github"/>{' '}
           <a
-            href="https://github.com/DataLinkDC/dlink"
+            href="https://github.com/DataLinkDC/dinky"
             rel="noopener noreferrer"
             target="__blank"
           >
@@ -126,12 +126,12 @@ export default (): React.ReactNode => {
                   <Link>支持以 SPI 的方式扩展任意 Connector，同 Flink 官网</Link>
                 </li>
                 <li>
-                  <Link>提供了 dlink-connector-jdbc，额外支持 Oracle 和 ClickHouse 读写，该扩展包可直接上传 Flink 集群的
+                  <Link>提供了 dinky-connector-jdbc，额外支持 Oracle 和 ClickHouse 读写，该扩展包可直接上传 Flink 集群的
                     lib
                     进行远程使用，无需重新编译</Link>
                 </li>
                 <li>
-                  <Link>提供了 dlink-client-1.12，支持 Flink 1.12.0+ 多集群的远程使用与本地隔离使用，1.10、1.11 和 1.13
+                  <Link>提供了 dinky-client-1.12，支持 Flink 1.12.0+ 多集群的远程使用与本地隔离使用，1.10、1.11 和 1.13
                     集群可能存在问题</Link>
                 </li>
                 <li>
@@ -191,7 +191,7 @@ export default (): React.ReactNode => {
                   <Link>AGGTABLE 语法实现</Link>
                 </li>
                 <li>
-                  <Link>增加了 dlink-function 模块用来管理 UDF 等，其可直接上传至集群lib</Link>
+                  <Link>增加了 dinky-function 模块用来管理 UDF 等，其可直接上传至集群lib</Link>
                 </li>
                 <li>
                   <Link>解决了表单无法正确提交 Fragment 的问题</Link>
@@ -342,7 +342,7 @@ export default (): React.ReactNode => {
                   <Link>增加了 plugins 类加载路径用于加载 Flink 的有关依赖</Link>
                 </li>
                 <li>
-                  <Link>增加了 dlink-extends 模块用于扩展依赖打包</Link>
+                  <Link>增加了 dinky-extends 模块用于扩展依赖打包</Link>
                 </li>
                 <li>
                   <Link>增加了更加稳定 Nginx 前后端分离部署方式</Link>
@@ -385,7 +385,7 @@ export default (): React.ReactNode => {
                   <Link>新增 yarn-perjob 与 yarn-application 的任务提交方式</Link>
                 </li>
                 <li>
-                  <Link>更新 dlink 的 flink 主版本号为 1.13.3</Link>
+                  <Link>更新 dinky 的 flink 主版本号为 1.13.3</Link>
                 </li>
                 <li>
                   <Link>新增 yarn-application 的sql作业提交方式</Link>
@@ -591,7 +591,7 @@ export default (): React.ReactNode => {
                   <Link>修复 作业非remote作业进行remote语法校验的问题</Link>
                 </li>
                 <li>
-                  <Link>增加 dlink-client-hadoop 版本定制依赖</Link>
+                  <Link>增加 dinky-client-hadoop 版本定制依赖</Link>
                 </li>
                 <li>
                   <Link>优化 菜单</Link>
@@ -1227,7 +1227,7 @@ export default (): React.ReactNode => {
                   <Link>修复邮件报警消息不能自定义昵称</Link>
                 </li>
                 <li>
-                  <Link>修复 dlink-connector-phoenix-1.14 编译异常</Link>
+                  <Link>修复 dinky-connector-phoenix-1.14 编译异常</Link>
                 </li>
                 <li>
                   <Link>修复 Oracle 字段可为空的识别错误</Link>
@@ -1279,7 +1279,7 @@ export default (): React.ReactNode => {
                   <Link>新增 1.13 版本 Doris 连接默认隐藏 __DORIS_DELETE_</Link>
                 </li>
                 <li>
-                  <Link>新增 dlink-connector-pulsar</Link>
+                  <Link>新增 dinky-connector-pulsar</Link>
                 </li>
                 <li>
                   <Link>新增选择 Checkpoint 重启任务</Link>
@@ -1451,7 +1451,7 @@ export default (): React.ReactNode => {
                   <Link>修复多租户新增角色和删除角色的问题</Link>
                 </li>
                 <li>
-                  <Link>修复 dlink-conector-pulsar-1.14 找不到 SubscriptionType 的报错</Link>
+                  <Link>修复 dinky-conector-pulsar-1.14 找不到 SubscriptionType 的报错</Link>
                 </li>
                 <li>
                   <Link>修复 flink1.14 savepoint 时的 jackjson 问题</Link>
@@ -1526,43 +1526,43 @@ export default (): React.ReactNode => {
                   <Link>优化用户关联角色渲染</Link>
                 </li>
                 <li>
-                  <Link>优化 dlink-admin 的代码风格</Link>
+                  <Link>优化 dinky-admin 的代码风格</Link>
                 </li>
                 <li>
-                  <Link>优化 dlink-alert 的代码风格</Link>
+                  <Link>优化 dinky-alert 的代码风格</Link>
                 </li>
                 <li>
-                  <Link>优化 dlink-common 的代码风格</Link>
+                  <Link>优化 dinky-common 的代码风格</Link>
                 </li>
                 <li>
-                  <Link>优化 dlink-catalog 的代码风格</Link>
+                  <Link>优化 dinky-catalog 的代码风格</Link>
                 </li>
                 <li>
-                  <Link>优化 dlink-client 的代码风格</Link>
+                  <Link>优化 dinky-client 的代码风格</Link>
                 </li>
                 <li>
-                  <Link>优化 dlink-app 的代码风格</Link>
+                  <Link>优化 dinky-app 的代码风格</Link>
                 </li>
                 <li>
                   <Link>优化数据源连接池和链接创建</Link>
                 </li>
                 <li>
-                  <Link>优化 dlink-connectors 的代码风格</Link>
+                  <Link>优化 dinky-connectors 的代码风格</Link>
                 </li>
                 <li>
-                  <Link>优化 dlink-core 的代码风格</Link>
+                  <Link>优化 dinky-core 的代码风格</Link>
                 </li>
                 <li>
-                  <Link>优化 dlink-daemon 的代码风格</Link>
+                  <Link>优化 dinky-daemon 的代码风格</Link>
                 </li>
                 <li>
-                  <Link>优化 dlink-executor 的代码风格</Link>
+                  <Link>优化 dinky-executor 的代码风格</Link>
                 </li>
                 <li>
-                  <Link>优化 dlink-function 和 dlink-gateway 的代码风格</Link>
+                  <Link>优化 dinky-function 和 dinky-gateway 的代码风格</Link>
                 </li>
                 <li>
-                  <Link>优化 dlink-metadata 的代码风格</Link>
+                  <Link>优化 dinky-metadata 的代码风格</Link>
                 </li>
                 <li>
                   <Link>添加协议头到pom文件</Link>
@@ -1571,7 +1571,7 @@ export default (): React.ReactNode => {
                   <Link>优化项目打包和启动文件</Link>
                 </li>
                 <li>
-                  <Link>dlink-client-hadoop 打包增加 ServicesResourceTransformer</Link>
+                  <Link>dinky-client-hadoop 打包增加 ServicesResourceTransformer</Link>
                 </li>
                 <li>
                   <Link>优化配置文件和静态资源目录打包</Link>

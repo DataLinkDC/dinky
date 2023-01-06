@@ -98,11 +98,11 @@ const StudioGuide = (props: any) => {
               }}>{l('pages.datastudio.label.systemInfo')}</Link>
             </li>
             <li>
-              <Link href="http://www.dlink.top/"
+              <Link href="http://www.dinky.top/"
                     target="_blank">{l('pages.datastudio.label.officialdocumentation')}</Link>
             </li>
             <li>
-              <Link href="https://github.com/DataLinkDC/dlink" target="_blank">Github</Link>
+              <Link href="https://github.com/DataLinkDC/dinky" target="_blank">Github</Link>
             </li>
           </ul>
         </Paragraph>

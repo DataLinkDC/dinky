@@ -17,16 +17,16 @@
  *
  */
 
-package com.dlink.metadata.driver;
+package org.dinky.metadata.driver;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.metadata.convert.ITypeConvert;
-import com.dlink.metadata.convert.OracleTypeConvert;
-import com.dlink.metadata.query.IDBQuery;
-import com.dlink.metadata.query.OracleQuery;
-import com.dlink.model.Column;
-import com.dlink.model.QueryData;
-import com.dlink.model.Table;
+import org.dinky.assertion.Asserts;
+import org.dinky.metadata.convert.ITypeConvert;
+import org.dinky.metadata.convert.OracleTypeConvert;
+import org.dinky.metadata.query.IDBQuery;
+import org.dinky.metadata.query.OracleQuery;
+import org.dinky.model.Column;
+import org.dinky.model.QueryData;
+import org.dinky.model.Table;
 
 import java.util.HashMap;
 import java.util.List;

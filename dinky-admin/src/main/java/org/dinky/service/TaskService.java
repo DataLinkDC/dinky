@@ -17,19 +17,19 @@
  *
  */
 
-package com.dlink.service;
+package org.dinky.service;
 
-import com.dlink.common.result.Result;
-import com.dlink.db.service.ISuperService;
-import com.dlink.dto.TaskRollbackVersionDTO;
-import com.dlink.job.JobResult;
-import com.dlink.model.JobInfoDetail;
-import com.dlink.model.JobInstance;
-import com.dlink.model.JobLifeCycle;
-import com.dlink.model.JobStatus;
-import com.dlink.model.Task;
-import com.dlink.result.SqlExplainResult;
-import com.dlink.result.TaskOperatingResult;
+import org.dinky.common.result.Result;
+import org.dinky.db.service.ISuperService;
+import org.dinky.dto.TaskRollbackVersionDTO;
+import org.dinky.job.JobResult;
+import org.dinky.model.JobInfoDetail;
+import org.dinky.model.JobInstance;
+import org.dinky.model.JobLifeCycle;
+import org.dinky.model.JobStatus;
+import org.dinky.model.Task;
+import org.dinky.result.SqlExplainResult;
+import org.dinky.result.TaskOperatingResult;
 
 import java.util.List;
 

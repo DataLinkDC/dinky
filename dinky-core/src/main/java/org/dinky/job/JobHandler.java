@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.job;
+package org.dinky.job;
 
-import com.dlink.exception.JobException;
+import org.dinky.exception.JobException;
 
 import java.util.ServiceLoader;
 

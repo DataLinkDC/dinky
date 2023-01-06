@@ -142,7 +142,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
                   // todo 切换租户需要将租户id 传入后端 以及本地存储中
                   // const {code, msg} = await postAll(requestUrl, {tenantId: tenantInfoId});
                   // localStorage.clear() // clear local storage
-                  // localStorage.setItem('dlink-tenantId',tenantInfoId) // set tenant to localStorage
+                  // localStorage.setItem('dinky-tenantId',tenantInfoId) // set tenant to localStorage
                   // code == 0 ? message.success(msg) : message.error(msg);
                   // todo
                   //  1.切换租户后 需要重新调用 /api/current接口获取用户的信息  (目前此接口从cookie直接取数 ,达不到预期效果)

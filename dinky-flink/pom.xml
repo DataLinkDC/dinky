@@ -19,12 +19,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.dlink</groupId>
-        <artifactId>dlink</artifactId>
+        <groupId>org.dinky</groupId>
+        <artifactId>dinky</artifactId>
         <version>0.7.0</version>
     </parent>
 
-    <artifactId>dlink-flink</artifactId>
+    <artifactId>dinky-flink</artifactId>
     <packaging>pom</packaging>
 
     <properties>
@@ -36,54 +36,54 @@
         <profile>
             <id>flink-1.11</id>
             <modules>
-                <module>dlink-flink-1.11</module>
+                <module>dinky-flink-1.11</module>
             </modules>
         </profile>
 
         <profile>
             <id>flink-1.12</id>
             <modules>
-                <module>dlink-flink-1.12</module>
+                <module>dinky-flink-1.12</module>
             </modules>
         </profile>
 
         <profile>
             <id>flink-1.13</id>
             <modules>
-                <module>dlink-flink-1.13</module>
+                <module>dinky-flink-1.13</module>
             </modules>
         </profile>
 
         <profile>
             <id>flink-1.14</id>
             <modules>
-                <module>dlink-flink-1.14</module>
+                <module>dinky-flink-1.14</module>
             </modules>
         </profile>
 
         <profile>
             <id>flink-1.15</id>
             <modules>
-                <module>dlink-flink-1.15</module>
+                <module>dinky-flink-1.15</module>
             </modules>
         </profile>
 
         <profile>
             <id>flink-1.16</id>
             <modules>
-                <module>dlink-flink-1.16</module>
+                <module>dinky-flink-1.16</module>
             </modules>
         </profile>
 
         <profile>
             <id>all</id>
             <modules>
-                <module>dlink-flink-1.11</module>
-                <module>dlink-flink-1.12</module>
-                <module>dlink-flink-1.13</module>
-                <module>dlink-flink-1.14</module>
-                <module>dlink-flink-1.15</module>
-                <module>dlink-flink-1.16</module>
+                <module>dinky-flink-1.11</module>
+                <module>dinky-flink-1.12</module>
+                <module>dinky-flink-1.13</module>
+                <module>dinky-flink-1.14</module>
+                <module>dinky-flink-1.15</module>
+                <module>dinky-flink-1.16</module>
             </modules>
         </profile>
     </profiles>

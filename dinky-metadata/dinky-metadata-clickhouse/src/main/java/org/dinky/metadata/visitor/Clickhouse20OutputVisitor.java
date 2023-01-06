@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.metadata.visitor;
+package org.dinky.metadata.visitor;
 
-import com.dlink.metadata.ast.Clickhouse20CreateTableStatement;
+import org.dinky.metadata.ast.Clickhouse20CreateTableStatement;
 
 import java.util.List;
 

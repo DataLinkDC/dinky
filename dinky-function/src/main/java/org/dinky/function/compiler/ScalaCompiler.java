@@ -17,11 +17,11 @@
  *
  */
 
-package com.dlink.function.compiler;
+package org.dinky.function.compiler;
 
-import com.dlink.function.data.model.UDF;
-import com.dlink.process.context.ProcessContextHolder;
-import com.dlink.process.model.ProcessEntity;
+import org.dinky.function.data.model.UDF;
+import org.dinky.process.context.ProcessContextHolder;
+import org.dinky.process.model.ProcessEntity;
 
 import org.apache.flink.configuration.ReadableConfig;
 

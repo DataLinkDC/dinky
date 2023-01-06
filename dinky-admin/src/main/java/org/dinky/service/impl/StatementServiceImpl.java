@@ -17,12 +17,12 @@
  *
  */
 
-package com.dlink.service.impl;
+package org.dinky.service.impl;
 
-import com.dlink.db.service.impl.SuperServiceImpl;
-import com.dlink.mapper.StatementMapper;
-import com.dlink.model.Statement;
-import com.dlink.service.StatementService;
+import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.mapper.StatementMapper;
+import org.dinky.model.Statement;
+import org.dinky.service.StatementService;
 
 import org.springframework.stereotype.Service;
 

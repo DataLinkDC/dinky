@@ -43,7 +43,7 @@ export async function outLogin(options?: { [key: string]: any }) {
 
 /** 登录接口 POST /api-uaa/oauth/token */
 export async function login(body: API.LoginParams, options?: { [key: string]: any }) {
-  const tenantId = localStorage.getItem('dlink-tenantId') || '';
+  const tenantId = localStorage.getItem('dinky-tenantId') || '';
   const authHeader = { tenantId };
   return request<API.Result>('/api/login', {
     method: 'POST',

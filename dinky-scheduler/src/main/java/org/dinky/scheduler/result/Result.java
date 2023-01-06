@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.scheduler.result;
+package org.dinky.scheduler.result;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;

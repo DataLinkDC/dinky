@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.model;
+package org.dinky.model;
 
-import com.dlink.db.model.SuperEntity;
+import org.dinky.db.model.SuperEntity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -36,7 +36,7 @@ import lombok.EqualsAndHashCode;
  **/
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("dlink_cluster")
+@TableName("dinky_cluster")
 public class Cluster extends SuperEntity {
 
     private static final long serialVersionUID = 3104721227014487321L;

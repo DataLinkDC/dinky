@@ -17,11 +17,11 @@
  *
  */
 
-package com.dlink.interceptor;
+package org.dinky.interceptor;
 
-import com.dlink.executor.Executor;
-import com.dlink.executor.ExecutorSetting;
-import com.dlink.executor.LocalStreamExecutor;
+import org.dinky.executor.Executor;
+import org.dinky.executor.ExecutorSetting;
+import org.dinky.executor.LocalStreamExecutor;
 
 import org.junit.Test;
 
@@ -40,7 +40,7 @@ public class CdcSourceTests {
                         .append("  'username' = 'root',\n").append("  'password' = '123456',\n")
                         .append("  'checkpoint' = '3000',\n").append("  'scan.startup.mode' = 'initial',\n")
                         .append("  'parallelism' = '1',\n").append("  'source.server-time-zone' = 'UTC',\n")
-                        .append("  'table-name' = 'dlink\\.dlink_flink_document',\n")
+                        .append("  'table-name' = 'dinky\\.dinky_flink_document',\n")
                         .append("  'sink.connector'='print'\n").append(")").toString();
 
         ExecutorSetting executorSetting = ExecutorSetting.DEFAULT;

@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.trans;
+package org.dinky.trans;
 
-import com.dlink.parser.SqlType;
+import org.dinky.parser.SqlType;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;

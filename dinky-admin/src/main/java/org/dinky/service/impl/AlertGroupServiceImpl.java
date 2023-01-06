@@ -17,15 +17,15 @@
  *
  */
 
-package com.dlink.service.impl;
+package org.dinky.service.impl;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.db.service.impl.SuperServiceImpl;
-import com.dlink.mapper.AlertGroupMapper;
-import com.dlink.model.AlertGroup;
-import com.dlink.model.AlertInstance;
-import com.dlink.service.AlertGroupService;
-import com.dlink.service.AlertInstanceService;
+import org.dinky.assertion.Asserts;
+import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.mapper.AlertGroupMapper;
+import org.dinky.model.AlertGroup;
+import org.dinky.model.AlertInstance;
+import org.dinky.service.AlertGroupService;
+import org.dinky.service.AlertInstanceService;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -51,7 +51,7 @@ Dinky 通过已注册的集群配置来获取对应的 YarnClient 实例，然�
 
 **Yarn-Application**
 
-Dinky 通过已注册的集群配置来获取对应的 YarnClient 实例。对于 User Jar，将 Jar 相关配置与 Configuration 提交至 Yarn 来创建 Flink-Application 应用；对于 Flink SQL，Dinky 则将作业 ID 及数据库连接配置作为 Main 入参和 dlink-app.jar 以及 Configuration 提交至 Yarn 来创建 Flink-Application 应用。
+Dinky 通过已注册的集群配置来获取对应的 YarnClient 实例。对于 User Jar，将 Jar 相关配置与 Configuration 提交至 Yarn 来创建 Flink-Application 应用；对于 Flink SQL，Dinky 则将作业 ID 及数据库连接配置作为 Main 入参和 dinky-app.jar 以及 Configuration 提交至 Yarn 来创建 Flink-Application 应用。
 
 **Kubernetes-Session**
 
@@ -60,5 +60,5 @@ Dinky 通过已注册的 Flink Kubernetes Session 集群实例可以对远程集
 
 **Kubernetes-Application**
 
-Dinky 通过已注册的集群配置来获取对应的 FlinkKubeClient 实例。对于 Flink SQL，Dinky 则将作业 ID 及数据库连接配置作为 Main 入参和定制的 dlink-app.jar 镜像以及 Configuration 提交至 Yarn 来创建 Flink-Application 应用。
-注意需要自己打包 dlink-app 镜像，具体见文章。
+Dinky 通过已注册的集群配置来获取对应的 FlinkKubeClient 实例。对于 Flink SQL，Dinky 则将作业 ID 及数据库连接配置作为 Main 入参和定制的 dinky-app.jar 镜像以及 Configuration 提交至 Yarn 来创建 Flink-Application 应用。
+注意需要自己打包 dinky-app 镜像，具体见文章。

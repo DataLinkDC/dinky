@@ -50,7 +50,7 @@ Issue 是引出一个 Feature 或 Bug 等的重要步骤，在单个 Issue 中�
 
 ### Issue 内容模板
 
-[Issue 模板](https://github.com/DataLinkDC/dlink/tree/dev/.github/ISSUE_TEMPLATE)
+[Issue 模板](https://github.com/DataLinkDC/dinky/tree/dev/.github/ISSUE_TEMPLATE)
 
 ### Bug 类 Issue
 

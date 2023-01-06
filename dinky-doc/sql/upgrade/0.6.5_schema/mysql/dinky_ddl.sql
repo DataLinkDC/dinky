@@ -19,12 +19,12 @@
 
 -- 0.6.5 2022-06-28
 -- ----------------------------
-alter table dlink_task ADD COLUMN `version_id` INT NULL COMMENT 'version id';
+alter table dinky_task ADD COLUMN `version_id` INT NULL COMMENT 'version id';
 
 -- ----------------------------
--- Table structure for dlink_task_version
+-- Table structure for dinky_task_version
 -- ----------------------------
-CREATE TABLE IF NOT EXISTS `dlink_task_version`(
+CREATE TABLE IF NOT EXISTS `dinky_task_version`(
   `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `task_id` int NOT NULL COMMENT 'task ID ',
   `version_id` int NOT NULL COMMENT 'version ID ',

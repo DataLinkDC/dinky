@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.cdc.mysql;
+package org.dinky.cdc.mysql;
 
 import org.apache.flink.api.common.typeinfo.BasicTypeInfo;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
@@ -34,7 +34,7 @@ import com.alibaba.ververica.cdc.debezium.DebeziumDeserializationSchema;
 
 /**
  * @version 1.0
- * @className: com.dlink.cdc.mysql.MysqlJsonDebeziumDeserializationSchema
+ * @className: org.dinky.cdc.mysql.MysqlJsonDebeziumDeserializationSchema
  * @Description:
  * @author: jack zhong
  */

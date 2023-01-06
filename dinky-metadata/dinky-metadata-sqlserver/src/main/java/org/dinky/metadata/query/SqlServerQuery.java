@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.metadata.query;
+package org.dinky.metadata.query;
 
-import com.dlink.metadata.constant.SqlServerConstant;
+import org.dinky.metadata.constant.SqlServerConstant;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

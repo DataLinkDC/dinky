@@ -17,14 +17,14 @@
  *
  */
 
-package com.dlink.plus;
+package org.dinky.plus;
 
-import com.dlink.executor.Executor;
-import com.dlink.explainer.Explainer;
-import com.dlink.explainer.ca.ColumnCAResult;
-import com.dlink.explainer.ca.TableCAResult;
-import com.dlink.model.LineageRel;
-import com.dlink.result.SqlExplainResult;
+import org.dinky.executor.Executor;
+import org.dinky.explainer.Explainer;
+import org.dinky.explainer.ca.ColumnCAResult;
+import org.dinky.explainer.ca.TableCAResult;
+import org.dinky.model.LineageRel;
+import org.dinky.result.SqlExplainResult;
 
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 

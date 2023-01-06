@@ -17,12 +17,12 @@
  *
  */
 
-package com.dlink.service.impl;
+package org.dinky.service.impl;
 
-import com.dlink.db.service.impl.SuperServiceImpl;
-import com.dlink.mapper.AlertHistoryMapper;
-import com.dlink.model.AlertHistory;
-import com.dlink.service.AlertHistoryService;
+import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.mapper.AlertHistoryMapper;
+import org.dinky.model.AlertHistory;
+import org.dinky.service.AlertHistoryService;
 
 import org.springframework.stereotype.Service;
 

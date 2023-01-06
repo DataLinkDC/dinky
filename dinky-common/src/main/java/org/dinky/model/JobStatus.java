@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.model;
+package org.dinky.model;
 
-import com.dlink.assertion.Asserts;
+import org.dinky.assertion.Asserts;
 
 import java.util.ArrayList;
 import java.util.List;

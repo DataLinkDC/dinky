@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.model;
+package org.dinky.model;
 
-import com.dlink.db.model.SuperEntity;
+import org.dinky.db.model.SuperEntity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -40,7 +40,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-@TableName("dlink_fragment")
+@TableName("dinky_fragment")
 public class FragmentVariable extends SuperEntity {
 
     @TableField(fill = FieldFill.INSERT)

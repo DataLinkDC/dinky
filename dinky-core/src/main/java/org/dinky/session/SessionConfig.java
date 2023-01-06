@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.session;
+package org.dinky.session;
 
-import com.dlink.executor.ExecutorSetting;
+import org.dinky.executor.ExecutorSetting;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -21,19 +21,19 @@
   },
   "link.item.label.Discussions": {
     "message": "Discussions",
-    "description": "The label of footer link with label=Discussions linking to https://github.com/DataLinkDC/dlink/discussions"
+    "description": "The label of footer link with label=Discussions linking to https://github.com/DataLinkDC/dinky/discussions"
   },
   "link.item.label.Issue": {
     "message": "Issue",
-    "description": "The label of footer link with label=Issue linking to https://github.com/DataLinkDC/dlink/issues"
+    "description": "The label of footer link with label=Issue linking to https://github.com/DataLinkDC/dinky/issues"
   },
   "link.item.label.Pull Request": {
     "message": "Pull Request",
-    "description": "The label of footer link with label=Pull Request linking to https://github.com/DataLinkDC/dlink/pulls"
+    "description": "The label of footer link with label=Pull Request linking to https://github.com/DataLinkDC/dinky/pulls"
   },
   "link.item.label.GitHub": {
     "message": "GitHub",
-    "description": "The label of footer link with label=GitHub linking to https://github.com/DataLinkDC/dlink"
+    "description": "The label of footer link with label=GitHub linking to https://github.com/DataLinkDC/dinky"
   },
   "copyright": {
     "message": "Copyright © 2022 Dinky, Inc. DataLinkDC.<br/><a href=\"https://beian.miit.gov.cn\" target=\"_blank\">鲁ICP备20001630号-2</a>",

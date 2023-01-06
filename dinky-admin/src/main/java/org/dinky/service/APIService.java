@@ -17,16 +17,16 @@
  *
  */
 
-package com.dlink.service;
+package org.dinky.service;
 
-import com.dlink.dto.APICancelDTO;
-import com.dlink.dto.APIExecuteJarDTO;
-import com.dlink.dto.APIExecuteSqlDTO;
-import com.dlink.dto.APIExplainSqlDTO;
-import com.dlink.dto.APISavePointDTO;
-import com.dlink.gateway.result.SavePointResult;
-import com.dlink.result.APIJobResult;
-import com.dlink.result.ExplainResult;
+import org.dinky.dto.APICancelDTO;
+import org.dinky.dto.APIExecuteJarDTO;
+import org.dinky.dto.APIExecuteSqlDTO;
+import org.dinky.dto.APIExplainSqlDTO;
+import org.dinky.dto.APISavePointDTO;
+import org.dinky.gateway.result.SavePointResult;
+import org.dinky.result.APIJobResult;
+import org.dinky.result.ExplainResult;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 

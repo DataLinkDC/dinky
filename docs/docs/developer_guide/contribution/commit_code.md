@@ -8,7 +8,7 @@ title: 提交代码须知
 
 # 提交代码
 
-* 首先从远端仓库 *https://github.com/DataLinkDC/dlink.git*  fork 一份代码到自己的仓库中
+* 首先从远端仓库 *https://github.com/DataLinkDC/dinky.git*  fork 一份代码到自己的仓库中
 
 * 远端仓库中目前有三个分支：
 
@@ -24,13 +24,13 @@ title: 提交代码须知
 * 把自己仓库 clone 到本地
 
   ```sh
-  git clone https://github.com/DataLinkDC/dlink.git
+  git clone https://github.com/DataLinkDC/dinky.git
   ```
 
 * 添加远端仓库地址，命名为 upstream
 
   ```sh
-  git remote add upstream https://github.com/DataLinkDC/dlink.git
+  git remote add upstream https://github.com/DataLinkDC/dinky.git
   ```
 
 

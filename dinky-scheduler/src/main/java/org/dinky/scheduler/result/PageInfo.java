@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.scheduler.result;
+package org.dinky.scheduler.result;
 
 import java.util.List;
 

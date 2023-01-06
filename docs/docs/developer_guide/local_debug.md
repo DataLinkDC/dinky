@@ -6,7 +6,7 @@ title: 本地调试
 
 # 前言
 
-最近小伙伴们一直追问，如何在 IDEA 里去调试 Dlink。本文将指导大家可以成功地搭建调试环境并可以修改相关功能的代码，当然欢迎大家将相关问题修复及新功能的实现贡献到 dev 分支哦。那一起来看看吧！
+最近小伙伴们一直追问，如何在 IDEA 里去调试 Dinky。本文将指导大家可以成功地搭建调试环境并可以修改相关功能的代码，当然欢迎大家将相关问题修复及新功能的实现贡献到 dev 分支哦。那一起来看看吧！
 
 # 开发者本地调试手册
 
@@ -37,22 +37,22 @@ title: 本地调试
 ```
 mkdir workspace
 cd workspace
-git clone https://github.com/DataLinkDC/dlink.git
+git clone https://github.com/DataLinkDC/dinky.git
 #或者
-git clone git://github.com/DataLinkDC/dlink.git
+git clone git://github.com/DataLinkDC/dinky.git
 ```
 
 ## IntelliJ IDEA
 
-该指南介绍了关于如何设置 IntelliJ IDEA 来进行 Dlink 前后端开发。Eclipse 不建议使用。
+该指南介绍了关于如何设置 IntelliJ IDEA 来进行 Dinky 前后端开发。Eclipse 不建议使用。
 
-以下文档描述了 [IntelliJ IDEA 2021.3](https://www.jetbrains.com/idea/download/) 的设置步骤以及 Dlink 的导入步骤。
+以下文档描述了 [IntelliJ IDEA 2021.3](https://www.jetbrains.com/idea/download/) 的设置步骤以及 Dinky 的导入步骤。
 
 所以以下简称 IDEA 来表示 IntelliJ IDEA 。
 
 ### 安装 Lombok 插件
 
-IDEA 提供了插件设置来安装 Lombok 插件。如果尚未安装，请在导入 Dlink 之前按照以下说明来进行操作以启用对 Lombok 注解的支持：
+IDEA 提供了插件设置来安装 Lombok 插件。如果尚未安装，请在导入 Dinky 之前按照以下说明来进行操作以启用对 Lombok 注解的支持：
 
 1. 转到 IDEA Settings → Plugins 并选择 Marketplace 。
 2. 选择并安装 Lombok 插件。
@@ -61,7 +61,7 @@ IDEA 提供了插件设置来安装 Lombok 插件。如果尚未安装，请在�
 ### 导入 Dinky
 
 1. 启动 IDEA 并选择 Open。
-2. 选择已克隆的 Dlink 存储库的根文件夹。
+2. 选择已克隆的 Dinky 存储库的根文件夹。
 3. 等待项目加载完成。
 4. 设置 JDK 1.8 和 Maven 3.6.0。
 
@@ -103,11 +103,11 @@ mvn clean install -Dmaven.test.skip=true -P pord,scala-2.11,flink-1.14,flink-1.1
 mvn clean install -Dmaven.test.skip=true -P !web,pord,scala-2.11,flink-1.14,flink-1.15
 ```
 
-打包最终位于根目录 build 下，`dlink-release-x.x.x.tar.gz` 其大小约为 40 M。
+打包最终位于根目录 build 下，`dinky-release-x.x.x.tar.gz` 其大小约为 40 M。
 
 ### 问题
 
-如果在打包 dlink-web 过程失败，请先单独打包前端进行问题排查。
+如果在打包 dinky-web 过程失败，请先单独打包前端进行问题排查。
 
 ```bash
 npm build
@@ -136,7 +136,7 @@ Dinky开发环境配置有两种模式，分别是 provided 环境和 compile �
 
 ### 修改pom文件
 
-需要修改 dlink根目录下的pom文件，下面以本地开发为例，修改如下：
+需要修改 dinky根目录下的pom文件，下面以本地开发为例，修改如下：
 
 ```
 <properties>
@@ -150,28 +150,28 @@ Dinky开发环境配置有两种模式，分别是 provided 环境和 compile �
 
 #### 修改配置文件
 
-修改dlink根目录下/dlink-admin/src/main/resources/application.ym文件
+修改dinky根目录下/dinky-admin/src/main/resources/application.ym文件
 
 配置数据库连接信息：
 
 ```yaml
 spring:
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/dlink?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-    username: dlink
-    password: dlink
+    url: jdbc:mysql://127.0.0.1:3306/dinky?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: dinky
+    password: dinky
     driver-class-name: com.mysql.cj.jdbc.Driver
 ```
 
 ### 初始化数据库
 
-在MySQL数据库创建 dlink 用户并在 dlink 数据库中执行 dlink-doc/sql/dinky.sql 文件。此外 dlink-doc/sql/upgrade 目录下存放了了各版本的升级 sql 请依次按照版本号执行。
+在MySQL数据库创建 dinky 用户并在 dinky 数据库中执行 dinky-doc/sql/dinky.sql 文件。此外 dinky-doc/sql/upgrade 目录下存放了了各版本的升级 sql 请依次按照版本号执行。
 
 以上文件修改完成后，就可以启动Dinky。
 
 ### 启动后端服务
 
-启动 dlink-admin 下的 Dlink 启动类，可见 8888 端口。
+启动 dinky-admin 下的 Dinky 启动类，可见 8888 端口。
 
 稍微等待一会，即可访问 127.0.0.1:8888 可见登录页。
 
@@ -208,104 +208,104 @@ npm start
 ## 源码结构
 
 ```java
-dlink--父项目
-    |-dlink-admin--管理中心
-    |-dlink-alert--告警中心
-    |-dlink-app--Application Jar
-    |-dlink-assembly--打包配置
-    |-dlink-client--Client 中心
-    | |-dlink-client-1.11--Client-1.11实现
-    | |-dlink-client-1.12--Client-1.12实现
-    | |-dlink-client-1.13--Client-1.13实现
-    | |-dlink-client-1.14--Client-1.14实现
-    |-dlink-common--通用中心
-    |-dlink-connectors--Connectors 中心
-    | |-dlink-connector-jdbc--Jdbc 扩展
-    |-dlink-core--执行中心
-    |-dlink-doc--文档
+dinky--父项目
+    |-dinky-admin--管理中心
+    |-dinky-alert--告警中心
+    |-dinky-app--Application Jar
+    |-dinky-assembly--打包配置
+    |-dinky-client--Client 中心
+    | |-dinky-client-1.11--Client-1.11实现
+    | |-dinky-client-1.12--Client-1.12实现
+    | |-dinky-client-1.13--Client-1.13实现
+    | |-dinky-client-1.14--Client-1.14实现
+    |-dinky-common--通用中心
+    |-dinky-connectors--Connectors 中心
+    | |-dinky-connector-jdbc--Jdbc 扩展
+    |-dinky-core--执行中心
+    |-dinky-doc--文档
     | |-bin--启动脚本
     | |-bug--bug 反馈
     | |-config--配置文件
     | |-doc--使用文档
     | |-sql--sql脚本
-    |-dlink-executor--执行中心
-    |-dlink-extends--扩展中心
-    |-dlink-function--函数中心
-    |-dlink-gateway--Flink 网关中心
-    |-dlink-metadata--元数据中心
-    | |-dlink-metadata-base--元数据基础组件
-    | |-dlink-metadata-clickhouse--元数据-clickhouse 实现
-    | |-dlink-metadata-mysql--元数据-mysql 实现
-    | |-dlink-metadata-oracle--元数据-oracle 实现
-    | |-dlink-metadata-postgresql--元数据-postgresql 实现
-    | |-dlink-metadata-doris--元数据-doris 实现
-    | |-dlink-metadata-phoenix-元数据-phoenix 实现
-    | |-dlink-metadata-sqlserver-元数据-sqlserver 实现
-    |-dlink-web--React 前端
+    |-dinky-executor--执行中心
+    |-dinky-extends--扩展中心
+    |-dinky-function--函数中心
+    |-dinky-gateway--Flink 网关中心
+    |-dinky-metadata--元数据中心
+    | |-dinky-metadata-base--元数据基础组件
+    | |-dinky-metadata-clickhouse--元数据-clickhouse 实现
+    | |-dinky-metadata-mysql--元数据-mysql 实现
+    | |-dinky-metadata-oracle--元数据-oracle 实现
+    | |-dinky-metadata-postgresql--元数据-postgresql 实现
+    | |-dinky-metadata-doris--元数据-doris 实现
+    | |-dinky-metadata-phoenix-元数据-phoenix 实现
+    | |-dinky-metadata-sqlserver-元数据-sqlserver 实现
+    |-dinky-web--React 前端
     |-docs--官网文档
 ```
 
-### dlink-admin
+### dinky-admin
 
-Dlink 的管理中心，标准的 SpringBoot 应用，负责与前端 react 交互。
+Dinky 的管理中心，标准的 SpringBoot 应用，负责与前端 react 交互。
 
-### dlink-alert
+### dinky-alert
 
 Dinky的告警中心，当前已完成: 钉钉 、企业微信 、飞书 、邮箱。
 
-### dlink-app
+### dinky-app
 
-Dlink 在 Yarn Application 模式所使用的简化解析包。
+Dinky 在 Yarn Application 模式所使用的简化解析包。
 
-### dlink-assembly
+### dinky-assembly
 
 项目打包配置，管理了最终 tar.gz 的打包内容。
 
-### dlink-client
+### dinky-client
 
-Dlink 定制的 Flink 运行环境的实现。用来桥接 Dlink 与不同版本的 Flink 运行环境。
+Dinky 定制的 Flink 运行环境的实现。用来桥接 Dinky 与不同版本的 Flink 运行环境。
 
-### dlink-common
+### dinky-common
 
-Dlink 的子项目的公用类及实现项目。
+Dinky 的子项目的公用类及实现项目。
 
-### dlink-connectors
+### dinky-connectors
 
-Dlink 的 Connectors，目前实现了 Oracle、Clickhouse、SQLServer ...。此外 Dlink 可以直接使用 Flink 的所有连接器，在确保依赖不冲突的情况下。
+Dinky 的 Connectors，目前实现了 Oracle、Clickhouse、SQLServer ...。此外 Dinky 可以直接使用 Flink 的所有连接器，在确保依赖不冲突的情况下。
 
-### dlink-core
+### dinky-core
 
-Dlink 的核心模块，内包含 Flink RestAPI 、集群、SQL解释器、Job统一调度器（JobManager）、会话管理等实现。
+Dinky 的核心模块，内包含 Flink RestAPI 、集群、SQL解释器、Job统一调度器（JobManager）、会话管理等实现。
 
-### dlink-doc
+### dinky-doc
 
 此模块为打包所需的资源模块，包含启动脚本、sql脚本、配置文件等。
 
-### dlink-executor
+### dinky-executor
 
-Dlink 的执行模块，是从 dlink-core 中拆分出来，内含最核心的 Executor、Interceptor、Operation 等实现。
+Dinky 的执行模块，是从 dinky-core 中拆分出来，内含最核心的 Executor、Interceptor、Operation 等实现。
 
-### dlink-extends
+### dinky-extends
 
-存放 Dlink 扩展其他生态的组件。
+存放 Dinky 扩展其他生态的组件。
 
-### dlink-function
+### dinky-function
 
-Dlink 所额外提供的 Flink 各种自定义函数。
+Dinky 所额外提供的 Flink 各种自定义函数。
 
-### dlink-gateway
+### dinky-gateway
 
-Dlink 的任务网关，负责把实现不同执行模式的任务提交与管理，目前主要包含 Yarn PerJob 和 Application。
+Dinky 的任务网关，负责把实现不同执行模式的任务提交与管理，目前主要包含 Yarn PerJob 和 Application。
 
-### dlink-metadata
+### dinky-metadata
 
-Dlink 的元数据中心，用于实现各种外部数据源对接到 Dlink，以此使用其各种查询、执行等能力。未来用于 Flink Catalog 的预装载等。
+Dinky 的元数据中心，用于实现各种外部数据源对接到 Dinky，以此使用其各种查询、执行等能力。未来用于 Flink Catalog 的预装载等。
 
-### dlink-web
+### dinky-web
 
-Dlink 的前端项目，基于 Ant Design Pro 5.0.0。Why Not Vue ? React Who Use Who Know。（中式英语 =。=）
+Dinky 的前端项目，基于 Ant Design Pro 5.0.0。Why Not Vue ? React Who Use Who Know。（中式英语 =。=）
 
-Dlink 的前端架构与开发后续文章会详解，本文略。
+Dinky 的前端架构与开发后续文章会详解，本文略。
 
 ## 任务执行路线
 
@@ -329,7 +329,7 @@ Dlink 的前端架构与开发后续文章会详解，本文略。
 
 ### Yarn Application
 
-注册集群配置 ==> 异步提交 ==> StudioService ==> JobManager ==> Executor ==> TaskId & JDBC ==> Gateway ==> YarnApplicationGateway==> YarnClient ==> dlink-app.jar ==> Executor ==> AppStreamExecutor ==> CustomTableEnvironmentImpl ==> LocalEnvironmentFlink Yarn Application Cluster
+注册集群配置 ==> 异步提交 ==> StudioService ==> JobManager ==> Executor ==> TaskId & JDBC ==> Gateway ==> YarnApplicationGateway==> YarnClient ==> dinky-app.jar ==> Executor ==> AppStreamExecutor ==> CustomTableEnvironmentImpl ==> LocalEnvironmentFlink Yarn Application Cluster
 
 ## 说明
 

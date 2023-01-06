@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.metadata.parser;
+package org.dinky.metadata.parser;
 
 import java.util.HashMap;
 import java.util.Map;

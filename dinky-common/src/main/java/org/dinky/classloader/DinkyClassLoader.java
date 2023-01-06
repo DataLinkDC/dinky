@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.classloader;
+package org.dinky.classloader;
 
-import com.dlink.context.JarPathContextHolder;
+import org.dinky.context.JarPathContextHolder;
 
 import java.io.File;
 import java.net.MalformedURLException;

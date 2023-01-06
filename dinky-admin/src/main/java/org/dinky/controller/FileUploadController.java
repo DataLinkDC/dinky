@@ -17,11 +17,11 @@
  *
  */
 
-package com.dlink.controller;
+package org.dinky.controller;
 
-import com.dlink.common.result.Result;
-import com.dlink.constant.UploadFileConstant;
-import com.dlink.service.FileUploadService;
+import org.dinky.common.result.Result;
+import org.dinky.constant.UploadFileConstant;
+import org.dinky.service.FileUploadService;
 
 import org.apache.commons.lang3.StringUtils;
 

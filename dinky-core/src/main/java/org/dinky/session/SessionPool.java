@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.session;
+package org.dinky.session;
 
-import com.dlink.constant.FlinkConstant;
+import org.dinky.constant.FlinkConstant;
 
 import java.util.ArrayList;
 import java.util.List;

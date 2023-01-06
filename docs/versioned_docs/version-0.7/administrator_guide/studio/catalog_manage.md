@@ -74,7 +74,7 @@ flink-sql-connector-hive-x.x.x_x.xx-x.x.x.jar
 
 ```
 # Mysql Catalog依赖放置 $FLINK_HOME/lib下
-dlink-catalog-mysql-1.1x-0.6.x.jar
+dinky-catalog-mysql-1.1x-0.6.x.jar
 ```
 
 ### 创建 Mysql Catalog 语法
@@ -83,10 +83,10 @@ dlink-catalog-mysql-1.1x-0.6.x.jar
 
 ```
 create catalog my_catalog with(
-   'type' = 'dlink_mysql', 
-   'username' = 'dlink', 
-   'password' = 'dlink', 
-   'url' = 'jdbc:mysql://127.0.0.1:3306/dlink?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true' 
+   'type' = 'dinky_mysql', 
+   'username' = 'dinky', 
+   'password' = 'dinky', 
+   'url' = 'jdbc:mysql://127.0.0.1:3306/dinky?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true' 
    );
 use catalog my_catalog;
 ```

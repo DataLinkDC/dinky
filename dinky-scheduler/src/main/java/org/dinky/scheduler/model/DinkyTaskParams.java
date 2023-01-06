@@ -17,7 +17,7 @@
  *
  */
 
-package com.dlink.scheduler.model;
+package org.dinky.scheduler.model;
 
 import java.util.List;
 
@@ -28,13 +28,13 @@ import lombok.Data;
  * @author 郑文豪
  */
 @Data
-public class DlinkTaskParams {
+public class DinkyTaskParams {
     @ApiModelProperty(value = "自定义参数")
     private List<Property> localParams;
 
-    @ApiModelProperty(value = "dlink地址")
+    @ApiModelProperty(value = "dinky地址")
     private String address;
 
-    @ApiModelProperty(value = "dlink任务id", required = true)
+    @ApiModelProperty(value = "dinky任务id", required = true)
     private String taskId;
 }

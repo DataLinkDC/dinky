@@ -7,7 +7,7 @@ title: 扩展数据源
 
 
 
- Dinky 数据源遵循 SPI,可随意扩展所需要的数据源。数据源扩展可在 dlink-metadata 模块中进行可插拔式扩展。现已经支持的数据源包括如下：
+ Dinky 数据源遵循 SPI,可随意扩展所需要的数据源。数据源扩展可在 dinky-metadata 模块中进行可插拔式扩展。现已经支持的数据源包括如下：
 
    - MySQL
    - Oracle
@@ -30,20 +30,20 @@ title: 扩展数据源
 
 ## 后端开发
 - 本文以 Hive 数据源扩展为例
-- 在 **dlink-metadata** 模块中， 右键**新建子模块**, 命名规则: **dlink-metadata-{数据源名称}**
+- 在 **dinky-metadata** 模块中， 右键**新建子模块**, 命名规则: **dinky-metadata-{数据源名称}**
 - **代码层面**
   - 注意事项: 
     - 不可在父类的基础上修改代码，可以在子类中进行扩展 ,或者重写父类方法
     - 扩展数据源需要同时提交**测试用例**
   - 在此模块的 **pom.xml** 中，添加所需依赖, 需要注意的是 : 数据源本身的 ``JDBC``的 jar 不要包含在打包中 , 而是后续部署时,添加在 ``plugins`` 下
-  - 需要在此模块的 **resource** 下 新建包 ``META-INF.services`` , 在此包中新建文件 ``com.dlink.metadata.driver.Driver`` 内容如下:
-    - ``com.dlink.metadata.driver.数据源类型Driver``
+  - 需要在此模块的 **resource** 下 新建包 ``META-INF.services`` , 在此包中新建文件 ``org.dinky.metadata.driver.Driver`` 内容如下:
+    - ``org.dinky.metadata.driver.数据源类型Driver``
       基础包:
 ```bash
-顶层包名定义: com.dlink.metadata
+顶层包名定义: org.dinky.metadata
   子包含义:
     - constant: 常量定义 目前此模块中主要定义各种动态构建的执行 SQL 
-    - convert: 存放数据源的数据类型<->Java 类型的转换类 ps: 可以不定义 不定义使用 dlink-metadata-base 的默认转换 即调用父类的方法
+    - convert: 存放数据源的数据类型<->Java 类型的转换类 ps: 可以不定义 不定义使用 dinky-metadata-base 的默认转换 即调用父类的方法
     - driver: 存放数据源驱动类,获取元数据的主要类,类 extends AbstractJdbcDriver implements Driver 
     - query : 存放解析获取元数据的主要类,类 extends AbstractDBQuery 方法不重写 默认使用父类
 ```
@@ -553,27 +553,27 @@ public class HiveQuery extends AbstractDBQuery {
 
 - 如果上述过程 测试没有问题 需要整合进入项目中 , 请看以下步骤:
 - 打包相关配置 修改如下:
-  - 在 **dlink-core** 模块的 **pom.xml** 下 , 找到扩展数据源相关的依赖 `放在一起方便管理` 并且新增如下内容:
+  - 在 **dinky-core** 模块的 **pom.xml** 下 , 找到扩展数据源相关的依赖 `放在一起方便管理` 并且新增如下内容:
 ```xml
         <dependency>
-            <groupId>com.dlink</groupId>
+            <groupId>org.dinky</groupId>
             <artifactId>模块名称</artifactId>
             <scope>${scope.runtime}</scope>
         </dependency>
 ``` 
-  - 在 **dlink** 根下 **pom.xml** 中 ,新增如下内容:
+  - 在 **dinky** 根下 **pom.xml** 中 ,新增如下内容:
 ```xml
         <dependency>
-            <groupId>com.dlink</groupId>
+            <groupId>org.dinky</groupId>
             <artifactId>模块名称</artifactId>
             <version>${project.version}</version>
         </dependency>
 ```
 
-  - 在 **dlink-assembly** 模块中 , 找到 ``package.xml`` 路径: **/dlink-assembly/src/main/assembly/package.xml** , 新增如下内容:
+  - 在 **dinky-assembly** 模块中 , 找到 ``package.xml`` 路径: **/dinky-assembly/src/main/assembly/package.xml** , 新增如下内容:
 ```xml
         <fileSet>
-            <directory>${project.parent.basedir}/dlink-metadata/模块名称/target
+            <directory>${project.parent.basedir}/dinky-metadata/模块名称/target
             </directory>
             <outputDirectory>lib</outputDirectory>
             <includes>
@@ -587,9 +587,9 @@ public class HiveQuery extends AbstractDBQuery {
 ----
 
 ## 前端开发
-- **dlink-web** 为 Dinky 的前端模块
-- 扩展数据源相关表单所在路径: `dlink-web/src/pages/DataBase/`
-  - 修改 `dlink-web/src/pages/DataBase/components/DBForm.tsx` 的 **const data** 中 添加如下:
+- **dinky-web** 为 Dinky 的前端模块
+- 扩展数据源相关表单所在路径: `dinky-web/src/pages/DataBase/`
+  - 修改 `dinky-web/src/pages/DataBase/components/DBForm.tsx` 的 **const data** 中 添加如下:
 eg:
 ```shell
          {
@@ -602,10 +602,10 @@ eg:
 注意: ``此处数据源类型遵照大驼峰命名规则``
 
   - 添加数据源logo图片
-    - 路径: `dlink-web/public/database/`
+    - 路径: `dinky-web/public/database/`
     - logo 图下载参考: [https://www.iconfont.cn](https://www.iconfont.cn) 
-    - logo 图片存放位置: `dlink-web/public/database`   
-  - 修改 `dlink-web/src/pages/DataBase/DB.ts` , 添加如下:
+    - logo 图片存放位置: `dinky-web/public/database`   
+  - 修改 `dinky-web/src/pages/DataBase/DB.ts` , 添加如下:
 eg:
 ```shell
     case 'hive':  
@@ -614,7 +614,7 @@ eg:
 ```
 如下图:
 ![extened_datasource_datasourceform](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/function_expansion/datasource/extened_datasource_datasourceform.jpg)
-   - 创建数据源相关表单属性在: `dlink-web/src/pages/DataBase/components/DataBaseForm.tsx` 此处无需修改
+   - 创建数据源相关表单属性在: `dinky-web/src/pages/DataBase/components/DataBaseForm.tsx` 此处无需修改
 
 ----
 

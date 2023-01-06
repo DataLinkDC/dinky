@@ -693,7 +693,7 @@ export default {
   'pages.rc.jar.config': 'Jar Config',
   'pages.rc.jar.filePathPleaseHolder': 'value such as: hdfs:///flink/app/demo.jar',
   'pages.rc.jar.filePathHelp': 'Please enter the file path! You need to specify the file path on hdfs,',
-  'pages.rc.jar.mainClassPleaseHolder': 'com.dlink.app.MainApp',
+  'pages.rc.jar.mainClassPleaseHolder': 'org.dinky.app.MainApp',
   'pages.rc.jar.mainClassHelp': 'Specify the startup class of the executable Jar, (optional)',
   'pages.rc.jar.execParamsHelp': 'Specify the startup class input parameter of the executable Jar, (optional)',
   'pages.rc.jar.execParamsPleaseHolder': '--id 1,2',

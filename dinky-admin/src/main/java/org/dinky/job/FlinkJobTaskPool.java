@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.job;
+package org.dinky.job;
 
-import com.dlink.model.JobInfoDetail;
-import com.dlink.pool.AbstractPool;
+import org.dinky.model.JobInfoDetail;
+import org.dinky.pool.AbstractPool;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

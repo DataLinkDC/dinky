@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.explainer.trans;
+package org.dinky.explainer.trans;
 
-import com.dlink.utils.MapParseUtils;
+import org.dinky.utils.MapParseUtils;
 
 import java.util.ArrayList;
 import java.util.List;

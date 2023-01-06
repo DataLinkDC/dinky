@@ -17,10 +17,10 @@
  *
  */
 
-package com.dlink.model;
+package org.dinky.model;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.utils.SqlUtil;
+import org.dinky.assertion.Asserts;
+import org.dinky.utils.SqlUtil;
 
 import java.beans.Transient;
 import java.io.Serializable;

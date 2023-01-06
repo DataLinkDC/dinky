@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.daemon.entity;
+package org.dinky.daemon.entity;
 
-import com.dlink.daemon.task.DaemonTask;
+import org.dinky.daemon.task.DaemonTask;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

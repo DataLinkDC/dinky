@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.dlink.db.config.MybatisPlusConfigure
+org.dinky.db.config.MybatisPlusConfigure

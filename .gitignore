@@ -33,11 +33,11 @@ target/*
 */target/*
 */*/target/*
 */*/*/target/*
-dlink-web/node_modules/*
-dlink-web/node/*
-dlink-web/dist/*
-dlink-web/.mfsu-production
-dlink-admin/src/main/resources/static/*
+dinky-web/node_modules/*
+dinky-web/node/*
+dinky-web/dist/*
+dinky-web/.mfsu-production
+dinky-admin/src/main/resources/static/*
 dependency-reduced-pom.xml
 
 # Dinky Docs gitignore

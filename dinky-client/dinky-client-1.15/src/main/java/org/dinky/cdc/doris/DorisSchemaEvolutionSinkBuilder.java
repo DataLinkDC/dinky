@@ -17,16 +17,16 @@
  *
  */
 
-package com.dlink.cdc.doris;
+package org.dinky.cdc.doris;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.cdc.AbstractSinkBuilder;
-import com.dlink.cdc.CDCBuilder;
-import com.dlink.cdc.SinkBuilder;
-import com.dlink.executor.CustomTableEnvironment;
-import com.dlink.model.FlinkCDCConfig;
-import com.dlink.model.Schema;
-import com.dlink.model.Table;
+import org.dinky.assertion.Asserts;
+import org.dinky.cdc.AbstractSinkBuilder;
+import org.dinky.cdc.CDCBuilder;
+import org.dinky.cdc.SinkBuilder;
+import org.dinky.executor.CustomTableEnvironment;
+import org.dinky.model.FlinkCDCConfig;
+import org.dinky.model.Schema;
+import org.dinky.model.Table;
 
 import org.apache.doris.flink.cfg.DorisExecutionOptions;
 import org.apache.doris.flink.cfg.DorisOptions;
@@ -162,7 +162,7 @@ public class DorisSchemaEvolutionSinkBuilder extends AbstractSinkBuilder impleme
                             + getSinkSchemaName(table) + "_" + getSinkTableName(table));
                 } else {
                     executionBuilder.setLabelPrefix(
-                            "dlink-" + getSinkSchemaName(table) + "_" + getSinkTableName(table) + UUID.randomUUID());
+                            "dinky-" + getSinkSchemaName(table) + "_" + getSinkTableName(table) + UUID.randomUUID());
                 }
                 if (sink.containsKey(DorisSinkOptions.SINK_MAX_RETRIES.key())) {
                     executionBuilder.setMaxRetries(Integer.valueOf(sink.get(DorisSinkOptions.SINK_MAX_RETRIES.key())));

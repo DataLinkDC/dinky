@@ -17,17 +17,17 @@
  *
  */
 
-package com.dlink.job;
+package org.dinky.job;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.context.SpringContextUtils;
-import com.dlink.daemon.constant.FlinkTaskConstant;
-import com.dlink.daemon.pool.DefaultThreadPool;
-import com.dlink.daemon.task.DaemonTask;
-import com.dlink.daemon.task.DaemonTaskConfig;
-import com.dlink.model.JobInstance;
-import com.dlink.model.JobStatus;
-import com.dlink.service.TaskService;
+import org.dinky.assertion.Asserts;
+import org.dinky.context.SpringContextUtils;
+import org.dinky.daemon.constant.FlinkTaskConstant;
+import org.dinky.daemon.pool.DefaultThreadPool;
+import org.dinky.daemon.task.DaemonTask;
+import org.dinky.daemon.task.DaemonTaskConfig;
+import org.dinky.model.JobInstance;
+import org.dinky.model.JobStatus;
+import org.dinky.service.TaskService;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

@@ -17,21 +17,21 @@
  *
  */
 
-package com.dlink.service.impl;
+package org.dinky.service.impl;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.common.result.Result;
-import com.dlink.context.TenantContextHolder;
-import com.dlink.db.service.impl.SuperServiceImpl;
-import com.dlink.mapper.TenantMapper;
-import com.dlink.model.Namespace;
-import com.dlink.model.Role;
-import com.dlink.model.Tenant;
-import com.dlink.model.UserTenant;
-import com.dlink.service.NamespaceService;
-import com.dlink.service.RoleService;
-import com.dlink.service.TenantService;
-import com.dlink.service.UserTenantService;
+import org.dinky.assertion.Asserts;
+import org.dinky.common.result.Result;
+import org.dinky.context.TenantContextHolder;
+import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.mapper.TenantMapper;
+import org.dinky.model.Namespace;
+import org.dinky.model.Role;
+import org.dinky.model.Tenant;
+import org.dinky.model.UserTenant;
+import org.dinky.service.NamespaceService;
+import org.dinky.service.RoleService;
+import org.dinky.service.TenantService;
+import org.dinky.service.UserTenantService;
 
 import java.util.ArrayList;
 import java.util.List;

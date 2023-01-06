@@ -17,9 +17,9 @@
  *
  */
 
-package com.dlink.process.model;
+package org.dinky.process.model;
 
-import com.dlink.assertion.Asserts;
+import org.dinky.assertion.Asserts;
 
 /**
  * ProcessStatus

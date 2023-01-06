@@ -17,11 +17,11 @@
  *
  */
 
-package com.dlink.process.context;
+package org.dinky.process.context;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.process.model.ProcessEntity;
-import com.dlink.process.pool.ProcessPool;
+import org.dinky.assertion.Asserts;
+import org.dinky.process.model.ProcessEntity;
+import org.dinky.process.pool.ProcessPool;
 
 /**
  * ProcessContextHolder

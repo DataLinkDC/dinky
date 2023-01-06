@@ -17,19 +17,19 @@
  *
  */
 
-package com.dlink.app.flinksql;
+package org.dinky.app.flinksql;
 
-import com.dlink.app.db.DBConfig;
-import com.dlink.app.db.DBUtil;
-import com.dlink.assertion.Asserts;
-import com.dlink.constant.FlinkSQLConstant;
-import com.dlink.executor.Executor;
-import com.dlink.executor.ExecutorSetting;
-import com.dlink.interceptor.FlinkInterceptor;
-import com.dlink.parser.SqlType;
-import com.dlink.trans.Operations;
-import com.dlink.utils.SqlUtil;
-import com.dlink.utils.ZipUtils;
+import org.dinky.app.db.DBConfig;
+import org.dinky.app.db.DBUtil;
+import org.dinky.assertion.Asserts;
+import org.dinky.constant.FlinkSQLConstant;
+import org.dinky.executor.Executor;
+import org.dinky.executor.ExecutorSetting;
+import org.dinky.interceptor.FlinkInterceptor;
+import org.dinky.parser.SqlType;
+import org.dinky.trans.Operations;
+import org.dinky.utils.SqlUtil;
+import org.dinky.utils.ZipUtils;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -76,7 +76,7 @@ public class Submiter {
         if (id == null) {
             throw new SQLException("请指定任务ID");
         }
-        return "select statement from dlink_task_statement where id = " + id;
+        return "select statement from dinky_task_statement where id = " + id;
     }
 
     private static String getTaskInfo(Integer id) throws SQLException {
@@ -85,7 +85,7 @@ public class Submiter {
         }
         return "select id, name, alias as jobName, type,check_point as checkpoint,"
                 + "save_point_path as savePointPath, parallelism,fragment as useSqlFragment,statement_set as useStatementSet,config_json as config,"
-                + " env_id as envId,batch_model AS useBatchModel from dlink_task where id = " + id;
+                + " env_id as envId,batch_model AS useBatchModel from dinky_task where id = " + id;
     }
 
     private static String getFlinkSQLStatement(Integer id, DBConfig config) {
@@ -115,8 +115,8 @@ public class Submiter {
     }
 
     public static String getDbSourceSqlStatements(DBConfig dbConfig, Integer id) {
-        String sql = "select name,flink_config from dlink_database where enabled = 1";
-        String sqlCheck = "select fragment from dlink_task where id = " + id;
+        String sql = "select name,flink_config from dinky_database where enabled = 1";
+        String sqlCheck = "select fragment from dinky_task where id = " + id;
         try {
             // 首先判断是否开启了全局变量
             String fragment = DBUtil.getOneByID(sqlCheck, dbConfig);
