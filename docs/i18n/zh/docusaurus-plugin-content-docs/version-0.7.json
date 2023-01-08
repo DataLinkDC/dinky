@@ -106,5 +106,17 @@
   "sidebar.tutorialSidebar.category.部署指南": {
     "message": "部署指南",
     "description": "The label for category 部署指南 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.k8s 集成手册": {
+    "message": "k8s 集成手册",
+    "description": "The label for category k8s 集成手册 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Flink SQL 开发指南": {
+    "message": "Flink SQL 开发指南",
+    "description": "The label for category Flink SQL 开发指南 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.语法增强（扩展语法）": {
+    "message": "语法增强（扩展语法）",
+    "description": "The label for category 语法增强（扩展语法） in sidebar tutorialSidebar"
   }
 }

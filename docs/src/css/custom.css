@@ -24,26 +24,23 @@
  */
 
 /* You can override the default Infima variables here. */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap');
 :root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
+  --ifm-color-primary: #25c2a0;
+  --ifm-color-primary-dark: rgb(33, 175, 144);
+  --ifm-color-primary-darker: rgb(31, 165, 136);
+  --ifm-color-primary-darkest: rgb(26, 136, 112);
+  --ifm-color-primary-light: rgb(70, 203, 174);
+  --ifm-color-primary-lighter: rgb(102, 212, 189);
+  --ifm-color-primary-lightest: rgb(146, 224, 208);
   --ifm-code-font-size: 95%;
+  --site-announcement-bar-stripe-color1: hsl(167deg 68% 85%);
+  --site-announcement-bar-stripe-color2: hsl(167deg 68% 95%);
+  --ifm-font-family-base: 'JetBrains Mono Medium', 'FZLanTingYuanS-R-GB', 'Noto Sans', sans-serif;
 }
 
-/* For readability concerns, you should choose a lighter palette in dark mode. */
-[data-theme='dark'] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
+html::-webkit-scrollbar {
+  width: auto;
 }
 
 .docusaurus-highlight-code-line {
@@ -53,8 +50,155 @@
   padding: 0 var(--ifm-pre-padding);
 }
 
-[data-theme='dark'] .docusaurus-highlight-code-line {
+html[data-theme='dark'] .docusaurus-highlight-code-line {
   background-color: rgba(0, 0, 0, 0.3);
+}
+
+html {
+  font-style: normal;
+  font-family: 'JetBrains Mono Medium', 'Noto Sans', sans-serif;
+  color: #3f3f4f;
+}
+
+/* 小空调自定义样式 */
+/* #airConditioning {
+  padding-left: 30px;
+  border-left: 0.5px solid var(--ifm-color-emphasis-300);
+  float: right;
+  margin-top: -630px;
+  height: 651px;
+  overflow: hidden;
+  zoom: 80%;
+} */
+
+/* tg comments */
+#comments-app-27ZP8kvt-1 {
+  overflow: auto;
+  border: none;
+  height: 186px;
+}
+
+/* @media screen and (max-width: 767px) {
+  #airConditioning {
+    display: none;
+  }
+} */
+
+/* html[data-theme="dark"] #airConditioning {
+  padding-left: 30px;
+  border-left: 1px solid var(--ifm-color-emphasis-300);
+  float: right;
+  margin-top: -660px;
+  height: 651px;
+  overflow: hidden;
+} */
+
+hr {
+  border: 0.5px solid rgb(245, 244, 244);
+  padding: 0;
+  margin: 0;
+  width: 90%;
+  color: rgb(201, 120, 120);
+}
+blockquote {
+  transition: all 0.5s ease-in-out;
+  /* background: var(--ifm-color-primary-lighter); */
+  /* border-bottom: #25c2a0 1px solid; */
+  background-color: #f8f8f9;
+  font-size: 0.9em;
+  border-image-source: linear-gradient(to left, #8f41e9, #f8f8f8);
+  box-shadow: 1px 1px 5px 5px rgba(139, 138, 138, 0.01);
+  padding: 5px 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+}
+blockquote:hover {
+  /* border-left: 2px solid var(--ifm-color-primary); */
+  border-image-source: linear-gradient(to left, #8f41e9, var(--ifm-color-primary));
+  border-image-slice: 1;
+  box-shadow: 1px 1px 10px 5px rgba(0, 0, 0, 0);
+}
+
+html[data-theme='dark'] blockquote {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+pre {
+  font-family: 'JetBrains Mono Medium', 'Noto Sans', sans-serif;
+}
+
+code {
+  color: var(--ifm-color-primary);
+  border: none;
+  padding: 0.1em 0.4em;
+  font-family: 'JetBrains Mono Medium', 'Noto Sans', sans-serif;
+}
+
+.markdown > h2 {
+  border-left: var(--ifm-color-primary-dark) 3px solid;
+  padding-left: 10px;
+  line-height: 100%;
+  border-left: var(--ifm-color-primary-dark) 7px solid;
+  border-radius: 1px;
+}
+.markdown > h3 {
+  padding-left: 10px;
+  line-height: 100%;
+  border-left: var(--ifm-color-primary-darker) 4px solid;
+  border-radius: 1px;
+}
+.markdown img {
+  display: block;
+  margin: 1rem auto;
+}
+
+img-annotation {
+  display: block;
+  color: #a9b1bb;
+  margin: -1rem 0 1rem;
+  text-align: center;
+  font-size: 0.7rem;
+}
+
+p {
+  margin: 15px 0 15px 10px;
+  font-family: 'Noto Sans', sans-serif;
+}
+
+p strong {
+  color: #000;
+}
+/* 徽章居左 */
+.Badges {
+  display: inline-block !important;
+  margin: 0.5rem 0.3rem !important;
+}
+
+/* 公告栏 */
+div[class^='announcementBar_'] {
+  background: repeating-linear-gradient(
+          35deg,
+          var(--site-announcement-bar-stripe-color1),
+          var(--site-announcement-bar-stripe-color1) 20px,
+          var(--site-announcement-bar-stripe-color2) 10px,
+          var(--site-announcement-bar-stripe-color2) 40px
+  );
+  font-weight: 700;
+}
+
+/* 滚动槽 */
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset006pxrgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+}
+/* 滚动条滑块 */
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: inset006pxrgba(0, 0, 0, 0.5);
+}
+::-webkit-scrollbar-thumb:window-inactive {
+  background: rgba(255, 0, 0, 0.4);
 }
 
 .structure .image img{
@@ -165,4 +309,22 @@ h2.blogPostTitle_node_modules-\@docusaurus-theme-classic-lib-next-theme-BlogPost
 }
 h1.blogPostTitle_node_modules-\@docusaurus-theme-classic-lib-next-theme-BlogPostItem-styles-module{
   font-size: 1.8rem;
+}
+
+.header-github-link:hover {
+  opacity: 0.6;
+}
+
+.header-github-link::before {
+  content: '';
+  width: 24px;
+  height: 24px;
+  display: flex;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12'/%3E%3C/svg%3E")
+  no-repeat;
+}
+
+[data-theme='dark'] .header-github-link::before {
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='white' d='M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12'/%3E%3C/svg%3E")
+  no-repeat;
 }

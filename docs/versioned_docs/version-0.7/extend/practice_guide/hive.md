@@ -28,11 +28,12 @@ title: Hive
 
 再来梳理下本教程的各个插件版本：
 
-|     所属组件      |            插件            |         版本          |
-|:-------------:| :------------------------: | :-------------------: |
-|     Dinky     |        dlink-client        |         1.12          |
-| Dinky & Flink |  flink-sql-connector-hive  |   2.3.6_2.11-1.12.3   |
-| Dinky & Flink | flink-shaded-hadoop-3-uber | 3.1.1.7.2.8.0-224-9.0 |
+|     所属组件      |                          插件                           |          版本           |
+|:-------------:|:-----------------------------------------------------:|:---------------------:|
+|     Dinky     |                     dlink-client                      |         1.12          |
+| Dinky & Flink |               flink-sql-connector-hive                |   2.3.6_2.11-1.12.3   |
+| Dinky & Flink |              flink-shaded-hadoop-3-uber               | 3.1.1.7.2.8.0-224-9.0 |
+|     Hive      | hive-exec & hive-jdbc & hive-metastore & hive-service |  2.1.1(根据自身hive版本定)   |
 
 ## 部署扩展
 
