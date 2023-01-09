@@ -1,3 +1,3 @@
 FROM mysql:5.7 as production-stage
-COPY ./dlink-doc/sql/dlink.sql /docker-entrypoint-initdb.d/01-dlink.sql
-COPY ./dlink-doc/sql/dlink_history.sql /docker-entrypoint-initdb.d/02-dlink_history.sql
+COPY ./dinky-doc/sql/dinky.sql /docker-entrypoint-initdb.d/01-dinky.sql
+COPY ./dinky-doc/sql/dinky_history.sql /docker-entrypoint-initdb.d/02-dinky_history.sql

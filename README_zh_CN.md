@@ -1,11 +1,11 @@
 # Dinky
 
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
-[![Total Lines](https://tokei.rs/b1/github/DataLinkDC/dlink?category=lines)](https://github.com/DataLinkDC/dlink)
+[![Total Lines](https://tokei.rs/b1/github/DataLinkDC/dinky?category=lines)](https://github.com/DataLinkDC/dinky)
 [![CN doc](https://img.shields.io/badge/文档-中文版-blue.svg)](README_zh_CN.md)
 [![EN doc](https://img.shields.io/badge/document-English-blue.svg)](README.md)
 
-[![Stargazers over time](https://starchart.cc/DataLinkDC/dlink.svg)](https://starchart.cc/DataLinkDC/dlink)
+[![Stargazers over time](https://starchart.cc/DataLinkDC/dinky.svg)](https://starchart.cc/DataLinkDC/dinky)
 
 ## 简介
 
@@ -32,41 +32,41 @@ Dinky 是一个 `开箱即用` 、`易扩展` ，以 `Apache Flink` 为基础，
 
 ## 原理
 
-![dinky_principle](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/main/dinky_principle.png)
+![dinky_principle](https://raw.githubusercontent.com/DataLinkDC/dinky/main/dinky-doc/images/main/dinky_principle.png)
 
 ## 运行效果
 
 > FlinkSQL Studio
 
-![datastudio](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/070/datastudio.png)
+![datastudio](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/dinky-doc/images/070/datastudio.png)
 
 > 语法检查
 
-![checksql](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/070/checksql.png)
+![checksql](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/dinky-doc/images/070/checksql.png)
 
 > 版本管理
 
-![versiondiff](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/070/versiondiff.png)
+![versiondiff](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/dinky-doc/images/070/versiondiff.png)
 
 > 血缘分析
 
-![lineage](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/070/lineage.png)
+![lineage](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/dinky-doc/images/070/lineage.png)
 
 > BI 图表
 
-![charts](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/070/charts.png)
+![charts](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/dinky-doc/images/070/charts.png)
 
 > 元数据查询
 
-![metadata](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/070/metadata.png)
+![metadata](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/dinky-doc/images/070/metadata.png)
 
 > 任务监控
 
-![monitor](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/070/monitor.png)
+![monitor](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/dinky-doc/images/070/monitor.png)
 
 > 作业信息
 
-![jobinfo](https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/070/jobinfo.png)
+![jobinfo](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/dinky-doc/images/070/jobinfo.png)
 
 ## 近期计划
 
@@ -78,11 +78,11 @@ Dinky 是一个 `开箱即用` 、`易扩展` ，以 `Apache Flink` 为基础，
 
 ## 参与贡献
 
-欢迎加入社区，共建共赢，贡献流程请参考： [参与贡献](https://github.com/DataLinkDC/dlink/blob/dev/docs/docs/developer_guide/contribution/how_contribute.md)
+欢迎加入社区，共建共赢，贡献流程请参考： [参与贡献](https://github.com/DataLinkDC/dinky/blob/dev/docs/docs/developer_guide/contribution/how_contribute.md)
 
 ## 如何部署
 
-详见 [源码编译](https://github.com/DataLinkDC/dlink/blob/dev/docs/docs/build_deploy/build.md) 和 [安装部署](https://github.com/DataLinkDC/dlink/blob/dev/docs/docs/build_deploy/deploy.md) 。
+详见 [源码编译](https://github.com/DataLinkDC/dinky/blob/dev/docs/docs/build_deploy/build.md) 和 [安装部署](https://github.com/DataLinkDC/dinky/blob/dev/docs/docs/build_deploy/deploy.md) 。
 
 ## 如何升级
 
@@ -122,19 +122,19 @@ Dinky 是一个 `开箱即用` 、`易扩展` ，以 `Apache Flink` 为基础，
 
 [SpringBoot]()
 
-感谢 [JetBrains](https://www.jetbrains.com/?from=dlink) 提供的免费开源 License 赞助。
+感谢 [JetBrains](https://www.jetbrains.com/?from=dinky) 提供的免费开源 License 赞助。
 
-[![JetBrains](https://raw.githubusercontent.com/DataLinkDC/dlink/main/dlink-doc/images/main/jetbrains.svg)](https://www.jetbrains.com/?from=dlink)
+[![JetBrains](https://raw.githubusercontent.com/DataLinkDC/dinky/main/dinky-doc/images/main/jetbrains.svg)](https://www.jetbrains.com/?from=dinky)
 
 ## 获得帮助
 
 1.提交 issue
 
-2.访问 [官网](http://www.dlink.top/#/) 网址，阅读最新文档手册
+2.访问 [官网](http://www.dinky.top/#/) 网址，阅读最新文档手册
 
 3.推荐扫码进入钉钉群
 
-<img src="https://raw.githubusercontent.com/DataLinkDC/dlink/dev/dlink-doc/images/main/dinkydingding.jpg" alt="dinkydingding" style="zoom:30%;" />
+<img src="https://raw.githubusercontent.com/DataLinkDC/dinky/dev/dinky-doc/images/main/dinkydingding.jpg" alt="dinkydingding" style="zoom:30%;" />
 
 4.进入微信用户社区群（推荐，添加微信号 `wenmo_ai` 邀请进群）和QQ用户社区群（**543709668**）交流，申请备注 “ Dinky + 企业名 + 职位”
 
@@ -144,4 +144,4 @@ Dinky 是一个 `开箱即用` 、`易扩展` ，以 `Apache Flink` 为基础，
 
 ## 版权
 
-请参考 [LICENSE](https://github.com/DataLinkDC/dlink/blob/main/LICENSE) 文件。
+请参考 [LICENSE](https://github.com/DataLinkDC/dinky/blob/main/LICENSE) 文件。

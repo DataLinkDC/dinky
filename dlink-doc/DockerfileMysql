@@ -1,8 +1,0 @@
-FROM mysql:5.7 as production-stage
-
-ENV MYSQL_ROOT_PASSWORD=dlink
-ENV MYSQL_DATABASE=dlink
-ENV MYSQL_USER=dlink
-ENV MYSQL_PASSWORD=dlink
-
-COPY ./sql/dinky.sql /docker-entrypoint-initdb.d/01-dinky.sql

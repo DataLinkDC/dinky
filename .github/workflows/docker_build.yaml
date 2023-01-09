@@ -61,7 +61,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: release-file
-          path: ./build/dlink-release-*.tar.gz
+          path: ./build/dinky-release-*.tar.gz
   dinky_mysql_image:
     name: dinky mysql image
     runs-on: ubuntu-latest
