@@ -32,7 +32,7 @@ Its main feature are as follows:
 
 ## Principle
 
-![dinky_principle](https://raw.githubusercontent.com/DataLinkDC/dinky/main/dinky-doc/images/main/dinky_principle.png)
+![dinky_principle](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/dinky-doc/images/main/dinky_principle.png)
 
 ## Run the Screenshot
 
